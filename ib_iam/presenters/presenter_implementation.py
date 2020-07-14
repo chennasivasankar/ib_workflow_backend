@@ -1,7 +1,8 @@
 from django.http import HttpResponse
 
 from ib_iam.adapters.auth_service import TokensDTO
-from ib_iam.interactors.presenter_interfaces.presenter_interface import PresenterInterface
+from ib_iam.interactors.presenter_interfaces.presenter_interface import \
+    PresenterInterface
 
 INVALID_EMAIL = (
     "Please send valid email",

@@ -16,7 +16,7 @@ class TokensDTO:
 
 
 class AuthService:
-    def get_user_id_from_email_and_password_dto(self):
+    def get_user_id_from_email_and_password_dto(self, email_and_password_dto: EmailAndPasswordDTO):
         pass
 
     def get_tokens_dto_from_user_id(self, user_id: int):

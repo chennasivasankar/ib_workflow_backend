@@ -1,4 +1,4 @@
-from ib_iam.interactors.login_interactor import \
+from ib_iam.interactors.user_login_interactor import \
     EmailAndPasswordDTO
 
 def prepare_get_user_id_mock(mocker, email_and_password_dto: EmailAndPasswordDTO):

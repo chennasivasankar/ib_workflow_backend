@@ -106,7 +106,7 @@
       }
     },
     "LoginInNotFoundResponse": {
-      "description": "Login In Not Found response",
+      "description": "LoginInNotFoundresponse",
       "schema": {
         "type": "object",
         "properties": {
@@ -135,7 +135,7 @@
   "paths": {
     "/login/v1/": {
       "post": {
-        "operationId": "login",
+        "operationId": "user_login",
         "summary": "login",
         "description": "if user is exists return the access_token and is_admin",
         "security": [

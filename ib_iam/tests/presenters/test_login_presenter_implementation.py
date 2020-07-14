@@ -5,7 +5,8 @@ class TestLoginPresenterImplementation:
 
     def test_raise_invalid_email_exception(self):
         # Arrange
-        from ib_iam.presenters.presenter_implementation import LoginPresenterImplementation
+        from ib_iam.presenters.presenter_implementation import \
+            LoginPresenterImplementation
         preseter = LoginPresenterImplementation()
 
         from ib_iam.presenters.presenter_implementation import INVALID_EMAIL
@@ -25,7 +26,8 @@ class TestLoginPresenterImplementation:
 
     def test_raise_invalid_password_exception(self):
         # Arrange
-        from ib_iam.presenters.presenter_implementation import LoginPresenterImplementation
+        from ib_iam.presenters.presenter_implementation import \
+            LoginPresenterImplementation
         preseter = LoginPresenterImplementation()
 
         from ib_iam.presenters.presenter_implementation import INVALID_PASSWORD
@@ -52,11 +54,14 @@ class TestLoginPresenterImplementation:
             expires_in_seconds=1000
         )
 
-        from ib_iam.presenters.presenter_implementation import LoginPresenterImplementation
+        from ib_iam.presenters.presenter_implementation import \
+            LoginPresenterImplementation
         preseter = LoginPresenterImplementation()
 
         # Act
-        response_object = preseter.prepare_response_for_tokens_dto(tokens_dto=tokens_dto)
+        response_object = preseter.prepare_response_for_tokens_dto(
+            tokens_dto=tokens_dto
+        )
 
         # Assert
         response = json.loads(response_object.content)
