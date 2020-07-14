@@ -175,7 +175,7 @@ class CreateUpdateDeleteStageActionsInteractor:
 
     def _validations_for_stage_roles(self, actions_dto: List[ActionDto]):
         from ib_tasks.adapters.service_adapter import get_service_adapter
-        db_roles = get_service_adapter.roles_service.get_db_roles()
+        db_roles = get_service_adapter().roles_service.get_db_roles()
         invalid_stage_roles = defaultdict(list)
         for action_dto in actions_dto:
             if self._check_for_invalid_role(action_dto.role, db_roles):
