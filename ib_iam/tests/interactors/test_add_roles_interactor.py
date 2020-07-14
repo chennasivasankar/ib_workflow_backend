@@ -68,12 +68,12 @@ class TestAddRolesInteractor:
                 "role_description": "payment poc"
             },
             {
-                "role_id": "PAYMENT_POC",
+                "role_id": "PAYMENT_POC_PAYMENT_POC2",
                 "role_name": "payment_poc",
                 "role_description": "payment poc"
             },
             {
-                "role_id": "PAYMENT",
+                "role_id": "PAYMENTPOC",
                 "role_name": "payment_poc",
                 "role_description": "payment poc"
             },

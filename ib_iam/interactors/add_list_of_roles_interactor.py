@@ -101,7 +101,8 @@ class AddListofRolesInteractor:
 
     def check_role_id_format(self, role_id: str):
         import re
-        valid_format_pattern = '[A-Z]+\_[A-Z0-9]*\d*$'
+        # valid_format_pattern = '^[A-Z]+\_[A-Z0-9]+[0-9]*$'
+        valid_format_pattern = '^([A-Z]+|[A-Z0-9_]*)*[A-Z0-9]$'
         is_valid_format = bool(re.match(valid_format_pattern, role_id))
         print(role_id)
         is_invalid_format = not is_valid_format
