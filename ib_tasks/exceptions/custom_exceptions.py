@@ -23,3 +23,15 @@ class InvalidRolesException(Exception):
 
     def __init__(self, roles):
         self.roles = roles
+
+
+class EmptyValueForPermissions(Exception):
+
+    def __init__(self, message: str):
+        self.message = message
+
+
+class InvalidValueForFieldDisplayName(Exception):
+
+    def __init__(self, message: str):
+        self.message = message

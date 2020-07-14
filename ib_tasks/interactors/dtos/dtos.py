@@ -8,7 +8,7 @@ class FieldDTO:
     field_id: int
     field_display_name: str
     field_type: FieldTypes
-    field_values: Optional[Union[int, str, float, List[str]]]
+    field_values: Optional[Union[str, List[str]]]
     required: bool
     read_permissions_to_roles: List[str]
     write_permissions_to_roles: List[str]
