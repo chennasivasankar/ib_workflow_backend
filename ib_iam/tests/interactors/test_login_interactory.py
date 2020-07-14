@@ -5,13 +5,6 @@ from unittest.mock import patch, Mock
 class TestLoginInteractor:
 
     @pytest.fixture()
-    def storage_mock_setup(self):
-        from unittest.mock import create_autospec
-        from ib_iam.interactors.storage_interfaces.storage_interface import StorageInterface
-        storage = create_autospec(StorageInterface)
-        return storage
-
-    @pytest.fixture()
     def presenter_mock_setup(self):
         # import unittest
         from unittest.mock import create_autospec
@@ -31,7 +24,7 @@ class TestLoginInteractor:
 
     @patch("ib_iam.adapters.auth_service.AuthService.get_user_id_from_email_and_password_dto")
     def test_validate_password_raise_exception(self, get_user_id_from_email_and_password_dto, email_and_password_dto,
-                                               presenter_mock_setup, storage_mock_setup):
+                                               presenter_mock_setup):
         # Arrange
         email = "test#gamil.com"
         expected_raise_invalid_password_mock = Mock()
@@ -43,7 +36,7 @@ class TestLoginInteractor:
         presenter_mock.raise_invalid_password.return_value = expected_raise_invalid_password_mock
 
         from ib_iam.interactors.login_interactor import LoginInteractor
-        interactor = LoginInteractor(storage=storage_mock_setup)
+        interactor = LoginInteractor()
 
         # Act
         response = interactor.login_wrapper(email_and_password_dto=email_and_password_dto,
@@ -55,7 +48,7 @@ class TestLoginInteractor:
 
     @patch("ib_iam.adapters.auth_service.AuthService.get_user_id_from_email_and_password_dto")
     def test_validate_email_raise_exception(self, get_user_id_from_email_and_password_dto, email_and_password_dto,
-                                            presenter_mock_setup, storage_mock_setup):
+                                            presenter_mock_setup):
         # Arrange
         expected_raise_invalid_email_mock = Mock()
 
@@ -66,7 +59,7 @@ class TestLoginInteractor:
         presenter_mock.raise_invalid_email.return_value = expected_raise_invalid_email_mock
 
         from ib_iam.interactors.login_interactor import LoginInteractor
-        interactor = LoginInteractor(storage=storage_mock_setup)
+        interactor = LoginInteractor()
 
         # Act
         response = interactor.login_wrapper(email_and_password_dto=email_and_password_dto,
@@ -80,11 +73,10 @@ class TestLoginInteractor:
     @patch("ib_iam.adapters.auth_service.AuthService.get_user_id_from_email_and_password_dto")
     def test_with_valid_email_and_password_dto(self, get_user_id_from_email_and_password_dto,
                                                get_tokens_dto_from_user_id, email_and_password_dto,
-                                               presenter_mock_setup, storage_mock_setup):
+                                               presenter_mock_setup):
         # Arrange
         user_id = 1
         from ib_iam.adapters.auth_service import TokensDTO
-        import datetime
         tokens_dto = TokensDTO(
             access_token="asdfaldskfjdfdlsdkf",
             refresh_token="sadfenkljkdfeller",
@@ -99,7 +91,7 @@ class TestLoginInteractor:
         presenter_mock.prepare_response_for_tokens_dto.return_value = expected_presenter_mock_response
 
         from ib_iam.interactors.login_interactor import LoginInteractor
-        interactor = LoginInteractor(storage=storage_mock_setup)
+        interactor = LoginInteractor()
 
         # Act
         response = interactor.login_wrapper(email_and_password_dto=email_and_password_dto,

@@ -5,44 +5,21 @@ from .validator_class import ValidatorClass
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    # ---------MOCK IMPLEMENTATION---------
+    request_data = kwargs['request_data']
 
-    try:
-        from ib_iam.views.login.request_response_mocks \
-            import REQUEST_BODY_JSON
-        body = REQUEST_BODY_JSON
-    except ImportError:
-        body = {}
+    email = request_data['email']
+    password = request_data['password']
+    from ib_iam.adapters.auth_service import EmailAndPasswordDTO
+    email_and_password_dto = EmailAndPasswordDTO(
+        email=email,
+        password=password
+    )
+    from ib_iam.interactors.login_interactor import LoginInteractor
+    interactor = LoginInteractor()
 
-    test_case = {
-        "path_params": {},
-        "query_params": {},
-        "header_params": {},
-        "body": body,
-        "securities": [{'oauth': ['read']}]
-    }
+    from ib_iam.presenters.presenter_implementation import LoginPresenterImplementation
+    presenter = LoginPresenterImplementation()
 
-    from django_swagger_utils.drf_server.utils.server_gen.mock_response \
-        import mock_response
-    try:
-        response = ''
-        status_code = 200
-        if '200' in ['200', '404', '400']:
-            from ib_iam.views.login.request_response_mocks \
-                import RESPONSE_200_JSON
-            response = RESPONSE_200_JSON
-            status_code = 200
-        elif '201' in ['200', '404', '400']:
-            from ib_iam.views.login.request_response_mocks \
-                import RESPONSE_201_JSON
-            response = RESPONSE_201_JSON
-            status_code = 201
-    except ImportError:
-        response = ''
-        status_code = 200
-    response_tuple = mock_response(
-        app_name="ib_iam", test_case=test_case,
-        operation_name="login",
-        kwargs=kwargs, default_response_body=response,
-        group_name="", status_code=status_code)
-    return response_tuple
+    response = interactor.login_wrapper(presenter=presenter,
+                                        email_and_password_dto=email_and_password_dto)
+    return response

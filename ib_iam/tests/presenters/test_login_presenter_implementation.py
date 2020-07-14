@@ -46,7 +46,6 @@ class TestLoginPresenterImplementation:
     def test_prepare_response_for_tokens_dto(self):
         # Arrange
         from ib_iam.adapters.auth_service import TokensDTO
-        import datetime
         tokens_dto = TokensDTO(
             access_token="asdfaldskfjdfdlsdkf",
             refresh_token="sadfenkljkdfeller",

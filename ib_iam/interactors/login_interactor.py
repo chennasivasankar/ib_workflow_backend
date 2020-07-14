@@ -12,9 +12,6 @@ class InvalidPassword(Exception):
 
 
 class LoginInteractor:
-    def __init__(self, storage: StorageInterface):
-        self.storage = storage
-
     def login_wrapper(self, presenter: PresenterInterface,
                       email_and_password_dto: EmailAndPasswordDTO
                       ):
