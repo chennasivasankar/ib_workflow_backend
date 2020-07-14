@@ -12,7 +12,7 @@ from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 
 
-class CreateGOF:
+class CreateGOFsInteractor:
 
     def __init__(self, storage: StorageInterface):
         self.storage = storage
@@ -22,24 +22,13 @@ class CreateGOF:
 
     def create_gofs(self, gof_dtos: List[GOFDTO]):
 
-        # TODO: check if any mandatory fields are empty if so, raise exception
         self._validate_for_empty_mandatory_fields(gof_dtos=gof_dtos)
-
-        # TODO: validate for unique field ids for a gof
         self._validate_for_unique_field_ids(gof_dtos=gof_dtos)
-
-        # TODO: roles in read permission should be valid
         self._validate_read_permission_roles(gof_dtos=gof_dtos)
-
-        # TODO: roles in write permission should be valid
         self._validate_write_permission_roles(gof_dtos=gof_dtos)
-
-        # TODO: same gof ids should not have multiple display names
         self._validate_for_different_gof_display_names_with_same_gof_id(
             gof_dtos=gof_dtos
         )
-
-        # TODO: store gofs in database
         self.storage.create_gofs(gof_dtos=gof_dtos)
 
     def _validate_for_empty_mandatory_fields(self, gof_dtos: List[GOFDTO]):
@@ -116,6 +105,9 @@ class CreateGOF:
     def _validate_read_permission_roles(
             self, gof_dtos: List[GOFDTO]
     ) -> Optional[InvalidReadPermissionRoles]:
+        from ib_tasks.adapters.roles_service_adapter import \
+            get_roles_service_adapter
+        roles_service_adapter = get_roles_service_adapter()
         valid_read_permission_roles = \
             self.storage.get_valid_read_permission_roles()
         for gof_dto in gof_dtos:
