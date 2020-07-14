@@ -12,3 +12,8 @@ class StageInformationDTO:
 class TaskStagesDTO:
     task_template_id: str
     stage_id: str
+
+@dataclass
+class TaskStatusDTO:
+    task_template_id: str
+    status_variable_id: str

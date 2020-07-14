@@ -23,3 +23,8 @@ class InvalidTaskTemplateIds(Exception):
 class InvalidStageDisplayLogic(Exception):
     def __init__(self, invalid_stage_display_logic_stages: List[str]):
         self.invalid_stage_display_logic_stages = invalid_stage_display_logic_stages
+
+
+class DuplicateTaskStatusVariableIds(Exception):
+    def __init__(self, duplicate_status_ids_for_tasks: List[str]):
+        self.task_ids = duplicate_status_ids_for_tasks

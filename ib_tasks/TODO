@@ -23,6 +23,12 @@ To be Implemented:
 Status variables:
 
 To be Implemented:
-    1.validate task template id
+
+
+Tn Process:
+
+
+Implemented:
+    1. validate task template ids
     2. unique status id for each task
-    3. create status for task template id
+    3. create status for task template ids

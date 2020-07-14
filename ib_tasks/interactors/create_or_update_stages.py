@@ -1,6 +1,6 @@
 from typing import List
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
-    StageStorageInterface
+    TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.dtos import StageInformationDTO
 from ib_tasks.exceptions.custom_exceptions import (
     InvalidStagesTaskTemplateId, InvalidStageValues, DuplicateStageIds,
@@ -9,7 +9,8 @@ from ib_tasks.interactors.storage_interfaces.dtos import TaskStagesDTO
 
 
 class CreateOrUpdateStagesInterface:
-    def __init__(self, stage_storage: StageStorageInterface):
+
+    def __init__(self, stage_storage: TaskStorageInterface):
         self.stage_storage = stage_storage
 
 
@@ -29,6 +30,7 @@ class CreateOrUpdateStagesInterface:
         self._validate_stage_display_logic(stages_information)
 
         self._create_or_update_stages(valid_stage_ids, stages_information)
+
 
     def _create_or_update_stages(self,
                                  valid_stage_ids: List[str],
@@ -59,7 +61,8 @@ class CreateOrUpdateStagesInterface:
 
     def _validate_stage_display_logic(self, stages_information):
         invalid_stage_display_logic_stages = [
-            stage.stage_id for stage in stages_information if stage.stage_display_logic == ""
+            stage.stage_id for stage in stages_information
+            if stage.stage_display_logic == ""
         ]
         if invalid_stage_display_logic_stages:
             raise InvalidStageDisplayLogic(invalid_stage_display_logic_stages)
@@ -68,7 +71,7 @@ class CreateOrUpdateStagesInterface:
     def check_for_duplicate_stage_ids(self, stage_ids: List[str]):
         duplicate_stage_ids = list(set(
             [x for x in stage_ids if stage_ids.count(x) > 1]))
-        print(duplicate_stage_ids)
+
         if duplicate_stage_ids:
             raise DuplicateStageIds(duplicate_stage_ids)
 

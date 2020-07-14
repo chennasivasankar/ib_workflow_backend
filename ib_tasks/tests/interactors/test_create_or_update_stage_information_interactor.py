@@ -6,7 +6,7 @@ from ib_tasks.exceptions.custom_exceptions import (
     InvalidStageValues, InvalidStagesTaskTemplateId, DuplicateStageIds,
     InvalidTaskTemplateIds, InvalidStageDisplayLogic)
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
-    StageStorageInterface
+    TaskStorageInterface
 from ib_tasks.interactors.create_or_update_stages import \
     CreateOrUpdateStagesInterface
 
@@ -29,7 +29,7 @@ class TestCreateOrUpdateStageInformation:
             stage_display_logic=stage_display_logic,
             value=value
         )]
-        storage = create_autospec(StageStorageInterface)
+        storage = create_autospec(TaskStorageInterface)
         stage_interactor = CreateOrUpdateStagesInterface(
             stage_storage=storage
         )
@@ -65,7 +65,7 @@ class TestCreateOrUpdateStageInformation:
             value=value
         )]
         stage_ids = ["PR_PENDING RP APPROVAL"]
-        storage = create_autospec(StageStorageInterface)
+        storage = create_autospec(TaskStorageInterface)
         storage.validate_stage_ids.return_value = ["PR_PENDING RP APPROVAL"]
         storage.validate_stages_related_task_template_ids.return_value = []
         task_stages_dto = [TaskStagesDTO(
@@ -111,8 +111,8 @@ class TestCreateOrUpdateStageInformation:
                 stage_display_logic=stage_display_logic,
                 value=-4
         )]
-        stage_ids = ["PR_PENDING RP APPROVAL", "PR APPROVED"]
-        storage = create_autospec(StageStorageInterface)
+        # stage_ids = ["PR_PENDING RP APPROVAL", "PR APPROVED"]
+        storage = create_autospec(TaskStorageInterface)
         storage.get_task_template_ids.return_value = ["FIN_PR"]
         storage.validate_stage_ids.return_value = []
         storage.validate_stages_related_task_template_ids.return_value = []
@@ -144,7 +144,7 @@ class TestCreateOrUpdateStageInformation:
             stage_display_logic=stage_display_logic,
             value=value
         )]
-        storage = create_autospec(StageStorageInterface)
+        storage = create_autospec(TaskStorageInterface)
         storage.validate_stage_ids.return_value = ["PR_PENDING RP APPROVAL"]
         storage.validate_stages_related_task_template_ids.\
             return_value = ["PR_PENDING RP APPROVAL"]
@@ -190,7 +190,7 @@ class TestCreateOrUpdateStageInformation:
                 stage_display_logic=stage_display_logic,
                 value=4
             )]
-        storage = create_autospec(StageStorageInterface)
+        storage = create_autospec(TaskStorageInterface)
         storage.validate_stage_ids.return_value = []
         storage.get_task_template_ids.return_value = ["FIN_PR"]
         storage.validate_stages_related_task_template_ids.return_value = []
@@ -220,7 +220,7 @@ class TestCreateOrUpdateStageInformation:
             stage_display_name=stage_display_name,
             stage_display_logic=stage_display_logic,
             value=value)]
-        storage = create_autospec(StageStorageInterface)
+        storage = create_autospec(TaskStorageInterface)
         storage.get_task_template_ids.return_value = ["BACKEND"]
 
         stage_interactor = CreateOrUpdateStagesInterface(
@@ -249,7 +249,7 @@ class TestCreateOrUpdateStageInformation:
             stage_display_name=stage_display_name,
             stage_display_logic=stage_display_logic,
             value=value)]
-        storage = create_autospec(StageStorageInterface)
+        storage = create_autospec(TaskStorageInterface)
         storage.get_task_template_ids.return_value = ["FIN_PR"]
 
         stage_interactor = CreateOrUpdateStagesInterface(
