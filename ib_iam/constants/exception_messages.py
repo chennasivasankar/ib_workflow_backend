@@ -22,7 +22,7 @@ ROLE_ID_SHOULD_BE_STRING = (
 )
 
 DUPLICATE_ROLE_IDS = (
-    "can't access duplicate role ids",
+    "can't create roles with duplicate role_ids",
     "DUPLICATE_ROLE_IDS"
 )
 

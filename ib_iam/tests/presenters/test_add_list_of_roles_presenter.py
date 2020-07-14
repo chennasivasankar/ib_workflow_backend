@@ -4,7 +4,7 @@ from ib_iam.presenters.presenter_implementation import PresenterImplementation
 
 class TestAddListOfRolesPresenter:
 
-    def test_raise_role_id_should_not_be_empty(self, snapshot):
+    def test_raise_role_id_should_not_be_empty(self):
 
         # Arrange
         presenter = PresenterImplementation()
@@ -17,16 +17,15 @@ class TestAddListOfRolesPresenter:
 
 
         # Act
-        response_object = presenter.raise_role_id_should_not_be_empty()
+        response_object = presenter.raise_role_id_should_not_be_empty_exception()
 
         # Assert
         response = json.loads(response_object.content)
-        # snapshot.assert_match(response, 'role_id_exception')
         assert response['http_status_code'] == 400
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
 
-    def test_raise_role_id_should_not_be_in_valid_format(self, snapshot):
+    def test_raise_role_id_should_not_be_in_valid_format(self):
 
         # Arrange
         presenter = PresenterImplementation()
@@ -39,16 +38,15 @@ class TestAddListOfRolesPresenter:
 
 
         # Act
-        response_object = presenter.raise_role_id_format_is_invalid()
+        response_object = presenter.raise_role_id_format_is_invalid_exception()
 
         # Assert
         response = json.loads(response_object.content)
-        # snapshot.assert_match(response, 'role_id_exception')
         assert response['http_status_code'] == 400
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
 
-    def test_raise_role_id_duplicate(self, snapshot):
+    def test_raise_role_id_duplicate(self):
 
         # Arrange
         presenter = PresenterImplementation()
@@ -65,12 +63,11 @@ class TestAddListOfRolesPresenter:
 
         # Assert
         response = json.loads(response_object.content)
-        # snapshot.assert_match(response, 'role_id_exception')
         assert response['http_status_code'] == 400
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
 
-    def test_raise_role_name_should_not_be_empty(self, snapshot):
+    def test_raise_role_name_should_not_be_empty(self):
 
         # Arrange
         presenter = PresenterImplementation()
@@ -83,17 +80,16 @@ class TestAddListOfRolesPresenter:
 
 
         # Act
-        response_object = presenter.raise_role_name_should_not_be_empty()
+        response_object = presenter.raise_role_name_should_not_be_empty_exception()
 
         # Assert
         response = json.loads(response_object.content)
-        # snapshot.assert_match(response, 'role_id_exception')
         assert response['http_status_code'] == 400
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
 
 
-    def test_raise_role_description_should_not_be_empty(self, snapshot):
+    def test_raise_role_description_should_not_be_empty(self):
 
         # Arrange
         presenter = PresenterImplementation()
@@ -106,11 +102,10 @@ class TestAddListOfRolesPresenter:
 
 
         # Act
-        response_object = presenter.raise_role_description_should_not_be_empty()
+        response_object = presenter.raise_role_description_should_not_be_empty_exception()
 
         # Assert
         response = json.loads(response_object.content)
-        # snapshot.assert_match(response, 'role_id_exception')
         assert response['http_status_code'] == 400
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response

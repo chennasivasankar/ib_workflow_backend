@@ -5,5 +5,5 @@ from ib_iam.interactors.storage_interfaces.dtos import RoleDto
 
 
 class StorageInterface(ABC):
-    def create_roles_from_list_of_role_dtos(self, roles_dto_list: List[RoleDto]):
+    def create_roles(self, roles_dto_list: List[RoleDto]):
         pass
