@@ -1,0 +1,5 @@
+#!/home/ib-developer/Desktop/Backend_Projects/ib-workflows-backend/venv/bin/python
+from django.core import management
+
+if __name__ == "__main__":
+    management.execute_from_command_line()
