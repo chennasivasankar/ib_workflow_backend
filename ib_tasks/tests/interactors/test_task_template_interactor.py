@@ -63,7 +63,7 @@ class TestTaskTemplateInteractor:
         task_storage_mock.get_task_template_name_if_exists.return_value = \
             "Payment Request"
         task_storage_mock.\
-            get_existing_gof_of_template.return_value = ["GOF_1"]
+            get_existing_gof_of_template.return_value = ["GoF_1"]
 
         # Act
         task_template_interactor.create_task_template_wrapper(
@@ -98,10 +98,10 @@ class TestTaskTemplateInteractor:
         )
 
         from ib_tasks.exceptions.custom_exceptions \
-            import DuplicateGOFIds
+            import DuplicateGoFIds
 
         # Assert
-        with pytest.raises(DuplicateGOFIds) as err:
+        with pytest.raises(DuplicateGoFIds) as err:
             task_template_interactor.create_task_template_wrapper(
                 create_task_template_dto=create_task_template_dto
             )
@@ -157,9 +157,9 @@ class TestTaskTemplateInteractor:
         task_storage_mock.get_task_template_name_if_exists.side_effect = \
             TemplateNotExists
         task_storage_mock. \
-            get_existing_gof_of_template.return_value = ["GOF_5"]
+            get_existing_gof_of_template.return_value = ["GoF_5"]
         expected_exception_message = \
-            "Existing gof ids not in given gof ids: ['GOF_5']"
+            "Existing gof ids not in given gof ids: ['GoF_5']"
 
         gof_dtos = GoFDTOFactory.create_batch(size=1)
         create_task_template_dto = CreateTaskTemplateDTO(
@@ -168,11 +168,11 @@ class TestTaskTemplateInteractor:
         )
 
         from ib_tasks.exceptions.custom_exceptions import \
-            ExistingGOFNotInGivenGOF
+            ExistingGoFNotInGivenGoF
 
         # Assert
         with pytest.raises(
-                ExistingGOFNotInGivenGOF
+                ExistingGoFNotInGivenGoF
         ) as err:
             task_template_interactor.create_task_template_wrapper(
                 create_task_template_dto=create_task_template_dto

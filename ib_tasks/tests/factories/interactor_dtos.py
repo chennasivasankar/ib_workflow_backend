@@ -7,6 +7,6 @@ class GoFDTOFactory(factory.Factory):
         model = GoFDTO
 
     gof_id = factory.sequence(
-        lambda n: "GOF_{}".format(n + 1)
+        lambda n: "GoF_{}".format(n + 1)
     )
     order = factory.sequence(lambda n: n + 1)

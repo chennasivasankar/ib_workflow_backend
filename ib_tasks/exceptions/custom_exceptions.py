@@ -1,7 +1,7 @@
 from typing import List
 
 
-class DuplicateGOFIds(Exception):
+class DuplicateGoFIds(Exception):
     def __init__(self, gof_ids: List[str]):
         self.message = "Given duplicate gof ids {}".format(gof_ids)
         super().__init__(self.message)
@@ -19,7 +19,7 @@ class TemplateNotExists(Exception):
     pass
 
 
-class ExistingGOFNotInGivenGOF(Exception):
+class ExistingGoFNotInGivenGoF(Exception):
     def __init__(self, gof_ids: List[str]):
         self.message = \
             "Existing gof ids not in given gof ids: {}".format(gof_ids)

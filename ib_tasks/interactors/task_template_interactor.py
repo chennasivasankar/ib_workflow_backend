@@ -94,9 +94,9 @@ class TaskTemplateInteractor:
             if gof_id not in present_gof_ids
         ]
         from ib_tasks.exceptions.custom_exceptions import \
-            ExistingGOFNotInGivenGOF
+            ExistingGoFNotInGivenGoF
         if gof_not_in_given_gof:
-            raise ExistingGOFNotInGivenGOF(gof_not_in_given_gof)
+            raise ExistingGoFNotInGivenGoF(gof_not_in_given_gof)
 
     def _validate_fields_of_create_task_template_dto(
             self, create_task_template_dto: CreateTaskTemplateDTO):
@@ -170,6 +170,6 @@ class TaskTemplateInteractor:
                 duplicate_gof_ids.append(gof_id)
 
         from ib_tasks.exceptions.custom_exceptions \
-            import DuplicateGOFIds
+            import DuplicateGoFIds
         if duplicate_gof_ids:
-            raise DuplicateGOFIds(duplicate_gof_ids)
+            raise DuplicateGoFIds(duplicate_gof_ids)
