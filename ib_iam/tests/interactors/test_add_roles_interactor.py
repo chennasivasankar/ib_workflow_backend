@@ -1,59 +1,16 @@
 from unittest.mock import create_autospec, Mock
 
-from ib_iam.interactors.add_list_of_roles_interactor import AddRolesInteractor
+from ib_iam.interactors.add_roles_interactor import AddRolesInteractor
 from ib_iam.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 from ib_iam.interactors.presenter_interfaces.presenter_interface \
     import PresenterInterface
 
-import pytest
-
 
 class TestAddRolesInteractor:
-
-    def when_role_id_is_empty_raise_exception(self):
+    def test_given_role_ids_are_duplicate_then_raise_exception(self):
         # Arrange
-        list_of_roles = [{
-            "role_id": "",
-            "role_name": "payment poc",
-            "role_description": "payment poc"
-        }]
-        storage = create_autospec(StorageInterface)
-        presenter = create_autospec(PresenterInterface)
-        interactor = AddRolesInteractor(storage=storage)
-        presenter.raise_role_id_should_not_be_empty_exception.return_value = \
-            Mock()
-
-        # Act
-        output = interactor.add_roles_wrapper(roles=list_of_roles,
-                                              presenter=presenter)
-
-        # Assert
-        presenter.raise_role_id_should_not_be_empty_exception.assert_called_once()
-
-    def test_when_role_id_is_not_string_raise_exception(self):
-        # Arrange
-        roles = [{
-            "role_id": 123,
-            "role_name": "payment poc",
-            "role_description": "payment poc"
-        }]
-        storage = create_autospec(StorageInterface)
-        presenter = create_autospec(PresenterInterface)
-        interactor = AddRolesInteractor(storage=storage)
-        presenter.raise_invalid_role_id_execption.return_value = \
-            Mock()
-
-        # Act
-        output = interactor.add_roles_wrapper(roles=roles,
-                                              presenter=presenter)
-
-        # Assert
-        presenter.raise_invalid_role_id_execption.assert_called_once()
-
-    def test_when_role_ids_are_duplicate_raise_exception(self):
-        # Arrange
-        list_of_roles = [
+        roles = [
             {
                 "role_id": "PAYMENT_POC",
                 "role_name": "payment poc",
@@ -78,15 +35,14 @@ class TestAddRolesInteractor:
             Mock()
 
         # Act
-        output = interactor.add_roles_wrapper(roles=list_of_roles,
-                                              presenter=presenter)
+        interactor.add_roles_wrapper(roles=roles, presenter=presenter)
 
         # Assert
         presenter.raise_duplicate_role_ids_exception.assert_called_once()
 
-    def test_when_role_name_is_empty_raise_exception(self):
+    def test_given_role_name_is_empty_then_raise_exception(self):
         # Arrange
-        list_of_roles = [{
+        roles = [{
             "role_id": "PAYMENT_POC",
             "role_name": "",
             "role_description": "payment poc"
@@ -98,13 +54,13 @@ class TestAddRolesInteractor:
             Mock()
 
         # Act
-        output = interactor.add_roles_wrapper(
-            roles=list_of_roles, presenter=presenter)
+        interactor.add_roles_wrapper(
+            roles=roles, presenter=presenter)
 
         # Assert
         presenter.raise_role_name_should_not_be_empty_exception.assert_called_once()
 
-    def test_when_role_description_is_empty_raise_exception(self):
+    def test_given_role_description_is_empty_then_raise_exception(self):
         # Arrange
         list_of_roles = [{
             "role_id": "PAYMENT_POC",
@@ -118,13 +74,12 @@ class TestAddRolesInteractor:
             Mock()
 
         # Act
-        output = interactor.add_roles_wrapper(
-            roles=list_of_roles, presenter=presenter)
+        interactor.add_roles_wrapper(roles=list_of_roles, presenter=presenter)
 
         # Assert
         presenter.raise_role_description_should_not_be_empty_exception.assert_called_once()
 
-    def test_when_role_id_is_not_in_camel_case_or_empty_raise_exception(self):
+    def test_when_role_id_is_invalid_format_then_raise_exception(self):
         # Arrange
         list_of_roles = [{
             "role_id": "payment_poc",
@@ -137,25 +92,26 @@ class TestAddRolesInteractor:
         presenter.raise_role_id_format_is_invalid_exception.return_value = Mock()
 
         # Act
-        interactor.add_roles_wrapper(
-            roles=list_of_roles, presenter=presenter)
+        interactor.add_roles_wrapper(roles=list_of_roles, presenter=presenter)
 
         # Assert
         presenter.raise_role_id_format_is_invalid_exception.assert_called_once()
 
-    def test_when_valid_details_given(self):
+    def test_when_given_valid_details_then_create_roles(self):
         # Arrange
-        list_of_roles = [{
+        roles = [{
             "role_id": "PAYMENT_POC",
             "role_name": "payment poc",
             "role_description": "payment poc"
         }]
+        from ib_iam.tests.factories.storage_dtos import RoleDTOFactory
+        role_dtos = [RoleDTOFactory(**role) for role in roles]
         storage = create_autospec(StorageInterface)
         presenter = create_autospec(PresenterInterface)
         interactor = AddRolesInteractor(storage=storage)
 
         # Act
-        interactor.add_roles_wrapper(
-            roles=list_of_roles, presenter=presenter)
+        interactor.add_roles_wrapper(roles=roles, presenter=presenter)
 
         # Assert
+        storage.create_roles.assert_called_once_with(role_dtos=role_dtos)
