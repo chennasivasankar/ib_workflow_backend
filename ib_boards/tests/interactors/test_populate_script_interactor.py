@@ -85,6 +85,23 @@ class TestPopulateScriptInteractor:
             ColumnDTOFactory(task_template_stages=invalid_json)
 
         ]
+
+    @pytest.fixture
+    def column_dtos_with_invalid_task_template_summary_fields(self):
+        invalid_json = """
+                {
+                    "CardInfo_Requester": "Field Description"
+                },
+                {
+                    "CardInfo_Requester": "Field Description"
+                }
+            """
+        return [
+            ColumnDTOFactory(),
+            ColumnDTOFactory(task_summary_fields=invalid_json)
+
+        ]
+
     @pytest.fixture
     def column_dtos_with_invalid_task_template_id(self):
         return ColumnDTOFactory.create_batch(3)
@@ -173,7 +190,7 @@ class TestPopulateScriptInteractor:
                 column_dtos=column_dtos_with_invalid_task_template_stages
             )
 
-    def test_with_invalid_task_template_id_raise_exception(
+    def test_with_invalid_task_template_id_in_stages_raise_exception(
             self, storage_mock, board_dtos, sequence_reset,
             column_dtos_with_invalid_task_template_id, mocker):
         # Arrange
@@ -185,6 +202,46 @@ class TestPopulateScriptInteractor:
             adapter_mock
 
         adapter_mock = adapter_mock(mocker=mocker)
+
+        # Act
+        from ib_boards.exceptions.custom_exceptions import \
+            InvalidTaskTemplateIdInStages
+        with pytest.raises(InvalidTaskTemplateIdInStages) as error:
+            assert interactor.populate_script_wrapper(
+                board_dtos=board_dtos,
+                column_dtos=column_dtos_with_invalid_task_template_id
+            )
+
+    def test_with_invalid_task_template_fields_json_raises_exception(
+            self,storage_mock, sequence_reset, board_dtos,
+            column_dtos_with_invalid_task_template_summary_fields):
+
+        # Arrange
+        interactor = PopulateScriptInteractor(
+            storage=storage_mock
+        )
+
+        # Act
+        from ib_boards.exceptions.custom_exceptions import \
+            InvalidJsonForTaskTemplateSummaryFields
+        with pytest.raises(InvalidJsonForTaskTemplateSummaryFields) as error:
+            assert interactor.populate_script_wrapper(
+                board_dtos=board_dtos,
+                column_dtos=column_dtos_with_invalid_task_template_summary_fields
+            )
+
+    def test_with_invalid_task_template_id_in_fields_raise_exception(
+            self, storage_mock, board_dtos, sequence_reset,
+            column_dtos_with_invalid_task_template_id, mocker):
+        # Arrange
+        interactor = PopulateScriptInteractor(
+            storage=storage_mock
+        )
+
+        from ib_boards.tests.common_fixtures.adapters.task_service import \
+            adapter_mock
+
+        adapter_mock(mocker=mocker)
 
         # Act
         from ib_boards.exceptions.custom_exceptions import \

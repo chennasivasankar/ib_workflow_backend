@@ -28,3 +28,7 @@ class InvalidJsonForTaskTemplateStages(Exception):
 class InvalidTaskTemplateIdInStages(Exception):
     def __init__(self, task_template_id: str):
         self.task_template_id = task_template_id
+
+
+class InvalidJsonForTaskTemplateSummaryFields(Exception):
+    pass
