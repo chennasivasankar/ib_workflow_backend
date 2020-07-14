@@ -11,7 +11,7 @@ class TestLoginPresenterImplementation:
 
         from ib_iam.presenters.presenter_implementation import INVALID_EMAIL
         expected_response = INVALID_EMAIL[0]
-        expected_http_status_code = 400
+        expected_http_status_code = 404
         expected_res_status = INVALID_EMAIL[1]
 
         # Act

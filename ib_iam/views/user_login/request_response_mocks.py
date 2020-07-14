@@ -20,7 +20,7 @@ RESPONSE_404_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "InvalidEmail"
+    "res_status": "INVALID_EMAIL"
 }
 """
 
@@ -28,7 +28,7 @@ RESPONSE_400_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "InvalidPassword"
+    "res_status": "INVALID_PASSWORD"
 }
 """
 

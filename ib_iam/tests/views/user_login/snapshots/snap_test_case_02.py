@@ -7,10 +7,10 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase02UserLoginAPITestCase.test_case status_code'] = '500'
+snapshots['TestCase02UserLoginAPITestCase.test_case status_code'] = '404'
 
 snapshots['TestCase02UserLoginAPITestCase.test_case body'] = {
-    'res_status': [
-        '"INVALID_EMAIL" is not a valid choice.'
-    ]
+    'http_status_code': 404,
+    'res_status': 'INVALID_EMAIL',
+    'response': 'Please send valid email'
 }

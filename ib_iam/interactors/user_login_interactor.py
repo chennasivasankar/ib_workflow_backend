@@ -22,7 +22,6 @@ class LoginInteractor:
             )
             return response
         except InvalidEmail:
-            print(1)
             return presenter.raise_invalid_email()
         except InvalidPassword:
             return presenter.raise_invalid_password()
@@ -37,13 +36,13 @@ class LoginInteractor:
         return response
 
     def get_tokens_dto(self, email_and_password_dto: EmailAndPasswordDTO):
-        print("********")
         from ib_iam.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
         user_id = service_adapter.auth_service.get_user_id_from_email_and_password_dto(
             email_and_password_dto
         )
         tokens_dto = service_adapter.auth_service.get_tokens_dto_from_user_id(
-            user_id=user_id)
+            user_id=user_id
+        )
 
         return tokens_dto
