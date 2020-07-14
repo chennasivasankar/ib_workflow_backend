@@ -40,6 +40,16 @@ class PopulateScriptInteractor:
         self._validate_task_template_ids_in_task_template_fields(
             column_dtos=column_dtos
         )
+        self._validate_empty_values_in_task_template_stage(
+            column_dtos=column_dtos
+        )
+        self._validate_task_template_stages_with_id(
+            column_dtos=column_dtos
+        )
+        self.storage.populate_data(
+            board_dtos=board_dtos,
+            column_dtos=column_dtos
+        )
 
     @staticmethod
     def _validate_board_ids(board_ids: List[str]):
@@ -139,4 +149,41 @@ class PopulateScriptInteractor:
                 from ib_boards.exceptions.custom_exceptions import \
                     InvalidJsonForTaskTemplateSummaryFields
                 raise InvalidJsonForTaskTemplateSummaryFields
+
+    @staticmethod
+    def _validate_empty_values_in_task_template_stage(
+            column_dtos: List[ColumnDTO]):
+        import json
+        task_template_ids = []
+        for column_dto in column_dtos:
+            task_template_stages = json.loads(column_dto.task_template_stages)
+            for value in task_template_stages.values():
+                is_empty_value = not value
+                if is_empty_value:
+                    from ib_boards.exceptions.custom_exceptions import \
+                        EmptyValuesForTaskTemplateStages
+                    raise EmptyValuesForTaskTemplateStages
+
+        from ib_boards.adapters.service_adapter import get_service_adapter
+
+        service_adapter = get_service_adapter()
+
+        service_adapter.task_service.validate_task_template_ids(
+            task_template_ids=task_template_ids
+        )
+
+    def _validate_task_template_stages_with_id(self, column_dtos: List[ColumnDTO]):
+        task_template_stages = []
+        for column_dto in column_dtos:
+            import json
+            task_template_stages.append(
+                json.loads(column_dto.task_template_stages)
+            )
+        from ib_boards.adapters.service_adapter import get_service_adapter
+
+        service_adapter = get_service_adapter()
+
+        service_adapter.task_service.validate_task_template_stages_with_id(
+            task_template_stages=task_template_stages
+        )
 

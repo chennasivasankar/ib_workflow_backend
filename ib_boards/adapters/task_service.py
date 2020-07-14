@@ -16,3 +16,6 @@ class TaskService:
 
     def validate_task_template_ids(self, task_template_ids: List[str]):
         pass
+
+    def validate_task_template_stages_with_id(self, task_template_stages: List):
+        pass

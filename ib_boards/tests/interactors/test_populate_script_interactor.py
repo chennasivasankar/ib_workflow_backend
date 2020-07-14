@@ -87,6 +87,18 @@ class TestPopulateScriptInteractor:
         ]
 
     @pytest.fixture
+    def column_dtos_with_empty_task_template_stages(self):
+        task_template_stages = """
+                    {
+                        "FIN_PR": []
+                    }
+                """
+        return [
+            ColumnDTOFactory(),
+            ColumnDTOFactory(task_template_stages=task_template_stages)
+        ]
+
+    @pytest.fixture
     def column_dtos_with_invalid_task_template_summary_fields(self):
         invalid_json = """
                 {
@@ -251,6 +263,64 @@ class TestPopulateScriptInteractor:
                 board_dtos=board_dtos,
                 column_dtos=column_dtos_with_invalid_task_template_id
             )
+
+    def test_with_empty_task_template_stages_raise_exception(
+            self, storage_mock, board_dtos, sequence_reset,
+            column_dtos_with_empty_task_template_stages):
+        # Arrange
+        interactor = PopulateScriptInteractor(
+            storage=storage_mock
+        )
+        # Act
+        from ib_boards.exceptions.custom_exceptions import \
+            EmptyValuesForTaskTemplateStages
+        with pytest.raises(EmptyValuesForTaskTemplateStages) as error:
+            assert interactor.populate_script_wrapper(
+                board_dtos=board_dtos,
+                column_dtos=column_dtos_with_empty_task_template_stages
+            )
+
+    def test_with_task_template_stages_not_belongs_to_task_template_id(
+            self, storage_mock, sequence_reset, board_dtos, column_dtos, mocker):
+        # Arrange
+        interactor = PopulateScriptInteractor(
+            storage=storage_mock
+        )
+
+        from ib_boards.tests.common_fixtures.adapters.task_service import \
+            adapter_mock_for_task_template_stages
+        adapter_mock_for_task_template_stages(mocker)
+
+        # Act
+        from ib_boards.exceptions.custom_exceptions import \
+            TaskTemplateStagesNotBelongsToTastTemplateId
+        with pytest.raises(TaskTemplateStagesNotBelongsToTastTemplateId) as error:
+            assert interactor.populate_script_wrapper(
+                board_dtos=board_dtos,
+                column_dtos=column_dtos
+            )
+
+    def test_with_valid_data_creates_data(
+            self, storage_mock, sequence_reset, board_dtos, column_dtos):
+        # Arrange
+        interactor = PopulateScriptInteractor(
+            storage=storage_mock
+        )
+
+        # Act
+        interactor.populate_script_wrapper(
+            board_dtos=board_dtos,
+            column_dtos=column_dtos
+        )
+
+        # Assert
+        storage_mock.populate_data.assert_called_once_with(
+            board_dtos=board_dtos,
+            column_dtos=column_dtos
+        )
+
+
+
 
 
 

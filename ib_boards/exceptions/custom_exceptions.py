@@ -32,3 +32,11 @@ class InvalidTaskTemplateIdInStages(Exception):
 
 class InvalidJsonForTaskTemplateSummaryFields(Exception):
     pass
+
+
+class EmptyValuesForTaskTemplateStages(Exception):
+    pass
+
+
+class TaskTemplateStagesNotBelongsToTastTemplateId(Exception):
+    pass
