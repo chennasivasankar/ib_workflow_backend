@@ -115,6 +115,21 @@ class TestPopulateScriptInteractor:
         ]
 
     @pytest.fixture
+    def column_dtos_with_duplicate_task_template_stages(self):
+        task_template_stages = """
+                            {
+                                "FIN_PR": [
+                                    "PR_PAYMENT_REQUEST_DRAFTS", 
+                                    "PR_PAYMENT_REQUEST_DRAFTS"
+                                ]
+                            }
+                        """
+        return [
+            ColumnDTOFactory(),
+            ColumnDTOFactory(task_template_stages=task_template_stages)
+        ]
+
+    @pytest.fixture
     def column_dtos_with_invalid_task_template_id(self):
         return ColumnDTOFactory.create_batch(3)
 
@@ -278,6 +293,22 @@ class TestPopulateScriptInteractor:
             assert interactor.populate_script_wrapper(
                 board_dtos=board_dtos,
                 column_dtos=column_dtos_with_empty_task_template_stages
+            )
+
+    def test_with_duplicate_task_template_stages_raise_exception(
+            self, storage_mock, board_dtos, sequence_reset,
+            column_dtos_with_duplicate_task_template_stages, mocker):
+        # Arrange
+        interactor = PopulateScriptInteractor(
+            storage=storage_mock
+        )
+        # Act
+        from ib_boards.exceptions.custom_exceptions import \
+            DuplicateStagesInTaskTemplateStages
+        with pytest.raises(DuplicateStagesInTaskTemplateStages) as error:
+            assert interactor.populate_script_wrapper(
+                board_dtos=board_dtos,
+                column_dtos=column_dtos_with_duplicate_task_template_stages
             )
 
     def test_with_task_template_stages_not_belongs_to_task_template_id(

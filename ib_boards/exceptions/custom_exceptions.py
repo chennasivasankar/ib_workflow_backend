@@ -40,3 +40,8 @@ class EmptyValuesForTaskTemplateStages(Exception):
 
 class TaskTemplateStagesNotBelongsToTastTemplateId(Exception):
     pass
+
+
+class DuplicateStagesInTaskTemplateStages(Exception):
+    def __init__(self, duplicate_stages: List[str]):
+        self.duplicate_stages = duplicate_stages

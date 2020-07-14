@@ -43,6 +43,9 @@ class PopulateScriptInteractor:
         self._validate_empty_values_in_task_template_stage(
             column_dtos=column_dtos
         )
+        self._validate_duplicate_task_template_stages(
+            column_dtos=column_dtos
+        )
         self._validate_task_template_stages_with_id(
             column_dtos=column_dtos
         )
@@ -186,4 +189,28 @@ class PopulateScriptInteractor:
         service_adapter.task_service.validate_task_template_stages_with_id(
             task_template_stages=task_template_stages
         )
+
+    def _validate_duplicate_task_template_stages(self, column_dtos):
+        import json
+        for column_dto in column_dtos:
+            task_template_stages = json.loads(column_dto.task_template_stages)
+            for key, value in task_template_stages.items():
+                self._validate_duplicate_values(stages=value)
+
+    @staticmethod
+    def _validate_duplicate_values(stages: List[str]):
+        import collections
+        duplicate_stages = [
+            stage for stage, count in
+            collections.Counter(stages).items()
+            if count > 1
+        ]
+        if duplicate_stages:
+            from ib_boards.exceptions.custom_exceptions import \
+                DuplicateStagesInTaskTemplateStages
+            raise DuplicateStagesInTaskTemplateStages(
+                duplicate_stages=duplicate_stages
+            )
+
+
 
