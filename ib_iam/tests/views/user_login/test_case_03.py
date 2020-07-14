@@ -1,5 +1,5 @@
 """
-# TODO: Invaild password raise exception
+Invaild password raise exception
 """
 from unittest.mock import patch
 

@@ -1,5 +1,5 @@
 """
-# TODO: Invaild email raise exception
+if email not found raise exception
 """
 from unittest.mock import patch
 

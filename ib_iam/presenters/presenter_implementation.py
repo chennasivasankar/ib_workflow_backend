@@ -1,4 +1,3 @@
-from django.http import HttpResponse
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_iam.adapters.auth_service import TokensDTO

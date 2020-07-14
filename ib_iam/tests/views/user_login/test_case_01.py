@@ -1,5 +1,5 @@
 """
-# TODO: Valid email and password return response
+Valid email and password return response
 """
 from unittest.mock import patch
 

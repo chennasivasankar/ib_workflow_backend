@@ -46,4 +46,5 @@ dist/
 *.egg-info
 
 doc_html/
-ven/
+venv/
+.gitignore
