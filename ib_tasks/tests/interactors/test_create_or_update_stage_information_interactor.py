@@ -9,36 +9,39 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.create_or_update_stages import \
     CreateOrUpdateStagesInterface
+from ib_tasks.tests.factories.storage_dtos import (
+    StageInformationDTOFactory, TaskStagesDTOFactory)
 
 
 class TestCreateOrUpdateStageInformation:
 
+    @pytest.fixture
+    def create_stage_dtos(self):
+        StageInformationDTOFactory.reset_sequence()
+        return StageInformationDTOFactory.create_batch(
+            size=2
+        )
+
+    @pytest.fixture
+    def create_task_stages_dtos(self):
+        TaskStagesDTOFactory.reset_sequence()
+        return TaskStagesDTOFactory.create_batch(size=2)
+
     def test_create_stage_given_valid_information_creates_stage_with_given_information(
-            self):
+            self, create_stage_dtos):
         # Arrange
-        task_template_id = "FIN_PR"
-        stage_id = "PR_PENDING RP APPROVAL"
-        stage_display_name = "Pending RP Approval"
-        stage_display_logic = "Value[Status1]==Value[PR_PENDING_RP_APPROVAL]"
-        value = 2
-        stage_ids = ["PR_PENDING RP APPROVAL"]
-        stages_information = [StageInformationDTO(
-            task_template_id=task_template_id,
-            stage_id=stage_id,
-            stage_display_name=stage_display_name,
-            stage_display_logic=stage_display_logic,
-            value=value
-        )]
+
+        stage_ids = ["stage_id_0", "stage_id_1"]
         storage = create_autospec(StageStorageInterface)
         stage_interactor = CreateOrUpdateStagesInterface(
             stage_storage=storage
         )
-        storage.get_task_template_ids.return_value = ["FIN_PR"]
+        storage.get_task_template_ids.return_value = ["task_template_id_0", "task_template_id_1"]
         storage.validate_stage_ids.return_value = []
 
         # Act
         stage_interactor.create_or_update_stages_information(
-            stages_information=stages_information
+            stages_information=create_stage_dtos
         )
 
         # Assert
@@ -46,33 +49,20 @@ class TestCreateOrUpdateStageInformation:
             stage_ids=stage_ids
         )
         storage.create_stages_with_given_information.assert_called_once_with(
-            stages_information
+            create_stage_dtos
         )
 
     def test_update_stage_when_stage_id_already_exists_for_given_task_template_updates_stage_details(
-            self):
+            self, create_stage_dtos, create_task_stages_dtos):
         # Arrange
-        task_template_id = "FIN_PR"
-        stage_id = "PR_PENDING RP APPROVAL"
-        stage_display_name = "Pending RP Approval"
-        stage_display_logic = "Value[Status1]==Value[PR_PENDING_RP_APPROVAL]"
-        value = 2
-        stages_information = [StageInformationDTO(
-            task_template_id=task_template_id,
-            stage_id=stage_id,
-            stage_display_name=stage_display_name,
-            stage_display_logic=stage_display_logic,
-            value=value
-        )]
-        stage_ids = ["PR_PENDING RP APPROVAL"]
+        stages_information = create_stage_dtos
+
         storage = create_autospec(StageStorageInterface)
-        storage.validate_stage_ids.return_value = ["PR_PENDING RP APPROVAL"]
+        storage.validate_stage_ids.return_value = ["stage_id_0", "stage_id_1"]
         storage.validate_stages_related_task_template_ids.return_value = []
-        task_stages_dto = [TaskStagesDTO(
-            task_template_id=task_template_id,
-            stage_id=stage_id
-        )]
-        storage.get_task_template_ids.return_value = ["FIN_PR"]
+        task_stages_dto = create_task_stages_dtos
+        storage.get_task_template_ids.return_value = ["task_template_id_0", "task_template_id_1"]
+
         stage_interactor = CreateOrUpdateStagesInterface(
             stage_storage=storage
         )
@@ -93,27 +83,12 @@ class TestCreateOrUpdateStageInformation:
 
     def test_validate_values_when_given_invalid_values_raises_exception(self):
         # Arrange
-        task_template_id = "FIN_PR"
-        stage_id = "PR_PENDING RP APPROVAL"
-        stage_display_name = "Pending RP Approval"
-        stage_display_logic = "Value[Status1]==Value[PR_PENDING_RP_APPROVAL]"
-        value = -1
-        stages_information = [StageInformationDTO(
-                task_template_id=task_template_id,
-                stage_id=stage_id,
-                stage_display_name=stage_display_name,
-                stage_display_logic=stage_display_logic,
-                value=value),
-            StageInformationDTO(
-                task_template_id=task_template_id,
-                stage_id="PR APPROVED",
-                stage_display_name=stage_display_name,
-                stage_display_logic=stage_display_logic,
-                value=-4
-        )]
-        stage_ids = ["PR_PENDING RP APPROVAL", "PR APPROVED"]
+        StageInformationDTOFactory.reset_sequence()
+        stages_information = StageInformationDTOFactory.create_batch(
+            value=-1, size=2
+        )
         storage = create_autospec(StageStorageInterface)
-        storage.get_task_template_ids.return_value = ["FIN_PR"]
+        storage.get_task_template_ids.return_value = ["task_template_id_0", "task_template_id_1"]
         storage.validate_stage_ids.return_value = []
         storage.validate_stages_related_task_template_ids.return_value = []
 
@@ -130,32 +105,20 @@ class TestCreateOrUpdateStageInformation:
         # Assert
 
     def test_invalid_task_template_id_with_valid_stage_id_raises_exception(
-            self):
+            self, create_stage_dtos, create_task_stages_dtos):
         # Arrange
-        task_template_id = "FIN_PR"
-        stage_id = "PR_PENDING RP APPROVAL"
-        stage_display_name = "Pending RP Approval"
-        stage_display_logic = "Value[Status1]==Value[PR_PENDING_RP_APPROVAL]"
-        value = 2
-        stages_information = [StageInformationDTO(
-            task_template_id=task_template_id,
-            stage_id=stage_id,
-            stage_display_name=stage_display_name,
-            stage_display_logic=stage_display_logic,
-            value=value
-        )]
+        stages_information = create_stage_dtos
+        task_stages_dto = create_task_stages_dtos
         storage = create_autospec(StageStorageInterface)
         storage.validate_stage_ids.return_value = ["PR_PENDING RP APPROVAL"]
         storage.validate_stages_related_task_template_ids.\
             return_value = ["PR_PENDING RP APPROVAL"]
-        task_stages_dto = [TaskStagesDTO(
-            task_template_id=task_template_id,
-            stage_id=stage_id
-        )]
+
+
         stage_interactor = CreateOrUpdateStagesInterface(
             stage_storage=storage
         )
-        storage.get_task_template_ids.return_value = ["FIN_PR"]
+        storage.get_task_template_ids.return_value = ["task_template_id_0", "task_template_id_1"]
 
         # Act
         with pytest.raises(InvalidStagesTaskTemplateId) as err:
@@ -172,24 +135,11 @@ class TestCreateOrUpdateStageInformation:
 
 
     def test_check_for_duplicate_stage_ids_raises_exception(self):
-        task_template_id = "FIN_PR"
-        stage_id = "PR_PENDING RP APPROVAL"
-        stage_display_name = "Pending RP Approval"
-        stage_display_logic = "Value[Status1]==Value[PR_PENDING_RP_APPROVAL]"
-        value = 3
-        stages_information = [StageInformationDTO(
-            task_template_id=task_template_id,
-            stage_id=stage_id,
-            stage_display_name=stage_display_name,
-            stage_display_logic=stage_display_logic,
-            value=value),
-            StageInformationDTO(
-                task_template_id=task_template_id,
-                stage_id=stage_id,
-                stage_display_name=stage_display_name,
-                stage_display_logic=stage_display_logic,
-                value=4
-            )]
+        # Arrange
+        StageInformationDTOFactory.reset_sequence()
+        stages_information = StageInformationDTOFactory.create_batch(
+            stage_id="stage_id_1", size=2
+        )
         storage = create_autospec(StageStorageInterface)
         storage.validate_stage_ids.return_value = []
         storage.get_task_template_ids.return_value = ["FIN_PR"]
@@ -208,18 +158,9 @@ class TestCreateOrUpdateStageInformation:
         # Assert
 
     def test_validate_task_template_ids_if_doesnot_exists_raises_exception(
-            self):
-        task_template_id = "FIN_PR"
-        stage_id = "PR_PENDING RP APPROVAL"
-        stage_display_name = "Pending RP Approval"
-        stage_display_logic = "Value[Status1]==Value[PR_PENDING_RP_APPROVAL]"
-        value = 3
-        stages_information = [StageInformationDTO(
-            task_template_id=task_template_id,
-            stage_id=stage_id,
-            stage_display_name=stage_display_name,
-            stage_display_logic=stage_display_logic,
-            value=value)]
+            self, create_stage_dtos):
+        # Arrange
+        stages_information = create_stage_dtos
         storage = create_autospec(StageStorageInterface)
         storage.get_task_template_ids.return_value = ["BACKEND"]
 
@@ -238,19 +179,14 @@ class TestCreateOrUpdateStageInformation:
 
     def test_validate_stage_display_logic_invalid_stage_display_logic_raises_exception(
             self):
-        task_template_id = "FIN_PR"
-        stage_id = "PR_PENDING RP APPROVAL"
-        stage_display_name = "Pending RP Approval"
-        stage_display_logic = ""
-        value = 3
-        stages_information = [StageInformationDTO(
-            task_template_id=task_template_id,
-            stage_id=stage_id,
-            stage_display_name=stage_display_name,
-            stage_display_logic=stage_display_logic,
-            value=value)]
+        # Arrange
+
+        StageInformationDTOFactory.reset_sequence()
+        stages_information = StageInformationDTOFactory.create_batch(
+            stage_display_logic="", size=2
+        )
         storage = create_autospec(StageStorageInterface)
-        storage.get_task_template_ids.return_value = ["FIN_PR"]
+        storage.get_task_template_ids.return_value = ["task_template_id_0", "task_template_id_1"]
 
         stage_interactor = CreateOrUpdateStagesInterface(
             stage_storage=storage
