@@ -1,6 +1,6 @@
 from unittest.mock import create_autospec, Mock
 
-from ib_iam.interactors.add_list_of_roles_interactor import AddListofRolesInteractor
+from ib_iam.interactors.add_list_of_roles_interactor import AddRolesInteractor
 from ib_iam.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 from ib_iam.interactors.presenter_interfaces.presenter_interface \
@@ -22,13 +22,13 @@ class TestAddRolesInteractor:
         expected_output = Mock()
         storage = create_autospec(StorageInterface)
         presenter = create_autospec(PresenterInterface)
-        interactor = AddListofRolesInteractor(storage=storage)
+        interactor = AddRolesInteractor(storage=storage)
         presenter.raise_role_id_should_not_be_empty.return_value = \
             expected_output
 
         # Act
-        output = interactor.add_list_of_roles_wrapper(list_of_roles=list_of_roles,
-                                    presenter=presenter)
+        output = interactor.add_roles_wrapper(roles=list_of_roles,
+                                              presenter=presenter)
 
         # Assert
         assert output == expected_output
@@ -45,13 +45,13 @@ class TestAddRolesInteractor:
         expected_output = Mock()
         storage = create_autospec(StorageInterface)
         presenter = create_autospec(PresenterInterface)
-        interactor = AddListofRolesInteractor(storage=storage)
+        interactor = AddRolesInteractor(storage=storage)
         presenter.raise_invalid_role_id_execption.return_value = \
             expected_output
 
         # Act
-        output = interactor.add_list_of_roles_wrapper(list_of_roles=list_of_roles,
-                                    presenter=presenter)
+        output = interactor.add_roles_wrapper(roles=list_of_roles,
+                                              presenter=presenter)
 
         # Assert
         assert output == expected_output
@@ -82,13 +82,13 @@ class TestAddRolesInteractor:
         expected_output = Mock()
         storage = create_autospec(StorageInterface)
         presenter = create_autospec(PresenterInterface)
-        interactor = AddListofRolesInteractor(storage=storage)
+        interactor = AddRolesInteractor(storage=storage)
         presenter.raise_duplicate_role_ids_exception.return_value = \
             expected_output
 
         # Act
-        output = interactor.add_list_of_roles_wrapper(list_of_roles=list_of_roles,
-                                    presenter=presenter)
+        output = interactor.add_roles_wrapper(roles=list_of_roles,
+                                              presenter=presenter)
 
         # Assert
         assert output == expected_output
@@ -105,13 +105,13 @@ class TestAddRolesInteractor:
         expected_output = Mock()
         storage = create_autospec(StorageInterface)
         presenter = create_autospec(PresenterInterface)
-        interactor = AddListofRolesInteractor(storage=storage)
+        interactor = AddRolesInteractor(storage=storage)
         presenter.raise_role_name_should_not_be_empty.return_value = \
             expected_output
 
         # Act
-        output = interactor.add_list_of_roles_wrapper(
-             list_of_roles=list_of_roles, presenter=presenter)
+        output = interactor.add_roles_wrapper(
+             roles=list_of_roles, presenter=presenter)
 
         # Assert
         assert output == expected_output
@@ -129,13 +129,13 @@ class TestAddRolesInteractor:
         expected_output = Mock()
         storage = create_autospec(StorageInterface)
         presenter = create_autospec(PresenterInterface)
-        interactor = AddListofRolesInteractor(storage=storage)
+        interactor = AddRolesInteractor(storage=storage)
         presenter.raise_role_description_should_not_be_empty.return_value = \
             expected_output
 
         # Act
-        output = interactor.add_list_of_roles_wrapper(
-            list_of_roles=list_of_roles, presenter=presenter)
+        output = interactor.add_roles_wrapper(
+            roles=list_of_roles, presenter=presenter)
 
         # Assert
         assert output == expected_output
@@ -152,11 +152,11 @@ class TestAddRolesInteractor:
         }]
         storage = create_autospec(StorageInterface)
         presenter = create_autospec(PresenterInterface)
-        interactor = AddListofRolesInteractor(storage=storage)
+        interactor = AddRolesInteractor(storage=storage)
 
         # Act
-        interactor.add_list_of_roles_wrapper(
-            list_of_roles=list_of_roles, presenter=presenter)
+        interactor.add_roles_wrapper(
+            roles=list_of_roles, presenter=presenter)
 
         # Assert
         presenter.raise_role_id_format_is_invalid.assert_called_once()
@@ -172,11 +172,11 @@ class TestAddRolesInteractor:
         }]
         storage = create_autospec(StorageInterface)
         presenter = create_autospec(PresenterInterface)
-        interactor = AddListofRolesInteractor(storage=storage)
+        interactor = AddRolesInteractor(storage=storage)
 
         # Act
-        interactor.add_list_of_roles_wrapper(
-            list_of_roles=list_of_roles, presenter=presenter)
+        interactor.add_roles_wrapper(
+            roles=list_of_roles, presenter=presenter)
 
         # Assert
         storage.create_roles_from_list_of_role_dtos.assert_called_once()

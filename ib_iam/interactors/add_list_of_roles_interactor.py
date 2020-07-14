@@ -37,36 +37,33 @@ class DuplicateRoleIdsException(Exception):
     pass
 
 
-class AddListofRolesInteractor:
+class AddRolesInteractor:
 
     def __init__(self, storage: StorageInterface):
         self.storage = storage
 
-    def add_list_of_roles_wrapper(self, list_of_roles: List,
-                                  presenter: PresenterInterface):
+    def add_roles_wrapper(self, roles: List,
+                          presenter: PresenterInterface):
         try:
-            self.add_list_of_roles_interactor(list_of_roles=list_of_roles)
+            self.add_roles(roles=roles)
         except RoleIdFormatIsInvalid:
             return presenter.raise_role_id_format_is_invalid()
         except DuplicateRoleIdsException:
             return presenter.raise_duplicate_role_ids_exception()
         except InvalidRoleIdException:
             return presenter.raise_invalid_role_id_execption()
-        except RoleIdFormatIsInvalid:
-            return presenter.raise_role_id_format_is_invalid()
         except RoleIdIsEmptyException:
             return presenter.raise_role_id_should_not_be_empty()
         except RoleNameIsEmptyException:
-            return  presenter.raise_role_name_should_not_be_empty()
+            return presenter.raise_role_name_should_not_be_empty()
         except RoleDescriptionIsEmptyException:
             return presenter.raise_role_description_should_not_be_empty()
-        
 
-    def add_list_of_roles_interactor(self, list_of_roles: List):
+    def add_roles(self, roles: List):
         roles_dto_list = []
-        role_ids = [role['role_id'] for role in list_of_roles]
+        role_ids = [role['role_id'] for role in roles]
         self.check_for_duplicate_role_ids(role_ids)
-        for role in list_of_roles:
+        for role in roles:
             self.check_role_id_is_string(role_id=role['role_id'])
             self.check_role_id_format(role_id=role['role_id'])
             # self.check_is_role_id_valid(role_id=role['role_id'])
@@ -81,7 +78,8 @@ class AddListofRolesInteractor:
             roles_dto_list.append(role_dto)
         self.storage.create_roles_from_list_of_role_dtos(roles_dto_list)
 
-    def check_is_role_id_valid(self, role_id: str):
+    @staticmethod
+    def check_is_role_id_valid(role_id: str):
         is_valid = check_is_value_valid(value=role_id)
         is_not_valid = not is_valid
         if is_not_valid:
