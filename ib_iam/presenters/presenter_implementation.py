@@ -1,20 +1,21 @@
-from django.http import response
+from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_iam.interactors.presenter_interfaces.presenter_interface \
     import PresenterInterface
 
-class PresenterImplementation(PresenterInterface):
+
+class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
 
     def raise_role_id_should_not_be_empty(self):
         from ib_iam.constants.exception_messages \
             import ROLE_ID_SHOULD_NOT_BE_EMPTY
-        import json
-        data = json.dumps({
+        response_dict = {
             "response": ROLE_ID_SHOULD_NOT_BE_EMPTY[0],
             "http_status_code": 400,
             "res_status": ROLE_ID_SHOULD_NOT_BE_EMPTY[1]
-        })
-        return response.HttpResponse(data, status=400)
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict)
 
     def raise_role_name_should_not_be_empty(self):
         from ib_iam.constants.exception_messages \
