@@ -16,6 +16,11 @@ class EmptyStageDisplayLogic(Exception):
         self.stage_ids_dict = stage_ids_dict
 
 
+class EmptyStageButtonText(Exception):
+    def __init__(self, stage_ids_dict: str):
+        self.stage_ids_dict = stage_ids_dict
+
+
 class DuplicateStageButtonsException(Exception):
     def __init__(self, stage_buttons_dict: str):
         self.stage_buttons_dict = stage_buttons_dict
@@ -40,7 +45,8 @@ class CreateUpdateDeleteStageActionsInteractor:
         stage_ids = self._get_stage_ids(actions_dto)
         self._validations_for_stage_ids(stage_ids=stage_ids)
         self._validations_for_stage_roles(actions_dto)
-        self._validations_for_stage_display_logic(actions_dto)
+        self._validations_for_empty_stage_display_logic(actions_dto)
+        self._validations_for_empty_button_texts(actions_dto)
         self._validations_for_button_texts(actions_dto)
         self._validations_for_duplicate_stage_actions(actions_dto)
         self._create_update_delete_stage_actions(actions_dto)
@@ -129,6 +135,7 @@ class CreateUpdateDeleteStageActionsInteractor:
             raise DuplicateStageActionNamesException(
                 stage_actions=stage_actions
             )
+
     @staticmethod
     def _get_stage_action_names(actions_dto: List[ActionDto]):
 
@@ -160,18 +167,34 @@ class CreateUpdateDeleteStageActionsInteractor:
             stage_button_texts[stage_id].append(action_dto.button_text)
         return stage_button_texts
 
-    def _validations_for_stage_display_logic(self, actions_dto):
+    @staticmethod
+    def _validations_for_empty_stage_display_logic(actions_dto):
 
-        empty_stage_display_logic_ids = list({
+        empty_stage_display_logic_ids = sorted(list({
             action_dto.stage_id
             for action_dto in actions_dto if action_dto.logic == ""
-        })
+        }))
         is_empty_stage_display_logic_present = empty_stage_display_logic_ids
         if is_empty_stage_display_logic_present:
             stage_ids_dict = json.dumps(
                 {"stage_ids": empty_stage_display_logic_ids}
             )
             raise EmptyStageDisplayLogic(stage_ids_dict=stage_ids_dict)
+
+    @staticmethod
+    def _validations_for_empty_button_texts(actions_dto):
+
+        empty_button_texts_stage_ids = list({
+            action_dto.stage_id
+            for action_dto in actions_dto if action_dto.button_text == ""
+        })
+        is_empty_stage_button_text_present = empty_button_texts_stage_ids
+        if is_empty_stage_button_text_present:
+            stage_ids_dict = json.dumps(
+                {"stage_ids": empty_button_texts_stage_ids}
+            )
+            raise EmptyStageButtonText(stage_ids_dict=stage_ids_dict)
+
 
     def _validations_for_stage_roles(self, actions_dto: List[ActionDto]):
         from ib_tasks.adapters.service_adapter import get_service_adapter
