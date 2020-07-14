@@ -12,7 +12,7 @@ class EmailAndPasswordDTO:
 class TokensDTO:
     access_token: str
     refresh_token: str
-    expires_in: datetime
+    expires_in_seconds: int
 
 
 class AuthService:

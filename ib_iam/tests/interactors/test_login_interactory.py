@@ -88,7 +88,7 @@ class TestLoginInteractor:
         tokens_dto = TokensDTO(
             access_token="asdfaldskfjdfdlsdkf",
             refresh_token="sadfenkljkdfeller",
-            expires_in=datetime.datetime(2020, 10, 12)
+            expires_in_seconds=1000
         )
 
         get_user_id_from_email_and_password_dto.return_value = user_id
