@@ -56,7 +56,7 @@
     }
   },
   "responses": {
-    "LoginInResponse": {
+    "LoginInSuccessResponse": {
       "description": "Success Response",
       "schema": {
         "type": "object",
@@ -136,7 +136,7 @@
     "/login/v1/": {
       "post": {
         "operationId": "user_login",
-        "summary": "login",
+        "summary": "user login",
         "description": "if user is exists return the access_token and is_admin",
         "security": [
           {
@@ -152,13 +152,32 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/responses/LoginInResponse"
+            "$ref": "#/responses/LoginInSuccessResponse"
           },
           "404": {
             "$ref": "#/responses/LoginInNotFoundResponse"
           },
           "400": {
             "$ref": "#/responses/LoginInBadRequestResponse"
+          }
+        }
+      }
+    },
+    "/logout/v1/": {
+      "post": {
+        "operationId": "user_logout",
+        "summary": "user logout",
+        "description": "user want to log out from a device",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response"
           }
         }
       }
