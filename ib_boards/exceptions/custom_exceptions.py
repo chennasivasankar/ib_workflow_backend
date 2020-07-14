@@ -38,7 +38,11 @@ class EmptyValuesForTaskTemplateStages(Exception):
     pass
 
 
-class TaskTemplateStagesNotBelongsToTastTemplateId(Exception):
+class TaskTemplateStagesNotBelongsToTaskTemplateId(Exception):
+    pass
+
+
+class TaskSummaryFieldsNotBelongsToTaskTemplateId(Exception):
     pass
 
 

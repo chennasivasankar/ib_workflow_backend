@@ -311,13 +311,44 @@ class TestAddOrDeleteColumnsForBoardInteractor:
 
         # Act
         from ib_boards.exceptions.custom_exceptions import \
-            TaskTemplateStagesNotBelongsToTastTemplateId
-        with pytest.raises(TaskTemplateStagesNotBelongsToTastTemplateId) as error:
+            TaskTemplateStagesNotBelongsToTaskTemplateId
+        with pytest.raises(TaskTemplateStagesNotBelongsToTaskTemplateId) as error:
             assert interactor.add_or_delete_columns_for_board_wrapper(
                 column_dtos=column_dtos
             )
+
+        # Assert
         adapter_mock.assert_called_once_with(
             task_template_stages=not_related_stages
+        )
+
+    def test_with_task_summary_fields_not_belongs_to_task_template_id(
+            self, storage_mock, sequence_reset, column_dtos, mocker):
+        # Arrange
+        not_related_fields = [
+            {"CardInfo_Requester": "Field Description"},
+            {"CardInfo_Requester": "Field Description"},
+            {"CardInfo_Requester": "Field Description"}
+        ]
+        interactor = AddOrDeleteColumnsForBoardInteractor(
+            storage=storage_mock
+        )
+
+        from ib_boards.tests.common_fixtures.adapters.task_service import \
+            adapter_mock_for_task_template_fields
+        adapter_mock = adapter_mock_for_task_template_fields(mocker)
+
+        # Act
+        from ib_boards.exceptions.custom_exceptions import \
+            TaskSummaryFieldsNotBelongsToTaskTemplateId
+        with pytest.raises(TaskSummaryFieldsNotBelongsToTaskTemplateId) as error:
+            assert interactor.add_or_delete_columns_for_board_wrapper(
+                column_dtos=column_dtos
+            )
+
+        # Assert
+        adapter_mock.assert_called_once_with(
+            task_summary_fields=not_related_fields
         )
 
     def test_with_invalid_user_role_ids_raise_exception(

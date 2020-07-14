@@ -100,12 +100,9 @@ class AddOrDeleteColumnsForBoardInteractor:
         self._validate_empty_values_in_task_template_stage(
             column_dtos=column_dtos
         )
-        self._validate_duplicate_task_template_stages(
-            column_dtos=column_dtos
-        )
-        self._validate_task_template_stages_with_id(
-            column_dtos=column_dtos
-        )
+        self._validate_duplicate_task_template_stages(column_dtos=column_dtos)
+        self._validate_task_template_stages_with_id(column_dtos=column_dtos)
+        self._validate_task_summary_fields_with_id(column_dtos=column_dtos)
         self._validate_user_roles(column_dtos=column_dtos)
 
         self._check_for_column_ids_are_assigned_to_single_board(
@@ -227,6 +224,22 @@ class AddOrDeleteColumnsForBoardInteractor:
 
         service_adapter.task_service.validate_task_template_stages_with_id(
             task_template_stages=task_template_stages
+        )
+
+    @staticmethod
+    def _validate_task_summary_fields_with_id(column_dtos: List[ColumnDTO]):
+        task_summary_fields = []
+        for column_dto in column_dtos:
+            import json
+            task_summary_fields.append(
+                json.loads(column_dto.task_summary_fields)
+            )
+        from ib_boards.adapters.service_adapter import get_service_adapter
+
+        service_adapter = get_service_adapter()
+
+        service_adapter.task_service.validate_task_task_summary_fields_with_id(
+            task_summary_fields=task_summary_fields
         )
 
     def _validate_duplicate_task_template_stages(self,

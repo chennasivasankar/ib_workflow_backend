@@ -25,6 +25,17 @@ def adapter_mock_for_task_template_stages(mocker):
     )
 
     from ib_boards.exceptions.custom_exceptions import \
-        TaskTemplateStagesNotBelongsToTastTemplateId
-    mock.side_effect = TaskTemplateStagesNotBelongsToTastTemplateId
+        TaskTemplateStagesNotBelongsToTaskTemplateId
+    mock.side_effect = TaskTemplateStagesNotBelongsToTaskTemplateId
+    return mock
+
+
+def adapter_mock_for_task_template_fields(mocker):
+    mock = mocker.patch(
+        'ib_boards.adapters.task_service.TaskService.validate_task_task_summary_fields_with_id'
+    )
+
+    from ib_boards.exceptions.custom_exceptions import \
+        TaskSummaryFieldsNotBelongsToTaskTemplateId
+    mock.side_effect = TaskSummaryFieldsNotBelongsToTaskTemplateId
     return mock

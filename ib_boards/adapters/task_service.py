@@ -19,3 +19,7 @@ class TaskService:
 
     def validate_task_template_stages_with_id(self, task_template_stages: List):
         pass
+
+    def validate_task_task_summary_fields_with_id(
+            self, task_summary_fields: List):
+        pass
