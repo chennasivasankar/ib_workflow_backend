@@ -23,3 +23,9 @@ class ColumnDTO:
     column_summary: str
     task_summary_fields: json
     board_id: str
+
+
+@dataclass
+class BoardColumnDTO:
+    board_id: str
+    column_ids: List[str]

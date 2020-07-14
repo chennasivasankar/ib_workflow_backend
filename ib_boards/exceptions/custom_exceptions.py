@@ -26,8 +26,8 @@ class InvalidJsonForTaskTemplateStages(Exception):
 
 
 class InvalidTaskTemplateIdInStages(Exception):
-    def __init__(self, task_template_id: str):
-        self.task_template_id = task_template_id
+    def __init__(self, task_template_ids: List[str]):
+        self.task_template_ids = task_template_ids
 
 
 class InvalidJsonForTaskTemplateSummaryFields(Exception):
@@ -45,3 +45,13 @@ class TaskTemplateStagesNotBelongsToTastTemplateId(Exception):
 class DuplicateStagesInTaskTemplateStages(Exception):
     def __init__(self, duplicate_stages: List[str]):
         self.duplicate_stages = duplicate_stages
+
+
+class InvalidUserRoles(Exception):
+    def __init__(self, user_role_ids: List[str]):
+        self.user_role_ids = user_role_ids
+        
+        
+class ColumnIdsAssignedToDifferentBoard(Exception):
+    def __init__(self, column_ids: List[str]):
+        self.column_ids = column_ids

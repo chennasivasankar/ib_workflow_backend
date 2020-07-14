@@ -1,19 +1,16 @@
 """
-Created on: 13/07/20
+Created on: 14/07/20
 Author: Pavankumar Pamuru
 
 """
-import json
-
 import pytest
 
-from ib_boards.interactors.populate_script_interactor import \
-    PopulateScriptInteractor
-from ib_boards.tests.factories.interactor_dtos import BoardDTOFactory, \
-    ColumnDTOFactory
+from ib_boards.interactors.add_or_delete_columns_for_board_interactor import \
+    AddOrDeleteColumnsForBoardInteractor
+from ib_boards.tests.factories.interactor_dtos import ColumnDTOFactory
 
 
-class TestPopulateScriptInteractor:
+class TestAddOrDeleteColumnsForBoardInteractor:
 
     @pytest.fixture
     def storage_mock(self):
@@ -25,29 +22,7 @@ class TestPopulateScriptInteractor:
 
     @pytest.fixture
     def sequence_reset(self):
-        BoardDTOFactory.reset_sequence()
         ColumnDTOFactory.reset_sequence()
-
-    @pytest.fixture
-    def board_dto_with_duplicate_ids(self):
-        board_dto_1 = BoardDTOFactory()
-        BoardDTOFactory.reset_sequence()
-        board_dto_2 = BoardDTOFactory()
-        return [
-            board_dto_1,
-            board_dto_2
-        ]
-
-    @pytest.fixture
-    def board_dtos_with_no_display_name(self):
-        return [
-            BoardDTOFactory(display_name=''),
-            BoardDTOFactory()
-        ]
-
-    @pytest.fixture
-    def board_dtos(self):
-        return BoardDTOFactory.create_batch(3)
 
     @pytest.fixture
     def column_dtos(self):
@@ -73,13 +48,13 @@ class TestPopulateScriptInteractor:
     @pytest.fixture
     def column_dtos_with_invalid_task_template_stages(self):
         invalid_json = """
-            {
-                "FIN_PR": ["PR_PAYMENT_REQUEST_DRAFTS"],
-            },
-            {
-                "FIN_PR": ["PR_PAYMENT_REQUEST_DRAFTS"],
-            }
-        """
+                {
+                    "FIN_PR": ["PR_PAYMENT_REQUEST_DRAFTS"],
+                },
+                {
+                    "FIN_PR": ["PR_PAYMENT_REQUEST_DRAFTS"],
+                }
+            """
         return [
             ColumnDTOFactory(),
             ColumnDTOFactory(task_template_stages=invalid_json)
@@ -89,10 +64,10 @@ class TestPopulateScriptInteractor:
     @pytest.fixture
     def column_dtos_with_empty_task_template_stages(self):
         task_template_stages = """
-                    {
-                        "FIN_PR": []
-                    }
-                """
+                        {
+                            "FIN_PR": []
+                        }
+                    """
         return [
             ColumnDTOFactory(),
             ColumnDTOFactory(task_template_stages=task_template_stages)
@@ -101,13 +76,13 @@ class TestPopulateScriptInteractor:
     @pytest.fixture
     def column_dtos_with_invalid_task_template_summary_fields(self):
         invalid_json = """
-                {
-                    "CardInfo_Requester": "Field Description"
-                },
-                {
-                    "CardInfo_Requester": "Field Description"
-                }
-            """
+                    {
+                        "CardInfo_Requester": "Field Description"
+                    },
+                    {
+                        "CardInfo_Requester": "Field Description"
+                    }
+                """
         return [
             ColumnDTOFactory(),
             ColumnDTOFactory(task_summary_fields=invalid_json)
@@ -117,13 +92,13 @@ class TestPopulateScriptInteractor:
     @pytest.fixture
     def column_dtos_with_duplicate_task_template_stages(self):
         task_template_stages = """
-                            {
-                                "FIN_PR": [
-                                    "PR_PAYMENT_REQUEST_DRAFTS", 
-                                    "PR_PAYMENT_REQUEST_DRAFTS"
-                                ]
-                            }
-                        """
+                                {
+                                    "FIN_PR": [
+                                        "PR_PAYMENT_REQUEST_DRAFTS", 
+                                        "PR_PAYMENT_REQUEST_DRAFTS"
+                                    ]
+                                }
+                            """
         return [
             ColumnDTOFactory(),
             ColumnDTOFactory(task_template_stages=task_template_stages)
@@ -133,43 +108,25 @@ class TestPopulateScriptInteractor:
     def column_dtos_with_invalid_task_template_id(self):
         return ColumnDTOFactory.create_batch(3)
 
-    def test_with_duplicate_board_ids_raise_exception(
-            self, storage_mock, sequence_reset,
-            board_dto_with_duplicate_ids, column_dtos):
-        # Arrange
-        interactor = PopulateScriptInteractor(
-            storage=storage_mock
-        )
+    @pytest.fixture
+    def column_dtos_with_invalid_user_roles(self):
+        column_dto_1 = ColumnDTOFactory(user_role_ids=['USER', 'MEMBER'])
+        column_dto_2 = ColumnDTOFactory()
+        return [
+            column_dto_1,
+            column_dto_2
+        ]
 
-        # Act
-        from ib_boards.exceptions.custom_exceptions import DuplicateBoardIds
-        with pytest.raises(DuplicateBoardIds) as error:
-            assert interactor.populate_script_wrapper(
-                board_dtos=board_dto_with_duplicate_ids,
-                column_dtos=column_dtos
-            )
-
-    def test_with_invalid_board_display_name_raise_exception(
-            self, storage_mock, sequence_reset,
-            board_dtos_with_no_display_name, column_dtos):
-        # Arrange
-        interactor = PopulateScriptInteractor(
-            storage=storage_mock
-        )
-
-        # Act
-        from ib_boards.exceptions.custom_exceptions import InvalidBoardDisplayName
-        with pytest.raises(InvalidBoardDisplayName) as error:
-            assert interactor.populate_script_wrapper(
-                board_dtos=board_dtos_with_no_display_name,
-                column_dtos=column_dtos
-            )
+    @pytest.fixture
+    def valid_column_dtos(self):
+        return ColumnDTOFactory.create_batch(10)
 
     def test_with_duplicate_column_ids_raise_exception(
             self, storage_mock, sequence_reset,
-            column_dtos_with_duplicate_ids, board_dtos):
+            column_dtos_with_duplicate_ids):
         # Arrange
-        interactor = PopulateScriptInteractor(
+        duplicate_column_ids = ['COLUMN_ID_1']
+        interactor = AddOrDeleteColumnsForBoardInteractor(
             storage=storage_mock
         )
 
@@ -177,16 +134,19 @@ class TestPopulateScriptInteractor:
         from ib_boards.exceptions.custom_exceptions import \
             DuplicateColumnIds
         with pytest.raises(DuplicateColumnIds) as error:
-            assert interactor.populate_script_wrapper(
-                board_dtos=board_dtos,
+            assert interactor.add_or_delete_columns_for_board_wrapper(
                 column_dtos=column_dtos_with_duplicate_ids
             )
 
+        # Assert
+        assert error.value.column_ids == duplicate_column_ids
+
     def test_with_invalid_column_display_name_raise_exception(
             self, storage_mock, sequence_reset,
-            column_dtos_with_no_display_name, board_dtos):
+            column_dtos_with_no_display_name):
         # Arrange
-        interactor = PopulateScriptInteractor(
+        invalid_display_name_column_id = 'COLUMN_ID_1'
+        interactor = AddOrDeleteColumnsForBoardInteractor(
             storage=storage_mock
         )
 
@@ -194,17 +154,19 @@ class TestPopulateScriptInteractor:
         from ib_boards.exceptions.custom_exceptions import \
             InvalidColumnDisplayName
         with pytest.raises(InvalidColumnDisplayName) as error:
-            assert interactor.populate_script_wrapper(
-                board_dtos=board_dtos,
+            assert interactor.add_or_delete_columns_for_board_wrapper(
                 column_dtos=column_dtos_with_no_display_name
             )
 
+        # Assert
+        assert error.value.column_id == invalid_display_name_column_id
+
     def test_with_invalid_task_template_stages_json_raises_exception(
-            self,storage_mock, sequence_reset, board_dtos,
+            self,storage_mock, sequence_reset,
             column_dtos_with_invalid_task_template_stages):
 
         # Arrange
-        interactor = PopulateScriptInteractor(
+        interactor = AddOrDeleteColumnsForBoardInteractor(
             storage=storage_mock
         )
 
@@ -212,17 +174,17 @@ class TestPopulateScriptInteractor:
         from ib_boards.exceptions.custom_exceptions import \
             InvalidJsonForTaskTemplateStages
         with pytest.raises(InvalidJsonForTaskTemplateStages) as error:
-            assert interactor.populate_script_wrapper(
-                board_dtos=board_dtos,
+            assert interactor.add_or_delete_columns_for_board_wrapper(
                 column_dtos=column_dtos_with_invalid_task_template_stages
             )
 
     def test_with_invalid_task_template_id_in_stages_raise_exception(
-            self, storage_mock, board_dtos, sequence_reset,
+            self, storage_mock, sequence_reset,
             column_dtos_with_invalid_task_template_id, mocker):
         # Arrange
         invalid_task_template_ids = ['TASK_ID_1']
-        interactor = PopulateScriptInteractor(
+        task_template_ids = ['FIN_PR', 'FIN_PR', 'FIN_PR']
+        interactor = AddOrDeleteColumnsForBoardInteractor(
             storage=storage_mock
         )
 
@@ -233,21 +195,27 @@ class TestPopulateScriptInteractor:
             mocker=mocker,
             task_template_ids=invalid_task_template_ids
         )
+
         # Act
         from ib_boards.exceptions.custom_exceptions import \
             InvalidTaskTemplateIdInStages
         with pytest.raises(InvalidTaskTemplateIdInStages) as error:
-            assert interactor.populate_script_wrapper(
-                board_dtos=board_dtos,
+            assert interactor.add_or_delete_columns_for_board_wrapper(
                 column_dtos=column_dtos_with_invalid_task_template_id
             )
 
+        # Assert
+        adapter_mock.assert_called_once_with(
+            task_template_ids=task_template_ids
+        )
+        assert error.value.task_template_ids == invalid_task_template_ids
+
     def test_with_invalid_task_template_fields_json_raises_exception(
-            self,storage_mock, sequence_reset, board_dtos,
+            self,storage_mock, sequence_reset,
             column_dtos_with_invalid_task_template_summary_fields):
 
         # Arrange
-        interactor = PopulateScriptInteractor(
+        interactor = AddOrDeleteColumnsForBoardInteractor(
             storage=storage_mock
         )
 
@@ -255,17 +223,17 @@ class TestPopulateScriptInteractor:
         from ib_boards.exceptions.custom_exceptions import \
             InvalidJsonForTaskTemplateSummaryFields
         with pytest.raises(InvalidJsonForTaskTemplateSummaryFields) as error:
-            assert interactor.populate_script_wrapper(
-                board_dtos=board_dtos,
+            assert interactor.add_or_delete_columns_for_board_wrapper(
                 column_dtos=column_dtos_with_invalid_task_template_summary_fields
             )
 
     def test_with_invalid_task_template_id_in_fields_raise_exception(
-            self, storage_mock, board_dtos, sequence_reset,
+            self, storage_mock, sequence_reset,
             column_dtos_with_invalid_task_template_id, mocker):
         # Arrange
-        invalid_task_template_ids = ['TASK_ID_1']
-        interactor = PopulateScriptInteractor(
+        invalid_task_template_ids = ['TASK_ID_0']
+        task_template_ids = ['FIN_PR', 'FIN_PR', 'FIN_PR']
+        interactor = AddOrDeleteColumnsForBoardInteractor(
             storage=storage_mock
         )
 
@@ -281,103 +249,164 @@ class TestPopulateScriptInteractor:
         from ib_boards.exceptions.custom_exceptions import \
             InvalidTaskTemplateIdInStages
         with pytest.raises(InvalidTaskTemplateIdInStages) as error:
-            assert interactor.populate_script_wrapper(
-                board_dtos=board_dtos,
+            assert interactor.add_or_delete_columns_for_board_wrapper(
                 column_dtos=column_dtos_with_invalid_task_template_id
             )
 
+        # Assert
+        adapter_mock.assert_called_once_with(
+            task_template_ids=task_template_ids
+        )
+        assert error.value.task_template_ids == invalid_task_template_ids
+
     def test_with_empty_task_template_stages_raise_exception(
-            self, storage_mock, board_dtos, sequence_reset,
+            self, storage_mock, sequence_reset,
             column_dtos_with_empty_task_template_stages):
         # Arrange
-        interactor = PopulateScriptInteractor(
+        interactor = AddOrDeleteColumnsForBoardInteractor(
             storage=storage_mock
         )
         # Act
         from ib_boards.exceptions.custom_exceptions import \
             EmptyValuesForTaskTemplateStages
         with pytest.raises(EmptyValuesForTaskTemplateStages) as error:
-            assert interactor.populate_script_wrapper(
-                board_dtos=board_dtos,
+            assert interactor.add_or_delete_columns_for_board_wrapper(
                 column_dtos=column_dtos_with_empty_task_template_stages
             )
 
     def test_with_duplicate_task_template_stages_raise_exception(
-            self, storage_mock, board_dtos, sequence_reset,
-            column_dtos_with_duplicate_task_template_stages, mocker):
+            self, storage_mock, sequence_reset,
+            column_dtos_with_duplicate_task_template_stages):
         # Arrange
-        interactor = PopulateScriptInteractor(
+        duplicate_stages = ['PR_PAYMENT_REQUEST_DRAFTS']
+        interactor = AddOrDeleteColumnsForBoardInteractor(
             storage=storage_mock
         )
         # Act
         from ib_boards.exceptions.custom_exceptions import \
             DuplicateStagesInTaskTemplateStages
         with pytest.raises(DuplicateStagesInTaskTemplateStages) as error:
-            assert interactor.populate_script_wrapper(
-                board_dtos=board_dtos,
+            assert interactor.add_or_delete_columns_for_board_wrapper(
                 column_dtos=column_dtos_with_duplicate_task_template_stages
             )
 
+        # Assert
+        assert error.value.duplicate_stages == duplicate_stages
+
     def test_with_task_template_stages_not_belongs_to_task_template_id(
-            self, storage_mock, sequence_reset, board_dtos, column_dtos, mocker):
+            self, storage_mock, sequence_reset, column_dtos, mocker):
         # Arrange
-        interactor = PopulateScriptInteractor(
+        not_related_stages = [
+            {'FIN_PR': ['PR_PAYMENT_REQUEST_DRAFTS']},
+            {'FIN_PR': ['PR_PAYMENT_REQUEST_DRAFTS']},
+            {'FIN_PR': ['PR_PAYMENT_REQUEST_DRAFTS']}
+        ]
+        interactor = AddOrDeleteColumnsForBoardInteractor(
             storage=storage_mock
         )
 
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             adapter_mock_for_task_template_stages
-        adapter_mock_for_task_template_stages(mocker)
+        adapter_mock = adapter_mock_for_task_template_stages(mocker)
 
         # Act
         from ib_boards.exceptions.custom_exceptions import \
             TaskTemplateStagesNotBelongsToTastTemplateId
         with pytest.raises(TaskTemplateStagesNotBelongsToTastTemplateId) as error:
-            assert interactor.populate_script_wrapper(
-                board_dtos=board_dtos,
+            assert interactor.add_or_delete_columns_for_board_wrapper(
                 column_dtos=column_dtos
             )
+        adapter_mock.assert_called_once_with(
+            task_template_stages=not_related_stages
+        )
 
     def test_with_invalid_user_role_ids_raise_exception(
-            self, storage_mock, board_dtos, sequence_reset,
-            column_dtos_with_invalid_task_template_id, mocker):
+            self, storage_mock, sequence_reset,
+            column_dtos_with_invalid_user_roles, mocker):
         # Arrange
-        invalid_user_roles = ['USER', 'MEMBER']
-        interactor = PopulateScriptInteractor(
+        invalid_user_roles = ['ALL_ROLES', 'MEMBER', 'USER']
+        interactor = AddOrDeleteColumnsForBoardInteractor(
             storage=storage_mock
         )
 
         from ib_boards.tests.common_fixtures.adapters.user_service import \
             adapter_mock
 
-        adapter_mock(mocker=mocker, user_roles=invalid_user_roles)
+        adapter_mock = adapter_mock(mocker=mocker, user_roles=invalid_user_roles)
 
         # Act
         from ib_boards.exceptions.custom_exceptions import \
             InvalidUserRoles
         with pytest.raises(InvalidUserRoles) as error:
-            assert interactor.populate_script_wrapper(
-                board_dtos=board_dtos,
-                column_dtos=column_dtos_with_invalid_task_template_id
+            assert interactor.add_or_delete_columns_for_board_wrapper(
+                column_dtos=column_dtos_with_invalid_user_roles
             )
         # Assert
+        adapter_mock.assert_called_once_with(
+            user_role_ids=invalid_user_roles
+        )
         assert error.value.user_role_ids == invalid_user_roles
 
-    def test_with_valid_data_creates_data(
-            self, storage_mock, sequence_reset, board_dtos, column_dtos):
+    def test_with_column_ids_are_assigned_to_multiple_boards(
+            self, storage_mock, sequence_reset,
+            column_dtos):
         # Arrange
-        interactor = PopulateScriptInteractor(
+        column_ids = ['COLUMN_ID_1', 'COLUMN_ID_2', 'COLUMN_ID_3']
+        storage_mock.get_board_ids_for_column_ids.return_value = ['BOARD_ID_1']
+        interactor = AddOrDeleteColumnsForBoardInteractor(
             storage=storage_mock
         )
 
         # Act
-        interactor.populate_script_wrapper(
-            board_dtos=board_dtos,
-            column_dtos=column_dtos
+        from ib_boards.exceptions.custom_exceptions import \
+            ColumnIdsAssignedToDifferentBoard
+        with pytest.raises(ColumnIdsAssignedToDifferentBoard) as error:
+            assert interactor.add_or_delete_columns_for_board_wrapper(
+                column_dtos=column_dtos
+            )
+
+        # Assert
+        storage_mock.get_board_ids_for_column_ids.assert_called_once_with(
+            column_ids=column_ids
+        )
+        assert error.value.column_ids == column_ids
+
+    def test_with_update_and_create_and_delete_columns(
+            self, storage_mock, sequence_reset, valid_column_dtos):
+        # Arrange
+        board_ids = ['BOARD_ID_0']
+        present_column_ids = ['COLUMN_ID_1', 'COLUMN_ID_2', 'COLUMN_ID_3']
+        interactor = AddOrDeleteColumnsForBoardInteractor(
+            storage=storage_mock
+        )
+        storage_mock.get_board_column_ids.return_value = present_column_ids
+        storage_mock.get_board_ids_for_column_ids.return_value = []
+
+        # Act
+        interactor.add_or_delete_columns_for_board_wrapper(
+            column_dtos=valid_column_dtos
         )
 
         # Assert
-        storage_mock.populate_data.assert_called_once_with(
-            board_dtos=board_dtos,
-            column_dtos=column_dtos
+        storage_mock.get_board_column_ids.assert_called_once_with(
+            board_ids=board_ids
         )
+        storage_mock.create_columns_for_board.assert_called_once_with(
+            column_dtos=valid_column_dtos[3:]
+        )
+        storage_mock.update_columns_for_board(
+            column_dtos=valid_column_dtos[:3]
+        )
+        storage_mock.delete_columns_which_are_not_in_configuration.\
+            assert_called_once()
+
+
+
+
+
+
+
+
+
+
+

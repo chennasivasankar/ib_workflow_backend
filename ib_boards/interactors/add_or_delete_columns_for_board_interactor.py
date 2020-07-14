@@ -1,33 +1,90 @@
 """
-Created on: 13/07/20
+Created on: 14/07/20
 Author: Pavankumar Pamuru
 
 """
 from typing import List
 
-from ib_boards.interactors.dtos import BoardDTO, ColumnDTO
+from ib_boards.interactors.dtos import ColumnDTO, BoardColumnDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
 
-class PopulateScriptInteractor:
+class AddOrDeleteColumnsForBoardInteractor:
     def __init__(self, storage: StorageInterface):
         self.storage = storage
 
-    def populate_script_wrapper(
-            self, board_dtos: List[BoardDTO], column_dtos: List[ColumnDTO]):
-        self.populate_script(
-            board_dtos=board_dtos,
+    def add_or_delete_columns_for_board_wrapper(
+            self, column_dtos: List[ColumnDTO]):
+        self.add_or_delete_columns_for_board(
             column_dtos=column_dtos
         )
 
-    def populate_script(
-            self, board_dtos: List[BoardDTO], column_dtos: List[ColumnDTO]):
+    def add_or_delete_columns_for_board(self, column_dtos: List[ColumnDTO]):
 
-        board_ids = [board_dto.board_id for board_dto in board_dtos]
+        self._validate_the_data(column_dtos=column_dtos)
+        board_ids = [column_dto.board_id for column_dto in column_dtos]
+        board_ids = list(set(board_ids))
+        present_column_ids = self.storage.get_board_column_ids(
+            board_ids=board_ids
+        )
+        from collections import defaultdict
+        board_column_map = defaultdict(lambda: [])
+        for column_dto in column_dtos:
+            board_column_map[column_dto.board_id].append(
+                column_dto.column_id
+            )
+        column_dtos_dict = {}
+        for column_dto in column_dtos:
+            column_dtos_dict[column_dto.column_id] = column_dto
+        self._update_columns_for_board(
+            present_column_ids=present_column_ids,
+            column_dtos_dict=column_dtos_dict
+        )
+        self._create_columns_for_board(
+            present_column_ids=present_column_ids,
+            column_dtos_dict=column_dtos_dict
+        )
+        self._delete_columns_which_are_not_in_configuration(
+            board_column_map=board_column_map
+        )
+
+    def _create_columns_for_board(
+            self, present_column_ids, column_dtos_dict):
+        columns_dtos_for_create = [
+            column_dtos_dict[column_id]
+            for column_id in column_dtos_dict.keys()
+            if column_id not in present_column_ids
+        ]
+        self.storage.create_columns_for_board(
+            column_dtos=columns_dtos_for_create
+        )
+
+    def _update_columns_for_board(
+            self, present_column_ids, column_dtos_dict):
+        column_dto_for_update = [
+            column_dtos_dict[column_id]
+            for column_id in present_column_ids
+        ]
+        self.storage.update_columns_for_board(
+            column_dtos=column_dto_for_update
+        )
+
+    def _delete_columns_which_are_not_in_configuration(self, board_column_map):
+
+        column_for_delete_dtos = [
+            BoardColumnDTO(
+                board_id=key,
+                column_ids=value
+            )
+            for key, value in board_column_map.items()
+        ]
+        self.storage.delete_columns_which_are_not_in_configuration(
+            column_for_delete_dtos=column_for_delete_dtos
+        )
+
+    def _validate_the_data(self, column_dtos: List[ColumnDTO]):
         column_ids = [column_dto.column_id for column_dto in column_dtos]
-        self._validate_board_ids(board_ids=board_ids)
-        self._validate_board_display_name(board_dtos=board_dtos)
         self._validate_column_ids(column_ids=column_ids)
         self._validate_column_display_name(column_dtos=column_dtos)
         self._validate_task_template_stages_json(column_dtos=column_dtos)
@@ -50,31 +107,10 @@ class PopulateScriptInteractor:
             column_dtos=column_dtos
         )
         self._validate_user_roles(column_dtos=column_dtos)
-        self.storage.populate_data(
-            board_dtos=board_dtos,
+
+        self._check_for_column_ids_are_assigned_to_single_board(
             column_dtos=column_dtos
         )
-
-    @staticmethod
-    def _validate_board_ids(board_ids: List[str]):
-        import collections
-        duplicate_board_ids = [
-            board_id for board_id, count in
-            collections.Counter(board_ids).items()
-            if count > 1
-        ]
-        if duplicate_board_ids:
-            from ib_boards.exceptions.custom_exceptions import DuplicateBoardIds
-            raise DuplicateBoardIds(board_ids=duplicate_board_ids)
-
-    @staticmethod
-    def _validate_board_display_name(board_dtos: List[BoardDTO]):
-        for board_dto in board_dtos:
-            is_invalid_display_name = not board_dto.display_name
-            if is_invalid_display_name:
-                from ib_boards.exceptions.custom_exceptions import \
-                    InvalidBoardDisplayName
-                raise InvalidBoardDisplayName(board_id=board_dto.board_id)
 
     @staticmethod
     def _validate_column_ids(column_ids: List[str]):
@@ -118,7 +154,7 @@ class PopulateScriptInteractor:
             task_template_stages = json.loads(column_dto.task_template_stages)
             task_template_ids += task_template_stages.keys()
 
-        from ib_boards.adapters.service_adapter import  get_service_adapter
+        from ib_boards.adapters.service_adapter import get_service_adapter
 
         service_adapter = get_service_adapter()
 
@@ -144,7 +180,8 @@ class PopulateScriptInteractor:
         )
 
     @staticmethod
-    def _validate_task_template_summary_fields_json(column_dtos: List[ColumnDTO]):
+    def _validate_task_template_summary_fields_json(
+            column_dtos: List[ColumnDTO]):
         import json
         for column_dto in column_dtos:
             try:
@@ -192,7 +229,8 @@ class PopulateScriptInteractor:
             task_template_stages=task_template_stages
         )
 
-    def _validate_duplicate_task_template_stages(self, column_dtos: List[ColumnDTO]):
+    def _validate_duplicate_task_template_stages(self,
+                                                 column_dtos: List[ColumnDTO]):
         import json
         for column_dto in column_dtos:
             task_template_stages = json.loads(column_dto.task_template_stages)
@@ -226,6 +264,25 @@ class PopulateScriptInteractor:
             user_role_ids=user_roles
         )
 
+    def _check_for_column_ids_are_assigned_to_single_board(
+            self, column_dtos: List[ColumnDTO]):
+        from collections import defaultdict
 
+        from ib_boards.exceptions.custom_exceptions import \
+            ColumnIdsAssignedToDifferentBoard
+        board_column_map = defaultdict(lambda: [])
 
-
+        for column_dto in column_dtos:
+            board_column_map[column_dto.board_id].append(
+                column_dto.column_id
+            )
+        for key, value in board_column_map.items():
+            board_ids = self.storage.get_board_ids_for_column_ids(
+                column_ids=value
+            )
+            is_having_multiple_boards = (
+                    len(board_ids) == 1 and key not in board_ids
+                    or len(board_ids) > 1
+            )
+            if is_having_multiple_boards:
+                raise ColumnIdsAssignedToDifferentBoard(column_ids=value)
