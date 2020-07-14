@@ -1,11 +1,15 @@
 from collections import defaultdict
 from typing import List, Optional, Union
 
-from ib_tasks.exceptions.custom_exceptions import GOFIdCantBeEmpty, GOFDisplayNameCantBeEmpty, \
-    GOFReadPermissionsCantBeEmpty, GOFWritePermissionsCantBeEmpty, GOFFieldIdsCantBeEmpty, DuplicatedFieldIds, \
-    InvalidReadPermissionRoles, InvalidWritePermissionRoles, DifferentDisplayNamesForSameGOF
+from ib_tasks.exceptions.custom_exceptions import (
+    GOFIdCantBeEmpty, GOFDisplayNameCantBeEmpty, GOFReadPermissionsCantBeEmpty,
+    GOFWritePermissionsCantBeEmpty, GOFFieldIdsCantBeEmpty, DuplicatedFieldIds,
+    InvalidReadPermissionRoles, InvalidWritePermissionRoles,
+    DifferentDisplayNamesForSameGOF
+)
 from ib_tasks.interactors.storage_interfaces.dtos import GOFDTO
-from ib_tasks.interactors.storage_interfaces.storage_interface import StorageInterface
+from ib_tasks.interactors.storage_interfaces.storage_interface \
+    import StorageInterface
 
 
 class CreateGOF:
