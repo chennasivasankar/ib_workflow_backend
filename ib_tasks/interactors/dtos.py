@@ -3,8 +3,8 @@ from typing import List
 
 
 @dataclasses.dataclass
-class GroupOfFieldsDTO:
-    group_of_fields_id: str
+class GoFDTO:
+    gof_id: str
     order: int
 
 
@@ -12,5 +12,4 @@ class GroupOfFieldsDTO:
 class CreateTaskTemplateDTO:
     template_id: str
     template_name: str
-    group_of_fields_dtos: List[GroupOfFieldsDTO]
-
+    gof_dtos: List[GoFDTO]

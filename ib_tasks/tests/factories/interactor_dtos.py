@@ -1,12 +1,12 @@
 import factory
-from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, GroupOfFieldsDTO
+from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, GoFDTO
 
 
-class GroupOfFieldsDTOFactory(factory.Factory):
+class GoFDTOFactory(factory.Factory):
     class Meta:
-        model = GroupOfFieldsDTO
+        model = GoFDTO
 
-    group_of_fields_id = factory.sequence(
+    gof_id = factory.sequence(
         lambda n: "GOF_{}".format(n + 1)
     )
     order = factory.sequence(lambda n: n + 1)

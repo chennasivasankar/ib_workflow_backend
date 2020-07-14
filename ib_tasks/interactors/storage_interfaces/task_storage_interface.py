@@ -19,7 +19,5 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_existing_group_of_fields_of_template(self,
-                                                 template_id: str
-                                                 ) -> List[str]:
+    def get_existing_gof_of_template(self, template_id: str) -> List[str]:
         pass

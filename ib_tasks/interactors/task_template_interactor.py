@@ -1,7 +1,7 @@
 from typing import List
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
-from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, GroupOfFieldsDTO
+from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, GoFDTO
 
 
 class TaskTemplateInteractor:
@@ -16,55 +16,54 @@ class TaskTemplateInteractor:
 
     def create_task_template(
             self, create_task_template_dto: CreateTaskTemplateDTO):
-        group_of_fields_ids = self._get_group_of_field_ids(
-            group_of_fields_dtos=create_task_template_dto.group_of_fields_dtos
+        gof_ids = self._get_gof_ids(
+            gof_dtos=create_task_template_dto.gof_dtos
         )
-        self._validate_uniqueness_in_group_of_fields_ids(
-            group_of_fields_ids=group_of_fields_ids
-        )
-        self._validate_template_name(
+        self._validate_uniqueness_in_gof_ids(gof_ids=gof_ids)
+        self._validate_template_name_with_existing_name_if_exists(
             template_id=create_task_template_dto.template_id,
-            template_name=create_task_template_dto.template_name)
-        self. \
-            _check_existing_group_of_fields_of_template_are_in_given_group_of_fields(
+            template_name=create_task_template_dto.template_name
+        )
+        self._check_existing_gof_of_template_are_in_given_gof(
             create_task_template_dto=create_task_template_dto
         )
         self._validate_fields_of_create_task_template_dto(
             create_task_template_dto=create_task_template_dto
         )
-        group_of_fields_dtos_to_update, group_of_fields_dtos_to_create = \
-            self._get_group_of_fields_to_update_and_create(
+        gof_dtos_to_update, gof_dtos_to_create = \
+            self._get_gof_dtos_to_update_and_create(
                 create_task_template_dto=create_task_template_dto
             )
-        if group_of_fields_dtos_to_update:
-            create_task_template_dto.group_of_fields_dtos = \
-                group_of_fields_dtos_to_update
+        if gof_dtos_to_update:
+            create_task_template_dto.gof_dtos = gof_dtos_to_update
             self.task_storage.update_task_template(
                 create_task_template_dto=create_task_template_dto
             )
             return
+
         self.task_storage.create_task_template(
             create_task_template_dto=create_task_template_dto
         )
 
-    def _get_group_of_fields_to_update_and_create(
-            self, create_task_template_dto=CreateTaskTemplateDTO):
-        existing_group_of_fields_ids = \
-            self.task_storage.get_existing_group_of_fields_of_template(
+    def _get_gof_dtos_to_update_and_create(
+            self, create_task_template_dto: CreateTaskTemplateDTO):
+        existing_gof_ids = \
+            self.task_storage.get_existing_gof_of_template(
                 template_id=create_task_template_dto.template_id,
             )
-        group_of_fields_dtos = create_task_template_dto.group_of_fields_dtos
-        group_of_fields_dtos_to_update = []
-        group_of_fields_dtos_to_create = []
-        for group_of_fields_dto in group_of_fields_dtos:
-            group_of_fields_id = group_of_fields_dto.group_of_fields_id
-            if group_of_fields_id in existing_group_of_fields_ids:
-                group_of_fields_dtos_to_update.append(group_of_fields_dto)
+        gof_dtos = create_task_template_dto.gof_dtos
+        gof_dtos_to_update = []
+        gof_dtos_to_create = []
+        for gof_dto in gof_dtos:
+            gof_id = gof_dto.gof_id
+            if gof_id in existing_gof_ids:
+                gof_dtos_to_update.append(gof_dto)
             else:
-                group_of_fields_dtos_to_create.append(group_of_fields_dto)
-        return group_of_fields_dtos_to_update, group_of_fields_dtos_to_create
+                gof_dtos_to_create.append(gof_dto)
+        return gof_dtos_to_update, gof_dtos_to_create
 
-    def _validate_template_name(self, template_id: str, template_name: str):
+    def _validate_template_name_with_existing_name_if_exists(
+            self, template_id: str, template_name: str):
         from ib_tasks.exceptions.custom_exceptions \
             import DifferentTemplateName, TemplateNotExists
         try:
@@ -80,90 +79,97 @@ class TaskTemplateInteractor:
         if is_different_template_name:
             raise DifferentTemplateName(template_name)
 
-    def _check_existing_group_of_fields_of_template_are_in_given_group_of_fields(
+    def _check_existing_gof_of_template_are_in_given_gof(
             self, create_task_template_dto: CreateTaskTemplateDTO):
-        existing_group_of_fields_ids = \
-            self.task_storage.get_existing_group_of_fields_of_template(
+        existing_gof_ids = \
+            self.task_storage.get_existing_gof_of_template(
                 template_id=create_task_template_dto.template_id,
             )
-        present_group_of_fields_ids = self._get_group_of_field_ids(
-            group_of_fields_dtos=create_task_template_dto.group_of_fields_dtos
+        present_gof_ids = self._get_gof_ids(
+            gof_dtos=create_task_template_dto.gof_dtos
         )
-        group_of_fields_not_in_given_group_of_fields = \
-            [
-                group_of_fields_id
-                for group_of_fields_id in existing_group_of_fields_ids
-                if group_of_fields_id not in present_group_of_fields_ids
-            ]
-        from ib_tasks.exceptions.custom_exceptions import \
-            ExistingGroupOfFieldsNotInGivenGroupOfFields
-        if group_of_fields_not_in_given_group_of_fields:
-            raise ExistingGroupOfFieldsNotInGivenGroupOfFields(
-                group_of_fields_not_in_given_group_of_fields
-            )
-
-    @staticmethod
-    def _validate_order_of_group_of_fileds(
-            group_of_fields_dtos: GroupOfFieldsDTO):
-        from ib_tasks.exceptions.custom_exceptions import InvalidOrder
-        for group_of_fields_dto in group_of_fields_dtos:
-            is_invalid_order = group_of_fields_dto.order <= -1 and \
-                               (type(group_of_fields_dto.order) == int)
-            if is_invalid_order:
-                raise InvalidOrder(
-                    group_of_fields_dto.group_of_fields_id,
-                    group_of_fields_dto.order
-                )
-
-    @staticmethod
-    def _get_group_of_field_ids(group_of_fields_dtos: List[GroupOfFieldsDTO]):
-        group_of_fields_ids = [
-            group_of_fields_dto.group_of_fields_id
-            for group_of_fields_dto in group_of_fields_dtos
+        gof_not_in_given_gof = [
+            gof_id
+            for gof_id in existing_gof_ids
+            if gof_id not in present_gof_ids
         ]
-        return group_of_fields_ids
-
-    @staticmethod
-    def _validate_uniqueness_in_group_of_fields_ids(
-            group_of_fields_ids: List[str]):
-        from collections import Counter
-        group_of_fields_ids_counter = Counter(group_of_fields_ids)
-
-        duplicate_group_of_fields_ids = []
-        for group_of_fields_id, count in group_of_fields_ids_counter.items():
-            is_duplicate_group_of_fields_id = count > 1
-            if is_duplicate_group_of_fields_id:
-                duplicate_group_of_fields_ids.append(group_of_fields_id)
-
-        from ib_tasks.exceptions.custom_exceptions \
-            import DuplicateGroupOfFields
-        if duplicate_group_of_fields_ids:
-            raise DuplicateGroupOfFields(duplicate_group_of_fields_ids)
+        from ib_tasks.exceptions.custom_exceptions import \
+            ExistingGOFNotInGivenGOF
+        if gof_not_in_given_gof:
+            raise ExistingGOFNotInGivenGOF(gof_not_in_given_gof)
 
     def _validate_fields_of_create_task_template_dto(
             self, create_task_template_dto: CreateTaskTemplateDTO):
         from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
         template_name = create_task_template_dto.template_name
         template_id = create_task_template_dto.template_id
-        group_of_fields_dtos = create_task_template_dto.group_of_fields_dtos
+        gof_dtos = create_task_template_dto.gof_dtos
+
+        self._validate_template_name(template_name=template_name)
+        self._validate_template_id(template_id=template_id)
+
+        gof_ids = self._get_gof_ids(gof_dtos=gof_dtos)
+        self._validate_gof_ids(gof_ids=gof_ids)
+        self._validate_order_of_gof(gof_dtos=gof_dtos)
+
+    @staticmethod
+    def _validate_template_name(template_name: str):
         is_template_name_valid = \
             template_name and (type(template_name) == str)
         is_template_name_invalid = not is_template_name_valid
+
+        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
         if is_template_name_invalid:
             raise InvalidValueForField("template_name")
+
+    @staticmethod
+    def _validate_template_id(template_id: str):
         is_template_id_valid = template_id and (type(template_id) == str)
         is_template_id_invalid = not is_template_id_valid
+
+        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
         if is_template_id_invalid:
             raise InvalidValueForField("template_id")
-        group_of_fields_ids = self._get_group_of_field_ids(
-            group_of_fields_dtos=group_of_fields_dtos
-        )
-        for group_of_fields_id in group_of_fields_ids:
-            is_group_of_fields_id_valid = \
-                group_of_fields_id and (type(group_of_fields_id) == str)
-            is_group_of_fields_id_invalid = not is_group_of_fields_id_valid
-            if is_group_of_fields_id_invalid:
-                raise InvalidValueForField("group_of_fields_id")
-        self._validate_order_of_group_of_fileds(
-            group_of_fields_dtos=group_of_fields_dtos
-        )
+
+    @staticmethod
+    def _validate_gof_ids(gof_ids: List[str]):
+        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+        for gof_id in gof_ids:
+            is_gof_id_valid = gof_id and (type(gof_id) == str)
+            is_gof_id_invalid = not is_gof_id_valid
+            if is_gof_id_invalid:
+                raise InvalidValueForField("gof_id")
+
+    @staticmethod
+    def _validate_order_of_gof(gof_dtos: GoFDTO):
+        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+        for gof_dto in gof_dtos:
+            is_invalid_order = \
+                gof_dto.order <= -1 and (type(gof_dto.order) == int)
+            if is_invalid_order:
+                raise InvalidValueForField("order")
+
+    @staticmethod
+    def _get_gof_ids(gof_dtos: List[GoFDTO]):
+        gof_ids = [
+            gof_dto.gof_id
+            for gof_dto in gof_dtos
+        ]
+        return gof_ids
+
+    @staticmethod
+    def _validate_uniqueness_in_gof_ids(
+            gof_ids: List[str]):
+        from collections import Counter
+        gof_ids_counter = Counter(gof_ids)
+
+        duplicate_gof_ids = []
+        for gof_id, count in gof_ids_counter.items():
+            is_duplicate_gof_id = count > 1
+            if is_duplicate_gof_id:
+                duplicate_gof_ids.append(gof_id)
+
+        from ib_tasks.exceptions.custom_exceptions \
+            import DuplicateGOFIds
+        if duplicate_gof_ids:
+            raise DuplicateGOFIds(duplicate_gof_ids)
