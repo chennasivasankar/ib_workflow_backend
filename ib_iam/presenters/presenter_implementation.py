@@ -39,7 +39,15 @@ class PresenterImplementation(PresenterInterface):
         return response.HttpResponse(data, status=400)
 
     def raise_role_id_format_is_invalid(self):
-        pass
+        from ib_iam.constants.exception_messages \
+            import ROLE_ID_SHOULD_NOT_BE_IN_VALID_FORMAT
+        import json
+        data = json.dumps({
+            "response": ROLE_ID_SHOULD_NOT_BE_IN_VALID_FORMAT[0],
+            "http_status_code": 400,
+            "res_status": ROLE_ID_SHOULD_NOT_BE_IN_VALID_FORMAT[1]
+        })
+        return response.HttpResponse(data, status=400)
 
     def raise_invalid_role_id_execption(self):
         from ib_iam.constants.exception_messages \

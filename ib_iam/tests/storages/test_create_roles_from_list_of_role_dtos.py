@@ -6,13 +6,14 @@ from ib_iam.tests.factories.models import RoleFactory
 
 class TestCreateRoles:
     @pytest.mark.django_db
-    def test_from_list_of_roles(self):
+    def test_from_list_of_roles_dtos(self):
 
         # Arrange
         storage = StorageImplementation()
         from ib_iam.tests.factories.storage_dtos import RoleDTOFactory
         list_of_role_dtos = RoleDTOFactory.create_batch(3)
         print(list_of_role_dtos)
+
         # Act
         roles = storage.create_roles_from_list_of_role_dtos(list_of_role_dtos)
 

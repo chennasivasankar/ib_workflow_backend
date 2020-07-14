@@ -26,6 +26,49 @@ class TestAddListOfRolesPresenter:
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
 
+    def test_raise_role_id_should_not_be_in_valid_format(self, snapshot):
+
+        # Arrange
+        presenter = PresenterImplementation()
+
+        from ib_iam.constants.exception_messages \
+            import ROLE_ID_SHOULD_NOT_BE_IN_VALID_FORMAT
+
+        expected_response = ROLE_ID_SHOULD_NOT_BE_IN_VALID_FORMAT[0]
+        response_status_code = ROLE_ID_SHOULD_NOT_BE_IN_VALID_FORMAT[1]
+
+
+        # Act
+        response_object = presenter.raise_role_id_format_is_invalid()
+
+        # Assert
+        response = json.loads(response_object.content)
+        # snapshot.assert_match(response, 'role_id_exception')
+        assert response['http_status_code'] == 400
+        assert response['res_status'] == response_status_code
+        assert response['response'] == expected_response
+
+    def test_raise_role_id_duplicate(self, snapshot):
+
+        # Arrange
+        presenter = PresenterImplementation()
+
+        from ib_iam.constants.exception_messages \
+            import DUPLICATE_ROLE_IDS
+
+        expected_response = DUPLICATE_ROLE_IDS[0]
+        response_status_code = DUPLICATE_ROLE_IDS[1]
+
+
+        # Act
+        response_object = presenter.raise_duplicate_role_ids_exception()
+
+        # Assert
+        response = json.loads(response_object.content)
+        # snapshot.assert_match(response, 'role_id_exception')
+        assert response['http_status_code'] == 400
+        assert response['res_status'] == response_status_code
+        assert response['response'] == expected_response
 
     def test_raise_role_name_should_not_be_empty(self, snapshot):
 
