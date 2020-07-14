@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
+
 @dataclass()
 class ActionDto:
     stage_id: str
@@ -8,3 +9,4 @@ class ActionDto:
     logic: str
     role: str
     button_text: str
+    button_color: Optional[str]
