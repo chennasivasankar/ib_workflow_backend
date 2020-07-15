@@ -1,9 +1,9 @@
 from typing import List
 import collections
 
-from ib_tasks.interactors.storage_interfaces.create_fields_storage_interface \
-    import CreateFieldsStorageInterface
-from ib_tasks.interactors.dtos.dtos import FieldDTO
+from ib_tasks.interactors.storage_interfaces.tasks_storage_interface \
+    import TaskStorageInterface
+from ib_tasks.interactors.dtos import FieldDTO
 from ib_tasks.constants.enum import FieldTypes
 from ib_tasks.exceptions.custom_exceptions import (
     InvalidFieldIdException,
@@ -18,7 +18,7 @@ from ib_tasks.exceptions.custom_exceptions import (
 
 
 class CreateFieldsInteractor:
-    def __init__(self, storage: CreateFieldsStorageInterface):
+    def __init__(self, storage: TaskStorageInterface):
         self.storage = storage
 
     def create_fields(self, field_dtos: List[FieldDTO]):

@@ -11,9 +11,9 @@ class TestCreateFieldsInteractor:
 
     @pytest.fixture
     def storage_mock(self):
-        from ib_tasks.interactors.storage_interfaces.create_fields_storage_interface \
-            import CreateFieldsStorageInterface
-        storage = create_autospec(CreateFieldsStorageInterface)
+        from ib_tasks.interactors.storage_interfaces.tasks_storage_interface \
+            import TaskStorageInterface
+        storage = create_autospec(TaskStorageInterface)
         return storage
 
     def test_given_gof_id_is_empty_raise_exception(self, storage_mock):

@@ -1,5 +1,5 @@
 import factory
-from ib_tasks.interactors.dtos.dtos import FieldDTO
+from ib_tasks.interactors.dtos import FieldDTO
 from ib_tasks.constants.enum import FieldTypes
 
 

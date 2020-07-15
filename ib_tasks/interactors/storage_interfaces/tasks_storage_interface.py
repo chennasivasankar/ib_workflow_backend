@@ -32,14 +32,26 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def create_fields(self, field_dtos: List[FieldDTO]):
-        pass
-
-    @abc.abstractmethod
     def get_existing_gof_of_template(self, template_id: str) -> List[str]:
         pass
 
     @abc.abstractmethod
     def create_gofs(self, gof_dtos: List[GOFDTO]):
+        pass
+
+    @abc.abstractmethod
+    def get_available_roles(self) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def create_fields(self, field_dtos: List[FieldDTO]):
+        pass
+
+    @abc.abstractmethod
+    def get_existing_field_ids(self, field_ids: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def update_fields(self, field_dtos: List[FieldDTO]):
         pass
 
