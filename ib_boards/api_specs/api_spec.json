@@ -165,7 +165,7 @@
                     }
                   },
                   "required": [
-                    "action_id", "name", "button_text", "button_color"
+                    "action_id", "name", "button_text"
                   ]
                 }
               }
