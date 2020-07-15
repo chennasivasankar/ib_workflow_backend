@@ -17,13 +17,15 @@ class GoFRolesDTO:
     read_permission_roles: List
     write_permission_roles: List
 
+
 @dataclass
 class GoFFieldsDTO:
     gof_id: str
     field_ids: List[str]
 
+
 @dataclass
-class GoFCompleteDetailsDTO:
+class CompleteGoFDetailsDTO:
     gof_dto: GoFDTO
     gof_roles_dto: GoFRolesDTO
     gof_fields_dto: GoFFieldsDTO
