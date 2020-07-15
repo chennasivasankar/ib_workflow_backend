@@ -1,5 +1,8 @@
 from abc import abstractmethod, ABC
 
+from ib_iam.interactors.presenter_interfaces.dtos \
+    import CompleteUserDetailsDTO
+
 
 class PresenterInterface(ABC):
     @abstractmethod
@@ -15,5 +18,10 @@ class PresenterInterface(ABC):
         pass
 
     @abstractmethod
-    def raise_offset_value_is_greater_than_limit_exception(self):
+    def raise_offset_value_is_greater_than_limit_value_exception(self):
+        pass
+
+    @abstractmethod
+    def response_for_get_users(
+            self,complete_user_details_dtos: CompleteUserDetailsDTO):
         pass

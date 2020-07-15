@@ -1,23 +1,16 @@
+from typing import List
 from uuid import uuid4
 
-from ib_iam.interactors.presenter_interfaces.presenter_interface import PresenterInterface
-from ib_iam.interactors.storage_interfaces.storage_interface import StorageInterface
-
-
-class UserIsNotAdminException(Exception):
-    pass
-
-
-class InvalidOffsetValueException(Exception):
-    pass
-
-
-class InvalidLimitValueException(Exception):
-    pass
-
-
-class OffsetValueIsGreaterthanLimitException(Exception):
-    pass
+from ib_iam.adapters.dtos import UserProfileDTO
+from ib_iam.exceptions.exceptions import UserIsNotAdminException, \
+    InvalidOffsetValueException, InvalidLimitValueException, \
+    OffsetValueIsGreaterthanLimitValueException
+from ib_iam.interactors.presenter_interfaces.dtos \
+    import CompleteUserDetailsDTO
+from ib_iam.interactors.presenter_interfaces.presenter_interface \
+    import PresenterInterface
+from ib_iam.interactors.storage_interfaces.storage_interface \
+    import StorageInterface
 
 
 class GetUsersDetails:
@@ -27,36 +20,44 @@ class GetUsersDetails:
     def get_users_details_wrapper(self, user_id: str, offset: int,
                                   limit: int, presenter: PresenterInterface):
         try:
-            self.get_users_details(user_id=user_id, offset=offset, limit=limit)
+            complete_user_details_dtos = self.get_users_details(
+                user_id=user_id, offset=offset, limit=limit)
+            print(complete_user_details_dtos)
+            return presenter.response_for_get_users(complete_user_details_dtos)
         except UserIsNotAdminException:
             return presenter.raise_user_is_not_admin_exception()
         except InvalidOffsetValueException:
             return presenter.raise_invalid_offset_value_exception()
         except InvalidLimitValueException:
             return presenter.raise_invalid_limit_value_exception()
-        except OffsetValueIsGreaterthanLimitException:
+        except OffsetValueIsGreaterthanLimitValueException:
             return presenter. \
-                raise_offset_value_is_greater_than_limit_exception()
+                raise_offset_value_is_greater_than_limit_value_exception()
 
-    def get_users_details(self, user_id: str, offset: int, limit: int):
+    def get_users_details(self, user_id: str, offset: int,
+                          limit: int) -> CompleteUserDetailsDTO:
 
         self._check_and_throw_user_is_admin(user_id=user_id)
-        self._validate_offset_value_and_throw_exception(offset=offset)
-        self._validate_limit_value_and_throw_exception(limit=limit)
-        self._validate_offset_and_limit_value_constraints(
-            offset=offset, limit=limit)
-        # GET USERS' IDS FILTER ONLY USERS EXCLUDE ADMINS
-        user_ids = self.storage.get_user_ids()
+        self._constants_validations(offset=offset, limit=limit)
+        user_dtos = self.storage.get_users()
+        user_ids = [user_dto.user_id for user_dto in user_dtos]
+        company_ids = [user_dto.company_id for user_dto in user_dtos]
 
-        # TODO: GET USERS' TEAM DETAILS
-        user_teams = self.storage.get_team_details_of_users_bulk(
+        user_team_dtos = self.storage.get_team_details_of_users_bulk(
             user_ids=user_ids)
-        # TODO: GET USERS' ROLE DETAILS
-        user_roles = self.storage.get_role_details_of_users_bulk(
+        user_role_dtos = self.storage.get_role_details_of_users_bulk(
             user_ids=user_ids)
-        # TODO: GET USERS' COMPANY DETAILS
-        # TODO: GET USERS' DETAILS FROM iBUSERS
+        user_company_dtos = self.storage.get_company_details_of_users_bulk(
+            company_ids=company_ids)
 
+        from ib_iam.adapters.user_service import UserService
+        user_service = UserService()
+        user_profile_dtos = user_service.get_user_profile_bulk(
+            user_ids=user_ids)
+
+        return self._convert_complete_user_details_dtos(
+            user_team_dtos, user_role_dtos, user_company_dtos,
+            user_profile_dtos)
 
     @staticmethod
     def _validate_value_and_throw_exception(value: int):
@@ -69,8 +70,13 @@ class GetUsersDetails:
     @staticmethod
     def _validate_offset_and_limit_value_constraints(offset: int, limit: int):
         if offset > limit:
-            raise OffsetValueIsGreaterthanLimitException()
+            raise OffsetValueIsGreaterthanLimitValueException()
 
+    def _constants_validations(self, offset: int, limit: int):
+        self._validate_offset_value_and_throw_exception(offset=offset)
+        self._validate_limit_value_and_throw_exception(limit=limit)
+        self._validate_offset_and_limit_value_constraints(
+            offset=offset, limit=limit)
 
     def _check_and_throw_user_is_admin(self, user_id: str):
         is_admin = self.storage.validate_user_is_admin(user_id=user_id)
@@ -86,5 +92,42 @@ class GetUsersDetails:
         if not self._validate_value_and_throw_exception(value=limit):
             raise InvalidLimitValueException()
 
+    def _convert_complete_user_details_dtos(
+            self, user_team_dtos, user_role_dtos,
+            user_company_dtos, user_profile_dtos):
+        complete_user_details_dto = CompleteUserDetailsDTO(
+            users=user_profile_dtos,
+            teams=user_team_dtos,
+            roles=user_role_dtos,
+            companies=user_company_dtos
+        )
+        return complete_user_details_dto
 
 
+    @staticmethod
+    def _get_user_team(user_team_dtos, user_id):
+        teams = []
+        for team_dto in user_team_dtos:
+            if team_dto.user_id == user_id:
+                teams.append(team_dto)
+        return teams
+
+    @staticmethod
+    def _get_user_company(user_company_dtos, user_id):
+        for company_dto in user_company_dtos:
+            if company_dto.user_id == user_id:
+                return company_dto
+
+    @staticmethod
+    def _get_profile(user_profile_dtos, user_id):
+        for user_profile in user_profile_dtos:
+            if user_profile.user_id == user_id:
+                return user_profile
+
+    @staticmethod
+    def _get_role(user_role_dtos, user_id):
+        roles = []
+        for user_role_dto in user_role_dtos:
+            if user_role_dto.user_id == user_id:
+                roles.append(user_role_dto)
+        return roles
