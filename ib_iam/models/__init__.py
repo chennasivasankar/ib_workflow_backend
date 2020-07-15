@@ -1,4 +1,7 @@
-__all__ = []
+from .team import Team, TeamMember
+from .user import User
+
+__all__ = ["User", "Team", "TeamMember"]
 
 # class DummyModel(AbstractDateTimeModel):
 #     """
