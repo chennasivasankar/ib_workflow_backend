@@ -11,3 +11,8 @@ class FieldTypes(enum.Enum):
     FLOAT = "FLOAT"
     LONG_TEXT = "LONG_TEXT"
     DROPDOWN = "DROPDOWN"
+
+
+class PermissionTypes(enum.Enum):
+    WRITE = "WRITE"
+    READ = "READ"
