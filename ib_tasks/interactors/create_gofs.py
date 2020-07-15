@@ -131,6 +131,7 @@ class CreateGoFsInteractor:
         read_permission_roles_is_string = isinstance(
             read_permission_roles, str
         )
+        invalid_read_permission_roles = False
         if read_permission_roles_is_string:
             invalid_read_permission_roles = \
                 read_permission_roles not in valid_read_permission_roles
@@ -167,6 +168,7 @@ class CreateGoFsInteractor:
         write_permission_roles_is_string = isinstance(
             write_permission_roles, str
         )
+        invalid_write_permission_roles = False
         if write_permission_roles_is_string:
             invalid_write_permission_roles = \
                 write_permission_roles not in valid_write_permission_roles
@@ -175,7 +177,7 @@ class CreateGoFsInteractor:
         )
         if write_permission_roles_is_list:
             invalid_write_permission_roles = \
-                set(write_permission_roles).issubset(set(valid_write_permission_roles))
+                not set(write_permission_roles).issubset(set(valid_write_permission_roles))
         if invalid_write_permission_roles:
             raise InvalidWritePermissionRoles
         return

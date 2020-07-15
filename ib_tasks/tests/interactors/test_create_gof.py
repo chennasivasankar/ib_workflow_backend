@@ -173,7 +173,7 @@ class TestCreateGOF:
         get_valid_read_permissions_mock_method = get_all_valid_read_permission_roles(mocker)
         get_valid_write_permissions_mock_method = get_all_valid_write_permission_roles(mocker)
         gof_dtos = [
-            GoFDTOFactory(write_permission_roles="all roles")
+            GoFDTOFactory(write_permission_roles=write_permission_roles)
         ]
         interactor = CreateGoFsInteractor(storage=storage_mock)
 
