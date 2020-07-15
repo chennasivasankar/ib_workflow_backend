@@ -1,6 +1,6 @@
 
 
-class TestCasePopulateStageActions:
+class TestCasePopulateTasks:
 
     @staticmethod
     def test_given_invalid_key_raises_exception():
@@ -17,7 +17,7 @@ class TestCasePopulateStageActions:
         import json
         import pytest
         json_valid_format = json.dumps(valid_format)
-        actions = [
+        tasks = [
             {
                 "stage": "stage_1",
                 "stage_display_logic": "logic_1",
@@ -27,14 +27,14 @@ class TestCasePopulateStageActions:
                 "button_color": "button_color_1"
             }
         ]
-        from ib_tasks.populate.populate_stage_actions \
-            import populate_stage_actions
+        from ib_tasks.populate.populate_tasks \
+            import populate_tasks
         from ib_tasks.exceptions.custom_exceptions \
             import InvalidFormatException
 
         # Act
         with pytest.raises(InvalidFormatException) as err:
-            populate_stage_actions(actions_dict=actions)
+            populate_tasks(tasks=tasks)
 
         # Assert
         assert err.value.valid_format == json_valid_format
@@ -42,9 +42,7 @@ class TestCasePopulateStageActions:
     @staticmethod
     def test_given_valid_key_creates_dtos():
         # Arrange
-        import json
-        import pytest
-        actions = [
+        tasks = [
             {
                 "stage_id": "stage_1",
                 "action_logic": "logic_1",
@@ -54,8 +52,8 @@ class TestCasePopulateStageActions:
                 "button_color": "button_color_1"
             }
         ]
-        from ib_tasks.interactors.dtos import ActionDto
-        expected_action_dto = [ActionDto(
+        from ib_tasks.interactors.dtos import TaskDto
+        expected_action_dto = [TaskDto(
             stage_id="stage_1",
             action_name="action_name_1",
             logic="logic_1",
@@ -63,11 +61,11 @@ class TestCasePopulateStageActions:
             button_text="button_text_1",
             button_color="button_color_1"
         )]
-        from ib_tasks.populate.populate_stage_actions \
-            import populate_stage_actions
+        from ib_tasks.populate.populate_tasks \
+            import populate_tasks
 
         # Act
-        response = populate_stage_actions(actions_dict=actions)
+        response = populate_tasks(tasks=tasks)
 
         # Assert
         assert response == expected_action_dto

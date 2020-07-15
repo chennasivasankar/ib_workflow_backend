@@ -1,17 +1,17 @@
 from typing import Dict, Any, List
 
 
-def populate_stage_actions(actions_dict: List[Dict]):
-    actions_dto = []
-    validation_for_action_dict(actions_dict)
-    for action_dict in actions_dict:
-        actions_dto.append(append_action_dict(action_dict))
-    return actions_dto
+def populate_tasks(tasks: List[Dict]):
+    tasks_dto = []
+    validation_for_tasks_dict(tasks)
+    for action_dict in tasks:
+        tasks_dto.append(append_action_dict(action_dict))
+    return tasks_dto
 
 
 def append_action_dict(action_dict: Dict[str, Any]):
-    from ib_tasks.interactors.dtos import ActionDto
-    return ActionDto(
+    from ib_tasks.interactors.dtos import TaskDto
+    return TaskDto(
         stage_id=action_dict['stage_id'],
         action_name=action_dict['action_name'],
         logic=action_dict['action_logic'],
@@ -21,7 +21,7 @@ def append_action_dict(action_dict: Dict[str, Any]):
     )
 
 
-def validation_for_action_dict(actions_dict: List[Dict]):
+def validation_for_tasks_dict(tasks_dict: List[Dict]):
 
     from schema import Schema, Optional, SchemaError
     schema = Schema(
@@ -35,9 +35,11 @@ def validation_for_action_dict(actions_dict: List[Dict]):
         }]
     )
     try:
-        schema.validate(actions_dict)
+        schema.validate(tasks_dict)
     except SchemaError:
         raise_exception_for_valid_format()
+
+
 
 
 def raise_exception_for_valid_format():

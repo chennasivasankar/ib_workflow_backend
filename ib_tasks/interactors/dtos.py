@@ -3,7 +3,7 @@ from typing import Optional
 
 
 @dataclass()
-class ActionDto:
+class RequestDto:
     stage_id: str
     action_name: str
     logic: str
@@ -13,10 +13,13 @@ class ActionDto:
 
 
 @dataclass()
-class TaskDto:
-    stage_id: str
-    action_name: str
-    logic: str
-    role: str
-    button_text: str
-    button_color: Optional[str]
+class ActionDto(RequestDto):
+    pass
+
+
+@dataclass()
+class TaskDto(RequestDto):
+    pass
+
+
+
