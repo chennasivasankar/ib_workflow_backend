@@ -199,19 +199,19 @@
             ]
           },
           "TaskCompleteDetails": {
-            "allOf": [{
-              "$ref": "#/definitions/TaskDetails"
-            },
-              {
                 "type": "object",
                 "properties": {
-                "total_tasks_count": {
-                "type": "integer",
-                "format": "int64"}
-              },
-                "required": ["total_tasks_count"]
-              }
-            ]
+                  "total_tasks_count": {
+                    "type": "integer",
+                    "format": "int64"},
+                  "tasks": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/TaskDetails"
+                    }
+                  }
+                },
+                "required": ["total_tasks_count", "tasks"]
           }
         },
         "parameters": {
@@ -318,10 +318,7 @@
           "TaskDetailsResponse": {
             "description": "tasks details",
             "schema": {
-              "type": "array",
-              "items": {
                 "$ref": "#/definitions/TaskCompleteDetails"
-              }
             }
           }
         },
