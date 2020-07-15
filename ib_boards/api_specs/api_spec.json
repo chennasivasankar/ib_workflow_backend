@@ -313,7 +313,10 @@
                   "format": "int64"
                 },
                 "columns": {
-                  "$ref": "#/definitions/ColumnDetails"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/ColumnDetails"
+                  }
                 }
               }
             }
