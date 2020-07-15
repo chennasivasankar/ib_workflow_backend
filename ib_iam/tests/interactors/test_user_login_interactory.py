@@ -9,8 +9,8 @@ class TestLoginInteractor:
         from unittest.mock import create_autospec
 
         from ib_iam.interactors.presenter_interfaces.presenter_interface import \
-            PresenterInterface
-        presenter = create_autospec(PresenterInterface)
+            AuthPresenterInterface
+        presenter = create_autospec(AuthPresenterInterface)
         return presenter
 
     @pytest.fixture()

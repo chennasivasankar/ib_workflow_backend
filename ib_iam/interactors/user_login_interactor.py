@@ -1,6 +1,6 @@
 from ib_iam.adapters.auth_service import EmailAndPasswordDTO
 from ib_iam.interactors.presenter_interfaces.presenter_interface import \
-    PresenterInterface
+    AuthPresenterInterface
 
 
 class InvalidEmail(Exception):
@@ -12,7 +12,7 @@ class InvalidPassword(Exception):
 
 
 class LoginInteractor:
-    def login_wrapper(self, presenter: PresenterInterface,
+    def login_wrapper(self, presenter: AuthPresenterInterface,
                       email_and_password_dto: EmailAndPasswordDTO
                       ):
         try:
@@ -27,7 +27,7 @@ class LoginInteractor:
             return presenter.raise_invalid_password()
 
     def _get_login_response(self, email_and_password_dto: EmailAndPasswordDTO,
-                            presenter: PresenterInterface
+                            presenter: AuthPresenterInterface
                             ):
         tokens_dto = self.get_tokens_dto(
             email_and_password_dto=email_and_password_dto

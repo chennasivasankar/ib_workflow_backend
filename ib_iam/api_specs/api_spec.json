@@ -58,7 +58,7 @@
       "name": "ResetPasswordParameter",
       "description": "email to reset the password",
       "in": "body",
-      "required": "true",
+      "required": true,
       "schema": {
         "type": "object",
         "properties": {
@@ -68,23 +68,6 @@
         },
         "required": [
           "email"
-        ]
-      }
-    },
-    "UpdatePasswordParameter": {
-      "name": "UpdatePasswordParameter",
-      "description": "update the password",
-      "in": "body",
-      "required": "true",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "password": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "password"
         ]
       }
     }
@@ -206,7 +189,7 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "USER_ACCOUNT_NOT_EXIST"
+              "USER_ACCOUNT_DOES_NOT_EXIST"
             ]
           }
         },
@@ -330,9 +313,20 @@
         "summary": "user update the password",
         "operationId": "user_update_password",
         "description": "user update the password using link which we provided",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
         "parameters": [
           {
-            "$ref": "#/parameters/UpdatePasswordParameter"
+            "name": "token",
+            "in": "query",
+            "description": "user token with expires secs",
+            "type": "integer",
+            "required": true
           }
         ],
         "responses": {
