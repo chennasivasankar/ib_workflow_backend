@@ -70,6 +70,23 @@
           "email"
         ]
       }
+    },
+    "UpdatePasswordParameter": {
+      "name": "UpdatePasswordParameter",
+      "description": "update password of user",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "password"
+        ]
+      }
     }
   },
   "responses": {
@@ -215,8 +232,7 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "INVALID_PASSWORD",
-              "INVALID_TOKEN"
+              "NOT_STRONG_PASSWORD"
             ]
           }
         },
@@ -225,6 +241,27 @@
           "http_status_code",
           "res_status"
         ]
+      }
+    },
+    "UpdatePasswordNotFoundResponse": {
+      "description": "update password not found response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "TOKEN_DOES_NOT_EXIST"
+            ]
+          }
+        }
       }
     }
   },
@@ -310,9 +347,9 @@
     },
     "/update_password/v1/": {
       "post": {
-        "summary": "user update the password",
-        "operationId": "user_update_password",
-        "description": "user update the password using link which we provided",
+        "summary": "update user the password",
+        "operationId": "update_user_password",
+        "description": "update user password using token which we provided",
         "security": [
           {
             "oauth": [
@@ -327,6 +364,9 @@
             "description": "user token with expires secs",
             "type": "integer",
             "required": true
+          },
+          {
+            "$ref": "#/parameters/UpdatePasswordParameter"
           }
         ],
         "responses": {
@@ -335,6 +375,9 @@
           },
           "400": {
             "$ref": "#/responses/UpdatePasswordBadRequestResponse"
+          },
+          "404": {
+            "$ref": "#/responses/UpdatePasswordNotFoundResponse"
           }
         }
       }
