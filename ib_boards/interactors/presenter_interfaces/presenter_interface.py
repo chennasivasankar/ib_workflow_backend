@@ -1,8 +1,16 @@
 import abc
 
 
-class PopulateScriptPresenterInterface(abc.ABC):
+class GetBoardsPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_board_id(self, err):
+    def get_response_for_user_have_no_access_for_boards(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_invalid_offset(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_invalid_limit(self):
         pass

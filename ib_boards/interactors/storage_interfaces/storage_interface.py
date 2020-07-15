@@ -40,3 +40,7 @@ class StorageInterface(abc.ABC):
     def delete_columns_which_are_not_in_configuration(
             self, column_for_delete_dtos: List[BoardColumnDTO]):
         pass
+
+    @abc.abstractmethod
+    def validate_user_role_with_boards_roles(self, user_role: str):
+        pass

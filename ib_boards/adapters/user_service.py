@@ -13,3 +13,6 @@ class UserService:
 
     def validate_user_role_ids(self, user_role_ids: List[str]):
         pass
+
+    def get_user_role(self, user_id: int):
+        pass

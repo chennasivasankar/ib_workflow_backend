@@ -68,3 +68,15 @@ class InvalidUserRoles(Exception):
 class ColumnIdsAssignedToDifferentBoard(Exception):
     def __init__(self, column_ids: List[str]):
         self.column_ids = column_ids
+
+
+class UserDoNotHaveAccessToBoards(Exception):
+    pass
+
+
+class InvalidOffsetValue(Exception):
+    pass
+
+
+class InvalidLimitValue(Exception):
+    pass
