@@ -1,8 +1,8 @@
 
 import pytest
 from ib_tasks.interactors.create_gofs import CreateGoFsInteractor
-from ib_tasks.interactors.storage_interfaces.storage_interface \
-    import StorageInterface
+from ib_tasks.interactors.storage_interfaces.tasks_storage_interface \
+    import TaskStorageInterface
 from ib_tasks.tests.factories.storage_dtos import (
     CompleteGoFDetailsDTOFactory, GoFDTOFactory, GoFRolesDTOFactory,
     GoFFieldsDTOFactory
@@ -14,7 +14,7 @@ class TestCreateGOF:
     @pytest.fixture
     def storage_mock(self):
         from mock import create_autospec
-        storage_mock = create_autospec(StorageInterface)
+        storage_mock = create_autospec(TaskStorageInterface)
         return storage_mock
 
     def test_create_gofs_with_valid_details(self, mocker, storage_mock):

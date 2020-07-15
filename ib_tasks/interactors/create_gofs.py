@@ -7,13 +7,13 @@ from ib_tasks.exceptions.custom_exceptions import (
 )
 from ib_tasks.interactors.storage_interfaces.dtos import CompleteGoFDetailsDTO, \
     GoFRolesDTO, GoFFieldsDTO, GoFDTO
-from ib_tasks.interactors.storage_interfaces.storage_interface \
-    import StorageInterface
+from ib_tasks.interactors.storage_interfaces.tasks_storage_interface \
+    import TaskStorageInterface
 
 
 class CreateGoFsInteractor:
 
-    def __init__(self, storage: StorageInterface):
+    def __init__(self, storage: TaskStorageInterface):
         self.storage = storage
 
     def create_gof_wrapper(self):
