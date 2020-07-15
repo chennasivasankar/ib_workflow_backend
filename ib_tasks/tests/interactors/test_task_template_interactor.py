@@ -3,7 +3,7 @@ import mock
 from ib_tasks.interactors.task_template_interactor \
     import TaskTemplateInteractor
 from ib_tasks.tests.factories.interactor_dtos import \
-    GoFDTOFactory
+    GoFIDAndOrderDTOFactory
 from ib_tasks.interactors.dtos import CreateTaskTemplateDTO
 
 
@@ -17,7 +17,7 @@ class TestTaskTemplateInteractor:
 
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
-        GoFDTOFactory.reset_sequence()
+        GoFIDAndOrderDTOFactory.reset_sequence()
 
     def test_with_invalid_order_for_gof_ids_raises_exception(
             self, task_storage_mock):
@@ -31,9 +31,9 @@ class TestTaskTemplateInteractor:
             task_storage=task_storage_mock
         )
 
-        expected_exception_message = "Invalid value for field:order"
+        expected_exception_message = "Invalid value for field: order"
         gof_dtos = \
-            GoFDTOFactory.create_batch(size=1, order=-2)
+            GoFIDAndOrderDTOFactory.create_batch(size=1, order=-2)
         create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name,
             gof_dtos=gof_dtos
@@ -47,20 +47,21 @@ class TestTaskTemplateInteractor:
             )
         assert err.value.args[0] == expected_exception_message
 
+    @pytest.mark.parametrize("template_name", ["", " ", 1, bool, 1.0])
     def test_with_invalid_template_name_raises_exception(
-            self, task_storage_mock):
+            self, task_storage_mock, template_name):
         # Arrange
         template_id = "FIN_PR"
-        template_name = ""
+        template_name = template_name
 
         from ib_tasks.interactors.task_template_interactor \
             import TaskTemplateInteractor
         task_template_interactor = TaskTemplateInteractor(
             task_storage=task_storage_mock
         )
-        expected_exception_message = "Invalid value for field:template_name"
+        expected_exception_message = "Invalid value for field: template_name"
         gof_dtos = \
-            GoFDTOFactory.create_batch(size=1)
+            GoFIDAndOrderDTOFactory.create_batch(size=1)
         create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name,
             gof_dtos=gof_dtos
@@ -74,10 +75,11 @@ class TestTaskTemplateInteractor:
             )
         assert err.value.args[0] == expected_exception_message
 
+    @pytest.mark.parametrize("template_id", ["", " ", 1, bool, 1.0])
     def test_with_invalid_template_id_raises_exception(
-            self, task_storage_mock):
+            self, task_storage_mock, template_id):
         # Arrange
-        template_id = ""
+        template_id = template_id
         template_name = "Request Payment"
 
         from ib_tasks.interactors.task_template_interactor \
@@ -85,8 +87,8 @@ class TestTaskTemplateInteractor:
         task_template_interactor = TaskTemplateInteractor(
             task_storage=task_storage_mock
         )
-        expected_exception_message = "Invalid value for field:template_id"
-        gof_dtos = GoFDTOFactory.create_batch(size=1)
+        expected_exception_message = "Invalid value for field: template_id"
+        gof_dtos = GoFIDAndOrderDTOFactory.create_batch(size=1)
         create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name,
             gof_dtos=gof_dtos
@@ -100,8 +102,9 @@ class TestTaskTemplateInteractor:
             )
         assert err.value.args[0] == expected_exception_message
 
+    @pytest.mark.parametrize("gof_id", ["", " ", 1, bool, 1.0])
     def test_with_invalid_gof_id_raises_exception(
-            self, task_storage_mock):
+            self, task_storage_mock, gof_id):
         # Arrange
         template_id = "FIN"
         template_name = "Request Payment"
@@ -111,8 +114,8 @@ class TestTaskTemplateInteractor:
         task_template_interactor = TaskTemplateInteractor(
             task_storage=task_storage_mock
         )
-        expected_exception_message = "Invalid value for field:gof_id"
-        gof_dtos = GoFDTOFactory.create_batch(size=1, gof_id="")
+        expected_exception_message = "Invalid value for field: gof_id"
+        gof_dtos = GoFIDAndOrderDTOFactory.create_batch(size=1, gof_id="")
         create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name,
             gof_dtos=gof_dtos
@@ -140,7 +143,7 @@ class TestTaskTemplateInteractor:
             task_storage=task_storage_mock
         )
 
-        gof_dtos = GoFDTOFactory.create_batch(
+        gof_dtos = GoFIDAndOrderDTOFactory.create_batch(
             size=2, gof_id="PaymentRequestDetails"
         )
         create_task_template_dto = CreateTaskTemplateDTO(
@@ -175,7 +178,7 @@ class TestTaskTemplateInteractor:
         expected_exception_message = \
             "Existing gof ids: ['GoF_5'] of template not in given gof ids: ['GoF_1']"
 
-        gof_dtos = GoFDTOFactory.create_batch(size=1)
+        gof_dtos = GoFIDAndOrderDTOFactory.create_batch(size=1)
         create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name,
             gof_dtos=gof_dtos
@@ -198,7 +201,7 @@ class TestTaskTemplateInteractor:
         # Arrange
         template_id = "FIN_PR"
         template_name = "Payment Request"
-        gof_dtos = GoFDTOFactory.create_batch(size=1)
+        gof_dtos = GoFIDAndOrderDTOFactory.create_batch(size=1)
         create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name,
             gof_dtos=gof_dtos
@@ -224,7 +227,7 @@ class TestTaskTemplateInteractor:
         template_id = "FIN_PR"
         template_name = "Payment Request"
 
-        gof_dtos = GoFDTOFactory.create_batch(size=3)
+        gof_dtos = GoFIDAndOrderDTOFactory.create_batch(size=3)
         create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name,
             gof_dtos=gof_dtos
@@ -235,9 +238,10 @@ class TestTaskTemplateInteractor:
         task_storage_mock.check_is_template_exists.return_value = True
         task_storage_mock.\
             get_existing_gof_ids_of_template.return_value = ["GoF_1"]
-        from ib_tasks.interactors.dtos import GoFDTO
+        from ib_tasks.interactors.dtos import GoFIDAndOrderDTO
         expected_gof_dtos_to_add_to_template = [
-            GoFDTO(gof_id='GoF_2', order=2), GoFDTO(gof_id='GoF_3', order=3)
+            GoFIDAndOrderDTO(gof_id='GoF_2', order=2),
+            GoFIDAndOrderDTO(gof_id='GoF_3', order=3)
         ]
 
         # Act
@@ -248,5 +252,5 @@ class TestTaskTemplateInteractor:
         # Assert
         task_storage_mock.add_gofs_to_task_template.assert_called_once_with(
             template_id=template_id,
-            gof_dtos_to_add_to_template=expected_gof_dtos_to_add_to_template
+            gof_id_and_order_dtos=expected_gof_dtos_to_add_to_template
         )

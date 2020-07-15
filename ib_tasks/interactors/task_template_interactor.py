@@ -1,7 +1,7 @@
 from typing import List
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
-from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, GoFDTO
+from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, GoFIDAndOrderDTO
 
 
 class TaskTemplateInteractor:
@@ -16,13 +16,9 @@ class TaskTemplateInteractor:
 
     def create_task_template(
             self, create_task_template_dto: CreateTaskTemplateDTO):
-        self._validate_field_values_of_create_task_template_dto(
+        self._make_validations(
             create_task_template_dto=create_task_template_dto
         )
-        gof_ids = self._get_gof_ids(
-            gof_dtos=create_task_template_dto.gof_dtos
-        )
-        self._validate_uniqueness_in_gof_ids(gof_ids=gof_ids)
         is_template_exists = self.task_storage.check_is_template_exists(
             template_id=create_task_template_dto.template_id
         )
@@ -34,21 +30,32 @@ class TaskTemplateInteractor:
             )
             self.task_storage.add_gofs_to_task_template(
                 template_id=create_task_template_dto.template_id,
-                gof_dtos_to_add_to_template=create_task_template_dto.gof_dtos
+                gof_id_and_order_dtos=create_task_template_dto.gof_dtos
             )
             return
 
         self._check_existing_gofs_of_template_are_in_given_gofs(
             create_task_template_dto=create_task_template_dto
         )
-        gof_dtos_to_add_to_template = self._get_gof_dtos_to_add_to_template(
-            create_task_template_dto=create_task_template_dto
-        )
-        if gof_dtos_to_add_to_template:
+        gof_id_and_order_dtos_to_add_to_template = \
+            self._get_gof_dtos_to_add_to_template(
+                create_task_template_dto=create_task_template_dto
+            )
+        if gof_id_and_order_dtos_to_add_to_template:
             self.task_storage.add_gofs_to_task_template(
                 template_id=create_task_template_dto.template_id,
-                gof_dtos_to_add_to_template=gof_dtos_to_add_to_template
+                gof_id_and_order_dtos=gof_id_and_order_dtos_to_add_to_template
             )
+
+    def _make_validations(
+            self, create_task_template_dto: CreateTaskTemplateDTO):
+        self._validate_field_values_of_create_task_template_dto(
+            create_task_template_dto=create_task_template_dto
+        )
+        gof_ids = self._get_gof_ids(
+            gof_dtos=create_task_template_dto.gof_dtos
+        )
+        self._validate_uniqueness_in_gof_ids(gof_ids=gof_ids)
 
     def _validate_field_values_of_create_task_template_dto(
             self, create_task_template_dto: CreateTaskTemplateDTO):
@@ -62,6 +69,10 @@ class TaskTemplateInteractor:
         gof_ids = self._get_gof_ids(gof_dtos=gof_dtos)
         self._validate_gof_ids(gof_ids=gof_ids)
         self._validate_order_of_gof(gof_dtos=gof_dtos)
+
+    def _validate_gof_ids(self, gof_ids: List[str]):
+        for gof_id in gof_ids:
+            self._validate_gof_id(gof_id=gof_id)
 
     def _get_gof_dtos_to_add_to_template(
             self, create_task_template_dto: CreateTaskTemplateDTO):
@@ -112,34 +123,45 @@ class TaskTemplateInteractor:
 
     @staticmethod
     def _validate_template_name(template_name: str):
-        is_template_name_valid = \
-            template_name and (type(template_name) == str)
-        is_template_name_invalid = not is_template_name_valid
-
+        is_template_name_string = (type(template_name) == str)
+        is_template_name_not_a_string = not is_template_name_string
         from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
-        if is_template_name_invalid:
+        if is_template_name_not_a_string:
+            raise InvalidValueForField("template_name")
+
+        template_name_after_strip = template_name.strip()
+        is_template_name_empty = not template_name_after_strip
+        if is_template_name_empty:
             raise InvalidValueForField("template_name")
 
     @staticmethod
     def _validate_template_id(template_id: str):
-        is_template_id_valid = template_id and (type(template_id) == str)
-        is_template_id_invalid = not is_template_id_valid
-
+        is_template_id_string = type(template_id) == str
+        is_template_id_not_a_string = not is_template_id_string
         from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
-        if is_template_id_invalid:
+        if is_template_id_not_a_string:
+            raise InvalidValueForField("template_id")
+
+        template_id_after_strip = template_id.strip()
+        is_template_id_empty = not template_id_after_strip
+        if is_template_id_empty:
             raise InvalidValueForField("template_id")
 
     @staticmethod
-    def _validate_gof_ids(gof_ids: List[str]):
+    def _validate_gof_id(gof_id: str):
+        is_gof_id_string = type(gof_id) == str
+        is_gof_id_not_a_string = not is_gof_id_string
         from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
-        for gof_id in gof_ids:
-            is_gof_id_valid = gof_id and (type(gof_id) == str)
-            is_gof_id_invalid = not is_gof_id_valid
-            if is_gof_id_invalid:
-                raise InvalidValueForField("gof_id")
+        if is_gof_id_not_a_string:
+            raise InvalidValueForField("gof_id")
+
+        gof_id_after_strip = gof_id.strip()
+        is_gof_id_empty = not gof_id_after_strip
+        if is_gof_id_empty:
+            raise InvalidValueForField("gof_id")
 
     @staticmethod
-    def _validate_order_of_gof(gof_dtos: List[GoFDTO]):
+    def _validate_order_of_gof(gof_dtos: List[GoFIDAndOrderDTO]):
         from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
         for gof_dto in gof_dtos:
             is_order_not_int_type = not (type(gof_dto.order) == int)
@@ -148,7 +170,7 @@ class TaskTemplateInteractor:
                 raise InvalidValueForField("order")
 
     @staticmethod
-    def _get_gof_ids(gof_dtos: List[GoFDTO]):
+    def _get_gof_ids(gof_dtos: List[GoFIDAndOrderDTO]):
         gof_ids = [
             gof_dto.gof_id
             for gof_dto in gof_dtos

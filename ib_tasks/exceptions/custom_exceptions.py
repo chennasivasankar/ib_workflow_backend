@@ -27,5 +27,5 @@ class ExistingGoFNotInGivenGoF(Exception):
 
 class InvalidValueForField(Exception):
     def __init__(self, field: str):
-        self.message = "Invalid value for field:{}".format(field)
+        self.message = "Invalid value for field: {}".format(field)
         super().__init__(self.message)
