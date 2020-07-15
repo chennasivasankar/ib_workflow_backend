@@ -19,11 +19,218 @@ class TestTaskTemplateInteractor:
     def reset_sequence(self):
         GoFDTOFactory.reset_sequence()
 
-    def test_create_task_template_with_valid_data(self, task_storage_mock):
+    def test_with_invalid_order_for_gof_ids_raises_exception(
+            self, task_storage_mock):
         # Arrange
         template_id = "FIN_PR"
         template_name = "Payment Request"
 
+        from ib_tasks.interactors.task_template_interactor \
+            import TaskTemplateInteractor
+        task_template_interactor = TaskTemplateInteractor(
+            task_storage=task_storage_mock
+        )
+
+        expected_exception_message = "Invalid value for field:order"
+        gof_dtos = \
+            GoFDTOFactory.create_batch(size=1, order=-2)
+        create_task_template_dto = CreateTaskTemplateDTO(
+            template_id=template_id, template_name=template_name,
+            gof_dtos=gof_dtos
+        )
+        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+
+        # Assert
+        with pytest.raises(InvalidValueForField) as err:
+            task_template_interactor.create_task_template_wrapper(
+                create_task_template_dto=create_task_template_dto
+            )
+        assert err.value.args[0] == expected_exception_message
+
+    def test_with_invalid_template_name_raises_exception(
+            self, task_storage_mock):
+        # Arrange
+        template_id = "FIN_PR"
+        template_name = ""
+
+        from ib_tasks.interactors.task_template_interactor \
+            import TaskTemplateInteractor
+        task_template_interactor = TaskTemplateInteractor(
+            task_storage=task_storage_mock
+        )
+        expected_exception_message = "Invalid value for field:template_name"
+        gof_dtos = \
+            GoFDTOFactory.create_batch(size=1)
+        create_task_template_dto = CreateTaskTemplateDTO(
+            template_id=template_id, template_name=template_name,
+            gof_dtos=gof_dtos
+        )
+        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+
+        # Assert
+        with pytest.raises(InvalidValueForField) as err:
+            task_template_interactor.create_task_template_wrapper(
+                create_task_template_dto=create_task_template_dto
+            )
+        assert err.value.args[0] == expected_exception_message
+
+    def test_with_invalid_template_id_raises_exception(
+            self, task_storage_mock):
+        # Arrange
+        template_id = ""
+        template_name = "Request Payment"
+
+        from ib_tasks.interactors.task_template_interactor \
+            import TaskTemplateInteractor
+        task_template_interactor = TaskTemplateInteractor(
+            task_storage=task_storage_mock
+        )
+        expected_exception_message = "Invalid value for field:template_id"
+        gof_dtos = GoFDTOFactory.create_batch(size=1)
+        create_task_template_dto = CreateTaskTemplateDTO(
+            template_id=template_id, template_name=template_name,
+            gof_dtos=gof_dtos
+        )
+        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+
+        # Assert
+        with pytest.raises(InvalidValueForField) as err:
+            task_template_interactor.create_task_template_wrapper(
+                create_task_template_dto=create_task_template_dto
+            )
+        assert err.value.args[0] == expected_exception_message
+
+    def test_with_invalid_gof_id_raises_exception(
+            self, task_storage_mock):
+        # Arrange
+        template_id = "FIN"
+        template_name = "Request Payment"
+
+        from ib_tasks.interactors.task_template_interactor \
+            import TaskTemplateInteractor
+        task_template_interactor = TaskTemplateInteractor(
+            task_storage=task_storage_mock
+        )
+        expected_exception_message = "Invalid value for field:gof_id"
+        gof_dtos = GoFDTOFactory.create_batch(size=1, gof_id="")
+        create_task_template_dto = CreateTaskTemplateDTO(
+            template_id=template_id, template_name=template_name,
+            gof_dtos=gof_dtos
+        )
+        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+
+        # Assert
+        with pytest.raises(InvalidValueForField) as err:
+            task_template_interactor.create_task_template_wrapper(
+                create_task_template_dto=create_task_template_dto
+            )
+        assert err.value.args[0] == expected_exception_message
+
+    def test_create_task_template_with_duplicate_gof_ids_raises_exception(
+            self, task_storage_mock):
+        # Arrange
+        template_id = "FIN_PR"
+        template_name = "Payment Request"
+        expected_exception_message = \
+            "Given duplicate gof ids ['PaymentRequestDetails']"
+
+        from ib_tasks.interactors.task_template_interactor \
+            import TaskTemplateInteractor
+        task_template_interactor = TaskTemplateInteractor(
+            task_storage=task_storage_mock
+        )
+
+        gof_dtos = GoFDTOFactory.create_batch(
+            size=2, gof_id="PaymentRequestDetails"
+        )
+        create_task_template_dto = CreateTaskTemplateDTO(
+            template_id=template_id, template_name=template_name,
+            gof_dtos=gof_dtos
+        )
+        from ib_tasks.exceptions.custom_exceptions \
+            import DuplicateGoFIds
+
+        # Assert
+        with pytest.raises(DuplicateGoFIds) as err:
+            task_template_interactor.create_task_template_wrapper(
+                create_task_template_dto=create_task_template_dto
+            )
+        assert err.value.args[0] == expected_exception_message
+
+    def test_with_existing_template_id_but_given_different_name_raises_exception(
+            self, task_storage_mock):
+        # Arrange
+        template_id = "FIN_PR"
+        template_name = "Payment Request"
+
+        from ib_tasks.interactors.task_template_interactor \
+            import TaskTemplateInteractor
+        task_template_interactor = TaskTemplateInteractor(
+            task_storage=task_storage_mock
+        )
+        task_storage_mock.check_is_template_exists.return_value = True
+        task_storage_mock.get_task_template_name.return_value = "Vendor"
+        expected_exception_message = \
+            "given template name: Payment Request but it is different from the existing template_name: Vendor"
+        gof_dtos = GoFDTOFactory.create_batch(size=1)
+        create_task_template_dto = CreateTaskTemplateDTO(
+            template_id=template_id, template_name=template_name,
+            gof_dtos=gof_dtos
+        )
+        from ib_tasks.exceptions.custom_exceptions import DifferentTemplateName
+
+        # Assert
+        with pytest.raises(DifferentTemplateName) as err:
+            task_template_interactor.create_task_template_wrapper(
+                create_task_template_dto=create_task_template_dto
+            )
+        task_storage_mock.get_task_template_name.assert_called_once_with(
+            template_id=template_id
+        )
+        assert err.value.args[0] == expected_exception_message
+
+    def test_with_existing_gof_ids_of_template_not_in_given_data(
+            self, task_storage_mock):
+        # Arrange
+        template_id = "FIN_PR"
+        template_name = "Payment Request"
+
+        from ib_tasks.interactors.task_template_interactor \
+            import TaskTemplateInteractor
+        task_template_interactor = TaskTemplateInteractor(
+            task_storage=task_storage_mock
+        )
+
+        task_storage_mock.check_is_template_exists.return_value = True
+        task_storage_mock.get_task_template_name.return_value = template_name
+        task_storage_mock. \
+            get_existing_gof_of_template.return_value = ["GoF_5"]
+        expected_exception_message = \
+            "Existing gof ids: ['GoF_5'] of template not in given gof ids: ['GoF_1']"
+
+        gof_dtos = GoFDTOFactory.create_batch(size=1)
+        create_task_template_dto = CreateTaskTemplateDTO(
+            template_id=template_id, template_name=template_name,
+            gof_dtos=gof_dtos
+        )
+        from ib_tasks.exceptions.custom_exceptions import \
+            ExistingGoFNotInGivenGoF
+
+        # Assert
+        with pytest.raises(ExistingGoFNotInGivenGoF) as err:
+            task_template_interactor.create_task_template_wrapper(
+                create_task_template_dto=create_task_template_dto
+            )
+        task_storage_mock. \
+            get_existing_gof_of_template.assert_called_once_with(
+                template_id=template_id
+            )
+        assert err.value.args[0] == expected_exception_message
+
+    def test_create_task_template_with_valid_data(self, task_storage_mock):
+        # Arrange
+        template_id = "FIN_PR"
+        template_name = "Payment Request"
         gof_dtos = GoFDTOFactory.create_batch(size=1)
         create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name,
@@ -32,9 +239,7 @@ class TestTaskTemplateInteractor:
         task_template_interactor = TaskTemplateInteractor(
             task_storage=task_storage_mock
         )
-        from ib_tasks.exceptions.custom_exceptions import TemplateNotExists
-        task_storage_mock.get_task_template_name_if_exists.side_effect = \
-            TemplateNotExists
+        task_storage_mock.check_is_template_exists.return_value = False
 
         # Act
         task_template_interactor.create_task_template_wrapper(
@@ -60,7 +265,8 @@ class TestTaskTemplateInteractor:
         task_template_interactor = TaskTemplateInteractor(
             task_storage=task_storage_mock
         )
-        task_storage_mock.get_task_template_name_if_exists.return_value = \
+        task_storage_mock.check_is_template_exists.return_value = True
+        task_storage_mock.get_task_template_name.return_value = \
             "Payment Request"
         task_storage_mock.\
             get_existing_gof_of_template.return_value = ["GoF_1"]
@@ -74,248 +280,3 @@ class TestTaskTemplateInteractor:
         task_storage_mock.update_task_template.assert_called_once_with(
             create_task_template_dto=create_task_template_dto
         )
-
-    def test_create_task_template_with_duplicate_gof_ids_raises_exception(
-            self, task_storage_mock):
-        # Arrange
-        template_id = "FIN_PR"
-        template_name = "Payment Request"
-        expected_exception_message = \
-            "Given duplicate gof ids ['PaymentRequestDetails']"
-
-        from ib_tasks.interactors.task_template_interactor \
-            import TaskTemplateInteractor
-        task_template_interactor = TaskTemplateInteractor(
-            task_storage=task_storage_mock
-        )
-
-        gof_dtos = GoFDTOFactory.create_batch(
-            size=2, gof_id="PaymentRequestDetails"
-        )
-        create_task_template_dto = CreateTaskTemplateDTO(
-            template_id=template_id, template_name=template_name,
-            gof_dtos=gof_dtos
-        )
-
-        from ib_tasks.exceptions.custom_exceptions \
-            import DuplicateGoFIds
-
-        # Assert
-        with pytest.raises(DuplicateGoFIds) as err:
-            task_template_interactor.create_task_template_wrapper(
-                create_task_template_dto=create_task_template_dto
-            )
-        assert err.value.args[0] == expected_exception_message
-
-    def test_with_existing_template_id_but_different_name_raises_exception(
-            self, task_storage_mock):
-        # Arrange
-        template_id = "FIN_PR"
-        template_name = "Payment Request"
-
-        from ib_tasks.interactors.task_template_interactor \
-            import TaskTemplateInteractor
-        task_template_interactor = TaskTemplateInteractor(
-            task_storage=task_storage_mock
-        )
-        task_storage_mock.get_task_template_name_if_exists.return_value = \
-            "Vendor"
-        expected_exception_message = \
-            "Template already exists! you have given different template name: Payment Request"
-
-        gof_dtos = GoFDTOFactory.create_batch(size=1)
-        create_task_template_dto = CreateTaskTemplateDTO(
-            template_id=template_id, template_name=template_name,
-            gof_dtos=gof_dtos
-        )
-
-        from ib_tasks.exceptions.custom_exceptions import DifferentTemplateName
-
-        # Assert
-        with pytest.raises(DifferentTemplateName) as err:
-            task_template_interactor.create_task_template_wrapper(
-                create_task_template_dto=create_task_template_dto
-            )
-        task_storage_mock. \
-            get_task_template_name_if_exists.assert_called_once_with(
-                template_id=template_id
-            )
-        assert err.value.args[0] == expected_exception_message
-
-    def test_with_existing_gof_ids_not_in_given_data(
-            self, task_storage_mock):
-        # Arrange
-        template_id = "FIN_PR"
-        template_name = "Payment Request"
-
-        from ib_tasks.interactors.task_template_interactor \
-            import TaskTemplateInteractor
-        task_template_interactor = TaskTemplateInteractor(
-            task_storage=task_storage_mock
-        )
-        from ib_tasks.exceptions.custom_exceptions import TemplateNotExists
-        task_storage_mock.get_task_template_name_if_exists.side_effect = \
-            TemplateNotExists
-        task_storage_mock. \
-            get_existing_gof_of_template.return_value = ["GoF_5"]
-        expected_exception_message = \
-            "Existing gof ids not in given gof ids: ['GoF_5']"
-
-        gof_dtos = GoFDTOFactory.create_batch(size=1)
-        create_task_template_dto = CreateTaskTemplateDTO(
-            template_id=template_id, template_name=template_name,
-            gof_dtos=gof_dtos
-        )
-
-        from ib_tasks.exceptions.custom_exceptions import \
-            ExistingGoFNotInGivenGoF
-
-        # Assert
-        with pytest.raises(
-                ExistingGoFNotInGivenGoF
-        ) as err:
-            task_template_interactor.create_task_template_wrapper(
-                create_task_template_dto=create_task_template_dto
-            )
-        task_storage_mock. \
-            get_existing_gof_of_template.assert_called_once_with(
-                template_id=template_id
-            )
-        assert err.value.args[0] == expected_exception_message
-
-    def test_with_invalid_order_for_gof_ids_raises_exception(
-            self, task_storage_mock):
-        # Arrange
-        template_id = "FIN_PR"
-        template_name = "Payment Request"
-
-        from ib_tasks.interactors.task_template_interactor \
-            import TaskTemplateInteractor
-        task_template_interactor = TaskTemplateInteractor(
-            task_storage=task_storage_mock
-        )
-        from ib_tasks.exceptions.custom_exceptions import TemplateNotExists
-        task_storage_mock.get_task_template_name_if_exists.side_effect = \
-            TemplateNotExists
-        task_storage_mock. \
-            get_existing_gof_of_template.return_value = []
-        expected_exception_message = "Invalid for field: order"
-        gof_dtos = \
-            GoFDTOFactory.create_batch(size=1, order=-2)
-        create_task_template_dto = CreateTaskTemplateDTO(
-            template_id=template_id, template_name=template_name,
-            gof_dtos=gof_dtos
-        )
-
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
-
-        # Assert
-        with pytest.raises(InvalidValueForField) as err:
-            task_template_interactor.create_task_template_wrapper(
-                create_task_template_dto=create_task_template_dto
-            )
-        assert err.value.args[0] == expected_exception_message
-
-    def test_with_invalid_template_name_raises_exception(
-            self, task_storage_mock):
-        # Arrange
-        template_id = "FIN_PR"
-        template_name = ""
-
-        from ib_tasks.interactors.task_template_interactor \
-            import TaskTemplateInteractor
-        task_template_interactor = TaskTemplateInteractor(
-            task_storage=task_storage_mock
-        )
-        from ib_tasks.exceptions.custom_exceptions import TemplateNotExists
-        task_storage_mock.get_task_template_name_if_exists.side_effect = \
-            TemplateNotExists
-        task_storage_mock. \
-            get_existing_gof_of_template.return_value = []
-        expected_exception_message = "Invalid for field: template_name"
-
-        gof_dtos = \
-            GoFDTOFactory.create_batch(size=1)
-        create_task_template_dto = CreateTaskTemplateDTO(
-            template_id=template_id, template_name=template_name,
-            gof_dtos=gof_dtos
-        )
-
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
-
-        # Assert
-        with pytest.raises(InvalidValueForField) as err:
-            task_template_interactor.create_task_template_wrapper(
-                create_task_template_dto=create_task_template_dto
-            )
-        assert err.value.args[0] == expected_exception_message
-
-    def test_with_invalid_template_id_raises_exception(
-            self, task_storage_mock):
-        # Arrange
-        template_id = ""
-        template_name = "Request Payment"
-
-        from ib_tasks.interactors.task_template_interactor \
-            import TaskTemplateInteractor
-        task_template_interactor = TaskTemplateInteractor(
-            task_storage=task_storage_mock
-        )
-        from ib_tasks.exceptions.custom_exceptions import TemplateNotExists
-        task_storage_mock.get_task_template_name_if_exists.side_effect = \
-            TemplateNotExists
-        task_storage_mock. \
-            get_existing_gof_of_template.return_value = []
-        expected_exception_message = "Invalid for field: template_id"
-
-        gof_dtos = \
-            GoFDTOFactory.create_batch(size=1)
-        create_task_template_dto = CreateTaskTemplateDTO(
-            template_id=template_id, template_name=template_name,
-            gof_dtos=gof_dtos
-        )
-
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
-
-        # Assert
-        with pytest.raises(InvalidValueForField) as err:
-            task_template_interactor.create_task_template_wrapper(
-                create_task_template_dto=create_task_template_dto
-            )
-        assert err.value.args[0] == expected_exception_message
-
-    def test_with_invalid_gof_id_raises_exception(
-            self, task_storage_mock):
-        # Arrange
-        template_id = "FIN"
-        template_name = "Request Payment"
-
-        from ib_tasks.interactors.task_template_interactor \
-            import TaskTemplateInteractor
-        task_template_interactor = TaskTemplateInteractor(
-            task_storage=task_storage_mock
-        )
-        from ib_tasks.exceptions.custom_exceptions import TemplateNotExists
-        task_storage_mock.get_task_template_name_if_exists.side_effect = \
-            TemplateNotExists
-        task_storage_mock. \
-            get_existing_gof_of_template.return_value = []
-        expected_exception_message = "Invalid for field: gof_id"
-
-        gof_dtos = \
-            GoFDTOFactory.create_batch(
-                size=1, gof_id=""
-            )
-        create_task_template_dto = CreateTaskTemplateDTO(
-            template_id=template_id, template_name=template_name,
-            gof_dtos=gof_dtos
-        )
-
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
-
-        # Assert
-        with pytest.raises(InvalidValueForField) as err:
-            task_template_interactor.create_task_template_wrapper(
-                create_task_template_dto=create_task_template_dto
-            )
-        assert err.value.args[0] == expected_exception_message

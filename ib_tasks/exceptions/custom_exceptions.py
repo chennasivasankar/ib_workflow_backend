@@ -8,25 +8,24 @@ class DuplicateGoFIds(Exception):
 
 
 class DifferentTemplateName(Exception):
-    def __init__(self, template_name: str):
+    def __init__(self, existing_template_name: str, template_name: str):
         self.message = \
-            "Template already exists! you have given different template name: {}". \
-                format(template_name)
+            "given template name: {} but it is different from the existing template_name: {}".\
+            format(template_name, existing_template_name)
         super().__init__(self.message)
 
 
-class TemplateNotExists(Exception):
-    pass
-
-
 class ExistingGoFNotInGivenGoF(Exception):
-    def __init__(self, gof_ids: List[str]):
+    def __init__(self,
+                 gof_of_template_not_in_given_gof: List[str],
+                 given_gof_ids: List[str]):
         self.message = \
-            "Existing gof ids not in given gof ids: {}".format(gof_ids)
+            "Existing gof ids: {} of template not in given gof ids: {}".\
+            format(gof_of_template_not_in_given_gof, given_gof_ids)
         super().__init__(self.message)
 
 
 class InvalidValueForField(Exception):
     def __init__(self, field: str):
-        self.message = "Invalid for field: {}".format(field)
+        self.message = "Invalid value for field:{}".format(field)
         super().__init__(self.message)
