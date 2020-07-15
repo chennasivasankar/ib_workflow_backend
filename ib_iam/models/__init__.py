@@ -1,4 +1,8 @@
-__all__ = []
+from ib_iam.models.Role import Role
+from ib_iam.models.company import Company
+from ib_iam.models.team import Team
+from ib_iam.models.user_profile import UserRole, UserTeam, UserCompany
+__all__ = ["Role", "Team", "Company", "UserTeam", "UserRole", "UserCompany"]
 
 # class DummyModel(AbstractDateTimeModel):
 #     """

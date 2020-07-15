@@ -34,9 +34,6 @@
     "UserDetailsDefinition": {
       "type": "object",
       "properties": {
-        "sno": {
-          "type": "integer"
-        },
         "user_id": {
           "type": "string",
           "format": "uuid"
@@ -70,6 +67,20 @@
         "team_name"
       ]
     },
+    "ListofTeamsDefinition": {
+      "type": "object",
+      "properties": {
+        "teams": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TeamDetailsDefinition"
+          }
+        }
+      },
+      "required": [
+        "teams"
+      ]
+    },
     "CompanyDetailsDefinition": {
       "type": "object",
       "properties": {
@@ -86,12 +97,22 @@
         "company_name"
       ]
     },
+    "CompanyDefinition": {
+      "type": "object",
+          "properties": {
+            "company": {
+              "$ref": "#/definitions/CompanyDetailsDefinition"
+            }
+          },
+          "required": [
+            "company"
+          ]
+    },
     "RoleDetailsDefinition": {
       "type": "object",
       "properties": {
         "role_id": {
-          "type": "string",
-          "format": "uuid"
+          "type": "string"
         },
         "role_name": {
           "type": "string"
@@ -102,61 +123,38 @@
         "role_name"
       ]
     },
+    "ListofRolesDefinition": {
+      "type": "object",
+      "properties": {
+        "roles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RoleDetailsDefinition"
+          }
+        }
+      },
+      "required": [
+        "roles"
+      ]
+    },
     "CompleteUserDetailsDefinition": {
       "allOf": [
-        {
-          "type": "object",
-          "properties": {
-            "sno": {
-              "type": "integer"
-            }
-          },
-          "required": [
-            "sno"
-          ]
-        },
         {
           "$ref": "#/definitions/UserDetailsDefinition"
         },
         {
-          "type": "object",
-          "properties": {
-            "teams": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/TeamDetailsDefinition"
-              }
-            }
-          },
-          "required": ["teams"]
+          "$ref": "#/definitions/ListofTeamsDefinition"
         },
         {
-          "type": "object",
-          "properties": {
-            "roles": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/RoleDetailsDefinition"
-              }
-            }
-          },
-          "required": ["roles"]
+          "$ref": "#/definitions/ListofRolesDefinition"
         },
         {
-          "type": "object",
-          "properties": {
-            "company": {
-              "$ref": "#/definitions/CompanyDetailsDefinition"
-            }
-          },
-          "required": ["company"]
+          "$ref": "#/definitions/CompanyDefinition"
         }
       ]
     },
-    "ListOfUsersDefinition": {
-      "allOf": [
-        {
-          "type": "object",
+    "UsersDetailsDefinition": {
+      "type": "object",
           "properties": {
             "users": {
               "type": "array",
@@ -165,7 +163,15 @@
               }
             }
           },
-          "required": ["users"]
+          "required": [
+            "users"
+          ]
+    },
+    "ListOfUsersDefinition": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/UsersDetailsDefinition"
+
         },
         {
           "type": "object",
@@ -175,7 +181,9 @@
               "format": "int64"
             }
           },
-          "required" : ["total_no_of_users"]
+          "required": [
+            "total_no_of_users"
+          ]
         }
       ]
     },
@@ -185,10 +193,13 @@
         "response": {
           "type": "string",
           "enum": [
-            "User don't permission"
+            "USER DONT'T HAVE PERMISSION"
           ]
         }
-      }
+      },
+      "required": [
+        "response"
+      ]
     }
   },
   "parameters": {
