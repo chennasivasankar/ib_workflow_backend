@@ -2,7 +2,7 @@ import factory
 from ib_tasks.interactors.storage_interfaces.dtos import GOFDTO
 
 
-class GOFDTOFactory(factory.Factory):
+class GoFDTOFactory(factory.Factory):
     class Meta:
         model = GOFDTO
 

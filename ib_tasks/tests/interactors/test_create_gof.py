@@ -1,9 +1,12 @@
+from unittest.mock import patch
+
 import pytest
 
-from ib_tasks.interactors.create_gofs import CreateGOF
+from ib_tasks.adapters.roles_service import RolesService
+from ib_tasks.interactors.create_gofs import CreateGoFsInteractor
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
-from ib_tasks.tests.factories.storage_dtos import GOFDTOFactory
+from ib_tasks.tests.factories.storage_dtos import GoFDTOFactory
 
 
 class TestCreateGOF:
@@ -14,32 +17,35 @@ class TestCreateGOF:
         storage_mock = create_autospec(StorageInterface)
         return storage_mock
 
-    def test_create_gofs(self, storage_mock):
+    def test_create_gofs_with_valid_details(self, mocker, storage_mock):
         # Arrange
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_all_valid_read_permission_roles, get_all_valid_write_permission_roles
+        get_valid_read_permissions_mock_method = get_all_valid_read_permission_roles(mocker)
+        get_valid_write_permissions_mock_method = get_all_valid_write_permission_roles(mocker)
+
         gof_dtos = [
-            GOFDTOFactory()
+            GoFDTOFactory(),
+            GoFDTOFactory()
         ]
-        storage_mock.get_valid_read_permission_roles.return_value = [
-            "ALL_ROLES"
-        ]
-        storage_mock.get_valid_write_permission_roles.return_value = [
-            "ALL_ROLES"
-        ]
-        interactor = CreateGOF(storage=storage_mock)
+        interactor = CreateGoFsInteractor(storage=storage_mock)
 
         # Act
         interactor.create_gofs(gof_dtos=gof_dtos)
 
         # Assert
+        get_valid_read_permissions_mock_method.assert_called_once()
+        get_valid_write_permissions_mock_method.assert_called_once()
         storage_mock.create_gofs.assert_called_once_with(gof_dtos=gof_dtos)
 
-    def test_create_gofs_without_gof_id_field_raise_exception(self, storage_mock):
+    @pytest.mark.parametrize("gof_id", [None, ""])
+    def test_create_gofs_with_invalid_gof_id_field_raise_exception(self, storage_mock, gof_id):
         # Arrange
         from ib_tasks.exceptions.custom_exceptions import GOFIdCantBeEmpty
         gof_dtos = [
-            GOFDTOFactory(gof_id=None)
+            GoFDTOFactory(gof_id=gof_id)
         ]
-        interactor = CreateGOF(storage=storage_mock)
+        interactor = CreateGoFsInteractor(storage=storage_mock)
 
         # Act
         with pytest.raises(GOFIdCantBeEmpty) as err:
@@ -48,28 +54,16 @@ class TestCreateGOF:
         # Assert
         storage_mock.create_gofs.assert_not_called()
 
-    def test_create_gofs_with_empty_gof_id_field_raise_exception(self, storage_mock):
-        # Arrange
-        from ib_tasks.exceptions.custom_exceptions import GOFIdCantBeEmpty
-        gof_dtos = [
-            GOFDTOFactory(gof_id="")
-        ]
-        interactor = CreateGOF(storage=storage_mock)
-
-        # Act
-        with pytest.raises(GOFIdCantBeEmpty) as err:
-            interactor.create_gofs(gof_dtos=gof_dtos)
-
-        # Assert
-        storage_mock.create_gofs.assert_not_called()
-
-    def test_create_gofs_without_gof_display_name_field_raise_exception(self, storage_mock):
+    @pytest.mark.parametrize("gof_display_name", [None, ""])
+    def test_create_gofs_with_invalid_gof_display_name_field_raise_exception(
+            self, gof_display_name, storage_mock
+    ):
         # Arrange
         from ib_tasks.exceptions.custom_exceptions import GOFDisplayNameCantBeEmpty
         gof_dtos = [
-            GOFDTOFactory(gof_display_name=None)
+            GoFDTOFactory(gof_display_name=gof_display_name)
         ]
-        interactor = CreateGOF(storage=storage_mock)
+        interactor = CreateGoFsInteractor(storage=storage_mock)
 
         # Act
         with pytest.raises(GOFDisplayNameCantBeEmpty) as err:
@@ -78,28 +72,16 @@ class TestCreateGOF:
         # Assert
         storage_mock.create_gofs.assert_not_called()
 
-    def test_create_gofs_with_empty_gof_display_name_field_raise_exception(self, storage_mock):
-        # Arrange
-        from ib_tasks.exceptions.custom_exceptions import GOFDisplayNameCantBeEmpty
-        gof_dtos = [
-            GOFDTOFactory(gof_display_name="")
-        ]
-        interactor = CreateGOF(storage=storage_mock)
-
-        # Act
-        with pytest.raises(GOFDisplayNameCantBeEmpty) as err:
-            interactor.create_gofs(gof_dtos=gof_dtos)
-
-        # Assert
-        storage_mock.create_gofs.assert_not_called()
-
-    def test_create_gofs_without_gof_read_permission_roles_raise_exception(self, storage_mock):
+    @pytest.mark.parametrize("read_permission_roles", [None, "", []])
+    def test_create_gofs_with_empty_gof_read_permission_roles_raise_exception(
+            self, storage_mock, read_permission_roles
+    ):
         # Arrange
         from ib_tasks.exceptions.custom_exceptions import GOFReadPermissionsCantBeEmpty
         gof_dtos = [
-            GOFDTOFactory(read_permission_roles=None)
+            GoFDTOFactory(read_permission_roles=None)
         ]
-        interactor = CreateGOF(storage=storage_mock)
+        interactor = CreateGoFsInteractor(storage=storage_mock)
 
         # Act
         with pytest.raises(GOFReadPermissionsCantBeEmpty) as err:
@@ -108,43 +90,16 @@ class TestCreateGOF:
         # Assert
         storage_mock.create_gofs.assert_not_called()
 
-    def test_create_gofs_with_empty_read_permission_roles_raise_exception(self, storage_mock):
-        # Arrange
-        from ib_tasks.exceptions.custom_exceptions import GOFReadPermissionsCantBeEmpty
-        gof_dtos = [
-            GOFDTOFactory(read_permission_roles="")
-        ]
-        interactor = CreateGOF(storage=storage_mock)
-
-        # Act
-        with pytest.raises(GOFReadPermissionsCantBeEmpty) as err:
-            interactor.create_gofs(gof_dtos=gof_dtos)
-
-        # Assert
-        storage_mock.create_gofs.assert_not_called()
-
-    def test_create_gofs_with_empty_list_of_read_permission_roles_raise_exception(self, storage_mock):
-        # Arrange
-        from ib_tasks.exceptions.custom_exceptions import GOFReadPermissionsCantBeEmpty
-        gof_dtos = [
-            GOFDTOFactory(read_permission_roles=[])
-        ]
-        interactor = CreateGOF(storage=storage_mock)
-
-        # Act
-        with pytest.raises(GOFReadPermissionsCantBeEmpty) as err:
-            interactor.create_gofs(gof_dtos=gof_dtos)
-
-        # Assert
-        storage_mock.create_gofs.assert_not_called()
-
-    def test_create_gofs_without_write_permission_roles_raise_exception(self, storage_mock):
+    @pytest.mark.parametrize("write_permission_roles", [None, "", []])
+    def test_create_gofs_with_empty_write_permission_roles_raise_exception(
+            self, storage_mock, write_permission_roles
+    ):
         # Arrange
         from ib_tasks.exceptions.custom_exceptions import GOFWritePermissionsCantBeEmpty
         gof_dtos = [
-            GOFDTOFactory(write_permission_roles=None)
+            GoFDTOFactory(write_permission_roles=write_permission_roles)
         ]
-        interactor = CreateGOF(storage=storage_mock)
+        interactor = CreateGoFsInteractor(storage=storage_mock)
 
         # Act
         with pytest.raises(GOFWritePermissionsCantBeEmpty) as err:
@@ -153,58 +108,14 @@ class TestCreateGOF:
         # Assert
         storage_mock.create_gofs.assert_not_called()
 
-    def test_create_gofs_with_empty_write_permission_roles_raise_exception(self, storage_mock):
-        # Arrange
-        from ib_tasks.exceptions.custom_exceptions import GOFWritePermissionsCantBeEmpty
-        gof_dtos = [
-            GOFDTOFactory(write_permission_roles="")
-        ]
-        interactor = CreateGOF(storage=storage_mock)
-
-        # Act
-        with pytest.raises(GOFWritePermissionsCantBeEmpty) as err:
-            interactor.create_gofs(gof_dtos=gof_dtos)
-
-        # Assert
-        storage_mock.create_gofs.assert_not_called()
-
-    def test_create_gofs_with_empty_list_of_write_permission_roles_raise_exception(self, storage_mock):
-        # Arrange
-        from ib_tasks.exceptions.custom_exceptions import GOFWritePermissionsCantBeEmpty
-        gof_dtos = [
-            GOFDTOFactory(write_permission_roles=[])
-        ]
-        interactor = CreateGOF(storage=storage_mock)
-
-        # Act
-        with pytest.raises(GOFWritePermissionsCantBeEmpty) as err:
-            interactor.create_gofs(gof_dtos=gof_dtos)
-
-        # Assert
-        storage_mock.create_gofs.assert_not_called()
-
-    def test_create_gofs_without_field_ids_raise_exception(self, storage_mock):
+    @pytest.mark.parametrize("field_ids", [None, []])
+    def test_create_gofs_with_empty_field_ids_raise_exception(self, field_ids, storage_mock):
         # Arrange
         from ib_tasks.exceptions.custom_exceptions import GOFFieldIdsCantBeEmpty
         gof_dtos = [
-            GOFDTOFactory(field_ids=None)
+            GoFDTOFactory(field_ids=field_ids)
         ]
-        interactor = CreateGOF(storage=storage_mock)
-
-        # Act
-        with pytest.raises(GOFFieldIdsCantBeEmpty) as err:
-            interactor.create_gofs(gof_dtos=gof_dtos)
-
-        # Assert
-        storage_mock.create_gofs.assert_not_called()
-
-    def test_create_gofs_with_empty_list_of_field_ids_raise_exception(self, storage_mock):
-        # Arrange
-        from ib_tasks.exceptions.custom_exceptions import GOFFieldIdsCantBeEmpty
-        gof_dtos = [
-            GOFDTOFactory(field_ids=[])
-        ]
-        interactor = CreateGOF(storage=storage_mock)
+        interactor = CreateGoFsInteractor(storage=storage_mock)
 
         # Act
         with pytest.raises(GOFFieldIdsCantBeEmpty) as err:
@@ -217,9 +128,9 @@ class TestCreateGOF:
         # Arrange
         from ib_tasks.exceptions.custom_exceptions import DuplicatedFieldIds
         gof_dtos = [
-            GOFDTOFactory(field_ids=["FIN_PAYMENT_REQUESTOR", "FIN_PAYMENT_REQUESTOR"])
+            GoFDTOFactory(field_ids=["FIN_PAYMENT_REQUESTOR", "FIN_PAYMENT_REQUESTOR"])
         ]
-        interactor = CreateGOF(storage=storage_mock)
+        interactor = CreateGoFsInteractor(storage=storage_mock)
 
         # Act
         with pytest.raises(DuplicatedFieldIds) as err:
@@ -228,113 +139,80 @@ class TestCreateGOF:
         # Assert
         storage_mock.create_gofs.assert_not_called()
 
-    def test_create_gofs_with_invalid_read_permission_roles_raises_exception(self, storage_mock):
+    @pytest.mark.parametrize("read_permission_roles", ["all roles", ["payment requestor"]])
+    def test_create_gofs_with_invalid_read_permission_roles_raises_exception(
+            self, storage_mock, read_permission_roles, mocker
+    ):
         # Arrange
         from ib_tasks.exceptions.custom_exceptions import InvalidReadPermissionRoles
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_all_valid_read_permission_roles, get_all_valid_write_permission_roles
+        get_valid_read_permissions_mock_method = get_all_valid_read_permission_roles(mocker)
+        get_valid_write_permissions_mock_method = get_all_valid_write_permission_roles(mocker)
         gof_dtos = [
-            GOFDTOFactory(read_permission_roles="all roles")
+            GoFDTOFactory(read_permission_roles=read_permission_roles)
         ]
-        storage_mock.get_valid_read_permission_roles.return_value = [
-            "ALL_ROLES"
-        ]
-        interactor = CreateGOF(storage=storage_mock)
+        interactor = CreateGoFsInteractor(storage=storage_mock)
 
         # Act
         with pytest.raises(InvalidReadPermissionRoles) as err:
             interactor.create_gofs(gof_dtos=gof_dtos)
 
         # Assert
-        storage_mock.get_valid_read_permission_roles.assert_called_once()
+        get_valid_read_permissions_mock_method.assert_called_once()
         storage_mock.create_gofs.assert_not_called()
 
-    def test_create_gofs_with_invalid_list_of_read_permission_roles_raises_exception(self, storage_mock):
-        # Arrange
-        from ib_tasks.exceptions.custom_exceptions import InvalidReadPermissionRoles
-        gof_dtos = [
-            GOFDTOFactory(read_permission_roles=["payment requestor"])
-        ]
-        storage_mock.get_valid_read_permission_roles.return_value = [
-            "ALL_ROLES"
-        ]
-        interactor = CreateGOF(storage=storage_mock)
-
-        # Act
-        with pytest.raises(InvalidReadPermissionRoles) as err:
-            interactor.create_gofs(gof_dtos=gof_dtos)
-
-        # Assert
-        storage_mock.get_valid_read_permission_roles.assert_called_once()
-        storage_mock.create_gofs.assert_not_called()
-
-    def test_create_gofs_with_invalid_write_permission_roles_raises_exception(self, storage_mock):
+    @pytest.mark.parametrize("write_permission_roles", ["all roles", ["payment requestor"]])
+    def test_create_gofs_with_invalid_write_permission_roles_raises_exception(
+            self, storage_mock, write_permission_roles, mocker
+    ):
         # Arrange
         from ib_tasks.exceptions.custom_exceptions import InvalidWritePermissionRoles
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_all_valid_read_permission_roles, get_all_valid_write_permission_roles
+        get_valid_read_permissions_mock_method = get_all_valid_read_permission_roles(mocker)
+        get_valid_write_permissions_mock_method = get_all_valid_write_permission_roles(mocker)
         gof_dtos = [
-            GOFDTOFactory(write_permission_roles="all roles")
+            GoFDTOFactory(write_permission_roles="all roles")
         ]
-        storage_mock.get_valid_read_permission_roles.return_value = [
-            "ALL_ROLES"
-        ]
-        storage_mock.get_valid_write_permission_roles.return_value = [
-            "ALL_ROLES"
-        ]
-        interactor = CreateGOF(storage=storage_mock)
+        interactor = CreateGoFsInteractor(storage=storage_mock)
 
         # Act
         with pytest.raises(InvalidWritePermissionRoles) as err:
             interactor.create_gofs(gof_dtos=gof_dtos)
 
         # Assert
-        storage_mock.get_valid_write_permission_roles.assert_called_once()
+        get_valid_read_permissions_mock_method.assert_called_once()
+        get_valid_write_permissions_mock_method.assert_called_once()
         storage_mock.create_gofs.assert_not_called()
 
-    def test_create_gofs_with_invalid_list_of_write_permission_roles_raises_exception(self, storage_mock):
-        # Arrange
-        from ib_tasks.exceptions.custom_exceptions import InvalidWritePermissionRoles
-        gof_dtos = [
-            GOFDTOFactory(write_permission_roles=["payment requester"])
-        ]
-        storage_mock.get_valid_read_permission_roles.return_value = [
-            "ALL_ROLES"
-        ]
-        storage_mock.get_valid_write_permission_roles.return_value = [
-            "ALL_ROLES"
-        ]
-        interactor = CreateGOF(storage=storage_mock)
-
-        # Act
-        with pytest.raises(InvalidWritePermissionRoles) as err:
-            interactor.create_gofs(gof_dtos=gof_dtos)
-
-        # Assert
-        storage_mock.get_valid_read_permission_roles.assert_called_once()
-        storage_mock.create_gofs.assert_not_called()
-
-    def test_create_gofs_with_different_display_names_for_same_gof_id_raises_exception(self, storage_mock):
+    def test_create_gofs_with_different_display_names_for_same_gof_id_raises_exception(
+            self, storage_mock, mocker
+    ):
         # Arrange
         from ib_tasks.exceptions.custom_exceptions import DifferentDisplayNamesForSameGOF
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_all_valid_read_permission_roles, get_all_valid_write_permission_roles
+        get_valid_read_permissions_mock_method = get_all_valid_read_permission_roles(mocker)
+        get_valid_write_permissions_mock_method = get_all_valid_write_permission_roles(mocker)
         gof_dtos = [
-            GOFDTOFactory(
+            GoFDTOFactory(
                 gof_id="FIN_REQUEST_DETAILS",
                 gof_display_name="Request Details"
             ),
-            GOFDTOFactory(field_ids=["FIN_SALUATION"]),
-            GOFDTOFactory(
+            GoFDTOFactory(field_ids=["FIN_SALUATION"]),
+            GoFDTOFactory(
                 gof_id="FIN_REQUEST_DETAILS",
                 gof_display_name="Request Data"
             )
         ]
-        storage_mock.get_valid_read_permission_roles.return_value = [
-            "ALL_ROLES"
-        ]
-        storage_mock.get_valid_write_permission_roles.return_value = [
-            "ALL_ROLES"
-        ]
-        interactor = CreateGOF(storage=storage_mock)
+        interactor = CreateGoFsInteractor(storage=storage_mock)
 
         # Act
         with pytest.raises(DifferentDisplayNamesForSameGOF) as err:
             interactor.create_gofs(gof_dtos=gof_dtos)
 
         # Assert
+        get_valid_read_permissions_mock_method.assert_called_once()
+        get_valid_write_permissions_mock_method.assert_called_once()
         storage_mock.create_gofs.assert_not_called()

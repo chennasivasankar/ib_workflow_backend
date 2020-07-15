@@ -6,5 +6,5 @@ class RolesServiceAdapter:
         return RolesService()
 
 
-def get_roles_service_adapter(self):
+def get_roles_service_adapter():
     return RolesServiceAdapter()

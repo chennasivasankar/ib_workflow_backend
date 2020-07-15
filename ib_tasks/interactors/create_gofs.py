@@ -12,7 +12,7 @@ from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 
 
-class CreateGOFsInteractor:
+class CreateGoFsInteractor:
 
     def __init__(self, storage: StorageInterface):
         self.storage = storage
@@ -45,6 +45,7 @@ class CreateGOFsInteractor:
             invalid_gof_id = self._is_empty_field(field=gof_dto.gof_id)
             if invalid_gof_id:
                 raise GOFIdCantBeEmpty
+            return
 
     def _validate_for_invalid_gof_display_names(
             self, gof_dtos: List[GOFDTO]
@@ -55,6 +56,7 @@ class CreateGOFsInteractor:
             )
             if invalid_display_name:
                 raise GOFDisplayNameCantBeEmpty
+            return
 
     def _validate_for_empty_read_permission_roles(
             self, gof_dtos: List[GOFDTO]
@@ -65,6 +67,7 @@ class CreateGOFsInteractor:
             )
             if invalid_read_permission_roles:
                 raise GOFReadPermissionsCantBeEmpty
+            return
 
     def _validate_for_empty_write_permission_roles(
             self, gof_dtos: List[GOFDTO]
@@ -75,6 +78,7 @@ class CreateGOFsInteractor:
             )
             if invalid_write_permission_roles:
                 raise GOFWritePermissionsCantBeEmpty
+            return
 
     def _validate_for_empty_field_ids(
             self, gof_dtos: List[GOFDTO]
@@ -83,6 +87,7 @@ class CreateGOFsInteractor:
             invalid_field_ids = self._is_empty_field(field=gof_dto.field_ids)
             if invalid_field_ids:
                 raise GOFFieldIdsCantBeEmpty
+            return
 
     @staticmethod
     def _is_empty_field(field: Union[None, str, List]) -> bool:
@@ -97,6 +102,7 @@ class CreateGOFsInteractor:
             )
             if field_ids_are_duplicated:
                 raise DuplicatedFieldIds
+            return
 
     @staticmethod
     def _are_field_ids_duplicated(field_ids: List[str]) -> bool:
@@ -109,12 +115,13 @@ class CreateGOFsInteractor:
             get_roles_service_adapter
         roles_service_adapter = get_roles_service_adapter()
         valid_read_permission_roles = \
-            self.storage.get_valid_read_permission_roles()
+            roles_service_adapter.roles_service.get_all_valid_read_permission_roles()
         for gof_dto in gof_dtos:
             self._validate_read_permission_roles_of_a_gof(
                 read_permission_roles=gof_dto.read_permission_roles,
                 valid_read_permission_roles=valid_read_permission_roles
             )
+        return
 
     @staticmethod
     def _validate_read_permission_roles_of_a_gof(
@@ -132,20 +139,25 @@ class CreateGOFsInteractor:
         )
         if read_permission_roles_is_list:
             invalid_read_permission_roles = \
-                set(read_permission_roles) != set(valid_read_permission_roles)
+                not set(read_permission_roles).issubset(set(valid_read_permission_roles))
         if invalid_read_permission_roles:
             raise InvalidReadPermissionRoles
+        return
 
     def _validate_write_permission_roles(
             self, gof_dtos: List[GOFDTO]
     ) -> Optional[InvalidWritePermissionRoles]:
+        from ib_tasks.adapters.roles_service_adapter import \
+            get_roles_service_adapter
+        roles_service_adapter = get_roles_service_adapter()
         valid_write_permission_roles = \
-            self.storage.get_valid_write_permission_roles()
+            roles_service_adapter.roles_service.get_all_valid_write_permission_roles()
         for gof_dto in gof_dtos:
             self._validate_write_permission_roles_of_a_gof(
                 write_permission_roles=gof_dto.write_permission_roles,
                 valid_write_permission_roles=valid_write_permission_roles
             )
+        return
 
     @staticmethod
     def _validate_write_permission_roles_of_a_gof(
@@ -163,9 +175,10 @@ class CreateGOFsInteractor:
         )
         if write_permission_roles_is_list:
             invalid_write_permission_roles = \
-                set(write_permission_roles) != set(valid_write_permission_roles)
+                set(write_permission_roles).issubset(set(valid_write_permission_roles))
         if invalid_write_permission_roles:
             raise InvalidWritePermissionRoles
+        return
 
     @staticmethod
     def _validate_for_different_gof_display_names_with_same_gof_id(
@@ -181,3 +194,4 @@ class CreateGOFsInteractor:
                     gof_display_names[gof_dto.gof_id] != gof_dto.gof_display_name
                 if different_display_name_for_same_gof_id:
                     raise DifferentDisplayNamesForSameGOF
+        return

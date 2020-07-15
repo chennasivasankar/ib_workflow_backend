@@ -1,13 +1,20 @@
 from typing import List
 
+class ServiceInterface:
+    def get_all_valid_read_permission_roles(self):
+        pass
+
+    def get_all_valid_write_permission_roles(self):
+        pass
+
 
 class RolesService:
 
     @property
     def interface(self):
+        # TODO: should import the interface from ib_iam app for roles validation
         # from ib_iam.app_interfaces import ServiceInterface
-        # return ServiceInterface()
-        pass
+        return ServiceInterface()
 
     def get_all_valid_read_permission_roles(self) -> List[str]:
         valid_read_permission_roles = \
@@ -18,21 +25,3 @@ class RolesService:
         valid_write_permission_roles = \
             self.interface.get_all_valid_write_permission_roles()
         return valid_write_permission_roles
-
-    def check_read_permission_roles_and_return_invalid_roles(
-            self, read_permission_roles: List[str]
-    ) -> List[str]:
-        invalid_read_permission_roles = \
-            self.interface.check_read_permission_roles_and_return_invalid_roles(
-                read_permission_roles=read_permission_roles
-            )
-        return invalid_read_permission_roles
-
-    def check_write_permission_roles_and_return_invalid_roles(
-            self, write_permission_roles: List[str]
-    ) -> List[str]:
-        invalid_write_permission_roles = \
-            self.interface.check_read_permission_roles_and_return_invalid_roles(
-                write_permission_roles=write_permission_roles
-            )
-        return invalid_write_permission_roles
