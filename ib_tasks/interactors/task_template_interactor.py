@@ -142,8 +142,8 @@ class TaskTemplateInteractor:
     def _validate_order_of_gof(gof_dtos: List[GoFDTO]):
         from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
         for gof_dto in gof_dtos:
-            is_invalid_order = \
-                gof_dto.order < -1 and (type(gof_dto.order) == int)
+            is_order_not_int_type = not (type(gof_dto.order) == int)
+            is_invalid_order = gof_dto.order < -1 or is_order_not_int_type
             if is_invalid_order:
                 raise InvalidValueForField("order")
 
