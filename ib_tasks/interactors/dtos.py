@@ -3,8 +3,8 @@ Created on: 15/07/20
 Author: Pavankumar Pamuru
 
 """
-from dataclasses import dataclass
 from typing import Union, List, Optional
+from dataclasses import dataclass
 from ib_tasks.constants.enum import FieldTypes
 
 
@@ -23,7 +23,7 @@ class FieldDTO:
     error_message: Optional[str]
 
 
-@dataclass()
+@dataclass
 class ActionDto:
     stage_id: str
     action_name: str
