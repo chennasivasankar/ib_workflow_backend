@@ -247,12 +247,6 @@
           }
         },
         "responses": {
-          "InvalidBoardsResponse": {
-            "description": "invalid offset or invalid limit",
-            "schema": {
-              "$ref": "#/definitions/InvalidPaginationDetails"
-            }
-          },
           "InvalidAccessResponse": {
             "description": "unauthorized access",
             "schema": {
@@ -312,7 +306,16 @@
           "ColumnsDetailsResponse": {
             "description": "columns details",
             "schema": {
-              "$ref": "#/definitions/ColumnDetails"
+              "type": "object",
+              "properties": {
+                "total_columns_count": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "columns": {
+                  "$ref": "#/definitions/ColumnDetails"
+                }
+              }
             }
           },
           "TaskDetailsResponse": {
