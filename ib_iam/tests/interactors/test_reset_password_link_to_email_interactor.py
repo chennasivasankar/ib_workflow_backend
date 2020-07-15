@@ -8,8 +8,8 @@ class TestResetPasswordLinkToEmailInteractor:
     @pytest.fixture()
     def presenter_mock(self):
         from unittest.mock import create_autospec
-        from ib_iam.interactors.presenter_interfaces.presenter_interface import \
-            AuthPresenterInterface
+        from ib_iam.interactors.presenter_interfaces.presenter_interface \
+            import AuthPresenterInterface
         presenter = create_autospec(AuthPresenterInterface)
         return presenter
 
