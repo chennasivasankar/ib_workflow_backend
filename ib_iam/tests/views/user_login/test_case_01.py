@@ -13,7 +13,7 @@ class TestCase01UserLoginAPITestCase(TestUtils):
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
     URL_SUFFIX = URL_SUFFIX
-    qqqqSECURITY = {'oauth': {'scopes': ['read']}}
+    SECURITY = {'oauth': {'scopes': ['read']}}
 
     @pytest.mark.django_db
     @patch(

@@ -94,7 +94,7 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "InvalidPassword"
+              "INVALID_PASSWORD"
             ]
           }
         },
@@ -120,7 +120,7 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "InvalidEmail"
+              "INVALID_EMAIL"
             ]
           }
         },
@@ -135,7 +135,7 @@
   "paths": {
     "/login/v1/": {
       "post": {
-        "operationId": "login",
+        "operationId": "user_login",
         "summary": "login",
         "description": "if user is exists return the access_token and is_admin",
         "security": [

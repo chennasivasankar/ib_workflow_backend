@@ -1,6 +1,5 @@
 import os
 
-
 from ib_workflows_backend.settings.base import *
 
 # swagger utils #
