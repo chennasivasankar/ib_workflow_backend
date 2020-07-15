@@ -1,0 +1,40 @@
+
+Writing API Specs:
+    1. get boards api - 15 min
+    2. given board id get column details - 30 min
+    3. given coulmn id get task details - 15 min
+
+To be Implemented:
+
+
+ In Process:
+    7. validate stage display logic
+
+ Implemented:
+    1. create a stage given valid details
+        Task Template Id
+        Stage Id
+        Value
+        Stage Display Name
+        Stage Display Value
+    5. update stage information given valid info
+    3. validate Value (>=0)
+    4. Stage Id already exists:
+            - task template id is not same as the one in db
+    2. check if stage id is unique:
+            - if not unique raise exception
+    6. validate task template ids
+
+
+Status variables:
+
+To be Implemented:
+
+
+Tn Process:
+
+
+Implemented:
+    1. validate task template ids
+    2. unique status id for each task
+    3. create status for task template ids
