@@ -11,7 +11,7 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def populate_data(
+    def create_boards_and_columns(
             self, board_dtos: List[BoardDTO], column_dtos: List[ColumnDTO]):
         pass
 

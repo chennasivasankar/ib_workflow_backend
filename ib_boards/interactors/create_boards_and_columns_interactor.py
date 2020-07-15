@@ -5,36 +5,25 @@ Author: Pavankumar Pamuru
 """
 from typing import List
 
-from ib_boards.interactors.dtos import BoardDTO, ColumnDTO
+from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
+    TaskTemplateStagesDTO, TaskSummaryFieldsDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
 
-class PopulateScriptInteractor:
+class CreateBoardsAndColumnsInteractor:
     def __init__(self, storage: StorageInterface):
         self.storage = storage
 
-    def populate_script_wrapper(
+    def create_boards_and_columns(
             self, board_dtos: List[BoardDTO], column_dtos: List[ColumnDTO]):
-        self.populate_script(
-            board_dtos=board_dtos,
-            column_dtos=column_dtos
-        )
-
-    def populate_script(
-            self, board_dtos: List[BoardDTO], column_dtos: List[ColumnDTO]):
-
         board_ids = [board_dto.board_id for board_dto in board_dtos]
         column_ids = [column_dto.column_id for column_dto in column_dtos]
         self._validate_board_ids(board_ids=board_ids)
         self._validate_board_display_name(board_dtos=board_dtos)
         self._validate_column_ids(column_ids=column_ids)
         self._validate_column_display_name(column_dtos=column_dtos)
-        self._validate_task_template_stages_json(column_dtos=column_dtos)
         self._validate_task_template_ids_in_task_template_stage(
-            column_dtos=column_dtos
-        )
-        self._validate_task_template_summary_fields_json(
             column_dtos=column_dtos
         )
         self._validate_task_template_ids_in_task_template_fields(
@@ -44,10 +33,12 @@ class PopulateScriptInteractor:
             column_dtos=column_dtos
         )
         self._validate_duplicate_task_template_stages(column_dtos=column_dtos)
+        self._validate_duplicate_task_summary_fields(column_dtos=column_dtos)
+        self._validate_empty_values_in_task_summary_fields(column_dtos=column_dtos)
         self._validate_task_template_stages_with_id(column_dtos=column_dtos)
         self._validate_task_summary_fields_with_id(column_dtos=column_dtos)
         self._validate_user_roles(column_dtos=column_dtos)
-        self.storage.populate_data(
+        self.storage.create_boards_and_columns(
             board_dtos=board_dtos,
             column_dtos=column_dtos
         )
@@ -95,27 +86,16 @@ class PopulateScriptInteractor:
                     InvalidColumnDisplayName
                 raise InvalidColumnDisplayName(column_id=column_dto.column_id)
 
-    @staticmethod
-    def _validate_task_template_stages_json(column_dtos: List[ColumnDTO]):
-        import json
-        for column_dto in column_dtos:
-            try:
-                json.loads(column_dto.task_template_stages)
-            except json.JSONDecodeError:
-                from ib_boards.exceptions.custom_exceptions import \
-                    InvalidJsonForTaskTemplateStages
-                raise InvalidJsonForTaskTemplateStages
-
-    @staticmethod
     def _validate_task_template_ids_in_task_template_stage(
-            column_dtos: List[ColumnDTO]):
-        import json
+            self, column_dtos: List[ColumnDTO]):
         task_template_ids = []
         for column_dto in column_dtos:
-            task_template_stages = json.loads(column_dto.task_template_stages)
-            task_template_ids += task_template_stages.keys()
+            task_template_stage_dtos = column_dto.task_template_stages
+            task_template_ids += self._get_task_template_ids(
+                task_template_stage_dtos=task_template_stage_dtos
+            )
 
-        from ib_boards.adapters.service_adapter import  get_service_adapter
+        from ib_boards.adapters.service_adapter import get_service_adapter
 
         service_adapter = get_service_adapter()
 
@@ -124,63 +104,64 @@ class PopulateScriptInteractor:
         )
 
     @staticmethod
+    def _get_task_template_ids(
+            task_template_stage_dtos: List[TaskTemplateStagesDTO]):
+        task_template_ids = [
+            task_template_stage_dto.task_template_id
+            for task_template_stage_dto in task_template_stage_dtos
+        ]
+        return task_template_ids
+
     def _validate_task_template_ids_in_task_template_fields(
-            column_dtos: List[ColumnDTO]):
-        import json
-        task_template_ids = []
+            self, column_dtos: List[ColumnDTO]):
+
+        task_ids = []
         for column_dto in column_dtos:
-            task_summary_fields = json.loads(column_dto.task_summary_fields)
-            task_template_ids += task_summary_fields.keys()
+            task_summary_field_dtos = column_dto.task_summary_fields
+            task_ids += self._get_task_ids(
+                task_summary_field_dtos=task_summary_field_dtos
+            )
 
         from ib_boards.adapters.service_adapter import get_service_adapter
 
         service_adapter = get_service_adapter()
 
-        service_adapter.task_service.validate_task_template_ids(
-            task_template_ids=task_template_ids
+        service_adapter.task_service.validate_task_ids(
+            task_ids=task_ids
         )
 
     @staticmethod
-    def _validate_task_template_summary_fields_json(column_dtos: List[ColumnDTO]):
-        import json
-        for column_dto in column_dtos:
-            try:
-                json.loads(column_dto.task_summary_fields)
-            except json.JSONDecodeError:
-                from ib_boards.exceptions.custom_exceptions import \
-                    InvalidJsonForTaskTemplateSummaryFields
-                raise InvalidJsonForTaskTemplateSummaryFields
+    def _get_task_ids(
+            task_summary_field_dtos: List[TaskSummaryFieldsDTO]):
+        task_ids = [
+            task_summary_field_dto.task_id
+            for task_summary_field_dto in task_summary_field_dtos
+        ]
+        return task_ids
 
-    @staticmethod
     def _validate_empty_values_in_task_template_stage(
-            column_dtos: List[ColumnDTO]):
-        import json
-        task_template_ids = []
+            self, column_dtos: List[ColumnDTO]):
         for column_dto in column_dtos:
-            task_template_stages = json.loads(column_dto.task_template_stages)
-            for value in task_template_stages.values():
-                is_empty_value = not value
-                if is_empty_value:
-                    from ib_boards.exceptions.custom_exceptions import \
-                        EmptyValuesForTaskTemplateStages
-                    raise EmptyValuesForTaskTemplateStages
+            task_templates = column_dto.task_template_stages
+            self._check_stages_for_task_templates_are_not_empty(
+                task_templates=task_templates
+            )
 
-        from ib_boards.adapters.service_adapter import get_service_adapter
-
-        service_adapter = get_service_adapter()
-
-        service_adapter.task_service.validate_task_template_ids(
-            task_template_ids=task_template_ids
-        )
+    @staticmethod
+    def _check_stages_for_task_templates_are_not_empty(
+            task_templates: List[TaskTemplateStagesDTO]):
+        for task_template in task_templates:
+            is_empty_value = not task_template.stages
+            if is_empty_value:
+                from ib_boards.exceptions.custom_exceptions import \
+                    EmptyValuesForTaskTemplateStages
+                raise EmptyValuesForTaskTemplateStages
 
     @staticmethod
     def _validate_task_template_stages_with_id(column_dtos: List[ColumnDTO]):
         task_template_stages = []
         for column_dto in column_dtos:
-            import json
-            task_template_stages.append(
-                json.loads(column_dto.task_template_stages)
-            )
+            task_template_stages += column_dto.task_template_stages
         from ib_boards.adapters.service_adapter import get_service_adapter
 
         service_adapter = get_service_adapter()
@@ -189,15 +170,17 @@ class PopulateScriptInteractor:
             task_template_stages=task_template_stages
         )
 
-    def _validate_duplicate_task_template_stages(self, column_dtos: List[ColumnDTO]):
-        import json
+    def _validate_duplicate_task_template_stages(self,
+                                                 column_dtos: List[ColumnDTO]):
         for column_dto in column_dtos:
-            task_template_stages = json.loads(column_dto.task_template_stages)
-            for key, value in task_template_stages.items():
-                self._validate_duplicate_values(stages=value)
+            task_template_stages_dtos = column_dto.task_template_stages
+            for task_template_stages_dto in task_template_stages_dtos:
+                self._validate_duplicate_stages_for_task_template(
+                    stages=task_template_stages_dto.stages
+                )
 
     @staticmethod
-    def _validate_duplicate_values(stages: List[str]):
+    def _validate_duplicate_stages_for_task_template(stages: List[str]):
         import collections
         duplicate_stages = [
             stage for stage, count in
@@ -227,10 +210,7 @@ class PopulateScriptInteractor:
     def _validate_task_summary_fields_with_id(column_dtos: List[ColumnDTO]):
         task_summary_fields = []
         for column_dto in column_dtos:
-            import json
-            task_summary_fields.append(
-                json.loads(column_dto.task_summary_fields)
-            )
+            task_summary_fields += column_dto.task_summary_fields
         from ib_boards.adapters.service_adapter import get_service_adapter
 
         service_adapter = get_service_adapter()
@@ -239,3 +219,44 @@ class PopulateScriptInteractor:
             task_summary_fields=task_summary_fields
         )
 
+    def _validate_empty_values_in_task_summary_fields(
+            self, column_dtos: List[ColumnDTO]):
+        for column_dto in column_dtos:
+            task_summary_fields_dtos = column_dto.task_summary_fields
+            self._check_task_summary_fields_are_not_empty(
+                task_summary_fields_dtos=task_summary_fields_dtos
+            )
+
+    @staticmethod
+    def _check_task_summary_fields_are_not_empty(
+            task_summary_fields_dtos: List[TaskSummaryFieldsDTO]):
+        for task_summary_fields_dto in task_summary_fields_dtos:
+            is_empty_value = not task_summary_fields_dto.summary_fields
+            if is_empty_value:
+                from ib_boards.exceptions.custom_exceptions import \
+                    EmptyValuesForTaskSummaryFields
+                raise EmptyValuesForTaskSummaryFields
+
+    def _validate_duplicate_task_summary_fields(self,
+                                                column_dtos: List[ColumnDTO]):
+        for column_dto in column_dtos:
+            task_summary_field_dtos = column_dto.task_summary_fields
+            for task_summary_fields_dto in task_summary_field_dtos:
+                self._validate_duplicate_summary_fields_for_task(
+                    fields=task_summary_fields_dto.summary_fields
+                )
+
+    @staticmethod
+    def _validate_duplicate_summary_fields_for_task(fields: List[str]):
+        import collections
+        duplicate_fields = [
+            field for field, count in
+            collections.Counter(fields).items()
+            if count > 1
+        ]
+        if duplicate_fields:
+            from ib_boards.exceptions.custom_exceptions import \
+                DuplicateSummaryFieldsInTask
+            raise DuplicateSummaryFieldsInTask(
+                duplicate_fields=duplicate_fields
+            )

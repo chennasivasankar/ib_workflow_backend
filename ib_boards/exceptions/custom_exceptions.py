@@ -38,6 +38,10 @@ class EmptyValuesForTaskTemplateStages(Exception):
     pass
 
 
+class EmptyValuesForTaskSummaryFields(Exception):
+    pass
+
+
 class TaskTemplateStagesNotBelongsToTaskTemplateId(Exception):
     pass
 
@@ -49,6 +53,11 @@ class TaskSummaryFieldsNotBelongsToTaskTemplateId(Exception):
 class DuplicateStagesInTaskTemplateStages(Exception):
     def __init__(self, duplicate_stages: List[str]):
         self.duplicate_stages = duplicate_stages
+
+
+class DuplicateSummaryFieldsInTask(Exception):
+    def __init__(self, duplicate_fields: List[str]):
+        self.duplicate_fields = duplicate_fields
 
 
 class InvalidUserRoles(Exception):

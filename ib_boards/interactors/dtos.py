@@ -17,7 +17,7 @@ class TaskTemplateStagesDTO:
 @dataclass
 class TaskSummaryFieldsDTO:
     task_id: int
-    summary_fields: List[int]
+    summary_fields: List[str]
 
 
 @dataclass
