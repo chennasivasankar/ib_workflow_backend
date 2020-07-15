@@ -9,6 +9,18 @@ from typing import List
 
 
 @dataclass
+class TaskTemplateStagesDTO:
+    task_template_id: str
+    stages: List[str]
+
+
+@dataclass
+class TaskSummaryFieldsDTO:
+    task_id: int
+    summary_fields: List[int]
+
+
+@dataclass
 class BoardDTO:
     board_id: str
     display_name: str
@@ -18,10 +30,10 @@ class BoardDTO:
 class ColumnDTO:
     column_id: str
     display_name: str
-    task_template_stages: json
+    task_template_stages: List[TaskTemplateStagesDTO]
     user_role_ids: List[str]
     column_summary: str
-    task_summary_fields: json
+    task_summary_fields: List[TaskSummaryFieldsDTO]
     board_id: str
 
 
