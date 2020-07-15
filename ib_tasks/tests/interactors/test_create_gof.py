@@ -72,7 +72,7 @@ class TestCreateGOF:
         # Assert
         storage_mock.create_gofs.assert_not_called()
 
-    @pytest.mark.parametrize("read_permission_roles", [None, "", []])
+    @pytest.mark.parametrize("read_permission_roles", [None, []])
     def test_create_gofs_with_empty_gof_read_permission_roles_raise_exception(
             self, storage_mock, read_permission_roles
     ):
@@ -90,7 +90,7 @@ class TestCreateGOF:
         # Assert
         storage_mock.create_gofs.assert_not_called()
 
-    @pytest.mark.parametrize("write_permission_roles", [None, "", []])
+    @pytest.mark.parametrize("write_permission_roles", [None, []])
     def test_create_gofs_with_empty_write_permission_roles_raise_exception(
             self, storage_mock, write_permission_roles
     ):
@@ -139,9 +139,8 @@ class TestCreateGOF:
         # Assert
         storage_mock.create_gofs.assert_not_called()
 
-    @pytest.mark.parametrize("read_permission_roles", ["all roles", ["payment requestor"]])
     def test_create_gofs_with_invalid_read_permission_roles_raises_exception(
-            self, storage_mock, read_permission_roles, mocker
+            self, storage_mock, mocker
     ):
         # Arrange
         from ib_tasks.exceptions.custom_exceptions import InvalidReadPermissionRoles
@@ -150,7 +149,7 @@ class TestCreateGOF:
         get_valid_read_permissions_mock_method = get_all_valid_read_permission_roles(mocker)
         get_valid_write_permissions_mock_method = get_all_valid_write_permission_roles(mocker)
         gof_dtos = [
-            GoFDTOFactory(read_permission_roles=read_permission_roles)
+            GoFDTOFactory(read_permission_roles=["payment requester"])
         ]
         interactor = CreateGoFsInteractor(storage=storage_mock)
 
@@ -162,9 +161,8 @@ class TestCreateGOF:
         get_valid_read_permissions_mock_method.assert_called_once()
         storage_mock.create_gofs.assert_not_called()
 
-    @pytest.mark.parametrize("write_permission_roles", ["all roles", ["payment requestor"]])
     def test_create_gofs_with_invalid_write_permission_roles_raises_exception(
-            self, storage_mock, write_permission_roles, mocker
+            self, storage_mock, mocker
     ):
         # Arrange
         from ib_tasks.exceptions.custom_exceptions import InvalidWritePermissionRoles
@@ -173,7 +171,7 @@ class TestCreateGOF:
         get_valid_read_permissions_mock_method = get_all_valid_read_permission_roles(mocker)
         get_valid_write_permissions_mock_method = get_all_valid_write_permission_roles(mocker)
         gof_dtos = [
-            GoFDTOFactory(write_permission_roles=write_permission_roles)
+            GoFDTOFactory(write_permission_roles=["payment requester"])
         ]
         interactor = CreateGoFsInteractor(storage=storage_mock)
 

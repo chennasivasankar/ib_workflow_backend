@@ -16,6 +16,6 @@ class GoFDTOFactory(factory.Factory):
             'Request Details', 'Vendor Basic Details'
         ]
     )
-    read_permission_roles = 'ALL_ROLES'
-    write_permission_roles = 'ALL_ROLES'
+    read_permission_roles = ['ALL_ROLES']
+    write_permission_roles = ['ALL_ROLES']
     field_ids = ['FIN_PAYMENT_REQUESTOR']

@@ -128,18 +128,7 @@ class CreateGoFsInteractor:
             read_permission_roles: List[str],
             valid_read_permission_roles: List[str]
     ) -> Optional[InvalidReadPermissionRoles]:
-        read_permission_roles_is_string = isinstance(
-            read_permission_roles, str
-        )
-        invalid_read_permission_roles = False
-        if read_permission_roles_is_string:
-            invalid_read_permission_roles = \
-                read_permission_roles not in valid_read_permission_roles
-        read_permission_roles_is_list = isinstance(
-            read_permission_roles, list
-        )
-        if read_permission_roles_is_list:
-            invalid_read_permission_roles = \
+        invalid_read_permission_roles = \
                 not set(read_permission_roles).issubset(set(valid_read_permission_roles))
         if invalid_read_permission_roles:
             raise InvalidReadPermissionRoles
@@ -165,18 +154,7 @@ class CreateGoFsInteractor:
             write_permission_roles: List[str],
             valid_write_permission_roles: List[str]
     ) -> Optional[InvalidWritePermissionRoles]:
-        write_permission_roles_is_string = isinstance(
-            write_permission_roles, str
-        )
-        invalid_write_permission_roles = False
-        if write_permission_roles_is_string:
-            invalid_write_permission_roles = \
-                write_permission_roles not in valid_write_permission_roles
-        write_permission_roles_is_list = isinstance(
-            write_permission_roles, list
-        )
-        if write_permission_roles_is_list:
-            invalid_write_permission_roles = \
+        invalid_write_permission_roles = \
                 not set(write_permission_roles).issubset(set(valid_write_permission_roles))
         if invalid_write_permission_roles:
             raise InvalidWritePermissionRoles
