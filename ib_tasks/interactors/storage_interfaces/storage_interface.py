@@ -1,37 +1,40 @@
-from abc import ABC
-from abc import abstractmethod
-from typing import List
-from ib_tasks.interactors.storage_interfaces.dtos import StageActionsDto
-from ib_tasks.interactors.dtos import ActionDto, TaskDto
+import abc
+from typing import List, Optional
+from ib_tasks.interactors.storage_interfaces.dtos import StageActionNamesDTO
+from ib_tasks.interactors.dtos import (
+    StageActionDTO, TaskTemplateStageActionDTO
+)
 
 
-class StorageInterface(ABC):
+class StorageInterface(abc.ABC):
 
-    @abstractmethod
+    @abc.abstractmethod
     def get_stage_action_names(
-            self, stage_ids: List[str]) -> List[StageActionsDto]:
+            self, stage_ids: List[str]) -> List[StageActionNamesDTO]:
         pass
 
-    @abstractmethod
-    def get_db_stage_ids(self, stage_ids: List[str]):
+    @abc.abstractmethod
+    def get_valid_stage_ids(self, stage_ids: List[str]) -> Optional[List[str]]:
         pass
 
-    @abstractmethod
-    def create_stage_actions(self, stage_actions: List[ActionDto]):
+    @abc.abstractmethod
+    def create_stage_actions(self, stage_actions: List[StageActionDTO]):
         pass
 
-    @abstractmethod
-    def update_stage_actions(self, stage_actions: List[ActionDto]):
+    @abc.abstractmethod
+    def update_stage_actions(self, stage_actions: List[StageActionDTO]):
         pass
 
-    @abstractmethod
-    def delete_stage_actions(self, stage_actions: List[StageActionsDto]):
+    @abc.abstractmethod
+    def delete_stage_actions(self, stage_actions: List[StageActionNamesDTO]):
         pass
 
-    @abstractmethod
-    def create_tasks(self, tasks_dto: List[TaskDto]):
+    @abc.abstractmethod
+    def create_task_template_stage_actions(
+            self, tasks_dto: List[TaskTemplateStageActionDTO]):
         pass
 
-    @abstractmethod
-    def update_tasks(self, tasks_dto: List[TaskDto]):
+    @abc.abstractmethod
+    def update_task_template_stage_actions(
+            self, tasks_dto: List[TaskTemplateStageActionDTO]):
         pass

@@ -10,7 +10,7 @@ from ib_tasks.interactors.mixins.stage_actions_validation_mixin \
     )
 from ib_tasks.interactors.create_update_delete_stage_actions_interactor \
     import CreateUpdateDeleteStageActionsInteractor
-from ib_tasks.tests.factories.interactor_dtos import ActionDtoFactory
+from ib_tasks.tests.factories.interactor_dtos import StageActionDTOFactory
 
 
 class TestCreateUpdateDeleteStageActionsInteractor:
@@ -22,11 +22,11 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         expected_stage_ids_dict = json.dumps(
             {"invalid_stage_ids": expected_stage_ids}
         )
-        ActionDtoFactory.reset_sequence(0)
-        actions_dto = ActionDtoFactory.create_batch(size=2)
+        StageActionDTOFactory.reset_sequence(0)
+        actions_dto = StageActionDTOFactory.create_batch(size=2)
         stage_ids = ["stage_1", "stage_2"]
         storage = create_autospec(StorageInterface)
-        storage.get_db_stage_ids.return_value = ["stage_1"]
+        storage.get_valid_stage_ids.return_value = ["stage_1"]
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
             actions_dto=actions_dto
@@ -40,7 +40,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
 
         # Assert
         assert err.value.stage_ids_dict == expected_stage_ids_dict
-        storage.get_db_stage_ids\
+        storage.get_valid_stage_ids\
             .assert_called_once_with(stage_ids=stage_ids)
 
     @staticmethod
@@ -50,11 +50,11 @@ class TestCreateUpdateDeleteStageActionsInteractor:
             "stage_2": ["ROLE_2"]
         }
         expected_stage_role_dict = json.dumps(expected_stage_roles)
-        ActionDtoFactory.reset_sequence(0)
-        actions_dto = ActionDtoFactory.create_batch(size=3)
+        StageActionDTOFactory.reset_sequence(0)
+        actions_dto = StageActionDTOFactory.create_batch(size=3)
         storage = create_autospec(StorageInterface)
         stage_ids = ["stage_1", "stage_2", "stage_3"]
-        storage.get_db_stage_ids.return_value = stage_ids
+        storage.get_valid_stage_ids.return_value = stage_ids
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
             actions_dto=actions_dto
@@ -78,13 +78,13 @@ class TestCreateUpdateDeleteStageActionsInteractor:
     def test_given_empty_stage_display_logic_raises_exception(mocker):
         expected_stage_ids = {"stage_ids": ["stage_3"]}
         expected_stage_ids_dict = json.dumps(expected_stage_ids)
-        ActionDtoFactory.reset_sequence(0)
-        actions_dto = ActionDtoFactory.create_batch(size=2)
-        action_dto = ActionDtoFactory(logic="")
+        StageActionDTOFactory.reset_sequence(0)
+        actions_dto = StageActionDTOFactory.create_batch(size=2)
+        action_dto = StageActionDTOFactory(logic="")
         actions_dto.append(action_dto)
         storage = create_autospec(StorageInterface)
         stage_ids = ["stage_1", "stage_2", "stage_3"]
-        storage.get_db_stage_ids.return_value = stage_ids
+        storage.get_valid_stage_ids.return_value = stage_ids
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
             actions_dto=actions_dto
@@ -104,14 +104,14 @@ class TestCreateUpdateDeleteStageActionsInteractor:
     def test_given_empty_stage_button_text_raises_exception(mocker):
         expected_stage_ids = {"stage_ids": ["stage_3"]}
         expected_stage_ids_dict = json.dumps(expected_stage_ids)
-        ActionDtoFactory.reset_sequence(0)
-        actions_dto = ActionDtoFactory.create_batch(size=2)
-        action_dto = ActionDtoFactory(button_text="")
+        StageActionDTOFactory.reset_sequence(0)
+        actions_dto = StageActionDTOFactory.create_batch(size=2)
+        action_dto = StageActionDTOFactory(button_text="")
         actions_dto.append(action_dto)
 
         storage = create_autospec(StorageInterface)
         stage_ids = ["stage_1", "stage_2", "stage_3"]
-        storage.get_db_stage_ids.return_value = stage_ids
+        storage.get_valid_stage_ids.return_value = stage_ids
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
             actions_dto=actions_dto
@@ -133,15 +133,15 @@ class TestCreateUpdateDeleteStageActionsInteractor:
             "stage_1": ["add"]
         }
         expected_stage_buttons_dict = json.dumps(expected_stage_buttons)
-        ActionDtoFactory.reset_sequence(0)
-        actions_dto = ActionDtoFactory.create_batch(
+        StageActionDTOFactory.reset_sequence(0)
+        actions_dto = StageActionDTOFactory.create_batch(
             size=2, stage_id="stage_1", button_text="add"
         )
-        action_dto = ActionDtoFactory(stage_id="stage_2", button_text="pay")
+        action_dto = StageActionDTOFactory(stage_id="stage_2", button_text="pay")
         actions_dto.append(action_dto)
         storage = create_autospec(StorageInterface)
         stage_ids = ["stage_1", "stage_2"]
-        storage.get_db_stage_ids.return_value = stage_ids
+        storage.get_valid_stage_ids.return_value = stage_ids
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
             actions_dto=actions_dto
@@ -163,14 +163,14 @@ class TestCreateUpdateDeleteStageActionsInteractor:
             "stage_1": ["action_name_1"]
         }
         expected_stage_actions_dict = json.dumps(expected_stage_actions)
-        ActionDtoFactory.reset_sequence(0)
-        actions_dto = ActionDtoFactory.create_batch(
+        StageActionDTOFactory.reset_sequence(0)
+        actions_dto = StageActionDTOFactory.create_batch(
             size=2, stage_id="stage_1", action_name="action_name_1"
         )
-        action_dto = ActionDtoFactory(stage_id="stage_2")
+        action_dto = StageActionDTOFactory(stage_id="stage_2")
         actions_dto.append(action_dto)
         storage = create_autospec(StorageInterface)
-        storage.get_db_stage_ids.return_value = ["stage_1", "stage_2"]
+        storage.get_valid_stage_ids.return_value = ["stage_1", "stage_2"]
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
             actions_dto=actions_dto
@@ -190,13 +190,13 @@ class TestCreateUpdateDeleteStageActionsInteractor:
     @staticmethod
     def test_given_create_stage_actions_creates_actions(mocker):
 
-        ActionDtoFactory.reset_sequence(0)
-        actions_dto = ActionDtoFactory.create_batch(size=2)
+        StageActionDTOFactory.reset_sequence(0)
+        actions_dto = StageActionDTOFactory.create_batch(size=2)
         stage_actions_dto = []
         create_stage_actions_dto = actions_dto
         stage_ids = ["stage_1", "stage_2"]
         storage = create_autospec(StorageInterface)
-        storage.get_db_stage_ids.return_value = stage_ids
+        storage.get_valid_stage_ids.return_value = stage_ids
         storage.get_stage_action_names.return_value = stage_actions_dto
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
@@ -218,20 +218,20 @@ class TestCreateUpdateDeleteStageActionsInteractor:
 
     @staticmethod
     def test_given_update_stage_actions_updates_actions(mocker):
-        from ib_tasks.tests.factories.interactor_dtos import ActionDtoFactory
-        ActionDtoFactory.reset_sequence(0)
-        actions_dto = ActionDtoFactory.create_batch(size=2)
+        from ib_tasks.tests.factories.interactor_dtos import StageActionDTOFactory
+        StageActionDTOFactory.reset_sequence(0)
+        actions_dto = StageActionDTOFactory.create_batch(size=2)
         from ib_tasks.interactors.storage_interfaces.dtos \
-            import StageActionsDto
+            import StageActionNamesDTO
         stage_actions_dto = [
-            StageActionsDto(
+            StageActionNamesDTO(
                 stage_id="stage_1", action_names=["action_name_1"]
             )
         ]
         update_stage_actions_dto = [actions_dto[0]]
         stage_ids = ["stage_1", "stage_2"]
         storage = create_autospec(StorageInterface)
-        storage.get_db_stage_ids.return_value = stage_ids
+        storage.get_valid_stage_ids.return_value = stage_ids
         storage.get_stage_action_names.return_value = stage_actions_dto
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
@@ -254,27 +254,27 @@ class TestCreateUpdateDeleteStageActionsInteractor:
     @staticmethod
     def test_given_delete_stage_actions_deletes_actions(mocker):
         from ib_tasks.interactors.storage_interfaces.dtos \
-            import StageActionsDto
+            import StageActionNamesDTO
         expected_stage_actions = [
-            StageActionsDto(
+            StageActionNamesDTO(
                 stage_id="stage_3", action_names=["action_name_3"]
             )
         ]
-        from ib_tasks.tests.factories.interactor_dtos import ActionDtoFactory
-        ActionDtoFactory.reset_sequence(0)
-        actions_dto = ActionDtoFactory.create_batch(size=2)
+        from ib_tasks.tests.factories.interactor_dtos import StageActionDTOFactory
+        StageActionDTOFactory.reset_sequence(0)
+        actions_dto = StageActionDTOFactory.create_batch(size=2)
         stage_actions_dto = [
-            StageActionsDto(
+            StageActionNamesDTO(
                 stage_id="stage_1", action_names=["action_name_1"]
             ),
-            StageActionsDto(
+            StageActionNamesDTO(
                 stage_id="stage_3", action_names=["action_name_3"]
             )
         ]
         update_stage_actions_dto = [actions_dto[0]]
         stage_ids = ["stage_1", "stage_2"]
         storage = create_autospec(StorageInterface)
-        storage.get_db_stage_ids.return_value = stage_ids
+        storage.get_valid_stage_ids.return_value = stage_ids
         storage.get_stage_action_names.return_value = stage_actions_dto
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,

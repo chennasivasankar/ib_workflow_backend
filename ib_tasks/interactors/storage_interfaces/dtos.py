@@ -3,6 +3,6 @@ from dataclasses import dataclass
 
 
 @dataclass
-class StageActionsDto:
+class StageActionNamesDTO:
     stage_id: str
     action_names: List[str]

@@ -10,8 +10,8 @@ def populate_stage_actions(actions_dict: List[Dict]):
 
 
 def append_action_dict(action_dict: Dict[str, Any]):
-    from ib_tasks.interactors.dtos import ActionDto
-    return ActionDto(
+    from ib_tasks.interactors.dtos import StageActionDTO
+    return StageActionDTO(
         stage_id=action_dict['stage_id'],
         action_name=action_dict['action_name'],
         logic=action_dict['action_logic'],
@@ -45,7 +45,7 @@ def raise_exception_for_valid_format():
         "stage_id": "stage_1",
         "action_logic": "logic_1",
         "action_name": "action_name_1",
-        "roles": "ROLE_!",
+        "roles": "ROLE_1",
         "button_text": "button_text_1",
         "button_color": "button_color_1"
     }

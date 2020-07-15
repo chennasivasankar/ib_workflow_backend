@@ -3,7 +3,7 @@ from typing import Optional
 
 
 @dataclass()
-class RequestDto:
+class RequestDTO:
     stage_id: str
     action_name: str
     logic: str
@@ -13,13 +13,13 @@ class RequestDto:
 
 
 @dataclass()
-class ActionDto(RequestDto):
+class StageActionDTO(RequestDTO):
     pass
 
 
 @dataclass()
-class TaskDto(RequestDto):
-    pass
+class TaskTemplateStageActionDTO(RequestDTO):
+    task_template_id: str
 
 
 

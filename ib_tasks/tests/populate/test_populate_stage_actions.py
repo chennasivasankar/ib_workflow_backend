@@ -10,7 +10,7 @@ class TestCasePopulateStageActions:
             "stage_id": "stage_1",
             "action_logic": "logic_1",
             "action_name": "action_name_1",
-            "roles": "ROLE_!",
+            "roles": "ROLE_1",
             "button_text": "button_text_1",
             "button_color": "button_color_1"
         }
@@ -22,7 +22,7 @@ class TestCasePopulateStageActions:
                 "stage": "stage_1",
                 "stage_display_logic": "logic_1",
                 "action_name": "action_name_1",
-                "role": "ROLE_!",
+                "role": "ROLE_1",
                 "button_text": "button_text_1",
                 "button_color": "button_color_1"
             }
@@ -54,8 +54,8 @@ class TestCasePopulateStageActions:
                 "button_color": "button_color_1"
             }
         ]
-        from ib_tasks.interactors.dtos import ActionDto
-        expected_action_dto = [ActionDto(
+        from ib_tasks.interactors.dtos import StageActionDTO
+        expected_action_dto = [StageActionDTO(
             stage_id="stage_1",
             action_name="action_name_1",
             logic="logic_1",

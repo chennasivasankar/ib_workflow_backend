@@ -3,7 +3,7 @@ from collections import defaultdict
 from typing import List
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
-from ib_tasks.interactors.dtos import ActionDto
+from ib_tasks.interactors.dtos import StageActionDTO
 from ib_tasks.interactors.mixins\
     .stage_actions_validation_mixin \
     import StageActionsAndTasksValidationMixin
@@ -12,7 +12,7 @@ from ib_tasks.interactors.mixins\
 class CreateUpdateDeleteStageActionsInteractor(
         StageActionsAndTasksValidationMixin):
 
-    def __init__(self, storage: StorageInterface, actions_dto: List[ActionDto]):
+    def __init__(self, storage: StorageInterface, actions_dto: List[StageActionDTO]):
         super().__init__(storage=storage)
         self.actions_dto = actions_dto
 
@@ -28,7 +28,7 @@ class CreateUpdateDeleteStageActionsInteractor(
         self._create_update_delete_stage_actions(actions_dto)
 
     def _create_update_delete_stage_actions(
-            self, actions_dto: List[ActionDto]):
+            self, actions_dto: List[StageActionDTO]):
         stage_ids = self._get_stage_ids(actions_dto)
         db_stage_actions_dto = self.storage \
             .get_stage_action_names(stage_ids=stage_ids)
@@ -51,10 +51,10 @@ class CreateUpdateDeleteStageActionsInteractor(
 
         is_delete_stage_actions_present = delete_stage_actions
         from ib_tasks.interactors.storage_interfaces.dtos \
-            import StageActionsDto
+            import StageActionNamesDTO
         if is_delete_stage_actions_present:
             delete_actions = [
-                StageActionsDto(stage_id=key, action_names=value)
+                StageActionNamesDTO(stage_id=key, action_names=value)
                 for key, value in delete_stage_actions.items()
             ]
             self.storage \

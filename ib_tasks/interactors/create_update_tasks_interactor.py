@@ -3,7 +3,7 @@ from collections import defaultdict
 from typing import List
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
-from ib_tasks.interactors.dtos import TaskDto
+from ib_tasks.interactors.dtos import TaskTemplateStageActionDTO
 from ib_tasks.interactors.mixins\
     .stage_actions_validation_mixin \
     import StageActionsAndTasksValidationMixin
@@ -11,7 +11,8 @@ from ib_tasks.interactors.mixins\
 
 class CreateUpdateTasksInteractor(StageActionsAndTasksValidationMixin):
 
-    def __init__(self, storage: StorageInterface, tasks_dto: List[TaskDto]):
+    def __init__(self, storage: StorageInterface,
+                 tasks_dto: List[TaskTemplateStageActionDTO]):
         super().__init__(storage=storage)
         self.tasks_dto = tasks_dto
 
@@ -27,13 +28,14 @@ class CreateUpdateTasksInteractor(StageActionsAndTasksValidationMixin):
         self._create_update_tasks(tasks_dto)
 
     def _create_update_tasks(
-            self, tasks_dto: List[TaskDto]):
+            self, tasks_dto: List[TaskTemplateStageActionDTO]):
         stage_ids = self._get_stage_ids(tasks_dto)
         db_stage_tasks_dto = self.storage \
             .get_stage_action_names(stage_ids=stage_ids)
         is_db_stage_actions_empty = not db_stage_tasks_dto
         if is_db_stage_actions_empty:
-            self.storage.create_tasks(tasks_dto=tasks_dto)
+            self.storage\
+                .create_task_template_stage_actions(tasks_dto=tasks_dto)
         stage_actions = self._get_stage_actions(tasks_dto)
         self._create_or_update_tasks(db_stage_tasks_dto, stage_actions)
 
@@ -57,12 +59,14 @@ class CreateUpdateTasksInteractor(StageActionsAndTasksValidationMixin):
 
         is_create_actions_present = create_stage_actions
         if is_create_actions_present:
-            self.storage \
-                .create_tasks(tasks_dto=create_stage_actions)
+            self.storage.create_task_template_stage_actions(
+                tasks_dto=create_stage_actions
+            )
         is_update_actions_present = update_stage_actions
         if is_update_actions_present:
-            self.storage \
-                .update_tasks(tasks_dto=update_stage_actions)
+            self.storage.update_task_template_stage_actions(
+                tasks_dto=update_stage_actions
+            )
 
     @staticmethod
     def _append_create_and_update_stage_dto(

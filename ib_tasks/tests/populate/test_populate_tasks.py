@@ -7,10 +7,11 @@ class TestCasePopulateTasks:
 
         # Arrange
         valid_format = {
+            "task_template_id": "task_template_1",
             "stage_id": "stage_1",
             "action_logic": "logic_1",
             "action_name": "action_name_1",
-            "roles": "ROLE_!",
+            "roles": "ROLE_1",
             "button_text": "button_text_1",
             "button_color": "button_color_1"
         }
@@ -19,6 +20,7 @@ class TestCasePopulateTasks:
         json_valid_format = json.dumps(valid_format)
         tasks = [
             {
+                "task_template_id": "task_template_1",
                 "stage": "stage_1",
                 "stage_display_logic": "logic_1",
                 "action_name": "action_name_1",
@@ -44,6 +46,7 @@ class TestCasePopulateTasks:
         # Arrange
         tasks = [
             {
+                "task_template_id": "task_template_1",
                 "stage_id": "stage_1",
                 "action_logic": "logic_1",
                 "action_name": "action_name_1",
@@ -52,8 +55,9 @@ class TestCasePopulateTasks:
                 "button_color": "button_color_1"
             }
         ]
-        from ib_tasks.interactors.dtos import TaskDto
-        expected_action_dto = [TaskDto(
+        from ib_tasks.interactors.dtos import TaskTemplateStageActionDTO
+        expected_action_dto = [TaskTemplateStageActionDTO(
+            task_template_id="task_template_1",
             stage_id="stage_1",
             action_name="action_name_1",
             logic="logic_1",
