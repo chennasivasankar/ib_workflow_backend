@@ -157,39 +157,7 @@ class TestTaskTemplateInteractor:
             )
         assert err.value.args[0] == expected_exception_message
 
-    def test_with_existing_template_id_but_given_different_name_raises_exception(
-            self, task_storage_mock):
-        # Arrange
-        template_id = "FIN_PR"
-        template_name = "Payment Request"
-
-        from ib_tasks.interactors.task_template_interactor \
-            import TaskTemplateInteractor
-        task_template_interactor = TaskTemplateInteractor(
-            task_storage=task_storage_mock
-        )
-        task_storage_mock.check_is_template_exists.return_value = True
-        task_storage_mock.get_task_template_name.return_value = "Vendor"
-        expected_exception_message = \
-            "given template name: Payment Request but it is different from the existing template_name: Vendor"
-        gof_dtos = GoFDTOFactory.create_batch(size=1)
-        create_task_template_dto = CreateTaskTemplateDTO(
-            template_id=template_id, template_name=template_name,
-            gof_dtos=gof_dtos
-        )
-        from ib_tasks.exceptions.custom_exceptions import DifferentTemplateName
-
-        # Assert
-        with pytest.raises(DifferentTemplateName) as err:
-            task_template_interactor.create_task_template_wrapper(
-                create_task_template_dto=create_task_template_dto
-            )
-        task_storage_mock.get_task_template_name.assert_called_once_with(
-            template_id=template_id
-        )
-        assert err.value.args[0] == expected_exception_message
-
-    def test_with_existing_gof_ids_of_template_not_in_given_data(
+    def test_when_existing_gof_ids_of_template_not_in_given_data_raises_exception(
             self, task_storage_mock):
         # Arrange
         template_id = "FIN_PR"
@@ -202,9 +170,8 @@ class TestTaskTemplateInteractor:
         )
 
         task_storage_mock.check_is_template_exists.return_value = True
-        task_storage_mock.get_task_template_name.return_value = template_name
         task_storage_mock. \
-            get_existing_gof_of_template.return_value = ["GoF_5"]
+            get_existing_gof_ids_of_template.return_value = ["GoF_5"]
         expected_exception_message = \
             "Existing gof ids: ['GoF_5'] of template not in given gof ids: ['GoF_1']"
 
@@ -222,7 +189,7 @@ class TestTaskTemplateInteractor:
                 create_task_template_dto=create_task_template_dto
             )
         task_storage_mock. \
-            get_existing_gof_of_template.assert_called_once_with(
+            get_existing_gof_ids_of_template.assert_called_once_with(
                 template_id=template_id
             )
         assert err.value.args[0] == expected_exception_message
@@ -248,10 +215,10 @@ class TestTaskTemplateInteractor:
 
         # Assert
         task_storage_mock.create_task_template.assert_called_once_with(
-            create_task_template_dto=create_task_template_dto
+            template_id=template_id, template_name=template_name
         )
 
-    def test_create_task_template_with_existing_template_updates_template(
+    def test_create_task_template_with_existing_template_updates_template_gofs(
             self, task_storage_mock):
         # Arrange
         template_id = "FIN_PR"
@@ -266,10 +233,12 @@ class TestTaskTemplateInteractor:
             task_storage=task_storage_mock
         )
         task_storage_mock.check_is_template_exists.return_value = True
-        task_storage_mock.get_task_template_name.return_value = \
-            "Payment Request"
         task_storage_mock.\
-            get_existing_gof_of_template.return_value = ["GoF_1"]
+            get_existing_gof_ids_of_template.return_value = ["GoF_1"]
+        from ib_tasks.interactors.dtos import GoFDTO
+        expected_gof_dtos_to_add_to_template = [
+            GoFDTO(gof_id='GoF_2', order=2), GoFDTO(gof_id='GoF_3', order=3)
+        ]
 
         # Act
         task_template_interactor.create_task_template_wrapper(
@@ -277,6 +246,7 @@ class TestTaskTemplateInteractor:
         )
 
         # Assert
-        task_storage_mock.update_task_template.assert_called_once_with(
-            create_task_template_dto=create_task_template_dto
+        task_storage_mock.add_gofs_to_task_template.assert_called_once_with(
+            template_id=template_id,
+            gof_dtos_to_add_to_template=expected_gof_dtos_to_add_to_template
         )

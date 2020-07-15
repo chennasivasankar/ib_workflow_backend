@@ -23,30 +23,32 @@ class TaskTemplateInteractor:
             gof_dtos=create_task_template_dto.gof_dtos
         )
         self._validate_uniqueness_in_gof_ids(gof_ids=gof_ids)
-        template_exists = self.task_storage.check_is_template_exists(
+        is_template_exists = self.task_storage.check_is_template_exists(
             template_id=create_task_template_dto.template_id
         )
-        if template_exists:
-            self._validate_template_name_with_existing_name(
+        is_template_not_exists = not is_template_exists
+        if is_template_not_exists:
+            self.task_storage.create_task_template(
                 template_id=create_task_template_dto.template_id,
                 template_name=create_task_template_dto.template_name
             )
-            self._check_existing_gof_of_template_are_in_given_gof(
-                create_task_template_dto=create_task_template_dto
+            self.task_storage.add_gofs_to_task_template(
+                template_id=create_task_template_dto.template_id,
+                gof_dtos_to_add_to_template=create_task_template_dto.gof_dtos
             )
-            gof_dtos_to_update = self._get_gof_dtos_to_update(
-                create_task_template_dto=create_task_template_dto
-            )
-            if gof_dtos_to_update:
-                create_task_template_dto.gof_dtos = gof_dtos_to_update
-                self.task_storage.update_task_template(
-                    create_task_template_dto=create_task_template_dto
-                )
             return
 
-        self.task_storage.create_task_template(
+        self._check_existing_gofs_of_template_are_in_given_gofs(
             create_task_template_dto=create_task_template_dto
         )
+        gof_dtos_to_add_to_template = self._get_gof_dtos_to_add_to_template(
+            create_task_template_dto=create_task_template_dto
+        )
+        if gof_dtos_to_add_to_template:
+            self.task_storage.add_gofs_to_task_template(
+                template_id=create_task_template_dto.template_id,
+                gof_dtos_to_add_to_template=gof_dtos_to_add_to_template
+            )
 
     def _validate_field_values_of_create_task_template_dto(
             self, create_task_template_dto: CreateTaskTemplateDTO):
@@ -61,10 +63,10 @@ class TaskTemplateInteractor:
         self._validate_gof_ids(gof_ids=gof_ids)
         self._validate_order_of_gof(gof_dtos=gof_dtos)
 
-    def _get_gof_dtos_to_update(
+    def _get_gof_dtos_to_add_to_template(
             self, create_task_template_dto: CreateTaskTemplateDTO):
         existing_gof_ids = \
-            self.task_storage.get_existing_gof_of_template(
+            self.task_storage.get_existing_gof_ids_of_template(
                 template_id=create_task_template_dto.template_id,
             )
         gof_dtos = create_task_template_dto.gof_dtos
@@ -87,10 +89,10 @@ class TaskTemplateInteractor:
         if is_different_template_name:
             raise DifferentTemplateName(existing_template_name, template_name)
 
-    def _check_existing_gof_of_template_are_in_given_gof(
+    def _check_existing_gofs_of_template_are_in_given_gofs(
             self, create_task_template_dto: CreateTaskTemplateDTO):
         existing_gof_ids = \
-            self.task_storage.get_existing_gof_of_template(
+            self.task_storage.get_existing_gof_ids_of_template(
                 template_id=create_task_template_dto.template_id,
             )
         given_gof_ids = self._get_gof_ids(

@@ -1,6 +1,6 @@
 import abc
 from typing import List
-from ib_tasks.interactors.dtos import CreateTaskTemplateDTO
+from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, GoFDTO
 
 
 class TaskStorageInterface(abc.ABC):
@@ -9,19 +9,15 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def create_task_template(
-            self, create_task_template_dto: CreateTaskTemplateDTO):
+    def create_task_template(self, template_id: str, template_name: str):
         pass
 
     @abc.abstractmethod
-    def update_task_template(
-            self, create_task_template_dto: CreateTaskTemplateDTO):
+    def add_gofs_to_task_template(
+            self, template_id: str,
+            gof_dtos_to_add_to_template: List[GoFDTO]):
         pass
 
     @abc.abstractmethod
-    def get_task_template_name(self, template_id: str) -> str:
-        pass
-
-    @abc.abstractmethod
-    def get_existing_gof_of_template(self, template_id: str) -> List[str]:
+    def get_existing_gof_ids_of_template(self, template_id: str) -> List[str]:
         pass
