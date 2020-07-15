@@ -16,9 +16,24 @@ class TestCreateFieldsInteractor:
         storage = create_autospec(CreateFieldsStorageInterface)
         return storage
 
+    def test_given_gof_id_is_empty_raise_exception(self, storage_mock):
+        # Arrange
+        field_dtos = [FieldDTOFactory(), FieldDTOFactory(gof_id=" ")]
+        from ib_tasks.exceptions.custom_exceptions import InvalidGOFId
+        interactor = CreateFieldsInteractor(storage=storage_mock)
+        error_message = "GOF Id shouldn't be empty"
+
+        # Act
+        with pytest.raises(InvalidGOFId) as err:
+            interactor.create_fields(field_dtos)
+
+        # Arrange
+        assert str(err.value) == error_message
+
+
     def test_given_field_id_is_empty_raise_exception(self, storage_mock):
         # Arrange
-        field_dtos = [FieldDTOFactory(), FieldDTOFactory(field_id="")]
+        field_dtos = [FieldDTOFactory(), FieldDTOFactory(field_id=" ")]
         from ib_tasks.exceptions.custom_exceptions import InvalidFieldIdException
         interactor = CreateFieldsInteractor(storage=storage_mock)
         error_message = "Field Id shouldn't be empty"
@@ -72,7 +87,7 @@ class TestCreateFieldsInteractor:
         field_dtos = [
             FieldDTOFactory(),
             FieldDTOFactory(),
-            FieldDTOFactory(field_display_name=""),
+            FieldDTOFactory(field_display_name=" "),
             FieldDTOFactory()
         ]
         exception_message = "Field display name shouldn't be empty"
@@ -281,7 +296,7 @@ class TestCreateFieldsInteractor:
         exception_object = err.value
         assert exception_object.message == exception_message
 
-    def test_with_valid_data_populate_fields(
+    def test_given_new_field_ids_populate_fields(
             self, storage_mock
     ):
         # Arrange
@@ -292,11 +307,36 @@ class TestCreateFieldsInteractor:
             FieldDTOFactory(),
             FieldDTOFactory()
         ]
+        existing_field_ids = []
         interactor = CreateFieldsInteractor(storage=storage_mock)
         storage_mock.get_available_roles.return_value = avaliable_roles
+        storage_mock.get_existing_field_ids.return_value = existing_field_ids
 
         # Act
         interactor.create_fields(field_dtos)
 
         # Assert
         storage_mock.create_fields.assert_called_once_with(field_dtos)
+
+    def test_given_field_ids_already_exist_in_database_then_update_fields(
+            self, storage_mock
+    ):
+        # Arrange
+        avaliable_roles = ["FIN_PAYMENTS_RP", "FIN_PAYMENTS_LEVEL1_VERIFIER"]
+        FieldDTOFactory.reset_sequence(1)
+        field_dtos = [
+            FieldDTOFactory(field_id="FIN_TYPE_OF_VENDOR"),
+            FieldDTOFactory(field_id="FIN_SALUATION"),
+            FieldDTOFactory(field_id="FIN_FIRST NAME"),
+            FieldDTOFactory(field_id="FIN_DISPLAY NAME")
+        ]
+        existing_field_ids = ["FIN_FIRST NAME", "FIN_TYPE_OF_VENDOR"]
+        interactor = CreateFieldsInteractor(storage=storage_mock)
+        storage_mock.get_available_roles.return_value = avaliable_roles
+        storage_mock.get_existing_field_ids.return_value = existing_field_ids
+
+        # Act
+        interactor.create_fields(field_dtos)
+
+        # Assert
+        storage_mock.update_fields.assert_called_once_with(field_dtos)

@@ -5,6 +5,7 @@ from ib_tasks.constants.enum import FieldTypes
 
 @dataclass
 class FieldDTO:
+    gof_id: str
     field_id: str
     field_display_name: str
     field_type: FieldTypes
