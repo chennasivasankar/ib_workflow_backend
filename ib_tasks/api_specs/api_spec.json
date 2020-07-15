@@ -34,6 +34,9 @@
     "CreateTaskRequestBody": {
       "type": "object",
       "properties": {
+        "task_id": {
+          "type": "string"
+        },
         "task_gofs": {
           "type": "array",
           "items": {
@@ -105,12 +108,12 @@
         "operationId": "create_task",
         "summary": "create a task",
         "description": "create a task with given details",
-        "security": [
-          {
-            "oauth": [
-              "write"
-            ]
-          }
+        "security":[
+           {
+              "oauth":[
+                 "write"
+              ]
+           }
         ],
         "parameters": [
           {
