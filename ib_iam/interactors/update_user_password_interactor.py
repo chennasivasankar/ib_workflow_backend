@@ -28,12 +28,14 @@ class UpdateUserPasswordInteractor:
         except TokenHasExpired:
             return presenter.raise_token_has_expired()
 
-    def update_user_password_response(self, password, presenter, token):
+    def update_user_password_response(self, password: str, token: str,
+                                      presenter: AuthPresenterInterface
+                                      ):
         self.update_user_password(token=token, password=password)
         return presenter.get_update_user_password_success_response()
 
     @staticmethod
-    def update_user_password(token, password):
+    def update_user_password(token: str, password: str):
         from ib_iam.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
 

@@ -12,11 +12,12 @@ class UserAccountDoesNotExist(Exception):
 
 class ResetPasswordLinkToEmailInteractor:
 
-    def reset_password_link_to_user_email_wrapper(self, email: str,
-                                                  presenter: AuthPresenterInterface):
+    def reset_password_link_to_user_email_wrapper(
+            self, email: str, presenter: AuthPresenterInterface
+    ):
         try:
             self.reset_password_link_to_email(email=email)
-            return presenter\
+            return presenter \
                 .get_success_response_for_reset_password_link_to_user_email()
         except InvalidEmail:
             return presenter.raise_invalid_email()
@@ -36,11 +37,9 @@ class ResetPasswordLinkToEmailInteractor:
             = LINK_TO_RESET_PASSWORD_EXPIRES_IN_SEC
         user_token = service_adapter.auth_service.get_token_for_reset_password(
             email=email,
-            expires_in_sec \
-                =link_to_reset_password_expires_in_sec
+            expires_in_sec=link_to_reset_password_expires_in_sec
         )
         self.send_email_to_user_email(email=email, user_token=user_token)
-
 
     @staticmethod
     def send_email_to_user_email(email: str, user_token: str):

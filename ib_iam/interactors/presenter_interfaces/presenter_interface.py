@@ -14,7 +14,8 @@ class AuthPresenterInterface(ABC):
         pass
 
     @abstractmethod
-    def prepare_response_for_tokens_dto(self, tokens_dto: TokensDTO):
+    def prepare_response_for_tokens_dto(self, tokens_dto: TokensDTO,
+                                        is_admin: bool):
         pass
 
     @abstractmethod

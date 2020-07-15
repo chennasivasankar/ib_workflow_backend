@@ -48,6 +48,7 @@ class TestAuthPresenterImplementation:
     def test_prepare_response_for_tokens_dto(self):
         # Arrange
         from ib_iam.adapters.auth_service import TokensDTO
+        is_admin = True
         tokens_dto = TokensDTO(
             access_token="asdfaldskfjdfdlsdkf",
             refresh_token="sadfenkljkdfeller",
@@ -60,7 +61,7 @@ class TestAuthPresenterImplementation:
 
         # Act
         response_object = presenter.prepare_response_for_tokens_dto(
-            tokens_dto=tokens_dto
+            tokens_dto=tokens_dto, is_admin=is_admin
         )
 
         # Assert
@@ -69,6 +70,7 @@ class TestAuthPresenterImplementation:
         assert response['access_token'] == tokens_dto.access_token
         assert response['refresh_token'] == tokens_dto.refresh_token
         assert response['expires_in_seconds'] == tokens_dto.expires_in_seconds
+        assert response['is_admin'] == is_admin
 
     def test_raise_user_account_does_not_exist(self):
         # Arrange

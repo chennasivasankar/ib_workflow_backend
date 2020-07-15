@@ -28,6 +28,9 @@ class TestCase01UserLoginAPITestCase(TestUtils):
             refresh_token="sadfenkljkdfeller",
             expires_in_seconds=1000
         )
+        from ib_iam.tests.factories.models import UserFactory
+        UserFactory.reset_sequence(1)
+        UserFactory()
 
         get_user_id_from_email_and_password_dto.return_value = user_id
         get_tokens_dto_from_user_id.return_value = tokens_dto

@@ -55,11 +55,13 @@ class AuthPresenterImplementation(AuthPresenterInterface, HTTPResponseMixin):
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
 
-    def prepare_response_for_tokens_dto(self, tokens_dto: TokensDTO):
+    def prepare_response_for_tokens_dto(self, tokens_dto: TokensDTO,
+                                        is_admin: bool):
         response_dict = {
             "access_token": tokens_dto.access_token,
             "refresh_token": tokens_dto.refresh_token,
-            "expires_in_seconds": tokens_dto.expires_in_seconds
+            "expires_in_seconds": tokens_dto.expires_in_seconds,
+            "is_admin": is_admin
         }
         return self.prepare_200_success_response(response_dict)
 
