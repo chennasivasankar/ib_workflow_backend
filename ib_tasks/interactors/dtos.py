@@ -4,9 +4,9 @@ Author: Pavankumar Pamuru
 
 """
 from typing import Union, List, Optional
-from dataclasses import dataclass
 from ib_tasks.constants.enum import FieldTypes
-
+import dataclasses
+from typing import List
 
 @dataclass
 class FieldDTO:
@@ -23,7 +23,7 @@ class FieldDTO:
     error_message: Optional[str]
 
 
-@dataclass()
+@dataclass
 class ActionDto:
     stage_id: str
     action_name: str
@@ -32,14 +32,12 @@ class ActionDto:
     button_text: str
     button_color: Optional[str]
 
-
-@dataclass
+@dataclasses.dataclass
 class GoFDTO:
     gof_id: str
     order: int
 
-
-@dataclass
+@dataclasses.dataclass
 class CreateTaskTemplateDTO:
     template_id: str
     template_name: str
