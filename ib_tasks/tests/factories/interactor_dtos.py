@@ -18,3 +18,5 @@ class FieldDTOFactory(factory.Factory):
     tool_tip = "Request"
     placeholder_text = "select vendor"
     error_message = "error message"
+    allowed_formats = None
+    validation_regex = None

@@ -11,7 +11,8 @@ from ib_tasks.exceptions.custom_exceptions import (
     FieldsDuplicationOfDropDownValues,
     InvalidRolesException,
     EmptyValueForPermissions,
-    InvalidValueForFieldDisplayName
+    InvalidValueForFieldDisplayName,
+    InvalidValueForFieldType
 )
 
 
@@ -23,6 +24,7 @@ class CreateFieldsInteractor:
         self._validate_field_id(field_dtos)
         self._check_for_duplication_of_filed_ids(field_dtos)
         self._validate_field_display_name(field_dtos)
+        self._validate_field_type(field_dtos)
         self._check_for_duplication_of_drop_down_values_for_field_dtos(
             field_dtos
         )
@@ -36,6 +38,15 @@ class CreateFieldsInteractor:
         )
         self.storage.create_fields(field_dtos)
 
+    @staticmethod
+    def _validate_field_type(field_dtos: List[FieldDTO]):
+        from ib_tasks.constants.constants import FIELD_TYPES_LIST
+        for field_dto in field_dtos:
+            field_type = field_dto.field_type
+            if field_type not in FIELD_TYPES_LIST:
+                raise InvalidValueForFieldType(
+                    "Field_Type should be one of these {}".format(FIELD_TYPES_LIST)
+                )
 
     @staticmethod
     def _validate_field_display_name(field_dtos: List[FieldDTO]):
@@ -85,7 +96,7 @@ class CreateFieldsInteractor:
                 fieds_with_dropdown_duplicate_values
             )
 
-    def _check_for_duplication_of_dropdown_values(self, field_dto=FieldDTO):
+    def _check_for_duplication_of_dropdown_values(self, field_dto: FieldDTO):
         field_id = field_dto.field_id
         dropdown_values = field_dto.field_values
         fied_with_dropdown_duplicate_values = {}
@@ -126,7 +137,7 @@ class CreateFieldsInteractor:
     def _check_invalid_roles_for_write_permissions_in_field_dtos(
             self, field_dtos: List[FieldDTO], available_roles: List[str]
     ):
-        fields_invalid_roles_for_read_permission = []
+        fields_invalid_roles_for_write_permission = []
         for field_dto in field_dtos:
             write_permission_roles = field_dto.write_permissions_to_roles
             invalid_roles_dict = self._validate_roles(
@@ -134,11 +145,11 @@ class CreateFieldsInteractor:
             )
             if invalid_roles_dict:
                 invalid_roles_dict["permissions"] = "write_permissions"
-                fields_invalid_roles_for_read_permission.\
+                fields_invalid_roles_for_write_permission. \
                     append(invalid_roles_dict)
-        if fields_invalid_roles_for_read_permission:
+        if fields_invalid_roles_for_write_permission:
             raise InvalidRolesException(
-                fields_invalid_roles_for_read_permission
+                fields_invalid_roles_for_write_permission
             )
 
     def _validate_roles(
@@ -167,5 +178,5 @@ class CreateFieldsInteractor:
                 not field_dto.write_permissions_to_roles
             if is_read_permissions_empty or is_write_permissions_empty:
                 raise EmptyValueForPermissions(
-                    "Premissions to roles shouldn't be empty"
+                    "Permissions to roles shouldn't be empty"
                 )

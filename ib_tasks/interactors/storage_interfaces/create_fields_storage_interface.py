@@ -1,17 +1,16 @@
 import abc
-from abc import ABC, abstractmethod
 
 from typing import List
 
 from ib_tasks.interactors.dtos.dtos import FieldDTO
 
 
-class CreateFieldsStorageInterface(ABC):
+class CreateFieldsStorageInterface(abc.ABC):
 
-    @abstractmethod
+    @abc.abstractmethod
     def get_available_roles(self) -> List[str]:
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def create_fields(self, field_dtos: List[FieldDTO]):
         pass

@@ -30,6 +30,7 @@ class TestCreateFieldsInteractor:
         # Arrange
         assert str(err.value) == error_message
 
+
     def test_given_duplication_of_filed_ids_raise_exception(self, storage_mock):
         # Arrange
         field_dtos = [
@@ -49,6 +50,20 @@ class TestCreateFieldsInteractor:
         exception_object = err.value
         assert exception_object.field_ids == duplication_of_field_ids
 
+    def test_given_invalid_field_type_raise_ecxception(self, storage_mock):
+        # Arrange
+        field_dtos = [FieldDTOFactory(field_type=""), FieldDTOFactory(field_type="Hello")]
+        from ib_tasks.exceptions.custom_exceptions import InvalidValueForFieldType
+        from ib_tasks.constants.constants import FIELD_TYPES_LIST
+        interactor = CreateFieldsInteractor(storage=storage_mock)
+        error_message = "Field_Type should be one of these {}".format(FIELD_TYPES_LIST)
+
+        # Act
+        with pytest.raises(InvalidValueForFieldType) as err:
+            interactor.create_fields(field_dtos)
+
+        # Arrange
+        assert str(err.value) == error_message
 
     def test_given_field_display_name_as_empty_rise_exception(
             self, storage_mock
@@ -208,7 +223,7 @@ class TestCreateFieldsInteractor:
             self, storage_mock
     ):
         # Arrange
-        exception_message = "Premissions to roles shouldn't be empty"
+        exception_message = "Permissions to roles shouldn't be empty"
         field_dtos = [
             FieldDTOFactory(
                 read_permissions_to_roles=[],
@@ -240,7 +255,7 @@ class TestCreateFieldsInteractor:
             self, storage_mock
     ):
         # Arrange
-        exception_message = "Premissions to roles shouldn't be empty"
+        exception_message = "Permissions to roles shouldn't be empty"
         field_dtos = [
             FieldDTOFactory(
                 read_permissions_to_roles=["FIN_PAYMENTS_RP"],
