@@ -3,7 +3,7 @@ from ib_iam.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
 
 
-class InvalidEmail(Exception):
+class AccountDoesNotExist(Exception):
     pass
 
 
@@ -21,7 +21,7 @@ class LoginInteractor:
                 presenter=presenter
             )
             return response
-        except InvalidEmail:
+        except AccountDoesNotExist:
             return presenter.raise_invalid_email()
         except InvalidPassword:
             return presenter.raise_invalid_password()

@@ -59,8 +59,8 @@ class TestLoginInteractor:
         # Arrange
         expected_raise_invalid_email_mock = Mock()
 
-        from ib_iam.interactors.user_login_interactor import InvalidEmail
-        get_user_id_from_email_and_password_dto.side_effect = InvalidEmail
+        from ib_iam.interactors.user_login_interactor import AccountDoesNotExist
+        get_user_id_from_email_and_password_dto.side_effect = AccountDoesNotExist
 
         presenter_mock = presenter_mock_setup
         presenter_mock.raise_invalid_email.return_value \

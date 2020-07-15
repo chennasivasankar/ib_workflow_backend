@@ -20,8 +20,8 @@ class TestCase02UserLoginAPITestCase(TestUtils):
     @patch(
         "ib_iam.adapters.auth_service.AuthService.get_user_id_from_email_and_password_dto")
     def test_case(self, get_user_id_from_email_and_password_dto, snapshot):
-        from ib_iam.interactors.user_login_interactor import InvalidEmail
-        get_user_id_from_email_and_password_dto.side_effect = InvalidEmail()
+        from ib_iam.interactors.user_login_interactor import AccountDoesNotExist
+        get_user_id_from_email_and_password_dto.side_effect = AccountDoesNotExist()
         body = {'email': 'sasnkar@gmail.com', 'password': 'test123'}
         path_params = {}
         query_params = {}
