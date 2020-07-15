@@ -17,9 +17,12 @@ def api_wrapper(*args, **kwargs):
     from ib_iam.interactors.user_login_interactor import LoginInteractor
     interactor = LoginInteractor()
 
-    from ib_iam.presenters.presenter_implementation import LoginPresenterImplementation
+    from ib_iam.presenters.presenter_implementation import \
+        LoginPresenterImplementation
     presenter = LoginPresenterImplementation()
 
-    response = interactor.login_wrapper(presenter=presenter,
-                                        email_and_password_dto=email_and_password_dto)
+    response = interactor.login_wrapper(
+        presenter=presenter,
+        email_and_password_dto=email_and_password_dto
+    )
     return response

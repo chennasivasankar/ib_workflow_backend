@@ -8,8 +8,8 @@ class TestLoginInteractor:
     def presenter_mock_setup(self):
         from unittest.mock import create_autospec
 
-        from ib_iam.interactors.presenter_interfaces.presenter_interface import \
-            PresenterInterface
+        from ib_iam.interactors.presenter_interfaces. \
+            presenter_interface import PresenterInterface
         presenter = create_autospec(PresenterInterface)
         return presenter
 
@@ -23,7 +23,8 @@ class TestLoginInteractor:
         return email_and_password_dto
 
     @patch(
-        "ib_iam.adapters.auth_service.AuthService.get_user_id_from_email_and_password_dto")
+        "ib_iam.adapters.auth_service.AuthService.get_user_id_from_email_and_password_dto"
+    )
     def test_validate_password_raise_exception(
             self, get_user_id_from_email_and_password_dto,
             email_and_password_dto, presenter_mock_setup
@@ -52,15 +53,16 @@ class TestLoginInteractor:
 
     @patch(
         "ib_iam.adapters.auth_service.AuthService.get_user_id_from_email_and_password_dto")
-    def test_validate_email_raise_exception(self,
-                                            get_user_id_from_email_and_password_dto,
-                                            email_and_password_dto,
-                                            presenter_mock_setup):
+    def test_validate_email_raise_exception(
+            self, get_user_id_from_email_and_password_dto,
+            email_and_password_dto, presenter_mock_setup
+    ):
         # Arrange
         expected_raise_invalid_email_mock = Mock()
 
         from ib_iam.interactors.user_login_interactor import AccountDoesNotExist
-        get_user_id_from_email_and_password_dto.side_effect = AccountDoesNotExist
+        get_user_id_from_email_and_password_dto.side_effect \
+            = AccountDoesNotExist
 
         presenter_mock = presenter_mock_setup
         presenter_mock.raise_invalid_email.return_value \
@@ -82,11 +84,11 @@ class TestLoginInteractor:
         "ib_iam.adapters.auth_service.AuthService.get_tokens_dto_from_user_id")
     @patch(
         "ib_iam.adapters.auth_service.AuthService.get_user_id_from_email_and_password_dto")
-    def test_with_valid_email_and_password_dto(self,
-                                               get_user_id_from_email_and_password_dto,
-                                               get_tokens_dto_from_user_id,
-                                               email_and_password_dto,
-                                               presenter_mock_setup):
+    def test_with_valid_email_and_password_dto(
+            self, get_user_id_from_email_and_password_dto,
+            get_tokens_dto_from_user_id, email_and_password_dto,
+            presenter_mock_setup
+    ):
         # Arrange
         user_id = 1
         from ib_iam.adapters.auth_service import TokensDTO

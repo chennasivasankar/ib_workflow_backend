@@ -35,10 +35,12 @@ class LoginInteractor:
         response = presenter.prepare_response_for_tokens_dto(tokens_dto)
         return response
 
-    def get_tokens_dto(self, email_and_password_dto: EmailAndPasswordDTO):
+    @staticmethod
+    def get_tokens_dto(email_and_password_dto: EmailAndPasswordDTO):
         from ib_iam.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
-        user_id = service_adapter.auth_service.get_user_id_from_email_and_password_dto(
+        user_id = service_adapter.auth_service. \
+            get_user_id_from_email_and_password_dto(
             email_and_password_dto
         )
         tokens_dto = service_adapter.auth_service.get_tokens_dto_from_user_id(
