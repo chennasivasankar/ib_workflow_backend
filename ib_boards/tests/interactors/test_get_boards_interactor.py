@@ -49,7 +49,7 @@ class TestGetBoardsInteractor:
     def get_boards_dto_invalid_limit(self):
         return GetBoardsDTO(
             user_id=1,
-            offset=-1,
+            offset=1,
             limit=-2
         )
 
@@ -66,7 +66,7 @@ class TestGetBoardsInteractor:
         storage_mock.validate_user_role_with_boards_roles.\
             side_effect = UserDoNotHaveAccessToBoards
         presenter_mock.get_response_for_user_have_no_access_for_boards.\
-            return_value = Mock()
+            return_value = expected_response
 
         from ib_boards.tests.common_fixtures.adapters.user_service import \
             adapter_mock_to_get_user_role
@@ -108,7 +108,7 @@ class TestGetBoardsInteractor:
         )
 
         # Assert
-        presenter_mock.get_response_for_invalid_offset()
+        presenter_mock.get_response_for_invalid_offset.assert_called_once_with()
         assert actual_response == expected_response
 
     def test_with_invalid_limit_value_return_error_message(
@@ -128,5 +128,5 @@ class TestGetBoardsInteractor:
         )
 
         # Assert
-        presenter_mock.get_response_for_invalid_limit()
+        presenter_mock.get_response_for_invalid_limit.assert_called_once_with()
         assert actual_response == expected_response
