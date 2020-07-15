@@ -7,8 +7,10 @@ URL_SUFFIX = "rest_password_link/v1/"
 
 from .test_case_01 import TestCase01UserResetPasswordLinkAPITestCase
 from .test_case_02 import TestCase02UserResetPasswordLinkAPITestCase
+from .test_case_03 import TestCase03UserResetPasswordLinkAPITestCase
 
 __all__ = [
     "TestCase01UserResetPasswordLinkAPITestCase",
-    "TestCase02UserResetPasswordLinkAPITestCase"
+    "TestCase02UserResetPasswordLinkAPITestCase",
+    "TestCase03UserResetPasswordLinkAPITestCase"
 ]

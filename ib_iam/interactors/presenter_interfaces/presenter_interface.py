@@ -22,9 +22,21 @@ class AuthPresenterInterface(ABC):
         pass
 
     @abstractmethod
-    def raise_invalid_email(self):
+    def get_success_response_for_reset_password_link_to_user_email(self):
         pass
 
     @abstractmethod
-    def get_success_response_for_reset_password_link_to_user_email(self):
+    def raise_token_does_not_exists(self):
+        pass
+
+    @abstractmethod
+    def raise_not_a_strong_password(self):
+        pass
+
+    @abstractmethod
+    def raise_token_has_expired(self):
+        pass
+
+    @abstractmethod
+    def get_update_user_password_success_response(self):
         pass

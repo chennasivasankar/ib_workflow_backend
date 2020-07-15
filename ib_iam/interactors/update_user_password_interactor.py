@@ -2,16 +2,41 @@ from ib_iam.interactors.presenter_interfaces.presenter_interface import \
     AuthPresenterInterface
 
 
+class TokenDoesNotExist(Exception):
+    pass
+
+
+class NotStrongPassword(Exception):
+    pass
+
+
+class TokenHasExpired(Exception):
+    pass
+
+
 class UpdateUserPasswordInteractor:
     def update_user_password_wrapper(self, presenter: AuthPresenterInterface,
                                      token: str, password: str):
         try:
-            self.update_user_password(token=token, password=password)
-        except:
-            pass
+            return self.update_user_password_response(
+                password=password, presenter=presenter, token=token
+            )
+        except TokenDoesNotExist:
+            return presenter.raise_token_does_not_exists()
+        except NotStrongPassword:
+            return presenter.raise_not_a_strong_password()
+        except TokenHasExpired:
+            return presenter.raise_token_has_expired()
 
-    def update_user_password(self, token, password):
-        self._check_the_password_policy(password=password)
+    def update_user_password_response(self, password, presenter, token):
+        self.update_user_password(token=token, password=password)
+        return presenter.get_update_user_password_success_response()
 
-    def _check_the_password_policy(self, password):
-        pass
+    @staticmethod
+    def update_user_password(token, password):
+        from ib_iam.adapters.service_adapter import ServiceAdapter
+        service_adapter = ServiceAdapter()
+
+        service_adapter.auth_service.update_user_password(
+            token=token, password=password
+        )

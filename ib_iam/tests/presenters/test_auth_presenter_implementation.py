@@ -99,8 +99,87 @@ class TestAuthPresenterImplementation:
         presenter = AuthPresenterImplementation()
 
         # Act
-        response_object \
-            = presenter.get_success_response_for_reset_password_link_to_user_email()
+        response_object = presenter.\
+            get_success_response_for_reset_password_link_to_user_email()
+
+        # Assert
+        assert response_object.status_code == 200
+
+    def test_raise_not_a_strong_password(self):
+        # Arrange
+        from ib_iam.presenters.presenter_implementation import \
+            AuthPresenterImplementation
+        presenter = AuthPresenterImplementation()
+
+        from ib_iam.presenters.presenter_implementation import \
+            NOT_STRONG_PASSWORD
+        expected_response = NOT_STRONG_PASSWORD[0]
+        expected_http_status_code = 400
+        expected_res_status = NOT_STRONG_PASSWORD[1]
+
+        # Act
+        response_object = presenter.raise_not_a_strong_password()
+
+        # Assert
+        response = json.loads(response_object.content)
+
+        assert response['response'] == expected_response
+        assert response['http_status_code'] == expected_http_status_code
+        assert response['res_status'] == expected_res_status
+
+    def test_raise_token_does_not_exists(self):
+        # Arrange
+        from ib_iam.presenters.presenter_implementation import \
+            AuthPresenterImplementation
+        presenter = AuthPresenterImplementation()
+
+        from ib_iam.presenters.presenter_implementation import \
+            TOKEN_DOES_NOT_EXIST
+        expected_response = TOKEN_DOES_NOT_EXIST[0]
+        expected_http_status_code = 404
+        expected_res_status = TOKEN_DOES_NOT_EXIST[1]
+
+        # Act
+        response_object = presenter.raise_token_does_not_exists()
+
+        # Assert
+        response = json.loads(response_object.content)
+
+        assert response['response'] == expected_response
+        assert response['http_status_code'] == expected_http_status_code
+        assert response['res_status'] == expected_res_status
+
+    def test_raise_token_has_expired(self):
+        # Arrange
+        from ib_iam.presenters.presenter_implementation import \
+            AuthPresenterImplementation
+        presenter = AuthPresenterImplementation()
+
+        from ib_iam.presenters.presenter_implementation import \
+            TOKEN_HAS_EXPIRED
+        expected_response = TOKEN_HAS_EXPIRED[0]
+        expected_http_status_code = 400
+        expected_res_status = TOKEN_HAS_EXPIRED[1]
+
+        # Act
+        response_object = presenter.raise_token_has_expired()
+
+        # Assert
+        response = json.loads(response_object.content)
+
+        assert response['response'] == expected_response
+        assert response['http_status_code'] == expected_http_status_code
+        assert response['res_status'] == expected_res_status
+
+    def test_get_update_user_password_success_response(self):
+        # Arrange
+        from ib_iam.presenters.presenter_implementation import \
+            AuthPresenterImplementation
+        presenter = AuthPresenterImplementation()
+
+        # Act
+        response_object = presenter.\
+            get_update_user_password_success_response()
 
         # Assert
         assert response_object.status_code == 200

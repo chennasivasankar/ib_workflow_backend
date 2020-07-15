@@ -232,7 +232,8 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "NOT_STRONG_PASSWORD"
+              "NOT_STRONG_PASSWORD",
+              "TOKEN_HAS_EXPIRED"
             ]
           }
         },

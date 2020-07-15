@@ -2,5 +2,6 @@ from enum import Enum
 
 
 class StrongPassword(Enum):
-    MAX_LENGTH = 10
     MIN_LENGTH = 5
+    MINIMUM_PASSWORD_LENGTH = "MINIMUM_PASSWORD_LENGTH_IS_5"
+    CAPITAL_LETTERS = "CAPITAL_LETTERS"
