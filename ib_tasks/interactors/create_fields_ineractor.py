@@ -31,18 +31,35 @@ class CreateFieldsInteractor:
             field_dtos
         )
         self._check_permissions_to_roles_contains_empty_values(field_dtos)
-        available_roles = self.storage.get_available_roles()
-        self._check_invalid_roles_for_read_permissions_in_field_dtos(
-            field_dtos, available_roles
-        )
-        self._check_invalid_roles_for_write_permissions_in_field_dtos(
-            field_dtos, available_roles
-        )
+        self._validate_read_permission_roles(field_dtos)
+        self._validate_write_permission_roles(field_dtos)
         new_field_dtos, existing_field_dtos = self._get_field_dtos(field_dtos)
         if new_field_dtos:
             self.storage.create_fields(field_dtos)
         if existing_field_dtos:
             self.storage.update_fields(field_dtos)
+
+    def _validate_read_permission_roles(self, field_dtos: List[FieldDTO]):
+        from ib_tasks.adapters.roles_service_adapter import \
+            get_roles_service_adapter
+        roles_service_adapter = get_roles_service_adapter()
+        roles_service = roles_service_adapter.roles_service
+        valid_read_permission_roles = \
+            roles_service.get_all_valid_read_permission_roles()
+        self._check_invalid_roles_for_read_permissions_in_field_dtos(
+            field_dtos, valid_read_permission_roles
+        )
+
+    def _validate_write_permission_roles(self, field_dtos: List[FieldDTO]):
+        from ib_tasks.adapters.roles_service_adapter import \
+            get_roles_service_adapter
+        roles_service_adapter = get_roles_service_adapter()
+        roles_service = roles_service_adapter.roles_service
+        valid_write_permission_roles = \
+            roles_service.get_all_valid_write_permission_roles()
+        self._check_invalid_roles_for_write_permissions_in_field_dtos(
+            field_dtos, valid_write_permission_roles
+        )
 
     def _validate_gof_id(self, field_dtos: List[FieldDTO]):
         for field_dto in field_dtos:
@@ -151,13 +168,13 @@ class CreateFieldsInteractor:
         return field_with_dropdown_duplicate_values
 
     def _check_invalid_roles_for_read_permissions_in_field_dtos(
-            self, field_dtos: List[FieldDTO], available_roles: List[str]
+            self, field_dtos: List[FieldDTO], available_read_permission_roles: List[str]
     ):
         fields_invalid_roles_for_read_permission = []
         for field_dto in field_dtos:
             read_permission_roles = field_dto.read_permissions_to_roles
             invalid_roles_dict = self._validate_roles(
-                available_roles, read_permission_roles, field_dto
+                available_read_permission_roles, read_permission_roles, field_dto
             )
             if invalid_roles_dict:
                 invalid_roles_dict["permissions"] = "read_permissions"
@@ -170,13 +187,13 @@ class CreateFieldsInteractor:
             )
 
     def _check_invalid_roles_for_write_permissions_in_field_dtos(
-            self, field_dtos: List[FieldDTO], available_roles: List[str]
+            self, field_dtos: List[FieldDTO], available_write_permission_roles: List[str]
     ):
         fields_invalid_roles_for_write_permission = []
         for field_dto in field_dtos:
             write_permission_roles = field_dto.write_permissions_to_roles
             invalid_roles_dict = self._validate_roles(
-                available_roles, write_permission_roles, field_dto
+                available_write_permission_roles, write_permission_roles, field_dto
             )
             if invalid_roles_dict:
                 invalid_roles_dict["permissions"] = "write_permissions"

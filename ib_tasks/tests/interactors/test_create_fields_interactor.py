@@ -140,22 +140,26 @@ class TestCreateFieldsInteractor:
                fieds_with_dropdown_duplicate_values
 
     def test_given_invalid_roles_for_read_permissions_raise_exception(
-            self, storage_mock
+            self, storage_mock, mocker
     ):
         # Arrange
-        avaliable_roles = ["FIN_PAYMENTS_RP", "FIN_PAYMENTS_LEVEL1_VERIFIER"]
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_all_valid_read_permission_roles
+        get_valid_read_permissions_mock_method = \
+            get_all_valid_read_permission_roles(mocker)
+        from ib_tasks.exceptions.custom_exceptions import InvalidRolesException
         FieldDTOFactory.reset_sequence(1)
         field_dtos = [
             FieldDTOFactory(
                 # field_id="field1",
                 read_permissions_to_roles=[
-                    "FIN_PAYMENTS_RP", "User", "Vendor", "FIN_PAYMENTS_LEVEL1_VERIFIER"
+                    "FIN_PAYMENT_POC", "User", "Vendor", "FIN_PAYMENT_REQUESTER"
                 ]
             ),
             FieldDTOFactory(
                 # field_id="filed2",
                 read_permissions_to_roles=[
-                    "FIN_PAYMENTS_LEVEL1_VERIFIER",
+                    "FIN_PAYMENT_REQUESTER",
                     "admin",
                 ]
             )
@@ -172,8 +176,7 @@ class TestCreateFieldsInteractor:
                 "invalid_roles": ["admin"]
             }
         ]
-        from ib_tasks.exceptions.custom_exceptions import InvalidRolesException
-        storage_mock.get_available_roles.return_value = avaliable_roles
+
         interactor = CreateFieldsInteractor(storage=storage_mock)
 
         # Act
@@ -183,29 +186,42 @@ class TestCreateFieldsInteractor:
         # Assert
         exception_object = err.value
         assert exception_object.roles == fields_invalid_roles_for_read_permission
+        get_valid_read_permissions_mock_method.assert_called_once()
+        storage_mock.create_fields.assert_not_called()
+        storage_mock.update_fields.assert_not_called()
 
 
     def test_given_invalid_roles_for_write_permissions_raise_exception(
-            self, storage_mock
+            self, storage_mock, mocker
     ):
         # Arrange
-        avaliable_roles = ["FIN_PAYMENTS_RP", "FIN_PAYMENTS_LEVEL1_VERIFIER"]
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import (
+            get_all_valid_read_permission_roles,
+            get_all_valid_write_permission_roles
+        )
+        get_valid_read_permissions_mock_method = \
+            get_all_valid_read_permission_roles(mocker)
+        get_valid_write_permissions_mock_method = \
+            get_all_valid_write_permission_roles(mocker)
+
+        from ib_tasks.exceptions.custom_exceptions import InvalidRolesException
+
         FieldDTOFactory.reset_sequence(1)
         field_dtos = [
             FieldDTOFactory(
                 read_permissions_to_roles=[
-                    "FIN_PAYMENTS_RP", "FIN_PAYMENTS_LEVEL1_VERIFIER"
+                    "FIN_PAYMENT_POC", "FIN_PAYMENT_REQUESTER"
                 ],
                 write_permissions_to_roles=[
-                    "FIN_PAYMENTS_RP", "User", "Vendor", "FIN_PAYMENTS_LEVEL1_VERIFIER"
+                    "FIN_PAYMENT_POC", "User", "Vendor", "FIN_PAYMENTS_LEVEL1_VERIFIER"
                 ]
             ),
             FieldDTOFactory(
                 read_permissions_to_roles=[
-                    "FIN_PAYMENTS_RP", "FIN_PAYMENTS_LEVEL1_VERIFIER"
+                    "FIN_PAYMENT_POC"
                 ],
                 write_permissions_to_roles=[
-                    "FIN_PAYMENTS_LEVEL1_VERIFIER",
+                    "FIN_PAYMENT_POC",
                     "admin",
                 ]
             )
@@ -213,7 +229,7 @@ class TestCreateFieldsInteractor:
         fields_invalid_roles_for_write_permission = [
             {
                 "field_id": "field1",
-                "invalid_roles": ["User", "Vendor"],
+                "invalid_roles": ["User", "Vendor", "FIN_PAYMENTS_LEVEL1_VERIFIER"],
                 "permissions": "write_permissions",
             },
             {
@@ -222,8 +238,6 @@ class TestCreateFieldsInteractor:
                 "invalid_roles": ["admin"]
             }
         ]
-        from ib_tasks.exceptions.custom_exceptions import InvalidRolesException
-        storage_mock.get_available_roles.return_value = avaliable_roles
         interactor = CreateFieldsInteractor(storage=storage_mock)
 
         # Act
@@ -233,6 +247,8 @@ class TestCreateFieldsInteractor:
         # Assert
         exception_object = err.value
         assert exception_object.roles == fields_invalid_roles_for_write_permission
+        get_valid_write_permissions_mock_method.assert_called_once()
+        get_valid_read_permissions_mock_method.assert_called_once()
 
     def test_given_empty_values_for_read_permissions_raise_exception(
             self, storage_mock
@@ -297,10 +313,18 @@ class TestCreateFieldsInteractor:
         assert exception_object.message == exception_message
 
     def test_given_new_field_ids_populate_fields(
-            self, storage_mock
+            self, storage_mock, mocker
     ):
         # Arrange
-        avaliable_roles = ["FIN_PAYMENTS_RP", "FIN_PAYMENTS_LEVEL1_VERIFIER"]
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import (
+            get_all_valid_read_permission_roles,
+            get_all_valid_write_permission_roles
+        )
+        get_valid_read_permissions_mock_method = \
+            get_all_valid_read_permission_roles(mocker)
+        get_valid_write_permissions_mock_method = \
+            get_all_valid_write_permission_roles(mocker)
+
         FieldDTOFactory.reset_sequence(1)
         field_dtos = [
             FieldDTOFactory(),
@@ -309,7 +333,6 @@ class TestCreateFieldsInteractor:
         ]
         existing_field_ids = []
         interactor = CreateFieldsInteractor(storage=storage_mock)
-        storage_mock.get_available_roles.return_value = avaliable_roles
         storage_mock.get_existing_field_ids.return_value = existing_field_ids
 
         # Act
@@ -317,13 +340,22 @@ class TestCreateFieldsInteractor:
 
         # Assert
         storage_mock.create_fields.assert_called_once_with(field_dtos)
+        get_valid_write_permissions_mock_method.assert_called_once()
+        get_valid_read_permissions_mock_method.assert_called_once()
 
     def test_given_field_ids_already_exist_in_database_then_update_fields(
-            self, storage_mock
+            self, storage_mock, mocker
     ):
         # Arrange
-        avaliable_roles = ["FIN_PAYMENTS_RP", "FIN_PAYMENTS_LEVEL1_VERIFIER"]
-        FieldDTOFactory.reset_sequence(1)
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import (
+            get_all_valid_read_permission_roles,
+            get_all_valid_write_permission_roles
+        )
+        get_valid_read_permissions_mock_method = \
+            get_all_valid_read_permission_roles(mocker)
+        get_valid_write_permissions_mock_method = \
+            get_all_valid_write_permission_roles(mocker)
+
         field_dtos = [
             FieldDTOFactory(field_id="FIN_TYPE_OF_VENDOR"),
             FieldDTOFactory(field_id="FIN_SALUATION"),
@@ -332,7 +364,6 @@ class TestCreateFieldsInteractor:
         ]
         existing_field_ids = ["FIN_FIRST NAME", "FIN_TYPE_OF_VENDOR"]
         interactor = CreateFieldsInteractor(storage=storage_mock)
-        storage_mock.get_available_roles.return_value = avaliable_roles
         storage_mock.get_existing_field_ids.return_value = existing_field_ids
 
         # Act
@@ -340,3 +371,5 @@ class TestCreateFieldsInteractor:
 
         # Assert
         storage_mock.update_fields.assert_called_once_with(field_dtos)
+        get_valid_write_permissions_mock_method.assert_called_once()
+        get_valid_read_permissions_mock_method.assert_called_once()

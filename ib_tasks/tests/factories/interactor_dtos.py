@@ -13,8 +13,8 @@ class FieldDTOFactory(factory.Factory):
     field_type = "DROPDOWN"
     field_values = ["Mr", "Mrs", "Ms"]
     required = True
-    read_permissions_to_roles = ["FIN_PAYMENTS_RP", "FIN_PAYMENTS_LEVEL1_VERIFIER"]
-    write_permissions_to_roles = ["FIN_PAYMENTS_RP"]
+    read_permissions_to_roles = ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC"]
+    write_permissions_to_roles = ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC"]
     help_text = "Verify the code"
     tool_tip = "Request"
     placeholder_text = "select vendor"
