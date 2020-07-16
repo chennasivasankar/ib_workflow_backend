@@ -2,7 +2,8 @@ from unittest.mock import create_autospec, Mock
 
 import pytest
 
-from ib_tasks.tests.factories.interactor_dtos import FieldDTOFactory
+from ib_tasks.tests.factories.storage_dtos import \
+    FieldDTOFactory, FieldRolesDTOFactory
 
 from ib_tasks.interactors.create_fields_ineractor import CreateFieldsInteractor
 
@@ -11,13 +12,14 @@ class TestCreateFieldsInteractor:
 
     @pytest.fixture
     def storage_mock(self):
-        from ib_tasks.interactors.storage_interfaces.tasks_storage_interface \
+        from ib_tasks.interactors.storage_interfaces.task_storage_interface \
             import TaskStorageInterface
         storage = create_autospec(TaskStorageInterface)
         return storage
 
     def test_given_gof_id_is_empty_raise_exception(self, storage_mock):
         # Arrange
+        field_roles_dtos = [FieldRolesDTOFactory()]
         field_dtos = [FieldDTOFactory(), FieldDTOFactory(gof_id=" ")]
         from ib_tasks.exceptions.custom_exceptions import InvalidGOFId
         interactor = CreateFieldsInteractor(storage=storage_mock)
@@ -25,7 +27,7 @@ class TestCreateFieldsInteractor:
 
         # Act
         with pytest.raises(InvalidGOFId) as err:
-            interactor.create_fields(field_dtos)
+            interactor.create_fields(field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
 
         # Arrange
         assert str(err.value) == error_message
@@ -33,6 +35,7 @@ class TestCreateFieldsInteractor:
 
     def test_given_field_id_is_empty_raise_exception(self, storage_mock):
         # Arrange
+        field_roles_dtos = [FieldRolesDTOFactory()]
         field_dtos = [FieldDTOFactory(), FieldDTOFactory(field_id=" ")]
         from ib_tasks.exceptions.custom_exceptions import InvalidFieldIdException
         interactor = CreateFieldsInteractor(storage=storage_mock)
@@ -40,7 +43,7 @@ class TestCreateFieldsInteractor:
 
         # Act
         with pytest.raises(InvalidFieldIdException) as err:
-            interactor.create_fields(field_dtos)
+            interactor.create_fields(field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
 
         # Arrange
         assert str(err.value) == error_message
@@ -48,6 +51,7 @@ class TestCreateFieldsInteractor:
 
     def test_given_duplication_of_filed_ids_raise_exception(self, storage_mock):
         # Arrange
+        field_roles_dtos = [FieldRolesDTOFactory()]
         field_dtos = [
             FieldDTOFactory(), FieldDTOFactory(),
             FieldDTOFactory(field_id="FIN_SALUATION"),
@@ -59,7 +63,7 @@ class TestCreateFieldsInteractor:
 
         # Act
         with pytest.raises(DuplicationOfFieldIdsExist) as err:
-            interactor.create_fields(field_dtos)
+            interactor.create_fields(field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
 
         # Assert
         exception_object = err.value
@@ -67,6 +71,7 @@ class TestCreateFieldsInteractor:
 
     def test_given_invalid_field_type_raise_ecxception(self, storage_mock):
         # Arrange
+        field_roles_dtos = [FieldRolesDTOFactory()]
         field_dtos = [FieldDTOFactory(field_type=""), FieldDTOFactory(field_type="Hello")]
         from ib_tasks.exceptions.custom_exceptions import InvalidValueForFieldType
         from ib_tasks.constants.constants import FIELD_TYPES_LIST
@@ -75,7 +80,7 @@ class TestCreateFieldsInteractor:
 
         # Act
         with pytest.raises(InvalidValueForFieldType) as err:
-            interactor.create_fields(field_dtos)
+            interactor.create_fields(field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
 
         # Arrange
         assert str(err.value) == error_message
@@ -84,6 +89,7 @@ class TestCreateFieldsInteractor:
             self, storage_mock
     ):
         # Arrange
+        field_roles_dtos = [FieldRolesDTOFactory()]
         field_dtos = [
             FieldDTOFactory(),
             FieldDTOFactory(),
@@ -96,7 +102,7 @@ class TestCreateFieldsInteractor:
 
         # Act
         with pytest.raises(InvalidValueForFieldDisplayName) as err:
-            interactor.create_fields(field_dtos)
+            interactor.create_fields(field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
 
         # Assert
         exception_object = err.value
@@ -108,6 +114,7 @@ class TestCreateFieldsInteractor:
             self, storage_mock
     ):
         # Arrange
+        field_roles_dtos = [FieldRolesDTOFactory()]
         FieldDTOFactory.reset_sequence(1)
         field_dtos = [
             FieldDTOFactory(),
@@ -132,7 +139,7 @@ class TestCreateFieldsInteractor:
 
         # Act
         with pytest.raises(FieldsDuplicationOfDropDownValues) as err:
-            interactor.create_fields(field_dtos)
+            interactor.create_fields(field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
 
         # Assert
         exception_object = err.value
@@ -143,6 +150,7 @@ class TestCreateFieldsInteractor:
             self, storage_mock, mocker
     ):
         # Arrange
+        field_dtos = [FieldDTOFactory(), FieldDTOFactory()]
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_all_valid_read_permission_roles
         get_valid_read_permissions_mock_method = \
@@ -150,15 +158,17 @@ class TestCreateFieldsInteractor:
         from ib_tasks.exceptions.custom_exceptions import InvalidRolesException
         FieldDTOFactory.reset_sequence(1)
         field_dtos = [
-            FieldDTOFactory(
-                # field_id="field1",
-                read_permissions_to_roles=[
+            FieldDTOFactory(), FieldDTOFactory(),
+        ]
+        FieldRolesDTOFactory.reset_sequence(1)
+        field_roles_dtos = [
+            FieldRolesDTOFactory(
+                read_permission_roles=[
                     "FIN_PAYMENT_POC", "User", "Vendor", "FIN_PAYMENT_REQUESTER"
                 ]
             ),
-            FieldDTOFactory(
-                # field_id="filed2",
-                read_permissions_to_roles=[
+            FieldRolesDTOFactory(
+                read_permission_roles=[
                     "FIN_PAYMENT_REQUESTER",
                     "admin",
                 ]
@@ -181,7 +191,7 @@ class TestCreateFieldsInteractor:
 
         # Act
         with pytest.raises(InvalidRolesException) as err:
-            interactor.create_fields(field_dtos)
+            interactor.create_fields(field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
 
         # Assert
         exception_object = err.value
@@ -195,6 +205,9 @@ class TestCreateFieldsInteractor:
             self, storage_mock, mocker
     ):
         # Arrange
+        FieldDTOFactory.reset_sequence(1)
+        field_dtos = [FieldDTOFactory(), FieldDTOFactory()]
+        FieldRolesDTOFactory.reset_sequence(1)
         from ib_tasks.tests.common_fixtures.adapters.roles_service import (
             get_all_valid_read_permission_roles,
             get_all_valid_write_permission_roles
@@ -207,20 +220,21 @@ class TestCreateFieldsInteractor:
         from ib_tasks.exceptions.custom_exceptions import InvalidRolesException
 
         FieldDTOFactory.reset_sequence(1)
-        field_dtos = [
-            FieldDTOFactory(
-                read_permissions_to_roles=[
+
+        field_roles_dtos = [
+            FieldRolesDTOFactory(
+                read_permission_roles=[
                     "FIN_PAYMENT_POC", "FIN_PAYMENT_REQUESTER"
                 ],
-                write_permissions_to_roles=[
+                write_permission_roles=[
                     "FIN_PAYMENT_POC", "User", "Vendor", "FIN_PAYMENTS_LEVEL1_VERIFIER"
                 ]
             ),
-            FieldDTOFactory(
-                read_permissions_to_roles=[
+            FieldRolesDTOFactory(
+                read_permission_roles=[
                     "FIN_PAYMENT_POC"
                 ],
-                write_permissions_to_roles=[
+                write_permission_roles=[
                     "FIN_PAYMENT_POC",
                     "admin",
                 ]
@@ -242,7 +256,7 @@ class TestCreateFieldsInteractor:
 
         # Act
         with pytest.raises(InvalidRolesException) as err:
-            interactor.create_fields(field_dtos)
+            interactor.create_fields(field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
 
         # Assert
         exception_object = err.value
@@ -256,19 +270,14 @@ class TestCreateFieldsInteractor:
         # Arrange
         exception_message = "Permissions to roles shouldn't be empty"
         field_dtos = [
-            FieldDTOFactory(
-                read_permissions_to_roles=[],
-                write_permissions_to_roles=[
-                    "FIN_PAYMENTS_RP", "FIN_PAYMENTS_LEVEL1_VERIFIER"
-                ]
+            FieldDTOFactory(), FieldDTOFactory(),
+        ]
+        field_roles_dtos = [
+            FieldRolesDTOFactory(
+                read_permission_roles=[]
             ),
-            FieldDTOFactory(
-                read_permissions_to_roles=[
-                    "FIN_PAYMENTS_RP", "FIN_PAYMENTS_LEVEL1_VERIFIER"
-                ],
-                write_permissions_to_roles=[
-                    "FIN_PAYMENTS_LEVEL1_VERIFIER"
-                ]
+            FieldRolesDTOFactory(
+                read_permission_roles=[]
             )
         ]
         from ib_tasks.exceptions.custom_exceptions import EmptyValueForPermissions
@@ -276,7 +285,9 @@ class TestCreateFieldsInteractor:
 
         # Act
         with pytest.raises(EmptyValueForPermissions) as err:
-            interactor.create_fields(field_dtos)
+            interactor.create_fields(
+                field_dtos=field_dtos, field_roles_dtos=field_roles_dtos
+            )
 
         # Assert
         exception_object = err.value
@@ -288,17 +299,14 @@ class TestCreateFieldsInteractor:
         # Arrange
         exception_message = "Permissions to roles shouldn't be empty"
         field_dtos = [
-            FieldDTOFactory(
-                read_permissions_to_roles=["FIN_PAYMENTS_RP"],
-                write_permissions_to_roles=[
-                    "FIN_PAYMENTS_RP", "FIN_PAYMENTS_LEVEL1_VERIFIER"
-                ]
+            FieldDTOFactory(), FieldDTOFactory(),
+        ]
+        field_roles_dtos = [
+            FieldRolesDTOFactory(
+                write_permission_roles=[]
             ),
-            FieldDTOFactory(
-                read_permissions_to_roles=[
-                    "FIN_PAYMENTS_RP", "FIN_PAYMENTS_LEVEL1_VERIFIER"
-                ],
-                write_permissions_to_roles=[]
+            FieldRolesDTOFactory(
+                write_permission_roles=[]
             )
         ]
         from ib_tasks.exceptions.custom_exceptions import EmptyValueForPermissions
@@ -306,7 +314,7 @@ class TestCreateFieldsInteractor:
 
         # Act
         with pytest.raises(EmptyValueForPermissions) as err:
-            interactor.create_fields(field_dtos)
+            interactor.create_fields(field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
 
         # Assert
         exception_object = err.value
@@ -316,6 +324,9 @@ class TestCreateFieldsInteractor:
             self, storage_mock, mocker
     ):
         # Arrange
+        FieldDTOFactory.reset_sequence(1)
+        FieldRolesDTOFactory.reset_sequence(1)
+        field_roles_dtos = [FieldRolesDTOFactory()]
         from ib_tasks.tests.common_fixtures.adapters.roles_service import (
             get_all_valid_read_permission_roles,
             get_all_valid_write_permission_roles
@@ -327,8 +338,6 @@ class TestCreateFieldsInteractor:
 
         FieldDTOFactory.reset_sequence(1)
         field_dtos = [
-            FieldDTOFactory(),
-            FieldDTOFactory(),
             FieldDTOFactory()
         ]
         existing_field_ids = []
@@ -336,10 +345,11 @@ class TestCreateFieldsInteractor:
         storage_mock.get_existing_field_ids.return_value = existing_field_ids
 
         # Act
-        interactor.create_fields(field_dtos)
+        interactor.create_fields(field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
 
         # Assert
         storage_mock.create_fields.assert_called_once_with(field_dtos)
+        storage_mock.create_fields_roles.assert_called_once_with(field_roles_dtos)
         get_valid_write_permissions_mock_method.assert_called_once()
         get_valid_read_permissions_mock_method.assert_called_once()
 
@@ -347,6 +357,10 @@ class TestCreateFieldsInteractor:
             self, storage_mock, mocker
     ):
         # Arrange
+        field_roles_dtos = [
+            FieldRolesDTOFactory(field_id="FIN_FIRST NAME"),
+            FieldRolesDTOFactory(field_id="FIN_DISPLAY NAME")
+        ]
         from ib_tasks.tests.common_fixtures.adapters.roles_service import (
             get_all_valid_read_permission_roles,
             get_all_valid_write_permission_roles
@@ -357,8 +371,6 @@ class TestCreateFieldsInteractor:
             get_all_valid_write_permission_roles(mocker)
 
         field_dtos = [
-            FieldDTOFactory(field_id="FIN_TYPE_OF_VENDOR"),
-            FieldDTOFactory(field_id="FIN_SALUATION"),
             FieldDTOFactory(field_id="FIN_FIRST NAME"),
             FieldDTOFactory(field_id="FIN_DISPLAY NAME")
         ]
@@ -367,9 +379,10 @@ class TestCreateFieldsInteractor:
         storage_mock.get_existing_field_ids.return_value = existing_field_ids
 
         # Act
-        interactor.create_fields(field_dtos)
+        interactor.create_fields(field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
 
         # Assert
         storage_mock.update_fields.assert_called_once_with(field_dtos)
+        storage_mock.update_fields_roles(field_roles_dtos)
         get_valid_write_permissions_mock_method.assert_called_once()
         get_valid_read_permissions_mock_method.assert_called_once()

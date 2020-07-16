@@ -8,7 +8,7 @@ from ib_tasks.exceptions.custom_exceptions import (
 from ib_tasks.interactors.storage_interfaces.dtos import (
     CompleteGoFDetailsDTO, GoFRolesDTO, GoFFieldsDTO, GoFDTO
 )
-from ib_tasks.interactors.storage_interfaces.tasks_storage_interface \
+from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
 
 
