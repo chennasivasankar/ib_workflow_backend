@@ -35,3 +35,50 @@ class InvalidValueForFieldDisplayName(Exception):
 
     def __init__(self, message: str):
         self.message = message
+
+
+class InvalidValueForFieldType(Exception):
+
+    def __init__(self, message: str):
+        self.message = message
+
+
+class InvalidGOFId(Exception):
+    def __int__(self, message: str):
+        self.message = message
+
+
+class GOFIdCantBeEmpty(Exception):
+    pass
+
+
+class GOFDisplayNameCantBeEmpty(Exception):
+    pass
+
+
+class GOFReadPermissionsCantBeEmpty(Exception):
+    pass
+
+
+class GOFWritePermissionsCantBeEmpty(Exception):
+    pass
+
+
+class GOFFieldIdsCantBeEmpty(Exception):
+    pass
+
+
+class DuplicatedFieldIds(Exception):
+    pass
+
+
+class InvalidReadPermissionRoles(Exception):
+    pass
+
+
+class InvalidWritePermissionRoles(Exception):
+    pass
+
+
+class DifferentDisplayNamesForSameGOF(Exception):
+    pass

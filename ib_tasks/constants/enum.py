@@ -2,6 +2,7 @@ import enum
 
 
 class FieldTypes(enum.Enum):
+
     PLAIN_TEXT = "PLAIN_TEXT"
     PHONE_NUMBER = "PHONE_NUMBER"
     EMAIL = "EMAIL"
@@ -17,3 +18,8 @@ class FieldTypes(enum.Enum):
     DATE = "DATE"
     TIME = "TIME"
     DATE_TIME = "DATE_TIME"
+
+
+class PermissionTypes(enum.Enum):
+    WRITE = "WRITE"
+    READ = "READ"
