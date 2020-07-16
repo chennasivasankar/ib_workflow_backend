@@ -12,3 +12,23 @@ class PresenterInterface(abc.ABC):
                                       task_actions_dto: List[TaskActionsDTO],
                                       task_ids: List[str]):
         pass
+
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_board_id(self):
+        pass
+
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_offset_value(self):
+        pass
+
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_limit_value(self):
+        pass
+
+
+    @abc.abstractmethod
+    def raise_exception_for_user_donot_have_access_for_board(self):
+        pass

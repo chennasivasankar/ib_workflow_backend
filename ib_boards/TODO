@@ -1,13 +1,14 @@
 To be Implemented:
-    1. given task id stage id get task details
-        - get fields
-            
-        - get actions
 
-    2. validate task ids
+
 
 
 In Progress:
 
 
 Implemented:
+    1. validate board id
+    3. validate limit
+    2. validate offset
+    5. get column details
+    4. validate user permissions for board

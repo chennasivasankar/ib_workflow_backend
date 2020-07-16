@@ -8,10 +8,11 @@ class TaskDTO:
     column_id: str
 
 
-# @dataclass
-# class TaskGetFieldsDto:
-#     task_id: str
-#     column_id: str
+@dataclass
+class ColumnDetailsDTO:
+    column_id: str
+    name: str
+
 
 @dataclass
 class TaskFieldsDTO:
