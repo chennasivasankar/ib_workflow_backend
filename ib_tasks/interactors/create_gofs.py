@@ -6,7 +6,7 @@ from ib_tasks.exceptions.custom_exceptions import (
     InvalidReadPermissionRoles, InvalidWritePermissionRoles
 )
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    CompleteGoFDetailsDTO, GoFRolesDTO, GoFFieldsDTO, GoFDTO
+    CompleteGoFDetailsDTO, GoFRolesDTO, GoFFieldsDTO, GoFDTO, GoFRoleDTO
 )
 from ib_tasks.interactors.storage_interfaces.tasks_storage_interface \
     import TaskStorageInterface
@@ -23,6 +23,7 @@ class CreateGoFsInteractor:
     def create_gofs(
             self, complete_gof_details_dtos: List[CompleteGoFDetailsDTO]
     ):
+        from ib_tasks.constants.enum import PermissionTypes
         gof_dtos = [
             complete_gof_details_dto.gof_dto
             for complete_gof_details_dto in complete_gof_details_dtos
@@ -35,15 +36,42 @@ class CreateGoFsInteractor:
             complete_gof_details_dto.gof_fields_dto
             for complete_gof_details_dto in complete_gof_details_dtos
         ]
+        field_ids = []
+        for gof_fields_dto in gof_fields_dtos:
+            field_ids += gof_fields_dto.field_ids
+
         self._validate_for_empty_mandatory_fields(
             gof_dtos=gof_dtos, gof_roles_dtos=gof_roles_dtos,
             gof_fields_dtos=gof_fields_dtos
         )
         self._validate_for_unique_field_ids(gof_fields_dtos=gof_fields_dtos)
+        self._validate_for_invalid_field_ids(field_ids=field_ids)
         self._validate_read_permission_roles(gof_roles_dtos=gof_roles_dtos)
         self._validate_write_permission_roles(gof_roles_dtos=gof_roles_dtos)
+
+        gof_role_dtos = []
+        for gof_roles_dto in gof_roles_dtos:
+            gof_role_dtos += [
+                GoFRoleDTO(
+                    gof_id=gof_roles_dto.gof_id,
+                    role=read_permission_role,
+                    permission_type=PermissionTypes.READ
+                )
+                for read_permission_role in gof_roles_dto.read_permission_roles
+            ]
+        for gof_roles_dto in gof_roles_dtos:
+            gof_role_dtos += [
+                GoFRoleDTO(
+                    gof_id=gof_roles_dto.gof_id,
+                    role=write_permission_role,
+                    permission_type=PermissionTypes.WRITE
+                )
+                for write_permission_role in (
+                    gof_roles_dto.write_permission_roles
+                )
+            ]
         self.storage.create_gofs(gof_dtos=gof_dtos)
-        self.storage.create_gof_roles(gof_roles_dtos=gof_roles_dtos)
+        self.storage.create_gof_roles(gof_role_dtos=gof_role_dtos)
         self.storage.create_gof_fields(gof_fields_dtos=gof_fields_dtos)
 
     def _validate_for_empty_mandatory_fields(
@@ -226,3 +254,18 @@ class CreateGoFsInteractor:
                 invalid_write_permission_roles_message
             )
         return
+
+    def _validate_for_invalid_field_ids(
+            self, field_ids: List[int]
+    ) -> Optional[InvalidFieldIds]:
+        valid_field_ids_in_given_field_ids = \
+            self.storage.get_valid_field_ids_in_given_field_ids(
+                field_ids=field_ids
+            )
+        invalid_field_ids_exists = len(field_ids) != \
+                                   len(valid_field_ids_in_given_field_ids)
+        if invalid_field_ids_exists:
+            invalid_field_ids = list(
+                set(field_ids) - set(valid_field_ids_in_given_field_ids)
+            )
+            raise InvalidFieldIds(invalid_field_ids=invalid_field_ids)

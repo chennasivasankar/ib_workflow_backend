@@ -9,7 +9,7 @@ from typing import List
 
 from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, FieldDTO
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    GoFDTO, GoFRolesDTO, GoFFieldsDTO
+    GoFDTO, GoFFieldsDTO, GoFRoleDTO
 )
 
 
@@ -46,7 +46,7 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def create_gof_roles(self, gof_roles_dtos: List[GoFRolesDTO]):
+    def create_gof_roles(self, gof_role_dtos: List[GoFRoleDTO]):
         pass
 
     @abc.abstractmethod

@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from typing import List, Union
+from typing import List
+from ib_tasks.constants.enum import PermissionTypes
 
 
 @dataclass
@@ -37,6 +38,13 @@ class GoFRolesDTO:
     gof_id: str
     read_permission_roles: List
     write_permission_roles: List
+
+
+@dataclass
+class GoFRoleDTO:
+    gof_id: str
+    role: str
+    permission_type: PermissionTypes
 
 
 @dataclass

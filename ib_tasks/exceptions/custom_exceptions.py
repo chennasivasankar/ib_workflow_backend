@@ -1,3 +1,6 @@
+from typing import List
+
+
 class GOFIdCantBeEmpty(Exception):
     pass
 
@@ -32,3 +35,9 @@ class InvalidWritePermissionRoles(Exception):
 
 class DifferentDisplayNamesForSameGOF(Exception):
     pass
+
+
+class InvalidFieldIds(Exception):
+
+    def __init__(self, invalid_field_ids: List[int]):
+        self.invalid_field_ids = invalid_field_ids
