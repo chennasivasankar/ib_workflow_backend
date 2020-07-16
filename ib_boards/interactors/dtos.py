@@ -21,7 +21,7 @@ class TaskSummaryFieldsDTO:
 
 
 @dataclass
-class BoardDTO:
+class CreateBoardDTO:
     board_id: str
     display_name: str
 

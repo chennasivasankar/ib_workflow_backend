@@ -5,7 +5,7 @@ Author: Pavankumar Pamuru
 """
 from typing import List
 
-from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
+from ib_boards.interactors.dtos import CreateBoardDTO, ColumnDTO, \
     TaskTemplateStagesDTO, TaskSummaryFieldsDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
@@ -16,7 +16,7 @@ class CreateBoardsAndColumnsInteractor:
         self.storage = storage
 
     def create_boards_and_columns(
-            self, board_dtos: List[BoardDTO], column_dtos: List[ColumnDTO]):
+            self, board_dtos: List[CreateBoardDTO], column_dtos: List[ColumnDTO]):
         board_ids = [board_dto.board_id for board_dto in board_dtos]
         column_ids = [column_dto.column_id for column_dto in column_dtos]
         self._validate_board_ids(board_ids=board_ids)
@@ -56,7 +56,7 @@ class CreateBoardsAndColumnsInteractor:
             raise DuplicateBoardIds(board_ids=duplicate_board_ids)
 
     @staticmethod
-    def _validate_board_display_name(board_dtos: List[BoardDTO]):
+    def _validate_board_display_name(board_dtos: List[CreateBoardDTO]):
         for board_dto in board_dtos:
             is_invalid_display_name = not board_dto.display_name
             if is_invalid_display_name:

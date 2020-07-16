@@ -30,22 +30,31 @@ class GetBoardsInteractor:
             return presenter.get_response_for_invalid_offset()
         except InvalidLimitValue:
             return presenter.get_response_for_invalid_limit()
+        return presenter.get_response_for_get_boards(board_dtos=board_dtos)
 
     def get_boards(self, get_boards_dto: GetBoardsDTO):
         from ib_boards.adapters.service_adapter import get_service_adapter
-
         service_adapter = get_service_adapter()
         user_id = get_boards_dto.user_id
-        user_role = service_adapter.user_service.get_user_role(
-            user_id=user_id
-        )
-        self.storage.validate_user_role_with_boards_roles(
-            user_role=user_role
-        )
+        user_role = service_adapter.user_service.get_user_role(user_id=user_id)
+        self.storage.validate_user_role_with_boards_roles(user_role=user_role)
         offset = get_boards_dto.offset
         limit = get_boards_dto.limit
         if offset < 0:
             raise InvalidOffsetValue
         if limit < 1:
             raise InvalidLimitValue
-        return 1
+        board_ids = self.storage.get_board_ids(
+            user_role=user_role,
+            offset=offset,
+            limit=limit
+        )
+        from ib_boards.interactors.get_board_details_interactor \
+            import GetBoardsDetailsInteractor
+        board_details_interactor = GetBoardsDetailsInteractor(
+            storage=self.storage
+        )
+        boards_details_dtos = board_details_interactor.get_boards_details(
+            board_ids=board_ids
+        )
+        return boards_details_dtos

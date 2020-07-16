@@ -63,8 +63,8 @@ class DuplicateSummaryFieldsInTask(Exception):
 class InvalidUserRoles(Exception):
     def __init__(self, user_role_ids: List[str]):
         self.user_role_ids = user_role_ids
-        
-        
+
+
 class ColumnIdsAssignedToDifferentBoard(Exception):
     def __init__(self, column_ids: List[str]):
         self.column_ids = column_ids
@@ -80,3 +80,8 @@ class InvalidOffsetValue(Exception):
 
 class InvalidLimitValue(Exception):
     pass
+
+
+class InvalidBoardIds(Exception):
+    def __init__(self, board_ids: List[str]):
+        self.board_ids = board_ids

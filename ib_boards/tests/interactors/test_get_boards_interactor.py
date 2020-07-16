@@ -9,6 +9,7 @@ import pytest
 
 from ib_boards.interactors.dtos import GetBoardsDTO
 from ib_boards.interactors.get_boards_interactor import GetBoardsInteractor
+from ib_boards.tests.factories.storage_dtos import BoardDTOFactory
 
 
 class TestGetBoardsInteractor:
@@ -130,3 +131,41 @@ class TestGetBoardsInteractor:
         # Assert
         presenter_mock.get_response_for_invalid_limit.assert_called_once_with()
         assert actual_response == expected_response
+
+    def test_with_valid_details_return_board_details(
+            self, storage_mock, presenter_mock, get_boards_dto, mocker):
+        # Arrange
+        board_ids = ['BOARD_ID_1', 'BOARD_ID_2', 'BOARD_ID_3']
+        board_dtos = BoardDTOFactory.create_batch(3)
+        BoardDTOFactory.reset_sequence()
+
+        interactor = GetBoardsInteractor(
+            storage=storage_mock
+        )
+        expected_response = Mock()
+        storage_mock.get_board_ids.return_value = board_ids
+        presenter_mock.get_response_for_get_boards.\
+            return_value = expected_response
+        from ib_boards.tests.common_fixtures.interactors import \
+            get_board_details_mock
+        interactor_mock = get_board_details_mock(mocker)
+        # Act
+        actual_response = interactor.get_boards_wrapper(
+            get_boards_dto=get_boards_dto,
+            presenter=presenter_mock
+        )
+
+        # Assert
+        storage_mock.get_board_ids.assert_called_once_with(
+            user_role=None, offset=1, limit=1
+        )
+        interactor_mock.assert_called_once_with(
+            board_ids=board_ids
+        )
+        presenter_mock.get_response_for_get_boards.assert_called_once_with(
+            board_dtos=board_dtos
+        )
+        assert actual_response == expected_response
+
+
+

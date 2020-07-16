@@ -7,7 +7,7 @@ import json
 
 import factory
 
-from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
+from ib_boards.interactors.dtos import CreateBoardDTO, ColumnDTO, \
     TaskTemplateStagesDTO, TaskSummaryFieldsDTO
 
 
@@ -27,9 +27,9 @@ class TaskSummaryFieldsDTOFactory(factory.Factory):
     summary_fields = ['Price', 'task_name']
 
 
-class BoardDTOFactory(factory.Factory):
+class CreateBoardDTOFactory(factory.Factory):
     class Meta:
-        model = BoardDTO
+        model = CreateBoardDTO
 
     board_id = factory.Sequence(lambda n: f'BOARD_ID_{n + 1}')
     display_name = factory.Sequence(lambda n: f'BOARD_DISPLAY_NAME')

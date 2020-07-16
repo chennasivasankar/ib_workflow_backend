@@ -7,7 +7,7 @@ import pytest
 
 from ib_boards.interactors.create_boards_and_columns_interactor import \
     CreateBoardsAndColumnsInteractor
-from ib_boards.tests.factories.interactor_dtos import BoardDTOFactory, \
+from ib_boards.tests.factories.interactor_dtos import CreateBoardDTOFactory, \
     ColumnDTOFactory, TaskTemplateStagesDTOFactory, TaskSummaryFieldsDTOFactory
 
 
@@ -25,14 +25,14 @@ class TestPopulateScriptInteractor:
     def sequence_reset(self):
         TaskTemplateStagesDTOFactory.reset_sequence()
         TaskSummaryFieldsDTOFactory.reset_sequence()
-        BoardDTOFactory.reset_sequence()
+        CreateBoardDTOFactory.reset_sequence()
         ColumnDTOFactory.reset_sequence()
 
     @pytest.fixture
     def board_dto_with_duplicate_ids(self):
-        board_dto_1 = BoardDTOFactory()
-        BoardDTOFactory.reset_sequence()
-        board_dto_2 = BoardDTOFactory()
+        board_dto_1 = CreateBoardDTOFactory()
+        CreateBoardDTOFactory.reset_sequence()
+        board_dto_2 = CreateBoardDTOFactory()
         return [
             board_dto_1,
             board_dto_2
@@ -41,13 +41,13 @@ class TestPopulateScriptInteractor:
     @pytest.fixture
     def board_dtos_with_no_display_name(self):
         return [
-            BoardDTOFactory(display_name=''),
-            BoardDTOFactory()
+            CreateBoardDTOFactory(display_name=''),
+            CreateBoardDTOFactory()
         ]
 
     @pytest.fixture
     def board_dtos(self):
-        return BoardDTOFactory.create_batch(3)
+        return CreateBoardDTOFactory.create_batch(3)
 
     @pytest.fixture
     def column_dtos(self):
