@@ -12,7 +12,7 @@ def populate_tasks(tasks: List[Dict]):
 
 def writing_data_to_task_actions_logic(actions_dict: List[Dict]):
 
-    with open('ib_tasks/populate/stage_actions_logic.py', "a") as file:
+    with open('ib_tasks/populate/task_initial_stage_actions_logic.py', "a") as file:
         for action_dict in actions_dict:
             _define_single_method(file=file, action_dict=action_dict)
         file.close()
@@ -23,7 +23,7 @@ def _define_single_method(file, action_dict: Dict[str, str]):
     action_name = action_dict["action_name"]
     action_logic = action_dict['action_logic']
     file.write(f"\n\ndef {stage_id}_{action_name}(task_dict):\n")
-    file.write(action_logic)
+    file.write(action_logic + "\n")
     file.write("\t" + "return task_dict\n")
 
 
@@ -70,7 +70,7 @@ def _validate_action_logic(action_logic: str):
     try:
         parse(action_logic)
     except AstroidSyntaxError:
-        InvalidPythonCodeException()
+        raise InvalidPythonCodeException()
 
 
 def raise_exception_for_valid_format():

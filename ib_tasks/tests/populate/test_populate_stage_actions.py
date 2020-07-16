@@ -1,3 +1,4 @@
+from unittest import mock
 
 
 class TestCasePopulateStageActions:
@@ -71,3 +72,51 @@ class TestCasePopulateStageActions:
 
         # Assert
         assert response == expected_action_dto
+
+    @staticmethod
+    def test_given_invalid_python_code_raises_exception():
+
+        # Arrange
+        actions = [
+            {
+                "stage_id": "stage_1",
+                "action_logic": "if a> b c=8",
+                "action_name": "action_name_1",
+                "role": "ROLE_1",
+                "button_text": "button_text_1",
+                "button_color": "button_color_1"
+            }
+        ]
+        import pytest
+        from ib_tasks.populate.populate_stage_actions \
+            import populate_stage_actions
+        from ib_tasks.exceptions.custom_exceptions \
+            import InvalidPythonCodeException
+
+        # Act
+        with pytest.raises(InvalidPythonCodeException):
+            populate_stage_actions(actions_dict=actions)
+
+    @staticmethod
+    @mock.patch('__main__.__builtins__.open', new_callable=mock.mock_open)
+    def test_mocking_writing_methods_to_file(os_system):
+
+        # Arrange
+        actions = [
+            {
+                "stage_id": "stage_1",
+                "action_logic": "if a > b: c=8",
+                "action_name": "action_name_1",
+                "role": "ROLE_1",
+                "button_text": "button_text_1",
+                "button_color": "button_color_1"
+            }
+        ]
+        from ib_tasks.populate.populate_stage_actions \
+            import populate_stage_actions
+
+        # Act
+        populate_stage_actions(actions_dict=actions)
+
+        # Assert
+        os_system.assert_called_with('ib_tasks/populate/stage_actions_logic.py', 'a')
