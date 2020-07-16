@@ -7,10 +7,11 @@ from ib_common.models import AbstractDateTimeModel
 class Team(AbstractDateTimeModel):
     team_id = models.UUIDField(
         default=uuid.uuid4,
-        editable=False
+        editable=False,
+        primary_key=True
     )
-    name = models.CharField(max_length=100)
-    description = models.CharField(max_length=200)
+    name = models.CharField(max_length=100, unique=True)
+    description = models.CharField(max_length=200, null=True, blank=True)
     created_by = models.CharField(max_length=200)
 
 

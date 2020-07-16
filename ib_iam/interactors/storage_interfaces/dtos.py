@@ -2,6 +2,11 @@ from dataclasses import dataclass
 from typing import List
 
 @dataclass
+class AddTeamParametersDTO:
+    name: str
+    description: str
+
+@dataclass
 class PaginationDTO:
     limit: int
     offset: int

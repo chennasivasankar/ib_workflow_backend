@@ -1,3 +1,3 @@
 from .custom_exceptions import (
-    UserHasNoAccess, InvalidLimit, InvalidOffset
+    UserHasNoAccess, InvalidLimit, InvalidOffset, DuplicateTeamName
 )

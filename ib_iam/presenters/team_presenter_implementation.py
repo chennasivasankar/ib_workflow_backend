@@ -3,7 +3,7 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 from ib_iam.interactors.presenter_interfaces.dtos import TeamWithMembersDetailsDTO
 from ib_iam.interactors.presenter_interfaces.team_presenter_interface import TeamPresenterInterface
 from ib_iam.constants.exception_messages import (
-    USER_HAS_NO_ACCESS, INVALID_LIMIT, INVALID_OFFSET
+    USER_HAS_NO_ACCESS, INVALID_LIMIT, INVALID_OFFSET, DUPLICATE_TEAM_NAME
 )
 
 
@@ -39,18 +39,33 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
             response_dict=response_dict
         )
 
+    def raise_exception_for_duplicate_team_name(self, exception):
+        response_dict = {
+            "response": DUPLICATE_TEAM_NAME[0] % exception.team_name,
+            "http_status_code": 400,
+            "res_status": DUPLICATE_TEAM_NAME[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict
+        )
+
     def get_response_for_get_list_of_teams(
             self, team_details_dtos: TeamWithMembersDetailsDTO
     ):
         team_details_dict = self._make_all_teams_details_dict(team_details_dtos=team_details_dtos)
         return self.prepare_200_success_response(response_dict=team_details_dict)
 
+    def get_response_for_add_team(self, team_id: str):
+        return self.prepare_201_created_response(
+            response_dict={"team_id": team_id}
+        )
+
     def _make_all_teams_details_dict(self, team_details_dtos: TeamWithMembersDetailsDTO):
         team_dtos = team_details_dtos.team_dtos
         team_member_ids_dtos = team_details_dtos.team_member_ids_dtos
         members_dtos = team_details_dtos.member_dtos
         all_members_dict = self._get_all_members_details_dict(members_dtos=members_dtos)
-        team_member_ids_dict = self.get_team_members_dict_from_team_member_ids_dtos(
+        team_member_ids_dict = self._get_team_members_dict_from_team_member_ids_dtos(
             team_member_ids_dtos=team_member_ids_dtos
         )
         teams_details_dict_list = []
@@ -110,7 +125,7 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
         return members_dict
 
     @staticmethod
-    def get_team_members_dict_from_team_member_ids_dtos(
+    def _get_team_members_dict_from_team_member_ids_dtos(
             team_member_ids_dtos
     ):
         from collections import defaultdict

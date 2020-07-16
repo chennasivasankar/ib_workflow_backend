@@ -12,3 +12,8 @@ INVALID_OFFSET = (
     "Given offset is not valid, please check it",
     "INVALID_OFFSET"
 )
+
+DUPLICATE_TEAM_NAME = (
+    "Given '%s' is already exists, so choose another",
+    "DUPLICATE_TEAM_NAME"
+)

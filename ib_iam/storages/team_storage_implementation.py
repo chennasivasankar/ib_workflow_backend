@@ -1,9 +1,9 @@
-from typing import List
+from typing import List, Optional
 from ib_iam.interactors.storage_interfaces.team_storage_interface import TeamStorageInterface
 from ib_iam.models import User, Team, TeamMember
-from ib_iam.exceptions.custom_exceptions import UserHasNoAccess
+from ib_iam.exceptions.custom_exceptions import UserHasNoAccess, DuplicateTeamName
 from ib_iam.interactors.storage_interfaces.dtos import (
-    PaginationDTO, BasicTeamDTO, TeamMembersDTO
+    PaginationDTO, BasicTeamDTO, TeamMembersDTO, AddTeamParametersDTO
 )
 
 
@@ -25,18 +25,6 @@ class TeamStorageImplementation(TeamStorageInterface):
         team_dtos_list = self._get_team_dtos(team_objects=team_objects)
         return team_dtos_list
 
-    @staticmethod
-    def _get_team_dtos(team_objects):
-        team_dtos = [
-            BasicTeamDTO(
-                team_id=str(team_object.team_id),
-                name=team_object.name,
-                description=team_object.description
-            )
-            for team_object in team_objects
-        ]
-        return team_dtos
-
     def get_team_member_ids_dtos(
             self, team_ids: List[str]
     ) -> List[TeamMembersDTO]:
@@ -55,3 +43,29 @@ class TeamStorageImplementation(TeamStorageInterface):
             ) for team_id in team_ids
         ]
         return team_member_ids_dtos
+
+    def add_team(
+            self, user_id: str, add_team_params_dto: AddTeamParametersDTO
+    ) -> Optional[str]:
+        from django.db import IntegrityError
+        try:
+            team_object = Team.objects.create(
+                name=add_team_params_dto.name,
+                description=add_team_params_dto.description,
+                created_by=user_id
+            )
+        except IntegrityError:
+            raise DuplicateTeamName(team_name=add_team_params_dto.name)
+        return str(team_object.team_id)
+
+    @staticmethod
+    def _get_team_dtos(team_objects):
+        team_dtos = [
+            BasicTeamDTO(
+                team_id=str(team_object.team_id),
+                name=team_object.name,
+                description=team_object.description
+            )
+            for team_object in team_objects
+        ]
+        return team_dtos

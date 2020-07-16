@@ -151,7 +151,7 @@
                         "res_status": {
                             "type": "string",
                             "enum": [
-                                "DuplicateName"
+                                "DUPLICATE_NAME"
                             ]
                         }
                     },
