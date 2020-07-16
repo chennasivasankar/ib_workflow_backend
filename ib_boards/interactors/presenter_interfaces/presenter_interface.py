@@ -39,3 +39,10 @@ class GetBoardsDetailsPresenterInterface(abc.ABC):
     def get_response_for_board_details(
             self, board_dtos: List[BoardDTO]) -> response.HttpResponse:
         pass
+
+
+class GetColumnTasksPresenterInterface(abc.ABC):
+
+    @abc.abstractmethod
+    def get_response_for_the_invalid_column_id(self):
+        pass

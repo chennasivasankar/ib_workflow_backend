@@ -85,3 +85,7 @@ class InvalidLimitValue(Exception):
 class InvalidBoardIds(Exception):
     def __init__(self, board_ids: List[str]):
         self.board_ids = board_ids
+
+
+class InvalidColumnId(Exception):
+    pass
