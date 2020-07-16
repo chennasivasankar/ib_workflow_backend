@@ -1,9 +1,7 @@
 import enum
 
 
-
 class FieldTypes(enum.Enum):
-
     PLAIN_TEXT = "PLAIN_TEXT"
     PHONE_NUMBER = "PHONE_NUMBER"
     EMAIL = "EMAIL"
@@ -13,6 +11,9 @@ class FieldTypes(enum.Enum):
     FLOAT = "FLOAT"
     LONG_TEXT = "LONG_TEXT"
     DROPDOWN = "DROPDOWN"
-
-
-
+    GOF_SELECTOR = "GOF_SELECTOR"
+    RADIO_GROUP = "RADIO_GROUP"
+    CHECKBOX_GROUP = "CHECKBOX_GROUP"
+    DATE = "DATE"
+    TIME = "TIME"
+    DATE_TIME = "DATE_TIME"

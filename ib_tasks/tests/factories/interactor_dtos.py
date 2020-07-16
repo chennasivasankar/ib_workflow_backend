@@ -7,6 +7,7 @@ class FieldDTOFactory(factory.Factory):
     class Meta:
         model = FieldDTO
 
+    gof_id = "FIN_VENDOR_BASIC_DETAILS"
     field_id = factory.Sequence(lambda n: 'field%d' % n)
     field_display_name = "field name"
     field_type = "DROPDOWN"
