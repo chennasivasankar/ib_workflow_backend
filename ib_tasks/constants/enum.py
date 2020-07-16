@@ -1,7 +1,7 @@
 import enum
 
 class FieldTypes(enum.Enum):
-
+    
     PLAIN_TEXT = "PLAIN_TEXT"
     PHONE_NUMBER = "PHONE_NUMBER"
     EMAIL = "EMAIL"
@@ -13,4 +13,6 @@ class FieldTypes(enum.Enum):
     DROPDOWN = "DROPDOWN"
 
 
-
+class PermissionTypes(enum.Enum):
+    WRITE = "WRITE"
+    READ = "READ"
