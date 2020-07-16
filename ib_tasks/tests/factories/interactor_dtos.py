@@ -17,4 +17,4 @@ class GlobalConstantsDTOFactory(factory.Factory):
         model = GlobalConstantsDTO
 
     constant_name = factory.sequence(lambda n: "Constant_{}".format(n + 1))
-    value = factory.sequence(lambda n: "value_{}".format(n+1))
+    value = factory.sequence(lambda n: n)

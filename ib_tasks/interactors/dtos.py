@@ -49,7 +49,7 @@ class CreateTaskTemplateDTO:
 @dataclass
 class GlobalConstantsDTO:
     constant_name: str
-    value: str
+    value: int
 
 
 @dataclass

@@ -145,11 +145,10 @@ class GlobalConstantsInteractor:
             raise InvalidValueForField("constant_name")
 
     @staticmethod
-    def _validate_value_for_value_field_in_global_constants(value: str):
-        value_after_strip = value.strip()
-        is_value_empty = not value_after_strip
+    def _validate_value_for_value_field_in_global_constants(value: int):
+        is_invalid_value = value < 0
         from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
-        if is_value_empty:
+        if is_invalid_value:
             raise InvalidValueForField("value")
 
     @staticmethod
