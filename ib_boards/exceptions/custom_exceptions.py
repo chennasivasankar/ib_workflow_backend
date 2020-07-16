@@ -89,3 +89,7 @@ class InvalidBoardIds(Exception):
 
 class InvalidColumnId(Exception):
     pass
+
+
+class OffsetValueExceedsTotalTasksCount(Exception):
+    pass

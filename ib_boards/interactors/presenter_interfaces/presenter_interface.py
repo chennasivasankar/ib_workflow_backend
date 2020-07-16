@@ -27,6 +27,10 @@ class GetBoardsPresenterInterface(abc.ABC):
             self, board_dtos: List[BoardDTO], total_boards: int) -> response.HttpResponse:
         pass
 
+    @abc.abstractmethod
+    def get_response_for_offset_exceeds_total_tasks(self):
+        pass
+
 
 class GetBoardsDetailsPresenterInterface(abc.ABC):
 
@@ -45,4 +49,20 @@ class GetColumnTasksPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_response_for_the_invalid_column_id(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_column_tasks(self, task_dtos, total_tasks):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_invalid_offset(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_invalid_limit(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_offset_exceeds_total_tasks(self):
         pass

@@ -30,7 +30,7 @@ class TaskService:
             self, task_summary_fields: List):
         pass
 
-    def get_stage_display_logics(self, stages_ids: List[str]) -> List[str]:
+    def get_stage_display_logics(self, stage_ids: List[str]) -> List[str]:
         pass
 
     def get_task_ids_and_number_total_tasks(

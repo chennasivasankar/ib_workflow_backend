@@ -48,3 +48,10 @@ class GetBoardsDTO:
     user_id: int
     offset: int
     limit: int
+
+
+@dataclass
+class GetColumnTasksDTO:
+    column_id: str
+    offset: int
+    limit: int
