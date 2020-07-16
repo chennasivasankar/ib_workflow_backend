@@ -34,15 +34,6 @@ class AuthPresenterInterface(ABC):
     ) -> HttpResponse:
         pass
 
-    # TODO
-    # @abstractmethod
-    # def raise_user_account_does_not_exist(self) -> HttpResponse:
-    #     pass
-    #
-    # @abstractmethod
-    # def raise_invalid_email(self) -> HttpResponse:
-    #     pass
-
     @abstractmethod
     def get_success_response_for_reset_password_link_to_user_email(self) \
             -> HttpResponse:
