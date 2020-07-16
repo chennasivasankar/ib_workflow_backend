@@ -12,7 +12,7 @@ class TestCreateFieldsInteractor:
 
     @pytest.fixture
     def storage_mock(self):
-        from ib_tasks.interactors.storage_interfaces.tasks_storage_interface \
+        from ib_tasks.interactors.storage_interfaces.task_storage_interface \
             import TaskStorageInterface
         storage = create_autospec(TaskStorageInterface)
         return storage
