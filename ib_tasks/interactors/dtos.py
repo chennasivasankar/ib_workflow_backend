@@ -24,7 +24,7 @@ class FieldDTO:
 
 
 @dataclass
-class ActionDto:
+class ActionDTO:
     stage_id: str
     action_name: str
     logic: str
@@ -34,7 +34,7 @@ class ActionDto:
 
 
 @dataclass
-class GoFIDAndOrderDTO:
+class GoFIdAndOrderDTO:
     gof_id: str
     order: int
 
@@ -43,4 +43,4 @@ class GoFIDAndOrderDTO:
 class CreateTaskTemplateDTO:
     template_id: str
     template_name: str
-    gof_dtos: List[GoFIDAndOrderDTO]
+    gof_dtos: List[GoFIdAndOrderDTO]

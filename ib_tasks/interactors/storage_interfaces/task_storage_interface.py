@@ -1,6 +1,6 @@
 import abc
 from typing import List
-from ib_tasks.interactors.dtos import FieldDTO, GoFIDAndOrderDTO
+from ib_tasks.interactors.dtos import FieldDTO, GoFIdAndOrderDTO
 from ib_tasks.interactors.storage_interfaces.dtos import GOFDTO
 
 
@@ -13,7 +13,7 @@ class TaskStorageInterface(abc.ABC):
     @abc.abstractmethod
     def add_gofs_to_task_template(
             self, template_id: str,
-            gof_id_and_order_dtos: List[GoFIDAndOrderDTO]):
+            gof_id_and_order_dtos: List[GoFIdAndOrderDTO]):
         pass
 
     @abc.abstractmethod

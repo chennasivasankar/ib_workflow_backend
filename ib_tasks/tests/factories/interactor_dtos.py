@@ -1,10 +1,10 @@
 import factory
-from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, GoFIDAndOrderDTO
+from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, GoFIdAndOrderDTO
 
 
-class GoFIDAndOrderDTOFactory(factory.Factory):
+class GoFIdAndOrderDTOFactory(factory.Factory):
     class Meta:
-        model = GoFIDAndOrderDTO
+        model = GoFIdAndOrderDTO
 
     gof_id = factory.sequence(
         lambda n: "GoF_{}".format(n + 1)
