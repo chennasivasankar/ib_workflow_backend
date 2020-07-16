@@ -23,9 +23,9 @@ def create_users():
 def create_teams():
     TeamFactory.reset_sequence(1)
     created_by = admin1_id
-    t1 = TeamFactory.create(id=1, team_id=team1_id, created_by=created_by)
-    t2 = TeamFactory.create(id=2, team_id=team2_id, created_by=created_by)
-    t3 = TeamFactory.create(id=3, team_id=team3_id, created_by=created_by)
+    t1 = TeamFactory.create(id=1, team_id=team1_id)
+    t2 = TeamFactory.create(id=2, team_id=team2_id)
+    t3 = TeamFactory.create(id=3, team_id=team3_id)
     return [t1, t2, t3]
 
 

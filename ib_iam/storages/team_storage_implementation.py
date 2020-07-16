@@ -18,7 +18,7 @@ class TeamStorageImplementation(TeamStorageInterface):
     def get_team_dtos_created_by_user(
             self, user_id: str, pagination_dto: PaginationDTO
     ) -> List[BasicTeamDTO]:
-        team_objects = Team.objects.filter(created_by=str(user_id))
+        team_objects = Team.objects.all()
         offset = pagination_dto.offset
         limit = pagination_dto.limit
         team_objects = team_objects[offset:offset + limit]

@@ -67,9 +67,9 @@ class TestCase01GetListOfTeamsAPITestCase(TestUtils):
         TeamFactory.reset_sequence(1)
         TeamMemberFactory.reset_sequence(1)
         UserFactory.create(user_id=user_obj.id, admin=True)
-        t1 = TeamFactory.create(id=1, team_id=team1_id, created_by=user_obj.id)
-        t2 = TeamFactory.create(id=2, team_id=team2_id, created_by=user_obj.id)
-        t3 = TeamFactory.create(id=3, team_id=team3_id, created_by=user_obj.id)
+        t1 = TeamFactory.create(id=1, team_id=team1_id)
+        t2 = TeamFactory.create(id=2, team_id=team2_id)
+        t3 = TeamFactory.create(id=3, team_id=team3_id)
 
         TeamMemberFactory.create(id=1, team=t1, member_id=member1_id)
         TeamMemberFactory.create(id=2, team=t1, member_id=member2_id)
