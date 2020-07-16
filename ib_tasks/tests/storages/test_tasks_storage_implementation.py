@@ -87,3 +87,29 @@ class TestTasksStorageImplementation:
                 gof_id=gof_role_dto.gof_id, role=gof_role_dto.role
             )
             assert gof_role_dto.permission_type == gof_role.permission_type
+
+    def test_create_gof_fields(self, storage):
+
+        # Arrange
+        from ib_tasks.models.field import Field
+        from ib_tasks.tests.factories.storage_dtos import GoFFieldDTOFactory
+        from ib_tasks.tests.factories.models import FieldFactory
+        gof_field_dtos = GoFFieldDTOFactory.create_batch(size=2)
+        field_ids = [
+            gof_field_dto.field_id
+            for gof_field_dto in gof_field_dtos
+        ]
+        FieldFactory.create_batch(size=2, field_id=factory.Iterator(field_ids))
+        gof_ids = [
+            gof_field_dto.gof_id
+            for gof_field_dto in gof_field_dtos
+        ]
+        GoFFactory.create_batch(size=2, gof_id=factory.Iterator(gof_ids))
+
+        # Act
+        storage.create_gof_fields(gof_field_dtos=gof_field_dtos)
+
+        # Assert
+        for gof_field_dto in gof_field_dtos:
+            field = Field.objects.get(pk=gof_field_dto.field_id)
+            assert field.gof_id == gof_field_dto.gof_id

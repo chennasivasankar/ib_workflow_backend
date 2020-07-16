@@ -30,6 +30,25 @@ class TasksStorageImplementation(TaskStorageInterface):
     def get_existing_gof_of_template(self, template_id: str) -> List[str]:
         pass
 
+    def get_existing_gof_ids_in_given_gof_ids(
+            self, gof_ids: List[str]
+    ) -> List[str]:
+        from ib_tasks.models.gof import GoF
+        existing_gof_ids = list(
+            GoF.objects.filter(pk__in=gof_ids).values_list('gof_id', flat=True)
+        )
+        return existing_gof_ids
+
+    def get_valid_field_ids_in_given_field_ids(
+            self, field_ids: List[str]
+    ) -> List[str]:
+        from ib_tasks.models.field import Field
+        valid_field_ids = list(
+            Field.objects.filter(pk__in=field_ids)\
+                         .values_list('field_id', flat=True)
+        )
+        return valid_field_ids
+
     def create_gofs(self, gof_dtos: List[GoFDTO]):
         from ib_tasks.models.gof import GoF
         gofs = [
@@ -59,25 +78,11 @@ class TasksStorageImplementation(TaskStorageInterface):
     def create_gof_fields(self, gof_field_dtos: List[GoFFieldDTO]):
         from ib_tasks.models.field import Field
         field_ids = [
-            field_id for field_id in gof_field_dtos
+            gof_field_dto.field_id for gof_field_dto in gof_field_dtos
         ]
-        fields = Field.objects.filter(pk__in=field_ids)
-
-    def get_existing_gof_ids_in_given_gof_ids(
-            self, gof_ids: List[str]
-    ) -> List[str]:
-        from ib_tasks.models.gof import GoF
-        existing_gof_ids = list(
-            GoF.objects.filter(pk__in=gof_ids).values_list('gof_id', flat=True)
-        )
-        return existing_gof_ids
-
-    def get_valid_field_ids_in_given_field_ids(
-            self, field_ids: List[str]
-    ) -> List[str]:
-        from ib_tasks.models.field import Field
-        valid_field_ids = list(
-            Field.objects.filter(pk__in=field_ids)\
-                         .values_list('field_id', flat=True)
-        )
-        return valid_field_ids
+        fields = Field.objects.filter(field_id__in=field_ids)
+        for field in fields:
+            for gof_field_dto in gof_field_dtos:
+                if field.field_id == gof_field_dto.field_id:
+                    field.gof_id = gof_field_dto.gof_id
+        Field.objects.bulk_update(fields, ['gof_id'])
