@@ -1,5 +1,5 @@
 """
-# TODO: Update test case description
+Update user password
 """
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils

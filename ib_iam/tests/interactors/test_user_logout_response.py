@@ -3,9 +3,11 @@ from unittest.mock import patch
 
 class TestUserLogoutResponse:
 
-    @patch("ib_iam.adapters.auth_service.AuthService.user_log_out_from_a_device")
-    def test_with_valid_user_id_return_response(self,
-                                                user_log_out_from_a_device_mock):
+    @patch(
+        "ib_iam.adapters.auth_service.AuthService.user_log_out_from_a_device")
+    def test_with_valid_user_id_return_response(
+            self, user_log_out_from_a_device_mock
+    ):
         # Arrange
         user_id = 1
 

@@ -1,5 +1,5 @@
 """
-# TODO: Valid email and password return response
+Valid email and password return response
 """
 from unittest.mock import patch
 
@@ -17,11 +17,11 @@ class TestCase01UserLoginAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     @patch(
-        "ib_iam.adapters.auth_service.AuthService.get_tokens_dto_from_user_id")
-    @patch(
-        "ib_iam.adapters.auth_service.AuthService.get_user_id_from_email_and_password_dto")
-    def test_case(self, get_user_id_from_email_and_password_dto, get_tokens_dto_from_user_id, snapshot):
-        user_id = 1
+        "ib_iam.adapters.auth_service.AuthService.get_tokens_dto_for_given_email_and_password_dto"
+    )
+    def test_case(self, get_tokens_dto_for_given_email_and_password_dto,
+                  snapshot
+                  ):
         from ib_iam.adapters.auth_service import TokensDTO
         tokens_dto = TokensDTO(
             access_token="asdfaldskfjdfdlsdkf",
@@ -29,10 +29,10 @@ class TestCase01UserLoginAPITestCase(TestUtils):
             expires_in_seconds=1000
         )
 
-        get_user_id_from_email_and_password_dto.return_value = user_id
-        get_tokens_dto_from_user_id.return_value = tokens_dto
+        get_tokens_dto_for_given_email_and_password_dto.return_value \
+            = tokens_dto
 
-        body = {'email': 'string', 'password': 'string'}
+        body = {'email': 'string@gmail.com', 'password': 'sankaR@123'}
         path_params = {}
         query_params = {}
         headers = {}
