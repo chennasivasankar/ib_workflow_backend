@@ -22,7 +22,7 @@ class TestCase02UserLoginAPITestCase(TestUtils):
     def test_case_user_account_not_exist(self,
                                          get_tokens_dto_for_given_email_and_password_dto,
                                          snapshot):
-        from ib_iam.interactors.DTOs.common_dtos import UserAccountDoesNotExist
+        from ib_iam.exceptions.custom_exceptions import UserAccountDoesNotExist
         get_tokens_dto_for_given_email_and_password_dto.side_effect \
             = UserAccountDoesNotExist()
         body = {'email': 'sasnkar@gmail.com', 'password': 'test123'}
@@ -59,7 +59,7 @@ class TestCase02UserLoginAPITestCase(TestUtils):
     def test_case_for_invalid_email(
             self, get_tokens_dto_for_given_email_and_password_dto, snapshot
     ):
-        from ib_iam.interactors.DTOs.common_dtos import InvalidEmail
+        from ib_iam.exceptions.custom_exceptions import InvalidEmail
         get_tokens_dto_for_given_email_and_password_dto.side_effect \
             = InvalidEmail()
         body = {'email': 'sasnka', 'password': 'test123'}

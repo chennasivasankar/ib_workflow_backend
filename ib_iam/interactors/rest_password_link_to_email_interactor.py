@@ -1,4 +1,4 @@
-from ib_iam.interactors.DTOs.common_dtos import InvalidEmail, \
+from ib_iam.exceptions.custom_exceptions import InvalidEmail, \
     UserAccountDoesNotExist
 from ib_iam.interactors.presenter_interfaces.presenter_interface import \
     AuthPresenterInterface
@@ -30,8 +30,7 @@ class ResetPasswordLinkToEmailInteractor:
             = LINK_TO_RESET_PASSWORD_EXPIRES_IN_SEC
         user_token = service_adapter.auth_service.get_token_for_reset_password(
             email=email,
-            expires_in_sec \
-                =link_to_reset_password_expires_in_sec
+            expires_in_sec=link_to_reset_password_expires_in_sec
         )
         self.send_email_to_user_email(email=email, user_token=user_token)
 

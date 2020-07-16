@@ -9,4 +9,3 @@ class UserLogoutInteractor:
         service_adapter.auth_service.user_log_out_from_a_device(
             user_id=user_id
         )
-        return
