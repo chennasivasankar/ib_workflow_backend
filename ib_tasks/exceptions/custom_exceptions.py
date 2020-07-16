@@ -39,5 +39,11 @@ class DifferentDisplayNamesForSameGOF(Exception):
 
 class InvalidFieldIds(Exception):
 
-    def __init__(self, invalid_field_ids: List[int]):
-        self.invalid_field_ids = invalid_field_ids
+    def __init__(self, invalid_field_ids: List[str]):
+        self.field_ids = invalid_field_ids
+
+
+class GoFIDsAlreadyExists(Exception):
+
+    def __init__(self, existing_gof_ids: List[str]):
+        self.gof_ids = existing_gof_ids

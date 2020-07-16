@@ -1,5 +1,7 @@
 import pytest
 
+from ib_tasks.tests.factories.models import GoFFactory, TaskTemplateFactory
+
 
 @pytest.mark.django_db
 class TestTasksStorageImplementation:
@@ -10,12 +12,44 @@ class TestTasksStorageImplementation:
             TasksStorageImplementation
         return TasksStorageImplementation()
 
+    def test_get_existing_gof_ids_in_given_gof_ids(self, storage):
+        # Arrange
+        gofs = GoFFactory.create_batch(size=2)
+        gof_ids = ["FIN_REQUEST_DETAILS", "FIN_BANK_DETAILS"]
+        expected_existing_gof_ids = ["FIN_REQUEST_DETAILS"]
+
+        # Act
+        actual_existing_gof_ids = \
+            storage.get_existing_gof_ids_in_given_gof_ids(
+                gof_ids=gof_ids
+            )
+
+        # Assert
+        assert expected_existing_gof_ids == actual_existing_gof_ids
+
+    def test_get_valid_field_ids_in_given_field_ids(self, storage):
+        # Arrange
+        from ib_tasks.tests.factories.models import FieldFactory
+        fields = FieldFactory.create_batch(size=2)
+        field_ids = ["FIN_PAYMENT_REQUESTOR", "FIN_PAYMENT_APPROVER"]
+        expected_valid_field_ids = ["FIN_PAYMENT_REQUESTOR"]
+
+        # Act
+        actual_valid_field_ids = \
+            storage.get_valid_field_ids_in_given_field_ids(field_ids=field_ids)
+
+        # Assert
+        assert expected_valid_field_ids == actual_valid_field_ids
+
     def test_create_gofs(self, storage):
         # Arrange
         from ib_tasks.models.gof import GoF
         from ib_tasks.tests.factories.storage_dtos import GoFDTOFactory
+        task_templates = TaskTemplateFactory.create_batch(size=2)
+
         gof_dtos = [
-            GoFDTOFactory(), GoFDTOFactory()
+            GoFDTOFactory(task_template_id=task_templates[0].pk),
+            GoFDTOFactory(task_template_id=task_templates[0].pk)
         ]
 
         # Act

@@ -48,6 +48,12 @@ class GoFRoleDTO:
 
 
 @dataclass
+class GoFFieldDTO:
+    gof_id: str
+    field_id: str
+
+
+@dataclass
 class GoFFieldsDTO:
     gof_id: str
     field_ids: List[str]

@@ -2,7 +2,7 @@ from typing import List
 
 from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, FieldDTO
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    GoFDTO, GoFFieldsDTO, GoFRoleDTO
+    GoFDTO, GoFRoleDTO, GoFFieldDTO
 )
 from ib_tasks.interactors.storage_interfaces.tasks_storage_interface import \
     TaskStorageInterface
@@ -56,6 +56,28 @@ class TasksStorageImplementation(TaskStorageInterface):
         ]
         GoFRole.objects.bulk_create(gof_roles)
 
-    def create_gof_fields(self, gof_fields_dtos: List[GoFFieldsDTO]):
+    def create_gof_fields(self, gof_field_dtos: List[GoFFieldDTO]):
         from ib_tasks.models.field import Field
-        fields =
+        field_ids = [
+            field_id for field_id in gof_field_dtos
+        ]
+        fields = Field.objects.filter(pk__in=field_ids)
+
+    def get_existing_gof_ids_in_given_gof_ids(
+            self, gof_ids: List[str]
+    ) -> List[str]:
+        from ib_tasks.models.gof import GoF
+        existing_gof_ids = list(
+            GoF.objects.filter(pk__in=gof_ids).values_list('gof_id', flat=True)
+        )
+        return existing_gof_ids
+
+    def get_valid_field_ids_in_given_field_ids(
+            self, field_ids: List[str]
+    ) -> List[str]:
+        from ib_tasks.models.field import Field
+        valid_field_ids = list(
+            Field.objects.filter(pk__in=field_ids)\
+                         .values_list('field_id', flat=True)
+        )
+        return valid_field_ids

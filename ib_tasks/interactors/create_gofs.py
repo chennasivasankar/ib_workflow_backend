@@ -3,10 +3,12 @@ from typing import List, Optional, Union
 from ib_tasks.exceptions.custom_exceptions import (
     GOFIdCantBeEmpty, GOFDisplayNameCantBeEmpty, GOFReadPermissionsCantBeEmpty,
     GOFWritePermissionsCantBeEmpty, GOFFieldIdsCantBeEmpty, DuplicatedFieldIds,
-    InvalidReadPermissionRoles, InvalidWritePermissionRoles
+    InvalidReadPermissionRoles, InvalidWritePermissionRoles, InvalidFieldIds,
+    GoFIDsAlreadyExists
 )
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    CompleteGoFDetailsDTO, GoFRolesDTO, GoFFieldsDTO, GoFDTO, GoFRoleDTO
+    CompleteGoFDetailsDTO, GoFRolesDTO, GoFFieldsDTO, GoFDTO, GoFRoleDTO,
+    GoFFieldDTO
 )
 from ib_tasks.interactors.storage_interfaces.tasks_storage_interface \
     import TaskStorageInterface
@@ -23,7 +25,6 @@ class CreateGoFsInteractor:
     def create_gofs(
             self, complete_gof_details_dtos: List[CompleteGoFDetailsDTO]
     ):
-        from ib_tasks.constants.enum import PermissionTypes
         gof_dtos = [
             complete_gof_details_dto.gof_dto
             for complete_gof_details_dto in complete_gof_details_dtos
@@ -36,19 +37,49 @@ class CreateGoFsInteractor:
             complete_gof_details_dto.gof_fields_dto
             for complete_gof_details_dto in complete_gof_details_dtos
         ]
-        field_ids = []
-        for gof_fields_dto in gof_fields_dtos:
-            field_ids += gof_fields_dto.field_ids
 
         self._validate_for_empty_mandatory_fields(
             gof_dtos=gof_dtos, gof_roles_dtos=gof_roles_dtos,
             gof_fields_dtos=gof_fields_dtos
         )
+        field_ids = []
+        for gof_fields_dto in gof_fields_dtos:
+            field_ids += gof_fields_dto.field_ids
+        gof_ids = [
+            gof_dto.gof_id for gof_dto in gof_dtos
+        ]
+        self._validate_for_already_existing_gof_ids(gof_ids=gof_ids)
         self._validate_for_unique_field_ids(gof_fields_dtos=gof_fields_dtos)
         self._validate_for_invalid_field_ids(field_ids=field_ids)
         self._validate_read_permission_roles(gof_roles_dtos=gof_roles_dtos)
         self._validate_write_permission_roles(gof_roles_dtos=gof_roles_dtos)
 
+        self.storage.create_gofs(gof_dtos=gof_dtos)
+        gof_role_dtos = self._get_role_dtos(gof_roles_dtos=gof_roles_dtos)
+        self.storage.create_gof_roles(gof_role_dtos=gof_role_dtos)
+        gof_field_dtos = self._get_gof_field_dtos(
+            gof_fields_dtos=gof_fields_dtos
+        )
+        self.storage.create_gof_fields(gof_field_dtos=gof_field_dtos)
+
+    @staticmethod
+    def _get_gof_field_dtos(
+            gof_fields_dtos: List[GoFFieldsDTO]
+    ) -> List[GoFFieldDTO]:
+        gof_field_dtos = []
+        for gof_fields_dto in gof_fields_dtos:
+            for gof_field_id in gof_fields_dto.field_ids:
+                gof_field_dtos.append(
+                    GoFFieldDTO(
+                        gof_id=gof_fields_dto.gof_id,
+                        field_id=gof_field_id
+                    )
+                )
+        return gof_field_dtos
+
+    @staticmethod
+    def _get_role_dtos(gof_roles_dtos: List[GoFRolesDTO]) -> List[GoFRoleDTO]:
+        from ib_tasks.constants.enum import PermissionTypes
         gof_role_dtos = []
         for gof_roles_dto in gof_roles_dtos:
             gof_role_dtos += [
@@ -70,9 +101,7 @@ class CreateGoFsInteractor:
                     gof_roles_dto.write_permission_roles
                 )
             ]
-        self.storage.create_gofs(gof_dtos=gof_dtos)
-        self.storage.create_gof_roles(gof_role_dtos=gof_role_dtos)
-        self.storage.create_gof_fields(gof_fields_dtos=gof_fields_dtos)
+        return gof_role_dtos
 
     def _validate_for_empty_mandatory_fields(
             self, gof_dtos: List[GoFDTO], gof_roles_dtos: List[GoFRolesDTO],
@@ -172,6 +201,17 @@ class CreateGoFsInteractor:
             return not field or not field.strip()
         return not field
 
+    def _validate_for_already_existing_gof_ids(
+            self, gof_ids: List[str]
+    ) -> Optional[GoFIDsAlreadyExists]:
+        existing_gof_ids_in_given_gof_ids = \
+            self.storage.get_existing_gof_ids_in_given_gof_ids(gof_ids=gof_ids)
+        if existing_gof_ids_in_given_gof_ids:
+            raise GoFIDsAlreadyExists(
+                existing_gof_ids=existing_gof_ids_in_given_gof_ids
+            )
+        return
+
     def _validate_for_unique_field_ids(
             self, gof_fields_dtos: List[GoFFieldsDTO]
     ) -> Optional[DuplicatedFieldIds]:
@@ -256,16 +296,17 @@ class CreateGoFsInteractor:
         return
 
     def _validate_for_invalid_field_ids(
-            self, field_ids: List[int]
+            self, field_ids: List[str]
     ) -> Optional[InvalidFieldIds]:
         valid_field_ids_in_given_field_ids = \
             self.storage.get_valid_field_ids_in_given_field_ids(
                 field_ids=field_ids
             )
-        invalid_field_ids_exists = len(field_ids) != \
-                                   len(valid_field_ids_in_given_field_ids)
+        invalid_field_ids_exists = \
+            len(field_ids) != len(valid_field_ids_in_given_field_ids)
         if invalid_field_ids_exists:
             invalid_field_ids = list(
                 set(field_ids) - set(valid_field_ids_in_given_field_ids)
             )
             raise InvalidFieldIds(invalid_field_ids=invalid_field_ids)
+        return

@@ -12,6 +12,7 @@ class FieldTypes(enum.Enum):
     FLOAT = "FLOAT"
     LONG_TEXT = "LONG_TEXT"
     DROPDOWN = "DROPDOWN"
+    GOF_SELECTOR = "<GOF_SELECTOR>"
 
 
 class PermissionTypes(enum.Enum):

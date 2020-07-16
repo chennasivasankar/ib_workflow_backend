@@ -9,7 +9,7 @@ from typing import List
 
 from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, FieldDTO
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    GoFDTO, GoFFieldsDTO, GoFRoleDTO
+    GoFDTO, GoFRoleDTO, GoFFieldDTO
 )
 
 
@@ -42,6 +42,18 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_existing_gof_ids_in_given_gof_ids(
+            self, gof_ids: List[str]
+    ) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_valid_field_ids_in_given_field_ids(
+            self, field_ids: List[str]
+    ) -> List[str]:
+        pass
+
+    @abc.abstractmethod
     def create_gofs(self, gof_dtos: List[GoFDTO]):
         pass
 
@@ -50,5 +62,5 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def create_gof_fields(self, gof_fields_dtos: List[GoFFieldsDTO]):
+    def create_gof_fields(self, gof_field_dtos: List[GoFFieldDTO]):
         pass
