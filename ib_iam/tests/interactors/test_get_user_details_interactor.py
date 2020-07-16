@@ -147,6 +147,95 @@ class TestGetUsersDetailsInteractor:
         presenter.raise_offset_value_is_greater_than_limit_value_exception. \
             assert_called_once()
 
+    def test_get_users_returns_user_dtos(self, user_dtos):
+        # Arrange
+        user_id = USER_ID
+        limit = 10
+        offset = 0
+        user_ids = ["user1", "user2", "user3"]
+        presenter = create_autospec(PresenterInterface)
+        storage = create_autospec(StorageInterface)
+        interactor = GetUsersDetails(storage=storage)
+        storage.validate_user_is_admin.return_value = True
+        storage.get_users_who_are_not_admins.return_value = user_dtos
+
+        # Act
+        response = interactor.get_users_details_wrapper(
+            user_id=user_id, offset=offset, limit=limit, presenter=presenter
+        )
+
+        # Assert
+        storage.get_users_who_are_not_admins.assert_called_once()
+
+    def test_get_users_team_details_returns_team_details_of_users(
+            self, user_dtos, user_team_dtos):
+        user_id = USER_ID
+        limit = 10
+        offset = 0
+        user_ids = ["user1", "user2", "user3"]
+        presenter = create_autospec(PresenterInterface)
+        storage = create_autospec(StorageInterface)
+        interactor = GetUsersDetails(storage=storage)
+        storage.validate_user_is_admin.return_value = True
+        storage.get_users_who_are_not_admins.return_value = user_dtos
+        storage.get_team_details_of_users_bulk.return_value = user_team_dtos
+
+        # Act
+        response = interactor.get_users_details_wrapper(
+            user_id=user_id, offset=offset, limit=limit, presenter=presenter
+        )
+
+        # Assert
+        storage.get_users_who_are_not_admins.assert_called_once()
+        storage.get_team_details_of_users_bulk.assert_called_once_with(
+            user_ids)
+
+    def test_get_users_role_details_returns_team_details_of_users(
+            self, user_dtos, user_role_dtos):
+        user_id = USER_ID
+        limit = 10
+        offset = 0
+        user_ids = ["user1", "user2", "user3"]
+        presenter = create_autospec(PresenterInterface)
+        storage = create_autospec(StorageInterface)
+        interactor = GetUsersDetails(storage=storage)
+        storage.validate_user_is_admin.return_value = True
+        storage.get_users_who_are_not_admins.return_value = user_dtos
+        storage.get_role_details_of_users_bulk.return_value = user_role_dtos
+        # Act
+        response = interactor.get_users_details_wrapper(
+            user_id=user_id, offset=offset, limit=limit, presenter=presenter
+        )
+
+        # Assert
+        storage.get_users_who_are_not_admins.assert_called_once()
+        storage.get_role_details_of_users_bulk.assert_called_once_with(
+            user_ids)
+
+    def test_get_users_company_details_returns_team_details_of_users(
+            self, user_dtos, user_company_dtos):
+        user_id = USER_ID
+        limit = 10
+        offset = 0
+        user_ids = ["user1", "user2", "user3"]
+        company_ids = ["company1", "company2", "company3"]
+        presenter = create_autospec(PresenterInterface)
+        storage = create_autospec(StorageInterface)
+        interactor = GetUsersDetails(storage=storage)
+        storage.validate_user_is_admin.return_value = True
+
+        storage.get_users_who_are_not_admins.return_value = user_dtos
+        storage.get_company_details_of_users_bulk.return_value = user_company_dtos
+
+        # Act
+        response = interactor.get_users_details_wrapper(
+            user_id=user_id, offset=offset, limit=limit, presenter=presenter
+        )
+
+        # Assert
+        storage.get_users_who_are_not_admins.assert_called_once()
+        storage.get_company_details_of_users_bulk.assert_called_once()
+
     @patch(
         "ib_iam.adapters.user_service.UserService.get_user_profile_bulk")
     def test_get_users_from_adapter_return_user_deails(
@@ -162,7 +251,7 @@ class TestGetUsersDetailsInteractor:
         storage.validate_user_is_admin.return_value = True
         user_dtos = [UserDTOFactory.create(user_id=user_id)
                      for user_id in user_ids]
-        storage.get_users.return_value = user_dtos
+        storage.get_users_who_are_not_admins.return_value = user_dtos
         userprofile_dtos = [UserProfileDTOFactory.create(user_id=user_id)
                             for user_id in user_ids]
         get_user_profile_bulk.return_value = user_profile_dtos
@@ -173,13 +262,6 @@ class TestGetUsersDetailsInteractor:
         )
 
         # Assert
-        storage.validate_user_is_admin.assert_called_once_with(user_id)
-        storage.get_users.assert_called_once()
-        storage.get_team_details_of_users_bulk.assert_called_once_with(
-            user_ids)
-        storage.get_role_details_of_users_bulk.assert_called_once_with(
-            user_ids)
-        storage.get_company_details_of_users_bulk.assert_called_once()
         get_user_profile_bulk.assert_called_once_with(user_ids=user_ids)
 
     @patch(
@@ -195,7 +277,7 @@ class TestGetUsersDetailsInteractor:
         storage = create_autospec(StorageInterface)
         interactor = GetUsersDetails(storage=storage)
         storage.validate_user_is_admin.return_value = True
-        storage.get_users.return_value = user_dtos
+        storage.get_users_who_are_not_admins.return_value = user_dtos
 
         storage.get_team_details_of_users_bulk.return_value = user_team_dtos
         storage.get_company_details_of_users_bulk.return_value = \
@@ -210,13 +292,5 @@ class TestGetUsersDetailsInteractor:
         )
 
         # Assert
-        assert 1 == 3
-        storage.validate_user_is_admin.assert_called_once_with(user_id)
-        storage.get_users.assert_called_once()
-        storage.get_team_details_of_users_bulk.assert_called_once_with(
-            user_ids)
-        storage.get_role_details_of_users_bulk.assert_called_once_with(
-            user_ids)
-        storage.get_company_details_of_users_bulk.assert_called_once()
         get_user_profile_bulk.assert_called_once_with(user_ids=user_ids)
         presenter.response_for_get_users.assert_called_once()

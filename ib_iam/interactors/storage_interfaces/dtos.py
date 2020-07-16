@@ -5,7 +5,7 @@ from dataclasses import dataclass
 @dataclass
 class UserDTO:
     user_id: str
-    is_admin: str
+    is_admin: bool
     company_id: str
 
 

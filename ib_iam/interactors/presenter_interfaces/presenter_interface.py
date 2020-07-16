@@ -23,5 +23,5 @@ class PresenterInterface(ABC):
 
     @abstractmethod
     def response_for_get_users(
-            self,complete_user_details_dtos: CompleteUserDetailsDTO):
+            self, complete_user_details_dtos: CompleteUserDetailsDTO):
         pass

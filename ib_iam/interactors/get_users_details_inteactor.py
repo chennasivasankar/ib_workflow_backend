@@ -36,10 +36,9 @@ class GetUsersDetails:
 
     def get_users_details(self, user_id: str, offset: int,
                           limit: int) -> CompleteUserDetailsDTO:
-
         self._check_and_throw_user_is_admin(user_id=user_id)
         self._constants_validations(offset=offset, limit=limit)
-        user_dtos = self.storage.get_users()
+        user_dtos = self.storage.get_users_who_are_not_admins(offset=offset, limit=limit)
         user_ids = [user_dto.user_id for user_dto in user_dtos]
         company_ids = [user_dto.company_id for user_dto in user_dtos]
 
@@ -48,7 +47,7 @@ class GetUsersDetails:
         user_role_dtos = self.storage.get_role_details_of_users_bulk(
             user_ids=user_ids)
         user_company_dtos = self.storage.get_company_details_of_users_bulk(
-            company_ids=company_ids)
+            user_ids=user_ids)
 
         from ib_iam.adapters.user_service import UserService
         user_service = UserService()
@@ -57,7 +56,7 @@ class GetUsersDetails:
 
         return self._convert_complete_user_details_dtos(
             user_team_dtos, user_role_dtos, user_company_dtos,
-            user_profile_dtos)
+            user_profile_dtos, len(user_ids))
 
     @staticmethod
     def _validate_value_and_throw_exception(value: int):
@@ -94,12 +93,13 @@ class GetUsersDetails:
 
     def _convert_complete_user_details_dtos(
             self, user_team_dtos, user_role_dtos,
-            user_company_dtos, user_profile_dtos):
+            user_company_dtos, user_profile_dtos, total_no_of_users):
         complete_user_details_dto = CompleteUserDetailsDTO(
             users=user_profile_dtos,
             teams=user_team_dtos,
             roles=user_role_dtos,
-            companies=user_company_dtos
+            companies=user_company_dtos,
+            total_no_of_users=total_no_of_users
         )
         return complete_user_details_dto
 
@@ -131,3 +131,4 @@ class GetUsersDetails:
             if user_role_dto.user_id == user_id:
                 roles.append(user_role_dto)
         return roles
+

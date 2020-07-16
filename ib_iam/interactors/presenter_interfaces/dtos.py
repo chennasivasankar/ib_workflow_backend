@@ -12,4 +12,5 @@ class CompleteUserDetailsDTO:
     teams: List[UserTeamDTO]
     roles: List[UserRoleDTO]
     companies: List[UserCompanyDTO]
+    total_no_of_users: int
 

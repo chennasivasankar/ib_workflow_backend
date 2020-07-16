@@ -1,6 +1,6 @@
-USER_NOT_ADMIN = (
+USER_DOES_NOT_HAVE_PERMISSION = (
     "forbidden access, user cannot access",
-    "USER_NOT_ADMIN"
+    "USER_DOES_NOT_HAVE_PERMISSION"
 )
 
 INVALID_OFFSET_VALUE = (
