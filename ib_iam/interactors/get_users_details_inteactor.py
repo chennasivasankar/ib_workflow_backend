@@ -1,7 +1,3 @@
-from typing import List
-from uuid import uuid4
-
-from ib_iam.adapters.dtos import UserDTO
 from ib_iam.exceptions.exceptions import UserIsNotAdminException, \
     InvalidOffsetValueException, InvalidLimitValueException, \
     OffsetValueIsGreaterthanLimitValueException

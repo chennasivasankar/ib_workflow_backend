@@ -1,6 +1,7 @@
 from django_swagger_utils.utils.http_response_mixin \
     import HTTPResponseMixin
 
+from ib_iam.constants.enums import StatusCode
 from ib_iam.interactors.presenter_interfaces.dtos import CompleteUserDetailsDTO
 from ib_iam.interactors.presenter_interfaces.presenter_interface \
     import PresenterInterface
@@ -14,7 +15,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         from ib_iam.constants.exception_messages import USER_DOES_NOT_HAVE_PERMISSION
         response_dict = {
             "response": USER_DOES_NOT_HAVE_PERMISSION[0],
-            "http_status_code": FORBIDDEN_STATUS_CODE,
+            "http_status_code": StatusCode.FORBIDDEN.value,
             "res_status": USER_DOES_NOT_HAVE_PERMISSION[1]
         }
         return self.prepare_403_forbidden_response(
@@ -24,7 +25,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         from ib_iam.constants.exception_messages import INVALID_OFFSET_VALUE
         response_dict = {
             "response": INVALID_OFFSET_VALUE[0],
-            "http_status_code": BADREQUEST_STATUS_CODE,
+            "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": INVALID_OFFSET_VALUE[1]
         }
         return self.prepare_400_bad_request_response(
@@ -34,7 +35,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         from ib_iam.constants.exception_messages import INVALID_LIMIT_VALUE
         response_dict = {
             "response": INVALID_LIMIT_VALUE[0],
-            "http_status_code": BADREQUEST_STATUS_CODE,
+            "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": INVALID_LIMIT_VALUE[1]
         }
         return self.prepare_400_bad_request_response(
@@ -44,7 +45,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         from ib_iam.constants.exception_messages import OFFSET_VALUE_IS_GREATER_THAN_LIMIT
         response_dict = {
             "response": OFFSET_VALUE_IS_GREATER_THAN_LIMIT[0],
-            "http_status_code": BADREQUEST_STATUS_CODE,
+            "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": OFFSET_VALUE_IS_GREATER_THAN_LIMIT[1]
         }
         return self.prepare_400_bad_request_response(
@@ -77,7 +78,6 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
     def _convert_user_response_dict(
             self, user_profile_dto, user_team_dtos, user_role_dtos,
             user_company_dto):
-
         user_response_dict = {
             "user_id": user_profile_dto.user_id,
             "name": user_profile_dto.name,
