@@ -6,7 +6,6 @@ from .validator_class import ValidatorClass
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     request_data = kwargs['request_data']
-
     email = request_data['email']
     password = request_data['password']
     from ib_iam.adapters.auth_service import EmailAndPasswordDTO

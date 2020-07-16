@@ -12,5 +12,6 @@ snapshots['TestCase01UserLoginAPITestCase.test_case status_code'] = '200'
 snapshots['TestCase01UserLoginAPITestCase.test_case body'] = {
     'access_token': 'asdfaldskfjdfdlsdkf',
     'expires_in_seconds': 1000,
+    'is_admin': True,
     'refresh_token': 'sadfenkljkdfeller'
 }
