@@ -19,7 +19,7 @@ class TaskStagesDTO:
 
 
 @dataclass
-class StageActionsDto:
+class StageActionsDTO:
     stage_id: str
     action_names: List[str]
 

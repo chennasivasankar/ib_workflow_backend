@@ -7,8 +7,8 @@ Author: Pavankumar Pamuru
 from typing import List, Optional
 from dataclasses import dataclass
 
-@dataclass()
-class ActionDto:
+@dataclass
+class ActionDTO:
     stage_id: str
     action_name: str
     logic: str
@@ -18,7 +18,7 @@ class ActionDto:
 
 
 @dataclass
-class GoFDTO:
+class GoFIdAndOrderDTO:
     gof_id: str
     order: int
 
@@ -27,4 +27,4 @@ class GoFDTO:
 class CreateTaskTemplateDTO:
     template_id: str
     template_name: str
-    gof_dtos: List[GoFDTO]
+    gof_dtos: List[GoFIdAndOrderDTO]
