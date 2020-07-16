@@ -3,10 +3,11 @@ from unittest.mock import create_autospec, Mock
 import pytest
 
 from ib_tasks.tests.factories.storage_dtos import \
-    FieldDTOFactory, FieldRolesDTOFactory
+    FieldDTOFactory, FieldRolesDTOFactory, FieldRoleDTOFactory
 
 from ib_tasks.interactors.create_fields_ineractor import CreateFieldsInteractor
 
+from ib_tasks.constants.enum import PermissionTypes
 
 class TestCreateFieldsInteractor:
 
@@ -326,7 +327,34 @@ class TestCreateFieldsInteractor:
         # Arrange
         FieldDTOFactory.reset_sequence(1)
         FieldRolesDTOFactory.reset_sequence(1)
-        field_roles_dtos = [FieldRolesDTOFactory()]
+        field_roles_dtos = [
+            FieldRolesDTOFactory(
+                read_permission_roles=["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC"],
+                write_permission_roles=["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC"]
+            )
+        ]
+        field_role_dtos = [
+            FieldRoleDTOFactory(
+                field_id="field1",
+                role="FIN_PAYMENT_REQUESTER",
+                permission_type=PermissionTypes.READ.value
+            ),
+            FieldRoleDTOFactory(
+                field_id="field1",
+                role="FIN_PAYMENT_POC",
+                permission_type=PermissionTypes.READ.value
+            ),
+            FieldRoleDTOFactory(
+                field_id="field1",
+                role="FIN_PAYMENT_REQUESTER",
+                permission_type=PermissionTypes.WRITE.value
+            ),
+            FieldRoleDTOFactory(
+                field_id="field1",
+                role="FIN_PAYMENT_POC",
+                permission_type=PermissionTypes.WRITE.value
+            ),
+        ]
         from ib_tasks.tests.common_fixtures.adapters.roles_service import (
             get_all_valid_read_permission_roles,
             get_all_valid_write_permission_roles
@@ -349,7 +377,7 @@ class TestCreateFieldsInteractor:
 
         # Assert
         storage_mock.create_fields.assert_called_once_with(field_dtos)
-        storage_mock.create_fields_roles.assert_called_once_with(field_roles_dtos)
+        storage_mock.create_fields_roles.assert_called_once_with(field_role_dtos)
         get_valid_write_permissions_mock_method.assert_called_once()
         get_valid_read_permissions_mock_method.assert_called_once()
 
@@ -359,7 +387,31 @@ class TestCreateFieldsInteractor:
         # Arrange
         field_roles_dtos = [
             FieldRolesDTOFactory(field_id="FIN_FIRST NAME"),
-            FieldRolesDTOFactory(field_id="FIN_DISPLAY NAME")
+        ]
+        field_dtos = [
+            FieldDTOFactory(field_id="FIN_FIRST NAME")
+        ]
+        field_role_dtos = [
+            FieldRoleDTOFactory(
+                field_id="FIN_FIRST NAME",
+                role="FIN_PAYMENT_REQUESTER",
+                permission_type=PermissionTypes.READ.value
+            ),
+            FieldRoleDTOFactory(
+                field_id="FIN_FIRST NAME",
+                role="FIN_PAYMENT_POC",
+                permission_type=PermissionTypes.READ.value
+            ),
+            FieldRoleDTOFactory(
+                field_id="FIN_FIRST NAME",
+                role="FIN_PAYMENT_REQUESTER",
+                permission_type=PermissionTypes.WRITE.value
+            ),
+            FieldRoleDTOFactory(
+                field_id="FIN_FIRST NAME",
+                role="FIN_PAYMENT_POC",
+                permission_type=PermissionTypes.WRITE.value
+            )
         ]
         from ib_tasks.tests.common_fixtures.adapters.roles_service import (
             get_all_valid_read_permission_roles,
@@ -370,11 +422,7 @@ class TestCreateFieldsInteractor:
         get_valid_write_permissions_mock_method = \
             get_all_valid_write_permission_roles(mocker)
 
-        field_dtos = [
-            FieldDTOFactory(field_id="FIN_FIRST NAME"),
-            FieldDTOFactory(field_id="FIN_DISPLAY NAME")
-        ]
-        existing_field_ids = ["FIN_FIRST NAME", "FIN_TYPE_OF_VENDOR"]
+        existing_field_ids = ["FIN_FIRST NAME"]
         interactor = CreateFieldsInteractor(storage=storage_mock)
         storage_mock.get_existing_field_ids.return_value = existing_field_ids
 
@@ -383,6 +431,90 @@ class TestCreateFieldsInteractor:
 
         # Assert
         storage_mock.update_fields.assert_called_once_with(field_dtos)
-        storage_mock.update_fields_roles(field_roles_dtos)
+        storage_mock.update_fields_roles.assert_called_once_with(field_role_dtos)
         get_valid_write_permissions_mock_method.assert_called_once()
         get_valid_read_permissions_mock_method.assert_called_once()
+
+
+    def test_new_and_already_exist_in_database_field_ids_are_given_then_create_and_update_fields(
+            self, storage_mock, mocker
+    ):
+        # Arrange
+        field_dtos = [
+            FieldDTOFactory(field_id="field1"),
+            FieldDTOFactory(field_id="FIN_SALUATION")
+        ]
+        field_roles_dtos = [
+            FieldRolesDTOFactory(field_id="field1"),
+            FieldRolesDTOFactory(field_id="FIN_SALUATION")
+        ]
+        existing_field_ids = ["field1"]
+        new_field_dtos = [FieldDTOFactory(field_id="FIN_SALUATION")]
+        existing_field_dtos = [FieldDTOFactory(field_id="field1")]
+
+        existing_field_role_dtos = [
+            FieldRoleDTOFactory(
+                field_id="field1",
+                role="FIN_PAYMENT_REQUESTER",
+                permission_type=PermissionTypes.READ.value
+            ),
+            FieldRoleDTOFactory(
+                field_id="field1",
+                role="FIN_PAYMENT_POC",
+                permission_type=PermissionTypes.READ.value
+            ),
+            FieldRoleDTOFactory(
+                field_id="field1",
+                role="FIN_PAYMENT_REQUESTER",
+                permission_type=PermissionTypes.WRITE.value
+            ),
+            FieldRoleDTOFactory(
+                field_id="field1",
+                role="FIN_PAYMENT_POC",
+                permission_type=PermissionTypes.WRITE.value
+            )
+        ]
+        new_field_role_dtos = [
+            FieldRoleDTOFactory(
+                field_id="FIN_SALUATION",
+                role="FIN_PAYMENT_REQUESTER",
+                permission_type=PermissionTypes.READ.value
+            ),
+            FieldRoleDTOFactory(
+                field_id="FIN_SALUATION",
+                role="FIN_PAYMENT_POC",
+                permission_type=PermissionTypes.READ.value
+            ),
+            FieldRoleDTOFactory(
+                field_id="FIN_SALUATION",
+                role="FIN_PAYMENT_REQUESTER",
+                permission_type=PermissionTypes.WRITE.value
+            ),
+            FieldRoleDTOFactory(
+                field_id="FIN_SALUATION",
+                role="FIN_PAYMENT_POC",
+                permission_type=PermissionTypes.WRITE.value
+            )
+        ]
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import (
+            get_all_valid_read_permission_roles,
+            get_all_valid_write_permission_roles
+        )
+        get_valid_read_permissions_mock_method = \
+            get_all_valid_read_permission_roles(mocker)
+        get_valid_write_permissions_mock_method = \
+            get_all_valid_write_permission_roles(mocker)
+
+        storage_mock.get_existing_field_ids.return_value = existing_field_ids
+        interactor = CreateFieldsInteractor(storage=storage_mock)
+
+        # Act
+        interactor.create_fields(field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
+
+        # Assert
+        get_valid_write_permissions_mock_method.assert_called_once()
+        get_valid_read_permissions_mock_method.assert_called_once()
+        storage_mock.create_fields.assert_called_once_with(new_field_dtos)
+        storage_mock.update_fields.assert_called_once_with(existing_field_dtos)
+        storage_mock.update_fields_roles.assert_called_once_with(existing_field_role_dtos)
+        storage_mock.create_fields_roles.assert_called_once_with(new_field_role_dtos)
