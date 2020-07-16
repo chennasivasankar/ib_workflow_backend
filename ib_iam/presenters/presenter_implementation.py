@@ -5,13 +5,14 @@ from ib_iam.interactors.presenter_interfaces.dtos import CompleteUserDetailsDTO
 from ib_iam.interactors.presenter_interfaces.presenter_interface \
     import PresenterInterface
 
-
+FORBIDDEN_STATUS_CODE = 403
+BADREQUEST_STATUS_CODE = 400
 class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
     def raise_user_is_not_admin_exception(self):
         from ib_iam.constants.exception_messages import USER_DOES_NOT_HAVE_PERMISSION
         response_dict = {
             "response": USER_DOES_NOT_HAVE_PERMISSION[0],
-            "http_status_code": 403,
+            "http_status_code": FORBIDDEN_STATUS_CODE,
             "res_status": USER_DOES_NOT_HAVE_PERMISSION[1]
         }
         return self.prepare_403_forbidden_response(
@@ -21,7 +22,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         from ib_iam.constants.exception_messages import INVALID_OFFSET_VALUE
         response_dict = {
             "response": INVALID_OFFSET_VALUE[0],
-            "http_status_code": 400,
+            "http_status_code": BADREQUEST_STATUS_CODE,
             "res_status": INVALID_OFFSET_VALUE[1]
         }
         return self.prepare_400_bad_request_response(
@@ -31,7 +32,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         from ib_iam.constants.exception_messages import INVALID_LIMIT_VALUE
         response_dict = {
             "response": INVALID_LIMIT_VALUE[0],
-            "http_status_code": 400,
+            "http_status_code": BADREQUEST_STATUS_CODE,
             "res_status": INVALID_LIMIT_VALUE[1]
         }
         return self.prepare_400_bad_request_response(
@@ -41,7 +42,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         from ib_iam.constants.exception_messages import OFFSET_VALUE_IS_GREATER_THAN_LIMIT
         response_dict = {
             "response": OFFSET_VALUE_IS_GREATER_THAN_LIMIT[0],
-            "http_status_code": 400,
+            "http_status_code": BADREQUEST_STATUS_CODE,
             "res_status": OFFSET_VALUE_IS_GREATER_THAN_LIMIT[1]
         }
         return self.prepare_400_bad_request_response(

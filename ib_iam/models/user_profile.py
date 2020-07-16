@@ -3,7 +3,6 @@ from ib_iam.models import Company, Role, Team
 
 
 class UserProfile(models.Model):
-    # TODO: Check the field
     user_id = models.CharField(max_length=1000)
     is_admin = models.BooleanField(default=False)
     company = models.ForeignKey('Company', on_delete=models.CASCADE)
