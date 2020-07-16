@@ -1,9 +1,10 @@
 import factory
 
-from ib_tasks.constants.enum import FieldTypes
+from ib_tasks.constants.enum import FieldTypes, PermissionTypes
 from ib_tasks.models.gof import GoF
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.field import Field
+from ib_tasks.models.gof_role import GoFRole
 
 
 class TaskTemplateFactory(factory.DjangoModelFactory):
@@ -55,3 +56,14 @@ class FieldFactory(factory.DjangoModelFactory):
     field_type = factory.Iterator(
         [FieldTypes.PLAIN_TEXT, FieldTypes.GOF_SELECTOR]
     )
+
+
+class GoFRoleFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = GoFRole
+
+    gof = factory.SubFactory(GoFFactory)
+    role = factory.Iterator(
+        ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"]
+    )
+    permission_type = PermissionTypes.READ.value
