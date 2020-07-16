@@ -111,7 +111,7 @@
                 },
                 {
                     "type": "object",
-                        "properties": {
+                    "properties": {
                         "res_status": {
                             "type": "string",
                             "enum": [
@@ -125,6 +125,49 @@
                     ]
                 }
             ]
+        },
+        "DetailsToAddTeam":{
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name"
+            ]
+        },
+        "DuplicatedName": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/CommonHttpExceptionFields"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "res_status": {
+                            "type": "string",
+                            "enum": [
+                                "DuplicateName"
+                            ]
+                        }
+                    },
+                    "required": [
+                    "res_status"
+                    ]
+                }
+            ]
+        },
+        "TeamCreated": {
+            "type": "object",
+            "properties": {
+                "team_id": {
+                    "type": "string"
+                }
+            }
         }
     },
     "parameters": {
@@ -139,6 +182,14 @@
             "in": "query",
             "type": "integer",
             "default": 0
+        },
+        "DetailsToAddTeam": {
+            "name": "details_to_add_team",
+            "in": "body",
+            "description": "parameters or details to create or add a team",
+            "schema": {
+                "$ref": "#/definitions/DetailsToAddTeam"
+            }
         }
     },
     "responses": {
@@ -178,6 +229,45 @@
                         "description": "BadRequest",
                         "schema": {
                             "$ref": "#/definitions/invalid_limit_offset"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/user_has_no_access"
+                        }
+                    }
+                }
+            }
+        },
+        "/team/add/": {
+            "post": {
+                "summary": "Adds a new team",
+                "description": "Creates a new team",
+                "operationId": "add_team",
+                "security": [
+                    {
+                        "oauth": [
+                            "write"
+                        ]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/DetailsToAddTeam"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Team added Suucessfully",
+                        "schema": {
+                            "$ref": "#/definitions/TeamCreated"
+                        }
+                    },
+                    "400": {
+                        "description": "BadRequest",
+                        "schema": {
+                            "$ref": "#/definitions/DuplicatedName"
                         }
                     },
                     "401": {
