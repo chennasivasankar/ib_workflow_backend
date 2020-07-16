@@ -6,7 +6,7 @@ from ib_boards.interactors.storage_interfaces.dtos import (
 class TaskService:
     @property
     def interface(self):
-        from ib_tasks.interactors.service_interface import ServiceInterface
+        from ib_tasks.app_interfaces.service_interface import ServiceInterface
         return ServiceInterface()
 
     def get_task_details_dtos(self, task_dtos: List[TaskDTO],

@@ -17,11 +17,12 @@ class GetTaskDetailsInteractor:
         return presenter.get_response_for_task_details(
             task_actions_dtos, task_fields_dtos, task_ids)
 
+
     def get_task_details(self, tasks_dtos: List[TaskDTO], user_id: str):
         task_ids = self._get_task_ids(tasks_dtos)
         task_service = get_service_adapter().task_service
         task_fields_dtos, task_actions_dtos = task_service. \
-            get_task_details_dtos(tasks_dtos, user_id)
+            get_task_details_dtos(tasks_dtos=tasks_dtos, user_id=user_id)
 
         return task_fields_dtos, task_actions_dtos, task_ids
 
