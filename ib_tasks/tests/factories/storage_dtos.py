@@ -1,6 +1,7 @@
 import factory
 from ib_tasks.interactors.storage_interfaces.dtos import CompleteGoFDetailsDTO, \
-    GoFDTO, GoFRolesDTO, GoFFieldsDTO
+    GoFDTO, GoFRolesDTO, GoFFieldsDTO, FieldDTO, FieldRolesDTO
+from ib_tasks.constants.enum import FieldTypes
 
 
 class GoFDTOFactory(factory.Factory):
@@ -58,3 +59,30 @@ class CompleteGoFDetailsDTOFactory(factory.Factory):
     gof_dto = GoFDTOFactory()
     gof_roles_dto = GoFRolesDTOFactory()
     gof_fields_dto = GoFFieldsDTOFactory()
+
+
+class FieldDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldDTO
+
+    gof_id = "FIN_VENDOR_BASIC_DETAILS"
+    field_id = factory.Sequence(lambda n: 'field%d' % n)
+    field_display_name = "field name"
+    field_type = FieldTypes.DROPDOWN.value
+    field_values = ["Mr", "Mrs", "Ms"]
+    required = True
+    help_text = "Verify the code"
+    tool_tip = "Request"
+    placeholder_text = "select vendor"
+    error_message = "error message"
+    allowed_formats = None
+    validation_regex = None
+
+
+class FieldRolesDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldRolesDTO
+
+    field_id = factory.Sequence(lambda n: 'field%d' % n)
+    read_permission_roles = ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC"]
+    write_permission_roles = ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC"]

@@ -7,9 +7,9 @@ Author: Pavankumar Pamuru
 import abc
 from typing import List
 
-from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, FieldDTO
+from ib_tasks.interactors.dtos import CreateTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    GoFDTO, GoFRolesDTO, GoFFieldsDTO
+    GoFDTO, GoFRolesDTO, GoFFieldsDTO, FieldDTO, FieldRolesDTO
 )
 
 
@@ -46,6 +46,10 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def create_fields_roles(self, field_roles_dto: List[FieldRolesDTO]):
+        pass
+
+    @abc.abstractmethod
     def get_existing_field_ids(self, field_ids: List[str]) -> List[str]:
         pass
 
@@ -67,4 +71,8 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def update_fields(self, field_dtos: List[FieldDTO]):
+        pass
+
+    @abc.abstractmethod
+    def update_fields_roles(self, field_roles_dto: List[FieldRolesDTO]):
         pass
