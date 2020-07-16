@@ -17,3 +17,7 @@ class InvalidRolesException(Exception):
 class InvalidFormatException(Exception):
     def __init__(self, valid_format: str):
         self.valid_format = valid_format
+
+
+class InvalidPythonCodeException(Exception):
+    pass

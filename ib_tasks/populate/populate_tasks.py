@@ -4,9 +4,27 @@ from typing import Dict, Any, List
 def populate_tasks(tasks: List[Dict]):
     tasks_dto = []
     validation_for_tasks_dict(tasks)
+    writing_data_to_task_actions_logic(tasks)
     for action_dict in tasks:
         tasks_dto.append(append_action_dict(action_dict))
     return tasks_dto
+
+
+def writing_data_to_task_actions_logic(actions_dict: List[Dict]):
+
+    with open('ib_tasks/populate/stage_actions_logic.py', "a") as file:
+        for action_dict in actions_dict:
+            _define_single_method(file=file, action_dict=action_dict)
+        file.close()
+
+
+def _define_single_method(file, action_dict: Dict[str, str]):
+    stage_id = action_dict["stage_id"]
+    action_name = action_dict["action_name"]
+    action_logic = action_dict['action_logic']
+    file.write(f"\n\ndef {stage_id}_{action_name}(task_dict):\n")
+    file.write(action_logic)
+    file.write("\t" + "return task_dict\n")
 
 
 def append_action_dict(action_dict: Dict[str, Any]):
@@ -36,10 +54,23 @@ def validation_for_tasks_dict(tasks_dict: List[Dict]):
             Optional("button_color"): str
         }]
     )
+    validated_data = []
     try:
-        schema.validate(tasks_dict)
+        validated_data = schema.validate(tasks_dict)
     except SchemaError:
         raise_exception_for_valid_format()
+    for action_dict in validated_data:
+        _validate_action_logic(action_logic=action_dict['action_logic'])
+
+
+def _validate_action_logic(action_logic: str):
+    from astroid import parse, AstroidSyntaxError
+    from ib_tasks.exceptions.custom_exceptions \
+        import InvalidPythonCodeException
+    try:
+        parse(action_logic)
+    except AstroidSyntaxError:
+        InvalidPythonCodeException()
 
 
 def raise_exception_for_valid_format():
