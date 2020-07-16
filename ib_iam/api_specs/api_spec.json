@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "host": "127.0.0.1:8000",
-  "basePath": "/authentication/",
+  "basePath": "/api/ib_iam/",
   "info": {
     "version": "1.0.0",
     "title": "Authentication",
@@ -57,7 +57,7 @@
   },
   "responses": {
     "LoginInResponse": {
-      "description": "Success Response",
+      "description": "Success Response for login",
       "schema": {
         "type": "object",
         "properties": {
@@ -94,7 +94,9 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "INVALID_PASSWORD"
+              "INVALID_EMAIL",
+              "PASSWORD_MIN_LENGTH",
+              "PASSWORD_AT_LEAST_ONE_SPECIAL_CHARACTER"
             ]
           }
         },
@@ -120,7 +122,8 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "INVALID_EMAIL"
+              "USER_ACCOUNT_DOES_NOT_EXIST",
+              "INCORRECT_PASSWORD"
             ]
           }
         },
