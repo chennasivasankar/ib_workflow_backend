@@ -68,7 +68,7 @@ class ExistingGlobalConstantNamesNotInGivenData(Exception):
 
 
 class TemplateDoesNotExists(Exception):
-    def __init__(self, template_id):
+    def __init__(self, template_id: str):
         self.message = "The template with template id: {}, does not exists".\
             format(template_id)
         super().__init__(self.message)

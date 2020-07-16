@@ -64,7 +64,7 @@ class GlobalConstantsInteractor:
         self._validate_template_id_in_db(template_id=template_id)
 
     def _create_global_constants_to_template_with_non_existing_constants(
-            self, template_id:str,
+            self, template_id: str,
             global_constants_dtos: List[GlobalConstantsDTO],
             existing_global_constant_names: List[str]):
         global_constants_dtos_to_create = \
@@ -112,6 +112,21 @@ class GlobalConstantsInteractor:
                 value=global_constants_dto.value
             )
 
+    def _get_existing_global_constant_names_that_are_not_in_given_data(
+            self, existing_global_constant_names: List[str],
+            global_constants_dtos: List[GlobalConstantsDTO]):
+        given_global_constant_names = \
+            self._get_constant_names(
+                global_constants_dtos=global_constants_dtos
+            )
+
+        existing_global_constant_names_not_in_given_data = [
+            global_constant_name
+            for global_constant_name in existing_global_constant_names
+            if global_constant_name not in given_global_constant_names
+        ]
+        return existing_global_constant_names_not_in_given_data
+
     @staticmethod
     def _validate_value_for_template_id_field(template_id: str):
         template_id_after_strip = template_id.strip()
@@ -154,24 +169,9 @@ class GlobalConstantsInteractor:
             raise DuplicateConstantNames(duplicate_constant_names)
 
     @staticmethod
-    def _get_existing_global_constant_names_that_are_not_in_given_data(
-            existing_global_constant_names: List[str],
-            global_constants_dtos=List[GlobalConstantsDTO]):
-        given_global_constant_names = [
-            global_constants_dto.constant_name
-            for global_constants_dto in global_constants_dtos
-        ]
-        existing_global_constant_names_not_in_given_data = [
-            global_constant_name
-            for global_constant_name in existing_global_constant_names
-            if global_constant_name not in given_global_constant_names
-        ]
-        return existing_global_constant_names_not_in_given_data
-
-    @staticmethod
     def _get_global_constants_dtos_to_create(
             existing_global_constant_names: List[str],
-            global_constants_dtos=List[GlobalConstantsDTO]):
+            global_constants_dtos: List[GlobalConstantsDTO]):
         global_constants_dtos_to_create = [
             global_constants_dto
             for global_constants_dto in global_constants_dtos
