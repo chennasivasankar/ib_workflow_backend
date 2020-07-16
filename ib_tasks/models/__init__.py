@@ -1,4 +1,13 @@
-__all__ = []
+
+from ib_tasks.models.field import Field
+from ib_tasks.models.field_role import FieldRole
+from ib_tasks.models.gof import GoF
+from ib_tasks.models.gof_role import GOFRole
+from ib_tasks.models.task_template import TaskTemplate
+
+__all__ = [
+    "Field", "FieldRole", "GoF", "GOFRole", "TaskTemplate"
+]
 
 # class DummyModel(AbstractDateTimeModel):
 #     """
