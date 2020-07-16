@@ -10,5 +10,5 @@ snapshots = Snapshot()
 snapshots['TestCase01AddTeamAPITestCase.test_case status_code'] = '201'
 
 snapshots['TestCase01AddTeamAPITestCase.test_case body'] = {
-    'team_id': '22a4f72a-eb54-47b5-8b50-c33c32e434f1'
+    'team_id': 'f2c02d98-f311-4ab2-8673-3daa00757002'
 }

@@ -1,9 +1,10 @@
+import uuid
+
 import factory, factory.django
 from ib_iam.models import User, Team, TeamMember
 
 
 class UserFactory(factory.django.DjangoModelFactory):
-
     class Meta:
         model = User
 
@@ -18,11 +19,9 @@ class UserFactory(factory.django.DjangoModelFactory):
 
 
 class TeamFactory(factory.django.DjangoModelFactory):
-
     class Meta:
         model = Team
 
-    id = factory.sequence(lambda n: n)
     team_id = factory.Faker("uuid4")
     name = factory.sequence(lambda n: "team_name%d" % n)
     description = factory.sequence(lambda n: "team_desc%d" % n)
@@ -30,11 +29,8 @@ class TeamFactory(factory.django.DjangoModelFactory):
 
 
 class TeamMemberFactory(factory.django.DjangoModelFactory):
-
     class Meta:
         model = TeamMember
 
-    id = factory.sequence(lambda n: n)
     team = factory.SubFactory(TeamFactory)
-    member_id = factory.sequence(lambda n: "user_id-%d" %n)
-
+    member_id = factory.sequence(lambda n: "user_id-%d" % n)

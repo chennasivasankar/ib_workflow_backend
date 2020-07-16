@@ -41,7 +41,7 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
 
     def raise_exception_for_duplicate_team_name(self, exception):
         response_dict = {
-            "response": DUPLICATE_TEAM_NAME[0] % exception.team_name,
+            "response": DUPLICATE_TEAM_NAME[0]  % exception.team_name,
             "http_status_code": 400,
             "res_status": DUPLICATE_TEAM_NAME[1]
         }

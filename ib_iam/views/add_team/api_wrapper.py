@@ -18,15 +18,19 @@ def api_wrapper(*args, **kwargs):
     storage = TeamStorageImplementation()
     presenter = TeamPresenterImplementation()
     interactor = AddTeamInteractor(storage=storage)
-    
+
     add_team_params_dto = AddTeamParametersDTO(
         name=name,
         description=description
     )
-    
+
     response_data = interactor.add_team_wrapper(
         user_id=user_id,
         add_team_params_dto=add_team_params_dto,
         presenter=presenter
     )
+    print("in wrapper")
+    print(response_data)
+    print(response_data.content)
+    print("given up")
     return response_data

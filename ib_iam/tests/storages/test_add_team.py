@@ -1,4 +1,5 @@
 import pytest
+import uuid
 from mock import patch
 
 from ib_iam.exceptions import DuplicateTeamName
@@ -24,11 +25,12 @@ class TestAddTeam:
         with pytest.raises(DuplicateTeamName) as exception:
             storage.add_team(user_id=user_id, add_team_params_dto=add_team_params_dto)
 
-    @patch("uuid.uuid")
-    def test_given_parameters_are_valid_returns_team_id(self, uui4_mock):
+    @patch("uuid.uuid4")
+    def test_given_parameters_are_valid_returns_team_id(self, uuid4_mock):
         storage = TeamStorageImplementation()
+
         user_id = admin1_id
-        uui4_mock.return_value = team1_id
+        uuid4_mock.return_value = "f2c02d98-f311-4ab2-8673-3daa00757002"
         team_name = "team_name1"
         team_description = "desc1"
         add_team_params_dto = AddTeamParametersDTO(
@@ -40,7 +42,7 @@ class TestAddTeam:
             user_id=user_id, add_team_params_dto=add_team_params_dto
         )
 
+        team_object = Team.objects.get(team_id=team1_id)
         assert actual_team_id == expected_team_id
-        team_object = Team.objects.get(id=actual_team_id)
         assert team_object.name == team_name
         assert team_object.description == team_description

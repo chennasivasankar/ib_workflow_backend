@@ -23,9 +23,9 @@ def create_users():
 def create_teams():
     TeamFactory.reset_sequence(1)
     created_by = admin1_id
-    t1 = TeamFactory.create(id=1, team_id=team1_id, created_by=created_by)
-    t2 = TeamFactory.create(id=2, team_id=team2_id, created_by=created_by)
-    t3 = TeamFactory.create(id=3, team_id=team3_id, created_by=created_by)
+    t1 = TeamFactory.create(team_id=team1_id, created_by=created_by)
+    t2 = TeamFactory.create(team_id=team2_id, created_by=created_by)
+    t3 = TeamFactory.create(team_id=team3_id, created_by=created_by)
     return [t1, t2, t3]
 
 
@@ -34,12 +34,12 @@ def create_members(create_teams):
     teams = create_teams
     TeamMemberFactory.reset_sequence(1)
 
-    TeamMemberFactory.create(id=1, team=teams[0], member_id=member1_id)
-    TeamMemberFactory.create(id=2, team=teams[0], member_id=member2_id)
-    TeamMemberFactory.create(id=3, team=teams[0], member_id=member3_id)
-    TeamMemberFactory.create(id=4, team=teams[1], member_id=member4_id)
-    TeamMemberFactory.create(id=5, team=teams[1], member_id=member1_id)
-    TeamMemberFactory.create(id=6, team=teams[2], member_id=member2_id)
-    TeamMemberFactory.create(id=7, team=teams[2], member_id=member3_id)
-    TeamMemberFactory.create(id=8, team=teams[2], member_id=member4_id)
+    TeamMemberFactory.create(team=teams[0], member_id=member1_id)
+    TeamMemberFactory.create(team=teams[0], member_id=member2_id)
+    TeamMemberFactory.create(team=teams[0], member_id=member3_id)
+    TeamMemberFactory.create(team=teams[1], member_id=member4_id)
+    TeamMemberFactory.create(team=teams[1], member_id=member1_id)
+    TeamMemberFactory.create(team=teams[2], member_id=member2_id)
+    TeamMemberFactory.create(team=teams[2], member_id=member3_id)
+    TeamMemberFactory.create(team=teams[2], member_id=member4_id)
 

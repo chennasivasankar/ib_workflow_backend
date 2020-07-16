@@ -151,7 +151,7 @@
                         "res_status": {
                             "type": "string",
                             "enum": [
-                                "DUPLICATE_NAME"
+                                "DUPLICATE_TEAM_NAME"
                             ]
                         }
                     },

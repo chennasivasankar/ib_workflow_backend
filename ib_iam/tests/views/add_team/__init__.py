@@ -6,7 +6,11 @@ REQUEST_METHOD = "post"
 URL_SUFFIX = "team/add/"
 
 from .test_case_01 import TestCase01AddTeamAPITestCase
+from .test_case_02 import TestCase02AddTeamAPITestCase
+from .test_case_03 import TestCase03AddTeamAPITestCase
 
 __all__ = [
-    "TestCase01AddTeamAPITestCase"
+    "TestCase01AddTeamAPITestCase",
+    "TestCase02AddTeamAPITestCase",
+    "TestCase03AddTeamAPITestCase"
 ]

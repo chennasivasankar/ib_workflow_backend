@@ -47,15 +47,24 @@ class TeamStorageImplementation(TeamStorageInterface):
     def add_team(
             self, user_id: str, add_team_params_dto: AddTeamParametersDTO
     ) -> Optional[str]:
-        from django.db import IntegrityError
-        try:
-            team_object = Team.objects.create(
-                name=add_team_params_dto.name,
-                description=add_team_params_dto.description,
-                created_by=user_id
-            )
-        except IntegrityError:
+        # if Team.objects.filter(name=add_team_params_dto.name).exists():
+        #     raise DuplicateTeamName(team_name=add_team_params_dto.name)
+        # team_object = Team.objects.create(
+        #     name=add_team_params_dto.name,
+        #     description=add_team_params_dto.description,
+        #     created_by=user_id
+        # )
+        team_object, is_created = Team.objects.get_or_create(
+            name=add_team_params_dto.name,
+            defaults={
+                'description' : add_team_params_dto.description,
+                'created_by' : user_id
+            }
+        )
+        is_not_created = not is_created
+        if is_not_created:
             raise DuplicateTeamName(team_name=add_team_params_dto.name)
+
         return str(team_object.team_id)
 
     @staticmethod

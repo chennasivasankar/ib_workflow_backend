@@ -15,7 +15,6 @@ class AddTeamInteractor:
             add_team_params_dto: AddTeamParametersDTO,
             presenter: TeamPresenterInterface
     ):
-
         try:
             team_id = self.add_team(
                 user_id=user_id, add_team_params_dto=add_team_params_dto
@@ -30,7 +29,5 @@ class AddTeamInteractor:
     def add_team(self, user_id: str, add_team_params_dto: AddTeamParametersDTO):
 
         self.storage.is_user_admin(user_id=user_id)
-
         team_id = self.storage.add_team(user_id=user_id, add_team_params_dto=add_team_params_dto)
-
         return team_id

@@ -4,9 +4,13 @@ from django.db import models
 from ib_common.models import AbstractDateTimeModel
 
 
+def generate_uuid4():
+    return uuid.uuid4()
+
+
 class Team(AbstractDateTimeModel):
     team_id = models.UUIDField(
-        default=uuid.uuid4,
+        default=generate_uuid4,
         editable=False,
         primary_key=True
     )

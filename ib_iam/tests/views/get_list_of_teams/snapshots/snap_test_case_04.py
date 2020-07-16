@@ -7,14 +7,6 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01GetListOfTeamsAPITestCase.test_case status_code'] = '400'
-
-snapshots['TestCase01GetListOfTeamsAPITestCase.test_case body'] = {
-    'http_status_code': 400,
-    'res_status': 'INVALID_OFFSET',
-    'response': 'Given offset is not valid, please check it'
-}
-
 snapshots['TestCase04GetListOfTeamsAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase04GetListOfTeamsAPITestCase.test_case body'] = {

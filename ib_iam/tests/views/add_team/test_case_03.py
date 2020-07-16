@@ -1,14 +1,14 @@
 """
-# TODO: Returns team_id as all the parametes are given properly
+# TODO: Raises User has no access exception if user is not admin   duplicate name
 """
-from uuid import UUID
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
-from mock import patch
+
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ...factories.models import TeamFactory
 
 
-class TestCase01AddTeamAPITestCase(TestUtils):
+class TestCase03AddTeamAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -16,9 +16,7 @@ class TestCase01AddTeamAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.mark.django_db
-    @patch("uuid.uuid4")
-    def test_case(self, uuid4_mock, snapshot, setup):
-        uuid4_mock.return_value = UUID("f2c02d98-f311-4ab2-8673-3daa00757002")
+    def test_case(self, snapshot, setup):
         body = {'name': 'team_name1', 'description': ''}
         path_params = {}
         query_params = {}
@@ -34,4 +32,6 @@ class TestCase01AddTeamAPITestCase(TestUtils):
         user_id = str(user_obj.id)
         from ib_iam.tests.factories.models import UserFactory
         UserFactory.reset_sequence(1)
-        UserFactory.create(user_id=user_id, admin=True)
+        TeamFactory.reset_sequence(1)
+        UserFactory.create(user_id=user_id, is_admin=True)
+        TeamFactory.create(name="team_name1")
