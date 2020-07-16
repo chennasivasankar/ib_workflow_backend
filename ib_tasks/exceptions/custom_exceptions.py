@@ -7,21 +7,13 @@ class DuplicateGoFIds(Exception):
         super().__init__(self.message)
 
 
-class DifferentTemplateName(Exception):
-    def __init__(self, existing_template_name: str, template_name: str):
-        self.message = \
-            "given template name: {} but it is different from the existing template_name: {}". \
-                format(template_name, existing_template_name)
-        super().__init__(self.message)
-
-
-class ExistingGoFNotInGivenGoF(Exception):
+class ExistingGoFsNotInGivenGoFs(Exception):
     def __init__(self,
                  gof_of_template_not_in_given_gof: List[str],
                  given_gof_ids: List[str]):
         self.message = \
-            "Existing gof ids: {} of template not in given gof ids: {}". \
-                format(gof_of_template_not_in_given_gof, given_gof_ids)
+            "Existing gof ids: {} of template not in given gof ids: {}".\
+            format(gof_of_template_not_in_given_gof, given_gof_ids)
         super().__init__(self.message)
 
 
@@ -31,17 +23,59 @@ class InvalidValueForField(Exception):
         super().__init__(self.message)
 
 
-class TemplateDoesNotExists(Exception):
-    def __init__(self, template_id: str):
-        self.message = \
-            "Template does not exists for the given template_id: {}".\
-            format(template_id)
-        super().__init__(self.message)
+class GOFIdCantBeEmpty(Exception):
+    pass
+
+
+class GOFDisplayNameCantBeEmpty(Exception):
+    pass
+
+
+class GOFReadPermissionsCantBeEmpty(Exception):
+    pass
+
+
+class GOFWritePermissionsCantBeEmpty(Exception):
+    pass
+
+
+class GOFFieldIdsCantBeEmpty(Exception):
+    pass
+
+
+class DuplicatedFieldIds(Exception):
+    pass
+
+
+class InvalidReadPermissionRoles(Exception):
+    pass
+
+
+class InvalidWritePermissionRoles(Exception):
+    pass
+
+
+class DifferentDisplayNamesForSameGOF(Exception):
+    pass
 
 
 class ExistingGlobalConstantNamesNotInGivenData(Exception):
     def __init__(self, constant_names: List[str]):
         self.message = \
-            "These existing constant names are not in given data: {}".\
+            "Existing constants with constant names: {} of template not in given data".\
             format(constant_names)
+        super().__init__(self.message)
+
+
+class TemplateDoesNotExists(Exception):
+    def __init__(self, template_id):
+        self.message = "The template with template id: {}, does not exists".\
+            format(template_id)
+        super().__init__(self.message)
+
+
+class DuplicateConstantNames(Exception):
+    def __init__(self, constant_names: List[str]):
+        self.message = \
+            "Given duplicate constant names {}".format(constant_names)
         super().__init__(self.message)

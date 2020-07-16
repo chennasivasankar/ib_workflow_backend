@@ -1,7 +1,7 @@
 from typing import List
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
-from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, GoFIDAndOrderDTO
+from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, GoFIdAndOrderDTO
 
 
 class TaskTemplateInteractor:
@@ -88,18 +88,6 @@ class TaskTemplateInteractor:
         ]
         return gof_dtos_to_update
 
-    def _validate_template_name_with_existing_name(
-            self, template_id: str, template_name: str):
-        from ib_tasks.exceptions.custom_exceptions \
-            import DifferentTemplateName
-        existing_template_name = \
-            self.task_storage.get_task_template_name(template_id=template_id)
-
-        is_same_template_name = existing_template_name == template_name
-        is_different_template_name = not is_same_template_name
-        if is_different_template_name:
-            raise DifferentTemplateName(existing_template_name, template_name)
-
     def _check_existing_gofs_of_template_are_in_given_gofs(
             self, create_task_template_dto: CreateTaskTemplateDTO):
         existing_gof_ids = \
@@ -115,62 +103,46 @@ class TaskTemplateInteractor:
             if gof_id not in given_gof_ids
         ]
         from ib_tasks.exceptions.custom_exceptions import \
-            ExistingGoFNotInGivenGoF
+            ExistingGoFsNotInGivenGoFs
         if gof_of_template_not_in_given_gof:
-            raise ExistingGoFNotInGivenGoF(
+            raise ExistingGoFsNotInGivenGoFs(
                 gof_of_template_not_in_given_gof, given_gof_ids
             )
 
     @staticmethod
     def _validate_template_name(template_name: str):
-        is_template_name_string = (type(template_name) == str)
-        is_template_name_not_a_string = not is_template_name_string
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
-        if is_template_name_not_a_string:
-            raise InvalidValueForField("template_name")
-
         template_name_after_strip = template_name.strip()
         is_template_name_empty = not template_name_after_strip
+        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
         if is_template_name_empty:
             raise InvalidValueForField("template_name")
 
     @staticmethod
     def _validate_template_id(template_id: str):
-        is_template_id_string = type(template_id) == str
-        is_template_id_not_a_string = not is_template_id_string
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
-        if is_template_id_not_a_string:
-            raise InvalidValueForField("template_id")
-
         template_id_after_strip = template_id.strip()
         is_template_id_empty = not template_id_after_strip
+        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
         if is_template_id_empty:
             raise InvalidValueForField("template_id")
 
     @staticmethod
     def _validate_gof_id(gof_id: str):
-        is_gof_id_string = type(gof_id) == str
-        is_gof_id_not_a_string = not is_gof_id_string
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
-        if is_gof_id_not_a_string:
-            raise InvalidValueForField("gof_id")
-
         gof_id_after_strip = gof_id.strip()
         is_gof_id_empty = not gof_id_after_strip
+        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
         if is_gof_id_empty:
             raise InvalidValueForField("gof_id")
 
     @staticmethod
-    def _validate_order_of_gof(gof_dtos: List[GoFIDAndOrderDTO]):
+    def _validate_order_of_gof(gof_dtos: List[GoFIdAndOrderDTO]):
         from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
         for gof_dto in gof_dtos:
-            is_order_not_int_type = not (type(gof_dto.order) == int)
-            is_invalid_order = gof_dto.order < -1 or is_order_not_int_type
+            is_invalid_order = gof_dto.order < -1
             if is_invalid_order:
                 raise InvalidValueForField("order")
 
     @staticmethod
-    def _get_gof_ids(gof_dtos: List[GoFIDAndOrderDTO]):
+    def _get_gof_ids(gof_dtos: List[GoFIdAndOrderDTO]):
         gof_ids = [
             gof_dto.gof_id
             for gof_dto in gof_dtos
