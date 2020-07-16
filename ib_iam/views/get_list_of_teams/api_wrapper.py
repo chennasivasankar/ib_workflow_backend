@@ -17,7 +17,7 @@ from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     user_obj = kwargs["user"]
-    user_id = user_obj.id
+    user_id = str(user_obj.id)
     request_query_params = kwargs["request_query_params"].__dict__
     offset = request_query_params.get("offset")
     limit = request_query_params.get("limit")
