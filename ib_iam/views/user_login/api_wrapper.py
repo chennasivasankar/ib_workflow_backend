@@ -17,7 +17,6 @@ def api_wrapper(*args, **kwargs):
     from ib_iam.interactors.user_login_interactor import LoginInteractor
     interactor = LoginInteractor()
 
-
     from ib_iam.presenters.presenter_implementation import \
         AuthPresenterImplementation
     presenter = AuthPresenterImplementation()

@@ -20,7 +20,7 @@ class TestCase01UserResetPasswordLinkAPITestCase(TestUtils):
         "ib_iam.adapters.auth_service.AuthService.get_token_for_reset_password"
     )
     def test_case(self, get_token_for_reset_password, snapshot):
-        from ib_iam.interactors.DTOs.common_dtos import InvalidEmail
+        from ib_iam.exceptions.custom_exceptions import InvalidEmail
         get_token_for_reset_password.side_effect = InvalidEmail
         body = {'email': 'test@gmail.com'}
         path_params = {}

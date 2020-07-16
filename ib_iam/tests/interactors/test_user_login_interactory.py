@@ -63,7 +63,7 @@ class TestLoginInteractor:
         # Arrange
         expected_presenter_raise_email_does_not_exist_mock = Mock()
 
-        from ib_iam.interactors.DTOs.common_dtos import UserAccountDoesNotExist
+        from ib_iam.exceptions.custom_exceptions import UserAccountDoesNotExist
         get_tokens_dto_for_given_email_and_password_dto_mock.side_effect \
             = UserAccountDoesNotExist
 
@@ -131,7 +131,7 @@ class TestLoginInteractor:
         # Arrange
         expected_raise_invalid_email_mock = Mock()
 
-        from ib_iam.interactors.DTOs.common_dtos import InvalidEmail
+        from ib_iam.exceptions.custom_exceptions import InvalidEmail
         get_tokens_dto_for_given_email_and_password_dto_mock.side_effect \
             = InvalidEmail
 
