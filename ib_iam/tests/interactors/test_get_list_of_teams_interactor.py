@@ -79,13 +79,17 @@ class TestGetListOfTeamsInteractor:
         user_id = "1"
         team_ids = ["1", "2"]
         member_ids = ["2", "3", "4", "5"]
+        total_teams = 3
         expected_team_details_dtos = TeamWithMembersDetailsDTO(
+            total_teams=total_teams,
             team_dtos=expected_list_of_teams_dtos,
             team_member_ids_dtos=expected_team_member_ids_dtos,
             member_dtos=expected_list_of_member_dtos
         )
 
-        storage.get_team_dtos_created_by_user.return_value = expected_list_of_teams_dtos
+        storage.get_team_dtos.return_value = (
+            expected_list_of_teams_dtos, total_teams
+        )
         storage.get_team_member_ids_dtos.return_value = expected_team_member_ids_dtos
         get_basic_user_dtos_mock.return_value = expected_list_of_user_dtos
         presenter.get_response_for_get_list_of_teams.return_value = \
@@ -98,7 +102,7 @@ class TestGetListOfTeamsInteractor:
 
         # Assert
         assert actual_list_of_teams_details == expected_get_list_of_teams_details
-        storage.get_team_dtos_created_by_user.assert_called_once_with(
+        storage.get_team_dtos.assert_called_once_with(
             user_id=user_id, pagination_dto=pagination_dto
         )
         storage.get_team_member_ids_dtos.assert_called_once_with(

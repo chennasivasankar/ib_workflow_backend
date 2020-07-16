@@ -33,6 +33,7 @@ def get_list_of_team_dtos():
     ]
 
     teams_dto = TeamWithMembersDetailsDTOFactory(
+        total_teams = 3,
         team_dtos=teams_dtos,
         team_member_ids_dtos=team_member_ids_dtos,
         member_dtos=members_dtos

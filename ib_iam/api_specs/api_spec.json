@@ -68,6 +68,20 @@
                 }
             }
         },
+        "ResponseForGetListOfTeams": {
+            "type": "object",
+            "properties": {
+                "total_teams": {
+                    "type": "integer"
+                },
+                "list_of_teams": {
+                    "type": "array",
+                    "items": {
+                        "$ref" : "#/definitions/TeamWithMembersDetails"
+                    }
+                }
+            }
+        },
         "CommonHttpExceptionFields": {
                 "type": "object",
                 "properties": {
@@ -168,11 +182,8 @@
                     "200": {
                         "description": "list of teams",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/TeamWithMembersDetails"
+                                "$ref": "#/definitions/ResponseForGetListOfTeams"
                             }
-                        }
                     },
                     "400": {
                         "description": "BadRequest",

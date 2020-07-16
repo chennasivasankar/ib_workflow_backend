@@ -9,7 +9,7 @@ from ib_iam.tests.factories.models import (
 )
 
 
-class TestCase01GetListOfTeamsAPITestCase(TestUtils):
+class TestCase03GetListOfTeamsAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD

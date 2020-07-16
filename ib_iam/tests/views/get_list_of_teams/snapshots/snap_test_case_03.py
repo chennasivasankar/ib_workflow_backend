@@ -14,3 +14,11 @@ snapshots['TestCase01GetListOfTeamsAPITestCase.test_case body'] = {
     'res_status': 'INVALID_LIMIT',
     'response': 'Given limit is not valid, please check it'
 }
+
+snapshots['TestCase03GetListOfTeamsAPITestCase.test_case status_code'] = '400'
+
+snapshots['TestCase03GetListOfTeamsAPITestCase.test_case body'] = {
+    'http_status_code': 400,
+    'res_status': 'INVALID_LIMIT',
+    'response': 'Given limit is not valid, please check it'
+}

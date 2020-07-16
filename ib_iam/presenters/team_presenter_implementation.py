@@ -43,7 +43,13 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
             self, team_details_dtos: TeamWithMembersDetailsDTO
     ):
         team_details_dict = self._make_all_teams_details_dict(team_details_dtos=team_details_dtos)
-        return self.prepare_200_success_response(response_dict=team_details_dict)
+        team_details_dicts_along_with_count = {
+            "total_teams": team_details_dtos.total_teams,
+            "list_of_teams": team_details_dict
+        }
+        return self.prepare_200_success_response(
+            response_dict=team_details_dicts_along_with_count
+        )
 
     def _make_all_teams_details_dict(self, team_details_dtos: TeamWithMembersDetailsDTO):
         team_dtos = team_details_dtos.team_dtos

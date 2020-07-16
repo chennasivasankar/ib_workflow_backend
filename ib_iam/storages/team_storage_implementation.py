@@ -15,18 +15,19 @@ class TeamStorageImplementation(TeamStorageInterface):
         except User.DoesNotExist:
             raise UserHasNoAccess()
 
-    def get_team_dtos_created_by_user(
+    def get_team_dtos(
             self, user_id: str, pagination_dto: PaginationDTO
-    ) -> List[BasicTeamDTO]:
+    ) -> (List[BasicTeamDTO], int):
         team_objects = Team.objects.all()
+        total_teams = len(team_objects)
         offset = pagination_dto.offset
         limit = pagination_dto.limit
         team_objects = team_objects[offset:offset + limit]
-        team_dtos_list = self._get_team_dtos(team_objects=team_objects)
-        return team_dtos_list
+        team_dtos_list = self._get_team_dtos_list(team_objects=team_objects)
+        return (team_dtos_list, total_teams)
 
     @staticmethod
-    def _get_team_dtos(team_objects):
+    def _get_team_dtos_list(team_objects):
         team_dtos = [
             BasicTeamDTO(
                 team_id=str(team_object.team_id),

@@ -49,10 +49,12 @@ class GetListOfTeamsInteractor:
         self._is_invalid_limit(pagination_dto.limit)
         self._is_invalid_offset(pagination_dto.offset)
 
-        team_dtos = self.storage.get_team_dtos_created_by_user(
+        team_dtos_along_with_count = self.storage.get_team_dtos(
             user_id=user_id,
             pagination_dto=pagination_dto
         )
+        team_dtos = team_dtos_along_with_count[0]
+        total_teams = team_dtos_along_with_count[1]
         team_ids = self._get_team_ids_from_team_dtos(team_dtos=team_dtos)
 
         team_member_ids_dtos = self.storage.get_team_member_ids_dtos(
@@ -68,6 +70,7 @@ class GetListOfTeamsInteractor:
         )
 
         team_details_dtos = TeamWithMembersDetailsDTO(
+            total_teams = total_teams,
             team_dtos=team_dtos,
             team_member_ids_dtos=team_member_ids_dtos,
             member_dtos=member_dtos
