@@ -1,8 +1,10 @@
-from ib_boards.exceptions.custom_exceptions import InvalidBoardId, InvalidOffsetValue, InvalidLimitValue, \
-    UserDonotHaveAccess
+from ib_boards.exceptions.custom_exceptions import (
+    InvalidBoardId, InvalidOffsetValue, InvalidLimitValue, UserDonotHaveAccess)
 from ib_boards.interactors.dtos import ColumnParametersDTO
-from ib_boards.interactors.presenter_interfaces.presenter_interface import PresenterInterface
-from ib_boards.interactors.storage_interfaces.storage_interface import StorageInterface
+from ib_boards.interactors.presenter_interfaces.presenter_interface import \
+    PresenterInterface
+from ib_boards.interactors.storage_interfaces.storage_interface import \
+    StorageInterface
 
 
 class GetColumnDetailsInteractor:
@@ -32,22 +34,28 @@ class GetColumnDetailsInteractor:
         self._validate_offset_value(offset=offset)
         self._validate_limit_value(limit=limit)
         self._validate_board_id(board_id=board_id)
+        user_roles = self.storage.get_user_roles(user_id)
         self._validate_if_user_has_permissions_for_given_board_id(
-            board_id=board_id, user_id=user_id)
+            board_id=board_id, user_roles=user_roles)
 
         column_ids = self.storage.get_column_ids_for_board(
-            board_id=board_id, user_id=user_id)
+            board_id=board_id, user_roles=user_roles)
+
         column_dtos = self.storage.get_columns_details(column_ids=column_ids)
 
     def _validate_if_user_has_permissions_for_given_board_id(self,
                                                              board_id: str,
-                                                             user_id: str):
-        is_permitted = self.storage.check_if_user_has_permissions_for_board_id(
-            board_id=board_id, user_id=user_id
-        )
-        is_not_permitted = not is_permitted
-        if is_not_permitted:
+                                                             user_roles: str):
+        board_permitted_user_roles = self.storage. \
+            get_permitted_user_roles_for_board(board_id=board_id)
+        has_permission = False
+        for board_permitted_user_role in board_permitted_user_roles:
+            if board_permitted_user_role in user_roles:
+                has_permission = True
+
+        if not has_permission:
             raise UserDonotHaveAccess
+        return
 
     @staticmethod
     def _validate_offset_value(offset: int):

@@ -92,16 +92,26 @@ class TestGetColumnDetailsInteractor:
             self):
         # Arrange
         board_id = "board_id_1"
+        user_id = "user_id_1"
         columns_parameters = ColumnParametersDTO(
             board_id=board_id,
             offset=2,
             limit=10,
-            user_id="user_id_1"
+            user_id=user_id
         )
-
+        user_roles = ["FIN_PAYMENT_REQUESTER",
+                      "FIN_PAYMENT_POC",
+                      "FIN_PAYMENT_APPROVER",
+                      "FIN_PAYMENTS_LEVEL1_VERIFIER",
+                      "FIN_PAYMENTS_LEVEL2_VERIFIER",
+                      "FIN_PAYMENTS_LEVEL3_VERIFIER"]
         storage = create_autospec(StorageInterface)
         presenter = create_autospec(PresenterInterface)
-        storage.check_if_user_has_permissions_for_board_id.return_value = False
+        board_permitted_user_roles = ["FIN_PAYMENTS_LEVEL4_VERIFIER",
+                                      "FIN_PAYMENTS_LEVEL5_VERIFIER",
+                                      "FIN_PAYMENTS_LEVEL6_VERIFIER"]
+        storage.get_user_roles.return_value = user_roles
+        storage.get_permitted_user_roles_for_board.return_value = board_permitted_user_roles
         interactor = GetColumnDetailsInteractor(
             storage=storage
         )
@@ -112,6 +122,9 @@ class TestGetColumnDetailsInteractor:
             columns_parameters=columns_parameters)
 
         # Assert
+        storage.get_permitted_user_roles_for_board.assert_called_once_with(
+            board_id=board_id
+        )
         presenter.raise_exception_for_user_donot_have_access_for_board.assert_called_once()
 
     def test_get_columns_details_given_valid_board_id_returns_columns_details(
@@ -125,10 +138,18 @@ class TestGetColumnDetailsInteractor:
             user_id="user_id_1"
         )
         column_ids = ["column_id_1", "column_id_2", "column_id_3"]
+        user_roles = ["FIN_PAYMENT_REQUESTER",
+                      "FIN_PAYMENT_POC",
+                      "FIN_PAYMENT_APPROVER",
+                      "FIN_PAYMENTS_LEVEL1_VERIFIER",
+                      "FIN_PAYMENTS_LEVEL2_VERIFIER",
+                      "FIN_PAYMENTS_LEVEL3_VERIFIER"]
+        board_permitted_user_roles = ["FIN_PAYMENT_POC"]
         storage = create_autospec(StorageInterface)
         presenter = create_autospec(PresenterInterface)
         storage.get_column_ids_for_board.return_value = column_ids
-        storage.check_if_user_has_permissions_for_board_id.return_value = True
+        storage.get_user_roles.return_value = user_roles
+        storage.get_permitted_user_roles_for_board.return_value = board_permitted_user_roles
         storage.get_columns_details.return_value = get_column_details_dto
         interactor = GetColumnDetailsInteractor(
             storage=storage
