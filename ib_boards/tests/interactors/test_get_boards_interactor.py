@@ -135,7 +135,9 @@ class TestGetBoardsInteractor:
     def test_with_valid_details_return_board_details(
             self, storage_mock, presenter_mock, get_boards_dto, mocker):
         # Arrange
+        total_boards = 3
         board_ids = ['BOARD_ID_1', 'BOARD_ID_2', 'BOARD_ID_3']
+        board_ids_need_to_send = ['BOARD_ID_2']
         board_dtos = BoardDTOFactory.create_batch(3)
         BoardDTOFactory.reset_sequence()
 
@@ -157,13 +159,13 @@ class TestGetBoardsInteractor:
 
         # Assert
         storage_mock.get_board_ids.assert_called_once_with(
-            user_role=None, offset=1, limit=1
+            user_role=None
         )
         interactor_mock.assert_called_once_with(
-            board_ids=board_ids
+            board_ids=board_ids_need_to_send
         )
         presenter_mock.get_response_for_get_boards.assert_called_once_with(
-            board_dtos=board_dtos
+            board_dtos=board_dtos, total_boards=total_boards
         )
         assert actual_response == expected_response
 

@@ -21,7 +21,7 @@ class GetBoardsInteractor:
             self, get_boards_dto: GetBoardsDTO,
             presenter: GetBoardsPresenterInterface):
         try:
-            board_dtos = self.get_boards(
+            board_dtos, total_boards = self.get_boards(
                 get_boards_dto=get_boards_dto
             )
         except UserDoNotHaveAccessToBoards:
@@ -30,7 +30,10 @@ class GetBoardsInteractor:
             return presenter.get_response_for_invalid_offset()
         except InvalidLimitValue:
             return presenter.get_response_for_invalid_limit()
-        return presenter.get_response_for_get_boards(board_dtos=board_dtos)
+        return presenter.get_response_for_get_boards(
+            board_dtos=board_dtos,
+            total_boards=total_boards
+        )
 
     def get_boards(self, get_boards_dto: GetBoardsDTO):
         from ib_boards.adapters.service_adapter import get_service_adapter
@@ -46,9 +49,9 @@ class GetBoardsInteractor:
             raise InvalidLimitValue
         board_ids = self.storage.get_board_ids(
             user_role=user_role,
-            offset=offset,
-            limit=limit
         )
+        total_boards = len(board_ids)
+        board_ids = board_ids[offset:offset+limit]
         from ib_boards.interactors.get_board_details_interactor \
             import GetBoardsDetailsInteractor
         board_details_interactor = GetBoardsDetailsInteractor(
@@ -57,4 +60,4 @@ class GetBoardsInteractor:
         boards_details_dtos = board_details_interactor.get_boards_details(
             board_ids=board_ids
         )
-        return boards_details_dtos
+        return boards_details_dtos, total_boards
