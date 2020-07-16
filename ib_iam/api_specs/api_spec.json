@@ -31,6 +31,22 @@
     }
   },
   "definitions": {
+    "HttpResponseAndStatusCodeDefinition": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code"
+      ]
+    }
   },
   "parameters": {
     "LoginParameter": {
@@ -99,134 +115,124 @@
     "LoginInBadRequestResponse": {
       "description": "Log in Bad Request Response",
       "schema": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCodeDefinition"
           },
-          "http_status_code": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "res_status": {
-            "type": "string",
-            "enum": [
-              "INVALID_EMAIL",
-              "PASSWORD_MIN_LENGTH",
-              "PASSWORD_AT_LEAST_ONE_SPECIAL_CHARACTER"
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_EMAIL",
+                  "PASSWORD_MIN_LENGTH",
+                  "PASSWORD_AT_LEAST_ONE_SPECIAL_CHARACTER"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
             ]
           }
-        },
-        "required": [
-          "response",
-          "http_status_code",
-          "res_status"
         ]
       }
     },
     "LoginInNotFoundResponse": {
       "description": "Login In Not Found response",
       "schema": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCodeDefinition"
           },
-          "http_status_code": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "res_status": {
-            "type": "string",
-            "enum": [
-              "USER_ACCOUNT_DOES_NOT_EXIST",
-              "INCORRECT_PASSWORD"
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_ACCOUNT_DOES_NOT_EXIST",
+                  "INCORRECT_PASSWORD"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
             ]
           }
-        },
-        "required": [
-          "response",
-          "http_status_code",
-          "res_status"
         ]
       }
     },
     "ResetPasswordBadRequestResponse": {
       "description": "reset password bad request response",
       "schema": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCodeDefinition"
           },
-          "http_status_code": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "res_status": {
-            "type": "string",
-            "enum": [
-              "INVALID_EMAIL"
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_EMAIL"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
             ]
           }
-        },
-        "required": [
-          "response",
-          "http_status_code",
-          "res_status"
         ]
       }
     },
     "ResetPasswordNotFoundResponse": {
       "description": "reset password not found response",
       "schema": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCodeDefinition"
           },
-          "http_status_code": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "res_status": {
-            "type": "string",
-            "enum": [
-              "USER_ACCOUNT_DOES_NOT_EXIST"
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_ACCOUNT_DOES_NOT_EXIST"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
             ]
           }
-        },
-        "required": [
-          "response",
-          "http_status_code",
-          "res_status"
         ]
       }
     },
     "UpdatePasswordBadRequestResponse": {
       "description": "update password bad request response",
       "schema": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCodeDefinition"
           },
-          "http_status_code": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "res_status": {
-            "type": "string",
-            "enum": [
-              "INVALID_PASSWORD",
-              "INVALID_TOKEN"
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_PASSWORD",
+                  "INVALID_TOKEN"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
             ]
           }
-        },
-        "required": [
-          "response",
-          "http_status_code",
-          "res_status"
         ]
       }
     }

@@ -23,7 +23,7 @@ class TestCase02UserResetPasswordLinkAPITestCase(TestUtils):
         body = {'email': 'test@gmail.com'}
         from ib_iam.interactors.DTOs.common_dtos import UserAccountDoesNotExist
         get_token_for_reset_password_mock.side_effect \
-            = UserAccountDoesNotExist()
+            = UserAccountDoesNotExist
         path_params = {}
         query_params = {}
         headers = {}

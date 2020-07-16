@@ -21,7 +21,7 @@ class TestResetPasswordLinkToEmailInteractor:
         # Arrange
         email = "san"
         from ib_iam.interactors.DTOs.common_dtos import InvalidEmail
-        get_token_for_reset_password.side_effect = InvalidEmail()
+        get_token_for_reset_password.side_effect = InvalidEmail
         expected_presenter_raise_invalid_email_mock = Mock()
 
         presenter_mock.raise_exception_for_invalid_email.return_value \
@@ -50,7 +50,7 @@ class TestResetPasswordLinkToEmailInteractor:
         email = "test@gmail.com"
         from ib_iam.interactors.DTOs.common_dtos import UserAccountDoesNotExist
         get_token_for_reset_password_mock.side_effect \
-            = UserAccountDoesNotExist()
+            = UserAccountDoesNotExist
 
         expected_presenter_raise_user_account_does_not_exist_mock = Mock()
 

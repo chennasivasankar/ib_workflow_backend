@@ -80,7 +80,7 @@ class TestCase02UserLoginAPITestCase(TestUtils):
     ):
         from ib_iam.interactors.user_login_interactor import PasswordMinLength
         get_tokens_dto_for_given_email_and_password_dto.side_effect \
-            = PasswordMinLength()
+            = PasswordMinLength
         body = {'email': 'test@gmail.com', 'password': 'test123'}
         path_params = {}
         query_params = {}
@@ -100,7 +100,7 @@ class TestCase02UserLoginAPITestCase(TestUtils):
         from ib_iam.interactors.user_login_interactor import \
             PasswordAtLeastOneSpecialCharacter
         get_tokens_dto_for_given_email_and_password_dto.side_effect \
-            = PasswordAtLeastOneSpecialCharacter()
+            = PasswordAtLeastOneSpecialCharacter
         body = {'email': 'test@gmail.com', 'password': 'test123'}
         path_params = {}
         query_params = {}
