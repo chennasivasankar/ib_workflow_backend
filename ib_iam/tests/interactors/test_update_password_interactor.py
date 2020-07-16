@@ -28,7 +28,7 @@ class TestUpdateUserPasswordInteractor:
         update_user_password_mock.side_effect = TokenDoesNotExist
 
         presenter = presenter_mock
-        presenter.raise_token_does_not_exists.return_value \
+        presenter.raise_exception_for_token_does_not_exists.return_value \
             = expected_presenter_token_does_not_exist_mock
         from ib_iam.interactors.update_user_password_interactor import \
             UpdateUserPasswordInteractor
@@ -41,7 +41,7 @@ class TestUpdateUserPasswordInteractor:
 
         # Assert
         assert response == expected_presenter_token_does_not_exist_mock
-        presenter.raise_token_does_not_exists.assert_called_once()
+        presenter.raise_exception_for_token_does_not_exists.assert_called_once()
 
     @patch(
         "ib_iam.adapters.auth_service.AuthService.update_user_password"
@@ -59,7 +59,7 @@ class TestUpdateUserPasswordInteractor:
         update_user_password_mock.side_effect = NotStrongPassword
 
         presenter = presenter_mock
-        presenter.raise_not_a_strong_password.return_value \
+        presenter.raise_exception_for_not_a_strong_password.return_value \
             = expected_presenter_raise_not_a_strong_password_mock
         from ib_iam.interactors.update_user_password_interactor import \
             UpdateUserPasswordInteractor
@@ -72,7 +72,7 @@ class TestUpdateUserPasswordInteractor:
 
         # Assert
         assert response == expected_presenter_raise_not_a_strong_password_mock
-        presenter.raise_not_a_strong_password.assert_called_once()
+        presenter.raise_exception_for_not_a_strong_password.assert_called_once()
 
     @patch(
         "ib_iam.adapters.auth_service.AuthService.update_user_password"
@@ -90,7 +90,7 @@ class TestUpdateUserPasswordInteractor:
         update_user_password_mock.side_effect = TokenHasExpired
 
         presenter = presenter_mock
-        presenter.raise_token_has_expired.return_value \
+        presenter.raise_exception_for_token_has_expired.return_value \
             = expected_presenter_token_expired_mock
         from ib_iam.interactors.update_user_password_interactor import \
             UpdateUserPasswordInteractor
@@ -103,7 +103,7 @@ class TestUpdateUserPasswordInteractor:
 
         # Assert
         assert response == expected_presenter_token_expired_mock
-        presenter.raise_token_has_expired.assert_called_once()
+        presenter.raise_exception_for_token_has_expired.assert_called_once()
 
     @patch(
         "ib_iam.adapters.auth_service.AuthService.update_user_password"

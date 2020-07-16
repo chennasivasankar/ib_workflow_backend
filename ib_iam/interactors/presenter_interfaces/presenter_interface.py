@@ -27,15 +27,15 @@ class AuthPresenterInterface(ABC):
         pass
 
     @abstractmethod
-    def raise_token_does_not_exists(self):
+    def raise_exception_for_token_does_not_exists(self):
         pass
 
     @abstractmethod
-    def raise_not_a_strong_password(self):
+    def raise_exception_for_not_a_strong_password(self):
         pass
 
     @abstractmethod
-    def raise_token_has_expired(self):
+    def raise_exception_for_token_has_expired(self):
         pass
 
     @abstractmethod

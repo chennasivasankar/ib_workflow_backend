@@ -120,7 +120,7 @@ class TestAuthPresenterImplementation:
         expected_res_status = NOT_STRONG_PASSWORD[1]
 
         # Act
-        response_object = presenter.raise_not_a_strong_password()
+        response_object = presenter.raise_exception_for_not_a_strong_password()
 
         # Assert
         response = json.loads(response_object.content)
@@ -142,7 +142,7 @@ class TestAuthPresenterImplementation:
         expected_res_status = TOKEN_DOES_NOT_EXIST[1]
 
         # Act
-        response_object = presenter.raise_token_does_not_exists()
+        response_object = presenter.raise_exception_for_token_does_not_exists()
 
         # Assert
         response = json.loads(response_object.content)
@@ -164,7 +164,7 @@ class TestAuthPresenterImplementation:
         expected_res_status = TOKEN_HAS_EXPIRED[1]
 
         # Act
-        response_object = presenter.raise_token_has_expired()
+        response_object = presenter.raise_exception_for_token_has_expired()
 
         # Assert
         response = json.loads(response_object.content)

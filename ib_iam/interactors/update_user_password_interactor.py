@@ -22,11 +22,11 @@ class UpdateUserPasswordInteractor:
                 password=password, presenter=presenter, token=token
             )
         except TokenDoesNotExist:
-            return presenter.raise_token_does_not_exists()
+            return presenter.raise_exception_for_token_does_not_exists()
         except NotStrongPassword:
-            return presenter.raise_not_a_strong_password()
+            return presenter.raise_exception_for_not_a_strong_password()
         except TokenHasExpired:
-            return presenter.raise_token_has_expired()
+            return presenter.raise_exception_for_token_has_expired()
 
     def update_user_password_response(self, password: str, token: str,
                                       presenter: AuthPresenterInterface
