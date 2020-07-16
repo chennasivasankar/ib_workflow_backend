@@ -9,7 +9,8 @@ from typing import List
 from ib_tasks.interactors.storage_interfaces.dtos import (
     GoFDTO, GoFRolesDTO, GoFFieldsDTO
 )
-from ib_tasks.interactors.dtos import FieldDTO, GoFIdAndOrderDTO
+from ib_tasks.interactors.dtos import FieldDTO, GoFIdAndOrderDTO, \
+    GlobalConstantsDTO
 
 
 class TaskStorageInterface(abc.ABC):
@@ -49,4 +50,15 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def check_is_template_exists(self, template_id: str) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def get_constant_names_of_existing_global_constants_of_template(
+            self, template_id: str):
+        pass
+
+    @abc.abstractmethod
+    def create_global_constants_to_template(
+            self, template_id: str,
+            global_constants_dtos: List[GlobalConstantsDTO]):
         pass

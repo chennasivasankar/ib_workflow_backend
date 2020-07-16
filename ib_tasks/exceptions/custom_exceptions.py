@@ -57,3 +57,25 @@ class InvalidWritePermissionRoles(Exception):
 
 class DifferentDisplayNamesForSameGOF(Exception):
     pass
+
+
+class ExistingGlobalConstantNamesNotInGivenData(Exception):
+    def __init__(self, constant_names: List[str]):
+        self.message = \
+            "Existing constants with constant names: {} of template not in given data".\
+            format(constant_names)
+        super().__init__(self.message)
+
+
+class TemplateDoesNotExists(Exception):
+    def __init__(self, template_id: str):
+        self.message = "The template with template id: {}, does not exists".\
+            format(template_id)
+        super().__init__(self.message)
+
+
+class DuplicateConstantNames(Exception):
+    def __init__(self, constant_names: List[str]):
+        self.message = \
+            "Given duplicate constant names {}".format(constant_names)
+        super().__init__(self.message)
