@@ -1,43 +1,47 @@
 from typing import List
 
 
-class DuplicateGroupOfFields(Exception):
-    def __init__(self, group_of_fields_ids: List[str]):
-        self.message = "Given Duplicate group_of_fields_ids: {}".format(
-            group_of_fields_ids
-        )
+class DuplicateGoFIds(Exception):
+    def __init__(self, gof_ids: List[str]):
+        self.message = "Given duplicate gof ids {}".format(gof_ids)
         super().__init__(self.message)
 
 
 class DifferentTemplateName(Exception):
-    def __init__(self, template_name: str):
+    def __init__(self, existing_template_name: str, template_name: str):
         self.message = \
-            "Template already exists! you have given different template name: {}". \
-                format(template_name)
+            "given template name: {} but it is different from the existing template_name: {}". \
+                format(template_name, existing_template_name)
         super().__init__(self.message)
 
 
-class TemplateNotExists(Exception):
-    pass
-
-
-class ExistingGroupOfFieldsNotInGivenGroupOfFields(Exception):
-    def __init__(self, group_of_fields_ids: List[str]):
+class ExistingGoFNotInGivenGoF(Exception):
+    def __init__(self,
+                 gof_of_template_not_in_given_gof: List[str],
+                 given_gof_ids: List[str]):
         self.message = \
-            "Existing group of fields ids not in given group of fields ids: {}". \
-                format(group_of_fields_ids)
-        super().__init__(self.message)
-
-
-class InvalidOrder(Exception):
-    def __init__(self, group_of_fields_id: str, order: int):
-        self.message = "Invalid Order: {} for group_of_fields_id: {}".format(
-            order, group_of_fields_id
-        )
+            "Existing gof ids: {} of template not in given gof ids: {}". \
+                format(gof_of_template_not_in_given_gof, given_gof_ids)
         super().__init__(self.message)
 
 
 class InvalidValueForField(Exception):
     def __init__(self, field: str):
-        self.message = "Invalid for field: {}".format(field)
+        self.message = "Invalid value for field: {}".format(field)
+        super().__init__(self.message)
+
+
+class TemplateDoesNotExists(Exception):
+    def __init__(self, template_id: str):
+        self.message = \
+            "Template does not exists for the given template_id: {}".\
+            format(template_id)
+        super().__init__(self.message)
+
+
+class ExistingGlobalConstantNamesNotInGivenData(Exception):
+    def __init__(self, constant_names: List[str]):
+        self.message = \
+            "These existing constant names are not in given data: {}".\
+            format(constant_names)
         super().__init__(self.message)
