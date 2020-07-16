@@ -7,6 +7,8 @@ from ib_iam.interactors.presenter_interfaces.presenter_interface \
 
 FORBIDDEN_STATUS_CODE = 403
 BADREQUEST_STATUS_CODE = 400
+
+
 class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
     def raise_user_is_not_admin_exception(self):
         from ib_iam.constants.exception_messages import USER_DOES_NOT_HAVE_PERMISSION
@@ -50,12 +52,10 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
 
     def response_for_get_users(
             self, complete_user_details_dtos: CompleteUserDetailsDTO):
-        response = []
         user_dtos = complete_user_details_dtos.users
         team_dtos = complete_user_details_dtos.teams
         role_dtos = complete_user_details_dtos.roles
         company_dtos = complete_user_details_dtos.companies
-
         total_no_of_users = complete_user_details_dtos.total_no_of_users
         users = []
         for user_profile_dto in user_dtos:
@@ -69,9 +69,10 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             users.append(user_response_dict)
         response = {
             "users": users,
-            "total":total_no_of_users
+            "total": total_no_of_users
         }
-        return response
+        return self.prepare_200_success_response(
+            response_dict=response)
 
     def _convert_user_response_dict(
             self, user_profile_dto, user_team_dtos, user_role_dtos,
@@ -84,8 +85,8 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             "teams": self._convert_to_teams_dict(user_team_dtos),
             "roles": self._convert_to_roles_dict(user_role_dtos),
             "company": {
-                "company_name": user_company_dto.company_id,
-                "company_id": user_company_dto.company_name
+                "company_name": user_company_dto.company_name,
+                "company_id": user_company_dto.company_id
             }
         }
         return user_response_dict

@@ -6,11 +6,12 @@ from ib_iam.presenters.presenter_implementation import PresenterImplementation
 
 FORBIDDEN_STATUS_CODE = 403
 BADREQUEST_STATUS_CODE = 400
+
+
 @pytest.fixture()
 def complete_user_details_dto():
-    from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
     from ib_iam.tests.factories.storage_dtos \
-        import UserTeamDTOFactory, UserDTOFactory, \
+        import UserTeamDTOFactory, \
         UserRoleDTOFactory, UserCompanyDTOFactory
     user_ids = ["user1", "user2", "user3"]
     company_ids = ["company1", "company2", "company3"]
@@ -25,7 +26,8 @@ def complete_user_details_dto():
     for user_id in user_ids:
         user_roles.extend(UserRoleDTOFactory.create_batch(
             2, user_id=user_id))
-    user_profile_dtos = [UserProfileDTOFactory.create(user_id=user_id) \
+    from ib_iam.tests.factories.adapter_dtos import UserDTOFactory
+    user_profile_dtos = [UserDTOFactory.create(user_id=user_id) \
                          for user_id in user_ids]
     from ib_iam.interactors.presenter_interfaces.dtos import CompleteUserDetailsDTO
     complete_user_details_dto = CompleteUserDetailsDTO(
@@ -118,7 +120,8 @@ class TestGetUsersPresenter:
         presenter = PresenterImplementation()
 
         # Act
-        response = presenter.response_for_get_users(complete_user_details_dto)
+        response_object = presenter.response_for_get_users(complete_user_details_dto)
 
         # Assert
+        response = json.loads(response_object.content)
         snapshot.assert_match(response, "get_users_response")

@@ -3,6 +3,7 @@ from unittest.mock import patch
 
 import factory
 
+from ib_iam import models
 from ib_iam.models import Role, Team, Company
 from ib_iam.models.user_profile import UserProfile, UserTeam, UserRole
 
@@ -47,7 +48,7 @@ class UserTeamFactory(factory.django.DjangoModelFactory):
         model = UserTeam
 
     user_id = factory.sequence(lambda number: "user%s" % number)
-    team = factory.SubFactory(TeamFactory)
+    team = factory.Iterator(models.Team.objects.all())
 
 
 class UserRoleFactory(factory.django.DjangoModelFactory):
@@ -55,4 +56,4 @@ class UserRoleFactory(factory.django.DjangoModelFactory):
         model = UserRole
 
     user_id = factory.sequence(lambda number: "user%s" % number)
-    role = factory.SubFactory(RoleFactory)
+    role = factory.Iterator(models.Role.objects.all())

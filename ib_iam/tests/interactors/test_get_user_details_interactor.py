@@ -2,13 +2,13 @@ from unittest.mock import create_autospec, Mock, patch
 from uuid import uuid4
 
 import pytest
-from ib_iam.interactors.get_users_details_inteactor import GetUsersDetails
+from ib_iam.interactors.get_users_details_inteactor import GetUsersDetailsInteractor
 from ib_iam.interactors.presenter_interfaces.presenter_interface \
     import PresenterInterface
 from ib_iam.interactors.storage_interfaces.storage_interface \
     import StorageInterface
-from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
-from ib_iam.tests.factories.storage_dtos import UserDTOFactory
+from ib_iam.tests.factories.adapter_dtos import UserDTOFactory
+from ib_iam.tests.factories.storage_dtos import UserProfileDTOFactory
 
 USER_ID = "dd67ab82-ab8a-4253-98ae-bef82b8013a8"
 
@@ -53,8 +53,8 @@ def user_role_dtos():
 def user_dtos():
     user_ids = ["user1", "user2", "user3"]
     from ib_iam.tests.factories.storage_dtos \
-        import UserDTOFactory
-    user_dtos = [UserDTOFactory.create(user_id=user_id)
+        import UserProfileDTOFactory
+    user_dtos = [UserProfileDTOFactory.create(user_id=user_id)
                  for user_id in user_ids]
     return user_dtos
 
@@ -75,7 +75,7 @@ class TestGetUsersDetailsInteractor:
         offset = 0
         presenter = create_autospec(PresenterInterface)
         storage = create_autospec(StorageInterface)
-        interactor = GetUsersDetails(storage=storage)
+        interactor = GetUsersDetailsInteractor(storage=storage)
         storage.validate_user_is_admin.return_value = False
         presenter.raise_user_is_not_admin_exception.return_value = Mock()
         # Act
@@ -96,7 +96,7 @@ class TestGetUsersDetailsInteractor:
         offset = -1
         presenter = create_autospec(PresenterInterface)
         storage = create_autospec(StorageInterface)
-        interactor = GetUsersDetails(storage=storage)
+        interactor = GetUsersDetailsInteractor(storage=storage)
         storage.validate_user_is_admin.return_value = True
 
         # Act
@@ -115,7 +115,7 @@ class TestGetUsersDetailsInteractor:
         offset = 0
         presenter = create_autospec(PresenterInterface)
         storage = create_autospec(StorageInterface)
-        interactor = GetUsersDetails(storage=storage)
+        interactor = GetUsersDetailsInteractor(storage=storage)
         storage.validate_user_is_admin.return_value = True
 
         # Act
@@ -134,7 +134,7 @@ class TestGetUsersDetailsInteractor:
         offset = 10
         presenter = create_autospec(PresenterInterface)
         storage = create_autospec(StorageInterface)
-        interactor = GetUsersDetails(storage=storage)
+        interactor = GetUsersDetailsInteractor(storage=storage)
         storage.validate_user_is_admin.return_value = True
 
         # Act
@@ -155,7 +155,7 @@ class TestGetUsersDetailsInteractor:
         user_ids = ["user1", "user2", "user3"]
         presenter = create_autospec(PresenterInterface)
         storage = create_autospec(StorageInterface)
-        interactor = GetUsersDetails(storage=storage)
+        interactor = GetUsersDetailsInteractor(storage=storage)
         storage.validate_user_is_admin.return_value = True
         storage.get_users_who_are_not_admins.return_value = user_dtos
 
@@ -175,7 +175,7 @@ class TestGetUsersDetailsInteractor:
         user_ids = ["user1", "user2", "user3"]
         presenter = create_autospec(PresenterInterface)
         storage = create_autospec(StorageInterface)
-        interactor = GetUsersDetails(storage=storage)
+        interactor = GetUsersDetailsInteractor(storage=storage)
         storage.validate_user_is_admin.return_value = True
         storage.get_users_who_are_not_admins.return_value = user_dtos
         storage.get_team_details_of_users_bulk.return_value = user_team_dtos
@@ -198,7 +198,7 @@ class TestGetUsersDetailsInteractor:
         user_ids = ["user1", "user2", "user3"]
         presenter = create_autospec(PresenterInterface)
         storage = create_autospec(StorageInterface)
-        interactor = GetUsersDetails(storage=storage)
+        interactor = GetUsersDetailsInteractor(storage=storage)
         storage.validate_user_is_admin.return_value = True
         storage.get_users_who_are_not_admins.return_value = user_dtos
         storage.get_role_details_of_users_bulk.return_value = user_role_dtos
@@ -221,7 +221,7 @@ class TestGetUsersDetailsInteractor:
         company_ids = ["company1", "company2", "company3"]
         presenter = create_autospec(PresenterInterface)
         storage = create_autospec(StorageInterface)
-        interactor = GetUsersDetails(storage=storage)
+        interactor = GetUsersDetailsInteractor(storage=storage)
         storage.validate_user_is_admin.return_value = True
 
         storage.get_users_who_are_not_admins.return_value = user_dtos
@@ -247,9 +247,9 @@ class TestGetUsersDetailsInteractor:
         user_ids = ["user1", "user2", "user3"]
         presenter = create_autospec(PresenterInterface)
         storage = create_autospec(StorageInterface)
-        interactor = GetUsersDetails(storage=storage)
+        interactor = GetUsersDetailsInteractor(storage=storage)
         storage.validate_user_is_admin.return_value = True
-        user_dtos = [UserDTOFactory.create(user_id=user_id)
+        user_dtos = [UserProfileDTOFactory.create(user_id=user_id)
                      for user_id in user_ids]
         storage.get_users_who_are_not_admins.return_value = user_dtos
         userprofile_dtos = [UserProfileDTOFactory.create(user_id=user_id)
@@ -275,7 +275,7 @@ class TestGetUsersDetailsInteractor:
         user_ids = ["user1", "user2", "user3"]
         presenter = create_autospec(PresenterInterface)
         storage = create_autospec(StorageInterface)
-        interactor = GetUsersDetails(storage=storage)
+        interactor = GetUsersDetailsInteractor(storage=storage)
         storage.validate_user_is_admin.return_value = True
         storage.get_users_who_are_not_admins.return_value = user_dtos
 

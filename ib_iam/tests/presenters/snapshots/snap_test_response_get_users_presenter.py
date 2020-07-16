@@ -12,8 +12,8 @@ snapshots['TestGetUsersPresenter.test_response_for_get_users get_users_response'
     'users': [
         {
             'company': {
-                'company_id': 'company 0',
-                'company_name': 'company1'
+                'company_id': 'company1',
+                'company_name': 'company 0'
             },
             'email': 'name0@gmail.com',
             'name': 'name0',
@@ -41,8 +41,8 @@ snapshots['TestGetUsersPresenter.test_response_for_get_users get_users_response'
         },
         {
             'company': {
-                'company_id': 'company 1',
-                'company_name': 'company2'
+                'company_id': 'company2',
+                'company_name': 'company 1'
             },
             'email': 'name1@gmail.com',
             'name': 'name1',
@@ -70,8 +70,8 @@ snapshots['TestGetUsersPresenter.test_response_for_get_users get_users_response'
         },
         {
             'company': {
-                'company_id': 'company 2',
-                'company_name': 'company3'
+                'company_id': 'company3',
+                'company_name': 'company 2'
             },
             'email': 'name2@gmail.com',
             'name': 'name2',

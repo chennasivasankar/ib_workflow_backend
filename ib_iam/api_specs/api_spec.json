@@ -182,7 +182,7 @@
             }
           },
           "required": [
-            "total_no_of_users"
+            "total"
           ]
         }
       ]
@@ -193,7 +193,7 @@
         "response": {
           "type": "string",
           "enum": [
-            "USER DONT'T HAVE PERMISSION"
+            "USER_DOES_NOT_HAVE_PERMISSION"
           ]
         }
       },

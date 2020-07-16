@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class UserDTO:
+class UserProfileDTO:
     user_id: str
     is_admin: bool
     company_id: str

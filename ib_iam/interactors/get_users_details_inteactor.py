@@ -1,7 +1,7 @@
 from typing import List
 from uuid import uuid4
 
-from ib_iam.adapters.dtos import UserProfileDTO
+from ib_iam.adapters.dtos import UserDTO
 from ib_iam.exceptions.exceptions import UserIsNotAdminException, \
     InvalidOffsetValueException, InvalidLimitValueException, \
     OffsetValueIsGreaterthanLimitValueException
@@ -13,7 +13,7 @@ from ib_iam.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 
 
-class GetUsersDetails:
+class GetUsersDetailsInteractor:
     def __init__(self, storage: StorageInterface):
         self.storage = storage
 
@@ -22,7 +22,6 @@ class GetUsersDetails:
         try:
             complete_user_details_dtos = self.get_users_details(
                 user_id=user_id, offset=offset, limit=limit)
-            print(complete_user_details_dtos)
             return presenter.response_for_get_users(complete_user_details_dtos)
         except UserIsNotAdminException:
             return presenter.raise_user_is_not_admin_exception()
@@ -103,7 +102,6 @@ class GetUsersDetails:
         )
         return complete_user_details_dto
 
-
     @staticmethod
     def _get_user_team(user_team_dtos, user_id):
         teams = []
@@ -131,4 +129,3 @@ class GetUsersDetails:
             if user_role_dto.user_id == user_id:
                 roles.append(user_role_dto)
         return roles
-

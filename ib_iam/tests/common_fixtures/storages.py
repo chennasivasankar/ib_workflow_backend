@@ -59,3 +59,4 @@ def users_role():
             user = UserRoleFactory.create(user_id=f"user{i}", role=role)
             users.append(user)
     return users
+
