@@ -1,5 +1,7 @@
 import json
 
+from ib_iam.constants.enums import StatusCode
+
 
 class TestLoginPresenterImplementation:
 
@@ -11,7 +13,7 @@ class TestLoginPresenterImplementation:
 
         from ib_iam.presenters.presenter_implementation import INVALID_EMAIL
         expected_response = INVALID_EMAIL[0]
-        expected_http_status_code = 400
+        expected_http_status_code = StatusCode.BAD_REQUEST.value
         expected_res_status = INVALID_EMAIL[1]
 
         # Act
@@ -33,7 +35,7 @@ class TestLoginPresenterImplementation:
         from ib_iam.presenters.presenter_implementation import \
             INCORRECT_PASSWORD
         expected_response = INCORRECT_PASSWORD[0]
-        expected_http_status_code = 404
+        expected_http_status_code = StatusCode.NOT_FOUND.value
         expected_res_status = INCORRECT_PASSWORD[1]
 
         # Act
@@ -80,7 +82,7 @@ class TestLoginPresenterImplementation:
         from ib_iam.presenters.presenter_implementation import \
             USER_ACCOUNT_DOES_NOT_EXIST
         expected_response = USER_ACCOUNT_DOES_NOT_EXIST[0]
-        expected_http_status_code = 404
+        expected_http_status_code = StatusCode.NOT_FOUND.value
         expected_res_status = USER_ACCOUNT_DOES_NOT_EXIST[1]
 
         # Act
@@ -102,10 +104,10 @@ class TestLoginPresenterImplementation:
 
         from ib_iam.presenters.presenter_implementation import \
             PASSWORD_MIN_LENGTH
-        from ib_iam.conf.settings import REQUIRED_PASSWORD_MIN_LENGTH
+        from ib_iam.constants.config import REQUIRED_PASSWORD_MIN_LENGTH
         expected_response \
             = PASSWORD_MIN_LENGTH[0] % REQUIRED_PASSWORD_MIN_LENGTH
-        expected_http_status_code = 400
+        expected_http_status_code = StatusCode.BAD_REQUEST.value
         expected_res_status = PASSWORD_MIN_LENGTH[1]
 
         # Act
@@ -129,7 +131,7 @@ class TestLoginPresenterImplementation:
         from ib_iam.presenters.presenter_implementation import \
             PASSWORD_AT_LEAST_ONE_SPECIAL_CHARACTER
         expected_response = PASSWORD_AT_LEAST_ONE_SPECIAL_CHARACTER[0]
-        expected_http_status_code = 400
+        expected_http_status_code = StatusCode.BAD_REQUEST.value
         expected_res_status = PASSWORD_AT_LEAST_ONE_SPECIAL_CHARACTER[1]
 
         # Act
