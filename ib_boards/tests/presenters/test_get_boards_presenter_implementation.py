@@ -26,16 +26,17 @@ class TestGetBoardsPresenterImplementation:
         # Assert
         actual_response_content = json.loads(actual_response.content)
 
-        assert actual_response_content.response == expected_response
-        assert actual_response_content.http_status_code == expected_http_status_code
-        assert actual_response_content.res_status == expected_res_status
+        assert actual_response_content['response'] == expected_response
+        assert actual_response_content[
+                   'http_status_code'] == expected_http_status_code
+        assert actual_response_content['res_status'] == expected_res_status
 
     def test_get_response_for_invalid_offset(self):
         # Arrange
         from ib_boards.constants.exception_messages import \
             INVALID_OFFSET_VALUE
         expected_response = INVALID_OFFSET_VALUE[0]
-        expected_http_status_code = 403
+        expected_http_status_code = 400
         expected_res_status = INVALID_OFFSET_VALUE[1]
         presenter = GetBoardsPresenterImplementation()
 
@@ -45,16 +46,17 @@ class TestGetBoardsPresenterImplementation:
         # Assert
         actual_response_content = json.loads(actual_response.content)
 
-        assert actual_response_content.response == expected_response
-        assert actual_response_content.http_status_code == expected_http_status_code
-        assert actual_response_content.res_status == expected_res_status
+        assert actual_response_content['response'] == expected_response
+        assert actual_response_content[
+                   'http_status_code'] == expected_http_status_code
+        assert actual_response_content['res_status'] == expected_res_status
 
     def test_get_response_for_invalid_limit(self):
         # Arrange
         from ib_boards.constants.exception_messages import \
             INVALID_LIMIT_VALUE
         expected_response = INVALID_LIMIT_VALUE[0]
-        expected_http_status_code = 403
+        expected_http_status_code = 400
         expected_res_status = INVALID_LIMIT_VALUE[1]
         presenter = GetBoardsPresenterImplementation()
 
@@ -64,9 +66,9 @@ class TestGetBoardsPresenterImplementation:
         # Assert
         actual_response_content = json.loads(actual_response.content)
 
-        assert actual_response_content.response == expected_response
-        assert actual_response_content.http_status_code == expected_http_status_code
-        assert actual_response_content.res_status == expected_res_status
+        assert actual_response_content['response'] == expected_response
+        assert actual_response_content['http_status_code'] == expected_http_status_code
+        assert actual_response_content['res_status'] == expected_res_status
 
     def test_get_response_for_get_boards(self, snapshot):
         # Arrange
@@ -84,4 +86,4 @@ class TestGetBoardsPresenterImplementation:
         # Assert
         actual_response_content = json.loads(actual_response.content)
 
-       snapshot.assert_match(actual_response_content, 'board_details')
+        snapshot.assert_match(actual_response_content, 'boards')
