@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import List, Union, Optional
-from ib_tasks.constants.enum import FieldTypes
+from ib_tasks.constants.enum import FieldTypes, PermissionTypes
 
 
 @dataclass
@@ -74,3 +74,11 @@ class FieldRolesDTO:
     field_id: str
     write_permission_roles: List[str]
     read_permission_roles: List[str]
+
+
+@dataclass
+class FieldRoleDTO:
+    field_id: str
+    role: str
+    permission_type: PermissionTypes
+

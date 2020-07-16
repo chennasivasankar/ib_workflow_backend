@@ -1,7 +1,9 @@
 import factory
-from ib_tasks.interactors.storage_interfaces.dtos import CompleteGoFDetailsDTO, \
-    GoFDTO, GoFRolesDTO, GoFFieldsDTO, FieldDTO, FieldRolesDTO
-from ib_tasks.constants.enum import FieldTypes
+from ib_tasks.interactors.storage_interfaces.dtos import (
+    CompleteGoFDetailsDTO, GoFDTO, GoFRolesDTO,
+    GoFFieldsDTO, FieldDTO, FieldRolesDTO, FieldRoleDTO
+)
+from ib_tasks.constants.enum import FieldTypes, PermissionTypes
 
 
 class GoFDTOFactory(factory.Factory):
@@ -86,3 +88,12 @@ class FieldRolesDTOFactory(factory.Factory):
     field_id = factory.Sequence(lambda n: 'field%d' % n)
     read_permission_roles = ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC"]
     write_permission_roles = ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC"]
+
+
+class FieldRoleDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldRoleDTO
+
+    field_id = factory.Sequence(lambda n: 'field%d' % n)
+    role = "FIN_PAYMENT_REQUESTER"
+    permission_type = PermissionTypes.READ.value

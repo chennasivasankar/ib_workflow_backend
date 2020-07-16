@@ -1,11 +1,11 @@
-from typing import List
+from typing import List, Optional
 import collections
 
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.dtos \
-    import FieldDTO, FieldRolesDTO
-from ib_tasks.constants.enum import FieldTypes
+    import FieldDTO, FieldRolesDTO, FieldRoleDTO
+from ib_tasks.constants.enum import FieldTypes, PermissionTypes
 from ib_tasks.exceptions.custom_exceptions import (
     InvalidFieldIdException,
     DuplicationOfFieldIdsExist,
@@ -42,11 +42,55 @@ class CreateFieldsInteractor:
             new_field_dtos, existing_field_dtos, field_roles_dtos
         )
         if new_field_dtos:
-            self.storage.create_fields(field_dtos)
-            self.storage.create_fields_roles(new_field_roles_dtos)
+            self.storage.create_fields(new_field_dtos)
+            new_field_role_dtos = self._get_field_role_dtos(new_field_roles_dtos)
+            self.storage.create_fields_roles(new_field_role_dtos)
         if existing_field_dtos:
-            self.storage.update_fields(field_dtos)
-            self.storage.update_fields_roles(existing_field_roles_dtos)
+            self.storage.update_fields(existing_field_dtos)
+            existing_field_role_dtos = self._get_field_role_dtos(existing_field_roles_dtos)
+            self.storage.update_fields_roles(existing_field_role_dtos)
+
+    def _get_field_role_dtos(
+            self, field_roles_dtos: List[FieldRolesDTO]
+    ) -> List[FieldRoleDTO]:
+        new_field_role_dtos = []
+        for field_roles_dto in field_roles_dtos:
+            read_permission_field_role_dtos = \
+                self._get_read_permission_field_role_dtos(field_roles_dto)
+            write_permission_field_role_dtos = \
+                self._get_write_permission_field_role_dtos(field_roles_dto)
+            new_field_role_dtos = read_permission_field_role_dtos + write_permission_field_role_dtos
+        return new_field_role_dtos
+
+
+    def _get_read_permission_field_role_dtos(
+            self, field_roles_dto: FieldRolesDTO
+    ) -> List[FieldRoleDTO]:
+        read_permission_field_role_dtos = []
+        field_id = field_roles_dto.field_id
+        read_permission_roles = field_roles_dto.read_permission_roles
+        for role in read_permission_roles:
+            field_role_dto = FieldRoleDTO(
+                field_id=field_id, role=role,
+                permission_type=PermissionTypes.READ.value
+            )
+            read_permission_field_role_dtos.append(field_role_dto)
+        return read_permission_field_role_dtos
+
+    def _get_write_permission_field_role_dtos(
+            self, field_roles_dto: FieldRolesDTO
+    ) -> List[FieldRoleDTO]:
+        write_permission_field_role_dtos = []
+        field_id = field_roles_dto.field_id
+        write_permission_roles = field_roles_dto.read_permission_roles
+        for role in write_permission_roles:
+            field_role_dto = FieldRoleDTO(
+                field_id=field_id, role=role,
+                permission_type=PermissionTypes.WRITE.value
+            )
+            write_permission_field_role_dtos.append(field_role_dto)
+        return write_permission_field_role_dtos
+
 
     def _get_field_roles_dto(
             self, new_field_dtos: List[FieldDTO],
@@ -97,7 +141,9 @@ class CreateFieldsInteractor:
             field_roles_dtos, valid_write_permission_roles
         )
 
-    def _validate_gof_id(self, field_dtos: List[FieldDTO]):
+    def _validate_gof_id(
+            self, field_dtos: List[FieldDTO]
+    ) -> Optional[InvalidGOFId]:
         for field_dto in field_dtos:
             gof_id = field_dto.gof_id.strip()
             is_gof_id_empty = not gof_id
@@ -107,6 +153,7 @@ class CreateFieldsInteractor:
     def _get_field_dtos(self, field_dtos: List[FieldDTO]):
         field_ids = [field_dto.field_id for field_dto in field_dtos]
         existing_field_ids = self.storage.get_existing_field_ids(field_ids)
+        print("existing_field_ids = ",existing_field_ids)
         new_field_ids = [
             field_id
             for field_id in field_ids
@@ -125,7 +172,9 @@ class CreateFieldsInteractor:
         return new_field_dtos, existing_field_dtos
 
     @staticmethod
-    def _validate_field_type(field_dtos: List[FieldDTO]):
+    def _validate_field_type(
+            field_dtos: List[FieldDTO]
+    ) -> Optional[InvalidValueForFieldType]:
         from ib_tasks.constants.constants import FIELD_TYPES_LIST
         for field_dto in field_dtos:
             field_type = field_dto.field_type
@@ -135,7 +184,9 @@ class CreateFieldsInteractor:
                 )
 
     @staticmethod
-    def _validate_field_display_name(field_dtos: List[FieldDTO]):
+    def _validate_field_display_name(
+            field_dtos: List[FieldDTO]
+    ) -> Optional[InvalidValueForFieldDisplayName]:
         for field_dto in field_dtos:
             field_display_name = field_dto.field_display_name.strip()
             is_field_display_name_empty = not field_display_name
@@ -145,7 +196,9 @@ class CreateFieldsInteractor:
                 )
 
     @staticmethod
-    def _validate_field_id(field_dtos: List[FieldDTO]):
+    def _validate_field_id(
+            field_dtos: List[FieldDTO]
+    ) -> Optional[InvalidFieldIdException]:
 
         for field_dto in field_dtos:
             field_id = field_dto.field_id.strip()
@@ -154,7 +207,9 @@ class CreateFieldsInteractor:
                 raise InvalidFieldIdException("Field Id shouldn't be empty")
 
     @staticmethod
-    def _check_for_duplication_of_filed_ids(field_dtos):
+    def _check_for_duplication_of_filed_ids(
+            field_dtos
+    ) -> Optional[DuplicationOfFieldIdsExist]:
         field_ids = []
         for field_dto in field_dtos:
             field_id = field_dto.field_id
@@ -170,7 +225,7 @@ class CreateFieldsInteractor:
 
     def _check_for_duplication_of_drop_down_values_for_field_dtos(
             self, field_dtos: List[FieldDTO]
-    ):
+    ) -> Optional[FieldsDuplicationOfDropDownValues]:
         fields_with_dropdown_duplicate_values = []
 
         for field_dto in field_dtos:
@@ -209,7 +264,7 @@ class CreateFieldsInteractor:
     def _check_invalid_roles_for_read_permissions_in_field_dtos(
             self, field_roles_dtos: List[FieldRolesDTO],
             available_read_permission_roles: List[str]
-    ):
+    ) -> Optional[InvalidRolesException]:
         fields_invalid_roles_for_read_permission = []
         for field_roles_dto in field_roles_dtos:
             read_permission_roles = field_roles_dto.read_permission_roles
@@ -230,7 +285,7 @@ class CreateFieldsInteractor:
     def _check_invalid_roles_for_write_permissions_in_field_dtos(
             self, field_roles_dtos: List[FieldRolesDTO],
             available_write_permission_roles: List[str]
-    ):
+    ) -> Optional[InvalidRolesException]:
         fields_invalid_roles_for_write_permission = []
         for field_roles_dto in field_roles_dtos:
             write_permission_roles = field_roles_dto.write_permission_roles
@@ -265,7 +320,7 @@ class CreateFieldsInteractor:
 
     def _check_permissions_to_roles_contains_empty_values(
             self, field_roles_dtos: List[FieldRolesDTO]
-    ):
+    ) -> Optional[EmptyValueForPermissions]:
         for field_roles_dto in field_roles_dtos:
             is_read_permissions_empty = \
                 not field_roles_dto.read_permission_roles
