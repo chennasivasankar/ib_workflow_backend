@@ -1,6 +1,6 @@
 from typing import List
 
-from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO, UserRoleDTO, UserCompanyDTO
+from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO, UserRoleDTO, UserCompanyDTO, UserDTO
 from ib_iam.interactors.storage_interfaces.storage_interface import StorageInterface
 
 
@@ -11,13 +11,13 @@ class StorageImplementation(StorageInterface):
         user = UserProfile.objects.get(user_id=user_id)
         return user.is_admin
 
-    def get_users_who_are_not_admins(self, offset=0, limit=10):
+    def get_users_who_are_not_admins(
+            self, offset=0, limit=10) -> List[UserDTO]:
         from ib_iam.models import UserProfile
         user_dtos = []
         users = UserProfile.objects.filter(is_admin=False)[offset:limit]
-        from ib_iam.interactors.storage_interfaces.dtos import UserProfileDTO
         for user in users:
-            user_dtos.append(UserProfileDTO(
+            user_dtos.append(UserDTO(
                 user_id=user.user_id,
                 is_admin=user.is_admin,
                 company_id=str(user.company_id)

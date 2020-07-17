@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List
 
 from ib_iam.interactors.storage_interfaces.dtos \
-    import UserTeamDTO, UserRoleDTO, UserCompanyDTO
+    import UserTeamDTO, UserRoleDTO, UserCompanyDTO, UserDTO
 
 
 class StorageInterface(ABC):
@@ -12,7 +12,8 @@ class StorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_users_who_are_not_admins(self, offset: int, limit: int):
+    def get_users_who_are_not_admins(
+            self, offset=0, limit=10) -> List[UserDTO]:
         pass
 
     @abstractmethod

@@ -26,8 +26,8 @@ def complete_user_details_dto():
     for user_id in user_ids:
         user_roles.extend(UserRoleDTOFactory.create_batch(
             2, user_id=user_id))
-    from ib_iam.tests.factories.adapter_dtos import UserDTOFactory
-    user_profile_dtos = [UserDTOFactory.create(user_id=user_id) \
+    from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
+    user_profile_dtos = [UserProfileDTOFactory.create(user_id=user_id) \
                          for user_id in user_ids]
     from ib_iam.interactors.presenter_interfaces.dtos import CompleteUserDetailsDTO
     complete_user_details_dto = CompleteUserDetailsDTO(

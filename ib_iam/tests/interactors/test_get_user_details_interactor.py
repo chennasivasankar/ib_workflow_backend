@@ -7,8 +7,8 @@ from ib_iam.interactors.presenter_interfaces.presenter_interface \
     import PresenterInterface
 from ib_iam.interactors.storage_interfaces.storage_interface \
     import StorageInterface
-from ib_iam.tests.factories.adapter_dtos import UserDTOFactory
-from ib_iam.tests.factories.storage_dtos import UserProfileDTOFactory
+from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
+from ib_iam.tests.factories.storage_dtos import UserDTOFactory
 
 USER_ID = "dd67ab82-ab8a-4253-98ae-bef82b8013a8"
 
@@ -53,8 +53,8 @@ def user_role_dtos():
 def user_dtos():
     user_ids = ["user1", "user2", "user3"]
     from ib_iam.tests.factories.storage_dtos \
-        import UserProfileDTOFactory
-    user_dtos = [UserProfileDTOFactory.create(user_id=user_id)
+        import UserDTOFactory
+    user_dtos = [UserDTOFactory.create(user_id=user_id)
                  for user_id in user_ids]
     return user_dtos
 
@@ -62,7 +62,7 @@ def user_dtos():
 @pytest.fixture()
 def user_profile_dtos():
     user_ids = ["user1", "user2", "user3"]
-    user_profile_dtos = [UserProfileDTOFactory.create(user_id=user_id) \
+    user_profile_dtos = [UserDTOFactory.create(user_id=user_id) \
                          for user_id in user_ids]
     return user_profile_dtos
 
@@ -249,10 +249,10 @@ class TestGetUsersDetailsInteractor:
         storage = create_autospec(StorageInterface)
         interactor = GetUsersDetailsInteractor(storage=storage)
         storage.validate_user_is_admin.return_value = True
-        user_dtos = [UserProfileDTOFactory.create(user_id=user_id)
+        user_dtos = [UserDTOFactory.create(user_id=user_id)
                      for user_id in user_ids]
         storage.get_users_who_are_not_admins.return_value = user_dtos
-        userprofile_dtos = [UserProfileDTOFactory.create(user_id=user_id)
+        userprofile_dtos = [UserDTOFactory.create(user_id=user_id)
                             for user_id in user_ids]
         get_user_profile_bulk.return_value = user_profile_dtos
 

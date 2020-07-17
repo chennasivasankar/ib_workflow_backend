@@ -1,10 +1,14 @@
+from typing import List
+
 from django_swagger_utils.utils.http_response_mixin \
     import HTTPResponseMixin
 
+from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.constants.enums import StatusCode
 from ib_iam.interactors.presenter_interfaces.dtos import CompleteUserDetailsDTO
 from ib_iam.interactors.presenter_interfaces.presenter_interface \
     import PresenterInterface
+from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO, UserRoleDTO, UserCompanyDTO
 
 FORBIDDEN_STATUS_CODE = 403
 BADREQUEST_STATUS_CODE = 400
@@ -76,8 +80,9 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             response_dict=response)
 
     def _convert_user_response_dict(
-            self, user_profile_dto, user_team_dtos, user_role_dtos,
-            user_company_dto):
+            self, user_profile_dto: UserProfileDTO,
+            user_team_dtos: List[UserTeamDTO], user_role_dtos: List[UserRoleDTO],
+            user_company_dto: UserCompanyDTO):
         user_response_dict = {
             "user_id": user_profile_dto.user_id,
             "name": user_profile_dto.name,

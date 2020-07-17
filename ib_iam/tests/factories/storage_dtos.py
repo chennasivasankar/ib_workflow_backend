@@ -3,12 +3,12 @@ import uuid
 import factory
 
 from ib_iam.interactors.storage_interfaces.dtos \
-    import UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserProfileDTO
+    import UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO
 
 
-class UserProfileDTOFactory(factory.Factory):
+class UserDTOFactory(factory.Factory):
     class Meta:
-        model = UserProfileDTO
+        model = UserDTO
 
     user_id = factory.sequence(lambda number: "team%s" % number)
     is_admin = True

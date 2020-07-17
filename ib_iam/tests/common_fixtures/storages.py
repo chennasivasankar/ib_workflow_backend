@@ -9,10 +9,11 @@ from ib_iam.tests.factories.models import UserProfileFactory, CompanyFactory, Us
 
 def reset_sequence():
     UserProfileFactory.reset_sequence(0)
-    # CompanyFactory.reset_sequence(0)
+    CompanyFactory.reset_sequence(0)
     UserTeamFactory.reset_sequence(0)
     UserRoleFactory.reset_sequence(0)
     RoleFactory.reset_sequence(0)
+    TeamFactory.reset_sequence(0)
 
 
 @pytest.fixture()

@@ -1,11 +1,11 @@
 import factory
 
-from ib_iam.adapters.dtos import UserDTO
+from ib_iam.adapters.dtos import UserProfileDTO
 
 
-class UserDTOFactory(factory.Factory):
+class UserProfileDTOFactory(factory.Factory):
     class Meta:
-        model = UserDTO
+        model = UserProfileDTO
 
     user_id = factory.sequence(lambda number: "user%s" % number)
     name = factory.sequence(lambda number: "name%s" % number)

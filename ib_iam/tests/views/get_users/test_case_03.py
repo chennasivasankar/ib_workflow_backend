@@ -4,7 +4,7 @@ import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...factories.models import UserProfileFactory, UserTeamFactory, UserRoleFactory, RoleFactory, CompanyFactory
+from ...factories.models import UserProfileFactory
 
 USER_ID_01 = '7e39bf1c-f9a5-4e76-8451-b962ddd52011'
 TEAM_ID_01 = "6ce31e92-f188-4019-b295-2e5ddc9c7a11"
@@ -22,7 +22,6 @@ class TestCase03GetUsersAPITestCase(TestUtils):
     REQUEST_METHOD = REQUEST_METHOD
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['read']}}
-
 
     @pytest.fixture
     def user_set_up(self, api_user):
@@ -57,11 +56,12 @@ class TestCase03GetUsersAPITestCase(TestUtils):
     @patch(
         "ib_iam.adapters.user_service.UserService.get_user_profile_bulk")
     def test_case(self, get_user_profile_bulk, set_up, user_set_up, snapshot):
-        from ib_iam.tests.factories.adapter_dtos import UserDTOFactory
+        from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
+
         get_user_profile_bulk.return_value = [
-            UserDTOFactory.create(user_id=USER_ID_01),
-            UserDTOFactory.create(user_id=USER_ID_02),
-            UserDTOFactory.create(user_id=USER_ID_03)
+            UserProfileDTOFactory.create(user_id=USER_ID_01),
+            UserProfileDTOFactory.create(user_id=USER_ID_02),
+            UserProfileDTOFactory.create(user_id=USER_ID_03)
         ]
         body = {}
         path_params = {}

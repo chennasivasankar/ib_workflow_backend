@@ -15,8 +15,8 @@ def api_wrapper(*args, **kwargs):
     # ---------MOCK IMPLEMENTATION---------
     storage = StorageImplementation()
     presenter = PresenterImplementation()
-
     interactor = GetUsersDetailsInteractor(storage=storage)
+
     user = kwargs['user']
     user_id = user.id
     query_params = kwargs['query_params']
