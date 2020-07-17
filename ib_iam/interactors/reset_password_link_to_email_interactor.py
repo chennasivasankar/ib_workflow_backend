@@ -28,7 +28,7 @@ class ResetPasswordLinkToEmailInteractor:
             LINK_TO_RESET_PASSWORD_EXPIRES_IN_SEC
         link_to_reset_password_expires_in_sec \
             = LINK_TO_RESET_PASSWORD_EXPIRES_IN_SEC
-        user_token = service_adapter.auth_service.get_token_for_reset_password(
+        user_token = service_adapter.auth_service.get_reset_password_token(
             email=email,
             expires_in_sec=link_to_reset_password_expires_in_sec
         )

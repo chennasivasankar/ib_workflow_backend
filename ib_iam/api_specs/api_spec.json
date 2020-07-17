@@ -331,7 +331,7 @@
         }
       }
     },
-    "/rest_password_link/v1/": {
+    "/send/reset_password_link/v1/": {
       "post": {
         "operationId": "send_user_reset_password_link",
         "summary": "send user reset password link",

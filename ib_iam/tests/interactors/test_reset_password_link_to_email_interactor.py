@@ -14,14 +14,14 @@ class TestResetPasswordLinkToEmailInteractor:
         return presenter
 
     @patch(
-        "ib_iam.adapters.auth_service.AuthService.get_token_for_reset_password"
+        "ib_iam.adapters.auth_service.AuthService.get_reset_password_token"
     )
-    def test_invalid_email_raise_exception(self,get_token_for_reset_password,
+    def test_invalid_email_raise_exception(self,get_reset_password_token,
                                            presenter_mock):
         # Arrange
         email = "san"
         from ib_iam.exceptions.custom_exceptions import InvalidEmail
-        get_token_for_reset_password.side_effect = InvalidEmail()
+        get_reset_password_token.side_effect = InvalidEmail()
         expected_presenter_raise_invalid_email_mock = Mock()
 
         presenter_mock.raise_exception_for_invalid_email.return_value \
@@ -41,15 +41,15 @@ class TestResetPasswordLinkToEmailInteractor:
         presenter_mock.raise_exception_for_invalid_email.assert_called_once()
 
     @patch(
-        "ib_iam.adapters.auth_service.AuthService.get_token_for_reset_password"
+        "ib_iam.adapters.auth_service.AuthService.get_reset_password_token"
     )
     def test_user_account_does_not_exist_raise_exception(
-            self, get_token_for_reset_password_mock, presenter_mock
+            self, get_reset_password_token_mock, presenter_mock
     ):
         # Arrange
         email = "test@gmail.com"
         from ib_iam.exceptions.custom_exceptions import UserAccountDoesNotExist
-        get_token_for_reset_password_mock.side_effect \
+        get_reset_password_token_mock.side_effect \
             = UserAccountDoesNotExist
 
         expected_presenter_raise_user_account_does_not_exist_mock = Mock()
@@ -76,16 +76,16 @@ class TestResetPasswordLinkToEmailInteractor:
         "ib_iam.adapters.email_service.EmailService.send_email_to_user"
     )
     @patch(
-        "ib_iam.adapters.auth_service.AuthService.get_token_for_reset_password"
+        "ib_iam.adapters.auth_service.AuthService.get_reset_password_token"
     )
     def test_with_valid_email_then_email_sent_to_user(
-            self, get_token_for_reset_password_mock, send_email_to_user_mock,
+            self, get_reset_password_token_mock, send_email_to_user_mock,
             presenter_mock
     ):
         # Arrange
         email = "test@gmail.com"
         user_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
-        get_token_for_reset_password_mock.return_value \
+        get_reset_password_token_mock.return_value \
             = user_token
 
         expected_presenter_success_response_mock = Mock()

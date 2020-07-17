@@ -16,13 +16,13 @@ class TestCase01SendUserResetPasswordLinkAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['read']}}
 
     @patch(
-        "ib_iam.adapters.auth_service.AuthService.get_token_for_reset_password"
+        "ib_iam.adapters.auth_service.AuthService.get_reset_password_token"
     )
     @pytest.mark.django_db
-    def test_case(self,get_token_for_reset_password, snapshot):
+    def test_case(self,get_reset_password_token, snapshot):
         body = {'email': 'test@gmail.com'}
         from ib_iam.exceptions.custom_exceptions import InvalidEmail
-        get_token_for_reset_password.side_effect = InvalidEmail
+        get_reset_password_token.side_effect = InvalidEmail
         path_params = {}
         query_params = {}
         headers = {}
