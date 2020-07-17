@@ -1,5 +1,5 @@
 USER_HAS_NO_ACCESS = (
-    "user has no access to see list of teams as he is not admin",
+    "user has no access as he is not admin",
     "USER_HAS_NO_ACCESS"
 )
 

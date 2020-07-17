@@ -1,295 +1,417 @@
 {
-    "swagger": "2.0",
-    "host": "127.0.0.1:8000",
-    "basePath": "/api/ib_iam/",
-    "info": {
-        "version": "1.0.0",
-        "title": "Simple API",
-        "description": "A simple API to learn how to write OpenAPI Specification"
-    },
-    "schemes": [
-        "http"
-    ],
-    "consumes": [
-        "application/json"
-    ],
-    "produces": [
-        "application/json"
-    ],
-    "securityDefinitions": {
-        "oauth": {
-            "tokenUrl": "http://auth.ibtspl.com/oauth2/",
-            "flow": "password",
-            "scopes": {
-                "read": "read users",
-                "write": "create users",
-                "update": "update users",
-                "delete": "delete users"
-            },
-            "type": "oauth2"
-        }
-    },
-    "security": [],
-    "definitions": {
-        "MemberDetails": {
-            "type": "object",
-            "properties": {
-                "member_id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "profile_pic_url": {
-                    "type": "string"
-                }
-            }
-        },
-        "TeamWithMembersDetails": {
-            "type": "object",
-            "properties": {
-                "team_id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "no_of_members": {
-                    "type": "integer"
-                },
-                "members": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/MemberDetails"
-                    }
-                }
-            }
-        },
-        "ResponseForGetListOfTeams": {
-            "type": "object",
-            "properties": {
-                "total_teams": {
-                    "type": "integer"
-                },
-                "list_of_teams": {
-                    "type": "array",
-                    "items": {
-                        "$ref" : "#/definitions/TeamWithMembersDetails"
-                    }
-                }
-            }
-        },
-        "CommonHttpExceptionFields": {
-                "type": "object",
-                "properties": {
-                    "response": {
-                        "type": "string"
-                    },
-                    "http_status_code": {
-                        "type": "integer"
-                    }
-                },
-                "required": [
-                    "response",
-                    "http_status_code"
-                ]
-        },
-        "UserHasNoAccess": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/CommonHttpExceptionFields"
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "res_status": {
-                            "type": "string",
-                            "enum": [
-                                "USER_HAS_NO_ACCESS"
-                            ]
-                        }
-                    },
-                    "required": [
-                        "res_status"
-                    ]
-                }
-            ]
-        },
-        "InvalidLimitOffset": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/CommonHttpExceptionFields"
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "res_status": {
-                            "type": "string",
-                            "enum": [
-                                "INVALID_LIMIT",
-                                "INVALID_OFFSET"
-                            ]
-                        }
-                    },
-                    "required": [
-                        "res_status"
-                    ]
-                }
-            ]
-        },
-        "DetailsToAddTeam":{
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "name"
-            ]
-        },
-        "DuplicatedName": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/CommonHttpExceptionFields"
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "res_status": {
-                            "type": "string",
-                            "enum": [
-                                "DUPLICATE_TEAM_NAME"
-                            ]
-                        }
-                    },
-                    "required": [
-                    "res_status"
-                    ]
-                }
-            ]
-        },
-        "TeamCreated": {
-            "type": "object",
-            "properties": {
-                "team_id": {
-                    "type": "string"
-                }
-            }
-        }
-    },
-    "parameters": {
-        "Limit": {
-            "name": "limit",
-            "in": "query",
-            "type": "integer",
-            "default": 5
-        },
-        "Offset": {
-            "name": "offset",
-            "in": "query",
-            "type": "integer",
-            "default": 0
-        },
-        "DetailsToAddTeam": {
-            "name": "details_to_add_team",
-            "in": "body",
-            "description": "parameters or details to create or add a team",
-            "schema": {
-                "$ref": "#/definitions/DetailsToAddTeam"
-            }
-        }
-    },
-    "responses": {
-    },
-    "paths": {
-        "/teams/": {
-            "get": {
-                "summary": "get list of teams",
-                "description": "Returns a list containing all teams related to a user(admin).",
-                "operationId": "get_list_of_teams",
-                "security": [
-                    {
-                        "oauth": [
-                            "read"
-                        ]
-                    }
-                ],
-                "parameters": [
-                    {
-                        "$ref": "#/parameters/Limit"
-                    },
-                    {
-                        "$ref": "#/parameters/Offset"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "list of teams",
-                        "schema": {
-                                "$ref": "#/definitions/ResponseForGetListOfTeams"
-                            }
-                    },
-                    "400": {
-                        "description": "BadRequest",
-                        "schema": {
-                            "$ref": "#/definitions/InvalidLimitOffset"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/UserHasNoAccess"
-                        }
-                    }
-                }
-            }
-        },
-        "/team/add/": {
-            "post": {
-                "summary": "Adds a new team",
-                "description": "Creates a new team",
-                "operationId": "add_team",
-                "security": [
-                    {
-                        "oauth": [
-                            "write"
-                        ]
-                    }
-                ],
-                "parameters": [
-                    {
-                        "$ref": "#/parameters/DetailsToAddTeam"
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Team added Suucessfully",
-                        "schema": {
-                            "$ref": "#/definitions/TeamCreated"
-                        }
-                    },
-                    "400": {
-                        "description": "BadRequest",
-                        "schema": {
-                            "$ref": "#/definitions/DuplicatedName"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/UserHasNoAccess"
-                        }
-                    }
-                }
-            }
-        }
+  "swagger": "2.0",
+  "host": "127.0.0.1:8000",
+  "basePath": "/api/ib_iam/",
+  "info": {
+    "version": "1.0.0",
+    "title": "Simple API",
+    "description": "A simple API to learn how to write OpenAPI Specification"
+  },
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "oauth": {
+      "tokenUrl": "http://auth.ibtspl.com/oauth2/",
+      "flow": "password",
+      "scopes": {
+        "read": "read users",
+        "write": "create users",
+        "update": "update users",
+        "delete": "delete users"
+      },
+      "type": "oauth2"
     }
+  },
+  "security": [],
+  "definitions": {
+    "MemberDetails": {
+      "type": "object",
+      "properties": {
+        "member_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "profile_pic_url": {
+          "type": "string"
+        }
+      }
+    },
+    "TeamWithMembersDetails": {
+      "type": "object",
+      "properties": {
+        "team_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "no_of_members": {
+          "type": "integer"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MemberDetails"
+          }
+        }
+      }
+    },
+    "ResponseForGetListOfTeams": {
+      "type": "object",
+      "properties": {
+        "total_teams": {
+          "type": "integer"
+        },
+        "list_of_teams": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TeamWithMembersDetails"
+          }
+        }
+      }
+    },
+    "CommonHttpExceptionFields": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code"
+      ]
+    },
+    "UserHasNoAccess": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "USER_HAS_NO_ACCESS"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
+        }
+      ]
+    },
+    "InvalidLimitOffset": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "INVALID_LIMIT",
+                "INVALID_OFFSET"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
+        }
+      ]
+    },
+    "InvalidTeamId": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "INVALID_TEAM_ID"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
+        }
+      ]
+    },
+    "DetailsToAddTeam": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "DetailsToUpdateTeam": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/DetailsToAddTeam"
+        }
+      ]
+    },
+    "DuplicatedName": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "DUPLICATE_TEAM_NAME"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
+        }
+      ]
+    },
+    "TeamCreated": {
+      "type": "object",
+      "properties": {
+        "team_id": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "parameters": {
+    "Limit": {
+      "name": "limit",
+      "in": "query",
+      "type": "integer",
+      "default": 5
+    },
+    "Offset": {
+      "name": "offset",
+      "in": "query",
+      "type": "integer",
+      "default": 0
+    },
+    "TeamId": {
+      "name": "team_id",
+      "in": "path",
+      "required": true,
+      "description": "team_id to identify a team",
+      "type": "integer"
+    },
+    "DetailsToAddTeam": {
+      "name": "details_to_add_team",
+      "in": "body",
+      "description": "parameters or details to create or add a team",
+      "schema": {
+        "$ref": "#/definitions/DetailsToAddTeam"
+      }
+    },
+    "DetailsToUpdateTeam": {
+      "name": "team_details_to_be_updated",
+      "in": "body",
+      "description": "details that are to be updated of a team",
+      "schema": {
+        "$ref": "#/definitions/DetailsToUpdateTeam"
+      }
+    }
+  },
+  "responses": {
+  },
+  "paths": {
+    "/teams/": {
+      "get": {
+        "summary": "get list of teams",
+        "description": "Returns a list containing all teams related to a user(admin).",
+        "operationId": "get_list_of_teams",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/Limit"
+          },
+          {
+            "$ref": "#/parameters/Offset"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "list of teams",
+            "schema": {
+              "$ref": "#/definitions/ResponseForGetListOfTeams"
+            }
+          },
+          "400": {
+            "description": "BadRequest",
+            "schema": {
+              "$ref": "#/definitions/InvalidLimitOffset"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/UserHasNoAccess"
+            }
+          }
+        }
+      }
+    },
+    "/team/add/": {
+      "post": {
+        "summary": "Adds a new team",
+        "description": "Creates a new team",
+        "operationId": "add_team",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/DetailsToAddTeam"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Team added Successfully",
+            "schema": {
+              "$ref": "#/definitions/TeamCreated"
+            }
+          },
+          "400": {
+            "description": "BadRequest",
+            "schema": {
+              "$ref": "#/definitions/DuplicatedName"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/UserHasNoAccess"
+            }
+          }
+        }
+      }
+    },
+    "/team/{team_id}": {
+      "put": {
+        "summary": "update team name",
+        "description": "updates a team name",
+        "operationId": "update_team_details",
+        "security": [
+          {
+            "oauth": [
+              "update"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TeamId"
+          },
+          {
+            "$ref": "#/parameters/DetailsToUpdateTeam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Team details updated Successfully"
+          },
+          "400": {
+            "description": "BadRequest",
+            "schema": {
+              "$ref": "#/definitions/DuplicatedName"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/UserHasNoAccess"
+            }
+          },
+          "404": {
+            "description": "NotFound",
+            "schema": {
+              "$ref": "#/definitions/InvalidTeamId"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "delete team",
+        "description": "deletes a team",
+        "operationId": "delete_team",
+        "security": [
+          {
+            "oauth": [
+              "update"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TeamId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Team deleted Successfully"
+          },
+          "404": {
+            "description": "NotFound",
+            "schema": {
+              "$ref": "#/definitions/InvalidTeamId"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/UserHasNoAccess"
+            }
+          }
+        }
+      }
+    }
+  }
 }
     
