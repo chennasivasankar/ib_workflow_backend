@@ -14,7 +14,7 @@ from ib_tasks.exceptions.custom_exceptions import (
     EmptyValueForPermissions,
     InvalidValueForFieldDisplayName,
     InvalidValueForFieldType,
-    InvalidGOFId
+    InvalidGOFIds
 )
 
 
@@ -26,7 +26,7 @@ class CreateFieldsInteractor:
             self, field_dtos: List[FieldDTO],
             field_roles_dtos: List[FieldRolesDTO]
     ):
-        self._validate_gof_id(field_dtos)
+        self._validate_gof_ids(field_dtos)
         self._validate_field_id(field_dtos)
         self._check_for_duplication_of_filed_ids(field_dtos)
         self._validate_field_display_name(field_dtos)
@@ -49,6 +49,7 @@ class CreateFieldsInteractor:
             self.storage.update_fields(existing_field_dtos)
             existing_field_role_dtos = self._get_field_role_dtos(existing_field_roles_dtos)
             self.storage.update_fields_roles(existing_field_role_dtos)
+
 
     def _get_field_role_dtos(
             self, field_roles_dtos: List[FieldRolesDTO]
@@ -141,20 +142,20 @@ class CreateFieldsInteractor:
             field_roles_dtos, valid_write_permission_roles
         )
 
-    def _validate_gof_id(
+    def _validate_gof_ids(
             self, field_dtos: List[FieldDTO]
-    ) -> Optional[InvalidGOFId]:
-        for field_dto in field_dtos:
-            gof_id = field_dto.gof_id.strip()
-            is_gof_id_empty = not gof_id
-            if is_gof_id_empty:
-                raise InvalidGOFId("GOF Id shouldn't be empty")
+    ) -> Optional[InvalidGOFIds]:
+        gof_ids = [field_dto.gof_id for field_dto in field_dtos]
+        existing_gof_ids = self.storage.get_existing_gof_ids(gof_ids)
+        for gof_id in gof_ids:
+            if gof_id not in existing_gof_ids:
+                raise InvalidGOFIds("Invalid GOF Ids")
+        return
 
     def _get_field_dtos(self, field_dtos: List[FieldDTO]):
         updated_field_dtos = self._update_field_dtos_by_field_value(field_dtos)
-        field_ids = [field_dto.field_id for field_dto in field_dtos]
+        field_ids = [field_dto.field_id for field_dto in updated_field_dtos]
         existing_field_ids = self.storage.get_existing_field_ids(field_ids)
-        print("existing_field_ids = ",existing_field_ids)
         new_field_ids = [
             field_id
             for field_id in field_ids
@@ -162,12 +163,12 @@ class CreateFieldsInteractor:
         ]
         new_field_dtos = [
             field_dto
-            for field_dto in field_dtos
+            for field_dto in updated_field_dtos
             if field_dto.field_id in new_field_ids
         ]
         existing_field_dtos = [
             field_dto
-            for field_dto in field_dtos
+            for field_dto in updated_field_dtos
             if field_dto.field_id in existing_field_ids
         ]
         return new_field_dtos, existing_field_dtos
@@ -192,6 +193,7 @@ class CreateFieldsInteractor:
                 raise InvalidValueForFieldType(
                     "Field_Type should be one of these {}".format(FIELD_TYPES_LIST)
                 )
+        return
 
     @staticmethod
     def _validate_field_display_name(
@@ -204,6 +206,7 @@ class CreateFieldsInteractor:
                 raise InvalidValueForFieldDisplayName(
                     "Field display name shouldn't be empty"
                 )
+        return
 
     @staticmethod
     def _validate_field_id(
@@ -215,6 +218,7 @@ class CreateFieldsInteractor:
             is_field_id_empty = not field_id
             if is_field_id_empty:
                 raise InvalidFieldIdException("Field Id shouldn't be empty")
+        return
 
     @staticmethod
     def _check_for_duplication_of_filed_ids(
@@ -232,6 +236,7 @@ class CreateFieldsInteractor:
         ]
         if duplication_of_field_ids:
             raise DuplicationOfFieldIdsExist(duplication_of_field_ids)
+        return
 
     def _check_for_duplication_of_drop_down_values_for_field_dtos(
             self, field_dtos: List[FieldDTO]
@@ -251,6 +256,7 @@ class CreateFieldsInteractor:
             raise FieldsDuplicationOfDropDownValues(
                 fields_with_dropdown_duplicate_values
             )
+        return
 
     def _check_for_duplication_of_dropdown_values(self, field_dto: FieldDTO):
         field_id = field_dto.field_id
@@ -291,6 +297,7 @@ class CreateFieldsInteractor:
             raise InvalidRolesException(
                 fields_invalid_roles_for_read_permission
             )
+        return
 
     def _check_invalid_roles_for_write_permissions_in_field_dtos(
             self, field_roles_dtos: List[FieldRolesDTO],
@@ -311,6 +318,7 @@ class CreateFieldsInteractor:
             raise InvalidRolesException(
                 fields_invalid_roles_for_write_permission
             )
+        return
 
     def _validate_roles(
             self, available_roles: List[str],
@@ -340,3 +348,4 @@ class CreateFieldsInteractor:
                 raise EmptyValueForPermissions(
                     "Permissions to roles shouldn't be empty"
                 )
+        return
