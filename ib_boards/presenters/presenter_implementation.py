@@ -157,6 +157,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
                 {
                     "column_id": column_dto.column_id,
                     "name": column_dto.name,
+                    "total_tasks_count": len(list_of_tasks),
                     "tasks": task_details_dict
                 }
             )
