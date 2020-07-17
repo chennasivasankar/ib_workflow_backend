@@ -4,11 +4,11 @@ from ib_boards.presenters.presenter_implementation import \
     PresenterImplementation
 from ib_boards.tests.factories.interactor_dto import TaskColumnDTOFactory
 from ib_boards.tests.factories.storage_dtos import (
-    TaskDTOFactory, TaskActionsDTOFactory, TaskFieldsDTOFactory)
+    TaskDTOFactory, TaskActionsDTOFactory, TaskFieldsDTOFactory,
+    ColumnDetailsDTOFactory)
 
 
-class TestTaskDetailsResponse:
-
+class TestGetColumnDetails:
     @pytest.fixture()
     def get_tasks_dto(self):
         TaskDTOFactory.reset_sequence()
@@ -26,24 +26,34 @@ class TestTaskDetailsResponse:
 
     @pytest.fixture()
     def get_column_task_details(self):
-        TaskColumnDTOFactory.reset_sequence()
+        TaskFieldsDTOFactory.reset_sequence()
         return TaskColumnDTOFactory.create_batch(size=3)
 
-    def test_get_response_for_task_details(self, get_task_fields_dtos,
-                                           get_column_task_details,
-                                           get_task_actions_dtos, snapshot):
+    @pytest.fixture()
+    def get_column_details(self):
+        ColumnDetailsDTOFactory.reset_sequence()
+        return ColumnDetailsDTOFactory.create_batch(size=3)
+
+    def test_get_response_for_column_details(self, get_task_fields_dtos,
+                                             get_column_task_details,
+                                             get_task_actions_dtos,
+                                             get_column_details, snapshot):
         # Arrange
         task_fields_dtos = get_task_fields_dtos
         task_actions_dtos = get_task_actions_dtos
+        task_details = get_column_task_details
+        column_details = get_column_details
         presenter = PresenterImplementation()
 
         # Act
-        response = presenter.get_response_for_task_details(
-            task_details=get_column_task_details, task_fields_dto=task_fields_dtos, task_actions_dto=task_actions_dtos)
+        response = presenter.get_response_for_column_details(
+            column_details=column_details,
+            task_details=task_details, task_fields_dto=task_fields_dtos,
+            task_actions_dto=task_actions_dtos)
 
         # Assert
         import json
         print(response)
         result = json.loads(response.content)
 
-        snapshot.assert_match(result, "list_of_task_details")
+        snapshot.assert_match(result, "list_of_column_details")

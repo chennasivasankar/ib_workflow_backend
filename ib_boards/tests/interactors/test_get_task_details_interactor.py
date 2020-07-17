@@ -61,7 +61,7 @@ class TestGetTaskDetailsInteractor:
         ]
         return task_details
 
-    def test_get_fields_given_valid_task_ids_return_task_details(
+    def test_get_task_actions_and_fields_given_valid_task_details_return_task_details_with_actions_and_fields(
             self, mocker, get_tasks_stage_dto, snapshot, task_details_response):
 
         # Arrange

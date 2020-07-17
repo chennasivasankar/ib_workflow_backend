@@ -4,9 +4,11 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_boards.constants.exception_messages import (
     INVALID_BOARD_ID, INVALID_OFFSET_VALUE, INVALID_LIMIT_VALUE, USER_DONOT_HAVE_ACCESS)
+from ib_boards.interactors.dtos import TaskColumnDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
-from ib_boards.interactors.storage_interfaces.dtos import TaskFieldsDTO, TaskActionsDTO
+from ib_boards.interactors.storage_interfaces.dtos import (
+    TaskFieldsDTO, TaskActionsDTO, ColumnDetailsDTO)
 
 
 class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
@@ -38,35 +40,39 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
     def get_response_for_task_details(self,
                                       task_fields_dto: List[TaskFieldsDTO],
                                       task_actions_dto: List[TaskActionsDTO],
-                                      task_ids: List[str]) -> response.HttpResponse:
+                                      task_details: List[TaskColumnDTO]) -> \
+            response.HttpResponse:
 
-        task_details_list = self._convert_task_details_into_list_of_dicts(
-            task_ids=task_ids, task_fields_dto=task_fields_dto,
+        task_details_list = self._convert_task_details_into_dict(
+            task_details=task_details, task_fields_dto=task_fields_dto,
             task_actions_dto=task_actions_dto
         )
-        return self.prepare_200_success_response(task_details_list)
+        task_details_dict = {
+            "total_tasks_count": len(task_details),
+            "tasks": task_details_list
+        }
+        return self.prepare_200_success_response(task_details_dict)
 
-    def _convert_task_details_into_list_of_dicts(self,
-                                                 task_fields_dto: List[TaskFieldsDTO],
-                                                 task_actions_dto: List[TaskActionsDTO],
-                                                 task_ids: List[str]
-                                                 ):
+    def _convert_task_details_into_dict(self,
+                                        task_fields_dto: List[TaskFieldsDTO],
+                                        task_actions_dto: List[TaskActionsDTO],
+                                        task_details: List[TaskColumnDTO]
+                                        ):
         list_of_tasks = []
-        for task_id in task_ids:
-            list_of_fields = self._get_list_of_task_fields(task_id, task_fields_dto)
+        for task_dto in task_details:
+            list_of_fields = self._get_list_of_task_fields(task_dto.task_id,
+                                                           task_fields_dto)
 
-            list_of_actions = self._get_task_actions_dict(task_actions_dto, task_id)
+            list_of_actions = self._get_task_actions_dict(task_actions_dto,
+                                                          task_dto.task_id)
             list_of_tasks.append(
                 {
-                    "task_id": task_id,
+                    "task_id": task_dto.task_id,
                     "fields": list_of_fields,
                     "actions": list_of_actions
                 }
             )
-        return {
-            "total_tasks_count": len(task_ids),
-            "tasks": list_of_tasks
-        }
+        return  list_of_tasks
 
     def _get_task_actions_dict(self, task_actions_dto, task_id):
         task_actions = []
@@ -116,3 +122,46 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
                 }
             )
         return list_of_task_actions
+
+    def get_response_for_column_details(self,
+                                        column_details: List[ColumnDetailsDTO],
+                                        task_fields_dto: List[TaskFieldsDTO],
+                                        task_actions_dto: List[TaskActionsDTO],
+                                        task_details: List[TaskColumnDTO]
+                                        ) -> response.HttpResponse:
+        column_details = self._convert_column_details_into_dict(
+            column_details=column_details, task_fields_dto=task_fields_dto,
+            task_actions_dto=task_actions_dto, task_details=task_details
+        )
+
+        return self.prepare_200_success_response(column_details)
+
+    def _convert_column_details_into_dict(self,
+                                          column_details: List[ColumnDetailsDTO],
+                                          task_fields_dto: List[TaskFieldsDTO],
+                                          task_actions_dto: List[TaskActionsDTO],
+                                          task_details: List[TaskColumnDTO]
+                                          ):
+        list_of_columns = []
+        for column_dto in column_details:
+            list_of_tasks = []
+            for task_dto in task_details:
+                if task_dto.column_id == column_dto.column_id:
+                    list_of_tasks.append(task_dto)
+            print(list_of_tasks)
+            task_details_dict = self._convert_task_details_into_dict(
+                task_details=list_of_tasks, task_actions_dto=task_actions_dto,
+                task_fields_dto=task_fields_dto
+            )
+            list_of_columns.append(
+                {
+                    "column_id": column_dto.column_id,
+                    "name": column_dto.name,
+                    "tasks": task_details_dict
+                }
+            )
+        columns_dict = {
+            "total_columns_count": len(column_details),
+            "columns": list_of_columns
+        }
+        return  columns_dict

@@ -12,6 +12,24 @@ snapshots['TestTaskDetailsResponse.test_get_response_for_task_details list_of_ta
         {
             'actions': [
                 {
+                    'action_id': 'action_id_0',
+                    'button_color': None,
+                    'button_text': 'button_text_0',
+                    'name': 'name_0'
+                }
+            ],
+            'fields': [
+                {
+                    'field_type': 'field_type_0',
+                    'key': 'key_0',
+                    'value': 'value_0'
+                }
+            ],
+            'task_id': 'task_id_0'
+        },
+        {
+            'actions': [
+                {
                     'action_id': 'action_id_1',
                     'button_color': None,
                     'button_text': 'button_text_1',
@@ -44,24 +62,6 @@ snapshots['TestTaskDetailsResponse.test_get_response_for_task_details list_of_ta
                 }
             ],
             'task_id': 'task_id_2'
-        },
-        {
-            'actions': [
-                {
-                    'action_id': 'action_id_0',
-                    'button_color': None,
-                    'button_text': 'button_text_0',
-                    'name': 'name_0'
-                }
-            ],
-            'fields': [
-                {
-                    'field_type': 'field_type_0',
-                    'key': 'key_0',
-                    'value': 'value_0'
-                }
-            ],
-            'task_id': 'task_id_0'
         }
     ],
     'total_tasks_count': 3

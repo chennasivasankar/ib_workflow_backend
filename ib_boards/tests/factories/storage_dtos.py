@@ -1,6 +1,8 @@
 import factory
+
 from ib_boards.interactors.storage_interfaces.dtos import (
     TaskFieldsDTO, TaskDTO, TaskActionsDTO, ColumnDetailsDTO)
+
 
 class TaskDTOFactory(factory.Factory):
     class Meta:
@@ -23,7 +25,7 @@ class TaskActionsDTOFactory(factory.Factory):
 
     class Params:
         factory.Trait(
-            button_color = factory.Sequence(lambda n: "a%df1fd" % n)
+            button_color=factory.Sequence(lambda n: "a%df1fd" % n)
         )
 
 
