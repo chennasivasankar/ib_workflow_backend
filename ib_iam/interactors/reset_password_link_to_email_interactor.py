@@ -25,21 +25,23 @@ class ResetPasswordLinkToEmailInteractor:
         service_adapter = ServiceAdapter()
 
         from ib_iam.constants.config import \
-            LINK_TO_RESET_PASSWORD_EXPIRES_IN_SEC
-        link_to_reset_password_expires_in_sec \
-            = LINK_TO_RESET_PASSWORD_EXPIRES_IN_SEC
-        user_token = service_adapter.auth_service.get_reset_password_token(
+            RESET_PASSWORD_TOKEN_EXPIRY_TIME_IN_SECONDS
+        reset_password_token_expiry_time_in_seconds \
+            = RESET_PASSWORD_TOKEN_EXPIRY_TIME_IN_SECONDS
+        reset_password_token = service_adapter.auth_service.get_reset_password_token(
             email=email,
-            expires_in_sec=link_to_reset_password_expires_in_sec
+            expires_in_sec=reset_password_token_expiry_time_in_seconds
         )
-        self.send_reset_password_mail_to_user_email(email=email, user_token=user_token)
+        self.send_reset_password_mail_to_user_email(
+            email=email, user_token=reset_password_token
+        )
 
     @staticmethod
     def send_reset_password_mail_to_user_email(email: str, user_token: str):
 
         from ib_iam.constants.config import \
-            LINK_TO_RESET_PASSWORD, EMAIL_CONTENT, EMAIL_SUBJECT
-        final_reset_password_link = LINK_TO_RESET_PASSWORD + user_token
+            BASE_URL_FOR_RESET_PASSWORD_LINK, EMAIL_CONTENT, EMAIL_SUBJECT
+        final_reset_password_link = BASE_URL_FOR_RESET_PASSWORD_LINK + user_token
         subject = EMAIL_SUBJECT
         content = EMAIL_CONTENT + final_reset_password_link
         from ib_iam.adapters.email_service import EmailService
