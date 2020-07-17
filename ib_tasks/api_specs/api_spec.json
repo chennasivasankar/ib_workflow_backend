@@ -1,325 +1,274 @@
 {
-        "swagger": "2.0",
-        "host": "127.0.0.1:8000",
-        "basePath": "/api/ib_tasks/",
-        "info": {
-            "version": "1.0.0",
-            "title": "Simple API",
-            "description": "A simple API to learn how to write OpenAPI Specification"
-        },
-        "schemes": [
-            "http"
-        ],
-        "consumes": [
-            "application/json"
-        ],
-        "produces": [
-            "application/json"
-        ],
-        "securityDefinitions": {
-            "oauth": {
-                "tokenUrl": "http://auth.ibtspl.com/oauth2/",
-                "flow": "password",
-                "scopes": {
-                    "read": "read users",
-                    "write": "create users",
-                    "update": "update users",
-                    "delete": "delete users"
-                },
-                "type": "oauth2"
+    "swagger": "2.0",
+    "host": "localhost:8080",
+    "basePath": "/ib_tasks/",
+    "info": {
+        "version": "1.0.0",
+        "title": "iB Tasks",
+        "description": "Simple API to post and comment in social app"
+    },
+    "schemes": [
+        "https",
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "securityDefinitions": {
+        "oauth": {
+            "tokenUrl": "http://auth.ibtspl.com/oauth2/",
+            "flow": "password",
+            "scopes": {
+                "read": "read users",
+                "write": "create users",
+                "update": "update users",
+                "delete": "delete users",
+                "superuser": "super user permission"
+            },
+            "type": "oauth2"
+        }
+    },
+    "definitions": {
+      "InvalidTaskActionDetails": {
+        "type": "object",
+          "properties": {
+            "response": {
+              "type": "string"
+            },
+            "http_status_code": {
+              "type": "integer"
+            },
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "INVALID_ACTION_ID",
+                "INVALID_TASK_ID"
+              ]
             }
-        },
-        "security": [],
-        "definitions": {
-            "DefaultHttpExceptionFields": {
-                "type": "object",
-                "properties": {
-                    "response": {
+          },
+          "required": [
+            "response",
+            "http_status_code",
+            "res_status"
+          ]
+      },
+      "AccessUnauthorized": {
+        "type": "object",
+          "properties": {
+            "response": {
+              "type": "string"
+            },
+            "http_status_code": {
+              "type": "integer"
+            },
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "USER_DONOT_HAVE_ACCESS"
+              ]
+            }
+          },
+          "required": [
+            "response",
+            "http_status_code",
+            "res_status"
+          ]
+      },
+      "ColumnDetailsResponse": {
+          "type": "object",
+          "properties": {
+              "column_id": {
+                  "type": "string"
+              },
+              "column_name": {
+                  "type": "string"
+              },
+              "actions": {
+                  "type": "array",
+                  "items": {
+                      "$ref": "#/definitions/ActionDetailsResponse"
+                  }
+              },
+              "fields": {
+                  "type": "array",
+                  "items": {
+                      "$ref": "#/definitions/FieldsResponse"
+                  }
+              }
+          },
+          "required": [
+            "column_id", "actions", "fields", "column_name"
+          ]
+      },
+      "TaskActionResponseBody": {
+          "type": "object",
+          "properties": {
+              "task_id": {
+                "type": "string"
+              },
+              "current_board_details": {
+                  "type": "object",
+                  "properties": {
+                    "board_id": {
+                      "type": "string"
+                    },
+                    "board_name": {
                         "type": "string"
                     },
-                    "http_status_code": {
-                        "type": "integer"
+                    "column_details": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/ColumnDetailsResponse"
+                        }
+                    }
+                  },
+                  "required": [
+                    "board_id", "column_details", "board_name"
+                  ]
+              },
+              "other_board_details": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                      "board_id": {
+                          "type": "string"
+                      },
+                      "board_name": {
+                          "type": "string"
+                      },
+                      "column_details": {
+                          "type": "array",
+                          "items": {
+                              "type": "object",
+                              "properties": {
+                                  "column_id": {
+                                      "type": "string"
+                                  },
+                                  "column_name": {
+                                      "type": "string"
+                                  }
+                              },
+                              "required": [
+                                "column_id", "column_name"
+                              ]
+                          }
+                      }
                     },
-                    "res_status": {
-                        "type": "string",
-                        "enum": [
-                            "DUPLICATE_TO_IDS",
-                            "INVALID_INPUT_TO_IDS"
-                        ]
-                    }
-                },
-                "required": [
-                    "response",
-                    "http_status_code",
-                    "res_status"
-                ]
-            },
-            "TodoId": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer"
-                    }
+                    "required": [
+                      "board_id", "board_name", "column_details"
+                    ]
                 }
+              }
+          },
+          "required": [ "task_id", "current_board_details", "other_board_details"]
+      },
+      "FieldsResponse": {
+          "type": "object",
+          "properties": {
+            "field_type": {
+              "type": "string"
             },
-            "BasicTodo": {
-                "type": "object",
-                "properties": {
-                    "description": {
-                        "type": "string"
-                    },
-                    "is_completed": {
-                        "type": "boolean"
-                    },
-                    "remind_at": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "description"
-                ]
+            "key": {
+              "type": "string"
             },
-            "Todo": {
-                "allOf": [
-                    {
-                        "$ref": "#/definitions/BasicTodo"
-                    },
-                    {
-                        "$ref": "#/definitions/TodoId"
-                    }
-                ]
+            "value": {
+              "type": "string"
             }
+          },
+          "required": [
+            "field_type", "key", "value"
+          ]
+      },
+      "ActionDetailsResponse": {
+          "type": "object",
+          "properties": {
+              "action_id": {
+                  "type": "string"
+              },
+              "name": {
+                  "type": "string"
+              },
+              "button_text": {
+                  "type": "string"
+              },
+              "button_color": {
+                  "type": "string"
+              }
+          },
+          "required": ["action_id", "name", "button_text"]
+      }
+
+    },
+    "parameters": {
+        "BoardParameterize": {
+            "name": "board_id",
+            "in": "path",
+            "required": true,
+            "description": "Id of the Board",
+            "type": "string"
         },
-        "parameters": {
-            "TodoId": {
-                "description": "todo id",
-                "in": "path",
-                "name": "id",
-                "required": true,
-                "type": "integer"
-            },
-            "BasicTodo": {
-                "description": "Todo Parameter",
-                "in": "body",
-                "name": "todo",
-                "required": true,
-                "schema": {
-                    "$ref": "#/definitions/BasicTodo"
-                }
-            }
+        "TaskParameterize": {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "description": "Id of the Task",
+            "type": "string"
         },
-        "responses": {
-            "SuccessResponse": {
-                "description": "success response"
-            }
-        },
-        "paths": {
-            "/todos/": {
-                "get": {
-                    "summary": "Get all todos",
-                    "description": "Returns a list containing all todos.",
-                    "operationId": "get_todos",
-                    "security": [
-                        {
-                            "oauth": [
-                                "read"
-                            ]
-                        }
-                    ],
-                    "responses": {
-                        "200": {
-                            "description": "A list of todos",
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/Todo"
-                                }
-                            }
-                        },
-                        "401": {
-                            "description": "Unauthorized",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        },
-                        "403": {
-                            "description": "Forbidden",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        },
-                        "404": {
-                            "description": "Not Found",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        }
-                    }
-                },
-                "post": {
-                    "summary": "create a todo",
-                    "description": "Create a todo",
-                    "operationId": "create_todo",
-                    "security": [
-                        {
-                            "oauth": [
-                                "write"
-                            ]
-                        }
-                    ],
-                    "parameters": [
-                        {
-                            "$ref": "#/parameters/BasicTodo"
-                        }
-                    ],
-                    "responses": {
-                        "200": {
-                            "description": "create a todo",
-                            "schema": {
-                                "$ref": "#/definitions/TodoId"
-                            }
-                        },
-                        "401": {
-                            "description": "Unauthorized",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        },
-                        "403": {
-                            "description": "Forbidden",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        },
-                        "404": {
-                            "description": "Not Found",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        }
-                    }
-                }
-            },
-            "/todos/{id}/": {
-                "parameters": [
+        "ActionParameterize": {
+            "name": "action_id",
+            "in": "path",
+            "required": true,
+            "description": "Id of the Action",
+            "type": "string"
+        }
+    },
+    "responses": {
+
+    },
+    "paths": {
+      "/boards/{board_id}/tasks/{task_id}/actions/{action_id}/v1/": {
+            "post": {
+                "operationId": "perform_task_action",
+                "summary": "User Act On Specific Task in a Column",
+                "description": "User Submitting Response by acting on a task",
+                "parameters": [{
+                        "$ref": "#/parameters/TaskParameterize"
+                    },
                     {
-                        "$ref": "#/parameters/TodoId"
+                        "$ref": "#/parameters/ActionParameterize"
+                    },
+                    {
+                        "$ref": "#/parameters/BoardParameterize"
                     }
                 ],
-                "post": {
-                    "summary": "Get a todo",
-                    "description": "Returns a todo.",
-                    "operationId": "get_todo",
-                    "security": [
-                        {
-                            "oauth": [
-                                "read"
-                            ]
+                "security": [{
+                    "oauth": ["superuser"]
+                }],
+                "responses": {
+                    "200": {
+                        "description": "successful",
+                        "schema": {
+                            "$ref": "#/definitions/TaskActionResponseBody"
                         }
-                    ],
-                    "responses": {
-                        "200": {
-                            "description": "A todo",
-                            "schema": {
-                                "$ref": "#/definitions/Todo"
-                            }
-                        },
-                        "401": {
-                            "description": "Unauthorized",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        },
-                        "403": {
-                            "description": "Forbidden",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        },
-                        "404": {
-                            "description": "Not Found",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/AccessUnauthorized"
                         }
-                    }
-                },
-                "put": {
-                    "parameters": [
-                        {
-                            "$ref": "#/parameters/BasicTodo"
-                        }
-                    ],
-                    "summary": "Updates a todo",
-                    "description": "Updates a todo.",
-                    "operationId": "update_todo",
-                    "security": [
-                        {
-                            "oauth": [
-                                "update"
-                            ]
-                        }
-                    ],
-                    "responses": {
-                        "200": {
-                            "$ref": "#/responses/SuccessResponse"
-                        },
-                        "401": {
-                            "description": "Unauthorized",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        },
-                        "403": {
-                            "description": "Forbidden",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        },
-                        "404": {
-                            "description": "Not Found",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        }
-                    }
-                },
-                "delete": {
-                    "summary": "Deletes a todo",
-                    "description": "Deletes a todo.",
-                    "operationId": "delete_todo",
-                    "security": [
-                        {
-                            "oauth": [
-                                "delete"
-                            ]
-                        }
-                    ],
-                    "responses": {
-                        "200": {
-                            "$ref": "#/responses/SuccessResponse"
-                        },
-                        "401": {
-                            "description": "Unauthorized",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        },
-                        "403": {
-                            "description": "Forbidden",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        },
-                        "404": {
-                            "description": "Not Found",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidTaskActionDetails"
                         }
                     }
                 }
             }
         }
     }
-    
+}
