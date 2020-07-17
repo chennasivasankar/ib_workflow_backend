@@ -18,16 +18,18 @@ class TestCreateFieldsInteractor:
         storage = create_autospec(TaskStorageInterface)
         return storage
 
-    def test_given_gof_id_is_empty_raise_exception(self, storage_mock):
+    def test_given_gof_ids_not_in_database_raise_exception(self, storage_mock):
         # Arrange
         field_roles_dtos = [FieldRolesDTOFactory()]
-        field_dtos = [FieldDTOFactory(), FieldDTOFactory(gof_id=" ")]
-        from ib_tasks.exceptions.custom_exceptions import InvalidGOFId
+        field_dtos = [FieldDTOFactory(), FieldDTOFactory(gof_id="")]
+        from ib_tasks.exceptions.custom_exceptions import InvalidGOFIds
         interactor = CreateFieldsInteractor(storage=storage_mock)
-        error_message = "GOF Id shouldn't be empty"
+        existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
+        storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
+        error_message = "Invalid GOF Ids"
 
         # Act
-        with pytest.raises(InvalidGOFId) as err:
+        with pytest.raises(InvalidGOFIds) as err:
             interactor.create_fields(field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
 
         # Arrange
@@ -41,6 +43,8 @@ class TestCreateFieldsInteractor:
         from ib_tasks.exceptions.custom_exceptions import InvalidFieldIdException
         interactor = CreateFieldsInteractor(storage=storage_mock)
         error_message = "Field Id shouldn't be empty"
+        existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
+        storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
 
         # Act
         with pytest.raises(InvalidFieldIdException) as err:
@@ -61,6 +65,8 @@ class TestCreateFieldsInteractor:
         duplication_of_field_ids = ["FIN_SALUATION"]
         from ib_tasks.exceptions.custom_exceptions import DuplicationOfFieldIdsExist
         interactor = CreateFieldsInteractor(storage=storage_mock)
+        existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
+        storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
 
         # Act
         with pytest.raises(DuplicationOfFieldIdsExist) as err:
@@ -78,6 +84,8 @@ class TestCreateFieldsInteractor:
         from ib_tasks.constants.constants import FIELD_TYPES_LIST
         interactor = CreateFieldsInteractor(storage=storage_mock)
         error_message = "Field_Type should be one of these {}".format(FIELD_TYPES_LIST)
+        existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
+        storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
 
         # Act
         with pytest.raises(InvalidValueForFieldType) as err:
@@ -100,6 +108,8 @@ class TestCreateFieldsInteractor:
         exception_message = "Field display name shouldn't be empty"
         from ib_tasks.exceptions.custom_exceptions import InvalidValueForFieldDisplayName
         interactor = CreateFieldsInteractor(storage=storage_mock)
+        existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
+        storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
 
         # Act
         with pytest.raises(InvalidValueForFieldDisplayName) as err:
@@ -137,6 +147,8 @@ class TestCreateFieldsInteractor:
         ]
         from ib_tasks.exceptions.custom_exceptions import FieldsDuplicationOfDropDownValues
         interactor = CreateFieldsInteractor(storage=storage_mock)
+        existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
+        storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
 
         # Act
         with pytest.raises(FieldsDuplicationOfDropDownValues) as err:
@@ -189,6 +201,8 @@ class TestCreateFieldsInteractor:
         ]
 
         interactor = CreateFieldsInteractor(storage=storage_mock)
+        existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
+        storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
 
         # Act
         with pytest.raises(InvalidRolesException) as err:
@@ -254,6 +268,8 @@ class TestCreateFieldsInteractor:
             }
         ]
         interactor = CreateFieldsInteractor(storage=storage_mock)
+        existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
+        storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
 
         # Act
         with pytest.raises(InvalidRolesException) as err:
@@ -283,6 +299,8 @@ class TestCreateFieldsInteractor:
         ]
         from ib_tasks.exceptions.custom_exceptions import EmptyValueForPermissions
         interactor = CreateFieldsInteractor(storage=storage_mock)
+        existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
+        storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
 
         # Act
         with pytest.raises(EmptyValueForPermissions) as err:
@@ -312,6 +330,8 @@ class TestCreateFieldsInteractor:
         ]
         from ib_tasks.exceptions.custom_exceptions import EmptyValueForPermissions
         interactor = CreateFieldsInteractor(storage=storage_mock)
+        existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
+        storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
 
         # Act
         with pytest.raises(EmptyValueForPermissions) as err:
@@ -371,6 +391,8 @@ class TestCreateFieldsInteractor:
         existing_field_ids = []
         interactor = CreateFieldsInteractor(storage=storage_mock)
         storage_mock.get_existing_field_ids.return_value = existing_field_ids
+        existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
+        storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
 
         # Act
         interactor.create_fields(field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
@@ -425,6 +447,8 @@ class TestCreateFieldsInteractor:
         existing_field_ids = ["FIN_FIRST NAME"]
         interactor = CreateFieldsInteractor(storage=storage_mock)
         storage_mock.get_existing_field_ids.return_value = existing_field_ids
+        existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
+        storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
 
         # Act
         interactor.create_fields(field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
@@ -507,6 +531,8 @@ class TestCreateFieldsInteractor:
 
         storage_mock.get_existing_field_ids.return_value = existing_field_ids
         interactor = CreateFieldsInteractor(storage=storage_mock)
+        existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
+        storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
 
         # Act
         interactor.create_fields(field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
