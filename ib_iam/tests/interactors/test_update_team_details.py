@@ -33,3 +33,29 @@ class TestUpdateTeamDetails:
 
         storage.is_user_admin.assert_called_once_with(user_id=user_id)
         presenter.raise_exception_for_user_has_no_access.assert_called_once()
+
+    def test_if_invalid_team_id_raises_not_found_exception(self):
+        from ib_iam.exceptions.custom_exceptions import InvalidTeamId
+        from django_swagger_utils.drf_server.exceptions import NotFound
+        storage = create_autospec(TeamStorageInterface)
+        presenter = create_autospec(TeamPresenterInterface)
+        interactor = TeamInteractor(storage=storage)
+        user_id = "1"
+        team_id = "1"
+        update_team_parameters_dto = UpdateTeamParametersDTO(
+            team_id=team_id, name="team1", description="team1_description"
+        )
+        storage.is_valid_team.side_effect = InvalidTeamId
+        presenter.raise_exception_for_invalid_team_id.side_effect = (
+            NotFound
+        )
+
+        with pytest.raises(NotFound):
+            interactor.update_team_details_wrapper(
+                user_id=user_id,
+                update_team_parameters_dto=update_team_parameters_dto,
+                presenter=presenter
+            )
+
+        storage.is_valid_team.assert_called_once_with(team_id=team_id)
+        presenter.raise_exception_for_invalid_team_id.assert_called_once()
