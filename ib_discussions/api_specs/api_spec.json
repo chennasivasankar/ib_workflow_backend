@@ -150,7 +150,7 @@
     }
   },
   "responses": {
-    "DiscussionNotFoundResponse": {
+    "EntityDetailsNotFoundResponse": {
       "description": "create discussion not found response",
       "schema": {
         "allOf": [
@@ -163,7 +163,7 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "NOT_FOUND_DISCUSSION_SET_FOR_GIVEN_ENTITY_ID_AND_ENTITY_TYPE"
+                  "ENTITY_ID_NOT_FOUND"
                 ]
               }
             },
@@ -187,7 +187,8 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "EmptyTitle"
+                  "EMPTY_TITLE",
+                  "INVALID_ENTITY_TYPE_FOR_ENTITY_ID"
                 ]
               }
             },
@@ -203,7 +204,7 @@
       "schema": {
         "type": "object",
         "properties": {
-          "discussionS": {
+          "discussions": {
             "type": "array",
             "items": {
               "$ref": "#/definitions/Discussion"
@@ -215,8 +216,32 @@
           }
         },
         "required": [
-          "discussion_set",
+          "discussions",
           "total_discussion_count"
+        ]
+      }
+    },
+    "GetDiscussionBadRequestResponse": {
+      "description": "get discussion bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_ENTITY_TYPE_FOR_ENTITY_ID"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
         ]
       }
     }
@@ -244,7 +269,7 @@
             "description": "Success response for create discussion"
           },
           "404": {
-            "$ref": "#/responses/DiscussionNotFoundResponse"
+            "$ref": "#/responses/EntityDetailsNotFoundResponse"
           },
           "400": {
             "$ref": "#/responses/CreateDiscussionBadRequestResponse"
@@ -272,7 +297,10 @@
             "$ref": "#/responses/GetDiscussionSuccessResponse"
           },
           "404": {
-            "$ref": "#/responses/DiscussionNotFoundResponse"
+            "$ref": "#/responses/EntityDetailsNotFoundResponse"
+          },
+          "400": {
+            "$ref": "#/responses/GetDiscussionBadRequestResponse"
           }
         }
       }

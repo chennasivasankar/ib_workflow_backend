@@ -2,12 +2,12 @@
 request - user_id(str), entity_id(str), entity_type(str), title(str), description
 
 todo
-
-2. create the discussion if discussion set found
-3. create the discussion and discussion set
+1. validate the entity id
+2. validate the entity type for entity id
+3. create the discussion if discussion set found
+4. create the discussion and discussion set
 
 in prgress
-1. validate the entity id and entity type not found
 
 completed
 '''
