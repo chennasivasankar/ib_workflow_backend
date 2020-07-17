@@ -47,13 +47,6 @@ class TeamStorageImplementation(TeamStorageInterface):
     def add_team(
             self, user_id: str, add_team_params_dto: AddTeamParametersDTO
     ) -> Optional[str]:
-        # if Team.objects.filter(name=add_team_params_dto.name).exists():
-        #     raise DuplicateTeamName(team_name=add_team_params_dto.name)
-        # team_object = Team.objects.create(
-        #     name=add_team_params_dto.name,
-        #     description=add_team_params_dto.description,
-        #     created_by=user_id
-        # )
         team_object, is_created = Team.objects.get_or_create(
             name=add_team_params_dto.name,
             defaults={
