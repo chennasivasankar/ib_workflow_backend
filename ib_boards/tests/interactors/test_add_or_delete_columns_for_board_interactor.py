@@ -386,7 +386,7 @@ class TestAddOrDeleteColumnsForBoardInteractor:
         interactor = AddOrDeleteColumnsForBoardInteractor(
             storage=storage_mock
         )
-        storage_mock.get_board_column_ids.return_value = present_column_ids
+        storage_mock.get_boards_column_ids.return_value = present_column_ids
         storage_mock.get_board_ids_for_column_ids.return_value = []
 
         # Act
@@ -395,7 +395,7 @@ class TestAddOrDeleteColumnsForBoardInteractor:
         )
 
         # Assert
-        storage_mock.get_board_column_ids.assert_called_once_with(
+        storage_mock.get_boards_column_ids.assert_called_once_with(
             board_ids=board_ids
         )
         storage_mock.create_columns_for_board.assert_called_once_with(

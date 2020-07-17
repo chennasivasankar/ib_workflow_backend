@@ -125,22 +125,6 @@ class TestPopulateScriptInteractor:
         task_field_dtos_3 = TaskSummaryFieldsDTOFactory.create_batch(2)
         return task_field_dtos_1 + task_field_dtos_2 + task_field_dtos_3
 
-    def test_with_duplicate_board_ids_raise_exception(
-            self, storage_mock, sequence_reset,
-            board_dto_with_duplicate_ids, column_dtos):
-        # Arrange
-        interactor = CreateBoardsAndColumnsInteractor(
-            storage=storage_mock
-        )
-
-        # Act
-        from ib_boards.exceptions.custom_exceptions import DuplicateBoardIds
-        with pytest.raises(DuplicateBoardIds) as error:
-            assert interactor.create_boards_and_columns(
-                board_dtos=board_dto_with_duplicate_ids,
-                column_dtos=column_dtos
-            )
-
     def test_with_invalid_board_display_name_raise_exception(
             self, storage_mock, sequence_reset,
             board_dtos_with_no_display_name, column_dtos):

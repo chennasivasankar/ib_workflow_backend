@@ -18,10 +18,15 @@ class CreateBoardsAndColumnsInteractor:
     def create_boards_and_columns(
             self, board_dtos: List[BoardDTO], column_dtos: List[ColumnDTO]):
         board_ids = [board_dto.board_id for board_dto in board_dtos]
-        column_ids = [column_dto.column_id for column_dto in column_dtos]
-        self._validate_board_ids(board_ids=board_ids)
         self._validate_board_display_name(board_dtos=board_dtos)
-        self._validate_column_ids(column_ids=column_ids)
+        self.validate_columns_data(column_dtos)
+        self.storage.create_boards_and_columns(
+            board_dtos=board_dtos,
+            column_dtos=column_dtos
+        )
+
+    def validate_columns_data(self, column_dtos):
+        self._validate_column_ids(column_dtos=column_dtos)
         self._validate_column_display_name(column_dtos=column_dtos)
         self._validate_task_template_ids_in_task_template_stage(
             column_dtos=column_dtos
@@ -34,26 +39,11 @@ class CreateBoardsAndColumnsInteractor:
         )
         self._validate_duplicate_task_template_stages(column_dtos=column_dtos)
         self._validate_duplicate_task_summary_fields(column_dtos=column_dtos)
-        self._validate_empty_values_in_task_summary_fields(column_dtos=column_dtos)
+        self._validate_empty_values_in_task_summary_fields(
+            column_dtos=column_dtos)
         self._validate_task_template_stages_with_id(column_dtos=column_dtos)
         self._validate_task_summary_fields_with_id(column_dtos=column_dtos)
         self._validate_user_roles(column_dtos=column_dtos)
-        self.storage.create_boards_and_columns(
-            board_dtos=board_dtos,
-            column_dtos=column_dtos
-        )
-
-    @staticmethod
-    def _validate_board_ids(board_ids: List[str]):
-        import collections
-        duplicate_board_ids = [
-            board_id for board_id, count in
-            collections.Counter(board_ids).items()
-            if count > 1
-        ]
-        if duplicate_board_ids:
-            from ib_boards.exceptions.custom_exceptions import DuplicateBoardIds
-            raise DuplicateBoardIds(board_ids=duplicate_board_ids)
 
     @staticmethod
     def _validate_board_display_name(board_dtos: List[BoardDTO]):
@@ -65,11 +55,13 @@ class CreateBoardsAndColumnsInteractor:
                 raise InvalidBoardDisplayName(board_id=board_dto.board_id)
 
     @staticmethod
-    def _validate_column_ids(column_ids: List[str]):
+    def _validate_column_ids(column_dtos: List[ColumnDTO]):
+        column_ids = [column_dto.column_id for column_dto in column_dtos]
         import collections
         duplicate_column_ids = [
-            column_id for column_id, count in
-            collections.Counter(column_ids).items()
+            column_id for column_id, count in collections.Counter(
+                column_ids
+            ).items()
             if count > 1
         ]
         if duplicate_column_ids:
