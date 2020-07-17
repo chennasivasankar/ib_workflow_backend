@@ -54,8 +54,7 @@ def validate_stage_ids_mock(mocker, stage_ids: List[str]):
         'ib_boards.adapters.task_service.TaskService.validate_stage_ids'
     )
 
-    from ib_boards.interactors.get_stage_display_logic_interactor import \
-        InvalidStageIds
+    from ib_boards.exceptions.custom_exceptions import InvalidStageIds
     mock.side_effect = InvalidStageIds(stage_ids=stage_ids)
     return mock
 

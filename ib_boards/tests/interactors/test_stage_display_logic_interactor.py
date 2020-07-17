@@ -39,7 +39,7 @@ class TestStageDisplayLogic:
         )
 
         # Act
-        actual_response = interactor.get_stage_display_condition_wrapper(
+        actual_response = interactor.get_stage_display_logic_condition_wrapper(
             stage_ids=stage_ids, presenter=presenter_mock
         )
 
@@ -72,7 +72,7 @@ class TestStageDisplayLogic:
         )
 
         # Act
-        actual_response = interactor.get_stage_display_condition_wrapper(
+        actual_response = interactor.get_stage_display_logic_condition_wrapper(
             stage_ids=stage_ids, presenter=presenter_mock
         )
 

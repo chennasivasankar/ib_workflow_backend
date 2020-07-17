@@ -82,7 +82,7 @@ class GetColumnTasksInteractor:
         service_adapter = get_service_adapter()
         stage_display_logic_interactor = StageDisplayLogicInteractor()
         task_status_dtos = stage_display_logic_interactor. \
-            get_stage_display_condition(
+            get_stage_display_logic_condition(
                 stage_ids=stage_ids
             )
         task_ids = service_adapter.task_service.get_task_ids(
