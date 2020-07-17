@@ -67,7 +67,6 @@ class TestAddTeamInteractor:
         assert actual_team_name_from_error == expected_team_name_from_error
 
     def test_given_correct_details_returns_team_id(self):
-        from ib_iam.exceptions.custom_exceptions import DuplicateTeamName
         storage = create_autospec(TeamStorageInterface)
         presenter = create_autospec(TeamPresenterInterface)
         interactor = AddTeamInteractor(storage=storage)
@@ -79,7 +78,6 @@ class TestAddTeamInteractor:
             name=team_name, description="team1_description"
         )
         storage.add_team.return_value = team_id
-        from django_swagger_utils.drf_server.exceptions import BadRequest
         presenter.get_response_for_add_team.return_value = expected_team_id
 
         actual_team_id = interactor.add_team_wrapper(

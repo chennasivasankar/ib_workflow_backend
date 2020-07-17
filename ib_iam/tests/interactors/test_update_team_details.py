@@ -59,3 +59,39 @@ class TestUpdateTeamDetails:
 
         storage.is_valid_team.assert_called_once_with(team_id=team_id)
         presenter.raise_exception_for_invalid_team_id.assert_called_once()
+
+    def test_duplicate_team_name_raises_bad_request_exception(self):
+        from ib_iam.exceptions.custom_exceptions import DuplicateTeamName
+        from django_swagger_utils.drf_server.exceptions import BadRequest
+        storage = create_autospec(TeamStorageInterface)
+        presenter = create_autospec(TeamPresenterInterface)
+        interactor = TeamInteractor(storage=storage)
+        user_id = "1"
+        team_id = "1"
+        team_name = "team1"
+        expected_team_name_from_error = team_name
+        update_team_parameters_dto = UpdateTeamParametersDTO(
+            team_id=team_id, name=team_name, description="team1_description"
+        )
+        storage.is_duplicate_name \
+               .side_effect = DuplicateTeamName(team_name=team_name)
+        presenter.raise_exception_for_duplicate_team_name.side_effect = (
+            BadRequest
+        )
+
+        with pytest.raises(BadRequest):
+            interactor.update_team_details_wrapper(
+                user_id=user_id,
+                update_team_parameters_dto=update_team_parameters_dto,
+                presenter=presenter
+            )
+
+        storage.is_duplicate_name.assert_called_once_with(
+            team_id=team_id, name=team_name
+        )
+        call_obj = presenter.raise_exception_for_duplicate_team_name.call_args
+        print("*"*80)
+        print(call_obj)
+        error_obj = call_obj.args[0]
+        actual_team_name_from_error = error_obj.team_name
+        assert actual_team_name_from_error == expected_team_name_from_error

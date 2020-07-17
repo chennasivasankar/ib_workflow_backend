@@ -23,7 +23,7 @@ class TeamInteractor:
             response = presenter.raise_exception_for_invalid_team_id()
         except DuplicateTeamName as exception:
             response = presenter.raise_exception_for_duplicate_team_name(
-                exception=exception
+                exception
             )
         return response
 
