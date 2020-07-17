@@ -1,4 +1,6 @@
 import json
+
+from ib_iam.constants.enums import StatusCode
 from ib_iam.presenters.presenter_implementation import PresenterImplementation
 
 
@@ -18,7 +20,7 @@ class TestAddListOfRolesPresenter:
 
         # Assert
         response = json.loads(response_object.content)
-        assert response['http_status_code'] == 400
+        assert response['http_status_code'] == StatusCode.BAD_REQUEST.value
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
 
@@ -37,7 +39,7 @@ class TestAddListOfRolesPresenter:
 
         # Assert
         response = json.loads(response_object.content)
-        assert response['http_status_code'] == 400
+        assert response['http_status_code'] == StatusCode.BAD_REQUEST.value
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
 
@@ -56,7 +58,7 @@ class TestAddListOfRolesPresenter:
 
         # Assert
         response = json.loads(response_object.content)
-        assert response['http_status_code'] == 400
+        assert response['http_status_code'] == StatusCode.BAD_REQUEST.value
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
 
@@ -75,6 +77,6 @@ class TestAddListOfRolesPresenter:
 
         # Assert
         response = json.loads(response_object.content)
-        assert response['http_status_code'] == 400
+        assert response['http_status_code'] == StatusCode.BAD_REQUEST.value
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
