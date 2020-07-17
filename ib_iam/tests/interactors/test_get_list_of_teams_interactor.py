@@ -38,7 +38,6 @@ class TestGetListOfTeamsInteractor:
 
     @pytest.mark.parametrize("limit", [(-1), (0)])
     def test_if_limit_is_invalid_raises_invalid_limit_exception(self, limit):
-        from ib_iam.exceptions.custom_exceptions import InvalidLimit
         storage = create_autospec(TeamStorageInterface)
         presenter = create_autospec(TeamPresenterInterface)
         interactor = GetListOfTeamsInteractor(storage=storage)
@@ -53,7 +52,6 @@ class TestGetListOfTeamsInteractor:
         presenter.raise_exception_for_invalid_limit.assert_called_once()
 
     def test_if_offset_is_invalid_raises_invalid_offset_exception(self):
-        from ib_iam.exceptions.custom_exceptions import InvalidLimit
         storage = create_autospec(TeamStorageInterface)
         presenter = create_autospec(TeamPresenterInterface)
         interactor = GetListOfTeamsInteractor(storage=storage)

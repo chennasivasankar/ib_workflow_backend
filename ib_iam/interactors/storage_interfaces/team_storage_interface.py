@@ -42,3 +42,7 @@ class TeamStorageInterface:
             self, update_team_parameters_dto: UpdateTeamParametersDTO
     ):
         pass
+
+    @abstractmethod
+    def delete_team(self, team_id: str):
+        pass

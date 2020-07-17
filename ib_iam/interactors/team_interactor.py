@@ -40,3 +40,20 @@ class TeamInteractor:
         self.storage.update_team_details(
             update_team_parameters_dto=update_team_parameters_dto
         )
+
+    def delete_team_wrapper(
+            self, user_id: str, team_id: str, presenter: TeamPresenterInterface
+    ):
+        try:
+            self.delete_team(user_id=user_id, team_id=team_id)
+            response = presenter.make_empty_http_success_response()
+        except UserHasNoAccess:
+            response = presenter.raise_exception_for_user_has_no_access()
+        except InvalidTeamId:
+            response = presenter.raise_exception_for_invalid_team_id()
+        return response
+
+    def delete_team(self, user_id: str, team_id: str):
+        self.storage.is_user_admin(user_id=user_id)
+        self.storage.is_valid_team(team_id=team_id)
+        self.storage.delete_team(team_id=team_id)
