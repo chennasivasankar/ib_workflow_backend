@@ -31,7 +31,8 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details list_of_col
                     ],
                     'task_id': 'task_id_0'
                 }
-            ]
+            ],
+            'total_tasks_count': 1
         },
         {
             'column_id': 'column_id_1',
@@ -55,7 +56,8 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details list_of_col
                     ],
                     'task_id': 'task_id_1'
                 }
-            ]
+            ],
+            'total_tasks_count': 1
         },
         {
             'column_id': 'column_id_2',
@@ -79,7 +81,8 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details list_of_col
                     ],
                     'task_id': 'task_id_2'
                 }
-            ]
+            ],
+            'total_tasks_count': 1
         }
     ],
     'total_columns_count': 3
