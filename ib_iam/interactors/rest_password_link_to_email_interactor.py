@@ -1,13 +1,7 @@
+from ib_iam.exceptions.custom_exceptions import UserAccountDoesNotExist, \
+    InvalidEmail
 from ib_iam.interactors.presenter_interfaces.presenter_interface import \
     AuthPresenterInterface
-
-
-class InvalidEmail(Exception):
-    pass
-
-
-class UserAccountDoesNotExist(Exception):
-    pass
 
 
 class ResetPasswordLinkToEmailInteractor:
@@ -20,10 +14,9 @@ class ResetPasswordLinkToEmailInteractor:
             return presenter \
                 .get_success_response_for_reset_password_link_to_user_email()
         except InvalidEmail:
-            return presenter.raise_invalid_email()
+            return presenter.raise_exception_for_invalid_email()
         except UserAccountDoesNotExist:
-            response = presenter.raise_user_account_does_not_exist()
-            return response
+            return presenter.raise_exception_for_user_account_does_not_exists()
 
     def reset_password_link_to_email(self, email: str):
         is_email_empty = not email

@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_iam.adapters.auth_service import TokensDTO
@@ -18,11 +19,6 @@ INCORRECT_PASSWORD = (
 PASSWORD_MIN_LENGTH = (
     "Please send the password with minimum required length is %s",
     "PASSWORD_MIN_LENGTH"
-)
-
-USER_ACCOUNT_DOES_NOT_EXIST = (
-    "Please send valid email which is already exist",
-    "USER_ACCOUNT_DOES_NOT_EXIST"
 )
 
 PASSWORD_AT_LEAST_ONE_SPECIAL_CHARACTER = (
@@ -70,8 +66,9 @@ class AuthPresenterImplementation(AuthPresenterInterface, HTTPResponseMixin):
         }
         return self.prepare_404_not_found_response(response_dict=response_dict)
 
-    def prepare_response_for_tokens_dto(self, tokens_dto: TokensDTO) \
-            -> HttpResponse:
+    def prepare_response_for_tokens_dto(
+            self, tokens_dto: TokensDTO, is_admin: int
+    ) -> HttpResponse:
         response_dict = {
             "access_token": tokens_dto.access_token,
             "refresh_token": tokens_dto.refresh_token,
@@ -94,7 +91,8 @@ class AuthPresenterImplementation(AuthPresenterInterface, HTTPResponseMixin):
         from ib_iam.constants.config import REQUIRED_PASSWORD_MIN_LENGTH
         min_required_length_for_password = REQUIRED_PASSWORD_MIN_LENGTH
         response_dict = {
-            "response": PASSWORD_MIN_LENGTH[0] % min_required_length_for_password,
+            "response": PASSWORD_MIN_LENGTH[
+                            0] % min_required_length_for_password,
             "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": PASSWORD_MIN_LENGTH[1]
         }
@@ -117,7 +115,7 @@ class AuthPresenterImplementation(AuthPresenterInterface, HTTPResponseMixin):
     def raise_user_account_does_not_exist(self):
         response_dict = {
             "response": USER_ACCOUNT_DOES_NOT_EXIST[0],
-            "http_status_code": 404,
+            "http_status_code": StatusCode.NOT_FOUND.value,
             "res_status": USER_ACCOUNT_DOES_NOT_EXIST[1]
         }
         return self.prepare_404_not_found_response(response_dict=response_dict)
@@ -128,7 +126,7 @@ class AuthPresenterImplementation(AuthPresenterInterface, HTTPResponseMixin):
     def raise_exception_for_not_a_strong_password(self):
         response_dict = {
             "response": NOT_STRONG_PASSWORD[0],
-            "http_status_code": 400,
+            "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": NOT_STRONG_PASSWORD[1]
         }
         return self.prepare_400_bad_request_response(
@@ -138,7 +136,7 @@ class AuthPresenterImplementation(AuthPresenterInterface, HTTPResponseMixin):
     def raise_exception_for_token_does_not_exists(self):
         response_dict = {
             "response": TOKEN_DOES_NOT_EXIST[0],
-            "http_status_code": 404,
+            "http_status_code": StatusCode.NOT_FOUND.value,
             "res_status": TOKEN_DOES_NOT_EXIST[1]
         }
         return self.prepare_404_not_found_response(response_dict=response_dict)
@@ -146,7 +144,7 @@ class AuthPresenterImplementation(AuthPresenterInterface, HTTPResponseMixin):
     def raise_exception_for_token_has_expired(self):
         response_dict = {
             "response": TOKEN_HAS_EXPIRED[0],
-            "http_status_code": 400,
+            "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": TOKEN_HAS_EXPIRED[1]
         }
         return self.prepare_400_bad_request_response(

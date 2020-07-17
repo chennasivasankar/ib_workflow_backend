@@ -1,21 +1,13 @@
-from django.http import HttpResponse
-
-from ib_iam.adapters.auth_service import EmailAndPasswordDTO, TokensDTO
+from ib_iam.adapters.auth_service import EmailAndPasswordDTO
+from ib_iam.exceptions.custom_exceptions import UserAccountDoesNotExist, \
+    InvalidEmail
 from ib_iam.interactors.presenter_interfaces.presenter_interface import \
     AuthPresenterInterface
 from ib_iam.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
 
-class UserAccountDoesNotExist(Exception):
-    pass
-
-
 class IncorrectPassword(Exception):
-    pass
-
-
-class InvalidEmail(Exception):
     pass
 
 
@@ -70,8 +62,8 @@ class LoginInteractor:
         user_id = service_adapter.auth_service. \
             get_user_id_from_email_and_password_dto(email_and_password_dto)
         is_admin = self.storage.get_is_admin_of_given_user_id(user_id=user_id)
-        tokens_dto = service_adapter.auth_service.get_tokens_dto_from_user_id(
-            user_id=user_id,
+        tokens_dto = service_adapter.auth_service.get_tokens_dto_for_given_email_and_password_dto(
+            email_and_password_dto=email_and_password_dto,
         )
 
         return tokens_dto, is_admin

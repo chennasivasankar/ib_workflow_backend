@@ -36,7 +36,7 @@ class TestLoginInteractor:
     )
     def test_validate_incorrect_password_raise_exception(
             self, get_tokens_dto_for_given_email_and_password_dto_mock,
-            email_and_password_dto, presenter_mock_setup
+            email_and_password_dto, presenter_mock_setup, storage_mock_setup
     ):
         # Arrange
         expected_raise_incorrect_password_mock = Mock()
@@ -67,13 +67,12 @@ class TestLoginInteractor:
     )
     def test_validate_for_email_account_not_exist_raise_exception(
             self, get_tokens_dto_for_given_email_and_password_dto_mock,
-            email_and_password_dto, presenter_mock_setup
+            email_and_password_dto, presenter_mock_setup, storage_mock_setup
     ):
         # Arrange
         expected_presenter_raise_email_does_not_exist_mock = Mock()
 
-        from ib_iam.interactors.user_login_interactor import \
-            UserAccountDoesNotExist
+        from ib_iam.exceptions.custom_exceptions import UserAccountDoesNotExist
         get_tokens_dto_for_given_email_and_password_dto_mock.side_effect \
             = UserAccountDoesNotExist
 
@@ -100,7 +99,7 @@ class TestLoginInteractor:
     )
     def test_with_valid_email_and_password_dto_return_response(
             self, get_tokens_dto_for_given_email_and_password_dto_mock,
-            email_and_password_dto, presenter_mock_setup
+            email_and_password_dto, presenter_mock_setup, storage_mock_setup
     ):
         # Arrange
         from ib_iam.adapters.auth_service import TokensDTO
@@ -136,13 +135,12 @@ class TestLoginInteractor:
     )
     def test_validate_invalid_email_raise_exception(
             self, get_tokens_dto_for_given_email_and_password_dto_mock,
-            email_and_password_dto, presenter_mock_setup
+            email_and_password_dto, presenter_mock_setup, storage_mock_setup
     ):
         # Arrange
         expected_raise_invalid_email_mock = Mock()
 
-        from ib_iam.interactors.user_login_interactor import \
-            InvalidEmail
+        from ib_iam.exceptions.custom_exceptions import InvalidEmail
         get_tokens_dto_for_given_email_and_password_dto_mock.side_effect \
             = InvalidEmail
 
@@ -151,7 +149,7 @@ class TestLoginInteractor:
             = expected_raise_invalid_email_mock
 
         from ib_iam.interactors.user_login_interactor import LoginInteractor
-        interactor = LoginInteractor()
+        interactor = LoginInteractor(storage=storage_mock_setup)
 
         # Act
         response = interactor.login_wrapper(
@@ -167,7 +165,7 @@ class TestLoginInteractor:
     )
     def test_validate_password_min_length_raise_exception(
             self, get_tokens_dto_for_given_email_and_password_dto_mock,
-            email_and_password_dto, presenter_mock_setup
+            email_and_password_dto, presenter_mock_setup, storage_mock_setup
     ):
         # Arrange
         expected_raise_password_min_length_mock = Mock()
@@ -183,7 +181,7 @@ class TestLoginInteractor:
             return_value = expected_raise_password_min_length_mock
 
         from ib_iam.interactors.user_login_interactor import LoginInteractor
-        interactor = LoginInteractor()
+        interactor = LoginInteractor(storage=storage_mock_setup)
 
         # Act
         response = interactor.login_wrapper(
@@ -200,7 +198,7 @@ class TestLoginInteractor:
     )
     def test_validate_password_at_least_one_special_character_raise_exception(
             self, get_tokens_dto_for_given_email_and_password_dto_mock,
-            email_and_password_dto, presenter_mock_setup
+            email_and_password_dto, presenter_mock_setup, storage_mock_setup
     ):
         # Arrange
         expected_raise_password_at_least_one_special_character_mock = Mock()
@@ -216,7 +214,7 @@ class TestLoginInteractor:
             return_value = expected_raise_password_at_least_one_special_character_mock
 
         from ib_iam.interactors.user_login_interactor import LoginInteractor
-        interactor = LoginInteractor()
+        interactor = LoginInteractor(storage=storage_mock_setup)
 
         # Act
         response = interactor.login_wrapper(
@@ -228,4 +226,3 @@ class TestLoginInteractor:
                == expected_raise_password_at_least_one_special_character_mock
         presenter_mock_setup.raise_exception_for_password_at_least_one_special_character_required. \
             assert_called_once()
-

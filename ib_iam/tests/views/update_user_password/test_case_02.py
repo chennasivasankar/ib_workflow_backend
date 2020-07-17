@@ -20,7 +20,7 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
         "ib_iam.adapters.auth_service.AuthService.update_user_password"
     )
     def test_token_doed_not_exist(self, update_user_password_mock,
-                                           snapshot):
+                                  snapshot):
         from ib_iam.interactors.update_user_password_interactor import \
             TokenDoesNotExist
         update_user_password_mock.side_effect = TokenDoesNotExist()
@@ -38,7 +38,7 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
         "ib_iam.adapters.auth_service.AuthService.update_user_password"
     )
     def test_token_has_expired(self, update_user_password_mock,
-                                  snapshot):
+                               snapshot):
         from ib_iam.interactors.update_user_password_interactor import \
             TokenHasExpired
         update_user_password_mock.side_effect = TokenHasExpired()
@@ -56,7 +56,7 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
         "ib_iam.adapters.auth_service.AuthService.update_user_password"
     )
     def test_with_weak_password(self, update_user_password_mock,
-                               snapshot):
+                                snapshot):
         from ib_iam.interactors.update_user_password_interactor import \
             NotStrongPassword
         update_user_password_mock.side_effect = NotStrongPassword()

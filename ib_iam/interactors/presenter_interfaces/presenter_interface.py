@@ -16,11 +16,6 @@ class AuthPresenterInterface(ABC):
         pass
 
     @abstractmethod
-    def prepare_response_for_tokens_dto(self, tokens_dto: TokensDTO) -> \
-            HttpResponse:
-        pass
-
-    @abstractmethod
     def raise_exception_for_user_account_does_not_exists(self) -> HttpResponse:
         pass
 
@@ -32,8 +27,11 @@ class AuthPresenterInterface(ABC):
     def raise_exception_for_password_at_least_one_special_character_required(
             self
     ) -> HttpResponse:
-    def prepare_response_for_tokens_dto(self, tokens_dto: TokensDTO,
-                                        is_admin: bool):
+        pass
+
+    def prepare_response_for_tokens_dto(
+            self, tokens_dto: TokensDTO, is_admin: bool
+    ):
         pass
 
     @abstractmethod

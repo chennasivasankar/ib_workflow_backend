@@ -17,10 +17,13 @@ class TestCase01UserLoginAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     @patch(
+        "ib_iam.adapters.auth_service.AuthService.get_user_id_from_email_and_password_dto"
+    )
+    @patch(
         "ib_iam.adapters.auth_service.AuthService.get_tokens_dto_for_given_email_and_password_dto"
     )
     def test_case(self, get_tokens_dto_for_given_email_and_password_dto,
-                  snapshot
+                  get_user_id_from_email_and_password_dto, snapshot
                   ):
         from ib_iam.adapters.auth_service import TokensDTO
         tokens_dto = TokensDTO(
@@ -31,6 +34,8 @@ class TestCase01UserLoginAPITestCase(TestUtils):
         from ib_iam.tests.factories.models import UserFactory
         UserFactory.reset_sequence(1)
         UserFactory()
+
+        get_user_id_from_email_and_password_dto.return_value = 1
 
         get_tokens_dto_for_given_email_and_password_dto.return_value \
             = tokens_dto

@@ -12,6 +12,7 @@ class TestCase01UpdateUserPasswordAPITestCase(TestUtils):
     REQUEST_METHOD = REQUEST_METHOD
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['write']}}
+
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {'password': 'string'}

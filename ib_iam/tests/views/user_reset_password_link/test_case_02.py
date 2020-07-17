@@ -21,8 +21,7 @@ class TestCase02UserResetPasswordLinkAPITestCase(TestUtils):
     @pytest.mark.django_db
     def test_case(self,get_token_for_reset_password_mock, snapshot):
         body = {'email': 'test@gmail.com'}
-        from ib_iam.interactors.rest_password_link_to_email_interactor import \
-            UserAccountDoesNotExist
+        from ib_iam.exceptions.custom_exceptions import UserAccountDoesNotExist
         get_token_for_reset_password_mock.side_effect \
             = UserAccountDoesNotExist()
         path_params = {}

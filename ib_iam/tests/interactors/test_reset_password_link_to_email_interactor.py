@@ -18,7 +18,7 @@ class TestResetPasswordLinkToEmailInteractor:
         email = ""
         expected_presenter_raise_invalid_email_mock = Mock()
 
-        presenter_mock.raise_invalid_email.return_value \
+        presenter_mock.raise_exception_for_invalid_email.return_value \
             = expected_presenter_raise_invalid_email_mock
 
         from ib_iam.interactors.rest_password_link_to_email_interactor import \
@@ -32,25 +32,24 @@ class TestResetPasswordLinkToEmailInteractor:
 
         # Assert
         assert response == expected_presenter_raise_invalid_email_mock
-        presenter_mock.raise_invalid_email.assert_called_once()
+        presenter_mock.raise_exception_for_invalid_email.assert_called_once()
 
     @patch(
         "ib_iam.adapters.auth_service.AuthService.get_token_for_reset_password"
     )
     def test_user_account_does_not_exist_raise_exception(
             self, get_token_for_reset_password_mock, presenter_mock
-        ):
+    ):
         # Arrange
         email = "test@gmail.com"
-        from ib_iam.interactors.rest_password_link_to_email_interactor import \
-            UserAccountDoesNotExist
+        from ib_iam.exceptions.custom_exceptions import UserAccountDoesNotExist
         get_token_for_reset_password_mock.side_effect \
             = UserAccountDoesNotExist()
 
         expected_presenter_raise_user_account_does_not_exist_mock = Mock()
 
-        presenter_mock.raise_user_account_does_not_exist.return_value \
-            = expected_presenter_raise_user_account_does_not_exist_mock
+        presenter_mock.raise_exception_for_user_account_does_not_exists.\
+            return_value = expected_presenter_raise_user_account_does_not_exist_mock
 
         from ib_iam.interactors.rest_password_link_to_email_interactor import \
             ResetPasswordLinkToEmailInteractor
@@ -64,7 +63,8 @@ class TestResetPasswordLinkToEmailInteractor:
         # Assert
         assert response \
                == expected_presenter_raise_user_account_does_not_exist_mock
-        presenter_mock.raise_user_account_does_not_exist.assert_called_once()
+        presenter_mock.raise_exception_for_user_account_does_not_exists. \
+            assert_called_once()
 
     @patch(
         "ib_iam.adapters.email_service.EmailService.send_email_to_user"
@@ -84,7 +84,7 @@ class TestResetPasswordLinkToEmailInteractor:
 
         expected_presenter_success_response_mock = Mock()
 
-        presenter_mock.\
+        presenter_mock. \
             get_success_response_for_reset_password_link_to_user_email.return_value \
             = expected_presenter_success_response_mock
 
