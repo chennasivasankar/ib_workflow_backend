@@ -30,3 +30,11 @@ class TeamPresenterInterface:
     @abstractmethod
     def raise_exception_for_duplicate_team_name(self, exception):
         pass
+
+    @abstractmethod
+    def make_empty_http_success_response(self):
+        pass
+
+    @abstractmethod
+    def raise_exception_for_invalid_team_id(self):
+        pass
