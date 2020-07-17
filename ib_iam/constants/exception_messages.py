@@ -17,3 +17,8 @@ DUPLICATE_TEAM_NAME = (
     "Given '%s' is already exists, so choose another",
     "DUPLICATE_TEAM_NAME"
 )
+
+INVALID_TEAM_ID = (
+    "Given team_id is invalid",
+    "INVALID_TEAM_ID"
+)

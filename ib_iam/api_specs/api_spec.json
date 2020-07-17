@@ -376,40 +376,6 @@
             }
           }
         }
-      },
-      "delete": {
-        "summary": "delete team",
-        "description": "deletes a team",
-        "operationId": "delete_team",
-        "security": [
-          {
-            "oauth": [
-              "update"
-            ]
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/parameters/TeamId"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Team deleted Successfully"
-          },
-          "404": {
-            "description": "NotFound",
-            "schema": {
-              "$ref": "#/definitions/InvalidTeamId"
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "$ref": "#/definitions/UserHasNoAccess"
-            }
-          }
-        }
       }
     }
   }
