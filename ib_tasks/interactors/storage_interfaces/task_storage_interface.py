@@ -11,20 +11,13 @@ from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, FieldDTO
 from ib_tasks.interactors.storage_interfaces.dtos import (
     GoFDTO, GoFRoleDTO, GoFFieldDTO
 )
-from ib_tasks.interactors.dtos import FieldDTO, GoFIdAndOrderDTO, \
-    GlobalConstantsDTO
+from ib_tasks.interactors.dtos import FieldDTO, GlobalConstantsDTO
 
 
 class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def create_task_template(self, template_id: str, template_name: str):
-        pass
-
-    @abc.abstractmethod
-    def add_gofs_to_task_template(
-            self, template_id: str,
-            gof_id_and_order_dtos: List[GoFIdAndOrderDTO]):
         pass
 
     @abc.abstractmethod
@@ -37,10 +30,6 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def create_fields(self, field_dtos: List[FieldDTO]):
-        pass
-
-    @abc.abstractmethod
-    def get_existing_gof_ids_of_template(self, template_id: str) -> List[str]:
         pass
 
     @abc.abstractmethod

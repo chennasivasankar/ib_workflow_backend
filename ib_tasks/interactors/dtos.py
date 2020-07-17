@@ -34,16 +34,9 @@ class ActionDTO:
 
 
 @dataclass
-class GoFIdAndOrderDTO:
-    gof_id: str
-    order: int
-
-
-@dataclass
 class CreateTaskTemplateDTO:
     template_id: str
     template_name: str
-    gof_dtos: List[GoFIdAndOrderDTO]
 
 
 @dataclass
