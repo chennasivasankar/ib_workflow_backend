@@ -19,7 +19,7 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
     @patch(
         "ib_iam.adapters.auth_service.AuthService.update_user_password"
     )
-    def test_token_doed_not_exist(self, update_user_password_mock,
+    def test_token_does_not_exist(self, update_user_password_mock,
                                   snapshot):
         from ib_iam.interactors.update_user_password_interactor import \
             TokenDoesNotExist
@@ -55,14 +55,39 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
     @patch(
         "ib_iam.adapters.auth_service.AuthService.update_user_password"
     )
-    def test_with_weak_password(self, update_user_password_mock,
-                                snapshot):
+    def test_case_for_required_password_min_length(
+            self, update_user_password, snapshot
+    ):
+
         from ib_iam.interactors.update_user_password_interactor import \
-            NotStrongPassword
-        update_user_password_mock.side_effect = NotStrongPassword()
-        body = {'password': 'string'}
+            PasswordMinLength
+        update_user_password.side_effect \
+            = PasswordMinLength
+
+        body = {'email': 'test@gmail.com', 'password': 'test123'}
         path_params = {}
-        query_params = {'token': 184}
+        query_params = {}
+        headers = {}
+        response = self.default_test_case(
+            body=body, path_params=path_params,
+            query_params=query_params, headers=headers, snapshot=snapshot
+        )
+
+    @pytest.mark.django_db
+    @patch(
+        "ib_iam.adapters.auth_service.AuthService.update_user_password"
+    )
+    def test_case_for_required_password_one_special_character(
+            self, update_user_password,
+            snapshot
+    ):
+        from ib_iam.interactors.update_user_password_interactor import \
+            PasswordAtLeastOneSpecialCharacter
+        update_user_password.side_effect \
+            = PasswordAtLeastOneSpecialCharacter
+        body = {'email': 'test@gmail.com', 'password': 'test123'}
+        path_params = {}
+        query_params = {}
         headers = {}
         response = self.default_test_case(
             body=body, path_params=path_params,

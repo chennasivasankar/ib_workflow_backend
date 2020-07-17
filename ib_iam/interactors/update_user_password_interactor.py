@@ -2,11 +2,15 @@ from ib_iam.interactors.presenter_interfaces.presenter_interface import \
     AuthPresenterInterface
 
 
-class TokenDoesNotExist(Exception):
+class PasswordMinLength(Exception):
     pass
 
 
-class NotStrongPassword(Exception):
+class PasswordAtLeastOneSpecialCharacter(Exception):
+    pass
+
+
+class TokenDoesNotExist(Exception):
     pass
 
 
@@ -23,10 +27,12 @@ class UpdateUserPasswordInteractor:
             )
         except TokenDoesNotExist:
             return presenter.raise_exception_for_token_does_not_exists()
-        except NotStrongPassword:
-            return presenter.raise_exception_for_not_a_strong_password()
         except TokenHasExpired:
             return presenter.raise_exception_for_token_has_expired()
+        except PasswordMinLength:
+            return presenter.raise_exception_for_password_min_length_required()
+        except PasswordAtLeastOneSpecialCharacter:
+            return presenter.raise_exception_for_password_at_least_one_special_character_required()
 
     def update_user_password_response(self, password: str, token: str,
                                       presenter: AuthPresenterInterface

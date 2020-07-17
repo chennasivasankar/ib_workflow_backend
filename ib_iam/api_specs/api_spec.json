@@ -146,9 +146,7 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_EMAIL",
-                  "PASSWORD_MIN_LENGTH",
-                  "PASSWORD_AT_LEAST_ONE_SPECIAL_CHARACTER"
+                  "INVALID_EMAIL"
                 ]
               }
             },
@@ -245,7 +243,6 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "NOT_STRONG_PASSWORD",
                   "TOKEN_HAS_EXPIRED"
                 ]
               }
@@ -270,7 +267,9 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "TOKEN_DOES_NOT_EXIST"
+                  "TOKEN_DOES_NOT_EXIST",
+                  "PASSWORD_MIN_LENGTH",
+                  "PASSWORD_AT_LEAST_ONE_SPECIAL_CHARACTER"
                 ]
               }
             },

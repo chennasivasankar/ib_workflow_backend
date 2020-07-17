@@ -4,20 +4,11 @@ from ib_iam.exceptions.custom_exceptions import InvalidEmail, \
 from ib_iam.interactors.presenter_interfaces.presenter_interface import \
     AuthPresenterInterface
 
-
 from ib_iam.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
 
 class IncorrectPassword(Exception):
-    pass
-
-
-class PasswordMinLength(Exception):
-    pass
-
-
-class PasswordAtLeastOneSpecialCharacter(Exception):
     pass
 
 
@@ -36,14 +27,10 @@ class LoginInteractor:
             return response
         except InvalidEmail:
             return presenter.raise_exception_for_invalid_email()
-        except IncorrectPassword:
-            return presenter.raise_exception_for_incorrect_password()
         except UserAccountDoesNotExist:
             return presenter.raise_exception_for_user_account_does_not_exists()
-        except PasswordMinLength:
-            return presenter.raise_exception_for_password_min_length_required()
-        except PasswordAtLeastOneSpecialCharacter:
-            return presenter.raise_exception_for_password_at_least_one_special_character_required()
+        except IncorrectPassword:
+            return presenter.raise_exception_for_incorrect_password()
 
     def _get_login_response(self, email_and_password_dto: EmailAndPasswordDTO,
                             presenter: AuthPresenterInterface
