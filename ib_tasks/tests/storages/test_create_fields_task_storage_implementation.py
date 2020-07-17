@@ -6,9 +6,11 @@ from ib_tasks.constants.enum import FieldTypes
 from ib_tasks.tests.factories.storage_dtos import (
     FieldDTOFactory
 )
+from ib_tasks.tests.factories.models import FieldRoleFactory
 from ib_tasks.models.field import Field
 
 
+@pytest.mark.django_db
 class TestTaskStorageImplementation:
 
     @pytest.fixture
@@ -22,8 +24,8 @@ class TestTaskStorageImplementation:
     def reset_factories(self):
         FieldFactory.reset_sequence(0)
         GoFFactory.reset_sequence(0)
+        FieldRoleFactory.reset_sequence(0)
 
-    @pytest.mark.django_db
     def test_get_existing_field_ids_in_given_field_ids(
             self, storage, reset_factories
     ):
@@ -39,7 +41,6 @@ class TestTaskStorageImplementation:
 
         assert expected_existing_field_ids == actual_existing_field_ids
 
-    @pytest.mark.django_db
     def test_create_fields_given_field_dtos(
             self, storage, reset_factories
     ):
@@ -65,7 +66,6 @@ class TestTaskStorageImplementation:
         # Assert
         self._assert_fileds(field_dtos)
 
-    @pytest.mark.django_db
     def test_update_fields_given_field_dtos(
             self, storage, reset_factories
     ):
@@ -106,3 +106,73 @@ class TestTaskStorageImplementation:
             assert field_obj.placeholder_text == field_dto.placeholder_text
             assert field_obj.error_messages == field_dto.error_message
             assert field_obj.validation_regex == field_dto.validation_regex
+
+    def test_create_field_roles_given_field_roles_dtos(self, storage, reset_factories):
+        # Arrange
+        from ib_tasks.tests.factories.storage_dtos import FieldRoleDTOFactory
+        from ib_tasks.constants.enum import PermissionTypes
+
+        FieldFactory(field_id="field1")
+        FieldFactory(field_id="field2")
+        field_role_dtos = [
+            FieldRoleDTOFactory(field_id="field1"),
+            FieldRoleDTOFactory(
+                field_id="field2",
+                permission_type=PermissionTypes.WRITE.value
+            )
+        ]
+
+        # Act
+        storage.create_fields_roles(field_role_dtos)
+
+        # Assert
+        from ib_tasks.models.field_role import FieldRole
+        for field_role_dto in field_role_dtos:
+            field_role_obj = FieldRole.objects.get(
+                field_id=field_role_dto.field_id,
+                role=field_role_dto.role
+            )
+            assert field_role_dto.permission_type == field_role_obj.permission_type
+
+    def test_get_existing_gof_ids_given_gof_ids(self, storage):
+        # Arrange
+        gof_ids = ["gof0", "gof1", "gof2"]
+        GoFFactory(gof_id="gof0")
+        GoFFactory(gof_id="gof1")
+        expected_existing_gof_ids = ["gof0", "gof1"]
+
+        # Act
+        actual_existing_gof_ids = storage.get_existing_gof_ids(gof_ids)
+
+        # Assert
+
+        assert expected_existing_gof_ids == actual_existing_gof_ids
+
+    def test_update_field_roles_given_field_roles_dtos(self, storage, reset_factories):
+        # Arrange
+        from ib_tasks.tests.factories.storage_dtos import FieldRoleDTOFactory
+        from ib_tasks.constants.enum import PermissionTypes
+
+        FieldFactory(field_id="field10")
+        FieldFactory(field_id="field20")
+        FieldRoleFactory(field_id="field10")
+        FieldRoleFactory(field_id="field20")
+        field_role_dtos = [
+            FieldRoleDTOFactory(field_id="field10"),
+            FieldRoleDTOFactory(
+                field_id="field20",
+                permission_type=PermissionTypes.WRITE.value
+            )
+        ]
+
+        # Act
+        storage.update_fields_roles(field_role_dtos)
+
+        # Assert
+        from ib_tasks.models.field_role import FieldRole
+        for field_role_dto in field_role_dtos:
+            field_role_obj = FieldRole.objects.get(
+                field_id=field_role_dto.field_id,
+                role=field_role_dto.role
+            )
+            assert field_role_dto.permission_type == field_role_obj.permission_type

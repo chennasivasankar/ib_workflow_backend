@@ -1,3 +1,4 @@
+
 import factory
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
@@ -10,7 +11,7 @@ class TaskTemplateFactory(factory.DjangoModelFactory):
     class Meta:
         model = TaskTemplate
 
-    template_id = factory.Sequence(lambda n: "template%d" %n )
+    template_id = factory.Sequence(lambda n: "template%d" % n)
     name = factory.Iterator(
         ["Payment Request", "Vendor"]
     )
@@ -20,7 +21,7 @@ class GoFFactory(factory.DjangoModelFactory):
     class Meta:
         model = GoF
 
-    gof_id = factory.Sequence(lambda n: "gof%d" %n )
+    gof_id = factory.Sequence(lambda n: "gof%d" % n)
     display_name = factory.Iterator(
         ["Request Details", "Vendor Type", "Vendor Basic Details"]
     )
@@ -34,7 +35,7 @@ class FieldFactory(factory.DjangoModelFactory):
         model = Field
 
     gof = factory.SubFactory(GoFFactory)
-    field_id = factory.Sequence(lambda n: "field%d" %n )
+    field_id = factory.Sequence(lambda n: "field%d" % n)
     display_name = factory.Iterator(
         "Saluation", "Type of Vendor"
     )

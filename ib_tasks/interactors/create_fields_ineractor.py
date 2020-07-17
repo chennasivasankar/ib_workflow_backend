@@ -303,6 +303,7 @@ class CreateFieldsInteractor:
             self, field_roles_dtos: List[FieldRolesDTO],
             available_write_permission_roles: List[str]
     ) -> Optional[InvalidRolesException]:
+
         fields_invalid_roles_for_write_permission = []
         for field_roles_dto in field_roles_dtos:
             write_permission_roles = field_roles_dto.write_permission_roles

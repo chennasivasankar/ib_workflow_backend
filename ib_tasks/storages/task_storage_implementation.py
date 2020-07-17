@@ -1,7 +1,7 @@
 from typing import List
 
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    FieldDTO, FieldRolesDTO, GoFDTO, GoFRolesDTO, GoFFieldsDTO
+    FieldDTO, FieldRoleDTO, GoFDTO, GoFRolesDTO, GoFFieldsDTO
 )
 from ib_tasks.interactors.dtos import GoFIdAndOrderDTO, GlobalConstantsDTO
 
@@ -9,6 +9,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
 
 from ib_tasks.models.field import Field
+from ib_tasks.models.field_role import FieldRole
 
 
 class TaskStorageImplementation(TaskStorageInterface):
@@ -54,7 +55,6 @@ class TaskStorageImplementation(TaskStorageInterface):
         Field.objects.bulk_create(fields)
 
     def update_fields(self, field_dtos: List[FieldDTO]):
-        from ib_tasks.models.field import Field
         list_of_fields = [
             'display_name', 'gof_id',
             'required', 'field_type',
@@ -65,7 +65,6 @@ class TaskStorageImplementation(TaskStorageInterface):
         ]
         fields = self._get_fields(field_dtos)
         Field.objects.bulk_update(fields, list_of_fields)
-
 
     @staticmethod
     def _get_fields(field_dtos: List[FieldDTO]):
@@ -88,11 +87,25 @@ class TaskStorageImplementation(TaskStorageInterface):
         ]
         return fields
 
-    def update_fields_roles(self, field_roles_dto: List[FieldRolesDTO]):
-        pass
+    def update_fields_roles(self, field_roles_dtos: List[FieldRoleDTO]):
+        list_of_fields = ["field_id", "role", "permission_type"]
+        fields_roles = self._get_fields_roles(field_roles_dtos)
+        FieldRole.objects.bulk_update(fields_roles, list_of_fields)
 
-    def create_fields_roles(self, field_roles_dto: List[FieldRolesDTO]):
-        pass
+    def create_fields_roles(self, field_roles_dtos: List[FieldRoleDTO]):
+        fields_roles = self._get_fields_roles(field_roles_dtos)
+        FieldRole.objects.bulk_create(fields_roles)
+
+    def _get_fields_roles(self, field_role_dtos):
+        fields_roles = [
+            FieldRole(
+                field_id=field_role_dto.field_id,
+                role=field_role_dto.role,
+                permission_type=field_role_dto.permission_type
+            )
+            for field_role_dto in field_role_dtos
+        ]
+        return fields_roles
 
     def get_existing_field_ids(self, field_ids: List[str]) -> List[str]:
         from ib_tasks.models.field import Field
@@ -100,3 +113,10 @@ class TaskStorageImplementation(TaskStorageInterface):
             Field.objects.filter(field_id__in=field_ids).values_list("field_id", flat=True)
         )
         return existing_field_ids
+
+    def get_existing_gof_ids(self, gof_ids: List[str]) -> List[str]:
+        from ib_tasks.models.gof import GoF
+        existing_gof_ids = list(
+            GoF.objects.filter(gof_id__in=gof_ids).values_list("gof_id", flat=True)
+        )
+        return existing_gof_ids

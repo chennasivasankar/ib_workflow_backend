@@ -70,11 +70,11 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def update_fields_roles(self, field_roles_dto: List[FieldRoleDTO]):
+    def update_fields_roles(self, field_role_dtos: List[FieldRoleDTO]):
         pass
 
     @abc.abstractmethod
-    def create_fields_roles(self, field_roles_dto: List[FieldRoleDTO]):
+    def create_fields_roles(self, field_role_dtos: List[FieldRoleDTO]):
         pass
 
     @abc.abstractmethod
