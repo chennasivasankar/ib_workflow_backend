@@ -1,6 +1,6 @@
 import factory
-from ib_tasks.interactors.storage_interfaces.dtos import CompleteGoFDetailsDTO, \
-    GoFDTO, GoFRolesDTO, GoFFieldsDTO
+from ib_tasks.interactors.storage_interfaces.dtos import \
+    CompleteGoFDetailsDTO, GoFDTO, GoFRolesDTO, GoFFieldsDTO
 
 
 class GoFDTOFactory(factory.Factory):

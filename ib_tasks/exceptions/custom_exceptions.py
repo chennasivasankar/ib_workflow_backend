@@ -79,3 +79,10 @@ class DuplicateConstantNames(Exception):
         self.message = \
             "Given duplicate constant names {}".format(constant_names)
         super().__init__(self.message)
+
+
+class GoFIdsNotExists(Exception):
+    def __init__(self, gof_ids: List[str]):
+        self.message = \
+            "GoF ids: {} are not exists".format(gof_ids)
+        super().__init__(self.message)

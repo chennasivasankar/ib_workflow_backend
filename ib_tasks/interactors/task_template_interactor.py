@@ -56,6 +56,18 @@ class TaskTemplateInteractor:
             gof_dtos=create_task_template_dto.gof_dtos
         )
         self._validate_uniqueness_in_gof_ids(gof_ids=gof_ids)
+        existing_gof_ids_of_template = \
+            self.task_storage.get_existing_gof_ids_of_template(
+                template_id=create_task_template_dto.template_id
+            )
+        invalid_gof_ids = [
+            gof_id
+            for gof_id in gof_ids
+            if gof_id not in existing_gof_ids_of_template
+        ]
+        from ib_tasks.exceptions.custom_exceptions import GoFIdsNotExists
+        if invalid_gof_ids:
+            raise GoFIdsNotExists(invalid_gof_ids)
 
     def _validate_field_values_of_create_task_template_dto(
             self, create_task_template_dto: CreateTaskTemplateDTO):

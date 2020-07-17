@@ -156,7 +156,7 @@ class TestTaskTemplateInteractor:
             )
         assert err.value.args[0] == expected_exception_message
 
-    def test_when_existing_gof_ids_of_template_not_in_given_data_raises_exception(
+    def test_when_given_gof_ids_are_not_exists_raises_exception(
             self, task_storage_mock):
         # Arrange
         template_id = "FIN_PR"
@@ -170,7 +170,40 @@ class TestTaskTemplateInteractor:
 
         task_storage_mock.check_is_template_exists.return_value = True
         task_storage_mock. \
-            get_existing_gof_ids_of_template.return_value = ["GoF_5"]
+            get_existing_gof_ids_of_template.return_value = []
+        expected_exception_message = \
+            "GoF ids: ['GoF_1', 'GoF_2'] are not exists"
+
+        gof_dtos = GoFIdAndOrderDTOFactory.create_batch(size=2)
+        create_task_template_dto = CreateTaskTemplateDTO(
+            template_id=template_id, template_name=template_name,
+            gof_dtos=gof_dtos
+        )
+        from ib_tasks.exceptions.custom_exceptions import \
+            GoFIdsNotExists
+
+        # Assert
+        with pytest.raises(GoFIdsNotExists) as err:
+            task_template_interactor.create_task_template_wrapper(
+                create_task_template_dto=create_task_template_dto
+            )
+        assert err.value.args[0] == expected_exception_message
+
+    def test_when_existing_gof_ids_of_template_not_in_given_data_raises_exception(
+            self, task_storage_mock):
+        # Arrange
+        template_id = "FIN_PR"
+        template_name = "Payment Request"
+
+        from ib_tasks.interactors.task_template_interactor \
+            import TaskTemplateInteractor
+        task_template_interactor = TaskTemplateInteractor(
+            task_storage=task_storage_mock
+        )
+
+        task_storage_mock.check_is_template_exists.return_value = True
+        task_storage_mock.get_existing_gof_ids_of_template.side_effect = \
+            [["GoF_1"], ["GoF_5"]]
         expected_exception_message = \
             "Existing gof ids: ['GoF_5'] of template not in given gof ids: ['GoF_1']"
 
@@ -187,11 +220,9 @@ class TestTaskTemplateInteractor:
             task_template_interactor.create_task_template_wrapper(
                 create_task_template_dto=create_task_template_dto
             )
-        task_storage_mock. \
-            get_existing_gof_ids_of_template.assert_called_once_with(
-                template_id=template_id
-            )
         assert err.value.args[0] == expected_exception_message
+        assert task_storage_mock.get_existing_gof_ids_of_template.\
+                   call_count == 2
 
     def test_create_task_template_with_valid_data(self, task_storage_mock):
         # Arrange
@@ -205,6 +236,8 @@ class TestTaskTemplateInteractor:
         task_template_interactor = TaskTemplateInteractor(
             task_storage=task_storage_mock
         )
+        task_storage_mock.get_existing_gof_ids_of_template.return_value = \
+            ["GoF_1"]
         task_storage_mock.check_is_template_exists.return_value = False
 
         # Act
@@ -233,7 +266,8 @@ class TestTaskTemplateInteractor:
         )
         task_storage_mock.check_is_template_exists.return_value = True
         task_storage_mock.\
-            get_existing_gof_ids_of_template.return_value = ["GoF_1"]
+            get_existing_gof_ids_of_template.side_effect = \
+            [["GoF_1", "GoF_2", "GoF_3"], [], ["GoF_1"]]
         from ib_tasks.interactors.dtos import GoFIdAndOrderDTO
         expected_gof_dtos_to_add_to_template = [
             GoFIdAndOrderDTO(gof_id='GoF_2', order=2),
