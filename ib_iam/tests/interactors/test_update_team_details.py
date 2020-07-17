@@ -101,10 +101,8 @@ class TestUpdateTeamDetails:
         presenter = create_autospec(TeamPresenterInterface)
         interactor = TeamInteractor(storage=storage)
         user_id = "1"
-        team_id = "1"
-        team_name = "team1"
         update_team_parameters_dto = UpdateTeamParametersDTO(
-            team_id=team_id, name=team_name, description="team1_description"
+            team_id="1", name="team", description="team1_description"
         )
         expected_response = {}
         presenter.make_empty_http_success_response \
