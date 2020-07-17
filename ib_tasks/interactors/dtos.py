@@ -1,5 +1,8 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List, Any
+
+from ib_tasks.interactors.storage_interfaces.dtos \
+    import StatusVariableDTO
 
 
 @dataclass()
@@ -20,6 +23,10 @@ class StageActionDTO(RequestDTO):
 @dataclass()
 class TaskTemplateStageActionDTO(RequestDTO):
     task_template_id: str
+
+
+
+
 
 
 

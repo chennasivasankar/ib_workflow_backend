@@ -189,7 +189,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
 
     @staticmethod
     def test_given_create_stage_actions_creates_actions(mocker):
-
+        # Arrange
         StageActionDTOFactory.reset_sequence(0)
         actions_dto = StageActionDTOFactory.create_batch(size=2)
         stage_actions_dto = []
