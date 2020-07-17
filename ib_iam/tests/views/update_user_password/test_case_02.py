@@ -26,7 +26,7 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
         update_user_password_mock.side_effect = TokenDoesNotExist()
         body = {'password': 'string'}
         path_params = {}
-        query_params = {'token': 184}
+        query_params = {'token': "184"}
         headers = {}
         response = self.default_test_case(
             body=body, path_params=path_params,

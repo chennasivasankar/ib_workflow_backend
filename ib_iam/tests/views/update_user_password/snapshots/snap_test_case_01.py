@@ -9,4 +9,5 @@ snapshots = Snapshot()
 
 snapshots['TestCase01UpdateUserPasswordAPITestCase.test_case status_code'] = '200'
 
-snapshots['TestCase01UpdateUserPasswordAPITestCase.test_case body'] = b''
+snapshots['TestCase01UpdateUserPasswordAPITestCase.test_case body'] = {
+}

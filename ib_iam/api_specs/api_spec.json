@@ -245,8 +245,32 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_PASSWORD",
-                  "INVALID_TOKEN"
+                  "NOT_STRONG_PASSWORD",
+                  "TOKEN_HAS_EXPIRED"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "UpdatePasswordNotFoundResponse": {
+      "description": "update password not found response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCodeDefinition"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "TOKEN_DOES_NOT_EXIST"
                 ]
               }
             },

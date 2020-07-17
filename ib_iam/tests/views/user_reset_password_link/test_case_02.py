@@ -19,7 +19,7 @@ class TestCase02UserResetPasswordLinkAPITestCase(TestUtils):
         "ib_iam.adapters.auth_service.AuthService.get_token_for_reset_password"
     )
     @pytest.mark.django_db
-    def test_case(self,get_token_for_reset_password_mock, snapshot):
+    def test_case(self, get_token_for_reset_password_mock, snapshot):
         body = {'email': 'test@gmail.com'}
         from ib_iam.exceptions.custom_exceptions import UserAccountDoesNotExist
         get_token_for_reset_password_mock.side_effect \
