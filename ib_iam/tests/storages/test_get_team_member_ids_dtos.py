@@ -9,7 +9,7 @@ from ib_iam.tests.storages.conftest import (
 class TestGetTeamMemberIdsDtos:
 
     def test_whether_it_returns_list_of_team_members_dtos(
-            self, snapshot, create_members
+            self, create_members, snapshot
     ):
         sql_storage = TeamStorageImplementation()
         team_ids = [team1_id, team2_id, team3_id]

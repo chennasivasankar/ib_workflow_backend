@@ -1,4 +1,3 @@
-from django.http import HttpResponse
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 from .validator_class import ValidatorClass
@@ -36,7 +35,4 @@ def api_wrapper(*args, **kwargs):
         pagination_dto=pagination_dto,
         presenter=presenter
     )
-    print("*"*80)
-    print(response)
-    print(response.content)
     return response

@@ -4,10 +4,10 @@ from ib_iam.interactors.storage_interfaces.team_storage_interface import Paginat
 
 
 @pytest.mark.django_db
-class TestGetTeamsDtos:
+class TestGetTeamsDtosAlongWithCount:
 
     def test_given_admin_returns_list_of_teams(
-            self, snapshot, create_teams
+            self, create_teams, snapshot
     ):
         sql_storage = TeamStorageImplementation()
         pagination_dto = PaginationDTO(limit=5, offset=0)

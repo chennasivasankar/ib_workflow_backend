@@ -1,10 +1,10 @@
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 from .validator_class import ValidatorClass
-from ...interactors.add_team_interactor import AddTeamInteractor
-from ...interactors.storage_interfaces.dtos import AddTeamParametersDTO
-from ...presenters.team_presenter_implementation import TeamPresenterImplementation
-from ...storages.team_storage_implementation import TeamStorageImplementation
+from ib_iam.interactors.add_team_interactor import AddTeamInteractor
+from ib_iam.interactors.storage_interfaces.dtos import AddTeamParametersDTO
+from ib_iam.presenters.team_presenter_implementation import TeamPresenterImplementation
+from ib_iam.storages.team_storage_implementation import TeamStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
