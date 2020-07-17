@@ -73,7 +73,7 @@ class TestUpdateTeamDetails:
         update_team_parameters_dto = UpdateTeamParametersDTO(
             team_id=team_id, name=team_name, description="team1_description"
         )
-        storage.is_duplicate_name \
+        storage.is_duplicate_team_name \
             .side_effect = DuplicateTeamName(team_name=team_name)
         presenter.raise_exception_for_duplicate_team_name.side_effect = (
             BadRequest
@@ -86,7 +86,7 @@ class TestUpdateTeamDetails:
                 presenter=presenter
             )
 
-        storage.is_duplicate_name.assert_called_once_with(
+        storage.is_duplicate_team_name.assert_called_once_with(
             team_id=team_id, name=team_name
         )
         call_obj = presenter.raise_exception_for_duplicate_team_name.call_args

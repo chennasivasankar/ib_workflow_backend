@@ -61,12 +61,6 @@ class TeamStorageImplementation(TeamStorageInterface):
 
         return str(team_object.team_id)
 
-    def is_valid_team(self, team_id: str):
-        try:
-            Team.objects.get(team_id=team_id)
-        except Team.DoesNotExist:
-            raise InvalidTeamId()
-
     @staticmethod
     def _get_team_dtos_list(team_objects):
         team_dtos = [

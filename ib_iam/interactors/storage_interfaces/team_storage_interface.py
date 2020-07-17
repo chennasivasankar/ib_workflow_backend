@@ -35,7 +35,7 @@ class TeamStorageInterface:
         pass
 
     @abstractmethod
-    def is_duplicate_name(self, team_id: str, name: str):
+    def is_duplicate_team_name(self, team_id: str, name: str):
         pass
 
     @abstractmethod

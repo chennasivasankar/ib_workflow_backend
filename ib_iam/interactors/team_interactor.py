@@ -33,7 +33,7 @@ class TeamInteractor:
         self.storage.is_valid_team(
             team_id=update_team_parameters_dto.team_id
         )
-        self.storage.is_duplicate_name(
+        self.storage.is_duplicate_team_name(
             team_id=update_team_parameters_dto.team_id,
             name=update_team_parameters_dto.name
         )

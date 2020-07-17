@@ -3,7 +3,7 @@ from ib_iam.constants.enums import StatusCode
 from ib_iam.interactors.presenter_interfaces.dtos import TeamWithMembersDetailsDTO
 from ib_iam.interactors.presenter_interfaces.team_presenter_interface import TeamPresenterInterface
 from ib_iam.constants.exception_messages import (
-    USER_HAS_NO_ACCESS, INVALID_LIMIT, INVALID_OFFSET, DUPLICATE_TEAM_NAME
+    USER_HAS_NO_ACCESS, INVALID_LIMIT, INVALID_OFFSET, DUPLICATE_TEAM_NAME, INVALID_TEAM_ID
 )
 
 
@@ -65,6 +65,21 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
         return self.prepare_201_created_response(
             response_dict={"team_id": team_id}
         )
+
+    def make_empty_http_success_response(self):
+        empty_dict = {}
+        return self.prepare_200_success_response(response_dict=empty_dict)
+
+    def raise_exception_for_invalid_team_id(self):
+        response_dict = {
+            "response": INVALID_TEAM_ID[0],
+            "http_status_code": StatusCode.NOT_FOUND.value,
+            "res_status": INVALID_TEAM_ID[1]
+        }
+        return self.prepare_404_not_found_response(
+            response_dict=response_dict
+        )
+
 
     def _make_all_teams_details_dict(self, team_details_dtos: TeamWithMembersDetailsDTO):
         team_dtos = team_details_dtos.team_dtos
