@@ -1,9 +1,9 @@
-from typing import List
+from typing import List, Optional
 
 from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, FieldDTO, \
     GlobalConstantsDTO
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    GoFDTO, GoFRoleDTO, GoFFieldDTO
+    GoFDTO, GoFRoleDTO
 )
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
@@ -36,15 +36,15 @@ class TasksStorageImplementation(TaskStorageInterface):
         )
         return existing_gof_ids
 
-    def get_valid_field_ids_in_given_field_ids(
-            self, field_ids: List[str]
+    def get_valid_template_ids_in_given_template_ids(
+            self, template_ids: List[str]
     ) -> List[str]:
-        from ib_tasks.models.field import Field
-        valid_field_ids = list(
-            Field.objects.filter(pk__in=field_ids)\
-                         .values_list('field_id', flat=True)
+        from ib_tasks.models.task_template import TaskTemplate
+        valid_template_ids = list(
+            TaskTemplate.objects.filter(pk__in=template_ids). \
+                values_list("template_id", flat=True)
         )
-        return valid_field_ids
+        return valid_template_ids
 
     def create_gofs(self, gof_dtos: List[GoFDTO]):
         from ib_tasks.models.gof import GoF
@@ -54,7 +54,8 @@ class TasksStorageImplementation(TaskStorageInterface):
                 display_name=gof_dto.gof_display_name,
                 task_template_id=gof_dto.task_template_id,
                 order=gof_dto.order,
-                max_columns=gof_dto.max_columns
+                max_columns=gof_dto.max_columns,
+                enable_multiple_gofs=gof_dto.enable_multiple_gofs
             )
             for gof_dto in gof_dtos
         ]
@@ -72,17 +73,33 @@ class TasksStorageImplementation(TaskStorageInterface):
         ]
         GoFRole.objects.bulk_create(gof_roles)
 
-    def create_gof_fields(self, gof_field_dtos: List[GoFFieldDTO]):
-        from ib_tasks.models.field import Field
-        field_ids = [
-            gof_field_dto.field_id for gof_field_dto in gof_field_dtos
-        ]
-        fields = Field.objects.filter(field_id__in=field_ids)
-        for field in fields:
-            for gof_field_dto in gof_field_dtos:
-                if field.field_id == gof_field_dto.field_id:
-                    field.gof_id = gof_field_dto.gof_id
-        Field.objects.bulk_update(fields, ['gof_id'])
+    def update_gofs(self, gof_dtos: List[GoFDTO]):
+        from ib_tasks.models.gof import GoF
+        gof_ids = [gof_dto.gof_id for gof_dto in gof_dtos]
+        gofs = GoF.objects.filter(pk__in=gof_ids)
+        for gof in gofs:
+            gof_dto = self._get_matching_gof_dto(gof.gof_id, gof_dtos)
+            gof.display_name = gof_dto.gof_display_name
+            gof.task_template_id = gof_dto.task_template_id
+            gof.order = gof_dto.order
+            gof.max_columns = gof_dto.max_columns
+            gof.enable_multiple_gofs = gof_dto.enable_multiple_gofs
+        GoF.objects.bulk_update(
+            gofs, ['display_name', 'task_template_id', 'order', 'max_columns']
+        )
+
+    @staticmethod
+    def _get_matching_gof_dto(
+            gof_id: str, gof_dtos: List[GoFDTO]
+    ) -> Optional[GoFDTO]:
+        for gof_dto in gof_dtos:
+            gof_id_matched = gof_id == gof_dto.gof_id
+            if gof_id_matched:
+                return gof_dto
+        return
+
+    def update_gof_roles(self, gof_role_dtos: List[GoFRoleDTO]):
+        pass
 
     def check_is_template_exists(self, template_id: str) -> bool:
         pass

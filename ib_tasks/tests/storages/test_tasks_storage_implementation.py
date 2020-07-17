@@ -30,20 +30,6 @@ class TestTasksStorageImplementation:
         # Assert
         assert expected_existing_gof_ids == actual_existing_gof_ids
 
-    def test_get_valid_field_ids_in_given_field_ids(self, storage):
-        # Arrange
-        from ib_tasks.tests.factories.models import FieldFactory
-        fields = FieldFactory.create_batch(size=2)
-        field_ids = ["FIN_PAYMENT_REQUESTOR", "FIN_PAYMENT_APPROVER"]
-        expected_valid_field_ids = ["FIN_PAYMENT_REQUESTOR"]
-
-        # Act
-        actual_valid_field_ids = \
-            storage.get_valid_field_ids_in_given_field_ids(field_ids=field_ids)
-
-        # Assert
-        assert expected_valid_field_ids == actual_valid_field_ids
-
     def test_create_gofs(self, storage):
         # Arrange
         from ib_tasks.models.gof import GoF
@@ -88,28 +74,73 @@ class TestTasksStorageImplementation:
             )
             assert gof_role_dto.permission_type == gof_role.permission_type
 
-    def test_create_gof_fields(self, storage):
+    def test_get_valid_template_ids_in_given_template_ids(self, storage):
 
         # Arrange
-        from ib_tasks.models.field import Field
-        from ib_tasks.tests.factories.storage_dtos import GoFFieldDTOFactory
-        from ib_tasks.tests.factories.models import FieldFactory
-        gof_field_dtos = GoFFieldDTOFactory.create_batch(size=2)
-        field_ids = [
-            gof_field_dto.field_id
-            for gof_field_dto in gof_field_dtos
-        ]
-        FieldFactory.create_batch(size=2, field_id=factory.Iterator(field_ids))
-        gof_ids = [
-            gof_field_dto.gof_id
-            for gof_field_dto in gof_field_dtos
-        ]
-        GoFFactory.create_batch(size=2, gof_id=factory.Iterator(gof_ids))
+        task_template = TaskTemplateFactory()
+        template_ids = ["FIN_PR", "FIN_VENDOR"]
+        expected_valid_template_ids = [task_template.template_id]
 
         # Act
-        storage.create_gof_fields(gof_field_dtos=gof_field_dtos)
+        actual_valid_template_ids = \
+            storage.get_valid_template_ids_in_given_template_ids(template_ids)
 
         # Assert
-        for gof_field_dto in gof_field_dtos:
-            field = Field.objects.get(pk=gof_field_dto.field_id)
-            assert field.gof_id == gof_field_dto.gof_id
+        assert expected_valid_template_ids == actual_valid_template_ids
+
+    def test_update_gofs(self, storage):
+
+        # Arrange
+        from ib_tasks.models.gof import GoF
+        from ib_tasks.tests.factories.storage_dtos import GoFDTOFactory
+        from ib_tasks.tests.factories.models import GoFFactory
+
+        pr_task_template = TaskTemplateFactory.create(
+            template_id="FIN_PR", name="Payment Request"
+        )
+        vendor_task_template = TaskTemplateFactory.create(
+            template_id="FIN_VENDOR", name="Vendor"
+        )
+        gofs = [
+            GoFFactory(
+                display_name="Request Details",
+                task_template=vendor_task_template,
+                order=1,
+                max_columns=3
+            ),
+            GoFFactory(
+                display_name="Vendor Type",
+                task_template=pr_task_template,
+                order=2,
+                max_columns=4
+            )
+        ]
+
+        gof_dtos = [
+            GoFDTOFactory(
+                gof_id=gofs[0].gof_id,
+                gof_display_name="details of request",
+                task_template_id=pr_task_template.template_id,
+                order=10,
+                max_columns=12
+            ),
+            GoFDTOFactory(
+                gof_id=gofs[1].gof_id,
+                gof_display_name="details of vendor",
+                task_template_id=vendor_task_template.template_id,
+                order=10,
+                max_columns=12
+            )
+        ]
+
+        # Act
+        storage.update_gofs(gof_dtos=gof_dtos)
+
+        # Assert
+        for gof_dto in gof_dtos:
+            gof = GoF.objects.get(pk=gof_dto.gof_id)
+            assert gof.display_name == gof_dto.gof_display_name
+            assert gof.order == gof_dto.order
+            assert gof.max_columns == gof_dto.max_columns
+            assert gof.task_template_id == gof_dto.task_template_id
+

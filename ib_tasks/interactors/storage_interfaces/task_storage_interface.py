@@ -7,9 +7,8 @@ Author: Pavankumar Pamuru
 import abc
 from typing import List
 
-from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, FieldDTO
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    GoFDTO, GoFRoleDTO, GoFFieldDTO
+    GoFDTO, GoFRoleDTO
 )
 from ib_tasks.interactors.dtos import FieldDTO, GlobalConstantsDTO
 
@@ -39,12 +38,6 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_valid_field_ids_in_given_field_ids(
-            self, field_ids: List[str]
-    ) -> List[str]:
-        pass
-
-    @abc.abstractmethod
     def create_gofs(self, gof_dtos: List[GoFDTO]):
         pass
 
@@ -53,7 +46,21 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def update_gofs(self, gof_dtos: List[GoFDTO]):
+        pass
+
+    @abc.abstractmethod
+    def update_gof_roles(self, gof_role_dtos: List[GoFRoleDTO]):
+        pass
+
+    @abc.abstractmethod
     def check_is_template_exists(self, template_id: str) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def get_valid_template_ids_in_given_template_ids(
+            self, template_ids: List[str]
+    ) -> List[str]:
         pass
 
     @abc.abstractmethod

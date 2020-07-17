@@ -31,6 +31,7 @@ class GoFDTO:
     task_template_id: str
     order: int
     max_columns: int
+    enable_multiple_gofs: bool
 
 
 @dataclass
@@ -51,3 +52,4 @@ class GoFRoleDTO:
 class CompleteGoFDetailsDTO:
     gof_dto: GoFDTO
     gof_roles_dto: GoFRolesDTO
+
