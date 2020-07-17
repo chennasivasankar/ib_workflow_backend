@@ -12,5 +12,5 @@ snapshots['TestCase02GetListOfTeamsAPITestCase.test_case status_code'] = '401'
 snapshots['TestCase02GetListOfTeamsAPITestCase.test_case body'] = {
     'http_status_code': 401,
     'res_status': 'USER_HAS_NO_ACCESS',
-    'response': 'user has no access to see list of teams as he is not admin'
+    'response': 'user has no access as he is not admin'
 }

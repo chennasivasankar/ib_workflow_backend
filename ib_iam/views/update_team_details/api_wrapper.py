@@ -32,7 +32,7 @@ def api_wrapper(*args, **kwargs):
         description=description
     )
 
-    response = interactor.get_list_of_teams_wrapper(
+    response = interactor.update_team_details_wrapper(
         user_id=user_id,
         update_team_parameters_dto=update_team_parameters_dto,
         presenter=presenter
