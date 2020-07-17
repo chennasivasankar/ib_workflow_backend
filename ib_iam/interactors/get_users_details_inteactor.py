@@ -1,6 +1,7 @@
 from ib_iam.exceptions.exceptions import UserIsNotAdminException, \
     InvalidOffsetValueException, InvalidLimitValueException, \
     OffsetValueIsGreaterthanLimitValueException
+from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.dtos \
     import CompleteUserDetailsDTO
 from ib_iam.interactors.presenter_interfaces.presenter_interface \
@@ -9,7 +10,7 @@ from ib_iam.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 
 
-class GetUsersDetailsInteractor:
+class GetUsersDetailsInteractor(ValidationMixin):
     def __init__(self, storage: StorageInterface):
         self.storage = storage
 
@@ -53,38 +54,11 @@ class GetUsersDetailsInteractor:
             user_team_dtos, user_role_dtos, user_company_dtos,
             user_profile_dtos, len(user_ids))
 
-    @staticmethod
-    def _validate_value_and_throw_exception(value: int):
-        valid = bool(isinstance(value, int) and value >= 0)
-        invalid = not valid
-        if invalid:
-            return False
-        return True
-
-    @staticmethod
-    def _validate_offset_and_limit_value_constraints(offset: int, limit: int):
-        if offset > limit:
-            raise OffsetValueIsGreaterthanLimitValueException()
-
-    def _constants_validations(self, offset: int, limit: int):
-        self._validate_offset_value_and_throw_exception(offset=offset)
-        self._validate_limit_value_and_throw_exception(limit=limit)
-        self._validate_offset_and_limit_value_constraints(
-            offset=offset, limit=limit)
-
     def _check_and_throw_user_is_admin(self, user_id: str):
         is_admin = self.storage.validate_user_is_admin(user_id=user_id)
         is_not_admin = not is_admin
         if is_not_admin:
             raise UserIsNotAdminException()
-
-    def _validate_offset_value_and_throw_exception(self, offset: int):
-        if not self._validate_value_and_throw_exception(value=offset):
-            raise InvalidOffsetValueException()
-
-    def _validate_limit_value_and_throw_exception(self, limit: int):
-        if not self._validate_value_and_throw_exception(value=limit):
-            raise InvalidLimitValueException()
 
     def _convert_complete_user_details_dtos(
             self, user_team_dtos, user_role_dtos,
