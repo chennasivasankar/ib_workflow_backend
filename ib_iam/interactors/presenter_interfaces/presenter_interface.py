@@ -35,7 +35,8 @@ class AuthPresenterInterface(ABC):
         pass
 
     @abstractmethod
-    def get_success_response_for_reset_password_link_to_user_email(self):
+    def get_success_response_for_reset_password_link_to_user_email(self) \
+            -> HttpResponse:
         pass
 
     @abstractmethod

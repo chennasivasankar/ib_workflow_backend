@@ -12,5 +12,5 @@ snapshots['TestCase02UserResetPasswordLinkAPITestCase.test_case status_code'] = 
 snapshots['TestCase02UserResetPasswordLinkAPITestCase.test_case body'] = {
     'http_status_code': 404,
     'res_status': 'USER_ACCOUNT_DOES_NOT_EXIST',
-    'response': 'user account does not exist. please send valid email'
+    'response': 'Please send valid email which is already exist'
 }

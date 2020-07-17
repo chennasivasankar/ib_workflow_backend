@@ -32,7 +32,7 @@ class TestLoginInteractor:
         return email_and_password_dto
 
     @patch(
-        "ib_iam.adapters.auth_service.AuthService.get_user_id_from_email_and_password_dto"
+        "ib_iam.adapters.auth_service.AuthService.get_tokens_dto_for_given_email_and_password_dto"
     )
     def test_validate_incorrect_password_raise_exception(
             self, get_tokens_dto_for_given_email_and_password_dto_mock,

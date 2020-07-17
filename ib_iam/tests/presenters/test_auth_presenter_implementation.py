@@ -66,7 +66,6 @@ class TestAuthPresenterImplementation:
         response_object = presenter.prepare_response_for_tokens_dto(
             tokens_dto=tokens_dto, is_admin=is_admin
         )
-
         # Assert
         response = json.loads(response_object.content)
 
@@ -238,3 +237,4 @@ class TestAuthPresenterImplementation:
         assert response['response'] == expected_response
         assert response['http_status_code'] == expected_http_status_code
         assert response['res_status'] == expected_res_status
+

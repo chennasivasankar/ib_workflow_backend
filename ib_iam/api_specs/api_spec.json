@@ -31,7 +31,7 @@
     }
   },
   "definitions": {
-    "HttpResponseAndStatusCode": {
+    "HttpResponseAndStatusCodeDefinition": {
       "type": "object",
       "properties": {
         "response": {
@@ -138,7 +138,7 @@
       "schema": {
         "allOf": [
           {
-            "$ref": "#/definitions/HttpResponseAndStatusCode"
+            "$ref": "#/definitions/HttpResponseAndStatusCodeDefinition"
           },
           {
             "type": "object",
@@ -164,7 +164,7 @@
       "schema": {
         "allOf": [
           {
-            "$ref": "#/definitions/HttpResponseAndStatusCode"
+            "$ref": "#/definitions/HttpResponseAndStatusCodeDefinition"
           },
           {
             "type": "object",
@@ -189,7 +189,7 @@
       "schema": {
         "allOf": [
           {
-            "$ref": "#/definitions/HttpResponseAndStatusCode"
+            "$ref": "#/definitions/HttpResponseAndStatusCodeDefinition"
           },
           {
             "type": "object",
@@ -213,7 +213,7 @@
       "schema": {
         "allOf": [
           {
-            "$ref": "#/definitions/HttpResponseAndStatusCode"
+            "$ref": "#/definitions/HttpResponseAndStatusCodeDefinition"
           },
           {
             "type": "object",
@@ -237,7 +237,7 @@
       "schema": {
         "allOf": [
           {
-            "$ref": "#/definitions/HttpResponseAndStatusCode"
+            "$ref": "#/definitions/HttpResponseAndStatusCodeDefinition"
           },
           {
             "type": "object",
@@ -245,32 +245,8 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "NOT_STRONG_PASSWORD",
-                  "TOKEN_HAS_EXPIRED"
-                ]
-              }
-            },
-            "required": [
-              "res_status"
-            ]
-          }
-        ]
-      }
-    },
-    "UpdatePasswordNotFoundResponse": {
-      "description": "update password not found response",
-      "schema": {
-        "allOf": [
-          {
-            "$ref": "#/definitions/HttpResponseAndStatusCode"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "res_status": {
-                "type": "string",
-                "enum": [
-                  "TOKEN_DOES_NOT_EXIST"
+                  "INVALID_PASSWORD",
+                  "INVALID_TOKEN"
                 ]
               }
             },
@@ -379,7 +355,7 @@
             "name": "token",
             "in": "query",
             "description": "user token with expires secs",
-            "type": "integer",
+            "type": "string",
             "required": true
           },
           {

@@ -25,6 +25,7 @@ PASSWORD_AT_LEAST_ONE_SPECIAL_CHARACTER = (
     "Please send the password at least with one special character",
     "PASSWORD_AT_LEAST_ONE_SPECIAL_CHARACTER"
 )
+
 USER_ACCOUNT_DOES_NOT_EXIST = (
     "user account does not exist. please send valid email",
     "USER_ACCOUNT_DOES_NOT_EXIST"
@@ -87,6 +88,7 @@ class AuthPresenterImplementation(AuthPresenterInterface, HTTPResponseMixin):
         }
         return self.prepare_404_not_found_response(response_dict=response_dict)
 
+
     def raise_exception_for_password_min_length_required(self) -> HttpResponse:
         from ib_iam.constants.config import REQUIRED_PASSWORD_MIN_LENGTH
         min_required_length_for_password = REQUIRED_PASSWORD_MIN_LENGTH
@@ -120,8 +122,6 @@ class AuthPresenterImplementation(AuthPresenterInterface, HTTPResponseMixin):
         }
         return self.prepare_404_not_found_response(response_dict=response_dict)
 
-    def get_success_response_for_reset_password_link_to_user_email(self):
-        return self.prepare_200_success_response(response_dict={})
 
     def raise_exception_for_not_a_strong_password(self):
         response_dict = {
@@ -152,4 +152,8 @@ class AuthPresenterImplementation(AuthPresenterInterface, HTTPResponseMixin):
         )
 
     def get_update_user_password_success_response(self):
+        return self.prepare_200_success_response(response_dict={})
+
+    def get_success_response_for_reset_password_link_to_user_email(self) \
+            -> HttpResponse:
         return self.prepare_200_success_response(response_dict={})

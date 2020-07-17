@@ -17,7 +17,7 @@ class TestCase01UpdateUserPasswordAPITestCase(TestUtils):
     def test_case(self, snapshot):
         body = {'password': 'string'}
         path_params = {}
-        query_params = {'token': 735}
+        query_params = {'token': "735"}
         headers = {}
         response = self.default_test_case(
             body=body, path_params=path_params,

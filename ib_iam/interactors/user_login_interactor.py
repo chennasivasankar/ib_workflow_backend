@@ -1,8 +1,10 @@
-from ib_iam.adapters.auth_service import EmailAndPasswordDTO
-from ib_iam.exceptions.custom_exceptions import UserAccountDoesNotExist, \
-    InvalidEmail
+from ib_iam.adapters.auth_service import EmailAndPasswordDTO, TokensDTO
+from ib_iam.exceptions.custom_exceptions import InvalidEmail, \
+    UserAccountDoesNotExist
 from ib_iam.interactors.presenter_interfaces.presenter_interface import \
     AuthPresenterInterface
+
+
 from ib_iam.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
@@ -41,7 +43,7 @@ class LoginInteractor:
         except PasswordMinLength:
             return presenter.raise_exception_for_password_min_length_required()
         except PasswordAtLeastOneSpecialCharacter:
-            return presenter.raise_exception_for_password_at_least_one_special_character_required ()
+            return presenter.raise_exception_for_password_at_least_one_special_character_required()
 
     def _get_login_response(self, email_and_password_dto: EmailAndPasswordDTO,
                             presenter: AuthPresenterInterface

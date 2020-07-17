@@ -31,7 +31,7 @@ class AuthService:
         pass
 
     def get_token_for_reset_password(self, email: str,
-                                     expires_in_sec: int):
+                                     expires_in_sec: int) -> str:
         pass
 
     def update_user_password(self, token: str, password: str):
