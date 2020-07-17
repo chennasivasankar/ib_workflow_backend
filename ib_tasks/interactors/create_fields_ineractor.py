@@ -151,6 +151,7 @@ class CreateFieldsInteractor:
                 raise InvalidGOFId("GOF Id shouldn't be empty")
 
     def _get_field_dtos(self, field_dtos: List[FieldDTO]):
+        updated_field_dtos = self._update_field_dtos_by_field_value(field_dtos)
         field_ids = [field_dto.field_id for field_dto in field_dtos]
         existing_field_ids = self.storage.get_existing_field_ids(field_ids)
         print("existing_field_ids = ",existing_field_ids)
@@ -170,6 +171,15 @@ class CreateFieldsInteractor:
             if field_dto.field_id in existing_field_ids
         ]
         return new_field_dtos, existing_field_dtos
+
+    @staticmethod
+    def _update_field_dtos_by_field_value(field_dtos: List[FieldDTO]):
+        for field_dto in field_dtos:
+            field_values = field_dto.field_values
+            if field_values and type(field_values) == list:
+                import json
+                field_dto.field_values = json.dumps(field_dto.field_values)
+        return field_dtos
 
     @staticmethod
     def _validate_field_type(

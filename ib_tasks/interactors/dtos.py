@@ -28,3 +28,15 @@ class CreateTaskTemplateDTO:
     template_id: str
     template_name: str
     gof_dtos: List[GoFIdAndOrderDTO]
+
+
+@dataclass
+class GlobalConstantsDTO:
+    constant_name: str
+    value: int
+
+
+@dataclass
+class GlobalConstantsWithTemplateIdDTO:
+    template_id: str
+    global_constants_dtos: List[GlobalConstantsDTO]

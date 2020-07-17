@@ -436,7 +436,7 @@ class TestCreateFieldsInteractor:
         get_valid_read_permissions_mock_method.assert_called_once()
 
 
-    def test_new_and_already_exist_in_database_field_ids_are_given_then_create_and_update_fields(
+    def test_new_and_already_existing_field_ids_in_database_are_given_then_create_and_update_fields(
             self, storage_mock, mocker
     ):
         # Arrange
@@ -449,8 +449,8 @@ class TestCreateFieldsInteractor:
             FieldRolesDTOFactory(field_id="FIN_SALUATION")
         ]
         existing_field_ids = ["field1"]
-        new_field_dtos = [FieldDTOFactory(field_id="FIN_SALUATION")]
-        existing_field_dtos = [FieldDTOFactory(field_id="field1")]
+        new_field_dtos = [FieldDTOFactory(field_id="FIN_SALUATION", field_values='["Mr", "Mrs", "Ms"]')]
+        existing_field_dtos = [FieldDTOFactory(field_id="field1", field_values='["Mr", "Mrs", "Ms"]')]
 
         existing_field_role_dtos = [
             FieldRoleDTOFactory(
