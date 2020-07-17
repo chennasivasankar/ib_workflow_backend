@@ -1,5 +1,5 @@
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
-
+from ib_iam.constants.enums import StatusCode
 from ib_iam.interactors.presenter_interfaces.dtos import TeamWithMembersDetailsDTO
 from ib_iam.interactors.presenter_interfaces.team_presenter_interface import TeamPresenterInterface
 from ib_iam.constants.exception_messages import (
@@ -12,7 +12,7 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
     def raise_exception_for_user_has_no_access(self):
         response_dict = {
             "response": USER_HAS_NO_ACCESS[0],
-            "http_status_code": 401,
+            "http_status_code": StatusCode.UNAUTHORIZED.value,
             "res_status": USER_HAS_NO_ACCESS[1]
         }
         return self.prepare_401_unauthorized_response(
@@ -22,7 +22,7 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
     def raise_exception_for_invalid_limit(self):
         response_dict = {
             "response": INVALID_LIMIT[0],
-            "http_status_code": 400,
+            "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": INVALID_LIMIT[1]
         }
         return self.prepare_400_bad_request_response(
@@ -32,7 +32,7 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
     def raise_exception_for_invalid_offset(self):
         response_dict = {
             "response": INVALID_OFFSET[0],
-            "http_status_code": 400,
+            "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": INVALID_OFFSET[1]
         }
         return self.prepare_400_bad_request_response(
@@ -41,8 +41,8 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
 
     def raise_exception_for_duplicate_team_name(self, exception):
         response_dict = {
-            "response": DUPLICATE_TEAM_NAME[0]  % exception.team_name,
-            "http_status_code": 400,
+            "response": DUPLICATE_TEAM_NAME[0] % exception.team_name,
+            "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": DUPLICATE_TEAM_NAME[1]
         }
         return self.prepare_400_bad_request_response(
@@ -53,7 +53,13 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
             self, team_details_dtos: TeamWithMembersDetailsDTO
     ):
         team_details_dict = self._make_all_teams_details_dict(team_details_dtos=team_details_dtos)
-        return self.prepare_200_success_response(response_dict=team_details_dict)
+        team_details_dicts_along_with_count = {
+            "total_teams": team_details_dtos.total_teams,
+            "list_of_teams": team_details_dict
+        }
+        return self.prepare_200_success_response(
+            response_dict=team_details_dicts_along_with_count
+        )
 
     def get_response_for_add_team(self, team_id: str):
         return self.prepare_201_created_response(

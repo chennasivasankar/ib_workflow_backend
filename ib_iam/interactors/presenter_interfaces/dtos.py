@@ -7,6 +7,7 @@ from ib_iam.interactors.storage_interfaces.dtos import (
 
 @dataclass
 class TeamWithMembersDetailsDTO:
+    total_teams: int
     team_dtos: List[BasicTeamDTO]
     team_member_ids_dtos: List[TeamMembersDTO]
     member_dtos: List[MemberDTO]

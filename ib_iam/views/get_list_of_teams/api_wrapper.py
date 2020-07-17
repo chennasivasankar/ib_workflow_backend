@@ -17,7 +17,7 @@ from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     user_obj = kwargs["user"]
-    user_id = user_obj.id
+    user_id = str(user_obj.id)
     request_query_params = kwargs["request_query_params"].__dict__
     offset = request_query_params.get("offset")
     limit = request_query_params.get("limit")
@@ -31,9 +31,12 @@ def api_wrapper(*args, **kwargs):
         limit=limit
     )
 
-    response_data = interactor.get_list_of_teams_wrapper(
+    response = interactor.get_list_of_teams_wrapper(
         user_id=user_id,
         pagination_dto=pagination_dto,
         presenter=presenter
     )
-    return response_data
+    print("*"*80)
+    print(response)
+    print(response.content)
+    return response

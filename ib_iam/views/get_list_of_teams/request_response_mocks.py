@@ -2,21 +2,24 @@
 
 
 RESPONSE_200_JSON = """
-[
-    {
-        "team_id": "string",
-        "name": "string",
-        "description": "string",
-        "no_of_members": 1,
-        "members": [
-            {
-                "member_id": "string",
-                "name": "string",
-                "profile_pic_url": "string"
-            }
-        ]
-    }
-]
+{
+    "total_teams": 1,
+    "list_of_teams": [
+        {
+            "team_id": "string",
+            "name": "string",
+            "description": "string",
+            "no_of_members": 1,
+            "members": [
+                {
+                    "member_id": "string",
+                    "name": "string",
+                    "profile_pic_url": "string"
+                }
+            ]
+        }
+    ]
+}
 """
 
 RESPONSE_400_JSON = """

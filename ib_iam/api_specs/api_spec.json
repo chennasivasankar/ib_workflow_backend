@@ -31,7 +31,7 @@
     },
     "security": [],
     "definitions": {
-        "team_member_details": {
+        "MemberDetails": {
             "type": "object",
             "properties": {
                 "member_id": {
@@ -45,7 +45,7 @@
                 }
             }
         },
-        "team_details": {
+        "TeamWithMembersDetails": {
             "type": "object",
             "properties": {
                 "team_id": {
@@ -63,7 +63,21 @@
                 "members": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/team_member_details"
+                        "$ref": "#/definitions/MemberDetails"
+                    }
+                }
+            }
+        },
+        "ResponseForGetListOfTeams": {
+            "type": "object",
+            "properties": {
+                "total_teams": {
+                    "type": "integer"
+                },
+                "list_of_teams": {
+                    "type": "array",
+                    "items": {
+                        "$ref" : "#/definitions/TeamWithMembersDetails"
                     }
                 }
             }
@@ -83,14 +97,14 @@
                     "http_status_code"
                 ]
         },
-        "user_has_no_access": {
+        "UserHasNoAccess": {
             "allOf": [
                 {
                     "$ref": "#/definitions/CommonHttpExceptionFields"
                 },
                 {
                     "type": "object",
-                        "properties": {
+                    "properties": {
                         "res_status": {
                             "type": "string",
                             "enum": [
@@ -99,12 +113,12 @@
                         }
                     },
                     "required": [
-                    "res_status"
+                        "res_status"
                     ]
                 }
             ]
         },
-        "invalid_limit_offset": {
+        "InvalidLimitOffset": {
             "allOf": [
                 {
                     "$ref": "#/definitions/CommonHttpExceptionFields"
@@ -121,7 +135,7 @@
                         }
                     },
                     "required": [
-                    "res_status"
+                        "res_status"
                     ]
                 }
             ]
@@ -171,13 +185,13 @@
         }
     },
     "parameters": {
-        "limit": {
+        "Limit": {
             "name": "limit",
             "in": "query",
             "type": "integer",
             "default": 5
         },
-        "offset": {
+        "Offset": {
             "name": "offset",
             "in": "query",
             "type": "integer",
@@ -209,32 +223,29 @@
                 ],
                 "parameters": [
                     {
-                        "$ref": "#/parameters/limit"
+                        "$ref": "#/parameters/Limit"
                     },
                     {
-                        "$ref": "#/parameters/offset"
+                        "$ref": "#/parameters/Offset"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "list of teams",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/team_details"
+                                "$ref": "#/definitions/ResponseForGetListOfTeams"
                             }
-                        }
                     },
                     "400": {
                         "description": "BadRequest",
                         "schema": {
-                            "$ref": "#/definitions/invalid_limit_offset"
+                            "$ref": "#/definitions/InvalidLimitOffset"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/user_has_no_access"
+                            "$ref": "#/definitions/UserHasNoAccess"
                         }
                     }
                 }
@@ -273,7 +284,7 @@
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/user_has_no_access"
+                            "$ref": "#/definitions/UserHasNoAccess"
                         }
                     }
                 }

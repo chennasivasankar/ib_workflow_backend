@@ -28,6 +28,6 @@ class MemberDTOFactory(factory.Factory):
     class Meta:
         model = MemberDTO
 
-    member_id = factory.Faker("uuid4")
+    member_id = factory.sequence(lambda n: "user_id-%d" % n)
     name = factory.sequence(lambda n: "user%d" % n)
     profile_pic_url = factory.sequence(lambda n: "profile_pic_url%d" % n)

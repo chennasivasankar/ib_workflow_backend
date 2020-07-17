@@ -1,4 +1,3 @@
-# from ib_users.models.user_profile import UserProfile
 from django.db import models
 
 

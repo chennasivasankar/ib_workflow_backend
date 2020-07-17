@@ -40,16 +40,14 @@ class GetListOfTeamsInteractor:
             response = presenter.raise_exception_for_invalid_limit()
         except InvalidOffset:
             response = presenter.raise_exception_for_invalid_offset()
-
         return response
 
     def get_list_of_teams(self, user_id: str, pagination_dto: PaginationDTO):
         self.storage.is_user_admin(user_id=user_id)
-
         self._is_invalid_limit(pagination_dto.limit)
         self._is_invalid_offset(pagination_dto.offset)
 
-        team_dtos = self.storage.get_team_dtos_created_by_user(
+        (team_dtos, total_teams) = self.storage.get_team_dtos_along_with_count(
             user_id=user_id,
             pagination_dto=pagination_dto
         )
@@ -58,16 +56,14 @@ class GetListOfTeamsInteractor:
         team_member_ids_dtos = self.storage.get_team_member_ids_dtos(
             team_ids=team_ids
         )
-
         member_ids = self._get_all_member_ids_from_team_member_ids_dtos(
             team_member_ids_dtos=team_member_ids_dtos
         )
-
         member_dtos = self._get_members_dtos_from_service(
             member_ids=member_ids
         )
-
         team_details_dtos = TeamWithMembersDetailsDTO(
+            total_teams=total_teams,
             team_dtos=team_dtos,
             team_member_ids_dtos=team_member_ids_dtos,
             member_dtos=member_dtos
@@ -107,9 +103,7 @@ class GetListOfTeamsInteractor:
         return unique_member_ids
 
     def _get_members_dtos_from_service(self, member_ids: List[str]):
-
         service = get_service_adapter()
-
         user_dtos = service.user_service.get_basic_user_dtos(
             user_ids=member_ids
         )

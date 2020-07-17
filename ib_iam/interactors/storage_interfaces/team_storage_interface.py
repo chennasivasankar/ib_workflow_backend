@@ -12,9 +12,9 @@ class TeamStorageInterface:
         pass
 
     @abstractmethod
-    def get_team_dtos_created_by_user(
+    def get_team_dtos_along_with_count(
             self, user_id: str, pagination_dto: PaginationDTO
-    ) -> List[BasicTeamDTO]:
+    ) -> (List[BasicTeamDTO], int):
         pass
 
     @abstractmethod

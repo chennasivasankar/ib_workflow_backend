@@ -25,6 +25,7 @@ class TestGetResponseForGetListOfTeams:
 
         http_response = json_presenter.get_response_for_get_list_of_teams(
             team_details_dtos=TeamWithMembersDetailsDTO(
+                total_teams=0,
                 team_dtos=[],
                 team_member_ids_dtos=[],
                 member_dtos=[]
@@ -33,4 +34,4 @@ class TestGetResponseForGetListOfTeams:
 
         import json
         response = json.loads(http_response.content)
-        assert response == []
+        assert response == {'list_of_teams': [], 'total_teams': 0}
