@@ -16,5 +16,5 @@ class GetTasksDetailsInteractor:
     def get_tasks_details_wrapper(self, task_ids: List[str]):
         pass
 
-    def get_task_details(self, task_ids: List[str]):
+    def get_task_details(self, tasks_parameters: List[str]):
         pass

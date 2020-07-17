@@ -66,3 +66,7 @@ class StorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_column_display_stage_ids(self, column_id: str) -> List[str]:
         pass
+
+    @abc.abstractmethod
+    def validate_user_role_with_column_roles(self, user_role: str):
+        pass

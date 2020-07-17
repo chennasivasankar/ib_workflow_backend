@@ -51,7 +51,8 @@ class GetBoardsDTO:
 
 
 @dataclass
-class GetColumnTasksDTO:
+class ColumnTasksParametersDTO:
+    user_id = 1
     column_id: str
     offset: int
     limit: int
@@ -78,3 +79,15 @@ class ActionDTO:
 class TaskStatusDTO:
     status: str
     stage: str
+
+
+@dataclass
+class TaskIdStageDTO:
+    task_id: str
+    stage_id: str
+
+
+@dataclass
+class TasksParameterDTO(TaskIdStageDTO):
+    column_id: str
+

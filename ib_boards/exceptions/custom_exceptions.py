@@ -74,6 +74,10 @@ class UserDoNotHaveAccessToBoards(Exception):
     pass
 
 
+class UserDoNotHaveAccessToColumn(Exception):
+    pass
+
+
 class InvalidOffsetValue(Exception):
     pass
 

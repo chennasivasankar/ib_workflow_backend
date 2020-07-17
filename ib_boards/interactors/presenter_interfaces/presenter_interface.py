@@ -77,6 +77,10 @@ class GetColumnTasksPresenterInterface(abc.ABC):
     def get_response_for_offset_exceeds_total_tasks(self):
         pass
 
+    @abc.abstractmethod
+    def get_response_for_user_have_no_access_for_boards(self):
+        pass
+
 
 class StageDisplayLogicPresenterInterface(abc.ABC):
 

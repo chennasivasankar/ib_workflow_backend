@@ -36,6 +36,6 @@ class TaskService:
     def get_stage_display_logics(self, stage_ids: List[str]) -> List[str]:
         pass
 
-    def get_task_ids(
+    def get_task_ids_with_respective_stages(
             self, task_status_dtos: List[TaskStatusDTO]) -> List[str]:
         pass
