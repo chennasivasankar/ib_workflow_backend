@@ -63,12 +63,28 @@ class TaskStorageImplementation(TaskStorageInterface):
 
     def get_constant_names_of_existing_global_constants_of_template(
             self, template_id: str):
-        pass
+
+        from ib_tasks.models.global_constant import GlobalConstant
+        constant_names_of_template = GlobalConstant.objects.filter(
+            task_template_id=template_id).values_list('name', flat=True)
+
+        constant_names_of_template_list = list(constant_names_of_template)
+        return constant_names_of_template_list
 
     def create_global_constants_to_template(
             self, template_id: str,
             global_constants_dtos: List[GlobalConstantsDTO]):
-        pass
+
+        from ib_tasks.models.global_constant import GlobalConstant
+        global_constants_objs = [
+            GlobalConstant(
+                task_template_id=template_id,
+                name=global_constants_dto.constant_name,
+                value=global_constants_dto.value
+            )
+            for global_constants_dto in global_constants_dtos
+        ]
+        GlobalConstant.objects.bulk_create(global_constants_objs)
 
     @staticmethod
     def _get_gof_ids(gof_id_and_order_dtos: List[GoFIdAndOrderDTO]):
