@@ -10,9 +10,6 @@ from ib_iam.interactors.presenter_interfaces.presenter_interface \
     import PresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO, UserRoleDTO, UserCompanyDTO
 
-FORBIDDEN_STATUS_CODE = 403
-BADREQUEST_STATUS_CODE = 400
-
 
 class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
     def raise_user_is_not_admin_exception(self):

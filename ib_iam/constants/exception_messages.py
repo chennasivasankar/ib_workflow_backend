@@ -14,6 +14,6 @@ INVALID_LIMIT_VALUE = (
 )
 
 OFFSET_VALUE_IS_GREATER_THAN_LIMIT = (
-    "offset value should be less than limit",
+    "offset value should be less than or equal to limit",
     "OFFSET_VALUE_IS_GREATER_THAN_LIMIT"
 )
