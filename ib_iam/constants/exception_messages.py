@@ -14,6 +14,6 @@ DUPLICATE_ROLE_IDS = (
 )
 
 ROLE_ID_SHOULD_NOT_BE_IN_VALID_FORMAT = (
-    "role id should be in valid format ex: PAYMENT_POC",
+    "role id should be valid format ex: PAYMENT_POC",
     "ROLE_ID_SHOULD_NOT_BE_IN_VALID_FORMAT"
 )

@@ -7,5 +7,5 @@ class RoleDTOFactory(factory.Factory):
         model = RoleDTO
 
     role_id = factory.Sequence(lambda n: 'PAYMENT%s' % n)
-    role_name = factory.Sequence(lambda n: 'payment%s' % n)
-    role_description = factory.Sequence(lambda n: 'payment_description%s' % n)
+    name = factory.Sequence(lambda n: 'payment%s' % n)
+    description = factory.Sequence(lambda n: 'payment_description%s' % n)

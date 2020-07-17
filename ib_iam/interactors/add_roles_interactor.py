@@ -1,26 +1,12 @@
 from typing import List
 
+from ib_iam.exceptions.exceptions import DuplicateRoleIdsException, RoleIdFormatIsInvalidException, \
+    RoleNameIsEmptyException, RoleDescriptionIsEmptyException
+from ib_iam.interactors.presenter_interfaces.presenter_interface \
+    import PresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import RoleDTO
 from ib_iam.interactors.storage_interfaces.storage_interface \
     import StorageInterface
-from ib_iam.interactors.presenter_interfaces.presenter_interface \
-    import PresenterInterface
-
-
-class RoleNameIsEmptyException(Exception):
-    pass
-
-
-class RoleDescriptionIsEmptyException(Exception):
-    pass
-
-
-class RoleIdFormatIsInvalid(Exception):
-    pass
-
-
-class DuplicateRoleIdsException(Exception):
-    pass
 
 
 class AddRolesInteractor:
@@ -34,7 +20,7 @@ class AddRolesInteractor:
             self.add_roles(roles=roles)
         except DuplicateRoleIdsException:
             return presenter.raise_duplicate_role_ids_exception()
-        except RoleIdFormatIsInvalid:
+        except RoleIdFormatIsInvalidException:
             return presenter.raise_role_id_format_is_invalid_exception()
         except RoleNameIsEmptyException:
             return presenter.raise_role_name_should_not_be_empty_exception()
@@ -49,8 +35,8 @@ class AddRolesInteractor:
             self._validate_role_details(role=role)
             role_dto = RoleDTO(
                 role_id=role['role_id'],
-                role_name=role['role_name'],
-                role_description=role['role_description']
+                name=role['role_name'],
+                description=role['role_description']
             )
             role_dtos.append(role_dto)
         self.storage.create_roles(role_dtos)
@@ -83,7 +69,7 @@ class AddRolesInteractor:
         # valid_format_pattern = '^[A-Z]+\_[A-Z0-9]+[0-9]*$'
         valid_format_pattern = '^([A-Z]+[A-Z0-9_]*)*[A-Z0-9]$'
         if not re.match(valid_format_pattern, role_id):
-            raise RoleIdFormatIsInvalid()
+            raise RoleIdFormatIsInvalidException()
 
     @staticmethod
     def _validate_role_ids(role_ids: List[int]):
