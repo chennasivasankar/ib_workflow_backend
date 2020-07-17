@@ -106,7 +106,7 @@
     }
   },
   "responses": {
-    "LoginInSuccessResponse": {
+    "LoginSuccessResponse": {
       "description": "Success Response for login",
       "schema": {
         "type": "object",
@@ -133,7 +133,7 @@
         ]
       }
     },
-    "LoginInBadRequestResponse": {
+    "LoginBadRequestResponse": {
       "description": "Log in Bad Request Response",
       "schema": {
         "allOf": [
@@ -157,7 +157,7 @@
         ]
       }
     },
-    "LoginInNotFoundResponse": {
+    "LoginNotFoundResponse": {
       "description": "Login In Not Found response",
       "schema": {
         "allOf": [
@@ -301,13 +301,13 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/responses/LoginInSuccessResponse"
+            "$ref": "#/responses/LoginSuccessResponse"
           },
           "404": {
-            "$ref": "#/responses/LoginInNotFoundResponse"
+            "$ref": "#/responses/LoginNotFoundResponse"
           },
           "400": {
-            "$ref": "#/responses/LoginInBadRequestResponse"
+            "$ref": "#/responses/LoginBadRequestResponse"
           }
         }
       }
