@@ -40,6 +40,21 @@ class CreateOrUpdateGoFsInteractor:
         self._validate_write_permission_roles(gof_roles_dtos=gof_roles_dtos)
         self._validate_for_invalid_task_template_id(gof_dtos=gof_dtos)
 
+        complete_gof_details_dtos_for_updation, \
+        complete_gof_details_dtos_for_creation = self._filter_gof_details_dtos(
+            gof_dtos, complete_gof_details_dtos
+        )
+        if complete_gof_details_dtos_for_updation:
+            self._update_gofs(complete_gof_details_dtos_for_updation)
+
+        if complete_gof_details_dtos_for_creation:
+            self._create_gofs(complete_gof_details_dtos_for_creation)
+        return
+
+    def _filter_gof_details_dtos(
+            self, gof_dtos: List[GoFDTO],
+            complete_gof_details_dtos: List[CompleteGoFDetailsDTO]
+    ) -> (List[CompleteGoFDetailsDTO], List[CompleteGoFDetailsDTO]):
         gof_ids = [
             gof_dto.gof_id for gof_dto in gof_dtos
         ]
@@ -60,40 +75,44 @@ class CreateOrUpdateGoFsInteractor:
                 gof_ids=new_gof_ids_in_given_gof_ids,
                 complete_gof_details_dtos=complete_gof_details_dtos
             )
-        if complete_gof_details_dtos_for_updation:
-            gof_dtos = \
-                self._get_gof_dtos_for_given_complete_gof_details_dtos(
-                    complete_gof_details_dtos=complete_gof_details_dtos_for_updation
-                )
-            gof_roles_dtos = \
-                self._get_gof_roles_dtos_for_given_complete_gof_details_dtos(
-                    complete_gof_details_dtos=complete_gof_details_dtos_for_updation
-                )
-            gof_role_dtos = self._get_role_dtos(gof_roles_dtos=gof_roles_dtos)
-            existing_roles, new_roles = self._filter_gof_role_dtos(
-                gof_role_dtos=gof_role_dtos
-            )
-            self.storage.update_gofs(gof_dtos=gof_dtos)
-            if existing_roles:
-                self.storage.update_gof_roles(
-                    gof_role_with_id_dtos=existing_roles
-                )
-            if new_roles:
-                self.storage.create_gof_roles(gof_role_dtos=new_roles)
+        return complete_gof_details_dtos_for_updation, \
+               complete_gof_details_dtos_for_creation
 
-        if complete_gof_details_dtos_for_creation:
-            gof_dtos = \
-                self._get_gof_dtos_for_given_complete_gof_details_dtos(
-                    complete_gof_details_dtos=complete_gof_details_dtos_for_creation
-                )
-            gof_roles_dtos = \
-                self._get_gof_roles_dtos_for_given_complete_gof_details_dtos(
-                    complete_gof_details_dtos=complete_gof_details_dtos_for_creation
-                )
-            gof_role_dtos = self._get_role_dtos(gof_roles_dtos=gof_roles_dtos)
-            self.storage.create_gofs(gof_dtos=gof_dtos)
-            self.storage.create_gof_roles(gof_role_dtos=gof_role_dtos)
-        return
+    def _update_gofs(
+            self, complete_gof_details_dtos: List[CompleteGoFDetailsDTO]
+    ):
+        gof_dtos = \
+            self._get_gof_dtos_for_given_complete_gof_details_dtos(
+                complete_gof_details_dtos=complete_gof_details_dtos
+            )
+        gof_roles_dtos = \
+            self._get_gof_roles_dtos_for_given_complete_gof_details_dtos(
+                complete_gof_details_dtos=complete_gof_details_dtos
+            )
+        gof_role_dtos = self._get_role_dtos(gof_roles_dtos=gof_roles_dtos)
+        existing_roles, new_roles = self._filter_gof_role_dtos(
+            gof_role_dtos=gof_role_dtos
+        )
+        self.storage.update_gofs(gof_dtos=gof_dtos)
+        if existing_roles:
+            self.storage.update_gof_roles(gof_role_with_id_dtos=existing_roles)
+        if new_roles:
+            self.storage.create_gof_roles(gof_role_dtos=new_roles)
+
+    def _create_gofs(
+            self, complete_gof_details_dtos: List[CompleteGoFDetailsDTO]
+    ):
+        gof_dtos = \
+            self._get_gof_dtos_for_given_complete_gof_details_dtos(
+                complete_gof_details_dtos=complete_gof_details_dtos
+            )
+        gof_roles_dtos = \
+            self._get_gof_roles_dtos_for_given_complete_gof_details_dtos(
+                complete_gof_details_dtos=complete_gof_details_dtos
+            )
+        gof_role_dtos = self._get_role_dtos(gof_roles_dtos=gof_roles_dtos)
+        self.storage.create_gofs(gof_dtos=gof_dtos)
+        self.storage.create_gof_roles(gof_role_dtos=gof_role_dtos)
 
     def _filter_gof_role_dtos(
             self, gof_role_dtos: List[GoFRoleDTO]
@@ -105,8 +124,8 @@ class CreateOrUpdateGoFsInteractor:
         for existing_gof_role in existing_gof_roles:
             for gof_role_dto in gof_role_dtos:
                 role_is_matched = (
-                    existing_gof_role.gof_id == gof_role_dto.gof_id and
-                    existing_gof_role.role == gof_role_dto.role
+                        existing_gof_role.gof_id == gof_role_dto.gof_id and
+                        existing_gof_role.role == gof_role_dto.role
                 )
                 if role_is_matched:
                     existing_gof_role.permission_type = \
@@ -139,7 +158,8 @@ class CreateOrUpdateGoFsInteractor:
             self.storage.get_valid_template_ids_in_given_template_ids(
                 template_ids=template_ids
             )
-        invalid_template_ids = list(set(template_ids)-set(valid_template_ids))
+        invalid_template_ids = list(
+            set(template_ids) - set(valid_template_ids))
         if invalid_template_ids:
             raise InvalidTaskTemplateIds(
                 invalid_task_template_ids=invalid_template_ids
