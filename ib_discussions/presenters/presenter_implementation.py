@@ -1,0 +1,26 @@
+from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
+
+from ib_discussions.constants.enum import StatusCode
+from ib_discussions.interactors.presenter_interfaces.presenter_interface import \
+    PresenterInterface
+
+ENTITY_ID_NOT_FOUND = (
+    "Please send valid entity id",
+    "ENTITY_ID_NOT_FOUND"
+)
+
+
+class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
+    def raise_exception_for_entity_id_not_found(self):
+        response_dict = {
+            "response": ENTITY_ID_NOT_FOUND[0],
+            "http_status_code": StatusCode.NOT_FOUND.value,
+            "res_status": ENTITY_ID_NOT_FOUND[1]
+        }
+        return self.prepare_404_not_found_response(response_dict=response_dict)
+
+    def raise_exception_for_invalid_entity_type_for_entity_id(self):
+        pass
+
+    def prepare_success_response_for_create_discussion(self):
+        pass
