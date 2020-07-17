@@ -1,3 +1,4 @@
+from ib_boards.adapters.service_adapter import get_service_adapter
 from ib_boards.exceptions.custom_exceptions import (
     InvalidBoardId, InvalidOffsetValue, InvalidLimitValue, UserDonotHaveAccess)
 from ib_boards.interactors.dtos import ColumnParametersDTO
@@ -34,7 +35,9 @@ class GetColumnDetailsInteractor:
         self._validate_offset_value(offset=offset)
         self._validate_limit_value(limit=limit)
         self._validate_board_id(board_id=board_id)
-        user_roles = self.storage.get_user_roles(user_id)
+        user_service = get_service_adapter().user_roles_service
+        print(user_service)
+        user_roles = user_service.get_user_roles(user_id)
         self._validate_if_user_has_permissions_for_given_board_id(
             board_id=board_id, user_roles=user_roles)
 

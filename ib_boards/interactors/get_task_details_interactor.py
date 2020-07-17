@@ -1,4 +1,5 @@
 from typing import List
+
 from ib_boards.adapters.service_adapter import get_service_adapter
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
