@@ -5,7 +5,6 @@ from ib_iam.interactors.storage_interfaces.dtos import (
 )
 
 
-
 class TeamStorageInterface:
 
     @abstractmethod
