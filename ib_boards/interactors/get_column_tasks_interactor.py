@@ -3,11 +3,12 @@ Created on: 16/07/20
 Author: Pavankumar Pamuru
 
 """
+from typing import List
 
 from ib_boards.exceptions.custom_exceptions import InvalidOffsetValue, \
     InvalidLimitValue, OffsetValueExceedsTotalTasksCount, \
     UserDoNotHaveAccessToColumn
-from ib_boards.interactors.dtos import ColumnTasksParametersDTO
+from ib_boards.interactors.dtos import ColumnTasksParametersDTO, TaskIdStageDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     GetColumnTasksPresenterInterface, TaskCompleteDetailsDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
@@ -54,13 +55,17 @@ class GetColumnTasksInteractor:
         if offset >= total_tasks:
             raise OffsetValueExceedsTotalTasksCount
         task_ids_stages_dtos = task_ids_stages_dtos[offset:offset + limit]
+        return self._get_tasks_complete_details(task_ids_stages_dtos, column_id)
+
+    def _get_tasks_complete_details(
+            self, task_ids_stages_dtos: List[TaskIdStageDTO], column_id: str):
         from ib_boards.interactors.get_tasks_details_interactor import \
             GetTasksDetailsInteractor
         tasks_interactor = GetTasksDetailsInteractor(
             storage=self.storage
         )
         task_dtos, action_dtos = tasks_interactor.get_task_details(
-            tasks_parameters=task_ids_stages_dtos
+            tasks_parameters=task_ids_stages_dtos, column_id=column_id
         )
         return TaskCompleteDetailsDTO(
             total_tasks=3,

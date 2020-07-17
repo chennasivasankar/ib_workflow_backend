@@ -5,6 +5,8 @@ Author: Pavankumar Pamuru
 """
 from typing import List
 
+from ib_boards.interactors.dtos import TaskIdStageDTO
+
 
 def adapter_mock(mocker, task_template_ids: List[str]):
     mock = mocker.patch(
@@ -40,12 +42,12 @@ def adapter_mock_for_task_template_fields(mocker):
     return mock
 
 
-def get_task_ids_mock(mocker, task_ids: List[str]):
+def get_task_ids_mock(mocker, task_stage_dtos: List[TaskIdStageDTO]):
     mock = mocker.patch(
         'ib_boards.adapters.task_service.TaskService.get_task_ids_with_respective_stages'
     )
 
-    mock.return_value = task_ids
+    mock.return_value = task_stage_dtos
     return mock
 
 

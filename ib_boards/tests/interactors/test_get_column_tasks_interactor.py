@@ -7,7 +7,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from ib_boards.interactors.dtos import ColumnTasksParametersDTO
+from ib_boards.interactors.dtos import ColumnTasksParametersDTO, TaskIdStageDTO
 from ib_boards.interactors.get_column_tasks_interactor import \
     GetColumnTasksInteractor
 from ib_boards.tests.factories.interactor_dtos import ActionDTOFactory, \
@@ -65,6 +65,19 @@ class TestGetColumnTasksInteractor:
             task_dtos=task_dtos,
             action_dtos=action_dtos
         )
+
+    @pytest.fixture
+    def task_stage_dtos(self):
+        return [
+            TaskIdStageDTO(
+                task_id="TASK_ID_1",
+                stage_id="STAGE_ID_1"
+            ),
+            TaskIdStageDTO(
+                task_id="TASK_ID_2",
+                stage_id="STAGE_ID_2"
+            )
+        ]
 
     @pytest.fixture
     def task_dtos(self):
@@ -148,7 +161,8 @@ class TestGetColumnTasksInteractor:
 
     def test_with_valid_details_return_task_details(
             self, storage_mock, presenter_mock, get_column_tasks_dto, mocker,
-            task_complete_details_dto, task_status_dtos, task_dtos, action_dtos):
+            task_complete_details_dto, task_status_dtos, task_dtos, action_dtos,
+            task_stage_dtos):
 
         # Arrange
         stage_ids = ['STAGE_ID_1', 'STAGE_ID_1']
@@ -167,7 +181,10 @@ class TestGetColumnTasksInteractor:
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             get_task_ids_mock
 
-        task_ids_mock = get_task_ids_mock(mocker=mocker, task_ids=task_ids)
+        task_ids_mock = get_task_ids_mock(
+            mocker=mocker,
+            task_stage_dtos=task_stage_dtos
+        )
 
         task_details_mock = get_task_details_mock(
             mocker=mocker, task_dtos=task_dtos, action_dtos=action_dtos
@@ -186,7 +203,8 @@ class TestGetColumnTasksInteractor:
         # Assert
         assert actual_response == expected_response
         task_details_mock.assert_called_once_with(
-            tasks_parameters=task_ids
+            tasks_parameters=task_stage_dtos,
+            column_id=get_column_tasks_dto.column_id
         )
         task_ids_mock.assert_called_once_with(
             task_status_dtos=task_status_dtos

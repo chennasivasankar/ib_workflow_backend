@@ -13,8 +13,10 @@ class GetTasksDetailsInteractor:
     def __init__(self, storage: StorageInterface):
         self.storage = storage
 
-    def get_tasks_details_wrapper(self, task_ids: List[str]):
+    def get_tasks_details_wrapper(
+            self, tasks_parameters: List[str], column_id: str):
         pass
 
-    def get_task_details(self, tasks_parameters: List[str]):
+    def get_task_details(
+            self, tasks_parameters: List[str], column_id: str):
         pass
