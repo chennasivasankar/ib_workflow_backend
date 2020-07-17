@@ -90,8 +90,6 @@ class TestUpdateTeamDetails:
             team_id=team_id, name=team_name
         )
         call_obj = presenter.raise_exception_for_duplicate_team_name.call_args
-        print("*" * 80)
-        print(call_obj)
         error_obj = call_obj.args[0]
         actual_team_name_from_error = error_obj.team_name
         assert actual_team_name_from_error == expected_team_name_from_error
