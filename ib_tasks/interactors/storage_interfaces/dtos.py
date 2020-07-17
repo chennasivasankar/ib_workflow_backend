@@ -48,19 +48,6 @@ class GoFRoleDTO:
 
 
 @dataclass
-class GoFFieldDTO:
-    gof_id: str
-    field_id: str
-
-
-@dataclass
-class GoFFieldsDTO:
-    gof_id: str
-    field_ids: List[str]
-
-
-@dataclass
 class CompleteGoFDetailsDTO:
     gof_dto: GoFDTO
     gof_roles_dto: GoFRolesDTO
-    gof_fields_dto: GoFFieldsDTO

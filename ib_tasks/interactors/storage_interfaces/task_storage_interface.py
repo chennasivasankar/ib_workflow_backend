@@ -53,10 +53,6 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def create_gof_fields(self, gof_field_dtos: List[GoFFieldDTO]):
-        pass
-
-    @abc.abstractmethod
     def check_is_template_exists(self, template_id: str) -> bool:
         pass
 

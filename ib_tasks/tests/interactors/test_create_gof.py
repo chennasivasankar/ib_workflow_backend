@@ -2,7 +2,7 @@
 import pytest
 
 from ib_tasks.constants.enum import PermissionTypes
-from ib_tasks.interactors.create_gofs import CreateGoFsInteractor
+from ib_tasks.interactors.create_gofs import CreateOrUpdateGoFsInteractor
 from ib_tasks.interactors.storage_interfaces.dtos import GoFRoleDTO, \
     GoFFieldDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
@@ -43,7 +43,7 @@ class TestCreateGOF:
         storage_mock.get_existing_gof_ids_in_given_gof_ids.return_value = []
         storage_mock.get_valid_field_ids_in_given_field_ids.return_value = \
             valid_field_ids
-        interactor = CreateGoFsInteractor(storage=storage_mock)
+        interactor = CreateOrUpdateGoFsInteractor(storage=storage_mock)
 
         # Act
         interactor.create_gofs(
@@ -113,7 +113,7 @@ class TestCreateGOF:
         complete_gof_details_dtos = [
             CompleteGoFDetailsDTOFactory(gof_dto=gof_dto)
         ]
-        interactor = CreateGoFsInteractor(storage=storage_mock)
+        interactor = CreateOrUpdateGoFsInteractor(storage=storage_mock)
 
         # Act
         with pytest.raises(GOFIdCantBeEmpty) as err:
@@ -137,7 +137,7 @@ class TestCreateGOF:
         complete_gof_details_dtos = [
             CompleteGoFDetailsDTOFactory(gof_dto=gof_dto)
         ]
-        interactor = CreateGoFsInteractor(storage=storage_mock)
+        interactor = CreateOrUpdateGoFsInteractor(storage=storage_mock)
 
         # Act
         with pytest.raises(GOFDisplayNameCantBeEmpty) as err:
@@ -163,7 +163,7 @@ class TestCreateGOF:
         complete_gof_details_dtos = [
             CompleteGoFDetailsDTOFactory(gof_roles_dto=gof_roles_dto)
         ]
-        interactor = CreateGoFsInteractor(storage=storage_mock)
+        interactor = CreateOrUpdateGoFsInteractor(storage=storage_mock)
 
         # Act
         with pytest.raises(GOFReadPermissionsCantBeEmpty) as err:
@@ -188,7 +188,7 @@ class TestCreateGOF:
         complete_gof_details_dtos = [
             CompleteGoFDetailsDTOFactory(gof_roles_dto=gof_roles_dto)
         ]
-        interactor = CreateGoFsInteractor(storage=storage_mock)
+        interactor = CreateOrUpdateGoFsInteractor(storage=storage_mock)
 
         # Act
         with pytest.raises(GOFWritePermissionsCantBeEmpty) as err:
@@ -212,7 +212,7 @@ class TestCreateGOF:
         complete_gof_details_dtos = [
             CompleteGoFDetailsDTOFactory(gof_fields_dto=gof_fields_dto)
         ]
-        interactor = CreateGoFsInteractor(storage=storage_mock)
+        interactor = CreateOrUpdateGoFsInteractor(storage=storage_mock)
 
         # Act
         with pytest.raises(GOFFieldIdsCantBeEmpty) as err:
@@ -237,7 +237,7 @@ class TestCreateGOF:
         ]
         storage_mock.get_existing_gof_ids_in_given_gof_ids.return_value = \
             [complete_gof_details_dtos[0].gof_dto.gof_id]
-        interactor = CreateGoFsInteractor(storage=storage_mock)
+        interactor = CreateOrUpdateGoFsInteractor(storage=storage_mock)
 
         # Act
         with pytest.raises(GoFIDsAlreadyExists) as err:
@@ -262,7 +262,7 @@ class TestCreateGOF:
             CompleteGoFDetailsDTOFactory(gof_fields_dto=gof_fields_dto)
         ]
         storage_mock.get_existing_gof_ids_in_given_gof_ids.return_value = []
-        interactor = CreateGoFsInteractor(storage=storage_mock)
+        interactor = CreateOrUpdateGoFsInteractor(storage=storage_mock)
 
         # Act
         with pytest.raises(DuplicatedFieldIds) as err:
@@ -286,7 +286,7 @@ class TestCreateGOF:
         storage_mock.get_valid_field_ids_in_given_field_ids.return_value = [
             complete_gof_details_dtos[0].gof_fields_dto.field_ids[0]
         ]
-        interactor = CreateGoFsInteractor(storage=storage_mock)
+        interactor = CreateOrUpdateGoFsInteractor(storage=storage_mock)
 
         # Act
         with pytest.raises(InvalidFieldIds) as err:
@@ -323,7 +323,7 @@ class TestCreateGOF:
         storage_mock.get_existing_gof_ids_in_given_gof_ids.return_value = []
         storage_mock.get_valid_field_ids_in_given_field_ids.return_value = \
             valid_field_ids
-        interactor = CreateGoFsInteractor(storage=storage_mock)
+        interactor = CreateOrUpdateGoFsInteractor(storage=storage_mock)
 
         # Act
         with pytest.raises(InvalidReadPermissionRoles) as err:
@@ -363,7 +363,7 @@ class TestCreateGOF:
         storage_mock.get_existing_gof_ids_in_given_gof_ids.return_value = []
         storage_mock.get_valid_field_ids_in_given_field_ids.return_value = \
             valid_field_ids
-        interactor = CreateGoFsInteractor(storage=storage_mock)
+        interactor = CreateOrUpdateGoFsInteractor(storage=storage_mock)
 
         # Act
         with pytest.raises(InvalidWritePermissionRoles) as err:
