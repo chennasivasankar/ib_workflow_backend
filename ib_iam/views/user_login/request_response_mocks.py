@@ -21,7 +21,7 @@ RESPONSE_404_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "INVALID_EMAIL"
+    "res_status": "USER_ACCOUNT_DOES_NOT_EXIST"
 }
 """
 
@@ -29,7 +29,7 @@ RESPONSE_400_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "INVALID_PASSWORD"
+    "res_status": "INVALID_EMAIL"
 }
 """
 

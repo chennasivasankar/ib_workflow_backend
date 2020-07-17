@@ -23,5 +23,6 @@ def api_wrapper(*args, **kwargs):
     presenter = AuthPresenterImplementation()
 
     response = interactor.login_wrapper(
-        presenter=presenter, email_and_password_dto=email_and_password_dto)
+        presenter=presenter, email_and_password_dto=email_and_password_dto
+    )
     return response

@@ -1,7 +1,8 @@
 from enum import Enum
 
 
-class StrongPassword(Enum):
-    MIN_LENGTH = 5
-    MINIMUM_PASSWORD_LENGTH = "MINIMUM_PASSWORD_LENGTH_IS_5"
-    CAPITAL_LETTERS = "CAPITAL_LETTERS"
+class StatusCode(Enum):
+    NOT_FOUND = 404
+    BAD_REQUEST = 400
+    FORBIDDEN = 403
+    SUCCESS = 200
