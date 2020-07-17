@@ -130,8 +130,6 @@
               }
             },
             "required": [
-              "entity_id",
-              "entity_type",
               "title",
               "description"
             ]
@@ -217,7 +215,7 @@
         },
         "required": [
           "discussions",
-          "total_discussion_count"
+          "total_count"
         ]
       }
     },
@@ -234,7 +232,9 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_ENTITY_TYPE_FOR_ENTITY_ID"
+                  "INVALID_ENTITY_TYPE_FOR_ENTITY_ID",
+                  "INVALID_OFFSET",
+                  "INVALID_LIMIT"
                 ]
               }
             },
@@ -290,6 +290,20 @@
         "parameters": [
           {
             "$ref": "#/parameters/GetDiscussionsParameter"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "offset count for discussions",
+            "type": "integer",
+            "required": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "limit count for discussions",
+            "type": "integer",
+            "required": true
           }
         ],
         "responses": {

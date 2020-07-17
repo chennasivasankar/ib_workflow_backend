@@ -69,3 +69,4 @@ class DiscussionInteractor:
                 entity_type=discussion_dto.entity_type
             )
         return discussion_set_id
+

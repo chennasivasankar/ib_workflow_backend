@@ -9,6 +9,11 @@ ENTITY_ID_NOT_FOUND = (
     "ENTITY_ID_NOT_FOUND"
 )
 
+INVALID_ENTITY_TYPE_FOR_ENTITY_ID = (
+    "Please valid entity type for entity id",
+    "INVALID_ENTITY_TYPE_FOR_ENTITY_ID"
+)
+
 
 class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
     def raise_exception_for_entity_id_not_found(self):
@@ -20,7 +25,14 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         return self.prepare_404_not_found_response(response_dict=response_dict)
 
     def raise_exception_for_invalid_entity_type_for_entity_id(self):
-        pass
+        response_dict = {
+            "response": INVALID_ENTITY_TYPE_FOR_ENTITY_ID[0],
+            "http_status_code": StatusCode.BAD_REQUEST.value,
+            "res_status": INVALID_ENTITY_TYPE_FOR_ENTITY_ID[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict
+        )
 
     def prepare_success_response_for_create_discussion(self):
-        pass
+        return self.prepare_201_created_response(response_dict={})
