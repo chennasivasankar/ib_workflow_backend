@@ -1,5 +1,5 @@
 """
-    valid email. Sent email to user account
+    Invalid Email -- Empty string
 """
 from unittest.mock import patch
 
@@ -8,7 +8,7 @@ from django_swagger_utils.utils.test_v1 import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase03UserResetPasswordLinkAPITestCase(TestUtils):
+class TestCase01SendUserResetPasswordLinkAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -16,20 +16,13 @@ class TestCase03UserResetPasswordLinkAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['read']}}
 
     @patch(
-        "ib_iam.adapters.email_service.EmailService.send_email_to_user"
-    )
-    @patch(
         "ib_iam.adapters.auth_service.AuthService.get_token_for_reset_password"
     )
     @pytest.mark.django_db
-    def test_case(self, get_token_for_reset_password_mock,
-                  send_email_to_user_mock, snapshot
-                  ):
+    def test_case(self,get_token_for_reset_password, snapshot):
         body = {'email': 'test@gmail.com'}
-        user_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
-        get_token_for_reset_password_mock.return_value \
-            = user_token
-
+        from ib_iam.exceptions.custom_exceptions import InvalidEmail
+        get_token_for_reset_password.side_effect = InvalidEmail
         path_params = {}
         query_params = {}
         headers = {}
@@ -37,5 +30,3 @@ class TestCase03UserResetPasswordLinkAPITestCase(TestUtils):
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
-        get_token_for_reset_password_mock.assert_called_once()
-        send_email_to_user_mock.assert_called_once()

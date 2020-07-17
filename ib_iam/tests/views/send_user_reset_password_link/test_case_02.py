@@ -1,5 +1,5 @@
 """
-    Invalid Email -- Empty string
+    UserAccountDoesNotExist
 """
 from unittest.mock import patch
 
@@ -8,7 +8,7 @@ from django_swagger_utils.utils.test_v1 import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01UserResetPasswordLinkAPITestCase(TestUtils):
+class TestCase02SendUserResetPasswordLinkAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -19,14 +19,16 @@ class TestCase01UserResetPasswordLinkAPITestCase(TestUtils):
         "ib_iam.adapters.auth_service.AuthService.get_token_for_reset_password"
     )
     @pytest.mark.django_db
-    def test_case(self,get_token_for_reset_password, snapshot):
+    def test_case(self, get_token_for_reset_password_mock, snapshot):
         body = {'email': 'test@gmail.com'}
-        from ib_iam.exceptions.custom_exceptions import InvalidEmail
-        get_token_for_reset_password.side_effect = InvalidEmail
+        from ib_iam.exceptions.custom_exceptions import UserAccountDoesNotExist
+        get_token_for_reset_password_mock.side_effect \
+            = UserAccountDoesNotExist
         path_params = {}
-        query_params = {}
+        query_params = {"token": "123"}
         headers = {}
         response = self.default_test_case(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
+        get_token_for_reset_password_mock.assert_called_once()

@@ -333,8 +333,8 @@
     },
     "/rest_password_link/v1/": {
       "post": {
-        "operationId": "user_reset_password_link",
-        "summary": "user reset password link",
+        "operationId": "send_user_reset_password_link",
+        "summary": "send user reset password link",
         "description": "user reset password link to email",
         "security": [
           {

@@ -7,9 +7,9 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase02UserResetPasswordLinkAPITestCase.test_case status_code'] = '404'
+snapshots['TestCase02SendUserResetPasswordLinkAPITestCase.test_case status_code'] = '404'
 
-snapshots['TestCase02UserResetPasswordLinkAPITestCase.test_case body'] = {
+snapshots['TestCase02SendUserResetPasswordLinkAPITestCase.test_case body'] = {
     'http_status_code': 404,
     'res_status': 'USER_ACCOUNT_DOES_NOT_EXIST',
     'response': 'user account does not exist. please send valid email'

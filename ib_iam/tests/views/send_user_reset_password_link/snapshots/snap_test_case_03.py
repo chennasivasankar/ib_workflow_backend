@@ -7,7 +7,7 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase03UserResetPasswordLinkAPITestCase.test_case status_code'] = '200'
+snapshots['TestCase03SendUserResetPasswordLinkAPITestCase.test_case status_code'] = '200'
 
-snapshots['TestCase03UserResetPasswordLinkAPITestCase.test_case body'] = {
+snapshots['TestCase03SendUserResetPasswordLinkAPITestCase.test_case body'] = {
 }
