@@ -1,6 +1,10 @@
-from unittest.mock import create_autospec
+
+
+
+from unittest.mock import create_autospec, patch
 import pytest
 
+from ib_boards.adapters.user_roles_service import UserRolesService
 from ib_boards.interactors.dtos import ColumnParametersDTO
 from ib_boards.interactors.get_column_details_interactor import GetColumnDetailsInteractor
 from ib_boards.interactors.presenter_interfaces.presenter_interface import PresenterInterface
@@ -88,8 +92,9 @@ class TestGetColumnDetailsInteractor:
         # Assert
         presenter.raise_exception_for_invalid_limit_value.assert_called_once()
 
+    @patch("ib_boards.adapters.service_adapter.ServiceAdapter.user_roles_service")
     def test_validate_user_permissions_given_board_which_donot_have_access_raises_exception(
-            self):
+            self, user_roles_service):
         # Arrange
         board_id = "board_id_1"
         user_id = "user_id_1"
@@ -110,7 +115,7 @@ class TestGetColumnDetailsInteractor:
         board_permitted_user_roles = ["FIN_PAYMENTS_LEVEL4_VERIFIER",
                                       "FIN_PAYMENTS_LEVEL5_VERIFIER",
                                       "FIN_PAYMENTS_LEVEL6_VERIFIER"]
-        storage.get_user_roles.return_value = user_roles
+        user_roles_service.get_user_roles.return_value = user_roles
         storage.get_permitted_user_roles_for_board.return_value = board_permitted_user_roles
         interactor = GetColumnDetailsInteractor(
             storage=storage
@@ -127,8 +132,9 @@ class TestGetColumnDetailsInteractor:
         )
         presenter.raise_exception_for_user_donot_have_access_for_board.assert_called_once()
 
+    @patch("ib_boards.adapters.service_adapter.ServiceAdapter.user_roles_service")
     def test_get_columns_details_given_valid_board_id_returns_columns_details(
-            self, get_column_details_dto):
+            self, user_roles_service, get_column_details_dto):
         # Arrange
         board_id = "board_id_1"
         columns_parameters = ColumnParametersDTO(
@@ -144,11 +150,11 @@ class TestGetColumnDetailsInteractor:
                       "FIN_PAYMENTS_LEVEL1_VERIFIER",
                       "FIN_PAYMENTS_LEVEL2_VERIFIER",
                       "FIN_PAYMENTS_LEVEL3_VERIFIER"]
+        user_roles_service.get_user_roles.return_value = user_roles
         board_permitted_user_roles = ["FIN_PAYMENT_POC"]
         storage = create_autospec(StorageInterface)
         presenter = create_autospec(PresenterInterface)
         storage.get_column_ids_for_board.return_value = column_ids
-        storage.get_user_roles.return_value = user_roles
         storage.get_permitted_user_roles_for_board.return_value = board_permitted_user_roles
         storage.get_columns_details.return_value = get_column_details_dto
         interactor = GetColumnDetailsInteractor(
