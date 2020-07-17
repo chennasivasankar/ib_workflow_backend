@@ -5,7 +5,7 @@ Author: Pavankumar Pamuru
 """
 from typing import List
 
-from ib_boards.adapters.dtos import TaskStatusDTO
+from ib_boards.interactors.dtos import TaskStatusDTO
 
 
 class TaskService:
@@ -22,6 +22,9 @@ class TaskService:
     def validate_task_ids(self, task_ids: List[str]):
         pass
 
+    def validate_stage_ids(self, stage_ids: List[str]):
+        pass
+
     def validate_task_template_stages_with_id(
             self, task_template_stages: List):
         pass
@@ -33,6 +36,6 @@ class TaskService:
     def get_stage_display_logics(self, stage_ids: List[str]) -> List[str]:
         pass
 
-    def get_task_ids_and_number_total_tasks(
-            self, task_status_dtos: List[TaskStatusDTO]) -> (List[str], int):
+    def get_task_ids(
+            self, task_status_dtos: List[TaskStatusDTO]) -> List[str]:
         pass

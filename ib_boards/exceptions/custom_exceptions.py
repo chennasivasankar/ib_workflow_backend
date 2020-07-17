@@ -7,7 +7,7 @@ class DuplicateBoardIds(Exception):
 
 
 class InvalidBoardDisplayName(Exception):
-    def __init__(self, board_id: str):
+    def __init__(self, board_id: str): 
         self.board_id = board_id
 
 

@@ -55,3 +55,26 @@ class GetColumnTasksDTO:
     column_id: str
     offset: int
     limit: int
+
+
+@dataclass
+class TaskDTO:
+    task_id: str
+    field_type: str
+    key: str
+    value: str
+
+
+@dataclass
+class ActionDTO:
+    action_id: str
+    name: str
+    button_text: str
+    button_color: str
+    task_id: str
+
+
+@dataclass
+class TaskStatusDTO:
+    status: str
+    stage: str

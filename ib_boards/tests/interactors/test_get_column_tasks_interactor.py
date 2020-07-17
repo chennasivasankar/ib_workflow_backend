@@ -10,6 +10,8 @@ import pytest
 from ib_boards.interactors.dtos import GetColumnTasksDTO
 from ib_boards.interactors.get_column_tasks_interactor import \
     GetColumnTasksInteractor
+from ib_boards.tests.factories.interactor_dtos import ActionDTOFactory, \
+    TaskDTOFactory, TaskStatusDTOFactory
 
 
 class TestGetColumnTasksInteractor:
@@ -34,8 +36,8 @@ class TestGetColumnTasksInteractor:
     def get_column_tasks_dto(self):
         return GetColumnTasksDTO(
             column_id='COLUMN_ID_1',
-            offset=1,
-            limit=1
+            offset=0,
+            limit=5
         )
 
     @pytest.fixture
@@ -53,6 +55,28 @@ class TestGetColumnTasksInteractor:
             offset=1,
             limit=-1
         )
+
+    @pytest.fixture
+    def task_complete_details_dto(self, task_dtos, action_dtos):
+        from ib_boards.interactors.presenter_interfaces.presenter_interface import \
+            TaskCompleteDetailsDTO
+        return TaskCompleteDetailsDTO(
+            total_tasks=3,
+            task_dtos=task_dtos,
+            action_dtos=action_dtos
+        )
+
+    @pytest.fixture
+    def task_dtos(self):
+        return TaskDTOFactory.create_batch(5)
+
+    @pytest.fixture
+    def action_dtos(self):
+        return ActionDTOFactory.create_batch(9)
+
+    @pytest.fixture
+    def task_status_dtos(self):
+        return TaskStatusDTOFactory.create_batch(2)
 
     def test_with_invalid_column_id_return_error_message(
             self, presenter_mock, storage_mock, get_column_tasks_dto):
@@ -123,7 +147,57 @@ class TestGetColumnTasksInteractor:
         assert actual_response == expected_response
 
     def test_with_valid_details_return_task_details(
-            self, storage_mock, presenter_mock):
-        pass
+            self, storage_mock, presenter_mock, get_column_tasks_dto, mocker,
+            task_complete_details_dto, task_status_dtos, task_dtos, action_dtos):
+
+        # Arrange
+        stage_ids = ['STAGE_ID_1', 'STAGE_ID_1']
+        task_ids = ['TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3']
+
+        expected_response = Mock()
+        storage_mock.get_column_display_stage_ids.return_value = stage_ids
+        presenter_mock.get_response_column_tasks.\
+            return_value = expected_response
+        interactor = GetColumnTasksInteractor(
+            storage=storage_mock
+        )
+        from ib_boards.tests.common_fixtures.interactors import \
+            get_stage_display_logic_mock, get_task_details_mock
+
+        from ib_boards.tests.common_fixtures.adapters.task_service import \
+            get_task_ids_mock
+
+        task_ids_mock = get_task_ids_mock(mocker=mocker, task_ids=task_ids)
+
+        task_details_mock = get_task_details_mock(
+            mocker=mocker, task_dtos=task_dtos, action_dtos=action_dtos
+        )
+
+        stage_display_logic_interactor_mock = get_stage_display_logic_mock(
+            mocker=mocker, task_status_dtos=task_status_dtos
+        )
+
+        # Act
+        actual_response = interactor.get_column_tasks_wrapper(
+            get_column_tasks_dto=get_column_tasks_dto,
+            presenter=presenter_mock
+        )
+
+        # Assert
+        assert actual_response == expected_response
+        task_details_mock.assert_called_once_with(
+            task_ids=task_ids
+        )
+        task_ids_mock.assert_called_once_with(
+            task_status_dtos=task_status_dtos
+        )
+        stage_display_logic_interactor_mock.assert_called_once_with(
+            stage_ids=stage_ids
+        )
+        presenter_mock.get_response_column_tasks.assert_called_once_with(
+            task_complete_details_dto=task_complete_details_dto
+        )
+
+
 
 

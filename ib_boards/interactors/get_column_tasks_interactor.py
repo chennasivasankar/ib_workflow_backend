@@ -3,14 +3,12 @@ Created on: 16/07/20
 Author: Pavankumar Pamuru
 
 """
-from typing import List
 
-from ib_boards.adapters.dtos import TaskStatusDTO
 from ib_boards.exceptions.custom_exceptions import InvalidOffsetValue, \
     InvalidLimitValue, OffsetValueExceedsTotalTasksCount
 from ib_boards.interactors.dtos import GetColumnTasksDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
-    GetColumnTasksPresenterInterface
+    GetColumnTasksPresenterInterface, TaskCompleteDetailsDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
@@ -24,7 +22,7 @@ class GetColumnTasksInteractor:
             presenter: GetColumnTasksPresenterInterface):
         from ib_boards.exceptions.custom_exceptions import InvalidColumnId
         try:
-            task_dtos, total_tasks = self.get_column_tasks(
+            task_complete_details_dto = self.get_column_tasks(
                 get_column_tasks_dto=get_column_tasks_dto
             )
         except InvalidColumnId:
@@ -36,7 +34,7 @@ class GetColumnTasksInteractor:
         except OffsetValueExceedsTotalTasksCount:
             return presenter.get_response_for_offset_exceeds_total_tasks()
         return presenter.get_response_column_tasks(
-            task_dtos=task_dtos, total_tasks=total_tasks
+            task_complete_details_dto=task_complete_details_dto
         )
 
     def get_column_tasks(self, get_column_tasks_dto: GetColumnTasksDTO):
@@ -51,42 +49,19 @@ class GetColumnTasksInteractor:
         total_tasks = len(task_ids)
         if offset >= total_tasks:
             raise OffsetValueExceedsTotalTasksCount
-        task_ids = task_ids[offset:offset+limit]
+        task_ids = task_ids[offset:offset + limit]
         from ib_boards.interactors.get_tasks_details_interactor import \
             GetTasksDetailsInteractor
         tasks_interactor = GetTasksDetailsInteractor(
             storage=self.storage
         )
-        task_dtos = tasks_interactor.get_task_details(task_ids=task_ids)
-        return task_dtos, total_tasks
-
-    def _get_values_from_stage_display_logic(
-            self, stage_display_logics: List[str]) -> List[TaskStatusDTO]:
-        task_status_dtos = []
-        for stage_display_logic in stage_display_logics:
-            task_status_dto = self._get_task_status_dto_from_stage_display_logic(
-                stage_display_logic=stage_display_logic
-            )
-            task_status_dtos.append(
-                task_status_dto
-            )
-        return task_status_dtos
-
-    @staticmethod
-    def _get_task_status_dto_from_stage_display_logic(
-            stage_display_logic: str) -> TaskStatusDTO:
-
-        import astroid
-        node = astroid.extract_node(stage_display_logic)
-        children = node.get_children()
-        children_values = []
-        for item in children:
-            children_values.append(
-                item.name
-            )
-        return TaskStatusDTO(
-            status=children_values[0],
-            stage=children_values[1]
+        task_dtos, action_dtos = tasks_interactor.get_task_details(
+            task_ids=task_ids
+        )
+        return TaskCompleteDetailsDTO(
+            total_tasks=3,
+            task_dtos=task_dtos,
+            action_dtos=action_dtos
         )
 
     def _validate_given_data(self, get_column_tasks_dto):
@@ -99,18 +74,18 @@ class GetColumnTasksInteractor:
         if limit < 0:
             raise InvalidLimitValue
 
-    def _get_task_ids(self, stage_ids):
+    @staticmethod
+    def _get_task_ids(stage_ids):
+        from ib_boards.interactors.get_stage_display_logic_interactor \
+            import StageDisplayLogicInteractor
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
-
-        stage_display_logics = service_adapter.task_service.get_stage_display_logics(
-            stage_ids=stage_ids
-        )
-        task_status_dtos = self._get_values_from_stage_display_logic(
-            stage_display_logics=stage_display_logics
-        )
-        task_ids = service_adapter.task_service. \
-            get_task_ids_and_number_total_tasks(
+        stage_display_logic_interactor = StageDisplayLogicInteractor()
+        task_status_dtos = stage_display_logic_interactor. \
+            get_stage_display_condition(
+                stage_ids=stage_ids
+            )
+        task_ids = service_adapter.task_service.get_task_ids(
             task_status_dtos=task_status_dtos
         )
         return task_ids
