@@ -1,17 +1,22 @@
 from typing import List
 
-from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, FieldDTO
+from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, FieldDTO, \
+    GoFIdAndOrderDTO, GlobalConstantsDTO
 from ib_tasks.interactors.storage_interfaces.dtos import (
     GoFDTO, GoFRoleDTO, GoFFieldDTO
 )
-from ib_tasks.interactors.storage_interfaces.tasks_storage_interface import \
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 
 
 class TasksStorageImplementation(TaskStorageInterface):
 
-    def create_task_template(
-            self, create_task_template_dto: CreateTaskTemplateDTO):
+    def create_task_template(self, template_id: str, template_name: str):
+        pass
+
+    def add_gofs_to_task_template(
+            self, template_id: str,
+            gof_id_and_order_dtos: List[GoFIdAndOrderDTO]):
         pass
 
     def update_task_template(
@@ -28,6 +33,9 @@ class TasksStorageImplementation(TaskStorageInterface):
         pass
 
     def get_existing_gof_of_template(self, template_id: str) -> List[str]:
+        pass
+
+    def get_existing_gof_ids_of_template(self, template_id: str) -> List[str]:
         pass
 
     def get_existing_gof_ids_in_given_gof_ids(
@@ -86,3 +94,15 @@ class TasksStorageImplementation(TaskStorageInterface):
                 if field.field_id == gof_field_dto.field_id:
                     field.gof_id = gof_field_dto.gof_id
         Field.objects.bulk_update(fields, ['gof_id'])
+
+    def check_is_template_exists(self, template_id: str) -> bool:
+        pass
+
+    def get_constant_names_of_existing_global_constants_of_template(
+            self, template_id: str):
+        pass
+
+    def create_global_constants_to_template(
+            self, template_id: str,
+            global_constants_dtos: List[GlobalConstantsDTO]):
+        pass

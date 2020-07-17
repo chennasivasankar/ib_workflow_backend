@@ -23,7 +23,3 @@ class StageStorageInterface(abc.ABC):
     def validate_stages_related_task_template_ids(
             self, task_stages_dto: TaskStagesDTO) -> Optional[List[TaskStagesDTO]]:
         pass
-
-
-
-

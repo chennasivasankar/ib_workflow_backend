@@ -23,8 +23,8 @@ class FieldDTO:
     error_message: Optional[str]
 
 
-@dataclass()
-class ActionDto:
+@dataclass
+class ActionDTO:
     stage_id: str
     action_name: str
     logic: str
@@ -34,7 +34,7 @@ class ActionDto:
 
 
 @dataclass
-class GoFDTO:
+class GoFIdAndOrderDTO:
     gof_id: str
     order: int
 
@@ -43,4 +43,16 @@ class GoFDTO:
 class CreateTaskTemplateDTO:
     template_id: str
     template_name: str
-    gof_dtos: List[GoFDTO]
+    gof_dtos: List[GoFIdAndOrderDTO]
+
+
+@dataclass
+class GlobalConstantsDTO:
+    constant_name: str
+    value: int
+
+
+@dataclass
+class GlobalConstantsWithTemplateIdDTO:
+    template_id: str
+    global_constants_dtos: List[GlobalConstantsDTO]
