@@ -1,7 +1,7 @@
 from typing import List, Optional
 from ib_iam.interactors.storage_interfaces.team_storage_interface import TeamStorageInterface
 from ib_iam.models import User, Team, TeamMember
-from ib_iam.exceptions.custom_exceptions import UserHasNoAccess, DuplicateTeamName
+from ib_iam.exceptions.custom_exceptions import UserHasNoAccess, DuplicateTeamName, InvalidTeamId
 from ib_iam.interactors.storage_interfaces.dtos import (
     PaginationDTO, BasicTeamDTO, TeamMembersDTO, AddTeamParametersDTO
 )
@@ -60,6 +60,12 @@ class TeamStorageImplementation(TeamStorageInterface):
             raise DuplicateTeamName(team_name=add_team_params_dto.name)
 
         return str(team_object.team_id)
+
+    def is_valid_team(self, team_id: str):
+        try:
+            Team.objects.get(team_id=team_id)
+        except Team.DoesNotExist:
+            raise InvalidTeamId()
 
     @staticmethod
     def _get_team_dtos_list(team_objects):
