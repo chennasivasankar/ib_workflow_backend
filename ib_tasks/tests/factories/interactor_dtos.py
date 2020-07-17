@@ -1,6 +1,5 @@
 import factory
-from ib_tasks.interactors.dtos import GlobalConstantsDTO, GoFIdAndOrderDTO, \
-    CreateTaskTemplateDTO
+from ib_tasks.interactors.dtos import GlobalConstantsDTO, GoFIdAndOrderDTO
 
 
 class GoFIdAndOrderDTOFactory(factory.Factory):
@@ -18,13 +17,4 @@ class GlobalConstantsDTOFactory(factory.Factory):
         model = GlobalConstantsDTO
 
     constant_name = factory.sequence(lambda n: "Constant_{}".format(n + 1))
-    value = factory.sequence(lambda n: "value_{}".format(n+1))
-
-'''
-class CreateTaskTemplateDTOFactory(factory.Factory):
-    class Meta:
-        model = CreateTaskTemplateDTO
-
-    template_id = factory.sequence(lambda n: "template_{}".format(n + 1))
-    gof_dtos = factory.SubFactory(GoFIdAndOrderDTOFactory)
-'''
+    value = factory.sequence(lambda n: n)

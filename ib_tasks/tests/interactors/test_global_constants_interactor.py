@@ -79,7 +79,7 @@ class TestGlobalConstantsInteractor:
         expected_exception_message = "Invalid value for field: value"
 
         global_constants_dtos = GlobalConstantsDTOFactory.create_batch(
-            size=2, value="  "
+            size=2, value=-1
         )
         global_constants_with_template_id_dto = \
             GlobalConstantsWithTemplateIdDTO(
