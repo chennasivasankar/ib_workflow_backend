@@ -74,7 +74,7 @@ class TestUpdateTeamDetails:
             team_id=team_id, name=team_name, description="team1_description"
         )
         storage.is_duplicate_name \
-               .side_effect = DuplicateTeamName(team_name=team_name)
+            .side_effect = DuplicateTeamName(team_name=team_name)
         presenter.raise_exception_for_duplicate_team_name.side_effect = (
             BadRequest
         )
@@ -90,8 +90,33 @@ class TestUpdateTeamDetails:
             team_id=team_id, name=team_name
         )
         call_obj = presenter.raise_exception_for_duplicate_team_name.call_args
-        print("*"*80)
+        print("*" * 80)
         print(call_obj)
         error_obj = call_obj.args[0]
         actual_team_name_from_error = error_obj.team_name
         assert actual_team_name_from_error == expected_team_name_from_error
+
+    def test_given_proper_details_updation_will_be_successful(self):
+        storage = create_autospec(TeamStorageInterface)
+        presenter = create_autospec(TeamPresenterInterface)
+        interactor = TeamInteractor(storage=storage)
+        user_id = "1"
+        team_id = "1"
+        team_name = "team1"
+        update_team_parameters_dto = UpdateTeamParametersDTO(
+            team_id=team_id, name=team_name, description="team1_description"
+        )
+        expected_response = {}
+        presenter.make_empty_http_success_response \
+            .return_value = expected_response
+
+        interactor.update_team_details_wrapper(
+            user_id=user_id,
+            update_team_parameters_dto=update_team_parameters_dto,
+            presenter=presenter
+        )
+
+        storage.update_team_details.assert_called_once_with(
+            update_team_parameters_dto=update_team_parameters_dto
+        )
+        presenter.make_empty_http_success_response.assert_called_once()
