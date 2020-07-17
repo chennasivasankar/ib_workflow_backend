@@ -32,16 +32,16 @@ class ResetPasswordLinkToEmailInteractor:
             email=email,
             expires_in_sec=link_to_reset_password_expires_in_sec
         )
-        self.send_email_to_user_email(email=email, user_token=user_token)
+        self.send_reset_password_mail_to_user_email(email=email, user_token=user_token)
 
     @staticmethod
-    def send_email_to_user_email(email: str, user_token: str):
+    def send_reset_password_mail_to_user_email(email: str, user_token: str):
 
         from ib_iam.constants.config import \
             LINK_TO_RESET_PASSWORD, EMAIL_CONTENT, EMAIL_SUBJECT
-        link = LINK_TO_RESET_PASSWORD + user_token
+        final_reset_password_link = LINK_TO_RESET_PASSWORD + user_token
         subject = EMAIL_SUBJECT
-        content = EMAIL_CONTENT + link
+        content = EMAIL_CONTENT + final_reset_password_link
         from ib_iam.adapters.email_service import EmailService
         email_service = EmailService()
         email_service.send_email_to_user(

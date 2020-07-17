@@ -32,7 +32,7 @@ class TestLoginInteractor:
         return email_and_password_dto
 
     @patch(
-        "ib_iam.adapters.auth_service.AuthService.get_tokens_dto_for_given_email_and_password_dto"
+        "ib_iam.adapters.auth_service.AuthService.get_user_tokens_dto_for_given_email_and_password_dto"
     )
     def test_validate_incorrect_password_raise_exception(
             self, get_tokens_dto_for_given_email_and_password_dto_mock,
@@ -63,7 +63,7 @@ class TestLoginInteractor:
             assert_called_once()
 
     @patch(
-        "ib_iam.adapters.auth_service.AuthService.get_tokens_dto_for_given_email_and_password_dto"
+        "ib_iam.adapters.auth_service.AuthService.get_user_tokens_dto_for_given_email_and_password_dto"
     )
     def test_validate_for_email_account_not_exist_raise_exception(
             self, get_tokens_dto_for_given_email_and_password_dto_mock,
@@ -95,18 +95,19 @@ class TestLoginInteractor:
             assert_called_once()
 
     @patch(
-        "ib_iam.adapters.auth_service.AuthService.get_tokens_dto_for_given_email_and_password_dto"
+        "ib_iam.adapters.auth_service.AuthService.get_user_tokens_dto_for_given_email_and_password_dto"
     )
     def test_with_valid_email_and_password_dto_return_response(
             self, get_tokens_dto_for_given_email_and_password_dto_mock,
             email_and_password_dto, presenter_mock_setup, storage_mock_setup
     ):
         # Arrange
-        from ib_iam.adapters.auth_service import TokensDTO
-        tokens_dto = TokensDTO(
+        from ib_iam.adapters.auth_service import UserTokensDTO
+        tokens_dto = UserTokensDTO(
             access_token="asdfaldskfjdfdlsdkf",
             refresh_token="sadfenkljkdfeller",
-            expires_in_seconds=1000
+            expires_in_seconds=1000,
+            user_id="11"
         )
         email_and_password_dto.password = "Test12345@"
         email_and_password_dto.email = "test@gmail.com"
@@ -116,7 +117,7 @@ class TestLoginInteractor:
 
         expected_presenter_mock_response = Mock()
         presenter_mock = presenter_mock_setup
-        presenter_mock.prepare_response_for_tokens_dto.return_value \
+        presenter_mock.prepare_response_for_user_tokens_dto_and_is_admin.return_value \
             = expected_presenter_mock_response
 
         from ib_iam.interactors.user_login_interactor import LoginInteractor
@@ -131,7 +132,7 @@ class TestLoginInteractor:
         assert response == expected_presenter_mock_response
 
     @patch(
-        "ib_iam.adapters.auth_service.AuthService.get_tokens_dto_for_given_email_and_password_dto"
+        "ib_iam.adapters.auth_service.AuthService.get_user_tokens_dto_for_given_email_and_password_dto"
     )
     def test_validate_invalid_email_raise_exception(
             self, get_tokens_dto_for_given_email_and_password_dto_mock,

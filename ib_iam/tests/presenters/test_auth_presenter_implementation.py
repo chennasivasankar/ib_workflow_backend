@@ -48,14 +48,15 @@ class TestAuthPresenterImplementation:
         assert response['http_status_code'] == expected_http_status_code
         assert response['res_status'] == expected_res_status
 
-    def test_prepare_response_for_tokens_dto(self):
+    def test_prepare_response_for_tokens_dto_and_is_admin(self):
         # Arrange
-        from ib_iam.adapters.auth_service import TokensDTO
+        from ib_iam.adapters.auth_service import UserTokensDTO
         is_admin = True
-        tokens_dto = TokensDTO(
+        tokens_dto = UserTokensDTO(
             access_token="asdfaldskfjdfdlsdkf",
             refresh_token="sadfenkljkdfeller",
-            expires_in_seconds=1000
+            expires_in_seconds=1000,
+            user_id="121"
         )
 
         from ib_iam.presenters.presenter_implementation import \
@@ -63,7 +64,7 @@ class TestAuthPresenterImplementation:
         presenter = AuthPresenterImplementation()
 
         # Act
-        response_object = presenter.prepare_response_for_tokens_dto(
+        response_object = presenter.prepare_response_for_user_tokens_dto_and_is_admin(
             tokens_dto=tokens_dto, is_admin=is_admin
         )
         # Assert
@@ -109,28 +110,6 @@ class TestAuthPresenterImplementation:
 
         # Assert
         assert response_object.status_code == StatusCode.SUCCESS.value
-
-    def test_raise_not_a_strong_password(self):
-        # Arrange
-        from ib_iam.presenters.presenter_implementation import \
-            AuthPresenterImplementation
-        presenter = AuthPresenterImplementation()
-
-        from ib_iam.presenters.presenter_implementation import \
-            NOT_STRONG_PASSWORD
-        expected_response = NOT_STRONG_PASSWORD[0]
-        expected_http_status_code = StatusCode.BAD_REQUEST.value
-        expected_res_status = NOT_STRONG_PASSWORD[1]
-
-        # Act
-        response_object = presenter.raise_exception_for_not_a_strong_password()
-
-        # Assert
-        response = json.loads(response_object.content)
-
-        assert response['response'] == expected_response
-        assert response['http_status_code'] == expected_http_status_code
-        assert response['res_status'] == expected_res_status
 
     def test_raise_token_does_not_exists(self):
         # Arrange
@@ -199,7 +178,9 @@ class TestAuthPresenterImplementation:
             PASSWORD_MIN_LENGTH
         from ib_iam.constants.config import REQUIRED_PASSWORD_MIN_LENGTH
         expected_response \
-            = PASSWORD_MIN_LENGTH[0] % REQUIRED_PASSWORD_MIN_LENGTH
+            = PASSWORD_MIN_LENGTH[0].format(
+                password_min_length=REQUIRED_PASSWORD_MIN_LENGTH
+            )
         expected_http_status_code = StatusCode.BAD_REQUEST.value
         expected_res_status = PASSWORD_MIN_LENGTH[1]
 
@@ -237,4 +218,3 @@ class TestAuthPresenterImplementation:
         assert response['response'] == expected_response
         assert response['http_status_code'] == expected_http_status_code
         assert response['res_status'] == expected_res_status
-

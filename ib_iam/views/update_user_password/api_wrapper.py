@@ -5,7 +5,7 @@ from .validator_class import ValidatorClass
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    query_params = kwargs["request_query_params"]
+    query_params = kwargs["query_params"]
     token = query_params["token"]
     request_data = kwargs["request_data"]
     password = request_data["password"]
@@ -18,7 +18,7 @@ def api_wrapper(*args, **kwargs):
         AuthPresenterImplementation
     presenter = AuthPresenterImplementation()
     response = interactor.update_user_password_wrapper(presenter=presenter,
-                                                       token=token,
+                                                       reset_password_token=token,
                                                        password=password
                                                        )
     return response

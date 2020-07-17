@@ -27,7 +27,7 @@ class TestResetPasswordLinkToEmailInteractor:
         presenter_mock.raise_exception_for_invalid_email.return_value \
             = expected_presenter_raise_invalid_email_mock
 
-        from ib_iam.interactors.rest_password_link_to_email_interactor import \
+        from ib_iam.interactors.reset_password_link_to_email_interactor import \
             ResetPasswordLinkToEmailInteractor
         interactor = ResetPasswordLinkToEmailInteractor()
 
@@ -57,7 +57,7 @@ class TestResetPasswordLinkToEmailInteractor:
         presenter_mock.raise_exception_for_user_account_does_not_exists. \
             return_value = expected_presenter_raise_user_account_does_not_exist_mock
 
-        from ib_iam.interactors.rest_password_link_to_email_interactor import \
+        from ib_iam.interactors.reset_password_link_to_email_interactor import \
             ResetPasswordLinkToEmailInteractor
         interactor = ResetPasswordLinkToEmailInteractor()
 
@@ -94,7 +94,7 @@ class TestResetPasswordLinkToEmailInteractor:
             get_success_response_for_reset_password_link_to_user_email.return_value \
             = expected_presenter_success_response_mock
 
-        from ib_iam.interactors.rest_password_link_to_email_interactor import \
+        from ib_iam.interactors.reset_password_link_to_email_interactor import \
             ResetPasswordLinkToEmailInteractor
         interactor = ResetPasswordLinkToEmailInteractor()
 

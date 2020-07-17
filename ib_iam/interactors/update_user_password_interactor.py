@@ -20,10 +20,11 @@ class TokenHasExpired(Exception):
 
 class UpdateUserPasswordInteractor:
     def update_user_password_wrapper(self, presenter: AuthPresenterInterface,
-                                     token: str, password: str):
+                                     reset_password_token: str, password: str):
         try:
             return self.update_user_password_response(
-                password=password, presenter=presenter, token=token
+                password=password, presenter=presenter,
+                reset_password_token=reset_password_token
             )
         except TokenDoesNotExist:
             return presenter.raise_exception_for_token_does_not_exists()
@@ -34,17 +35,22 @@ class UpdateUserPasswordInteractor:
         except PasswordAtLeastOneSpecialCharacter:
             return presenter.raise_exception_for_password_at_least_one_special_character_required()
 
-    def update_user_password_response(self, password: str, token: str,
+    def update_user_password_response(self, password: str,
+                                      reset_password_token: str,
                                       presenter: AuthPresenterInterface
                                       ):
-        self.update_user_password(token=token, password=password)
+        self.update_user_password_with_reset_password_token(
+            reset_password_token=reset_password_token,
+            password=password)
         return presenter.get_update_user_password_success_response()
 
     @staticmethod
-    def update_user_password(token: str, password: str):
+    def update_user_password_with_reset_password_token(
+            reset_password_token: str,
+            password: str):
         from ib_iam.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
 
-        service_adapter.auth_service.update_user_password(
-            token=token, password=password
+        service_adapter.auth_service.update_user_password_with_reset_password_token(
+            reset_password_token=reset_password_token, password=password
         )

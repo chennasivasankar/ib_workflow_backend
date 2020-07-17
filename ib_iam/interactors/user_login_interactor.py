@@ -1,4 +1,4 @@
-from ib_iam.adapters.auth_service import EmailAndPasswordDTO, TokensDTO
+from ib_iam.adapters.auth_service import EmailAndPasswordDTO, UserTokensDTO
 from ib_iam.exceptions.custom_exceptions import InvalidEmail, \
     UserAccountDoesNotExist
 from ib_iam.interactors.presenter_interfaces.presenter_interface import \
@@ -38,7 +38,7 @@ class LoginInteractor:
         tokens_dto, is_admin = self.get_tokens_dto_and_is_admin(
             email_and_password_dto=email_and_password_dto
         )
-        response = presenter.prepare_response_for_tokens_dto(
+        response = presenter.prepare_response_for_user_tokens_dto_and_is_admin(
             tokens_dto=tokens_dto, is_admin=is_admin
         )
         return response
@@ -48,11 +48,10 @@ class LoginInteractor:
     ):
         from ib_iam.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
-        user_id = service_adapter.auth_service. \
-            get_user_id_from_email_and_password_dto(email_and_password_dto)
-        is_admin = self.storage.get_is_admin_of_given_user_id(user_id=user_id)
-        tokens_dto = service_adapter.auth_service.get_tokens_dto_for_given_email_and_password_dto(
+        tokens_dto = service_adapter.auth_service.get_user_tokens_dto_for_given_email_and_password_dto(
             email_and_password_dto=email_and_password_dto,
         )
+        user_id = tokens_dto.user_id
+        is_admin = self.storage.get_is_admin_of_given_user_id(user_id=user_id)
 
         return tokens_dto, is_admin

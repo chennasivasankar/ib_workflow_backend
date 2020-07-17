@@ -17,7 +17,7 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     @patch(
-        "ib_iam.adapters.auth_service.AuthService.update_user_password"
+        "ib_iam.adapters.auth_service.AuthService.update_user_password_with_reset_password_token"
     )
     def test_token_does_not_exist(self, update_user_password_mock,
                                   snapshot):
@@ -35,7 +35,7 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     @patch(
-        "ib_iam.adapters.auth_service.AuthService.update_user_password"
+        "ib_iam.adapters.auth_service.AuthService.update_user_password_with_reset_password_token"
     )
     def test_token_has_expired(self, update_user_password_mock,
                                snapshot):
@@ -53,12 +53,11 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     @patch(
-        "ib_iam.adapters.auth_service.AuthService.update_user_password"
+        "ib_iam.adapters.auth_service.AuthService.update_user_password_with_reset_password_token"
     )
     def test_case_for_required_password_min_length(
             self, update_user_password, snapshot
     ):
-
         from ib_iam.interactors.update_user_password_interactor import \
             PasswordMinLength
         update_user_password.side_effect \
@@ -75,7 +74,7 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     @patch(
-        "ib_iam.adapters.auth_service.AuthService.update_user_password"
+        "ib_iam.adapters.auth_service.AuthService.update_user_password_with_reset_password_token"
     )
     def test_case_for_required_password_one_special_character(
             self, update_user_password,

@@ -1,7 +1,7 @@
-from .user import User
+from .userdetails import UserDetails
 
 __all__ = [
-    "User"
+    "UserDetails"
 ]
 
 # class DummyModel(AbstractDateTimeModel):

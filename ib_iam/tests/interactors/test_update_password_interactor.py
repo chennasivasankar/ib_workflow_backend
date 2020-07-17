@@ -13,7 +13,7 @@ class TestUpdateUserPasswordInteractor:
         return presenter
 
     @patch(
-        "ib_iam.adapters.auth_service.AuthService.update_user_password"
+        "ib_iam.adapters.auth_service.AuthService.update_user_password_with_reset_password_token"
     )
     def test_with_token_which_does_not_exist_raise_exception(
             self, update_user_password_mock, presenter_mock
@@ -36,7 +36,7 @@ class TestUpdateUserPasswordInteractor:
 
         # Act
         response = interactor.update_user_password_wrapper(
-            token=token, password=password, presenter=presenter
+            reset_password_token=token, password=password, presenter=presenter
         )
 
         # Assert
@@ -44,7 +44,7 @@ class TestUpdateUserPasswordInteractor:
         presenter.raise_exception_for_token_does_not_exists.assert_called_once()
 
     @patch(
-        "ib_iam.adapters.auth_service.AuthService.update_user_password"
+        "ib_iam.adapters.auth_service.AuthService.update_user_password_with_reset_password_token"
     )
     def test_with_token_expired_raise_exception(
             self, update_user_password_mock, presenter_mock
@@ -67,7 +67,7 @@ class TestUpdateUserPasswordInteractor:
 
         # Act
         response = interactor.update_user_password_wrapper(
-            token=token, password=password, presenter=presenter
+            reset_password_token=token, password=password, presenter=presenter
         )
 
         # Assert
@@ -75,7 +75,7 @@ class TestUpdateUserPasswordInteractor:
         presenter.raise_exception_for_token_has_expired.assert_called_once()
 
     @patch(
-        "ib_iam.adapters.auth_service.AuthService.update_user_password"
+        "ib_iam.adapters.auth_service.AuthService.update_user_password_with_reset_password_token"
     )
     def test_with_valid_details_update_password(
             self, update_user_password_mock, presenter_mock
@@ -94,7 +94,7 @@ class TestUpdateUserPasswordInteractor:
 
         # Act
         response = interactor.update_user_password_wrapper(
-            token=token, password=password, presenter=presenter
+            reset_password_token=token, password=password, presenter=presenter
         )
 
         # Assert
@@ -103,7 +103,7 @@ class TestUpdateUserPasswordInteractor:
         update_user_password_mock.assert_called_once()
 
     @patch(
-        "ib_iam.adapters.auth_service.AuthService.update_user_password"
+        "ib_iam.adapters.auth_service.AuthService.update_user_password_with_reset_password_token"
     )
     def test_validate_password_min_length_raise_exception(
             self, update_user_password_mock,
@@ -129,7 +129,8 @@ class TestUpdateUserPasswordInteractor:
 
         # Act
         response = interactor.update_user_password_wrapper(
-            token=token, password=password, presenter=presenter_mock
+            reset_password_token=token, password=password,
+            presenter=presenter_mock
         )
 
         # Assert
@@ -138,7 +139,7 @@ class TestUpdateUserPasswordInteractor:
             assert_called_once()
 
     @patch(
-        "ib_iam.adapters.auth_service.AuthService.update_user_password"
+        "ib_iam.adapters.auth_service.AuthService.update_user_password_with_reset_password_token"
     )
     def test_validate_password_at_least_one_special_character_raise_exception(
             self, update_user_password_mock,
@@ -163,7 +164,8 @@ class TestUpdateUserPasswordInteractor:
 
         # Act
         response = interactor.update_user_password_wrapper(
-            token=token, password=password, presenter=presenter_mock
+            reset_password_token=token, password=password,
+            presenter=presenter_mock
         )
 
         # Assert

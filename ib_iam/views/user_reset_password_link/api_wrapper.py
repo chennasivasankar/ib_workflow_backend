@@ -9,7 +9,7 @@ def api_wrapper(*args, **kwargs):
     request_data = kwargs["request_data"]
     email = request_data["email"]
 
-    from ib_iam.interactors.rest_password_link_to_email_interactor import \
+    from ib_iam.interactors.reset_password_link_to_email_interactor import \
         ResetPasswordLinkToEmailInteractor
     interactor = ResetPasswordLinkToEmailInteractor()
 

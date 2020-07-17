@@ -2,7 +2,7 @@ from abc import abstractmethod, ABC
 
 from django.http import HttpResponse
 
-from ib_iam.adapters.auth_service import TokensDTO
+from ib_iam.adapters.auth_service import UserTokensDTO
 
 
 class AuthPresenterInterface(ABC):
@@ -29,8 +29,8 @@ class AuthPresenterInterface(ABC):
     ) -> HttpResponse:
         pass
 
-    def prepare_response_for_tokens_dto(
-            self, tokens_dto: TokensDTO, is_admin: bool
+    def prepare_response_for_user_tokens_dto_and_is_admin(
+            self, tokens_dto: UserTokensDTO, is_admin: bool
     ):
         pass
 
@@ -41,10 +41,6 @@ class AuthPresenterInterface(ABC):
 
     @abstractmethod
     def raise_exception_for_token_does_not_exists(self):
-        pass
-
-    @abstractmethod
-    def raise_exception_for_not_a_strong_password(self):
         pass
 
     @abstractmethod
