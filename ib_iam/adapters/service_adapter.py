@@ -1,8 +1,8 @@
 class ServiceAdapter:
 
     @property
-    def auth_service(self):
-        from .user_service import UserService
+    def user_service(self):
+        from ib_iam.adapters.user_service import UserService
         return UserService()
 
 

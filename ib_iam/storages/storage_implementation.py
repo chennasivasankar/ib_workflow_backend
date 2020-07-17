@@ -7,15 +7,15 @@ from ib_iam.interactors.storage_interfaces.storage_interface import StorageInter
 class StorageImplementation(StorageInterface):
 
     def validate_user_is_admin(self, user_id: str) -> bool:
-        from ib_iam.models.user_profile import UserProfile
-        user = UserProfile.objects.get(user_id=user_id)
+        from ib_iam.models.user_profile import UserDetails
+        user = UserDetails.objects.get(user_id=user_id)
         return user.is_admin
 
     def get_users_who_are_not_admins(
             self, offset=0, limit=10) -> List[UserDTO]:
-        from ib_iam.models import UserProfile
+        from ib_iam.models import UserDetails
         user_dtos = []
-        users = UserProfile.objects.filter(is_admin=False)[offset:limit]
+        users = UserDetails.objects.filter(is_admin=False)[offset:limit]
         for user in users:
             user_dtos.append(UserDTO(
                 user_id=user.user_id,
@@ -60,8 +60,8 @@ class StorageImplementation(StorageInterface):
     def get_company_details_of_users_bulk(
             self, user_ids: List[str]) -> List[UserCompanyDTO]:
         from ib_iam.models import UserRole
-        from ib_iam.models import UserProfile
-        user_companies = UserProfile.objects.filter(user_id__in=user_ids) \
+        from ib_iam.models import UserDetails
+        user_companies = UserDetails.objects.filter(user_id__in=user_ids) \
             .select_related('company')
         company_dtos = []
         for user_company in user_companies:

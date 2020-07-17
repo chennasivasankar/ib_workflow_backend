@@ -200,6 +200,44 @@
       "required": [
         "response"
       ]
+    },
+    "AddUserDetailsDefinition": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        }
+      },
+      "required": [
+        "name",
+        "email"
+      ]
+    },
+    "AddUserFailedDefinition": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_EMAIL",
+            "INVALID_NAME",
+            "USER_ALREADY_EXIST_WITH_THIS_EMAIL"
+          ]
+        }
+      },
+      "required": [
+        "response"
+      ]
     }
   },
   "parameters": {
@@ -214,6 +252,14 @@
       "in": "query",
       "required": true,
       "type": "integer"
+    },
+    "AddUserParameter": {
+      "name": "AddUser",
+      "description": "Details of User",
+      "in": "body",
+      "schema": {
+        "$ref": "#/definitions/AddUserDetailsDefinition"
+      }
     }
   },
   "responses": {
@@ -227,6 +273,12 @@
       "description": "Access Denied",
       "schema": {
         "$ref": "#/definitions/ForbiddenDefinition"
+      }
+    },
+    "AddUserFailedResponse": {
+      "description": "Failed to add user",
+      "schema": {
+        "$ref": "#/definitions/AddUserFailedDefinition"
       }
     }
   },
@@ -258,6 +310,32 @@
             "$ref": "#/responses/ForbiddenResponse"
           }
         }
+      }
+    },
+    "/add_user/v1/": {
+      "post": {
+        "operationId": "add_user",
+        "description": "add an user with valid details",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/AddUserParameter"
+          }
+        ],
+       "responses": {
+         "201": {
+           "description": "user added"
+         },
+         "400": {
+           "$ref": "#/responses/AddUserFailedResponse"
+         }
+       }
       }
     }
   }

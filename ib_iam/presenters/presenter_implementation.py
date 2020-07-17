@@ -10,6 +10,9 @@ from ib_iam.interactors.presenter_interfaces.presenter_interface \
     import PresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO, UserRoleDTO, UserCompanyDTO
 
+FORBIDDEN_STATUS_CODE = 403
+BADREQUEST_STATUS_CODE = 400
+
 
 class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
     def raise_user_is_not_admin_exception(self):
@@ -134,3 +137,23 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
                 "role_name": role_dto.name
             })
         return roles
+
+    def raise_invalid_name_exception(self):
+        from ib_iam.constants.exception_messages import INVALID_NAME
+        response_dict = {
+            "response": INVALID_NAME[0],
+            "http_status_code": StatusCode.BAD_REQUEST.value,
+            "res_status": INVALID_NAME[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict)
+
+    def raise_invalid_email_exception(self):
+        from ib_iam.constants.exception_messages import INVALID_EMAIL
+        response_dict = {
+            "response": INVALID_EMAIL[0],
+            "http_status_code": StatusCode.BAD_REQUEST.value,
+            "res_status": INVALID_EMAIL[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict)

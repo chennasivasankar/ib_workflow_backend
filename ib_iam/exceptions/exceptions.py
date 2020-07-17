@@ -12,3 +12,7 @@ class InvalidLimitValueException(Exception):
 
 class OffsetValueIsGreaterthanLimitValueException(Exception):
     pass
+
+
+class UserAccountAlreadyExistWithThisEmail(Exception):
+    pass

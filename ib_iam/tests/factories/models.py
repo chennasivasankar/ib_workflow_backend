@@ -5,7 +5,7 @@ import factory
 
 from ib_iam import models
 from ib_iam.models import Role, Team, Company
-from ib_iam.models.user_profile import UserProfile, UserTeam, UserRole
+from ib_iam.models.user_profile import UserDetails, UserTeam, UserRole
 
 
 class TeamFactory(factory.django.DjangoModelFactory):
@@ -36,7 +36,7 @@ class RoleFactory(factory.django.DjangoModelFactory):
 
 class UserProfileFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = UserProfile
+        model = UserDetails
 
     user_id = factory.sequence(lambda number: "user%s" % number)
     is_admin = False
