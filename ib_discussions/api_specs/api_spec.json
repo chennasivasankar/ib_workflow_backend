@@ -1,325 +1,281 @@
 {
-        "swagger": "2.0",
-        "host": "127.0.0.1:8000",
-        "basePath": "/api/ib_discussions/",
-        "info": {
-            "version": "1.0.0",
-            "title": "Simple API",
-            "description": "A simple API to learn how to write OpenAPI Specification"
-        },
-        "schemes": [
-            "http"
-        ],
-        "consumes": [
-            "application/json"
-        ],
-        "produces": [
-            "application/json"
-        ],
-        "securityDefinitions": {
-            "oauth": {
-                "tokenUrl": "http://auth.ibtspl.com/oauth2/",
-                "flow": "password",
-                "scopes": {
-                    "read": "read users",
-                    "write": "create users",
-                    "update": "update users",
-                    "delete": "delete users"
-                },
-                "type": "oauth2"
-            }
-        },
-        "security": [],
-        "definitions": {
-            "DefaultHttpExceptionFields": {
-                "type": "object",
-                "properties": {
-                    "response": {
-                        "type": "string"
-                    },
-                    "http_status_code": {
-                        "type": "integer"
-                    },
-                    "res_status": {
-                        "type": "string",
-                        "enum": [
-                            "DUPLICATE_TO_IDS",
-                            "INVALID_INPUT_TO_IDS"
-                        ]
-                    }
-                },
-                "required": [
-                    "response",
-                    "http_status_code",
-                    "res_status"
-                ]
-            },
-            "TodoId": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer"
-                    }
-                }
-            },
-            "BasicTodo": {
-                "type": "object",
-                "properties": {
-                    "description": {
-                        "type": "string"
-                    },
-                    "is_completed": {
-                        "type": "boolean"
-                    },
-                    "remind_at": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "description"
-                ]
-            },
-            "Todo": {
-                "allOf": [
-                    {
-                        "$ref": "#/definitions/BasicTodo"
-                    },
-                    {
-                        "$ref": "#/definitions/TodoId"
-                    }
-                ]
-            }
-        },
-        "parameters": {
-            "TodoId": {
-                "description": "todo id",
-                "in": "path",
-                "name": "id",
-                "required": true,
-                "type": "integer"
-            },
-            "BasicTodo": {
-                "description": "Todo Parameter",
-                "in": "body",
-                "name": "todo",
-                "required": true,
-                "schema": {
-                    "$ref": "#/definitions/BasicTodo"
-                }
-            }
-        },
-        "responses": {
-            "SuccessResponse": {
-                "description": "success response"
-            }
-        },
-        "paths": {
-            "/todos/": {
-                "get": {
-                    "summary": "Get all todos",
-                    "description": "Returns a list containing all todos.",
-                    "operationId": "get_todos",
-                    "security": [
-                        {
-                            "oauth": [
-                                "read"
-                            ]
-                        }
-                    ],
-                    "responses": {
-                        "200": {
-                            "description": "A list of todos",
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/Todo"
-                                }
-                            }
-                        },
-                        "401": {
-                            "description": "Unauthorized",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        },
-                        "403": {
-                            "description": "Forbidden",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        },
-                        "404": {
-                            "description": "Not Found",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        }
-                    }
-                },
-                "post": {
-                    "summary": "create a todo",
-                    "description": "Create a todo",
-                    "operationId": "create_todo",
-                    "security": [
-                        {
-                            "oauth": [
-                                "write"
-                            ]
-                        }
-                    ],
-                    "parameters": [
-                        {
-                            "$ref": "#/parameters/BasicTodo"
-                        }
-                    ],
-                    "responses": {
-                        "200": {
-                            "description": "create a todo",
-                            "schema": {
-                                "$ref": "#/definitions/TodoId"
-                            }
-                        },
-                        "401": {
-                            "description": "Unauthorized",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        },
-                        "403": {
-                            "description": "Forbidden",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        },
-                        "404": {
-                            "description": "Not Found",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        }
-                    }
-                }
-            },
-            "/todos/{id}/": {
-                "parameters": [
-                    {
-                        "$ref": "#/parameters/TodoId"
-                    }
-                ],
-                "post": {
-                    "summary": "Get a todo",
-                    "description": "Returns a todo.",
-                    "operationId": "get_todo",
-                    "security": [
-                        {
-                            "oauth": [
-                                "read"
-                            ]
-                        }
-                    ],
-                    "responses": {
-                        "200": {
-                            "description": "A todo",
-                            "schema": {
-                                "$ref": "#/definitions/Todo"
-                            }
-                        },
-                        "401": {
-                            "description": "Unauthorized",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        },
-                        "403": {
-                            "description": "Forbidden",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        },
-                        "404": {
-                            "description": "Not Found",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        }
-                    }
-                },
-                "put": {
-                    "parameters": [
-                        {
-                            "$ref": "#/parameters/BasicTodo"
-                        }
-                    ],
-                    "summary": "Updates a todo",
-                    "description": "Updates a todo.",
-                    "operationId": "update_todo",
-                    "security": [
-                        {
-                            "oauth": [
-                                "update"
-                            ]
-                        }
-                    ],
-                    "responses": {
-                        "200": {
-                            "$ref": "#/responses/SuccessResponse"
-                        },
-                        "401": {
-                            "description": "Unauthorized",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        },
-                        "403": {
-                            "description": "Forbidden",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        },
-                        "404": {
-                            "description": "Not Found",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        }
-                    }
-                },
-                "delete": {
-                    "summary": "Deletes a todo",
-                    "description": "Deletes a todo.",
-                    "operationId": "delete_todo",
-                    "security": [
-                        {
-                            "oauth": [
-                                "delete"
-                            ]
-                        }
-                    ],
-                    "responses": {
-                        "200": {
-                            "$ref": "#/responses/SuccessResponse"
-                        },
-                        "401": {
-                            "description": "Unauthorized",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        },
-                        "403": {
-                            "description": "Forbidden",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        },
-                        "404": {
-                            "description": "Not Found",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        }
-                    }
-                }
-            }
-        }
+  "swagger": "2.0",
+  "host": "127.0.0.1:8000",
+  "basePath": "/api/ib_discussions/",
+  "info": {
+    "version": "1.0.0",
+    "title": "Simple API",
+    "description": "A simple API to learn how to write OpenAPI Specification"
+  },
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "oauth": {
+      "tokenUrl": "http://auth.ibtspl.com/oauth2/",
+      "flow": "password",
+      "scopes": {
+        "read": "read users",
+        "write": "create users",
+        "update": "update users",
+        "delete": "delete users"
+      },
+      "type": "oauth2"
     }
-    
+  },
+  "security": [],
+  "definitions": {
+    "HttpResponseAndStatusCode": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code"
+      ]
+    },
+    "EntityDetails": {
+      "type": "object",
+      "properties": {
+        "entity_id": {
+          "type": "string"
+        },
+        "entity_type": {
+          "type": "string",
+          "enum": [
+            "TASK",
+            "COLUMN",
+            "BOARD"
+          ]
+        }
+      },
+      "required": [
+        "entity_id",
+        "entity_type"
+      ]
+    },
+    "Discussion": {
+      "type": "object",
+      "properties": {
+        "discussion_id": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "author": {
+          "type": "object",
+          "properties": {
+            "user_id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "user_id",
+            "name"
+          ]
+        }
+      },
+      "required": [
+        "discussion_id",
+        "description",
+        "title",
+        "created_at",
+        "author"
+      ]
+    }
+  },
+  "parameters": {
+    "CreateDiscussionParameter": {
+      "name": "CreateDiscussionParameter",
+      "description": "Create Discussion for user",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/EntityDetails"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "entity_id",
+              "entity_type",
+              "title",
+              "description"
+            ]
+          }
+        ]
+      }
+    },
+    "GetDiscussionsParameter": {
+      "name": "GetDiscussionsParameter",
+      "description": "get discussions parameter",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "$ref": "#/definitions/EntityDetails"
+      }
+    }
+  },
+  "responses": {
+    "DiscussionNotFoundResponse": {
+      "description": "create discussion not found response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "NOT_FOUND_DISCUSSION_SET_FOR_GIVEN_ENTITY_ID_AND_ENTITY_TYPE"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "CreateDiscussionBadRequestResponse": {
+      "description": "create discussion bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "EmptyTitle"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "GetDiscussionSuccessResponse": {
+      "description": "get discussion success response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "discussionS": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Discussion"
+            }
+          },
+          "total_count": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "discussion_set",
+          "total_discussion_count"
+        ]
+      }
+    }
+  },
+  "paths": {
+    "/discussions/v1/": {
+      "post": {
+        "operationId": "create_discussion",
+        "summary": "create the discussion ",
+        "description": "create the discussion with title and description",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/CreateDiscussionParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success response for create discussion"
+          },
+          "404": {
+            "$ref": "#/responses/DiscussionNotFoundResponse"
+          },
+          "400": {
+            "$ref": "#/responses/CreateDiscussionBadRequestResponse"
+          }
+        }
+      },
+      "get": {
+        "operationId": "get_discussions",
+        "summary": "get discussions",
+        "description": "get all discussion for given entity id and entity type",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/GetDiscussionsParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetDiscussionSuccessResponse"
+          },
+          "404": {
+            "$ref": "#/responses/DiscussionNotFoundResponse"
+          }
+        }
+      }
+    }
+  }
+}
