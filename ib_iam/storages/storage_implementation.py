@@ -51,8 +51,8 @@ class StorageImplementation(StorageInterface):
             role_dto = UserRoleDTO(
                 user_id=user_role.user_id,
                 role_id=str(role.id),
-                role_name=role.role_name,
-                role_description=role.role_description
+                name=role.name,
+                description=role.description
             )
             role_dtos.append(role_dto)
         return role_dtos

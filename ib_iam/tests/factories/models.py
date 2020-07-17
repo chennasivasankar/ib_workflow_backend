@@ -30,8 +30,8 @@ class RoleFactory(factory.django.DjangoModelFactory):
 
     id = factory.LazyFunction(uuid.uuid4)
     role_id = factory.sequence(lambda number: "ROLE_%s" % number)
-    role_name = factory.sequence(lambda number: "role %s" % number)
-    role_description = factory.Sequence(lambda n: 'payment_description%s' % n)
+    name = factory.sequence(lambda number: "role %s" % number)
+    description = factory.Sequence(lambda n: 'payment_description%s' % n)
 
 
 class UserProfileFactory(factory.django.DjangoModelFactory):

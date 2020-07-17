@@ -131,6 +131,6 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         for role_dto in role_dtos:
             roles.append({
                 "role_id": role_dto.role_id,
-                "role_name": role_dto.role_name
+                "role_name": role_dto.name
             })
         return roles

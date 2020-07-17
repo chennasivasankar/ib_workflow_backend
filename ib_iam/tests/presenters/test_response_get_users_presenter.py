@@ -3,6 +3,7 @@ import json
 import pytest
 
 from ib_iam.presenters.presenter_implementation import PresenterImplementation
+from ib_iam.tests.common_fixtures.storages import reset_sequence
 
 FORBIDDEN_STATUS_CODE = 403
 BADREQUEST_STATUS_CODE = 400
@@ -10,6 +11,7 @@ BADREQUEST_STATUS_CODE = 400
 
 @pytest.fixture()
 def complete_user_details_dto():
+    reset_sequence()
     from ib_iam.tests.factories.storage_dtos \
         import UserTeamDTOFactory, \
         UserRoleDTOFactory, UserCompanyDTOFactory

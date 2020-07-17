@@ -27,5 +27,5 @@ class UserCompanyDTO:
 class UserRoleDTO:
     user_id: uuid.uuid4
     role_id: str
-    role_name: str
-    role_description: str
+    name: str
+    description: str
