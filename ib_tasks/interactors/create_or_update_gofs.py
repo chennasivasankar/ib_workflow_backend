@@ -3,11 +3,11 @@ from typing import List, Optional, Union
 from ib_tasks.exceptions.custom_exceptions import (
     GOFIdCantBeEmpty, GOFDisplayNameCantBeEmpty, GOFReadPermissionsCantBeEmpty,
     GOFWritePermissionsCantBeEmpty, InvalidReadPermissionRoles,
-    InvalidWritePermissionRoles, GoFIDsAlreadyExists, InvalidTaskTemplateIds,
+    InvalidWritePermissionRoles, InvalidTaskTemplateIds,
     InvalidOrderValues
 )
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    CompleteGoFDetailsDTO, GoFRolesDTO, GoFDTO, GoFRoleDTO
+    CompleteGoFDetailsDTO, GoFRolesDTO, GoFDTO, GoFRoleDTO, GoFRoleWithIdDTO
 )
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
@@ -18,7 +18,7 @@ class CreateOrUpdateGoFsInteractor:
     def __init__(self, storage: TaskStorageInterface):
         self.storage = storage
 
-    def create_or_update_gof_wrapper(self):
+    def create_or_update_gofs_wrapper(self):
         pass
 
     def create_or_update_gofs(
@@ -70,8 +70,16 @@ class CreateOrUpdateGoFsInteractor:
                     complete_gof_details_dtos=complete_gof_details_dtos_for_updation
                 )
             gof_role_dtos = self._get_role_dtos(gof_roles_dtos=gof_roles_dtos)
+            existing_roles, new_roles = self._filter_gof_role_dtos(
+                gof_role_dtos=gof_role_dtos
+            )
             self.storage.update_gofs(gof_dtos=gof_dtos)
-            self.storage.update_gof_roles(gof_role_dtos=gof_role_dtos)
+            if existing_roles:
+                self.storage.update_gof_roles(
+                    gof_role_with_id_dtos=existing_roles
+                )
+            if new_roles:
+                self.storage.create_gof_roles(gof_role_dtos=new_roles)
 
         if complete_gof_details_dtos_for_creation:
             gof_dtos = \
@@ -86,6 +94,26 @@ class CreateOrUpdateGoFsInteractor:
             self.storage.create_gofs(gof_dtos=gof_dtos)
             self.storage.create_gof_roles(gof_role_dtos=gof_role_dtos)
         return
+
+    def _filter_gof_role_dtos(
+            self, gof_role_dtos: List[GoFRoleDTO]
+    ) -> (List[GoFRoleWithIdDTO], List[GoFRoleDTO]):
+        gof_ids = [gof_role_dto.gof_id for gof_role_dto in gof_role_dtos]
+        existing_gof_roles = self.storage.get_roles_for_given_gof_ids(
+            gof_ids=gof_ids
+        )
+        for existing_gof_role in existing_gof_roles:
+            for gof_role_dto in gof_role_dtos:
+                role_is_matched = (
+                    existing_gof_role.gof_id == gof_role_dto.gof_id and
+                    existing_gof_role.role == gof_role_dto.role
+                )
+                if role_is_matched:
+                    existing_gof_role.permission_type = \
+                        gof_role_dto.permission_type
+                    gof_role_dtos.remove(gof_role_dto)
+                    break
+        return existing_gof_roles, gof_role_dtos
 
     def _validate_for_invalid_order_value(
             self, gof_dtos: List[GoFDTO]

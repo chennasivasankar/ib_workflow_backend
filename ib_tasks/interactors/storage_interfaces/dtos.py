@@ -49,7 +49,11 @@ class GoFRoleDTO:
 
 
 @dataclass
+class GoFRoleWithIdDTO(GoFRoleDTO):
+    id: str
+
+
+@dataclass
 class CompleteGoFDetailsDTO:
     gof_dto: GoFDTO
     gof_roles_dto: GoFRolesDTO
-

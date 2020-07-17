@@ -40,7 +40,7 @@ def prepare_complete_gof_details_dtos():
     from ib_tasks.constants.constants import GOFS_CSV_FILE_PATH
     gof_dicts = read_csv_file(file_path=GOFS_CSV_FILE_PATH)
     from ib_tasks.interactors.storage_interfaces.dtos import (
-        CompleteGoFDetailsDTO, GoFRolesDTO, GoFFieldsDTO
+        CompleteGoFDetailsDTO, GoFRolesDTO
     )
     return
 

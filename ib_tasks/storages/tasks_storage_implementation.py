@@ -3,10 +3,11 @@ from typing import List, Optional
 from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, FieldDTO, \
     GlobalConstantsDTO
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    GoFDTO, GoFRoleDTO
+    GoFDTO, GoFRoleDTO, GoFRoleWithIdDTO
 )
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
+from ib_tasks.models import GoFRole
 
 
 class TasksStorageImplementation(TaskStorageInterface):
@@ -98,8 +99,28 @@ class TasksStorageImplementation(TaskStorageInterface):
                 return gof_dto
         return
 
-    def update_gof_roles(self, gof_role_dtos: List[GoFRoleDTO]):
-        pass
+    def update_gof_roles(self, gof_role_with_id_dtos: List[GoFRoleWithIdDTO]):
+        from ib_tasks.models.gof_role import GoFRole
+        role_ids = [
+            gof_role_dto.id
+            for gof_role_dto in gof_role_with_id_dtos
+        ]
+        gof_roles = GoFRole.objects.filter(pk__in=role_ids)
+        for gof_role in gof_roles:
+            gof_role_dto = self._get_matching_gof_role_dto(
+                gof_role, gof_role_with_id_dtos
+            )
+            gof_role.permission_type = gof_role_dto.permission_type
+        GoFRole.objects.bulk_update(gof_roles, ['permission_type'])
+
+    @staticmethod
+    def _get_matching_gof_role_dto(
+            gof_role: GoFRole, gof_role_with_id_dtos: List[GoFRoleWithIdDTO]
+    ) -> GoFRoleWithIdDTO:
+        for gof_role_dto in gof_role_with_id_dtos:
+            gof_role_is_matched = gof_role.id == gof_role_dto.id
+            if gof_role_is_matched:
+                return gof_role_dto
 
     def check_is_template_exists(self, template_id: str) -> bool:
         pass
@@ -112,3 +133,26 @@ class TasksStorageImplementation(TaskStorageInterface):
             self, template_id: str,
             global_constants_dtos: List[GlobalConstantsDTO]):
         pass
+
+    def get_roles_for_given_gof_ids(
+            self, gof_ids: List[str]
+    ) -> List[GoFRoleWithIdDTO]:
+        from ib_tasks.models.gof_role import GoFRole
+        gof_roles = list(GoFRole.objects.filter(gof_id__in=gof_ids))
+        gof_role_with_id_dtos = self._prepare_gof_role_with_id_dtos(gof_roles)
+        return gof_role_with_id_dtos
+
+    @staticmethod
+    def _prepare_gof_role_with_id_dtos(
+            gof_roles: List[GoFRole]
+    ) -> List[GoFRoleWithIdDTO]:
+        gof_role_with_id_dtos = [
+            GoFRoleWithIdDTO(
+                id=gof_role.id,
+                gof_id=gof_role.gof_id,
+                role=gof_role.role,
+                permission_type=gof_role.permission_type
+            )
+            for gof_role in gof_roles
+        ]
+        return gof_role_with_id_dtos

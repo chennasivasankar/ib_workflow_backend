@@ -1,9 +1,12 @@
 import factory
 import pytest
 
+from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.models.gof_role import GoFRole
-from ib_tasks.tests.factories.models import GoFFactory, TaskTemplateFactory
-from ib_tasks.tests.factories.storage_dtos import GoFRoleDTOFactory
+from ib_tasks.tests.factories.models import GoFFactory, TaskTemplateFactory, \
+    GoFRoleFactory
+from ib_tasks.tests.factories.storage_dtos import GoFRoleDTOFactory, \
+    GoFRoleWithIdDTOFactory
 
 
 @pytest.mark.django_db
@@ -144,3 +147,46 @@ class TestTasksStorageImplementation:
             assert gof.max_columns == gof_dto.max_columns
             assert gof.task_template_id == gof_dto.task_template_id
 
+    def test_update_gof_roles(self, storage):
+
+        # Arrange
+        gof_roles = GoFRoleFactory.create_batch(size=2)
+        gof_role_with_id_dtos = [
+            GoFRoleWithIdDTOFactory(
+                id=gof_role.id,
+                gof_id=gof_role.gof_id,
+                role=gof_role.role,
+                permission_type=PermissionTypes.WRITE.value
+            )
+            for gof_role in gof_roles
+        ]
+
+        # Act
+        storage.update_gof_roles(gof_role_with_id_dtos=gof_role_with_id_dtos)
+
+        # Assert
+        for gof_role_with_id_dto in gof_role_with_id_dtos:
+            gof_role = GoFRole.objects.get(
+                gof_id=gof_role_with_id_dto.gof_id,
+                role=gof_role_with_id_dto.role
+            )
+            assert gof_role_with_id_dto.permission_type == \
+                   gof_role.permission_type
+
+    def test_get_roles_for_given_gof_ids(self, storage):
+
+        # Arrange
+        gof_roles = GoFRoleFactory.create_batch(size=2)
+        gof_ids = [gof_role.gof_id for gof_role in gof_roles]
+
+        # Act
+        actual_gof_role_with_id_dtos = \
+            storage.get_roles_for_given_gof_ids(gof_ids=gof_ids)
+
+        # Assert
+        for gof_role_with_id_dto in actual_gof_role_with_id_dtos:
+            gof_role = GoFRole.objects.get(pk=gof_role_with_id_dto.id)
+            assert gof_role.gof_id == gof_role_with_id_dto.gof_id
+            assert gof_role.role == gof_role_with_id_dto.role
+            assert gof_role.permission_type == \
+                   gof_role_with_id_dto.permission_type

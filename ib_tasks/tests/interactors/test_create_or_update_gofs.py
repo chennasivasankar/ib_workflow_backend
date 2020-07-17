@@ -1,12 +1,14 @@
 import pytest
 
 from ib_tasks.constants.enum import PermissionTypes
-from ib_tasks.interactors.create_gofs import CreateOrUpdateGoFsInteractor
-from ib_tasks.interactors.storage_interfaces.dtos import GoFRoleDTO
+from ib_tasks.interactors.create_or_update_gofs import CreateOrUpdateGoFsInteractor
+from ib_tasks.interactors.storage_interfaces.dtos import GoFRoleDTO, \
+    GoFRoleWithIdDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
 from ib_tasks.tests.factories.storage_dtos import (
-    CompleteGoFDetailsDTOFactory, GoFDTOFactory, GoFRolesDTOFactory
+    CompleteGoFDetailsDTOFactory, GoFDTOFactory, GoFRolesDTOFactory,
+    GoFRoleWithIdDTOFactory
 )
 
 
@@ -79,6 +81,7 @@ class TestCreateOrUpdateGOFs:
         storage_mock.create_gof_roles.assert_called_once_with(
             gof_role_dtos=gof_role_dtos
         )
+        storage_mock.update_gofs.assert_not_called()
 
     @pytest.mark.parametrize("gof_id", [None, "", "  "])
     def test_create_or_update_gofs_with_invalid_gof_id_field_raise_exception(
@@ -310,7 +313,7 @@ class TestCreateOrUpdateGOFs:
         storage_mock.update_gofs.assert_not_called()
         storage_mock.update_gof_roles.assert_not_called()
 
-    def test_create_or_update_gofs_with_already_existing_gof_ids_updates_gofs(
+    def test_create_or_update_gofs_with_already_existing_gof_ids_and_new_gof_ids_crates_and_updates_gofs(
             self, storage_mock, mocker
     ):
         # Arrange
@@ -346,17 +349,7 @@ class TestCreateOrUpdateGOFs:
         storage_mock.get_existing_gof_ids_in_given_gof_ids.return_value = [
             request_details_dto.gof_id
         ]
-        storage_mock.get_valid_template_ids_in_given_template_ids.return_value = template_ids
-        interactor = CreateOrUpdateGoFsInteractor(storage=storage_mock)
-
-        # Act
-        interactor.create_or_update_gofs(
-            complete_gof_details_dtos=complete_gof_details_dtos
-        )
-
-        # Assert
-        get_valid_read_permissions_mock_method.assert_called_once()
-        get_valid_write_permissions_mock_method.assert_called_once()
+        gof_ids = [gof_dto.gof_id for gof_dto in gof_dtos]
         gof_roles_dtos = [
             complete_gof_details_dto.gof_roles_dto
             for complete_gof_details_dto in complete_gof_details_dtos
@@ -382,6 +375,26 @@ class TestCreateOrUpdateGOFs:
                     gof_roles_dto.write_permission_roles
                 )
             ]
+        gof_role_with_id_dtos = [
+            GoFRoleWithIdDTOFactory(
+                gof_id=gof_role_dto.gof_id,
+                role=gof_role_dto.role
+            )
+            for gof_role_dto in gof_role_dtos
+        ]
+        storage_mock.get_roles_for_given_gof_ids.return_value = gof_role_with_id_dtos
+        storage_mock.get_valid_template_ids_in_given_template_ids.return_value = template_ids
+        interactor = CreateOrUpdateGoFsInteractor(storage=storage_mock)
+
+        # Act
+        interactor.create_or_update_gofs(
+            complete_gof_details_dtos=complete_gof_details_dtos
+        )
+
+        # Assert
+        get_valid_read_permissions_mock_method.assert_called_once()
+        get_valid_write_permissions_mock_method.assert_called_once()
+
         gof_dtos_for_creation = [vendor_details_dto]
         gof_dtos_for_updation = [request_details_dto]
         gof_role_dtos_for_creation = [
@@ -404,5 +417,5 @@ class TestCreateOrUpdateGOFs:
             gof_dtos=gof_dtos_for_updation
         )
         storage_mock.update_gof_roles.assert_called_once_with(
-            gof_role_dtos=gof_role_dtos_for_updation
+            gof_role_with_id_dtos=gof_role_with_id_dtos
         )

@@ -2,7 +2,7 @@ import factory
 
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    CompleteGoFDetailsDTO, GoFDTO, GoFRolesDTO, GoFRoleDTO
+    CompleteGoFDetailsDTO, GoFDTO, GoFRolesDTO, GoFRoleDTO, GoFRoleWithIdDTO
 )
 
 
@@ -67,3 +67,20 @@ class GoFRoleDTOFactory(factory.Factory):
     )
     permission_type = PermissionTypes.READ.value
 
+
+class GoFRoleWithIdDTOFactory(factory.Factory):
+    class Meta:
+        model = GoFRoleWithIdDTO
+
+    id = factory.Sequence(lambda counter: counter)
+    gof_id = factory.Iterator(
+        [
+            'FIN_REQUEST_DETAILS', 'FIN_VENDOR_BASIC_DETAILS'
+        ]
+    )
+    role = factory.Iterator(
+        [
+            "FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"
+        ]
+    )
+    permission_type = PermissionTypes.READ.value

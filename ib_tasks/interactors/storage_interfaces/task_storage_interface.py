@@ -8,7 +8,7 @@ import abc
 from typing import List
 
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    GoFDTO, GoFRoleDTO
+    GoFDTO, GoFRoleDTO, GoFRoleWithIdDTO
 )
 from ib_tasks.interactors.dtos import FieldDTO, GlobalConstantsDTO
 
@@ -50,7 +50,7 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def update_gof_roles(self, gof_role_dtos: List[GoFRoleDTO]):
+    def update_gof_roles(self, gof_role_with_id_dtos: List[GoFRoleWithIdDTO]):
         pass
 
     @abc.abstractmethod
@@ -72,4 +72,10 @@ class TaskStorageInterface(abc.ABC):
     def create_global_constants_to_template(
             self, template_id: str,
             global_constants_dtos: List[GlobalConstantsDTO]):
+        pass
+
+    @abc.abstractmethod
+    def get_roles_for_given_gof_ids(
+            self, gof_ids: List[str]
+    ) -> List[GoFRoleWithIdDTO]:
         pass
