@@ -20,4 +20,8 @@ class TestCreateRoles:
         # Assert
         current_storage_len = Role.objects.count()
         no_of_objects_created = current_storage_len - previous_storage_len
+        expeected_role_objs = Role.objects.all()
         assert no_of_objects_created == objects_count
+        for role_dto, role_obj in zip(role_dtos, expeected_role_objs):
+            assert role_obj.role_id == role_dto.role_id
+
