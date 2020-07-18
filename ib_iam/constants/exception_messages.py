@@ -18,9 +18,14 @@ OFFSET_VALUE_IS_GREATER_THAN_LIMIT = (
     "OFFSET_VALUE_IS_GREATER_THAN_LIMIT"
 )
 
-INVALID_NAME = (
-    "given name is invalid",
-    "INVALID_NAME"
+EMPTY_NAME_IS_INVALID = (
+    "name should not be empty",
+    "EMPTY_NAME_IS_INVALID"
+)
+
+NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS = (
+    "name should not contains special characters and numbers",
+    "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
 )
 
 INVALID_EMAIL = (

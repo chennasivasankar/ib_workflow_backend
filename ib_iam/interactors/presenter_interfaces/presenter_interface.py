@@ -38,3 +38,7 @@ class PresenterInterface(ABC):
     @abstractmethod
     def raise_user_account_already_exist_with_this_email_exception(cls):
         pass
+
+    @abstractmethod
+    def raise_name_should_not_contain_special_characters_exception(self):
+        pass

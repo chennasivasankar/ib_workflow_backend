@@ -139,11 +139,11 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         return roles
 
     def raise_invalid_name_exception(self):
-        from ib_iam.constants.exception_messages import INVALID_NAME
+        from ib_iam.constants.exception_messages import EMPTY_NAME_IS_INVALID
         response_dict = {
-            "response": INVALID_NAME[0],
+            "response": EMPTY_NAME_IS_INVALID[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
-            "res_status": INVALID_NAME[1]
+            "res_status": EMPTY_NAME_IS_INVALID[1]
         }
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
@@ -165,6 +165,19 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             "response": USER_ACCOUNT_ALREADY_EXIST_FOR_THIS_EMAIL[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": USER_ACCOUNT_ALREADY_EXIST_FOR_THIS_EMAIL[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict)
+
+    def raise_name_should_not_contain_special_characters_exception(self):
+        from ib_iam.constants.exception_messages \
+            import NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS
+        response_dict = {
+            "response": \
+                NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS[0],
+            "http_status_code": StatusCode.BAD_REQUEST.value,
+            "res_status": \
+                NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS[1]
         }
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)

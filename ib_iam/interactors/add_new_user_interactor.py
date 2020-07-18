@@ -1,5 +1,6 @@
-from ib_iam.exceptions.exceptions import UserIsNotAdminException, InvalidNameException, InvalidEmailAddressException, \
-    UserAccountAlreadyExistWithThisEmail
+from ib_iam.exceptions.exceptions import UserIsNotAdminException, GivenNameIsEmptyException, \
+    InvalidEmailAddressException, \
+    UserAccountAlreadyExistWithThisEmail, NameShouldNotContainsNumbersSpecCharactersException
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.presenter_interface \
     import PresenterInterface
@@ -17,13 +18,16 @@ class AddNewUserInteractor(ValidationMixin):
             self.add_new_user(user_id=user_id, name=name, email=email)
         except UserIsNotAdminException:
             return presenter.raise_user_is_not_admin_exception()
-        except InvalidNameException:
+        except GivenNameIsEmptyException:
             return presenter.raise_invalid_name_exception()
         except InvalidEmailAddressException:
             return presenter.raise_invalid_email_exception()
         except UserAccountAlreadyExistWithThisEmail:
             return presenter.\
                 raise_user_account_already_exist_with_this_email_exception()
+        except NameShouldNotContainsNumbersSpecCharactersException:
+            return presenter.\
+                raise_name_should_not_contain_special_characters_exception()
 
     def add_new_user(self, user_id: str, name: str, email: str):
         self._check_and_throw_user_is_admin(user_id=user_id)

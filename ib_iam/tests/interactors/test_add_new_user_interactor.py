@@ -40,7 +40,7 @@ class TestAddNewUserIneractor:
             user_id=user_id)
         presenter_mock.raise_user_is_not_admin_exception.assert_called_once()
 
-    def test_validate_name_and_throw_exception(self, storage_mock, presenter_mock):
+    def test_validate_name_when_empty_throw_exception(self, storage_mock, presenter_mock):
         # Arrange
         user_id = "user_1"
         name = ""
@@ -55,12 +55,31 @@ class TestAddNewUserIneractor:
 
         # Assert
         presenter_mock.raise_invalid_name_exception.assert_called_once()
+
+    def test_validate_name_when_contains_special_characters_and_numbers_throw_exception(
+            self, storage_mock, presenter_mock):
+        # Arrange
+        user_id = "user_1"
+        name = "user@2"
+        email = "user@email.com"
+        interactor = AddNewUserInteractor(storage=storage_mock)
+        storage_mock.validate_user_is_admin.return_value = True
+        presenter_mock.raise_invalid_name_exception.return_value = Mock()
+
+        # Act
+        interactor.add_new_user_wrapper(
+            user_id=user_id, name=name, email=email, presenter=presenter_mock)
+
+        # Assert
+        presenter_mock. \
+            raise_name_should_not_contain_special_characters_exception. \
+            assert_called_once()
 
     def test_validate_email_and_throw_exception(self, storage_mock, presenter_mock):
         # Arrange
         user_id = "user_1"
-        name = ""
-        email = "user@email.com"
+        name = "name"
+        email = ""
         interactor = AddNewUserInteractor(storage=storage_mock)
         storage_mock.validate_user_is_admin.return_value = True
         presenter_mock.raise_invalid_name_exception.return_value = Mock()
@@ -70,7 +89,7 @@ class TestAddNewUserIneractor:
             user_id=user_id, name=name, email=email, presenter=presenter_mock)
 
         # Assert
-        presenter_mock.raise_invalid_name_exception.assert_called_once()
+        presenter_mock.raise_invalid_email_exception.assert_called_once()
 
     def test_create_user_account_with_email_already_exist_throws_exception(
             self, storage_mock, presenter_mock, mocker):

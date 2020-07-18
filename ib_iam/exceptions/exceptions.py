@@ -18,10 +18,13 @@ class UserAccountAlreadyExistWithThisEmail(Exception):
     pass
 
 
-class InvalidNameException(Exception):
+class GivenNameIsEmptyException(Exception):
     pass
 
 
 class InvalidEmailAddressException(Exception):
     pass
 
+
+class NameShouldNotContainsNumbersSpecCharactersException(Exception):
+    pass

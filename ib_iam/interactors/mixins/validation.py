@@ -1,5 +1,6 @@
 from ib_iam.exceptions.exceptions import InvalidOffsetValueException, \
-    InvalidLimitValueException, OffsetValueIsGreaterthanLimitValueException, InvalidNameException
+    InvalidLimitValueException, OffsetValueIsGreaterthanLimitValueException, GivenNameIsEmptyException, \
+    NameShouldNotContainsNumbersSpecCharactersException
 
 
 class ValidationMixin:
@@ -40,4 +41,11 @@ class ValidationMixin:
 
     def _validate_name_and_throw_exception(self, name: str):
         if not self._validate_string(value=name):
-            raise InvalidNameException()
+            raise GivenNameIsEmptyException()
+        self._check_name_contains_special_characters_and_throw_exception(name)
+
+    @staticmethod
+    def _check_name_contains_special_characters_and_throw_exception(name):
+        print(bool(name.isalpha()))
+        if not name.isalpha():
+            raise NameShouldNotContainsNumbersSpecCharactersException()
