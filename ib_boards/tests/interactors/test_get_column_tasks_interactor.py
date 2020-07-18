@@ -181,19 +181,22 @@ class TestGetColumnTasksInteractor:
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             get_task_ids_mock, validate_stage_ids_mock
 
-        validate_stage_ids_mock = validate_stage_ids_mock(
+        validate_stage_ids_mock(
             mocker=mocker, stage_ids=stage_ids
         )
+        from ib_boards.tests.common_fixtures.adapters.task_service import \
+            get_stage_display_logics_mock
 
+        stage_display_logic_mock = get_stage_display_logics_mock(
+            mocker=mocker
+        )
         task_ids_mock = get_task_ids_mock(
             mocker=mocker,
             task_stage_dtos=task_stage_dtos
         )
-
         task_details_mock = get_task_details_mock(
             mocker=mocker, task_dtos=task_dtos, action_dtos=action_dtos
         )
-
         stage_display_logic_interactor_mock = get_stage_display_logic_mock(
             mocker=mocker, task_status_dtos=task_status_dtos
         )
@@ -218,6 +221,9 @@ class TestGetColumnTasksInteractor:
         )
         presenter_mock.get_response_column_tasks.assert_called_once_with(
             task_complete_details_dto=task_complete_details_dto
+        )
+        stage_display_logic_mock.assert_called_once_with(
+            stage_ids=stage_ids
         )
 
     def test_with_user_id_not_have_permission_for_boards_return_error_message(

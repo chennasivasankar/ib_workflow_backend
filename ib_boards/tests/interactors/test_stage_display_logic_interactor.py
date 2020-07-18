@@ -67,12 +67,7 @@ class TestStageDisplayLogic:
         presenter_mock.get_response_for_stage_display_logic.\
             return_value = expected_response
 
-        from ib_boards.tests.common_fixtures.adapters.task_service import \
-            get_stage_display_logics_mock
 
-        stage_display_logic_mock = get_stage_display_logics_mock(
-            mocker=mocker
-        )
 
         # Act
         actual_response = interactor.get_stage_display_logic_condition_wrapper(
@@ -81,9 +76,7 @@ class TestStageDisplayLogic:
 
         # Assert
         assert actual_response == expected_response
-        stage_display_logic_mock.assert_called_once_with(
-            stage_ids=stage_ids
-        )
+
         presenter_mock.get_response_for_stage_display_logic.assert_called_once_with(
             task_status_dtos=task_status_dtos
         )
