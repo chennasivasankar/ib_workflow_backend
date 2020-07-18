@@ -231,13 +231,9 @@ class TestAddOrDeleteColumnsForBoardInteractor:
             'TASK_TEMPLATE_ID_1', 'TASK_TEMPLATE_ID_2', 'TASK_TEMPLATE_ID_3',
             'TASK_TEMPLATE_ID_4', 'TASK_TEMPLATE_ID_5',
         ]
-        invalid_task_ids = ['TASK_ID_4', 'TASK_ID_5']
-        task_ids = [
-            'TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3',
-            'TASK_ID_4', 'TASK_ID_5',
-        ]
+        invalid_task_ids = ['TASK_TEMPLATE_ID_4', 'TASK_TEMPLATE_ID_5']
         valid_task_ids = [
-            'TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3'
+            'TASK_TEMPLATE_ID_1', 'TASK_TEMPLATE_ID_2', 'TASK_TEMPLATE_ID_3'
         ]
         interactor = AddOrDeleteColumnsForBoardInteractor(
             storage=storage_mock

@@ -260,20 +260,16 @@ class TestPopulateScriptInteractor:
             'TASK_TEMPLATE_ID_1', 'TASK_TEMPLATE_ID_2', 'TASK_TEMPLATE_ID_3',
             'TASK_TEMPLATE_ID_4', 'TASK_TEMPLATE_ID_5',
         ]
-        invalid_task_ids = ['TASK_ID_4', 'TASK_ID_5']
-        task_ids = [
-            'TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3',
-            'TASK_ID_4', 'TASK_ID_5',
-        ]
+        invalid_task_ids = ['TASK_TEMPLATE_ID_4', 'TASK_TEMPLATE_ID_5']
         valid_task_ids = [
-            'TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3'
+            'TASK_TEMPLATE_ID_1', 'TASK_TEMPLATE_ID_2', 'TASK_TEMPLATE_ID_3'
         ]
         interactor = CreateBoardsAndColumnsInteractor(
             storage=storage_mock
         )
 
         from ib_boards.tests.common_fixtures.adapters.task_service import \
-            get_valid_task_ids_mock, get_valid_task_template_ids_mock
+            get_valid_task_ids_mock
         get_valid_task_ids_mock(
             mocker=mocker,
             task_template_ids=task_template_ids,
