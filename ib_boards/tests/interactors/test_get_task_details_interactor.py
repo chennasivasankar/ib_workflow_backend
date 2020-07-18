@@ -79,5 +79,5 @@ class TestGetTaskDetailsInteractor:
             presenter=presenter, tasks_dtos=tasks_stage_dto, user_id=user_id)
 
         # Assert
-        assert  result == task_details_response
+        assert result == task_details_response
 

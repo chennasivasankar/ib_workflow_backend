@@ -1,4 +1,3 @@
-
 from ib_boards.adapters.service_adapter import get_service_adapter
 from ib_boards.exceptions.custom_exceptions import (
     InvalidBoardId, InvalidOffsetValue, InvalidLimitValue, UserDonotHaveAccess)
@@ -19,7 +18,7 @@ class GetColumnDetailsInteractor:
     def get_column_details_wrapper(self, presenter: PresenterInterface,
                                    columns_parameters: ColumnParametersDTO):
         try:
-            task_details, task_actions_dto, task_fields_dto, column_dtos = self.\
+            task_details, task_actions_dto, task_fields_dto, column_dtos = self. \
                 get_column_details(columns_parameters=columns_parameters)
             return presenter.get_response_for_column_details(
                 task_details=task_details, task_actions_dto=task_actions_dto,
@@ -59,8 +58,7 @@ class GetColumnDetailsInteractor:
         task_interactor = GetTaskDetailsInteractor()
 
         task_actions_dto, task_fields_dto, task_details = task_interactor. \
-            get_task_details(
-            tasks_dtos=tasks_dtos, user_id=user_id)
+            get_task_details(tasks_dtos=tasks_dtos, user_id=user_id)
 
         return task_details, task_actions_dto, task_fields_dto, column_dtos
 
