@@ -5,6 +5,7 @@ from ib_iam.interactors.presenter_interfaces.dtos \
 
 
 class PresenterInterface(ABC):
+
     @abstractmethod
     def raise_user_is_not_admin_exception(self):
         pass
@@ -24,4 +25,12 @@ class PresenterInterface(ABC):
     @abstractmethod
     def response_for_get_users(
             self, complete_user_details_dtos: CompleteUserDetailsDTO):
+        pass
+
+    @abstractmethod
+    def raise_invalid_name_exception(cls):
+        pass
+
+    @abstractmethod
+    def raise_invalid_email_exception(cls):
         pass

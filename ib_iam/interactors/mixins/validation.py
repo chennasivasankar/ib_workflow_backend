@@ -1,5 +1,5 @@
 from ib_iam.exceptions.exceptions import InvalidOffsetValueException, \
-    InvalidLimitValueException, OffsetValueIsGreaterthanLimitValueException
+    InvalidLimitValueException, OffsetValueIsGreaterthanLimitValueException, InvalidNameException
 
 
 class ValidationMixin:
@@ -30,3 +30,14 @@ class ValidationMixin:
         self._validate_limit_value_and_throw_exception(limit=limit)
         self._validate_offset_and_limit_value_constraints(
             offset=offset, limit=limit)
+
+    def _validate_string(self, value):
+        valid = bool(isinstance(value, str) and value != "")
+        invalid = not valid
+        if invalid:
+            return False
+        return True
+
+    def _validate_name_and_throw_exception(self, name: str):
+        if not self._validate_string(value=name):
+            raise InvalidNameException()
