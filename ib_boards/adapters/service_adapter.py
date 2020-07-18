@@ -5,9 +5,9 @@ class ServiceAdapter:
         return TaskService()
 
     @property
-    def user_roles_service(self):
-        from .user_roles_service import UserRolesService
-        return UserRolesService()
+    def iam_service(self):
+        from .iam_service import IamService
+        return IamService()
 
 def get_service_adapter():
     return ServiceAdapter()

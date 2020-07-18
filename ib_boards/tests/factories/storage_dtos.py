@@ -1,6 +1,8 @@
 import factory
+
+from ib_boards.interactors.dtos import TaskDTO, TaskDetailsDTO, FieldsDTO
 from ib_boards.interactors.storage_interfaces.dtos import (
-    TaskFieldsDTO, TaskDTO, TaskActionsDTO, ColumnDetailsDTO)
+    TaskFieldsDTO, TaskActionsDTO, ColumnDetailsDTO)
 
 class TaskDTOFactory(factory.Factory):
     class Meta:
@@ -8,7 +10,15 @@ class TaskDTOFactory(factory.Factory):
 
     task_id = factory.Sequence(lambda n: "task_id_%d" % n)
     stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)
+
+class TaskStagesDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskDetailsDTO
+
+    task_id = factory.Sequence(lambda n: "task_id_%d" % n)
+    stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)
     column_id = factory.Sequence(lambda n: "column_id_%d" % n)
+
 
 
 class TaskActionsDTOFactory(factory.Factory):
@@ -43,3 +53,10 @@ class ColumnDetailsDTOFactory(factory.Factory):
 
     column_id = factory.Sequence(lambda n: "column_id_%d" % n)
     name = factory.Sequence(lambda n: "name_%d" % n)
+
+class FieldsDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldsDTO
+
+    task_id = factory.Sequence(lambda n: "task_id_%d" % n)
+    field_id = factory.Sequence(lambda n: "field_id_%d" % n)

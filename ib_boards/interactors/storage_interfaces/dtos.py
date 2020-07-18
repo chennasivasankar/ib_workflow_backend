@@ -1,12 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional
 
-@dataclass
-class TaskDTO:
-    task_id: str
-    stage_id: str
-    column_id: str
-
 
 @dataclass
 class ColumnDetailsDTO:

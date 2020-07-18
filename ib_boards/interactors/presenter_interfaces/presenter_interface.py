@@ -15,19 +15,19 @@ class PresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_board_id(self):
+    def response_for_invalid_board_id(self):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_offset_value(self):
+    def response_for_invalid_offset_value(self):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_limit_value(self):
+    def response_for_invalid_limit_value(self):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_user_donot_have_access_for_board(self):
+    def response_for_user_donot_have_access_for_board(self):
         pass
 
     @abc.abstractmethod
