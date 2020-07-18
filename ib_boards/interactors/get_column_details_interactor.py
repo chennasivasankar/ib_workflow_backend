@@ -53,9 +53,7 @@ class GetColumnDetailsInteractor:
 
         column_dtos = self.storage.get_columns_details(column_ids=column_ids)
         tasks_dtos = [TaskDTO(task_id="task_id_1",
-
                               column_id="column_id_1",
-
                               stage_id="stage_id_1")]
 
         task_interactor = GetTaskDetailsInteractor()
@@ -75,6 +73,7 @@ class GetColumnDetailsInteractor:
         for board_permitted_user_role in board_permitted_user_roles:
             if board_permitted_user_role in user_roles:
                 has_permission = True
+                break
 
         if not has_permission:
             raise UserDonotHaveAccess
