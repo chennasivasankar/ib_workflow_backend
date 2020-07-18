@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 @dataclass
-class StageInformationDTO:
+class StageDTO:
     stage_id: str
     task_template_id: str
     value: int
