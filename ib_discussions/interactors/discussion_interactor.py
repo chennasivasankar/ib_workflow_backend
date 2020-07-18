@@ -1,3 +1,4 @@
+from ib_discussions.constants.enum import EntityType
 from ib_discussions.interactors.DTOs.common_dtos import DiscussionDTO
 from ib_discussions.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
@@ -69,4 +70,8 @@ class DiscussionInteractor:
                 entity_type=discussion_dto.entity_type
             )
         return discussion_set_id
+
+    def get_discussions_wrapper(self, entity_id: str, entity_type: EntityType,
+                                offset: int, limit: int):
+        pass
 

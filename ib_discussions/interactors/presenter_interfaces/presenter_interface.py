@@ -13,3 +13,7 @@ class PresenterInterface(ABC):
     @abstractmethod
     def prepare_success_response_for_create_discussion(self):
         pass
+
+    @abstractmethod
+    def raise_exception_for_invalid_offset(self):
+        pass
