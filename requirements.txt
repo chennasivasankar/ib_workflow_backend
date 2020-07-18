@@ -3,3 +3,6 @@
 -r requirements_lint.txt
 -r requirements_dev.txt
 -r requirements_test.txt
+
+setuptools~=49.2.0
+djangorestframework~=3.9.4

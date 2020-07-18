@@ -1,4 +1,6 @@
 from dataclasses import dataclass
+from typing import List
+from ib_tasks.constants.enum import PermissionTypes
 from typing import List, Union, Optional
 from ib_tasks.constants.enum import FieldTypes, PermissionTypes
 
@@ -31,6 +33,7 @@ class GoFDTO:
     task_template_id: str
     order: int
     max_columns: int
+    enable_multiple_gofs: bool
 
 
 @dataclass
@@ -41,16 +44,17 @@ class GoFRolesDTO:
 
 
 @dataclass
-class GoFFieldsDTO:
+class GoFRoleDTO:
     gof_id: str
-    field_ids: List[str]
+    role: str
+    permission_type: PermissionTypes
 
 
 @dataclass
 class CompleteGoFDetailsDTO:
     gof_dto: GoFDTO
     gof_roles_dto: GoFRolesDTO
-    gof_fields_dto: GoFFieldsDTO
+
 
 
 @dataclass

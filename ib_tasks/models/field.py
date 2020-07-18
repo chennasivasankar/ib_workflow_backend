@@ -16,4 +16,4 @@ class Field(models.Model):
     placeholder_text = models.CharField(max_length=100, null=True)
     error_messages = models.CharField(max_length=200, null=True)
     validation_regex = models.CharField(max_length=200, null=True)
-    gof = models.ForeignKey(GoF, on_delete=models.CASCADE)
+    gof = models.ForeignKey(GoF, on_delete=models.CASCADE, null=True)
