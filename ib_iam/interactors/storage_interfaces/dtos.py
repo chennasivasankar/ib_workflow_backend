@@ -39,3 +39,15 @@ class UpdateTeamParametersDTO:
     team_id: str
     name: str
     description: str
+
+@dataclass
+class BasicCompanyDTO:
+    company_id: str
+    name: str
+    description: str
+    logo: str
+
+@dataclass
+class CompanyWithEmployeeCountDTO:
+    company_id: str
+    no_of_employees: int

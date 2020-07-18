@@ -5,7 +5,7 @@ from ib_iam.interactors.presenter_interfaces \
         GetListOfCompaniesPresenterInterface
     )
 from ib_iam.interactors.storage_interfaces.dtos import (
-    PaginationDTO,
+    PaginationDTO, BasicCompanyDTO
 )
 from typing import List
 from ib_iam.exceptions.custom_exceptions import (
@@ -25,11 +25,11 @@ class GetListOfCompaniesInteractor:
             presenter: GetListOfCompaniesPresenterInterface
     ):
         try:
-            comapny_details_dtos = self.get_list_of_companies(
+            company_details_dtos = self.get_list_of_companies(
                 user_id=user_id, pagination_dto=pagination_dto
             )
             response = presenter.get_response_for_get_list_of_companies(
-                comapny_details_dtos=comapny_details_dtos
+                company_details_dtos=company_details_dtos
             )
         except UserHasNoAccess:
             response = presenter.raise_exception_for_user_has_no_access()
@@ -48,13 +48,15 @@ class GetListOfCompaniesInteractor:
             user_id=user_id,
             pagination_dto=pagination_dto
         )
-        company_ids = self._get_company_ids_from_company_dtos(comapny_dtos=comapny_dtos)
+        company_ids = self._get_company_ids_from_company_dtos(
+            company_dtos=company_dtos
+        )
 
         company_employee_count_dtos = self.storage.get_company_employee_ids_dtos(
             company_ids=company_ids
         )
         # Dto like c_id and no_of_employee
-        company_details_dtos = CompanyWithEmployeeCountDTO(
+        company_details_dtos = GetListOfCompaniesResponseDTO(
             total_companies=total_companies,
             company_dtos=company_dtos,
             company_employee_count_dtos=company_employee_count_dtos
@@ -75,9 +77,9 @@ class GetListOfCompaniesInteractor:
 
     @staticmethod
     def _get_company_ids_from_company_dtos(
-            team_dtos: List[BasicCompanyDTO]
+            company_dtos: List[BasicCompanyDTO]
     ) -> List[str]:
-        team_ids = [
-            team_dto.team_id for team_dto in team_dtos
+        company_ids = [
+            company_dto.company_id for company_dto in company_dtos
         ]
-        return team_ids
+        return company_ids
