@@ -73,3 +73,8 @@ class StorageImplementation(StorageInterface):
             )
             company_dtos.append(company_dto)
         return company_dtos
+
+    def add_new_user(self, user_id: str, email: str, is_admin: bool):
+        from ib_iam.models import UserDetails
+        UserDetails.objects.create(
+            user_id=user_id, email=email, is_admin=is_admin)
