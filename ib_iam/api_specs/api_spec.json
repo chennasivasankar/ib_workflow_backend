@@ -31,7 +31,7 @@
   },
   "security": [],
   "definitions": {
-    "UserDetailsDefinition": {
+    "UserDetails": {
       "type": "object",
       "properties": {
         "user_id": {
@@ -51,7 +51,7 @@
         "email"
       ]
     },
-    "TeamDetailsDefinition": {
+    "TeamDetails": {
       "type": "object",
       "properties": {
         "team_id": {
@@ -67,13 +67,13 @@
         "team_name"
       ]
     },
-    "ListofTeamsDefinition": {
+    "ListofTeams": {
       "type": "object",
       "properties": {
         "teams": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/TeamDetailsDefinition"
+            "$ref": "#/definitions/TeamDetails"
           }
         }
       },
@@ -81,7 +81,7 @@
         "teams"
       ]
     },
-    "CompanyDetailsDefinition": {
+    "CompanyDetails": {
       "type": "object",
       "properties": {
         "company_id": {
@@ -97,18 +97,18 @@
         "company_name"
       ]
     },
-    "CompanyDefinition": {
+    "Company": {
       "type": "object",
           "properties": {
             "company": {
-              "$ref": "#/definitions/CompanyDetailsDefinition"
+              "$ref": "#/definitions/CompanyDetails"
             }
           },
           "required": [
             "company"
           ]
     },
-    "RoleDetailsDefinition": {
+    "RoleDetails": {
       "type": "object",
       "properties": {
         "role_id": {
@@ -123,13 +123,13 @@
         "role_name"
       ]
     },
-    "ListofRolesDefinition": {
+    "ListofRoles": {
       "type": "object",
       "properties": {
         "roles": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/RoleDetailsDefinition"
+            "$ref": "#/definitions/RoleDetails"
           }
         }
       },
@@ -137,29 +137,29 @@
         "roles"
       ]
     },
-    "CompleteUserDetailsDefinition": {
+    "CompleteUserDetails": {
       "allOf": [
         {
-          "$ref": "#/definitions/UserDetailsDefinition"
+          "$ref": "#/definitions/UserDetails"
         },
         {
-          "$ref": "#/definitions/ListofTeamsDefinition"
+          "$ref": "#/definitions/ListofTeams"
         },
         {
-          "$ref": "#/definitions/ListofRolesDefinition"
+          "$ref": "#/definitions/ListofRoles"
         },
         {
-          "$ref": "#/definitions/CompanyDefinition"
+          "$ref": "#/definitions/Company"
         }
       ]
     },
-    "UsersDetailsDefinition": {
+    "UsersDetails": {
       "type": "object",
           "properties": {
             "users": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/CompleteUserDetailsDefinition"
+                "$ref": "#/definitions/CompleteUserDetails"
               }
             }
           },
@@ -167,10 +167,10 @@
             "users"
           ]
     },
-    "ListOfUsersDefinition": {
+    "ListOfUsers": {
       "allOf": [
         {
-          "$ref": "#/definitions/UsersDetailsDefinition"
+          "$ref": "#/definitions/UsersDetails"
 
         },
         {
@@ -187,7 +187,7 @@
         }
       ]
     },
-    "ForbiddenDefinition": {
+    "Forbidden": {
       "type": "object",
       "properties": {
         "response": {
@@ -201,7 +201,7 @@
         "response"
       ]
     },
-    "AddUserDetailsDefinition": {
+    "AddUserDetails": {
       "type": "object",
       "properties": {
         "name": {
@@ -217,7 +217,7 @@
         "email"
       ]
     },
-    "AddUserFailedDefinition": {
+    "AddUserFailed": {
       "type": "object",
       "properties": {
         "response": {
@@ -258,7 +258,7 @@
       "description": "Details of User",
       "in": "body",
       "schema": {
-        "$ref": "#/definitions/AddUserDetailsDefinition"
+        "$ref": "#/definitions/AddUserDetails"
       }
     }
   },
@@ -266,19 +266,19 @@
     "ListOfUsersResponse": {
       "description": "list of users exist",
       "schema": {
-        "$ref": "#/definitions/ListOfUsersDefinition"
+        "$ref": "#/definitions/ListOfUsers"
       }
     },
     "ForbiddenResponse": {
       "description": "Access Denied",
       "schema": {
-        "$ref": "#/definitions/ForbiddenDefinition"
+        "$ref": "#/definitions/Forbidden"
       }
     },
     "AddUserFailedResponse": {
       "description": "Failed to add user",
       "schema": {
-        "$ref": "#/definitions/AddUserFailedDefinition"
+        "$ref": "#/definitions/AddUserFailed"
       }
     }
   },
