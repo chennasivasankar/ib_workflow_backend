@@ -43,10 +43,13 @@ class GlobalConstantsInteractor:
 
         from ib_tasks.exceptions.custom_exceptions import \
             ExistingGlobalConstantNamesNotInGivenData
+        from ib_tasks.constants.exception_messages import \
+            EXISTING_GLOBAL_CONSTANT_NAMES_NOT_IN_GIVEN_DATA
         if existing_global_constant_names_not_in_given_data:
-            raise ExistingGlobalConstantNamesNotInGivenData(
+            err_msg = EXISTING_GLOBAL_CONSTANT_NAMES_NOT_IN_GIVEN_DATA.format(
                 existing_global_constant_names_not_in_given_data
             )
+            raise ExistingGlobalConstantNamesNotInGivenData(err_msg)
 
     def _make_validations(
             self, template_id: str,
@@ -95,8 +98,11 @@ class GlobalConstantsInteractor:
         is_invalid_template_id = not is_valid_template_id
         from ib_tasks.exceptions.custom_exceptions import \
             TemplateDoesNotExists
+        from ib_tasks.constants.exception_messages import \
+            TEMPLATE_DOES_NOT_EXISTS
         if is_invalid_template_id:
-            raise TemplateDoesNotExists(template_id)
+            err_msg = TEMPLATE_DOES_NOT_EXISTS.format(template_id)
+            raise TemplateDoesNotExists(err_msg)
 
     def _validate_values_for_constant_name_fields_in_global_constants(
             self, global_constants_dtos: List[GlobalConstantsDTO]):
@@ -132,8 +138,11 @@ class GlobalConstantsInteractor:
         template_id_after_strip = template_id.strip()
         is_template_id_empty = not template_id_after_strip
         from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+        from ib_tasks.constants.exception_messages import \
+            INVALID_VALUE_FOR_FIELD
         if is_template_id_empty:
-            raise InvalidValueForField("template_id")
+            err_msg = INVALID_VALUE_FOR_FIELD.format("template_id")
+            raise InvalidValueForField(err_msg)
 
     @staticmethod
     def _validate_value_for_constant_name_field_in_global_constants(
@@ -141,15 +150,21 @@ class GlobalConstantsInteractor:
         constant_name_after_strip = constant_name.strip()
         is_constant_name_empty = not constant_name_after_strip
         from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+        from ib_tasks.constants.exception_messages import \
+            INVALID_VALUE_FOR_FIELD
         if is_constant_name_empty:
-            raise InvalidValueForField("constant_name")
+            err_msg = INVALID_VALUE_FOR_FIELD.format("constant_name")
+            raise InvalidValueForField(err_msg)
 
     @staticmethod
     def _validate_value_for_value_field_in_global_constants(value: int):
         is_invalid_value = value < 0
         from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+        from ib_tasks.constants.exception_messages import \
+            INVALID_VALUE_FOR_FIELD
         if is_invalid_value:
-            raise InvalidValueForField("value")
+            err_msg = INVALID_VALUE_FOR_FIELD.format("value")
+            raise InvalidValueForField(err_msg)
 
     @staticmethod
     def _validate_uniqueness_in_constant_names(constant_names: List[str]):
@@ -164,8 +179,12 @@ class GlobalConstantsInteractor:
 
         from ib_tasks.exceptions.custom_exceptions \
             import DuplicateConstantNames
+        from ib_tasks.constants.exception_messages import \
+            DUPLICATE_CONSTANT_NAMES
         if duplicate_constant_names:
-            raise DuplicateConstantNames(duplicate_constant_names)
+            err_msg = \
+                DUPLICATE_CONSTANT_NAMES.format(duplicate_constant_names)
+            raise DuplicateConstantNames(err_msg)
 
     @staticmethod
     def _get_global_constants_dtos_to_create(

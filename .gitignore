@@ -46,6 +46,6 @@ dist/
 *.egg-info
 
 doc_html/
-
 venv/
+
 migrations/
