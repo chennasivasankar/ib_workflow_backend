@@ -1,8 +1,7 @@
-from dataclasses import dataclass
 from typing import List
 
-from ib_discussions.constants.enum import EntityType
-from ib_discussions.interactors.DTOs.common_dtos import DiscussionDTO
+from ib_discussions.interactors.DTOs.common_dtos import DiscussionDTO, \
+    EntityIdAndEntityTypeDTO, OffsetAndLimitDTO
 from ib_discussions.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
 from ib_discussions.interactors.storage_interfaces.dtos import \
@@ -11,32 +10,12 @@ from ib_discussions.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
 
-class EntityIdNotFound(Exception):
-    pass
-
-
-class InvalidEntityTypeForEntityId(Exception):
-    pass
-
-
 class DiscussionSetNotFound(Exception):
     pass
 
 
 class InvalidOffset(Exception):
     pass
-
-
-@dataclass
-class EntityIdAndEntityTypeDTO:
-    entity_id: str
-    entity_type: EntityType
-
-
-@dataclass
-class OffsetAndLimitDTO:
-    offset: int
-    limit: int
 
 
 class InvalidLimit(Exception):
@@ -50,15 +29,18 @@ class DiscussionInteractor:
     def create_discussion_wrapper(self, discussion_dto: DiscussionDTO,
                                   presenter: PresenterInterface
                                   ):
+        from ib_discussions.exceptions.custom_exceptions import \
+            EntityIdNotFound, InvalidEntityTypeForEntityId
         try:
-            return self._create_discussion_response(
+            response = self._create_discussion_response(
                 discussion_dto=discussion_dto, presenter=presenter
             )
         except EntityIdNotFound:
-            return presenter.raise_exception_for_entity_id_not_found()
+            response = presenter.raise_exception_for_entity_id_not_found()
         except InvalidEntityTypeForEntityId:
-            return presenter. \
+            response = presenter. \
                 raise_exception_for_invalid_entity_type_for_entity_id()
+        return response
 
     def _create_discussion_response(self, discussion_dto: DiscussionDTO,
                                     presenter: PresenterInterface
@@ -101,20 +83,23 @@ class DiscussionInteractor:
             offset_and_limit_dto: OffsetAndLimitDTO,
             presenter: PresenterInterface
     ):
+        from ib_discussions.exceptions.custom_exceptions import \
+            EntityIdNotFound, InvalidEntityTypeForEntityId
         try:
             return self._get_discussion_response(
                 entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
                 offset_and_limit_dto=offset_and_limit_dto, presenter=presenter
             )
         except InvalidOffset:
-            return presenter.raise_exception_for_invalid_offset()
+            response = presenter.raise_exception_for_invalid_offset()
         except InvalidLimit:
-            return presenter.raise_exception_for_invalid_limit()
+            response = presenter.raise_exception_for_invalid_limit()
         except EntityIdNotFound:
-            return presenter.raise_exception_for_entity_id_not_found()
+            response = presenter.raise_exception_for_entity_id_not_found()
         except InvalidEntityTypeForEntityId:
-            return presenter. \
+            response = presenter. \
                 raise_exception_for_invalid_entity_type_for_entity_id()
+        return response
 
     def _get_discussion_response(
             self, entity_id_and_entity_type_dto: EntityIdAndEntityTypeDTO,
@@ -146,9 +131,12 @@ class DiscussionInteractor:
             entity_id_and_entity_type_dto=entity_id_and_entity_type_dto
         )
         complete_discussion_dtos = self.storage.get_complete_discussion_dtos(
+            discussion_set_id=discussion_set_id,
+            offset_and_limit_dto=offset_and_limit_dto
+        )
+        total_discussions_count = self.storage.get_total_discussion_count(
             discussion_set_id=discussion_set_id
         )
-        total_discussions_count = len(complete_discussion_dtos)
         user_profile_dtos = self._get_user_profile_dtos(
             complete_discussion_dtos=complete_discussion_dtos
         )

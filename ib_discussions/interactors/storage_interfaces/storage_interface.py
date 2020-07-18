@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, List
 
 from ib_discussions.constants.enum import EntityType
-from ib_discussions.interactors.DTOs.common_dtos import DiscussionDTO
-from ib_discussions.interactors.discussion_interactor import \
-    EntityIdAndEntityTypeDTO, EntityIdNotFound, InvalidEntityTypeForEntityId
+from ib_discussions.exceptions.custom_exceptions import EntityIdNotFound, \
+    InvalidEntityTypeForEntityId
+from ib_discussions.interactors.DTOs.common_dtos import DiscussionDTO, \
+    OffsetAndLimitDTO, EntityIdAndEntityTypeDTO
 from ib_discussions.interactors.storage_interfaces.dtos import \
     CompleteDiscussionDTO
 
@@ -47,6 +48,11 @@ class StorageInterface(ABC):
 
     @abstractmethod
     def get_complete_discussion_dtos(
-            self, discussion_set_id: str
-    ) -> CompleteDiscussionDTO:
+            self, discussion_set_id: str,
+            offset_and_limit_dto: OffsetAndLimitDTO
+    ) -> List[CompleteDiscussionDTO]:
+        pass
+
+    @abstractmethod
+    def get_total_discussion_count(self, discussion_set_id: str) -> int:
         pass

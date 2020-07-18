@@ -39,8 +39,7 @@ class TestCreateDiscussionInteractor:
         from unittest.mock import Mock
         expected_presenter_entity_id_not_found_mock = Mock()
 
-        from ib_discussions.interactors.discussion_interactor import \
-            EntityIdNotFound
+        from ib_discussions.exceptions.custom_exceptions import EntityIdNotFound
         storage_mock.validate_entity_id.side_effect \
             = EntityIdNotFound
 
@@ -68,7 +67,7 @@ class TestCreateDiscussionInteractor:
         from unittest.mock import Mock
         expected_presenter_invalid_entity_type_mock = Mock()
 
-        from ib_discussions.interactors.discussion_interactor import \
+        from ib_discussions.exceptions.custom_exceptions import \
             InvalidEntityTypeForEntityId
         storage_mock.validate_entity_type_for_entity_id.side_effect \
             = InvalidEntityTypeForEntityId
