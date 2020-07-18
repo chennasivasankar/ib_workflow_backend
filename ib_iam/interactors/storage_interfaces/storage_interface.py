@@ -32,5 +32,5 @@ class StorageInterface(ABC):
         pass
 
     @abstractmethod
-    def add_new_user(self, user_id: str, email: str, is_admin: bool):
+    def add_new_user(self, user_id: str, is_admin: bool):
         pass

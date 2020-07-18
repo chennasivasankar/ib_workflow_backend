@@ -12,7 +12,7 @@ class AddNewUserInteractor(ValidationMixin):
         self.storage = storage
 
     def add_new_user_wrapper(
-            self, user_id: str, name: str, email: str, presenter=PresenterInterface):
+            self, user_id: str, name: str, email: str, presenter: PresenterInterface):
         try:
             self.add_new_user(user_id=user_id, name=name, email=email)
         except UserIsNotAdminException:
@@ -22,7 +22,8 @@ class AddNewUserInteractor(ValidationMixin):
         except InvalidEmailAddressException:
             return presenter.raise_invalid_email_exception()
         except UserAccountAlreadyExistWithThisEmail:
-            return presenter.raise_user_account_already_exist_with_this_email_exception()
+            return presenter.\
+                raise_user_account_already_exist_with_this_email_exception()
 
     def add_new_user(self, user_id: str, name: str, email: str):
         self._check_and_throw_user_is_admin(user_id=user_id)
@@ -31,7 +32,7 @@ class AddNewUserInteractor(ValidationMixin):
         new_user_id = self._create_user_account_with_email(
             name=name, email=email)
         self._create_user_profile(user_id=new_user_id, email=email, name=name)
-        self.storage.add_new_user(user_id=user_id, email=email, is_admin=False)
+        self.storage.add_new_user(user_id=user_id, is_admin=False)
 
     def _check_and_throw_user_is_admin(self, user_id: str):
         is_admin = self.storage.validate_user_is_admin(user_id=user_id)

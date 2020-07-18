@@ -5,12 +5,12 @@ RESPONSE_200_JSON = """
 {
     "users": [
         {
-            "user_id": "dfc34545-78b9-4bb8-a723-22839efc3ff2",
+            "user_id": "60c602b2-5d67-4bc8-8368-5c679aef9564",
             "name": "string",
             "email": "string",
             "teams": [
                 {
-                    "team_id": "67a962e3-f30f-4b05-9564-5319b4c57010",
+                    "team_id": "c7f78461-4c4c-4c64-b514-7280cb2ea958",
                     "team_name": "string"
                 }
             ],
@@ -21,7 +21,7 @@ RESPONSE_200_JSON = """
                 }
             ],
             "company": {
-                "company_id": "86db2e8e-e62c-4e6d-a6d1-89a53cc667dd",
+                "company_id": "bda6c4e0-0e51-4a5e-95b5-4099a05e6147",
                 "company_name": "string"
             }
         }
