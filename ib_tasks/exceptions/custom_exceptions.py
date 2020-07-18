@@ -105,7 +105,7 @@ class DuplicateConstantNames(Exception):
         super().__init__(self.message)
 
 
-class InvalidFieldIdException(Exception):
+class FieldIdEmptyValueException(Exception):
     def __init__(self, message: str):
         self.message = message
 

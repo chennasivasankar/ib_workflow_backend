@@ -13,7 +13,8 @@ multiple_display_names_for_same_gof = \
 gof_id_already_exists = "GoF id already exists"
 
 INVALID_GOF_IDS_EXCEPTION_MESSAGE = "Invalid values for gof_ids {}"
-INVALID_FIELD_ID_EXCEPTION = "Invalid field_ids {}"
+EMPTY_VALUE_FOR_FIELD_ID = "Field ids shouldn't be empty"
 EMPTY_VALUE_FOR_PERMISSIONS = "Permission roles shouldn't be empty"
-INVALID_FIELDS_DISPLAY_NAMES = "Invalid fields display names {}"
-INVALID_VALUES_FOR_FIELD_TYPES = "Field Types should be one of these {}"
+INVALID_FIELDS_DISPLAY_NAMES = "Invalid fields display names for these field ids {}"
+INVALID_VALUES_FOR_FIELD_TYPES = "Field Types should be one of these {} for these field_ids {}"
+DUPLICATION_OF_FIELD_IDS = "These are duplicated field ids {}"

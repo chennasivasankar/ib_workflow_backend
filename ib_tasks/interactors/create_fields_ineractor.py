@@ -7,7 +7,7 @@ from ib_tasks.interactors.storage_interfaces.dtos \
     import FieldDTO, FieldRolesDTO, FieldRoleDTO
 from ib_tasks.constants.enum import FieldTypes, PermissionTypes
 from ib_tasks.exceptions.custom_exceptions import (
-    InvalidFieldIdException,
+    FieldIdEmptyValueException,
     DuplicationOfFieldIdsExist,
     FieldsDuplicationOfDropDownValues,
     InvalidRolesException,
@@ -228,6 +228,7 @@ class CreateFieldsInteractor:
     def _validate_field_type(
             field_dtos: List[FieldDTO]
     ) -> Optional[InvalidValueForFieldType]:
+
         from ib_tasks.constants.exception_messages \
             import INVALID_VALUES_FOR_FIELD_TYPES
         from ib_tasks.constants.constants import FIELD_TYPES_LIST
@@ -260,10 +261,10 @@ class CreateFieldsInteractor:
     @staticmethod
     def _validate_field_ids(
             field_dtos: List[FieldDTO]
-    ) -> Optional[InvalidFieldIdException]:
+    ) -> Optional[FieldIdEmptyValueException]:
 
         from ib_tasks.constants.exception_messages \
-            import INVALID_FIELD_ID_EXCEPTION
+            import EMPTY_VALUE_FOR_FIELD_ID
         invalid_field_ids = []
         for field_dto in field_dtos:
             field_id = field_dto.field_id.strip()
@@ -271,8 +272,8 @@ class CreateFieldsInteractor:
             if is_field_id_empty:
                 invalid_field_ids.append(field_id)
         if invalid_field_ids:
-            raise InvalidFieldIdException(
-                INVALID_FIELD_ID_EXCEPTION.format(invalid_field_ids)
+            raise FieldIdEmptyValueException(
+                EMPTY_VALUE_FOR_FIELD_ID.format(invalid_field_ids)
             )
         return
 

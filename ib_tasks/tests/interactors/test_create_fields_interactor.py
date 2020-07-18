@@ -1,3 +1,4 @@
+
 from unittest.mock import create_autospec, Mock
 
 import pytest
@@ -30,8 +31,6 @@ class TestCreateFieldsInteractor:
         error_message = INVALID_GOF_IDS_EXCEPTION_MESSAGE.format(invalid_gof_ids)
         storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
 
-
-
         # Act
         with pytest.raises(InvalidGOFIds) as err:
             interactor.create_fields(field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
@@ -43,18 +42,18 @@ class TestCreateFieldsInteractor:
     def test_given_field_id_is_empty_raise_exception(self, storage_mock):
         # Arrange
         from ib_tasks.constants.exception_messages \
-            import INVALID_FIELD_ID_EXCEPTION
+            import EMPTY_VALUE_FOR_FIELD_ID
         field_roles_dtos = [FieldRolesDTOFactory()]
         field_dtos = [FieldDTOFactory(), FieldDTOFactory(field_id=" ")]
-        from ib_tasks.exceptions.custom_exceptions import InvalidFieldIdException
+        from ib_tasks.exceptions.custom_exceptions import FieldIdEmptyValueException
         interactor = CreateFieldsInteractor(storage=storage_mock)
         invalid_field_ids = [""]
-        error_message = INVALID_FIELD_ID_EXCEPTION.format(invalid_field_ids)
+        error_message = EMPTY_VALUE_FOR_FIELD_ID.format(invalid_field_ids)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
         storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
 
         # Act
-        with pytest.raises(InvalidFieldIdException) as err:
+        with pytest.raises(FieldIdEmptyValueException) as err:
             interactor.create_fields(field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
 
         # Arrange
