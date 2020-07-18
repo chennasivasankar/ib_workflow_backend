@@ -179,7 +179,11 @@ class TestGetColumnTasksInteractor:
             get_stage_display_logic_mock, get_task_details_mock
 
         from ib_boards.tests.common_fixtures.adapters.task_service import \
-            get_task_ids_mock
+            get_task_ids_mock, validate_stage_ids_mock
+
+        validate_stage_ids_mock = validate_stage_ids_mock(
+            mocker=mocker, stage_ids=stage_ids
+        )
 
         task_ids_mock = get_task_ids_mock(
             mocker=mocker,

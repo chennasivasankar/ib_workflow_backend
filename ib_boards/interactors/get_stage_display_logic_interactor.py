@@ -16,11 +16,11 @@ class StageDisplayLogicInteractor:
         pass
 
     def get_stage_display_logic_condition_wrapper(
-            self, stage_ids: List[str],
+            self, stage_display_logics: List[str],
             presenter: StageDisplayLogicPresenterInterface):
         try:
             task_status_dtos = self.get_stage_display_logic_condition(
-                stage_ids=stage_ids
+                stage_display_logics=stage_display_logics
             )
         except InvalidStageIds as error:
             return presenter.get_response_for_invalid_stage_ids(error=error)
@@ -28,14 +28,7 @@ class StageDisplayLogicInteractor:
             task_status_dtos=task_status_dtos
         )
 
-    def get_stage_display_logic_condition(self, stage_ids: List[str]):
-        from ib_boards.adapters.service_adapter import get_service_adapter
-        service_adapter = get_service_adapter()
-        service_adapter.task_service.validate_stage_ids(stage_ids=stage_ids)
-        stage_display_logics = service_adapter.task_service. \
-            get_stage_display_logics(
-                stage_ids=stage_ids
-            )
+    def get_stage_display_logic_condition(self, stage_display_logics: List[str]):
         task_status_dtos = self._get_values_from_stage_display_logic(
             stage_display_logics=stage_display_logics
         )

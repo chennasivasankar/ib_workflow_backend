@@ -40,7 +40,7 @@ class TestStageDisplayLogic:
 
         # Act
         actual_response = interactor.get_stage_display_logic_condition_wrapper(
-            stage_ids=stage_ids, presenter=presenter_mock
+            stage_display_logics=stage_display_logics, presenter=presenter_mock
         )
 
         # Assert
@@ -58,7 +58,10 @@ class TestStageDisplayLogic:
         from ib_boards.tests.factories.interactor_dtos import \
             TaskStatusDTOFactory
         task_status_dtos = TaskStatusDTOFactory.create_batch(2)
-        stage_ids = ['STAGE_ID_1', 'STAGE_ID_1']
+        stage_display_logics = [
+            "STATUS_ID_3 == STAGE_ID_3",
+            "STATUS_ID_4 == STAGE_ID_4"
+        ]
         expected_response = Mock()
         interactor = StageDisplayLogicInteractor()
         presenter_mock.get_response_for_stage_display_logic.\
@@ -73,7 +76,7 @@ class TestStageDisplayLogic:
 
         # Act
         actual_response = interactor.get_stage_display_logic_condition_wrapper(
-            stage_ids=stage_ids, presenter=presenter_mock
+            stage_display_logics=stage_display_logics, presenter=presenter_mock
         )
 
         # Assert

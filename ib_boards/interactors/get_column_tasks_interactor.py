@@ -41,7 +41,8 @@ class GetColumnTasksInteractor:
             task_complete_details_dto=task_complete_details_dto
         )
 
-    def get_column_tasks(self, column_tasks_parameters: ColumnTasksParametersDTO):
+    def get_column_tasks(self,
+                         column_tasks_parameters: ColumnTasksParametersDTO):
         self._validate_given_data(
             column_tasks_parameters=column_tasks_parameters)
         column_id = column_tasks_parameters.column_id
@@ -50,7 +51,8 @@ class GetColumnTasksInteractor:
         stage_ids = self.storage.get_column_display_stage_ids(
             column_id=column_id
         )
-        task_ids_stages_dtos = self._get_task_ids_with_respective_stages(stage_ids=stage_ids)
+        task_ids_stages_dtos = self._get_task_ids_with_respective_stages(
+            stage_ids=stage_ids)
         total_tasks = len(task_ids_stages_dtos)
         if offset >= total_tasks:
             raise OffsetValueExceedsTotalTasksCount
@@ -95,12 +97,17 @@ class GetColumnTasksInteractor:
             import StageDisplayLogicInteractor
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
+        service_adapter.task_service.validate_stage_ids(stage_ids=stage_ids)
+        stage_display_logics = service_adapter.task_service. \
+            get_stage_display_logics(
+                stage_ids=stage_ids
+            )
         stage_display_logic_interactor = StageDisplayLogicInteractor()
         task_status_dtos = stage_display_logic_interactor. \
             get_stage_display_logic_condition(
-                stage_ids=stage_ids
+                stage_display_logics=stage_display_logics
             )
-        task_ids_stages_dtos = service_adapter.task_service.\
+        task_ids_stages_dtos = service_adapter.task_service. \
             get_task_ids_with_respective_stages(
                 task_status_dtos=task_status_dtos
             )
