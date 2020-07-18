@@ -130,8 +130,8 @@ class TestCreateOrUpdateGOFs:
         storage_mock.update_gofs.assert_not_called()
         storage_mock.update_gof_roles.assert_not_called()
 
-    @pytest.mark.parametrize("max_columns", [None, 0, -1])
-    def test_create_or_update_gofs_with_invalid_gof_display_name_field_raise_exception(
+    @pytest.mark.parametrize("max_columns", [None, "", "  "])
+    def test_create_or_update_gofs_with_empty_gof_max_coloumns_raise_exception(
             self, max_columns, storage_mock
     ):
         # Arrange
@@ -145,6 +145,55 @@ class TestCreateOrUpdateGOFs:
 
         # Act
         with pytest.raises(MaxColumnsCantBeEmpty) as err:
+            interactor.create_or_update_gofs(
+                complete_gof_details_dtos=complete_gof_details_dtos
+            )
+
+        # Assert
+        storage_mock.create_gofs.assert_not_called()
+        storage_mock.create_gof_roles.assert_not_called()
+        storage_mock.update_gofs.assert_not_called()
+        storage_mock.update_gof_roles.assert_not_called()
+
+    @pytest.mark.parametrize("max_columns", [0, -1])
+    def test_create_or_update_gofs_with_invalid_gof_max_coloumns_raise_exception(
+            self, max_columns, storage_mock
+    ):
+        # Arrange
+        from ib_tasks.exceptions.custom_exceptions import \
+            MaxColumnsMustBeAPositiveInteger
+        gof_dto = GoFDTOFactory(max_columns=max_columns)
+        complete_gof_details_dtos = [
+            CompleteGoFDetailsDTOFactory(gof_dto=gof_dto)
+        ]
+        interactor = CreateOrUpdateGoFsInteractor(storage=storage_mock)
+
+        # Act
+        with pytest.raises(MaxColumnsMustBeAPositiveInteger) as err:
+            interactor.create_or_update_gofs(
+                complete_gof_details_dtos=complete_gof_details_dtos
+            )
+
+        # Assert
+        storage_mock.create_gofs.assert_not_called()
+        storage_mock.create_gof_roles.assert_not_called()
+        storage_mock.update_gofs.assert_not_called()
+        storage_mock.update_gof_roles.assert_not_called()
+
+    def test_create_or_update_gofs_with_a_string_value_for_gof_max_coloumns_raise_exception(
+            self, storage_mock
+    ):
+        # Arrange
+        from ib_tasks.exceptions.custom_exceptions import \
+            MaxColumnsMustBeANumber
+        gof_dto = GoFDTOFactory(max_columns="two")
+        complete_gof_details_dtos = [
+            CompleteGoFDetailsDTOFactory(gof_dto=gof_dto)
+        ]
+        interactor = CreateOrUpdateGoFsInteractor(storage=storage_mock)
+
+        # Act
+        with pytest.raises(MaxColumnsMustBeANumber) as err:
             interactor.create_or_update_gofs(
                 complete_gof_details_dtos=complete_gof_details_dtos
             )

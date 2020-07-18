@@ -3,7 +3,8 @@ from typing import List, Optional, Union
 from ib_tasks.exceptions.custom_exceptions import (
     GOFIdCantBeEmpty, GOFDisplayNameCantBeEmpty, GOFReadPermissionsCantBeEmpty,
     GOFWritePermissionsCantBeEmpty, InvalidReadPermissionRoles,
-    InvalidWritePermissionRoles, MaxColumnsCantBeEmpty
+    InvalidWritePermissionRoles, MaxColumnsCantBeEmpty,
+    MaxColumnsMustBeANumber, MaxColumnsMustBeAPositiveInteger
 )
 from ib_tasks.interactors.storage_interfaces.dtos import (
     CompleteGoFDetailsDTO, GoFRolesDTO, GoFDTO, GoFRoleDTO, GoFRoleWithIdDTO
@@ -206,7 +207,7 @@ class CreateOrUpdateGoFsInteractor:
             gof_dtos=gof_dtos, gof_roles_dtos=gof_roles_dtos
         )
         self._validate_for_empty_gof_display_names(gof_dtos=gof_dtos)
-        self._validate_for_empty_max_columns(gof_dtos=gof_dtos)
+        self._validate_for_invalid_max_columns(gof_dtos=gof_dtos)
         self._validate_for_empty_read_permission_roles(
             gof_roles_dtos=gof_roles_dtos
         )
@@ -214,26 +215,44 @@ class CreateOrUpdateGoFsInteractor:
             gof_roles_dtos=gof_roles_dtos
         )
 
-    def _validate_for_empty_max_columns(
+    def _validate_for_invalid_max_columns(
             self, gof_dtos: List[GoFDTO]
     ) -> Optional[MaxColumnsCantBeEmpty]:
-        from ib_tasks.constants.exception_messages import \
-            EMPTY_MAX_COLUMNS_MESSAGE
         for gof_dto in gof_dtos:
-            gof_max_columns_is_empty = \
-                self._is_valid_max_columns_value(gof_dto.max_columns)
-            if gof_max_columns_is_empty:
-                raise MaxColumnsCantBeEmpty(EMPTY_MAX_COLUMNS_MESSAGE)
+            self._validate_max_column_value(gof_dto.max_columns)
         return
 
     @staticmethod
-    def _is_valid_max_columns_value(max_columns: Union[None, int, str]) -> bool:
+    def _validate_max_column_value(
+            max_columns: Union[None, int, str]
+    ) -> Union[
+        None, MaxColumnsCantBeEmpty, MaxColumnsMustBeANumber,
+        MaxColumnsMustBeAPositiveInteger
+    ]:
         max_columns_is_string = isinstance(max_columns, str)
+        from ib_tasks.constants.exception_messages import (
+            EMPTY_MAX_COLUMNS_MESSAGE,
+            MAX_COLUMNS_VALUE_MUST_NOT_BE_STRING_MESSAGE,
+            MAX_COLUMNS_VALUE_MUST_BE_POSITIVE_INTEGER_MESSAGE
+        )
+
+        if max_columns is None:
+            raise MaxColumnsCantBeEmpty(EMPTY_MAX_COLUMNS_MESSAGE)
+
         if max_columns_is_string:
-            from ib_tasks.exceptions.custom_exceptions import \
-                MaxColumnsMustBeANumber
-            raise MaxColumnsMustBeANumber(max_columns)
-        return max_columns is None or max_columns < 1
+            if not max_columns.strip():
+                raise MaxColumnsCantBeEmpty(EMPTY_MAX_COLUMNS_MESSAGE)
+            error_message = "{}: {}".format(
+                MAX_COLUMNS_VALUE_MUST_NOT_BE_STRING_MESSAGE, max_columns
+            )
+            raise MaxColumnsMustBeANumber(error_message)
+        max_columns_is_not_a_positive_integer = max_columns < 1
+        if max_columns_is_not_a_positive_integer:
+            error_message = "{}: {}".format(
+                MAX_COLUMNS_VALUE_MUST_BE_POSITIVE_INTEGER_MESSAGE, max_columns
+            )
+            raise MaxColumnsMustBeAPositiveInteger(error_message)
+        return
 
     def _validate_for_empty_gof_ids(
             self, gof_dtos: List[GoFDTO], gof_roles_dtos: List[GoFRolesDTO]
