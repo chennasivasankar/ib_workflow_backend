@@ -10,35 +10,18 @@ class GoFDTOFactory(factory.Factory):
     class Meta:
         model = GoFDTO
 
-    gof_id = factory.Iterator(
-        [
-            'FIN_REQUEST_DETAILS', 'FIN_VENDOR_BASIC_DETAILS'
-        ]
+    gof_id = factory.Sequence(lambda counter: "GOF_ID-{}".format(counter))
+    gof_display_name = factory.Sequence(
+        lambda counter: "GOF_DISPLAY_NAME-{}".format(counter)
     )
-    gof_display_name = factory.Iterator(
-        [
-            'Request Details', 'Vendor Basic Details'
-        ]
-    )
-    task_template_id = factory.Iterator(
-        [
-            "FIN_PR", "FIN_VENDOR"
-        ]
-    )
-    order = factory.Sequence(lambda counter: counter)
     max_columns = 2
-    enable_multiple_gofs = False
 
 
 class GoFRolesDTOFactory(factory.Factory):
     class Meta:
         model = GoFRolesDTO
 
-    gof_id = factory.Iterator(
-        [
-            'FIN_REQUEST_DETAILS', 'FIN_VENDOR_BASIC_DETAILS'
-        ]
-    )
+    gof_id = factory.Sequence(lambda counter: "GOF_ID-{}".format(counter))
     read_permission_roles = ['ALL_ROLES']
     write_permission_roles = ['ALL_ROLES']
 
@@ -55,16 +38,8 @@ class GoFRoleDTOFactory(factory.Factory):
     class Meta:
         model = GoFRoleDTO
 
-    gof_id = factory.Iterator(
-        [
-            'FIN_REQUEST_DETAILS', 'FIN_VENDOR_BASIC_DETAILS'
-        ]
-    )
-    role = factory.Iterator(
-        [
-            "FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"
-        ]
-    )
+    gof_id = factory.Sequence(lambda counter: "GOF_ID-{}".format(counter))
+    role = factory.Sequence(lambda counter: "ROLE-{}".format(counter))
     permission_type = PermissionTypes.READ.value
 
 
@@ -73,14 +48,6 @@ class GoFRoleWithIdDTOFactory(factory.Factory):
         model = GoFRoleWithIdDTO
 
     id = factory.Sequence(lambda counter: counter)
-    gof_id = factory.Iterator(
-        [
-            'FIN_REQUEST_DETAILS', 'FIN_VENDOR_BASIC_DETAILS'
-        ]
-    )
-    role = factory.Iterator(
-        [
-            "FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"
-        ]
-    )
+    gof_id = factory.Sequence(lambda counter: "GOF_ID-{}".format(counter))
+    role = factory.Sequence(lambda counter: "ROLE-{}".format(counter))
     permission_type = PermissionTypes.READ.value

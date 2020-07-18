@@ -28,17 +28,14 @@ class StageActionsDTO:
 class GoFDTO:
     gof_id: str
     gof_display_name: str
-    task_template_id: str
-    order: int
     max_columns: int
-    enable_multiple_gofs: bool
 
 
 @dataclass
 class GoFRolesDTO:
     gof_id: str
-    read_permission_roles: List
-    write_permission_roles: List
+    read_permission_roles: List[PermissionTypes]
+    write_permission_roles: List[PermissionTypes]
 
 
 @dataclass

@@ -4,9 +4,10 @@ import pytest
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.models.gof_role import GoFRole
 from ib_tasks.tests.factories.models import GoFFactory, TaskTemplateFactory, \
-    GoFRoleFactory
+    GoFRoleFactory, FieldFactory
 from ib_tasks.tests.factories.storage_dtos import GoFRoleDTOFactory, \
-    GoFRoleWithIdDTOFactory
+    GoFRoleWithIdDTOFactory, GoFDTOFactory, GoFRolesDTOFactory, \
+    CompleteGoFDetailsDTOFactory
 
 
 @pytest.mark.django_db
@@ -18,11 +19,25 @@ class TestTasksStorageImplementation:
             TasksStorageImplementation
         return TasksStorageImplementation()
 
-    def test_get_existing_gof_ids_in_given_gof_ids(self, storage):
+    @pytest.fixture
+    def reset_sequence(self):
+        GoFFactory.reset_sequence(1)
+        TaskTemplateFactory.reset_sequence(1)
+        FieldFactory.reset_sequence(1)
+        GoFRoleFactory.reset_sequence(1)
+        GoFDTOFactory.reset_sequence(1)
+        GoFRolesDTOFactory.reset_sequence(1)
+        CompleteGoFDetailsDTOFactory.reset_sequence(1)
+        GoFRoleDTOFactory.reset_sequence(1)
+        GoFRoleWithIdDTOFactory.reset_sequence(1)
+
+    def test_get_existing_gof_ids_in_given_gof_ids(
+            self, storage, reset_sequence
+    ):
         # Arrange
-        gofs = GoFFactory.create_batch(size=2)
-        gof_ids = ["FIN_REQUEST_DETAILS", "FIN_BANK_DETAILS"]
-        expected_existing_gof_ids = ["FIN_REQUEST_DETAILS"]
+        GoFFactory.create_batch(size=2)
+        gof_ids = ["GOF_ID-1", "GOF_ID-2", "GOF_ID-3"]
+        expected_existing_gof_ids = ["GOF_ID-1", "GOF_ID-2"]
 
         # Act
         actual_existing_gof_ids = \
@@ -33,16 +48,11 @@ class TestTasksStorageImplementation:
         # Assert
         assert expected_existing_gof_ids == actual_existing_gof_ids
 
-    def test_create_gofs(self, storage):
+    def test_create_gofs(self, storage, reset_sequence):
         # Arrange
         from ib_tasks.models.gof import GoF
         from ib_tasks.tests.factories.storage_dtos import GoFDTOFactory
-        task_templates = TaskTemplateFactory.create_batch(size=2)
-
-        gof_dtos = [
-            GoFDTOFactory(task_template_id=task_templates[0].pk),
-            GoFDTOFactory(task_template_id=task_templates[0].pk)
-        ]
+        gof_dtos = [GoFDTOFactory(), GoFDTOFactory()]
 
         # Act
         storage.create_gofs(gof_dtos=gof_dtos)
@@ -51,11 +61,9 @@ class TestTasksStorageImplementation:
         for gof_dto in gof_dtos:
             gof = GoF.objects.get(pk=gof_dto.gof_id)
             assert gof.display_name == gof_dto.gof_display_name
-            assert gof.order == gof_dto.order
             assert gof.max_columns == gof_dto.max_columns
-            assert gof.task_template_id == gof_dto.task_template_id
 
-    def test_create_gof_roles(self, storage):
+    def test_create_gof_roles(self, storage, reset_sequence):
 
         # Arrange
         gof_role_dtos = [
@@ -77,44 +85,19 @@ class TestTasksStorageImplementation:
             )
             assert gof_role_dto.permission_type == gof_role.permission_type
 
-    def test_get_valid_template_ids_in_given_template_ids(self, storage):
-
-        # Arrange
-        task_template = TaskTemplateFactory()
-        template_ids = ["FIN_PR", "FIN_VENDOR"]
-        expected_valid_template_ids = [task_template.template_id]
-
-        # Act
-        actual_valid_template_ids = \
-            storage.get_valid_template_ids_in_given_template_ids(template_ids)
-
-        # Assert
-        assert expected_valid_template_ids == actual_valid_template_ids
-
-    def test_update_gofs(self, storage):
+    def test_update_gofs(self, storage, reset_sequence):
 
         # Arrange
         from ib_tasks.models.gof import GoF
         from ib_tasks.tests.factories.storage_dtos import GoFDTOFactory
         from ib_tasks.tests.factories.models import GoFFactory
-
-        pr_task_template = TaskTemplateFactory.create(
-            template_id="FIN_PR", name="Payment Request"
-        )
-        vendor_task_template = TaskTemplateFactory.create(
-            template_id="FIN_VENDOR", name="Vendor"
-        )
         gofs = [
             GoFFactory(
                 display_name="Request Details",
-                task_template=vendor_task_template,
-                order=1,
                 max_columns=3
             ),
             GoFFactory(
                 display_name="Vendor Type",
-                task_template=pr_task_template,
-                order=2,
                 max_columns=4
             )
         ]
@@ -123,15 +106,11 @@ class TestTasksStorageImplementation:
             GoFDTOFactory(
                 gof_id=gofs[0].gof_id,
                 gof_display_name="details of request",
-                task_template_id=pr_task_template.template_id,
-                order=10,
                 max_columns=12
             ),
             GoFDTOFactory(
                 gof_id=gofs[1].gof_id,
                 gof_display_name="details of vendor",
-                task_template_id=vendor_task_template.template_id,
-                order=10,
                 max_columns=12
             )
         ]
@@ -143,11 +122,9 @@ class TestTasksStorageImplementation:
         for gof_dto in gof_dtos:
             gof = GoF.objects.get(pk=gof_dto.gof_id)
             assert gof.display_name == gof_dto.gof_display_name
-            assert gof.order == gof_dto.order
             assert gof.max_columns == gof_dto.max_columns
-            assert gof.task_template_id == gof_dto.task_template_id
 
-    def test_update_gof_roles(self, storage):
+    def test_update_gof_roles(self, storage, reset_sequence):
 
         # Arrange
         gof_roles = GoFRoleFactory.create_batch(size=2)
@@ -173,7 +150,7 @@ class TestTasksStorageImplementation:
             assert gof_role_with_id_dto.permission_type == \
                    gof_role.permission_type
 
-    def test_get_roles_for_given_gof_ids(self, storage):
+    def test_get_roles_for_given_gof_ids(self, storage, reset_sequence):
 
         # Arrange
         gof_roles = GoFRoleFactory.create_batch(size=2)
@@ -192,7 +169,7 @@ class TestTasksStorageImplementation:
                     assert gof_role.permission_type == \
                            gof_role_with_id_dto.permission_type
 
-    def test_get_gof_dtos_for_given_gof_ids(self, storage):
+    def test_get_gof_dtos_for_given_gof_ids(self, storage, reset_sequence):
 
         # Arrange
         from ib_tasks.tests.factories.models import GoFFactory
@@ -207,7 +184,4 @@ class TestTasksStorageImplementation:
             for gof in gofs:
                 if gof.gof_id == gof_dto.gof_id:
                     assert gof.display_name == gof_dto.gof_display_name
-                    assert gof.task_template_id == gof_dto.task_template_id
-                    assert gof.order == gof_dto.order
                     assert gof.max_columns == gof_dto.max_columns
-                    assert gof.enable_multiple_gofs == gof_dto.enable_multiple_gofs

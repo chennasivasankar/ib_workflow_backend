@@ -1,11 +1,9 @@
-from collections import defaultdict
 from typing import List, Optional, Union
 
 from ib_tasks.exceptions.custom_exceptions import (
     GOFIdCantBeEmpty, GOFDisplayNameCantBeEmpty, GOFReadPermissionsCantBeEmpty,
     GOFWritePermissionsCantBeEmpty, InvalidReadPermissionRoles,
-    InvalidWritePermissionRoles, InvalidTaskTemplateIds,
-    InvalidOrderValues, TaskTemplateIdCantBeEmpty, ConflictingGoFOrder
+    InvalidWritePermissionRoles, MaxColumnsCantBeEmpty
 )
 from ib_tasks.interactors.storage_interfaces.dtos import (
     CompleteGoFDetailsDTO, GoFRolesDTO, GoFDTO, GoFRoleDTO, GoFRoleWithIdDTO
@@ -36,20 +34,17 @@ class CreateOrUpdateGoFsInteractor:
         self._validate_for_empty_mandatory_fields(
             gof_dtos=gof_dtos, gof_roles_dtos=gof_roles_dtos
         )
-        self._validate_for_invalid_order_value(gof_dtos=gof_dtos)
         self._validate_read_permission_roles(gof_roles_dtos=gof_roles_dtos)
         self._validate_write_permission_roles(gof_roles_dtos=gof_roles_dtos)
-        self._validate_for_invalid_task_template_id(gof_dtos=gof_dtos)
 
-        complete_gof_details_dtos_for_updation, \
-        complete_gof_details_dtos_for_creation = self._filter_gof_details_dtos(
+        gofs_for_updation, gofs_for_creation = self._filter_gof_details_dtos(
             gof_dtos, complete_gof_details_dtos
         )
-        if complete_gof_details_dtos_for_updation:
-            self._update_gofs(complete_gof_details_dtos_for_updation)
+        if gofs_for_updation:
+            self._update_gofs(gofs_for_updation)
 
-        if complete_gof_details_dtos_for_creation:
-            self._create_gofs(complete_gof_details_dtos_for_creation)
+        if gofs_for_creation:
+            self._create_gofs(gofs_for_creation)
         return
 
     def _filter_gof_details_dtos(
@@ -61,9 +56,9 @@ class CreateOrUpdateGoFsInteractor:
         ]
         existing_gof_ids_in_given_gof_ids = \
             self.storage.get_existing_gof_ids_in_given_gof_ids(gof_ids=gof_ids)
-        complete_gof_details_dtos_for_updation = []
+        gofs_for_updation = []
         if existing_gof_ids_in_given_gof_ids:
-            complete_gof_details_dtos_for_updation = \
+            gofs_for_updation = \
                 self._get_complete_gof_details_dtos_of_given_gof_ids(
                     gof_ids=existing_gof_ids_in_given_gof_ids,
                     complete_gof_details_dtos=complete_gof_details_dtos
@@ -71,13 +66,12 @@ class CreateOrUpdateGoFsInteractor:
         new_gof_ids_in_given_gof_ids = list(
             set(gof_ids) - set(existing_gof_ids_in_given_gof_ids)
         )
-        complete_gof_details_dtos_for_creation = \
+        gofs_for_creation = \
             self._get_complete_gof_details_dtos_of_given_gof_ids(
                 gof_ids=new_gof_ids_in_given_gof_ids,
                 complete_gof_details_dtos=complete_gof_details_dtos
             )
-        return complete_gof_details_dtos_for_updation, \
-               complete_gof_details_dtos_for_creation
+        return gofs_for_updation, gofs_for_creation
 
     def _update_gofs(
             self, complete_gof_details_dtos: List[CompleteGoFDetailsDTO]
@@ -86,7 +80,6 @@ class CreateOrUpdateGoFsInteractor:
             self._get_gof_dtos_for_given_complete_gof_details_dtos(
                 complete_gof_details_dtos=complete_gof_details_dtos
             )
-        self._validate_for_order_value_in_updating_gofs(gof_dtos)
         gof_roles_dtos = \
             self._get_gof_roles_dtos_for_given_complete_gof_details_dtos(
                 complete_gof_details_dtos=complete_gof_details_dtos
@@ -100,29 +93,6 @@ class CreateOrUpdateGoFsInteractor:
             self.storage.update_gof_roles(gof_role_with_id_dtos=existing_roles)
         if new_roles:
             self.storage.create_gof_roles(gof_role_dtos=new_roles)
-
-    def _validate_for_order_value_in_updating_gofs(
-            self, gof_dtos: List[GoFDTO]
-    ) -> Optional[ConflictingGoFOrder]:
-        gof_ids = [gof_dto.gof_id for gof_dto in gof_dtos]
-        existing_gof_dtos = \
-            self.storage.get_gof_dtos_for_given_gof_ids(gof_ids)
-        template_gofs = defaultdict(list)
-        for gof_dto in existing_gof_dtos:
-            template_gofs[gof_dto.task_template_id].append(gof_dto)
-        invalid_order_gof_ids = []
-        for gof_dto in gof_dtos:
-            for template_gof in template_gofs[gof_dto.task_template_id]:
-                conflicting_order_value = (
-                        template_gof.gof_id != gof_dto.gof_id and
-                        template_gof.order == gof_dto.order
-                )
-                if conflicting_order_value:
-                    invalid_order_gof_ids.append(gof_dto.gof_id)
-                    break
-        if invalid_order_gof_ids:
-            raise ConflictingGoFOrder(invalid_order_gof_ids)
-        return
 
     def _create_gofs(
             self, complete_gof_details_dtos: List[CompleteGoFDetailsDTO]
@@ -158,38 +128,6 @@ class CreateOrUpdateGoFsInteractor:
                     gof_role_dtos.remove(gof_role_dto)
                     break
         return existing_gof_roles, gof_role_dtos
-
-    def _validate_for_invalid_order_value(
-            self, gof_dtos: List[GoFDTO]
-    ) -> Optional[InvalidOrderValues]:
-        invalid_order_values = [
-            gof_dto.order
-            for gof_dto in gof_dtos
-            if self._invalid_order_value(order=gof_dto.order)
-        ]
-        if invalid_order_values:
-            raise InvalidOrderValues(invalid_order_values=invalid_order_values)
-        return
-
-    @staticmethod
-    def _invalid_order_value(order: int) -> bool:
-        return order < -1
-
-    def _validate_for_invalid_task_template_id(
-            self, gof_dtos: List[GoFDTO]
-    ) -> Optional[InvalidTaskTemplateIds]:
-        template_ids = [gof_dto.task_template_id for gof_dto in gof_dtos]
-        valid_template_ids = \
-            self.storage.get_valid_template_ids_in_given_template_ids(
-                template_ids=template_ids
-            )
-        invalid_template_ids = list(
-            set(template_ids) - set(valid_template_ids))
-        if invalid_template_ids:
-            raise InvalidTaskTemplateIds(
-                invalid_task_template_ids=invalid_template_ids
-            )
-        return
 
     @staticmethod
     def _get_gof_dtos_for_given_complete_gof_details_dtos(
@@ -268,7 +206,7 @@ class CreateOrUpdateGoFsInteractor:
             gof_dtos=gof_dtos, gof_roles_dtos=gof_roles_dtos
         )
         self._validate_for_empty_gof_display_names(gof_dtos=gof_dtos)
-        self._validate_for_empty_task_template_ids(gof_dtos=gof_dtos)
+        self._validate_for_empty_max_columns(gof_dtos=gof_dtos)
         self._validate_for_empty_read_permission_roles(
             gof_roles_dtos=gof_roles_dtos
         )
@@ -276,58 +214,61 @@ class CreateOrUpdateGoFsInteractor:
             gof_roles_dtos=gof_roles_dtos
         )
 
-    def _validate_for_empty_task_template_ids(
+    def _validate_for_empty_max_columns(
             self, gof_dtos: List[GoFDTO]
-    ) -> Optional[TaskTemplateIdCantBeEmpty]:
+    ) -> Optional[MaxColumnsCantBeEmpty]:
         from ib_tasks.constants.exception_messages import \
-            empty_task_template_id_message
+            EMPTY_MAX_COLUMNS_MESSAGE
         for gof_dto in gof_dtos:
-            task_template_id_is_empty = self._is_empty_field(
-                gof_dto.task_template_id
-            )
-            if task_template_id_is_empty:
-                raise TaskTemplateIdCantBeEmpty(empty_task_template_id_message)
+            gof_max_columns_is_empty = \
+                self._is_valid_max_columns_value(gof_dto.max_columns)
+            if gof_max_columns_is_empty:
+                raise MaxColumnsCantBeEmpty(EMPTY_MAX_COLUMNS_MESSAGE)
         return
+
+    @staticmethod
+    def _is_valid_max_columns_value(max_columns: Optional[int]) -> bool:
+        return max_columns is None or max_columns < 1
 
     def _validate_for_empty_gof_ids(
             self, gof_dtos: List[GoFDTO], gof_roles_dtos: List[GoFRolesDTO]
     ) -> Optional[GOFIdCantBeEmpty]:
-        from ib_tasks.constants.exception_messages import empty_gof_id_message
+        from ib_tasks.constants.exception_messages import EMPTY_GOF_ID_MESSAGE
         for gof_dto in gof_dtos:
             gof_id_is_empty = self._is_empty_field(field=gof_dto.gof_id)
             if gof_id_is_empty:
-                raise GOFIdCantBeEmpty(empty_gof_id_message)
+                raise GOFIdCantBeEmpty(EMPTY_GOF_ID_MESSAGE)
         for gof_roles_dto in gof_roles_dtos:
             gof_id_is_empty = self._is_empty_field(field=gof_roles_dto.gof_id)
             if gof_id_is_empty:
-                raise GOFIdCantBeEmpty(empty_gof_id_message)
+                raise GOFIdCantBeEmpty(EMPTY_GOF_ID_MESSAGE)
         return
 
     def _validate_for_empty_gof_display_names(
             self, gof_dtos: List[GoFDTO]
     ) -> Optional[GOFDisplayNameCantBeEmpty]:
         from ib_tasks.constants.exception_messages import \
-            empty_gof_name_message
+            EMPTY_GOF_NAME_MESSAGE
         for gof_dto in gof_dtos:
             invalid_display_name = self._is_empty_field(
                 field=gof_dto.gof_display_name
             )
             if invalid_display_name:
-                raise GOFDisplayNameCantBeEmpty(empty_gof_name_message)
+                raise GOFDisplayNameCantBeEmpty(EMPTY_GOF_NAME_MESSAGE)
         return
 
     def _validate_for_empty_read_permission_roles(
             self, gof_roles_dtos: List[GoFRolesDTO]
     ) -> Optional[GOFReadPermissionsCantBeEmpty]:
         from ib_tasks.constants.exception_messages import \
-            empty_read_permissions_message
+            EMPTY_GOF_READ_PERMISSIONS_MESSAGE
         for gof_roles_dto in gof_roles_dtos:
             read_permission_roles_are_emtpy = self._is_empty_field(
                 field=gof_roles_dto.read_permission_roles
             )
             if read_permission_roles_are_emtpy:
                 raise GOFReadPermissionsCantBeEmpty(
-                    empty_read_permissions_message
+                    EMPTY_GOF_READ_PERMISSIONS_MESSAGE
                 )
         return
 
@@ -335,14 +276,14 @@ class CreateOrUpdateGoFsInteractor:
             self, gof_roles_dtos: List[GoFRolesDTO]
     ) -> Optional[GOFWritePermissionsCantBeEmpty]:
         from ib_tasks.constants.exception_messages import \
-            empty_write_permissions_message
+            EMPTY_WRITE_PERMISSIONS_MESSAGE
         for gof_roles_dto in gof_roles_dtos:
             write_permission_roles_are_empty = self._is_empty_field(
                 field=gof_roles_dto.write_permission_roles
             )
             if write_permission_roles_are_empty:
                 raise GOFWritePermissionsCantBeEmpty(
-                    empty_write_permissions_message
+                    EMPTY_WRITE_PERMISSIONS_MESSAGE
                 )
         return
 
@@ -373,16 +314,15 @@ class CreateOrUpdateGoFsInteractor:
             read_permission_roles: List[str],
             valid_read_permission_roles: List[str]
     ) -> Optional[InvalidReadPermissionRoles]:
-        from ib_tasks.constants.exception_messages import \
-            invalid_read_permission_roles_message
         invalid_read_permission_roles = \
             not set(read_permission_roles).issubset(
                 set(valid_read_permission_roles)
             )
         if invalid_read_permission_roles:
-            raise InvalidReadPermissionRoles(
-                invalid_read_permission_roles_message
+            invalid_roles = list(
+                set(read_permission_roles) - set(valid_read_permission_roles)
             )
+            raise InvalidReadPermissionRoles(invalid_roles)
         return
 
     def _validate_write_permission_roles(
@@ -406,14 +346,13 @@ class CreateOrUpdateGoFsInteractor:
             write_permission_roles: List[str],
             valid_write_permission_roles: List[str]
     ) -> Optional[InvalidWritePermissionRoles]:
-        from ib_tasks.constants.exception_messages import \
-            invalid_write_permission_roles_message
         invalid_write_permission_roles = \
             not set(write_permission_roles).issubset(
                 set(valid_write_permission_roles)
             )
         if invalid_write_permission_roles:
-            raise InvalidWritePermissionRoles(
-                invalid_write_permission_roles_message
+            invalid_roles = list(
+                set(write_permission_roles) - set(valid_write_permission_roles)
             )
+            raise InvalidWritePermissionRoles(invalid_roles)
         return

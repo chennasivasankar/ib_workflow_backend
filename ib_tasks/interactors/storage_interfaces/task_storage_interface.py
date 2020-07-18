@@ -58,12 +58,6 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_valid_template_ids_in_given_template_ids(
-            self, template_ids: List[str]
-    ) -> List[str]:
-        pass
-
-    @abc.abstractmethod
     def get_constant_names_of_existing_global_constants_of_template(
             self, template_id: str):
         pass

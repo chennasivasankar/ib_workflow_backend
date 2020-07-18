@@ -11,35 +11,21 @@ class TaskTemplateFactory(factory.DjangoModelFactory):
     class Meta:
         model = TaskTemplate
 
-    template_id = factory.Iterator(
-        [
-            "FIN_PR", "FIN_VENDOR"
-        ]
+    template_id = factory.Sequence(
+        lambda counter: "TEMPLATE_ID-{}".format(counter)
     )
-    name = factory.Iterator(
-        [
-            "Payment Request", "Vendor"
-        ]
-    )
+    name = factory.Sequence(lambda counter: "TEMPLATE_NAME-{}".format(counter))
 
 
 class GoFFactory(factory.DjangoModelFactory):
     class Meta:
         model = GoF
 
-    gof_id = factory.Iterator(
-        [
-            "FIN_REQUEST_DETAILS", "FIN_GOF_VENDOR_TYPE",
-            "FIN_VENDOR_BASIC_DETAILS"
-        ]
-    )
-    display_name = factory.Iterator(
-        [
-            "Request Details", "Vendor Type", "Vendor Basic Details"
-        ]
+    gof_id = factory.Sequence(lambda counter: "GOF_ID-{}".format(counter))
+    display_name = factory.Sequence(
+        lambda counter: "GOF_DISPLAY_NAME-{}".format(counter)
     )
     task_template = factory.SubFactory(TaskTemplateFactory)
-    order = factory.Sequence(lambda counter: counter)
     max_columns = 2
 
 
@@ -47,14 +33,12 @@ class FieldFactory(factory.DjangoModelFactory):
     class Meta:
         model = Field
 
-    field_id = factory.Iterator(
-        ["FIN_PAYMENT_REQUESTOR", "FIN_TYPE_OF_VENDOR"]
+    field_id = factory.Sequence(lambda counter: "FIELD_ID-{}".format(counter))
+    display_name = factory.Sequence(
+        lambda counter: "DISPLAY_NAME-{}".format(counter)
     )
-    display_name = factory.Iterator(
-        ["Payment Requester", "Type of Vendor"]
-    )
-    field_type = factory.Iterator(
-        [FieldTypes.PLAIN_TEXT, FieldTypes.GOF_SELECTOR]
+    field_type = factory.Sequence(
+        lambda counter: "FIELD_TYPE-{}".format(counter)
     )
 
 
@@ -63,7 +47,5 @@ class GoFRoleFactory(factory.DjangoModelFactory):
         model = GoFRole
 
     gof = factory.SubFactory(GoFFactory)
-    role = factory.Iterator(
-        ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"]
-    )
+    role = factory.Sequence(lambda counter: "ROLE-{}".format(counter))
     permission_type = PermissionTypes.READ.value

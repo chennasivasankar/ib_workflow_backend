@@ -37,26 +37,13 @@ class TasksStorageImplementation(TaskStorageInterface):
         )
         return existing_gof_ids
 
-    def get_valid_template_ids_in_given_template_ids(
-            self, template_ids: List[str]
-    ) -> List[str]:
-        from ib_tasks.models.task_template import TaskTemplate
-        valid_template_ids = list(
-            TaskTemplate.objects.filter(pk__in=template_ids). \
-                values_list("template_id", flat=True)
-        )
-        return valid_template_ids
-
     def create_gofs(self, gof_dtos: List[GoFDTO]):
         from ib_tasks.models.gof import GoF
         gofs = [
             GoF(
                 gof_id=gof_dto.gof_id,
                 display_name=gof_dto.gof_display_name,
-                task_template_id=gof_dto.task_template_id,
-                order=gof_dto.order,
-                max_columns=gof_dto.max_columns,
-                enable_multiple_gofs=gof_dto.enable_multiple_gofs
+                max_columns=gof_dto.max_columns
             )
             for gof_dto in gof_dtos
         ]
@@ -81,12 +68,9 @@ class TasksStorageImplementation(TaskStorageInterface):
         for gof in gofs:
             gof_dto = self._get_matching_gof_dto(gof.gof_id, gof_dtos)
             gof.display_name = gof_dto.gof_display_name
-            gof.task_template_id = gof_dto.task_template_id
-            gof.order = gof_dto.order
             gof.max_columns = gof_dto.max_columns
-            gof.enable_multiple_gofs = gof_dto.enable_multiple_gofs
         GoF.objects.bulk_update(
-            gofs, ['display_name', 'task_template_id', 'order', 'max_columns']
+            gofs, ['display_name', 'max_columns']
         )
 
     @staticmethod
@@ -170,10 +154,7 @@ class TasksStorageImplementation(TaskStorageInterface):
             GoFDTO(
                 gof_id=gof.gof_id,
                 gof_display_name=gof.display_name,
-                task_template_id=gof.task_template_id,
-                order=gof.order,
-                max_columns=gof.max_columns,
-                enable_multiple_gofs=gof.enable_multiple_gofs
+                max_columns=gof.max_columns
             )
             for gof in gofs
         ]
