@@ -82,9 +82,9 @@ class DuplicateConstantNames(Exception):
 
 
 class InvalidFieldIdException(Exception):
-    def __init__(self, error_message: str):
-        self.error_message = error_message
-
+    def __init__(self, field_ids: List[str]):
+        self.message = "Invalid field_ids {}".format(field_ids)
+        super().__init__(self.message)
 
 class DuplicationOfFieldIdsExist(Exception):
 
@@ -113,19 +113,22 @@ class EmptyValueForPermissions(Exception):
 
 class InvalidValueForFieldDisplayName(Exception):
 
-    def __init__(self, message: str):
-        self.message = message
+    def __init__(self, field_display_names: List[str]):
+        self.message = "Invalid fields display names {}".format(field_display_names)
+        super().__init__(self.message)
 
 
 class InvalidValueForFieldType(Exception):
 
-    def __init__(self, message: str):
-        self.message = message
+    def __init__(self, field_types: List[str]):
+        self.message = "Field Types should be one of these {}".format(field_types)
+        super().__init__(self.message)
 
 
 class InvalidGOFIds(Exception):
-    def __int__(self, message: str):
-        self.message = message
+    def __int__(self, gof_ids: List[str]):
+        self.message = "Invalid values for gof_ids {}".format(gof_ids)
+        super().__init__(self.message)
 
 
 class DuplicateGoFIds(Exception):
