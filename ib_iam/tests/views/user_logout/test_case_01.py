@@ -16,11 +16,11 @@ class TestCase01UserLogoutAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.mark.django_db
-    @patch(
-        "ib_iam.adapters.auth_service.AuthService.user_log_out_from_a_device"
-    )
-    def test_case(self, user_log_out_from_a_device_mock, snapshot):
-        user_log_out_from_a_device_mock.return_value = Mock()
+    def test_case(self, mocker, snapshot):
+        from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks \
+            import prepare_user_log_out_from_a_device_mock
+        user_log_out_from_a_device_mock \
+            = prepare_user_log_out_from_a_device_mock(mocker)
         body = {}
         path_params = {}
         query_params = {}
@@ -29,3 +29,4 @@ class TestCase01UserLogoutAPITestCase(TestUtils):
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
+        user_log_out_from_a_device_mock.assert_called_once()

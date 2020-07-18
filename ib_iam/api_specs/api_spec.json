@@ -70,7 +70,7 @@
         ]
       }
     },
-    "ResetPasswordParameter": {
+    "SendResetPasswordLinkParameter": {
       "name": "ResetPasswordParameter",
       "description": "email to reset the password",
       "in": "body",
@@ -134,7 +134,7 @@
       }
     },
     "LoginBadRequestResponse": {
-      "description": "Log in Bad Request Response",
+      "description": "login bad request response",
       "schema": {
         "allOf": [
           {
@@ -158,7 +158,7 @@
       }
     },
     "LoginNotFoundResponse": {
-      "description": "Login In Not Found response",
+      "description": "login not found response",
       "schema": {
         "allOf": [
           {
@@ -182,8 +182,8 @@
         ]
       }
     },
-    "ResetPasswordBadRequestResponse": {
-      "description": "reset password bad request response",
+    "SendResetPasswordLinkBadRequestResponse": {
+      "description": "send reset password link bad request response",
       "schema": {
         "allOf": [
           {
@@ -206,8 +206,8 @@
         ]
       }
     },
-    "ResetPasswordNotFoundResponse": {
-      "description": "reset password not found response",
+    "SendResetPasswordLinkNotFoundResponse": {
+      "description": "send reset password link not found response",
       "schema": {
         "allOf": [
           {
@@ -243,7 +243,9 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "TOKEN_HAS_EXPIRED"
+                  "TOKEN_HAS_EXPIRED",
+                  "PASSWORD_MIN_LENGTH",
+                  "PASSWORD_AT_LEAST_ONE_SPECIAL_CHARACTER"
                 ]
               }
             },
@@ -267,9 +269,7 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "TOKEN_DOES_NOT_EXIST",
-                  "PASSWORD_MIN_LENGTH",
-                  "PASSWORD_AT_LEAST_ONE_SPECIAL_CHARACTER"
+                  "TOKEN_DOES_NOT_EXIST"
                 ]
               }
             },
@@ -287,13 +287,6 @@
         "operationId": "user_login",
         "summary": "user login",
         "description": "if user is exists return the access_token and is_admin",
-        "security": [
-          {
-            "oauth": [
-              "read"
-            ]
-          }
-        ],
         "parameters": [
           {
             "$ref": "#/parameters/LoginParameter"
@@ -345,15 +338,15 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/ResetPasswordParameter"
+            "$ref": "#/parameters/SendResetPasswordLinkParameter"
           }
         ],
         "responses": {
           "400": {
-            "$ref": "#/responses/ResetPasswordBadRequestResponse"
+            "$ref": "#/responses/SendResetPasswordLinkBadRequestResponse"
           },
           "404": {
-            "$ref": "#/responses/ResetPasswordNotFoundResponse"
+            "$ref": "#/responses/SendResetPasswordLinkNotFoundResponse"
           },
           "200": {
             "description": "Success Response"

@@ -15,14 +15,13 @@ class TestCase01SendUserResetPasswordLinkAPITestCase(TestUtils):
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['read']}}
 
-    @patch(
-        "ib_iam.adapters.auth_service.AuthService.get_reset_password_token"
-    )
     @pytest.mark.django_db
-    def test_case(self,get_reset_password_token, snapshot):
-        body = {'email': 'test@gmail.com'}
+    def test_case(self, mocker, snapshot):
+        body = {'email': ''}
         from ib_iam.exceptions.custom_exceptions import InvalidEmail
-        get_reset_password_token.side_effect = InvalidEmail
+        from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
+            prepare_get_reset_password_token_mock
+        prepare_get_reset_password_token_mock(mocker).side_effect = InvalidEmail
         path_params = {}
         query_params = {}
         headers = {}

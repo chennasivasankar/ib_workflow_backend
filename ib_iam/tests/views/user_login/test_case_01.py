@@ -16,12 +16,7 @@ class TestCase01UserLoginAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['read']}}
 
     @pytest.mark.django_db
-    @patch(
-        "ib_iam.adapters.auth_service.AuthService.get_user_tokens_dto_for_given_email_and_password_dto"
-    )
-    def test_case(self, get_tokens_dto_for_given_email_and_password_dto,
-                  snapshot
-                  ):
+    def test_case(self, mocker, snapshot):
         from ib_iam.adapters.auth_service import UserTokensDTO
         tokens_dto = UserTokensDTO(
             access_token="asdfaldskfjdfdlsdkf",
@@ -33,7 +28,11 @@ class TestCase01UserLoginAPITestCase(TestUtils):
         UserFactory.reset_sequence(1)
         UserFactory()
 
-        get_tokens_dto_for_given_email_and_password_dto.return_value \
+        from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
+            prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock
+        get_tokens_dto_for_given_email_and_password_dto_mock \
+            = prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock(mocker)
+        get_tokens_dto_for_given_email_and_password_dto_mock.return_value \
             = tokens_dto
 
         body = {'email': 'string@gmail.com', 'password': 'sankaR@123'}

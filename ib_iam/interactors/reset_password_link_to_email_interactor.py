@@ -6,11 +6,11 @@ from ib_iam.interactors.presenter_interfaces.presenter_interface import \
 
 class SendResetPasswordLinkToEmailInteractor:
 
-    def reset_password_link_to_user_email_wrapper(
+    def send_reset_password_link_to_user_email_wrapper(
             self, email: str, presenter: AuthPresenterInterface
     ):
         try:
-            self.reset_password_link_to_email(email=email)
+            self.send_reset_password_link_to_user_email(email=email)
             return presenter \
                 .get_success_response_for_reset_password_link_to_user_email()
         except InvalidEmail:
@@ -20,7 +20,7 @@ class SendResetPasswordLinkToEmailInteractor:
                 = presenter.raise_exception_for_user_account_does_not_exists()
             return response
 
-    def reset_password_link_to_email(self, email: str):
+    def send_reset_password_link_to_user_email(self, email: str):
         from ib_iam.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
 

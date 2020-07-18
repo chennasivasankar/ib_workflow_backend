@@ -35,15 +35,15 @@ class LoginInteractor:
     def _get_login_response(self, email_and_password_dto: EmailAndPasswordDTO,
                             presenter: AuthPresenterInterface
                             ):
-        tokens_dto, is_admin = self.get_tokens_dto_and_is_admin(
+        user_tokens_dto, is_admin = self.get_user_tokens_dto_and_is_admin(
             email_and_password_dto=email_and_password_dto
         )
         response = presenter.prepare_response_for_user_tokens_dto_and_is_admin(
-            tokens_dto=tokens_dto, is_admin=is_admin
+            tokens_dto=user_tokens_dto, is_admin=is_admin
         )
         return response
 
-    def get_tokens_dto_and_is_admin(
+    def get_user_tokens_dto_and_is_admin(
             self, email_and_password_dto: EmailAndPasswordDTO
     ):
         from ib_iam.adapters.service_adapter import ServiceAdapter

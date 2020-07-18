@@ -26,15 +26,15 @@ snapshots['TestCase02UpdateUserPasswordAPITestCase.test_token_does_not_exist bod
 snapshots['TestCase02UpdateUserPasswordAPITestCase.test_case_for_required_password_min_length status_code'] = '400'
 
 snapshots['TestCase02UpdateUserPasswordAPITestCase.test_case_for_required_password_min_length body'] = {
-    'token': [
-        'This field is required.'
-    ]
+    'http_status_code': 400,
+    'res_status': 'PASSWORD_MIN_LENGTH',
+    'response': 'Please send the password with minimum required length is 8'
 }
 
 snapshots['TestCase02UpdateUserPasswordAPITestCase.test_case_for_required_password_one_special_character status_code'] = '400'
 
 snapshots['TestCase02UpdateUserPasswordAPITestCase.test_case_for_required_password_one_special_character body'] = {
-    'token': [
-        'This field is required.'
-    ]
+    'http_status_code': 400,
+    'res_status': 'PASSWORD_AT_LEAST_ONE_SPECIAL_CHARACTER',
+    'response': 'Please send the password at least with one special character'
 }

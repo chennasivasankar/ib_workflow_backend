@@ -15,7 +15,7 @@ def api_wrapper(*args, **kwargs):
     from ib_iam.presenters.presenter_implementation import \
         AuthPresenterImplementation
     presenter = AuthPresenterImplementation()
-    response = interactor.reset_password_link_to_user_email_wrapper(
+    response = interactor.send_reset_password_link_to_user_email_wrapper(
         presenter=presenter,
         email=email
     )

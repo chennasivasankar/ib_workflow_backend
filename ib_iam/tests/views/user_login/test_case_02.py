@@ -16,15 +16,15 @@ class TestCase02UserLoginAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['read']}}
 
     @pytest.mark.django_db
-    @patch(
-        "ib_iam.adapters.auth_service.AuthService.get_user_tokens_dto_for_given_email_and_password_dto"
-    )
-    def test_case_user_account_not_exist(
-            self, get_tokens_dto_for_given_email_and_password_dto,
-            snapshot):
+    def test_case_user_account_not_exist(self, mocker, snapshot):
         from ib_iam.exceptions.custom_exceptions import UserAccountDoesNotExist
+        from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
+            prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock
+        get_tokens_dto_for_given_email_and_password_dto \
+            = prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock(mocker)
         get_tokens_dto_for_given_email_and_password_dto.side_effect \
             = UserAccountDoesNotExist
+
         self._create_user()
         body = {'email': 'sasnkar@gmail.com', 'password': 'test123'}
         path_params = {}
@@ -42,14 +42,12 @@ class TestCase02UserLoginAPITestCase(TestUtils):
         UserFactory()
 
     @pytest.mark.django_db
-    @patch(
-        "ib_iam.adapters.auth_service.AuthService.get_user_tokens_dto_for_given_email_and_password_dto"
-    )
-    def test_case_incorrect_password(
-            self, get_tokens_dto_for_given_email_and_password_dto,
-            snapshot
-    ):
+    def test_case_incorrect_password(self, mocker, snapshot):
         from ib_iam.interactors.user_login_interactor import IncorrectPassword
+        from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
+            prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock
+        get_tokens_dto_for_given_email_and_password_dto \
+            = prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock(mocker)
         get_tokens_dto_for_given_email_and_password_dto.side_effect \
             = IncorrectPassword
         self._create_user()
@@ -63,14 +61,12 @@ class TestCase02UserLoginAPITestCase(TestUtils):
         )
 
     @pytest.mark.django_db
-    @patch(
-        "ib_iam.adapters.auth_service.AuthService.get_user_tokens_dto_for_given_email_and_password_dto"
-    )
-    def test_case_for_invalid_email(
-            self, get_tokens_dto_for_given_email_and_password_dto,
-            snapshot
-    ):
+    def test_case_for_invalid_email(self, mocker, snapshot):
         from ib_iam.exceptions.custom_exceptions import InvalidEmail
+        from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
+            prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock
+        get_tokens_dto_for_given_email_and_password_dto \
+            = prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock(mocker)
         get_tokens_dto_for_given_email_and_password_dto.side_effect \
             = InvalidEmail
         self._create_user()
@@ -82,4 +78,3 @@ class TestCase02UserLoginAPITestCase(TestUtils):
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
-

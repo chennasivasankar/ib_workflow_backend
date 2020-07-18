@@ -15,15 +15,15 @@ class TestCase02SendUserResetPasswordLinkAPITestCase(TestUtils):
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['read']}}
 
-    @patch(
-        "ib_iam.adapters.auth_service.AuthService.get_reset_password_token"
-    )
     @pytest.mark.django_db
-    def test_case(self, get_reset_password_token_mock, snapshot):
+    def test_case(self, mocker, snapshot):
         body = {'email': 'test@gmail.com'}
         from ib_iam.exceptions.custom_exceptions import UserAccountDoesNotExist
-        get_reset_password_token_mock.side_effect \
-            = UserAccountDoesNotExist
+        from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
+            prepare_get_reset_password_token_mock
+        get_reset_password_token_mock = prepare_get_reset_password_token_mock(
+            mocker)
+        get_reset_password_token_mock.side_effect = UserAccountDoesNotExist
         path_params = {}
         query_params = {"token": "123"}
         headers = {}
