@@ -1,9 +1,8 @@
 from typing import List
 
-from ib_tasks.interactors.dtos import StageLogicAttributes
+from ib_tasks.interactors.dtos import StageLogicAttributes, StageDTO
 from ib_tasks.interactors.stage_display_logic import StageDisplayLogicInteractor
 
-from ib_tasks.interactors.storage_interfaces.dtos import StageDTO
 from ib_tasks.exceptions.custom_exceptions import (
     InvalidStagesTaskTemplateId, InvalidStageValues, DuplicateStageIds,
     InvalidTaskTemplateIds, InvalidStageDisplayLogic, InvalidStagesDisplayName)

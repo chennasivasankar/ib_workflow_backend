@@ -1,13 +1,13 @@
 import factory
 
+from ib_tasks.interactors.dtos import StageDTO
 from ib_tasks.interactors.storage_interfaces.dtos import (
     CompleteGoFDetailsDTO, GoFDTO, GoFRolesDTO,
     FieldDTO, FieldRolesDTO, FieldRoleDTO, GoFRoleDTO
 )
 from ib_tasks.constants.enum import FieldTypes, PermissionTypes
 
-from ib_tasks.interactors.storage_interfaces.dtos import (
-    StageDTO, TaskStagesDTO)
+from ib_tasks.interactors.storage_interfaces.dtos import (TaskStagesDTO)
 
 
 class StageDTOFactory(factory.Factory):

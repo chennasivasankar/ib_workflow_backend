@@ -1,7 +1,8 @@
 import abc
 from typing import Optional, List
-from ib_tasks.interactors.storage_interfaces.dtos import (
-    StageDTO, TaskStagesDTO)
+
+from ib_tasks.interactors.dtos import StageDTO
+from ib_tasks.interactors.storage_interfaces.dtos import (TaskStagesDTO)
 
 
 class StageStorageInterface(abc.ABC):
@@ -19,8 +20,7 @@ class StageStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def validate_stages_related_task_template_ids(self,
-                                                  task_stages_dto: List[TaskStagesDTO]) -> \
-            Optional[List[str]]:
+        task_stages_dto: List[TaskStagesDTO]) -> Optional[List[str]]:
         pass
 
     @abc.abstractmethod

@@ -157,9 +157,7 @@ class TestCreateOrUpdateStageInformation:
         # Assert
         task_storage.get_valid_template_ids_in_given_template_ids.assert_called_once_with(task_template_ids)
         storage.validate_stages_related_task_template_ids. \
-            assert_called_once_with(
-            task_stages_dto
-        )
+            assert_called_once_with(task_stages_dto)
 
     def test_check_for_duplicate_stage_ids_raises_exception(self):
         # Arrange

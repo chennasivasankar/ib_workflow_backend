@@ -59,8 +59,7 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_valid_template_ids_in_given_template_ids(
-            self, template_ids: List[str]
-    ) -> List[str]:
+            self, template_ids: List[str]) -> List[str]:
         pass
 
     @abc.abstractmethod

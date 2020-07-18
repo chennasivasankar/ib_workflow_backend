@@ -5,6 +5,15 @@ from typing import List, Optional
 class StageLogicAttributes:
     stage_id: str
     status_id: str
+
+@dataclass
+class StageDTO:
+    stage_id: str
+    task_template_id: str
+    value: int
+    stage_display_name: str
+    stage_display_logic: str
+
 @dataclass
 class ActionDTO:
     stage_id: str
