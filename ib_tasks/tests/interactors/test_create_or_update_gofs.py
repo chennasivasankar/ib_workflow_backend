@@ -60,7 +60,7 @@ class TestCreateOrUpdateGOFs:
                 GoFRoleDTO(
                     gof_id=gof_roles_dto.gof_id,
                     role=read_permission_role,
-                    permission_type=PermissionTypes.READ
+                    permission_type=PermissionTypes.READ.value
                 )
                 for read_permission_role in gof_roles_dto.read_permission_roles
             ]
@@ -69,7 +69,7 @@ class TestCreateOrUpdateGOFs:
                 GoFRoleDTO(
                     gof_id=gof_roles_dto.gof_id,
                     role=write_permission_role,
-                    permission_type=PermissionTypes.WRITE
+                    permission_type=PermissionTypes.WRITE.value
                 )
                 for write_permission_role in (
                     gof_roles_dto.write_permission_roles
@@ -372,7 +372,7 @@ class TestCreateOrUpdateGOFs:
                 GoFRoleDTO(
                     gof_id=gof_roles_dto.gof_id,
                     role=read_permission_role,
-                    permission_type=PermissionTypes.READ
+                    permission_type=PermissionTypes.READ.value
                 )
                 for read_permission_role in gof_roles_dto.read_permission_roles
             ]
@@ -381,7 +381,7 @@ class TestCreateOrUpdateGOFs:
                 GoFRoleDTO(
                     gof_id=gof_roles_dto.gof_id,
                     role=write_permission_role,
-                    permission_type=PermissionTypes.WRITE
+                    permission_type=PermissionTypes.WRITE.value
                 )
                 for write_permission_role in (
                     gof_roles_dto.write_permission_roles

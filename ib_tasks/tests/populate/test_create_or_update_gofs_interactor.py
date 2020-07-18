@@ -2,8 +2,10 @@ import pytest
 import factory
 
 from ib_tasks.tests.factories.storage_dtos import (
-    CompleteGoFDetailsDTOFactory, GoFDTOFactory, GoFRolesDTOFactory
+    CompleteGoFDetailsDTOFactory, GoFDTOFactory, GoFRolesDTOFactory,
+    GoFRoleDTOFactory
 )
+from ib_tasks.tests.factories.models import GoFFactory, GoFRoleFactory
 
 
 class TestCreateOrUpdateGoFsInteractor:
@@ -13,6 +15,8 @@ class TestCreateOrUpdateGoFsInteractor:
         CompleteGoFDetailsDTOFactory.reset_sequence(1)
         GoFDTOFactory.reset_sequence(1)
         GoFRolesDTOFactory.reset_sequence(1)
+        GoFFactory.reset_sequence(1)
+        GoFRoleFactory.reset_sequence(1)
 
     @pytest.fixture
     def interactor(self):
@@ -228,3 +232,84 @@ class TestCreateOrUpdateGoFsInteractor:
             name="invalid_gof_write_permission_roles_message",
             value=str(err.value)
         )
+
+    @pytest.mark.django_db
+    def test_create_or_update_gofs_interactor_with_valid_details(
+            self, interactor
+    ):
+        # Arrange
+        from ib_tasks.models.gof import GoF
+        from ib_tasks.models.gof_role import GoFRole
+        from ib_tasks.constants.enum import PermissionTypes
+        complete_gof_details_dtos = CompleteGoFDetailsDTOFactory.create_batch(
+            size=3
+        )
+        gof_dtos = [
+            complete_gof_details_dto.gof_dto
+            for complete_gof_details_dto in complete_gof_details_dtos
+        ]
+        gof_roles_dtos = [
+            complete_gof_details_dto.gof_roles_dto
+            for complete_gof_details_dto in complete_gof_details_dtos
+        ]
+
+        # Act
+        interactor.create_or_update_gofs(complete_gof_details_dtos)
+
+        # Assert
+        for gof_dto in gof_dtos:
+            gof = GoF.objects.get(pk=gof_dto.gof_id)
+            assert gof.display_name == gof_dto.gof_display_name
+            assert gof.max_columns == gof_dto.max_columns
+        for gof_roles_dto in gof_roles_dtos:
+            for gof_read_permission_role in gof_roles_dto.read_permission_roles:
+                GoFRole.objects.get(
+                    gof_id=gof_roles_dto.gof_id, role=gof_read_permission_role,
+                    permission_type=PermissionTypes.READ.value
+                )
+            for gof_write_permission_role in gof_roles_dto.read_permission_roles:
+                GoFRole.objects.get(
+                    gof_id=gof_roles_dto.gof_id, role=gof_write_permission_role,
+                    permission_type=PermissionTypes.WRITE.value
+                )
+
+    @pytest.mark.django_db
+    def test_create_or_update_gofs_interactor_with_already_existing_gofs_updates_gofs(
+            self, interactor
+    ):
+        # Arrange
+        from ib_tasks.models.gof import GoF
+        from ib_tasks.models.gof_role import GoFRole
+        from ib_tasks.constants.enum import PermissionTypes
+        from ib_tasks.tests.factories.models import GoFFactory, GoFRoleFactory
+        gofs = GoFFactory.create_batch(size=2)
+        gof_ids = [gof.gof_id for gof in gofs]
+        gof_roles = GoFRoleFactory.create_batch(
+            size=2, gof_id=factory.Iterator(gof_ids)
+        )
+        gof_dtos = GoFDTOFactory.create_batch(
+            size=2, gof_id=factory.Iterator(gof_ids)
+        )
+        complete_gof_details_dtos = CompleteGoFDetailsDTOFactory.create_batch(
+            size=2, gof_dto=factory.Iterator(gof_dtos)
+        )
+        complete_gof_details_dtos += CompleteGoFDetailsDTOFactory.create_batch(
+            size=2
+        )
+        gof_dtos = [
+            complete_gof_details_dto.gof_dto
+            for complete_gof_details_dto in complete_gof_details_dtos
+        ]
+        gof_roles_dtos = [
+            complete_gof_details_dto.gof_roles_dto
+            for complete_gof_details_dto in complete_gof_details_dtos
+        ]
+
+        # Act
+        interactor.create_or_update_gofs(complete_gof_details_dtos)
+
+        # Assert
+        for gof_dto in gof_dtos:
+            gof = GoF.objects.get(pk=gof_dto.gof_id)
+            assert gof.display_name == gof_dto.gof_display_name
+            assert gof.max_columns == gof_dto.max_columns
