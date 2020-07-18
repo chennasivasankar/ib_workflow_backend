@@ -115,9 +115,13 @@ class TestCreateBoardsAndColumnsInteractor:
 
     @pytest.fixture
     def column_dtos_with_empty_task_kanban_view_fields(self):
-        column_dtos = ColumnDTOFactory.create_batch(3)
-        column_dtos[0].kanban_view_fields[0].summary_fields = []
-        return column_dtos
+        kanban_view_fields = TaskSummaryFieldsDTOFactory.create_batch(
+            2, summary_fields=[]
+        )
+        return [
+            ColumnDTOFactory(),
+            ColumnDTOFactory(kanban_view_fields=kanban_view_fields)
+        ]
 
     @pytest.fixture
     def column_dtos_with_duplicate_kanban_view_fields(self):
@@ -179,6 +183,31 @@ class TestCreateBoardsAndColumnsInteractor:
             'TASK_TEMPLATE_ID_9', 'TASK_TEMPLATE_ID_10',
             'TASK_TEMPLATE_ID_6', 'TASK_TEMPLATE_ID_7', 'TASK_TEMPLATE_ID_8',
             'TASK_TEMPLATE_ID_9', 'TASK_TEMPLATE_ID_10'
+
+        ]
+        from ib_boards.tests.common_fixtures.adapters.task_service import \
+            get_valid_task_ids_for_kanban_view_mock
+        get_valid_task_ids_for_kanban_view_mock(
+            mocker=mocker,
+            task_template_ids_for_stages=task_template_ids_for_stages,
+            task_template_ids_list_view=task_template_ids_list_view,
+            task_ids=task_template_ids_kanban_view
+        )
+
+    @pytest.fixture
+    def mock_valid_template_ids_for_empty_fields(self, mocker):
+        task_template_ids_for_stages = [
+            'TASK_TEMPLATE_ID_1', 'TASK_TEMPLATE_ID_2', 'TASK_TEMPLATE_ID_3',
+            'TASK_TEMPLATE_ID_4', 'TASK_TEMPLATE_ID_5',
+        ]
+        task_template_ids_list_view = [
+            'TASK_TEMPLATE_ID_1', 'TASK_TEMPLATE_ID_2', 'TASK_TEMPLATE_ID_3',
+            'TASK_TEMPLATE_ID_4', 'TASK_TEMPLATE_ID_5',
+        ]
+        task_template_ids_kanban_view = [
+            'TASK_TEMPLATE_ID_6', 'TASK_TEMPLATE_ID_7', 'TASK_TEMPLATE_ID_8',
+            'TASK_TEMPLATE_ID_9', 'TASK_TEMPLATE_ID_10', 'TASK_TEMPLATE_ID_1',
+            'TASK_TEMPLATE_ID_2'
 
         ]
         from ib_boards.tests.common_fixtures.adapters.task_service import \
@@ -583,7 +612,7 @@ class TestCreateBoardsAndColumnsInteractor:
     def test_with_empty_task_kanban_view_fields_raise_exception(
             self, storage_mock, sequence_reset, board_dtos,
             column_dtos_with_empty_task_kanban_view_fields,
-            mock_valid_template_ids):
+            mock_valid_template_ids_for_empty_fields):
         # Arrange
         interactor = CreateBoardsAndColumnsInteractor(
             storage=storage_mock
@@ -592,7 +621,7 @@ class TestCreateBoardsAndColumnsInteractor:
         from ib_boards.exceptions.custom_exceptions import \
             EmptyValuesForTaskKanbanViewFields
         with pytest.raises(EmptyValuesForTaskKanbanViewFields) as error:
-            assert interactor.create_boards_and_columns(
+            interactor.create_boards_and_columns(
                 board_dtos=board_dtos,
                 column_dtos=column_dtos_with_empty_task_kanban_view_fields
             )

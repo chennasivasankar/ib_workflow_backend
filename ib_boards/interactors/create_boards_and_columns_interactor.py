@@ -285,7 +285,7 @@ class CreateBoardsAndColumnsInteractor:
             self, column_dtos: List[ColumnDTO]):
         task_summary_fields_dtos = []
         for column_dto in column_dtos:
-            task_summary_fields_dtos += column_dto.list_view_fields
+            task_summary_fields_dtos += column_dto.kanban_view_fields
         try:
             self._check_task_summary_fields_are_not_empty(
                 task_summary_fields_dtos=task_summary_fields_dtos
