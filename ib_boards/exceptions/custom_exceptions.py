@@ -91,6 +91,10 @@ class InvalidBoardIds(Exception):
         self.board_ids = board_ids
 
 
+class InvalidBoardId(Exception):
+   pass
+
+
 class InvalidColumnId(Exception):
     pass
 
