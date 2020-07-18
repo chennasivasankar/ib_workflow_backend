@@ -13,7 +13,7 @@ from ib_boards.tests.factories.interactor_dtos import BoardDTOFactory, \
     ColumnDTOFactory, TaskTemplateStagesDTOFactory, TaskSummaryFieldsDTOFactory
 
 
-class TestPopulateScriptInteractor:
+class TestCreateBoardsAndColumnsInteractor:
 
     @pytest.fixture
     def storage_mock(self):
@@ -278,8 +278,8 @@ class TestPopulateScriptInteractor:
 
         # Act
         from ib_boards.exceptions.custom_exceptions import \
-            InvalidTaskIdInSummaryFields
-        with pytest.raises(InvalidTaskIdInSummaryFields) as error:
+            InvalidTaskIdInListViewFields
+        with pytest.raises(InvalidTaskIdInListViewFields) as error:
             assert interactor.create_boards_and_columns(
                 board_dtos=board_dtos,
                 column_dtos=column_dtos_with_invalid_task_template_id
@@ -363,9 +363,9 @@ class TestPopulateScriptInteractor:
 
         # Act
         from ib_boards.exceptions.custom_exceptions import \
-            TaskSummaryFieldsNotBelongsToTaskTemplateId
+            TaskListViewFieldsNotBelongsToTaskTemplateId
         with pytest.raises(
-                TaskSummaryFieldsNotBelongsToTaskTemplateId) as error:
+                TaskListViewFieldsNotBelongsToTaskTemplateId) as error:
             assert interactor.create_boards_and_columns(
                 board_dtos=board_dtos,
                 column_dtos=column_dtos
@@ -448,8 +448,8 @@ class TestPopulateScriptInteractor:
         )
         # Act
         from ib_boards.exceptions.custom_exceptions import \
-            EmptyValuesForTaskSummaryFields
-        with pytest.raises(EmptyValuesForTaskSummaryFields) as error:
+            EmptyValuesForTaskListViewFields
+        with pytest.raises(EmptyValuesForTaskListViewFields) as error:
             assert interactor.create_boards_and_columns(
                 board_dtos=board_dtos,
                 column_dtos=column_dtos_with_empty_task_list_view_fields

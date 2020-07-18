@@ -249,8 +249,8 @@ class TestAddOrDeleteColumnsForBoardInteractor:
 
         # Act
         from ib_boards.exceptions.custom_exceptions import \
-            InvalidTaskIdInSummaryFields
-        with pytest.raises(InvalidTaskIdInSummaryFields) as error:
+            InvalidTaskIdInListViewFields
+        with pytest.raises(InvalidTaskIdInListViewFields) as error:
             assert interactor.add_or_delete_columns_for_board_wrapper(
                 column_dtos=column_dtos_with_invalid_task_template_id
             )
@@ -333,9 +333,9 @@ class TestAddOrDeleteColumnsForBoardInteractor:
 
         # Act
         from ib_boards.exceptions.custom_exceptions import \
-            TaskSummaryFieldsNotBelongsToTaskTemplateId
+            TaskListViewFieldsNotBelongsToTaskTemplateId
         with pytest.raises(
-                TaskSummaryFieldsNotBelongsToTaskTemplateId) as error:
+                TaskListViewFieldsNotBelongsToTaskTemplateId) as error:
             assert interactor.add_or_delete_columns_for_board_wrapper(
                 column_dtos=column_dtos
             )
@@ -453,8 +453,8 @@ class TestAddOrDeleteColumnsForBoardInteractor:
         )
         # Act
         from ib_boards.exceptions.custom_exceptions import \
-            EmptyValuesForTaskSummaryFields
-        with pytest.raises(EmptyValuesForTaskSummaryFields) as error:
+            EmptyValuesForTaskListViewFields
+        with pytest.raises(EmptyValuesForTaskListViewFields) as error:
             assert interactor.add_or_delete_columns_for_board_wrapper(
                 column_dtos=column_dtos_with_empty_task_list_view_fields
             )
