@@ -114,7 +114,7 @@ class TestPopulateScriptInteractor:
 
     @pytest.fixture
     def column_dtos_with_invalid_task_template_id(self):
-        return ColumnDTOFactory.create_batch(3)
+        return ColumnDTOFactory.create_batch(1)
 
     @pytest.fixture
     def task_summary_field_dtos(self):
@@ -184,7 +184,14 @@ class TestPopulateScriptInteractor:
             self, storage_mock, board_dtos, sequence_reset,
             column_dtos_with_invalid_task_template_id, mocker):
         # Arrange
-        invalid_task_template_ids = ['TASK_ID_1']
+        invalid_task_template_ids = ['TASK_TEMPLATE_ID_4', 'TASK_TEMPLATE_ID_5']
+        task_template_ids = [
+            'TASK_TEMPLATE_ID_1', 'TASK_TEMPLATE_ID_2', 'TASK_TEMPLATE_ID_3',
+            'TASK_TEMPLATE_ID_4', 'TASK_TEMPLATE_ID_5',
+        ]
+        valid_task_template_ids = [
+            'TASK_TEMPLATE_ID_1', 'TASK_TEMPLATE_ID_2', 'TASK_TEMPLATE_ID_3'
+        ]
         interactor = CreateBoardsAndColumnsInteractor(
             storage=storage_mock
         )
@@ -194,7 +201,7 @@ class TestPopulateScriptInteractor:
 
         adapter_mock = get_valid_task_template_ids_mock(
             mocker=mocker,
-            task_template_ids=invalid_task_template_ids
+            task_template_ids=valid_task_template_ids
         )
         # Act
         from ib_boards.exceptions.custom_exceptions import \
@@ -211,24 +218,28 @@ class TestPopulateScriptInteractor:
         )
         assert error.value.task_template_ids == invalid_task_template_ids
 
-    def test_with_invalid_task_template_id_in_fields_raise_exception(
+    def test_with_invalid_task_id_in_fields_raise_exception(
             self, storage_mock, board_dtos, sequence_reset,
             column_dtos_with_invalid_task_template_id, mocker):
         # Arrange
-        task_template_ids = [
-            'TASK_TEMPLATE_ID_1', 'TASK_TEMPLATE_ID_2', 'TASK_TEMPLATE_ID_3',
-            'TASK_TEMPLATE_ID_4', 'TASK_TEMPLATE_ID_5',
+        invalid_task_ids = ['TASK_ID_4', 'TASK_ID_5']
+        task_ids = [
+            'TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3',
+            'TASK_ID_4', 'TASK_ID_5',
+        ]
+        valid_task_ids = [
+            'TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3'
         ]
         interactor = CreateBoardsAndColumnsInteractor(
             storage=storage_mock
         )
 
         from ib_boards.tests.common_fixtures.adapters.task_service import \
-            get_valid_task_template_ids_mock
+            get_valid_task_ids_mock
 
-        adapter_mock = get_valid_task_template_ids_mock(
+        adapter_mock = get_valid_task_ids_mock(
             mocker=mocker,
-            task_template_ids=task_template_ids
+            task_ids=valid_task_ids
         )
 
         # Act
@@ -239,6 +250,12 @@ class TestPopulateScriptInteractor:
                 board_dtos=board_dtos,
                 column_dtos=column_dtos_with_invalid_task_template_id
             )
+
+        # Assert
+        adapter_mock.assert_called_once_with(
+            task_template_ids=task_template_ids
+        )
+        assert error.value.task_template_ids == invalid_task_template_ids
 
     def test_with_empty_task_template_stages_raise_exception(
             self, storage_mock, board_dtos, sequence_reset,

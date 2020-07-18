@@ -31,7 +31,7 @@ class CreateBoardsAndColumnsInteractor:
         self._validate_task_template_ids_in_task_template_stage(
             column_dtos=column_dtos
         )
-        self._validate_task_template_ids_in_task_template_fields(
+        self._validate_task_ids_in_task_summary_fields(
             column_dtos=column_dtos
         )
         self._validate_empty_values_in_task_template_stage(
@@ -89,19 +89,16 @@ class CreateBoardsAndColumnsInteractor:
             task_template_ids += self._get_task_template_ids(
                 task_template_stage_dtos=task_template_stage_dtos
             )
-
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         valid_task_template_ids = service_adapter.task_service.\
             get_valid_task_template_ids(
                 task_template_ids=task_template_ids
             )
-
         invalid_task_template_ids = [
             task_template_id for task_template_id in task_template_ids
             if task_template_id not in valid_task_template_ids
         ]
-        print(invalid_task_template_ids, task_template_ids)
         if invalid_task_template_ids:
             from ib_boards.exceptions.custom_exceptions import \
                 InvalidTaskTemplateIdInStages
@@ -118,7 +115,7 @@ class CreateBoardsAndColumnsInteractor:
         ]
         return task_template_ids
 
-    def _validate_task_template_ids_in_task_template_fields(
+    def _validate_task_ids_in_task_summary_fields(
             self, column_dtos: List[ColumnDTO]):
 
         task_ids = []
