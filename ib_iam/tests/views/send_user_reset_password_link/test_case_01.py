@@ -17,7 +17,7 @@ class TestCase01SendUserResetPasswordLinkAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_case(self, mocker, snapshot):
-        body = {'email': ''}
+        body = {'email': 'saa'}
         from ib_iam.exceptions.custom_exceptions import InvalidEmail
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
             prepare_get_reset_password_token_mock

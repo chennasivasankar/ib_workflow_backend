@@ -3,8 +3,3 @@
 -r requirements_lint.txt
 -r requirements_dev.txt
 -r requirements_test.txt
-
-djangorestframework~=3.9.4
-django-oauth-toolkit~=1.2.0
-snapshottest~=0.5.1
-setuptools~=49.2.0

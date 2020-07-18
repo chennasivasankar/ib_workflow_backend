@@ -11,14 +11,14 @@ class SendResetPasswordLinkToEmailInteractor:
     ):
         try:
             self.send_reset_password_link_to_user_email(email=email)
-            return presenter \
+            response = presenter \
                 .get_success_response_for_reset_password_link_to_user_email()
         except InvalidEmail:
-            return presenter.raise_exception_for_invalid_email()
+            response = presenter.raise_exception_for_invalid_email()
         except UserAccountDoesNotExist:
             response \
                 = presenter.raise_exception_for_user_account_does_not_exists()
-            return response
+        return response
 
     def send_reset_password_link_to_user_email(self, email: str):
         from ib_iam.adapters.service_adapter import ServiceAdapter

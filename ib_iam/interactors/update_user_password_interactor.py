@@ -22,18 +22,19 @@ class UpdateUserPasswordInteractor:
     def update_user_password_wrapper(self, presenter: AuthPresenterInterface,
                                      reset_password_token: str, password: str):
         try:
-            return self.update_user_password_response(
+            response = self.update_user_password_response(
                 password=password, presenter=presenter,
                 reset_password_token=reset_password_token
             )
         except TokenDoesNotExist:
-            return presenter.raise_exception_for_token_does_not_exists()
+            response = presenter.raise_exception_for_token_does_not_exists()
         except TokenHasExpired:
-            return presenter.raise_exception_for_token_has_expired()
+            response = presenter.raise_exception_for_token_has_expired()
         except PasswordMinLength:
-            return presenter.raise_exception_for_password_min_length_required()
+            response = presenter.raise_exception_for_password_min_length_required()
         except PasswordAtLeastOneSpecialCharacter:
-            return presenter.raise_exception_for_password_at_least_one_special_character_required()
+            response = presenter.raise_exception_for_password_at_least_one_special_character_required()
+        return response
 
     def update_user_password_response(self, password: str,
                                       reset_password_token: str,

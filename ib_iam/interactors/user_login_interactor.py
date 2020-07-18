@@ -24,13 +24,13 @@ class LoginInteractor:
                 email_and_password_dto=email_and_password_dto,
                 presenter=presenter
             )
-            return response
         except InvalidEmail:
-            return presenter.raise_exception_for_invalid_email()
+            response = presenter.raise_exception_for_invalid_email()
         except UserAccountDoesNotExist:
-            return presenter.raise_exception_for_user_account_does_not_exists()
+            response = presenter.raise_exception_for_user_account_does_not_exists()
         except IncorrectPassword:
-            return presenter.raise_exception_for_incorrect_password()
+            response = presenter.raise_exception_for_incorrect_password()
+        return response
 
     def _get_login_response(self, email_and_password_dto: EmailAndPasswordDTO,
                             presenter: AuthPresenterInterface
