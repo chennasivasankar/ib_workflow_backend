@@ -10,7 +10,7 @@ from ib_boards.exceptions.custom_exceptions import \
     TaskListViewFieldsNotBelongsToTaskTemplateId, \
     EmptyValuesForTaskSummaryFields, EmptyValuesForTaskListViewFields, \
     InvalidTaskIdInListViewFields, InvalidTaskIdInSummaryFields, \
-    InvalidTaskIdInKanbanViewFields
+    InvalidTaskIdInKanbanViewFields, EmptyValuesForTaskKanbanViewFields
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
     TaskTemplateStagesDTO, TaskSummaryFieldsDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
@@ -30,7 +30,7 @@ class CreateBoardsAndColumnsInteractor:
             column_dtos=column_dtos
         )
 
-    def validate_columns_data(self, column_dtos):
+    def validate_columns_data(self, column_dtos: List[ColumnDTO]):
         self._validate_column_ids(column_dtos=column_dtos)
         self._validate_column_display_name(column_dtos=column_dtos)
         self._validate_column_display_order(column_dtos=column_dtos)
@@ -43,19 +43,10 @@ class CreateBoardsAndColumnsInteractor:
         self._validate_task_template_stages_with_template_id(
             column_dtos=column_dtos)
         self._validate_duplicate_task_template_stages(column_dtos=column_dtos)
-        self._validate_task_template_ids_in_list_view_fields(
-            column_dtos=column_dtos
-        )
         self._validate_task_summary_fields(column_dtos)
         self._validate_user_roles(column_dtos=column_dtos)
 
-    def _validate_task_summary_fields(self, column_dtos):
-        self._validate_duplicate_task_list_view_fields(column_dtos=column_dtos)
-        self._validate_empty_values_in_task_template_list_view_fields(
-            column_dtos=column_dtos)
-        self._validate_task_template_list_view_fields_with_task_template_id(
-            column_dtos=column_dtos
-        )
+    def _validate_task_summary_fields(self, column_dtos: List[ColumnDTO]):
         self._validate_task_template_ids_in_list_view_fields(
             column_dtos=column_dtos
         )
@@ -63,6 +54,15 @@ class CreateBoardsAndColumnsInteractor:
         self._validate_empty_values_in_task_template_list_view_fields(
             column_dtos=column_dtos)
         self._validate_task_template_list_view_fields_with_task_template_id(
+            column_dtos=column_dtos
+        )
+        self._validate_task_template_ids_in_kanban_view_fields(
+            column_dtos=column_dtos
+        )
+        self._validate_duplicate_task_kanban_view_fields(column_dtos=column_dtos)
+        self._validate_empty_values_in_task_template_kanban_view_fields(
+            column_dtos=column_dtos)
+        self._validate_task_template_kanban_view_fields_with_task_template_id(
             column_dtos=column_dtos
         )
 
@@ -262,6 +262,7 @@ class CreateBoardsAndColumnsInteractor:
             task_ids += self._get_task_template_ids_for_fields(
                 task_summary_field_dtos=task_summary_field_dtos
             )
+        print(task_ids)
         try:
             self._get_invalid_task_template_ids_for_fields(
                 task_ids=task_ids
@@ -290,7 +291,7 @@ class CreateBoardsAndColumnsInteractor:
                 task_summary_fields_dtos=task_summary_fields_dtos
             )
         except EmptyValuesForTaskSummaryFields:
-            raise EmptyValuesForTaskListViewFields
+            raise EmptyValuesForTaskKanbanViewFields
 
     def _validate_duplicate_task_kanban_view_fields(
             self, column_dtos: List[ColumnDTO]):

@@ -25,6 +25,21 @@ def get_valid_task_ids_mock(
     return mock
 
 
+def get_valid_task_ids_for_kanban_view_mock(
+        mocker, task_template_ids_for_stages: List[str],
+        task_template_ids_list_view: List[str], task_ids: List[str]):
+
+    mock = mocker.patch(
+        'ib_boards.adapters.task_service.TaskService.get_valid_task_template_ids'
+    )
+    mock.side_effect = [
+        task_template_ids_for_stages,
+        task_template_ids_list_view,
+        task_ids
+    ]
+    return mock
+
+
 def adapter_mock_for_task_template_stages(mocker):
     mock = mocker.patch(
         'ib_boards.adapters.task_service.TaskService.validate_task_template_stages_with_id'
