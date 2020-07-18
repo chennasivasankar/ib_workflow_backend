@@ -10,3 +10,4 @@ class GoF(models.Model):
     task_template = models.ForeignKey(TaskTemplate, on_delete=models.CASCADE)
     order = models.IntegerField()
     max_columns = models.IntegerField(default=2)
+    enable_multiple_gofs = models.BooleanField(default=False)

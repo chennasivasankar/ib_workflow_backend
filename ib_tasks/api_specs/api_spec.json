@@ -54,12 +54,6 @@
                       "type": "string",
                       "example": "FIN_FIRST_NAME"
                     },
-                    "field_type": {
-                      "type": "string",
-                      "enum": [
-                        "PLAIN_TEXT"
-                      ]
-                    },
                     "field_response_single_value": {
                       "type": "string"
                     },
