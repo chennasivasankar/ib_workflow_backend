@@ -50,9 +50,7 @@ class TestGetGroupOfFieldsAndStatusVariablesToTaskInteractor:
         interactor = GetGroupOfFieldsAndStatusVariablesToTaskInteractor(
             storage=storage
         )
-        from ib_tasks.interactors.storage_interfaces.dtos import (
-            TaskGofAndStatusesDTO
-        )
+        from ib_tasks.interactors.dtos import TaskGofAndStatusesDTO
 
         expected_task_dto = TaskGofAndStatusesDTO(
             task_id="task_1",

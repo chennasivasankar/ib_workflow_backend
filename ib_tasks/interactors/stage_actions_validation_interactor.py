@@ -1,6 +1,9 @@
 import json
 from collections import defaultdict
 from typing import List
+
+from ib_tasks.interactors.mixins.get_stage_actions_details \
+    import GetStageActionsDetailsMixin
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 from ib_tasks.exceptions.custom_exceptions import (
@@ -29,12 +32,21 @@ class DuplicateStageActionNamesException(Exception):
         self.stage_actions = stage_actions
 
 
-class StageActionsAndTasksValidationMixin:
+class StageActionsAndTasksValidationInteractor(GetStageActionsDetailsMixin):
 
     def __init__(self, storage: StorageInterface):
         self.storage = storage
 
-    def validations_for_duplicate_stage_actions(
+    def validations_for_actions_dto(self, actions_dto: List[RequestDTO]):
+        stage_ids = self.get_stage_ids(actions_dto)
+        self._validations_for_stage_ids(stage_ids=stage_ids)
+        self._validations_for_stage_roles(actions_dto)
+        self._validations_for_empty_stage_display_logic(actions_dto)
+        self._validations_for_empty_button_texts(actions_dto)
+        self._validations_for_button_texts(actions_dto)
+        self._validations_for_duplicate_stage_actions(actions_dto)
+
+    def _validations_for_duplicate_stage_actions(
             self, actions_dto: List[RequestDTO]):
         stage_actions = self._get_stage_action_names(actions_dto)
         invalid_stage_actions = defaultdict(list)
@@ -58,7 +70,7 @@ class StageActionsAndTasksValidationMixin:
             stage_actions[action_dto.stage_id].append(action_dto.action_name)
         return stage_actions
 
-    def validations_for_button_texts(self, actions_dto: List[RequestDTO]):
+    def _validations_for_button_texts(self, actions_dto: List[RequestDTO]):
         stage_buttons = self._get_stage_button_texts(actions_dto)
         from collections import Counter
         invalid_stage_buttons = defaultdict(list)
@@ -82,7 +94,7 @@ class StageActionsAndTasksValidationMixin:
         return stage_button_texts
 
     @staticmethod
-    def validations_for_empty_stage_display_logic(actions_dto):
+    def _validations_for_empty_stage_display_logic(actions_dto):
 
         empty_stage_display_logic_ids = sorted(list({
             action_dto.stage_id
@@ -96,7 +108,7 @@ class StageActionsAndTasksValidationMixin:
             raise EmptyStageDisplayLogic(stage_ids_dict=stage_ids_dict)
 
     @staticmethod
-    def validations_for_empty_button_texts(actions_dto):
+    def _validations_for_empty_button_texts(actions_dto):
 
         empty_button_texts_stage_ids = list({
             action_dto.stage_id
@@ -109,7 +121,7 @@ class StageActionsAndTasksValidationMixin:
             )
             raise EmptyStageButtonText(stage_ids_dict=stage_ids_dict)
 
-    def validations_for_stage_roles(self, actions_dto: List[RequestDTO]):
+    def _validations_for_stage_roles(self, actions_dto: List[RequestDTO]):
         from ib_tasks.adapters.service_adapter import get_service_adapter
         db_roles = get_service_adapter().roles_service.get_db_roles()
         invalid_stage_roles = defaultdict(list)
@@ -132,7 +144,7 @@ class StageActionsAndTasksValidationMixin:
                 field = True
         return field
 
-    def validations_for_stage_ids(self, stage_ids: List[str]):
+    def _validations_for_stage_ids(self, stage_ids: List[str]):
         db_stage_ids = self.storage.get_valid_stage_ids(stage_ids=stage_ids)
         invalid_stage_ids = self._get_invalid_stage_ids(
             stage_ids=stage_ids, db_stage_ids=db_stage_ids)
@@ -151,10 +163,4 @@ class StageActionsAndTasksValidationMixin:
         ]
         return invalid_stage_ids
 
-    @staticmethod
-    def _get_stage_ids(actions_dto: List[RequestDTO]):
-        stage_ids = [
-            action_dto.stage_id
-            for action_dto in actions_dto
-        ]
-        return stage_ids
+

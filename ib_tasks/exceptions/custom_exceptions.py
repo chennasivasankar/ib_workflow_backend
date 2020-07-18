@@ -26,3 +26,8 @@ class InvalidPythonCodeException(Exception):
 class InvalidTaskIdException(Exception):
     def __init__(self, task_id: str):
         self.task_id = task_id
+
+
+class InvalidTaskTemplateId(Exception):
+    def __init__(self, task_template_ids_dict: str):
+        self.task_template_ids_dict = task_template_ids_dict

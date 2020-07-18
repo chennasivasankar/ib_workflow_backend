@@ -30,8 +30,6 @@ class GroupOfFieldsDTO:
 
 
 @dataclass()
-class TaskGofAndStatusesDTO:
-    task_id: str
-    group_of_fields_dto: List[GroupOfFieldsDTO]
-    fields_dto: List[FieldValueDTO]
-    statuses_dto: List[StatusVariableDTO]
+class GOFMultipleStatusDTO:
+    group_of_field_id: str
+    multiple_status: bool

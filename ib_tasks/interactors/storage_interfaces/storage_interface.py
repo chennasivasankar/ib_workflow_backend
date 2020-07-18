@@ -14,7 +14,8 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_valid_stage_ids(self, stage_ids: List[str]) -> Optional[List[str]]:
+    def get_valid_stage_ids(self,
+                            stage_ids: List[str]) -> Optional[List[str]]:
         pass
 
     @abc.abstractmethod
@@ -26,7 +27,8 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def delete_stage_actions(self, stage_actions: List[StageActionNamesDTO]):
+    def delete_stage_actions(self,
+                             stage_actions: List[StageActionNamesDTO]):
         pass
 
     @abc.abstractmethod
@@ -56,4 +58,23 @@ class StorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_status_variables_to_task(
             self, task_id: str) -> List[StatusVariableDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_enable_multiple_gofs_field_to_gof_ids(
+            self, gof_ids: List[str]) -> List[GOFMultipleStatusDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_path_name_to_action(self, action_id: str) -> str:
+        pass
+
+    @abc.abstractmethod
+    def update_status_variables_to_task(self, task_id: str,
+                                        status_variables_dto):
+        pass
+
+    @abc.abstractmethod
+    def get_valid_task_template_ids(self,
+                                    task_template_ids: List[str]) -> List[str]:
         pass

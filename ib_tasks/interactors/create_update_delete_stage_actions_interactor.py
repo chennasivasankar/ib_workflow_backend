@@ -1,35 +1,34 @@
 
 from collections import defaultdict
 from typing import List
+
+from ib_tasks.interactors.mixins.get_stage_actions_details \
+    import GetStageActionsDetailsMixin
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 from ib_tasks.interactors.dtos import StageActionDTO
-from ib_tasks.interactors.mixins\
-    .stage_actions_validation_mixin \
-    import StageActionsAndTasksValidationMixin
 
 
-class CreateUpdateDeleteStageActionsInteractor(
-        StageActionsAndTasksValidationMixin):
+class CreateUpdateDeleteStageActionsInteractor(GetStageActionsDetailsMixin):
 
-    def __init__(self, storage: StorageInterface, actions_dto: List[StageActionDTO]):
-        super().__init__(storage=storage)
+    def __init__(self, storage: StorageInterface,
+                 actions_dto: List[StageActionDTO]):
+        self.storage = storage
         self.actions_dto = actions_dto
 
     def create_update_delete_stage_actions(self):
         actions_dto = self.actions_dto
-        stage_ids = self._get_stage_ids(actions_dto)
-        self.validations_for_stage_ids(stage_ids=stage_ids)
-        self.validations_for_stage_roles(actions_dto)
-        self.validations_for_empty_stage_display_logic(actions_dto)
-        self.validations_for_empty_button_texts(actions_dto)
-        self.validations_for_button_texts(actions_dto)
-        self.validations_for_duplicate_stage_actions(actions_dto)
+        from ib_tasks.interactors.stage_actions_validation_interactor \
+            import StageActionsAndTasksValidationInteractor
+
+        interactor = StageActionsAndTasksValidationInteractor(
+            storage=self.storage)
+        interactor.validations_for_actions_dto(actions_dto=actions_dto)
         self._create_update_delete_stage_actions(actions_dto)
 
     def _create_update_delete_stage_actions(
             self, actions_dto: List[StageActionDTO]):
-        stage_ids = self._get_stage_ids(actions_dto)
+        stage_ids = self.get_stage_ids(actions_dto)
         db_stage_actions_dto = self.storage \
             .get_stage_action_names(stage_ids=stage_ids)
         is_db_stage_actions_empty = not db_stage_actions_dto
@@ -97,4 +96,10 @@ class CreateUpdateDeleteStageActionsInteractor(
             elif stage_action_dto.action_name in db_action_names:
                 update_stage_actions.append(stage_action_dto)
 
+    @staticmethod
+    def _get_stage_action_names(actions_dto: List[StageActionDTO]):
 
+        stage_actions = defaultdict(list)
+        for action_dto in actions_dto:
+            stage_actions[action_dto.stage_id].append(action_dto.action_name)
+        return stage_actions
