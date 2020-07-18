@@ -3,12 +3,12 @@ from unittest.mock import patch
 
 import pytest
 
-from ib_iam.tests.factories.models import UserProfileFactory, CompanyFactory, UserTeamFactory, TeamFactory, RoleFactory, \
+from ib_iam.tests.factories.models import UserDetailsFactory, CompanyFactory, UserTeamFactory, TeamFactory, RoleFactory, \
     UserRoleFactory
 
 
 def reset_sequence():
-    UserProfileFactory.reset_sequence(0)
+    UserDetailsFactory.reset_sequence(0)
     CompanyFactory.reset_sequence(0)
     UserTeamFactory.reset_sequence(0)
     UserRoleFactory.reset_sequence(0)
@@ -19,7 +19,7 @@ def reset_sequence():
 @pytest.fixture()
 def user_not_admin():
     reset_sequence()
-    user = UserProfileFactory.create(user_id="user0", is_admin=False)
+    user = UserDetailsFactory.create(user_id="user0", is_admin=False)
     return user
 
 
@@ -31,7 +31,7 @@ def users_company():
     for company_id in companies:
         company = CompanyFactory.create(company_id=company_id)
         for i in range(1, 4, 1):
-            user = UserProfileFactory.create(company=company)
+            user = UserDetailsFactory.create(company=company)
             users.append(user)
     return users
 
