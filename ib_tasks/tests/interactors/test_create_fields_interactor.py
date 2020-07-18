@@ -21,19 +21,21 @@ class TestCreateFieldsInteractor:
     def test_given_gof_ids_not_in_database_raise_exception(self, storage_mock):
         # Arrange
         field_roles_dtos = [FieldRolesDTOFactory()]
-        field_dtos = [FieldDTOFactory(), FieldDTOFactory(gof_id="")]
+        field_dtos = [FieldDTOFactory(), FieldDTOFactory(gof_id="Hello"), FieldDTOFactory(gof_id="") ]
         from ib_tasks.exceptions.custom_exceptions import InvalidGOFIds
         interactor = CreateFieldsInteractor(storage=storage_mock)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
+        invalid_gof_ids = ["Hello", ""]
         storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
-        error_message = "Invalid GOF Ids"
+
+
 
         # Act
         with pytest.raises(InvalidGOFIds) as err:
             interactor.create_fields(field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
 
         # Arrange
-        assert str(err.value) == error_message
+        assert str(err.value) == str(invalid_gof_ids)
 
 
     def test_given_field_id_is_empty_raise_exception(self, storage_mock):
@@ -42,7 +44,8 @@ class TestCreateFieldsInteractor:
         field_dtos = [FieldDTOFactory(), FieldDTOFactory(field_id=" ")]
         from ib_tasks.exceptions.custom_exceptions import InvalidFieldIdException
         interactor = CreateFieldsInteractor(storage=storage_mock)
-        error_message = "Field Id shouldn't be empty"
+        invalid_field_ids = [""]
+        error_message = "Invalid field_ids {}".format(invalid_field_ids)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
         storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
 
@@ -83,7 +86,7 @@ class TestCreateFieldsInteractor:
         from ib_tasks.exceptions.custom_exceptions import InvalidValueForFieldType
         from ib_tasks.constants.constants import FIELD_TYPES_LIST
         interactor = CreateFieldsInteractor(storage=storage_mock)
-        error_message = "Field_Type should be one of these {}".format(FIELD_TYPES_LIST)
+        error_message = "Field Types should be one of these {}".format(FIELD_TYPES_LIST)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
         storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
 
@@ -105,7 +108,8 @@ class TestCreateFieldsInteractor:
             FieldDTOFactory(field_display_name=" "),
             FieldDTOFactory()
         ]
-        exception_message = "Field display name shouldn't be empty"
+        invalid_fields_display_names = [""]
+        exception_message = "Invalid fields display names {}".format(invalid_fields_display_names)
         from ib_tasks.exceptions.custom_exceptions import InvalidValueForFieldDisplayName
         interactor = CreateFieldsInteractor(storage=storage_mock)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
@@ -116,8 +120,8 @@ class TestCreateFieldsInteractor:
             interactor.create_fields(field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
 
         # Assert
-        exception_object = err.value
-        assert exception_object.message == exception_message
+
+        assert str(err.value) == exception_message
 
 
 
@@ -285,7 +289,8 @@ class TestCreateFieldsInteractor:
             self, storage_mock
     ):
         # Arrange
-        exception_message = "Permissions to roles shouldn't be empty"
+        from ib_tasks.constants.constants import permission_exception
+        exception_message = permission_exception
         field_dtos = [
             FieldDTOFactory(), FieldDTOFactory(),
         ]
@@ -449,6 +454,7 @@ class TestCreateFieldsInteractor:
         storage_mock.get_existing_field_ids.return_value = existing_field_ids
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
         storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
+        storage_mock.get_fields_role_dtos.return_value = field_role_dtos
 
         # Act
         interactor.create_fields(field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
@@ -533,6 +539,7 @@ class TestCreateFieldsInteractor:
         interactor = CreateFieldsInteractor(storage=storage_mock)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
         storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
+        storage_mock.get_fields_role_dtos.return_value = existing_field_role_dtos
 
         # Act
         interactor.create_fields(field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
@@ -544,3 +551,78 @@ class TestCreateFieldsInteractor:
         storage_mock.update_fields.assert_called_once_with(existing_field_dtos)
         storage_mock.update_fields_roles.assert_called_once_with(existing_field_role_dtos)
         storage_mock.create_fields_roles.assert_called_once_with(new_field_role_dtos)
+
+    def test_create_and_update_fields_roles_when_existing_fieds_having_new_roles(
+            self, mocker, storage_mock
+    ):
+        # Arrange
+        field_dtos = [
+            FieldDTOFactory(field_id="field1"),
+            FieldDTOFactory(field_id="field2")
+        ]
+        new_field_dtos = [FieldDTOFactory(field_id="field1", field_values='["Mr", "Mrs", "Ms"]')]
+        existing_field_ids = ["field2"]
+        existing_field_dtos = [FieldDTOFactory(field_id="field2", field_values='["Mr", "Mrs", "Ms"]')]
+
+        field_roles_dtos = [
+            FieldRolesDTOFactory(
+                field_id="field1",
+                read_permission_roles=["FIN_PAYMENT_REQUESTER"],
+                write_permission_roles=["FIN_PAYMENT_POC"]
+            ),
+            FieldRolesDTOFactory(
+                field_id="field2",
+                read_permission_roles=["FIN_PAYMENT_REQUESTER"],
+                write_permission_roles=["FIN_PAYMENT_POC"]
+            )
+        ]
+        new_fields_role_dtos = [
+            FieldRoleDTOFactory(
+                field_id="field1",
+                role="FIN_PAYMENT_REQUESTER",
+                permission_type=PermissionTypes.READ.value
+            ),
+            FieldRoleDTOFactory(
+                field_id="field1",
+                role="FIN_PAYMENT_POC",
+                permission_type=PermissionTypes.WRITE.value
+            ),
+            FieldRoleDTOFactory(
+                field_id="field2",
+                role="FIN_PAYMENT_POC",
+                permission_type=PermissionTypes.WRITE.value
+            ),
+        ]
+        exist_fields_role_dtos = [
+            FieldRoleDTOFactory(
+                field_id="field2",
+                role="FIN_PAYMENT_REQUESTER",
+                permission_type=PermissionTypes.READ.value
+            )
+        ]
+
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import (
+            get_all_valid_read_permission_roles,
+            get_all_valid_write_permission_roles
+        )
+        get_valid_read_permissions_mock_method = \
+            get_all_valid_read_permission_roles(mocker)
+        get_valid_write_permissions_mock_method = \
+            get_all_valid_write_permission_roles(mocker)
+
+        storage_mock.get_existing_field_ids.return_value = existing_field_ids
+        interactor = CreateFieldsInteractor(storage=storage_mock)
+        existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
+        storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
+        storage_mock.get_fields_role_dtos.return_value = exist_fields_role_dtos
+
+        # Act
+        interactor.create_fields(field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
+
+        # Assert
+        get_valid_write_permissions_mock_method.assert_called_once()
+        get_valid_read_permissions_mock_method.assert_called_once()
+        storage_mock.create_fields.assert_called_once_with(new_field_dtos)
+        storage_mock.create_fields_roles.assert_called_once_with(new_fields_role_dtos)
+        # storage_mock.update_fields.assert_called_once_with(existing_field_dtos)
+        # storage_mock.update_fields_roles.assert_called_once_with(exist_fields_role_dtos)

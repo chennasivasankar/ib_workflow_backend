@@ -117,19 +117,16 @@ class InvalidValueForFieldDisplayName(Exception):
         self.message = "Invalid fields display names {}".format(field_display_names)
         super().__init__(self.message)
 
-
 class InvalidValueForFieldType(Exception):
 
     def __init__(self, field_types: List[str]):
         self.message = "Field Types should be one of these {}".format(field_types)
         super().__init__(self.message)
 
-
 class InvalidGOFIds(Exception):
     def __int__(self, gof_ids: List[str]):
         self.message = "Invalid values for gof_ids {}".format(gof_ids)
         super().__init__(self.message)
-
 
 class DuplicateGoFIds(Exception):
     def __init__(self, gof_ids: List[str]):
