@@ -4,7 +4,7 @@ import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...factories.models import UserProfileFactory
+from ...factories.models import UserDetailsFactory
 
 USER_ID_01 = '7e39bf1c-f9a5-4e76-8451-b962ddd52011'
 TEAM_ID_01 = "6ce31e92-f188-4019-b295-2e5ddc9c7a11"
@@ -42,13 +42,13 @@ class TestCase03GetUsersAPITestCase(TestUtils):
         role1 = RoleFactory.create(id=ROLE_ID_01)
         team2 = TeamFactory.create(team_id=TEAM_ID_02)
         role2 = RoleFactory.create(id=ROLE_ID_02)
-        UserProfileFactory.create(user_id=USER_ID_01, company=company)
+        UserDetailsFactory.create(user_id=USER_ID_01, company=company)
         UserTeamFactory.create(user_id=USER_ID_01, team=team1)
         UserRoleFactory.create(user_id=USER_ID_01, role=role1)
-        UserProfileFactory.create(user_id=USER_ID_02, company=company)
+        UserDetailsFactory.create(user_id=USER_ID_02, company=company)
         UserTeamFactory.create(user_id=USER_ID_02, team=team2)
         UserRoleFactory.create(user_id=USER_ID_02, role=role2)
-        UserProfileFactory.create(user_id=USER_ID_03, company=company)
+        UserDetailsFactory.create(user_id=USER_ID_03, company=company)
         UserTeamFactory.create(user_id=USER_ID_03, team=team2)
         UserRoleFactory.create(user_id=USER_ID_03, role=role2)
 

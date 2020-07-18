@@ -1,13 +1,7 @@
-from unittest.mock import create_autospec, Mock, patch
-from uuid import uuid4
-
 import pytest
+from unittest.mock import Mock, patch
+
 from ib_iam.interactors.get_users_details_inteactor import GetUsersDetailsInteractor
-from ib_iam.interactors.presenter_interfaces.presenter_interface \
-    import PresenterInterface
-from ib_iam.interactors.storage_interfaces.storage_interface \
-    import StorageInterface
-from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
 from ib_iam.tests.factories.storage_dtos import UserDTOFactory
 
 USER_ID = "dd67ab82-ab8a-4253-98ae-bef82b8013a8"
@@ -68,229 +62,242 @@ def user_profile_dtos():
 
 
 class TestGetUsersDetailsInteractor:
-    def test_get_users_when_user_is_not_admin_then_throw_exception(self):
+    @pytest.fixture
+    def storage_mock(self):
+        from unittest import mock
+        from ib_iam.interactors.storage_interfaces.storage_interface import StorageInterface
+        storage = mock.create_autospec(StorageInterface)
+        return storage
+
+    @pytest.fixture
+    def presenter_mock(self):
+        from unittest import mock
+        from ib_iam.interactors.presenter_interfaces.presenter_interface import PresenterInterface
+        storage = mock.create_autospec(PresenterInterface)
+        return storage
+
+    def test_get_users_when_user_is_not_admin_then_throw_exception(
+            self, storage_mock, presenter_mock):
         # Arrange
         user_id = USER_ID
         limit = 10
         offset = 0
-        presenter = create_autospec(PresenterInterface)
-        storage = create_autospec(StorageInterface)
-        interactor = GetUsersDetailsInteractor(storage=storage)
-        storage.validate_user_is_admin.return_value = False
-        presenter.raise_user_is_not_admin_exception.return_value = Mock()
+        interactor = GetUsersDetailsInteractor(storage=storage_mock)
+        storage_mock.validate_user_is_admin.return_value = False
+        presenter_mock.raise_user_is_not_admin_exception.return_value = Mock()
         # Act
         response = interactor.get_users_details_wrapper(
             user_id=user_id, offset=offset, limit=limit,
-            presenter=presenter
+            presenter=presenter_mock
         )
 
         # Assert
-        storage.validate_user_is_admin.assert_called_once_with(
+        storage_mock.validate_user_is_admin.assert_called_once_with(
             user_id=user_id)
-        presenter.raise_user_is_not_admin_exception.assert_called_once()
+        presenter_mock.raise_user_is_not_admin_exception.assert_called_once()
 
-    def test_get_users_when_offset_value_is_less_than_0_then_throw_exception(self):
+    def test_get_users_when_offset_value_is_less_than_0_then_throw_exception(
+            self, storage_mock, presenter_mock):
         # Arrange
         user_id = USER_ID
         limit = 10
         offset = -1
-        presenter = create_autospec(PresenterInterface)
-        storage = create_autospec(StorageInterface)
-        interactor = GetUsersDetailsInteractor(storage=storage)
-        storage.validate_user_is_admin.return_value = True
+        interactor = GetUsersDetailsInteractor(storage=storage_mock)
+        storage_mock.validate_user_is_admin.return_value = True
 
         # Act
         response = interactor.get_users_details_wrapper(
             user_id=user_id, offset=offset, limit=limit,
-            presenter=presenter
+            presenter=presenter_mock
         )
 
         # Assert
-        presenter.raise_invalid_offset_value_exception.assert_called_once()
+        presenter_mock.raise_invalid_offset_value_exception.assert_called_once()
 
-    def test_get_users_when_limit_value_is_less_than_0_then_throw_exception(self):
+    def test_get_users_when_limit_value_is_less_than_0_then_throw_exception(
+            self, storage_mock, presenter_mock):
         # Arrange
         user_id = USER_ID
         limit = -10
         offset = 0
-        presenter = create_autospec(PresenterInterface)
-        storage = create_autospec(StorageInterface)
-        interactor = GetUsersDetailsInteractor(storage=storage)
-        storage.validate_user_is_admin.return_value = True
+        interactor = GetUsersDetailsInteractor(storage=storage_mock)
+        storage_mock.validate_user_is_admin.return_value = True
 
         # Act
         response = interactor.get_users_details_wrapper(
             user_id=user_id, offset=offset, limit=limit,
-            presenter=presenter
+            presenter=presenter_mock
         )
 
         # Assert
-        presenter.raise_invalid_limit_value_exception.assert_called_once()
+        presenter_mock.raise_invalid_limit_value_exception.assert_called_once()
 
-    def test_get_users_when_offset_value_is_greater_than_limit_then_throw_exception(self):
+    def test_get_users_when_offset_value_is_greater_than_limit_then_throw_exception(
+            self, storage_mock, presenter_mock):
         # Arrange
         user_id = USER_ID
         limit = 5
         offset = 10
-        presenter = create_autospec(PresenterInterface)
-        storage = create_autospec(StorageInterface)
-        interactor = GetUsersDetailsInteractor(storage=storage)
-        storage.validate_user_is_admin.return_value = True
+        interactor = GetUsersDetailsInteractor(storage=storage_mock)
+        storage_mock.validate_user_is_admin.return_value = True
 
         # Act
         response = interactor.get_users_details_wrapper(
             user_id=user_id, offset=offset, limit=limit,
-            presenter=presenter
+            presenter=presenter_mock
         )
 
         # Assert
-        presenter.raise_offset_value_is_greater_than_limit_value_exception. \
+        presenter_mock.raise_offset_value_is_greater_than_limit_value_exception. \
             assert_called_once()
 
-    def test_get_users_returns_user_dtos(self, user_dtos):
+    def test_get_users_returns_user_dtos(
+            self, storage_mock, presenter_mock, user_dtos):
         # Arrange
         user_id = USER_ID
         limit = 10
         offset = 0
-        user_ids = ["user1", "user2", "user3"]
-        presenter = create_autospec(PresenterInterface)
-        storage = create_autospec(StorageInterface)
-        interactor = GetUsersDetailsInteractor(storage=storage)
-        storage.validate_user_is_admin.return_value = True
-        storage.get_users_who_are_not_admins.return_value = user_dtos
+        interactor = GetUsersDetailsInteractor(storage=storage_mock)
+        storage_mock.validate_user_is_admin.return_value = True
+        storage_mock.get_users_who_are_not_admins.return_value = user_dtos
 
         # Act
         response = interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit, presenter=presenter
+            user_id=user_id, offset=offset, limit=limit,
+            presenter=presenter_mock
         )
 
         # Assert
-        storage.get_users_who_are_not_admins.assert_called_once()
+        storage_mock.get_users_who_are_not_admins.assert_called_once()
 
     def test_get_users_team_details_returns_team_details_of_users(
-            self, user_dtos, user_team_dtos):
+            self, user_dtos, user_team_dtos, storage_mock, presenter_mock):
         user_id = USER_ID
         limit = 10
         offset = 0
         user_ids = ["user1", "user2", "user3"]
-        presenter = create_autospec(PresenterInterface)
-        storage = create_autospec(StorageInterface)
-        interactor = GetUsersDetailsInteractor(storage=storage)
-        storage.validate_user_is_admin.return_value = True
-        storage.get_users_who_are_not_admins.return_value = user_dtos
-        storage.get_team_details_of_users_bulk.return_value = user_team_dtos
+        interactor = GetUsersDetailsInteractor(storage=storage_mock)
+        storage_mock.validate_user_is_admin.return_value = True
+        storage_mock.get_users_who_are_not_admins.return_value = user_dtos
+        storage_mock.get_team_details_of_users_bulk.return_value = user_team_dtos
 
         # Act
         response = interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit, presenter=presenter
+            user_id=user_id, offset=offset, limit=limit,
+            presenter=presenter_mock
         )
 
         # Assert
-        storage.get_users_who_are_not_admins.assert_called_once()
-        storage.get_team_details_of_users_bulk.assert_called_once_with(
+        storage_mock.get_users_who_are_not_admins.assert_called_once()
+        storage_mock.get_team_details_of_users_bulk.assert_called_once_with(
             user_ids)
 
     def test_get_users_role_details_returns_team_details_of_users(
-            self, user_dtos, user_role_dtos):
+            self, user_dtos, user_role_dtos, storage_mock, presenter_mock):
         user_id = USER_ID
         limit = 10
         offset = 0
         user_ids = ["user1", "user2", "user3"]
-        presenter = create_autospec(PresenterInterface)
-        storage = create_autospec(StorageInterface)
-        interactor = GetUsersDetailsInteractor(storage=storage)
-        storage.validate_user_is_admin.return_value = True
-        storage.get_users_who_are_not_admins.return_value = user_dtos
-        storage.get_role_details_of_users_bulk.return_value = user_role_dtos
+        interactor = GetUsersDetailsInteractor(storage=storage_mock)
+        storage_mock.validate_user_is_admin.return_value = True
+        storage_mock.get_users_who_are_not_admins.return_value = user_dtos
+        storage_mock.get_role_details_of_users_bulk.return_value = user_role_dtos
         # Act
         response = interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit, presenter=presenter
+            user_id=user_id, offset=offset, limit=limit,
+            presenter=presenter_mock
         )
 
         # Assert
-        storage.get_users_who_are_not_admins.assert_called_once()
-        storage.get_role_details_of_users_bulk.assert_called_once_with(
+        storage_mock.get_users_who_are_not_admins.assert_called_once()
+        storage_mock.get_role_details_of_users_bulk.assert_called_once_with(
             user_ids)
 
     def test_get_users_company_details_returns_team_details_of_users(
-            self, user_dtos, user_company_dtos):
+            self, user_dtos, user_company_dtos, storage_mock, presenter_mock):
         user_id = USER_ID
         limit = 10
         offset = 0
         user_ids = ["user1", "user2", "user3"]
         company_ids = ["company1", "company2", "company3"]
-        presenter = create_autospec(PresenterInterface)
-        storage = create_autospec(StorageInterface)
-        interactor = GetUsersDetailsInteractor(storage=storage)
-        storage.validate_user_is_admin.return_value = True
+        interactor = GetUsersDetailsInteractor(storage=storage_mock)
+        storage_mock.validate_user_is_admin.return_value = True
 
-        storage.get_users_who_are_not_admins.return_value = user_dtos
-        storage.get_company_details_of_users_bulk.return_value = user_company_dtos
+        storage_mock.get_users_who_are_not_admins.return_value = user_dtos
+        storage_mock.get_company_details_of_users_bulk.return_value = user_company_dtos
 
         # Act
         response = interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit, presenter=presenter
+            user_id=user_id, offset=offset, limit=limit,
+            presenter=presenter_mock
         )
 
         # Assert
-        storage.get_users_who_are_not_admins.assert_called_once()
-        storage.get_company_details_of_users_bulk.assert_called_once()
+        storage_mock.get_users_who_are_not_admins.assert_called_once()
+        storage_mock.get_company_details_of_users_bulk.assert_called_once()
 
-    @patch(
-        "ib_iam.adapters.user_service.UserService.get_user_profile_bulk")
     def test_get_users_from_adapter_return_user_deails(
-            self, get_user_profile_bulk, user_dtos, user_team_dtos,
-            user_role_dtos, user_company_dtos, user_profile_dtos):
+            self, user_dtos, user_team_dtos,
+            user_role_dtos, user_company_dtos, user_profile_dtos,
+            storage_mock, presenter_mock, mocker):
         user_id = USER_ID
         limit = 10
         offset = 0
         user_ids = ["user1", "user2", "user3"]
-        presenter = create_autospec(PresenterInterface)
-        storage = create_autospec(StorageInterface)
-        interactor = GetUsersDetailsInteractor(storage=storage)
-        storage.validate_user_is_admin.return_value = True
+        interactor = GetUsersDetailsInteractor(storage=storage_mock)
+        storage_mock.validate_user_is_admin.return_value = True
         user_dtos = [UserDTOFactory.create(user_id=user_id)
                      for user_id in user_ids]
-        storage.get_users_who_are_not_admins.return_value = user_dtos
+        storage_mock.get_users_who_are_not_admins.return_value = user_dtos
         userprofile_dtos = [UserDTOFactory.create(user_id=user_id)
                             for user_id in user_ids]
-        get_user_profile_bulk.return_value = user_profile_dtos
+
+        from ib_iam.tests.common_fixtures.adapters.user_service \
+            import get_users_adapter_mock
+        adapter_mock = get_users_adapter_mock(
+            mocker=mocker,
+            user_profile_dtos=user_profile_dtos
+        )
 
         # Act
         response = interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit, presenter=presenter
+            user_id=user_id, offset=offset, limit=limit,
+            presenter=presenter_mock
         )
 
         # Assert
-        get_user_profile_bulk.assert_called_once_with(user_ids=user_ids)
+        adapter_mock.assert_called_once()
 
-    @patch(
-        "ib_iam.adapters.user_service.UserService.get_user_profile_bulk")
     def test_get_users_complete_details(
-            self, get_user_profile_bulk, user_dtos, user_team_dtos,
-            user_role_dtos, user_company_dtos, user_profile_dtos):
+            self, user_dtos, user_team_dtos,
+            user_role_dtos, user_company_dtos, user_profile_dtos,
+            storage_mock, presenter_mock, mocker):
         user_id = USER_ID
         limit = 10
         offset = 0
         user_ids = ["user1", "user2", "user3"]
-        presenter = create_autospec(PresenterInterface)
-        storage = create_autospec(StorageInterface)
-        interactor = GetUsersDetailsInteractor(storage=storage)
-        storage.validate_user_is_admin.return_value = True
-        storage.get_users_who_are_not_admins.return_value = user_dtos
+        interactor = GetUsersDetailsInteractor(storage=storage_mock)
+        storage_mock.validate_user_is_admin.return_value = True
+        storage_mock.get_users_who_are_not_admins.return_value = user_dtos
 
-        storage.get_team_details_of_users_bulk.return_value = user_team_dtos
-        storage.get_company_details_of_users_bulk.return_value = \
+        storage_mock.get_team_details_of_users_bulk.return_value = user_team_dtos
+        storage_mock.get_company_details_of_users_bulk.return_value = \
             user_company_dtos
-        storage.get_role_details_of_users_bulk.return_value = user_role_dtos
+        storage_mock.get_role_details_of_users_bulk.return_value = user_role_dtos
 
-        get_user_profile_bulk.return_value = user_profile_dtos
+        from ib_iam.tests.common_fixtures.adapters.user_service \
+            import get_users_adapter_mock
+        adapter_mock = get_users_adapter_mock(
+            mocker=mocker,
+            user_profile_dtos=user_profile_dtos
+        )
 
         # Act
         response = interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit, presenter=presenter
+            user_id=user_id, offset=offset, limit=limit,
+            presenter=presenter_mock
         )
 
         # Assert
-        get_user_profile_bulk.assert_called_once_with(user_ids=user_ids)
-        presenter.response_for_get_users.assert_called_once()
+        adapter_mock.assert_called_once()
+        presenter_mock.response_for_get_users.assert_called_once()

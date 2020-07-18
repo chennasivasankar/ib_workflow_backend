@@ -34,7 +34,7 @@ class RoleFactory(factory.django.DjangoModelFactory):
     description = factory.Sequence(lambda n: 'payment_description%s' % n)
 
 
-class UserProfileFactory(factory.django.DjangoModelFactory):
+class UserDetailsFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = UserDetails
 

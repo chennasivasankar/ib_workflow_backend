@@ -1,7 +1,7 @@
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...factories.models import UserProfileFactory
+from ...factories.models import UserDetailsFactory
 
 USER_ID = '7e39bf1c-f9a5-4e76-8451-b962ddd520fc'
 
@@ -23,6 +23,7 @@ class TestCase01GetUsersAPITestCase(TestUtils):
     def test_case(self, set_up, snapshot):
         body = {}
         path_params = {}
+
         query_params = {'offset': 0, 'limit': 10}
         headers = {}
         response = self.default_test_case(
