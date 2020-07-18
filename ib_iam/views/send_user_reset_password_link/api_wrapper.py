@@ -9,8 +9,8 @@ def api_wrapper(*args, **kwargs):
     email = request_data["email"]
 
     from ib_iam.interactors.reset_password_link_to_email_interactor import \
-        ResetPasswordLinkToEmailInteractor
-    interactor = ResetPasswordLinkToEmailInteractor()
+        SendResetPasswordLinkToEmailInteractor
+    interactor = SendResetPasswordLinkToEmailInteractor()
 
     from ib_iam.presenters.presenter_implementation import \
         AuthPresenterImplementation

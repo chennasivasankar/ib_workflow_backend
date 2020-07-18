@@ -4,7 +4,7 @@ from ib_iam.interactors.presenter_interfaces.presenter_interface import \
     AuthPresenterInterface
 
 
-class ResetPasswordLinkToEmailInteractor:
+class SendResetPasswordLinkToEmailInteractor:
 
     def reset_password_link_to_user_email_wrapper(
             self, email: str, presenter: AuthPresenterInterface
@@ -33,15 +33,15 @@ class ResetPasswordLinkToEmailInteractor:
             expires_in_sec=reset_password_token_expiry_time_in_seconds
         )
         self.send_reset_password_mail_to_user_email(
-            email=email, user_token=reset_password_token
+            email=email, reset_password_token=reset_password_token
         )
 
     @staticmethod
-    def send_reset_password_mail_to_user_email(email: str, user_token: str):
+    def send_reset_password_mail_to_user_email(email: str, reset_password_token: str):
 
         from ib_iam.constants.config import \
             BASE_URL_FOR_RESET_PASSWORD_LINK, EMAIL_CONTENT, EMAIL_SUBJECT
-        final_reset_password_link = BASE_URL_FOR_RESET_PASSWORD_LINK + user_token
+        final_reset_password_link = BASE_URL_FOR_RESET_PASSWORD_LINK + reset_password_token
         subject = EMAIL_SUBJECT
         content = EMAIL_CONTENT + final_reset_password_link
         from ib_iam.adapters.email_service import EmailService

@@ -48,10 +48,10 @@ class LoginInteractor:
     ):
         from ib_iam.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
-        tokens_dto = service_adapter.auth_service.get_user_tokens_dto_for_given_email_and_password_dto(
+        user_tokens_dto = service_adapter.auth_service.get_user_tokens_dto_for_given_email_and_password_dto(
             email_and_password_dto=email_and_password_dto,
         )
-        user_id = tokens_dto.user_id
+        user_id = user_tokens_dto.user_id
         is_admin = self.storage.get_is_admin_of_given_user_id(user_id=user_id)
 
-        return tokens_dto, is_admin
+        return user_tokens_dto, is_admin

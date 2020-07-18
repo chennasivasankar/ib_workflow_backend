@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 
-class TestResetPasswordLinkToEmailInteractor:
+class TestSendResetPasswordLinkToEmailInteractor:
 
     @pytest.fixture()
     def presenter_mock(self):
@@ -28,8 +28,8 @@ class TestResetPasswordLinkToEmailInteractor:
             = expected_presenter_raise_invalid_email_mock
 
         from ib_iam.interactors.reset_password_link_to_email_interactor import \
-            ResetPasswordLinkToEmailInteractor
-        interactor = ResetPasswordLinkToEmailInteractor()
+            SendResetPasswordLinkToEmailInteractor
+        interactor = SendResetPasswordLinkToEmailInteractor()
 
         # Act
         response = interactor.reset_password_link_to_user_email_wrapper(
@@ -58,8 +58,8 @@ class TestResetPasswordLinkToEmailInteractor:
             return_value = expected_presenter_raise_user_account_does_not_exist_mock
 
         from ib_iam.interactors.reset_password_link_to_email_interactor import \
-            ResetPasswordLinkToEmailInteractor
-        interactor = ResetPasswordLinkToEmailInteractor()
+            SendResetPasswordLinkToEmailInteractor
+        interactor = SendResetPasswordLinkToEmailInteractor()
 
         # Act
         response = interactor.reset_password_link_to_user_email_wrapper(
@@ -95,8 +95,8 @@ class TestResetPasswordLinkToEmailInteractor:
             = expected_presenter_success_response_mock
 
         from ib_iam.interactors.reset_password_link_to_email_interactor import \
-            ResetPasswordLinkToEmailInteractor
-        interactor = ResetPasswordLinkToEmailInteractor()
+            SendResetPasswordLinkToEmailInteractor
+        interactor = SendResetPasswordLinkToEmailInteractor()
 
         # Act
         response = interactor.reset_password_link_to_user_email_wrapper(
