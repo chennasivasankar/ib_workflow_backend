@@ -321,7 +321,8 @@ class TestCreateFieldsInteractor:
             self, storage_mock
     ):
         # Arrange
-        exception_message = "Permissions to roles shouldn't be empty"
+        from ib_tasks.constants.constants import permission_exception
+        exception_message = permission_exception
         field_dtos = [
             FieldDTOFactory(), FieldDTOFactory(),
         ]
@@ -624,5 +625,5 @@ class TestCreateFieldsInteractor:
         get_valid_read_permissions_mock_method.assert_called_once()
         storage_mock.create_fields.assert_called_once_with(new_field_dtos)
         storage_mock.create_fields_roles.assert_called_once_with(new_fields_role_dtos)
-        # storage_mock.update_fields.assert_called_once_with(existing_field_dtos)
-        # storage_mock.update_fields_roles.assert_called_once_with(exist_fields_role_dtos)
+        storage_mock.update_fields.assert_called_once_with(existing_field_dtos)
+        storage_mock.update_fields_roles.assert_called_once_with(exist_fields_role_dtos)

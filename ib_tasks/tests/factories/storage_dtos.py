@@ -71,7 +71,7 @@ class FieldDTOFactory(factory.Factory):
     field_id = factory.Sequence(lambda n: 'field%d' % n)
     field_display_name = "field name"
     field_type = FieldTypes.DROPDOWN.value
-    field_values = '["Mr", "Mrs", "Ms"]'
+    field_values = ["Mr", "Mrs", "Ms"]
     required = True
     help_text = None
     tool_tip = None

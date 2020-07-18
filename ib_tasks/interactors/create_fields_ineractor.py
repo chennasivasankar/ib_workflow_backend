@@ -294,6 +294,7 @@ class CreateFieldsInteractor:
                         field_with_dropdown_duplicate_values_dict
                     )
 
+        print("fields_with_dropdown_duplicate_values = ", fields_with_dropdown_duplicate_values)
         if fields_with_dropdown_duplicate_values:
             raise FieldsDuplicationOfDropDownValues(
                 fields_with_dropdown_duplicate_values
@@ -303,6 +304,7 @@ class CreateFieldsInteractor:
     def _check_for_duplication_of_dropdown_values(self, field_dto: FieldDTO):
         field_id = field_dto.field_id
         dropdown_values = field_dto.field_values
+        print("dropdown_values = ", dropdown_values)
         field_with_dropdown_duplicate_values = {}
 
         duplications_of_dropdown_values = [
@@ -345,7 +347,6 @@ class CreateFieldsInteractor:
             self, field_roles_dtos: List[FieldRolesDTO],
             available_write_permission_roles: List[str]
     ) -> Optional[InvalidRolesException]:
-
         fields_invalid_roles_for_write_permission = []
         for field_roles_dto in field_roles_dtos:
             write_permission_roles = field_roles_dto.write_permission_roles

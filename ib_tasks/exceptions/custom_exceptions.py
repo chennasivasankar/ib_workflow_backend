@@ -124,6 +124,7 @@ class InvalidValueForFieldType(Exception):
         super().__init__(self.message)
 
 class InvalidGOFIds(Exception):
+
     def __int__(self, gof_ids: List[str]):
         self.message = "Invalid values for gof_ids {}".format(gof_ids)
         super().__init__(self.message)

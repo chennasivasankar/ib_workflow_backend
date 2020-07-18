@@ -87,16 +87,40 @@ class TaskStorageImplementation(TaskStorageInterface):
         ]
         return fields
 
-    def update_fields_roles(self, field_roles_dtos: List[FieldRoleDTO]):
-        list_of_fields = ["field_id", "role", "permission_type"]
-        fields_roles = self._get_fields_roles(field_roles_dtos)
-        FieldRole.objects.bulk_update(fields_roles, list_of_fields)
+    def update_fields_roles(self, field_role_dtos: List[FieldRoleDTO]):
+        list_of_fields = ["permission_type"]
+        field_ids = [
+            field_role_dto.field_id
+            for field_role_dto in field_role_dtos
+        ]
 
-    def create_fields_roles(self, field_roles_dtos: List[FieldRoleDTO]):
-        fields_roles = self._get_fields_roles(field_roles_dtos)
+        field_role_objs = list(FieldRole.objects.filter(field_id__in=field_ids))
+        for field_role_obj in field_role_objs:
+            field_role_dto = self._get_matching_field_role_dto(
+                field_role_obj, field_role_dtos
+            )
+            field_role_obj.permission_type = field_role_dto.permission_type
+
+        FieldRole.objects.bulk_update(field_role_objs, list_of_fields)
+
+    @staticmethod
+    def _get_matching_field_role_dto(
+            field_role_obj: FieldRole, field_role_dtos: List[FieldRoleDTO]
+    ):
+        old_field_id =  field_role_obj.field_id
+        old_role = field_role_obj.role
+        for field_role_dto in field_role_dtos:
+            new_field_id = field_role_dto.field_id
+            new_role = field_role_dto.role
+            if old_field_id == new_field_id and old_role == new_role:
+                return field_role_dto
+
+    def create_fields_roles(self, field_role_dtos: List[FieldRoleDTO]):
+        fields_roles = self._get_fields_roles(field_role_dtos)
         FieldRole.objects.bulk_create(fields_roles)
 
-    def _get_fields_roles(self, field_role_dtos):
+    @staticmethod
+    def _get_fields_roles(field_role_dtos):
         fields_roles = [
             FieldRole(
                 field_id=field_role_dto.field_id,
@@ -120,3 +144,15 @@ class TaskStorageImplementation(TaskStorageInterface):
             GoF.objects.filter(gof_id__in=gof_ids).values_list("gof_id", flat=True)
         )
         return existing_gof_ids
+
+    def get_fields_role_dtos(self, field_ids: List[str]) -> List[str]:
+        field_role_objs = FieldRole.objects.filter(field_id__in=field_ids)
+        field_role_dtos = [
+            FieldRoleDTO(
+                field_id=field_role_obj.field_id,
+                role=field_role_obj.role,
+                permission_type=field_role_obj.permission_type
+            )
+            for field_role_obj in field_role_objs
+        ]
+        return field_role_dtos

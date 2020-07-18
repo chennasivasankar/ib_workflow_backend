@@ -86,5 +86,5 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_fields_role_dtos(self, field_ids: List[str]) -> List[FieldRoleDTO]:
+    def get_fields_role_dtos(self, field_ids: List[str]) -> List[str]:
         pass

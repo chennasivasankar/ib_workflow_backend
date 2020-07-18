@@ -24,19 +24,18 @@ class TestTaskStorageImplementation:
     def reset_factories(self):
         FieldFactory.reset_sequence(0)
         GoFFactory.reset_sequence(0)
-        FieldRoleFactory.reset_sequence(0)
 
     def test_get_existing_field_ids_in_given_field_ids(
             self, storage, reset_factories
     ):
         # Arrange
         field_ids = ["field0", "field1", "field2"]
-        FieldFactory.create_batch(size=2)
+        FieldFactory(field_id="field0")
+        FieldFactory(field_id="field1")
         expected_existing_field_ids = ["field0", "field1"]
 
         # Act
         actual_existing_field_ids = storage.get_existing_field_ids(field_ids)
-        print("actual_existing_field_ids = ", actual_existing_field_ids)
         # Assert
 
         assert expected_existing_field_ids == actual_existing_field_ids
@@ -52,11 +51,13 @@ class TestTaskStorageImplementation:
         field_dtos = [
             FieldDTOFactory(
                 gof_id="gof1", field_id="field1",
-                field_type=FieldTypes.PLAIN_TEXT.value
+                field_type=FieldTypes.PLAIN_TEXT.value,
+                field_values=None
             ),
             FieldDTOFactory(
                 gof_id="gof2", field_id="field2",
-                field_type=FieldTypes.DROPDOWN.value
+                field_type=FieldTypes.DROPDOWN.value,
+                field_values="['Mr', 'Mrs', 'Ms']"
             )
         ]
 
@@ -79,11 +80,13 @@ class TestTaskStorageImplementation:
         field_dtos = [
             FieldDTOFactory(
                 gof_id="gof11", field_id="field1",
-                field_type=FieldTypes.PLAIN_TEXT.value
+                field_type=FieldTypes.PASSWORD.value,
+                field_values=None
             ),
             FieldDTOFactory(
                 gof_id="gof10", field_id="field2",
-                field_type=FieldTypes.DROPDOWN.value
+                field_type=FieldTypes.DROPDOWN.value,
+                field_values="['User', 'admin']"
             )
         ]
 
@@ -155,12 +158,13 @@ class TestTaskStorageImplementation:
 
         FieldFactory(field_id="field10")
         FieldFactory(field_id="field20")
-        FieldRoleFactory(field_id="field10")
-        FieldRoleFactory(field_id="field20")
+        FieldRoleFactory(field_id="field10", role="FIN_PAYMENT_REQUESTER")
+        FieldRoleFactory(field_id="field20", role="FIN_PAYMENT_APPROVER")
         field_role_dtos = [
-            FieldRoleDTOFactory(field_id="field10"),
+            FieldRoleDTOFactory(field_id="field10", role="FIN_PAYMENT_REQUESTER"),
             FieldRoleDTOFactory(
                 field_id="field20",
+                role="FIN_PAYMENT_APPROVER",
                 permission_type=PermissionTypes.WRITE.value
             )
         ]
@@ -176,3 +180,41 @@ class TestTaskStorageImplementation:
                 role=field_role_dto.role
             )
             assert field_role_dto.permission_type == field_role_obj.permission_type
+
+
+    def test_get_fields_role_dtos_given_field_ids(self, storage, reset_factories):
+        # Arrange
+        from ib_tasks.tests.factories.storage_dtos import FieldRoleDTOFactory
+        from ib_tasks.constants.enum import PermissionTypes
+        FieldFactory(field_id="field100")
+        FieldFactory(field_id="field200")
+        field_ids = ["field100", "field200", "field100"]
+        FieldRoleFactory(
+            field_id="field100",
+            role="FIN_PAYMENT_REQUESTER",
+            permission_type=PermissionTypes.READ.value
+        )
+        FieldRoleFactory(
+            field_id="field100",
+            role="FIN_PAYMENT_APPROVER",
+            permission_type=PermissionTypes.READ.value
+        )
+        expected_field_role_dtos = [
+            FieldRoleDTOFactory(
+                field_id="field100",
+                role="FIN_PAYMENT_REQUESTER",
+                permission_type=PermissionTypes.READ.value
+            ),
+            FieldRoleDTOFactory(
+                field_id="field100",
+                role="FIN_PAYMENT_APPROVER",
+                permission_type=PermissionTypes.READ.value
+            )
+        ]
+
+        # Act
+        actual_field_role_dtos = storage.get_fields_role_dtos(field_ids)
+
+        # Assert
+
+        assert actual_field_role_dtos == expected_field_role_dtos
