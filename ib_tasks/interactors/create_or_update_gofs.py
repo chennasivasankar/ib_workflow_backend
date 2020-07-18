@@ -1,10 +1,11 @@
+from collections import defaultdict
 from typing import List, Optional, Union
 
 from ib_tasks.exceptions.custom_exceptions import (
     GOFIdCantBeEmpty, GOFDisplayNameCantBeEmpty, GOFReadPermissionsCantBeEmpty,
     GOFWritePermissionsCantBeEmpty, InvalidReadPermissionRoles,
     InvalidWritePermissionRoles, InvalidTaskTemplateIds,
-    InvalidOrderValues
+    InvalidOrderValues, TaskTemplateIdCantBeEmpty, ConflictingGoFOrder
 )
 from ib_tasks.interactors.storage_interfaces.dtos import (
     CompleteGoFDetailsDTO, GoFRolesDTO, GoFDTO, GoFRoleDTO, GoFRoleWithIdDTO
@@ -85,6 +86,7 @@ class CreateOrUpdateGoFsInteractor:
             self._get_gof_dtos_for_given_complete_gof_details_dtos(
                 complete_gof_details_dtos=complete_gof_details_dtos
             )
+        self._validate_for_order_value_in_updating_gofs(gof_dtos)
         gof_roles_dtos = \
             self._get_gof_roles_dtos_for_given_complete_gof_details_dtos(
                 complete_gof_details_dtos=complete_gof_details_dtos
@@ -98,6 +100,29 @@ class CreateOrUpdateGoFsInteractor:
             self.storage.update_gof_roles(gof_role_with_id_dtos=existing_roles)
         if new_roles:
             self.storage.create_gof_roles(gof_role_dtos=new_roles)
+
+    def _validate_for_order_value_in_updating_gofs(
+            self, gof_dtos: List[GoFDTO]
+    ) -> Optional[ConflictingGoFOrder]:
+        gof_ids = [gof_dto.gof_id for gof_dto in gof_dtos]
+        existing_gof_dtos = \
+            self.storage.get_gof_dtos_for_given_gof_ids(gof_ids)
+        template_gofs = defaultdict(list)
+        for gof_dto in existing_gof_dtos:
+            template_gofs[gof_dto.task_template_id].append(gof_dto)
+        invalid_order_gof_ids = []
+        for gof_dto in gof_dtos:
+            for template_gof in template_gofs[gof_dto.task_template_id]:
+                conflicting_order_value = (
+                        template_gof.gof_id != gof_dto.gof_id and
+                        template_gof.order == gof_dto.order
+                )
+                if conflicting_order_value:
+                    invalid_order_gof_ids.append(gof_dto.gof_id)
+                    break
+        if invalid_order_gof_ids:
+            raise ConflictingGoFOrder(invalid_order_gof_ids)
+        return
 
     def _create_gofs(
             self, complete_gof_details_dtos: List[CompleteGoFDetailsDTO]
@@ -243,12 +268,26 @@ class CreateOrUpdateGoFsInteractor:
             gof_dtos=gof_dtos, gof_roles_dtos=gof_roles_dtos
         )
         self._validate_for_empty_gof_display_names(gof_dtos=gof_dtos)
+        self._validate_for_empty_task_template_ids(gof_dtos=gof_dtos)
         self._validate_for_empty_read_permission_roles(
             gof_roles_dtos=gof_roles_dtos
         )
         self._validate_for_empty_write_permission_roles(
             gof_roles_dtos=gof_roles_dtos
         )
+
+    def _validate_for_empty_task_template_ids(
+            self, gof_dtos: List[GoFDTO]
+    ) -> Optional[TaskTemplateIdCantBeEmpty]:
+        from ib_tasks.constants.exception_messages import \
+            empty_task_template_id_message
+        for gof_dto in gof_dtos:
+            task_template_id_is_empty = self._is_empty_field(
+                gof_dto.task_template_id
+            )
+            if task_template_id_is_empty:
+                raise TaskTemplateIdCantBeEmpty(empty_task_template_id_message)
+        return
 
     def _validate_for_empty_gof_ids(
             self, gof_dtos: List[GoFDTO], gof_roles_dtos: List[GoFRolesDTO]

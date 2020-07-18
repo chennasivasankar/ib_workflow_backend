@@ -1,6 +1,7 @@
 
 empty_gof_id_message = "GoF id should not be empty"
 empty_gof_name_message = "GoF name should not be empty"
+empty_task_template_id_message = "Task Template id should not be empty"
 empty_read_permissions_message = "GoF read permissions should not be empty"
 empty_write_permissions_message = "GoF write permissions should not be empty"
 invalid_read_permission_roles_message = \

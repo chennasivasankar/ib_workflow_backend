@@ -7,7 +7,7 @@ from ib_tasks.interactors.storage_interfaces.dtos import (
 )
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.models import GoFRole
+from ib_tasks.models import GoFRole, GoF
 
 
 class TasksStorageImplementation(TaskStorageInterface):
@@ -156,3 +156,25 @@ class TasksStorageImplementation(TaskStorageInterface):
             for gof_role in gof_roles
         ]
         return gof_role_with_id_dtos
+
+    def get_gof_dtos_for_given_gof_ids(
+            self, gof_ids: List[str]
+    ) -> List[GoFDTO]:
+        gofs = GoF.objects.filter(pk__in=gof_ids)
+        gof_dtos = self._prepare_gof_dtos(gofs)
+        return gof_dtos
+
+    @staticmethod
+    def _prepare_gof_dtos(gofs: List[GoF]):
+        gof_dtos = [
+            GoFDTO(
+                gof_id=gof.gof_id,
+                gof_display_name=gof.display_name,
+                task_template_id=gof.task_template_id,
+                order=gof.order,
+                max_columns=gof.max_columns,
+                enable_multiple_gofs=gof.enable_multiple_gofs
+            )
+            for gof in gofs
+        ]
+        return gof_dtos

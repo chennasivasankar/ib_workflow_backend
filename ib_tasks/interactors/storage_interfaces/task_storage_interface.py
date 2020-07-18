@@ -79,3 +79,9 @@ class TaskStorageInterface(abc.ABC):
             self, gof_ids: List[str]
     ) -> List[GoFRoleWithIdDTO]:
         pass
+
+    @abc.abstractmethod
+    def get_gof_dtos_for_given_gof_ids(
+            self, gof_ids: List[str]
+    ) -> List[GoFDTO]:
+        pass

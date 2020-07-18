@@ -31,6 +31,10 @@ class GOFDisplayNameCantBeEmpty(Exception):
     pass
 
 
+class TaskTemplateIdCantBeEmpty(Exception):
+    pass
+
+
 class GOFReadPermissionsCantBeEmpty(Exception):
     pass
 
@@ -103,3 +107,9 @@ class DuplicateConstantNames(Exception):
         self.message = \
             "Given duplicate constant names {}".format(constant_names)
         super().__init__(self.message)
+
+
+class ConflictingGoFOrder(Exception):
+
+    def __init__(self, invalid_order_gof_ids: List[str]):
+        self.gof_ids = invalid_order_gof_ids

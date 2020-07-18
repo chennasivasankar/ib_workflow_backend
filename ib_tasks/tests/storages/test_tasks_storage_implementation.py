@@ -185,8 +185,29 @@ class TestTasksStorageImplementation:
 
         # Assert
         for gof_role_with_id_dto in actual_gof_role_with_id_dtos:
-            gof_role = GoFRole.objects.get(pk=gof_role_with_id_dto.id)
-            assert gof_role.gof_id == gof_role_with_id_dto.gof_id
-            assert gof_role.role == gof_role_with_id_dto.role
-            assert gof_role.permission_type == \
-                   gof_role_with_id_dto.permission_type
+            for gof_role in gof_roles:
+                if gof_role.id == gof_role_with_id_dto.id:
+                    assert gof_role.gof_id == gof_role_with_id_dto.gof_id
+                    assert gof_role.role == gof_role_with_id_dto.role
+                    assert gof_role.permission_type == \
+                           gof_role_with_id_dto.permission_type
+
+    def test_get_gof_dtos_for_given_gof_ids(self, storage):
+
+        # Arrange
+        from ib_tasks.tests.factories.models import GoFFactory
+        gofs = GoFFactory.create_batch(size=2)
+        gof_ids = [gof.gof_id for gof in gofs]
+
+        # Act
+        actual_gof_dtos = storage.get_gof_dtos_for_given_gof_ids(gof_ids)
+
+        # Assert
+        for gof_dto in actual_gof_dtos:
+            for gof in gofs:
+                if gof.gof_id == gof_dto.gof_id:
+                    assert gof.display_name == gof_dto.gof_display_name
+                    assert gof.task_template_id == gof_dto.task_template_id
+                    assert gof.order == gof_dto.order
+                    assert gof.max_columns == gof_dto.max_columns
+                    assert gof.enable_multiple_gofs == gof_dto.enable_multiple_gofs
