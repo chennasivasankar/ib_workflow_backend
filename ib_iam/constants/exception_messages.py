@@ -20,10 +20,15 @@ OFFSET_VALUE_IS_GREATER_THAN_LIMIT = (
 
 INVALID_NAME = (
     "given name is invalid",
-    'INVALID_NAME'
+    "INVALID_NAME"
 )
 
 INVALID_EMAIL = (
     "given email is invalid",
-    'INVALID_EMAIL'
+    "INVALID_EMAIL"
+)
+
+USER_ACCOUNT_ALREADY_EXIST_FOR_THIS_EMAIL = (
+    'given email already registered for another account',
+    "USER_ACCOUNT_ALREADY_EXIST_FOR_THIS_EMAIL"
 )

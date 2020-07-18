@@ -71,3 +71,101 @@ class TestAddNewUserIneractor:
 
         # Assert
         presenter_mock.raise_invalid_name_exception.assert_called_once()
+
+    def test_create_user_account_with_email_already_exist_throws_exception(
+            self, storage_mock, presenter_mock, mocker):
+        # Arrange
+        user_id = "user_1"
+        name = "user"
+        email = "user@email.com"
+        interactor = AddNewUserInteractor(storage=storage_mock)
+        storage_mock.validate_user_is_admin.return_value = True
+        presenter_mock.raise_user_account_already_exist_with_this_email_exception. \
+            return_value = Mock()
+        from ib_iam.tests.common_fixtures.adapters.user_service \
+            import email_exist_adapter_mock
+        adapter_mock = email_exist_adapter_mock(mocker=mocker)
+
+        # Act
+        interactor.add_new_user_wrapper(
+            user_id=user_id, name=name, email=email, presenter=presenter_mock)
+
+        # Assert
+        adapter_mock.assert_called_once()
+        presenter_mock.raise_user_account_already_exist_with_this_email_exception. \
+            assert_called_once()
+
+
+    def test_create_user_account_returns_user_id(
+            self, storage_mock, presenter_mock, mocker):
+        # Arrange
+        user_id = "user_1"
+        name = "user"
+        email = "user@email.com"
+        interactor = AddNewUserInteractor(storage=storage_mock)
+        storage_mock.validate_user_is_admin.return_value = True
+        presenter_mock.raise_user_account_already_exist_with_this_email_exception. \
+            return_value = Mock()
+        from ib_iam.tests.common_fixtures.adapters.user_service \
+            import create_user_account_adapter_mock
+        adapter_mock = create_user_account_adapter_mock(mocker=mocker)
+
+        # Act
+        interactor.add_new_user_wrapper(
+            user_id=user_id, name=name, email=email, presenter=presenter_mock)
+
+        # Assert
+        adapter_mock.assert_called_once()
+
+    def test_create_user_profile(
+            self, storage_mock, presenter_mock, mocker):
+        # Arrange
+        user_id = "user_1"
+        name = "user"
+        email = "user@email.com"
+        interactor = AddNewUserInteractor(storage=storage_mock)
+        storage_mock.validate_user_is_admin.return_value = True
+        presenter_mock.raise_user_account_already_exist_with_this_email_exception. \
+            return_value = Mock()
+        from ib_iam.tests.common_fixtures.adapters.user_service \
+            import create_user_account_adapter_mock,\
+            create_user_profile_adapter_mock
+        user_account_adapter_mock = \
+            create_user_account_adapter_mock(mocker=mocker)
+        user_profile_adapter_mock = \
+            create_user_profile_adapter_mock(mocker=mocker)
+
+        # Act
+        interactor.add_new_user_wrapper(
+            user_id=user_id, name=name, email=email, presenter=presenter_mock)
+
+        # Assert
+        user_account_adapter_mock.assert_called_once()
+        user_profile_adapter_mock.assert_called_once()
+
+    def test_add_new_user(
+            self, storage_mock, presenter_mock, mocker):
+        # Arrange
+        user_id = "user_1"
+        name = "user"
+        email = "user@email.com"
+        interactor = AddNewUserInteractor(storage=storage_mock)
+        storage_mock.validate_user_is_admin.return_value = True
+        presenter_mock.raise_user_account_already_exist_with_this_email_exception. \
+            return_value = Mock()
+        from ib_iam.tests.common_fixtures.adapters.user_service \
+            import create_user_account_adapter_mock,\
+            create_user_profile_adapter_mock
+        user_account_adapter_mock = \
+            create_user_account_adapter_mock(mocker=mocker)
+        user_profile_adapter_mock = \
+            create_user_profile_adapter_mock(mocker=mocker)
+
+        # Act
+        interactor.add_new_user_wrapper(
+            user_id=user_id, name=name, email=email, presenter=presenter_mock)
+
+        # Assert
+        storage_mock.add_new_user.assert_called_once()
+        user_account_adapter_mock.assert_called_once()
+        user_profile_adapter_mock.assert_called_once()

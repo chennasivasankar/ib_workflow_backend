@@ -157,3 +157,14 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         }
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
+
+    def raise_user_account_already_exist_with_this_email_exception(self):
+        from ib_iam.constants.exception_messages \
+            import USER_ACCOUNT_ALREADY_EXIST_FOR_THIS_EMAIL
+        response_dict = {
+            "response": USER_ACCOUNT_ALREADY_EXIST_FOR_THIS_EMAIL[0],
+            "http_status_code": StatusCode.BAD_REQUEST.value,
+            "res_status": USER_ACCOUNT_ALREADY_EXIST_FOR_THIS_EMAIL[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict)

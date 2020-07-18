@@ -34,3 +34,7 @@ class PresenterInterface(ABC):
     @abstractmethod
     def raise_invalid_email_exception(cls):
         pass
+
+    @abstractmethod
+    def raise_user_account_already_exist_with_this_email_exception(cls):
+        pass

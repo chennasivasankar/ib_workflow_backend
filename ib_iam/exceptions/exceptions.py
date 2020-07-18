@@ -24,3 +24,4 @@ class InvalidNameException(Exception):
 
 class InvalidEmailAddressException(Exception):
     pass
+
