@@ -12,4 +12,6 @@ Field_Types = [
     for item in FieldTypes
 ]
 
-permission_exception = "Permission roles shouldn't be empty"
+
+
+

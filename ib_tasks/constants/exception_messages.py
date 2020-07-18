@@ -1,4 +1,3 @@
-
 empty_gof_id_message = "GoF id should not be empty"
 empty_gof_name_message = "GoF name should not be empty"
 empty_read_permissions_message = "GoF read permissions should not be empty"
@@ -9,3 +8,9 @@ empty_field_ids_message = "GoF field ids should not be empty"
 duplicated_field_ids_message = "GoF field ids should be unique"
 multiple_display_names_for_same_gof = "One GoF should not have multiple display names"
 gof_id_already_exists = "GoF id already exists"
+
+INVALID_GOF_IDS_EXCEPTION_MESSAGE = "Invalid values for gof_ids {}"
+INVALID_FIELD_ID_EXCEPTION = "Invalid field_ids {}"
+EMPTY_VALUE_FOR_PERMISSIONS = "Permission roles shouldn't be empty"
+INVALID_FIELDS_DISPLAY_NAMES = "Invalid fields display names {}"
+INVALID_VALUES_FOR_FIELD_TYPES = "Field Types should be one of these {}"

@@ -20,12 +20,14 @@ class TestCreateFieldsInteractor:
 
     def test_given_gof_ids_not_in_database_raise_exception(self, storage_mock):
         # Arrange
+        from ib_tasks.constants.exception_messages import INVALID_GOF_IDS_EXCEPTION_MESSAGE
         field_roles_dtos = [FieldRolesDTOFactory()]
         field_dtos = [FieldDTOFactory(), FieldDTOFactory(gof_id="Hello"), FieldDTOFactory(gof_id="") ]
         from ib_tasks.exceptions.custom_exceptions import InvalidGOFIds
         interactor = CreateFieldsInteractor(storage=storage_mock)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
         invalid_gof_ids = ["Hello", ""]
+        error_message = INVALID_GOF_IDS_EXCEPTION_MESSAGE.format(invalid_gof_ids)
         storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
 
 
@@ -35,17 +37,19 @@ class TestCreateFieldsInteractor:
             interactor.create_fields(field_dtos=field_dtos, field_roles_dtos=field_roles_dtos)
 
         # Arrange
-        assert str(err.value) == str(invalid_gof_ids)
+        assert str(err.value) == error_message
 
 
     def test_given_field_id_is_empty_raise_exception(self, storage_mock):
         # Arrange
+        from ib_tasks.constants.exception_messages \
+            import INVALID_FIELD_ID_EXCEPTION
         field_roles_dtos = [FieldRolesDTOFactory()]
         field_dtos = [FieldDTOFactory(), FieldDTOFactory(field_id=" ")]
         from ib_tasks.exceptions.custom_exceptions import InvalidFieldIdException
         interactor = CreateFieldsInteractor(storage=storage_mock)
         invalid_field_ids = [""]
-        error_message = "Invalid field_ids {}".format(invalid_field_ids)
+        error_message = INVALID_FIELD_ID_EXCEPTION.format(invalid_field_ids)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
         storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
 
@@ -81,12 +85,14 @@ class TestCreateFieldsInteractor:
 
     def test_given_invalid_field_type_raise_ecxception(self, storage_mock):
         # Arrange
+        from ib_tasks.constants.exception_messages \
+            import INVALID_VALUES_FOR_FIELD_TYPES
+        from ib_tasks.exceptions.custom_exceptions import InvalidValueForFieldType
         field_roles_dtos = [FieldRolesDTOFactory()]
         field_dtos = [FieldDTOFactory(field_type=""), FieldDTOFactory(field_type="Hello")]
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForFieldType
         from ib_tasks.constants.constants import FIELD_TYPES_LIST
         interactor = CreateFieldsInteractor(storage=storage_mock)
-        error_message = "Field Types should be one of these {}".format(FIELD_TYPES_LIST)
+        error_message = INVALID_VALUES_FOR_FIELD_TYPES.format(FIELD_TYPES_LIST)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
         storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
 
@@ -101,6 +107,8 @@ class TestCreateFieldsInteractor:
             self, storage_mock
     ):
         # Arrange
+        from ib_tasks.constants.exception_messages \
+            import INVALID_FIELDS_DISPLAY_NAMES
         field_roles_dtos = [FieldRolesDTOFactory()]
         field_dtos = [
             FieldDTOFactory(),
@@ -109,7 +117,7 @@ class TestCreateFieldsInteractor:
             FieldDTOFactory()
         ]
         invalid_fields_display_names = [""]
-        exception_message = "Invalid fields display names {}".format(invalid_fields_display_names)
+        exception_message = INVALID_FIELDS_DISPLAY_NAMES.format(invalid_fields_display_names)
         from ib_tasks.exceptions.custom_exceptions import InvalidValueForFieldDisplayName
         interactor = CreateFieldsInteractor(storage=storage_mock)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
@@ -289,8 +297,9 @@ class TestCreateFieldsInteractor:
             self, storage_mock
     ):
         # Arrange
-        from ib_tasks.constants.constants import permission_exception
-        exception_message = permission_exception
+        from ib_tasks.constants.exception_messages \
+            import EMPTY_VALUE_FOR_PERMISSIONS
+        exception_message = EMPTY_VALUE_FOR_PERMISSIONS
         field_dtos = [
             FieldDTOFactory(), FieldDTOFactory(),
         ]
@@ -321,8 +330,9 @@ class TestCreateFieldsInteractor:
             self, storage_mock
     ):
         # Arrange
-        from ib_tasks.constants.constants import permission_exception
-        exception_message = permission_exception
+        from ib_tasks.constants.exception_messages \
+            import EMPTY_VALUE_FOR_PERMISSIONS
+        exception_message = EMPTY_VALUE_FOR_PERMISSIONS
         field_dtos = [
             FieldDTOFactory(), FieldDTOFactory(),
         ]
