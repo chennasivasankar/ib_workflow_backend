@@ -5,6 +5,7 @@ Author: Pavankumar Pamuru
 """
 from typing import List
 
+from ib_boards.interactors.dtos import TasksParameterDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
@@ -14,7 +15,7 @@ class GetTasksDetailsInteractor:
         self.storage = storage
 
     def get_tasks_details_wrapper(
-            self, tasks_parameters: List[str], column_id: str):
+            self, tasks_parameters: List[TasksParameterDTO], column_id: str):
         pass
 
     def get_task_details(
