@@ -227,7 +227,12 @@ class CreateOrUpdateGoFsInteractor:
         return
 
     @staticmethod
-    def _is_valid_max_columns_value(max_columns: Optional[int]) -> bool:
+    def _is_valid_max_columns_value(max_columns: Union[None, int, str]) -> bool:
+        max_columns_is_string = isinstance(max_columns, str)
+        if max_columns_is_string:
+            from ib_tasks.exceptions.custom_exceptions import \
+                MaxColumnsMustBeANumber
+            raise MaxColumnsMustBeANumber(max_columns)
         return max_columns is None or max_columns < 1
 
     def _validate_for_empty_gof_ids(

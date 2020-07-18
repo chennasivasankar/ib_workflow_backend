@@ -12,11 +12,13 @@ def create_gofs():
         CreateOrUpdateGoFsInteractor
     from ib_tasks.storages.tasks_storage_implementation import \
         TasksStorageImplementation
+    print("reading google sheet.....")
     sheet = read_google_sheet(sheet_name=GOOGLE_SHEET_NAME)
     gof_sheet = sheet.worksheet(GOF_SUB_SHEET_TITLE)
     gof_records = gof_sheet.get_all_records()
     complete_gof_details_dtos = prepare_complete_gof_details_dtos(gof_records)
 
+    print("calling create or update gofs interactor.....")
     storage = TasksStorageImplementation()
     interactor = CreateOrUpdateGoFsInteractor(storage=storage)
     interactor.create_or_update_gofs(complete_gof_details_dtos)
@@ -39,15 +41,24 @@ def get_gof_dto_for_a_gof_record(gof_record: Dict) -> GoFDTO:
     gof_dto = GoFDTO(
         gof_id=gof_record['GOF ID*'],
         gof_display_name=gof_record['GOF Display Name*'],
-        max_columns=gof_record['MAX_COLUMNS']
+        max_columns=gof_record['MAX_COLUMNS*']
     )
     return gof_dto
 
 
 def get_gof_roles_dto_for_a_gof_record(gof_record: Dict) -> GoFRolesDTO:
     import json
-    read_permission_roles = json.loads(gof_record['Read Permission Roles*'])
-    write_permission_roles = json.loads(gof_record['Write Permission Roles*'])
+    read_permissions_is_not_empty = \
+        gof_record['Read Permission Roles*'].strip()
+    write_permissions_is_not_empty = \
+        gof_record['Read Permission Roles*'].strip()
+    read_permission_roles, write_permission_roles = [], []
+    if read_permissions_is_not_empty:
+        read_permission_roles = \
+            json.loads(gof_record['Read Permission Roles*'])
+    if write_permissions_is_not_empty:
+        write_permission_roles = \
+            json.loads(gof_record['Write Permission Roles*'])
     gof_roles_dto = GoFRolesDTO(
         gof_id=gof_record['GOF ID*'],
         read_permission_roles=read_permission_roles,
