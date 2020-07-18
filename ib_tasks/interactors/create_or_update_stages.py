@@ -13,7 +13,6 @@ class CreateOrUpdateStagesInterface:
     def __init__(self, stage_storage: TaskStorageInterface):
         self.stage_storage = stage_storage
 
-
     def create_or_update_stages_information(
             self,
             stages_information: List[StageInformationDTO]):
@@ -31,11 +30,10 @@ class CreateOrUpdateStagesInterface:
 
         self._create_or_update_stages(valid_stage_ids, stages_information)
 
-
     def _create_or_update_stages(self,
                                  valid_stage_ids: List[str],
                                  stages_information: List[StageInformationDTO]
-                                ):
+                                 ):
         update_stages_information = []
         create_stages_information = []
         if valid_stage_ids:
@@ -58,7 +56,6 @@ class CreateOrUpdateStagesInterface:
             self.stage_storage.create_stages_with_given_information(
                 create_stages_information)
 
-
     def _validate_stage_display_logic(self, stages_information):
         invalid_stage_display_logic_stages = [
             stage.stage_id for stage in stages_information
@@ -74,7 +71,6 @@ class CreateOrUpdateStagesInterface:
 
         if duplicate_stage_ids:
             raise DuplicateStageIds(duplicate_stage_ids)
-
 
     def _validate_stage_ids(self, stage_ids: List[str]):
 
@@ -99,7 +95,7 @@ class CreateOrUpdateStagesInterface:
     def _validate_stages_related_task_template_ids(
             self,
             task_stages_dto: List[TaskStagesDTO]):
-        invalid_stages_related_task_template_ids = self.stage_storage.\
+        invalid_stages_related_task_template_ids = self.stage_storage. \
             validate_stages_related_task_template_ids(task_stages_dto)
 
         if invalid_stages_related_task_template_ids:
@@ -107,14 +103,12 @@ class CreateOrUpdateStagesInterface:
                 invalid_stages_related_task_template_ids)
         return
 
-
     def _get_stage_ids(self,
                        stages_information: List[StageInformationDTO]):
         stage_ids = []
         for stage_information in stages_information:
             stage_ids.append(stage_information.stage_id)
         return stage_ids
-
 
     def _get_task_stages_dto(self,
                              stages_information: List[StageInformationDTO]):
@@ -124,8 +118,7 @@ class CreateOrUpdateStagesInterface:
                 stage_id=stage_information.stage_id,
                 task_template_id=stage_information.task_template_id
             ))
-        return  task_stages_dto
-
+        return task_stages_dto
 
     def _validate_values_for_stages(self,
                                     stages_information: List[StageInformationDTO]):
@@ -137,31 +130,3 @@ class CreateOrUpdateStagesInterface:
         if invalid_value_stages:
             raise InvalidStageValues(invalid_value_stages)
         return
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
