@@ -92,24 +92,24 @@ class TestPopulateScriptInteractor:
         ]
 
     @pytest.fixture
-    def column_dtos_with_empty_task_summary_fields(self):
-        task_summary_fields = TaskSummaryFieldsDTOFactory.create_batch(
+    def column_dtos_with_empty_task_list_view_fields(self):
+        list_view_fields = TaskSummaryFieldsDTOFactory.create_batch(
             2, summary_fields=[]
         )
         return [
             ColumnDTOFactory(),
-            ColumnDTOFactory(task_summary_fields=task_summary_fields)
+            ColumnDTOFactory(list_view_fields=list_view_fields)
         ]
 
     @pytest.fixture
-    def column_dtos_with_duplicate_task_summary_fields(self):
-        task_summary_fields = TaskSummaryFieldsDTOFactory.create_batch(
+    def column_dtos_with_duplicate_list_view_fields(self):
+        list_view_fields = TaskSummaryFieldsDTOFactory.create_batch(
             2,
             summary_fields=['Price', 'Price']
         )
         return [
             ColumnDTOFactory(),
-            ColumnDTOFactory(task_summary_fields=task_summary_fields)
+            ColumnDTOFactory(list_view_fields=list_view_fields)
         ]
 
     @pytest.fixture
@@ -123,6 +123,40 @@ class TestPopulateScriptInteractor:
         task_field_dtos_2 = TaskSummaryFieldsDTOFactory.create_batch(2)
         TaskSummaryFieldsDTOFactory.reset_sequence()
         task_field_dtos_3 = TaskSummaryFieldsDTOFactory.create_batch(2)
+        return task_field_dtos_1 + task_field_dtos_2 + task_field_dtos_3
+
+    @pytest.fixture
+    def mock_valid_task_and_template_ids(self, mocker):
+        task_template_ids = [
+            'TASK_TEMPLATE_ID_1', 'TASK_TEMPLATE_ID_2', 'TASK_TEMPLATE_ID_3',
+            'TASK_TEMPLATE_ID_4', 'TASK_TEMPLATE_ID_5',
+            'TASK_TEMPLATE_ID_1', 'TASK_TEMPLATE_ID_2', 'TASK_TEMPLATE_ID_3',
+            'TASK_TEMPLATE_ID_4', 'TASK_TEMPLATE_ID_5',
+        ]
+        task_ids = [
+            'TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3',
+            'TASK_ID_4', 'TASK_ID_5',
+            'TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3',
+            'TASK_ID_4', 'TASK_ID_5',
+        ]
+        from ib_boards.tests.common_fixtures.adapters.task_service import \
+            get_valid_task_ids_mock, get_valid_task_template_ids_mock
+        get_valid_task_template_ids_mock(
+            mocker=mocker,
+            task_template_ids=task_template_ids
+        )
+        get_valid_task_ids_mock(
+            mocker=mocker,
+            task_ids=task_ids
+        )
+
+    @pytest.fixture
+    def task_template_stages_dtos(self):
+        task_field_dtos_1 = TaskTemplateStagesDTOFactory.create_batch(2)
+        TaskTemplateStagesDTOFactory.reset_sequence()
+        task_field_dtos_2 = TaskTemplateStagesDTOFactory.create_batch(2)
+        TaskTemplateStagesDTOFactory.reset_sequence()
+        task_field_dtos_3 = TaskTemplateStagesDTOFactory.create_batch(2)
         return task_field_dtos_1 + task_field_dtos_2 + task_field_dtos_3
 
     def test_with_invalid_board_display_name_raise_exception(
@@ -222,6 +256,10 @@ class TestPopulateScriptInteractor:
             self, storage_mock, board_dtos, sequence_reset,
             column_dtos_with_invalid_task_template_id, mocker):
         # Arrange
+        task_template_ids = [
+            'TASK_TEMPLATE_ID_1', 'TASK_TEMPLATE_ID_2', 'TASK_TEMPLATE_ID_3',
+            'TASK_TEMPLATE_ID_4', 'TASK_TEMPLATE_ID_5',
+        ]
         invalid_task_ids = ['TASK_ID_4', 'TASK_ID_5']
         task_ids = [
             'TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3',
@@ -235,8 +273,11 @@ class TestPopulateScriptInteractor:
         )
 
         from ib_boards.tests.common_fixtures.adapters.task_service import \
-            get_valid_task_ids_mock
-
+            get_valid_task_ids_mock, get_valid_task_template_ids_mock
+        get_valid_task_template_ids_mock(
+            mocker=mocker,
+            task_template_ids=task_template_ids
+        )
         adapter_mock = get_valid_task_ids_mock(
             mocker=mocker,
             task_ids=valid_task_ids
@@ -244,8 +285,8 @@ class TestPopulateScriptInteractor:
 
         # Act
         from ib_boards.exceptions.custom_exceptions import \
-            InvalidTaskTemplateIdInStages
-        with pytest.raises(InvalidTaskTemplateIdInStages) as error:
+            InvalidTaskIdInSummaryFields
+        with pytest.raises(InvalidTaskIdInSummaryFields) as error:
             assert interactor.create_boards_and_columns(
                 board_dtos=board_dtos,
                 column_dtos=column_dtos_with_invalid_task_template_id
@@ -253,13 +294,14 @@ class TestPopulateScriptInteractor:
 
         # Assert
         adapter_mock.assert_called_once_with(
-            task_template_ids=task_template_ids
+            task_ids=task_ids
         )
-        assert error.value.task_template_ids == invalid_task_template_ids
+        assert error.value.task_ids == invalid_task_ids
 
     def test_with_empty_task_template_stages_raise_exception(
             self, storage_mock, board_dtos, sequence_reset,
-            column_dtos_with_empty_task_template_stages):
+            column_dtos_with_empty_task_template_stages,
+            mock_valid_task_and_template_ids):
         # Arrange
         interactor = CreateBoardsAndColumnsInteractor(
             storage=storage_mock
@@ -275,8 +317,10 @@ class TestPopulateScriptInteractor:
 
     def test_with_duplicate_task_template_stages_raise_exception(
             self, storage_mock, board_dtos, sequence_reset,
-            column_dtos_with_duplicate_task_template_stages, mocker):
+            column_dtos_with_duplicate_task_template_stages,
+            mock_valid_task_and_template_ids):
         # Arrange
+        duplicate_stages = ['PR_PAYMENT_REQUEST_DRAFTS']
         interactor = CreateBoardsAndColumnsInteractor(
             storage=storage_mock
         )
@@ -289,16 +333,21 @@ class TestPopulateScriptInteractor:
                 column_dtos=column_dtos_with_duplicate_task_template_stages
             )
 
+        # Assert
+        assert error.value.duplicate_stages == duplicate_stages
+
     def test_with_task_template_stages_not_belongs_to_task_template_id(
-            self, storage_mock, sequence_reset, board_dtos, column_dtos, mocker):
+            self, storage_mock, sequence_reset, board_dtos, column_dtos, mocker,
+            mock_valid_task_and_template_ids, task_template_stages_dtos):
         # Arrange
+        not_related_stages = task_template_stages_dtos
         interactor = CreateBoardsAndColumnsInteractor(
             storage=storage_mock
         )
 
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             adapter_mock_for_task_template_stages
-        adapter_mock_for_task_template_stages(mocker)
+        adapter_mock = adapter_mock_for_task_template_stages(mocker)
 
         # Act
         from ib_boards.exceptions.custom_exceptions import \
@@ -311,9 +360,9 @@ class TestPopulateScriptInteractor:
 
     def test_with_task_summary_fields_not_belongs_to_task_id(
             self, storage_mock, sequence_reset, board_dtos,
-            column_dtos, task_summary_field_dtos, mocker):
+            column_dtos, task_summary_field_dtos, mocker,
+            mock_valid_task_and_template_ids):
         # Arrange
-        not_related_fields = task_summary_field_dtos
         interactor = CreateBoardsAndColumnsInteractor(
             storage=storage_mock
         )
@@ -332,14 +381,10 @@ class TestPopulateScriptInteractor:
                 column_dtos=column_dtos
             )
 
-        # Assert
-        adapter_mock.assert_called_once_with(
-            task_summary_fields=not_related_fields
-        )
-
     def test_with_invalid_user_role_ids_raise_exception(
             self, storage_mock, board_dtos, sequence_reset,
-            column_dtos_with_invalid_task_template_id, mocker):
+            column_dtos_with_invalid_task_template_id,
+            mocker, mock_valid_task_and_template_ids):
         # Arrange
         invalid_user_roles = ['USER', 'MEMBER']
         interactor = CreateBoardsAndColumnsInteractor(
@@ -363,7 +408,8 @@ class TestPopulateScriptInteractor:
         assert error.value.user_role_ids == invalid_user_roles
 
     def test_with_valid_data_creates_data(
-            self, storage_mock, sequence_reset, board_dtos, column_dtos):
+            self, storage_mock, sequence_reset, board_dtos, column_dtos,
+            mock_valid_task_and_template_ids):
         # Arrange
         interactor = CreateBoardsAndColumnsInteractor(
             storage=storage_mock
@@ -383,7 +429,8 @@ class TestPopulateScriptInteractor:
 
     def test_with_duplicate_task_summary_fields_raise_exception(
             self, storage_mock, sequence_reset, board_dtos,
-            column_dtos_with_duplicate_task_summary_fields):
+            column_dtos_with_duplicate_list_view_fields,
+            mock_valid_task_and_template_ids):
         # Arrange
         duplicate_fields = ['Price']
         interactor = CreateBoardsAndColumnsInteractor(
@@ -395,7 +442,7 @@ class TestPopulateScriptInteractor:
         with pytest.raises(DuplicateSummaryFieldsInTask) as error:
             assert interactor.create_boards_and_columns(
                 board_dtos=board_dtos,
-                column_dtos=column_dtos_with_duplicate_task_summary_fields
+                column_dtos=column_dtos_with_duplicate_list_view_fields
             )
 
         # Assert
@@ -403,7 +450,8 @@ class TestPopulateScriptInteractor:
 
     def test_with_empty_task_summary_fields_raise_exception(
             self, storage_mock, sequence_reset, board_dtos,
-            column_dtos_with_empty_task_summary_fields):
+            column_dtos_with_empty_task_list_view_fields,
+            mock_valid_task_and_template_ids):
         # Arrange
         interactor = CreateBoardsAndColumnsInteractor(
             storage=storage_mock
@@ -414,5 +462,5 @@ class TestPopulateScriptInteractor:
         with pytest.raises(EmptyValuesForTaskSummaryFields) as error:
             assert interactor.create_boards_and_columns(
                 board_dtos=board_dtos,
-                column_dtos=column_dtos_with_empty_task_summary_fields
+                column_dtos=column_dtos_with_empty_task_list_view_fields
             )

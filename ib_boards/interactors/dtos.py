@@ -3,7 +3,6 @@ Created on: 13/07/20
 Author: Pavankumar Pamuru
 
 """
-import json
 from dataclasses import dataclass
 from typing import List
 
@@ -30,10 +29,13 @@ class BoardDTO:
 class ColumnDTO:
     column_id: str
     display_name: str
+    display_order: int
     task_template_stages: List[TaskTemplateStagesDTO]
     user_role_ids: List[str]
     column_summary: str
-    task_summary_fields: List[TaskSummaryFieldsDTO]
+    column_actions: str
+    list_view_fields: List[TaskSummaryFieldsDTO]
+    kanban_view_fields: List[TaskSummaryFieldsDTO]
     board_id: str
 
 

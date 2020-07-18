@@ -69,29 +69,29 @@ class TestAddOrDeleteColumnsForBoardInteractor:
         ]
 
     @pytest.fixture
-    def column_dtos_with_empty_task_summary_fields(self):
-        task_summary_fields = TaskSummaryFieldsDTOFactory.create_batch(
+    def column_dtos_with_empty_task_list_view_fields(self):
+        list_view_fields = TaskSummaryFieldsDTOFactory.create_batch(
             2, summary_fields=[]
         )
         return [
             ColumnDTOFactory(),
-            ColumnDTOFactory(task_summary_fields=task_summary_fields)
+            ColumnDTOFactory(list_view_fields=list_view_fields)
         ]
 
     @pytest.fixture
-    def column_dtos_with_duplicate_task_summary_fields(self):
-        task_summary_fields = TaskSummaryFieldsDTOFactory.create_batch(
+    def column_dtos_with_duplicate_list_view_fields(self):
+        list_view_fields = TaskSummaryFieldsDTOFactory.create_batch(
             2,
             summary_fields=['Price', 'Price']
         )
         return [
             ColumnDTOFactory(),
-            ColumnDTOFactory(task_summary_fields=task_summary_fields)
+            ColumnDTOFactory(list_view_fields=list_view_fields)
         ]
 
     @pytest.fixture
     def column_dtos_with_invalid_task_template_id(self):
-        return ColumnDTOFactory.create_batch(3)
+        return ColumnDTOFactory.create_batch(1)
 
     @pytest.fixture
     def column_dtos_with_invalid_user_roles(self):
@@ -123,6 +123,31 @@ class TestAddOrDeleteColumnsForBoardInteractor:
         TaskTemplateStagesDTOFactory.reset_sequence()
         task_field_dtos_3 = TaskTemplateStagesDTOFactory.create_batch(2)
         return task_field_dtos_1 + task_field_dtos_2 + task_field_dtos_3
+
+    @pytest.fixture
+    def mock_valid_task_and_template_ids(self, mocker):
+        task_template_ids = [
+            'TASK_TEMPLATE_ID_1', 'TASK_TEMPLATE_ID_2', 'TASK_TEMPLATE_ID_3',
+            'TASK_TEMPLATE_ID_4', 'TASK_TEMPLATE_ID_5',
+            'TASK_TEMPLATE_ID_1', 'TASK_TEMPLATE_ID_2', 'TASK_TEMPLATE_ID_3',
+            'TASK_TEMPLATE_ID_4', 'TASK_TEMPLATE_ID_5',
+        ]
+        task_ids = [
+            'TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3',
+            'TASK_ID_4', 'TASK_ID_5',
+            'TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3',
+            'TASK_ID_4', 'TASK_ID_5',
+        ]
+        from ib_boards.tests.common_fixtures.adapters.task_service import \
+            get_valid_task_ids_mock, get_valid_task_template_ids_mock
+        get_valid_task_template_ids_mock(
+            mocker=mocker,
+            task_template_ids=task_template_ids
+        )
+        get_valid_task_ids_mock(
+            mocker=mocker,
+            task_ids=task_ids
+        )
 
     def test_with_duplicate_column_ids_raise_exception(
             self, storage_mock, sequence_reset,
@@ -168,13 +193,14 @@ class TestAddOrDeleteColumnsForBoardInteractor:
             self, storage_mock, sequence_reset,
             column_dtos_with_invalid_task_template_id, mocker):
         # Arrange
-        invalid_task_template_ids = ['TASK_TEMPLATE_ID_1']
-        task_template_ids = ['TASK_TEMPLATE_ID_1',
-                             'TASK_TEMPLATE_ID_2',
-                             'TASK_TEMPLATE_ID_1',
-                             'TASK_TEMPLATE_ID_2',
-                             'TASK_TEMPLATE_ID_1',
-                             'TASK_TEMPLATE_ID_2']
+        invalid_task_template_ids = ['TASK_TEMPLATE_ID_4', 'TASK_TEMPLATE_ID_5']
+        task_template_ids = [
+            'TASK_TEMPLATE_ID_1', 'TASK_TEMPLATE_ID_2', 'TASK_TEMPLATE_ID_3',
+            'TASK_TEMPLATE_ID_4', 'TASK_TEMPLATE_ID_5',
+        ]
+        valid_task_template_ids = [
+            'TASK_TEMPLATE_ID_1', 'TASK_TEMPLATE_ID_2', 'TASK_TEMPLATE_ID_3'
+        ]
         interactor = AddOrDeleteColumnsForBoardInteractor(
             storage=storage_mock
         )
@@ -184,7 +210,7 @@ class TestAddOrDeleteColumnsForBoardInteractor:
 
         adapter_mock = get_valid_task_template_ids_mock(
             mocker=mocker,
-            task_template_ids=invalid_task_template_ids
+            task_template_ids=valid_task_template_ids
         )
 
         # Act
@@ -205,44 +231,51 @@ class TestAddOrDeleteColumnsForBoardInteractor:
             self, storage_mock, sequence_reset,
             column_dtos_with_invalid_task_template_id, mocker):
         # Arrange
-        invalid_task_template_ids = ['TASK_ID_5', 'TASK_ID_3', 'TASK_ID_4']
         task_template_ids = [
-            'TASK_ID_0',
-            'TASK_ID_1',
-            'TASK_ID_2',
-            'TASK_ID_3',
-            'TASK_ID_4',
-            'TASK_ID_5'
+            'TASK_TEMPLATE_ID_1', 'TASK_TEMPLATE_ID_2', 'TASK_TEMPLATE_ID_3',
+            'TASK_TEMPLATE_ID_4', 'TASK_TEMPLATE_ID_5',
+        ]
+        invalid_task_ids = ['TASK_ID_4', 'TASK_ID_5']
+        task_ids = [
+            'TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3',
+            'TASK_ID_4', 'TASK_ID_5',
+        ]
+        valid_task_ids = [
+            'TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3'
         ]
         interactor = AddOrDeleteColumnsForBoardInteractor(
             storage=storage_mock
         )
 
         from ib_boards.tests.common_fixtures.adapters.task_service import \
-            get_valid_task_template_ids_mock
-
-        adapter_mock = get_valid_task_template_ids_mock(
+            get_valid_task_ids_mock, get_valid_task_template_ids_mock
+        get_valid_task_template_ids_mock(
             mocker=mocker,
             task_template_ids=task_template_ids
+        )
+        adapter_mock = get_valid_task_ids_mock(
+            mocker=mocker,
+            task_ids=valid_task_ids
         )
 
         # Act
         from ib_boards.exceptions.custom_exceptions import \
-            InvalidTaskTemplateIdInStages
-        with pytest.raises(InvalidTaskTemplateIdInStages) as error:
+            InvalidTaskIdInSummaryFields
+        with pytest.raises(InvalidTaskIdInSummaryFields) as error:
             assert interactor.add_or_delete_columns_for_board_wrapper(
                 column_dtos=column_dtos_with_invalid_task_template_id
             )
 
         # Assert
         adapter_mock.assert_called_once_with(
-            task_template_ids=task_template_ids
+            task_ids=task_ids
         )
-        assert error.value.task_template_ids == invalid_task_template_ids
+        assert error.value.task_ids == invalid_task_ids
 
     def test_with_empty_task_template_stages_raise_exception(
             self, storage_mock, sequence_reset,
-            column_dtos_with_empty_task_template_stages):
+            column_dtos_with_empty_task_template_stages,
+            mock_valid_task_and_template_ids):
         # Arrange
         interactor = AddOrDeleteColumnsForBoardInteractor(
             storage=storage_mock
@@ -257,7 +290,8 @@ class TestAddOrDeleteColumnsForBoardInteractor:
 
     def test_with_duplicate_task_template_stages_raise_exception(
             self, storage_mock, sequence_reset,
-            column_dtos_with_duplicate_task_template_stages):
+            column_dtos_with_duplicate_task_template_stages,
+            mock_valid_task_and_template_ids):
         # Arrange
         duplicate_stages = ['PR_PAYMENT_REQUEST_DRAFTS']
         interactor = AddOrDeleteColumnsForBoardInteractor(
@@ -276,7 +310,8 @@ class TestAddOrDeleteColumnsForBoardInteractor:
 
     def test_with_task_template_stages_not_belongs_to_task_template_id(
             self, storage_mock, sequence_reset,
-            column_dtos, task_template_stages_dtos, mocker):
+            column_dtos, task_template_stages_dtos, mocker,
+            mock_valid_task_and_template_ids):
         # Arrange
         not_related_stages = task_template_stages_dtos
         interactor = AddOrDeleteColumnsForBoardInteractor(
@@ -296,14 +331,10 @@ class TestAddOrDeleteColumnsForBoardInteractor:
                 column_dtos=column_dtos
             )
 
-        # Assert
-        adapter_mock.assert_called_once_with(
-            task_template_stages=not_related_stages
-        )
-
     def test_with_task_summary_fields_not_belongs_to_task_template_id(
             self, storage_mock, sequence_reset,
-            column_dtos, task_summary_field_dtos, mocker):
+            column_dtos, task_summary_field_dtos, mocker,
+            mock_valid_task_and_template_ids):
         # Arrange
         not_related_fields = task_summary_field_dtos
         interactor = AddOrDeleteColumnsForBoardInteractor(
@@ -323,14 +354,10 @@ class TestAddOrDeleteColumnsForBoardInteractor:
                 column_dtos=column_dtos
             )
 
-        # Assert
-        adapter_mock.assert_called_once_with(
-            task_summary_fields=not_related_fields
-        )
-
     def test_with_invalid_user_role_ids_raise_exception(
             self, storage_mock, sequence_reset,
-            column_dtos_with_invalid_user_roles, mocker):
+            column_dtos_with_invalid_user_roles, mocker,
+            mock_valid_task_and_template_ids):
         # Arrange
         invalid_user_roles = ['ALL_ROLES', 'MEMBER', 'USER']
         interactor = AddOrDeleteColumnsForBoardInteractor(
@@ -358,7 +385,7 @@ class TestAddOrDeleteColumnsForBoardInteractor:
 
     def test_with_column_ids_are_assigned_to_multiple_boards(
             self, storage_mock, sequence_reset,
-            column_dtos):
+            column_dtos, mock_valid_task_and_template_ids):
         # Arrange
         column_ids = ['COLUMN_ID_1', 'COLUMN_ID_2', 'COLUMN_ID_3']
         storage_mock.get_board_ids_for_column_ids.return_value = ['BOARD_ID_1']
@@ -381,7 +408,8 @@ class TestAddOrDeleteColumnsForBoardInteractor:
         assert error.value.column_ids == column_ids
 
     def test_with_update_and_create_and_delete_columns(
-            self, storage_mock, sequence_reset, valid_column_dtos):
+            self, storage_mock, sequence_reset, valid_column_dtos,
+            mock_valid_task_and_template_ids):
         # Arrange
         board_ids = ['BOARD_ID_0']
         present_column_ids = ['COLUMN_ID_1', 'COLUMN_ID_2', 'COLUMN_ID_3']
@@ -411,7 +439,8 @@ class TestAddOrDeleteColumnsForBoardInteractor:
 
     def test_with_duplicate_task_summary_fields_raise_exception(
             self, storage_mock, sequence_reset,
-            column_dtos_with_duplicate_task_summary_fields):
+            column_dtos_with_duplicate_list_view_fields,
+            mock_valid_task_and_template_ids):
         # Arrange
         duplicate_fields = ['Price']
         interactor = AddOrDeleteColumnsForBoardInteractor(
@@ -422,7 +451,7 @@ class TestAddOrDeleteColumnsForBoardInteractor:
             DuplicateSummaryFieldsInTask
         with pytest.raises(DuplicateSummaryFieldsInTask) as error:
             assert interactor.add_or_delete_columns_for_board_wrapper(
-                column_dtos=column_dtos_with_duplicate_task_summary_fields
+                column_dtos=column_dtos_with_duplicate_list_view_fields
             )
 
         # Assert
@@ -430,7 +459,8 @@ class TestAddOrDeleteColumnsForBoardInteractor:
 
     def test_with_empty_task_summary_fields_raise_exception(
             self, storage_mock, sequence_reset,
-            column_dtos_with_empty_task_summary_fields):
+            column_dtos_with_empty_task_list_view_fields,
+            mock_valid_task_and_template_ids):
         # Arrange
         interactor = AddOrDeleteColumnsForBoardInteractor(
             storage=storage_mock
@@ -440,5 +470,5 @@ class TestAddOrDeleteColumnsForBoardInteractor:
             EmptyValuesForTaskSummaryFields
         with pytest.raises(EmptyValuesForTaskSummaryFields) as error:
             assert interactor.add_or_delete_columns_for_board_wrapper(
-                column_dtos=column_dtos_with_empty_task_summary_fields
+                column_dtos=column_dtos_with_empty_task_list_view_fields
             )

@@ -120,7 +120,7 @@ class CreateBoardsAndColumnsInteractor:
 
         task_ids = []
         for column_dto in column_dtos:
-            task_summary_field_dtos = column_dto.task_summary_fields
+            task_summary_field_dtos = column_dto.list_view_fields
             task_ids += self._get_task_ids(
                 task_summary_field_dtos=task_summary_field_dtos
             )
@@ -140,7 +140,7 @@ class CreateBoardsAndColumnsInteractor:
         if invalid_task_ids:
             from ib_boards.exceptions.custom_exceptions import \
                 InvalidTaskIdInSummaryFields
-            raise InvalidTaskIdInSummaryFields(task_ids=task_ids)
+            raise InvalidTaskIdInSummaryFields(task_ids=invalid_task_ids)
 
     @staticmethod
     def _get_task_ids(
@@ -222,7 +222,7 @@ class CreateBoardsAndColumnsInteractor:
     def _validate_task_summary_fields_with_id(column_dtos: List[ColumnDTO]):
         task_summary_fields = []
         for column_dto in column_dtos:
-            task_summary_fields += column_dto.task_summary_fields
+            task_summary_fields += column_dto.list_view_fields
         from ib_boards.adapters.service_adapter import get_service_adapter
 
         service_adapter = get_service_adapter()
@@ -234,7 +234,7 @@ class CreateBoardsAndColumnsInteractor:
     def _validate_empty_values_in_task_summary_fields(
             self, column_dtos: List[ColumnDTO]):
         for column_dto in column_dtos:
-            task_summary_fields_dtos = column_dto.task_summary_fields
+            task_summary_fields_dtos = column_dto.list_view_fields
             self._check_task_summary_fields_are_not_empty(
                 task_summary_fields_dtos=task_summary_fields_dtos
             )
@@ -252,7 +252,7 @@ class CreateBoardsAndColumnsInteractor:
     def _validate_duplicate_task_summary_fields(self,
                                                 column_dtos: List[ColumnDTO]):
         for column_dto in column_dtos:
-            task_summary_field_dtos = column_dto.task_summary_fields
+            task_summary_field_dtos = column_dto.list_view_fields
             for task_summary_fields_dto in task_summary_field_dtos:
                 self._validate_duplicate_summary_fields_for_task(
                     fields=task_summary_fields_dto.summary_fields

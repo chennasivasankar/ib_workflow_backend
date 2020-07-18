@@ -41,8 +41,11 @@ class ColumnDTOFactory(factory.Factory):
 
     column_id = factory.Sequence(lambda n: f'COLUMN_ID_{n + 1}')
     display_name = factory.Sequence(lambda n: f'COLUMN_DISPLAY_NAME_{n + 1}')
+    display_order = factory.Sequence(lambda n: n + 1)
     task_template_stages = TaskTemplateStagesDTOFactory.create_batch(5)
     user_role_ids = ['ALL_ROLES']
     column_summary = 'COLUMN_SUMMARY'
-    task_summary_fields = TaskSummaryFieldsDTOFactory.create_batch(5)
+    column_actions = 'COLUMN_ACTIONS'
+    list_view_fields = TaskSummaryFieldsDTOFactory.create_batch(5)
+    kanban_view_fields = TaskSummaryFieldsDTOFactory.create_batch(2)
     board_id = "BOARD_ID_0"
