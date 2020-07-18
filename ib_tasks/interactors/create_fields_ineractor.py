@@ -27,7 +27,7 @@ class CreateFieldsInteractor:
             field_roles_dtos: List[FieldRolesDTO]
     ):
         self._validate_gof_ids(field_dtos)
-        self._validate_field_id(field_dtos)
+        self._validate_field_ids(field_dtos)
         self._check_for_duplication_of_filed_ids(field_dtos)
         self._validate_field_display_name(field_dtos)
         self._validate_field_type(field_dtos)
@@ -41,14 +41,51 @@ class CreateFieldsInteractor:
         new_field_roles_dtos, existing_field_roles_dtos = self._get_field_roles_dto(
             new_field_dtos, existing_field_dtos, field_roles_dtos
         )
+        new_field_role_dtos = self._get_field_role_dtos(new_field_roles_dtos)
+        existing_field_role_dtos = \
+            self._get_field_role_dtos(existing_field_roles_dtos)
+        new_role_dtos, exist_field_role_dtos = \
+            self._get_new_field_role_dtos(existing_field_role_dtos)
+        new_field_role_dtos = new_field_role_dtos + new_role_dtos
         if new_field_dtos:
             self.storage.create_fields(new_field_dtos)
-            new_field_role_dtos = self._get_field_role_dtos(new_field_roles_dtos)
             self.storage.create_fields_roles(new_field_role_dtos)
         if existing_field_dtos:
             self.storage.update_fields(existing_field_dtos)
-            existing_field_role_dtos = self._get_field_role_dtos(existing_field_roles_dtos)
-            self.storage.update_fields_roles(existing_field_role_dtos)
+            self.storage.update_fields_roles(exist_field_role_dtos)
+
+
+    def _get_new_field_role_dtos(
+            self, existing_field_role_dtos: List[FieldRoleDTO]
+    ):
+        field_ids = [
+            existing_field_role_dto.field_id
+            for existing_field_role_dto in existing_field_role_dtos
+        ]
+        field_role_dtos = self.storage.get_fields_role_dtos(field_ids)
+        exist_role_dtos = []
+        new_role_dtos = []
+        for field_role_dto in existing_field_role_dtos:
+            is_field_role_dto_matches = \
+                self._is_field_role_dto_matches(field_role_dto, field_role_dtos)
+            if is_field_role_dto_matches:
+                exist_role_dtos.append(field_role_dto)
+            else:
+                new_role_dtos.append(field_role_dto)
+        return new_role_dtos, exist_role_dtos
+
+    def _is_field_role_dto_matches(
+            self, field_role_dto: FieldRoleDTO,
+            field_role_dtos: List[FieldRoleDTO]
+    ):
+        field_id = field_role_dto.field_id
+        role = field_role_dto.role
+        for role_dto in field_role_dtos:
+            exist_field_id, exist_role = role_dto.field_id, role_dto.role
+            is_field_role_matches = field_id == exist_field_id and role == exist_role
+            if is_field_role_matches:
+                return True
+        return False
 
 
     def _get_field_role_dtos(
@@ -83,7 +120,7 @@ class CreateFieldsInteractor:
     ) -> List[FieldRoleDTO]:
         write_permission_field_role_dtos = []
         field_id = field_roles_dto.field_id
-        write_permission_roles = field_roles_dto.read_permission_roles
+        write_permission_roles = field_roles_dto.write_permission_roles
         for role in write_permission_roles:
             field_role_dto = FieldRoleDTO(
                 field_id=field_id, role=role,
@@ -147,9 +184,12 @@ class CreateFieldsInteractor:
     ) -> Optional[InvalidGOFIds]:
         gof_ids = [field_dto.gof_id for field_dto in field_dtos]
         existing_gof_ids = self.storage.get_existing_gof_ids(gof_ids)
+        invalid_gof_ids = []
         for gof_id in gof_ids:
             if gof_id not in existing_gof_ids:
-                raise InvalidGOFIds("Invalid GOF Ids")
+                invalid_gof_ids.append(gof_id)
+        if invalid_gof_ids:
+            raise InvalidGOFIds(invalid_gof_ids)
         return
 
     def _get_field_dtos(self, field_dtos: List[FieldDTO]):
@@ -190,34 +230,36 @@ class CreateFieldsInteractor:
         for field_dto in field_dtos:
             field_type = field_dto.field_type
             if field_type not in FIELD_TYPES_LIST:
-                raise InvalidValueForFieldType(
-                    "Field_Type should be one of these {}".format(FIELD_TYPES_LIST)
-                )
+                raise InvalidValueForFieldType(FIELD_TYPES_LIST)
         return
 
     @staticmethod
     def _validate_field_display_name(
             field_dtos: List[FieldDTO]
     ) -> Optional[InvalidValueForFieldDisplayName]:
+        invalid_field_display_names = []
         for field_dto in field_dtos:
             field_display_name = field_dto.field_display_name.strip()
             is_field_display_name_empty = not field_display_name
             if is_field_display_name_empty:
-                raise InvalidValueForFieldDisplayName(
-                    "Field display name shouldn't be empty"
-                )
+                invalid_field_display_names.append(field_display_name)
+        if invalid_field_display_names:
+            raise InvalidValueForFieldDisplayName(invalid_field_display_names)
         return
 
     @staticmethod
-    def _validate_field_id(
+    def _validate_field_ids(
             field_dtos: List[FieldDTO]
     ) -> Optional[InvalidFieldIdException]:
 
+        invalid_field_ids = []
         for field_dto in field_dtos:
             field_id = field_dto.field_id.strip()
             is_field_id_empty = not field_id
             if is_field_id_empty:
-                raise InvalidFieldIdException("Field Id shouldn't be empty")
+                invalid_field_ids.append(field_id)
+        if invalid_field_ids:
+            raise InvalidFieldIdException(invalid_field_ids)
         return
 
     @staticmethod
@@ -339,13 +381,12 @@ class CreateFieldsInteractor:
     def _check_permissions_to_roles_contains_empty_values(
             self, field_roles_dtos: List[FieldRolesDTO]
     ) -> Optional[EmptyValueForPermissions]:
+        from ib_tasks.constants.constants import permission_exception
         for field_roles_dto in field_roles_dtos:
             is_read_permissions_empty = \
                 not field_roles_dto.read_permission_roles
             is_write_permissions_empty = \
                 not field_roles_dto.write_permission_roles
             if is_read_permissions_empty or is_write_permissions_empty:
-                raise EmptyValueForPermissions(
-                    "Permissions to roles shouldn't be empty"
-                )
+                raise EmptyValueForPermissions(permission_exception)
         return
