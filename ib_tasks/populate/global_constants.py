@@ -6,7 +6,7 @@ from ib_tasks.utils.get_google_sheet import get_google_sheet
 
 class PopulateGlobalConstantsToTemplate:
 
-    def poulate_global_contants_to_template(self):
+    def populate_global_constants_to_template(self):
         sheet = get_google_sheet()
         global_constants_with_template_ids_dicts = \
             sheet.worksheet("Global Constants").get_all_records()
@@ -30,8 +30,6 @@ class PopulateGlobalConstantsToTemplate:
             self._populate_global_constants_to_template_in_db(
                 global_constants_with_template_id_dto=global_constants_with_template_id_dto
             )
-        from ib_tasks.models.global_constant import GlobalConstant
-        print(GlobalConstant.objects.all().values())
 
     def _get_global_constants_with_template_id_dto(
             self, template_id: str,

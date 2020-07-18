@@ -20,8 +20,8 @@ class TestTaskTemplateInteractor:
         template_name = " "
 
         from ib_tasks.constants.exception_messages import \
-            INVALID_VALUE_FOR_FIELD
-        expected_err_msg = INVALID_VALUE_FOR_FIELD.format("template_name")
+            INVALID_VALUE_FOR_TEMPLATE_NAME
+        expected_err_msg = INVALID_VALUE_FOR_TEMPLATE_NAME
 
         from ib_tasks.interactors.task_template_interactor \
             import TaskTemplateInteractor
@@ -48,8 +48,8 @@ class TestTaskTemplateInteractor:
         template_name = "Request Payment"
 
         from ib_tasks.constants.exception_messages import \
-            INVALID_VALUE_FOR_FIELD
-        expected_err_msg = INVALID_VALUE_FOR_FIELD.format("template_id")
+            INVALID_VALUE_FOR_TEMPLATE_ID
+        expected_err_msg = INVALID_VALUE_FOR_TEMPLATE_ID
 
         from ib_tasks.interactors.task_template_interactor \
             import TaskTemplateInteractor

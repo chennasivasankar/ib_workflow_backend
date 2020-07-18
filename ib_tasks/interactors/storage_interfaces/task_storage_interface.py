@@ -97,3 +97,9 @@ class TaskStorageInterface(abc.ABC):
     @abc.abstractmethod
     def update_task_template(self, template_id: str, template_name: str):
         pass
+
+    @abc.abstractmethod
+    def update_global_constants_to_template(
+            self, template_id: str,
+            global_constants_dtos: List[GlobalConstantsDTO]):
+        pass

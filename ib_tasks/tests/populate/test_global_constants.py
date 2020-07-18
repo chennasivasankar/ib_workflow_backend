@@ -196,7 +196,7 @@ class TestGlobalConstants:
 
         from ib_tasks.tests.factories.models import GlobalConstantFactory
         GlobalConstantFactory.create_batch(
-            size=1, task_template_id=template_id
+            size=1, task_template_id=template_id, name="Constant_0"
         )
         global_constants_dtos = GlobalConstantsDTOFactory.create_batch(size=2)
         global_constants_with_template_id_dto = \
@@ -215,6 +215,50 @@ class TestGlobalConstants:
             )
 
         snapshot.assert_match(err.value.args[0], 'err_msg')
+
+        from ib_tasks.models.global_constant import GlobalConstant
+        global_constants = GlobalConstant.objects.all()
+
+        counter = 1
+        for global_constant in global_constants:
+            snapshot.assert_match(
+                global_constant.task_template_id,
+                f'task_template_id_{counter}'
+            )
+            snapshot.assert_match(
+                global_constant.name, f'constant_name_{counter}'
+            )
+            snapshot.assert_match(
+                global_constant.value, f'value_{counter}'
+            )
+            counter = counter + 1
+
+    @pytest.mark.django_db
+    def test_with_existing_constant_but_different_configuration_updates_constant(
+            self, global_constants_interactor, snapshot):
+        # Arrange
+        template_id = "template_1"
+        from ib_tasks.tests.factories.models import TaskTemplateFactory
+        TaskTemplateFactory.create_batch(size=2)
+
+        from ib_tasks.tests.factories.models import GlobalConstantFactory
+        GlobalConstantFactory.create_batch(
+            size=1, task_template_id=template_id, name="Constant_0"
+        )
+        global_constants_dtos = GlobalConstantsDTOFactory.create_batch(
+            size=1, constant_name="Constant_0", value=10000
+        )
+        global_constants_with_template_id_dto = \
+            GlobalConstantsWithTemplateIdDTO(
+                template_id=template_id,
+                global_constants_dtos=global_constants_dtos
+            )
+
+        # Assert
+        global_constants_interactor.\
+            create_global_constants_to_template_wrapper(
+            global_constants_with_template_id_dto=global_constants_with_template_id_dto
+        )
 
         from ib_tasks.models.global_constant import GlobalConstant
         global_constants = GlobalConstant.objects.all()

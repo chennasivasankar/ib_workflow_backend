@@ -10,9 +10,8 @@ def get_google_sheet():
         "https://www.googleapis.com/auth/drive"
     ]
     creds = ServiceAccountCredentials.from_json_keyfile_name(
-        '/home/ib-developer/Desktop/work/ib-workflows-backend/ib_tasks/utils/workflow-types-4f1e079f438e.json',
-        scope
+        'ib_tasks/utils/workflow-types-4f1e079f438e.json', scope
     )
     client = gspread.authorize(creds)
-    sheet = client.open('FinMan Configuration')
+    sheet = client.open('FinMan Configuration Rajesh')
     return sheet

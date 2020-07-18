@@ -54,9 +54,9 @@ class TaskTemplateInteractor:
         is_template_name_empty = not template_name_after_strip
         from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
         from ib_tasks.constants.exception_messages import \
-            INVALID_VALUE_FOR_FIELD
+            INVALID_VALUE_FOR_TEMPLATE_NAME
         if is_template_name_empty:
-            err_msg = INVALID_VALUE_FOR_FIELD.format("template_name")
+            err_msg = INVALID_VALUE_FOR_TEMPLATE_NAME
             raise InvalidValueForField(err_msg)
 
     @staticmethod
@@ -65,7 +65,7 @@ class TaskTemplateInteractor:
         is_template_id_empty = not template_id_after_strip
         from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
         from ib_tasks.constants.exception_messages import \
-            INVALID_VALUE_FOR_FIELD
+            INVALID_VALUE_FOR_TEMPLATE_ID
         if is_template_id_empty:
-            err_msg = INVALID_VALUE_FOR_FIELD.format("template_id")
+            err_msg = INVALID_VALUE_FOR_TEMPLATE_ID
             raise InvalidValueForField(err_msg)
