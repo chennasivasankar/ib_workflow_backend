@@ -12,13 +12,18 @@ class DuplicateColumnIds(Exception):
 
 
 class InvalidColumnDisplayName(Exception):
-    def __init__(self, column_id: str):
-        self.column_id = column_id
+    def __init__(self, column_ids: List[str]):
+        self.column_ids = column_ids
 
 
 class InvalidTaskTemplateIdInStages(Exception):
     def __init__(self, task_template_ids: List[str]):
         self.task_template_ids = task_template_ids
+
+
+class InvalidTaskIdInSummaryFields(Exception):
+    def __init__(self, task_ids: List[str]):
+        self.task_ids = task_ids
 
 
 class EmptyValuesForTaskTemplateStages(Exception):

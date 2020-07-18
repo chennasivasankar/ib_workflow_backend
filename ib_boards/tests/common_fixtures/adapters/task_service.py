@@ -6,16 +6,21 @@ Author: Pavankumar Pamuru
 from typing import List
 
 
-def adapter_mock(mocker, task_template_ids: List[str]):
+def get_valid_task_template_ids_mock(mocker, task_template_ids: List[str]):
 
     mock = mocker.patch(
-        'ib_boards.adapters.task_service.TaskService.validate_task_template_ids'
+        'ib_boards.adapters.task_service.TaskService.get_valid_task_template_ids'
     )
-    from ib_boards.exceptions.custom_exceptions import \
-        InvalidTaskTemplateIdInStages
-    mock.side_effect = InvalidTaskTemplateIdInStages(
-        task_template_ids=task_template_ids
+    mock.return_value = task_template_ids[0:1]
+    return mock
+
+
+def get_valid_task_ids_mock(mocker, task_template_ids: List[str]):
+
+    mock = mocker.patch(
+        'ib_boards.adapters.task_service.TaskService.get_valid_task_ids'
     )
+    mock.return_value = task_template_ids[0:3]
     return mock
 
 

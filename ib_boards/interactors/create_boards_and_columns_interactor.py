@@ -71,12 +71,15 @@ class CreateBoardsAndColumnsInteractor:
 
     @staticmethod
     def _validate_column_display_name(column_dtos: List[ColumnDTO]):
+        is_invalid_display_name_ids = []
         for column_dto in column_dtos:
             is_invalid_display_name = not column_dto.display_name
             if is_invalid_display_name:
-                from ib_boards.exceptions.custom_exceptions import \
-                    InvalidColumnDisplayName
-                raise InvalidColumnDisplayName(column_id=column_dto.column_id)
+                is_invalid_display_name_ids.append(column_dto.column_id)
+        if is_invalid_display_name_ids:
+            from ib_boards.exceptions.custom_exceptions import \
+                InvalidColumnDisplayName
+            raise InvalidColumnDisplayName(column_ids=is_invalid_display_name_ids)
 
     def _validate_task_template_ids_in_task_template_stage(
             self, column_dtos: List[ColumnDTO]):
@@ -88,12 +91,23 @@ class CreateBoardsAndColumnsInteractor:
             )
 
         from ib_boards.adapters.service_adapter import get_service_adapter
-
         service_adapter = get_service_adapter()
+        valid_task_template_ids = service_adapter.task_service.\
+            get_valid_task_template_ids(
+                task_template_ids=task_template_ids
+            )
 
-        service_adapter.task_service.validate_task_template_ids(
-            task_template_ids=task_template_ids
-        )
+        invalid_task_template_ids = [
+            task_template_id for task_template_id in task_template_ids
+            if task_template_id not in valid_task_template_ids
+        ]
+        print(invalid_task_template_ids, task_template_ids)
+        if invalid_task_template_ids:
+            from ib_boards.exceptions.custom_exceptions import \
+                InvalidTaskTemplateIdInStages
+            raise InvalidTaskTemplateIdInStages(
+                task_template_ids=invalid_task_template_ids
+            )
 
     @staticmethod
     def _get_task_template_ids(
@@ -118,9 +132,18 @@ class CreateBoardsAndColumnsInteractor:
 
         service_adapter = get_service_adapter()
 
-        service_adapter.task_service.validate_task_ids(
+        valid_task_ids = service_adapter.task_service.get_valid_task_ids(
             task_ids=task_ids
         )
+        invalid_task_ids = [
+            task_id
+            for task_id in task_ids
+            if task_id not in valid_task_ids
+        ]
+        if invalid_task_ids:
+            from ib_boards.exceptions.custom_exceptions import \
+                InvalidTaskIdInSummaryFields
+            raise InvalidTaskIdInSummaryFields(task_ids=task_ids)
 
     @staticmethod
     def _get_task_ids(

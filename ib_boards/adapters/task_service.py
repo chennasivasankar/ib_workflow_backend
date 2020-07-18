@@ -17,10 +17,11 @@ class TaskService:
         # return ServiceInterface()
         pass
 
-    def validate_task_template_ids(self, task_template_ids: List[str]):
+    def get_valid_task_template_ids(
+            self, task_template_ids: List[str]) -> List[str]:
         pass
 
-    def validate_task_ids(self, task_ids: List[str]):
+    def get_valid_task_ids(self, task_ids: List[str]) -> List[str]:
         pass
 
     def validate_task_template_stages_with_id(
