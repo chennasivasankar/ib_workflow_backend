@@ -5,7 +5,7 @@ Author: Pavankumar Pamuru
 """
 
 import abc
-from typing import List
+from typing import List, Optional
 
 from ib_tasks.interactors.storage_interfaces.dtos import (
     GoFRoleDTO, GoFDTO, FieldDTO, FieldRoleDTO

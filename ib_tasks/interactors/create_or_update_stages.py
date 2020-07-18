@@ -2,18 +2,23 @@ from typing import List
 
 from ib_tasks.interactors.dtos import StageLogicAttributes
 from ib_tasks.interactors.stage_display_logic import StageDisplayLogicInteractor
-from ib_tasks.interactors.storage_interfaces.storage_interface import \
-    StageStorageInterface
+
 from ib_tasks.interactors.storage_interfaces.dtos import StageDTO
 from ib_tasks.exceptions.custom_exceptions import (
     InvalidStagesTaskTemplateId, InvalidStageValues, DuplicateStageIds,
     InvalidTaskTemplateIds, InvalidStageDisplayLogic, InvalidStagesDisplayName)
 from ib_tasks.interactors.storage_interfaces.dtos import TaskStagesDTO
+from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
+    StageStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
+    TaskStorageInterface
 
 
 class CreateOrUpdateStagesInterface:
-    def __init__(self, stage_storage: StageStorageInterface):
+    def __init__(self, stage_storage: StageStorageInterface,
+                 task_storage: TaskStorageInterface):
         self.stage_storage = stage_storage
+        self.task_storage = task_storage
 
     def create_or_update_stages(
             self,
@@ -125,7 +130,9 @@ class CreateOrUpdateStagesInterface:
 
     def _validate_task_template_ids(self, task_template_ids: List[str]):
         invalid_task_template_ids = []
-        valid_task_template_ids = self.stage_storage.get_valid_task_template_ids(task_template_ids)
+        valid_task_template_ids = self.task_storage.\
+            get_valid_template_ids_in_given_template_ids(
+                task_template_ids)
         for task_template_id in task_template_ids:
             if task_template_id not in valid_task_template_ids:
                 invalid_task_template_ids.append(task_template_id)
