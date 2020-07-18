@@ -1,3 +1,4 @@
+from abc import ABC
 from abc import abstractmethod
 from typing import List, Optional
 from ib_iam.interactors.storage_interfaces.dtos import (
@@ -5,7 +6,7 @@ from ib_iam.interactors.storage_interfaces.dtos import (
 )
 
 
-class TeamStorageInterface:
+class TeamStorageInterface(ABC):
 
     @abstractmethod
     def is_user_admin(self, user_id: str):

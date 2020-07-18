@@ -1,9 +1,10 @@
+from abc import ABC
 from abc import abstractmethod
 
 from ib_iam.interactors.presenter_interfaces.dtos import TeamWithMembersDetailsDTO
 
 
-class TeamPresenterInterface:
+class TeamPresenterInterface(ABC):
 
     @abstractmethod
     def raise_exception_for_user_has_no_access(self):

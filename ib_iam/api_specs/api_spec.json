@@ -68,6 +68,26 @@
         }
       }
     },
+    "CompanyWithNoOfEmployeeDetails": {
+      "type": "object",
+      "properties": {
+        "company_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "logo": {
+          "type": "string"
+        },
+        "no_of_employees": {
+          "type": "integer"
+        }
+      }
+    },
     "ResponseForGetListOfTeams": {
       "type": "object",
       "properties": {
@@ -78,6 +98,20 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/TeamWithMembersDetails"
+          }
+        }
+      }
+    },
+    "ResponseForGetListOfCompanies": {
+      "type": "object",
+      "properties": {
+        "total_companies": {
+          "type": "integer"
+        },
+        "list_of_companies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CompanyWithNoOfEmployeeDetails"
           }
         }
       }
@@ -255,7 +289,7 @@
     "/teams/": {
       "get": {
         "summary": "get list of teams",
-        "description": "Returns a list containing all teams related to a user(admin).",
+        "description": "Returns a list containing all teams, if accessed by admin",
         "operationId": "get_list_of_teams",
         "security": [
           {
@@ -401,6 +435,48 @@
             "description": "NotFound",
             "schema": {
               "$ref": "#/definitions/InvalidTeamId"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/UserHasNoAccess"
+            }
+          }
+        }
+      }
+    },
+    "/companies/": {
+      "get": {
+        "summary": "get list of companies",
+        "description": "Returns a list containing all companies, if accessed by admin",
+        "operationId": "get_list_of_companies",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/Limit"
+          },
+          {
+            "$ref": "#/parameters/Offset"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "list of companies",
+            "schema": {
+              "$ref": "#/definitions/ResponseForGetListOfCompanies"
+            }
+          },
+          "400": {
+            "description": "BadRequest",
+            "schema": {
+              "$ref": "#/definitions/InvalidLimitOffset"
             }
           },
           "401": {
