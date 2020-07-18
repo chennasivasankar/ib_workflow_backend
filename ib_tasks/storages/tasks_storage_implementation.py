@@ -1,9 +1,9 @@
 from typing import List, Optional
 
-from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, FieldDTO, \
+from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, \
     GlobalConstantsDTO
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    GoFDTO, GoFRoleDTO
+    GoFDTO, GoFRoleDTO, FieldDTO, FieldRoleDTO
 )
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
@@ -111,4 +111,19 @@ class TasksStorageImplementation(TaskStorageInterface):
     def create_global_constants_to_template(
             self, template_id: str,
             global_constants_dtos: List[GlobalConstantsDTO]):
+        pass
+
+    def update_fields(self, field_dtos: List[FieldDTO]):
+        pass
+
+    def update_fields_roles(self, field_roles_dto: List[FieldRoleDTO]):
+        pass
+
+    def create_fields_roles(self, field_roles_dto: List[FieldRoleDTO]):
+        pass
+
+    def get_existing_field_ids(self, field_ids: List[str]) -> List[str]:
+        pass
+
+    def get_existing_gof_ids(self, gof_ids: List[str]) -> List[str]:
         pass
