@@ -55,8 +55,8 @@ class GetColumnDetailsInteractor:
 
         column_dtos = self.storage.get_columns_details(column_ids=column_ids)
         tasks_dtos = [TaskDetailsDTO(task_id="task_id_1",
-                              stage_id="stage_id_1",
-                                column_id="column_id_1")]
+                                     stage_id="stage_id_1",
+                                     column_id="column_id_1")]
 
         fields_dto = [FieldsDTO(
             task_id="task_id_1",
