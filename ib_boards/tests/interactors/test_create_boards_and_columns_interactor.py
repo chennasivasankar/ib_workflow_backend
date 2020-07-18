@@ -117,6 +117,10 @@ class TestPopulateScriptInteractor:
         return ColumnDTOFactory.create_batch(1)
 
     @pytest.fixture
+    def column_dtos_with_invalid_display_name(self):
+        return ColumnDTOFactory.create_batch(3, display_order=1)
+
+    @pytest.fixture
     def task_summary_field_dtos(self):
         task_field_dtos_1 = TaskSummaryFieldsDTOFactory.create_batch(2)
         TaskSummaryFieldsDTOFactory.reset_sequence()
@@ -140,14 +144,10 @@ class TestPopulateScriptInteractor:
             'TASK_ID_4', 'TASK_ID_5',
         ]
         from ib_boards.tests.common_fixtures.adapters.task_service import \
-            get_valid_task_ids_mock, get_valid_task_template_ids_mock
+            get_valid_task_template_ids_mock
         get_valid_task_template_ids_mock(
             mocker=mocker,
             task_template_ids=task_template_ids
-        )
-        get_valid_task_ids_mock(
-            mocker=mocker,
-            task_ids=task_ids
         )
 
     @pytest.fixture
@@ -274,12 +274,9 @@ class TestPopulateScriptInteractor:
 
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             get_valid_task_ids_mock, get_valid_task_template_ids_mock
-        get_valid_task_template_ids_mock(
+        get_valid_task_ids_mock(
             mocker=mocker,
-            task_template_ids=task_template_ids
-        )
-        adapter_mock = get_valid_task_ids_mock(
-            mocker=mocker,
+            task_template_ids=task_template_ids,
             task_ids=valid_task_ids
         )
 
@@ -293,9 +290,6 @@ class TestPopulateScriptInteractor:
             )
 
         # Assert
-        adapter_mock.assert_called_once_with(
-            task_ids=task_ids
-        )
         assert error.value.task_ids == invalid_task_ids
 
     def test_with_empty_task_template_stages_raise_exception(
@@ -464,3 +458,24 @@ class TestPopulateScriptInteractor:
                 board_dtos=board_dtos,
                 column_dtos=column_dtos_with_empty_task_list_view_fields
             )
+
+    def test_with_duplicate_column_display_order_raise_exception(
+            self, storage_mock, sequence_reset,
+            column_dtos_with_invalid_display_name, board_dtos,
+            mock_valid_task_and_template_ids):
+        # Arrange
+        duplicate_display_order_values = [1]
+        interactor = CreateBoardsAndColumnsInteractor(
+            storage=storage_mock
+        )
+
+        # Act
+        from ib_boards.exceptions.custom_exceptions import \
+            DuplicateValuesInColumnDisplayOrder
+        with pytest.raises(DuplicateValuesInColumnDisplayOrder) as error:
+            assert interactor.create_boards_and_columns(
+                board_dtos=board_dtos,
+                column_dtos=column_dtos_with_invalid_display_name
+            )
+        # Assert
+        assert error.value.display_order_values == duplicate_display_order_values

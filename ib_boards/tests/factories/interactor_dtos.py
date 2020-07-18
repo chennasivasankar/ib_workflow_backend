@@ -23,7 +23,7 @@ class TaskSummaryFieldsDTOFactory(factory.Factory):
     class Meta:
         model = TaskSummaryFieldsDTO
 
-    task_id = factory.Sequence(lambda n: f'TASK_ID_{n + 1}')
+    task_id = factory.Sequence(lambda n: f'TASK_TEMPLATE_ID_{n + 1}')
     summary_fields = ['Price', 'task_name']
 
 

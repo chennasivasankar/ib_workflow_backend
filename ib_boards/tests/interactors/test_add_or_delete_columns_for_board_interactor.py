@@ -139,14 +139,10 @@ class TestAddOrDeleteColumnsForBoardInteractor:
             'TASK_ID_4', 'TASK_ID_5',
         ]
         from ib_boards.tests.common_fixtures.adapters.task_service import \
-            get_valid_task_ids_mock, get_valid_task_template_ids_mock
+            get_valid_task_template_ids_mock
         get_valid_task_template_ids_mock(
             mocker=mocker,
             task_template_ids=task_template_ids
-        )
-        get_valid_task_ids_mock(
-            mocker=mocker,
-            task_ids=task_ids
         )
 
     def test_with_duplicate_column_ids_raise_exception(
@@ -248,13 +244,10 @@ class TestAddOrDeleteColumnsForBoardInteractor:
         )
 
         from ib_boards.tests.common_fixtures.adapters.task_service import \
-            get_valid_task_ids_mock, get_valid_task_template_ids_mock
-        get_valid_task_template_ids_mock(
+            get_valid_task_ids_mock
+        get_valid_task_ids_mock(
             mocker=mocker,
-            task_template_ids=task_template_ids
-        )
-        adapter_mock = get_valid_task_ids_mock(
-            mocker=mocker,
+            task_template_ids=task_template_ids,
             task_ids=valid_task_ids
         )
 
@@ -267,9 +260,6 @@ class TestAddOrDeleteColumnsForBoardInteractor:
             )
 
         # Assert
-        adapter_mock.assert_called_once_with(
-            task_ids=task_ids
-        )
         assert error.value.task_ids == invalid_task_ids
 
     def test_with_empty_task_template_stages_raise_exception(

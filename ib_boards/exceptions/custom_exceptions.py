@@ -60,3 +60,8 @@ class InvalidUserRoles(Exception):
 class ColumnIdsAssignedToDifferentBoard(Exception):
     def __init__(self, column_ids: List[str]):
         self.column_ids = column_ids
+
+
+class DuplicateValuesInColumnDisplayOrder(Exception):
+    def __init__(self, display_order_values: List[int]):
+        self.display_order_values = display_order_values

@@ -15,12 +15,13 @@ def get_valid_task_template_ids_mock(mocker, task_template_ids: List[str]):
     return mock
 
 
-def get_valid_task_ids_mock(mocker, task_ids: List[str]):
+def get_valid_task_ids_mock(
+        mocker, task_template_ids: List[str], task_ids: List[str]):
 
     mock = mocker.patch(
-        'ib_boards.adapters.task_service.TaskService.get_valid_task_ids'
+        'ib_boards.adapters.task_service.TaskService.get_valid_task_template_ids'
     )
-    mock.return_value = task_ids
+    mock.side_effect = [task_template_ids, task_ids]
     return mock
 
 
