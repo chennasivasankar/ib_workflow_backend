@@ -27,3 +27,7 @@ class StageStorageInterface(abc.ABC):
     def get_valid_task_template_ids(self, task_template_ids: List[str]) -> \
             Optional[List[str]]:
         pass
+
+    @abc.abstractmethod
+    def get_valid_status_ids(self, status_ids: List[str]) -> Optional[List[str]]:
+        pass
