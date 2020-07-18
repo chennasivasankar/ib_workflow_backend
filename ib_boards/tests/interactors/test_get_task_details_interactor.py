@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import create_autospec, patch
+from unittest.mock import create_autospec, patch, Mock
 from ib_boards.tests.factories.storage_dtos import (
     TaskDTOFactory)
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
@@ -61,11 +61,12 @@ class TestGetTaskDetailsInteractor:
         ]
         return task_details
 
-    def test_get_fields_given_valid_task_ids_return_task_details(
+    def test_get_task_details_given_valid_inputs_return_task_details(
             self, mocker, get_tasks_stage_dto, snapshot, task_details_response):
 
         # Arrange
         tasks_stage_dto = get_tasks_stage_dto
+        task_details_response = Mock()
         user_id = "123e4567-e89b-12d3-a456-426614174000"
         presenter = create_autospec(PresenterInterface)
         from ib_boards.tests.common_fixtures.adapters.task_service import prepare_task_details_dtos
@@ -78,5 +79,5 @@ class TestGetTaskDetailsInteractor:
             presenter=presenter, tasks_dtos=tasks_stage_dto, user_id=user_id)
 
         # Assert
-        snapshot.assert_match(result, "task_details")
+        assert  result == task_details_response
 

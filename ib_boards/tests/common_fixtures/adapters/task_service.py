@@ -21,7 +21,6 @@ def prepare_task_details_dtos(mocker, task_dtos: List[TaskDTO],
             task_id=task_dto.task_id
         ) for _index, task_dto in enumerate(task_dtos)
     ]
-    # actions_dto = TaskActionsDTOFactory.create_batch(size=0, task_id)
-    # fields_dto = TaskFieldsDTOFactory.create_batch(size=3)
+
     mock.return_value = actions_dto, fields_dto
     return mock
