@@ -1,5 +1,8 @@
 from abc import ABC, abstractmethod
 
+from ib_discussions.interactors.presenter_interfaces.dtos import \
+    DiscussionsDetailsDTO
+
 
 class PresenterInterface(ABC):
     @abstractmethod
@@ -16,4 +19,14 @@ class PresenterInterface(ABC):
 
     @abstractmethod
     def raise_exception_for_invalid_offset(self):
+        pass
+
+    @abstractmethod
+    def raise_exception_for_invalid_limit(self):
+        pass
+
+    @abstractmethod
+    def prepare_response_for_discussions_details_dtos(
+            self, discussions_details_dtos: DiscussionsDetailsDTO
+    ):
         pass
