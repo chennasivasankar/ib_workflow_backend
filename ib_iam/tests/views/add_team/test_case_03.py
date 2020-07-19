@@ -1,11 +1,11 @@
 """
-# TODO: Raises User has no access exception if user is not admin   duplicate name
+Raises TeamNameAlreadyExists exception as
+the requested name is already assigned to another team
 """
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...factories.models import TeamFactory
 
 
 class TestCase03AddTeamAPITestCase(TestUtils):
@@ -17,7 +17,7 @@ class TestCase03AddTeamAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_case(self, snapshot, setup):
-        body = {'name': 'team_name1', 'description': ''}
+        body = {'name': 'team1', 'description': ''}
         path_params = {}
         query_params = {}
         headers = {}
@@ -30,8 +30,10 @@ class TestCase03AddTeamAPITestCase(TestUtils):
     def setup(self, api_user):
         user_obj = api_user
         user_id = str(user_obj.id)
-        from ib_iam.tests.factories.models import UserFactory
-        UserFactory.reset_sequence(1)
+        from ib_iam.tests.factories.models import (
+            UserDetailsFactory, TeamFactory
+        )
+        UserDetailsFactory.reset_sequence(1)
         TeamFactory.reset_sequence(1)
-        UserFactory.create(user_id=user_id, is_admin=True)
-        TeamFactory.create(name="team_name1")
+        UserDetailsFactory.create(user_id=user_id, is_admin=True)
+        TeamFactory.create(name="team1")

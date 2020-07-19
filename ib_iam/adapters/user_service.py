@@ -1,5 +1,5 @@
 from typing import List
-from ib_iam.adapters.dtos import BasicUserDTO
+from ib_iam.adapters.dtos import UserProfileDTO
 
 
 class UserService:
@@ -11,14 +11,14 @@ class UserService:
 
     def get_basic_user_dtos(self, user_ids: List[str]):
         user_dtos_from_service = self.user_interface.get_user_profile_bulk(
-            user_ids=user_ids
-        )
-        user_dtos = [
-            BasicUserDTO(
+                                    user_ids=user_ids
+                                )
+        user_profile_dtos = [
+            UserProfileDTO(
                 user_id=user_dto.user_id,
                 name=user_dto.name,
                 profile_pic_url=user_dto.profile_pic_url,
             )
             for user_dto in user_dtos_from_service
         ]
-        return user_dtos
+        return user_profile_dtos

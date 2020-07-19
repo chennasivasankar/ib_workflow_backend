@@ -1,16 +1,13 @@
 import factory, factory.django
-from ib_iam.models import User, Team, TeamMember
+from ib_iam.models import UserDetails, Team, TeamMember
 
 
-class UserFactory(factory.django.DjangoModelFactory):
+class UserDetailsFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = User
+        model = UserDetails
 
     user_id = factory.sequence(lambda n: "user_id-%d" % n)
     is_admin = False
-
-    class Params:
-        admin = factory.Trait(is_admin=True)
 
 
 class TeamFactory(factory.django.DjangoModelFactory):
@@ -18,8 +15,8 @@ class TeamFactory(factory.django.DjangoModelFactory):
         model = Team
 
     team_id = factory.Faker("uuid4")
-    name = factory.sequence(lambda n: "team_name%d" % n)
-    description = factory.sequence(lambda n: "team_desc%d" % n)
+    name = factory.sequence(lambda n: "team%d" % n)
+    description = factory.sequence(lambda n: "team_description%d" % n)
     created_by = factory.sequence(lambda n: "user_id-%d" % n)
 
 

@@ -17,9 +17,9 @@ from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
 def api_wrapper(*args, **kwargs):
     user_obj = kwargs["user"]
     user_id = str(user_obj.id)
-    request_query_params = kwargs["request_query_params"].__dict__
-    offset = request_query_params.get("offset")
-    limit = request_query_params.get("limit")
+    query_params = kwargs["query_params"]
+    offset = query_params.get("offset_query_parameter")
+    limit = query_params.get("limit_query_parameter")
 
     storage = TeamStorageImplementation()
     presenter = TeamPresenterImplementation()

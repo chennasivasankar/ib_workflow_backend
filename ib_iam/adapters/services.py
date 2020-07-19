@@ -5,5 +5,6 @@ class ServiceAdapter:
         from .user_service import UserService
         return UserService()
 
+
 def get_service_adapter():
     return ServiceAdapter()

@@ -1,10 +1,9 @@
-import pytest
 from ib_iam.presenters.team_presenter_implementation import TeamPresenterImplementation
 from ib_iam.constants.exception_messages import INVALID_LIMIT
 
 
 class TestRaiseExceptionForUserHasNoAccess:
-    def test_whether_it_returns_error_object(self, snapshot):
+    def test_when_it_is_called_it_returns_http_response(self, snapshot):
         json_presenter = TeamPresenterImplementation()
         import json
         expected_response = INVALID_LIMIT[0]
