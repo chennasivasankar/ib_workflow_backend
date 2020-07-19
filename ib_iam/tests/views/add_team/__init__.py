@@ -3,7 +3,7 @@
 APP_NAME = "ib_iam"
 OPERATION_NAME = "add_team"
 REQUEST_METHOD = "post"
-URL_SUFFIX = "team/add/"
+URL_SUFFIX = "team/add/v1/"
 
 from .test_case_01 import TestCase01AddTeamAPITestCase
 from .test_case_02 import TestCase02AddTeamAPITestCase

@@ -1,40 +1,45 @@
 from abc import abstractmethod
 from typing import List, Optional
 from ib_iam.interactors.storage_interfaces.dtos import (
-    PaginationDTO, BasicTeamDTO, TeamMembersDTO, AddTeamParametersDTO, UpdateTeamParametersDTO
+    PaginationDTO, TeamMemberIdsDTO, TeamNameAndDescriptionDTO,
+    TeamsWithTotalTeamsCountDTO, UpdateTeamParametersDTO
 )
 
 
 class TeamStorageInterface:
 
     @abstractmethod
-    def is_user_admin(self, user_id: str):
+    def raise_exception_if_user_is_not_admin(self, user_id: str):
         pass
 
     @abstractmethod
-    def get_team_dtos_along_with_count(
-            self, user_id: str, pagination_dto: PaginationDTO
-    ) -> (List[BasicTeamDTO], int):
+    def get_teams_with_total_teams_count_dto(
+            self, pagination_dto: PaginationDTO
+    ) -> TeamsWithTotalTeamsCountDTO:
         pass
 
     @abstractmethod
     def get_team_member_ids_dtos(
             self, team_ids: List[str]
-    ) -> List[TeamMembersDTO]:
+    ) -> List[TeamMemberIdsDTO]:
         pass
 
     @abstractmethod
-    def add_team(
-            self, user_id: str, add_team_params_dto: AddTeamParametersDTO
+    def get_team_id_if_team_name_already_exists(
+            self, name: str
     ) -> Optional[str]:
         pass
 
     @abstractmethod
-    def is_valid_team(self, team_id: str):
+    def add_team(
+            self,
+            user_id: str,
+            team_name_and_description_dto: TeamNameAndDescriptionDTO
+    ) -> str:
         pass
 
     @abstractmethod
-    def is_duplicate_team_name(self, team_id: str, name: str):
+    def raise_exception_if_team_not_exists(self, team_id: str):
         pass
 
     @abstractmethod

@@ -1,5 +1,5 @@
 USER_HAS_NO_ACCESS = (
-    "user has no access as he is not admin",
+    "user has no access to see list of teams as he is not admin",
     "USER_HAS_NO_ACCESS"
 )
 
@@ -13,9 +13,9 @@ INVALID_OFFSET = (
     "INVALID_OFFSET"
 )
 
-DUPLICATE_TEAM_NAME = (
+TEAM_NAME_ALREADY_EXISTS = (
     "Given '%s' is already exists, so choose another",
-    "DUPLICATE_TEAM_NAME"
+    "TEAM_NAME_ALREADY_EXISTS"
 )
 
 INVALID_TEAM_ID = (

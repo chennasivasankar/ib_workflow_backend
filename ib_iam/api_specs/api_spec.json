@@ -4,11 +4,11 @@
   "basePath": "/api/ib_iam/",
   "info": {
     "version": "1.0.0",
-    "title": "Simple API",
-    "description": "A simple API to learn how to write OpenAPI Specification"
+    "title": "Identity Access Management",
+    "description": "Identity Access Management"
   },
   "schemes": [
-    "http"
+    "https"
   ],
   "consumes": [
     "application/json"
@@ -43,44 +43,73 @@
         "profile_pic_url": {
           "type": "string"
         }
-      }
+      },
+      "required": [
+        "member_id",
+        "name",
+        "profile_pic_url"
+      ]
     },
-    "TeamWithMembersDetails": {
+    "TeamNameAndDescription": {
       "type": "object",
       "properties": {
-        "team_id": {
-          "type": "string"
-        },
         "name": {
           "type": "string"
         },
         "description": {
           "type": "string"
-        },
-        "no_of_members": {
-          "type": "integer"
-        },
-        "members": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/MemberDetails"
-          }
         }
-      }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "TeamWithMembersDetails": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/TeamNameAndDescription"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "team_id": {
+              "type": "string"
+            },
+            "no_of_members": {
+              "type": "integer"
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/MemberDetails"
+              }
+            }
+          },
+          "required": [
+            "team_id",
+            "no_of_members",
+            "members"
+          ]
+        }
+      ]
     },
     "ResponseForGetListOfTeams": {
       "type": "object",
       "properties": {
-        "total_teams": {
+        "total_teams_count": {
           "type": "integer"
         },
-        "list_of_teams": {
+        "teams": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/TeamWithMembersDetails"
           }
         }
-      }
+      },
+      "required": [
+        "total_teams_count",
+        "teams"
+      ]
     },
     "CommonHttpExceptionFields": {
       "type": "object",
@@ -140,6 +169,38 @@
         }
       ]
     },
+    "TeamNameAlreadyExists": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "TEAM_NAME_ALREADY_EXISTS"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
+        }
+      ]
+    },
+    "TeamId": {
+      "type": "object",
+      "properties": {
+        "team_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "team_id"
+      ]
+    },
     "InvalidTeamId": {
       "allOf": [
         {
@@ -161,45 +222,10 @@
         }
       ]
     },
-    "DetailsToAddTeam": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "name"
-      ]
-    },
-    "DetailsToUpdateTeam": {
+    "UpdateTeamParameter": {
       "allOf": [
         {
-          "$ref": "#/definitions/DetailsToAddTeam"
-        }
-      ]
-    },
-    "DuplicatedName": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/CommonHttpExceptionFields"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "res_status": {
-              "type": "string",
-              "enum": [
-                "DUPLICATE_TEAM_NAME"
-              ]
-            }
-          },
-          "required": [
-            "res_status"
-          ]
+          "$ref": "#/definitions/TeamNameAndDescription"
         }
       ]
     },
@@ -213,17 +239,28 @@
     }
   },
   "parameters": {
-    "Limit": {
-      "name": "limit",
+    "LimitQueryParameter": {
+      "name": "limit_query_parameter",
       "in": "query",
+      "required": true,
       "type": "integer",
       "default": 5
     },
-    "Offset": {
-      "name": "offset",
+    "OffsetQueryParameter": {
+      "name": "offset_query_parameter",
       "in": "query",
+      "required": true,
       "type": "integer",
       "default": 0
+    },
+    "AddTeamParameter": {
+      "name": "details_to_add_team",
+      "in": "body",
+      "required": true,
+      "description": "parameters or details to create or add a team",
+      "schema": {
+        "$ref": "#/definitions/TeamNameAndDescription"
+      }
     },
     "TeamId": {
       "name": "team_id",
@@ -232,27 +269,19 @@
       "description": "team_id to identify a team",
       "type": "integer"
     },
-    "DetailsToAddTeam": {
-      "name": "details_to_add_team",
-      "in": "body",
-      "description": "parameters or details to create or add a team",
-      "schema": {
-        "$ref": "#/definitions/DetailsToAddTeam"
-      }
-    },
-    "DetailsToUpdateTeam": {
+    "UpdateTeamParameter": {
       "name": "team_details_to_be_updated",
       "in": "body",
       "description": "details that are to be updated of a team",
       "schema": {
-        "$ref": "#/definitions/DetailsToUpdateTeam"
+        "$ref": "#/definitions/UpdateTeamParameter"
       }
     }
   },
   "responses": {
   },
   "paths": {
-    "/teams/": {
+    "/teams/v1/": {
       "get": {
         "summary": "get list of teams",
         "description": "Returns a list containing all teams related to a user(admin).",
@@ -266,10 +295,10 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/Limit"
+            "$ref": "#/parameters/LimitQueryParameter"
           },
           {
-            "$ref": "#/parameters/Offset"
+            "$ref": "#/parameters/OffsetQueryParameter"
           }
         ],
         "responses": {
@@ -294,7 +323,7 @@
         }
       }
     },
-    "/team/add/": {
+    "/team/add/v1/": {
       "post": {
         "summary": "Adds a new team",
         "description": "Creates a new team",
@@ -308,20 +337,20 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/DetailsToAddTeam"
+            "$ref": "#/parameters/AddTeamParameter"
           }
         ],
         "responses": {
           "201": {
             "description": "Team added Successfully",
             "schema": {
-              "$ref": "#/definitions/TeamCreated"
+              "$ref": "#/definitions/TeamId"
             }
           },
           "400": {
             "description": "BadRequest",
             "schema": {
-              "$ref": "#/definitions/DuplicatedName"
+              "$ref": "#/definitions/TeamNameAlreadyExists"
             }
           },
           "401": {
@@ -350,7 +379,7 @@
             "$ref": "#/parameters/TeamId"
           },
           {
-            "$ref": "#/parameters/DetailsToUpdateTeam"
+            "$ref": "#/parameters/UpdateTeamParameter"
           }
         ],
         "responses": {
@@ -360,7 +389,7 @@
           "400": {
             "description": "BadRequest",
             "schema": {
-              "$ref": "#/definitions/DuplicatedName"
+              "$ref": "#/definitions/TeamNameAlreadyExists"
             }
           },
           "401": {

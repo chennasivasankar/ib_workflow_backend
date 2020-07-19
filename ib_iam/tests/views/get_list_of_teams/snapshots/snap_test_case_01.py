@@ -10,9 +10,9 @@ snapshots = Snapshot()
 snapshots['TestCase01GetListOfTeamsAPITestCase.test_case status_code'] = '200'
 
 snapshots['TestCase01GetListOfTeamsAPITestCase.test_case body'] = {
-    'list_of_teams': [
+    'teams': [
         {
-            'description': 'team_desc1',
+            'description': 'team_description1',
             'members': [
                 {
                     'member_id': '2bdb417e-4632-419a-8ddd-085ea272c6eb',
@@ -30,12 +30,12 @@ snapshots['TestCase01GetListOfTeamsAPITestCase.test_case body'] = {
                     'profile_pic_url': 'url3'
                 }
             ],
-            'name': 'team_name1',
+            'name': 'team1',
             'no_of_members': 3,
             'team_id': 'f2c02d98-f311-4ab2-8673-3daa00757002'
         },
         {
-            'description': 'team_desc2',
+            'description': 'team_description2',
             'members': [
                 {
                     'member_id': '2bdb417e-4632-419a-8ddd-085ea272c6eb',
@@ -48,12 +48,12 @@ snapshots['TestCase01GetListOfTeamsAPITestCase.test_case body'] = {
                     'profile_pic_url': 'url4'
                 }
             ],
-            'name': 'team_name2',
+            'name': 'team2',
             'no_of_members': 2,
             'team_id': 'aa66c40f-6d93-484a-b418-984716514c7b'
         },
         {
-            'description': 'team_desc3',
+            'description': 'team_description3',
             'members': [
                 {
                     'member_id': '548a803c-7b48-47ba-a700-24f2ea0d1280',
@@ -71,10 +71,10 @@ snapshots['TestCase01GetListOfTeamsAPITestCase.test_case body'] = {
                     'profile_pic_url': 'url4'
                 }
             ],
-            'name': 'team_name3',
+            'name': 'team3',
             'no_of_members': 3,
             'team_id': 'c982032b-53a7-4dfa-a627-4701a5230765'
         }
     ],
-    'total_teams': 3
+    'total_teams_count': 3
 }

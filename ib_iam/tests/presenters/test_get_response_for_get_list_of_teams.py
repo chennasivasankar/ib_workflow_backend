@@ -1,9 +1,10 @@
-import pytest
-from ib_iam.presenters.team_presenter_implementation import TeamPresenterImplementation
+from ib_iam.presenters.team_presenter_implementation import (
+    TeamPresenterImplementation
+)
 
 
 class TestGetResponseForGetListOfTeams:
-    def test_whether_it_returns_list_of_team_details_dict(
+    def test_given_valid_team_with_members_details_dto_returns_http_response(
             self, snapshot, get_list_of_team_dtos
     ):
         json_presenter = TeamPresenterImplementation()
@@ -15,9 +16,9 @@ class TestGetResponseForGetListOfTeams:
         import json
         response = json.loads(http_response.content)
 
-        snapshot.assert_match(response, "list_of_teams_details_dict")
+        snapshot.assert_match(response, "response")
 
-    def test_whether_it_returns_list_of_team_details(
+    def test_given_zero_teams_exists_returns_http_response(
             self,
     ):
         json_presenter = TeamPresenterImplementation()
@@ -25,7 +26,7 @@ class TestGetResponseForGetListOfTeams:
 
         http_response = json_presenter.get_response_for_get_list_of_teams(
             team_details_dtos=TeamWithMembersDetailsDTO(
-                total_teams=0,
+                total_teams_count=0,
                 team_dtos=[],
                 team_member_ids_dtos=[],
                 member_dtos=[]
@@ -34,4 +35,4 @@ class TestGetResponseForGetListOfTeams:
 
         import json
         response = json.loads(http_response.content)
-        assert response == {'list_of_teams': [], 'total_teams': 0}
+        assert response == {'teams': [], 'total_teams_count': 0}

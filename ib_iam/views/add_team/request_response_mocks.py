@@ -18,7 +18,7 @@ RESPONSE_400_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "DUPLICATE_TEAM_NAME"
+    "res_status": "TEAM_NAME_ALREADY_EXISTS"
 }
 """
 

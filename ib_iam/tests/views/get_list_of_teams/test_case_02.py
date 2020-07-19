@@ -1,11 +1,11 @@
 """
-# TODO: Exception case which gives user has no access exception when it gets a user who is not admin
+Raise UserHasNoAccess exception as the user is not admin
 """
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ib_iam.tests.factories.models import (
-    UserFactory
+    UserDetailsFactory
 )
 
 
@@ -20,7 +20,7 @@ class TestCase02GetListOfTeamsAPITestCase(TestUtils):
     def test_case(self, snapshot, setup):
         body = {}
         path_params = {}
-        query_params = {'limit': 5, 'offset': 0}
+        query_params = {'limit_query_parameter': 5, 'offset_query_parameter': 0}
         headers = {}
         response = self.default_test_case(
             body=body, path_params=path_params,
@@ -30,5 +30,5 @@ class TestCase02GetListOfTeamsAPITestCase(TestUtils):
     @pytest.fixture()
     def setup(self, api_user):
         user_obj = api_user
-        UserFactory.reset_sequence(1)
-        UserFactory.create(user_id=user_obj.id)
+        UserDetailsFactory.reset_sequence(1)
+        UserDetailsFactory.create(user_id=user_obj.id)

@@ -1,11 +1,11 @@
 import factory, factory.django
 
-from ib_iam.adapters.dtos import BasicUserDTO
+from ib_iam.adapters.dtos import UserProfileDTO
 
 
-class BasicUserDTOFactory(factory.Factory):
+class UserProfileDTOFactory(factory.Factory):
     class Meta:
-        model = BasicUserDTO
+        model = UserProfileDTO
 
     user_id = factory.sequence(lambda n: "user_id-%d" % n)
     name = factory.sequence(lambda n: "user%d" % n)

@@ -3,12 +3,12 @@
 
 RESPONSE_200_JSON = """
 {
-    "total_teams": 1,
-    "list_of_teams": [
+    "total_teams_count": 1,
+    "teams": [
         {
-            "team_id": "string",
             "name": "string",
             "description": "string",
+            "team_id": "string",
             "no_of_members": 1,
             "members": [
                 {

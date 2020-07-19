@@ -3,7 +3,7 @@ from typing import List
 
 
 @dataclass
-class AddTeamParametersDTO:
+class TeamNameAndDescriptionDTO:
     name: str
     description: str
 
@@ -15,16 +15,22 @@ class PaginationDTO:
 
 
 @dataclass
-class BasicTeamDTO:
+class TeamDTO:
     team_id: str
     name: str
     description: str
 
 
 @dataclass
-class TeamMembersDTO:
+class TeamMemberIdsDTO:
     team_id: str
     member_ids: List[str]
+
+
+@dataclass
+class TeamsWithTotalTeamsCountDTO:
+    total_teams_count: int
+    teams: List[TeamDTO]
 
 
 @dataclass

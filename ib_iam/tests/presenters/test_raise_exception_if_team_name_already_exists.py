@@ -1,21 +1,19 @@
-import pytest
-
-from ib_iam.exceptions import DuplicateTeamName
+from ib_iam.exceptions import TeamNameAlreadyExists
 from ib_iam.presenters.team_presenter_implementation import TeamPresenterImplementation
-from ib_iam.constants.exception_messages import DUPLICATE_TEAM_NAME
+from ib_iam.constants.exception_messages import TEAM_NAME_ALREADY_EXISTS
 
 
-class TestRaiseExceptionForDuplicateTeamName:
-    def test_whether_it_returns_error_object(self, snapshot):
+class TestRaiseExceptionIfTeamNameAlreadyExists:
+    def test_when_it_is_called_it_returns_http_response(self, snapshot):
         json_presenter = TeamPresenterImplementation()
         team_name = "team_name1"
         import json
-        expected_response = DUPLICATE_TEAM_NAME[0] % team_name
-        expected_res_status = DUPLICATE_TEAM_NAME[1]
+        expected_response = TEAM_NAME_ALREADY_EXISTS[0] % team_name
+        expected_res_status = TEAM_NAME_ALREADY_EXISTS[1]
         expected_http_status_code = 400
 
-        result = json_presenter.raise_exception_for_duplicate_team_name(
-            exception=DuplicateTeamName(team_name=team_name)
+        result = json_presenter.raise_exception_if_team_name_already_exists(
+            exception=TeamNameAlreadyExists(team_name=team_name)
         )
         response_dict = json.loads(result.content)
         actual_response = response_dict["response"]
