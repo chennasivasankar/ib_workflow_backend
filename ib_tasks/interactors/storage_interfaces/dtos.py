@@ -1,17 +1,6 @@
 from dataclasses import dataclass
-from typing import List
-from ib_tasks.constants.enum import PermissionTypes
 from typing import List, Union, Optional
 from ib_tasks.constants.enum import FieldTypes, PermissionTypes
-
-
-@dataclass
-class StageInformationDTO:
-    stage_id: str
-    task_template_id: str
-    value: int
-    stage_display_name: str
-    stage_display_logic: str
 
 
 @dataclass

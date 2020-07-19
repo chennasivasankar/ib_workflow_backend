@@ -5,7 +5,7 @@ Author: Pavankumar Pamuru
 """
 
 import abc
-from typing import List
+from typing import List, Optional
 
 from ib_tasks.interactors.storage_interfaces.dtos import (
     GoFRoleDTO, GoFDTO, FieldDTO, FieldRoleDTO
@@ -59,8 +59,7 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_valid_template_ids_in_given_template_ids(
-            self, template_ids: List[str]
-    ) -> List[str]:
+            self, template_ids: List[str]) -> List[str]:
         pass
 
     @abc.abstractmethod

@@ -1,6 +1,5 @@
 from django.db import models
 
-from ib_tasks.constants.constants import Permission_Types
 from ib_tasks.models.task_template import TaskTemplate
 
 
