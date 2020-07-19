@@ -13,7 +13,7 @@ INVALID_OFFSET = (
     "INVALID_OFFSET"
 )
 
-DUPLICATE_TEAM_NAME = (
+TEAM_NAME_ALREADY_EXISTS = (
     "Given '%s' is already exists, so choose another",
-    "DUPLICATE_TEAM_NAME"
+    "TEAM_NAME_ALREADY_EXISTS"
 )

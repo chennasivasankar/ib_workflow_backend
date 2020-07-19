@@ -28,5 +28,5 @@ class TeamPresenterInterface:
         pass
 
     @abstractmethod
-    def raise_exception_for_duplicate_team_name(self, exception):
+    def raise_exception_if_team_name_already_exists(self, exception):
         pass

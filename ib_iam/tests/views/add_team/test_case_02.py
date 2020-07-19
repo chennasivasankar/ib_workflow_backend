@@ -1,5 +1,5 @@
 """
-# TODO: Raises User has no access exception if user is not admin
+# Raises User has no access exception as user is not admin
 """
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
@@ -29,6 +29,6 @@ class TestCase02AddTeamAPITestCase(TestUtils):
     def setup(self, api_user):
         user_obj = api_user
         user_id = str(user_obj.id)
-        from ib_iam.tests.factories.models import UserFactory
-        UserFactory.reset_sequence(1)
-        UserFactory.create(user_id=user_id)
+        from ib_iam.tests.factories.models import UserDetailsFactory
+        UserDetailsFactory.reset_sequence(1)
+        UserDetailsFactory.create(user_id=user_id)

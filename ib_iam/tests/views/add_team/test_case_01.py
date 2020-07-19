@@ -1,5 +1,5 @@
 """
-# TODO: Returns team_id as all the parametes are given properly
+# Returns team_id as valid parameters are given
 """
 from uuid import UUID
 import pytest
@@ -32,6 +32,6 @@ class TestCase01AddTeamAPITestCase(TestUtils):
     def setup(self, api_user):
         user_obj = api_user
         user_id = str(user_obj.id)
-        from ib_iam.tests.factories.models import UserFactory
-        UserFactory.reset_sequence(1)
-        UserFactory.create(user_id=user_id, admin=True)
+        from ib_iam.tests.factories.models import UserDetailsFactory
+        UserDetailsFactory.reset_sequence(1)
+        UserDetailsFactory.create(user_id=user_id, is_admin=True)
