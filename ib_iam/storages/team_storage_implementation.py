@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from ib_iam.interactors.storage_interfaces.team_storage_interface import TeamStorageInterface
 from ib_iam.models import UserDetails, Team, TeamMember
 from ib_iam.exceptions.custom_exceptions import UserHasNoAccess, TeamNameAlreadyExists
@@ -50,10 +50,14 @@ class TeamStorageImplementation(TeamStorageInterface):
         ]
         return team_member_ids_dtos
 
-    def is_team_name_already_exists(self, name: str):
-        is_team_name_already_exists = \
-            Team.objects.filter(name=name).exists()
-        return is_team_name_already_exists
+    def get_team_id_if_team_name_already_exists(
+            self, name: str
+    ) -> Optional[str]:
+        try:
+            team_object = Team.objects.get(name=name)
+            return str(team_object.team_id)
+        except Team.DoesNotExist:
+            return None
 
     def add_team(
             self,

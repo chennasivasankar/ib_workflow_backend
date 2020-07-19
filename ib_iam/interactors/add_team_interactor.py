@@ -30,9 +30,10 @@ class AddTeamInteractor:
     def add_team(self, user_id: str, team_name_and_description_dto: TeamNameAndDescriptionDTO):
 
         self.storage.raise_exception_if_user_is_not_admin(user_id=user_id)
-        is_team_name_already_exists = self.storage.is_team_name_already_exists(
+        team_id = self.storage.get_team_id_if_team_name_already_exists(
             name=team_name_and_description_dto.name
         )
+        is_team_name_already_exists = team_id is not None
         if is_team_name_already_exists:
             raise TeamNameAlreadyExists(
                 team_name=team_name_and_description_dto.name

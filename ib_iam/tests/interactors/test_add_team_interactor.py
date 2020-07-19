@@ -40,7 +40,7 @@ class TestAddTeamInteractor:
         team_name = "team1"
         expected_team_name_from_team_name_already_exists_error = team_name
         team_name_and_description_dto = TeamNameAndDescriptionDTOFactory(name="team1")
-        storage.is_team_name_already_exists.return_value = True
+        storage.get_team_id_if_team_name_already_exists.return_value = "2"
         from django_swagger_utils.drf_server.exceptions import BadRequest
         presenter.raise_exception_if_team_name_already_exists.side_effect = (
             BadRequest
@@ -53,9 +53,8 @@ class TestAddTeamInteractor:
                 presenter=presenter
             )
 
-        storage.is_team_name_already_exists.assert_called_once_with(
-            name=team_name_and_description_dto.name
-        )
+        storage.get_team_id_if_team_name_already_exists \
+            .assert_called_once_with(name=team_name_and_description_dto.name)
         call_obj = \
             presenter.raise_exception_if_team_name_already_exists.call_args
         error_obj = call_obj.args[0]
@@ -71,7 +70,7 @@ class TestAddTeamInteractor:
         user_id = "1"
         team_id = "1"
         team_name_and_description_dto = TeamNameAndDescriptionDTOFactory()
-        storage.is_team_name_already_exists.return_value = False
+        storage.get_team_id_if_team_name_already_exists.return_value = None
         storage.add_team.return_value = team_id
 
         interactor.add_team_wrapper(
