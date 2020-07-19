@@ -3,8 +3,8 @@ from ib_iam.interactors.storage_interfaces.team_storage_interface import TeamSto
 from ib_iam.models import UserDetails, Team, TeamMember
 from ib_iam.exceptions.custom_exceptions import UserHasNoAccess, TeamNameAlreadyExists
 from ib_iam.interactors.storage_interfaces.dtos import (
-    PaginationDTO, TeamDTO, TeamMemberIdsDTO, TeamNameAndDescriptionDTO,
-    TeamsWithTotalTeamsCountDTO
+    PaginationDTO, TeamDTO, TeamMemberIdsDTO,
+    TeamsWithTotalTeamsCountDTO, AddTeamParametersDTO
 )
 
 
@@ -50,22 +50,42 @@ class TeamStorageImplementation(TeamStorageInterface):
         ]
         return team_member_ids_dtos
 
-    def is_team_name_already_exists(self, name: str):
-        is_team_name_already_exists = \
-            Team.objects.filter(name=name).exists()
-        return is_team_name_already_exists
+    def get_team_id_if_team_name_already_exists(
+            self, name: str
+    ) -> Optional[str]:
+        try:
+            team_object = Team.objects.get(name=name)
+            return str(team_object.team_id)
+        except Team.DoesNotExist:
+            return None
+
+    def get_valid_member_ids_among_the_given_member_ids(
+            self, member_ids: List[str]
+    ):
+        member_ids = UserDetails.objects.filter(user_id__in=member_ids) \
+                                .values_list('user_id', flat=True)
+        return list(member_ids)
 
     def add_team(
             self,
             user_id: str,
-            team_name_and_description_dto: TeamNameAndDescriptionDTO
+            add_team_parameters_dto: AddTeamParametersDTO
     ) -> str:
         team_object = Team.objects.create(
-            name=team_name_and_description_dto.name,
-            description=team_name_and_description_dto.description,
+            name=add_team_parameters_dto.name,
+            description=add_team_parameters_dto.description,
             created_by=user_id
         )
         return str(team_object.team_id)
+
+    def add_members_to_team(self, team_id: str, member_ids: List[str]):
+        team_members = [
+            TeamMember(
+                team_id=team_id,
+                member_id=member_id
+            ) for member_id in member_ids
+        ]
+        TeamMember.objects.bulk_create(team_members)
 
     @staticmethod
     def _get_team_dtos(team_objects):

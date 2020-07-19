@@ -17,3 +17,13 @@ TEAM_NAME_ALREADY_EXISTS = (
     "Given '%s' is already exists, so choose another",
     "TEAM_NAME_ALREADY_EXISTS"
 )
+
+INVALID_MEMBERS = (
+    "Given members are not valid, please check it",
+    "INVALID_MEMBERS"
+)
+
+DUPLICATE_MEMBERS = (
+    "Given members consists of duplicates, please check it",
+    "DUPLICATE_MEMBERS"
+)

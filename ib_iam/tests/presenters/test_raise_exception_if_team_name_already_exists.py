@@ -1,12 +1,12 @@
-import pytest
-
 from ib_iam.exceptions import TeamNameAlreadyExists
-from ib_iam.presenters.team_presenter_implementation import TeamPresenterImplementation
+from ib_iam.presenters.team_presenter_implementation import (
+    TeamPresenterImplementation
+)
 from ib_iam.constants.exception_messages import TEAM_NAME_ALREADY_EXISTS
 
 
 class TestRaiseExceptionIfTeamNameAlreadyExists:
-    def test_when_it_is_called_it_returns_http_response(self, snapshot):
+    def test_when_it_is_called_it_returns_http_response(self):
         json_presenter = TeamPresenterImplementation()
         team_name = "team_name1"
         import json

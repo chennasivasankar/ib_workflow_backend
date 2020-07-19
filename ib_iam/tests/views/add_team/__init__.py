@@ -8,9 +8,11 @@ URL_SUFFIX = "team/add/v1/"
 from .test_case_01 import TestCase01AddTeamAPITestCase
 from .test_case_02 import TestCase02AddTeamAPITestCase
 from .test_case_03 import TestCase03AddTeamAPITestCase
+from .test_case_04 import TestCase04AddTeamAPITestCase
 
 __all__ = [
     "TestCase01AddTeamAPITestCase",
     "TestCase02AddTeamAPITestCase",
-    "TestCase03AddTeamAPITestCase"
+    "TestCase03AddTeamAPITestCase",
+    "TestCase04AddTeamAPITestCase"
 ]

@@ -1,8 +1,8 @@
 from abc import abstractmethod
 from typing import List, Optional
 from ib_iam.interactors.storage_interfaces.dtos import (
-    PaginationDTO, TeamMemberIdsDTO, TeamNameAndDescriptionDTO,
-    TeamsWithTotalTeamsCountDTO
+    PaginationDTO, TeamMemberIdsDTO,
+    TeamsWithTotalTeamsCountDTO, AddTeamParametersDTO
 )
 
 
@@ -25,13 +25,25 @@ class TeamStorageInterface:
         pass
 
     @abstractmethod
-    def is_team_name_already_exists(self, name: str) -> bool:
+    def get_team_id_if_team_name_already_exists(
+            self, name: str
+    ) -> Optional[str]:
+        pass
+
+    @abstractmethod
+    def get_valid_member_ids_among_the_given_member_ids(
+            self, member_ids: List[str]
+    ) -> List[str]:
         pass
 
     @abstractmethod
     def add_team(
             self,
             user_id: str,
-            team_name_and_description_dto: TeamNameAndDescriptionDTO
+            add_team_parameters_dto: AddTeamParametersDTO
     ) -> str:
+        pass
+
+    @abstractmethod
+    def add_members_to_team(self, team_id: str, member_ids: List[str]):
         pass

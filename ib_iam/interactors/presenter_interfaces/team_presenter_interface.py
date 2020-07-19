@@ -24,6 +24,14 @@ class TeamPresenterInterface:
         pass
 
     @abstractmethod
+    def raise_exception_for_invalid_members(self):
+        pass
+
+    @abstractmethod
+    def raise_exception_for_duplicate_members(self):
+        pass
+
+    @abstractmethod
     def get_response_for_add_team(self, team_id: str):
         pass
 

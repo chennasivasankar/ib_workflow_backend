@@ -3,7 +3,8 @@ from ib_iam.constants.enums import StatusCode
 from ib_iam.interactors.presenter_interfaces.dtos import TeamWithMembersDetailsDTO
 from ib_iam.interactors.presenter_interfaces.team_presenter_interface import TeamPresenterInterface
 from ib_iam.constants.exception_messages import (
-    USER_HAS_NO_ACCESS, INVALID_LIMIT, INVALID_OFFSET, TEAM_NAME_ALREADY_EXISTS
+    USER_HAS_NO_ACCESS, INVALID_LIMIT, INVALID_OFFSET,
+    TEAM_NAME_ALREADY_EXISTS, INVALID_MEMBERS, DUPLICATE_MEMBERS
 )
 
 
@@ -61,6 +62,26 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
             response_dict=response_dict
         )
 
+    def raise_exception_for_duplicate_members(self):
+        response_dict = {
+            "response": DUPLICATE_MEMBERS[0],
+            "http_status_code": StatusCode.BAD_REQUEST.value,
+            "res_status": DUPLICATE_MEMBERS[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict
+        )
+
+    def raise_exception_for_invalid_members(self):
+        response_dict = {
+            "response": INVALID_MEMBERS[0],
+            "http_status_code": StatusCode.NOT_FOUND.value,
+            "res_status": INVALID_MEMBERS[1]
+        }
+        return self.prepare_404_not_found_response(
+            response_dict=response_dict
+        )
+
     def get_response_for_add_team(self, team_id: str):
         return self.prepare_201_created_response(
             response_dict={"team_id": team_id}
@@ -83,13 +104,6 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
                 team_dto=team_dto
             ) for team_dto in team_dtos
         ]
-        # for team_dto in team_dtos:
-        #     teams_details_dict = self._convert_to_team_details_dictionary(
-        #         team_member_ids_dict=team_member_ids_dict,
-        #         members_dictionary=members_dictionary,
-        #         team_dto=team_dto
-        #     )
-        #     teams_details_dict_list.append(teams_details_dict)
         return teams_details_dict_list
 
     def _convert_to_team_details_dictionary(

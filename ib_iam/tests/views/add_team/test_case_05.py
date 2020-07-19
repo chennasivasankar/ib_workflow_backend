@@ -1,6 +1,6 @@
 """
-Raises TeamNameAlreadyExists exception as
-the requested name is already assigned to another team
+Raises InvalidMembers exception as
+as we send invalid member ids(not user ids)
 """
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
@@ -8,7 +8,7 @@ from django_swagger_utils.utils.test_v1 import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase03AddTeamAPITestCase(TestUtils):
+class TestCase05AddTeamAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -17,7 +17,7 @@ class TestCase03AddTeamAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_case(self, snapshot, setup):
-        body = {'name': 'team1', 'description': '',  'member_ids': []}
+        body = {'name': 'team1', 'description': '',  'member_ids': ["2", "3"]}
         path_params = {}
         query_params = {}
         headers = {}
@@ -30,10 +30,7 @@ class TestCase03AddTeamAPITestCase(TestUtils):
     def setup(self, api_user):
         user_obj = api_user
         user_id = str(user_obj.id)
-        from ib_iam.tests.factories.models import (
-            UserDetailsFactory, TeamFactory
-        )
+        from ib_iam.tests.factories.models import UserDetailsFactory
         UserDetailsFactory.reset_sequence(1)
-        TeamFactory.reset_sequence(1)
         UserDetailsFactory.create(user_id=user_id, is_admin=True)
-        TeamFactory.create(name="team1")
+        UserDetailsFactory.create(user_id="2", is_admin=True)

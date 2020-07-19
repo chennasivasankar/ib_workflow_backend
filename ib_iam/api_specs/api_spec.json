@@ -111,6 +111,24 @@
         "teams"
       ]
     },
+    "AddTeamParameters": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/TeamNameAndDescription"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "member_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
     "CommonHttpExceptionFields": {
       "type": "object",
       "properties": {
@@ -138,6 +156,27 @@
               "type": "string",
               "enum": [
                 "USER_HAS_NO_ACCESS"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
+        }
+      ]
+    },
+    "InvalidMembers": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "INVALID_MEMBERS"
               ]
             }
           },
@@ -191,6 +230,29 @@
         }
       ]
     },
+    "TeamNameAlreadyExistsAndDuplicateMembers": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "TEAM_NAME_ALREADY_EXISTS",
+                "DUPLICATE_MEMBERS"
+              ]
+            }
+          },
+          "required": [
+
+            "res_status"
+          ]
+        }
+      ]
+    },
     "TeamId": {
       "type": "object",
       "properties": {
@@ -218,13 +280,13 @@
       "type": "integer",
       "default": 0
     },
-    "AddTeamParameter": {
+    "AddTeamParameters": {
       "name": "details_to_add_team",
       "in": "body",
       "required": true,
-      "description": "parameters or details to create or add a team",
+      "description": "parameters or details to create/add a team",
       "schema": {
-        "$ref": "#/definitions/TeamNameAndDescription"
+        "$ref": "#/definitions/AddTeamParameters"
       }
     }
   },
@@ -287,7 +349,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/AddTeamParameter"
+            "$ref": "#/parameters/AddTeamParameters"
           }
         ],
         "responses": {
@@ -300,13 +362,19 @@
           "400": {
             "description": "BadRequest",
             "schema": {
-              "$ref": "#/definitions/TeamNameAlreadyExists"
+              "$ref": "#/definitions/TeamNameAlreadyExistsAndDuplicateMembers"
             }
           },
           "401": {
             "description": "Unauthorized",
             "schema": {
               "$ref": "#/definitions/UserHasNoAccess"
+            }
+          },
+          "404": {
+            "description": "NotFound",
+            "schema": {
+              "$ref": "#/definitions/InvalidMembers"
             }
           }
         }

@@ -1,5 +1,6 @@
-import pytest
-from ib_iam.presenters.team_presenter_implementation import TeamPresenterImplementation
+from ib_iam.presenters.team_presenter_implementation import (
+    TeamPresenterImplementation
+)
 from ib_iam.constants.exception_messages import USER_HAS_NO_ACCESS
 
 

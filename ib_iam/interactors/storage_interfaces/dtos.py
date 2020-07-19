@@ -9,6 +9,11 @@ class TeamNameAndDescriptionDTO:
 
 
 @dataclass
+class AddTeamParametersDTO(TeamNameAndDescriptionDTO):
+    member_ids: List[str]
+
+
+@dataclass
 class PaginationDTO:
     limit: int
     offset: int

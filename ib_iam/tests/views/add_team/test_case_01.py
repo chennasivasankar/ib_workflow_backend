@@ -19,7 +19,7 @@ class TestCase01AddTeamAPITestCase(TestUtils):
     @patch("uuid.uuid4")
     def test_case(self, uuid4_mock, snapshot, setup):
         uuid4_mock.return_value = UUID("f2c02d98-f311-4ab2-8673-3daa00757002")
-        body = {'name': 'team_name1', 'description': ''}
+        body = {'name': 'team_name1', 'description': '',  'member_ids': ["2", "3"]}
         path_params = {}
         query_params = {}
         headers = {}
@@ -35,3 +35,5 @@ class TestCase01AddTeamAPITestCase(TestUtils):
         from ib_iam.tests.factories.models import UserDetailsFactory
         UserDetailsFactory.reset_sequence(1)
         UserDetailsFactory.create(user_id=user_id, is_admin=True)
+        for user_id in ["2", "3"]:
+            UserDetailsFactory.create(user_id=user_id, is_admin=True)
