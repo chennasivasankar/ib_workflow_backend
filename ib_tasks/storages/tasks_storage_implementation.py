@@ -170,16 +170,14 @@ class TasksStorageImplementation(TaskStorageInterface):
         )
 
         from ib_tasks.models.global_constant import GlobalConstant
-        global_constants_objs = \
-            GlobalConstant.objects.filter(name__in=global_constants_names)
+        global_constants_objs = GlobalConstant.objects.filter(
+            name__in=global_constants_names, task_template_id=template_id
+        )
         for global_constant_obj in global_constants_objs:
-            global_constant_obj.task_template_id = template_id
             global_constant_obj.value = \
                 global_constants_dict[global_constant_obj.name].value
 
-        GlobalConstant.objects.bulk_update(
-            global_constants_objs, ['task_template_id', 'value']
-        )
+        GlobalConstant.objects.bulk_update(global_constants_objs, ['value'])
 
     @staticmethod
     def _get_global_constant_names(
