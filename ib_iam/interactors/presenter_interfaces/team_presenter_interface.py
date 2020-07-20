@@ -1,9 +1,10 @@
+from abc import ABC
 from abc import abstractmethod
 
 from ib_iam.interactors.presenter_interfaces.dtos import TeamWithMembersDetailsDTO
 
 
-class TeamPresenterInterface:
+class TeamPresenterInterface(ABC):
 
     @abstractmethod
     def get_user_has_no_access_response_for_get_list_of_teams(self):
