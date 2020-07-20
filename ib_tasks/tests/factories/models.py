@@ -11,7 +11,8 @@ class StageModelFactory(factory.django.DjangoModelFactory):
 
     stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)
     display_name = factory.Sequence(lambda n: "name_%d" % n)
-    value = factory.Iterator([-1, 0, 1, 2, 3, 4, 5, 6])
+    task_template_id = factory.Sequence(lambda n: "task_template_id_%d" % n)
+    value = factory.Sequence(lambda n: n)
     display_logic = factory.Sequence(lambda n: "status_id_%d==stage_id" % n)
 
 

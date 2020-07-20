@@ -20,41 +20,61 @@ class CreateOrUpdateStagesInterface:
         stage_ids = self._get_stage_ids(stages_information)
         self.check_for_duplicate_stage_ids(stage_ids)
 
-        task_template_ids = self._get_valid_template_ids_in_given_template_ids(stages_information)
+        task_template_ids = self._get_valid_template_ids_in_given_template_ids(
+            stages_information)
         self._validate_task_template_ids(task_template_ids)
 
-        valid_stage_ids = self._validate_stage_ids(stage_ids)
+        valid_stages_dtos = self._validate_stage_ids(stage_ids)
         self._validate_values_for_stages(stages_information)
 
         self._validate_stage_display_logic(stages_information)
 
-        self._create_or_update_stages(valid_stage_ids, stages_information)
+        self._create_or_update_stages(valid_stages_dtos, stages_information)
 
     def _create_or_update_stages(self,
-                                 valid_stage_ids: List[str],
+                                 valid_stages_dtos: List[str],
                                  stages_information: List[StageDTO]
                                  ):
+        create_stages_dtos, update_stages_dtos = self._get_stages_dtos_based_on_their_state(
+            valid_stages_dtos, stages_information)
+
+        if update_stages_dtos:
+            self.stage_storage.update_stages(
+                update_stages_dtos)
+
+        if create_stages_dtos:
+            self.stage_storage.create_stages(
+                create_stages_dtos)
+
+    def _get_stages_dtos_based_on_their_state(self, valid_stages_dtos, stages_information):
         update_stages_information = []
         create_stages_information = []
-        if valid_stage_ids:
-            task_stages_dto = self._get_task_stages_dto(stages_information)
+        if valid_stages_dtos:
+            valid_stages_info = self._get_valid_stages_details_dtos(
+                stages_information, valid_stages_dtos)
+
+            task_stages_dto = self._get_task_stages_dto(valid_stages_info)
             self._validate_stages_related_task_template_ids(task_stages_dto)
 
             for stage_information in stages_information:
                 update_stages_information.append(stage_information)
 
-        else:
+        if len(valid_stages_dtos) != len(stages_information):
+            valid_stage_ids = [stage.stage_id for stage in valid_stages_dtos]
+
             for stage_information in stages_information:
                 if stage_information.stage_id not in valid_stage_ids:
                     create_stages_information.append(stage_information)
+        return create_stages_information, update_stages_information
 
-        if update_stages_information:
-            self.stage_storage.update_stages_with_given_information(
-                update_stages_information)
-
-        if create_stages_information:
-            self.stage_storage.create_stages_with_given_information(
-                create_stages_information)
+    def _get_valid_stages_details_dtos(self, stages_information, valid_stages_dtos):
+        valid_stages_info = []
+        for stage_dto in valid_stages_dtos:
+            for stage in stages_information:
+                if stage.stage_id == stage_dto.stage_id:
+                    stage.id = stage_dto.id
+                    valid_stages_info.append(stage)
+        return valid_stages_info
 
     def _validate_stage_display_logic(self, stages_information):
         invalid_stage_display_logic_stages = [
@@ -74,7 +94,7 @@ class CreateOrUpdateStagesInterface:
 
     def _validate_stage_ids(self, stage_ids: List[str]):
 
-        valid_stage_ids = self.stage_storage.validate_stage_ids(stage_ids)
+        valid_stage_ids = self.stage_storage.get_valid_stage_ids(stage_ids)
         return valid_stage_ids
 
     def _get_valid_template_ids_in_given_template_ids(self, stages_information: List[StageDTO]):
