@@ -14,8 +14,8 @@ class TestUserRoleValidationInteractor:
         interactor = UserRoleValidationInteractor()
 
         # Act
-        result = interactor.user_role_validation(user_id=user_id,
-                                                 role_ids=role_ids)
+        result = interactor.does_user_has_required_permission(user_id=user_id,
+                                                              role_ids=role_ids)
         assert result is True
         get_user_role_ids_mock_method.assert_not_called()
 
@@ -30,8 +30,8 @@ class TestUserRoleValidationInteractor:
         interactor = UserRoleValidationInteractor()
 
         # Act
-        result = interactor.user_role_validation(user_id=user_id,
-                                                 role_ids=role_ids)
+        result = interactor.does_user_has_required_permission(user_id=user_id,
+                                                              role_ids=role_ids)
         assert result is True
         get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
 
@@ -46,7 +46,7 @@ class TestUserRoleValidationInteractor:
         interactor = UserRoleValidationInteractor()
 
         # Act
-        result = interactor.user_role_validation(user_id=user_id,
-                                                 role_ids=role_ids)
+        result = interactor.does_user_has_required_permission(user_id=user_id,
+                                                              role_ids=role_ids)
         assert result is False
         get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
