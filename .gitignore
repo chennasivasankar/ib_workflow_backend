@@ -48,4 +48,3 @@ dist/
 doc_html/
 
 venv/
-migrations/
