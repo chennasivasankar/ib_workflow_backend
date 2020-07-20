@@ -1,4 +1,5 @@
 from django.db import models
+
 from ib_tasks.models.task_template import TaskTemplate
 
 
