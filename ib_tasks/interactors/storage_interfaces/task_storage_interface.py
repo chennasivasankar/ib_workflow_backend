@@ -10,7 +10,8 @@ from typing import List
 from ib_tasks.interactors.storage_interfaces.dtos import (
     GoFRoleDTO, GoFDTO, FieldDTO, FieldRoleDTO
 )
-from ib_tasks.interactors.dtos import GlobalConstantsDTO
+from ib_tasks.interactors.dtos import GlobalConstantsDTO, \
+    GoFWithOrderAndAddAnotherDTO
 
 
 class TaskStorageInterface(abc.ABC):
@@ -96,4 +97,26 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def update_task_template(self, template_id: str, template_name: str):
+        pass
+
+    @abc.abstractmethod
+    def get_existing_gof_ids_of_template(
+            self, template_id: str) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def add_gofs_to_template(
+            self, template_id: str,
+            gof_dtos: List[GoFWithOrderAndAddAnotherDTO]):
+        pass
+
+    @abc.abstractmethod
+    def update_gofs_to_template(
+            self, template_id: str,
+            gof_dtos: List[GoFWithOrderAndAddAnotherDTO]):
+        pass
+
+    @abc.abstractmethod
+    def get_valid_gof_ids_in_given_gof_ids(
+            self, gof_ids: List[str]) -> List[str]:
         pass

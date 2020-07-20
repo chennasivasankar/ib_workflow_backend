@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, \
+from ib_tasks.interactors.dtos import GoFWithOrderAndAddAnotherDTO, \
     GlobalConstantsDTO
 from ib_tasks.interactors.storage_interfaces.dtos import (
     GoFDTO, GoFRoleDTO, FieldDTO, FieldRoleDTO
@@ -154,4 +154,25 @@ class TasksStorageImplementation(TaskStorageInterface):
         pass
 
     def get_existing_gof_ids(self, gof_ids: List[str]) -> List[str]:
+        pass
+
+    def get_existing_template_ids(self):
+        pass
+
+    def get_existing_gof_ids_of_template(
+            self, template_id: str) -> List[str]:
+        pass
+
+    def add_gofs_to_template(
+            self, template_id: str,
+            gof_dtos: List[GoFWithOrderAndAddAnotherDTO]):
+        pass
+
+    def update_gofs_to_template(
+            self, template_id: str,
+            gof_dtos: List[GoFWithOrderAndAddAnotherDTO]):
+        pass
+
+    def get_valid_gof_ids_in_given_gof_ids(
+            self, gof_ids: List[str]) -> List[str]:
         pass

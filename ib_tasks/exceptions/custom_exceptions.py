@@ -3,7 +3,7 @@ from typing import List
 
 class InvalidValueForField(Exception):
     def __init__(self, err_msg: str):
-        super().__init__(err_msg)
+        self.err_msg = err_msg
 
 
 class GOFIdCantBeEmpty(Exception):
@@ -68,17 +68,17 @@ class InvalidTaskTemplateIds(Exception):
 
 class ExistingGlobalConstantNamesNotInGivenData(Exception):
     def __init__(self, err_msg: str):
-        super().__init__(err_msg)
+        self.err_msg = err_msg
 
 
 class TemplateDoesNotExists(Exception):
     def __init__(self, err_msg: str):
-        super().__init__(err_msg)
+        self.err_msg = err_msg
 
 
 class DuplicateConstantNames(Exception):
     def __init__(self, err_msg: str):
-        super().__init__(err_msg)
+        self.err_msg = err_msg
 
 
 class InvalidFieldIdException(Exception):
@@ -126,3 +126,23 @@ class InvalidValueForFieldType(Exception):
 class InvalidGOFIds(Exception):
     def __int__(self, message: str):
         self.message = message
+
+
+class InvalidOrdersForGoFs(Exception):
+    def __int__(self, message: str):
+        self.message = message
+
+
+class InvalidTemplateIds(Exception):
+    def __int__(self, message: str):
+        self.message = message
+
+
+class ExistingGoFsNotInGivenData(Exception):
+    def __init__(self, err_msg: str):
+        self.err_msg = err_msg
+
+
+class GofsDoesNotExist(Exception):
+    def __init__(self, err_msg: str):
+        self.err_msg = err_msg
