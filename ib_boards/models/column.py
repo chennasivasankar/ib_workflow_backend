@@ -9,7 +9,7 @@ from .board import Board
 
 
 class Column(models.Model):
-    column_id = models.CharField(max_length=200)
+    column_id = models.CharField(max_length=200, primary_key=True)
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     display_order = models.IntegerField()

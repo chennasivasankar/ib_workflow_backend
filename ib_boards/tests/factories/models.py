@@ -16,7 +16,7 @@ class ColumnFactory(factory.django.DjangoModelFactory):
         model = Column
 
     column_id = factory.Sequence(lambda n: f'COLUMN_ID_{n + 1}')
-    display_name = factory.Sequence(
+    name = factory.Sequence(
         lambda n: f'COLUMN_DISPLAY_NAME_{n + 1}')
     display_order = factory.Sequence(lambda n: n + 1)
     task_selection_config = """
@@ -24,19 +24,19 @@ class ColumnFactory(factory.django.DjangoModelFactory):
             FIN_PR:[PR_PAYMENT_REQUEST_DRAFTS]
         }
     """
-    list_view_fields = """
+    list_brief_view_config = """
         {
             FIN_PR:[PR_PAYMENT_REQUEST_DRAFTS]
         }
     """
-    kanban_view_fields = """
+    kanban_brief_view_config = """
         {
             FIN_PR:[PR_PAYMENT_REQUEST_DRAFTS]
         }
     """
-    board_id = "BOARD_ID_0"
+    board = factory.SubFactory(BoardFactory)
 
 
 class ColumnPermission(factory.django.DjangoModelFactory):
-    column = ColumnFactory()
+    column = factory.SubFactory(ColumnFactory)
     user_role_id = ['ALL_ROLES']

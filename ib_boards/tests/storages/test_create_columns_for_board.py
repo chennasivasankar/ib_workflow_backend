@@ -14,7 +14,7 @@ from ib_boards.storages.storage_implementation import StorageImplementation
 
 
 @pytest.mark.django_db
-class TestCreateBoardsAndColumns:
+class TestAddColumnsForBoard:
 
     @pytest.fixture
     def storage(self):
@@ -30,40 +30,35 @@ class TestCreateBoardsAndColumns:
         BoardFactory.reset_sequence()
         ColumnFactory.reset_sequence()
 
-    def test_with_valid_data_crates_data(self, storage):
+    def test_with_valid_data_crates_data_for_board(
+            self, storage, reset_sequence):
         # Arrange
         from ib_boards.tests.factories.interactor_dtos import \
-            BoardDTOFactory, ColumnDTOFactory
-        board_dtos = BoardDTOFactory.create_batch(1)
-        column_dtos = ColumnDTOFactory.create_batch(2, board_id='BOARD_ID_1')
+            ColumnDTOFactory
+        from ib_boards.tests.factories.models import BoardFactory
+        board_dtos = BoardFactory.create_batch(2)
+        column_dtos = ColumnDTOFactory.create_batch(2, board_id=board_dtos[0].board_id)
+        column_dtos += ColumnDTOFactory.create_batch(2, board_id=board_dtos[1].board_id)
 
         # Act
-        storage.create_boards_and_columns(
-            board_dtos=board_dtos,
+        storage.create_columns_for_board(
             column_dtos=column_dtos
         )
 
         # Assert
-        self._check_given_boards_data_created_correctly(
-            board_dtos=board_dtos
-        )
-
         self._check_given_columns_data_created_correctly(
             column_dtos=column_dtos
         )
 
-    @staticmethod
-    def _check_given_boards_data_created_correctly(
-            board_dtos: List[BoardDTO]):
-        board_objects = Board.objects.all()
-        assert len(board_objects) == len(board_dtos)
-        for board_dto, board_object in zip(board_dtos, board_objects):
-            assert board_object.board_id == board_dto.board_id
-            assert board_object.name == board_dto.display_name
-
     def _check_given_columns_data_created_correctly(
             self, column_dtos: List[ColumnDTO]):
-        column_objects = Column.objects.all()
+        column_objects = Column.objects.filter(
+            board_id__in=['BOARD_ID_1', 'BOARD_ID_2'],
+            column_id__in=[
+                'COLUMN_ID_1', 'COLUMN_ID_2',
+                'COLUMN_ID_3', 'COLUMN_ID_4'
+            ]
+        )
         assert len(column_objects) == len(column_dtos)
         for column_object, column_dto in zip(column_objects, column_dtos):
             assert column_object.column_id == column_dto.column_id

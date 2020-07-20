@@ -1,13 +1,8 @@
 from typing import List
 
 
-class DuplicateBoardIds(Exception):
-    def __init__(self, board_ids: List[str]):
-        self.board_ids = board_ids
-
-
 class InvalidBoardDisplayName(Exception):
-    def __init__(self, board_id: str): 
+    def __init__(self, board_id: str):
         self.board_id = board_id
 
 
@@ -17,12 +12,8 @@ class DuplicateColumnIds(Exception):
 
 
 class InvalidColumnDisplayName(Exception):
-    def __init__(self, column_id: str):
-        self.column_id = column_id
-
-
-class InvalidJsonForTaskTemplateStages(Exception):
-    pass
+    def __init__(self, column_ids: List[str]):
+        self.column_ids = column_ids
 
 
 class InvalidTaskTemplateIdInStages(Exception):
@@ -30,8 +21,19 @@ class InvalidTaskTemplateIdInStages(Exception):
         self.task_template_ids = task_template_ids
 
 
-class InvalidJsonForTaskTemplateSummaryFields(Exception):
-    pass
+class InvalidTaskIdInSummaryFields(Exception):
+    def __init__(self, task_ids: List[str]):
+        self.task_ids = task_ids
+
+
+class InvalidTaskIdInListViewFields(Exception):
+    def __init__(self, task_ids: List[str]):
+        self.task_ids = task_ids
+
+
+class InvalidTaskIdInKanbanViewFields(Exception):
+    def __init__(self, task_ids: List[str]):
+        self.task_ids = task_ids
 
 
 class EmptyValuesForTaskTemplateStages(Exception):
@@ -42,11 +44,27 @@ class EmptyValuesForTaskSummaryFields(Exception):
     pass
 
 
+class EmptyValuesForTaskListViewFields(Exception):
+    pass
+
+
+class EmptyValuesForTaskKanbanViewFields(Exception):
+    pass
+
+
 class TaskTemplateStagesNotBelongsToTaskTemplateId(Exception):
     pass
 
 
 class TaskSummaryFieldsNotBelongsToTaskTemplateId(Exception):
+    pass
+
+
+class TaskListViewFieldsNotBelongsToTaskTemplateId(Exception):
+    pass
+
+
+class TaskKanbanViewFieldsNotBelongsToTaskTemplateId(Exception):
     pass
 
 
@@ -63,8 +81,8 @@ class DuplicateSummaryFieldsInTask(Exception):
 class InvalidUserRoles(Exception):
     def __init__(self, user_role_ids: List[str]):
         self.user_role_ids = user_role_ids
-
-
+        
+        
 class ColumnIdsAssignedToDifferentBoard(Exception):
     def __init__(self, column_ids: List[str]):
         self.column_ids = column_ids
@@ -106,3 +124,8 @@ class OffsetValueExceedsTotalTasksCount(Exception):
 class InvalidStageIds(Exception):
     def __init__(self, stage_ids: List[str]):
         self.stage_ids = stage_ids
+
+
+class DuplicateValuesInColumnDisplayOrder(Exception):
+    def __init__(self, display_order_values: List[int]):
+        self.display_order_values = display_order_values

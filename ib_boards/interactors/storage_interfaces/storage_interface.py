@@ -1,7 +1,7 @@
 import abc
 from typing import List
 
-from ib_boards.interactors.dtos import CreateBoardDTO, ColumnDTO, BoardColumnsDTO
+from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, BoardColumnsDTO
 
 
 class StorageInterface(abc.ABC):
@@ -12,7 +12,8 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def create_boards_and_columns(
-            self, board_dtos: List[CreateBoardDTO], column_dtos: List[ColumnDTO]) -> None:
+            self, board_dtos: List[BoardDTO],
+            column_dtos: List[ColumnDTO]) -> None:
         pass
 
     @abc.abstractmethod
@@ -20,7 +21,7 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_board_column_ids(
+    def get_boards_column_ids(
             self, board_ids: List[str]) -> List[BoardColumnsDTO]:
         pass
 
@@ -29,7 +30,7 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def create_columns_for_board(self, column_dtos) -> None:
+    def create_columns_for_board(self, column_dtos: List[ColumnDTO]) -> None:
         pass
 
     @abc.abstractmethod
@@ -38,16 +39,12 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def validate_user_role_with_boards_roles(self, user_role: str):
-        pass
-
-    @abc.abstractmethod
     def get_board_ids(
             self, user_role: str,) -> List[str]:
         pass
 
     @abc.abstractmethod
-    def get_board_details(self, board_ids: List[str]) -> List[CreateBoardDTO]:
+    def get_board_details(self, board_ids: List[str]) -> List[BoardDTO]:
         pass
 
     @abc.abstractmethod
@@ -64,4 +61,7 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def validate_user_role_with_column_roles(self, user_role: str):
+        pass
+
+    def validate_user_role_with_boards_roles(self, user_role: str):
         pass

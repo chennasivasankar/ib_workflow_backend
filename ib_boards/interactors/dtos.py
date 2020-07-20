@@ -3,7 +3,6 @@ Created on: 13/07/20
 Author: Pavankumar Pamuru
 
 """
-import json
 from dataclasses import dataclass
 from typing import List
 
@@ -21,7 +20,7 @@ class TaskSummaryFieldsDTO:
 
 
 @dataclass
-class CreateBoardDTO:
+class BoardDTO:
     board_id: str
     display_name: str
 

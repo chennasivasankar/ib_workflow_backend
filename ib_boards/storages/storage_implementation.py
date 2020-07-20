@@ -5,7 +5,7 @@ Author: Pavankumar Pamuru
 """
 from typing import List, Tuple
 
-from ib_boards.interactors.dtos import CreateBoardDTO, ColumnDTO, \
+from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
     BoardColumnsDTO, TaskTemplateStagesDTO, TaskSummaryFieldsDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
@@ -24,7 +24,7 @@ class StorageImplementation(StorageInterface):
             raise InvalidBoardId
 
     def create_boards_and_columns(
-            self, board_dtos: List[CreateBoardDTO],
+            self, board_dtos: List[BoardDTO],
             column_dtos: List[ColumnDTO]) -> None:
         board_objects = [
             Board(
@@ -56,12 +56,13 @@ class StorageImplementation(StorageInterface):
         ]
         return board_column_id_dtos
 
-    def get_board_column_ids(
+    def get_boards_column_ids(
             self, board_ids: List[str]) -> List[BoardColumnsDTO]:
+        print(Column.objects.all())
         board_column_ids = Column.objects.filter(
             board_id__in=board_ids
         ).values('board_id', 'column_id')
-
+        print(board_column_ids)
         from collections import defaultdict
         board_columns_map = defaultdict(lambda: [])
         for board_column_id in board_column_ids:
@@ -74,12 +75,61 @@ class StorageImplementation(StorageInterface):
                 board_id=key,
                 column_ids=value
             )
-            for key, value in board_columns_map
+            for key, value in board_columns_map.items()
         ]
+        print(board_columns_dtos)
         return board_columns_dtos
 
     def update_columns_for_board(self, column_dtos: List[ColumnDTO]) -> None:
-        pass
+        column_ids = [column_dto.column_id for column_dto in column_dtos]
+        column_objects = Column.objects.filter(
+            column_id__in=column_ids
+        )
+        updated_column_objects = self._get_updated_column_objects(
+            column_dtos=column_dtos, column_objects=column_objects
+        )
+        Column.objects.bulk_update(
+            updated_column_objects,
+            [
+                'name',
+                'display_order', 'task_selection_config',
+                'kanban_brief_view_config',
+                'list_brief_view_config'
+            ]
+        )
+
+    def _get_updated_column_objects(
+            self, column_dtos: List[ColumnDTO],
+            column_objects: List[Column]) -> List[Column]:
+        column_dtos_dict = {}
+        for column_dto in column_dtos:
+            column_dtos_dict[column_dto.column_id] = column_dto
+
+        updated_column_objects = []
+        for column_object in column_objects:
+            updated_column_object = self._get_updated_column_object(
+                column_dtos_dict[column_object.column_id], column_object
+            )
+            updated_column_objects.append(updated_column_object)
+        return updated_column_objects
+
+    def _get_updated_column_object(
+            self, column_dto: ColumnDTO, column_object: Column):
+        column_object.name = column_dto.display_name
+        column_object.display_order = column_dto.display_order
+        column_object.task_selection_config = \
+            self._get_json_string_for_task_selection_config(
+                column_dto.task_template_stages
+            )
+        column_object.kanban_brief_view_config = \
+            self._get_json_string_for_view_config(
+                column_dto.kanban_view_fields
+            )
+        column_object.list_brief_view_config = \
+            self._get_json_string_for_view_config(
+                column_dto.list_view_fields
+            )
+        return column_object
 
     def create_columns_for_board(self, column_dtos) -> None:
         column_objects, user_role_ids = \
@@ -91,7 +141,13 @@ class StorageImplementation(StorageInterface):
 
     def delete_columns_which_are_not_in_configuration(
             self, column_for_delete_dtos: List[BoardColumnsDTO]) -> None:
-        pass
+        column_ids = []
+        for column_for_delete_dto in column_for_delete_dtos:
+            column_ids += column_for_delete_dto.column_ids
+        column_objects = Column.objects.filter(
+            column_id__in=column_ids
+        )
+        column_objects.delete()
 
     def _get_column_objects_and_column_permission_objects_from_dtos(
             self, column_dtos: List[ColumnDTO]) -> Tuple[
@@ -106,10 +162,10 @@ class StorageImplementation(StorageInterface):
                     column_dto.task_template_stages
                 ),
                 kanban_brief_view_config=self._get_json_string_for_view_config(
-                    column_dto.list_view_fields
+                    column_dto.kanban_view_fields
                 ),
                 list_brief_view_config=self._get_json_string_for_view_config(
-                    column_dto.kanban_view_fields
+                    column_dto.list_view_fields
                 ),
             )
             for column_dto in column_dtos
@@ -157,7 +213,7 @@ class StorageImplementation(StorageInterface):
             self, user_role: str, ) -> List[str]:
         pass
 
-    def get_board_details(self, board_ids: List[str]) -> List[CreateBoardDTO]:
+    def get_board_details(self, board_ids: List[str]) -> List[BoardDTO]:
         pass
 
     def get_valid_board_ids(self, board_ids: List[str]) -> List[str]:
