@@ -116,11 +116,10 @@ class DuplicationOfFieldIdsExist(Exception):
         self.field_ids = field_ids
 
 
-class FieldsDuplicationOfDropDownValues(Exception):
+class DuplicationOfFieldValuesForFieldTypeMultiValues(Exception):
 
-    def __init__(self, fieds_with_dropdown_duplicate_values):
-        self.fieds_with_dropdown_duplicate_values = \
-            fieds_with_dropdown_duplicate_values
+    def __init__(self, message: str):
+        self.message = message
 
 
 class InvalidRolesException(Exception):
@@ -174,3 +173,15 @@ class InvalidValueForField(Exception):
     def __init__(self, field: str):
         self.message = "Invalid value for field: {}".format(field)
         super().__init__(self.message)
+
+
+class DuplicationOfPermissionRoles(Exception):
+
+    def __init__(self, message: str):
+        self.message = message
+
+
+class EmptyValuesForFieldValues(Exception):
+
+    def __init__(self, message: str):
+        self.message = message

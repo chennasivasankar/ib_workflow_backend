@@ -17,7 +17,7 @@ from ib_tasks.exceptions.custom_exceptions import (
 )
 
 
-class CreateUpdateFieldsBaseVaidationInteractor:
+class CreateOrUpdateFieldsBaseVaidationInteractor:
 
     def __init__(self, storage: TaskStorageInterface):
         self.storage = storage

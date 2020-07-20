@@ -12,13 +12,13 @@ Field_Types = [
     for item in FieldTypes
 ]
 
-FIELDS_CSV_FILE_PATH = "/home/ib-developer/Desktop/aws/ib-workflows-backend/ib_tasks/populate/fields.csv"
-
-
-GOFS_CSV_FILE_PATH = "/home/ib-developer/Desktop/aws/ib-workflows-backend/ib_tasks/populate/gofs.csv"
-
-
-TASK_TEMPLATES_CSV_FILE_PATH = "/home/ib-developer/Desktop/aws/ib-workflows-backend/ib_tasks/populate/task_templates.csv"
+MULTI_VALUES_INPUT_FIELDS = [
+    FieldTypes.DROPDOWN.value,
+    FieldTypes.RADIO_GROUP.value,
+    FieldTypes.CHECKBOX_GROUP.value,
+    FieldTypes.MULTI_SELECT_FIELD.value,
+    FieldTypes.MULTI_SELECT_LABELS.value
+]
 
 
 
