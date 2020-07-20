@@ -7,6 +7,10 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01AddUserAPITestCase.test_case status_code'] = '200'
+snapshots['TestCase01AddUserAPITestCase.test_case status_code'] = '400'
 
-snapshots['TestCase01AddUserAPITestCase.test_case body'] = b''
+snapshots['TestCase01AddUserAPITestCase.test_case body'] = {
+    'name': [
+        'This field may not be blank.'
+    ]
+}

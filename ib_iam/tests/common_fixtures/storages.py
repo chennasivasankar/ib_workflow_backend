@@ -3,17 +3,28 @@ from unittest.mock import patch
 
 import pytest
 
-from ib_iam.tests.factories.models import UserDetailsFactory, CompanyFactory, UserTeamFactory, TeamFactory, RoleFactory, \
-    UserRoleFactory
+from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
+from ib_iam.tests.factories.models import UserDetailsFactory, CompanyFactory, \
+    UserTeamFactory, TeamFactory, RoleFactory, UserRoleFactory
+from ib_iam.tests.factories.storage_dtos \
+    import UserDTOFactory, UserTeamDTOFactory, UserCompanyDTOFactory, \
+    UserRoleDTOFactory
 
 
 def reset_sequence():
+    UserDTOFactory.reset_sequence()
+    UserTeamDTOFactory.reset_sequence()
+    UserCompanyDTOFactory.reset_sequence()
+    UserRoleDTOFactory.reset_sequence()
+    UserProfileDTOFactory.reset_sequence(0)
     UserDetailsFactory.reset_sequence(0)
     CompanyFactory.reset_sequence(0)
     UserTeamFactory.reset_sequence(0)
     UserRoleFactory.reset_sequence(0)
     RoleFactory.reset_sequence(0)
     TeamFactory.reset_sequence(0)
+
+
 
 
 @pytest.fixture()
