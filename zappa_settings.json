@@ -15,7 +15,16 @@
     "cloudwatch_metrics_enabled": true,
     "touch": false,
     "exception_handler": "ib_sentry_wrapper.utils.zappa_sentry.capture_exceptions",
-    "runtime": "python3.7"
+    "runtime": "python3.7",
+    "vpc_config": {
+      "SubnetIds": [
+        "subnet-89f666c4",
+        "subnet-69f76724"
+      ],
+      "SecurityGroupIds": [
+        "sg-7071bb18"
+      ]
+    }
   },
   "beta": {
     "project_name": "ib-workflows-backend",
@@ -33,7 +42,16 @@
     "cloudwatch_metrics_enabled": true,
     "touch": false,
     "exception_handler": "ib_sentry_wrapper.utils.zappa_sentry.capture_exceptions",
-    "runtime": "python3.7"
+    "runtime": "python3.7",
+    "vpc_config": {
+      "SubnetIds": [
+        "subnet-89f666c4",
+        "subnet-69f76724"
+      ],
+      "SecurityGroupIds": [
+        "sg-7071bb18"
+      ]
+    }
   },
   "gamma": {
     "project_name": "ib-workflows-backend",
