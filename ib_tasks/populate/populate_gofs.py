@@ -22,6 +22,7 @@ def create_gofs():
     storage = TasksStorageImplementation()
     interactor = CreateOrUpdateGoFsInteractor(storage=storage)
     interactor.create_or_update_gofs(complete_gof_details_dtos)
+    print("successfully populated all records...")
 
 
 def prepare_complete_gof_details_dtos(

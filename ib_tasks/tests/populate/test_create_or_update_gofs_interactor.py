@@ -2,8 +2,7 @@ import pytest
 import factory
 
 from ib_tasks.tests.factories.storage_dtos import (
-    CompleteGoFDetailsDTOFactory, GoFDTOFactory, GoFRolesDTOFactory,
-    GoFRoleDTOFactory
+    CompleteGoFDetailsDTOFactory, GoFDTOFactory, GoFRolesDTOFactory
 )
 from ib_tasks.tests.factories.models import GoFFactory, GoFRoleFactory
 
@@ -279,14 +278,9 @@ class TestCreateOrUpdateGoFsInteractor:
     ):
         # Arrange
         from ib_tasks.models.gof import GoF
-        from ib_tasks.models.gof_role import GoFRole
-        from ib_tasks.constants.enum import PermissionTypes
-        from ib_tasks.tests.factories.models import GoFFactory, GoFRoleFactory
+        from ib_tasks.tests.factories.models import GoFFactory
         gofs = GoFFactory.create_batch(size=2)
         gof_ids = [gof.gof_id for gof in gofs]
-        gof_roles = GoFRoleFactory.create_batch(
-            size=2, gof_id=factory.Iterator(gof_ids)
-        )
         gof_dtos = GoFDTOFactory.create_batch(
             size=2, gof_id=factory.Iterator(gof_ids)
         )
@@ -298,10 +292,6 @@ class TestCreateOrUpdateGoFsInteractor:
         )
         gof_dtos = [
             complete_gof_details_dto.gof_dto
-            for complete_gof_details_dto in complete_gof_details_dtos
-        ]
-        gof_roles_dtos = [
-            complete_gof_details_dto.gof_roles_dto
             for complete_gof_details_dto in complete_gof_details_dtos
         ]
 

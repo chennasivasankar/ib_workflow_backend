@@ -6,8 +6,7 @@ from ib_tasks.models.gof_role import GoFRole
 from ib_tasks.tests.factories.models import GoFFactory, TaskTemplateFactory, \
     GoFRoleFactory, FieldFactory
 from ib_tasks.tests.factories.storage_dtos import GoFRoleDTOFactory, \
-    GoFRoleWithIdDTOFactory, GoFDTOFactory, GoFRolesDTOFactory, \
-    CompleteGoFDetailsDTOFactory
+    GoFDTOFactory, GoFRolesDTOFactory, CompleteGoFDetailsDTOFactory
 
 
 @pytest.mark.django_db
@@ -29,7 +28,6 @@ class TestTasksStorageImplementation:
         GoFRolesDTOFactory.reset_sequence(1)
         CompleteGoFDetailsDTOFactory.reset_sequence(1)
         GoFRoleDTOFactory.reset_sequence(1)
-        GoFRoleWithIdDTOFactory.reset_sequence(1)
 
     def test_get_existing_gof_ids_in_given_gof_ids(
             self, storage, reset_sequence
@@ -91,16 +89,7 @@ class TestTasksStorageImplementation:
         from ib_tasks.models.gof import GoF
         from ib_tasks.tests.factories.storage_dtos import GoFDTOFactory
         from ib_tasks.tests.factories.models import GoFFactory
-        gofs = [
-            GoFFactory(
-                display_name="Request Details",
-                max_columns=3
-            ),
-            GoFFactory(
-                display_name="Vendor Type",
-                max_columns=4
-            )
-        ]
+        gofs = GoFFactory.create_batch(size=2)
 
         gof_dtos = [
             GoFDTOFactory(
@@ -124,50 +113,18 @@ class TestTasksStorageImplementation:
             assert gof.display_name == gof_dto.gof_display_name
             assert gof.max_columns == gof_dto.max_columns
 
-    def test_update_gof_roles(self, storage, reset_sequence):
-
-        # Arrange
-        gof_roles = GoFRoleFactory.create_batch(size=2)
-        gof_role_with_id_dtos = [
-            GoFRoleWithIdDTOFactory(
-                id=gof_role.id,
-                gof_id=gof_role.gof_id,
-                role=gof_role.role,
-                permission_type=PermissionTypes.WRITE.value
-            )
-            for gof_role in gof_roles
-        ]
-
-        # Act
-        storage.update_gof_roles(gof_role_with_id_dtos=gof_role_with_id_dtos)
-
-        # Assert
-        for gof_role_with_id_dto in gof_role_with_id_dtos:
-            gof_role = GoFRole.objects.get(
-                gof_id=gof_role_with_id_dto.gof_id,
-                role=gof_role_with_id_dto.role
-            )
-            assert gof_role_with_id_dto.permission_type == \
-                   gof_role.permission_type
-
-    def test_get_roles_for_given_gof_ids(self, storage, reset_sequence):
+    def test_delete_gof_roles(self, storage, reset_sequence):
 
         # Arrange
         gof_roles = GoFRoleFactory.create_batch(size=2)
         gof_ids = [gof_role.gof_id for gof_role in gof_roles]
 
         # Act
-        actual_gof_role_with_id_dtos = \
-            storage.get_roles_for_given_gof_ids(gof_ids=gof_ids)
+        storage.delete_gof_roles(gof_ids=gof_ids)
 
         # Assert
-        for gof_role_with_id_dto in actual_gof_role_with_id_dtos:
-            for gof_role in gof_roles:
-                if gof_role.id == gof_role_with_id_dto.id:
-                    assert gof_role.gof_id == gof_role_with_id_dto.gof_id
-                    assert gof_role.role == gof_role_with_id_dto.role
-                    assert gof_role.permission_type == \
-                           gof_role_with_id_dto.permission_type
+        gof_roles = list(GoFRole.objects.filter(gof_id__in=gof_ids))
+        assert gof_roles == []
 
     def test_get_gof_dtos_for_given_gof_ids(self, storage, reset_sequence):
 
