@@ -2,7 +2,7 @@ from abc import abstractmethod
 from typing import List, Optional
 from ib_iam.interactors.storage_interfaces.dtos import (
     PaginationDTO, TeamMemberIdsDTO,
-    TeamsWithTotalTeamsCountDTO, AddTeamParametersDTO
+    TeamsWithTotalTeamsCountDTO, TeamWithUserIdsDTO
 )
 
 
@@ -31,8 +31,8 @@ class TeamStorageInterface:
         pass
 
     @abstractmethod
-    def get_valid_member_ids_among_the_given_member_ids(
-            self, member_ids: List[str]
+    def get_valid_user_ids_among_the_given_user_ids(
+            self, user_ids: List[str]
     ) -> List[str]:
         pass
 
@@ -40,10 +40,10 @@ class TeamStorageInterface:
     def add_team(
             self,
             user_id: str,
-            add_team_parameters_dto: AddTeamParametersDTO
+            team_with_user_ids_dto: TeamWithUserIdsDTO
     ) -> str:
         pass
 
     @abstractmethod
-    def add_members_to_team(self, team_id: str, member_ids: List[str]):
+    def add_users_to_team(self, team_id: str, user_ids: List[str]):
         pass

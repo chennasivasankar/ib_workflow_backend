@@ -8,5 +8,5 @@ from .storage_dtos import (
     MemberDTOFactory,
     TeamNameAndDescriptionDTOFactory,
     PaginationDTOFactory,
-    AddTeamParametersDTOFactory
+    TeamWithUserIdsDTOFactory
 )

@@ -17,7 +17,7 @@ class TestCase05AddTeamAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_case(self, snapshot, setup):
-        body = {'name': 'team1', 'description': '',  'member_ids': ["2", "3"]}
+        body = {'name': 'team1', 'description': '',  'user_ids': ["2", "3"]}
         path_params = {}
         query_params = {}
         headers = {}

@@ -11,6 +11,6 @@ snapshots['TestCase04AddTeamAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase04AddTeamAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'DUPLICATE_MEMBERS',
-    'response': 'Given members consists of duplicates, please check it'
+    'res_status': 'DUPLICATE_USERS',
+    'response': 'Given users consists of duplicates, please check it'
 }

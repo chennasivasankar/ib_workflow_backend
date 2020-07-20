@@ -1,5 +1,7 @@
 import pytest
-from ib_iam.storages.team_storage_implementation import TeamStorageImplementation
+from ib_iam.storages.team_storage_implementation import (
+    TeamStorageImplementation
+)
 from ib_iam.tests.factories import TeamMemberIdsDTOFactory
 
 team_ids = [
@@ -13,7 +15,7 @@ class TestGetTeamMemberIdsDtos:
     def test_whether_it_returns_list_of_team_members_dtos(
             self, create_members, create_teams, snapshot
     ):
-        sql_storage = TeamStorageImplementation()
+        storage = TeamStorageImplementation()
         expected_dto = [
             TeamMemberIdsDTOFactory(
                 team_id='f2c02d98-f311-4ab2-8673-3daa00757002',
@@ -23,7 +25,7 @@ class TestGetTeamMemberIdsDtos:
                 ]
             )
         ]
-        actual_dto = sql_storage.get_team_member_ids_dtos(
+        actual_dto = storage.get_team_member_ids_dtos(
             team_ids=team_ids
         )
         assert actual_dto == expected_dto

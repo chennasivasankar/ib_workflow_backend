@@ -11,6 +11,6 @@ snapshots['TestCase05AddTeamAPITestCase.test_case status_code'] = '404'
 
 snapshots['TestCase05AddTeamAPITestCase.test_case body'] = {
     'http_status_code': 404,
-    'res_status': 'INVALID_MEMBERS',
-    'response': 'Given members are not valid, please check it'
+    'res_status': 'INVALID_USERS',
+    'response': 'Given users are invalid(not found), please check it'
 }

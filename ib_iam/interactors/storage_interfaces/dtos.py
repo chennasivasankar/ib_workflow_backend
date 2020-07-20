@@ -9,8 +9,8 @@ class TeamNameAndDescriptionDTO:
 
 
 @dataclass
-class AddTeamParametersDTO(TeamNameAndDescriptionDTO):
-    member_ids: List[str]
+class TeamWithUserIdsDTO(TeamNameAndDescriptionDTO):
+    user_ids: List[str]
 
 
 @dataclass

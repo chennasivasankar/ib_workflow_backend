@@ -4,7 +4,7 @@ REQUEST_BODY_JSON = """
 {
     "name": "string",
     "description": "string",
-    "member_ids": [
+    "user_ids": [
         "string"
     ]
 }
@@ -37,7 +37,7 @@ RESPONSE_404_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "INVALID_MEMBERS"
+    "res_status": "INVALID_USERS"
 }
 """
 

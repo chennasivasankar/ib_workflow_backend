@@ -6,15 +6,15 @@ from ib_iam.interactors.presenter_interfaces.dtos import TeamWithMembersDetailsD
 class TeamPresenterInterface:
 
     @abstractmethod
-    def raise_exception_for_user_has_no_access(self):
+    def get_user_has_no_access_response_for_get_list_of_teams(self):
         pass
 
     @abstractmethod
-    def raise_exception_for_invalid_limit(self):
+    def get_invalid_limit_response_for_get_list_of_teams(self):
         pass
 
     @abstractmethod
-    def raise_exception_for_invalid_offset(self):
+    def get_invalid_offset_response_for_get_list_of_teams(self):
         pass
 
     @abstractmethod
@@ -24,11 +24,15 @@ class TeamPresenterInterface:
         pass
 
     @abstractmethod
-    def raise_exception_for_invalid_members(self):
+    def get_user_has_no_access_response_for_add_team(self):
         pass
 
     @abstractmethod
-    def raise_exception_for_duplicate_members(self):
+    def get_invalid_users_response_for_add_team(self):
+        pass
+
+    @abstractmethod
+    def get_duplicate_users_response_for_add_team(self):
         pass
 
     @abstractmethod
@@ -36,5 +40,5 @@ class TeamPresenterInterface:
         pass
 
     @abstractmethod
-    def raise_exception_if_team_name_already_exists(self, exception):
+    def get_team_name_already_exists_response_for_add_team(self, exception):
         pass

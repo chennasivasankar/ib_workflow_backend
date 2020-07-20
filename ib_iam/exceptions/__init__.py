@@ -1,4 +1,9 @@
 from .custom_exceptions import (
-    UserHasNoAccess, InvalidLimit, InvalidOffset, TeamNameAlreadyExists,
-    InvalidMembers, DuplicateMembers
+    UserHasNoAccess,
+    InvalidLimit,
+    InvalidOffset,
+    UserHasNoAccess,
+    TeamNameAlreadyExists,
+    InvalidUsers,
+    DuplicateUsers
 )

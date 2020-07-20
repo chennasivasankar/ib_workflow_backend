@@ -1,5 +1,5 @@
 import pytest
-from ib_iam.tests.factories import AddTeamParametersDTOFactory
+from ib_iam.tests.factories import TeamWithUserIdsDTOFactory
 from ib_iam.models import Team
 from ib_iam.storages.team_storage_implementation import TeamStorageImplementation
 from ib_iam.tests.common_fixtures.adapters.uuid_mock import prepare_uuid_mock
@@ -18,13 +18,13 @@ class TestAddTeam:
         team_name = "team_name1"
         team_description = "desc1"
         expected_team_id = team_id
-        add_team_parameters_dto = AddTeamParametersDTOFactory(
-            name=team_name, description=team_description, member_ids=[]
+        team_with_user_ids_dto = TeamWithUserIdsDTOFactory(
+            name=team_name, description=team_description, user_ids=[]
         )
 
         actual_team_id = storage.add_team(
             user_id=user_id,
-            add_team_parameters_dto=add_team_parameters_dto
+            team_with_user_ids_dto=team_with_user_ids_dto
         )
 
         team_object = Team.objects.get(team_id=actual_team_id)

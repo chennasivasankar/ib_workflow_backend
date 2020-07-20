@@ -16,7 +16,7 @@ class TestGetTeamsWithTotalTeamsCountDto:
     def test_given_admin_returns_list_of_teams(
             self, create_teams, snapshot
     ):
-        sql_storage = TeamStorageImplementation()
+        storage = TeamStorageImplementation()
         pagination_dto = PaginationDTO(limit=5, offset=0)
         TeamDTOFactory.reset_sequence(1)
         team_dtos = [
@@ -27,7 +27,7 @@ class TestGetTeamsWithTotalTeamsCountDto:
             teams=team_dtos
         )
 
-        actual_dto = sql_storage.get_teams_with_total_teams_count_dto(
+        actual_dto = storage.get_teams_with_total_teams_count_dto(
             pagination_dto=pagination_dto
         )
 

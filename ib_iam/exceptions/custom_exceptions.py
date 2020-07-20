@@ -15,9 +15,9 @@ class TeamNameAlreadyExists(Exception):
         self.team_name = team_name
 
 
-class InvalidMembers(Exception):
+class InvalidUsers(Exception):
     pass
 
 
-class DuplicateMembers(Exception):
+class DuplicateUsers(Exception):
     pass
