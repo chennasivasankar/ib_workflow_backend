@@ -30,11 +30,9 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def create_task_template_stage_actions(
-            self, tasks_dto: List[TaskTemplateStageActionDTO]):
+    def create_initial_stage_to_task_template(self, task_template_stage_dtos):
         pass
 
     @abc.abstractmethod
-    def update_task_template_stage_actions(
-            self, tasks_dto: List[TaskTemplateStageActionDTO]):
+    def get_valid_task_template_ids(self, task_template_ids: List[str]):
         pass
