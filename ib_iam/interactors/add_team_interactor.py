@@ -9,7 +9,9 @@ from ib_iam.exceptions import (
 from ib_iam.interactors.presenter_interfaces.team_presenter_interface import (
     TeamPresenterInterface
 )
-from ib_iam.interactors.storage_interfaces.dtos import TeamWithUserIdsDTO
+from ib_iam.interactors.storage_interfaces.dtos import (
+    TeamDetailsWithUserIdsDTO
+)
 from ib_iam.interactors.storage_interfaces.team_storage_interface import (
     TeamStorageInterface
 )
@@ -23,13 +25,13 @@ class AddTeamInteractor:
     def add_team_wrapper(
             self,
             user_id: str,
-            team_with_user_ids_dto: TeamWithUserIdsDTO,
+            team_details_with_user_ids_dto: TeamDetailsWithUserIdsDTO,
             presenter: TeamPresenterInterface
     ):
         try:
             team_id = self.add_team(
                 user_id=user_id,
-                team_with_user_ids_dto=team_with_user_ids_dto
+                team_details_with_user_ids_dto=team_details_with_user_ids_dto
             )
             response = presenter.get_response_for_add_team(team_id=team_id)
         except UserHasNoAccess:
@@ -42,16 +44,20 @@ class AddTeamInteractor:
             response = presenter.get_invalid_users_response_for_add_team()
         return response
 
-    def add_team(self, user_id: str, team_with_user_ids_dto: TeamWithUserIdsDTO):
-        user_ids = team_with_user_ids_dto.user_ids
+    def add_team(
+            self,
+            user_id: str,
+            team_details_with_user_ids_dto: TeamDetailsWithUserIdsDTO
+    ):
+        user_ids = team_details_with_user_ids_dto.user_ids
         self.storage.raise_exception_if_user_is_not_admin(user_id=user_id)
         team_id = self.storage.get_team_id_if_team_name_already_exists(
-            name=team_with_user_ids_dto.name
+            name=team_details_with_user_ids_dto.name
         )
         is_team_name_already_exists = team_id is not None
         if is_team_name_already_exists:
             raise TeamNameAlreadyExists(
-                team_name=team_with_user_ids_dto.name
+                team_name=team_details_with_user_ids_dto.name
             )
         self._raise_exception_if_duplicate_user_ids_found(
             user_ids=user_ids
@@ -59,7 +65,7 @@ class AddTeamInteractor:
         self._raise_exception_if_invalid_users_found(user_ids=user_ids)
         team_id = self.storage.add_team(
             user_id=user_id,
-            team_with_user_ids_dto=team_with_user_ids_dto
+            team_details_with_user_ids_dto=team_details_with_user_ids_dto
         )
         self.storage.add_users_to_team(
             team_id=team_id, user_ids=user_ids

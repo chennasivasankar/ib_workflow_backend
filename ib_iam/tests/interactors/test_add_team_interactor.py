@@ -3,7 +3,7 @@ from ib_iam.interactors.add_team_interactor import AddTeamInteractor
 from ib_iam.interactors.presenter_interfaces.team_presenter_interface import (
     TeamPresenterInterface
 )
-from ib_iam.tests.factories import TeamWithUserIdsDTOFactory
+from ib_iam.tests.factories import TeamDetailsWithUserIdsDTOFactory
 from ib_iam.interactors.storage_interfaces.team_storage_interface import (
     TeamStorageInterface
 )
@@ -17,7 +17,7 @@ class TestAddTeamInteractor:
         presenter = create_autospec(TeamPresenterInterface)
         interactor = AddTeamInteractor(storage=storage)
         user_id = "1"
-        team_with_user_ids_dto = TeamWithUserIdsDTOFactory()
+        team_details_with_user_ids_dto = TeamDetailsWithUserIdsDTOFactory()
         storage.raise_exception_if_user_is_not_admin \
             .side_effect = UserHasNoAccess
         presenter.get_user_has_no_access_response_for_add_team \
@@ -25,7 +25,7 @@ class TestAddTeamInteractor:
 
         interactor.add_team_wrapper(
             user_id=user_id,
-            team_with_user_ids_dto=team_with_user_ids_dto,
+            team_details_with_user_ids_dto=team_details_with_user_ids_dto,
             presenter=presenter
         )
 
@@ -41,19 +41,19 @@ class TestAddTeamInteractor:
         user_id = "1"
         team_name = "team1"
         expected_team_name_from_team_name_already_exists_error = team_name
-        team_with_user_ids_dto = TeamWithUserIdsDTOFactory(name="team1")
+        team_details_with_user_ids_dto = TeamDetailsWithUserIdsDTOFactory(name="team1")
         storage.get_team_id_if_team_name_already_exists.return_value = "1"
         presenter.get_team_name_already_exists_response_for_add_team \
                  .return_value = Mock()
 
         interactor.add_team_wrapper(
             user_id=user_id,
-            team_with_user_ids_dto=team_with_user_ids_dto,
+            team_details_with_user_ids_dto=team_details_with_user_ids_dto,
             presenter=presenter
         )
 
         storage.get_team_id_if_team_name_already_exists \
-            .assert_called_once_with(name=team_with_user_ids_dto.name)
+            .assert_called_once_with(name=team_details_with_user_ids_dto.name)
         call_obj = \
             presenter.get_team_name_already_exists_response_for_add_team.call_args
         error_obj = call_obj.args[0]
@@ -68,7 +68,7 @@ class TestAddTeamInteractor:
         interactor = AddTeamInteractor(storage=storage)
         user_id = "1"
         user_ids = ["2", "2", "3", "1"]
-        team_with_user_ids_dto = TeamWithUserIdsDTOFactory(
+        team_details_with_user_ids_dto = TeamDetailsWithUserIdsDTOFactory(
             name="team1", user_ids=user_ids
         )
         storage.get_team_id_if_team_name_already_exists.return_value = None
@@ -77,7 +77,7 @@ class TestAddTeamInteractor:
 
         interactor.add_team_wrapper(
             user_id=user_id,
-            team_with_user_ids_dto=team_with_user_ids_dto,
+            team_details_with_user_ids_dto=team_details_with_user_ids_dto,
             presenter=presenter
         )
 
@@ -90,7 +90,7 @@ class TestAddTeamInteractor:
         user_id = "1"
         valid_user_ids = ["2", "3"]
         invalid_user_ids = ["2", "3", "4"]
-        team_with_user_ids_dto = TeamWithUserIdsDTOFactory(
+        team_details_with_user_ids_dto = TeamDetailsWithUserIdsDTOFactory(
             name="team1", user_ids=invalid_user_ids
         )
         storage.get_team_id_if_team_name_already_exists.return_value = None
@@ -100,7 +100,7 @@ class TestAddTeamInteractor:
 
         interactor.add_team_wrapper(
             user_id=user_id,
-            team_with_user_ids_dto=team_with_user_ids_dto,
+            team_details_with_user_ids_dto=team_details_with_user_ids_dto,
             presenter=presenter
         )
 
@@ -115,7 +115,7 @@ class TestAddTeamInteractor:
         user_id = "1"
         team_id = "1"
         user_ids = ["2", "3"]
-        team_with_user_ids_dto = TeamWithUserIdsDTOFactory()
+        team_details_with_user_ids_dto = TeamDetailsWithUserIdsDTOFactory()
         storage.get_team_id_if_team_name_already_exists.return_value = None
         storage.get_valid_user_ids_among_the_given_user_ids \
                .return_value = user_ids
@@ -124,13 +124,13 @@ class TestAddTeamInteractor:
 
         interactor.add_team_wrapper(
             user_id=user_id,
-            team_with_user_ids_dto=team_with_user_ids_dto,
+            team_details_with_user_ids_dto=team_details_with_user_ids_dto,
             presenter=presenter
         )
 
         storage.add_team.assert_called_once_with(
             user_id=user_id,
-            team_with_user_ids_dto=team_with_user_ids_dto
+            team_details_with_user_ids_dto=team_details_with_user_ids_dto
         )
         storage.add_users_to_team(team_id=team_id, user_ids=user_ids)
         presenter.get_response_for_add_team \
