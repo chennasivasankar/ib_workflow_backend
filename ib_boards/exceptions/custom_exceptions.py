@@ -62,6 +62,24 @@ class ColumnIdsAssignedToDifferentBoard(Exception):
         self.column_ids = column_ids
 
 
+class UserDoNotHaveAccessToBoards(Exception):
+    pass
+
+
+class InvalidOffsetValue(Exception):
+    pass
+
+
+class InvalidLimitValue(Exception):
+    pass
+
+
+class InvalidBoardIds(Exception):
+    def __init__(self, board_ids: List[str]):
+        self.board_ids = board_ids
+
+
+
 class DuplicateValuesInColumnDisplayOrder(Exception):
     def __init__(self, display_order_values: List[int]):
         self.display_order_values = display_order_values

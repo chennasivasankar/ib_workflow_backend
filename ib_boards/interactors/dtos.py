@@ -43,3 +43,10 @@ class ColumnDTO:
 class BoardColumnDTO:
     board_id: str
     column_ids: List[str]
+
+
+@dataclass
+class GetBoardsDTO:
+    user_id: int
+    offset: int
+    limit: int

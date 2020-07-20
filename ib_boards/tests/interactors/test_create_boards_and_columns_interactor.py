@@ -3,8 +3,6 @@ Created on: 13/07/20
 Author: Pavankumar Pamuru
 
 """
-import json
-
 import pytest
 
 from ib_boards.interactors.create_boards_and_columns_interactor import \
