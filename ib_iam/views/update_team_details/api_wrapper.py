@@ -10,7 +10,7 @@ from ib_iam.presenters.team_presenter_implementation import (
 from ib_iam.interactors.team_interactor import (
     TeamInteractor
 )
-from ib_iam.interactors.storage_interfaces.dtos import UpdateTeamParametersDTO
+from ib_iam.interactors.storage_interfaces.dtos import TeamWithUserIdsDTO
 
 
 @validate_decorator(validator_class=ValidatorClass)
@@ -21,20 +21,22 @@ def api_wrapper(*args, **kwargs):
     team_id = request_data["team_id"]
     name = request_data["name"]
     description = request_data["description"]
+    user_ids = request_data["user_ids"]
 
     storage = TeamStorageImplementation()
     presenter = TeamPresenterImplementation()
     interactor = TeamInteractor(storage=storage)
 
-    update_team_parameters_dto = UpdateTeamParametersDTO(
+    team_with_user_ids_dto = TeamWithUserIdsDTO(
         team_id=team_id,
         name=name,
-        description=description
+        description=description,
+        user_ids=user_ids
     )
 
-    response = interactor.get_list_of_teams_wrapper(
+    response = interactor.update_team_details_wrapper(
         user_id=user_id,
-        update_team_parameters_dto=update_team_parameters_dto,
+        team_with_user_ids_dto=team_with_user_ids_dto,
         presenter=presenter
     )
     return response

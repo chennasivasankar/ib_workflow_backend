@@ -1,4 +1,9 @@
-from ib_iam.exceptions import UserHasNoAccess
+from ib_iam.exceptions import (
+    UserHasNoAccess,
+    TeamNameAlreadyExists,
+    InvalidUsers,
+    DuplicateUsers
+)
 from ib_iam.exceptions.custom_exceptions import (
     InvalidTeam, TeamNameAlreadyExists
 )
@@ -34,20 +39,20 @@ class TeamInteractor:
             response = presenter.get_invalid_team_response_for_update_team()
         except TeamNameAlreadyExists as exception:
             response = presenter \
-                        .get_team_name_already_exists_response_for_update_team(
-                            exception
-                        )
+                .get_team_name_already_exists_response_for_update_team(
+                    exception
+                )
         return response
 
     def update_team_details(
             self, user_id: str, team_with_user_ids_dto: TeamWithUserIdsDTO
     ):
-
+        user_ids = team_with_user_ids_dto.user_ids
+        team_id = team_with_user_ids_dto.team_id
         self.storage.raise_exception_if_user_is_not_admin(user_id=user_id)
-        self.storage.raise_exception_if_team_not_exists(
-            team_id=team_with_user_ids_dto.team_id
-        )
-
+        self.storage.raise_exception_if_team_not_exists(team_id=team_id)
+        self._raise_exception_if_duplicate_user_ids_found(user_ids=user_ids)
+        self._raise_exception_if_invalid_users_found(user_ids=user_ids)
         team_id = self.storage.get_team_id_if_team_name_already_exists(
             name=team_with_user_ids_dto.name
         )
@@ -59,7 +64,40 @@ class TeamInteractor:
                 raise TeamNameAlreadyExists(
                     team_name=team_with_user_ids_dto.name
                 )
-
         self.storage.update_team_details(
             team_with_user_ids_dto=team_with_user_ids_dto
         )
+        team_member_ids = self.storage.get_member_ids_of_team(team_id=team_id)
+        self._add_members_to_team(
+            user_ids=user_ids, team_member_ids=team_member_ids, team_id=team_id
+        )
+        self._delete_members_of_team(
+            user_ids=user_ids, team_member_ids=team_member_ids, team_id=team_id
+        )
+
+    def _add_members_to_team(self, user_ids, team_member_ids, team_id):
+        user_ids_to_add = list(set(user_ids) - set(team_member_ids))
+        self.storage.add_users_to_team(
+            team_id=team_id, user_ids=user_ids_to_add
+        )
+
+    @staticmethod
+    def _delete_members_of_team(user_ids, team_member_ids, team_id):
+        member_ids_to_delete = list(set(team_member_ids) - set(user_ids))
+        self.storage.delete_members_from_team(tem_id, member_ids=)
+
+
+    @staticmethod
+    def _raise_exception_if_duplicate_user_ids_found(user_ids: List[str]):
+        is_duplicate_user_ids_exist = len(user_ids) != len(set(user_ids))
+        if is_duplicate_user_ids_exist:
+            raise DuplicateUsers()
+
+    def _raise_exception_if_invalid_users_found(self, user_ids: List[str]):
+        user_ids_from_db = \
+            self.storage.get_valid_user_ids_among_the_given_user_ids(
+                user_ids=user_ids
+            )
+        is_invalid_users_found = len(user_ids) != len(user_ids_from_db)
+        if is_invalid_users_found:
+            raise InvalidUsers()

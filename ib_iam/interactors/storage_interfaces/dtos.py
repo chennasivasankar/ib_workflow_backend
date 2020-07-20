@@ -12,9 +12,10 @@ class TeamNameAndDescriptionDTO:
 class TeamDetailsWithUserIdsDTO(TeamNameAndDescriptionDTO):
     user_ids: List[str]
 
+
 @dataclass
-class TeamAndTeamIdWithUserIdsDTO(TeamWithUserIdsDTO):
-    team_id:
+class TeamWithUserIdsDTO(TeamDetailsWithUserIdsDTO):
+    team_id: str
 
 
 @dataclass

@@ -51,20 +51,18 @@ class AddTeamInteractor:
     ):
         user_ids = team_details_with_user_ids_dto.user_ids
         self.storage.raise_exception_if_user_is_not_admin(user_id=user_id)
+        self._raise_exception_if_duplicate_user_ids_found(
+            user_ids=user_ids
+        )
+        self._raise_exception_if_invalid_users_found(user_ids=user_ids)
         team_id = self.storage.get_team_id_if_team_name_already_exists(
             name=team_details_with_user_ids_dto.name
         )
-
         is_team_name_already_exists = team_id is not None
         if is_team_name_already_exists:
             raise TeamNameAlreadyExists(
                 team_name=team_details_with_user_ids_dto.name
             )
-
-        self._raise_exception_if_duplicate_user_ids_found(
-            user_ids=user_ids
-        )
-        self._raise_exception_if_invalid_users_found(user_ids=user_ids)
         team_id = self.storage.add_team(
             user_id=user_id,
             team_details_with_user_ids_dto=team_details_with_user_ids_dto
