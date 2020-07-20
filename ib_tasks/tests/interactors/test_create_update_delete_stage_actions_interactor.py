@@ -3,12 +3,12 @@ import json
 from unittest.mock import create_autospec
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
-from ib_tasks.interactors.stage_actions_validation_interactor \
+from ib_tasks.interactors.create_update_delete_stage_actions \
     import (
         EmptyStageDisplayLogic, DuplicateStageButtonsException,
         DuplicateStageActionNamesException, EmptyStageButtonText
     )
-from ib_tasks.interactors.create_update_delete_stage_actions_interactor \
+from ib_tasks.interactors.create_update_delete_stage_actions \
     import CreateUpdateDeleteStageActionsInteractor
 from ib_tasks.tests.factories.interactor_dtos import StageActionDTOFactory
 
@@ -189,7 +189,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
 
     @staticmethod
     def test_given_create_stage_actions_creates_actions(mocker):
-        # Arrange
+
         StageActionDTOFactory.reset_sequence(0)
         actions_dto = StageActionDTOFactory.create_batch(size=2)
         stage_actions_dto = []
