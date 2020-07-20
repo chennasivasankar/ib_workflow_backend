@@ -9,7 +9,7 @@ class TeamNameAndDescriptionDTO:
 
 
 @dataclass
-class TeamWithUserIdsDTO(TeamNameAndDescriptionDTO):
+class TeamDetailsWithUserIdsDTO(TeamNameAndDescriptionDTO):
     user_ids: List[str]
 
 @dataclass

@@ -2,7 +2,7 @@ from abc import abstractmethod
 from typing import List, Optional
 from ib_iam.interactors.storage_interfaces.dtos import (
     PaginationDTO, TeamMemberIdsDTO,
-    TeamsWithTotalTeamsCountDTO, TeamWithUserIdsDTO
+    TeamsWithTotalTeamsCountDTO, TeamDetailsWithUserIdsDTO
 )
 
 
@@ -40,7 +40,7 @@ class TeamStorageInterface:
     def add_team(
             self,
             user_id: str,
-            team_with_user_ids_dto: TeamWithUserIdsDTO
+            team_details_with_user_ids_dto: TeamDetailsWithUserIdsDTO
     ) -> str:
         pass
 

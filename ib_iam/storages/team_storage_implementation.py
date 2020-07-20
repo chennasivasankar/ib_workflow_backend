@@ -3,9 +3,8 @@ from ib_iam.interactors.storage_interfaces.team_storage_interface import TeamSto
 from ib_iam.models import UserDetails, Team, TeamMember
 from ib_iam.exceptions.custom_exceptions import UserHasNoAccess, TeamNameAlreadyExists
 from ib_iam.interactors.storage_interfaces.dtos import (
-    PaginationDTO, TeamDTO,
-    TeamMemberIdsDTO, TeamsWithTotalTeamsCountDTO,
-    TeamWithUserIdsDTO
+    PaginationDTO, TeamDTO, TeamMemberIdsDTO,
+    TeamsWithTotalTeamsCountDTO, TeamDetailsWithUserIdsDTO
 )
 
 
@@ -70,11 +69,11 @@ class TeamStorageImplementation(TeamStorageInterface):
     def add_team(
             self,
             user_id: str,
-            team_with_user_ids_dto: TeamWithUserIdsDTO
+            team_details_with_user_ids_dto: TeamDetailsWithUserIdsDTO
     ) -> str:
         team_object = Team.objects.create(
-            name=team_with_user_ids_dto.name,
-            description=team_with_user_ids_dto.description,
+            name=team_details_with_user_ids_dto.name,
+            description=team_details_with_user_ids_dto.description,
             created_by=user_id
         )
         return str(team_object.team_id)
