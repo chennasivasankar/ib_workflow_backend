@@ -111,6 +111,24 @@
         "teams"
       ]
     },
+    "TeamWithUserIds": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/TeamNameAndDescription"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "user_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
     "CommonHttpExceptionFields": {
       "type": "object",
       "properties": {
@@ -126,28 +144,7 @@
         "http_status_code"
       ]
     },
-    "UserHasNoAccess": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/CommonHttpExceptionFields"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "res_status": {
-              "type": "string",
-              "enum": [
-                "USER_HAS_NO_ACCESS"
-              ]
-            }
-          },
-          "required": [
-            "res_status"
-          ]
-        }
-      ]
-    },
-    "InvalidLimitOffset": {
+    "BadRequestResponseForGetListOfTeams": {
       "allOf": [
         {
           "$ref": "#/definitions/CommonHttpExceptionFields"
@@ -169,7 +166,7 @@
         }
       ]
     },
-    "TeamNameAlreadyExists": {
+    "UnauthorizedResponseForGetListOfTeams": {
       "allOf": [
         {
           "$ref": "#/definitions/CommonHttpExceptionFields"
@@ -180,7 +177,71 @@
             "res_status": {
               "type": "string",
               "enum": [
-                "TEAM_NAME_ALREADY_EXISTS"
+                "USER_HAS_NO_ACCESS"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
+        }
+      ]
+    },
+    "BadRequestResponseForAddTeam": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "TEAM_NAME_ALREADY_EXISTS",
+                "DUPLICATE_USERS"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
+        }
+      ]
+    },
+    "UnauthorizedResponseForAddTeam": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "USER_HAS_NO_ACCESS"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
+        }
+      ]
+    },
+    "NotFoundResponseForAddTeam": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "INVALID_USERS"
               ]
             }
           },
@@ -201,7 +262,7 @@
         "team_id"
       ]
     },
-    "InvalidTeamId": {
+    "BadRequestResponseForUpdateTeam": {
       "allOf": [
         {
           "$ref": "#/definitions/CommonHttpExceptionFields"
@@ -212,7 +273,7 @@
             "res_status": {
               "type": "string",
               "enum": [
-                "INVALID_TEAM_ID"
+                "TEAM_NAME_ALREADY_EXISTS"
               ]
             }
           },
@@ -222,20 +283,47 @@
         }
       ]
     },
-    "UpdateTeamParameter": {
+    "UnauthorizedResponseForUpdateTeam": {
       "allOf": [
         {
-          "$ref": "#/definitions/TeamNameAndDescription"
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "USER_HAS_NO_ACCESS"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
         }
       ]
     },
-    "TeamCreated": {
-      "type": "object",
-      "properties": {
-        "team_id": {
-          "type": "string"
+    "NotFoundResponseForUpdateTeam": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "INVALID_TEAM"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
         }
-      }
+      ]
     }
   },
   "parameters": {
@@ -253,13 +341,13 @@
       "type": "integer",
       "default": 0
     },
-    "AddTeamParameter": {
+    "AddTeamParameters": {
       "name": "details_to_add_team",
       "in": "body",
       "required": true,
-      "description": "parameters or details to create or add a team",
+      "description": "parameters or details to create/add a team",
       "schema": {
-        "$ref": "#/definitions/TeamNameAndDescription"
+        "$ref": "#/definitions/TeamWithUserIds"
       }
     },
     "TeamId": {
@@ -274,11 +362,71 @@
       "in": "body",
       "description": "details that are to be updated of a team",
       "schema": {
-        "$ref": "#/definitions/UpdateTeamParameter"
+        "$ref": "#/definitions/TeamWithUserIds"
       }
     }
   },
   "responses": {
+    "BadRequestResponseForGetListOfTeams": {
+      "description": "",
+      "schema": {
+        "$ref": "#/definitions/BadRequestResponseForGetListOfTeams"
+      }
+    },
+    "UnauthorizedResponseForGetListOfTeams": {
+      "description": "BadRequest",
+      "schema": {
+        "$ref": "#/definitions/UnauthorizedResponseForGetListOfTeams"
+      }
+    },
+    "SuccessResponseForGetListOfTeams": {
+      "description": "",
+      "schema": {
+        "$ref": "#/definitions/ResponseForGetListOfTeams"
+      }
+    },
+    "BadRequestResponseForAddTeam": {
+      "description": "",
+      "schema": {
+        "$ref": "#/definitions/BadRequestResponseForAddTeam"
+      }
+    },
+    "UnauthorizedResponseForAddTeam": {
+      "description": "",
+      "schema": {
+        "$ref": "#/definitions/UnauthorizedResponseForAddTeam"
+      }
+    },
+    "NotFoundResponseForAddTeam": {
+      "description": "",
+      "schema": {
+        "$ref": "#/definitions/NotFoundResponseForAddTeam"
+      }
+    },
+    "SuccessfullyCreatedResponseForAddTeam": {
+      "description": "",
+      "schema": {
+        "$ref": "#/definitions/TeamId"
+      }
+    },
+    "BadRequestResponseForUpdateTeam": {
+      "description": "",
+      "schema": {
+        "$ref": "#/definitions/BadRequestResponseForUpdateTeam"
+      }
+    },
+    "UnauthorizedResponseForUpdateTeam": {
+      "description": "",
+      "schema": {
+        "$ref": "#/definitions/UnauthorizedResponseForUpdateTeam"
+      }
+    },
+    "NotFoundResponseForUpdateTeam": {
+      "description": "",
+      "schema": {
+        "$ref": "#/definitions/NotFoundResponseForUpdateTeam"
+      }
+    }
   },
   "paths": {
     "/teams/v1/": {
@@ -303,22 +451,13 @@
         ],
         "responses": {
           "200": {
-            "description": "list of teams",
-            "schema": {
-              "$ref": "#/definitions/ResponseForGetListOfTeams"
-            }
+            "$ref": "#/responses/SuccessResponseForGetListOfTeams"
           },
           "400": {
-            "description": "BadRequest",
-            "schema": {
-              "$ref": "#/definitions/InvalidLimitOffset"
-            }
+            "$ref": "#/responses/BadRequestResponseForGetListOfTeams"
           },
           "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "$ref": "#/definitions/UserHasNoAccess"
-            }
+            "$ref": "#/responses/UnauthorizedResponseForGetListOfTeams"
           }
         }
       }
@@ -337,27 +476,21 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/AddTeamParameter"
+            "$ref": "#/parameters/AddTeamParameters"
           }
         ],
         "responses": {
           "201": {
-            "description": "Team added Successfully",
-            "schema": {
-              "$ref": "#/definitions/TeamId"
-            }
+            "$ref": "#/responses/SuccessfullyCreatedResponseForAddTeam"
           },
           "400": {
-            "description": "BadRequest",
-            "schema": {
-              "$ref": "#/definitions/TeamNameAlreadyExists"
-            }
+            "$ref": "#/responses/BadRequestResponseForAddTeam"
           },
           "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "$ref": "#/definitions/UserHasNoAccess"
-            }
+            "$ref": "#/responses/UnauthorizedResponseForAddTeam"
+          },
+          "404": {
+            "$ref": "#/responses/NotFoundResponseForAddTeam"
           }
         }
       }
@@ -389,19 +522,19 @@
           "400": {
             "description": "BadRequest",
             "schema": {
-              "$ref": "#/definitions/TeamNameAlreadyExists"
+              "$ref": "#/definitions/BadRequestResponseForUpdateTeam"
             }
           },
           "401": {
             "description": "Unauthorized",
             "schema": {
-              "$ref": "#/definitions/UserHasNoAccess"
+              "$ref": "#/definitions/UnauthorizedResponseForUpdateTeam"
             }
           },
           "404": {
             "description": "NotFound",
             "schema": {
-              "$ref": "#/definitions/InvalidTeamId"
+              "$ref": "#/definitions/NotFoundResponseForUpdateTeam"
             }
           }
         }

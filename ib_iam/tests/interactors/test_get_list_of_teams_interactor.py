@@ -1,5 +1,4 @@
 import pytest
-from django_swagger_utils.drf_server.exceptions import Unauthorized, BadRequest
 from mock import create_autospec, Mock
 from ib_iam.interactors.get_list_of_teams_interactor import (
     GetListOfTeamsInteractor
@@ -10,61 +9,71 @@ from ib_iam.interactors.storage_interfaces.team_storage_interface import (
 from ib_iam.interactors.presenter_interfaces.team_presenter_interface import (
     TeamPresenterInterface
 )
-from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO, TeamsWithTotalTeamsCountDTO
-from ib_iam.tests.factories.presenter_dtos import TeamWithMembersDetailsDTOFactory
-from ib_iam.tests.factories.storage_dtos import TeamsWithTotalTeamsCountDTOFactory, PaginationDTOFactory
+from ib_iam.tests.factories.presenter_dtos import (
+    TeamWithMembersDetailsDTOFactory
+)
+from ib_iam.tests.factories.storage_dtos import (
+    TeamsWithTotalTeamsCountDTOFactory, PaginationDTOFactory
+)
 
 
 class TestGetListOfTeamsInteractor:
 
-    def test_if_user_not_admin_raises_unauthorized_exception(self):
+    def test_if_user_not_admin_returns_unauthorized_response(self):
         from ib_iam.exceptions.custom_exceptions import UserHasNoAccess
         storage = create_autospec(TeamStorageInterface)
         presenter = create_autospec(TeamPresenterInterface)
         interactor = GetListOfTeamsInteractor(storage=storage)
         user_id = "1"
-        pagination_dto = PaginationDTO(limit=5, offset=0)
-        storage.raise_exception_if_user_is_not_admin.side_effect = UserHasNoAccess
-        presenter.raise_exception_for_user_has_no_access.side_effect = Unauthorized
+        pagination_dto = PaginationDTOFactory()
+        storage.raise_exception_if_user_is_not_admin \
+               .side_effect = UserHasNoAccess
+        presenter.get_user_has_no_access_response_for_get_list_of_teams \
+                 .return_value = Mock()
 
-        with pytest.raises(Unauthorized):
-            interactor.get_list_of_teams_wrapper(
-                user_id=user_id, pagination_dto=pagination_dto, presenter=presenter
-            )
+        interactor.get_list_of_teams_wrapper(
+            user_id=user_id, pagination_dto=pagination_dto,
+            presenter=presenter
+        )
 
-        storage.raise_exception_if_user_is_not_admin.assert_called_once_with(user_id=user_id)
-        presenter.raise_exception_for_user_has_no_access.assert_called_once()
+        storage.raise_exception_if_user_is_not_admin.assert_called_once_with(
+            user_id=user_id
+        )
+        presenter.get_user_has_no_access_response_for_get_list_of_teams \
+                 .assert_called_once()
 
     @pytest.mark.parametrize("limit", [-1, 0])
-    def test_if_limit_is_invalid_raises_invalid_limit_exception(self, limit):
+    def test_invalid_limit_returns_invalid_limit_response(self, limit):
         storage = create_autospec(TeamStorageInterface)
         presenter = create_autospec(TeamPresenterInterface)
         interactor = GetListOfTeamsInteractor(storage=storage)
-        presenter.raise_exception_for_invalid_limit.side_effect = BadRequest
-        pagination_dto = PaginationDTO(limit=limit, offset=5)
+        presenter.get_invalid_limit_response_for_get_list_of_teams \
+                 .return_value = Mock()
+        pagination_dto = PaginationDTOFactory(limit=limit)
 
-        with pytest.raises(BadRequest):
-            interactor.get_list_of_teams_wrapper(
-                user_id="1", pagination_dto=pagination_dto, presenter=presenter
-            )
+        interactor.get_list_of_teams_wrapper(
+            user_id="1", pagination_dto=pagination_dto, presenter=presenter
+        )
 
-        presenter.raise_exception_for_invalid_limit.assert_called_once()
+        presenter.get_invalid_limit_response_for_get_list_of_teams \
+                 .assert_called_once()
 
-    def test_if_offset_is_invalid_raises_invalid_offset_exception(self):
+    def test_invalid_offset_returns_invalid_offset_response(self):
         storage = create_autospec(TeamStorageInterface)
         presenter = create_autospec(TeamPresenterInterface)
         interactor = GetListOfTeamsInteractor(storage=storage)
         pagination_dto = PaginationDTOFactory(offset=-1)
-        presenter.raise_exception_for_invalid_offset.side_effect = BadRequest
+        presenter.get_invalid_offset_response_for_get_list_of_teams \
+                 .return_value = Mock()
 
-        with pytest.raises(BadRequest):
-            interactor.get_list_of_teams_wrapper(
-                user_id="1", pagination_dto=pagination_dto, presenter=presenter
-            )
+        interactor.get_list_of_teams_wrapper(
+            user_id="1", pagination_dto=pagination_dto, presenter=presenter
+        )
 
-        presenter.raise_exception_for_invalid_offset.assert_called_once()
+        presenter.get_invalid_offset_response_for_get_list_of_teams \
+                 .assert_called_once()
 
-    def test_whether_it_returns_list_of_teams(
+    def test_given_valid_details_returns_list_of_teams(
             self,
             mocker,
             expected_list_of_teams_dtos,

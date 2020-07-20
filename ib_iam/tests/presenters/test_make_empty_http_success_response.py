@@ -1,4 +1,6 @@
-from ib_iam.presenters.team_presenter_implementation import TeamPresenterImplementation
+from ib_iam.presenters.team_presenter_implementation import (
+    TeamPresenterImplementation
+)
 
 
 class TestMakeEmptyHttpSuccessResponse:

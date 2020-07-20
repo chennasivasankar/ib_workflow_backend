@@ -18,7 +18,6 @@ member_ids = [
     '7ee2c7b4-34c8-4d65-a83a-f87da75db24e'
 ]
 
-
 @pytest.fixture()
 def get_list_of_team_dtos():
     TeamDTOFactory.reset_sequence(1)

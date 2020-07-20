@@ -9,6 +9,11 @@ class TeamNameAndDescriptionDTO:
 
 
 @dataclass
+class TeamWithUserIdsDTO(TeamNameAndDescriptionDTO):
+    user_ids: List[str]
+
+
+@dataclass
 class PaginationDTO:
     limit: int
     offset: int
@@ -38,10 +43,3 @@ class MemberDTO:
     member_id: str
     name: str
     profile_pic_url: str
-
-
-@dataclass
-class UpdateTeamParametersDTO:
-    team_id: str
-    name: str
-    description: str

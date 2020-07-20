@@ -12,5 +12,5 @@ snapshots['TestCase04GetListOfTeamsAPITestCase.test_case status_code'] = '400'
 snapshots['TestCase04GetListOfTeamsAPITestCase.test_case body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_OFFSET',
-    'response': 'Given offset is not valid, please check it'
+    'response': 'Given offset is invalid to retrieve list of teams'
 }

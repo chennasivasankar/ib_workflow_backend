@@ -6,14 +6,22 @@ from ib_iam.interactors.storage_interfaces.dtos import (
     TeamNameAndDescriptionDTO,
     PaginationDTO,
     TeamsWithTotalTeamsCountDTO,
-    UpdateTeamParametersDTO
+    TeamWithUserIdsDTO
 )
+
+team_ids = [
+    "f2c02d98-f311-4ab2-8673-3daa00757002",
+    "aa66c40f-6d93-484a-b418-984716514c7b",
+    "c982032b-53a7-4dfa-a627-4701a5230765"
+]
 
 member_ids = [
     '2bdb417e-4632-419a-8ddd-085ea272c6eb',
     '548a803c-7b48-47ba-a700-24f2ea0d1280',
     '4b8fb6eb-fa7d-47c1-8726-cd917901104e'
 ]
+
+user_ids = member_ids
 
 
 class TeamDTOFactory(factory.Factory):
@@ -54,6 +62,19 @@ class TeamNameAndDescriptionDTOFactory(factory.Factory):
     description = factory.sequence(lambda n: "team_description%d" % n)
 
 
+class TeamWithUserIdsDTOFactory(
+    TeamNameAndDescriptionDTOFactory, factory.Factory
+):
+    class Meta:
+        model = TeamWithUserIdsDTO
+
+    user_ids = factory.Iterator([
+        [user_ids[0], user_ids[2]],
+        [user_ids[2], user_ids[1]],
+        [user_ids[2], user_ids[1]]
+    ])
+
+
 class PaginationDTOFactory(factory.Factory):
     class Meta:
         model = PaginationDTO
@@ -62,11 +83,6 @@ class PaginationDTOFactory(factory.Factory):
     offset = factory.Iterator([4, 3, 10])
 
 
-team_ids = [
-    "f2c02d98-f311-4ab2-8673-3daa00757002",
-    "aa66c40f-6d93-484a-b418-984716514c7b",
-    "c982032b-53a7-4dfa-a627-4701a5230765"
-]
 team_dtos = [
     TeamDTOFactory(team_id=team_id) for team_id in team_ids
 ]
@@ -81,12 +97,3 @@ class TeamsWithTotalTeamsCountDTOFactory(factory.Factory):
         [team_dtos[1], team_dtos[2]]
     ])
     total_teams_count = 2
-
-
-class UpdateTeamParametersDTOFactory(factory.Factory):
-    class Meta:
-        model = UpdateTeamParametersDTO
-
-    team_id = factory.Faker("uuid4")
-    name = factory.sequence(lambda n: "team%d" % n)
-    description = factory.sequence(lambda n: "team_description%d" % n)

@@ -3,8 +3,9 @@ from ib_iam.interactors.storage_interfaces.team_storage_interface import TeamSto
 from ib_iam.models import UserDetails, Team, TeamMember
 from ib_iam.exceptions.custom_exceptions import UserHasNoAccess, TeamNameAlreadyExists
 from ib_iam.interactors.storage_interfaces.dtos import (
-    PaginationDTO, TeamDTO, TeamMemberIdsDTO, TeamNameAndDescriptionDTO,
-    TeamsWithTotalTeamsCountDTO
+    PaginationDTO, TeamDTO,
+    TeamMemberIdsDTO, TeamsWithTotalTeamsCountDTO,
+    TeamWithUserIdsDTO
 )
 
 
@@ -59,17 +60,33 @@ class TeamStorageImplementation(TeamStorageInterface):
         except Team.DoesNotExist:
             return None
 
+    def get_valid_user_ids_among_the_given_user_ids(
+            self, user_ids: List[str]
+    ):
+        user_ids = UserDetails.objects.filter(user_id__in=user_ids) \
+            .values_list('user_id', flat=True)
+        return list(user_ids)
+
     def add_team(
             self,
             user_id: str,
-            team_name_and_description_dto: TeamNameAndDescriptionDTO
+            team_with_user_ids_dto: TeamWithUserIdsDTO
     ) -> str:
         team_object = Team.objects.create(
-            name=team_name_and_description_dto.name,
-            description=team_name_and_description_dto.description,
+            name=team_with_user_ids_dto.name,
+            description=team_with_user_ids_dto.description,
             created_by=user_id
         )
         return str(team_object.team_id)
+
+    def add_users_to_team(self, team_id: str, user_ids: List[str]):
+        team_members = [
+            TeamMember(
+                team_id=team_id,
+                member_id=user_id
+            ) for user_id in user_ids
+        ]
+        TeamMember.objects.bulk_create(team_members)
 
     @staticmethod
     def _get_team_dtos(team_objects):

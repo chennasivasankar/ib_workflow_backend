@@ -17,3 +17,11 @@ class TeamNameAlreadyExists(Exception):
 
 class InvalidTeamId(Exception):
     pass
+
+
+class InvalidUsers(Exception):
+    pass
+
+
+class DuplicateUsers(Exception):
+    pass
