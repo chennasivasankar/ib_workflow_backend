@@ -33,9 +33,9 @@ class TestTasksStorageImplementation:
             self, storage, reset_sequence
     ):
         # Arrange
-        GoFFactory.create_batch(size=2)
+        gofs = GoFFactory.create_batch(size=2)
         gof_ids = ["GOF_ID-1", "GOF_ID-2", "GOF_ID-3"]
-        expected_existing_gof_ids = ["GOF_ID-1", "GOF_ID-2"]
+        expected_existing_gof_ids = [gof.gof_id for gof in gofs]
 
         # Act
         actual_existing_gof_ids = \

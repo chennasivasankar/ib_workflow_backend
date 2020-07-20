@@ -44,12 +44,6 @@ class GoFRoleDTO:
     role: str
     permission_type: PermissionTypes
 
-
-@dataclass
-class GoFRoleWithIdDTO(GoFRoleDTO):
-    id: str
-
-
 @dataclass
 class CompleteGoFDetailsDTO:
     gof_dto: GoFDTO
