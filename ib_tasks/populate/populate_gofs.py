@@ -12,17 +12,15 @@ def create_gofs():
         CreateOrUpdateGoFsInteractor
     from ib_tasks.storages.tasks_storage_implementation import \
         TasksStorageImplementation
-    print("reading google sheet.....")
+
     sheet = read_google_sheet(sheet_name=GOOGLE_SHEET_NAME)
     gof_sheet = sheet.worksheet(GOF_SUB_SHEET_TITLE)
     gof_records = gof_sheet.get_all_records()
     complete_gof_details_dtos = prepare_complete_gof_details_dtos(gof_records)
 
-    print("calling create or update gofs interactor.....")
     storage = TasksStorageImplementation()
     interactor = CreateOrUpdateGoFsInteractor(storage=storage)
     interactor.create_or_update_gofs(complete_gof_details_dtos)
-    print("successfully populated all records...")
 
 
 def prepare_complete_gof_details_dtos(
