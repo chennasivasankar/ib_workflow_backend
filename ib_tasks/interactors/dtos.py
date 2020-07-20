@@ -1,27 +1,18 @@
-"""
-Created on: 15/07/20
-Author: Pavankumar Pamuru
-
-"""
-from typing import Union, List, Optional
 from dataclasses import dataclass
-from ib_tasks.constants.enum import FieldTypes
-
+from typing import List, Optional
 
 @dataclass
-class FieldDTO:
-    field_id: int
-    field_display_name: str
-    field_type: FieldTypes
-    field_values: Optional[Union[str, List[str]]]
-    required: bool
-    read_permissions_to_roles: List[str]
-    write_permissions_to_roles: List[str]
-    help_text: Optional[str]
-    tool_tip: Optional[str]
-    placeholder_text: Optional[str]
-    error_message: Optional[str]
+class StageLogicAttributes:
+    stage_id: str
+    status_id: str
 
+@dataclass
+class StageDTO:
+    stage_id: str
+    task_template_id: str
+    value: int
+    stage_display_name: str
+    stage_display_logic: str
 
 @dataclass
 class ActionDTO:

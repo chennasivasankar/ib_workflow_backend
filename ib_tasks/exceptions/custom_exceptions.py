@@ -1,6 +1,37 @@
 from typing import List
 
 
+class InvalidStagesTaskTemplateId(Exception):
+    def __init__(self, invalid_stages_task_template_ids: List[str]):
+        self.invalid_stages_task_template_ids = invalid_stages_task_template_ids
+
+
+class InvalidStageValues(Exception):
+    def __init__(self, invalid_value_stages: List[str]):
+        self.invalid_value_stages = invalid_value_stages
+
+
+class DuplicateStageIds(Exception):
+    def __init__(self, duplicate_stage_ids: List[str]):
+        self.duplicate_stage_ids = duplicate_stage_ids
+
+
+class InvalidTaskTemplateIds(Exception):
+    def __init__(self, invalid_task_template_ids: List[str]):
+        self.invalid_task_template_ids = invalid_task_template_ids
+
+
+class InvalidStageDisplayLogic(Exception):
+    def __init__(self, invalid_stage_display_logic_stages: List[str]):
+        self.invalid_stage_display_logic_stages = invalid_stage_display_logic_stages
+
+
+class InvalidStagesDisplayName(Exception):
+    def __init__(self, invalid_stages_display_name: List[str]):
+        self.invalid_stages_display_name = invalid_stages_display_name
+from typing import List
+
+
 class DuplicateGoFIds(Exception):
     def __init__(self, gof_ids: List[str]):
         self.message = "Given duplicate gof ids {}".format(gof_ids)
@@ -129,7 +160,53 @@ class DuplicateConstantNames(Exception):
         super().__init__(self.message)
 
 
-class ConflictingGoFOrder(Exception):
+class InvalidFieldIdException(Exception):
+    def __init__(self, error_message: str):
+        self.error_message = error_message
 
-    def __init__(self, invalid_order_gof_ids: List[str]):
-        self.gof_ids = invalid_order_gof_ids
+
+class DuplicationOfFieldIdsExist(Exception):
+
+    def __init__(self, field_ids: List[str]):
+        self.field_ids = field_ids
+
+
+class FieldsDuplicationOfDropDownValues(Exception):
+
+    def __init__(self, fieds_with_dropdown_duplicate_values):
+        self.fieds_with_dropdown_duplicate_values = \
+            fieds_with_dropdown_duplicate_values
+
+
+class InvalidRolesException(Exception):
+
+    def __init__(self, roles):
+        self.roles = roles
+
+
+class EmptyValueForPermissions(Exception):
+
+    def __init__(self, message: str):
+        self.message = message
+
+
+class InvalidValueForFieldDisplayName(Exception):
+
+    def __init__(self, message: str):
+        self.message = message
+
+
+class InvalidValueForFieldType(Exception):
+
+    def __init__(self, message: str):
+        self.message = message
+
+
+class InvalidGOFIds(Exception):
+    def __int__(self, message: str):
+        self.message = message
+
+
+class DuplicateTaskStatusVariableIds(Exception):
+    def __init__(self, duplicate_status_ids_for_tasks: List[str]):
+        self.task_ids = duplicate_status_ids_for_tasks
