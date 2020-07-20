@@ -199,19 +199,19 @@
             ]
           },
           "TaskCompleteDetails": {
-            "allOf": [{
-              "$ref": "#/definitions/TaskDetails"
-            },
-              {
                 "type": "object",
                 "properties": {
-                "total_tasks_count": {
-                "type": "integer",
-                "format": "int64"}
-              },
-                "required": ["total_tasks_count"]
-              }
-            ]
+                  "total_tasks_count": {
+                    "type": "integer",
+                    "format": "int64"},
+                  "tasks": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/TaskDetails"
+                    }
+                  }
+                },
+                "required": ["total_tasks_count", "tasks"]
           }
         },
         "parameters": {
@@ -247,12 +247,6 @@
           }
         },
         "responses": {
-          "InvalidBoardsResponse": {
-            "description": "invalid offset or invalid limit",
-            "schema": {
-              "$ref": "#/definitions/InvalidPaginationDetails"
-            }
-          },
           "InvalidAccessResponse": {
             "description": "unauthorized access",
             "schema": {
@@ -312,16 +306,25 @@
           "ColumnsDetailsResponse": {
             "description": "columns details",
             "schema": {
-              "$ref": "#/definitions/ColumnDetails"
+              "type": "object",
+              "properties": {
+                "total_columns_count": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "columns": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/ColumnDetails"
+                  }
+                }
+              }
             }
           },
           "TaskDetailsResponse": {
             "description": "tasks details",
             "schema": {
-              "type": "array",
-              "items": {
                 "$ref": "#/definitions/TaskCompleteDetails"
-              }
             }
           }
         },
