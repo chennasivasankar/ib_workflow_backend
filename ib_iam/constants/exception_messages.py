@@ -32,8 +32,7 @@ DUPLICATE_USERS_FOR_ADD_TEAM = (
     "DUPLICATE_USERS"
 )
 
-INVALID_TEAM_ID = (
-    "Given team_id is invalid",
-    "INVALID_TEAM_ID"
+INVALID_TEAM_FOR_UPDATE_TEAM = (
+    "Given team is invalid(NotFound)",
+    "INVALID_TEAM"
 )
-

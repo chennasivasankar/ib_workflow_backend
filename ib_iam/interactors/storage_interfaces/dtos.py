@@ -12,6 +12,10 @@ class TeamNameAndDescriptionDTO:
 class TeamWithUserIdsDTO(TeamNameAndDescriptionDTO):
     user_ids: List[str]
 
+@dataclass
+class TeamAndTeamIdWithUserIdsDTO(TeamWithUserIdsDTO):
+    team_id:
+
 
 @dataclass
 class PaginationDTO:

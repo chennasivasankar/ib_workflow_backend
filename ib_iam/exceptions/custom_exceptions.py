@@ -15,7 +15,7 @@ class TeamNameAlreadyExists(Exception):
         self.team_name = team_name
 
 
-class InvalidTeamId(Exception):
+class InvalidTeam(Exception):
     pass
 
 

@@ -11,8 +11,7 @@ from ib_iam.constants.exception_messages import (
     USER_HAS_NO_ACCESS_FOR_ADD_TEAM,
     TEAM_NAME_ALREADY_EXISTS_FOR_ADD_TEAM,
     INVALID_USERS_FOR_ADD_TEAM,
-    DUPLICATE_USERS_FOR_ADD_TEAM,
-    INVALID_TEAM_ID
+    DUPLICATE_USERS_FOR_ADD_TEAM
 )
 
 
@@ -91,16 +90,6 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
             response_dict=response_dict
         )
 
-    def get_response_for_get_list_of_teams(
-            self, team_details_dtos: TeamWithMembersDetailsDTO
-    ):
-        teams = self._convert_team_details_dtos_to_teams_list(team_details_dtos=team_details_dtos)
-        response_dict = {
-            "total_teams_count": team_details_dtos.total_teams_count,
-            "teams": teams
-        }
-        return self.prepare_200_success_response(response_dict=response_dict)
-
     def get_invalid_users_response_for_add_team(self):
         response_dict = {
             "response": INVALID_USERS_FOR_ADD_TEAM[0],
@@ -114,20 +103,6 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
     def get_response_for_add_team(self, team_id: str):
         return self.prepare_201_created_response(
             response_dict={"team_id": team_id}
-        )
-
-    def make_empty_http_success_response(self):
-        empty_dict = {}
-        return self.prepare_200_success_response(response_dict=empty_dict)
-
-    def raise_exception_for_invalid_team_id(self):
-        response_dict = {
-            "response": INVALID_TEAM_ID[0],
-            "http_status_code": StatusCode.NOT_FOUND.value,
-            "res_status": INVALID_TEAM_ID[1]
-        }
-        return self.prepare_404_not_found_response(
-            response_dict=response_dict
         )
 
     def _convert_team_details_dtos_to_teams_list(
