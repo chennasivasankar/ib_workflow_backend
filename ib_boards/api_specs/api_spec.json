@@ -1,15 +1,14 @@
 {
         "swagger": "2.0",
         "host": "127.0.0.1:8000",
-        "basePath": "/api/ib_boards/",
+        "basePath": "/api/ib_boards",
         "info": {
             "version": "1.0.0",
-            "title": "iB Boards API",
-            "description": "Api for ib boards"
+            "title": "Simple API",
+            "description": "A simple API to learn how to write OpenAPI Specification"
         },
         "schemes": [
-            "http",
-            "https"
+            "http"
         ],
         "consumes": [
             "application/json"
@@ -32,108 +31,403 @@
         },
         "security": [],
         "definitions": {
-            "DefaultHttpExceptionFields": {
-                "type": "object",
-                "properties": {
-                    "response": {
-                        "type": "string"
-                    },
-                    "http_status_code": {
-                        "type": "integer"
-                    },
-                    "res_status": {
-                        "type": "string",
-                        "enum": [
-                            "DUPLICATE_TO_IDS",
-                            "INVALID_INPUT_TO_IDS"
-                        ]
-                    }
+          "InvalidTaskDetails": {
+            "type": "object",
+              "properties": {
+                "response": {
+                  "type": "string"
                 },
-                "required": [
-                    "response",
-                    "http_status_code",
-                    "res_status"
-                ]
+                "http_status_code": {
+                  "type": "integer"
+                },
+                "res_status": {
+                  "type": "string",
+                  "enum": [
+                    "INVALID_COLUMN_ID"
+                  ]
+                }
+              },
+              "required": [
+                "response",
+                "http_status_code",
+                "res_status"
+              ]
+          },
+          "AccessUnauthorized": {
+            "type": "object",
+              "properties": {
+                "response": {
+                  "type": "string"
+                },
+                "http_status_code": {
+                  "type": "integer"
+                },
+                "res_status": {
+                  "type": "string",
+                  "enum": [
+                    "USER_DONOT_HAVE_ACCESS"
+                  ]
+                }
+              },
+              "required": [
+                "response",
+                "http_status_code",
+                "res_status"
+              ]
+          },
+          "InvalidColumnDetails": {
+            "type": "object",
+            "properties": {
+                "response": {
+                  "type": "string"
+                },
+                "http_status_code": {
+                  "type": "integer"
+                },
+                "res_status": {
+                  "type": "string",
+                  "enum": [
+                    "INVALID_BOARD_ID"
+                  ]
+                }
+              },
+              "required": [
+                "response",
+                "http_status_code",
+                "res_status"
+              ]
+          },
+          "InvalidPaginationDetails": {
+            "type": "object",
+            "properties": {
+                "response": {
+                  "type": "string"
+                },
+                "http_status_code": {
+                  "type": "integer"
+                },
+                "res_status": {
+                  "type": "string",
+                  "enum": [
+                    "INVALID_OFFSET_VALUE",
+                    "INVALID_LIMIT_VALUE"
+                  ]
+                }
+              },
+              "required": [
+                "response",
+                "http_status_code",
+                "res_status"
+              ]
+          },
+          "TaskDetails": {
+            "type": "object",
+            "properties": {
+              "task_id": {
+                "type": "string"
+              },
+              "fields": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "field_type": {
+                      "type": "string"
+                    },
+                    "key": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "field_type", "key", "value"
+                  ]
+                }
+              },
+              "actions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "action_id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "button_text": {
+                      "type": "string"
+                    },
+                    "button_color": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "action_id", "name", "button_text"
+                  ]
+                }
+              }
             },
-            "Board": {
+            "required": [
+              "task_id", "fields", "actions"
+            ]
+          },
+          "ColumnDetails": {
+            "type": "object",
+            "properties": {
+              "column_id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "total_tasks_count": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "tasks": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/TaskDetails"
+                }
+              }
+            },
+            "required": [
+              "column_id", "name", "total_tasks_count", "tasks"
+            ]
+          },
+          "TaskCompleteDetails": {
                 "type": "object",
                 "properties": {
-                    "board_id": {
-                        "type": "string"
-                    },
-                    "display_name": {
-                        "type": "string"
+                  "total_tasks_count": {
+                    "type": "integer",
+                    "format": "int64"},
+                  "tasks": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/TaskDetails"
                     }
-                }
-            }
+                  }
+                },
+                "required": ["total_tasks_count", "tasks"]
+          }
         },
         "parameters": {
-            "BoardsParameterOffset": {
-                "description": "Offset",
-                "in": "query",
-                "name": "Offset",
-                "required": true,
-                "type": "integer"
-            },
-            "BoardsParameterLimit": {
-                "description": "Limit",
-                "in": "query",
-                "name": "Limit",
-                "required": true,
-                "type": "integer"
-            }
+          "OffsetParameter": {
+            "name": "Offset",
+            "in": "query",
+            "description": "offset value",
+            "type": "integer",
+            "format": "int64",
+            "required": true
+          },
+          "LimitParameter": {
+              "name": "Limit",
+              "in": "query",
+              "description": "limit value",
+              "type": "integer",
+              "format": "int64",
+              "required": true
+          },
+          "BoardIdParameter": {
+            "name": "board_id",
+            "in": "path",
+            "description": "board id value",
+            "type": "string",
+            "required": true
+          },
+          "ColumnIdParameter": {
+            "name": "column_id",
+            "in": "path",
+            "description": "column id value",
+            "type": "string",
+            "required": true
+          }
         },
         "responses": {
+          "InvalidAccessResponse": {
+            "description": "unauthorized access",
+            "schema": {
+              "$ref": "#/definitions/AccessUnauthorized"
+            }
+          },
+          "InvalidColumnsResponse": {
+            "description": "invalid board id",
+            "schema": {
+              "$ref": "#/definitions/InvalidColumnDetails"
+            }
+          },
+          "InvalidTasksResponse": {
+            "description": "invalid column id",
+            "schema": {
+              "$ref": "#/definitions/InvalidTaskDetails"
+            }
+          },
+          "InvalidPaginationResponse": {
+            "description": "invalid offset or invalid limit",
+            "schema": {
+              "$ref": "#/definitions/InvalidPaginationDetails"
+            }
+          },
+          "GetBoardsResponse": {
+            "description": "get boards response",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "total_boards_count": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "boards_details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "board_id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "board_id", "name"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "total_boards_count", "boards_details"
+              ]
+            }
+          },
+          "ColumnsDetailsResponse": {
+            "description": "columns details",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "total_columns_count": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "columns": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/ColumnDetails"
+                  }
+                }
+              }
+            }
+          },
+          "TaskDetailsResponse": {
+            "description": "tasks details",
+            "schema": {
+                "$ref": "#/definitions/TaskCompleteDetails"
+            }
+          }
         },
         "paths": {
             "/boards/v1/": {
                 "get": {
-                    "summary": "Get Boards",
-                    "description": "Returns a list of board details.",
-                    "operationId": "get_boards",
-                    "security": [
-                        {
-                            "oauth": [
-                                "read"
-                            ]
-                        }
-                    ],
-                    "parameters": [
-                        {
-                            "$ref": "#/parameters/BoardsParameter"
-                        }
-                    ],
-                    "responses": {
-                        "200": {
-                            "description": "A list of boards",
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/Board"
-                                }
-                            }
-                        },
-                        "401": {
-                            "description": "Unauthorized",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        },
-                        "403": {
-                            "description": "Forbidden",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        },
-                        "404": {
-                            "description": "Not Found",
-                            "schema": {
-                                "$ref": "#/definitions/DefaultHttpExceptionFields"
-                            }
-                        }
+                  "operationId": "get_boards_details",
+                  "summary": "Get Boards Details ",
+                  "description": "get boards details based on user roles",
+                  "security": [{
+                      "oauth": ["read", "write"]
+                  }],
+                  "parameters": [
+                    {
+                      "$ref": "#/parameters/LimitParameter"
+                    },
+                    {
+                      "$ref": "#/parameters/OffsetParameter"
                     }
+                  ],
+                  "responses": {
+                    "400": {
+                      "$ref": "#/responses/InvalidPaginationResponse"
+                    },
+                    "403": {
+                      "$ref": "#/responses/InvalidAccessResponse"
+                    },
+                    "200": {
+                      "$ref": "#/responses/GetBoardsResponse"
+                    }
+                  }
                 }
+            },
+          "/boards/{board_id}/columns/v1/": {
+            "get": {
+              "operationId": "get_columns_details",
+              "summary": "Get Column Details",
+              "description": "get columns details of the given board id",
+              "security": [{
+                      "oauth": ["read", "write"]
+                  }],
+              "parameters": [
+                {
+                  "$ref": "#/parameters/BoardIdParameter"
+                },
+                {
+                  "$ref": "#/parameters/OffsetParameter"
+                },
+                {
+                  "$ref": "#/parameters/LimitParameter"
+                }
+              ],
+              "responses": {
+                "403": {
+                  "$ref": "#/responses/InvalidAccessResponse"
+                },
+                "404": {
+                  "$ref": "#/responses/InvalidColumnsResponse"
+                },
+                "400": {
+                  "$ref": "#/responses/InvalidPaginationResponse"
+                },
+                "200": {
+                  "$ref": "#/responses/ColumnsDetailsResponse"
+                }
+              }
             }
+          },
+          "/columns/{column_id}/tasks/v1/": {
+            "get": {
+              "operationId": "get column tasks",
+              "summary": "Get Column Tasks",
+              "description": "get column tasks details",
+              "security": [{
+                  "oauth": ["read", "write"]
+                }],
+              "parameters": [
+                {
+                  "$ref": "#/parameters/LimitParameter"
+                },
+                {
+                  "$ref": "#/parameters/OffsetParameter"
+                },
+                {
+                  "$ref": "#/parameters/ColumnIdParameter"
+                }
+              ],
+              "responses": {
+                "403": {
+                  "$ref": "#/responses/InvalidAccessResponse"
+                },
+                "400": {
+                  "$ref": "#/responses/InvalidPaginationResponse"
+                },
+                "404": {
+                  "$ref": "#/responses/InvalidTasksResponse"
+                },
+                "200": {
+                  "$ref": "#/responses/TaskDetailsResponse"
+                }
+              }
+            }
+          }
         }
-}
+    }
     
