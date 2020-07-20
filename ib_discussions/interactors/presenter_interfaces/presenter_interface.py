@@ -4,6 +4,7 @@ from ib_discussions.interactors.presenter_interfaces.dtos import \
     DiscussionsDetailsDTO
 
 
+# TODO seperate the presenter class
 class PresenterInterface(ABC):
     @abstractmethod
     def raise_exception_for_entity_id_not_found(self):
@@ -26,7 +27,7 @@ class PresenterInterface(ABC):
         pass
 
     @abstractmethod
-    def prepare_response_for_discussions_details_dtos(
-            self, discussions_details_dtos: DiscussionsDetailsDTO
+    def prepare_response_for_discussions_details_dto(
+            self, discussions_details_dto: DiscussionsDetailsDTO
     ):
         pass

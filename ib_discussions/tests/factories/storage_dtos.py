@@ -1,8 +1,6 @@
 import datetime
 
 import factory
-from factory import fuzzy
-
 from ib_discussions.interactors.storage_interfaces.dtos import \
     CompleteDiscussionDTO
 
@@ -24,8 +22,5 @@ class CompleteDiscussionFactory(factory.Factory):
             discussion_id=obj.discussion_id
         )
     )
-    created_at = fuzzy.FuzzyDateTime(
-        start_dt=datetime.datetime(2008, 1, 1, tzinfo=datetime.timezone.utc),
-        end_dt=datetime.datetime(2020, 5, 5, tzinfo=datetime.timezone.utc)
-    )
+    created_at = datetime.datetime(2008, 1, 1, tzinfo=datetime.timezone.utc)
     is_clarified = factory.Iterator([True, False])

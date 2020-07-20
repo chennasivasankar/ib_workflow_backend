@@ -86,7 +86,7 @@ class DiscussionInteractor:
         from ib_discussions.exceptions.custom_exceptions import \
             EntityIdNotFound, InvalidEntityTypeForEntityId
         try:
-            return self._get_discussion_response(
+            response = self._get_discussion_response(
                 entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
                 offset_and_limit_dto=offset_and_limit_dto, presenter=presenter
             )
@@ -106,12 +106,12 @@ class DiscussionInteractor:
             offset_and_limit_dto: OffsetAndLimitDTO,
             presenter: PresenterInterface
     ):
-        discussions_details_dtos = self.get_discussions_details_dto(
+        discussions_details_dto = self.get_discussions_details_dto(
             entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
             offset_and_limit_dto=offset_and_limit_dto,
         )
-        return presenter.prepare_response_for_discussions_details_dtos(
-            discussions_details_dtos=discussions_details_dtos
+        return presenter.prepare_response_for_discussions_details_dto(
+            discussions_details_dto=discussions_details_dto
         )
 
     def get_discussions_details_dto(
