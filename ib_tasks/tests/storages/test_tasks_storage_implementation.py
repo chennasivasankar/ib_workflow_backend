@@ -1,7 +1,6 @@
 import factory
 import pytest
 
-from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.models.gof_role import GoFRole
 from ib_tasks.tests.factories.models import GoFFactory, TaskTemplateFactory, \
     GoFRoleFactory, FieldFactory
