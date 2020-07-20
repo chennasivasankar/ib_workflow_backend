@@ -3,13 +3,34 @@ from typing import List, Optional
 from ib_tasks.interactors.dtos import GoFWithOrderAndAddAnotherDTO, \
     GlobalConstantsDTO
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    GoFDTO, GoFRoleDTO, FieldDTO, FieldRoleDTO
+    GoFDTO, GoFRoleDTO, FieldDTO, FieldRoleDTO, TaskStatusDTO, TaskStagesDTO,
+    StageInformationDTO
 )
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 
 
 class TasksStorageImplementation(TaskStorageInterface):
+
+    def create_stages_with_given_information(self,
+                                             stage_information: StageInformationDTO):
+        pass
+
+    def validate_stage_ids(self, stage_ids) -> Optional[List[str]]:
+        pass
+
+    def update_stages_with_given_information(self,
+                                             update_stages_information: StageInformationDTO):
+        pass
+
+    def validate_stages_related_task_template_ids(self,
+                                                  task_stages_dto: TaskStagesDTO) -> \
+            Optional[List[TaskStagesDTO]]:
+        pass
+
+    def create_status_for_tasks(self,
+                                create_status_for_tasks: List[TaskStatusDTO]):
+        pass
 
     def create_task_template(self, template_id: str, template_name: str):
         from ib_tasks.models.task_template import TaskTemplate

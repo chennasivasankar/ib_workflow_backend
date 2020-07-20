@@ -1,11 +1,18 @@
-"""
-Created on: 15/07/20
-Author: Pavankumar Pamuru
-
-"""
-
-from typing import List, Optional
 from dataclasses import dataclass
+from typing import List, Optional
+
+@dataclass
+class StageLogicAttributes:
+    stage_id: str
+    status_id: str
+
+@dataclass
+class StageDTO:
+    stage_id: str
+    task_template_id: str
+    value: int
+    stage_display_name: str
+    stage_display_logic: str
 
 @dataclass
 class ActionDTO:
