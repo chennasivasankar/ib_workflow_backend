@@ -21,7 +21,7 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_task_template_name_if_exists(self, template_id: str) -> str:
+    def get_task_template_name(self, template_id: str) -> str:
         pass
 
     @abc.abstractmethod
@@ -117,4 +117,14 @@ class TaskStorageInterface(abc.ABC):
     @abc.abstractmethod
     def create_status_for_tasks(self,
                                 create_status_for_tasks: List[TaskStatusDTO]):
+        pass
+
+    @abc.abstractmethod
+    def update_task_template(self, template_id: str, template_name: str):
+        pass
+
+    @abc.abstractmethod
+    def update_global_constants_to_template(
+            self, template_id: str,
+            global_constants_dtos: List[GlobalConstantsDTO]):
         pass
