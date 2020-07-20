@@ -5,7 +5,7 @@ Author: Pavankumar Pamuru
 """
 from typing import List
 
-from ib_boards.interactors.dtos import ColumnDTO, BoardColumnDTO, \
+from ib_boards.interactors.dtos import ColumnDTO, BoardColumnsDTO, \
     TaskSummaryFieldsDTO, TaskTemplateStagesDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
@@ -74,7 +74,7 @@ class AddOrDeleteColumnsForBoardInteractor:
     def _delete_columns_which_are_not_in_configuration(self, board_column_map):
 
         column_for_delete_dtos = [
-            BoardColumnDTO(
+            BoardColumnsDTO(
                 board_id=key,
                 column_ids=value
             )
