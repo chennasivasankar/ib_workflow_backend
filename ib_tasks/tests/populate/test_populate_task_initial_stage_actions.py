@@ -100,7 +100,7 @@ class TestCasePopulateTasks:
             populate_tasks(tasks=tasks)
 
     @staticmethod
-    @mock.patch('__main__.__builtins__.open', new_callable=mock.mock_open)
+    @mock.patch('builtins.open', new_callable=mock.mock_open)
     def test_mocking_writing_methods_to_file(os_system):
         # Arrange
         tasks = [

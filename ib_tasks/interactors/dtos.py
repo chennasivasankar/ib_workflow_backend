@@ -31,3 +31,8 @@ class TaskGofAndStatusesDTO:
     group_of_fields_dto: List[GroupOfFieldsDTO]
     fields_dto: List[FieldValueDTO]
     statuses_dto: List[StatusVariableDTO]
+
+
+class TaskStatusVariablesDTO:
+    task_id: str
+    status_variables_dto: List[StatusVariableDTO]
