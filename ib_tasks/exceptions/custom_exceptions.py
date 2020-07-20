@@ -91,7 +91,6 @@ class GoFIDsAlreadyExists(Exception):
 
 
 class InvalidTaskTemplateIds(Exception):
-
     def __init__(self, invalid_task_template_ids: List[str]):
         self.task_template_ids = invalid_task_template_ids
 

@@ -42,6 +42,20 @@ class TestTasksStorageImplementation:
         assert is_template_exists is True
 
     @pytest.mark.django_db
+    def test_get_task_template_name(self, storage):
+        #Arrange
+        template_id = "FIN_VENDOR"
+        expected_template_name = "Template 1"
+        TaskTemplateFactory(template_id=template_id)
+
+        #Act
+        template_name = \
+            storage.get_task_template_name(template_id=template_id)
+
+        #Assert
+        assert template_name == expected_template_name
+
+    @pytest.mark.django_db
     def test_create_task_template(self, storage):
         #Arrange
         template_id = "FIN_VENDOR"

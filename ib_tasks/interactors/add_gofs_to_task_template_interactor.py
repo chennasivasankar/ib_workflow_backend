@@ -128,6 +128,18 @@ class AddGoFsToTaskTemplateInteractor:
                 INVALID_ORDERS_FOR_GOFS.format(gof_ids_of_invalid_orders)
             )
 
+    def _get_existing_gof_ids_that_are_not_in_given_data(
+            self, existing_gof_ids: List[str],
+            gof_dtos: List[GoFWithOrderAndAddAnotherDTO]):
+        given_gof_ids = self._get_gof_ids(gof_dtos=gof_dtos)
+
+        existing_gof_ids_not_in_given_data = [
+            gof_id
+            for gof_id in existing_gof_ids
+            if gof_id not in given_gof_ids
+        ]
+        return existing_gof_ids_not_in_given_data
+
     @staticmethod
     def _validate_template_id(template_id: str):
         from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
@@ -162,18 +174,6 @@ class AddGoFsToTaskTemplateInteractor:
             if is_empty_gof_id:
                 invalid_gof_ids.append(gof_id)
         return invalid_gof_ids
-
-    def _get_existing_gof_ids_that_are_not_in_given_data(
-            self, existing_gof_ids: List[str],
-            gof_dtos: List[GoFWithOrderAndAddAnotherDTO]):
-        given_gof_ids = self._get_gof_ids(gof_dtos=gof_dtos)
-
-        existing_gof_ids_not_in_given_data = [
-            gof_id
-            for gof_id in existing_gof_ids
-            if gof_id not in given_gof_ids
-        ]
-        return existing_gof_ids_not_in_given_data
 
     @staticmethod
     def _get_gof_ids(gof_dtos: List[GoFWithOrderAndAddAnotherDTO]):
