@@ -1,6 +1,6 @@
 import factory
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    TaskStatusDTO, StageInformationDTO)
+    TaskStatusDTO, StageDTO)
 
 class TaskStatusDTOFactory(factory.Factory):
     class Meta:
@@ -9,9 +9,9 @@ class TaskStatusDTOFactory(factory.Factory):
     task_template_id = factory.Sequence(lambda n: 'task_template_id_%d' % n)
     status_variable_id = factory.Sequence(lambda n: 'status_variable_id_%d' % n)
 
-class StageInformationDTO(factory.Factory):
+class StageDTO(factory.Factory):
     class Meta:
-        model = StageInformationDTO
+        model = StageDTO
 
     stage_id = factory.Sequence(lambda n: 'stage_id_%d' % n)
     task_template_id = factory.Sequence(lambda n: 'task_template_id_%d' % n)

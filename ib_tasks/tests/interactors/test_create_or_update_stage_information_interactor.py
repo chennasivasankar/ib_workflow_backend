@@ -1,7 +1,7 @@
 from unittest.mock import create_autospec
 import pytest
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    StageInformationDTO, TaskStagesDTO)
+    StageDTO, TaskStagesDTO)
 from ib_tasks.exceptions.custom_exceptions import (
     InvalidStageValues, InvalidStagesTaskTemplateId, DuplicateStageIds,
     InvalidTaskTemplateIds, InvalidStageDisplayLogic)
@@ -22,7 +22,7 @@ class TestCreateOrUpdateStageInformation:
         stage_display_logic = "Value[Status1]==Value[PR_PENDING_RP_APPROVAL]"
         value = 2
         stage_ids = ["PR_PENDING RP APPROVAL"]
-        stages_information = [StageInformationDTO(
+        stages_information = [StageDTO(
             task_template_id=task_template_id,
             stage_id=stage_id,
             stage_display_name=stage_display_name,
@@ -33,7 +33,7 @@ class TestCreateOrUpdateStageInformation:
         stage_interactor = CreateOrUpdateStagesInterface(
             stage_storage=storage
         )
-        storage.get_task_template_ids.return_value = ["FIN_PR"]
+        storage.get_valid_template_ids_in_given_template_ids.return_value = ["FIN_PR"]
         storage.validate_stage_ids.return_value = []
 
         # Act
@@ -57,7 +57,7 @@ class TestCreateOrUpdateStageInformation:
         stage_display_name = "Pending RP Approval"
         stage_display_logic = "Value[Status1]==Value[PR_PENDING_RP_APPROVAL]"
         value = 2
-        stages_information = [StageInformationDTO(
+        stages_information = [StageDTO(
             task_template_id=task_template_id,
             stage_id=stage_id,
             stage_display_name=stage_display_name,
@@ -72,7 +72,7 @@ class TestCreateOrUpdateStageInformation:
             task_template_id=task_template_id,
             stage_id=stage_id
         )]
-        storage.get_task_template_ids.return_value = ["FIN_PR"]
+        storage.get_valid_template_ids_in_given_template_ids.return_value = ["FIN_PR"]
         stage_interactor = CreateOrUpdateStagesInterface(
             stage_storage=storage
         )
@@ -98,13 +98,13 @@ class TestCreateOrUpdateStageInformation:
         stage_display_name = "Pending RP Approval"
         stage_display_logic = "Value[Status1]==Value[PR_PENDING_RP_APPROVAL]"
         value = -1
-        stages_information = [StageInformationDTO(
+        stages_information = [StageDTO(
                 task_template_id=task_template_id,
                 stage_id=stage_id,
                 stage_display_name=stage_display_name,
                 stage_display_logic=stage_display_logic,
                 value=value),
-            StageInformationDTO(
+            StageDTO(
                 task_template_id=task_template_id,
                 stage_id="PR APPROVED",
                 stage_display_name=stage_display_name,
@@ -113,7 +113,7 @@ class TestCreateOrUpdateStageInformation:
         )]
         # stage_ids = ["PR_PENDING RP APPROVAL", "PR APPROVED"]
         storage = create_autospec(TaskStorageInterface)
-        storage.get_task_template_ids.return_value = ["FIN_PR"]
+        storage.get_valid_template_ids_in_given_template_ids.return_value = ["FIN_PR"]
         storage.validate_stage_ids.return_value = []
         storage.validate_stages_related_task_template_ids.return_value = []
 
@@ -137,7 +137,7 @@ class TestCreateOrUpdateStageInformation:
         stage_display_name = "Pending RP Approval"
         stage_display_logic = "Value[Status1]==Value[PR_PENDING_RP_APPROVAL]"
         value = 2
-        stages_information = [StageInformationDTO(
+        stages_information = [StageDTO(
             task_template_id=task_template_id,
             stage_id=stage_id,
             stage_display_name=stage_display_name,
@@ -155,7 +155,7 @@ class TestCreateOrUpdateStageInformation:
         stage_interactor = CreateOrUpdateStagesInterface(
             stage_storage=storage
         )
-        storage.get_task_template_ids.return_value = ["FIN_PR"]
+        storage.get_valid_template_ids_in_given_template_ids.return_value = ["FIN_PR"]
 
         # Act
         with pytest.raises(InvalidStagesTaskTemplateId) as err:
@@ -164,7 +164,7 @@ class TestCreateOrUpdateStageInformation:
             )
 
         # Assert
-        storage.get_task_template_ids.assert_called_once()
+        storage.get_valid_template_ids_in_given_template_ids.assert_called_once()
         storage.validate_stages_related_task_template_ids.\
             assert_called_once_with(
                 task_stages_dto
@@ -177,13 +177,13 @@ class TestCreateOrUpdateStageInformation:
         stage_display_name = "Pending RP Approval"
         stage_display_logic = "Value[Status1]==Value[PR_PENDING_RP_APPROVAL]"
         value = 3
-        stages_information = [StageInformationDTO(
+        stages_information = [StageDTO(
             task_template_id=task_template_id,
             stage_id=stage_id,
             stage_display_name=stage_display_name,
             stage_display_logic=stage_display_logic,
             value=value),
-            StageInformationDTO(
+            StageDTO(
                 task_template_id=task_template_id,
                 stage_id=stage_id,
                 stage_display_name=stage_display_name,
@@ -192,7 +192,7 @@ class TestCreateOrUpdateStageInformation:
             )]
         storage = create_autospec(TaskStorageInterface)
         storage.validate_stage_ids.return_value = []
-        storage.get_task_template_ids.return_value = ["FIN_PR"]
+        storage.get_valid_template_ids_in_given_template_ids.return_value = ["FIN_PR"]
         storage.validate_stages_related_task_template_ids.return_value = []
 
         stage_interactor = CreateOrUpdateStagesInterface(
@@ -214,14 +214,14 @@ class TestCreateOrUpdateStageInformation:
         stage_display_name = "Pending RP Approval"
         stage_display_logic = "Value[Status1]==Value[PR_PENDING_RP_APPROVAL]"
         value = 3
-        stages_information = [StageInformationDTO(
+        stages_information = [StageDTO(
             task_template_id=task_template_id,
             stage_id=stage_id,
             stage_display_name=stage_display_name,
             stage_display_logic=stage_display_logic,
             value=value)]
         storage = create_autospec(TaskStorageInterface)
-        storage.get_task_template_ids.return_value = ["BACKEND"]
+        storage.get_valid_template_ids_in_given_template_ids.return_value = ["BACKEND"]
 
         stage_interactor = CreateOrUpdateStagesInterface(
             stage_storage=storage
@@ -234,7 +234,7 @@ class TestCreateOrUpdateStageInformation:
             )
 
         # Assert
-        storage.get_task_template_ids.assert_called_once()
+        storage.get_valid_template_ids_in_given_template_ids.assert_called_once()
 
     def test_validate_stage_display_logic_invalid_stage_display_logic_raises_exception(
             self):
@@ -243,14 +243,14 @@ class TestCreateOrUpdateStageInformation:
         stage_display_name = "Pending RP Approval"
         stage_display_logic = ""
         value = 3
-        stages_information = [StageInformationDTO(
+        stages_information = [StageDTO(
             task_template_id=task_template_id,
             stage_id=stage_id,
             stage_display_name=stage_display_name,
             stage_display_logic=stage_display_logic,
             value=value)]
         storage = create_autospec(TaskStorageInterface)
-        storage.get_task_template_ids.return_value = ["FIN_PR"]
+        storage.get_valid_template_ids_in_given_template_ids.return_value = ["FIN_PR"]
 
         stage_interactor = CreateOrUpdateStagesInterface(
             stage_storage=storage

@@ -1,11 +1,12 @@
 import abc
 from typing import Optional, List
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    StageInformationDTO, TaskStagesDTO, TaskStatusDTO)
+    StageDTO, TaskStagesDTO, TaskStatusDTO)
 
 class TaskStorageInterface(abc.ABC):
     @abc.abstractmethod
-    def create_stages_with_given_information(self, stage_information: StageInformationDTO):
+    def create_stages_with_given_information(self,
+                                             stage_information: StageDTO):
         pass
 
     @abc.abstractmethod
@@ -14,7 +15,7 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def update_stages_with_given_information(self,
-                                             update_stages_information: StageInformationDTO):
+                                             update_stages_information: StageDTO):
         pass
 
     @abc.abstractmethod
@@ -24,7 +25,7 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_task_template_ids(self) -> List[str]:
+    def get_valid_template_ids_in_given_template_ids(self, task_template_ids: List[str]) -> List[str]:
         pass
 
     @abc.abstractmethod
