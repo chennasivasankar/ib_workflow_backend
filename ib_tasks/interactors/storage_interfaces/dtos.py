@@ -4,6 +4,15 @@ from ib_tasks.constants.enum import FieldTypes, PermissionTypes
 
 
 @dataclass
+class StageInformationDTO:
+    stage_id: str
+    task_template_id: str
+    value: int
+    stage_display_name: str
+    stage_display_logic: str
+
+
+@dataclass
 class TaskStagesDTO:
     task_template_id: str
     stage_id: str
@@ -19,17 +28,14 @@ class StageActionsDTO:
 class GoFDTO:
     gof_id: str
     gof_display_name: str
-    task_template_id: str
-    order: int
     max_columns: int
-    enable_multiple_gofs: bool
 
 
 @dataclass
 class GoFRolesDTO:
     gof_id: str
-    read_permission_roles: List
-    write_permission_roles: List
+    read_permission_roles: List[PermissionTypes]
+    write_permission_roles: List[PermissionTypes]
 
 
 @dataclass

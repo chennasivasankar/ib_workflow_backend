@@ -51,7 +51,7 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def update_gof_roles(self, gof_role_dtos: List[GoFRoleDTO]):
+    def delete_gof_roles(self, gof_ids: List[str]):
         pass
 
     @abc.abstractmethod
@@ -72,6 +72,12 @@ class TaskStorageInterface(abc.ABC):
     def create_global_constants_to_template(
             self, template_id: str,
             global_constants_dtos: List[GlobalConstantsDTO]):
+        pass
+
+    @abc.abstractmethod
+    def get_gof_dtos_for_given_gof_ids(
+            self, gof_ids: List[str]
+    ) -> List[GoFDTO]:
         pass
 
     @abc.abstractmethod
