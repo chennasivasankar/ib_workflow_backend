@@ -2,10 +2,10 @@ from typing import List
 
 
 class UserRoleValidationInteractor:
+    def user_role_validation(self, user_id: str, role_ids: List[str]) -> bool:
 
-    def user_role_validation(self, user_id: str,
-                             role_ids: List[str]) -> bool:
-        if "ALL_ROLES" in role_ids:
+        from ib_tasks.constants.constants import all_roles_id
+        if all_roles_id in role_ids:
             return True
 
         user_role_ids = self._get_user_role_ids(user_id)
