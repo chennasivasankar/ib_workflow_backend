@@ -9,3 +9,6 @@ class RolesService:
 
     def get_db_roles(self):
         pass
+
+    def get_user_roles(self, user_id):
+        pass

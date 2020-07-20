@@ -64,9 +64,9 @@ class ConfigureInitialTaskTemplateStageActions:
             for task_dto in tasks_dto
         }))
 
-
     def _get_initial_stage_dto_to_tasks_templates(
-            self, tasks_dto: List[TaskTemplateStageActionDTO]):
+            self,
+            tasks_dto: List[TaskTemplateStageActionDTO]):
 
         task_template_stage_dtos = []
         unique_ids = []

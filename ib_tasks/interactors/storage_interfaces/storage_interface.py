@@ -72,3 +72,11 @@ class StorageInterface(abc.ABC):
                                         status_variables_dto):
         pass
 
+    @abc.abstractmethod
+    def get_action_roles_to_stages(
+            self, stage_ids: List[str]) -> List[ActionRolesDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_actions_dto(self, action_ids: List[str]) -> List[ActionDTO]:
+        pass

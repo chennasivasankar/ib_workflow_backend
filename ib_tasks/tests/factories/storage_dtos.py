@@ -1,6 +1,7 @@
 import factory
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    FieldValueDTO, StatusVariableDTO, GroupOfFieldsDTO, GOFMultipleStatusDTO
+    FieldValueDTO, StatusVariableDTO, GroupOfFieldsDTO,
+    GOFMultipleStatusDTO, ActionDTO
 )
 
 
@@ -34,3 +35,15 @@ class GOFMultipleStatusDTOFactory(factory.Factory):
         model = GOFMultipleStatusDTO
     multiple_status = True
     group_of_field_id = factory.Sequence(lambda n: 'group_of_field_%d' % (n+1))
+
+
+class ActionDTOFactory(factory.Factory):
+    class Meta:
+        model = ActionDTO
+
+    action_id = factory.Sequence(lambda n: 'action_%d' % (n+1))
+    name = factory.Sequence(lambda n: 'name_%d' % (n+1))
+    stage_id = factory.Sequence(lambda n: 'stage_%d' % (n+1))
+    button_text = factory.Sequence(lambda n: 'button_text_%d' % (n+1))
+    button_color = None
+

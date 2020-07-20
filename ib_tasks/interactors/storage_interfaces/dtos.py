@@ -1,4 +1,4 @@
-from typing import List, Any
+from typing import List, Any, Optional
 from dataclasses import dataclass
 
 
@@ -33,3 +33,18 @@ class GroupOfFieldsDTO:
 class GOFMultipleStatusDTO:
     group_of_field_id: str
     multiple_status: bool
+
+
+@dataclass()
+class ActionDTO:
+    action_id: str
+    name: str
+    stage_id: str
+    button_text: str
+    button_color: Optional[str]
+
+
+@dataclass()
+class ActionRolesDTO:
+    action_id: str
+    roles: List[str]
