@@ -3,7 +3,7 @@ app:
     dockerfile: Dockerfile
     encrypted_args_file: env.encrypted
   cached: true
-  default_cache_branch: "development"
+  default_cache_branch: "dev"
   volumes:
     - ./:/code
   encrypted_env_file:
