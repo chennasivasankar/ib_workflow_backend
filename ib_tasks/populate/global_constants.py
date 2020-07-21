@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List
 from ib_tasks.interactors.dtos import GlobalConstantsDTO, \
     GlobalConstantsWithTemplateIdDTO
 from ib_tasks.utils.get_google_sheet import get_google_sheet
@@ -59,24 +59,6 @@ class PopulateGlobalConstantsToTemplate:
             )
             global_constants_dtos.append(global_constants_dto)
         return  global_constants_dtos
-
-    @staticmethod
-    def _get_data_from_global_constants_csv_file(
-            file_path: str) -> List[Dict]:
-        import csv
-        with open(file_path) as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter=',')
-            col_headers = csv_reader.__next__()
-            result = []
-
-            from itertools import zip_longest
-            from collections import defaultdict
-            for row in csv_reader:
-                row_dict = defaultdict()
-                for col_header, col_val in zip_longest(col_headers, row):
-                    row_dict[col_header] = col_val
-                result.append(row_dict)
-            return result
 
     @staticmethod
     def _populate_global_constants_to_template_in_db(
