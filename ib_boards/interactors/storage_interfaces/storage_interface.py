@@ -1,7 +1,7 @@
 import abc
 from typing import List
 
-from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, BoardColumnsDTO
+from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, BoardColumnDTO
 
 
 class StorageInterface(abc.ABC):
@@ -17,12 +17,17 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def check_for_column_ids_are_assigned_to_single_board(
+            self, column_ids: List[str]):
+        pass
+
+    @abc.abstractmethod
     def get_board_ids_for_column_ids(self, column_ids: List[str]) -> List[str]:
         pass
 
     @abc.abstractmethod
     def get_boards_column_ids(
-            self, board_ids: List[str]) -> List[BoardColumnsDTO]:
+            self, board_ids: List[str]) -> List[BoardColumnDTO]:
         pass
 
     @abc.abstractmethod
@@ -35,7 +40,11 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def delete_columns_which_are_not_in_configuration(
-            self, column_for_delete_dtos: List[BoardColumnsDTO]) -> None:
+            self, column_for_delete_dtos: List[BoardColumnDTO]) -> None:
+        pass
+
+    @abc.abstractmethod
+    def validate_user_role_with_boards_roles(self, user_role: str):
         pass
 
     @abc.abstractmethod
