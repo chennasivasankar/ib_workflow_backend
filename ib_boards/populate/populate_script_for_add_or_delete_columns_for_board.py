@@ -6,8 +6,10 @@ Author: Pavankumar Pamuru
 import json
 from typing import List, Dict
 
-from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
+from ib_boards.interactors.dtos import ColumnDTO, \
     TaskTemplateStagesDTO, TaskSummaryFieldsDTO
+from ib_boards.tests.factories.interactor_dtos import \
+    TaskTemplateStagesDTOFactory, TaskSummaryFieldsDTOFactory
 
 
 class InvalidDataFormat(Exception):
@@ -51,65 +53,65 @@ class PopulateAddOrDeleteColumnsForBoard:
 
     def _convert_column_dict_to_column_dto(self,
                                            column_dict: Dict) -> ColumnDTO:
-        task_template_stages = self._get_task_template_stages_dto(
-            column_dict['task_template_stages']
-        )
-        list_view_fields = self._get_task_template_summary_fields_dto(
-            column_dict['list_view_fields']
-        )
-        kanban_view_fields = self._get_task_template_summary_fields_dto(
-            column_dict['kanban_view_fields']
-        )
+        # task_template_stages = self._get_task_template_stages_dto(
+        #     column_dict['Task Template Stages that are visible in columns']
+        # )
+        # list_view_fields = self._get_task_template_summary_fields_dto(
+        #     column_dict['Card Info_List']
+        # )
+        # kanban_view_fields = self._get_task_template_summary_fields_dto(
+        #     column_dict['Card Info_Kanban']
+        # )
         return ColumnDTO(
-            column_id=column_dict['column_id'],
-            display_name=column_dict['column_display_name'],
-            display_order=column_dict['display_order'],
-            task_template_stages=task_template_stages,
-            user_role_ids=column_dict['user_role_ids'],
+            column_id=column_dict['Column ID*'],
+            display_name=column_dict['Column Display Name'],
+            display_order=column_dict['Column Order For Display'],
+            task_template_stages=TaskTemplateStagesDTOFactory.create_batch(3),
+            user_role_ids=column_dict['Visible to RoleIDs'],
             column_summary="COLUMN SUMMARY",
             column_actions="COLUMN ACTIONS",
-            list_view_fields=list_view_fields,
-            kanban_view_fields=kanban_view_fields,
-            board_id=column_dict['board_id'],
+            list_view_fields=TaskSummaryFieldsDTOFactory.create_batch(3),
+            kanban_view_fields=TaskSummaryFieldsDTOFactory.create_batch(3),
+            board_id=column_dict['Board ID*'],
         )
 
     def validate_keys_in_given_dict(self, boards_columns_dicts: List[Dict]):
-        from schema import Schema, SchemaError, And, Optional
-        import json
+        from schema import Schema, SchemaError
         schema = Schema(
             [{
-                "board_id": str,
-                "board_display_name": str,
-                "column_id": str,
-                "column_display_name": str,
-                "display_order": int,
-                "user_role_ids": [str],
-                Optional("column_summary"): str,
-                Optional("column_actions"): str,
-                "task_template_stages": str,
-                "kanban_view_fields": str,
-                "list_view_fields": str
+                "Board ID*": str,
+                "Board Display Name": str,
+                "Column Order For Display": int,
+                "Column ID*": str,
+                "Column Display Name": str,
+                "Task Template Stages that are visible in columns": str,
+                "Visible to RoleIDs": str,
+                "Column Summary": str,
+                "Column Actions": str,
+                "Card Info_Kanban": str,
+                "Card Info_List": str
+
 
             }]
         )
         try:
             schema.validate(boards_columns_dicts)
         except SchemaError:
-            self._raise_exception_for_board_valid_format()
+            self._raise_exception_for_invalid_data_format()
 
-    def _raise_exception_for_board_valid_format(self):
+    def _raise_exception_for_invalid_data_format(self):
         raise InvalidDataFormat("""{
-                "board_id": "board_id"
-                "board_display_name": "board_display_name"
-                "column_id": "column_id"
-                "column_display_name": "column_display_name"
-                "display_order": "display_order"
-                "user_role_ids": "user_role_ids"
-                "column_summary": "column_summary"
-                "column_actions": "column_actions"
-                "task_template_stages": "task_template_stages"
-                "kanban_view_fields": "kanban_view_fields"
-                "list_view_fields": "list_view_fields"
+                "Board ID*": str,
+                "Board Display Name": str,
+                "Column Order For Display": int,
+                "Column ID*": str,
+                "Column Display Name": str,
+                "Task Template Stages that are visible in columns": str,
+                "Visible to RoleIDs": [str],
+                "Column Summary": str,
+                "Column Actions": str,
+                "Card Info_Kanban": str,
+                "Card Info_List": str
         }""")
 
     @staticmethod
