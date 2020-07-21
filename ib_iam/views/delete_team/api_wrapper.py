@@ -4,8 +4,8 @@ from .validator_class import ValidatorClass
 from ib_iam.storages.team_storage_implementation import (
     TeamStorageImplementation
 )
-from ib_iam.presenters.team_presenter_implementation import (
-    TeamPresenterImplementation
+from ib_iam.presenters.delete_team_presenter_implementation import (
+    DeleteTeamPresenterImplementation
 )
 from ib_iam.interactors.team_interactor import (
     TeamInteractor
@@ -16,11 +16,10 @@ from ib_iam.interactors.team_interactor import (
 def api_wrapper(*args, **kwargs):
     user_obj = kwargs["user"]
     user_id = str(user_obj.id)
-    request_data = kwargs["request_data"]
-    team_id = request_data["team_id"]
+    team_id = kwargs["team_id"]
 
     storage = TeamStorageImplementation()
-    presenter = TeamPresenterImplementation()
+    presenter = DeleteTeamPresenterImplementation()
     interactor = TeamInteractor(storage=storage)
 
     response = interactor.delete_team_wrapper(

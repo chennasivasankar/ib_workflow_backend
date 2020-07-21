@@ -56,3 +56,13 @@ INVALID_USERS_FOR_UPDATE_TEAM = (
     "Given users are invalid(not found), so update is not possible",
     "INVALID_USERS"
 )
+
+USER_HAS_NO_ACCESS_FOR_DELETE_TEAM = (
+    "User has no access to delete team details as he is not an admin",
+    "USER_HAS_NO_ACCESS"
+)
+
+INVALID_TEAM_FOR_DELETE_TEAM = (
+    "Given team is invalid(NotFound)",
+    "INVALID_TEAM"
+)

@@ -327,6 +327,48 @@
           ]
         }
       ]
+    },
+    "NotFoundResponseForDeleteTeam": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "INVALID_TEAM"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
+        }
+      ]
+    },
+    "UnauthorizedResponseForDeleteTeam": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "USER_HAS_NO_ACCESS"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
+        }
+      ]
     }
   },
   "parameters": {
@@ -429,6 +471,18 @@
       "description": "",
       "schema": {
         "$ref": "#/definitions/NotFoundResponseForUpdateTeam"
+      }
+    },
+    "NotFoundResponseForDeleteTeam": {
+      "description": "Requested team does not exist",
+      "schema": {
+        "$ref": "#/definitions/NotFoundResponseForDeleteTeam"
+      }
+    },
+    "UnauthorizedResponseForDeleteTeam": {
+      "description": "User has no access to delete a team",
+      "schema": {
+        "$ref": "#/definitions/UnauthorizedResponseForDeleteTeam"
       }
     }
   },
@@ -564,16 +618,10 @@
             "description": "Team deleted Successfully"
           },
           "404": {
-            "description": "NotFound",
-            "schema": {
-              "$ref": "#/definitions/InvalidTeamId"
-            }
+            "$ref": "#/responses/NotFoundResponseForDeleteTeam"
           },
           "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "$ref": "#/definitions/UserHasNoAccess"
-            }
+            "$ref": "#/responses/UnauthorizedResponseForDeleteTeam"
           }
         }
       }

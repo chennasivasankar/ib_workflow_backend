@@ -5,6 +5,9 @@ from ib_iam.exceptions import (
     DuplicateUsers,
     InvalidTeam
 )
+from ib_iam.interactors.presenter_interfaces.delete_team_presenter_interface import (
+    DeleteTeamPresenterInterface
+)
 from ib_iam.interactors.presenter_interfaces \
     .update_team_presenter_interface import UpdateTeamPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import TeamWithUserIdsDTO
@@ -79,6 +82,23 @@ class TeamInteractor:
             user_ids=user_ids, team_member_ids=team_member_ids, team_id=team_id
         )
 
+    def delete_team_wrapper(
+            self, user_id: str, team_id: str, presenter: DeleteTeamPresenterInterface
+    ):
+        try:
+            self.delete_team(user_id=user_id, team_id=team_id)
+            response = presenter.get_success_response_for_delete_team()
+        except UserHasNoAccess:
+            response = presenter.get_user_has_no_access_response_for_delete_team()
+        except InvalidTeam:
+            response = presenter.get_invalid_team_response_for_delete_team()
+        return response
+
+    def delete_team(self, user_id: str, team_id: str):
+        self.storage.raise_exception_if_user_is_not_admin(user_id=user_id)
+        self.storage.raise_exception_if_team_not_exists(team_id=team_id)
+        self.storage.delete_team(team_id=team_id)
+
     def _add_members_to_team(self, user_ids, team_member_ids, team_id):
         user_ids_to_add = list(set(user_ids) - set(team_member_ids))
         self.storage.add_users_to_team(
@@ -105,20 +125,3 @@ class TeamInteractor:
         is_invalid_users_found = len(user_ids) != len(user_ids_from_db)
         if is_invalid_users_found:
             raise InvalidUsers()
-
-    def delete_team_wrapper(
-            self, user_id: str, team_id: str, presenter: TeamPresenterInterface
-    ):
-        try:
-            self.delete_team(user_id=user_id, team_id=team_id)
-            response = presenter.make_empty_http_success_response()
-        except UserHasNoAccess:
-            response = presenter.raise_exception_for_user_has_no_access()
-        except InvalidTeamId:
-            response = presenter.raise_exception_for_invalid_team_id()
-        return response
-
-    def delete_team(self, user_id: str, team_id: str):
-        self.storage.raise_exception_if_user_is_not_admin(user_id=user_id)
-        self.storage.raise_exception_if_team_not_exists(team_id=team_id)
-        self.storage.delete_team(team_id=team_id)

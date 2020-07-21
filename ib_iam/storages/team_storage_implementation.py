@@ -112,6 +112,9 @@ class TeamStorageImplementation(TeamStorageInterface):
         TeamMember.objects.filter(team_id=team_id, member_id__in=member_ids) \
                   .delete()
 
+    def delete_team(self, team_id: str):
+        Team.objects.filter(team_id=team_id).delete()
+
     @staticmethod
     def _get_team_dtos(team_objects):
         team_dtos = [
