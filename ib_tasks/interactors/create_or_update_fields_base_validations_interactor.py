@@ -145,6 +145,8 @@ class CreateOrUpdateFieldsBaseVaidationInteractor:
 
         if field_ids:
             raise InvalidValueForFieldType(
-                INVALID_VALUES_FOR_FIELD_TYPES.format(FIELD_TYPES_LIST, field_ids)
+                INVALID_VALUES_FOR_FIELD_TYPES.format(
+                    FIELD_TYPES_LIST, field_ids
+                )
             )
         return

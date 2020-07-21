@@ -34,9 +34,11 @@ class CreateOrUpdateFieldsInteractor:
 
         if new_field_dtos:
             self.storage.create_fields(new_field_dtos)
-            self.storage.create_fields_roles(new_field_role_dtos)
         if existing_field_dtos:
             self.storage.update_fields(existing_field_dtos)
+        if new_field_role_dtos:
+            self.storage.create_fields_roles(new_field_role_dtos)
+        if existing_field_role_dtos:
             self.storage.update_fields_roles(existing_field_role_dtos)
 
     def _check_for_base_validations(self, field_dtos: List[FieldDTO]):
@@ -56,11 +58,15 @@ class CreateOrUpdateFieldsInteractor:
         field_roles_validation_interactor = FieldsRolesValidationsInteractor()
         field_roles_validation_interactor.fields_roles_validations(field_roles_dtos)
 
-    def _vlidate_field_values_based_on_field_types(self, field_dtos: List[FieldDTO]):
+    def _vlidate_field_values_based_on_field_types(
+            self, field_dtos: List[FieldDTO]
+    ):
         for field_dto in field_dtos:
             self._validate_field_value(field_dto)
 
-    def _get_field_role_dtos(self, field_roles_dtos: List[FieldRolesDTO]):
+    def _get_field_role_dtos(
+            self, field_roles_dtos: List[FieldRolesDTO]
+    ) -> List[FieldRoleDTO]:
         field_role_dtos = []
         for field_roles_dto in field_roles_dtos:
             read_permission_field_role_dtos = \
@@ -124,9 +130,16 @@ class CreateOrUpdateFieldsInteractor:
         ]
         return new_field_dtos, existing_field_dtos
 
-    def _get_new_and_exist_field_role_dtos(self, field_role_dtos: List[FieldRoleDTO]):
-        field_ids = [field_role_dto.field_id for field_role_dto in field_role_dtos]
-        existing_field_role_dtos = self.storage.get_fields_role_dtos(field_ids)
+    def _get_new_and_exist_field_role_dtos(
+            self, field_role_dtos: List[FieldRoleDTO]
+    ):
+        field_ids = [
+            field_role_dto.field_id
+            for field_role_dto in field_role_dtos
+        ]
+        existing_field_role_dtos = self.storage.get_fields_role_dtos(
+            field_ids
+        )
         new_role_dtos = []
         for field_role_dto in field_role_dtos:
             is_new_role_dto = self._is_field_role_dto_matches(
@@ -152,9 +165,12 @@ class CreateOrUpdateFieldsInteractor:
     def _validate_field_value(self, field_dto: FieldDTO):
         from ib_tasks.constants.constants import MULTI_VALUES_INPUT_FIELDS
         field_type = field_dto.field_type
+
         if field_type in MULTI_VALUES_INPUT_FIELDS:
             interactor = MultiValuesInputFieldsValidationInteractor()
             interactor.multi_values_input_fields_validations(field_dto)
         if field_type == FieldTypes.GOF_SELECTOR.value:
-            interactor = GoFSelectorValidationsInteractor(storage=self.storage)
+            interactor = GoFSelectorValidationsInteractor(
+                storage=self.storage
+            )
             interactor.gof_selecter_validations(field_dto)

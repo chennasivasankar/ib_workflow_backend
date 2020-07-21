@@ -200,3 +200,18 @@ class EmptyValuesForGoFNames(Exception):
 class DuplicationOfGoFNamesForFieldValues(Exception):
     def __init__(self, message: str):
         self.message = message
+
+
+class AllowedFormatsEmptyValueException(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class FieldsDuplicationOfAllowedFormatsValues(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class EmptyValuesForAllowedFormats(Exception):
+    def __init__(self, message: str):
+        self.message = message

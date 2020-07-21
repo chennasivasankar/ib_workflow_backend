@@ -26,7 +26,6 @@ class MultiValuesInputFieldsValidationInteractor:
         from ib_tasks.constants.exception_messages \
             import EMPTY_VALUE_FOR_FIELD_VALUE
         field_values = field_dto.field_values
-
         for field_value in field_values:
             is_field_value_empty = not field_value.strip()
             if is_field_value_empty:

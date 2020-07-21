@@ -52,8 +52,7 @@ class TestCreateOrUpdateFieldsBaseVaidationInteractor:
         # Assert
         assert str(err.value) == exception_message
 
-
-    def test_given_field_display_name_as_empty_rise_exception(
+    def test_given_field_display_name_as_empty_raise_exception(
             self, storage_mock
     ):
         # Arrange

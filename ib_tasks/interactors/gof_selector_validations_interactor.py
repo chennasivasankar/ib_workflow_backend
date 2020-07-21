@@ -38,7 +38,9 @@ class GoFSelectorValidationsInteractor:
         try:
             field_values = json.loads(field_dto.field_values)
         except JSONDecodeError:
-            raise InvalidJsonForFieldValue(INVALID_JSON.format(field_dto.field_id))
+            raise InvalidJsonForFieldValue(
+                INVALID_JSON.format(field_dto.field_id)
+            )
         return field_values
 
     @staticmethod
@@ -105,6 +107,7 @@ class GoFSelectorValidationsInteractor:
         from ib_tasks.constants.exception_messages \
             import INVALID_GOF_IDS_EXCEPTION_MESSAGE
         existing_gof_ids = self.storage.get_existing_gof_ids(gof_ids)
+        print("gof_ids = ", gof_ids)
         invalid_gof_ids = []
 
         for gof_id in gof_ids:

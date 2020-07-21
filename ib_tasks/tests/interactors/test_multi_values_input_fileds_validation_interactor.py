@@ -3,16 +3,13 @@ from ib_tasks.tests.factories.storage_dtos import \
     FieldDTOFactory
 from ib_tasks.interactors.multi_values_input_fileds_validation_interactor \
     import MultiValuesInputFieldsValidationInteractor
-from ib_tasks.exceptions.custom_exceptions import (
-    EmptyValuesForFieldValues,
-    DuplicationOfFieldValuesForFieldTypeMultiValues
-)
-
 
 class TestMultiValuesInputFieldsValidationInteractor:
 
     def test_given_empty_values_in_field_values_raise_exceptions(self):
         # Arrange
+        from ib_tasks.exceptions.custom_exceptions \
+            import EmptyValuesForFieldValues
         from ib_tasks.constants.exception_messages \
             import EMPTY_VALUE_FOR_FIELD_VALUE
 
@@ -32,6 +29,8 @@ class TestMultiValuesInputFieldsValidationInteractor:
 
     def test_given_duplication_of_field_values_raise_exception(self):
         # Arrange
+        from ib_tasks.exceptions.custom_exceptions \
+            import DuplicationOfFieldValuesForFieldTypeMultiValues
         from ib_tasks.constants.exception_messages \
             import DUPLICATION_OF_FIELD_VALUES
 

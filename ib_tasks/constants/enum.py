@@ -20,8 +20,20 @@ class FieldTypes(enum.Enum):
     DATE = "DATE"
     TIME = "TIME"
     DATE_TIME = "DATE_TIME"
+    IMAGE_UPLOADER = "IMAGE_UPLOADER"
+    FILE_UPLOADER = "FILE_UPLOADER"
 
 
 class PermissionTypes(enum.Enum):
     WRITE = "WRITE"
     READ = "READ"
+
+
+class Searchable(enum.Enum):
+    CITY = "CITY"
+    STATE = "STATE"
+    COUNTRY = "COUNTRY"
+    VENDOR = "VENDOR"
+    USER = "USER"
+    COMPANY = "COMPANY"
+    TEAM = "TEAM"

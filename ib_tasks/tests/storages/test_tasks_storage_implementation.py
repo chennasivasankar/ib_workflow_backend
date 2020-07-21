@@ -159,7 +159,6 @@ class TestTasksStorageImplementation:
 
         assert expected_existing_field_ids == actual_existing_field_ids
 
-
     def test_create_fields_given_field_dtos(
             self, storage, reset_factories
     ):
@@ -167,6 +166,19 @@ class TestTasksStorageImplementation:
 
         GoFFactory(gof_id="gof1")
         GoFFactory(gof_id="gof2")
+        import json
+
+        field_values = [
+            {
+                "name": "Individual",
+                "gof_ids": ["gof2", "gof1"]
+            },
+            {
+                "name": "Company",
+                "gof_ids": ["gof1", "gof2"]
+            }
+        ]
+        field_values = json.dumps(field_values)
 
         field_dtos = [
             FieldDTOFactory(
@@ -178,7 +190,13 @@ class TestTasksStorageImplementation:
                 gof_id="gof2", field_id="field2",
                 field_type=FieldTypes.DROPDOWN.value,
                 field_values="['Mr', 'Mrs', 'Ms']"
+            ),
+            FieldDTOFactory(
+                gof_id="gof2", field_id="field3",
+                field_type=FieldTypes.GOF_SELECTOR.value,
+                field_values=field_values
             )
+
         ]
 
         # Act
@@ -225,7 +243,7 @@ class TestTasksStorageImplementation:
             assert field_obj.field_values == field_dto.field_values
             assert field_obj.required == field_dto.required
             assert field_obj.help_text == field_dto.help_text
-            assert field_obj.tooltip == field_dto.tool_tip
+            assert field_obj.tooltip == field_dto.tooltip
             assert field_obj.placeholder_text == field_dto.placeholder_text
             assert field_obj.error_messages == field_dto.error_message
             assert field_obj.validation_regex == field_dto.validation_regex

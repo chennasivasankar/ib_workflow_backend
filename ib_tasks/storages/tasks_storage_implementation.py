@@ -186,7 +186,7 @@ class TasksStorageImplementation(TaskStorageInterface):
                 field_values=field_dto.field_values,
                 allowed_formats=field_dto.allowed_formats,
                 help_text=field_dto.help_text,
-                tooltip=field_dto.tool_tip,
+                tooltip=field_dto.tooltip,
                 placeholder_text=field_dto.placeholder_text,
                 error_messages=field_dto.error_message,
                 validation_regex=field_dto.validation_regex,

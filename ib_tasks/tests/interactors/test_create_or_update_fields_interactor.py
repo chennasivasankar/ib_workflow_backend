@@ -7,6 +7,9 @@ from ib_tasks.interactors.create_or_update_fields_interactor \
 from ib_tasks.tests.factories.storage_dtos import \
     FieldDTOFactory, FieldRolesDTOFactory, FieldRoleDTOFactory
 
+from ib_tasks.tests.common_fixtures.adapters.roles_service \
+        import get_valid_role_ids_in_given_role_ids
+
 
 class TestCreateOrUpdateFieldsInteractor:
 
@@ -56,14 +59,7 @@ class TestCreateOrUpdateFieldsInteractor:
                 permission_type=PermissionTypes.WRITE.value
             ),
         ]
-        from ib_tasks.tests.common_fixtures.adapters.roles_service import (
-            get_all_valid_read_permission_roles,
-            get_all_valid_write_permission_roles
-        )
-        get_valid_read_permissions_mock_method = \
-            get_all_valid_read_permission_roles(mocker)
-        get_valid_write_permissions_mock_method = \
-            get_all_valid_write_permission_roles(mocker)
+        get_valid_role_ids_mock_method = get_valid_role_ids_in_given_role_ids(mocker)
 
         FieldDTOFactory.reset_sequence(1)
         field_dtos = [
@@ -83,8 +79,7 @@ class TestCreateOrUpdateFieldsInteractor:
         # Assert
         storage_mock.create_fields.assert_called_once_with(field_dtos)
         storage_mock.create_fields_roles.assert_called_once_with(field_role_dtos)
-        get_valid_write_permissions_mock_method.assert_called_once()
-        get_valid_read_permissions_mock_method.assert_called_once()
+        get_valid_role_ids_mock_method.assert_called_once()
 
     def test_given_field_ids_already_exist_in_database_then_update_fields(
             self, storage_mock, mocker, reset_sequence
@@ -118,14 +113,7 @@ class TestCreateOrUpdateFieldsInteractor:
                 permission_type=PermissionTypes.WRITE.value
             )
         ]
-        from ib_tasks.tests.common_fixtures.adapters.roles_service import (
-            get_all_valid_read_permission_roles,
-            get_all_valid_write_permission_roles
-        )
-        get_valid_read_permissions_mock_method = \
-            get_all_valid_read_permission_roles(mocker)
-        get_valid_write_permissions_mock_method = \
-            get_all_valid_write_permission_roles(mocker)
+        get_valid_role_ids_mock_method = get_valid_role_ids_in_given_role_ids(mocker)
 
         existing_field_ids = ["FIN_FIRST NAME"]
         interactor = CreateOrUpdateFieldsInteractor(storage=storage_mock)
@@ -142,8 +130,7 @@ class TestCreateOrUpdateFieldsInteractor:
         # Assert
         storage_mock.update_fields.assert_called_once_with(field_dtos)
         storage_mock.update_fields_roles.assert_called_once_with(field_role_dtos)
-        get_valid_write_permissions_mock_method.assert_called_once()
-        get_valid_read_permissions_mock_method.assert_called_once()
+        get_valid_role_ids_mock_method.assert_called_once()
 
     def test_new_and_already_existing_field_ids_in_database_are_given_then_create_and_update_fields(
             self, storage_mock, mocker, reset_sequence
@@ -215,14 +202,7 @@ class TestCreateOrUpdateFieldsInteractor:
                 permission_type=PermissionTypes.WRITE.value
             )
         ]
-        from ib_tasks.tests.common_fixtures.adapters.roles_service import (
-            get_all_valid_read_permission_roles,
-            get_all_valid_write_permission_roles
-        )
-        get_valid_read_permissions_mock_method = \
-            get_all_valid_read_permission_roles(mocker)
-        get_valid_write_permissions_mock_method = \
-            get_all_valid_write_permission_roles(mocker)
+        get_valid_role_ids_mock_method = get_valid_role_ids_in_given_role_ids(mocker)
 
         storage_mock.get_existing_field_ids.return_value = existing_field_ids
         interactor = CreateOrUpdateFieldsInteractor(storage=storage_mock)
@@ -236,8 +216,7 @@ class TestCreateOrUpdateFieldsInteractor:
         )
 
         # Assert
-        get_valid_write_permissions_mock_method.assert_called_once()
-        get_valid_read_permissions_mock_method.assert_called_once()
+        get_valid_role_ids_mock_method.assert_called_once()
         storage_mock.create_fields.assert_called_once_with(new_field_dtos)
         storage_mock.update_fields.assert_called_once_with(existing_field_dtos)
         storage_mock.update_fields_roles.assert_called_once_with(existing_field_role_dtos)
@@ -307,16 +286,7 @@ class TestCreateOrUpdateFieldsInteractor:
                 permission_type=PermissionTypes.READ.value
             )
         ]
-
-        from ib_tasks.tests.common_fixtures.adapters.roles_service import (
-            get_all_valid_read_permission_roles,
-            get_all_valid_write_permission_roles
-        )
-        get_valid_read_permissions_mock_method = \
-            get_all_valid_read_permission_roles(mocker)
-        get_valid_write_permissions_mock_method = \
-            get_all_valid_write_permission_roles(mocker)
-
+        get_valid_role_ids_mock_method = get_valid_role_ids_in_given_role_ids(mocker)
         storage_mock.get_existing_field_ids.return_value = existing_field_ids
         interactor = CreateOrUpdateFieldsInteractor(storage=storage_mock)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
@@ -329,8 +299,7 @@ class TestCreateOrUpdateFieldsInteractor:
         )
 
         # Assert
-        get_valid_write_permissions_mock_method.assert_called_once()
-        get_valid_read_permissions_mock_method.assert_called_once()
+        get_valid_role_ids_mock_method.assert_called_once()
         storage_mock.create_fields.assert_called_once_with(new_field_dtos)
         storage_mock.create_fields_roles.assert_called_once_with(new_fields_role_dtos)
         storage_mock.update_fields.assert_called_once_with(existing_field_dtos)

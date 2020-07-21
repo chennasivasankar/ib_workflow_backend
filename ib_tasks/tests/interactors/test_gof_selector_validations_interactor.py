@@ -17,11 +17,11 @@ class TestGoFSelectorValidationsInteractor:
         return storage
 
     @pytest.fixture
-    def reset_sequence(self):
+    def reset_field_dto(self):
         FieldDTOFactory.reset_sequence(1)
 
     def test_given_field_type_gof_selector_and_field_values_as_invalid_json_raise_exception(
-            self, storage_mock, reset_sequence
+            self, storage_mock, reset_field_dto
     ):
         # Arrange
         from ib_tasks.exceptions.custom_exceptions \
@@ -39,7 +39,7 @@ class TestGoFSelectorValidationsInteractor:
         ]
         field_dto = FieldDTOFactory(
             field_id="field1",
-            field_type=FieldTypes.DROPDOWN.value,
+            field_type=FieldTypes.GOF_SELECTOR.value,
             field_values=str(field_values)
         )
         field_id = "field1"
@@ -56,7 +56,7 @@ class TestGoFSelectorValidationsInteractor:
         assert str(err.value) == error_message
 
     def test_given_gof_names_as_empty_for_field_values_raise_exception(
-            self, storage_mock, reset_sequence
+            self, storage_mock, reset_field_dto
     ):
         # Arrange
         from ib_tasks.exceptions.custom_exceptions \
@@ -93,7 +93,7 @@ class TestGoFSelectorValidationsInteractor:
         assert str(err.value) == error_message
 
     def test_given_duplication_of_gof_names_for_field_values_raise_exception(
-            self, storage_mock, reset_sequence
+            self, storage_mock, reset_field_dto
     ):
         # Arrange
         from ib_tasks.exceptions.custom_exceptions \
@@ -137,7 +137,7 @@ class TestGoFSelectorValidationsInteractor:
         assert str(err.value) == error_message
 
     def test_given_invalid_gof_ids_for_field_values_raise_exception(
-            self, storage_mock, reset_sequence
+            self, storage_mock, reset_field_dto
     ):
         # Arrange
         from ib_tasks.exceptions.custom_exceptions \

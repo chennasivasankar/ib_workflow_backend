@@ -84,7 +84,7 @@ class FieldDTOFactory(factory.Factory):
     field_values = ["Mr", "Mrs", "Ms"]
     required = True
     help_text = None
-    tool_tip = None
+    tooltip = None
     placeholder_text = None
     error_message = None
     allowed_formats = None

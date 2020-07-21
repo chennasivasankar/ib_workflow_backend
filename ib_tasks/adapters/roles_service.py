@@ -1,11 +1,11 @@
 from typing import List
 
-class ServiceInterface:
-    def get_all_valid_read_permission_roles(self):
-        pass
 
-    def get_all_valid_write_permission_roles(self):
-        pass
+class ServiceInterface:
+
+    @staticmethod
+    def get_valid_role_ids_in_given_role_ids(role_ids: List[str]):
+        return ["ALL_ROLES", "FIN_PAYMENTS_RP", "FIN_ACCOUNTS_LEVEL1_VERIFIER", "FIN_FINANCE_RP"]
 
 
 class RolesService:
@@ -16,12 +16,6 @@ class RolesService:
         # from ib_iam.app_interfaces import ServiceInterface
         return ServiceInterface()
 
-    def get_all_valid_read_permission_roles(self) -> List[str]:
-        valid_read_permission_roles = \
-            self.interface.get_all_valid_read_permission_roles()
-        return valid_read_permission_roles
-
-    def get_all_valid_write_permission_roles(self) -> List[str]:
-        valid_write_permission_roles = \
-            self.interface.get_all_valid_write_permission_roles()
-        return valid_write_permission_roles
+    def get_valid_role_ids_in_given_role_ids(self, role_ids: List[str]):
+        valid_role_ids = self.interface.get_valid_role_ids_in_given_role_ids(role_ids)
+        return valid_role_ids

@@ -126,7 +126,6 @@ class TestFieldsRolesValidationsInteractor:
         # Assert
         assert str(err.value) == exception_message
 
-
     def test_given_duplication_of_values_for_write_permissions_roles_raise_exception(
             self
     ):
@@ -178,9 +177,9 @@ class TestFieldsRolesValidationsInteractor:
         # Arrange
         from ib_tasks.exceptions.custom_exceptions import InvalidRolesException
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_all_valid_read_permission_roles
-        get_valid_read_permissions_mock_method = \
-            get_all_valid_read_permission_roles(mocker)
+            get_valid_role_ids_in_given_role_ids
+        get_valid_role_ids_mock_method = \
+            get_valid_role_ids_in_given_role_ids(mocker)
 
         FieldRolesDTOFactory.reset_sequence(1)
         field_roles_dtos = [
@@ -218,8 +217,7 @@ class TestFieldsRolesValidationsInteractor:
         # Assert
         exception_object = err.value
         assert exception_object.roles == fields_invalid_roles_for_read_permission
-        get_valid_read_permissions_mock_method.assert_called_once()
-
+        get_valid_role_ids_mock_method.assert_called_once()
 
     def test_given_invalid_roles_for_write_permissions_raise_exception(
             self, mocker
@@ -227,14 +225,9 @@ class TestFieldsRolesValidationsInteractor:
         # Arrange
         FieldRolesDTOFactory.reset_sequence(1)
         from ib_tasks.exceptions.custom_exceptions import InvalidRolesException
-        from ib_tasks.tests.common_fixtures.adapters.roles_service import (
-            get_all_valid_read_permission_roles,
-            get_all_valid_write_permission_roles
-        )
-        get_valid_read_permissions_mock_method = \
-            get_all_valid_read_permission_roles(mocker)
-        get_valid_write_permissions_mock_method = \
-            get_all_valid_write_permission_roles(mocker)
+        from ib_tasks.tests.common_fixtures.adapters.roles_service \
+            import get_valid_role_ids_in_given_role_ids
+        get_valid_role_ids_mock_method = get_valid_role_ids_in_given_role_ids(mocker)
 
         field_roles_dtos = [
             FieldRolesDTOFactory(
@@ -276,5 +269,4 @@ class TestFieldsRolesValidationsInteractor:
         # Assert
         exception_object = err.value
         assert exception_object.roles == fields_invalid_roles_for_write_permission
-        get_valid_write_permissions_mock_method.assert_called_once()
-        get_valid_read_permissions_mock_method.assert_called_once()
+        get_valid_role_ids_mock_method.assert_called_once()

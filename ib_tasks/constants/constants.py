@@ -20,5 +20,9 @@ MULTI_VALUES_INPUT_FIELDS = [
     FieldTypes.MULTI_SELECT_LABELS.value
 ]
 
+GOOGLE_SHEET_NAME = "FinMan Configuration"
+
+FIELD_SUB_SHEET_TITLE = "Fields"
+
 
 
