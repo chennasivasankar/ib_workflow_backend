@@ -22,7 +22,7 @@ class PopulateCreateBoardsAndColumns:
         board_dtos = [
             self._convert_board_dict_to_board_dto(board_dict=board_dict)
             for board_dict in boards_columns_dicts
-            if board_dict['Board ID*'] not in board_ids
+            if board_dict['board_id'] not in board_ids
         ]
         column_dtos = populate_script.get_column_dtos_from_dict(
             boards_columns_dicts
@@ -41,6 +41,6 @@ class PopulateCreateBoardsAndColumns:
     @staticmethod
     def _convert_board_dict_to_board_dto(board_dict: Dict) -> BoardDTO:
         return BoardDTO(
-            board_id=board_dict['Board ID*'],
-            display_name=board_dict['Board Display Name']
+            board_id=board_dict['board_id'],
+            display_name=board_dict['board_display_name']
         )
