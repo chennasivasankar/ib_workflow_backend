@@ -5,7 +5,7 @@ from django_swagger_utils.utils.http_response_mixin \
 
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.constants.enums import StatusCode
-from ib_iam.interactors.presenter_interfaces.dtos import CompleteUserDetailsDTO
+from ib_iam.interactors.presenter_interfaces.dtos import CompleteUsersDetailsDTO
 from ib_iam.interactors.presenter_interfaces.presenter_interface \
     import PresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO, UserRoleDTO, UserCompanyDTO
@@ -53,12 +53,23 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             response_dict=response_dict)
 
     def response_for_get_users(
-            self, complete_user_details_dtos: CompleteUserDetailsDTO):
+            self, complete_user_details_dtos: CompleteUsersDetailsDTO):
         user_dtos = complete_user_details_dtos.users
         team_dtos = complete_user_details_dtos.teams
         role_dtos = complete_user_details_dtos.roles
         company_dtos = complete_user_details_dtos.companies
         total_no_of_users = complete_user_details_dtos.total_no_of_users
+        users = self._prepare_response_for_user_details(
+            user_dtos, team_dtos, role_dtos, company_dtos)
+        response = {
+            "users": users,
+            "total": total_no_of_users
+        }
+        return self.prepare_200_success_response(
+            response_dict=response)
+
+    def _prepare_response_for_user_details(
+            self, user_dtos, team_dtos, role_dtos, company_dtos):
         users = []
         for user_profile_dto in user_dtos:
             user_id = user_profile_dto.user_id
@@ -69,12 +80,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
                 user_profile_dto, user_team_dtos, user_role_dtos,
                 user_company_dto)
             users.append(user_response_dict)
-        response = {
-            "users": users,
-            "total": total_no_of_users
-        }
-        return self.prepare_200_success_response(
-            response_dict=response)
+        return users
 
     def _convert_user_response_dict(
             self, user_profile_dto: UserProfileDTO,

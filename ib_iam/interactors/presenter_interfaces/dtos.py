@@ -7,7 +7,7 @@ from ib_iam.interactors.storage_interfaces.dtos \
 
 
 @dataclass
-class CompleteUserDetailsDTO:
+class CompleteUsersDetailsDTO:
     users: List[UserProfileDTO]
     teams: List[UserTeamDTO]
     roles: List[UserRoleDTO]

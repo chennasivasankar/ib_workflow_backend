@@ -31,8 +31,8 @@ def complete_user_details_dto():
     from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
     user_profile_dtos = [UserProfileDTOFactory.create(user_id=user_id) \
                          for user_id in user_ids]
-    from ib_iam.interactors.presenter_interfaces.dtos import CompleteUserDetailsDTO
-    complete_user_details_dto = CompleteUserDetailsDTO(
+    from ib_iam.interactors.presenter_interfaces.dtos import CompleteUsersDetailsDTO
+    complete_user_details_dto = CompleteUsersDetailsDTO(
         users=user_profile_dtos,
         teams=user_teams,
         roles=user_roles,
