@@ -80,17 +80,9 @@ class TestCase01GetListOfTeamsAPITestCase(TestUtils):
 
             }
         ]
-        print("*******************")
-        i = 1
         for team in teams:
             team_object = TeamFactory(team_id=team["team_id"])
-            print(i)
-            i += 1
-            j = 1
             for member_id in team["member_ids"]:
-                print(j)
-                j += 1
                 TeamMemberFactory(team=team_object, member_id=member_id)
-            print("__________________________")
             from ib_iam.models import Team
             print(Team.objects.values())

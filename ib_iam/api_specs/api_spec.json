@@ -665,10 +665,10 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/Limit"
+            "$ref": "#/parameters/LimitQueryParameter"
           },
           {
-            "$ref": "#/parameters/Offset"
+            "$ref": "#/parameters/OffsetQueryParameter"
           }
         ],
         "responses": {
@@ -679,16 +679,10 @@
             }
           },
           "400": {
-            "description": "BadRequest",
-            "schema": {
-              "$ref": "#/definitions/InvalidLimitOffset"
-            }
+            "description": "BadRequest"
           },
           "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "$ref": "#/definitions/UserHasNoAccess"
-            }
+            "description": "Unauthorized"
           }
         }
       }
