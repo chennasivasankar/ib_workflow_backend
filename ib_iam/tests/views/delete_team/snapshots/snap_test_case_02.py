@@ -7,10 +7,6 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase03DeleteTeamAPITestCase.test_case status_code'] = '401'
+snapshots['TestCase03DeleteTeamAPITestCase.test_case status_code'] = '405'
 
-snapshots['TestCase03DeleteTeamAPITestCase.test_case body'] = {
-    'http_status_code': 401,
-    'res_status': 'USER_HAS_NO_ACCESS',
-    'response': 'User has no access to delete team details as he is not an admin'
-}
+snapshots['TestCase03DeleteTeamAPITestCase.test_case body'] = b'Method Not Allowed'
