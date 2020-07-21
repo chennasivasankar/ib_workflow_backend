@@ -8,7 +8,7 @@ from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories import TeamFactory, TeamMemberFactory, UserDetailsFactory
 
 
-class TestCase01UpdateTeamDetailsAPITestCase(TestUtils):
+class TestCase06UpdateTeamDetailsAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
