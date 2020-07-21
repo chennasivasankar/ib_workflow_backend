@@ -44,3 +44,8 @@ class GlobalConstantsDTO:
 class GlobalConstantsWithTemplateIdDTO:
     template_id: str
     global_constants_dtos: List[GlobalConstantsDTO]
+
+@dataclass()
+class TaskTemplateStageDTO:
+    task_template_id: str
+    stage_id: str

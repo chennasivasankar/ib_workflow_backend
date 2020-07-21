@@ -1,6 +1,6 @@
 from typing import List
 
-from django.db.models import F
+from django.db.models import F, Q
 
 from ib_tasks.interactors.dtos import StagesActionDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
@@ -60,48 +60,59 @@ class ActionsStorageImplementation(ActionStorageInterface):
         StageAction.objects.bulk_create(list_of_actions)
         action_objs = StageAction.objects.filter(name__in=names_list)
 
-        self._get_list_of_permitted_roles_objs(
-            action_objs, list_of_permitted_roles, stage_action, stage_actions)
+        list_of_permitted_roles = self._get_list_of_permitted_roles_objs(
+            action_objs, stage_actions)
 
         ActionPermittedRoles.objects.bulk_create(list_of_permitted_roles)
 
     def update_stage_actions(self, stage_actions: List[StagesActionDTO]):
         # TODO: Optimize db hits
-        list_of_permitted_roles = []
-        names_list = [stage.action_name for stage in stage_actions]
         stage_ids = [stage.stage_id for stage in stage_actions]
-        stages = Stage.objects.filter(stage_id__in=stage_ids).values('stage_id', 'id')
-
-        list_of_stages = {}
-        for item in stages:
-            list_of_stages[item['stage_id']] = item['id']
-
         for stage_action in stage_actions:
-            StageAction.objects.filter(stage__stage_id=stage_action.stage_id).update(
-                stage_id=list_of_stages[stage_action.stage_id],
-                name=stage_action.action_name,
+            StageAction.objects.filter(stage__stage_id=stage_action.stage_id,
+                                       name=stage_action.action_name)\
+                .update(
                 logic=stage_action.logic,
                 py_function_import_path=stage_action.function_path,
                 button_text=stage_action.button_text,
                 button_color=stage_action.button_color
             )
+        action_objs = []
+        for stage_action in stage_actions:
+            action_objs.append(
+                StageAction.objects.get(
+                    name=stage_action.action_name, stage__stage_id=stage_action.stage_id))
 
-        action_objs = StageAction.objects.filter(name__in=names_list)
-
-        self._get_list_of_permitted_roles_objs(
-            action_objs, list_of_permitted_roles, stage_action, stage_actions)
+        list_of_permitted_roles = self._get_list_of_permitted_roles_objs(
+            action_objs, stage_actions)
 
         ActionPermittedRoles.objects.bulk_create(list_of_permitted_roles)
 
-    def _get_list_of_permitted_roles_objs(self,
-                                          action_objs,
-                                          list_of_permitted_roles,
-                                          stage_action, stage_actions):
+    @staticmethod
+    def _get_list_of_permitted_roles_objs(action_objs,
+                                          stage_actions):
+
+        list_of_permitted_roles = []
         for action_obj in action_objs:
             for stage in stage_actions:
                 if action_obj.name == stage.action_name:
-                    list_of_permitted_roles.append(
-                        ActionPermittedRoles(action=action_obj, role_id=stage_action.roles))
+                    for role in stage.roles:
+                        list_of_permitted_roles.append(
+                            ActionPermittedRoles(action_id=action_obj.id, role_id=role))
+        return list_of_permitted_roles
 
     def delete_stage_actions(self, stage_actions: List[StageActionNamesDTO]):
-        pass
+        stage_actions_dict = [{'stage_id': stage.stage_id,
+                               'action_names': stage.action_names}
+                              for stage in stage_actions]
+        q = None
+        for counter, item in enumerate(stage_actions_dict):
+            current_queue = Q(stage__stage_id=item['stage_id'], name__in=item["action_names"])
+            if counter == 0:
+                q = current_queue
+            else:
+                q = q | current_queue
+
+        stages = StageAction.objects.filter(q).values()
+        StageAction.objects.filter(q).delete()
+

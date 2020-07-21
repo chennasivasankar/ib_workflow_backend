@@ -17,7 +17,7 @@ class ActionDTOFactory(factory.Factory):
     action_name = factory.Sequence(lambda n: "name_%d" % n)
     function_path = "path"
     logic = factory.Sequence(lambda n: 'status_id_%d==stage_id' % n)
-    roles = 'Role_1'
+    roles = ['Role_1', 'Role_2']
     button_text = "text"
     button_color = None
 
