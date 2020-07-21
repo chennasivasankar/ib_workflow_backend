@@ -1,5 +1,6 @@
-import pytest
-from ib_iam.presenters.team_presenter_implementation import TeamPresenterImplementation
+from ib_iam.presenters.team_presenter_implementation import (
+    TeamPresenterImplementation
+)
 
 team_id = "f2c02d98-f311-4ab2-8673-3daa00757002"
 

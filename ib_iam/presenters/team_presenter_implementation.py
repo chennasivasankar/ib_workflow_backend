@@ -1,50 +1,47 @@
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 from ib_iam.constants.enums import StatusCode
 from ib_iam.interactors.presenter_interfaces.dtos import TeamWithMembersDetailsDTO
-from ib_iam.interactors.presenter_interfaces.team_presenter_interface import TeamPresenterInterface
+from ib_iam.interactors.presenter_interfaces.team_presenter_interface import (
+    TeamPresenterInterface
+)
 from ib_iam.constants.exception_messages import (
-    USER_HAS_NO_ACCESS, INVALID_LIMIT, INVALID_OFFSET,
-    TEAM_NAME_ALREADY_EXISTS, INVALID_TEAM_ID
+    USER_HAS_NO_ACCESS_FOR_GET_LIST_OF_TEAMS,
+    INVALID_LIMIT_FOR_GET_LIST_OF_TEAMS,
+    INVALID_OFFSET_FOR_GET_LIST_OF_TEAMS,
+    USER_HAS_NO_ACCESS_FOR_ADD_TEAM,
+    TEAM_NAME_ALREADY_EXISTS_FOR_ADD_TEAM,
+    INVALID_USERS_FOR_ADD_TEAM,
+    DUPLICATE_USERS_FOR_ADD_TEAM
 )
 
 
 class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
 
-    def raise_exception_for_user_has_no_access(self):
+    def get_user_has_no_access_response_for_get_list_of_teams(self):
         response_dict = {
-            "response": USER_HAS_NO_ACCESS[0],
+            "response": USER_HAS_NO_ACCESS_FOR_GET_LIST_OF_TEAMS[0],
             "http_status_code": StatusCode.UNAUTHORIZED.value,
-            "res_status": USER_HAS_NO_ACCESS[1]
+            "res_status": USER_HAS_NO_ACCESS_FOR_GET_LIST_OF_TEAMS[1]
         }
         return self.prepare_401_unauthorized_response(
             response_dict=response_dict
         )
 
-    def raise_exception_for_invalid_limit(self):
+    def get_invalid_limit_response_for_get_list_of_teams(self):
         response_dict = {
-            "response": INVALID_LIMIT[0],
+            "response": INVALID_LIMIT_FOR_GET_LIST_OF_TEAMS[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
-            "res_status": INVALID_LIMIT[1]
+            "res_status": INVALID_LIMIT_FOR_GET_LIST_OF_TEAMS[1]
         }
         return self.prepare_400_bad_request_response(
             response_dict=response_dict
         )
 
-    def raise_exception_for_invalid_offset(self):
+    def get_invalid_offset_response_for_get_list_of_teams(self):
         response_dict = {
-            "response": INVALID_OFFSET[0],
+            "response": INVALID_OFFSET_FOR_GET_LIST_OF_TEAMS[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
-            "res_status": INVALID_OFFSET[1]
-        }
-        return self.prepare_400_bad_request_response(
-            response_dict=response_dict
-        )
-
-    def raise_exception_if_team_name_already_exists(self, exception):
-        response_dict = {
-            "response": TEAM_NAME_ALREADY_EXISTS[0] % exception.team_name,
-            "http_status_code": StatusCode.BAD_REQUEST.value,
-            "res_status": TEAM_NAME_ALREADY_EXISTS[1]
+            "res_status": INVALID_OFFSET_FOR_GET_LIST_OF_TEAMS[1]
         }
         return self.prepare_400_bad_request_response(
             response_dict=response_dict
@@ -62,23 +59,50 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
             response_dict=response_dict
         )
 
-    def get_response_for_add_team(self, team_id: str):
-        return self.prepare_201_created_response(
-            response_dict={"team_id": team_id}
+    def get_user_has_no_access_response_for_add_team(self):
+        response_dict = {
+            "response": USER_HAS_NO_ACCESS_FOR_ADD_TEAM[0],
+            "http_status_code": StatusCode.UNAUTHORIZED.value,
+            "res_status": USER_HAS_NO_ACCESS_FOR_ADD_TEAM[1]
+        }
+        return self.prepare_401_unauthorized_response(
+            response_dict=response_dict
         )
 
-    def make_empty_http_success_response(self):
-        empty_dict = {}
-        return self.prepare_200_success_response(response_dict=empty_dict)
-
-    def raise_exception_for_invalid_team_id(self):
+    def get_team_name_already_exists_response_for_add_team(self, exception):
         response_dict = {
-            "response": INVALID_TEAM_ID[0],
+            "response":
+                TEAM_NAME_ALREADY_EXISTS_FOR_ADD_TEAM[0] % exception.team_name,
+            "http_status_code": StatusCode.BAD_REQUEST.value,
+            "res_status": TEAM_NAME_ALREADY_EXISTS_FOR_ADD_TEAM[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict
+        )
+
+    def get_duplicate_users_response_for_add_team(self):
+        response_dict = {
+            "response": DUPLICATE_USERS_FOR_ADD_TEAM[0],
+            "http_status_code": StatusCode.BAD_REQUEST.value,
+            "res_status": DUPLICATE_USERS_FOR_ADD_TEAM[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict
+        )
+
+    def get_invalid_users_response_for_add_team(self):
+        response_dict = {
+            "response": INVALID_USERS_FOR_ADD_TEAM[0],
             "http_status_code": StatusCode.NOT_FOUND.value,
-            "res_status": INVALID_TEAM_ID[1]
+            "res_status": INVALID_USERS_FOR_ADD_TEAM[1]
         }
         return self.prepare_404_not_found_response(
             response_dict=response_dict
+        )
+
+    def get_response_for_add_team(self, team_id: str):
+        return self.prepare_201_created_response(
+            response_dict={"team_id": team_id}
         )
 
     def _convert_team_details_dtos_to_teams_list(

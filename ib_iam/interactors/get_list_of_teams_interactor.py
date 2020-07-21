@@ -35,17 +35,19 @@ class GetListOfTeamsInteractor:
                 team_details_dtos=team_details_dtos
             )
         except UserHasNoAccess:
-            response = presenter.raise_exception_for_user_has_no_access()
+            response = presenter \
+                .get_user_has_no_access_response_for_get_list_of_teams()
         except InvalidLimit:
-            response = presenter.raise_exception_for_invalid_limit()
+            response = \
+                presenter.get_invalid_limit_response_for_get_list_of_teams()
         except InvalidOffset:
-            response = presenter.raise_exception_for_invalid_offset()
+            response = \
+                presenter.get_invalid_offset_response_for_get_list_of_teams()
         return response
 
     def get_list_of_teams(self, user_id: str, pagination_dto: PaginationDTO):
-        self.storage.raise_exception_if_user_is_not_admin(user_id=user_id)
         self._validate_pagination_details(pagination_dto=pagination_dto)
-
+        self.storage.raise_exception_if_user_is_not_admin(user_id=user_id)
         teams_with_total_teams_count = \
             self.storage.get_teams_with_total_teams_count_dto(
                 pagination_dto=pagination_dto

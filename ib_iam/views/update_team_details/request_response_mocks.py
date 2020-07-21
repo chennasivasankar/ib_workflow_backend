@@ -3,7 +3,10 @@
 REQUEST_BODY_JSON = """
 {
     "name": "string",
-    "description": "string"
+    "description": "string",
+    "user_ids": [
+        "string"
+    ]
 }
 """
 
@@ -28,7 +31,7 @@ RESPONSE_404_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "INVALID_TEAM_ID"
+    "res_status": "INVALID_TEAM"
 }
 """
 
