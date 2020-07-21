@@ -7,6 +7,7 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01DeleteTeamAPITestCase.test_case status_code'] = '405'
+snapshots['TestCase01DeleteTeamAPITestCase.test_case status_code'] = '200'
 
-snapshots['TestCase01DeleteTeamAPITestCase.test_case body'] = b'Method Not Allowed'
+snapshots['TestCase01DeleteTeamAPITestCase.test_case body'] = {
+}

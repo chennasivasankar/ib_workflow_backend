@@ -7,6 +7,10 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase03DeleteTeamAPITestCase.test_case status_code'] = '405'
+snapshots['TestCase03DeleteTeamAPITestCase.test_case status_code'] = '404'
 
-snapshots['TestCase03DeleteTeamAPITestCase.test_case body'] = b'Method Not Allowed'
+snapshots['TestCase03DeleteTeamAPITestCase.test_case body'] = {
+    'http_status_code': 404,
+    'res_status': 'INVALID_TEAM',
+    'response': 'Given team is invalid(NotFound)'
+}
