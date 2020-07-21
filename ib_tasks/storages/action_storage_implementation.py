@@ -37,8 +37,6 @@ class ActionsStorageImplementation(ActionStorageInterface):
         return list_of_dtos
 
     def create_stage_actions(self, stage_actions: List[StagesActionDTO]):
-        list_of_actions = []
-        list_of_permitted_roles = []
         names_list = [stage.action_name for stage in stage_actions]
         stage_ids = [stage.stage_id for stage in stage_actions]
         stages = Stage.objects.filter(stage_id__in=stage_ids).values('stage_id', 'id')
@@ -47,15 +45,8 @@ class ActionsStorageImplementation(ActionStorageInterface):
         for item in stages:
             list_of_stages[item['stage_id']] = item['id']
 
-        for stage_action in stage_actions:
-            list_of_actions.append(StageAction(
-                stage_id=list_of_stages[stage_action.stage_id],
-                name=stage_action.action_name,
-                logic=stage_action.logic,
-                py_function_import_path=stage_action.function_path,
-                button_text=stage_action.button_text,
-                button_color=stage_action.button_color
-            ))
+        list_of_actions = self._get_list_of_action_objs_to_create(
+            list_of_stages, stage_actions)
 
         StageAction.objects.bulk_create(list_of_actions)
         action_objs = StageAction.objects.filter(name__in=names_list)
@@ -65,9 +56,21 @@ class ActionsStorageImplementation(ActionStorageInterface):
 
         ActionPermittedRoles.objects.bulk_create(list_of_permitted_roles)
 
+    def _get_list_of_action_objs_to_create(self, list_of_stages, stage_actions):
+        list_of_actions = []
+        for stage_action in stage_actions:
+            list_of_actions.append(StageAction(
+                stage_id=list_of_stages[stage_action.stage_id],
+                name=stage_action.action_name,
+                logic=stage_action.logic,
+                py_function_import_path=stage_action.function_path,
+                button_text=stage_action.button_text,
+                button_color=stage_action.button_color
+            ))
+        return list_of_actions
+
     def update_stage_actions(self, stage_actions: List[StagesActionDTO]):
         # TODO: Optimize db hits
-        stage_ids = [stage.stage_id for stage in stage_actions]
         for stage_action in stage_actions:
             StageAction.objects.filter(stage__stage_id=stage_action.stage_id,
                                        name=stage_action.action_name)\
@@ -113,6 +116,5 @@ class ActionsStorageImplementation(ActionStorageInterface):
             else:
                 q = q | current_queue
 
-        stages = StageAction.objects.filter(q).values()
         StageAction.objects.filter(q).delete()
 
