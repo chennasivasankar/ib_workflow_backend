@@ -1,10 +1,14 @@
 from typing import List
 
+
 class ServiceInterface:
-    def get_all_valid_read_permission_roles(self):
+    def get_all_valid_read_permission_roles(self) -> List[str]:
         pass
 
-    def get_all_valid_write_permission_roles(self):
+    def get_all_valid_write_permission_roles(self) -> List[str]:
+        pass
+
+    def get_user_role_ids(self, user_id) -> List[str]:
         pass
 
 
@@ -25,3 +29,7 @@ class RolesService:
         valid_write_permission_roles = \
             self.interface.get_all_valid_write_permission_roles()
         return valid_write_permission_roles
+
+    def get_user_role_ids(self, user_id) -> List[str]:
+        user_role_ids = self.interface.get_user_role_ids(user_id)
+        return user_role_ids
