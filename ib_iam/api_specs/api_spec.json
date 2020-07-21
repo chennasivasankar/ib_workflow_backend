@@ -291,43 +291,43 @@
   },
   "responses": {
     "BadRequestResponseForGetListOfTeams": {
-      "description": "",
+      "description": "given limit or offset is not valid",
       "schema":{
         "$ref": "#/definitions/BadRequestResponseForGetListOfTeams"
       }
     },
     "UnauthorizedResponseForGetListOfTeams": {
-      "description": "BadRequest",
+      "description": "user has no access to see teams",
       "schema": {
         "$ref": "#/definitions/UnauthorizedResponseForGetListOfTeams"
       }
     },
     "SuccessResponseForGetListOfTeams": {
-      "description": "",
+      "description": "returns list of teams",
       "schema": {
         "$ref": "#/definitions/ResponseForGetListOfTeams"
       }
     },
     "UnauthorizedResponseForAddTeam": {
-      "description": "",
+      "description": "User has no access to add a team",
       "schema": {
         "$ref": "#/definitions/UnauthorizedResponseForAddTeam"
       }
     },
     "NotFoundResponseForAddTeam": {
-      "description": "",
+      "description": "Requested users not found to add",
       "schema": {
         "$ref": "#/definitions/NotFoundResponseForAddTeam"
       }
     },
     "BadRequestResponseForAddTeam": {
-      "description": "",
+      "description": "Team name already exists or duplicate users has sent",
       "schema": {
         "$ref": "#/definitions/BadRequestResponseForAddTeam"
       }
     },
     "SuccessfullyCreatedResponseForAddTeam": {
-      "description": "",
+      "description": "Team Created successfully",
       "schema": {
         "$ref": "#/definitions/TeamId"
       }
