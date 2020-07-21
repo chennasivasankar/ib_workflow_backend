@@ -1,7 +1,9 @@
 from typing import List
 
-from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO, UserRoleDTO, UserCompanyDTO, UserDTO
-from ib_iam.interactors.storage_interfaces.storage_interface import StorageInterface
+from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO, UserRoleDTO, \
+    UserCompanyDTO, UserDTO
+from ib_iam.interactors.storage_interfaces.storage_interface import \
+    StorageInterface
 
 
 class StorageImplementation(StorageInterface):
@@ -73,3 +75,8 @@ class StorageImplementation(StorageInterface):
             )
             company_dtos.append(company_dto)
         return company_dtos
+
+    def is_user_is_a_admin(self, user_id: str):
+        from ib_iam.models import UserProfile
+        user_profile_object = UserProfile.objects.get(user_id=user_id)
+        return user_profile_object.is_admin

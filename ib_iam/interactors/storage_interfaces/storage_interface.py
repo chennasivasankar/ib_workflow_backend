@@ -30,3 +30,7 @@ class StorageInterface(ABC):
     def get_company_details_of_users_bulk(
             self, user_ids: List[str]) -> List[UserCompanyDTO]:
         pass
+
+    @abstractmethod
+    def is_user_is_a_admin(self, user_id: str):
+        pass

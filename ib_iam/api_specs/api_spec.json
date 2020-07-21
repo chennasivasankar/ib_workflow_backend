@@ -35,20 +35,27 @@
       "type": "object",
       "properties": {
         "user_id": {
-          "type": "string",
-          "format": "uuid"
+          "type": "string"
         },
         "name": {
           "type": "string"
         },
         "email": {
           "type": "string"
+        },
+        "profile_pic_url": {
+          "type": "string"
+        },
+        "is_admin": {
+          "type": "boolean"
         }
       },
       "required": [
         "user_id",
         "name",
-        "email"
+        "email",
+        "profile_pic_url",
+        "is_admin"
       ]
     },
     "TeamDetailsDefinition": {
@@ -99,14 +106,14 @@
     },
     "CompanyDefinition": {
       "type": "object",
-          "properties": {
-            "company": {
-              "$ref": "#/definitions/CompanyDetailsDefinition"
-            }
-          },
-          "required": [
-            "company"
-          ]
+      "properties": {
+        "company": {
+          "$ref": "#/definitions/CompanyDetailsDefinition"
+        }
+      },
+      "required": [
+        "company"
+      ]
     },
     "RoleDetailsDefinition": {
       "type": "object",
@@ -155,23 +162,22 @@
     },
     "UsersDetailsDefinition": {
       "type": "object",
-          "properties": {
-            "users": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/CompleteUserDetailsDefinition"
-              }
-            }
-          },
-          "required": [
-            "users"
-          ]
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CompleteUserDetailsDefinition"
+          }
+        }
+      },
+      "required": [
+        "users"
+      ]
     },
     "ListOfUsersDefinition": {
       "allOf": [
         {
           "$ref": "#/definitions/UsersDetailsDefinition"
-
         },
         {
           "type": "object",
@@ -199,6 +205,22 @@
       },
       "required": [
         "response"
+      ]
+    },
+    "HttpResponseAndStatusDefinition": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code"
       ]
     }
   },
@@ -228,6 +250,60 @@
       "schema": {
         "$ref": "#/definitions/ForbiddenDefinition"
       }
+    },
+    "GetUserProfileSuccessResponse": {
+      "description": "get user profile success response",
+      "schema": {
+        "$ref": "#/definitions/UserDetailsDefinition"
+      }
+    },
+    "GetUserProfileBadRequestResponse": {
+      "description": "get user profile bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusDefinition"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_USER_ID"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "GetUserProfileNotFoundResponse": {
+      "description": "get user profile not found response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusDefinition"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_ACCOUNT_DOES_NOT_EXIST"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
     }
   },
   "paths": {
@@ -256,6 +332,31 @@
           },
           "403": {
             "$ref": "#/responses/ForbiddenResponse"
+          }
+        }
+      }
+    },
+    "/user_profile/v1/": {
+      "get": {
+        "operationId": "get_user_profile",
+        "summary": "get user profile",
+        "description": "get user profile details",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetUserProfileSuccessResponse"
+          },
+          "400": {
+            "$ref": "#/responses/GetUserProfileBadRequestResponse"
+          },
+          "404": {
+            "$ref": "#/responses/GetUserProfileNotFoundResponse"
           }
         }
       }
