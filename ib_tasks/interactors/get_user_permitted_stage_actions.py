@@ -1,10 +1,7 @@
 from typing import List
 
-from ib_tasks.interactors.storage_interfaces.dtos import ActionDTO
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
-from ib_tasks.interactors.dtos \
-    import TaskTemplateStageActionDTO, StageActionDTO, TaskTemplateStageDTO
 
 
 class InvalidTaskTemplateIdsException(Exception):
@@ -44,5 +41,5 @@ class GetUserPermittedStageActions:
             for action_role in actions_roles_dto:
                 if role in action_role.roles:
                     action_ids.append(action_role.action_id)
-        return list(set(action_ids))
+        return sorted(list(set(action_ids)))
 

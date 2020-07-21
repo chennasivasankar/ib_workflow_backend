@@ -5,9 +5,22 @@ def populate_tasks(tasks: List[Dict]):
     tasks_dto = []
     validation_for_tasks_dict(tasks)
     writing_data_to_task_actions_logic(tasks)
+    tasks = _remove_white_spaces_and_apply_replaces_to_roles(
+        tasks)
     for action_dict in tasks:
         tasks_dto.append(append_action_dict(action_dict))
     return tasks_dto
+
+
+def _remove_white_spaces_and_apply_replaces_to_roles(
+        action_dicts: List[Dict]):
+
+    for action_dict in action_dicts:
+        roles = action_dict['roles']
+        roles = roles.replace(" ", "")
+        roles = roles.split(",")
+        action_dict["roles"] = roles
+    return action_dicts
 
 
 def writing_data_to_task_actions_logic(actions_dict: List[Dict]):
@@ -29,12 +42,16 @@ def _define_single_method(file, action_dict: Dict[str, str]):
 
 def append_action_dict(action_dict: Dict[str, Any]):
     from ib_tasks.interactors.dtos import TaskTemplateStageActionDTO
+    function_path = 'ib_tasks.populate.task_initial_stage_actions_logic.'
+    function_name = action_dict['stage_id'] + "_" + action_dict['action_name']
+    function_path = function_path + function_name
     return TaskTemplateStageActionDTO(
         task_template_id=action_dict['task_template_id'],
         stage_id=action_dict['stage_id'],
         action_name=action_dict['action_name'],
         logic=action_dict['action_logic'],
-        role=action_dict['role'],
+        roles=action_dict['roles'],
+        function_path=function_path,
         button_text=action_dict['button_text'],
         button_color=action_dict.get("button_color")
     )
@@ -49,7 +66,7 @@ def validation_for_tasks_dict(tasks_dict: List[Dict]):
             "stage_id": str,
             "action_logic": str,
             "action_name": str,
-            "role": str,
+            "roles": str,
             "button_text": str,
             Optional("button_color"): str
         }]

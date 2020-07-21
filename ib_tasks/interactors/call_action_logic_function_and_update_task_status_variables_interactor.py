@@ -25,7 +25,6 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
 
     def call_action_logic_function_and_update_task_status_variables(
             self, task_dto: TaskGofAndStatusesDTO):
-
         group_of_fields_dto = task_dto.group_of_fields_dto
         gof_status_dict = self._get_gof_status_dict(
             group_of_fields_dto=group_of_fields_dto)
@@ -34,7 +33,6 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
         status_variables_dto = task_dto.statuses_dto
         task_dict = self._get_task_dict(group_of_fields_dto, gof_status_dict,
                                         gof_fields_dto_dict, status_variables_dto)
-        print(task_dict)
         method_object = self._get_method_object_for_condition(action_id=self.action_id)
         task_dict = method_object(task_dict=task_dict)
         status_dict = task_dict["statuses"]

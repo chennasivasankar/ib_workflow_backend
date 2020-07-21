@@ -74,7 +74,7 @@ class ConfigureInitialTaskTemplateStageActions:
             task_template_id = task_dto.task_template_id
             if task_template_id not in unique_ids:
                 unique_ids.append(task_template_id)
-            task_template_stage_dtos.append(self._append_task_dto(task_dto))
+                task_template_stage_dtos.append(self._append_task_dto(task_dto))
 
         return task_template_stage_dtos
 
@@ -94,7 +94,8 @@ class ConfigureInitialTaskTemplateStageActions:
                 stage_id=task_dto.stage_id,
                 action_name=task_dto.action_name,
                 logic=task_dto.logic,
-                role=task_dto.role,
+                roles=task_dto.roles,
+                function_path=task_dto.function_path,
                 button_text=task_dto.button_text,
                 button_color=task_dto.button_color
             )

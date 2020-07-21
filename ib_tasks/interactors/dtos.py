@@ -6,21 +6,12 @@ from ib_tasks.interactors.storage_interfaces.dtos \
 
 
 @dataclass()
-class RequestDTO:
-    stage_id: str
-    action_name: str
-    logic: str
-    role: str
-    button_text: str
-    button_color: Optional[str]
-
-
-@dataclass()
 class StageActionDTO:
     stage_id: str
     action_name: str
     logic: str
-    role: str
+    roles: List[str]
+    function_path: str
     button_text: str
     button_color: Optional[str]
 
