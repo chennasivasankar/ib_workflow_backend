@@ -60,16 +60,48 @@ class ActionsStorageImplementation(ActionStorageInterface):
         StageAction.objects.bulk_create(list_of_actions)
         action_objs = StageAction.objects.filter(name__in=names_list)
 
-        for action_obj in action_objs:
-            for stage in stage_actions:
-                if action_obj.name == stage.action_name:
-                    list_of_permitted_roles.append(
-                        ActionPermittedRoles(action_id=action_obj, role_id=stage_action.roles))
+        self._get_list_of_permitted_roles_objs(
+            action_objs, list_of_permitted_roles, stage_action, stage_actions)
 
         ActionPermittedRoles.objects.bulk_create(list_of_permitted_roles)
 
     def update_stage_actions(self, stage_actions: List[StagesActionDTO]):
-        pass
+        # TODO: Optimize db hits
+        list_of_permitted_roles = []
+        names_list = [stage.action_name for stage in stage_actions]
+        stage_ids = [stage.stage_id for stage in stage_actions]
+        stages = Stage.objects.filter(stage_id__in=stage_ids).values('stage_id', 'id')
+
+        list_of_stages = {}
+        for item in stages:
+            list_of_stages[item['stage_id']] = item['id']
+
+        for stage_action in stage_actions:
+            StageAction.objects.filter(stage__stage_id=stage_action.stage_id).update(
+                stage_id=list_of_stages[stage_action.stage_id],
+                name=stage_action.action_name,
+                logic=stage_action.logic,
+                py_function_import_path=stage_action.function_path,
+                button_text=stage_action.button_text,
+                button_color=stage_action.button_color
+            )
+
+        action_objs = StageAction.objects.filter(name__in=names_list)
+
+        self._get_list_of_permitted_roles_objs(
+            action_objs, list_of_permitted_roles, stage_action, stage_actions)
+
+        ActionPermittedRoles.objects.bulk_create(list_of_permitted_roles)
+
+    def _get_list_of_permitted_roles_objs(self,
+                                          action_objs,
+                                          list_of_permitted_roles,
+                                          stage_action, stage_actions):
+        for action_obj in action_objs:
+            for stage in stage_actions:
+                if action_obj.name == stage.action_name:
+                    list_of_permitted_roles.append(
+                        ActionPermittedRoles(action=action_obj, role_id=stage_action.roles))
 
     def delete_stage_actions(self, stage_actions: List[StageActionNamesDTO]):
         pass
