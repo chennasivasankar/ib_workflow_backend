@@ -82,11 +82,15 @@ class StorageImplementation(StorageInterface):
 
     def update_columns_for_board(self, column_dtos: List[ColumnDTO]) -> None:
         column_ids = [column_dto.column_id for column_dto in column_dtos]
-        column_objects = Column.objects.filter(
-            column_id__in=column_ids
-        )
+        column_objects = Column.objects.filter(column_id__in=column_ids)
+        user_role_ids = ColumnPermission.objects.filter(column_id__in=column_ids)
         updated_column_objects = self._get_updated_column_objects(
-            column_dtos=column_dtos, column_objects=column_objects
+            column_dtos=column_dtos,
+            column_objects=column_objects
+        )
+        updated_user_role_objects = self._get_updated_user_role_objects(
+            column_dtos=column_dtos,
+            user_role_ids=user_role_ids
         )
         Column.objects.bulk_update(
             updated_column_objects,
@@ -96,6 +100,10 @@ class StorageImplementation(StorageInterface):
                 'kanban_brief_view_config',
                 'list_brief_view_config'
             ]
+        )
+        ColumnPermission.objects.bulk_update(
+            updated_user_role_objects,
+            ['user_role_id']
         )
 
     def _get_updated_column_objects(
@@ -112,6 +120,29 @@ class StorageImplementation(StorageInterface):
             )
             updated_column_objects.append(updated_column_object)
         return updated_column_objects
+
+    def _get_updated_user_role_objects(self, column_dtos, user_role_ids):
+        from collections import defaultdict
+        user_role_ids_dict = defaultdict(lambda: [])
+        for user_role_id in user_role_ids:
+            user_role_ids_dict[user_role_id.column_id].append(user_role_id)
+
+        updated_user_role_objects = []
+        for column_dto in column_dtos:
+            updated_user_role_objects += self._get_user_role_objects_from_column_dtos(
+                column_dto=column_dto,
+                user_role_objects=user_role_ids_dict[column_dto.column_id]
+            )
+        return updated_user_role_objects
+
+    @staticmethod
+    def _get_user_role_objects_from_column_dtos(column_dto,
+                                                user_role_objects):
+        for user_role in column_dto.user_role_ids:
+            for user_role_object in user_role_objects:
+                user_role_object.user_role_id=user_role
+
+        return user_role_objects
 
     def _get_updated_column_object(
             self, column_dto: ColumnDTO, column_object: Column):
@@ -227,34 +258,3 @@ class StorageImplementation(StorageInterface):
 
     def validate_user_role_with_column_roles(self, user_role: str):
         pass
-
-
-"""
- @abc.abstractmethod
-    def create_boards_and_columns(
-            self, board_dtos: List[BoardDTO],
-            column_dtos: List[ColumnDTO]) -> None:
-        pass
-
-    @abc.abstractmethod
-    def get_board_ids_for_column_ids(self, column_ids: List[str]) -> List[str]:
-        pass
-
-    @abc.abstractmethod
-    def get_boards_column_ids(self, board_ids: List[str]) -> List[str]:
-        pass
-
-    @abc.abstractmethod
-    def update_columns_for_board(self, column_dtos: List[ColumnDTO]) -> None:
-        pass
-
-    @abc.abstractmethod
-    def create_columns_for_board(self, column_dtos: List[ColumnDTO]) -> None:
-        pass
-
-    @abc.abstractmethod
-    def delete_columns_which_are_not_in_configuration(
-            self, column_for_delete_dtos: List[BoardColumnDTO]) -> None:
-        pass
-
-"""

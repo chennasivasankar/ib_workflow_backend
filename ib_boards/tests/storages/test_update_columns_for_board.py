@@ -37,7 +37,7 @@ class TestUpdateColumnsForBoard:
     def test_with_valid_data_update_data(self, storage, reset_sequence):
         # Arrange
         from ib_boards.tests.factories.models import \
-            BoardFactory, ColumnFactory
+            BoardFactory
         BoardFactory()
         column_dtos = ColumnDTOFactory.create_batch(2, board_id='BOARD_ID_1')
 
