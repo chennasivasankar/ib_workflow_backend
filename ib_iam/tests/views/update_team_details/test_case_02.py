@@ -1,13 +1,13 @@
 """
-# Returns team_id as valid parameters are given
+# Returns user has no access exception as he is not admin
 """
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...factories import TeamFactory, TeamMemberFactory, UserDetailsFactory
+from ...factories import TeamFactory, UserDetailsFactory
 
 
-class TestCase01UpdateTeamDetailsAPITestCase(TestUtils):
+class TestCase02UpdateTeamDetailsAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -18,18 +18,10 @@ class TestCase01UpdateTeamDetailsAPITestCase(TestUtils):
     def setup(self, api_user):
         user_id = str(api_user.id)
         UserDetailsFactory.reset_sequence(1)
-        TeamMemberFactory.reset_sequence(1)
         TeamFactory.reset_sequence(1)
-        UserDetailsFactory(user_id=user_id, is_admin=True)
+        UserDetailsFactory(user_id=user_id)
         team_id = "f2c02d98-f311-4ab2-8673-3daa00757002"
-        team = TeamFactory.create(team_id=team_id)
-        from ib_iam.models import Team, TeamMember, UserDetails
-        print(Team.objects.values())
-        for user_id in ["2", "3"]:
-            TeamMemberFactory.create(team=team, member_id=user_id)
-            print(TeamMember.objects.values())
-            UserDetailsFactory.create(user_id=user_id)
-            print(UserDetails.objects.values())
+        TeamFactory.create(team_id=team_id)
         return team_id
 
     @pytest.mark.django_db

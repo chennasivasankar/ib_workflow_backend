@@ -273,7 +273,8 @@
             "res_status": {
               "type": "string",
               "enum": [
-                "TEAM_NAME_ALREADY_EXISTS"
+                "TEAM_NAME_ALREADY_EXISTS",
+                "DUPLICATE_USERS"
               ]
             }
           },
@@ -315,7 +316,8 @@
             "res_status": {
               "type": "string",
               "enum": [
-                "INVALID_TEAM"
+                "INVALID_TEAM",
+                "INVALID_USERS"
               ]
             }
           },
@@ -355,7 +357,8 @@
       "in": "path",
       "required": true,
       "description": "team_id to identify a team",
-      "type": "integer"
+      "type": "string",
+      "format": "uuid"
     },
     "UpdateTeamParameter": {
       "name": "team_details_to_be_updated",

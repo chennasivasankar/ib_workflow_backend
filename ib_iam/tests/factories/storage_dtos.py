@@ -6,7 +6,8 @@ from ib_iam.interactors.storage_interfaces.dtos import (
     TeamNameAndDescriptionDTO,
     PaginationDTO,
     TeamsWithTotalTeamsCountDTO,
-    TeamDetailsWithUserIdsDTO
+    TeamDetailsWithUserIdsDTO,
+    TeamWithUserIdsDTO
 )
 
 team_ids = [
@@ -73,6 +74,14 @@ class TeamDetailsWithUserIdsDTOFactory(
         [user_ids[2], user_ids[1]],
         [user_ids[2], user_ids[1]]
     ])
+
+class TeamWithUserIdsDTOFactory(
+    TeamDetailsWithUserIdsDTOFactory, factory.Factory
+):
+    class Meta:
+        model = TeamWithUserIdsDTO
+
+    team_id = factory.sequence(lambda n: "team%d" % n)
 
 
 class PaginationDTOFactory(factory.Factory):

@@ -1,5 +1,5 @@
 """
-# Returns team_id as valid parameters are given
+# Returns invalid_users_exception response as invalid user_ids has given
 """
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
@@ -7,7 +7,7 @@ from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories import TeamFactory, TeamMemberFactory, UserDetailsFactory
 
 
-class TestCase01UpdateTeamDetailsAPITestCase(TestUtils):
+class TestCase05UpdateTeamDetailsAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -23,19 +23,15 @@ class TestCase01UpdateTeamDetailsAPITestCase(TestUtils):
         UserDetailsFactory(user_id=user_id, is_admin=True)
         team_id = "f2c02d98-f311-4ab2-8673-3daa00757002"
         team = TeamFactory.create(team_id=team_id)
-        from ib_iam.models import Team, TeamMember, UserDetails
-        print(Team.objects.values())
         for user_id in ["2", "3"]:
             TeamMemberFactory.create(team=team, member_id=user_id)
-            print(TeamMember.objects.values())
             UserDetailsFactory.create(user_id=user_id)
-            print(UserDetails.objects.values())
         return team_id
 
     @pytest.mark.django_db
     def test_case(self, setup, snapshot):
         team_id = setup
-        body = {'name': 'team1', 'description': '', 'user_ids': ["2", "3"]}
+        body = {'name': 'team1', 'description': '', 'user_ids': ["2", "3", "4"]}
         path_params = {"team_id": team_id}
         query_params = {}
         headers = {}

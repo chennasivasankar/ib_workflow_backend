@@ -32,7 +32,27 @@ DUPLICATE_USERS_FOR_ADD_TEAM = (
     "DUPLICATE_USERS"
 )
 
+USER_HAS_NO_ACCESS_FOR_UPDATE_TEAM = (
+    "User has no access to update team details as he is not an admin",
+    "USER_HAS_NO_ACCESS"
+)
+
 INVALID_TEAM_FOR_UPDATE_TEAM = (
     "Given team is invalid(NotFound)",
     "INVALID_TEAM"
+)
+
+TEAM_NAME_ALREADY_EXISTS_FOR_UPDATE_TEAM = (
+    "Given '%s' is already exists, so updating name is not possible.",
+    "TEAM_NAME_ALREADY_EXISTS"
+)
+
+DUPLICATE_USERS_FOR_UPDATE_TEAM = (
+    "Given users consists of duplicates, so update is not possible",
+    "DUPLICATE_USERS"
+)
+
+INVALID_USERS_FOR_UPDATE_TEAM = (
+    "Given users are invalid(not found), so update is not possible",
+    "INVALID_USERS"
 )

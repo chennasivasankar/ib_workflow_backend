@@ -1,10 +1,12 @@
 from typing import List, Optional
 from ib_iam.interactors.storage_interfaces.team_storage_interface import TeamStorageInterface
 from ib_iam.models import UserDetails, Team, TeamMember
-from ib_iam.exceptions.custom_exceptions import UserHasNoAccess, TeamNameAlreadyExists
+from ib_iam.exceptions.custom_exceptions import (
+    UserHasNoAccess, TeamNameAlreadyExists, InvalidTeam
+)
 from ib_iam.interactors.storage_interfaces.dtos import (
     PaginationDTO, TeamDTO, TeamMemberIdsDTO,
-    TeamsWithTotalTeamsCountDTO, TeamDetailsWithUserIdsDTO
+    TeamsWithTotalTeamsCountDTO, TeamDetailsWithUserIdsDTO, TeamWithUserIdsDTO
 )
 
 
@@ -86,6 +88,29 @@ class TeamStorageImplementation(TeamStorageInterface):
             ) for user_id in user_ids
         ]
         TeamMember.objects.bulk_create(team_members)
+
+    def raise_exception_if_team_not_exists(self, team_id: str):
+        try:
+            Team.objects.get(team_id=team_id)
+        except Team.DoesNotExist:
+            raise InvalidTeam()
+
+    def update_team_details(
+            self, team_with_user_ids_dto: TeamWithUserIdsDTO
+    ):
+        Team.objects.filter(team_id=team_with_user_ids_dto.team_id).update(
+            name=team_with_user_ids_dto.name,
+            description=team_with_user_ids_dto.description
+        )
+
+    def get_member_ids_of_team(self, team_id: str):
+        member_ids = TeamMember.objects.filter(team_id=team_id) \
+                               .values_list("member_id", flat=True)
+        return list(member_ids)
+
+    def delete_members_from_team(self, team_id: str, member_ids: List[str]):
+        TeamMember.objects.filter(team_id=team_id, member_id__in=member_ids) \
+                  .delete()
 
     @staticmethod
     def _get_team_dtos(team_objects):

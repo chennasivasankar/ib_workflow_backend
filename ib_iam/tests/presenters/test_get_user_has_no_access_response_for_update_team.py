@@ -1,18 +1,21 @@
 from ib_iam.presenters.update_team_presenter_implementation import (
     UpdateTeamPresenterImplementation
 )
-from ib_iam.constants.exception_messages import DUPLICATE_USERS_FOR_UPDATE_TEAM
+from ib_iam.constants.exception_messages import (
+    USER_HAS_NO_ACCESS_FOR_UPDATE_TEAM
+)
 
 
-class TestRaiseExceptionForDuplicateMembers:
+class TestRaiseExceptionForUserHasNoAccess:
     def test_when_it_is_called_it_returns_http_response(self):
         json_presenter = UpdateTeamPresenterImplementation()
         import json
-        expected_response = DUPLICATE_USERS_FOR_UPDATE_TEAM[0]
-        expected_res_status = DUPLICATE_USERS_FOR_UPDATE_TEAM[1]
-        expected_http_status_code = 400
+        expected_response = USER_HAS_NO_ACCESS_FOR_UPDATE_TEAM[0]
+        expected_res_status = USER_HAS_NO_ACCESS_FOR_UPDATE_TEAM[1]
+        expected_http_status_code = 401
 
-        result = json_presenter.get_duplicate_users_response_for_update_team()
+        result = \
+            json_presenter.get_user_has_no_access_response_for_update_team()
         response_dict = json.loads(result.content)
         actual_response = response_dict["response"]
         actual_res_status = response_dict["res_status"]

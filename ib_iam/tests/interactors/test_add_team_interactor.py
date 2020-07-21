@@ -34,34 +34,6 @@ class TestAddTeamInteractor:
         presenter.get_user_has_no_access_response_for_add_team \
             .assert_called_once()
 
-    def test_team_name_exists_returns_team_name_already_exists_response(self):
-        storage = create_autospec(TeamStorageInterface)
-        presenter = create_autospec(TeamPresenterInterface)
-        interactor = AddTeamInteractor(storage=storage)
-        user_id = "1"
-        team_name = "team1"
-        expected_team_name_from_team_name_already_exists_error = team_name
-        team_details_with_user_ids_dto = TeamDetailsWithUserIdsDTOFactory(name="team1")
-        storage.get_team_id_if_team_name_already_exists.return_value = "1"
-        presenter.get_team_name_already_exists_response_for_add_team \
-            .return_value = Mock()
-
-        interactor.add_team_wrapper(
-            user_id=user_id,
-            team_details_with_user_ids_dto=team_details_with_user_ids_dto,
-            presenter=presenter
-        )
-
-        storage.get_team_id_if_team_name_already_exists \
-            .assert_called_once_with(name=team_details_with_user_ids_dto.name)
-        call_obj = \
-            presenter.get_team_name_already_exists_response_for_add_team.call_args
-        error_obj = call_obj.args[0]
-        actual_team_name_from_team_name_already_exists_error = \
-            error_obj.team_name
-        assert actual_team_name_from_team_name_already_exists_error == \
-               expected_team_name_from_team_name_already_exists_error
-
     def test_given_duplicate_users_returns_duplicate_users_response(self):
         storage = create_autospec(TeamStorageInterface)
         presenter = create_autospec(TeamPresenterInterface)
@@ -107,6 +79,39 @@ class TestAddTeamInteractor:
         storage.get_valid_user_ids_among_the_given_user_ids \
             .assert_called_once_with(user_ids=invalid_user_ids)
         presenter.get_invalid_users_response_for_add_team.assert_called_once()
+
+    def test_team_name_exists_returns_team_name_already_exists_response(self):
+        storage = create_autospec(TeamStorageInterface)
+        presenter = create_autospec(TeamPresenterInterface)
+        interactor = AddTeamInteractor(storage=storage)
+        user_id = "1"
+        team_name = "team1"
+        user_ids = ["1"]
+        expected_team_name_from_team_name_already_exists_error = team_name
+        storage.get_valid_user_ids_among_the_given_user_ids \
+            .return_value = user_ids
+        team_details_with_user_ids_dto = TeamDetailsWithUserIdsDTOFactory(
+            name="team1", user_ids=user_ids
+        )
+        storage.get_team_id_if_team_name_already_exists.return_value = "1"
+        presenter.get_team_name_already_exists_response_for_add_team \
+            .return_value = Mock()
+
+        interactor.add_team_wrapper(
+            user_id=user_id,
+            team_details_with_user_ids_dto=team_details_with_user_ids_dto,
+            presenter=presenter
+        )
+
+        storage.get_team_id_if_team_name_already_exists \
+            .assert_called_once_with(name=team_details_with_user_ids_dto.name)
+        call_obj = \
+            presenter.get_team_name_already_exists_response_for_add_team.call_args
+        error_obj = call_obj.args[0]
+        actual_team_name_from_team_name_already_exists_error = \
+            error_obj.team_name
+        assert actual_team_name_from_team_name_already_exists_error == \
+               expected_team_name_from_team_name_already_exists_error
 
     def test_given_valid_details_then_returns_team_id(self):
         storage = create_autospec(TeamStorageInterface)

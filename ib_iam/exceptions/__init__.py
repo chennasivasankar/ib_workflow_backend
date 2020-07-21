@@ -2,7 +2,7 @@ from .custom_exceptions import (
     UserHasNoAccess,
     InvalidLimit,
     InvalidOffset,
-    InvalidTeamId,
+    InvalidTeam,
     UserHasNoAccess,
     TeamNameAlreadyExists,
     InvalidUsers,

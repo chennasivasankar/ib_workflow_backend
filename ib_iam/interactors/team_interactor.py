@@ -2,10 +2,8 @@ from ib_iam.exceptions import (
     UserHasNoAccess,
     TeamNameAlreadyExists,
     InvalidUsers,
-    DuplicateUsers
-)
-from ib_iam.exceptions.custom_exceptions import (
-    InvalidTeam, TeamNameAlreadyExists
+    DuplicateUsers,
+    InvalidTeam
 )
 from ib_iam.interactors.presenter_interfaces \
     .update_team_presenter_interface import UpdateTeamPresenterInterface
@@ -13,6 +11,7 @@ from ib_iam.interactors.storage_interfaces.dtos import TeamWithUserIdsDTO
 from ib_iam.interactors.storage_interfaces.team_storage_interface import (
     TeamStorageInterface
 )
+from typing import List
 
 
 class TeamInteractor:
@@ -31,12 +30,16 @@ class TeamInteractor:
                 user_id=user_id,
                 team_with_user_ids_dto=team_with_user_ids_dto
             )
-            response = presenter.make_empty_http_success_response()
+            response = presenter.get_success_response_for_update_team()
         except UserHasNoAccess:
             response = \
                 presenter.get_user_has_no_access_response_for_update_team()
         except InvalidTeam:
             response = presenter.get_invalid_team_response_for_update_team()
+        except DuplicateUsers:
+            response = presenter.get_duplicate_users_response_for_update_team()
+        except InvalidUsers:
+            response = presenter.get_invalid_users_response_for_update_team()
         except TeamNameAlreadyExists as exception:
             response = presenter \
                 .get_team_name_already_exists_response_for_update_team(
@@ -58,6 +61,7 @@ class TeamInteractor:
         )
         is_team_name_exists = team_id is not None
         if is_team_name_exists:
+
             is_team_requested_name_already_assigned_to_other = \
                 team_id != team_with_user_ids_dto.team_id
             if is_team_requested_name_already_assigned_to_other:
@@ -81,11 +85,11 @@ class TeamInteractor:
             team_id=team_id, user_ids=user_ids_to_add
         )
 
-    @staticmethod
-    def _delete_members_of_team(user_ids, team_member_ids, team_id):
+    def _delete_members_of_team(self, user_ids, team_member_ids, team_id):
         member_ids_to_delete = list(set(team_member_ids) - set(user_ids))
-        self.storage.delete_members_from_team(tem_id, member_ids=)
-
+        self.storage.delete_members_from_team(
+            team_id=team_id, member_ids=member_ids_to_delete
+        )
 
     @staticmethod
     def _raise_exception_if_duplicate_user_ids_found(user_ids: List[str]):
