@@ -1,3 +1,4 @@
+
 from typing import List
 
 
@@ -11,11 +12,16 @@ class ServiceInterface:
     def get_user_role_ids(self, user_id) -> List[str]:
         pass
 
-
 class RolesService:
 
     @property
     def interface(self):
+        # from ib_iam.interfaces.service_interface import ServiceInterface
+        # return ServiceInterface()
+        pass
+
+    def get_db_roles(self):
+        pass
         # TODO: should import the interface from ib_iam app for roles validation
         # from ib_iam.app_interfaces import ServiceInterface
         return ServiceInterface()
@@ -33,3 +39,5 @@ class RolesService:
     def get_user_role_ids(self, user_id) -> List[str]:
         user_role_ids = self.interface.get_user_role_ids(user_id)
         return user_role_ids
+
+
