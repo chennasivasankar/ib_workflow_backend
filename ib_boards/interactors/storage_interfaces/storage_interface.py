@@ -1,7 +1,7 @@
 import abc
 from typing import List
 
-from ib_boards.interactors.dtos import CreateBoardDTO, ColumnDTO, BoardColumnDTO
+from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, BoardColumnDTO
 
 
 class StorageInterface(abc.ABC):
@@ -12,7 +12,8 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def create_boards_and_columns(
-            self, board_dtos: List[CreateBoardDTO], column_dtos: List[ColumnDTO]) -> None:
+            self, board_dtos: List[BoardDTO],
+            column_dtos: List[ColumnDTO]) -> None:
         pass
 
     @abc.abstractmethod
@@ -25,7 +26,7 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_board_column_ids(
+    def get_boards_column_ids(
             self, board_ids: List[str]) -> List[BoardColumnDTO]:
         pass
 
@@ -34,7 +35,7 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def create_columns_for_board(self, column_dtos) -> None:
+    def create_columns_for_board(self, column_dtos: List[ColumnDTO]) -> None:
         pass
 
     @abc.abstractmethod
@@ -52,7 +53,7 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_board_details(self, board_ids: List[str]) -> List[CreateBoardDTO]:
+    def get_board_details(self, board_ids: List[str]) -> List[BoardDTO]:
         pass
 
     @abc.abstractmethod
