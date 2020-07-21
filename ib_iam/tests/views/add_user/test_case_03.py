@@ -28,5 +28,4 @@ class TestCase03AddUserAPITestCase(TestUtils):
         headers = {}
         response = self.default_test_case(
             body=body, path_params=path_params,
-            query_params=query_params, headers=headers, snapshot=snapshot
-        )
+            query_params=query_params, headers=headers, snapshot=snapshot)

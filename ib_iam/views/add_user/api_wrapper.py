@@ -1,14 +1,15 @@
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 from .validator_class import ValidatorClass
-from ...interactors.add_new_user_interactor import AddNewUserInteractor
-from ...presenters.presenter_implementation import PresenterImplementation
-from ...storages.storage_implementation import StorageImplementation
+from ib_iam.interactors.add_new_user_interactor import AddNewUserInteractor
+from ib_iam.presenters.presenter_implementation import PresenterImplementation
+from ib_iam.storages.storage_implementation import StorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     # ---------MOCK IMPLEMENTATION---------
+
     storage = StorageImplementation()
     presenter = PresenterImplementation()
     interactor = AddNewUserInteractor(storage=storage)

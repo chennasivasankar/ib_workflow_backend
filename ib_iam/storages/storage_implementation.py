@@ -7,7 +7,7 @@ from ib_iam.interactors.storage_interfaces.storage_interface import StorageInter
 class StorageImplementation(StorageInterface):
 
     def validate_user_is_admin(self, user_id: str) -> bool:
-        from ib_iam.models.user_profile import UserDetails
+        from ib_iam.models.user import UserDetails
         user = UserDetails.objects.get(user_id=user_id)
         return user.is_admin
 

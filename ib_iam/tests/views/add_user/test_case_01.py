@@ -18,7 +18,6 @@ class TestCase01AddUserAPITestCase(TestUtils):
         user_id = api_user.id
         from ib_iam.models import UserDetails
         user = UserDetails.objects.create(user_id=user_id, is_admin=True)
-        print(user.__dict__)
 
     @pytest.mark.django_db
     def test_case(self, user_set_up, snapshot):
@@ -28,5 +27,4 @@ class TestCase01AddUserAPITestCase(TestUtils):
         headers = {}
         response = self.default_test_case(
             body=body, path_params=path_params,
-            query_params=query_params, headers=headers, snapshot=snapshot
-        )
+            query_params=query_params, headers=headers, snapshot=snapshot)

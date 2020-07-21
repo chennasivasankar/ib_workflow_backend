@@ -5,7 +5,7 @@ import factory
 
 from ib_iam import models
 from ib_iam.models import Role, Team, Company
-from ib_iam.models.user_profile import UserDetails, UserTeam, UserRole
+from ib_iam.models.user import UserDetails, UserTeam, UserRole
 
 
 class TeamFactory(factory.django.DjangoModelFactory):

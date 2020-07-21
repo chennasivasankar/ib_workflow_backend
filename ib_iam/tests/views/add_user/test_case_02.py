@@ -17,8 +17,7 @@ class TestCase02AddUserAPITestCase(TestUtils):
     def user_set_up(self, api_user):
         user_id = api_user.id
         from ib_iam.models import UserDetails
-        user = UserDetails.objects.create(user_id=user_id, is_admin=True)
-        print(user.__dict__)
+        UserDetails.objects.create(user_id=user_id, is_admin=True)
 
     @pytest.mark.django_db
     def test_case(self, user_set_up, snapshot):
