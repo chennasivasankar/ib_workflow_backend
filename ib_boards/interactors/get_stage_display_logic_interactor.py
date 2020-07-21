@@ -21,7 +21,6 @@ class StageDisplayLogicInteractor:
         task_status_dtos = self.get_stage_display_logic_condition(
             stage_display_logics=stage_display_logics
         )
-
         return presenter.get_response_for_stage_display_logic(
             task_status_dtos=task_status_dtos
         )

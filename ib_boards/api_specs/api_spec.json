@@ -1,430 +1,463 @@
 {
-        "swagger": "2.0",
-        "host": "127.0.0.1:8000",
-        "basePath": "/api/ib_boards",
-        "info": {
-            "version": "1.0.0",
-            "title": "Simple API",
-            "description": "A simple API to learn how to write OpenAPI Specification"
+  "swagger": "2.0",
+  "host": "127.0.0.1:8000",
+  "basePath": "/api/ib_boards",
+  "info": {
+    "version": "1.0.0",
+    "title": "Simple API",
+    "description": "A simple API to learn how to write OpenAPI Specification"
+  },
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "oauth": {
+      "tokenUrl": "http://auth.ibtspl.com/oauth2/",
+      "flow": "password",
+      "scopes": {
+        "read": "read users",
+        "write": "create users",
+        "update": "update users",
+        "delete": "delete users"
+      },
+      "type": "oauth2"
+    }
+  },
+  "security": [],
+  "definitions": {
+    "InvalidTaskDetails": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
         },
-        "schemes": [
-            "http"
-        ],
-        "consumes": [
-            "application/json"
-        ],
-        "produces": [
-            "application/json"
-        ],
-        "securityDefinitions": {
-            "oauth": {
-                "tokenUrl": "http://auth.ibtspl.com/oauth2/",
-                "flow": "password",
-                "scopes": {
-                    "read": "read users",
-                    "write": "create users",
-                    "update": "update users",
-                    "delete": "delete users"
-                },
-                "type": "oauth2"
-            }
+        "http_status_code": {
+          "type": "integer"
         },
-        "security": [],
-        "definitions": {
-          "InvalidTaskDetails": {
-            "type": "object",
-              "properties": {
-                "response": {
-                  "type": "string"
-                },
-                "http_status_code": {
-                  "type": "integer"
-                },
-                "res_status": {
-                  "type": "string",
-                  "enum": [
-                    "INVALID_COLUMN_ID"
-                  ]
-                }
-              },
-              "required": [
-                "response",
-                "http_status_code",
-                "res_status"
-              ]
-          },
-          "AccessUnauthorized": {
-            "type": "object",
-              "properties": {
-                "response": {
-                  "type": "string"
-                },
-                "http_status_code": {
-                  "type": "integer"
-                },
-                "res_status": {
-                  "type": "string",
-                  "enum": [
-                    "USER_DONOT_HAVE_ACCESS"
-                  ]
-                }
-              },
-              "required": [
-                "response",
-                "http_status_code",
-                "res_status"
-              ]
-          },
-          "InvalidColumnDetails": {
-            "type": "object",
-            "properties": {
-                "response": {
-                  "type": "string"
-                },
-                "http_status_code": {
-                  "type": "integer"
-                },
-                "res_status": {
-                  "type": "string",
-                  "enum": [
-                    "INVALID_BOARD_ID"
-                  ]
-                }
-              },
-              "required": [
-                "response",
-                "http_status_code",
-                "res_status"
-              ]
-          },
-          "InvalidPaginationDetails": {
-            "type": "object",
-            "properties": {
-                "response": {
-                  "type": "string"
-                },
-                "http_status_code": {
-                  "type": "integer"
-                },
-                "res_status": {
-                  "type": "string",
-                  "enum": [
-                    "INVALID_OFFSET_VALUE",
-                    "INVALID_LIMIT_VALUE"
-                  ]
-                }
-              },
-              "required": [
-                "response",
-                "http_status_code",
-                "res_status"
-              ]
-          },
-          "TaskDetails": {
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_COLUMN_ID"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
+    "AccessUnauthorized": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "USER_DONOT_HAVE_ACCESS"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
+    "InvalidColumnDetails": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_BOARD_ID"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
+    "InvalidPaginationDetails": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_OFFSET_VALUE",
+            "INVALID_LIMIT_VALUE"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
+    "TaskDetails": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
             "type": "object",
             "properties": {
-              "task_id": {
+              "field_type": {
                 "type": "string"
               },
-              "fields": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "field_type": {
-                      "type": "string"
-                    },
-                    "key": {
-                      "type": "string"
-                    },
-                    "value": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "field_type", "key", "value"
-                  ]
-                }
+              "key": {
+                "type": "string"
               },
-              "actions": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "action_id": {
-                      "type": "string"
-                    },
-                    "name": {
-                      "type": "string"
-                    },
-                    "button_text": {
-                      "type": "string"
-                    },
-                    "button_color": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "action_id", "name", "button_text"
-                  ]
-                }
+              "value": {
+                "type": "string"
               }
             },
             "required": [
-              "task_id", "fields", "actions"
+              "field_type",
+              "key",
+              "value"
             ]
-          },
-          "ColumnDetails": {
+          }
+        },
+        "actions": {
+          "type": "array",
+          "items": {
             "type": "object",
             "properties": {
-              "column_id": {
+              "action_id": {
                 "type": "string"
               },
               "name": {
                 "type": "string"
               },
-              "total_tasks_count": {
-                "type": "integer",
-                "format": "int64"
+              "button_text": {
+                "type": "string"
               },
-              "tasks": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/TaskDetails"
-                }
+              "button_color": {
+                "type": "string"
               }
             },
             "required": [
-              "column_id", "name", "total_tasks_count", "tasks"
-            ]
-          },
-          "TaskCompleteDetails": {
-            "allOf": [{
-              "$ref": "#/definitions/TaskDetails"
-            },
-              {
-                "type": "object",
-                "properties": {
-                "total_tasks_count": {
-                "type": "integer",
-                "format": "int64"}
-              },
-                "required": ["total_tasks_count"]
-              }
+              "action_id",
+              "name",
+              "button_text"
             ]
           }
+        }
+      },
+      "required": [
+        "task_id",
+        "fields",
+        "actions"
+      ]
+    },
+    "ColumnDetails": {
+      "type": "object",
+      "properties": {
+        "column_id": {
+          "type": "string"
         },
-        "parameters": {
-          "OffsetParameter": {
-            "name": "Offset",
-            "in": "query",
-            "description": "offset value",
+        "name": {
+          "type": "string"
+        },
+        "total_tasks_count": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TaskDetails"
+          }
+        }
+      },
+      "required": [
+        "column_id",
+        "name",
+        "total_tasks_count",
+        "tasks"
+      ]
+    },
+    "TaskCompleteDetails": {
+      "type": "object",
+      "properties": {
+        "total_tasks_count": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TaskDetails"
+          }
+        }
+      },
+      "required": [
+        "total_tasks_count",
+        "tasks"
+      ]
+    }
+  },
+  "parameters": {
+    "OffsetParameter": {
+      "name": "Offset",
+      "in": "query",
+      "description": "offset value",
+      "type": "integer",
+      "format": "int64",
+      "required": true
+    },
+    "LimitParameter": {
+      "name": "Limit",
+      "in": "query",
+      "description": "limit value",
+      "type": "integer",
+      "format": "int64",
+      "required": true
+    },
+    "BoardIdParameter": {
+      "name": "board_id",
+      "in": "path",
+      "description": "board id value",
+      "type": "string",
+      "required": true
+    },
+    "ColumnIdParameter": {
+      "name": "column_id",
+      "in": "path",
+      "description": "column id value",
+      "type": "string",
+      "required": true
+    }
+  },
+  "responses": {
+    "InvalidAccessResponse": {
+      "description": "unauthorized access",
+      "schema": {
+        "$ref": "#/definitions/AccessUnauthorized"
+      }
+    },
+    "InvalidColumnsResponse": {
+      "description": "invalid board id",
+      "schema": {
+        "$ref": "#/definitions/InvalidColumnDetails"
+      }
+    },
+    "InvalidTasksResponse": {
+      "description": "invalid column id",
+      "schema": {
+        "$ref": "#/definitions/InvalidTaskDetails"
+      }
+    },
+    "InvalidPaginationResponse": {
+      "description": "invalid offset or invalid limit",
+      "schema": {
+        "$ref": "#/definitions/InvalidPaginationDetails"
+      }
+    },
+    "GetBoardsResponse": {
+      "description": "get boards response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "total_boards_count": {
             "type": "integer",
-            "format": "int64",
-            "required": true
+            "format": "int64"
           },
-          "LimitParameter": {
-              "name": "Limit",
-              "in": "query",
-              "description": "limit value",
-              "type": "integer",
-              "format": "int64",
-              "required": true
-          },
-          "BoardIdParameter": {
-            "name": "board_id",
-            "in": "path",
-            "description": "board id value",
-            "type": "string",
-            "required": true
-          },
-          "ColumnIdParameter": {
-            "name": "column_id",
-            "in": "path",
-            "description": "column id value",
-            "type": "string",
-            "required": true
-          }
-        },
-        "responses": {
-          "InvalidBoardsResponse": {
-            "description": "invalid offset or invalid limit",
-            "schema": {
-              "$ref": "#/definitions/InvalidPaginationDetails"
-            }
-          },
-          "InvalidAccessResponse": {
-            "description": "unauthorized access",
-            "schema": {
-              "$ref": "#/definitions/AccessUnauthorized"
-            }
-          },
-          "InvalidColumnsResponse": {
-            "description": "invalid board id",
-            "schema": {
-              "$ref": "#/definitions/InvalidColumnDetails"
-            }
-          },
-          "InvalidTasksResponse": {
-            "description": "invalid column id",
-            "schema": {
-              "$ref": "#/definitions/InvalidTaskDetails"
-            }
-          },
-          "InvalidPaginationResponse": {
-            "description": "invalid offset or invalid limit",
-            "schema": {
-              "$ref": "#/definitions/InvalidPaginationDetails"
-            }
-          },
-          "GetBoardsResponse": {
-            "description": "get boards response",
-            "schema": {
+          "boards_details": {
+            "type": "array",
+            "items": {
               "type": "object",
               "properties": {
-                "total_boards_count": {
-                  "type": "integer",
-                  "format": "int64"
+                "board_id": {
+                  "type": "string"
                 },
-                "boards_details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "board_id": {
-                        "type": "string"
-                      },
-                      "name": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "board_id", "name"
-                    ]
-                  }
+                "name": {
+                  "type": "string"
                 }
               },
               "required": [
-                "total_boards_count", "boards_details"
+                "board_id",
+                "name"
               ]
-            }
-          },
-          "ColumnsDetailsResponse": {
-            "description": "columns details",
-            "schema": {
-              "$ref": "#/definitions/ColumnDetails"
-            }
-          },
-          "TaskDetailsResponse": {
-            "description": "tasks details",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/TaskCompleteDetails"
-              }
             }
           }
         },
-        "paths": {
-            "/boards/v1/": {
-                "get": {
-                  "operationId": "get_boards_details",
-                  "summary": "Get Boards Details ",
-                  "description": "get boards details based on user roles",
-                  "security": [{
-                      "oauth": ["read", "write"]
-                  }],
-                  "parameters": [
-                    {
-                      "$ref": "#/parameters/LimitParameter"
-                    },
-                    {
-                      "$ref": "#/parameters/OffsetParameter"
-                    }
-                  ],
-                  "responses": {
-                    "400": {
-                      "$ref": "#/responses/InvalidPaginationResponse"
-                    },
-                    "403": {
-                      "$ref": "#/responses/InvalidAccessResponse"
-                    },
-                    "200": {
-                      "$ref": "#/responses/GetBoardsResponse"
-                    }
-                  }
-                }
-            },
-          "/boards/{board_id}/columns/v1/": {
-            "get": {
-              "operationId": "get_columns_details",
-              "summary": "Get Column Details",
-              "description": "get columns details of the given board id",
-              "security": [{
-                      "oauth": ["read", "write"]
-                  }],
-              "parameters": [
-                {
-                  "$ref": "#/parameters/BoardIdParameter"
-                },
-                {
-                  "$ref": "#/parameters/OffsetParameter"
-                },
-                {
-                  "$ref": "#/parameters/LimitParameter"
-                }
-              ],
-              "responses": {
-                "403": {
-                  "$ref": "#/responses/InvalidAccessResponse"
-                },
-                "404": {
-                  "$ref": "#/responses/InvalidColumnsResponse"
-                },
-                "400": {
-                  "$ref": "#/responses/InvalidPaginationResponse"
-                },
-                "200": {
-                  "$ref": "#/responses/ColumnsDetailsResponse"
-                }
-              }
-            }
+        "required": [
+          "total_boards_count",
+          "boards_details"
+        ]
+      }
+    },
+    "ColumnsDetailsResponse": {
+      "description": "columns details",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "total_columns_count": {
+            "type": "integer",
+            "format": "int64"
           },
-          "/columns/{column_id}/tasks/v1/": {
-            "get": {
-              "operationId": "get column tasks",
-              "summary": "Get Column Tasks",
-              "description": "get column tasks details",
-              "security": [{
-                  "oauth": ["read", "write"]
-                }],
-              "parameters": [
-                {
-                  "$ref": "#/parameters/LimitParameter"
-                },
-                {
-                  "$ref": "#/parameters/OffsetParameter"
-                },
-                {
-                  "$ref": "#/parameters/ColumnIdParameter"
-                }
-              ],
-              "responses": {
-                "403": {
-                  "$ref": "#/responses/InvalidAccessResponse"
-                },
-                "400": {
-                  "$ref": "#/responses/InvalidPaginationResponse"
-                },
-                "404": {
-                  "$ref": "#/responses/InvalidTasksResponse"
-                },
-                "200": {
-                  "$ref": "#/responses/TaskDetailsResponse"
-                }
-              }
+          "columns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/ColumnDetails"
             }
           }
         }
+      }
+    },
+    "TaskDetailsResponse": {
+      "description": "tasks details",
+      "schema": {
+        "$ref": "#/definitions/TaskCompleteDetails"
+      }
     }
+  },
+  "paths": {
+    "/boards/v1/": {
+      "get": {
+        "operationId": "get_boards_details",
+        "summary": "Get Boards Details ",
+        "description": "get boards details based on user roles",
+        "security": [
+          {
+            "oauth": [
+              "read",
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetParameter"
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/responses/InvalidPaginationResponse"
+          },
+          "403": {
+            "$ref": "#/responses/InvalidAccessResponse"
+          },
+          "200": {
+            "$ref": "#/responses/GetBoardsResponse"
+          }
+        }
+      }
+    },
+    "/boards/{board_id}/columns/v1/": {
+      "get": {
+        "operationId": "get_columns_details",
+        "summary": "Get Column Details",
+        "description": "get columns details of the given board id",
+        "security": [
+          {
+            "oauth": [
+              "read",
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/BoardIdParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/LimitParameter"
+          }
+        ],
+        "responses": {
+          "403": {
+            "$ref": "#/responses/InvalidAccessResponse"
+          },
+          "404": {
+            "$ref": "#/responses/InvalidColumnsResponse"
+          },
+          "400": {
+            "$ref": "#/responses/InvalidPaginationResponse"
+          },
+          "200": {
+            "$ref": "#/responses/ColumnsDetailsResponse"
+          }
+        }
+      }
+    },
+    "/columns/{column_id}/tasks/v1/": {
+      "get": {
+        "operationId": "get column tasks",
+        "summary": "Get Column Tasks",
+        "description": "get column tasks details",
+        "security": [
+          {
+            "oauth": [
+              "read",
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/ColumnIdParameter"
+          }
+        ],
+        "responses": {
+          "403": {
+            "$ref": "#/responses/InvalidAccessResponse"
+          },
+          "400": {
+            "$ref": "#/responses/InvalidPaginationResponse"
+          },
+          "404": {
+            "$ref": "#/responses/InvalidTasksResponse"
+          },
+          "200": {
+            "$ref": "#/responses/TaskDetailsResponse"
+          }
+        }
+      }
+    }
+  }
+}
     

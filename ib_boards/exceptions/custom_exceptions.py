@@ -1,13 +1,8 @@
 from typing import List
 
 
-class DuplicateBoardIds(Exception):
-    def __init__(self, board_ids: List[str]):
-        self.board_ids = board_ids
-
-
 class InvalidBoardDisplayName(Exception):
-    def __init__(self, board_id: str): 
+    def __init__(self, board_id: str):
         self.board_id = board_id
 
 
@@ -17,12 +12,8 @@ class DuplicateColumnIds(Exception):
 
 
 class InvalidColumnDisplayName(Exception):
-    def __init__(self, column_id: str):
-        self.column_id = column_id
-
-
-class InvalidJsonForTaskTemplateStages(Exception):
-    pass
+    def __init__(self, column_ids: List[str]):
+        self.column_ids = column_ids
 
 
 class InvalidTaskTemplateIdInStages(Exception):
@@ -30,8 +21,9 @@ class InvalidTaskTemplateIdInStages(Exception):
         self.task_template_ids = task_template_ids
 
 
-class InvalidJsonForTaskTemplateSummaryFields(Exception):
-    pass
+class InvalidTaskIdInSummaryFields(Exception):
+    def __init__(self, task_ids: List[str]):
+        self.task_ids = task_ids
 
 
 class EmptyValuesForTaskTemplateStages(Exception):
@@ -90,6 +82,11 @@ class InvalidBoardIds(Exception):
     def __init__(self, board_ids: List[str]):
         self.board_ids = board_ids
 
+
+
+class DuplicateValuesInColumnDisplayOrder(Exception):
+    def __init__(self, display_order_values: List[int]):
+        self.display_order_values = display_order_values
 
 class InvalidColumnId(Exception):
     pass
