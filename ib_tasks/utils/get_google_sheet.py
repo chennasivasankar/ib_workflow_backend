@@ -1,7 +1,5 @@
-
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-
 
 
 def get_google_sheet():
@@ -10,8 +8,8 @@ def get_google_sheet():
         "https://www.googleapis.com/auth/drive"
     ]
     creds = ServiceAccountCredentials.from_json_keyfile_name(
-        'ib_tasks/utils/workflow-types-4f1e079f438e.json', scope
+        'ib_tasks/utils/google_sheets_credentials.json', scope
     )
     client = gspread.authorize(creds)
-    sheet = client.open('FinMan Configuration Rajesh')
+    sheet = client.open('FinMan Configuration_Dev_Test')
     return sheet

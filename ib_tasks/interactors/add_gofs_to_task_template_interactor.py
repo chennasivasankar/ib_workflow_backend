@@ -67,6 +67,18 @@ class AddGoFsToTaskTemplateInteractor:
         self._make_field_values_validations(
             gofs_with_template_id_dto=gofs_with_template_id_dto
         )
+
+        gof_ids = \
+            self._get_gof_ids(gof_dtos=gofs_with_template_id_dto.gof_dtos)
+        self._validate_uniqueness_in_gof_ids(gof_ids=gof_ids)
+
+        orders_of_gofs = [
+            gof_dto.order
+            for gof_dto in gofs_with_template_id_dto.gof_dtos
+        ]
+        self._validate_uniqueness_in_orders_of_gofs(
+            orders_of_gofs=orders_of_gofs
+        )
         self._make_database_validations(
             gofs_with_template_id_dto=gofs_with_template_id_dto
         )
@@ -197,3 +209,43 @@ class AddGoFsToTaskTemplateInteractor:
             else:
                 gof_dtos_to_create.append(gof_dto)
         return gof_dtos_to_create, gof_dtos_to_update
+
+    @staticmethod
+    def _validate_uniqueness_in_gof_ids(gof_ids: List[str]):
+        from collections import Counter
+        gof_ids_counter = Counter(gof_ids)
+
+        duplicate_gof_ids = []
+        for gof_id, count in gof_ids_counter.items():
+            is_duplicate_gof_id = count > 1
+            if is_duplicate_gof_id:
+                duplicate_gof_ids.append(gof_id)
+
+        from ib_tasks.exceptions.custom_exceptions \
+            import DuplicateGoFIds
+        from ib_tasks.constants.exception_messages import \
+            DUPLICATE_GOF_IDS
+        if duplicate_gof_ids:
+            message = DUPLICATE_GOF_IDS.format(duplicate_gof_ids)
+            raise DuplicateGoFIds(message)
+
+    @staticmethod
+    def _validate_uniqueness_in_orders_of_gofs(orders_of_gofs: List[int]):
+        from collections import Counter
+        orders_of_gofs_counter = Counter(orders_of_gofs)
+
+        duplicate_orders_of_gofs = []
+        for order_value, count in orders_of_gofs_counter.items():
+            is_duplicate_order_value = count > 1
+            if is_duplicate_order_value:
+                duplicate_orders_of_gofs.append(order_value)
+
+        from ib_tasks.exceptions.custom_exceptions \
+            import DuplicateOrderValuesForGoFs
+        from ib_tasks.constants.exception_messages import \
+            DUPLICATE_ORDER_VALUES_FOR_GOFS
+        if duplicate_orders_of_gofs:
+            message = DUPLICATE_ORDER_VALUES_FOR_GOFS.format(
+                duplicate_orders_of_gofs
+            )
+            raise DuplicateOrderValuesForGoFs(message)

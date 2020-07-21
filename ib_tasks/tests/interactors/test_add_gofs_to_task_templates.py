@@ -97,6 +97,60 @@ class TestAddGoFsToTaskTemplates:
             )
         assert err.value.args[0] == expected_exception_message
 
+    def test_with_duplicate_order_values_for_gof_ids_raises_exception(
+            self, task_storage_mock):
+        # Arrange
+        from ib_tasks.constants.exception_messages import \
+            DUPLICATE_ORDER_VALUES_FOR_GOFS
+        expected_exception_message = \
+            DUPLICATE_ORDER_VALUES_FOR_GOFS.format([2])
+
+        gof_dtos = GoFWithOrderAndAddAnotherDTOFactory.create_batch(
+            size=2, order=2
+        )
+        gofs_with_template_id_dto = GoFsWithTemplateIdDTOFactory(
+            gof_dtos=gof_dtos
+        )
+
+        interactor = AddGoFsToTaskTemplateInteractor(
+            task_storage=task_storage_mock
+        )
+        from ib_tasks.exceptions.custom_exceptions import \
+            DuplicateOrderValuesForGoFs
+
+        # Assert
+        with pytest.raises(DuplicateOrderValuesForGoFs) as err:
+            interactor.add_gofs_to_task_template_wrapper(
+                gofs_with_template_id_dto=gofs_with_template_id_dto
+            )
+        assert err.value.args[0] == expected_exception_message
+
+    def test_with_duplicate_gof_ids_raises_exception(self, task_storage_mock):
+        # Arrange
+        from ib_tasks.constants.exception_messages import \
+            DUPLICATE_GOF_IDS
+        expected_exception_message = \
+            DUPLICATE_GOF_IDS.format(["gof_1"])
+
+        gof_dtos = GoFWithOrderAndAddAnotherDTOFactory.create_batch(
+            size=2, gof_id="gof_1"
+        )
+        gofs_with_template_id_dto = GoFsWithTemplateIdDTOFactory(
+            gof_dtos=gof_dtos
+        )
+
+        interactor = AddGoFsToTaskTemplateInteractor(
+            task_storage=task_storage_mock
+        )
+        from ib_tasks.exceptions.custom_exceptions import DuplicateGoFIds
+
+        # Assert
+        with pytest.raises(DuplicateGoFIds) as err:
+            interactor.add_gofs_to_task_template_wrapper(
+                gofs_with_template_id_dto=gofs_with_template_id_dto
+            )
+        assert err.value.args[0] == expected_exception_message
+
     def test_with_invalid_template_id_raises_exception(
             self, task_storage_mock):
         # Arrange

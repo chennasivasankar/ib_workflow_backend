@@ -117,6 +117,51 @@ class TestGoFsToTaskTemplate:
         snapshot.assert_match(err.value.args[0], 'message')
 
     @pytest.mark.django_db
+    def test_with_duplicate_gof_ids_raises_exception(
+            self, gofs_to_task_template_interactor, snapshot):
+        # Arrange
+        template_id = "template_1"
+        gof_dtos = GoFWithOrderAndAddAnotherDTOFactory.create_batch(
+            size=2, gof_id="gof_1"
+        )
+        gofs_with_template_id_dto = GoFsWithTemplateIdDTO(
+            template_id=template_id, gof_dtos=gof_dtos
+        )
+        from ib_tasks.exceptions.custom_exceptions import DuplicateGoFIds
+
+        # Assert
+        with pytest.raises(DuplicateGoFIds) as err:
+            gofs_to_task_template_interactor.\
+                add_gofs_to_task_template_wrapper(
+                    gofs_with_template_id_dto=gofs_with_template_id_dto
+                )
+
+        snapshot.assert_match(err.value.args[0], 'message')
+
+    @pytest.mark.django_db
+    def test_with_duplicate_values_for_orders_of_gof_ids_raises_exception(
+            self, gofs_to_task_template_interactor, snapshot):
+        # Arrange
+        template_id = "template_1"
+        gof_dtos = GoFWithOrderAndAddAnotherDTOFactory.create_batch(
+            size=2, order=1
+        )
+        gofs_with_template_id_dto = GoFsWithTemplateIdDTO(
+            template_id=template_id, gof_dtos=gof_dtos
+        )
+        from ib_tasks.exceptions.custom_exceptions import \
+            DuplicateOrderValuesForGoFs
+
+        # Assert
+        with pytest.raises(DuplicateOrderValuesForGoFs) as err:
+            gofs_to_task_template_interactor.\
+                add_gofs_to_task_template_wrapper(
+                    gofs_with_template_id_dto=gofs_with_template_id_dto
+                )
+
+        snapshot.assert_match(err.value.args[0], 'message')
+
+    @pytest.mark.django_db
     def test_when_given_invalid_gofs_raises_exception(
             self, gofs_to_task_template_interactor, snapshot):
         # Arrange
@@ -184,12 +229,13 @@ class TestGoFsToTaskTemplate:
     def test_with_existing_gofs_of_template_but_different_configuration_updates_gofs_to_template(
             self, gofs_to_task_template_interactor, snapshot):
         # Arrange
+        import factory
         template_id = "template_1"
         from ib_tasks.tests.factories.models import \
             TaskTemplateWith2GoFsFactory
         TaskTemplateWith2GoFsFactory(template_id=template_id)
         gof_dtos = GoFWithOrderAndAddAnotherDTOFactory.create_batch(
-            size=2, order=5, enable_add_another_gof=True
+            size=2, order=factory.Iterator([4, 5]), enable_add_another_gof=True
         )
 
         gofs_with_template_id_dto = GoFsWithTemplateIdDTO(

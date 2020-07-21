@@ -1,3 +1,36 @@
+from typing import List, Dict
+
+
+class InvalidStageIdsException(Exception):
+    def __init__(self, stage_ids_dict: str):
+        self.stage_ids_dict = stage_ids_dict
+
+    def __str__(self):
+        return self.stage_ids_dict
+
+
+class InvalidRolesException(Exception):
+    def __init__(self, stage_roles_dict: str):
+        self.stage_roles_dict = stage_roles_dict
+
+
+class InvalidFormatException(Exception):
+    def __init__(self, valid_format: str):
+        self.valid_format = valid_format
+
+
+class InvalidPythonCodeException(Exception):
+    pass
+
+
+class InvalidTaskIdException(Exception):
+    def __init__(self, task_id: str):
+        self.task_id = task_id
+
+
+class InvalidTaskTemplateId(Exception):
+    def __init__(self, task_template_ids_dict: str):
+        self.task_template_ids_dict = task_template_ids_dict
 from typing import List
 
 
@@ -175,3 +208,13 @@ class GofsDoesNotExist(Exception):
 class DuplicateTaskStatusVariableIds(Exception):
     def __init__(self, duplicate_status_ids_for_tasks: List[str]):
         self.task_ids = duplicate_status_ids_for_tasks
+
+
+class DuplicateGoFIds(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class DuplicateOrderValuesForGoFs(Exception):
+    def __init__(self, message: str):
+        self.message = message

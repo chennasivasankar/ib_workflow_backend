@@ -15,7 +15,7 @@ class PopulateGoFsToTaskTemplate:
         group_by_template_id_dict = collections.defaultdict(list)
         for item in gofs_with_template_ids_dicts:
             group_by_template_id_dict[item['Template ID']].append(
-                [item['GOF ID*'], item['ORDER'], item['Enable Multiple GoFs']]
+                [item['GOF ID*'], item['Order'], item['Enable add another']]
             )
 
         group_by_template_id_dict = collections.OrderedDict(

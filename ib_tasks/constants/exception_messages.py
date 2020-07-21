@@ -17,7 +17,6 @@ TEMPLATE_DOES_NOT_EXISTS = "The template with template id: {}, does not exists"
 DUPLICATE_CONSTANT_NAMES = "Given duplicate constant names {}"
 EXISTING_GLOBAL_CONSTANT_NAMES_NOT_IN_GIVEN_DATA = \
     "Existing constants with constant names: {} of template not in given data"
-INVALID_VALUE_FOR_TEMPLATE_ID = "Invalid value for template_id, got empty string"
 INVALID_VALUE_FOR_GOF_IDS = "Invalid value for gof_ids, got empty string"
 INVALID_ORDERS_FOR_GOFS = \
     "Value for order should not be less than -1, got invalid values for these gof_ids: {}"
@@ -32,3 +31,5 @@ INVALID_VALUE_FOR_VALUE = \
     "Invalid value for value!, value should not be negative!, but given value is: {}"
 INVALID_VALUE_FOR_TEMPLATE_NAME = \
     "Invalid value for template name!, template name should not be empty"
+DUPLICATE_ORDER_VALUES_FOR_GOFS = \
+    "Given duplicate order values {}! Gof orders of a template should be unique"
