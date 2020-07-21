@@ -3,7 +3,7 @@
 APP_NAME = "ib_iam"
 OPERATION_NAME = "update_team_details"
 REQUEST_METHOD = "put"
-URL_SUFFIX = "team/{team_id}/"
+URL_SUFFIX = "team/{team_id}/v1/"
 
 from .test_case_01 import TestCase01UpdateTeamDetailsAPITestCase
 from .test_case_02 import TestCase02UpdateTeamDetailsAPITestCase
