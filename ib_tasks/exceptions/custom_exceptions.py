@@ -220,6 +220,11 @@ class DuplicateOrderValuesForGoFs(Exception):
         self.message = message
 
 
-class InvalidValueForOrder(Exception):
+class InvalidTypeForOrder(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class InvalidTypeForValue(Exception):
     def __init__(self, message: str):
         self.message = message

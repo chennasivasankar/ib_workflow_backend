@@ -53,7 +53,16 @@ class PopulateGlobalConstantsToTemplate:
         global_constants_dtos = []
         for global_constant in global_constants_list:
             constant_name = global_constant[0]
-            value = int(global_constant[1])
+            from ib_tasks.exceptions.custom_exceptions import \
+                InvalidTypeForValue
+            from ib_tasks.constants.exception_messages import \
+                INVALID_TYPE_FOR_VALUE
+            try:
+                value = int(global_constant[1])
+            except:
+                message = INVALID_TYPE_FOR_VALUE.format(global_constant[1])
+                raise InvalidTypeForValue(message)
+
             global_constants_dto = GlobalConstantsDTO(
                 constant_name=constant_name, value=value
             )
