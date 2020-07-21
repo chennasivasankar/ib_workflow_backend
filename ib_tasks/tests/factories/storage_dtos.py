@@ -2,7 +2,7 @@ import factory
 
 from ib_tasks.interactors.dtos import StageDTO
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    TaskStatusDTO, ValidStageDTO, TaskStagesDTO)
+    TaskStatusDTO, ValidStageDTO, TaskStagesDTO, StageActionNamesDTO)
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.interactors.storage_interfaces.dtos import (
     CompleteGoFDetailsDTO, GoFDTO, GoFRolesDTO, GoFRoleDTO
@@ -12,6 +12,30 @@ from ib_tasks.interactors.storage_interfaces.dtos import (
     FieldDTO, FieldRolesDTO, FieldRoleDTO
 )
 from ib_tasks.constants.enum import FieldTypes, PermissionTypes
+from ib_tasks.models import StageAction
+
+
+class StageActionsDTOFactory(factory.Factory):
+    class Meta:
+        model = StageActionNamesDTO
+
+    stage_id = factory.Sequence(lambda n: 'stage_id_%d' % n)
+    action_names = factory.Sequence(lambda n: [f"name_{n}"])
+
+
+class StageActionModelFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = StageAction
+
+    stage_id = factory.Sequence(lambda n: 'stage_id_%d' % n)
+    name = factory.Sequence(lambda n: "name_%d" % n)
+    logic = factory.Sequence(lambda n: 'status_id_%d==stage_id' % n)
+    py_function_import_path = "ib_tasks.interactors.storage_interfaces.storage_interface.StorageInterface"
+    button_text = "text"
+    button_color = None
+
+    class Params:
+        color = factory.Trait(button_color="#ffffff")
 
 
 class TaskStatusDTOFactory(factory.Factory):
@@ -51,6 +75,7 @@ class TaskStageDTOFactory(factory.Factory):
 
     stage_id = factory.Sequence(lambda n: 'stage_id_%d' % n)
     task_template_id = factory.Sequence(lambda n: 'task_template_id_%d' % n)
+
 
 class GoFDTOFactory(factory.Factory):
     class Meta:
@@ -112,7 +137,6 @@ class GoFRoleDTOFactory(factory.Factory):
         ]
     )
     permission_type = PermissionTypes.READ.value
-
 
 
 class FieldDTOFactory(factory.Factory):
