@@ -25,7 +25,7 @@ class TestPopulateStatusVariables:
         valid_json_format = valid_format
         list_of_status_dict = [
             {
-                "task_template_ids": "task_template_id_1",
+                "invalid_field_name": "task_template_id_1",
                 "status_variable_id": "status_id_1"
             },
             {

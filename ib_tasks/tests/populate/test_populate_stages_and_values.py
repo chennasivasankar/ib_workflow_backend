@@ -30,7 +30,7 @@ class TestPopulateStagesAndValues:
             {
                 "task_template_id": "task_template_id_1",
                 "stage_id": "stage_id_1",
-                "values": 1,
+                "invalid_field_name": 1,
                 "stage_display_name": "stage_name",
                 "stage_display_logic": "status_1==stage_id_1"
             },
