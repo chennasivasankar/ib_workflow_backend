@@ -1,6 +1,6 @@
 from unittest.mock import create_autospec
 import pytest
-from ib_tasks.interactors.storage_interfaces.storage_interface import \
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.dtos import TaskStatusDTO
 from ib_tasks.interactors.create_task_status_interactor import CreateTaskStatusInteractor

@@ -1,7 +1,11 @@
 from typing import List
-from ib_tasks.interactors.storage_interfaces.storage_interface import \
+
+from ib_tasks.interactors.dtos import StageLogicAttributes
+from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
+    StageStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.storage_interfaces.dtos import StageDTO
+from ib_tasks.interactors.dtos import StageDTO
 from ib_tasks.exceptions.custom_exceptions import (
     InvalidStagesTaskTemplateId, InvalidStageValues, DuplicateStageIds,
     InvalidTaskTemplateIds, InvalidStageDisplayLogic)
@@ -10,8 +14,10 @@ from ib_tasks.interactors.storage_interfaces.dtos import TaskStagesDTO
 
 class CreateOrUpdateStagesInterface:
 
-    def __init__(self, stage_storage: TaskStorageInterface):
+    def __init__(self, task_storage: TaskStorageInterface,
+                 stage_storage: StageStorageInterface):
         self.stage_storage = stage_storage
+        self.task_storage = task_storage
 
     def create_or_update_stages_information(
             self,
@@ -46,7 +52,9 @@ class CreateOrUpdateStagesInterface:
             self.stage_storage.create_stages(
                 create_stages_dtos)
 
-    def _get_stages_dtos_based_on_their_state(self, valid_stages_dtos, stages_information):
+    def _get_stages_dtos_based_on_their_state(self,
+                                              valid_stages_dtos,
+                                              stages_information):
         update_stages_information = []
         create_stages_information = []
         if valid_stages_dtos:
@@ -67,7 +75,8 @@ class CreateOrUpdateStagesInterface:
                     create_stages_information.append(stage_information)
         return create_stages_information, update_stages_information
 
-    def _get_valid_stages_details_dtos(self, stages_information, valid_stages_dtos):
+    @staticmethod
+    def _get_valid_stages_details_dtos(stages_information, valid_stages_dtos):
         valid_stages_info = []
         for stage_dto in valid_stages_dtos:
             for stage in stages_information:
@@ -76,15 +85,41 @@ class CreateOrUpdateStagesInterface:
                     valid_stages_info.append(stage)
         return valid_stages_info
 
-    def _validate_stage_display_logic(self, stages_information):
+    def _validate_stage_display_logic(self, stages_details):
+        list_of_logic_attributes = []
+
         invalid_stage_display_logic_stages = [
-            stage.stage_id for stage in stages_information
-            if stage.stage_display_logic == ""
+            stage.stage_id for stage in stages_details if stage.stage_display_logic == ""
         ]
+
         if invalid_stage_display_logic_stages:
             raise InvalidStageDisplayLogic(invalid_stage_display_logic_stages)
-        return
 
+        for stage in stages_details:
+            logic_interactor = StageDisplayLogicInteractor()
+            stage_logic_attributes_dto = logic_interactor.get_stage_display_logic_attributes(
+                stage.stage_display_logic
+            )
+            list_of_logic_attributes.append(stage_logic_attributes_dto)
+
+        self._validate_stage_display_logic_attributes(list_of_logic_attributes)
+
+    def _validate_stage_display_logic_attributes(
+            self, list_of_logic_attributes: List[StageLogicAttributes]):
+        invalid_stage_display_logic_stages = []
+        list_of_status_ids = [attribute.status_id
+                              for attribute in list_of_logic_attributes]
+        valid_status_ids = self.stage_storage.get_valid_status_ids(
+            list_of_status_ids)
+
+        for attribute in list_of_logic_attributes:
+            if attribute.status_id not in valid_status_ids:
+                invalid_stage_display_logic_stages.append(attribute.stage_id)
+
+        if invalid_stage_display_logic_stages:
+            raise InvalidStageDisplayLogic(invalid_stage_display_logic_stages)
+
+        return
     def check_for_duplicate_stage_ids(self, stage_ids: List[str]):
         duplicate_stage_ids = list(set(
             [x for x in stage_ids if stage_ids.count(x) > 1]))
@@ -103,7 +138,9 @@ class CreateOrUpdateStagesInterface:
 
     def _validate_task_template_ids(self, task_template_ids: List[str]):
         invalid_task_template_ids = []
-        valid_task_template_ids = self.stage_storage.get_valid_template_ids_in_given_template_ids(task_template_ids)
+        valid_task_template_ids = self.task_storage.\
+            get_valid_template_ids_in_given_template_ids(template_ids=task_template_ids)
+
         for task_template_id in task_template_ids:
             if task_template_id not in valid_task_template_ids:
                 invalid_task_template_ids.append(task_template_id)

@@ -1,8 +1,8 @@
 import pytest
 
-from ib_tasks.storages.storage_implementation import StorageImplementation
+from ib_tasks.storages.storage_implementation import StagesStorageImplementation
 from ib_tasks.tests.factories.models import StageModelFactory
-from ib_tasks.tests.factories.storage_dtos import TaskStageDTOFactory, StageDTOFactory
+from ib_tasks.tests.factories.storage_dtos import TaskStageDTOFactory
 
 
 @pytest.mark.django_db
@@ -21,7 +21,7 @@ class TestStageTempalteId:
     def test_validate_stage_related_task_template_ids(self, create_stages, get_stage_task_dto):
         # Arrange
         invalid_stage_ids = ["stage_id_3"]
-        storage = StorageImplementation()
+        storage = StagesStorageImplementation()
 
         # Act
         returned_ids = storage.validate_stages_related_task_template_ids(get_stage_task_dto)

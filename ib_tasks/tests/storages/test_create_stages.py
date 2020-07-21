@@ -1,8 +1,8 @@
 import pytest
 
-from ib_tasks.interactors.storage_interfaces.dtos import StageDTO
+from ib_tasks.interactors.dtos import StageDTO
 from ib_tasks.models import Stage
-from ib_tasks.storages.storage_implementation import StorageImplementation
+from ib_tasks.storages.storage_implementation import StagesStorageImplementation
 from ib_tasks.tests.factories.storage_dtos import StageDTOFactory
 
 
@@ -35,7 +35,7 @@ class TestCreateStages:
         # Arrange
         stage_dtos = stage_dtos
         stage_ids = ["stage_id_0", "stage_id_1", "stage_id_2", "stage_id_3"]
-        storage = StorageImplementation()
+        storage = StagesStorageImplementation()
 
         # Act
         storage.create_stages(stage_dtos)

@@ -2,7 +2,7 @@ import pytest
 
 from ib_tasks.interactors.storage_interfaces.dtos import TaskStatusDTO
 from ib_tasks.models import TaskStatusVariable
-from ib_tasks.storages.storage_implementation import StorageImplementation
+from ib_tasks.storages.tasks_storage_implementation import TasksStorageImplementation
 from ib_tasks.tests.factories.storage_dtos import TaskStatusDTOFactory
 
 
@@ -29,7 +29,7 @@ class TestTaskStatusVariable:
         # Arrange
         task_status_dtos = get_task_status_dtos
         status_ids = ["status_id_0", "status_id_1", "status_id_2"]
-        storage = StorageImplementation()
+        storage = TasksStorageImplementation()
 
         # Act
         storage.create_status_for_tasks(get_task_status_dtos)

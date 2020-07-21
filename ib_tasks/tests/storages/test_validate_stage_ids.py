@@ -1,6 +1,6 @@
 import pytest
 
-from ib_tasks.storages.storage_implementation import StorageImplementation
+from ib_tasks.storages.storage_implementation import StagesStorageImplementation
 from ib_tasks.tests.factories.models import StageModelFactory
 from ib_tasks.tests.factories.storage_dtos import ValidStageDTOFactory
 
@@ -20,7 +20,7 @@ class TestValidateStageIds:
 
     def test_validate_stage_ids(self, create_stages, valid_stages_dto):
         # Arrange
-        storage = StorageImplementation()
+        storage = StagesStorageImplementation()
         expected_stage_dtos = valid_stages_dto
         stage_ids = ["stage_id_0", "stage_id_1", "stage_id_2", "stage_id_3"]
 
