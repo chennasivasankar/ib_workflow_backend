@@ -23,3 +23,6 @@ INVALID_VALUES_FOR_FIELD_TYPES = "Field Types should be one of these {} for thes
 DUPLICATION_OF_FIELD_IDS = "These are duplicated field ids {}"
 EMPTY_VALUE_FOR_FIELD_VALUE = "Field values are shouldn't be empty for these field id {}"
 DUPLICATION_OF_FIELD_VALUES = "Duplication of Field values for these field {}"
+INVALID_JSON = "Field values contains invalid json for these field_id = {}"
+EMPTY_VALUE_FOR_GOF_NAMES = "GoF names for field values shouldn't be empty for these field id = {}"
+DUPLICATED_OF_GOF_NAMES_FOR_FIELD_VALUES = "Duplication of gof names for field values of these field = "

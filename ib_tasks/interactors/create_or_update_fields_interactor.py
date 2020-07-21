@@ -5,7 +5,13 @@ from ib_tasks.interactors.storage_interfaces.dtos \
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
 
-from ib_tasks.constants.enum import PermissionTypes
+from ib_tasks.constants.enum import PermissionTypes, FieldTypes
+
+from ib_tasks.interactors.multi_values_input_fileds_validation_interactor \
+    import MultiValuesInputFieldsValidationInteractor
+
+from ib_tasks.interactors.gof_selector_validations_interactor \
+    import GoFSelectorValidationsInteractor
 
 
 class CreateOrUpdateFieldsInteractor:
@@ -37,7 +43,8 @@ class CreateOrUpdateFieldsInteractor:
 
         from ib_tasks.interactors.create_or_update_fields_base_validations_interactor \
             import CreateOrUpdateFieldsBaseVaidationInteractor
-        base_validation_interactor = CreateOrUpdateFieldsBaseVaidationInteractor(storage=self.storage)
+        base_validation_interactor = \
+            CreateOrUpdateFieldsBaseVaidationInteractor(storage=self.storage)
         base_validation_interactor.fields_base_validations(field_dtos)
 
     def _check_for_field_roles_validations(
@@ -60,7 +67,11 @@ class CreateOrUpdateFieldsInteractor:
                 self._get_read_permission_field_role_dtos(field_roles_dto)
             write_permission_field_role_dtos = \
                 self._get_write_permission_field_role_dtos(field_roles_dto)
-            field_role_dtos = field_role_dtos + read_permission_field_role_dtos + write_permission_field_role_dtos
+            field_role_dtos = (
+                    field_role_dtos +
+                    read_permission_field_role_dtos +
+                    write_permission_field_role_dtos
+            )
         return field_role_dtos
 
     def _get_read_permission_field_role_dtos(
@@ -142,7 +153,8 @@ class CreateOrUpdateFieldsInteractor:
         from ib_tasks.constants.constants import MULTI_VALUES_INPUT_FIELDS
         field_type = field_dto.field_type
         if field_type in MULTI_VALUES_INPUT_FIELDS:
-            from ib_tasks.interactors.multi_values_input_fileds_validation_interactor \
-                import MultiValuesInputFieldsValidationInteractor
             interactor = MultiValuesInputFieldsValidationInteractor()
             interactor.multi_values_input_fields_validations(field_dto)
+        if field_type == FieldTypes.GOF_SELECTOR.value:
+            interactor = GoFSelectorValidationsInteractor(storage=self.storage)
+            interactor.gof_selecter_validations(field_dto)

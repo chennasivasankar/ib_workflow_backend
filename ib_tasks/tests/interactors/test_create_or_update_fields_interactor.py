@@ -1,6 +1,6 @@
 import pytest
 
-from ib_tasks.constants.enum import PermissionTypes
+from ib_tasks.constants.enum import PermissionTypes, FieldTypes
 
 from ib_tasks.interactors.create_or_update_fields_interactor \
     import CreateOrUpdateFieldsInteractor
@@ -86,8 +86,6 @@ class TestCreateOrUpdateFieldsInteractor:
         get_valid_write_permissions_mock_method.assert_called_once()
         get_valid_read_permissions_mock_method.assert_called_once()
 
-
-
     def test_given_field_ids_already_exist_in_database_then_update_fields(
             self, storage_mock, mocker, reset_sequence
     ):
@@ -147,7 +145,6 @@ class TestCreateOrUpdateFieldsInteractor:
         get_valid_write_permissions_mock_method.assert_called_once()
         get_valid_read_permissions_mock_method.assert_called_once()
 
-
     def test_new_and_already_existing_field_ids_in_database_are_given_then_create_and_update_fields(
             self, storage_mock, mocker, reset_sequence
     ):
@@ -161,8 +158,18 @@ class TestCreateOrUpdateFieldsInteractor:
             FieldRolesDTOFactory(field_id="FIN_SALUATION")
         ]
         existing_field_ids = ["field1"]
-        new_field_dtos = [FieldDTOFactory(field_id="FIN_SALUATION", field_values='["Mr", "Mrs", "Ms"]')]
-        existing_field_dtos = [FieldDTOFactory(field_id="field1", field_values='["Mr", "Mrs", "Ms"]')]
+        new_field_dtos = [
+            FieldDTOFactory(
+                field_id="FIN_SALUATION",
+                field_values='["Mr", "Mrs", "Ms"]'
+            )
+        ]
+        existing_field_dtos = [
+            FieldDTOFactory(
+                field_id="field1",
+                field_values='["Mr", "Mrs", "Ms"]'
+            )
+        ]
 
         existing_field_role_dtos = [
             FieldRoleDTOFactory(
@@ -236,18 +243,33 @@ class TestCreateOrUpdateFieldsInteractor:
         storage_mock.update_fields_roles.assert_called_once_with(existing_field_role_dtos)
         storage_mock.create_fields_roles.assert_called_once_with(new_field_role_dtos)
 
-
     def test_create_and_update_fields_roles_when_existing_fieds_having_new_roles(
             self, mocker, storage_mock
     ):
         # Arrange
+        import json
+        field_values = [
+            {
+                "name": "Individual",
+                "gof_ids": ["FIN_VENDOR_BASIC_DETAILS"]
+            },
+            {
+                "name": "Company",
+                "gof_ids": ["FIN_VENDOR_BASIC_DETAILS"]
+            }
+        ]
+        field_values = json.dumps(field_values)
         field_dtos = [
-            FieldDTOFactory(field_id="field1"),
+            FieldDTOFactory(
+                field_id="field1",
+                field_type=FieldTypes.GOF_SELECTOR.value,
+                field_values=field_values
+            ),
             FieldDTOFactory(field_id="field2")
         ]
-        new_field_dtos = [FieldDTOFactory(field_id="field1", field_values='["Mr", "Mrs", "Ms"]')]
+        new_field_dtos = [field_dtos[0]]
         existing_field_ids = ["field2"]
-        existing_field_dtos = [FieldDTOFactory(field_id="field2", field_values='["Mr", "Mrs", "Ms"]')]
+        existing_field_dtos = [field_dtos[1]]
 
         field_roles_dtos = [
             FieldRolesDTOFactory(

@@ -185,3 +185,18 @@ class EmptyValuesForFieldValues(Exception):
 
     def __init__(self, message: str):
         self.message = message
+
+
+class InvalidJsonForFieldValue(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class EmptyValuesForGoFNames(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class DuplicationOfGoFNamesForFieldValues(Exception):
+    def __init__(self, message: str):
+        self.message = message
