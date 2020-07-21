@@ -10,7 +10,7 @@ snapshots = Snapshot()
 snapshots['TestCase02AddUserAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase02AddUserAPITestCase.test_case body'] = {
-    'email': [
-        'Enter a valid email address.'
-    ]
+    'http_status_code': 400,
+    'res_status': 'INVALID_EMAIL',
+    'response': 'given email is invalid'
 }

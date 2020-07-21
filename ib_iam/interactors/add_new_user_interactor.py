@@ -1,6 +1,9 @@
+from typing import List
+
 from ib_iam.exceptions.exceptions import UserIsNotAdminException, GivenNameIsEmptyException, \
     InvalidEmailAddressException, \
-    UserAccountAlreadyExistWithThisEmail, NameShouldNotContainsNumbersSpecCharactersException
+    UserAccountAlreadyExistWithThisEmail, NameShouldNotContainsNumbersSpecCharactersException, \
+    RoleIdsAreInvalidException, InvalidCompanyIdException, TeamIdsAreInvalidException
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.presenter_interface \
     import PresenterInterface
@@ -13,9 +16,12 @@ class AddNewUserInteractor(ValidationMixin):
         self.storage = storage
 
     def add_new_user_wrapper(
-            self, user_id: str, name: str, email: str, presenter: PresenterInterface):
+            self, user_id: str, name: str, email: str,
+            teams: List[str], roles: List[str], company_id: str,
+            presenter: PresenterInterface):
         try:
-            self.add_new_user(user_id=user_id, name=name, email=email)
+            self.add_new_user(user_id=user_id, name=name, email=email,
+                              roles=roles, teams=teams, company_id=company_id)
         except UserIsNotAdminException:
             return presenter.raise_user_is_not_admin_exception()
         except GivenNameIsEmptyException:
@@ -23,20 +29,30 @@ class AddNewUserInteractor(ValidationMixin):
         except InvalidEmailAddressException:
             return presenter.raise_invalid_email_exception()
         except UserAccountAlreadyExistWithThisEmail:
-            return presenter.\
+            return presenter. \
                 raise_user_account_already_exist_with_this_email_exception()
         except NameShouldNotContainsNumbersSpecCharactersException:
-            return presenter.\
+            return presenter. \
                 raise_name_should_not_contain_special_characters_exception()
+        except RoleIdsAreInvalidException:
+            return presenter.raise_role_ids_are_invalid()
+        except InvalidCompanyIdException:
+            return presenter.raise_company_ids_is_invalid()
+        except TeamIdsAreInvalidException:
+            return presenter.raise_team_ids_are_invalid()
 
-    def add_new_user(self, user_id: str, name: str, email: str):
+    def add_new_user(self, user_id: str, name: str, email: str,
+                     roles: List[str], teams: List[str], company_id: str):
         self._check_and_throw_user_is_admin(user_id=user_id)
         self._validate_name_and_throw_exception(name=name)
         self._validate_email_and_throw_exception(email=email)
+        self._validate_values(roles, teams, company_id)
         new_user_id = self._create_user_account_with_email(
             name=name, email=email)
         self._create_user_profile(user_id=new_user_id, email=email, name=name)
-        self.storage.add_new_user(user_id=user_id, is_admin=False)
+        self.storage.add_new_user(
+            user_id=user_id, is_admin=False, company_id=company_id,
+            role_ids=roles, team_ids=teams)
 
     def _check_and_throw_user_is_admin(self, user_id: str):
         is_admin = self.storage.validate_user_is_admin(user_id=user_id)
@@ -77,3 +93,26 @@ class AddNewUserInteractor(ValidationMixin):
             user_id=user_id
         )
         return user_profile_dto
+
+    def _validate_values(self, roles, teams, company):
+        self._validate_roles(roles)
+        self._validate_teams(teams)
+        self._validate_company(company)
+
+    def _validate_roles(self, roles):
+        are_valid = self.storage.validate_roles(role_ids=roles)
+        are_not_valid = not are_valid
+        if are_not_valid:
+            raise RoleIdsAreInvalidException()
+
+    def _validate_teams(self, teams):
+        are_valid = self.storage.validate_teams(team_ids=teams)
+        are_not_valid = not are_valid
+        if are_not_valid:
+            raise TeamIdsAreInvalidException()
+
+    def _validate_company(self, company):
+        is_valid = self.storage.validate_company(company_id=company)
+        is_not_valid = not is_valid
+        if is_not_valid:
+            raise InvalidCompanyIdException()

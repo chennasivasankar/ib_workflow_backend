@@ -209,11 +209,29 @@
         "email": {
           "type": "string",
           "format": "email"
+        },
+        "company_id": {
+          "type": "string"
+        },
+        "team_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "role_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       },
       "required": [
         "name",
-        "email"
+        "email",
+        "company_id",
+        "role_ids",
+        "team_ids"
       ]
     },
     "AddUserFailed": {

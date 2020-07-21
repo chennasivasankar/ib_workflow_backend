@@ -17,14 +17,18 @@ class TestCase01AddUserAPITestCase(TestUtils):
     def user_set_up(self, api_user):
         user_id = api_user.id
         from ib_iam.tests.factories.models import UserDetailsFactory
-        UserDetailsFactory.create(user_id=user_id, is_admin=True)
-
+        user = UserDetailsFactory.create(user_id=user_id, is_admin=True)
+        
     @pytest.mark.django_db
     def test_case(self, user_set_up, snapshot):
-        body = {'name': '', 'email': 'parker@gmail.com'}
+        body = {'name': '', 'email': 'parker@string.com',
+                'company_id': 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
+                'team_ids': ['ef6d1fc6-ac3f-4d2d-a983-752c992e8331'],
+                'role_ids': ['ef6d1fc6-ac3f-4d2d-a983-752c992e8331']}
         path_params = {}
         query_params = {}
         headers = {}
         response = self.default_test_case(
             body=body, path_params=path_params,
-            query_params=query_params, headers=headers, snapshot=snapshot)
+            query_params=query_params, headers=headers, snapshot=snapshot
+        )

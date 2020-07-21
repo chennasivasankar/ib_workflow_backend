@@ -19,8 +19,12 @@ def api_wrapper(*args, **kwargs):
     request_object = kwargs["request_data"]
     name = request_object['name']
     email = request_object['email']
+    company_id = request_object['company_id']
+    teams = request_object['team_ids']
+    roles = request_object['role_ids']
 
     response = interactor.add_new_user_wrapper(
-        user_id=user_id, name=name, email=email, presenter=presenter)
+        user_id=user_id, name=name, email=email, company_id=company_id,
+        roles=roles, teams=teams,presenter=presenter)
 
     return response

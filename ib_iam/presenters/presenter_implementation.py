@@ -192,3 +192,12 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         companies = configuration_details_dto.companies
         teams = configuration_details_dto.teams
         roles = configuration_details_dto.teams
+
+    def raise_role_ids_are_invalid(self):
+        pass
+
+    def raise_company_ids_is_invalid(self):
+        pass
+
+    def raise_team_ids_are_invalid(self):
+        pass

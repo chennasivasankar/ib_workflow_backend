@@ -1,6 +1,7 @@
 import pytest
 
 from ib_iam.storages.storage_implementation import StorageImplementation
+from ib_iam.tests.common_fixtures.storages import reset_sequence
 
 
 @pytest.fixture()
@@ -12,6 +13,7 @@ def company_dtos():
 
 @pytest.fixture()
 def companies():
+    reset_sequence()
     from ib_iam.tests.factories.models import CompanyFactory
     company_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
                    "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
@@ -21,6 +23,7 @@ def companies():
 
 @pytest.fixture()
 def teams():
+    reset_sequence()
     from ib_iam.tests.factories.models import TeamFactory
     team_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
                 "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
@@ -30,7 +33,7 @@ def teams():
 
 @pytest.fixture()
 def roles():
-
+    reset_sequence()
     role_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
                 "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
     from ib_iam.tests.factories.models import RoleFactory

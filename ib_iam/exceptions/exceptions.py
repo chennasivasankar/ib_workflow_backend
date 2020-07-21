@@ -28,3 +28,15 @@ class InvalidEmailAddressException(Exception):
 
 class NameShouldNotContainsNumbersSpecCharactersException(Exception):
     pass
+
+
+class RoleIdsAreInvalidException(Exception):
+    pass
+
+
+class InvalidCompanyIdException(Exception):
+    pass
+
+
+class TeamIdsAreInvalidException(Exception):
+    pass

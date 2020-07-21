@@ -46,3 +46,15 @@ class PresenterInterface(ABC):
     @abstractmethod
     def response_for_get_configuration_details(self, configuration_details):
         pass
+
+    @abstractmethod
+    def raise_role_ids_are_invalid(self):
+        pass
+
+    @abstractmethod
+    def raise_company_ids_is_invalid(self):
+        pass
+
+    @abstractmethod
+    def raise_team_ids_are_invalid(self):
+        pass
