@@ -1,8 +1,6 @@
 import abc
-from typing import List, Optional
-from ib_tasks.interactors.dtos import (
-    StageActionDTO, TaskTemplateStageActionDTO
-)
+
+from ib_tasks.interactors.dtos import StageActionDTO, TaskTemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.dtos import *
 
 
@@ -32,7 +30,8 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def create_initial_stage_to_task_template(self, task_template_stage_dtos):
+    def create_initial_stage_to_task_template(
+            self, task_template_stage_dtos: List[TaskTemplateStageDTO]):
         pass
 
     @abc.abstractmethod
@@ -79,4 +78,12 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_actions_dto(self, action_ids: List[str]) -> List[ActionDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_action_roles(self, action_id: str) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def validate_action(self, action_id: str) -> bool:
         pass

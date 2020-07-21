@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, List, Any
+from typing import List, Optional, Any
 
 from ib_tasks.interactors.storage_interfaces.dtos \
     import StatusVariableDTO, GroupOfFieldsDTO, FieldValueDTO
@@ -35,6 +35,9 @@ class TaskGofAndStatusesDTO:
     statuses_dto: List[StatusVariableDTO]
 
 
-class TaskStatusVariablesDTO:
-    task_id: str
-    status_variables_dto: List[StatusVariableDTO]
+@dataclass()
+class FieldDisplayDTO:
+    field_id: str
+    field_type: str
+    key: str
+    value: Any

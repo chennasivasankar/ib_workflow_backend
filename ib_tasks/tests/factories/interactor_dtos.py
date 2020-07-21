@@ -1,7 +1,7 @@
 import factory
 
 from ib_tasks.interactors.dtos import (
-    StageActionDTO, TaskTemplateStageActionDTO
+    TaskTemplateStageActionDTO, StageActionDTO
 )
 
 

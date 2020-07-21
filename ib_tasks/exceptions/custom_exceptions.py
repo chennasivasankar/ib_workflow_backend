@@ -31,3 +31,18 @@ class InvalidTaskIdException(Exception):
 class InvalidTaskTemplateId(Exception):
     def __init__(self, task_template_ids_dict: str):
         self.task_template_ids_dict = task_template_ids_dict
+
+
+class InvalidActionException(Exception):
+    def __init__(self, action_id: str):
+        self.action_id = action_id
+
+
+class UserActionPermissionDenied(Exception):
+    def __init__(self, action_id: str):
+        self.action_id = action_id
+
+
+class InvalidTaskException(Exception):
+    def __init__(self, task_id: str):
+        self.task_id = task_id

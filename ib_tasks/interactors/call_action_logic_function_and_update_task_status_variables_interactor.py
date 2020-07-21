@@ -2,7 +2,7 @@ from typing import List
 
 from ib_tasks.interactors.storage_interfaces.dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.storage_interface \
-    import StorageInterface, GroupOfFieldsDTO
+    import StorageInterface, GroupOfFieldsDTO, StatusVariableDTO
 from ib_tasks.interactors.dtos import TaskGofAndStatusesDTO
 
 
@@ -37,12 +37,20 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
         task_dict = method_object(task_dict=task_dict)
         status_dict = task_dict["statuses"]
         updated_status_variables_dto = self._get_updated_status_variable_dto(
-            status_dict, status_variables_dto
-        )
+            status_dict, status_variables_dto)
         self.storage.update_status_variables_to_task(
             task_id=task_dto.task_id,
-            status_variables_dto=updated_status_variables_dto
-        )
+            status_variables_dto=updated_status_variables_dto)
+        stage_ids = self._get_stage_ids(updated_status_variables_dto)
+        return stage_ids
+
+    @staticmethod
+    def _get_stage_ids(status_variable_dtos: List[StatusVariableDTO]):
+
+        return [
+            status_variable_dto.value
+            for status_variable_dto in status_variable_dtos
+        ]
 
     def _get_method_object_for_condition(self, action_id: str):
         path_name = self.storage.get_path_name_to_action(

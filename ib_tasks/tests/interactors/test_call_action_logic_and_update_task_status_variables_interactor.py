@@ -111,6 +111,7 @@ class TestUpdateTaskStatusVariablesInteractor:
                           'group_of_field_2': {'field_2': 'value_2'},
                           'statuses': {'status_variable_1': 'value_1'}}
         action_id = "action_1"
+        stage_ids = ['value_1']
         storage = create_autospec(StorageInterface)
         GOFMultipleStatusDTOFactory.reset_sequence()
         multiple_gof = GOFMultipleStatusDTOFactory()
@@ -140,7 +141,7 @@ class TestUpdateTaskStatusVariablesInteractor:
         )
 
         # Act
-        interactor.call_action_logic_function_and_update_task_status_variables(
+        response = interactor.call_action_logic_function_and_update_task_status_variables(
             task_dto=task_dto
         )
 
@@ -152,3 +153,4 @@ class TestUpdateTaskStatusVariablesInteractor:
         storage.update_status_variables_to_task.assert_called_once_with(
             task_id="task_1", status_variables_dto=statuses
         )
+        # assert response == stage_ids
