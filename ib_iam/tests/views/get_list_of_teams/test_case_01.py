@@ -85,4 +85,3 @@ class TestCase01GetListOfTeamsAPITestCase(TestUtils):
             for member_id in team["member_ids"]:
                 TeamMemberFactory(team=team_object, member_id=member_id)
             from ib_iam.models import Team
-            print(Team.objects.values())
