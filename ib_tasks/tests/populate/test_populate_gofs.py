@@ -7,6 +7,7 @@ from ib_tasks.tests.factories.storage_dtos import (
 from ib_tasks.tests.factories.models import GoFFactory, GoFRoleFactory
 
 
+@pytest.mark.django_db
 class TestPopulateGoFs:
 
     @pytest.fixture(autouse=True)
@@ -187,7 +188,6 @@ class TestPopulateGoFs:
             value=str(err.value)
         )
 
-    @pytest.mark.django_db
     def test_populate_gofs_with_valid_details(
             self, interactor, snapshot
     ):
@@ -215,13 +215,18 @@ class TestPopulateGoFs:
         for gof_dto in gof_dtos:
             gof = GoF.objects.get(pk=gof_dto.gof_id)
             snapshot.assert_match(
+                name="gof_id {}".format(gof_counter),
+                value=gof.gof_id
+            )
+            snapshot.assert_match(
                 name="gof_display_name {}".format(gof_counter),
                 value=gof.display_name
             )
             snapshot.assert_match(
-                name="gof_max_columns",
+                name="gof_max_columns {}".format(gof_counter),
                 value=gof.max_columns
             )
+            gof_counter += 1
 
         read_permission_role_counter, write_permission_role_counter = 1, 1
         for gof_roles_dto in gof_roles_dtos:
@@ -231,7 +236,8 @@ class TestPopulateGoFs:
                     permission_type=PermissionTypes.READ.value
                 )
                 snapshot.assert_match(
-                    name="gof_id_in_gof_role {}".format(read_permission_role_counter),
+                    name="gof_id_in_gof_role {}".format(
+                        read_permission_role_counter),
                     value=gof_role_object.gof_id
                 )
                 snapshot.assert_match(
@@ -239,17 +245,20 @@ class TestPopulateGoFs:
                     value=gof_role_object.role
                 )
                 snapshot.assert_match(
-                    name="role_permission_type".format(read_permission_role_counter),
+                    name="role_permission_type".format(
+                        read_permission_role_counter),
                     value=gof_role_object.permission_type
                 )
                 read_permission_role_counter += 1
             for gof_write_permission_role in gof_roles_dto.read_permission_roles:
                 gof_role_object = GoFRole.objects.get(
-                    gof_id=gof_roles_dto.gof_id, role=gof_write_permission_role,
+                    gof_id=gof_roles_dto.gof_id,
+                    role=gof_write_permission_role,
                     permission_type=PermissionTypes.WRITE.value
                 )
                 snapshot.assert_match(
-                    name="gof_id_in_gof_role {}".format(write_permission_role_counter),
+                    name="gof_id_in_gof_role {}".format(
+                        write_permission_role_counter),
                     value=gof_role_object.gof_id
                 )
                 snapshot.assert_match(
@@ -257,19 +266,18 @@ class TestPopulateGoFs:
                     value=gof_role_object.role
                 )
                 snapshot.assert_match(
-                    name="role_permission_type {}".format(write_permission_role_counter),
+                    name="role_permission_type {}".format(
+                        write_permission_role_counter),
                     value=gof_role_object.permission_type
                 )
                 write_permission_role_counter += 1
 
-    @pytest.mark.django_db
     def test_populate_gofs_with_already_existing_gofs_updates_gofs(
             self, interactor, snapshot
     ):
         # Arrange
         from ib_tasks.models.gof import GoF
         from ib_tasks.constants.enum import PermissionTypes
-        from ib_tasks.tests.factories.models import GoFFactory
         from ib_tasks.models.gof_role import GoFRole
         gofs = GoFFactory.create_batch(size=2)
         gof_ids = [gof.gof_id for gof in gofs]
@@ -295,12 +303,22 @@ class TestPopulateGoFs:
         interactor.create_or_update_gofs(complete_gof_details_dtos)
 
         # Assert
+        gof_counter = 0
         for gof_dto in gof_dtos:
             gof = GoF.objects.get(pk=gof_dto.gof_id)
-            snapshot.assert_match(name="gof_display_name",
-                                  value=gof.display_name)
-            snapshot.assert_match(name="gof_max_columns",
-                                  value=gof.max_columns)
+            snapshot.assert_match(
+                name="gof_id {}".format(gof_counter),
+                value=gof.gof_id
+            )
+            snapshot.assert_match(
+                name="gof_display_name {}".format(gof_counter),
+                value=gof.display_name
+            )
+            snapshot.assert_match(
+                name="gof_max_columns {}".format(gof_counter),
+                value=gof.max_columns
+            )
+            gof_counter += 1
 
         read_permission_role_counter, write_permission_role_counter = 1, 1
         for gof_roles_dto in gof_roles_dtos:

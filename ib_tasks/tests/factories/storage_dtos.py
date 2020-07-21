@@ -56,8 +56,8 @@ class CompleteGoFDetailsDTOFactory(factory.Factory):
     class Meta:
         model = CompleteGoFDetailsDTO
 
-    gof_dto = GoFDTOFactory()
-    gof_roles_dto = GoFRolesDTOFactory()
+    gof_dto = factory.SubFactory(GoFDTOFactory)
+    gof_roles_dto = factory.SubFactory(GoFRolesDTOFactory)
 
 
 class GoFRoleDTOFactory(factory.Factory):

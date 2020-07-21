@@ -24,13 +24,10 @@ class TestCreateOrUpdateGOFs:
                                                       storage_mock):
         # Arrange
         from ib_tasks.tests.common_fixtures.adapters.roles_service import (
-            get_all_valid_read_permission_roles,
-            get_all_valid_write_permission_roles
+            get_valid_role_ids_in_given_role_ids
         )
-        get_valid_read_permissions_mock_method = \
-            get_all_valid_read_permission_roles(mocker)
-        get_valid_write_permissions_mock_method = \
-            get_all_valid_write_permission_roles(mocker)
+        get_valid_role_ids_in_given_role_ids_mock_method = \
+            get_valid_role_ids_in_given_role_ids(mocker)
 
         complete_gof_details_dtos = [
             CompleteGoFDetailsDTOFactory()
@@ -48,8 +45,7 @@ class TestCreateOrUpdateGOFs:
         )
 
         # Assert
-        get_valid_read_permissions_mock_method.assert_called_once()
-        get_valid_write_permissions_mock_method.assert_called_once()
+        get_valid_role_ids_in_given_role_ids_mock_method.assert_called_once()
         gof_roles_dtos = [
             complete_gof_details_dto.gof_roles_dto
             for complete_gof_details_dto in complete_gof_details_dtos
@@ -210,10 +206,10 @@ class TestCreateOrUpdateGOFs:
         from ib_tasks.exceptions.custom_exceptions import \
             InvalidReadPermissionRoles
         from ib_tasks.tests.common_fixtures.adapters.roles_service import (
-            get_all_valid_read_permission_roles
+            get_valid_role_ids_in_given_role_ids
         )
-        get_valid_read_permissions_mock_method = \
-            get_all_valid_read_permission_roles(mocker)
+        get_valid_role_ids_in_given_role_ids_mock_method = \
+            get_valid_role_ids_in_given_role_ids(mocker)
         gof_roles_dto = GoFRolesDTOFactory(
             read_permission_roles=["payment requester"]
         )
@@ -230,7 +226,7 @@ class TestCreateOrUpdateGOFs:
             )
 
         # Assert
-        get_valid_read_permissions_mock_method.assert_called_once()
+        get_valid_role_ids_in_given_role_ids_mock_method.assert_called_once()
         storage_mock.create_gofs.assert_not_called()
         storage_mock.create_gof_roles.assert_not_called()
         storage_mock.update_gofs.assert_not_called()
@@ -242,13 +238,10 @@ class TestCreateOrUpdateGOFs:
         from ib_tasks.exceptions.custom_exceptions import \
             InvalidWritePermissionRoles
         from ib_tasks.tests.common_fixtures.adapters.roles_service import (
-            get_all_valid_read_permission_roles,
-            get_all_valid_write_permission_roles
+            get_valid_role_ids_in_given_role_ids
         )
-        get_valid_read_permissions_mock_method = \
-            get_all_valid_read_permission_roles(mocker)
-        get_valid_write_permissions_mock_method = \
-            get_all_valid_write_permission_roles(mocker)
+        get_valid_role_ids_in_given_role_ids_mock_method = \
+            get_valid_role_ids_in_given_role_ids(mocker)
         gof_roles_dto = GoFRolesDTOFactory(
             write_permission_roles=["payment requester"])
         complete_gof_details_dtos = [
@@ -264,8 +257,7 @@ class TestCreateOrUpdateGOFs:
             )
 
         # Assert
-        get_valid_read_permissions_mock_method.assert_called_once()
-        get_valid_write_permissions_mock_method.assert_called_once()
+        get_valid_role_ids_in_given_role_ids_mock_method.assert_called_once()
         storage_mock.create_gofs.assert_not_called()
         storage_mock.create_gof_roles.assert_not_called()
         storage_mock.update_gofs.assert_not_called()
@@ -275,13 +267,10 @@ class TestCreateOrUpdateGOFs:
     ):
         # Arrange
         from ib_tasks.tests.common_fixtures.adapters.roles_service import (
-            get_all_valid_read_permission_roles,
-            get_all_valid_write_permission_roles
+            get_valid_role_ids_in_given_role_ids
         )
-        get_valid_read_permissions_mock_method = \
-            get_all_valid_read_permission_roles(mocker)
-        get_valid_write_permissions_mock_method = \
-            get_all_valid_write_permission_roles(mocker)
+        get_valid_role_ids_in_given_role_ids_mock_method = \
+            get_valid_role_ids_in_given_role_ids(mocker)
 
         gof_dtos = GoFDTOFactory.create_batch(size=2)
         gof_ids = [gof_dto.gof_id for gof_dto in gof_dtos]
@@ -323,8 +312,7 @@ class TestCreateOrUpdateGOFs:
         )
 
         # Assert
-        get_valid_read_permissions_mock_method.assert_called_once()
-        get_valid_write_permissions_mock_method.assert_called_once()
+        get_valid_role_ids_in_given_role_ids_mock_method.assert_called_once()
         storage_mock.update_gofs.assert_called_once_with(
             gof_dtos=gof_dtos
         )

@@ -3,11 +3,7 @@ from typing import List
 
 class ServiceInterface:
     @staticmethod
-    def get_all_valid_read_permission_roles():
-        return ["ALL_ROLES", "Payment Requester", "Payment POC"]
-
-    @staticmethod
-    def get_all_valid_write_permission_roles():
+    def get_valid_role_ids_in_given_role_ids(role_ids: List[str]):
         return ["ALL_ROLES", "Payment Requester", "Payment POC"]
 
 
@@ -19,12 +15,9 @@ class RolesService:
         #  validation from ib_iam.app_interfaces import ServiceInterface
         return ServiceInterface()
 
-    def get_all_valid_read_permission_roles(self) -> List[str]:
-        valid_read_permission_roles = \
-            self.interface.get_all_valid_read_permission_roles()
-        return valid_read_permission_roles
-
-    def get_all_valid_write_permission_roles(self) -> List[str]:
-        valid_write_permission_roles = \
-            self.interface.get_all_valid_write_permission_roles()
-        return valid_write_permission_roles
+    def get_valid_role_ids_in_given_role_ids(
+            self, role_ids: List[str]
+    ) -> List[str]:
+        valid_roles = \
+            self.interface.get_valid_role_ids_in_given_role_ids(role_ids)
+        return valid_roles
