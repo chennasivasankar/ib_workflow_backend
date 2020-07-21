@@ -9,6 +9,7 @@ RESPONSE_200_JSON = """
             "template_name": "string",
             "actions": [
                 {
+                    "action_id": "string",
                     "action_name": "string",
                     "button_text": "string",
                     "button_color": "string"

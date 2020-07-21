@@ -179,6 +179,9 @@
 									"items": {
 										"type": "object",
 										"properties": {
+											"action_id": {
+												"type": "string"
+											},
 											"action_name": {
 												"type": "string"
 											},
@@ -190,6 +193,7 @@
 											}
 										},
 										"required": [
+											"action_id",
 											"action_name",
 											"button_text",
 											"button_color"
