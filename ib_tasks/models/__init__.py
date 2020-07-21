@@ -1,6 +1,7 @@
 from .action_permitted_roles import ActionPermittedRoles
 from .stage import Stage
 from .stage_actions import StageAction
+from .task_template_stage import TaskStage
 from .task_status_variable import TaskStatusVariable
 from .task_template import TaskTemplate
 from .template_status_variables import TaskTemplateStatusVariables
@@ -10,6 +11,7 @@ from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.gof import GoF
 from ib_tasks.models.gof_role import GoFRole
 
+
 __all__ = [
     "ActionPermittedRoles",
     "Stage",
@@ -17,5 +19,6 @@ __all__ = [
     "TaskStatusVariable",
     "TaskTemplateStatusVariables",
     "TaskTemplateGlobalConstants",
+    'TaskStage',
     "Field", "FieldRole", "GoF", "GoFRole", "TaskTemplate"
 ]
