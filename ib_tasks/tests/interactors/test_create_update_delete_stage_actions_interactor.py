@@ -46,8 +46,9 @@ class TestCreateUpdateDeleteStageActionsInteractor:
     @staticmethod
     def test_given_invalid_roles_raises_exception(mocker):
         expected_stage_roles = {
-            "stage_1": ["ROLE_1"],
-            "stage_2": ["ROLE_2"]
+            "stage_1": ["ROLE_1", "ROLE_2"],
+            "stage_2": ["ROLE_2"],
+            "stage_3": ["ROLE_4"]
         }
         expected_stage_role_dict = json.dumps(expected_stage_roles)
         StageActionDTOFactory.reset_sequence(0)

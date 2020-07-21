@@ -34,7 +34,7 @@ class TestCasePopulateStageActions:
 
         # Act
         with pytest.raises(InvalidFormatException) as err:
-            populate_stage_actions(actions_dict=actions)
+            populate_stage_actions(action_dicts=actions)
 
         # Assert
         assert err.value.valid_format == json_valid_format
@@ -59,7 +59,7 @@ class TestCasePopulateStageActions:
             stage_id="stage_1",
             action_name="action_name_1",
             logic="logic_1",
-            role="ROLE_1",
+            roles=["ROLE_1"],
             button_text="button_text_1",
             button_color="button_color_1"
         )]
