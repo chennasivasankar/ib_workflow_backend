@@ -1,6 +1,10 @@
-from ib_tasks.constants.enum import PermissionTypes, FieldTypes
+from ib_tasks.constants.enum \
+    import PermissionTypes, FieldTypes, Searchable
 
 FIELD_TYPES_LIST = [item.value for item in FieldTypes]
+
+SEARCHABLE_VALUES = [item.value for item in Searchable]
+
 
 Permission_Types = [
     (item.value, item.value)

@@ -29,3 +29,4 @@ DUPLICATED_OF_GOF_NAMES_FOR_FIELD_VALUES = "Duplication of gof names for field v
 ALLOWED_FORMAT_EMPTY_VALUES_EXCEPTION = "Allowed formats for these field id shouldn't be empty = {}"
 FIELD_DUPLICATION_OF_ALLOWED_FORMATS = "Duplication of values for aloowed formats = {}"
 EMPTY_VALUES_FOR_ALLOWED_FORMATS = "Allowed formats shouldn't contain empty values for these filed_id = {}"
+INVALID_VALUE_FOR_SEARCHABLE = "Searchable value should be one of these = {}"

@@ -215,3 +215,8 @@ class FieldsDuplicationOfAllowedFormatsValues(Exception):
 class EmptyValuesForAllowedFormats(Exception):
     def __init__(self, message: str):
         self.message = message
+
+
+class InvalidValueForSearchable(Exception):
+    def __init__(self, message: str):
+        self.message = message

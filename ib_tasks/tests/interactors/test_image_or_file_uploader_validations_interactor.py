@@ -109,26 +109,6 @@ class TestImageOrFileUploaderValidationsInteractor:
         # Assert
         assert str(err.value) == exception_message
 
-    @pytest.mark.parametrize("field_type", [FieldTypes.IMAGE_UPLOADER, FieldTypes.FILE_UPLOADER.value])
-    def test_given_valid_values_for_allowed_formats(self, field_type):
-        # Arrange
-        import json
-
-        field_dto = FieldDTOFactory(
-            field_id="field1",
-            field_type=field_type,
-            allowed_formats=[".pdf", "jpg"]
-        )
-        allowed_formats = [".pdf", "jpg"]
-        allowed_formats = json.dumps(allowed_formats)
-        interactor = ImageOrFileUploaderValidationsInteractor()
-
-        # Act
-        interactor.image_or_file_uploader_validations(field_dto)
-
-        # Assert
-
-
 
 
 
