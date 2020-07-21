@@ -66,6 +66,10 @@ class UserDoNotHaveAccessToBoards(Exception):
     pass
 
 
+class UserDoNotHaveAccessToColumn(Exception):
+    pass
+
+
 class InvalidOffsetValue(Exception):
     pass
 
@@ -83,3 +87,15 @@ class InvalidBoardIds(Exception):
 class DuplicateValuesInColumnDisplayOrder(Exception):
     def __init__(self, display_order_values: List[int]):
         self.display_order_values = display_order_values
+
+class InvalidColumnId(Exception):
+    pass
+
+
+class OffsetValueExceedsTotalTasksCount(Exception):
+    pass
+
+
+class InvalidStageIds(Exception):
+    def __init__(self, stage_ids: List[str]):
+        self.stage_ids = stage_ids
