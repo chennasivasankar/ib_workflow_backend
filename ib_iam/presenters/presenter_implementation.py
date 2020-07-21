@@ -19,6 +19,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             "http_status_code": StatusCode.FORBIDDEN.value,
             "res_status": USER_DOES_NOT_HAVE_PERMISSION[1]
         }
+        print(response_dict)
         return self.prepare_403_forbidden_response(
             response_dict=response_dict)
 
@@ -175,12 +176,19 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
     def raise_name_should_not_contain_special_characters_exception(self):
         from ib_iam.constants.exception_messages \
             import NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS
+        response = NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS[0]
+        res_status = NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS[1]
         response_dict = {
-            "response": \
-                NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS[0],
+            "response": response,
             "http_status_code": StatusCode.BAD_REQUEST.value,
-            "res_status": \
-                NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS[1]
+            "res_status": res_status
+
         }
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
+
+
+    def response_for_get_configuration_details(self, configuration_details_dto):
+        companies = configuration_details_dto.companies
+        teams = configuration_details_dto.teams
+        roles = configuration_details_dto.teams

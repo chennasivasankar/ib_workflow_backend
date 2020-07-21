@@ -25,8 +25,6 @@ def reset_sequence():
     TeamFactory.reset_sequence(0)
 
 
-
-
 @pytest.fixture()
 def user_not_admin():
     reset_sequence()
@@ -72,3 +70,42 @@ def users_role():
             users.append(user)
     return users
 
+
+@pytest.fixture()
+def companies():
+    reset_sequence()
+    companies = CompanyFactory.create_batch(3)
+    return companies
+
+
+@pytest.fixture()
+def company_dtos():
+    from ib_iam.tests.factories.storage_dtos import CompanyDTOFactory
+    company_dtos = CompanyDTOFactory.create_batch(3)
+    return company_dtos
+
+
+@pytest.fixture()
+def team_dtos():
+    from ib_iam.tests.factories.storage_dtos import TeamDTOFactory
+    team_dtos = TeamDTOFactory.create_batch(3)
+    return team_dtos
+
+
+@pytest.fixture()
+def role_dtos():
+    from ib_iam.tests.factories.storage_dtos import RoleDTOFactory
+    role_dtos = RoleDTOFactory.create_batch(3)
+    return role_dtos
+
+
+@pytest.fixture()
+def configuration_details_dto():
+    from ib_iam.interactors.presenter_interfaces.dtos \
+        import ConfigurationDetailsDto
+    configuration_details_dto = ConfigurationDetailsDto(
+        companies=company_dtos,
+        teams=team_dtos,
+        roles=role_dtos
+    )
+    return configuration_details_dto

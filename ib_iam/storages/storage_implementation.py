@@ -1,6 +1,7 @@
 from typing import List
 
-from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO, UserRoleDTO, UserCompanyDTO, UserDTO
+from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO, UserRoleDTO, UserCompanyDTO, UserDTO, CompanyDTO, \
+    TeamDTO, RoleDTO
 from ib_iam.interactors.storage_interfaces.storage_interface import StorageInterface
 
 
@@ -9,6 +10,7 @@ class StorageImplementation(StorageInterface):
     def validate_user_is_admin(self, user_id: str) -> bool:
         from ib_iam.models.user import UserDetails
         user = UserDetails.objects.get(user_id=user_id)
+        print(user.is_admin)
         return user.is_admin
 
     def get_users_who_are_not_admins(
@@ -75,4 +77,44 @@ class StorageImplementation(StorageInterface):
         return company_dtos
 
     def add_new_user(self, user_id: str, is_admin: bool):
-        pass
+        from ib_iam.models import UserDetails
+        UserDetails.objects.create(user_id=user_id, is_admin=is_admin)
+
+    def get_companies(self) -> List[CompanyDTO]:
+        from ib_iam.models import Company
+        companies = []
+        company_query_set = Company.objects.values('company_id', 'name')
+        for company in company_query_set:
+            companies.append(
+                CompanyDTO(
+                    company_id=str(company['company_id']),
+                    company_name=company['name']
+                )
+            )
+        return companies
+
+    def get_teams(self) -> List[TeamDTO]:
+        teams = []
+        from ib_iam.models import Team
+        team_query_set = Team.objects.values('team_id', 'name')
+        for team in team_query_set:
+            teams.append(
+                TeamDTO(
+                    team_id=str(team['team_id']),
+                    team_name=team['name']
+                )
+            )
+        return teams
+
+    def get_roles(self) -> List[RoleDTO]:
+        roles = []
+        from ib_iam.models import Role
+        team_query_set = Role.objects.values('id', 'name')
+        for role in team_query_set:
+            roles.append(
+                RoleDTO(
+                    id=str(role['id']),
+                    role_name=role['name']
+                )
+            )
+        return roles

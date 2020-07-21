@@ -42,3 +42,7 @@ class PresenterInterface(ABC):
     @abstractmethod
     def raise_name_should_not_contain_special_characters_exception(self):
         pass
+
+    @abstractmethod
+    def response_for_get_configuration_details(self, configuration_details):
+        pass

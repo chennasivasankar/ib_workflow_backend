@@ -3,7 +3,8 @@ from typing import List
 
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.interactors.storage_interfaces.dtos \
-    import UserTeamDTO, UserRoleDTO, UserCompanyDTO
+    import UserTeamDTO, UserRoleDTO, UserCompanyDTO, \
+    CompanyDTO, TeamDTO, RoleDTO
 
 
 @dataclass
@@ -14,3 +15,9 @@ class CompleteUsersDetailsDTO:
     companies: List[UserCompanyDTO]
     total_no_of_users: int
 
+
+@dataclass
+class ConfigurationDetailsDto:
+    companies: List[CompanyDTO]
+    teams: List[TeamDTO]
+    roles: List[RoleDTO]

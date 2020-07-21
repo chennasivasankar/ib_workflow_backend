@@ -99,14 +99,14 @@
     },
     "Company": {
       "type": "object",
-          "properties": {
-            "company": {
-              "$ref": "#/definitions/CompanyDetails"
-            }
-          },
-          "required": [
-            "company"
-          ]
+      "properties": {
+        "company": {
+          "$ref": "#/definitions/CompanyDetails"
+        }
+      },
+      "required": [
+        "company"
+      ]
     },
     "RoleDetails": {
       "type": "object",
@@ -155,23 +155,22 @@
     },
     "UsersDetails": {
       "type": "object",
-          "properties": {
-            "users": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/CompleteUserDetails"
-              }
-            }
-          },
-          "required": [
-            "users"
-          ]
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CompleteUserDetails"
+          }
+        }
+      },
+      "required": [
+        "users"
+      ]
     },
     "ListOfUsers": {
       "allOf": [
         {
           "$ref": "#/definitions/UsersDetails"
-
         },
         {
           "type": "object",
@@ -238,6 +237,82 @@
       "required": [
         "response"
       ]
+    },
+    "Companies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "company_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "company_name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "company_id",
+          "company_name"
+        ]
+      }
+    },
+    "Roles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "role_name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "role_name"
+        ]
+      }
+    },
+    "Teams": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "team_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "team_name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "team_id",
+          "team_name"
+        ]
+      }
+    },
+    "ConfigurationDetails": {
+      "type": "object",
+      "properties": {
+        "companies": {
+          "$ref": "#/definitions/Companies"
+        },
+        "roles": {
+          "$ref": "#/definitions/Roles"
+        },
+        "teams": {
+          "$ref": "#/definitions/Teams"
+        }
+      },
+      "required": [
+        "companies",
+        "roles",
+        "teams"
+      ]
     }
   },
   "parameters": {
@@ -280,9 +355,36 @@
       "schema": {
         "$ref": "#/definitions/AddUserFailed"
       }
+    },
+    "ConfigurationDetailsResponse": {
+      "description": "Configuration Details",
+      "schema": {
+        "$ref": "#/definitions/ConfigurationDetails"
+      }
     }
   },
   "paths": {
+    "/configuration_details/v1": {
+      "get": {
+        "operationId": "get_configuration_details",
+        "description": "get configuration details to add/edit user",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/ConfigurationDetailsResponse"
+          },
+          "403": {
+            "$ref": "#/responses/ForbiddenResponse"
+          }
+        }
+      }
+    },
     "/users/v1/": {
       "get": {
         "operationId": "get_users",
@@ -328,14 +430,14 @@
             "$ref": "#/parameters/AddUserParameter"
           }
         ],
-       "responses": {
-         "201": {
-           "description": "user added"
-         },
-         "400": {
-           "$ref": "#/responses/AddUserFailedResponse"
-         }
-       }
+        "responses": {
+          "201": {
+            "description": "user added"
+          },
+          "400": {
+            "$ref": "#/responses/AddUserFailedResponse"
+          }
+        }
       }
     }
   }
