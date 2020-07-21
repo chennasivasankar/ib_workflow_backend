@@ -1,31 +1,29 @@
 from ib_iam.interactors.storage_interfaces \
     .company_storage_interface import CompanyStorageInterface
 from ib_iam.interactors.presenter_interfaces \
-    .get_list_of_companies_presenter_interface import (
-        GetListOfCompaniesPresenterInterface
-    )
+    .get_companies_presenter_interface import GetCompaniesPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import (
-    PaginationDTO, BasicCompanyDTO
+    PaginationDTO, CompanyDTO
 )
 from typing import List
-from ib_iam.exceptions.custom_exceptions import (
+from ib_iam.exceptions import (
     UserHasNoAccess, InvalidLimit, InvalidOffset
 )
 
 
-class GetListOfCompaniesInteractor:
+class GetCompaniesInteractor:
 
     def __init__(self, storage: CompanyStorageInterface):
         self.storage = storage
 
-    def get_list_of_companies_wrapper(
+    def get_companies_wrapper(
             self,
             user_id: str,
             pagination_dto: PaginationDTO,
-            presenter: GetListOfCompaniesPresenterInterface
+            presenter: GetCompaniesPresenterInterface
     ):
         try:
-            company_details_dtos = self.get_list_of_companies(
+            company_details_dtos = self.get_companies(
                 user_id=user_id, pagination_dto=pagination_dto
             )
             response = presenter.get_response_for_get_list_of_companies(
@@ -39,15 +37,15 @@ class GetListOfCompaniesInteractor:
             response = presenter.raise_exception_for_invalid_offset()
         return response
 
-    def get_list_of_companies(self, user_id: str, pagination_dto: PaginationDTO):
+    def get_companies(self, user_id: str, pagination_dto: PaginationDTO):
+        self._validate_pagination_details(pagination_dto=pagination_dto)
         self.storage.is_user_admin(user_id=user_id)
-        self._is_invalid_limit(pagination_dto.limit)
-        self._is_invalid_offset(pagination_dto.offset)
 
-        (company_dtos, total_companies) = self.storage.get_company_dtos_along_with_count(
-            user_id=user_id,
-            pagination_dto=pagination_dto
-        )
+        company_with_total_companies_count_dto = \
+            self.storage.get_company_dtos_along_with_count(
+                user_id=user_id,
+                pagination_dto=pagination_dto
+            )
         company_ids = self._get_company_ids_from_company_dtos(
             company_dtos=company_dtos
         )
@@ -64,15 +62,10 @@ class GetListOfCompaniesInteractor:
         return company_details_dtos
 
     @staticmethod
-    def _is_invalid_limit(limit: int):
-        is_invalid_limit = limit <= 0
-        if is_invalid_limit:
+    def _validate_pagination_details(pagination_dto: PaginationDTO):
+        if pagination_dto.limit <= 0:
             raise InvalidLimit()
-
-    @staticmethod
-    def _is_invalid_offset(offset: int):
-        is_invalid_offset = offset < 0
-        if is_invalid_offset:
+        if pagination_dto.offset < 0:
             raise InvalidOffset()
 
     @staticmethod

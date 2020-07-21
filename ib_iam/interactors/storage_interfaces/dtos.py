@@ -48,3 +48,17 @@ class MemberDTO:
     member_id: str
     name: str
     profile_pic_url: str
+
+
+@dataclass
+class CompanyDTO:
+    company_id: str
+    name: str
+    description: str
+    logo_url: str
+
+
+@dataclass
+class CompanyWithTotalCompaniesCountDTO:
+    company_dtos: List[CompanyDTO]
+    total_companies_count: int

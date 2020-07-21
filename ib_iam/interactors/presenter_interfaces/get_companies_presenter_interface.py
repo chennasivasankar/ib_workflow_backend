@@ -15,7 +15,7 @@ class GetListOfCompaniesResponseDTO:
     company_employee_count_dtos: List[CompanyWithEmployeeCountDTO]
 
 
-class GetListOfCompaniesPresenterInterface(ABC):
+class GetCompaniesPresenterInterface(ABC):
 
     @abstractmethod
     def get_response_for_get_list_of_companies(
