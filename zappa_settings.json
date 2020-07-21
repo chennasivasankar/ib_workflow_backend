@@ -24,7 +24,8 @@
       "SecurityGroupIds": [
         "sg-7071bb18"
       ]
-    }
+    },
+    "manage_roles": false
   },
   "beta": {
     "project_name": "ib-workflows-backend",
@@ -51,7 +52,8 @@
       "SecurityGroupIds": [
         "sg-7071bb18"
       ]
-    }
+    },
+    "manage_roles": false
   },
   "gamma": {
     "project_name": "ib-workflows-backend",
