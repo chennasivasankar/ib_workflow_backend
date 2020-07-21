@@ -1,128 +1,138 @@
 {
-  "swagger": "2.0",
-  "host": "127.0.0.1:8000",
-  "basePath": "/api/ib_tasks/",
-  "info": {
-    "version": "1.0.0",
-    "title": "Simple API",
-    "description": "A simple API to learn how to write OpenAPI Specification"
-  },
-  "schemes": [
-    "http"
-  ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
-  "securityDefinitions": {
-    "oauth": {
-      "tokenUrl": "http://auth.ibtspl.com/oauth2/",
-      "flow": "password",
-      "scopes": {
-        "read": "read users",
-        "write": "create users",
-        "update": "update users",
-        "delete": "delete users"
-      },
-      "type": "oauth2"
-    }
-  },
-  "security": [],
-  "definitions": {
-    "CreateTaskRequestBody": {
-      "type": "object",
-      "properties": {
-        "task_id": {
-          "type": "string"
-        },
-        "task_gofs": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "gof_id": {
-                "type": "string"
-              },
-              "gof_fields": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "field_id": {
-                      "type": "string",
-                      "example": "FIN_FIRST_NAME"
-                    },
-                    "field_response_single_value": {
-                      "type": "string"
-                    },
-                    "field_response_multiple_values": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    }
-                  },
-                  "required": [
-                    "field_id",
-                    "field_type"
-                  ]
-                }
-              }
+   "swagger":"2.0",
+   "host":"127.0.0.1:8000",
+   "basePath":"/api/ib_tasks/",
+   "info":{
+      "version":"1.0.0",
+      "title":"Simple API",
+      "description":"A simple API to learn how to write OpenAPI Specification"
+   },
+   "schemes":[
+      "http"
+   ],
+   "consumes":[
+      "application/json"
+   ],
+   "produces":[
+      "application/json"
+   ],
+   "securityDefinitions":{
+      "oauth":{
+         "tokenUrl":"http://auth.ibtspl.com/oauth2/",
+         "flow":"password",
+         "scopes":{
+            "read":"read users",
+            "write":"create users",
+            "update":"update users",
+            "delete":"delete users"
+         },
+         "type":"oauth2"
+      }
+   },
+   "security":[
+   ],
+   "definitions":{
+      "GoFField":{
+         "type":"object",
+         "properties":{
+            "field_id":{
+               "type":"string",
+               "example":"FIN_FIRST_NAME"
             },
-            "required": [
-              "gof_id",
-              "gof_fields"
-            ]
-          }
-        }
+            "field_response_single_value":{
+               "type":"string"
+            },
+            "field_response_multiple_values":{
+               "type":"array",
+               "items":{
+                  "type":"string"
+               }
+            }
+         },
+         "required":[
+            "field_id"
+         ]
+      },
+      "GoF":{
+         "type":"object",
+         "properties":{
+            "gof_id":{
+               "type":"string"
+            },
+            "gof_fields":{
+               "type":"array",
+               "items":{
+                  "$ref":"#/definitions/GoFField"
+               }
+            }
+         },
+         "required":[
+            "gof_id",
+            "gof_fields"
+         ]
+      },
+      "CreateTaskRequestBody":{
+         "type":"object",
+         "properties":{
+            "task_template_id":{
+               "type":"string"
+            },
+            "task_gofs":{
+               "type":"array",
+               "items":{
+                  "$ref":"#/definitions/GoF"
+               }
+            }
+         },
+         "required":[
+            "task_gofs",
+            "task_template_id"
+         ]
       }
-    }
-  },
-  "parameters": {
-    "CreateTaskBodyParameter": {
-      "in": "body",
-      "name": "CreateTaskRequestBody",
-      "description": "give valid details",
-      "required": true,
-      "schema": {
-        "$ref": "#/definitions/CreateTaskRequestBody"
+   },
+   "parameters":{
+      "CreateTaskBodyParameter":{
+         "in":"body",
+         "name":"CreateTaskRequestBody",
+         "description":"give valid details",
+         "required":true,
+         "schema":{
+            "$ref":"#/definitions/CreateTaskRequestBody"
+         }
       }
-    }
-  },
-  "responses": {
-    "CreateTaskSuccessResponse": {
-      "description": "task created successfully"
-    }
-  },
-  "paths": {
-    "/task/v1/": {
-      "post": {
-        "operationId": "create_task",
-        "summary": "create a task",
-        "description": "create a task with given details",
-        "security":[
-           {
-              "oauth":[
-                 "write"
-              ]
-           }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/parameters/CreateTaskBodyParameter"
-          }
-        ],
-        "responses": {
-          "201": {
-            "$ref": "#/responses/CreateTaskSuccessResponse"
-          },
-          "400": {
-            "description": ""
-          }
-        }
+   },
+   "responses":{
+      "CreateTaskSuccessResponse":{
+         "description":"task created successfully"
       }
-    }
-  }
+   },
+   "paths":{
+      "/task/v1/":{
+         "post":{
+            "operationId":"create_task",
+            "summary":"create a task",
+            "description":"create a task with given details",
+            "security":[
+               {
+                  "oauth":[
+                     "write"
+                  ]
+               }
+            ],
+            "parameters":[
+               {
+                  "$ref":"#/parameters/CreateTaskBodyParameter"
+               }
+            ],
+            "responses":{
+               "201":{
+                  "$ref":"#/responses/CreateTaskSuccessResponse"
+               },
+               "400":{
+                  "description":"INVALID_TASK_TEMPLATE_ID, INVALID_GOF_ID, INVALID_FIELD_IDS"
+               }
+            }
+         }
+      }
+   }
 }

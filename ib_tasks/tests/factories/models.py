@@ -26,7 +26,6 @@ class GoFFactory(factory.DjangoModelFactory):
     display_name = factory.Sequence(
         lambda counter: "GOF_DISPLAY_NAME-{}".format(counter)
     )
-    task_template = factory.SubFactory(TaskTemplateFactory)
     max_columns = 2
 
 

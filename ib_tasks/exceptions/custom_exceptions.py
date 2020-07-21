@@ -21,10 +21,17 @@ class InvalidTaskTemplateIds(Exception):
         self.invalid_task_template_ids = invalid_task_template_ids
 
 
+class InvalidGoFIds(Exception):
+
+    def __init__(self, invalid_gof_ids: List[str]):
+        self.gof_ids = invalid_gof_ids
+
+
 class DuplicateGoFIds(Exception):
     def __init__(self, gof_ids: List[str]):
         self.message = "Given duplicate gof ids {}".format(gof_ids)
         super().__init__(self.message)
+
 
 class InvalidStageDisplayLogic(Exception):
     def __init__(self, invalid_stage_display_logic_stages: List[str]):

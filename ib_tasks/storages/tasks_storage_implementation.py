@@ -175,7 +175,12 @@ class TasksStorageImplementation(TaskStorageInterface):
         pass
 
     def get_existing_field_ids(self, field_ids: List[str]) -> List[str]:
-        pass
+        from ib_tasks.models.field import Field
+        valid_field_ids = list(
+            Field.objects.filter(field_id__in=field_ids)\
+                         .values_list('field_id', flat=True)
+        )
+        return valid_field_ids
 
     def get_gof_dtos_for_given_gof_ids(
             self, gof_ids: List[str]

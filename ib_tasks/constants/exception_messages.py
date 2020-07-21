@@ -27,3 +27,6 @@ INVALID_VALUE_FOR_VALUE = \
     "Invalid value for value!, value should not be negative!, but given value is: {}"
 INVALID_VALUE_FOR_TEMPLATE_NAME = \
     "Invalid value for template name!, template name should not be empty"
+INVALID_TASK_TEMPLATE_ID_MESSAGE = "Invalid Task Template Ids: "
+INVALID_GOF_IDS_MESSAGE = "Invalid GoF IDs: "
+INVALID_FIELD_IDS_MESSAGE = "Invalid Field IDs: "

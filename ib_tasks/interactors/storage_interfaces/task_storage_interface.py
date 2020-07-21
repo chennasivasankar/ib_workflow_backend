@@ -134,3 +134,4 @@ class TaskStorageInterface(abc.ABC):
             self, template_id: str,
             global_constants_dtos: List[GlobalConstantsDTO]):
         pass
+
