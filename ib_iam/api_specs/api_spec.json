@@ -187,28 +187,6 @@
         }
       ]
     },
-    "BadRequestResponseForAddTeam": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/CommonHttpExceptionFields"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "res_status": {
-              "type": "string",
-              "enum": [
-                "TEAM_NAME_ALREADY_EXISTS",
-                "DUPLICATE_USERS"
-              ]
-            }
-          },
-          "required": [
-            "res_status"
-          ]
-        }
-      ]
-    },
     "UnauthorizedResponseForAddTeam": {
       "allOf": [
         {
@@ -242,6 +220,28 @@
               "type": "string",
               "enum": [
                 "INVALID_USERS"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
+        }
+      ]
+    },
+    "BadRequestResponseForAddTeam": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "TEAM_NAME_ALREADY_EXISTS",
+                "DUPLICATE_USERS"
               ]
             }
           },
@@ -414,61 +414,61 @@
   },
   "responses": {
     "BadRequestResponseForGetListOfTeams": {
-      "description": "",
+      "description": "given limit or offset is not valid",
       "schema": {
         "$ref": "#/definitions/BadRequestResponseForGetListOfTeams"
       }
     },
     "UnauthorizedResponseForGetListOfTeams": {
-      "description": "BadRequest",
+      "description": "user has no access to see teams",
       "schema": {
         "$ref": "#/definitions/UnauthorizedResponseForGetListOfTeams"
       }
     },
     "SuccessResponseForGetListOfTeams": {
-      "description": "",
+      "description": "returns list of teams",
       "schema": {
         "$ref": "#/definitions/ResponseForGetListOfTeams"
       }
     },
-    "BadRequestResponseForAddTeam": {
-      "description": "",
-      "schema": {
-        "$ref": "#/definitions/BadRequestResponseForAddTeam"
-      }
-    },
     "UnauthorizedResponseForAddTeam": {
-      "description": "",
+      "description": "User has no access to add a team",
       "schema": {
         "$ref": "#/definitions/UnauthorizedResponseForAddTeam"
       }
     },
     "NotFoundResponseForAddTeam": {
-      "description": "",
+      "description": "Requested users not found to add",
       "schema": {
         "$ref": "#/definitions/NotFoundResponseForAddTeam"
       }
     },
+    "BadRequestResponseForAddTeam": {
+      "description": "Team name already exists or duplicate users has sent",
+      "schema": {
+        "$ref": "#/definitions/BadRequestResponseForAddTeam"
+      }
+    },
     "SuccessfullyCreatedResponseForAddTeam": {
-      "description": "",
+      "description": "Team Created successfully",
       "schema": {
         "$ref": "#/definitions/TeamId"
       }
     },
     "BadRequestResponseForUpdateTeam": {
-      "description": "",
+      "description": "Team name already exists or duplicate users has sent",
       "schema": {
         "$ref": "#/definitions/BadRequestResponseForUpdateTeam"
       }
     },
     "UnauthorizedResponseForUpdateTeam": {
-      "description": "",
+      "description": "User has no access to update team",
       "schema": {
         "$ref": "#/definitions/UnauthorizedResponseForUpdateTeam"
       }
     },
     "NotFoundResponseForUpdateTeam": {
-      "description": "",
+      "description": "Invalid team or Invalid Users sent",
       "schema": {
         "$ref": "#/definitions/NotFoundResponseForUpdateTeam"
       }
@@ -578,22 +578,13 @@
             "description": "Team details updated Successfully"
           },
           "400": {
-            "description": "BadRequest",
-            "schema": {
-              "$ref": "#/definitions/BadRequestResponseForUpdateTeam"
-            }
+              "$ref": "#/responses/BadRequestResponseForUpdateTeam"
           },
           "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "$ref": "#/definitions/UnauthorizedResponseForUpdateTeam"
-            }
+            "$ref": "#/responses/UnauthorizedResponseForUpdateTeam"
           },
           "404": {
-            "description": "NotFound",
-            "schema": {
-              "$ref": "#/definitions/NotFoundResponseForUpdateTeam"
-            }
+            "$ref": "#/responses/NotFoundResponseForUpdateTeam"
           }
         }
       },
@@ -628,4 +619,3 @@
     }
   }
 }
-    
