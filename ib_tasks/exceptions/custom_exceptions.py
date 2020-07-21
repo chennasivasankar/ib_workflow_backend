@@ -29,29 +29,11 @@ class InvalidStageDisplayLogic(Exception):
 class InvalidStagesDisplayName(Exception):
     def __init__(self, invalid_stages_display_name: List[str]):
         self.invalid_stages_display_name = invalid_stages_display_name
-from typing import List
-
-
-class DuplicateGoFIds(Exception):
-    def __init__(self, gof_ids: List[str]):
-        self.message = "Given duplicate gof ids {}".format(gof_ids)
-        super().__init__(self.message)
-
-
-class ExistingGoFsNotInGivenGoFs(Exception):
-    def __init__(self,
-                 gof_of_template_not_in_given_gof: List[str],
-                 given_gof_ids: List[str]):
-        self.message = \
-            "Existing gof ids: {} of template not in given gof ids: {}". \
-                format(gof_of_template_not_in_given_gof, given_gof_ids)
-        super().__init__(self.message)
 
 
 class InvalidValueForField(Exception):
-    def __init__(self, field: str):
-        self.message = "Invalid value for field: {}".format(field)
-        super().__init__(self.message)
+    def __init__(self, err_msg: str):
+        super().__init__(err_msg)
 
 
 class GOFIdCantBeEmpty(Exception):
@@ -139,25 +121,18 @@ class InvalidTaskTemplateIds(Exception):
 
 
 class ExistingGlobalConstantNamesNotInGivenData(Exception):
-    def __init__(self, constant_names: List[str]):
-        self.message = \
-            "Existing constants with constant names: {} of template not in " \
-            "given data".format(constant_names)
-        super().__init__(self.message)
+    def __init__(self, err_msg: str):
+        super().__init__(err_msg)
 
 
 class TemplateDoesNotExists(Exception):
-    def __init__(self, template_id: str):
-        self.message = "The template with template id: {}, does not exists". \
-            format(template_id)
-        super().__init__(self.message)
+    def __init__(self, err_msg: str):
+        super().__init__(err_msg)
 
 
 class DuplicateConstantNames(Exception):
-    def __init__(self, constant_names: List[str]):
-        self.message = \
-            "Given duplicate constant names {}".format(constant_names)
-        super().__init__(self.message)
+    def __init__(self, err_msg: str):
+        super().__init__(err_msg)
 
 
 class InvalidFieldIdException(Exception):

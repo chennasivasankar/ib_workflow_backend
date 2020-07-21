@@ -34,14 +34,26 @@ class TasksStorageImplementation(TaskStorageInterface):
         pass
 
     def create_task_template(self, template_id: str, template_name: str):
-        pass
+        from ib_tasks.models.task_template import TaskTemplate
+        TaskTemplate.objects.create(
+            template_id=template_id, name=template_name
+        )
 
     def update_task_template(
-            self, create_task_template_dto: CreateTaskTemplateDTO):
-        pass
+            self, template_id: str, template_name: str):
+        from ib_tasks.models.task_template import TaskTemplate
+        task_template = \
+            TaskTemplate.objects.get(template_id=template_id)
+        task_template.name = template_name
+        task_template.save()
 
-    def get_task_template_name_if_exists(self, template_id: str) -> str:
-        pass
+    def get_task_template_name(self, template_id: str) -> str:
+        from ib_tasks.models.task_template import TaskTemplate
+        template_name_query_set = \
+            TaskTemplate.objects.filter(
+                template_id=template_id
+            ).values_list('name', flat=True)
+        return template_name_query_set.first()
 
     def get_task_template_ids(self) -> List[str]:
         pass
@@ -118,16 +130,34 @@ class TasksStorageImplementation(TaskStorageInterface):
         GoFRole.objects.filter(gof_id__in=gof_ids).delete()
 
     def check_is_template_exists(self, template_id: str) -> bool:
-        pass
+        from ib_tasks.models.task_template import TaskTemplate
+        is_template_exists = \
+            TaskTemplate.objects.filter(template_id=template_id).exists()
+        return is_template_exists
 
     def get_constant_names_of_existing_global_constants_of_template(
             self, template_id: str):
-        pass
+
+        from ib_tasks.models.global_constant import GlobalConstant
+        constant_names_of_template = GlobalConstant.objects.filter(
+            task_template_id=template_id).values_list('name', flat=True)
+
+        constant_names_of_template_list = list(constant_names_of_template)
+        return constant_names_of_template_list
 
     def create_global_constants_to_template(
             self, template_id: str,
             global_constants_dtos: List[GlobalConstantsDTO]):
-        pass
+        from ib_tasks.models.global_constant import GlobalConstant
+        global_constants_objs = [
+            GlobalConstant(
+                task_template_id=template_id,
+                name=global_constants_dto.constant_name,
+                value=global_constants_dto.value
+            )
+            for global_constants_dto in global_constants_dtos
+        ]
+        GlobalConstant.objects.bulk_create(global_constants_objs)
 
     def update_fields(self, field_dtos: List[FieldDTO]):
         pass
@@ -162,3 +192,42 @@ class TasksStorageImplementation(TaskStorageInterface):
             for gof in gofs
         ]
         return gof_dtos
+
+    def update_global_constants_to_template(
+            self, template_id: str,
+            global_constants_dtos: List[GlobalConstantsDTO]):
+
+        global_constants_names = self._get_global_constant_names(
+            global_constants_dtos=global_constants_dtos
+        )
+        global_constants_dict = self._make_global_constants_dict(
+            global_constants_dtos=global_constants_dtos
+        )
+
+        from ib_tasks.models.global_constant import GlobalConstant
+        global_constants_objs = GlobalConstant.objects.filter(
+            name__in=global_constants_names, task_template_id=template_id
+        )
+        for global_constant_obj in global_constants_objs:
+            global_constant_obj.value = \
+                global_constants_dict[global_constant_obj.name].value
+
+        GlobalConstant.objects.bulk_update(global_constants_objs, ['value'])
+
+    @staticmethod
+    def _get_global_constant_names(
+            global_constants_dtos: List[GlobalConstantsDTO]):
+        global_constants_names = [
+            global_constants_dto.constant_name
+            for global_constants_dto in global_constants_dtos
+        ]
+        return global_constants_names
+
+    @staticmethod
+    def _make_global_constants_dict(
+            global_constants_dtos: List[GlobalConstantsDTO]):
+        global_constants_dict = {}
+        for global_constants_dto in global_constants_dtos:
+            global_constants_dict[global_constants_dto.constant_name] = \
+                global_constants_dto
+        return global_constants_dict

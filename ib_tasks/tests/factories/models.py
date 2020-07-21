@@ -5,6 +5,7 @@ from ib_tasks.models.gof import GoF
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.field import Field
 from ib_tasks.models.gof_role import GoFRole
+from ib_tasks.models.global_constant import GlobalConstant
 
 
 class TaskTemplateFactory(factory.DjangoModelFactory):
@@ -48,3 +49,12 @@ class GoFRoleFactory(factory.DjangoModelFactory):
     gof = factory.SubFactory(GoFFactory)
     role = factory.Sequence(lambda counter: "ROLE-{}".format(counter))
     permission_type = PermissionTypes.READ.value
+
+
+class GlobalConstantFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = GlobalConstant
+
+    name = factory.sequence(lambda n: "constant_{}".format(n + 1))
+    value = factory.sequence(lambda n: (n + 1))
+    task_template = factory.SubFactory(TaskTemplateFactory)

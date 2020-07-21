@@ -5,9 +5,11 @@ from ib_tasks.models.gof import GoF
 from ib_tasks.models.gof_role import GoFRole
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gof import TaskTemplateGoF
+from ib_tasks.models.global_constant import GlobalConstant
 
 __all__ = [
     "Field", "FieldRole", "GoF", "GoFRole", "TaskTemplate", "TaskTemplateGoF"
+    "Field", "FieldRole", "GoF", "GoFRole", "TaskTemplate", "GlobalConstant"
 ]
 
 # class DummyModel(AbstractDateTimeModel):
