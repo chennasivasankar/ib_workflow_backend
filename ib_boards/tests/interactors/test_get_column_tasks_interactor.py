@@ -167,6 +167,10 @@ class TestGetColumnTasksInteractor:
         # Arrange
         stage_ids = ['STAGE_ID_1', 'STAGE_ID_1']
         task_ids = ['TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3']
+        stage_display_logics = [
+            'STATUS_ID_3 == STAGE_ID_3',
+            'STATUS_ID_4 == STAGE_ID_4'
+        ]
 
         expected_response = Mock()
         storage_mock.get_column_display_stage_ids.return_value = stage_ids
@@ -179,11 +183,8 @@ class TestGetColumnTasksInteractor:
             get_stage_display_logic_mock, get_task_details_mock
 
         from ib_boards.tests.common_fixtures.adapters.task_service import \
-            get_task_ids_mock, validate_stage_ids_mock
+            get_task_ids_mock
 
-        validate_stage_ids_mock(
-            mocker=mocker, stage_ids=stage_ids
-        )
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             get_stage_display_logics_mock
 
@@ -217,7 +218,7 @@ class TestGetColumnTasksInteractor:
             task_status_dtos=task_status_dtos
         )
         stage_display_logic_interactor_mock.assert_called_once_with(
-            stage_ids=stage_ids
+            stage_display_logics=stage_display_logics
         )
         presenter_mock.get_response_column_tasks.assert_called_once_with(
             task_complete_details_dto=task_complete_details_dto

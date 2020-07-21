@@ -51,7 +51,6 @@ class TestStageDisplayLogic:
 
         # Assert
         assert actual_response == expected_response
-        print("task_status_dtos: ", task_status_dtos)
         presenter_mock.get_response_for_stage_display_logic.assert_called_once_with(
             task_status_dtos=task_status_dtos
         )
