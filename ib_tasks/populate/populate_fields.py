@@ -3,6 +3,7 @@ from typing import List, Dict
 
 from ib_tasks.constants.enum import FieldTypes
 from ib_tasks.interactors.storage_interfaces.dtos import FieldDTO, FieldRolesDTO
+from ib_tasks.constants.constants import MULTI_VALUES_INPUT_FIELDS
 
 
 def create_fields():
@@ -60,8 +61,7 @@ def _prepare_field_dtos(field_records: List[Dict]) -> List[FieldDTO]:
             field_values = None
         if field_type == FieldTypes.GOF_SELECTOR.value and field_values is not None:
             field_values = json.dumps(field_values)
-        if (field_type == FieldTypes.DROPDOWN.value or field_type
-                == FieldTypes.RADIO_GROUP.value) and field_values is not None:
+        if (field_type in MULTI_VALUES_INPUT_FIELDS) and field_values is not None:
             field_values = field_values.split("\r\n")
         if (field_type == FieldTypes.FILE_UPLOADER.value
                 or field_type == FieldTypes.IMAGE_UPLOADER.value

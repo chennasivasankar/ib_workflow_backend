@@ -22,6 +22,7 @@ class FieldTypes(enum.Enum):
     DATE_TIME = "DATE_TIME"
     IMAGE_UPLOADER = "IMAGE_UPLOADER"
     FILE_UPLOADER = "FILE_UPLOADER"
+    SEARCHABLE = "SEARCHABLE"
 
 
 class PermissionTypes(enum.Enum):

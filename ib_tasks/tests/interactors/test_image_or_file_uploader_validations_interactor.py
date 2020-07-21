@@ -1,7 +1,7 @@
 import pytest
 
-from ib_tasks.tests.factories.storage_dtos import \
-    FieldDTOFactory
+from ib_tasks.tests.factories.storage_dtos \
+    import FieldDTOFactory
 from ib_tasks.constants.enum import FieldTypes
 from ib_tasks.interactors.image_or_file_uploader_validations_interactor \
     import ImageOrFileUploaderValidationsInteractor
@@ -19,7 +19,7 @@ class TestImageOrFileUploaderValidationsInteractor:
 
         field_dto = FieldDTOFactory(field_id="field1", field_type=field_type, allowed_formats=[])
         field_id = "field1"
-        exception_mesaage = ALLOWED_FORMAT_EMPTY_VALUES_EXCEPTION.format(field_id)
+        exception_message = ALLOWED_FORMAT_EMPTY_VALUES_EXCEPTION.format(field_id)
         interactor = ImageOrFileUploaderValidationsInteractor()
 
         # Act
@@ -27,7 +27,7 @@ class TestImageOrFileUploaderValidationsInteractor:
             interactor.image_or_file_uploader_validations(field_dto)
 
         # Assert
-        assert str(err.value) == exception_mesaage
+        assert str(err.value) == exception_message
 
     def test_given_duplication_of_allowed_formats_for_field_type_image_uploder_raise_exception(self):
         # Arrange

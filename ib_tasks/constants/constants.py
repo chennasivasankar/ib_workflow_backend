@@ -1,6 +1,8 @@
 from ib_tasks.constants.enum \
     import PermissionTypes, FieldTypes, Searchable
 
+all_roles_id = "ALL_ROLES"
+
 FIELD_TYPES_LIST = [item.value for item in FieldTypes]
 
 SEARCHABLE_VALUES = [item.value for item in Searchable]
