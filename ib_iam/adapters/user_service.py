@@ -27,7 +27,7 @@ class UserService:
         from ib_users.interactors.exceptions.user_profile import \
             InvalidUserException
         try:
-            get_user_profile_dto = self.interface.get_user_profile(
+            user_profile_dto = self.interface.get_user_profile(
                 user_id=user_id
             )
         except InvalidUserException as err:
@@ -40,17 +40,17 @@ class UserService:
             elif err.error_type == INVALID_USER_ID_ERROR_TYPE:
                 raise UserAccountDoesNotExist
         else:
-            converted_user_profile_dto = self._convert_to_user_profile_dto(
-                get_user_profile_dto=get_user_profile_dto
+            user_profile_dto = self._convert_to_user_profile_dto(
+                user_profile_dto=user_profile_dto
             )
-            return converted_user_profile_dto
+            return user_profile_dto
 
     @staticmethod
-    def _convert_to_user_profile_dto(get_user_profile_dto):
-        user_profile_dto = UserProfileDTO(
-            user_id=get_user_profile_dto.user_id,
-            name=get_user_profile_dto.name,
-            email=get_user_profile_dto.email,
-            profile_pic_url=get_user_profile_dto.profile_pic_url
+    def _convert_to_user_profile_dto(user_profile_dto):
+        converted_user_profile_dto = UserProfileDTO(
+            user_id=user_profile_dto.user_id,
+            name=user_profile_dto.name,
+            email=user_profile_dto.email,
+            profile_pic_url=user_profile_dto.profile_pic_url
         )
-        return user_profile_dto
+        return converted_user_profile_dto
