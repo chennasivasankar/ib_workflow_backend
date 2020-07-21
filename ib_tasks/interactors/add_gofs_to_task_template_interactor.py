@@ -39,10 +39,10 @@ class AddGoFsToTaskTemplateInteractor:
         from ib_tasks.constants.exception_messages import \
             EXISTING_GOFS_NOT_IN_GIVEN_DATA
         if existing_gof_ids_not_in_given_data:
-            err_msg = EXISTING_GOFS_NOT_IN_GIVEN_DATA.format(
+            message = EXISTING_GOFS_NOT_IN_GIVEN_DATA.format(
                 existing_gof_ids_not_in_given_data
             )
-            raise ExistingGoFsNotInGivenData(err_msg)
+            raise ExistingGoFsNotInGivenData(message)
 
     def _add_gofs_to_task_template_in_db(
             self, template_id: str,
@@ -98,8 +98,8 @@ class AddGoFsToTaskTemplateInteractor:
         from ib_tasks.exceptions.custom_exceptions import GofsDoesNotExist
         from ib_tasks.constants.exception_messages import GOFS_DOES_NOT_EXIST
         if invalid_gof_ids:
-            err_msg = GOFS_DOES_NOT_EXIST.format(invalid_gof_ids)
-            raise GofsDoesNotExist(err_msg)
+            message = GOFS_DOES_NOT_EXIST.format(invalid_gof_ids)
+            raise GofsDoesNotExist(message)
 
     def _make_field_values_validations(
             self, gofs_with_template_id_dto: GoFsWithTemplateIdDTO):

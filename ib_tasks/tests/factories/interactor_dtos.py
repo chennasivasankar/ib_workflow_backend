@@ -17,7 +17,7 @@ class GoFWithOrderAndAddAnotherDTOFactory(factory.Factory):
 
     gof_id = factory.sequence(lambda n: "gof_{}".format(n + 1))
     order = factory.sequence(lambda n: n)
-    is_add_another_enable = factory.Iterator([True, False])
+    enable_add_another_gof = factory.Iterator([True, False])
 
 
 class GoFsWithTemplateIdDTOFactory(factory.Factory):

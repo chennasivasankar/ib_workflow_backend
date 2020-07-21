@@ -49,7 +49,7 @@ class TestGlobalConstants:
                     global_constants_with_template_id_dto=global_constants_with_template_id_dto
                 )
 
-        snapshot.assert_match(err.value.args[0], 'err_msg')
+        snapshot.assert_match(err.value.args[0], 'message')
 
     @pytest.mark.django_db
     def test_when_given_template_id_is_empty_raises_exception(
@@ -71,7 +71,7 @@ class TestGlobalConstants:
                 global_constants_with_template_id_dto=global_constants_with_template_id_dto
             )
 
-        snapshot.assert_match(err.value.args[0], 'err_msg')
+        snapshot.assert_match(err.value.args[0], 'message')
 
     @pytest.mark.django_db
     def test_when_given_constant_name_is_empty_raises_exception(
@@ -96,7 +96,7 @@ class TestGlobalConstants:
                 global_constants_with_template_id_dto=global_constants_with_template_id_dto
             )
 
-        snapshot.assert_match(err.value.args[0], 'err_msg')
+        snapshot.assert_match(err.value.args[0], 'message')
 
     @pytest.mark.django_db
     def test_when_given_invalid_value_for_value_field_raises_exception(
@@ -120,7 +120,7 @@ class TestGlobalConstants:
                 create_global_constants_to_template_wrapper(
                 global_constants_with_template_id_dto=global_constants_with_template_id_dto
             )
-        snapshot.assert_match(err.value.args[0], 'err_msg')
+        snapshot.assert_match(err.value.args[0], 'message')
 
     @pytest.mark.django_db
     def test_when_given_duplicate_constant_names_raises_exception(
@@ -144,7 +144,7 @@ class TestGlobalConstants:
                 create_global_constants_to_template_wrapper(
                 global_constants_with_template_id_dto=global_constants_with_template_id_dto
             )
-        snapshot.assert_match(err.value.args[0], 'err_msg')
+        snapshot.assert_match(err.value.args[0], 'message')
 
     @pytest.mark.django_db
     def test_with_valid_data(self, global_constants_interactor, snapshot):
@@ -214,7 +214,7 @@ class TestGlobalConstants:
                 global_constants_with_template_id_dto=global_constants_with_template_id_dto
             )
 
-        snapshot.assert_match(err.value.args[0], 'err_msg')
+        snapshot.assert_match(err.value.args[0], 'message')
 
         from ib_tasks.models.global_constant import GlobalConstant
         global_constants = GlobalConstant.objects.all()

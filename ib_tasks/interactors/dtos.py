@@ -46,7 +46,7 @@ class GlobalConstantsWithTemplateIdDTO:
 class GoFWithOrderAndAddAnotherDTO:
     gof_id: str
     order: int
-    is_add_another_enable: bool
+    enable_add_another_gof: bool
 
 
 @dataclass

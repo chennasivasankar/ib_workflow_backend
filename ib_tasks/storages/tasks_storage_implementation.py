@@ -184,21 +184,60 @@ class TasksStorageImplementation(TaskStorageInterface):
 
     def get_existing_gof_ids_of_template(
             self, template_id: str) -> List[str]:
-        pass
+        from ib_tasks.models.gof_to_task_template import GoFToTaskTemplate
+
+        gof_ids_of_template_queryset = GoFToTaskTemplate.objects.filter(
+            task_template_id=template_id
+        ).values_list('gof_id', flat=True)
+
+        gof_ids_of_template_list = list(gof_ids_of_template_queryset)
+        return gof_ids_of_template_list
 
     def add_gofs_to_template(
             self, template_id: str,
             gof_dtos: List[GoFWithOrderAndAddAnotherDTO]):
-        pass
+        from ib_tasks.models.gof_to_task_template import GoFToTaskTemplate
+        gofs_to_template_objs = [
+            GoFToTaskTemplate(
+                task_template_id=template_id,
+                gof_id=gof_dto.gof_id, order=gof_dto.order,
+                enable_add_another_gof=gof_dto.enable_add_another_gof
+            )
+            for gof_dto in gof_dtos
+        ]
+
+        GoFToTaskTemplate.objects.bulk_create(gofs_to_template_objs)
 
     def update_gofs_to_template(
             self, template_id: str,
             gof_dtos: List[GoFWithOrderAndAddAnotherDTO]):
-        pass
+
+        gof_ids = self._get_gof_ids(gof_dtos=gof_dtos)
+        gofs_dict = self._make_gofs_dict(gof_dtos=gof_dtos)
+        from ib_tasks.models.gof_to_task_template import GoFToTaskTemplate
+
+        gof_to_task_template_objs = GoFToTaskTemplate.objects.filter(
+            gof_id__in=gof_ids, task_template_id=template_id
+        )
+        for gof_to_task_template_obj in gof_to_task_template_objs:
+            gof_to_task_template_obj.order = \
+                gofs_dict[gof_to_task_template_obj.gof_id].order
+            gof_to_task_template_obj.enable_add_another_gof = \
+                gofs_dict[gof_to_task_template_obj.gof_id].enable_add_another_gof
+
+        GoFToTaskTemplate.objects.bulk_update(
+            gof_to_task_template_objs, ['order', 'enable_add_another_gof']
+        )
 
     def get_valid_gof_ids_in_given_gof_ids(
             self, gof_ids: List[str]) -> List[str]:
-        pass
+        from ib_tasks.models.gof import GoF
+        gof_ids_queryset = GoF.objects.filter(
+            gof_id__in=gof_ids
+        ).values_list('gof_id', flat=True)
+
+        gof_ids_list = list(gof_ids_queryset)
+        return gof_ids_list
 
     def update_global_constants_to_template(
             self, template_id: str,
@@ -238,3 +277,15 @@ class TasksStorageImplementation(TaskStorageInterface):
             global_constants_dict[global_constants_dto.constant_name] = \
                 global_constants_dto
         return global_constants_dict
+
+    @staticmethod
+    def _get_gof_ids(gof_dtos: List[GoFWithOrderAndAddAnotherDTO]):
+        gof_ids = [gof_dto.gof_id for gof_dto in gof_dtos]
+        return gof_ids
+
+    @staticmethod
+    def _make_gofs_dict(gof_dtos: List[GoFWithOrderAndAddAnotherDTO]):
+        gofs_dict = {}
+        for gof_dto in gof_dtos:
+            gofs_dict[gof_dto.gof_id] = gof_dto
+        return gofs_dict

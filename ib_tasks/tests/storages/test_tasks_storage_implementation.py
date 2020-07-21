@@ -19,43 +19,6 @@ class TestTasksStorageImplementation:
     def reset_sequence(self):
         TaskTemplateFactory.reset_sequence()
 
-    def test_get_existing_gof_ids_in_given_gof_ids(self, storage):
-        # Arrange
-        GoFFactory.create_batch(size=2)
-        gof_ids = ["FIN_REQUEST_DETAILS", "FIN_BANK_DETAILS"]
-        expected_existing_gof_ids = ["FIN_REQUEST_DETAILS"]
-
-        # Act
-        actual_existing_gof_ids = \
-            storage.get_existing_gof_ids_in_given_gof_ids(
-                gof_ids=gof_ids
-            )
-
-        # Assert
-        assert expected_existing_gof_ids == actual_existing_gof_ids
-
-    def test_create_gofs(self, storage):
-        # Arrange
-        from ib_tasks.models.gof import GoF
-        from ib_tasks.tests.factories.storage_dtos import GoFDTOFactory
-        task_templates = TaskTemplateFactory.create_batch(size=2)
-
-        gof_dtos = [
-            GoFDTOFactory(task_template_id=task_templates[0].pk),
-            GoFDTOFactory(task_template_id=task_templates[0].pk)
-        ]
-
-        # Act
-        storage.create_gofs(gof_dtos=gof_dtos)
-
-        # Assert
-        for gof_dto in gof_dtos:
-            gof = GoF.objects.get(pk=gof_dto.gof_id)
-            assert gof.display_name == gof_dto.gof_display_name
-            assert gof.order == gof_dto.order
-            assert gof.max_columns == gof_dto.max_columns
-            assert gof.task_template_id == gof_dto.task_template_id
-
     def test_create_gof_roles(self, storage):
 
         # Arrange
@@ -91,59 +54,3 @@ class TestTasksStorageImplementation:
 
         # Assert
         assert expected_valid_template_ids == actual_valid_template_ids
-
-    def test_update_gofs(self, storage):
-
-        # Arrange
-        from ib_tasks.models.gof import GoF
-        from ib_tasks.tests.factories.storage_dtos import GoFDTOFactory
-        from ib_tasks.tests.factories.models import GoFFactory
-
-        pr_task_template = TaskTemplateFactory.create(
-            template_id="FIN_PR", name="Payment Request"
-        )
-        vendor_task_template = TaskTemplateFactory.create(
-            template_id="FIN_VENDOR", name="Vendor"
-        )
-        gofs = [
-            GoFFactory(
-                display_name="Request Details",
-                task_template=vendor_task_template,
-                order=1,
-                max_columns=3
-            ),
-            GoFFactory(
-                display_name="Vendor Type",
-                task_template=pr_task_template,
-                order=2,
-                max_columns=4
-            )
-        ]
-
-        gof_dtos = [
-            GoFDTOFactory(
-                gof_id=gofs[0].gof_id,
-                gof_display_name="details of request",
-                task_template_id=pr_task_template.template_id,
-                order=10,
-                max_columns=12
-            ),
-            GoFDTOFactory(
-                gof_id=gofs[1].gof_id,
-                gof_display_name="details of vendor",
-                task_template_id=vendor_task_template.template_id,
-                order=10,
-                max_columns=12
-            )
-        ]
-
-        # Act
-        storage.update_gofs(gof_dtos=gof_dtos)
-
-        # Assert
-        for gof_dto in gof_dtos:
-            gof = GoF.objects.get(pk=gof_dto.gof_id)
-            assert gof.display_name == gof_dto.gof_display_name
-            assert gof.order == gof_dto.order
-            assert gof.max_columns == gof_dto.max_columns
-            assert gof.task_template_id == gof_dto.task_template_id

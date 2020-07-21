@@ -6,9 +6,10 @@ from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.field import Field
 from ib_tasks.models.gof_role import GoFRole
 from ib_tasks.models.global_constant import GlobalConstant
+from ib_tasks.models.gof_to_task_template import GoFToTaskTemplate
 
 
-class TaskTemplateFactory(factory.DjangoModelFactory):
+class TaskTemplateFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = TaskTemplate
 
@@ -16,23 +17,14 @@ class TaskTemplateFactory(factory.DjangoModelFactory):
     name = factory.sequence(lambda n: "Template {}".format(n + 1))
 
 
-class GoFFactory(factory.DjangoModelFactory):
+class GoFFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = GoF
 
-    gof_id = factory.Iterator(
-        [
-            "FIN_REQUEST_DETAILS", "FIN_GOF_VENDOR_TYPE",
-            "FIN_VENDOR_BASIC_DETAILS"
-        ]
+    gof_id = factory.Sequence(lambda counter: "gof_{}".format(counter + 1))
+    display_name = factory.Sequence(
+        lambda counter: "GOF_DISPLAY_NAME-{}".format(counter)
     )
-    display_name = factory.Iterator(
-        [
-            "Request Details", "Vendor Type", "Vendor Basic Details"
-        ]
-    )
-    task_template = factory.SubFactory(TaskTemplateFactory)
-    order = factory.Sequence(lambda counter: counter)
     max_columns = 2
 
 
@@ -69,3 +61,22 @@ class GlobalConstantFactory(factory.django.DjangoModelFactory):
     name = factory.sequence(lambda n: "constant_{}".format(n + 1))
     value = factory.sequence(lambda n: (n + 1))
     task_template = factory.SubFactory(TaskTemplateFactory)
+
+
+class GoFToTaskTemplateFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = GoFToTaskTemplate
+
+    task_template = factory.SubFactory(TaskTemplateFactory)
+    gof = factory.SubFactory(GoFFactory)
+    order = factory.sequence(lambda n: n)
+    enable_add_another_gof = factory.Iterator([True, False])
+
+
+class TaskTemplateWith2GoFsFactory(TaskTemplateFactory):
+    gof1 = factory.RelatedFactory(
+        GoFToTaskTemplateFactory, 'task_template', gof__gof_id='gof_1'
+    )
+    gof2 = factory.RelatedFactory(
+        GoFToTaskTemplateFactory, 'task_template', gof__gof_id='gof_2'
+    )

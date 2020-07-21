@@ -209,7 +209,7 @@ class TestAddGoFsToTaskTemplates:
         from ib_tasks.interactors.dtos import GoFWithOrderAndAddAnotherDTO
         expected_gof_dtos_to_update = [
             GoFWithOrderAndAddAnotherDTO(
-                gof_id='gof_2', order=1, is_add_another_enable=True
+                gof_id='gof_2', order=1, enable_add_another_gof=True
             )
         ]
 

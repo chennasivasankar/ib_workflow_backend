@@ -32,8 +32,8 @@ class InvalidStagesDisplayName(Exception):
 
 
 class InvalidValueForField(Exception):
-    def __init__(self, err_msg: str):
-        self.err_msg = err_msg
+    def __init__(self, message: str):
+        self.message = message
 
 
 class GOFIdCantBeEmpty(Exception):
@@ -90,24 +90,19 @@ class GoFIDsAlreadyExists(Exception):
         self.gof_ids = existing_gof_ids
 
 
-class InvalidTaskTemplateIds(Exception):
-    def __init__(self, invalid_task_template_ids: List[str]):
-        self.task_template_ids = invalid_task_template_ids
-
-
 class ExistingGlobalConstantNamesNotInGivenData(Exception):
-    def __init__(self, err_msg: str):
-        self.err_msg = err_msg
+    def __init__(self, message: str):
+        self.message = message
 
 
 class TemplateDoesNotExists(Exception):
-    def __init__(self, err_msg: str):
-        self.err_msg = err_msg
+    def __init__(self, message: str):
+        self.message = message
 
 
 class DuplicateConstantNames(Exception):
-    def __init__(self, err_msg: str):
-        self.err_msg = err_msg
+    def __init__(self, message: str):
+        self.message = message
 
 
 class InvalidFieldIdException(Exception):
@@ -168,13 +163,13 @@ class InvalidTemplateIds(Exception):
 
 
 class ExistingGoFsNotInGivenData(Exception):
-    def __init__(self, err_msg: str):
-        self.err_msg = err_msg
+    def __init__(self, message: str):
+        self.message = message
 
 
 class GofsDoesNotExist(Exception):
-    def __init__(self, err_msg: str):
-        self.err_msg = err_msg
+    def __init__(self, message: str):
+        self.message = message
 
 
 class DuplicateTaskStatusVariableIds(Exception):
