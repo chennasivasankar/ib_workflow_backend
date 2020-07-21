@@ -58,5 +58,5 @@ class FieldsDTOFactory(factory.Factory):
     class Meta:
         model = FieldsDTO
 
-    task_id = factory.Sequence(lambda n: "task_id_%d" % n)
+    task_template_id = factory.Sequence(lambda n: "task_template_id%d" % n)
     field_id = factory.Sequence(lambda n: "field_id_%d" % n)
