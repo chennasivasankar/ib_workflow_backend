@@ -255,7 +255,8 @@
       "type": "object",
       "properties": {
         "team_id": {
-          "type": "string"
+          "type": "string",
+          "format": "uuid"
         }
       },
       "required": [
