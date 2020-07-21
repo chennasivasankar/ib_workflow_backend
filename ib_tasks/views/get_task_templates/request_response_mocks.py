@@ -26,10 +26,10 @@ RESPONSE_200_JSON = """
                     "is_gof_writable": true,
                     "fields": [
                         {
+                            "field_type": "PLAIN_TEXT",
                             "field_id": "string",
                             "display_name": "string",
                             "is_field_required": true,
-                            "field_type": "PLAIN_TEXT",
                             "field_values": "string",
                             "allowed_formats": "string",
                             "validation_regex": "string",
