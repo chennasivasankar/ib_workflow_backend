@@ -33,3 +33,4 @@ INVALID_VALUE_FOR_TEMPLATE_NAME = \
     "Invalid value for template name!, template name should not be empty"
 DUPLICATE_ORDER_VALUES_FOR_GOFS = \
     "Given duplicate order values {}! Gof orders of a template should be unique"
+INVALID_VALUE_FOR_ORDER = "Given value for order: {} is not an integer"

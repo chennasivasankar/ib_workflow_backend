@@ -218,3 +218,8 @@ class DuplicateGoFIds(Exception):
 class DuplicateOrderValuesForGoFs(Exception):
     def __init__(self, message: str):
         self.message = message
+
+
+class InvalidValueForOrder(Exception):
+    def __init__(self, message: str):
+        self.message = message

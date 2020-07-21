@@ -52,8 +52,22 @@ class PopulateGoFsToTaskTemplate:
         gof_with_order_and_add_another_dtos = []
         for gof in gofs_list:
             gof_id = gof[0]
-            order = int(gof[1])
-            enable_add_another_gof = gof[2]
+            from ib_tasks.exceptions.custom_exceptions import \
+                InvalidValueForOrder
+            from ib_tasks.constants.exception_messages import \
+                INVALID_VALUE_FOR_ORDER
+            try:
+                order = int(gof[1])
+            except:
+                message = INVALID_VALUE_FOR_ORDER.format(gof[1])
+                raise InvalidValueForOrder(message)
+
+            is_enable_add_another_gof_is_yes = gof[2] == "Yes"
+            if is_enable_add_another_gof_is_yes:
+                enable_add_another_gof = True
+            else:
+                enable_add_another_gof = False
+
             gof_with_order_and_add_another_dto = GoFWithOrderAndAddAnotherDTO(
                 gof_id=gof_id, order=order,
                 enable_add_another_gof=bool(enable_add_another_gof)
