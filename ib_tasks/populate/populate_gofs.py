@@ -37,7 +37,7 @@ def prepare_complete_gof_details_dtos(
 
 
 def get_gof_dto_for_a_gof_record(gof_record: Dict) -> GoFDTO:
-    max_columns = gof_record['MAX_COLUMNS*']
+    max_columns = gof_record['MAX_COLUMNS']
     max_columns_is_not_integer = not isinstance(max_columns, int)
     if max_columns_is_not_integer:
         from ib_tasks.constants.exception_messages import \
@@ -50,7 +50,7 @@ def get_gof_dto_for_a_gof_record(gof_record: Dict) -> GoFDTO:
     gof_dto = GoFDTO(
         gof_id=gof_record['GOF ID*'],
         gof_display_name=gof_record['GOF Display Name*'],
-        max_columns=gof_record['MAX_COLUMNS*']
+        max_columns=max_columns
     )
     return gof_dto
 
@@ -58,18 +58,18 @@ def get_gof_dto_for_a_gof_record(gof_record: Dict) -> GoFDTO:
 def get_gof_roles_dto_for_a_gof_record(gof_record: Dict) -> GoFRolesDTO:
     import json
     read_permissions_is_empty = \
-        not gof_record['Read Permission Roles*'].strip()
+        not gof_record['Read permission Roles*'].strip()
     write_permissions_is_empty = \
-        not gof_record['Read Permission Roles*'].strip()
+        not gof_record['Write permission Roles*'].strip()
     read_permission_roles_is_not_empty = not read_permissions_is_empty
     write_permissions_is_not_empty = not write_permissions_is_empty
     read_permission_roles, write_permission_roles = [], []
     if read_permission_roles_is_not_empty:
         read_permission_roles = \
-            gof_record['Read Permission Roles*'].split('\n')
+            gof_record['Read permission Roles*'].split('\n')
     if write_permissions_is_not_empty:
         write_permission_roles = \
-            gof_record['Write Permission Roles*'].split('\n')
+            gof_record['Write permission Roles*'].split('\n')
     gof_roles_dto = GoFRolesDTO(
         gof_id=gof_record['GOF ID*'],
         read_permission_roles=read_permission_roles,

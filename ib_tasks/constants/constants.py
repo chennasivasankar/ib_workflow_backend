@@ -15,6 +15,6 @@ Field_Types = [
     for item in FieldTypes
 ]
 
-GOOGLE_SHEET_NAME = "FinMan Configuration"
+GOOGLE_SHEET_NAME = "FinMan Configuration_Dev_Test"
 TASK_TEMPLATE_SUB_SHEET_TITLE = "Task Templates"
 GOF_SUB_SHEET_TITLE = "GOF"
