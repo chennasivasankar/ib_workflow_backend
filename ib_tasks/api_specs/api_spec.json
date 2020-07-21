@@ -31,6 +31,36 @@
   },
   "security": [],
   "definitions": {
+    "FieldTypeEnum": {
+      "type": "object",
+      "properties": {
+      "field_type":{
+        "type": "string",
+        "enum": [
+             "PLAIN_TEXT",
+            "PHONE_NUMBER",
+            "EMAIL",
+            "URL",
+            "PASSWORD",
+            "NUMBER",
+            "FLOAT",
+            "LONG_TEXT",
+            "GOF_SELECTOR",
+            "RADIO_GROUP",
+            "CHECKBOX_GROUP",
+            "DROPDOWN",
+            "IMAGE_UPLOADER",
+            "FILE_UPLOADER",
+            "SEARCHABLE",
+            "DATE",
+            "MULTI_SELECT_FIELD"
+           ]
+        }
+      },
+      "required": [
+        "field_type"
+      ]
+    },
     "CreateTaskRequestBody": {
       "type": "object",
       "properties": {
@@ -65,8 +95,7 @@
                     }
                   },
                   "required": [
-                    "field_id",
-                    "field_type"
+                    "field_id"
                   ]
                 }
               }
@@ -78,7 +107,127 @@
           }
         }
       }
-    }
+    },
+    "Field": {
+      "allOf": [
+          {
+              "$ref": "#/definitions/FieldTypeEnum"
+          },
+        {
+          "type": "object",
+          "properties": {
+            "field_id": {
+              "type": "string"
+            },
+            "display_name": {
+              "type": "string"
+            },
+            "is_field_required": {
+              "type": "boolean"
+            },
+            "field_values": {
+              "type": "string"
+            },
+            "allowed_formats": {
+              "type": "string"
+            },
+            "validation_regex": {
+              "type": "string"
+            },
+            "error_msg": {
+              "type": "string"
+            },
+            "tooltip": {
+              "type": "string"
+            },
+            "help_text": {
+              "type": "string"
+            },
+            "placeholder_text": {
+              "type": "string"
+            },
+            "is_field_readable": {
+              "type": "boolean"
+            },
+            "is_field_writable": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "field_id",
+            "display_name",
+            "is_field_required",
+            "is_field_readable",
+            "is_field_writable"
+          ]
+        }
+      ]
+    },
+    "GroupOfFields": {
+        "type": "object",
+        "properties": {
+          "gof_id": {
+            "type": "string"
+          },
+          "gof_display_name": {
+            "type": "string"
+          },
+          "max_columns": {
+            "type": "integer"
+          },
+          "order": {
+            "type": "integer"
+          },
+          "enable_multiple_gofs": {
+            "type": "boolean"
+          },
+          "is_gof_readable": {
+            "type": "boolean"
+          },
+          "is_gof_writable": {
+            "type": "boolean"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Field"
+            }
+          }
+        },
+        "required": [
+          "gof_id",
+          "gof_display_name",
+          "order",
+          "enable_multiple_gofs",
+          "max_columns",
+          "is_gof_readable",
+          "is_gof_writable",
+          "fields"
+        ]
+    },
+    "Action": {
+        "type": "object",
+        "properties": {
+          "action_id": {
+            "type": "string"
+          },
+          "action_name": {
+            "type": "string"
+          },
+          "button_text": {
+            "type": "string"
+          },
+          "button_color": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "action_id",
+          "action_name",
+          "button_text",
+          "button_color"
+        ]
+      }
   },
   "parameters": {
     "CreateTaskBodyParameter": {
@@ -94,26 +243,83 @@
   "responses": {
     "CreateTaskSuccessResponse": {
       "description": "task created successfully"
+    },
+    "GetTaskTemplateResponse": {
+      "description": "OK",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "task_templates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "template_id": {
+                  "type": "string"
+                },
+                "template_name": {
+                  "type": "string"
+                },
+                "actions": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Action"
+                  }
+                },
+                "group_of_fields": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/GroupOfFields"
+                  }
+                }
+              },
+              "required": [
+                "template_id",
+                "template_name",
+                "actions",
+                "group_of_fields"
+              ]
+            }
+          }
+        },
+        "required": [
+          "task_templates"
+        ]
+      }
     }
   },
   "paths": {
+    "/task_templates/v1/": {
+      "get": {
+        "operationId": "get_task_templates",
+        "summary": "Get list of task templates along with group of fields",
+        "description": "Get list of task templates along with group of fields",
+        "security": [{
+          "oauth": [
+            "read"
+          ]
+        }],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetTaskTemplateResponse"
+          }
+        }
+      }
+    },
     "/task/v1/": {
       "post": {
         "operationId": "create_task",
         "summary": "create a task",
         "description": "create a task with given details",
-        "security":[
-           {
-              "oauth":[
-                 "write"
-              ]
-           }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/parameters/CreateTaskBodyParameter"
-          }
-        ],
+        "security": [{
+          "oauth": [
+            "write"
+          ]
+        }],
+        "parameters": [{
+          "$ref": "#/parameters/CreateTaskBodyParameter"
+        }],
         "responses": {
           "201": {
             "$ref": "#/responses/CreateTaskSuccessResponse"
