@@ -52,3 +52,4 @@ doc_html/
 venv/
 
 migrations/
+/venv/
