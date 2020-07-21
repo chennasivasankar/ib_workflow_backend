@@ -1,118 +1,188 @@
-import pytest
-from mock import create_autospec
-
-from ib_iam.interactors.presenter_interfaces.team_presenter_interface import TeamPresenterInterface
-from ib_iam.interactors.storage_interfaces.dtos import UpdateTeamParametersDTO
+from mock import create_autospec, Mock
+from ib_iam.interactors.presenter_interfaces.update_team_presenter_interface import (
+    UpdateTeamPresenterInterface
+)
 from ib_iam.interactors.storage_interfaces.team_storage_interface import TeamStorageInterface
 from ib_iam.interactors.team_interactor import TeamInteractor
+from ib_iam.tests.factories import TeamWithUserIdsDTOFactory
 
 
 class TestUpdateTeamDetails:
 
-    def test_if_user_not_admin_raises_unauthorized_exception(self):
+    def test_if_user_not_admin_returns_unauthorized_exception_response(self):
         from ib_iam.exceptions.custom_exceptions import UserHasNoAccess
-        from django_swagger_utils.drf_server.exceptions import Unauthorized
         storage = create_autospec(TeamStorageInterface)
-        presenter = create_autospec(TeamPresenterInterface)
+        presenter = create_autospec(UpdateTeamPresenterInterface)
         interactor = TeamInteractor(storage=storage)
         user_id = "1"
-        update_team_parameters_dto = UpdateTeamParametersDTO(
-            team_id="1", name="team1", description="team1_description"
+        team_with_user_ids_dto = \
+            TeamWithUserIdsDTOFactory(team_id="1")
+        storage.raise_exception_if_user_is_not_admin \
+            .side_effect = UserHasNoAccess
+        presenter.get_user_has_no_access_response_for_update_team.side_effect = Mock()
+
+        interactor.update_team_details_wrapper(
+            user_id=user_id,
+            team_with_user_ids_dto=team_with_user_ids_dto,
+            presenter=presenter
         )
-        storage.is_user_admin.side_effect = UserHasNoAccess
-        presenter.raise_exception_for_user_has_no_access.side_effect = (
-            Unauthorized
-        )
 
-        with pytest.raises(Unauthorized):
-            interactor.update_team_details_wrapper(
-                user_id=user_id,
-                update_team_parameters_dto=update_team_parameters_dto,
-                presenter=presenter
-            )
+        storage.raise_exception_if_user_is_not_admin \
+            .assert_called_once_with(user_id=user_id)
+        presenter.get_user_has_no_access_response_for_update_team \
+                 .assert_called_once()
 
-        storage.is_user_admin.assert_called_once_with(user_id=user_id)
-        presenter.raise_exception_for_user_has_no_access.assert_called_once()
-
-    def test_if_invalid_team_id_raises_not_found_exception(self):
-        from ib_iam.exceptions.custom_exceptions import InvalidTeamId
-        from django_swagger_utils.drf_server.exceptions import NotFound
+    def test_if_invalid_team_id_raises_not_found_exception_response(self):
+        from ib_iam.exceptions.custom_exceptions import InvalidTeam
         storage = create_autospec(TeamStorageInterface)
-        presenter = create_autospec(TeamPresenterInterface)
+        presenter = create_autospec(UpdateTeamPresenterInterface)
         interactor = TeamInteractor(storage=storage)
         user_id = "1"
-        team_id = "1"
-        update_team_parameters_dto = UpdateTeamParametersDTO(
-            team_id=team_id, name="team1", description="team1_description"
+        team_id = "2"
+        team_with_user_ids_dto = \
+            TeamWithUserIdsDTOFactory(team_id="2")
+        storage.raise_exception_if_team_not_exists.side_effect = InvalidTeam
+        presenter.get_invalid_team_response_for_update_team.side_effect = Mock()
+
+        interactor.update_team_details_wrapper(
+            user_id=user_id,
+            team_with_user_ids_dto=team_with_user_ids_dto,
+            presenter=presenter
         )
-        storage.is_valid_team.side_effect = InvalidTeamId
-        presenter.raise_exception_for_invalid_team_id.side_effect = (
-            NotFound
-        )
 
-        with pytest.raises(NotFound):
-            interactor.update_team_details_wrapper(
-                user_id=user_id,
-                update_team_parameters_dto=update_team_parameters_dto,
-                presenter=presenter
-            )
+        storage.raise_exception_if_team_not_exists \
+            .assert_called_once_with(team_id=team_id)
+        presenter.get_invalid_team_response_for_update_team.assert_called_once()
 
-        storage.is_valid_team.assert_called_once_with(team_id=team_id)
-        presenter.raise_exception_for_invalid_team_id.assert_called_once()
-
-    def test_duplicate_team_name_raises_bad_request_exception(self):
-        from ib_iam.exceptions.custom_exceptions import DuplicateTeamName
-        from django_swagger_utils.drf_server.exceptions import BadRequest
+    def test_given_duplicate_users_returns_duplicate_users_response(self):
         storage = create_autospec(TeamStorageInterface)
-        presenter = create_autospec(TeamPresenterInterface)
+        presenter = create_autospec(UpdateTeamPresenterInterface)
         interactor = TeamInteractor(storage=storage)
         user_id = "1"
-        team_id = "1"
         team_name = "team1"
+        user_ids = ["2", "2", "3", "1"]
+        team_with_user_ids_dto = \
+            TeamWithUserIdsDTOFactory(team_id="3", user_ids=user_ids)
+        storage.raise_exception_if_team_not_exists.return_value = None
+        presenter.get_duplicate_users_response_for_update_team \
+            .return_value = Mock()
+
+        interactor.update_team_details_wrapper(
+            user_id=user_id,
+            team_with_user_ids_dto=team_with_user_ids_dto,
+            presenter=presenter
+        )
+
+        presenter.get_duplicate_users_response_for_update_team \
+                 .assert_called_once()
+
+    def test_given_invalid_users_returns_invalid_users_response(self):
+        storage = create_autospec(TeamStorageInterface)
+        presenter = create_autospec(UpdateTeamPresenterInterface)
+        interactor = TeamInteractor(storage=storage)
+        user_id = "1"
+        team_name = "team1"
+        user_ids = ["2", "3", "1"]
+        valid_user_ids = ["2", "3"]
+        team_with_user_ids_dto = \
+            TeamWithUserIdsDTOFactory(team_id="3", user_ids=user_ids)
+        storage.raise_exception_if_team_not_exists.return_value = None
+        storage.get_valid_user_ids_among_the_given_user_ids \
+               .return_value = valid_user_ids
+        presenter.get_invalid_users_response_for_update_team \
+            .return_value = Mock()
+
+        interactor.update_team_details_wrapper(
+            user_id=user_id,
+            team_with_user_ids_dto=team_with_user_ids_dto,
+            presenter=presenter
+        )
+
+        storage.get_valid_user_ids_among_the_given_user_ids \
+               .assert_called_once_with(user_ids=user_ids)
+        presenter.get_invalid_users_response_for_update_team \
+                 .assert_called_once()
+
+    def test_if_team_name_already_exists_raises_bad_request_exception_response(
+            self
+    ):
+        storage = create_autospec(TeamStorageInterface)
+        presenter = create_autospec(UpdateTeamPresenterInterface)
+        interactor = TeamInteractor(storage=storage)
+        user_id = "1"
+        team_name = "team4"
         expected_team_name_from_error = team_name
-        update_team_parameters_dto = UpdateTeamParametersDTO(
-            team_id=team_id, name=team_name, description="team1_description"
+        user_ids = ["2", "3", "1"]
+        team_with_user_ids_dto = TeamWithUserIdsDTOFactory(
+                team_id="3", name=team_name, user_ids=user_ids
         )
-        storage.is_duplicate_team_name \
-            .side_effect = DuplicateTeamName(team_name=team_name)
-        presenter.raise_exception_for_duplicate_team_name.side_effect = (
-            BadRequest
+        storage.get_valid_user_ids_among_the_given_user_ids \
+            .return_value = user_ids
+        storage.get_team_id_if_team_name_already_exists.return_value = "2"
+        presenter.get_team_name_already_exists_response_for_update_team \
+                 .side_effect = Mock()
+
+        interactor.update_team_details_wrapper(
+            user_id=user_id,
+            team_with_user_ids_dto=team_with_user_ids_dto,
+            presenter=presenter
         )
 
-        with pytest.raises(BadRequest):
-            interactor.update_team_details_wrapper(
-                user_id=user_id,
-                update_team_parameters_dto=update_team_parameters_dto,
-                presenter=presenter
-            )
-
-        storage.is_duplicate_team_name.assert_called_once_with(
-            team_id=team_id, name=team_name
-        )
-        call_obj = presenter.raise_exception_for_duplicate_team_name.call_args
+        storage.get_team_id_if_team_name_already_exists \
+            .assert_called_once_with(name=team_name)
+        call_obj = presenter \
+            .get_team_name_already_exists_response_for_update_team.call_args
         error_obj = call_obj.args[0]
         actual_team_name_from_error = error_obj.team_name
         assert actual_team_name_from_error == expected_team_name_from_error
 
-    def test_given_proper_details_updation_will_be_successful(self):
+    def test_team_requested_for_its_own_name_then_updation_will_be_done(
+            self
+    ):
         storage = create_autospec(TeamStorageInterface)
-        presenter = create_autospec(TeamPresenterInterface)
+        presenter = create_autospec(UpdateTeamPresenterInterface)
         interactor = TeamInteractor(storage=storage)
         user_id = "1"
-        update_team_parameters_dto = UpdateTeamParametersDTO(
-            team_id="1", name="team", description="team1_description"
-        )
-        expected_response = {}
-        presenter.make_empty_http_success_response \
-            .return_value = expected_response
+        user_ids = ["2", "3", "1"]
+        team_with_user_ids_dto = \
+            TeamWithUserIdsDTOFactory(team_id="3", user_ids=user_ids)
+        storage.get_valid_user_ids_among_the_given_user_ids \
+            .return_value = user_ids
+        storage.get_team_id_if_team_name_already_exists.return_value = None
+        presenter.get_success_response_for_update_team.return_value = Mock()
 
         interactor.update_team_details_wrapper(
             user_id=user_id,
-            update_team_parameters_dto=update_team_parameters_dto,
+            team_with_user_ids_dto=team_with_user_ids_dto,
             presenter=presenter
         )
 
         storage.update_team_details.assert_called_once_with(
-            update_team_parameters_dto=update_team_parameters_dto
+            team_with_user_ids_dto=team_with_user_ids_dto
         )
-        presenter.make_empty_http_success_response.assert_called_once()
+        presenter.get_success_response_for_update_team.assert_called_once()
+
+    def test_given_team_name_not_exists_then_updation_will_be_done(
+                self
+    ):
+        storage = create_autospec(TeamStorageInterface)
+        presenter = create_autospec(UpdateTeamPresenterInterface)
+        interactor = TeamInteractor(storage=storage)
+        user_ids = ["2", "3", "1"]
+        team_with_user_ids_dto = \
+            TeamWithUserIdsDTOFactory(team_id="3", user_ids=user_ids)
+        storage.get_valid_user_ids_among_the_given_user_ids \
+            .return_value = user_ids
+        storage.get_team_id_if_team_name_already_exists.return_value = None
+        presenter.get_success_response_for_update_team.return_value = Mock()
+
+        interactor.update_team_details_wrapper(
+            user_id="1",
+            team_with_user_ids_dto=team_with_user_ids_dto,
+            presenter=presenter
+        )
+
+        storage.update_team_details.assert_called_once_with(
+            team_with_user_ids_dto=team_with_user_ids_dto
+        )
+        presenter.get_success_response_for_update_team.assert_called_once()

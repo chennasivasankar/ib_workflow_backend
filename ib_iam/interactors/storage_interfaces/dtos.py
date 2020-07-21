@@ -3,9 +3,19 @@ from typing import List
 
 
 @dataclass
-class AddTeamParametersDTO:
+class TeamNameAndDescriptionDTO:
     name: str
     description: str
+
+
+@dataclass
+class TeamDetailsWithUserIdsDTO(TeamNameAndDescriptionDTO):
+    user_ids: List[str]
+
+
+@dataclass
+class TeamWithUserIdsDTO(TeamDetailsWithUserIdsDTO):
+    team_id: str
 
 
 @dataclass
@@ -15,16 +25,22 @@ class PaginationDTO:
 
 
 @dataclass
-class BasicTeamDTO:
+class TeamDTO:
     team_id: str
     name: str
     description: str
 
 
 @dataclass
-class TeamMembersDTO:
+class TeamMemberIdsDTO:
     team_id: str
     member_ids: List[str]
+
+
+@dataclass
+class TeamsWithTotalTeamsCountDTO:
+    total_teams_count: int
+    teams: List[TeamDTO]
 
 
 @dataclass
@@ -32,22 +48,3 @@ class MemberDTO:
     member_id: str
     name: str
     profile_pic_url: str
-
-
-@dataclass
-class UpdateTeamParametersDTO:
-    team_id: str
-    name: str
-    description: str
-
-@dataclass
-class BasicCompanyDTO:
-    company_id: str
-    name: str
-    description: str
-    logo: str
-
-@dataclass
-class CompanyWithEmployeeCountDTO:
-    company_id: str
-    no_of_employees: int

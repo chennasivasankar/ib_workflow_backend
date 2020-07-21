@@ -3,7 +3,7 @@
 APP_NAME = "ib_iam"
 OPERATION_NAME = "get_list_of_teams"
 REQUEST_METHOD = "get"
-URL_SUFFIX = "teams/"
+URL_SUFFIX = "teams/v1/"
 
 from .test_case_01 import TestCase01GetListOfTeamsAPITestCase
 from .test_case_02 import TestCase02GetListOfTeamsAPITestCase

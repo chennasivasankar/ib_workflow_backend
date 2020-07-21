@@ -1,11 +1,12 @@
 """
-# TODO: Invalid Limit Gives Invalid Limit exception as BadRequest
+Returns Invalid Limit response as BadRequest
+as the given limit is invalid
 """
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ib_iam.tests.factories.models import (
-    UserFactory
+    UserDetailsFactory
 )
 
 
@@ -20,7 +21,7 @@ class TestCase03GetListOfTeamsAPITestCase(TestUtils):
     def test_case(self, snapshot, setup):
         body = {}
         path_params = {}
-        query_params = {'limit': 0, 'offset': 0}
+        query_params = {'limit_query_parameter': 0, 'offset_query_parameter': 5}
         headers = {}
         response = self.default_test_case(
             body=body, path_params=path_params,
@@ -30,5 +31,5 @@ class TestCase03GetListOfTeamsAPITestCase(TestUtils):
     @pytest.fixture()
     def setup(self, api_user):
         user_obj = api_user
-        UserFactory.reset_sequence(1)
-        UserFactory.create(user_id=user_obj.id, admin=True)
+        UserDetailsFactory.reset_sequence(1)
+        UserDetailsFactory.create(user_id=user_obj.id, is_admin=True)

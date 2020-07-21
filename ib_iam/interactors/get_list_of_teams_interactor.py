@@ -7,9 +7,9 @@ from ib_iam.interactors.presenter_interfaces.dtos import (
     TeamWithMembersDetailsDTO
 )
 from ib_iam.interactors.storage_interfaces.dtos import (
-    PaginationDTO, BasicTeamDTO, TeamMembersDTO, MemberDTO
+    PaginationDTO, TeamDTO, TeamMemberIdsDTO, MemberDTO
 )
-from ib_iam.adapters.dtos import BasicUserDTO
+from ib_iam.adapters.dtos import UserProfileDTO
 from typing import List
 from ib_iam.exceptions.custom_exceptions import (
     UserHasNoAccess, InvalidLimit, InvalidOffset
@@ -35,23 +35,26 @@ class GetListOfTeamsInteractor:
                 team_details_dtos=team_details_dtos
             )
         except UserHasNoAccess:
-            response = presenter.raise_exception_for_user_has_no_access()
+            response = presenter \
+                .get_user_has_no_access_response_for_get_list_of_teams()
         except InvalidLimit:
-            response = presenter.raise_exception_for_invalid_limit()
+            response = \
+                presenter.get_invalid_limit_response_for_get_list_of_teams()
         except InvalidOffset:
-            response = presenter.raise_exception_for_invalid_offset()
+            response = \
+                presenter.get_invalid_offset_response_for_get_list_of_teams()
         return response
 
     def get_list_of_teams(self, user_id: str, pagination_dto: PaginationDTO):
-        self.storage.is_user_admin(user_id=user_id)
-        self._is_invalid_limit(pagination_dto.limit)
-        self._is_invalid_offset(pagination_dto.offset)
-
-        (team_dtos, total_teams) = self.storage.get_team_dtos_along_with_count(
-            user_id=user_id,
-            pagination_dto=pagination_dto
+        self._validate_pagination_details(pagination_dto=pagination_dto)
+        self.storage.raise_exception_if_user_is_not_admin(user_id=user_id)
+        teams_with_total_teams_count = \
+            self.storage.get_teams_with_total_teams_count_dto(
+                pagination_dto=pagination_dto
+            )
+        team_ids = self._get_team_ids_from_team_dtos(
+            team_dtos=teams_with_total_teams_count.teams
         )
-        team_ids = self._get_team_ids_from_team_dtos(team_dtos=team_dtos)
 
         team_member_ids_dtos = self.storage.get_team_member_ids_dtos(
             team_ids=team_ids
@@ -62,29 +65,24 @@ class GetListOfTeamsInteractor:
         member_dtos = self._get_members_dtos_from_service(
             member_ids=member_ids
         )
-        team_details_dtos = TeamWithMembersDetailsDTO(
-            total_teams=total_teams,
-            team_dtos=team_dtos,
+        team_with_memebers_dtos = TeamWithMembersDetailsDTO(
+            total_teams_count=teams_with_total_teams_count.total_teams_count,
+            team_dtos=teams_with_total_teams_count.teams,
             team_member_ids_dtos=team_member_ids_dtos,
             member_dtos=member_dtos
         )
-        return team_details_dtos
+        return team_with_memebers_dtos
 
     @staticmethod
-    def _is_invalid_limit(limit: int):
-        is_invalid_limit = limit <= 0
-        if is_invalid_limit:
+    def _validate_pagination_details(pagination_dto: PaginationDTO):
+        if pagination_dto.limit <= 0:
             raise InvalidLimit()
-
-    @staticmethod
-    def _is_invalid_offset(offset: int):
-        is_invalid_offset = offset < 0
-        if is_invalid_offset:
+        if pagination_dto.offset < 0:
             raise InvalidOffset()
 
     @staticmethod
     def _get_team_ids_from_team_dtos(
-            team_dtos: List[BasicTeamDTO]
+            team_dtos: List[TeamDTO]
     ) -> List[str]:
         team_ids = [
             team_dto.team_id for team_dto in team_dtos
@@ -93,13 +91,12 @@ class GetListOfTeamsInteractor:
 
     @staticmethod
     def _get_all_member_ids_from_team_member_ids_dtos(
-            team_member_ids_dtos: List[TeamMembersDTO]
+            team_member_ids_dtos: List[TeamMemberIdsDTO]
     ):
         member_ids = []
         for team_member_ids_dto in team_member_ids_dtos:
             member_ids.extend(team_member_ids_dto.member_ids)
         unique_member_ids = list(set(member_ids))
-        unique_member_ids.sort()
         return unique_member_ids
 
     def _get_members_dtos_from_service(self, member_ids: List[str]):
@@ -114,7 +111,7 @@ class GetListOfTeamsInteractor:
 
     @staticmethod
     def _convert_user_dtos_to_member_dtos(
-            user_dtos: List[BasicUserDTO]
+            user_dtos: List[UserProfileDTO]
     ) -> List[MemberDTO]:
         member_dtos = [
             MemberDTO(member_id=user_dto.user_id,
