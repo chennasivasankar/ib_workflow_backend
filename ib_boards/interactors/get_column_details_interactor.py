@@ -59,7 +59,7 @@ class GetColumnDetailsInteractor:
                                      column_id="column_id_1")]
 
         fields_dto = [FieldsDTO(
-            task_id="task_id_1",
+            task_template_id="task_template_id_1",
             field_id="field_id_1"
         )]
         task_interactor = GetTaskDetailsInteractor()

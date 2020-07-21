@@ -29,5 +29,5 @@ class TaskDetailsDTO:
 
 @dataclass
 class FieldsDTO:
-    task_id: str
+    task_template_id: str
     field_id: str
