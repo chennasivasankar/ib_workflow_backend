@@ -25,7 +25,7 @@ class StageActionFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = StageAction
 
-    stage_id = factory.SubFactory(StageModelFactory)
+    stage = factory.SubFactory(StageModelFactory)
     name = factory.Sequence(lambda n: "name_%d" % n)
     button_text = "hey"
     button_color = "#fafafa"
