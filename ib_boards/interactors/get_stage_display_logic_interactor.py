@@ -18,12 +18,10 @@ class StageDisplayLogicInteractor:
     def get_stage_display_logic_condition_wrapper(
             self, stage_display_logics: List[str],
             presenter: StageDisplayLogicPresenterInterface):
-        try:
-            task_status_dtos = self.get_stage_display_logic_condition(
-                stage_display_logics=stage_display_logics
-            )
-        except InvalidStageIds as error:
-            return presenter.get_response_for_invalid_stage_ids(error=error)
+        task_status_dtos = self.get_stage_display_logic_condition(
+            stage_display_logics=stage_display_logics
+        )
+
         return presenter.get_response_for_stage_display_logic(
             task_status_dtos=task_status_dtos
         )
