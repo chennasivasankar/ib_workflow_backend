@@ -136,12 +136,6 @@ class GoFIDsAlreadyExists(Exception):
         self.gof_ids = existing_gof_ids
 
 
-class InvalidTaskTemplateIds(Exception):
-
-    def __init__(self, invalid_task_template_ids: List[str]):
-        self.task_template_ids = invalid_task_template_ids
-
-
 class ExistingGlobalConstantNamesNotInGivenData(Exception):
     def __init__(self, err_msg: str):
         super().__init__(err_msg)

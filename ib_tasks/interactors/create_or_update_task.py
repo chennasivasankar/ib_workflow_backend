@@ -42,6 +42,7 @@ class CreateOrUpdateTaskInteractor:
         self._validate_task_template_id(task_dto.task_template_id)
         self._validate_for_invalid_gof_ids(task_dto.gof_fields_dtos)
         self._validate_for_invalid_field_ids(task_dto.gof_fields_dtos)
+        # TODO: GET FIELD VALUES DTOS FROM THE BELOW PRIVATE METHOD
 
     def _validate_task_template_id(
             self, task_template_id: str
@@ -68,18 +69,23 @@ class CreateOrUpdateTaskInteractor:
             self, gof_fields_dtos: List[GoFFieldsDTO]
     ) -> Optional[InvalidFieldIds]:
 
-        field_ids = []
-        for gof_fields_dto in gof_fields_dtos:
-            field_ids += [
-                field_value_dto.field_id
-                for field_value_dto in gof_fields_dto.field_values_dtos
-            ]
-        field_ids = list(set(field_ids))
+        field_values_dtos = self._get_field_values_dtos(gof_fields_dtos)
+        field_ids = [
+            field_values_dto.field_id
+            for field_values_dto in field_values_dtos
+        ]
         valid_field_ids = self.storage.get_existing_field_ids(field_ids)
         invalid_field_ids = list(set(field_ids) - set(valid_field_ids))
         if invalid_field_ids:
-            from ib_tasks.constants.exception_messages import \
-                INVALID_FIELD_IDS_MESSAGE
-            INVALID_FIELD_IDS_MESSAGE += str(invalid_field_ids)
-            raise InvalidFieldIds(INVALID_FIELD_IDS_MESSAGE)
+            raise InvalidFieldIds(invalid_field_ids)
         return
+
+    @staticmethod
+    def _get_field_values_dtos(gof_fields_dtos: List[GoFFieldsDTO]):
+        field_values_dtos = []
+        for gof_fields_dto in gof_fields_dtos:
+            field_values_dtos += [
+                field_value_dto
+                for field_value_dto in gof_fields_dto.field_values_dtos
+            ]
+        return field_values_dtos

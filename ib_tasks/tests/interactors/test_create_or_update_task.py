@@ -84,6 +84,32 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_invalid_gof_ids.assert_called_once()
 
     def test_create_or_update_task_with_invalid_field_ids_raises_exception(
-            self
+            self, storage_mock, presenter_mock, mock_object
     ):
-        pass
+        # Arrange
+        task_dto = TaskDTOFactory()
+        storage_mock.check_is_template_exists.return_value = True
+        gof_ids = [
+            gof_fields_dto.gof_id
+            for gof_fields_dto in task_dto.gof_fields_dtos
+        ]
+        storage_mock.get_existing_gof_ids.return_value = gof_ids
+        storage_mock.get_existing_field_ids.return_value = ["FIELD_ID-10"]
+        interactor = CreateOrUpdateTaskInteractor(storage_mock)
+        presenter_mock.raise_exception_for_invalid_field_ids.return_value = mock_object
+
+        # Act
+        response = interactor.create_or_update_task_wrapper(presenter_mock,
+                                                            task_dto)
+
+        # Assert
+        assert response == mock_object
+        field_ids = []
+        for gof_fields_dto in task_dto.gof_fields_dtos:
+            field_ids += [
+                field_value_dto.field_id
+                for field_value_dto in gof_fields_dto.field_values_dtos
+            ]
+        storage_mock.get_existing_field_ids.assert_called_once_with(field_ids)
+        presenter_mock.raise_exception_for_invalid_field_ids.assert_called_once()
+
