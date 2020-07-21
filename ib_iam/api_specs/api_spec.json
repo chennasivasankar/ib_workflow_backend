@@ -553,7 +553,7 @@
         }
       }
     },
-    "/team/{team_id}": {
+    "/team/{team_id}/v1/": {
       "put": {
         "summary": "update team name",
         "description": "updates a team name",
