@@ -29,3 +29,12 @@ class TaskTemplateStageActionDTOFactory(factory.Factory):
     button_text = factory.Sequence(lambda n: 'button_text_%d' % (n+1))
     button_color = factory.Sequence(lambda n: 'button_color_%d' % (n+1))
     function_path = "sample_function_path"
+from ib_tasks.interactors.dtos import GlobalConstantsDTO
+
+
+class GlobalConstantsDTOFactory(factory.Factory):
+    class Meta:
+        model = GlobalConstantsDTO
+
+    constant_name = factory.sequence(lambda n: "Constant_{}".format(n + 1))
+    value = factory.sequence(lambda n: n)

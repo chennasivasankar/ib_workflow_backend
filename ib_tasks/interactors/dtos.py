@@ -38,3 +38,19 @@ class TaskGofAndStatusesDTO:
 class TaskStatusVariablesDTO:
     task_id: str
     status_variables_dto: List[StatusVariableDTO]
+@dataclass
+class CreateTaskTemplateDTO:
+    template_id: str
+    template_name: str
+
+
+@dataclass
+class GlobalConstantsDTO:
+    constant_name: str
+    value: int
+
+
+@dataclass
+class GlobalConstantsWithTemplateIdDTO:
+    template_id: str
+    global_constants_dtos: List[GlobalConstantsDTO]
