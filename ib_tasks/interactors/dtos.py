@@ -22,6 +22,20 @@ class TaskTemplateStageActionDTO(StageActionDTO):
 
 
 @dataclass()
+class StageDTO:
+    stage_id: str
+    task_template_id: str
+    value: int
+    stage_display_name: str
+    stage_display_logic: str
+
+@dataclass
+class StageLogicAttributes:
+    stage_id: str
+    status_id: str
+
+
+@dataclass()
 class TaskTemplateStageDTO:
     task_template_id: str
     stage_id: str
@@ -34,10 +48,11 @@ class TaskGofAndStatusesDTO:
     fields_dto: List[FieldValueDTO]
     statuses_dto: List[StatusVariableDTO]
 
-
+@dataclass()
 class TaskStatusVariablesDTO:
     task_id: str
     status_variables_dto: List[StatusVariableDTO]
+
 @dataclass
 class CreateTaskTemplateDTO:
     template_id: str
