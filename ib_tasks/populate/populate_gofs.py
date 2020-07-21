@@ -4,7 +4,7 @@ from ib_tasks.utils.read_google_sheet import read_google_sheet
 from typing import List, Dict
 
 
-def create_gofs():
+def create_or_update_gofs():
     from ib_tasks.constants.constants import (
         GOOGLE_SHEET_NAME, GOF_SUB_SHEET_TITLE
     )
@@ -37,6 +37,16 @@ def prepare_complete_gof_details_dtos(
 
 
 def get_gof_dto_for_a_gof_record(gof_record: Dict) -> GoFDTO:
+    max_columns = gof_record['MAX_COLUMNS*']
+    max_columns_is_not_integer = not isinstance(max_columns, int)
+    if max_columns_is_not_integer:
+        from ib_tasks.constants.exception_messages import \
+            MAX_COLUMNS_VALUE_MUST_BE_INTEGER
+        from ib_tasks.exceptions.custom_exceptions import \
+            MaxColumnsMustBeANumber
+        MAX_COLUMNS_VALUE_MUST_BE_INTEGER += ", got {}".format(max_columns)
+        raise MaxColumnsMustBeANumber(MAX_COLUMNS_VALUE_MUST_BE_INTEGER)
+
     gof_dto = GoFDTO(
         gof_id=gof_record['GOF ID*'],
         gof_display_name=gof_record['GOF Display Name*'],
@@ -47,17 +57,19 @@ def get_gof_dto_for_a_gof_record(gof_record: Dict) -> GoFDTO:
 
 def get_gof_roles_dto_for_a_gof_record(gof_record: Dict) -> GoFRolesDTO:
     import json
-    read_permissions_is_not_empty = \
-        gof_record['Read Permission Roles*'].strip()
-    write_permissions_is_not_empty = \
-        gof_record['Read Permission Roles*'].strip()
+    read_permissions_is_empty = \
+        not gof_record['Read Permission Roles*'].strip()
+    write_permissions_is_empty = \
+        not gof_record['Read Permission Roles*'].strip()
+    read_permission_roles_is_not_empty = not read_permissions_is_empty
+    write_permissions_is_not_empty = not write_permissions_is_empty
     read_permission_roles, write_permission_roles = [], []
-    if read_permissions_is_not_empty:
+    if read_permission_roles_is_not_empty:
         read_permission_roles = \
-            json.loads(gof_record['Read Permission Roles*'])
+            gof_record['Read Permission Roles*'].split('\n')
     if write_permissions_is_not_empty:
         write_permission_roles = \
-            json.loads(gof_record['Write Permission Roles*'])
+            gof_record['Write Permission Roles*'].split('\n')
     gof_roles_dto = GoFRolesDTO(
         gof_id=gof_record['GOF ID*'],
         read_permission_roles=read_permission_roles,

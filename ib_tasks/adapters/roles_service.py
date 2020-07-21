@@ -4,11 +4,11 @@ from typing import List
 class ServiceInterface:
     @staticmethod
     def get_all_valid_read_permission_roles():
-        return ["ALL_ROLES"]
+        return ["ALL_ROLES", "Payment Requester", "Payment POC"]
 
     @staticmethod
     def get_all_valid_write_permission_roles():
-        return ["ALL_ROLES"]
+        return ["ALL_ROLES", "Payment Requester", "Payment POC"]
 
 
 class RolesService:

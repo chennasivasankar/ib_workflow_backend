@@ -4,9 +4,10 @@ from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.gof import GoF
 from ib_tasks.models.gof_role import GoFRole
 from ib_tasks.models.task_template import TaskTemplate
+from ib_tasks.models.task_template_gof import TaskTemplateGoF
 
 __all__ = [
-    "Field", "FieldRole", "GoF", "GoFRole", "TaskTemplate"
+    "Field", "FieldRole", "GoF", "GoFRole", "TaskTemplate", "TaskTemplateGoF"
 ]
 
 # class DummyModel(AbstractDateTimeModel):

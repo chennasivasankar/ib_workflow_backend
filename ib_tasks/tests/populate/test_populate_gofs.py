@@ -7,7 +7,7 @@ from ib_tasks.tests.factories.storage_dtos import (
 from ib_tasks.tests.factories.models import GoFFactory, GoFRoleFactory
 
 
-class TestCreateOrUpdateGoFsInteractor:
+class TestPopulateGoFs:
 
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
@@ -28,7 +28,7 @@ class TestCreateOrUpdateGoFsInteractor:
         return interactor
 
     @pytest.mark.parametrize("gof_id", [None, "", "  "])
-    def test_create_or_update_gofs_interactor_with_empty_gof_ids(
+    def test_populate_gofs_with_empty_gof_ids(
             self, interactor, gof_id, snapshot
     ):
         # Arrange
@@ -48,7 +48,7 @@ class TestCreateOrUpdateGoFsInteractor:
         )
 
     @pytest.mark.parametrize("gof_display_name", [None, "", "  "])
-    def test_create_or_update_gofs_interactor_with_empty_gof_display_names(
+    def test_populate_gofs_with_empty_gof_display_names(
             self, interactor, gof_display_name, snapshot
     ):
         # Arrange
@@ -70,31 +70,8 @@ class TestCreateOrUpdateGoFsInteractor:
             name="empty_gof_display_name_message", value=str(err.value)
         )
 
-    @pytest.mark.parametrize("max_columns", [None, "", "  "])
-    def test_create_or_update_gofs_interactor_with_empty_gof_max_columns(
-            self, interactor, max_columns, snapshot
-    ):
-        # Arrange
-        from ib_tasks.exceptions.custom_exceptions import \
-            MaxColumnsCantBeEmpty
-        gof_dtos = GoFDTOFactory.create_batch(
-            size=2, max_columns=max_columns
-        )
-        complete_gof_details_dtos = CompleteGoFDetailsDTOFactory.create_batch(
-            size=2, gof_dto=factory.Iterator(gof_dtos)
-        )
-
-        # Act
-        with pytest.raises(MaxColumnsCantBeEmpty) as err:
-            interactor.create_or_update_gofs(complete_gof_details_dtos)
-
-        # Assert
-        snapshot.assert_match(
-            name="empty_gof_max_columns_message", value=str(err.value)
-        )
-
     @pytest.mark.parametrize("max_columns", [0, -1])
-    def test_create_or_update_gofs_interactor_with_invalid_max_columns_value(
+    def test_populate_gofs_with_invalid_max_columns_value(
             self, interactor, max_columns, snapshot
     ):
         # Arrange
@@ -116,30 +93,8 @@ class TestCreateOrUpdateGoFsInteractor:
             name="invalid_max_columns_message", value=str(err.value)
         )
 
-    def test_create_or_update_gofs_interactor_with_a_string_as_max_columns_value(
-            self, interactor, snapshot
-    ):
-        # Arrange
-        from ib_tasks.exceptions.custom_exceptions import \
-            MaxColumnsMustBeANumber
-        gof_dtos = GoFDTOFactory.create_batch(
-            size=2, max_columns="two"
-        )
-        complete_gof_details_dtos = CompleteGoFDetailsDTOFactory.create_batch(
-            size=2, gof_dto=factory.Iterator(gof_dtos)
-        )
-
-        # Act
-        with pytest.raises(MaxColumnsMustBeANumber) as err:
-            interactor.create_or_update_gofs(complete_gof_details_dtos)
-
-        # Assert
-        snapshot.assert_match(
-            name="max_columns_as_string_error_message", value=str(err.value)
-        )
-
     @pytest.mark.parametrize("read_permissions", [None, []])
-    def test_create_or_update_gofs_interactor_with_empty_read_permissions(
+    def test_populate_gofs_with_empty_read_permissions(
             self, interactor, read_permissions, snapshot
     ):
         # Arrange
@@ -163,7 +118,7 @@ class TestCreateOrUpdateGoFsInteractor:
         )
 
     @pytest.mark.parametrize("write_permissions", [None, []])
-    def test_create_or_update_gofs_interactor_with_empty_write_permissions(
+    def test_populate_gofs_with_empty_write_permissions(
             self, interactor, write_permissions, snapshot
     ):
         # Arrange
@@ -186,7 +141,7 @@ class TestCreateOrUpdateGoFsInteractor:
             value=str(err.value)
         )
 
-    def test_create_or_update_gofs_interactor_with_invalid_read_permission_roles(
+    def test_populate_gofs_with_invalid_read_permission_roles(
             self, interactor, snapshot
     ):
         # Arrange
@@ -209,7 +164,7 @@ class TestCreateOrUpdateGoFsInteractor:
             value=str(err.value)
         )
 
-    def test_create_or_update_gofs_interactor_with_invalid_write_permission_roles(
+    def test_populate_gofs_with_invalid_write_permission_roles(
             self, interactor, snapshot
     ):
         # Arrange
@@ -233,8 +188,8 @@ class TestCreateOrUpdateGoFsInteractor:
         )
 
     @pytest.mark.django_db
-    def test_create_or_update_gofs_interactor_with_valid_details(
-            self, interactor
+    def test_populate_gofs_with_valid_details(
+            self, interactor, snapshot
     ):
         # Arrange
         from ib_tasks.models.gof import GoF
@@ -256,29 +211,66 @@ class TestCreateOrUpdateGoFsInteractor:
         interactor.create_or_update_gofs(complete_gof_details_dtos)
 
         # Assert
+        gof_counter = 0
         for gof_dto in gof_dtos:
             gof = GoF.objects.get(pk=gof_dto.gof_id)
-            assert gof.display_name == gof_dto.gof_display_name
-            assert gof.max_columns == gof_dto.max_columns
+            snapshot.assert_match(
+                name="gof_display_name {}".format(gof_counter),
+                value=gof.display_name
+            )
+            snapshot.assert_match(
+                name="gof_max_columns",
+                value=gof.max_columns
+            )
+
+        read_permission_role_counter, write_permission_role_counter = 1, 1
         for gof_roles_dto in gof_roles_dtos:
             for gof_read_permission_role in gof_roles_dto.read_permission_roles:
-                GoFRole.objects.get(
+                gof_role_object = GoFRole.objects.get(
                     gof_id=gof_roles_dto.gof_id, role=gof_read_permission_role,
                     permission_type=PermissionTypes.READ.value
                 )
+                snapshot.assert_match(
+                    name="gof_id_in_gof_role {}".format(read_permission_role_counter),
+                    value=gof_role_object.gof_id
+                )
+                snapshot.assert_match(
+                    name="gof_role".format(read_permission_role_counter),
+                    value=gof_role_object.role
+                )
+                snapshot.assert_match(
+                    name="role_permission_type".format(read_permission_role_counter),
+                    value=gof_role_object.permission_type
+                )
+                read_permission_role_counter += 1
             for gof_write_permission_role in gof_roles_dto.read_permission_roles:
-                GoFRole.objects.get(
+                gof_role_object = GoFRole.objects.get(
                     gof_id=gof_roles_dto.gof_id, role=gof_write_permission_role,
                     permission_type=PermissionTypes.WRITE.value
                 )
+                snapshot.assert_match(
+                    name="gof_id_in_gof_role {}".format(write_permission_role_counter),
+                    value=gof_role_object.gof_id
+                )
+                snapshot.assert_match(
+                    name="gof_role {}".format(write_permission_role_counter),
+                    value=gof_role_object.role
+                )
+                snapshot.assert_match(
+                    name="role_permission_type {}".format(write_permission_role_counter),
+                    value=gof_role_object.permission_type
+                )
+                write_permission_role_counter += 1
 
     @pytest.mark.django_db
-    def test_create_or_update_gofs_interactor_with_already_existing_gofs_updates_gofs(
-            self, interactor
+    def test_populate_gofs_with_already_existing_gofs_updates_gofs(
+            self, interactor, snapshot
     ):
         # Arrange
         from ib_tasks.models.gof import GoF
+        from ib_tasks.constants.enum import PermissionTypes
         from ib_tasks.tests.factories.models import GoFFactory
+        from ib_tasks.models.gof_role import GoFRole
         gofs = GoFFactory.create_batch(size=2)
         gof_ids = [gof.gof_id for gof in gofs]
         gof_dtos = GoFDTOFactory.create_batch(
@@ -294,6 +286,10 @@ class TestCreateOrUpdateGoFsInteractor:
             complete_gof_details_dto.gof_dto
             for complete_gof_details_dto in complete_gof_details_dtos
         ]
+        gof_roles_dtos = [
+            complete_gof_details_dto.gof_roles_dto
+            for complete_gof_details_dto in complete_gof_details_dtos
+        ]
 
         # Act
         interactor.create_or_update_gofs(complete_gof_details_dtos)
@@ -301,5 +297,51 @@ class TestCreateOrUpdateGoFsInteractor:
         # Assert
         for gof_dto in gof_dtos:
             gof = GoF.objects.get(pk=gof_dto.gof_id)
-            assert gof.display_name == gof_dto.gof_display_name
-            assert gof.max_columns == gof_dto.max_columns
+            snapshot.assert_match(name="gof_display_name",
+                                  value=gof.display_name)
+            snapshot.assert_match(name="gof_max_columns",
+                                  value=gof.max_columns)
+
+        read_permission_role_counter, write_permission_role_counter = 1, 1
+        for gof_roles_dto in gof_roles_dtos:
+            for gof_read_permission_role in gof_roles_dto.read_permission_roles:
+                gof_role_object = GoFRole.objects.get(
+                    gof_id=gof_roles_dto.gof_id, role=gof_read_permission_role,
+                    permission_type=PermissionTypes.READ.value
+                )
+                snapshot.assert_match(
+                    name="gof_id_in_gof_role {}".format(
+                        read_permission_role_counter),
+                    value=gof_role_object.gof_id
+                )
+                snapshot.assert_match(
+                    name="gof_role".format(read_permission_role_counter),
+                    value=gof_role_object.role
+                )
+                snapshot.assert_match(
+                    name="role_permission_type".format(
+                        read_permission_role_counter),
+                    value=gof_role_object.permission_type
+                )
+                read_permission_role_counter += 1
+            for gof_write_permission_role in gof_roles_dto.read_permission_roles:
+                gof_role_object = GoFRole.objects.get(
+                    gof_id=gof_roles_dto.gof_id,
+                    role=gof_write_permission_role,
+                    permission_type=PermissionTypes.WRITE.value
+                )
+                snapshot.assert_match(
+                    name="gof_id_in_gof_role {}".format(
+                        write_permission_role_counter),
+                    value=gof_role_object.gof_id
+                )
+                snapshot.assert_match(
+                    name="gof_role {}".format(write_permission_role_counter),
+                    value=gof_role_object.role
+                )
+                snapshot.assert_match(
+                    name="role_permission_type {}".format(
+                        write_permission_role_counter),
+                    value=gof_role_object.permission_type
+                )
+                write_permission_role_counter += 1

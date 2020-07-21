@@ -6,8 +6,8 @@ from ib_tasks.models.task_template import TaskTemplate
 class GoF(models.Model):
     gof_id = models.CharField(max_length=50, primary_key=True)
     display_name = models.CharField(max_length=50)
-    task_template = models.ForeignKey(
-        TaskTemplate, on_delete=models.CASCADE, null=True
+    task_template = models.ManyToManyField(
+        TaskTemplate, through="TaskTemplateGoF"
     )
     max_columns = models.IntegerField(default=2)
 

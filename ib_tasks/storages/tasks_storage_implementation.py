@@ -70,7 +70,7 @@ class TasksStorageImplementation(TaskStorageInterface):
 
     def create_gofs(self, gof_dtos: List[GoFDTO]):
         from ib_tasks.models.gof import GoF
-        gofs = [
+        gof_objects = [
             GoF(
                 gof_id=gof_dto.gof_id,
                 display_name=gof_dto.gof_display_name,
@@ -78,7 +78,7 @@ class TasksStorageImplementation(TaskStorageInterface):
             )
             for gof_dto in gof_dtos
         ]
-        GoF.objects.bulk_create(gofs)
+        GoF.objects.bulk_create(gof_objects)
 
     def create_gof_roles(self, gof_role_dtos: List[GoFRoleDTO]):
         from ib_tasks.models.gof_role import GoFRole

@@ -34,8 +34,8 @@ class GoFDTO:
 @dataclass
 class GoFRolesDTO:
     gof_id: str
-    read_permission_roles: List[PermissionTypes]
-    write_permission_roles: List[PermissionTypes]
+    read_permission_roles: List[str]
+    write_permission_roles: List[str]
 
 
 @dataclass

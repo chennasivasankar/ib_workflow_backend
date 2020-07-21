@@ -1,10 +1,11 @@
 from typing import List, Optional, Union
 
+from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.exceptions.custom_exceptions import (
     GOFIdCantBeEmpty, GOFDisplayNameCantBeEmpty, GOFReadPermissionsCantBeEmpty,
     GOFWritePermissionsCantBeEmpty, InvalidReadPermissionRoles,
-    InvalidWritePermissionRoles, MaxColumnsCantBeEmpty,
-    MaxColumnsMustBeANumber, MaxColumnsMustBeAPositiveInteger
+    InvalidWritePermissionRoles,
+    MaxColumnsMustBeAPositiveInteger
 )
 from ib_tasks.interactors.storage_interfaces.dtos import (
     CompleteGoFDetailsDTO, GoFRolesDTO, GoFDTO, GoFRoleDTO
@@ -193,7 +194,7 @@ class CreateOrUpdateGoFsInteractor:
 
     def _validate_for_invalid_max_columns(
             self, gof_dtos: List[GoFDTO]
-    ) -> Optional[MaxColumnsCantBeEmpty]:
+    ) -> Optional[MaxColumnsMustBeAPositiveInteger]:
         for gof_dto in gof_dtos:
             self._validate_max_column_value(gof_dto.max_columns)
         return
@@ -201,27 +202,10 @@ class CreateOrUpdateGoFsInteractor:
     @staticmethod
     def _validate_max_column_value(
             max_columns: Union[None, int, str]
-    ) -> Union[
-        None, MaxColumnsCantBeEmpty, MaxColumnsMustBeANumber,
-        MaxColumnsMustBeAPositiveInteger
-    ]:
-        max_columns_is_string = isinstance(max_columns, str)
+    ) -> Union[None, MaxColumnsMustBeAPositiveInteger]:
         from ib_tasks.constants.exception_messages import (
-            EMPTY_MAX_COLUMNS_MESSAGE,
-            MAX_COLUMNS_VALUE_MUST_NOT_BE_STRING_MESSAGE,
             MAX_COLUMNS_VALUE_MUST_BE_POSITIVE_INTEGER_MESSAGE
         )
-
-        if max_columns is None:
-            raise MaxColumnsCantBeEmpty(EMPTY_MAX_COLUMNS_MESSAGE)
-
-        if max_columns_is_string:
-            if not max_columns.strip():
-                raise MaxColumnsCantBeEmpty(EMPTY_MAX_COLUMNS_MESSAGE)
-            error_message = "{}: {}".format(
-                MAX_COLUMNS_VALUE_MUST_NOT_BE_STRING_MESSAGE, max_columns
-            )
-            raise MaxColumnsMustBeANumber(error_message)
         max_columns_is_not_a_positive_integer = max_columns < 1
         if max_columns_is_not_a_positive_integer:
             error_message = "{}: {}".format(
@@ -322,7 +306,10 @@ class CreateOrUpdateGoFsInteractor:
             invalid_roles = list(
                 set(read_permission_roles) - set(valid_read_permission_roles)
             )
-            raise InvalidReadPermissionRoles(invalid_roles)
+            from ib_tasks.constants.exception_messages import \
+                INVALID_READ_PERMISSION_ROLES
+            INVALID_READ_PERMISSION_ROLES += str(invalid_roles)
+            raise InvalidReadPermissionRoles(INVALID_READ_PERMISSION_ROLES)
         return
 
     def _validate_write_permission_roles(
@@ -354,5 +341,8 @@ class CreateOrUpdateGoFsInteractor:
             invalid_roles = list(
                 set(write_permission_roles) - set(valid_write_permission_roles)
             )
-            raise InvalidWritePermissionRoles(invalid_roles)
+            from ib_tasks.constants.exception_messages import \
+                INVALID_WRITE_PERMISSION_ROLES
+            INVALID_WRITE_PERMISSION_ROLES += str(invalid_roles)
+            raise InvalidWritePermissionRoles(INVALID_WRITE_PERMISSION_ROLES)
         return
