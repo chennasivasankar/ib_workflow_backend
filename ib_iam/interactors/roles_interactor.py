@@ -1,6 +1,7 @@
 from typing import List
 
-from ib_iam.exceptions.exceptions import DuplicateRoleIdsException, RoleIdFormatIsInvalidException, \
+from ib_iam.exceptions.exceptions import DuplicateRoleIdsException, \
+    RoleIdFormatIsInvalidException, \
     RoleNameIsEmptyException, RoleDescriptionIsEmptyException
 from ib_iam.interactors.presenter_interfaces.presenter_interface \
     import PresenterInterface
@@ -9,7 +10,7 @@ from ib_iam.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 
 
-class AddRolesInteractor:
+class RolesInteractor:
 
     def __init__(self, storage: StorageInterface):
         self.storage = storage
@@ -76,3 +77,8 @@ class AddRolesInteractor:
         unique_role_ids = list(set(role_ids))
         if len(unique_role_ids) != len(role_ids):
             raise DuplicateRoleIdsException()
+
+    def get_valid_role_ids(self, role_ids: List[str]):
+        role_ids = list(set(role_ids))
+        valid_role_ids = self.storage.get_valid_role_ids(role_ids=role_ids)
+        return valid_role_ids
