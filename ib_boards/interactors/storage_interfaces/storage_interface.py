@@ -1,7 +1,8 @@
 import abc
 from typing import List
 
-from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, BoardColumnDTO
+from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, BoardColumnsDTO
+from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO
 
 
 class StorageInterface(abc.ABC):
@@ -14,11 +15,6 @@ class StorageInterface(abc.ABC):
     def create_boards_and_columns(
             self, board_dtos: List[BoardDTO],
             column_dtos: List[ColumnDTO]) -> None:
-        pass
-
-    @abc.abstractmethod
-    def check_for_column_ids_are_assigned_to_single_board(
-            self, column_ids: List[str]):
         pass
 
     @abc.abstractmethod
@@ -70,7 +66,4 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def validate_user_role_with_column_roles(self, user_role: str):
-        pass
-
-    def validate_user_role_with_boards_roles(self, user_role: str):
         pass

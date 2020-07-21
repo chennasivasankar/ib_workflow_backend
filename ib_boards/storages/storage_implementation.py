@@ -242,19 +242,45 @@ class StorageImplementation(StorageInterface):
 
     def get_board_ids(
             self, user_role: str, ) -> List[str]:
-        pass
+        board_ids = Board.objects.values_list('board_id', flat=True)
+        return list(board_ids)
 
     def get_board_details(self, board_ids: List[str]) -> List[BoardDTO]:
-        pass
+        board_objects = Board.objects.filter(
+            board_id__in=board_ids
+        )
+        board_dtos = self._convert_board_objects_to_board_dtos(
+            board_objects=board_objects
+        )
+        return board_dtos
 
     def get_valid_board_ids(self, board_ids: List[str]) -> List[str]:
-        pass
+        board_ids = Board.objects.filter(
+            board_id__in=board_ids
+        ).values_list('board_id', flat=True)
+        return list(board_ids)
 
     def validate_column_id(self, column_id: str) -> None:
-        pass
+        is_invalid_column_id = not Column.objects.filter(
+            column_id=column_id
+        ).exists()
+        if is_invalid_column_id:
+            from ib_boards.exceptions.custom_exceptions import InvalidColumnId
+            raise InvalidColumnId
 
     def get_column_display_stage_ids(self, column_id: str) -> List[str]:
         pass
 
     def validate_user_role_with_column_roles(self, user_role: str):
         pass
+
+    @staticmethod
+    def _convert_board_objects_to_board_dtos(board_objects):
+        board_dtos = [
+            BoardDTO(
+                board_id=board_object.board_id,
+                display_name=board_object.name
+            )
+            for board_object in board_objects
+        ]
+        return board_dtos
