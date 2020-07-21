@@ -1,6 +1,5 @@
 from typing import Dict, Any, List
 
-
 def populate_stages_values(list_of_stages_dict: List[Dict]):
     validation_for_list_of_stages_dict(list_of_stages_dict)
     stages_dto = [append_stage_dto(stage_dict)

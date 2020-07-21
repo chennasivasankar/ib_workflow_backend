@@ -63,8 +63,9 @@ class ActionsStorageImplementation(ActionStorageInterface):
         for action_obj in action_objs:
             for stage in stage_actions:
                 if action_obj.name == stage.action_name:
-                    list_of_permitted_roles.append(
-                        ActionPermittedRoles(action_id=action_obj, role_id=stage_action.roles))
+                    for role in stage.roles:
+                        list_of_permitted_roles.append(
+                            ActionPermittedRoles(action_id=action_obj, role_id=role))
 
         ActionPermittedRoles.objects.bulk_create(list_of_permitted_roles)
 

@@ -12,6 +12,7 @@ class TestPopulateStagesAndValues:
             "stage_display_name": "stage_name",
             "stage_display_logic": "status_1==stage_id_1"
         }
+
         import json
         json_valid_format = json.dumps(valid_format)
         return json_valid_format

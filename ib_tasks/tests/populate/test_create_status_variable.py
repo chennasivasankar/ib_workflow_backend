@@ -9,6 +9,7 @@ class TestPopulateStatusVariables:
             "task_template_id": "task_template_id_1",
             "status_variable_id": "status_id_1"
         }
+
         import json
         json_valid_format = json.dumps(valid_format)
         return json_valid_format
