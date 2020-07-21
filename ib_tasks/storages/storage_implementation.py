@@ -1,13 +1,12 @@
 from typing import Optional, List
 
-from ib_tasks.interactors.storage_interfaces.dtos import (
-    StageDTO, TaskStagesDTO, TaskStatusDTO, ValidStageDTO)
-from ib_tasks.interactors.storage_interfaces.storage_interface import \
-    TaskStorageInterface
-from ib_tasks.models import Stage, TaskStatusVariable
+from ib_tasks.interactors.dtos import StageDTO
+from ib_tasks.interactors.storage_interfaces.dtos import (TaskStagesDTO, ValidStageDTO)
+from ib_tasks.interactors.storage_interfaces.stages_storage_interface import StageStorageInterface
+from ib_tasks.models import Stage
 
 
-class StorageImplementation(TaskStorageInterface):
+class StagesStorageImplementation(StageStorageInterface):
     def create_stages(self, stage_information: StageDTO):
         list_of_stages = []
         for stage in stage_information:
@@ -66,15 +65,3 @@ class StorageImplementation(TaskStorageInterface):
             if stage.stage_id not in stages:
                 invalid_task_id_stages.append(stage.stage_id)
         return invalid_task_id_stages
-
-    def get_valid_template_ids_in_given_template_ids(self,
-                                                     task_template_ids: List[str]) -> List[str]:
-        pass
-
-    def create_status_for_tasks(self, create_status_for_tasks: List[TaskStatusDTO]):
-        list_of_status_tasks = [TaskStatusVariable(
-            variable=status.status_variable_id,
-            task_template_id=status.task_template_id
-        ) for status in create_status_for_tasks]
-
-        TaskStatusVariable.objects.bulk_create(list_of_status_tasks)
