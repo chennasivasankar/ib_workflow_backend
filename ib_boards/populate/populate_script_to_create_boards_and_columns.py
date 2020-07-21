@@ -36,6 +36,7 @@ class PopulateCreateBoardsAndColumns:
         interactor.create_boards_and_columns(
             board_dtos=board_dtos, column_dtos=column_dtos
         )
+        return board_dtos, column_dtos
 
     @staticmethod
     def _convert_board_dict_to_board_dto(board_dict: Dict) -> BoardDTO:
