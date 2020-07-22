@@ -1,7 +1,7 @@
 from mock import create_autospec, Mock
 from ib_iam.interactors.company_interactor import CompanyInteractor
-from ib_iam.interactors.presenter_interfaces.company_presenter_interface import (
-    CompanyPresenterInterface
+from ib_iam.interactors.presenter_interfaces.add_company_presenter_interface import (
+    AddCompanyPresenterInterface
 )
 from ib_iam.tests.factories import CompanyDetailsWithUserIdsDTOFactory
 from ib_iam.interactors.storage_interfaces.company_storage_interface import (
@@ -14,7 +14,7 @@ class TestAddCompanyInteractor:
     def test_if_user_not_admin_returns_unauthorized_exception_response(self):
         from ib_iam.exceptions.custom_exceptions import UserHasNoAccess
         storage = create_autospec(CompanyStorageInterface)
-        presenter = create_autospec(CompanyPresenterInterface)
+        presenter = create_autospec(AddCompanyPresenterInterface)
         interactor = CompanyInteractor(storage=storage)
         user_id = "1"
         company_details_with_user_ids_dto = CompanyDetailsWithUserIdsDTOFactory()
@@ -36,7 +36,7 @@ class TestAddCompanyInteractor:
 
     def test_given_duplicate_users_returns_duplicate_users_response(self):
         storage = create_autospec(CompanyStorageInterface)
-        presenter = create_autospec(CompanyPresenterInterface)
+        presenter = create_autospec(AddCompanyPresenterInterface)
         interactor = CompanyInteractor(storage=storage)
         user_id = "1"
         user_ids = ["2", "2", "3", "1"]
@@ -57,7 +57,7 @@ class TestAddCompanyInteractor:
 
     def test_given_invalid_users_returns_invalid_users_response(self):
         storage = create_autospec(CompanyStorageInterface)
-        presenter = create_autospec(CompanyPresenterInterface)
+        presenter = create_autospec(AddCompanyPresenterInterface)
         interactor = CompanyInteractor(storage=storage)
         user_id = "1"
         valid_user_ids = ["2", "3"]
@@ -82,7 +82,7 @@ class TestAddCompanyInteractor:
 
     def test_company_name_exists_returns_company_name_already_exists_response(self):
         storage = create_autospec(CompanyStorageInterface)
-        presenter = create_autospec(CompanyPresenterInterface)
+        presenter = create_autospec(AddCompanyPresenterInterface)
         interactor = CompanyInteractor(storage=storage)
         user_id = "1"
         company_name = "company1"
@@ -115,7 +115,7 @@ class TestAddCompanyInteractor:
 
     def test_given_valid_details_then_returns_company_id(self):
         storage = create_autospec(CompanyStorageInterface)
-        presenter = create_autospec(CompanyPresenterInterface)
+        presenter = create_autospec(AddCompanyPresenterInterface)
         interactor = CompanyInteractor(storage=storage)
         user_id = "1"
         company_id = "1"

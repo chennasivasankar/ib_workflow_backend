@@ -2,7 +2,7 @@ from abc import ABC
 from abc import abstractmethod
 
 
-class CompanyPresenterInterface(ABC):
+class AddCompanyPresenterInterface(ABC):
 
     @abstractmethod
     def get_response_for_add_company(self, company_id: str):

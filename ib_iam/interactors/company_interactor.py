@@ -7,7 +7,7 @@ from ib_iam.exceptions import (
     DuplicateUsers
 )
 from ib_iam.interactors.presenter_interfaces \
-    .company_presenter_interface import CompanyPresenterInterface
+    .add_company_presenter_interface import AddCompanyPresenterInterface
 from ib_iam.interactors.storage_interfaces \
     .company_storage_interface import CompanyStorageInterface
 from ib_iam.interactors.storage_interfaces.dtos import (
@@ -24,7 +24,7 @@ class CompanyInteractor:
             self,
             user_id: str,
             company_details_with_user_ids_dto: CompanyDetailsWithUserIdsDTO,
-            presenter: CompanyPresenterInterface
+            presenter: AddCompanyPresenterInterface
     ):
         try:
             company_id = self.add_company(
