@@ -61,8 +61,8 @@ class AuthService:
             )
             return converted_user_tokens_dto
 
-    def user_log_out_from_a_device(self, user_id: int):
-        pass
+    def user_log_out_from_a_device(self, user_id: str):
+        self.interface.logout_in_all_devices(user_id=user_id)
 
     def get_reset_password_token(self, email: str,
                                  expires_in_sec: int) -> str:
