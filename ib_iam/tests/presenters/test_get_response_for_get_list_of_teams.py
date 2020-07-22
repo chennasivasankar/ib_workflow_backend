@@ -1,3 +1,4 @@
+import json
 from ib_iam.presenters.team_presenter_implementation import (
     TeamPresenterImplementation
 )
@@ -13,14 +14,11 @@ class TestGetResponseForGetListOfTeams:
             team_details_dtos=get_list_of_team_dtos
         )
 
-        import json
         response = json.loads(http_response.content)
 
         snapshot.assert_match(response, "response")
 
-    def test_given_zero_teams_exists_returns_http_response(
-            self,
-    ):
+    def test_given_zero_teams_exists_returns_http_response(self):
         json_presenter = TeamPresenterImplementation()
         from ib_iam.interactors.presenter_interfaces.dtos import TeamWithMembersDetailsDTO
 
@@ -33,6 +31,5 @@ class TestGetResponseForGetListOfTeams:
             )
         )
 
-        import json
         response = json.loads(http_response.content)
         assert response == {'teams': [], 'total_teams_count': 0}

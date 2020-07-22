@@ -1,13 +1,15 @@
+import json
 from ib_iam.presenters.team_presenter_implementation import (
     TeamPresenterImplementation
 )
-from ib_iam.constants.exception_messages import INVALID_LIMIT_FOR_GET_LIST_OF_TEAMS
+from ib_iam.constants.exception_messages import (
+    INVALID_LIMIT_FOR_GET_LIST_OF_TEAMS
+)
 
 
-class TestRaiseExceptionForUserHasNoAccess:
-    def test_when_it_is_called_it_returns_http_response(self):
+class TestRaiseExceptionForInvalidLimitForGetListOfTeams:
+    def test_whether_it_returns_invalid_limit_exception_http_response(self):
         json_presenter = TeamPresenterImplementation()
-        import json
         expected_response = INVALID_LIMIT_FOR_GET_LIST_OF_TEAMS[0]
         expected_res_status = INVALID_LIMIT_FOR_GET_LIST_OF_TEAMS[1]
         expected_http_status_code = 400

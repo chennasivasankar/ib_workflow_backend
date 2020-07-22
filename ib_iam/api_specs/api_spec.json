@@ -93,7 +93,7 @@
         }
       ]
     },
-    "ResponseForGetListOfTeams": {
+    "TeamsWithTotalTeamsCount": {
       "type": "object",
       "properties": {
         "total_teams_count": {
@@ -331,20 +331,20 @@
   },
   "parameters": {
     "LimitQueryParameter": {
-      "name": "limit_query_parameter",
+      "name": "limit",
       "in": "query",
       "required": true,
       "type": "integer",
       "default": 5
     },
     "OffsetQueryParameter": {
-      "name": "offset_query_parameter",
+      "name": "offset",
       "in": "query",
       "required": true,
       "type": "integer",
       "default": 0
     },
-    "AddTeamParameters": {
+    "AddTeamParameter": {
       "name": "details_to_add_team",
       "in": "body",
       "required": true,
@@ -386,7 +386,7 @@
     "SuccessResponseForGetListOfTeams": {
       "description": "returns list of teams",
       "schema": {
-        "$ref": "#/definitions/ResponseForGetListOfTeams"
+        "$ref": "#/definitions/TeamsWithTotalTeamsCount"
       }
     },
     "UnauthorizedResponseForAddTeam": {
@@ -480,7 +480,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/AddTeamParameters"
+            "$ref": "#/parameters/AddTeamParameter"
           }
         ],
         "responses": {
