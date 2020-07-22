@@ -16,3 +16,4 @@ class DeleteUserInteractor:
 
     def delete_user(self, user_id: str, delete_user_id: str):
         self.storage.delete_user(user_id=delete_user_id)
+        self.storage.delete_user_roles(user_id=delete_user_id)
