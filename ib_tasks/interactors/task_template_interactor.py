@@ -1,4 +1,3 @@
-from typing import List
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
 from ib_tasks.interactors.dtos import CreateTaskTemplateDTO
@@ -56,8 +55,8 @@ class TaskTemplateInteractor:
         from ib_tasks.constants.exception_messages import \
             INVALID_VALUE_FOR_TEMPLATE_NAME
         if is_template_name_empty:
-            err_msg = INVALID_VALUE_FOR_TEMPLATE_NAME
-            raise InvalidValueForField(err_msg)
+            message = INVALID_VALUE_FOR_TEMPLATE_NAME
+            raise InvalidValueForField(message)
 
     @staticmethod
     def _validate_template_id(template_id: str):
@@ -67,5 +66,5 @@ class TaskTemplateInteractor:
         from ib_tasks.constants.exception_messages import \
             INVALID_VALUE_FOR_TEMPLATE_ID
         if is_template_id_empty:
-            err_msg = INVALID_VALUE_FOR_TEMPLATE_ID
-            raise InvalidValueForField(err_msg)
+            message = INVALID_VALUE_FOR_TEMPLATE_ID
+            raise InvalidValueForField(message)
