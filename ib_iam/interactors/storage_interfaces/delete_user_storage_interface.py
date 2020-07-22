@@ -13,3 +13,7 @@ class DeleteUserStorageInterface(ABC):
     @abstractmethod
     def delete_user_teams(self, user_id: str):
         pass
+
+    @abstractmethod
+    def is_admin_user(self, user_id: str):
+        pass

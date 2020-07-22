@@ -31,6 +31,7 @@ class TestDeleteUserInteractor:
         delete_user_id = "2"
         interactor = DeleteUserInteractor(storage=storage_mock)
 
+        storage_mock.is_admin_user.return_value = True
         presenter_mock.get_delete_user_response.return_value = Mock()
 
         interactor.delete_user_wrapper(user_id=admin_user_id,
@@ -39,6 +40,8 @@ class TestDeleteUserInteractor:
 
         storage_mock.delete_user.assert_called_once_with(
             user_id=delete_user_id)
+        storage_mock.is_admin_user.assert_called_once_with(
+            user_id=admin_user_id)
         presenter_mock.get_delete_user_response.assert_called_once()
 
     def test_delete_user_given_valid_details_then_delete_user_roles_from_user_roles_db(
@@ -47,6 +50,7 @@ class TestDeleteUserInteractor:
         delete_user_id = "2"
         interactor = DeleteUserInteractor(storage=storage_mock)
 
+        storage_mock.is_admin_user.return_value = True
         presenter_mock.get_delete_user_response.return_value = Mock()
 
         interactor.delete_user_wrapper(user_id=admin_user_id,
@@ -57,6 +61,8 @@ class TestDeleteUserInteractor:
             user_id=delete_user_id)
         storage_mock.delete_user_roles.assert_called_once_with(
             user_id=delete_user_id)
+        storage_mock.is_admin_user.assert_called_once_with(
+            user_id=admin_user_id)
         presenter_mock.get_delete_user_response.assert_called_once()
 
     def test_delete_user_given_valid_user_id_then_delete_user_teams_from_user_team_db(
@@ -65,6 +71,7 @@ class TestDeleteUserInteractor:
         delete_user_id = "2"
         interactor = DeleteUserInteractor(storage=storage_mock)
 
+        storage_mock.is_admin_user.return_value = True
         presenter_mock.get_delete_user_response.return_value = Mock()
 
         interactor.delete_user_wrapper(user_id=admin_user_id,
@@ -77,6 +84,8 @@ class TestDeleteUserInteractor:
             user_id=delete_user_id)
         storage_mock.delete_user_teams.assert_called_once_with(
             user_id=delete_user_id)
+        storage_mock.is_admin_user.assert_called_once_with(
+            user_id=admin_user_id)
         presenter_mock.get_delete_user_response.assert_called_once()
 
     def test_delete_user_given_valid_delete_user_id_and_invalid_admin_user_id_then_raise_exception(
@@ -88,10 +97,9 @@ class TestDeleteUserInteractor:
         storage_mock.is_admin_user.return_value = False
         presenter_mock.get_delete_user_response.return_value = Mock()
 
-        with pytest.raises(UserIsNotAdmin):
-            interactor.delete_user_wrapper(user_id=invalid_admin_user_id,
-                                           delete_user_id=delete_user_id,
-                                           presenter=presenter_mock)
+        interactor.delete_user_wrapper(user_id=invalid_admin_user_id,
+                                       delete_user_id=delete_user_id,
+                                       presenter=presenter_mock)
 
         storage_mock.is_admin_user.assert_called_once_with(
             user_id=invalid_admin_user_id)
