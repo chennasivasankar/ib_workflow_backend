@@ -469,7 +469,7 @@
         "$ref": "#/definitions/TeamWithUserIds"
       }
     },
-    "TeamId": {
+    "TeamIdPathParameter": {
       "name": "team_id",
       "in": "path",
       "required": true,
@@ -683,7 +683,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/TeamId"
+            "$ref": "#/parameters/TeamIdPathParameter"
           },
           {
             "$ref": "#/parameters/UpdateTeamParameter"
@@ -717,7 +717,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/TeamId"
+            "$ref": "#/parameters/TeamIdPathParameter"
           }
         ],
         "responses": {
