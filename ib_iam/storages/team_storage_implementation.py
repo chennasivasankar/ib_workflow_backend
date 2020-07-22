@@ -10,7 +10,7 @@ from ib_iam.interactors.storage_interfaces.dtos import (
 
 class TeamStorageImplementation(TeamStorageInterface):
 
-    def raise_exception_if_user_is_not_admin(self, user_id: str):
+    def validate_is_user_admin(self, user_id: str):
         try:
             UserDetails.objects.get(user_id=user_id, is_admin=True)
         except UserDetails.DoesNotExist:

@@ -17,7 +17,7 @@ from ib_iam.interactors.storage_interfaces.team_storage_interface import (
 )
 
 
-class AddTeamInteractor:
+class TeamInteractor:
 
     def __init__(self, storage: TeamStorageInterface):
         self.storage = storage
@@ -50,19 +50,10 @@ class AddTeamInteractor:
             team_details_with_user_ids_dto: TeamDetailsWithUserIdsDTO
     ):
         user_ids = team_details_with_user_ids_dto.user_ids
-        self.storage.raise_exception_if_user_is_not_admin(user_id=user_id)
-        self._raise_exception_if_duplicate_user_ids_found(
-            user_ids=user_ids
+        self.storage.validate_is_user_admin(user_id=user_id)
+        self._validate_add_team_details(
+            team_details_with_user_ids_dto=team_details_with_user_ids_dto
         )
-        self._raise_exception_if_invalid_users_found(user_ids=user_ids)
-        team_id = self.storage.get_team_id_if_team_name_already_exists(
-            name=team_details_with_user_ids_dto.name
-        )
-        is_team_name_already_exists = team_id is not None
-        if is_team_name_already_exists:
-            raise TeamNameAlreadyExists(
-                team_name=team_details_with_user_ids_dto.name
-            )
         team_id = self.storage.add_team(
             user_id=user_id,
             team_details_with_user_ids_dto=team_details_with_user_ids_dto
@@ -72,13 +63,20 @@ class AddTeamInteractor:
         )
         return team_id
 
+    def _validate_add_team_details(self, team_details_with_user_ids_dto):
+        user_ids = team_details_with_user_ids_dto.user_ids
+        name = team_details_with_user_ids_dto.name
+        self._validate_is_duplicate_users_exists(user_ids=user_ids)
+        self._validate_is_invalid_users_exists(user_ids=user_ids)
+        self._validate_is_team_name_already_exists(name=name)
+
     @staticmethod
-    def _raise_exception_if_duplicate_user_ids_found(user_ids: List[str]):
+    def _validate_is_duplicate_users_exists(user_ids: List[str]):
         is_duplicate_user_ids_exist = len(user_ids) != len(set(user_ids))
         if is_duplicate_user_ids_exist:
             raise DuplicateUsers()
 
-    def _raise_exception_if_invalid_users_found(self, user_ids: List[str]):
+    def _validate_is_invalid_users_exists(self, user_ids: List[str]):
         user_ids_from_db = \
             self.storage.get_valid_user_ids_among_the_given_user_ids(
                 user_ids=user_ids
@@ -86,3 +84,10 @@ class AddTeamInteractor:
         is_invalid_users_found = len(user_ids) != len(user_ids_from_db)
         if is_invalid_users_found:
             raise InvalidUsers()
+
+    def _validate_is_team_name_already_exists(self, name: str):
+        team_id = \
+            self.storage.get_team_id_if_team_name_already_exists(name=name)
+        is_team_name_already_exists = team_id is not None
+        if is_team_name_already_exists:
+            raise TeamNameAlreadyExists(team_name=name)
