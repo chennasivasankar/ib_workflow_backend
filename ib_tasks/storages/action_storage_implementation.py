@@ -50,7 +50,7 @@ class ActionsStorageImplementation(ActionStorageInterface):
 
         StageAction.objects.bulk_create(list_of_actions)
         q = None
-        for counter, item in enumerate(list_of_actions):
+        for counter, item in enumerate(stage_actions):
             current_queue = Q(stage_id__stage_id=item.stage_id, name=item.action_name)
             if counter == 0:
                 q = current_queue
