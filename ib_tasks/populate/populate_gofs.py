@@ -56,7 +56,6 @@ def get_gof_dto_for_a_gof_record(gof_record: Dict) -> GoFDTO:
 
 
 def get_gof_roles_dto_for_a_gof_record(gof_record: Dict) -> GoFRolesDTO:
-    import json
     read_permissions_is_empty = \
         not gof_record['Read permission Roles*'].strip()
     write_permissions_is_empty = \

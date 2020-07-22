@@ -210,7 +210,7 @@ class CreateOrUpdateGoFsInteractor:
 
     @staticmethod
     def _validate_max_column_value(
-            max_columns: Union[None, int, str]
+            max_columns: int
     ) -> Union[None, MaxColumnsMustBeAPositiveInteger]:
         from ib_tasks.constants.exception_messages import (
             MAX_COLUMNS_VALUE_MUST_BE_POSITIVE_INTEGER_MESSAGE
