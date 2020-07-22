@@ -11,7 +11,7 @@ class TestInvalidLimitValue:
         exception_res_status = INVALID_LIMIT_VALUE[1]
 
         # Act
-        response_object = presenter.raise_exception_for_invalid_limit_value()
+        response_object = presenter.response_for_invalid_limit_value()
 
         # Assert
         import json

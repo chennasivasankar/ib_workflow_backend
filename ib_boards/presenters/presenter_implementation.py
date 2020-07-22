@@ -163,25 +163,25 @@ class GetColumnTasksPresenterImplementation(
 
 class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
 
-    def raise_exception_for_invalid_board_id(self) -> response.HttpResponse:
+    def response_for_invalid_board_id(self) -> response.HttpResponse:
         response_object = {"response": INVALID_BOARD_ID[0],
                            "http_status_code": 404,
                            "res_status": INVALID_BOARD_ID[1]}
         return self.prepare_404_not_found_response(response_dict=response_object)
 
-    def raise_exception_for_invalid_offset_value(self):
+    def response_for_invalid_offset_value(self):
         response_object = {"response": INVALID_OFFSET_VALUE[0],
                            "http_status_code": 400,
                            "res_status": INVALID_OFFSET_VALUE[1]}
         return self.prepare_400_bad_request_response(response_object)
 
-    def raise_exception_for_invalid_limit_value(self):
+    def response_for_invalid_limit_value(self):
         response_object = {"response": INVALID_LIMIT_VALUE[0],
                            "http_status_code": 400,
                            "res_status": INVALID_LIMIT_VALUE[1]}
         return self.prepare_400_bad_request_response(response_object)
 
-    def raise_exception_for_user_donot_have_access_for_board(self):
+    def response_for_user_donot_have_access_for_board(self):
         response_object = {"response": USER_DONOT_HAVE_ACCESS[0],
                            "http_status_code": 403,
                            "res_status": USER_DONOT_HAVE_ACCESS[1]}

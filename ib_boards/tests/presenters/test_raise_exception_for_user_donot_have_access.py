@@ -11,7 +11,7 @@ class TestUserDonotHaveAccess:
         exception_res_status = USER_DONOT_HAVE_ACCESS[1]
 
         # Act
-        response_object = presenter.raise_exception_for_user_donot_have_access_for_board()
+        response_object = presenter.response_for_user_donot_have_access_for_board()
 
         # Assert
         import json
