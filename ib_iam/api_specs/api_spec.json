@@ -576,6 +576,30 @@
       "schema": {
         "$ref": "#/definitions/BadRequestResponseForGetCompanies"
       }
+    },
+    "UnauthorizedResponseForAddCompany": {
+      "description": "User has no access to add a company",
+      "schema": {
+        "$ref": "#/definitions/UnauthorizedResponseForAddCompany"
+      }
+    },
+    "NotFoundResponseForAddCompany": {
+      "description": "Requested users not found to add",
+      "schema": {
+        "$ref": "#/definitions/NotFoundResponseForAddCompany"
+      }
+    },
+    "BadRequestResponseForAddCompany": {
+      "description": "Company name already exists or duplicate users has sent",
+      "schema": {
+        "$ref": "#/definitions/BadRequestResponseForAddCompany"
+      }
+    },
+    "SuccessfullyCreatedResponseForAddCompany": {
+      "description": "Company Created successfully",
+      "schema": {
+        "$ref": "#/definitions/CompanyId"
+      }
     }
   },
   "paths": {
@@ -729,6 +753,39 @@
           },
           "401": {
             "$ref": "#/responses/UnauthorizedResponseForGetCompanies"
+          }
+        }
+      }
+    },
+    "/company/add/v1/": {
+      "post": {
+        "summary": "Adds a new company",
+        "description": "Creates/Adds a new company",
+        "operationId": "add_company",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/AddCompanyParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/SuccessfullyCreatedResponseForAddCompany"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequestResponseForAddCompany"
+          },
+          "401": {
+            "$ref": "#/responses/UnauthorizedResponseForAddCompany"
+          },
+          "404": {
+            "$ref": "#/responses/NotFoundResponseForAddCompany"
           }
         }
       }
