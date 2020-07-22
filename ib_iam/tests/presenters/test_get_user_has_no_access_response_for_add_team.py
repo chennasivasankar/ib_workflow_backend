@@ -1,3 +1,4 @@
+import json
 from ib_iam.presenters.team_presenter_implementation import (
     TeamPresenterImplementation
 )
@@ -6,10 +7,9 @@ from ib_iam.constants.exception_messages import (
 )
 
 
-class TestRaiseExceptionForUserHasNoAccess:
+class TestRaiseExceptionForUserHasNoAccessForAddTeam:
     def test_when_it_is_called_it_returns_http_response(self):
         json_presenter = TeamPresenterImplementation()
-        import json
         expected_response = USER_HAS_NO_ACCESS_FOR_ADD_TEAM[0]
         expected_res_status = USER_HAS_NO_ACCESS_FOR_ADD_TEAM[1]
         expected_http_status_code = 401

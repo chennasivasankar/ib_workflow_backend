@@ -26,7 +26,7 @@ class TestGetListOfTeamsInteractor:
         interactor = GetListOfTeamsInteractor(storage=storage)
         user_id = "1"
         pagination_dto = PaginationDTOFactory()
-        storage.raise_exception_if_user_is_not_admin \
+        storage.validate_is_user_admin \
                .side_effect = UserHasNoAccess
         presenter.get_user_has_no_access_response_for_get_list_of_teams \
                  .return_value = Mock()
@@ -36,7 +36,7 @@ class TestGetListOfTeamsInteractor:
             presenter=presenter
         )
 
-        storage.raise_exception_if_user_is_not_admin.assert_called_once_with(
+        storage.validate_is_user_admin.assert_called_once_with(
             user_id=user_id
         )
         presenter.get_user_has_no_access_response_for_get_list_of_teams \

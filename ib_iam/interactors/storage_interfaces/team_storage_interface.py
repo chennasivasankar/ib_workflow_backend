@@ -10,7 +10,7 @@ from ib_iam.interactors.storage_interfaces.dtos import (
 class TeamStorageInterface:
 
     @abstractmethod
-    def raise_exception_if_user_is_not_admin(self, user_id: str):
+    def validate_is_user_admin(self, user_id: str):
         pass
 
     @abstractmethod
