@@ -48,7 +48,8 @@ class PopulateGoFsToTaskTemplate:
         return gofs_with_template_id_dto
 
     def _get_gof_with_order_and_add_another_dtos(
-            self, gofs_list: List[str]) -> List[GoFWithOrderAndAddAnotherDTO]:
+            self, gofs_list: List[any]) -> List[GoFWithOrderAndAddAnotherDTO]:
+
         gof_with_order_and_add_another_dtos = []
         for gof in gofs_list:
             gof_id = gof[0]
@@ -72,7 +73,7 @@ class PopulateGoFsToTaskTemplate:
 
             gof_with_order_and_add_another_dto = GoFWithOrderAndAddAnotherDTO(
                 gof_id=gof_id, order=order,
-                enable_add_another_gof=bool(enable_add_another_gof)
+                enable_add_another_gof=enable_add_another_gof
             )
             gof_with_order_and_add_another_dtos.append(
                 gof_with_order_and_add_another_dto

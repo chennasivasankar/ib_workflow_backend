@@ -48,7 +48,7 @@ class PopulateGlobalConstantsToTemplate:
         return global_constants_with_template_id_dto
 
     def _get_global_constant_dtos(
-            self, global_constants_list: List[str]
+            self, global_constants_list: List[any]
     ) -> List[GlobalConstantsDTO]:
         global_constants_dtos = []
         for global_constant in global_constants_list:
@@ -69,7 +69,7 @@ class PopulateGlobalConstantsToTemplate:
                 constant_name=constant_name, value=value
             )
             global_constants_dtos.append(global_constants_dto)
-        return  global_constants_dtos
+        return global_constants_dtos
 
     @staticmethod
     def _populate_global_constants_to_template_in_db(
