@@ -37,5 +37,7 @@ class TestDeleteUserInteractor:
                                        presenter=presenter_mock)
 
         storage_mock.delete_user.assert_called_once_with(
-            user_id=admin_user_id, delete_user_id=delete_user_id)
+            user_id=delete_user_id)
         presenter_mock.get_delete_user_response.assert_called_once()
+
+
