@@ -12,7 +12,7 @@ class TestTasksStorageImplementation:
 
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
-        TaskTemplateFactory.reset_sequence()
+        TaskTemplateFactory.reset_sequence(1)
 
     @pytest.mark.django_db
     def test_check_is_template_exists_with_invalid_template_id_returns_false(
@@ -47,9 +47,6 @@ class TestTasksStorageImplementation:
         task_template = TaskTemplateFactory()
         template_id = task_template.template_id
         expected_template_name = task_template.name
-        TaskTemplateFactory(
-            template_id=template_id, name=expected_template_name
-        )
 
         #Act
         template_name = \

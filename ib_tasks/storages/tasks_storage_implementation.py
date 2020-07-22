@@ -4,7 +4,7 @@ from ib_tasks.interactors.dtos import CreateTaskTemplateDTO, \
     GlobalConstantsDTO
 from ib_tasks.interactors.storage_interfaces.dtos import (
     GoFDTO, GoFRoleDTO, FieldDTO, FieldRoleDTO, TaskStatusDTO, TaskStagesDTO,
-    StageInformationDTO
+    StageInformationDTO, FieldTypeDTO
 )
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
@@ -12,6 +12,10 @@ from ib_tasks.models import GoFRole, GoF
 
 
 class TasksStorageImplementation(TaskStorageInterface):
+
+    def get_field_types_for_given_field_ids(self, field_ids: List[str]) -> \
+            List[FieldTypeDTO]:
+        pass
 
     def get_valid_template_ids_in_given_template_ids(
             self, template_ids: List[str]
@@ -187,8 +191,8 @@ class TasksStorageImplementation(TaskStorageInterface):
     def get_existing_field_ids(self, field_ids: List[str]) -> List[str]:
         from ib_tasks.models.field import Field
         valid_field_ids = list(
-            Field.objects.filter(field_id__in=field_ids)\
-                         .values_list('field_id', flat=True)
+            Field.objects.filter(field_id__in=field_ids) \
+                .values_list('field_id', flat=True)
         )
         return valid_field_ids
 

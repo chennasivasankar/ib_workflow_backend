@@ -23,13 +23,14 @@ def prepare_get_roles_for_valid_mock(mocker):
     )
     roles = ["ROLE_1", "ROLE_2", "ROLE_3", "ROLE_4", "ROLE_5"]
     mock.return_value = roles
+    return mock
 
 
 def get_user_role_ids(mocker):
-     mock = mocker.patch(
-         "ib_tasks.adapters.roles_service.RolesService.get_user_role_ids")
-     user_role_ids = [
-         "FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC"
-     ]
-     mock.return_value = user_role_ids
-
+    mock = mocker.patch(
+        "ib_tasks.adapters.roles_service.RolesService.get_user_role_ids")
+    user_role_ids = [
+        "FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC"
+    ]
+    mock.return_value = user_role_ids
+    return mock
