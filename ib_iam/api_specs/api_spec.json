@@ -113,7 +113,6 @@
         }
       }
     },
-    "ResponseForGetListOfTeams": {
     "TeamsWithTotalTeamsCount": {
       "type": "object",
       "properties": {
