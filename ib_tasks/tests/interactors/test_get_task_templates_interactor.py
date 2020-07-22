@@ -163,7 +163,7 @@ class TestGetTaskTemplatesInteractor:
         task_storage_mock.get_task_template_dtos.return_value = \
             task_template_dtos
 
-        from ib_tasks.exceptions.custom_exceptions import \
+        from ib_tasks.exceptions.task_custom_exceptions import \
             TaskTemplatesDoesNotExists
 
         # Act

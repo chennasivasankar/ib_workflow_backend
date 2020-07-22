@@ -303,8 +303,3 @@ class EmptyValuesForAllowedFormats(Exception):
 class InvalidValueForSearchable(Exception):
     def __init__(self, message: str):
         self.message = message
-
-
-class TaskTemplatesDoesNotExists(Exception):
-    def __init__(self, message: str):
-        self.message = message

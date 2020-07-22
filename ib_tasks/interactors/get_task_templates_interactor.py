@@ -55,7 +55,7 @@ class GetTaskTemplatesInteractor:
     def _validate_task_templates_are_exists(
             task_template_dtos: List[TaskTemplateDTO]):
         task_templates_are_empty = not task_template_dtos
-        from ib_tasks.exceptions.custom_exceptions import \
+        from ib_tasks.exceptions.task_custom_exceptions import \
             TaskTemplatesDoesNotExists
         from ib_tasks.constants.exception_messages import \
             TASK_TEMPLATES_DOES_NOT_EXISTS_IN_DATABASE
