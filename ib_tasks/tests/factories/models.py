@@ -59,7 +59,7 @@ class TaskTemplateGlobalConstantsFactory(factory.django.DjangoModelFactory):
     value = factory.Sequence(lambda n: "value%d" % n)
     data_type = factory.Sequence(lambda n: "data_type_%d" % n)
 from ib_tasks.models.global_constant import GlobalConstant
-from ib_tasks.models.gof_to_task_template import GoFToTaskTemplate
+from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
 
 class TaskTemplateFactory(factory.django.DjangoModelFactory):
@@ -114,7 +114,7 @@ class GlobalConstantFactory(factory.django.DjangoModelFactory):
 
 class GoFToTaskTemplateFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = GoFToTaskTemplate
+        model = TaskTemplateGoFs
 
     task_template = factory.SubFactory(TaskTemplateFactory)
     gof = factory.SubFactory(GoFFactory)

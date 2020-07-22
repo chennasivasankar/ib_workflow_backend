@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List
 
 
 class InvalidStageIdsException(Exception):
@@ -31,7 +31,6 @@ class InvalidTaskIdException(Exception):
 class InvalidTaskTemplateId(Exception):
     def __init__(self, task_template_ids_dict: str):
         self.task_template_ids_dict = task_template_ids_dict
-from typing import List
 
 
 class InvalidStagesTaskTemplateId(Exception):
@@ -63,10 +62,11 @@ class DuplicateTaskStatusVariableIds(Exception):
     def __init__(self, duplicate_status_ids_for_tasks: List[str]):
         self.task_ids = duplicate_status_ids_for_tasks
 
+
 class DuplicateGoFIds(Exception):
-    def __init__(self, gof_ids: List[str]):
-        self.message = "Given duplicate gof ids {}".format(gof_ids)
-        super().__init__(self.message)
+    def __int__(self, message: str):
+        self.message = message
+
 
 class InvalidStagesDisplayName(Exception):
     def __init__(self, invalid_stages_display_name: List[str]):
@@ -157,25 +157,18 @@ class GoFIDsAlreadyExists(Exception):
 
 
 class ExistingGlobalConstantNamesNotInGivenData(Exception):
-    def __init__(self, constant_names: List[str]):
-        self.message = \
-            "Existing constants with constant names: {} of template not in " \
-            "given data".format(constant_names)
-        super().__init__(self.message)
+    def __int__(self, message: str):
+        self.message = message
 
 
 class TemplateDoesNotExists(Exception):
-    def __init__(self, template_id: str):
-        self.message = "The template with template id: {}, does not exists". \
-            format(template_id)
-        super().__init__(self.message)
+    def __int__(self, message: str):
+        self.message = message
 
 
 class DuplicateConstantNames(Exception):
-    def __init__(self, constant_names: List[str]):
-        self.message = \
-            "Given duplicate constant names {}".format(constant_names)
-        super().__init__(self.message)
+    def __int__(self, message: str):
+        self.message = message
 
 
 class InvalidFieldIdException(Exception):
@@ -184,16 +177,15 @@ class InvalidFieldIdException(Exception):
 
 
 class DuplicationOfFieldIdsExist(Exception):
-
     def __init__(self, field_ids: List[str]):
         self.field_ids = field_ids
 
 
 class FieldsDuplicationOfDropDownValues(Exception):
-
     def __init__(self, fieds_with_dropdown_duplicate_values):
         self.fieds_with_dropdown_duplicate_values = \
             fieds_with_dropdown_duplicate_values
+
 
 class EmptyValueForPermissions(Exception):
 
@@ -239,13 +231,8 @@ class GofsDoesNotExist(Exception):
 
 
 class ExistingGoFsNotInGivenGoFs(Exception):
-    def __init__(self,
-                 gof_of_template_not_in_given_gof: List[str],
-                 given_gof_ids: List[str]):
-        self.message = \
-            "Existing gof ids: {} of template not in given gof ids: {}". \
-                format(gof_of_template_not_in_given_gof, given_gof_ids)
-        super().__init__(self.message)
+    def __int__(self, message: str):
+        self.message = message
 
 
 class DuplicateOrderValuesForGoFs(Exception):

@@ -163,9 +163,9 @@ class TasksStorageImplementation(TaskStorageInterface):
 
     def get_existing_gof_ids_of_template(
             self, template_id: str) -> List[str]:
-        from ib_tasks.models.gof_to_task_template import GoFToTaskTemplate
+        from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
-        gof_ids_of_template_queryset = GoFToTaskTemplate.objects.filter(
+        gof_ids_of_template_queryset = TaskTemplateGoFs.objects.filter(
             task_template_id=template_id
         ).values_list('gof_id', flat=True)
 
@@ -175,9 +175,9 @@ class TasksStorageImplementation(TaskStorageInterface):
     def add_gofs_to_template(
             self, template_id: str,
             gof_dtos: List[GoFWithOrderAndAddAnotherDTO]):
-        from ib_tasks.models.gof_to_task_template import GoFToTaskTemplate
+        from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
         gofs_to_template_objs = [
-            GoFToTaskTemplate(
+            TaskTemplateGoFs(
                 task_template_id=template_id,
                 gof_id=gof_dto.gof_id, order=gof_dto.order,
                 enable_add_another_gof=gof_dto.enable_add_another_gof
@@ -185,7 +185,7 @@ class TasksStorageImplementation(TaskStorageInterface):
             for gof_dto in gof_dtos
         ]
 
-        GoFToTaskTemplate.objects.bulk_create(gofs_to_template_objs)
+        TaskTemplateGoFs.objects.bulk_create(gofs_to_template_objs)
 
     def update_gofs_to_template(
             self, template_id: str,
@@ -193,9 +193,9 @@ class TasksStorageImplementation(TaskStorageInterface):
 
         gof_ids = self._get_gof_ids(gof_dtos=gof_dtos)
         gofs_dict = self._make_gofs_dict(gof_dtos=gof_dtos)
-        from ib_tasks.models.gof_to_task_template import GoFToTaskTemplate
+        from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
-        gof_to_task_template_objs = GoFToTaskTemplate.objects.filter(
+        gof_to_task_template_objs = TaskTemplateGoFs.objects.filter(
             gof_id__in=gof_ids, task_template_id=template_id
         )
         for gof_to_task_template_obj in gof_to_task_template_objs:
@@ -204,7 +204,7 @@ class TasksStorageImplementation(TaskStorageInterface):
             gof_to_task_template_obj.enable_add_another_gof = \
                 gofs_dict[gof_to_task_template_obj.gof_id].enable_add_another_gof
 
-        GoFToTaskTemplate.objects.bulk_update(
+        TaskTemplateGoFs.objects.bulk_update(
             gof_to_task_template_objs, ['order', 'enable_add_another_gof']
         )
 
