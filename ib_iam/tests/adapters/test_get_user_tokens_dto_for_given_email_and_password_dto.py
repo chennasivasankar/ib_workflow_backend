@@ -51,6 +51,7 @@ class TestGetUserTokens:
 
         # Assert
         assert response == expected_user_tokens_dtos
+        get_user_auth_tokens_for_login_with_email_and_password_mock.assert_called_once()
 
     @patch(
         "ib_users.interfaces.service_interface.ServiceInterface.get_user_auth_tokens_for_login_with_email_and_password"
@@ -81,6 +82,7 @@ class TestGetUserTokens:
             auth_service.get_user_tokens_dto_for_given_email_and_password_dto(
                 email_and_password_dto=email_and_password_dto
             )
+        get_user_auth_tokens_for_login_with_email_and_password_mock.assert_called_once()
 
     @patch(
         "ib_users.interfaces.service_interface.ServiceInterface.get_user_auth_tokens_for_login_with_email_and_password"
@@ -113,6 +115,7 @@ class TestGetUserTokens:
             auth_service.get_user_tokens_dto_for_given_email_and_password_dto(
                 email_and_password_dto=email_and_password_dto
             )
+        get_user_auth_tokens_for_login_with_email_and_password_mock.assert_called_once()
 
     @patch(
         "ib_users.interfaces.service_interface.ServiceInterface.get_user_auth_tokens_for_login_with_email_and_password"
@@ -147,6 +150,7 @@ class TestGetUserTokens:
             auth_service.get_user_tokens_dto_for_given_email_and_password_dto(
                 email_and_password_dto=email_and_password_dto
             )
+        get_user_auth_tokens_for_login_with_email_and_password_mock.assert_called_once()
 
     @patch(
         "ib_users.interfaces.service_interface.ServiceInterface.get_user_auth_tokens_for_login_with_email_and_password"
@@ -181,3 +185,4 @@ class TestGetUserTokens:
             auth_service.get_user_tokens_dto_for_given_email_and_password_dto(
                 email_and_password_dto=email_and_password_dto
             )
+        get_user_auth_tokens_for_login_with_email_and_password_mock.assert_called_once()

@@ -61,6 +61,9 @@ class TestUpdateUserPasswordAdapter:
                 password=password
             )
 
+        reset_password_for_given_user_password_reset_token_mock. \
+            assert_called_once()
+
     @patch(
         "ib_users.interfaces.service_interface.ServiceInterface.reset_password_for_given_user_password_reset_token"
     )
@@ -94,6 +97,9 @@ class TestUpdateUserPasswordAdapter:
                 password=password
             )
 
+        reset_password_for_given_user_password_reset_token_mock. \
+            assert_called_once()
+
     @patch(
         "ib_users.interfaces.service_interface.ServiceInterface.reset_password_for_given_user_password_reset_token"
     )
@@ -121,6 +127,9 @@ class TestUpdateUserPasswordAdapter:
                 reset_password_token=reset_password_token,
                 password=password
             )
+
+        reset_password_for_given_user_password_reset_token_mock. \
+            assert_called_once()
 
     @patch(
         "ib_users.interfaces.service_interface.ServiceInterface.reset_password_for_given_user_password_reset_token"
@@ -150,3 +159,5 @@ class TestUpdateUserPasswordAdapter:
                 reset_password_token=reset_password_token,
                 password=password
             )
+        reset_password_for_given_user_password_reset_token_mock. \
+            assert_called_once()

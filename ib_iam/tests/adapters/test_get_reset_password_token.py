@@ -30,6 +30,7 @@ class TestGetResetPasswordToken:
 
         # Assert
         assert response == expected_token
+        get_reset_password_token_for_reset_password_mock.assert_called_once()
 
     @patch(
         "ib_users.interfaces.service_interface.ServiceInterface.get_reset_password_token_for_reset_password"
@@ -57,3 +58,4 @@ class TestGetResetPasswordToken:
             auth_service.get_reset_password_token(
                 email=email, expires_in_sec=expires_in_sec
             )
+        get_reset_password_token_for_reset_password_mock.assert_called_once()
