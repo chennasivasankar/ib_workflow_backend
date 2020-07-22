@@ -66,3 +66,8 @@ INVALID_TEAM_FOR_DELETE_TEAM = (
     "Given team is invalid(NotFound)",
     "INVALID_TEAM"
 )
+
+USER_HAS_NO_ACCESS_FOR_GET_COMPANIES = (
+    "User has no access to see all available companies",
+    "USER_HAS_NO_ACCESS"
+)

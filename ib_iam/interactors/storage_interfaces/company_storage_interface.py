@@ -1,7 +1,7 @@
 from abc import ABC
 from abc import abstractmethod
 from ib_iam.interactors.storage_interfaces.dtos import (
-    PaginationDTO, BasicCompanyDTO, CompanyWithEmployeeCountDTO
+    CompanyDTO, CompanyWithEmployeesCountDTO
 )
 from typing import List
 
@@ -9,17 +9,15 @@ from typing import List
 class CompanyStorageInterface(ABC):
 
     @abstractmethod
-    def is_user_admin(self, user_id: str):
+    def raise_exception_if_user_is_not_admin(self, user_id: str):
         pass
 
     @abstractmethod
-    def get_company_dtos_along_with_count(
-            self, user_id: str, pagination_dto: PaginationDTO
-    ) -> (List[BasicCompanyDTO], int):
+    def get_company_dtos(self) -> List[CompanyDTO]:
         pass
 
     @abstractmethod
-    def get_company_employee_ids_dtos(
+    def get_company_with_employees_count_dtos(
             self, company_ids: List[str]
-    ) -> List[CompanyWithEmployeeCountDTO]:
+    ) -> List[CompanyWithEmployeesCountDTO]:
         pass

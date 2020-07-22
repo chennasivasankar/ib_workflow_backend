@@ -59,6 +59,6 @@ class CompanyDTO:
 
 
 @dataclass
-class CompanyWithTotalCompaniesCountDTO:
-    company_dtos: List[CompanyDTO]
-    total_companies_count: int
+class CompanyWithEmployeesCountDTO:
+    company_id: str
+    no_of_employees: int

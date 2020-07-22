@@ -9,5 +9,7 @@ from .storage_dtos import (
     TeamNameAndDescriptionDTOFactory,
     PaginationDTOFactory,
     TeamDetailsWithUserIdsDTOFactory,
-    TeamWithUserIdsDTOFactory
+    TeamWithUserIdsDTOFactory,
+    CompanyDTOFactory,
+    CompanyWithEmployeesCountDTOFactory
 )

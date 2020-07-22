@@ -5,6 +5,8 @@ from ib_iam.tests.factories import (
 from ib_iam.tests.factories.presenter_dtos import (
     TeamWithMembersDetailsDTOFactory
 )
+from ib_iam.interactors.presenter_interfaces.get_companies_presenter_interface import \
+    CompanyDetailsWithEmployeesCountDTO
 
 team_ids = [
     "f2c02d98-f311-4ab2-8673-3daa00757002",
@@ -17,6 +19,7 @@ member_ids = [
     '4b8fb6eb-fa7d-47c1-8726-cd917901104e',
     '7ee2c7b4-34c8-4d65-a83a-f87da75db24e'
 ]
+
 
 @pytest.fixture()
 def get_list_of_team_dtos():
@@ -41,3 +44,29 @@ def get_list_of_team_dtos():
         member_dtos=members_dtos
     )
     return teams_dto
+
+
+@pytest.fixture
+def get_company_details_dtos():
+    from ib_iam.tests.factories import CompanyDTOFactory
+    from ib_iam.tests.factories import CompanyWithEmployeesCountDTOFactory
+    company_ids = [
+        "f2c02d98-f311-4ab2-8673-3daa00757003",
+        "aa66c40f-6d93-484a-b418-984716514c7c",
+        "c982032b-53a7-4dfa-a627-4701a5230767"
+    ]
+    CompanyDTOFactory.reset_sequence(1)
+    company_dtos = [
+        CompanyDTOFactory(company_id=company_id) for company_id in company_ids
+    ]
+    company_with_employees_count_dtos = [
+        CompanyWithEmployeesCountDTOFactory(
+            company_id=company_id,
+            no_of_employees=i
+        ) for company_id, i in zip(company_ids, range(3, 7, 2))
+    ]
+    company_details_dtos = CompanyDetailsWithEmployeesCountDTO(
+        company_dtos=company_dtos,
+        company_with_employees_count_dtos=company_with_employees_count_dtos
+    )
+    return company_details_dtos
