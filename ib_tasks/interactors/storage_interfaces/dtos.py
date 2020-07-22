@@ -86,10 +86,7 @@ class StageActionNamesDTO:
 class GoFDTO:
     gof_id: str
     gof_display_name: str
-    task_template_id: str
-    order: int
     max_columns: int
-    enable_multiple_gofs: bool
 
 
 @dataclass

@@ -21,7 +21,7 @@ class TestTaskTemplateInteractor:
 
         from ib_tasks.constants.exception_messages import \
             INVALID_VALUE_FOR_TEMPLATE_NAME
-        expected_err_msg = INVALID_VALUE_FOR_TEMPLATE_NAME
+        expected_err_msg = "Invalid value for field: " + INVALID_VALUE_FOR_TEMPLATE_NAME
 
         from ib_tasks.interactors.task_template_interactor \
             import TaskTemplateInteractor
@@ -49,7 +49,7 @@ class TestTaskTemplateInteractor:
 
         from ib_tasks.constants.exception_messages import \
             INVALID_VALUE_FOR_TEMPLATE_ID
-        expected_err_msg = INVALID_VALUE_FOR_TEMPLATE_ID
+        expected_err_msg = "Invalid value for field: " + INVALID_VALUE_FOR_TEMPLATE_ID
 
         from ib_tasks.interactors.task_template_interactor \
             import TaskTemplateInteractor

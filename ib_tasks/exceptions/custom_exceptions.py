@@ -211,10 +211,10 @@ class FieldsDuplicationOfDropDownValues(Exception):
             fieds_with_dropdown_duplicate_values
 
 
-class InvalidRolesException(Exception):
-
-    def __init__(self, roles):
-        self.roles = roles
+# class InvalidRolesException(Exception):
+#
+#     def __init__(self, roles):
+#         self.roles = roles
 
 
 class EmptyValueForPermissions(Exception):
