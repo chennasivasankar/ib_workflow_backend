@@ -23,3 +23,9 @@ class TaskActionsDTO:
     name: str
     button_text: str
     button_color: Optional[str]
+
+
+@dataclass
+class BoardDTO:
+    board_id: str
+    display_name: str

@@ -2,7 +2,7 @@ import factory
 
 from ib_boards.interactors.dtos import TaskDTO, TaskDetailsDTO, FieldsDTO
 from ib_boards.interactors.storage_interfaces.dtos import (
-    TaskFieldsDTO, TaskActionsDTO, ColumnDetailsDTO)
+    TaskFieldsDTO, TaskActionsDTO, ColumnDetailsDTO, BoardDTO)
 
 class TaskDTOFactory(factory.Factory):
     class Meta:
@@ -60,3 +60,11 @@ class FieldsDTOFactory(factory.Factory):
 
     task_template_id = factory.Sequence(lambda n: "task_template_id%d" % n)
     field_id = factory.Sequence(lambda n: "field_id_%d" % n)
+
+
+class BoardDTOFactory(factory.Factory):
+    class Meta:
+        model = BoardDTO
+
+    board_id = factory.Sequence(lambda n: f'BOARD_ID_{n + 1}')
+    display_name = factory.Sequence(lambda n: f'BOARD_DISPLAY_NAME')
