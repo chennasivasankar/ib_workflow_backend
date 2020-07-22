@@ -2,8 +2,10 @@ from typing import List
 
 from ib_iam.exceptions.exceptions import UserIsNotAdmin, GivenNameIsEmpty, \
     InvalidEmailAddressException, \
-    UserAccountAlreadyExistWithThisEmail, NameShouldNotContainsNumbersSpecCharactersException, \
-    RoleIdsAreInvalidException, InvalidCompanyIdException, TeamIdsAreInvalidException
+    UserAccountAlreadyExistWithThisEmail, \
+    NameShouldNotContainsNumbersSpecCharactersException, \
+    RoleIdsAreInvalidException, InvalidCompanyIdException, \
+    TeamIdsAreInvalidException
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.presenter_interface \
     import PresenterInterface
@@ -81,7 +83,6 @@ class AddNewUserInteractor(ValidationMixin):
         service_adapter = get_service_adapter()
         user_profile_dto = self._create_user_profile_dto(
             name=name, email=email, user_id=user_id)
-        print(user_id, "--------")
         service_adapter.user_service.create_user_profile(
             user_id=user_id, user_profile_dto=user_profile_dto)
 
