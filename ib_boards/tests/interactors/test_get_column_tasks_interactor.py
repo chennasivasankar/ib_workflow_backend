@@ -167,6 +167,10 @@ class TestGetColumnTasksInteractor:
         # Arrange
         stage_ids = ['STAGE_ID_1', 'STAGE_ID_1']
         task_ids = ['TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3']
+        stage_display_logics = [
+            'STATUS_ID_3 == STAGE_ID_3',
+            'STATUS_ID_4 == STAGE_ID_4'
+        ]
 
         expected_response = Mock()
         storage_mock.get_column_display_stage_ids.return_value = stage_ids
@@ -181,15 +185,19 @@ class TestGetColumnTasksInteractor:
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             get_task_ids_mock
 
+        from ib_boards.tests.common_fixtures.adapters.task_service import \
+            get_stage_display_logics_mock
+
+        stage_display_logic_mock = get_stage_display_logics_mock(
+            mocker=mocker
+        )
         task_ids_mock = get_task_ids_mock(
             mocker=mocker,
             task_stage_dtos=task_stage_dtos
         )
-
         task_details_mock = get_task_details_mock(
             mocker=mocker, task_dtos=task_dtos, action_dtos=action_dtos
         )
-
         stage_display_logic_interactor_mock = get_stage_display_logic_mock(
             mocker=mocker, task_status_dtos=task_status_dtos
         )
@@ -210,10 +218,13 @@ class TestGetColumnTasksInteractor:
             task_status_dtos=task_status_dtos
         )
         stage_display_logic_interactor_mock.assert_called_once_with(
-            stage_ids=stage_ids
+            stage_display_logics=stage_display_logics
         )
         presenter_mock.get_response_column_tasks.assert_called_once_with(
             task_complete_details_dto=task_complete_details_dto
+        )
+        stage_display_logic_mock.assert_called_once_with(
+            stage_ids=stage_ids
         )
 
     def test_with_user_id_not_have_permission_for_column_return_error_message(

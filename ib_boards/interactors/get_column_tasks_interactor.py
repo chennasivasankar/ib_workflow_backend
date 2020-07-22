@@ -7,7 +7,7 @@ from typing import List
 
 from ib_boards.exceptions.custom_exceptions import InvalidOffsetValue, \
     InvalidLimitValue, OffsetValueExceedsTotalTasksCount, \
-    UserDoNotHaveAccessToColumn
+    UserDoNotHaveAccessToColumn, InvalidStageIds
 from ib_boards.interactors.dtos import ColumnTasksParametersDTO, TaskIdStageDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     GetColumnTasksPresenterInterface, TaskCompleteDetailsDTO
@@ -37,11 +37,15 @@ class GetColumnTasksInteractor:
             return presenter.get_response_for_offset_exceeds_total_tasks()
         except UserDoNotHaveAccessToColumn:
             return presenter.get_response_for_user_have_no_access_for_column()
+            return presenter.get_response_for_user_have_no_access_for_boards()
+        except InvalidStageIds as error:
+            return presenter.get_response_for_invalid_stage_ids(error=error)
         return presenter.get_response_column_tasks(
             task_complete_details_dto=task_complete_details_dto
         )
 
-    def get_column_tasks(self, column_tasks_parameters: ColumnTasksParametersDTO):
+    def get_column_tasks(self,
+                         column_tasks_parameters: ColumnTasksParametersDTO):
         self._validate_given_data(
             column_tasks_parameters=column_tasks_parameters)
         column_id = column_tasks_parameters.column_id
@@ -50,7 +54,8 @@ class GetColumnTasksInteractor:
         stage_ids = self.storage.get_column_display_stage_ids(
             column_id=column_id
         )
-        task_ids_stages_dtos = self._get_task_ids_with_respective_stages(stage_ids=stage_ids)
+        task_ids_stages_dtos = self._get_task_ids_with_respective_stages(
+            stage_ids=stage_ids)
         total_tasks = len(task_ids_stages_dtos)
         if offset >= total_tasks:
             raise OffsetValueExceedsTotalTasksCount
@@ -79,7 +84,6 @@ class GetColumnTasksInteractor:
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         user_id = column_tasks_parameters.user_id
-        print('user_id{}'.format(user_id))
         user_role = service_adapter.user_service.get_user_role(user_id=user_id)
         self.storage.validate_user_role_with_column_roles(user_role=user_role)
         offset = column_tasks_parameters.offset
@@ -95,12 +99,17 @@ class GetColumnTasksInteractor:
             import StageDisplayLogicInteractor
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
+        service_adapter.task_service.validate_stage_ids(stage_ids=stage_ids)
+        stage_display_logics = service_adapter.task_service. \
+            get_stage_display_logics(
+                stage_ids=stage_ids
+            )
         stage_display_logic_interactor = StageDisplayLogicInteractor()
         task_status_dtos = stage_display_logic_interactor. \
             get_stage_display_logic_condition(
-                stage_ids=stage_ids
+                stage_display_logics=stage_display_logics
             )
-        task_ids_stages_dtos = service_adapter.task_service.\
+        task_ids_stages_dtos = service_adapter.task_service. \
             get_task_ids_with_respective_stages(
                 task_status_dtos=task_status_dtos
             )
