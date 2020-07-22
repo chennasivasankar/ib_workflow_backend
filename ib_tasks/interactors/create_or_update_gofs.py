@@ -32,7 +32,6 @@ class CreateOrUpdateGoFsInteractor:
             self._get_gof_roles_dtos_for_given_complete_gof_details_dtos(
                 complete_gof_details_dtos=complete_gof_details_dtos
             )
-
         self._validate_for_empty_mandatory_fields(
             gof_dtos=gof_dtos, gof_roles_dtos=gof_roles_dtos
         )
