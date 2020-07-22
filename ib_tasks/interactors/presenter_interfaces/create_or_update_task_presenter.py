@@ -1,10 +1,14 @@
 import abc
 
 from ib_tasks.exceptions.custom_exceptions import InvalidTaskTemplateIds, \
-    InvalidFieldIds, InvalidGoFIds
+    InvalidFieldIds, InvalidGoFIds, DuplicateGoFIds
 
 
 class CreateOrUpdateTaskPresenterInterface(abc.ABC):
+
+    @abc.abstractmethod
+    def raise_exception_for_duplicate_gof_ids(self, err: DuplicateGoFIds):
+        pass
 
     @abc.abstractmethod
     def raise_exception_for_invalid_task_template_id(

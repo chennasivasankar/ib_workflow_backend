@@ -36,12 +36,29 @@ class TestCreateOrUpdateTask:
         from unittest.mock import Mock
         return Mock()
 
+    def test_create_or_update_task_with_duplicate_gof_ids_raises_exception(
+            self, storage_mock, presenter_mock, mock_object
+    ):
+        # Arrange
+        gof_fields_dtos = GoFFieldsDTOFactory.create_batch(
+            size=2, gof_id="GOF_ID-1"
+        )
+        task_dto = TaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        presenter_mock.raise_exception_for_duplicate_gof_ids.return_value = mock_object
+        interactor = CreateOrUpdateTaskInteractor(storage_mock)
+
+        # Act
+        response = interactor.create_or_update_task_wrapper(presenter_mock, task_dto)
+
+        # Assert
+        assert response == mock_object
+
+
     def test_create_or_update_task_with_invalid_task_task_tempalte_id_raises_exception(
             self, storage_mock, presenter_mock, mock_object
     ):
 
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import InvalidTaskTemplateIds
         task_template_id = "TASK_TEMPLATE_ID-1"
         task_dto = TaskDTOFactory(task_template_id=task_template_id)
         storage_mock.check_is_template_exists.return_value = False
