@@ -19,15 +19,20 @@ class PopulateCreateBoardsAndColumns:
             boards_columns_dicts=boards_columns_dicts
         )
         board_ids = []
-        board_dtos = [
-            self._convert_board_dict_to_board_dto(board_dict=board_dict)
-            for board_dict in boards_columns_dicts
-            if board_dict['board_id'] not in board_ids
-        ]
+        board_dtos = []
+
+        for board_dict in boards_columns_dicts:
+            if board_dict['board_id'] not in board_ids:
+                board_ids.append(board_dict['board_id'])
+                board_dto  = self._convert_board_dict_to_board_dto(
+                    board_dict=board_dict
+                )
+                board_dtos.append(board_dto)
+
         column_dtos = populate_script.get_column_dtos_from_dict(
             boards_columns_dicts
         )
-        from ib_boards.populate.populate_script_for_add_or_delete_columns_for_board import \
+        from ib_boards.storages.storage_implementation import \
             StorageImplementation
         storage = StorageImplementation()
         from ib_boards.interactors.create_boards_and_columns_interactor \

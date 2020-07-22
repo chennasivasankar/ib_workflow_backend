@@ -4,4 +4,4 @@ Author: Pavankumar Pamuru
 
 """
 GOOGLE_SHEET_NAME = "FinMan Configuration_Dev_Test"
-FIELD_SUB_SHEET_TITLE = "PR - Boards and Columns"
+BOARDS_AND_COLUMN_SUB_SHEET = "PR - Boards and Columns"

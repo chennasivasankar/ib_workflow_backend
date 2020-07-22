@@ -1,7 +1,7 @@
 class ServiceAdapter:
     @property
     def task_service(self):
-        from .tasks_service import TaskService
+        from .task_service import TaskService
         return TaskService()
 
     @property

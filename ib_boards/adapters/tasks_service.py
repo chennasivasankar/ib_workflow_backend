@@ -1,8 +1,8 @@
 from typing import List
 
 from ib_boards.interactors.dtos import TaskDTO
-from ib_boards.interactors.storage_interfaces.dtos import (TaskFieldsDTO, TaskActionsDTO)
-from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, TaskFieldsDTOFactory
+from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
+    TaskFieldsDTOFactory
 
 
 class ServiceInterface:

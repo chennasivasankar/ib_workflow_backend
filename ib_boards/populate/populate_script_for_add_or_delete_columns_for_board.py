@@ -20,10 +20,6 @@ class InvalidDataFormat(Exception):
         return "Valid Format:" + " " + self.valid_format
 
 
-class StorageImplementation(object):
-    pass
-
-
 class InvalidJsonFormat(Exception):
     pass
 
@@ -36,9 +32,11 @@ class PopulateAddOrDeleteColumnsForBoard:
             boards_columns_dicts=boards_columns_dicts
         )
         column_dtos = self.get_column_dtos_from_dict(boards_columns_dicts)
-        from ib_boards.interactors.add_or_delete_columns_for_board_interactor \
-            import AddOrDeleteColumnsForBoardInteractor
+        from ib_boards.storages.storage_implementation import \
+            StorageImplementation
         storage = StorageImplementation()
+        from ib_boards.interactors.add_or_delete_columns_for_board_interactor import \
+            AddOrDeleteColumnsForBoardInteractor
         interactor = AddOrDeleteColumnsForBoardInteractor(
             storage=storage
         )
@@ -57,13 +55,13 @@ class PopulateAddOrDeleteColumnsForBoard:
 
     def _convert_column_dict_to_column_dto(self, column_dict: Dict) -> ColumnDTO:
         # task_template_stages = self._get_task_template_stages_dto(
-        #     column_dict['Task Template Stages that are visible in columns']
+        #     column_dict['task_template_stages']
         # )
         # list_view_fields = self._get_task_template_summary_fields_dto(
-        #     column_dict['Card Info_List']
+        #     column_dict['list_view_fields']
         # )
         # kanban_view_fields = self._get_task_template_summary_fields_dto(
-        #     column_dict['Card Info_Kanban']
+        #     column_dict['kanban_view_fields']
         # )
         user_role_ids = self._convert_user_role_to_list_from_string(
             user_roles=column_dict['user_role_ids'])
@@ -71,18 +69,17 @@ class PopulateAddOrDeleteColumnsForBoard:
             column_id=column_dict['column_id'],
             display_name=column_dict['column_display_name'],
             display_order=column_dict['display_order'],
-            task_template_stages=TaskTemplateStagesDTOFactory.create_batch(3),
+            task_template_stages=TaskTemplateStagesDTOFactory.create_batch(2),
             user_role_ids=user_role_ids,
             column_summary=column_dict['column_summary'],
             column_actions=column_dict['column_actions'],
-            list_view_fields=TaskSummaryFieldsDTOFactory.create_batch(3),
-            kanban_view_fields=TaskSummaryFieldsDTOFactory.create_batch(3),
+            list_view_fields=TaskSummaryFieldsDTOFactory.create_batch(2),
+            kanban_view_fields=TaskSummaryFieldsDTOFactory.create_batch(2),
             board_id=column_dict['board_id']
         )
 
     def validate_keys_in_given_dict(self, boards_columns_dicts: List[Dict]):
         from schema import Schema, SchemaError, And, Optional
-        import json
         schema = Schema(
             [{
                 "board_id": str,
@@ -98,7 +95,6 @@ class PopulateAddOrDeleteColumnsForBoard:
                 "list_view_fields": str
             }]
         )
-        schema.validate(boards_columns_dicts)
         try:
             schema.validate(boards_columns_dicts)
         except SchemaError:
@@ -118,8 +114,10 @@ class PopulateAddOrDeleteColumnsForBoard:
             "task_template_stages": "task_template_stages",
             "kanban_view_fields": "kanban_view_fields",
             "list_view_fields": "list_view_fields"
-    }
-        raise InvalidDataFormat(valid_format=valid_format)
+        }
+        import json
+        json_valid_format = json.dumps(valid_format, indent=4)
+        raise InvalidDataFormat(valid_format=json_valid_format)
 
     @staticmethod
     def _get_task_template_stages_dto(json_object: json):

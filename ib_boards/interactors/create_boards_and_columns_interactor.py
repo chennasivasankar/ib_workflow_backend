@@ -25,6 +25,7 @@ class CreateBoardsAndColumnsInteractor:
             self, board_dtos: List[BoardDTO], column_dtos: List[ColumnDTO]):
         self._validate_board_display_name(board_dtos=board_dtos)
         self.validate_columns_data(column_dtos)
+        print(board_dtos, column_dtos)
         self.storage.create_boards_and_columns(
             board_dtos=board_dtos,
             column_dtos=column_dtos
@@ -262,7 +263,6 @@ class CreateBoardsAndColumnsInteractor:
             task_ids += self._get_task_template_ids_for_fields(
                 task_summary_field_dtos=task_summary_field_dtos
             )
-        print(task_ids)
         try:
             self._get_invalid_task_template_ids_for_fields(
                 task_ids=task_ids
