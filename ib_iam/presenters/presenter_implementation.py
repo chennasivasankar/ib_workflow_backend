@@ -6,7 +6,7 @@ from django_swagger_utils.utils.http_response_mixin \
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.constants.enums import StatusCode
 from ib_iam.interactors.presenter_interfaces.dtos import \
-    CompleteUsersDetailsDTO
+    CompleteUsersDetailsDTO, UserOptionsDetails
 from ib_iam.interactors.presenter_interfaces.presenter_interface \
     import PresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO, \
@@ -14,8 +14,21 @@ from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO, \
 
 
 class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
-    def get_user_options_details_response(self, configuration_details):
-        pass
+    def get_user_options_details_response(
+            self, configuration_details: UserOptionsDetails):
+        companies = configuration_details.companies
+        teams = configuration_details.teams
+        roles = configuration_details.roles
+        companies_details = self._get_company_details(companies)
+        teams_details = self._get_team_details(teams)
+        roles_details = self._get_role_details(roles)
+        response_dict = {
+            "companies": companies_details,
+            "teams": teams_details,
+            "roles": roles_details
+        }
+        return self.prepare_200_success_response(
+            response_dict=response_dict)
 
     def raise_role_name_should_not_be_empty_exception(self):
         from ib_iam.constants.exception_messages \
@@ -272,29 +285,13 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             response_dict=response_dict)
         return response
 
-    def response_for_get_configuration_details(self,
-                                               configuration_details_dto):
-        companies = configuration_details_dto.companies
-        teams = configuration_details_dto.teams
-        roles = configuration_details_dto.roles
-        companies_details = self._get_company_details(companies)
-        teams_details = self._get_team_details(teams)
-        roles_details = self._get_role_details(roles)
-        response_dict = {
-            "companies": companies_details,
-            "teams": teams_details,
-            "roles": roles_details
-        }
-        return self.prepare_200_success_response(
-            response_dict=response_dict)
-
     @staticmethod
     def _get_role_details(roles):
         roles_details = []
         for role in roles:
             roles_details.append({
                 "role_id": role.role_id,
-                "role_name": role.role_name
+                "role_name": role.name
             })
         return roles_details
 
