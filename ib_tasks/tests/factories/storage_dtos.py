@@ -1,10 +1,11 @@
 import factory
 
+from ib_tasks.constants.constants import VALID_FIELD_TYPES
 from ib_tasks.constants.enum import FieldTypes, PermissionTypes
 from ib_tasks.interactors.dtos import StageDTO
 from ib_tasks.interactors.storage_interfaces.dtos import (
     CompleteGoFDetailsDTO, GoFDTO, GoFRolesDTO,
-    FieldDTO, FieldRolesDTO, FieldRoleDTO, GoFRoleDTO
+    FieldDTO, FieldRolesDTO, FieldRoleDTO, GoFRoleDTO, FieldTypeDTO
 )
 from ib_tasks.interactors.storage_interfaces.dtos import (TaskStagesDTO)
 from ib_tasks.interactors.storage_interfaces.dtos import (
@@ -112,3 +113,11 @@ class TaskStatusDTOFactory(factory.Factory):
     task_template_id = factory.Sequence(lambda n: 'task_template_id_%d' % n)
     status_variable_id = factory.Sequence(
         lambda n: 'status_variable_id_%d' % n)
+
+
+class FieldTypeDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldTypeDTO
+
+    field_id = factory.Sequence(lambda counter: "FIELD_ID-{}".format(counter))
+    field_type = factory.Iterator(VALID_FIELD_TYPES)

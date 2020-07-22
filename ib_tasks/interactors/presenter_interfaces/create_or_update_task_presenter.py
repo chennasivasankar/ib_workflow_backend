@@ -1,13 +1,17 @@
 import abc
 
 from ib_tasks.exceptions.custom_exceptions import InvalidTaskTemplateIds, \
-    InvalidFieldIds, InvalidGoFIds, DuplicateGoFIds
+    InvalidFieldIds, InvalidGoFIds, DuplicateGoFIds, DuplicatedFieldIds
 
 
 class CreateOrUpdateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_exception_for_duplicate_gof_ids(self, err: DuplicateGoFIds):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_duplicate_field_ids(self, err: DuplicatedFieldIds):
         pass
 
     @abc.abstractmethod
@@ -30,4 +34,8 @@ class CreateOrUpdateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_response_for_create_or_update_task(self):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_empty_value_in_plain_text_field(self):
         pass

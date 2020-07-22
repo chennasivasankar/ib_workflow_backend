@@ -99,7 +99,9 @@ class GOFFieldIdsCantBeEmpty(Exception):
 
 
 class DuplicatedFieldIds(Exception):
-    pass
+
+    def __init__(self, duplicated_field_ids: List[str]):
+        self.field_ids = duplicated_field_ids
 
 
 class InvalidReadPermissionRoles(Exception):
@@ -207,3 +209,7 @@ class ConflictingGoFOrder(Exception):
 
     def __init__(self, invalid_order_gof_ids: List[str]):
         self.gof_ids = invalid_order_gof_ids
+
+
+class EmptyValueForPlainTextField(Exception):
+    pass

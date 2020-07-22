@@ -51,7 +51,6 @@ class CompleteGoFDetailsDTO:
     gof_roles_dto: GoFRolesDTO
 
 
-
 @dataclass
 class FieldDTO:
     gof_id: str
@@ -101,3 +100,9 @@ class TaskStagesDTO:
 class TaskStatusDTO:
     task_template_id: str
     status_variable_id: str
+
+
+@dataclass
+class FieldTypeDTO:
+    field_id: str
+    field_type: FieldTypes

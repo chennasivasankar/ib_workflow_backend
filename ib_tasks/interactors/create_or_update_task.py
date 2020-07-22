@@ -1,7 +1,9 @@
-from typing import Optional, List
+from typing import Optional, List, Union
 
+from ib_tasks.constants.enum import FieldTypes
 from ib_tasks.exceptions.custom_exceptions import TaskTemplateIdCantBeEmpty, \
-    InvalidGoFIds, InvalidFieldIds, InvalidTaskTemplateIds, DuplicateGoFIds
+    InvalidGoFIds, InvalidFieldIds, InvalidTaskTemplateIds, DuplicateGoFIds, \
+    DuplicatedFieldIds, EmptyValueForPlainTextField
 from ib_tasks.interactors.dtos import TaskDTO, GoFFieldsDTO, FieldValuesDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
@@ -18,19 +20,22 @@ class CreateOrUpdateTaskInteractor:
             self, presenter: CreateOrUpdateTaskPresenterInterface,
             task_dto: TaskDTO
     ):
-
         try:
             return self._prepare_response_for_create_or_update_task(
                 presenter=presenter, task_dto=task_dto
             )
         except DuplicateGoFIds as err:
             return presenter.raise_exception_for_duplicate_gof_ids(err)
+        except DuplicatedFieldIds as err:
+            return presenter.raise_exception_for_duplicate_field_ids(err)
         except InvalidTaskTemplateIds as err:
             return presenter.raise_exception_for_invalid_task_template_id(err)
         except InvalidGoFIds as err:
             return presenter.raise_exception_for_invalid_gof_ids(err)
         except InvalidFieldIds as err:
             return presenter.raise_exception_for_invalid_field_ids(err)
+        except EmptyValueForPlainTextField:
+            return presenter.raise_exception_for_empty_value_in_plain_text_field()
 
     def _prepare_response_for_create_or_update_task(
             self, presenter: CreateOrUpdateTaskPresenterInterface,
@@ -54,13 +59,46 @@ class CreateOrUpdateTaskInteractor:
             for field_values_dto in field_values_dtos
         ]
         self._validate_for_duplicate_gof_ids(gof_ids)
-        # self._validate_for_duplicate_field_ids(field_ids)
+        self._validate_for_duplicate_field_ids(field_ids)
         self._validate_task_template_id(task_dto.task_template_id)
         self._validate_for_invalid_gof_ids(gof_ids)
         self._validate_for_invalid_field_ids(field_ids)
+        self._validate_field_values(field_values_dtos)
+
+    def _validate_field_values(
+            self, field_values_dtos: List[FieldValuesDTO]
+    ):
+        field_ids = [
+            field_values_dto.field_id for field_values_dto in field_values_dtos
+        ]
+        field_types_dtos = self.storage.get_field_types_for_given_field_ids(
+            field_ids=field_ids
+        )
+        for field_type_dto in field_types_dtos:
+            field_value = self._get_field_value_for_given_field_id(
+                field_id=field_type_dto.field_id,
+                field_values_dtos=field_values_dtos
+            )
+            field_type = field_type_dto.field_type
+            field_type_is_text_field = field_type == FieldTypes.PLAIN_TEXT.value
+            if field_type_is_text_field:
+                self._validate_for_text_field_value(field_value)
+
         # TODO: VALIDATE FOR PLAIN_TEXT FIELD TYPE VALUE
-        # TODO: GET FIELD VALUES DTOS FROM THE BELOW PRIVATE METHOD
         # TODO: NEXT FIELD TYPE VALIDATION
+        pass
+
+    @staticmethod
+    def _validate_for_text_field_value(
+            field_value: str
+    ) -> Optional[EmptyValueForPlainTextField]:
+        field_value_is_empty = not field_value.strip()
+        if field_value_is_empty:
+            from ib_tasks.constants.exception_messages import \
+                EMPTY_PLAIN_TEXT_FIELD_VALUE_MESSAGE
+            raise EmptyValueForPlainTextField(
+                EMPTY_PLAIN_TEXT_FIELD_VALUE_MESSAGE)
+        return
 
     def _validate_task_template_id(
             self, task_template_id: str
@@ -111,6 +149,14 @@ class CreateOrUpdateTaskInteractor:
             raise DuplicateGoFIds(duplicate_gof_ids)
         return
 
+    def _validate_for_duplicate_field_ids(
+            self, field_ids:  List[str]
+    ) -> Optional[DuplicatedFieldIds]:
+        duplicate_field_ids = self._get_duplicates_in_given_list(field_ids)
+        if duplicate_field_ids:
+            raise DuplicatedFieldIds(duplicate_field_ids)
+        return
+
     @staticmethod
     def _get_duplicates_in_given_list(values: List):
         duplicate_values = list(
@@ -123,3 +169,12 @@ class CreateOrUpdateTaskInteractor:
         )
         return duplicate_values
 
+    @staticmethod
+    def _get_field_value_for_given_field_id(
+            field_id: str, field_values_dtos: List[FieldValuesDTO]
+    ) -> Union[None, str, List[str]]:
+        for field_values_dto in field_values_dtos:
+            field_id_matched = field_values_dto.field_id == field_id
+            if field_id_matched:
+                return field_values_dto.field_value
+        return

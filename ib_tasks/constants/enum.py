@@ -1,7 +1,7 @@
 import enum
 
-class FieldTypes(enum.Enum):
 
+class FieldTypes(enum.Enum):
     PLAIN_TEXT = "PLAIN_TEXT"
     PHONE_NUMBER = "PHONE_NUMBER"
     EMAIL = "EMAIL"

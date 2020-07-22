@@ -9,7 +9,7 @@ from typing import List, Optional
 
 from ib_tasks.interactors.storage_interfaces.dtos import (
     GoFRoleDTO, GoFDTO, FieldDTO, FieldRoleDTO, StageInformationDTO,
-    TaskStagesDTO, TaskStatusDTO
+    TaskStagesDTO, TaskStatusDTO, FieldTypeDTO
 )
 from ib_tasks.interactors.dtos import GlobalConstantsDTO
 
@@ -135,3 +135,8 @@ class TaskStorageInterface(abc.ABC):
             global_constants_dtos: List[GlobalConstantsDTO]):
         pass
 
+    @abc.abstractmethod
+    def get_field_types_for_given_field_ids(
+            self, field_ids: List[str]
+    ) -> List[FieldTypeDTO]:
+        pass

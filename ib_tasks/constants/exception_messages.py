@@ -30,3 +30,4 @@ INVALID_VALUE_FOR_TEMPLATE_NAME = \
 INVALID_TASK_TEMPLATE_ID_MESSAGE = "Invalid Task Template Ids: "
 INVALID_GOF_IDS_MESSAGE = "Invalid GoF IDs: "
 INVALID_FIELD_IDS_MESSAGE = "Invalid Field IDs: "
+EMPTY_PLAIN_TEXT_FIELD_VALUE_MESSAGE = "Plain Text filed value should not be empty"
