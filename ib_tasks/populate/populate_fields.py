@@ -1,5 +1,5 @@
 import json
-from typing import List, Dict
+from typing import List, Dict, Union
 
 from ib_tasks.interactors.storage_interfaces.dtos import FieldDTO, FieldRolesDTO
 from ib_tasks.constants.constants import MULTI_VALUES_INPUT_FIELDS, UPLOADERS
@@ -37,14 +37,13 @@ def prepare_field_dtos(field_records: List[Dict]) -> List[FieldDTO]:
         error_message = field_record["Error Message"]
         allowed_formats = field_record["Allowed Formats"]
         validation_regex = field_record["Validation - RegEx"]
-        if required == "Yes":
-            required = True
-        else:
-            required = False
+
+        required = get_required_bool_value_based_on_given_input(required)
+        field_values = get_field_values(field_type, field_values)
+        allowed_formats = get_allowed_formats(field_type, allowed_formats)
 
         if help_text.strip() == "":
             help_text = None
-
         if tooltip.strip() == "":
             tooltip = None
         if placeholder_text.strip() == "":
@@ -53,18 +52,6 @@ def prepare_field_dtos(field_records: List[Dict]) -> List[FieldDTO]:
             error_message = None
         if validation_regex.strip() == "":
             validation_regex = None
-        if allowed_formats.strip() == "":
-            allowed_formats = None
-        if field_values.strip() == "":
-            field_values = None
-        if field_type in MULTI_VALUES_INPUT_FIELDS and field_values is not None:
-            field_values = field_values.split("\r\n")
-        if field_type in MULTI_VALUES_INPUT_FIELDS and field_values is None:
-            field_values = []
-        if field_type in UPLOADERS and allowed_formats is not None:
-            allowed_formats = allowed_formats.split("\r\n")
-        if field_type in UPLOADERS and allowed_formats is None:
-            allowed_formats = []
 
         field_dto = FieldDTO(
             gof_id=field_record["GOF ID*"],
@@ -84,10 +71,40 @@ def prepare_field_dtos(field_records: List[Dict]) -> List[FieldDTO]:
     return field_dtos
 
 
+def get_allowed_formats(
+        field_type, allowed_formats
+) -> Union[None, str, List[str]]:
+    if allowed_formats.strip() == "":
+        allowed_formats = None
+    if field_type in UPLOADERS and allowed_formats is not None:
+        allowed_formats = allowed_formats.split("\r\n")
+    if field_type in UPLOADERS and allowed_formats is None:
+        allowed_formats = []
+    return allowed_formats
+
+
+def get_field_values(
+        field_type, field_values
+) -> Union[None, str, List[str]]:
+    if field_values.strip() == "":
+        field_values = None
+    if field_type in MULTI_VALUES_INPUT_FIELDS and field_values is not None:
+        field_values = field_values.split("\r\n")
+    if field_type in MULTI_VALUES_INPUT_FIELDS and field_values is None:
+        field_values = []
+    return field_values
+
+
+def get_required_bool_value_based_on_given_input(required) -> bool:
+    if required == "Yes":
+        required = True
+    else:
+        required = False
+    return required
+
 def prepare_field_roles_dtos(
         field_records: List[Dict]
 ) -> List[FieldRolesDTO]:
-
     field_roles_dtos = []
     for field_record in field_records:
         field_roles_dto = get_field_roles_dto(field_record)

@@ -15,6 +15,7 @@ from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 
 
+
 @pytest.mark.django_db
 class TestCreateOrUpdateFields:
 
@@ -81,7 +82,7 @@ class TestCreateOrUpdateFields:
 
 
     def test_given_field_ids_empty_raise_exception(
-            self, storage, field_roles_dtos
+            self, storage, field_roles_dtos, snapshot
     ):
         # Arrange
         from ib_tasks.constants.exception_messages \
@@ -98,10 +99,10 @@ class TestCreateOrUpdateFields:
             )
 
         # Arrange
-        assert str(err.value) == EMPTY_VALUE_FOR_FIELD_ID
+        snapshot.assert_match(name="exception_message = ", value=str(err.value))
 
     def test_given_duplication_of_filed_ids_raise_exception(
-            self, storage, field_roles_dtos
+            self, storage, field_roles_dtos, snapshot
     ):
         # Arrange
         from ib_tasks.constants.exception_messages \
@@ -125,10 +126,10 @@ class TestCreateOrUpdateFields:
             )
 
         # Assert
-        assert str(err.value) == exception_message
+        snapshot.assert_match(name="exception_message = ", value=str(err.value))
 
     def test_given_field_display_name_as_empty_raise_exception(
-            self, storage, field_roles_dtos
+            self, storage, field_roles_dtos, snapshot
     ):
         # Arrange
         from ib_tasks.constants.exception_messages \
@@ -153,10 +154,10 @@ class TestCreateOrUpdateFields:
             )
 
         # Assert
-        assert str(err.value) == exception_message
+        snapshot.assert_match(name="exception_message = ", value=str(err.value))
 
     def test_given_invalid_field_type_raise_ecxception(
-            self, storage, field_roles_dtos
+            self, storage, field_roles_dtos, snapshot
     ):
         # Arrange
         from ib_tasks.constants.exception_messages \
@@ -182,10 +183,10 @@ class TestCreateOrUpdateFields:
             )
 
         # Arrange
-        assert str(err.value) == error_message
+        snapshot.assert_match(name="exception_message = ", value=str(err.value))
         
     def test_given_gof_ids_not_in_database_raise_exception(
-            self, storage, field_roles_dtos
+            self, storage, field_roles_dtos, snapshot
     ):
         # Arrange
         from ib_tasks.constants.exception_messages \
@@ -208,10 +209,10 @@ class TestCreateOrUpdateFields:
             )
 
         # Arrange
-        assert str(err.value) == error_message
+        snapshot.assert_match(name="exception_message = ", value=str(err.value))
 
     def test_given_empty_values_for_read_permissions_roles_raise_exception(
-            self, storage, field_dtos
+            self, storage, field_dtos, snapshot
     ):
         # Arrange
         from ib_tasks.constants.exception_messages \
@@ -246,10 +247,10 @@ class TestCreateOrUpdateFields:
             )
 
         # Assert
-        assert str(err.value) == exception_message
+        snapshot.assert_match(name="exception_message = ", value=str(err.value))
 
     def test_given_empty_values_for_write_permissions_roles_raise_exception(
-            self, storage, field_dtos
+            self, storage, field_dtos, snapshot
     ):
         # Arrange
         from ib_tasks.constants.exception_messages \
@@ -283,10 +284,10 @@ class TestCreateOrUpdateFields:
                 field_roles_dtos=field_roles_dtos
             )
         # Assert
-        assert str(err.value) == exception_message
+        snapshot.assert_match(name="exception_message = ", value=str(err.value))
 
     def test_given_duplication_of_values_for_read_permissions_roles_raise_exception(
-            self, storage, field_dtos
+            self, storage, field_dtos, snapshot
     ):
         # Arrange
         from ib_tasks.constants.exception_messages \
@@ -328,10 +329,10 @@ class TestCreateOrUpdateFields:
                 field_roles_dtos=field_roles_dtos
             )
         # Assert
-        assert str(err.value) == exception_message
+        snapshot.assert_match(name="exception_message = ", value=str(err.value))
 
     def test_given_duplication_of_values_for_write_permissions_roles_raise_exception(
-            self, storage, field_dtos
+            self, storage, field_dtos, snapshot
     ):
         # Arrange
         from ib_tasks.constants.exception_messages \
@@ -374,10 +375,10 @@ class TestCreateOrUpdateFields:
                 field_roles_dtos=field_roles_dtos
             )
         # Assert
-        assert str(err.value) == exception_message
+        snapshot.assert_match(name="exception_message = ", value=str(err.value))
 
     def test_given_invalid_roles_for_read_permissions_raise_exception(
-            self, mocker, storage, field_dtos
+            self, mocker, storage, field_dtos, snapshot
     ):
         # Arrange
         from ib_tasks.exceptions.custom_exceptions import InvalidRolesException
@@ -424,11 +425,11 @@ class TestCreateOrUpdateFields:
 
         # Assert
         exception_object = err.value
-        assert exception_object.roles == fields_invalid_roles_for_read_permission
         get_valid_role_ids_mock_method.assert_called_once()
+        snapshot.assert_match(name="exception_message = ", value=exception_object.roles)
 
     def test_given_invalid_roles_for_write_permissions_raise_exception(
-            self, mocker, storage, field_dtos
+            self, mocker, storage, field_dtos, snapshot
     ):
         # Arrange
         FieldRolesDTOFactory.reset_sequence(1)
@@ -456,18 +457,6 @@ class TestCreateOrUpdateFields:
                 ]
             )
         ]
-        fields_invalid_roles_for_write_permission = [
-            {
-                "field_id": "field1",
-                "invalid_roles": ["User", "Vendor", "FIN_PAYMENTS_LEVEL1_VERIFIER"],
-                "permissions": "write_permissions",
-            },
-            {
-                "field_id": "field2",
-                "permissions": "write_permissions",
-                "invalid_roles": ["admin"]
-            }
-        ]
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
         # Act
@@ -479,11 +468,12 @@ class TestCreateOrUpdateFields:
 
         # Assert
         exception_object = err.value
-        assert exception_object.roles == fields_invalid_roles_for_write_permission
         get_valid_role_ids_mock_method.assert_called_once()
+        snapshot.assert_match(name="exception_message = ", value=exception_object.roles)
 
     def test_given_empty_values_in_field_values_raise_exceptions(
-            self, storage, valid_field_roles_dtos, populate_gofs
+            self, storage, valid_field_roles_dtos,
+            populate_gofs, snapshot
     ):
         # Arrange
         from ib_tasks.exceptions.custom_exceptions \
@@ -508,10 +498,11 @@ class TestCreateOrUpdateFields:
             )
 
         # Assert
-        assert str(err.value) == exception_message
+        snapshot.assert_match(name="exception_message = ", value=str(err.value))
 
     def test_given_field_values_is_empty_raise_exceptions(
-            self, storage, valid_field_roles_dtos, populate_gofs
+            self, storage, valid_field_roles_dtos,
+            populate_gofs, snapshot
     ):
         # Arrange
         from ib_tasks.exceptions.custom_exceptions \
@@ -536,10 +527,11 @@ class TestCreateOrUpdateFields:
             )
 
         # Assert
-        assert str(err.value) == exception_message
+        snapshot.assert_match(name="exception_message = ", value=str(err.value))
 
     def test_given_duplication_of_field_values_raise_exception(
-            self, storage, valid_field_roles_dtos, populate_gofs
+            self, storage, valid_field_roles_dtos,
+            populate_gofs, snapshot
     ):
         # Arrange
         from ib_tasks.exceptions.custom_exceptions \
@@ -569,10 +561,10 @@ class TestCreateOrUpdateFields:
             )
 
         # Assert
-        assert str(err.value) == exception_message
+        snapshot.assert_match(name="exception_message = ", value=str(err.value))
 
     def test_given_field_type_gof_selector_and_field_values_as_invalid_json_raise_exception(
-            self, storage, reset_field_dto,
+            self, storage, reset_field_dto, snapshot,
             valid_field_roles_dtos, populate_gofs
     ):
         # Arrange
@@ -608,10 +600,10 @@ class TestCreateOrUpdateFields:
             )
 
         # Assert
-        assert str(err.value) == error_message
+        snapshot.assert_match(name="exception_message = ", value=str(err.value))
     
     def test_given_gof_names_as_empty_for_field_values_raise_exception(
-            self, storage, reset_field_dto,
+            self, storage, reset_field_dto, snapshot,
             valid_field_roles_dtos, populate_gofs
     ):
         # Arrange
@@ -649,10 +641,10 @@ class TestCreateOrUpdateFields:
             )
 
         # Assert
-        assert str(err.value) == error_message
+        snapshot.assert_match(name="exception_message = ", value=str(err.value))
 
     def test_given_duplication_of_gof_names_for_field_values_raise_exception(
-            self, storage, reset_field_dto,
+            self, storage, reset_field_dto, snapshot,
             valid_field_roles_dtos, populate_gofs
     ):
         # Arrange
@@ -697,10 +689,10 @@ class TestCreateOrUpdateFields:
             )
 
         # Assert
-        assert str(err.value) == error_message
+        snapshot.assert_match(name="exception_message = ", value=str(err.value))
 
     def test_given_invalid_gof_ids_for_field_values_raise_exception(
-            self, storage, reset_field_dto,
+            self, storage, reset_field_dto, snapshot,
             valid_field_roles_dtos, populate_gofs
     ):
         # Arrange
@@ -742,12 +734,12 @@ class TestCreateOrUpdateFields:
             )
 
         # Assert
-        assert str(err.value) == error_message
+        snapshot.assert_match(name="exception_message = ", value=str(err.value))
 
     @pytest.mark.parametrize("field_type", [FieldTypes.IMAGE_UPLOADER.value, FieldTypes.FILE_UPLOADER.value])
     def test_given_empty_values_for_allowed_format_raise_exception(
             self, field_type, storage, reset_field_dto,
-            valid_field_roles_dtos, populate_gofs
+            valid_field_roles_dtos, populate_gofs, snapshot
     ):
         # Arrange
         from ib_tasks.exceptions.custom_exceptions \
@@ -774,10 +766,10 @@ class TestCreateOrUpdateFields:
             )
 
         # Assert
-        assert str(err.value) == exception_message
+        snapshot.assert_match(name="exception_message = ", value=str(err.value))
 
     def test_given_duplication_of_allowed_formats_for_field_type_image_uploder_raise_exception(
-            self, storage, reset_field_dto,
+            self, storage, reset_field_dto, snapshot,
             valid_field_roles_dtos, populate_gofs
     ):
         # Arrange
@@ -810,10 +802,10 @@ class TestCreateOrUpdateFields:
             )
 
         # Assert
-        assert str(err.value) == exception_message
+        snapshot.assert_match(name="exception_message = ", value=str(err.value))
 
     def test_given_duplication_of_allowed_formats_for_field_type_file_uploader_raise_exception(
-            self, storage, reset_field_dto,
+            self, storage, reset_field_dto, snapshot,
             valid_field_roles_dtos, populate_gofs
     ):
         # Arrange
@@ -846,12 +838,12 @@ class TestCreateOrUpdateFields:
             )
 
         # Assert
-        assert str(err.value) == exception_message
+        snapshot.assert_match(name="exception_message = ", value=str(err.value))
 
     @pytest.mark.parametrize("field_type", [FieldTypes.IMAGE_UPLOADER.value, FieldTypes.FILE_UPLOADER.value])
     def test_given_empty_values_for_allowed_formats_raise_exception(
             self, field_type, storage, reset_field_dto,
-            valid_field_roles_dtos, populate_gofs
+            valid_field_roles_dtos, populate_gofs, snapshot
     ):
         # Arrange
         from ib_tasks.exceptions.custom_exceptions \
@@ -878,10 +870,10 @@ class TestCreateOrUpdateFields:
             )
 
         # Assert
-        assert str(err.value) == exception_message
+        snapshot.assert_match(name="exception_message = ", value=str(err.value))
 
     def test_given_empty_values_for_field_values_for_field_type_searchable_raise_exception(
-            self, storage, reset_field_dto,
+            self, storage, reset_field_dto, snapshot,
             valid_field_roles_dtos, populate_gofs
     ):
         # Arrange
@@ -911,10 +903,10 @@ class TestCreateOrUpdateFields:
             )
 
         # Assert
-        assert str(err.value) == exception_message
+        snapshot.assert_match(name="exception_message = ", value=str(err.value))
 
     def test_given_invalid_field_values_for_field_type_searchable_raise_exception(
-            self, storage, reset_field_dto,
+            self, storage, reset_field_dto, snapshot,
             valid_field_roles_dtos, populate_gofs
     ):
         # Arrange
@@ -944,10 +936,10 @@ class TestCreateOrUpdateFields:
             )
 
         # Assert
-        assert str(err.value) == exception_message
+        snapshot.assert_match(name="exception_message = ", value=str(err.value))
 
     def test_create_fields_and_fields_roles_given_field_dtos_and_field_role_dtos(
-            self, storage, reset_factories
+            self, storage, reset_factories, snapshot
     ):
         # Arrange
         import json
@@ -1039,41 +1031,45 @@ class TestCreateOrUpdateFields:
         # Act
         interactor.create_or_update_fields(field_dtos, field_roles_dtos)
 
+        counter = 1
         # Assert
         for field_dto in field_dtos:
             field_obj = Field.objects.get(field_id=field_dto.field_id)
-            self._assert_field_dto_and_field_obj(field_obj, field_dto)
+            self._assert_field_dto_and_field_obj(counter, field_obj, snapshot)
+            counter += 1
 
         for field_role_dto in field_role_dtos:
             field_role_obj = FieldRole.objects.get(
                 field_id=field_role_dto.field_id,
                 role=field_role_dto.role
             )
-            self._assert_field_role_dto_and_field_role_obj(field_role_dto, field_role_obj)
+            self._assert_field_role_dto_and_field_role_obj(counter, field_role_obj, snapshot)
+            counter += 1
 
     def _assert_field_dto_and_field_obj(
-            self, field_obj: Field, field_dto: FieldDTOFactory
+            self, counter: int, field_obj: Field, snapshot
     ):
-
-        assert field_obj.gof_id == field_dto.gof_id
-        assert field_obj.display_name == field_dto.field_display_name
-        assert field_obj.field_type == field_dto.field_type
-        assert field_obj.field_values == field_dto.field_values
-        assert field_obj.required == field_dto.required
-        assert field_obj.help_text == field_dto.help_text
-        assert field_obj.tooltip == field_dto.tooltip
-        assert field_obj.placeholder_text == field_dto.placeholder_text
-        assert field_obj.error_messages == field_dto.error_message
-        assert field_obj.validation_regex == field_dto.validation_regex
+        snapshot.assert_match(name="field_id{}".format(counter), value=field_obj.field_id)
+        snapshot.assert_match(name="gof_id{}".format(counter), value=field_obj.gof_id)
+        snapshot.assert_match(name="display_name{}".format(counter), value=field_obj.display_name)
+        snapshot.assert_match(name="field_type{}".format(counter), value=field_obj.field_type)
+        snapshot.assert_match(name="field_values{}".format(counter), value=field_obj.field_values)
+        snapshot.assert_match(name="allowed_formats{}".format(counter), value=field_obj.allowed_formats)
+        snapshot.assert_match(name="help_text{}".format(counter), value=field_obj.help_text)
+        snapshot.assert_match(name="tooltip{}".format(counter), value=field_obj.tooltip)
+        snapshot.assert_match(name="placeholder_text{}".format(counter), value=field_obj.placeholder_text)
+        snapshot.assert_match(name="error_messages{}".format(counter), value=field_obj.error_messages)
+        snapshot.assert_match(name="validation_regex{}".format(counter), value=field_obj.validation_regex)
 
     def _assert_field_role_dto_and_field_role_obj(
-            self, field_role_dto: FieldRoleDTOFactory,
-            field_role_obj: FieldRole
+            self, counter: int, field_role_obj: FieldRole, snapshot
     ):
-        assert field_role_obj.permission_type == field_role_dto.permission_type
+        snapshot.assert_match(name="field_id{}".format(counter), value=field_role_obj.field_id)
+        snapshot.assert_match(name="role{}".format(counter), value=field_role_obj.role)
+        snapshot.assert_match(name="permission_type{}".format(counter), value=field_role_obj.permission_type)
 
     def test_update_fields_and_fields_roles_given_field_dtos_and_field_role_dtos(
-            self, storage, reset_factories
+            self, storage, reset_factories, snapshot
     ):
         # Arrange
         GoFFactory()
@@ -1147,19 +1143,22 @@ class TestCreateOrUpdateFields:
         interactor.create_or_update_fields(field_dtos, field_roles_dtos)
 
         # Assert
+        counter = 1
         for field_dto in field_dtos:
             field_obj = Field.objects.get(field_id=field_dto.field_id)
-            self._assert_field_dto_and_field_obj(field_obj, field_dto)
+            self._assert_field_dto_and_field_obj(counter, field_obj, snapshot)
+            counter += 1
 
         for field_role_dto in field_role_dtos:
             field_role_obj = FieldRole.objects.get(
                 field_id=field_role_dto.field_id,
                 role=field_role_dto.role
             )
-            self._assert_field_role_dto_and_field_role_obj(field_role_dto, field_role_obj)
+            self._assert_field_role_dto_and_field_role_obj(counter, field_role_obj, snapshot)
+            counter += 1
 
     def test_create_or_update_fields_and_fields_roles_given_field_dtos_and_field_role_dtos(
-            self, storage, reset_factories
+            self, storage, reset_factories, snapshot
     ):
         # Arrange
         GoFFactory()
@@ -1254,13 +1253,16 @@ class TestCreateOrUpdateFields:
         interactor.create_or_update_fields(field_dtos, field_roles_dtos)
 
         # Assert
+        counter = 1
         for field_dto in field_dtos:
             field_obj = Field.objects.get(field_id=field_dto.field_id)
-            self._assert_field_dto_and_field_obj(field_obj, field_dto)
+            self._assert_field_dto_and_field_obj(counter, field_obj, snapshot)
+            counter += 1
 
         for field_role_dto in field_role_dtos:
             field_role_obj = FieldRole.objects.get(
                 field_id=field_role_dto.field_id,
                 role=field_role_dto.role
             )
-            self._assert_field_role_dto_and_field_role_obj(field_role_dto, field_role_obj)
+            self._assert_field_role_dto_and_field_role_obj(counter, field_role_obj, snapshot)
+            counter += 1

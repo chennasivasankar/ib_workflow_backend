@@ -25,7 +25,6 @@ class GoFFactory(factory.DjangoModelFactory):
     display_name = factory.Iterator(
         ["Request Details", "Vendor Type", "Vendor Basic Details"]
     )
-    order = factory.Sequence(lambda counter: counter)
     max_columns = 2
 
 
