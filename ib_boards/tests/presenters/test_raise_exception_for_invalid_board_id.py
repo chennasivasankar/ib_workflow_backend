@@ -11,7 +11,7 @@ class TestInvalidBoardId:
         exception_res_status = INVALID_BOARD_ID[1]
 
         # Act
-        response_object = presenter.raise_exception_for_invalid_board_id()
+        response_object = presenter.response_for_invalid_board_id()
 
         # Assert
         import json

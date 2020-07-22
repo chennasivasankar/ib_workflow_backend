@@ -1,4 +1,11 @@
-__all__ = []
+from ib_boards.models.board import Board
+from ib_boards.models.column import Column, ColumnPermission
+
+__all__ = [
+    'Board',
+    'Column',
+    'ColumnPermission'
+]
 
 # class DummyModel(AbstractDateTimeModel):
 #     """

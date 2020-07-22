@@ -11,7 +11,7 @@ class TestInvalidOffsetValue:
         exception_res_status = INVALID_OFFSET_VALUE[1]
 
         # Act
-        response_object = presenter.raise_exception_for_invalid_offset_value()
+        response_object = presenter.response_for_invalid_offset_value()
 
         # Assert
         import json
