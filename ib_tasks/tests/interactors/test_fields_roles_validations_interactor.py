@@ -13,7 +13,8 @@ class TestFieldsRolesValidationsInteractor:
         # Arrange
         from ib_tasks.constants.exception_messages \
             import EMPTY_VALUE_FOR_READ_PERMISSIONS
-        from ib_tasks.exceptions.custom_exceptions import EmptyValueForPermissions
+        from ib_tasks.exceptions.fields_custom_exceptions \
+            import EmptyValueForPermissions
 
         field_ids_with_read_permissions_empty = ["field1", "field2"]
 
@@ -50,7 +51,8 @@ class TestFieldsRolesValidationsInteractor:
         # Arrange
         from ib_tasks.constants.exception_messages \
             import EMPTY_VALUE_FOR_WRITE_PERMISSIONS
-        from ib_tasks.exceptions.custom_exceptions import EmptyValueForPermissions
+        from ib_tasks.exceptions.fields_custom_exceptions \
+            import EmptyValueForPermissions
 
         field_ids_with_write_permissions_empty = ["field1", "field2"]
 
@@ -87,7 +89,8 @@ class TestFieldsRolesValidationsInteractor:
         # Arrange
         from ib_tasks.constants.exception_messages \
             import DUPLICATED_VALUES_FOR_READ_PERMISSIONS
-        from ib_tasks.exceptions.custom_exceptions import DuplicationOfPermissionRoles
+        from ib_tasks.exceptions.fields_custom_exceptions \
+            import DuplicationOfPermissionRoles
 
         duplication_of_read_permission_roles = [
             {
@@ -132,7 +135,8 @@ class TestFieldsRolesValidationsInteractor:
         # Arrange
         from ib_tasks.constants.exception_messages \
             import DUPLICATED_VALUES_FOR_WRITE_PERMISSIONS
-        from ib_tasks.exceptions.custom_exceptions import DuplicationOfPermissionRoles
+        from ib_tasks.exceptions.fields_custom_exceptions \
+            import DuplicationOfPermissionRoles
 
         duplication_of_write_permission_roles = [
             {
@@ -175,7 +179,8 @@ class TestFieldsRolesValidationsInteractor:
             self, mocker
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import InvalidFieldRolesException
+        from ib_tasks.exceptions.fields_custom_exceptions \
+            import InvalidFieldRolesException
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_valid_role_ids_in_given_role_ids
         get_valid_role_ids_mock_method = \
@@ -224,7 +229,8 @@ class TestFieldsRolesValidationsInteractor:
     ):
         # Arrange
         FieldRolesDTOFactory.reset_sequence(1)
-        from ib_tasks.exceptions.custom_exceptions import InvalidFieldRolesException
+        from ib_tasks.exceptions.fields_custom_exceptions \
+            import InvalidFieldRolesException
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
             import get_valid_role_ids_in_given_role_ids
         get_valid_role_ids_mock_method = get_valid_role_ids_in_given_role_ids(mocker)

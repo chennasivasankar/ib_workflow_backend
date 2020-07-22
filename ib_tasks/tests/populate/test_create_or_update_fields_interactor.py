@@ -85,11 +85,8 @@ class TestCreateOrUpdateFields:
             self, storage, field_roles_dtos, snapshot
     ):
         # Arrange
-        from ib_tasks.constants.exception_messages \
-            import EMPTY_VALUE_FOR_FIELD_ID
-
         field_dtos = [FieldDTOFactory(), FieldDTOFactory(field_id=" ")]
-        from ib_tasks.exceptions.custom_exceptions import FieldIdEmptyValueException
+        from ib_tasks.exceptions.fields_custom_exceptions import FieldIdEmptyValueException
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
         # Act
@@ -105,9 +102,8 @@ class TestCreateOrUpdateFields:
             self, storage, field_roles_dtos, snapshot
     ):
         # Arrange
-        from ib_tasks.constants.exception_messages \
-            import DUPLICATION_OF_FIELD_IDS
-        from ib_tasks.exceptions.custom_exceptions import DuplicationOfFieldIdsExist
+        from ib_tasks.exceptions.fields_custom_exceptions \
+            import DuplicationOfFieldIdsExist
 
         field_dtos = [
             FieldDTOFactory(), FieldDTOFactory(),
@@ -116,7 +112,6 @@ class TestCreateOrUpdateFields:
         ]
 
         duplication_of_field_ids = ["FIN_SALUATION"]
-        exception_message = DUPLICATION_OF_FIELD_IDS.format(duplication_of_field_ids)
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
         # Act
@@ -132,9 +127,7 @@ class TestCreateOrUpdateFields:
             self, storage, field_roles_dtos, snapshot
     ):
         # Arrange
-        from ib_tasks.constants.exception_messages \
-            import INVALID_FIELDS_DISPLAY_NAMES
-        from ib_tasks.exceptions.custom_exceptions \
+        from ib_tasks.exceptions.fields_custom_exceptions \
             import InvalidValueForFieldDisplayName
 
         field_dtos = [
@@ -144,7 +137,6 @@ class TestCreateOrUpdateFields:
             FieldDTOFactory(field_id="field4")
         ]
         field_ids = ["field2", "field3"]
-        exception_message = INVALID_FIELDS_DISPLAY_NAMES.format(field_ids)
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
         # Act
@@ -160,10 +152,8 @@ class TestCreateOrUpdateFields:
             self, storage, field_roles_dtos, snapshot
     ):
         # Arrange
-        from ib_tasks.constants.exception_messages \
-            import INVALID_VALUES_FOR_FIELD_TYPES
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForFieldType
-        from ib_tasks.constants.constants import FIELD_TYPES_LIST
+        from ib_tasks.exceptions.fields_custom_exceptions \
+            import InvalidValueForFieldType
         from ib_tasks.constants.enum import FieldTypes
 
         field_dtos = [
@@ -174,7 +164,6 @@ class TestCreateOrUpdateFields:
         field_ids = ["field1", "field2"]
 
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
-        error_message = INVALID_VALUES_FOR_FIELD_TYPES.format(FIELD_TYPES_LIST, field_ids)
 
         # Act
         with pytest.raises(InvalidValueForFieldType) as err:
@@ -189,9 +178,7 @@ class TestCreateOrUpdateFields:
             self, storage, field_roles_dtos, snapshot
     ):
         # Arrange
-        from ib_tasks.constants.exception_messages \
-            import INVALID_GOF_IDS_EXCEPTION_MESSAGE
-        from ib_tasks.exceptions.custom_exceptions import InvalidGOFIds
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidGOFIds
         field_dtos = [
             FieldDTOFactory(),
             FieldDTOFactory(gof_id="Hello"),
@@ -199,7 +186,6 @@ class TestCreateOrUpdateFields:
         ]
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
         invalid_gof_ids = ["FIN_VENDOR_BASIC_DETAILS", "Hello", ""]
-        error_message = INVALID_GOF_IDS_EXCEPTION_MESSAGE.format(invalid_gof_ids)
 
         # Act
         with pytest.raises(InvalidGOFIds) as err:
@@ -215,15 +201,7 @@ class TestCreateOrUpdateFields:
             self, storage, field_dtos, snapshot
     ):
         # Arrange
-        from ib_tasks.constants.exception_messages \
-            import EMPTY_VALUE_FOR_READ_PERMISSIONS
-        from ib_tasks.exceptions.custom_exceptions import EmptyValueForPermissions
-
-        field_ids_with_read_permissions_empty = ["field1", "field2"]
-
-        exception_message = EMPTY_VALUE_FOR_READ_PERMISSIONS.format(
-            field_ids_with_read_permissions_empty
-        )
+        from ib_tasks.exceptions.fields_custom_exceptions import EmptyValueForPermissions
 
         field_roles_dtos = [
             FieldRolesDTOFactory(
@@ -255,7 +233,7 @@ class TestCreateOrUpdateFields:
         # Arrange
         from ib_tasks.constants.exception_messages \
             import EMPTY_VALUE_FOR_WRITE_PERMISSIONS
-        from ib_tasks.exceptions.custom_exceptions import EmptyValueForPermissions
+        from ib_tasks.exceptions.fields_custom_exceptions import EmptyValueForPermissions
 
         field_ids_with_write_permissions_empty = ["field1", "field2"]
 
@@ -292,7 +270,7 @@ class TestCreateOrUpdateFields:
         # Arrange
         from ib_tasks.constants.exception_messages \
             import DUPLICATED_VALUES_FOR_READ_PERMISSIONS
-        from ib_tasks.exceptions.custom_exceptions import DuplicationOfPermissionRoles
+        from ib_tasks.exceptions.fields_custom_exceptions import DuplicationOfPermissionRoles
 
         duplication_of_read_permission_roles = [
             {
@@ -337,8 +315,7 @@ class TestCreateOrUpdateFields:
         # Arrange
         from ib_tasks.constants.exception_messages \
             import DUPLICATED_VALUES_FOR_WRITE_PERMISSIONS
-        from ib_tasks.exceptions.custom_exceptions \
-            import DuplicationOfPermissionRoles
+        from ib_tasks.exceptions.fields_custom_exceptions import DuplicationOfPermissionRoles
 
         duplication_of_write_permission_roles = [
             {
@@ -381,7 +358,7 @@ class TestCreateOrUpdateFields:
             self, mocker, storage, field_dtos, snapshot
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import InvalidFieldRolesException
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldRolesException
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_valid_role_ids_in_given_role_ids
         get_valid_role_ids_mock_method = \
@@ -433,7 +410,7 @@ class TestCreateOrUpdateFields:
     ):
         # Arrange
         FieldRolesDTOFactory.reset_sequence(1)
-        from ib_tasks.exceptions.custom_exceptions import InvalidFieldRolesException
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldRolesException
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
             import get_valid_role_ids_in_given_role_ids
         get_valid_role_ids_mock_method = get_valid_role_ids_in_given_role_ids(mocker)
@@ -476,8 +453,7 @@ class TestCreateOrUpdateFields:
             populate_gofs, snapshot
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions \
-            import EmptyValuesForFieldValues
+        from ib_tasks.exceptions.fields_custom_exceptions import EmptyValuesForFieldValues
         from ib_tasks.constants.exception_messages \
             import EMPTY_VALUE_FOR_FIELD_VALUE
 
@@ -505,8 +481,7 @@ class TestCreateOrUpdateFields:
             populate_gofs, snapshot
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions \
-            import EmptyValuesForFieldValues
+        from ib_tasks.exceptions.fields_custom_exceptions import EmptyValuesForFieldValues
         from ib_tasks.constants.exception_messages \
             import EMPTY_VALUE_FOR_FIELD_VALUE
 
@@ -534,8 +509,7 @@ class TestCreateOrUpdateFields:
             populate_gofs, snapshot
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions \
-            import DuplicationOfFieldValuesForFieldTypeMultiValues
+        from ib_tasks.exceptions.fields_custom_exceptions import DuplicationOfFieldValuesForFieldTypeMultiValues
         from ib_tasks.constants.exception_messages \
             import DUPLICATION_OF_FIELD_VALUES
 
@@ -568,8 +542,7 @@ class TestCreateOrUpdateFields:
             valid_field_roles_dtos, populate_gofs
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions \
-            import InvalidJsonForFieldValue
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidJsonForFieldValue
         from ib_tasks.constants.exception_messages import INVALID_JSON
         field_values = [
             {
@@ -607,8 +580,7 @@ class TestCreateOrUpdateFields:
             valid_field_roles_dtos, populate_gofs
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions \
-            import EmptyValuesForGoFNames
+        from ib_tasks.exceptions.fields_custom_exceptions import EmptyValuesForGoFNames
         from ib_tasks.constants.exception_messages \
             import EMPTY_VALUE_FOR_GOF_NAMES
         field_values = [
@@ -648,8 +620,7 @@ class TestCreateOrUpdateFields:
             valid_field_roles_dtos, populate_gofs
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions \
-            import DuplicationOfGoFNamesForFieldValues
+        from ib_tasks.exceptions.fields_custom_exceptions import DuplicationOfGoFNamesForFieldValues
         from ib_tasks.constants.exception_messages \
             import DUPLICATED_OF_GOF_NAMES_FOR_FIELD_VALUES
         field_values = [
@@ -697,8 +668,7 @@ class TestCreateOrUpdateFields:
             valid_field_roles_dtos, populate_gofs
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions \
-            import InvalidGOFIds
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidGOFIds
         from ib_tasks.constants.exception_messages \
             import INVALID_GOF_IDS_EXCEPTION_MESSAGE
         field_values = [
@@ -743,8 +713,7 @@ class TestCreateOrUpdateFields:
             valid_field_roles_dtos, populate_gofs, snapshot
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions \
-            import AllowedFormatsEmptyValueException
+        from ib_tasks.exceptions.fields_custom_exceptions import AllowedFormatsEmptyValueException
         from ib_tasks.constants.exception_messages \
             import ALLOWED_FORMAT_EMPTY_VALUES_EXCEPTION
 
@@ -774,8 +743,7 @@ class TestCreateOrUpdateFields:
             valid_field_roles_dtos, populate_gofs
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions \
-            import FieldsDuplicationOfAllowedFormatsValues
+        from ib_tasks.exceptions.fields_custom_exceptions import FieldsDuplicationOfAllowedFormatsValues
         from ib_tasks.constants.exception_messages \
             import FIELD_DUPLICATION_OF_ALLOWED_FORMATS
 
@@ -810,8 +778,7 @@ class TestCreateOrUpdateFields:
             valid_field_roles_dtos, populate_gofs
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions \
-            import FieldsDuplicationOfAllowedFormatsValues
+        from ib_tasks.exceptions.fields_custom_exceptions import FieldsDuplicationOfAllowedFormatsValues
         from ib_tasks.constants.exception_messages \
             import FIELD_DUPLICATION_OF_ALLOWED_FORMATS
 
@@ -847,8 +814,7 @@ class TestCreateOrUpdateFields:
             valid_field_roles_dtos, populate_gofs, snapshot
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions \
-            import EmptyValuesForAllowedFormats
+        from ib_tasks.exceptions.fields_custom_exceptions import EmptyValuesForAllowedFormats
         from ib_tasks.constants.exception_messages \
             import EMPTY_VALUES_FOR_ALLOWED_FORMATS
 
@@ -879,8 +845,7 @@ class TestCreateOrUpdateFields:
     ):
         # Arrange
         from ib_tasks.constants.constants import SEARCHABLE_VALUES
-        from ib_tasks.exceptions.custom_exceptions \
-            import InvalidValueForSearchable
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForSearchable
         from ib_tasks.constants.exception_messages \
             import INVALID_VALUE_FOR_SEARCHABLE
         field_dtos = [
@@ -912,8 +877,7 @@ class TestCreateOrUpdateFields:
     ):
         # Arrange
         from ib_tasks.constants.constants import SEARCHABLE_VALUES
-        from ib_tasks.exceptions.custom_exceptions \
-            import InvalidValueForSearchable
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForSearchable
         from ib_tasks.constants.exception_messages \
             import INVALID_VALUE_FOR_SEARCHABLE
         field_dtos = [

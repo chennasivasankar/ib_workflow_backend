@@ -2,7 +2,7 @@ from typing import List, Optional
 import collections
 
 from ib_tasks.interactors.storage_interfaces.dtos import FieldRolesDTO
-from ib_tasks.exceptions.custom_exceptions import (
+from ib_tasks.exceptions.fields_custom_exceptions import (
     EmptyValueForPermissions,
     InvalidFieldRolesException,
     DuplicationOfPermissionRoles
