@@ -18,8 +18,8 @@ def api_wrapper(*args, **kwargs):
     user_obj = kwargs["user"]
     user_id = str(user_obj.id)
     query_params = kwargs["query_params"]
-    offset = query_params.get("offset_query_parameter")
-    limit = query_params.get("limit_query_parameter")
+    offset = query_params.get("offset")
+    limit = query_params.get("limit")
 
     storage = TeamStorageImplementation()
     presenter = TeamPresenterImplementation()

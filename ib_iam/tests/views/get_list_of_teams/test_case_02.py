@@ -20,7 +20,7 @@ class TestCase02GetListOfTeamsAPITestCase(TestUtils):
     def test_case(self, snapshot, setup):
         body = {}
         path_params = {}
-        query_params = {'limit_query_parameter': 5, 'offset_query_parameter': 0}
+        query_params = {'limit': 5, 'offset': 0}
         headers = {}
         response = self.default_test_case(
             body=body, path_params=path_params,

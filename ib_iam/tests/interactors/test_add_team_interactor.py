@@ -1,5 +1,5 @@
 from mock import create_autospec, Mock
-from ib_iam.interactors.add_team_interactor import AddTeamInteractor
+from ib_iam.interactors.team_interactor import TeamInteractor
 from ib_iam.interactors.presenter_interfaces.team_presenter_interface import (
     TeamPresenterInterface
 )
@@ -15,10 +15,10 @@ class TestAddTeamInteractor:
         from ib_iam.exceptions.custom_exceptions import UserHasNoAccess
         storage = create_autospec(TeamStorageInterface)
         presenter = create_autospec(TeamPresenterInterface)
-        interactor = AddTeamInteractor(storage=storage)
+        interactor = TeamInteractor(storage=storage)
         user_id = "1"
         team_details_with_user_ids_dto = TeamDetailsWithUserIdsDTOFactory()
-        storage.raise_exception_if_user_is_not_admin \
+        storage.validate_is_user_admin \
             .side_effect = UserHasNoAccess
         presenter.get_user_has_no_access_response_for_add_team \
             .return_value = Mock()
@@ -29,7 +29,7 @@ class TestAddTeamInteractor:
             presenter=presenter
         )
 
-        storage.raise_exception_if_user_is_not_admin \
+        storage.validate_is_user_admin \
             .assert_called_once_with(user_id=user_id)
         presenter.get_user_has_no_access_response_for_add_team \
             .assert_called_once()
@@ -37,7 +37,7 @@ class TestAddTeamInteractor:
     def test_given_duplicate_users_returns_duplicate_users_response(self):
         storage = create_autospec(TeamStorageInterface)
         presenter = create_autospec(TeamPresenterInterface)
-        interactor = AddTeamInteractor(storage=storage)
+        interactor = TeamInteractor(storage=storage)
         user_id = "1"
         user_ids = ["2", "2", "3", "1"]
         team_details_with_user_ids_dto = TeamDetailsWithUserIdsDTOFactory(
@@ -58,7 +58,7 @@ class TestAddTeamInteractor:
     def test_given_invalid_users_returns_invalid_users_response(self):
         storage = create_autospec(TeamStorageInterface)
         presenter = create_autospec(TeamPresenterInterface)
-        interactor = AddTeamInteractor(storage=storage)
+        interactor = TeamInteractor(storage=storage)
         user_id = "1"
         valid_user_ids = ["2", "3"]
         invalid_user_ids = ["2", "3", "4"]
@@ -83,7 +83,7 @@ class TestAddTeamInteractor:
     def test_team_name_exists_returns_team_name_already_exists_response(self):
         storage = create_autospec(TeamStorageInterface)
         presenter = create_autospec(TeamPresenterInterface)
-        interactor = AddTeamInteractor(storage=storage)
+        interactor = TeamInteractor(storage=storage)
         user_id = "1"
         team_name = "team1"
         user_ids = ["1"]
@@ -116,7 +116,7 @@ class TestAddTeamInteractor:
     def test_given_valid_details_then_returns_team_id(self):
         storage = create_autospec(TeamStorageInterface)
         presenter = create_autospec(TeamPresenterInterface)
-        interactor = AddTeamInteractor(storage=storage)
+        interactor = TeamInteractor(storage=storage)
         user_id = "1"
         team_id = "1"
         user_ids = ["2", "3"]

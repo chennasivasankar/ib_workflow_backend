@@ -40,7 +40,7 @@ class TestCase01GetListOfTeamsAPITestCase(TestUtils):
         ]
         body = {}
         path_params = {}
-        query_params = {'limit_query_parameter': 5, 'offset_query_parameter': 0}
+        query_params = {'limit': 5, 'offset': 0}
         headers = {}
         response = self.default_test_case(
             body=body, path_params=path_params,
@@ -84,4 +84,3 @@ class TestCase01GetListOfTeamsAPITestCase(TestUtils):
             team_object = TeamFactory(team_id=team["team_id"])
             for member_id in team["member_ids"]:
                 TeamMemberFactory(team=team_object, member_id=member_id)
-            from ib_iam.models import Team

@@ -47,7 +47,7 @@ class GetListOfTeamsInteractor:
 
     def get_list_of_teams(self, user_id: str, pagination_dto: PaginationDTO):
         self._validate_pagination_details(pagination_dto=pagination_dto)
-        self.storage.raise_exception_if_user_is_not_admin(user_id=user_id)
+        self.storage.validate_is_user_admin(user_id=user_id)
         teams_with_total_teams_count = \
             self.storage.get_teams_with_total_teams_count_dto(
                 pagination_dto=pagination_dto
