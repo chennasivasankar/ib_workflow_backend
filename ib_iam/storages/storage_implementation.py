@@ -1,8 +1,10 @@
 from typing import List
 
-from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO, UserRoleDTO, UserCompanyDTO, UserDTO, CompanyDTO, \
+from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO, \
+    UserRoleDTO, UserCompanyDTO, UserDTO, CompanyDTO, \
     TeamDTO, RoleDTO
-from ib_iam.interactors.storage_interfaces.storage_interface import StorageInterface
+from ib_iam.interactors.storage_interfaces.storage_interface import \
+    StorageInterface
 
 
 class StorageImplementation(StorageInterface):
@@ -10,7 +12,6 @@ class StorageImplementation(StorageInterface):
     def validate_user_is_admin(self, user_id: str) -> bool:
         from ib_iam.models.user import UserDetails
         user = UserDetails.objects.get(user_id=user_id)
-        print(user.is_admin)
         return user.is_admin
 
     def get_users_who_are_not_admins(
@@ -61,7 +62,6 @@ class StorageImplementation(StorageInterface):
 
     def get_company_details_of_users_bulk(
             self, user_ids: List[str]) -> List[UserCompanyDTO]:
-        from ib_iam.models import UserRole
         from ib_iam.models import UserDetails
         user_companies = UserDetails.objects.filter(user_id__in=user_ids) \
             .select_related('company')
@@ -117,11 +117,11 @@ class StorageImplementation(StorageInterface):
     def get_roles(self) -> List[RoleDTO]:
         roles = []
         from ib_iam.models import Role
-        team_query_set = Role.objects.values('id', 'name')
+        team_query_set = Role.objects.values('role_id', 'name')
         for role in team_query_set:
             roles.append(
                 RoleDTO(
-                    id=str(role['id']),
+                    role_id=str(role['role_id']),
                     role_name=role['name']
                 )
             )

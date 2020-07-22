@@ -31,13 +31,24 @@
   },
   "security": [],
   "definitions": {
-    "UserDetails": {
+    "CommonHttpExceptionFields": {
       "type": "object",
       "properties": {
-        "user_id": {
-          "type": "string",
-          "format": "uuid"
+        "response": {
+          "type": "string"
         },
+        "http_status_code": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code"
+      ]
+    },
+    "UserNameAndEmail": {
+      "type": "object",
+      "properties": {
         "name": {
           "type": "string"
         },
@@ -46,9 +57,51 @@
         }
       },
       "required": [
-        "user_id",
         "name",
         "email"
+      ]
+    },
+    "UserDetails": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/UserId"
+        },
+        {
+          "$ref": "#/definitions/UserNameAndEmail"
+        }
+      ]
+    },
+    "UserWithExtraFields": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/UserDetails"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "profile_pic_url": {
+              "type": "string"
+            },
+            "is_admin": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "profile_pic_url",
+            "is_admin"
+          ]
+        }
+      ]
+    },
+    "UserId": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "user_id"
       ]
     },
     "TeamDetails": {
@@ -67,7 +120,7 @@
         "team_name"
       ]
     },
-    "ListofTeams": {
+    "ListOfTeams": {
       "type": "object",
       "properties": {
         "teams": {
@@ -97,17 +150,6 @@
         "company_name"
       ]
     },
-    "Company": {
-      "type": "object",
-      "properties": {
-        "company": {
-          "$ref": "#/definitions/CompanyDetails"
-        }
-      },
-      "required": [
-        "company"
-      ]
-    },
     "RoleDetails": {
       "type": "object",
       "properties": {
@@ -123,7 +165,7 @@
         "role_name"
       ]
     },
-    "ListofRoles": {
+    "ListOfRoles": {
       "type": "object",
       "properties": {
         "roles": {
@@ -143,13 +185,21 @@
           "$ref": "#/definitions/UserDetails"
         },
         {
-          "$ref": "#/definitions/ListofTeams"
+          "$ref": "#/definitions/ListOfTeams"
         },
         {
-          "$ref": "#/definitions/ListofRoles"
+          "$ref": "#/definitions/ListOfRoles"
         },
         {
-          "$ref": "#/definitions/Company"
+          "type": "object",
+          "properties": {
+            "company": {
+              "$ref": "#/definitions/CompanyDetails"
+            }
+          },
+          "required": [
+            "company"
+          ]
         }
       ]
     },
@@ -167,7 +217,7 @@
         "users"
       ]
     },
-    "ListOfUsers": {
+    "ListOfUsersWithTotalUsersCount": {
       "allOf": [
         {
           "$ref": "#/definitions/UsersDetails"
@@ -186,131 +236,54 @@
         }
       ]
     },
-    "Forbidden": {
-      "type": "object",
-      "properties": {
-        "response": {
-          "type": "string",
-          "enum": [
-            "USER_DOES_NOT_HAVE_PERMISSION"
+    "UserWithCompanyWithTeamsAndRoles": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/UserNameAndEmail"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "company_id": {
+              "type": "string"
+            },
+            "team_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "role_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "company_id",
+            "role_ids",
+            "team_ids"
           ]
         }
-      },
-      "required": [
-        "response"
-      ]
-    },
-    "AddUserDetails": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string",
-          "format": "email"
-        },
-        "company_id": {
-          "type": "string"
-        },
-        "team_ids": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "role_ids": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      },
-      "required": [
-        "name",
-        "email",
-        "company_id",
-        "role_ids",
-        "team_ids"
-      ]
-    },
-    "AddUserFailed": {
-      "type": "object",
-      "properties": {
-        "response": {
-          "type": "string"
-        },
-        "http_status_code": {
-          "type": "integer"
-        },
-        "res_status": {
-          "type": "string",
-          "enum": [
-            "INVALID_EMAIL",
-            "INVALID_NAME",
-            "USER_ALREADY_EXIST_WITH_THIS_EMAIL"
-          ]
-        }
-      },
-      "required": [
-        "response"
       ]
     },
     "Companies": {
       "type": "array",
       "items": {
-        "type": "object",
-        "properties": {
-          "company_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "company_name": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "company_id",
-          "company_name"
-        ]
+        "$ref": "#/definitions/CompanyDetails"
       }
     },
     "Roles": {
       "type": "array",
       "items": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "role_name": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "role_name"
-        ]
+        "$ref": "#/definitions/RoleDetails"
       }
     },
     "Teams": {
       "type": "array",
       "items": {
-        "type": "object",
-        "properties": {
-          "team_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "team_name": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "team_id",
-          "team_name"
-        ]
+        "$ref": "#/definitions/TeamDetails"
       }
     },
     "ConfigurationDetails": {
@@ -334,6 +307,12 @@
     }
   },
   "parameters": {
+    "UserIdPathParameter": {
+      "name": "user_id",
+      "in": "path",
+      "required": true,
+      "type": "string"
+    },
     "OffsetQueryParameter": {
       "name": "offset",
       "in": "query",
@@ -348,10 +327,73 @@
     },
     "AddUserParameter": {
       "name": "AddUser",
-      "description": "Details of User",
+      "description": "Details of User to add",
       "in": "body",
       "schema": {
-        "$ref": "#/definitions/AddUserDetails"
+        "$ref": "#/definitions/UserWithCompanyWithTeamsAndRoles"
+      }
+    },
+    "EditUserDetailsBodyParameter": {
+      "name": "EditUser",
+      "description": "Details of User to edit",
+      "in": "body",
+      "schema": {
+        "$ref": "#/definitions/UserNameAndEmail"
+      }
+    },
+    "LoginParameter": {
+      "name": "login",
+      "description": "email and password to login in database",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      }
+    },
+    "SendResetPasswordLinkParameter": {
+      "name": "ResetPasswordParameter",
+      "description": "email to reset the password",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      }
+    },
+    "UpdatePasswordParameter": {
+      "name": "UpdatePasswordParameter",
+      "description": "update password of user",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "password"
+        ]
       }
     }
   },
@@ -359,19 +401,57 @@
     "ListOfUsersResponse": {
       "description": "list of users exist",
       "schema": {
-        "$ref": "#/definitions/ListOfUsers"
+        "$ref": "#/definitions/ListOfUsersWithTotalUsersCount"
       }
     },
-    "ForbiddenResponse": {
+    "UserDoesNotHavePermissionResponse": {
       "description": "Access Denied",
       "schema": {
-        "$ref": "#/definitions/Forbidden"
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_DOES_NOT_HAVE_PERMISSION"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
       }
     },
-    "AddUserFailedResponse": {
+    "AddUserBadRequestResponse": {
       "description": "Failed to add user",
       "schema": {
-        "$ref": "#/definitions/AddUserFailed"
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_EMAIL",
+                  "INVALID_NAME",
+                  "USER_ALREADY_EXIST_WITH_THIS_EMAIL"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
       }
     },
     "ConfigurationDetailsResponse": {
@@ -398,7 +478,7 @@
             "$ref": "#/responses/ConfigurationDetailsResponse"
           },
           "403": {
-            "$ref": "#/responses/ForbiddenResponse"
+            "$ref": "#/responses/UserDoesNotHavePermissionResponse"
           }
         }
       }
@@ -427,7 +507,7 @@
             "$ref": "#/responses/ListOfUsersResponse"
           },
           "403": {
-            "$ref": "#/responses/ForbiddenResponse"
+            "$ref": "#/responses/UserDoesNotHavePermissionResponse"
           }
         }
       }
@@ -453,7 +533,7 @@
             "description": "user added"
           },
           "400": {
-            "$ref": "#/responses/AddUserFailedResponse"
+            "$ref": "#/responses/AddUserBadRequestResponse"
           }
         }
       }

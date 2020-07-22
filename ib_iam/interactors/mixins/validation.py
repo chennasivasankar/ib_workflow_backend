@@ -46,6 +46,5 @@ class ValidationMixin:
 
     @staticmethod
     def _check_name_contains_special_characters_and_throw_exception(name):
-        print(bool(name.isalpha()))
         if not name.isalpha():
             raise NameShouldNotContainsNumbersSpecCharactersException()

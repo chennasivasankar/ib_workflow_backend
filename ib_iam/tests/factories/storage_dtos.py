@@ -3,7 +3,8 @@ import uuid
 import factory
 
 from ib_iam.interactors.storage_interfaces.dtos \
-    import UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamDTO, CompanyDTO, RoleDTO
+    import UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamDTO, \
+    CompanyDTO, RoleDTO
 
 
 class UserDTOFactory(factory.Factory):
@@ -55,7 +56,7 @@ class RoleDTOFactory(factory.Factory):
     class Meta:
         model = RoleDTO
 
-    id = factory.Sequence(lambda n: 'PAYMENT%s' % n)
+    role_id = factory.Sequence(lambda n: 'PAYMENT%s' % n)
     role_name = factory.Sequence(lambda n: 'payment %s' % n)
 
 

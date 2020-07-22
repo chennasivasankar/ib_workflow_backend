@@ -5,19 +5,19 @@ RESPONSE_200_JSON = """
 {
     "companies": [
         {
-            "company_id": "ba57c0bf-bcf5-42dc-88e9-db2030a54f00",
+            "company_id": "80f10e14-d8ca-4a7c-b857-913c71a8ade6",
             "company_name": "string"
         }
     ],
     "roles": [
         {
-            "id": "13892af1-eff2-4ea2-a9d8-26fab954b043",
+            "role_id": "string",
             "role_name": "string"
         }
     ],
     "teams": [
         {
-            "team_id": "d0eae995-29d7-493e-9d51-c77f0955007b",
+            "team_id": "6ad6004c-1fb0-49cc-8115-9e05dd013166",
             "team_name": "string"
         }
     ]
@@ -26,7 +26,9 @@ RESPONSE_200_JSON = """
 
 RESPONSE_403_JSON = """
 {
-    "response": "USER_DOES_NOT_HAVE_PERMISSION"
+    "response": "string",
+    "http_status_code": 1,
+    "res_status": "USER_DOES_NOT_HAVE_PERMISSION"
 }
 """
 

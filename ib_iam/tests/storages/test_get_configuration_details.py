@@ -4,44 +4,34 @@ from ib_iam.storages.storage_implementation import StorageImplementation
 from ib_iam.tests.common_fixtures.storages import reset_sequence
 
 
-@pytest.fixture()
-def company_dtos():
-    from ib_iam.tests.factories.storage_dtos import CompanyDTOFactory
-    company_dtos = CompanyDTOFactory.create_batch(4)
-    return company_dtos
-
-
-@pytest.fixture()
-def companies():
-    reset_sequence()
-    from ib_iam.tests.factories.models import CompanyFactory
-    company_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
-                   "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
-    companies = [CompanyFactory.create(company_id=id) for id in company_ids]
-    return companies
-
-
-@pytest.fixture()
-def teams():
-    reset_sequence()
-    from ib_iam.tests.factories.models import TeamFactory
-    team_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
-                "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
-    teams = [TeamFactory.create(team_id=id) for id in team_ids]
-    return teams
-
-
-@pytest.fixture()
-def roles():
-    reset_sequence()
-    role_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
-                "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
-    from ib_iam.tests.factories.models import RoleFactory
-    roles = [RoleFactory.create(id=id) for id in role_ids]
-    return roles
-
-
 class TestGetConfigurationDetailsStorage:
+    @pytest.fixture()
+    def companies(self):
+        reset_sequence()
+        from ib_iam.tests.factories.models import CompanyFactory
+        company_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
+                       "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
+        companies = [CompanyFactory.create(company_id=company_id) for
+                     company_id in company_ids]
+        return companies
+
+    @pytest.fixture()
+    def teams(self):
+        reset_sequence()
+        from ib_iam.tests.factories.models import TeamFactory
+        team_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
+                    "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
+        teams = [TeamFactory.create(team_id=team_id) for team_id in team_ids]
+        return teams
+
+    @pytest.fixture()
+    def roles(self):
+        reset_sequence()
+        role_ids = ["1", "2"]
+        from ib_iam.tests.factories.models import RoleFactory
+        roles = [RoleFactory.create(role_id=role_id) for role_id in role_ids]
+        return roles
+
     @pytest.mark.django_db
     def test_get_companies(self, companies):
         # Arrange
@@ -65,9 +55,10 @@ class TestGetConfigurationDetailsStorage:
         storage = StorageImplementation()
         from ib_iam.interactors.storage_interfaces.dtos import TeamDTO
         expected_ouput = [
-            TeamDTO(team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331', team_name='team 0'),
-            TeamDTO(team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8332', team_name='team 1')]
-
+            TeamDTO(team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
+                    team_name='team 0'),
+            TeamDTO(team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8332',
+                    team_name='team 1')]
 
         # Act
         output = storage.get_teams()
@@ -81,9 +72,8 @@ class TestGetConfigurationDetailsStorage:
         storage = StorageImplementation()
         from ib_iam.interactors.storage_interfaces.dtos import RoleDTO
         expected_ouput = [
-            RoleDTO(id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331', role_name='role 0'),
-            RoleDTO(id='ef6d1fc6-ac3f-4d2d-a983-752c992e8332', role_name='role 1')]
-
+            RoleDTO(role_id='1', role_name='role 0'),
+            RoleDTO(role_id='2', role_name='role 1')]
 
         # Act
         output = storage.get_roles()

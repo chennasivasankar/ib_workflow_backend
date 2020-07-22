@@ -13,7 +13,6 @@ def email_exist_adapter_mock(mocker):
     mock = mocker.patch(
         'ib_iam.adapters.user_service.UserService.create_user_account_with_email'
     )
-    print('Hai')
     from ib_iam.exceptions.exceptions \
         import UserAccountAlreadyExistWithThisEmail
     mock.side_effect = UserAccountAlreadyExistWithThisEmail

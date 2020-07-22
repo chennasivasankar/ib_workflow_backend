@@ -1,5 +1,3 @@
-import pytest
-
 from ib_iam.exceptions.exceptions import UserIsNotAdminException
 from ib_iam.interactors.presenter_interfaces.presenter_interface \
     import PresenterInterface
@@ -7,15 +5,16 @@ from ib_iam.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 
 
-class GetConfigurationDetails:
+class GetUserOptionsDetails:
 
     def __init__(self, storage: StorageInterface):
         self.storage = storage
 
-    def get_configuration_details_wrapper(self,  user_id: str, presenter: PresenterInterface):
+    def get_configuration_details_wrapper(self, user_id: str,
+                                          presenter: PresenterInterface):
         try:
-            print('user_id', '-='*10, user_id)
-            configuration_details_dto = self.get_configuration_details(user_id=user_id)
+            configuration_details_dto = self.get_configuration_details(
+                user_id=user_id)
             return presenter.response_for_get_configuration_details(
                 configuration_details_dto)
         except UserIsNotAdminException:
@@ -31,7 +30,8 @@ class GetConfigurationDetails:
 
     @staticmethod
     def _create_configuration_details_dto(companies, teams, roles):
-        from ib_iam.interactors.presenter_interfaces.dtos import ConfigurationDetailsDto
+        from ib_iam.interactors.presenter_interfaces.dtos import \
+            ConfigurationDetailsDto
         configuration_details_dto = ConfigurationDetailsDto(
             companies=companies,
             roles=roles,
@@ -42,6 +42,5 @@ class GetConfigurationDetails:
     def _check_and_throw_user_is_admin(self, user_id: str):
         is_admin = self.storage.validate_user_is_admin(user_id=user_id)
         is_not_admin = not is_admin
-        print(is_not_admin)
         if is_not_admin:
             raise UserIsNotAdminException()

@@ -1,7 +1,7 @@
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 from .validator_class import ValidatorClass
-from ...interactors.get_configuration_details_interactor import GetConfigurationDetails
+from ...interactors.get_user_options_interactor import GetUserOptionsDetails
 from ...presenters.presenter_implementation import PresenterImplementation
 from ...storages.storage_implementation import StorageImplementation
 
@@ -12,7 +12,7 @@ def api_wrapper(*args, **kwargs):
 
     storage = StorageImplementation()
     presenter = PresenterImplementation()
-    interactor = GetConfigurationDetails(storage=storage)
+    interactor = GetUserOptionsDetails(storage=storage)
 
     user = kwargs['user']
     user_id = user.id

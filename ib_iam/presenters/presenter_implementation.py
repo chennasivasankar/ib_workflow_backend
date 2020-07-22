@@ -19,7 +19,6 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             "http_status_code": StatusCode.FORBIDDEN.value,
             "res_status": USER_DOES_NOT_HAVE_PERMISSION[1]
         }
-        print(response_dict)
         return self.prepare_403_forbidden_response(
             response_dict=response_dict)
 

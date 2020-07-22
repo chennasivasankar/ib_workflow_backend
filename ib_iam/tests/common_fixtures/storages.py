@@ -1,6 +1,3 @@
-import uuid
-from unittest.mock import patch
-
 import pytest
 
 from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
@@ -36,7 +33,8 @@ def user_not_admin():
 def users_company():
     reset_sequence()
     users = []
-    companies = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331", "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
+    companies = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
+                 "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
     for company_id in companies:
         company = CompanyFactory.create(company_id=company_id)
         for i in range(1, 4, 1):
@@ -49,7 +47,8 @@ def users_company():
 def users_team():
     reset_sequence()
     users = []
-    teams = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331", "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
+    teams = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
+             "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
     for team_id in teams:
         team = TeamFactory.create(team_id=team_id)
         for i in range(1, 4):
@@ -62,7 +61,8 @@ def users_team():
 def users_role():
     reset_sequence()
     users = []
-    roles = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331", "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
+    roles = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
+             "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
     for role_id in roles:
         role = RoleFactory.create(id=role_id)
         for i in range(1, 4):

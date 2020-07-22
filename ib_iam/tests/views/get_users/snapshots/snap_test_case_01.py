@@ -7,10 +7,10 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01GetUsersAPITestCase.test_case status_code'] = '500'
+snapshots['TestCase01GetUsersAPITestCase.test_case status_code'] = '403'
 
 snapshots['TestCase01GetUsersAPITestCase.test_case body'] = {
-    'response': [
-        '"forbidden access, user cannot access" is not a valid choice.'
-    ]
+    'http_status_code': 403,
+    'res_status': 'USER_DOES_NOT_HAVE_PERMISSION',
+    'response': 'forbidden access, user cannot access'
 }

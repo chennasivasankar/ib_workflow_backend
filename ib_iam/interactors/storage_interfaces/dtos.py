@@ -24,7 +24,7 @@ class TeamDTO:
 
 @dataclass
 class RoleDTO:
-    id: str
+    role_id: str
     role_name: str
 
 

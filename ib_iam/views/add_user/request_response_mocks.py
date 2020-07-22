@@ -3,7 +3,7 @@
 REQUEST_BODY_JSON = """
 {
     "name": "string",
-    "email": "string@string.com",
+    "email": "string",
     "company_id": "string",
     "team_ids": [
         "string"

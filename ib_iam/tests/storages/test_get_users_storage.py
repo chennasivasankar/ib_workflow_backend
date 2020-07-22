@@ -16,7 +16,6 @@ class TestGetUsers:
         # Arrange
         user_id = "user0"
 
-        print(user_not_admin)
         expected_output = False
         storage = StorageImplementation()
 
