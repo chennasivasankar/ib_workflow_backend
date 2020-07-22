@@ -8,14 +8,12 @@ from ib_iam.storages.storage_implementation import StorageImplementation
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    # ---------MOCK IMPLEMENTATION---------
-
     storage = StorageImplementation()
     presenter = PresenterImplementation()
     interactor = AddNewUserInteractor(storage=storage)
 
     user = kwargs['user']
-    user_id = user.id
+    user_id = user.user_id
     request_object = kwargs["request_data"]
     name = request_object['name']
     email = request_object['email']

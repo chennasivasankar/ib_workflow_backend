@@ -12,13 +12,12 @@ from ib_iam.interactors.get_users_details_inteactor \
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    # ---------MOCK IMPLEMENTATION---------
     storage = StorageImplementation()
     presenter = PresenterImplementation()
     interactor = GetUsersDetailsInteractor(storage=storage)
 
     user = kwargs['user']
-    user_id = user.id
+    user_id = user.user_id
     query_params = kwargs['query_params']
     offset = query_params["offset"]
     limit = query_params["limit"]

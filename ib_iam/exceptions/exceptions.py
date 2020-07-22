@@ -1,16 +1,16 @@
-class UserIsNotAdminException(Exception):
+class UserIsNotAdmin(Exception):
     pass
 
 
-class InvalidOffsetValueException(Exception):
+class InvalidOffsetValue(Exception):
     pass
 
 
-class InvalidLimitValueException(Exception):
+class InvalidLimitValue(Exception):
     pass
 
 
-class OffsetValueIsGreaterthanLimitValueException(Exception):
+class OffsetValueIsGreaterthanLimitValue(Exception):
     pass
 
 
@@ -18,7 +18,7 @@ class UserAccountAlreadyExistWithThisEmail(Exception):
     pass
 
 
-class GivenNameIsEmptyException(Exception):
+class GivenNameIsEmpty(Exception):
     pass
 
 
@@ -39,4 +39,8 @@ class InvalidCompanyIdException(Exception):
 
 
 class TeamIdsAreInvalidException(Exception):
+    pass
+
+
+class UserDoesNotExist(Exception):
     pass

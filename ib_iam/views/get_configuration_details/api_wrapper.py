@@ -8,14 +8,12 @@ from ...storages.storage_implementation import StorageImplementation
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    # ---------MOCK IMPLEMENTATION---------
-
     storage = StorageImplementation()
     presenter = PresenterImplementation()
     interactor = GetUserOptionsDetails(storage=storage)
 
     user = kwargs['user']
-    user_id = user.id
+    user_id = user.user_id
 
 
     response = interactor.get_configuration_details_wrapper(

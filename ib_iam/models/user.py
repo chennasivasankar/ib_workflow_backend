@@ -1,5 +1,4 @@
 from django.db import models
-from ib_iam.models import Company, Role, Team
 
 
 class UserDetails(models.Model):

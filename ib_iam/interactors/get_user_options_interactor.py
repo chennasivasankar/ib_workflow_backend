@@ -1,4 +1,4 @@
-from ib_iam.exceptions.exceptions import UserIsNotAdminException
+from ib_iam.exceptions.exceptions import UserIsNotAdmin
 from ib_iam.interactors.presenter_interfaces.presenter_interface \
     import PresenterInterface
 from ib_iam.interactors.storage_interfaces.storage_interface \
@@ -17,7 +17,7 @@ class GetUserOptionsDetails:
                 user_id=user_id)
             return presenter.response_for_get_configuration_details(
                 configuration_details_dto)
-        except UserIsNotAdminException:
+        except UserIsNotAdmin:
             presenter.raise_user_is_not_admin_exception()
 
     def get_configuration_details(self, user_id: str):
@@ -43,4 +43,4 @@ class GetUserOptionsDetails:
         is_admin = self.storage.validate_user_is_admin(user_id=user_id)
         is_not_admin = not is_admin
         if is_not_admin:
-            raise UserIsNotAdminException()
+            raise UserIsNotAdmin()

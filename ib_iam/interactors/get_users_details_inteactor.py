@@ -1,6 +1,6 @@
-from ib_iam.exceptions.exceptions import UserIsNotAdminException, \
-    InvalidOffsetValueException, InvalidLimitValueException, \
-    OffsetValueIsGreaterthanLimitValueException
+from ib_iam.exceptions.exceptions import UserIsNotAdmin, \
+    InvalidOffsetValue, InvalidLimitValue, \
+    OffsetValueIsGreaterthanLimitValue
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.dtos \
     import CompleteUsersDetailsDTO
@@ -20,13 +20,13 @@ class GetUsersDetailsInteractor(ValidationMixin):
             complete_user_details_dtos = self.get_users_details(
                 user_id=user_id, offset=offset, limit=limit)
             return presenter.response_for_get_users(complete_user_details_dtos)
-        except UserIsNotAdminException:
+        except UserIsNotAdmin:
             return presenter.raise_user_is_not_admin_exception()
-        except InvalidOffsetValueException:
+        except InvalidOffsetValue:
             return presenter.raise_invalid_offset_value_exception()
-        except InvalidLimitValueException:
+        except InvalidLimitValue:
             return presenter.raise_invalid_limit_value_exception()
-        except OffsetValueIsGreaterthanLimitValueException:
+        except OffsetValueIsGreaterthanLimitValue:
             return presenter. \
                 raise_offset_value_is_greater_than_limit_value_exception()
 
@@ -58,7 +58,7 @@ class GetUsersDetailsInteractor(ValidationMixin):
         is_admin = self.storage.validate_user_is_admin(user_id=user_id)
         is_not_admin = not is_admin
         if is_not_admin:
-            raise UserIsNotAdminException()
+            raise UserIsNotAdmin()
 
     def _convert_complete_user_details_dtos(
             self, user_team_dtos, user_role_dtos,

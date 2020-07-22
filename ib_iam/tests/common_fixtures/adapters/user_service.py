@@ -1,6 +1,3 @@
-import pytest
-
-
 def get_users_adapter_mock(mocker, user_profile_dtos):
     mock = mocker.patch(
         'ib_iam.adapters.user_service.UserService.get_user_profile_bulk'
@@ -30,5 +27,29 @@ def create_user_account_adapter_mock(mocker):
 def create_user_profile_adapter_mock(mocker):
     mock = mocker.patch(
         'ib_iam.adapters.user_service.UserService.create_user_profile'
+    )
+    return mock
+
+
+def update_user_profile_user_already_exist_adapter_mock(mocker):
+    mock = mocker.patch(
+        'ib_iam.adapters.user_service.UserService.update_user_profile'
+    )
+    from ib_iam.exceptions.exceptions import UserDoesNotExist
+    mock.side_effect = UserDoesNotExist
+    return mock
+
+
+def update_user_profile_success_adapter_mock(mocker):
+    mock = mocker.patch(
+        'ib_iam.adapters.user_service.UserService.update_user_profile'
+    )
+    mock.return_value = None
+    return mock
+
+
+def prepare_get_user_profile_dto_mock(mocker):
+    mock = mocker.patch(
+        "ib_iam.adapters.user_service.UserService.get_user_profile_dto"
     )
     return mock

@@ -16,7 +16,7 @@ class TestCase01GetUsersAPITestCase(TestUtils):
 
     @pytest.fixture
     def set_up(self, api_user):
-        user_id = api_user.id
+        user_id = api_user.user_id
         from ib_iam.tests.factories.models import UserDetailsFactory
         from ib_iam.tests.common_fixtures.storages import reset_sequence
         reset_sequence()

@@ -1,6 +1,5 @@
 import os
 
-
 from ib_workflows_backend.settings.base import *
 
 # swagger utils #
@@ -32,6 +31,7 @@ INSTALLED_APPS += APPS
 THIRD_PARTY_SWAGGER_APPS = [
     # insert your apps here, in this order third part apps specific settings will be loaded.
     "ib_sentry_wrapper",
+    "ib_users",
 ]
 INSTALLED_APPS += THIRD_PARTY_SWAGGER_APPS
 
@@ -75,3 +75,5 @@ API_KEY_AUTHENTICATION_CLASS = \
     "ib_workflows_backend.common.authentication.APIKeyAuthentication"
 
 CUSTOM_EXCEPTIONS_TO_LOG_IN_SENTRY = []
+
+AUTH_USER_MODEL = "ib_users.UserAccount"

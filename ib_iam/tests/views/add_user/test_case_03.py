@@ -15,7 +15,7 @@ class TestCase03AddUserAPITestCase(TestUtils):
 
     @pytest.fixture
     def user_set_up(self, api_user):
-        user_id = api_user.id
+        user_id = api_user.user_id
         from ib_iam.tests.factories.models import UserDetailsFactory
         user = UserDetailsFactory.create(user_id=user_id, is_admin=True)
         from ib_iam.tests.factories.models \

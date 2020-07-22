@@ -1,6 +1,6 @@
 from typing import List
 
-from ib_iam.exceptions.exceptions import UserIsNotAdminException, GivenNameIsEmptyException, \
+from ib_iam.exceptions.exceptions import UserIsNotAdmin, GivenNameIsEmpty, \
     InvalidEmailAddressException, \
     UserAccountAlreadyExistWithThisEmail, NameShouldNotContainsNumbersSpecCharactersException, \
     RoleIdsAreInvalidException, InvalidCompanyIdException, TeamIdsAreInvalidException
@@ -22,9 +22,9 @@ class AddNewUserInteractor(ValidationMixin):
         try:
             self.add_new_user(user_id=user_id, name=name, email=email,
                               roles=roles, teams=teams, company_id=company_id)
-        except UserIsNotAdminException:
+        except UserIsNotAdmin:
             return presenter.raise_user_is_not_admin_exception()
-        except GivenNameIsEmptyException:
+        except GivenNameIsEmpty:
             return presenter.raise_invalid_name_exception()
         except InvalidEmailAddressException:
             return presenter.raise_invalid_email_exception()
@@ -58,7 +58,7 @@ class AddNewUserInteractor(ValidationMixin):
         is_admin = self.storage.validate_user_is_admin(user_id=user_id)
         is_not_admin = not is_admin
         if is_not_admin:
-            raise UserIsNotAdminException()
+            raise UserIsNotAdmin()
 
     @staticmethod
     def _validate_email_and_throw_exception(email: str):
@@ -81,6 +81,7 @@ class AddNewUserInteractor(ValidationMixin):
         service_adapter = get_service_adapter()
         user_profile_dto = self._create_user_profile_dto(
             name=name, email=email, user_id=user_id)
+        print(user_id, "--------")
         service_adapter.user_service.create_user_profile(
             user_id=user_id, user_profile_dto=user_profile_dto)
 
