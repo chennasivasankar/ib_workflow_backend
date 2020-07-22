@@ -129,9 +129,5 @@ class GetColumnTasksPresenterInterface(abc.ABC):
 class StageDisplayLogicPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
-    def get_response_for_invalid_stage_ids(self, error):
-        pass
-
-    @abc.abstractmethod
     def get_response_for_stage_display_logic(self, task_status_dtos):
         pass
