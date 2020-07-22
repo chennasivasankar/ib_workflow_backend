@@ -26,11 +26,29 @@ class InvalidTaskIdInSummaryFields(Exception):
         self.task_ids = task_ids
 
 
+class InvalidTaskIdInListViewFields(Exception):
+    def __init__(self, task_ids: List[str]):
+        self.task_ids = task_ids
+
+
+class InvalidTaskIdInKanbanViewFields(Exception):
+    def __init__(self, task_ids: List[str]):
+        self.task_ids = task_ids
+
+
 class EmptyValuesForTaskTemplateStages(Exception):
     pass
 
 
 class EmptyValuesForTaskSummaryFields(Exception):
+    pass
+
+
+class EmptyValuesForTaskListViewFields(Exception):
+    pass
+
+
+class EmptyValuesForTaskKanbanViewFields(Exception):
     pass
 
 
@@ -50,6 +68,14 @@ class TaskTemplateStagesNotBelongsToTaskTemplateId(Exception):
 
 
 class TaskSummaryFieldsNotBelongsToTaskTemplateId(Exception):
+    pass
+
+
+class TaskListViewFieldsNotBelongsToTaskTemplateId(Exception):
+    pass
+
+
+class TaskKanbanViewFieldsNotBelongsToTaskTemplateId(Exception):
     pass
 
 
