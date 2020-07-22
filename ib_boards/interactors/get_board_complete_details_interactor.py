@@ -1,7 +1,8 @@
 from typing import List
 
 from ib_boards.adapters.service_adapter import get_service_adapter
-from ib_boards.exceptions.custom_exceptions import InvalidBoardId, InvalidStageIds, UserDonotHaveAccess
+from ib_boards.exceptions.custom_exceptions import InvalidBoardId,\
+    UserDonotHaveAccess
 
 
 class GetBoardDetailsInteractor:
