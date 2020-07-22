@@ -33,7 +33,7 @@ class TestPopulateGoFs:
             self, interactor, gof_id, snapshot
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import GOFIdCantBeEmpty
+        from ib_tasks.exceptions.gofs_custom_exceptions import GOFIdCantBeEmpty
         gof_dtos = GoFDTOFactory.create_batch(size=2, gof_id=gof_id)
         complete_gof_details_dtos = CompleteGoFDetailsDTOFactory.create_batch(
             size=2, gof_dto=factory.Iterator(gof_dtos)
@@ -53,8 +53,7 @@ class TestPopulateGoFs:
             self, interactor, gof_display_name, snapshot
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import \
-            GOFDisplayNameCantBeEmpty
+        from ib_tasks.exceptions.gofs_custom_exceptions import GOFDisplayNameCantBeEmpty
         gof_dtos = GoFDTOFactory.create_batch(
             size=2, gof_display_name=gof_display_name
         )
@@ -76,8 +75,7 @@ class TestPopulateGoFs:
             self, interactor, max_columns, snapshot
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import \
-            MaxColumnsMustBeAPositiveInteger
+        from ib_tasks.exceptions.columns_custom_exceptions import MaxColumnsMustBeAPositiveInteger
         gof_dtos = GoFDTOFactory.create_batch(
             size=2, max_columns=max_columns
         )
@@ -99,8 +97,7 @@ class TestPopulateGoFs:
             self, interactor, read_permissions, snapshot
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import \
-            GOFReadPermissionsCantBeEmpty
+        from ib_tasks.exceptions.gofs_custom_exceptions import GOFReadPermissionsCantBeEmpty
         gof_roles_dtos = GoFRolesDTOFactory.create_batch(
             size=2, read_permission_roles=read_permissions
         )
@@ -123,8 +120,7 @@ class TestPopulateGoFs:
             self, interactor, write_permissions, snapshot
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import \
-            GOFWritePermissionsCantBeEmpty
+        from ib_tasks.exceptions.gofs_custom_exceptions import GOFWritePermissionsCantBeEmpty
         gof_roles_dtos = GoFRolesDTOFactory.create_batch(
             size=2, write_permission_roles=write_permissions
         )
@@ -146,8 +142,7 @@ class TestPopulateGoFs:
             self, interactor, snapshot
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import \
-            InvalidReadPermissionRoles
+        from ib_tasks.exceptions.roles_custom_exceptions import InvalidReadPermissionRoles
         gof_roles_dtos = GoFRolesDTOFactory.create_batch(
             size=2, read_permission_roles=["Payment Requestor"]
         )
@@ -169,8 +164,7 @@ class TestPopulateGoFs:
             self, interactor, snapshot
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import \
-            InvalidWritePermissionRoles
+        from ib_tasks.exceptions.roles_custom_exceptions import InvalidWritePermissionRoles
         gof_roles_dtos = GoFRolesDTOFactory.create_batch(
             size=2, write_permission_roles=["Payment Requestor"]
         )

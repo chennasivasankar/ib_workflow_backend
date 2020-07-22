@@ -10,13 +10,13 @@ class TestCreateTaskTemplate:
 
     @pytest.fixture
     def create_task_templates_interactor(self):
-        from ib_tasks.interactors.task_template_interactor import \
-            TaskTemplateInteractor
+        from ib_tasks.interactors.create_task_template_interactor import \
+            CreateTaskTemplateInteractor
         from ib_tasks.storages.tasks_storage_implementation import \
             TasksStorageImplementation
 
         task_storage = TasksStorageImplementation()
-        task_template_interactor = TaskTemplateInteractor(
+        task_template_interactor = CreateTaskTemplateInteractor(
             task_storage=task_storage
         )
         return task_template_interactor
@@ -31,8 +31,7 @@ class TestCreateTaskTemplate:
         create_task_template_dto= CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name
         )
-        from ib_tasks.exceptions.custom_exceptions import \
-            InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
 
         #Asssert
         with pytest.raises(InvalidValueForField) as err:
@@ -52,8 +51,7 @@ class TestCreateTaskTemplate:
         create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name
         )
-        from ib_tasks.exceptions.custom_exceptions import \
-            InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
 
         # Asssert
         with pytest.raises(InvalidValueForField) as err:

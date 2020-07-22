@@ -39,8 +39,7 @@ class TestGlobalConstants:
                 template_id=template_id,
                 global_constants_dtos=global_constants_dtos
             )
-        from ib_tasks.exceptions.custom_exceptions import \
-            TemplateDoesNotExists
+        from ib_tasks.exceptions.task_custom_exceptions import TemplateDoesNotExists
 
         #Asssert
         with pytest.raises(TemplateDoesNotExists) as err:
@@ -61,8 +60,7 @@ class TestGlobalConstants:
                 template_id=" ",
                 global_constants_dtos=global_constants_dtos
             )
-        from ib_tasks.exceptions.custom_exceptions import \
-            InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
@@ -86,8 +84,7 @@ class TestGlobalConstants:
                 template_id=template_id,
                 global_constants_dtos=global_constants_dtos
             )
-        from ib_tasks.exceptions.custom_exceptions import \
-            InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
@@ -111,8 +108,7 @@ class TestGlobalConstants:
                 template_id=template_id,
                 global_constants_dtos=global_constants_dtos
             )
-        from ib_tasks.exceptions.custom_exceptions import \
-            InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
@@ -135,8 +131,7 @@ class TestGlobalConstants:
                 template_id=template_id,
                 global_constants_dtos=global_constants_dtos
             )
-        from ib_tasks.exceptions.custom_exceptions import \
-            DuplicateConstantNames
+        from ib_tasks.exceptions.constants_custom_exceptions import DuplicateConstantNames
 
         # Assert
         with pytest.raises(DuplicateConstantNames) as err:
@@ -206,8 +201,7 @@ class TestGlobalConstants:
                 template_id=template_id,
                 global_constants_dtos=global_constants_dtos
             )
-        from ib_tasks.exceptions.custom_exceptions import \
-            ExistingGlobalConstantNamesNotInGivenData
+        from ib_tasks.exceptions.constants_custom_exceptions import ExistingGlobalConstantNamesNotInGivenData
 
         # Assert
         with pytest.raises(ExistingGlobalConstantNamesNotInGivenData) as err:

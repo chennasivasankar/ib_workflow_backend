@@ -1,7 +1,7 @@
 import pytest
 import mock
-from ib_tasks.interactors.task_template_interactor \
-    import TaskTemplateInteractor
+from ib_tasks.interactors.create_task_template_interactor \
+    import CreateTaskTemplateInteractor
 from ib_tasks.interactors.dtos import CreateTaskTemplateDTO
 
 
@@ -23,16 +23,16 @@ class TestTaskTemplateInteractor:
             INVALID_VALUE_FOR_TEMPLATE_NAME
         expected_message = INVALID_VALUE_FOR_TEMPLATE_NAME
 
-        from ib_tasks.interactors.task_template_interactor \
-            import TaskTemplateInteractor
-        task_template_interactor = TaskTemplateInteractor(
+        from ib_tasks.interactors.create_task_template_interactor \
+            import CreateTaskTemplateInteractor
+        task_template_interactor = CreateTaskTemplateInteractor(
             task_storage=task_storage_mock
         )
 
         create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name
         )
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
@@ -51,15 +51,15 @@ class TestTaskTemplateInteractor:
             INVALID_VALUE_FOR_TEMPLATE_ID
         expected_message = INVALID_VALUE_FOR_TEMPLATE_ID
 
-        from ib_tasks.interactors.task_template_interactor \
-            import TaskTemplateInteractor
-        task_template_interactor = TaskTemplateInteractor(
+        from ib_tasks.interactors.create_task_template_interactor \
+            import CreateTaskTemplateInteractor
+        task_template_interactor = CreateTaskTemplateInteractor(
             task_storage=task_storage_mock
         )
         create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name
         )
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
@@ -75,7 +75,7 @@ class TestTaskTemplateInteractor:
         create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name
         )
-        task_template_interactor = TaskTemplateInteractor(
+        task_template_interactor = CreateTaskTemplateInteractor(
             task_storage=task_storage_mock
         )
         task_storage_mock.check_is_template_exists.return_value = False
@@ -99,7 +99,7 @@ class TestTaskTemplateInteractor:
         create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name
         )
-        task_template_interactor = TaskTemplateInteractor(
+        task_template_interactor = CreateTaskTemplateInteractor(
             task_storage=task_storage_mock
         )
         task_storage_mock.check_is_template_exists.return_value = True
