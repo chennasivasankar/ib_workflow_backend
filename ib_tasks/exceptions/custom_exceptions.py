@@ -65,8 +65,8 @@ class InvalidStagesDisplayName(Exception):
 
 
 class InvalidValueForField(Exception):
-    def __init__(self, err_msg: str):
-        super().__init__(err_msg)
+    def __init__(self, message: str):
+        self.message = message
 
 
 class GOFIdCantBeEmpty(Exception):
@@ -147,25 +147,19 @@ class GoFIDsAlreadyExists(Exception):
         self.gof_ids = existing_gof_ids
 
 
-class InvalidTaskTemplateIds(Exception):
-
-    def __init__(self, invalid_task_template_ids: List[str]):
-        self.task_template_ids = invalid_task_template_ids
-
-
 class ExistingGlobalConstantNamesNotInGivenData(Exception):
-    def __init__(self, err_msg: str):
-        super().__init__(err_msg)
+    def __init__(self, message: str):
+        self.message = message
 
 
 class TemplateDoesNotExists(Exception):
-    def __init__(self, err_msg: str):
-        super().__init__(err_msg)
+    def __init__(self, message: str):
+        self.message = message
 
 
 class DuplicateConstantNames(Exception):
-    def __init__(self, err_msg: str):
-        super().__init__(err_msg)
+    def __init__(self, message: str):
+        self.message = message
 
 
 class InvalidFieldIdException(Exception):
@@ -215,6 +209,46 @@ class InvalidGOFIds(Exception):
         self.message = message
 
 
+class InvalidOrdersForGoFs(Exception):
+    def __int__(self, message: str):
+        self.message = message
+
+
+class InvalidTemplateIds(Exception):
+    def __int__(self, message: str):
+        self.message = message
+
+
+class ExistingGoFsNotInGivenData(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class GofsDoesNotExist(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
 class DuplicateTaskStatusVariableIds(Exception):
     def __init__(self, duplicate_status_ids_for_tasks: List[str]):
         self.task_ids = duplicate_status_ids_for_tasks
+
+
+class DuplicateGoFIds(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class DuplicateOrderValuesForGoFs(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class InvalidTypeForOrder(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class InvalidTypeForValue(Exception):
+    def __init__(self, message: str):
+        self.message = message

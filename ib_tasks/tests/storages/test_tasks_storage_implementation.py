@@ -17,7 +17,7 @@ class TestTasksStorageImplementation:
             TasksStorageImplementation
         return TasksStorageImplementation()
 
-    @pytest.fixture
+    @pytest.fixture(autouse=True)
     def reset_sequence(self):
         GoFFactory.reset_sequence(1)
         TaskTemplateFactory.reset_sequence(1)
@@ -28,12 +28,10 @@ class TestTasksStorageImplementation:
         CompleteGoFDetailsDTOFactory.reset_sequence(1)
         GoFRoleDTOFactory.reset_sequence(1)
 
-    def test_get_existing_gof_ids_in_given_gof_ids(
-            self, storage, reset_sequence
-    ):
+    def test_get_existing_gof_ids_in_given_gof_ids(self, storage):
         # Arrange
         gofs = GoFFactory.create_batch(size=2)
-        gof_ids = ["GOF_ID-1", "GOF_ID-2", "GOF_ID-3"]
+        gof_ids = ["gof_1", "gof_2", "gof_3"]
         expected_existing_gof_ids = [gof.gof_id for gof in gofs]
 
         # Act
@@ -45,7 +43,7 @@ class TestTasksStorageImplementation:
         # Assert
         assert expected_existing_gof_ids == actual_existing_gof_ids
 
-    def test_create_gofs(self, storage, reset_sequence):
+    def test_create_gofs(self, storage):
         # Arrange
         from ib_tasks.models.gof import GoF
         from ib_tasks.tests.factories.storage_dtos import GoFDTOFactory
@@ -60,7 +58,7 @@ class TestTasksStorageImplementation:
             assert gof.display_name == gof_dto.gof_display_name
             assert gof.max_columns == gof_dto.max_columns
 
-    def test_create_gof_roles(self, storage, reset_sequence):
+    def test_create_gof_roles(self, storage):
 
         # Arrange
         gof_role_dtos = [

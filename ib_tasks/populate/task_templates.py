@@ -3,6 +3,7 @@ class PopulateTaskTemplates:
     def populate_task_templates(self):
         from ib_tasks.utils.get_google_sheet import get_google_sheet
         sheet = get_google_sheet()
+
         task_templates_dicts = \
             sheet.worksheet("Task Templates").get_all_records()
 
