@@ -119,12 +119,13 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_user_actions_of_template_dtos(
+    def get_user_actions_of_templates_dtos(
             self, roles: List[str]) -> List[ActionsOfTemplateDTO]:
         pass
 
     @abc.abstractmethod
-    def get_gofs_of_task_templates_dtos(self) -> List[GoFDTO]:
+    def get_gofs_of_task_templates_dtos(
+            self, gof_ids: List[str]) -> List[GoFDTO]:
         pass
 
     @abc.abstractmethod
@@ -133,13 +134,14 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_user_field_permission_dtos(
-            self, roles: List[str]) -> List[UserFieldPermissionDTO]:
+            self, roles: List[str],
+            field_ids: List[str]) -> List[UserFieldPermissionDTO]:
         pass
 
     @abc.abstractmethod
-    def get_field_dtos(self) -> List[FieldDTO]:
+    def get_fields_of_gofs_in_dtos(
+            self, gof_ids: List[str]) -> List[FieldDTO]:
         pass
-
 
     @abc.abstractmethod
     def delete_field_roles(self, field_ids: List[str]):

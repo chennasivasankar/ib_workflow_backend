@@ -15,7 +15,6 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
             'actions': [
                 {
                     'action_id': 'string',
-                    'action_name': 'string',
                     'button_color': 'string',
                     'button_text': 'string'
                 }

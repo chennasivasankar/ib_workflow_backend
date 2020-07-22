@@ -203,9 +203,6 @@
           "action_id": {
             "type": "string"
           },
-          "action_name": {
-            "type": "string"
-          },
           "button_text": {
             "type": "string"
           },
@@ -215,7 +212,6 @@
         },
         "required": [
           "action_id",
-          "action_name",
           "button_text",
           "button_color"
         ]
@@ -237,7 +233,7 @@
       "description": "task created successfully"
     },
     "TaskTemplatesDoesNotExistsResponse": {
-      "description": "No task templates exists in database",
+      "description": "No task templates exists",
         "schema": {
             "type": "object",
             "properties": {
@@ -250,7 +246,7 @@
                 "res_status": {
                     "type": "string",
                     "enum": [
-                        "TASK_TEMPLATES_DOES_NOT_EXISTS_IN_DATABASE"
+                        "TASK_TEMPLATES_DOES_NOT_EXISTS"
                     ]
                 }
             },

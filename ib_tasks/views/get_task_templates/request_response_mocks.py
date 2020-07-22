@@ -10,7 +10,6 @@ RESPONSE_200_JSON = """
             "actions": [
                 {
                     "action_id": "string",
-                    "action_name": "string",
                     "button_text": "string",
                     "button_color": "string"
                 }
@@ -50,7 +49,7 @@ RESPONSE_404_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "TASK_TEMPLATES_DOES_NOT_EXISTS_IN_DATABASE"
+    "res_status": "TASK_TEMPLATES_DOES_NOT_EXISTS"
 }
 """
 
