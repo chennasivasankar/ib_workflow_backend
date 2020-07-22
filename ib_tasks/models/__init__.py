@@ -11,7 +11,7 @@ from ib_tasks.models.gof import GoF
 from ib_tasks.models.gof_role import GoFRole
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.global_constant import GlobalConstant
-from ib_tasks.models.gof_to_task_template import GoFToTaskTemplate
+from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 __all__ = [
     "ActionPermittedRoles",
     "Stage",
@@ -20,7 +20,7 @@ __all__ = [
     "TaskTemplateStatusVariables",
     "TaskTemplateGlobalConstants",
     "Field", "FieldRole", "GoF", "GoFRole", "TaskTemplate", "GlobalConstant",
-    "GoFToTaskTemplate"
+    "TaskTemplateGoFs"
 ]
 
 # class DummyModel(AbstractDateTimeModel):

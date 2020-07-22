@@ -47,7 +47,6 @@ dist/
 
 doc_html/
 venv/
-migrations/
 
 utils/google_sheets_credentials.json
 

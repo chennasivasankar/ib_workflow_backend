@@ -204,8 +204,8 @@ class TestGoFsToTaskTemplate:
         )
 
         #Assert
-        from ib_tasks.models.gof_to_task_template import GoFToTaskTemplate
-        gofs_to_task_template_objs = GoFToTaskTemplate.objects.all()
+        from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
+        gofs_to_task_template_objs = TaskTemplateGoFs.objects.all()
 
         counter = 1
         for gofs_to_task_template_obj in gofs_to_task_template_objs:
@@ -248,8 +248,8 @@ class TestGoFsToTaskTemplate:
         )
 
         #Assert
-        from ib_tasks.models.gof_to_task_template import GoFToTaskTemplate
-        gofs_to_task_template_objs = GoFToTaskTemplate.objects.all()
+        from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
+        gofs_to_task_template_objs = TaskTemplateGoFs.objects.all()
 
         counter = 1
         for gofs_to_task_template_obj in gofs_to_task_template_objs:
@@ -295,8 +295,8 @@ class TestGoFsToTaskTemplate:
                     gofs_with_template_id_dto=gofs_with_template_id_dto
                 )
         snapshot.assert_match(err.value.args[0], 'message')
-        from ib_tasks.models.gof_to_task_template import GoFToTaskTemplate
-        gofs_to_task_template_objs = GoFToTaskTemplate.objects.all()
+        from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
+        gofs_to_task_template_objs = TaskTemplateGoFs.objects.all()
 
         counter = 1
         for gofs_to_task_template_obj in gofs_to_task_template_objs:
