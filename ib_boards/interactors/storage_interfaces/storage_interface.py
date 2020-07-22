@@ -1,7 +1,7 @@
 import abc
-from typing import List
+from typing import List, Optional
 
-from ib_boards.interactors.storage_interfaces.dtos import ColumnDetailsDTO
+from ib_boards.interactors.storage_interfaces.dtos import ColumnDetailsDTO, BoardDTO, BoardColumnDTO
 
 
 class StorageInterface(abc.ABC):
@@ -22,4 +22,13 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_permitted_user_roles_for_board(self, board_id: str) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_board_details(self, board_id: str) -> BoardDTO:
+        pass
+
+    @abc.abstractmethod
+    def get_column_details(self, board_id: str, user_roles: List[str]) \
+            -> List[BoardColumnDTO]:
         pass

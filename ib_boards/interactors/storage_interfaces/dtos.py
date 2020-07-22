@@ -29,3 +29,15 @@ class TaskActionsDTO:
     name: str
     button_text: str
     button_color: Optional[str]
+
+
+@dataclass()
+class BoardDTO:
+    board_id: str
+    name: str
+
+@dataclass()
+class BoardColumnDTO:
+    column_id: str
+    board_id: str
+    name: str
