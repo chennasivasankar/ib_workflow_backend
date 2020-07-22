@@ -2,8 +2,8 @@ import json
 from collections import defaultdict
 from typing import List, Dict
 
-from ib_tasks.exceptions.custom_exceptions \
-    import InvalidStageIdsException
+from ib_tasks.exceptions.roles_custom_exceptions import InvalidRolesException
+from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageIdsException
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 from ib_tasks.interactors.dtos import StageActionDTO
@@ -17,11 +17,6 @@ class EmptyStageDisplayLogic(Exception):
 class EmptyStageButtonText(Exception):
     def __init__(self, stage_ids_dict: str):
         self.stage_ids_dict = stage_ids_dict
-
-
-class InvalidRolesException(Exception):
-    def __init__(self, stage_roles_dict: str):
-        self.stage_roles_dict = stage_roles_dict
 
 
 class DuplicateStageButtonsException(Exception):
@@ -51,7 +46,7 @@ class CreateUpdateDeleteStageActionsInteractor():
         self._validations_for_button_texts(actions_dto)
         self._validations_for_duplicate_stage_actions(actions_dto)
         self._create_update_delete_stage_actions(actions_dto)
-    
+
     def _validations_for_duplicate_stage_actions(
             self, actions_dto: List[StageActionDTO]):
         stage_actions = self._get_stage_action_names(actions_dto)
@@ -136,7 +131,9 @@ class CreateUpdateDeleteStageActionsInteractor():
                 stage_id = action_dto.stage_id
                 self._validation_for_action_roles(
                     action_dto.roles, db_roles, invalid_stage_roles, stage_id)
+
         is_invalid_stage_roles_present = invalid_stage_roles
+
         if is_invalid_stage_roles_present:
             stage_roles_dict = \
                 json.dumps(invalid_stage_roles)
@@ -146,13 +143,13 @@ class CreateUpdateDeleteStageActionsInteractor():
                                      db_roles: List[str],
                                      invalid_stage_roles: Dict[str, List],
                                      stage_id: str):
-        invalid_action_roles = \
-            self._get_invalid_roles_to_action(action_roles, db_roles)
-
+        invalid_action_roles = self._get_invalid_roles_to_action(
+            action_roles, db_roles)
         is_invalid_action_roles_present = invalid_action_roles
         if is_invalid_action_roles_present:
-            self._append_invalid_action_roles_to_dict(
-                invalid_action_roles, stage_id, invalid_stage_roles)
+            self._append_invalid_action_roles_to_dict(invalid_action_roles,
+                                                      stage_id,
+                                                      invalid_stage_roles)
 
     @staticmethod
     def _append_invalid_action_roles_to_dict(

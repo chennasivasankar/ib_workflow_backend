@@ -44,7 +44,7 @@ class TestPopulateStagesAndValues:
         ]
 
         from ib_tasks.populate.create_or_update_stages import populate_stages_values
-        from ib_tasks.exceptions.custom_exceptions import InvalidFormatException
+        from ib_tasks.exceptions.stage_custom_exceptions import InvalidFormatException
 
         # Act
 

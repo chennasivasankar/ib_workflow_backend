@@ -3,9 +3,9 @@ import pytest
 
 from ib_tasks.interactors.dtos import StageDTO
 from ib_tasks.interactors.storage_interfaces.dtos import TaskStagesDTO
-from ib_tasks.exceptions.custom_exceptions import (
-    InvalidStageValues, InvalidStagesTaskTemplateId, DuplicateStageIds,
-    InvalidTaskTemplateIds, InvalidStageDisplayLogic, InvalidStagesDisplayName)
+from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageValues, DuplicateStageIds, InvalidStageDisplayLogic, \
+    InvalidStagesDisplayName
+from ib_tasks.exceptions.task_custom_exceptions import InvalidStagesTaskTemplateId, InvalidTaskTemplateIds
 from ib_tasks.interactors.dtos import StageLogicAttributes
 from ib_tasks.interactors.stage_display_logic import StageDisplayLogicInteractor
 

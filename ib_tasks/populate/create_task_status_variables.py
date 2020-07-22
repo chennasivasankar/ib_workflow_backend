@@ -45,5 +45,5 @@ def raise_exception_for_invalid_format():
     import json
     json_valid_format = json.dumps(valid_format)
 
-    from ib_tasks.exceptions.custom_exceptions import InvalidFormatException
+    from ib_tasks.exceptions.stage_custom_exceptions import InvalidFormatException
     raise InvalidFormatException(valid_format=json_valid_format)

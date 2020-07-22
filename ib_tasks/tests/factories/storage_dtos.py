@@ -193,10 +193,10 @@ class FieldDTOFactory(factory.Factory):
     field_type = FieldTypes.DROPDOWN.value
     field_values = ["Mr", "Mrs", "Ms"]
     required = True
-    help_text = "Verify the code"
-    tool_tip = "Request"
-    placeholder_text = "select vendor"
-    error_message = "error message"
+    help_text = None
+    tooltip = None
+    placeholder_text = None
+    error_message = None
     allowed_formats = None
     validation_regex = None
 

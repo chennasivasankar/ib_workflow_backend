@@ -5,9 +5,9 @@ from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 from ib_tasks.interactors.create_update_delete_stage_actions \
     import (
-    EmptyStageDisplayLogic, DuplicateStageButtonsException,
-    DuplicateStageActionNamesException, EmptyStageButtonText, InvalidRolesException
-)
+        EmptyStageDisplayLogic, DuplicateStageButtonsException,
+        DuplicateStageActionNamesException, EmptyStageButtonText
+    )
 from ib_tasks.interactors.create_update_delete_stage_actions \
     import CreateUpdateDeleteStageActionsInteractor
 from ib_tasks.tests.factories.interactor_dtos import StageActionDTOFactory
@@ -31,8 +31,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
             storage=storage,
             actions_dto=actions_dto
         )
-        from ib_tasks.exceptions.custom_exceptions \
-            import InvalidStageIdsException
+        from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageIdsException
 
         # Act
         with pytest.raises(InvalidStageIdsException) as err:
@@ -63,6 +62,8 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
             import prepare_get_roles_for_invalid_mock
         mocker_obj = prepare_get_roles_for_invalid_mock(mocker)
+
+        from ib_tasks.exceptions.roles_custom_exceptions import InvalidRolesException
 
         # Act
         with pytest.raises(InvalidRolesException) as err:
