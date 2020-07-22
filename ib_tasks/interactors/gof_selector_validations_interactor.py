@@ -118,6 +118,7 @@ class GoFSelectorValidationsInteractor:
 
         from ib_tasks.constants.exception_messages \
             import INVALID_GOF_IDS_EXCEPTION_MESSAGE
+        gof_ids = sorted(list(set(gof_ids)))
         existing_gof_ids = self.storage.get_existing_gof_ids(gof_ids)
         invalid_gof_ids = []
 
@@ -126,10 +127,9 @@ class GoFSelectorValidationsInteractor:
                 invalid_gof_ids.append(gof_id)
 
         if invalid_gof_ids:
-            gof_ids = sorted(list(set(invalid_gof_ids)))
             exception_message = {
                 "field_id": field_id,
-                "invalid_gof_ids": gof_ids
+                "invalid_gof_ids": invalid_gof_ids
             }
             raise InvalidGOFIds(
                 INVALID_GOF_IDS_EXCEPTION_MESSAGE.format(exception_message)

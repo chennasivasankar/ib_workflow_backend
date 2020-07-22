@@ -7,6 +7,7 @@ FIELD_TYPES_LIST = [item.value for item in FieldTypes]
 
 SEARCHABLE_VALUES = [item.value for item in Searchable]
 
+all_roles_id = "ALL_ROLES"
 
 Permission_Types = [
     (item.value, item.value)
@@ -27,7 +28,8 @@ MULTI_VALUES_INPUT_FIELDS = [
 ]
 
 GOOGLE_SHEET_NAME = "FinMan Configuration_Dev_Test"
-
+TASK_TEMPLATE_SUB_SHEET_TITLE = "Task Templates"
+GOF_SUB_SHEET_TITLE = "GOF"
 FIELD_SUB_SHEET_TITLE = "Fields"
 
 UPLOADERS = [

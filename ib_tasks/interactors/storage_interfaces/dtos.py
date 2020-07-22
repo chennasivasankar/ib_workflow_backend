@@ -1,14 +1,15 @@
-from typing import List, Any, Optional
 from dataclasses import dataclass
+from ib_tasks.constants.enum import PermissionTypes
+from typing import List, Union, Optional, Any
+from dataclasses import dataclass
+from typing import List, Union, Optional
+from ib_tasks.constants.enum import FieldTypes, PermissionTypes
 
 
 @dataclass
-class StageDTO:
-    stage_id: str
+class TaskStagesDTO:
     task_template_id: str
-    value: int
-    stage_display_name: str
-    stage_display_logic: str
+    stage_id: str
 
 
 @dataclass
@@ -63,19 +64,20 @@ class ActionDTO:
 class ActionRolesDTO:
     action_id: str
     roles: List[str]
-from dataclasses import dataclass
-from typing import List, Union, Optional
-from ib_tasks.constants.enum import FieldTypes, PermissionTypes
-
 
 @dataclass
 class TaskStagesDTO:
     task_template_id: str
     stage_id: str
 
+@dataclass
+class ValidStageDTO:
+    stage_id: str
+    id: int
+
 
 @dataclass
-class StageActionsDTO:
+class StageActionNamesDTO:
     stage_id: str
     action_names: List[str]
 
@@ -84,17 +86,14 @@ class StageActionsDTO:
 class GoFDTO:
     gof_id: str
     gof_display_name: str
-    task_template_id: str
-    order: int
     max_columns: int
-    enable_multiple_gofs: bool
 
 
 @dataclass
 class GoFRolesDTO:
     gof_id: str
-    read_permission_roles: List
-    write_permission_roles: List
+    read_permission_roles: List[str]
+    write_permission_roles: List[str]
 
 
 @dataclass
@@ -102,7 +101,6 @@ class GoFRoleDTO:
     gof_id: str
     role: str
     permission_type: PermissionTypes
-
 
 @dataclass
 class CompleteGoFDetailsDTO:
@@ -142,7 +140,7 @@ class FieldRoleDTO:
 
 
 @dataclass
-class StageInformationDTO:
+class StageDTO:
     stage_id: str
     task_template_id: str
     value: int

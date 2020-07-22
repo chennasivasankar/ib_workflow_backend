@@ -381,7 +381,7 @@ class TestCreateOrUpdateFields:
             self, mocker, storage, field_dtos, snapshot
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import InvalidRolesException
+        from ib_tasks.exceptions.custom_exceptions import InvalidFieldRolesException
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_valid_role_ids_in_given_role_ids
         get_valid_role_ids_mock_method = \
@@ -417,7 +417,7 @@ class TestCreateOrUpdateFields:
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
         # Act
-        with pytest.raises(InvalidRolesException) as err:
+        with pytest.raises(InvalidFieldRolesException) as err:
             interactor.create_or_update_fields(
                 field_dtos=field_dtos,
                 field_roles_dtos=field_roles_dtos
@@ -433,7 +433,7 @@ class TestCreateOrUpdateFields:
     ):
         # Arrange
         FieldRolesDTOFactory.reset_sequence(1)
-        from ib_tasks.exceptions.custom_exceptions import InvalidRolesException
+        from ib_tasks.exceptions.custom_exceptions import InvalidFieldRolesException
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
             import get_valid_role_ids_in_given_role_ids
         get_valid_role_ids_mock_method = get_valid_role_ids_in_given_role_ids(mocker)
@@ -460,7 +460,7 @@ class TestCreateOrUpdateFields:
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
         # Act
-        with pytest.raises(InvalidRolesException) as err:
+        with pytest.raises(InvalidFieldRolesException) as err:
             interactor.create_or_update_fields(
                 field_dtos=field_dtos,
                 field_roles_dtos=field_roles_dtos
@@ -687,6 +687,7 @@ class TestCreateOrUpdateFields:
                 field_dtos=field_dtos,
                 field_roles_dtos=valid_field_roles_dtos
             )
+        print("str(err.value) = ", str(err.value))
 
         # Assert
         snapshot.assert_match(name="exception_message = ", value=str(err.value))
@@ -1072,8 +1073,8 @@ class TestCreateOrUpdateFields:
             self, storage, reset_factories, snapshot
     ):
         # Arrange
-        GoFFactory()
-        GoFFactory()
+        GoFFactory(gof_id="gof0")
+        GoFFactory(gof_id="gof1")
         FieldFactory(field_id="field3")
         FieldFactory(field_id="field4")
 
@@ -1161,8 +1162,8 @@ class TestCreateOrUpdateFields:
             self, storage, reset_factories, snapshot
     ):
         # Arrange
-        GoFFactory()
-        GoFFactory()
+        GoFFactory(gof_id="gof1")
+        GoFFactory(gof_id="gof2")
         FieldFactory(field_id="field1")
         FieldFactory(field_id="field2")
 

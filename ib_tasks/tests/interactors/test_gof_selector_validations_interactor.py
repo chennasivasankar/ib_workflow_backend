@@ -134,6 +134,8 @@ class TestGoFSelectorValidationsInteractor:
             interactor.gof_selector_validations(field_dto)
 
         # Assert
+        print("str(err.value) = ", str(err.value))
+        print("error_message = ", error_message)
         assert str(err.value) == error_message
 
     def test_given_invalid_gof_ids_for_field_values_raise_exception(

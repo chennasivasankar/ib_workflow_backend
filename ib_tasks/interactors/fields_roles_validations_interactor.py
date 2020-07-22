@@ -4,7 +4,7 @@ import collections
 from ib_tasks.interactors.storage_interfaces.dtos import FieldRolesDTO
 from ib_tasks.exceptions.custom_exceptions import (
     EmptyValueForPermissions,
-    InvalidRolesException,
+    InvalidFieldRolesException,
     DuplicationOfPermissionRoles
 )
 from ib_tasks.adapters.roles_service_adapter \
@@ -158,7 +158,7 @@ class FieldsRolesValidationsInteractor:
                     invalid_roles_dict
                 )
         if fields_invalid_roles_for_read_permission:
-            raise InvalidRolesException(
+            raise InvalidFieldRolesException(
                 fields_invalid_roles_for_read_permission
             )
         return
@@ -179,7 +179,7 @@ class FieldsRolesValidationsInteractor:
                 fields_invalid_roles_for_write_permission. \
                     append(invalid_roles_dict)
         if fields_invalid_roles_for_write_permission:
-            raise InvalidRolesException(
+            raise InvalidFieldRolesException(
                 fields_invalid_roles_for_write_permission
             )
         return

@@ -62,17 +62,17 @@ snapshots['TestCreateOrUpdateFields.test_given_invalid_roles_for_write_permissio
     }
 ]
 
-snapshots['TestCreateOrUpdateFields.test_given_empty_values_in_field_values_raise_exceptions exception_message = '] = "Field values shouldn't be empty for these field id field1"
+snapshots['TestCreateOrUpdateFields.test_given_empty_values_in_field_values_raise_exceptions exception_message = '] = "Field values shouldn't be empty for this field id field1"
 
-snapshots['TestCreateOrUpdateFields.test_given_field_values_is_empty_raise_exceptions exception_message = '] = "Field values shouldn't be empty for these field id field1"
+snapshots['TestCreateOrUpdateFields.test_given_field_values_is_empty_raise_exceptions exception_message = '] = "Field values shouldn't be empty for this field id field1"
 
-snapshots['TestCreateOrUpdateFields.test_given_duplication_of_field_values_raise_exception exception_message = '] = "Duplication of Field values for these field {'field_id': 'field1', 'field_type': 'DROPDOWN', 'duplication_of_values': ['Mrs']}"
+snapshots['TestCreateOrUpdateFields.test_given_duplication_of_field_values_raise_exception exception_message = '] = "Duplication of Field values for this field {'field_id': 'field1', 'field_type': 'DROPDOWN', 'duplication_of_values': ['Mrs']}"
 
 snapshots['TestCreateOrUpdateFields.test_given_field_type_gof_selector_and_field_values_as_invalid_json_raise_exception exception_message = '] = 'Field values contains invalid json for these field_id = field1'
 
-snapshots['TestCreateOrUpdateFields.test_given_gof_names_as_empty_for_field_values_raise_exception exception_message = '] = "GoF names for field values shouldn't be empty for these field id = field1"
+snapshots['TestCreateOrUpdateFields.test_given_gof_names_as_empty_for_field_values_raise_exception exception_message = '] = "GoF names for field values shouldn't be empty for this field id = field1"
 
-snapshots['TestCreateOrUpdateFields.test_given_duplication_of_gof_names_for_field_values_raise_exception exception_message = '] = 'Duplication of gof names for field values of these field = '
+snapshots['TestCreateOrUpdateFields.test_given_duplication_of_gof_names_for_field_values_raise_exception exception_message = '] = "Duplication of gof names for field values of this field = {'field_id': 'field1', 'duplication_of_gof_names': ['Individual']}"
 
 snapshots['TestCreateOrUpdateFields.test_given_invalid_gof_ids_for_field_values_raise_exception exception_message = '] = "Invalid values for gof_ids {'field_id': 'field1', 'invalid_gof_ids': ['CUSTOMER_DETAILS', 'GST_DETAILS']}"
 
@@ -84,9 +84,9 @@ snapshots['TestCreateOrUpdateFields.test_given_duplication_of_allowed_formats_fo
 
 snapshots['TestCreateOrUpdateFields.test_given_duplication_of_allowed_formats_for_field_type_file_uploader_raise_exception exception_message = '] = "Duplication of values for allowed formats = {'field_id': 'field1', 'field_type': 'FILE_UPLOADER', 'duplication_of_values': ['.pdf']}"
 
-snapshots['TestCreateOrUpdateFields.test_given_empty_values_for_allowed_formats_raise_exception[IMAGE_UPLOADER] exception_message = '] = "Allowed formats shouldn't contain empty values for these filed_id = field1"
+snapshots['TestCreateOrUpdateFields.test_given_empty_values_for_allowed_formats_raise_exception[IMAGE_UPLOADER] exception_message = '] = "Allowed formats shouldn't contain empty values for this filed_id = field1"
 
-snapshots['TestCreateOrUpdateFields.test_given_empty_values_for_allowed_formats_raise_exception[FILE_UPLOADER] exception_message = '] = "Allowed formats shouldn't contain empty values for these filed_id = field1"
+snapshots['TestCreateOrUpdateFields.test_given_empty_values_for_allowed_formats_raise_exception[FILE_UPLOADER] exception_message = '] = "Allowed formats shouldn't contain empty values for this filed_id = field1"
 
 snapshots['TestCreateOrUpdateFields.test_given_empty_values_for_field_values_for_field_type_searchable_raise_exception exception_message = '] = "Searchable value should be one of these  ['CITY', 'STATE', 'COUNTRY', 'VENDOR', 'USER', 'COMPANY', 'TEAM'] for this field_id field1"
 

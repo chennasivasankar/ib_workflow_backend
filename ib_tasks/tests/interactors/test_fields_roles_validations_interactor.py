@@ -175,7 +175,7 @@ class TestFieldsRolesValidationsInteractor:
             self, mocker
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import InvalidRolesException
+        from ib_tasks.exceptions.custom_exceptions import InvalidFieldRolesException
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_valid_role_ids_in_given_role_ids
         get_valid_role_ids_mock_method = \
@@ -211,7 +211,7 @@ class TestFieldsRolesValidationsInteractor:
         interactor = FieldsRolesValidationsInteractor()
 
         # Act
-        with pytest.raises(InvalidRolesException) as err:
+        with pytest.raises(InvalidFieldRolesException) as err:
             interactor.fields_roles_validations(field_roles_dtos=field_roles_dtos)
 
         # Assert
@@ -224,7 +224,7 @@ class TestFieldsRolesValidationsInteractor:
     ):
         # Arrange
         FieldRolesDTOFactory.reset_sequence(1)
-        from ib_tasks.exceptions.custom_exceptions import InvalidRolesException
+        from ib_tasks.exceptions.custom_exceptions import InvalidFieldRolesException
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
             import get_valid_role_ids_in_given_role_ids
         get_valid_role_ids_mock_method = get_valid_role_ids_in_given_role_ids(mocker)
@@ -263,7 +263,7 @@ class TestFieldsRolesValidationsInteractor:
         interactor = FieldsRolesValidationsInteractor()
 
         # Act
-        with pytest.raises(InvalidRolesException) as err:
+        with pytest.raises(InvalidFieldRolesException) as err:
             interactor.fields_roles_validations(field_roles_dtos=field_roles_dtos)
 
         # Assert
