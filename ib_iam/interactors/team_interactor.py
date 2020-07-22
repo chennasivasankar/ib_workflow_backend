@@ -1,30 +1,21 @@
 from typing import List
-from ib_iam.interactors.storage_interfaces.team_storage_interface import (
-    TeamStorageInterface
-)
-from ib_iam.interactors.presenter_interfaces.team_presenter_interface import (
-    TeamPresenterInterface
-)
-from ib_iam.interactors.presenter_interfaces \
-    .update_team_presenter_interface import UpdateTeamPresenterInterface
-from ib_iam.interactors.storage_interfaces.dtos import (
-    TeamDetailsWithUserIdsDTO
-)
-from ib_iam.interactors.storage_interfaces.dtos import TeamWithUserIdsDTO
 from ib_iam.exceptions import (
     UserHasNoAccess,
     TeamNameAlreadyExists,
     InvalidUsers,
-    DuplicateUsers
+    DuplicateUsers,
+    InvalidTeam
 )
+from ib_iam.interactors.presenter_interfaces \
+    .update_team_presenter_interface import UpdateTeamPresenterInterface
 from ib_iam.interactors.presenter_interfaces.team_presenter_interface import (
     TeamPresenterInterface
 )
-from ib_iam.interactors.storage_interfaces.dtos import (
-    TeamDetailsWithUserIdsDTO
-)
 from ib_iam.interactors.storage_interfaces.team_storage_interface import (
     TeamStorageInterface
+)
+from ib_iam.interactors.storage_interfaces.dtos import (
+    TeamDetailsWithUserIdsDTO, TeamWithUserIdsDTO
 )
 
 
@@ -125,25 +116,24 @@ class TeamInteractor:
     def _validate_add_team_details(
             self, team_details_with_user_ids_dto: TeamDetailsWithUserIdsDTO
     ):
-        user_ids = team_details_with_user_ids_dto.user_ids
         name = team_details_with_user_ids_dto.name
-        self._validate_users(user_ids=user_ids)
+        self._validate_users(user_ids=team_details_with_user_ids_dto.user_ids)
         self._validate_is_team_name_already_exists(name=name)
-
-    def _validate_users(self, user_ids):
-        self._validate_is_duplicate_users_exists(user_ids=user_ids)
-        self._validate_is_invalid_users_exists(user_ids=user_ids)
 
     def _validate_update_team_details(
             self, team_with_user_ids_dto: TeamWithUserIdsDTO
     ):
-        user_ids = team_with_user_ids_dto.user_ids
         name = team_with_user_ids_dto.name
         team_id = team_with_user_ids_dto.team_id
         self.storage.raise_exception_if_team_not_exists(team_id=team_id)
+        self._validate_users(user_ids=team_with_user_ids_dto.user_ids)
+        self._validate_is_team_name_exists_for_update_team(
+            name=name, team_id=team_id
+        )
+
+    def _validate_users(self, user_ids):
         self._validate_is_duplicate_users_exists(user_ids=user_ids)
         self._validate_is_invalid_users_exists(user_ids=user_ids)
-        self._validate_is_team_name_exists_for_update_team(name=name)
 
     @staticmethod
     def _validate_is_duplicate_users_exists(user_ids: List[str]):
