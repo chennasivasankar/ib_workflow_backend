@@ -17,8 +17,7 @@ class TestUpdateTeamDetails:
         user_id = "1"
         team_with_user_ids_dto = \
             TeamWithUserIdsDTOFactory(team_id="1")
-        storage.raise_exception_if_user_is_not_admin \
-            .side_effect = UserHasNoAccess
+        storage.validate_is_user_admin.side_effect = UserHasNoAccess
         presenter.get_user_has_no_access_response_for_update_team.side_effect = Mock()
 
         interactor.update_team_details_wrapper(
@@ -27,8 +26,7 @@ class TestUpdateTeamDetails:
             presenter=presenter
         )
 
-        storage.raise_exception_if_user_is_not_admin \
-            .assert_called_once_with(user_id=user_id)
+        storage.validate_is_user_admin.assert_called_once_with(user_id=user_id)
         presenter.get_user_has_no_access_response_for_update_team \
                  .assert_called_once()
 

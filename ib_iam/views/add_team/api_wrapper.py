@@ -1,7 +1,7 @@
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 from .validator_class import ValidatorClass
-from ib_iam.interactors.add_team_interactor import AddTeamInteractor
+from ib_iam.interactors.team_interactor import TeamInteractor
 from ib_iam.interactors.storage_interfaces.dtos import (
     TeamDetailsWithUserIdsDTO
 )
@@ -24,7 +24,7 @@ def api_wrapper(*args, **kwargs):
 
     storage = TeamStorageImplementation()
     presenter = TeamPresenterImplementation()
-    interactor = AddTeamInteractor(storage=storage)
+    interactor = TeamInteractor(storage=storage)
 
     team_details_with_user_ids_dto = TeamDetailsWithUserIdsDTO(
         name=name,
