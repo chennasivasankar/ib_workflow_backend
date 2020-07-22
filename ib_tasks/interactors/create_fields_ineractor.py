@@ -3,8 +3,7 @@ import collections
 
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
-from ib_tasks.interactors.storage_interfaces.dtos \
-    import FieldDTO, FieldRolesDTO, FieldRoleDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, FieldRolesDTO, FieldRoleDTO
 from ib_tasks.constants.enum import FieldTypes, PermissionTypes
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIdException, DuplicationOfFieldIdsExist, \
     FieldsDuplicationOfDropDownValues, InvalidValueForFieldDisplayName, InvalidValueForFieldType

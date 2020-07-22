@@ -1,15 +1,13 @@
 import factory
 
-from ib_tasks.interactors.dtos import StageDTO
-from ib_tasks.interactors.storage_interfaces.dtos import (
-    TaskStatusDTO, ValidStageDTO, TaskStagesDTO, StageActionNamesDTO)
+from ib_tasks.interactors.stages_dtos import StageDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import TaskStatusDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO, TaskStagesDTO, ValidStageDTO
 from ib_tasks.constants.enum import PermissionTypes
-from ib_tasks.interactors.storage_interfaces.dtos import (
-    CompleteGoFDetailsDTO, GoFDTO, GoFRolesDTO,
-    FieldDTO, FieldRolesDTO, FieldRoleDTO, GoFRoleDTO
-)
-from ib_tasks.interactors.storage_interfaces.dtos import (TaskStagesDTO)
-from ib_tasks.interactors.storage_interfaces.dtos import (
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, FieldRolesDTO, FieldRoleDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import (TaskStagesDTO)
+from ib_tasks.interactors.storage_interfaces.status_dtos import (
     TaskStatusDTO)
 from ib_tasks.constants.enum import FieldTypes, PermissionTypes
 from ib_tasks.models import StageAction

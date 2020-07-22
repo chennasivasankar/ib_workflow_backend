@@ -2,7 +2,7 @@ from typing import List, Optional
 
 import collections
 
-from ib_tasks.interactors.storage_interfaces.dtos import FieldDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO
 
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface

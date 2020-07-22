@@ -1,6 +1,6 @@
 import pytest
 
-from ib_tasks.interactors.storage_interfaces.dtos import TaskStatusDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import TaskStatusDTO
 from ib_tasks.models import TaskStatusVariable
 from ib_tasks.storages.tasks_storage_implementation import TasksStorageImplementation
 from ib_tasks.tests.factories.storage_dtos import TaskStatusDTOFactory

@@ -1,5 +1,4 @@
-from ib_tasks.interactors.storage_interfaces.dtos import CompleteGoFDetailsDTO, \
-    GoFDTO, GoFRolesDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRolesDTO, CompleteGoFDetailsDTO
 from ib_tasks.utils.read_google_sheet import read_google_sheet
 from typing import List, Dict
 

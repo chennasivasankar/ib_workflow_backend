@@ -1,6 +1,5 @@
 from typing import List
-from ib_tasks.interactors.storage_interfaces.dtos \
-    import FieldDTO, FieldRolesDTO, FieldRoleDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, FieldRolesDTO, FieldRoleDTO
 
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
