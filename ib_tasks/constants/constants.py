@@ -14,12 +14,9 @@ Field_Types = [
     for item in FieldTypes
 ]
 
-FIELDS_CSV_FILE_PATH = "/home/ib-developer/Desktop/aws/ib-workflows-backend/ib_tasks/populate/fields.csv"
-
-GOFS_CSV_FILE_PATH = "/home/ib-developer/Desktop/aws/ib-workflows-backend/ib_tasks/populate/gofs.csv"
-
-TASK_TEMPLATES_CSV_FILE_PATH = "/home/ib-developer/Desktop/aws/ib-workflows-backend/ib_tasks/populate/task_templates.csv"
-
 GOOGLE_SHEET_NAME = "FinMan Configuration_Dev_Test"
+TASK_TEMPLATE_SUB_SHEET_TITLE = "Task Templates"
+GOF_SUB_SHEET_TITLE = "GOF"
+
 STAGES_AND_ACTIONS_SUB_SHEET = "PR - Stages and Actions "
 TASK_CREATION_CONFIG_SUB_SHEET = "PR-Task Creation Config"

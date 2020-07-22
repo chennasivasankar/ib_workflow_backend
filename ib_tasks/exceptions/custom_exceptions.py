@@ -64,14 +64,23 @@ class InvalidStageDisplayLogic(Exception):
         self.invalid_stage_display_logic_stages = invalid_stage_display_logic_stages
 
 
+class DuplicateTaskStatusVariableIds(Exception):
+    def __init__(self, duplicate_status_ids_for_tasks: List[str]):
+        self.task_ids = duplicate_status_ids_for_tasks
+
+class DuplicateGoFIds(Exception):
+    def __init__(self, gof_ids: List[str]):
+        self.message = "Given duplicate gof ids {}".format(gof_ids)
+        super().__init__(self.message)
+
 class InvalidStagesDisplayName(Exception):
     def __init__(self, invalid_stages_display_name: List[str]):
         self.invalid_stages_display_name = invalid_stages_display_name
 
 
 class InvalidValueForField(Exception):
-    def __init__(self, err_msg: str):
-        super().__init__(err_msg)
+    def __init__(self, message: str):
+        self.message = message
 
 
 class GOFIdCantBeEmpty(Exception):
@@ -79,6 +88,26 @@ class GOFIdCantBeEmpty(Exception):
 
 
 class GOFDisplayNameCantBeEmpty(Exception):
+    pass
+
+
+class MaxColumnsCantBeEmpty(Exception):
+    pass
+
+
+class MaxColumnsMustBeANumber(Exception):
+
+    def __init__(self, invalid_max_column_value: str):
+        self.max_column = invalid_max_column_value
+
+
+class MaxColumnsMustBeAPositiveInteger(Exception):
+
+    def __init__(self, invalid_max_column_value: str):
+        self.max_column = invalid_max_column_value
+
+
+class TaskTemplateIdCantBeEmpty(Exception):
     pass
 
 
@@ -99,11 +128,15 @@ class DuplicatedFieldIds(Exception):
 
 
 class InvalidReadPermissionRoles(Exception):
-    pass
+
+    def __init__(self, invalid_read_permission_roles: List[str]):
+        self.read_permission_roles = invalid_read_permission_roles
 
 
 class InvalidWritePermissionRoles(Exception):
-    pass
+
+    def __init__(self, invalid_write_permission_roles: List[str]):
+        self.write_permission_roles = invalid_write_permission_roles
 
 
 class DifferentDisplayNamesForSameGOF(Exception):
@@ -128,25 +161,26 @@ class GoFIDsAlreadyExists(Exception):
         self.gof_ids = existing_gof_ids
 
 
-class InvalidTaskTemplateIds(Exception):
-
-    def __init__(self, invalid_task_template_ids: List[str]):
-        self.task_template_ids = invalid_task_template_ids
-
-
 class ExistingGlobalConstantNamesNotInGivenData(Exception):
-    def __init__(self, err_msg: str):
-        super().__init__(err_msg)
+    def __init__(self, constant_names: List[str]):
+        self.message = \
+            "Existing constants with constant names: {} of template not in " \
+            "given data".format(constant_names)
+        super().__init__(self.message)
 
 
 class TemplateDoesNotExists(Exception):
-    def __init__(self, err_msg: str):
-        super().__init__(err_msg)
+    def __init__(self, template_id: str):
+        self.message = "The template with template id: {}, does not exists". \
+            format(template_id)
+        super().__init__(self.message)
 
 
 class DuplicateConstantNames(Exception):
-    def __init__(self, err_msg: str):
-        super().__init__(err_msg)
+    def __init__(self, constant_names: List[str]):
+        self.message = \
+            "Given duplicate constant names {}".format(constant_names)
+        super().__init__(self.message)
 
 
 class InvalidFieldIdException(Exception):
@@ -165,13 +199,6 @@ class FieldsDuplicationOfDropDownValues(Exception):
     def __init__(self, fieds_with_dropdown_duplicate_values):
         self.fieds_with_dropdown_duplicate_values = \
             fieds_with_dropdown_duplicate_values
-
-
-class InvalidRolesException(Exception):
-
-    def __init__(self, roles):
-        self.roles = roles
-
 
 class EmptyValueForPermissions(Exception):
 
@@ -196,6 +223,46 @@ class InvalidGOFIds(Exception):
         self.message = message
 
 
-class DuplicateTaskStatusVariableIds(Exception):
-    def __init__(self, duplicate_status_ids_for_tasks: List[str]):
-        self.task_ids = duplicate_status_ids_for_tasks
+class InvalidOrdersForGoFs(Exception):
+    def __int__(self, message: str):
+        self.message = message
+
+
+class InvalidTemplateIds(Exception):
+    def __int__(self, message: str):
+        self.message = message
+
+
+class ExistingGoFsNotInGivenData(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class GofsDoesNotExist(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class ExistingGoFsNotInGivenGoFs(Exception):
+    def __init__(self,
+                 gof_of_template_not_in_given_gof: List[str],
+                 given_gof_ids: List[str]):
+        self.message = \
+            "Existing gof ids: {} of template not in given gof ids: {}". \
+                format(gof_of_template_not_in_given_gof, given_gof_ids)
+        super().__init__(self.message)
+
+
+class DuplicateOrderValuesForGoFs(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class InvalidTypeForOrder(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class InvalidTypeForValue(Exception):
+    def __init__(self, message: str):
+        self.message = message

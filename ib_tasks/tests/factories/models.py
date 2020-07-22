@@ -5,10 +5,64 @@ from ib_tasks.models.gof import GoF
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.field import Field
 from ib_tasks.models.gof_role import GoFRole
+from ib_tasks.models import (
+    Stage, ActionPermittedRoles, StageAction, TaskStatusVariable,
+    TaskTemplateGlobalConstants)
+
+
+class StageModelFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Stage
+
+    stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)
+    display_name = factory.Sequence(lambda n: "name_%d" % n)
+    task_template_id = factory.Sequence(lambda n: "task_template_id_%d" % n)
+    value = factory.Sequence(lambda n: n)
+    display_logic = factory.Sequence(lambda n: "status_id_%d==stage_id" % n)
+
+
+class StageActionFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = StageAction
+
+    stage = factory.SubFactory(StageModelFactory)
+    name = factory.Sequence(lambda n: "name_%d" % n)
+    button_text = "hey"
+    button_color = "#fafafa"
+    logic = "Status1 = PR_PAYMENT_REQUEST_DRAFTS"
+    py_function_import_path = "path"
+
+
+class ActionPermittedRolesFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ActionPermittedRoles
+
+    action_id = factory.SubFactory(StageActionFactory)
+    role_id = factory.Sequence(lambda n: "role_%d" % n)
+
+
+class TaskStatusVariableFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskStatusVariable
+
+    task_id = factory.Sequence(lambda n: n)
+    variable = factory.Sequence(lambda n: "variable%d" % n)
+    value = factory.Sequence(lambda n: n)
+
+
+class TaskTemplateGlobalConstantsFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskTemplateGlobalConstants
+
+    task_template_id = factory.Sequence(lambda n: n)
+    variable = factory.Sequence(lambda n: "variable%d" % n)
+    value = factory.Sequence(lambda n: "value%d" % n)
+    data_type = factory.Sequence(lambda n: "data_type_%d" % n)
 from ib_tasks.models.global_constant import GlobalConstant
+from ib_tasks.models.gof_to_task_template import GoFToTaskTemplate
 
 
-class TaskTemplateFactory(factory.DjangoModelFactory):
+class TaskTemplateFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = TaskTemplate
 
@@ -16,23 +70,14 @@ class TaskTemplateFactory(factory.DjangoModelFactory):
     name = factory.sequence(lambda n: "Template {}".format(n + 1))
 
 
-class GoFFactory(factory.DjangoModelFactory):
+class GoFFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = GoF
 
-    gof_id = factory.Iterator(
-        [
-            "FIN_REQUEST_DETAILS", "FIN_GOF_VENDOR_TYPE",
-            "FIN_VENDOR_BASIC_DETAILS"
-        ]
+    gof_id = factory.Sequence(lambda counter: "gof_{}".format(counter + 1))
+    display_name = factory.Sequence(
+        lambda counter: "GOF_DISPLAY_NAME-{}".format(counter)
     )
-    display_name = factory.Iterator(
-        [
-            "Request Details", "Vendor Type", "Vendor Basic Details"
-        ]
-    )
-    task_template = factory.SubFactory(TaskTemplateFactory)
-    order = factory.Sequence(lambda counter: counter)
     max_columns = 2
 
 
@@ -40,14 +85,12 @@ class FieldFactory(factory.DjangoModelFactory):
     class Meta:
         model = Field
 
-    field_id = factory.Iterator(
-        ["FIN_PAYMENT_REQUESTOR", "FIN_TYPE_OF_VENDOR"]
+    field_id = factory.Sequence(lambda counter: "FIELD_ID-{}".format(counter))
+    display_name = factory.Sequence(
+        lambda counter: "DISPLAY_NAME-{}".format(counter)
     )
-    display_name = factory.Iterator(
-        ["Payment Requester", "Type of Vendor"]
-    )
-    field_type = factory.Iterator(
-        [FieldTypes.PLAIN_TEXT, FieldTypes.GOF_SELECTOR]
+    field_type = factory.Sequence(
+        lambda counter: "FIELD_TYPE-{}".format(counter)
     )
 
 
@@ -56,9 +99,7 @@ class GoFRoleFactory(factory.DjangoModelFactory):
         model = GoFRole
 
     gof = factory.SubFactory(GoFFactory)
-    role = factory.Iterator(
-        ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"]
-    )
+    role = factory.Sequence(lambda counter: "ROLE-{}".format(counter))
     permission_type = PermissionTypes.READ.value
 
 
@@ -69,3 +110,22 @@ class GlobalConstantFactory(factory.django.DjangoModelFactory):
     name = factory.sequence(lambda n: "constant_{}".format(n + 1))
     value = factory.sequence(lambda n: (n + 1))
     task_template = factory.SubFactory(TaskTemplateFactory)
+
+
+class GoFToTaskTemplateFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = GoFToTaskTemplate
+
+    task_template = factory.SubFactory(TaskTemplateFactory)
+    gof = factory.SubFactory(GoFFactory)
+    order = factory.sequence(lambda n: n)
+    enable_add_another_gof = factory.Iterator([True, False])
+
+
+class TaskTemplateWith2GoFsFactory(TaskTemplateFactory):
+    gof1 = factory.RelatedFactory(
+        GoFToTaskTemplateFactory, 'task_template', gof__gof_id='gof_1'
+    )
+    gof2 = factory.RelatedFactory(
+        GoFToTaskTemplateFactory, 'task_template', gof__gof_id='gof_2'
+    )

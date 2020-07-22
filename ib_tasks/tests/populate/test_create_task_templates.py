@@ -41,7 +41,7 @@ class TestCreateTaskTemplate:
                     create_task_template_dto=create_task_template_dto
                 )
 
-        snapshot.assert_match(err.value.args[0], 'err_msg')
+        snapshot.assert_match(err.value.args[0], 'message')
 
     @pytest.mark.django_db
     def test_with_invalid_template_name_raises_exception(
@@ -62,7 +62,7 @@ class TestCreateTaskTemplate:
                 create_task_template_dto=create_task_template_dto
             )
 
-        snapshot.assert_match(err.value.args[0], 'err_msg')
+        snapshot.assert_match(err.value.args[0], 'message')
 
     @pytest.mark.django_db
     def test_with_valid_data(
@@ -95,7 +95,7 @@ class TestCreateTaskTemplate:
         template_id = "template_1"
         template_name = "iBHubs 1"
         from ib_tasks.tests.factories.models import TaskTemplateFactory
-        TaskTemplateFactory()
+        TaskTemplateFactory(template_id=template_id, name=template_name)
 
         create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name

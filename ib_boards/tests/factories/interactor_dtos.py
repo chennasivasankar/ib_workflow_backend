@@ -8,7 +8,8 @@ import json
 import factory
 
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
-    TaskTemplateStagesDTO, TaskSummaryFieldsDTO
+    TaskTemplateStagesDTO, TaskSummaryFieldsDTO, TaskDTO, ActionDTO, \
+    TaskStatusDTO
 
 
 class TaskTemplateStagesDTOFactory(factory.Factory):
@@ -47,5 +48,34 @@ class ColumnDTOFactory(factory.Factory):
     column_summary = 'COLUMN_SUMMARY'
     column_actions = 'COLUMN_ACTIONS'
     list_view_fields = TaskSummaryFieldsDTOFactory.create_batch(5)
-    kanban_view_fields = TaskSummaryFieldsDTOFactory.create_batch(2)
+    kanban_view_fields = TaskSummaryFieldsDTOFactory.create_batch(5)
     board_id = "BOARD_ID_0"
+
+
+class TaskDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskDTO
+
+    task_id = factory.Sequence(lambda n: f'TASK_ID_{n + 1}')
+    field_type = factory.Sequence(lambda n: f'FIELD_TYPE_ID_{n + 1}')
+    key = factory.Sequence(lambda n: f'KEY_{n + 1}')
+    value = factory.Sequence(lambda n: f'VALUE_{n + 1}')
+
+
+class ActionDTOFactory(factory.Factory):
+    class Meta:
+        model = ActionDTO
+
+    action_id = factory.Sequence(lambda n: f'ACTION_ID_{n + 1}')
+    name = factory.Sequence(lambda n: f'NAME_{n + 1}')
+    button_text = factory.Sequence(lambda n: f'BUTTON_TEXT_{n + 1}')
+    button_color = factory.Sequence(lambda n: f'BUTTON_COLOR_{n + 1}')
+    task_id = factory.Sequence(lambda n: f'TASK_ID_{n + 1}')
+
+
+class TaskStatusDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskStatusDTO
+
+    stage = factory.Sequence(lambda n: f'STAGE_ID_{n + 1}')
+    status = factory.Sequence(lambda n: f'STATUS_ID_{n + 1}')

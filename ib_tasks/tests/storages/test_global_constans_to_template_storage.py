@@ -39,7 +39,7 @@ class TestTasksStorageImplementation:
             self, storage):
         #Arrange
         template_id = "template_1"
-        TaskTemplateFactory.create_batch(size=1)
+        TaskTemplateFactory(template_id=template_id)
 
         #Act
         is_template_exists = \
