@@ -14,8 +14,8 @@ class ActionsStorageImplementation(ActionStorageInterface):
     def get_stage_action_names(
             self, stage_ids: List[str]) -> List[StageActionNamesDTO]:
         stages = (StageAction.objects
-                  .filter(stage__stage_id__in=stage_ids)
-                  .annotate(stage_value_id=F('stage__stage_id'))
+                  .filter(stage_id__stage_id__in=stage_ids)
+                  .annotate(stage_value_id=F('stage_id__stage_id'))
                   .values('stage_value_id', 'name'))
 
         from collections import defaultdict
@@ -49,7 +49,15 @@ class ActionsStorageImplementation(ActionStorageInterface):
             list_of_stages, stage_actions)
 
         StageAction.objects.bulk_create(list_of_actions)
-        action_objs = StageAction.objects.filter(name__in=names_list)
+        q = None
+        for counter, item in enumerate(list_of_actions):
+            current_queue = Q(stage_id__stage_id=item.stage_id, name=item.action_name)
+            if counter == 0:
+                q = current_queue
+            else:
+                q = q | current_queue
+
+        action_objs = StageAction.objects.filter(q)
 
         list_of_permitted_roles = self._get_list_of_permitted_roles_objs(
             action_objs, stage_actions)
@@ -110,7 +118,7 @@ class ActionsStorageImplementation(ActionStorageInterface):
                               for stage in stage_actions]
         q = None
         for counter, item in enumerate(stage_actions_dict):
-            current_queue = Q(stage__stage_id=item['stage_id'], name__in=item["action_names"])
+            current_queue = Q(stage_id__stage_id=item['stage_id'], name__in=item["action_names"])
             if counter == 0:
                 q = current_queue
             else:

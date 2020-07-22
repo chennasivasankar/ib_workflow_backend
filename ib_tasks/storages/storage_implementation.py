@@ -3,7 +3,7 @@ from typing import Optional, List
 from ib_tasks.interactors.dtos import StageDTO, TaskTemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.dtos import (TaskStagesDTO, ValidStageDTO)
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import StageStorageInterface
-from ib_tasks.models import Stage, TaskStage
+from ib_tasks.models import Stage, TaskTemplateInitialStage
 
 
 class StagesStorageImplementation(StageStorageInterface):
@@ -77,8 +77,8 @@ class StagesStorageImplementation(StageStorageInterface):
 
         list_of_task_stages = []
         for task in list_of_task_stages:
-            list_of_stages.append(TaskStage(
+            list_of_stages.append(TaskTemplateInitialStage(
                 task_template_id=task.task_template_id,
                 stage_id=list_of_stages[task.stage_id]
             ))
-        TaskStage.objects.bulk_create(list_of_task_stages)
+        TaskTemplateInitialStage.objects.bulk_create(list_of_task_stages)
