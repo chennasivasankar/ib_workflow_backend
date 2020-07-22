@@ -31,8 +31,7 @@ class TestCreateTaskTemplate:
         create_task_template_dto= CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name
         )
-        from ib_tasks.exceptions.custom_exceptions import \
-            InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
 
         #Asssert
         with pytest.raises(InvalidValueForField) as err:
@@ -52,8 +51,7 @@ class TestCreateTaskTemplate:
         create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name
         )
-        from ib_tasks.exceptions.custom_exceptions import \
-            InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
 
         # Asssert
         with pytest.raises(InvalidValueForField) as err:

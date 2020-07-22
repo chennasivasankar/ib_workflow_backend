@@ -37,8 +37,7 @@ class TestGoFsToTaskTemplate:
         gofs_with_template_id_dto = GoFsWithTemplateIdDTO(
             template_id=template_id, gof_dtos=gof_dtos
         )
-        from ib_tasks.exceptions.custom_exceptions import \
-            TemplateDoesNotExists
+        from ib_tasks.exceptions.task_custom_exceptions import TemplateDoesNotExists
 
         #Asssert
         with pytest.raises(TemplateDoesNotExists) as err:
@@ -58,8 +57,7 @@ class TestGoFsToTaskTemplate:
             template_id=" ", gof_dtos=gof_dtos
         )
 
-        from ib_tasks.exceptions.custom_exceptions import \
-            InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
@@ -81,8 +79,7 @@ class TestGoFsToTaskTemplate:
         gofs_with_template_id_dto = GoFsWithTemplateIdDTO(
             template_id=template_id, gof_dtos=gof_dtos
         )
-        from ib_tasks.exceptions.custom_exceptions import \
-            InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
@@ -104,8 +101,7 @@ class TestGoFsToTaskTemplate:
         gofs_with_template_id_dto = GoFsWithTemplateIdDTO(
             template_id=template_id, gof_dtos=gof_dtos
         )
-        from ib_tasks.exceptions.custom_exceptions import \
-            InvalidOrdersForGoFs
+        from ib_tasks.exceptions.gofs_custom_exceptions import InvalidOrdersForGoFs
 
         # Assert
         with pytest.raises(InvalidOrdersForGoFs) as err:
@@ -127,7 +123,7 @@ class TestGoFsToTaskTemplate:
         gofs_with_template_id_dto = GoFsWithTemplateIdDTO(
             template_id=template_id, gof_dtos=gof_dtos
         )
-        from ib_tasks.exceptions.custom_exceptions import DuplicateGoFIds
+        from ib_tasks.exceptions.gofs_custom_exceptions import DuplicateGoFIds
 
         # Assert
         with pytest.raises(DuplicateGoFIds) as err:
@@ -149,8 +145,7 @@ class TestGoFsToTaskTemplate:
         gofs_with_template_id_dto = GoFsWithTemplateIdDTO(
             template_id=template_id, gof_dtos=gof_dtos
         )
-        from ib_tasks.exceptions.custom_exceptions import \
-            DuplicateOrderValuesForGoFs
+        from ib_tasks.exceptions.gofs_custom_exceptions import DuplicateOrderValuesForGoFs
 
         # Assert
         with pytest.raises(DuplicateOrderValuesForGoFs) as err:
@@ -172,8 +167,7 @@ class TestGoFsToTaskTemplate:
         gofs_with_template_id_dto = GoFsWithTemplateIdDTO(
             template_id=template_id, gof_dtos=gof_dtos
         )
-        from ib_tasks.exceptions.custom_exceptions import \
-            GofsDoesNotExist
+        from ib_tasks.exceptions.gofs_custom_exceptions import GofsDoesNotExist
 
         # Assert
         with pytest.raises(GofsDoesNotExist) as err:
@@ -285,8 +279,7 @@ class TestGoFsToTaskTemplate:
             template_id=template_id, gof_dtos=gof_dtos
         )
 
-        from ib_tasks.exceptions.custom_exceptions import \
-            ExistingGoFsNotInGivenData
+        from ib_tasks.exceptions.gofs_custom_exceptions import ExistingGoFsNotInGivenData
 
         #Assert
         with pytest.raises(ExistingGoFsNotInGivenData) as err:

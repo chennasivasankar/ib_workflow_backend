@@ -2,8 +2,7 @@ from unittest.mock import create_autospec
 
 import pytest
 
-from ib_tasks.exceptions.custom_exceptions import (
-    InvalidTaskTemplateIds, DuplicateTaskStatusVariableIds)
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateIds, DuplicateTaskStatusVariableIds
 from ib_tasks.interactors.create_task_status_interactor import \
     CreateTaskStatusInteractor
 from ib_tasks.interactors.storage_interfaces.dtos import TaskStatusDTO

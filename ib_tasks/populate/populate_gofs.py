@@ -42,8 +42,7 @@ def get_gof_dto_for_a_gof_record(gof_record: Dict) -> GoFDTO:
     if max_columns_is_not_integer:
         from ib_tasks.constants.exception_messages import \
             MAX_COLUMNS_VALUE_MUST_BE_INTEGER
-        from ib_tasks.exceptions.custom_exceptions import \
-            MaxColumnsMustBeANumber
+        from ib_tasks.exceptions.columns_custom_exceptions import MaxColumnsMustBeANumber
         MAX_COLUMNS_VALUE_MUST_BE_INTEGER += ", got {}".format(max_columns)
         raise MaxColumnsMustBeANumber(MAX_COLUMNS_VALUE_MUST_BE_INTEGER)
 
