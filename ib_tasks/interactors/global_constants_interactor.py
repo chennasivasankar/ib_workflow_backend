@@ -41,8 +41,7 @@ class GlobalConstantsInteractor:
             global_constants_dtos=global_constants_dtos
         )
 
-        from ib_tasks.exceptions.custom_exceptions import \
-            ExistingGlobalConstantNamesNotInGivenData
+        from ib_tasks.exceptions.constants_custom_exceptions import ExistingGlobalConstantNamesNotInGivenData
         from ib_tasks.constants.exception_messages import \
             EXISTING_GLOBAL_CONSTANT_NAMES_NOT_IN_GIVEN_DATA
         if existing_global_constant_names_not_in_given_data:
@@ -102,8 +101,7 @@ class GlobalConstantsInteractor:
             template_id=template_id
         )
         is_invalid_template_id = not is_valid_template_id
-        from ib_tasks.exceptions.custom_exceptions import \
-            TemplateDoesNotExists
+        from ib_tasks.exceptions.task_custom_exceptions import TemplateDoesNotExists
         from ib_tasks.constants.exception_messages import \
             TEMPLATE_DOES_NOT_EXISTS
         if is_invalid_template_id:
@@ -143,7 +141,7 @@ class GlobalConstantsInteractor:
     def _validate_value_for_template_id_field(template_id: str):
         template_id_after_strip = template_id.strip()
         is_template_id_empty = not template_id_after_strip
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
         from ib_tasks.constants.exception_messages import \
             INVALID_VALUE_FOR_TEMPLATE_ID
         if is_template_id_empty:
@@ -155,7 +153,7 @@ class GlobalConstantsInteractor:
             constant_name: str):
         constant_name_after_strip = constant_name.strip()
         is_constant_name_empty = not constant_name_after_strip
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
         from ib_tasks.constants.exception_messages import \
             INVALID_VALUE_FOR_CONSTANT_NAME
         if is_constant_name_empty:
@@ -165,7 +163,7 @@ class GlobalConstantsInteractor:
     @staticmethod
     def _validate_value_for_value_field_in_global_constants(value: int):
         is_invalid_value = value < 0
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
         from ib_tasks.constants.exception_messages import \
             INVALID_VALUE_FOR_VALUE
         if is_invalid_value:
@@ -183,8 +181,7 @@ class GlobalConstantsInteractor:
             if is_duplicate_constant_name:
                 duplicate_constant_names.append(constant_name)
 
-        from ib_tasks.exceptions.custom_exceptions \
-            import DuplicateConstantNames
+        from ib_tasks.exceptions.constants_custom_exceptions import DuplicateConstantNames
         from ib_tasks.constants.exception_messages import \
             DUPLICATE_CONSTANT_NAMES
         if duplicate_constant_names:
