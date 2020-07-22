@@ -74,3 +74,10 @@ class ActionsStorageImplementation(ActionStorageInterface):
 
     def delete_stage_actions(self, stage_actions: List[StageActionNamesDTO]):
         pass
+
+    def create_initial_stage_to_task_template(self, task_template_stage_dtos):
+        pass
+
+    def get_valid_task_template_ids(self, task_template_ids: List[str]):
+        pass
+

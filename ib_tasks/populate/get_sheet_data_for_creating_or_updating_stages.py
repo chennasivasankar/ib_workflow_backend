@@ -18,14 +18,13 @@ class GetSheetDataForStages:
         field_records = self.data_sheet.get_data_from_sub_sheet(
             sub_sheet_name=STAGE_ID_AND_VALUES_SUB_SHEET
         )
-        import json
-        print(json.dumps(field_records, indent=4))
-        self._validation_for_stages_dict(field_records[:4])
+        # TODO need to remove list slicing
+        self._validation_for_stages_dict(field_records[:2])
         stages_dict = [
             self._convert_stages_sheet_data_dict_to_our_format(
                 field_record
             )
-            for field_record in field_records[:4]
+            for field_record in field_records[:2]
         ]
         from ib_tasks.populate.create_or_update_stages import \
             populate_stages_values
@@ -43,16 +42,16 @@ class GetSheetDataForStages:
 
     def _validation_for_stages_dict(self, actions_dict: List[Dict]):
         from schema import Schema, SchemaError
+        from schema import And
         schema = Schema(
             [{
-                "TaskTemplate ID*": str,
-                "Stage ID*": str,
+                "TaskTemplate ID*": And(str, len),
+                "Stage ID*": And(str, len),
                 "Stage Display Name": str,
                 "Value": int,
-                "Stage Display Logic": str
+                "Stage Display Logic": And(str, len)
             }]
         )
-        schema.validate(actions_dict)
         try:
             schema.validate(actions_dict)
         except SchemaError:

@@ -1,5 +1,7 @@
 
 from django.contrib import admin
+
+from ib_tasks.models import Stage, TaskStatusVariable
 from ib_tasks.models.gof import GoF
 from ib_tasks.models.field import Field
 from ib_tasks.models.task_template import TaskTemplate
@@ -11,3 +13,5 @@ admin.site.register(Field)
 admin.site.register(TaskTemplate)
 admin.site.register(GoFRole)
 admin.site.register(FieldRole)
+admin.site.register(Stage)
+admin.site.register(TaskStatusVariable)

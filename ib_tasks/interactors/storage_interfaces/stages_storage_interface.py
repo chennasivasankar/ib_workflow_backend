@@ -3,7 +3,7 @@ from typing import Optional, List
 
 from ib_tasks.interactors.dtos import StageDTO
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    TaskStagesDTO, ValidStageDTO)
+    TaskStagesDTO)
 
 
 class StageStorageInterface(abc.ABC):

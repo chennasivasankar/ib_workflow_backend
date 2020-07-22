@@ -11,13 +11,13 @@ def populate_stage_actions(action_dicts: List[Dict]):
         actions_dtos.append(append_action_dict(action_dict))
     from ib_tasks.interactors.create_update_delete_stage_actions import \
         CreateUpdateDeleteStageActionsInteractor
-    from ib_boards.populate.populate_script_for_add_or_delete_columns_for_board import \
-        StorageImplementation
-    interactr = CreateUpdateDeleteStageActionsInteractor(
-        storage=StorageImplementation(),
+    from ib_tasks.storages.action_storage_implementation import \
+        ActionsStorageImplementation
+    interactor = CreateUpdateDeleteStageActionsInteractor(
+        storage=ActionsStorageImplementation(),
         actions_dto=actions_dtos
     )
-    interactr.create_update_delete_stage_actions()
+    interactor.create_update_delete_stage_actions()
 
 
 def _remove_white_spaces_and_apply_replaces_to_roles(

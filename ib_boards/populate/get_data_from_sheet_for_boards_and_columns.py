@@ -19,12 +19,13 @@ class GetBoardsAndColumnsDataFromSheet:
         field_records = self.data_sheet.get_data_from_sub_sheet(
             sub_sheet_name=BOARDS_AND_COLUMN_SUB_SHEET
         )
+        # TODO need to remove list slicing
         self.validate_keys_in_given_dict(
-            boards_columns_dicts=field_records[:4]
+            boards_columns_dicts=field_records[:6]
         )
         boards_columns_dicts = [
             self._get_list_of_dictionary_to_populate_data(field_record)
-            for field_record in field_records[:4]
+            for field_record in field_records[:6]
         ]
         return boards_columns_dicts
 
@@ -47,20 +48,20 @@ class GetBoardsAndColumnsDataFromSheet:
         )
 
     def validate_keys_in_given_dict(self, boards_columns_dicts: List[Dict]):
-        from schema import Schema, SchemaError
+        from schema import Schema, SchemaError, And
         schema = Schema(
             [{
-                "Board ID*": str,
-                "Board Display Name": str,
+                "Board ID*": And(str, len),
+                "Board Display Name": And(str, len),
                 "Column Order For Display": int,
-                "Column ID*": str,
+                "Column ID*": And(str, len),
                 "Column Display Name": str,
-                "Task Template Stages that are visible in columns": str,
-                "Visible to RoleIDs": str,
-                "Column Summary": str,
-                "Column Actions": str,
-                "Card Info_Kanban": str,
-                "Card Info_List": str
+                "Task Template Stages that are visible in columns": And(str, len),
+                "Visible to RoleIDs": And(str, len),
+                "Column Summary": And(str, len),
+                "Column Actions": And(str, len),
+                "Card Info_Kanban": And(str, len),
+                "Card Info_List": And(str, len)
 
             }]
         )

@@ -18,8 +18,6 @@ class GetSheetDataForStatusVariables:
         field_records = self.data_sheet.get_data_from_sub_sheet(
             sub_sheet_name=STATUS_VARIABLES_SUB_SHEET
         )
-        import json
-        print(json.dumps(field_records, indent=4))
         self._validation_for_status_variables_dict(field_records)
         list_of_status_dict = [
             self._convert_status_variables_sheet_data_dict_to_our_format(

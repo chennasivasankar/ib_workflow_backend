@@ -4,6 +4,8 @@ from typing import List, Dict
 
 from ib_tasks.exceptions.roles_custom_exceptions import InvalidRolesException
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageIdsException
+from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
+    ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 from ib_tasks.interactors.dtos import StageActionDTO
@@ -29,9 +31,9 @@ class DuplicateStageActionNamesException(Exception):
         self.stage_actions = stage_actions
 
 
-class CreateUpdateDeleteStageActionsInteractor():
+class CreateUpdateDeleteStageActionsInteractor:
 
-    def __init__(self, storage: StorageInterface,
+    def __init__(self, storage: ActionStorageInterface,
                  actions_dto: List[StageActionDTO]):
         self.storage = storage
         self.actions_dto = actions_dto

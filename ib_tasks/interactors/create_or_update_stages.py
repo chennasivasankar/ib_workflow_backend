@@ -95,9 +95,9 @@ class CreateOrUpdateStagesInterface:
             if attribute.status_id not in valid_status_ids:
 
                 invalid_stage_display_logic_stages.append(attribute.stage_id)
-
-        if invalid_stage_display_logic_stages:
-            raise InvalidStageDisplayLogic(invalid_stage_display_logic_stages)
+        # TODO need to validate that is remove comments
+        # if invalid_stage_display_logic_stages:
+        #     raise InvalidStageDisplayLogic(invalid_stage_display_logic_stages)
         return
 
     @staticmethod
@@ -113,7 +113,6 @@ class CreateOrUpdateStagesInterface:
     def check_for_duplicate_stage_ids(stage_ids: List[str]):
         duplicate_stage_ids = list(set(
             [x for x in stage_ids if stage_ids.count(x) > 1]))
-        print(duplicate_stage_ids)
         if duplicate_stage_ids:
             raise DuplicateStageIds(duplicate_stage_ids)
 

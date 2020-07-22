@@ -3,28 +3,41 @@ Created on: 15/07/20
 Author: Pavankumar Pamuru
 
 """
+import abc
 from abc import ABC
 from abc import abstractmethod
-from typing import List
+from typing import List, Optional
 from ib_tasks.interactors.storage_interfaces.dtos import StageActionNamesDTO
-from ib_tasks.interactors.dtos import StagesActionDTO
+from ib_tasks.interactors.dtos import StagesActionDTO, StageActionDTO
 
 
 class ActionStorageInterface(ABC):
 
-    @abstractmethod
+    @abc.abstractmethod
     def get_stage_action_names(
             self, stage_ids: List[str]) -> List[StageActionNamesDTO]:
         pass
 
-    @abstractmethod
-    def create_stage_actions(self, stage_actions: List[StagesActionDTO]):
+    @abc.abstractmethod
+    def get_valid_stage_ids(self, stage_ids: List[str]) -> Optional[List[str]]:
         pass
 
-    @abstractmethod
-    def update_stage_actions(self, stage_actions: List[StagesActionDTO]):
+    @abc.abstractmethod
+    def create_stage_actions(self, stage_actions: List[StageActionDTO]):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
+    def update_stage_actions(self, stage_actions: List[StageActionDTO]):
+        pass
+
+    @abc.abstractmethod
     def delete_stage_actions(self, stage_actions: List[StageActionNamesDTO]):
+        pass
+
+    @abc.abstractmethod
+    def create_initial_stage_to_task_template(self, task_template_stage_dtos):
+        pass
+
+    @abc.abstractmethod
+    def get_valid_task_template_ids(self, task_template_ids: List[str]):
         pass

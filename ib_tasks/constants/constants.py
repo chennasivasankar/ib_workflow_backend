@@ -32,13 +32,11 @@ TASK_TEMPLATE_SUB_SHEET_TITLE = "Task Templates"
 GOF_SUB_SHEET_TITLE = "GOF"
 FIELD_SUB_SHEET_TITLE = "Fields"
 
+
 UPLOADERS = [
     FieldTypes.IMAGE_UPLOADER.value,
     FieldTypes.FILE_UPLOADER.value
 ]
-
-
-
 
 STAGES_AND_ACTIONS_SUB_SHEET = "PR - Stages and Actions "
 TASK_CREATION_CONFIG_SUB_SHEET = "PR-Task Creation Config"
