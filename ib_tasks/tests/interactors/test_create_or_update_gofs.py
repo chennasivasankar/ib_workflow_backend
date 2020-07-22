@@ -82,7 +82,7 @@ class TestCreateOrUpdateGOFs:
             self, storage_mock, gof_id
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import GOFIdCantBeEmpty
+        from ib_tasks.exceptions.gofs_custom_exceptions import GOFIdCantBeEmpty
         gof_dto = GoFDTOFactory(gof_id=gof_id)
         complete_gof_details_dtos = [
             CompleteGoFDetailsDTOFactory(gof_dto=gof_dto)
@@ -105,8 +105,7 @@ class TestCreateOrUpdateGOFs:
             self, gof_display_name, storage_mock
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import \
-            GOFDisplayNameCantBeEmpty
+        from ib_tasks.exceptions.gofs_custom_exceptions import GOFDisplayNameCantBeEmpty
         gof_dto = GoFDTOFactory(gof_display_name=gof_display_name)
         complete_gof_details_dtos = [
             CompleteGoFDetailsDTOFactory(gof_dto=gof_dto)
@@ -129,8 +128,7 @@ class TestCreateOrUpdateGOFs:
             self, max_columns, storage_mock
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import \
-            MaxColumnsMustBeAPositiveInteger
+        from ib_tasks.exceptions.columns_custom_exceptions import MaxColumnsMustBeAPositiveInteger
         gof_dto = GoFDTOFactory(max_columns=max_columns)
         complete_gof_details_dtos = [
             CompleteGoFDetailsDTOFactory(gof_dto=gof_dto)
@@ -153,8 +151,7 @@ class TestCreateOrUpdateGOFs:
             self, storage_mock, read_permission_roles
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import \
-            GOFReadPermissionsCantBeEmpty
+        from ib_tasks.exceptions.gofs_custom_exceptions import GOFReadPermissionsCantBeEmpty
         gof_roles_dto = GoFRolesDTOFactory(
             read_permission_roles=read_permission_roles
         )
@@ -179,8 +176,7 @@ class TestCreateOrUpdateGOFs:
             self, storage_mock, write_permission_roles
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import \
-            GOFWritePermissionsCantBeEmpty
+        from ib_tasks.exceptions.gofs_custom_exceptions import GOFWritePermissionsCantBeEmpty
         gof_roles_dto = GoFRolesDTOFactory(
             write_permission_roles=write_permission_roles)
         complete_gof_details_dtos = [
@@ -254,8 +250,7 @@ class TestCreateOrUpdateGOFs:
             self, storage_mock, mocker
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import \
-            InvalidReadPermissionRoles
+        from ib_tasks.exceptions.roles_custom_exceptions import InvalidReadPermissionRoles
         from ib_tasks.tests.common_fixtures.adapters.roles_service import (
             get_valid_role_ids_in_given_role_ids
         )
@@ -286,8 +281,7 @@ class TestCreateOrUpdateGOFs:
             self, storage_mock, mocker
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import \
-            InvalidWritePermissionRoles
+        from ib_tasks.exceptions.roles_custom_exceptions import InvalidWritePermissionRoles
         from ib_tasks.tests.common_fixtures.adapters.roles_service import (
             get_valid_role_ids_in_given_role_ids
         )

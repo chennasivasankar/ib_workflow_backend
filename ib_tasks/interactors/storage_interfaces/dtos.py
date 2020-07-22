@@ -1,14 +1,15 @@
-from typing import List, Any, Optional
 from dataclasses import dataclass
+from ib_tasks.constants.enum import PermissionTypes
+from typing import List, Union, Optional, Any
+from dataclasses import dataclass
+from typing import List, Union, Optional
+from ib_tasks.constants.enum import FieldTypes, PermissionTypes
 
 
 @dataclass
-class StageDTO:
-    stage_id: str
+class TaskStagesDTO:
     task_template_id: str
-    value: int
-    stage_display_name: str
-    stage_display_logic: str
+    stage_id: str
 
 
 @dataclass
@@ -63,28 +64,20 @@ class ActionDTO:
 class ActionRolesDTO:
     action_id: str
     roles: List[str]
-from dataclasses import dataclass
-from typing import List, Union, Optional
-from ib_tasks.constants.enum import FieldTypes, PermissionTypes
-
-
-@dataclass
-class StageInformationDTO:
-    stage_id: str
-    task_template_id: str
-    value: int
-    stage_display_name: str
-    stage_display_logic: str
-
 
 @dataclass
 class TaskStagesDTO:
     task_template_id: str
     stage_id: str
 
+@dataclass
+class ValidStageDTO:
+    stage_id: str
+    id: int
+
 
 @dataclass
-class StageActionsDTO:
+class StageActionNamesDTO:
     stage_id: str
     action_names: List[str]
 
@@ -126,7 +119,7 @@ class FieldDTO:
     field_values: Optional[Union[str, List[str]]]
     required: bool
     help_text: Optional[str]
-    tool_tip: Optional[str]
+    tooltip: Optional[str]
     placeholder_text: Optional[str]
     error_message: Optional[str]
     allowed_formats: Optional[List[str]]
@@ -148,7 +141,7 @@ class FieldRoleDTO:
 
 
 @dataclass
-class StageInformationDTO:
+class StageDTO:
     stage_id: str
     task_template_id: str
     value: int

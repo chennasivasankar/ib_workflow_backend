@@ -1,8 +1,11 @@
 from unittest.mock import create_autospec, patch
 import pytest
-from ib_tasks.exceptions.custom_exceptions import (
-    InvalidStageValues, InvalidStagesTaskTemplateId, DuplicateStageIds,
-    InvalidTaskTemplateIds, InvalidStageDisplayLogic, InvalidStagesDisplayName)
+
+from ib_tasks.interactors.dtos import StageDTO
+from ib_tasks.interactors.storage_interfaces.dtos import TaskStagesDTO
+from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageValues, DuplicateStageIds, InvalidStageDisplayLogic, \
+    InvalidStagesDisplayName
+from ib_tasks.exceptions.task_custom_exceptions import InvalidStagesTaskTemplateId, InvalidTaskTemplateIds
 from ib_tasks.interactors.dtos import StageLogicAttributes
 from ib_tasks.interactors.stage_display_logic import StageDisplayLogicInteractor
 
@@ -12,6 +15,7 @@ from ib_tasks.interactors.storage_interfaces.stages_storage_interface import Sta
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import TaskStorageInterface
 from ib_tasks.tests.factories.storage_dtos import (
     StageDTOFactory, TaskStagesDTOFactory)
+from ib_tasks.tests.factories.storage_dtos import ValidStageDTOFactory
 
 
 class TestCreateOrUpdateStageInformation:
@@ -29,24 +33,36 @@ class TestCreateOrUpdateStageInformation:
         return TaskStagesDTOFactory.create_batch(size=2)
 
     @patch.object(StageDisplayLogicInteractor, 'get_stage_display_logic_attributes')
+    @pytest.fixture()
+    def valid_stages_dto(self):
+        return ValidStageDTOFactory.create_batch(size=1, stage_id="PR_PENDING RP APPROVAL")
+
+    @pytest.fixture()
+    def stage_storage(self):
+        return create_autospec(StageStorageInterface)
+
+    @pytest.fixture()
+    def task_storage(self):
+        return create_autospec(TaskStorageInterface)
+
+    @patch.object(StageDisplayLogicInteractor, 'get_stage_display_logic_attributes')
     def test_create_stage_given_valid_information_creates_stage_with_given_information(
-            self, logic_interactor, create_stage_dtos):
+            self, logic_interactor, create_stage_dtos,
+            valid_stages_dto, task_storage, stage_storage):
         # Arrange
 
         stage_ids = ["stage_id_0", "stage_id_1"]
-        storage = create_autospec(StageStorageInterface)
-        task_storage = create_autospec(TaskStorageInterface)
         stage_interactor = CreateOrUpdateStagesInterface(
-            stage_storage=storage, task_storage=task_storage
+            stage_storage=stage_storage, task_storage=task_storage
         )
+
         task_storage.get_valid_template_ids_in_given_template_ids. \
             return_value = ["task_template_id_0", "task_template_id_1"]
-        storage.get_valid_status_ids.return_value = ["status1"]
         logic_interactor.return_value = StageLogicAttributes(
-            status_id="status1",
+            status_id="status10",
             stage_id="PR_PENDING RP APPROVAL"
         )
-        storage.get_existing_stage_ids.return_value = []
+        stage_storage.get_existing_stage_ids.side_effect = [[], ["status10"]]
 
         # Act
         stage_interactor.create_or_update_stages(
@@ -54,25 +70,23 @@ class TestCreateOrUpdateStageInformation:
         )
 
         # Assert
-        storage.get_existing_stage_ids.assert_called_once_with(
-            stage_ids=stage_ids
-        )
-        storage.create_stages.assert_called_once_with(
+        stage_storage.get_existing_stage_ids.assert_called()
+        stage_storage.create_stages.assert_called_once_with(
             create_stage_dtos
         )
 
     @patch.object(StageDisplayLogicInteractor, 'get_stage_display_logic_attributes')
     def test_update_stage_when_stage_id_already_exists_for_given_task_template_updates_stage_details(
-            self, logic_interactor, create_stage_dtos, create_task_stages_dtos):
+            self, logic_interactor, create_stage_dtos, create_task_stages_dtos,
+            valid_stages_dto, task_storage, stage_storage):
         # Arrange
         stages_details = create_stage_dtos
 
-        storage = create_autospec(StageStorageInterface)
+        storage = stage_storage
         storage.get_existing_stage_ids.return_value = ["stage_id_0", "stage_id_1"]
         storage.validate_stages_related_task_template_ids.return_value = []
         task_stages_dto = create_task_stages_dtos
-        task_storage = create_autospec(TaskStorageInterface)
-        storage.get_valid_status_ids.return_value = ["status1"]
+        storage.get_existing_stage_ids.return_value = ["status1"]
         logic_interactor.return_value = StageLogicAttributes(
             status_id="status1",
             stage_id="PR_PENDING RP APPROVAL"
@@ -99,14 +113,15 @@ class TestCreateOrUpdateStageInformation:
             stages_details
         )
 
-    def test_validate_values_when_given_invalid_values_raises_exception(self):
+    def test_validate_values_when_given_invalid_values_raises_exception(self,
+                                                                        stage_storage,
+                                                                        task_storage):
         # Arrange
         StageDTOFactory.reset_sequence()
         stages_details = StageDTOFactory.create_batch(
             value=-2, size=2
         )
-        storage = create_autospec(StageStorageInterface)
-        task_storage = create_autospec(TaskStorageInterface)
+        storage = stage_storage
         task_storage.get_valid_template_ids_in_given_template_ids. \
             return_value = ["task_template_id_0", "task_template_id_1"]
         storage.get_existing_stage_ids.return_value = []
@@ -133,7 +148,7 @@ class TestCreateOrUpdateStageInformation:
         storage = create_autospec(StageStorageInterface)
         task_storage = create_autospec(TaskStorageInterface)
         storage.get_existing_stage_ids.return_value = ["PR_PENDING RP APPROVAL"]
-        storage.get_valid_status_ids.return_value = ["status1"]
+        storage.get_existing_stage_ids.return_value = ["status1"]
         logic_interactor.return_value = StageLogicAttributes(
             status_id="status1",
             stage_id="PR_PENDING RP APPROVAL"
@@ -222,7 +237,7 @@ class TestCreateOrUpdateStageInformation:
             status_id="status1",
             stage_id="PR_APPROVED"
         )
-        storage.get_valid_status_ids.return_value = []
+        storage.get_existing_stage_ids.return_value = []
         task_storage.get_valid_template_ids_in_given_template_ids. \
             return_value = ["task_template_id_0", "task_template_id_1"]
 
@@ -239,15 +254,14 @@ class TestCreateOrUpdateStageInformation:
         # Assert
 
     def test_validate_stage_display_name_invalid_stage_display_name_raises_exception(
-            self):
+            self, stage_storage, task_storage):
         # Arrange
 
         StageDTOFactory.reset_sequence()
         stages_details = StageDTOFactory.create_batch(
             stage_display_name="", size=2
         )
-        storage = create_autospec(StageStorageInterface)
-        task_storage = create_autospec(TaskStorageInterface)
+        storage = stage_storage
         stage_interactor = CreateOrUpdateStagesInterface(
             stage_storage=storage, task_storage=task_storage
         )

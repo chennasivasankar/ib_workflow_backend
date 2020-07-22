@@ -2,8 +2,8 @@ import json
 from collections import defaultdict
 from typing import List, Dict
 
-from ib_tasks.exceptions.custom_exceptions \
-    import InvalidStageIdsException, InvalidRolesException
+from ib_tasks.exceptions.roles_custom_exceptions import InvalidRolesException
+from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageIdsException
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 from ib_tasks.interactors.dtos import StageActionDTO

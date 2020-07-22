@@ -2,8 +2,7 @@ from unittest.mock import create_autospec
 
 import pytest
 
-from ib_tasks.exceptions.custom_exceptions import (
-    InvalidTaskTemplateIds, DuplicateTaskStatusVariableIds)
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateIds, DuplicateTaskStatusVariableIds
 from ib_tasks.interactors.create_task_status_interactor import \
     CreateTaskStatusInteractor
 from ib_tasks.interactors.storage_interfaces.dtos import TaskStatusDTO
@@ -21,8 +20,7 @@ class TestCreateStatusInteractor:
     @pytest.fixture
     def duplicate_status_dtos(self):
         task_status_dto = TaskStatusDTOFactory.create_batch(
-            task_template_id="task_template_id_1",
-            status_variable_id="status_variable_id_1", size=2)
+            task_template_id="task_template_id_1", status_variable_id="status_variable_id_1", size=2)
         return task_status_dto
 
     def test_validate_task_template_id_invalid_task_template_id_raises_exception(
@@ -30,7 +28,7 @@ class TestCreateStatusInteractor:
         # Arrange
 
         storage = create_autospec(TaskStorageInterface)
-        storage.get_task_template_ids.return_value = []
+        storage.get_valid_template_ids_in_given_template_ids.return_value = []
         interactor = CreateTaskStatusInteractor(
             status_storage=storage
         )
@@ -40,22 +38,21 @@ class TestCreateStatusInteractor:
             interactor.create_task_status(task_status_dtos)
 
         # Assert
-        storage.get_task_template_ids.assert_called_once()
+        storage.get_valid_template_ids_in_given_template_ids.assert_called_once()
 
     def test_create_status_for_task_given_valid_details(
             self, task_status_dtos):
         # Arrange
         task_status_details_dtos = [TaskStatusDTO(
             task_template_id="FIN_PR",
-            status_variable_id="Status 1"
-        ), TaskStatusDTO(
+            status_variable_id="Status 1"),
+TaskStatusDTO(
             task_template_id="FIN_PR",
             status_variable_id="Status 2"
         )
         ]
         storage = create_autospec(TaskStorageInterface)
-        storage.get_task_template_ids.return_value = ["task_template_id_1",
-                                                      "task_template_id_2"]
+        storage.get_valid_template_ids_in_given_template_ids.return_value = ["task_template_id_1", "task_template_id_2"]
         interactor = CreateTaskStatusInteractor(
             status_storage=storage
         )
@@ -87,7 +84,7 @@ class TestCreateStatusInteractor:
             )
         ]
         storage = create_autospec(TaskStorageInterface)
-        storage.get_task_template_ids.return_value = ["task_template_id_1"]
+        storage.get_valid_template_ids_in_given_template_ids.return_value = ["task_template_id_1"]
         interactor = CreateTaskStatusInteractor(
             status_storage=storage
         )
@@ -97,4 +94,4 @@ class TestCreateStatusInteractor:
             interactor.create_task_status(duplicate_status_dtos)
 
         # Assert
-        storage.get_task_template_ids.assert_called_once()
+        storage.get_valid_template_ids_in_given_template_ids.assert_called_once()
