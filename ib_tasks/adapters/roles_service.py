@@ -1,3 +1,4 @@
+
 from typing import List
 
 
@@ -17,6 +18,9 @@ class RolesService:
         #  validation from ib_iam.app_interfaces import ServiceInterface
         return ServiceInterface()
 
+    def get_db_roles(self):
+        pass
+
     def get_valid_role_ids_in_given_role_ids(
             self, role_ids: List[str]
     ) -> List[str]:
@@ -27,3 +31,5 @@ class RolesService:
     def get_user_role_ids(self, user_id) -> List[str]:
         user_role_ids = self.interface.get_user_role_ids(user_id)
         return user_role_ids
+
+
