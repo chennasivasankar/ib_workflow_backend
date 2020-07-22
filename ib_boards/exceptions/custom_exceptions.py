@@ -34,6 +34,17 @@ class EmptyValuesForTaskSummaryFields(Exception):
     pass
 
 
+class InvalidBoardId(Exception):
+    pass
+
+class InvalidOffsetValue(Exception):
+    pass
+
+class InvalidLimitValue(Exception):
+    pass
+
+class UserDonotHaveAccess(Exception):
+    pass
 class TaskTemplateStagesNotBelongsToTaskTemplateId(Exception):
     pass
 
@@ -68,15 +79,6 @@ class UserDoNotHaveAccessToBoards(Exception):
 
 class UserDoNotHaveAccessToColumn(Exception):
     pass
-
-
-class InvalidOffsetValue(Exception):
-    pass
-
-
-class InvalidLimitValue(Exception):
-    pass
-
 
 class InvalidBoardIds(Exception):
     def __init__(self, board_ids: List[str]):
