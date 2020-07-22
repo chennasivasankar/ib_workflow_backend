@@ -14,7 +14,10 @@ class TestCase01UpdateUserPasswordAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.mark.django_db
-    def test_case(self, snapshot):
+    def test_case(self, mocker, snapshot):
+        from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks \
+            import prepare_update_user_password_with_reset_password_token_mock
+        prepare_update_user_password_with_reset_password_token_mock(mocker)
         body = {'password': 'string'}
         path_params = {}
         query_params = {'token': "735"}
