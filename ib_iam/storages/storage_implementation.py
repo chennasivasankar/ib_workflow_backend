@@ -77,17 +77,24 @@ class StorageImplementation(StorageInterface):
             company_dtos.append(company_dto)
         return company_dtos
 
+    def get_role_objs_ids(self, roles):
+        role_ids = Role.objects.filter(role_id__in=roles).values_list('id')
+        return role_ids
+
     def add_new_user(self, user_id: str, is_admin: bool, company_id: str,
-                     role_ids: List[str], team_ids: List[str]):
+                     role_ids: List[int], team_ids: List[str]):
         from ib_iam.models import UserDetails, UserTeam, UserRole
+        print(role_ids)
         UserDetails.objects.create(user_id=user_id, is_admin=is_admin,
                                    company_id=company_id)
         user_teams = [UserTeam(user_id=user_id, team_id=team_id)
                       for team_id in team_ids]
+
         user_roles = [UserRole(user_id=user_id, role_id=role_id)
                       for role_id in role_ids]
         UserTeam.objects.bulk_create(user_teams)
         UserRole.objects.bulk_create(user_roles)
+        print(UserRole.objects.all().values('id', 'user_id', 'role_id'))
 
     def get_companies(self) -> List[CompanyDTO]:
         from ib_iam.models import Company
@@ -128,7 +135,7 @@ class StorageImplementation(StorageInterface):
             )
         return roles
 
-    def validate_roles(self, role_ids):
+    def validate_role_ids(self, role_ids):
         from ib_iam.models import Role
         role_objs_count = Role.objects.filter(
             role_id__in=role_ids).count()

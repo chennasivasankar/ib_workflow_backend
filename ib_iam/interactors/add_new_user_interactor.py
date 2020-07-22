@@ -49,12 +49,17 @@ class AddNewUserInteractor(ValidationMixin):
         self._validate_name_and_throw_exception(name=name)
         self._validate_email_and_throw_exception(email=email)
         self._validate_values(roles, teams, company_id)
+        new_user_id = self._create_user_in_ib_users(email, name)
+        role_ids = self.storage.get_role_objs_ids(roles)
+        self.storage.add_new_user(
+            user_id=new_user_id, is_admin=False, company_id=company_id,
+            role_ids=role_ids, team_ids=teams)
+
+    def _create_user_in_ib_users(self, email, name):
         new_user_id = self._create_user_account_with_email(
             name=name, email=email)
         self._create_user_profile(user_id=new_user_id, email=email, name=name)
-        self.storage.add_new_user(
-            user_id=user_id, is_admin=False, company_id=company_id,
-            role_ids=roles, team_ids=teams)
+        return new_user_id
 
     def _check_and_throw_user_is_admin(self, user_id: str):
         is_admin = self.storage.validate_user_is_admin(user_id=user_id)
@@ -102,7 +107,7 @@ class AddNewUserInteractor(ValidationMixin):
         self._validate_company(company)
 
     def _validate_roles(self, roles):
-        are_valid = self.storage.validate_roles(role_ids=roles)
+        are_valid = self.storage.validate_role_ids(role_ids=roles)
         are_not_valid = not are_valid
         if are_not_valid:
             raise RoleIdsAreInvalidException()

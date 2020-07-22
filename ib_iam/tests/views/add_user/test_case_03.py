@@ -25,15 +25,25 @@ class TestCase03AddUserAPITestCase(TestUtils):
         RoleFactory.create(role_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331')
 
     @pytest.mark.django_db
-    def test_case(self, user_set_up, snapshot):
-        body = {'name': 'parker', 'email': 'parker@string.com',
+    def test_case(self, user_set_up, snapshot, mocker):
+        body = {'name': 'parker', 'email': 'parker@gmail.com',
                 'company_id': 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
                 'team_ids': ['ef6d1fc6-ac3f-4d2d-a983-752c992e8331'],
                 'role_ids': ['ef6d1fc6-ac3f-4d2d-a983-752c992e8331']}
         path_params = {}
         query_params = {}
         headers = {}
+        from ib_iam.tests.common_fixtures.adapters.user_service \
+            import create_user_account_adapter_mock, \
+            create_user_profile_adapter_mock
+        user_account_adapter_mock = \
+            create_user_account_adapter_mock(mocker=mocker)
+        user_profile_adapter_mock = \
+            create_user_profile_adapter_mock(mocker=mocker)
         response = self.default_test_case(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
+        user_account_adapter_mock.assert_called_once()
+        user_profile_adapter_mock.assert_called_once()
+

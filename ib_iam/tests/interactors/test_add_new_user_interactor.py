@@ -126,7 +126,7 @@ class TestAddNewUserIneractor:
         role_ids = ['role0', 'role1']
         company_id = 'company0'
         interactor = AddNewUserInteractor(storage=storage_mock)
-        storage_mock.validate_roles.return_value = False
+        storage_mock.validate_role_ids.return_value = False
         presenter_mock.raise_role_ids_are_invalid.return_value = Mock()
 
         # Act
@@ -136,7 +136,7 @@ class TestAddNewUserIneractor:
             presenter=presenter_mock)
 
         # Assert
-        storage_mock.validate_roles.assert_called_once()
+        storage_mock.validate_role_ids.assert_called_once()
         presenter_mock.raise_role_ids_are_invalid.assert_called_once()
 
     def test_validate_teams_and_throw_exception(self, storage_mock,
@@ -212,6 +212,41 @@ class TestAddNewUserIneractor:
         adapter_mock.assert_called_once()
         presenter_mock.raise_user_account_already_exist_with_this_email_exception. \
             assert_called_once()
+
+    def test_get_role_objs_ids_returns_ids_of_role(
+            self, storage_mock, presenter_mock, mocker):
+        # Arrange
+        user_id = "user_1"
+        name = "user"
+        email = "user@email.com"
+        team_ids = ['team0', 'team1']
+        role_ids = ['role0', 'role1']
+        ids_of_role_objs = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
+             "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
+        company_id = 'company0'
+        interactor = AddNewUserInteractor(storage=storage_mock)
+        storage_mock.validate_user_is_admin.return_value = True
+        storage_mock.get_role_objs_ids.return_value = ids_of_role_objs
+        presenter_mock.raise_user_account_already_exist_with_this_email_exception. \
+            return_value = Mock()
+        from ib_iam.tests.common_fixtures.adapters.user_service \
+            import create_user_account_adapter_mock, \
+            create_user_profile_adapter_mock
+        user_account_adapter_mock = \
+            create_user_account_adapter_mock(mocker=mocker)
+        user_profile_adapter_mock = \
+            create_user_profile_adapter_mock(mocker=mocker)
+
+        # Act
+        interactor.add_new_user_wrapper(
+            user_id=user_id, name=name, email=email,
+            teams=team_ids, roles=role_ids, company_id=company_id,
+            presenter=presenter_mock)
+
+        # Assert
+        storage_mock.get_role_objs_ids.assert_called_once()
+        user_account_adapter_mock.assert_called_once()
+        user_profile_adapter_mock.assert_called_once()
 
     def test_create_ib_user_with_given_valid_details(
             self, storage_mock, presenter_mock, mocker):

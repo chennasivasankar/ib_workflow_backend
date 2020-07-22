@@ -23,9 +23,10 @@ def teams():
 
 @pytest.fixture()
 def roles():
-    role_ids = ["1", "2"]
+    role_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
+                "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
     from ib_iam.tests.factories.models import RoleFactory
-    roles = [RoleFactory.create(role_id=role_id) for role_id in role_ids]
+    roles = [RoleFactory.create(id=role_id) for role_id in role_ids]
     return roles
 
 
@@ -37,7 +38,8 @@ class TestAddNewUserStorage:
         is_admin = True
         team_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
                     "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
-        role_ids = ["1", "2"]
+        role_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
+                "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
         company_id = 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331'
         storage = StorageImplementation()
 
@@ -52,14 +54,15 @@ class TestAddNewUserStorage:
         assert str(user.company_id) == company_id
 
     @pytest.mark.django_db
-    def test_validate_roles(self, roles):
+    def test_validate_role_ids(self, roles):
         # Arrange
         storage = StorageImplementation()
-        role_ids = ["1", "2"]
-        expected_output = True
+        role_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8000",
+                    "ef6d1fc6-ac3f-4d2d-a983-752c992e8000"]
+        expected_output = False
 
         # Act
-        output = storage.validate_roles(role_ids=role_ids)
+        output = storage.validate_role_ids(role_ids=role_ids)
 
         # Assert
         assert output == expected_output

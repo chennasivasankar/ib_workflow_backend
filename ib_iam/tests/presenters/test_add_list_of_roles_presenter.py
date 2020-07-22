@@ -54,7 +54,8 @@ class TestAddListOfRolesPresenter:
         response_status_code = ROLE_NAME_SHOULD_NOT_BE_EMPTY[1]
 
         # Act
-        response_object = presenter.raise_role_name_should_not_be_empty_exception()
+        response_object = presenter. \
+            raise_role_name_should_not_be_empty_exception()
 
         # Assert
         response = json.loads(response_object.content)

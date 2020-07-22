@@ -34,7 +34,7 @@ class StorageInterface(ABC):
 
     @abstractmethod
     def add_new_user(self, user_id: str, is_admin: bool, company_id: str,
-                     role_ids: List[str], team_ids: List[str]):
+                     role_ids: List[int], team_ids: List[str]):
         pass
 
     @abstractmethod
@@ -50,7 +50,7 @@ class StorageInterface(ABC):
         pass
 
     @abstractmethod
-    def validate_roles(self, role_ids):
+    def validate_role_ids(self, role_ids):
         pass
 
     @abstractmethod
@@ -67,4 +67,8 @@ class StorageInterface(ABC):
 
     @abstractmethod
     def get_valid_role_ids(self, role_ids: List[str]):
+        pass
+
+    @abstractmethod
+    def get_role_objs_ids(self, roles):
         pass
