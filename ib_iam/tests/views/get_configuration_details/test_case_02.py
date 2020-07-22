@@ -28,8 +28,8 @@ class TestCase02GetConfigurationDetailsAPITestCase(TestUtils):
     def user_set_up(self, api_user):
         user_id = api_user.user_id
         from ib_iam.tests.factories.models import UserDetailsFactory
-        from ib_iam.tests.common_fixtures.storages import reset_sequence
-        reset_sequence()
+        from ib_iam.tests.common_fixtures.storages import reset_all_factories_sequence
+        reset_all_factories_sequence()
         UserDetailsFactory.create(user_id=user_id, is_admin=True)
         UserDetailsFactory.create_batch(4)
 
@@ -39,8 +39,8 @@ class TestCase02GetConfigurationDetailsAPITestCase(TestUtils):
             import TeamFactory, CompanyFactory, RoleFactory, \
             UserTeamFactory, \
             UserRoleFactory
-        from ib_iam.tests.common_fixtures.storages import reset_sequence
-        reset_sequence()
+        from ib_iam.tests.common_fixtures.storages import reset_all_factories_sequence
+        reset_all_factories_sequence()
         company = CompanyFactory.create(company_id=COMPANY_ID)
         teams = [TeamFactory.create(team_id=team_id) for team_id in TEAM_IDS]
         roles = [RoleFactory.create(id=role_id) for role_id in ROLE_IDS]

@@ -8,7 +8,7 @@ from ib_iam.tests.factories.storage_dtos \
     UserRoleDTOFactory
 
 
-def reset_sequence():
+def reset_all_factories_sequence():
     UserDTOFactory.reset_sequence()
     UserTeamDTOFactory.reset_sequence()
     UserCompanyDTOFactory.reset_sequence()
@@ -24,14 +24,14 @@ def reset_sequence():
 
 @pytest.fixture()
 def user_not_admin():
-    reset_sequence()
+    reset_all_factories_sequence()
     user = UserDetailsFactory.create(user_id="user0", is_admin=False)
     return user
 
 
 @pytest.fixture()
 def users_company():
-    reset_sequence()
+    reset_all_factories_sequence()
     users = []
     companies = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
                  "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
@@ -45,7 +45,7 @@ def users_company():
 
 @pytest.fixture()
 def users_team():
-    reset_sequence()
+    reset_all_factories_sequence()
     users = []
     teams = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
              "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
@@ -59,7 +59,7 @@ def users_team():
 
 @pytest.fixture()
 def users_role():
-    reset_sequence()
+    reset_all_factories_sequence()
     users = []
     roles = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
              "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
@@ -73,6 +73,6 @@ def users_role():
 
 @pytest.fixture()
 def companies():
-    reset_sequence()
+    reset_all_factories_sequence()
     companies = CompanyFactory.create_batch(3)
     return companies

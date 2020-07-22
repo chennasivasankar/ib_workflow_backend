@@ -4,7 +4,7 @@ import pytest
 
 from ib_iam.interactors.get_user_options_interactor \
     import GetUserOptionsDetails
-from ib_iam.tests.common_fixtures.storages import reset_sequence
+from ib_iam.tests.common_fixtures.storages import reset_all_factories_sequence
 
 
 class TestGetUserOptionsInteractor:
@@ -16,14 +16,14 @@ class TestGetUserOptionsInteractor:
 
     @pytest.fixture()
     def team_dtos(self):
-        reset_sequence()
+        reset_all_factories_sequence()
         from ib_iam.tests.factories.storage_dtos import TeamDTOFactory
         team_dtos = TeamDTOFactory.create_batch(4)
         return team_dtos
 
     @pytest.fixture()
     def role_dtos(self):
-        reset_sequence()
+        reset_all_factories_sequence()
         from ib_iam.tests.factories.storage_dtos import RoleDTOFactory
         role_dtos = RoleDTOFactory.create_batch(4)
         return role_dtos

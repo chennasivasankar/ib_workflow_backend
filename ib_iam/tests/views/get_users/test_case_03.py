@@ -35,8 +35,8 @@ class TestCase03GetUsersAPITestCase(TestUtils):
             import TeamFactory, CompanyFactory, RoleFactory, \
             UserTeamFactory, \
             UserRoleFactory
-        from ib_iam.tests.common_fixtures.storages import reset_sequence
-        reset_sequence()
+        from ib_iam.tests.common_fixtures.storages import reset_all_factories_sequence
+        reset_all_factories_sequence()
         company = CompanyFactory.create(company_id=COMPANY_ID)
         team1 = TeamFactory.create(team_id=TEAM_ID_01)
         role1 = RoleFactory.create(id=ROLE_ID_01)
