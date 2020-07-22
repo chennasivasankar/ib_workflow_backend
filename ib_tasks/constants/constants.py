@@ -21,4 +21,5 @@ GOFS_CSV_FILE_PATH = "/home/ib-developer/Desktop/aws/ib-workflows-backend/ib_tas
 TASK_TEMPLATES_CSV_FILE_PATH = "/home/ib-developer/Desktop/aws/ib-workflows-backend/ib_tasks/populate/task_templates.csv"
 
 GOOGLE_SHEET_NAME = "FinMan Configuration_Dev_Test"
-FIELD_SUB_SHEET_TITLE = "PR - Stages and Actions "
+STAGES_AND_ACTIONS_SUB_SHEET = "PR - Stages and Actions "
+TASK_CREATION_CONFIG_SUB_SHEET = "PR-Task Creation Config"

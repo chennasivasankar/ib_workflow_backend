@@ -1,23 +1,23 @@
 from typing import Dict, Any, List
 
 
-def populate_stage_actions(action_dicts: List[Dict]):
-    actions_dtos = []
-    validation_for_action_dict(action_dicts)
-    writing_data_to_task_actions_logic(action_dicts)
-    actions_dict = _remove_white_spaces_and_apply_replaces_to_roles(
-        action_dicts)
-    for action_dict in actions_dict:
-        actions_dtos.append(append_action_dict(action_dict))
-    from ib_tasks.interactors.create_update_delete_stage_actions import \
-        CreateUpdateDeleteStageActionsInteractor
+def populate_tasks(tasks: List[Dict]):
+    tasks_dto = []
+    validation_for_tasks_dict(tasks)
+    writing_data_to_task_actions_logic(tasks)
+    tasks = _remove_white_spaces_and_apply_replaces_to_roles(
+        tasks)
+    for action_dict in tasks:
+        tasks_dto.append(append_action_dict(action_dict))
+    from ib_tasks.interactors.configur_initial_task_template_stage_actions \
+        import ConfigureInitialTaskTemplateStageActions
     from ib_boards.populate.populate_script_for_add_or_delete_columns_for_board import \
         StorageImplementation
-    interactr = CreateUpdateDeleteStageActionsInteractor(
+    interactor = ConfigureInitialTaskTemplateStageActions(
         storage=StorageImplementation(),
-        actions_dto=actions_dtos
+        tasks_dto=tasks_dto
     )
-    interactr.create_update_delete_stage_actions()
+    interactor.create_update_delete_stage_actions_to_task_template()
 
 
 def _remove_white_spaces_and_apply_replaces_to_roles(
@@ -31,9 +31,10 @@ def _remove_white_spaces_and_apply_replaces_to_roles(
     return action_dicts
 
 
-def writing_data_to_task_actions_logic(action_dicts: List[Dict]):
-    with open('ib_tasks/populate/stage_actions_logic.py', "a") as file:
-        for action_dict in action_dicts:
+def writing_data_to_task_actions_logic(actions_dict: List[Dict]):
+
+    with open('ib_tasks/populate/task_initial_stage_actions_logic.py', "a") as file:
+        for action_dict in actions_dict:
             _define_single_method(file=file, action_dict=action_dict)
         file.close()
 
@@ -47,23 +48,13 @@ def _define_single_method(file, action_dict: Dict[str, str]):
     file.write("\t" + "return task_dict\n")
 
 
-def _validate_action_logic(action_logic: str):
-    from astroid import parse, AstroidSyntaxError
-    from ib_tasks.exceptions.custom_exceptions \
-        import InvalidPythonCodeException
-    try:
-        parse(action_logic)
-    except AstroidSyntaxError:
-        raise InvalidPythonCodeException()
-
-
 def append_action_dict(action_dict: Dict[str, Any]):
-    from ib_tasks.interactors.dtos import StageActionDTO
-
-    function_path = 'ib_tasks.populate.stage_actions_logic.'
+    from ib_tasks.interactors.dtos import TaskTemplateStageActionDTO
+    function_path = 'ib_tasks.populate.task_initial_stage_actions_logic.'
     function_name = action_dict['stage_id'] + "_" + action_dict['action_name']
     function_path = function_path + function_name
-    return StageActionDTO(
+    return TaskTemplateStageActionDTO(
+        task_template_id=action_dict['task_template_id'],
         stage_id=action_dict['stage_id'],
         action_name=action_dict['action_name'],
         logic=action_dict['action_logic'],
@@ -74,10 +65,12 @@ def append_action_dict(action_dict: Dict[str, Any]):
     )
 
 
-def validation_for_action_dict(actions_dict: List[Dict]):
+def validation_for_tasks_dict(tasks_dict: List[Dict]):
+
     from schema import Schema, Optional, SchemaError
     schema = Schema(
         [{
+            "task_template_id": str,
             "stage_id": str,
             "action_logic": str,
             "action_name": str,
@@ -86,20 +79,33 @@ def validation_for_action_dict(actions_dict: List[Dict]):
             Optional("button_color"): str
         }]
     )
+    validated_data = []
+    validated_data = schema.validate(tasks_dict)
     try:
-        schema.validate(actions_dict)
+        validated_data = schema.validate(tasks_dict)
     except SchemaError:
         raise_exception_for_valid_format()
-    for action_dict in actions_dict:
+    for action_dict in validated_data:
         _validate_action_logic(action_logic=action_dict['action_logic'])
+
+
+def _validate_action_logic(action_logic: str):
+    from astroid import parse, AstroidSyntaxError
+    from ib_tasks.exceptions.custom_exceptions \
+        import InvalidPythonCodeException
+    try:
+        parse(action_logic)
+    except AstroidSyntaxError:
+        raise InvalidPythonCodeException()
 
 
 def raise_exception_for_valid_format():
     valid_format = {
+        "task_template_id": "task_template_1",
         "stage_id": "stage_1",
         "action_logic": "logic_1",
         "action_name": "action_name_1",
-        "roles": "ROLE_1, ROLE_2",
+        "roles": "ROLE_1",
         "button_text": "button_text_1",
         "button_color": "button_color_1"
     }
@@ -108,3 +114,5 @@ def raise_exception_for_valid_format():
     from ib_tasks.exceptions.custom_exceptions \
         import InvalidFormatException
     raise InvalidFormatException(valid_format=json_valid_format)
+
+

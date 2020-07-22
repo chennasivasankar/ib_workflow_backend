@@ -51,8 +51,7 @@ class PopulateAddOrDeleteColumnsForBoard:
         ]
         return column_dtos
 
-    @staticmethod
-    def _convert_column_dict_to_column_dto(column_dict: Dict) -> ColumnDTO:
+    def _convert_column_dict_to_column_dto(self, column_dict: Dict) -> ColumnDTO:
         # task_template_stages = self._get_task_template_stages_dto(
         #     column_dict['Task Template Stages that are visible in columns']
         # )
@@ -62,12 +61,14 @@ class PopulateAddOrDeleteColumnsForBoard:
         # kanban_view_fields = self._get_task_template_summary_fields_dto(
         #     column_dict['Card Info_Kanban']
         # )
+        user_role_ids = self._convert_user_role_to_list_from_string(
+            user_roles=column_dict['user_role_ids'])
         return ColumnDTO(
             column_id=column_dict['column_id'],
             display_name=column_dict['column_display_name'],
             display_order=column_dict['display_order'],
             task_template_stages=TaskTemplateStagesDTOFactory.create_batch(3),
-            user_role_ids=column_dict['user_role_ids'],
+            user_role_ids=user_role_ids,
             column_summary=column_dict['column_summary'],
             column_actions=column_dict['column_actions'],
             list_view_fields=TaskSummaryFieldsDTOFactory.create_batch(3),
@@ -143,3 +144,9 @@ class PopulateAddOrDeleteColumnsForBoard:
             for key, value in task_summary_fields.items()
         ]
         return task_summary_fields
+
+    @staticmethod
+    def _convert_user_role_to_list_from_string(user_roles: str):
+        user_roles = user_roles.replace(" ", "")
+        user_roles = user_roles.split(",")
+        return user_roles
