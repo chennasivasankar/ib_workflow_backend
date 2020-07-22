@@ -36,7 +36,7 @@ class TestAddGoFsToTaskTemplates:
         interactor = AddGoFsToTaskTemplateInteractor(
             task_storage=task_storage_mock
         )
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
@@ -61,7 +61,7 @@ class TestAddGoFsToTaskTemplates:
         interactor = AddGoFsToTaskTemplateInteractor(
             task_storage=task_storage_mock
         )
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
@@ -88,7 +88,7 @@ class TestAddGoFsToTaskTemplates:
         interactor = AddGoFsToTaskTemplateInteractor(
             task_storage=task_storage_mock
         )
-        from ib_tasks.exceptions.custom_exceptions import InvalidOrdersForGoFs
+        from ib_tasks.exceptions.gofs_custom_exceptions import InvalidOrdersForGoFs
 
         # Assert
         with pytest.raises(InvalidOrdersForGoFs) as err:
@@ -115,8 +115,7 @@ class TestAddGoFsToTaskTemplates:
         interactor = AddGoFsToTaskTemplateInteractor(
             task_storage=task_storage_mock
         )
-        from ib_tasks.exceptions.custom_exceptions import \
-            DuplicateOrderValuesForGoFs
+        from ib_tasks.exceptions.gofs_custom_exceptions import DuplicateOrderValuesForGoFs
 
         # Assert
         with pytest.raises(DuplicateOrderValuesForGoFs) as err:
@@ -142,7 +141,7 @@ class TestAddGoFsToTaskTemplates:
         interactor = AddGoFsToTaskTemplateInteractor(
             task_storage=task_storage_mock
         )
-        from ib_tasks.exceptions.custom_exceptions import DuplicateGoFIds
+        from ib_tasks.exceptions.gofs_custom_exceptions import DuplicateGoFIds
 
         # Assert
         with pytest.raises(DuplicateGoFIds) as err:
@@ -171,8 +170,7 @@ class TestAddGoFsToTaskTemplates:
             task_storage=task_storage_mock
         )
         task_storage_mock.check_is_template_exists.return_value = False
-        from ib_tasks.exceptions.custom_exceptions import \
-            TemplateDoesNotExists
+        from ib_tasks.exceptions.task_custom_exceptions import TemplateDoesNotExists
 
         # Assert
         with pytest.raises(TemplateDoesNotExists) as err:
@@ -204,8 +202,7 @@ class TestAddGoFsToTaskTemplates:
         task_storage_mock.get_existing_gof_ids_of_template.return_value = []
         task_storage_mock.get_valid_gof_ids_in_given_gof_ids.return_value = \
             ['gof_2']
-        from ib_tasks.exceptions.custom_exceptions import \
-            GofsDoesNotExist
+        from ib_tasks.exceptions.gofs_custom_exceptions import GofsDoesNotExist
 
         # Assert
         with pytest.raises(GofsDoesNotExist) as err:
@@ -303,8 +300,7 @@ class TestAddGoFsToTaskTemplates:
         task_storage_mock.get_valid_gof_ids_in_given_gof_ids.return_value = \
             ['gof_1', 'gof_2']
 
-        from ib_tasks.exceptions.custom_exceptions import \
-            ExistingGoFsNotInGivenData
+        from ib_tasks.exceptions.gofs_custom_exceptions import ExistingGoFsNotInGivenData
 
         #Assert
         with pytest.raises(ExistingGoFsNotInGivenData) as err:

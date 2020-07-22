@@ -120,7 +120,7 @@ class FieldDTO:
     field_values: Optional[Union[str, List[str]]]
     required: bool
     help_text: Optional[str]
-    tool_tip: Optional[str]
+    tooltip: Optional[str]
     placeholder_text: Optional[str]
     error_message: Optional[str]
     allowed_formats: Optional[List[str]]

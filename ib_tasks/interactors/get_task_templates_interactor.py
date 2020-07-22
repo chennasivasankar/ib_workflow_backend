@@ -61,6 +61,4 @@ class GetTaskTemplatesInteractor:
             TASK_TEMPLATES_DOES_NOT_EXISTS_IN_DATABASE
         if task_templates_are_empty:
             message = TASK_TEMPLATES_DOES_NOT_EXISTS_IN_DATABASE
-            raise TaskTemplatesDoesNotExists(
-                TASK_TEMPLATES_DOES_NOT_EXISTS_IN_DATABASE
-            )
+            raise TaskTemplatesDoesNotExists(message)
