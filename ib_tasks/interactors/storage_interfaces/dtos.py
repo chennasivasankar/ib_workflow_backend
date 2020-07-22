@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from ib_tasks.constants.enum import PermissionTypes
 from typing import List, Union, Optional, Any
-from ib_tasks.constants.enum import FieldTypes, PermissionTypes
 from dataclasses import dataclass
 from typing import List, Union, Optional
 from ib_tasks.constants.enum import FieldTypes, PermissionTypes
@@ -67,6 +66,11 @@ class ActionRolesDTO:
     roles: List[str]
 
 @dataclass
+class TaskStagesDTO:
+    task_template_id: str
+    stage_id: str
+
+@dataclass
 class ValidStageDTO:
     stage_id: str
     id: int
@@ -91,8 +95,8 @@ class GoFDTO:
 @dataclass
 class GoFRolesDTO:
     gof_id: str
-    read_permission_roles: List
-    write_permission_roles: List
+    read_permission_roles: List[str]
+    write_permission_roles: List[str]
 
 
 @dataclass
@@ -100,7 +104,6 @@ class GoFRoleDTO:
     gof_id: str
     role: str
     permission_type: PermissionTypes
-
 
 @dataclass
 class CompleteGoFDetailsDTO:

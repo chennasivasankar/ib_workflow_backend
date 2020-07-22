@@ -7,7 +7,7 @@ from ib_tasks.models import Stage
 
 
 class StagesStorageImplementation(StageStorageInterface):
-    def create_stages(self, stage_information: StageDTO):
+    def create_stages(self, stage_information: List[StageDTO]):
         list_of_stages = []
         for stage in stage_information:
             list_of_stages.append(self._get_stage_object(stage))
