@@ -10,12 +10,12 @@ from ib_tasks.exceptions.custom_exceptions import (
     InvalidFieldIdException,
     DuplicationOfFieldIdsExist,
     FieldsDuplicationOfDropDownValues,
-    InvalidRolesException,
     EmptyValueForPermissions,
     InvalidValueForFieldDisplayName,
     InvalidValueForFieldType,
     InvalidGOFIds
 )
+from ib_tasks.interactors.create_update_delete_stage_actions import InvalidRolesException
 
 
 class CreateFieldsInteractor:

@@ -59,7 +59,7 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_enable_multiple_gofs_field_to_gof_ids(
-            self, gof_ids: List[str]) -> List[GOFMultipleStatusDTO]:
+            self, gof_ids: List[str]) -> List[GOFMultipleEnableDTO]:
         pass
 
     @abc.abstractmethod

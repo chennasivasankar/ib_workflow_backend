@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import create_autospec, patch, Mock
-from ib_tasks.interactors.storage_interfaces.dtos import GOFMultipleStatusDTO
+from ib_tasks.interactors.storage_interfaces.dtos import GOFMultipleEnableDTO
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 from ib_tasks.interactors.call_action_logic_function_and_update_task_status_variables_interactor \

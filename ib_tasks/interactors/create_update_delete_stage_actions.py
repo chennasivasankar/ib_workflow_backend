@@ -3,7 +3,7 @@ from collections import defaultdict
 from typing import List, Dict
 
 from ib_tasks.exceptions.custom_exceptions \
-    import InvalidStageIdsException, InvalidRolesException
+    import InvalidStageIdsException
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 from ib_tasks.interactors.dtos import StageActionDTO
@@ -270,3 +270,6 @@ class CreateUpdateDeleteStageActionsInteractor():
                 update_stage_actions.append(stage_action_dto)
 
 
+class InvalidRolesException(Exception):
+    def __init__(self, stage_roles_dict: str):
+        self.stage_roles_dict = stage_roles_dict

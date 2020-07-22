@@ -3,6 +3,7 @@ import factory
 from ib_tasks.interactors.dtos import (
     TaskTemplateStageActionDTO, StageActionDTO, FieldDisplayDTO
 )
+from ib_tasks.interactors.dtos import GlobalConstantsDTO
 
 
 class StageActionDTOFactory(factory.Factory):
@@ -40,8 +41,6 @@ class FieldDisplayDTOFactory(factory.Factory):
     field_type = factory.Sequence(lambda n: 'field_type_%d' % (n + 1))
     key = factory.Sequence(lambda n: 'key_%d' % (n + 1))
     value = factory.Sequence(lambda n: 'value_%d' % (n + 1))
-
-from ib_tasks.interactors.dtos import GlobalConstantsDTO
 
 
 class GlobalConstantsDTOFactory(factory.Factory):

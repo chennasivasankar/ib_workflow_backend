@@ -1,6 +1,7 @@
 from typing import List, Any, Optional
 from dataclasses import dataclass
-
+from typing import List, Union, Optional
+from ib_tasks.constants.enum import FieldTypes, PermissionTypes
 
 @dataclass
 class StageActionNamesDTO:
@@ -30,7 +31,7 @@ class GroupOfFieldsDTO:
 
 
 @dataclass()
-class GOFMultipleStatusDTO:
+class GOFMultipleEnableDTO:
     group_of_field_id: str
     multiple_status: bool
 
@@ -48,11 +49,6 @@ class ActionDTO:
 class ActionRolesDTO:
     action_id: str
     roles: List[str]
-
-
-from dataclasses import dataclass
-from typing import List, Union, Optional
-from ib_tasks.constants.enum import FieldTypes, PermissionTypes
 
 
 @dataclass

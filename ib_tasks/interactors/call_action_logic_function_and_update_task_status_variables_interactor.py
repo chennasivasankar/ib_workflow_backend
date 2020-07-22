@@ -54,7 +54,7 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
 
     def _get_method_object_for_condition(self, action_id: str):
         path_name = self.storage.get_path_name_to_action(
-            action_id=self.action_id
+            action_id=action_id
         )
         path, method = path_name.rsplit(".", 1)
         from importlib import import_module

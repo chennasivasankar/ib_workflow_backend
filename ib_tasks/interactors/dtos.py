@@ -12,6 +12,8 @@ class StageActionDTO:
     logic: str
     roles: List[str]
     function_path: str
+    button_text: str
+    button_color: str
 
 
 @dataclass
@@ -62,6 +64,7 @@ class FieldDisplayDTO:
     field_type: str
     key: str
     value: Any
+
 @dataclass
 class CreateTaskTemplateDTO:
     template_id: str
