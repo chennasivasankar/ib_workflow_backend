@@ -5,10 +5,10 @@ RESPONSE_200_JSON = """
 {
     "companies": [
         {
-            "company_id": "string",
             "name": "string",
             "description": "string",
             "logo_url": "string",
+            "company_id": "string",
             "no_of_employees": 1
         }
     ]

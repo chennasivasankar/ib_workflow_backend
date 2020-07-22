@@ -11,5 +11,7 @@ from .storage_dtos import (
     TeamDetailsWithUserIdsDTOFactory,
     TeamWithUserIdsDTOFactory,
     CompanyDTOFactory,
-    CompanyWithEmployeesCountDTOFactory
+    CompanyWithEmployeesCountDTOFactory,
+    CompanyNameLogoAndDescriptionDTOFactory,
+    CompanyDetailsWithUserIdsDTOFactory
 )

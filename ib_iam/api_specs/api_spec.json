@@ -93,12 +93,9 @@
         }
       ]
     },
-    "CompanyDetailsWithNoOfEmployees": {
+    "CompanyNameLogoAndDescription": {
       "type": "object",
       "properties": {
-        "company_id": {
-          "type": "string"
-        },
         "name": {
           "type": "string"
         },
@@ -107,11 +104,34 @@
         },
         "logo_url": {
           "type": "string"
-        },
-        "no_of_employees": {
-          "type": "integer"
         }
-      }
+      },
+      "required": [
+        "name",
+        "logo_url"
+      ]
+    },
+    "CompanyDetailsWithNoOfEmployees": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CompanyNameLogoAndDescription"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "company_id": {
+              "type": "string"
+            },
+            "no_of_employees": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "company_id",
+            "no_of_employees"
+          ]
+        }
+      ]
     },
     "TeamsWithTotalTeamsCount": {
       "type": "object",
@@ -145,7 +165,10 @@
                 "type": "string"
               }
             }
-          }
+          },
+          "required": [
+            "user_ids"
+          ]
         }
       ]
     },
@@ -443,6 +466,100 @@
           ]
         }
       ]
+    },
+    "CompanyWithUserIds": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CompanyNameLogoAndDescription"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "user_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "UnauthorizedResponseForAddCompany": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "USER_HAS_NO_ACCESS"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
+        }
+      ]
+    },
+    "NotFoundResponseForAddCompany": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "INVALID_USERS"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
+        }
+      ]
+    },
+    "BadRequestResponseForAddCompany": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "COMPANY_NAME_ALREADY_EXISTS",
+                "DUPLICATE_USERS"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
+        }
+      ]
+    },
+    "CompanyId": {
+      "type": "object",
+      "properties": {
+        "company_id": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "company_id"
+      ]
     }
   },
   "parameters": {
@@ -483,6 +600,15 @@
       "description": "details that are to be updated of a team",
       "schema": {
         "$ref": "#/definitions/TeamWithUserIds"
+      }
+    },
+    "AddCompanyParameter": {
+      "name": "details_to_add_company",
+      "in": "body",
+      "required": true,
+      "description": "parameters or details to create/add a company",
+      "schema": {
+        "$ref": "#/definitions/CompanyWithUserIds"
       }
     }
   },

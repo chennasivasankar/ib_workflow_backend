@@ -6,5 +6,6 @@ from .custom_exceptions import (
     UserHasNoAccess,
     TeamNameAlreadyExists,
     InvalidUsers,
-    DuplicateUsers
+    DuplicateUsers,
+    CompanyNameAlreadyExists
 )

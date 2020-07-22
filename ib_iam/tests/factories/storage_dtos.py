@@ -9,7 +9,7 @@ from ib_iam.interactors.storage_interfaces.dtos import (
     TeamDetailsWithUserIdsDTO,
     TeamWithUserIdsDTO,
     CompanyDTO,
-    CompanyWithEmployeesCountDTO
+    CompanyWithEmployeesCountDTO, CompanyNameLogoAndDescriptionDTO, CompanyDetailsWithUserIdsDTO
 )
 
 team_ids = [
@@ -111,14 +111,22 @@ class TeamsWithTotalTeamsCountDTOFactory(factory.Factory):
     total_teams_count = 2
 
 
-class CompanyDTOFactory(factory.Factory):
+class CompanyNameLogoAndDescriptionDTOFactory(factory.Factory):
+    class Meta:
+        model = CompanyNameLogoAndDescriptionDTO
+
+    name = factory.sequence(lambda n: "company1")
+    description = factory.sequence(lambda n: "company_description%d" % n)
+    logo_url = factory.sequence(lambda n: "logo_url%d" % n)
+
+
+class CompanyDTOFactory(
+    CompanyNameLogoAndDescriptionDTOFactory, factory.Factory
+):
     class Meta:
         model = CompanyDTO
 
     company_id = factory.Faker("uuid4")
-    name = factory.sequence(lambda n: "company1")
-    description = factory.sequence(lambda n: "comapny_description%d" % n)
-    logo_url = factory.sequence(lambda n: "logo_url%d" % n)
 
 
 class CompanyWithEmployeesCountDTOFactory(factory.Factory):
@@ -127,3 +135,16 @@ class CompanyWithEmployeesCountDTOFactory(factory.Factory):
 
     company_id = factory.Faker("uuid4")
     no_of_employees = 2
+
+
+class CompanyDetailsWithUserIdsDTOFactory(
+    CompanyNameLogoAndDescriptionDTOFactory, factory.Factory
+):
+    class Meta:
+        model = CompanyDetailsWithUserIdsDTO
+
+    user_ids = factory.Iterator([
+        [user_ids[0], user_ids[2]],
+        [user_ids[2], user_ids[1]],
+        [user_ids[2], user_ids[1]]
+    ])

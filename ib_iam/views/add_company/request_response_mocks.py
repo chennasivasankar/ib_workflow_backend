@@ -4,6 +4,7 @@ REQUEST_BODY_JSON = """
 {
     "name": "string",
     "description": "string",
+    "logo_url": "string",
     "user_ids": [
         "string"
     ]
@@ -13,7 +14,7 @@ REQUEST_BODY_JSON = """
 
 RESPONSE_201_JSON = """
 {
-    "team_id": "fa0b4645-f3b7-47a2-8cca-7a7749b7e141"
+    "company_id": "1a8d8913-c861-49ce-9630-87edd189f38f"
 }
 """
 
@@ -21,7 +22,7 @@ RESPONSE_400_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "TEAM_NAME_ALREADY_EXISTS"
+    "res_status": "COMPANY_NAME_ALREADY_EXISTS"
 }
 """
 
