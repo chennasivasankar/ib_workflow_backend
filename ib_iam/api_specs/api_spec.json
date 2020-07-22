@@ -469,7 +469,7 @@
         "$ref": "#/definitions/TeamWithUserIds"
       }
     },
-    "TeamIdParameter": {
+    "TeamIdPathParameter": {
       "name": "team_id",
       "in": "path",
       "required": true,
@@ -659,7 +659,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/TeamIdParameter"
+            "$ref": "#/parameters/TeamIdPathParameter"
           },
           {
             "$ref": "#/parameters/UpdateTeamParameter"
@@ -670,7 +670,7 @@
             "description": "Team details updated Successfully"
           },
           "400": {
-              "$ref": "#/responses/BadRequestResponseForUpdateTeam"
+            "$ref": "#/responses/BadRequestResponseForUpdateTeam"
           },
           "401": {
             "$ref": "#/responses/UnauthorizedResponseForUpdateTeam"
