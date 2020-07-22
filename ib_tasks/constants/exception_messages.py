@@ -40,3 +40,5 @@ DUPLICATE_ORDER_VALUES_FOR_GOFS = \
     "Given duplicate order values {}! Gof orders of a template should be unique"
 INVALID_TYPE_FOR_ORDER = "Given value for order: {} is not an integer"
 INVALID_TYPE_FOR_VALUE = "Given value for order: {} is not an integer"
+TASK_TEMPLATES_DOES_NOT_EXISTS_IN_DATABASE = \
+    "No Task Templates are exists in Database"

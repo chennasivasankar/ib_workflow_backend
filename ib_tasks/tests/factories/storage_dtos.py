@@ -2,17 +2,16 @@ import factory
 
 from ib_tasks.interactors.dtos import StageDTO
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    TaskStatusDTO, ValidStageDTO, TaskStagesDTO, StageActionNamesDTO)
-from ib_tasks.constants.enum import PermissionTypes
-from ib_tasks.interactors.storage_interfaces.dtos import (
     CompleteGoFDetailsDTO, GoFDTO, GoFRolesDTO,
-    FieldDTO, FieldRolesDTO, FieldRoleDTO, GoFRoleDTO
+    FieldDTO, FieldRolesDTO, FieldRoleDTO, GoFRoleDTO, TaskTemplateDTO,
+    UserFieldPermissionDTO, ActionsOfTemplateDTO,
+    GoFToTaskTemplateDTO, CompleteTaskTemplatesDTO, TaskStagesDTO,
+    TaskStatusDTO, ValidStageDTO, StageActionNamesDTO
 )
-from ib_tasks.interactors.storage_interfaces.dtos import (TaskStagesDTO)
-from ib_tasks.interactors.storage_interfaces.dtos import (
-    TaskStatusDTO)
+
 from ib_tasks.constants.enum import FieldTypes, PermissionTypes
 from ib_tasks.models import StageAction
+
 
 class StageDTOFactory(factory.Factory):
     class Meta:
@@ -33,6 +32,7 @@ class TaskStagesDTOFactory(factory.Factory):
 
     stage_id = factory.Sequence(lambda n: 'stage_id_%d' % n)
     task_template_id = factory.Sequence(lambda n: 'task_template_id_%d' % n)
+
 
 class StageActionsDTOFactory(factory.Factory):
     class Meta:
@@ -133,7 +133,6 @@ class GoFRoleDTOFactory(factory.Factory):
     permission_type = PermissionTypes.READ.value
 
 
-
 class FieldDTOFactory(factory.Factory):
     class Meta:
         model = FieldDTO
@@ -177,3 +176,56 @@ class TaskStatusDTOFactory(factory.Factory):
     task_template_id = factory.Sequence(lambda n: 'task_template_id_%d' % n)
     status_variable_id = factory.Sequence(
         lambda n: 'status_variable_id_%d' % n)
+
+
+class TaskTemplateDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskTemplateDTO
+
+    template_id = factory.Sequence(lambda n: 'template_{}'.format(n + 1))
+    template_name = \
+        factory.sequence(lambda n: 'Task Template {}'.format(n + 1))
+
+
+class ActionsOfTemplateDTOFactory(factory.Factory):
+    class Meta:
+        model = ActionsOfTemplateDTO
+
+    template_id = factory.Sequence(lambda n: 'template_{}'.format(n + 1))
+    action_id = factory.Sequence(lambda n: 'action_{}'.format(n + 1))
+    action_name = factory.Sequence(lambda n: 'Action {}'.format(n + 1))
+    button_text = factory.Sequence(lambda n: 'button_text__{}'.format(n + 1))
+    button_color = factory.Sequence(lambda n: 'button_color_{}'.format(n + 1))
+
+
+class UserFieldPermissionDTOFactory(factory.Factory):
+    class Meta:
+        model = UserFieldPermissionDTO
+
+    field_id = factory.Sequence(lambda n: 'field_{}'.format(n + 1))
+    permission_type = factory.Iterator(["READ", "WRITE"])
+
+
+class GoFToTaskTemplateDTOFactory(factory.Factory):
+    class Meta:
+        model = GoFToTaskTemplateDTO
+
+    gof_id = factory.Sequence(lambda n: 'gof_{}'.format(n + 1))
+    template_id = factory.Sequence(lambda n: 'template_{}'.format(n + 1))
+    order = factory.Sequence(lambda n: n)
+    enable_multiple_gofs = factory.Iterator([True, False])
+
+
+class CompleteTaskTemplatesDTOFactory(factory.Factory):
+    class Meta:
+        model = CompleteTaskTemplatesDTO
+
+    task_template_dtos = factory.SubFactory(TaskTemplateDTOFactory)
+    actions_of_templates_dtos = \
+        factory.SubFactory(ActionsOfTemplateDTOFactory)
+    gof_dtos = factory.SubFactory(GoFDTOFactory)
+    gofs_to_task_templates_dtos = \
+        factory.SubFactory(GoFToTaskTemplateDTOFactory)
+    field_dtos = factory.SubFactory(FieldDTOFactory)
+    user_field_permission_dtos = \
+        factory.SubFactory(UserFieldPermissionDTOFactory)

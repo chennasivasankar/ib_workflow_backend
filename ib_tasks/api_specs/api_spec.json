@@ -181,12 +181,6 @@
           "enable_multiple_gofs": {
             "type": "boolean"
           },
-          "is_gof_readable": {
-            "type": "boolean"
-          },
-          "is_gof_writable": {
-            "type": "boolean"
-          },
           "fields": {
             "type": "array",
             "items": {
@@ -200,8 +194,6 @@
           "order",
           "enable_multiple_gofs",
           "max_columns",
-          "is_gof_readable",
-          "is_gof_writable",
           "fields"
         ]
     },
@@ -243,6 +235,31 @@
   "responses": {
     "CreateTaskSuccessResponse": {
       "description": "task created successfully"
+    },
+    "TaskTemplatesDoesNotExistsResponse": {
+      "description": "No task templates exists in database",
+        "schema": {
+            "type": "object",
+            "properties": {
+                "response": {
+                    "type": "string"
+                },
+                "http_status_code": {
+                    "type": "integer"
+                },
+                "res_status": {
+                    "type": "string",
+                    "enum": [
+                        "TASK_TEMPLATES_DOES_NOT_EXISTS_IN_DATABASE"
+                    ]
+                }
+            },
+            "required": [
+                "response",
+                "http_status_code",
+                "res_status"
+            ]
+        }
     },
     "GetTaskTemplateResponse": {
       "description": "OK",
@@ -303,6 +320,9 @@
         "responses": {
           "200": {
             "$ref": "#/responses/GetTaskTemplateResponse"
+          },
+          "404": {
+            "$ref": "#/responses/TaskTemplatesDoesNotExistsResponse"
           }
         }
       }

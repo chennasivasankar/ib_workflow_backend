@@ -3,7 +3,9 @@ from typing import List, Optional
 from ib_tasks.interactors.dtos import GlobalConstantsDTO
 from ib_tasks.interactors.dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    GoFDTO, GoFRoleDTO, FieldDTO, FieldRoleDTO, TaskStatusDTO
+    GoFDTO, GoFRoleDTO, FieldDTO, FieldRoleDTO, TaskStatusDTO,
+    TaskTemplateDTO, ActionsOfTemplateDTO, UserFieldPermissionDTO,
+    GoFToTaskTemplateDTO
 )
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
@@ -265,6 +267,26 @@ class TasksStorageImplementation(TaskStorageInterface):
                 global_constants_dict[global_constant_obj.name].value
 
         GlobalConstant.objects.bulk_update(global_constants_objs, ['value'])
+
+    def get_task_template_dtos(self) -> List[TaskTemplateDTO]:
+        pass
+
+    def get_user_actions_of_template_dtos(
+            self, roles: List[str]) -> List[ActionsOfTemplateDTO]:
+        pass
+
+    def get_gofs_of_task_templates_dtos(self) -> List[GoFDTO]:
+        pass
+
+    def get_gofs_to_task_templates_dtos(self) -> List[GoFToTaskTemplateDTO]:
+        pass
+
+    def get_user_field_permission_dtos(
+            self, roles: List[str]) -> List[UserFieldPermissionDTO]:
+        pass
+
+    def get_field_dtos(self) -> List[FieldDTO]:
+        pass
 
     @staticmethod
     def _get_global_constant_names(

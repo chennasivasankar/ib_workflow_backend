@@ -26,6 +26,7 @@ def prepare_get_roles_for_valid_mock(mocker):
 
     return mock
 
+
 def get_user_role_ids(mocker):
      mock = mocker.patch(
          "ib_tasks.adapters.roles_service.RolesService.get_user_role_ids")

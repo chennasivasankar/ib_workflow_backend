@@ -65,10 +65,12 @@ class ActionRolesDTO:
     action_id: str
     roles: List[str]
 
+
 @dataclass
 class TaskStagesDTO:
     task_template_id: str
     stage_id: str
+
 
 @dataclass
 class ValidStageDTO:
@@ -102,11 +104,11 @@ class GoFRoleDTO:
     role: str
     permission_type: PermissionTypes
 
+
 @dataclass
 class CompleteGoFDetailsDTO:
     gof_dto: GoFDTO
     gof_roles_dto: GoFRolesDTO
-
 
 
 @dataclass
@@ -158,3 +160,42 @@ class TaskStagesDTO:
 class TaskStatusDTO:
     task_template_id: str
     status_variable_id: str
+
+
+@dataclass
+class TaskTemplateDTO:
+    template_id: str
+    template_name: str
+
+
+@dataclass
+class ActionsOfTemplateDTO:
+    template_id: str
+    action_id: str
+    action_name: str
+    button_text: str
+    button_color: str
+
+
+@dataclass
+class UserFieldPermissionDTO:
+    field_id: str
+    permission_type: PermissionTypes
+
+
+@dataclass
+class GoFToTaskTemplateDTO:
+    gof_id: str
+    template_id: str
+    order: int
+    enable_multiple_gofs: bool
+
+
+@dataclass
+class CompleteTaskTemplatesDTO:
+    task_template_dtos: List[TaskTemplateDTO]
+    actions_of_templates_dtos: List[ActionsOfTemplateDTO]
+    gof_dtos: List[GoFDTO]
+    gofs_to_task_templates_dtos: List[GoFToTaskTemplateDTO]
+    field_dtos: List[FieldDTO]
+    user_field_permission_dtos: List[UserFieldPermissionDTO]
