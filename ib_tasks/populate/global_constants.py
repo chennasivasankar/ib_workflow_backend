@@ -47,8 +47,9 @@ class PopulateGlobalConstantsToTemplate:
             )
         return global_constants_with_template_id_dto
 
+    @staticmethod
     def _get_global_constant_dtos(
-            self, global_constants_list: List[any]
+            global_constants_list: List[any]
     ) -> List[GlobalConstantsDTO]:
         global_constants_dtos = []
         for global_constant in global_constants_list:

@@ -47,8 +47,9 @@ class PopulateGoFsToTaskTemplate:
             )
         return gofs_with_template_id_dto
 
+    @staticmethod
     def _get_gof_with_order_and_add_another_dtos(
-            self, gofs_list: List[any]) -> List[GoFWithOrderAndAddAnotherDTO]:
+            gofs_list: List[any]) -> List[GoFWithOrderAndAddAnotherDTO]:
 
         gof_with_order_and_add_another_dtos = []
         for gof in gofs_list:
