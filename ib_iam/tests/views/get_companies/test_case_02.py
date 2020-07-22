@@ -1,5 +1,6 @@
 """
-Gives all available companies if accessed by an admin
+Gives user has no access exception response
+as it is accessed by an user wo is not admin
 """
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
@@ -29,7 +30,5 @@ class TestCase01GetCompaniesAPITestCase(TestUtils):
         user_id = str(api_user.id)
         from ib_iam.tests.factories import UserDetailsFactory
         UserDetailsFactory.sequence(1)
-        UserDetailsFactory.create(user_id=user_id, is_admin=True)
-        # TODO : Create some companies with Company Factory after writing storages
-        # TODO : Create employess for the companies created above
+        UserDetailsFactory.create(user_id=user_id)
 
