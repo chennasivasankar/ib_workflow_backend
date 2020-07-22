@@ -1,13 +1,9 @@
-"""
-Created on: 18/07/20
-Author: Pavankumar Pamuru
 
-"""
 from typing import List, Tuple
 
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
     BoardColumnsDTO, TaskTemplateStagesDTO, TaskSummaryFieldsDTO
-from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO
+from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, ColumnDetailsDTO, TaskBoardsDetailsDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_boards.models import Board, ColumnPermission, Column
@@ -258,3 +254,19 @@ class StorageImplementation(StorageInterface):
 
     def validate_user_role_with_column_roles(self, user_role: str):
         pass
+
+    def get_columns_details(self, column_ids: List[str]) -> \
+            List[ColumnDetailsDTO]:
+        pass
+
+    def get_column_ids_for_board(self, board_id: str, user_roles: List[str]) \
+            -> List[str]:
+        pass
+
+    def get_permitted_user_roles_for_board(self, board_id: str) -> List[str]:
+        pass
+
+    def get_board_complete_details(self, board_id: str, stage_ids: List[str]) -> \
+            TaskBoardsDetailsDTO:
+        pass
+
