@@ -35,7 +35,6 @@ class TestCreateFieldsInteractor:
         # Arrange
         assert str(err.value) == error_message
 
-
     def test_given_field_id_is_empty_raise_exception(self, storage_mock):
         # Arrange
         field_roles_dtos = [FieldRolesDTOFactory()]
