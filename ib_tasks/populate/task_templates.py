@@ -20,9 +20,9 @@ class PopulateTaskTemplates:
             TasksStorageImplementation
         task_storage = TasksStorageImplementation()
 
-        from ib_tasks.interactors.task_template_interactor import \
-            TaskTemplateInteractor
-        interactor = TaskTemplateInteractor(task_storage=task_storage)
+        from ib_tasks.interactors.create_task_template_interactor import \
+            CreateTaskTemplateInteractor
+        interactor = CreateTaskTemplateInteractor(task_storage=task_storage)
 
         from ib_tasks.interactors.dtos import CreateTaskTemplateDTO
         create_task_template_dto = CreateTaskTemplateDTO(

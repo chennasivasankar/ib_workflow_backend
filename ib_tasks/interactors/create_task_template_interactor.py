@@ -3,7 +3,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface \
 from ib_tasks.interactors.dtos import CreateTaskTemplateDTO
 
 
-class TaskTemplateInteractor:
+class CreateTaskTemplateInteractor:
     def __init__(self, task_storage: TaskStorageInterface):
         self.task_storage = task_storage
 
