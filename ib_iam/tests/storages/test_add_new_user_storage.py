@@ -23,10 +23,9 @@ def teams():
 
 @pytest.fixture()
 def roles():
-    role_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
-                "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
+    role_ids = ["1", "2"]
     from ib_iam.tests.factories.models import RoleFactory
-    roles = [RoleFactory.create(id=id) for id in role_ids]
+    roles = [RoleFactory.create(role_id=role_id) for role_id in role_ids]
     return roles
 
 
@@ -36,12 +35,9 @@ class TestAddNewUserStorage:
         # Arrange
         user_id = "user_1"
         is_admin = True
-        name = "user"
-        email = "user@email.com"
         team_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
                     "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
-        role_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
-                    "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
+        role_ids = ["1", "2"]
         company_id = 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331'
         storage = StorageImplementation()
 
@@ -54,3 +50,43 @@ class TestAddNewUserStorage:
         from ib_iam.models import UserDetails
         user = UserDetails.objects.get(user_id=user_id)
         assert str(user.company_id) == company_id
+
+    @pytest.mark.django_db
+    def test_validate_roles(self, roles):
+        # Arrange
+        storage = StorageImplementation()
+        role_ids = ["1", "2"]
+        expected_output = True
+
+        # Act
+        output = storage.validate_roles(role_ids=role_ids)
+
+        # Assert
+        assert output == expected_output
+
+    @pytest.mark.django_db
+    def test_validate_teams(self, teams):
+        # Arrange
+        storage = StorageImplementation()
+        team_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8333",
+                    "ef6d1fc6-ac3f-4d2d-a983-752c992e8344"]
+        expected_output = False
+
+        # Act
+        output = storage.validate_teams(team_ids=team_ids)
+
+        # Assert
+        assert output == expected_output
+
+    @pytest.mark.django_db
+    def test_validate_company(self, companies):
+        # Arrange
+        storage = StorageImplementation()
+        comapany_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8333"
+        expected_output = False
+
+        # Act
+        output = storage.validate_company(company_id=comapany_id)
+
+        # Assert
+        assert output == expected_output

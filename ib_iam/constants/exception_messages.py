@@ -57,3 +57,23 @@ ROLE_ID_SHOULD_NOT_BE_IN_VALID_FORMAT = (
     "role id should be valid format ex: PAYMENT_POC",
     "ROLE_ID_SHOULD_NOT_BE_IN_VALID_FORMAT"
 )
+
+InvalidRoleIds = (
+    "given role ids are invalid",
+    "InvalidRoleIds"
+)
+
+InvalidTeamIds = (
+    "given team ids are invalid",
+    "InvalidTeamIds"
+)
+
+InvalidCompanyId = (
+    "given company id is invalid",
+    "InvalidComapnyId"
+)
+
+USER_DOES_NOT_EXIST = (
+    "user is not exist",
+    "USER_DOES_NOT_EXIST"
+)

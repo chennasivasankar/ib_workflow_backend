@@ -44,7 +44,7 @@ class PresenterInterface(ABC):
         pass
 
     @abstractmethod
-    def response_for_get_configuration_details(self, configuration_details):
+    def get_user_options_details_response(self, configuration_details):
         pass
 
     @abstractmethod

@@ -4,7 +4,7 @@ from ib_iam.storages.storage_implementation import StorageImplementation
 from ib_iam.tests.common_fixtures.storages import reset_sequence
 
 
-class TestGetConfigurationDetailsStorage:
+class TestGetUserOptionsDetailsStorage:
     @pytest.fixture()
     def companies(self):
         reset_sequence()
@@ -70,10 +70,10 @@ class TestGetConfigurationDetailsStorage:
     def test_get_roles(self, roles):
         # Arrange
         storage = StorageImplementation()
-        from ib_iam.interactors.storage_interfaces.dtos import RoleDTO
+        from ib_iam.interactors.storage_interfaces.dtos import RoleIdAndNameDTO
         expected_ouput = [
-            RoleDTO(role_id='1', role_name='role 0'),
-            RoleDTO(role_id='2', role_name='role 1')]
+            RoleIdAndNameDTO(role_id='1', name='role 0'),
+            RoleIdAndNameDTO(role_id='2', name='role 1')]
 
         # Act
         output = storage.get_roles()

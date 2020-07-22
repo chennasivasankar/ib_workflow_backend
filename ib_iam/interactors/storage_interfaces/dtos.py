@@ -23,9 +23,9 @@ class TeamDTO:
 
 
 @dataclass
-class RoleDTO:
+class RoleIdAndNameDTO:
     role_id: str
-    role_name: str
+    name: str
 
 
 @dataclass
@@ -48,7 +48,6 @@ class UserRoleDTO:
     role_id: str
     name: str
     description: str
-from dataclasses import dataclass
 
 
 @dataclass

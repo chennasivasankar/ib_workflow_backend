@@ -105,8 +105,13 @@ class TestAddRolesInteractor:
             "role_description": "payment poc"
         }]
         from ib_iam.tests.factories.storage_dtos import RoleDTOFactory
-        role_dtos = [RoleDTOFactory(role_id = "PAYMENT_POC", name="payment poc", description="payment poc")
-                     for role in roles]
+        role_dtos = [
+            RoleDTOFactory(
+                role_id=role["role_id"],
+                name=role["role_name"],
+                description=role["role_description"]
+            )
+            for role in roles]
         storage = create_autospec(StorageInterface)
         presenter = create_autospec(PresenterInterface)
         interactor = RolesInteractor(storage=storage)

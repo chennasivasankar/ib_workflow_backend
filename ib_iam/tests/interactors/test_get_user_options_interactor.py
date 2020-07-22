@@ -98,4 +98,4 @@ class TestGetUserOptionsInteractor:
                                                      user_id="user0")
 
         # Assert
-        presenter_mock.response_for_get_configuration_details.assert_called_once()
+        presenter_mock.get_user_options_details_response.assert_called_once()

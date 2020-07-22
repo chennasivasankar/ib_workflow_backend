@@ -1,5 +1,3 @@
-import uuid
-
 import factory
 
 from ib_iam.interactors.storage_interfaces.dtos \
@@ -51,12 +49,14 @@ class TeamDTOFactory(factory.Factory):
     team_id = factory.sequence(lambda number: "team%s" % number)
     team_name = factory.sequence(lambda number: "team %s" % number)
 
+
 class CompanyDTOFactory(factory.Factory):
     class Meta:
         model = CompanyDTO
 
     company_id = factory.Sequence(lambda n: 'Company%s' % n)
     company_name = factory.Sequence(lambda n: 'company %s' % n)
+
 
 class RoleDTOFactory(factory.Factory):
     class Meta:

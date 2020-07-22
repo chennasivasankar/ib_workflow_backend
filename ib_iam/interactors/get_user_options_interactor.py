@@ -15,7 +15,7 @@ class GetUserOptionsDetails:
         try:
             configuration_details_dto = self.get_configuration_details(
                 user_id=user_id)
-            return presenter.response_for_get_configuration_details(
+            return presenter.get_user_options_details_response(
                 configuration_details_dto)
         except UserIsNotAdmin:
             presenter.raise_user_is_not_admin_exception()
@@ -31,8 +31,8 @@ class GetUserOptionsDetails:
     @staticmethod
     def _create_configuration_details_dto(companies, teams, roles):
         from ib_iam.interactors.presenter_interfaces.dtos import \
-            ConfigurationDetailsDto
-        configuration_details_dto = ConfigurationDetailsDto(
+            UserOptionsDetails
+        configuration_details_dto = UserOptionsDetails(
             companies=companies,
             roles=roles,
             teams=teams

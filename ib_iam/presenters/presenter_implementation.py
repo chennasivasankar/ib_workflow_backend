@@ -5,15 +5,33 @@ from django_swagger_utils.utils.http_response_mixin \
 
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.constants.enums import StatusCode
-from ib_iam.interactors.presenter_interfaces.dtos import CompleteUsersDetailsDTO
+from ib_iam.interactors.presenter_interfaces.dtos import \
+    CompleteUsersDetailsDTO
 from ib_iam.interactors.presenter_interfaces.presenter_interface \
     import PresenterInterface
-from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO, UserRoleDTO, UserCompanyDTO
+from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO, \
+    UserRoleDTO, UserCompanyDTO
 
 
 class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
+    def get_user_options_details_response(self, configuration_details):
+        pass
+
+    def raise_role_name_should_not_be_empty_exception(self):
+        pass
+
+    def raise_role_description_should_not_be_empty_exception(self):
+        pass
+
+    def raise_role_id_format_is_invalid_exception(self):
+        pass
+
+    def raise_duplicate_role_ids_exception(self):
+        pass
+
     def raise_user_is_not_admin_exception(self):
-        from ib_iam.constants.exception_messages import USER_DOES_NOT_HAVE_PERMISSION
+        from ib_iam.constants.exception_messages import \
+            USER_DOES_NOT_HAVE_PERMISSION
         response_dict = {
             "response": USER_DOES_NOT_HAVE_PERMISSION[0],
             "http_status_code": StatusCode.FORBIDDEN.value,
@@ -43,7 +61,8 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             response_dict=response_dict)
 
     def raise_offset_value_is_greater_than_limit_value_exception(self):
-        from ib_iam.constants.exception_messages import OFFSET_VALUE_IS_GREATER_THAN_LIMIT
+        from ib_iam.constants.exception_messages import \
+            OFFSET_VALUE_IS_GREATER_THAN_LIMIT
         response_dict = {
             "response": OFFSET_VALUE_IS_GREATER_THAN_LIMIT[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
@@ -84,7 +103,8 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
 
     def _convert_user_response_dict(
             self, user_profile_dto: UserProfileDTO,
-            user_team_dtos: List[UserTeamDTO], user_role_dtos: List[UserRoleDTO],
+            user_team_dtos: List[UserTeamDTO],
+            user_role_dtos: List[UserRoleDTO],
             user_company_dto: UserCompanyDTO):
         user_response_dict = {
             "user_id": user_profile_dto.user_id,
@@ -186,65 +206,116 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
 
+    def user_created_response(self):
+        from ib_iam.constants.exception_messages import \
+            CREATE_USER_SUCCESSFULLY
+        response_dict = {
+            "response": CREATE_USER_SUCCESSFULLY[0],
+            "http_status_code": StatusCode.CREATE_SUCCESS.value,
+            "res_status": CREATE_USER_SUCCESSFULLY[1]
 
-    def response_for_get_configuration_details(self, configuration_details_dto):
+        }
+        return self.prepare_201_created_response(
+            response_dict=response_dict)
+
+    def edit_user_edited_successfully(self):
+        from ib_iam.constants.exception_messages import EDIT_USER_SUCCESSFULLY
+        response_dict = {
+            "response": EDIT_USER_SUCCESSFULLY[0],
+            "http_status_code": StatusCode.SUCCESS.value,
+            "res_status": EDIT_USER_SUCCESSFULLY[1]
+
+        }
+        return self.prepare_200_success_response(
+            response_dict=response_dict)
+
+    def raise_user_does_not_exist(self):
+        from ib_iam.constants.exception_messages \
+            import USER_DOES_NOT_EXIST
+        response_dict = {
+            "response": USER_DOES_NOT_EXIST[0],
+            "http_status_code": StatusCode.NOT_FOUND.value,
+            "res_status": USER_DOES_NOT_EXIST[1]
+        }
+        response = self.prepare_404_not_found_response(
+            response_dict=response_dict)
+        return response
+
+    def response_for_get_configuration_details(self,
+                                               configuration_details_dto):
         companies = configuration_details_dto.companies
         teams = configuration_details_dto.teams
-        roles = configuration_details_dto.teams
+        roles = configuration_details_dto.roles
+        companies_details = self._get_company_details(companies)
+        teams_details = self._get_team_details(teams)
+        roles_details = self._get_role_details(roles)
+        response_dict = {
+            "companies": companies_details,
+            "teams": teams_details,
+            "roles": roles_details
+        }
+        return self.prepare_200_success_response(
+            response_dict=response_dict)
+
+    @staticmethod
+    def _get_role_details(roles):
+        roles_details = []
+        for role in roles:
+            roles_details.append({
+                "role_id": role.role_id,
+                "role_name": role.role_name
+            })
+        return roles_details
+
+    @staticmethod
+    def _get_team_details(teams):
+        teams_details = []
+        for team in teams:
+            teams_details.append({
+                "team_id": team.team_id,
+                "team_name": team.team_name
+            })
+        return teams_details
+
+    @staticmethod
+    def _get_company_details(companies):
+        companies_details = []
+        for company in companies:
+            companies_details.append({
+                "company_id": company.company_id,
+                "company_name": company.company_name
+            })
+        return companies_details
 
     def raise_role_ids_are_invalid(self):
-        pass
+        from ib_iam.constants.exception_messages import InvalidRoleIds
+        response_dict = {
+            "response": InvalidRoleIds[0],
+            "http_status_code": StatusCode.NOT_FOUND.value,
+            "res_status": InvalidRoleIds[1]
+        }
+        return self.prepare_404_not_found_response(
+            response_dict=response_dict
+        )
 
     def raise_company_ids_is_invalid(self):
-        pass
+        from ib_iam.constants.exception_messages import InvalidCompanyId
+        response_dict = {
+            "response": InvalidCompanyId[0],
+            "http_status_code": StatusCode.NOT_FOUND.value,
+            "res_status": InvalidCompanyId[1]
+        }
+        return self.prepare_404_not_found_response(
+            response_dict=response_dict
+        )
 
     def raise_team_ids_are_invalid(self):
-        pass
-
-    def raise_role_name_should_not_be_empty_exception(self):
-        from ib_iam.constants.exception_messages \
-            import ROLE_NAME_SHOULD_NOT_BE_EMPTY
-        from ib_iam.constants.enums import StatusCode
+        from ib_iam.constants.exception_messages import InvalidTeamIds
         response_dict = {
-            "response": ROLE_NAME_SHOULD_NOT_BE_EMPTY[0],
-            "http_status_code": StatusCode.BAD_REQUEST.value,
-            "res_status": ROLE_NAME_SHOULD_NOT_BE_EMPTY[1]
+            "response": InvalidTeamIds[0],
+            "http_status_code": StatusCode.NOT_FOUND.value,
+            "res_status": InvalidTeamIds[1]
         }
-        return self.prepare_400_bad_request_response(
-            response_dict=response_dict)
-
-    def raise_role_description_should_not_be_empty_exception(self):
-        from ib_iam.constants.exception_messages \
-            import ROLE_DESCRIPTION_SHOULD_NOT_BE_EMPTY
-        from ib_iam.constants.enums import StatusCode
-        response_dict = {
-            "response": ROLE_DESCRIPTION_SHOULD_NOT_BE_EMPTY[0],
-            "http_status_code": StatusCode.BAD_REQUEST.value,
-            "res_status": ROLE_DESCRIPTION_SHOULD_NOT_BE_EMPTY[1]
-        }
-        return self.prepare_400_bad_request_response(
-            response_dict=response_dict)
-
-    def raise_role_id_format_is_invalid_exception(self):
-        from ib_iam.constants.exception_messages \
-            import ROLE_ID_SHOULD_NOT_BE_IN_VALID_FORMAT
-        from ib_iam.constants.enums import StatusCode
-        response_dict = {
-            "response": ROLE_ID_SHOULD_NOT_BE_IN_VALID_FORMAT[0],
-            "http_status_code": StatusCode.BAD_REQUEST.value,
-            "res_status": ROLE_ID_SHOULD_NOT_BE_IN_VALID_FORMAT[1]
-        }
-        return self.prepare_400_bad_request_response(
-            response_dict=response_dict)
-
-    def raise_duplicate_role_ids_exception(self):
-        from ib_iam.constants.exception_messages \
-            import DUPLICATE_ROLE_IDS
-        from ib_iam.constants.enums import StatusCode
-        response_dict = {
-            "response": DUPLICATE_ROLE_IDS[0],
-            "http_status_code": StatusCode.BAD_REQUEST.value,
-            "res_status": DUPLICATE_ROLE_IDS[1]
-        }
-        return self.prepare_400_bad_request_response(
-            response_dict=response_dict)
+        return self.prepare_404_not_found_response(
+            response_dict=response_dict
+        )

@@ -2,9 +2,10 @@ from typing import List
 
 from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, UserDTO, CompanyDTO, \
-    TeamDTO, RoleDTO
+    TeamDTO, RoleIdAndNameDTO, RoleDTO
 from ib_iam.interactors.storage_interfaces.storage_interface import \
     StorageInterface
+from ib_iam.models import Role
 
 
 class StorageImplementation(StorageInterface):
@@ -114,27 +115,37 @@ class StorageImplementation(StorageInterface):
             )
         return teams
 
-    def get_roles(self) -> List[RoleDTO]:
+    def get_roles(self) -> List[RoleIdAndNameDTO]:
         roles = []
         from ib_iam.models import Role
         team_query_set = Role.objects.values('role_id', 'name')
         for role in team_query_set:
             roles.append(
-                RoleDTO(
+                RoleIdAndNameDTO(
                     role_id=str(role['role_id']),
-                    role_name=role['name']
+                    name=role['name']
                 )
             )
         return roles
 
     def validate_roles(self, role_ids):
-        pass
+        from ib_iam.models import Role
+        role_objs_count = Role.objects.filter(
+            role_id__in=role_ids).count()
+        are_exists = role_objs_count == len(role_ids)
+        return are_exists
 
     def validate_company(self, company_id):
-        pass
+        from ib_iam.models import Company
+        is_exist = Company.objects.filter(company_id=company_id).exists()
+        return is_exist
 
     def validate_teams(self, team_ids):
-        pass
+        from ib_iam.models import Team
+        team_objs_count = Team.objects.filter(
+            team_id__in=team_ids).count()
+        are_exists = team_objs_count == len(team_ids)
+        return are_exists
 
     def create_roles(self, role_dtos: List[RoleDTO]):
         role_objects = [
