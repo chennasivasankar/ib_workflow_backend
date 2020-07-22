@@ -48,7 +48,7 @@ class ColumnDTOFactory(factory.Factory):
     column_summary = 'COLUMN_SUMMARY'
     column_actions = 'COLUMN_ACTIONS'
     list_view_fields = TaskSummaryFieldsDTOFactory.create_batch(5)
-    kanban_view_fields = TaskSummaryFieldsDTOFactory.create_batch(2)
+    kanban_view_fields = TaskSummaryFieldsDTOFactory.create_batch(5)
     board_id = "BOARD_ID_0"
 
 

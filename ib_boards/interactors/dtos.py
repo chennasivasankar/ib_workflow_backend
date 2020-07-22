@@ -69,7 +69,7 @@ class ColumnDTO:
 
 
 @dataclass
-class BoardColumnDTO:
+class BoardColumnsDTO:
     board_id: str
     column_ids: List[str]
 

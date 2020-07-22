@@ -25,6 +25,7 @@ THIRD_PARTY_APPS = []
 APPS = [
     "ib_iam",
     "ib_tasks",
+    "ib_boards"
 ]
 
 INSTALLED_APPS += THIRD_PARTY_APPS
@@ -54,7 +55,7 @@ from django_swagger_utils.drf_server.utils.decorator.getPrivateKeyFromClientKeyR
 
 SWAGGER_UTILS = {
     "DEFAULTS": {
-        "REQUEST_WRAPPING_REQUIRED": True,
+        "REQUEST_WRAPPING_REQUIRED": False,
         "REQUEST_ENCRYPTION_REQUIRED": False,
         "GET_CLIENT_KEY_DETAILS_FUNCTION": getPrivateKeyFromClientKeyRelatedDetails,
         "GET_DECRYPTED_DATA_FUNCTION": getDecryptedData,
@@ -69,6 +70,7 @@ SWAGGER_UTILS = {
     "APPS": {
         "ib_iam": {"dsu_version": "1.0"},
         "ib_tasks": {"dsu_version": "1.0"}
+        "ib_boards": {}
     },
     "HOST": os.environ.get('APIGATEWAY_ENDPOINT', '127.0.0.1:8000'),
 }

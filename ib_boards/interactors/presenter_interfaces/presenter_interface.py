@@ -117,7 +117,7 @@ class GetColumnTasksPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_response_for_user_have_no_access_for_boards(self):
+    def get_response_for_user_have_no_access_for_column(self):
         pass
 
     @abc.abstractmethod

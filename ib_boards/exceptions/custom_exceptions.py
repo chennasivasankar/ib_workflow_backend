@@ -26,11 +26,29 @@ class InvalidTaskIdInSummaryFields(Exception):
         self.task_ids = task_ids
 
 
+class InvalidTaskIdInListViewFields(Exception):
+    def __init__(self, task_ids: List[str]):
+        self.task_ids = task_ids
+
+
+class InvalidTaskIdInKanbanViewFields(Exception):
+    def __init__(self, task_ids: List[str]):
+        self.task_ids = task_ids
+
+
 class EmptyValuesForTaskTemplateStages(Exception):
     pass
 
 
 class EmptyValuesForTaskSummaryFields(Exception):
+    pass
+
+
+class EmptyValuesForTaskListViewFields(Exception):
+    pass
+
+
+class EmptyValuesForTaskKanbanViewFields(Exception):
     pass
 
 
@@ -50,6 +68,14 @@ class TaskTemplateStagesNotBelongsToTaskTemplateId(Exception):
 
 
 class TaskSummaryFieldsNotBelongsToTaskTemplateId(Exception):
+    pass
+
+
+class TaskListViewFieldsNotBelongsToTaskTemplateId(Exception):
+    pass
+
+
+class TaskKanbanViewFieldsNotBelongsToTaskTemplateId(Exception):
     pass
 
 
@@ -90,6 +116,10 @@ class DuplicateValuesInColumnDisplayOrder(Exception):
     def __init__(self, display_order_values: List[int]):
         self.display_order_values = display_order_values
 
+class InvalidBoardId(Exception):
+   pass
+
+
 class InvalidColumnId(Exception):
     pass
 
@@ -101,3 +131,8 @@ class OffsetValueExceedsTotalTasksCount(Exception):
 class InvalidStageIds(Exception):
     def __init__(self, stage_ids: List[str]):
         self.stage_ids = stage_ids
+
+
+class DuplicateValuesInColumnDisplayOrder(Exception):
+    def __init__(self, display_order_values: List[int]):
+        self.display_order_values = display_order_values

@@ -1,8 +1,9 @@
 import abc
 from typing import List
 
-from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, BoardColumnDTO
-from ib_boards.interactors.storage_interfaces.dtos import ColumnDetailsDTO
+from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
+    ColumnDetailsDTO
+from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, BoardColumnsDTO
 
 
 class StorageInterface(abc.ABC):
@@ -16,12 +17,6 @@ class StorageInterface(abc.ABC):
             self, board_dtos: List[BoardDTO],
             column_dtos: List[ColumnDTO]) -> None:
         pass
-
-    @abc.abstractmethod
-    def check_for_column_ids_are_assigned_to_single_board(
-            self, column_ids: List[str]):
-        pass
-
     @abc.abstractmethod
     def get_board_ids_for_column_ids(self, column_ids: List[str]) -> List[str]:
         pass
@@ -41,7 +36,7 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def delete_columns_which_are_not_in_configuration(
-            self, column_for_delete_dtos: List[BoardColumnDTO]) -> None:
+            self, column_for_delete_dtos: List[BoardColumnsDTO]) -> None:
         pass
 
     @abc.abstractmethod

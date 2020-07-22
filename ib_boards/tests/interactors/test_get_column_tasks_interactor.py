@@ -227,7 +227,7 @@ class TestGetColumnTasksInteractor:
             stage_ids=stage_ids
         )
 
-    def test_with_user_id_not_have_permission_for_boards_return_error_message(
+    def test_with_user_id_not_have_permission_for_column_return_error_message(
             self, storage_mock, presenter_mock, get_column_tasks_dto, mocker):
         # Arrange
         user_role = 'User'
@@ -239,7 +239,7 @@ class TestGetColumnTasksInteractor:
             UserDoNotHaveAccessToColumn
         storage_mock.validate_user_role_with_column_roles.\
             side_effect = UserDoNotHaveAccessToColumn
-        presenter_mock.get_response_for_user_have_no_access_for_boards.\
+        presenter_mock.get_response_for_user_have_no_access_for_column.\
             return_value = expected_response
 
         from ib_boards.tests.common_fixtures.adapters.user_service import \
@@ -261,7 +261,7 @@ class TestGetColumnTasksInteractor:
         storage_mock.validate_user_role_with_column_roles.assert_called_once_with(
             user_role=user_role
         )
-        presenter_mock.get_response_for_user_have_no_access_for_boards.\
+        presenter_mock.get_response_for_user_have_no_access_for_column.\
             assert_called_once_with()
         assert actual_response == expected_response
 
