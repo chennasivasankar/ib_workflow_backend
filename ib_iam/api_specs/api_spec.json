@@ -601,7 +601,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/TeamId"
+            "$ref": "#/parameters/TeamIdPathParameter"
           }
         ],
         "responses": {
