@@ -34,6 +34,17 @@ class EmptyValuesForTaskSummaryFields(Exception):
     pass
 
 
+class InvalidBoardId(Exception):
+    pass
+
+class InvalidOffsetValue(Exception):
+    pass
+
+class InvalidLimitValue(Exception):
+    pass
+
+class UserDonotHaveAccess(Exception):
+    pass
 class TaskTemplateStagesNotBelongsToTaskTemplateId(Exception):
     pass
 
@@ -66,13 +77,8 @@ class UserDoNotHaveAccessToBoards(Exception):
     pass
 
 
-class InvalidOffsetValue(Exception):
+class UserDoNotHaveAccessToColumn(Exception):
     pass
-
-
-class InvalidLimitValue(Exception):
-    pass
-
 
 class InvalidBoardIds(Exception):
     def __init__(self, board_ids: List[str]):
@@ -83,3 +89,15 @@ class InvalidBoardIds(Exception):
 class DuplicateValuesInColumnDisplayOrder(Exception):
     def __init__(self, display_order_values: List[int]):
         self.display_order_values = display_order_values
+
+class InvalidColumnId(Exception):
+    pass
+
+
+class OffsetValueExceedsTotalTasksCount(Exception):
+    pass
+
+
+class InvalidStageIds(Exception):
+    def __init__(self, stage_ids: List[str]):
+        self.stage_ids = stage_ids

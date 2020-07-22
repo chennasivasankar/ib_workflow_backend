@@ -75,6 +75,9 @@ class GetBoardsPresenterImplementation(
             "display_name": board_dto.display_name
         }
 
+    def get_response_for_offset_exceeds_total_tasks(self):
+        pass
+
 
 class GetBoardsDetailsPresenterImplementation(
         GetBoardsDetailsPresenterInterface, HTTPResponseMixin):

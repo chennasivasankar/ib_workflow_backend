@@ -1,10 +1,13 @@
 class ServiceAdapter:
-    pass
-
     @property
     def task_service(self):
-        from ib_boards.adapters.task_service import TaskService
+        from .tasks_service import TaskService
         return TaskService()
+
+    @property
+    def iam_service(self):
+        from .iam_service import IamService
+        return IamService()
 
     @property
     def user_service(self):
@@ -14,4 +17,3 @@ class ServiceAdapter:
 
 def get_service_adapter():
     return ServiceAdapter()
-
