@@ -1,13 +1,12 @@
 
 from .stage import Stage
 from .stage_actions import StageAction
-from .task import Task
 from .task_status_variable import TaskStatusVariable
 from .task_template import TaskTemplate
 from .template_status_variables import TaskTemplateStatusVariables
 
 __all__ = [
-    "Stage", "StageAction", "Task", "TaskTemplateStatusVariables",
+    "Stage", "StageAction", "TaskTemplateStatusVariables",
     "TaskTemplate", "TaskStatusVariable"
 ]
 
