@@ -57,7 +57,7 @@ class AddNewUserInteractor(ValidationMixin):
             role_ids=roles, team_ids=teams)
 
     def _check_and_throw_user_is_admin(self, user_id: str):
-        is_admin = self.storage.validate_user_is_admin(user_id=user_id)
+        is_admin = self.storage.is_admin_user(user_id=user_id)
         is_not_admin = not is_admin
         if is_not_admin:
             raise UserIsNotAdmin()

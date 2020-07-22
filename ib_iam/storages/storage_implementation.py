@@ -10,7 +10,7 @@ from ib_iam.models import Role
 
 class StorageImplementation(StorageInterface):
 
-    def validate_user_is_admin(self, user_id: str) -> bool:
+    def is_admin_user(self, user_id: str) -> bool:
         from ib_iam.models.user import UserDetails
         user = UserDetails.objects.get(user_id=user_id)
         return user.is_admin
