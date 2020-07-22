@@ -6,9 +6,8 @@ from ib_iam.exceptions import (
     DuplicateUsers,
     InvalidTeam
 )
-from ib_iam.interactors.presenter_interfaces.delete_team_presenter_interface import (
-    DeleteTeamPresenterInterface
-)
+from ib_iam.interactors.presenter_interfaces \
+    .delete_team_presenter_interface import DeleteTeamPresenterInterface
 from ib_iam.interactors.presenter_interfaces \
     .update_team_presenter_interface import UpdateTeamPresenterInterface
 from ib_iam.interactors.presenter_interfaces.team_presenter_interface import (
@@ -92,8 +91,8 @@ class TeamInteractor:
         except TeamNameAlreadyExists as exception:
             response = presenter \
                 .get_team_name_already_exists_response_for_update_team(
-                    exception
-                )
+                exception
+            )
         return response
 
     def update_team_details(
@@ -116,12 +115,6 @@ class TeamInteractor:
             user_ids=user_ids, team_member_ids=team_member_ids, team_id=team_id
         )
 
-    def _validate_add_team_details(
-            self, team_details_with_user_ids_dto: TeamDetailsWithUserIdsDTO
-    ):
-        name = team_details_with_user_ids_dto.name
-        self._validate_users(user_ids=team_details_with_user_ids_dto.user_ids)
-        self._validate_is_team_name_already_exists(name=name)
     def delete_team_wrapper(
             self, user_id: str, team_id: str, presenter: DeleteTeamPresenterInterface
     ):
@@ -135,15 +128,16 @@ class TeamInteractor:
         return response
 
     def delete_team(self, user_id: str, team_id: str):
-        self.storage.raise_exception_if_user_is_not_admin(user_id=user_id)
+        self.storage.validate_is_user_admin(user_id=user_id)
         self.storage.raise_exception_if_team_not_exists(team_id=team_id)
         self.storage.delete_team(team_id=team_id)
 
-    def _add_members_to_team(self, user_ids, team_member_ids, team_id):
-        user_ids_to_add = list(set(user_ids) - set(team_member_ids))
-        self.storage.add_users_to_team(
-            team_id=team_id, user_ids=user_ids_to_add
-        )
+    def _validate_add_team_details(
+            self, team_details_with_user_ids_dto: TeamDetailsWithUserIdsDTO
+    ):
+        name = team_details_with_user_ids_dto.name
+        self._validate_users(user_ids=team_details_with_user_ids_dto.user_ids)
+        self._validate_is_team_name_already_exists(name=name)
 
     def _validate_update_team_details(
             self, team_with_user_ids_dto: TeamWithUserIdsDTO
@@ -153,8 +147,17 @@ class TeamInteractor:
         self.storage.raise_exception_if_team_not_exists(team_id=team_id)
         self._validate_users(user_ids=team_with_user_ids_dto.user_ids)
         self._validate_is_team_name_exists_for_update_team(
-            name=name, team_id=team_id
-        )
+            name=name, team_id=team_id)
+
+    def _add_members_to_team(self, user_ids, team_member_ids, team_id):
+        user_ids_to_add = list(set(user_ids) - set(team_member_ids))
+        self.storage.add_users_to_team(
+            team_id=team_id, user_ids=user_ids_to_add)
+
+    def _delete_members_of_team(self, user_ids, team_member_ids, team_id):
+        member_ids_to_delete = list(set(team_member_ids) - set(user_ids))
+        self.storage.delete_members_from_team(
+            team_id=team_id, member_ids=member_ids_to_delete)
 
     def _validate_users(self, user_ids):
         self._validate_is_duplicate_users_exists(user_ids=user_ids)
@@ -169,8 +172,7 @@ class TeamInteractor:
     def _validate_is_invalid_users_exists(self, user_ids: List[str]):
         user_ids_from_db = \
             self.storage.get_valid_user_ids_among_the_given_user_ids(
-                user_ids=user_ids
-            )
+                user_ids=user_ids)
         is_invalid_users_found = len(user_ids) != len(user_ids_from_db)
         if is_invalid_users_found:
             raise InvalidUsers()
@@ -182,19 +184,7 @@ class TeamInteractor:
         if is_team_name_already_exists:
             raise TeamNameAlreadyExists(team_name=name)
 
-    def _add_members_to_team(self, user_ids, team_member_ids, team_id):
-        user_ids_to_add = list(set(user_ids) - set(team_member_ids))
-        self.storage.add_users_to_team(
-            team_id=team_id, user_ids=user_ids_to_add
-        )
-
-    def _delete_members_of_team(self, user_ids, team_member_ids, team_id):
-        member_ids_to_delete = list(set(team_member_ids) - set(user_ids))
-        self.storage.delete_members_from_team(
-            team_id=team_id, member_ids=member_ids_to_delete
-        )
-
-    def _validate_is_team_name_exists_for_update_team(self, name: str, team_id: str):
+    def _validate_is_team_name_exists_for_update_team(self, name, team_id):
         team_id_from_db = \
             self.storage.get_team_id_if_team_name_already_exists(name=name)
         is_team_name_exists = team_id_from_db is not None
