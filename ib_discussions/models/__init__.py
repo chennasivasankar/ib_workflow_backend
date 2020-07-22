@@ -1,4 +1,12 @@
-__all__ = []
+from .discussion import Discussion
+from .discussion_set import DiscussionSet
+from .entity import Entity
+
+__all__ = [
+    "Discussion",
+    "DiscussionSet",
+    "Entity"
+]
 
 # class DummyModel(AbstractDateTimeModel):
 #     """

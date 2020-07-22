@@ -21,7 +21,7 @@ DSU_RAISE_EXCEPTION_FOR_API_RESPONSE_STATUS_CODE = True  # default value is Fals
 from django_swagger_utils.drf_server.utils.general.import_app_settings import \
     import_app_settings
 
-THIRD_PARTY_APPS = []
+THIRD_PARTY_APPS = ["ib_users"]
 APPS = [
     "ib_iam",
     "ib_discussions",
@@ -77,3 +77,5 @@ API_KEY_AUTHENTICATION_CLASS = \
     "ib_workflows_backend.common.authentication.APIKeyAuthentication"
 
 CUSTOM_EXCEPTIONS_TO_LOG_IN_SENTRY = []
+
+AUTH_USER_MODEL = "ib_users.UserAccount"

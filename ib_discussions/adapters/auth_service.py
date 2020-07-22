@@ -24,15 +24,15 @@ class AuthService:
                 user_ids=user_ids
             )
         except InvalidUserException as err:
-            from ib_users.constants.user_profile.error_messages import \
-                INVALID_USER_ID
             from ib_discussions.interactors.discussion_interactor import \
                 InvalidUserId
-            if err.error_type == INVALID_USER_ID:
+            from ib_users.constants.user_profile.error_types import \
+                INVALID_USER_ID_ERROR_TYPE
+            if err.error_type == INVALID_USER_ID_ERROR_TYPE:
                 raise InvalidUserId
-            from ib_users.constants.user_profile.error_messages import \
-                EMPTY_USER_ID
-            if err.error_type == EMPTY_USER_ID:
+            from ib_users.constants.user_profile.error_types import \
+                EMPTY_USER_ID_ERROR_TYPE
+            if err.error_type == EMPTY_USER_ID_ERROR_TYPE:
                 raise InvalidUserId
         else:
             converted_user_dtos = self._convert_to_required_user_profile_dtos(

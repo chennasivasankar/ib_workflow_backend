@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
-from ib_discussions.constants.enum import EntityType
+from ib_discussions.constants.enum import EntityType, FilterByEnum, SortByEnum, \
+    OrderByEnum
 
 
 @dataclass
@@ -22,3 +23,15 @@ class EntityIdAndEntityTypeDTO:
 class OffsetAndLimitDTO:
     offset: int
     limit: int
+
+
+@dataclass
+class FilterByDTO:
+    filter_by: FilterByEnum
+    value: [str, bool]
+
+
+@dataclass
+class SortByDTO:
+    sort_by: SortByEnum
+    order: OrderByEnum

@@ -49,6 +49,27 @@ class TestGetDiscussionsInteractor:
         interactor = DiscussionInteractor(storage=storage_mock)
         return interactor
 
+    @pytest.fixture()
+    def filter_by_dto(self):
+        from ib_discussions.interactors.DTOs.common_dtos import FilterByDTO
+        from ib_discussions.constants.enum import FilterByEnum
+        filter_by_dto = FilterByDTO(
+            filter_by=FilterByEnum.CLARIFIED.value,
+            value=True
+        )
+        return filter_by_dto
+
+    @pytest.fixture()
+    def sort_by_dto(self):
+        from ib_discussions.interactors.DTOs.common_dtos import SortByDTO
+        from ib_discussions.constants.enum import SortByEnum
+        from ib_discussions.constants.enum import OrderByEnum
+        sort_by_dto = SortByDTO(
+            sort_by=SortByEnum.LATEST.value,
+            order=OrderByEnum.ASC.value
+        )
+        return sort_by_dto
+
     @staticmethod
     def _get_complete_discussion_dtos(discussion_set_id):
         total_count = 3
@@ -69,10 +90,12 @@ class TestGetDiscussionsInteractor:
 
     def test_validate_offset_value_raise_exception(
             self, presenter_mock, entity_id_and_entity_type_dto,
-            offset_and_limit_dto, initialise_discussions_interactor
+            offset_and_limit_dto, initialise_discussions_interactor,
+            filter_by_dto, sort_by_dto
     ):
         # Arrange
         offset_and_limit_dto.offset = -1
+
         expected_presenter_raise_exception_for_invalid_offset_mock = Mock()
 
         presenter_mock.raise_exception_for_invalid_offset.return_value \
@@ -83,7 +106,8 @@ class TestGetDiscussionsInteractor:
         # Act
         response = interactor.get_discussions_wrapper(
             entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
-            offset_and_limit_dto=offset_and_limit_dto, presenter=presenter_mock
+            offset_and_limit_dto=offset_and_limit_dto, presenter=presenter_mock,
+            sort_by_dto=sort_by_dto, filter_by_dto=filter_by_dto
         )
 
         # Assert
@@ -92,7 +116,8 @@ class TestGetDiscussionsInteractor:
 
     def test_validate_limit_value_raise_exception(
             self, presenter_mock, entity_id_and_entity_type_dto,
-            offset_and_limit_dto, initialise_discussions_interactor
+            offset_and_limit_dto, initialise_discussions_interactor,
+            filter_by_dto, sort_by_dto
     ):
         # Arrange
         offset_and_limit_dto.limit = -1
@@ -106,7 +131,8 @@ class TestGetDiscussionsInteractor:
         # Act
         response = interactor.get_discussions_wrapper(
             entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
-            offset_and_limit_dto=offset_and_limit_dto, presenter=presenter_mock
+            offset_and_limit_dto=offset_and_limit_dto, presenter=presenter_mock,
+            sort_by_dto=sort_by_dto, filter_by_dto=filter_by_dto
         )
 
         # Assert
@@ -115,7 +141,8 @@ class TestGetDiscussionsInteractor:
 
     def test_validate_entity_id_raise_exception(
             self, presenter_mock, entity_id_and_entity_type_dto, storage_mock,
-            offset_and_limit_dto, initialise_discussions_interactor
+            offset_and_limit_dto, initialise_discussions_interactor,
+            filter_by_dto, sort_by_dto
     ):
         # Arrange
         from unittest.mock import Mock
@@ -133,7 +160,8 @@ class TestGetDiscussionsInteractor:
         # Act
         response = interactor.get_discussions_wrapper(
             entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
-            offset_and_limit_dto=offset_and_limit_dto, presenter=presenter_mock
+            offset_and_limit_dto=offset_and_limit_dto, presenter=presenter_mock,
+            sort_by_dto=sort_by_dto, filter_by_dto=filter_by_dto
         )
 
         # Assert
@@ -144,7 +172,8 @@ class TestGetDiscussionsInteractor:
 
     def test_validate_entity_type_for_entity_id_raise_exception(
             self, presenter_mock, entity_id_and_entity_type_dto, storage_mock,
-            offset_and_limit_dto, initialise_discussions_interactor
+            offset_and_limit_dto, initialise_discussions_interactor,
+            filter_by_dto, sort_by_dto
     ):
         # Arrange
         from unittest.mock import Mock
@@ -163,7 +192,8 @@ class TestGetDiscussionsInteractor:
         # Act
         response = interactor.get_discussions_wrapper(
             entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
-            offset_and_limit_dto=offset_and_limit_dto, presenter=presenter_mock
+            offset_and_limit_dto=offset_and_limit_dto, presenter=presenter_mock,
+            sort_by_dto=sort_by_dto, filter_by_dto=filter_by_dto
         )
 
         # Assert
@@ -174,7 +204,7 @@ class TestGetDiscussionsInteractor:
     def test_get_discussions_details_return_response(
             self, presenter_mock, entity_id_and_entity_type_dto, storage_mock,
             offset_and_limit_dto, initialise_discussions_interactor,
-            mocker
+            mocker, filter_by_dto, sort_by_dto
     ):
         discussion_set_id = "e892e8db-6064-4d8f-9ce2-7c9032dbd8a5"
         discussions_count = 3
@@ -213,7 +243,8 @@ class TestGetDiscussionsInteractor:
         # Act
         response = interactor.get_discussions_wrapper(
             entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
-            offset_and_limit_dto=offset_and_limit_dto, presenter=presenter_mock
+            offset_and_limit_dto=offset_and_limit_dto, presenter=presenter_mock,
+            sort_by_dto=sort_by_dto, filter_by_dto=filter_by_dto
         )
 
         # Assert
@@ -221,7 +252,9 @@ class TestGetDiscussionsInteractor:
         storage_mock.get_discussion_set_id.assert_called_once()
         storage_mock.get_complete_discussion_dtos.assert_called_once_with(
             discussion_set_id=discussion_set_id,
-            offset_and_limit_dto=offset_and_limit_dto
+            offset_and_limit_dto=offset_and_limit_dto,
+            sort_by_dto=sort_by_dto,
+            filter_by_dto=filter_by_dto
         )
         storage_mock.get_total_discussion_count.assert_called_once_with(
             discussion_set_id=discussion_set_id

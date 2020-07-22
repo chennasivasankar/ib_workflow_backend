@@ -52,6 +52,26 @@ class TestGetDiscussionsPresenterImplementation:
         assert response_data["http_status_code"] == expected_http_status_code
         assert response_data["res_status"] == expected_res_status
 
+    def test_raise_exception_for_invalid_user_id(self,
+                                                 presenter):
+        # Arrange
+        from ib_discussions.presenters.get_discussion_presenter_implementation import \
+            INVALID_USER_ID
+        expected_response = INVALID_USER_ID[0]
+        expected_http_status_code = StatusCode.BAD_REQUEST.value
+        expected_res_status = INVALID_USER_ID[1]
+
+        # Act
+        response_obj \
+            = presenter.raise_exception_for_invalid_user_id()
+
+        # Assert
+        response_data = json.loads(response_obj.content)
+
+        assert response_data["response"] == expected_response
+        assert response_data["http_status_code"] == expected_http_status_code
+        assert response_data["res_status"] == expected_res_status
+
     def test_raise_exception_for_invalid_offset(self, presenter):
         # Arrange
         from ib_discussions.presenters.create_discussion_presenter_implementation import \
@@ -142,7 +162,8 @@ class TestGetDiscussionsPresenterImplementation:
                     'user_id': 'fc4c3c81-ebc3-4957-8c62-e1cbb6238b27',
                     'name': 'name of user_id is fc4c3c81-ebc3-4957-8c62-e1cbb6238b27',
                     'profile_pic_url': 'https://graph.ib_users.com/fc4c3c81-ebc3-4957-8c62-e1cbb6238b27/picture'
-                }
+                },
+                "is_clarified": True
             }, {
                 'discussion_id': '5ce6581b-86ce-4246-8551-2c8a8ed4df87',
                 'description': 'Description of discussion id is 5ce6581b-86ce-4246-8551-2c8a8ed4df87',
@@ -152,7 +173,8 @@ class TestGetDiscussionsPresenterImplementation:
                     'user_id': '458813d7-9954-44fd-a014-a9faafce5948',
                     'name': 'name of user_id is 458813d7-9954-44fd-a014-a9faafce5948',
                     'profile_pic_url': 'https://graph.ib_users.com/458813d7-9954-44fd-a014-a9faafce5948/picture'
-                }
+                },
+                "is_clarified": False
             }, {
                 'discussion_id': 'ed10c17c-8995-4d84-9807-189a54a2049d',
                 'description': 'Description of discussion id is ed10c17c-8995-4d84-9807-189a54a2049d',
@@ -162,7 +184,8 @@ class TestGetDiscussionsPresenterImplementation:
                     'user_id': '06b0bdc4-76ac-4a01-a4da-68156f0527f5',
                     'name': 'name of user_id is 06b0bdc4-76ac-4a01-a4da-68156f0527f5',
                     'profile_pic_url': 'https://graph.ib_users.com/06b0bdc4-76ac-4a01-a4da-68156f0527f5/picture'
-                }
+                },
+                "is_clarified": True
             }],
             'total_count': 3
         }
@@ -175,7 +198,7 @@ class TestGetDiscussionsPresenterImplementation:
             response_dict["discussions"]
         )
         assert expected_discussion_details_response["total_count"] \
-            == response_dict["total_count"]
+               == response_dict["total_count"]
 
     def _compare_two_discussions_list(self, discussion_list1, discussion_list2):
         discussion_list1 = sorted(
@@ -191,7 +214,8 @@ class TestGetDiscussionsPresenterImplementation:
         ))
 
         for discussion_dict1, discussion_dict2 in map_of_two_discussion_lists:
-            self._compare_two_discussion_dict(discussion_dict1, discussion_dict2)
+            self._compare_two_discussion_dict(discussion_dict1,
+                                              discussion_dict2)
 
     @staticmethod
     def _compare_two_discussion_dict(discussion_dict1, discussion_dict2):

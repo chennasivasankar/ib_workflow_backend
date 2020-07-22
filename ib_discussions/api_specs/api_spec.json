@@ -51,7 +51,8 @@
       "type": "object",
       "properties": {
         "entity_id": {
-          "type": "string"
+          "type": "string",
+          "format": "uuid"
         },
         "entity_type": {
           "type": "string",
@@ -151,7 +152,35 @@
       "in": "body",
       "required": true,
       "schema": {
-        "$ref": "#/definitions/EntityDetails"
+        "allOf": [
+          {
+            "$ref": "#/definitions/EntityDetails"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "filter_by": {
+                "type": "string",
+                "enum": [
+                  "ALL",
+                  "POSTED_BY_ME",
+                  "CLARIFIED",
+                  "NOT_CLARIFIED"
+                ]
+              },
+              "sort_by": {
+                "type": "string",
+                "enum": [
+                  "LATEST"
+                ]
+              }
+            },
+            "required": [
+              "filter_by",
+              "sort_by"
+            ]
+          }
+        ]
       }
     }
   },

@@ -26,9 +26,15 @@ INVALID_LIMIT = (
     "INVALID_LIMIT"
 )
 
+INVALID_USER_ID = (
+    "Please send the valid user id",
+    "INVALID_USER_ID"
+)
 
-class GetDiscussionPresenterImplementation(GetDiscussionsPresenterInterface,
-                                           HTTPResponseMixin):
+
+class GetDiscussionPresenterImplementation(
+    GetDiscussionsPresenterInterface, HTTPResponseMixin
+):
     def raise_exception_for_entity_id_not_found(self):
         response_dict = {
             "response": ENTITY_ID_NOT_FOUND[0],
@@ -67,9 +73,15 @@ class GetDiscussionPresenterImplementation(GetDiscussionsPresenterInterface,
             response_dict=response_dict
         )
 
-    # TODO
     def raise_exception_for_invalid_user_id(self):
-        pass
+        response_dict = {
+            "response": INVALID_USER_ID[0],
+            "http_status_code": StatusCode.BAD_REQUEST.value,
+            "res_status": INVALID_USER_ID[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict
+        )
 
     def prepare_response_for_discussions_details_dto(
             self, discussions_details_dto: DiscussionsDetailsDTO
@@ -89,7 +101,8 @@ class GetDiscussionPresenterImplementation(GetDiscussionsPresenterInterface,
                 "author": self._prepare_user_profile_dict(
                     user_profile_dto \
                         =user_profiles_dict[complete_discussion_dto.user_id]
-                )
+                ),
+                "is_clarified": complete_discussion_dto.is_clarified
             }
             for complete_discussion_dto in
             discussions_details_dto.complete_discussion_dtos

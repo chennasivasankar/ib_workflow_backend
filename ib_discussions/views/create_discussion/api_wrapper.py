@@ -10,7 +10,7 @@ def api_wrapper(*args, **kwargs):
 
     from ib_discussions.interactors.DTOs.common_dtos import DiscussionDTO
     discussion_dto = DiscussionDTO(
-        user_id=user_object.id,
+        user_id=user_object.user_id,
         entity_type=request_data["entity_type"],
         entity_id=request_data["entity_id"],
         title=request_data["title"],

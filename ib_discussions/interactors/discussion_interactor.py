@@ -1,7 +1,7 @@
 from typing import List
 
 from ib_discussions.interactors.DTOs.common_dtos import DiscussionDTO, \
-    EntityIdAndEntityTypeDTO, OffsetAndLimitDTO
+    EntityIdAndEntityTypeDTO, OffsetAndLimitDTO, FilterByDTO, SortByDTO
 from ib_discussions.interactors.presenter_interfaces.presenter_interface import \
     CreateDiscussionPresenterInterface, GetDiscussionsPresenterInterface
 from ib_discussions.interactors.storage_interfaces.dtos import \
@@ -85,6 +85,7 @@ class DiscussionInteractor:
     def get_discussions_wrapper(
             self, entity_id_and_entity_type_dto: EntityIdAndEntityTypeDTO,
             offset_and_limit_dto: OffsetAndLimitDTO,
+            filter_by_dto: FilterByDTO, sort_by_dto: SortByDTO,
             presenter: GetDiscussionsPresenterInterface
     ):
         from ib_discussions.exceptions.custom_exceptions import \
@@ -92,7 +93,8 @@ class DiscussionInteractor:
         try:
             response = self._get_discussions_response(
                 entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
-                offset_and_limit_dto=offset_and_limit_dto, presenter=presenter
+                offset_and_limit_dto=offset_and_limit_dto, presenter=presenter,
+                filter_by_dto=filter_by_dto, sort_by_dto=sort_by_dto
             )
         except InvalidOffset:
             response = presenter.raise_exception_for_invalid_offset()
@@ -110,11 +112,13 @@ class DiscussionInteractor:
     def _get_discussions_response(
             self, entity_id_and_entity_type_dto: EntityIdAndEntityTypeDTO,
             offset_and_limit_dto: OffsetAndLimitDTO,
+            filter_by_dto: FilterByDTO, sort_by_dto: SortByDTO,
             presenter: GetDiscussionsPresenterInterface
     ):
         discussions_details_dto = self.get_discussions_details_dto(
             entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
             offset_and_limit_dto=offset_and_limit_dto,
+            filter_by_dto=filter_by_dto, sort_by_dto=sort_by_dto
         )
         return presenter.prepare_response_for_discussions_details_dto(
             discussions_details_dto=discussions_details_dto
@@ -122,7 +126,8 @@ class DiscussionInteractor:
 
     def get_discussions_details_dto(
             self, entity_id_and_entity_type_dto: EntityIdAndEntityTypeDTO,
-            offset_and_limit_dto: OffsetAndLimitDTO
+            offset_and_limit_dto: OffsetAndLimitDTO,
+            filter_by_dto: FilterByDTO, sort_by_dto: SortByDTO,
     ):
         self._validate_offset(offset_and_limit_dto.offset)
         self._validate_limit(offset_and_limit_dto.limit)
@@ -138,7 +143,8 @@ class DiscussionInteractor:
         )
         complete_discussion_dtos = self.storage.get_complete_discussion_dtos(
             discussion_set_id=discussion_set_id,
-            offset_and_limit_dto=offset_and_limit_dto
+            offset_and_limit_dto=offset_and_limit_dto,
+            filter_by_dto=filter_by_dto, sort_by_dto=sort_by_dto
         )
         total_discussions_count = self.storage.get_total_discussion_count(
             discussion_set_id=discussion_set_id
