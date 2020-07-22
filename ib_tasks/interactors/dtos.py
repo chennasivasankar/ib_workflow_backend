@@ -36,6 +36,16 @@ class ActionDTO:
     button_text: str
     button_color: Optional[str]
 
+@dataclass
+class StagesActionDTO:
+    stage_id: str
+    action_name: str
+    logic: str
+    roles: List[str]
+    function_path: str
+    button_text: str
+    button_color: Optional[str]
+
 
 @dataclass()
 class TaskTemplateStageActionDTO(StageActionDTO):

@@ -19,6 +19,12 @@ class StageActionNamesDTO:
     action_names: List[str]
 
 
+@dataclass()
+class GOFMultipleEnableDTO:
+    group_of_field_id: str
+    multiple_status: bool
+
+
 @dataclass
 class StageLogicAttributes:
     stage_id: str

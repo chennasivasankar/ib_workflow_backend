@@ -17,6 +17,11 @@ class InvalidPythonCodeException(Exception):
     pass
 
 
+class InvalidRolesException(Exception):
+    def __init__(self, role: str):
+        self.role = role
+
+
 class InvalidTaskIdException(Exception):
     def __init__(self, task_id: str):
         self.task_id = task_id

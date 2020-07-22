@@ -132,14 +132,48 @@ class CreateUpdateDeleteStageActionsInteractor():
         db_roles = get_service_adapter().roles_service.get_db_roles()
         invalid_stage_roles = defaultdict(list)
         for action_dto in actions_dto:
-            if self._check_for_invalid_role(action_dto.role, db_roles):
-                invalid_stage_roles[action_dto.stage_id].append(action_dto.role)
+            if not action_dto.roles == ["ALL_ROLES"]:
+                stage_id = action_dto.stage_id
+                self._validation_for_action_roles(
+                    action_dto.roles, db_roles, invalid_stage_roles, stage_id)
         is_invalid_stage_roles_present = invalid_stage_roles
         if is_invalid_stage_roles_present:
             stage_roles_dict = \
                 json.dumps(invalid_stage_roles)
             raise InvalidRolesException(stage_roles_dict=stage_roles_dict)
 
+    def _validation_for_action_roles(self, action_roles: List[str],
+                                     db_roles: List[str],
+                                     invalid_stage_roles: Dict[str, List],
+                                     stage_id: str):
+        invalid_action_roles = \
+            self._get_invalid_roles_to_action(action_roles, db_roles)
+
+        is_invalid_action_roles_present = invalid_action_roles
+        if is_invalid_action_roles_present:
+            self._append_invalid_action_roles_to_dict(
+                invalid_action_roles, stage_id, invalid_stage_roles)
+
+    @staticmethod
+    def _append_invalid_action_roles_to_dict(
+            invalid_action_roles: List[str], stage_id: str,
+            invalid_stage_roles_dict: Dict[str, List]):
+
+        for role in invalid_action_roles:
+            invalid_stage_roles_dict[stage_id].append(role)
+        stage_roles = invalid_stage_roles_dict[stage_id]
+        stage_roles = sorted(list(set(stage_roles)))
+        invalid_stage_roles_dict[stage_id] = stage_roles
+
+    @staticmethod
+    def _get_invalid_roles_to_action(
+            action_roles: List[str], db_roles: List[str]):
+
+        invalid_action_roles = []
+        for role in action_roles:
+            if role not in db_roles:
+                invalid_action_roles.append(role)
+        return invalid_action_roles
 
     def _validations_for_stage_ids(self, stage_ids: List[str]):
         db_stage_ids = self.storage.get_valid_stage_ids(stage_ids=stage_ids)
