@@ -5,7 +5,13 @@ class ServiceInterface:
 
     @staticmethod
     def get_valid_role_ids_in_given_role_ids(role_ids: List[str]):
-        return ["ALL_ROLES", "FIN_PAYMENTS_RP", "FIN_ACCOUNTS_LEVEL1_VERIFIER", "FIN_FINANCE_RP"]
+        return [
+            "ALL_ROLES", "FIN_PAYMENTS_RP", "FIN_ACCOUNTS_LEVEL1_VERIFIER",
+            "FIN_FINANCE_RP", "FIN_PAYMENTS_LEVEL1_VERIFIER", "FIN_PAYMENTS_LEVEL2_VERIFIER",
+            "FIN_PAYMENTS_LEVEL3_VERIFIER", "FIN_PAYMENTS_RP", "FIN_FINANCE_RP",
+            "FIN_ACCOUNTS_LEVEL1_VERIFIER", "FIN_ACCOUNTS_LEVEL2_VERIFIER",
+            "FIN_ACCOUNTS_LEVEL3_VERIFIER", "FIN_ACCOUNTS_LEVEL4_VERIFIER", "FIN_ACCOUNTS_LEVEL5_VERIFIER"
+        ]
 
     def get_user_role_ids(self, user_id) -> List[str]:
         pass

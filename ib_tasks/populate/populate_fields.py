@@ -20,7 +20,6 @@ def create_fields():
     field_records = fields_config_sheet.get_all_records()
     field_dtos = prepare_field_dtos(field_records)
     field_roles_dtos = prepare_field_roles_dtos(field_records)
-
     storage = TasksStorageImplementation()
     interactor = CreateOrUpdateFieldsInteractor(storage=storage)
     interactor.create_or_update_fields(field_dtos, field_roles_dtos)
@@ -99,8 +98,8 @@ def prepare_field_roles_dtos(
 def get_field_roles_dto(field_record: Dict) -> FieldRolesDTO:
     read_permissions_is_empty = not field_record["Write Permission to roles"].strip()
     write_permissions_is_empty = not field_record['Read Permission to roles'].strip()
-    write_permission_roles = field_record["Write Permission to roles"].split("\n"),
-    read_permission_roles = field_record["Read Permission to roles"].split("\n"),
+    write_permission_roles = field_record["Write Permission to roles"].split("\n")
+    read_permission_roles = field_record["Read Permission to roles"].split("\n")
     if read_permissions_is_empty:
         read_permission_roles = []
     if write_permissions_is_empty:
