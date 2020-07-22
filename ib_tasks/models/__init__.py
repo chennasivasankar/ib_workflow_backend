@@ -4,11 +4,19 @@ from .stage_actions import StageAction
 from .task_status_variable import TaskStatusVariable
 from .task_template import TaskTemplate
 from .template_status_variables import TaskTemplateStatusVariables
+from ib_tasks.models.field import Field
+from ib_tasks.models.field_role import FieldRole
+from ib_tasks.models.gof import GoF
+from ib_tasks.models.gof_role import GoFRole
+from ib_tasks.models.task_template import TaskTemplate
+from ib_tasks.models.global_constant import GlobalConstant
 
 __all__ = [
     "Stage", "StageAction", "TaskTemplateStatusVariables",
-    "TaskTemplate", "TaskStatusVariable"
+    "TaskTemplate", "TaskStatusVariable", "Field", "FieldRole", "GoF",
+    "GoFRole", "TaskTemplate", "GlobalConstant"
 ]
+
 
 # class DummyModel(AbstractDateTimeModel):
 #     """

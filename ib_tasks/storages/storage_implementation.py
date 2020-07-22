@@ -7,6 +7,5 @@ from ib_tasks.models import *
 
 class StorageImplementation(StorageInterface):
 
-    def validate_task_id(self, task_id: str):
+    pass
 
-        return Task.objects.filter(id=task_id).exists()

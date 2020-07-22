@@ -41,3 +41,12 @@ class FieldDisplayDTOFactory(factory.Factory):
     key = factory.Sequence(lambda n: 'key_%d' % (n + 1))
     value = factory.Sequence(lambda n: 'value_%d' % (n + 1))
 
+from ib_tasks.interactors.dtos import GlobalConstantsDTO
+
+
+class GlobalConstantsDTOFactory(factory.Factory):
+    class Meta:
+        model = GlobalConstantsDTO
+
+    constant_name = factory.sequence(lambda n: "Constant_{}".format(n + 1))
+    value = factory.sequence(lambda n: n)
