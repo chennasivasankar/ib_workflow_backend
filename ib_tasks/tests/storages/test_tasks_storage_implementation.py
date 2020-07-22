@@ -5,7 +5,8 @@ from ib_tasks.models.gof_role import GoFRole
 from ib_tasks.tests.factories.models import GoFFactory, TaskTemplateFactory, \
     GoFRoleFactory, FieldFactory
 from ib_tasks.tests.factories.storage_dtos import GoFRoleDTOFactory, \
-    GoFDTOFactory, GoFRolesDTOFactory, CompleteGoFDetailsDTOFactory
+    GoFDTOFactory, GoFRolesDTOFactory, CompleteGoFDetailsDTOFactory, \
+    FieldTypeDTOFactory
 
 
 @pytest.mark.django_db
@@ -27,6 +28,7 @@ class TestTasksStorageImplementation:
         GoFRolesDTOFactory.reset_sequence(1)
         CompleteGoFDetailsDTOFactory.reset_sequence(1)
         GoFRoleDTOFactory.reset_sequence(1)
+        FieldTypeDTOFactory.reset_sequence(1)
 
     def test_get_existing_gof_ids_in_given_gof_ids(
             self, storage
@@ -96,7 +98,7 @@ class TestTasksStorageImplementation:
         # Assert
         assert expected_valid_template_ids == actual_valid_template_ids
 
-    def test_update_gofs(self, storage, reset_sequence):
+    def test_update_gofs(self, storage):
 
         # Arrange
         from ib_tasks.models.gof import GoF
@@ -126,7 +128,7 @@ class TestTasksStorageImplementation:
             assert gof.display_name == gof_dto.gof_display_name
             assert gof.max_columns == gof_dto.max_columns
 
-    def test_delete_gof_roles(self, storage, reset_sequence):
+    def test_delete_gof_roles(self, storage):
 
         # Arrange
         gof_roles = GoFRoleFactory.create_batch(size=2)
@@ -139,7 +141,7 @@ class TestTasksStorageImplementation:
         gof_roles = list(GoFRole.objects.filter(gof_id__in=gof_ids))
         assert gof_roles == []
 
-    def test_get_gof_dtos_for_given_gof_ids(self, storage, reset_sequence):
+    def test_get_gof_dtos_for_given_gof_ids(self, storage):
 
         # Arrange
         from ib_tasks.tests.factories.models import GoFFactory
@@ -155,3 +157,50 @@ class TestTasksStorageImplementation:
                 if gof.gof_id == gof_dto.gof_id:
                     assert gof.display_name == gof_dto.gof_display_name
                     assert gof.max_columns == gof_dto.max_columns
+
+    def test_get_existing_field_ids(self, storage):
+
+        # Arrange
+        field_objects = FieldFactory.create_batch(size=2)
+        expected_field_ids = [field_object.field_id for field_object in field_objects]
+        field_ids = expected_field_ids + ["EXTRA_FIELD_ID-1", "EXTRA_FIELD_ID-2"]
+
+        # Act
+        actual_field_ids = storage.get_existing_field_ids(field_ids)
+
+        # Assert
+        assert expected_field_ids == actual_field_ids
+
+    def test_get_field_types_for_given_field_ids(self, storage):
+
+        # Arrange
+        field_objects = FieldFactory.create_batch(size=2)
+        field_ids = [field_object.field_id for field_object in field_objects]
+        field_types = [
+            field_object.field_type for field_object in field_objects
+        ]
+        expected_field_type_dtos = FieldTypeDTOFactory.create_batch(
+            size=2, field_id=factory.Iterator(field_ids),
+            field_type=factory.Iterator(field_types)
+        )
+
+        # Act
+        actual_field_type_dtos = storage.get_field_types_for_given_field_ids(
+            field_ids=field_ids
+        )
+
+        # Assert
+        assert expected_field_type_dtos == actual_field_type_dtos
+
+    def test_check_is_template_exists_with_valid_template_id_returns_true(self, storage):
+
+        # Arrange
+        task_template = TaskTemplateFactory()
+        template_id = task_template.template_id
+        expected_response = True
+
+        # Act
+        actual_response = storage.check_is_template_exists(template_id)
+
+        # Assert
+        assert expected_response == actual_response

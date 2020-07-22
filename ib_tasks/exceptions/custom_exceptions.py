@@ -31,6 +31,8 @@ class InvalidTaskIdException(Exception):
 class InvalidTaskTemplateId(Exception):
     def __init__(self, task_template_ids_dict: str):
         self.task_template_ids_dict = task_template_ids_dict
+
+
 from typing import List
 
 
@@ -239,4 +241,26 @@ class ConflictingGoFOrder(Exception):
 
 
 class EmptyValueForPlainTextField(Exception):
-    pass
+
+    def __init__(self, field_id: str):
+        self.field_id = field_id
+
+
+class DuplicateReadPermissionRolesForAGoF(Exception):
+
+    def __init__(
+            self, duplicate_read_permission_role_ids: List[str],
+            gof_id: str
+    ):
+        self.role_ids = duplicate_read_permission_role_ids
+        self.gof_id = gof_id
+
+
+class DuplicateWritePermissionRolesForAGoF(Exception):
+
+    def __init__(
+            self, duplicate_write_permission_role_ids: List[str],
+            gof_id: str
+    ):
+        self.role_ids = duplicate_write_permission_role_ids
+        self.gof_id = gof_id

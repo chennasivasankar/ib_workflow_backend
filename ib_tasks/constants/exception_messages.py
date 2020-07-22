@@ -5,7 +5,7 @@ EMPTY_MAX_COLUMNS_MESSAGE = "GoF max columns should not be empty"
 EMPTY_GOF_READ_PERMISSIONS_MESSAGE = "GoF read permissions should not be empty"
 EMPTY_WRITE_PERMISSIONS_MESSAGE = "GoF write permissions should not be empty"
 EMPTY_FIELD_IDS_MESSAGE = "GoF field ids should not be empty"
-DUPLICATED_FIELD_IDS_MESSAGE = "GoF field ids should be unique"
+DUPLICATED_FIELD_IDS = "GoF field ids should be unique"
 MULTIPLE_DISPLAY_NAMES_FOR_SAME_GOF = \
     "One GoF should not have multiple display names"
 GOF_ID_ALREADY_EXISTS = "GoF id already exists"
@@ -35,4 +35,30 @@ MAX_COLUMNS_VALUE_MUST_BE_INTEGER = \
     "Max columns should be a integer value"
 INVALID_READ_PERMISSION_ROLES = "Invalid Read Permission roles:"
 INVALID_WRITE_PERMISSION_ROLES = "Invalid Write Permission roles:"
+
+
+DUPLICATE_FIELD_IDS = [
+    "duplicate field ids: {}",
+    "DUPLICATE_FIELD_IDS"
+]
+
+INVALID_TASK_TEMPLATE_IDS = [
+    "duplicate task template ids: {}",
+    "INVALID_TASK_TEMPLATE_IDS"
+]
+
+INVALID_GOF_IDS = [
+    "invalid gof ids: {}",
+    "INVALID_GOF_IDS"
+]
+
+INVALID_FIELD_IDS = [
+    "invalid field ids: {}",
+    "INVALID_FIELD_IDS"
+]
+
+EMPTY_VALUE_FOR_PLAIN_TEXT_FIELD = [
+    "got empty value in plain text field for field id: {}",
+    "EMPTY_VALUE_FOR_PLAIN_TEXT_FIELD"
+]
 

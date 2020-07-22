@@ -5,7 +5,8 @@ from ib_tasks.exceptions.custom_exceptions import (
     GOFIdCantBeEmpty, GOFDisplayNameCantBeEmpty, GOFReadPermissionsCantBeEmpty,
     GOFWritePermissionsCantBeEmpty, InvalidReadPermissionRoles,
     InvalidWritePermissionRoles,
-    MaxColumnsMustBeAPositiveInteger
+    MaxColumnsMustBeAPositiveInteger, DuplicateReadPermissionRolesForAGoF,
+    DuplicateWritePermissionRolesForAGoF
 )
 from ib_tasks.interactors.storage_interfaces.dtos import (
     CompleteGoFDetailsDTO, GoFRolesDTO, GoFDTO, GoFRoleDTO
@@ -38,6 +39,7 @@ class CreateOrUpdateGoFsInteractor:
         self._validate_for_empty_mandatory_fields(
             gof_dtos=gof_dtos, gof_roles_dtos=gof_roles_dtos
         )
+        self._validate_for_duplicate_role_ids(gof_roles_dtos)
         gof_role_dtos = self._get_role_dtos(gof_roles_dtos)
         role_ids = [gof_role_dto.role for gof_role_dto in gof_role_dtos]
 
@@ -339,3 +341,40 @@ class CreateOrUpdateGoFsInteractor:
             INVALID_WRITE_PERMISSION_ROLES += str(invalid_roles)
             raise InvalidWritePermissionRoles(INVALID_WRITE_PERMISSION_ROLES)
         return
+
+    def _validate_for_duplicate_role_ids(
+            self, gof_roles_dtos: List[GoFRolesDTO]
+    ) -> Union[None, DuplicateReadPermissionRolesForAGoF,
+               DuplicateWritePermissionRolesForAGoF]:
+        for gof_roles_dto in gof_roles_dtos:
+            duplicate_read_permission_roles = \
+                self._get_duplicates_in_given_list(
+                    gof_roles_dto.read_permission_roles
+                )
+            if duplicate_read_permission_roles:
+                raise DuplicateReadPermissionRolesForAGoF(
+                    duplicate_read_permission_role_ids=duplicate_read_permission_roles,
+                    gof_id=gof_roles_dto.gof_id
+                )
+            duplicate_write_permission_roles = \
+                self._get_duplicates_in_given_list(
+                    gof_roles_dto.write_permission_roles
+                )
+            if duplicate_write_permission_roles:
+                raise DuplicateWritePermissionRolesForAGoF(
+                    duplicate_write_permission_role_ids=duplicate_write_permission_roles,
+                    gof_id=gof_roles_dto.gof_id
+                )
+        return
+
+    @staticmethod
+    def _get_duplicates_in_given_list(values: List):
+        duplicate_values = list(
+            set(
+                [
+                    value
+                    for value in values if values.count(value) > 1
+                ]
+            )
+        )
+        return duplicate_values

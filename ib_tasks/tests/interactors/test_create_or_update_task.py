@@ -41,24 +41,6 @@ class TestCreateOrUpdateTask:
         from unittest.mock import Mock
         return Mock()
 
-    def test_create_or_update_task_with_duplicate_gof_ids_raises_exception(
-            self, storage_mock, presenter_mock, mock_object
-    ):
-        # Arrange
-        gof_fields_dtos = GoFFieldsDTOFactory.create_batch(
-            size=2, gof_id="GOF_ID-1"
-        )
-        task_dto = TaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
-        presenter_mock.raise_exception_for_duplicate_gof_ids.return_value = mock_object
-        interactor = CreateOrUpdateTaskInteractor(storage_mock)
-
-        # Act
-        response = interactor.create_or_update_task_wrapper(presenter_mock, task_dto)
-
-        # Assert
-        assert response == mock_object
-        presenter_mock.raise_exception_for_duplicate_gof_ids.assert_called_once()
-
     def test_create_or_update_task_with_duplicate_field_ids_raises_exception(
             self, storage_mock, presenter_mock, mock_object
     ):

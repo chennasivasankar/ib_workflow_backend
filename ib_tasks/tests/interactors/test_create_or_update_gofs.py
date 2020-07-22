@@ -199,6 +199,57 @@ class TestCreateOrUpdateGOFs:
         storage_mock.create_gof_roles.assert_not_called()
         storage_mock.update_gofs.assert_not_called()
 
+    def test_create_or_update_gofs_with_duplicate_write_permission_roles_raise_exception(
+            self, storage_mock
+    ):
+        # Arrange
+        from ib_tasks.exceptions.custom_exceptions import \
+            DuplicateWritePermissionRolesForAGoF
+        write_permission_roles = ["ALL_ROLES", "ALL_ROLES"]
+        gof_roles_dto = GoFRolesDTOFactory(
+            write_permission_roles=write_permission_roles)
+        complete_gof_details_dtos = [
+            CompleteGoFDetailsDTOFactory(gof_roles_dto=gof_roles_dto)
+        ]
+        interactor = CreateOrUpdateGoFsInteractor(storage=storage_mock)
+
+        # Act
+        with pytest.raises(DuplicateWritePermissionRolesForAGoF) as err:
+            interactor.create_or_update_gofs(
+                complete_gof_details_dtos=complete_gof_details_dtos
+            )
+
+        # Assert
+        storage_mock.create_gofs.assert_not_called()
+        storage_mock.create_gof_roles.assert_not_called()
+        storage_mock.update_gofs.assert_not_called()
+
+    def test_create_or_update_gofs_with_duplicate_read_permission_roles_raise_exception(
+            self, storage_mock
+    ):
+        # Arrange
+        from ib_tasks.exceptions.custom_exceptions import \
+            DuplicateReadPermissionRolesForAGoF
+        read_permission_roles = ["ALL_ROLES", "ALL_ROLES"]
+        gof_roles_dto = GoFRolesDTOFactory(
+            read_permission_roles=read_permission_roles)
+        complete_gof_details_dtos = [
+            CompleteGoFDetailsDTOFactory(gof_roles_dto=gof_roles_dto)
+        ]
+        interactor = CreateOrUpdateGoFsInteractor(storage=storage_mock)
+
+        # Act
+        with pytest.raises(DuplicateReadPermissionRolesForAGoF) as err:
+            interactor.create_or_update_gofs(
+                complete_gof_details_dtos=complete_gof_details_dtos
+            )
+
+        # Assert
+        storage_mock.create_gofs.assert_not_called()
+        storage_mock.create_gof_roles.assert_not_called()
+        storage_mock.update_gofs.assert_not_called()
+
+
     def test_create_or_update_gofs_with_invalid_read_permission_roles_raises_exception(
             self, storage_mock, mocker
     ):
