@@ -84,7 +84,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
                 "created_at": get_datetime_as_string(
                     complete_discussion_dto.created_at
                 ),
-                "author": self._prepare_user_profie_dict(
+                "author": self._prepare_user_profile_dict(
                     user_profile_dto \
                         =user_profiles_dict[complete_discussion_dto.user_id]
                 )
@@ -108,7 +108,8 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         }
         return user_profiles_dict
 
-    def _prepare_user_profie_dict(self, user_profile_dto):
+    @staticmethod
+    def _prepare_user_profile_dict(user_profile_dto):
         user_profile_dict = {
             "user_id": user_profile_dto.user_id,
             "name": user_profile_dto.name,
