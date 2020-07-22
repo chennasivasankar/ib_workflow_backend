@@ -459,6 +459,30 @@
       "schema": {
         "$ref": "#/definitions/ConfigurationDetails"
       }
+    },
+    "UserDoesNotFoundResponse": {
+      "description": "User Does Not Found Http Exception Response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_NOT_FOUND"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
     }
   },
   "paths": {
@@ -534,6 +558,35 @@
           },
           "400": {
             "$ref": "#/responses/AddUserBadRequestResponse"
+          }
+        }
+      }
+    },
+    "/users/{user_id}/v1": {
+      "delete": {
+        "operationId": "delete_user",
+        "description": "delete an user with valid details",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/UserIdPathParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SuccessFully Delete User"
+          },
+          "403": {
+            "$ref": "#/responses/UserDoesNotHavePermissionResponse"
+          },
+          "404": {
+            "$ref": "#/responses/UserDoesNotFoundResponse"
           }
         }
       }
