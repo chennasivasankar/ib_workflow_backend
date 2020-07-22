@@ -269,10 +269,28 @@ class StorageImplementation(StorageInterface):
             raise InvalidColumnId
 
     def get_column_display_stage_ids(self, column_id: str) -> List[str]:
-        pass
+        task_templates_stages = Column.objects.filter(
+            column_id=column_id
+        ).values_list('task_selection_config', flat=True)
+        print(task_templates_stages)
+        stage_ids = self._get_stage_ids_from_json_string(
+            task_templates_stages[0]
+        )
+        return stage_ids
 
+    # TODO: need to pass column  Id
     def validate_user_role_with_column_roles(self, user_role: str):
-        pass
+        user_roles = ColumnPermission.objects.filter(
+            column_id='COLUMN_ID_1'
+        ).values_list('user_role_id', flat=True)
+
+        is_invalid_user = not (user_role in user_roles or
+                               'ALL_ROLES' in user_roles)
+        if is_invalid_user:
+            from ib_boards.exceptions.custom_exceptions import \
+                UserDoNotHaveAccessToColumn
+            raise UserDoNotHaveAccessToColumn
+
 
     @staticmethod
     def _convert_board_objects_to_board_dtos(board_objects):
@@ -284,3 +302,14 @@ class StorageImplementation(StorageInterface):
             for board_object in board_objects
         ]
         return board_dtos
+
+    @staticmethod
+    def _get_stage_ids_from_json_string(
+            task_template_stages: str) -> List[str]:
+        import json
+        task_template_stages = json.loads(task_template_stages)
+        stage_ids = []
+        for key, value in task_template_stages.items():
+            stage_ids += value
+
+        return stage_ids
