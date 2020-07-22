@@ -153,3 +153,4 @@ class TestTasksStorageImplementation:
                 if gof.gof_id == gof_dto.gof_id:
                     assert gof.display_name == gof_dto.gof_display_name
                     assert gof.max_columns == gof_dto.max_columns
+

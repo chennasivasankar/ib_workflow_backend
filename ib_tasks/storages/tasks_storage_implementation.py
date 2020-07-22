@@ -3,34 +3,18 @@ from typing import List, Optional
 from ib_tasks.interactors.dtos import GlobalConstantsDTO
 from ib_tasks.interactors.dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    GoFDTO, GoFRoleDTO, FieldDTO, FieldRoleDTO, TaskStatusDTO, TaskStagesDTO,
-    StageInformationDTO
+    GoFDTO, GoFRoleDTO, FieldDTO, FieldRoleDTO, TaskStatusDTO
 )
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
+from ib_tasks.models import TaskStatusVariable
 from ib_tasks.models import GoFRole, GoF
 
 
 class TasksStorageImplementation(TaskStorageInterface):
 
-    def create_stages_with_given_information(self,
-                                             stage_information: StageInformationDTO):
-        pass
 
-    def validate_stage_ids(self, stage_ids) -> Optional[List[str]]:
-        pass
-
-    def update_stages_with_given_information(self,
-                                             update_stages_information: StageInformationDTO):
-        pass
-
-    def validate_stages_related_task_template_ids(self,
-                                                  task_stages_dto: TaskStagesDTO) -> \
-            Optional[List[TaskStagesDTO]]:
-        pass
-
-    def create_status_for_tasks(self,
-                                create_status_for_tasks: List[TaskStatusDTO]):
+    def get_task_template_name_if_exists(self, template_id: str) -> str:
         pass
 
     def create_task_template(self, template_id: str, template_name: str):
@@ -66,7 +50,7 @@ class TasksStorageImplementation(TaskStorageInterface):
     ) -> List[str]:
         from ib_tasks.models.task_template import TaskTemplate
         valid_template_ids = list(
-            TaskTemplate.objects.filter(pk__in=template_ids). \
+            TaskTemplate.objects.filter(pk__in=template_ids).
                 values_list("template_id", flat=True)
         )
         return valid_template_ids
@@ -252,6 +236,14 @@ class TasksStorageImplementation(TaskStorageInterface):
             for gof in gofs
         ]
         return gof_dtos
+
+    def create_status_for_tasks(self, create_status_for_tasks: List[TaskStatusDTO]):
+        list_of_status_tasks = [TaskStatusVariable(
+            variable=status.status_variable_id,
+            task_template_id=status.task_template_id
+        ) for status in create_status_for_tasks]
+
+        TaskStatusVariable.objects.bulk_create(list_of_status_tasks)
 
     def update_global_constants_to_template(
             self, template_id: str,

@@ -8,8 +8,8 @@ import abc
 from typing import List, Optional
 
 from ib_tasks.interactors.storage_interfaces.dtos import (
-    GoFRoleDTO, GoFDTO, FieldDTO, FieldRoleDTO, StageInformationDTO,
-    TaskStagesDTO, TaskStatusDTO
+    GoFRoleDTO, GoFDTO, FieldDTO, FieldRoleDTO, TaskStatusDTO, TaskStagesDTO,
+    StageDTO
 )
 from ib_tasks.interactors.dtos import GlobalConstantsDTO, \
     GoFWithOrderAndAddAnotherDTO
@@ -22,7 +22,7 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_task_template_name(self, template_id: str) -> str:
+    def get_task_template_name_if_exists(self, template_id: str) -> str:
         pass
 
     @abc.abstractmethod
@@ -62,6 +62,10 @@ class TaskStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_constant_names_of_existing_global_constants_of_template(
             self, template_id: str):
+        pass
+
+    @abc.abstractmethod
+    def get_task_template_name(self, template_id: str):
         pass
 
     @abc.abstractmethod
@@ -118,7 +122,7 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def create_stages_with_given_information(self,
-                                             stage_information: StageInformationDTO):
+                                             stage_information: StageDTO):
         pass
 
     @abc.abstractmethod
@@ -127,7 +131,7 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def update_stages_with_given_information(self,
-                                             update_stages_information: StageInformationDTO):
+                                             update_stages_information: StageDTO):
         pass
 
     @abc.abstractmethod
@@ -146,7 +150,6 @@ class TaskStorageInterface(abc.ABC):
             self, template_id: str,
             global_constants_dtos: List[GlobalConstantsDTO]):
         pass
-
 
     @abc.abstractmethod
     def get_gof_dtos_for_given_gof_ids(
