@@ -16,9 +16,9 @@ class TestGetDiscussionsInteractor:
     @pytest.fixture()
     def presenter_mock(self):
         from ib_discussions.interactors.presenter_interfaces. \
-            presenter_interface import PresenterInterface
+            presenter_interface import GetDiscussionsPresenterInterface
         from unittest.mock import create_autospec
-        presenter = create_autospec(PresenterInterface)
+        presenter = create_autospec(GetDiscussionsPresenterInterface)
         return presenter
 
     @pytest.fixture()
@@ -178,15 +178,22 @@ class TestGetDiscussionsInteractor:
     ):
         discussion_set_id = "e892e8db-6064-4d8f-9ce2-7c9032dbd8a5"
         discussions_count = 3
-        storage_mock.get_discussion_set_id.return_value \
-            = discussion_set_id
+        expected_presenter_response_for_discussions = Mock()
+
         complete_discussion_dtos = self._get_complete_discussion_dtos(
             discussion_set_id
         )
+
+        storage_mock.get_discussion_set_id.return_value \
+            = discussion_set_id
         storage_mock.get_complete_discussion_dtos.return_value \
             = complete_discussion_dtos
         storage_mock.get_total_discussion_count.return_value \
             = discussions_count
+
+        presenter_mock.prepare_response_for_discussions_details_dto. \
+            return_value = expected_presenter_response_for_discussions
+
         from ib_discussions.tests.common_fixtures.adapters import \
             prepare_get_user_profile_dtos_mock
         get_user_profile_dtos_mock = prepare_get_user_profile_dtos_mock(mocker)
@@ -210,6 +217,7 @@ class TestGetDiscussionsInteractor:
         )
 
         # Assert
+        assert response == expected_presenter_response_for_discussions
         storage_mock.get_discussion_set_id.assert_called_once()
         storage_mock.get_complete_discussion_dtos.assert_called_once_with(
             discussion_set_id=discussion_set_id,

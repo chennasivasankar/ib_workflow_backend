@@ -14,9 +14,9 @@ class TestCreateDiscussionInteractor:
     @pytest.fixture()
     def presenter_mock(self):
         from ib_discussions.interactors.presenter_interfaces.presenter_interface \
-            import PresenterInterface
+            import CreateDiscussionPresenterInterface
         from unittest.mock import create_autospec
-        presenter = create_autospec(PresenterInterface)
+        presenter = create_autospec(CreateDiscussionPresenterInterface)
         return presenter
 
     @pytest.fixture()

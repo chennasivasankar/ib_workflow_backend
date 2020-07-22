@@ -1,22 +1,22 @@
 import json
 
 import pytest
-from freezegun import freeze_time
 
 from ib_discussions.constants.enum import StatusCode
 
 
-class TestPresenterImplementation:
+class TestGetDiscussionsPresenterImplementation:
+
     @pytest.fixture()
     def presenter(self):
-        from ib_discussions.presenters.presenter_implementation import \
-            PresenterImplementation
-        presenter = PresenterImplementation()
+        from ib_discussions.presenters.get_discussion_presenter_implementation import \
+            GetDiscussionPresenterImplementation
+        presenter = GetDiscussionPresenterImplementation()
         return presenter
 
     def test_raise_exception_for_entity_id_not_found(self, presenter):
         # Arrange
-        from ib_discussions.presenters.presenter_implementation import \
+        from ib_discussions.presenters.get_discussion_presenter_implementation import \
             ENTITY_ID_NOT_FOUND
         expected_response = ENTITY_ID_NOT_FOUND[0]
         expected_http_status_code = StatusCode.NOT_FOUND.value
@@ -35,7 +35,7 @@ class TestPresenterImplementation:
     def test_raise_exception_for_invalid_entity_type_for_entity_id(self,
                                                                    presenter):
         # Arrange
-        from ib_discussions.presenters.presenter_implementation import \
+        from ib_discussions.presenters.get_discussion_presenter_implementation import \
             INVALID_ENTITY_TYPE_FOR_ENTITY_ID
         expected_response = INVALID_ENTITY_TYPE_FOR_ENTITY_ID[0]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
@@ -52,17 +52,9 @@ class TestPresenterImplementation:
         assert response_data["http_status_code"] == expected_http_status_code
         assert response_data["res_status"] == expected_res_status
 
-    def test_prepare_success_response_for_create_discussion(self, presenter):
-        # Act
-        response_obj \
-            = presenter.prepare_success_response_for_create_discussion()
-
-        # Assert
-        assert response_obj.status_code == StatusCode.CREATED.value
-
     def test_raise_exception_for_invalid_offset(self, presenter):
         # Arrange
-        from ib_discussions.presenters.presenter_implementation import \
+        from ib_discussions.presenters.create_discussion_presenter_implementation import \
             INVALID_OFFSET
         expected_response = INVALID_OFFSET[0]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
@@ -80,7 +72,7 @@ class TestPresenterImplementation:
 
     def test_raise_exception_for_invalid_limit(self, presenter):
         # Arrange
-        from ib_discussions.presenters.presenter_implementation import \
+        from ib_discussions.presenters.create_discussion_presenter_implementation import \
             INVALID_LIMIT
         expected_response = INVALID_LIMIT[0]
         expected_http_status_code = StatusCode.BAD_REQUEST.value

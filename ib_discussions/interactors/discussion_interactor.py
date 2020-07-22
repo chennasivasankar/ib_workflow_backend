@@ -3,7 +3,7 @@ from typing import List
 from ib_discussions.interactors.DTOs.common_dtos import DiscussionDTO, \
     EntityIdAndEntityTypeDTO, OffsetAndLimitDTO
 from ib_discussions.interactors.presenter_interfaces.presenter_interface import \
-    PresenterInterface
+    CreateDiscussionPresenterInterface, GetDiscussionsPresenterInterface
 from ib_discussions.interactors.storage_interfaces.dtos import \
     CompleteDiscussionDTO
 from ib_discussions.interactors.storage_interfaces.storage_interface import \
@@ -22,12 +22,16 @@ class InvalidLimit(Exception):
     pass
 
 
+class InvalidUserId(Exception):
+    pass
+
+
 class DiscussionInteractor:
     def __init__(self, storage: StorageInterface):
         self.storage = storage
 
     def create_discussion_wrapper(self, discussion_dto: DiscussionDTO,
-                                  presenter: PresenterInterface
+                                  presenter: CreateDiscussionPresenterInterface
                                   ):
         from ib_discussions.exceptions.custom_exceptions import \
             EntityIdNotFound, InvalidEntityTypeForEntityId
@@ -43,7 +47,7 @@ class DiscussionInteractor:
         return response
 
     def _create_discussion_response(self, discussion_dto: DiscussionDTO,
-                                    presenter: PresenterInterface
+                                    presenter: CreateDiscussionPresenterInterface
                                     ):
         self.create_discussion(discussion_dto=discussion_dto)
         return presenter.prepare_success_response_for_create_discussion()
@@ -81,12 +85,12 @@ class DiscussionInteractor:
     def get_discussions_wrapper(
             self, entity_id_and_entity_type_dto: EntityIdAndEntityTypeDTO,
             offset_and_limit_dto: OffsetAndLimitDTO,
-            presenter: PresenterInterface
+            presenter: GetDiscussionsPresenterInterface
     ):
         from ib_discussions.exceptions.custom_exceptions import \
             EntityIdNotFound, InvalidEntityTypeForEntityId
         try:
-            response = self._get_discussion_response(
+            response = self._get_discussions_response(
                 entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
                 offset_and_limit_dto=offset_and_limit_dto, presenter=presenter
             )
@@ -99,12 +103,14 @@ class DiscussionInteractor:
         except InvalidEntityTypeForEntityId:
             response = presenter. \
                 raise_exception_for_invalid_entity_type_for_entity_id()
+        except InvalidUserId:
+            response = presenter.raise_exception_for_invalid_user_id()
         return response
 
-    def _get_discussion_response(
+    def _get_discussions_response(
             self, entity_id_and_entity_type_dto: EntityIdAndEntityTypeDTO,
             offset_and_limit_dto: OffsetAndLimitDTO,
-            presenter: PresenterInterface
+            presenter: GetDiscussionsPresenterInterface
     ):
         discussions_details_dto = self.get_discussions_details_dto(
             entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,

@@ -4,7 +4,7 @@ from ib_discussions.constants.enum import StatusCode
 from ib_discussions.interactors.presenter_interfaces.dtos import \
     DiscussionsDetailsDTO
 from ib_discussions.interactors.presenter_interfaces.presenter_interface import \
-    PresenterInterface
+    GetDiscussionsPresenterInterface
 
 ENTITY_ID_NOT_FOUND = (
     "Please send valid entity id",
@@ -27,7 +27,8 @@ INVALID_LIMIT = (
 )
 
 
-class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
+class GetDiscussionPresenterImplementation(GetDiscussionsPresenterInterface,
+                                           HTTPResponseMixin):
     def raise_exception_for_entity_id_not_found(self):
         response_dict = {
             "response": ENTITY_ID_NOT_FOUND[0],
@@ -45,9 +46,6 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         return self.prepare_400_bad_request_response(
             response_dict=response_dict
         )
-
-    def prepare_success_response_for_create_discussion(self):
-        return self.prepare_201_created_response(response_dict={})
 
     def raise_exception_for_invalid_offset(self):
         response_dict = {

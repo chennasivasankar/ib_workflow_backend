@@ -17,9 +17,9 @@ def api_wrapper(*args, **kwargs):
         description=request_data["description"],
     )
 
-    from ib_discussions.presenters.presenter_implementation import \
-        PresenterImplementation
-    presenter = PresenterImplementation()
+    from ib_discussions.presenters.create_discussion_presenter_implementation import \
+        CreateDiscussionPresenterImplementation
+    presenter = CreateDiscussionPresenterImplementation()
 
     from ib_discussions.storages.storage_implementation import \
         StorageImplementation
