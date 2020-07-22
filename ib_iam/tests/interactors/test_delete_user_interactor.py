@@ -57,3 +57,23 @@ class TestDeleteUserInteractor:
         storage_mock.delete_user_roles.assert_called_once_with(
             user_id=delete_user_id)
         presenter_mock.get_delete_user_response.assert_called_once()
+
+    def test_delete_user_given_valid_user_id_then_delete_user_teams_from_user_team_db(
+            self, storage_mock, presenter_mock):
+        admin_user_id = "1"
+        delete_user_id = "2"
+        interactor = DeleteUserInteractor(storage=storage_mock)
+
+        presenter_mock.get_delete_user_response.return_value = Mock()
+
+        interactor.delete_user_wrapper(user_id=admin_user_id,
+                                       delete_user_id=delete_user_id,
+                                       presenter=presenter_mock)
+
+        storage_mock.delete_user.assert_called_once_with(
+            user_id=delete_user_id)
+        storage_mock.delete_user_roles.assert_called_once_with(
+            user_id=delete_user_id)
+        storage_mock.delete_user_teams.assert_called_once_with(
+            user_id=delete_user_id)
+        presenter_mock.get_delete_user_response.assert_called_once()
