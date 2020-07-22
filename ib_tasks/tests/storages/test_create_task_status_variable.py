@@ -1,7 +1,7 @@
 import pytest
 
 from ib_tasks.interactors.storage_interfaces.dtos import TaskStatusDTO
-from ib_tasks.models import TaskStatusVariable
+from ib_tasks.models import TaskTemplateStatusVariable
 from ib_tasks.storages.tasks_storage_implementation import TasksStorageImplementation
 from ib_tasks.tests.factories.storage_dtos import TaskStatusDTOFactory
 
@@ -35,5 +35,5 @@ class TestTaskStatusVariable:
         storage.create_status_for_tasks(get_task_status_dtos)
 
         # Assert
-        tasks_status = TaskStatusVariable.objects.filter(variable__in=status_ids)
+        tasks_status = TaskTemplateStatusVariable.objects.filter(variable__in=status_ids)
         self._validate_tasks_status(tasks_status, task_status_dtos)

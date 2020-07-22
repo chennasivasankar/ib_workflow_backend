@@ -7,7 +7,7 @@ from ib_tasks.interactors.storage_interfaces.dtos import (
 )
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.models import TaskStatusVariable
+from ib_tasks.models import TaskTemplateStatusVariable
 
 
 class TasksStorageImplementation(TaskStorageInterface):
@@ -130,9 +130,9 @@ class TasksStorageImplementation(TaskStorageInterface):
         pass
 
     def create_status_for_tasks(self, create_status_for_tasks: List[TaskStatusDTO]):
-        list_of_status_tasks = [TaskStatusVariable(
+        list_of_status_tasks = [TaskTemplateStatusVariable(
             variable=status.status_variable_id,
             task_template_id=status.task_template_id
         ) for status in create_status_for_tasks]
 
-        TaskStatusVariable.objects.bulk_create(list_of_status_tasks)
+        TaskTemplateStatusVariable.objects.bulk_create(list_of_status_tasks)

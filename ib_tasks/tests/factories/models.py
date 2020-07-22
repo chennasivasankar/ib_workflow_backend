@@ -6,7 +6,7 @@ from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.field import Field
 from ib_tasks.models.gof_role import GoFRole
 from ib_tasks.models import (
-    Stage, ActionPermittedRoles, StageAction, TaskStatusVariable,
+    Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     TaskTemplateGlobalConstants)
 
 
@@ -43,7 +43,7 @@ class ActionPermittedRolesFactory(factory.django.DjangoModelFactory):
 
 class TaskStatusVariableFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = TaskStatusVariable
+        model = TaskTemplateStatusVariable
 
     task_id = factory.Sequence(lambda n: n)
     variable = factory.Sequence(lambda n: "variable%d" % n)
