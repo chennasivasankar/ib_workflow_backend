@@ -12,11 +12,9 @@ class EntityFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Entity
 
-    id = factory.Faker("uuid")
+    id = factory.Faker("uuid4")
     entity_type = factory.Iterator([
-        EntityType.TASK.value,
-        EntityType.BOARD.value,
-        EntityType.COLUMN.value
+        EntityType.TASK.value
     ])
 
 
@@ -24,12 +22,10 @@ class DiscussionSetFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = DiscussionSet
 
-    id = factory.Faker("uuid")
-    entity_id = factory.Faker("uuid")
+    id = factory.Faker("uuid4")
+    entity_id = factory.Faker("uuid4")
     entity_type = factory.Iterator([
-        EntityType.TASK.value,
-        EntityType.BOARD.value,
-        EntityType.COLUMN.value
+        EntityType.TASK.value
     ])
 
 
@@ -37,12 +33,12 @@ class DiscussionFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Discussion
 
-    id = factory.Faker("uuid")
-    discussion_set_id = factory.Faker("uuid")
-    title = factory.LazyFunction(
+    id = factory.Faker("uuid4")
+    discussion_set_id = factory.SubFactory(DiscussionSetFactory)
+    title = factory.LazyAttribute(
         lambda obj: "title of {id}".format(id=obj.id)
     )
-    description = factory.LazyFunction(
+    description = factory.LazyAttribute(
         lambda obj: "title of {id}".format(id=obj.id)
     )
     created_at = datetime.datetime(2008, 1, 1, tzinfo=datetime.timezone.utc)

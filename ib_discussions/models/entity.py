@@ -13,7 +13,7 @@ class Entity(models.Model):
     id = models.UUIDField(primary_key=True, default=generate_uuid,
                           editable=False)
     entity_choice = (
-        (EntityType.TASK.value, EntityType.TASK.value)
+        (EntityType.TASK.value, EntityType.TASK.value),
     )
     entity_type = models.CharField(
         max_length=50,

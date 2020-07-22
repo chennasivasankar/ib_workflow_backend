@@ -2,7 +2,7 @@ from typing import List
 
 from ib_discussions.constants.enum import EntityType
 from ib_discussions.interactors.DTOs.common_dtos import DiscussionDTO, \
-    EntityIdAndEntityTypeDTO, OffsetAndLimitDTO
+    EntityIdAndEntityTypeDTO, OffsetAndLimitDTO, FilterByDTO, SortByDTO
 from ib_discussions.interactors.storage_interfaces.dtos import \
     CompleteDiscussionDTO
 from ib_discussions.interactors.storage_interfaces.storage_interface import \
@@ -40,7 +40,8 @@ class StorageImplementation(StorageInterface):
 
     def get_complete_discussion_dtos(
             self, discussion_set_id: str,
-            offset_and_limit_dto: OffsetAndLimitDTO
+            offset_and_limit_dto: OffsetAndLimitDTO,
+            filter_by_dto: FilterByDTO, sort_by_dto: SortByDTO
     ) -> List[CompleteDiscussionDTO]:
         pass
 
