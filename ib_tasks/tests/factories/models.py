@@ -58,18 +58,15 @@ class TaskTemplateGlobalConstantsFactory(factory.django.DjangoModelFactory):
     variable = factory.Sequence(lambda n: "variable%d" % n)
     value = factory.Sequence(lambda n: "value%d" % n)
     data_type = factory.Sequence(lambda n: "data_type_%d" % n)
+from ib_tasks.models.global_constant import GlobalConstant
 
 
 class TaskTemplateFactory(factory.DjangoModelFactory):
     class Meta:
         model = TaskTemplate
 
-    template_id = factory.Sequence(lambda n: "task_template_id_%d" % n)
-    name = factory.Iterator(
-        [
-            "Payment Request", "Vendor"
-        ]
-    )
+    template_id = factory.sequence(lambda n: "template_{}".format(n + 1))
+    name = factory.sequence(lambda n: "Template {}".format(n + 1))
 
 
 class GoFFactory(factory.DjangoModelFactory):
@@ -116,3 +113,12 @@ class GoFRoleFactory(factory.DjangoModelFactory):
         ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"]
     )
     permission_type = PermissionTypes.READ.value
+
+
+class GlobalConstantFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = GlobalConstant
+
+    name = factory.sequence(lambda n: "constant_{}".format(n + 1))
+    value = factory.sequence(lambda n: (n + 1))
+    task_template = factory.SubFactory(TaskTemplateFactory)

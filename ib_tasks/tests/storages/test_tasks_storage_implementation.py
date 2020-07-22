@@ -15,9 +15,13 @@ class TestTasksStorageImplementation:
             TasksStorageImplementation
         return TasksStorageImplementation()
 
+    @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        TaskTemplateFactory.reset_sequence()
+
     def test_get_existing_gof_ids_in_given_gof_ids(self, storage):
         # Arrange
-        gofs = GoFFactory.create_batch(size=2)
+        GoFFactory.create_batch(size=2)
         gof_ids = ["FIN_REQUEST_DETAILS", "FIN_BANK_DETAILS"]
         expected_existing_gof_ids = ["FIN_REQUEST_DETAILS"]
 
@@ -78,7 +82,7 @@ class TestTasksStorageImplementation:
 
         # Arrange
         task_template = TaskTemplateFactory()
-        template_ids = ["FIN_PR", "FIN_VENDOR", "task_template_id_6"]
+        template_ids = ["template_1", "FIN_VENDOR"]
         expected_valid_template_ids = [task_template.template_id]
 
         # Act

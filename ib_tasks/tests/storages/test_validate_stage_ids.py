@@ -25,7 +25,7 @@ class TestValidateStageIds:
         stage_ids = ["stage_id_0", "stage_id_1", "stage_id_2", "stage_id_3"]
 
         # Act
-        valid_stage_dtos = storage.get_valid_stage_ids(stage_ids)
+        valid_stage_dtos = storage.get_existing_stage_ids(stage_ids)
 
         # Assert
         assert valid_stage_dtos == expected_stage_dtos

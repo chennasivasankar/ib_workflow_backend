@@ -21,7 +21,7 @@ class StagesStorageImplementation(StageStorageInterface):
                      value=stage.value,
                      display_logic=stage.stage_display_logic)
 
-    def get_valid_stage_ids(self, stage_ids) -> Optional[List[str]]:
+    def get_existing_stage_ids(self, stage_ids) -> Optional[List[str]]:
         valid_stage_ids = Stage.objects.filter(stage_id__in=stage_ids)
 
         valid_stages_dto = [ValidStageDTO(

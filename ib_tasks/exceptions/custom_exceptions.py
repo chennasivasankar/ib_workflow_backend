@@ -1,3 +1,36 @@
+from typing import List, Dict
+
+
+class InvalidStageIdsException(Exception):
+    def __init__(self, stage_ids_dict: str):
+        self.stage_ids_dict = stage_ids_dict
+
+    def __str__(self):
+        return self.stage_ids_dict
+
+
+class InvalidRolesException(Exception):
+    def __init__(self, stage_roles_dict: str):
+        self.stage_roles_dict = stage_roles_dict
+
+
+class InvalidFormatException(Exception):
+    def __init__(self, valid_format: str):
+        self.valid_format = valid_format
+
+
+class InvalidPythonCodeException(Exception):
+    pass
+
+
+class InvalidTaskIdException(Exception):
+    def __init__(self, task_id: str):
+        self.task_id = task_id
+
+
+class InvalidTaskTemplateId(Exception):
+    def __init__(self, task_template_ids_dict: str):
+        self.task_template_ids_dict = task_template_ids_dict
 from typing import List
 
 
@@ -44,21 +77,14 @@ class DuplicateGoFIds(Exception):
         self.message = "Given duplicate gof ids {}".format(gof_ids)
         super().__init__(self.message)
 
-
-class ExistingGoFsNotInGivenGoFs(Exception):
-    def __init__(self,
-                 gof_of_template_not_in_given_gof: List[str],
-                 given_gof_ids: List[str]):
-        self.message = \
-            "Existing gof ids: {} of template not in given gof ids: {}". \
-                format(gof_of_template_not_in_given_gof, given_gof_ids)
-        super().__init__(self.message)
+class InvalidStagesDisplayName(Exception):
+    def __init__(self, invalid_stages_display_name: List[str]):
+        self.invalid_stages_display_name = invalid_stages_display_name
 
 
 class InvalidValueForField(Exception):
-    def __init__(self, field: str):
-        self.message = "Invalid value for field: {}".format(field)
-        super().__init__(self.message)
+    def __init__(self, err_msg: str):
+        super().__init__(err_msg)
 
 
 class GOFIdCantBeEmpty(Exception):
@@ -210,3 +236,7 @@ class InvalidValueForField(Exception):
     def __init__(self, field: str):
         self.message = "Invalid value for field: {}".format(field)
         super().__init__(self.message)
+
+class DuplicateTaskStatusVariableIds(Exception):
+    def __init__(self, duplicate_status_ids_for_tasks: List[str]):
+        self.task_ids = duplicate_status_ids_for_tasks
