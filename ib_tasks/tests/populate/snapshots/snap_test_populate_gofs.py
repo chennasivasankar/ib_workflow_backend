@@ -83,13 +83,13 @@ snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_write_perm
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details write_role_permission_type 3'] = 'WRITE'
 
-snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_id 1'] = 'GOF_ID-1'
+snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_id 1'] = 'gof_2'
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_display_name 1'] = 'GOF_DISPLAY_NAME-1'
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_max_columns 1'] = 2
 
-snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_id 2'] = 'GOF_ID-2'
+snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_id 2'] = 'gof_3'
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_display_name 2'] = 'GOF_DISPLAY_NAME-2'
 

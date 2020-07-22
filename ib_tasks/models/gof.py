@@ -7,7 +7,7 @@ class GoF(models.Model):
     gof_id = models.CharField(max_length=50, primary_key=True)
     display_name = models.CharField(max_length=50)
     task_template = models.ManyToManyField(
-        TaskTemplate, through="TaskTemplateGoF"
+        TaskTemplate, through="GoFToTaskTemplate"
     )
     max_columns = models.IntegerField(default=2)
 

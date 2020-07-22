@@ -34,11 +34,6 @@ class InvalidTaskTemplateId(Exception):
 from typing import List
 
 
-class InvalidFormatException(Exception):
-
-    def __init__(self, valid_format: str):
-        self.valid_format = valid_format
-
 class InvalidStagesTaskTemplateId(Exception):
     def __init__(self, invalid_stages_task_template_ids: List[str]):
         self.invalid_stages_task_template_ids = invalid_stages_task_template_ids
@@ -68,10 +63,6 @@ class DuplicateTaskStatusVariableIds(Exception):
     def __init__(self, duplicate_status_ids_for_tasks: List[str]):
         self.task_ids = duplicate_status_ids_for_tasks
 
-
-from typing import List
-
-
 class DuplicateGoFIds(Exception):
     def __init__(self, gof_ids: List[str]):
         self.message = "Given duplicate gof ids {}".format(gof_ids)
@@ -83,8 +74,8 @@ class InvalidStagesDisplayName(Exception):
 
 
 class InvalidValueForField(Exception):
-    def __init__(self, err_msg: str):
-        super().__init__(err_msg)
+    def __init__(self, message: str):
+        self.message = message
 
 
 class GOFIdCantBeEmpty(Exception):
@@ -165,12 +156,6 @@ class GoFIDsAlreadyExists(Exception):
         self.gof_ids = existing_gof_ids
 
 
-class InvalidTaskTemplateIds(Exception):
-
-    def __init__(self, invalid_task_template_ids: List[str]):
-        self.task_template_ids = invalid_task_template_ids
-
-
 class ExistingGlobalConstantNamesNotInGivenData(Exception):
     def __init__(self, constant_names: List[str]):
         self.message = \
@@ -210,13 +195,6 @@ class FieldsDuplicationOfDropDownValues(Exception):
         self.fieds_with_dropdown_duplicate_values = \
             fieds_with_dropdown_duplicate_values
 
-
-# class InvalidRolesException(Exception):
-#
-#     def __init__(self, roles):
-#         self.roles = roles
-
-
 class EmptyValueForPermissions(Exception):
 
     def __init__(self, message: str):
@@ -240,10 +218,24 @@ class InvalidGOFIds(Exception):
         self.message = message
 
 
-class DuplicateGoFIds(Exception):
-    def __init__(self, gof_ids: List[str]):
-        self.message = "Given duplicate gof ids {}".format(gof_ids)
-        super().__init__(self.message)
+class InvalidOrdersForGoFs(Exception):
+    def __int__(self, message: str):
+        self.message = message
+
+
+class InvalidTemplateIds(Exception):
+    def __int__(self, message: str):
+        self.message = message
+
+
+class ExistingGoFsNotInGivenData(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class GofsDoesNotExist(Exception):
+    def __init__(self, message: str):
+        self.message = message
 
 
 class ExistingGoFsNotInGivenGoFs(Exception):
@@ -256,11 +248,16 @@ class ExistingGoFsNotInGivenGoFs(Exception):
         super().__init__(self.message)
 
 
-class InvalidValueForField(Exception):
-    def __init__(self, field: str):
-        self.message = "Invalid value for field: {}".format(field)
-        super().__init__(self.message)
+class DuplicateOrderValuesForGoFs(Exception):
+    def __init__(self, message: str):
+        self.message = message
 
-class DuplicateTaskStatusVariableIds(Exception):
-    def __init__(self, duplicate_status_ids_for_tasks: List[str]):
-        self.task_ids = duplicate_status_ids_for_tasks
+
+class InvalidTypeForOrder(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class InvalidTypeForValue(Exception):
+    def __init__(self, message: str):
+        self.message = message

@@ -14,6 +14,12 @@ TEMPLATE_DOES_NOT_EXISTS = "The template with template id: {}, does not exists"
 DUPLICATE_CONSTANT_NAMES = "Given duplicate constant names {}"
 EXISTING_GLOBAL_CONSTANT_NAMES_NOT_IN_GIVEN_DATA = \
     "Existing constants with constant names: {} of template not in given data"
+INVALID_VALUE_FOR_GOF_IDS = "Invalid value for gof_ids, got empty string"
+INVALID_ORDERS_FOR_GOFS = \
+    "Value for order should not be less than -1, got invalid values for these gof_ids: {}"
+EXISTING_GOFS_NOT_IN_GIVEN_DATA = \
+    "Existing GoFs of template with gof_ids: {} are not in given data"
+GOFS_DOES_NOT_EXIST = "The gofs with gof_ids: {}, does not exists"
 INVALID_VALUE_FOR_TEMPLATE_ID = \
     "Invalid value for template id!, template id should not be empty"
 INVALID_VALUE_FOR_CONSTANT_NAME = \
@@ -30,3 +36,7 @@ MAX_COLUMNS_VALUE_MUST_BE_POSITIVE_INTEGER_MESSAGE = \
 INVALID_READ_PERMISSION_ROLES = "Invalid Read Permission roles:"
 INVALID_WRITE_PERMISSION_ROLES = "Invalid Write Permission roles:"
 
+DUPLICATE_ORDER_VALUES_FOR_GOFS = \
+    "Given duplicate order values {}! Gof orders of a template should be unique"
+INVALID_TYPE_FOR_ORDER = "Given value for order: {} is not an integer"
+INVALID_TYPE_FOR_VALUE = "Given value for order: {} is not an integer"

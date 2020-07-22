@@ -86,3 +86,16 @@ class GlobalConstantsDTO:
 class GlobalConstantsWithTemplateIdDTO:
     template_id: str
     global_constants_dtos: List[GlobalConstantsDTO]
+
+
+@dataclass
+class GoFWithOrderAndAddAnotherDTO:
+    gof_id: str
+    order: int
+    enable_add_another_gof: bool
+
+
+@dataclass
+class GoFsWithTemplateIdDTO:
+    template_id: str
+    gof_dtos: List[GoFWithOrderAndAddAnotherDTO]
