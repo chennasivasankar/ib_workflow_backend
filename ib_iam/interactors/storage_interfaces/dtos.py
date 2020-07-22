@@ -48,3 +48,11 @@ class UserRoleDTO:
     role_id: str
     name: str
     description: str
+from dataclasses import dataclass
+
+
+@dataclass
+class RoleDTO:
+    role_id: str
+    name: str
+    description: str

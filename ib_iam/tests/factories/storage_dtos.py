@@ -51,18 +51,17 @@ class TeamDTOFactory(factory.Factory):
     team_id = factory.sequence(lambda number: "team%s" % number)
     team_name = factory.sequence(lambda number: "team %s" % number)
 
-
-class RoleDTOFactory(factory.Factory):
-    class Meta:
-        model = RoleDTO
-
-    role_id = factory.Sequence(lambda n: 'PAYMENT%s' % n)
-    role_name = factory.Sequence(lambda n: 'payment %s' % n)
-
-
 class CompanyDTOFactory(factory.Factory):
     class Meta:
         model = CompanyDTO
 
     company_id = factory.Sequence(lambda n: 'Company%s' % n)
     company_name = factory.Sequence(lambda n: 'company %s' % n)
+
+class RoleDTOFactory(factory.Factory):
+    class Meta:
+        model = RoleDTO
+
+    role_id = factory.Sequence(lambda n: 'PAYMENT%s' % n)
+    name = factory.Sequence(lambda n: 'payment%s' % n)
+    description = factory.Sequence(lambda n: 'payment_description%s' % n)

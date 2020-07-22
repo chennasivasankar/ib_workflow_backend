@@ -59,3 +59,11 @@ class StorageInterface(ABC):
     @abstractmethod
     def validate_teams(self, team_ids):
         pass
+
+    @abstractmethod
+    def create_roles(self, role_dtos: List[RoleDTO]):
+        pass
+
+    @abstractmethod
+    def get_valid_role_ids(self, role_ids: List[str]):
+        pass
