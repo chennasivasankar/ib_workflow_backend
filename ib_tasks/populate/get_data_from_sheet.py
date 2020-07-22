@@ -56,7 +56,7 @@ class PopulateStageActionsAndTaskCreationConfig:
     def _convert_stage_action_sheet_data_dict_to_our_format(field_record: Dict):
         return {
             "stage_id": field_record["Stage ID*"],
-            "action_logic": "logic_1",
+            "action_logic": "\ta = '9'",
             "action_name": field_record["Action name"],
             "roles": field_record["Role"],
             "button_text": field_record["Button Text"],
@@ -110,14 +110,13 @@ class PopulateStageActionsAndTaskCreationConfig:
 
             }]
         )
-        schema.validate(tasks_dict)
         try:
             schema.validate(tasks_dict)
         except SchemaError:
             self._raise_exception_for_valid_task_creation_format()
 
     def _raise_exception_for_valid_task_creation_format(self):
-        valid_format = {
+        valid_format = """{
             "TaskTemplate ID*": "FIN_PR",
             "Stage ID*": "PR_PAYMENT_REQUEST_DRAFTS",
             "Stage Display Name": "Payment Request Drafts",
@@ -128,11 +127,11 @@ class PopulateStageActionsAndTaskCreationConfig:
             "Button Text": "Save Draft",
             "Button Colour": "Blue"
 
-        }
+        }"""
         self._raise_exception_for_valid_format(valid_format)
 
     def _raise_exception_for_valid_stage_actions_format(self):
-        valid_format = {
+        valid_format = """{
             "Stage ID*": "PR_PAYMENT_REQUEST_DRAFTS",
             "Stage Display Name": "Payment Request Drafts",
             "Stage Display Logic": "Value [Status1]== Value[PR_PAYMENT_REQUEST_DRAFTS]",
@@ -142,7 +141,7 @@ class PopulateStageActionsAndTaskCreationConfig:
             "Button Text": "Save Draft",
             "Button Colour": "Blue"
 
-        }
+        }"""
         self._raise_exception_for_valid_format(valid_format)
 
     @staticmethod

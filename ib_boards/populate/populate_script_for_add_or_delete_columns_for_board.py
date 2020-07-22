@@ -102,16 +102,16 @@ class PopulateAddOrDeleteColumnsForBoard:
 
     def _raise_exception_for_board_valid_format(self):
         raise InvalidDataFormat("""{
-                "board_id": "board_id"
-                "board_display_name": "board_display_name"
-                "column_id": "column_id"
-                "column_display_name": "column_display_name"
-                "display_order": "display_order"
-                "user_role_ids": "user_role_ids"
-                "column_summary": "column_summary"
-                "column_actions": "column_actions"
-                "task_template_stages": "task_template_stages"
-                "kanban_view_fields": "kanban_view_fields"
+                "board_id": "board_id",
+                "board_display_name": "board_display_name",
+                "column_id": "column_id",
+                "column_display_name": "column_display_name",
+                "display_order": "display_order",
+                "user_role_ids": "user_role_ids",
+                "column_summary": "column_summary",
+                "column_actions": "column_actions",
+                "task_template_stages": "task_template_stages",
+                "kanban_view_fields": "kanban_view_fields",
                 "list_view_fields": "list_view_fields"
         }""")
 
