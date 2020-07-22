@@ -52,6 +52,17 @@ class EmptyValuesForTaskKanbanViewFields(Exception):
     pass
 
 
+class InvalidBoardId(Exception):
+    pass
+
+class InvalidOffsetValue(Exception):
+    pass
+
+class InvalidLimitValue(Exception):
+    pass
+
+class UserDonotHaveAccess(Exception):
+    pass
 class TaskTemplateStagesNotBelongsToTaskTemplateId(Exception):
     pass
 
@@ -88,6 +99,31 @@ class ColumnIdsAssignedToDifferentBoard(Exception):
         self.column_ids = column_ids
 
 
+class UserDoNotHaveAccessToBoards(Exception):
+    pass
+
+
+class UserDoNotHaveAccessToColumn(Exception):
+    pass
+
+class InvalidBoardIds(Exception):
+    def __init__(self, board_ids: List[str]):
+        self.board_ids = board_ids
+
+
+
 class DuplicateValuesInColumnDisplayOrder(Exception):
     def __init__(self, display_order_values: List[int]):
         self.display_order_values = display_order_values
+
+class InvalidColumnId(Exception):
+    pass
+
+
+class OffsetValueExceedsTotalTasksCount(Exception):
+    pass
+
+
+class InvalidStageIds(Exception):
+    def __init__(self, stage_ids: List[str]):
+        self.stage_ids = stage_ids
