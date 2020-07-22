@@ -1,5 +1,4 @@
 from typing import List
-
 from ib_iam.exceptions import (
     UserHasNoAccess,
     TeamNameAlreadyExists,
@@ -66,9 +65,12 @@ class TeamInteractor:
     def _validate_add_team_details(self, team_details_with_user_ids_dto):
         user_ids = team_details_with_user_ids_dto.user_ids
         name = team_details_with_user_ids_dto.name
+        self._validate_users(user_ids=user_ids)
+        self._validate_is_team_name_already_exists(name=name)
+
+    def _validate_users(self, user_ids):
         self._validate_is_duplicate_users_exists(user_ids=user_ids)
         self._validate_is_invalid_users_exists(user_ids=user_ids)
-        self._validate_is_team_name_already_exists(name=name)
 
     @staticmethod
     def _validate_is_duplicate_users_exists(user_ids: List[str]):
