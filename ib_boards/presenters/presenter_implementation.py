@@ -3,7 +3,7 @@ Created on: 16/07/20
 Author: Pavankumar Pamuru
 
 """
-import json
+
 from typing import List
 
 from django.http import response
@@ -11,7 +11,8 @@ from django.http import response
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
-    GetBoardsPresenterInterface, GetBoardsDetailsPresenterInterface
+    GetBoardsPresenterInterface, GetBoardsDetailsPresenterInterface, \
+    GetColumnTasksPresenterInterface, TaskCompleteDetailsDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardDTO
 
 
@@ -111,3 +112,43 @@ class GetBoardsDetailsPresenterImplementation(
             "board_id": board_dto.board_id,
             "display_name": board_dto.display_name
         }
+
+
+class GetColumnTasksPresenterImplementation(
+        GetColumnTasksPresenterInterface, HTTPResponseMixin):
+
+    def get_response_for_the_invalid_column_id(self):
+        from ib_boards.constants.exception_messages import INVALID_COLUMN_ID
+        response_dict = {
+            "response": INVALID_COLUMN_ID[0],
+            "http_status_code": 404,
+            "res_status": INVALID_COLUMN_ID[1]
+        }
+        return self.prepare_404_not_found_response(
+            response_dict=response_dict
+        )
+
+    def get_response_column_tasks(
+            self, task_complete_details_dto: TaskCompleteDetailsDTO):
+        pass
+
+    def get_response_for_invalid_offset(self):
+        pass
+
+    def get_response_for_invalid_limit(self):
+        pass
+
+    def get_response_for_offset_exceeds_total_tasks(self):
+        pass
+
+    def get_response_for_user_have_no_access_for_column(self):
+        from ib_boards.constants.exception_messages import \
+            USER_NOT_HAVE_ACCESS_TO_COLUMN
+        response_dict = {
+            "response": USER_NOT_HAVE_ACCESS_TO_COLUMN[0],
+            "http_status_code": 403,
+            "res_status": USER_NOT_HAVE_ACCESS_TO_COLUMN[1]
+        }
+        return self.prepare_403_forbidden_response(
+            response_dict=response_dict
+        )

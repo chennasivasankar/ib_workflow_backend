@@ -21,6 +21,12 @@ class TaskService:
             self, task_template_ids: List[str]) -> List[str]:
         pass
 
+    def validate_task_ids(self, task_ids: List[str]):
+        pass
+
+    def validate_stage_ids(self, stage_ids: List[str]):
+        pass
+
     def validate_task_template_stages_with_id(
             self, task_template_stages: List[TaskTemplateStagesDTO]):
         pass

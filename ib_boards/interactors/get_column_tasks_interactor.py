@@ -36,6 +36,7 @@ class GetColumnTasksInteractor:
         except OffsetValueExceedsTotalTasksCount:
             return presenter.get_response_for_offset_exceeds_total_tasks()
         except UserDoNotHaveAccessToColumn:
+            return presenter.get_response_for_user_have_no_access_for_column()
             return presenter.get_response_for_user_have_no_access_for_boards()
         except InvalidStageIds as error:
             return presenter.get_response_for_invalid_stage_ids(error=error)

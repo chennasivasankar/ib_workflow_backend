@@ -21,7 +21,8 @@ __pycache__
 .pydevproject
 android_jars/
 .venv/
-venv/
+venv
+manual_testing
 .coverage
 ipython/
 

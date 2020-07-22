@@ -5,7 +5,7 @@ Author: Pavankumar Pamuru
 """
 from typing import List
 
-from ib_boards.interactors.dtos import ColumnDTO, BoardColumnDTO, \
+from ib_boards.interactors.dtos import ColumnDTO, BoardColumnsDTO, \
     TaskSummaryFieldsDTO, TaskTemplateStagesDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
@@ -38,16 +38,16 @@ class AddOrDeleteColumnsForBoardInteractor:
         column_dtos_dict = {}
         for column_dto in column_dtos:
             column_dtos_dict[column_dto.column_id] = column_dto
-        self._update_columns_for_board(
-            present_column_ids=present_column_ids,
-            column_dtos_dict=column_dtos_dict
+        self._delete_columns_which_are_not_in_configuration(
+            board_column_map=board_column_map
         )
         self._create_columns_for_board(
             present_column_ids=present_column_ids,
             column_dtos_dict=column_dtos_dict
         )
-        self._delete_columns_which_are_not_in_configuration(
-            board_column_map=board_column_map
+        self._update_columns_for_board(
+            present_column_ids=present_column_ids,
+            column_dtos_dict=column_dtos_dict
         )
 
     def _create_columns_for_board(
@@ -74,7 +74,7 @@ class AddOrDeleteColumnsForBoardInteractor:
     def _delete_columns_which_are_not_in_configuration(self, board_column_map):
 
         column_for_delete_dtos = [
-            BoardColumnDTO(
+            BoardColumnsDTO(
                 board_id=key,
                 column_ids=value
             )
