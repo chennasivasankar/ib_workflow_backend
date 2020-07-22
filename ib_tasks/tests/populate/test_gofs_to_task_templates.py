@@ -220,7 +220,7 @@ class TestGoFsToTaskTemplate:
                 gofs_to_task_template_obj.order, f'order_{counter}'
             )
             snapshot.assert_match(
-                gofs_to_task_template_obj.enable_add_another_gof,\
+                gofs_to_task_template_obj.enable_add_another_gof,
                 f'enable_add_another_gof_{counter}'
             )
             counter = counter + 1
@@ -264,7 +264,7 @@ class TestGoFsToTaskTemplate:
                 gofs_to_task_template_obj.order, f'order_{counter}'
             )
             snapshot.assert_match(
-                gofs_to_task_template_obj.enable_add_another_gof,\
+                gofs_to_task_template_obj.enable_add_another_gof,
                 f'enable_add_another_gof_{counter}'
             )
             counter = counter + 1
@@ -311,7 +311,7 @@ class TestGoFsToTaskTemplate:
                 gofs_to_task_template_obj.order, f'order_{counter}'
             )
             snapshot.assert_match(
-                gofs_to_task_template_obj.enable_add_another_gof,\
+                gofs_to_task_template_obj.enable_add_another_gof,
                 f'enable_add_another_gof_{counter}'
             )
             counter = counter + 1
