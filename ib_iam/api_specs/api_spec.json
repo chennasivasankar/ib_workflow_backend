@@ -562,7 +562,7 @@
         }
       }
     },
-    "/users/{user_id}/v1": {
+    "/users/{user_id}/v1/": {
       "delete": {
         "operationId": "delete_user",
         "description": "delete an user with valid details",
