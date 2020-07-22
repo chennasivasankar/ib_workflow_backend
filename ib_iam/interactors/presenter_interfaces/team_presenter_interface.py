@@ -1,7 +1,9 @@
 from abc import ABC
 from abc import abstractmethod
 
-from ib_iam.interactors.presenter_interfaces.dtos import TeamWithMembersDetailsDTO
+from ib_iam.interactors.presenter_interfaces.dtos import (
+    TeamWithMembersDetailsDTO
+)
 
 
 class TeamPresenterInterface(ABC):
