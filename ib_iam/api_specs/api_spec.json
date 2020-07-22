@@ -670,7 +670,7 @@
             "description": "Team details updated Successfully"
           },
           "400": {
-            "$ref": "#/responses/BadRequestResponseForUpdateTeam"
+              "$ref": "#/responses/BadRequestResponseForUpdateTeam"
           },
           "401": {
             "$ref": "#/responses/UnauthorizedResponseForUpdateTeam"
@@ -693,7 +693,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/TeamIdParameter"
+            "$ref": "#/parameters/TeamIdPathParameter"
           }
         ],
         "responses": {
