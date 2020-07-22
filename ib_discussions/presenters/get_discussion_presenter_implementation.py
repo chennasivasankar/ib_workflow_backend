@@ -31,6 +31,11 @@ INVALID_USER_ID = (
     "INVALID_USER_ID"
 )
 
+DISCUSSION_SET_NOT_FOUND = (
+    "There is no discussion for given entity id and entity type",
+    "DISCUSSION_SET_NOT_FOUND"
+)
+
 
 class GetDiscussionPresenterImplementation(
     GetDiscussionsPresenterInterface, HTTPResponseMixin
@@ -82,6 +87,14 @@ class GetDiscussionPresenterImplementation(
         return self.prepare_400_bad_request_response(
             response_dict=response_dict
         )
+
+    def raise_exception_for_discussion_set_not_found(self):
+        response_dict = {
+            "response": DISCUSSION_SET_NOT_FOUND[0],
+            "http_status_code": StatusCode.NOT_FOUND.value,
+            "res_status": DISCUSSION_SET_NOT_FOUND[1]
+        }
+        return self.prepare_404_not_found_response(response_dict=response_dict)
 
     def prepare_response_for_discussions_details_dto(
             self, discussions_details_dto: DiscussionsDetailsDTO

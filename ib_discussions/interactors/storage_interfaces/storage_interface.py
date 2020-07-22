@@ -5,7 +5,7 @@ from ib_discussions.constants.enum import EntityType
 from ib_discussions.exceptions.custom_exceptions import EntityIdNotFound, \
     InvalidEntityTypeForEntityId
 from ib_discussions.interactors.DTOs.common_dtos import DiscussionDTO, \
-    OffsetAndLimitDTO, EntityIdAndEntityTypeDTO, FilterByDTO, SortByDTO
+    OffsetAndLimitDTO, FilterByDTO, SortByDTO
 from ib_discussions.interactors.storage_interfaces.dtos import \
     CompleteDiscussionDTO
 
@@ -38,12 +38,6 @@ class StorageInterface(ABC):
     def create_discussion(self, discussion_dto: DiscussionDTO,
                           discussion_set_id: str
                           ):
-        pass
-
-    @abstractmethod
-    def get_discussion_set_id(
-            self, entity_id_and_entity_type_dto: EntityIdAndEntityTypeDTO
-    ) -> str:
         pass
 
     @abstractmethod

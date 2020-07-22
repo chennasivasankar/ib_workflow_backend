@@ -139,6 +139,37 @@ class TestGetDiscussionsInteractor:
         assert response == \
                expected_presenter_raise_exception_for_invalid_limit_mock
 
+    def test_discussion_set_id_exist_if_not_foun_raise_exception(
+            self, presenter_mock, entity_id_and_entity_type_dto,
+            offset_and_limit_dto, initialise_discussions_interactor,
+            filter_by_dto, sort_by_dto, storage_mock
+    ):
+        # Arrange
+        expected_presenter_discussion_set_id_mock = Mock()
+
+        presenter_mock.raise_exception_for_discussion_set_not_found.return_value \
+            = expected_presenter_discussion_set_id_mock
+
+        from ib_discussions.interactors.discussion_interactor import \
+            DiscussionSetNotFound
+        storage_mock.get_discussion_set_id_if_exists.side_effect \
+            = DiscussionSetNotFound
+
+        interactor = initialise_discussions_interactor
+
+        # Act
+        response = interactor.get_discussions_wrapper(
+            entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
+            offset_and_limit_dto=offset_and_limit_dto, presenter=presenter_mock,
+            sort_by_dto=sort_by_dto, filter_by_dto=filter_by_dto
+        )
+
+        # Assert
+        assert response == \
+               expected_presenter_discussion_set_id_mock
+        presenter_mock.raise_exception_for_discussion_set_not_found. \
+            assert_called_once()
+
     def test_validate_entity_id_raise_exception(
             self, presenter_mock, entity_id_and_entity_type_dto, storage_mock,
             offset_and_limit_dto, initialise_discussions_interactor,
@@ -214,7 +245,7 @@ class TestGetDiscussionsInteractor:
             discussion_set_id
         )
 
-        storage_mock.get_discussion_set_id.return_value \
+        storage_mock.get_discussion_set_id_if_exists.return_value \
             = discussion_set_id
         storage_mock.get_complete_discussion_dtos.return_value \
             = complete_discussion_dtos
@@ -249,7 +280,7 @@ class TestGetDiscussionsInteractor:
 
         # Assert
         assert response == expected_presenter_response_for_discussions
-        storage_mock.get_discussion_set_id.assert_called_once()
+        storage_mock.get_discussion_set_id_if_exists.assert_called_once()
         storage_mock.get_complete_discussion_dtos.assert_called_once_with(
             discussion_set_id=discussion_set_id,
             offset_and_limit_dto=offset_and_limit_dto,

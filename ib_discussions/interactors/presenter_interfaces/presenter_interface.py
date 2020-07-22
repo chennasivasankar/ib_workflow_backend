@@ -44,3 +44,7 @@ class GetDiscussionsPresenterInterface(ABC):
     @abstractmethod
     def raise_exception_for_invalid_user_id(self):
         pass
+
+    @abstractmethod
+    def raise_exception_for_discussion_set_not_found(self):
+        pass
