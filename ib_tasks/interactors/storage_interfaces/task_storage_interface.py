@@ -51,16 +51,11 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def update_gof_roles(self, gof_role_dtos: List[GoFRoleDTO]):
+    def delete_gof_roles(self, gof_ids: List[str]):
         pass
 
     @abc.abstractmethod
     def check_is_template_exists(self, template_id: str) -> bool:
-        pass
-
-    @abc.abstractmethod
-    def get_valid_template_ids_in_given_template_ids(
-            self, template_ids: List[str]) -> List[str]:
         pass
 
     @abc.abstractmethod
@@ -127,4 +122,17 @@ class TaskStorageInterface(abc.ABC):
     def update_global_constants_to_template(
             self, template_id: str,
             global_constants_dtos: List[GlobalConstantsDTO]):
+        pass
+
+
+    @abc.abstractmethod
+    def get_gof_dtos_for_given_gof_ids(
+            self, gof_ids: List[str]
+    ) -> List[GoFDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_valid_template_ids_in_given_template_ids(
+            self, template_ids: List[str]
+    ) -> List[str]:
         pass
