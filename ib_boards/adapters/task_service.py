@@ -6,9 +6,7 @@ Author: Pavankumar Pamuru
 from typing import List
 
 from ib_boards.interactors.dtos import TaskTemplateStagesDTO, \
-    TaskSummaryFieldsDTO
-
-from ib_boards.interactors.dtos import TaskStatusDTO
+    TaskSummaryFieldsDTO, TaskStatusDTO
 
 
 class TaskService:
@@ -17,7 +15,7 @@ class TaskService:
     def app_interface(self):
         # from ib_tasks.app_interfaces.service_interface import ServiceInterface
         # return ServiceInterface()
-        pass
+        return
 
     def get_valid_task_template_ids(
             self, task_template_ids: List[str]) -> List[str]:
@@ -31,6 +29,12 @@ class TaskService:
 
     def validate_task_template_stages_with_id(
             self, task_template_stages: List[TaskTemplateStagesDTO]):
+        pass
+
+    def validate_task_ids(self, task_ids: List[str]):
+        pass
+
+    def validate_stage_ids(self, stage_ids: List[str]):
         pass
 
     def validate_task_task_summary_fields_with_id(

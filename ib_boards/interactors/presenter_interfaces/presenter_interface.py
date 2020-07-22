@@ -81,6 +81,10 @@ class GetColumnTasksPresenterInterface(abc.ABC):
     def get_response_for_user_have_no_access_for_column(self):
         pass
 
+    @abc.abstractmethod
+    def get_response_for_invalid_stage_ids(self, error):
+        pass
+
 
 class StageDisplayLogicPresenterInterface(abc.ABC):
 

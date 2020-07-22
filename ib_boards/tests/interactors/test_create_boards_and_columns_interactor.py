@@ -74,8 +74,7 @@ class TestCreateBoardsAndColumnsInteractor:
 
     @pytest.fixture
     def column_dtos_with_empty_task_template_stages(self):
-        task_template_stages = TaskTemplateStagesDTOFactory.create_batch(2,
-                                                                         stages=[])
+        task_template_stages = TaskTemplateStagesDTOFactory.create_batch(2, stages=[])
         return [
             ColumnDTOFactory(),
             ColumnDTOFactory(task_template_stages=task_template_stages)
@@ -237,8 +236,7 @@ class TestCreateBoardsAndColumnsInteractor:
         )
 
         # Act
-        from ib_boards.exceptions.custom_exceptions import \
-            InvalidBoardDisplayName
+        from ib_boards.exceptions.custom_exceptions import InvalidBoardDisplayName
         with pytest.raises(InvalidBoardDisplayName) as error:
             assert interactor.create_boards_and_columns(
                 board_dtos=board_dtos_with_no_display_name,
@@ -412,8 +410,7 @@ class TestCreateBoardsAndColumnsInteractor:
         # Act
         from ib_boards.exceptions.custom_exceptions import \
             TaskTemplateStagesNotBelongsToTaskTemplateId
-        with pytest.raises(
-                TaskTemplateStagesNotBelongsToTaskTemplateId) as error:
+        with pytest.raises(TaskTemplateStagesNotBelongsToTaskTemplateId) as error:
             assert interactor.create_boards_and_columns(
                 board_dtos=board_dtos,
                 column_dtos=column_dtos
