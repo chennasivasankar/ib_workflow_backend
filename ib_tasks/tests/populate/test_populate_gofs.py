@@ -241,7 +241,7 @@ class TestPopulateGoFs:
                     value=gof_role_object.gof_id
                 )
                 snapshot.assert_match(
-                    name="gof_role".format(read_permission_role_counter),
+                    name="gof_read_permission_role {}".format(read_permission_role_counter),
                     value=gof_role_object.role
                 )
                 snapshot.assert_match(
@@ -262,7 +262,7 @@ class TestPopulateGoFs:
                     value=gof_role_object.gof_id
                 )
                 snapshot.assert_match(
-                    name="gof_role {}".format(write_permission_role_counter),
+                    name="gof_write_permission_role {}".format(write_permission_role_counter),
                     value=gof_role_object.role
                 )
                 snapshot.assert_match(
@@ -333,7 +333,7 @@ class TestPopulateGoFs:
                     value=gof_role_object.gof_id
                 )
                 snapshot.assert_match(
-                    name="gof_role".format(read_permission_role_counter),
+                    name="gof_read_permission_role {}".format(read_permission_role_counter),
                     value=gof_role_object.role
                 )
                 snapshot.assert_match(
@@ -354,7 +354,7 @@ class TestPopulateGoFs:
                     value=gof_role_object.gof_id
                 )
                 snapshot.assert_match(
-                    name="gof_role {}".format(write_permission_role_counter),
+                    name="gof_write_permission_role {}".format(write_permission_role_counter),
                     value=gof_role_object.role
                 )
                 snapshot.assert_match(
