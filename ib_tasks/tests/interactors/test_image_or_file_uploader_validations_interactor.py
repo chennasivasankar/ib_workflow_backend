@@ -9,7 +9,7 @@ from ib_tasks.interactors.image_or_file_uploader_validations_interactor \
 
 class TestImageOrFileUploaderValidationsInteractor:
 
-    @pytest.mark.parametrize("field_type", [FieldTypes.IMAGE_UPLOADER, FieldTypes.FILE_UPLOADER.value])
+    @pytest.mark.parametrize("field_type", [FieldTypes.IMAGE_UPLOADER.value, FieldTypes.FILE_UPLOADER.value])
     def test_given_empty_values_for_allowed_format_raise_exception(self, field_type):
         # Arrange
         from ib_tasks.exceptions.custom_exceptions \
@@ -85,7 +85,7 @@ class TestImageOrFileUploaderValidationsInteractor:
         # Assert
         assert str(err.value) == exception_message
 
-    @pytest.mark.parametrize("field_type", [FieldTypes.IMAGE_UPLOADER, FieldTypes.FILE_UPLOADER.value])
+    @pytest.mark.parametrize("field_type", [FieldTypes.IMAGE_UPLOADER.value, FieldTypes.FILE_UPLOADER.value])
     def test_given_empty_values_for_allowed_formats_raise_exception(self, field_type):
         # Arrange
         from ib_tasks.exceptions.custom_exceptions \

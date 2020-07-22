@@ -17,7 +17,7 @@ from ib_tasks.exceptions.custom_exceptions import (
 )
 
 
-class CreateOrUpdateFieldsBaseVaidationInteractor:
+class CreateOrUpdateFieldsBaseValidationInteractor:
 
     def __init__(self, storage: TaskStorageInterface):
         self.storage = storage
@@ -93,39 +93,18 @@ class CreateOrUpdateFieldsBaseVaidationInteractor:
 
         from ib_tasks.constants.exception_messages \
             import INVALID_FIELDS_DISPLAY_NAMES
-        invalid_field_display_names = []
+        field_ids = []
 
         for field_dto in field_dtos:
             field_display_name = field_dto.field_display_name.strip()
             is_field_display_name_empty = not field_display_name
             if is_field_display_name_empty:
-                invalid_field_display_name_dict = {
-                    "field_id": field_dto.field_id,
-                    "display_name": field_dto.field_display_name
-                }
-                invalid_field_display_names.append(invalid_field_display_name_dict)
+                field_ids.append(field_dto.field_id)
 
-        if invalid_field_display_names:
+        if field_ids:
             raise InvalidValueForFieldDisplayName(
-                INVALID_FIELDS_DISPLAY_NAMES.format(invalid_field_display_names)
+                INVALID_FIELDS_DISPLAY_NAMES.format(field_ids)
             )
-        return
-
-    @staticmethod
-    def _validate_field_type(
-            field_dtos: List[FieldDTO]
-    ) -> Optional[InvalidValueForFieldType]:
-
-        from ib_tasks.constants.exception_messages \
-            import INVALID_VALUES_FOR_FIELD_TYPES
-        from ib_tasks.constants.constants import FIELD_TYPES_LIST
-
-        for field_dto in field_dtos:
-            field_type = field_dto.field_type
-            if field_type not in FIELD_TYPES_LIST:
-                raise InvalidValueForFieldType(
-                    INVALID_VALUES_FOR_FIELD_TYPES.format(FIELD_TYPES_LIST)
-                )
         return
 
     @staticmethod

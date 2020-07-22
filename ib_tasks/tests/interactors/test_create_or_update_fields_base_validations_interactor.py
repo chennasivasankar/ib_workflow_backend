@@ -1,7 +1,7 @@
 import pytest
 from ib_tasks.tests.factories.storage_dtos import FieldDTOFactory
 from ib_tasks.interactors.create_or_update_fields_base_validations_interactor \
-    import CreateOrUpdateFieldsBaseVaidationInteractor
+    import CreateOrUpdateFieldsBaseValidationInteractor
 
 
 class TestCreateOrUpdateFieldsBaseVaidationInteractor:
@@ -21,7 +21,7 @@ class TestCreateOrUpdateFieldsBaseVaidationInteractor:
 
         field_dtos = [FieldDTOFactory(), FieldDTOFactory(field_id=" ")]
         from ib_tasks.exceptions.custom_exceptions import FieldIdEmptyValueException
-        interactor = CreateOrUpdateFieldsBaseVaidationInteractor(storage=storage_mock)
+        interactor = CreateOrUpdateFieldsBaseValidationInteractor(storage=storage_mock)
 
         # Act
         with pytest.raises(FieldIdEmptyValueException) as err:
@@ -43,7 +43,7 @@ class TestCreateOrUpdateFieldsBaseVaidationInteractor:
         ]
         duplication_of_field_ids = ["FIN_SALUATION"]
         exception_message = DUPLICATION_OF_FIELD_IDS.format(duplication_of_field_ids)
-        interactor = CreateOrUpdateFieldsBaseVaidationInteractor(storage=storage_mock)
+        interactor = CreateOrUpdateFieldsBaseValidationInteractor(storage=storage_mock)
 
         # Act
         with pytest.raises(DuplicationOfFieldIdsExist) as err:
@@ -67,18 +67,9 @@ class TestCreateOrUpdateFieldsBaseVaidationInteractor:
             FieldDTOFactory(field_id="field3", field_display_name=" "),
             FieldDTOFactory(field_id="field4")
         ]
-        invalid_fields_display_names = [
-            {
-                "field_id": "field2",
-                "display_name": ""
-            },
-            {
-                "field_id": "field3",
-                "display_name": " "
-            }
-        ]
-        exception_message = INVALID_FIELDS_DISPLAY_NAMES.format(invalid_fields_display_names)
-        interactor = CreateOrUpdateFieldsBaseVaidationInteractor(storage=storage_mock)
+        field_ids = ["field2", "field3"]
+        exception_message = INVALID_FIELDS_DISPLAY_NAMES.format(field_ids)
+        interactor = CreateOrUpdateFieldsBaseValidationInteractor(storage=storage_mock)
 
         # Act
         with pytest.raises(InvalidValueForFieldDisplayName) as err:
@@ -103,7 +94,7 @@ class TestCreateOrUpdateFieldsBaseVaidationInteractor:
         ]
         field_ids = ["field1", "field2"]
 
-        interactor = CreateOrUpdateFieldsBaseVaidationInteractor(storage=storage_mock)
+        interactor = CreateOrUpdateFieldsBaseValidationInteractor(storage=storage_mock)
         error_message = INVALID_VALUES_FOR_FIELD_TYPES.format(FIELD_TYPES_LIST, field_ids)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
         storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
@@ -120,7 +111,7 @@ class TestCreateOrUpdateFieldsBaseVaidationInteractor:
         from ib_tasks.constants.exception_messages import INVALID_GOF_IDS_EXCEPTION_MESSAGE
         from ib_tasks.exceptions.custom_exceptions import InvalidGOFIds
         field_dtos = [FieldDTOFactory(), FieldDTOFactory(gof_id="Hello"), FieldDTOFactory(gof_id="")]
-        interactor = CreateOrUpdateFieldsBaseVaidationInteractor(storage=storage_mock)
+        interactor = CreateOrUpdateFieldsBaseValidationInteractor(storage=storage_mock)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
         invalid_gof_ids = ["Hello", ""]
         error_message = INVALID_GOF_IDS_EXCEPTION_MESSAGE.format(invalid_gof_ids)

@@ -50,7 +50,7 @@ class TestGoFSelectorValidationsInteractor:
 
         # Act
         with pytest.raises(InvalidJsonForFieldValue) as err:
-            interactor.gof_selecter_validations(field_dto)
+            interactor.gof_selector_validations(field_dto)
 
         # Assert
         assert str(err.value) == error_message
@@ -87,7 +87,7 @@ class TestGoFSelectorValidationsInteractor:
 
         # Act
         with pytest.raises(EmptyValuesForGoFNames) as err:
-            interactor.gof_selecter_validations(field_dto)
+            interactor.gof_selector_validations(field_dto)
 
         # Assert
         assert str(err.value) == error_message
@@ -131,7 +131,7 @@ class TestGoFSelectorValidationsInteractor:
 
         # Act
         with pytest.raises(DuplicationOfGoFNamesForFieldValues) as err:
-            interactor.gof_selecter_validations(field_dto)
+            interactor.gof_selector_validations(field_dto)
 
         # Assert
         assert str(err.value) == error_message
@@ -160,7 +160,7 @@ class TestGoFSelectorValidationsInteractor:
             field_type=FieldTypes.GOF_SELECTOR.value,
             field_values=field_values
         )
-        invalid_gof_ids = ["GST_DETAILS", "CUSTOMER_DETAILS"]
+        invalid_gof_ids = ["CUSTOMER_DETAILS", "GST_DETAILS"]
         exception_message = {
             "field_id": "field1",
             "invalid_gof_ids": invalid_gof_ids
@@ -172,7 +172,48 @@ class TestGoFSelectorValidationsInteractor:
 
         # Act
         with pytest.raises(InvalidGOFIds) as err:
-            interactor.gof_selecter_validations(field_dto)
+            interactor.gof_selector_validations(field_dto)
 
         # Assert
         assert str(err.value) == error_message
+
+    def test_eliminate_duplication_of_gof_ids(self, storage_mock):
+        # Arrange
+        field_values = [
+            {
+                "name": "Individual",
+                "gof_ids": ["GST_DETAILS", "CUSTOMER_DETAILS", "CUSTOMER_DETAILS"]
+            },
+            {
+                "name": "Company",
+                "gof_ids": ["GST_DETAILS", "FIN_VENDOR_BASIC_DETAILS", "GST_DETAILS"]
+            }
+        ]
+        field_values = json.dumps(field_values)
+        field_dto = FieldDTOFactory(
+            field_id="field1",
+            field_type=FieldTypes.GOF_SELECTOR.value,
+            field_values=field_values
+        )
+        expected_field_values = [
+            {
+                "name": "Individual",
+                "gof_ids": ["CUSTOMER_DETAILS", "GST_DETAILS"]
+            },
+            {
+                "name": "Company",
+                "gof_ids": ["FIN_VENDOR_BASIC_DETAILS", "GST_DETAILS"]
+            }
+        ]
+        existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS", "CUSTOMER_DETAILS", "GST_DETAILS"]
+        storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
+
+        expected_field_values = json.dumps(expected_field_values)
+        interactor = GoFSelectorValidationsInteractor(storage=storage_mock)
+
+        # Act
+        interactor.gof_selector_validations(field_dto)
+
+        # Assert
+
+        assert field_dto.field_values == expected_field_values

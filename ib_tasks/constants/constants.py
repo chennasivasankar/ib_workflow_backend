@@ -26,9 +26,14 @@ MULTI_VALUES_INPUT_FIELDS = [
     FieldTypes.MULTI_SELECT_LABELS.value
 ]
 
-GOOGLE_SHEET_NAME = "FinMan Configuration"
+GOOGLE_SHEET_NAME = "FinMan Configuration_Dev_Test"
 
 FIELD_SUB_SHEET_TITLE = "Fields"
+
+UPLOADERS = [
+    FieldTypes.IMAGE_UPLOADER.value,
+    FieldTypes.FILE_UPLOADER.value
+]
 
 
 

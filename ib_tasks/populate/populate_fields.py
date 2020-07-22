@@ -1,9 +1,8 @@
 import json
 from typing import List, Dict
 
-from ib_tasks.constants.enum import FieldTypes
 from ib_tasks.interactors.storage_interfaces.dtos import FieldDTO, FieldRolesDTO
-from ib_tasks.constants.constants import MULTI_VALUES_INPUT_FIELDS
+from ib_tasks.constants.constants import MULTI_VALUES_INPUT_FIELDS, UPLOADERS
 
 
 def create_fields():
@@ -19,15 +18,15 @@ def create_fields():
     sheet = read_google_sheet(sheet_name=GOOGLE_SHEET_NAME)
     fields_config_sheet = sheet.worksheet(FIELD_SUB_SHEET_TITLE)
     field_records = fields_config_sheet.get_all_records()
-    field_dtos = _prepare_field_dtos(field_records)
-    field_roles_dtos = _prepare_field_roles_dtos(field_records)
+    field_dtos = prepare_field_dtos(field_records)
+    field_roles_dtos = prepare_field_roles_dtos(field_records)
 
     storage = TasksStorageImplementation()
     interactor = CreateOrUpdateFieldsInteractor(storage=storage)
-    interactor.create_or_update_fields_interactor(field_dtos, field_roles_dtos)
+    interactor.create_or_update_fields(field_dtos, field_roles_dtos)
 
 
-def _prepare_field_dtos(field_records: List[Dict]) -> List[FieldDTO]:
+def prepare_field_dtos(field_records: List[Dict]) -> List[FieldDTO]:
     field_dtos = []
     for field_record in field_records:
         field_type = field_record["Field Type*"]
@@ -59,14 +58,14 @@ def _prepare_field_dtos(field_records: List[Dict]) -> List[FieldDTO]:
             allowed_formats = None
         if field_values.strip() == "":
             field_values = None
-        if field_type == FieldTypes.GOF_SELECTOR.value and field_values is not None:
-            field_values = json.dumps(field_values)
-        if (field_type in MULTI_VALUES_INPUT_FIELDS) and field_values is not None:
+        if field_type in MULTI_VALUES_INPUT_FIELDS and field_values is not None:
             field_values = field_values.split("\r\n")
-        if (field_type == FieldTypes.FILE_UPLOADER.value
-                or field_type == FieldTypes.IMAGE_UPLOADER.value
-            ) and allowed_formats is not None:
+        if field_type in MULTI_VALUES_INPUT_FIELDS and field_values is None:
+            field_values = []
+        if field_type in UPLOADERS and allowed_formats is not None:
             allowed_formats = allowed_formats.split("\r\n")
+        if field_type in UPLOADERS and allowed_formats is None:
+            allowed_formats = []
 
         field_dto = FieldDTO(
             gof_id=field_record["GOF ID*"],
@@ -86,7 +85,7 @@ def _prepare_field_dtos(field_records: List[Dict]) -> List[FieldDTO]:
     return field_dtos
 
 
-def _prepare_field_roles_dtos(
+def prepare_field_roles_dtos(
         field_records: List[Dict]
 ) -> List[FieldRolesDTO]:
 

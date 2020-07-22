@@ -4,7 +4,29 @@ from ib_tasks.tests.factories.storage_dtos import \
 from ib_tasks.interactors.multi_values_input_fileds_validation_interactor \
     import MultiValuesInputFieldsValidationInteractor
 
+
 class TestMultiValuesInputFieldsValidationInteractor:
+
+    def test_given_field_values_is_empty_raise_exceptions(self):
+        # Arrange
+        from ib_tasks.exceptions.custom_exceptions \
+            import EmptyValuesForFieldValues
+        from ib_tasks.constants.exception_messages \
+            import EMPTY_VALUE_FOR_FIELD_VALUE
+
+        field_dto = FieldDTOFactory(
+            field_id="field1", field_values=[]
+        )
+        field_id = "field1"
+        exception_message = EMPTY_VALUE_FOR_FIELD_VALUE.format(field_id)
+        interactor = MultiValuesInputFieldsValidationInteractor()
+
+        # Act
+        with pytest.raises(EmptyValuesForFieldValues) as err:
+            interactor.multi_values_input_fields_validations(field_dto)
+
+        # Assert
+        assert str(err.value) == exception_message
 
     def test_given_empty_values_in_field_values_raise_exceptions(self):
         # Arrange

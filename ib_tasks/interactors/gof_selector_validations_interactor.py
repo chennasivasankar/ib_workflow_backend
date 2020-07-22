@@ -1,5 +1,5 @@
 import json
-from typing import List, Optional
+from typing import List, Dict, Union, Optional
 from json.decoder import JSONDecodeError
 import collections
 
@@ -19,7 +19,7 @@ class GoFSelectorValidationsInteractor:
     def __init__(self, storage: TaskStorageInterface):
         self.storage = storage
 
-    def gof_selecter_validations(self, field_dto: FieldDTO):
+    def gof_selector_validations(self, field_dto: FieldDTO):
         field_values = self._check_for_valid_json(field_dto)
         gof_names = self._get_gof_names(field_values)
         field_id = field_dto.field_id
@@ -27,11 +27,23 @@ class GoFSelectorValidationsInteractor:
         self._check_for_duplication_of_gof_names(gof_names, field_id)
         gof_ids = self._get_gof_ids(field_values)
         self._validate_gof_ids(gof_ids, field_id)
+        field_values = self._eliminate_duplication_of_gof_ids(field_values)
+        field_dto.field_values = json.dumps(field_values)
+
+    @staticmethod
+    def _eliminate_duplication_of_gof_ids(
+            field_values: List[Dict]
+    ) -> List[Dict]:
+
+        for field_value_dict in field_values:
+            gof_ids = field_value_dict["gof_ids"]
+            field_value_dict["gof_ids"] = sorted(list(set(gof_ids)))
+        return field_values
 
     @staticmethod
     def _check_for_valid_json(
             field_dto: FieldDTO
-    ) -> Optional[InvalidJsonForFieldValue]:
+    ) -> Union[InvalidJsonForFieldValue, List[Dict]]:
 
         from ib_tasks.constants.exception_messages import INVALID_JSON
 
@@ -44,9 +56,9 @@ class GoFSelectorValidationsInteractor:
         return field_values
 
     @staticmethod
-    def _get_gof_names(field_vaues) -> List[str]:
+    def _get_gof_names(field_values) -> List[str]:
         gof_names = []
-        for field_value in field_vaues:
+        for field_value in field_values:
             name = field_value['name']
             gof_names.append(name)
         return gof_names
@@ -107,7 +119,6 @@ class GoFSelectorValidationsInteractor:
         from ib_tasks.constants.exception_messages \
             import INVALID_GOF_IDS_EXCEPTION_MESSAGE
         existing_gof_ids = self.storage.get_existing_gof_ids(gof_ids)
-        print("gof_ids = ", gof_ids)
         invalid_gof_ids = []
 
         for gof_id in gof_ids:
@@ -115,7 +126,7 @@ class GoFSelectorValidationsInteractor:
                 invalid_gof_ids.append(gof_id)
 
         if invalid_gof_ids:
-            gof_ids = self._eliminate_duplication_of_gof_ids(invalid_gof_ids)
+            gof_ids = sorted(list(set(invalid_gof_ids)))
             exception_message = {
                 "field_id": field_id,
                 "invalid_gof_ids": gof_ids
@@ -124,16 +135,3 @@ class GoFSelectorValidationsInteractor:
                 INVALID_GOF_IDS_EXCEPTION_MESSAGE.format(exception_message)
             )
         return
-
-    @staticmethod
-    def _eliminate_duplication_of_gof_ids(
-            invalid_gof_ids: List[str]
-    ) -> List[str]:
-
-        gof_ids = []
-        for gof_id in invalid_gof_ids:
-            if gof_id not in gof_ids:
-                gof_ids.append(gof_id)
-        return gof_ids
-
-

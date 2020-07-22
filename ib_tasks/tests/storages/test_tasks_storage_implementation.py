@@ -2,6 +2,7 @@ import factory
 import pytest
 from typing import List
 
+from ib_tasks.models import FieldRole
 from ib_tasks.models.gof_role import GoFRole
 from ib_tasks.tests.factories.models import (
     GoFFactory, TaskTemplateFactory,
@@ -265,7 +266,9 @@ class TestTasksStorageImplementation:
             assert field_obj.error_messages == field_dto.error_message
             assert field_obj.validation_regex == field_dto.validation_regex
 
-    def test_create_field_roles_given_field_roles_dtos(self, storage, reset_factories):
+    def test_create_field_roles_given_field_roles_dtos(
+            self, storage, reset_factories
+    ):
         # Arrange
         from ib_tasks.tests.factories.storage_dtos import FieldRoleDTOFactory
         from ib_tasks.constants.enum import PermissionTypes
@@ -306,69 +309,14 @@ class TestTasksStorageImplementation:
 
         assert expected_existing_gof_ids == actual_existing_gof_ids
 
-    def test_update_field_roles_given_field_roles_dtos(self, storage, reset_factories):
+    def test_delete_field_roles_given_field_ids(self, storage):
         # Arrange
-        from ib_tasks.tests.factories.storage_dtos import FieldRoleDTOFactory
-        from ib_tasks.constants.enum import PermissionTypes
-
-        FieldFactory(field_id="field10")
-        FieldFactory(field_id="field20")
-        FieldRoleFactory(field_id="field10", role="FIN_PAYMENT_REQUESTER")
-        FieldRoleFactory(field_id="field20", role="FIN_PAYMENT_APPROVER")
-        field_role_dtos = [
-            FieldRoleDTOFactory(field_id="field10", role="FIN_PAYMENT_REQUESTER"),
-            FieldRoleDTOFactory(
-                field_id="field20",
-                role="FIN_PAYMENT_APPROVER",
-                permission_type=PermissionTypes.WRITE.value
-            )
-        ]
+        field_roles = FieldRoleFactory.create_batch(size=2)
+        field_ids = [field_role.field_id for field_role in field_roles]
 
         # Act
-        storage.update_fields_roles(field_role_dtos)
+        storage.delete_field_roles(field_ids)
 
         # Assert
-        from ib_tasks.models.field_role import FieldRole
-        for field_role_dto in field_role_dtos:
-            field_role_obj = FieldRole.objects.get(
-                field_id=field_role_dto.field_id,
-                role=field_role_dto.role
-            )
-            assert field_role_dto.permission_type == field_role_obj.permission_type
-
-    def test_get_fields_role_dtos_given_field_ids(self, storage, reset_factories):
-        # Arrange
-        from ib_tasks.tests.factories.storage_dtos import FieldRoleDTOFactory
-        from ib_tasks.constants.enum import PermissionTypes
-        FieldFactory(field_id="field100")
-        FieldFactory(field_id="field200")
-        field_ids = ["field100", "field200", "field100"]
-        FieldRoleFactory(
-            field_id="field100",
-            role="FIN_PAYMENT_REQUESTER",
-            permission_type=PermissionTypes.READ.value
-        )
-        FieldRoleFactory(
-            field_id="field100",
-            role="FIN_PAYMENT_APPROVER",
-            permission_type=PermissionTypes.READ.value
-        )
-        expected_field_role_dtos = [
-            FieldRoleDTOFactory(
-                field_id="field100",
-                role="FIN_PAYMENT_REQUESTER",
-                permission_type=PermissionTypes.READ.value
-            ),
-            FieldRoleDTOFactory(
-                field_id="field100",
-                role="FIN_PAYMENT_APPROVER",
-                permission_type=PermissionTypes.READ.value
-            )
-        ]
-
-        # Act
-        actual_field_role_dtos = storage.get_fields_role_dtos(field_ids)
-
-        # Assert
-
-        assert actual_field_role_dtos == expected_field_role_dtos
+        field_roles = list(FieldRole.objects.filter(field_id__in=field_ids))
+        assert field_roles == []

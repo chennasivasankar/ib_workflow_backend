@@ -142,17 +142,8 @@ class TestCreateOrUpdateFields:
             FieldDTOFactory(field_id="field3", field_display_name=" "),
             FieldDTOFactory(field_id="field4")
         ]
-        invalid_fields_display_names = [
-            {
-                "field_id": "field2",
-                "display_name": ""
-            },
-            {
-                "field_id": "field3",
-                "display_name": " "
-            }
-        ]
-        exception_message = INVALID_FIELDS_DISPLAY_NAMES.format(invalid_fields_display_names)
+        field_ids = ["field2", "field3"]
+        exception_message = INVALID_FIELDS_DISPLAY_NAMES.format(field_ids)
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
         # Act
@@ -519,6 +510,34 @@ class TestCreateOrUpdateFields:
         # Assert
         assert str(err.value) == exception_message
 
+    def test_given_field_values_is_empty_raise_exceptions(
+            self, storage, valid_field_roles_dtos, populate_gofs
+    ):
+        # Arrange
+        from ib_tasks.exceptions.custom_exceptions \
+            import EmptyValuesForFieldValues
+        from ib_tasks.constants.exception_messages \
+            import EMPTY_VALUE_FOR_FIELD_VALUE
+
+        field_dtos = [
+            FieldDTOFactory(
+                field_id="field1", field_values=[]
+            )
+        ]
+        field_id = "field1"
+        exception_message = EMPTY_VALUE_FOR_FIELD_VALUE.format(field_id)
+        interactor = CreateOrUpdateFieldsInteractor(storage=storage)
+
+        # Act
+        with pytest.raises(EmptyValuesForFieldValues) as err:
+            interactor.create_or_update_fields(
+                field_dtos=field_dtos,
+                field_roles_dtos=valid_field_roles_dtos
+            )
+
+        # Assert
+        assert str(err.value) == exception_message
+
     def test_given_duplication_of_field_values_raise_exception(
             self, storage, valid_field_roles_dtos, populate_gofs
     ):
@@ -707,7 +726,7 @@ class TestCreateOrUpdateFields:
                 field_values=field_values
             )
         ]
-        invalid_gof_ids = ["GST_DETAILS", "CUSTOMER_DETAILS"]
+        invalid_gof_ids = ["CUSTOMER_DETAILS", "GST_DETAILS"]
         exception_message = {
             "field_id": "field1",
             "invalid_gof_ids": invalid_gof_ids
@@ -725,18 +744,220 @@ class TestCreateOrUpdateFields:
         # Assert
         assert str(err.value) == error_message
 
+    @pytest.mark.parametrize("field_type", [FieldTypes.IMAGE_UPLOADER.value, FieldTypes.FILE_UPLOADER.value])
+    def test_given_empty_values_for_allowed_format_raise_exception(
+            self, field_type, storage, reset_field_dto,
+            valid_field_roles_dtos, populate_gofs
+    ):
+        # Arrange
+        from ib_tasks.exceptions.custom_exceptions \
+            import AllowedFormatsEmptyValueException
+        from ib_tasks.constants.exception_messages \
+            import ALLOWED_FORMAT_EMPTY_VALUES_EXCEPTION
+
+        field_dtos = [
+            FieldDTOFactory(
+                field_id="field1",
+                field_type=field_type,
+                allowed_formats=[]
+            )
+        ]
+        field_id = "field1"
+        exception_message = ALLOWED_FORMAT_EMPTY_VALUES_EXCEPTION.format(field_id)
+        interactor = CreateOrUpdateFieldsInteractor(storage=storage)
+
+        # Act
+        with pytest.raises(AllowedFormatsEmptyValueException) as err:
+            interactor.create_or_update_fields(
+                field_dtos=field_dtos,
+                field_roles_dtos=valid_field_roles_dtos
+            )
+
+        # Assert
+        assert str(err.value) == exception_message
+
+    def test_given_duplication_of_allowed_formats_for_field_type_image_uploder_raise_exception(
+            self, storage, reset_field_dto,
+            valid_field_roles_dtos, populate_gofs
+    ):
+        # Arrange
+        from ib_tasks.exceptions.custom_exceptions \
+            import FieldsDuplicationOfAllowedFormatsValues
+        from ib_tasks.constants.exception_messages \
+            import FIELD_DUPLICATION_OF_ALLOWED_FORMATS
+
+        field_dtos = [
+            FieldDTOFactory(
+                field_id="field1",
+                field_type=FieldTypes.IMAGE_UPLOADER.value,
+                allowed_formats=[".jpg", ".jpg", ".mpeg"]
+            )
+        ]
+        duplication_of_values = [".jpg"]
+        duplication_of_values_dict = {
+            "field_id": "field1",
+            "field_type": FieldTypes.IMAGE_UPLOADER.value,
+            "duplication_of_values": duplication_of_values
+        }
+        exception_message = FIELD_DUPLICATION_OF_ALLOWED_FORMATS.format(duplication_of_values_dict)
+        interactor = CreateOrUpdateFieldsInteractor(storage=storage)
+
+        # Act
+        with pytest.raises(FieldsDuplicationOfAllowedFormatsValues) as err:
+            interactor.create_or_update_fields(
+                field_dtos=field_dtos,
+                field_roles_dtos=valid_field_roles_dtos
+            )
+
+        # Assert
+        assert str(err.value) == exception_message
+
+    def test_given_duplication_of_allowed_formats_for_field_type_file_uploader_raise_exception(
+            self, storage, reset_field_dto,
+            valid_field_roles_dtos, populate_gofs
+    ):
+        # Arrange
+        from ib_tasks.exceptions.custom_exceptions \
+            import FieldsDuplicationOfAllowedFormatsValues
+        from ib_tasks.constants.exception_messages \
+            import FIELD_DUPLICATION_OF_ALLOWED_FORMATS
+
+        field_dtos = [
+            FieldDTOFactory(
+                field_id="field1",
+                field_type=FieldTypes.FILE_UPLOADER.value,
+                allowed_formats=[".pdf", ".pdf"]
+            )
+        ]
+        duplication_of_values = [".pdf"]
+        duplication_of_values_dict = {
+            "field_id": "field1",
+            "field_type": FieldTypes.FILE_UPLOADER.value,
+            "duplication_of_values": duplication_of_values
+        }
+        exception_message = FIELD_DUPLICATION_OF_ALLOWED_FORMATS.format(duplication_of_values_dict)
+        interactor = CreateOrUpdateFieldsInteractor(storage=storage)
+
+        # Act
+        with pytest.raises(FieldsDuplicationOfAllowedFormatsValues) as err:
+            interactor.create_or_update_fields(
+                field_dtos=field_dtos,
+                field_roles_dtos=valid_field_roles_dtos
+            )
+
+        # Assert
+        assert str(err.value) == exception_message
+
+    @pytest.mark.parametrize("field_type", [FieldTypes.IMAGE_UPLOADER.value, FieldTypes.FILE_UPLOADER.value])
+    def test_given_empty_values_for_allowed_formats_raise_exception(
+            self, field_type, storage, reset_field_dto,
+            valid_field_roles_dtos, populate_gofs
+    ):
+        # Arrange
+        from ib_tasks.exceptions.custom_exceptions \
+            import EmptyValuesForAllowedFormats
+        from ib_tasks.constants.exception_messages \
+            import EMPTY_VALUES_FOR_ALLOWED_FORMATS
+
+        field_dtos = [
+            FieldDTOFactory(
+                field_id="field1",
+                field_type=field_type,
+                allowed_formats=[".pdf", "  "]
+            )
+        ]
+        field_id = "field1"
+        exception_message = EMPTY_VALUES_FOR_ALLOWED_FORMATS.format(field_id)
+        interactor = CreateOrUpdateFieldsInteractor(storage=storage)
+
+        # Act
+        with pytest.raises(EmptyValuesForAllowedFormats) as err:
+            interactor.create_or_update_fields(
+                field_dtos=field_dtos,
+                field_roles_dtos=valid_field_roles_dtos
+            )
+
+        # Assert
+        assert str(err.value) == exception_message
+
+    def test_given_empty_values_for_field_values_for_field_type_searchable_raise_exception(
+            self, storage, reset_field_dto,
+            valid_field_roles_dtos, populate_gofs
+    ):
+        # Arrange
+        from ib_tasks.constants.constants import SEARCHABLE_VALUES
+        from ib_tasks.exceptions.custom_exceptions \
+            import InvalidValueForSearchable
+        from ib_tasks.constants.exception_messages \
+            import INVALID_VALUE_FOR_SEARCHABLE
+        field_dtos = [
+            FieldDTOFactory(
+                field_id="field1",
+                field_type=FieldTypes.SEARCHABLE.value,
+                field_values=" "
+            )
+        ]
+        field_id = "field1"
+        exception_message = INVALID_VALUE_FOR_SEARCHABLE.format(
+            SEARCHABLE_VALUES, field_id
+        )
+        interactor = CreateOrUpdateFieldsInteractor(storage=storage)
+
+        # Act
+        with pytest.raises(InvalidValueForSearchable) as err:
+            interactor.create_or_update_fields(
+                field_dtos=field_dtos,
+                field_roles_dtos=valid_field_roles_dtos
+            )
+
+        # Assert
+        assert str(err.value) == exception_message
+
+    def test_given_invalid_field_values_for_field_type_searchable_raise_exception(
+            self, storage, reset_field_dto,
+            valid_field_roles_dtos, populate_gofs
+    ):
+        # Arrange
+        from ib_tasks.constants.constants import SEARCHABLE_VALUES
+        from ib_tasks.exceptions.custom_exceptions \
+            import InvalidValueForSearchable
+        from ib_tasks.constants.exception_messages \
+            import INVALID_VALUE_FOR_SEARCHABLE
+        field_dtos = [
+            FieldDTOFactory(
+                field_id="field1",
+                field_type=FieldTypes.SEARCHABLE.value,
+                field_values="Hello"
+            )
+        ]
+        field_id = "field1"
+        exception_message = INVALID_VALUE_FOR_SEARCHABLE.format(
+            SEARCHABLE_VALUES, field_id
+        )
+        interactor = CreateOrUpdateFieldsInteractor(storage=storage)
+
+        # Act
+        with pytest.raises(InvalidValueForSearchable) as err:
+            interactor.create_or_update_fields(
+                field_dtos=field_dtos,
+                field_roles_dtos=valid_field_roles_dtos
+            )
+
+        # Assert
+        assert str(err.value) == exception_message
 
     def test_create_fields_and_fields_roles_given_field_dtos_and_field_role_dtos(
             self, storage, reset_factories
     ):
         # Arrange
+        import json
         GoFFactory(gof_id="gof1")
         GoFFactory(gof_id="gof2")
 
         field_values = [
             {
                 "name": "Individual",
-                "gof_ids": ["gof2", "gof1"]
+                "gof_ids": ["gof1", "gof2"]
             },
             {
                 "name": "Company",
@@ -813,7 +1034,6 @@ class TestCreateOrUpdateFields:
                 permission_type=PermissionTypes.WRITE.value
             )
         ]
-
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
         # Act
@@ -834,6 +1054,7 @@ class TestCreateOrUpdateFields:
     def _assert_field_dto_and_field_obj(
             self, field_obj: Field, field_dto: FieldDTOFactory
     ):
+
         assert field_obj.gof_id == field_dto.gof_id
         assert field_obj.display_name == field_dto.field_display_name
         assert field_obj.field_type == field_dto.field_type
@@ -863,7 +1084,7 @@ class TestCreateOrUpdateFields:
         field_values = [
             {
                 "name": "Individual",
-                "gof_ids": ["gof1", "gof0"]
+                "gof_ids": ["gof0", "gof1"]
             },
             {
                 "name": "Company",
@@ -949,7 +1170,7 @@ class TestCreateOrUpdateFields:
         field_values = [
             {
                 "name": "Individual",
-                "gof_ids": ["gof2", "gof1"]
+                "gof_ids": ["gof1", "gof2"]
             },
             {
                 "name": "Company",

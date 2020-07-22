@@ -79,10 +79,6 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def update_fields_roles(self, field_role_dtos: List[FieldRoleDTO]):
-        pass
-
-    @abc.abstractmethod
     def create_fields_roles(self, field_role_dtos: List[FieldRoleDTO]):
         pass
 
@@ -92,10 +88,6 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_existing_gof_ids(self, gof_ids: List[str]) -> List[str]:
-        pass
-
-    @abc.abstractmethod
-    def get_fields_role_dtos(self, field_ids: List[str]) -> List[str]:
         pass
 
     @abc.abstractmethod
@@ -131,4 +123,8 @@ class TaskStorageInterface(abc.ABC):
     def update_global_constants_to_template(
             self, template_id: str,
             global_constants_dtos: List[GlobalConstantsDTO]):
+        pass
+
+    @abc.abstractmethod
+    def delete_field_roles(self, field_ids: List[str]):
         pass

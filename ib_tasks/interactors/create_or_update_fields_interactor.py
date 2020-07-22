@@ -13,6 +13,14 @@ from ib_tasks.interactors.multi_values_input_fileds_validation_interactor \
 from ib_tasks.interactors.gof_selector_validations_interactor \
     import GoFSelectorValidationsInteractor
 
+from ib_tasks.interactors.image_or_file_uploader_validations_interactor \
+    import ImageOrFileUploaderValidationsInteractor
+
+from ib_tasks.interactors.field_type_searchable_validations_interactor \
+    import FieldTypeSearchableValidationsInteractor
+
+from ib_tasks.constants.constants import MULTI_VALUES_INPUT_FIELDS, UPLOADERS
+
 
 class CreateOrUpdateFieldsInteractor:
 
@@ -25,28 +33,32 @@ class CreateOrUpdateFieldsInteractor:
     ):
         self._check_for_base_validations(field_dtos)
         self._check_for_field_roles_validations(field_roles_dtos)
-        self._vlidate_field_values_based_on_field_types(field_dtos)
+        self._validate_field_values_based_on_field_types(field_dtos)
         field_role_dtos = self._get_field_role_dtos(field_roles_dtos)
-
         new_field_dtos, existing_field_dtos = self._get_field_dtos(field_dtos)
-        new_field_role_dtos, existing_field_role_dtos = \
-            self._get_new_and_exist_field_role_dtos(field_role_dtos)
 
         if new_field_dtos:
             self.storage.create_fields(new_field_dtos)
         if existing_field_dtos:
+            exist_field_ids = self._get_field_ids(existing_field_dtos)
+            self.storage.delete_field_roles(exist_field_ids)
             self.storage.update_fields(existing_field_dtos)
-        if new_field_role_dtos:
-            self.storage.create_fields_roles(new_field_role_dtos)
-        if existing_field_role_dtos:
-            self.storage.update_fields_roles(existing_field_role_dtos)
+        self.storage.create_fields_roles(field_role_dtos)
+
+    @staticmethod
+    def _get_field_ids(existing_field_dtos):
+        field_ids = [
+            existing_field_dto.field_id
+            for existing_field_dto in existing_field_dtos
+        ]
+        return field_ids
 
     def _check_for_base_validations(self, field_dtos: List[FieldDTO]):
 
         from ib_tasks.interactors.create_or_update_fields_base_validations_interactor \
-            import CreateOrUpdateFieldsBaseVaidationInteractor
+            import CreateOrUpdateFieldsBaseValidationInteractor
         base_validation_interactor = \
-            CreateOrUpdateFieldsBaseVaidationInteractor(storage=self.storage)
+            CreateOrUpdateFieldsBaseValidationInteractor(storage=self.storage)
         base_validation_interactor.fields_base_validations(field_dtos)
 
     def _check_for_field_roles_validations(
@@ -58,9 +70,10 @@ class CreateOrUpdateFieldsInteractor:
         field_roles_validation_interactor = FieldsRolesValidationsInteractor()
         field_roles_validation_interactor.fields_roles_validations(field_roles_dtos)
 
-    def _vlidate_field_values_based_on_field_types(
+    def _validate_field_values_based_on_field_types(
             self, field_dtos: List[FieldDTO]
     ):
+
         for field_dto in field_dtos:
             self._validate_field_value(field_dto)
 
@@ -130,47 +143,22 @@ class CreateOrUpdateFieldsInteractor:
         ]
         return new_field_dtos, existing_field_dtos
 
-    def _get_new_and_exist_field_role_dtos(
-            self, field_role_dtos: List[FieldRoleDTO]
-    ):
-        field_ids = [
-            field_role_dto.field_id
-            for field_role_dto in field_role_dtos
-        ]
-        existing_field_role_dtos = self.storage.get_fields_role_dtos(
-            field_ids
-        )
-        new_role_dtos = []
-        for field_role_dto in field_role_dtos:
-            is_new_role_dto = self._is_field_role_dto_matches(
-                field_role_dto, existing_field_role_dtos
-            )
-            if is_new_role_dto:
-                new_role_dtos.append(field_role_dto)
-        return new_role_dtos, existing_field_role_dtos
-
-    def _is_field_role_dto_matches(
-            self, field_role_dto: FieldRoleDTO,
-            field_role_dtos: List[FieldRoleDTO]
-    ):
-        field_id = field_role_dto.field_id
-        role = field_role_dto.role
-        for role_dto in field_role_dtos:
-            exist_field_id, exist_role = role_dto.field_id, role_dto.role
-            is_field_role_matches = field_id == exist_field_id and role == exist_role
-            if is_field_role_matches:
-                return False
-        return True
-
     def _validate_field_value(self, field_dto: FieldDTO):
-        from ib_tasks.constants.constants import MULTI_VALUES_INPUT_FIELDS
         field_type = field_dto.field_type
 
         if field_type in MULTI_VALUES_INPUT_FIELDS:
             interactor = MultiValuesInputFieldsValidationInteractor()
             interactor.multi_values_input_fields_validations(field_dto)
+
         if field_type == FieldTypes.GOF_SELECTOR.value:
             interactor = GoFSelectorValidationsInteractor(
                 storage=self.storage
             )
-            interactor.gof_selecter_validations(field_dto)
+            interactor.gof_selector_validations(field_dto)
+        if field_type in UPLOADERS:
+            interactor = ImageOrFileUploaderValidationsInteractor()
+            interactor.image_or_file_uploader_validations(field_dto)
+
+        if field_type == FieldTypes.SEARCHABLE.value:
+            interactor = FieldTypeSearchableValidationsInteractor()
+            interactor.field_type_searcahble_validations(field_dto)
