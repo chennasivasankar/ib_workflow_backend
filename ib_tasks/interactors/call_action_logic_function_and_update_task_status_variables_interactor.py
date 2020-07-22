@@ -26,12 +26,12 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
     def call_action_logic_function_and_update_task_status_variables(
             self, task_dto: TaskGofAndStatusesDTO):
         group_of_fields_dto = task_dto.group_of_fields_dto
-        gof_status_dict = self._get_gof_status_dict(
+        gof_multiple_enable_dict = self._get_gof_multiple_enable_dict(
             group_of_fields_dto=group_of_fields_dto)
         fields_dto = task_dto.fields_dto
         gof_fields_dto_dict = self._get_gof_field_dtos_dict(fields_dto)
         status_variables_dto = task_dto.statuses_dto
-        task_dict = self._get_task_dict(group_of_fields_dto, gof_status_dict,
+        task_dict = self._get_task_dict(group_of_fields_dto, gof_multiple_enable_dict,
                                         gof_fields_dto_dict, status_variables_dto)
         method_object = self._get_method_object_for_condition(action_id=self.action_id)
         task_dict = method_object(task_dict=task_dict)
@@ -75,7 +75,7 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
             status_dto.value = status_dict[status_dto.status_variable]
         return status_variables_dto
 
-    def _get_task_dict(self, group_of_fields_dto, gof_status_dict,
+    def _get_task_dict(self, group_of_fields_dto, gof_multiple_enable_dict,
                        gof_fields_dto_dict, status_variables_dto):
         task_dict = {}
         from collections import defaultdict
@@ -83,8 +83,8 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
         single_gof_dict = {}
         for group_of_field_dto in group_of_fields_dto:
             self._update_multiple_and_single_dict(
-                gof_fields_dto_dict, gof_status_dict, multiple_gof_dict,
-                single_gof_dict, group_of_field_dto)
+                gof_fields_dto_dict, gof_multiple_enable_dict,
+                multiple_gof_dict, single_gof_dict, group_of_field_dto)
         task_dict.update(multiple_gof_dict)
         task_dict.update(single_gof_dict)
         statuses_dict = {}
@@ -95,11 +95,11 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
         return task_dict
 
     def _update_multiple_and_single_dict(
-            self, gof_fields_dto_dict, gof_status_dict, multiple_gof_dict,
-            single_gof_dict, group_of_field_dto
+            self, gof_fields_dto_dict, gof_multiple_enable_dict,
+            multiple_gof_dict, single_gof_dict, group_of_field_dto
     ):
         group_of_field_id = group_of_field_dto.group_of_field_id
-        if gof_status_dict[group_of_field_id]:
+        if gof_multiple_enable_dict[group_of_field_id]:
             multiple_gof_dict[group_of_field_id].append(
                 self._get_fields_dto_dict(
                     gof_fields_dto_dict[group_of_field_dto.database_id])
@@ -125,19 +125,22 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
             field_dict[field_dto.field_id] = field_dto.value
         return field_dict
 
-    def _get_gof_status_dict(self, group_of_fields_dto: List[GroupOfFieldsDTO]):
+    def _get_gof_multiple_enable_dict(
+            self, group_of_fields_dto: List[GroupOfFieldsDTO]):
 
         common_gof_ids = self._get_common_gof_ids(
             group_of_fields_dto=group_of_fields_dto
         )
-        gof_status_dtos = self.storage.get_enable_multiple_gofs_field_to_gof_ids(
-            gof_ids=common_gof_ids
-        )
-        gof_status_dict = {}
-        for gof_status_dto in gof_status_dtos:
-            gof_status_dict[gof_status_dto.group_of_field_id] = \
-                gof_status_dto.multiple_status
-        return gof_status_dict
+        gof_multiple_enable_dtos = self.storage\
+            .get_enable_multiple_gofs_field_to_gof_ids(
+                gof_ids=common_gof_ids
+            )
+        gof_multiple_enable_dict = {}
+        for gof_multiple_enable_dto in gof_multiple_enable_dtos:
+            gof_multiple_enable_dict[
+                gof_multiple_enable_dto.group_of_field_id] = \
+                    gof_multiple_enable_dto.multiple_status
+        return gof_multiple_enable_dict
 
     @staticmethod
     def _get_gof_field_dtos_dict(fields_dto: List[FieldValueDTO]):

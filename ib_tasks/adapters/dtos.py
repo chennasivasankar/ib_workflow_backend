@@ -29,7 +29,7 @@ class BoardDTO:
 
 @dataclass()
 class TaskBoardsDetailsDTO:
+    board_dto: BoardDTO
     column_stage_dtos: List[ColumnStageDTO]
-    boards_dto: List[BoardDTO]
     columns_dtos: List[ColumnDTO]
     columns_fields_dtos: List[ColumnFieldDTO]

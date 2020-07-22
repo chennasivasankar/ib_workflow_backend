@@ -28,6 +28,6 @@ class ColumnStageDTOFactory(factory.Factory):
 
 class ColumnFieldDTOFactory(factory.Factory):
     class Meta:
-        model = ColumnStageDTO
+        model = ColumnFieldDTO
     column_id = factory.Sequence(lambda n: 'column_%d' % (n+1))
-    stage_id = factory.Sequence(lambda n: 'stage_%d' % (n+1))
+    field_ids = factory.Sequence(lambda n: [f"field_{n+1}", f"field_{n+3}"])
