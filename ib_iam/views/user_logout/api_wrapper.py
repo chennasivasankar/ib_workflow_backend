@@ -6,7 +6,6 @@ from .validator_class import ValidatorClass
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     user_obj = kwargs["user"]
-    print(user_obj.__dict__)
     user_id = user_obj.user_id
 
     from ib_iam.interactors.user_logout_interactor import \
