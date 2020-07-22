@@ -211,7 +211,7 @@ class TestPopulateGoFs:
         interactor.create_or_update_gofs(complete_gof_details_dtos)
 
         # Assert
-        gof_counter = 0
+        gof_counter = 1
         for gof_dto in gof_dtos:
             gof = GoF.objects.get(pk=gof_dto.gof_id)
             snapshot.assert_match(
@@ -245,7 +245,7 @@ class TestPopulateGoFs:
                     value=gof_role_object.role
                 )
                 snapshot.assert_match(
-                    name="role_permission_type".format(
+                    name="read_role_permission_type {}".format(
                         read_permission_role_counter),
                     value=gof_role_object.permission_type
                 )
@@ -266,7 +266,7 @@ class TestPopulateGoFs:
                     value=gof_role_object.role
                 )
                 snapshot.assert_match(
-                    name="role_permission_type {}".format(
+                    name="write_role_permission_type {}".format(
                         write_permission_role_counter),
                     value=gof_role_object.permission_type
                 )
@@ -303,7 +303,7 @@ class TestPopulateGoFs:
         interactor.create_or_update_gofs(complete_gof_details_dtos)
 
         # Assert
-        gof_counter = 0
+        gof_counter = 1
         for gof_dto in gof_dtos:
             gof = GoF.objects.get(pk=gof_dto.gof_id)
             snapshot.assert_match(
@@ -337,7 +337,7 @@ class TestPopulateGoFs:
                     value=gof_role_object.role
                 )
                 snapshot.assert_match(
-                    name="role_permission_type".format(
+                    name="read_role_permission_type {}".format(
                         read_permission_role_counter),
                     value=gof_role_object.permission_type
                 )
@@ -358,7 +358,7 @@ class TestPopulateGoFs:
                     value=gof_role_object.role
                 )
                 snapshot.assert_match(
-                    name="role_permission_type {}".format(
+                    name="write_role_permission_type {}".format(
                         write_permission_role_counter),
                     value=gof_role_object.permission_type
                 )
