@@ -22,5 +22,4 @@ class TestGetValidRoleIds:
         valid_role_ids = interactor.get_valid_role_ids(role_ids=role_ids)
 
         # Assert
-        assert sorted(valid_role_ids) == sorted(expected_valid_ids)
-        snapshot.assert_match(valid_role_ids, "valid_role_ids")
+        snapshot.assert_match(sorted(valid_role_ids), "valid_role_ids")
