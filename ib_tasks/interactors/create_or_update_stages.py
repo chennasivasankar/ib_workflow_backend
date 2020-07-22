@@ -88,7 +88,7 @@ class CreateOrUpdateStagesInterface:
         list_of_status_ids = [attribute.status_id
                              for attribute in list_of_logic_attributes]
 
-        valid_status_ids = self.stage_storage.get_valid_status_ids(
+        valid_status_ids = self.stage_storage.get_existing_stage_ids(
             list_of_status_ids)
 
         for attribute in list_of_logic_attributes:
@@ -113,6 +113,7 @@ class CreateOrUpdateStagesInterface:
     def check_for_duplicate_stage_ids(stage_ids: List[str]):
         duplicate_stage_ids = list(set(
             [x for x in stage_ids if stage_ids.count(x) > 1]))
+        print(duplicate_stage_ids)
         if duplicate_stage_ids:
             raise DuplicateStageIds(duplicate_stage_ids)
 
@@ -172,9 +173,37 @@ class CreateOrUpdateStagesInterface:
     def _validate_values_for_stages(stages_details: List[StageDTO]):
         invalid_value_stages = []
         for stage in stages_details:
-            if stage.value < -1:
+            if stage.value < 0:
                 invalid_value_stages.append(stage.stage_id)
 
         if invalid_value_stages:
             raise InvalidStageValues(invalid_value_stages)
         return
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

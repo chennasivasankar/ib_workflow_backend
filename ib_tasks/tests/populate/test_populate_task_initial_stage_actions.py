@@ -57,7 +57,7 @@ class TestCasePopulateTasks:
             }
         ]
         import pytest
-        from ib_tasks.populate.populate_task_initial_stage_actions \
+        from ib_tasks.populate.task_initial_stage_actions_logic \
             import populate_tasks
         from ib_tasks.exceptions.custom_exceptions \
             import InvalidPythonCodeException

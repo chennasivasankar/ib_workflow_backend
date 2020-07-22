@@ -7,9 +7,9 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCreateTaskTemplate.test_with_invalid_template_id_raises_exception err_msg'] = 'Invalid value for template id!, template id should not be empty'
+snapshots['TestCreateTaskTemplate.test_with_invalid_template_id_raises_exception message'] = 'Invalid value for template id!, template id should not be empty'
 
-snapshots['TestCreateTaskTemplate.test_with_invalid_template_name_raises_exception err_msg'] = 'Invalid value for template name!, template name should not be empty'
+snapshots['TestCreateTaskTemplate.test_with_invalid_template_name_raises_exception message'] = 'Invalid value for template name!, template name should not be empty'
 
 snapshots['TestCreateTaskTemplate.test_with_valid_data template_id'] = 'template_1'
 

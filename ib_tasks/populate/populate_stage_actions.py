@@ -7,7 +7,7 @@ def populate_stage_actions(action_dicts: List[Dict]):
     writing_data_to_task_actions_logic(action_dicts)
     actions_dict = _remove_white_spaces_and_apply_replaces_to_roles(
         action_dicts)
-    for action_dict in action_dicts:
+    for action_dict in actions_dict:
         actions_dto.append(append_action_dict(action_dict))
     return actions_dto
 

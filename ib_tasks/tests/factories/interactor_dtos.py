@@ -1,7 +1,11 @@
 import factory
+from ib_tasks.interactors.dtos import GlobalConstantsDTO, \
+    GoFsWithTemplateIdDTO, GoFWithOrderAndAddAnotherDTO
+from ib_tasks.interactors.dtos import GlobalConstantsDTO, StagesActionDTO
 
 from ib_tasks.interactors.dtos import (
-    TaskTemplateStageActionDTO, StageActionDTO, FieldDisplayDTO
+    StageActionDTO, TaskTemplateStageActionDTO,
+    TaskTemplateStageActionDTO, StageActionDTO
 )
 from ib_tasks.interactors.dtos import GlobalConstantsDTO
 
@@ -32,20 +36,41 @@ class TaskTemplateStageActionDTOFactory(factory.Factory):
     function_path = "sample_function_path"
 
 
-class FieldDisplayDTOFactory(factory.Factory):
-
-    class Meta:
-        model = FieldDisplayDTO
-
-    field_id = factory.Sequence(lambda n: 'field_%d' % (n + 1))
-    field_type = factory.Sequence(lambda n: 'field_type_%d' % (n + 1))
-    key = factory.Sequence(lambda n: 'key_%d' % (n + 1))
-    value = factory.Sequence(lambda n: 'value_%d' % (n + 1))
-
-
 class GlobalConstantsDTOFactory(factory.Factory):
     class Meta:
         model = GlobalConstantsDTO
 
     constant_name = factory.sequence(lambda n: "Constant_{}".format(n + 1))
     value = factory.sequence(lambda n: n)
+
+
+class GoFWithOrderAndAddAnotherDTOFactory(factory.Factory):
+    class Meta:
+        model = GoFWithOrderAndAddAnotherDTO
+
+    gof_id = factory.sequence(lambda n: "gof_{}".format(n + 1))
+    order = factory.sequence(lambda n: n)
+    enable_add_another_gof = factory.Iterator([True, False])
+
+
+class GoFsWithTemplateIdDTOFactory(factory.Factory):
+    class Meta:
+        model = GoFsWithTemplateIdDTO
+
+    template_id = factory.sequence(lambda n: "template_{}".format(n + 1))
+    gof_dtos = factory.SubFactory(GoFWithOrderAndAddAnotherDTOFactory)
+
+class ActionDTOFactory(factory.Factory):
+    class Meta:
+        model = StagesActionDTO
+
+    stage_id = factory.Sequence(lambda n: 'stage_id_%d' % n)
+    action_name = factory.Sequence(lambda n: "name_%d" % n)
+    function_path = "path"
+    logic = factory.Sequence(lambda n: 'status_id_%d==stage_id' % n)
+    roles = ['ALL_ROLES']
+    button_text = "text"
+    button_color = None
+
+    class Params:
+        color = factory.Trait(button_color="#ffffff")
