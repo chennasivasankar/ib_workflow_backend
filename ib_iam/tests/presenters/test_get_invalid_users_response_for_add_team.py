@@ -1,11 +1,13 @@
-from ib_iam.presenters.team_presenter_implementation import TeamPresenterImplementation
+import json
+from ib_iam.presenters.team_presenter_implementation import (
+    TeamPresenterImplementation
+)
 from ib_iam.constants.exception_messages import INVALID_USERS_FOR_ADD_TEAM
 
 
-class TestRaiseExceptionForInvalidMembers:
-    def test_when_it_is_called_it_returns_http_response(self):
+class TestRaiseExceptionForInvalidUsersForAddTeam:
+    def test_whether_it_returns_invalid_users_http_response(self):
         json_presenter = TeamPresenterImplementation()
-        import json
         expected_response = INVALID_USERS_FOR_ADD_TEAM[0]
         expected_res_status = INVALID_USERS_FOR_ADD_TEAM[1]
         expected_http_status_code = 404

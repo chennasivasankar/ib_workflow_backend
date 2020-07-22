@@ -1,11 +1,13 @@
 from ib_iam.presenters.team_presenter_implementation import (
     TeamPresenterImplementation
 )
-from ib_iam.constants.exception_messages import INVALID_OFFSET_FOR_GET_LIST_OF_TEAMS
+from ib_iam.constants.exception_messages import (
+    INVALID_OFFSET_FOR_GET_LIST_OF_TEAMS
+)
 
 
-class TestRaiseExceptionForUserHasNoAccess:
-    def test_when_it_is_called_it_returns_http_response(self):
+class TestRaiseExceptionForInvalidOffsetForGetListOfTeams:
+    def test_whether_it_returns_invalid_offset_exception_http_response(self):
         json_presenter = TeamPresenterImplementation()
         import json
         expected_response = INVALID_OFFSET_FOR_GET_LIST_OF_TEAMS[0]
