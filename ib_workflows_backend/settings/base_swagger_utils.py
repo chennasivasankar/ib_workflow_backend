@@ -1,5 +1,3 @@
-import os
-
 from ib_workflows_backend.settings.base import *
 
 # swagger utils #
@@ -74,3 +72,4 @@ API_KEY_AUTHENTICATION_CLASS = \
     "ib_workflows_backend.common.authentication.APIKeyAuthentication"
 
 CUSTOM_EXCEPTIONS_TO_LOG_IN_SENTRY = []
+AUTH_USER_MODEL = "ib_users.UserAccount"
