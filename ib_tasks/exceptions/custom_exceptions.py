@@ -77,6 +77,26 @@ class GOFDisplayNameCantBeEmpty(Exception):
     pass
 
 
+class MaxColumnsCantBeEmpty(Exception):
+    pass
+
+
+class MaxColumnsMustBeANumber(Exception):
+
+    def __init__(self, invalid_max_column_value: str):
+        self.max_column = invalid_max_column_value
+
+
+class MaxColumnsMustBeAPositiveInteger(Exception):
+
+    def __init__(self, invalid_max_column_value: str):
+        self.max_column = invalid_max_column_value
+
+
+class TaskTemplateIdCantBeEmpty(Exception):
+    pass
+
+
 class GOFReadPermissionsCantBeEmpty(Exception):
     pass
 
@@ -94,11 +114,15 @@ class DuplicatedFieldIds(Exception):
 
 
 class InvalidReadPermissionRoles(Exception):
-    pass
+
+    def __init__(self, invalid_read_permission_roles: List[str]):
+        self.read_permission_roles = invalid_read_permission_roles
 
 
 class InvalidWritePermissionRoles(Exception):
-    pass
+
+    def __init__(self, invalid_write_permission_roles: List[str]):
+        self.write_permission_roles = invalid_write_permission_roles
 
 
 class DifferentDisplayNamesForSameGOF(Exception):

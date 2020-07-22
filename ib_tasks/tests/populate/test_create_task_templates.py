@@ -95,7 +95,7 @@ class TestCreateTaskTemplate:
         template_id = "template_1"
         template_name = "iBHubs 1"
         from ib_tasks.tests.factories.models import TaskTemplateFactory
-        TaskTemplateFactory()
+        TaskTemplateFactory(template_id=template_id, name=template_name)
 
         create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name

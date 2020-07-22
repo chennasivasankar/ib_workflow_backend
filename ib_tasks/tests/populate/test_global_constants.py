@@ -151,6 +151,7 @@ class TestGlobalConstants:
         # Arrange
         template_id = "template_1"
         from ib_tasks.tests.factories.models import TaskTemplateFactory
+        TaskTemplateFactory(template_id=template_id)
         TaskTemplateFactory.create_batch(size=2)
         global_constants_dtos = GlobalConstantsDTOFactory.create_batch(
             size=2
@@ -192,6 +193,7 @@ class TestGlobalConstants:
         # Arrange
         template_id = "template_1"
         from ib_tasks.tests.factories.models import TaskTemplateFactory
+        TaskTemplateFactory(template_id=template_id)
         TaskTemplateFactory.create_batch(size=2)
 
         from ib_tasks.tests.factories.models import GlobalConstantFactory
@@ -239,6 +241,7 @@ class TestGlobalConstants:
         # Arrange
         template_id = "template_1"
         from ib_tasks.tests.factories.models import TaskTemplateFactory
+        TaskTemplateFactory(template_id=template_id)
         TaskTemplateFactory.create_batch(size=2)
 
         from ib_tasks.tests.factories.models import GlobalConstantFactory

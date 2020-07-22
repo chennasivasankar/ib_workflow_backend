@@ -1,15 +1,12 @@
 
-empty_gof_id_message = "GoF id should not be empty"
-empty_gof_name_message = "GoF name should not be empty"
-empty_read_permissions_message = "GoF read permissions should not be empty"
-empty_write_permissions_message = "GoF write permissions should not be empty"
-invalid_read_permission_roles_message = \
-    "One of the GoF has invalid read permissions"
-invalid_write_permission_roles_message = \
-    "One of the GoF has invalid write permissions"
-empty_field_ids_message = "GoF field ids should not be empty"
-duplicated_field_ids_message = "GoF field ids should be unique"
-multiple_display_names_for_same_gof = \
+EMPTY_GOF_ID_MESSAGE = "GoF id should not be empty"
+EMPTY_GOF_NAME_MESSAGE = "GoF name should not be empty"
+EMPTY_MAX_COLUMNS_MESSAGE = "GoF max columns should not be empty"
+EMPTY_GOF_READ_PERMISSIONS_MESSAGE = "GoF read permissions should not be empty"
+EMPTY_WRITE_PERMISSIONS_MESSAGE = "GoF write permissions should not be empty"
+EMPTY_FIELD_IDS_MESSAGE = "GoF field ids should not be empty"
+DUPLICATED_FIELD_IDS_MESSAGE = "GoF field ids should be unique"
+MULTIPLE_DISPLAY_NAMES_FOR_SAME_GOF = \
     "One GoF should not have multiple display names"
 gof_id_already_exists = "GoF id already exists"
 DUPLICATE_GOF_IDS = "Given duplicate gof ids {}"
@@ -31,6 +28,14 @@ INVALID_VALUE_FOR_VALUE = \
     "Invalid value for value!, value should not be negative!, but given value is: {}"
 INVALID_VALUE_FOR_TEMPLATE_NAME = \
     "Invalid value for template name!, template name should not be empty"
+GOF_ID_ALREADY_EXISTS = "GoF id already exists"
+MAX_COLUMNS_VALUE_MUST_BE_INTEGER = \
+    "Max columns should be a integer value"
+MAX_COLUMNS_VALUE_MUST_BE_POSITIVE_INTEGER_MESSAGE = \
+    "Max columns value must be greater than zero"
+INVALID_READ_PERMISSION_ROLES = "Invalid Read Permission roles:"
+INVALID_WRITE_PERMISSION_ROLES = "Invalid Write Permission roles:"
+
 DUPLICATE_ORDER_VALUES_FOR_GOFS = \
     "Given duplicate order values {}! Gof orders of a template should be unique"
 INVALID_TYPE_FOR_ORDER = "Given value for order: {} is not an integer"

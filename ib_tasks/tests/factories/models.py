@@ -32,14 +32,12 @@ class FieldFactory(factory.DjangoModelFactory):
     class Meta:
         model = Field
 
-    field_id = factory.Iterator(
-        ["FIN_PAYMENT_REQUESTOR", "FIN_TYPE_OF_VENDOR"]
+    field_id = factory.Sequence(lambda counter: "FIELD_ID-{}".format(counter))
+    display_name = factory.Sequence(
+        lambda counter: "DISPLAY_NAME-{}".format(counter)
     )
-    display_name = factory.Iterator(
-        ["Payment Requester", "Type of Vendor"]
-    )
-    field_type = factory.Iterator(
-        [FieldTypes.PLAIN_TEXT, FieldTypes.GOF_SELECTOR]
+    field_type = factory.Sequence(
+        lambda counter: "FIELD_TYPE-{}".format(counter)
     )
 
 
@@ -48,9 +46,7 @@ class GoFRoleFactory(factory.DjangoModelFactory):
         model = GoFRole
 
     gof = factory.SubFactory(GoFFactory)
-    role = factory.Iterator(
-        ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"]
-    )
+    role = factory.Sequence(lambda counter: "ROLE-{}".format(counter))
     permission_type = PermissionTypes.READ.value
 
 
