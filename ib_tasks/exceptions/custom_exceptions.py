@@ -18,6 +18,9 @@ class InvalidFormatException(Exception):
     def __init__(self, valid_format: str):
         self.valid_format = valid_format
 
+    def __str__(self):
+        return "Valid Format:" + " " + self.valid_format
+
 
 class InvalidPythonCodeException(Exception):
     pass
@@ -31,6 +34,8 @@ class InvalidTaskIdException(Exception):
 class InvalidTaskTemplateId(Exception):
     def __init__(self, task_template_ids_dict: str):
         self.task_template_ids_dict = task_template_ids_dict
+
+
 from typing import List
 
 

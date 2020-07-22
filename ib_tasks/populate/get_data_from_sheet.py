@@ -99,7 +99,7 @@ class PopulateStageActionsAndTaskCreationConfig:
         from schema import Schema, Optional, SchemaError
         schema = Schema(
             [{
-                "TaskTemplate ID*": str,
+                "TaskTemplate ID": str,
                 "Stage ID*": str,
                 "Stage Display Name": str,
                 "Action name": str,
@@ -116,7 +116,7 @@ class PopulateStageActionsAndTaskCreationConfig:
             self._raise_exception_for_valid_task_creation_format()
 
     def _raise_exception_for_valid_task_creation_format(self):
-        valid_format = """{
+        valid_format = {
             "TaskTemplate ID*": "FIN_PR",
             "Stage ID*": "PR_PAYMENT_REQUEST_DRAFTS",
             "Stage Display Name": "Payment Request Drafts",
@@ -127,11 +127,11 @@ class PopulateStageActionsAndTaskCreationConfig:
             "Button Text": "Save Draft",
             "Button Colour": "Blue"
 
-        }"""
+        }
         self._raise_exception_for_valid_format(valid_format)
 
     def _raise_exception_for_valid_stage_actions_format(self):
-        valid_format = """{
+        valid_format = {
             "Stage ID*": "PR_PAYMENT_REQUEST_DRAFTS",
             "Stage Display Name": "Payment Request Drafts",
             "Stage Display Logic": "Value [Status1]== Value[PR_PAYMENT_REQUEST_DRAFTS]",
@@ -141,13 +141,13 @@ class PopulateStageActionsAndTaskCreationConfig:
             "Button Text": "Save Draft",
             "Button Colour": "Blue"
 
-        }"""
+        }
         self._raise_exception_for_valid_format(valid_format)
 
     @staticmethod
     def _raise_exception_for_valid_format(valid_format):
         import json
-        json_valid_format = json.dumps(valid_format)
+        json_valid_format = json.dumps(valid_format, indent=4)
         from ib_tasks.exceptions.custom_exceptions \
             import InvalidFormatException
         raise InvalidFormatException(valid_format=json_valid_format)

@@ -69,19 +69,20 @@ class GetBoardsAndColumnsDataFromSheet:
     def _raise_exception_for_invalid_data_format():
         from ib_boards.populate.populate_script_for_add_or_delete_columns_for_board import \
             InvalidDataFormat
-        raise InvalidDataFormat("""valid format = {
-                "Board ID*": str,
-                "Board Display Name": str,
-                "Column Order For Display": int,
-                "Column ID*": str,
-                "Column Display Name": str,
-                "Task Template Stages that are visible in columns": str,
-                "Visible to RoleIDs": str,
-                "Column Summary": str,
-                "Column Actions": str,
-                "Card Info_Kanban": str,
-                "Card Info_List": str
-        }""")
+        valid_format = {
+            "Board ID*": str,
+            "Board Display Name": str,
+            "Column Order For Display": int,
+            "Column ID*": str,
+            "Column Display Name": str,
+            "Task Template Stages that are visible in columns": str,
+            "Visible to RoleIDs": str,
+            "Column Summary": str,
+            "Column Actions": str,
+            "Card Info_Kanban": str,
+            "Card Info_List": str
+        }
+        raise InvalidDataFormat(valid_format=valid_format)
 
     @staticmethod
     def _get_list_of_dictionary_to_populate_data(

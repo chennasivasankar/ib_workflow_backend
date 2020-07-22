@@ -4,7 +4,7 @@ Author: Pavankumar Pamuru
 
 """
 import json
-from typing import List, Dict
+from typing import List, Dict, Any
 
 from ib_boards.interactors.dtos import ColumnDTO, \
     TaskTemplateStagesDTO, TaskSummaryFieldsDTO
@@ -13,7 +13,11 @@ from ib_boards.tests.factories.interactor_dtos import \
 
 
 class InvalidDataFormat(Exception):
-    pass
+    def __init__(self, valid_format):
+        self.valid_format = valid_format
+
+    def __str__(self):
+        return "Valid Format:" + " " + self.valid_format
 
 
 class StorageImplementation(object):
@@ -100,20 +104,22 @@ class PopulateAddOrDeleteColumnsForBoard:
         except SchemaError:
             self._raise_exception_for_board_valid_format()
 
-    def _raise_exception_for_board_valid_format(self):
-        raise InvalidDataFormat("""{
-                "board_id": "board_id",
-                "board_display_name": "board_display_name",
-                "column_id": "column_id",
-                "column_display_name": "column_display_name",
-                "display_order": "display_order",
-                "user_role_ids": "user_role_ids",
-                "column_summary": "column_summary",
-                "column_actions": "column_actions",
-                "task_template_stages": "task_template_stages",
-                "kanban_view_fields": "kanban_view_fields",
-                "list_view_fields": "list_view_fields"
-        }""")
+    @staticmethod
+    def _raise_exception_for_board_valid_format():
+        valid_format ={
+            "board_id": "board_id",
+            "board_display_name": "board_display_name",
+            "column_id": "column_id",
+            "column_display_name": "column_display_name",
+            "display_order": "display_order",
+            "user_role_ids": "user_role_ids",
+            "column_summary": "column_summary",
+            "column_actions": "column_actions",
+            "task_template_stages": "task_template_stages",
+            "kanban_view_fields": "kanban_view_fields",
+            "list_view_fields": "list_view_fields"
+    }
+        raise InvalidDataFormat(valid_format=valid_format)
 
     @staticmethod
     def _get_task_template_stages_dto(json_object: json):
