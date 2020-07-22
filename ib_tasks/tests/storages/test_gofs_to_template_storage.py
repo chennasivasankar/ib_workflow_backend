@@ -67,9 +67,9 @@ class TestGoFsToTaskTemplateStorageImplementation:
         )
 
         #Assert
-        from ib_tasks.models.gof_to_task_template import GoFToTaskTemplate
+        from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
         gof_to_task_template_objs = \
-            GoFToTaskTemplate.objects.filter(task_template_id=template_id)
+            TaskTemplateGoFs.objects.filter(task_template_id=template_id)
 
         assert gof_to_task_template_objs[0].task_template_id == template_id
         assert gof_to_task_template_objs[0].gof_id == \
@@ -103,9 +103,9 @@ class TestGoFsToTaskTemplateStorageImplementation:
         )
 
         #Assert
-        from ib_tasks.models.gof_to_task_template import GoFToTaskTemplate
+        from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
         gof_to_task_template_objs = \
-            GoFToTaskTemplate.objects.filter(task_template_id=template_id)
+            TaskTemplateGoFs.objects.filter(task_template_id=template_id)
 
         assert gof_to_task_template_objs[0].order == \
                gof_dtos[0].order

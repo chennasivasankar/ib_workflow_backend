@@ -54,8 +54,7 @@ class PopulateGoFsToTaskTemplate:
         gof_with_order_and_add_another_dtos = []
         for gof in gofs_list:
             gof_id = gof[0]
-            from ib_tasks.exceptions.custom_exceptions import \
-                InvalidTypeForOrder
+            from ib_tasks.exceptions.constants_custom_exceptions import InvalidTypeForOrder
             from ib_tasks.constants.exception_messages import \
                 INVALID_TYPE_FOR_ORDER
 

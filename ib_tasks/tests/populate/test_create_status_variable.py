@@ -36,7 +36,7 @@ class TestPopulateStatusVariables:
 
         from ib_tasks.populate.create_task_status_variables import \
             populate_status_variables
-        from ib_tasks.exceptions.custom_exceptions import InvalidFormatException
+        from ib_tasks.exceptions.stage_custom_exceptions import InvalidFormatException
 
         # Act
 

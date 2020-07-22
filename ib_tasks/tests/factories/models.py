@@ -1,10 +1,13 @@
 import factory
 
-from ib_tasks.constants.enum import FieldTypes, PermissionTypes
 from ib_tasks.models.gof import GoF
+from ib_tasks.constants.enum import PermissionTypes, FieldTypes
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.field import Field
 from ib_tasks.models.gof_role import GoFRole
+from ib_tasks.models.field_role import FieldRole
+from ib_tasks.models.global_constant import GlobalConstant
+from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskStatusVariable,
     TaskTemplateGlobalConstants)
@@ -58,8 +61,6 @@ class TaskTemplateGlobalConstantsFactory(factory.django.DjangoModelFactory):
     variable = factory.Sequence(lambda n: "variable%d" % n)
     value = factory.Sequence(lambda n: "value%d" % n)
     data_type = factory.Sequence(lambda n: "data_type_%d" % n)
-from ib_tasks.models.global_constant import GlobalConstant
-from ib_tasks.models.gof_to_task_template import GoFToTaskTemplate
 
 
 class TaskTemplateFactory(factory.django.DjangoModelFactory):
@@ -81,7 +82,7 @@ class GoFFactory(factory.django.DjangoModelFactory):
     max_columns = 2
 
 
-class FieldFactory(factory.DjangoModelFactory):
+class FieldFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Field
 
@@ -89,9 +90,13 @@ class FieldFactory(factory.DjangoModelFactory):
     display_name = factory.Sequence(
         lambda counter: "DISPLAY_NAME-{}".format(counter)
     )
-    field_type = factory.Sequence(
-        lambda counter: "FIELD_TYPE-{}".format(counter)
-    )
+    field_type = FieldTypes.PLAIN_TEXT
+    required = True
+
+    class Params:
+        optional = factory.Trait(
+            field_values='["mr", "mrs"]'
+        )
 
 
 class GoFRoleFactory(factory.DjangoModelFactory):
@@ -100,6 +105,17 @@ class GoFRoleFactory(factory.DjangoModelFactory):
 
     gof = factory.SubFactory(GoFFactory)
     role = factory.Sequence(lambda counter: "ROLE-{}".format(counter))
+    permission_type = PermissionTypes.READ.value
+
+
+class FieldRoleFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = FieldRole
+
+    field = factory.SubFactory(FieldFactory)
+    role = factory.Iterator(
+        ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"]
+    )
     permission_type = PermissionTypes.READ.value
 
 
@@ -114,7 +130,7 @@ class GlobalConstantFactory(factory.django.DjangoModelFactory):
 
 class GoFToTaskTemplateFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = GoFToTaskTemplate
+        model = TaskTemplateGoFs
 
     task_template = factory.SubFactory(TaskTemplateFactory)
     gof = factory.SubFactory(GoFFactory)
