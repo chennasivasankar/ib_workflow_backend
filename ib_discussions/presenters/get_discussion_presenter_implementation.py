@@ -67,6 +67,10 @@ class GetDiscussionPresenterImplementation(GetDiscussionsPresenterInterface,
             response_dict=response_dict
         )
 
+    # TODO
+    def raise_exception_for_invalid_user_id(self):
+        pass
+
     def prepare_response_for_discussions_details_dto(
             self, discussions_details_dto: DiscussionsDetailsDTO
     ):
