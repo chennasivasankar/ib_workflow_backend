@@ -82,6 +82,20 @@ class TestTasksStorageImplementation:
             )
             assert gof_role_dto.permission_type == gof_role.permission_type
 
+    def test_get_valid_template_ids_in_given_template_ids(self, storage):
+
+        # Arrange
+        task_template = TaskTemplateFactory()
+        template_ids = [task_template.template_id, "FIN_VENDOR"]
+        expected_valid_template_ids = [task_template.template_id]
+
+        # Act
+        actual_valid_template_ids = \
+            storage.get_valid_template_ids_in_given_template_ids(template_ids)
+
+        # Assert
+        assert expected_valid_template_ids == actual_valid_template_ids
+
     def test_update_gofs(self, storage, reset_sequence):
 
         # Arrange

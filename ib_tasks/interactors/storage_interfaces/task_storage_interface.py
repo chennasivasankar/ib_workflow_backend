@@ -140,3 +140,22 @@ class TaskStorageInterface(abc.ABC):
             self, field_ids: List[str]
     ) -> List[FieldTypeDTO]:
         pass
+
+
+    @abc.abstractmethod
+    def get_gof_dtos_for_given_gof_ids(
+            self, gof_ids: List[str]
+    ) -> List[GoFDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_valid_template_ids_in_given_template_ids(
+            self, template_ids: List[str]
+    ) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_field_types_for_given_field_ids(
+            self, field_ids: List[str]
+    ) -> List[FieldTypeDTO]:
+        pass

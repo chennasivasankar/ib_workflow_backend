@@ -1,10 +1,11 @@
 from typing import List, Optional, Union
 
+from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.exceptions.custom_exceptions import (
     GOFIdCantBeEmpty, GOFDisplayNameCantBeEmpty, GOFReadPermissionsCantBeEmpty,
     GOFWritePermissionsCantBeEmpty, InvalidReadPermissionRoles,
-    InvalidWritePermissionRoles, MaxColumnsCantBeEmpty,
-    MaxColumnsMustBeANumber, MaxColumnsMustBeAPositiveInteger
+    InvalidWritePermissionRoles,
+    MaxColumnsMustBeAPositiveInteger
 )
 from ib_tasks.interactors.storage_interfaces.dtos import (
     CompleteGoFDetailsDTO, GoFRolesDTO, GoFDTO, GoFRoleDTO
@@ -24,6 +25,8 @@ class CreateOrUpdateGoFsInteractor:
     def create_or_update_gofs(
             self, complete_gof_details_dtos: List[CompleteGoFDetailsDTO]
     ):
+        from ib_tasks.adapters.roles_service_adapter import \
+            get_roles_service_adapter
         gof_dtos = self._get_gof_dtos_for_given_complete_gof_details_dtos(
             complete_gof_details_dtos=complete_gof_details_dtos
         )
@@ -35,17 +38,36 @@ class CreateOrUpdateGoFsInteractor:
         self._validate_for_empty_mandatory_fields(
             gof_dtos=gof_dtos, gof_roles_dtos=gof_roles_dtos
         )
-        self._validate_read_permission_roles(gof_roles_dtos=gof_roles_dtos)
-        self._validate_write_permission_roles(gof_roles_dtos=gof_roles_dtos)
+        gof_role_dtos = self._get_role_dtos(gof_roles_dtos)
+        role_ids = [gof_role_dto.role for gof_role_dto in gof_role_dtos]
+
+        service_adapter = get_roles_service_adapter()
+        roles_service = service_adapter.roles_service
+        valid_roles = roles_service.get_valid_role_ids_in_given_role_ids(
+            role_ids=role_ids
+        )
+        self._validate_read_permission_roles(
+            gof_roles_dtos=gof_roles_dtos, valid_roles=valid_roles
+        )
+        self._validate_write_permission_roles(
+            gof_roles_dtos=gof_roles_dtos, valid_roles=valid_roles
+        )
 
         gofs_for_updation, gofs_for_creation = self._filter_gof_details_dtos(
             gof_dtos, complete_gof_details_dtos
         )
+        gof_roles_dtos = \
+            self._get_gof_roles_dtos_for_given_complete_gof_details_dtos(
+                complete_gof_details_dtos=complete_gof_details_dtos
+            )
+        gof_role_dtos = self._get_role_dtos(gof_roles_dtos=gof_roles_dtos)
         if gofs_for_updation:
             self._update_gofs(gofs_for_updation)
 
         if gofs_for_creation:
             self._create_gofs(gofs_for_creation)
+
+        self.storage.create_gof_roles(gof_role_dtos)
         return
 
     def _filter_gof_details_dtos(
@@ -81,15 +103,9 @@ class CreateOrUpdateGoFsInteractor:
             self._get_gof_dtos_for_given_complete_gof_details_dtos(
                 complete_gof_details_dtos=complete_gof_details_dtos
             )
-        gof_roles_dtos = \
-            self._get_gof_roles_dtos_for_given_complete_gof_details_dtos(
-                complete_gof_details_dtos=complete_gof_details_dtos
-            )
-        gof_role_dtos = self._get_role_dtos(gof_roles_dtos=gof_roles_dtos)
         self.storage.update_gofs(gof_dtos=gof_dtos)
         gof_ids = [gof_dto.gof_id for gof_dto in gof_dtos]
         self.storage.delete_gof_roles(gof_ids=gof_ids)
-        self.storage.create_gof_roles(gof_role_dtos=gof_role_dtos)
 
     def _create_gofs(
             self, complete_gof_details_dtos: List[CompleteGoFDetailsDTO]
@@ -98,13 +114,7 @@ class CreateOrUpdateGoFsInteractor:
             self._get_gof_dtos_for_given_complete_gof_details_dtos(
                 complete_gof_details_dtos=complete_gof_details_dtos
             )
-        gof_roles_dtos = \
-            self._get_gof_roles_dtos_for_given_complete_gof_details_dtos(
-                complete_gof_details_dtos=complete_gof_details_dtos
-            )
-        gof_role_dtos = self._get_role_dtos(gof_roles_dtos=gof_roles_dtos)
         self.storage.create_gofs(gof_dtos=gof_dtos)
-        self.storage.create_gof_roles(gof_role_dtos=gof_role_dtos)
 
     @staticmethod
     def _get_gof_dtos_for_given_complete_gof_details_dtos(
@@ -193,35 +203,18 @@ class CreateOrUpdateGoFsInteractor:
 
     def _validate_for_invalid_max_columns(
             self, gof_dtos: List[GoFDTO]
-    ) -> Optional[MaxColumnsCantBeEmpty]:
+    ) -> Optional[MaxColumnsMustBeAPositiveInteger]:
         for gof_dto in gof_dtos:
             self._validate_max_column_value(gof_dto.max_columns)
         return
 
     @staticmethod
     def _validate_max_column_value(
-            max_columns: Union[None, int, str]
-    ) -> Union[
-        None, MaxColumnsCantBeEmpty, MaxColumnsMustBeANumber,
-        MaxColumnsMustBeAPositiveInteger
-    ]:
-        max_columns_is_string = isinstance(max_columns, str)
+            max_columns: int
+    ) -> Union[None, MaxColumnsMustBeAPositiveInteger]:
         from ib_tasks.constants.exception_messages import (
-            EMPTY_MAX_COLUMNS_MESSAGE,
-            MAX_COLUMNS_VALUE_MUST_NOT_BE_STRING_MESSAGE,
             MAX_COLUMNS_VALUE_MUST_BE_POSITIVE_INTEGER_MESSAGE
         )
-
-        if max_columns is None:
-            raise MaxColumnsCantBeEmpty(EMPTY_MAX_COLUMNS_MESSAGE)
-
-        if max_columns_is_string:
-            if not max_columns.strip():
-                raise MaxColumnsCantBeEmpty(EMPTY_MAX_COLUMNS_MESSAGE)
-            error_message = "{}: {}".format(
-                MAX_COLUMNS_VALUE_MUST_NOT_BE_STRING_MESSAGE, max_columns
-            )
-            raise MaxColumnsMustBeANumber(error_message)
         max_columns_is_not_a_positive_integer = max_columns < 1
         if max_columns_is_not_a_positive_integer:
             error_message = "{}: {}".format(
@@ -294,65 +287,55 @@ class CreateOrUpdateGoFsInteractor:
         return not field
 
     def _validate_read_permission_roles(
-            self, gof_roles_dtos: List[GoFRolesDTO]
+            self, gof_roles_dtos: List[GoFRolesDTO], valid_roles: List[str]
     ) -> Optional[InvalidReadPermissionRoles]:
-        from ib_tasks.adapters.roles_service_adapter import \
-            get_roles_service_adapter
-        roles_service_adapter = get_roles_service_adapter()
-        roles_service = roles_service_adapter.roles_service
-        valid_read_permission_roles = \
-            roles_service.get_all_valid_read_permission_roles()
         for gof_roles_dto in gof_roles_dtos:
             self._validate_read_permission_roles_of_a_gof(
                 read_permission_roles=gof_roles_dto.read_permission_roles,
-                valid_read_permission_roles=valid_read_permission_roles
+                valid_roles=valid_roles
             )
         return
 
     @staticmethod
     def _validate_read_permission_roles_of_a_gof(
             read_permission_roles: List[str],
-            valid_read_permission_roles: List[str]
+            valid_roles: List[str]
     ) -> Optional[InvalidReadPermissionRoles]:
         invalid_read_permission_roles = \
-            not set(read_permission_roles).issubset(
-                set(valid_read_permission_roles)
-            )
+            not set(read_permission_roles).issubset(set(valid_roles))
         if invalid_read_permission_roles:
             invalid_roles = list(
-                set(read_permission_roles) - set(valid_read_permission_roles)
+                set(read_permission_roles) - set(valid_roles)
             )
-            raise InvalidReadPermissionRoles(invalid_roles)
+            from ib_tasks.constants.exception_messages import \
+                INVALID_READ_PERMISSION_ROLES
+            INVALID_READ_PERMISSION_ROLES += str(invalid_roles)
+            raise InvalidReadPermissionRoles(INVALID_READ_PERMISSION_ROLES)
         return
 
     def _validate_write_permission_roles(
-            self, gof_roles_dtos: List[GoFRolesDTO]
+            self, gof_roles_dtos: List[GoFRolesDTO], valid_roles: List[str]
     ) -> Optional[InvalidWritePermissionRoles]:
-        from ib_tasks.adapters.roles_service_adapter import \
-            get_roles_service_adapter
-        roles_service_adapter = get_roles_service_adapter()
-        roles_service = roles_service_adapter.roles_service
-        valid_write_permission_roles = \
-            roles_service.get_all_valid_write_permission_roles()
         for gof_roles_dto in gof_roles_dtos:
             self._validate_write_permission_roles_of_a_gof(
                 write_permission_roles=gof_roles_dto.write_permission_roles,
-                valid_write_permission_roles=valid_write_permission_roles
+                valid_roles=valid_roles
             )
         return
 
     @staticmethod
     def _validate_write_permission_roles_of_a_gof(
             write_permission_roles: List[str],
-            valid_write_permission_roles: List[str]
+            valid_roles: List[str]
     ) -> Optional[InvalidWritePermissionRoles]:
         invalid_write_permission_roles = \
-            not set(write_permission_roles).issubset(
-                set(valid_write_permission_roles)
-            )
+            not set(write_permission_roles).issubset(set(valid_roles))
         if invalid_write_permission_roles:
             invalid_roles = list(
-                set(write_permission_roles) - set(valid_write_permission_roles)
+                set(write_permission_roles) - set(valid_roles)
             )
-            raise InvalidWritePermissionRoles(invalid_roles)
+            from ib_tasks.constants.exception_messages import \
+                INVALID_WRITE_PERMISSION_ROLES
+            INVALID_WRITE_PERMISSION_ROLES += str(invalid_roles)
+            raise InvalidWritePermissionRoles(INVALID_WRITE_PERMISSION_ROLES)
         return

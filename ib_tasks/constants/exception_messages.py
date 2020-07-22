@@ -31,3 +31,8 @@ INVALID_TASK_TEMPLATE_ID_MESSAGE = "Invalid Task Template Ids: "
 INVALID_GOF_IDS_MESSAGE = "Invalid GoF IDs: "
 INVALID_FIELD_IDS_MESSAGE = "Invalid Field IDs: "
 EMPTY_PLAIN_TEXT_FIELD_VALUE_MESSAGE = "Plain Text filed value should not be empty"
+MAX_COLUMNS_VALUE_MUST_BE_INTEGER = \
+    "Max columns should be a integer value"
+INVALID_READ_PERMISSION_ROLES = "Invalid Read Permission roles:"
+INVALID_WRITE_PERMISSION_ROLES = "Invalid Write Permission roles:"
+

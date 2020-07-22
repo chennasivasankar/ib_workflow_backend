@@ -38,8 +38,8 @@ class TestTasksStorageImplementation:
     def test_check_is_template_exists_with_valid_template_id_returns_true(
             self, storage):
         #Arrange
-        task_tempalte = TaskTemplateFactory()
-        template_id = task_tempalte.template_id
+        template_id = "template_1"
+        TaskTemplateFactory(template_id=template_id)
 
         #Act
         is_template_exists = \

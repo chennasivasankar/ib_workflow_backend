@@ -47,6 +47,9 @@ class TestTasksStorageImplementation:
         task_template = TaskTemplateFactory()
         template_id = task_template.template_id
         expected_template_name = task_template.name
+        TaskTemplateFactory(
+            template_id=template_id, name=expected_template_name
+        )
 
         #Act
         template_name = \

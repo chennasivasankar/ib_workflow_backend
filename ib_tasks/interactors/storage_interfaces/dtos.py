@@ -1,3 +1,68 @@
+from typing import List, Any, Optional
+from dataclasses import dataclass
+
+
+@dataclass
+class StageDTO:
+    stage_id: str
+    task_template_id: str
+    value: int
+    stage_display_name: str
+    stage_display_logic: str
+
+
+@dataclass
+class StageActionNamesDTO:
+    stage_id: str
+    action_names: List[str]
+
+
+@dataclass
+class StageLogicAttributes:
+    stage_id: str
+    status_id: str
+
+
+@dataclass()
+class FieldValueDTO:
+    database_id: str
+    gof_database_id: str
+    field_id: str
+    value: Any
+
+
+@dataclass()
+class StatusVariableDTO:
+    status_id: str
+    status_variable: str
+    value: str
+
+
+@dataclass()
+class GroupOfFieldsDTO:
+    database_id: str
+    group_of_field_id: str
+
+
+@dataclass()
+class GOFMultipleStatusDTO:
+    group_of_field_id: str
+    multiple_status: bool
+
+
+@dataclass()
+class ActionDTO:
+    action_id: str
+    name: str
+    stage_id: str
+    button_text: str
+    button_color: Optional[str]
+
+
+@dataclass()
+class ActionRolesDTO:
+    action_id: str
+    roles: List[str]
 from dataclasses import dataclass
 from typing import List, Union, Optional
 from ib_tasks.constants.enum import FieldTypes, PermissionTypes
@@ -34,8 +99,8 @@ class GoFDTO:
 @dataclass
 class GoFRolesDTO:
     gof_id: str
-    read_permission_roles: List[PermissionTypes]
-    write_permission_roles: List[PermissionTypes]
+    read_permission_roles: List[str]
+    write_permission_roles: List[str]
 
 
 @dataclass
@@ -49,6 +114,7 @@ class GoFRoleDTO:
 class CompleteGoFDetailsDTO:
     gof_dto: GoFDTO
     gof_roles_dto: GoFRolesDTO
+
 
 
 @dataclass

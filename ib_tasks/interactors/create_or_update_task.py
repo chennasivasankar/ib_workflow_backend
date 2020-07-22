@@ -83,8 +83,6 @@ class CreateOrUpdateTaskInteractor:
             field_type_is_text_field = field_type == FieldTypes.PLAIN_TEXT.value
             if field_type_is_text_field:
                 self._validate_for_text_field_value(field_value)
-
-        # TODO: VALIDATE FOR PLAIN_TEXT FIELD TYPE VALUE
         # TODO: NEXT FIELD TYPE VALIDATION
         pass
 
