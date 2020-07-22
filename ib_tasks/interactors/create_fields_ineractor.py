@@ -6,16 +6,10 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface \
 from ib_tasks.interactors.storage_interfaces.dtos \
     import FieldDTO, FieldRolesDTO, FieldRoleDTO
 from ib_tasks.constants.enum import FieldTypes, PermissionTypes
-from ib_tasks.exceptions.custom_exceptions import (
-    InvalidFieldIdException,
-    DuplicationOfFieldIdsExist,
-    FieldsDuplicationOfDropDownValues,
-    InvalidRolesException,
-    EmptyValueForPermissions,
-    InvalidValueForFieldDisplayName,
-    InvalidValueForFieldType,
-    InvalidGOFIds
-)
+from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIdException, DuplicationOfFieldIdsExist, \
+    FieldsDuplicationOfDropDownValues, InvalidValueForFieldDisplayName, InvalidValueForFieldType
+from ib_tasks.exceptions.roles_custom_exceptions import InvalidRolesException, EmptyValueForPermissions
+from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGOFIds
 
 
 class CreateFieldsInteractor:

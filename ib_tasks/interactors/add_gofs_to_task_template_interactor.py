@@ -34,8 +34,7 @@ class AddGoFsToTaskTemplateInteractor:
                 template_id=template_id, gof_dtos=gof_dtos,
                 existing_gof_ids_of_template=existing_gof_ids_of_template
         )
-        from ib_tasks.exceptions.custom_exceptions import \
-            ExistingGoFsNotInGivenData
+        from ib_tasks.exceptions.gofs_custom_exceptions import ExistingGoFsNotInGivenData
         from ib_tasks.constants.exception_messages import \
             EXISTING_GOFS_NOT_IN_GIVEN_DATA
         if existing_gof_ids_not_in_given_data:
@@ -90,8 +89,7 @@ class AddGoFsToTaskTemplateInteractor:
             template_id=template_id
         )
         is_template_does_not_exists = not is_template_exists
-        from ib_tasks.exceptions.custom_exceptions import \
-            TemplateDoesNotExists
+        from ib_tasks.exceptions.task_custom_exceptions import TemplateDoesNotExists
         from ib_tasks.constants.exception_messages import \
             TEMPLATE_DOES_NOT_EXISTS
         if is_template_does_not_exists:
@@ -107,7 +105,7 @@ class AddGoFsToTaskTemplateInteractor:
         invalid_gof_ids = [
             gof_id for gof_id in given_gof_ids if gof_id not in valid_gof_ids
         ]
-        from ib_tasks.exceptions.custom_exceptions import GofsDoesNotExist
+        from ib_tasks.exceptions.gofs_custom_exceptions import GofsDoesNotExist
         from ib_tasks.constants.exception_messages import GOFS_DOES_NOT_EXIST
         if invalid_gof_ids:
             message = GOFS_DOES_NOT_EXIST.format(invalid_gof_ids)
@@ -122,8 +120,7 @@ class AddGoFsToTaskTemplateInteractor:
         invalid_gof_ids = self._get_invalid_gof_ids(
             gof_dtos=gofs_with_template_id_dto.gof_dtos
         )
-        from ib_tasks.exceptions.custom_exceptions import \
-            InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
         from ib_tasks.constants.exception_messages import \
             INVALID_VALUE_FOR_GOF_IDS
         if invalid_gof_ids:
@@ -132,7 +129,7 @@ class AddGoFsToTaskTemplateInteractor:
         gof_ids_of_invalid_orders = self._get_gof_ids_of_invalid_orders(
             gof_dtos=gofs_with_template_id_dto.gof_dtos
         )
-        from ib_tasks.exceptions.custom_exceptions import InvalidOrdersForGoFs
+        from ib_tasks.exceptions.gofs_custom_exceptions import InvalidOrdersForGoFs
         from ib_tasks.constants.exception_messages import \
             INVALID_ORDERS_FOR_GOFS
         if gof_ids_of_invalid_orders:
@@ -154,7 +151,7 @@ class AddGoFsToTaskTemplateInteractor:
 
     @staticmethod
     def _validate_template_id(template_id: str):
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
         from ib_tasks.constants.exception_messages import \
             INVALID_VALUE_FOR_TEMPLATE_ID
 
@@ -221,8 +218,7 @@ class AddGoFsToTaskTemplateInteractor:
             if is_duplicate_gof_id:
                 duplicate_gof_ids.append(gof_id)
 
-        from ib_tasks.exceptions.custom_exceptions \
-            import DuplicateGoFIds
+        from ib_tasks.exceptions.gofs_custom_exceptions import DuplicateGoFIds
         from ib_tasks.constants.exception_messages import \
             DUPLICATE_GOF_IDS
         if duplicate_gof_ids:
@@ -240,8 +236,7 @@ class AddGoFsToTaskTemplateInteractor:
             if is_duplicate_order_value:
                 duplicate_orders_of_gofs.append(order_value)
 
-        from ib_tasks.exceptions.custom_exceptions \
-            import DuplicateOrderValuesForGoFs
+        from ib_tasks.exceptions.gofs_custom_exceptions import DuplicateOrderValuesForGoFs
         from ib_tasks.constants.exception_messages import \
             DUPLICATE_ORDER_VALUES_FOR_GOFS
         if duplicate_orders_of_gofs:

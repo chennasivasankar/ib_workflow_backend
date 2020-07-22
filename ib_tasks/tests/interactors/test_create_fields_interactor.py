@@ -22,7 +22,7 @@ class TestCreateFieldsInteractor:
         # Arrange
         field_roles_dtos = [FieldRolesDTOFactory()]
         field_dtos = [FieldDTOFactory(), FieldDTOFactory(gof_id="")]
-        from ib_tasks.exceptions.custom_exceptions import InvalidGOFIds
+        from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGOFIds
         interactor = CreateFieldsInteractor(storage=storage_mock)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
         storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
@@ -39,7 +39,7 @@ class TestCreateFieldsInteractor:
         # Arrange
         field_roles_dtos = [FieldRolesDTOFactory()]
         field_dtos = [FieldDTOFactory(), FieldDTOFactory(field_id=" ")]
-        from ib_tasks.exceptions.custom_exceptions import InvalidFieldIdException
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIdException
         interactor = CreateFieldsInteractor(storage=storage_mock)
         error_message = "Field Id shouldn't be empty"
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
@@ -62,7 +62,7 @@ class TestCreateFieldsInteractor:
             FieldDTOFactory(field_id="FIN_SALUATION")
         ]
         duplication_of_field_ids = ["FIN_SALUATION"]
-        from ib_tasks.exceptions.custom_exceptions import DuplicationOfFieldIdsExist
+        from ib_tasks.exceptions.fields_custom_exceptions import DuplicationOfFieldIdsExist
         interactor = CreateFieldsInteractor(storage=storage_mock)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
         storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
@@ -79,7 +79,7 @@ class TestCreateFieldsInteractor:
         # Arrange
         field_roles_dtos = [FieldRolesDTOFactory()]
         field_dtos = [FieldDTOFactory(field_type=""), FieldDTOFactory(field_type="Hello")]
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForFieldType
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForFieldType
         from ib_tasks.constants.constants import FIELD_TYPES_LIST
         interactor = CreateFieldsInteractor(storage=storage_mock)
         error_message = "Field_Type should be one of these {}".format(FIELD_TYPES_LIST)
@@ -105,7 +105,7 @@ class TestCreateFieldsInteractor:
             FieldDTOFactory()
         ]
         exception_message = "Field display name shouldn't be empty"
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForFieldDisplayName
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForFieldDisplayName
         interactor = CreateFieldsInteractor(storage=storage_mock)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
         storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
@@ -144,7 +144,7 @@ class TestCreateFieldsInteractor:
                 "duplicate_values": ["admin", "User"]
             }
         ]
-        from ib_tasks.exceptions.custom_exceptions import FieldsDuplicationOfDropDownValues
+        from ib_tasks.exceptions.fields_custom_exceptions import FieldsDuplicationOfDropDownValues
         interactor = CreateFieldsInteractor(storage=storage_mock)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
         storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
@@ -169,7 +169,7 @@ class TestCreateFieldsInteractor:
         get_valid_role_ids_in_given_role_ids_mock_method = \
             get_valid_role_ids_in_given_role_ids(mocker)
 
-        from ib_tasks.exceptions.custom_exceptions import InvalidRolesException
+        from ib_tasks.exceptions.roles_custom_exceptions import InvalidRolesException
         FieldDTOFactory.reset_sequence(1)
         field_dtos = [
             FieldDTOFactory(), FieldDTOFactory(),
@@ -230,7 +230,7 @@ class TestCreateFieldsInteractor:
         get_valid_role_ids_in_given_role_ids_mock_method = \
             get_valid_role_ids_in_given_role_ids(mocker)
 
-        from ib_tasks.exceptions.custom_exceptions import InvalidRolesException
+        from ib_tasks.exceptions.roles_custom_exceptions import InvalidRolesException
 
         FieldDTOFactory.reset_sequence(1)
 
@@ -294,7 +294,7 @@ class TestCreateFieldsInteractor:
                 read_permission_roles=[]
             )
         ]
-        from ib_tasks.exceptions.custom_exceptions import EmptyValueForPermissions
+        from ib_tasks.exceptions.roles_custom_exceptions import EmptyValueForPermissions
         interactor = CreateFieldsInteractor(storage=storage_mock)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
         storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
@@ -325,7 +325,7 @@ class TestCreateFieldsInteractor:
                 write_permission_roles=[]
             )
         ]
-        from ib_tasks.exceptions.custom_exceptions import EmptyValueForPermissions
+        from ib_tasks.exceptions.roles_custom_exceptions import EmptyValueForPermissions
         interactor = CreateFieldsInteractor(storage=storage_mock)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
         storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
