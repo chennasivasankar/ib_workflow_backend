@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 
 
 class InvalidStageIdsException(Exception):
@@ -31,7 +31,6 @@ class InvalidTaskIdException(Exception):
 class InvalidTaskTemplateId(Exception):
     def __init__(self, task_template_ids_dict: str):
         self.task_template_ids_dict = task_template_ids_dict
-
 
 class InvalidStagesTaskTemplateId(Exception):
     def __init__(self, invalid_stages_task_template_ids: List[str]):
@@ -171,20 +170,27 @@ class DuplicateConstantNames(Exception):
         self.message = message
 
 
-class InvalidFieldIdException(Exception):
-    def __init__(self, error_message: str):
-        self.error_message = error_message
+class FieldIdEmptyValueException(Exception):
+    def __init__(self, message: str):
+        self.message = message
 
 
 class DuplicationOfFieldIdsExist(Exception):
+
     def __init__(self, field_ids: List[str]):
         self.field_ids = field_ids
 
 
-class FieldsDuplicationOfDropDownValues(Exception):
-    def __init__(self, fieds_with_dropdown_duplicate_values):
-        self.fieds_with_dropdown_duplicate_values = \
-            fieds_with_dropdown_duplicate_values
+class DuplicationOfFieldValuesForFieldTypeMultiValues(Exception):
+
+    def __init__(self, message: str):
+        self.message = message
+
+
+class InvalidFieldRolesException(Exception):
+
+    def __init__(self, roles):
+        self.roles = roles
 
 
 class EmptyValueForPermissions(Exception):
@@ -206,6 +212,7 @@ class InvalidValueForFieldType(Exception):
 
 
 class InvalidGOFIds(Exception):
+
     def __int__(self, message: str):
         self.message = message
 
@@ -246,5 +253,52 @@ class InvalidTypeForOrder(Exception):
 
 
 class InvalidTypeForValue(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class DuplicationOfPermissionRoles(Exception):
+
+    def __init__(self, message: str):
+        self.message = message
+
+
+class EmptyValuesForFieldValues(Exception):
+
+    def __init__(self, message: str):
+        self.message = message
+
+
+class InvalidJsonForFieldValue(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class EmptyValuesForGoFNames(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class DuplicationOfGoFNamesForFieldValues(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class AllowedFormatsEmptyValueException(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class FieldsDuplicationOfAllowedFormatsValues(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class EmptyValuesForAllowedFormats(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class InvalidValueForSearchable(Exception):
     def __init__(self, message: str):
         self.message = message
