@@ -37,4 +37,17 @@ class TestValidateColumnId:
                 column_id=invalid_column_id
             )
 
+    def test_with_valid_column_id(
+            self, storage, reset_sequence):
+        # Arrange
+        column_id = 'COLUMN_ID_1'
+        from ib_boards.tests.factories.models import BoardFactory, ColumnFactory
+        BoardFactory.create_batch(2)
+        ColumnFactory.create_batch(3, board_id='BOARD_ID_1')
+
+        # Act
+        storage.validate_column_id(column_id=column_id)
+
+
+
 
