@@ -56,10 +56,12 @@ class PopulateGoFsToTaskTemplate:
                 InvalidTypeForOrder
             from ib_tasks.constants.exception_messages import \
                 INVALID_TYPE_FOR_ORDER
-            try:
-                order = int(gof[1])
-            except:
-                message = INVALID_TYPE_FOR_ORDER.format(gof[1])
+
+            order = gof[1]
+            is_order_is_int = isinstance(order, int)
+            is_order_is_not_int = not is_order_is_int
+            if is_order_is_not_int:
+                message = INVALID_TYPE_FOR_ORDER.format(order)
                 raise InvalidTypeForOrder(message)
 
             is_enable_add_another_gof_is_yes = gof[2] == "Yes"

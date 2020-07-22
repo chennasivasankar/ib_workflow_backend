@@ -57,10 +57,12 @@ class PopulateGlobalConstantsToTemplate:
                 InvalidTypeForValue
             from ib_tasks.constants.exception_messages import \
                 INVALID_TYPE_FOR_VALUE
-            try:
-                value = int(global_constant[1])
-            except:
-                message = INVALID_TYPE_FOR_VALUE.format(global_constant[1])
+
+            value = global_constant[1]
+            is_value_is_int = isinstance(value, int)
+            is_value_is_not_int = not is_value_is_int
+            if is_value_is_not_int:
+                message = INVALID_TYPE_FOR_VALUE.format(value)
                 raise InvalidTypeForValue(message)
 
             global_constants_dto = GlobalConstantsDTO(
