@@ -64,7 +64,8 @@ class ActionsStorageImplementation(ActionStorageInterface):
 
         ActionPermittedRoles.objects.bulk_create(list_of_permitted_roles)
 
-    def _get_list_of_action_objs_to_create(self, list_of_stages, stage_actions):
+    @staticmethod
+    def _get_list_of_action_objs_to_create(list_of_stages, stage_actions):
         list_of_actions = []
         for stage_action in stage_actions:
             list_of_actions.append(StageAction(
