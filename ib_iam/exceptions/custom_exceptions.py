@@ -6,7 +6,6 @@ class InvalidEmail(Exception):
     pass
 
 
-
 class UserIsNotAdmin(Exception):
     pass
 

@@ -4,7 +4,6 @@ from django_swagger_utils.utils.http_response_mixin \
     import HTTPResponseMixin
 
 from ib_iam.adapters.dtos import UserProfileDTO
-from ib_iam.constants.enums import StatusCode
 from ib_iam.interactors.presenter_interfaces.dtos import \
     CompleteUsersDetailsDTO, UserOptionsDetails
 from ib_iam.interactors.presenter_interfaces.presenter_interface \
@@ -40,6 +39,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         }
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
+
     def raise_role_description_should_not_be_empty_exception(self):
         from ib_iam.constants.exception_messages \
             import ROLE_DESCRIPTION_SHOULD_NOT_BE_EMPTY
@@ -394,7 +394,6 @@ from ib_iam.adapters.auth_service import UserTokensDTO
 from ib_iam.constants.enums import StatusCode
 from ib_iam.interactors.presenter_interfaces.presenter_interface import \
     AuthPresenterInterface
-
 
 
 class AuthPresenterImplementation(AuthPresenterInterface, HTTPResponseMixin):

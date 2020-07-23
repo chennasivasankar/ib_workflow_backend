@@ -85,9 +85,7 @@ class PresenterInterface(ABC):
 
 
 from abc import abstractmethod, ABC
-
 from django.http import HttpResponse
-
 from ib_iam.adapters.auth_service import UserTokensDTO
 
 
