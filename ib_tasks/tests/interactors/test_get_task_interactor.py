@@ -39,10 +39,9 @@ class TestTaskInteractor:
         presenter_mock.raise_exception_for_invalid_task_id.return_value = mock_object
 
         # Act
-        with pytest.raises(InvalidTaskIdException) as err:
-            interactor.get_task_wrapper(
-                user_id=user_id, task_id=task_id, presenter=presenter_mock
-            )
+        interactor.get_task_wrapper(
+            user_id=user_id, task_id=task_id, presenter=presenter_mock
+        )
 
         # Assert
         storage_mock.validate_task_id.assert_called_once_with(task_id=task_id)

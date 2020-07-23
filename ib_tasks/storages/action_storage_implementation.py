@@ -95,7 +95,10 @@ class ActionsStorageImplementation(ActionStorageInterface):
         for stage_action in stage_actions:
             action_objs.append(
                 StageAction.objects.get(
-                    name=stage_action.action_name, stage__stage_id=stage_action.stage_id))
+                    name=stage_action.action_name,
+                    stage__stage_id=stage_action.stage_id
+                )
+            )
 
         list_of_permitted_roles = self._get_list_of_permitted_roles_objs(
             action_objs, stage_actions)
