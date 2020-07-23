@@ -3,7 +3,8 @@ from unittest.mock import patch
 
 import pytest
 
-from ib_iam.storages.storage_implementation import StorageImplementation
+from ib_iam.storages.get_users_list_storage_implementation \
+    import GetUsersListStorageImplementation
 
 from ib_iam.tests.common_fixtures.storages import \
     user_not_admin, users_company, users_team, users_role
@@ -17,7 +18,7 @@ class TestGetUsers:
         user_id = "user0"
 
         expected_output = False
-        storage = StorageImplementation()
+        storage = GetUsersListStorageImplementation()
 
         # Act
         output = storage.check_is_admin_user(user_id=user_id)
@@ -30,7 +31,7 @@ class TestGetUsers:
         # Arrange
         offset = 0
         limit = 10
-        storage = StorageImplementation()
+        storage = GetUsersListStorageImplementation()
         from ib_iam.interactors.storage_interfaces.dtos import UserDTO
         expected_output = [
             UserDTO(user_id='user0', is_admin=False, company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331'),
@@ -72,7 +73,7 @@ class TestGetUsers:
             )
         ]
 
-        storage = StorageImplementation()
+        storage = GetUsersListStorageImplementation()
 
         # Act
         output = storage.get_team_details_of_users_bulk(user_ids=user_ids)
@@ -111,7 +112,7 @@ class TestGetUsers:
             )
         ]
 
-        storage = StorageImplementation()
+        storage = GetUsersListStorageImplementation()
 
         # Act
         output = storage.get_role_details_of_users_bulk(user_ids=user_ids)
@@ -136,8 +137,8 @@ class TestGetUsers:
                 company_name='company 0'
             )
         ]
-    
-        storage = StorageImplementation()
+
+        storage = GetUsersListStorageImplementation()
 
         # Act
         output = storage.get_company_details_of_users_bulk(user_ids=user_ids)
