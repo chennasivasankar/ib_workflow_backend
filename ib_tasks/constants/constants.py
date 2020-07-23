@@ -7,7 +7,6 @@ FIELD_TYPES_LIST = [item.value for item in FieldTypes]
 
 SEARCHABLE_VALUES = [item.value for item in Searchable]
 
-all_roles_id = "ALL_ROLES"
 
 Permission_Types = [
     (item.value, item.value)
@@ -17,6 +16,11 @@ Permission_Types = [
 Field_Types = [
     (item.value, item.value)
     for item in FieldTypes
+]
+
+VALID_FIELD_TYPES = [
+    field_type.value
+    for field_type in FieldTypes
 ]
 
 MULTI_VALUES_INPUT_FIELDS = [

@@ -40,3 +40,8 @@ class FieldRoleDTO:
     field_id: str
     role: str
     permission_type: PermissionTypes
+
+@dataclass
+class FieldTypeDTO:
+    field_id: str
+    field_type: FieldTypes
