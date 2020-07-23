@@ -22,3 +22,5 @@ django-cors-headers==3.0.1
 
 # ib_sentry wrapper
 ib_sentry_wrapper==1.0.2
+
+schema
