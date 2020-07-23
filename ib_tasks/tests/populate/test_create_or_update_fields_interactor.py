@@ -136,7 +136,6 @@ class TestCreateOrUpdateFields:
             FieldDTOFactory(field_id="field3", field_display_name=" "),
             FieldDTOFactory(field_id="field4")
         ]
-        field_ids = ["field2", "field3"]
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
         # Act
@@ -161,7 +160,6 @@ class TestCreateOrUpdateFields:
             FieldDTOFactory(field_id="field2", field_type="Hello"),
             FieldDTOFactory(field_id="field3", field_type=FieldTypes.PLAIN_TEXT.value)
         ]
-        field_ids = ["field1", "field2"]
 
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
@@ -185,7 +183,6 @@ class TestCreateOrUpdateFields:
             FieldDTOFactory(gof_id="")
         ]
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
-        invalid_gof_ids = ["FIN_VENDOR_BASIC_DETAILS", "Hello", ""]
 
         # Act
         with pytest.raises(InvalidGOFIds) as err:
@@ -231,15 +228,7 @@ class TestCreateOrUpdateFields:
             self, storage, field_dtos, snapshot
     ):
         # Arrange
-        from ib_tasks.constants.exception_messages \
-            import EMPTY_VALUE_FOR_WRITE_PERMISSIONS
         from ib_tasks.exceptions.fields_custom_exceptions import EmptyValueForPermissions
-
-        field_ids_with_write_permissions_empty = ["field1", "field2"]
-
-        exception_message = EMPTY_VALUE_FOR_WRITE_PERMISSIONS.format(
-            field_ids_with_write_permissions_empty
-        )
 
         field_roles_dtos = [
             FieldRolesDTOFactory(
@@ -267,21 +256,7 @@ class TestCreateOrUpdateFields:
     def test_given_duplication_of_values_for_read_permissions_roles_raise_exception(
             self, storage, field_dtos, snapshot
     ):
-        # Arrange
-        from ib_tasks.constants.exception_messages \
-            import DUPLICATED_VALUES_FOR_READ_PERMISSIONS
         from ib_tasks.exceptions.fields_custom_exceptions import DuplicationOfPermissionRoles
-
-        duplication_of_read_permission_roles = [
-            {
-                "field_id": "field1",
-                "duplication_values_for_read_permissions": ["User"]
-            },
-            {
-                "field_id": "field2",
-                "duplication_values_for_read_permissions": ["Admin"]
-            }
-        ]
 
         field_roles_dtos = [
             FieldRolesDTOFactory(
@@ -294,10 +269,6 @@ class TestCreateOrUpdateFields:
             ),
             FieldRolesDTOFactory(field_id="field3")
         ]
-        exception_message = DUPLICATED_VALUES_FOR_READ_PERMISSIONS.format(
-            duplication_of_read_permission_roles
-        )
-
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
         # Act
@@ -313,20 +284,8 @@ class TestCreateOrUpdateFields:
             self, storage, field_dtos, snapshot
     ):
         # Arrange
-        from ib_tasks.constants.exception_messages \
-            import DUPLICATED_VALUES_FOR_WRITE_PERMISSIONS
-        from ib_tasks.exceptions.fields_custom_exceptions import DuplicationOfPermissionRoles
-
-        duplication_of_write_permission_roles = [
-            {
-                "field_id": "field1",
-                "duplication_values_for_write_permissions": ["User"]
-            },
-            {
-                "field_id": "field2",
-                "duplication_values_for_write_permissions": ["Admin"]
-            }
-        ]
+        from ib_tasks.exceptions.fields_custom_exceptions\
+            import DuplicationOfPermissionRoles
 
         field_roles_dtos = [
             FieldRolesDTOFactory(
@@ -339,9 +298,6 @@ class TestCreateOrUpdateFields:
             ),
             FieldRolesDTOFactory(field_id="field3")
         ]
-        exception_message = DUPLICATED_VALUES_FOR_WRITE_PERMISSIONS.format(
-            duplication_of_write_permission_roles
-        )
 
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
@@ -358,7 +314,8 @@ class TestCreateOrUpdateFields:
             self, mocker, storage, field_dtos, snapshot
     ):
         # Arrange
-        from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldRolesException
+        from ib_tasks.exceptions.fields_custom_exceptions \
+            import InvalidFieldRolesException
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_valid_role_ids_in_given_role_ids
         get_valid_role_ids_mock_method = \
@@ -377,18 +334,6 @@ class TestCreateOrUpdateFields:
                     "admin",
                 ]
             )
-        ]
-        fields_invalid_roles_for_read_permission = [
-            {
-                "field_id": "field1",
-                "invalid_roles": ["User", "Vendor"],
-                "permissions": "read_permissions",
-            },
-            {
-                "field_id": "field2",
-                "permissions": "read_permissions",
-                "invalid_roles": ["admin"]
-            }
         ]
 
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
@@ -410,7 +355,8 @@ class TestCreateOrUpdateFields:
     ):
         # Arrange
         FieldRolesDTOFactory.reset_sequence(1)
-        from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldRolesException
+        from ib_tasks.exceptions.fields_custom_exceptions \
+            import InvalidFieldRolesException
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
             import get_valid_role_ids_in_given_role_ids
         get_valid_role_ids_mock_method = get_valid_role_ids_in_given_role_ids(mocker)
@@ -454,8 +400,6 @@ class TestCreateOrUpdateFields:
     ):
         # Arrange
         from ib_tasks.exceptions.fields_custom_exceptions import EmptyValuesForFieldValues
-        from ib_tasks.constants.exception_messages \
-            import EMPTY_VALUE_FOR_FIELD_VALUE
 
         field_dtos = [
             FieldDTOFactory(
@@ -463,7 +407,6 @@ class TestCreateOrUpdateFields:
             )
         ]
         field_id = "field1"
-        exception_message = EMPTY_VALUE_FOR_FIELD_VALUE.format(field_id)
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
         # Act
@@ -482,8 +425,6 @@ class TestCreateOrUpdateFields:
     ):
         # Arrange
         from ib_tasks.exceptions.fields_custom_exceptions import EmptyValuesForFieldValues
-        from ib_tasks.constants.exception_messages \
-            import EMPTY_VALUE_FOR_FIELD_VALUE
 
         field_dtos = [
             FieldDTOFactory(
@@ -491,7 +432,6 @@ class TestCreateOrUpdateFields:
             )
         ]
         field_id = "field1"
-        exception_message = EMPTY_VALUE_FOR_FIELD_VALUE.format(field_id)
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
         # Act
@@ -509,9 +449,8 @@ class TestCreateOrUpdateFields:
             populate_gofs, snapshot
     ):
         # Arrange
-        from ib_tasks.exceptions.fields_custom_exceptions import DuplicationOfFieldValuesForFieldTypeMultiValues
-        from ib_tasks.constants.exception_messages \
-            import DUPLICATION_OF_FIELD_VALUES
+        from ib_tasks.exceptions.fields_custom_exceptions \
+            import DuplicationOfFieldValuesForFieldTypeMultiValues
 
         field_dtos = [
             FieldDTOFactory(
@@ -524,7 +463,6 @@ class TestCreateOrUpdateFields:
             "field_type": FieldTypes.DROPDOWN.value,
             "duplication_of_values": duplication_of_field_values
         }
-        exception_message = DUPLICATION_OF_FIELD_VALUES.format(field_dict)
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
         # Act
@@ -543,7 +481,6 @@ class TestCreateOrUpdateFields:
     ):
         # Arrange
         from ib_tasks.exceptions.fields_custom_exceptions import InvalidJsonForFieldValue
-        from ib_tasks.constants.exception_messages import INVALID_JSON
         field_values = [
             {
                 "name": "Individual",
@@ -561,8 +498,7 @@ class TestCreateOrUpdateFields:
                 field_values=str(field_values)
             )
         ]
-        field_id = "field1"
-        error_message = INVALID_JSON.format(field_id)
+
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
         # Act
@@ -580,9 +516,8 @@ class TestCreateOrUpdateFields:
             valid_field_roles_dtos, populate_gofs
     ):
         # Arrange
-        from ib_tasks.exceptions.fields_custom_exceptions import EmptyValuesForGoFNames
-        from ib_tasks.constants.exception_messages \
-            import EMPTY_VALUE_FOR_GOF_NAMES
+        from ib_tasks.exceptions.fields_custom_exceptions \
+            import EmptyValuesForGoFNames
         field_values = [
             {
                 "name": "Individual",
@@ -602,7 +537,6 @@ class TestCreateOrUpdateFields:
             )
         ]
         field_id = "field1"
-        error_message = EMPTY_VALUE_FOR_GOF_NAMES.format(field_id)
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
         # Act
@@ -620,9 +554,8 @@ class TestCreateOrUpdateFields:
             valid_field_roles_dtos, populate_gofs
     ):
         # Arrange
-        from ib_tasks.exceptions.fields_custom_exceptions import DuplicationOfGoFNamesForFieldValues
-        from ib_tasks.constants.exception_messages \
-            import DUPLICATED_OF_GOF_NAMES_FOR_FIELD_VALUES
+        from ib_tasks.exceptions.fields_custom_exceptions \
+            import DuplicationOfGoFNamesForFieldValues
         field_values = [
             {
                 "name": "Individual",
@@ -645,11 +578,6 @@ class TestCreateOrUpdateFields:
                 field_values=field_values
             )
         ]
-        exception_message = {
-            "field_id": "field1",
-            "duplication_of_gof_names": ["Individual"]
-        }
-        error_message = DUPLICATED_OF_GOF_NAMES_FOR_FIELD_VALUES.format(exception_message)
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
         # Act
@@ -713,9 +641,8 @@ class TestCreateOrUpdateFields:
             valid_field_roles_dtos, populate_gofs, snapshot
     ):
         # Arrange
-        from ib_tasks.exceptions.fields_custom_exceptions import AllowedFormatsEmptyValueException
-        from ib_tasks.constants.exception_messages \
-            import ALLOWED_FORMAT_EMPTY_VALUES_EXCEPTION
+        from ib_tasks.exceptions.fields_custom_exceptions \
+            import AllowedFormatsEmptyValueException
 
         field_dtos = [
             FieldDTOFactory(
@@ -725,7 +652,6 @@ class TestCreateOrUpdateFields:
             )
         ]
         field_id = "field1"
-        exception_message = ALLOWED_FORMAT_EMPTY_VALUES_EXCEPTION.format(field_id)
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
         # Act
@@ -743,9 +669,8 @@ class TestCreateOrUpdateFields:
             valid_field_roles_dtos, populate_gofs
     ):
         # Arrange
-        from ib_tasks.exceptions.fields_custom_exceptions import FieldsDuplicationOfAllowedFormatsValues
-        from ib_tasks.constants.exception_messages \
-            import FIELD_DUPLICATION_OF_ALLOWED_FORMATS
+        from ib_tasks.exceptions.fields_custom_exceptions \
+            import FieldsDuplicationOfAllowedFormatsValues
 
         field_dtos = [
             FieldDTOFactory(
@@ -754,13 +679,6 @@ class TestCreateOrUpdateFields:
                 allowed_formats=[".jpg", ".jpg", ".mpeg"]
             )
         ]
-        duplication_of_values = [".jpg"]
-        duplication_of_values_dict = {
-            "field_id": "field1",
-            "field_type": FieldTypes.IMAGE_UPLOADER.value,
-            "duplication_of_values": duplication_of_values
-        }
-        exception_message = FIELD_DUPLICATION_OF_ALLOWED_FORMATS.format(duplication_of_values_dict)
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
         # Act
@@ -778,9 +696,8 @@ class TestCreateOrUpdateFields:
             valid_field_roles_dtos, populate_gofs
     ):
         # Arrange
-        from ib_tasks.exceptions.fields_custom_exceptions import FieldsDuplicationOfAllowedFormatsValues
-        from ib_tasks.constants.exception_messages \
-            import FIELD_DUPLICATION_OF_ALLOWED_FORMATS
+        from ib_tasks.exceptions.fields_custom_exceptions \
+            import FieldsDuplicationOfAllowedFormatsValues
 
         field_dtos = [
             FieldDTOFactory(
@@ -789,13 +706,7 @@ class TestCreateOrUpdateFields:
                 allowed_formats=[".pdf", ".pdf"]
             )
         ]
-        duplication_of_values = [".pdf"]
-        duplication_of_values_dict = {
-            "field_id": "field1",
-            "field_type": FieldTypes.FILE_UPLOADER.value,
-            "duplication_of_values": duplication_of_values
-        }
-        exception_message = FIELD_DUPLICATION_OF_ALLOWED_FORMATS.format(duplication_of_values_dict)
+
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
         # Act
@@ -814,9 +725,8 @@ class TestCreateOrUpdateFields:
             valid_field_roles_dtos, populate_gofs, snapshot
     ):
         # Arrange
-        from ib_tasks.exceptions.fields_custom_exceptions import EmptyValuesForAllowedFormats
-        from ib_tasks.constants.exception_messages \
-            import EMPTY_VALUES_FOR_ALLOWED_FORMATS
+        from ib_tasks.exceptions.fields_custom_exceptions \
+            import EmptyValuesForAllowedFormats
 
         field_dtos = [
             FieldDTOFactory(
@@ -826,7 +736,6 @@ class TestCreateOrUpdateFields:
             )
         ]
         field_id = "field1"
-        exception_message = EMPTY_VALUES_FOR_ALLOWED_FORMATS.format(field_id)
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
         # Act
@@ -844,10 +753,9 @@ class TestCreateOrUpdateFields:
             valid_field_roles_dtos, populate_gofs
     ):
         # Arrange
-        from ib_tasks.constants.constants import SEARCHABLE_VALUES
-        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForSearchable
-        from ib_tasks.constants.exception_messages \
-            import INVALID_VALUE_FOR_SEARCHABLE
+
+        from ib_tasks.exceptions.fields_custom_exceptions \
+            import InvalidValueForSearchable
         field_dtos = [
             FieldDTOFactory(
                 field_id="field1",
@@ -855,10 +763,6 @@ class TestCreateOrUpdateFields:
                 field_values=" "
             )
         ]
-        field_id = "field1"
-        exception_message = INVALID_VALUE_FOR_SEARCHABLE.format(
-            SEARCHABLE_VALUES, field_id
-        )
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
         # Act
@@ -876,10 +780,9 @@ class TestCreateOrUpdateFields:
             valid_field_roles_dtos, populate_gofs
     ):
         # Arrange
-        from ib_tasks.constants.constants import SEARCHABLE_VALUES
-        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForSearchable
-        from ib_tasks.constants.exception_messages \
-            import INVALID_VALUE_FOR_SEARCHABLE
+
+        from ib_tasks.exceptions.fields_custom_exceptions \
+            import InvalidValueForSearchable
         field_dtos = [
             FieldDTOFactory(
                 field_id="field1",
@@ -887,10 +790,7 @@ class TestCreateOrUpdateFields:
                 field_values="Hello"
             )
         ]
-        field_id = "field1"
-        exception_message = INVALID_VALUE_FOR_SEARCHABLE.format(
-            SEARCHABLE_VALUES, field_id
-        )
+
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
         # Act
@@ -904,7 +804,7 @@ class TestCreateOrUpdateFields:
         snapshot.assert_match(name="exception_message = ", value=str(err.value))
 
     def test_create_fields_and_fields_roles_given_field_dtos_and_field_role_dtos(
-            self, storage, reset_factories, snapshot
+            self, storage, reset_factories, snapshot, mocker
     ):
         # Arrange
         import json
@@ -991,13 +891,19 @@ class TestCreateOrUpdateFields:
                 permission_type=PermissionTypes.WRITE.value
             )
         ]
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_valid_role_ids_in_given_role_ids
+        get_valid_role_ids_mock_method = \
+            get_valid_role_ids_in_given_role_ids(mocker)
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
+
 
         # Act
         interactor.create_or_update_fields(field_dtos, field_roles_dtos)
 
-        counter = 1
         # Assert
+        counter = 1
+        get_valid_role_ids_mock_method.assert_called_once()
         for field_dto in field_dtos:
             field_obj = Field.objects.get(field_id=field_dto.field_id)
             self._assert_field_dto_and_field_obj(counter, field_obj, snapshot)
@@ -1034,7 +940,7 @@ class TestCreateOrUpdateFields:
         snapshot.assert_match(name="permission_type{}".format(counter), value=field_role_obj.permission_type)
 
     def test_update_fields_and_fields_roles_given_field_dtos_and_field_role_dtos(
-            self, storage, reset_factories, snapshot
+            self, storage, reset_factories, snapshot, mocker
     ):
         # Arrange
         GoFFactory(gof_id="gof0")
@@ -1102,12 +1008,18 @@ class TestCreateOrUpdateFields:
                 permission_type=PermissionTypes.WRITE.value
             )
         ]
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_valid_role_ids_in_given_role_ids
+        get_valid_role_ids_mock_method = \
+            get_valid_role_ids_in_given_role_ids(mocker)
+
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
         # Act
         interactor.create_or_update_fields(field_dtos, field_roles_dtos)
 
         # Assert
+        get_valid_role_ids_mock_method.assert_called_once()
         counter = 1
         for field_dto in field_dtos:
             field_obj = Field.objects.get(field_id=field_dto.field_id)
@@ -1123,7 +1035,7 @@ class TestCreateOrUpdateFields:
             counter += 1
 
     def test_create_or_update_fields_and_fields_roles_given_field_dtos_and_field_role_dtos(
-            self, storage, reset_factories, snapshot
+            self, storage, reset_factories, snapshot, mocker
     ):
         # Arrange
         GoFFactory(gof_id="gof1")
@@ -1211,6 +1123,10 @@ class TestCreateOrUpdateFields:
                 permission_type=PermissionTypes.WRITE.value
             )
         ]
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_valid_role_ids_in_given_role_ids
+        get_valid_role_ids_mock_method = \
+            get_valid_role_ids_in_given_role_ids(mocker)
 
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
 
@@ -1218,6 +1134,7 @@ class TestCreateOrUpdateFields:
         interactor.create_or_update_fields(field_dtos, field_roles_dtos)
 
         # Assert
+        get_valid_role_ids_mock_method.assert_called_once()
         counter = 1
         for field_dto in field_dtos:
             field_obj = Field.objects.get(field_id=field_dto.field_id)

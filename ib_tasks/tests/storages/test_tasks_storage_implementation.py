@@ -165,14 +165,13 @@ class TestTasksStorageImplementation:
                     assert gof.display_name == gof_dto.gof_display_name
                     assert gof.max_columns == gof_dto.max_columns
 
-
     def test_get_existing_field_ids_in_given_field_ids(
             self, storage, reset_factories
     ):
         # Arrange
         field_ids = ["field0", "field1", "field2"]
-        FieldFactory(field_id="field0")
-        FieldFactory(field_id="field1")
+        FieldFactory.create(field_id="field0")
+        FieldFactory.create(field_id="field1")
         expected_existing_field_ids = ["field0", "field1"]
 
         # Act
