@@ -435,7 +435,33 @@
                 "enum": [
                   "INVALID_EMAIL",
                   "INVALID_NAME",
-                  "USER_ALREADY_EXIST_WITH_THIS_EMAIL"
+                  "USER_ALREADY_EXIST_WITH_THIS_EMAIL",
+                  "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "EditUserBadRequestResponse": {
+      "description": "Failed to add user",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_EMAIL",
+                  "INVALID_NAME"
                 ]
               }
             },
@@ -526,6 +552,36 @@
           },
           "400": {
             "$ref": "#/responses/AddUserBadRequestResponse"
+          }
+        }
+      }
+    },
+    "/users/edit_user/{user_id}/v1/": {
+      "put": {
+        "operationId": "edit_user",
+        "summary": "Edit User",
+        "description": "edit an user",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/AddUserParameter"
+          },
+          {
+            "$ref": "#/parameters/UserIdPathParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user added"
+          },
+          "400": {
+            "$ref": "#/responses/EditUserFailedResponse"
           }
         }
       }
