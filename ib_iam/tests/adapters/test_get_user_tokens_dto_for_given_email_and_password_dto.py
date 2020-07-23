@@ -21,11 +21,12 @@ class TestGetUserTokens:
 
         from ib_users.interactors.third_party.user_tokens_generator import \
             UserAuthTokensDTO
-        from datetime import datetime
+
+        # TODO: UserAuthDTO in ib_users expecting the expires_in is datetime but working for integers
         user_auth_tokens_dto = UserAuthTokensDTO(
             access_token="asdfaldskfjdfdlsdkf",
             refresh_token="sadfenkljkdfeller",
-            expires_in=datetime(year=2199, month=1, day=2),
+            expires_in=5647665599,
             user_id="11"
         )
 

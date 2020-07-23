@@ -88,8 +88,8 @@
             }
           },
           "required": [
-            "profile_pic_url",
-            "is_admin"
+            "is_admin",
+            "profile_pic_url"
           ]
         }
       ]
