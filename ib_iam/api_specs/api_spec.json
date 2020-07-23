@@ -857,7 +857,7 @@
       }
     },
     "UnauthorizedResponseForDeleteCompany": {
-      "description": "User has no access to delete a team",
+      "description": "User has no access to delete a company",
       "schema": {
         "$ref": "#/definitions/UnauthorizedResponseForDeleteCompany"
       }
