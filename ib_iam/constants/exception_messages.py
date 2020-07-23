@@ -58,17 +58,17 @@ ROLE_ID_SHOULD_NOT_BE_IN_VALID_FORMAT = (
     "ROLE_ID_SHOULD_NOT_BE_IN_VALID_FORMAT"
 )
 
-InvalidRoleIds = (
+INVALID_ROLE_IDS = (
     "given role ids are invalid",
-    "InvalidRoleIds"
+    "INVALID_ROLE_IDS"
 )
 
-InvalidTeamIds = (
+INVALID_TEAM_IDS = (
     "given team ids are invalid",
-    "InvalidTeamIds"
+    "INVALID_TEAM_IDS"
 )
 
-InvalidCompanyId = (
+INVALID_COMPANY_ID = (
     "given company id is invalid",
     "InvalidComapnyId"
 )
