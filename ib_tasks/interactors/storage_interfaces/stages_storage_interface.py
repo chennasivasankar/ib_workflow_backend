@@ -6,6 +6,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO
 
 
 class StageStorageInterface(abc.ABC):
+
     @abc.abstractmethod
     def create_stages(self, stage_details: List[StageDTO]):
         pass
