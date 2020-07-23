@@ -9,15 +9,15 @@ snapshots = Snapshot()
 
 snapshots['TestGetBoardsDetailsPresenterImplementation.test_get_response_for_board_details board_details'] = [
     {
-        'board_id': 'BOARD_ID_1',
+        'board_id': 'BOARD_ID_4',
         'display_name': 'BOARD_DISPLAY_NAME'
     },
     {
-        'board_id': 'BOARD_ID_2',
+        'board_id': 'BOARD_ID_5',
         'display_name': 'BOARD_DISPLAY_NAME'
     },
     {
-        'board_id': 'BOARD_ID_3',
+        'board_id': 'BOARD_ID_6',
         'display_name': 'BOARD_DISPLAY_NAME'
     }
 ]

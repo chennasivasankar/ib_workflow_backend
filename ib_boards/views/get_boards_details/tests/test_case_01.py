@@ -8,13 +8,13 @@ from ib_boards.utils.custom_test_utils import CustomTestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 REQUEST_BODY = """
-
+{}
 """
 
 TEST_CASE = {
     "request": {
         "path_params": {},
-        "query_params": {"Limit": 231, "Offset": 337},
+        "query_params": {"Limit": 0, "Offset": 8},
         "header_params": {},
         "securities": {"oauth": {"tokenUrl": "http://auth.ibtspl.com/oauth2/", "flow": "password", "scopes": ["read", "write"], "type": "oauth2"}},
         "body": REQUEST_BODY,
@@ -41,4 +41,5 @@ class TestCase01GetBoardsDetailsAPITestCase(CustomTestUtils):
 
         self.assert_match_snapshot(
             name="response",
-            value=response)
+            value=response.content
+        )

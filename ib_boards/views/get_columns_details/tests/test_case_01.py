@@ -14,8 +14,8 @@ REQUEST_BODY = """
 
 TEST_CASE = {
     "request": {
-        "path_params": {"board_id": "ibgroup"},
-        "query_params": {"Offset": 192, "Limit": 409},
+        "path_params": {"board_id": "BOARD_ID_1"},
+        "query_params": {"Offset": 0, "Limit": 1},
         "header_params": {},
         "securities": {"oauth": {"tokenUrl": "http://auth.ibtspl.com/oauth2/", "flow": "password", "scopes": ["read", "write"], "type": "oauth2"}},
         "body": REQUEST_BODY,

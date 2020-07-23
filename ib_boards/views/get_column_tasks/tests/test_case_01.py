@@ -13,8 +13,8 @@ REQUEST_BODY = """
 
 TEST_CASE = {
     "request": {
-        "path_params": {"column_id": "ibgroup"},
-        "query_params": {"Limit": 475, "Offset": 498},
+        "path_params": {"column_id": "COLUMN_ID_1"},
+        "query_params": {"Limit": 0, "Offset": 1},
         "header_params": {},
         "securities": {"oauth": {"tokenUrl": "http://auth.ibtspl.com/oauth2/", "flow": "password", "scopes": ["read", "write"], "type": "oauth2"}},
         "body": REQUEST_BODY,
@@ -34,7 +34,8 @@ class TestCase01GetColumnTasksAPITestCase(CustomTestUtils):
               ).setupUser(
             username=username, password=password
         )
-        self.create_boards()
+        # self.create_boards()
+        self.create_columns()
 
     def test_case(self):
         response = self.default_test_case()

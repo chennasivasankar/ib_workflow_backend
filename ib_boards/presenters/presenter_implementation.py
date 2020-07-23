@@ -56,6 +56,7 @@ class GetBoardsPresenterImplementation(
     def get_response_for_get_boards(
             self, board_dtos: List[BoardDTO], total_boards: int) \
             -> response.HttpResponse:
+
         board_details_dict = {
             "total_boards_count": total_boards,
             "boards_details": []
@@ -67,6 +68,7 @@ class GetBoardsPresenterImplementation(
         return self.prepare_200_success_response(
             response_dict=board_details_dict
         )
+
 
     @staticmethod
     def _convert_board_dto_to_dict(board_dto):
@@ -314,5 +316,3 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         }
         return columns_dict
 
-    def get_response_for_offset_exceeds_total_tasks(self):
-        pass

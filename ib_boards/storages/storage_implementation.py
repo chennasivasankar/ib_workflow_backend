@@ -14,12 +14,10 @@ from ib_boards.models import Board, ColumnPermission, Column
 class StorageImplementation(StorageInterface):
 
     def validate_board_id(self, board_id):
-        is_board_id_invalid = not Board.objects.filter(
+        is_board_id_valid = Board.objects.filter(
             board_id=board_id
         ).exists()
-        if is_board_id_invalid:
-            from ib_boards.exceptions.custom_exceptions import InvalidBoardId
-            raise InvalidBoardId
+        return is_board_id_valid
 
     def create_boards_and_columns(
             self, board_dtos: List[BoardDTO],
@@ -314,13 +312,6 @@ class StorageImplementation(StorageInterface):
 
     def get_columns_details(self, column_ids: List[str]) -> \
             List[ColumnDetailsDTO]:
-        pass
-
-    def get_column_ids_for_board(self, board_id: str, user_roles: List[str]) \
-            -> List[str]:
-        pass
-
-    def get_permitted_user_roles_for_board(self, board_id: str) -> List[str]:
         pass
 
     def get_columns_details(self, column_ids: List[str]) -> \

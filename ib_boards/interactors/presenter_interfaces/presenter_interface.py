@@ -40,6 +40,9 @@ class GetBoardsPresenterInterface(abc.ABC):
             self, board_dtos: List[BoardDTO], total_boards: int) -> response.HttpResponse:
         pass
 
+    @abc.abstractmethod
+    def get_response_for_offset_exceeds_total_tasks(self):
+        pass
 
 class PresenterInterface(abc.ABC):
     def get_response_for_task_details(self,
@@ -81,9 +84,6 @@ class PresenterInterface(abc.ABC):
         pass
 
 
-    @abc.abstractmethod
-    def get_response_for_offset_exceeds_total_tasks(self):
-        pass
 
 
 class GetBoardsDetailsPresenterInterface(abc.ABC):
