@@ -3,7 +3,7 @@ from typing import Optional
 import json
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO
 
-from ib_tasks.exceptions.custom_exceptions import (
+from ib_tasks.exceptions.fields_custom_exceptions import (
     EmptyValuesForFieldValues,
     DuplicationOfFieldValuesForFieldTypeMultiValues
 )

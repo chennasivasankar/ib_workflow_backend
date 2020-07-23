@@ -31,8 +31,9 @@ class CreateOrUpdateFieldsInteractor:
             field_roles_dtos: List[FieldRolesDTO]
     ):
         self._check_for_base_validations(field_dtos)
-        self._check_for_field_roles_validations(field_roles_dtos)
         self._validate_field_values_based_on_field_types(field_dtos)
+        self._check_for_field_roles_validations(field_roles_dtos)
+
         field_role_dtos = self._get_field_role_dtos(field_roles_dtos)
         new_field_dtos, existing_field_dtos = self._get_field_dtos(field_dtos)
 

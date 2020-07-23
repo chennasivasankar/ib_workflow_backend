@@ -8,7 +8,7 @@ class FieldTypeSearchableValidationsInteractor:
 
     @staticmethod
     def _validate_field_value(field_dto: FieldDTO):
-        from ib_tasks.exceptions.custom_exceptions \
+        from ib_tasks.exceptions.fields_custom_exceptions \
             import InvalidValueForSearchable
         from ib_tasks.constants.exception_messages \
             import INVALID_VALUE_FOR_SEARCHABLE

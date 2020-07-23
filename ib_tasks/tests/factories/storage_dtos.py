@@ -1,12 +1,13 @@
 import factory
-
 from ib_tasks.interactors.dtos import TaskStatusVariableDTO
+from ib_tasks.constants.constants import VALID_FIELD_TYPES
 from ib_tasks.interactors.stages_dtos import StageDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
-from ib_tasks.interactors.storage_interfaces.status_dtos import TaskTemplateStatusDTO, StatusVariableDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import TaskTemplateStatusDTO, StatusVariableDTO, TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO, TaskStagesDTO, ValidStageDTO
 from ib_tasks.constants.enum import PermissionTypes
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, FieldRolesDTO, FieldRoleDTO, FieldValueDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, FieldRolesDTO, FieldRoleDTO, FieldValueDTO, FieldTypeDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO, \
     GroupOfFieldsDTO, GOFMultipleEnableDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (TaskStagesDTO)
@@ -58,24 +59,6 @@ class ActionDTOFactory(factory.Factory):
     button_color = None
 
 
-class StageDTOFactory(factory.Factory):
-    class Meta:
-        model = StageDTO
-
-    stage_id = factory.Sequence(lambda n: 'stage_id_%d' % n)
-    task_template_id = factory.Sequence(lambda n: 'task_template_id_%d' % n)
-    value = factory.Iterator([-1, 1, 2, 3, 4, 5, 0, 6])
-    id = None
-    stage_display_name = factory.Sequence(
-        lambda n: 'stage_display_name_%d' % n)
-    stage_display_logic = factory.Sequence(
-        lambda n: 'Value[stage%d]==Value[other_stage]' % n)
-
-    class Params:
-        id_value = factory.Trait(
-            id=factory.Sequence(lambda n: n)
-        )
-
 class TaskStagesDTOFactory(factory.Factory):
     class Meta:
         model = TaskStagesDTO
@@ -114,6 +97,21 @@ class TaskTemplateStatusDTOFactory(factory.Factory):
     status_variable_id = factory.Sequence(lambda n: 'status_id_%d' % n)
 
 
+class StageDTOFactory(factory.Factory):
+    class Meta:
+        model = StageDTO
+
+    stage_id = factory.Sequence(lambda n: 'stage_id_%d' % n)
+    task_template_id = factory.Sequence(lambda n: 'task_template_id_%d' % n)
+    value = factory.Sequence(lambda n: n)
+    id = None
+    stage_display_name = factory.Sequence(lambda n: 'name_%d' % n)
+    stage_display_logic = factory.Sequence(lambda n: 'status_id_%d==stage_id' % n)
+
+    class Params:
+        id_value = factory.Trait(id=factory.Sequence(lambda n: n))
+
+
 class ValidStageDTOFactory(factory.Factory):
     class Meta:
         model = ValidStageDTO
@@ -134,7 +132,7 @@ class GoFDTOFactory(factory.Factory):
     class Meta:
         model = GoFDTO
 
-    gof_id = factory.Sequence(lambda counter: "GOF_ID-{}".format(counter))
+    gof_id = factory.Sequence(lambda counter: "gof_{}".format(counter))
     gof_display_name = factory.Sequence(
         lambda counter: "GOF_DISPLAY_NAME-{}".format(counter)
     )
@@ -145,7 +143,7 @@ class GoFRolesDTOFactory(factory.Factory):
     class Meta:
         model = GoFRolesDTO
 
-    gof_id = factory.Sequence(lambda counter: "GOF_ID-{}".format(counter))
+    gof_id = factory.Sequence(lambda counter: "gof_{}".format(counter))
     read_permission_roles = ['ALL_ROLES']
     write_permission_roles = ['ALL_ROLES']
 
@@ -162,7 +160,7 @@ class GoFRoleDTOFactory(factory.Factory):
     class Meta:
         model = GoFRoleDTO
 
-    gof_id = factory.Sequence(lambda counter: "GOF_ID-{}".format(counter))
+    gof_id = factory.Sequence(lambda counter: "gof_{}".format(counter))
     role = factory.Sequence(lambda counter: "ROLE-{}".format(counter))
     permission_type = PermissionTypes.READ.value
 
@@ -211,3 +209,10 @@ class TaskStatusVariableDTOFactory(factory.Factory):
     task_id = factory.Sequence(lambda n: "%d" % n)
     variable = factory.Sequence(lambda n: "status_variable_%d" % n)
     value = factory.Sequence(lambda n: "value_%d" % n)
+
+class FieldTypeDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldTypeDTO
+
+    field_id = factory.Sequence(lambda counter: "FIELD_ID-{}".format(counter))
+    field_type = factory.Iterator(VALID_FIELD_TYPES)

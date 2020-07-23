@@ -1,38 +1,85 @@
 {
-    "swagger": "2.0",
-    "host": "localhost:8080",
-    "basePath": "/ib_tasks/",
-    "info": {
-        "version": "1.0.0",
-        "title": "iB Tasks",
-        "description": "Simple API to post and comment in social app"
-    },
-    "schemes": [
-        "https",
-        "http"
-    ],
-    "consumes": [
-        "application/json"
-    ],
-    "produces": [
-        "application/json"
-    ],
-    "securityDefinitions": {
-        "oauth": {
-            "tokenUrl": "http://auth.ibtspl.com/oauth2/",
-            "flow": "password",
-            "scopes": {
-                "read": "read users",
-                "write": "create users",
-                "update": "update users",
-                "delete": "delete users",
-                "superuser": "super user permission"
+  "swagger": "2.0",
+  "host": "127.0.0.1:8000",
+  "basePath": "/api/ib_tasks/",
+  "info": {
+    "version": "1.0.0",
+    "title": "Simple API",
+    "description": "A simple API to learn how to write OpenAPI Specification"
+  },
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "oauth": {
+      "tokenUrl": "http://auth.ibtspl.com/oauth2/",
+      "flow": "password",
+      "scopes": {
+        "read": "read users",
+        "write": "create users",
+        "update": "update users",
+        "delete": "delete users"
+      },
+      "type": "oauth2"
+    }
+  },
+  "security": [],
+  "definitions": {
+    "CreateTaskRequestBody": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "task_gofs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "gof_id": {
+                "type": "string"
+              },
+              "gof_fields": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "field_id": {
+                      "type": "string",
+                      "example": "FIN_FIRST_NAME"
+                    },
+                    "field_response_single_value": {
+                      "type": "string"
+                    },
+                    "field_response_multiple_values": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "field_id",
+                    "field_type"
+                  ]
+                }
+              }
             },
-            "type": "oauth2"
+            "required": [
+              "gof_id",
+              "gof_fields"
+            ]
+          }
         }
+      }
     },
-    "definitions": {
-      "InvalidTaskActionDetails": {
+    "InvalidTaskActionDetails": {
         "type": "object",
           "properties": {
             "response": {
@@ -201,36 +248,73 @@
           },
           "required": ["action_id", "name", "button_text"]
       }
-
+  },
+  "parameters": {
+    "CreateTaskBodyParameter": {
+      "in": "body",
+      "name": "CreateTaskRequestBody",
+      "description": "give valid details",
+      "required": true,
+      "schema": {
+        "$ref": "#/definitions/CreateTaskRequestBody"
+      }
     },
-    "parameters": {
-        "BoardParameterize": {
-            "name": "board_id",
-            "in": "path",
-            "required": true,
-            "description": "Id of the Board",
-            "type": "string"
-        },
-        "TaskParameterize": {
-            "name": "task_id",
-            "in": "path",
-            "required": true,
-            "description": "Id of the Task",
-            "type": "string"
-        },
-        "ActionParameterize": {
-            "name": "action_id",
-            "in": "path",
-            "required": true,
-            "description": "Id of the Action",
-            "type": "string"
+    "BoardParameterize": {
+        "name": "board_id",
+        "in": "path",
+        "required": true,
+        "description": "Id of the Board",
+        "type": "string"
+    },
+    "TaskParameterize": {
+        "name": "task_id",
+        "in": "path",
+        "required": true,
+        "description": "Id of the Task",
+        "type": "string"
+    },
+    "ActionParameterize": {
+        "name": "action_id",
+        "in": "path",
+        "required": true,
+        "description": "Id of the Action",
+        "type": "string"
+    }
+  },
+  "responses": {
+    "CreateTaskSuccessResponse": {
+      "description": "task created successfully"
+    }
+  },
+  "paths": {
+    "/task/v1/": {
+      "post": {
+        "operationId": "create_task",
+        "summary": "create a task",
+        "description": "create a task with given details",
+        "security":[
+           {
+              "oauth":[
+                 "write"
+              ]
+           }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/CreateTaskBodyParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/CreateTaskSuccessResponse"
+          },
+          "400": {
+            "description": ""
+          }
         }
+      }
     },
-    "responses": {
-
-    },
-    "paths": {
-      "/boards/{board_id}/tasks/{task_id}/actions/{action_id}/v1/": {
+    "/boards/{board_id}/tasks/{task_id}/actions/{action_id}/v1/": {
             "post": {
                 "operationId": "perform_task_action",
                 "summary": "User Act On Specific Task in a Column",
@@ -270,5 +354,5 @@
                 }
             }
         }
-    }
+  }
 }

@@ -26,12 +26,6 @@ class DuplicationOfFieldIdsExist(Exception):
         self.field_ids = field_ids
 
 
-class FieldsDuplicationOfDropDownValues(Exception):
-    def __init__(self, fieds_with_dropdown_duplicate_values):
-        self.fieds_with_dropdown_duplicate_values = \
-            fieds_with_dropdown_duplicate_values
-
-
 class InvalidValueForFieldDisplayName(Exception):
 
     def __init__(self, message: str):
@@ -40,5 +34,81 @@ class InvalidValueForFieldDisplayName(Exception):
 
 class InvalidValueForFieldType(Exception):
 
+    def __init__(self, message: str):
+        self.message = message
+
+
+class FieldIdEmptyValueException(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class InvalidGOFIds(Exception):
+
+    def __int__(self, message: str):
+        self.message = message
+
+
+class InvalidJsonForFieldValue(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class EmptyValuesForGoFNames(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class DuplicationOfGoFNamesForFieldValues(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class AllowedFormatsEmptyValueException(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class FieldsDuplicationOfAllowedFormatsValues(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class InvalidValueForSearchable(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class EmptyValuesForFieldValues(Exception):
+
+    def __init__(self, message: str):
+        self.message = message
+
+
+class DuplicationOfFieldValuesForFieldTypeMultiValues(Exception):
+
+    def __init__(self, message: str):
+        self.message = message
+
+
+class EmptyValueForPermissions(Exception):
+
+    def __init__(self, message: str):
+        self.message = message
+
+
+class InvalidFieldRolesException(Exception):
+
+    def __init__(self, roles):
+        self.roles = roles
+
+
+class DuplicationOfPermissionRoles(Exception):
+
+    def __init__(self, message: str):
+        self.message = message
+
+
+class EmptyValuesForAllowedFormats(Exception):
     def __init__(self, message: str):
         self.message = message

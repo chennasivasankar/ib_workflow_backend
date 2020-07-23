@@ -1,13 +1,9 @@
 from typing import Optional, List
 
-from ib_tasks.interactors.stages_dtos import StageDTO, TaskTemplateStageDTO, StageActionDTO
-from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, ActionRolesDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import GOFMultipleEnableDTO
+from ib_tasks.interactors.stages_dtos import StageDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, ValidStageDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import StageStorageInterface
-from ib_tasks.models import Stage, TaskTemplateInitialStage, TaskTemplateGoFs
-
+from ib_tasks.models import Stage, TaskTemplateInitialStage
 from typing import List
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import (
@@ -15,7 +11,6 @@ from ib_tasks.interactors.storage_interfaces.storage_interface \
         StatusVariableDTO, StageActionNamesDTO
     )
 from ib_tasks.models import *
-
 
 class StagesStorageImplementation(StageStorageInterface):
     def create_stages(self, stage_information: List[StageDTO]):
@@ -95,7 +90,7 @@ class StagesStorageImplementation(StageStorageInterface):
         TaskTemplateInitialStage.objects.bulk_create(list_of_task_stages)
 
 
-class StorageImplementation(StorageInterface):
+# class StorageImplementation(StorageInterface):
 
     def get_stage_action_names(
             self, stage_ids: List[str]) -> List[StageActionNamesDTO]:

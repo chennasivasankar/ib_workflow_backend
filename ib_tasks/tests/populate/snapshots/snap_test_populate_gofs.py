@@ -35,25 +35,25 @@ snapshots['TestPopulateGoFs.test_populate_gofs_with_invalid_read_permission_role
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_invalid_write_permission_roles invalid_gof_write_permission_roles_message'] = "Invalid Write Permission roles:['Payment Requestor']"
 
-snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_id 1'] = 'GOF_ID-1'
+snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_id 1'] = 'gof_1'
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_display_name 1'] = 'GOF_DISPLAY_NAME-1'
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_max_columns 1'] = 2
 
-snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_id 2'] = 'GOF_ID-2'
+snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_id 2'] = 'gof_2'
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_display_name 2'] = 'GOF_DISPLAY_NAME-2'
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_max_columns 2'] = 2
 
-snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_id 3'] = 'GOF_ID-3'
+snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_id 3'] = 'gof_3'
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_display_name 3'] = 'GOF_DISPLAY_NAME-3'
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_max_columns 3'] = 2
 
-snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_id_in_gof_role 1'] = 'GOF_ID-1'
+snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_id_in_gof_role 1'] = 'gof_1'
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_read_permission_role 1'] = 'ALL_ROLES'
 
@@ -63,7 +63,7 @@ snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_write_perm
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details write_role_permission_type 1'] = 'WRITE'
 
-snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_id_in_gof_role 2'] = 'GOF_ID-2'
+snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_id_in_gof_role 2'] = 'gof_2'
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_read_permission_role 2'] = 'ALL_ROLES'
 
@@ -73,7 +73,7 @@ snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_write_perm
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details write_role_permission_type 2'] = 'WRITE'
 
-snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_id_in_gof_role 3'] = 'GOF_ID-3'
+snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_id_in_gof_role 3'] = 'gof_3'
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_read_permission_role 3'] = 'ALL_ROLES'
 
@@ -83,31 +83,31 @@ snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details gof_write_perm
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_valid_details write_role_permission_type 3'] = 'WRITE'
 
-snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_id 1'] = 'gof_2'
+snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_id 1'] = 'gof_1'
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_display_name 1'] = 'GOF_DISPLAY_NAME-1'
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_max_columns 1'] = 2
 
-snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_id 2'] = 'gof_3'
+snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_id 2'] = 'gof_2'
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_display_name 2'] = 'GOF_DISPLAY_NAME-2'
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_max_columns 2'] = 2
 
-snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_id 3'] = 'GOF_ID-3'
+snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_id 3'] = 'gof_3'
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_display_name 3'] = 'GOF_DISPLAY_NAME-3'
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_max_columns 3'] = 2
 
-snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_id 4'] = 'GOF_ID-4'
+snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_id 4'] = 'gof_4'
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_display_name 4'] = 'GOF_DISPLAY_NAME-4'
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_max_columns 4'] = 2
 
-snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_id_in_gof_role 1'] = 'GOF_ID-1'
+snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_id_in_gof_role 1'] = 'gof_1'
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_read_permission_role 1'] = 'ALL_ROLES'
 
@@ -117,7 +117,7 @@ snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_update
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs write_role_permission_type 1'] = 'WRITE'
 
-snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_id_in_gof_role 2'] = 'GOF_ID-2'
+snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_id_in_gof_role 2'] = 'gof_2'
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_read_permission_role 2'] = 'ALL_ROLES'
 
@@ -127,7 +127,7 @@ snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_update
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs write_role_permission_type 2'] = 'WRITE'
 
-snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_id_in_gof_role 3'] = 'GOF_ID-3'
+snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_id_in_gof_role 3'] = 'gof_3'
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_read_permission_role 3'] = 'ALL_ROLES'
 
@@ -137,7 +137,7 @@ snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_update
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs write_role_permission_type 3'] = 'WRITE'
 
-snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_id_in_gof_role 4'] = 'GOF_ID-4'
+snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_id_in_gof_role 4'] = 'gof_4'
 
 snapshots['TestPopulateGoFs.test_populate_gofs_with_already_existing_gofs_updates_gofs gof_read_permission_role 4'] = 'ALL_ROLES'
 

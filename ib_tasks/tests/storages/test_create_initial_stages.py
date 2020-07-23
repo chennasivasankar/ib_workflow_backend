@@ -1,7 +1,7 @@
 import factory
 import pytest
 
-from ib_tasks.interactors.dtos import TaskTemplateStageDTO
+from ib_tasks.interactors.stages_dtos import TaskTemplateStageDTO
 from ib_tasks.models import TaskTemplateInitialStage
 from ib_tasks.storages.storage_implementation import StagesStorageImplementation
 
