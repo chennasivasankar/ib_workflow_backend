@@ -229,7 +229,7 @@
   },
   "parameters": {
     "OffsetParameter": {
-      "name": "Offset",
+      "name": "offset",
       "in": "query",
       "description": "offset value",
       "type": "integer",
@@ -237,7 +237,7 @@
       "required": true
     },
     "LimitParameter": {
-      "name": "Limit",
+      "name": "limit",
       "in": "query",
       "description": "limit value",
       "type": "integer",

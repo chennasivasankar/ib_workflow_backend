@@ -11,8 +11,8 @@ from ...storages.storage_implementation import StorageImplementation
 def api_wrapper(*args, **kwargs):
     user = kwargs["user"]
     params = kwargs['request_query_params']
-    offset = params['Offset']
-    limit = params['Limit']
+    offset = params['offset']
+    limit = params['limit']
 
     boards_dto = GetBoardsDTO(
         user_id=user.id,
