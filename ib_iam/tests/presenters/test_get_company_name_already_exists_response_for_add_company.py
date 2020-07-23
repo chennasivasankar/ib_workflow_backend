@@ -1,3 +1,4 @@
+import json
 from ib_iam.exceptions import CompanyNameAlreadyExists
 from ib_iam.presenters.add_company_presenter_implementation import (
     AddCompanyPresenterImplementation
@@ -11,7 +12,6 @@ class TestRaiseExceptionIfCompanyNameAlreadyExistsForAddCompany:
     def test_whether_it_returns_company_name_already_exists_http_response(self):
         json_presenter = AddCompanyPresenterImplementation()
         company_name = "company_name1"
-        import json
         expected_response = COMPANY_NAME_ALREADY_EXISTS_FOR_ADD_COMPANY[0] % company_name
         expected_res_status = COMPANY_NAME_ALREADY_EXISTS_FOR_ADD_COMPANY[1]
         expected_http_status_code = 400

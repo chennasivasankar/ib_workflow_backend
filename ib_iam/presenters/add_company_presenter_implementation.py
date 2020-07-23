@@ -35,7 +35,7 @@ class AddCompanyPresenterImplementation(
     ):
         response_dict = {
             "response": COMPANY_NAME_ALREADY_EXISTS_FOR_ADD_COMPANY[
-                            0] % exception.team_name,
+                            0] % exception.company_name,
             "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": COMPANY_NAME_ALREADY_EXISTS_FOR_ADD_COMPANY[1]
         }

@@ -48,14 +48,14 @@ def get_list_of_team_dtos():
 
 @pytest.fixture
 def get_company_details_dtos():
-    from ib_iam.tests.factories import CompanyDTOFactory
+    from ib_iam.tests.factories import CompanyDTOFactory, CompanyNameLogoAndDescriptionDTOFactory
     from ib_iam.tests.factories import CompanyWithEmployeesCountDTOFactory
     company_ids = [
         "f2c02d98-f311-4ab2-8673-3daa00757003",
         "aa66c40f-6d93-484a-b418-984716514c7c",
         "c982032b-53a7-4dfa-a627-4701a5230767"
     ]
-    CompanyDTOFactory.reset_sequence(1)
+    CompanyDTOFactory.reset_sequence(1, force=True)
     company_dtos = [
         CompanyDTOFactory(company_id=company_id) for company_id in company_ids
     ]
