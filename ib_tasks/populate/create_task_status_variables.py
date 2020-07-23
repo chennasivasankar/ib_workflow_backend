@@ -6,7 +6,7 @@ from ib_tasks.interactors.storage_interfaces.dtos import TaskStatusDTO
 def populate_status_variables(list_of_status_dict: List[Dict]):
     validation_for_list_of_status_dict(list_of_status_dict)
     status_dtos = [append_status_dto(status_dict)
-                  for status_dict in list_of_status_dict]
+                   for status_dict in list_of_status_dict]
 
     return status_dtos
 
@@ -45,5 +45,5 @@ def raise_exception_for_invalid_format():
     import json
     json_valid_format = json.dumps(valid_format)
 
-    from ib_tasks.exceptions.custom_exceptions import InvalidFormatException
+    from ib_tasks.exceptions.stage_custom_exceptions import InvalidFormatException
     raise InvalidFormatException(valid_format=json_valid_format)

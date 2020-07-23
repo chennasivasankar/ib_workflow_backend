@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 from ib_tasks.constants.enum import PermissionTypes
+from typing import List, Union, Optional, Any
+from dataclasses import dataclass
 from typing import List, Union, Optional
 from ib_tasks.constants.enum import FieldTypes, PermissionTypes
 
@@ -9,10 +11,64 @@ class TaskStagesDTO:
     task_template_id: str
     stage_id: str
 
+
 @dataclass
-class TaskStatusDTO:
+class StageActionNamesDTO:
+    stage_id: str
+    action_names: List[str]
+
+
+@dataclass
+class StageLogicAttributes:
+    stage_id: str
+    status_id: str
+
+
+@dataclass()
+class FieldValueDTO:
+    database_id: str
+    gof_database_id: str
+    field_id: str
+    value: Any
+
+
+@dataclass()
+class StatusVariableDTO:
+    status_id: str
+    status_variable: str
+    value: str
+
+
+@dataclass()
+class GroupOfFieldsDTO:
+    database_id: str
+    group_of_field_id: str
+
+
+@dataclass()
+class GOFMultipleStatusDTO:
+    group_of_field_id: str
+    multiple_status: bool
+
+
+@dataclass()
+class ActionDTO:
+    action_id: str
+    name: str
+    stage_id: str
+    button_text: str
+    button_color: Optional[str]
+
+
+@dataclass()
+class ActionRolesDTO:
+    action_id: str
+    roles: List[str]
+
+@dataclass
+class TaskStagesDTO:
     task_template_id: str
-    status_variable_id: str
+    stage_id: str
 
 @dataclass
 class ValidStageDTO:
@@ -30,17 +86,14 @@ class StageActionNamesDTO:
 class GoFDTO:
     gof_id: str
     gof_display_name: str
-    task_template_id: str
-    order: int
     max_columns: int
-    enable_multiple_gofs: bool
 
 
 @dataclass
 class GoFRolesDTO:
     gof_id: str
-    read_permission_roles: List
-    write_permission_roles: List
+    read_permission_roles: List[str]
+    write_permission_roles: List[str]
 
 
 @dataclass
@@ -48,7 +101,6 @@ class GoFRoleDTO:
     gof_id: str
     role: str
     permission_type: PermissionTypes
-
 
 @dataclass
 class CompleteGoFDetailsDTO:
@@ -66,7 +118,7 @@ class FieldDTO:
     field_values: Optional[Union[str, List[str]]]
     required: bool
     help_text: Optional[str]
-    tool_tip: Optional[str]
+    tooltip: Optional[str]
     placeholder_text: Optional[str]
     error_message: Optional[str]
     allowed_formats: Optional[List[str]]
@@ -86,3 +138,23 @@ class FieldRoleDTO:
     role: str
     permission_type: PermissionTypes
 
+
+@dataclass
+class StageDTO:
+    stage_id: str
+    task_template_id: str
+    value: int
+    stage_display_name: str
+    stage_display_logic: str
+
+
+@dataclass
+class TaskStagesDTO:
+    task_template_id: str
+    stage_id: str
+
+
+@dataclass
+class TaskStatusDTO:
+    task_template_id: str
+    status_variable_id: str

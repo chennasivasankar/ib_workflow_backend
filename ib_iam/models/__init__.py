@@ -1,4 +1,5 @@
-__all__ = []
+from ib_iam.models.role import Role
+__all__ = ['Role']
 
 # class DummyModel(AbstractDateTimeModel):
 #     """

@@ -1,10 +1,36 @@
-from typing import List
+from typing import List, Dict
+
+
+class InvalidStageIdsException(Exception):
+    def __init__(self, stage_ids_dict: str):
+        self.stage_ids_dict = stage_ids_dict
+
+    def __str__(self):
+        return self.stage_ids_dict
+
+
+class InvalidRolesException(Exception):
+    def __init__(self, stage_roles_dict: str):
+        self.stage_roles_dict = stage_roles_dict
 
 
 class InvalidFormatException(Exception):
-
     def __init__(self, valid_format: str):
         self.valid_format = valid_format
+
+
+class InvalidPythonCodeException(Exception):
+    pass
+
+
+class InvalidTaskIdException(Exception):
+    def __init__(self, task_id: str):
+        self.task_id = task_id
+
+
+class InvalidTaskTemplateId(Exception):
+    def __init__(self, task_template_ids_dict: str):
+        self.task_template_ids_dict = task_template_ids_dict
 
 class InvalidStagesTaskTemplateId(Exception):
     def __init__(self, invalid_stages_task_template_ids: List[str]):
@@ -36,29 +62,19 @@ class DuplicateTaskStatusVariableIds(Exception):
         self.task_ids = duplicate_status_ids_for_tasks
 
 
-from typing import List
-
-
 class DuplicateGoFIds(Exception):
-    def __init__(self, gof_ids: List[str]):
-        self.message = "Given duplicate gof ids {}".format(gof_ids)
-        super().__init__(self.message)
+    def __int__(self, message: str):
+        self.message = message
 
 
-class ExistingGoFsNotInGivenGoFs(Exception):
-    def __init__(self,
-                 gof_of_template_not_in_given_gof: List[str],
-                 given_gof_ids: List[str]):
-        self.message = \
-            "Existing gof ids: {} of template not in given gof ids: {}". \
-                format(gof_of_template_not_in_given_gof, given_gof_ids)
-        super().__init__(self.message)
+class InvalidStagesDisplayName(Exception):
+    def __init__(self, invalid_stages_display_name: List[str]):
+        self.invalid_stages_display_name = invalid_stages_display_name
 
 
 class InvalidValueForField(Exception):
-    def __init__(self, field: str):
-        self.message = "Invalid value for field: {}".format(field)
-        super().__init__(self.message)
+    def __init__(self, message: str):
+        self.message = message
 
 
 class GOFIdCantBeEmpty(Exception):
@@ -66,6 +82,26 @@ class GOFIdCantBeEmpty(Exception):
 
 
 class GOFDisplayNameCantBeEmpty(Exception):
+    pass
+
+
+class MaxColumnsCantBeEmpty(Exception):
+    pass
+
+
+class MaxColumnsMustBeANumber(Exception):
+
+    def __init__(self, invalid_max_column_value: str):
+        self.max_column = invalid_max_column_value
+
+
+class MaxColumnsMustBeAPositiveInteger(Exception):
+
+    def __init__(self, invalid_max_column_value: str):
+        self.max_column = invalid_max_column_value
+
+
+class TaskTemplateIdCantBeEmpty(Exception):
     pass
 
 
@@ -86,11 +122,15 @@ class DuplicatedFieldIds(Exception):
 
 
 class InvalidReadPermissionRoles(Exception):
-    pass
+
+    def __init__(self, invalid_read_permission_roles: List[str]):
+        self.read_permission_roles = invalid_read_permission_roles
 
 
 class InvalidWritePermissionRoles(Exception):
-    pass
+
+    def __init__(self, invalid_write_permission_roles: List[str]):
+        self.write_permission_roles = invalid_write_permission_roles
 
 
 class DifferentDisplayNamesForSameGOF(Exception):
@@ -115,37 +155,24 @@ class GoFIDsAlreadyExists(Exception):
         self.gof_ids = existing_gof_ids
 
 
-class InvalidTaskTemplateIds(Exception):
-
-    def __init__(self, invalid_task_template_ids: List[str]):
-        self.task_template_ids = invalid_task_template_ids
-
-
 class ExistingGlobalConstantNamesNotInGivenData(Exception):
-    def __init__(self, constant_names: List[str]):
-        self.message = \
-            "Existing constants with constant names: {} of template not in " \
-            "given data".format(constant_names)
-        super().__init__(self.message)
+    def __int__(self, message: str):
+        self.message = message
 
 
 class TemplateDoesNotExists(Exception):
-    def __init__(self, template_id: str):
-        self.message = "The template with template id: {}, does not exists". \
-            format(template_id)
-        super().__init__(self.message)
+    def __int__(self, message: str):
+        self.message = message
 
 
 class DuplicateConstantNames(Exception):
-    def __init__(self, constant_names: List[str]):
-        self.message = \
-            "Given duplicate constant names {}".format(constant_names)
-        super().__init__(self.message)
+    def __int__(self, message: str):
+        self.message = message
 
 
-class InvalidFieldIdException(Exception):
-    def __init__(self, error_message: str):
-        self.error_message = error_message
+class FieldIdEmptyValueException(Exception):
+    def __init__(self, message: str):
+        self.message = message
 
 
 class DuplicationOfFieldIdsExist(Exception):
@@ -154,14 +181,13 @@ class DuplicationOfFieldIdsExist(Exception):
         self.field_ids = field_ids
 
 
-class FieldsDuplicationOfDropDownValues(Exception):
+class DuplicationOfFieldValuesForFieldTypeMultiValues(Exception):
 
-    def __init__(self, fieds_with_dropdown_duplicate_values):
-        self.fieds_with_dropdown_duplicate_values = \
-            fieds_with_dropdown_duplicate_values
+    def __init__(self, message: str):
+        self.message = message
 
 
-class InvalidRolesException(Exception):
+class InvalidFieldRolesException(Exception):
 
     def __init__(self, roles):
         self.roles = roles
@@ -186,27 +212,93 @@ class InvalidValueForFieldType(Exception):
 
 
 class InvalidGOFIds(Exception):
+
     def __int__(self, message: str):
         self.message = message
 
 
-class DuplicateGoFIds(Exception):
-    def __init__(self, gof_ids: List[str]):
-        self.message = "Given duplicate gof ids {}".format(gof_ids)
-        super().__init__(self.message)
+class InvalidOrdersForGoFs(Exception):
+    def __int__(self, message: str):
+        self.message = message
+
+
+class InvalidTemplateIds(Exception):
+    def __int__(self, message: str):
+        self.message = message
+
+
+class ExistingGoFsNotInGivenData(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class GofsDoesNotExist(Exception):
+    def __init__(self, message: str):
+        self.message = message
 
 
 class ExistingGoFsNotInGivenGoFs(Exception):
-    def __init__(self,
-                 gof_of_template_not_in_given_gof: List[str],
-                 given_gof_ids: List[str]):
-        self.message = \
-            "Existing gof ids: {} of template not in given gof ids: {}". \
-                format(gof_of_template_not_in_given_gof, given_gof_ids)
-        super().__init__(self.message)
+    def __int__(self, message: str):
+        self.message = message
 
 
-class InvalidValueForField(Exception):
-    def __init__(self, field: str):
-        self.message = "Invalid value for field: {}".format(field)
-        super().__init__(self.message)
+class DuplicateOrderValuesForGoFs(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class InvalidTypeForOrder(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class InvalidTypeForValue(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class DuplicationOfPermissionRoles(Exception):
+
+    def __init__(self, message: str):
+        self.message = message
+
+
+class EmptyValuesForFieldValues(Exception):
+
+    def __init__(self, message: str):
+        self.message = message
+
+
+class InvalidJsonForFieldValue(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class EmptyValuesForGoFNames(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class DuplicationOfGoFNamesForFieldValues(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class AllowedFormatsEmptyValueException(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class FieldsDuplicationOfAllowedFormatsValues(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class EmptyValuesForAllowedFormats(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class InvalidValueForSearchable(Exception):
+    def __init__(self, message: str):
+        self.message = message
