@@ -1,7 +1,7 @@
 import factory
 
-from ib_tasks.interactors.dtos import FieldDisplayDTO
-from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO
+from ib_tasks.interactors.gofs_dtos \
+    import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 
 

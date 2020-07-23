@@ -52,11 +52,11 @@ class TestPopulateStatusVariables:
         list_of_status_dict = [
             {
                 "task_template_id": "task_template_id_1",
-                "status_variable_id": "status_variable_id_1"
+                "status_variable_id": "status_id_1"
             },
             {
                 "task_template_id": "task_template_id_2",
-                "status_variable_id": "status_variable_id_2"
+                "status_variable_id": "status_id_2"
             }
         ]
 

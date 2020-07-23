@@ -2,9 +2,9 @@
 from dataclasses import dataclass
 from typing import List
 
-from ib_tasks.interactors.dtos import FieldDisplayDTO
 from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO
-from ib_tasks.interactors.storage_interfaces.dtos import ActionDTO
+from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
+from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
 
 
 @dataclass()

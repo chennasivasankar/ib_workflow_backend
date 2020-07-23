@@ -7,7 +7,7 @@ Author: Pavankumar Pamuru
 import abc
 from typing import List, Optional
 
-from ib_tasks.interactors.storage_interfaces.status_dtos import TaskStatusDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldRoleDTO, FieldTypeDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRoleDTO
@@ -113,7 +113,7 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def create_status_for_tasks(self,
-                                create_status_for_tasks: List[TaskStatusDTO]):
+                                create_status_for_tasks: List[TaskTemplateStatusDTO]):
         pass
 
     @abc.abstractmethod

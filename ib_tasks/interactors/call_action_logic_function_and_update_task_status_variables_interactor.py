@@ -1,9 +1,9 @@
 from typing import List
 
-from ib_tasks.interactors.storage_interfaces.dtos import FieldValueDTO
+from ib_tasks.interactors.gofs_dtos import TaskGofAndStatusesDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface, GroupOfFieldsDTO, StatusVariableDTO
-from ib_tasks.interactors.dtos import TaskGofAndStatusesDTO
 
 
 class InvalidModulePathFound(Exception):

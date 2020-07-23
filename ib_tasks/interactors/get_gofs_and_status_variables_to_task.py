@@ -1,7 +1,7 @@
 from typing import List
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
-from ib_tasks.interactors.dtos import TaskGofAndStatusesDTO
+from ib_tasks.interactors.gofs_dtos import TaskGofAndStatusesDTO
 
 
 class GetGroupOfFieldsAndStatusVariablesToTaskInteractor:
@@ -33,8 +33,7 @@ class GetGroupOfFieldsAndStatusVariablesToTaskInteractor:
         valid_task = self.storage.validate_task_id(task_id=task_id)
         is_invalid_task = not valid_task
         if is_invalid_task:
-            from ib_tasks.exceptions.custom_exceptions \
-                import InvalidTaskIdException
+            from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
             raise InvalidTaskIdException(task_id=task_id)
 
     @staticmethod

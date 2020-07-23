@@ -1,6 +1,5 @@
 import pytest
 from unittest.mock import create_autospec, patch, Mock
-from ib_tasks.interactors.storage_interfaces.dtos import GOFMultipleEnableDTO
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 from ib_tasks.interactors.call_action_logic_function_and_update_task_status_variables_interactor \
@@ -35,7 +34,7 @@ class TestUpdateTaskStatusVariablesInteractor:
         group_of_fields = GroupOfFieldsDTOFactory.create_batch(size=2)
         fields = FieldValueDTOFactory.create_batch(size=2)
         statuses = [StatusVariableDTOFactory()]
-        from ib_tasks.interactors.dtos import TaskGofAndStatusesDTO
+        from ib_tasks.interactors.gofs_dtos import TaskGofAndStatusesDTO
         task_dto = TaskGofAndStatusesDTO(
             task_id="task_1",
             group_of_fields_dto=group_of_fields,
@@ -80,7 +79,7 @@ class TestUpdateTaskStatusVariablesInteractor:
         group_of_fields = GroupOfFieldsDTOFactory.create_batch(size=2)
         fields = FieldValueDTOFactory.create_batch(size=2)
         statuses = [StatusVariableDTOFactory()]
-        from ib_tasks.interactors.dtos import TaskGofAndStatusesDTO
+        from ib_tasks.interactors.gofs_dtos import TaskGofAndStatusesDTO
         task_dto = TaskGofAndStatusesDTO(
             task_id="task_1",
             group_of_fields_dto=group_of_fields,
@@ -129,7 +128,7 @@ class TestUpdateTaskStatusVariablesInteractor:
         group_of_fields = GroupOfFieldsDTOFactory.create_batch(size=2)
         fields = FieldValueDTOFactory.create_batch(size=2)
         statuses = [StatusVariableDTOFactory()]
-        from ib_tasks.interactors.dtos import TaskGofAndStatusesDTO
+        from ib_tasks.interactors.gofs_dtos import TaskGofAndStatusesDTO
         task_dto = TaskGofAndStatusesDTO(
             task_id="task_1",
             group_of_fields_dto=group_of_fields,

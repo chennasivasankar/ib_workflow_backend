@@ -1,5 +1,5 @@
 import factory
-from ib_tasks.interactors.dtos import TaskStatusVariableDTO
+from ib_tasks.interactors.task_dtos import TaskStatusVariableDTO
 from ib_tasks.constants.constants import VALID_FIELD_TYPES
 from ib_tasks.interactors.stages_dtos import StageDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO

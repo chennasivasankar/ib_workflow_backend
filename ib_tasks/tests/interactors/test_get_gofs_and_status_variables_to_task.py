@@ -18,10 +18,9 @@ class TestGetGroupOfFieldsAndStatusVariablesToTaskInteractor:
             storage=storage
         )
         import pytest
-        from ib_tasks.exceptions.custom_exceptions \
-            import InvalidTaskIdException
 
         # Act
+        from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
         with pytest.raises(InvalidTaskIdException) as error:
             interactor.get_gofs_and_status_variables_to_task(task_id=task_id)
 
@@ -50,7 +49,7 @@ class TestGetGroupOfFieldsAndStatusVariablesToTaskInteractor:
         interactor = GetGroupOfFieldsAndStatusVariablesToTaskInteractor(
             storage=storage
         )
-        from ib_tasks.interactors.dtos import TaskGofAndStatusesDTO
+        from ib_tasks.interactors.gofs_dtos import TaskGofAndStatusesDTO
 
         expected_task_dto = TaskGofAndStatusesDTO(
             task_id="task_1",

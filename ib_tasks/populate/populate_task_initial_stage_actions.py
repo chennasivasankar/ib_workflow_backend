@@ -1,5 +1,7 @@
 from typing import Dict, Any, List
 
+from ib_tasks.exceptions.stage_custom_exceptions import InvalidPythonCodeException, InvalidFormatException
+
 
 def populate_tasks(tasks: List[Dict]):
     tasks_dto = []
@@ -41,7 +43,7 @@ def _define_single_method(file, action_dict: Dict[str, str]):
 
 
 def append_action_dict(action_dict: Dict[str, Any]):
-    from ib_tasks.interactors.dtos import TaskTemplateStageActionDTO
+    from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO
     function_path = 'ib_tasks.populate.task_initial_stage_actions_logic.'
     function_name = action_dict['stage_id'] + "_" + action_dict['action_name']
     function_path = function_path + function_name
@@ -82,8 +84,6 @@ def validation_for_tasks_dict(tasks_dict: List[Dict]):
 
 def _validate_action_logic(action_logic: str):
     from astroid import parse, AstroidSyntaxError
-    from ib_tasks.exceptions.custom_exceptions \
-        import InvalidPythonCodeException
     try:
         parse(action_logic)
     except AstroidSyntaxError:
@@ -102,6 +102,4 @@ def raise_exception_for_valid_format():
     }
     import json
     json_valid_format = json.dumps(valid_format)
-    from ib_tasks.exceptions.custom_exceptions \
-        import InvalidFormatException
     raise InvalidFormatException(valid_format=json_valid_format)

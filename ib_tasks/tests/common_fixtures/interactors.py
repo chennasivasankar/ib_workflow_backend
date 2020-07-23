@@ -4,7 +4,7 @@ from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO
 
 
 def prepare_gof_and_status_variables_dto():
-    from ib_tasks.interactors.dtos import TaskGofAndStatusesDTO
+    from ib_tasks.interactors.gofs_dtos import TaskGofAndStatusesDTO
 
     from ib_tasks.tests.factories.storage_dtos import (
         FieldValueDTOFactory, StatusVariableDTOFactory,

@@ -1,3 +1,5 @@
+from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionRolesDTO
+
 
 class TestGetUserPermittedStageActions:
 
@@ -16,8 +18,6 @@ class TestGetUserPermittedStageActions:
         stage_ids = ["stage_1", "stage_2"]
         ActionDTOFactory.reset_sequence()
         actions_dto = ActionDTOFactory.create_batch(size=2)
-        from ib_tasks.interactors.storage_interfaces.dtos \
-            import ActionRolesDTO
 
         action_roles = [
             ActionRolesDTO(action_id="action_1", roles=["ROLE_1", "ROLE_2"]),
