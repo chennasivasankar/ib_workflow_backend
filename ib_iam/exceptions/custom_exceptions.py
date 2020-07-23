@@ -68,3 +68,4 @@ class RoleIdFormatIsInvalid(Exception):
 
 class DuplicateRoleIds(Exception):
     pass
+
