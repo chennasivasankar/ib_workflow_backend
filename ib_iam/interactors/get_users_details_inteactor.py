@@ -4,8 +4,8 @@ from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, \
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.dtos \
     import CompleteUsersDetailsDTO
-from ib_iam.interactors.presenter_interfaces.presenter_interface \
-    import PresenterInterface
+from ib_iam.interactors.presenter_interfaces.get_users_list_presenter_interface \
+    import GetUsersListPresenterInterface
 from ib_iam.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 
@@ -14,8 +14,9 @@ class GetUsersDetailsInteractor(ValidationMixin):
     def __init__(self, storage: StorageInterface):
         self.storage = storage
 
-    def get_users_details_wrapper(self, user_id: str, offset: int,
-                                  limit: int, presenter: PresenterInterface):
+    def get_users_details_wrapper(
+            self, user_id: str, offset: int,
+            limit: int, presenter: GetUsersListPresenterInterface):
         try:
             complete_user_details_dtos = self.get_users_details(
                 user_id=user_id, offset=offset, limit=limit)
