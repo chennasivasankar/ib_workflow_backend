@@ -1,7 +1,6 @@
-import dataclasses
 from typing import List
 
-from ib_iam.adapters.dtos import UserProfileDTO, UserProfileDTO
+from ib_iam.adapters.dtos import UserProfileDTO
 
 
 class InvalidUserId(Exception):
@@ -93,6 +92,7 @@ class UserService:
             user_id=user_profile_dto.user_id,
             name=user_profile_dto.name,
             email=user_profile_dto.email,
+            profile_pic_url=user_profile_dto.profile_pic_url
         )
         return converted_user_profile_dto
 

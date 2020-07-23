@@ -113,13 +113,10 @@ class AuthService:
 
     @staticmethod
     def _convert_to_user_tokens_dto(user_auth_tokens_dto):
-        from datetime import datetime
         converted_user_tokens_dto = UserTokensDTO(
             user_id=user_auth_tokens_dto.user_id,
             access_token=user_auth_tokens_dto.access_token,
             refresh_token=user_auth_tokens_dto.refresh_token,
-            expires_in_seconds=(
-                    user_auth_tokens_dto.expires_in - datetime.now()
-            ).total_seconds()
+            expires_in_seconds=user_auth_tokens_dto.expires_in
         )
         return converted_user_tokens_dto
