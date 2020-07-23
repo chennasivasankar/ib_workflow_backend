@@ -46,12 +46,12 @@ class StagesStorageImplementation(StageStorageInterface):
             )
             )
         Stage.objects.bulk_update(list_of_stages,
-                                  ['stage_id', 'task_template_id',
+                                  ['task_template_id',
                                    'value', 'display_name', 'display_logic'])
 
     @staticmethod
     def _get_update_stage_object(stage, stage_object):
-        stage_object.stage_id = stage.stage_id
+        # stage_object.stage_id = stage.stage_id
         stage_object.display_name = stage.stage_display_name
         stage_object.value = stage.value
         stage_object.display_logic = stage.stage_display_logic

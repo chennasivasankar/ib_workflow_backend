@@ -4,11 +4,9 @@ from typing import List, Dict
 
 from ib_tasks.exceptions.roles_custom_exceptions import InvalidRolesException
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageIdsException
+from ib_tasks.interactors.stages_dtos import StageActionDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
-from ib_tasks.interactors.storage_interfaces.storage_interface \
-    import StorageInterface
-from ib_tasks.interactors.stages_dtos import StageActionDTO
 
 
 class EmptyStageDisplayLogic(Exception):

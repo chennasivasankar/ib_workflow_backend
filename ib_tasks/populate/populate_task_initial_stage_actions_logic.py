@@ -11,10 +11,11 @@ def populate_tasks(tasks: List[Dict]):
         tasks_dto.append(append_action_dict(action_dict))
     from ib_tasks.interactors.configur_initial_task_template_stage_actions \
         import ConfigureInitialTaskTemplateStageActions
-    from ib_boards.populate.populate_script_for_add_or_delete_columns_for_board import \
-        StorageImplementation
+
+    from ib_tasks.storages.action_storage_implementation import \
+        ActionsStorageImplementation
     interactor = ConfigureInitialTaskTemplateStageActions(
-        storage=StorageImplementation(),
+        storage=ActionsStorageImplementation(),
         tasks_dto=tasks_dto
     )
     interactor.create_update_delete_stage_actions_to_task_template()

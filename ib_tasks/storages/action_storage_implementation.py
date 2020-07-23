@@ -1,12 +1,14 @@
-from typing import List
+from typing import List, Optional
 
 from django.db.models import F, Q
 
-from ib_tasks.interactors.stages_dtos import StagesActionDTO
+from ib_tasks.interactors.stages_dtos import StagesActionDTO, \
+    TaskTemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO
-from ib_tasks.models import StageAction, Stage, ActionPermittedRoles
+from ib_tasks.models import StageAction, Stage, ActionPermittedRoles, \
+    TaskTemplateInitialStage
 
 
 class ActionsStorageImplementation(ActionStorageInterface):
@@ -37,8 +39,6 @@ class ActionsStorageImplementation(ActionStorageInterface):
         return list_of_dtos
 
     def create_stage_actions(self, stage_actions: List[StagesActionDTO]):
-        list_of_actions = []
-        list_of_permitted_roles = []
         names_list = [stage.action_name for stage in stage_actions]
         stage_ids = [stage.stage_id for stage in stage_actions]
         stages = Stage.objects.filter(stage_id__in=stage_ids).values('stage_id', 'id')
@@ -129,10 +129,38 @@ class ActionsStorageImplementation(ActionStorageInterface):
 
         StageAction.objects.filter(q).delete()
 
+    def create_initial_stage_to_task_template(self,
+                                              task_template_stage_dtos: List[
+                                                  TaskTemplateStageDTO]):
+        stage_ids = [stage.stage_id for stage in task_template_stage_dtos]
+        stages = Stage.objects.filter(stage_id__in=stage_ids).values('stage_id',
+                                                                     'id')
 
-    def create_initial_stage_to_task_template(self, task_template_stage_dtos):
-        pass
+        list_of_stages = {}
+        for item in stages:
+            list_of_stages[item['stage_id']] = item['id']
+
+        list_of_task_stages = []
+        for task in list_of_task_stages:
+            list_of_stages.append(TaskTemplateInitialStage(
+                task_template_id=task.task_template_id,
+                stage_id=list_of_stages[task.stage_id]
+            ))
+        TaskTemplateInitialStage.objects.bulk_create(list_of_task_stages)
 
     def get_valid_task_template_ids(self, task_template_ids: List[str]):
-        pass
+        from ib_tasks.models.task_template import TaskTemplate
+        valid_template_ids = list(
+            TaskTemplate.objects.filter(pk__in=task_template_ids).
+                values_list("template_id", flat=True)
+        )
+        # TODO need to set return value valid_template_ids
+        return ['FIN_PR']
+
+    def get_valid_stage_ids(self, stage_ids: List[str]) -> Optional[List[str]]:
+        valid_stage_ids = Stage.objects.filter(
+            stage_id__in=stage_ids
+        ).values_list('stage_id', flat=True)
+
+        return list(valid_stage_ids)
 

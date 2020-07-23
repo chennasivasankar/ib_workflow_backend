@@ -40,12 +40,8 @@ class CreateOrUpdateStagesInterface:
                                  existing_stage_ids: List[str],
                                  stages_details: List[StageDTO]
                                  ):
-        print(existing_stage_ids)
-
-        print(stages_details)
         update_stages_details = []
         create_stages_details = []
-
         for stage_information in stages_details:
             if stage_information.stage_id not in existing_stage_ids:
                 create_stages_details.append(stage_information)
@@ -177,31 +173,3 @@ class CreateOrUpdateStagesInterface:
         if invalid_value_stages:
             raise InvalidStageValues(invalid_value_stages)
         return
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

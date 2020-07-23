@@ -82,3 +82,7 @@ class StorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_permitted_user_roles_for_board(self, board_id: str) -> List[str]:
         pass
+
+    @abc.abstractmethod
+    def get_existing_board_ids(self) -> List[str]:
+        pass

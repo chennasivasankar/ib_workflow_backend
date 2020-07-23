@@ -20,10 +20,10 @@ class GetBoardsAndColumnsDataFromSheet:
             sub_sheet_name=BOARDS_AND_COLUMN_SUB_SHEET
         )
         import json
-        print(json.dumps(field_records[:7], indent=4))
+        print(json.dumps(field_records[:6], indent=4))
         # TODO need to remove list slicing
         self.validate_keys_in_given_dict(
-            boards_columns_dicts=field_records[:7]
+            boards_columns_dicts=field_records[:6]
         )
         boards_columns_dicts = [
             self._get_list_of_dictionary_to_populate_data(field_record)

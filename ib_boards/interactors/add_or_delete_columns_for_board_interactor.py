@@ -5,6 +5,8 @@ Author: Pavankumar Pamuru
 """
 from typing import List
 
+from ib_boards.exceptions.custom_exceptions import \
+    ColumnIdsAssignedToDifferentBoard
 from ib_boards.interactors.dtos import ColumnDTO, BoardColumnsDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface

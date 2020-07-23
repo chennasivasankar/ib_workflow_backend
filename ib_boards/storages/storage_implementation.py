@@ -24,6 +24,10 @@ class StorageImplementation(StorageInterface):
             from ib_boards.exceptions.custom_exceptions import InvalidBoardId
             raise InvalidBoardId
 
+    def get_existing_board_ids(self) -> List[str]:
+        board_ids = Board.objects.values_list('board_id', flat=True)
+        return list(board_ids)
+
     def create_boards_and_columns(
             self, board_dtos: List[BoardDTO],
             column_dtos: List[ColumnDTO]) -> None:

@@ -10,7 +10,8 @@ from ib_boards.exceptions.custom_exceptions import \
     TaskListViewFieldsNotBelongsToTaskTemplateId, \
     EmptyValuesForTaskSummaryFields, EmptyValuesForTaskListViewFields, \
     InvalidTaskIdInListViewFields, InvalidTaskIdInSummaryFields, \
-    InvalidTaskIdInKanbanViewFields, EmptyValuesForTaskKanbanViewFields
+    InvalidTaskIdInKanbanViewFields, EmptyValuesForTaskKanbanViewFields, \
+    InvalidUserRoles
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
     TaskTemplateStagesDTO, TaskSummaryFieldsDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
@@ -25,11 +26,31 @@ class CreateBoardsAndColumnsInteractor:
             self, board_dtos: List[BoardDTO], column_dtos: List[ColumnDTO]):
         self._validate_board_display_name(board_dtos=board_dtos)
         self.validate_columns_data(column_dtos)
-        print(board_dtos, column_dtos)
-        self.storage.create_boards_and_columns(
-            board_dtos=board_dtos,
-            column_dtos=column_dtos
+        board_dtos, column_dtos = self._get_boards_and_columns_need_to_create(
+            board_dtos=board_dtos, column_dtos=column_dtos
         )
+        boards_columns_to_create = board_dtos and column_dtos
+        if boards_columns_to_create:
+            self.storage.create_boards_and_columns(
+                board_dtos=board_dtos,
+                column_dtos=column_dtos
+            )
+
+    def _get_boards_and_columns_need_to_create(self, board_dtos, column_dtos):
+        existing_board_ids = self.storage.get_existing_board_ids()
+        from collections import defaultdict
+        board_columns_dict = defaultdict(lambda: [])
+        for column_dto in column_dtos:
+            board_columns_dict[column_dto.board_id].append(
+                column_dto
+            )
+        new_board_dtos = []
+        new_column_dtos = []
+        for board_dto in board_dtos:
+            if board_dto.board_id not in existing_board_ids:
+                new_board_dtos.append(board_dto)
+                new_column_dtos += board_columns_dict[board_dto.board_id]
+        return new_board_dtos, new_column_dtos
 
     def validate_columns_data(self, column_dtos: List[ColumnDTO]):
         self._validate_column_ids(column_dtos=column_dtos)
@@ -60,7 +81,8 @@ class CreateBoardsAndColumnsInteractor:
         self._validate_task_template_ids_in_kanban_view_fields(
             column_dtos=column_dtos
         )
-        self._validate_duplicate_task_kanban_view_fields(column_dtos=column_dtos)
+        self._validate_duplicate_task_kanban_view_fields(
+            column_dtos=column_dtos)
         self._validate_empty_values_in_task_template_kanban_view_fields(
             column_dtos=column_dtos)
         self._validate_task_template_kanban_view_fields_with_task_template_id(
@@ -204,9 +226,16 @@ class CreateBoardsAndColumnsInteractor:
         for column_dto in column_dtos:
             user_roles += column_dto.user_role_ids
         user_roles = sorted(list(set(user_roles)))
-        service_adapter.user_service.validate_user_role_ids(
+        valid_user_roles = service_adapter.user_service.get_valid_user_role_ids(
             user_role_ids=user_roles
         )
+        invalid_user_roles = [
+            user_role
+            for user_role in user_roles
+            if user_role not in valid_user_roles
+        ]
+        if invalid_user_roles:
+            raise InvalidUserRoles(user_role_ids=invalid_user_roles)
 
     def _validate_task_template_ids_in_list_view_fields(
             self, column_dtos: List[ColumnDTO]):

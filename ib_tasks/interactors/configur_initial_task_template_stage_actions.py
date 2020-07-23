@@ -1,5 +1,8 @@
 
 from typing import List
+
+from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
+    ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, StageActionDTO, TaskTemplateStageDTO
@@ -12,7 +15,7 @@ class InvalidTaskTemplateIdsException(Exception):
 
 class ConfigureInitialTaskTemplateStageActions:
 
-    def __init__(self, storage: StorageInterface,
+    def __init__(self, storage: ActionStorageInterface,
                  tasks_dto: List[TaskTemplateStageActionDTO]):
         self.storage = storage
         self.tasks_dto = tasks_dto
