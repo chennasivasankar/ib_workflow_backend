@@ -1,8 +1,10 @@
 from typing import List
 
-from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, GivenNameIsEmpty, InvalidEmailAddress, \
-    UserAccountAlreadyExistWithThisEmail, NameShouldNotContainsNumbersSpecCharacters, RoleIdsAreInvalid, \
-    InvalidCompanyId, TeamIdsAreInvalid, UserDoesNotExist
+from ib_iam.exceptions.custom_exceptions \
+    import UserIsNotAdmin, GivenNameIsEmpty, InvalidEmailAddress, \
+    UserAccountAlreadyExistWithThisEmail, RoleIdsAreInvalid, \
+    InvalidCompanyId, TeamIdsAreInvalid, UserDoesNotExist, \
+    NameShouldNotContainsNumbersSpecCharacters
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.edit_user_presenter_interface \
     import EditUserPresenterInterface
@@ -19,8 +21,9 @@ class EditUserInteractor(ValidationMixin):
             teams: List[str], roles: List[str], company_id: str,
             presenter: EditUserPresenterInterface):
         try:
-            self.edit_user(admin_user_id=admin_user_id, user_id=user_id, name=name, email=email,
-                           roles=roles, teams=teams, company_id=company_id)
+            self.edit_user(admin_user_id=admin_user_id, user_id=user_id,
+                           name=name, email=email, roles=roles, teams=teams,
+                           company_id=company_id)
             return presenter.edit_user_success_response()
         except UserIsNotAdmin:
             return presenter.raise_user_is_not_admin_exception()
