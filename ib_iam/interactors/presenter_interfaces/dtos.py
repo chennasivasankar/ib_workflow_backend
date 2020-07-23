@@ -22,10 +22,9 @@ class UserOptionsDetails:
     teams: List[TeamIdAndNameDTO]
     roles: List[RoleIdAndNameDTO]
 
-from dataclasses import dataclass
-from typing import List
+
 from ib_iam.interactors.storage_interfaces.dtos import (
-    MemberDTO, TeamIdAndNameDTO, TeamMemberIdsDTO
+    MemberDTO, TeamIdAndNameDTO, TeamUserIdsDTO
 )
 
 
@@ -33,5 +32,5 @@ from ib_iam.interactors.storage_interfaces.dtos import (
 class TeamWithMembersDetailsDTO:
     total_teams_count: int
     team_dtos: List[TeamIdAndNameDTO]
-    team_member_ids_dtos: List[TeamMemberIdsDTO]
+    team_user_ids_dtos: List[TeamUserIdsDTO]
     member_dtos: List[MemberDTO]

@@ -77,7 +77,7 @@ class TestGetListOfTeamsInteractor:
             self,
             mocker,
             expected_list_of_teams_dtos,
-            expected_team_member_ids_dtos,
+            expected_team_user_ids_dtos,
             expected_list_of_user_dtos,
             expected_list_of_member_dtos
     ):
@@ -96,7 +96,7 @@ class TestGetListOfTeamsInteractor:
             TeamWithMembersDetailsDTOFactory(
                 total_teams_count=total_teams_count,
                 team_dtos=expected_list_of_teams_dtos,
-                team_member_ids_dtos=expected_team_member_ids_dtos,
+                team_user_ids_dtos=expected_team_user_ids_dtos,
                 member_dtos=expected_list_of_member_dtos
             )
         print(expected_team_with_members_details_dtos, "************")
@@ -105,8 +105,8 @@ class TestGetListOfTeamsInteractor:
                 teams=expected_list_of_teams_dtos,
                 total_teams_count=total_teams_count
             )
-        storage.get_team_member_ids_dtos.return_value = (
-            expected_team_member_ids_dtos
+        storage.get_team_user_ids_dtos.return_value = (
+            expected_team_user_ids_dtos
         )
         presenter.get_response_for_get_list_of_teams.return_value = Mock()
         mock = prepare_user_profile_dtos_mock(mocker)
@@ -121,7 +121,7 @@ class TestGetListOfTeamsInteractor:
         storage.get_teams_with_total_teams_count_dto.assert_called_once_with(
             pagination_dto=pagination_dto
         )
-        storage.get_team_member_ids_dtos.assert_called_once_with(
+        storage.get_team_user_ids_dtos.assert_called_once_with(
             team_ids=team_ids
         )
         presenter.get_response_for_get_list_of_teams.assert_called_once_with(

@@ -26,7 +26,7 @@ class TestGetResponseForGetListOfTeams:
             team_details_dtos=TeamWithMembersDetailsDTO(
                 total_teams_count=0,
                 team_dtos=[],
-                team_member_ids_dtos=[],
+                team_user_ids_dtos=[],
                 member_dtos=[]
             )
         )

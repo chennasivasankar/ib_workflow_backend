@@ -7,7 +7,7 @@ from ib_iam.interactors.presenter_interfaces.dtos import (
     TeamWithMembersDetailsDTO
 )
 from ib_iam.interactors.storage_interfaces.dtos import (
-    PaginationDTO, TeamIdAndNameDTO, TeamMemberIdsDTO, MemberDTO
+    PaginationDTO, TeamIdAndNameDTO, TeamUserIdsDTO, MemberDTO
 )
 from ib_iam.adapters.dtos import UserProfileDTO
 from typing import List
@@ -54,16 +54,16 @@ class GetListOfTeamsInteractor:
         team_ids = self._get_team_ids_from_team_dtos(
             team_dtos=teams_with_total_teams_count.teams)
 
-        team_member_ids_dtos = self.storage.get_team_member_ids_dtos(
+        team_user_ids_dtos = self.storage.get_team_user_ids_dtos(
             team_ids=team_ids)
-        member_ids = self._get_all_member_ids_from_team_member_ids_dtos(
-            team_member_ids_dtos=team_member_ids_dtos)
+        member_ids = self._get_all_member_ids_from_team_user_ids_dtos(
+            team_user_ids_dtos=team_user_ids_dtos)
         member_dtos = self._get_members_dtos_from_service(
             member_ids=member_ids)
         team_with_memebers_dtos = TeamWithMembersDetailsDTO(
             total_teams_count=teams_with_total_teams_count.total_teams_count,
             team_dtos=teams_with_total_teams_count.teams,
-            team_member_ids_dtos=team_member_ids_dtos,
+            team_user_ids_dtos=team_user_ids_dtos,
             member_dtos=member_dtos)
         print(team_with_memebers_dtos)
         return team_with_memebers_dtos
@@ -85,12 +85,12 @@ class GetListOfTeamsInteractor:
         return team_ids
 
     @staticmethod
-    def _get_all_member_ids_from_team_member_ids_dtos(
-            team_member_ids_dtos: List[TeamMemberIdsDTO]
+    def _get_all_member_ids_from_team_user_ids_dtos(
+            team_user_ids_dtos: List[TeamUserIdsDTO]
     ):
         member_ids = []
-        for team_member_ids_dto in team_member_ids_dtos:
-            member_ids.extend(team_member_ids_dto.member_ids)
+        for team_user_ids_dto in team_user_ids_dtos:
+            member_ids.extend(team_user_ids_dto.user_ids)
         unique_member_ids = list(set(member_ids))
         return unique_member_ids
 

@@ -9,7 +9,7 @@ team_ids = [
     "aa66c40f-6d93-484a-b418-984716514c7b",
     "c982032b-53a7-4dfa-a627-4701a5230765",
 ]
-member_ids = [
+user_ids = [
     '2bdb417e-4632-419a-8ddd-085ea272c6eb',
     '548a803c-7b48-47ba-a700-24f2ea0d1280',
     '4b8fb6eb-fa7d-47c1-8726-cd917901104e',
@@ -38,20 +38,19 @@ def create_teams():
 
 @pytest.fixture()
 def create_members(create_teams):
-    team_objects = create_teams
     TeamMemberFactory.reset_sequence(1)
     team_members = [
         {
             "team_id": team_ids[0],
-            "member_ids": [member_ids[0], member_ids[2]]
+            "member_ids": [user_ids[0], user_ids[2]]
         },
         {
             "team_id": team_ids[1],
-            "member_ids": [member_ids[0], member_ids[2]]
+            "member_ids": [user_ids[0], user_ids[2]]
         },
         {
             "team_id": team_ids[2],
-            "member_ids": [member_ids[0], member_ids[2]]
+            "member_ids": [user_ids[0], user_ids[2]]
         }
 
     ]

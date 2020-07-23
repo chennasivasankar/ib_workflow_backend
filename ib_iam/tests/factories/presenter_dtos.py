@@ -15,11 +15,10 @@ class CompleteUserDetailsDTOFactory(factory.Factory):
     teams = factory.SubFactory(UserTeamDTO)
 
 
-import factory, factory.django
 from ib_iam.interactors.presenter_interfaces.dtos import \
     TeamWithMembersDetailsDTO
 from ib_iam.tests.factories.storage_dtos import (
-    TeamDTOFactory, TeamMemberIdsDTOFactory, MemberDTOFactory
+    TeamDTOFactory, TeamUserIdsDTOFactory, MemberDTOFactory
 )
 
 team_ids = [
@@ -37,8 +36,8 @@ member_ids = [
 team_dtos = [
     TeamDTOFactory(team_id=team_id) for team_id in team_ids
 ]
-team_member_ids_dtos = [
-    TeamMemberIdsDTOFactory(team_id=team_id) for team_id in team_ids
+team_user_ids_dtos = [
+    TeamUserIdsDTOFactory(team_id=team_id) for team_id in team_ids
 ]
 members_dtos = [
     MemberDTOFactory(member_id=member_id) for member_id in member_ids
@@ -54,9 +53,9 @@ class TeamWithMembersDetailsDTOFactory(factory.Factory):
         [team_dtos[0], team_dtos[1]],
         [team_dtos[2], team_dtos[0]],
     ])
-    team_member_ids_dtos = factory.Iterator([
-        [team_member_ids_dtos[0], team_member_ids_dtos[1]],
-        [team_member_ids_dtos[2], team_member_ids_dtos[0]]
+    team_user_ids_dtos = factory.Iterator([
+        [team_user_ids_dtos[0], team_user_ids_dtos[1]],
+        [team_user_ids_dtos[2], team_user_ids_dtos[0]]
     ])
     member_dtos = factory.Iterator([
         [members_dtos[1], members_dtos[2], members_dtos[0]],

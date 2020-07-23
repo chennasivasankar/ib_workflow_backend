@@ -87,9 +87,9 @@ class TeamDTO:
 
 
 @dataclass
-class TeamMemberIdsDTO:
+class TeamUserIdsDTO:
     team_id: str
-    member_ids: List[str]
+    user_ids: List[str]
 
 
 @dataclass

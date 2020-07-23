@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import List, Optional
 from ib_iam.interactors.storage_interfaces.dtos import (
-    PaginationDTO, TeamMemberIdsDTO,
+    PaginationDTO, TeamUserIdsDTO,
     TeamsWithTotalTeamsCountDTO, TeamDetailsWithUserIdsDTO,
     TeamWithUserIdsDTO
 )
@@ -20,9 +20,9 @@ class TeamStorageInterface:
         pass
 
     @abstractmethod
-    def get_team_member_ids_dtos(
+    def get_team_user_ids_dtos(
             self, team_ids: List[str]
-    ) -> List[TeamMemberIdsDTO]:
+    ) -> List[TeamUserIdsDTO]:
         pass
 
     @abstractmethod

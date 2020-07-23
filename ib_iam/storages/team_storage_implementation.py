@@ -4,7 +4,7 @@ from ib_iam.interactors.storage_interfaces.team_storage_interface import \
 from ib_iam.models import UserDetails, Team, TeamMember
 from ib_iam.exceptions.custom_exceptions import UserHasNoAccess, InvalidTeam
 from ib_iam.interactors.storage_interfaces.dtos import (
-    PaginationDTO, TeamMemberIdsDTO,
+    PaginationDTO, TeamUserIdsDTO,
     TeamsWithTotalTeamsCountDTO, TeamDetailsWithUserIdsDTO, TeamWithUserIdsDTO,
     TeamDTO)
 
@@ -32,24 +32,24 @@ class TeamStorageImplementation(TeamStorageInterface):
         )
         return teams_with_total_teams_count_dto
 
-    def get_team_member_ids_dtos(
+    def get_team_user_ids_dtos(
             self, team_ids: List[str]
-    ) -> List[TeamMemberIdsDTO]:
+    ) -> List[TeamUserIdsDTO]:
         team_members = TeamMember.objects.filter(
             team__team_id__in=team_ids
         ).values_list('team__team_id', 'member_id')
         from collections import defaultdict
-        team_member_ids_dictionary = defaultdict(list)
+        team_user_ids_dictionary = defaultdict(list)
         for team_member in team_members:
             team_id = str(team_member[0])
-            team_member_ids_dictionary[team_id].extend([team_member[1]])
-        team_member_ids_dtos = [
-            TeamMemberIdsDTO(
+            team_user_ids_dictionary[team_id].extend([team_member[1]])
+        team_user_ids_dtos = [
+            TeamUserIdsDTO(
                 team_id=team_id,
-                member_ids=team_member_ids_dictionary[team_id]
+                user_ids=team_user_ids_dictionary[team_id]
             ) for team_id in team_ids
         ]
-        return team_member_ids_dtos
+        return team_user_ids_dtos
 
     def get_team_id_if_team_name_already_exists(
             self, name: str

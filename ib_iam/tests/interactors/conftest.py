@@ -10,12 +10,12 @@ def expected_list_of_teams_dtos():
 
 
 @pytest.fixture()
-def expected_team_member_ids_dtos():
-    from ib_iam.tests.factories.storage_dtos import TeamMemberIdsDTOFactory
-    team_member_ids_dtos = [
-        TeamMemberIdsDTOFactory(team_id="1", member_ids=["2", "3"])
+def expected_team_user_ids_dtos():
+    from ib_iam.tests.factories.storage_dtos import TeamUserIdsDTOFactory
+    team_user_ids_dtos = [
+        TeamUserIdsDTOFactory(team_id="1", user_ids=["2", "3"])
     ]
-    return team_member_ids_dtos
+    return team_user_ids_dtos
 
 
 @pytest.fixture

@@ -69,7 +69,7 @@ class TeamIdAndNameDTOFactory(factory.Factory):
 
 from ib_iam.interactors.storage_interfaces.dtos import (
     MemberDTO,
-    TeamMemberIdsDTO,
+    TeamUserIdsDTO,
     TeamNameAndDescriptionDTO,
     PaginationDTO,
     TeamsWithTotalTeamsCountDTO,
@@ -83,24 +83,24 @@ team_ids = [
     "c982032b-53a7-4dfa-a627-4701a5230765"
 ]
 
-member_ids = [
+user_ids = [
     '2bdb417e-4632-419a-8ddd-085ea272c6eb',
     '548a803c-7b48-47ba-a700-24f2ea0d1280',
     '4b8fb6eb-fa7d-47c1-8726-cd917901104e'
 ]
 
-user_ids = member_ids
+user_ids = user_ids
 
 
-class TeamMemberIdsDTOFactory(factory.Factory):
+class TeamUserIdsDTOFactory(factory.Factory):
     class Meta:
-        model = TeamMemberIdsDTO
+        model = TeamUserIdsDTO
 
     team_id = factory.Faker("uuid4")
-    member_ids = factory.Iterator([
-        [member_ids[1], member_ids[2]],
-        [member_ids[0], member_ids[1]],
-        [member_ids[0], member_ids[2]]
+    user_ids = factory.Iterator([
+        [user_ids[1], user_ids[2]],
+        [user_ids[0], user_ids[1]],
+        [user_ids[0], user_ids[2]]
     ])
 
 
