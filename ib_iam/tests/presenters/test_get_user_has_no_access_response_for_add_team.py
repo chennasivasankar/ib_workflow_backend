@@ -8,7 +8,7 @@ from ib_iam.constants.exception_messages import (
 
 
 class TestRaiseExceptionForUserHasNoAccessForAddTeam:
-    def test_when_it_is_called_it_returns_http_response(self):
+    def test_whether_it_returns_user_has_no_access_http_response(self):
         json_presenter = TeamPresenterImplementation()
         expected_response = USER_HAS_NO_ACCESS_FOR_ADD_TEAM[0]
         expected_res_status = USER_HAS_NO_ACCESS_FOR_ADD_TEAM[1]
