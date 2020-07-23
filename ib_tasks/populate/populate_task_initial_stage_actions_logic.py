@@ -44,16 +44,22 @@ def _define_single_method(file, action_dict: Dict[str, str]):
     stage_id = action_dict["stage_id"]
     action_name = action_dict["action_name"]
     action_logic = action_dict['action_logic']
-    file.write(f"\n\ndef {stage_id}_{action_name}(task_dict):\n")
+    function_name = f'{stage_id}_{action_name}'
+    function_name = function_name.replace(' ', '_').replace('-', '_').replace('\n', '')
+    file.write(f"\n\ndef {function_name}(task_dict):\n")
     file.write(action_logic + "\n")
     file.write("\t" + "return task_dict\n")
 
 
 def append_action_dict(action_dict: Dict[str, Any]):
-    from ib_tasks.interactors.dtos import TaskTemplateStageActionDTO
+    stage_id = action_dict["stage_id"]
     function_path = 'ib_tasks.populate.task_initial_stage_actions_logic.'
-    function_name = action_dict['stage_id'] + "_" + action_dict['action_name']
+    action_name = action_dict["action_name"]
+    function_name = f'{stage_id}_{action_name}'
+    function_name = function_name.replace(' ', '_').replace('-', '_').replace(
+        '\n', '')
     function_path = function_path + function_name
+    from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO
     return TaskTemplateStageActionDTO(
         task_template_id=action_dict['task_template_id'],
         stage_id=action_dict['stage_id'],

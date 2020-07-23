@@ -141,8 +141,8 @@ class ActionsStorageImplementation(ActionStorageInterface):
             list_of_stages[item['stage_id']] = item['id']
 
         list_of_task_stages = []
-        for task in list_of_task_stages:
-            list_of_stages.append(TaskTemplateInitialStage(
+        for task in task_template_stage_dtos:
+            list_of_task_stages.append(TaskTemplateInitialStage(
                 task_template_id=task.task_template_id,
                 stage_id=list_of_stages[task.stage_id]
             ))
@@ -155,7 +155,7 @@ class ActionsStorageImplementation(ActionStorageInterface):
                 values_list("template_id", flat=True)
         )
         # TODO need to set return value valid_template_ids
-        return ['FIN_PR']
+        return ['FIN_PR', 'FIN_PR-1']
 
     def get_valid_stage_ids(self, stage_ids: List[str]) -> Optional[List[str]]:
         valid_stage_ids = Stage.objects.filter(

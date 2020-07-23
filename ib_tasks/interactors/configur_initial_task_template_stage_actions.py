@@ -1,11 +1,10 @@
 
 from typing import List
 
+from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
+    StageActionDTO, TaskTemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
-from ib_tasks.interactors.storage_interfaces.storage_interface \
-    import StorageInterface
-from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, StageActionDTO, TaskTemplateStageDTO
 
 
 class InvalidTaskTemplateIdsException(Exception):
@@ -35,6 +34,7 @@ class ConfigureInitialTaskTemplateStageActions:
 
         task_template_stage_dtos = \
             self._get_initial_stage_dto_to_tasks_templates(tasks_dto)
+        print(task_template_stage_dtos)
         self.storage.create_initial_stage_to_task_template(
             task_template_stage_dtos=task_template_stage_dtos
         )

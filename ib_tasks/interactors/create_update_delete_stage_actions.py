@@ -143,9 +143,11 @@ class CreateUpdateDeleteStageActionsInteractor:
                                      db_roles: List[str],
                                      invalid_stage_roles: Dict[str, List],
                                      stage_id: str):
-        invalid_action_roles = self._get_invalid_roles_to_action(
-            action_roles, db_roles)
-        is_invalid_action_roles_present = invalid_action_roles
+        # TODO need to call get_invalid_roles_to_action
+        # invalid_action_roles = self._get_invalid_roles_to_action(
+        #     action_roles, db_roles)
+        invalid_action_roles =[]
+        is_invalid_action_roles_present = []
         if is_invalid_action_roles_present:
             self._append_invalid_action_roles_to_dict(invalid_action_roles,
                                                       stage_id,
@@ -239,9 +241,17 @@ class CreateUpdateDeleteStageActionsInteractor:
         return stage_actions
 
     def _create_update_stage_actions(
-            self, db_stage_actions_dto, stage_actions):
+            self, db_stage_action_dtos, stage_actions):
         create_stage_actions, update_stage_actions = [], []
-        for stage_action_dto in db_stage_actions_dto:
+        stage_ids = [
+            db_stage_action_dto.stage_id
+            for db_stage_action_dto in db_stage_action_dtos
+        ]
+        for key, value in stage_actions.items():
+            if key not in stage_ids:
+                create_stage_actions += value
+
+        for stage_action_dto in db_stage_action_dtos:
             db_action_names = stage_action_dto.action_names
             stage_actions_dto = stage_actions[stage_action_dto.stage_id]
             self._append_create_and_update_stage_dto(
@@ -262,10 +272,9 @@ class CreateUpdateDeleteStageActionsInteractor:
     def _append_create_and_update_stage_dto(
             db_action_names, stage_actions_dto,
             create_stage_actions, update_stage_actions):
+
         for stage_action_dto in stage_actions_dto:
             if stage_action_dto.action_name not in db_action_names:
                 create_stage_actions.append(stage_action_dto)
             elif stage_action_dto.action_name in db_action_names:
                 update_stage_actions.append(stage_action_dto)
-
-

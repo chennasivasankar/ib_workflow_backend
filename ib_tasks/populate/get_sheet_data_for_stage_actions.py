@@ -18,12 +18,15 @@ class GetSheetDataForStageActions:
         field_records = self.data_sheet.get_data_from_sub_sheet(
             sub_sheet_name=STAGES_AND_ACTIONS_SUB_SHEET
         )
-        self._validation_for_action_dict(field_records)
+        import json
+        print(json.dumps(field_records[:10], indent=4))
+        # TODO need to remove list slicing
+        self._validation_for_action_dict(field_records[:10])
         stage_actions_dict = [
             self._convert_stage_action_sheet_data_dict_to_our_format(
                 field_record
             )
-            for field_record in field_records[:4]
+            for field_record in field_records[:10]
         ]
         from ib_tasks.populate.populate_stage_actions import \
             populate_stage_actions
@@ -42,15 +45,16 @@ class GetSheetDataForStageActions:
 
     def _validation_for_action_dict(self, actions_dict: List[Dict]):
         from schema import Schema, Optional, SchemaError
+        from schema import And
         schema = Schema(
             [{
-                "Stage ID*": str,
-                "Stage Display Name": str,
-                "Stage Display Logic": str,
-                "Action name": str,
-                "Role": str,
-                "Logic": str,
-                "Button Text": str,
+                "Stage ID*": And(str, len),
+                "Stage Display Name": And(str, len),
+                "Stage Display Logic": And(str, len),
+                "Action name": And(str, len),
+                "Role": And(str, len),
+                "Logic": And(str, len),
+                "Button Text": And(str, len),
                 Optional("Button Colour"): str
 
             }]
