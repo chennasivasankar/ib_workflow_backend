@@ -1,4 +1,4 @@
-from ib_tasks.interactors.dtos import StageLogicAttributes
+from ib_tasks.interactors.stages_dtos import StageLogicAttributes
 
 
 class StageDisplayLogicInteractor:

@@ -1,6 +1,5 @@
 from typing import List
-from ib_tasks.interactors.dtos import GlobalConstantsDTO, \
-    GlobalConstantsWithTemplateIdDTO
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO, GlobalConstantsWithTemplateIdDTO
 from ib_tasks.utils.get_google_sheet import get_google_sheet
 
 
@@ -35,7 +34,7 @@ class PopulateGlobalConstantsToTemplate:
             self, template_id: str,
             global_constants_list: List[str]):
 
-        from ib_tasks.interactors.dtos import GlobalConstantsWithTemplateIdDTO
+
         global_constants_dtos = self._get_global_constant_dtos(
             global_constants_list=global_constants_list
         )

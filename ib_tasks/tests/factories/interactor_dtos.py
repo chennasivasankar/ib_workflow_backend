@@ -1,11 +1,15 @@
 import factory
-from ib_tasks.interactors.dtos import GlobalConstantsDTO, \
-    GoFsWithTemplateIdDTO, GoFWithOrderAndAddAnotherDTO
-from ib_tasks.interactors.dtos import GlobalConstantsDTO, StagesActionDTO
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
+from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 
-from ib_tasks.interactors.dtos import (
-    StageActionDTO, TaskTemplateStageActionDTO, StagesActionDTO
+from ib_tasks.interactors.stages_dtos import (
+    StagesActionDTO
 )
+from ib_tasks.interactors.stages_dtos import \
+    TaskTemplateStageActionDTO, StageActionDTO, StagesActionDTO
+from ib_tasks.interactors.task_dtos import TaskDTO, GoFFieldsDTO, \
+    FieldValuesDTO
 
 
 class StageActionDTOFactory(factory.Factory):
@@ -66,9 +70,43 @@ class ActionDTOFactory(factory.Factory):
     action_name = factory.Sequence(lambda n: "name_%d" % n)
     function_path = "path"
     logic = factory.Sequence(lambda n: 'status_id_%d==stage_id' % n)
-    roles = ['ALL_ROLES']
+    roles = ['Role_1', 'Role_2']
     button_text = "text"
     button_color = None
 
     class Params:
         color = factory.Trait(button_color="#ffffff")
+
+class FieldValuesDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldValuesDTO
+
+    field_id = factory.sequence(lambda counter: "FIELD_ID-{}".format(counter))
+    field_value = factory.sequence(
+        lambda counter: "FIELD_VALUE-{}".format(counter)
+    )
+
+class GoFFieldsDTOFactory(factory.Factory):
+    class Meta:
+        model = GoFFieldsDTO
+
+    gof_id = factory.sequence(lambda counter: "GOF_ID-{}".format(counter))
+
+    @factory.LazyAttribute
+    def field_values_dtos(self):
+        field_values_dtos = FieldValuesDTOFactory.create_batch(size=2)
+        return field_values_dtos
+
+
+class TaskDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskDTO
+
+    task_template_id = factory.sequence(
+        lambda counter: "TASK_TEMPLATE_ID-{}".format(counter)
+    )
+
+    @factory.LazyAttribute
+    def gof_fields_dtos(self):
+        gof_fields_dtos = GoFFieldsDTOFactory.create_batch(size=2)
+        return gof_fields_dtos

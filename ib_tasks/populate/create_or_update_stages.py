@@ -10,7 +10,7 @@ def populate_stages_values(list_of_stages_dict: List[Dict]):
 
 
 def append_stage_dto(stage_dict: Dict[str, Any]):
-    from ib_tasks.interactors.dtos import StageDTO
+    from ib_tasks.interactors.stages_dtos import StageDTO
     stage_dto = StageDTO(
         stage_id=stage_dict['stage_id'],
         task_template_id=stage_dict['task_template_id'],

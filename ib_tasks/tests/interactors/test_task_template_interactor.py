@@ -2,7 +2,7 @@ import pytest
 import mock
 from ib_tasks.interactors.create_task_template_interactor \
     import CreateTaskTemplateInteractor
-from ib_tasks.interactors.dtos import CreateTaskTemplateDTO
+from ib_tasks.interactors.task_template_dtos import CreateTaskTemplateDTO
 
 
 class TestTaskTemplateInteractor:

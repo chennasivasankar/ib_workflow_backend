@@ -1,7 +1,9 @@
 import pytest
 from ib_tasks.tests.factories.interactor_dtos import \
     GoFWithOrderAndAddAnotherDTOFactory
-from ib_tasks.interactors.dtos import GoFsWithTemplateIdDTO
+from ib_tasks.interactors.gofs_dtos import GoFsWithTemplateIdDTO
+
+
 
 class TestGoFsToTaskTemplate:
 
@@ -30,21 +32,22 @@ class TestGoFsToTaskTemplate:
     @pytest.mark.django_db
     def test_with_invalid_template_raises_exception(
             self, gofs_to_task_template_interactor, snapshot):
-        #Arrange
+        # Arrange
         template_id = "FIN_MAN"
         gof_dtos = GoFWithOrderAndAddAnotherDTOFactory.create_batch(size=2)
 
         gofs_with_template_id_dto = GoFsWithTemplateIdDTO(
             template_id=template_id, gof_dtos=gof_dtos
         )
-        from ib_tasks.exceptions.task_custom_exceptions import TemplateDoesNotExists
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            TemplateDoesNotExists
 
-        #Asssert
+        # Asssert
         with pytest.raises(TemplateDoesNotExists) as err:
-            gofs_to_task_template_interactor.\
+            gofs_to_task_template_interactor. \
                 add_gofs_to_task_template_wrapper(
-                    gofs_with_template_id_dto=gofs_with_template_id_dto
-                )
+                gofs_with_template_id_dto=gofs_with_template_id_dto
+            )
 
         snapshot.assert_match(err.value.args[0], 'message')
 
@@ -57,14 +60,15 @@ class TestGoFsToTaskTemplate:
             template_id=" ", gof_dtos=gof_dtos
         )
 
-        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import \
+            InvalidValueForField
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
-            gofs_to_task_template_interactor.\
+            gofs_to_task_template_interactor. \
                 add_gofs_to_task_template_wrapper(
-                    gofs_with_template_id_dto=gofs_with_template_id_dto
-                )
+                gofs_with_template_id_dto=gofs_with_template_id_dto
+            )
 
         snapshot.assert_match(err.value.args[0], 'message')
 
@@ -79,14 +83,15 @@ class TestGoFsToTaskTemplate:
         gofs_with_template_id_dto = GoFsWithTemplateIdDTO(
             template_id=template_id, gof_dtos=gof_dtos
         )
-        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import \
+            InvalidValueForField
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
-            gofs_to_task_template_interactor.\
+            gofs_to_task_template_interactor. \
                 add_gofs_to_task_template_wrapper(
-                    gofs_with_template_id_dto=gofs_with_template_id_dto
-                )
+                gofs_with_template_id_dto=gofs_with_template_id_dto
+            )
 
         snapshot.assert_match(err.value.args[0], 'message')
 
@@ -101,14 +106,15 @@ class TestGoFsToTaskTemplate:
         gofs_with_template_id_dto = GoFsWithTemplateIdDTO(
             template_id=template_id, gof_dtos=gof_dtos
         )
-        from ib_tasks.exceptions.gofs_custom_exceptions import InvalidOrdersForGoFs
+        from ib_tasks.exceptions.gofs_custom_exceptions import \
+            InvalidOrdersForGoFs
 
         # Assert
         with pytest.raises(InvalidOrdersForGoFs) as err:
-            gofs_to_task_template_interactor.\
+            gofs_to_task_template_interactor. \
                 add_gofs_to_task_template_wrapper(
-                    gofs_with_template_id_dto=gofs_with_template_id_dto
-                )
+                gofs_with_template_id_dto=gofs_with_template_id_dto
+            )
 
         snapshot.assert_match(err.value.args[0], 'message')
 
@@ -127,10 +133,10 @@ class TestGoFsToTaskTemplate:
 
         # Assert
         with pytest.raises(DuplicateGoFIds) as err:
-            gofs_to_task_template_interactor.\
+            gofs_to_task_template_interactor. \
                 add_gofs_to_task_template_wrapper(
-                    gofs_with_template_id_dto=gofs_with_template_id_dto
-                )
+                gofs_with_template_id_dto=gofs_with_template_id_dto
+            )
 
         snapshot.assert_match(err.value.args[0], 'message')
 
@@ -145,14 +151,15 @@ class TestGoFsToTaskTemplate:
         gofs_with_template_id_dto = GoFsWithTemplateIdDTO(
             template_id=template_id, gof_dtos=gof_dtos
         )
-        from ib_tasks.exceptions.gofs_custom_exceptions import DuplicateOrderValuesForGoFs
+        from ib_tasks.exceptions.gofs_custom_exceptions import \
+            DuplicateOrderValuesForGoFs
 
         # Assert
         with pytest.raises(DuplicateOrderValuesForGoFs) as err:
-            gofs_to_task_template_interactor.\
+            gofs_to_task_template_interactor. \
                 add_gofs_to_task_template_wrapper(
-                    gofs_with_template_id_dto=gofs_with_template_id_dto
-                )
+                gofs_with_template_id_dto=gofs_with_template_id_dto
+            )
 
         snapshot.assert_match(err.value.args[0], 'message')
 
@@ -171,10 +178,10 @@ class TestGoFsToTaskTemplate:
 
         # Assert
         with pytest.raises(GofsDoesNotExist) as err:
-            gofs_to_task_template_interactor.\
+            gofs_to_task_template_interactor. \
                 add_gofs_to_task_template_wrapper(
-                    gofs_with_template_id_dto=gofs_with_template_id_dto
-                )
+                gofs_with_template_id_dto=gofs_with_template_id_dto
+            )
 
         snapshot.assert_match(err.value.args[0], 'message')
 
@@ -192,12 +199,12 @@ class TestGoFsToTaskTemplate:
             template_id=template_id, gof_dtos=gof_dtos
         )
 
-        #Act
+        # Act
         gofs_to_task_template_interactor.add_gofs_to_task_template_wrapper(
             gofs_with_template_id_dto=gofs_with_template_id_dto
         )
 
-        #Assert
+        # Assert
         from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
         gofs_to_task_template_objs = TaskTemplateGoFs.objects.all()
 
@@ -236,12 +243,12 @@ class TestGoFsToTaskTemplate:
             template_id=template_id, gof_dtos=gof_dtos
         )
 
-        #Act
+        # Act
         gofs_to_task_template_interactor.add_gofs_to_task_template_wrapper(
             gofs_with_template_id_dto=gofs_with_template_id_dto
         )
 
-        #Assert
+        # Assert
         from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
         gofs_to_task_template_objs = TaskTemplateGoFs.objects.all()
 
@@ -279,14 +286,15 @@ class TestGoFsToTaskTemplate:
             template_id=template_id, gof_dtos=gof_dtos
         )
 
-        from ib_tasks.exceptions.gofs_custom_exceptions import ExistingGoFsNotInGivenData
+        from ib_tasks.exceptions.gofs_custom_exceptions import \
+            ExistingGoFsNotInGivenData
 
-        #Assert
+        # Assert
         with pytest.raises(ExistingGoFsNotInGivenData) as err:
-            gofs_to_task_template_interactor.\
+            gofs_to_task_template_interactor. \
                 add_gofs_to_task_template_wrapper(
-                    gofs_with_template_id_dto=gofs_with_template_id_dto
-                )
+                gofs_with_template_id_dto=gofs_with_template_id_dto
+            )
         snapshot.assert_match(err.value.args[0], 'message')
         from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
         gofs_to_task_template_objs = TaskTemplateGoFs.objects.all()

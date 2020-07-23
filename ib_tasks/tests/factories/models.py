@@ -9,7 +9,7 @@ from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from ib_tasks.models import (
-    Stage, ActionPermittedRoles, StageAction, TaskStatusVariable,
+    Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     TaskTemplateGlobalConstants)
 
 
@@ -44,9 +44,9 @@ class ActionPermittedRolesFactory(factory.django.DjangoModelFactory):
     role_id = factory.Sequence(lambda n: "role_%d" % n)
 
 
-class TaskStatusVariableFactory(factory.django.DjangoModelFactory):
+class TaskTemplateStatusVariableFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = TaskStatusVariable
+        model = TaskTemplateStatusVariable
 
     task_id = factory.Sequence(lambda n: n)
     variable = factory.Sequence(lambda n: "variable%d" % n)
@@ -86,11 +86,12 @@ class FieldFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Field
 
+    gof = factory.SubFactory(GoFFactory)
     field_id = factory.Sequence(lambda counter: "FIELD_ID-{}".format(counter))
     display_name = factory.Sequence(
         lambda counter: "DISPLAY_NAME-{}".format(counter)
     )
-    field_type = FieldTypes.PLAIN_TEXT
+    field_type = FieldTypes.PLAIN_TEXT.value
     required = True
 
     class Params:

@@ -7,13 +7,18 @@ Author: Pavankumar Pamuru
 import abc
 from typing import List, Optional
 
-from ib_tasks.interactors.storage_interfaces.dtos import (
-    GoFRoleDTO, GoFDTO, FieldDTO, FieldRoleDTO, TaskStatusDTO, TaskStagesDTO,
-    StageDTO, TaskTemplateDTO, ActionsOfTemplateDTO, UserFieldPermissionDTO,
-    GoFToTaskTemplateDTO
-)
-from ib_tasks.interactors.dtos import GlobalConstantsDTO, \
-    GoFWithOrderAndAddAnotherDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import TaskStatusDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
+    FieldRoleDTO, FieldTypeDTO, UserFieldPermissionDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
+    GoFRoleDTO, GoFToTaskTemplateDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, StageDTO
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
+from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
+from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
+    TaskTemplateDTO
+from ib_tasks.interactors.storage_interfaces.actions_dtos import \
+    ActionsOfTemplateDTO
 
 
 class TaskStorageInterface(abc.ABC):
@@ -92,6 +97,26 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def create_stages_with_given_information(self,
+                                             stage_information: StageDTO):
+        pass
+
+    @abc.abstractmethod
+    def validate_stage_ids(self, stage_ids) -> Optional[List[str]]:
+        pass
+
+    @abc.abstractmethod
+    def update_stages_with_given_information(self,
+                                             update_stages_information: StageDTO):
+        pass
+
+    @abc.abstractmethod
+    def validate_stages_related_task_template_ids(self,
+                                                  task_stages_dto: TaskStagesDTO) -> \
+            Optional[List[TaskStagesDTO]]:
+        pass
+
+    @abc.abstractmethod
     def create_status_for_tasks(self,
                                 create_status_for_tasks: List[TaskStatusDTO]):
         pass
@@ -144,7 +169,7 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_gof_ids_permitted_for_user(self, roles: List[str]) -> List[str]:
+    def get_gof_ids_with_read_permission_for_user(self, roles: List[str]) -> List[str]:
         pass
 
     @abc.abstractmethod
@@ -176,4 +201,10 @@ class TaskStorageInterface(abc.ABC):
     @abc.abstractmethod
     def update_task_template(
             self, template_id: str, template_name: str):
+        pass
+
+    @abc.abstractmethod
+    def get_field_types_for_given_field_ids(
+            self, field_ids: List[str]
+    ) -> List[FieldTypeDTO]:
         pass
