@@ -108,7 +108,7 @@
             "task_template_id":{
                "type":"string"
             },
-            "action":{
+            "action_id":{
                "type":"string"
             },
             "task_gofs":{
@@ -120,7 +120,7 @@
          },
          "required":[
             "task_gofs",
-            "action",
+            "action_id",
             "task_template_id"
          ]
       },
@@ -227,9 +227,6 @@
             "action_id":{
                "type":"string"
             },
-            "action_name":{
-               "type":"string"
-            },
             "button_text":{
                "type":"string"
             },
@@ -239,7 +236,6 @@
          },
          "required":[
             "action_id",
-            "action_name",
             "button_text",
             "button_color"
          ]
