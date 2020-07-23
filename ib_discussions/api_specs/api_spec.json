@@ -72,7 +72,8 @@
       "type": "object",
       "properties": {
         "discussion_id": {
-          "type": "string"
+          "type": "string",
+          "format": "uuid"
         },
         "description": {
           "type": "string"
@@ -88,7 +89,8 @@
           "type": "object",
           "properties": {
             "user_id": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             },
             "name": {
               "type": "string"
@@ -272,7 +274,8 @@
                 "enum": [
                   "INVALID_ENTITY_TYPE_FOR_ENTITY_ID",
                   "INVALID_OFFSET",
-                  "INVALID_LIMIT"
+                  "INVALID_LIMIT",
+                  "INVALID_USER_ID"
                 ]
               }
             },
@@ -285,7 +288,7 @@
     }
   },
   "paths": {
-    "/discussions/v1/": {
+    "/discussion/v1/": {
       "post": {
         "operationId": "create_discussion",
         "summary": "create the discussion ",
@@ -313,8 +316,10 @@
             "$ref": "#/responses/CreateDiscussionBadRequestResponse"
           }
         }
-      },
-      "get": {
+      }
+    },
+    "/get_discussions/v1/": {
+      "post": {
         "operationId": "get_discussions",
         "summary": "get discussions",
         "description": "get all discussion for given entity id and entity type",

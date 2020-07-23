@@ -148,7 +148,7 @@ class TestStorageImplementation:
         from ib_discussions.constants.enum import EntityType
         entity_id = '31be920b-7b4c-49e7-8adb-41a0c18da848'
         entity_type = EntityType.TASK.value
-        user_id = "41a0c18da848"
+        user_id = "e1ed4b2d-f5d5-4b20-a5c4-8536130e704d"
         title = "interactor"
         description = "test for interactor"
         discussion_dto = DiscussionDTO(
@@ -170,7 +170,7 @@ class TestStorageImplementation:
         discussion_obj = Discussion.objects.get(
             discussion_set_id=discussion_set_id)
 
-        assert discussion_obj.user_id == user_id
+        assert str(discussion_obj.user_id) == user_id
         assert discussion_obj.title == title
         assert discussion_obj.description == description
         assert str(discussion_obj.discussion_set_id) == discussion_set_id
@@ -211,7 +211,7 @@ class TestStorageImplementation:
             CompleteDiscussionFactory
         expected_complete_discussion_dtos = [
             CompleteDiscussionFactory(
-                user_id='41a0c18da848',
+                user_id='9cc22e39-2390-4d96-b7ac-6bb27816461f',
                 discussion_id='829db67d-0663-4e71-a103-826706ab5678',
                 discussion_set_id='641bfcc5-e1ea-4231-b482-f7f34fb5c7c4',
                 description='description',
@@ -221,7 +221,7 @@ class TestStorageImplementation:
                 is_clarified=True
             ),
             CompleteDiscussionFactory(
-                user_id='41a0c18da848',
+                user_id='9cc22e39-2390-4d96-b7ac-6bb27816461f',
                 discussion_id='c0091084-1d34-4e8c-b813-464e14cb152c',
                 discussion_set_id='641bfcc5-e1ea-4231-b482-f7f34fb5c7c4',
                 description='description',
@@ -240,7 +240,7 @@ class TestStorageImplementation:
         from ib_discussions.constants.enum import FilterByEnum
         filter_by_dto = FilterByDTO(
             filter_by=FilterByEnum.POSTED_BY_ME.value,
-            value="41a0c18da848"
+            value="9cc22e39-2390-4d96-b7ac-6bb27816461f"
         )
 
         from ib_discussions.interactors.discussion_interactor import \

@@ -175,7 +175,7 @@ class TestGetDiscussionsPresenterImplementation:
                 'discussion_id': 'c5a444ea-589a-4e8f-b006-cfac3c1c0b78',
                 'description': 'description',
                 'title': 'title',
-                'created_at': '01-01-2008,00:00:1199125800.000000',
+                'created_at': '2008-01-01 00:00:00',
                 'author': {
                     'user_id': 'fc4c3c81-ebc3-4957-8c62-e1cbb6238b27',
                     'name': 'name of user_id is fc4c3c81-ebc3-4957-8c62-e1cbb6238b27',
@@ -186,7 +186,7 @@ class TestGetDiscussionsPresenterImplementation:
                 'discussion_id': '5ce6581b-86ce-4246-8551-2c8a8ed4df87',
                 'description': 'description',
                 'title': 'title',
-                'created_at': '01-01-2008,00:00:1199125800.000000',
+                'created_at': '2008-01-01 00:00:00',
                 'author': {
                     'user_id': '458813d7-9954-44fd-a014-a9faafce5948',
                     'name': 'name of user_id is 458813d7-9954-44fd-a014-a9faafce5948',
@@ -197,7 +197,7 @@ class TestGetDiscussionsPresenterImplementation:
                 'discussion_id': 'ed10c17c-8995-4d84-9807-189a54a2049d',
                 'description': 'description',
                 'title': 'title',
-                'created_at': '01-01-2008,00:00:1199125800.000000',
+                'created_at': '2008-01-01 00:00:00',
                 'author': {
                     'user_id': '06b0bdc4-76ac-4a01-a4da-68156f0527f5',
                     'name': 'name of user_id is 06b0bdc4-76ac-4a01-a4da-68156f0527f5',

@@ -35,7 +35,13 @@ class DiscussionFactory(factory.django.DjangoModelFactory):
 
     id = factory.Faker("uuid4")
     discussion_set = factory.SubFactory(DiscussionSetFactory)
-    user_id = factory.Iterator(["41a0c18da848", "d3482aaa30e5", "1d42bb68e3ce"])
+    user_id = factory.Iterator(
+        [
+            "9cc22e39-2390-4d96-b7ac-6bb27816461f",
+            "cd4eb7da-6a5f-4f82-82ba-12e40ab7bf5a",
+            "e597ab2f-a10c-4164-930e-23af375741cb"
+        ]
+    )
     title = factory.LazyAttribute(
         lambda obj: "title"
     )

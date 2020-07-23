@@ -113,7 +113,7 @@ class GetDiscussionPresenterImplementation(
                 ),
                 "author": self._prepare_user_profile_dict(
                     user_profile_dto \
-                        =user_profiles_dict[complete_discussion_dto.user_id]
+                        =user_profiles_dict[str(complete_discussion_dto.user_id)]
                 ),
                 "is_clarified": complete_discussion_dto.is_clarified
             }
@@ -124,6 +124,7 @@ class GetDiscussionPresenterImplementation(
             "discussions": discussions_list,
             "total_count": discussions_details_dto.total_count
         }
+        print(discussions_list)
         return self.prepare_200_success_response(
             response_dict=discussions_details_dict
         )

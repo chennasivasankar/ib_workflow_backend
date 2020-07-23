@@ -4,13 +4,6 @@ import pytest
 
 
 class TestAuthService:
-    @pytest.fixture()
-    def prepare_get_user_profile_dtos_mock(self, mocker):
-        mock = mocker.patch(
-            "ib_users.interfaces.service_interface.ServiceInterface.get_user_profile_bulk"
-        )
-        return mock
-
     @patch(
         "ib_users.interfaces.service_interface.ServiceInterface.get_user_profile_bulk"
     )
@@ -18,7 +11,10 @@ class TestAuthService:
             self, get_user_profile_dtos_mock
     ):
         # Arrange
-        user_ids = ["1", "", "3"]
+        user_ids = [
+            "9cc22e39-2390-4d96-b7ac-6bb27816461f",
+            "cd4eb7da-6a5f-4f82-82ba-12e40ab7bf5a"
+        ]
         from ib_users.interactors.exceptions.user_profile import \
             InvalidUserException
         from ib_users.constants.user_profile.error_types import \
@@ -46,7 +42,10 @@ class TestAuthService:
             self, get_user_profile_dtos_mock
     ):
         # Arrange
-        user_ids = ["1", "2", "3"]
+        user_ids = [
+            "9cc22e39-2390-4d96-b7ac-6bb27816461f",
+            "cd4eb7da-6a5f-4f82-82ba-12e40ab7bf5a"
+        ]
         from ib_users.interactors.exceptions.user_profile import \
             InvalidUserException
 
@@ -68,3 +67,54 @@ class TestAuthService:
 
         with pytest.raises(InvalidUserId):
             auth_service.get_user_profile_dtos(user_ids=user_ids)
+
+    @patch(
+        "ib_users.interfaces.service_interface.ServiceInterface.get_user_profile_bulk"
+    )
+    def test_with_valid_user_ids(
+            self, get_user_profile_dtos_mock
+    ):
+        # Arrange
+        user_ids = [
+            "9cc22e39-2390-4d96-b7ac-6bb27816461f",
+            "cd4eb7da-6a5f-4f82-82ba-12e40ab7bf5a"
+        ]
+        from ib_discussions.adapters.auth_service import UserProfileDTO
+        expected_user_profile_dtos = [
+            UserProfileDTO(
+                user_id='9cc22e39-2390-4d96-b7ac-6bb27816461f',
+                name='test1',
+                profile_pic_url='test1.com'
+            ),
+            UserProfileDTO(
+                user_id='cd4eb7da-6a5f-4f82-82ba-12e40ab7bf5a',
+                name='test2',
+                profile_pic_url='test2.com'
+            )
+        ]
+
+        from ib_users.interactors.user_profile_interactor import \
+            GetUserProfileDTO
+        get_user_profile_dtos_mock.return_value = [
+            GetUserProfileDTO(
+                user_id=user_ids[0],
+                name="test1",
+                profile_pic_url="test1.com"
+            ),
+            GetUserProfileDTO(
+                user_id=user_ids[1],
+                name="test2",
+                profile_pic_url="test2.com"
+            )
+        ]
+
+        from ib_discussions.adapters.service_adapter import ServiceAdapter
+        service_adapter = ServiceAdapter()
+        auth_service = service_adapter.auth_service
+
+        # Act
+        user_profile_dtos = auth_service.get_user_profile_dtos(
+            user_ids=user_ids)
+
+        # Assert
+        assert user_profile_dtos == expected_user_profile_dtos

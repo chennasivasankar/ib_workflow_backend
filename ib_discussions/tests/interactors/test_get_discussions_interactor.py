@@ -139,7 +139,7 @@ class TestGetDiscussionsInteractor:
         assert response == \
                expected_presenter_raise_exception_for_invalid_limit_mock
 
-    def test_discussion_set_id_exist_if_not_foun_raise_exception(
+    def test_discussion_set_id_exist_if_not_found_raise_exception(
             self, presenter_mock, entity_id_and_entity_type_dto,
             offset_and_limit_dto, initialise_discussions_interactor,
             filter_by_dto, sort_by_dto, storage_mock
@@ -261,6 +261,7 @@ class TestGetDiscussionsInteractor:
         user_profile_dtos = self._get_user_profile_dtos()
         get_user_profile_dtos_mock.return_value \
             = user_profile_dtos
+
         from ib_discussions.interactors.presenter_interfaces.dtos import \
             DiscussionsDetailsDTO
         discussions_details_dto = DiscussionsDetailsDTO(

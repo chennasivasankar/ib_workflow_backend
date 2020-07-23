@@ -1,48 +1,99 @@
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
+
 from .validator_class import ValidatorClass
 
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    # ---------MOCK IMPLEMENTATION---------
+    request_data = kwargs["request_data"]
+    query_params = kwargs["query_params"]
 
-    try:
-        from ib_discussions.views.get_discussions.request_response_mocks \
-            import REQUEST_BODY_JSON
-        body = REQUEST_BODY_JSON
-    except ImportError:
-        body = {}
+    entity_id_and_entity_type_dto = _prepare_entity_id_and_entity_type_dto(
+        request_data)
 
-    test_case = {
-        "path_params": {},
-        "query_params": {'offset': 303, 'limit': 755},
-        "header_params": {},
-        "body": body,
-        "securities": [{'oauth': ['read']}]
-    }
+    offset_and_limit_dto = _prepare_offset_and_limit_dto(query_params)
 
-    from django_swagger_utils.drf_server.utils.server_gen.mock_response \
-        import mock_response
-    try:
-        response = ''
-        status_code = 200
-        if '200' in ['200', '404', '400']:
-            from ib_discussions.views.get_discussions.request_response_mocks \
-                import RESPONSE_200_JSON
-            response = RESPONSE_200_JSON
-            status_code = 200
-        elif '201' in ['200', '404', '400']:
-            from ib_discussions.views.get_discussions.request_response_mocks \
-                import RESPONSE_201_JSON
-            response = RESPONSE_201_JSON
-            status_code = 201
-    except ImportError:
-        response = ''
-        status_code = 200
-    response_tuple = mock_response(
-        app_name="ib_discussions", test_case=test_case,
-        operation_name="get_discussions",
-        kwargs=kwargs, default_response_body=response,
-        group_name="", status_code=status_code)
-    return response_tuple
+    filter_by_dto = _prepare_filter_by_dto(kwargs, request_data)
+
+    sort_by_dto = _prepare_sort_by_dto(request_data)
+
+    from ib_discussions.presenters.get_discussion_presenter_implementation import \
+        GetDiscussionPresenterImplementation
+    presenter = GetDiscussionPresenterImplementation()
+
+    from ib_discussions.storages.storage_implementation import \
+        StorageImplementation
+    storage = StorageImplementation()
+
+    from ib_discussions.interactors.discussion_interactor import \
+        DiscussionInteractor
+    interactor = DiscussionInteractor(storage=storage)
+
+    response = interactor.get_discussions_wrapper(
+        entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
+        offset_and_limit_dto=offset_and_limit_dto,
+        filter_by_dto=filter_by_dto, sort_by_dto=sort_by_dto,
+        presenter=presenter
+    )
+    return response
+
+
+def _prepare_sort_by_dto(request_data):
+    from ib_discussions.constants.enum import SortByEnum
+    from ib_discussions.constants.enum import OrderByEnum
+    from ib_discussions.interactors.DTOs.common_dtos import SortByDTO
+
+    sort_by = request_data["sort_by"]
+    order = OrderByEnum.ASC.value
+    if sort_by == SortByEnum.LATEST.value:
+        order = OrderByEnum.ASC.value
+    sort_by_dto = SortByDTO(
+        sort_by=sort_by,
+        order=order
+    )
+    return sort_by_dto
+
+
+def _prepare_filter_by_dto(kwargs, request_data):
+    from ib_discussions.constants.enum import FilterByEnum
+    from ib_discussions.interactors.DTOs.common_dtos import FilterByDTO
+
+    filter_by = request_data["filter_by"]
+    value = None
+    if filter_by == FilterByEnum.ALL.value:
+        value = FilterByEnum.ALL.value
+    if filter_by == FilterByEnum.POSTED_BY_ME.value:
+        user = kwargs["user"]
+        value = user.user_id
+    if filter_by == FilterByEnum.CLARIFIED.value:
+        value = True
+    if filter_by == FilterByEnum.NOT_CLARIFIED.value:
+        value = False
+    filter_by_dto = FilterByDTO(
+        filter_by=filter_by,
+        value=value
+    )
+    return filter_by_dto
+
+
+def _prepare_offset_and_limit_dto(query_params):
+    from ib_discussions.interactors.DTOs.common_dtos import \
+        OffsetAndLimitDTO
+
+    offset_and_limit_dto = OffsetAndLimitDTO(
+        offset=query_params["offset"],
+        limit=query_params["limit"]
+    )
+    return offset_and_limit_dto
+
+
+def _prepare_entity_id_and_entity_type_dto(request_data):
+    from ib_discussions.interactors.DTOs.common_dtos import \
+        EntityIdAndEntityTypeDTO
+
+    entity_id_and_entity_type_dto = EntityIdAndEntityTypeDTO(
+        entity_id=request_data["entity_id"],
+        entity_type=request_data["entity_type"]
+    )
+    return entity_id_and_entity_type_dto
