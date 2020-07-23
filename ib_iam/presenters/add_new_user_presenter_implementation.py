@@ -63,33 +63,33 @@ class AddUserPresenterImplementation(AddUserPresenterInterface, HTTPResponseMixi
             response_dict=response_dict)
 
     def raise_role_ids_are_invalid(self):
-        from ib_iam.constants.exception_messages import InvalidRoleIds
+        from ib_iam.constants.exception_messages import INVALID_ROLE_IDS
         response_dict = {
-            "response": InvalidRoleIds[0],
+            "response": INVALID_ROLE_IDS[0],
             "http_status_code": StatusCode.NOT_FOUND.value,
-            "res_status": InvalidRoleIds[1]
+            "res_status": INVALID_ROLE_IDS[1]
         }
         return self.prepare_404_not_found_response(
             response_dict=response_dict
         )
 
     def raise_company_ids_is_invalid(self):
-        from ib_iam.constants.exception_messages import InvalidCompanyId
+        from ib_iam.constants.exception_messages import INVALID_COMPANY_ID
         response_dict = {
-            "response": InvalidCompanyId[0],
+            "response": INVALID_COMPANY_ID[0],
             "http_status_code": StatusCode.NOT_FOUND.value,
-            "res_status": InvalidCompanyId[1]
+            "res_status": INVALID_COMPANY_ID[1]
         }
         return self.prepare_404_not_found_response(
             response_dict=response_dict
         )
 
     def raise_team_ids_are_invalid(self):
-        from ib_iam.constants.exception_messages import InvalidTeamIds
+        from ib_iam.constants.exception_messages import INVALID_TEAM_IDS
         response_dict = {
-            "response": InvalidTeamIds[0],
+            "response": INVALID_TEAM_IDS[0],
             "http_status_code": StatusCode.NOT_FOUND.value,
-            "res_status": InvalidTeamIds[1]
+            "res_status": INVALID_TEAM_IDS[1]
         }
         return self.prepare_404_not_found_response(
             response_dict=response_dict
