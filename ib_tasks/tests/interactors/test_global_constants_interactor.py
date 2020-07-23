@@ -2,7 +2,7 @@ import pytest
 import mock
 from ib_tasks.interactors.global_constants_interactor import \
     GlobalConstantsInteractor
-from ib_tasks.interactors.dtos import GlobalConstantsWithTemplateIdDTO
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsWithTemplateIdDTO
 from ib_tasks.tests.factories.interactor_dtos import GlobalConstantsDTOFactory
 
 
@@ -41,7 +41,7 @@ class TestGlobalConstantsInteractor:
         global_constants_interactor = GlobalConstantsInteractor(
             task_storage=task_storage_mock
         )
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
@@ -71,7 +71,7 @@ class TestGlobalConstantsInteractor:
         global_constants_interactor = GlobalConstantsInteractor(
             task_storage=task_storage_mock
         )
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
@@ -102,7 +102,7 @@ class TestGlobalConstantsInteractor:
         global_constants_interactor = GlobalConstantsInteractor(
             task_storage=task_storage_mock
         )
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
@@ -132,8 +132,7 @@ class TestGlobalConstantsInteractor:
         global_constants_interactor = GlobalConstantsInteractor(
             task_storage=task_storage_mock
         )
-        from ib_tasks.exceptions.custom_exceptions import \
-            DuplicateConstantNames
+        from ib_tasks.exceptions.constants_custom_exceptions import DuplicateConstantNames
 
         # Assert
         with pytest.raises(DuplicateConstantNames) as err:
@@ -162,8 +161,7 @@ class TestGlobalConstantsInteractor:
         global_constants_interactor = GlobalConstantsInteractor(
             task_storage=task_storage_mock
         )
-        from ib_tasks.exceptions.custom_exceptions import \
-            TemplateDoesNotExists
+        from ib_tasks.exceptions.task_custom_exceptions import TemplateDoesNotExists
 
         # Assert
         with pytest.raises(TemplateDoesNotExists) as err:
@@ -228,8 +226,7 @@ class TestGlobalConstantsInteractor:
         global_constants_interactor = GlobalConstantsInteractor(
             task_storage=task_storage_mock
         )
-        from ib_tasks.exceptions.custom_exceptions import \
-            ExistingGlobalConstantNamesNotInGivenData
+        from ib_tasks.exceptions.constants_custom_exceptions import ExistingGlobalConstantNamesNotInGivenData
 
         # Assert
         with pytest.raises(ExistingGlobalConstantNamesNotInGivenData) as err:

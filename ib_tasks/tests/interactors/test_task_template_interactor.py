@@ -1,8 +1,8 @@
 import pytest
 import mock
-from ib_tasks.interactors.task_template_interactor \
-    import TaskTemplateInteractor
-from ib_tasks.interactors.dtos import CreateTaskTemplateDTO
+from ib_tasks.interactors.create_task_template_interactor \
+    import CreateTaskTemplateInteractor
+from ib_tasks.interactors.task_template_dtos import CreateTaskTemplateDTO
 
 
 class TestTaskTemplateInteractor:
@@ -21,25 +21,25 @@ class TestTaskTemplateInteractor:
 
         from ib_tasks.constants.exception_messages import \
             INVALID_VALUE_FOR_TEMPLATE_NAME
-        expected_err_msg = INVALID_VALUE_FOR_TEMPLATE_NAME
+        expected_message = INVALID_VALUE_FOR_TEMPLATE_NAME
 
-        from ib_tasks.interactors.task_template_interactor \
-            import TaskTemplateInteractor
-        task_template_interactor = TaskTemplateInteractor(
+        from ib_tasks.interactors.create_task_template_interactor \
+            import CreateTaskTemplateInteractor
+        task_template_interactor = CreateTaskTemplateInteractor(
             task_storage=task_storage_mock
         )
 
         create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name
         )
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
             task_template_interactor.create_task_template_wrapper(
                 create_task_template_dto=create_task_template_dto
             )
-        assert err.value.args[0] == expected_err_msg
+        assert err.value.args[0] == expected_message
 
     def test_with_invalid_template_id_raises_exception(
             self, task_storage_mock):
@@ -49,24 +49,24 @@ class TestTaskTemplateInteractor:
 
         from ib_tasks.constants.exception_messages import \
             INVALID_VALUE_FOR_TEMPLATE_ID
-        expected_err_msg = INVALID_VALUE_FOR_TEMPLATE_ID
+        expected_message = INVALID_VALUE_FOR_TEMPLATE_ID
 
-        from ib_tasks.interactors.task_template_interactor \
-            import TaskTemplateInteractor
-        task_template_interactor = TaskTemplateInteractor(
+        from ib_tasks.interactors.create_task_template_interactor \
+            import CreateTaskTemplateInteractor
+        task_template_interactor = CreateTaskTemplateInteractor(
             task_storage=task_storage_mock
         )
         create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name
         )
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
             task_template_interactor.create_task_template_wrapper(
                 create_task_template_dto=create_task_template_dto
             )
-        assert err.value.args[0] == expected_err_msg
+        assert err.value.args[0] == expected_message
 
     def test_create_task_template_with_valid_data(self, task_storage_mock):
         # Arrange
@@ -75,7 +75,7 @@ class TestTaskTemplateInteractor:
         create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name
         )
-        task_template_interactor = TaskTemplateInteractor(
+        task_template_interactor = CreateTaskTemplateInteractor(
             task_storage=task_storage_mock
         )
         task_storage_mock.check_is_template_exists.return_value = False
@@ -99,7 +99,7 @@ class TestTaskTemplateInteractor:
         create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name
         )
-        task_template_interactor = TaskTemplateInteractor(
+        task_template_interactor = CreateTaskTemplateInteractor(
             task_storage=task_storage_mock
         )
         task_storage_mock.check_is_template_exists.return_value = True

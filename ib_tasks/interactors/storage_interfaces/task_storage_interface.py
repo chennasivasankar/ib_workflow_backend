@@ -7,11 +7,13 @@ Author: Pavankumar Pamuru
 import abc
 from typing import List, Optional
 
-from ib_tasks.interactors.storage_interfaces.dtos import (
-    GoFRoleDTO, GoFDTO, FieldDTO, FieldRoleDTO, StageInformationDTO,
-    TaskStagesDTO, TaskStatusDTO
-)
-from ib_tasks.interactors.dtos import GlobalConstantsDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import TaskStatusDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
+    FieldRoleDTO, FieldTypeDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRoleDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, StageDTO
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
+from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 
 
 class TaskStorageInterface(abc.ABC):
@@ -21,7 +23,7 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_task_template_name(self, template_id: str) -> str:
+    def get_task_template_name_if_exists(self, template_id: str) -> str:
         pass
 
     @abc.abstractmethod
@@ -51,7 +53,7 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def update_gof_roles(self, gof_role_dtos: List[GoFRoleDTO]):
+    def delete_gof_roles(self, gof_ids: List[str]):
         pass
 
     @abc.abstractmethod
@@ -59,13 +61,12 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_valid_template_ids_in_given_template_ids(
-            self, template_ids: List[str]) -> List[str]:
+    def get_constant_names_of_existing_global_constants_of_template(
+            self, template_id: str):
         pass
 
     @abc.abstractmethod
-    def get_constant_names_of_existing_global_constants_of_template(
-            self, template_id: str):
+    def get_task_template_name(self, template_id: str):
         pass
 
     @abc.abstractmethod
@@ -79,11 +80,7 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def update_fields_roles(self, field_roles_dto: List[FieldRoleDTO]):
-        pass
-
-    @abc.abstractmethod
-    def create_fields_roles(self, field_roles_dto: List[FieldRoleDTO]):
+    def create_fields_roles(self, field_role_dtos: List[FieldRoleDTO]):
         pass
 
     @abc.abstractmethod
@@ -96,7 +93,7 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def create_stages_with_given_information(self,
-                                             stage_information: StageInformationDTO):
+                                             stage_information: StageDTO):
         pass
 
     @abc.abstractmethod
@@ -105,7 +102,7 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def update_stages_with_given_information(self,
-                                             update_stages_information: StageInformationDTO):
+                                             update_stages_information: StageDTO):
         pass
 
     @abc.abstractmethod
@@ -120,11 +117,56 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def update_task_template(self, template_id: str, template_name: str):
-        pass
-
-    @abc.abstractmethod
     def update_global_constants_to_template(
             self, template_id: str,
             global_constants_dtos: List[GlobalConstantsDTO]):
+        pass
+
+    @abc.abstractmethod
+    def get_gof_dtos_for_given_gof_ids(
+            self, gof_ids: List[str]
+    ) -> List[GoFDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_valid_template_ids_in_given_template_ids(
+            self, template_ids: List[str]
+    ) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def delete_field_roles(self, field_ids: List[str]):
+        pass
+
+    @abc.abstractmethod
+    def get_existing_gof_ids_of_template(
+            self, template_id: str) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_valid_gof_ids_in_given_gof_ids(
+            self, gof_ids: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def add_gofs_to_template(
+            self, template_id: str,
+            gof_dtos: List[GoFWithOrderAndAddAnotherDTO]):
+        pass
+
+    @abc.abstractmethod
+    def update_gofs_to_template(
+            self, template_id: str,
+            gof_dtos: List[GoFWithOrderAndAddAnotherDTO]):
+        pass
+
+    @abc.abstractmethod
+    def update_task_template(
+            self, template_id: str, template_name: str):
+        pass
+
+    @abc.abstractmethod
+    def get_field_types_for_given_field_ids(
+            self, field_ids: List[str]
+    ) -> List[FieldTypeDTO]:
         pass

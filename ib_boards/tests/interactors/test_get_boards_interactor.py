@@ -54,6 +54,14 @@ class TestGetBoardsInteractor:
             limit=-2
         )
 
+    @pytest.fixture
+    def get_boards_dto_with_offset_exceeds(self):
+        return GetBoardsDTO(
+            user_id=1,
+            offset=10,
+            limit=2
+        )
+
     def test_with_user_id_not_have_permission_for_boards_return_error_message(
             self, storage_mock, presenter_mock, get_boards_dto, mocker):
         # Arrange
@@ -69,7 +77,7 @@ class TestGetBoardsInteractor:
         presenter_mock.get_response_for_user_have_no_access_for_boards.\
             return_value = expected_response
 
-        from ib_boards.tests.common_fixtures.adapters.user_service import \
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
             adapter_mock_to_get_user_role
         adapter_mock = adapter_mock_to_get_user_role(
             mocker=mocker, user_role=user_role
@@ -167,6 +175,40 @@ class TestGetBoardsInteractor:
         presenter_mock.get_response_for_get_boards.assert_called_once_with(
             board_dtos=board_dtos, total_boards=total_boards
         )
+        assert actual_response == expected_response
+
+    def test_with_offset_exceeds_total_count_return_error_message(
+            self, storage_mock, presenter_mock,
+            get_boards_dto_with_offset_exceeds, mocker):
+        # Arrange
+        total_boards = 3
+        board_ids = ['BOARD_ID_1', 'BOARD_ID_2', 'BOARD_ID_3']
+        board_ids_need_to_send = ['BOARD_ID_2']
+        board_dtos = BoardDTOFactory.create_batch(3)
+        BoardDTOFactory.reset_sequence()
+
+        interactor = GetBoardsInteractor(
+            storage=storage_mock
+        )
+        expected_response = Mock()
+        storage_mock.get_board_ids.return_value = board_ids
+        presenter_mock.get_response_for_offset_exceeds_total_tasks.\
+            return_value = expected_response
+        from ib_boards.tests.common_fixtures.interactors import \
+            get_board_details_mock
+        interactor_mock = get_board_details_mock(mocker)
+        # Act
+        actual_response = interactor.get_boards_wrapper(
+            get_boards_dto=get_boards_dto_with_offset_exceeds,
+            presenter=presenter_mock
+        )
+
+        # Assert
+        storage_mock.get_board_ids.assert_called_once_with(
+            user_role=None
+        )
+        presenter_mock.get_response_for_offset_exceeds_total_tasks.\
+            assert_called_once_with()
         assert actual_response == expected_response
 
 

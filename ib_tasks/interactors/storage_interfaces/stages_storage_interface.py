@@ -1,11 +1,15 @@
 import abc
 from typing import Optional, List
 
-from ib_tasks.interactors.dtos import StageDTO
-from ib_tasks.interactors.storage_interfaces.dtos import (TaskStagesDTO)
+from ib_tasks.interactors.stages_dtos import StageDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO
 
 
 class StageStorageInterface(abc.ABC):
+    @abc.abstractmethod
+    def create_stages(self, stage_details: List[StageDTO]):
+        pass
+
     @abc.abstractmethod
     def update_stages(self, stage_details: List[StageDTO]):
         pass
@@ -15,14 +19,10 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def create_stages(self, stage_details: List[StageDTO]):
-        pass
-
-    @abc.abstractmethod
     def validate_stages_related_task_template_ids(self,
-        task_stages_dto: List[TaskStagesDTO]) -> Optional[List[str]]:
+        task_stages_dto: List[TaskStagesDTO]) -> Optional[List[TaskStagesDTO]]:
         pass
 
     @abc.abstractmethod
-    def get_valid_status_ids(self, status_ids: List[str]) -> Optional[List[str]]:
+    def create_initial_stage_to_task_template(self, task_template_stage_dtos):
         pass

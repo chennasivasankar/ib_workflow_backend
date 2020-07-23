@@ -4,7 +4,8 @@ Author: Pavankumar Pamuru
 
 """
 from ib_boards.exceptions.custom_exceptions import InvalidOffsetValue, \
-    InvalidLimitValue, UserDoNotHaveAccessToBoards
+    InvalidLimitValue, UserDoNotHaveAccessToBoards, \
+    OffsetValueExceedsTotalTasksCount
 from ib_boards.interactors.dtos import GetBoardsDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     GetBoardsPresenterInterface
@@ -30,6 +31,8 @@ class GetBoardsInteractor:
             return presenter.get_response_for_invalid_offset()
         except InvalidLimitValue:
             return presenter.get_response_for_invalid_limit()
+        except OffsetValueExceedsTotalTasksCount:
+            return presenter.get_response_for_offset_exceeds_total_tasks()
         return presenter.get_response_for_get_boards(
             board_dtos=board_dtos,
             total_boards=total_boards
@@ -45,12 +48,14 @@ class GetBoardsInteractor:
         limit = get_boards_dto.limit
         if offset < 0:
             raise InvalidOffsetValue
-        if limit < 1:
+        if limit < 0:
             raise InvalidLimitValue
         board_ids = self.storage.get_board_ids(
             user_role=user_role,
         )
         total_boards = len(board_ids)
+        if offset >= total_boards:
+            raise OffsetValueExceedsTotalTasksCount
         board_ids = board_ids[offset:offset+limit]
         from ib_boards.interactors.get_board_details_interactor \
             import GetBoardsDetailsInteractor

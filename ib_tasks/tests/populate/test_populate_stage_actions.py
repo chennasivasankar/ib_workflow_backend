@@ -31,8 +31,7 @@ class TestCasePopulateStageActions:
         ]
         from ib_tasks.populate.populate_stage_actions \
             import populate_stage_actions
-        from ib_tasks.exceptions.custom_exceptions \
-            import InvalidFormatException
+        from ib_tasks.exceptions.stage_custom_exceptions import InvalidFormatException
 
         # Act
         with pytest.raises(InvalidFormatException) as err:
@@ -58,8 +57,7 @@ class TestCasePopulateStageActions:
         import pytest
         from ib_tasks.populate.populate_stage_actions \
             import populate_stage_actions
-        from ib_tasks.exceptions.custom_exceptions \
-            import InvalidPythonCodeException
+        from ib_tasks.exceptions.stage_custom_exceptions import InvalidPythonCodeException
 
         # Act
         with pytest.raises(InvalidPythonCodeException):
@@ -79,7 +77,7 @@ class TestCasePopulateStageActions:
                 "button_color": "button_color_1"
             }
         ]
-        from ib_tasks.interactors.dtos import StageActionDTO
+        from ib_tasks.interactors.stages_dtos import StageActionDTO
         expected_action_dto = [StageActionDTO(
             stage_id="stage_1",
             action_name="action_name_1",

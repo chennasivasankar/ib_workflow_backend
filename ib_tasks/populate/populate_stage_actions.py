@@ -2,14 +2,22 @@ from typing import Dict, Any, List
 
 
 def populate_stage_actions(action_dicts: List[Dict]):
-    actions_dto = []
+    actions_dtos = []
     validation_for_action_dict(action_dicts)
     writing_data_to_task_actions_logic(action_dicts)
     actions_dict = _remove_white_spaces_and_apply_replaces_to_roles(
         action_dicts)
     for action_dict in actions_dict:
-        actions_dto.append(append_action_dict(action_dict))
-    return actions_dto
+        actions_dtos.append(append_action_dict(action_dict))
+    from ib_tasks.interactors.create_update_delete_stage_actions import \
+        CreateUpdateDeleteStageActionsInteractor
+    from ib_tasks.storages.action_storage_implementation import \
+        ActionsStorageImplementation
+    interactor = CreateUpdateDeleteStageActionsInteractor(
+        storage=ActionsStorageImplementation(),
+        actions_dto=actions_dtos
+    )
+    interactor.create_update_delete_stage_actions()
 
 
 def _remove_white_spaces_and_apply_replaces_to_roles(
@@ -34,15 +42,16 @@ def _define_single_method(file, action_dict: Dict[str, str]):
     stage_id = action_dict["stage_id"]
     action_name = action_dict["action_name"]
     action_logic = action_dict['action_logic']
-    file.write(f"\n\ndef {stage_id}_{action_name}(task_dict):\n")
+    function_name = f'{stage_id}_{action_name}'
+    function_name = function_name.replace(' ', '_').replace('-', '_').replace('\n', '')
+    file.write(f"\n\ndef {function_name}(task_dict):\n")
     file.write(action_logic + "\n")
     file.write("\t" + "return task_dict\n")
 
 
 def _validate_action_logic(action_logic: str):
     from astroid import parse, AstroidSyntaxError
-    from ib_tasks.exceptions.custom_exceptions \
-        import InvalidPythonCodeException
+    from ib_tasks.exceptions.stage_custom_exceptions import InvalidPythonCodeException
     try:
         parse(action_logic)
     except AstroidSyntaxError:
@@ -50,10 +59,12 @@ def _validate_action_logic(action_logic: str):
 
 
 def append_action_dict(action_dict: Dict[str, Any]):
-    from ib_tasks.interactors.dtos import StageActionDTO
-
+    from ib_tasks.interactors.stages_dtos import StageActionDTO
+    stage_id = action_dict["stage_id"]
+    action_name = action_dict["action_name"]
     function_path = 'ib_tasks.populate.stage_actions_logic.'
-    function_name = action_dict['stage_id'] + "_" + action_dict['action_name']
+    function_name = f'{stage_id}_{action_name}'
+    function_name = function_name.replace(' ', '_').replace('-', '_').replace('\n', '')
     function_path = function_path + function_name
     return StageActionDTO(
         stage_id=action_dict['stage_id'],
@@ -97,6 +108,5 @@ def raise_exception_for_valid_format():
     }
     import json
     json_valid_format = json.dumps(valid_format)
-    from ib_tasks.exceptions.custom_exceptions \
-        import InvalidFormatException
+    from ib_tasks.exceptions.stage_custom_exceptions import InvalidFormatException
     raise InvalidFormatException(valid_format=json_valid_format)

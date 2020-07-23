@@ -3,6 +3,7 @@ class PopulateTaskTemplates:
     def populate_task_templates(self):
         from ib_tasks.utils.get_google_sheet import get_google_sheet
         sheet = get_google_sheet()
+
         task_templates_dicts = \
             sheet.worksheet("Task Templates").get_all_records()
 
@@ -19,11 +20,11 @@ class PopulateTaskTemplates:
             TasksStorageImplementation
         task_storage = TasksStorageImplementation()
 
-        from ib_tasks.interactors.task_template_interactor import \
-            TaskTemplateInteractor
-        interactor = TaskTemplateInteractor(task_storage=task_storage)
+        from ib_tasks.interactors.create_task_template_interactor import \
+            CreateTaskTemplateInteractor
+        interactor = CreateTaskTemplateInteractor(task_storage=task_storage)
 
-        from ib_tasks.interactors.dtos import CreateTaskTemplateDTO
+        from ib_tasks.interactors.task_template_dtos import CreateTaskTemplateDTO
         create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name
         )

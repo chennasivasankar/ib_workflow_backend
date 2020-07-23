@@ -1,12 +1,12 @@
 from typing import List
 
-from ib_tasks.interactors.dtos import StageLogicAttributes, StageDTO
+from ib_tasks.interactors.stages_dtos import StageLogicAttributes, StageDTO
 from ib_tasks.interactors.stage_display_logic import StageDisplayLogicInteractor
 
-from ib_tasks.exceptions.custom_exceptions import (
-    InvalidStagesTaskTemplateId, InvalidStageValues, DuplicateStageIds,
-    InvalidTaskTemplateIds, InvalidStageDisplayLogic, InvalidStagesDisplayName)
-from ib_tasks.interactors.storage_interfaces.dtos import TaskStagesDTO
+from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageValues, DuplicateStageIds, InvalidStageDisplayLogic, \
+    InvalidStagesDisplayName
+from ib_tasks.exceptions.task_custom_exceptions import InvalidStagesTaskTemplateId, InvalidTaskTemplateIds
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
@@ -22,7 +22,6 @@ class CreateOrUpdateStagesInterface:
     def create_or_update_stages(
             self,
             stages_details: List[StageDTO]):
-
         stage_ids = self._get_stage_ids(stages_details)
         self.check_for_duplicate_stage_ids(stage_ids)
         self._validate_stage_display_name(stages_details)
@@ -43,17 +42,13 @@ class CreateOrUpdateStagesInterface:
                                  ):
         update_stages_details = []
         create_stages_details = []
-        if existing_stage_ids:
-            task_stages_dto = self._get_task_stages_dto(stages_details)
-            self._validate_stages_related_task_template_ids(task_stages_dto)
-
-            for stage_information in stages_details:
+        for stage_information in stages_details:
+            if stage_information.stage_id not in existing_stage_ids:
+                create_stages_details.append(stage_information)
+            else:
                 update_stages_details.append(stage_information)
-
-        else:
-            for stage_information in stages_details:
-                if stage_information.stage_id not in existing_stage_ids:
-                    create_stages_details.append(stage_information)
+        task_stages_dto = self._get_task_stages_dto(update_stages_details)
+        self._validate_stages_related_task_template_ids(task_stages_dto)
 
         if update_stages_details:
             self.stage_storage.update_stages(
@@ -88,16 +83,16 @@ class CreateOrUpdateStagesInterface:
         list_of_status_ids = [attribute.status_id
                              for attribute in list_of_logic_attributes]
 
-        valid_status_ids = self.stage_storage.get_valid_status_ids(
+        valid_status_ids = self.stage_storage.get_existing_stage_ids(
             list_of_status_ids)
 
         for attribute in list_of_logic_attributes:
             if attribute.status_id not in valid_status_ids:
 
                 invalid_stage_display_logic_stages.append(attribute.stage_id)
-
-        if invalid_stage_display_logic_stages:
-            raise InvalidStageDisplayLogic(invalid_stage_display_logic_stages)
+        # TODO need to validate that is remove comments
+        # if invalid_stage_display_logic_stages:
+        #     raise InvalidStageDisplayLogic(invalid_stage_display_logic_stages)
         return
 
     @staticmethod
@@ -172,7 +167,7 @@ class CreateOrUpdateStagesInterface:
     def _validate_values_for_stages(stages_details: List[StageDTO]):
         invalid_value_stages = []
         for stage in stages_details:
-            if stage.value < -1:
+            if stage.value < 0:
                 invalid_value_stages.append(stage.stage_id)
 
         if invalid_value_stages:

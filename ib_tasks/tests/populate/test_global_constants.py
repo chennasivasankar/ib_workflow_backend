@@ -1,7 +1,8 @@
 import pytest
 from ib_tasks.tests.factories.interactor_dtos import \
     GlobalConstantsDTOFactory
-from ib_tasks.interactors.dtos import GlobalConstantsWithTemplateIdDTO
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsWithTemplateIdDTO
+
 
 class TestGlobalConstants:
 
@@ -39,8 +40,7 @@ class TestGlobalConstants:
                 template_id=template_id,
                 global_constants_dtos=global_constants_dtos
             )
-        from ib_tasks.exceptions.custom_exceptions import \
-            TemplateDoesNotExists
+        from ib_tasks.exceptions.task_custom_exceptions import TemplateDoesNotExists
 
         #Asssert
         with pytest.raises(TemplateDoesNotExists) as err:
@@ -49,7 +49,7 @@ class TestGlobalConstants:
                     global_constants_with_template_id_dto=global_constants_with_template_id_dto
                 )
 
-        snapshot.assert_match(err.value.args[0], 'err_msg')
+        snapshot.assert_match(err.value.args[0], 'message')
 
     @pytest.mark.django_db
     def test_when_given_template_id_is_empty_raises_exception(
@@ -61,8 +61,7 @@ class TestGlobalConstants:
                 template_id=" ",
                 global_constants_dtos=global_constants_dtos
             )
-        from ib_tasks.exceptions.custom_exceptions import \
-            InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
@@ -71,7 +70,7 @@ class TestGlobalConstants:
                 global_constants_with_template_id_dto=global_constants_with_template_id_dto
             )
 
-        snapshot.assert_match(err.value.args[0], 'err_msg')
+        snapshot.assert_match(err.value.args[0], 'message')
 
     @pytest.mark.django_db
     def test_when_given_constant_name_is_empty_raises_exception(
@@ -86,8 +85,7 @@ class TestGlobalConstants:
                 template_id=template_id,
                 global_constants_dtos=global_constants_dtos
             )
-        from ib_tasks.exceptions.custom_exceptions import \
-            InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
@@ -96,7 +94,7 @@ class TestGlobalConstants:
                 global_constants_with_template_id_dto=global_constants_with_template_id_dto
             )
 
-        snapshot.assert_match(err.value.args[0], 'err_msg')
+        snapshot.assert_match(err.value.args[0], 'message')
 
     @pytest.mark.django_db
     def test_when_given_invalid_value_for_value_field_raises_exception(
@@ -111,8 +109,7 @@ class TestGlobalConstants:
                 template_id=template_id,
                 global_constants_dtos=global_constants_dtos
             )
-        from ib_tasks.exceptions.custom_exceptions import \
-            InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
@@ -120,7 +117,7 @@ class TestGlobalConstants:
                 create_global_constants_to_template_wrapper(
                 global_constants_with_template_id_dto=global_constants_with_template_id_dto
             )
-        snapshot.assert_match(err.value.args[0], 'err_msg')
+        snapshot.assert_match(err.value.args[0], 'message')
 
     @pytest.mark.django_db
     def test_when_given_duplicate_constant_names_raises_exception(
@@ -135,8 +132,7 @@ class TestGlobalConstants:
                 template_id=template_id,
                 global_constants_dtos=global_constants_dtos
             )
-        from ib_tasks.exceptions.custom_exceptions import \
-            DuplicateConstantNames
+        from ib_tasks.exceptions.constants_custom_exceptions import DuplicateConstantNames
 
         # Assert
         with pytest.raises(DuplicateConstantNames) as err:
@@ -144,13 +140,14 @@ class TestGlobalConstants:
                 create_global_constants_to_template_wrapper(
                 global_constants_with_template_id_dto=global_constants_with_template_id_dto
             )
-        snapshot.assert_match(err.value.args[0], 'err_msg')
+        snapshot.assert_match(err.value.args[0], 'message')
 
     @pytest.mark.django_db
     def test_with_valid_data(self, global_constants_interactor, snapshot):
         # Arrange
-        template_id = "template_1"
+        template_id = "TEMPLATE_ID-0"
         from ib_tasks.tests.factories.models import TaskTemplateFactory
+        TaskTemplateFactory(template_id=template_id)
         TaskTemplateFactory.create_batch(size=2)
         global_constants_dtos = GlobalConstantsDTOFactory.create_batch(
             size=2
@@ -190,8 +187,9 @@ class TestGlobalConstants:
     def test_with_existing_constants_not_in_given_data_raises_exception_after_creating_given_data(
             self, global_constants_interactor, snapshot):
         # Arrange
-        template_id = "template_1"
+        template_id = "TEMPLATE_ID-0"
         from ib_tasks.tests.factories.models import TaskTemplateFactory
+        TaskTemplateFactory(template_id=template_id)
         TaskTemplateFactory.create_batch(size=2)
 
         from ib_tasks.tests.factories.models import GlobalConstantFactory
@@ -204,8 +202,7 @@ class TestGlobalConstants:
                 template_id=template_id,
                 global_constants_dtos=global_constants_dtos
             )
-        from ib_tasks.exceptions.custom_exceptions import \
-            ExistingGlobalConstantNamesNotInGivenData
+        from ib_tasks.exceptions.constants_custom_exceptions import ExistingGlobalConstantNamesNotInGivenData
 
         # Assert
         with pytest.raises(ExistingGlobalConstantNamesNotInGivenData) as err:
@@ -214,7 +211,7 @@ class TestGlobalConstants:
                 global_constants_with_template_id_dto=global_constants_with_template_id_dto
             )
 
-        snapshot.assert_match(err.value.args[0], 'err_msg')
+        snapshot.assert_match(err.value.args[0], 'message')
 
         from ib_tasks.models.global_constant import GlobalConstant
         global_constants = GlobalConstant.objects.all()
@@ -237,8 +234,9 @@ class TestGlobalConstants:
     def test_with_existing_constant_but_different_configuration_updates_constant(
             self, global_constants_interactor, snapshot):
         # Arrange
-        template_id = "template_1"
+        template_id = "TEMPLATE_ID-0"
         from ib_tasks.tests.factories.models import TaskTemplateFactory
+        TaskTemplateFactory(template_id=template_id)
         TaskTemplateFactory.create_batch(size=2)
 
         from ib_tasks.tests.factories.models import GlobalConstantFactory

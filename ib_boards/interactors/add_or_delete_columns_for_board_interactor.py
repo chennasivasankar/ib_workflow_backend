@@ -5,8 +5,9 @@ Author: Pavankumar Pamuru
 """
 from typing import List
 
-from ib_boards.interactors.dtos import ColumnDTO, BoardColumnDTO, \
-    TaskSummaryFieldsDTO, TaskTemplateStagesDTO
+from ib_boards.exceptions.custom_exceptions import \
+    ColumnIdsAssignedToDifferentBoard
+from ib_boards.interactors.dtos import ColumnDTO, BoardColumnsDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
@@ -38,16 +39,16 @@ class AddOrDeleteColumnsForBoardInteractor:
         column_dtos_dict = {}
         for column_dto in column_dtos:
             column_dtos_dict[column_dto.column_id] = column_dto
-        self._update_columns_for_board(
-            present_column_ids=present_column_ids,
-            column_dtos_dict=column_dtos_dict
+        self._delete_columns_which_are_not_in_configuration(
+            board_column_map=board_column_map
         )
         self._create_columns_for_board(
             present_column_ids=present_column_ids,
             column_dtos_dict=column_dtos_dict
         )
-        self._delete_columns_which_are_not_in_configuration(
-            board_column_map=board_column_map
+        self._update_columns_for_board(
+            present_column_ids=present_column_ids,
+            column_dtos_dict=column_dtos_dict
         )
 
     def _create_columns_for_board(
@@ -63,10 +64,11 @@ class AddOrDeleteColumnsForBoardInteractor:
 
     def _update_columns_for_board(
             self, present_column_ids, column_dtos_dict):
-        column_dto_for_update = [
-            column_dtos_dict[column_id]
-            for column_id in present_column_ids
-        ]
+        column_dto_for_update = []
+        for column_dto in present_column_ids:
+            for column_id in column_dto.column_ids:
+                column_dto_for_update.append(column_dtos_dict[column_id])
+
         self.storage.update_columns_for_board(
             column_dtos=column_dto_for_update
         )
@@ -74,7 +76,7 @@ class AddOrDeleteColumnsForBoardInteractor:
     def _delete_columns_which_are_not_in_configuration(self, board_column_map):
 
         column_for_delete_dtos = [
-            BoardColumnDTO(
+            BoardColumnsDTO(
                 board_id=key,
                 column_ids=value
             )
@@ -101,22 +103,41 @@ class AddOrDeleteColumnsForBoardInteractor:
     def _check_for_column_ids_are_assigned_to_single_board(
             self, column_dtos: List[ColumnDTO]):
         from collections import defaultdict
-
-        from ib_boards.exceptions.custom_exceptions import \
-            ColumnIdsAssignedToDifferentBoard
         board_column_map = defaultdict(lambda: [])
 
         for column_dto in column_dtos:
             board_column_map[column_dto.board_id].append(
                 column_dto.column_id
             )
-        for key, value in board_column_map.items():
-            board_ids = self.storage.get_board_ids_for_column_ids(
-                column_ids=value
-            )
-            is_having_multiple_boards = (
-                    len(board_ids) == 1 and key not in board_ids
-                    or len(board_ids) > 1
-            )
-            if is_having_multiple_boards:
-                raise ColumnIdsAssignedToDifferentBoard(column_ids=value)
+        column_ids = [column_dto.column_id for column_dto in column_dtos]
+        board_column_dtos = self.storage.get_board_ids_for_column_ids(
+            column_ids=column_ids
+        )
+    #     self._check_for_column_ids_are_having_single_board_id(
+    #         board_column_dtos=board_column_dtos,
+    #         board_column_map=board_column_map
+    #     )
+    #
+    # @staticmethod
+    # def _check_for_column_ids_are_having_single_board_id(
+    #         board_column_dtos: List[BoardColumnDTO], board_column_map):
+    #     for board_column_dto in board_column_dtos:
+    #         column_board_map[board_column_dto.column_id]
+    #
+    #
+    #     is_having_multiple_boards = (
+    #             len(board_ids) == 1 and key not in board_ids
+    #             or len(board_ids) > 1
+    #     )
+    #     if is_having_multiple_boards:
+    #         raise ColumnIdsAssignedToDifferentBoard(column_ids=value)
+
+        column_ids = [column_dto.column_id for column_dto in column_dtos]
+        board_column_dtos = self.storage.get_board_ids_for_column_ids(
+            column_ids=column_ids
+        )
+        for board_column_dto in board_column_dtos:
+            board_id = board_column_dto.board_id
+            column_id = board_column_dto.column_id
+            if column_id not in board_column_map[board_id]:
+                raise ColumnIdsAssignedToDifferentBoard(column_ids=column_id)

@@ -1,8 +1,12 @@
-from ib_tasks.constants.enum import PermissionTypes, FieldTypes
+from ib_tasks.constants.enum \
+    import PermissionTypes, FieldTypes, Searchable
 
 all_roles_id = "ALL_ROLES"
 
 FIELD_TYPES_LIST = [item.value for item in FieldTypes]
+
+SEARCHABLE_VALUES = [item.value for item in Searchable]
+
 
 Permission_Types = [
     (item.value, item.value)
@@ -14,8 +18,31 @@ Field_Types = [
     for item in FieldTypes
 ]
 
-FIELDS_CSV_FILE_PATH = "/home/ib-developer/Desktop/aws/ib-workflows-backend/ib_tasks/populate/fields.csv"
+VALID_FIELD_TYPES = [
+    field_type.value
+    for field_type in FieldTypes
+]
 
-GOFS_CSV_FILE_PATH = "/home/ib-developer/Desktop/aws/ib-workflows-backend/ib_tasks/populate/gofs.csv"
+MULTI_VALUES_INPUT_FIELDS = [
+    FieldTypes.DROPDOWN.value,
+    FieldTypes.RADIO_GROUP.value,
+    FieldTypes.CHECKBOX_GROUP.value,
+    FieldTypes.MULTI_SELECT_FIELD.value,
+    FieldTypes.MULTI_SELECT_LABELS.value
+]
 
-TASK_TEMPLATES_CSV_FILE_PATH = "/home/ib-developer/Desktop/aws/ib-workflows-backend/ib_tasks/populate/task_templates.csv"
+GOOGLE_SHEET_NAME = "FinMan Configuration_Dev_Test"
+TASK_TEMPLATE_SUB_SHEET_TITLE = "Task Templates"
+GOF_SUB_SHEET_TITLE = "GOF"
+FIELD_SUB_SHEET_TITLE = "Fields"
+
+
+UPLOADERS = [
+    FieldTypes.IMAGE_UPLOADER.value,
+    FieldTypes.FILE_UPLOADER.value
+]
+
+STAGES_AND_ACTIONS_SUB_SHEET = "PR - Stages and Actions "
+TASK_CREATION_CONFIG_SUB_SHEET = "PR-Task Creation Config"
+STAGE_ID_AND_VALUES_SUB_SHEET = "PR - StageID and Values"
+STATUS_VARIABLES_SUB_SHEET = "PR - Status Variables"

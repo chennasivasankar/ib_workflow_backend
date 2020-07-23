@@ -12,7 +12,7 @@ class TestTasksStorageImplementation:
 
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
-        TaskTemplateFactory.reset_sequence()
+        TaskTemplateFactory.reset_sequence(1)
 
     @pytest.mark.django_db
     def test_check_is_template_exists_with_invalid_template_id_returns_false(
@@ -31,8 +31,8 @@ class TestTasksStorageImplementation:
     def test_check_is_template_exists_with_valid_template_id_returns_true(
             self, storage):
         #Arrange
-        template_id = "template_1"
-        TaskTemplateFactory.create_batch(size=1)
+        task_template = TaskTemplateFactory()
+        template_id = task_template.template_id
 
         #Act
         is_template_exists = \
@@ -44,9 +44,9 @@ class TestTasksStorageImplementation:
     @pytest.mark.django_db
     def test_get_task_template_name(self, storage):
         #Arrange
-        template_id = "FIN_VENDOR"
-        expected_template_name = "Template 1"
-        TaskTemplateFactory(template_id=template_id)
+        task_template = TaskTemplateFactory()
+        template_id = task_template.template_id
+        expected_template_name = task_template.name
 
         #Act
         template_name = \
@@ -78,7 +78,7 @@ class TestTasksStorageImplementation:
         #Arrange
         template_id = "FIN_VENDOR"
         template_name = "iB Template"
-        TaskTemplateFactory(template_id=template_id)
+        TaskTemplateFactory(template_id=template_id, name=template_name)
 
         #Act
         storage.update_task_template(
