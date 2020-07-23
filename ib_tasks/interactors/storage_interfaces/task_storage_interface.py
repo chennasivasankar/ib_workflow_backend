@@ -144,7 +144,7 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_gof_ids_permitted_for_user(self, roles: List[str]) -> List[str]:
+    def get_gof_ids_with_read_permission_for_user(self, roles: List[str]) -> List[str]:
         pass
 
     @abc.abstractmethod

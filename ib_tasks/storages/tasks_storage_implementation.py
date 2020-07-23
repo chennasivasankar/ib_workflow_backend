@@ -344,7 +344,7 @@ class TasksStorageImplementation(TaskStorageInterface):
             self, gof_ids: List[str]) -> List[FieldDTO]:
         pass
 
-    def get_gof_ids_permitted_for_user(self, roles: List[str]) -> List[str]:
+    def get_gof_ids_with_read_permission_for_user(self, roles: List[str]) -> List[str]:
         pass
 
     def delete_field_roles(self, field_ids: List[str]):
