@@ -19,7 +19,8 @@ class GetUsersDetailsInteractor(ValidationMixin):
         try:
             complete_user_details_dtos = self.get_users_details(
                 user_id=user_id, offset=offset, limit=limit)
-            response = presenter.response_for_get_users(complete_user_details_dtos)
+            response = presenter.response_for_get_users(
+                complete_user_details_dtos)
         except UserIsNotAdmin:
             response = presenter.raise_user_is_not_admin_exception()
         except InvalidOffsetValue:
@@ -35,7 +36,8 @@ class GetUsersDetailsInteractor(ValidationMixin):
                           limit: int) -> CompleteUsersDetailsDTO:
         self._check_and_throw_user_is_admin(user_id=user_id)
         self._constants_validations(offset=offset, limit=limit)
-        user_dtos = self.storage.get_users_who_are_not_admins(offset=offset, limit=limit)
+        user_dtos = self.storage.get_users_who_are_not_admins(offset=offset,
+                                                              limit=limit)
         user_ids = [user_dto.user_id for user_dto in user_dtos]
         company_ids = [user_dto.company_id for user_dto in user_dtos]
 
