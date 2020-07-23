@@ -345,7 +345,7 @@ class StorageImplementation(StorageInterface):
 
 
     def get_permitted_user_roles_for_board(self, board_id: str) -> List[str]:
-        pass
+        return "ALL ROLES"
 
     def get_board_complete_details(self, board_id: str, stage_ids: List[str]) -> \
             TaskBoardsDetailsDTO:

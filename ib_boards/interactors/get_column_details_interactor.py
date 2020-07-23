@@ -53,7 +53,7 @@ class GetColumnDetailsInteractor:
             field_id="field_id_1"
         )]
         task_interactor = GetTaskDetailsInteractor()
-        task_actions_dto, task_fields_dto, task_details = task_interactor. \
+        task_fields_dto,task_actions_dto, task_details = task_interactor. \
             get_task_details(tasks_dtos=tasks_dtos, user_id=user_id,
                              fields_dto=fields_dto)
 
@@ -81,6 +81,8 @@ class GetColumnDetailsInteractor:
                                                              user_roles: str):
         board_permitted_user_roles = self.storage. \
             get_permitted_user_roles_for_board(board_id=board_id)
+        if "ALL ROLES" in board_permitted_user_roles:
+            return
         has_permission = False
         for board_permitted_user_role in board_permitted_user_roles:
             if board_permitted_user_role in user_roles:

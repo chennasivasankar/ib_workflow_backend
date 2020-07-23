@@ -42,4 +42,4 @@ class TestCase01GetColumnsDetailsAPITestCase(CustomTestUtils):
 
         self.assert_match_snapshot(
             name="response",
-            value=response)
+            value=response.content)

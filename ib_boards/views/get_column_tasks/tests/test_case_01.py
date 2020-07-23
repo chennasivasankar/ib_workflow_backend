@@ -41,4 +41,4 @@ class TestCase01GetColumnTasksAPITestCase(CustomTestUtils):
         response = self.default_test_case()
         self.assert_match_snapshot(
             name="response",
-            value=response)
+            value=response.content)
