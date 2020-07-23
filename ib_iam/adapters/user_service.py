@@ -80,7 +80,7 @@ class UserService:
             if err.error_type == EMPTY_USER_ID_ERROR_TYPE:
                 raise InvalidUserId
             elif err.error_type == INVALID_USER_ID_ERROR_TYPE:
-                raise UserAccountDoesNotExist
+                raise UserAccountDoesNotExist()
         else:
             user_profile_dto = self._convert_to_user_profile_dto(
                 user_profile_dto=user_profile_dto
