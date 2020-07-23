@@ -18,7 +18,7 @@ def api_wrapper(*args, **kwargs):
     print("&*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
     print(1)
     user_obj = kwargs["user"]
-    user_id = str(user_obj.id)
+    user_id = str(user_obj.user_id)
     request_data = kwargs["request_data"]
     team_id = kwargs["team_id"]
     name = request_data["name"]

@@ -32,4 +32,4 @@ class TestCase03GetListOfTeamsAPITestCase(TestUtils):
     def setup(self, api_user):
         user_obj = api_user
         UserDetailsFactory.reset_sequence(1)
-        UserDetailsFactory.create(user_id=user_obj.id, is_admin=True)
+        UserDetailsFactory.create(user_id=user_obj.user_id, is_admin=True)

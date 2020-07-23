@@ -144,49 +144,6 @@
         "http_status_code"
       ]
     },
-    "BadRequestResponseForGetListOfTeams": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/CommonHttpExceptionFields"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "res_status": {
-              "type": "string",
-              "enum": [
-                "INVALID_LIMIT",
-                "INVALID_OFFSET"
-              ]
-            }
-          },
-          "required": [
-            "res_status"
-          ]
-        }
-      ]
-    },
-    "UnauthorizedResponseForGetListOfTeams": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/CommonHttpExceptionFields"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "res_status": {
-              "type": "string",
-              "enum": [
-                "USER_HAS_NO_ACCESS"
-              ]
-            }
-          },
-          "required": [
-            "res_status"
-          ]
-        }
-      ]
-    },
     "UnauthorizedResponseForAddTeam": {
       "allOf": [
         {
@@ -413,16 +370,53 @@
     }
   },
   "responses": {
-    "BadRequestResponseForGetListOfTeams": {
+    "BadRequestForGetListOfTeamsResponse": {
       "description": "given limit or offset is not valid",
       "schema": {
-        "$ref": "#/definitions/BadRequestResponseForGetListOfTeams"
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_LIMIT",
+                  "INVALID_OFFSET"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
       }
     },
     "UnauthorizedResponseForGetListOfTeams": {
       "description": "user has no access to see teams",
       "schema": {
-        "$ref": "#/definitions/UnauthorizedResponseForGetListOfTeams"
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_HAS_NO_ACCESS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
       }
     },
     "SuccessResponseForGetListOfTeams": {
@@ -512,7 +506,7 @@
             "$ref": "#/responses/SuccessResponseForGetListOfTeams"
           },
           "400": {
-            "$ref": "#/responses/BadRequestResponseForGetListOfTeams"
+            "$ref": "#/responses/BadRequestForGetListOfTeamsResponse"
           },
           "401": {
             "$ref": "#/responses/UnauthorizedResponseForGetListOfTeams"
@@ -578,7 +572,7 @@
             "description": "Team details updated Successfully"
           },
           "400": {
-              "$ref": "#/responses/BadRequestResponseForUpdateTeam"
+            "$ref": "#/responses/BadRequestResponseForUpdateTeam"
           },
           "401": {
             "$ref": "#/responses/UnauthorizedResponseForUpdateTeam"

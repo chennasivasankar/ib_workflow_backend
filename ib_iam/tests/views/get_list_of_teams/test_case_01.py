@@ -53,7 +53,7 @@ class TestCase01GetListOfTeamsAPITestCase(TestUtils):
         UserDetailsFactory.reset_sequence(1)
         TeamFactory.reset_sequence(1)
         TeamMemberFactory.reset_sequence(1)
-        UserDetailsFactory.create(user_id=user_obj.id, is_admin=True)
+        UserDetailsFactory.create(user_id=user_obj.user_id, is_admin=True)
         teams = [
             {
                 "team_id": "f2c02d98-f311-4ab2-8673-3daa00757002",

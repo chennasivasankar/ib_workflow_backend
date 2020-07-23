@@ -16,7 +16,7 @@ class TestCase03UpdateTeamDetailsAPITestCase(TestUtils):
 
     @pytest.fixture
     def setup(self, api_user):
-        user_id = str(api_user.id)
+        user_id = str(api_user.user_id)
         UserDetailsFactory.reset_sequence(1)
         UserDetailsFactory(user_id=user_id, is_admin=True)
 
