@@ -17,3 +17,10 @@ class GoFFieldsDTO:
 class TaskDTO:
     task_template_id: str
     gof_fields_dtos: List[GoFFieldsDTO]
+
+
+@dataclass
+class TaskStatusVariableDTO:
+    status_id: int
+    variable: str
+    value: str

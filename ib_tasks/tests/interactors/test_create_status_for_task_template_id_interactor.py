@@ -5,21 +5,21 @@ import pytest
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateIds, DuplicateTaskStatusVariableIds
 from ib_tasks.interactors.create_task_status_interactor import \
     CreateTaskStatusInteractor
-from ib_tasks.interactors.storage_interfaces.status_dtos import TaskStatusDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.tests.factories.storage_dtos import TaskStatusDTOFactory
+from ib_tasks.tests.factories.storage_dtos import TaskTemplateStatusDTOFactory
 
 
 class TestCreateStatusInteractor:
     @pytest.fixture
     def task_status_dtos(self):
-        TaskStatusDTOFactory.reset_sequence(1)
-        return TaskStatusDTOFactory.create_batch(size=2)
+        TaskTemplateStatusDTOFactory.reset_sequence(1)
+        return TaskTemplateStatusDTOFactory.create_batch(size=2)
 
     @pytest.fixture
     def duplicate_status_dtos(self):
-        task_status_dto = TaskStatusDTOFactory.create_batch(
+        task_status_dto = TaskTemplateStatusDTOFactory.create_batch(
             task_template_id="task_template_id_1", status_variable_id="status_variable_id_1", size=2)
         return task_status_dto
 
@@ -43,10 +43,10 @@ class TestCreateStatusInteractor:
     def test_create_status_for_task_given_valid_details(
             self, task_status_dtos):
         # Arrange
-        task_status_details_dtos = [TaskStatusDTO(
+        task_status_details_dtos = [TaskTemplateStatusDTO(
             task_template_id="FIN_PR",
             status_variable_id="Status 1"),
-TaskStatusDTO(
+TaskTemplateStatusDTO(
             task_template_id="FIN_PR",
             status_variable_id="Status 2"
         )
@@ -68,17 +68,17 @@ TaskStatusDTO(
             self, duplicate_status_dtos):
         # Arrange
         task_status_details = [
-            TaskStatusDTO(
+            TaskTemplateStatusDTO(
                 task_template_id="FIN_PR",
                 status_variable_id="Status 1"
-            ), TaskStatusDTO(
+            ), TaskTemplateStatusDTO(
                 task_template_id="FIN_PR",
                 status_variable_id="Status 1"
             ),
-            TaskStatusDTO(
+            TaskTemplateStatusDTO(
                 task_template_id="BACKEND",
                 status_variable_id="Status 2"
-            ), TaskStatusDTO(
+            ), TaskTemplateStatusDTO(
                 task_template_id="BACKEND",
                 status_variable_id="Status 2"
             )
