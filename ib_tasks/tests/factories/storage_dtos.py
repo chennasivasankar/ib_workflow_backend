@@ -3,16 +3,19 @@ import factory
 from ib_tasks.constants.constants import VALID_FIELD_TYPES
 from ib_tasks.interactors.stages_dtos import StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import TaskStatusDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO, TaskStagesDTO, ValidStageDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    StageActionNamesDTO, TaskStagesDTO, ValidStageDTO
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
-    FieldRolesDTO, FieldRoleDTO, FieldTypeDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO
+    FieldRolesDTO, FieldRoleDTO, FieldDetailsDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
+    GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (TaskStagesDTO)
 from ib_tasks.interactors.storage_interfaces.status_dtos import (
     TaskStatusDTO)
 from ib_tasks.constants.enum import FieldTypes, PermissionTypes
 from ib_tasks.models import StageAction
+
 
 class StageDTOFactory(factory.Factory):
     class Meta:
@@ -33,6 +36,7 @@ class TaskStagesDTOFactory(factory.Factory):
 
     stage_id = factory.Sequence(lambda n: 'stage_id_%d' % n)
     task_template_id = factory.Sequence(lambda n: 'task_template_id_%d' % n)
+
 
 class StageActionsDTOFactory(factory.Factory):
     class Meta:
@@ -74,7 +78,8 @@ class StageDTOFactory(factory.Factory):
     value = factory.Sequence(lambda n: n)
     id = None
     stage_display_name = factory.Sequence(lambda n: 'name_%d' % n)
-    stage_display_logic = factory.Sequence(lambda n: 'status_id_%d==stage_id' % n)
+    stage_display_logic = factory.Sequence(
+        lambda n: 'status_id_%d==stage_id' % n)
 
     class Params:
         id_value = factory.Trait(id=factory.Sequence(lambda n: n))
@@ -133,7 +138,6 @@ class GoFRoleDTOFactory(factory.Factory):
     permission_type = PermissionTypes.READ.value
 
 
-
 class FieldDTOFactory(factory.Factory):
     class Meta:
         model = FieldDTO
@@ -170,17 +174,13 @@ class FieldRoleDTOFactory(factory.Factory):
     permission_type = PermissionTypes.READ.value
 
 
-class TaskStatusDTOFactory(factory.Factory):
+class FieldDetailsDTOFactory(factory.Factory):
     class Meta:
-        model = TaskStatusDTO
-
-    task_template_id = factory.Sequence(lambda n: 'task_template_id_%d' % n)
-    status_variable_id = factory.Sequence(
-        lambda n: 'status_variable_id_%d' % n)
-
-class FieldTypeDTOFactory(factory.Factory):
-    class Meta:
-        model = FieldTypeDTO
+        model = FieldDetailsDTO
 
     field_id = factory.Sequence(lambda counter: "FIELD_ID-{}".format(counter))
     field_type = factory.Iterator(VALID_FIELD_TYPES)
+    required = True
+    field_values = []
+    allowed_formats = []
+    validation_regex = None

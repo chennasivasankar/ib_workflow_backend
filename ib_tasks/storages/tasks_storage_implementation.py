@@ -4,7 +4,7 @@ from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import TaskStatusDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
-    FieldRoleDTO, FieldTypeDTO
+    FieldRoleDTO, FieldDetailsDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRoleDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, StageDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
@@ -18,8 +18,8 @@ from ib_tasks.models.field_role import FieldRole
 class TasksStorageImplementation(TaskStorageInterface):
 
 
-    def get_field_types_for_given_field_ids(self, field_ids: List[str]) -> \
-            List[FieldTypeDTO]:
+    def get_field_details_for_given_field_ids(self, field_ids: List[str]) -> \
+            List[FieldDetailsDTO]:
         field_type_dicts = list(
             Field.objects.filter(field_id__in=field_ids).\
                           values('field_id', 'field_type')
@@ -30,7 +30,7 @@ class TasksStorageImplementation(TaskStorageInterface):
     @staticmethod
     def _prepare_field_type_dtos(field_type_dicts: List[Dict]):
         field_type_dtos = [
-            FieldTypeDTO(
+            FieldDetailsDTO(
                 field_id=field_type_dict['field_id'],
                 field_type=field_type_dict['field_type']
             )

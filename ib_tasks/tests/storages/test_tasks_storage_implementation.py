@@ -11,7 +11,7 @@ from ib_tasks.tests.factories.storage_dtos import (GoFRoleDTOFactory,
                                                    GoFDTOFactory,
                                                    GoFRolesDTOFactory,
                                                    CompleteGoFDetailsDTOFactory,
-                                                   FieldTypeDTOFactory)
+                                                   FieldDetailsDTOFactory)
 from ib_tasks.tests.factories.storage_dtos \
     import GoFRoleDTOFactory, FieldDTOFactory
 from ib_tasks.constants.enum import FieldTypes
@@ -37,7 +37,7 @@ class TestTasksStorageImplementation:
         GoFRolesDTOFactory.reset_sequence(1)
         CompleteGoFDetailsDTOFactory.reset_sequence(1)
         GoFRoleDTOFactory.reset_sequence(1)
-        FieldTypeDTOFactory.reset_sequence(1)
+        FieldDetailsDTOFactory.reset_sequence(1)
 
     def test_get_existing_gof_ids_in_given_gof_ids(
             self, storage
@@ -334,13 +334,13 @@ class TestTasksStorageImplementation:
         field_types = [
             field_object.field_type for field_object in field_objects
         ]
-        expected_field_type_dtos = FieldTypeDTOFactory.create_batch(
+        expected_field_type_dtos = FieldDetailsDTOFactory.create_batch(
             size=2, field_id=factory.Iterator(field_ids),
             field_type=factory.Iterator(field_types)
         )
 
         # Act
-        actual_field_type_dtos = storage.get_field_types_for_given_field_ids(
+        actual_field_type_dtos = storage.get_field_details_for_given_field_ids(
             field_ids=field_ids
         )
 

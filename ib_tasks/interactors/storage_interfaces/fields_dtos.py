@@ -42,6 +42,10 @@ class FieldRoleDTO:
     permission_type: PermissionTypes
 
 @dataclass
-class FieldTypeDTO:
+class FieldDetailsDTO:
     field_id: str
     field_type: FieldTypes
+    required: bool
+    field_values: Optional[List[str]]
+    allowed_formats: Optional[List[str]]
+    validation_regex: Optional[str]

@@ -1,10 +1,13 @@
 import abc
 
-
+from ib_tasks.exceptions.field_values_custom_exceptions import \
+    InvalidPhoneNumberValue, EmptyValueForPlainTextField, \
+    InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
+    InvalidNumberValue, InvalidFloatValue, InvalidValueForDropdownField, \
+    InvalidGoFIDsInGoFSelectorField
 from ib_tasks.exceptions.fields_custom_exceptions import \
     DuplicationOfFieldIdsExist, InvalidFieldIds
-from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
-    EmptyValueForPlainTextField
+from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateIds
 
 
@@ -37,7 +40,43 @@ class CreateOrUpdateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def raise_exception_for_gof_ids_in_gof_selector_field_value(
+            self, err: InvalidGoFIDsInGoFSelectorField
+    ):
+        pass
+
+    @abc.abstractmethod
     def raise_exception_for_empty_value_in_plain_text_field(
             self, err: EmptyValueForPlainTextField
+    ):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_phone_number_value(self, err: InvalidPhoneNumberValue):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_email_address(self, err: InvalidEmailFieldValue):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_url_address(self, err: InvalidURLValue):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_weak_password(self, err: NotAStrongPassword):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_number_value(self, err: InvalidNumberValue):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_float_value(self, err: InvalidFloatValue):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_dropdown_value(
+            self, err: InvalidValueForDropdownField
     ):
         pass
