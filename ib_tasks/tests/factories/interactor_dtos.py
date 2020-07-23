@@ -1,11 +1,13 @@
 import factory
-from ib_tasks.interactors.dtos import GlobalConstantsDTO, \
-    GoFsWithTemplateIdDTO, GoFWithOrderAndAddAnotherDTO
-from ib_tasks.interactors.dtos import GlobalConstantsDTO, StagesActionDTO
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
+from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 
-from ib_tasks.interactors.dtos import (
-    StageActionDTO, TaskTemplateStageActionDTO, StagesActionDTO
+from ib_tasks.interactors.stages_dtos import (
+    StagesActionDTO
 )
+from ib_tasks.interactors.stages_dtos import \
+    TaskTemplateStageActionDTO, StageActionDTO, StagesActionDTO
 
 
 class StageActionDTOFactory(factory.Factory):
@@ -66,7 +68,7 @@ class ActionDTOFactory(factory.Factory):
     action_name = factory.Sequence(lambda n: "name_%d" % n)
     function_path = "path"
     logic = factory.Sequence(lambda n: 'status_id_%d==stage_id' % n)
-    roles = ['ALL_ROLES']
+    roles = ['Role_1', 'Role_2']
     button_text = "text"
     button_color = None
 
