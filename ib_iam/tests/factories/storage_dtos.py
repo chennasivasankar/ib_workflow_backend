@@ -110,15 +110,19 @@ class TeamsWithTotalTeamsCountDTOFactory(factory.Factory):
     ])
     total_teams_count = 2
 
+class CompanyNameLogoAndDescriptionDTOFactory(factory.Factory):
+    class Meta:
+        model = CompanyNameLogoAndDescriptionDTO
+
+    name = factory.sequence(lambda n: "company1")
+    description = factory.sequence(lambda n: "company_description%d" % n)
+    logo_url = factory.sequence(lambda n: "logo_url%d" % n)
 
 class CompanyDTOFactory(factory.Factory):
     class Meta:
         model = CompanyDTO
 
     company_id = factory.Faker("uuid4")
-    name = factory.sequence(lambda n: "company1")
-    description = factory.sequence(lambda n: "company_description%d" % n)
-    logo_url = factory.sequence(lambda n: "logo_url%d" % n)
 
 
 class CompanyWithEmployeesCountDTOFactory(factory.Factory):

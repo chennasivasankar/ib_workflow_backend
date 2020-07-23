@@ -51,11 +51,15 @@ class MemberDTO:
 
 
 @dataclass
-class CompanyDTO:
-    company_id: str
+class CompanyNameLogoAndDescriptionDTO:
     name: str
     description: str
     logo_url: str
+
+
+@dataclass
+class CompanyDTO(CompanyNameLogoAndDescriptionDTO):
+    company_id: str
 
 
 @dataclass
