@@ -530,6 +530,41 @@
       "required": true,
       "description": "Id of the Board",
       "type": "string"
+    },
+    "SearchableTypeParameter": {
+      "name": "search_type",
+      "description": "Searchable Type Parameter",
+      "in": "query",
+      "required": true,
+      "type": "string",
+      "enum": [
+        "CITY",
+        "STATE",
+        "COUNTRY",
+        "VENDOR",
+        "USER",
+        "COMPANY",
+        "TEAM"
+      ]
+    },
+    "LimitParameter": {
+      "name": "limit",
+      "description": "Limit Parameter",
+      "in": "query",
+      "type": "integer"
+    },
+    "OffsetParameter": {
+      "name": "offset",
+      "description": "Offset Parameter",
+      "in": "query",
+      "type": "integer"
+    },
+    "SearchableQueryParameter": {
+      "name": "search_query",
+      "description": "Searchable Query Parameter",
+      "in": "query",
+      "required": true,
+      "type": "string"
     }
   },
   "responses": {
@@ -629,6 +664,55 @@
             ]
           }
         }
+      }
+    },
+    "SearchableValuesResponse": {
+      "description": "OK",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      }
+    },
+    "SearchableValuesFailureResponse": {
+      "description": "Searchable Values Failure Response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer",
+            "enum": [
+              400
+            ]
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "SEARCHABLE_TYPE_DOES_NOT_EXIST",
+              "LIMIT_VALUE_SHOULD_BE_GREATER_THAN_ZERO",
+              "OFFSET_VALUE_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE",
+              "NO_SEARCH_RESULTS_FOUND"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
       }
     }
   },
@@ -754,6 +838,42 @@
           },
           "404": {
             "$ref": "#/responses/GetTaskFailureResponse"
+          }
+        }
+      }
+    },
+    "/field_search/v1/": {
+      "get": {
+        "operationId": "get_searchable_values",
+        "summary": "get searchable values based on search type",
+        "description": "get searchable values based on search type given a query",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/SearchableTypeParameter"
+          },
+          {
+            "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/SearchableQueryParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/SearchableValuesResponse"
+          },
+          "400": {
+            "$ref": "#/responses/SearchableValuesFailureResponse"
           }
         }
       }
