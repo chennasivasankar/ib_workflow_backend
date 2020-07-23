@@ -1,9 +1,15 @@
 import abc
 from dataclasses import dataclass
 from typing import List
-from ib_tasks.interactors.storage_interfaces.dtos import \
-    TaskTemplateDTO, ActionsOfTemplateDTO, GoFToTaskTemplateDTO, GoFDTO, \
-    UserFieldPermissionDTO, FieldDTO
+
+from ib_tasks.interactors.storage_interfaces.actions_dtos import \
+    ActionsOfTemplateDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
+    UserFieldPermissionDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
+    GoFToTaskTemplateDTO
+from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
+    TaskTemplateDTO
 
 
 @dataclass

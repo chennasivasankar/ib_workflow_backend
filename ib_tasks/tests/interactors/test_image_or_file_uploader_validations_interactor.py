@@ -12,7 +12,7 @@ class TestImageOrFileUploaderValidationsInteractor:
     @pytest.mark.parametrize("field_type", [FieldTypes.IMAGE_UPLOADER.value, FieldTypes.FILE_UPLOADER.value])
     def test_given_empty_values_for_allowed_format_raise_exception(self, field_type):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions \
+        from ib_tasks.exceptions.fields_custom_exceptions \
             import AllowedFormatsEmptyValueException
         from ib_tasks.constants.exception_messages \
             import ALLOWED_FORMAT_EMPTY_VALUES_EXCEPTION
@@ -31,7 +31,7 @@ class TestImageOrFileUploaderValidationsInteractor:
 
     def test_given_duplication_of_allowed_formats_for_field_type_image_uploder_raise_exception(self):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions \
+        from ib_tasks.exceptions.fields_custom_exceptions \
             import FieldsDuplicationOfAllowedFormatsValues
         from ib_tasks.constants.exception_messages \
             import FIELD_DUPLICATION_OF_ALLOWED_FORMATS
@@ -59,7 +59,7 @@ class TestImageOrFileUploaderValidationsInteractor:
 
     def test_given_duplication_of_allowed_formats_for_field_type_file_uploader_raise_exception(self):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions \
+        from ib_tasks.exceptions.fields_custom_exceptions \
             import FieldsDuplicationOfAllowedFormatsValues
         from ib_tasks.constants.exception_messages \
             import FIELD_DUPLICATION_OF_ALLOWED_FORMATS
@@ -88,8 +88,7 @@ class TestImageOrFileUploaderValidationsInteractor:
     @pytest.mark.parametrize("field_type", [FieldTypes.IMAGE_UPLOADER.value, FieldTypes.FILE_UPLOADER.value])
     def test_given_empty_values_for_allowed_formats_raise_exception(self, field_type):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions \
-            import EmptyValuesForAllowedFormats
+        from ib_tasks.exceptions.fields_custom_exceptions import EmptyValuesForAllowedFormats
         from ib_tasks.constants.exception_messages \
             import EMPTY_VALUES_FOR_ALLOWED_FORMATS
 

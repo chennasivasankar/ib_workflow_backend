@@ -1,15 +1,22 @@
 import factory
 
-from ib_tasks.interactors.dtos import StageDTO
-from ib_tasks.interactors.storage_interfaces.dtos import (
-    CompleteGoFDetailsDTO, GoFDTO, GoFRolesDTO,
-    FieldDTO, FieldRolesDTO, FieldRoleDTO, GoFRoleDTO, TaskTemplateDTO,
-    UserFieldPermissionDTO, ActionsOfTemplateDTO,
-    GoFToTaskTemplateDTO, TaskStagesDTO,
-    TaskStatusDTO, ValidStageDTO, StageActionNamesDTO
-)
-
+from ib_tasks.constants.constants import VALID_FIELD_TYPES
+from ib_tasks.interactors.stages_dtos import StageDTO
+from ib_tasks.interactors.storage_interfaces.actions_dtos import \
+    ActionsOfTemplateDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import TaskStatusDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO, TaskStagesDTO, ValidStageDTO
+from ib_tasks.constants.enum import PermissionTypes
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
+    FieldRolesDTO, FieldRoleDTO, FieldTypeDTO, UserFieldPermissionDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
+    GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO, GoFToTaskTemplateDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import (TaskStagesDTO)
+from ib_tasks.interactors.storage_interfaces.status_dtos import (
+    TaskStatusDTO)
 from ib_tasks.constants.enum import FieldTypes, PermissionTypes
+from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
+    TaskTemplateDTO
 from ib_tasks.models import StageAction
 
 
@@ -100,7 +107,7 @@ class GoFDTOFactory(factory.Factory):
     class Meta:
         model = GoFDTO
 
-    gof_id = factory.Sequence(lambda counter: "GOF_ID-{}".format(counter))
+    gof_id = factory.Sequence(lambda counter: "gof_{}".format(counter))
     gof_display_name = factory.Sequence(
         lambda counter: "GOF_DISPLAY_NAME-{}".format(counter)
     )
@@ -111,7 +118,7 @@ class GoFRolesDTOFactory(factory.Factory):
     class Meta:
         model = GoFRolesDTO
 
-    gof_id = factory.Sequence(lambda counter: "GOF_ID-{}".format(counter))
+    gof_id = factory.Sequence(lambda counter: "gof_{}".format(counter))
     read_permission_roles = ['ALL_ROLES']
     write_permission_roles = ['ALL_ROLES']
 
@@ -128,7 +135,7 @@ class GoFRoleDTOFactory(factory.Factory):
     class Meta:
         model = GoFRoleDTO
 
-    gof_id = factory.Sequence(lambda counter: "GOF_ID-{}".format(counter))
+    gof_id = factory.Sequence(lambda counter: "gof_{}".format(counter))
     role = factory.Sequence(lambda counter: "ROLE-{}".format(counter))
     permission_type = PermissionTypes.READ.value
 
@@ -176,6 +183,13 @@ class TaskStatusDTOFactory(factory.Factory):
     task_template_id = factory.Sequence(lambda n: 'task_template_id_%d' % n)
     status_variable_id = factory.Sequence(
         lambda n: 'status_variable_id_%d' % n)
+
+class FieldTypeDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldTypeDTO
+
+    field_id = factory.Sequence(lambda counter: "FIELD_ID-{}".format(counter))
+    field_type = factory.Iterator(VALID_FIELD_TYPES)
 
 
 class TaskTemplateDTOFactory(factory.Factory):

@@ -1,6 +1,5 @@
 from typing import List
-from ib_tasks.interactors.dtos import GoFWithOrderAndAddAnotherDTO, \
-    GoFsWithTemplateIdDTO
+from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO
 from ib_tasks.utils.get_google_sheet import get_google_sheet
 
 
@@ -34,7 +33,7 @@ class PopulateGoFsToTaskTemplate:
     def _get_gofs_with_template_id_dto(
             self, template_id: str, gofs_list: List[str]):
 
-        from ib_tasks.interactors.dtos import GoFsWithTemplateIdDTO
+
         gof_with_order_and_add_another_dtos = \
             self._get_gof_with_order_and_add_another_dtos(
                 gofs_list=gofs_list

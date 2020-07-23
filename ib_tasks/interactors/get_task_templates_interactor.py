@@ -1,8 +1,12 @@
 from typing import List
+
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import \
+    GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
-from ib_tasks.interactors.storage_interfaces.dtos import TaskTemplateDTO, \
-    GoFToTaskTemplateDTO, FieldDTO
+from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
+    TaskTemplateDTO
 from ib_tasks.interactors.presenter_interfaces.\
     get_task_templates_presenter_interface import \
     GetTaskTemplatesPresenterInterface, CompleteTaskTemplatesDTO

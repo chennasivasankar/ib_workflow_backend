@@ -1,7 +1,6 @@
 from typing import List
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateIds, DuplicateTaskStatusVariableIds
-from ib_tasks.interactors.storage_interfaces.dtos import (
-    TaskStatusDTO)
+from ib_tasks.interactors.storage_interfaces.status_dtos import TaskStatusDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 

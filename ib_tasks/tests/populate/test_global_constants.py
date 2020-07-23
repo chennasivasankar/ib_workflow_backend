@@ -1,7 +1,8 @@
 import pytest
 from ib_tasks.tests.factories.interactor_dtos import \
     GlobalConstantsDTOFactory
-from ib_tasks.interactors.dtos import GlobalConstantsWithTemplateIdDTO
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsWithTemplateIdDTO
+
 
 class TestGlobalConstants:
 
@@ -144,7 +145,7 @@ class TestGlobalConstants:
     @pytest.mark.django_db
     def test_with_valid_data(self, global_constants_interactor, snapshot):
         # Arrange
-        template_id = "template_1"
+        template_id = "TEMPLATE_ID-0"
         from ib_tasks.tests.factories.models import TaskTemplateFactory
         TaskTemplateFactory(template_id=template_id)
         TaskTemplateFactory.create_batch(size=2)
@@ -186,7 +187,7 @@ class TestGlobalConstants:
     def test_with_existing_constants_not_in_given_data_raises_exception_after_creating_given_data(
             self, global_constants_interactor, snapshot):
         # Arrange
-        template_id = "template_1"
+        template_id = "TEMPLATE_ID-0"
         from ib_tasks.tests.factories.models import TaskTemplateFactory
         TaskTemplateFactory(template_id=template_id)
         TaskTemplateFactory.create_batch(size=2)
@@ -233,7 +234,7 @@ class TestGlobalConstants:
     def test_with_existing_constant_but_different_configuration_updates_constant(
             self, global_constants_interactor, snapshot):
         # Arrange
-        template_id = "template_1"
+        template_id = "TEMPLATE_ID-0"
         from ib_tasks.tests.factories.models import TaskTemplateFactory
         TaskTemplateFactory(template_id=template_id)
         TaskTemplateFactory.create_batch(size=2)

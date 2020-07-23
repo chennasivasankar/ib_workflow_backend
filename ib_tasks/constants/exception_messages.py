@@ -8,6 +8,11 @@ EMPTY_FIELD_IDS_MESSAGE = "GoF field ids should not be empty"
 DUPLICATED_FIELD_IDS_MESSAGE = "GoF field ids should be unique"
 MULTIPLE_DISPLAY_NAMES_FOR_SAME_GOF = \
     "One GoF should not have multiple display names"
+GOF_ID_ALREADY_EXISTS = "GoF id already exists"
+MAX_COLUMNS_VALUE_MUST_NOT_BE_STRING_MESSAGE = \
+    "Max columns should not be a string"
+MAX_COLUMNS_VALUE_MUST_BE_POSITIVE_INTEGER_MESSAGE = \
+    "Max columns value must be greater than zero"
 gof_id_already_exists = "GoF id already exists"
 DUPLICATE_GOF_IDS = "Given duplicate gof ids {}"
 TEMPLATE_DOES_NOT_EXISTS = "The template with template id: {}, does not exists"
@@ -28,11 +33,8 @@ INVALID_VALUE_FOR_VALUE = \
     "Invalid value for value!, value should not be negative!, but given value is: {}"
 INVALID_VALUE_FOR_TEMPLATE_NAME = \
     "Invalid value for template name!, template name should not be empty"
-GOF_ID_ALREADY_EXISTS = "GoF id already exists"
 MAX_COLUMNS_VALUE_MUST_BE_INTEGER = \
     "Max columns should be a integer value"
-MAX_COLUMNS_VALUE_MUST_BE_POSITIVE_INTEGER_MESSAGE = \
-    "Max columns value must be greater than zero"
 INVALID_READ_PERMISSION_ROLES = "Invalid Read Permission roles:"
 INVALID_WRITE_PERMISSION_ROLES = "Invalid Write Permission roles:"
 
@@ -60,3 +62,29 @@ ALLOWED_FORMAT_EMPTY_VALUES_EXCEPTION = "Allowed formats for these field id shou
 FIELD_DUPLICATION_OF_ALLOWED_FORMATS = "Duplication of values for allowed formats = {}"
 EMPTY_VALUES_FOR_ALLOWED_FORMATS = "Allowed formats shouldn't contain empty values for this filed_id = {}"
 INVALID_VALUE_FOR_SEARCHABLE = "Searchable value should be one of these  {} for this field_id {}"
+
+DUPLICATE_FIELD_IDS = [
+    "duplicate field ids: {}",
+    "DUPLICATE_FIELD_IDS"
+]
+
+INVALID_TASK_TEMPLATE_IDS = [
+    "duplicate task template ids: {}",
+    "INVALID_TASK_TEMPLATE_IDS"
+]
+
+INVALID_GOF_IDS = [
+    "invalid gof ids: {}",
+    "INVALID_GOF_IDS"
+]
+
+INVALID_FIELD_IDS = [
+    "invalid field ids: {}",
+    "INVALID_FIELD_IDS"
+]
+
+EMPTY_VALUE_FOR_PLAIN_TEXT_FIELD = [
+    "got empty value in plain text field for field id: {}",
+    "EMPTY_VALUE_FOR_PLAIN_TEXT_FIELD"
+]
+
