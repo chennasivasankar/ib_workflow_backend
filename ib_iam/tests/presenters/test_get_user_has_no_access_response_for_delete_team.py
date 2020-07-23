@@ -7,7 +7,7 @@ from ib_iam.constants.exception_messages import (
 
 
 class TestRaiseExceptionForUserHasNoAccessForDeleteTeam:
-    def test_when_it_is_called_it_returns_http_response(self):
+    def test_whether_it_returns_user_has_no_access_http_response(self):
         json_presenter = DeleteTeamPresenterImplementation()
         import json
         expected_response = USER_HAS_NO_ACCESS_FOR_DELETE_TEAM[0]

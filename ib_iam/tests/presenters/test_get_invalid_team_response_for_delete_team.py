@@ -5,7 +5,7 @@ from ib_iam.constants.exception_messages import INVALID_TEAM_FOR_DELETE_TEAM
 
 
 class TestRaiseExceptionForInvalidTeamId:
-    def test_whether_it_returns_error_object(self, snapshot):
+    def test_whether_it_returns_invalid_team_http_response(self):
         json_presenter = DeleteTeamPresenterImplementation()
         import json
         expected_response = INVALID_TEAM_FOR_DELETE_TEAM[0]
