@@ -2,8 +2,8 @@ from ib_iam.presenters.team_presenter_implementation import TeamPresenterImpleme
 from ib_iam.constants.exception_messages import INVALID_USERS_FOR_ADD_TEAM
 
 
-class TestRaiseExceptionForInvalidMembers:
-    def test_when_it_is_called_it_returns_http_response(self):
+class TestRaiseExceptionForInvalidUsers:
+    def test_whether_it_returns_invalid_users_http_response(self):
         json_presenter = TeamPresenterImplementation()
         import json
         expected_response = INVALID_USERS_FOR_ADD_TEAM[0]
