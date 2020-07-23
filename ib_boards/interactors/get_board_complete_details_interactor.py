@@ -3,10 +3,11 @@ from typing import List
 from ib_boards.adapters.service_adapter import get_service_adapter
 from ib_boards.exceptions.custom_exceptions import InvalidBoardId,\
     UserDonotHaveAccess
+from ib_boards.interactors.storage_interfaces.storage_interface import StorageInterface
 
 
 class GetBoardDetailsInteractor:
-    def __init__(self, storage):
+    def __init__(self, storage: StorageInterface):
         self.storage = storage
 
     def get_board_details(self, board_id: str, stage_ids: List[str],
@@ -28,6 +29,8 @@ class GetBoardDetailsInteractor:
                                                              user_roles: str):
         board_permitted_user_roles = self.storage. \
             get_permitted_user_roles_for_board(board_id=board_id)
+        if "ALL ROLES" in board_permitted_user_roles:
+            return
         has_permission = False
         for board_permitted_user_role in board_permitted_user_roles:
             if board_permitted_user_role in user_roles:
@@ -37,3 +40,4 @@ class GetBoardDetailsInteractor:
         if not has_permission:
             raise UserDonotHaveAccess
         return
+
