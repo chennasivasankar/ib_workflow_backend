@@ -420,7 +420,7 @@
     },
     "/columns/{column_id}/tasks/v1/": {
       "get": {
-        "operationId": "get column tasks",
+        "operationId": "get_column_tasks",
         "summary": "Get Column Tasks",
         "description": "get column tasks details",
         "security": [
@@ -460,4 +460,3 @@
     }
   }
 }
-    

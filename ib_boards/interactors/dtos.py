@@ -83,7 +83,7 @@ class GetBoardsDTO:
 
 @dataclass
 class ColumnTasksParametersDTO:
-    user_id = 1
+    user_id: int
     column_id: str
     offset: int
     limit: int

@@ -53,7 +53,6 @@ class TestGetColumnDetails:
 
         # Assert
         import json
-        print(response)
         result = json.loads(response.content)
 
         snapshot.assert_match(result, "list_of_column_details")

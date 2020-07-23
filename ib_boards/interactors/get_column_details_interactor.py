@@ -46,7 +46,7 @@ class GetColumnDetailsInteractor:
         column_dtos = self._get_column_details_dto(board_id, user_id)
 
         tasks_dtos = [TaskDetailsDTO(task_id="task_id_1",
-                                     column_id="column_id_1",
+                                     column_id="COLUMN_ID_1",
                                      stage_id="stage_id_1")]
         fields_dto = [FieldsDTO(
             task_template_id="task_template_id_1",

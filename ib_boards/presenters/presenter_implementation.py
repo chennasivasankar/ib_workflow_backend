@@ -152,6 +152,9 @@ class GetColumnTasksPresenterImplementation(
             response_dict=response_dict
         )
 
+    def get_response_for_invalid_stage_ids(self, error):
+        pass
+
 
 class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
 
@@ -290,7 +293,6 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             for task_dto in task_details:
                 if task_dto.column_id == column_dto.column_id:
                     list_of_tasks.append(task_dto)
-            print(list_of_tasks)
             task_details_dict = self._convert_task_details_into_dict(
                 task_details=list_of_tasks, task_actions_dto=task_actions_dto,
                 task_fields_dto=task_fields_dto
@@ -309,5 +311,5 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         }
         return columns_dict
 
-    def get_response_for_invalid_stage_ids(self, error):
+    def get_response_for_offset_exceeds_total_tasks(self):
         pass
