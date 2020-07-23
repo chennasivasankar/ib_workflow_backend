@@ -1,7 +1,7 @@
 from abc import abstractmethod, ABC
 
 
-class PresenterInterface(ABC):
+class AddRolesPresenterInterface(ABC):
 
     @abstractmethod
     def raise_user_is_not_admin_exception(self):

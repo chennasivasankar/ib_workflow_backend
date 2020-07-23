@@ -1,11 +1,11 @@
 from typing import List
 
 from ib_iam.interactors.storage_interfaces.dtos import RoleDTO
-from ib_iam.interactors.storage_interfaces.storage_interface import \
-    StorageInterface
+from ib_iam.interactors.storage_interfaces.add_roles_storage_interface import \
+    AddRolesStorageInterface
 
 
-class StorageImplementation(StorageInterface):
+class AddRolesStorageImplementation(AddRolesStorageInterface):
 
     def check_is_admin_user(self, user_id: str) -> bool:
         from ib_iam.models.user import UserDetails
@@ -22,6 +22,6 @@ class StorageImplementation(StorageInterface):
 
     def get_valid_role_ids(self, role_ids: List[str]):
         from ib_iam.models import Role
-        valid_role_ids = Role.objects.filter(role_id__in=role_ids).\
+        valid_role_ids = Role.objects.filter(role_id__in=role_ids). \
             values_list("role_id", flat=True)
         return list(valid_role_ids)

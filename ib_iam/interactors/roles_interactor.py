@@ -3,20 +3,20 @@ from typing import List
 from ib_iam.exceptions.custom_exceptions import DuplicateRoleIds, \
     RoleIdFormatIsInvalid, \
     RoleNameIsEmpty, RoleDescriptionIsEmpty
-from ib_iam.interactors.presenter_interfaces.presenter_interface \
-    import PresenterInterface
+from ib_iam.interactors.presenter_interfaces.add_roles_presenter_interface \
+    import AddRolesPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import RoleDTO
-from ib_iam.interactors.storage_interfaces.storage_interface \
-    import StorageInterface
+from ib_iam.interactors.storage_interfaces.add_roles_storage_interface \
+    import AddRolesStorageInterface
 
 
 class RolesInteractor:
 
-    def __init__(self, storage: StorageInterface):
+    def __init__(self, storage: AddRolesStorageInterface):
         self.storage = storage
 
     def add_roles_wrapper(self, roles: List[dict],
-                          presenter: PresenterInterface):
+                          presenter: AddRolesPresenterInterface):
         response = None
         try:
             self.add_roles(roles=roles)

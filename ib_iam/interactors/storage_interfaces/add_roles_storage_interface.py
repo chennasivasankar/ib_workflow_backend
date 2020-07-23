@@ -1,12 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from ib_iam.interactors.storage_interfaces.dtos \
-    import UserTeamDTO, UserRoleDTO, UserCompanyDTO, UserDTO, CompanyDTO, \
-    TeamDTO, RoleIdAndNameDTO, RoleDTO
+from ib_iam.interactors.storage_interfaces.dtos import RoleDTO
 
 
-class StorageInterface(ABC):
+class AddRolesStorageInterface(ABC):
     @abstractmethod
     def check_is_admin_user(self, user_id: str) -> bool:
         pass

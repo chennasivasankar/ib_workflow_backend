@@ -1,13 +1,13 @@
 import json
 
 from ib_iam.constants.enums import StatusCode
-from ib_iam.presenters.presenter_implementation import PresenterImplementation
+from ib_iam.presenters.add_roles_presenter_implementation import AddRolesPresenterImplementation
 
 
 class TestAddListOfRolesPresenter:
     def test_raise_role_id_should_not_be_in_valid_format_exception(self):
         # Arrange
-        presenter = PresenterImplementation()
+        presenter = AddRolesPresenterImplementation()
 
         from ib_iam.constants.exception_messages \
             import ROLE_ID_SHOULD_NOT_BE_IN_VALID_FORMAT
@@ -26,7 +26,7 @@ class TestAddListOfRolesPresenter:
 
     def test_raise_role_id_duplicate_exception(self):
         # Arrange
-        presenter = PresenterImplementation()
+        presenter = AddRolesPresenterImplementation()
 
         from ib_iam.constants.exception_messages \
             import DUPLICATE_ROLE_IDS
@@ -45,7 +45,7 @@ class TestAddListOfRolesPresenter:
 
     def test_raise_role_name_should_not_be_empty_exception(self):
         # Arrange
-        presenter = PresenterImplementation()
+        presenter = AddRolesPresenterImplementation()
 
         from ib_iam.constants.exception_messages \
             import ROLE_NAME_SHOULD_NOT_BE_EMPTY
@@ -65,7 +65,7 @@ class TestAddListOfRolesPresenter:
 
     def test_raise_role_description_should_not_be_empty_exception(self):
         # Arrange
-        presenter = PresenterImplementation()
+        presenter = AddRolesPresenterImplementation()
 
         from ib_iam.constants.exception_messages \
             import ROLE_DESCRIPTION_SHOULD_NOT_BE_EMPTY

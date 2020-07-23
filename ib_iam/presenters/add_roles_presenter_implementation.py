@@ -1,11 +1,11 @@
 from django_swagger_utils.utils.http_response_mixin \
     import HTTPResponseMixin
 from ib_iam.constants.enums import StatusCode
-from ib_iam.interactors.presenter_interfaces.presenter_interface \
-    import PresenterInterface
+from ib_iam.interactors.presenter_interfaces.add_roles_presenter_interface \
+    import AddRolesPresenterInterface
 
 
-class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
+class AddRolesPresenterImplementation(AddRolesPresenterInterface, HTTPResponseMixin):
 
     def raise_role_name_should_not_be_empty_exception(self):
         from ib_iam.constants.exception_messages \
