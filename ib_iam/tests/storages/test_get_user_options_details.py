@@ -53,12 +53,12 @@ class TestGetUserOptionsDetailsStorage:
     def test_get_teams(self, teams):
         # Arrange
         storage = StorageImplementation()
-        from ib_iam.interactors.storage_interfaces.dtos import TeamDTO
+        from ib_iam.interactors.storage_interfaces.dtos import TeamIdAndNameDTO
         expected_ouput = [
-            TeamDTO(team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
-                    team_name='team 0'),
-            TeamDTO(team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8332',
-                    team_name='team 1')]
+            TeamIdAndNameDTO(team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
+                             team_name='team 0'),
+            TeamIdAndNameDTO(team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8332',
+                             team_name='team 1')]
 
         # Act
         output = storage.get_teams()

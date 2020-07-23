@@ -3,7 +3,7 @@ from typing import List
 
 from ib_iam.interactors.storage_interfaces.dtos \
     import UserTeamDTO, UserRoleDTO, UserCompanyDTO, UserDTO, CompanyDTO, \
-    TeamDTO, RoleIdAndNameDTO, RoleDTO
+    TeamIdAndNameDTO, RoleIdAndNameDTO, RoleDTO
 
 
 class StorageInterface(ABC):
@@ -42,7 +42,7 @@ class StorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_teams(self) -> List[TeamDTO]:
+    def get_teams(self) -> List[TeamIdAndNameDTO]:
         pass
 
     @abstractmethod

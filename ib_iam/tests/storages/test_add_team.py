@@ -1,7 +1,9 @@
 import pytest
-from ib_iam.tests.factories import TeamDetailsWithUserIdsDTOFactory
+from ib_iam.tests.factories.storage_dtos import \
+    TeamDetailsWithUserIdsDTOFactory
 from ib_iam.models import Team
-from ib_iam.storages.team_storage_implementation import TeamStorageImplementation
+from ib_iam.storages.team_storage_implementation import \
+    TeamStorageImplementation
 from ib_iam.tests.common_fixtures.adapters.uuid_mock import prepare_uuid_mock
 
 

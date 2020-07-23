@@ -2,7 +2,7 @@ import pytest
 from ib_iam.storages.team_storage_implementation import (
     TeamStorageImplementation
 )
-from ib_iam.tests.factories import TeamMemberIdsDTOFactory
+from ib_iam.tests.factories.storage_dtos import TeamMemberIdsDTOFactory
 
 team_ids = [
     'f2c02d98-f311-4ab2-8673-3daa00757002',

@@ -9,8 +9,9 @@ class TestIsTeamNameAlreadyExists:
     def test_given_team_name_already_exists_it_returns_team_id(
             self, create_users, create_teams
     ):
+        print(create_teams)
         storage = TeamStorageImplementation()
-        requested_name = "team1"
+        requested_name = "team 1"
         expected_value = "f2c02d98-f311-4ab2-8673-3daa00757002"
 
         actual_value = storage.get_team_id_if_team_name_already_exists(

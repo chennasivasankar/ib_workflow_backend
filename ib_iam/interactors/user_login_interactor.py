@@ -1,4 +1,4 @@
-from ib_iam.adapters.auth_service import EmailAndPasswordDTO, UserTokensDTO
+from ib_iam.adapters.auth_service import EmailAndPasswordDTO
 from ib_iam.exceptions.custom_exceptions import InvalidEmail, \
     UserAccountDoesNotExist
 from ib_iam.interactors.presenter_interfaces.presenter_interface import \

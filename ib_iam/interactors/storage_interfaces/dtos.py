@@ -1,5 +1,6 @@
 import uuid
 from dataclasses import dataclass
+from typing import List
 
 
 @dataclass
@@ -16,7 +17,7 @@ class CompanyDTO:
 
 
 @dataclass
-class TeamDTO:
+class TeamIdAndNameDTO:
     team_id: str
     team_name: str
 
@@ -54,10 +55,6 @@ class RoleDTO:
     role_id: str
     name: str
     description: str
-
-
-from dataclasses import dataclass
-from typing import List
 
 
 @dataclass

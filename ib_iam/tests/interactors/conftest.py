@@ -3,7 +3,7 @@ import pytest
 
 @pytest.fixture
 def expected_list_of_teams_dtos():
-    from ib_iam.tests.factories import TeamDTOFactory
+    from ib_iam.tests.factories.storage_dtos import TeamDTOFactory
     TeamDTOFactory.reset_sequence(1)
     team_dtos = [TeamDTOFactory(team_id="1")]
     return team_dtos
@@ -11,7 +11,7 @@ def expected_list_of_teams_dtos():
 
 @pytest.fixture()
 def expected_team_member_ids_dtos():
-    from ib_iam.tests.factories import TeamMemberIdsDTOFactory
+    from ib_iam.tests.factories.storage_dtos import TeamMemberIdsDTOFactory
     team_member_ids_dtos = [
         TeamMemberIdsDTOFactory(team_id="1", member_ids=["2", "3"])
     ]
@@ -20,7 +20,7 @@ def expected_team_member_ids_dtos():
 
 @pytest.fixture
 def expected_list_of_user_dtos():
-    from ib_iam.tests.factories import UserProfileDTOFactory
+    from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
     UserProfileDTOFactory.reset_sequence(2)
     user_profile_dtos = [
         UserProfileDTOFactory() for _ in range(2)
@@ -30,7 +30,7 @@ def expected_list_of_user_dtos():
 
 @pytest.fixture()
 def expected_list_of_member_dtos():
-    from ib_iam.tests.factories import MemberDTOFactory
+    from ib_iam.tests.factories.storage_dtos import MemberDTOFactory
     MemberDTOFactory.reset_sequence(2)
     member_dtos = [
         MemberDTOFactory() for _ in range(2)

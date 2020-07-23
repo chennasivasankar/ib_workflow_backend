@@ -1,19 +1,24 @@
 import factory
 
-from ib_iam.interactors.presenter_interfaces.dtos import CompleteUsersDetailsDTO
+from ib_iam.interactors.presenter_interfaces.dtos import \
+    CompleteUsersDetailsDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO
 
 
 class CompleteUserDetailsDTOFactory(factory.Factory):
     class Meta:
         model = CompleteUsersDetailsDTO
+
     user_id = factory.sequence(lambda number: "user%s" % number)
     name = factory.sequence(lambda number: "user%s" % number)
     email = factory.sequence(lambda number: "useremail%s@gmail.com" % number)
     teams = factory.SubFactory(UserTeamDTO)
+
+
 import factory, factory.django
-from ib_iam.interactors.presenter_interfaces.dtos import TeamWithMembersDetailsDTO
-from ib_iam.tests.factories import (
+from ib_iam.interactors.presenter_interfaces.dtos import \
+    TeamWithMembersDetailsDTO
+from ib_iam.tests.factories.storage_dtos import (
     TeamDTOFactory, TeamMemberIdsDTOFactory, MemberDTOFactory
 )
 
@@ -57,5 +62,3 @@ class TeamWithMembersDetailsDTOFactory(factory.Factory):
         [members_dtos[1], members_dtos[2], members_dtos[0]],
         [members_dtos[1], members_dtos[2], members_dtos[0]]
     ])
-
-

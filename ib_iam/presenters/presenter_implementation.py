@@ -255,7 +255,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             CREATE_USER_SUCCESSFULLY
         response_dict = {
             "response": CREATE_USER_SUCCESSFULLY[0],
-            "http_status_code": StatusCode.CREATE_SUCCESS.value,
+            "http_status_code": StatusCode.SUCCESS_CREATE.value,
             "res_status": CREATE_USER_SUCCESSFULLY[1]
 
         }

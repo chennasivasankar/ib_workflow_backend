@@ -10,8 +10,8 @@ def company_dtos():
 
 @pytest.fixture()
 def team_dtos():
-    from ib_iam.tests.factories.storage_dtos import TeamDTOFactory
-    team_dtos = TeamDTOFactory.create_batch(3)
+    from ib_iam.tests.factories.storage_dtos import TeamIdAndNameDTOFactory
+    team_dtos = TeamIdAndNameDTOFactory.create_batch(3)
     return team_dtos
 
 

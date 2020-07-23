@@ -405,21 +405,6 @@
         }
       ]
     },
-    "CommonHttpExceptionFields": {
-      "type": "object",
-      "properties": {
-        "response": {
-          "type": "string"
-        },
-        "http_status_code": {
-          "type": "integer"
-        }
-      },
-      "required": [
-        "response",
-        "http_status_code"
-      ]
-    },
     "UnauthorizedResponseForAddTeam": {
       "allOf": [
         {
@@ -1469,4 +1454,5 @@
       }
     }
   }
+}
     

@@ -1,5 +1,5 @@
 import pytest
-from ib_iam.tests.factories import (
+from ib_iam.tests.factories.storage_dtos import (
     TeamDTOFactory, TeamMemberIdsDTOFactory, MemberDTOFactory
 )
 from ib_iam.tests.factories.presenter_dtos import (

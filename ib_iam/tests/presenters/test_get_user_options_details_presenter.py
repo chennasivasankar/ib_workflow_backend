@@ -18,8 +18,8 @@ class TestGetUserOptionsDetailsResponse:
     @pytest.fixture()
     def team_dtos(self):
         reset_sequence()
-        from ib_iam.tests.factories.storage_dtos import TeamDTOFactory
-        team_dtos = TeamDTOFactory.create_batch(3)
+        from ib_iam.tests.factories.storage_dtos import TeamIdAndNameDTOFactory
+        team_dtos = TeamIdAndNameDTOFactory.create_batch(3)
         return team_dtos
 
     @pytest.fixture()
@@ -42,6 +42,7 @@ class TestGetUserOptionsDetailsResponse:
 
     def test_response_for_get_configuration_details(
             self, set_up, snapshot):
+        print(set_up)
         # Arrange
 
         presenter = PresenterImplementation()

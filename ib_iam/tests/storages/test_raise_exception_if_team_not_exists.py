@@ -1,5 +1,5 @@
 import pytest
-from ib_iam.exceptions import InvalidTeam
+from ib_iam.exceptions.custom_exceptions import InvalidTeam
 from ib_iam.storages.team_storage_implementation import (
     TeamStorageImplementation
 )

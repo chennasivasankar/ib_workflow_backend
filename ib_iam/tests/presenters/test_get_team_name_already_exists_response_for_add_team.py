@@ -1,4 +1,4 @@
-from ib_iam.exceptions import TeamNameAlreadyExists
+from ib_iam.exceptions.custom_exceptions import TeamNameAlreadyExists
 from ib_iam.presenters.team_presenter_implementation import (
     TeamPresenterImplementation
 )
