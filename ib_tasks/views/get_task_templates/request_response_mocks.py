@@ -10,7 +10,6 @@ RESPONSE_200_JSON = """
             "actions": [
                 {
                     "action_id": "string",
-                    "action_name": "string",
                     "button_text": "string",
                     "button_color": "string"
                 }
@@ -22,8 +21,6 @@ RESPONSE_200_JSON = """
                     "max_columns": 1,
                     "order": 1,
                     "enable_multiple_gofs": true,
-                    "is_gof_readable": true,
-                    "is_gof_writable": true,
                     "fields": [
                         {
                             "field_type": "PLAIN_TEXT",
@@ -45,6 +42,14 @@ RESPONSE_200_JSON = """
             ]
         }
     ]
+}
+"""
+
+RESPONSE_404_JSON = """
+{
+    "response": "string",
+    "http_status_code": 1,
+    "res_status": "TASK_TEMPLATES_DOES_NOT_EXISTS"
 }
 """
 

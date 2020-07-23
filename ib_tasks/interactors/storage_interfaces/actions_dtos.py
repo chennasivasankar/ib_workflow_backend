@@ -15,3 +15,12 @@ class ActionDTO:
 class ActionRolesDTO:
     action_id: str
     roles: List[str]
+
+
+@dataclass
+class ActionsOfTemplateDTO:
+    template_id: str
+    action_id: str
+    action_name: str
+    button_text: str
+    button_color: str

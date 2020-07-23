@@ -39,3 +39,7 @@ class InvalidTemplateIds(Exception):
     def __int__(self, message: str):
         self.message = message
 
+
+class TaskTemplatesDoesNotExists(Exception):
+    def __init__(self, message: str):
+        self.message = message
