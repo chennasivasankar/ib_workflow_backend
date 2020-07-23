@@ -436,7 +436,10 @@
                   "INVALID_EMAIL",
                   "INVALID_NAME",
                   "USER_ALREADY_EXIST_WITH_THIS_EMAIL",
-                  "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
+                  "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS",
+                  "INVALID_COMPANY_ID",
+                  "INVALID_TEAM_IDS",
+                  "INVALID_ROLE_IDS"
                 ]
               }
             },
@@ -461,7 +464,12 @@
                 "type": "string",
                 "enum": [
                   "INVALID_EMAIL",
-                  "INVALID_NAME"
+                  "INVALID_NAME",
+                  "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS",
+                  "INVALID_COMPANY_ID",
+                  "INVALID_TEAM_IDS",
+                  "INVALID_ROLE_IDS",
+                  "USER_DOES_NOT_EXIST"
                 ]
               }
             },
@@ -578,10 +586,10 @@
         ],
         "responses": {
           "200": {
-            "description": "user added"
+            "description": "Edit User Successfully"
           },
           "400": {
-            "$ref": "#/responses/EditUserFailedResponse"
+            "$ref": "#/responses/EditUserBadRequestResponse"
           }
         }
       }
