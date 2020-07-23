@@ -2,7 +2,8 @@ from ib_tasks.interactors.storage_interfaces.create_or_update_task_storage_inter
     import CreateOrUpdateTaskStorageInterface
 from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
     import GetTaskPresenterInterface
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
+from ib_tasks.exceptions.task_custom_exceptions \
+    import InvalidTaskIdException
 
 
 class GetTaskInteractor:
