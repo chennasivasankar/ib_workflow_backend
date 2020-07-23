@@ -10,7 +10,7 @@ RESPONSE_200_JSON = """
             "email": "string",
             "teams": [
                 {
-                    "team_id": "d5037c0d-8c8f-468a-8638-14598dcdada1",
+                    "team_id": "4bf591e5-85fe-40b2-9ef4-35d84dac346c",
                     "team_name": "string"
                 }
             ],
@@ -21,7 +21,7 @@ RESPONSE_200_JSON = """
                 }
             ],
             "company": {
-                "company_id": "0ef9c321-a088-4504-a76c-574e901d4ef7",
+                "company_id": "7e8bb1c8-3977-4760-a6fb-018bd7c49fb4",
                 "company_name": "string"
             }
         }

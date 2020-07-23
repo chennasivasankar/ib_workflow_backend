@@ -30,8 +30,7 @@ class TestCase02GetConfigurationDetailsAPITestCase(TestUtils):
         from ib_iam.tests.factories.models import UserDetailsFactory
         from ib_iam.tests.common_fixtures.storages import reset_sequence
         reset_sequence()
-        UserDetailsFactory.create(user_id=user_id, is_admin=True)
-        UserDetailsFactory.create_batch(4)
+        UserDetailsFactory.create(user_id=user_id, is_admin=True, company=None)
 
     @pytest.fixture
     def set_up(self):
@@ -56,7 +55,7 @@ class TestCase02GetConfigurationDetailsAPITestCase(TestUtils):
         path_params = {}
         query_params = {}
         headers = {}
-        response = self.default_test_case(
+        self.default_test_case(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
