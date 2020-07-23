@@ -1,4 +1,3 @@
-import json
 from typing import List, Dict, Union
 
 from ib_tasks.interactors.storage_interfaces.dtos import FieldDTO, FieldRolesDTO
@@ -101,6 +100,7 @@ def get_required_bool_value_based_on_given_input(required) -> bool:
     else:
         required = False
     return required
+
 
 def prepare_field_roles_dtos(
         field_records: List[Dict]
