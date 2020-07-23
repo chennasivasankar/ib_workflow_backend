@@ -13,3 +13,6 @@ class ServiceInterface:
 
         valid_role_ids = interactor.get_valid_role_ids(role_ids=role_ids)
         return valid_role_ids
+
+    def get_user_role_ids(self, user_id: str):
+        pass

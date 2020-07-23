@@ -11,8 +11,7 @@ class TestFieldTypeSearchableValidationsInteractor:
     def test_given_empty_values_for_field_values_for_field_type_searchable_raise_exception(self):
         # Arrange
         from ib_tasks.constants.constants import SEARCHABLE_VALUES
-        from ib_tasks.exceptions.custom_exceptions \
-            import InvalidValueForSearchable
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForSearchable
         from ib_tasks.constants.exception_messages \
             import INVALID_VALUE_FOR_SEARCHABLE
         field_dto = FieldDTOFactory(
@@ -36,8 +35,7 @@ class TestFieldTypeSearchableValidationsInteractor:
     def test_given_invalid_field_values_for_field_type_searchable_raise_exception(self):
         # Arrange
         from ib_tasks.constants.constants import SEARCHABLE_VALUES
-        from ib_tasks.exceptions.custom_exceptions \
-            import InvalidValueForSearchable
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForSearchable
         from ib_tasks.constants.exception_messages \
             import INVALID_VALUE_FOR_SEARCHABLE
         field_dto = FieldDTOFactory(

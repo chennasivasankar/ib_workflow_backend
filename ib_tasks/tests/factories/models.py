@@ -86,11 +86,12 @@ class FieldFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Field
 
+    gof = factory.SubFactory(GoFFactory)
     field_id = factory.Sequence(lambda counter: "FIELD_ID-{}".format(counter))
     display_name = factory.Sequence(
         lambda counter: "DISPLAY_NAME-{}".format(counter)
     )
-    field_type = FieldTypes.PLAIN_TEXT
+    field_type = FieldTypes.PLAIN_TEXT.value
     required = True
 
     class Params:
