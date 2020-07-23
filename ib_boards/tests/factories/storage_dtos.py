@@ -53,8 +53,9 @@ class ColumnDetailsDTOFactory(factory.Factory):
     class Meta:
         model = ColumnDetailsDTO
 
-    column_id = factory.Sequence(lambda n: "column_id_%d" % n)
-    name = factory.Sequence(lambda n: "name_%d" % n)
+    column_id = factory.Sequence(lambda n: f'COLUMN_ID_{n + 1}')
+    name = factory.Sequence(
+        lambda n: f'COLUMN_DISPLAY_NAME_{n + 1}')
 
 class FieldsDTOFactory(factory.Factory):
     class Meta:

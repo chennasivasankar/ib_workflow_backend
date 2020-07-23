@@ -1,6 +1,6 @@
 import factory
 
-from ib_boards.models import Board, Column
+from ib_boards.models import Board, Column, ColumnPermission
 
 
 class BoardFactory(factory.django.DjangoModelFactory):
@@ -37,6 +37,9 @@ class ColumnFactory(factory.django.DjangoModelFactory):
     board = factory.SubFactory(BoardFactory)
 
 
-class ColumnPermission(factory.django.DjangoModelFactory):
+class ColumnPermissionFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ColumnPermission
+
     column = factory.SubFactory(ColumnFactory)
-    user_role_id = ['ALL_ROLES']
+    user_role_id = 'PR APPROVER'

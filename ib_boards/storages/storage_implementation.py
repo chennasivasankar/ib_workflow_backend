@@ -255,11 +255,33 @@ class StorageImplementation(StorageInterface):
 
     def get_columns_details(self, column_ids: List[str]) -> \
             List[ColumnDetailsDTO]:
-        pass
+        column_objs = Column.objects.filter(column_id__in=column_ids)
+        columns_dtos = self._convert_column_objs_to_dtos(column_objs)
+        return columns_dtos
+
+    @staticmethod
+    def _convert_column_objs_to_dtos(column_objs):
+        list_of_column_dtos = [
+            ColumnDetailsDTO(
+                column_id=obj.column_id,
+                name=obj.name
+            )
+            for obj in column_objs
+        ]
+        return list_of_column_dtos
 
     def get_column_ids_for_board(self, board_id: str, user_roles: List[str]) \
             -> List[str]:
-        pass
+        column_objs = Column.objects.filter(board__board_id=board_id)
+        roles = ColumnPermission.objects.filter(column__in=column_objs)
+        column_ids = []
+        for role in roles:
+            if role.user_role_id == "ALL_ROLES":
+                column_ids.append(role.column.column_id)
+            elif role.user_role_id in user_roles:
+                column_ids.append(role.column.column_id)
+        return sorted(list(set(column_ids)))
+
 
     def get_permitted_user_roles_for_board(self, board_id: str) -> List[str]:
         pass
@@ -268,3 +290,6 @@ class StorageImplementation(StorageInterface):
             TaskBoardsDetailsDTO:
         pass
 
+    def get_column_details(self, board_id: str, user_roles: List[str]) \
+            -> List[BoardColumnDTO]:
+        pass
