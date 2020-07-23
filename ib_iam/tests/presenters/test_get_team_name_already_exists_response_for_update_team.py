@@ -8,7 +8,7 @@ from ib_iam.constants.exception_messages import (
 
 
 class TestRaiseExceptionIfTeamNameAlreadyExists:
-    def test_when_it_is_called_it_returns_http_response(self):
+    def test_whether_it_returns_team_name_already_exists_http_response(self):
         json_presenter = UpdateTeamPresenterImplementation()
         team_name = "team_name1"
         import json
