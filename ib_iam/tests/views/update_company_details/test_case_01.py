@@ -12,6 +12,7 @@ class TestCase01UpdateCompanyDetailsAPITestCase(TestUtils):
     REQUEST_METHOD = REQUEST_METHOD
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['update']}}
+
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {'name': 'string', 'description': 'string', 'logo_url': 'string', 'user_ids': ['string']}

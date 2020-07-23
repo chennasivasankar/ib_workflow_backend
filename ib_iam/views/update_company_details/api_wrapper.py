@@ -1,48 +1,41 @@
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 from .validator_class import ValidatorClass
+from ib_iam.interactors.company_interactor import CompanyInteractor
+from ib_iam.interactors.storage_interfaces.company_storage_interface import \
+    CompanyStorageInterface
+from ib_iam.interactors.storage_interfaces.dtos import CompanyWithUserIdsDTO
+from ib_iam.presenters.update_company_presenter_implementation import \
+    UpdateCompanyPresenterImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    # ---------MOCK IMPLEMENTATION---------
+    user_obj = kwargs["user"]
+    user_id = str(user_obj.id)
+    request_data = kwargs["request_data"]
+    company_id = kwargs["company_id"]
+    name = request_data["name"]
+    description = request_data["description"]
+    logo_url = request_data["logo_url"]
+    user_ids = request_data["user_ids"]
 
-    try:
-        from ib_iam.views.update_company_details.request_response_mocks \
-            import REQUEST_BODY_JSON
-        body = REQUEST_BODY_JSON
-    except ImportError:
-        body = {}
+    # TODO After implementing storages change the \
+    #  below from storage interface to implementation
+    storage = CompanyStorageInterface()
+    presenter = UpdateCompanyPresenterImplementation()
+    interactor = CompanyInteractor(storage=storage)
 
-    test_case = {
-        "path_params": {'company_id': '0bd84f09-fe21-400a-a6c5-09b60b4508af'},
-        "query_params": {},
-        "header_params": {},
-        "body": body,
-        "securities": [{'oauth': ['update']}]
-    }
-
-    from django_swagger_utils.drf_server.utils.server_gen.mock_response \
-        import mock_response
-    try:
-        response = ''
-        status_code = 200
-        if '200' in ['200', '400', '401', '404']:
-            from ib_iam.views.update_company_details.request_response_mocks \
-                import RESPONSE_200_JSON
-            response = RESPONSE_200_JSON
-            status_code = 200
-        elif '201' in ['200', '400', '401', '404']:
-            from ib_iam.views.update_company_details.request_response_mocks \
-                import RESPONSE_201_JSON
-            response = RESPONSE_201_JSON
-            status_code = 201
-    except ImportError:
-        response = ''
-        status_code = 200
-    response_tuple = mock_response(
-        app_name="ib_iam", test_case=test_case,
-        operation_name="update_company_details",
-        kwargs=kwargs, default_response_body=response,
-        group_name="", status_code=status_code)
-    return response_tuple
+    company_with_user_ids_dto = CompanyWithUserIdsDTO(
+        company_id=company_id,
+        name=name,
+        description=description,
+        logo_url=logo_url,
+        user_ids=user_ids
+    )
+    response = interactor.update_company_details_wrapper(
+        user_id=user_id,
+        company_with_user_ids_dto=company_with_user_ids_dto,
+        presenter=presenter
+    )
+    return response
