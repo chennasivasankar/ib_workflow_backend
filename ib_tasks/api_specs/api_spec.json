@@ -32,6 +32,51 @@
   "security": [
   ],
   "definitions": {
+    "InvalidTaskActionDetails": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_ACTION_ID",
+            "INVALID_TASK_ID"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
+    "AccessUnauthorized": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "USER_DONOT_HAVE_ACCESS"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
     "FieldTypeEnum": {
       "type": "object",
       "properties": {
@@ -119,6 +164,148 @@
         "task_gofs",
         "action_id",
         "task_template_id"
+      ]
+    },
+    "ActionDetailsResponse": {
+      "type": "object",
+      "properties": {
+        "action_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "button_text": {
+          "type": "string"
+        },
+        "button_color": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "action_id",
+        "name",
+        "button_text"
+      ]
+    },
+    "ColumnDetailsResponse": {
+      "type": "object",
+      "properties": {
+        "column_id": {
+          "type": "string"
+        },
+        "column_name": {
+          "type": "string"
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ActionDetailsResponse"
+          }
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FieldsResponse"
+          }
+        }
+      },
+      "required": [
+        "column_id",
+        "actions",
+        "fields",
+        "column_name"
+      ]
+    },
+    "FieldsResponse": {
+      "type": "object",
+      "properties": {
+        "field_type": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "field_type",
+        "key",
+        "value"
+      ]
+    },
+    "TaskActionResponseBody": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "current_board_details": {
+          "type": "object",
+          "properties": {
+            "board_id": {
+              "type": "string"
+            },
+            "board_name": {
+              "type": "string"
+            },
+            "column_details": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ColumnDetailsResponse"
+              }
+            }
+          },
+          "required": [
+            "board_id",
+            "column_details",
+            "board_name"
+          ]
+        },
+        "other_board_details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "board_id": {
+                "type": "string"
+              },
+              "board_name": {
+                "type": "string"
+              },
+              "column_details": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "column_id": {
+                      "type": "string"
+                    },
+                    "column_name": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "column_id",
+                    "column_name"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "board_id",
+              "board_name",
+              "column_details"
+            ]
+          }
+        }
+      },
+      "required": [
+        "task_id",
+        "current_board_details",
+        "other_board_details"
       ]
     },
     "Field": {
@@ -322,6 +509,27 @@
       "schema": {
         "$ref": "#/definitions/CreateTaskRequestBody"
       }
+    },
+    "TaskParameterize": {
+      "name": "task_id",
+      "in": "path",
+      "required": true,
+      "description": "Id of the Task",
+      "type": "string"
+    },
+    "ActionParameterize": {
+      "name": "action_id",
+      "in": "path",
+      "required": true,
+      "description": "Id of the Action",
+      "type": "string"
+    },
+    "BoardParameterize": {
+      "name": "board_id",
+      "in": "path",
+      "required": true,
+      "description": "Id of the Board",
+      "type": "string"
     }
   },
   "responses": {
@@ -425,6 +633,51 @@
     }
   },
   "paths": {
+    "/boards/{board_id}/tasks/{task_id}/actions/{action_id}/v1/": {
+      "post": {
+        "operationId": "perform_task_action",
+        "summary": "User Act On Specific Task in a Column",
+        "description": "User Submitting Response by acting on a task",
+        "parameters": [
+          {
+            "$ref": "#/parameters/TaskParameterize"
+          },
+          {
+            "$ref": "#/parameters/ActionParameterize"
+          },
+          {
+            "$ref": "#/parameters/BoardParameterize"
+          }
+        ],
+        "security": [
+          {
+            "oauth": [
+              "superuser"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "schema": {
+              "$ref": "#/definitions/TaskActionResponseBody"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/AccessUnauthorized"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/InvalidTaskActionDetails"
+            }
+          }
+        }
+      }
+    },
     "/task_templates/v1/": {
       "get": {
         "operationId": "get_task_templates",

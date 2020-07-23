@@ -38,7 +38,7 @@ class CompleteGoFDetailsDTO:
 
 
 @dataclass()
-class GOFMultipleStatusDTO:
+class GOFMultipleEnableDTO:
     group_of_field_id: str
     multiple_status: bool
 
