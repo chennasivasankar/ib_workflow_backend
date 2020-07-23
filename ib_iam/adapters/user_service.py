@@ -86,6 +86,9 @@ class UserService:
             )
             return user_profile_dto
 
+    def deactivate_delete_user_id_from_ib_users(self, user_id: str):
+        pass
+
     @staticmethod
     def _convert_to_user_profile_dto(user_profile_dto):
         converted_user_profile_dto = UserProfileDTO(
