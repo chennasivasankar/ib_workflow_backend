@@ -4,7 +4,10 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidPhoneNumberValue, EmptyValueForPlainTextField, \
     InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
     InvalidNumberValue, InvalidFloatValue, InvalidValueForDropdownField, \
-    InvalidGoFIDsInGoFSelectorField
+    InvalidGoFIDsInGoFSelectorField, IncorrectGoFIDInGoFSelectorField, \
+    IncorrectRadioGroupChoice, IncorrectCheckBoxOptionsSelected, \
+    IncorrectMultiSelectOptionsSelected, IncorrectMultiSelectLabelsSelected, \
+    InvalidDateFormat, InvalidTimeFormat
 from ib_tasks.exceptions.fields_custom_exceptions import \
     DuplicationOfFieldIdsExist, InvalidFieldIds
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
@@ -79,4 +82,42 @@ class CreateOrUpdateTaskPresenterInterface(abc.ABC):
     def raise_exception_for_invalid_dropdown_value(
             self, err: InvalidValueForDropdownField
     ):
+        pass
+
+    @abc.abstractmethod
+    def raise_exceptions_for_invalid_gof_id_selected_in_gof_selector(
+            self, err: IncorrectGoFIDInGoFSelectorField
+    ):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_choice_in_radio_group_field(
+            self, err: IncorrectRadioGroupChoice
+    ):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_checkbox_group_options_selected(
+            self, err: IncorrectCheckBoxOptionsSelected
+    ):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_multi_select_options_selected(
+            self, err: IncorrectMultiSelectOptionsSelected
+    ):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_multi_select_labels_selected(
+            self, err: IncorrectMultiSelectLabelsSelected
+    ):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_date_format(self, err: InvalidDateFormat):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_time_format(self, err: InvalidTimeFormat):
         pass

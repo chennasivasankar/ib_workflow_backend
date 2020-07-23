@@ -69,3 +69,77 @@ class InvalidValueForDropdownField(Exception):
         self.field_id = field_id
         self.field_value = field_value
         self.valid_values = valid_values
+
+
+class IncorrectGoFIDInGoFSelectorField(Exception):
+
+    def __init__(
+            self, field_id: str, field_value: str,
+            valid_gof_id_options: List[str]
+    ):
+        self.field_id = field_id
+        self.field_value = field_value
+        self.valid_gof_id_options = valid_gof_id_options
+
+
+class IncorrectRadioGroupChoice(Exception):
+
+    def __init__(
+            self, field_id: str, field_value: str,
+            valid_radio_group_options: List[str]
+    ):
+        self.field_id = field_id
+        self.field_value = field_value
+        self.valid_radio_group_options = valid_radio_group_options
+
+
+class IncorrectCheckBoxOptionsSelected(Exception):
+
+    def __init__(
+            self, field_id: str,
+            invalid_checkbox_options: List[str],
+            valid_check_box_options: List[str]
+    ):
+        self.field_id = field_id
+        self.invalid_checkbox_options = invalid_checkbox_options
+        self.valid_check_box_options = valid_check_box_options
+
+
+class IncorrectMultiSelectOptionsSelected(Exception):
+
+    def __init__(
+            self, field_id: str,
+            invalid_multi_select_options: List[str],
+            valid_multi_select_options: List[str]
+    ):
+        self.field_id = field_id
+        self.invalid_multi_select_options = invalid_multi_select_options
+        self.valid_multi_select_options = valid_multi_select_options
+
+
+class IncorrectMultiSelectLabelsSelected(Exception):
+
+    def __init__(
+            self, field_id: str,
+            invalid_multi_select_labels: List[str],
+            valid_multi_select_labels: List[str]
+    ):
+        self.field_id = field_id
+        self.invalid_multi_select_labels = invalid_multi_select_labels
+        self.valid_multi_select_labels = valid_multi_select_labels
+
+
+class InvalidDateFormat(Exception):
+
+    def __init__(self, field_id: str, field_value: str, expected_format: str):
+        self.field_id = field_id
+        self.field_value = field_value
+        self.expected_format = expected_format
+
+
+class InvalidTimeFormat(Exception):
+
+    def __init__(self, field_id: str, field_value: str, expected_format: str):
+        self.field_id = field_id
+        self.field_value = field_value
+        self.expected_format = expected_format

@@ -1,3 +1,5 @@
+
+import json
 from typing import Optional, List, Union
 
 from ib_tasks.constants.enum import FieldTypes
@@ -5,7 +7,10 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidPhoneNumberValue, EmptyValueForPlainTextField, \
     InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
     InvalidNumberValue, InvalidFloatValue, \
-    InvalidValueForDropdownField, InvalidGoFIDsInGoFSelectorField
+    InvalidValueForDropdownField, InvalidGoFIDsInGoFSelectorField, \
+    IncorrectGoFIDInGoFSelectorField, IncorrectRadioGroupChoice, \
+    IncorrectCheckBoxOptionsSelected, IncorrectMultiSelectOptionsSelected, \
+    IncorrectMultiSelectLabelsSelected, InvalidDateFormat, InvalidTimeFormat
 from ib_tasks.exceptions.fields_custom_exceptions import \
     DuplicationOfFieldIdsExist, InvalidFieldIds
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
@@ -60,6 +65,20 @@ class CreateOrUpdateTaskInteractor:
             return presenter.raise_exception_for_invalid_float_value(err)
         except InvalidValueForDropdownField as err:
             return presenter.raise_exception_for_invalid_dropdown_value(err)
+        except IncorrectGoFIDInGoFSelectorField as err:
+            return presenter.raise_exceptions_for_invalid_gof_id_selected_in_gof_selector(err)
+        except IncorrectRadioGroupChoice as err:
+            return presenter.raise_exception_for_invalid_choice_in_radio_group_field(err)
+        except IncorrectCheckBoxOptionsSelected as err:
+            return presenter.raise_exception_for_invalid_checkbox_group_options_selected(err)
+        except IncorrectMultiSelectOptionsSelected as err:
+            return presenter.raise_exception_for_invalid_multi_select_options_selected(err)
+        except IncorrectMultiSelectLabelsSelected as err:
+            return presenter.raise_exception_for_invalid_multi_select_labels_selected(err)
+        except InvalidDateFormat as err:
+            return presenter.raise_exception_for_invalid_date_format(err)
+        except InvalidTimeFormat as err:
+            return presenter.raise_exception_for_invalid_time_format(err)
 
     def _prepare_response_for_create_or_update_task(
             self, presenter: CreateOrUpdateTaskPresenterInterface,
@@ -81,6 +100,7 @@ class CreateOrUpdateTaskInteractor:
             field_values_dto.field_id
             for field_values_dto in field_values_dtos
         ]
+
         self._validate_for_duplicate_field_ids(field_ids)
         self._validate_task_template_id(task_dto.task_template_id)
         self._validate_for_invalid_gof_ids(gof_ids)
@@ -104,7 +124,7 @@ class CreateOrUpdateTaskInteractor:
             field_type_is_gof_selector = field_type == FieldTypes.GOF_SELECTOR.value
             if field_type_is_gof_selector:
                 gof_ids_in_gof_selector.append(field_values_dto.field_value)
-        valid_gof_ids = self.storage.get_valid_gof_ids_in_given_gof_ids(
+        valid_gof_ids = self.storage.get_existing_gof_ids(
             gof_ids_in_gof_selector
         )
         invalid_gof_ids = list(set(gof_ids_in_gof_selector) - set(valid_gof_ids))
@@ -142,15 +162,145 @@ class CreateOrUpdateTaskInteractor:
                 self._validate_for_float_value(field_value, field_id)
             field_type_is_dropdown = field_type == FieldTypes.DROPDOWN.value
             if field_type_is_dropdown:
-                valid_dropdown_values = field_details_dto.field_values
+                valid_dropdown_values = json.loads(field_details_dto.field_values)
                 self._validate_for_dropdown_field_value(
                     field_value, field_id, valid_dropdown_values
                 )
             field_type_is_gof_selector = field_type == FieldTypes.GOF_SELECTOR.value
             if field_type_is_gof_selector:
-                #  TODO: check valid gof_id option in valid list of gof ids
-                # in given json stringified list
-                pass
+                valid_gof_id_options = json.loads(field_details_dto.field_values)
+                self._validate_gof_selector_value(
+                    field_value, field_id, valid_gof_id_options
+                )
+            field_type_is_radio_group = field_type == FieldTypes.RADIO_GROUP.value
+            if field_type_is_radio_group:
+                valid_radio_group_options = json.loads(field_details_dto.field_values)
+                self._validate_for_invalid_radio_group_value(
+                    field_value, field_id, valid_radio_group_options
+                )
+            field_type_is_check_box_group = field_type == FieldTypes.CHECKBOX_GROUP.value
+            if field_type_is_check_box_group:
+                valid_check_box_options = json.loads(field_details_dto.field_values)
+                self._validate_for_invalid_checkbox_values(
+                    field_value, field_id, valid_check_box_options
+                )
+            field_type_is_multi_select_field = field_type == FieldTypes.MULTI_SELECT_FIELD.value
+            if field_type_is_multi_select_field:
+                valid_multi_select_options = json.loads(field_details_dto.field_values)
+                self._validate_for_invalid_multi_select_options(
+                    field_value, field_id, valid_multi_select_options
+                )
+            field_type_is_multi_select_labels = field_type == FieldTypes.MULTI_SELECT_LABELS.value
+            if field_type_is_multi_select_labels:
+                valid_multi_select_labels = json.loads(field_details_dto.field_values)
+                self._validate_for_invalid_multi_select_labels(
+                    field_value, field_id, valid_multi_select_labels
+                )
+            field_type_is_date = field_type == FieldTypes.DATE.value
+            if field_type_is_date:
+                self._validate_for_date_field_value(
+                    field_value, field_id
+                )
+            field_type_is_time = field_type == FieldTypes.TIME.value
+            if field_type_is_time:
+                self._validate_for_time_field_value(
+                    field_value, field_id
+                )
+
+    @staticmethod
+    def _validate_for_time_field_value(
+        field_value: str, field_id: str
+    ) -> Optional[InvalidTimeFormat]:
+        import datetime
+        from ib_tasks.constants.config import TIME_FORMAT
+        try:
+            datetime.datetime.strptime(field_value, TIME_FORMAT).time()
+        except ValueError:
+            raise InvalidTimeFormat(
+                field_id, field_value, TIME_FORMAT
+            )
+        return
+
+    @staticmethod
+    def _validate_for_date_field_value(
+        field_value: str, field_id: str
+    ) -> Optional[InvalidDateFormat]:
+        import datetime
+        from ib_tasks.constants.config import DATE_FORMAT
+        try:
+            datetime.datetime.strptime(field_value, DATE_FORMAT).date()
+        except ValueError:
+            raise InvalidDateFormat(
+                field_id, field_value, DATE_FORMAT
+            )
+        return
+
+    @staticmethod
+    def _validate_for_invalid_multi_select_labels(
+            field_value: str, field_id: str,
+            valid_multi_select_labels: List[str]
+    ) -> Optional[IncorrectMultiSelectLabelsSelected]:
+        selected_multi_select_labels = json.loads(field_value)
+        invalid_multi_select_labels = list(
+            set(selected_multi_select_labels) - set(
+                valid_multi_select_labels)
+        )
+        if invalid_multi_select_labels:
+            raise IncorrectMultiSelectLabelsSelected(
+                field_id, invalid_multi_select_labels,
+                valid_multi_select_labels
+            )
+        return
+
+    @staticmethod
+    def _validate_for_invalid_multi_select_options(
+        field_value: str, field_id: str, valid_multi_select_options: List[str]
+    ) -> Optional[IncorrectMultiSelectOptionsSelected]:
+        selected_multi_select_options = json.loads(field_value)
+        invalid_multi_select_options = list(
+            set(selected_multi_select_options) - set(valid_multi_select_options)
+        )
+        if invalid_multi_select_options:
+            raise IncorrectMultiSelectOptionsSelected(
+                field_id, invalid_multi_select_options, valid_multi_select_options
+            )
+        return
+
+    @staticmethod
+    def _validate_for_invalid_checkbox_values(
+        field_value: str, field_id: str, valid_check_box_options: List[str]
+    ) -> Optional[IncorrectCheckBoxOptionsSelected]:
+        selected_check_box_options = json.loads(field_value)
+        invalid_checkbox_options = list(
+            set(selected_check_box_options) - set(valid_check_box_options)
+        )
+        if invalid_checkbox_options:
+            raise IncorrectCheckBoxOptionsSelected(
+                field_id, invalid_checkbox_options, valid_check_box_options
+            )
+        return
+
+    @staticmethod
+    def _validate_for_invalid_radio_group_value(
+            field_value: str, field_id: str, valid_radio_group_options: List[str]
+    ) -> Optional[IncorrectRadioGroupChoice]:
+        invalid_radio_group_choice = field_value not in valid_radio_group_options
+        if invalid_radio_group_choice:
+            raise IncorrectRadioGroupChoice(
+                field_id, field_value, valid_radio_group_options
+            )
+        return
+
+    @staticmethod
+    def _validate_gof_selector_value(
+            field_value: str, field_id: str, valid_gof_id_options: List[str]
+    ) -> Optional[IncorrectGoFIDInGoFSelectorField]:
+        invalid_gof_option = field_value not in valid_gof_id_options
+        if invalid_gof_option:
+            raise IncorrectGoFIDInGoFSelectorField(
+                field_id, field_value, valid_gof_id_options
+            )
+        return
 
     @staticmethod
     def _validate_for_dropdown_field_value(

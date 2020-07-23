@@ -181,6 +181,6 @@ class FieldDetailsDTOFactory(factory.Factory):
     field_id = factory.Sequence(lambda counter: "FIELD_ID-{}".format(counter))
     field_type = factory.Iterator(VALID_FIELD_TYPES)
     required = True
-    field_values = []
-    allowed_formats = []
+    field_values = None
+    allowed_formats = None
     validation_regex = None

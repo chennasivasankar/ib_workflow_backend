@@ -46,6 +46,6 @@ class FieldDetailsDTO:
     field_id: str
     field_type: FieldTypes
     required: bool
-    field_values: Optional[List[str]]
-    allowed_formats: Optional[List[str]]
+    field_values: Optional[str]
+    allowed_formats: Optional[str]
     validation_regex: Optional[str]
