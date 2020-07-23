@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import Mock, patch
 
-from ib_iam.interactors.get_users_details_inteactor import \
+from ib_iam.interactors.get_users_list_interactor import \
     GetUsersDetailsInteractor
 from ib_iam.tests.factories.storage_dtos import UserDTOFactory
 

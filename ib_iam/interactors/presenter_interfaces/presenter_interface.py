@@ -14,10 +14,6 @@ class PresenterInterface(ABC):
     def get_user_options_details_response(self, configuration_details):
         pass
 
-    # ADD USER
-
-
-
     @abstractmethod
     def raise_role_name_should_not_be_empty_exception(self):
         pass

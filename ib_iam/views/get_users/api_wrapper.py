@@ -5,7 +5,7 @@ from .validator_class import ValidatorClass
 from ib_iam.storages.storage_implementation \
     import StorageImplementation
 
-from ib_iam.interactors.get_users_details_inteactor \
+from ib_iam.interactors.get_users_list_interactor \
     import GetUsersDetailsInteractor
 from ib_iam.presenters.get_users_list_presenter_implementation \
     import GetUsersListPresenterImplementation
