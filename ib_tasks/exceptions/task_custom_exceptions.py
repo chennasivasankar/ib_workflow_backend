@@ -38,3 +38,4 @@ class TemplateDoesNotExists(Exception):
 class InvalidTemplateIds(Exception):
     def __int__(self, message: str):
         self.message = message
+
