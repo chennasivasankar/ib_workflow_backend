@@ -22,7 +22,6 @@ class CreateOrUpdateStagesInterface:
     def create_or_update_stages(
             self,
             stages_details: List[StageDTO]):
-
         stage_ids = self._get_stage_ids(stages_details)
         self.check_for_duplicate_stage_ids(stage_ids)
         self._validate_stage_display_name(stages_details)
@@ -41,19 +40,19 @@ class CreateOrUpdateStagesInterface:
                                  existing_stage_ids: List[str],
                                  stages_details: List[StageDTO]
                                  ):
+        print(existing_stage_ids)
+
+        print(stages_details)
         update_stages_details = []
         create_stages_details = []
-        if existing_stage_ids:
-            task_stages_dto = self._get_task_stages_dto(stages_details)
-            self._validate_stages_related_task_template_ids(task_stages_dto)
 
-            for stage_information in stages_details:
+        for stage_information in stages_details:
+            if stage_information.stage_id not in existing_stage_ids:
+                create_stages_details.append(stage_information)
+            else:
                 update_stages_details.append(stage_information)
-
-        else:
-            for stage_information in stages_details:
-                if stage_information.stage_id not in existing_stage_ids:
-                    create_stages_details.append(stage_information)
+        task_stages_dto = self._get_task_stages_dto(update_stages_details)
+        self._validate_stages_related_task_template_ids(task_stages_dto)
 
         if update_stages_details:
             self.stage_storage.update_stages(

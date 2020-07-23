@@ -19,12 +19,12 @@ class GetSheetDataForStages:
             sub_sheet_name=STAGE_ID_AND_VALUES_SUB_SHEET
         )
         # TODO need to remove list slicing
-        self._validation_for_stages_dict(field_records[:2])
+        self._validation_for_stages_dict(field_records[:8])
         stages_dict = [
             self._convert_stages_sheet_data_dict_to_our_format(
                 field_record
             )
-            for field_record in field_records[:2]
+            for field_record in field_records[:8]
         ]
         from ib_tasks.populate.create_or_update_stages import \
             populate_stages_values

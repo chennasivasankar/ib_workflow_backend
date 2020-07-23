@@ -39,4 +39,4 @@ class ColumnFactory(factory.django.DjangoModelFactory):
 
 class ColumnPermission(factory.django.DjangoModelFactory):
     column = factory.SubFactory(ColumnFactory)
-    user_role_id = ['ALL_ROLES']
+    user_role_id = 'ALL_ROLES'
