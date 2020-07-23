@@ -239,7 +239,95 @@
             "button_text",
             "button_color"
          ]
+      },
+      "GetTaskResponseBody": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "template_id": {
+          "type": "string"
+        },
+        "gofs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "gof_id": {
+                "type": "string"
+              },
+              "gof_fields": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "field_id": {
+                      "type": "string"
+                    },
+                    "field_response_single_value": {
+                      "type": "string"
+                    },
+                    "field_response_multiple_values": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "is_readable": {
+                      "type": "boolean"
+                    },
+                    "is_writable": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "field_id",
+                    "field_type"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "gof_id",
+              "gof_fields"
+            ]
+          }
+        },
+        "stages_with_actions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "stage_id": {
+                "type": "string"
+              },
+              "stage_display_name": {
+                "type": "string"
+              },
+              "actions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties":{
+                    "action_id": {
+                      "type": "string"
+                    },
+                    "button_text": {
+                      "type": "string"
+                    },
+                    "button_color": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+        }
       }
+    }
    },
    "parameters":{
       "CreateTaskBodyParameter":{
@@ -298,7 +386,34 @@
                "task_templates"
             ]
          }
+      },
+      "GetTaskSuccessResponse": {
+      "description": "Success",
+      "schema": {
+        "$ref": "#/definitions/GetTaskResponseBody"
       }
+    },
+    "GetTaskFailureResponse": {
+      "description": "get task failure response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer",
+            "example": 404
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "INVALID_TASK_ID"
+            ]
+          }
+        }
+      }
+    }
    },
    "paths":{
       "/task_templates/v1/":{
@@ -348,7 +463,36 @@
                   "description":""
                }
             }
-         }
+         },
+        "get": {
+          "operationId": "get_task",
+          "summary": "get task",
+          "description": "get task details",
+          "security": [
+            {
+              "oauth": [
+                "write",
+                "read"
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "name": "task_id",
+              "in": "query",
+              "description": "task id to get task details",
+              "type": "integer"
+            }
+          ],
+          "responses": {
+            "200": {
+              "$ref": "#/responses/GetTaskSuccessResponse"
+            },
+            "404": {
+              "$ref": "#/responses/GetTaskFailureResponse"
+            }
+          }
+        }
       }
    }
 }
