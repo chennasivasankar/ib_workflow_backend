@@ -23,7 +23,6 @@ class TestCreateStageActions:
             assert returned[val].logic == expected[val].logic
             assert returned[val].button_text == expected[val].button_text
 
-
     def test_with_action_details_creates_action(self, stage_actions_dtos, snapshot):
         # Arrange
         action_ids = [1, 2, 3, 4]
