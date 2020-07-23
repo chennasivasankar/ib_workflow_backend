@@ -560,6 +560,48 @@
       "required": [
         "company_id"
       ]
+    },
+    "NotFoundResponseForDeleteCompany": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "INVALID_COMPANY"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
+        }
+      ]
+    },
+    "UnauthorizedResponseForDeleteCompany": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "USER_HAS_NO_ACCESS"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
+        }
+      ]
     }
   },
   "parameters": {
@@ -610,6 +652,14 @@
       "schema": {
         "$ref": "#/definitions/CompanyWithUserIds"
       }
+    },
+    "CompanyIdPathParameter": {
+      "name": "company_id",
+      "in": "path",
+      "required": true,
+      "description": "company_id to identify a team",
+      "type": "string",
+      "format": "uuid"
     }
   },
   "responses": {
@@ -725,6 +775,18 @@
       "description": "Company Created successfully",
       "schema": {
         "$ref": "#/definitions/CompanyId"
+      }
+    },
+    "NotFoundResponseForDeleteCompany": {
+      "description": "Requested company does not exist",
+      "schema": {
+        "$ref": "#/definitions/NotFoundResponseForDeleteCompany"
+      }
+    },
+    "UnauthorizedResponseForDeleteCompany": {
+      "description": "User has no access to delete a team",
+      "schema": {
+        "$ref": "#/definitions/UnauthorizedResponseForDeleteCompany"
       }
     }
   },
@@ -912,6 +974,36 @@
           },
           "404": {
             "$ref": "#/responses/NotFoundResponseForAddCompany"
+          }
+        }
+      }
+    },
+    "/company/{company_id}/v1/": {
+      "delete": {
+        "summary": "delete company",
+        "description": "deletes a company",
+        "operationId": "delete_company",
+        "security": [
+          {
+            "oauth": [
+              "delete"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/CompanyIdPathParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Company deleted Successfully"
+          },
+          "404": {
+            "$ref": "#/responses/NotFoundResponseForDeleteCompany"
+          },
+          "401": {
+            "$ref": "#/responses/UnauthorizedResponseForDeleteCompany"
           }
         }
       }

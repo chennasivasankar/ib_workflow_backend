@@ -90,3 +90,13 @@ DUPLICATE_USERS_FOR_ADD_COMPANY = (
     "Given users consists of duplicates, please check it",
     "DUPLICATE_USERS"
 )
+
+USER_HAS_NO_ACCESS_FOR_DELETE_COMPANY = (
+    "User has no access to delete team details as he is not an admin",
+    "USER_HAS_NO_ACCESS"
+)
+
+INVALID_TEAM_FOR_DELETE_COMPANY = (
+    "Given team is invalid(NotFound)",
+    "INVALID_TEAM"
+)
