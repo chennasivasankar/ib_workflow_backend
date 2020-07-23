@@ -15,10 +15,11 @@ class GetUserOptionsDetails:
         try:
             configuration_details_dto = self.get_configuration_details(
                 user_id=user_id)
-            return presenter.get_user_options_details_response(
+            response = presenter.get_user_options_details_response(
                 configuration_details_dto)
         except UserIsNotAdmin:
-            presenter.raise_user_is_not_admin_exception()
+            response = presenter.raise_user_is_not_admin_exception()
+        return response
 
     def get_configuration_details(self, user_id: str):
         self._check_and_throw_user_is_admin(user_id=user_id)

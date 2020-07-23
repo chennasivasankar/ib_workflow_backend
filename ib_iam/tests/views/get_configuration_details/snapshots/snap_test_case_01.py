@@ -7,6 +7,10 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01GetConfigurationDetailsAPITestCase.test_case status_code'] = '200'
+snapshots['TestCase01GetConfigurationDetailsAPITestCase.test_case status_code'] = '403'
 
-snapshots['TestCase01GetConfigurationDetailsAPITestCase.test_case body'] = b''
+snapshots['TestCase01GetConfigurationDetailsAPITestCase.test_case body'] = {
+    'http_status_code': 403,
+    'res_status': 'USER_DOES_NOT_HAVE_PERMISSION',
+    'response': 'forbidden access, user cannot access'
+}

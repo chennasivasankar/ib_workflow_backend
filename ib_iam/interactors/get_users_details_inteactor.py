@@ -1,6 +1,6 @@
 from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, \
     InvalidOffsetValue, InvalidLimitValue, \
-    OffsetValueIsGreaterthanLimitValue
+    OffsetValueIsGreaterThanLimitValue
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.dtos \
     import CompleteUsersDetailsDTO
@@ -19,16 +19,17 @@ class GetUsersDetailsInteractor(ValidationMixin):
         try:
             complete_user_details_dtos = self.get_users_details(
                 user_id=user_id, offset=offset, limit=limit)
-            return presenter.response_for_get_users(complete_user_details_dtos)
+            response = presenter.response_for_get_users(complete_user_details_dtos)
         except UserIsNotAdmin:
-            return presenter.raise_user_is_not_admin_exception()
+            response = presenter.raise_user_is_not_admin_exception()
         except InvalidOffsetValue:
-            return presenter.raise_invalid_offset_value_exception()
+            response = presenter.raise_invalid_offset_value_exception()
         except InvalidLimitValue:
-            return presenter.raise_invalid_limit_value_exception()
-        except OffsetValueIsGreaterthanLimitValue:
-            return presenter. \
+            response = presenter.raise_invalid_limit_value_exception()
+        except OffsetValueIsGreaterThanLimitValue:
+            response = presenter. \
                 raise_offset_value_is_greater_than_limit_value_exception()
+        return response
 
     def get_users_details(self, user_id: str, offset: int,
                           limit: int) -> CompleteUsersDetailsDTO:

@@ -10,7 +10,7 @@ class InvalidLimitValue(Exception):
     pass
 
 
-class OffsetValueIsGreaterthanLimitValue(Exception):
+class OffsetValueIsGreaterThanLimitValue(Exception):
     pass
 
 
@@ -22,23 +22,23 @@ class GivenNameIsEmpty(Exception):
     pass
 
 
-class InvalidEmailAddressException(Exception):
+class InvalidEmailAddress(Exception):
     pass
 
 
-class NameShouldNotContainsNumbersSpecCharactersException(Exception):
+class NameShouldNotContainsNumbersSpecCharacters(Exception):
     pass
 
 
-class RoleIdsAreInvalidException(Exception):
+class RoleIdsAreInvalid(Exception):
     pass
 
 
-class InvalidCompanyIdException(Exception):
+class InvalidCompanyId(Exception):
     pass
 
 
-class TeamIdsAreInvalidException(Exception):
+class TeamIdsAreInvalid(Exception):
     pass
 
 
@@ -46,17 +46,17 @@ class UserDoesNotExist(Exception):
     pass
 
 
-class RoleNameIsEmptyException(Exception):
+class RoleNameIsEmpty(Exception):
     pass
 
 
-class RoleDescriptionIsEmptyException(Exception):
+class RoleDescriptionIsEmpty(Exception):
     pass
 
 
-class RoleIdFormatIsInvalidException(Exception):
+class RoleIdFormatIsInvalid(Exception):
     pass
 
 
-class DuplicateRoleIdsException(Exception):
+class DuplicateRoleIds(Exception):
     pass
