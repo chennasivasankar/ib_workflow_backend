@@ -37,7 +37,6 @@ class ActionsStorageImplementation(ActionStorageInterface):
         return list_of_dtos
 
     def create_stage_actions(self, stage_actions: List[StagesActionDTO]):
-        names_list = [stage.action_name for stage in stage_actions]
         stage_ids = [stage.stage_id for stage in stage_actions]
         stages = Stage.objects.filter(stage_id__in=stage_ids).values('stage_id', 'id')
 
