@@ -12,8 +12,8 @@ def api_wrapper(*args, **kwargs):
     user = kwargs["user"]
     column_id = kwargs['column_id']
     params = kwargs['request_query_params']
-    offset = params['Offset']
-    limit = params['Limit']
+    offset = params['offset']
+    limit = params['limit']
 
     storage = StorageImplementation()
     presenter = GetColumnTasksPresenterImplementation()

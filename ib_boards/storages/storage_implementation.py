@@ -91,7 +91,7 @@ class StorageImplementation(StorageInterface):
         Column.objects.bulk_update(
             updated_column_objects,
             [
-                'name',
+                'display_name',
                 'display_order', 'task_selection_config',
                 'kanban_brief_view_config',
                 'list_brief_view_config'
@@ -293,7 +293,7 @@ class StorageImplementation(StorageInterface):
         board_dtos = [
             BoardDTO(
                 board_id=board_object.board_id,
-                display_name=board_object.name
+                display_name=board_object.display_name
             )
             for board_object in board_objects
         ]
@@ -325,7 +325,7 @@ class StorageImplementation(StorageInterface):
         list_of_column_dtos = [
             ColumnDetailsDTO(
                 column_id=obj.column_id,
-                name=obj.name
+                name=obj.display_name
             )
             for obj in column_objs
         ]

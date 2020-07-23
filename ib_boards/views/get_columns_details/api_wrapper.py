@@ -12,8 +12,8 @@ def api_wrapper(*args, **kwargs):
     user = kwargs["user"]
     board_id = kwargs['board_id']
     params = kwargs['request_query_params']
-    offset = params['Offset']
-    limit = params['Limit']
+    offset = params['offset']
+    limit = params['limit']
     column_params = ColumnParametersDTO(
         board_id=board_id,
         user_id=user.id

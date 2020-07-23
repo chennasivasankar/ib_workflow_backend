@@ -11,21 +11,21 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details list_of_col
     'columns': [
         {
             'column_id': 'COLUMN_ID_1',
-            'name': 'COLUMN_DISPLAY_NAME_1',
+            'display_name': 'COLUMN_DISPLAY_NAME_1',
             'tasks': [
             ],
             'total_tasks_count': 0
         },
         {
             'column_id': 'COLUMN_ID_2',
-            'name': 'COLUMN_DISPLAY_NAME_2',
+            'display_name': 'COLUMN_DISPLAY_NAME_2',
             'tasks': [
             ],
             'total_tasks_count': 0
         },
         {
             'column_id': 'COLUMN_ID_3',
-            'name': 'COLUMN_DISPLAY_NAME_3',
+            'display_name': 'COLUMN_DISPLAY_NAME_3',
             'tasks': [
             ],
             'total_tasks_count': 0

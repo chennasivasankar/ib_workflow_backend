@@ -10,7 +10,7 @@ from ...storages.storage_implementation import StorageImplementation
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     user = kwargs["user"]
-    params = kwargs['request_query_params']
+    params = kwargs['query_params']
     offset = params['offset']
     limit = params['limit']
 

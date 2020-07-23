@@ -266,7 +266,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             list_of_task_actions.append(
                 {
                     "action_id": action_dto.action_id,
-                    "name": action_dto.name,
+                    "display_name": action_dto.name,
                     "button_text": action_dto.button_text,
                     "button_color": action_dto.button_color
                 }
@@ -305,7 +305,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             list_of_columns.append(
                 {
                     "column_id": column_dto.column_id,
-                    "name": column_dto.name,
+                    "display_name": column_dto.name,
                     "total_tasks_count": len(list_of_tasks),
                     "tasks": task_details_dict
                 }

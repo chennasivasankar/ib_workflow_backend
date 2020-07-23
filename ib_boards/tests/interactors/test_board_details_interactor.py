@@ -21,7 +21,7 @@ class TestBoardDetailsInteractor:
         task_details = TaskBoardsDetailsDTO(
             board_dto=BoardDTO(
                 board_id="board_id_1",
-                display_name="name"
+                display_name="display_name"
             ),
             column_stage_dtos=[ColumnStageDTO(
                 column_id="column_id_1",
@@ -29,7 +29,7 @@ class TestBoardDetailsInteractor:
             )],
             columns_dtos=[ColumnBoardDTO(
                 board_id="board_id_1",
-                name="name",
+                name="display_name",
                 column_id="column_id_1"
             )],
             columns_fields_dtos=[ColumnFieldDTO(

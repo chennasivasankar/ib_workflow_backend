@@ -41,7 +41,7 @@ RESPONSE_200_JSON = """
             "actions": [
                 {
                     "action_id": "string",
-                    "name": "string",
+                    "display_name": "string",
                     "button_text": "string",
                     "button_color": "string"
                 }

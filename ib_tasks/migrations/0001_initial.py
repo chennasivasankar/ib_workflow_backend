@@ -51,7 +51,7 @@ class Migration(migrations.Migration):
             name='TaskTemplate',
             fields=[
                 ('template_id', models.CharField(max_length=100, primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=100)),
+                ('display_name', models.CharField(max_length=100)),
             ],
         ),
         migrations.CreateModel(
@@ -103,7 +103,7 @@ class Migration(migrations.Migration):
             name='StageAction',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
+                ('display_name', models.CharField(max_length=100)),
                 ('button_text', models.TextField()),
                 ('button_color', models.TextField(null=True)),
                 ('logic', models.TextField()),
@@ -111,7 +111,7 @@ class Migration(migrations.Migration):
                 ('stage', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ib_tasks.Stage')),
             ],
             options={
-                'unique_together': {('stage', 'name')},
+                'unique_together': {('stage', 'display_name')},
             },
         ),
         migrations.CreateModel(
@@ -132,7 +132,7 @@ class Migration(migrations.Migration):
             name='GlobalConstant',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
+                ('display_name', models.CharField(max_length=100)),
                 ('value', models.IntegerField()),
                 ('task_template', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='global_constants', to='ib_tasks.TaskTemplate')),
             ],

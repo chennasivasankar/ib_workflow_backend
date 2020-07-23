@@ -15,7 +15,7 @@ snapshots['TestTaskDetailsResponse.test_get_response_for_task_details list_of_ta
                     'action_id': 'action_id_0',
                     'button_color': None,
                     'button_text': 'button_text_0',
-                    'name': 'name_0'
+                    'display_name': 'name_0'
                 }
             ],
             'fields': [
@@ -33,7 +33,7 @@ snapshots['TestTaskDetailsResponse.test_get_response_for_task_details list_of_ta
                     'action_id': 'action_id_1',
                     'button_color': None,
                     'button_text': 'button_text_1',
-                    'name': 'name_1'
+                    'display_name': 'name_1'
                 }
             ],
             'fields': [
@@ -51,7 +51,7 @@ snapshots['TestTaskDetailsResponse.test_get_response_for_task_details list_of_ta
                     'action_id': 'action_id_2',
                     'button_color': None,
                     'button_text': 'button_text_2',
-                    'name': 'name_2'
+                    'display_name': 'name_2'
                 }
             ],
             'fields': [

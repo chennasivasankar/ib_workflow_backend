@@ -16,7 +16,7 @@ class TestCase01GetColumnsDetailsAPITestCase(TestUtils):
     def test_case(self, snapshot):
         body = {}
         path_params = {"board_id": "ibgroup"}
-        query_params = {'Offset': 892, 'Limit': 409}
+        query_params = {'offset': 892, 'limit': 409}
         headers = {}
         response = self.default_test_case(
             body=body, path_params=path_params,

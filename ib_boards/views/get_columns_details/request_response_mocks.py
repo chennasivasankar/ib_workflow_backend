@@ -31,7 +31,7 @@ RESPONSE_200_JSON = """
     "columns": [
         {
             "column_id": "string",
-            "name": "string",
+            "display_name": "string",
             "total_tasks_count": 1,
             "tasks": [
                 {
@@ -46,7 +46,7 @@ RESPONSE_200_JSON = """
                     "actions": [
                         {
                             "action_id": "string",
-                            "name": "string",
+                            "display_name": "string",
                             "button_text": "string",
                             "button_color": "string"
                         }

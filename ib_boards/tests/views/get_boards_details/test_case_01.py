@@ -36,7 +36,7 @@ class TestCase01GetBoardsDetailsAPITestCase(TestUtils):
     def test_case(self, snapshot, setup):
         body = {}
         path_params = {}
-        query_params = {'limit': 10, 'offset': 0}
+        query_params = {'limit': 6, 'offset': 2}
         headers = {}
         response = self.default_test_case(
             body=body, path_params=path_params,

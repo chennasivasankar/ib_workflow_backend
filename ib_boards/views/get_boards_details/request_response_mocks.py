@@ -23,7 +23,7 @@ RESPONSE_200_JSON = """
     "boards_details": [
         {
             "board_id": "string",
-            "name": "string"
+            "display_name": "string"
         }
     ]
 }

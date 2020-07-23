@@ -1,5 +1,5 @@
 from functools import reduce
-def get_column_tasks(*args, **kwargs):  # pylint: disable=invalid-name
+def get_column_tasks(*args, **kwargs):  # pylint: disable=invalid-display_name
     """
     Note: replace below mock implementation with your actual implementation
 

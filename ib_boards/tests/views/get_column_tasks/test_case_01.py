@@ -12,11 +12,30 @@ class TestCase01GetColumnTasksAPITestCase(TestUtils):
     REQUEST_METHOD = REQUEST_METHOD
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['read', 'write']}}
+
+    @pytest.fixture()
+    def setup(self):
+        from ib_boards.tests.factories.models import BoardFactory
+        from ib_boards.tests.factories.models import ColumnFactory
+        from ib_boards.tests.factories.models import ColumnPermissionFactory
+
+        BoardFactory.reset_sequence()
+        BoardFactory.create_batch(size=10)
+
+        board = BoardFactory()
+        ColumnFactory.reset_sequence()
+        ColumnPermissionFactory.reset_sequence()
+        columns = ColumnFactory.create_batch(size=4, board=board)
+        ColumnPermissionFactory.create_batch(size=2, column=columns[0])
+        ColumnPermissionFactory.create_batch(size=2, column=columns[1])
+        ColumnPermissionFactory.create_batch(size=2, column=columns[2])
+        ColumnPermissionFactory.create_batch(size=2, column=columns[3])
+
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {}
-        path_params = {"column_id": "ibgroup"}
-        query_params = {'Limit': 376, 'Offset': 271}
+        path_params = {"column_id": "COLUMN_ID_1"}
+        query_params = {'limit': 10, 'offset': 0}
         headers = {}
         response = self.default_test_case(
             body=body, path_params=path_params,
