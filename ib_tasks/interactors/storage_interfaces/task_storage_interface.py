@@ -115,21 +115,21 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_task_template_dtos(self) -> List[TaskTemplateDTO]:
+    def get_task_templates_dtos(self) -> List[TaskTemplateDTO]:
         pass
 
     @abc.abstractmethod
-    def get_user_actions_of_templates_dtos(
-            self, roles: List[str]) -> List[ActionsOfTemplateDTO]:
+    def get_actions_of_templates_dtos(self) -> List[ActionsOfTemplateDTO]:
         pass
 
     @abc.abstractmethod
-    def get_gofs_of_task_templates_dtos(
+    def get_gofs_details_dtos(
             self, gof_ids: List[str]) -> List[GoFDTO]:
         pass
 
     @abc.abstractmethod
-    def get_gofs_to_task_templates_dtos(self) -> List[GoFToTaskTemplateDTO]:
+    def get_gofs_to_task_templates_from_permitted_gofs(
+            self, gof_ids: List[str]) -> List[GoFToTaskTemplateDTO]:
         pass
 
     @abc.abstractmethod
@@ -141,6 +141,10 @@ class TaskStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_fields_of_gofs_in_dtos(
             self, gof_ids: List[str]) -> List[FieldDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_gof_ids_permitted_for_user(self, roles: List[str]) -> List[str]:
         pass
 
     @abc.abstractmethod
@@ -173,4 +177,3 @@ class TaskStorageInterface(abc.ABC):
     def update_task_template(
             self, template_id: str, template_name: str):
         pass
-
