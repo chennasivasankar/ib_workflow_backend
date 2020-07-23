@@ -10,8 +10,8 @@ from ib_iam.interactors.presenter_interfaces.get_users_list_presenter_interface 
 from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO, UserRoleDTO, UserCompanyDTO
 
 
-class GetUsersListPresenterImplementation(
-    GetUsersListPresenterInterface, HTTPResponseMixin):
+class GetUsersListPresenterImplementation(GetUsersListPresenterInterface,
+                                          HTTPResponseMixin):
     def raise_user_is_not_admin_exception(self):
         from ib_iam.constants.exception_messages import \
             USER_DOES_NOT_HAVE_PERMISSION
