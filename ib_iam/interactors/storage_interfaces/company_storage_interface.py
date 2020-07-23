@@ -49,3 +49,17 @@ class CompanyStorageInterface(ABC):
     @abstractmethod
     def delete_company(self, company_id: str):
         pass
+
+    @abstractmethod
+    def update_company_details(
+            self, company_with_user_ids_dto: CompanyWithUserIdsDTO
+    ):
+        pass
+
+    @abstractmethod
+    def get_member_ids_of_company(self, company_id: str):
+        pass
+
+    @abstractmethod
+    def delete_members_from_company(self, company_id: str, member_ids: List[str]):
+        pass

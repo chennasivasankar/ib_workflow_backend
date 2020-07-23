@@ -82,6 +82,54 @@ class CompanyInteractor:
         self.storage.validate_is_company_exists(company_id=company_id)
         self.storage.delete_company(company_id=company_id)
 
+    def update_company_details_wrapper(
+            self,
+            user_id: str,
+            company_with_user_ids_dto: CompanyWithUserIdsDTO,
+            presenter: UpdateCompanyPresenterInterface
+    ):
+        try:
+            self.update_company_details(
+                user_id=user_id,
+                company_with_user_ids_dto=company_with_user_ids_dto
+            )
+            response = presenter.get_success_response_for_update_company()
+        except UserHasNoAccess:
+            response = \
+                presenter.get_user_has_no_access_response_for_update_company()
+        except InvalidCompany:
+            response = presenter.get_invalid_company_response_for_update_company()
+        except DuplicateUsers:
+            response = presenter.get_duplicate_users_response_for_update_company()
+        except InvalidUsers:
+            response = presenter.get_invalid_users_response_for_update_company()
+        except CompanyNameAlreadyExists as exception:
+            response = presenter \
+                .get_company_name_already_exists_response_for_update_company(
+                exception
+            )
+        return response
+
+    def update_company_details(
+            self, user_id: str, company_with_user_ids_dto: CompanyWithUserIdsDTO
+    ):
+        user_ids = company_with_user_ids_dto.user_ids
+        company_id = company_with_user_ids_dto.company_id
+        self.storage.validate_is_user_admin(user_id=user_id)
+        self._validate_update_company_details(
+            company_with_user_ids_dto=company_with_user_ids_dto
+        )
+        self.storage.update_company_details(
+            company_with_user_ids_dto=company_with_user_ids_dto
+        )
+        company_member_ids = self.storage.get_member_ids_of_company(company_id=company_id)
+        self._add_members_to_company(
+            user_ids=user_ids, company_member_ids=company_member_ids, company_id=company_id
+        )
+        self._delete_members_of_company(
+            user_ids=user_ids, company_member_ids=company_member_ids, company_id=company_id
+        )
+
     def _validate_add_company_details(
             self,
             company_details_with_user_ids_dto: CompanyDetailsWithUserIdsDTO
@@ -89,6 +137,26 @@ class CompanyInteractor:
         name = company_details_with_user_ids_dto.name
         self._validate_users(user_ids=company_details_with_user_ids_dto.user_ids)
         self._validate_is_company_name_already_exists(name=name)
+
+    def _validate_update_company_details(
+            self, company_with_user_ids_dto: CompanyWithUserIdsDTO
+    ):
+        name = company_with_user_ids_dto.name
+        company_id = company_with_user_ids_dto.company_id
+        self.storage.validate_is_company_exists(company_id=company_id)
+        self._validate_users(user_ids=company_with_user_ids_dto.user_ids)
+        self._validate_is_company_name_exists_for_update_company(
+            name=name, company_id=company_id)
+
+    def _add_members_to_company(self, user_ids, company_member_ids, company_id):
+        user_ids_to_add = list(set(user_ids) - set(company_member_ids))
+        self.storage.add_users_to_company(
+            company_id=company_id, user_ids=user_ids_to_add)
+
+    def _delete_members_of_company(self, user_ids, company_member_ids, company_id):
+        member_ids_to_delete = list(set(company_member_ids) - set(user_ids))
+        self.storage.delete_members_from_company(
+            company_id=company_id, member_ids=member_ids_to_delete)
 
     def _validate_users(self, user_ids):
         self._validate_is_duplicate_users_exists(user_ids=user_ids)
@@ -114,3 +182,13 @@ class CompanyInteractor:
         is_company_name_already_exists = company_id is not None
         if is_company_name_already_exists:
             raise CompanyNameAlreadyExists(company_name=name)
+
+    def _validate_is_company_name_exists_for_update_company(self, name, company_id):
+        company_id_from_db = \
+            self.storage.get_company_id_if_company_name_already_exists(name=name)
+        is_company_name_exists = company_id_from_db is not None
+        if is_company_name_exists:
+            is_company_requested_name_already_assigned_to_other = \
+                company_id_from_db != company_id
+            if is_company_requested_name_already_assigned_to_other:
+                raise CompanyNameAlreadyExists(company_name=name)
