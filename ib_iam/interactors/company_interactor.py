@@ -10,10 +10,12 @@ from ib_iam.exceptions import (
 from ib_iam.interactors.presenter_interfaces \
     .add_company_presenter_interface import AddCompanyPresenterInterface
 from ib_iam.interactors.presenter_interfaces.delete_company_presenter_interface import DeleteCompanyPresenterInterface
+from ib_iam.interactors.presenter_interfaces \
+    .update_company_presenter_interface import UpdateCompanyPresenterInterface
 from ib_iam.interactors.storage_interfaces \
     .company_storage_interface import CompanyStorageInterface
 from ib_iam.interactors.storage_interfaces.dtos import (
-    CompanyDetailsWithUserIdsDTO
+    CompanyDetailsWithUserIdsDTO, CompanyWithUserIdsDTO
 )
 
 

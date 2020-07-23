@@ -13,5 +13,6 @@ from .storage_dtos import (
     CompanyDTOFactory,
     CompanyWithEmployeesCountDTOFactory,
     CompanyNameLogoAndDescriptionDTOFactory,
-    CompanyDetailsWithUserIdsDTOFactory
+    CompanyDetailsWithUserIdsDTOFactory,
+    CompanyWithUserIdsDTOFactory
 )

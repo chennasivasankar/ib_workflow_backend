@@ -11,7 +11,8 @@ from ib_iam.interactors.storage_interfaces.dtos import (
     CompanyDTO,
     CompanyWithEmployeesCountDTO,
     CompanyNameLogoAndDescriptionDTO,
-    CompanyDetailsWithUserIdsDTO
+    CompanyDetailsWithUserIdsDTO,
+    CompanyWithUserIdsDTO
 )
 
 team_ids = [
@@ -150,3 +151,12 @@ class CompanyDetailsWithUserIdsDTOFactory(
         [user_ids[2], user_ids[1]],
         [user_ids[2], user_ids[1]]
     ])
+
+
+class CompanyWithUserIdsDTOFactory(
+    CompanyDetailsWithUserIdsDTOFactory, factory.Factory
+):
+    class Meta:
+        model = CompanyWithUserIdsDTO
+
+    company_id = factory.Faker("uuid4")

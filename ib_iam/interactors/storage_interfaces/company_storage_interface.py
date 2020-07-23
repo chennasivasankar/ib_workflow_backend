@@ -2,7 +2,8 @@ from abc import ABC
 from abc import abstractmethod
 from typing import List
 from ib_iam.interactors.storage_interfaces.dtos import (
-    CompanyDTO, CompanyWithEmployeesCountDTO, CompanyDetailsWithUserIdsDTO
+    CompanyDTO, CompanyWithEmployeesCountDTO, CompanyDetailsWithUserIdsDTO,
+    CompanyWithUserIdsDTO
 )
 
 

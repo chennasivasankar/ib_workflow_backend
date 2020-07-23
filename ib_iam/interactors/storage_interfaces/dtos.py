@@ -71,3 +71,8 @@ class CompanyWithEmployeesCountDTO:
 @dataclass
 class CompanyDetailsWithUserIdsDTO(CompanyNameLogoAndDescriptionDTO):
     user_ids: List[str]
+
+
+@dataclass
+class CompanyWithUserIdsDTO(CompanyDetailsWithUserIdsDTO):
+    company_id: str
