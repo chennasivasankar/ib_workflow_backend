@@ -34,7 +34,7 @@ class TestCreateOrUpdateFieldsBaseVaidationInteractor:
         # Arrange
         from ib_tasks.constants.exception_messages \
             import DUPLICATION_OF_FIELD_IDS
-        from ib_tasks.exceptions.custom_exceptions import DuplicationOfFieldIdsExist
+        from ib_tasks.exceptions.fields_custom_exceptions import DuplicationOfFieldIdsExist
 
         field_dtos = [
             FieldDTOFactory(), FieldDTOFactory(),
@@ -58,7 +58,7 @@ class TestCreateOrUpdateFieldsBaseVaidationInteractor:
         # Arrange
         from ib_tasks.constants.exception_messages \
             import INVALID_FIELDS_DISPLAY_NAMES
-        from ib_tasks.exceptions.custom_exceptions \
+        from ib_tasks.exceptions.fields_custom_exceptions \
             import InvalidValueForFieldDisplayName
 
         field_dtos = [
@@ -83,7 +83,7 @@ class TestCreateOrUpdateFieldsBaseVaidationInteractor:
         # Arrange
         from ib_tasks.constants.exception_messages \
             import INVALID_VALUES_FOR_FIELD_TYPES
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForFieldType
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForFieldType
         from ib_tasks.constants.constants import FIELD_TYPES_LIST
         from ib_tasks.constants.enum import FieldTypes
 
@@ -109,7 +109,7 @@ class TestCreateOrUpdateFieldsBaseVaidationInteractor:
     def test_given_gof_ids_not_in_database_raise_exception(self, storage_mock):
         # Arrange
         from ib_tasks.constants.exception_messages import INVALID_GOF_IDS_EXCEPTION_MESSAGE
-        from ib_tasks.exceptions.custom_exceptions import InvalidGOFIds
+        from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGOFIds
         field_dtos = [FieldDTOFactory(), FieldDTOFactory(gof_id="Hello"), FieldDTOFactory(gof_id="")]
         interactor = CreateOrUpdateFieldsBaseValidationInteractor(storage=storage_mock)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]

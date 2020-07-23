@@ -12,6 +12,7 @@ class TestPopulateGoFs:
 
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
+        GoFFactory.reset_sequence(0)
         CompleteGoFDetailsDTOFactory.reset_sequence(1)
         GoFDTOFactory.reset_sequence(1)
         GoFRolesDTOFactory.reset_sequence(1)
@@ -274,6 +275,7 @@ class TestPopulateGoFs:
         from ib_tasks.constants.enum import PermissionTypes
         from ib_tasks.models.gof_role import GoFRole
         gofs = GoFFactory.create_batch(size=2)
+        print(gofs)
         gof_ids = [gof.gof_id for gof in gofs]
         gof_dtos = GoFDTOFactory.create_batch(
             size=2, gof_id=factory.Iterator(gof_ids)

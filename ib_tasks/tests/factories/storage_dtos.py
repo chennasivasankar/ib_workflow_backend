@@ -98,7 +98,7 @@ class GoFDTOFactory(factory.Factory):
     class Meta:
         model = GoFDTO
 
-    gof_id = factory.Sequence(lambda counter: "GOF_ID-{}".format(counter))
+    gof_id = factory.Sequence(lambda counter: "gof_{}".format(counter))
     gof_display_name = factory.Sequence(
         lambda counter: "GOF_DISPLAY_NAME-{}".format(counter)
     )
@@ -109,7 +109,7 @@ class GoFRolesDTOFactory(factory.Factory):
     class Meta:
         model = GoFRolesDTO
 
-    gof_id = factory.Sequence(lambda counter: "GOF_ID-{}".format(counter))
+    gof_id = factory.Sequence(lambda counter: "gof_{}".format(counter))
     read_permission_roles = ['ALL_ROLES']
     write_permission_roles = ['ALL_ROLES']
 
@@ -126,7 +126,7 @@ class GoFRoleDTOFactory(factory.Factory):
     class Meta:
         model = GoFRoleDTO
 
-    gof_id = factory.Sequence(lambda counter: "GOF_ID-{}".format(counter))
+    gof_id = factory.Sequence(lambda counter: "gof_{}".format(counter))
     role = factory.Sequence(lambda counter: "ROLE-{}".format(counter))
     permission_type = PermissionTypes.READ.value
 

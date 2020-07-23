@@ -1,9 +1,11 @@
 from typing import Optional, List, Union
 
 from ib_tasks.constants.enum import FieldTypes
-from ib_tasks.exceptions.custom_exceptions import TaskTemplateIdCantBeEmpty, \
-    InvalidGoFIds, InvalidFieldIds, InvalidTaskTemplateIds, DuplicateGoFIds, \
-    DuplicatedFieldIds, EmptyValueForPlainTextField
+from ib_tasks.exceptions.custom_exceptions import (
+    InvalidFieldIds, InvalidTaskTemplateIds,
+    InvalidGoFIds, EmptyValueForPlainTextField)
+from ib_tasks.exceptions.fields_custom_exceptions import \
+    DuplicationOfFieldIdsExist
 from ib_tasks.interactors.dtos import TaskDTO, GoFFieldsDTO, FieldValuesDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
@@ -24,7 +26,7 @@ class CreateOrUpdateTaskInteractor:
             return self._prepare_response_for_create_or_update_task(
                 presenter=presenter, task_dto=task_dto
             )
-        except DuplicatedFieldIds as err:
+        except DuplicationOfFieldIdsExist as err:
             return presenter.raise_exception_for_duplicate_field_ids(err)
         except InvalidTaskTemplateIds as err:
             return presenter.raise_exception_for_invalid_task_template_id(err)
@@ -135,10 +137,10 @@ class CreateOrUpdateTaskInteractor:
 
     def _validate_for_duplicate_field_ids(
             self, field_ids: List[str]
-    ) -> Optional[DuplicatedFieldIds]:
+    ) -> Optional[DuplicationOfFieldIdsExist]:
         duplicate_field_ids = self._get_duplicates_in_given_list(field_ids)
         if duplicate_field_ids:
-            raise DuplicatedFieldIds(duplicate_field_ids)
+            raise DuplicationOfFieldIdsExist(duplicate_field_ids)
         return
 
     @staticmethod

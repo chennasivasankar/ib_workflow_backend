@@ -1,5 +1,6 @@
 import factory
 
+from ib_tasks.constants.constants import VALID_FIELD_TYPES
 from ib_tasks.models.gof import GoF
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes
 from ib_tasks.models.task_template import TaskTemplate
@@ -75,7 +76,7 @@ class GoFFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = GoF
 
-    gof_id = factory.Sequence(lambda counter: "gof_{}".format(counter + 1))
+    gof_id = factory.Sequence(lambda counter: "gof_{}".format(counter))
     display_name = factory.Sequence(
         lambda counter: "GOF_DISPLAY_NAME-{}".format(counter)
     )
@@ -90,8 +91,9 @@ class FieldFactory(factory.django.DjangoModelFactory):
     display_name = factory.Sequence(
         lambda counter: "DISPLAY_NAME-{}".format(counter)
     )
-    field_type = FieldTypes.PLAIN_TEXT
+    field_type = factory.Iterator(VALID_FIELD_TYPES)
     required = True
+    gof_id = factory.SubFactory(GoFFactory)
 
     class Params:
         optional = factory.Trait(

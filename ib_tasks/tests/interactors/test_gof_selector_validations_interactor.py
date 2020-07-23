@@ -142,7 +142,7 @@ class TestGoFSelectorValidationsInteractor:
             self, storage_mock, reset_field_dto
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions \
+        from ib_tasks.exceptions.gofs_custom_exceptions \
             import InvalidGOFIds
         from ib_tasks.constants.exception_messages \
             import INVALID_GOF_IDS_EXCEPTION_MESSAGE

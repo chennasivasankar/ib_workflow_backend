@@ -2,13 +2,16 @@ import factory
 import pytest
 from typing import List
 
+from ib_tasks.constants.constants import VALID_FIELD_TYPES
 from ib_tasks.models import FieldRole
 from ib_tasks.models.gof_role import GoFRole
 from ib_tasks.tests.factories.models import GoFFactory, TaskTemplateFactory, \
     GoFRoleFactory, FieldFactory, FieldRoleFactory
 from ib_tasks.tests.factories.storage_dtos import (GoFRoleDTOFactory,
-    GoFDTOFactory, GoFRolesDTOFactory, CompleteGoFDetailsDTOFactory,
-    FieldTypeDTOFactory)
+                                                   GoFDTOFactory,
+                                                   GoFRolesDTOFactory,
+                                                   CompleteGoFDetailsDTOFactory,
+                                                   FieldTypeDTOFactory)
 from ib_tasks.tests.factories.storage_dtos \
     import GoFRoleDTOFactory, FieldDTOFactory
 from ib_tasks.constants.enum import FieldTypes
@@ -41,7 +44,7 @@ class TestTasksStorageImplementation:
     ):
         # Arrange
         gofs = GoFFactory.create_batch(size=2)
-        gof_ids = ["GOF_ID-1", "GOF_ID-2", "GOF_ID-3"]
+        gof_ids = ["gof_1", "gof_2", "gof_3"]
         expected_existing_gof_ids = [gof.gof_id for gof in gofs]
 
         # Act
@@ -164,9 +167,8 @@ class TestTasksStorageImplementation:
                     assert gof.display_name == gof_dto.gof_display_name
                     assert gof.max_columns == gof_dto.max_columns
 
-
     def test_get_existing_field_ids_in_given_field_ids(
-            self, storage, reset_factories
+            self, storage
     ):
         # Arrange
         field_ids = ["field0", "field1", "field2"]
@@ -181,7 +183,7 @@ class TestTasksStorageImplementation:
         assert expected_existing_field_ids == actual_existing_field_ids
 
     def test_create_fields_given_field_dtos(
-            self, storage, reset_factories
+            self, storage
     ):
         # Arrange
 
@@ -227,7 +229,7 @@ class TestTasksStorageImplementation:
         self._assert_fileds(field_dtos)
 
     def test_update_fields_given_field_dtos(
-            self, storage, reset_factories
+            self, storage
     ):
         # Arrange
         FieldFactory(field_id="field1")
@@ -270,7 +272,7 @@ class TestTasksStorageImplementation:
             assert field_obj.validation_regex == field_dto.validation_regex
 
     def test_create_field_roles_given_field_roles_dtos(
-            self, storage, reset_factories
+            self, storage
     ):
         # Arrange
         from ib_tasks.tests.factories.storage_dtos import FieldRoleDTOFactory
@@ -345,7 +347,8 @@ class TestTasksStorageImplementation:
         # Assert
         assert expected_field_type_dtos == actual_field_type_dtos
 
-    def test_check_is_template_exists_with_valid_template_id_returns_true(self, storage):
+    def test_check_is_template_exists_with_valid_template_id_returns_true(self,
+                                                                          storage):
 
         # Arrange
         task_template = TaskTemplateFactory()

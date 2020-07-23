@@ -1,6 +1,8 @@
 from ib_tasks.exceptions.custom_exceptions import InvalidFieldIds, \
-    InvalidGoFIds, InvalidTaskTemplateIds, DuplicatedFieldIds, DuplicateGoFIds, \
+    InvalidGoFIds, InvalidTaskTemplateIds, DuplicatedFieldIds, \
     EmptyValueForPlainTextField
+from ib_tasks.exceptions.fields_custom_exceptions import \
+    DuplicationOfFieldIdsExist
 from ib_tasks.interactors.presenter_interfaces.create_or_update_task_presenter \
     import CreateOrUpdateTaskPresenterInterface
 from django.http import response
@@ -10,7 +12,7 @@ import json
 class CreateOrUpdateTaskPresenterImplementation(
     CreateOrUpdateTaskPresenterInterface
 ):
-    def raise_exception_for_duplicate_field_ids(self, err: DuplicatedFieldIds):
+    def raise_exception_for_duplicate_field_ids(self, err: DuplicationOfFieldIdsExist):
         from ib_tasks.constants.exception_messages import \
             DUPLICATE_FIELD_IDS
         response_message = DUPLICATE_FIELD_IDS[0].format(

@@ -13,10 +13,10 @@ class TestCreateOrUpdateTaskPresenterImplementation:
             self, presenter, snapshot
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import \
-            DuplicatedFieldIds
-        err = DuplicatedFieldIds(
-            duplicated_field_ids=["FIELD_ID-1", "FIELD_ID-2"]
+        from ib_tasks.exceptions.fields_custom_exceptions import \
+            DuplicationOfFieldIdsExist
+        err = DuplicationOfFieldIdsExist(
+            field_ids=["FIELD_ID-1", "FIELD_ID-2"]
         )
 
         # Act

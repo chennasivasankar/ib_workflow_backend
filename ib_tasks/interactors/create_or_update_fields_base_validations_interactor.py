@@ -2,6 +2,7 @@ from typing import List, Optional
 
 import collections
 
+from ib_tasks.exceptions.custom_exceptions import FieldIdEmptyValueException
 from ib_tasks.exceptions.fields_custom_exceptions import \
     DuplicationOfFieldIdsExist, InvalidValueForFieldDisplayName, \
     InvalidValueForFieldType
@@ -10,7 +11,6 @@ from ib_tasks.interactors.storage_interfaces.dtos import FieldDTO
 
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
-
 
 
 class CreateOrUpdateFieldsBaseValidationInteractor:
