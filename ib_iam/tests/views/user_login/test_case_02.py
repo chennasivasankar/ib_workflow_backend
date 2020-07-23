@@ -1,7 +1,6 @@
 """
 Test ALL Exceptions
 """
-from unittest.mock import patch
 
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
@@ -21,7 +20,8 @@ class TestCase02UserLoginAPITestCase(TestUtils):
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
             prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock
         get_tokens_dto_for_given_email_and_password_dto \
-            = prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock(mocker)
+            = prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock(
+            mocker)
         get_tokens_dto_for_given_email_and_password_dto.side_effect \
             = UserAccountDoesNotExist
 
@@ -47,7 +47,8 @@ class TestCase02UserLoginAPITestCase(TestUtils):
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
             prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock
         get_tokens_dto_for_given_email_and_password_dto \
-            = prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock(mocker)
+            = prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock(
+            mocker)
         get_tokens_dto_for_given_email_and_password_dto.side_effect \
             = IncorrectPassword
         self._create_user()
@@ -66,7 +67,8 @@ class TestCase02UserLoginAPITestCase(TestUtils):
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
             prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock
         get_tokens_dto_for_given_email_and_password_dto \
-            = prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock(mocker)
+            = prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock(
+            mocker)
         get_tokens_dto_for_given_email_and_password_dto.side_effect \
             = InvalidEmail
         self._create_user()

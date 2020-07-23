@@ -596,18 +596,6 @@
       "required": true,
       "type": "string"
     },
-    "OffsetQueryParameter": {
-      "name": "offset",
-      "in": "query",
-      "required": true,
-      "type": "integer"
-    },
-    "LimitQueryParameter": {
-      "name": "limit",
-      "in": "query",
-      "required": true,
-      "type": "integer"
-    },
     "AddUserParameter": {
       "name": "AddUser",
       "description": "Details of User to add",

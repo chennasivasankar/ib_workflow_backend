@@ -1,7 +1,6 @@
 """
 All Exception in the user update password
 """
-from unittest.mock import patch
 
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
@@ -22,7 +21,8 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
             prepare_update_user_password_with_reset_password_token_mock
         update_user_password_mock \
-            = prepare_update_user_password_with_reset_password_token_mock(mocker)
+            = prepare_update_user_password_with_reset_password_token_mock(
+            mocker)
         update_user_password_mock.side_effect = TokenDoesNotExist()
         body = {'password': 'string'}
         path_params = {}
@@ -40,7 +40,8 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
             prepare_update_user_password_with_reset_password_token_mock
         update_user_password_mock \
-            = prepare_update_user_password_with_reset_password_token_mock(mocker)
+            = prepare_update_user_password_with_reset_password_token_mock(
+            mocker)
         update_user_password_mock.side_effect = TokenHasExpired()
         body = {'password': 'string'}
         path_params = {}
@@ -60,7 +61,8 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
             prepare_update_user_password_with_reset_password_token_mock
         update_user_password_mock \
-            = prepare_update_user_password_with_reset_password_token_mock(mocker)
+            = prepare_update_user_password_with_reset_password_token_mock(
+            mocker)
         update_user_password_mock.side_effect \
             = PasswordMinLength
 
@@ -82,7 +84,8 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
             prepare_update_user_password_with_reset_password_token_mock
         update_user_password_mock \
-            = prepare_update_user_password_with_reset_password_token_mock(mocker)
+            = prepare_update_user_password_with_reset_password_token_mock(
+            mocker)
         update_user_password_mock.side_effect \
             = PasswordAtLeastOneSpecialCharacter
         reset_password_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"

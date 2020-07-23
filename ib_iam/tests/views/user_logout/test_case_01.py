@@ -1,7 +1,6 @@
 """
 Update user password
 """
-from unittest.mock import patch, Mock
 
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
