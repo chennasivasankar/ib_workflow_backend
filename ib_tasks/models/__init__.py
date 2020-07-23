@@ -16,7 +16,9 @@ from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.global_constant import GlobalConstant
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
+from .task_status_variable import TaskStatusVariable
 __all__ = [
+    "TaskStatusVariable",
     "ActionPermittedRoles",
     "Stage",
     "StageAction",
@@ -25,5 +27,9 @@ __all__ = [
     "TaskTemplateGlobalConstants",
     "TaskStage",
     "Field", "FieldRole", "GoF", "GoFRole", "TaskTemplate", "GlobalConstant",
-    "TaskTemplateGoFs"
+    "TaskTemplateGoFs",
+    "Field", "FieldRole", "GoF", "GoFRole",
+    "Stage", "StageAction", "TaskTemplateStatusVariables",
+    "TaskTemplate",
+    "GlobalConstant"
 ]

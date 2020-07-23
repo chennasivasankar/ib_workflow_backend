@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Any
 
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GroupOfFieldsDTO
@@ -31,3 +31,11 @@ class GoFWithOrderAndAddAnotherDTO:
 class GoFsWithTemplateIdDTO:
     template_id: str
     gof_dtos: List[GoFWithOrderAndAddAnotherDTO]
+
+
+@dataclass()
+class FieldDisplayDTO:
+    field_id: str
+    field_type: str
+    key: str
+    value: Any

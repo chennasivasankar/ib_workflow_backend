@@ -1,6 +1,11 @@
 from typing import List
 
 
+
+class InvalidTaskException(Exception):
+    def __init__(self, task_id: str):
+        self.task_id = task_id
+
 class InvalidTaskIdException(Exception):
     def __init__(self, task_id: str):
         self.task_id = task_id
@@ -37,6 +42,11 @@ class TemplateDoesNotExists(Exception):
 
 class InvalidTemplateIds(Exception):
     def __int__(self, message: str):
+        self.message = message
+
+
+class TaskTemplatesDoesNotExists(Exception):
+    def __init__(self, message: str):
         self.message = message
 
 

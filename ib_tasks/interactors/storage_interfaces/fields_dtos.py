@@ -41,6 +41,7 @@ class FieldRoleDTO:
     role: str
     permission_type: PermissionTypes
 
+
 @dataclass
 class FieldTypeDTO:
     field_id: str
@@ -53,3 +54,9 @@ class FieldDetailsDTO:
     stage_id: str
     key: str
     value: str
+
+
+@dataclass
+class UserFieldPermissionDTO:
+    field_id: str
+    permission_type: PermissionTypes
