@@ -100,3 +100,28 @@ INVALID_COMPANY_FOR_DELETE_COMPANY = (
     "Given team is invalid(NotFound)",
     "INVALID_TEAM"
 )
+
+USER_HAS_NO_ACCESS_FOR_UPDATE_COMPANY = (
+    "User has no access to update company details as he is not an admin",
+    "USER_HAS_NO_ACCESS"
+)
+
+INVALID_COMPANY_FOR_UPDATE_COMPANY = (
+    "Given company is invalid(NotFound)",
+    "INVALID_COMPANY"
+)
+
+COMPANY_NAME_ALREADY_EXISTS_FOR_UPDATE_COMPANY = (
+    "Given '%s' is already exists, so updating name is not possible.",
+    "TEAM_NAME_ALREADY_EXISTS"
+)
+
+DUPLICATE_USERS_FOR_UPDATE_COMPANY = (
+    "Given users consists of duplicates, so update is not possible",
+    "DUPLICATE_USERS"
+)
+
+INVALID_USERS_FOR_UPDATE_COMPANY = (
+    "Given users are invalid(not found), so update is not possible",
+    "INVALID_USERS"
+)
