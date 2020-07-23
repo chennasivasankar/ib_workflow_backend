@@ -338,7 +338,44 @@
          "schema":{
             "$ref":"#/definitions/CreateTaskRequestBody"
          }
-      }
+      },
+
+     "SearchableTypeParameter": {
+      "name": "SearchableTypeParameter",
+      "description": "Searchable Type Parameter",
+      "in": "query",
+      "required": true,
+      "type": "string",
+      "enum": [
+       "CITY",
+       "STATE",
+      "COUNTRY",
+      "VENDOR",
+      "USER",
+     "COMPANY",
+    "TEAM"]
+    },
+    "LimitParameter": {
+      "name": "LimitParameter",
+      "description": "Limit Parameter",
+      "in": "query",
+      "type": "integer"
+    },
+    "OffsetParameter": {
+      "name": "OffsetParameter",
+      "description": "Offset Parameter",
+      "in": "query",
+      "required": true,
+      "type": "integer"
+    },
+    "SearchableQueryParameter": {
+      "name": "SearchableQueryParameter",
+      "description": "Searchable Query Parameter",
+      "in": "query",
+      "required": true,
+      "type": "string"
+
+    }
    },
    "responses":{
       "CreateTaskSuccessResponse":{
@@ -412,6 +449,56 @@
             ]
           }
         }
+      }
+    },
+     "SearchableValuesResponse": {
+      "description": "OK",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      }
+    },
+    "SearchableValuesFailureResponse": {
+       "description": "Searchable Values Failure Response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer",
+            "enum": [
+              400
+            ]
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "SEARCHABLE_TYPE_DOES_NOT_EXIST",
+              "LIMIT_VALUE_SHOULD_BE_GREATER_THAN_ZERO",
+              "OFFSET_VALUE_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE",
+              "SEARCH_QUERY_SHOULD_NOT_BE_EMPTY",
+              "NO_SEARCH_RESULTS_FOUND"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
       }
     }
    },
@@ -493,6 +580,44 @@
             }
           }
         }
+      },
+     "/task/field_search/v1/": {
+      "get": {
+        "operationId": "get_searchable_values",
+        "summary": "get searchable values based on search type",
+        "description": "get searchable values based on search type given a query",
+        "security":[
+           {
+              "oauth":[
+                 "read"
+              ]
+           }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/SearchableTypeParameter"
+          },
+          {
+            "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/SearchableQueryParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/SearchableValuesResponse"
+          },
+         "400": {
+            "$ref": "#/responses/SearchableValuesFailureResponse"
+          }
+        }
       }
+
+
+    }
    }
 }
