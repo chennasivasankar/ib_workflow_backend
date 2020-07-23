@@ -1,17 +1,18 @@
 from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin
 from ib_iam.interactors.presenter_interfaces.get_user_options_presenter_interface \
     import GetUserOptionsPresenterInterface
-from ib_iam.interactors.storage_interfaces.storage_interface \
-    import StorageInterface
+from ib_iam.interactors.storage_interfaces.get_user_options_storage_interface \
+    import GetUserOptionsStorageInterface
 
 
 class GetUserOptionsDetails:
 
-    def __init__(self, storage: StorageInterface):
+    def __init__(self, storage: GetUserOptionsStorageInterface):
         self.storage = storage
 
-    def get_configuration_details_wrapper(self, user_id: str,
-                                          presenter: GetUserOptionsPresenterInterface):
+    def get_configuration_details_wrapper(
+            self, user_id: str,
+            presenter: GetUserOptionsPresenterInterface):
         try:
             configuration_details_dto = self.get_configuration_details(
                 user_id=user_id)

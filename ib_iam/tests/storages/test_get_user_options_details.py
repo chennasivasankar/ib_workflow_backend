@@ -1,6 +1,6 @@
 import pytest
 
-from ib_iam.storages.storage_implementation import StorageImplementation
+from ib_iam.storages.get_user_options_storage_implementation import GetUserOptionsStorageImplementation
 from ib_iam.tests.common_fixtures.storages import reset_sequence
 
 
@@ -35,7 +35,7 @@ class TestGetUserOptionsDetailsStorage:
     @pytest.mark.django_db
     def test_get_companies(self, companies):
         # Arrange
-        storage = StorageImplementation()
+        storage = GetUserOptionsStorageImplementation()
         from ib_iam.interactors.storage_interfaces.dtos import CompanyDTO
         expected_ouput = [
             CompanyDTO(company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
@@ -52,7 +52,7 @@ class TestGetUserOptionsDetailsStorage:
     @pytest.mark.django_db
     def test_get_teams(self, teams):
         # Arrange
-        storage = StorageImplementation()
+        storage = GetUserOptionsStorageImplementation()
         from ib_iam.interactors.storage_interfaces.dtos import TeamDTO
         expected_ouput = [
             TeamDTO(team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
@@ -69,7 +69,7 @@ class TestGetUserOptionsDetailsStorage:
     @pytest.mark.django_db
     def test_get_roles(self, roles):
         # Arrange
-        storage = StorageImplementation()
+        storage = GetUserOptionsStorageImplementation()
         from ib_iam.interactors.storage_interfaces.dtos import RoleIdAndNameDTO
         expected_ouput = [
             RoleIdAndNameDTO(role_id='1', name='role 0'),

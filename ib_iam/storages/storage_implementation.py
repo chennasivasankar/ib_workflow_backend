@@ -107,45 +107,6 @@ class StorageImplementation(StorageInterface):
         UserDetails.objects.create(user_id=user_id, is_admin=is_admin,
                                    company_id=company_id)
 
-    def get_companies(self) -> List[CompanyDTO]:
-        from ib_iam.models import Company
-        companies = []
-        company_query_set = Company.objects.values('company_id', 'name')
-        for company in company_query_set:
-            companies.append(
-                CompanyDTO(
-                    company_id=str(company['company_id']),
-                    company_name=company['name']
-                )
-            )
-        return companies
-
-    def get_teams(self) -> List[TeamDTO]:
-        teams = []
-        from ib_iam.models import Team
-        team_query_set = Team.objects.values('team_id', 'name')
-        for team in team_query_set:
-            teams.append(
-                TeamDTO(
-                    team_id=str(team['team_id']),
-                    team_name=team['name']
-                )
-            )
-        return teams
-
-    def get_roles(self) -> List[RoleIdAndNameDTO]:
-        roles = []
-        from ib_iam.models import Role
-        team_query_set = Role.objects.values('role_id', 'name')
-        for role in team_query_set:
-            roles.append(
-                RoleIdAndNameDTO(
-                    role_id=str(role['role_id']),
-                    name=role['name']
-                )
-            )
-        return roles
-
     def validate_role_ids(self, role_ids):
         from ib_iam.models import Role
         role_objs_count = Role.objects.filter(

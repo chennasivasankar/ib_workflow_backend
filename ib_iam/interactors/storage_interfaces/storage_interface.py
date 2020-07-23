@@ -36,17 +36,8 @@ class StorageInterface(ABC):
                      role_ids: List[int], team_ids: List[str]):
         pass
 
-    @abstractmethod
-    def get_companies(self) -> List[CompanyDTO]:
-        pass
 
-    @abstractmethod
-    def get_teams(self) -> List[TeamDTO]:
-        pass
 
-    @abstractmethod
-    def get_roles(self) -> List[RoleIdAndNameDTO]:
-        pass
 
     @abstractmethod
     def validate_role_ids(self, role_ids):
