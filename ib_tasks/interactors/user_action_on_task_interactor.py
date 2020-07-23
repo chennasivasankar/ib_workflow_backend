@@ -25,7 +25,7 @@ class InvalidBoardIdException(Exception):
 class UserActionOnTaskInteractor:
 
     def __init__(self, user_id: str, board_id: str,
-                 task_id: str, action_id: str, storage: StorageInterface):
+                 task_id: int, action_id: int, storage: StorageInterface):
         self.user_id = user_id
         self.board_id = board_id
         self.task_id = task_id

@@ -19,7 +19,7 @@ class InvalidMethodFound(Exception):
 class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
 
     def __init__(self, storage: StorageInterface,
-                 action_id: str):
+                 action_id: int):
         self.storage = storage
         self.action_id = action_id
 
@@ -52,7 +52,7 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
             for status_variable_dto in status_variable_dtos
         ]
 
-    def _get_method_object_for_condition(self, action_id: str):
+    def _get_method_object_for_condition(self, action_id: int):
         path_name = self.storage.get_path_name_to_action(
             action_id=action_id
         )

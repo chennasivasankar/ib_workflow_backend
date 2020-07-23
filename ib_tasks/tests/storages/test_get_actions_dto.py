@@ -11,10 +11,13 @@ class TestGetActionsDto:
             import StorageImplementation
         from ib_tasks.tests.factories.models \
             import StageActionFactory
+        from ib_tasks.tests.factories.models import StageModelFactory
+        StageModelFactory.reset_sequence(0)
         StageActionFactory.reset_sequence(1)
         StageActionFactory()
         storage = StorageImplementation()
-        from ib_tasks.interactors.storage_interfaces.dtos import ActionDTO
+        from ib_tasks.interactors.storage_interfaces.actions_dtos\
+            import ActionDTO
         expected_dtos = [
             ActionDTO(
                 action_id=1,
@@ -24,6 +27,7 @@ class TestGetActionsDto:
                 button_color="#fafafa"
             )
         ]
+        StageActionFactory.reset_sequence(0)
 
         # Act
         response = storage.get_actions_dto(action_ids=action_ids)
