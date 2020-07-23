@@ -114,14 +114,8 @@
           "type": "string",
           "example": "FIN_FIRST_NAME"
         },
-        "field_response_single_value": {
+        "field_response": {
           "type": "string"
-        },
-        "field_response_multiple_values": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
         }
       },
       "required": [
@@ -134,6 +128,9 @@
         "gof_id": {
           "type": "string"
         },
+        "same_gof_order": {
+          "type": "number"
+        },
         "gof_fields": {
           "type": "array",
           "items": {
@@ -143,6 +140,7 @@
       },
       "required": [
         "gof_id",
+        "same_gof_order",
         "gof_fields"
       ]
     },
@@ -380,7 +378,7 @@
         "order": {
           "type": "integer"
         },
-        "enable_multiple_gofs": {
+        "enable_add_another": {
           "type": "boolean"
         },
         "fields": {
@@ -394,7 +392,7 @@
         "gof_id",
         "gof_display_name",
         "order",
-        "enable_multiple_gofs",
+        "enable_add_another",
         "max_columns",
         "fields"
       ]
@@ -435,6 +433,9 @@
               "gof_id": {
                 "type": "string"
               },
+              "same_gof_order": {
+                "type": "number"
+              },
               "gof_fields": {
                 "type": "array",
                 "items": {
@@ -443,14 +444,8 @@
                     "field_id": {
                       "type": "string"
                     },
-                    "field_response_single_value": {
+                    "field_response": {
                       "type": "string"
-                    },
-                    "field_response_multiple_values": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
                     },
                     "is_readable": {
                       "type": "boolean"
@@ -638,30 +633,6 @@
     }
   },
   "paths": {
-    "/task_templates/v1/": {
-      "get": {
-        "operationId": "get_task_templates",
-        "summary": "Get list of task templates along with group of fields",
-        "description": "Get list of task templates along with group of fields",
-        "security": [
-          {
-            "oauth": [
-              "read"
-            ]
-          }
-        ],
-        "parameters": [
-        ],
-        "responses": {
-          "200": {
-            "$ref": "#/responses/GetTaskTemplateResponse"
-          },
-          "404": {
-            "$ref": "#/responses/TaskTemplatesDoesNotExistsResponse"
-          }
-        }
-      }
-    },
     "/boards/{board_id}/tasks/{task_id}/actions/{action_id}/v1/": {
       "post": {
         "operationId": "perform_task_action",
@@ -703,6 +674,30 @@
             "schema": {
               "$ref": "#/definitions/InvalidTaskActionDetails"
             }
+          }
+        }
+      }
+    },
+    "/task_templates/v1/": {
+      "get": {
+        "operationId": "get_task_templates",
+        "summary": "Get list of task templates along with group of fields",
+        "description": "Get list of task templates along with group of fields",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetTaskTemplateResponse"
+          },
+          "404": {
+            "$ref": "#/responses/TaskTemplatesDoesNotExistsResponse"
           }
         }
       }
