@@ -10,7 +10,8 @@ from ib_iam.interactors.storage_interfaces.dtos import (
     TeamWithUserIdsDTO,
     CompanyDTO,
     CompanyWithEmployeesCountDTO,
-    CompanyNameLogoAndDescriptionDTO
+    CompanyNameLogoAndDescriptionDTO,
+    CompanyDetailsWithUserIdsDTO
 )
 
 team_ids = [
@@ -120,20 +121,10 @@ class CompanyNameLogoAndDescriptionDTOFactory(factory.Factory):
     description = factory.sequence(lambda n: "company_description%d" % n)
     logo_url = factory.sequence(lambda n: "logo_url%d" % n)
 
-class CompanyNameLogoAndDescriptionDTOFactory(factory.Factory):
-    class Meta:
-        model = CompanyNameLogoAndDescriptionDTO
-
-    name = factory.sequence(lambda n: "company1")
-    description = factory.sequence(lambda n: "company_description%d" % n)
-    logo_url = factory.sequence(lambda n: "logo_url%d" % n)
-
 
 class CompanyDTOFactory(
     CompanyNameLogoAndDescriptionDTOFactory, factory.Factory
 ):
-
-class CompanyDTOFactory(factory.Factory):
     class Meta:
         model = CompanyDTO
 
