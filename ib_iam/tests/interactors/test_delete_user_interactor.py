@@ -24,9 +24,9 @@ class TestDeleteUserInteractor:
         return presenter
 
     @staticmethod
-    def deactivate_delete_user_id_from_ib_users(mocker):
+    def deactivate_delete_user_id_in_ib_users(mocker):
         mock = mocker.patch(
-            "ib_iam.adapters.user_service.UserService.deactivate_delete_user_id_from_ib_users"
+            "ib_iam.adapters.user_service.UserService.deactivate_delete_user_id_in_ib_users"
         )
         return mock
 
@@ -166,7 +166,7 @@ class TestDeleteUserInteractor:
         presenter_mock.raise_user_does_not_have_delete_permission_exception. \
             assert_called_once()
 
-    def test_delete_user_given_valid_details_then_deactivate_delete_user_from_ib_users(
+    def test_delete_user_given_valid_details_then_deactivate_delete_user_in_ib_users(
             self, storage_mock, presenter_mock, mocker):
         admin_user_id = "1"
         delete_user_id = "2"
@@ -175,7 +175,7 @@ class TestDeleteUserInteractor:
         user_details_dto = UserDTOFactory.create(user_id=delete_user_id,
                                                  is_admin=False)
         deactivate_delete_user_mocker = self. \
-            deactivate_delete_user_id_from_ib_users(mocker=mocker)
+            deactivate_delete_user_id_in_ib_users(mocker=mocker)
 
         storage_mock.check_is_admin_user.return_value = True
         storage_mock.get_user_details.return_value = user_details_dto

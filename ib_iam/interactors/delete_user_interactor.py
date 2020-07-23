@@ -29,6 +29,8 @@ class DeleteUserInteractor:
         self.storage.delete_user(user_id=delete_user_id)
         self.storage.delete_user_roles(user_id=delete_user_id)
         self.storage.delete_user_teams(user_id=delete_user_id)
+        self._deactivate_delete_user_id_in_ib_users(
+            delete_user_id=delete_user_id)
 
     def _validate_delete_user_details(self, user_id: str, delete_user_id: str):
         self._validate_user_is_admin(user_id=user_id)
@@ -44,3 +46,10 @@ class DeleteUserInteractor:
             user_id=delete_user_id)
         if user_details_dto.is_admin:
             raise UserDoesNotHaveDeletePermission
+
+    @staticmethod
+    def _deactivate_delete_user_id_in_ib_users(delete_user_id: str):
+        from ib_iam.adapters.service_adapter import get_service_adapter
+        service_adapter = get_service_adapter()
+        service_adapter.user_service. \
+            deactivate_delete_user_id_in_ib_users(user_id=delete_user_id)
