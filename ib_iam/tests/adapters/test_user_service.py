@@ -67,7 +67,7 @@ class TestUserService:
         from ib_iam.adapters.dtos import UserProfileDTO
         expected_user_profile_dto = UserProfileDTO(
             user_id='eca1a0c1-b9ef-4e59-b415-60a28ef17b10',
-            name='test', email='test@gmail.com',
+            name='test', email='test@gmail.com', profile_pic_url="test.com"
         )
         from ib_users.interactors.user_profile_interactor import \
             GetUserProfileDTO

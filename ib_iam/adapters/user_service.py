@@ -93,5 +93,6 @@ class UserService:
             user_id=user_profile_dto.user_id,
             name=user_profile_dto.name,
             email=user_profile_dto.email,
+            profile_pic_url=user_profile_dto.profile_pic_url
         )
         return converted_user_profile_dto

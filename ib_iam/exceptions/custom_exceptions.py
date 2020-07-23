@@ -68,3 +68,12 @@ class RoleIdFormatIsInvalid(Exception):
 
 class DuplicateRoleIds(Exception):
     pass
+
+
+class InvalidUserId(Exception):
+    pass
+
+
+class InvalidUserIds(Exception):
+    def __init__(self, user_ids):
+        self.user_ids = user_ids
