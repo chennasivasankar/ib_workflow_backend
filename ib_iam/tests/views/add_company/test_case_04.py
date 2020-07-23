@@ -1,15 +1,14 @@
 """
-# Returns company_id as valid parameters are given
+Raises DuplicateMembers exception as
+as we send duplicate member ids
 """
-from uuid import UUID
 
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ib_iam.tests.common_fixtures.adapters.uuid_mock import prepare_uuid_mock
 
 
-class TestCase01AddCompanyAPITestCase(TestUtils):
+class TestCase04AddCompanyAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -17,10 +16,8 @@ class TestCase01AddCompanyAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.mark.django_db
-    def test_case(self, mocker, snapshot, setup):
-        mock = prepare_uuid_mock(mocker)
-        mock.return_value = UUID("f2c02d98-f311-4ab2-8673-3daa00757002")
-        body = {'name': 'string', 'description': 'string', 'logo_url': 'string', 'user_ids': ["2", "3"]}
+    def test_case(self, snapshot, setup):
+        body = {'name': 'company1', 'description': '', 'logo_url': 'string', 'user_ids': ["2", "3", "2"]}
         path_params = {}
         query_params = {}
         headers = {}
@@ -36,5 +33,3 @@ class TestCase01AddCompanyAPITestCase(TestUtils):
         from ib_iam.tests.factories.models import UserDetailsFactory
         UserDetailsFactory.reset_sequence(1)
         UserDetailsFactory.create(user_id=user_id, is_admin=True)
-        for user_id in ["2", "3"]:
-            UserDetailsFactory.create(user_id=user_id, is_admin=True)

@@ -1,5 +1,6 @@
 """
-# Returns company_id as valid parameters are given
+Raises CompanyNameAlreadyExists exception as
+the requested name is already assigned to another company
 """
 from uuid import UUID
 
@@ -9,7 +10,7 @@ from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ib_iam.tests.common_fixtures.adapters.uuid_mock import prepare_uuid_mock
 
 
-class TestCase01AddCompanyAPITestCase(TestUtils):
+class TestCase03AddCompanyAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -20,7 +21,7 @@ class TestCase01AddCompanyAPITestCase(TestUtils):
     def test_case(self, mocker, snapshot, setup):
         mock = prepare_uuid_mock(mocker)
         mock.return_value = UUID("f2c02d98-f311-4ab2-8673-3daa00757002")
-        body = {'name': 'string', 'description': 'string', 'logo_url': 'string', 'user_ids': ["2", "3"]}
+        body = {'name': 'company1', 'description': '', 'logo_url': 'string', 'user_ids': ["2", "3"]}
         path_params = {}
         query_params = {}
         headers = {}
@@ -33,8 +34,11 @@ class TestCase01AddCompanyAPITestCase(TestUtils):
     def setup(self, api_user):
         user_obj = api_user
         user_id = str(user_obj.id)
-        from ib_iam.tests.factories.models import UserDetailsFactory
-        UserDetailsFactory.reset_sequence(1)
-        UserDetailsFactory.create(user_id=user_id, is_admin=True)
-        for user_id in ["2", "3"]:
-            UserDetailsFactory.create(user_id=user_id, is_admin=True)
+        # TODO Check this out after storage implementation and writing model factories
+        # from ib_iam.tests.factories.models import (
+        #     UserDetailsFactory, CompanyFactory
+        # )
+        # UserDetailsFactory.reset_sequence(1)
+        # CompanyFactory.reset_sequence(1)
+        # UserDetailsFactory.create(user_id=user_id, is_admin=True)
+        # CompanyFactory.create(name="company1")
