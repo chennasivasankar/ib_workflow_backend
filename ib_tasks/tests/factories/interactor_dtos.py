@@ -1,11 +1,10 @@
 import factory
-from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
-from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO
+
+from ib_tasks.interactors.gofs_dtos \
+    import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 
-from ib_tasks.interactors.stages_dtos import (
-    StagesActionDTO
-)
+
 from ib_tasks.interactors.stages_dtos import \
     TaskTemplateStageActionDTO, StageActionDTO, StagesActionDTO
 from ib_tasks.interactors.task_dtos import TaskDTO, GoFFieldsDTO, \
@@ -36,6 +35,17 @@ class TaskTemplateStageActionDTOFactory(factory.Factory):
     button_text = factory.Sequence(lambda n: 'button_text_%d' % (n+1))
     button_color = factory.Sequence(lambda n: 'button_color_%d' % (n+1))
     function_path = "sample_function_path"
+
+
+class FieldDisplayDTOFactory(factory.Factory):
+
+    class Meta:
+        model = FieldDisplayDTO
+
+    field_id = factory.Sequence(lambda n: 'field_%d' % (n + 1))
+    field_type = factory.Sequence(lambda n: 'field_type_%d' % (n + 1))
+    key = factory.Sequence(lambda n: 'key_%d' % (n + 1))
+    value = factory.Sequence(lambda n: 'value_%d' % (n + 1))
 
 
 class GlobalConstantsDTOFactory(factory.Factory):
