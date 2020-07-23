@@ -1,8 +1,7 @@
 import collections
 import json
 
-from ib_tasks.interactors.storage_interfaces.dtos \
-    import FieldDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO
 
 
 class ImageOrFileUploaderValidationsInteractor:

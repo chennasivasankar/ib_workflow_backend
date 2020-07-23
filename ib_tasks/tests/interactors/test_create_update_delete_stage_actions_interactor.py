@@ -220,8 +220,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         from ib_tasks.tests.factories.interactor_dtos import StageActionDTOFactory
         StageActionDTOFactory.reset_sequence(0)
         actions_dto = StageActionDTOFactory.create_batch(size=2)
-        from ib_tasks.interactors.storage_interfaces.dtos \
-            import StageActionNamesDTO
+        from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO
         stage_actions_dto = [
             StageActionNamesDTO(
                 stage_id="stage_1", action_names=["action_name_1"]
@@ -252,8 +251,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
 
     @staticmethod
     def test_given_delete_stage_actions_deletes_actions(mocker):
-        from ib_tasks.interactors.storage_interfaces.dtos \
-            import StageActionNamesDTO
+        from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO
         expected_stage_actions = [
             StageActionNamesDTO(
                 stage_id="stage_3", action_names=["action_name_3"]
