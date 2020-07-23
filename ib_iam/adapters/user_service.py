@@ -36,12 +36,13 @@ class UserService:
             import UserAccountAlreadyExistWithThisEmail
         from ib_users.exceptions.registration_exceptions \
             import AccountWithThisEmailAlreadyExistsException
+
         try:
             user_id = self.interface.create_user_account_with_email(
                 email=email)
             return user_id
         except AccountWithThisEmailAlreadyExistsException:
-            raise UserAccountAlreadyExistWithThisEmail()
+            raise UserAccountAlreadyExistWithThisEmail
 
     def create_user_profile(
             self, user_id: str, user_profile_dto: UserProfileDTO):
