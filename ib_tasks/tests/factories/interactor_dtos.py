@@ -1,11 +1,13 @@
 import factory
-from ib_tasks.interactors.dtos import GlobalConstantsDTO, \
-    GoFsWithTemplateIdDTO, GoFWithOrderAndAddAnotherDTO
-from ib_tasks.interactors.dtos import GlobalConstantsDTO, StagesActionDTO
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
+from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 
-from ib_tasks.interactors.dtos import (
-    StageActionDTO, TaskTemplateStageActionDTO, StagesActionDTO
+from ib_tasks.interactors.stages_dtos import (
+    StagesActionDTO
 )
+from ib_tasks.interactors.stages_dtos import \
+    TaskTemplateStageActionDTO, StageActionDTO, StagesActionDTO
 
 
 class StageActionDTOFactory(factory.Factory):

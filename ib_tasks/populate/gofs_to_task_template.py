@@ -1,6 +1,5 @@
 from typing import List
-from ib_tasks.interactors.dtos import GoFWithOrderAndAddAnotherDTO, \
-    GoFsWithTemplateIdDTO
+from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO
 from ib_tasks.utils.get_google_sheet import get_google_sheet
 
 

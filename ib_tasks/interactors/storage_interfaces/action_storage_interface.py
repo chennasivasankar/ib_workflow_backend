@@ -6,8 +6,8 @@ Author: Pavankumar Pamuru
 from abc import ABC
 from abc import abstractmethod
 from typing import List
-from ib_tasks.interactors.storage_interfaces.dtos import StageActionNamesDTO
-from ib_tasks.interactors.dtos import StagesActionDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO
+from ib_tasks.interactors.stages_dtos import StagesActionDTO
 
 
 class ActionStorageInterface(ABC):

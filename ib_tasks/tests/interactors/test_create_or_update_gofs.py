@@ -4,7 +4,7 @@ import factory
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.interactors.create_or_update_gofs import \
     CreateOrUpdateGoFsInteractor
-from ib_tasks.interactors.storage_interfaces.dtos import GoFRoleDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFRoleDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
 from ib_tasks.tests.factories.storage_dtos import (

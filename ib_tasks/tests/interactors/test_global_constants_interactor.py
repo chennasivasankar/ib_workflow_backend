@@ -2,7 +2,7 @@ import pytest
 import mock
 from ib_tasks.interactors.global_constants_interactor import \
     GlobalConstantsInteractor
-from ib_tasks.interactors.dtos import GlobalConstantsWithTemplateIdDTO
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsWithTemplateIdDTO
 from ib_tasks.tests.factories.interactor_dtos import GlobalConstantsDTOFactory
 
 
