@@ -209,9 +209,7 @@ class GetTaskTemplatesPresenterImplementation(
         is_writable = False
         if has_read_permission:
             is_readable = True
-            is_writable = False
         if has_write_permission:
-            is_readable = True
             is_writable = True
 
         field_dict = {
