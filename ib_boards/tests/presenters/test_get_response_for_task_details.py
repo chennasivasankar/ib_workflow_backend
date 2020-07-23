@@ -2,7 +2,7 @@ import pytest
 
 from ib_boards.presenters.presenter_implementation import \
     PresenterImplementation
-from ib_boards.tests.factories.interactor_dto import TaskColumnDTOFactory
+from ib_boards.tests.factories.interactor_dtos import TaskColumnDTOFactory
 from ib_boards.tests.factories.storage_dtos import (
     TaskDTOFactory, TaskActionsDTOFactory, TaskFieldsDTOFactory)
 
