@@ -1,4 +1,4 @@
-from ib_iam.exceptions.exceptions import InvalidOffsetValue, \
+from ib_iam.exceptions.custom_exceptions import InvalidOffsetValue, \
     InvalidLimitValue, OffsetValueIsGreaterthanLimitValue, GivenNameIsEmpty, \
     NameShouldNotContainsNumbersSpecCharactersException
 

@@ -77,3 +77,13 @@ USER_DOES_NOT_EXIST = (
     "user is not exist",
     "USER_DOES_NOT_EXIST"
 )
+
+CREATE_USER_SUCCESSFULLY = (
+    "User created successfully",
+    "CREATE_USER_SUCCESSFULLY"
+)
+
+EDIT_USER_SUCCESSFULLY = (
+    "Edit User successfully"
+    "EDIT_USER_SUCCESSFULLY"
+)

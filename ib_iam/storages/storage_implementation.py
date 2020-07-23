@@ -10,7 +10,7 @@ from ib_iam.models import Role
 
 class StorageImplementation(StorageInterface):
 
-    def validate_user_is_admin(self, user_id: str) -> bool:
+    def check_is_admin_user(self, user_id: str) -> bool:
         from ib_iam.models.user import UserDetails
         user = UserDetails.objects.get(user_id=user_id)
         return user.is_admin
@@ -78,25 +78,35 @@ class StorageImplementation(StorageInterface):
         return company_dtos
 
     def get_role_objs_ids(self, roles):
-        print(roles)
-        role_ids = Role.objects.filter(role_id__in=roles).values_list('id', flat=True)
-        print(role_ids)
+        role_ids = Role.objects.filter(role_id__in=roles) \
+            .values_list('id', flat=True)
         return role_ids
 
     def add_new_user(self, user_id: str, is_admin: bool, company_id: str,
-                     role_ids: List[int], team_ids: List[str]):
-        from ib_iam.models import UserDetails, UserTeam, UserRole
-        print(role_ids)
-        UserDetails.objects.create(user_id=user_id, is_admin=is_admin,
-                                   company_id=company_id)
-        user_teams = [UserTeam(user_id=user_id, team_id=team_id)
-                      for team_id in team_ids]
+                     role_ids, team_ids: List[str]):
+        self.create_user(company_id, is_admin, user_id)
+        self.add_user_to_the_teams(team_ids, user_id)
+        self.add_roles_to_the_user(role_ids, user_id)
 
+    @staticmethod
+    def add_roles_to_the_user(role_ids, user_id):
+        from ib_iam.models import UserRole
         user_roles = [UserRole(user_id=user_id, role_id=str(role_id))
                       for role_id in role_ids]
-        UserTeam.objects.bulk_create(user_teams)
-        print(user_roles, '-='*20)
         UserRole.objects.bulk_create(user_roles)
+
+    @staticmethod
+    def add_user_to_the_teams(team_ids, user_id):
+        from ib_iam.models import UserTeam
+        user_teams = [UserTeam(user_id=user_id, team_id=team_id)
+                      for team_id in team_ids]
+        UserTeam.objects.bulk_create(user_teams)
+
+    @staticmethod
+    def create_user(company_id, is_admin, user_id):
+        from ib_iam.models import UserDetails
+        UserDetails.objects.create(user_id=user_id, is_admin=is_admin,
+                                   company_id=company_id)
 
     def get_companies(self) -> List[CompanyDTO]:
         from ib_iam.models import Company

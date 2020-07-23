@@ -74,3 +74,7 @@ class PresenterInterface(ABC):
     @abstractmethod
     def raise_duplicate_role_ids_exception(self):
         pass
+
+    @abstractmethod
+    def user_created_response(self):
+        pass

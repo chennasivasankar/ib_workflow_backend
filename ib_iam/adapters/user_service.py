@@ -32,7 +32,7 @@ class UserService:
             return user_profile_dtos
 
     def create_user_account_with_email(self, email: str) -> str:
-        from ib_iam.exceptions.exceptions \
+        from ib_iam.exceptions.custom_exceptions \
             import UserAccountAlreadyExistWithThisEmail
         from ib_users.exceptions.registration_exceptions \
             import AccountWithThisEmailAlreadyExistsException

@@ -9,10 +9,10 @@ from ib_iam.tests.factories.storage_dtos \
 
 
 def reset_sequence():
-    UserDTOFactory.reset_sequence()
-    UserTeamDTOFactory.reset_sequence()
-    UserCompanyDTOFactory.reset_sequence()
-    UserRoleDTOFactory.reset_sequence()
+    UserDTOFactory.reset_sequence(0)
+    UserTeamDTOFactory.reset_sequence(0)
+    UserCompanyDTOFactory.reset_sequence(0)
+    UserRoleDTOFactory.reset_sequence(0)
     UserProfileDTOFactory.reset_sequence(0)
     UserDetailsFactory.reset_sequence(0)
     CompanyFactory.reset_sequence(0)

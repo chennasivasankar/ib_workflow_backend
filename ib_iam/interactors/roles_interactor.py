@@ -1,6 +1,6 @@
 from typing import List
 
-from ib_iam.exceptions.exceptions import DuplicateRoleIdsException, \
+from ib_iam.exceptions.custom_exceptions import DuplicateRoleIdsException, \
     RoleIdFormatIsInvalidException, \
     RoleNameIsEmptyException, RoleDescriptionIsEmptyException
 from ib_iam.interactors.presenter_interfaces.presenter_interface \

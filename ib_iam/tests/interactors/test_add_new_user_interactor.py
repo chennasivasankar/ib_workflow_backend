@@ -34,7 +34,7 @@ class TestAddNewUserIneractor:
         company_id = 'company0'
 
         interactor = AddNewUserInteractor(storage=storage_mock)
-        storage_mock.validate_user_is_admin.return_value = False
+        storage_mock.check_is_admin_user.return_value = False
         presenter_mock.raise_user_is_not_admin_exception.return_value = Mock()
         # Act
         interactor.add_new_user_wrapper(
@@ -43,7 +43,7 @@ class TestAddNewUserIneractor:
             presenter=presenter_mock)
 
         # Assert
-        storage_mock.validate_user_is_admin.assert_called_once_with(
+        storage_mock.check_is_admin_user.assert_called_once_with(
             user_id=user_id)
         presenter_mock.raise_user_is_not_admin_exception.assert_called_once()
 
@@ -57,7 +57,7 @@ class TestAddNewUserIneractor:
         role_ids = ['role0', 'role1']
         company_id = 'company0'
         interactor = AddNewUserInteractor(storage=storage_mock)
-        storage_mock.validate_user_is_admin.return_value = True
+        storage_mock.check_is_admin_user.return_value = True
         presenter_mock.raise_invalid_name_exception.return_value = Mock()
 
         # Act
@@ -80,7 +80,7 @@ class TestAddNewUserIneractor:
         role_ids = ['role0', 'role1']
         company_id = 'company0'
         interactor = AddNewUserInteractor(storage=storage_mock)
-        storage_mock.validate_user_is_admin.return_value = True
+        storage_mock.check_is_admin_user.return_value = True
         presenter_mock.raise_invalid_name_exception.return_value = Mock()
 
         # Act
@@ -104,7 +104,7 @@ class TestAddNewUserIneractor:
         role_ids = ['role0', 'role1']
         company_id = 'company0'
         interactor = AddNewUserInteractor(storage=storage_mock)
-        storage_mock.validate_user_is_admin.return_value = True
+        storage_mock.check_is_admin_user.return_value = True
         presenter_mock.raise_invalid_name_exception.return_value = Mock()
 
         # Act
@@ -195,7 +195,7 @@ class TestAddNewUserIneractor:
         role_ids = ['role0', 'role1']
         company_id = 'company0'
         interactor = AddNewUserInteractor(storage=storage_mock)
-        storage_mock.validate_user_is_admin.return_value = True
+        storage_mock.check_is_admin_user.return_value = True
         presenter_mock.raise_user_account_already_exist_with_this_email_exception. \
             return_value = Mock()
         from ib_iam.tests.common_fixtures.adapters.user_service \
@@ -225,7 +225,7 @@ class TestAddNewUserIneractor:
              "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
         company_id = 'company0'
         interactor = AddNewUserInteractor(storage=storage_mock)
-        storage_mock.validate_user_is_admin.return_value = True
+        storage_mock.check_is_admin_user.return_value = True
         storage_mock.get_role_objs_ids.return_value = ids_of_role_objs
         presenter_mock.raise_user_account_already_exist_with_this_email_exception. \
             return_value = Mock()
@@ -258,7 +258,7 @@ class TestAddNewUserIneractor:
         role_ids = ['role0', 'role1']
         company_id = 'company0'
         interactor = AddNewUserInteractor(storage=storage_mock)
-        storage_mock.validate_user_is_admin.return_value = True
+        storage_mock.check_is_admin_user.return_value = True
         presenter_mock.raise_user_account_already_exist_with_this_email_exception. \
             return_value = Mock()
         from ib_iam.tests.common_fixtures.adapters.user_service \
@@ -289,9 +289,8 @@ class TestAddNewUserIneractor:
         role_ids = ['role0', 'role1']
         company_id = 'company0'
         interactor = AddNewUserInteractor(storage=storage_mock)
-        storage_mock.validate_user_is_admin.return_value = True
-        presenter_mock.raise_user_account_already_exist_with_this_email_exception. \
-            return_value = Mock()
+        storage_mock.check_is_admin_user.return_value = True
+        presenter_mock.user_created_response.return_value = Mock()
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import create_user_account_adapter_mock, \
             create_user_profile_adapter_mock
@@ -310,3 +309,4 @@ class TestAddNewUserIneractor:
         storage_mock.add_new_user.assert_called_once()
         user_account_adapter_mock.assert_called_once()
         user_profile_adapter_mock.assert_called_once()
+        presenter_mock.user_created_response.assert_called_once()

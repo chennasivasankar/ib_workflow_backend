@@ -333,14 +333,6 @@
         "$ref": "#/definitions/UserWithCompanyWithTeamsAndRoles"
       }
     },
-    "EditUserDetailsBodyParameter": {
-      "name": "EditUser",
-      "description": "Details of User to edit",
-      "in": "body",
-      "schema": {
-        "$ref": "#/definitions/UserNameAndEmail"
-      }
-    },
     "LoginParameter": {
       "name": "login",
       "description": "email and password to login in database",

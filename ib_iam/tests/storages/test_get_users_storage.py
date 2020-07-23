@@ -20,7 +20,7 @@ class TestGetUsers:
         storage = StorageImplementation()
 
         # Act
-        output = storage.validate_user_is_admin(user_id=user_id)
+        output = storage.check_is_admin_user(user_id=user_id)
 
         # Assert
         assert output == expected_output

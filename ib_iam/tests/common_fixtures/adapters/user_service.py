@@ -10,7 +10,7 @@ def email_exist_adapter_mock(mocker):
     mock = mocker.patch(
         'ib_iam.adapters.user_service.UserService.create_user_account_with_email'
     )
-    from ib_iam.exceptions.exceptions \
+    from ib_iam.exceptions.custom_exceptions \
         import UserAccountAlreadyExistWithThisEmail
     mock.side_effect = UserAccountAlreadyExistWithThisEmail
     return mock
@@ -35,7 +35,7 @@ def update_user_profile_user_already_exist_adapter_mock(mocker):
     mock = mocker.patch(
         'ib_iam.adapters.user_service.UserService.update_user_profile'
     )
-    from ib_iam.exceptions.exceptions import UserDoesNotExist
+    from ib_iam.exceptions.custom_exceptions import UserDoesNotExist
     mock.side_effect = UserDoesNotExist
     return mock
 
