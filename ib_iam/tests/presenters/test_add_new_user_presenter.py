@@ -1,13 +1,14 @@
 import json
 
 from ib_iam.constants.enums import StatusCode
-from ib_iam.presenters.presenter_implementation import PresenterImplementation
+from ib_iam.presenters.add_new_user_presenter_implementation \
+    import AddUserPresenterImplementation
 
 
 class TestResponseAddNewUser:
     def test_raise_invalid_name_exception(self):
         # Arrange
-        presenter = PresenterImplementation()
+        presenter = AddUserPresenterImplementation()
         from ib_iam.constants.exception_messages import EMPTY_NAME_IS_INVALID
         expected_response = EMPTY_NAME_IS_INVALID[0]
         response_status_code = EMPTY_NAME_IS_INVALID[1]
@@ -23,7 +24,7 @@ class TestResponseAddNewUser:
 
     def test_raise_name_should_not_contain_special_characters_exception(self):
         # Arrange
-        presenter = PresenterImplementation()
+        presenter = AddUserPresenterImplementation()
         from ib_iam.constants.exception_messages \
             import NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS
         expected_response = \
@@ -43,7 +44,7 @@ class TestResponseAddNewUser:
 
     def test_raise_invalid_email_exception(self):
         # Arrange
-        presenter = PresenterImplementation()
+        presenter = AddUserPresenterImplementation()
         from ib_iam.constants.exception_messages import INVALID_EMAIL
         expected_response = INVALID_EMAIL[0]
         response_status_code = INVALID_EMAIL[1]
@@ -59,7 +60,7 @@ class TestResponseAddNewUser:
 
     def test_raise_user_account_already_exist_with_this_email_exception(self):
         # Arrange
-        presenter = PresenterImplementation()
+        presenter = AddUserPresenterImplementation()
         from ib_iam.constants.exception_messages \
             import USER_ACCOUNT_ALREADY_EXIST_FOR_THIS_EMAIL
         expected_response = USER_ACCOUNT_ALREADY_EXIST_FOR_THIS_EMAIL[0]
@@ -77,7 +78,7 @@ class TestResponseAddNewUser:
 
     def test_create_user_accout_response_returns_response(self):
         # Arrange
-        presenter = PresenterImplementation()
+        presenter = AddUserPresenterImplementation()
         from ib_iam.constants.exception_messages \
             import CREATE_USER_SUCCESSFULLY
         expected_response = CREATE_USER_SUCCESSFULLY[0]
