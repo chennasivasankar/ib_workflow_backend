@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from ib_discussions.constants.enum import EntityType, FilterByEnum
+from ib_discussions.constants.enum import EntityType, FilterByEnum, SortByEnum
 from ib_discussions.exceptions.custom_exceptions import \
     InvalidEntityTypeForEntityId, EntityIdNotFound
 from ib_discussions.interactors.DTOs.common_dtos import DiscussionDTO, \
@@ -83,8 +83,16 @@ class StorageImplementation(StorageInterface):
         filter_discussion_objects = self._get_filter_discussion_objects(
             filter_by_dto=filter_by_dto, discussion_objects=discussion_objects
         )
+        sort_discussion_objects = self._get_sort_discussion_objects(
+            sort_by_dto=sort_by_dto,
+            discussion_objects=filter_discussion_objects
+        )
+        offset = offset_and_limit_dto.offset
+        limit = offset_and_limit_dto.limit
+        discussion_objects_after_applying_offset_and_limit \
+            = sort_discussion_objects[offset: offset+limit]
         complete_discussion_dtos = self._convert_to_discussion_dtos(
-            filter_discussion_objects
+            discussion_objects_after_applying_offset_and_limit
         )
         return complete_discussion_dtos
 
@@ -129,3 +137,7 @@ class StorageImplementation(StorageInterface):
         )
         return discussion_dto
 
+    @staticmethod
+    def _get_sort_discussion_objects(sort_by_dto, discussion_objects):
+        if sort_by_dto.sort_by == SortByEnum.LATEST.value:
+            return discussion_objects.order_by("-created_at")

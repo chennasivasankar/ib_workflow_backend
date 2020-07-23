@@ -13,12 +13,12 @@ class CompleteDiscussionFactory(factory.Factory):
     discussion_id = factory.Faker("uuid4")
     discussion_set_id = factory.Faker("uuid4")
     description = factory.LazyAttribute(
-        lambda obj: "Description of discussion id is {discussion_id}".format(
+        lambda obj: "description".format(
             discussion_id=obj.discussion_id
         )
     )
     title = factory.LazyAttribute(
-        lambda obj: "Title of discussion id is {discussion_id}".format(
+        lambda obj: "title".format(
             discussion_id=obj.discussion_id
         )
     )

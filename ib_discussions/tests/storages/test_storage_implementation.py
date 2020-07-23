@@ -1,3 +1,4 @@
+import datetime
 from uuid import UUID
 
 import pytest
@@ -206,6 +207,31 @@ class TestStorageImplementation:
             storage_implementation):
         # Arrange
         discussion_set_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
+        from ib_discussions.tests.factories.storage_dtos import \
+            CompleteDiscussionFactory
+        expected_complete_discussion_dtos = [
+            CompleteDiscussionFactory(
+                user_id='41a0c18da848',
+                discussion_id='829db67d-0663-4e71-a103-826706ab5678',
+                discussion_set_id='641bfcc5-e1ea-4231-b482-f7f34fb5c7c4',
+                description='description',
+                title='title',
+                created_at=datetime.datetime(2020, 1, 20, 0, 0,
+                                             tzinfo=datetime.timezone.utc),
+                is_clarified=True
+            ),
+            CompleteDiscussionFactory(
+                user_id='41a0c18da848',
+                discussion_id='c0091084-1d34-4e8c-b813-464e14cb152c',
+                discussion_set_id='641bfcc5-e1ea-4231-b482-f7f34fb5c7c4',
+                description='description',
+                title='title',
+                created_at=datetime.datetime(2008, 1, 1, 0, 0,
+                                             tzinfo=datetime.timezone.utc),
+                is_clarified=True
+            )
+        ]
+
         self.create_discussion_objects(
             discussion_set_id=discussion_set_id, size=12
         )
@@ -213,15 +239,15 @@ class TestStorageImplementation:
         from ib_discussions.interactors.DTOs.common_dtos import FilterByDTO
         from ib_discussions.constants.enum import FilterByEnum
         filter_by_dto = FilterByDTO(
-            filter_by=FilterByEnum.NOT_CLARIFIED.value,
-            value=False
+            filter_by=FilterByEnum.POSTED_BY_ME.value,
+            value="41a0c18da848"
         )
 
         from ib_discussions.interactors.discussion_interactor import \
             OffsetAndLimitDTO
         offset_and_limit_dto = OffsetAndLimitDTO(
-            offset=0,
-            limit=3
+            offset=1,
+            limit=2
         )
 
         from ib_discussions.interactors.DTOs.common_dtos import SortByDTO
@@ -238,8 +264,31 @@ class TestStorageImplementation:
         )
 
         # Assert
-        from ib_discussions.models import Discussion
-        print(Discussion.objects.values("id", "is_clarified"))
-        print("*"*50)
-        print(response)
-        assert "ssnk" == []
+        self._compare_two_complete_discussion_dtos(
+            response, expected_complete_discussion_dtos
+        )
+
+    def _compare_two_complete_discussion_dtos(self,
+                                              complete_discussion_dtos2,
+                                              complete_discussion_dtos1):
+        for complete_discussion_dtos1, complete_discussion_dtos2 in list(
+                zip(complete_discussion_dtos1,
+                    complete_discussion_dtos2)):
+            self._compare_two_complete_discussion_dto(
+                complete_discussion_dtos1, complete_discussion_dtos1
+            )
+
+    @staticmethod
+    def _compare_two_complete_discussion_dto(complete_discussion_dto1,
+                                             complete_discussion_dto2):
+        assert complete_discussion_dto1.user_id == complete_discussion_dto2.user_id
+        assert complete_discussion_dto1.discussion_set_id \
+               == complete_discussion_dto2.discussion_set_id
+        assert complete_discussion_dto1.title \
+               == complete_discussion_dto2.title
+        assert complete_discussion_dto1.description \
+               == complete_discussion_dto2.description
+        assert complete_discussion_dto1.is_clarified \
+               == complete_discussion_dto2.is_clarified
+        assert complete_discussion_dto1.created_at.replace(tzinfo=None) \
+               == complete_discussion_dto2.created_at.replace(tzinfo=None)

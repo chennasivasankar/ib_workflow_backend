@@ -37,10 +37,15 @@ class DiscussionFactory(factory.django.DjangoModelFactory):
     discussion_set = factory.SubFactory(DiscussionSetFactory)
     user_id = factory.Iterator(["41a0c18da848", "d3482aaa30e5", "1d42bb68e3ce"])
     title = factory.LazyAttribute(
-        lambda obj: "title of {id}".format(id=obj.id)
+        lambda obj: "title"
     )
     description = factory.LazyAttribute(
-        lambda obj: "title of {id}".format(id=obj.id)
+        lambda obj: "description"
     )
-    created_at = datetime.datetime(2008, 1, 1, tzinfo=datetime.timezone.utc)
+    created_at = factory.Iterator([
+        datetime.datetime(2008, 1, 1, tzinfo=datetime.timezone.utc),
+        datetime.datetime(2020, 5, 1, tzinfo=datetime.timezone.utc),
+        datetime.datetime(2020, 1, 20, tzinfo=datetime.timezone.utc),
+        datetime.datetime(2007, 2, 5, tzinfo=datetime.timezone.utc)
+    ])
     is_clarified = factory.Iterator([True, False])
