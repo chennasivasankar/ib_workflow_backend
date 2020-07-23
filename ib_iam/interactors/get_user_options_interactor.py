@@ -1,6 +1,6 @@
 from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin
-from ib_iam.interactors.presenter_interfaces.presenter_interface \
-    import PresenterInterface
+from ib_iam.interactors.presenter_interfaces.get_user_options_presenter_interface \
+    import GetUserOptionsPresenterInterface
 from ib_iam.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 
@@ -11,7 +11,7 @@ class GetUserOptionsDetails:
         self.storage = storage
 
     def get_configuration_details_wrapper(self, user_id: str,
-                                          presenter: PresenterInterface):
+                                          presenter: GetUserOptionsPresenterInterface):
         try:
             configuration_details_dto = self.get_configuration_details(
                 user_id=user_id)
@@ -32,8 +32,8 @@ class GetUserOptionsDetails:
     @staticmethod
     def _create_configuration_details_dto(companies, teams, roles):
         from ib_iam.interactors.presenter_interfaces.dtos import \
-            UserOptionsDetails
-        configuration_details_dto = UserOptionsDetails(
+            UserOptionsDetailsDTO
+        configuration_details_dto = UserOptionsDetailsDTO(
             companies=companies,
             roles=roles,
             teams=teams

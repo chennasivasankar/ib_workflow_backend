@@ -2,27 +2,12 @@ from django_swagger_utils.utils.http_response_mixin \
     import HTTPResponseMixin
 from ib_iam.constants.enums import StatusCode
 from ib_iam.interactors.presenter_interfaces.dtos import \
-    UserOptionsDetails
+    UserOptionsDetailsDTO
 from ib_iam.interactors.presenter_interfaces.presenter_interface \
     import PresenterInterface
 
 
 class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
-    def get_user_options_details_response(
-            self, configuration_details: UserOptionsDetails):
-        companies = configuration_details.companies
-        teams = configuration_details.teams
-        roles = configuration_details.roles
-        companies_details = self._get_company_details(companies)
-        teams_details = self._get_team_details(teams)
-        roles_details = self._get_role_details(roles)
-        response_dict = {
-            "companies": companies_details,
-            "teams": teams_details,
-            "roles": roles_details
-        }
-        return self.prepare_200_success_response(
-            response_dict=response_dict)
 
     def raise_role_name_should_not_be_empty_exception(self):
         from ib_iam.constants.exception_messages \
@@ -79,8 +64,6 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         return self.prepare_403_forbidden_response(
             response_dict=response_dict)
 
-
-
     def edit_user_edited_successfully(self):
         from ib_iam.constants.exception_messages import EDIT_USER_SUCCESSFULLY
         response_dict = {
@@ -103,34 +86,3 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         response = self.prepare_404_not_found_response(
             response_dict=response_dict)
         return response
-
-    @staticmethod
-    def _get_role_details(roles):
-        roles_details = []
-        for role in roles:
-            roles_details.append({
-                "role_id": role.role_id,
-                "role_name": role.name
-            })
-        return roles_details
-
-    @staticmethod
-    def _get_team_details(teams):
-        teams_details = []
-        for team in teams:
-            teams_details.append({
-                "team_id": team.team_id,
-                "team_name": team.team_name
-            })
-        return teams_details
-
-    @staticmethod
-    def _get_company_details(companies):
-        companies_details = []
-        for company in companies:
-            companies_details.append({
-                "company_id": company.company_id,
-                "company_name": company.company_name
-            })
-        return companies_details
-

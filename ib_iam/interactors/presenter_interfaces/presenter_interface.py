@@ -1,17 +1,10 @@
 from abc import abstractmethod, ABC
 
-from ib_iam.interactors.presenter_interfaces.dtos \
-    import CompleteUsersDetailsDTO
-
 
 class PresenterInterface(ABC):
 
     @abstractmethod
     def raise_user_is_not_admin_exception(self):
-        pass
-
-    @abstractmethod
-    def get_user_options_details_response(self, configuration_details):
         pass
 
     @abstractmethod

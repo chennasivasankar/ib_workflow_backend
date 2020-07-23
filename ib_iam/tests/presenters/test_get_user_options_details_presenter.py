@@ -2,7 +2,8 @@ import json
 
 import pytest
 
-from ib_iam.presenters.presenter_implementation import PresenterImplementation
+from ib_iam.presenters.get_user_options_presenter_implementation \
+    import GetUserOptionsPresenterImplementation
 from ib_iam.tests.common_fixtures.storages import reset_sequence
 
 
@@ -32,8 +33,8 @@ class TestGetUserOptionsDetailsResponse:
     @pytest.fixture
     def set_up(self, company_dtos, team_dtos, role_dtos):
         from ib_iam.interactors.presenter_interfaces.dtos \
-            import UserOptionsDetails
-        configuration_details_dto = UserOptionsDetails(
+            import UserOptionsDetailsDTO
+        configuration_details_dto = UserOptionsDetailsDTO(
             companies=company_dtos,
             teams=team_dtos,
             roles=role_dtos
@@ -44,7 +45,7 @@ class TestGetUserOptionsDetailsResponse:
             self, set_up, snapshot):
         # Arrange
 
-        presenter = PresenterImplementation()
+        presenter = GetUserOptionsPresenterImplementation()
 
         # Act
         resonse = presenter.get_user_options_details_response(
