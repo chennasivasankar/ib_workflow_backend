@@ -4,6 +4,7 @@ from typing import List
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
     ColumnDetailsDTO
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, BoardColumnsDTO
+from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO
 
 
 class StorageInterface(abc.ABC):
@@ -17,6 +18,7 @@ class StorageInterface(abc.ABC):
             self, board_dtos: List[BoardDTO],
             column_dtos: List[ColumnDTO]) -> None:
         pass
+
     @abc.abstractmethod
     def get_board_ids_for_column_ids(self, column_ids: List[str]) -> List[str]:
         pass
