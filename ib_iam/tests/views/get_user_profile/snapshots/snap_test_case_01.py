@@ -14,7 +14,7 @@ snapshots['TestCase01GetUserProfileAPITestCase.test_valid_user_id body'] = {
     'is_admin': False,
     'name': 'test',
     'profile_pic_url': 'test.com',
-    'user_id': '1'
+    'user_id': 'd44af9cc-bd22-45fa-9a82-78cdc9e059fe'
 }
 
 snapshots['TestCase01GetUserProfileAPITestCase.test_user_account_does_not_exist status_code'] = '404'

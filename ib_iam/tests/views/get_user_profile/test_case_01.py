@@ -31,20 +31,21 @@ class TestCase01GetUserProfileAPITestCase(TestUtils):
         path_params = {}
         query_params = {}
         headers = {}
+        user_id = str(api_user.user_id)
 
         from ib_iam.tests.common_fixtures.adapters.user_service import \
             prepare_get_user_profile_dto_mock
         get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(mocker)
         from ib_iam.adapters.dtos import UserProfileDTO
         get_user_profile_dto_mock.return_value = UserProfileDTO(
-            user_id=api_user.id,
+            user_id=user_id,
             email="test@gmail.com",
             profile_pic_url="test.com",
             is_admin=False,
             name="test"
         )
         from ib_iam.tests.factories.models import UserProfileFactory
-        UserProfileFactory(user_id=api_user.id)
+        UserProfileFactory(user_id=user_id)
 
         response = self.default_test_case(
             body=body, path_params=path_params,

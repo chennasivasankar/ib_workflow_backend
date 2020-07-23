@@ -12,7 +12,7 @@ RESPONSE_200_JSON = """
             "is_admin": true,
             "teams": [
                 {
-                    "team_id": "79f1972e-e7aa-404b-9b4b-ab0d9a74f1e8",
+                    "team_id": "7178e698-a4c0-4997-ae52-313ac189621a",
                     "team_name": "string"
                 }
             ],
@@ -23,7 +23,7 @@ RESPONSE_200_JSON = """
                 }
             ],
             "company": {
-                "company_id": "054f288a-9917-4578-85ae-ca63e29f3535",
+                "company_id": "283450d6-54cf-4843-a520-f11fdae2fce3",
                 "company_name": "string"
             }
         }
