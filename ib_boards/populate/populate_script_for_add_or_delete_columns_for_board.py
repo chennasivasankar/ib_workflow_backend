@@ -53,7 +53,8 @@ class PopulateAddOrDeleteColumnsForBoard:
         ]
         return column_dtos
 
-    def _convert_column_dict_to_column_dto(self, column_dict: Dict) -> ColumnDTO:
+    def _convert_column_dict_to_column_dto(self,
+                                           column_dict: Dict) -> ColumnDTO:
         # task_template_stages = self._get_task_template_stages_dto(
         #     column_dict['task_template_stages']
         # )
@@ -84,8 +85,8 @@ class PopulateAddOrDeleteColumnsForBoard:
             [{
                 "board_id": str,
                 "board_display_name": str,
-                "column_id": str,
                 "column_display_name": str,
+                "column_id": str,
                 "display_order": int,
                 "user_role_ids": str,
                 Optional("column_summary"): str,
@@ -102,7 +103,7 @@ class PopulateAddOrDeleteColumnsForBoard:
 
     @staticmethod
     def _raise_exception_for_board_valid_format():
-        valid_format ={
+        valid_format = {
             "board_id": "board_id",
             "board_display_name": "board_display_name",
             "column_id": "column_id",

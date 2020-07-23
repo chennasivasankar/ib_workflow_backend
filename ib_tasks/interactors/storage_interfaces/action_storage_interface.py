@@ -5,10 +5,10 @@ Author: Pavankumar Pamuru
 """
 import abc
 from abc import ABC
-from abc import abstractmethod
 from typing import List, Optional
+
+from ib_tasks.interactors.dtos import StageActionDTO
 from ib_tasks.interactors.storage_interfaces.dtos import StageActionNamesDTO
-from ib_tasks.interactors.dtos import StagesActionDTO, StageActionDTO
 
 
 class ActionStorageInterface(ABC):

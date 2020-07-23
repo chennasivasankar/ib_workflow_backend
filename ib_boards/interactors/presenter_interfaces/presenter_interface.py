@@ -35,6 +35,11 @@ class GetBoardsPresenterInterface(abc.ABC):
     def get_response_for_get_boards(
             self, board_dtos: List[BoardDTO], total_boards: int) -> response.HttpResponse:
         pass
+
+    def get_response_for_offset_exceeds_total_tasks(self):
+        pass
+
+
 import abc
 from typing import List
 

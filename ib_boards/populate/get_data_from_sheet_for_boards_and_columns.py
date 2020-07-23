@@ -19,13 +19,15 @@ class GetBoardsAndColumnsDataFromSheet:
         field_records = self.data_sheet.get_data_from_sub_sheet(
             sub_sheet_name=BOARDS_AND_COLUMN_SUB_SHEET
         )
+        import json
+        print(json.dumps(field_records[:7], indent=4))
         # TODO need to remove list slicing
         self.validate_keys_in_given_dict(
-            boards_columns_dicts=field_records[:6]
+            boards_columns_dicts=field_records[:7]
         )
         boards_columns_dicts = [
             self._get_list_of_dictionary_to_populate_data(field_record)
-            for field_record in field_records[:6]
+            for field_record in field_records[:7]
         ]
         return boards_columns_dicts
 
@@ -52,7 +54,7 @@ class GetBoardsAndColumnsDataFromSheet:
         schema = Schema(
             [{
                 "Board ID*": And(str, len),
-                "Board Display Name": And(str, len),
+                "Board Display Name": str,
                 "Column Order For Display": int,
                 "Column ID*": And(str, len),
                 "Column Display Name": str,
@@ -72,17 +74,18 @@ class GetBoardsAndColumnsDataFromSheet:
 
     def _raise_exception_for_invalid_data_format(self):
         valid_format = {
-            "Board ID*": str,
-            "Board Display Name": str,
-            "Column Order For Display": int,
-            "Column ID*": str,
-            "Column Display Name": str,
-            "Task Template Stages that are visible in columns": str,
-            "Visible to RoleIDs": str,
-            "Column Summary": str,
-            "Column Actions": str,
-            "Card Info_Kanban": str,
-            "Card Info_List": str
+            "Board ID*": "FINB_PAYMENT_REQUESTS",
+            "Board Display Name": "Payment Requests",
+            "Column Order For Display": 1,
+            "Column ID*": "FINC_PAYMENT_REQUESTS_DRAFTS",
+            "Column Display Name": "Payment Requests drafts",
+            "Task Template Stages that are visible in columns": "{\nFIN_PR:[PR_PAYMENT_REQUEST_DRAFTS]\n}\n\n",
+            "Visible to RoleIDs": "ALL_ROLES",
+            "Column Summary": "ColumnSummary1",
+            "Column Actions": "ColumnSummary3",
+            "Card Info_Kanban": "CardInfo_Requester_Kanban\n{\nFIN_PR:[PR_PAYMENT_REQUEST_DRAFTS]\n}",
+            "Card Info_List": "CardInfo_Requester_List\n{\nFIN_PR:[PR_PAYMENT_REQUEST_DRAFTS]\n}"
+
         }
         self.data_sheet.raise_exception_for_valid_format(valid_format=valid_format)
 
