@@ -1,6 +1,7 @@
 import abc
 from typing import List, Optional
 
+from ib_boards.exceptions.custom_exceptions import InvalidBoardId
 from ib_boards.interactors.storage_interfaces.dtos import ColumnDetailsDTO, BoardDTO, BoardColumnDTO, \
     TaskBoardsDetailsDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
@@ -11,7 +12,7 @@ from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, BoardColumnsDTO
 class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
-    def validate_board_id(self, board_id):
+    def validate_board_id(self, board_id) -> Optional[InvalidBoardId]:
         pass
 
     @abc.abstractmethod
