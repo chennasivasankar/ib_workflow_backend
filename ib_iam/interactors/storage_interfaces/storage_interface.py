@@ -77,6 +77,3 @@ class StorageInterface(ABC):
     def get_is_admin_of_given_user_id(self, user_id: int):
         pass
 
-    @abstractmethod
-    def is_user_is_a_admin(self, user_id: str):
-        pass

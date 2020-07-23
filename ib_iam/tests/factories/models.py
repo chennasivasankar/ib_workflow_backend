@@ -1,5 +1,4 @@
 import uuid
-from unittest.mock import patch
 
 import factory
 
@@ -57,6 +56,7 @@ class UserRoleFactory(factory.django.DjangoModelFactory):
 
     user_id = factory.sequence(lambda number: "user%s" % number)
     role = factory.Iterator(models.Role.objects.all())
+
 
 class UserFactory(factory.django.DjangoModelFactory):
     class Meta:

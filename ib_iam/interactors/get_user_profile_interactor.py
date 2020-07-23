@@ -33,8 +33,8 @@ class GetUserProfileInteractor:
 
     def get_user_profile_dto(self, user_id: str):
         from ib_iam.adapters.service_adapter import get_service_adapter
-        user_service = get_service_adapter().auth_service
+        user_service = get_service_adapter().user_service
         user_profile_dto = user_service.get_user_profile_dto(user_id=user_id)
-        is_admin = self.storage.is_user_is_a_admin(user_id=user_id)
+        is_admin = self.storage.check_is_admin_user(user_id=user_id)
         user_profile_dto.is_admin = is_admin
         return user_profile_dto

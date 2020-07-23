@@ -184,8 +184,3 @@ class StorageImplementation(StorageInterface):
         user_object = UserDetails.objects.get(user_id=user_id)
         is_admin = user_object.is_admin
         return is_admin
-
-    def is_user_is_a_admin(self, user_id: str):
-        from ib_iam.models import UserProfile
-        user_profile_object = UserProfile.objects.get(user_id=user_id)
-        return user_profile_object.is_admin

@@ -51,6 +51,5 @@ class TestGetUserOptionsDetailsResponse:
             set_up)
 
         # Assert
-        print(resonse)
         response_dict = json.loads(resonse.content)
         snapshot.assert_match(response_dict, 'user_options_details')

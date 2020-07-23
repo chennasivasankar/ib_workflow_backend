@@ -33,15 +33,22 @@ class TestGetUsers:
         storage = StorageImplementation()
         from ib_iam.interactors.storage_interfaces.dtos import UserDTO
         expected_output = [
-            UserDTO(user_id='user0', is_admin=False, company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331'),
-            UserDTO(user_id='user1', is_admin=False, company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331'),
-            UserDTO(user_id='user2', is_admin=False, company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331'),
-            UserDTO(user_id='user3', is_admin=False, company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8332'),
-            UserDTO(user_id='user4', is_admin=False, company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8332'),
-            UserDTO(user_id='user5', is_admin=False, company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8332')]
+            UserDTO(user_id='user0', is_admin=False,
+                    company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331'),
+            UserDTO(user_id='user1', is_admin=False,
+                    company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331'),
+            UserDTO(user_id='user2', is_admin=False,
+                    company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331'),
+            UserDTO(user_id='user3', is_admin=False,
+                    company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8332'),
+            UserDTO(user_id='user4', is_admin=False,
+                    company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8332'),
+            UserDTO(user_id='user5', is_admin=False,
+                    company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8332')]
 
         # Act
-        output = storage.get_users_who_are_not_admins(offset=offset, limit=limit)
+        output = storage.get_users_who_are_not_admins(offset=offset,
+                                                      limit=limit)
 
         assert output == expected_output
 
@@ -136,7 +143,7 @@ class TestGetUsers:
                 company_name='company 0'
             )
         ]
-    
+
         storage = StorageImplementation()
 
         # Act
@@ -148,13 +155,13 @@ class TestGetUsers:
     @pytest.mark.django_db
     def test_is_user_is_a_admin(self):
         # Arrange
-        from ib_iam.tests.factories.models import UserProfileFactory
-        user_profile_object = UserProfileFactory()
+        from ib_iam.tests.factories.models import UserDetailsFactory
+        user_profile_object = UserDetailsFactory()
 
         storage = StorageImplementation()
 
         # Act
-        is_admin = storage.is_user_is_a_admin(
+        is_admin = storage.check_is_admin_user(
             user_id=user_profile_object.user_id
         )
 

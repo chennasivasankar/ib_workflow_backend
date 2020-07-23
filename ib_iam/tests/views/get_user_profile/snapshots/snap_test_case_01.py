@@ -14,13 +14,5 @@ snapshots['TestCase01GetUserProfileAPITestCase.test_valid_user_id body'] = {
     'is_admin': False,
     'name': 'test',
     'profile_pic_url': 'test.com',
-    'user_id': 'd44af9cc-bd22-45fa-9a82-78cdc9e059fe'
-}
-
-snapshots['TestCase01GetUserProfileAPITestCase.test_user_account_does_not_exist status_code'] = '404'
-
-snapshots['TestCase01GetUserProfileAPITestCase.test_user_account_does_not_exist body'] = {
-    'http_status_code': 404,
-    'res_status': 'USER_ACCOUNT_DOES_NOT_EXIST',
-    'response': 'Please send valid user id'
+    'user_id': 'c8939223-79a0-4566-ba13-b4fbf7db6f93'
 }

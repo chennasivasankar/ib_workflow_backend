@@ -6,7 +6,7 @@ from .validator_class import ValidatorClass
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     user = kwargs["user"]
-    user_id = user.user_id
+    user_id = str(user.user_id)
     from ib_iam.storages.storage_implementation import StorageImplementation
     storage = StorageImplementation()
 

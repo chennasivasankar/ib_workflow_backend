@@ -3,6 +3,8 @@ test all cases
 """
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
+from ib_users.models import UserAccount
+
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -25,13 +27,18 @@ class TestCase01GetUserProfileAPITestCase(TestUtils):
             query_params=query_params, headers=headers, snapshot=snapshot
         )
 
+    def _get_or_create_user(self):
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        user = UserAccount.objects.create(user_id=user_id)
+        return user
+
     @pytest.mark.django_db
-    def test_valid_user_id(self, mocker, api_user, snapshot):
+    def test_valid_user_id(self, mocker, snapshot):
         body = {}
         path_params = {}
         query_params = {}
         headers = {}
-        user_id = str(api_user.user_id)
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
 
         from ib_iam.tests.common_fixtures.adapters.user_service import \
             prepare_get_user_profile_dto_mock
@@ -44,8 +51,8 @@ class TestCase01GetUserProfileAPITestCase(TestUtils):
             is_admin=False,
             name="test"
         )
-        from ib_iam.tests.factories.models import UserProfileFactory
-        UserProfileFactory(user_id=user_id)
+        from ib_iam.tests.factories.models import UserDetailsFactory
+        UserDetailsFactory(user_id=user_id, is_admin=False)
 
         response = self.default_test_case(
             body=body, path_params=path_params,
