@@ -41,3 +41,11 @@ class CompanyStorageInterface(ABC):
     @abstractmethod
     def add_users_to_company(self, company_id: str, user_ids: List[str]):
         pass
+
+    @abstractmethod
+    def validate_is_company_exists(self, company_id: str):
+        pass
+
+    @abstractmethod
+    def delete_company(self, company_id: str):
+        pass

@@ -7,7 +7,7 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestGetResponseForGetListOfTeams.test_given_valid_team_with_members_details_dto_returns_http_response response'] = {
+snapshots['TestGetResponseForGetCompanies.test_given_valid_team_with_members_details_dto_returns_http_response response'] = {
     'companies': [
         {
             'company_id': 'f2c02d98-f311-4ab2-8673-3daa00757003',

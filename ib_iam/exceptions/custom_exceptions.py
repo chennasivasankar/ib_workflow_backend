@@ -30,3 +30,7 @@ class DuplicateUsers(Exception):
 class CompanyNameAlreadyExists(Exception):
     def __init__(self, company_name: str):
         self.company_name = company_name
+
+
+class InvalidCompany(Exception):
+    pass

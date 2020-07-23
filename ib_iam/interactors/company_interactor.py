@@ -4,10 +4,12 @@ from ib_iam.exceptions import (
     UserHasNoAccess,
     CompanyNameAlreadyExists,
     InvalidUsers,
-    DuplicateUsers
+    DuplicateUsers,
+    InvalidCompany
 )
 from ib_iam.interactors.presenter_interfaces \
     .add_company_presenter_interface import AddCompanyPresenterInterface
+from ib_iam.interactors.presenter_interfaces.delete_company_presenter_interface import DeleteCompanyPresenterInterface
 from ib_iam.interactors.storage_interfaces \
     .company_storage_interface import CompanyStorageInterface
 from ib_iam.interactors.storage_interfaces.dtos import (
@@ -61,6 +63,24 @@ class CompanyInteractor:
             company_id=company_id, user_ids=user_ids
         )
         return company_id
+
+    def delete_company_wrapper(
+            self, user_id: str, company_id: str,
+            presenter: DeleteCompanyPresenterInterface
+    ):
+        try:
+            self.delete_company(user_id=user_id, company_id=company_id)
+            response = presenter.get_success_response_for_delete_company()
+        except UserHasNoAccess:
+            response = presenter.get_user_has_no_access_response_for_delete_company()
+        except InvalidCompany:
+            response = presenter.get_invalid_company_response_for_delete_company()
+        return response
+
+    def delete_company(self, user_id: str, company_id: str):
+        self.storage.validate_is_user_admin(user_id=user_id)
+        self.storage.validate_is_company_exists(company_id=company_id)
+        self.storage.delete_company(company_id=company_id)
 
     def _validate_add_company_details(
             self,
