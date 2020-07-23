@@ -1,6 +1,7 @@
 import pytest
 
-from ib_iam.storages.storage_implementation import StorageImplementation
+from ib_iam.storages.add_new_user_storage_implementation \
+    import AddNewUserStorageImplementation
 
 
 @pytest.fixture()
@@ -8,7 +9,8 @@ def companies():
     from ib_iam.tests.factories.models import CompanyFactory
     company_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
                    "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
-    companies = [CompanyFactory.create(company_id=id) for id in company_ids]
+    companies = [CompanyFactory.create(company_id=company_id)
+                 for company_id in company_ids]
     return companies
 
 
@@ -17,7 +19,8 @@ def teams():
     from ib_iam.tests.factories.models import TeamFactory
     team_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
                 "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
-    teams = [TeamFactory.create(team_id=id) for id in team_ids]
+    teams = [TeamFactory.create(team_id=team_id)
+             for team_id in team_ids]
     return teams
 
 
@@ -39,9 +42,9 @@ class TestAddNewUserStorage:
         team_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
                     "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
         role_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
-                "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
+                    "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
         company_id = 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331'
-        storage = StorageImplementation()
+        storage = AddNewUserStorageImplementation()
 
         # Act
         storage.add_new_user(
@@ -56,7 +59,7 @@ class TestAddNewUserStorage:
     @pytest.mark.django_db
     def test_validate_role_ids(self, roles):
         # Arrange
-        storage = StorageImplementation()
+        storage = AddNewUserStorageImplementation()
         role_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8000",
                     "ef6d1fc6-ac3f-4d2d-a983-752c992e8000"]
         expected_output = False
@@ -70,7 +73,7 @@ class TestAddNewUserStorage:
     @pytest.mark.django_db
     def test_validate_teams(self, teams):
         # Arrange
-        storage = StorageImplementation()
+        storage = AddNewUserStorageImplementation()
         team_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8333",
                     "ef6d1fc6-ac3f-4d2d-a983-752c992e8344"]
         expected_output = False
@@ -84,7 +87,7 @@ class TestAddNewUserStorage:
     @pytest.mark.django_db
     def test_validate_company(self, companies):
         # Arrange
-        storage = StorageImplementation()
+        storage = AddNewUserStorageImplementation()
         comapany_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8333"
         expected_output = False
 

@@ -10,12 +10,13 @@ from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, \
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.add_new_user_presenter_inerface \
     import AddUserPresenterInterface
-from ib_iam.interactors.storage_interfaces.storage_interface \
-    import StorageInterface
+from ib_iam.interactors.storage_interfaces.add_new_user_storage_interface \
+    import AddNewUserStorageInterface
+
 
 
 class AddNewUserInteractor(ValidationMixin):
-    def __init__(self, storage: StorageInterface):
+    def __init__(self, storage: AddNewUserStorageInterface):
         self.storage = storage
 
     def add_new_user_wrapper(

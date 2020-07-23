@@ -10,9 +10,10 @@ class TestAddNewUserIneractor:
     @pytest.fixture
     def storage_mock(self):
         from unittest import mock
-        from ib_iam.interactors.storage_interfaces.storage_interface \
-            import StorageInterface
-        storage = mock.create_autospec(StorageInterface)
+
+        from ib_iam.interactors.storage_interfaces.add_new_user_storage_interface \
+            import AddNewUserStorageInterface
+        storage = mock.create_autospec(AddNewUserStorageInterface)
         return storage
 
     @pytest.fixture
