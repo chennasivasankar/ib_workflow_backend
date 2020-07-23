@@ -602,6 +602,71 @@
           ]
         }
       ]
+    },
+    "BadRequestResponseForUpdateCompany": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "COMPANY_NAME_ALREADY_EXISTS",
+                "DUPLICATE_USERS"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
+        }
+      ]
+    },
+    "UnauthorizedResponseForUpdateCompany": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "USER_HAS_NO_ACCESS"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
+        }
+      ]
+    },
+    "NotFoundResponseForUpdateCompany": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "INVALID_COMPANY",
+                "INVALID_USERS"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
+        }
+      ]
     }
   },
   "parameters": {
@@ -660,6 +725,14 @@
       "description": "company_id to identify a team",
       "type": "string",
       "format": "uuid"
+    },
+    "UpdateCompanyParameter": {
+      "name": "company_details_to_update",
+      "in": "body",
+      "description": "details that are to be updated of a company",
+      "schema": {
+        "$ref": "#/definitions/CompanyWithUserIds"
+      }
     }
   },
   "responses": {
@@ -787,6 +860,24 @@
       "description": "User has no access to delete a team",
       "schema": {
         "$ref": "#/definitions/UnauthorizedResponseForDeleteCompany"
+      }
+    },
+    "BadRequestResponseForUpdateCompany": {
+      "description": "Company name already exists or duplicate users has sent",
+      "schema": {
+        "$ref": "#/definitions/BadRequestResponseForUpdateCompany"
+      }
+    },
+    "UnauthorizedResponseForUpdateCompany": {
+      "description": "User has no access to update company",
+      "schema": {
+        "$ref": "#/definitions/UnauthorizedResponseForUpdateCompany"
+      }
+    },
+    "NotFoundResponseForUpdateCompany": {
+      "description": "Invalid company or Invalid Users sent",
+      "schema": {
+        "$ref": "#/definitions/NotFoundResponseForUpdateCompany"
       }
     }
   },
@@ -979,6 +1070,40 @@
       }
     },
     "/company/{company_id}/v1/": {
+      "put": {
+        "summary": "update company details",
+        "description": "updates company details",
+        "operationId": "update_company_details",
+        "security": [
+          {
+            "oauth": [
+              "update"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/CompanyIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/UpdateCompanyParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Company details updated Successfully"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequestResponseForUpdateCompany"
+          },
+          "401": {
+            "$ref": "#/responses/UnauthorizedResponseForUpdateCompany"
+          },
+          "404": {
+            "$ref": "#/responses/NotFoundResponseForUpdateCompany"
+          }
+        }
+      },
       "delete": {
         "summary": "delete company",
         "description": "deletes a company",
