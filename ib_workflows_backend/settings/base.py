@@ -277,7 +277,6 @@ TEMPLATES = [
     },
 ]
 
-
 # *********************** Middleware *************************#
 
 MIDDLEWARE = [
@@ -350,3 +349,6 @@ RESET_PASSWORD_LINK = \
     os.environ.get(
         "RESET_PASSWORD_LINK",
         'https://127.0.0.1:8000/api/ib_iam/update_password/v1/?token=')
+
+
+AUTH_USER_MODEL = "ib_users.UserAccount"

@@ -113,7 +113,7 @@ class TestGetUsers:
 
         storage = StorageImplementation()
 
-        # Act
+        # Actis_user_is_a_admin
         output = storage.get_role_details_of_users_bulk(user_ids=user_ids)
 
         # Assert
@@ -144,3 +144,19 @@ class TestGetUsers:
 
         # Assert
         assert output == expected_output
+
+    @pytest.mark.django_db
+    def test_is_user_is_a_admin(self):
+        # Arrange
+        from ib_iam.tests.factories.models import UserProfileFactory
+        user_profile_object = UserProfileFactory()
+
+        storage = StorageImplementation()
+
+        # Act
+        is_admin = storage.is_user_is_a_admin(
+            user_id=user_profile_object.user_id
+        )
+
+        # Assert
+        assert is_admin == user_profile_object.is_admin

@@ -8,7 +8,8 @@
     "description": "A simple API to learn how to write OpenAPI Specification"
   },
   "schemes": [
-    "http"
+    "http",
+    "https"
   ],
   "consumes": [
     "application/json"
@@ -625,6 +626,60 @@
           }
         ]
       }
+    },
+    "GetUserProfileSuccessResponse": {
+      "description": "get user profile success response",
+      "schema": {
+        "$ref": "#/definitions/UserDetailsDefinition"
+      }
+    },
+    "GetUserProfileBadRequestResponse": {
+      "description": "get user profile bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusDefinition"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_USER_ID"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "GetUserProfileNotFoundResponse": {
+      "description": "get user profile not found response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusDefinition"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_ACCOUNT_DOES_NOT_EXIST"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
     }
   },
   "paths": {
@@ -809,6 +864,31 @@
           },
           "404": {
             "$ref": "#/responses/UpdatePasswordNotFoundResponse"
+          }
+        }
+      }
+    },
+    "/user_profile/v1/": {
+      "get": {
+        "operationId": "get_user_profile",
+        "summary": "get user profile",
+        "description": "get user profile details",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetUserProfileSuccessResponse"
+          },
+          "400": {
+            "$ref": "#/responses/GetUserProfileBadRequestResponse"
+          },
+          "404": {
+            "$ref": "#/responses/GetUserProfileNotFoundResponse"
           }
         }
       }

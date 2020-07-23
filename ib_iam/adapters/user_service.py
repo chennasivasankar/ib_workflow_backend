@@ -1,3 +1,4 @@
+import dataclasses
 from typing import List
 
 from ib_iam.adapters.dtos import UserProfileDTO
