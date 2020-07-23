@@ -1,7 +1,14 @@
 import abc
+from typing import List, Optional
 
-from ib_tasks.interactors.dtos import StageActionDTO, TaskTemplateStageDTO
-from ib_tasks.interactors.storage_interfaces.dtos import *
+from ib_tasks.interactors.storage_interfaces.actions_dtos \
+    import ActionRolesDTO, ActionDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos \
+    import GroupOfFieldsDTO, GOFMultipleEnableDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO
+from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, StageActionDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import StatusVariableDTO
 
 
 class StorageInterface(abc.ABC):
@@ -12,8 +19,7 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_valid_stage_ids(self,
-                            stage_ids: List[str]) -> Optional[List[str]]:
+    def get_valid_stage_ids(self, stage_ids: List[str]) -> Optional[List[str]]:
         pass
 
     @abc.abstractmethod
@@ -25,13 +31,11 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def delete_stage_actions(self,
-                             stage_actions: List[StageActionNamesDTO]):
+    def delete_stage_actions(self, stage_actions: List[StageActionNamesDTO]):
         pass
 
     @abc.abstractmethod
-    def create_initial_stage_to_task_template(
-            self, task_template_stage_dtos: List[TaskTemplateStageDTO]):
+    def create_initial_stage_to_task_template(self, task_template_stage_dtos):
         pass
 
     @abc.abstractmethod
@@ -63,11 +67,11 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_path_name_to_action(self, action_id: str) -> str:
+    def get_path_name_to_action(self, action_id: int) -> str:
         pass
 
     @abc.abstractmethod
-    def update_status_variables_to_task(self, task_id: str,
+    def update_status_variables_to_task(self, task_id: int,
                                         status_variables_dto):
         pass
 
@@ -77,13 +81,13 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_actions_dto(self, action_ids: List[str]) -> List[ActionDTO]:
+    def get_actions_dto(self, action_ids: List[int]) -> List[ActionDTO]:
         pass
 
     @abc.abstractmethod
-    def get_action_roles(self, action_id: str) -> List[str]:
+    def get_action_roles(self, action_id: int) -> List[str]:
         pass
 
     @abc.abstractmethod
-    def validate_action(self, action_id: str) -> bool:
+    def validate_action(self, action_id: int) -> bool:
         pass

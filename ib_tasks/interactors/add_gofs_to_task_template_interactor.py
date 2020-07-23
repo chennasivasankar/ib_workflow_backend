@@ -1,8 +1,7 @@
 from typing import List
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
-from ib_tasks.interactors.dtos import GoFsWithTemplateIdDTO, \
-    GoFWithOrderAndAddAnotherDTO
+from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO
 
 
 class AddGoFsToTaskTemplateInteractor:

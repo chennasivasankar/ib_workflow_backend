@@ -1,7 +1,8 @@
 import pytest
 from ib_tasks.tests.factories.interactor_dtos import \
     GoFWithOrderAndAddAnotherDTOFactory
-from ib_tasks.interactors.dtos import GoFsWithTemplateIdDTO
+from ib_tasks.interactors.gofs_dtos import GoFsWithTemplateIdDTO
+
 
 class TestGoFsToTaskTemplate:
 

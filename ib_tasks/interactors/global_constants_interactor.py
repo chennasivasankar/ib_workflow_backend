@@ -1,8 +1,7 @@
 from typing import List
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
-from ib_tasks.interactors.dtos import GlobalConstantsWithTemplateIdDTO, \
-    GlobalConstantsDTO
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO, GlobalConstantsWithTemplateIdDTO
 
 
 class GlobalConstantsInteractor:

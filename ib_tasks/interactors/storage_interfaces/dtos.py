@@ -1,16 +1,11 @@
-from typing import List, Any, Optional
-from dataclasses import dataclass
-from ib_tasks.constants.enum import PermissionTypes
+
+
+
+
 from typing import List, Union, Optional, Any
 from dataclasses import dataclass
 from typing import List, Union, Optional
 from ib_tasks.constants.enum import FieldTypes, PermissionTypes
-
-
-@dataclass
-class TaskStagesDTO:
-    task_template_id: str
-    stage_id: str
 
 
 @dataclass

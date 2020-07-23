@@ -1,5 +1,5 @@
 import factory
-import uuid
+
 from ib_tasks.models.gof import GoF
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes
 from ib_tasks.models.task_template import TaskTemplate

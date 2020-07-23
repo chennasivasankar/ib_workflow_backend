@@ -1,10 +1,11 @@
-
+from .action_permitted_roles import ActionPermittedRoles
 from .stage import Stage
 from .stage_actions import StageAction
+from .task_template_initial_stages import TaskTemplateInitialStage
+
 from .task_template_status_variable import TaskTemplateStatusVariable
 from .task_template import TaskTemplate
 from .template_status_variables import TaskTemplateStatusVariables
-from .action_permitted_roles import ActionPermittedRoles
 from .task_template_global_constants import TaskTemplateGlobalConstants
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
@@ -27,21 +28,3 @@ __all__ = [
     "TaskTemplate",
     "GlobalConstant"
 ]
-
-# class DummyModel(AbstractDateTimeModel):
-#     """
-#     Model to store key value pair
-#     Attributes:
-#         :var key: String field which will be unique
-#         :var value: String field which will be of 128 char length
-#     """
-#     key = models.CharField(max_length=128, unique=True)
-#     value = models.CharField(max_length=128)
-#
-#     class Meta(object):
-#         app_label = 'sample_app'
-#
-#     def __str__(self):
-#         return "<DummyModel: {key}-{value}>".format(key=self.key,
-#                                                     value=self.value)
-#

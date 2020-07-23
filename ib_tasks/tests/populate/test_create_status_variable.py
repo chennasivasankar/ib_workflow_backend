@@ -16,9 +16,9 @@ class TestPopulateStatusVariables:
 
     @pytest.fixture()
     def expected_status_dto(self):
-        from ib_tasks.tests.factories.storage_dtos import TaskStatusDTOFactory
-        TaskStatusDTOFactory.reset_sequence(1)
-        return TaskStatusDTOFactory.create_batch(size=2)
+        from ib_tasks.tests.factories.storage_dtos import TaskTemplateStatusDTOFactory
+        TaskTemplateStatusDTOFactory.reset_sequence(1)
+        return TaskTemplateStatusDTOFactory.create_batch(size=2)
 
     def test_with_invalid_keys_raises_exception(self, valid_format):
         # Arrange
