@@ -21,17 +21,17 @@ class ColumnFactory(factory.django.DjangoModelFactory):
     display_order = factory.Sequence(lambda n: n + 1)
     task_selection_config = """
         {
-            FIN_PR:[PR_PAYMENT_REQUEST_DRAFTS]
+            "FIN_PR":["PR_PAYMENT_REQUEST_DRAFTS"]
         }
     """
     list_brief_view_config = """
         {
-            FIN_PR:[PR_PAYMENT_REQUEST_DRAFTS]
+            "FIN_PR":["PR_PAYMENT_REQUEST_DRAFTS"]
         }
     """
     kanban_brief_view_config = """
         {
-            FIN_PR:[PR_PAYMENT_REQUEST_DRAFTS]
+            "FIN_PR":["PR_PAYMENT_REQUEST_DRAFTS"]
         }
     """
     board = factory.SubFactory(BoardFactory)
@@ -42,4 +42,4 @@ class ColumnPermissionFactory(factory.django.DjangoModelFactory):
         model = ColumnPermission
 
     column = factory.SubFactory(ColumnFactory)
-    user_role_id = 'PR APPROVER'
+    user_role_id = 'ALL_ROLES'

@@ -127,6 +127,9 @@ class GetColumnTasksPresenterImplementation(
             response_dict=response_dict
         )
 
+    def get_response_for_invalid_stage_ids(self, error):
+        pass
+
     def get_response_column_tasks(
             self, task_complete_details_dto: TaskCompleteDetailsDTO):
         pass

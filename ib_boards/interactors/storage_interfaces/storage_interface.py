@@ -7,6 +7,7 @@ from ib_boards.interactors.storage_interfaces.dtos import ColumnDetailsDTO, Boar
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
     ColumnDetailsDTO
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, BoardColumnsDTO
+from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO
 
 
 class StorageInterface(abc.ABC):

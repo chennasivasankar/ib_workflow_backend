@@ -3,6 +3,8 @@ from typing import List, Tuple
 
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
     BoardColumnsDTO, TaskTemplateStagesDTO, TaskSummaryFieldsDTO
+from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
+    ColumnDetailsDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, ColumnDetailsDTO, TaskBoardsDetailsDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
@@ -12,10 +14,12 @@ from ib_boards.models import Board, ColumnPermission, Column
 class StorageImplementation(StorageInterface):
 
     def validate_board_id(self, board_id):
-        is_board_id_valid = Board.objects.filter(
+        is_board_id_invalid = not Board.objects.filter(
             board_id=board_id
         ).exists()
-        return is_board_id_valid
+        if is_board_id_invalid:
+            from ib_boards.exceptions.custom_exceptions import InvalidBoardId
+            raise InvalidBoardId
 
     def create_boards_and_columns(
             self, board_dtos: List[BoardDTO],
@@ -236,22 +240,87 @@ class StorageImplementation(StorageInterface):
 
     def get_board_ids(
             self, user_role: str, ) -> List[str]:
-        board_ids = Board.objects.all().values_list('board_id', flat=True)
+        board_ids = Board.objects.values_list('board_id', flat=True)
         return list(board_ids)
 
     def get_board_details(self, board_ids: List[str]) -> List[BoardDTO]:
-        pass
+        board_objects = Board.objects.filter(
+            board_id__in=board_ids
+        )
+        board_dtos = self._convert_board_objects_to_board_dtos(
+            board_objects=board_objects
+        )
+        return board_dtos
 
     def get_valid_board_ids(self, board_ids: List[str]) -> List[str]:
-        pass
+        board_ids = Board.objects.filter(
+            board_id__in=board_ids
+        ).values_list('board_id', flat=True)
+        return list(board_ids)
 
     def validate_column_id(self, column_id: str) -> None:
-        pass
+        is_invalid_column_id = not Column.objects.filter(
+            column_id=column_id
+        ).exists()
+        if is_invalid_column_id:
+            from ib_boards.exceptions.custom_exceptions import InvalidColumnId
+            raise InvalidColumnId
 
     def get_column_display_stage_ids(self, column_id: str) -> List[str]:
+        task_templates_stages = Column.objects.filter(
+            column_id=column_id
+        ).values_list('task_selection_config', flat=True)
+        print(task_templates_stages)
+        stage_ids = self._get_stage_ids_from_json_string(
+            task_templates_stages[0]
+        )
+        return stage_ids
+
+    # TODO: need to pass column  Id
+    def validate_user_role_with_column_roles(self, user_role: str):
+        user_roles = ColumnPermission.objects.filter(
+            column_id='COLUMN_ID_1'
+        ).values_list('user_role_id', flat=True)
+
+        is_invalid_user = not (user_role in user_roles or
+                               'ALL_ROLES' in user_roles)
+        if is_invalid_user:
+            from ib_boards.exceptions.custom_exceptions import \
+                UserDoNotHaveAccessToColumn
+            raise UserDoNotHaveAccessToColumn
+
+
+    @staticmethod
+    def _convert_board_objects_to_board_dtos(board_objects):
+        board_dtos = [
+            BoardDTO(
+                board_id=board_object.board_id,
+                display_name=board_object.name
+            )
+            for board_object in board_objects
+        ]
+        return board_dtos
+
+    @staticmethod
+    def _get_stage_ids_from_json_string(
+            task_template_stages: str) -> List[str]:
+        import json
+        task_template_stages = json.loads(task_template_stages)
+        stage_ids = []
+        for key, value in task_template_stages.items():
+            stage_ids += value
+
+        return stage_ids
+
+    def get_columns_details(self, column_ids: List[str]) -> \
+            List[ColumnDetailsDTO]:
         pass
 
-    def validate_user_role_with_column_roles(self, user_role: str):
+    def get_column_ids_for_board(self, board_id: str, user_roles: List[str]) \
+            -> List[str]:
+        pass
+
+    def get_permitted_user_roles_for_board(self, board_id: str) -> List[str]:
         pass
 
     def get_columns_details(self, column_ids: List[str]) -> \
