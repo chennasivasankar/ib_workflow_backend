@@ -9,7 +9,8 @@ from ib_iam.interactors.storage_interfaces.dtos import (
     TeamDetailsWithUserIdsDTO,
     TeamWithUserIdsDTO,
     CompanyDTO,
-    CompanyWithEmployeesCountDTO, CompanyNameLogoAndDescriptionDTO, CompanyDetailsWithUserIdsDTO
+    CompanyWithEmployeesCountDTO,
+    CompanyNameLogoAndDescriptionDTO
 )
 
 team_ids = [
@@ -110,6 +111,7 @@ class TeamsWithTotalTeamsCountDTOFactory(factory.Factory):
     ])
     total_teams_count = 2
 
+
 class CompanyNameLogoAndDescriptionDTOFactory(factory.Factory):
     class Meta:
         model = CompanyNameLogoAndDescriptionDTO
@@ -130,6 +132,8 @@ class CompanyNameLogoAndDescriptionDTOFactory(factory.Factory):
 class CompanyDTOFactory(
     CompanyNameLogoAndDescriptionDTOFactory, factory.Factory
 ):
+
+class CompanyDTOFactory(factory.Factory):
     class Meta:
         model = CompanyDTO
 
