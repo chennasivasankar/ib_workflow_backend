@@ -6,7 +6,7 @@ from ib_tasks.exceptions.roles_custom_exceptions import InvalidRolesException
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageIdsException
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
-from ib_tasks.interactors.dtos import StageActionDTO
+from ib_tasks.interactors.stages_dtos import StageActionDTO
 
 
 class EmptyStageDisplayLogic(Exception):
@@ -222,8 +222,7 @@ class CreateUpdateDeleteStageActionsInteractor():
                     delete_stage_actions[stage_id].append(action_name)
 
         is_delete_stage_actions_present = delete_stage_actions
-        from ib_tasks.interactors.storage_interfaces.dtos \
-            import StageActionNamesDTO
+        from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO
         if is_delete_stage_actions_present:
             delete_actions = [
                 StageActionNamesDTO(stage_id=key, action_names=value)
