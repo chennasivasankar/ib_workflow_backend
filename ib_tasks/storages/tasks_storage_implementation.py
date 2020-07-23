@@ -1,17 +1,16 @@
 from typing import List, Optional, Dict
 
+from django.db.models import Q
+
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionsOfTemplateDTO
-from ib_tasks.interactors.storage_interfaces.status_dtos import TaskStatusDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldRoleDTO, FieldTypeDTO, UserFieldPermissionDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFRoleDTO, GoFToTaskTemplateDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import TaskTemplateStatusDTO
-    FieldRoleDTO, FieldTypeDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRoleDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, StageDTO, GetTaskStageCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
@@ -23,6 +22,7 @@ from ib_tasks.models import TaskTemplateStatusVariable
 from ib_tasks.models import GoFRole, GoF
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
+from ib_tasks.models.task import Task
 
 
 class TasksStorageImplementation(TaskStorageInterface):
@@ -453,5 +453,6 @@ class TasksStorageImplementation(TaskStorageInterface):
         pass
 
     def get_valid_task_ids(self, task_ids: List[str]) -> Optional[List[str]]:
-        pass
+        valid_task_ids = Task.objects.filter(task_id__in=task_ids)
+        return valid_task_ids
 
