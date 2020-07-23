@@ -1,10 +1,11 @@
 from typing import List
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
-from ib_tasks.interactors.presenter_interfaces.presenter_interface import \
-    GetTaskTemplatesPresenterInterface
 from ib_tasks.interactors.storage_interfaces.dtos import TaskTemplateDTO, \
-    GoFToTaskTemplateDTO, FieldDTO, CompleteTaskTemplatesDTO
+    GoFToTaskTemplateDTO, FieldDTO
+from ib_tasks.interactors.presenter_interfaces.\
+    get_task_templates_presenter_interface import \
+    GetTaskTemplatesPresenterInterface, CompleteTaskTemplatesDTO
 
 
 class GetTaskTemplatesInteractor:

@@ -189,13 +189,3 @@ class GoFToTaskTemplateDTO:
     template_id: str
     order: int
     enable_multiple_gofs: bool
-
-
-@dataclass
-class CompleteTaskTemplatesDTO:
-    task_template_dtos: List[TaskTemplateDTO]
-    actions_of_templates_dtos: List[ActionsOfTemplateDTO]
-    gof_dtos: List[GoFDTO]
-    gofs_to_task_templates_dtos: List[GoFToTaskTemplateDTO]
-    field_dtos: List[FieldDTO]
-    user_field_permission_dtos: List[UserFieldPermissionDTO]

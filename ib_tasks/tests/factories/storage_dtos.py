@@ -5,7 +5,7 @@ from ib_tasks.interactors.storage_interfaces.dtos import (
     CompleteGoFDetailsDTO, GoFDTO, GoFRolesDTO,
     FieldDTO, FieldRolesDTO, FieldRoleDTO, GoFRoleDTO, TaskTemplateDTO,
     UserFieldPermissionDTO, ActionsOfTemplateDTO,
-    GoFToTaskTemplateDTO, CompleteTaskTemplatesDTO, TaskStagesDTO,
+    GoFToTaskTemplateDTO, TaskStagesDTO,
     TaskStatusDTO, ValidStageDTO, StageActionNamesDTO
 )
 
@@ -214,18 +214,3 @@ class GoFToTaskTemplateDTOFactory(factory.Factory):
     template_id = factory.Sequence(lambda n: 'template_{}'.format(n + 1))
     order = factory.Sequence(lambda n: n)
     enable_multiple_gofs = factory.Iterator([True, False])
-
-
-class CompleteTaskTemplatesDTOFactory(factory.Factory):
-    class Meta:
-        model = CompleteTaskTemplatesDTO
-
-    task_template_dtos = factory.SubFactory(TaskTemplateDTOFactory)
-    actions_of_templates_dtos = \
-        factory.SubFactory(ActionsOfTemplateDTOFactory)
-    gof_dtos = factory.SubFactory(GoFDTOFactory)
-    gofs_to_task_templates_dtos = \
-        factory.SubFactory(GoFToTaskTemplateDTOFactory)
-    field_dtos = factory.SubFactory(FieldDTOFactory)
-    user_field_permission_dtos = \
-        factory.SubFactory(UserFieldPermissionDTOFactory)

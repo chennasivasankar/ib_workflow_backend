@@ -7,6 +7,13 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01CreateTaskAPITestCase.test_case status_code'] = '200'
+snapshots['TestCase01CreateTaskAPITestCase.test_case status_code'] = '400'
 
-snapshots['TestCase01CreateTaskAPITestCase.test_case body'] = b''
+snapshots['TestCase01CreateTaskAPITestCase.test_case body'] = {
+    'action_id': [
+        'This field is required.'
+    ],
+    'task_template_id': [
+        'This field is required.'
+    ]
+}

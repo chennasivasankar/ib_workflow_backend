@@ -4,9 +4,10 @@ from ib_tasks.interactors.get_task_templates_interactor \
     import GetTaskTemplatesInteractor
 from ib_tasks.tests.factories.storage_dtos import \
     TaskTemplateDTOFactory, ActionsOfTemplateDTOFactory, \
-    UserFieldPermissionDTOFactory, CompleteTaskTemplatesDTOFactory, \
-    GoFToTaskTemplateDTOFactory, GoFDTOFactory, FieldDTOFactory
-from ib_tasks.interactors.storage_interfaces.dtos import \
+    UserFieldPermissionDTOFactory, FieldDTOFactory, \
+    GoFToTaskTemplateDTOFactory, GoFDTOFactory
+from ib_tasks.interactors.presenter_interfaces.\
+    get_task_templates_presenter_interface import \
     CompleteTaskTemplatesDTO
 
 
@@ -20,7 +21,8 @@ class TestGetTaskTemplatesInteractor:
 
     @pytest.fixture
     def presenter_mock(self):
-        from ib_tasks.interactors.presenter_interfaces.presenter_interface \
+        from ib_tasks.interactors.presenter_interfaces.\
+            get_task_templates_presenter_interface \
             import GetTaskTemplatesPresenterInterface
         presenter = mock.create_autospec(GetTaskTemplatesPresenterInterface)
         return presenter
@@ -79,7 +81,6 @@ class TestGetTaskTemplatesInteractor:
         GoFDTOFactory.reset_sequence()
         UserFieldPermissionDTOFactory.reset_sequence()
         GoFToTaskTemplateDTOFactory.reset_sequence()
-        CompleteTaskTemplatesDTOFactory.reset_sequence()
 
     def test_when_complete_task_details_exists(
             self, task_storage_mock, presenter_mock,
