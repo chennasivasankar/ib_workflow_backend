@@ -117,7 +117,7 @@ class CompanyDTOFactory(factory.Factory):
 
     company_id = factory.Faker("uuid4")
     name = factory.sequence(lambda n: "company1")
-    description = factory.sequence(lambda n: "comapny_description%d" % n)
+    description = factory.sequence(lambda n: "company_description%d" % n)
     logo_url = factory.sequence(lambda n: "logo_url%d" % n)
 
 
