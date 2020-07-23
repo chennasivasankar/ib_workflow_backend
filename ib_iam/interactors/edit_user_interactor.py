@@ -117,15 +117,18 @@ class EditUserInteractor(ValidationMixin):
         service_adapter.user_service.update_user_profile(
             user_id=user_id, user_profile_dto=user_profile_dto)
 
-    def _update_user_roles_company_roles(self, user_id: str, company_id: str,
-                                         role_ids: List[str], team_ids: List[str]):
+    def _update_user_roles_company_roles(
+            self, user_id: str, company_id: str,
+            role_ids: List[str], team_ids: List[str]):
         self._unassign_existing_teams_roles_and_company(user_id)
         self._assaign_teams_roles_company_to_user(
             company_id, role_ids, team_ids, user_id)
 
     def _assaign_teams_roles_company_to_user(
             self, company_id, role_ids, team_ids, user_id):
-        self.storage.add_roles_to_the_user(user_id=user_id, role_ids=role_ids)
+        ids_of_role_objs = self.storage.get_role_objs_ids(role_ids)
+        self.storage.add_roles_to_the_user(
+            user_id=user_id, role_ids=ids_of_role_objs)
         self.storage.add_user_to_the_teams(user_id=user_id, team_ids=team_ids)
         self.storage.add_company_to_user(user_id=user_id, company_id=company_id,
                                          is_admin=False)
