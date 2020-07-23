@@ -2,13 +2,19 @@ from typing import List, Optional, Dict
 
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
+from ib_tasks.interactors.storage_interfaces.actions_dtos import \
+    ActionsOfTemplateDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import TaskStatusDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
-    FieldRoleDTO, FieldTypeDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRoleDTO
+    FieldRoleDTO, FieldTypeDTO, UserFieldPermissionDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
+    GoFRoleDTO, GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
+    TaskTemplateDTO
 from ib_tasks.models import TaskTemplateStatusVariable
 from ib_tasks.models import GoFRole, GoF
 from ib_tasks.models.field import Field
@@ -343,6 +349,52 @@ class TasksStorageImplementation(TaskStorageInterface):
 
         GlobalConstant.objects.bulk_update(global_constants_objs, ['value'])
 
+    def get_task_templates_dtos(self) -> List[TaskTemplateDTO]:
+        pass
+
+    def get_actions_of_templates_dtos(self) -> List[ActionsOfTemplateDTO]:
+        pass
+
+    def get_gofs_details_dtos(
+            self, gof_ids: List[str]) -> List[GoFDTO]:
+        pass
+
+    def get_gofs_to_task_templates_from_permitted_gofs(
+            self, gof_ids: List[str]) -> List[GoFToTaskTemplateDTO]:
+        pass
+
+    def get_user_field_permission_dtos(
+            self, roles: List[str],
+            field_ids: List[str]) -> List[UserFieldPermissionDTO]:
+        pass
+
+    def get_fields_of_gofs_in_dtos(
+            self, gof_ids: List[str]) -> List[FieldDTO]:
+        pass
+
+    def get_gof_ids_with_read_permission_for_user(
+            self, roles: List[str]) -> List[str]:
+        pass
+
+    def delete_field_roles(self, field_ids: List[str]):
+        FieldRole.objects.filter(field_id__in=field_ids).delete()
+
+    def create_stages_with_given_information(self,
+                                             stage_information: StageDTO):
+        pass
+
+    def validate_stage_ids(self, stage_ids) -> Optional[List[str]]:
+        pass
+
+    def update_stages_with_given_information(self,
+                                             update_stages_information: StageDTO):
+        pass
+
+    def validate_stages_related_task_template_ids(self,
+                                                  task_stages_dto: TaskStagesDTO) -> \
+            Optional[List[TaskStagesDTO]]:
+        pass
+
     @staticmethod
     def _get_global_constant_names(
             global_constants_dtos: List[GlobalConstantsDTO]):
@@ -372,22 +424,3 @@ class TasksStorageImplementation(TaskStorageInterface):
         for gof_dto in gof_dtos:
             gofs_dict[gof_dto.gof_id] = gof_dto
         return gofs_dict
-
-    def delete_field_roles(self, field_ids: List[str]):
-        FieldRole.objects.filter(field_id__in=field_ids).delete()
-
-    def create_stages_with_given_information(self,
-                                             stage_information: StageDTO):
-        pass
-
-    def validate_stage_ids(self, stage_ids) -> Optional[List[str]]:
-        pass
-
-    def update_stages_with_given_information(self,
-                                             update_stages_information: StageDTO):
-        pass
-
-    def validate_stages_related_task_template_ids(self,
-                                                  task_stages_dto: TaskStagesDTO) -> \
-            Optional[List[TaskStagesDTO]]:
-        pass
