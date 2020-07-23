@@ -69,7 +69,6 @@ class RolesInteractor:
     @staticmethod
     def _validate_role_id_format(role_id: str):
         import re
-        # valid_format_pattern = '^[A-Z]+\_[A-Z0-9]+[0-9]*$'
         valid_format_pattern = '^([A-Z]+[A-Z0-9_]*)*[A-Z0-9]$'
         if not re.match(valid_format_pattern, role_id):
             raise RoleIdFormatIsInvalid()

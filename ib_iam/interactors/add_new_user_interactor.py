@@ -14,7 +14,6 @@ from ib_iam.interactors.storage_interfaces.add_new_user_storage_interface \
     import AddNewUserStorageInterface
 
 
-
 class AddNewUserInteractor(ValidationMixin):
     def __init__(self, storage: AddNewUserStorageInterface):
         self.storage = storage
