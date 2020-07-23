@@ -1,6 +1,5 @@
 from typing import List
-from ib_tasks.interactors.dtos import GlobalConstantsDTO, \
-    GlobalConstantsWithTemplateIdDTO
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO, GlobalConstantsWithTemplateIdDTO
 from ib_tasks.utils.get_google_sheet import get_google_sheet
 
 

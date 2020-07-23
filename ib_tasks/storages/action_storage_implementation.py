@@ -2,10 +2,10 @@ from typing import List
 
 from django.db.models import F, Q
 
-from ib_tasks.interactors.dtos import StagesActionDTO
+from ib_tasks.interactors.stages_dtos import StagesActionDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
-from ib_tasks.interactors.storage_interfaces.dtos import StageActionNamesDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO
 from ib_tasks.models import StageAction, Stage, ActionPermittedRoles
 
 

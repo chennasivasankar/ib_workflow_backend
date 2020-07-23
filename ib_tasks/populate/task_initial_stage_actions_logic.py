@@ -41,7 +41,7 @@ def _define_single_method(file, action_dict: Dict[str, str]):
 
 
 def append_action_dict(action_dict: Dict[str, Any]):
-    from ib_tasks.interactors.dtos import TaskTemplateStageActionDTO
+    from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO
     function_path = 'ib_tasks.populate.task_initial_stage_actions_logic.'
     function_name = action_dict['stage_id'] + "_" + action_dict['action_name']
     function_path = function_path + function_name
