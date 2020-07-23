@@ -166,8 +166,8 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
         from collections import defaultdict
         members_dict = defaultdict()
         for member_dto in member_dtos:
-            members_dict[member_dto.member_id] = {
-                "member_id": member_dto.member_id,
+            members_dict[member_dto.user_id] = {
+                "member_id": member_dto.user_id,
                 "name": member_dto.name,
                 "profile_pic_url": member_dto.profile_pic_url
             }

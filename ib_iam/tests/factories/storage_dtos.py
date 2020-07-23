@@ -68,7 +68,7 @@ class TeamIdAndNameDTOFactory(factory.Factory):
 
 
 from ib_iam.interactors.storage_interfaces.dtos import (
-    MemberDTO,
+    BasicUserDetailsDTO,
     TeamUserIdsDTO,
     TeamNameAndDescriptionDTO,
     PaginationDTO,
@@ -106,9 +106,9 @@ class TeamUserIdsDTOFactory(factory.Factory):
 
 class MemberDTOFactory(factory.Factory):
     class Meta:
-        model = MemberDTO
+        model = BasicUserDetailsDTO
 
-    member_id = factory.sequence(lambda n: "user%d" % n)
+    user_id = factory.sequence(lambda n: "user%d" % n)
     name = factory.sequence(lambda n: "name%d" % n)
     profile_pic_url = factory.sequence(lambda n: "url%d" % n)
 

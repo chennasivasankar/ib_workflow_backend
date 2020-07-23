@@ -7,7 +7,7 @@ from ib_iam.interactors.presenter_interfaces.dtos import (
     TeamWithMembersDetailsDTO
 )
 from ib_iam.interactors.storage_interfaces.dtos import (
-    PaginationDTO, TeamIdAndNameDTO, TeamUserIdsDTO, MemberDTO
+    PaginationDTO, TeamIdAndNameDTO, TeamUserIdsDTO, BasicUserDetailsDTO
 )
 from ib_iam.adapters.dtos import UserProfileDTO
 from typing import List
@@ -107,11 +107,11 @@ class GetListOfTeamsInteractor:
     @staticmethod
     def _convert_user_dtos_to_member_dtos(
             user_dtos: List[UserProfileDTO]
-    ) -> List[MemberDTO]:
+    ) -> List[BasicUserDetailsDTO]:
         member_dtos = [
-            MemberDTO(member_id=user_dto.user_id,
-                      name=user_dto.name,
-                      profile_pic_url=user_dto.profile_pic_url
-                      ) for user_dto in user_dtos
+            BasicUserDetailsDTO(user_id=user_dto.user_id,
+                                name=user_dto.name,
+                                profile_pic_url=user_dto.profile_pic_url
+                                ) for user_dto in user_dtos
         ]
         return member_dtos

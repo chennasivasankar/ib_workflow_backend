@@ -99,7 +99,7 @@ class TeamsWithTotalTeamsCountDTO:
 
 
 @dataclass
-class MemberDTO:
-    member_id: str
+class BasicUserDetailsDTO:
+    user_id: str
     name: str
     profile_pic_url: str

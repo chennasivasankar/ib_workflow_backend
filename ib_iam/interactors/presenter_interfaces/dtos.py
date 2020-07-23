@@ -24,7 +24,7 @@ class UserOptionsDetails:
 
 
 from ib_iam.interactors.storage_interfaces.dtos import (
-    MemberDTO, TeamIdAndNameDTO, TeamUserIdsDTO
+    BasicUserDetailsDTO, TeamIdAndNameDTO, TeamUserIdsDTO
 )
 
 
@@ -33,4 +33,4 @@ class TeamWithMembersDetailsDTO:
     total_teams_count: int
     team_dtos: List[TeamIdAndNameDTO]
     team_user_ids_dtos: List[TeamUserIdsDTO]
-    member_dtos: List[MemberDTO]
+    member_dtos: List[BasicUserDetailsDTO]
