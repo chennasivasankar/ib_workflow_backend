@@ -4,7 +4,7 @@ from ib_iam.presenters.get_companies_presenter_implementation import (
 )
 
 
-class TestGetResponseForGetListOfTeams:
+class TestGetResponseForGetCompanies:
     def test_given_valid_team_with_members_details_dto_returns_http_response(
             self, get_company_details_dtos, snapshot
     ):

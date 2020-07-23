@@ -29,7 +29,7 @@ class GetCompaniesInteractor:
         return response
 
     def get_companies(self, user_id: str):
-        self.storage.raise_exception_if_user_is_not_admin(user_id=user_id)
+        self.storage.validate_is_user_admin(user_id=user_id)
         company_dtos = \
             self.storage.get_company_dtos()
         company_ids = self._get_company_ids_from_company_dtos(

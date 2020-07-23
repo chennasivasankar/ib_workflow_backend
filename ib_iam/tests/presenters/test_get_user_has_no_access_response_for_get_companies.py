@@ -4,8 +4,9 @@ from ib_iam.presenters.get_companies_presenter_implementation import GetCompanie
 
 
 class TestGetUserHasNoAccessResponseForGetCompanies:
-    def test_it_returns_user_has_no_access_for_get_comapnies_response(self):
-        from ib_iam.constants.exception_messages import USER_HAS_NO_ACCESS_FOR_GET_COMPANIES
+    def test_it_returns_user_has_no_access_for_get_companies_response(self):
+        from ib_iam.constants.exception_messages import \
+            USER_HAS_NO_ACCESS_FOR_GET_COMPANIES
 
         json_presenter = GetCompaniesPresenterImplementation()
         expected_response = USER_HAS_NO_ACCESS_FOR_GET_COMPANIES[0]
