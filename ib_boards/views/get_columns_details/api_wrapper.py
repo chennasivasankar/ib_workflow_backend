@@ -30,6 +30,6 @@ def api_wrapper(*args, **kwargs):
     )
 
     response = interactor.get_column_details_wrapper(presenter=presenter,
-                                          columns_parameters=column_params,
-                                          pagination_parameters=pagination_params)
+                                                     columns_parameters=column_params,
+                                                     pagination_parameters=pagination_params)
     return response

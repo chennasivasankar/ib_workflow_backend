@@ -1,5 +1,5 @@
 """
-# TODO: Update test case description
+# get board details
 """
 
 from django_swagger_utils.utils.test import CustomAPITestCase

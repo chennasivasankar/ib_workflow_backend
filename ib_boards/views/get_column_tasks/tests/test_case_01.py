@@ -1,5 +1,5 @@
 """
-# TODO: Update test case description
+# get column tasks when given column id is valid
 """
 
 from django_swagger_utils.utils.test import CustomAPITestCase

@@ -1,8 +1,11 @@
 """
-# TODO: Update test case description
+#
 """
+import json
 
 from django_swagger_utils.utils.test import CustomAPITestCase
+
+from ib_boards.utils.custom_test_utils import CustomTestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 REQUEST_BODY = """
@@ -20,14 +23,23 @@ TEST_CASE = {
 }
 
 
-class TestCase01GetColumnsDetailsAPITestCase(CustomAPITestCase):
+class TestCase01GetColumnsDetailsAPITestCase(CustomTestUtils):
     app_name = APP_NAME
     operation_name = OPERATION_NAME
     request_method = REQUEST_METHOD
     url_suffix = URL_SUFFIX
     test_case_dict = TEST_CASE
 
+    def setupUser(self, username, password):
+        super(TestCase01GetColumnsDetailsAPITestCase, self
+              ).setupUser(
+            username=username, password=password
+        )
+        self.create_columns()
+
     def test_case(self):
-        self.default_test_case() # Returns response object.
-        # Which can be used for further response object checks.
-        # Add database state checks here.
+        response = self.default_test_case()
+
+        self.assert_match_snapshot(
+            name="response",
+            value=response)

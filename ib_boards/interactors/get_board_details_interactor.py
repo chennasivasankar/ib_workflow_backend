@@ -49,6 +49,6 @@ class GetBoardsDetailsInteractor:
             for board_id in board_ids
             if board_id not in valid_board_ids
         ]
-        print(board_ids)
+
         if invalid_board_ids:
             raise InvalidBoardIds(board_ids=invalid_board_ids)
