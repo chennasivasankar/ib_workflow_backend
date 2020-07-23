@@ -1,57 +1,75 @@
-from ib_tasks.utils.csv_reader import read_csv_file
-import json
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRolesDTO, CompleteGoFDetailsDTO
+from ib_tasks.utils.read_google_sheet import read_google_sheet
+from typing import List, Dict
 
 
-def populate_required_fields(file_path: str):
-    from ib_tasks.models.field import Field
-    field_dicts = read_csv_file(file_path=file_path)
-    field_model_objects = [
-        Field(
-            field_id=field_dict['Feild ID'],
-            display_name=field_dict['Field Display Name'],
-            field_type=field_dict['Field Type'],
-            field_values=field_dict['Field Values'],
-            allowed_formats=field_dict['Allowed Formats'],
-            help_text=field_dict['Help Text'],
-            tooltip=field_dict['Tool Tip'],
-            placeholder_text=field_dict['Place Holder Text'],
-            error_message=field_dict['Error Message'],
-            validation_regex=field_dict['Validation - RegEx']
-        )
-        for field_dict in field_dicts
-    ]
-    Field.objects.bulk_create(field_model_objects)
-
-
-def populate_required_task_templates(file_path: str):
-    from ib_tasks.models.task_template import TaskTemplate
-    task_template_dicts = read_csv_file(file_path=file_path)
-    task_template_model_objects = [
-        TaskTemplate(
-            template_id=task_template_dict['Template ID'],
-            template_name=task_template_dict['Template Name']
-        )
-        for task_template_dict in task_template_dicts
-    ]
-    TaskTemplate.objects.bulk_create(task_template_model_objects)
-
-
-def prepare_complete_gof_details_dtos():
-    from ib_tasks.constants.constants import GOFS_CSV_FILE_PATH
-    gof_dicts = read_csv_file(file_path=GOFS_CSV_FILE_PATH)
-    from ib_tasks.interactors.storage_interfaces.dtos import (
-        CompleteGoFDetailsDTO, GoFRolesDTO, GoFFieldsDTO
-    )
-    return
-
-
-def create_gofs():
+def create_or_update_gofs():
     from ib_tasks.constants.constants import (
-        FIELDS_CSV_FILE_PATH, TASK_TEMPLATES_CSV_FILE_PATH
+        GOOGLE_SHEET_NAME, GOF_SUB_SHEET_TITLE
     )
-    # populate_required_fields(file_path=FIELDS_CSV_FILE_PATH)
-    # populate_required_task_templates(file_path=TASK_TEMPLATES_CSV_FILE_PATH)
-    complete_gof_details_dtos = prepare_complete_gof_details_dtos()
+    from ib_tasks.interactors.create_or_update_gofs import \
+        CreateOrUpdateGoFsInteractor
+    from ib_tasks.storages.tasks_storage_implementation import \
+        TasksStorageImplementation
+
+    sheet = read_google_sheet(sheet_name=GOOGLE_SHEET_NAME)
+    gof_sheet = sheet.worksheet(GOF_SUB_SHEET_TITLE)
+    gof_records = gof_sheet.get_all_records()
+    complete_gof_details_dtos = prepare_complete_gof_details_dtos(gof_records)
+
+    storage = TasksStorageImplementation()
+    interactor = CreateOrUpdateGoFsInteractor(storage=storage)
+    interactor.create_or_update_gofs(complete_gof_details_dtos)
 
 
-create_gofs()
+def prepare_complete_gof_details_dtos(
+        gof_records: List[Dict]
+) -> List[CompleteGoFDetailsDTO]:
+    complete_gof_details_dtos = [
+        CompleteGoFDetailsDTO(
+            gof_dto=get_gof_dto_for_a_gof_record(gof_record),
+            gof_roles_dto=get_gof_roles_dto_for_a_gof_record(gof_record)
+        )
+        for gof_record in gof_records
+    ]
+    return complete_gof_details_dtos
+
+
+def get_gof_dto_for_a_gof_record(gof_record: Dict) -> GoFDTO:
+    max_columns = gof_record['MAX_COLUMNS']
+    max_columns_is_not_integer = not isinstance(max_columns, int)
+    if max_columns_is_not_integer:
+        from ib_tasks.constants.exception_messages import \
+            MAX_COLUMNS_VALUE_MUST_BE_INTEGER
+        from ib_tasks.exceptions.columns_custom_exceptions import MaxColumnsMustBeANumber
+        MAX_COLUMNS_VALUE_MUST_BE_INTEGER += ", got {}".format(max_columns)
+        raise MaxColumnsMustBeANumber(MAX_COLUMNS_VALUE_MUST_BE_INTEGER)
+
+    gof_dto = GoFDTO(
+        gof_id=gof_record['GOF ID*'],
+        gof_display_name=gof_record['GOF Display Name*'],
+        max_columns=max_columns
+    )
+    return gof_dto
+
+
+def get_gof_roles_dto_for_a_gof_record(gof_record: Dict) -> GoFRolesDTO:
+    read_permissions_is_empty = \
+        not gof_record['Read permission Roles*'].strip()
+    write_permissions_is_empty = \
+        not gof_record['Write permission Roles*'].strip()
+    read_permission_roles_is_not_empty = not read_permissions_is_empty
+    write_permissions_is_not_empty = not write_permissions_is_empty
+    read_permission_roles, write_permission_roles = [], []
+    if read_permission_roles_is_not_empty:
+        read_permission_roles = \
+            gof_record['Read permission Roles*'].split('\n')
+    if write_permissions_is_not_empty:
+        write_permission_roles = \
+            gof_record['Write permission Roles*'].split('\n')
+    gof_roles_dto = GoFRolesDTO(
+        gof_id=gof_record['GOF ID*'],
+        read_permission_roles=read_permission_roles,
+        write_permission_roles=write_permission_roles
+    )
+    return gof_roles_dto

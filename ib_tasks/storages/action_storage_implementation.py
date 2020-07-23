@@ -2,10 +2,10 @@ from typing import List
 
 from django.db.models import F, Q
 
-from ib_tasks.interactors.dtos import StagesActionDTO
+from ib_tasks.interactors.stages_dtos import StagesActionDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
-from ib_tasks.interactors.storage_interfaces.dtos import StageActionNamesDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO
 from ib_tasks.models import StageAction, Stage, ActionPermittedRoles
 
 
@@ -37,6 +37,9 @@ class ActionsStorageImplementation(ActionStorageInterface):
         return list_of_dtos
 
     def create_stage_actions(self, stage_actions: List[StagesActionDTO]):
+        list_of_actions = []
+        list_of_permitted_roles = []
+        names_list = [stage.action_name for stage in stage_actions]
         stage_ids = [stage.stage_id for stage in stage_actions]
         stages = Stage.objects.filter(stage_id__in=stage_ids).values('stage_id', 'id')
 

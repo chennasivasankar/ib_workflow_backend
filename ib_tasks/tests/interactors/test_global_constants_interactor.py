@@ -2,7 +2,7 @@ import pytest
 import mock
 from ib_tasks.interactors.global_constants_interactor import \
     GlobalConstantsInteractor
-from ib_tasks.interactors.dtos import GlobalConstantsWithTemplateIdDTO
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsWithTemplateIdDTO
 from ib_tasks.tests.factories.interactor_dtos import GlobalConstantsDTOFactory
 
 
@@ -24,7 +24,11 @@ class TestGlobalConstantsInteractor:
             self, task_storage_mock):
         # Arrange
         template_id = " "
-        expected_exception_message = "Invalid value for field: template_id"
+
+        from ib_tasks.constants.exception_messages import \
+            INVALID_VALUE_FOR_TEMPLATE_ID
+        expected_exception_message = INVALID_VALUE_FOR_TEMPLATE_ID
+
         global_constants_dtos = GlobalConstantsDTOFactory.create_batch(
             size=2
         )
@@ -37,7 +41,7 @@ class TestGlobalConstantsInteractor:
         global_constants_interactor = GlobalConstantsInteractor(
             task_storage=task_storage_mock
         )
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
@@ -50,7 +54,11 @@ class TestGlobalConstantsInteractor:
             self, task_storage_mock):
         # Arrange
         template_id = "FIN_PR"
-        expected_exception_message = "Invalid value for field: constant_name"
+
+        from ib_tasks.constants.exception_messages import \
+            INVALID_VALUE_FOR_CONSTANT_NAME
+        expected_exception_message = INVALID_VALUE_FOR_CONSTANT_NAME
+
         global_constants_dtos = GlobalConstantsDTOFactory.create_batch(
             size=2, constant_name=" "
         )
@@ -63,7 +71,7 @@ class TestGlobalConstantsInteractor:
         global_constants_interactor = GlobalConstantsInteractor(
             task_storage=task_storage_mock
         )
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
@@ -76,10 +84,14 @@ class TestGlobalConstantsInteractor:
             self, task_storage_mock):
         # Arrange
         template_id = "FIN_PR"
-        expected_exception_message = "Invalid value for field: value"
+        invalid_value = -1
+        from ib_tasks.constants.exception_messages import \
+            INVALID_VALUE_FOR_VALUE
+        expected_exception_message = \
+            INVALID_VALUE_FOR_VALUE.format(invalid_value)
 
         global_constants_dtos = GlobalConstantsDTOFactory.create_batch(
-            size=2, value=-1
+            size=2, value=invalid_value
         )
         global_constants_with_template_id_dto = \
             GlobalConstantsWithTemplateIdDTO(
@@ -90,7 +102,7 @@ class TestGlobalConstantsInteractor:
         global_constants_interactor = GlobalConstantsInteractor(
             task_storage=task_storage_mock
         )
-        from ib_tasks.exceptions.custom_exceptions import InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
@@ -103,8 +115,11 @@ class TestGlobalConstantsInteractor:
             self, task_storage_mock):
         # Arrange
         template_id = "FIN_PR"
+        from ib_tasks.constants.exception_messages import \
+            DUPLICATE_CONSTANT_NAMES
         expected_exception_message = \
-            "Given duplicate constant names ['Constant_1']"
+            DUPLICATE_CONSTANT_NAMES.format(['Constant_1'])
+
         global_constants_dtos = GlobalConstantsDTOFactory.create_batch(
             size=2, constant_name="Constant_1"
         )
@@ -117,8 +132,7 @@ class TestGlobalConstantsInteractor:
         global_constants_interactor = GlobalConstantsInteractor(
             task_storage=task_storage_mock
         )
-        from ib_tasks.exceptions.custom_exceptions import \
-            DuplicateConstantNames
+        from ib_tasks.exceptions.constants_custom_exceptions import DuplicateConstantNames
 
         # Assert
         with pytest.raises(DuplicateConstantNames) as err:
@@ -131,8 +145,10 @@ class TestGlobalConstantsInteractor:
                                                        task_storage_mock):
         # Arrange
         template_id = "FIN_PR"
+        from ib_tasks.constants.exception_messages import \
+            TEMPLATE_DOES_NOT_EXISTS
         expected_exception_message = \
-            "The template with template id: FIN_PR, does not exists"
+            TEMPLATE_DOES_NOT_EXISTS.format(template_id)
         task_storage_mock.check_is_template_exists.return_value = False
 
         global_constants_dtos = GlobalConstantsDTOFactory.create_batch(size=2)
@@ -145,8 +161,7 @@ class TestGlobalConstantsInteractor:
         global_constants_interactor = GlobalConstantsInteractor(
             task_storage=task_storage_mock
         )
-        from ib_tasks.exceptions.custom_exceptions import \
-            TemplateDoesNotExists
+        from ib_tasks.exceptions.task_custom_exceptions import TemplateDoesNotExists
 
         # Assert
         with pytest.raises(TemplateDoesNotExists) as err:
@@ -186,10 +201,17 @@ class TestGlobalConstantsInteractor:
             self, task_storage_mock):
         # Arrange
         template_id = "FIN_PR"
-        expected_exception_message = \
-            "Existing constants with constant names: ['Constant_4'] of template not in given data"
-        task_storage_mock.check_is_template_exists.return_value = True
         existing_global_constants_names = ["Constant_4"]
+
+        from ib_tasks.constants.exception_messages import \
+            EXISTING_GLOBAL_CONSTANT_NAMES_NOT_IN_GIVEN_DATA
+        expected_exception_message = \
+            EXISTING_GLOBAL_CONSTANT_NAMES_NOT_IN_GIVEN_DATA.format(
+                existing_global_constants_names
+            )
+
+        task_storage_mock.check_is_template_exists.return_value = True
+
         global_constants_dtos = \
             GlobalConstantsDTOFactory.create_batch(size=2)
         task_storage_mock.\
@@ -204,8 +226,7 @@ class TestGlobalConstantsInteractor:
         global_constants_interactor = GlobalConstantsInteractor(
             task_storage=task_storage_mock
         )
-        from ib_tasks.exceptions.custom_exceptions import \
-            ExistingGlobalConstantNamesNotInGivenData
+        from ib_tasks.exceptions.constants_custom_exceptions import ExistingGlobalConstantNamesNotInGivenData
 
         # Assert
         with pytest.raises(ExistingGlobalConstantNamesNotInGivenData) as err:
@@ -218,3 +239,35 @@ class TestGlobalConstantsInteractor:
                 global_constants_dtos=global_constants_dtos
         )
         assert err.value.args[0] == expected_exception_message
+
+    def test_when_unique_constant_name_but_different_configuration_updates_global_constant(
+            self, task_storage_mock):
+        # Arrange
+        template_id = "FIN_PR"
+        existing_global_constants_names = ["Constant_1", "Constant_2"]
+        task_storage_mock.check_is_template_exists.return_value = True
+
+        global_constants_dtos = \
+            GlobalConstantsDTOFactory.create_batch(size=2)
+        task_storage_mock.\
+            get_constant_names_of_existing_global_constants_of_template.\
+            return_value = existing_global_constants_names
+
+        global_constants_with_template_id_dto = \
+            GlobalConstantsWithTemplateIdDTO(
+                template_id=template_id,
+                global_constants_dtos=global_constants_dtos
+            )
+        global_constants_interactor = GlobalConstantsInteractor(
+            task_storage=task_storage_mock
+        )
+
+        # Assert
+        global_constants_interactor.create_global_constants_to_template_wrapper(
+            global_constants_with_template_id_dto=global_constants_with_template_id_dto
+        )
+        task_storage_mock.update_global_constants_to_template.\
+            assert_called_once_with(
+                template_id=template_id,
+                global_constants_dtos=global_constants_dtos
+        )

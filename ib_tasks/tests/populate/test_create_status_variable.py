@@ -9,6 +9,7 @@ class TestPopulateStatusVariables:
             "task_template_id": "task_template_id_1",
             "status_variable_id": "status_id_1"
         }
+
         import json
         json_valid_format = json.dumps(valid_format)
         return json_valid_format
@@ -24,7 +25,7 @@ class TestPopulateStatusVariables:
         valid_json_format = valid_format
         list_of_status_dict = [
             {
-                "task_template_ids": "task_template_id_1",
+                "invalid_field_name": "task_template_id_1",
                 "status_variable_id": "status_id_1"
             },
             {
@@ -35,7 +36,7 @@ class TestPopulateStatusVariables:
 
         from ib_tasks.populate.create_task_status_variables import \
             populate_status_variables
-        from ib_tasks.exceptions.custom_exceptions import InvalidFormatException
+        from ib_tasks.exceptions.stage_custom_exceptions import InvalidFormatException
 
         # Act
 
@@ -51,11 +52,11 @@ class TestPopulateStatusVariables:
         list_of_status_dict = [
             {
                 "task_template_id": "task_template_id_1",
-                "status_variable_id": "status_id_1"
+                "status_variable_id": "status_variable_id_1"
             },
             {
                 "task_template_id": "task_template_id_2",
-                "status_variable_id": "status_id_2"
+                "status_variable_id": "status_variable_id_2"
             }
         ]
 

@@ -1,12 +1,15 @@
 from unittest.mock import create_autospec
+
 import pytest
+
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateIds, DuplicateTaskStatusVariableIds
+from ib_tasks.interactors.create_task_status_interactor import \
+    CreateTaskStatusInteractor
+from ib_tasks.interactors.storage_interfaces.status_dtos import TaskStatusDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.storage_interfaces.dtos import TaskStatusDTO
-from ib_tasks.interactors.create_task_status_interactor import CreateTaskStatusInteractor
-from ib_tasks.exceptions.custom_exceptions import (
-    InvalidTaskTemplateIds, DuplicateTaskStatusVariableIds)
 from ib_tasks.tests.factories.storage_dtos import TaskStatusDTOFactory
+
 
 class TestCreateStatusInteractor:
     @pytest.fixture
@@ -42,8 +45,8 @@ class TestCreateStatusInteractor:
         # Arrange
         task_status_details_dtos = [TaskStatusDTO(
             task_template_id="FIN_PR",
-            status_variable_id="Status 1"
-        ),TaskStatusDTO(
+            status_variable_id="Status 1"),
+TaskStatusDTO(
             task_template_id="FIN_PR",
             status_variable_id="Status 2"
         )
@@ -58,7 +61,8 @@ class TestCreateStatusInteractor:
         interactor.create_task_status(task_status_dtos)
 
         # Assert
-        storage.create_status_for_tasks.assert_called_once_with(task_status_dtos)
+        storage.create_status_for_tasks.assert_called_once_with(
+            task_status_dtos)
 
     def test_duplicate_status_ids_for_task_template_id_raises_exception(
             self, duplicate_status_dtos):
@@ -67,7 +71,7 @@ class TestCreateStatusInteractor:
             TaskStatusDTO(
                 task_template_id="FIN_PR",
                 status_variable_id="Status 1"
-            ),TaskStatusDTO(
+            ), TaskStatusDTO(
                 task_template_id="FIN_PR",
                 status_variable_id="Status 1"
             ),

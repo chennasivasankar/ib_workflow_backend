@@ -1,13 +1,13 @@
 from typing import Optional, List
 
-from ib_tasks.interactors.dtos import StageDTO, TaskTemplateStageDTO
-from ib_tasks.interactors.storage_interfaces.dtos import (TaskStagesDTO, ValidStageDTO)
+from ib_tasks.interactors.stages_dtos import StageDTO, TaskTemplateStageDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, ValidStageDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import StageStorageInterface
 from ib_tasks.models import Stage, TaskTemplateInitialStage
 
 
 class StagesStorageImplementation(StageStorageInterface):
-    def create_stages(self, stage_information: StageDTO):
+    def create_stages(self, stage_information: List[StageDTO]):
         list_of_stages = []
         for stage in stage_information:
             list_of_stages.append(self._get_stage_object(stage))
@@ -21,7 +21,7 @@ class StagesStorageImplementation(StageStorageInterface):
                      value=stage.value,
                      display_logic=stage.stage_display_logic)
 
-    def get_valid_stage_ids(self, stage_ids) -> Optional[List[str]]:
+    def get_existing_stage_ids(self, stage_ids) -> Optional[List[str]]:
         valid_stage_ids = Stage.objects.filter(stage_id__in=stage_ids)
 
         valid_stages_dto = [ValidStageDTO(
