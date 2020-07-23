@@ -33,7 +33,8 @@ class GetBoardsPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_response_for_get_boards(
-            self, board_dtos: List[BoardDTO], total_boards: int) -> response.HttpResponse:
+            self, board_dtos: List[BoardDTO],
+            total_boards: int) -> response.HttpResponse:
         pass
 
     def get_response_for_offset_exceeds_total_tasks(self):
@@ -73,7 +74,8 @@ class PresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_response_for_column_details(self, column_details: List[ColumnDetailsDTO],
+    def get_response_for_column_details(self,
+                                        column_details: List[ColumnDetailsDTO],
                                         task_fields_dto: List[TaskFieldsDTO],
                                         task_actions_dto: List[TaskActionsDTO],
                                         task_details: List[TaskColumnDTO]
