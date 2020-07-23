@@ -6,9 +6,10 @@ from ib_tasks.interactors.storage_interfaces.status_dtos import TaskStatusDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldRoleDTO, FieldTypeDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRoleDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, StageDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, StageDTO, GetTaskStageCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.models import TaskTemplateStatusVariable
 from ib_tasks.models import GoFRole, GoF
 from ib_tasks.models.field import Field
@@ -391,3 +392,11 @@ class TasksStorageImplementation(TaskStorageInterface):
                                                   task_stages_dto: TaskStagesDTO) -> \
             Optional[List[TaskStagesDTO]]:
         pass
+
+    def get_task_details(self, task_dtos: List[GetTaskDetailsDTO]) ->\
+            GetTaskStageCompleteDetailsDTO:
+        pass
+
+    def get_valid_task_ids(self, task_ids: List[str]) -> Optional[List[str]]:
+        pass
+
