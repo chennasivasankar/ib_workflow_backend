@@ -1,7 +1,7 @@
 {
         "swagger": "2.0",
         "host": "127.0.0.1:8000",
-        "basePath": "/api/ib_tasks/",
+        "basePath": "/api/ib_iam/",
         "info": {
             "version": "1.0.0",
             "title": "Simple API",
@@ -206,7 +206,7 @@
                         "$ref": "#/parameters/TodoId"
                     }
                 ],
-                "post": {
+                "get": {
                     "summary": "Get a todo",
                     "description": "Returns a todo.",
                     "operationId": "get_todo",
@@ -322,4 +322,3 @@
             }
         }
     }
-    

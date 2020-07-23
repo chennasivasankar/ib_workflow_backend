@@ -26,7 +26,8 @@ ALLOWED_HOSTS = [
     "ib-workflows-backend-beta.apigateway.in",
     "ib-workflows-backend-gamma.apigateway.in",
     "127.0.0.1",
-    "localhost"
+    "localhost",
+    "*"
 ]
 
 ROOT_URLCONF = 'ib_workflows_backend.urls'
@@ -276,6 +277,7 @@ TEMPLATES = [
     },
 ]
 
+
 # *********************** Middleware *************************#
 
 MIDDLEWARE = [
@@ -342,3 +344,9 @@ TEST_RUNNER = 'snapshottest.django.TestRunner'
 MOCK_X_IB_REQUEST_ID = True
 
 STAGE = os.environ.get("STAGE", "local")
+RESET_PASSWORD_LINK_EXPIRY_IN_SECONDS = \
+    int(os.environ.get("RESET_PASSWORD_LINK_EXPIRY_IN_SECONDS", '3600'))
+RESET_PASSWORD_LINK = \
+    os.environ.get(
+        "RESET_PASSWORD_LINK",
+        'https://127.0.0.1:8000/api/ib_iam/update_password/v1/?token=')

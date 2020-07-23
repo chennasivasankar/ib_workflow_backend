@@ -1,3 +1,12 @@
+class UserAccountDoesNotExist(Exception):
+    pass
+
+
+class InvalidEmail(Exception):
+    pass
+
+
+
 class UserIsNotAdmin(Exception):
     pass
 

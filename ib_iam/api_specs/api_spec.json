@@ -451,7 +451,8 @@
       "schema": {
         "$ref": "#/definitions/ConfigurationDetails"
       }
-    }
+    },
+    
   },
   "paths": {
     "/configuration_details/v1": {
@@ -526,6 +527,115 @@
           },
           "400": {
             "$ref": "#/responses/AddUserBadRequestResponse"
+          }
+        }
+      }
+    },
+    "/login/v1/": {
+      "post": {
+        "operationId": "user_login",
+        "summary": "user login",
+        "description": "if user is exists return the access_token and is_admin",
+        "parameters": [
+          {
+            "$ref": "#/parameters/LoginParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/LoginSuccessResponse"
+          },
+          "404": {
+            "$ref": "#/responses/LoginNotFoundResponse"
+          },
+          "400": {
+            "$ref": "#/responses/LoginBadRequestResponse"
+          }
+        }
+      }
+    },
+    "/logout/v1/": {
+      "post": {
+        "operationId": "user_logout",
+        "summary": "user logout",
+        "description": "user want to log out from a device",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response"
+          }
+        }
+      }
+    },
+    "/send/reset_password_link/v1/": {
+      "post": {
+        "operationId": "send_user_reset_password_link",
+        "summary": "send user reset password link",
+        "description": "user reset password link to email",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/SendResetPasswordLinkParameter"
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/responses/SendResetPasswordLinkBadRequestResponse"
+          },
+          "404": {
+            "$ref": "#/responses/SendResetPasswordLinkNotFoundResponse"
+          },
+          "200": {
+            "description": "Success Response"
+          }
+        }
+      }
+    },
+    "/update_password/v1/": {
+      "post": {
+        "summary": "update user the password",
+        "operationId": "update_user_password",
+        "description": "update user password using token which we provided",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "user token with expires secs",
+            "type": "string",
+            "required": true
+          },
+          {
+            "$ref": "#/parameters/UpdatePasswordParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response"
+          },
+          "400": {
+            "$ref": "#/responses/UpdatePasswordBadRequestResponse"
+          },
+          "404": {
+            "$ref": "#/responses/UpdatePasswordNotFoundResponse"
           }
         }
       }
