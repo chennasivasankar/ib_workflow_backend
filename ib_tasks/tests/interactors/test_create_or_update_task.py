@@ -3,11 +3,10 @@ import pytest
 import factory
 
 from ib_tasks.constants.enum import FieldTypes
-from ib_tasks.tests.factories.interactor_dtos import (
-    TaskDTOFactory, GoFFieldsDTOFactory, FieldValuesDTOFactory
-)
 from ib_tasks.interactors.create_or_update_task import \
     CreateOrUpdateTaskInteractor
+from ib_tasks.tests.factories.interactor_dtos import TaskDTOFactory, \
+    GoFFieldsDTOFactory, FieldValuesDTOFactory
 from ib_tasks.tests.factories.storage_dtos import FieldTypeDTOFactory
 
 

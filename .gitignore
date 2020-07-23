@@ -48,6 +48,11 @@ dist/
 doc_html/
 venv/
 
+migrations/
+/venv/
+/venv/
+/venv/
+/venv/
 utils/google_sheets_credentials.json
 
 ib_tasks/utils/workflow-types-4f1e079f438e.json

@@ -2,15 +2,18 @@ from typing import List, Optional
 
 import collections
 
-from ib_tasks.exceptions.custom_exceptions import FieldIdEmptyValueException
-from ib_tasks.exceptions.fields_custom_exceptions import \
-    DuplicationOfFieldIdsExist, InvalidValueForFieldDisplayName, \
-    InvalidValueForFieldType
-from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGOFIds
-from ib_tasks.interactors.storage_interfaces.dtos import FieldDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO
 
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
+
+from ib_tasks.exceptions.fields_custom_exceptions import (
+    FieldIdEmptyValueException,
+    InvalidGOFIds,
+    DuplicationOfFieldIdsExist,
+    InvalidValueForFieldDisplayName,
+    InvalidValueForFieldType,
+)
 
 
 class CreateOrUpdateFieldsBaseValidationInteractor:

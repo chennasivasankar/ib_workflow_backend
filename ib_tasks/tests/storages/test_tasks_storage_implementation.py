@@ -172,8 +172,8 @@ class TestTasksStorageImplementation:
     ):
         # Arrange
         field_ids = ["field0", "field1", "field2"]
-        FieldFactory(field_id="field0")
-        FieldFactory(field_id="field1")
+        FieldFactory.create(field_id="field0")
+        FieldFactory.create(field_id="field1")
         expected_existing_field_ids = ["field0", "field1"]
 
         # Act

@@ -24,7 +24,7 @@ class TestGoFSelectorValidationsInteractor:
             self, storage_mock, reset_field_dto
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions \
+        from ib_tasks.exceptions.fields_custom_exceptions \
             import InvalidJsonForFieldValue
         from ib_tasks.constants.exception_messages import INVALID_JSON
         field_values = [
@@ -59,7 +59,7 @@ class TestGoFSelectorValidationsInteractor:
             self, storage_mock, reset_field_dto
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions \
+        from ib_tasks.exceptions.fields_custom_exceptions \
             import EmptyValuesForGoFNames
         from ib_tasks.constants.exception_messages \
             import EMPTY_VALUE_FOR_GOF_NAMES
@@ -96,7 +96,7 @@ class TestGoFSelectorValidationsInteractor:
             self, storage_mock, reset_field_dto
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions \
+        from ib_tasks.exceptions.fields_custom_exceptions \
             import DuplicationOfGoFNamesForFieldValues
         from ib_tasks.constants.exception_messages \
             import DUPLICATED_OF_GOF_NAMES_FOR_FIELD_VALUES
@@ -142,8 +142,7 @@ class TestGoFSelectorValidationsInteractor:
             self, storage_mock, reset_field_dto
     ):
         # Arrange
-        from ib_tasks.exceptions.gofs_custom_exceptions \
-            import InvalidGOFIds
+        from ib_tasks.exceptions.fields_custom_exceptions import InvalidGOFIds
         from ib_tasks.constants.exception_messages \
             import INVALID_GOF_IDS_EXCEPTION_MESSAGE
         field_values = [

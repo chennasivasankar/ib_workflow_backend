@@ -2,8 +2,7 @@
 from typing import List
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
-from ib_tasks.interactors.dtos \
-    import TaskTemplateStageActionDTO, StageActionDTO, TaskTemplateStageDTO
+from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, StageActionDTO, TaskTemplateStageDTO
 
 
 class InvalidTaskTemplateIdsException(Exception):

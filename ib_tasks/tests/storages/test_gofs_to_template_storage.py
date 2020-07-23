@@ -15,7 +15,7 @@ class TestGoFsToTaskTemplateStorageImplementation:
         from ib_tasks.tests.factories.models import TaskTemplateFactory
         TaskTemplateFactory.reset_sequence()
         from ib_tasks.tests.factories.models import GoFFactory
-        GoFFactory.reset_sequence(1)
+        GoFFactory.reset_sequence()
         from ib_tasks.tests.factories.interactor_dtos import \
             GoFWithOrderAndAddAnotherDTOFactory
         GoFWithOrderAndAddAnotherDTOFactory.reset_sequence()

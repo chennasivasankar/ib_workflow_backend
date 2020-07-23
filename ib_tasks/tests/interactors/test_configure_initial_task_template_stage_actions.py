@@ -1,7 +1,7 @@
 
 from unittest.mock import create_autospec
 
-from ib_tasks.interactors.dtos import TaskTemplateStageDTO
+from ib_tasks.interactors.stages_dtos import TaskTemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 

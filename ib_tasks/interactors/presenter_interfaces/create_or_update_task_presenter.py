@@ -1,9 +1,11 @@
 import abc
 
-from ib_tasks.exceptions.custom_exceptions import InvalidTaskTemplateIds, \
-    InvalidFieldIds, InvalidGoFIds, EmptyValueForPlainTextField
+
 from ib_tasks.exceptions.fields_custom_exceptions import \
-    DuplicationOfFieldIdsExist
+    DuplicationOfFieldIdsExist, InvalidFieldIds
+from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
+    EmptyValueForPlainTextField
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateIds
 
 
 class CreateOrUpdateTaskPresenterInterface(abc.ABC):

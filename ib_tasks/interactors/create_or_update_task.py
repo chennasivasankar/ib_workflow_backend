@@ -1,16 +1,17 @@
 from typing import Optional, List, Union
 
 from ib_tasks.constants.enum import FieldTypes
-from ib_tasks.exceptions.custom_exceptions import (
-    InvalidFieldIds, InvalidTaskTemplateIds,
-    InvalidGoFIds, EmptyValueForPlainTextField)
 from ib_tasks.exceptions.fields_custom_exceptions import \
-    DuplicationOfFieldIdsExist
-from ib_tasks.interactors.dtos import TaskDTO, GoFFieldsDTO, FieldValuesDTO
+    DuplicationOfFieldIdsExist, InvalidFieldIds
+from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
+    EmptyValueForPlainTextField
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateIds
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.presenter_interfaces.create_or_update_task_presenter \
     import CreateOrUpdateTaskPresenterInterface
+from ib_tasks.interactors.task_dtos import TaskDTO, FieldValuesDTO, \
+    GoFFieldsDTO
 
 
 class CreateOrUpdateTaskInteractor:

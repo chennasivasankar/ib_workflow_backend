@@ -2,9 +2,11 @@ import pytest
 import factory
 
 from ib_tasks.constants.enum import PermissionTypes
+from ib_tasks.exceptions.gofs_custom_exceptions import \
+    DuplicateWritePermissionRolesForAGoF, DuplicateReadPermissionRolesForAGoF
 from ib_tasks.interactors.create_or_update_gofs import \
     CreateOrUpdateGoFsInteractor
-from ib_tasks.interactors.storage_interfaces.dtos import GoFRoleDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFRoleDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
 from ib_tasks.tests.factories.storage_dtos import (
@@ -199,8 +201,6 @@ class TestCreateOrUpdateGOFs:
             self, storage_mock
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import \
-            DuplicateWritePermissionRolesForAGoF
         write_permission_roles = ["ALL_ROLES", "ALL_ROLES"]
         gof_roles_dto = GoFRolesDTOFactory(
             write_permission_roles=write_permission_roles)
@@ -224,8 +224,6 @@ class TestCreateOrUpdateGOFs:
             self, storage_mock
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import \
-            DuplicateReadPermissionRolesForAGoF
         read_permission_roles = ["ALL_ROLES", "ALL_ROLES"]
         gof_roles_dto = GoFRolesDTOFactory(
             read_permission_roles=read_permission_roles)

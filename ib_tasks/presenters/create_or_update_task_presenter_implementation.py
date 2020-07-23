@@ -1,8 +1,9 @@
-from ib_tasks.exceptions.custom_exceptions import InvalidFieldIds, \
-    InvalidGoFIds, InvalidTaskTemplateIds, DuplicatedFieldIds, \
-    EmptyValueForPlainTextField
+
 from ib_tasks.exceptions.fields_custom_exceptions import \
-    DuplicationOfFieldIdsExist
+    DuplicationOfFieldIdsExist, InvalidFieldIds
+from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
+    EmptyValueForPlainTextField
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateIds
 from ib_tasks.interactors.presenter_interfaces.create_or_update_task_presenter \
     import CreateOrUpdateTaskPresenterInterface
 from django.http import response

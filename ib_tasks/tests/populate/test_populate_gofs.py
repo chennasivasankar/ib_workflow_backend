@@ -1,6 +1,8 @@
 import pytest
 import factory
 
+from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+    get_valid_role_ids_in_given_role_ids
 from ib_tasks.tests.factories.storage_dtos import (
     CompleteGoFDetailsDTOFactory, GoFDTOFactory, GoFRolesDTOFactory
 )
@@ -12,11 +14,10 @@ class TestPopulateGoFs:
 
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
-        GoFFactory.reset_sequence(0)
         CompleteGoFDetailsDTOFactory.reset_sequence(1)
         GoFDTOFactory.reset_sequence(1)
         GoFRolesDTOFactory.reset_sequence(1)
-        GoFFactory.reset_sequence(1)
+        GoFFactory.reset_sequence()
         GoFRoleFactory.reset_sequence(1)
 
     @pytest.fixture
@@ -162,13 +163,14 @@ class TestPopulateGoFs:
         )
 
     def test_populate_gofs_with_invalid_write_permission_roles(
-            self, interactor, snapshot
+            self, interactor, snapshot, mocker
     ):
         # Arrange
         from ib_tasks.exceptions.roles_custom_exceptions import InvalidWritePermissionRoles
         gof_roles_dtos = GoFRolesDTOFactory.create_batch(
             size=2, write_permission_roles=["Payment Requestor"]
         )
+        mock_method = get_valid_role_ids_in_given_role_ids(mocker)
         complete_gof_details_dtos = CompleteGoFDetailsDTOFactory.create_batch(
             size=2, gof_roles_dto=factory.Iterator(gof_roles_dtos)
         )
@@ -184,12 +186,13 @@ class TestPopulateGoFs:
         )
 
     def test_populate_gofs_with_valid_details(
-            self, interactor, snapshot
+            self, interactor, snapshot, mocker
     ):
         # Arrange
         from ib_tasks.models.gof import GoF
         from ib_tasks.models.gof_role import GoFRole
         from ib_tasks.constants.enum import PermissionTypes
+        mock_method = get_valid_role_ids_in_given_role_ids(mocker)
         complete_gof_details_dtos = CompleteGoFDetailsDTOFactory.create_batch(
             size=3
         )
@@ -268,12 +271,13 @@ class TestPopulateGoFs:
                 write_permission_role_counter += 1
 
     def test_populate_gofs_with_already_existing_gofs_updates_gofs(
-            self, interactor, snapshot
+            self, interactor, snapshot, mocker
     ):
         # Arrange
         from ib_tasks.models.gof import GoF
         from ib_tasks.constants.enum import PermissionTypes
         from ib_tasks.models.gof_role import GoFRole
+        mock_method = get_valid_role_ids_in_given_role_ids(mocker)
         gofs = GoFFactory.create_batch(size=2)
         print(gofs)
         gof_ids = [gof.gof_id for gof in gofs]

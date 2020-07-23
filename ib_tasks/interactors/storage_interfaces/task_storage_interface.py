@@ -7,14 +7,13 @@ Author: Pavankumar Pamuru
 import abc
 from typing import List, Optional
 
-from ib_tasks.interactors.storage_interfaces.dtos import (
-    GoFRoleDTO, GoFDTO, FieldDTO, FieldRoleDTO, TaskStatusDTO, TaskStagesDTO,
-    StageDTO,
-    GoFRoleDTO, GoFDTO, FieldDTO, FieldRoleDTO,
-    TaskStagesDTO, TaskStatusDTO, FieldTypeDTO
-)
-from ib_tasks.interactors.dtos import GlobalConstantsDTO, \
-    GoFWithOrderAndAddAnotherDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import TaskStatusDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
+    FieldRoleDTO, FieldTypeDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRoleDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, StageDTO
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
+from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 
 
 class TaskStorageInterface(abc.ABC):
@@ -62,11 +61,6 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_valid_template_ids_in_given_template_ids(
-            self, template_ids: List[str]) -> List[str]:
-        pass
-
-    @abc.abstractmethod
     def get_constant_names_of_existing_global_constants_of_template(
             self, template_id: str):
         pass
@@ -79,12 +73,6 @@ class TaskStorageInterface(abc.ABC):
     def create_global_constants_to_template(
             self, template_id: str,
             global_constants_dtos: List[GlobalConstantsDTO]):
-        pass
-
-    @abc.abstractmethod
-    def get_gof_dtos_for_given_gof_ids(
-            self, gof_ids: List[str]
-    ) -> List[GoFDTO]:
         pass
 
     @abc.abstractmethod
@@ -145,7 +133,6 @@ class TaskStorageInterface(abc.ABC):
             self, template_ids: List[str]
     ) -> List[str]:
         pass
-
 
     @abc.abstractmethod
     def delete_field_roles(self, field_ids: List[str]):

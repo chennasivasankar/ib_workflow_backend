@@ -1,7 +1,8 @@
 import pytest
 from ib_tasks.tests.factories.interactor_dtos import \
     GoFWithOrderAndAddAnotherDTOFactory
-from ib_tasks.interactors.dtos import GoFsWithTemplateIdDTO
+from ib_tasks.interactors.gofs_dtos import GoFsWithTemplateIdDTO
+
 
 
 class TestGoFsToTaskTemplate:
@@ -10,7 +11,7 @@ class TestGoFsToTaskTemplate:
     def reset_sequence(self):
         from ib_tasks.tests.factories.models import TaskTemplateFactory, \
             GoFFactory
-        GoFFactory.reset_sequence(1)
+        GoFFactory.reset_sequence()
         GoFWithOrderAndAddAnotherDTOFactory.reset_sequence()
         GoFWithOrderAndAddAnotherDTOFactory.enable_add_another_gof.reset()
         TaskTemplateFactory.reset_sequence()

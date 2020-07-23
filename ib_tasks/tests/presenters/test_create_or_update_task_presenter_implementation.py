@@ -1,5 +1,10 @@
 import pytest
 
+from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds
+from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
+    EmptyValueForPlainTextField
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateIds
+
 
 class TestCreateOrUpdateTaskPresenterImplementation:
 
@@ -32,8 +37,7 @@ class TestCreateOrUpdateTaskPresenterImplementation:
             self, presenter, snapshot
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import \
-            InvalidTaskTemplateIds
+
         err = InvalidTaskTemplateIds(
             invalid_task_template_ids=["TASK_TEMPLATE_ID-0"]
         )
@@ -48,8 +52,7 @@ class TestCreateOrUpdateTaskPresenterImplementation:
 
     def test_raise_exception_for_invalid_gof_ids(self, presenter, snapshot):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import \
-            InvalidGoFIds
+
         err = InvalidGoFIds(
             invalid_gof_ids=["GOF_ID-0", "GOF_ID-1"]
         )
@@ -64,8 +67,7 @@ class TestCreateOrUpdateTaskPresenterImplementation:
 
     def test_raise_exception_for_invalid_field_ids(self, presenter, snapshot):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import \
-            InvalidFieldIds
+
         err = InvalidFieldIds(
             invalid_field_ids=["FIELD_ID-1", "FIELD_ID-2"]
         )
@@ -82,8 +84,7 @@ class TestCreateOrUpdateTaskPresenterImplementation:
             self, presenter, snapshot
     ):
         # Arrange
-        from ib_tasks.exceptions.custom_exceptions import \
-            EmptyValueForPlainTextField
+
         err = EmptyValueForPlainTextField(
             field_id="FIELD_ID-1"
         )

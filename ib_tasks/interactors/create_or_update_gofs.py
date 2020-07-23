@@ -2,14 +2,12 @@ from typing import List, Optional, Union
 
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.exceptions.columns_custom_exceptions import MaxColumnsMustBeAPositiveInteger
-from ib_tasks.exceptions.custom_exceptions import \
-    DuplicateReadPermissionRolesForAGoF, DuplicateWritePermissionRolesForAGoF
 from ib_tasks.exceptions.roles_custom_exceptions import InvalidReadPermissionRoles, InvalidWritePermissionRoles
-from ib_tasks.exceptions.gofs_custom_exceptions import GOFIdCantBeEmpty, GOFDisplayNameCantBeEmpty, \
-    GOFReadPermissionsCantBeEmpty, GOFWritePermissionsCantBeEmpty
-from ib_tasks.interactors.storage_interfaces.dtos import (
-    CompleteGoFDetailsDTO, GoFRolesDTO, GoFDTO, GoFRoleDTO
-)
+from ib_tasks.exceptions.gofs_custom_exceptions import GOFIdCantBeEmpty, \
+    GOFDisplayNameCantBeEmpty, \
+    GOFReadPermissionsCantBeEmpty, GOFWritePermissionsCantBeEmpty, \
+    DuplicateReadPermissionRolesForAGoF, DuplicateWritePermissionRolesForAGoF
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
 
