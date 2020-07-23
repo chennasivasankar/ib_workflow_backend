@@ -8,7 +8,7 @@ from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRoleDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, StageDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.models import TaskStatusVariable
+from ib_tasks.models import TaskTemplateStatusVariable
 from ib_tasks.models import GoFRole, GoF
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
@@ -293,12 +293,12 @@ class TasksStorageImplementation(TaskStorageInterface):
         return gof_dtos
 
     def create_status_for_tasks(self, create_status_for_tasks: List[TaskStatusDTO]):
-        list_of_status_tasks = [TaskStatusVariable(
+        list_of_status_tasks = [TaskTemplateStatusVariable(
             variable=status.status_variable_id,
             task_template_id=status.task_template_id
         ) for status in create_status_for_tasks]
 
-        TaskStatusVariable.objects.bulk_create(list_of_status_tasks)
+        TaskTemplateStatusVariable.objects.bulk_create(list_of_status_tasks)
 
     def update_global_constants_to_template(
             self, template_id: str,
