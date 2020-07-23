@@ -257,7 +257,7 @@ class TestAddGoFsToTaskTemplates:
         task_storage_mock.get_valid_gof_ids_in_given_gof_ids.return_value = \
             ['gof_1', 'gof_2']
 
-        from ib_tasks.interactors.dtos import GoFWithOrderAndAddAnotherDTO
+        from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
         expected_gof_dtos_to_update = [
             GoFWithOrderAndAddAnotherDTO(
                 gof_id='gof_2', order=1, enable_add_another_gof=True

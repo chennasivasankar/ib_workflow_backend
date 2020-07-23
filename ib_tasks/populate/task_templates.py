@@ -24,7 +24,7 @@ class PopulateTaskTemplates:
             CreateTaskTemplateInteractor
         interactor = CreateTaskTemplateInteractor(task_storage=task_storage)
 
-        from ib_tasks.interactors.dtos import CreateTaskTemplateDTO
+        from ib_tasks.interactors.task_template_dtos import CreateTaskTemplateDTO
         create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name
         )

@@ -49,7 +49,7 @@ def _validate_action_logic(action_logic: str):
 
 
 def append_action_dict(action_dict: Dict[str, Any]):
-    from ib_tasks.interactors.dtos import StageActionDTO
+    from ib_tasks.interactors.stages_dtos import StageActionDTO
 
     function_path = 'ib_tasks.populate.stage_actions_logic.'
     function_name = action_dict['stage_id'] + "_" + action_dict['action_name']

@@ -1,20 +1,42 @@
-from typing import List, Optional
+from typing import List, Optional, Dict
 
-from ib_tasks.interactors.dtos import GlobalConstantsDTO
-from ib_tasks.interactors.dtos import GoFWithOrderAndAddAnotherDTO
-from ib_tasks.interactors.storage_interfaces.dtos import (
-    GoFDTO, GoFRoleDTO, FieldDTO, FieldRoleDTO,
-    TaskStatusDTO, TaskStagesDTO, StageDTO
-)
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
+from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import TaskStatusDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
+    FieldRoleDTO, FieldTypeDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRoleDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, StageDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.models import TaskStatusVariable
+from ib_tasks.models import TaskTemplateStatusVariable
 from ib_tasks.models import GoFRole, GoF
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 
 
 class TasksStorageImplementation(TaskStorageInterface):
+
+
+    def get_field_types_for_given_field_ids(self, field_ids: List[str]) -> \
+            List[FieldTypeDTO]:
+        field_type_dicts = list(
+            Field.objects.filter(field_id__in=field_ids).\
+                          values('field_id', 'field_type')
+        )
+        field_type_dtos = self._prepare_field_type_dtos(field_type_dicts)
+        return field_type_dtos
+
+    @staticmethod
+    def _prepare_field_type_dtos(field_type_dicts: List[Dict]):
+        field_type_dtos = [
+            FieldTypeDTO(
+                field_id=field_type_dict['field_id'],
+                field_type=field_type_dict['field_type']
+            )
+            for field_type_dict in field_type_dicts
+        ]
+        return field_type_dtos
 
 
     def get_task_template_name_if_exists(self, template_id: str) -> str:
@@ -293,12 +315,12 @@ class TasksStorageImplementation(TaskStorageInterface):
         return gof_dtos
 
     def create_status_for_tasks(self, create_status_for_tasks: List[TaskStatusDTO]):
-        list_of_status_tasks = [TaskStatusVariable(
+        list_of_status_tasks = [TaskTemplateStatusVariable(
             variable=status.status_variable_id,
             task_template_id=status.task_template_id
         ) for status in create_status_for_tasks]
 
-        TaskStatusVariable.objects.bulk_create(list_of_status_tasks)
+        TaskTemplateStatusVariable.objects.bulk_create(list_of_status_tasks)
 
     def update_global_constants_to_template(
             self, template_id: str,

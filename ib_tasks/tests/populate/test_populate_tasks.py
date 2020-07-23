@@ -79,7 +79,7 @@ class TestCasePopulateTasks:
                 "button_color": "button_color_1"
             }
         ]
-        from ib_tasks.interactors.dtos import TaskTemplateStageActionDTO
+        from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO
         expected_action_dto = [TaskTemplateStageActionDTO(
             task_template_id="task_template_1",
             stage_id="stage_1",

@@ -1,8 +1,7 @@
 import collections
 import json
 
-from ib_tasks.interactors.storage_interfaces.dtos \
-    import FieldDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO
 
 
 class ImageOrFileUploaderValidationsInteractor:
@@ -20,7 +19,7 @@ class ImageOrFileUploaderValidationsInteractor:
     def _check_allowed_formats_is_empty_value_for_field_dto(
              field_dto: FieldDTO
     ):
-        from ib_tasks.exceptions.custom_exceptions \
+        from ib_tasks.exceptions.fields_custom_exceptions \
             import AllowedFormatsEmptyValueException
         from ib_tasks.constants.exception_messages \
             import ALLOWED_FORMAT_EMPTY_VALUES_EXCEPTION
@@ -33,7 +32,7 @@ class ImageOrFileUploaderValidationsInteractor:
 
     @staticmethod
     def _check_for_duplication_of_allowed_formats_for_field_dto(field_dto):
-        from ib_tasks.exceptions.custom_exceptions \
+        from ib_tasks.exceptions.fields_custom_exceptions \
             import FieldsDuplicationOfAllowedFormatsValues
         from ib_tasks.constants.exception_messages \
             import FIELD_DUPLICATION_OF_ALLOWED_FORMATS
@@ -57,8 +56,7 @@ class ImageOrFileUploaderValidationsInteractor:
 
     @staticmethod
     def _check_for_empty_values_in_allowed_formats_for_field_dto(field_dto):
-        from ib_tasks.exceptions.custom_exceptions \
-            import EmptyValuesForAllowedFormats
+        from ib_tasks.exceptions.fields_custom_exceptions import EmptyValuesForAllowedFormats
         from ib_tasks.constants.exception_messages \
             import EMPTY_VALUES_FOR_ALLOWED_FORMATS
 
