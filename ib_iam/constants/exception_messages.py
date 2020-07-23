@@ -77,3 +77,8 @@ USER_DOES_NOT_EXIST = (
     "user is not exist",
     "USER_DOES_NOT_EXIST"
 )
+
+USER_DOES_NOT_HAVE_DELETE_PERMISSION = (
+    "User does not have delete permission",
+    "USER_DOES_NOT_HAVE_DELETE_PERMISSION"
+)

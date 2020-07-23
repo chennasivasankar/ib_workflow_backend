@@ -64,3 +64,7 @@ class DuplicateRoleIds(Exception):
 
 class UserNotFound(Exception):
     pass
+
+
+class UserDoesNotHaveDeletePermission(Exception):
+    pass

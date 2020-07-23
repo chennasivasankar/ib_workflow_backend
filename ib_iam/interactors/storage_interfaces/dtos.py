@@ -1,13 +1,13 @@
 import uuid
 from dataclasses import dataclass
-from typing import List
+from typing import Optional
 
 
 @dataclass
 class UserDTO:
     user_id: str
     is_admin: bool
-    company_id: str
+    company_id: Optional[str]
 
 
 @dataclass

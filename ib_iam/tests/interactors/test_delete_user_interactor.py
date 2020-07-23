@@ -28,8 +28,12 @@ class TestDeleteUserInteractor:
         admin_user_id = "1"
         delete_user_id = "2"
         interactor = DeleteUserInteractor(storage=storage_mock)
+        from ib_iam.tests.factories.storage_dtos import UserDTOFactory
+        user_details_dto = UserDTOFactory.create(user_id=delete_user_id,
+                                                 is_admin=False)
 
         storage_mock.check_is_admin_user.return_value = True
+        storage_mock.get_user_details.return_value = user_details_dto
         presenter_mock.get_delete_user_response.return_value = Mock()
 
         interactor.delete_user_wrapper(user_id=admin_user_id,
@@ -47,8 +51,12 @@ class TestDeleteUserInteractor:
         admin_user_id = "1"
         delete_user_id = "2"
         interactor = DeleteUserInteractor(storage=storage_mock)
+        from ib_iam.tests.factories.storage_dtos import UserDTOFactory
+        user_details_dto = UserDTOFactory.create(user_id=delete_user_id,
+                                                 is_admin=False)
 
         storage_mock.check_is_admin_user.return_value = True
+        storage_mock.get_user_details.return_value = user_details_dto
         presenter_mock.get_delete_user_response.return_value = Mock()
 
         interactor.delete_user_wrapper(user_id=admin_user_id,
@@ -68,8 +76,12 @@ class TestDeleteUserInteractor:
         admin_user_id = "1"
         delete_user_id = "2"
         interactor = DeleteUserInteractor(storage=storage_mock)
+        from ib_iam.tests.factories.storage_dtos import UserDTOFactory
+        user_details_dto = UserDTOFactory.create(user_id=delete_user_id,
+                                                 is_admin=False)
 
         storage_mock.check_is_admin_user.return_value = True
+        storage_mock.get_user_details.return_value = user_details_dto
         presenter_mock.get_delete_user_response.return_value = Mock()
 
         interactor.delete_user_wrapper(user_id=admin_user_id,
@@ -122,3 +134,27 @@ class TestDeleteUserInteractor:
         storage_mock.get_user_details.assert_called_once_with(
             user_id=invalid_delete_user_id)
         presenter_mock.raise_user_is_not_found_exception.assert_called_once()
+
+    def test_delete_user_given_valid_details_and_delete_user_id_is_admin_then_raise_exception(
+            self, storage_mock, presenter_mock):
+        admin_user_id = "1"
+        delete_user_id = "2"
+        interactor = DeleteUserInteractor(storage=storage_mock)
+        from ib_iam.tests.factories.storage_dtos import UserDTOFactory
+        user_details_dto = UserDTOFactory.create(user_id=delete_user_id,
+                                                 is_admin=True)
+
+        storage_mock.check_is_admin_user.return_value = True
+        storage_mock.get_user_details.return_value = user_details_dto
+        presenter_mock.get_delete_user_response.return_value = Mock()
+
+        interactor.delete_user_wrapper(user_id=admin_user_id,
+                                       delete_user_id=delete_user_id,
+                                       presenter=presenter_mock)
+
+        storage_mock.check_is_admin_user.assert_called_once_with(
+            user_id=admin_user_id)
+        storage_mock.get_user_details.assert_called_once_with(
+            user_id=delete_user_id)
+        presenter_mock.raise_user_does_not_have_delete_permission_exception. \
+            assert_called_once()
