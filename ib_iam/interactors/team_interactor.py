@@ -154,7 +154,7 @@ class TeamInteractor:
     def _delete_members_of_team(self, user_ids, team_user_ids, team_id):
         member_ids_to_delete = list(set(team_user_ids) - set(user_ids))
         self.storage.delete_members_from_team(
-            team_id=team_id, member_ids=member_ids_to_delete)
+            team_id=team_id, user_ids=member_ids_to_delete)
 
     def _validate_users(self, user_ids):
         self._validate_is_duplicate_users_exists(user_ids=user_ids)

@@ -64,7 +64,7 @@ class TeamStorageInterface:
         pass
 
     @abstractmethod
-    def delete_members_from_team(self, team_id: str, member_ids: List[str]):
+    def delete_members_from_team(self, team_id: str, user_ids: List[str]):
         pass
 
     @abstractmethod

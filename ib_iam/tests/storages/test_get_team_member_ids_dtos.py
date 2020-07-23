@@ -5,7 +5,7 @@ from ib_iam.storages.team_storage_implementation import (
 from ib_iam.tests.factories.storage_dtos import TeamUserIdsDTOFactory
 
 team_ids = [
-    'f2c02d98-f311-4ab2-8673-3daa00757002',
+    'f2c02d98-f311-4ab2-8673-3daa00757002'
 ]
 
 

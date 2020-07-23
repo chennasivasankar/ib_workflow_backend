@@ -22,4 +22,4 @@ class Team(AbstractDateTimeModel):
 class TeamMember(models.Model):
     team = models.ForeignKey("Team", on_delete=models.CASCADE,
                              related_name="members")
-    member_id = models.CharField(max_length=1000)
+    user_id = models.CharField(max_length=1000)

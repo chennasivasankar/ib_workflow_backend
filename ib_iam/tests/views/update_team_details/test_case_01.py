@@ -27,7 +27,7 @@ class TestCase01UpdateTeamDetailsAPITestCase(TestUtils):
         from ib_iam.models import Team, TeamMember, UserDetails
         print(Team.objects.values())
         for user_id in ["2", "3"]:
-            TeamMemberFactory.create(team=team, member_id=user_id)
+            TeamMemberFactory.create(team=team, user_id=user_id)
             print(TeamMember.objects.values())
             UserDetailsFactory.create(user_id=user_id)
             print(UserDetails.objects.values())

@@ -1,6 +1,7 @@
 import pytest
 from ib_iam.models import TeamMember
-from ib_iam.storages.team_storage_implementation import TeamStorageImplementation
+from ib_iam.storages.team_storage_implementation import \
+    TeamStorageImplementation
 
 
 @pytest.mark.django_db
@@ -22,6 +23,6 @@ class TestAddUsersToTeam:
 
         team_member_objects = TeamMember.objects.filter(
             team_id=team_id,
-            member_id__in=user_ids
+            user_id__in=user_ids
         )
         assert len(team_member_objects) == no_of_members_added

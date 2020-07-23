@@ -24,7 +24,7 @@ class TestCase05UpdateTeamDetailsAPITestCase(TestUtils):
         team_id = "f2c02d98-f311-4ab2-8673-3daa00757002"
         team = TeamFactory.create(team_id=team_id)
         for user_id in ["2", "3"]:
-            TeamMemberFactory.create(team=team, member_id=user_id)
+            TeamMemberFactory.create(team=team, user_id=user_id)
             UserDetailsFactory.create(user_id=user_id)
         return team_id
 

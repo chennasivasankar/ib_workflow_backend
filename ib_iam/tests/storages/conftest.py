@@ -42,20 +42,20 @@ def create_members(create_teams):
     team_members = [
         {
             "team_id": team_ids[0],
-            "member_ids": [user_ids[0], user_ids[2]]
+            "user_ids": [user_ids[0], user_ids[2]]
         },
         {
             "team_id": team_ids[1],
-            "member_ids": [user_ids[0], user_ids[2]]
+            "user_ids": [user_ids[0], user_ids[2]]
         },
         {
             "team_id": team_ids[2],
-            "member_ids": [user_ids[0], user_ids[2]]
+            "user_ids": [user_ids[0], user_ids[2]]
         }
 
     ]
     team_member_objects = [
-        TeamMemberFactory.create(team_id=team["team_id"], member_id=member_id)
-        for team in team_members for member_id in team["member_ids"]
+        TeamMemberFactory.create(team_id=team["team_id"], user_id=user_id)
+        for team in team_members for user_id in team["user_ids"]
     ]
     return team_member_objects

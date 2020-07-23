@@ -5,7 +5,8 @@ as the requested name is already exists
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...factories.models import TeamFactory, TeamMemberFactory, UserDetailsFactory
+from ...factories.models import TeamFactory, TeamMemberFactory, \
+    UserDetailsFactory
 
 
 class TestCase06UpdateTeamDetailsAPITestCase(TestUtils):
@@ -24,9 +25,10 @@ class TestCase06UpdateTeamDetailsAPITestCase(TestUtils):
         UserDetailsFactory(user_id=user_id, is_admin=True)
         team_id = "f2c02d98-f311-4ab2-8673-3daa00757002"
         team = TeamFactory.create(team_id=team_id)
-        TeamFactory.create(team_id="f2c02d98-f311-4ab2-8673-3daa00757003", name="team2")
+        TeamFactory.create(team_id="f2c02d98-f311-4ab2-8673-3daa00757003",
+                           name="team2")
         for user_id in ["2", "3"]:
-            TeamMemberFactory.create(team=team, member_id=user_id)
+            TeamMemberFactory.create(team=team, user_id=user_id)
             UserDetailsFactory.create(user_id=user_id)
         return team_id
 

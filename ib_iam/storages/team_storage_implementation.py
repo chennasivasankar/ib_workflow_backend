@@ -35,14 +35,14 @@ class TeamStorageImplementation(TeamStorageInterface):
     def get_team_user_ids_dtos(
             self, team_ids: List[str]
     ) -> List[TeamUserIdsDTO]:
-        team_members = TeamMember.objects.filter(
+        team_users = TeamMember.objects.filter(
             team__team_id__in=team_ids
-        ).values_list('team__team_id', 'member_id')
+        ).values_list('team__team_id', 'user_id')
         from collections import defaultdict
         team_user_ids_dictionary = defaultdict(list)
-        for team_member in team_members:
-            team_id = str(team_member[0])
-            team_user_ids_dictionary[team_id].extend([team_member[1]])
+        for team_user in team_users:
+            team_id = str(team_user[0])
+            team_user_ids_dictionary[team_id].extend([team_user[1]])
         team_user_ids_dtos = [
             TeamUserIdsDTO(
                 team_id=team_id,
@@ -83,7 +83,7 @@ class TeamStorageImplementation(TeamStorageInterface):
         team_members = [
             TeamMember(
                 team_id=team_id,
-                member_id=user_id
+                user_id=user_id
             ) for user_id in user_ids
         ]
         TeamMember.objects.bulk_create(team_members)
@@ -104,11 +104,11 @@ class TeamStorageImplementation(TeamStorageInterface):
 
     def get_member_ids_of_team(self, team_id: str):
         member_ids = TeamMember.objects.filter(team_id=team_id) \
-            .values_list("member_id", flat=True)
+            .values_list("user_id", flat=True)
         return list(member_ids)
 
-    def delete_members_from_team(self, team_id: str, member_ids: List[str]):
-        TeamMember.objects.filter(team_id=team_id, member_id__in=member_ids) \
+    def delete_members_from_team(self, team_id: str, user_ids: List[str]):
+        TeamMember.objects.filter(team_id=team_id, user_id__in=user_ids) \
             .delete()
 
     def delete_team(self, team_id: str):

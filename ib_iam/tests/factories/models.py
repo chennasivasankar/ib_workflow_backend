@@ -76,4 +76,4 @@ class TeamMemberFactory(factory.django.DjangoModelFactory):
         model = TeamMember
 
     team = factory.SubFactory(TeamFactory)
-    member_id = factory.sequence(lambda n: "user_id-%d" % n)
+    user_id = factory.sequence(lambda n: "user_id-%d" % n)
