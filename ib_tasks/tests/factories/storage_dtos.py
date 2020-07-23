@@ -3,7 +3,8 @@ import factory
 from ib_tasks.constants.constants import VALID_FIELD_TYPES
 from ib_tasks.interactors.stages_dtos import StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import TaskStatusDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO, TaskStagesDTO, ValidStageDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO, TaskStagesDTO, ValidStageDTO, \
+    GetTaskStageCompleteDetailsDTO
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldRolesDTO, FieldRoleDTO, FieldTypeDTO

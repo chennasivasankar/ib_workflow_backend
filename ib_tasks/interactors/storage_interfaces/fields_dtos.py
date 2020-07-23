@@ -45,3 +45,9 @@ class FieldRoleDTO:
 class FieldTypeDTO:
     field_id: str
     field_type: FieldTypes
+
+@dataclass
+class FieldDetailsDTO:
+    field_type: str
+    key: str
+    value: str

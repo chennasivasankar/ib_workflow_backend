@@ -17,3 +17,9 @@ class GoFFieldsDTO:
 class TaskDTO:
     task_template_id: str
     gof_fields_dtos: List[GoFFieldsDTO]
+
+@dataclass
+class GetTaskDetailsDTO:
+    task_id: str
+    stage_id: str
+
