@@ -4,7 +4,7 @@ from typing import Any, Optional, Union, List
 from ib_tasks.constants.enum import FieldTypes, PermissionTypes
 
 
-@dataclass()
+@dataclass
 class FieldValueDTO:
     database_id: str
     gof_database_id: str
@@ -41,7 +41,12 @@ class FieldRoleDTO:
     role: str
     permission_type: PermissionTypes
 
+
 @dataclass
 class FieldTypeDTO:
     field_id: str
     field_type: FieldTypes
+
+
+
+

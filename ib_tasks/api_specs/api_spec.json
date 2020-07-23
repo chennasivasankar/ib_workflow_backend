@@ -365,7 +365,6 @@
       "name": "OffsetParameter",
       "description": "Offset Parameter",
       "in": "query",
-      "required": true,
       "type": "integer"
     },
     "SearchableQueryParameter": {
@@ -489,7 +488,6 @@
               "SEARCHABLE_TYPE_DOES_NOT_EXIST",
               "LIMIT_VALUE_SHOULD_BE_GREATER_THAN_ZERO",
               "OFFSET_VALUE_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE",
-              "SEARCH_QUERY_SHOULD_NOT_BE_EMPTY",
               "NO_SEARCH_RESULTS_FOUND"
             ]
           }
