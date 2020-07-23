@@ -41,7 +41,7 @@ class TestGetUsers:
             UserDTO(user_id='user5', is_admin=False, company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8332')]
 
         # Act
-        output = storage.get_users_who_are_not_admins(offset=offset, limit=limit)
+        output = storage.get_users_who_are_not_admins()
 
         assert output == expected_output
 

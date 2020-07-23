@@ -15,11 +15,10 @@ class StorageImplementation(StorageInterface):
         user = UserDetails.objects.get(user_id=user_id)
         return user.is_admin
 
-    def get_users_who_are_not_admins(
-            self, offset=0, limit=10) -> List[UserDTO]:
+    def get_users_who_are_not_admins(self) -> List[UserDTO]:
         from ib_iam.models import UserDetails
         user_dtos = []
-        users = UserDetails.objects.filter(is_admin=False)[offset:limit]
+        users = UserDetails.objects.filter(is_admin=False)
         for user in users:
             user_dtos.append(UserDTO(
                 user_id=user.user_id,

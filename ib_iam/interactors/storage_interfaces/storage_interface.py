@@ -13,8 +13,7 @@ class StorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_users_who_are_not_admins(
-            self, offset=0, limit=10) -> List[UserDTO]:
+    def get_users_who_are_not_admins(self) -> List[UserDTO]:
         pass
 
     @abstractmethod
