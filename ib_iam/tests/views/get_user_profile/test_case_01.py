@@ -16,12 +16,17 @@ class TestCase01GetUserProfileAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['read']}}
 
     @pytest.mark.django_db
-    def test_user_account_does_not_exist(self, api_user, snapshot):
+    def test_user_account_does_not_exist(self, mocker, snapshot):
         body = {}
         path_params = {}
         query_params = {}
         headers = {}
 
+        from ib_iam.tests.common_fixtures.adapters.user_service import \
+            prepare_get_user_profile_dto_mock
+        get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(mocker)
+        from ib_iam.adapters.user_service import UserAccountDoesNotExist
+        get_user_profile_dto_mock.side_effect = UserAccountDoesNotExist
         response = self.default_test_case(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
