@@ -12,6 +12,9 @@ class TestCreateRoles:
         previous_storage_len = Role.objects.count()
         objects_count = 3
         from ib_iam.tests.factories.storage_dtos import RoleDTOFactory
+        from ib_iam.tests.common_fixtures.reset_fixture \
+            import reset_sequence_for_role_dto_factory
+        reset_sequence_for_role_dto_factory()
         role_dtos = RoleDTOFactory.create_batch(objects_count)
 
         # Act
@@ -24,4 +27,3 @@ class TestCreateRoles:
         assert no_of_objects_created == objects_count
         for role_dto, role_obj in zip(role_dtos, expeected_role_objs):
             assert role_obj.role_id == role_dto.role_id
-

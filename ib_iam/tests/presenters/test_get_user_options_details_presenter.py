@@ -4,28 +4,33 @@ import pytest
 
 from ib_iam.presenters.get_user_options_presenter_implementation \
     import GetUserOptionsPresenterImplementation
-from ib_iam.tests.common_fixtures.storages import reset_sequence
 
 
 class TestGetUserOptionsDetailsResponse:
 
     @pytest.fixture()
     def company_dtos(self):
-        reset_sequence()
+        from ib_iam.tests.common_fixtures.reset_fixture \
+            import reset_sequence_for_company_dto_factory
+        reset_sequence_for_company_dto_factory()
         from ib_iam.tests.factories.storage_dtos import CompanyDTOFactory
         company_dtos = CompanyDTOFactory.create_batch(3)
         return company_dtos
 
     @pytest.fixture()
     def team_dtos(self):
-        reset_sequence()
+        from ib_iam.tests.common_fixtures.reset_fixture \
+            import reset_sequence_for_team_dto_factory
+        reset_sequence_for_team_dto_factory()
         from ib_iam.tests.factories.storage_dtos import TeamDTOFactory
         team_dtos = TeamDTOFactory.create_batch(3)
         return team_dtos
 
     @pytest.fixture()
     def role_dtos(self):
-        reset_sequence()
+        from ib_iam.tests.common_fixtures.reset_fixture \
+            import reset_sequence_for_role_dto_factory
+        reset_sequence_for_role_dto_factory()
         from ib_iam.tests.factories.storage_dtos import RoleDTOFactory
         role_dtos = RoleDTOFactory.create_batch(3)
         return role_dtos

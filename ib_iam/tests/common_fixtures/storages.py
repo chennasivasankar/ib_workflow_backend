@@ -1,13 +1,15 @@
 import pytest
 
-from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
 from ib_iam.tests.factories.models import UserDetailsFactory, CompanyFactory, \
     UserTeamFactory, TeamFactory, RoleFactory, UserRoleFactory
+
+from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
 from ib_iam.tests.factories.storage_dtos \
     import UserDTOFactory, UserTeamDTOFactory, UserCompanyDTOFactory, \
     UserRoleDTOFactory, CompanyDTOFactory, TeamDTOFactory, RoleDTOFactory
 
 
+#
 def reset_sequence():
     UserDetailsFactory.reset_sequence(0)
     CompanyFactory.reset_sequence(0)
@@ -15,6 +17,7 @@ def reset_sequence():
     UserRoleFactory.reset_sequence(0)
     RoleFactory.reset_sequence(0)
     TeamFactory.reset_sequence(0)
+
     CompanyDTOFactory.reset_sequence(0)
     TeamDTOFactory.reset_sequence(0)
     RoleDTOFactory.reset_sequence(0)
@@ -28,7 +31,8 @@ def reset_sequence():
 @pytest.fixture()
 def user_not_admin():
     reset_sequence()
-    user = UserDetailsFactory.create(user_id="user0", is_admin=False)
+    user = UserDetailsFactory.create(
+        user_id="user0", is_admin=False, company=None)
     return user
 
 

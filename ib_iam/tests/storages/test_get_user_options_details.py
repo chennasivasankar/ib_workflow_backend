@@ -7,7 +7,9 @@ from ib_iam.tests.common_fixtures.storages import reset_sequence
 class TestGetUserOptionsDetailsStorage:
     @pytest.fixture()
     def companies(self):
-        reset_sequence()
+        from ib_iam.tests.common_fixtures.reset_fixture \
+            import reset_sequence_company_factory
+        reset_sequence_company_factory()
         from ib_iam.tests.factories.models import CompanyFactory
         company_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
                        "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
@@ -17,7 +19,9 @@ class TestGetUserOptionsDetailsStorage:
 
     @pytest.fixture()
     def teams(self):
-        reset_sequence()
+        from ib_iam.tests.common_fixtures.reset_fixture \
+            import reset_sequence_team_factory
+        reset_sequence_team_factory()
         from ib_iam.tests.factories.models import TeamFactory
         team_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
                     "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
@@ -26,7 +30,9 @@ class TestGetUserOptionsDetailsStorage:
 
     @pytest.fixture()
     def roles(self):
-        reset_sequence()
+        from ib_iam.tests.common_fixtures.reset_fixture \
+            import reset_sequence_role_factory
+        reset_sequence_role_factory()
         role_ids = ["1", "2"]
         from ib_iam.tests.factories.models import RoleFactory
         roles = [RoleFactory.create(role_id=role_id) for role_id in role_ids]

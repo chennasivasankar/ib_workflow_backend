@@ -16,10 +16,11 @@ class TestCase03AddUserAPITestCase(TestUtils):
     @pytest.fixture
     def user_set_up(self, api_user):
         user_id = api_user.user_id
-        from ib_iam.tests.common_fixtures.storages import reset_sequence
-        reset_sequence()
+        from ib_iam.tests.common_fixtures.reset_fixture \
+            import reset_sequence_for_model_factories
+        reset_sequence_for_model_factories()
         from ib_iam.tests.factories.models import UserDetailsFactory
-        user = UserDetailsFactory.create(user_id=user_id, is_admin=True)
+        UserDetailsFactory.create(user_id=user_id, is_admin=True)
         from ib_iam.tests.factories.models \
             import CompanyFactory, TeamFactory, RoleFactory
         CompanyFactory.create(company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331')
@@ -42,10 +43,9 @@ class TestCase03AddUserAPITestCase(TestUtils):
             create_user_account_adapter_mock(mocker=mocker)
         user_profile_adapter_mock = \
             create_user_profile_adapter_mock(mocker=mocker)
-        response = self.default_test_case(
+        self.default_test_case(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
         user_account_adapter_mock.assert_called_once()
         user_profile_adapter_mock.assert_called_once()
-

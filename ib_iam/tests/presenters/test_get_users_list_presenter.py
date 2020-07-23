@@ -5,12 +5,13 @@ import pytest
 from ib_iam.constants.enums import StatusCode
 from ib_iam.presenters.get_users_list_presenter_implementation \
     import GetUsersListPresenterImplementation
-from ib_iam.tests.common_fixtures.storages import reset_sequence
 
 
 @pytest.fixture()
 def complete_user_details_dto():
-    reset_sequence()
+    from ib_iam.tests.common_fixtures.reset_fixture \
+        import reset_sequence_for_dto_factory
+    reset_sequence_for_dto_factory()
     from ib_iam.tests.factories.storage_dtos \
         import UserTeamDTOFactory, \
         UserRoleDTOFactory, UserCompanyDTOFactory
