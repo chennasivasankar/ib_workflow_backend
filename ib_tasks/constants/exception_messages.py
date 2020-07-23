@@ -42,6 +42,7 @@ DUPLICATE_ORDER_VALUES_FOR_GOFS = \
     "Given duplicate order values {}! Gof orders of a template should be unique"
 INVALID_TYPE_FOR_ORDER = "Given value for order: {} is not an integer"
 INVALID_TYPE_FOR_VALUE = "Given value for order: {} is not an integer"
+TASK_TEMPLATES_DOES_NOT_EXISTS = "No Task Templates are exists"
 
 INVALID_GOF_IDS_EXCEPTION_MESSAGE = "Invalid values for gof_ids {}"
 EMPTY_VALUE_FOR_FIELD_ID = "Field ids shouldn't be empty"

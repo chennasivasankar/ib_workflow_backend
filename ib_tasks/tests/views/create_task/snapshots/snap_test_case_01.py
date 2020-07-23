@@ -7,6 +7,13 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01CreateTaskAPITestCase.test_case status_code'] = '404'
+snapshots['TestCase01CreateTaskAPITestCase.test_case status_code'] = '400'
 
-snapshots['TestCase01CreateTaskAPITestCase.test_case body'] = b'<h1>Not Found</h1><p>The requested resource was not found on this server.</p>'
+snapshots['TestCase01CreateTaskAPITestCase.test_case body'] = {
+    'action_id': [
+        'This field is required.'
+    ],
+    'task_template_id': [
+        'This field is required.'
+    ]
+}
