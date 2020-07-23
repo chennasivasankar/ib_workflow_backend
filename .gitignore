@@ -51,3 +51,7 @@ env
 venv
 
 vedavidhbudimuri_ib-workflows-backend.aes
+
+venv/
+
+env_*.sh
