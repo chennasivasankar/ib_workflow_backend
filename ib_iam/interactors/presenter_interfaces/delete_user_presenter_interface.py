@@ -9,3 +9,7 @@ class DeleteUserPresenterInterface(ABC):
     @abstractmethod
     def raise_user_is_not_admin_exception(self):
         pass
+
+    @abstractmethod
+    def raise_user_is_not_found_exception(self):
+        pass

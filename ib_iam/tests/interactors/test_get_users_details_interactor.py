@@ -88,7 +88,7 @@ class TestGetUsersDetailsInteractor:
         limit = 10
         offset = 0
         interactor = GetUsersDetailsInteractor(storage=storage_mock)
-        storage_mock.is_admin_user.return_value = False
+        storage_mock.check_is_admin_user.return_value = False
         presenter_mock.raise_user_is_not_admin_exception.return_value = Mock()
         # Act
         interactor.get_users_details_wrapper(
@@ -97,7 +97,7 @@ class TestGetUsersDetailsInteractor:
         )
 
         # Assert
-        storage_mock.is_admin_user.assert_called_once_with(
+        storage_mock.check_is_admin_user.assert_called_once_with(
             user_id=user_id)
         presenter_mock.raise_user_is_not_admin_exception.assert_called_once()
 
@@ -108,7 +108,7 @@ class TestGetUsersDetailsInteractor:
         limit = 10
         offset = -1
         interactor = GetUsersDetailsInteractor(storage=storage_mock)
-        storage_mock.is_admin_user.return_value = True
+        storage_mock.check_is_admin_user.return_value = True
 
         # Act
         interactor.get_users_details_wrapper(
@@ -126,7 +126,7 @@ class TestGetUsersDetailsInteractor:
         limit = -10
         offset = 0
         interactor = GetUsersDetailsInteractor(storage=storage_mock)
-        storage_mock.is_admin_user.return_value = True
+        storage_mock.check_is_admin_user.return_value = True
 
         # Act
         interactor.get_users_details_wrapper(
@@ -144,7 +144,7 @@ class TestGetUsersDetailsInteractor:
         limit = 5
         offset = 10
         interactor = GetUsersDetailsInteractor(storage=storage_mock)
-        storage_mock.is_admin_user.return_value = True
+        storage_mock.check_is_admin_user.return_value = True
 
         # Act
         interactor.get_users_details_wrapper(
@@ -163,7 +163,7 @@ class TestGetUsersDetailsInteractor:
         limit = 10
         offset = 0
         interactor = GetUsersDetailsInteractor(storage=storage_mock)
-        storage_mock.is_admin_user.return_value = True
+        storage_mock.check_is_admin_user.return_value = True
         storage_mock.get_users_who_are_not_admins.return_value = user_dtos
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import get_users_adapter_mock
@@ -190,7 +190,7 @@ class TestGetUsersDetailsInteractor:
         offset = 0
         user_ids = ["user1", "user2", "user3"]
         interactor = GetUsersDetailsInteractor(storage=storage_mock)
-        storage_mock.is_admin_user.return_value = True
+        storage_mock.check_is_admin_user.return_value = True
         storage_mock.get_users_who_are_not_admins.return_value = user_dtos
         storage_mock.get_team_details_of_users_bulk.return_value = user_team_dtos
         from ib_iam.tests.common_fixtures.adapters.user_service \
@@ -220,7 +220,7 @@ class TestGetUsersDetailsInteractor:
         offset = 0
         user_ids = ["user1", "user2", "user3"]
         interactor = GetUsersDetailsInteractor(storage=storage_mock)
-        storage_mock.is_admin_user.return_value = True
+        storage_mock.check_is_admin_user.return_value = True
         storage_mock.get_users_who_are_not_admins.return_value = user_dtos
         storage_mock.get_role_details_of_users_bulk.return_value = user_role_dtos
         from ib_iam.tests.common_fixtures.adapters.user_service \
@@ -249,7 +249,7 @@ class TestGetUsersDetailsInteractor:
         limit = 10
         offset = 0
         interactor = GetUsersDetailsInteractor(storage=storage_mock)
-        storage_mock.is_admin_user.return_value = True
+        storage_mock.check_is_admin_user.return_value = True
 
         storage_mock.get_users_who_are_not_admins.return_value = user_dtos
         storage_mock.get_company_details_of_users_bulk.return_value = user_company_dtos
@@ -280,7 +280,7 @@ class TestGetUsersDetailsInteractor:
         offset = 0
         user_ids = ["user1", "user2", "user3"]
         interactor = GetUsersDetailsInteractor(storage=storage_mock)
-        storage_mock.is_admin_user.return_value = True
+        storage_mock.check_is_admin_user.return_value = True
         user_dtos = [UserDTOFactory.create(user_id=user_id)
                      for user_id in user_ids]
         storage_mock.get_users_who_are_not_admins.return_value = user_dtos
@@ -310,7 +310,7 @@ class TestGetUsersDetailsInteractor:
         offset = 0
         user_ids = ["user1", "user2", "user3"]
         interactor = GetUsersDetailsInteractor(storage=storage_mock)
-        storage_mock.is_admin_user.return_value = True
+        storage_mock.check_is_admin_user.return_value = True
         storage_mock.get_users_who_are_not_admins.return_value = user_dtos
 
         storage_mock.get_team_details_of_users_bulk.return_value = user_team_dtos

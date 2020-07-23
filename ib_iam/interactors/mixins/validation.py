@@ -1,6 +1,6 @@
-from ib_iam.exceptions.exceptions import InvalidOffsetValue, \
-    InvalidLimitValue, OffsetValueIsGreaterthanLimitValue, GivenNameIsEmpty, \
-    NameShouldNotContainsNumbersSpecCharactersException
+from ib_iam.exceptions.custom_exceptions import InvalidOffsetValue, \
+    InvalidLimitValue, OffsetValueIsGreaterThanLimitValue, GivenNameIsEmpty, \
+    NameShouldNotContainsNumbersSpecCharacters
 
 
 class ValidationMixin:
@@ -24,7 +24,7 @@ class ValidationMixin:
     @staticmethod
     def _validate_offset_and_limit_value_constraints(offset: int, limit: int):
         if offset >= limit:
-            raise OffsetValueIsGreaterthanLimitValue()
+            raise OffsetValueIsGreaterThanLimitValue()
 
     def _constants_validations(self, offset: int, limit: int):
         self._validate_offset_value_and_throw_exception(offset=offset)
@@ -47,4 +47,4 @@ class ValidationMixin:
     @staticmethod
     def _check_name_contains_special_characters_and_throw_exception(name):
         if not name.isalpha():
-            raise NameShouldNotContainsNumbersSpecCharactersException()
+            raise NameShouldNotContainsNumbersSpecCharacters()

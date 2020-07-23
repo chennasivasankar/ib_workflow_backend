@@ -1,6 +1,6 @@
-from ib_iam.exceptions.exceptions import UserIsNotAdmin, \
+from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, \
     InvalidOffsetValue, InvalidLimitValue, \
-    OffsetValueIsGreaterthanLimitValue
+    OffsetValueIsGreaterThanLimitValue
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.dtos \
     import CompleteUsersDetailsDTO
@@ -26,7 +26,7 @@ class GetUsersDetailsInteractor(ValidationMixin):
             return presenter.raise_invalid_offset_value_exception()
         except InvalidLimitValue:
             return presenter.raise_invalid_limit_value_exception()
-        except OffsetValueIsGreaterthanLimitValue:
+        except OffsetValueIsGreaterThanLimitValue:
             return presenter. \
                 raise_offset_value_is_greater_than_limit_value_exception()
 
@@ -34,9 +34,9 @@ class GetUsersDetailsInteractor(ValidationMixin):
                           limit: int) -> CompleteUsersDetailsDTO:
         self._check_and_throw_user_is_admin(user_id=user_id)
         self._constants_validations(offset=offset, limit=limit)
-        user_dtos = self.storage.get_users_who_are_not_admins(offset=offset, limit=limit)
+        user_dtos = self.storage.get_users_who_are_not_admins(
+            offset=offset, limit=limit)
         user_ids = [user_dto.user_id for user_dto in user_dtos]
-        company_ids = [user_dto.company_id for user_dto in user_dtos]
 
         user_team_dtos = self.storage.get_team_details_of_users_bulk(
             user_ids=user_ids)
@@ -55,7 +55,7 @@ class GetUsersDetailsInteractor(ValidationMixin):
             user_profile_dtos, len(user_ids))
 
     def _check_and_throw_user_is_admin(self, user_id: str):
-        is_admin = self.storage.is_admin_user(user_id=user_id)
+        is_admin = self.storage.check_is_admin_user(user_id=user_id)
         is_not_admin = not is_admin
         if is_not_admin:
             raise UserIsNotAdmin()

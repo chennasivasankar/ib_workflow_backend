@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+from ib_iam.interactors.storage_interfaces.dtos import UserDTO
+
 
 class DeleteUserStorageInterface(ABC):
     @abstractmethod
@@ -15,5 +17,9 @@ class DeleteUserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def is_admin_user(self, user_id: str):
+    def check_is_admin_user(self, user_id: str) -> bool:
+        pass
+
+    @abstractmethod
+    def get_user_details(self, user_id: str) -> UserDTO:
         pass

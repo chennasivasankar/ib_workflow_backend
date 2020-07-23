@@ -1,11 +1,11 @@
 from typing import List
 
-from ib_iam.exceptions.exceptions import UserIsNotAdmin, GivenNameIsEmpty, \
-    InvalidEmailAddressException, \
+from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, GivenNameIsEmpty, \
+    InvalidEmailAddress, \
     UserAccountAlreadyExistWithThisEmail, \
-    NameShouldNotContainsNumbersSpecCharactersException, \
-    RoleIdsAreInvalidException, InvalidCompanyIdException, \
-    TeamIdsAreInvalidException
+    NameShouldNotContainsNumbersSpecCharacters, \
+    RoleIdsAreInvalid, InvalidCompanyId, \
+    TeamIdsAreInvalid
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.presenter_interface \
     import PresenterInterface
@@ -28,19 +28,19 @@ class AddNewUserInteractor(ValidationMixin):
             return presenter.raise_user_is_not_admin_exception()
         except GivenNameIsEmpty:
             return presenter.raise_invalid_name_exception()
-        except InvalidEmailAddressException:
+        except InvalidEmailAddress:
             return presenter.raise_invalid_email_exception()
         except UserAccountAlreadyExistWithThisEmail:
             return presenter. \
                 raise_user_account_already_exist_with_this_email_exception()
-        except NameShouldNotContainsNumbersSpecCharactersException:
+        except NameShouldNotContainsNumbersSpecCharacters:
             return presenter. \
                 raise_name_should_not_contain_special_characters_exception()
-        except RoleIdsAreInvalidException:
+        except RoleIdsAreInvalid:
             return presenter.raise_role_ids_are_invalid()
-        except InvalidCompanyIdException:
+        except InvalidCompanyId:
             return presenter.raise_company_ids_is_invalid()
-        except TeamIdsAreInvalidException:
+        except TeamIdsAreInvalid:
             return presenter.raise_team_ids_are_invalid()
 
     def add_new_user(self, user_id: str, name: str, email: str,
@@ -57,7 +57,7 @@ class AddNewUserInteractor(ValidationMixin):
             role_ids=roles, team_ids=teams)
 
     def _check_and_throw_user_is_admin(self, user_id: str):
-        is_admin = self.storage.is_admin_user(user_id=user_id)
+        is_admin = self.storage.check_is_admin_user(user_id=user_id)
         is_not_admin = not is_admin
         if is_not_admin:
             raise UserIsNotAdmin()
@@ -68,7 +68,7 @@ class AddNewUserInteractor(ValidationMixin):
         email_valid_pattern = \
             r"(^[a-zA-Z]+[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]*[a-zA-Z]+$)"
         if not bool(re.match(email_valid_pattern, email)):
-            raise InvalidEmailAddressException()
+            raise InvalidEmailAddress()
 
     @staticmethod
     def _create_user_account_with_email(name: str, email: str):
@@ -105,16 +105,16 @@ class AddNewUserInteractor(ValidationMixin):
         are_valid = self.storage.validate_roles(role_ids=roles)
         are_not_valid = not are_valid
         if are_not_valid:
-            raise RoleIdsAreInvalidException()
+            raise RoleIdsAreInvalid()
 
     def _validate_teams(self, teams):
         are_valid = self.storage.validate_teams(team_ids=teams)
         are_not_valid = not are_valid
         if are_not_valid:
-            raise TeamIdsAreInvalidException()
+            raise TeamIdsAreInvalid()
 
     def _validate_company(self, company):
         is_valid = self.storage.validate_company(company_id=company)
         is_not_valid = not is_valid
         if is_not_valid:
-            raise InvalidCompanyIdException()
+            raise InvalidCompanyId()

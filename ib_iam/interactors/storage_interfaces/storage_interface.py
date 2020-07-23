@@ -9,7 +9,7 @@ from ib_iam.interactors.storage_interfaces.dtos \
 class StorageInterface(ABC):
 
     @abstractmethod
-    def is_admin_user(self, user_id: str) -> bool:
+    def check_is_admin_user(self, user_id: str) -> bool:
         pass
 
     @abstractmethod
