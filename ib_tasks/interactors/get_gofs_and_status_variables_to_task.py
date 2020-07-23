@@ -9,7 +9,7 @@ class GetGroupOfFieldsAndStatusVariablesToTaskInteractor:
     def __init__(self, storage: StorageInterface):
         self.storage = storage
 
-    def get_gofs_and_status_variables_to_task(self, task_id: str):
+    def get_gofs_and_status_variables_to_task(self, task_id: int):
 
         self._validate_task_id(task_id=task_id)
         group_of_fields_dto = \
@@ -28,7 +28,7 @@ class GetGroupOfFieldsAndStatusVariablesToTaskInteractor:
             statuses_dto=status_variable_dtos
         )
 
-    def _validate_task_id(self, task_id: str):
+    def _validate_task_id(self, task_id: int):
 
         valid_task = self.storage.validate_task_id(task_id=task_id)
         is_invalid_task = not valid_task

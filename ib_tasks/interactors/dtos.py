@@ -65,14 +65,14 @@ class TaskTemplateStageDTO:
 
 @dataclass()
 class TaskGofAndStatusesDTO:
-    task_id: str
+    task_id: int
     group_of_fields_dto: List[GroupOfFieldsDTO]
     fields_dto: List[FieldValueDTO]
     statuses_dto: List[StatusVariableDTO]
 
 @dataclass()
 class TaskStatusVariablesDTO:
-    task_id: str
+    task_id: int
     status_variables_dto: List[StatusVariableDTO]
 
 
@@ -112,3 +112,10 @@ class GoFWithOrderAndAddAnotherDTO:
 class GoFsWithTemplateIdDTO:
     template_id: str
     gof_dtos: List[GoFWithOrderAndAddAnotherDTO]
+
+
+@dataclass
+class TaskStatusVariableDTO:
+    status_id: int
+    variable: str
+    value: str

@@ -41,7 +41,7 @@ class FieldValueDTO:
 
 @dataclass()
 class StatusVariableDTO:
-    status_id: str
+    status_id: int
     status_variable: str
     value: str
 
@@ -60,7 +60,7 @@ class GOFMultipleStatusDTO:
 
 @dataclass()
 class ActionDTO:
-    action_id: str
+    action_id: int
     name: str
     stage_id: str
     button_text: str
@@ -69,8 +69,9 @@ class ActionDTO:
 
 @dataclass()
 class ActionRolesDTO:
-    action_id: str
+    action_id: int
     roles: List[str]
+
 
 @dataclass
 class TaskStagesDTO:
@@ -108,6 +109,7 @@ class GoFRoleDTO:
     gof_id: str
     role: str
     permission_type: PermissionTypes
+
 
 @dataclass
 class CompleteGoFDetailsDTO:

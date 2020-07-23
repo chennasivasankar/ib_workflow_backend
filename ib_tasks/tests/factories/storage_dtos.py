@@ -18,7 +18,7 @@ class FieldValueDTOFactory(factory.Factory):
 class StatusVariableDTOFactory(factory.Factory):
     class Meta:
         model = StatusVariableDTO
-    status_id = factory.Sequence(lambda n: 'status_%d' % (n+1))
+    status_id = factory.Sequence(lambda n: (n+1))
     status_variable = factory.Sequence(lambda n: 'status_variable_%d' % (n+1))
     value = factory.Sequence(lambda n: 'value_%d' % (n+1))
 
@@ -41,7 +41,7 @@ class ActionDTOFactory(factory.Factory):
     class Meta:
         model = ActionDTO
 
-    action_id = factory.Sequence(lambda n: 'action_%d' % (n+1))
+    action_id = factory.Sequence(lambda n: (n+1))
     name = factory.Sequence(lambda n: 'name_%d' % (n+1))
     stage_id = factory.Sequence(lambda n: 'stage_%d' % (n+1))
     button_text = factory.Sequence(lambda n: 'button_text_%d' % (n+1))
@@ -49,7 +49,8 @@ class ActionDTOFactory(factory.Factory):
 
 import factory
 
-from ib_tasks.interactors.dtos import StageDTO
+
+from ib_tasks.interactors.dtos import StageDTO, TaskStatusVariableDTO
 from ib_tasks.interactors.storage_interfaces.dtos import (
     TaskStatusDTO, ValidStageDTO, TaskStagesDTO, StageActionNamesDTO)
 from ib_tasks.constants.enum import PermissionTypes
@@ -226,3 +227,11 @@ class TaskStatusDTOFactory(factory.Factory):
     task_template_id = factory.Sequence(lambda n: 'task_template_id_%d' % n)
     status_variable_id = factory.Sequence(
         lambda n: 'status_variable_id_%d' % n)
+
+
+class TaskStatusVariableDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskStatusVariableDTO
+    task_id = factory.Sequence(lambda n: "%d" % n)
+    variable = factory.Sequence(lambda n: "status_variable_%d" % n)
+    value = factory.Sequence(lambda n: "value_%d" % n)

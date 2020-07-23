@@ -1,6 +1,6 @@
 from typing import Optional, List
 
-from ib_tasks.interactors.dtos import StageDTO
+from ib_tasks.interactors.dtos import StageDTO, StageActionDTO, TaskTemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.dtos import (TaskStagesDTO, ValidStageDTO)
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import StageStorageInterface
 from ib_tasks.models import Stage
@@ -65,3 +65,154 @@ class StagesStorageImplementation(StageStorageInterface):
             if stage.stage_id not in stages:
                 invalid_task_id_stages.append(stage.stage_id)
         return invalid_task_id_stages
+
+
+
+from typing import List
+from ib_tasks.interactors.storage_interfaces.dtos import (
+    FieldValueDTO, GOFMultipleEnableDTO, ActionRolesDTO, ActionDTO
+)
+from ib_tasks.interactors.storage_interfaces.storage_interface \
+    import StorageInterface, GroupOfFieldsDTO, StatusVariableDTO, StageActionNamesDTO
+from ib_tasks.models import *
+
+
+class StorageImplementation(StorageInterface):
+
+    
+    def get_stage_action_names(
+            self, stage_ids: List[str]) -> List[StageActionNamesDTO]:
+        pass
+
+    
+    def get_valid_stage_ids(self,
+                            stage_ids: List[str]) -> Optional[List[str]]:
+        pass
+
+    
+    def create_stage_actions(self, stage_actions: List[StageActionDTO]):
+        pass
+
+    
+    def update_stage_actions(self, stage_actions: List[StageActionDTO]):
+        pass
+
+    
+    def delete_stage_actions(self,
+                             stage_actions: List[StageActionNamesDTO]):
+        pass
+
+    
+    def create_initial_stage_to_task_template(
+            self, task_template_stage_dtos: List[TaskTemplateStageDTO]):
+        pass
+
+    
+    def get_valid_task_template_ids(self, task_template_ids: List[str]):
+        pass
+
+    def validate_task_id(self, task_id: str) -> bool:
+        # return Task.objects.filter(id=task_id).exists()
+        pass
+
+
+    def get_task_group_of_fields_dto(
+            self, task_id: str) -> List[GroupOfFieldsDTO]:
+        # GOF.objects.filter()
+        pass
+
+
+    def get_fields_to_group_of_field_ids(
+            self, group_of_field_ids: List[str]) -> List[FieldValueDTO]:
+        # Field.objects.filter(gof_id__in=group_of_field_ids)
+        pass
+
+
+    def get_status_variables_to_task(
+            self, task_id: int) -> List[StatusVariableDTO]:
+
+        status_variable_objs = TaskStatusVariable.objects\
+            .filter(task_id=task_id)
+
+        return [
+            StatusVariableDTO(
+                status_id=status_variable_obj.id,
+                status_variable=status_variable_obj.variable,
+                value=status_variable_obj.value
+            ) for status_variable_obj in status_variable_objs
+        ]
+
+    def get_path_name_to_action(self, action_id: str) -> str:
+
+        action_obj = StageAction.objects.get(id=action_id)
+        return action_obj.py_function_import_path
+
+    def update_status_variables_to_task(self, task_id: int,
+                                        status_variables_dto):
+        status_variable_objs = TaskStatusVariable.objects \
+            .filter(task_id=task_id)
+        status_variable_dict = \
+            self._get_status_variable_dict(status_variable_objs)
+        for status_variable_dto in status_variables_dto:
+            status_obj = status_variable_dict[status_variable_dto.status_id]
+            status_obj.variable = status_variable_dto.status_variable
+            status_obj.value = status_variable_dto.value
+
+    @staticmethod
+    def _get_status_variable_dict(status_variable_objs):
+
+        status_variable_dict = {}
+
+        for status_variable_obj in status_variable_objs:
+            status_id = status_variable_obj.id
+            status_variable_dict[status_id] = status_variable_obj
+        return status_variable_dict
+
+    def get_action_roles_to_stages(
+            self, stage_ids: List[str]) -> List[ActionRolesDTO]:
+        action_role_objs = ActionPermittedRoles.objects.filter(
+            action__in=StageAction.objects.filter(
+                stage__stage_id__in=stage_ids
+            )
+        )
+        from collections import defaultdict
+        action_roles_dict = defaultdict(list)
+        for action_role_obj in action_role_objs:
+            action_id = action_role_obj.action_id
+            role_id = action_role_obj.role_id
+            action_roles_dict[action_id].append(role_id)
+
+        return [
+            ActionRolesDTO(
+                action_id=key,
+                roles=value
+            )
+            for key, value in action_roles_dict.items()
+        ]
+
+    def get_actions_dto(self, action_ids: List[int]) -> List[ActionDTO]:
+
+        action_objs = StageAction.objects\
+            .filter(id__in=action_ids)\
+            .select_related('stage')
+
+        return [
+            ActionDTO(
+                action_id=action_obj.id,
+                name=action_obj.name,
+                stage_id=action_obj.stage.stage_id,
+                button_text=action_obj.button_text,
+                button_color=action_obj.button_color
+            )
+            for action_obj in action_objs
+        ]
+    
+    def get_action_roles(self, action_id: int) -> List[str]:
+        pass
+    
+    def validate_action(self, action_id: int) -> bool:
+        pass
+
+    def get_enable_multiple_gofs_field_to_gof_ids(
+            self, gof_ids: List[str]) -> List[GOFMultipleEnableDTO]:
+        pass
