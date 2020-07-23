@@ -21,7 +21,7 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
             ],
             'group_of_fields': [
                 {
-                    'enable_multiple_gofs': True,
+                    'enable_add_another': True,
                     'fields': [
                         {
                             'allowed_formats': 'string',

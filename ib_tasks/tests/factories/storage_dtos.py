@@ -227,4 +227,4 @@ class GoFToTaskTemplateDTOFactory(factory.Factory):
     gof_id = factory.Sequence(lambda n: 'gof_{}'.format(n + 1))
     template_id = factory.Sequence(lambda n: 'template_{}'.format(n + 1))
     order = factory.Sequence(lambda n: n)
-    enable_multiple_gofs = factory.Iterator([True, False])
+    enable_add_another = factory.Iterator([True, False])

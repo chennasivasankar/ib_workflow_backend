@@ -19,7 +19,16 @@ class GetTaskTemplatesInteractor:
     def get_task_templates_wrapper(
             self, user_id: int,
             presenter: GetTaskTemplatesPresenterInterface):
-        complete_task_templates_dto = self.get_task_templates(user_id=user_id)
+
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            TaskTemplatesDoesNotExists
+        try:
+            complete_task_templates_dto = \
+                self.get_task_templates(user_id=user_id)
+        except TaskTemplatesDoesNotExists as err:
+            presenter.raise_task_templates_does_not_exists_exception(err)
+            return
+
         complete_task_templates_response_object = \
             presenter.get_task_templates_response(
                 complete_task_templates_dto=complete_task_templates_dto

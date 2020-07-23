@@ -48,7 +48,7 @@ class TestGetTaskTemplatesInteractor:
                             "gof_display_name": "string",
                             "max_columns": 1,
                             "order": 1,
-                            "enable_multiple_gofs": True,
+                            "enable_add_another": True,
                             "fields": [
                                 {
                                     "field_type": "PLAIN_TEXT",
@@ -175,17 +175,20 @@ class TestGetTaskTemplatesInteractor:
         task_storage_mock.get_task_templates_dtos.return_value = \
             task_template_dtos
 
-        from ib_tasks.exceptions.task_custom_exceptions import \
-            TaskTemplatesDoesNotExists
+        from django_swagger_utils.drf_server.exceptions import NotFound
+        presenter_mock.raise_task_templates_does_not_exists_exception.\
+            side_effect = NotFound
 
         # Act
-        with pytest.raises(TaskTemplatesDoesNotExists) as err:
+        with pytest.raises(NotFound) as err:
             task_template_interactor.get_task_templates_wrapper(
                 user_id=user_id, presenter=presenter_mock
             )
 
         #Assert
-        assert err.value.args[0] == expected_err_message
+        call_args = presenter_mock.\
+            raise_task_templates_does_not_exists_exception.call_args
+        assert call_args.args[0].args[0] == TASK_TEMPLATES_DOES_NOT_EXISTS
 
     def test_when_no_actions_for_templates_returns_empty_list_of_actions_of_templates(
             self, task_storage_mock, presenter_mock,
