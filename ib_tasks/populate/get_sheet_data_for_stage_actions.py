@@ -18,8 +18,6 @@ class GetSheetDataForStageActions:
         field_records = self.data_sheet.get_data_from_sub_sheet(
             sub_sheet_name=STAGES_AND_ACTIONS_SUB_SHEET
         )
-        import json
-        print(json.dumps(field_records[:10], indent=4))
         # TODO need to remove list slicing
         self._validation_for_action_dict(field_records[:10])
         stage_actions_dict = [

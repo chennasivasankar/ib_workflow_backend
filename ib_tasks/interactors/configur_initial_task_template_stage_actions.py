@@ -34,7 +34,6 @@ class ConfigureInitialTaskTemplateStageActions:
 
         task_template_stage_dtos = \
             self._get_initial_stage_dto_to_tasks_templates(tasks_dto)
-        print(task_template_stage_dtos)
         self.storage.create_initial_stage_to_task_template(
             task_template_stage_dtos=task_template_stage_dtos
         )

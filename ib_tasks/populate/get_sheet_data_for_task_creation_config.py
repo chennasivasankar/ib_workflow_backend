@@ -18,8 +18,6 @@ class GetSheetDataForTaskCreationConfig:
         field_records = self.data_sheet.get_data_from_sub_sheet(
             sub_sheet_name=TASK_CREATION_CONFIG_SUB_SHEET
         )
-        import json
-        print(json.dumps(field_records, indent=4))
         self._validation_for_task_creation_config_dict(field_records)
         tasks_dict = [
             self._convert_task_creation_sheet_data_dict_to_our_format(

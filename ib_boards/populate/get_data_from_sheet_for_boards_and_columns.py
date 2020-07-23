@@ -19,8 +19,6 @@ class GetBoardsAndColumnsDataFromSheet:
         field_records = self.data_sheet.get_data_from_sub_sheet(
             sub_sheet_name=BOARDS_AND_COLUMN_SUB_SHEET
         )
-        import json
-        print(json.dumps(field_records[:6], indent=4))
         # TODO need to remove list slicing
         self.validate_keys_in_given_dict(
             boards_columns_dicts=field_records[:6]
