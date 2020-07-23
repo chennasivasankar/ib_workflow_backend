@@ -66,11 +66,28 @@ class TestResponseAddNewUser:
         response_status_code = USER_ACCOUNT_ALREADY_EXIST_FOR_THIS_EMAIL[1]
 
         # Act
-        response_object = presenter.\
+        response_object = presenter. \
             raise_user_account_already_exist_with_this_email_exception()
 
         # Assert
         response = json.loads(response_object.content)
         assert response['http_status_code'] == StatusCode.BAD_REQUEST.value
+        assert response['res_status'] == response_status_code
+        assert response['response'] == expected_response
+
+    def test_create_user_accout_response_returns_response(self):
+        # Arrange
+        presenter = PresenterImplementation()
+        from ib_iam.constants.exception_messages \
+            import CREATE_USER_SUCCESSFULLY
+        expected_response = CREATE_USER_SUCCESSFULLY[0]
+        response_status_code = CREATE_USER_SUCCESSFULLY[1]
+
+        # Act
+        response_object = presenter.user_created_response()
+
+        # Assert
+        response = json.loads(response_object.content)
+        assert response['http_status_code'] == StatusCode.CREATE_SUCCESS.value
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
