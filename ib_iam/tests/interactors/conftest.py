@@ -41,7 +41,7 @@ def expected_list_of_member_dtos():
 @pytest.fixture
 def expected_company_dtos():
     from ib_iam.tests.factories import CompanyDTOFactory
-    CompanyDTOFactory.reset_sequence(1)
+    CompanyDTOFactory.reset_sequence(1, force=True)
     company_dtos = [
         CompanyDTOFactory(company_id=str(i)) for i in range(1, 3)
     ]
