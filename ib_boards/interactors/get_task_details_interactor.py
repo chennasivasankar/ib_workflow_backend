@@ -5,6 +5,7 @@ from ib_boards.interactors.dtos import (
     TaskColumnDTO, TaskDTO, TaskDetailsDTO, FieldsDTO, TaskStageDTO)
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
+from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, TaskFieldsDTOFactory
 
 
 class GetTaskDetailsInteractor:
@@ -28,8 +29,8 @@ class GetTaskDetailsInteractor:
         task_service = get_service_adapter().tasks_service
         # task_fields_dtos, task_actions_dtos = task_service.\
         #     get_task_details_dtos(tasks_dtos=task_stages_dto, user_id=user_id)
-        task_fields_dtos = task_service[0]
-        task_actions_dtos = task_service[1]
+        task_fields_dtos = TaskFieldsDTOFactory.create_batch(size=3)
+        task_actions_dtos = TaskActionsDTOFactory.create_batch(size=4)
 
 
         return task_fields_dtos, task_actions_dtos, task_column_details
