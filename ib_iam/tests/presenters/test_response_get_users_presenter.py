@@ -2,11 +2,10 @@ import json
 
 import pytest
 
+from ib_iam.constants.enums import StatusCode
 from ib_iam.presenters.presenter_implementation import PresenterImplementation
 from ib_iam.tests.common_fixtures.storages import reset_sequence
 
-FORBIDDEN_STATUS_CODE = 403
-BADREQUEST_STATUS_CODE = 400
 
 
 @pytest.fixture()
@@ -57,7 +56,7 @@ class TestGetUsersPresenter:
 
         # Assert
         response = json.loads(response_object.content)
-        assert response['http_status_code'] == FORBIDDEN_STATUS_CODE
+        assert response['http_status_code'] == StatusCode.FORBIDDEN.value
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
 
@@ -75,7 +74,7 @@ class TestGetUsersPresenter:
 
         # Assert
         response = json.loads(response_object.content)
-        assert response['http_status_code'] == BADREQUEST_STATUS_CODE
+        assert response['http_status_code'] == StatusCode.BAD_REQUEST.value
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
 
@@ -93,7 +92,7 @@ class TestGetUsersPresenter:
 
         # Assert
         response = json.loads(response_object.content)
-        assert response['http_status_code'] == BADREQUEST_STATUS_CODE
+        assert response['http_status_code'] == StatusCode.BAD_REQUEST.value
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
 
@@ -113,7 +112,7 @@ class TestGetUsersPresenter:
 
         # Assert
         response = json.loads(response_object.content)
-        assert response['http_status_code'] == BADREQUEST_STATUS_CODE
+        assert response['http_status_code'] == StatusCode.BAD_REQUEST.value
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
 
