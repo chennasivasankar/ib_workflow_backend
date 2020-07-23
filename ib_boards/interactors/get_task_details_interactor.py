@@ -26,10 +26,11 @@ class GetTaskDetailsInteractor:
         fields_ids = self._get_field_ids(fields_dto)
         task_stages_dto = self._get_task_stages_dto(tasks_dtos)
         task_service = get_service_adapter().tasks_service
+        task_fields_dtos, task_actions_dtos = task_service.\
+            get_task_details_dtos(tasks_dtos=task_stages_dto, user_id=user_id)
         task_fields_dtos = task_service[0]
         task_actions_dtos = task_service[1]
-        # task_fields_dtos, task_actions_dtos = task_service.\
-        #     get_task_details_dtos(tasks_dtos=task_stages_dto, user_id=user_id)
+
 
         return task_fields_dtos, task_actions_dtos, task_column_details
 
