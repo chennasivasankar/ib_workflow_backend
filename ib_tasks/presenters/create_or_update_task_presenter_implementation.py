@@ -6,7 +6,8 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     IncorrectCheckBoxOptionsSelected, IncorrectRadioGroupChoice, \
     IncorrectGoFIDInGoFSelectorField, InvalidValueForDropdownField, \
     InvalidFloatValue, InvalidNumberValue, NotAStrongPassword, InvalidURLValue, \
-    InvalidEmailFieldValue, InvalidPhoneNumberValue
+    InvalidEmailFieldValue, InvalidPhoneNumberValue, InvalidFileFormat, \
+    EmptyValueForRequiredField
 from ib_tasks.exceptions.fields_custom_exceptions import \
     DuplicationOfFieldIdsExist, InvalidFieldIds
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
@@ -20,6 +21,17 @@ import json
 class CreateOrUpdateTaskPresenterImplementation(
     CreateOrUpdateTaskPresenterInterface
 ):
+    def raise_exception_for_could_not_read_image(self, err: CouldNotReadImage):
+        pass
+
+    def raise_exception_for_empty_value_in_required_field(self,
+                                                          err: EmptyValueForRequiredField):
+        pass
+
+    def raise_exception_for_not_acceptable_file_format(self,
+                                                       err: InvalidFileFormat):
+        pass
+
     def raise_exception_for_invalid_phone_number_value(self,
                                                        err: InvalidPhoneNumberValue):
         pass

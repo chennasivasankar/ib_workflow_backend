@@ -11,7 +11,7 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     IncorrectCheckBoxOptionsSelected, IncorrectMultiSelectOptionsSelected, \
     IncorrectMultiSelectLabelsSelected, InvalidDateFormat, InvalidTimeFormat, \
     InvalidUrlForImage, InvalidImageFormat, NotAnImageUrl, CouldNotReadImage, \
-    InvalidUrlForFile, EmptyValueForRequiredField
+    InvalidUrlForFile, EmptyValueForRequiredField, InvalidFileFormat
 from ib_tasks.exceptions.fields_custom_exceptions import \
     DuplicationOfFieldIdsExist, InvalidFieldIds
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
@@ -101,13 +101,15 @@ class CreateOrUpdateTaskInteractor:
             return presenter.raise_exception_for_invalid_time_format(err)
         except InvalidUrlForImage as err:
             return presenter.raise_exception_for_invalid_image_url(err)
-        except NotAnImageUrl as err:
-            return presenter.raise_exception_for_not_an_image_url(err)
         except InvalidImageFormat as err:
             return presenter.raise_exception_for_not_acceptable_image_format(
                 err)
         except InvalidUrlForFile as err:
             return presenter.raise_exception_for_invalid_folder_url(err)
+        except InvalidFileFormat as err:
+            return presenter.raise_exception_for_not_acceptable_file_format(
+                err
+            )
 
     def _prepare_response_for_create_or_update_task(
             self, presenter: CreateOrUpdateTaskPresenterInterface,
@@ -333,11 +335,22 @@ class CreateOrUpdateTaskInteractor:
     @staticmethod
     def _validate_for_file_uploader_value(
             field_value: str, field_id: str, allowed_formats: List[str]
-    ) -> Optional[InvalidUrlForFile]:
+    ) -> Union[None, InvalidUrlForFile, InvalidFileFormat]:
         from ib_tasks.constants.config import VALID_URL_REGEX_PATTERN
         invalid_url_path = not VALID_URL_REGEX_PATTERN.search(field_value)
-        if invalid_url_path:
+        try:
+            file = field_value[field_value.rindex("/") + 1:]
+        except ValueError:
             raise InvalidUrlForFile(field_id, field_value)
+        file_is_empty = not file
+        if invalid_url_path or file_is_empty:
+            raise InvalidUrlForFile(field_id, field_value)
+        given_file_format = '.' + file.split('.')[-1]
+        invalid_file_format = given_file_format not in allowed_formats
+        if invalid_file_format:
+            raise InvalidFileFormat(
+                field_id, given_file_format, allowed_formats
+            )
         return
 
     @staticmethod
@@ -349,10 +362,16 @@ class CreateOrUpdateTaskInteractor:
     ]:
         from ib_tasks.constants.config import VALID_URL_REGEX_PATTERN
         invalid_url_path = not VALID_URL_REGEX_PATTERN.search(field_value)
-        given_image_format = ".jpeg"
-        if invalid_url_path:
+        try:
+            image_file = field_value[field_value.rindex("/") + 1:]
+        except ValueError:
             raise InvalidUrlForImage(field_id, field_value)
-        given_image_format_not_in_allowed_formats = False
+        image_file_is_empty = not image_file
+        if invalid_url_path or image_file_is_empty:
+            raise InvalidUrlForImage(field_id, field_value)
+        given_image_format = '.' + image_file.split('.')[-1]
+        given_image_format_not_in_allowed_formats = \
+            given_image_format not in allowed_formats
         if given_image_format_not_in_allowed_formats:
             raise InvalidImageFormat(
                 field_id, given_image_format, allowed_formats

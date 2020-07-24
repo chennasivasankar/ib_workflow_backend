@@ -9,7 +9,7 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     IncorrectMultiSelectOptionsSelected, IncorrectMultiSelectLabelsSelected, \
     InvalidDateFormat, InvalidTimeFormat, CouldNotReadImage, NotAnImageUrl, \
     InvalidImageFormat, InvalidUrlForImage, InvalidUrlForFile, \
-    EmptyValueForRequiredField
+    EmptyValueForRequiredField, InvalidFileFormat
 from ib_tasks.exceptions.fields_custom_exceptions import \
     DuplicationOfFieldIdsExist, InvalidFieldIds
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
@@ -147,5 +147,11 @@ class CreateOrUpdateTaskPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def raise_exception_for_empty_value_in_required_field(
         self, err: EmptyValueForRequiredField
+    ):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_not_acceptable_file_format(
+        self, err: InvalidFileFormat
     ):
         pass

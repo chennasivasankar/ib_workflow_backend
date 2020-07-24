@@ -186,6 +186,16 @@ class InvalidImageFormat(Exception):
         self.allowed_formats = allowed_formats
 
 
+class InvalidFileFormat(Exception):
+
+    def __init__(
+            self, field_id: str, given_format: str, allowed_formats: List[str]
+    ):
+        self.field_id = field_id
+        self.given_format = given_format
+        self.allowed_formats = allowed_formats
+
+
 class NotAnImageUrl(Exception):
 
     def __init__(self, field_id: str, given_url: str):
