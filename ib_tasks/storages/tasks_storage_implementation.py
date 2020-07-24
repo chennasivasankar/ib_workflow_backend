@@ -23,6 +23,7 @@ from ib_tasks.models import GoFRole, GoF
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.task import Task
+from ib_tasks.models.task_gof_field import TaskGoFField
 
 
 class TasksStorageImplementation(TaskStorageInterface):
@@ -502,17 +503,22 @@ class TasksStorageImplementation(TaskStorageInterface):
     def _get_fields_details(stage_objs):
         fields_ids = [stage['stage_display_config'] for stage in stage_objs]
         field_objs = Field.objects.filter(field__in=fields_ids).values('field_id', 'field_type')
+        field_response_objs = TaskGoFField.objects.filter(field_id__int=fields_ids).values('field_id', 'field_response')
+        field_values = {}
+        for item in field_response_objs:
+            field_values[item['field_id']] = item['field_response']
         fields_dtos = []
         for stage in stage_objs:
             for field in field_objs:
                 if field['field_id'] in stage['stage_display_config']:
+                    field_id = field['field_id']
                     fields_dtos.append(
                         FieldDetailsDTO(
-                            field_id=field['field_id'],
+                            field_id=field_id,
                             field_type=field['field_type'],
                             stage_id=stage['stage_id'],
-                            key="key",
-                            value="value"
+                            key=field['display_name'],
+                            value=field_values[field_id]
                         )
                     )
         return fields_dtos
