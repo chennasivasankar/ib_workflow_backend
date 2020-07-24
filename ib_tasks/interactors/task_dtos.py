@@ -27,6 +27,6 @@ class TaskStatusVariableDTO:
 
 @dataclass
 class GetTaskDetailsDTO:
-    task_id: str
+    task_id: int
     stage_id: str
 

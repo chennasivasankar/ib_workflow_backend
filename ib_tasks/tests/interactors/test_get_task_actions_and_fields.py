@@ -9,9 +9,6 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO,
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import GetTaskStageCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import StageStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
-    TaskStorageInterface
-
 from ib_tasks.tests.factories.interactor_dtos import GetTaskDetailsDTOFactory
 from ib_tasks.tests.factories.storage_dtos import (
     ActionDetailsDTOFactory, FieldDetailsDTOFactory, TaskFieldsDTOFactory, TaskTemplateStagesDTOFactory)
@@ -44,7 +41,7 @@ class TestGetFieldsAndActionsInteractor:
         ActionDetailsDTOFactory.reset_sequence()
         FieldDetailsDTOFactory.reset_sequence()
         response = [GetTaskStageCompleteDetailsDTO(
-            task_id="task_id_1",
+            task_id=1,
             stage_id="stage_id_1",
             field_dtos=[FieldDetailsDTOFactory()],
             action_dtos=[ActionDetailsDTOFactory()]
@@ -75,7 +72,7 @@ class TestGetFieldsAndActionsInteractor:
         interactor = GetTaskFieldsAndActionsInteractor(
             storage=storage, stage_storage=stage_storage
         )
-        task_ids = ["task_id_1"]
+        task_ids = [1]
         task_template_stages_dtos = [get_task_template_stage_dtos]
         stage_ids = ["stage_id_1"]
         action_dtos = [get_actions_dtos]
@@ -107,7 +104,7 @@ class TestGetFieldsAndActionsInteractor:
         interactor = GetTaskFieldsAndActionsInteractor(
             storage=storage, stage_storage=stage_storage
         )
-        task_ids = ["task_id_1"]
+        task_ids = [1]
         storage.get_valid_task_ids.return_value = []
 
         # Act
@@ -125,7 +122,7 @@ class TestGetFieldsAndActionsInteractor:
         interactor = GetTaskFieldsAndActionsInteractor(
             storage=storage, stage_storage=stage_storage
         )
-        task_ids = ["task_id_1"]
+        task_ids = [1]
         stage_ids = ["stage_id_1"]
         storage.get_valid_task_ids.return_value = task_ids
         stage_storage.get_existing_stage_ids.return_value = []
@@ -145,7 +142,7 @@ class TestGetFieldsAndActionsInteractor:
         interactor = GetTaskFieldsAndActionsInteractor(
             storage=storage, stage_storage=stage_storage
         )
-        task_ids = ["task_id_1"]
+        task_ids = [1]
         stage_ids = ["stage_id_1"]
         storage.get_valid_task_ids.return_value = task_ids
         storage.validate_task_related_stage_ids.return_value = []

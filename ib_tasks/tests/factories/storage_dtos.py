@@ -99,7 +99,7 @@ class TaskTemplateStagesDTOFactory(factory.Factory):
         model = TaskTemplateStageDTO
 
     stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n + 1))
-    task_id = factory.Sequence(lambda n: 'task_id%d' % (n + 1))
+    task_id = factory.Sequence(lambda n: n + 1)
     task_template_id = factory.Sequence(lambda n: 'task_template_id_%d' % (n + 1))
 
 
@@ -108,7 +108,7 @@ class TaskFieldsDTOFactory(factory.Factory):
         model = StageTaskFieldsDTO
 
     field_ids = ["field_id_1"]
-    task_id = factory.Sequence(lambda n: 'task_id%d' % (n + 1))
+    task_id = factory.Sequence(lambda n: n + 1)
 
 
 class TemplateStagesDTOFactory(factory.Factory):

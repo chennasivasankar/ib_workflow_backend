@@ -48,6 +48,6 @@ class GetTaskStageCompleteDetailsDTO:
 
 @dataclass
 class TaskTemplateStageDTO:
-    task_id: str
+    task_id: int
     task_template_id: str
     stage_id: str
