@@ -3,26 +3,13 @@ Created on: 24/07/20
 Author: Pavankumar Pamuru
 
 """
-from dataclasses import dataclass
 from typing import List
 
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-
-
-@dataclass
-class TaskDetailsConfigDTO:
-    unique_key: int
-    stage_ids: List[str]
-
-
-@dataclass
-class TaskIdsDTO:
-    unique_key: int
-    task_stage_ids: List[TaskStageIdsDTO]
+from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, TaskIdsDTO
 
 
 class GetTaskIdsInteractor:
@@ -53,13 +40,20 @@ class GetTaskIdsInteractor:
         total_task_ids_dtos = []
         # TODO need optimize db hits
         for task_details_config in task_details_configs:
-            task_ids_dtos = self.task_storage.get_task_ids_for_the_stage_ids(
-                stage_ids=task_details_config.stage_ids
+            task_ids_dto = self._get_task_ids_dto(
+                task_details_config
             )
-            total_task_ids_dtos.append(
-                TaskIdsDTO(
-                    unique_key=task_details_config.unique_key,
-                    task_stage_ids=task_ids_dtos
-                )
-            )
+            total_task_ids_dtos.append(task_ids_dto)
         return total_task_ids_dtos
+
+    def _get_task_ids_dto(self, task_details_config: TaskDetailsConfigDTO):
+        task_ids_dtos, total_count = self.task_storage.get_task_ids_for_the_stage_ids(
+            stage_ids=task_details_config.stage_ids,
+            offset=task_details_config.offset,
+            limit=task_details_config.limit
+        )
+        return TaskIdsDTO(
+            unique_key=task_details_config.unique_key,
+            task_stage_ids=task_ids_dtos,
+            total_tasks=total_count
+        )

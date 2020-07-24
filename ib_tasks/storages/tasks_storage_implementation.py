@@ -23,7 +23,6 @@ from ib_tasks.models.field_role import FieldRole
 
 class TasksStorageImplementation(TaskStorageInterface):
 
-
     def get_field_types_for_given_field_ids(self, field_ids: List[str]) -> \
             List[FieldTypeDTO]:
         field_type_dicts = list(

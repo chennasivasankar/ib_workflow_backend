@@ -7,8 +7,8 @@ Author: Pavankumar Pamuru
 
 import pytest
 
-from ib_tasks.interactors.get_task_ids_interactor import GetTaskIdsInteractor, \
-    TaskDetailsConfigDTO, TaskIdsDTO
+from ib_tasks.interactors.get_task_ids_interactor import GetTaskIdsInteractor
+from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, TaskIdsDTO
 
 
 class TestGetTaskIdsInteractor:
@@ -42,11 +42,15 @@ class TestGetTaskIdsInteractor:
         task_config_dtos = [
             TaskDetailsConfigDTO(
                 unique_key=1,
-                stage_ids=stage_ids[0]
+                stage_ids=stage_ids[0],
+                offset=0,
+                limit=5
             ),
             TaskDetailsConfigDTO(
                 unique_key=1,
-                stage_ids=stage_ids[1]
+                stage_ids=stage_ids[1],
+                offset=0,
+                limit=5
             )
         ]
         stage_storage.get_existing_stage_ids.return_value = valid_stage_ids
@@ -79,32 +83,39 @@ class TestGetTaskIdsInteractor:
         task_config_dtos = [
             TaskDetailsConfigDTO(
                 unique_key=1,
-                stage_ids=stage_ids[0]
+                stage_ids=stage_ids[0],
+                offset=0,
+                limit=5
             ),
             TaskDetailsConfigDTO(
                 unique_key=1,
-                stage_ids=stage_ids[1]
+                stage_ids=stage_ids[1],
+                offset=0,
+                limit=5
             )
         ]
         task_ids_dtos = [
             TaskIdsDTO(
                 unique_key=1,
-                task_stage_ids=expected_response[0]
+                task_stage_ids=expected_response[0],
+                total_tasks=100
             ),
             TaskIdsDTO(
                 unique_key=1,
-                task_stage_ids=expected_response[1]
+                task_stage_ids=expected_response[1],
+                total_tasks=100
             )
         ]
         from unittest.mock import call
-        calls = (call(stage_ids[0]), call(stage_ids[1]))
+        calls = (call(stage_ids=stage_ids[0], offset=0, limit=5),
+                 call(stage_ids=stage_ids[1], offset=0, limit=5))
         interactor = GetTaskIdsInteractor(
             stage_storage=stage_storage,
             task_storage=task_storage
         )
         stage_storage.get_existing_stage_ids.return_value = stage_ids_single_list
         task_storage.get_task_ids_for_the_stage_ids.side_effect = [
-            expected_response[0], expected_response[1]
+            (expected_response[0], 100), (expected_response[1], 100)
         ]
         # Act
         actual_response = interactor.get_task_ids(

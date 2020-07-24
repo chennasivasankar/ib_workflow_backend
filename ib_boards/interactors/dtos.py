@@ -124,3 +124,9 @@ class TaskIdStageDTO:
 @dataclass
 class TasksParameterDTO(TaskIdStageDTO):
     column_id: str
+
+
+@dataclass
+class ColumnTaskIdsDTO:
+    unique_key: int
+    task_stage_ids: List[TaskIdStageDTO]

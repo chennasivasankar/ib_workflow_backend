@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Union, List
 
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
+
 
 @dataclass
 class FieldValuesDTO:
@@ -24,3 +26,18 @@ class TaskStatusVariableDTO:
     status_id: int
     variable: str
     value: str
+
+
+@dataclass
+class TaskDetailsConfigDTO:
+    unique_key: int
+    stage_ids: List[str]
+    offset: int
+    limit: int
+
+
+@dataclass
+class TaskIdsDTO:
+    unique_key: int
+    task_stage_ids: List[TaskStageIdsDTO]
+    total_tasks: int

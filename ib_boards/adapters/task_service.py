@@ -6,21 +6,22 @@ Author: Pavankumar Pamuru
 from typing import List
 
 from ib_boards.interactors.dtos import TaskTemplateStagesDTO, \
-    TaskSummaryFieldsDTO, TaskStatusDTO, TaskDTO
+    TaskSummaryFieldsDTO, TaskStatusDTO, TaskDTO, ColumnTaskIdsDTO
 from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
     TaskFieldsDTOFactory
+from ib_tasks.interactors.task_dtos import TaskIdsDTO, TaskDetailsConfigDTO
 
 
 class TaskService:
 
     @property
-    def app_interface(self):
-        # from ib_tasks.app_interfaces.service_interface import ServiceInterface
-        # return ServiceInterface()
-        return
+    def interface(self):
+        from ib_tasks.app_interfaces.service_interface import ServiceInterface
+        return ServiceInterface()
 
+    @staticmethod
     def get_valid_task_template_ids(
-            self, task_template_ids: List[str]) -> List[str]:
+            task_template_ids: List[str]) -> List[str]:
         return task_template_ids
 
     def validate_task_ids(self, task_ids: List[str]):
@@ -60,3 +61,18 @@ class TaskService:
             ) for _index, task_dto in enumerate(task_dtos)
         ]
         return fields_dto, actions_dto
+
+    def get_task_ids_for_stage_ids(
+            self, task_config_dtos: List[TaskDetailsConfigDTO]) \
+            -> List[ColumnTaskIdsDTO]:
+        task_ids_dtos = self.interface.get_task_ids_for_the_stages(
+            task_config_dtos=task_config_dtos
+        )
+        column_task_ids_dtos = [
+            ColumnTaskIdsDTO(
+                unique_key=task_ids_dto.unique_key,
+                task_stage_ids=task_ids_dto.task_stage_ids
+            )
+            for task_ids_dto in task_ids_dtos
+        ]
+        return column_task_ids_dtos
