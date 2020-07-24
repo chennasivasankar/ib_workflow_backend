@@ -4,7 +4,7 @@ from ib_iam.interactors.presenter_interfaces.update_team_presenter_interface imp
 )
 from ib_iam.interactors.storage_interfaces.team_storage_interface import TeamStorageInterface
 from ib_iam.interactors.team_interactor import TeamInteractor
-from ib_iam.tests.factories import TeamWithUserIdsDTOFactory
+from ib_iam.tests.factories.storage_dtos import TeamWithUserIdsDTOFactory
 
 
 class TestUpdateTeamDetails:

@@ -1,3 +1,4 @@
+import pytest
 from mock import create_autospec, Mock
 
 from ib_iam.exceptions import UserHasNoAccess
@@ -5,6 +6,26 @@ from ib_iam.interactors.get_companies import GetCompaniesInteractor
 from ib_iam.interactors.presenter_interfaces.get_companies_presenter_interface import GetCompaniesPresenterInterface, \
     CompanyDetailsWithEmployeesCountDTO
 from ib_iam.interactors.storage_interfaces.company_storage_interface import CompanyStorageInterface
+
+
+@pytest.fixture
+def expected_company_dtos():
+    from ib_iam.tests.factories.storage_dtos import CompanyDTOFactory
+    CompanyDTOFactory.reset_sequence(1, force=True)
+    company_dtos = [
+        CompanyDTOFactory(company_id=str(i)) for i in range(1, 3)
+    ]
+    return company_dtos
+
+
+@pytest.fixture
+def expected_company_with_employees_count_dtos():
+    from ib_iam.tests.factories.storage_dtos import CompanyWithEmployeesCountDTOFactory
+    CompanyWithEmployeesCountDTOFactory.reset_sequence(1)
+    expected_company_with_employees_count_dtos = [
+        CompanyWithEmployeesCountDTOFactory(company_id=str(i)) for i in range(1, 3)
+    ]
+    return expected_company_with_employees_count_dtos
 
 
 class TestGetCompaniesInteractor:
@@ -34,7 +55,7 @@ class TestGetCompaniesInteractor:
         company_ids = ["1", "2"]
         storage.get_company_dtos.return_value = expected_company_dtos
         storage.get_company_with_employees_count_dtos \
-               .return_value = expected_company_with_employees_count_dtos
+            .return_value = expected_company_with_employees_count_dtos
         company_details_dto = CompanyDetailsWithEmployeesCountDTO(
             company_dtos=expected_company_dtos,
             company_with_employees_count_dtos=expected_company_with_employees_count_dtos
@@ -50,5 +71,3 @@ class TestGetCompaniesInteractor:
         presenter.get_response_for_get_companies.assert_called_once_with(
             company_details_dtos=company_details_dto
         )
-
-

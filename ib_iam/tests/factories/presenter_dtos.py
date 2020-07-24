@@ -1,6 +1,6 @@
 import factory, factory.django
 from ib_iam.interactors.presenter_interfaces.dtos import TeamWithMembersDetailsDTO
-from ib_iam.tests.factories import (
+from ib_iam.tests.factories.storage_dtos import (
     TeamDTOFactory, TeamMemberIdsDTOFactory, MemberDTOFactory
 )
 

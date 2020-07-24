@@ -4,7 +4,7 @@ from ib_iam.interactors.presenter_interfaces.update_company_presenter_interface 
 )
 from ib_iam.interactors.storage_interfaces.company_storage_interface import CompanyStorageInterface
 from ib_iam.interactors.company_interactor import CompanyInteractor
-from ib_iam.tests.factories import CompanyWithUserIdsDTOFactory
+from ib_iam.tests.factories.storage_dtos import CompanyWithUserIdsDTOFactory
 
 
 class TestUpdateCompanyDetails:

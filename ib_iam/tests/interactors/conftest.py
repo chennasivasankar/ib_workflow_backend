@@ -38,21 +38,3 @@ def expected_list_of_member_dtos():
     return member_dtos
 
 
-@pytest.fixture
-def expected_company_dtos():
-    from ib_iam.tests.factories import CompanyDTOFactory
-    CompanyDTOFactory.reset_sequence(1, force=True)
-    company_dtos = [
-        CompanyDTOFactory(company_id=str(i)) for i in range(1, 3)
-    ]
-    return company_dtos
-
-
-@pytest.fixture
-def expected_company_with_employees_count_dtos():
-    from ib_iam.tests.factories import CompanyWithEmployeesCountDTOFactory
-    CompanyWithEmployeesCountDTOFactory.reset_sequence(1)
-    expected_company_with_employees_count_dtos = [
-        CompanyWithEmployeesCountDTOFactory(company_id=str(i)) for i in range(1, 3)
-    ]
-    return expected_company_with_employees_count_dtos

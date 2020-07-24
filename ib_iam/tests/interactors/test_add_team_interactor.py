@@ -3,7 +3,7 @@ from ib_iam.interactors.team_interactor import TeamInteractor
 from ib_iam.interactors.presenter_interfaces.team_presenter_interface import (
     TeamPresenterInterface
 )
-from ib_iam.tests.factories import TeamDetailsWithUserIdsDTOFactory
+from ib_iam.tests.factories.storage_dtos import TeamDetailsWithUserIdsDTOFactory
 from ib_iam.interactors.storage_interfaces.team_storage_interface import (
     TeamStorageInterface
 )

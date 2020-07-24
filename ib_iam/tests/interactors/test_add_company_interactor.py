@@ -3,7 +3,7 @@ from ib_iam.interactors.company_interactor import CompanyInteractor
 from ib_iam.interactors.presenter_interfaces.add_company_presenter_interface import (
     AddCompanyPresenterInterface
 )
-from ib_iam.tests.factories import CompanyDetailsWithUserIdsDTOFactory
+from ib_iam.tests.factories.storage_dtos import CompanyDetailsWithUserIdsDTOFactory
 from ib_iam.interactors.storage_interfaces.company_storage_interface import (
     CompanyStorageInterface
 )
