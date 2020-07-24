@@ -4,7 +4,7 @@ import pytest
 from ib_boards.interactors.dtos import ColumnParametersDTO, PaginationParametersDTO
 from ib_boards.interactors.get_column_details_interactor import GetColumnDetailsInteractor
 from ib_boards.interactors.presenter_interfaces.presenter_interface import PresenterInterface
-from ib_boards.interactors.dtos import TaskDTO
+from ib_boards.interactors.dtos import TaskStageIdDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import StorageInterface
 from ib_boards.tests.factories.storage_dtos import (
     ColumnDetailsDTOFactory, TaskActionsDTOFactory, TaskFieldsDTOFactory)
@@ -197,8 +197,8 @@ class TestGetColumnDetailsInteractor:
                       "FIN_PAYMENTS_LEVEL2_VERIFIER",
                       "FIN_PAYMENTS_LEVEL3_VERIFIER"]
 
-        tasks_dtos = [TaskDTO(task_id="task_id_1",
-                              stage_id="stage_id_1")]
+        tasks_dtos = [TaskStageIdDTO(task_id="task_id_1",
+                                     stage_id="stage_id_1")]
 
         from ib_boards.tests.common_fixtures.adapters.task_service import prepare_task_details_dtos
         task_details_dto = prepare_task_details_dtos(mocker, tasks_dtos, user_id=user_id)

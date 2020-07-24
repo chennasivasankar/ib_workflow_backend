@@ -1,11 +1,11 @@
 from typing import List
 
-from ib_boards.interactors.dtos import TaskDTO
+from ib_boards.interactors.dtos import TaskStageIdDTO
 from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, TaskFieldsDTOFactory
 
 
-def prepare_task_details_dtos(mocker, task_dtos: List[TaskDTO],
-                          user_id: str):
+def prepare_task_details_dtos(mocker, task_dtos: List[TaskStageIdDTO],
+                              user_id: str):
     mock = mocker.patch(
         'ib_boards.adapters.tasks_service.TaskService'
     )

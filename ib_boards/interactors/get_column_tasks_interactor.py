@@ -37,7 +37,6 @@ class GetColumnTasksInteractor:
             return presenter.get_response_for_offset_exceeds_total_tasks()
         except UserDoNotHaveAccessToColumn:
             return presenter.get_response_for_user_have_no_access_for_column()
-            return presenter.get_response_for_user_have_no_access_for_boards()
         except InvalidStageIds as error:
             return presenter.get_response_for_invalid_stage_ids(error=error)
         return presenter.get_response_column_tasks(
@@ -84,7 +83,7 @@ class GetColumnTasksInteractor:
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         user_id = column_tasks_parameters.user_id
-        user_role = service_adapter.user_service.get_user_role(user_id=user_id)
+        user_role = service_adapter.user_service.get_user_roles(user_id=user_id)
         self.storage.validate_user_role_with_column_roles(user_role=user_role)
         offset = column_tasks_parameters.offset
         limit = column_tasks_parameters.limit

@@ -42,7 +42,7 @@ class GetBoardsInteractor:
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         user_id = get_boards_dto.user_id
-        user_role = service_adapter.user_service.get_user_role(user_id=user_id)
+        user_role = service_adapter.user_service.get_user_roles(user_id=user_id)
         self.storage.validate_user_role_with_boards_roles(user_role=user_role)
         offset = get_boards_dto.offset
         limit = get_boards_dto.limit

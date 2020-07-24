@@ -1,6 +1,6 @@
 from typing import List
 
-from ib_boards.interactors.dtos import TaskDTO
+from ib_boards.interactors.dtos import TaskStageIdDTO
 from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
     TaskFieldsDTOFactory
 
@@ -15,7 +15,7 @@ class TaskService:
         from ib_tasks.app_interfaces.service_interface import ServiceInterface
         return ServiceInterface()
 
-    def get_task_details_dtos(self, task_dtos: List[TaskDTO],
+    def get_task_details_dtos(self, task_dtos: List[TaskStageIdDTO],
                               field_ids: List[str],
                               user_id: str):
         actions_dto = [

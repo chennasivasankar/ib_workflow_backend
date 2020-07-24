@@ -8,8 +8,8 @@ import json
 import factory
 
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
-    TaskTemplateStagesDTO, TaskSummaryFieldsDTO, TaskDTO, ActionDTO, \
-    TaskStatusDTO
+    TaskTemplateStagesDTO, TaskSummaryFieldsDTO, TaskStageIdDTO, ActionDTO, \
+    TaskStatusDTO, TaskDTO
 
 
 class TaskTemplateStagesDTOFactory(factory.Factory):

@@ -5,14 +5,14 @@ from typing import List
 from django.http import response
 
 from ib_boards.exceptions.custom_exceptions import InvalidBoardIds
-from ib_boards.interactors.dtos import TaskDTO, ActionDTO
+from ib_boards.interactors.dtos import TaskStageIdDTO, ActionDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardDTO
 
 
 @dataclass
 class TaskCompleteDetailsDTO:
     total_tasks: int
-    task_dtos: List[TaskDTO]
+    task_dtos: List[TaskStageIdDTO]
     action_dtos: List[ActionDTO]
 
 

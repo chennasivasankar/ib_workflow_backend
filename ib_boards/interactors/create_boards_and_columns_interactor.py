@@ -29,6 +29,7 @@ class CreateBoardsAndColumnsInteractor:
         board_dtos, column_dtos = self._get_boards_and_columns_need_to_create(
             board_dtos=board_dtos, column_dtos=column_dtos
         )
+        print(board_dtos, column_dtos)
         boards_columns_to_create = board_dtos and column_dtos
         if boards_columns_to_create:
             self.storage.create_boards_and_columns(
@@ -50,6 +51,7 @@ class CreateBoardsAndColumnsInteractor:
             if board_dto.board_id not in existing_board_ids:
                 new_board_dtos.append(board_dto)
                 new_column_dtos += board_columns_dict[board_dto.board_id]
+
         return new_board_dtos, new_column_dtos
 
     def validate_columns_data(self, column_dtos: List[ColumnDTO]):
@@ -227,7 +229,7 @@ class CreateBoardsAndColumnsInteractor:
             user_roles += column_dto.user_role_ids
         user_roles = sorted(list(set(user_roles)))
         valid_user_roles = service_adapter.user_service.get_valid_user_role_ids(
-            user_role_ids=user_roles
+            user_roles=user_roles
         )
         invalid_user_roles = [
             user_role

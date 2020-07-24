@@ -372,7 +372,9 @@ class TestAddOrDeleteColumnsForBoardInteractor:
             self, storage_mock, sequence_reset, mock_valid_template_ids,
             column_dtos_with_invalid_user_roles, mocker):
         # Arrange
-        invalid_user_roles = ['ALL_ROLES', 'MEMBER', 'USER']
+        valid_user_roles = ['ALL_ROLES', 'MEMBER']
+        user_roles = ['ALL_ROLES', 'MEMBER', 'USER']
+        invalid_user_roles = ['USER']
         interactor = AddOrDeleteColumnsForBoardInteractor(
             storage=storage_mock
         )
@@ -381,7 +383,7 @@ class TestAddOrDeleteColumnsForBoardInteractor:
             adapter_mock
 
         adapter_mock = adapter_mock(mocker=mocker,
-                                    user_roles=invalid_user_roles)
+                                    user_roles=valid_user_roles)
 
         # Act
         from ib_boards.exceptions.custom_exceptions import \
@@ -392,16 +394,28 @@ class TestAddOrDeleteColumnsForBoardInteractor:
             )
         # Assert
         adapter_mock.assert_called_once_with(
-            user_role_ids=invalid_user_roles
+            user_roles=user_roles
         )
         assert error.value.user_role_ids == invalid_user_roles
 
     def test_with_column_ids_are_assigned_to_multiple_boards(
             self, storage_mock, sequence_reset, mock_valid_template_ids,
-            column_dtos):
+            column_dtos, mocker):
         # Arrange
         column_ids = ['COLUMN_ID_1', 'COLUMN_ID_2', 'COLUMN_ID_3']
-        storage_mock.get_board_ids_for_column_ids.return_value = ['BOARD_ID_1']
+        user_roles = ['ALL_ROLES', 'MEMBER', 'USER']
+        invalid_column_id = 'COLUMN_ID_2'
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            adapter_mock
+        adapter_mock = adapter_mock(mocker=mocker,
+                                    user_roles=user_roles)
+        from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO
+        storage_mock.get_board_ids_for_column_ids.return_value = [
+            BoardColumnDTO(
+                board_id='BOARD_ID_1',
+                column_id='COLUMN_ID_2'
+            )
+        ]
         interactor = AddOrDeleteColumnsForBoardInteractor(
             storage=storage_mock
         )
@@ -418,14 +432,21 @@ class TestAddOrDeleteColumnsForBoardInteractor:
         storage_mock.get_board_ids_for_column_ids.assert_called_once_with(
             column_ids=column_ids
         )
-        assert error.value.column_ids == column_ids
+        assert error.value.column_id == invalid_column_id
 
     def test_with_update_and_create_and_delete_columns(
             self, storage_mock, sequence_reset, valid_column_dtos,
-            mock_valid_task_and_template_ids, mock_valid_template_ids):
+            mock_valid_task_and_template_ids, mock_valid_template_ids, mocker):
         # Arrange
         board_ids = ['BOARD_ID_0']
+
+        from ib_boards.interactors.dtos import BoardColumnsDTO
         present_column_ids = ['COLUMN_ID_1', 'COLUMN_ID_2', 'COLUMN_ID_3']
+        user_roles = ['ALL_ROLES', 'MEMBER', 'USER']
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            adapter_mock
+        adapter_mock = adapter_mock(mocker=mocker,
+                                    user_roles=user_roles)
         interactor = AddOrDeleteColumnsForBoardInteractor(
             storage=storage_mock
         )

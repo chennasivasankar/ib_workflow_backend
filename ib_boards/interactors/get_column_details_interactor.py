@@ -1,7 +1,7 @@
 from ib_boards.adapters.service_adapter import get_service_adapter
 from ib_boards.exceptions.custom_exceptions import (
     InvalidBoardId, InvalidOffsetValue, InvalidLimitValue, UserDonotHaveAccess)
-from ib_boards.interactors.dtos import ColumnParametersDTO, PaginationParametersDTO, TaskDTO, TaskDetailsDTO, FieldsDTO
+from ib_boards.interactors.dtos import ColumnParametersDTO, PaginationParametersDTO, TaskStageIdDTO, TaskDetailsDTO, FieldsDTO
 from ib_boards.interactors.get_task_details_interactor import GetTaskDetailsInteractor
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface

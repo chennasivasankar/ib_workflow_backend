@@ -444,7 +444,9 @@ class TestCreateBoardsAndColumnsInteractor:
             column_dtos_with_invalid_task_template_id,
             mocker, mock_valid_template_ids):
         # Arrange
-        invalid_user_roles = ['USER', 'MEMBER']
+        valid_user_roles = ['ALL_ROLES', 'MEMBER']
+        user_roles = ['ALL_ROLES']
+        invalid_user_roles = ['USER']
         interactor = CreateBoardsAndColumnsInteractor(
             storage=storage_mock
         )
@@ -452,7 +454,8 @@ class TestCreateBoardsAndColumnsInteractor:
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             adapter_mock
 
-        adapter_mock(mocker=mocker, user_roles=invalid_user_roles)
+        adapter_mock = adapter_mock(mocker=mocker,
+                                    user_roles=invalid_user_roles)
 
         # Act
         from ib_boards.exceptions.custom_exceptions import \
@@ -463,16 +466,27 @@ class TestCreateBoardsAndColumnsInteractor:
                 column_dtos=column_dtos_with_invalid_task_template_id
             )
         # Assert
-        assert error.value.user_role_ids == invalid_user_roles
+        adapter_mock.assert_called_once_with(
+            user_roles=user_roles
+        )
+        assert error.value.user_role_ids == user_roles
 
     def test_with_valid_data_creates_data(
             self, storage_mock, sequence_reset, board_dtos, column_dtos,
-            mock_valid_template_ids):
+            mock_valid_template_ids, mocker):
         # Arrange
+        user_roles = ['ALL_ROLES', 'MEMBER', 'USER']
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            adapter_mock
+        adapter_mock = adapter_mock(mocker=mocker,
+                                    user_roles=user_roles)
         interactor = CreateBoardsAndColumnsInteractor(
             storage=storage_mock
         )
-
+        board_dtos.append(
+            BoardDTOFactory(board_id='BOARD_ID_0')
+        )
+        storage_mock.get_existing_board_ids.return_value = []
         # Act
         interactor.create_boards_and_columns(
             board_dtos=board_dtos,

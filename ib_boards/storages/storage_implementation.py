@@ -62,26 +62,13 @@ class StorageImplementation(StorageInterface):
         return board_column_id_dtos
 
     def get_boards_column_ids(
-            self, board_ids: List[str]) -> List[BoardColumnsDTO]:
+            self, board_ids: List[str]) -> List[str]:
 
-        board_column_ids = Column.objects.filter(
+        column_ids = Column.objects.filter(
             board_id__in=board_ids
-        ).values('board_id', 'column_id')
-        from collections import defaultdict
-        board_columns_map = defaultdict(lambda: [])
-        for board_column_id in board_column_ids:
-            board_columns_map[board_column_id['board_id']].append(
-                board_column_id['column_id']
-            )
+        ).values_list('column_id', flat=True)
+        return list(column_ids)
 
-        board_columns_dtos = [
-            BoardColumnsDTO(
-                board_id=key,
-                column_ids=value
-            )
-            for key, value in board_columns_map.items()
-        ]
-        return board_columns_dtos
 
     def update_columns_for_board(self, column_dtos: List[ColumnDTO]) -> None:
         column_ids = [column_dto.column_id for column_dto in column_dtos]
