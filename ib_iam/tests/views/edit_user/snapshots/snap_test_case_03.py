@@ -7,10 +7,10 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase02EditUserAPITestCase.test_case status_code'] = '200'
-
-snapshots['TestCase02EditUserAPITestCase.test_case body'] = {
+snapshots['TestCase03EditUserAPITestCase.test_case body'] = {
     'http_status_code': 200,
     'res_status': 'EDIT_USER_SUCCESSFULLY',
     'response': 'Edit User successfully'
 }
+
+snapshots['TestCase03EditUserAPITestCase.test_case status_code'] = '200'

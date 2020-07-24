@@ -4,9 +4,9 @@ REQUEST_BODY_JSON = """
 {
     "name": "string",
     "email": "string",
-    "company_id": "657e845e-df15-452f-bede-e63d5f167218",
+    "company_id": "35f84226-2a18-40ec-864a-547e9bd5b844",
     "team_ids": [
-        "6973f19e-17a8-41ee-994a-bf3df42515b4"
+        "16fb927a-c359-42b2-9a0a-15bcb881d637"
     ],
     "role_ids": [
         "string"
@@ -28,6 +28,14 @@ RESPONSE_403_JSON = """
     "response": "string",
     "http_status_code": 1,
     "res_status": "USER_DOES_NOT_HAVE_PERMISSION"
+}
+"""
+
+RESPONSE_404_JSON = """
+{
+    "response": "string",
+    "http_status_code": 1,
+    "res_status": "INVALID_COMPANY_ID"
 }
 """
 

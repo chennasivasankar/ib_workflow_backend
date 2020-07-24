@@ -7,8 +7,10 @@ URL_SUFFIX = "users/{user_id}/v1/"
 
 from .test_case_01 import TestCase01EditUserAPITestCase
 from .test_case_02 import TestCase02EditUserAPITestCase
+from .test_case_03 import TestCase03EditUserAPITestCase
 
 __all__ = [
     "TestCase01EditUserAPITestCase",
-    "TestCase02EditUserAPITestCase"
+    "TestCase02EditUserAPITestCase",
+    "TestCase03EditUserAPITestCase"
 ]

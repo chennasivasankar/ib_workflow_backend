@@ -24,6 +24,4 @@ def api_wrapper(*args, **kwargs):
         admin_user_id=admin_user_id, user_id=user_id, name=name,
         email=email, company_id=company_id,
         roles=roles, teams=teams, presenter=presenter)
-    import json
-    print(json.loads(response.content)['response'])
     return response

@@ -6,7 +6,7 @@ from django_swagger_utils.utils.test_v1 import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase02EditUserAPITestCase(TestUtils):
+class TestCase03EditUserAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -17,8 +17,8 @@ class TestCase02EditUserAPITestCase(TestUtils):
     def user_set_up(self, api_user):
         user_id = api_user.user_id
         from ib_iam.tests.common_fixtures.reset_fixture \
-            import reset_sequence_user_details_factory
-        reset_sequence_user_details_factory()
+            import reset_sequence_for_model_factories
+        reset_sequence_for_model_factories()
         from ib_iam.tests.factories.models import UserDetailsFactory
         UserDetailsFactory.create(user_id=user_id, is_admin=True, company=None)
         UserDetailsFactory.create(user_id="ef6d1fc6-ac3f-4d2d-a983-752c992e8300", \

@@ -440,10 +440,7 @@
                   "INVALID_EMAIL",
                   "INVALID_NAME",
                   "USER_ALREADY_EXIST_WITH_THIS_EMAIL",
-                  "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS",
-                  "INVALID_COMPANY_ID",
-                  "INVALID_TEAM_IDS",
-                  "INVALID_ROLE_IDS"
+                  "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
                 ]
               }
             },
@@ -480,7 +477,7 @@
         ]
       }
     },
-    "EditUserNotFoundResponse": {
+    "NotFoundResponse": {
       "description": "Edit User Not Found",
       "schema": {
         "allOf": [
@@ -590,6 +587,9 @@
           },
           "403": {
             "$ref": "#/responses/UserDoesNotHavePermissionResponse"
+          },
+          "404": {
+            "$ref": "#/responses/NotFoundResponse"
           }
         }
       }
@@ -625,7 +625,7 @@
             "$ref": "#/responses/UserDoesNotHavePermissionResponse"
           },
           "404": {
-            "$ref": "#/responses/EditUserNotFoundResponse"
+            "$ref": "#/responses/NotFoundResponse"
           }
         }
       }

@@ -6,13 +6,10 @@ from ib_iam.tests.factories.models \
 
 
 @pytest.fixture()
-def reset_sequence_for_model_factories():
-    CompanyFactory.reset_sequence(0)
-    RoleFactory.reset_sequence(0)
-    TeamFactory.reset_sequence(0)
-    UserDetailsFactory.reset_sequence(0)
-    UserTeamFactory.reset_sequence(0)
-    UserRoleFactory.reset_sequence(0)
+def model_reset_sequence():
+    from ib_iam.tests.common_fixtures.reset_fixture \
+        import reset_sequence_for_model_factories
+    reset_sequence_for_model_factories()
 
 
 @pytest.fixture()
@@ -65,7 +62,7 @@ def roles():
 class TestEditUserStorage:
     @pytest.mark.django_db
     def test_add_company_to_user_adds_company_with_given_details(
-            self, reset_sequence_for_model_factories, user_companies):
+            self, model_reset_sequence, user_companies):
         # Arrange
         user_id = "user_1"
         is_admin = True
@@ -83,7 +80,7 @@ class TestEditUserStorage:
 
     @pytest.mark.django_db
     def test_add_roles_to_user_adds_roles_with_given_details(
-            self, reset_sequence_for_model_factories, roles):
+            self, model_reset_sequence, roles):
         # Arrange
         user_id = "user_1"
         role_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
@@ -102,7 +99,7 @@ class TestEditUserStorage:
 
     @pytest.mark.django_db
     def test_add_user_to_teams_adds_to_team_with_given_details(
-            self, reset_sequence_for_model_factories, teams):
+            self, model_reset_sequence, teams):
         # Arrange
         user_id = "user_1"
         team_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
@@ -121,7 +118,7 @@ class TestEditUserStorage:
 
     @pytest.mark.django_db
     def test_unassign_company_for_user_removes_company(
-            self, reset_sequence_for_model_factories, user_companies):
+            self, model_reset_sequence, user_companies):
         # Arrange
         user_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8444"
         storage = EditUserStorageImplementation()
@@ -136,7 +133,7 @@ class TestEditUserStorage:
 
     @pytest.mark.django_db
     def test_unassign_roles_for_user_removes_roles(
-            self, reset_sequence_for_model_factories, user_roles):
+            self, model_reset_sequence, user_roles):
         # Arrange
         user_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8444"
         storage = EditUserStorageImplementation()
@@ -151,7 +148,7 @@ class TestEditUserStorage:
 
     @pytest.mark.django_db
     def test_unassign_teams_for_user_removes_teams(
-            self, reset_sequence_for_model_factories, user_teams):
+            self, model_reset_sequence, user_teams):
         # Arrange
         user_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8444"
         storage = EditUserStorageImplementation()
