@@ -16,7 +16,7 @@ class TestCase01GetSearchableValuesAPITestCase(TestUtils):
     def test_case(self, snapshot):
         body = {}
         path_params = {}
-        query_params = {'search_type': 'USER', 'limit': 581, 'offset': 420, 'search_query': 'string'}
+        query_params = {'search_type': 'CITY', 'limit': 922, 'offset': 790, 'search_query': 'string'}
         headers = {}
         response = self.default_test_case(
             body=body, path_params=path_params,

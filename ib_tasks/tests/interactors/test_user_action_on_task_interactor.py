@@ -96,6 +96,8 @@ class TestUserActionOnTaskInteractor:
         # Arrange
         user_id = "user_1"
         board_id = "board_1"
+        task_id = "task_1"
+        action_id = 1
         task_id = 1
         action_id = 1
         mock_obj = mocker.patch(
