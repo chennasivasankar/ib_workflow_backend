@@ -301,13 +301,13 @@
                 "board_id": {
                   "type": "string"
                 },
-                "display_name": {
+                "name": {
                   "type": "string"
                 }
               },
               "required": [
                 "board_id",
-                "display_name"
+                "name"
               ]
             }
           }

@@ -51,13 +51,13 @@ class TaskSummaryFieldsDTO:
 @dataclass
 class BoardDTO:
     board_id: str
-    display_name: str
+    name: str
 
 
 @dataclass
 class ColumnDTO:
     column_id: str
-    display_name: str
+    name: str
     display_order: int
     task_template_stages: List[TaskTemplateStagesDTO]
     user_role_ids: List[str]

@@ -26,7 +26,7 @@ class StorageImplementation(StorageInterface):
         board_objects = [
             Board(
                 board_id=board_dto.board_id,
-                name=board_dto.display_name
+                name=board_dto.name
             )
             for board_dto in board_dtos
         ]
@@ -92,7 +92,7 @@ class StorageImplementation(StorageInterface):
         Column.objects.bulk_update(
             updated_column_objects,
             [
-                'display_name',
+                'name',
                 'display_order', 'task_selection_config',
                 'kanban_brief_view_config',
                 'list_brief_view_config'
@@ -143,7 +143,7 @@ class StorageImplementation(StorageInterface):
 
     def _get_updated_column_object(
             self, column_dto: ColumnDTO, column_object: Column):
-        column_object.name = column_dto.display_name
+        column_object.name = column_dto.name
         column_object.display_order = column_dto.display_order
         column_object.task_selection_config = \
             self._get_json_string_for_task_selection_config(
@@ -184,7 +184,7 @@ class StorageImplementation(StorageInterface):
             Column(
                 column_id=column_dto.column_id,
                 board_id=column_dto.board_id,
-                name=column_dto.display_name,
+                name=column_dto.name,
                 display_order=column_dto.display_order,
                 task_selection_config=self._get_json_string_for_task_selection_config(
                     column_dto.task_template_stages
@@ -294,7 +294,7 @@ class StorageImplementation(StorageInterface):
         board_dtos = [
             BoardDTO(
                 board_id=board_object.board_id,
-                display_name=board_object.display_name
+                name=board_object.name
             )
             for board_object in board_objects
         ]
@@ -326,7 +326,7 @@ class StorageImplementation(StorageInterface):
         list_of_column_dtos = [
             ColumnDetailsDTO(
                 column_id=obj.column_id,
-                name=obj.display_name
+                name=obj.name
             )
             for obj in column_objs
         ]

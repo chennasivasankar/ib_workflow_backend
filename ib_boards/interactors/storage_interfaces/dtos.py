@@ -35,7 +35,7 @@ class TaskActionsDTO:
 @dataclass
 class BoardDTO:
     board_id: str
-    display_name: str
+    name: str
 
 
 @dataclass

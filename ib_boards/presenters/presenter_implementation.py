@@ -74,7 +74,7 @@ class GetBoardsPresenterImplementation(
     def _convert_board_dto_to_dict(board_dto):
         return {
             "board_id": board_dto.board_id,
-            "display_name": board_dto.display_name
+            "name": board_dto.name
         }
 
     def get_response_for_offset_exceeds_total_tasks(self):
@@ -111,7 +111,7 @@ class GetBoardsDetailsPresenterImplementation(
     def _convert_board_dto_to_dict(board_dto: BoardDTO):
         return {
             "board_id": board_dto.board_id,
-            "display_name": board_dto.display_name
+            "name": board_dto.name
         }
 
 
@@ -266,7 +266,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             list_of_task_actions.append(
                 {
                     "action_id": action_dto.action_id,
-                    "display_name": action_dto.name,
+                    "name": action_dto.name,
                     "button_text": action_dto.button_text,
                     "button_color": action_dto.button_color
                 }
@@ -305,7 +305,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             list_of_columns.append(
                 {
                     "column_id": column_dto.column_id,
-                    "display_name": column_dto.name,
+                    "name": column_dto.name,
                     "total_tasks_count": len(list_of_tasks),
                     "tasks": task_details_dict
                 }
