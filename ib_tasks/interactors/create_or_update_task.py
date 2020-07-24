@@ -11,7 +11,7 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     IncorrectCheckBoxOptionsSelected, IncorrectMultiSelectOptionsSelected, \
     IncorrectMultiSelectLabelsSelected, InvalidDateFormat, InvalidTimeFormat, \
     InvalidUrlForImage, InvalidImageFormat, NotAnImageUrl, CouldNotReadImage, \
-    InvalidUrlForFile
+    InvalidUrlForFile, EmptyValueForRequiredField, InvalidFileFormat
 from ib_tasks.exceptions.fields_custom_exceptions import \
     DuplicationOfFieldIdsExist, InvalidFieldIds
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
@@ -58,9 +58,9 @@ class CreateOrUpdateTaskInteractor:
         except InvalidGoFIDsInGoFSelectorField as err:
             return presenter.\
                 raise_exception_for_gof_ids_in_gof_selector_field_value(err)
-        except EmptyValueForPlainTextField as err:
+        except EmptyValueForRequiredField as err:
             return presenter.\
-                raise_exception_for_empty_value_in_plain_text_field(err)
+                raise_exception_for_empty_value_in_required_field(err)
         except InvalidPhoneNumberValue as err:
             return presenter.raise_exception_for_invalid_phone_number_value(
                 err)
@@ -101,15 +101,15 @@ class CreateOrUpdateTaskInteractor:
             return presenter.raise_exception_for_invalid_time_format(err)
         except InvalidUrlForImage as err:
             return presenter.raise_exception_for_invalid_image_url(err)
-        except CouldNotReadImage as err:
-            return presenter.raise_exception_for_could_not_read_image(err)
-        except NotAnImageUrl as err:
-            return presenter.raise_exception_for_not_an_image_url(err)
         except InvalidImageFormat as err:
             return presenter.raise_exception_for_not_acceptable_image_format(
                 err)
         except InvalidUrlForFile as err:
             return presenter.raise_exception_for_invalid_folder_url(err)
+        except InvalidFileFormat as err:
+            return presenter.raise_exception_for_not_acceptable_file_format(
+                err
+            )
 
     def _prepare_response_for_create_or_update_task(
             self, presenter: CreateOrUpdateTaskPresenterInterface,
@@ -226,15 +226,15 @@ class CreateOrUpdateTaskInteractor:
                 field_values_dtos=field_values_dtos
             )
             field_value = field_value.strip()
-            field_type = field_details_dto.field_type
             field_id = field_details_dto.field_id
-            field_type_is_text_field = (
-                    field_type == FieldTypes.PLAIN_TEXT.value
+            field_is_required_but_not_given = (
+                not field_value and field_details_dto.required
             )
-            if field_type_is_text_field:
-                self._validate_for_text_field_value(field_value, field_id)
+            if field_is_required_but_not_given:
+                raise EmptyValueForRequiredField(field_id)
+            field_type = field_details_dto.field_type
             field_type_is_phone_number = (
-                    field_type == FieldTypes.PHONE_NUMBER.value
+                field_type == FieldTypes.PHONE_NUMBER.value
             )
             if field_type_is_phone_number:
                 self._validate_phone_number_value(field_value, field_id)
@@ -335,11 +335,22 @@ class CreateOrUpdateTaskInteractor:
     @staticmethod
     def _validate_for_file_uploader_value(
             field_value: str, field_id: str, allowed_formats: List[str]
-    ) -> Optional[InvalidUrlForFile]:
+    ) -> Union[None, InvalidUrlForFile, InvalidFileFormat]:
         from ib_tasks.constants.config import VALID_URL_REGEX_PATTERN
         invalid_url_path = not VALID_URL_REGEX_PATTERN.search(field_value)
-        if invalid_url_path:
+        try:
+            file = field_value[field_value.rindex("/") + 1:]
+        except ValueError:
             raise InvalidUrlForFile(field_id, field_value)
+        file_is_empty = not file
+        if invalid_url_path or file_is_empty:
+            raise InvalidUrlForFile(field_id, field_value)
+        given_file_format = '.' + file.split('.')[-1]
+        invalid_file_format = given_file_format not in allowed_formats
+        if invalid_file_format:
+            raise InvalidFileFormat(
+                field_id, given_file_format, allowed_formats
+            )
         return
 
     @staticmethod
@@ -351,20 +362,14 @@ class CreateOrUpdateTaskInteractor:
     ]:
         from ib_tasks.constants.config import VALID_URL_REGEX_PATTERN
         invalid_url_path = not VALID_URL_REGEX_PATTERN.search(field_value)
-        if invalid_url_path:
+        try:
+            image_file = field_value[field_value.rindex("/") + 1:]
+        except ValueError:
             raise InvalidUrlForImage(field_id, field_value)
-        import requests
-        response = requests.head(field_value)
-        could_not_read_image = (
-                response.status_code < 200 or response.status_code >= 300
-        )
-        if could_not_read_image:
-            raise CouldNotReadImage(field_id, field_value)
-        given_format = response.headers['content-type']
-        not_an_image = given_format.find("image/") == -1
-        if not_an_image:
-            raise NotAnImageUrl(field_id, field_value)
-        given_image_format = given_format.replace("image/", '.')
+        image_file_is_empty = not image_file
+        if invalid_url_path or image_file_is_empty:
+            raise InvalidUrlForImage(field_id, field_value)
+        given_image_format = '.' + image_file.split('.')[-1]
         given_image_format_not_in_allowed_formats = \
             given_image_format not in allowed_formats
         if given_image_format_not_in_allowed_formats:
@@ -547,15 +552,6 @@ class CreateOrUpdateTaskInteractor:
         phone_number_does_not_contain_10_digits = len(field_value) != 10
         if phone_number_does_not_contain_10_digits:
             raise InvalidPhoneNumberValue(field_id, field_value)
-        return
-
-    @staticmethod
-    def _validate_for_text_field_value(
-            field_value: str, field_id: str
-    ) -> Optional[EmptyValueForPlainTextField]:
-        field_value_is_empty = not field_value
-        if field_value_is_empty:
-            raise EmptyValueForPlainTextField(field_id)
         return
 
     def _validate_task_template_id(

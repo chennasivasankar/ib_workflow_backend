@@ -61,8 +61,10 @@ class TestCreateOrUpdateTaskStorageImplementation:
                 id=task_gof_details_dto.task_gof_id
             )
             assert task_gof_object.gof_id == task_gof_details_dto.gof_id
-            assert task_gof_object.same_gof_order == \
-                   task_gof_details_dto.same_gof_order
+            assert (
+                    task_gof_object.same_gof_order ==
+                    task_gof_details_dto.same_gof_order
+            )
 
     def test_create_task_gof_fields(self, storage):
 

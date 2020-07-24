@@ -206,50 +206,6 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_gof_ids_in_gof_selector_field_value.assert_called_once()
 
 
-    def test_create_or_update_task_with_empty_value_for_plain_text_field_raises_exception(
-            self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object
-    ):
-        # Arrange
-        gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
-            size=1, field_response="  "
-        )
-        field_ids = [
-            gof_field_values_dto.field_id
-            for gof_field_values_dto in gof_field_values_dtos
-        ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
-            size=1, field_id=factory.Iterator(field_ids),
-            field_type=FieldTypes.PLAIN_TEXT.value
-        )
-        gof_fields_dtos = GoFFieldsDTOFactory.create_batch(
-            size=1, field_values_dtos=gof_field_values_dtos
-        )
-        task_dto = TaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
-        gof_ids = [
-            gof_fields_dto.gof_id
-            for gof_fields_dto in task_dto.gof_fields_dtos
-        ]
-        task_storage_mock.get_existing_gof_ids.return_value = gof_ids
-        task_storage_mock.get_existing_field_ids.return_value = field_ids
-        task_storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
-        presenter_mock.raise_exception_for_empty_value_in_plain_text_field.return_value = mock_object
-
-        interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
-        )
-
-        # Act
-        response = interactor.create_or_update_task_wrapper(presenter_mock, task_dto)
-
-        # Assert
-        assert response == mock_object
-        task_storage_mock.get_field_details_for_given_field_ids.assert_called_once_with(
-            field_ids=field_ids
-        )
-        presenter_mock.raise_exception_for_empty_value_in_plain_text_field.assert_called_once()
-
-
     @pytest.mark.parametrize("phone_number", ["phone_number", "989  89", "97979sjsljs"])
     def test_create_or_update_task_with_invalid_phone_number_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
@@ -387,7 +343,7 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_invalid_url_address.assert_called_once()
 
     @pytest.mark.parametrize("password",
-                             ["password", "8798", "", "Pas788", "7979passI"])
+                             ["password", "8798", "Pas788", "7979passI"])
     def test_create_or_update_task_with_weak_password_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, password
@@ -433,7 +389,7 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_weak_password.assert_called_once()
 
     @pytest.mark.parametrize("number",
-                             ["password", "87()", "", "7+8", "90!2"])
+                             ["password", "87()", "7+8", "90!2"])
     def test_create_or_update_task_with_number_value_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, number
@@ -889,7 +845,7 @@ class TestCreateOrUpdateTask:
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
-            size=1, field_response="www.google.com"
+            size=1, field_response="www.google.com/"
         )
         field_ids = [
             gof_field_values_dto.field_id
@@ -927,93 +883,6 @@ class TestCreateOrUpdateTask:
         )
         presenter_mock.raise_exception_for_invalid_image_url.assert_called_once()
 
-    def test_create_or_update_task_with_valid_url_but_not_found_url_raises_exception(
-            self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object
-    ):
-        # Arrange
-        gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
-            size=1, field_response="https://www.google.com/sls"
-        )
-        field_ids = [
-            gof_field_values_dto.field_id
-            for gof_field_values_dto in gof_field_values_dtos
-        ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
-            size=1, field_id=factory.Iterator(field_ids),
-            field_type=FieldTypes.IMAGE_UPLOADER.value,
-            allowed_formats='[".jpeg", ".svg"]'
-        )
-        gof_fields_dtos = GoFFieldsDTOFactory.create_batch(
-            size=1, field_values_dtos=gof_field_values_dtos
-        )
-        task_dto = TaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
-        gof_ids = [
-            gof_fields_dto.gof_id
-            for gof_fields_dto in task_dto.gof_fields_dtos
-        ]
-        task_storage_mock.get_existing_gof_ids.return_value = gof_ids
-        task_storage_mock.get_existing_field_ids.return_value = field_ids
-        task_storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
-        presenter_mock.raise_exception_for_could_not_read_image.return_value = mock_object
-        interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
-        )
-
-        # Act
-        response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto)
-
-        # Assert
-        assert response == mock_object
-        task_storage_mock.get_field_details_for_given_field_ids.assert_called_once_with(
-            field_ids=field_ids
-        )
-        presenter_mock.raise_exception_for_could_not_read_image.assert_called_once()
-
-    def test_create_or_update_task_with_valid_url_but_not_an_image_url_raises_exception(
-            self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object
-    ):
-        # Arrange
-        gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
-            size=1, field_response="https://www.google.com/"
-        )
-        field_ids = [
-            gof_field_values_dto.field_id
-            for gof_field_values_dto in gof_field_values_dtos
-        ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
-            size=1, field_id=factory.Iterator(field_ids),
-            field_type=FieldTypes.IMAGE_UPLOADER.value,
-            allowed_formats='[".jpeg", ".svg"]'
-        )
-        gof_fields_dtos = GoFFieldsDTOFactory.create_batch(
-            size=1, field_values_dtos=gof_field_values_dtos
-        )
-        task_dto = TaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
-        gof_ids = [
-            gof_fields_dto.gof_id
-            for gof_fields_dto in task_dto.gof_fields_dtos
-        ]
-        task_storage_mock.get_existing_gof_ids.return_value = gof_ids
-        task_storage_mock.get_existing_field_ids.return_value = field_ids
-        task_storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
-        presenter_mock.raise_exception_for_not_an_image_url.return_value = mock_object
-        interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
-        )
-
-        # Act
-        response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto)
-
-        # Assert
-        assert response == mock_object
-        task_storage_mock.get_field_details_for_given_field_ids.assert_called_once_with(
-            field_ids=field_ids
-        )
-        presenter_mock.raise_exception_for_not_an_image_url.assert_called_once()
 
     def test_create_or_update_task_with_valid_image_url_but_with_format_not_in_allowed_formats_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
@@ -1059,13 +928,13 @@ class TestCreateOrUpdateTask:
         )
         presenter_mock.raise_exception_for_not_acceptable_image_format.assert_called_once()
 
-    def test_create_or_update_task_with_invalid_folder_url_raises_exception(
+    def test_create_or_update_task_with_invalid_file_url_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
-            size=1, field_response="www.google.comss"
+            size=1, field_response="www.google.com/"
         )
         field_ids = [
             gof_field_values_dto.field_id

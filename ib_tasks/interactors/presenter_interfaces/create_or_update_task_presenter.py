@@ -8,7 +8,8 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     IncorrectRadioGroupChoice, IncorrectCheckBoxOptionsSelected, \
     IncorrectMultiSelectOptionsSelected, IncorrectMultiSelectLabelsSelected, \
     InvalidDateFormat, InvalidTimeFormat, CouldNotReadImage, NotAnImageUrl, \
-    InvalidImageFormat, InvalidUrlForImage, InvalidUrlForFile
+    InvalidImageFormat, InvalidUrlForImage, InvalidUrlForFile, \
+    EmptyValueForRequiredField, InvalidFileFormat
 from ib_tasks.exceptions.fields_custom_exceptions import \
     DuplicationOfFieldIdsExist, InvalidFieldIds
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
@@ -141,4 +142,16 @@ class CreateOrUpdateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_exception_for_invalid_folder_url(self, err: InvalidUrlForFile):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_empty_value_in_required_field(
+        self, err: EmptyValueForRequiredField
+    ):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_not_acceptable_file_format(
+        self, err: InvalidFileFormat
+    ):
         pass
