@@ -65,27 +65,3 @@ class TestSearchableFieldValuesInteractor:
             raise_offset_should_be_greater_than_or_equal_to_minus_one_exception\
             .assert_called_once()
 
-    def test_get_searchable_field_value_details_given_valid_user_details(
-            self, mocker, presenter_mock):
-        # Arrange
-
-        from ib_tasks.tests.factories.interactor_dtos import \
-            SearchableFieldTypeDTOFactory, SearchableFieldUserDetailDTOFactory
-        searchable_field_type_dto = SearchableFieldTypeDTOFactory(offset=None,
-                                                                  limit=None)
-        searchable_value_detail_dtos = SearchableFieldUserDetailDTOFactory.\
-            create_batch(2)
-        from ib_tasks.tests.common_fixtures.adapters.auth_service import \
-            get_user_dtos_based_on_limit_and_offset_mock
-        get_user_dtos_based_on_limit_and_offset_mock_method = \
-            get_user_dtos_based_on_limit_and_offset_mock(mocker)
-        user_dtos = get_user_dtos_based_on_limit_and_offset_mock_method()
-
-        from ib_tasks.interactors.searchable_field_values_interactor import \
-            SearchableFieldValuesInteractor
-        interactor = SearchableFieldValuesInteractor()
-
-        interactor.searchable_field_values_wrapper(
-            presenter=presenter_mock,
-            searchable_field_type_dto=searchable_field_type_dto)
-        get_user_dtos_based_on_limit_and_offset_mock_method.asser_called_once()
