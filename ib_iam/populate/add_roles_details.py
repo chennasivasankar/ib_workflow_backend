@@ -8,7 +8,8 @@ class RollsDetails:
             read_spread_sheet_data_and_get_row_wise_dicts(
             spread_sheet_name=spread_sheet_name, sub_sheet_name=sub_sheet_name
         )
-        from ib_iam.storages.storage_implementation import StorageImplementation
+        from ib_iam.storages.storage_implementation import \
+            StorageImplementation
         storage = StorageImplementation()
         from ib_iam.interactors.roles_interactor import RolesInteractor
         interactor = RolesInteractor(storage=storage)

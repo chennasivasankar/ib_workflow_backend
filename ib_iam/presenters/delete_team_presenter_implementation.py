@@ -11,9 +11,8 @@ from ib_iam.constants.exception_messages import (
 )
 
 
-class DeleteTeamPresenterImplementation(
-    DeleteTeamPresenterInterface, HTTPResponseMixin
-):
+class DeleteTeamPresenterImplementation(DeleteTeamPresenterInterface,
+                                        HTTPResponseMixin):
 
     def get_success_response_for_delete_team(self):
         empty_dict = {}
