@@ -15,7 +15,7 @@ from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GroupOfFieldsDTO, \
     GOFMultipleEnableDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    StageActionNamesDTO, ValidStageDTO
+    StageActionNamesDTO, ValidStageDTO, TaskStageIdsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (TaskStagesDTO)
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     StatusVariableDTO
@@ -273,3 +273,11 @@ class GoFToTaskTemplateDTOFactory(factory.Factory):
     template_id = factory.Sequence(lambda n: 'template_{}'.format(n + 1))
     order = factory.Sequence(lambda n: n)
     enable_multiple_gofs = factory.Iterator([True, False])
+
+
+class TaskStageIdsDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskStageIdsDTO
+
+    task_id = factory.Sequence(lambda n: f'TASK_ID_{ n + 1 }')
+    stage_id = factory.Sequence(lambda n: f'STAGE_ID_{n + 1}')
