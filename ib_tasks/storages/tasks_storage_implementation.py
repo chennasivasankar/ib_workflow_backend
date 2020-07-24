@@ -4,7 +4,6 @@ from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionsOfTemplateDTO
-from ib_tasks.interactors.storage_interfaces.status_dtos import TaskStatusDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldRoleDTO, FieldTypeDTO, UserFieldPermissionDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
