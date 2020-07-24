@@ -48,5 +48,7 @@ class FieldTypeDTO:
     field_type: FieldTypes
 
 
-
-
+@dataclass
+class UserFieldPermissionDTO:
+    field_id: str
+    permission_type: PermissionTypes

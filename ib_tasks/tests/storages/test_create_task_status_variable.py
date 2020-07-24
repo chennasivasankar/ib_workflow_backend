@@ -1,9 +1,9 @@
 import pytest
 
-from ib_tasks.interactors.storage_interfaces.status_dtos import TaskStatusDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import TaskTemplateStatusDTO
 from ib_tasks.models import TaskTemplateStatusVariable
 from ib_tasks.storages.tasks_storage_implementation import TasksStorageImplementation
-from ib_tasks.tests.factories.storage_dtos import TaskStatusDTOFactory
+from ib_tasks.tests.factories.storage_dtos import TaskTemplateStatusDTOFactory
 
 
 @pytest.mark.django_db
@@ -11,11 +11,11 @@ class TestTaskStatusVariable:
 
     @pytest.fixture()
     def get_task_status_dtos(self):
-        TaskStatusDTOFactory.reset_sequence()
-        return TaskStatusDTOFactory.create_batch(size=3)
+        TaskTemplateStatusDTOFactory.reset_sequence()
+        return TaskTemplateStatusDTOFactory.create_batch(size=3)
 
     def _validate_tasks_status(self, returned_objs, expected_dtos):
-        returned_dtos = [TaskStatusDTO(
+        returned_dtos = [TaskTemplateStatusDTO(
             task_template_id=obj.task_template_id,
             status_variable_id=obj.variable
         ) for obj in returned_objs]
