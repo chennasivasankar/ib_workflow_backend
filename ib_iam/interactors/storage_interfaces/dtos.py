@@ -7,7 +7,7 @@ from typing import Optional
 class UserDTO:
     user_id: str
     is_admin: bool
-    company_id: Optional[str]
+    company_id: Optional[str] = None
 
 
 @dataclass
