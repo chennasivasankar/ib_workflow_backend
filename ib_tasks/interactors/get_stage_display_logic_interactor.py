@@ -6,23 +6,11 @@ Author: Pavankumar Pamuru
 from typing import List
 
 from ib_boards.interactors.dtos import TaskStatusDTO
-from ib_boards.interactors.presenter_interfaces.presenter_interface import \
-    StageDisplayLogicPresenterInterface
 
 
 class StageDisplayLogicInteractor:
     def __init__(self):
         pass
-
-    def get_stage_display_logic_condition_wrapper(
-            self, stage_display_logics: List[str],
-            presenter: StageDisplayLogicPresenterInterface):
-        task_status_dtos = self.get_stage_display_logic_condition(
-            stage_display_logics=stage_display_logics
-        )
-        return presenter.get_response_for_stage_display_logic(
-            task_status_dtos=task_status_dtos
-        )
 
     def get_stage_display_logic_condition(self, stage_display_logics: List[str]):
         task_status_dtos = self._get_values_from_stage_display_logic(
