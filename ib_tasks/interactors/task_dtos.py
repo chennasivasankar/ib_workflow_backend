@@ -25,3 +25,9 @@ class TaskStatusVariableDTO:
     status_id: int
     variable: str
     value: str
+
+@dataclass
+class GetTaskDetailsDTO:
+    task_id: str
+    stage_id: str
+

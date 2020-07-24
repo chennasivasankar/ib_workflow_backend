@@ -48,3 +48,13 @@ class InvalidTemplateIds(Exception):
 class TaskTemplatesDoesNotExists(Exception):
     def __init__(self, message: str):
         self.message = message
+
+
+class InvalidTaskIds(Exception):
+    def __init__(self, task_ids: str):
+        self.invalid_task_ids = task_ids
+
+
+class InvalidStageIds(Exception):
+    def __init__(self, stage_ids: str):
+        self.invalid_stage_ids = stage_ids

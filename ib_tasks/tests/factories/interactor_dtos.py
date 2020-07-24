@@ -17,8 +17,15 @@ from ib_tasks.interactors.stages_dtos import (StagesActionDTO)
 from ib_tasks.interactors.stages_dtos import \
     TaskTemplateStageActionDTO, StageActionDTO, StagesActionDTO
 from ib_tasks.interactors.task_dtos import TaskDTO, GoFFieldsDTO, \
-    FieldValuesDTO
+    FieldValuesDTO, GetTaskDetailsDTO
 
+
+class GetTaskDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = GetTaskDetailsDTO
+
+    task_id = factory.Sequence(lambda n: "task_id_%d" % (n+1))
+    stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n+1))
 
 class StageActionDTOFactory(factory.Factory):
     class Meta:

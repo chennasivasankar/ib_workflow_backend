@@ -42,6 +42,7 @@ urlpatterns += [
     url(r'^swagger/', include('django_swagger_utils.urls', namespace='swagger_ui')),
     url(r'^accounts/', include('django_swagger_utils.auth_urls')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^fine-uploader/', include('django_fine_uploader_s3.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
