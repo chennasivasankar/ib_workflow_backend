@@ -36,8 +36,8 @@ class GetTaskInteractor:
             self, user_id: str, task_id: int,
             presenter: GetTaskPresenterInterface
     ):
-        task_details_dto = self.get_task_details(user_id, task_id)
-        response = presenter.get_task_response(task_details_dto)
+        task_complete_details_dto = self.get_task_details(user_id, task_id)
+        response = presenter.get_task_response(task_complete_details_dto)
         return response
 
     def get_task_details(self, user_id: str, task_id: int):

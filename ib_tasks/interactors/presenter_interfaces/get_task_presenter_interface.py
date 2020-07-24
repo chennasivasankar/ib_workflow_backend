@@ -20,5 +20,5 @@ class GetTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_task_response(self, task_details_dto):
+    def get_task_response(self, task_complete_details_dto: TaskCompleteDetailsDTO):
         pass
