@@ -148,8 +148,8 @@ class CreateBoardsAndColumnsInteractor:
         service_adapter = get_service_adapter()
         valid_task_template_ids = service_adapter.task_service. \
             get_valid_task_template_ids(
-                task_template_ids=task_template_ids
-            )
+            task_template_ids=task_template_ids
+        )
         invalid_task_template_ids = [
             task_template_id for task_template_id in task_template_ids
             if task_template_id not in valid_task_template_ids

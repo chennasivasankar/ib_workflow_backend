@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestCase01GetBoardsDetailsAPITestCase::test_case status'] = 200
@@ -38,4 +37,5 @@ snapshots['TestCase01GetBoardsDetailsAPITestCase::test_case header_params'] = {
     ]
 }
 
-snapshots['TestCase01GetBoardsDetailsAPITestCase::test_case response'] = b'{"total_boards_count":10,"boards_details":[]}'
+snapshots[
+    'TestCase01GetBoardsDetailsAPITestCase::test_case response'] = b'{"total_boards_count":10,"boards_details":[]}'

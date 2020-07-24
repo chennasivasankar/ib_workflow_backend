@@ -101,7 +101,7 @@ class TestGetColumnTasksInteractor:
         column_id = 'COLUMN_ID_1'
         from ib_boards.exceptions.custom_exceptions import InvalidColumnId
         storage_mock.validate_column_id.side_effect = InvalidColumnId
-        presenter_mock.get_response_for_the_invalid_column_id.\
+        presenter_mock.get_response_for_the_invalid_column_id. \
             return_value = expected_response
 
         interactor = GetColumnTasksInteractor(
@@ -128,7 +128,7 @@ class TestGetColumnTasksInteractor:
         interactor = GetColumnTasksInteractor(
             storage=storage_mock
         )
-        presenter_mock.get_response_for_invalid_offset.\
+        presenter_mock.get_response_for_invalid_offset. \
             return_value = expected_response
 
         # Act
@@ -149,7 +149,7 @@ class TestGetColumnTasksInteractor:
         interactor = GetColumnTasksInteractor(
             storage=storage_mock
         )
-        presenter_mock.get_response_for_invalid_limit.\
+        presenter_mock.get_response_for_invalid_limit. \
             return_value = expected_response
 
         # Act
@@ -164,9 +164,9 @@ class TestGetColumnTasksInteractor:
 
     def test_with_valid_details_return_task_details(
             self, storage_mock, presenter_mock, get_column_tasks_dto, mocker,
-            task_complete_details_dto, task_status_dtos, task_dtos, action_dtos,
+            task_complete_details_dto, task_status_dtos, task_dtos,
+            action_dtos,
             task_stage_dtos):
-
         # Arrange
         stage_ids = ['STAGE_ID_1', 'STAGE_ID_1']
         task_ids = ['TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3']
@@ -177,7 +177,7 @@ class TestGetColumnTasksInteractor:
 
         expected_response = Mock()
         storage_mock.get_column_display_stage_ids.return_value = stage_ids
-        presenter_mock.get_response_column_tasks.\
+        presenter_mock.get_response_column_tasks. \
             return_value = expected_response
         interactor = GetColumnTasksInteractor(
             storage=storage_mock
@@ -240,9 +240,9 @@ class TestGetColumnTasksInteractor:
         )
         from ib_boards.exceptions.custom_exceptions import \
             UserDoNotHaveAccessToColumn
-        storage_mock.validate_user_role_with_column_roles.\
+        storage_mock.validate_user_role_with_column_roles. \
             side_effect = UserDoNotHaveAccessToColumn
-        presenter_mock.get_response_for_user_have_no_access_for_column.\
+        presenter_mock.get_response_for_user_have_no_access_for_column. \
             return_value = expected_response
 
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
@@ -264,10 +264,6 @@ class TestGetColumnTasksInteractor:
         storage_mock.validate_user_role_with_column_roles.assert_called_once_with(
             user_role=user_role
         )
-        presenter_mock.get_response_for_user_have_no_access_for_column.\
+        presenter_mock.get_response_for_user_have_no_access_for_column. \
             assert_called_once_with()
         assert actual_response == expected_response
-
-
-
-

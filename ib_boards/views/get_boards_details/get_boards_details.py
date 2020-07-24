@@ -1,5 +1,5 @@
-from functools import reduce
-def get_boards_details(*args, **kwargs):  # pylint: disable=invalid-display_name
+def get_boards_details(*args,
+                       **kwargs):  # pylint: disable=invalid-display_name
     """
     Note: replace below mock implementation with your actual implementation
 
@@ -53,4 +53,5 @@ def get_boards_details(*args, **kwargs):  # pylint: disable=invalid-display_name
 
     from django_swagger_utils.drf_server.utils.server_gen.endpoint_response \
         import endpoint_response
-    return endpoint_response(response_object,response_status_code, response_headers_obj)
+    return endpoint_response(response_object, response_status_code,
+                             response_headers_obj)

@@ -7,7 +7,8 @@ from typing import List
 
 from ib_boards.interactors.dtos import TaskTemplateStagesDTO, \
     TaskSummaryFieldsDTO, TaskStatusDTO, TaskDTO
-from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, TaskFieldsDTOFactory
+from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
+    TaskFieldsDTOFactory
 
 
 class TaskService:
@@ -59,4 +60,3 @@ class TaskService:
             ) for _index, task_dto in enumerate(task_dtos)
         ]
         return fields_dto, actions_dto
-

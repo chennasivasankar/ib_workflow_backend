@@ -1,8 +1,10 @@
 from ib_boards.adapters.service_adapter import get_service_adapter
 from ib_boards.exceptions.custom_exceptions import (
     InvalidBoardId, InvalidOffsetValue, InvalidLimitValue, UserDonotHaveAccess)
-from ib_boards.interactors.dtos import ColumnParametersDTO, PaginationParametersDTO, TaskStageIdDTO, TaskDetailsDTO, FieldsDTO
-from ib_boards.interactors.get_task_details_interactor import GetTaskDetailsInteractor
+from ib_boards.interactors.dtos import ColumnParametersDTO, \
+    PaginationParametersDTO, TaskDetailsDTO, FieldsDTO
+from ib_boards.interactors.get_task_details_interactor import \
+    GetTaskDetailsInteractor
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
 from ib_boards.interactors.storage_interfaces.storage_interface import \
@@ -53,7 +55,7 @@ class GetColumnDetailsInteractor:
             field_id="field_id_1"
         )]
         task_interactor = GetTaskDetailsInteractor()
-        task_fields_dto,task_actions_dto, task_details = task_interactor. \
+        task_fields_dto, task_actions_dto, task_details = task_interactor. \
             get_task_details(tasks_dtos=tasks_dtos, user_id=user_id,
                              fields_dto=fields_dto)
 

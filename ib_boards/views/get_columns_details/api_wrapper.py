@@ -1,8 +1,10 @@
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
+
 from .validator_class import ValidatorClass
 from ...interactors.dtos import ColumnParametersDTO, PaginationParametersDTO
-from ...interactors.get_column_details_interactor import GetColumnDetailsInteractor
+from ...interactors.get_column_details_interactor import \
+    GetColumnDetailsInteractor
 from ...presenters.presenter_implementation import PresenterImplementation
 from ...storages.storage_implementation import StorageImplementation
 

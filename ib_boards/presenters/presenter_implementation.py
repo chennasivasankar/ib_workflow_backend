@@ -1,16 +1,18 @@
 from typing import List
+
 from django.http import response
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
+from ib_boards.constants.exception_messages import (
+    INVALID_BOARD_ID, INVALID_OFFSET_VALUE, INVALID_LIMIT_VALUE,
+    USER_DONOT_HAVE_ACCESS)
+from ib_boards.interactors.dtos import TaskColumnDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     GetBoardsPresenterInterface, GetBoardsDetailsPresenterInterface, \
     GetColumnTasksPresenterInterface, TaskCompleteDetailsDTO
-from ib_boards.interactors.storage_interfaces.dtos import BoardDTO
-from ib_boards.constants.exception_messages import (
-    INVALID_BOARD_ID, INVALID_OFFSET_VALUE, INVALID_LIMIT_VALUE, USER_DONOT_HAVE_ACCESS)
-from ib_boards.interactors.dtos import TaskColumnDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
+from ib_boards.interactors.storage_interfaces.dtos import BoardDTO
 from ib_boards.interactors.storage_interfaces.dtos import (
     TaskFieldsDTO, TaskActionsDTO, ColumnDetailsDTO)
 
@@ -56,7 +58,6 @@ class GetBoardsPresenterImplementation(
     def get_response_for_get_boards(
             self, board_dtos: List[BoardDTO], total_boards: int) \
             -> response.HttpResponse:
-
         board_details_dict = {
             "total_boards_count": total_boards,
             "boards_details": []
@@ -68,7 +69,6 @@ class GetBoardsPresenterImplementation(
         return self.prepare_200_success_response(
             response_dict=board_details_dict
         )
-
 
     @staticmethod
     def _convert_board_dto_to_dict(board_dto):
@@ -170,7 +170,8 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         response_object = {"response": INVALID_BOARD_ID[0],
                            "http_status_code": 404,
                            "res_status": INVALID_BOARD_ID[1]}
-        return self.prepare_404_not_found_response(response_dict=response_object)
+        return self.prepare_404_not_found_response(
+            response_dict=response_object)
 
     def response_for_invalid_offset_value(self):
         response_object = {"response": INVALID_OFFSET_VALUE[0],
@@ -249,7 +250,8 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         return list_of_fields
 
     @staticmethod
-    def _convert_task_fields_dtos_into_list_of_dict(task_fields_dto: List[TaskFieldsDTO]):
+    def _convert_task_fields_dtos_into_list_of_dict(
+            task_fields_dto: List[TaskFieldsDTO]):
         list_of_task_fields = []
         for field_dto in task_fields_dto:
             list_of_task_fields.append(
@@ -262,7 +264,8 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         return list_of_task_fields
 
     @staticmethod
-    def _convert_task_actions_dtos_into_list_of_dict(task_actions_dto: List[TaskActionsDTO]):
+    def _convert_task_actions_dtos_into_list_of_dict(
+            task_actions_dto: List[TaskActionsDTO]):
 
         list_of_task_actions = []
         for action_dto in task_actions_dto:
@@ -290,9 +293,11 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         return self.prepare_200_success_response(column_details)
 
     def _convert_column_details_into_dict(self,
-                                          column_details: List[ColumnDetailsDTO],
+                                          column_details: List[
+                                              ColumnDetailsDTO],
                                           task_fields_dto: List[TaskFieldsDTO],
-                                          task_actions_dto: List[TaskActionsDTO],
+                                          task_actions_dto: List[
+                                              TaskActionsDTO],
                                           task_details: List[TaskColumnDTO]
                                           ):
         list_of_columns = []

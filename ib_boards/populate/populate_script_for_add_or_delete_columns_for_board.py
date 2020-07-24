@@ -4,12 +4,10 @@ Author: Pavankumar Pamuru
 
 """
 import json
-from typing import List, Dict, Any
+from typing import List, Dict
 
 from ib_boards.interactors.dtos import ColumnDTO, \
     TaskTemplateStagesDTO, TaskSummaryFieldsDTO
-from ib_boards.tests.factories.interactor_dtos import \
-    TaskTemplateStagesDTOFactory, TaskSummaryFieldsDTOFactory
 
 
 class InvalidDataFormat(Exception):
@@ -80,7 +78,7 @@ class PopulateAddOrDeleteColumnsForBoard:
         )
 
     def validate_keys_in_given_dict(self, boards_columns_dicts: List[Dict]):
-        from schema import Schema, SchemaError, And, Optional
+        from schema import Schema, SchemaError, Optional
         schema = Schema(
             [{
                 "board_id": str,

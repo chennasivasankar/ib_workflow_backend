@@ -1,7 +1,8 @@
 import pytest
 
 from ib_boards.storages.storage_implementation import StorageImplementation
-from ib_boards.tests.factories.models import BoardFactory, ColumnPermissionFactory, ColumnFactory
+from ib_boards.tests.factories.models import BoardFactory, \
+    ColumnPermissionFactory, ColumnFactory
 
 
 @pytest.mark.django_db

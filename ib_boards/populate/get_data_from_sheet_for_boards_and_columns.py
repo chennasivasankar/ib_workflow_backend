@@ -56,7 +56,8 @@ class GetBoardsAndColumnsDataFromSheet:
                 "Column Order For Display": int,
                 "Column ID*": And(str, len),
                 "Column Display Name": str,
-                "Task Template Stages that are visible in columns": And(str, len),
+                "Task Template Stages that are visible in columns": And(str,
+                                                                        len),
                 "Visible to RoleIDs": And(str, len),
                 "Column Summary": And(str, len),
                 "Column Actions": And(str, len),
@@ -85,7 +86,8 @@ class GetBoardsAndColumnsDataFromSheet:
             "Card Info_List": "CardInfo_Requester_List\n{\nFIN_PR:[PR_PAYMENT_REQUEST_DRAFTS]\n}"
 
         }
-        self.data_sheet.raise_exception_for_valid_format(valid_format=valid_format)
+        self.data_sheet.raise_exception_for_valid_format(
+            valid_format=valid_format)
 
     @staticmethod
     def _get_list_of_dictionary_to_populate_data(
@@ -99,9 +101,8 @@ class GetBoardsAndColumnsDataFromSheet:
             "user_role_ids": field_record["Visible to RoleIDs"],
             "column_summary": field_record["Column Summary"],
             "column_actions": field_record["Column Actions"],
-            "task_template_stages": field_record["Task Template Stages that are visible in columns"],
+            "task_template_stages": field_record[
+                "Task Template Stages that are visible in columns"],
             "kanban_view_fields": field_record["Card Info_Kanban"],
             "list_view_fields": field_record["Card Info_List"],
         }
-
-

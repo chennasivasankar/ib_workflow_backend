@@ -17,7 +17,8 @@ class TestGetColumnDisplayStageIds:
 
     @pytest.fixture
     def reset_sequence(self):
-        from ib_boards.tests.factories.models import BoardFactory, ColumnFactory
+        from ib_boards.tests.factories.models import BoardFactory, \
+            ColumnFactory
         BoardFactory.reset_sequence()
         ColumnFactory.reset_sequence()
 

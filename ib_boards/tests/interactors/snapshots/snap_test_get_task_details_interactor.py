@@ -4,10 +4,10 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
-snapshots['TestGetTaskDetailsInteractor.test_get_task_actions_and_fields_given_valid_task_details_return_task_details_with_actions_and_fields task_details'] = [
+snapshots[
+    'TestGetTaskDetailsInteractor.test_get_task_actions_and_fields_given_valid_task_details_return_task_details_with_actions_and_fields task_details'] = [
     {
         'actions': [
             {

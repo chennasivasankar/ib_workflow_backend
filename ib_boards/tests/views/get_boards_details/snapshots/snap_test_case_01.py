@@ -4,10 +4,10 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
-snapshots['TestCase01GetBoardsDetailsAPITestCase.test_case status_code'] = '200'
+snapshots[
+    'TestCase01GetBoardsDetailsAPITestCase.test_case status_code'] = '200'
 
 snapshots['TestCase01GetBoardsDetailsAPITestCase.test_case body'] = {
     'boards_details': [

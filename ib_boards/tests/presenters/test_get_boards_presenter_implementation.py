@@ -67,7 +67,8 @@ class TestGetBoardsPresenterImplementation:
         actual_response_content = json.loads(actual_response.content)
 
         assert actual_response_content['response'] == expected_response
-        assert actual_response_content['http_status_code'] == expected_http_status_code
+        assert actual_response_content[
+                   'http_status_code'] == expected_http_status_code
         assert actual_response_content['res_status'] == expected_res_status
 
     def test_get_response_for_get_boards(self, snapshot):

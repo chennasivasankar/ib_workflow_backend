@@ -1,11 +1,11 @@
-
 from typing import List, Tuple
 
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
     BoardColumnsDTO, TaskTemplateStagesDTO, TaskSummaryFieldsDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
-    ColumnDetailsDTO, ColumnBoardDTO, ColumnStageDTO
-from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, ColumnDetailsDTO, TaskBoardsDetailsDTO
+    ColumnDetailsDTO, TaskBoardsDetailsDTO
+from ib_boards.interactors.storage_interfaces.dtos import ColumnBoardDTO, \
+    ColumnStageDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_boards.models import Board, ColumnPermission, Column
@@ -65,11 +65,11 @@ class StorageImplementation(StorageInterface):
         ).values_list('column_id', flat=True)
         return list(column_ids)
 
-
     def update_columns_for_board(self, column_dtos: List[ColumnDTO]) -> None:
         column_ids = [column_dto.column_id for column_dto in column_dtos]
         column_objects = Column.objects.filter(column_id__in=column_ids)
-        user_role_ids = ColumnPermission.objects.filter(column_id__in=column_ids)
+        user_role_ids = ColumnPermission.objects.filter(
+            column_id__in=column_ids)
         updated_column_objects = self._get_updated_column_objects(
             column_dtos=column_dtos,
             column_objects=column_objects
@@ -126,7 +126,7 @@ class StorageImplementation(StorageInterface):
                                                 user_role_objects):
         for user_role in column_dto.user_role_ids:
             for user_role_object in user_role_objects:
-                user_role_object.user_role_id=user_role
+                user_role_object.user_role_id = user_role
 
         return user_role_objects
 
@@ -168,7 +168,7 @@ class StorageImplementation(StorageInterface):
 
     def _get_column_objects_and_column_permission_objects_from_dtos(
             self, column_dtos: List[ColumnDTO]) -> Tuple[
-            List[Column], List[ColumnPermission]]:
+        List[Column], List[ColumnPermission]]:
         column_objects = [
             Column(
                 column_id=column_dto.column_id,
@@ -277,7 +277,6 @@ class StorageImplementation(StorageInterface):
                 UserDoNotHaveAccessToColumn
             raise UserDoNotHaveAccessToColumn
 
-
     @staticmethod
     def _convert_board_objects_to_board_dtos(board_objects):
         board_dtos = [
@@ -333,11 +332,11 @@ class StorageImplementation(StorageInterface):
                 column_ids.append(role.column.column_id)
         return sorted(list(set(column_ids)))
 
-
     def get_permitted_user_roles_for_board(self, board_id: str) -> List[str]:
         return "ALL ROLES"
 
-    def get_board_complete_details(self, board_id: str, stage_ids: List[str]) -> \
+    def get_board_complete_details(self, board_id: str,
+                                   stage_ids: List[str]) -> \
             TaskBoardsDetailsDTO:
 
         column_objs = Column.objects.filter(board_id=board_id)
@@ -347,8 +346,9 @@ class StorageImplementation(StorageInterface):
             display_name=board_obj.name
         )
 
-        list_of_column_dtos, column_stages = self._convert_column_details_to_dtos(column_objs,
-                                                                   stage_ids)
+        list_of_column_dtos, column_stages = self._convert_column_details_to_dtos(
+            column_objs,
+            stage_ids)
         board_details_dto = TaskBoardsDetailsDTO(
             board_dto=board_dto,
             columns_dtos=list_of_column_dtos,
@@ -370,7 +370,6 @@ class StorageImplementation(StorageInterface):
 
     def get_permitted_user_roles_for_board(self, board_id: str) -> List[str]:
         pass
-
 
     def _convert_column_details_to_dtos(self, column_objs,
                                         stage_ids):

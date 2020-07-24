@@ -3,7 +3,6 @@ Created on: 13/07/20
 Author: Pavankumar Pamuru
 
 """
-import json
 
 import pytest
 
@@ -74,7 +73,8 @@ class TestCreateBoardsAndColumnsInteractor:
 
     @pytest.fixture
     def column_dtos_with_empty_task_template_stages(self):
-        task_template_stages = TaskTemplateStagesDTOFactory.create_batch(2, stages=[])
+        task_template_stages = TaskTemplateStagesDTOFactory.create_batch(2,
+                                                                         stages=[])
         return [
             ColumnDTOFactory(),
             ColumnDTOFactory(task_template_stages=task_template_stages)
@@ -236,7 +236,8 @@ class TestCreateBoardsAndColumnsInteractor:
         )
 
         # Act
-        from ib_boards.exceptions.custom_exceptions import InvalidBoardDisplayName
+        from ib_boards.exceptions.custom_exceptions import \
+            InvalidBoardDisplayName
         with pytest.raises(InvalidBoardDisplayName) as error:
             assert interactor.create_boards_and_columns(
                 board_dtos=board_dtos_with_no_display_name,
@@ -286,7 +287,8 @@ class TestCreateBoardsAndColumnsInteractor:
             self, storage_mock, board_dtos, sequence_reset,
             column_dtos_with_invalid_task_template_id, mocker):
         # Arrange
-        invalid_task_template_ids = ['TASK_TEMPLATE_ID_4', 'TASK_TEMPLATE_ID_5']
+        invalid_task_template_ids = ['TASK_TEMPLATE_ID_4',
+                                     'TASK_TEMPLATE_ID_5']
         task_template_ids = [
             'TASK_TEMPLATE_ID_1', 'TASK_TEMPLATE_ID_2', 'TASK_TEMPLATE_ID_3',
             'TASK_TEMPLATE_ID_4', 'TASK_TEMPLATE_ID_5',
@@ -395,7 +397,8 @@ class TestCreateBoardsAndColumnsInteractor:
         assert error.value.duplicate_stages == duplicate_stages
 
     def test_with_task_template_stages_not_belongs_to_task_template_id(
-            self, storage_mock, sequence_reset, board_dtos, column_dtos, mocker,
+            self, storage_mock, sequence_reset, board_dtos, column_dtos,
+            mocker,
             mock_valid_task_and_template_ids, task_template_stages_dtos):
         # Arrange
         not_related_stages = task_template_stages_dtos
@@ -410,7 +413,8 @@ class TestCreateBoardsAndColumnsInteractor:
         # Act
         from ib_boards.exceptions.custom_exceptions import \
             TaskTemplateStagesNotBelongsToTaskTemplateId
-        with pytest.raises(TaskTemplateStagesNotBelongsToTaskTemplateId) as error:
+        with pytest.raises(
+                TaskTemplateStagesNotBelongsToTaskTemplateId) as error:
             assert interactor.create_boards_and_columns(
                 board_dtos=board_dtos,
                 column_dtos=column_dtos

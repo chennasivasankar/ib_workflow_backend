@@ -17,7 +17,8 @@ class TestColumnIdsWithBoardIds:
 
     @pytest.fixture
     def reset_sequence(self):
-        from ib_boards.tests.factories.models import BoardFactory, ColumnFactory
+        from ib_boards.tests.factories.models import BoardFactory, \
+            ColumnFactory
         from ib_boards.tests.factories.interactor_dtos import BoardDTOFactory
         from ib_boards.tests.factories.interactor_dtos import ColumnDTOFactory
         BoardDTOFactory.reset_sequence()
@@ -56,9 +57,3 @@ class TestColumnIdsWithBoardIds:
         assert boards_columns_dtos[1] == first_board_column_ids[1]
         assert boards_columns_dtos[2] == second_board_column_ids[0]
         assert boards_columns_dtos[3] == second_board_column_ids[1]
-
-
-
-
-
-

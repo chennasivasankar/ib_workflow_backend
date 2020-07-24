@@ -4,10 +4,10 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
-snapshots['TestGetColumnDetails.test_get_response_for_column_details list_of_column_details'] = {
+snapshots[
+    'TestGetColumnDetails.test_get_response_for_column_details list_of_column_details'] = {
     'columns': [
         {
             'column_id': 'COLUMN_ID_1',

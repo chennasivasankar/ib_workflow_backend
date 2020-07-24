@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot, GenericRepr
 
-
 snapshots = Snapshot()
 
 snapshots['TestCase01GetColumnTasksAPITestCase::test_case status'] = 404
@@ -38,4 +37,8 @@ snapshots['TestCase01GetColumnTasksAPITestCase::test_case header_params'] = {
     ]
 }
 
-snapshots['TestCase01GetColumnTasksAPITestCase::test_case response'] = GenericRepr("<Response status_code=404, "application/json">")
+snapshots[
+    'TestCase01GetColumnTasksAPITestCase::test_case response'] = GenericRepr(
+    "<Response status_code=404, "
+application / json
+">")

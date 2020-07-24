@@ -26,7 +26,7 @@ class TestPopulateBoardsAndColumnsInteractor:
 
     def test_with_invalid_keys_in_dict_raise_exception(self):
         # Arrange
-        from ib_boards.tests.common_fixtures.populate_data import\
+        from ib_boards.tests.common_fixtures.populate_data import \
             populate_dict_with_invalid_keys
 
         data_dict = populate_dict_with_invalid_keys()
@@ -54,7 +54,8 @@ class TestPopulateBoardsAndColumnsInteractor:
                 boards_columns_dicts=data_dict
             )
 
-    def test_with_invalid_json_in_task_summary_fields_dict_raise_exception(self):
+    def test_with_invalid_json_in_task_summary_fields_dict_raise_exception(
+            self):
         # Arrange
         from ib_boards.tests.common_fixtures.populate_data import \
             populate_dict_with_invalid_json_for_summary_fields
@@ -68,7 +69,8 @@ class TestPopulateBoardsAndColumnsInteractor:
                 boards_columns_dicts=data_dict
             )
 
-    def test_with_valid_data_return_dtos(self, snapshot, mocker, sequence_reset):
+    def test_with_valid_data_return_dtos(self, snapshot, mocker,
+                                         sequence_reset):
         # Arrange
         from ib_boards.tests.common_fixtures.populate_data import \
             populate_dict_with_valid_data

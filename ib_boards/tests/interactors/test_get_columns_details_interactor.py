@@ -1,11 +1,16 @@
 from unittest.mock import create_autospec, patch
+
 import pytest
 
-from ib_boards.interactors.dtos import ColumnParametersDTO, PaginationParametersDTO
-from ib_boards.interactors.get_column_details_interactor import GetColumnDetailsInteractor
-from ib_boards.interactors.presenter_interfaces.presenter_interface import PresenterInterface
+from ib_boards.interactors.dtos import ColumnParametersDTO, \
+    PaginationParametersDTO
 from ib_boards.interactors.dtos import TaskStageIdDTO
-from ib_boards.interactors.storage_interfaces.storage_interface import StorageInterface
+from ib_boards.interactors.get_column_details_interactor import \
+    GetColumnDetailsInteractor
+from ib_boards.interactors.presenter_interfaces.presenter_interface import \
+    PresenterInterface
+from ib_boards.interactors.storage_interfaces.storage_interface import \
+    StorageInterface
 from ib_boards.tests.factories.storage_dtos import (
     ColumnDetailsDTOFactory, TaskActionsDTOFactory, TaskFieldsDTOFactory)
 
@@ -173,7 +178,8 @@ class TestGetColumnDetailsInteractor:
     @patch("ib_boards.adapters.service_adapter.ServiceAdapter.iam_service")
     def test_get_columns_details_given_valid_board_id_returns_columns_details(
             self, user_roles_service, get_column_details_dto, mocker,
-            get_task_actions_dtos, get_task_fields_dtos, mock_storage, mock_presenter):
+            get_task_actions_dtos, get_task_fields_dtos, mock_storage,
+            mock_presenter):
         # Arrange
         storage = mock_storage
         presenter = mock_presenter
@@ -200,8 +206,10 @@ class TestGetColumnDetailsInteractor:
         tasks_dtos = [TaskStageIdDTO(task_id="task_id_1",
                                      stage_id="stage_id_1")]
 
-        from ib_boards.tests.common_fixtures.adapters.task_service import prepare_task_details_dtos
-        task_details_dto = prepare_task_details_dtos(mocker, tasks_dtos, user_id=user_id)
+        from ib_boards.tests.common_fixtures.adapters.task_service import \
+            prepare_task_details_dtos
+        task_details_dto = prepare_task_details_dtos(mocker, tasks_dtos,
+                                                     user_id=user_id)
         task_details_dto.return_value = task_fields_dto, task_actions_dto
         user_roles_service.get_user_roles.return_value = user_roles
         board_permitted_user_roles = ["FIN_PAYMENT_POC"]
@@ -221,4 +229,5 @@ class TestGetColumnDetailsInteractor:
             pagination_parameters=pagination_parameters)
 
         # Assert
-        storage.get_columns_details.assert_called_once_with(column_ids=column_ids)
+        storage.get_columns_details.assert_called_once_with(
+            column_ids=column_ids)

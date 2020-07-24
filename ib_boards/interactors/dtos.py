@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 
+
 @dataclass
 class ColumnParametersDTO:
     board_id: str
@@ -123,4 +124,3 @@ class TaskIdStageDTO:
 @dataclass
 class TasksParameterDTO(TaskIdStageDTO):
     column_id: str
-

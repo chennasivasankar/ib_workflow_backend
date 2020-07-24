@@ -1,7 +1,8 @@
 import pytest
 
 from ib_boards.interfaces.service_interface import BoardServiceInterface
-from ib_boards.tests.factories.models import ColumnPermissionFactory, ColumnFactory, BoardFactory
+from ib_boards.tests.factories.models import ColumnPermissionFactory, \
+    ColumnFactory, BoardFactory
 
 
 @pytest.mark.django_db

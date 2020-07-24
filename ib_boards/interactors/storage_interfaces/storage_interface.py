@@ -2,12 +2,10 @@ import abc
 from typing import List, Optional
 
 from ib_boards.exceptions.custom_exceptions import InvalidBoardId
-from ib_boards.interactors.storage_interfaces.dtos import ColumnDetailsDTO, BoardDTO, BoardColumnDTO, \
-    TaskBoardsDetailsDTO
-from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
-    ColumnDetailsDTO
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, BoardColumnsDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO
+from ib_boards.interactors.storage_interfaces.dtos import ColumnDetailsDTO
+from ib_boards.interactors.storage_interfaces.dtos import TaskBoardsDetailsDTO
 
 
 class StorageInterface(abc.ABC):
@@ -23,7 +21,8 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_board_ids_for_column_ids(self, column_ids: List[str]) -> List[BoardColumnDTO]:
+    def get_board_ids_for_column_ids(self, column_ids: List[str]) -> List[
+        BoardColumnDTO]:
         pass
 
     @abc.abstractmethod
@@ -50,7 +49,7 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_board_ids(
-            self, user_role: str,) -> List[str]:
+            self, user_role: str, ) -> List[str]:
         pass
 
     @abc.abstractmethod
@@ -88,7 +87,8 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_board_complete_details(self, board_id: str, stage_ids: List[str]) -> \
+    def get_board_complete_details(self, board_id: str,
+                                   stage_ids: List[str]) -> \
             TaskBoardsDetailsDTO:
         pass
 

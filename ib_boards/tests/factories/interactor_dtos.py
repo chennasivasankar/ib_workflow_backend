@@ -3,15 +3,14 @@ Created on: 14/07/20
 Author: Pavankumar Pamuru
 
 """
-import json
 
 import factory
 
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
-    TaskTemplateStagesDTO, TaskSummaryFieldsDTO, TaskStageIdDTO, ActionDTO, \
+    TaskTemplateStagesDTO, TaskSummaryFieldsDTO, ActionDTO, \
     TaskStatusDTO, TaskDTO
-
 from ib_boards.interactors.dtos import TaskColumnDTO
+
 
 class TaskColumnDTOFactory(factory.Factory):
     class Meta:

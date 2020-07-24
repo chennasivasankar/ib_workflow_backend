@@ -20,7 +20,8 @@ class TestDeleteColumnsForBoard:
 
     @pytest.fixture
     def reset_sequence(self):
-        from ib_boards.tests.factories.models import BoardFactory, ColumnFactory
+        from ib_boards.tests.factories.models import BoardFactory, \
+            ColumnFactory
         from ib_boards.tests.factories.interactor_dtos import BoardDTOFactory
         from ib_boards.tests.factories.interactor_dtos import ColumnDTOFactory
         BoardDTOFactory.reset_sequence()

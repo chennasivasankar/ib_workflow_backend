@@ -1,9 +1,10 @@
 from typing import List
 
 from ib_boards.adapters.service_adapter import get_service_adapter
-from ib_boards.exceptions.custom_exceptions import InvalidBoardId,\
+from ib_boards.exceptions.custom_exceptions import InvalidBoardId, \
     UserDonotHaveAccess
-from ib_boards.interactors.storage_interfaces.storage_interface import StorageInterface
+from ib_boards.interactors.storage_interfaces.storage_interface import \
+    StorageInterface
 
 
 class GetBoardDetailsInteractor:
@@ -21,7 +22,8 @@ class GetBoardDetailsInteractor:
         self._validate_if_user_has_permissions_for_given_board_id(
             board_id=board_id, user_roles=user_roles)
 
-        board_details = self.storage.get_board_complete_details(board_id, stage_ids)
+        board_details = self.storage.get_board_complete_details(board_id,
+                                                                stage_ids)
         return board_details
 
     def _validate_if_user_has_permissions_for_given_board_id(self,
@@ -40,4 +42,3 @@ class GetBoardDetailsInteractor:
         if not has_permission:
             raise UserDonotHaveAccess
         return
-

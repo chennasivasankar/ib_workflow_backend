@@ -2,11 +2,15 @@ from unittest.mock import create_autospec, patch
 
 import pytest
 
-from ib_boards.exceptions.custom_exceptions import InvalidBoardId, InvalidStageIds, UserDonotHaveAccess
-from ib_boards.interactors.get_board_complete_details_interactor import GetBoardDetailsInteractor
-from ib_boards.interactors.storage_interfaces.dtos import TaskBoardsDetailsDTO, BoardDTO, ColumnStageDTO, \
-    ColumnBoardDTO, ColumnFieldDTO
-from ib_boards.interactors.storage_interfaces.storage_interface import StorageInterface
+from ib_boards.exceptions.custom_exceptions import InvalidBoardId, \
+    UserDonotHaveAccess
+from ib_boards.interactors.get_board_complete_details_interactor import \
+    GetBoardDetailsInteractor
+from ib_boards.interactors.storage_interfaces.dtos import TaskBoardsDetailsDTO, \
+    BoardDTO, ColumnStageDTO, \
+    ColumnBoardDTO
+from ib_boards.interactors.storage_interfaces.storage_interface import \
+    StorageInterface
 
 
 class TestBoardDetailsInteractor:

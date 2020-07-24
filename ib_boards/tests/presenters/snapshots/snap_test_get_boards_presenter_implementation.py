@@ -4,10 +4,10 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
-snapshots['TestGetBoardsPresenterImplementation.test_get_response_for_get_boards boards'] = {
+snapshots[
+    'TestGetBoardsPresenterImplementation.test_get_response_for_get_boards boards'] = {
     'boards_details': [
         {
             'board_id': 'BOARD_ID_7',

@@ -1,4 +1,3 @@
-
 import abc
 from dataclasses import dataclass
 from typing import List
@@ -8,8 +7,6 @@ from django.http import response
 from ib_boards.exceptions.custom_exceptions import InvalidBoardIds
 from ib_boards.interactors.dtos import TaskStageIdDTO, ActionDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardDTO
-from ib_boards.interactors.storage_interfaces.dtos import (
-    TaskFieldsDTO, TaskActionsDTO, ColumnDetailsDTO)
 
 
 @dataclass
@@ -87,11 +84,9 @@ class PresenterInterface(abc.ABC):
                                         ):
         pass
 
-
     @abc.abstractmethod
     def get_response_for_offset_exceeds_total_tasks(self):
         pass
-
 
     @abc.abstractmethod
     def get_response_for_offset_exceeds_total_tasks(self):

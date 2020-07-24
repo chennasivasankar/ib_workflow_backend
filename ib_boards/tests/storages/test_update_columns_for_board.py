@@ -9,7 +9,7 @@ import pytest
 
 from ib_boards.interactors.dtos import ColumnDTO, \
     TaskTemplateStagesDTO, TaskSummaryFieldsDTO
-from ib_boards.models import Board, Column
+from ib_boards.models import Column
 from ib_boards.storages.storage_implementation import StorageImplementation
 from ib_boards.tests.factories.interactor_dtos import ColumnDTOFactory, \
     TaskTemplateStagesDTOFactory, TaskSummaryFieldsDTOFactory
@@ -24,7 +24,8 @@ class TestUpdateColumnsForBoard:
 
     @pytest.fixture
     def reset_sequence(self):
-        from ib_boards.tests.factories.models import BoardFactory, ColumnFactory
+        from ib_boards.tests.factories.models import BoardFactory, \
+            ColumnFactory
         from ib_boards.tests.factories.interactor_dtos import BoardDTOFactory
         from ib_boards.tests.factories.interactor_dtos import ColumnDTOFactory
         TaskTemplateStagesDTOFactory.reset_sequence()
@@ -66,17 +67,17 @@ class TestUpdateColumnsForBoard:
             assert column_object.display_order == column_dto.display_order
             assert column_object.name == column_dto.name
             assert column_object.task_selection_config == \
-                self._get_json_string_for_task_selection_config(
-                    column_dto.task_template_stages
-                )
+                   self._get_json_string_for_task_selection_config(
+                       column_dto.task_template_stages
+                   )
             assert column_object.kanban_brief_view_config == \
-                self._get_json_string_for_view_config(
-                    column_dto.kanban_view_fields
-                )
+                   self._get_json_string_for_view_config(
+                       column_dto.kanban_view_fields
+                   )
             assert column_object.list_brief_view_config == \
-                self._get_json_string_for_view_config(
-                    column_dto.list_view_fields
-                )
+                   self._get_json_string_for_view_config(
+                       column_dto.list_view_fields
+                   )
 
     @staticmethod
     def _get_json_string_for_task_selection_config(

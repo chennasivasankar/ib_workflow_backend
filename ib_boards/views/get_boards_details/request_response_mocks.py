@@ -1,6 +1,3 @@
-
-
-
 RESPONSE_400_JSON = """
 {
     "response": "string",
@@ -28,4 +25,3 @@ RESPONSE_200_JSON = """
     ]
 }
 """
-

@@ -1,7 +1,8 @@
 import pytest
 
 from ib_boards.storages.storage_implementation import StorageImplementation
-from ib_boards.tests.factories.models import BoardFactory, ColumnPermissionFactory, ColumnFactory
+from ib_boards.tests.factories.models import BoardFactory, \
+    ColumnPermissionFactory, ColumnFactory
 from ib_boards.tests.factories.storage_dtos import ColumnDetailsDTOFactory
 
 
@@ -29,7 +30,8 @@ class TestColumnDetails:
                                                  column_details):
         # Arrange
         expected_column_dtos = column_details
-        column_ids = ["COLUMN_ID_1", "COLUMN_ID_2", "COLUMN_ID_3", "COLUMN_ID_4"]
+        column_ids = ["COLUMN_ID_1", "COLUMN_ID_2", "COLUMN_ID_3",
+                      "COLUMN_ID_4"]
         storage = StorageImplementation()
 
         # Act

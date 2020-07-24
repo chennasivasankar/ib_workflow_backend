@@ -1,4 +1,3 @@
-
 INVALID_BOARD_ID = (
     "board id is invalid", "INVALID_BOARD_ID"
 )
@@ -12,7 +11,8 @@ INVALID_LIMIT_VALUE = (
 )
 
 USER_DONOT_HAVE_ACCESS = (
-    "user donot have permissions to access this board", "USER_DONOT_HAVE_ACCESS"
+    "user donot have permissions to access this board",
+    "USER_DONOT_HAVE_ACCESS"
 )
 
 USER_NOT_HAVE_ACCESS_TO_BOARDS = (
@@ -52,5 +52,6 @@ INVALID_LIMIT_VALUE = (
 )
 
 USER_DONOT_HAVE_ACCESS = (
-    "user donot have permissions to access this board", "USER_DONOT_HAVE_ACCESS"
+    "user donot have permissions to access this board",
+    "USER_DONOT_HAVE_ACCESS"
 )

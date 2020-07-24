@@ -4,9 +4,9 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
-snapshots['TestCase01GetColumnsDetailsAPITestCase.test_case status_code'] = '200'
+snapshots[
+    'TestCase01GetColumnsDetailsAPITestCase.test_case status_code'] = '200'
 
 snapshots['TestCase01GetColumnsDetailsAPITestCase.test_case body'] = b''

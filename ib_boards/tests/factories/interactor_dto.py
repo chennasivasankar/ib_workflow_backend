@@ -2,6 +2,7 @@ import factory
 
 from ib_boards.interactors.dtos import TaskColumnDTO
 
+
 class TaskColumnDTOFactory(factory.Factory):
     class Meta:
         model = TaskColumnDTO
