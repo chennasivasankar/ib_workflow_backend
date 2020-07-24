@@ -1,13 +1,21 @@
 import pytest
 
 from ib_tasks.models import StageAction, ActionPermittedRoles
-from ib_tasks.storages.action_storage_implementation import ActionsStorageImplementation
+from ib_tasks.storages.action_storage_implementation import \
+    ActionsStorageImplementation
 from ib_tasks.tests.factories.interactor_dtos import ActionDTOFactory
-from ib_tasks.tests.factories.models import StageActionFactory
+from ib_tasks.tests.factories.models import StageActionFactory, \
+    StageModelFactory
 
 
 @pytest.mark.django_db
 class TestUpdateStageActions:
+
+    @classmethod
+    def setup_class(cls):
+        ActionDTOFactory.reset_sequence()
+        StageActionFactory.reset_sequence()
+        StageModelFactory.reset_sequence()
 
     @pytest.fixture()
     def stage_actions_dtos(self):
@@ -27,8 +35,10 @@ class TestUpdateStageActions:
             assert returned[val].logic == expected[val].logic
             assert returned[val].button_text == expected[val].button_text
 
-    def test_with_action_details_updates_action(self, stage_actions_dtos, snapshot,
-                                                create_stage_actions):
+    def test_with_action_details_updates_action(
+            self, stage_actions_dtos, snapshot,
+            create_stage_actions
+    ):
         # Arrange
         action_ids = [1, 2, 3, 4]
         storage = ActionsStorageImplementation()
@@ -38,6 +48,8 @@ class TestUpdateStageActions:
 
         # Assert
         returned = StageAction.objects.filter(id__in=action_ids)
-        roles = ActionPermittedRoles.objects.filter(action_id__in=action_ids).values()
+        roles = ActionPermittedRoles.objects.filter(
+            action_id__in=action_ids
+        ).values()
         self._validate(stage_actions_dtos, returned)
         snapshot.assert_match(roles, "roles")
