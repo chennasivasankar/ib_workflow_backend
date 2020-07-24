@@ -71,7 +71,8 @@ class TaskService:
         column_task_ids_dtos = [
             ColumnTaskIdsDTO(
                 unique_key=task_ids_dto.unique_key,
-                task_stage_ids=task_ids_dto.task_stage_ids
+                task_stage_ids=task_ids_dto.task_stage_ids,
+                total_tasks=task_ids_dto.total_tasks
             )
             for task_ids_dto in task_ids_dtos
         ]

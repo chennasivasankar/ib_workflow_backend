@@ -130,3 +130,4 @@ class TasksParameterDTO(TaskIdStageDTO):
 class ColumnTaskIdsDTO:
     unique_key: int
     task_stage_ids: List[TaskIdStageDTO]
+    total_tasks: int

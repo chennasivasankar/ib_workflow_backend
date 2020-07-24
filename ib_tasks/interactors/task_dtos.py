@@ -31,7 +31,7 @@ class TaskStatusVariableDTO:
 
 @dataclass
 class TaskDetailsConfigDTO:
-    unique_key: int
+    unique_key: str
     stage_ids: List[str]
     offset: int
     limit: int
@@ -39,7 +39,7 @@ class TaskDetailsConfigDTO:
 
 @dataclass
 class TaskIdsDTO:
-    unique_key: int
+    unique_key: str
     task_stage_ids: List[TaskStageIdsDTO]
     total_tasks: int
 

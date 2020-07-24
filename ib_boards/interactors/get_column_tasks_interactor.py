@@ -8,7 +8,8 @@ from typing import List
 from ib_boards.exceptions.custom_exceptions import InvalidOffsetValue, \
     InvalidLimitValue, OffsetValueExceedsTotalTasksCount, \
     UserDoNotHaveAccessToColumn, InvalidStageIds
-from ib_boards.interactors.dtos import ColumnTasksParametersDTO, TaskIdStageDTO
+from ib_boards.interactors.dtos import ColumnTasksParametersDTO, TaskIdStageDTO, \
+    ColumnTaskIdsDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     GetColumnTasksPresenterInterface, TaskCompleteDetailsDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
@@ -54,29 +55,22 @@ class GetColumnTasksInteractor:
             column_id=column_id
         )
         task_ids_stages_dtos = self._get_task_ids_with_respective_stages(
-            stage_ids=stage_ids)
-        total_tasks = len(task_ids_stages_dtos)
-        if offset >= total_tasks:
-            raise OffsetValueExceedsTotalTasksCount
-        task_ids_stages_dtos = task_ids_stages_dtos[offset:offset + limit]
-        return self._get_tasks_complete_details(task_ids_stages_dtos,
-                                                column_id)
+            stage_ids=stage_ids, column_tasks_parameters=column_tasks_parameters)
+
+        return self._get_tasks_complete_details(task_ids_stages_dtos)
 
     def _get_tasks_complete_details(
-            self, task_ids_stages_dtos: List[TaskIdStageDTO], column_id: str):
-        from ib_boards.interactors.get_tasks_details_interactor import \
-            GetTasksDetailsInteractor
-        tasks_interactor = GetTasksDetailsInteractor(
-            storage=self.storage
-        )
-        task_dtos, action_dtos = tasks_interactor.get_task_details(
-            tasks_parameters=task_ids_stages_dtos, column_id=column_id
-        )
-        return TaskCompleteDetailsDTO(
-            total_tasks=3,
-            task_dtos=task_dtos,
-            action_dtos=action_dtos
-        )
+            self, task_ids_stages_dtos: List[ColumnTaskIdsDTO]):
+        task_details_dtos = []
+        for task_ids_stages_dto in task_ids_stages_dtos:
+            from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
+            task_details_dtos.append(
+                GetTaskDetailsDTO(
+
+                )
+            )
+
+        GetTaskDetailsDTO
 
     def _validate_given_data(self, column_tasks_parameters):
         column_id = column_tasks_parameters.column_id
@@ -95,23 +89,21 @@ class GetColumnTasksInteractor:
             raise InvalidLimitValue
 
     @staticmethod
-    def _get_task_ids_with_respective_stages(stage_ids):
-        from ib_boards.interactors.get_stage_display_logic_interactor \
-            import StageDisplayLogicInteractor
+    def _get_task_ids_with_respective_stages(
+            stage_ids: List[str],
+            column_tasks_parameters: ColumnTasksParametersDTO) -> List[ColumnTaskIdsDTO]:
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
-        service_adapter.task_service.validate_stage_ids(stage_ids=stage_ids)
-        stage_display_logics = service_adapter.task_service. \
-            get_stage_display_logics(
-            stage_ids=stage_ids
+        from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
+        task_config_dto = [
+            TaskDetailsConfigDTO(
+                unique_key=column_tasks_parameters.column_id,
+                stage_ids=stage_ids,
+                offset=column_tasks_parameters.offset,
+                limit=column_tasks_parameters.limit
+            )
+        ]
+        task_ids_details = service_adapter.task_service.get_task_ids_for_stage_ids(
+            task_config_dto=task_config_dto
         )
-        stage_display_logic_interactor = StageDisplayLogicInteractor()
-        task_status_dtos = stage_display_logic_interactor. \
-            get_stage_display_logic_condition(
-            stage_display_logics=stage_display_logics
-        )
-        task_ids_stages_dtos = service_adapter.task_service. \
-            get_task_ids_with_respective_stages(
-            task_status_dtos=task_status_dtos
-        )
-        return task_ids_stages_dtos
+        return task_ids_details
