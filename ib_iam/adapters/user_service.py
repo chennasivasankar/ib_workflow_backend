@@ -56,7 +56,7 @@ class UserService:
             CreateUserProfileDTO
         create_user_profile_dto = CreateUserProfileDTO(
             name=user_profile_dto.name,
-            email=user_profile_dto.name,
+            email=user_profile_dto.email,
         )
         self.interface.create_user_profile(
             user_id=user_id, user_profile=create_user_profile_dto)

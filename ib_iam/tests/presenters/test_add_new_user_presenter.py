@@ -62,9 +62,9 @@ class TestResponseAddNewUser:
         # Arrange
         presenter = AddUserPresenterImplementation()
         from ib_iam.constants.exception_messages \
-            import USER_ACCOUNT_ALREADY_EXIST_FOR_THIS_EMAIL
-        expected_response = USER_ACCOUNT_ALREADY_EXIST_FOR_THIS_EMAIL[0]
-        response_status_code = USER_ACCOUNT_ALREADY_EXIST_FOR_THIS_EMAIL[1]
+            import USER_ALREADY_EXIST_WITH_THIS_EMAIL
+        expected_response = USER_ALREADY_EXIST_WITH_THIS_EMAIL[0]
+        response_status_code = USER_ALREADY_EXIST_WITH_THIS_EMAIL[1]
 
         # Act
         response_object = presenter. \

@@ -41,8 +41,8 @@ class GetUserOptionsStorageImplementation(GetUserOptionsStorageInterface):
     def get_roles(self) -> List[RoleIdAndNameDTO]:
         roles = []
         from ib_iam.models import Role
-        team_query_set = Role.objects.values('role_id', 'name')
-        for role in team_query_set:
+        role_query_set = Role.objects.values('role_id', 'name')
+        for role in role_query_set:
             roles.append(
                 RoleIdAndNameDTO(
                     role_id=str(role['role_id']),
