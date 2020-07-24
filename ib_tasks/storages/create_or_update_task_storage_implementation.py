@@ -1,10 +1,11 @@
 from typing import List
 
-from ib_tasks.interactors.storage_interfaces.create_or_update_task_storage_interface import \
-    CreateOrUpdateTaskStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_dtos import TaskGoFFieldDTO, \
-    TaskGoFDTO, TaskGoFDetailsDTO
-from ib_tasks.models import TaskGoF
+from ib_tasks.interactors.storage_interfaces.\
+    create_or_update_task_storage_interface \
+    import CreateOrUpdateTaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_dtos import (
+    TaskGoFFieldDTO, TaskGoFDTO, TaskGoFDetailsDTO)
+from ib_tasks.models import TaskGoF, TaskGoFField
 
 
 class CreateOrUpdateTaskStorageImplementation(
@@ -42,10 +43,27 @@ class CreateOrUpdateTaskStorageImplementation(
     def _prepare_task_gof_details_dtos(
             task_gofs: List[TaskGoF]
     ) -> List[TaskGoFDetailsDTO]:
-        gof_ids = [task_gof.gof_id for task_gof in task_gofs]
-        pass
+        task_ids = [task_gof.task_id for task_gof in task_gofs]
+        task_gof_objects = list(TaskGoF.objects.filter(task_id__in=task_ids))
+        task_gof_details_dtos = [
+            TaskGoFDetailsDTO(
+                task_gof_id=task_gof_object.id,
+                gof_id=task_gof_object.gof_id,
+                same_gof_order=task_gof_object.same_gof_order
+            )
+            for task_gof_object in task_gof_objects
+        ]
+        return task_gof_details_dtos
 
     def create_task_gof_fields(
-            self, task_gof_field_dtos: List[TaskGoFFieldDTO]
+        self, task_gof_field_dtos: List[TaskGoFFieldDTO]
     ):
-        pass
+        task_gof_field_objects = [
+            TaskGoFField(
+                task_gof_id=task_gof_field_dto.task_gof_id,
+                field_id=task_gof_field_dto.field_id,
+                field_response=task_gof_field_dto.field_response
+            )
+            for task_gof_field_dto in task_gof_field_dtos
+        ]
+        TaskGoFField.objects.bulk_create(task_gof_field_objects)

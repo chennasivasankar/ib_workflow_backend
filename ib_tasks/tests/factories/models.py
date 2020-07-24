@@ -10,7 +10,7 @@ from ib_tasks.models.global_constant import GlobalConstant
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
-    TaskTemplateGlobalConstants, TaskStatusVariable, Task)
+    TaskTemplateGlobalConstants, TaskStatusVariable, Task, TaskGoF)
 
 
 class StageModelFactory(factory.django.DjangoModelFactory):
@@ -164,3 +164,12 @@ class TaskFactory(factory.django.DjangoModelFactory):
     template_id = factory.Sequence(
         lambda counter: "template_{}".format(counter))
     created_by_id = "123e4567-e89b-12d3-a456-426614174000"
+
+
+class TaskGoFFactory(factory.django.DjangoModelFactory):
+
+    class Meta:
+        model = TaskGoF
+    same_gof_order = 1
+    gof_id = factory.Sequence(lambda counter: "gof_{}".format(counter))
+    task = factory.SubFactory(TaskFactory)
