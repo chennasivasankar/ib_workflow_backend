@@ -1,10 +1,12 @@
 from ib_boards.constants.exception_messages import USER_DONOT_HAVE_ACCESS
-from ib_boards.presenters.presenter_implementation import PresenterImplementation
+from ib_boards.presenters.presenter_implementation import \
+    PresenterImplementation
 
 
 class TestUserDonotHaveAccess:
 
-    def test_raise_exception_for_user_donot_have_access_to_the_board_raises_exception(self):
+    def test_raise_exception_for_user_donot_have_access_to_the_board_raises_exception(
+            self):
         # Arrange
         presenter = PresenterImplementation()
         exception_message: str = USER_DONOT_HAVE_ACCESS[0]

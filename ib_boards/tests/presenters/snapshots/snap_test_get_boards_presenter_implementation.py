@@ -4,22 +4,22 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
-snapshots['TestGetBoardsPresenterImplementation.test_get_response_for_get_boards boards'] = {
+snapshots[
+    'TestGetBoardsPresenterImplementation.test_get_response_for_get_boards boards'] = {
     'boards_details': [
         {
             'board_id': 'BOARD_ID_7',
-            'display_name': 'BOARD_DISPLAY_NAME'
+            'name': 'BOARD_DISPLAY_NAME'
         },
         {
             'board_id': 'BOARD_ID_8',
-            'display_name': 'BOARD_DISPLAY_NAME'
+            'name': 'BOARD_DISPLAY_NAME'
         },
         {
             'board_id': 'BOARD_ID_9',
-            'display_name': 'BOARD_DISPLAY_NAME'
+            'name': 'BOARD_DISPLAY_NAME'
         }
     ],
     'total_boards_count': 3

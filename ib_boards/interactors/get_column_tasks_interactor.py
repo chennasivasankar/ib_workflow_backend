@@ -37,7 +37,6 @@ class GetColumnTasksInteractor:
             return presenter.get_response_for_offset_exceeds_total_tasks()
         except UserDoNotHaveAccessToColumn:
             return presenter.get_response_for_user_have_no_access_for_column()
-            return presenter.get_response_for_user_have_no_access_for_boards()
         except InvalidStageIds as error:
             return presenter.get_response_for_invalid_stage_ids(error=error)
         return presenter.get_response_column_tasks(
@@ -60,7 +59,8 @@ class GetColumnTasksInteractor:
         if offset >= total_tasks:
             raise OffsetValueExceedsTotalTasksCount
         task_ids_stages_dtos = task_ids_stages_dtos[offset:offset + limit]
-        return self._get_tasks_complete_details(task_ids_stages_dtos, column_id)
+        return self._get_tasks_complete_details(task_ids_stages_dtos,
+                                                column_id)
 
     def _get_tasks_complete_details(
             self, task_ids_stages_dtos: List[TaskIdStageDTO], column_id: str):
@@ -84,7 +84,8 @@ class GetColumnTasksInteractor:
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         user_id = column_tasks_parameters.user_id
-        user_role = service_adapter.user_service.get_user_role(user_id=user_id)
+        user_role = service_adapter.user_service.get_user_roles(
+            user_id=user_id)
         self.storage.validate_user_role_with_column_roles(user_role=user_role)
         offset = column_tasks_parameters.offset
         limit = column_tasks_parameters.limit
@@ -102,15 +103,15 @@ class GetColumnTasksInteractor:
         service_adapter.task_service.validate_stage_ids(stage_ids=stage_ids)
         stage_display_logics = service_adapter.task_service. \
             get_stage_display_logics(
-                stage_ids=stage_ids
-            )
+            stage_ids=stage_ids
+        )
         stage_display_logic_interactor = StageDisplayLogicInteractor()
         task_status_dtos = stage_display_logic_interactor. \
             get_stage_display_logic_condition(
-                stage_display_logics=stage_display_logics
-            )
+            stage_display_logics=stage_display_logics
+        )
         task_ids_stages_dtos = service_adapter.task_service. \
             get_task_ids_with_respective_stages(
-                task_status_dtos=task_status_dtos
-            )
+            task_status_dtos=task_status_dtos
+        )
         return task_ids_stages_dtos

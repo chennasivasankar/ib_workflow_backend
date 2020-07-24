@@ -6,7 +6,9 @@ Author: Pavankumar Pamuru
 from typing import List
 
 from ib_boards.interactors.dtos import TaskTemplateStagesDTO, \
-    TaskSummaryFieldsDTO, TaskStatusDTO
+    TaskSummaryFieldsDTO, TaskStatusDTO, TaskDTO
+from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
+    TaskFieldsDTOFactory
 
 
 class TaskService:
@@ -41,3 +43,20 @@ class TaskService:
     def get_task_ids_with_respective_stages(
             self, task_status_dtos: List[TaskStatusDTO]) -> List[str]:
         pass
+
+    @staticmethod
+    def get_task_details_dtos(task_dtos: List[TaskDTO],
+                              field_ids: List[str],
+                              user_id: str):
+        actions_dto = [
+            TaskActionsDTOFactory.create(
+                task_id=task_dto.task_id
+            ) for _index, task_dto in enumerate(task_dtos)
+        ]
+
+        fields_dto = [
+            TaskFieldsDTOFactory.create(
+                task_id=task_dto.task_id
+            ) for _index, task_dto in enumerate(task_dtos)
+        ]
+        return fields_dto, actions_dto

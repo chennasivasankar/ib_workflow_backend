@@ -1,13 +1,14 @@
 from typing import List
 
-from ib_boards.interactors.dtos import TaskDTO
-from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, TaskFieldsDTOFactory
+from ib_boards.interactors.dtos import TaskStageIdDTO
+from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
+    TaskFieldsDTOFactory
 
 
-def prepare_task_details_dtos(mocker, task_dtos: List[TaskDTO],
-                          user_id: str):
+def prepare_task_details_dtos(mocker, task_dtos: List[TaskStageIdDTO],
+                              user_id: str):
     mock = mocker.patch(
-        'ib_boards.adapters.tasks_service.TaskService'
+        'ib_boards.adapters.task_service.TaskService.get_task_details_dtos'
     )
 
     actions_dto = [
@@ -24,6 +25,8 @@ def prepare_task_details_dtos(mocker, task_dtos: List[TaskDTO],
 
     mock.return_value = actions_dto, fields_dto
     return mock
+
+
 """
 Created on: 14/07/20
 Author: Pavankumar Pamuru
@@ -35,7 +38,6 @@ from ib_boards.interactors.dtos import TaskIdStageDTO
 
 
 def get_valid_task_template_ids_mock(mocker, task_template_ids: List[str]):
-
     mock = mocker.patch(
         'ib_boards.adapters.task_service.TaskService.get_valid_task_template_ids'
     )
@@ -45,7 +47,6 @@ def get_valid_task_template_ids_mock(mocker, task_template_ids: List[str]):
 
 def get_valid_task_ids_mock(
         mocker, task_template_ids: List[str], task_ids: List[str]):
-
     mock = mocker.patch(
         'ib_boards.adapters.task_service.TaskService.get_valid_task_template_ids'
     )
@@ -56,7 +57,6 @@ def get_valid_task_ids_mock(
 def get_valid_task_ids_for_kanban_view_mock(
         mocker, task_template_ids_for_stages: List[str],
         task_template_ids_list_view: List[str], task_ids: List[str]):
-
     mock = mocker.patch(
         'ib_boards.adapters.task_service.TaskService.get_valid_task_template_ids'
     )

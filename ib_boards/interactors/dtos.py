@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 
+
 @dataclass
 class ColumnParametersDTO:
     board_id: str
@@ -12,21 +13,25 @@ class TaskColumnDTO:
     column_id: str
     task_id: str
 
+
 @dataclass
 class PaginationParametersDTO:
     offset: int
     limit: int
 
+
 @dataclass
-class TaskDTO:
+class TaskStageIdDTO:
     task_id: str
     stage_id: str
+
 
 @dataclass
 class TaskDetailsDTO:
     task_id: str
     stage_id: str
     column_id: str
+
 
 @dataclass
 class FieldsDTO:
@@ -49,13 +54,13 @@ class TaskSummaryFieldsDTO:
 @dataclass
 class BoardDTO:
     board_id: str
-    display_name: str
+    name: str
 
 
 @dataclass
 class ColumnDTO:
     column_id: str
-    display_name: str
+    name: str
     display_order: int
     task_template_stages: List[TaskTemplateStagesDTO]
     user_role_ids: List[str]
@@ -81,7 +86,7 @@ class GetBoardsDTO:
 
 @dataclass
 class ColumnTasksParametersDTO:
-    user_id = 1
+    user_id: int
     column_id: str
     offset: int
     limit: int
@@ -119,4 +124,3 @@ class TaskIdStageDTO:
 @dataclass
 class TasksParameterDTO(TaskIdStageDTO):
     column_id: str
-

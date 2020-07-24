@@ -5,14 +5,14 @@ from typing import List
 from django.http import response
 
 from ib_boards.exceptions.custom_exceptions import InvalidBoardIds
-from ib_boards.interactors.dtos import TaskDTO, ActionDTO
+from ib_boards.interactors.dtos import TaskStageIdDTO, ActionDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardDTO
 
 
 @dataclass
 class TaskCompleteDetailsDTO:
     total_tasks: int
-    task_dtos: List[TaskDTO]
+    task_dtos: List[TaskStageIdDTO]
     action_dtos: List[ActionDTO]
 
 
@@ -37,6 +37,7 @@ class GetBoardsPresenterInterface(abc.ABC):
             total_boards: int) -> response.HttpResponse:
         pass
 
+    @abc.abstractmethod
     def get_response_for_offset_exceeds_total_tasks(self):
         pass
 
@@ -79,7 +80,12 @@ class PresenterInterface(abc.ABC):
                                         task_fields_dto: List[TaskFieldsDTO],
                                         task_actions_dto: List[TaskActionsDTO],
                                         task_details: List[TaskColumnDTO]
+
                                         ):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_offset_exceeds_total_tasks(self):
         pass
 
     @abc.abstractmethod

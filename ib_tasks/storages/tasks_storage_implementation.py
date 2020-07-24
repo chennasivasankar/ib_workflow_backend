@@ -8,10 +8,11 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionsOfTemplateDTO, ActionDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldRoleDTO, FieldTypeDTO, UserFieldPermissionDTO, FieldDetailsDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
-    GoFRoleDTO, GoFToTaskTemplateDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRoleDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import \
+    GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
-    StageDTO
+    StageDTO, GetTaskStageCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
@@ -21,11 +22,11 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
     StageDTO, GetTaskStageCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TaskTemplateDTO
-from ib_tasks.models import TaskTemplateStatusVariable, Stage, StageAction
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.models import GoFRole, GoF
+from ib_tasks.models import Stage, StageAction
 from ib_tasks.models import TaskTemplateStatusVariable
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
@@ -469,25 +470,6 @@ class TasksStorageImplementation(TaskStorageInterface):
         for gof_dto in gof_dtos:
             gofs_dict[gof_dto.gof_id] = gof_dto
         return gofs_dict
-
-    def delete_field_roles(self, field_ids: List[str]):
-        FieldRole.objects.filter(field_id__in=field_ids).delete()
-
-    def create_stages_with_given_information(self,
-                                             stage_information: StageDTO):
-        pass
-
-    def validate_stage_ids(self, stage_ids) -> Optional[List[str]]:
-        pass
-
-    def update_stages_with_given_information(self,
-                                             update_stages_information: StageDTO):
-        pass
-
-    def validate_stages_related_task_template_ids(self,
-                                                  task_stages_dto: TaskStagesDTO) -> \
-            Optional[List[TaskStagesDTO]]:
-        pass
 
     def get_task_details(self, task_dtos: List[GetTaskDetailsDTO]) -> \
             GetTaskStageCompleteDetailsDTO:

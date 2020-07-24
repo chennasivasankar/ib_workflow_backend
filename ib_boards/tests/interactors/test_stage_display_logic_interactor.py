@@ -39,10 +39,8 @@ class TestStageDisplayLogic:
         ]
         expected_response = Mock()
         interactor = StageDisplayLogicInteractor()
-        presenter_mock.get_response_for_stage_display_logic.\
+        presenter_mock.get_response_for_stage_display_logic. \
             return_value = expected_response
-
-
 
         # Act
         actual_response = interactor.get_stage_display_logic_condition_wrapper(
