@@ -1,13 +1,13 @@
 import factory
 import pytest
 
-from ib_tasks.interactors.stages_dtos import TaskTemplateStageDTO
+from ib_tasks.interactors.stages_dtos import TemplateStageDTO
 from ib_tasks.models import TaskTemplateInitialStage
 from ib_tasks.storages.storage_implementation import StagesStorageImplementation
 
 class TaskTemplateStagesDTOFactory(factory.Factory):
     class Meta:
-        model = TaskTemplateStageDTO
+        model = TemplateStageDTO
 
     task_template_id = factory.sequence(lambda n: "task_template_id_%d" % n)
     stage_id = factory.Sequence(lambda n: n)

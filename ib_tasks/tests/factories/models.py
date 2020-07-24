@@ -1,13 +1,18 @@
+import json
+
 import factory
 
-from ib_tasks.models.gof import GoF
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes
-from ib_tasks.models.task import Task
-from ib_tasks.models.task_template import TaskTemplate
+from ib_tasks.models import (
+    Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
+    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage, TaskGoF, TaskGoFField)
 from ib_tasks.models.field import Field
-from ib_tasks.models.gof_role import GoFRole
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
+from ib_tasks.models.gof import GoF
+from ib_tasks.models.gof_role import GoFRole
+from ib_tasks.models.task import Task
+from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
@@ -21,6 +26,7 @@ class TaskFactory(factory.django.DjangoModelFactory):
     template_id = "task_template_id_1"
     created_by = factory.Iterator([1, 2, 3, 4, 5, 6, 7])
 
+
 class StageModelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Stage
@@ -30,7 +36,8 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     task_template_id = factory.Sequence(lambda n: "task_template_id_%d" % n)
     value = factory.Sequence(lambda n: n)
     display_logic = factory.Sequence(lambda n: "status_id_%d==stage_id" % n)
-    field_display_config = ["FIELD_ID_1", "FIELD_ID_2"]
+    field_display_config = json.dumps(["FIELD_ID_1", "FIELD_ID_2"])
+
 
 class TaskStageModelFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -38,6 +45,7 @@ class TaskStageModelFactory(factory.django.DjangoModelFactory):
 
     task = factory.SubFactory(TaskFactory)
     stage = factory.SubFactory(StageModelFactory)
+
 
 class TaskModelFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -72,7 +80,6 @@ class TaskTemplateFactory(factory.django.DjangoModelFactory):
 
     template_id = factory.sequence(lambda n: "template_{}".format(n + 1))
     name = factory.sequence(lambda n: "Template {}".format(n + 1))
-
 
 class TaskTemplateStatusVariableFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -177,3 +184,21 @@ class TaskTemplateWith2GoFsFactory(TaskTemplateFactory):
     gof2 = factory.RelatedFactory(
         GoFToTaskTemplateFactory, 'task_template', gof__gof_id='gof_2'
     )
+
+
+class TaskGoFFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskGoF
+
+    same_gof_order = 1
+    gof_id = factory.sequence(lambda n: "gof_id_%d" % n)
+    task = factory.SubFactory(TaskFactory)
+
+
+class TaskGoFFieldFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskGoFField
+
+    task_gof = factory.SubFactory(TaskGoFFactory)
+    field = factory.SubFactory(FieldFactory)
+    field_response = "response"

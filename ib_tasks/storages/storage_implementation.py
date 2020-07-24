@@ -1,5 +1,8 @@
 from typing import List
 from typing import Optional
+
+from ib_tasks.interactors.stages_dtos import StageActionDTO, TemplateStageDTO
+from ib_tasks.interactors.stages_dtos import StageDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.stages_dtos import StageActionDTO
 from ib_tasks.interactors.stages_dtos import StageDTO, TaskTemplateStageDTO
@@ -8,6 +11,7 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GOFMultipleEnableDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, TaskTemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, StageValueDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
@@ -130,7 +134,7 @@ class StorageImplementation(StorageInterface):
         pass
 
     def create_initial_stage_to_task_template(
-            self, task_template_stage_dtos: List[TaskTemplateStageDTO]):
+            self, task_template_stage_dtos: List[TemplateStageDTO]):
         pass
 
     def get_valid_task_template_ids(self, task_template_ids: List[str]):

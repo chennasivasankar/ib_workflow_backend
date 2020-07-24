@@ -47,16 +47,36 @@ class FieldTypeDTO:
     field_id: str
     field_type: FieldTypes
 
+
 @dataclass
 class FieldDetailsDTO:
     field_type: str
     field_id: int
-    stage_id: str
     key: str
     value: str
+
+
+@dataclass
+class TaskAndFieldsDTO:
+    task_id: int
+    field_dtos: List[FieldDetailsDTO]
 
 
 @dataclass
 class UserFieldPermissionDTO:
     field_id: str
     permission_type: PermissionTypes
+
+
+@dataclass
+class TaskTemplateStageFieldsDTO:
+    task_template_id: str
+    task_id: int
+    stage_id: str
+    field_ids: List[str]
+
+
+@dataclass
+class StageTaskFieldsDTO:
+    task_id: int
+    field_ids: List[str]
