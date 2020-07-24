@@ -2,7 +2,6 @@ from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO
 
 
 
-
 def prepare_gof_and_status_variables_dto():
     from ib_tasks.interactors.gofs_dtos import TaskGofAndStatusesDTO
 
@@ -54,7 +53,6 @@ def prepare_task_boards_details():
         board_dto=boards_dto,
         column_stage_dtos=columns_stage_dtos,
         columns_dtos=column_dtos,
-        columns_fields_dtos=column_fields
     )
 
 

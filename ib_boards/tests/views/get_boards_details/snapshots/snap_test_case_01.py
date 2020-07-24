@@ -4,37 +4,9 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
+
 snapshots = Snapshot()
 
-snapshots[
-    'TestCase01GetBoardsDetailsAPITestCase.test_case status_code'] = '200'
+snapshots['TestCase01GetBoardsDetailsAPITestCase.test_case status_code'] = '404'
 
-snapshots['TestCase01GetBoardsDetailsAPITestCase.test_case body'] = {
-    'boards_details': [
-        {
-            'board_id': 'BOARD_ID_11',
-            'display_name': 'BOARD_DISPLAY_NAME'
-        },
-        {
-            'board_id': 'BOARD_ID_2',
-            'display_name': 'BOARD_DISPLAY_NAME'
-        },
-        {
-            'board_id': 'BOARD_ID_3',
-            'display_name': 'BOARD_DISPLAY_NAME'
-        },
-        {
-            'board_id': 'BOARD_ID_4',
-            'display_name': 'BOARD_DISPLAY_NAME'
-        },
-        {
-            'board_id': 'BOARD_ID_5',
-            'display_name': 'BOARD_DISPLAY_NAME'
-        },
-        {
-            'board_id': 'BOARD_ID_6',
-            'display_name': 'BOARD_DISPLAY_NAME'
-        }
-    ],
-    'total_boards_count': 11
-}
+snapshots['TestCase01GetBoardsDetailsAPITestCase.test_case body'] = b'<h1>Not Found</h1><p>The requested resource was not found on this server.</p>'

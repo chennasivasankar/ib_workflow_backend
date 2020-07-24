@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 
 @dataclass
@@ -124,3 +124,36 @@ class TaskIdStageDTO:
 @dataclass
 class TasksParameterDTO(TaskIdStageDTO):
     column_id: str
+
+
+@dataclass
+class ColumnTaskIdsDTO:
+    unique_key: str
+    task_stage_ids: List[TaskIdStageDTO]
+    total_tasks: int
+
+
+@dataclass
+class FieldDetailsDTO:
+    field_type: str
+    field_id: int
+    stage_id: str
+    key: str
+    value: str
+
+
+@dataclass()
+class ActionDetailsDTO:
+    action_id: int
+    name: str
+    stage_id: str
+    button_text: str
+    button_color: Optional[str]
+
+
+@dataclass
+class TaskCompleteDetailsDTO:
+    task_id: int
+    stage_id: str
+    field_dtos: List[FieldDetailsDTO]
+    action_dtos: List[ActionDetailsDTO]

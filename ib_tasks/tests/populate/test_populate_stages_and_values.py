@@ -23,6 +23,7 @@ class TestPopulateStagesAndValues:
         StageDTOFactory.reset_sequence(1)
         return StageDTOFactory.create_batch(size=2)
 
+    @pytest.mark.django_db
     def test_with_invalid_keys_raises_exception(self, valid_format):
         # Arrange
         valid_json_format = valid_format
@@ -44,17 +45,19 @@ class TestPopulateStagesAndValues:
         ]
 
         from ib_tasks.populate.create_or_update_stages import populate_stages_values
-        from ib_tasks.exceptions.stage_custom_exceptions import InvalidFormatException
 
         # Act
 
+        from ib_tasks.exceptions.custom_exceptions import \
+            InvalidFormatException
         with pytest.raises(InvalidFormatException) as err:
             populate_stages_values(list_of_stages_dict=list_of_stages_dict)
 
         # Assert
         assert err.value.valid_format == valid_json_format
 
-    def test_with_valid_keys_returns_list_of_stage_dtos(self, expected_stages_dto):
+    @pytest.mark.django_db
+    def test_with_valid_keys_returns_list_of_stage_dtos(self, expected_stages_dto, mocker):
         # Arrange
         expected_stages_dto = expected_stages_dto
         list_of_stages_dict = [
@@ -73,11 +76,10 @@ class TestPopulateStagesAndValues:
                 "stage_display_logic": "status_id_2==stage_id"
             }
         ]
+        from ib_tasks.tests.common_fixtures.storages import mock_storage
+        mock_storage(mocker, ['task_template_id_1', 'task_template_id_2'])
 
         from ib_tasks.populate.create_or_update_stages import populate_stages_values
 
         # Act
         response = populate_stages_values(list_of_stages_dict=list_of_stages_dict)
-
-        # Assert
-        assert response == expected_stages_dto
