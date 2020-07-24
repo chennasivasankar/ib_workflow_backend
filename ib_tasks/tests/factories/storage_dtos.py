@@ -14,7 +14,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GroupOfFieldsDTO, \
     GOFMultipleEnableDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    StageActionNamesDTO, ValidStageDTO, StageValueDTO
+    StageActionNamesDTO, ValidStageDTO, TaskStageIdsDTO, StageValueDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO, GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (TaskStagesDTO)
@@ -198,7 +198,6 @@ class GoFRoleDTOFactory(factory.Factory):
     permission_type = PermissionTypes.READ.value
 
 
-
 class FieldDTOFactory(factory.Factory):
     class Meta:
         model = FieldDTO
@@ -297,3 +296,10 @@ class GlobalConstantDTOFactory(factory.Factory):
     constant_name = factory.sequence(lambda n: "constant_{}".format(n + 1))
     value = factory.sequence(lambda n: (n + 1))
 
+
+class TaskStageIdsDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskStageIdsDTO
+
+    task_id = factory.Sequence(lambda n: f'TASK_ID_{ n + 1 }')
+    stage_id = factory.Sequence(lambda n: f'STAGE_ID_{n + 1}')
