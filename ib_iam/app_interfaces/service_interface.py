@@ -19,7 +19,7 @@ class ServiceInterface:
         return valid_role_ids
 
     @staticmethod
-    def get_user_role_ids(self, user_id: str):
+    def get_user_role_ids(user_id: str):
         pass
 
     @staticmethod
