@@ -450,7 +450,8 @@ class TasksStorageImplementation(TaskStorageInterface):
 
     def get_task_details(self, task_dtos: List[GetTaskDetailsDTO]) ->\
             GetTaskStageCompleteDetailsDTO:
-        pass
+        task_ids = [task.task_id for task in task_dtos]
+        Task.objects.filter(id__in=task_ids).values('id', 'template_id')
 
     def get_valid_task_ids(self, task_ids: List[str]) -> Optional[List[str]]:
         valid_task_ids = Task.objects.filter(task_id__in=task_ids)
