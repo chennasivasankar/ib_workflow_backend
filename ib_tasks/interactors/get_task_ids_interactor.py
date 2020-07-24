@@ -7,6 +7,7 @@ Author: Pavankumar Pamuru
 
 from typing import List
 
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
@@ -20,10 +21,7 @@ class GetTaskIdsInteractor:
         self.stage_storage = stage_storage
         self.task_storage = task_storage
 
-    def get_task_ids_wrapper(self, stage_ids: List[List[str]]):
-        pass
-
-    def get_task_ids(self, stage_ids: List[List[str]]):
+    def get_task_ids(self, stage_ids: List[TaskStageIdsDTO]):
         total_stage_ids = []
         for stage_id in stage_ids:
             total_stage_ids += stage_id
