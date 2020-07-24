@@ -37,10 +37,5 @@ class InvalidStagesDisplayName(Exception):
         self.invalid_stages_display_name = invalid_stages_display_name
 
 
-class InvalidFormatException(Exception):
-    def __init__(self, valid_format: str):
-        self.valid_format = valid_format
-
-
 class InvalidPythonCodeException(Exception):
     pass

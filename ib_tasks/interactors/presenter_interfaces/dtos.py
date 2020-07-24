@@ -9,7 +9,7 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
 
 @dataclass()
 class TaskCompleteDetailsDTO:
-    board_id: str
+    task_id: int
     task_boards_details: TaskBoardsDetailsDTO
     actions_dto: List[ActionDTO]
     field_dtos: List[FieldDisplayDTO]

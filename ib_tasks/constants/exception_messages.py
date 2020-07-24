@@ -1,4 +1,3 @@
-
 EMPTY_GOF_ID_MESSAGE = "GoF id should not be empty"
 EMPTY_GOF_NAME_MESSAGE = "GoF name should not be empty"
 EMPTY_MAX_COLUMNS_MESSAGE = "GoF max columns should not be empty"
@@ -63,28 +62,45 @@ FIELD_DUPLICATION_OF_ALLOWED_FORMATS = "Duplication of values for allowed format
 EMPTY_VALUES_FOR_ALLOWED_FORMATS = "Allowed formats shouldn't contain empty values for this filed_id = {}"
 INVALID_VALUE_FOR_SEARCHABLE = "Searchable value should be one of these  {} for this field_id {}"
 
-DUPLICATE_FIELD_IDS = [
-    "duplicate field ids: {}",
-    "DUPLICATE_FIELD_IDS"
-]
+DUPLICATE_FIELD_IDS = ["duplicate field ids: {}", "DUPLICATE_FIELD_IDS"]
 
 INVALID_TASK_TEMPLATE_IDS = [
-    "duplicate task template ids: {}",
-    "INVALID_TASK_TEMPLATE_IDS"
+    "duplicate task template ids: {}", "INVALID_TASK_TEMPLATE_IDS"
 ]
 
-INVALID_GOF_IDS = [
-    "invalid gof ids: {}",
-    "INVALID_GOF_IDS"
-]
+INVALID_GOF_IDS = ["invalid gof ids: {}", "INVALID_GOF_IDS"]
 
-INVALID_FIELD_IDS = [
-    "invalid field ids: {}",
-    "INVALID_FIELD_IDS"
+INVALID_FIELD_IDS = ["invalid field ids: {}", "INVALID_FIELD_IDS"]
+
+USER_DO_NOT_HAVE_ACCESS = [
+    "User do not have access to the action: {}",
+    "USER_DO_NOT_HAVE_ACCESS"
 ]
 
 EMPTY_VALUE_FOR_PLAIN_TEXT_FIELD = [
     "got empty value in plain text field for field id: {}",
     "EMPTY_VALUE_FOR_PLAIN_TEXT_FIELD"
 ]
+LIMIT_SHOULD_BE_GREATER_THAN_ZERO = ("Limit value should be greater than zero",
+                                     "LIMIT_SHOULD_BE_GREATER_THAN_ZERO")
 
+OFFSET_SHOULD_BE_GREATER_THAN_OR_EQAL_TO_MINUS_ONE = (
+    "Offset sould be greater than or equal to minus one",
+    "OFFSET_SHOULD_BE_GREATER_THAN_OR_EQAL_TO_MINUS_ONE")
+
+
+INVALID_TASK_ID = [
+    "invalid task id is: {}, please send valid task id",
+    "INVALID_TASK_ID"
+]
+
+
+INVALID_BOARD_ID = [
+    "invalid board id is: {}, please send valid board id",
+    "INVALID_BOARD_ID"
+]
+
+INVALID_ACTION_ID = [
+    "invalid action id is: {}, please send valid action id",
+    "INVALID_ACTION_ID"
+]

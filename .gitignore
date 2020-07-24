@@ -54,6 +54,7 @@ ib_tasks/utils/ib-worksflows-dev-testing-d86743f0ecd1.json
 env
 
 vedavidhbudimuri_ib-workflows-backend.aes
+/venv/
 
 .gitignore
 env_*.sh

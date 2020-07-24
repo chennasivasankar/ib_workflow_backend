@@ -59,13 +59,13 @@ class TestUserActionOnTaskInteractor:
         return mock_obj
 
     @staticmethod
-    def prepare_task_complete_details(board_id,
+    def prepare_task_complete_details(task_id, board_id,
                                       task_boards_details,
                                       actions_dto, field_dtos):
         from ib_tasks.interactors.presenter_interfaces.dtos \
             import TaskCompleteDetailsDTO
         return TaskCompleteDetailsDTO(
-            board_id=board_id,
+            task_id=task_id,
             task_boards_details=task_boards_details,
             actions_dto=actions_dto,
             field_dtos=field_dtos
@@ -75,8 +75,8 @@ class TestUserActionOnTaskInteractor:
         # Arrange
         user_id = "user_1"
         board_id = "board_1"
-        task_id = "task_1"
-        action_id = "action_1"
+        task_id = 1
+        action_id = 1
 
         interactor = UserActionOnTaskInteractor(
             user_id=user_id, board_id=board_id, task_id=task_id,
@@ -96,8 +96,8 @@ class TestUserActionOnTaskInteractor:
         # Arrange
         user_id = "user_1"
         board_id = "board_1"
-        task_id = "task_1"
-        action_id = "action_1"
+        task_id = 1
+        action_id = 1
         mock_obj = mocker.patch(
             'ib_tasks.adapters.service_adapter.get_service_adapter')
         mock_obj.boards_service.validate_board_id.return_value = False
@@ -120,8 +120,8 @@ class TestUserActionOnTaskInteractor:
         # Arrange
         user_id = "user_1"
         board_id = "board_1"
-        task_id = "task_1"
-        action_id = "action_1"
+        task_id = 1
+        action_id = 1
         mock_obj = mocker.patch(
             'ib_tasks.adapters.boards_service.BoardsService.validate_board_id')
         mock_obj.return_value = True
@@ -149,8 +149,8 @@ class TestUserActionOnTaskInteractor:
         # Arrange
         user_id = "user_1"
         board_id = "board_1"
-        task_id = "task_1"
-        action_id = "action_1"
+        task_id = 1
+        action_id = 1
         mock_obj = mocker.patch(
             'ib_tasks.adapters.boards_service.BoardsService.validate_board_id')
         mock_obj.return_value = True
@@ -181,8 +181,8 @@ class TestUserActionOnTaskInteractor:
         # Arrange
         user_id = "user_1"
         board_id = "board_1"
-        task_id = "task_1"
-        action_id = "action_1"
+        task_id = 1
+        action_id = 1
         mock_obj = mocker.patch(
             'ib_tasks.adapters.boards_service.BoardsService.validate_board_id')
         mock_obj.return_value = True
@@ -213,7 +213,7 @@ class TestUserActionOnTaskInteractor:
         storage.validate_action.return_value = True
         storage.get_action_roles.return_value = ["ROLE_2", "ROLE_4"]
         task_complete_details = self.prepare_task_complete_details(
-            board_id, task_boards_details,
+            task_id, board_id, task_boards_details,
             actions_dto, field_dtos
         )
 

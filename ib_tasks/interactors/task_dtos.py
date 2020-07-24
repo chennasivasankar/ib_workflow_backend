@@ -15,6 +15,7 @@ class GoFFieldsDTO:
     gof_id: str
     field_values_dtos: List[FieldValuesDTO]
 
+
 @dataclass
 class TaskDTO:
     task_template_id: str
@@ -41,3 +42,9 @@ class TaskIdsDTO:
     unique_key: int
     task_stage_ids: List[TaskStageIdsDTO]
     total_tasks: int
+
+@dataclass
+class GetTaskDetailsDTO:
+    task_id: str
+    stage_id: str
+
