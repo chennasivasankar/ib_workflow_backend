@@ -20,7 +20,7 @@ class TestCase01AddCompanyAPITestCase(TestUtils):
     def test_case(self, mocker, snapshot, setup):
         mock = prepare_uuid_mock(mocker)
         mock.return_value = UUID("f2c02d98-f311-4ab2-8673-3daa00757002")
-        body = {'name': 'string', 'description': 'string', 'logo_url': 'string', 'user_ids': ["2", "3"]}
+        body = {'name': 'string', 'description': 'string', 'logo_url': 'string', 'employee_ids': ["2", "3"]}
         path_params = {}
         query_params = {}
         headers = {}
@@ -37,4 +37,4 @@ class TestCase01AddCompanyAPITestCase(TestUtils):
         UserFactory.reset_sequence(1)
         UserFactory.create(user_id=user_id, is_admin=True)
         for user_id in ["2", "3"]:
-            UserFactory.create(user_id=user_id, is_admin=True)
+            UserFactory.create(user_id=user_id)

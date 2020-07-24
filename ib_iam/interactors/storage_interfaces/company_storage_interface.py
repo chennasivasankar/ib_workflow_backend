@@ -57,9 +57,9 @@ class CompanyStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_member_ids_of_company(self, company_id: str):
+    def get_employee_ids_of_company(self, company_id: str):
         pass
 
     @abstractmethod
-    def delete_members_from_company(self, company_id: str, member_ids: List[str]):
+    def delete_employees_from_company(self, company_id: str, employee_ids: List[str]):
         pass

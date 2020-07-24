@@ -97,8 +97,8 @@ USER_HAS_NO_ACCESS_FOR_DELETE_COMPANY = (
 )
 
 INVALID_COMPANY_FOR_DELETE_COMPANY = (
-    "Given team is invalid(NotFound)",
-    "INVALID_TEAM"
+    "Given company is invalid(NotFound)",
+    "INVALID_COMPANY"
 )
 
 USER_HAS_NO_ACCESS_FOR_UPDATE_COMPANY = (

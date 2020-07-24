@@ -4,8 +4,7 @@ from .validator_class import ValidatorClass
 from ib_iam.interactors.company_interactor import CompanyInteractor
 from ib_iam.presenters.delete_company_presenter_implementation import \
     DeleteCompanyPresenterImplementation
-from ib_iam.interactors.storage_interfaces.company_storage_interface import \
-    CompanyStorageInterface
+from ib_iam.storages.company_storage_implementation import CompanyStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
@@ -14,8 +13,7 @@ def api_wrapper(*args, **kwargs):
     user_id = str(user_obj.id)
     company_id = kwargs["company_id"]
 
-    # TODO change this storage interface to storage implementation after completing storages
-    storage = CompanyStorageInterface()
+    storage = CompanyStorageImplementation()
     presenter = DeleteCompanyPresenterImplementation()
     interactor = CompanyInteractor(storage=storage)
 

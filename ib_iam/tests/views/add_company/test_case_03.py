@@ -21,7 +21,7 @@ class TestCase03AddCompanyAPITestCase(TestUtils):
     def test_case(self, mocker, snapshot, setup):
         mock = prepare_uuid_mock(mocker)
         mock.return_value = UUID("f2c02d98-f311-4ab2-8673-3daa00757002")
-        body = {'name': 'company1', 'description': '', 'logo_url': 'string', 'employee_ids': ["2", "3"]}
+        body = {'name': 'company1', 'description': '', 'logo_url': 'string', 'employee_ids': []}
         path_params = {}
         query_params = {}
         headers = {}
@@ -34,11 +34,8 @@ class TestCase03AddCompanyAPITestCase(TestUtils):
     def setup(self, api_user):
         user_obj = api_user
         user_id = str(user_obj.id)
-        # TODO Check this out after storage implementation and writing model factories
-        # from ib_iam.tests.factories.models import (
-        #     UserDetailsFactory, CompanyFactory
-        # )
-        # UserDetailsFactory.reset_sequence(1)
-        # CompanyFactory.reset_sequence(1)
-        # UserDetailsFactory.create(user_id=user_id, is_admin=True)
-        # CompanyFactory.create(name="company1")
+        from ib_iam.tests.factories.models import (
+            UserDetailsFactory, CompanyFactory)
+        CompanyFactory.reset_sequence(1)
+        UserDetailsFactory.create(user_id=user_id, is_admin=True)
+        CompanyFactory.create(name="company1")

@@ -29,11 +29,8 @@ class TestCase01DeleteCompanyAPITestCase(TestUtils):
     def setup(self, api_user):
         user_id = api_user.id
         company_id = "413642ff-1272-4990-b878-6607a5e02bc1"
-        # TODO After storage and factory implementation for company related \
-        #  models check this out
-        # from ib_iam.tests.factories import CompanyFactory, UserDetailsFactory
-        # UserDetailsFactory.reset_sequence(1)
-        # CompanyFactory.reset_sequence(1)
-        # UserDetailsFactory.create(user_id=user_id, is_admin=True)
-        # CompanyFactory.create(company_id=company_id)
-        # return company_id
+        from ib_iam.tests.factories.models import CompanyFactory, UserDetailsFactory
+        UserDetailsFactory.reset_sequence(1)
+        UserDetailsFactory.create(user_id=user_id, is_admin=True)
+        CompanyFactory.create(company_id=company_id)
+        return company_id

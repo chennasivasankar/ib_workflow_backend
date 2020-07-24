@@ -86,18 +86,29 @@ class CompanyStorageImplementation(CompanyStorageInterface):
             .update(company_id=company_id)
 
     def validate_is_company_exists(self, company_id: str):
-        pass
+        from ib_iam.exceptions.custom_exceptions import InvalidCompany
+        try:
+            Company.objects.get(company_id=company_id)
+        except Company.DoesNotExist:
+            raise InvalidCompany()
 
     def delete_company(self, company_id: str):
-        pass
+        Company.objects.filter(company_id=company_id).delete()
 
     def update_company_details(
             self, company_with_user_ids_dto: CompanyWithUserIdsDTO
     ):
-        pass
+        Company.objects\
+               .filter(company_id=company_with_user_ids_dto.company_id) \
+               .update(name=company_with_user_ids_dto.name,
+                       description=company_with_user_ids_dto.description,
+                       logo_url=company_with_user_ids_dto.logo_url)
 
-    def get_member_ids_of_company(self, company_id: str):
-        pass
+    def get_employee_ids_of_company(self, company_id: str):
+        user_ids = UserDetails.objects.filter(company_id=company_id) \
+            .values_list("user_id", flat=True)
+        return list(user_ids)
 
-    def delete_members_from_company(self, company_id: str, member_ids: List[str]):
-        pass
+    def delete_employees_from_company(self, company_id: str, employee_ids: List[str]):
+        UserDetails.objects.filter(user_id__in=employee_ids,
+                                   company_id=company_id).delete()

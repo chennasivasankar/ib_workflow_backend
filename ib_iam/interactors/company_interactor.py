@@ -124,7 +124,7 @@ class CompanyInteractor:
         self.storage.update_company_details(
             company_with_user_ids_dto=company_with_user_ids_dto
         )
-        company_member_ids = self.storage.get_member_ids_of_company(company_id=company_id)
+        company_member_ids = self.storage.get_employee_ids_of_company(company_id=company_id)
         self._add_members_to_company(
             user_ids=user_ids, company_member_ids=company_member_ids, company_id=company_id
         )
@@ -157,8 +157,8 @@ class CompanyInteractor:
 
     def _delete_members_of_company(self, user_ids, company_member_ids, company_id):
         member_ids_to_delete = list(set(company_member_ids) - set(user_ids))
-        self.storage.delete_members_from_company(
-            company_id=company_id, member_ids=member_ids_to_delete)
+        self.storage.delete_employees_from_company(
+            company_id=company_id, employee_ids=member_ids_to_delete)
 
     def _validate_users(self, user_ids):
         self._validate_is_duplicate_users_exists(user_ids=user_ids)
