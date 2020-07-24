@@ -24,7 +24,8 @@ ALLOWED_HOSTS = [
     "ib-workflows-backend-beta.apigateway.in",
     "ib-workflows-backend-gamma.apigateway.in",
     "127.0.0.1",
-    "localhost"
+    "localhost",
+    "*"
 ]
 
 ROOT_URLCONF = 'ib_workflows_backend.urls'
@@ -72,7 +73,7 @@ from ib_common.logger.log_custom_formatter import LogCustomFormatter
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
     'filters': {
         'request_id': {
             '()': 'log_request_id.filters.RequestIDFilter'
