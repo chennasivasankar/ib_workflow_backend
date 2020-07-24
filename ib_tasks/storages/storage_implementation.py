@@ -1,10 +1,11 @@
 from typing import Optional, List
 
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.stages_dtos import StageDTO, TaskTemplateStageDTO, StageActionDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, ActionRolesDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GOFMultipleEnableDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, ValidStageDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, ValidStageDTO, StageValueDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import StageStorageInterface
 from ib_tasks.models import Stage, TaskTemplateInitialStage
 from typing import List
@@ -238,4 +239,11 @@ class StorageImplementation(StorageInterface):
         #     )
         #     for task_template_gof in task_template_gofs
         # ]
+        pass
+
+    def get_global_constants_to_task(
+            self, task_id: int) -> List[GlobalConstantsDTO]:
+        pass
+
+    def get_stage_dtos_to_task(self, task_id: int) -> List[StageValueDTO]:
         pass

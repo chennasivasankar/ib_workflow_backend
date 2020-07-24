@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Any
 
 
 @dataclass
@@ -33,3 +33,9 @@ class StageDTO:
     value: int
     stage_display_name: str
     stage_display_logic: str
+
+
+@dataclass
+class StageValueDTO:
+    stage_id: str
+    value: Any

@@ -18,7 +18,7 @@ class TestUpdateTaskStatusVariablesInteractor:
     @staticmethod
     def test_given_invalid_path_raises_exception():
         # Arrange
-        action_id = "action_1"
+        action_id = 1
         storage = create_autospec(StorageInterface)
         GOFMultipleStatusDTOFactory.reset_sequence()
         multiple_gof = GOFMultipleStatusDTOFactory()
@@ -36,7 +36,7 @@ class TestUpdateTaskStatusVariablesInteractor:
         statuses = [StatusVariableDTOFactory()]
         from ib_tasks.interactors.gofs_dtos import TaskGofAndStatusesDTO
         task_dto = TaskGofAndStatusesDTO(
-            task_id="task_1",
+            task_id=1,
             group_of_fields_dto=group_of_fields,
             fields_dto=fields,
             statuses_dto=statuses
@@ -109,8 +109,8 @@ class TestUpdateTaskStatusVariablesInteractor:
         mock_task_dict = {'group_of_field_1': [{'field_1': 'value_1'}],
                           'group_of_field_2': {'field_2': 'value_2'},
                           'statuses': {'status_variable_1': 'value_1'}}
-        action_id = "action_1"
-        stage_ids = ['value_1']
+        action_id = 1
+        task_id = 1
         storage = create_autospec(StorageInterface)
         GOFMultipleStatusDTOFactory.reset_sequence()
         multiple_gof = GOFMultipleStatusDTOFactory()
@@ -130,7 +130,7 @@ class TestUpdateTaskStatusVariablesInteractor:
         statuses = [StatusVariableDTOFactory()]
         from ib_tasks.interactors.gofs_dtos import TaskGofAndStatusesDTO
         task_dto = TaskGofAndStatusesDTO(
-            task_id="task_1",
+            task_id=task_id,
             group_of_fields_dto=group_of_fields,
             fields_dto=fields,
             statuses_dto=statuses
@@ -140,9 +140,10 @@ class TestUpdateTaskStatusVariablesInteractor:
         )
 
         # Act
-        response = interactor.call_action_logic_function_and_update_task_status_variables(
-            task_dto=task_dto
-        )
+        response = interactor\
+            .call_action_logic_function_and_update_task_status_variables(
+                task_dto=task_dto
+            )
 
         # Assert
         storage.get_path_name_to_action.assert_called_once_with(
@@ -150,6 +151,9 @@ class TestUpdateTaskStatusVariablesInteractor:
         )
         mock_obj.called_once()
         storage.update_status_variables_to_task.assert_called_once_with(
-            task_id="task_1", status_variables_dto=statuses
+            task_id=1, status_variables_dto=statuses
         )
-        # assert response == stage_ids
+        storage.get_global_constants_to_task\
+            .assert_called_once_with(task_id=task_id)
+        storage.get_stage_dtos_to_task\
+            .assert_called_once_with(task_id=task_id)
