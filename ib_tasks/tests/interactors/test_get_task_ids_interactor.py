@@ -7,7 +7,8 @@ Author: Pavankumar Pamuru
 
 import pytest
 
-from ib_tasks.interactors.get_task_ids_interactor import GetTaskIdsInteractor
+from ib_tasks.interactors.get_task_ids_interactor import GetTaskIdsInteractor, \
+    TaskDetailsConfigDTO, TaskIdsDTO
 
 
 class TestGetTaskIdsInteractor:
@@ -38,12 +39,22 @@ class TestGetTaskIdsInteractor:
             stage_storage=stage_storage,
             task_storage=task_storage
         )
+        task_config_dtos = [
+            TaskDetailsConfigDTO(
+                unique_key=1,
+                stage_ids=stage_ids[0]
+            ),
+            TaskDetailsConfigDTO(
+                unique_key=1,
+                stage_ids=stage_ids[1]
+            )
+        ]
         stage_storage.get_existing_stage_ids.return_value = valid_stage_ids
         # Act
         from ib_tasks.exceptions.stage_custom_exceptions import \
             InvalidStageIds
         with pytest.raises(InvalidStageIds) as error:
-            interactor.get_task_ids(stage_ids=stage_ids)
+            interactor.get_task_ids(task_details_configs=task_config_dtos)
 
         # Assert
         stage_storage.get_existing_stage_ids.assert_called_once_with(
@@ -65,7 +76,26 @@ class TestGetTaskIdsInteractor:
         stage_ids = [['STAGE_ID_1', 'STAGE_ID_2'], ['STAGE_ID_3', 'STAGE_ID_4']]
         stage_ids_single_list = ['STAGE_ID_1', 'STAGE_ID_2', 'STAGE_ID_3',
                                  'STAGE_ID_4']
-
+        task_config_dtos = [
+            TaskDetailsConfigDTO(
+                unique_key=1,
+                stage_ids=stage_ids[0]
+            ),
+            TaskDetailsConfigDTO(
+                unique_key=1,
+                stage_ids=stage_ids[1]
+            )
+        ]
+        task_ids_dtos = [
+            TaskIdsDTO(
+                unique_key=1,
+                task_stage_ids=expected_response[0]
+            ),
+            TaskIdsDTO(
+                unique_key=1,
+                task_stage_ids=expected_response[1]
+            )
+        ]
         from unittest.mock import call
         calls = (call(stage_ids[0]), call(stage_ids[1]))
         interactor = GetTaskIdsInteractor(
@@ -77,7 +107,9 @@ class TestGetTaskIdsInteractor:
             expected_response[0], expected_response[1]
         ]
         # Act
-        actual_response = interactor.get_task_ids(stage_ids=stage_ids)
+        actual_response = interactor.get_task_ids(
+            task_details_configs=task_config_dtos
+        )
 
         # Assert
 
@@ -85,7 +117,7 @@ class TestGetTaskIdsInteractor:
             stage_ids=stage_ids_single_list
         )
         task_storage.get_task_ids_for_the_stage_ids.assert_has_calls(calls)
-        assert  actual_response == expected_response
+        assert actual_response == task_ids_dtos
 
 
 

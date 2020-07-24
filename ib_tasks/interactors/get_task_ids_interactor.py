@@ -3,8 +3,7 @@ Created on: 24/07/20
 Author: Pavankumar Pamuru
 
 """
-
-
+from dataclasses import dataclass
 from typing import List
 
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
@@ -14,6 +13,18 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 
 
+@dataclass
+class TaskDetailsConfigDTO:
+    unique_key: int
+    stage_ids: List[str]
+
+
+@dataclass
+class TaskIdsDTO:
+    unique_key: int
+    task_stage_ids: List[TaskStageIdsDTO]
+
+
 class GetTaskIdsInteractor:
     def __init__(
             self, stage_storage: StageStorageInterface,
@@ -21,10 +32,12 @@ class GetTaskIdsInteractor:
         self.stage_storage = stage_storage
         self.task_storage = task_storage
 
-    def get_task_ids(self, stage_ids: List[TaskStageIdsDTO]):
+    def get_task_ids(self, task_details_configs: List[TaskDetailsConfigDTO]):
+
         total_stage_ids = []
-        for stage_id in stage_ids:
-            total_stage_ids += stage_id
+        for task_details_config in task_details_configs:
+            total_stage_ids += task_details_config.stage_ids
+
         valid_stage_ids = self.stage_storage.get_existing_stage_ids(
             stage_ids=total_stage_ids
         )
@@ -37,11 +50,16 @@ class GetTaskIdsInteractor:
                 InvalidStageIds
             raise InvalidStageIds(stage_ids=invalid_stage_ids)
 
-        stage_task_ids_dtos = []
-        # TODO need to optimise the db hits
-        for stage_id in stage_ids:
-            stage_task_ids_dto_list = self.task_storage.get_task_ids_for_the_stage_ids(
-                stage_ids=stage_id
+        total_task_ids_dtos = []
+        # TODO need optimize db hits
+        for task_details_config in task_details_configs:
+            task_ids_dtos = self.task_storage.get_task_ids_for_the_stage_ids(
+                stage_ids=task_details_config.stage_ids
             )
-            stage_task_ids_dtos.append(stage_task_ids_dto_list)
-        return stage_task_ids_dtos
+            total_task_ids_dtos.append(
+                TaskIdsDTO(
+                    unique_key=task_details_config.unique_key,
+                    task_stage_ids=task_ids_dtos
+                )
+            )
+        return total_task_ids_dtos
