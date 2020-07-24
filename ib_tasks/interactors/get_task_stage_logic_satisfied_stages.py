@@ -1,6 +1,6 @@
 from typing import List, Any, Dict
 
-from ib_tasks.interactors.stages_dtos import StageDisplayValueDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDisplayValueDTO
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 from ib_tasks.interactors.storage_interfaces.status_dtos \
