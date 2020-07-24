@@ -10,7 +10,7 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GOFMultipleEnableDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, TaskTemplateStageDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, TaskTemplateStageDTO, StageDisplayValueDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, StageValueDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
@@ -285,6 +285,22 @@ class StorageImplementation(StorageInterface):
         return [
             StageValueDTO(
                 stage_id=stage_obj.stage_id,
+                value=stage_obj.value
+            )
+            for stage_obj in stage_objs
+        ]
+
+    def get_task_template_stage_logic_to_task(
+            self, task_id: int) -> List[StageDisplayValueDTO]:
+
+        from ib_tasks.models.task import Task
+        task_obj = Task.objects.get(id=task_id)
+        stage_objs = Stage.objects.filter(task_template_id=task_obj.template_id)
+
+        return [
+            StageDisplayValueDTO(
+                stage_id=stage_obj.stage_id,
+                display_logic=stage_obj.display_logic,
                 value=stage_obj.value
             )
             for stage_obj in stage_objs

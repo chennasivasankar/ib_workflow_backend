@@ -15,7 +15,7 @@ from ib_tasks.interactors.storage_interfaces.gof_dtos import GroupOfFieldsDTO, \
     GOFMultipleEnableDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionNamesDTO, ValidStageDTO, TaskTemplateStageDTO, \
-    StageActionNamesDTO, ValidStageDTO, TaskStageIdsDTO, StageValueDTO
+    StageActionNamesDTO, ValidStageDTO, TaskStageIdsDTO, StageValueDTO, StageDisplayValueDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO, GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (TaskStagesDTO)
@@ -376,3 +376,12 @@ class TaskStageIdsDTOFactory(factory.Factory):
 
     task_id = factory.Sequence(lambda n: f'TASK_ID_{ n + 1 }')
     stage_id = factory.Sequence(lambda n: f'STAGE_ID_{n + 1}')
+
+
+class StageDisplayValueDTOFactory(factory.Factory):
+
+    class Meta:
+        model = StageDisplayValueDTO
+    stage_id = factory.sequence(lambda n: "stage_{}".format(n + 1))
+    display_logic = factory.sequence(lambda n: "variable_{} == stage_{}".format((n+1), (n+1)))
+    value = factory.sequence(lambda n: (n+1))

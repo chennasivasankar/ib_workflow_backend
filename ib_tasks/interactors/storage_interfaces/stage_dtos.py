@@ -64,3 +64,10 @@ class TaskTemplateStageDTO:
 class StageValueDTO:
     stage_id: str
     value: Any
+
+
+@dataclass()
+class StageDisplayValueDTO:
+    stage_id: str
+    display_logic: str
+    value: int
