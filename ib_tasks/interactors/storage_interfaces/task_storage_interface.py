@@ -5,7 +5,7 @@ Author: Pavankumar Pamuru
 """
 
 import abc
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from ib_tasks.interactors.storage_interfaces.status_dtos import TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
@@ -226,5 +226,6 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_task_ids_for_the_stage_ids(
-            self, stage_ids: List[str], offset: int, limit: int) -> List[TaskStageIdsDTO]:
+            self, stage_ids: List[str],
+            offset: int, limit: int) -> Tuple[List[TaskStageIdsDTO], int]:
         pass

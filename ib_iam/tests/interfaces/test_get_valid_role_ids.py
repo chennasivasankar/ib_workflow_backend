@@ -23,4 +23,4 @@ class TestGetValidRoleIds:
 
         # Assert
         assert sorted(valid_role_ids) == sorted(expected_valid_ids)
-        snapshot.assert_match(valid_role_ids, "valid_role_ids")
+        snapshot.assert_match(sorted(valid_role_ids), "valid_role_ids")

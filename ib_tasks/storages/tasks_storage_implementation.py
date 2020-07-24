@@ -1,4 +1,4 @@
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Tuple
 
 from django.db.models import Q
 
@@ -25,7 +25,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TaskTemplateDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
-from ib_tasks.models import GoFRole, GoF
+from ib_tasks.models import GoFRole, GoF, TaskStage
 from ib_tasks.models import Stage, StageAction
 from ib_tasks.models import TaskTemplateStatusVariable
 from ib_tasks.models.field import Field
@@ -439,8 +439,21 @@ class TasksStorageImplementation(TaskStorageInterface):
             gofs_dict[gof_dto.gof_id] = gof_dto
         return gofs_dict
 
-    def get_task_ids_for_the_stage_ids(self, stage_ids: List[str]) -> TaskStageIdsDTO:
-        pass
+    def get_task_ids_for_the_stage_ids(
+            self, stage_ids: List[str],
+            offset: int, limit: int) -> Tuple[List[TaskStageIdsDTO], int]:
+        task_stage_ids = TaskStage.objects.filter(
+            stage__stage_id__in=stage_ids
+        ).values('task_id', 'stage__stage_id')
+        total_count = len(task_stage_ids)
+        task_stage_dtos = [
+            TaskStageIdsDTO(
+                task_id=task_stage_id['task_id'],
+                stage_id=task_stage_id['stage_id']
+            )
+            for task_stage_id in task_stage_ids[offset: offset + limit]
+        ]
+        return task_stage_dtos, total_count
 
     def get_task_details(self, task_dtos: List[GetTaskDetailsDTO]) -> \
             GetTaskStageCompleteDetailsDTO:
