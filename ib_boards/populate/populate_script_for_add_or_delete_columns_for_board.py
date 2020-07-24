@@ -55,27 +55,27 @@ class PopulateAddOrDeleteColumnsForBoard:
 
     def _convert_column_dict_to_column_dto(self,
                                            column_dict: Dict) -> ColumnDTO:
-        # task_template_stages = self._get_task_template_stages_dto(
-        #     column_dict['task_template_stages']
-        # )
-        # list_view_fields = self._get_task_template_summary_fields_dto(
-        #     column_dict['list_view_fields']
-        # )
-        # kanban_view_fields = self._get_task_template_summary_fields_dto(
-        #     column_dict['kanban_view_fields']
-        # )
+        task_template_stages = self._get_task_template_stages_dto(
+            column_dict['task_template_stages']
+        )
+        list_view_fields = self._get_task_template_summary_fields_dto(
+            column_dict['list_view_fields']
+        )
+        kanban_view_fields = self._get_task_template_summary_fields_dto(
+            column_dict['kanban_view_fields']
+        )
         user_role_ids = self._convert_user_role_to_list_from_string(
             user_roles=column_dict['user_role_ids'])
         return ColumnDTO(
             column_id=column_dict['column_id'],
             display_name=column_dict['column_display_name'],
             display_order=column_dict['display_order'],
-            task_template_stages=TaskTemplateStagesDTOFactory.create_batch(2),
+            task_template_stages=task_template_stages,
             user_role_ids=user_role_ids,
             column_summary=column_dict['column_summary'],
             column_actions=column_dict['column_actions'],
-            list_view_fields=TaskSummaryFieldsDTOFactory.create_batch(2),
-            kanban_view_fields=TaskSummaryFieldsDTOFactory.create_batch(2),
+            list_view_fields=list_view_fields,
+            kanban_view_fields=kanban_view_fields,
             board_id=column_dict['board_id']
         )
 

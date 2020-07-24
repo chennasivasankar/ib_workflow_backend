@@ -25,7 +25,7 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_boards_column_ids(
-            self, board_ids: List[str]) -> List[BoardColumnDTO]:
+            self, board_ids: List[str]) -> List[str]:
         pass
 
     @abc.abstractmethod

@@ -1,12 +1,12 @@
 import factory
 
-from ib_boards.interactors.dtos import TaskDTO, TaskDetailsDTO, FieldsDTO
+from ib_boards.interactors.dtos import TaskStageIdDTO, TaskDetailsDTO, FieldsDTO
 from ib_boards.interactors.storage_interfaces.dtos import (
     TaskFieldsDTO, TaskActionsDTO, ColumnDetailsDTO, BoardDTO)
 
 class TaskDTOFactory(factory.Factory):
     class Meta:
-        model = TaskDTO
+        model = TaskStageIdDTO
 
     task_id = factory.Sequence(lambda n: "task_id_%d" % n)
     stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)

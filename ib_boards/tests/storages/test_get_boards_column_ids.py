@@ -52,10 +52,10 @@ class TestColumnIdsWithBoardIds:
         )
 
         # Assert
-        assert boards_columns_dtos[0].board_id == board_ids[0]
-        assert boards_columns_dtos[1].board_id == board_ids[1]
-        assert boards_columns_dtos[0].column_ids == first_board_column_ids
-        assert boards_columns_dtos[1].column_ids == second_board_column_ids
+        assert boards_columns_dtos[0] == first_board_column_ids[0]
+        assert boards_columns_dtos[1] == first_board_column_ids[1]
+        assert boards_columns_dtos[2] == second_board_column_ids[0]
+        assert boards_columns_dtos[3] == second_board_column_ids[1]
 
 
 

@@ -100,8 +100,8 @@ class InvalidUserRoles(Exception):
 
 
 class ColumnIdsAssignedToDifferentBoard(Exception):
-    def __init__(self, column_ids: List[str]):
-        self.column_ids = column_ids
+    def __init__(self, column_id: str):
+        self.column_id = column_id
 
 
 class UserDoNotHaveAccessToBoards(Exception):

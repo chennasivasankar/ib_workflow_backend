@@ -65,9 +65,8 @@ class AddOrDeleteColumnsForBoardInteractor:
     def _update_columns_for_board(
             self, present_column_ids, column_dtos_dict):
         column_dto_for_update = []
-        for column_dto in present_column_ids:
-            for column_id in column_dto.column_ids:
-                column_dto_for_update.append(column_dtos_dict[column_id])
+        for column_id in present_column_ids:
+            column_dto_for_update.append(column_dtos_dict[column_id])
 
         self.storage.update_columns_for_board(
             column_dtos=column_dto_for_update
@@ -113,31 +112,8 @@ class AddOrDeleteColumnsForBoardInteractor:
         board_column_dtos = self.storage.get_board_ids_for_column_ids(
             column_ids=column_ids
         )
-    #     self._check_for_column_ids_are_having_single_board_id(
-    #         board_column_dtos=board_column_dtos,
-    #         board_column_map=board_column_map
-    #     )
-    #
-    # @staticmethod
-    # def _check_for_column_ids_are_having_single_board_id(
-    #         board_column_dtos: List[BoardColumnDTO], board_column_map):
-    #     for board_column_dto in board_column_dtos:
-    #         column_board_map[board_column_dto.column_id]
-    #
-    #
-    #     is_having_multiple_boards = (
-    #             len(board_ids) == 1 and key not in board_ids
-    #             or len(board_ids) > 1
-    #     )
-    #     if is_having_multiple_boards:
-    #         raise ColumnIdsAssignedToDifferentBoard(column_ids=value)
-
-        column_ids = [column_dto.column_id for column_dto in column_dtos]
-        board_column_dtos = self.storage.get_board_ids_for_column_ids(
-            column_ids=column_ids
-        )
         for board_column_dto in board_column_dtos:
             board_id = board_column_dto.board_id
             column_id = board_column_dto.column_id
             if column_id not in board_column_map[board_id]:
-                raise ColumnIdsAssignedToDifferentBoard(column_ids=column_id)
+                raise ColumnIdsAssignedToDifferentBoard(column_id=column_id)

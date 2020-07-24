@@ -1,4 +1,0 @@
-class ServiceInterface:
-    pass
-
-
