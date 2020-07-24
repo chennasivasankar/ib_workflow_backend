@@ -11,7 +11,9 @@ from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     TaskTemplateGlobalConstants, TaskStatusVariable)
-
+from ib_tasks.models.task import Task
+from ib_tasks.models.task_gof import TaskGoF
+from ib_tasks.models.task_gof_field import TaskGoFField
 
 class StageModelFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -154,3 +156,29 @@ class TaskTemplateWith2GoFsFactory(TaskTemplateFactory):
     gof2 = factory.RelatedFactory(
         GoFToTaskTemplateFactory, 'task_template', gof__gof_id='gof_2'
     )
+
+
+class TaskFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Task
+
+    template_id = factory.sequence(lambda counter: "template_{}".format(counter))
+    created_by = "123e4567-e89b-12d3-a456-426614174000"
+
+
+class TaskGoFFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskGoF
+
+    same_gof_order = 0
+    gof_id = factory.sequence(lambda counter: "gof_{}".format(counter))
+    task = factory.SubFactory(TaskFactory)
+
+
+class TaskGoFFieldFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskGoFField
+
+    task_gof = factory.SubFactory(TaskGoFFactory)
+    field = factory.SubFactory(FieldFactory)
+    field_response = factory.sequence(lambda counter: "field_response_{}".format(counter))
