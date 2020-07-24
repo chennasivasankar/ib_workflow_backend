@@ -43,7 +43,8 @@ class TaskService:
             self, task_status_dtos: List[TaskStatusDTO]) -> List[str]:
         pass
 
-    def get_task_details_dtos(self, task_dtos: List[TaskDTO],
+    @staticmethod
+    def get_task_details_dtos(task_dtos: List[TaskDTO],
                               field_ids: List[str],
                               user_id: str):
         actions_dto = [
