@@ -14,7 +14,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GroupOfFieldsDTO, \
     GOFMultipleEnableDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    StageActionNamesDTO, ValidStageDTO, TaskTemplateStageDTO,
+    StageActionNamesDTO, ValidStageDTO, TaskTemplateStageDTO, \
     StageActionNamesDTO, ValidStageDTO, TaskStageIdsDTO, StageValueDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO, GoFToTaskTemplateDTO

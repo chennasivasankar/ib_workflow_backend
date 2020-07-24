@@ -1,11 +1,10 @@
 from typing import List
 from typing import Optional
 
-from ib_tasks.interactors.stages_dtos import StageActionDTO, TemplateStageDTO
-from ib_tasks.interactors.stages_dtos import StageDTO
+from ib_tasks.interactors.stages_dtos import TemplateStageDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.stages_dtos import StageActionDTO
-from ib_tasks.interactors.stages_dtos import StageDTO, TaskTemplateStageDTO
+from ib_tasks.interactors.stages_dtos import StageDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
     ActionRolesDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
