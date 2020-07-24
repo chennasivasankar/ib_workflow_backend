@@ -20,7 +20,7 @@ RESPONSE_200_JSON = """
                     "gof_display_name": "string",
                     "max_columns": 1,
                     "order": 1,
-                    "enable_multiple_gofs": true,
+                    "enable_add_another": true,
                     "fields": [
                         {
                             "field_type": "PLAIN_TEXT",

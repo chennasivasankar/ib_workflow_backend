@@ -37,7 +37,7 @@ class TestUpdateStages:
             assert returned_dtos[dto_value].stage_display_logic == expected_dtos[dto_value].stage_display_logic
             assert returned_dtos[dto_value].stage_display_name == expected_dtos[dto_value].stage_display_name
 
-    def test_update_stages_create_stage_details(self, stage_dtos, create_stages):
+    def test_update_stages_stage_details(self, stage_dtos, create_stages):
         # Arrange
         stage_dtos = stage_dtos
         stage_ids = ["stage_id_50", "stage_id_51", "stage_id_52", "stage_id_53"]
