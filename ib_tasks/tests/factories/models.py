@@ -1,17 +1,17 @@
 import factory
 
-from ib_tasks.models.gof import GoF
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes
-from ib_tasks.models.task import Task
-from ib_tasks.models.task_template import TaskTemplate
-from ib_tasks.models.field import Field
-from ib_tasks.models.gof_role import GoFRole
-from ib_tasks.models.field_role import FieldRole
-from ib_tasks.models.global_constant import GlobalConstant
-from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage)
+from ib_tasks.models.field import Field
+from ib_tasks.models.field_role import FieldRole
+from ib_tasks.models.global_constant import GlobalConstant
+from ib_tasks.models.gof import GoF
+from ib_tasks.models.gof_role import GoFRole
+from ib_tasks.models.task import Task
+from ib_tasks.models.task_template import TaskTemplate
+from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
 
 class TaskFactory(factory.django.DjangoModelFactory):
@@ -20,6 +20,7 @@ class TaskFactory(factory.django.DjangoModelFactory):
 
     template_id = "task_template_id_1"
     created_by = factory.Iterator([1, 2, 3, 4, 5, 6, 7])
+
 
 class StageModelFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -30,7 +31,8 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     task_template_id = factory.Sequence(lambda n: "task_template_id_%d" % n)
     value = factory.Sequence(lambda n: n)
     display_logic = factory.Sequence(lambda n: "status_id_%d==stage_id" % n)
-    stage_display_config = ["FIELD_ID_1", "FIELD_ID_2"]
+    field_display_config = ["FIELD_ID_1", "FIELD_ID_2"]
+
 
 class TaskStageModelFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -38,6 +40,7 @@ class TaskStageModelFactory(factory.django.DjangoModelFactory):
 
     task = factory.SubFactory(TaskFactory)
     stage = factory.SubFactory(StageModelFactory)
+
 
 class StageActionFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -58,12 +61,14 @@ class ActionPermittedRolesFactory(factory.django.DjangoModelFactory):
     action = factory.SubFactory(StageActionFactory)
     role_id = factory.Sequence(lambda n: "role_%d" % n)
 
+
 class TaskTemplateFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = TaskTemplate
 
     template_id = factory.sequence(lambda n: "template_{}".format(n + 1))
     name = factory.sequence(lambda n: "Template {}".format(n + 1))
+
 
 class TaskTemplateStatusVariableFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -77,6 +82,7 @@ class TaskTemplateStatusVariableFactory(factory.django.DjangoModelFactory):
 class TaskStatusVariableFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = TaskStatusVariable
+
     task_id = factory.Sequence(lambda n: "%d" % n)
     variable = factory.Sequence(lambda n: "status_variable_%d" % n)
     value = factory.Sequence(lambda n: "value_%d" % n)
@@ -90,7 +96,6 @@ class TaskTemplateGlobalConstantsFactory(factory.django.DjangoModelFactory):
     variable = factory.Sequence(lambda n: "variable%d" % n)
     value = factory.Sequence(lambda n: "value%d" % n)
     data_type = factory.Sequence(lambda n: "data_type_%d" % n)
-
 
 
 class GoFFactory(factory.django.DjangoModelFactory):

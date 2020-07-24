@@ -60,3 +60,15 @@ class FieldDetailsDTO:
 class UserFieldPermissionDTO:
     field_id: str
     permission_type: PermissionTypes
+
+
+@dataclass
+class TaskTemplateStageFieldsDTO:
+    task_template_id: str
+    stage_id: str
+    field_ids: List[str]
+
+@dataclass
+class StageTaskFieldsDTO:
+    task_id: str
+    field_ids : List[str]
