@@ -1,9 +1,17 @@
 import factory
 
-from ib_tasks.adapters.dtos import ColumnStageDTO
+from ib_tasks.adapters.dtos import UserDTO
+from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
+    SearchableFieldDetailDTO
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
+from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO, \
+    GoFsWithTemplateIdDTO
+
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
+from ib_tasks.constants.enum import Searchable
+from ib_tasks.interactors.stages_dtos import (StagesActionDTO)
 
 
 from ib_tasks.interactors.stages_dtos import \
@@ -48,7 +56,6 @@ class FieldDisplayDTOFactory(factory.Factory):
     field_type = factory.Sequence(lambda n: 'field_type_%d' % (n + 1))
     key = factory.Sequence(lambda n: 'key_%d' % (n + 1))
     value = factory.Sequence(lambda n: 'value_%d' % (n + 1))
-
 
 
 class GlobalConstantsDTOFactory(factory.Factory):
@@ -96,8 +103,8 @@ class FieldValuesDTOFactory(factory.Factory):
 
     field_id = factory.sequence(lambda counter: "FIELD_ID-{}".format(counter))
     field_value = factory.sequence(
-        lambda counter: "FIELD_VALUE-{}".format(counter)
-    )
+        lambda counter: "FIELD_VALUE-{}".format(counter))
+
 
 class GoFFieldsDTOFactory(factory.Factory):
     class Meta:
@@ -116,10 +123,35 @@ class TaskDTOFactory(factory.Factory):
         model = TaskDTO
 
     task_template_id = factory.sequence(
-        lambda counter: "TASK_TEMPLATE_ID-{}".format(counter)
-    )
+        lambda counter: "TASK_TEMPLATE_ID-{}".format(counter))
 
     @factory.LazyAttribute
     def gof_fields_dtos(self):
         gof_fields_dtos = GoFFieldsDTOFactory.create_batch(size=2)
         return gof_fields_dtos
+
+
+class SearchableFieldTypeDTOFactory(factory.Factory):
+    class Meta:
+        model = SearchableFieldTypeDTO
+
+    searchable_type = Searchable.USER.value
+    limit = factory.Sequence(lambda n: n + 1)
+    offset = factory.Sequence(lambda n: n + 1)
+    search_query = ""
+
+
+class SearchableFieldUserDetailDTOFactory(factory.Factory):
+    class Meta:
+        model = SearchableFieldDetailDTO
+
+    id = factory.sequence(lambda n: "user_{}".format(n + 1))
+    name = factory.sequence(lambda n: "user_name_{}".format(n + 1))
+
+
+class UserDTOFactory(factory.Factory):
+    class Meta:
+        model = UserDTO
+
+    user_id = factory.sequence(lambda n: "user_{}".format(n + 1))
+    name = factory.sequence(lambda n: "user_name_{}".format(n + 1))
