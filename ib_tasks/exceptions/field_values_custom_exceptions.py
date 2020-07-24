@@ -179,6 +179,7 @@ class InvalidImageFormat(Exception):
         self.given_format = given_format
         self.allowed_formats = allowed_formats
 
+
 class NotAnImageUrl(Exception):
 
     def __init__(self, field_id: str, given_url: str):

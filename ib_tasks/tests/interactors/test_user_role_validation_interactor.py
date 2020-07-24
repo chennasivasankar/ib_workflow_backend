@@ -42,7 +42,6 @@ class TestUserRoleValidationInteractor:
         role_ids = ["FIN_PAYMENTS_LEVEL3_VERIFIER", "FIN_PAYMENT_APPROVER"]
         get_user_role_ids_mock_method = \
             get_user_role_ids(mocker)
-
         interactor = UserRoleValidationInteractor()
 
         # Act

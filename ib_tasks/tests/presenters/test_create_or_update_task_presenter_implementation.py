@@ -1,8 +1,10 @@
 import pytest
 
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds
-from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
+
+from ib_tasks.exceptions.field_values_custom_exceptions import \
     EmptyValueForPlainTextField
+from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateIds
 
 

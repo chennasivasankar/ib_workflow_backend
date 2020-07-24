@@ -113,3 +113,15 @@ class EmptyValuesForAllowedFormats(Exception):
     def __init__(self, message: str):
         self.message = message
 
+
+class SearchableTypeDoesNotExistException(Exception):
+    pass
+
+
+class LimitShouldBeGreaterThanZeroException(Exception):
+    pass
+
+
+class OffsetShouldBeGreaterThanOrEqualToMinusOneException(Exception):
+    pass
+

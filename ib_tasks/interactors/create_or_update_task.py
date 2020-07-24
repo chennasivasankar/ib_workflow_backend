@@ -16,7 +16,11 @@ from ib_tasks.exceptions.fields_custom_exceptions import \
     DuplicationOfFieldIdsExist, InvalidFieldIds
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateIds
+from ib_tasks.interactors.storage_interfaces.create_or_update_task_storage_interface import \
+    CreateOrUpdateTaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskGoFDTO, \
+    TaskGoFDetailsDTO, TaskGoFFieldDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.presenter_interfaces.create_or_update_task_presenter \
@@ -27,8 +31,12 @@ from ib_tasks.interactors.task_dtos import TaskDTO, FieldValuesDTO, \
 
 class CreateOrUpdateTaskInteractor:
 
-    def __init__(self, storage: TaskStorageInterface):
-        self.storage = storage
+    def __init__(
+            self, task_storage: TaskStorageInterface,
+            create_task_storage: CreateOrUpdateTaskStorageInterface
+    ):
+        self.task_storage = task_storage
+        self.create_task_storage = create_task_storage
 
     def create_or_update_task_wrapper(
             self, presenter: CreateOrUpdateTaskPresenterInterface,
@@ -125,13 +133,68 @@ class CreateOrUpdateTaskInteractor:
         self._validate_for_invalid_field_ids(field_ids)
         self._validate_field_values(field_values_dtos)
 
+        created_task_id = \
+            self.create_task_storage.create_task_with_template_id(
+                task_dto.task_template_id, task_dto.created_by_id
+            )
+        task_gof_dtos = [
+            TaskGoFDTO(
+                task_id=created_task_id,
+                gof_id=gof_fields_dto.gof_id,
+                same_gof_order=gof_fields_dto.same_gof_order
+            )
+            for gof_fields_dto in task_dto.gof_fields_dtos
+        ]
+        task_gof_details_dtos = self.create_task_storage.create_task_gofs(
+            task_gof_dtos=task_gof_dtos
+        )
+        task_gof_field_dtos = self._prepare_task_gof_fields_dtos(
+            task_dto, task_gof_details_dtos
+        )
+        self.create_task_storage.create_task_gof_fields(task_gof_field_dtos)
+        return
+
+    def _prepare_task_gof_fields_dtos(
+            self, task_dto: TaskDTO,
+            task_gof_details_dtos: List[TaskGoFDetailsDTO]
+    ) -> List[TaskGoFFieldDTO]:
+        task_gof_field_dtos = []
+        for gof_fields_dto in task_dto.gof_fields_dtos:
+            task_gof_id = self._get_gof_id_for_field_in_task_gof_details(
+                gof_fields_dto.gof_id, gof_fields_dto.same_gof_order,
+                task_gof_details_dtos
+            )
+            task_gof_field_dtos += [
+                TaskGoFFieldDTO(
+                    field_id=field_values_dto.field_id,
+                    field_response=field_values_dto.field_response,
+                    task_gof_id=task_gof_id
+                )
+                for field_values_dto in gof_fields_dto.field_values_dtos
+            ]
+        return task_gof_field_dtos
+
+    @staticmethod
+    def _get_gof_id_for_field_in_task_gof_details(
+            gof_id: str, same_gof_order: int,
+            task_gof_details_dtos: List[TaskGoFDetailsDTO]
+    ) -> Optional[int]:
+        for task_gof_details_dto in task_gof_details_dtos:
+            gof_matched = (
+                    task_gof_details_dto.gof_id == gof_id and
+                    task_gof_details_dto.same_gof_order == same_gof_order
+            )
+            if gof_matched:
+                return task_gof_details_dto.task_gof_id
+        return
+
     def _validate_field_values(
             self, field_values_dtos: List[FieldValuesDTO]
     ):
         field_ids = [
             field_values_dto.field_id for field_values_dto in field_values_dtos
         ]
-        field_details_dtos = self.storage.get_field_details_for_given_field_ids(
+        field_details_dtos = self.task_storage.get_field_details_for_given_field_ids(
             field_ids=field_ids
         )
         gof_ids_in_gof_selector = []
@@ -141,8 +204,8 @@ class CreateOrUpdateTaskInteractor:
             )
             field_type_is_gof_selector = field_type == FieldTypes.GOF_SELECTOR.value
             if field_type_is_gof_selector:
-                gof_ids_in_gof_selector.append(field_values_dto.field_value)
-        valid_gof_ids = self.storage.get_existing_gof_ids(
+                gof_ids_in_gof_selector.append(field_values_dto.field_response)
+        valid_gof_ids = self.task_storage.get_existing_gof_ids(
             gof_ids_in_gof_selector
         )
         invalid_gof_ids = list(
@@ -473,7 +536,8 @@ class CreateOrUpdateTaskInteractor:
             self, task_template_id: str
     ) -> Optional[InvalidTaskTemplateIds]:
         task_template_existence = \
-            self.storage.check_is_template_exists(template_id=task_template_id)
+            self.task_storage.check_is_template_exists(
+                template_id=task_template_id)
         if not task_template_existence:
             raise InvalidTaskTemplateIds(
                 invalid_task_template_ids=[task_template_id]
@@ -483,7 +547,7 @@ class CreateOrUpdateTaskInteractor:
     def _validate_for_invalid_gof_ids(
             self, gof_ids: List[str]
     ) -> Optional[InvalidGoFIds]:
-        valid_gof_ids = self.storage.get_existing_gof_ids(gof_ids)
+        valid_gof_ids = self.task_storage.get_existing_gof_ids(gof_ids)
         invalid_gof_ids = list(set(gof_ids) - set(valid_gof_ids))
         if invalid_gof_ids:
             raise InvalidGoFIds(gof_ids)
@@ -492,7 +556,7 @@ class CreateOrUpdateTaskInteractor:
     def _validate_for_invalid_field_ids(
             self, field_ids: List[str]
     ) -> Optional[InvalidFieldIds]:
-        valid_field_ids = self.storage.get_existing_field_ids(field_ids)
+        valid_field_ids = self.task_storage.get_existing_field_ids(field_ids)
         invalid_field_ids = list(set(field_ids) - set(valid_field_ids))
         if invalid_field_ids:
             raise InvalidFieldIds(invalid_field_ids)
@@ -537,7 +601,7 @@ class CreateOrUpdateTaskInteractor:
         for field_values_dto in field_values_dtos:
             field_id_matched = field_values_dto.field_id == field_id
             if field_id_matched:
-                return field_values_dto.field_value
+                return field_values_dto.field_response
         return
 
     @staticmethod
