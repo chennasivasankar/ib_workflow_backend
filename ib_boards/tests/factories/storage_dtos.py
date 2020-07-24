@@ -70,5 +70,5 @@ class BoardDTOFactory(factory.Factory):
         model = BoardDTO
 
     board_id = factory.Sequence(lambda n: f'BOARD_ID_{n + 1}')
-    display_name = factory.Sequence(lambda n: f'BOARD_DISPLAY_NAME')
+    name = factory.Sequence(lambda n: f'BOARD_DISPLAY_NAME')
 

@@ -42,7 +42,7 @@ class BoardDTOFactory(factory.Factory):
         model = BoardDTO
 
     board_id = factory.Sequence(lambda n: f'BOARD_ID_{n + 1}')
-    display_name = factory.Sequence(lambda n: f'BOARD_DISPLAY_NAME')
+    name = factory.Sequence(lambda n: f'BOARD_DISPLAY_NAME')
 
 
 class ColumnDTOFactory(factory.Factory):
@@ -50,7 +50,7 @@ class ColumnDTOFactory(factory.Factory):
         model = ColumnDTO
 
     column_id = factory.Sequence(lambda n: f'COLUMN_ID_{n + 1}')
-    display_name = factory.Sequence(lambda n: f'COLUMN_DISPLAY_NAME_{n + 1}')
+    name = factory.Sequence(lambda n: f'COLUMN_DISPLAY_NAME_{n + 1}')
     display_order = factory.Sequence(lambda n: n + 1)
     task_template_stages = TaskTemplateStagesDTOFactory.create_batch(5)
     user_role_ids = ['ALL_ROLES']
