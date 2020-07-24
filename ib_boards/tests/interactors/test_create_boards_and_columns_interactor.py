@@ -449,7 +449,7 @@ class TestCreateBoardsAndColumnsInteractor:
             storage=storage_mock
         )
 
-        from ib_boards.tests.common_fixtures.adapters.user_service import \
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
             adapter_mock
 
         adapter_mock(mocker=mocker, user_roles=invalid_user_roles)

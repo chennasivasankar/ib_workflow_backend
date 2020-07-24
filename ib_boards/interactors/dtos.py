@@ -34,8 +34,6 @@ class FieldsDTO:
     field_id: str
 
 
-
-
 @dataclass
 class TaskTemplateStagesDTO:
     task_template_id: str

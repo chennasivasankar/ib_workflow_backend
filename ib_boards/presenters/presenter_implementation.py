@@ -151,6 +151,9 @@ class GetColumnTasksPresenterImplementation(
     def get_response_for_offset_exceeds_total_tasks(self):
         pass
 
+    def get_response_for_invalid_stage_ids(self, error):
+        pass
+
     def get_response_for_user_have_no_access_for_column(self):
         from ib_boards.constants.exception_messages import \
             USER_NOT_HAVE_ACCESS_TO_COLUMN

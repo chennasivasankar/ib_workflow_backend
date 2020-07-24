@@ -6,7 +6,6 @@ from typing import List
 from django.http import response
 
 from ib_boards.exceptions.custom_exceptions import InvalidBoardIds
-from ib_boards.interactors.dtos import TaskColumnDTO
 from ib_boards.interactors.dtos import TaskDTO, ActionDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardDTO
 from ib_boards.interactors.storage_interfaces.dtos import (
@@ -37,11 +36,24 @@ class GetBoardsPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_response_for_get_boards(
-            self, board_dtos: List[BoardDTO], total_boards: int) -> response.HttpResponse:
+            self, board_dtos: List[BoardDTO],
+            total_boards: int) -> response.HttpResponse:
+        pass
+
+    def get_response_for_offset_exceeds_total_tasks(self):
         pass
 
 
+import abc
+from typing import List
+
+from ib_boards.interactors.dtos import TaskColumnDTO
+from ib_boards.interactors.storage_interfaces.dtos import (
+    TaskFieldsDTO, TaskActionsDTO, ColumnDetailsDTO)
+
+
 class PresenterInterface(abc.ABC):
+    @abc.abstractmethod
     def get_response_for_task_details(self,
                                       task_fields_dto: List[TaskFieldsDTO],
                                       task_actions_dto: List[TaskActionsDTO],
@@ -71,19 +83,14 @@ class PresenterInterface(abc.ABC):
 
 
     @abc.abstractmethod
-    def get_response_for_column_details(self, column_details: List[ColumnDetailsDTO],
+    def get_response_for_column_details(self,
+                                        column_details: List[ColumnDetailsDTO],
                                         task_fields_dto: List[TaskFieldsDTO],
                                         task_actions_dto: List[TaskActionsDTO],
                                         task_details: List[TaskColumnDTO]
 
                                         ):
         pass
-
-
-    @abc.abstractmethod
-    def get_response_for_offset_exceeds_total_tasks(self):
-        pass
-
 
     @abc.abstractmethod
     def get_response_for_offset_exceeds_total_tasks(self):
@@ -136,6 +143,10 @@ class GetColumnTasksPresenterInterface(abc.ABC):
 
 
 class StageDisplayLogicPresenterInterface(abc.ABC):
+
+    @abc.abstractmethod
+    def get_response_for_invalid_stage_ids(self, error):
+        pass
 
     @abc.abstractmethod
     def get_response_for_stage_display_logic(self, task_status_dtos):

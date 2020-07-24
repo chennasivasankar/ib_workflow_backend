@@ -24,6 +24,10 @@ class StorageImplementation(StorageInterface):
             from ib_boards.exceptions.custom_exceptions import InvalidBoardId
             raise InvalidBoardId
 
+    def get_existing_board_ids(self) -> List[str]:
+        board_ids = Board.objects.values_list('board_id', flat=True)
+        return list(board_ids)
+
     def create_boards_and_columns(
             self, board_dtos: List[BoardDTO],
             column_dtos: List[ColumnDTO]) -> None:
@@ -59,11 +63,10 @@ class StorageImplementation(StorageInterface):
 
     def get_boards_column_ids(
             self, board_ids: List[str]) -> List[BoardColumnsDTO]:
-        print(Column.objects.all())
+
         board_column_ids = Column.objects.filter(
             board_id__in=board_ids
         ).values('board_id', 'column_id')
-        print(board_column_ids)
         from collections import defaultdict
         board_columns_map = defaultdict(lambda: [])
         for board_column_id in board_column_ids:
@@ -78,7 +81,6 @@ class StorageImplementation(StorageInterface):
             )
             for key, value in board_columns_map.items()
         ]
-        print(board_columns_dtos)
         return board_columns_dtos
 
     def update_columns_for_board(self, column_dtos: List[ColumnDTO]) -> None:
@@ -314,6 +316,17 @@ class StorageImplementation(StorageInterface):
             stage_ids += value
 
         return stage_ids
+
+    def get_columns_details(self, column_ids: List[str]) -> \
+            List[ColumnDetailsDTO]:
+        pass
+
+    def get_column_ids_for_board(self, board_id: str, user_roles: List[str]) \
+            -> List[str]:
+        pass
+
+    def get_permitted_user_roles_for_board(self, board_id: str) -> List[str]:
+        pass
 
     def get_columns_details(self, column_ids: List[str]) -> \
             List[ColumnDetailsDTO]:

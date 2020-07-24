@@ -24,6 +24,7 @@ from django_swagger_utils.drf_server.utils.general.import_app_settings import \
 THIRD_PARTY_APPS = []
 APPS = [
     "ib_iam",
+    "ib_tasks",
     "ib_boards"
 ]
 
@@ -68,6 +69,7 @@ SWAGGER_UTILS = {
     },
     "APPS": {
         "ib_iam": {"dsu_version": "1.0"},
+        "ib_tasks": {"dsu_version": "1.0"},
         "ib_boards": {}
     },
     "HOST": os.environ.get('APIGATEWAY_ENDPOINT', '127.0.0.1:8000'),

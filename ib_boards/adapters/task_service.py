@@ -20,7 +20,7 @@ class TaskService:
 
     def get_valid_task_template_ids(
             self, task_template_ids: List[str]) -> List[str]:
-        pass
+        return task_template_ids
 
     def validate_task_ids(self, task_ids: List[str]):
         pass
@@ -30,12 +30,6 @@ class TaskService:
 
     def validate_task_template_stages_with_id(
             self, task_template_stages: List[TaskTemplateStagesDTO]):
-        pass
-
-    def validate_task_ids(self, task_ids: List[str]):
-        pass
-
-    def validate_stage_ids(self, stage_ids: List[str]):
         pass
 
     def validate_task_task_summary_fields_with_id(

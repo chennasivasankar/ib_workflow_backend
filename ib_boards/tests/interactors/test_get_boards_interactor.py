@@ -77,7 +77,7 @@ class TestGetBoardsInteractor:
         presenter_mock.get_response_for_user_have_no_access_for_boards.\
             return_value = expected_response
 
-        from ib_boards.tests.common_fixtures.adapters.user_service import \
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
             adapter_mock_to_get_user_role
         adapter_mock = adapter_mock_to_get_user_role(
             mocker=mocker, user_role=user_role
