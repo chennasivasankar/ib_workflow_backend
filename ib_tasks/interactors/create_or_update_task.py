@@ -11,7 +11,7 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     IncorrectCheckBoxOptionsSelected, IncorrectMultiSelectOptionsSelected, \
     IncorrectMultiSelectLabelsSelected, InvalidDateFormat, InvalidTimeFormat, \
     InvalidUrlForImage, InvalidImageFormat, NotAnImageUrl, CouldNotReadImage, \
-    InvalidUrlForFolder
+    InvalidUrlForFile
 from ib_tasks.exceptions.fields_custom_exceptions import \
     DuplicationOfFieldIdsExist, InvalidFieldIds
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
@@ -108,7 +108,7 @@ class CreateOrUpdateTaskInteractor:
         except InvalidImageFormat as err:
             return presenter.raise_exception_for_not_acceptable_image_format(
                 err)
-        except InvalidUrlForFolder as err:
+        except InvalidUrlForFile as err:
             return presenter.raise_exception_for_invalid_folder_url(err)
 
     def _prepare_response_for_create_or_update_task(
@@ -335,11 +335,11 @@ class CreateOrUpdateTaskInteractor:
     @staticmethod
     def _validate_for_file_uploader_value(
             field_value: str, field_id: str, allowed_formats: List[str]
-    ) -> Optional[InvalidUrlForFolder]:
+    ) -> Optional[InvalidUrlForFile]:
         from ib_tasks.constants.config import VALID_URL_REGEX_PATTERN
         invalid_url_path = not VALID_URL_REGEX_PATTERN.search(field_value)
         if invalid_url_path:
-            raise InvalidUrlForFolder(field_id, field_value)
+            raise InvalidUrlForFile(field_id, field_value)
         return
 
     @staticmethod

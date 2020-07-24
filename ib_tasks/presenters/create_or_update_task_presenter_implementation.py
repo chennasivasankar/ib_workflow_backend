@@ -1,6 +1,6 @@
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     EmptyValueForPlainTextField, InvalidGoFIDsInGoFSelectorField, \
-    InvalidUrlForFolder, InvalidUrlForImage, InvalidImageFormat, NotAnImageUrl, \
+    InvalidUrlForFile, InvalidUrlForImage, InvalidImageFormat, NotAnImageUrl, \
     CouldNotReadImage, InvalidTimeFormat, InvalidDateFormat, \
     IncorrectMultiSelectLabelsSelected, IncorrectMultiSelectOptionsSelected, \
     IncorrectCheckBoxOptionsSelected, IncorrectRadioGroupChoice, \
@@ -84,7 +84,7 @@ class CreateOrUpdateTaskPresenterImplementation(
     def raise_exception_for_invalid_image_url(self, err: InvalidUrlForImage):
         pass
 
-    def raise_exception_for_invalid_folder_url(self, err: InvalidUrlForFolder):
+    def raise_exception_for_invalid_folder_url(self, err: InvalidUrlForFile):
         pass
 
     def raise_exception_for_gof_ids_in_gof_selector_field_value(self,

@@ -154,7 +154,7 @@ class InvalidUrlForImage(Exception):
         self.image_url = image_url
 
 
-class InvalidUrlForFolder(Exception):
+class InvalidUrlForFile(Exception):
 
     def __init__(
             self, field_id: str, folder_url: str
