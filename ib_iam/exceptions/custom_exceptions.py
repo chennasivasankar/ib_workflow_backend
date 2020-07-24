@@ -1,4 +1,11 @@
+from typing import List
+
+
 class UserIsNotAdmin(Exception):
+    pass
+
+
+class InvalidUser(Exception):
     pass
 
 

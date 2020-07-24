@@ -102,6 +102,17 @@ class GetUsersListPresenterImplementation(GetUsersListPresenterInterface,
         }
         return user_response_dict
 
+    def raise_invalid_user(self):
+        from ib_iam.constants.exception_messages import \
+            INVALID_USER
+        response_dict = {
+            "response": INVALID_USER[0],
+            "http_status_code": StatusCode.NOT_FOUND.value,
+            "res_status": INVALID_USER[1]
+        }
+        return self.prepare_404_not_found_response(
+            response_dict=response_dict)
+
     @staticmethod
     def _get_user_teams(team_dtos, user_id):
         teams = []

@@ -331,4 +331,5 @@ class TestGetUsersDetailsInteractor:
 
         # Assert
         adapter_mock.assert_called_once()
+        storage_mock.get_total_count_of_users_for_query.assert_called_once()
         presenter_mock.response_for_get_users.assert_called_once()

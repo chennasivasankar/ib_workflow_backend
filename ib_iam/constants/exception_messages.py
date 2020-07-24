@@ -2,6 +2,10 @@ USER_DOES_NOT_HAVE_PERMISSION = (
     "forbidden access, user cannot access",
     "USER_DOES_NOT_HAVE_PERMISSION"
 )
+INVALID_USER = (
+    "invalid user",
+    "INVALID_USER"
+)
 
 INVALID_OFFSET_VALUE = (
     "given offset value is invalid, less than 0",

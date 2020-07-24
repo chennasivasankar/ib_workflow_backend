@@ -20,8 +20,14 @@ class UserService:
 
     def get_user_profile_bulk(
             self, user_ids: List[str]) -> List[UserProfileDTO]:
-        user_profiles = self.interface.get_user_profile_bulk(
-            user_ids=user_ids)
+        from ib_users.interactors.exceptions.user_profile \
+            import InvalidUserException
+        try:
+            user_profiles = self.interface.get_user_profile_bulk(
+                user_ids=user_ids)
+        except InvalidUserException:
+            from ib_iam.exceptions.custom_exceptions import InvalidUser
+            raise InvalidUser()
         user_profile_dtos = []
         for user in user_profiles:
             user_profile_dtos.append(UserProfileDTO(

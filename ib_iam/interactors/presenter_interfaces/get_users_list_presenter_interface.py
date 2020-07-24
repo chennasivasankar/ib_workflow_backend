@@ -24,3 +24,7 @@ class GetUsersListPresenterInterface(ABC):
     def response_for_get_users(
             self, complete_user_details_dtos: CompleteUsersDetailsDTO):
         pass
+
+    @abstractmethod
+    def raise_invalid_user(self):
+        pass
