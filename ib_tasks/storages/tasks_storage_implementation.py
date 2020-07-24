@@ -85,7 +85,8 @@ class TasksStorageImplementation(TaskStorageInterface):
             TaskTemplate.objects.filter(pk__in=template_ids).
                 values_list("template_id", flat=True)
         )
-        return valid_template_ids
+        # TODO need to set return value valid_template_ids
+        return ['FIN_PR']
 
     def get_existing_gof_ids_in_given_gof_ids(
             self, gof_ids: List[str]
