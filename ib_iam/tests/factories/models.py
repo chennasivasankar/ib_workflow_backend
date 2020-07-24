@@ -41,6 +41,7 @@ class UserDetailsFactory(factory.django.DjangoModelFactory):
 
     user_id = factory.sequence(lambda number: "user%s" % number)
     is_admin = False
+    name = factory.Faker('name')
     company = factory.SubFactory(CompanyFactory)
 
 

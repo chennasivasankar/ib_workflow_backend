@@ -22,15 +22,12 @@ class ServiceInterface:
         pass
 
     @staticmethod
-    def get_user_dtos_based_on_limit_and_offset(limit: int, offset: int, search_query: str) \
-            -> List[UserDTO]:
-        storage = StorageImplementation()
-
-        user_dtos = storage.get_user_dtos_based_on_limit_and_offset(limit=limit,
-                                                                    offset=offset,
-                                                                    search_query=
-                                                         search_query)
-        return user_dtos
+    def get_user_dtos_based_on_limit_and_offset(
+            limit: int, offset: int, search_query: str)-> List[UserDTO]:
+        '''
+         icontains. --> case insensitive
+        '''
+        pass
 
     @staticmethod
     def get_all_user_dtos_based_on_query(search_query: str) -> \
