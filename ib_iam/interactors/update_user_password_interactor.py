@@ -1,4 +1,4 @@
-from ib_iam.interactors.presenter_interfaces.presenter_interface import \
+from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
     AuthPresenterInterface
 
 

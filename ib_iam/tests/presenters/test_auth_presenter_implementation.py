@@ -7,11 +7,11 @@ class TestAuthPresenterImplementation:
 
     def test_raise_exception_for_invalid_email(self):
         # Arrange
-        from ib_iam.presenters.presenter_implementation import \
+        from ib_iam.presenters.auth_presenter_implementation import \
             AuthPresenterImplementation
         presenter = AuthPresenterImplementation()
 
-        from ib_iam.presenters.presenter_implementation import INVALID_EMAIL
+        from ib_iam.presenters.auth_presenter_implementation import INVALID_EMAIL
         expected_response = INVALID_EMAIL[0]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
         expected_res_status = INVALID_EMAIL[1]
@@ -28,11 +28,11 @@ class TestAuthPresenterImplementation:
 
     def test_raise_exception_for_incorrect_password(self):
         # Arrange
-        from ib_iam.presenters.presenter_implementation import \
+        from ib_iam.presenters.auth_presenter_implementation import \
             AuthPresenterImplementation
         presenter = AuthPresenterImplementation()
 
-        from ib_iam.presenters.presenter_implementation import \
+        from ib_iam.presenters.auth_presenter_implementation import \
             INCORRECT_PASSWORD
         expected_response = INCORRECT_PASSWORD[0]
         expected_http_status_code = StatusCode.NOT_FOUND.value
@@ -59,7 +59,7 @@ class TestAuthPresenterImplementation:
             user_id="121"
         )
 
-        from ib_iam.presenters.presenter_implementation import \
+        from ib_iam.presenters.auth_presenter_implementation import \
             AuthPresenterImplementation
         presenter = AuthPresenterImplementation()
 
@@ -77,11 +77,11 @@ class TestAuthPresenterImplementation:
 
     def test_raise_exception_for_user_account_does_not_exists(self):
         # Arrange
-        from ib_iam.presenters.presenter_implementation import \
+        from ib_iam.presenters.auth_presenter_implementation import \
             AuthPresenterImplementation
         presenter = AuthPresenterImplementation()
 
-        from ib_iam.presenters.presenter_implementation import \
+        from ib_iam.presenters.auth_presenter_implementation import \
             USER_ACCOUNT_DOES_NOT_EXIST
         expected_response = USER_ACCOUNT_DOES_NOT_EXIST[0]
         expected_http_status_code = StatusCode.NOT_FOUND.value
@@ -100,7 +100,7 @@ class TestAuthPresenterImplementation:
 
     def test_get_success_response_for_reset_password_link_to_user_email(self):
         # Arrange
-        from ib_iam.presenters.presenter_implementation import \
+        from ib_iam.presenters.auth_presenter_implementation import \
             AuthPresenterImplementation
         presenter = AuthPresenterImplementation()
 
@@ -113,11 +113,11 @@ class TestAuthPresenterImplementation:
 
     def test_raise_token_does_not_exists(self):
         # Arrange
-        from ib_iam.presenters.presenter_implementation import \
+        from ib_iam.presenters.auth_presenter_implementation import \
             AuthPresenterImplementation
         presenter = AuthPresenterImplementation()
 
-        from ib_iam.presenters.presenter_implementation import \
+        from ib_iam.presenters.auth_presenter_implementation import \
             TOKEN_DOES_NOT_EXIST
         expected_response = TOKEN_DOES_NOT_EXIST[0]
         expected_http_status_code = StatusCode.NOT_FOUND.value
@@ -135,11 +135,11 @@ class TestAuthPresenterImplementation:
 
     def test_raise_token_has_expired(self):
         # Arrange
-        from ib_iam.presenters.presenter_implementation import \
+        from ib_iam.presenters.auth_presenter_implementation import \
             AuthPresenterImplementation
         presenter = AuthPresenterImplementation()
 
-        from ib_iam.presenters.presenter_implementation import \
+        from ib_iam.presenters.auth_presenter_implementation import \
             TOKEN_HAS_EXPIRED
         expected_response = TOKEN_HAS_EXPIRED[0]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
@@ -157,7 +157,7 @@ class TestAuthPresenterImplementation:
 
     def test_get_update_user_password_success_response(self):
         # Arrange
-        from ib_iam.presenters.presenter_implementation import \
+        from ib_iam.presenters.auth_presenter_implementation import \
             AuthPresenterImplementation
         presenter = AuthPresenterImplementation()
 
@@ -170,11 +170,11 @@ class TestAuthPresenterImplementation:
 
     def test_raise_exception_for_password_min_length_required(self):
         # Arrange
-        from ib_iam.presenters.presenter_implementation import \
+        from ib_iam.presenters.auth_presenter_implementation import \
             AuthPresenterImplementation
         presenter = AuthPresenterImplementation()
 
-        from ib_iam.presenters.presenter_implementation import \
+        from ib_iam.presenters.auth_presenter_implementation import \
             PASSWORD_MIN_LENGTH
         from ib_iam.constants.config import REQUIRED_PASSWORD_MIN_LENGTH
         expected_response \
@@ -199,11 +199,11 @@ class TestAuthPresenterImplementation:
             self
     ):
         # Arrange
-        from ib_iam.presenters.presenter_implementation import \
+        from ib_iam.presenters.auth_presenter_implementation import \
             AuthPresenterImplementation
         presenter = AuthPresenterImplementation()
 
-        from ib_iam.presenters.presenter_implementation import \
+        from ib_iam.presenters.auth_presenter_implementation import \
             PASSWORD_AT_LEAST_ONE_SPECIAL_CHARACTER
         expected_response = PASSWORD_AT_LEAST_ONE_SPECIAL_CHARACTER[0]
         expected_http_status_code = StatusCode.BAD_REQUEST.value

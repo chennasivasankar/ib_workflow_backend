@@ -3,7 +3,7 @@ from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, \
     OffsetValueIsGreaterThanLimitValue
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.dtos \
-    import CompleteUsersDetailsDTO
+    import ListOfCompleteUsersDTO
 from ib_iam.interactors.presenter_interfaces.get_users_list_presenter_interface \
     import GetUsersListPresenterInterface
 from ib_iam.interactors.storage_interfaces.get_users_list_storage_interface \
@@ -34,7 +34,7 @@ class GetUsersDetailsInteractor(ValidationMixin):
         return response
 
     def get_users_details(self, user_id: str, offset: int,
-                          limit: int) -> CompleteUsersDetailsDTO:
+                          limit: int) -> ListOfCompleteUsersDTO:
         self._check_and_throw_user_is_admin(user_id=user_id)
         self._constants_validations(offset=offset, limit=limit)
         user_dtos = self.storage.get_users_who_are_not_admins()

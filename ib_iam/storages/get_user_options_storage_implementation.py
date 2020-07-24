@@ -1,7 +1,7 @@
 from typing import List
 
 from ib_iam.interactors.storage_interfaces.dtos \
-    import RoleIdAndNameDTO, TeamDTO, CompanyDTO
+    import RoleIdAndNameDTO, TeamDTO, CompanyDTO, TeamIdAndNameDTO
 from ib_iam.interactors.storage_interfaces.get_user_options_storage_interface \
     import GetUserOptionsStorageInterface
 
@@ -25,13 +25,13 @@ class GetUserOptionsStorageImplementation(GetUserOptionsStorageInterface):
             )
         return companies
 
-    def get_teams(self) -> List[TeamDTO]:
+    def get_teams(self) -> List[TeamIdAndNameDTO]:
         teams = []
         from ib_iam.models import Team
         team_query_set = Team.objects.values('team_id', 'name')
         for team in team_query_set:
             teams.append(
-                TeamDTO(
+                TeamIdAndNameDTO(
                     team_id=str(team['team_id']),
                     team_name=team['name']
                 )

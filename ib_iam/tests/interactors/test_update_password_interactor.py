@@ -7,7 +7,7 @@ class TestUpdateUserPasswordInteractor:
     @pytest.fixture()
     def presenter_mock(self):
         from unittest.mock import create_autospec
-        from ib_iam.interactors.presenter_interfaces.presenter_interface import \
+        from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
             AuthPresenterInterface
         presenter = create_autospec(AuthPresenterInterface)
         return presenter

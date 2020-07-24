@@ -1294,7 +1294,7 @@
         "security": [
           {
             "oauth": [
-              "update"
+              "write"
             ]
           }
         ],

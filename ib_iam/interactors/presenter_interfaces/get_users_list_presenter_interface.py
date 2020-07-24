@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from ib_iam.interactors.presenter_interfaces.dtos import CompleteUsersDetailsDTO
+from ib_iam.interactors.presenter_interfaces.dtos import ListOfCompleteUsersDTO
 
 
 class GetUsersListPresenterInterface(ABC):
@@ -22,5 +22,5 @@ class GetUsersListPresenterInterface(ABC):
 
     @abstractmethod
     def response_for_get_users(
-            self, complete_user_details_dtos: CompleteUsersDetailsDTO):
+            self, complete_user_details_dtos: ListOfCompleteUsersDTO):
         pass

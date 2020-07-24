@@ -2,7 +2,7 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.constants.enums import StatusCode
-from ib_iam.interactors.presenter_interfaces.presenter_interface import \
+from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
     GetUserProfilePresenterInterface
 
 INVALID_USER_ID = (

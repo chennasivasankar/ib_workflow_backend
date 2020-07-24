@@ -3,6 +3,8 @@ from unittest.mock import patch
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
 
+from ib_iam.tests.common_fixtures.reset_fixture import \
+    reset_sequence_for_user_profile_dto_factory
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories.models import UserDetailsFactory
 
@@ -58,7 +60,7 @@ class TestCase03GetUsersAPITestCase(TestUtils):
         "ib_iam.adapters.user_service.UserService.get_user_profile_bulk")
     def test_case(self, get_user_profile_bulk, set_up, user_set_up, snapshot):
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
-
+        reset_sequence_for_user_profile_dto_factory()
         get_user_profile_bulk.return_value = [
             UserProfileDTOFactory.create(user_id=USER_ID_01),
             UserProfileDTOFactory.create(user_id=USER_ID_02),

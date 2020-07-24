@@ -1,4 +1,4 @@
-from ib_iam.adapters.services import get_service_adapter
+from ib_iam.adapters.service_adapter import get_service_adapter
 from ib_iam.interactors.presenter_interfaces \
     .team_presenter_interface import TeamPresenterInterface
 from ib_iam.interactors.storage_interfaces \
@@ -11,7 +11,8 @@ from ib_iam.interactors.storage_interfaces.dtos import (
     TeamDTO)
 from ib_iam.adapters.dtos import UserProfileDTO
 from typing import List
-from ib_iam.exceptions.custom_exceptions import UserHasNoAccess, InvalidLimitValue, \
+from ib_iam.exceptions.custom_exceptions import UserHasNoAccess, \
+    InvalidLimitValue, \
     InvalidOffsetValue
 
 

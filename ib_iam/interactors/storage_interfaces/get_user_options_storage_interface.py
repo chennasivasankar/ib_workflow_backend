@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List
 
 from ib_iam.interactors.storage_interfaces.dtos \
-    import TeamDTO, RoleIdAndNameDTO, CompanyDTO
+    import TeamDTO, RoleIdAndNameDTO, CompanyDTO, TeamIdAndNameDTO
 
 
 class GetUserOptionsStorageInterface(ABC):
@@ -16,7 +16,7 @@ class GetUserOptionsStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_teams(self) -> List[TeamDTO]:
+    def get_teams(self) -> List[TeamIdAndNameDTO]:
         pass
 
     @abstractmethod

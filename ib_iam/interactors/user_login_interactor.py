@@ -1,7 +1,7 @@
 from ib_iam.adapters.auth_service import EmailAndPasswordDTO
 from ib_iam.exceptions.custom_exceptions import InvalidEmail, \
     UserAccountDoesNotExist
-from ib_iam.interactors.presenter_interfaces.presenter_interface import \
+from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
     AuthPresenterInterface
 
 from ib_iam.interactors.storage_interfaces.storage_interface import \
@@ -52,6 +52,6 @@ class LoginInteractor:
             email_and_password_dto=email_and_password_dto,
         )
         user_id = user_tokens_dto.user_id
-        is_admin = self.storage.get_is_admin_of_given_user_id(user_id=user_id)
+        is_admin = self.storage.check_is_admin_user(user_id=user_id)
 
         return user_tokens_dto, is_admin

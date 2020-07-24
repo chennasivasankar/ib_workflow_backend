@@ -5,7 +5,7 @@ class TestGetUserProfileInteractor:
 
     @pytest.fixture()
     def presenter_mock(self):
-        from ib_iam.interactors.presenter_interfaces.presenter_interface import \
+        from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
             GetUserProfilePresenterInterface
         from unittest.mock import create_autospec
         presenter = create_autospec(GetUserProfilePresenterInterface)

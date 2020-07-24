@@ -14,7 +14,7 @@ def api_wrapper(*args, **kwargs):
         UpdateUserPasswordInteractor
     interactor = UpdateUserPasswordInteractor()
 
-    from ib_iam.presenters.presenter_implementation import \
+    from ib_iam.presenters.auth_presenter_implementation import \
         AuthPresenterImplementation
     presenter = AuthPresenterImplementation()
     response = interactor.update_user_password_wrapper(presenter=presenter,

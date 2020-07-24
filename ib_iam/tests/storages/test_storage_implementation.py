@@ -15,7 +15,7 @@ class TestStorageImplementation:
         storage = StorageImplementation()
 
         # Act
-        is_admin = storage.get_is_admin_of_given_user_id(
+        is_admin = storage.check_is_admin_user(
             user_id=user_id
         )
 
