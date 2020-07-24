@@ -161,7 +161,7 @@ class TestGetTaskTemplatesInteractor:
 
     def test_when_no_task_templates_present_raises_exception(
             self, task_storage_mock, presenter_mock,
-            presenter_response_mock):
+            presenter_response_mock, mocker):
         # Arrange
         user_id = "user_1"
         from ib_tasks.constants.exception_messages import \
@@ -170,6 +170,9 @@ class TestGetTaskTemplatesInteractor:
         task_template_interactor = GetTaskTemplatesInteractor(
             task_storage=task_storage_mock
         )
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_user_role_ids
+        get_user_role_ids_mock_method = get_user_role_ids(mocker)
 
         task_template_dtos = []
         task_storage_mock.get_task_templates_dtos.return_value = \
@@ -188,7 +191,8 @@ class TestGetTaskTemplatesInteractor:
         #Assert
         call_args = presenter_mock.\
             raise_task_templates_does_not_exists_exception.call_args
-        assert call_args.args[0].args[0] == TASK_TEMPLATES_DOES_NOT_EXISTS
+        assert call_args.args[0].args[0] == expected_err_message
+        get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
 
     def test_when_no_actions_for_templates_returns_empty_list_of_actions_of_templates(
             self, task_storage_mock, presenter_mock,
