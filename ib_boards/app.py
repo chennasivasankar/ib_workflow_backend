@@ -5,4 +5,4 @@ class IbBoardsAppConfig(AppConfig):
     name = "ib_boards"
 
     def ready(self):
-        from ib_boards import signals # pylint: disable=unused-variable
+        pass

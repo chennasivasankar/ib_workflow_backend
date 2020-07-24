@@ -111,18 +111,19 @@ class UserDoNotHaveAccessToBoards(Exception):
 class UserDoNotHaveAccessToColumn(Exception):
     pass
 
+
 class InvalidBoardIds(Exception):
     def __init__(self, board_ids: List[str]):
         self.board_ids = board_ids
-
 
 
 class DuplicateValuesInColumnDisplayOrder(Exception):
     def __init__(self, display_order_values: List[int]):
         self.display_order_values = display_order_values
 
+
 class InvalidBoardId(Exception):
-   pass
+    pass
 
 
 class InvalidColumnId(Exception):

@@ -17,17 +17,20 @@ class TestInvalidUserRoleForColumn:
 
     @pytest.fixture
     def reset_sequence(self):
-        from ib_boards.tests.factories.models import BoardFactory, ColumnFactory
+        from ib_boards.tests.factories.models import BoardFactory, \
+            ColumnFactory
         BoardFactory.reset_sequence()
         ColumnFactory.reset_sequence()
         from ib_boards.tests.factories.interactor_dtos import BoardDTOFactory
         BoardDTOFactory.reset_sequence()
 
-    def test_with_valid_user_role_for_the_column(self, storage, reset_sequence):
+    def test_with_valid_user_role_for_the_column(self, storage,
+                                                 reset_sequence):
         # Arrange
         user_role = 'USER'
         column_id = 'COLUMN_ID_1'
-        from ib_boards.tests.factories.models import BoardFactory, ColumnFactory
+        from ib_boards.tests.factories.models import BoardFactory, \
+            ColumnFactory
         BoardFactory.create_batch(2)
         ColumnFactory.create_batch(3, board_id='BOARD_ID_1')
         from ib_boards.tests.factories.models import ColumnPermissionFactory
@@ -37,11 +40,13 @@ class TestInvalidUserRoleForColumn:
         # Act
         storage.validate_user_role_with_column_roles(user_role=user_role)
 
-    def test_with_invalid_user_role_for_the_column(self, storage, reset_sequence):
+    def test_with_invalid_user_role_for_the_column(self, storage,
+                                                   reset_sequence):
         # Arrange
         user_role = 'USER'
         column_id = 'COLUMN_ID_1'
-        from ib_boards.tests.factories.models import BoardFactory, ColumnFactory
+        from ib_boards.tests.factories.models import BoardFactory, \
+            ColumnFactory
         BoardFactory.create_batch(2)
         ColumnFactory.create_batch(3, board_id='BOARD_ID_1')
         from ib_boards.tests.factories.models import ColumnPermissionFactory
@@ -57,12 +62,13 @@ class TestInvalidUserRoleForColumn:
         # Arrange
         user_role = 'USER'
         column_id = 'COLUMN_ID_1'
-        from ib_boards.tests.factories.models import BoardFactory, ColumnFactory
+        from ib_boards.tests.factories.models import BoardFactory, \
+            ColumnFactory
         BoardFactory.create_batch(2)
         ColumnFactory.create_batch(3, board_id='BOARD_ID_1')
         from ib_boards.tests.factories.models import ColumnPermissionFactory
-        ColumnPermissionFactory(column_id='COLUMN_ID_1', user_role_id='ALL_ROLES')
+        ColumnPermissionFactory(column_id='COLUMN_ID_1',
+                                user_role_id='ALL_ROLES')
 
         # Act
         storage.validate_user_role_with_column_roles(user_role=user_role)
-

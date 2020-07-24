@@ -44,7 +44,7 @@ class TestAddOrDeleteColumnsForBoardInteractor:
     @pytest.fixture
     def column_dtos_with_no_display_name(self):
         return [
-            ColumnDTOFactory(display_name=''),
+            ColumnDTOFactory(name=''),
             ColumnDTOFactory()
         ]
 
@@ -217,7 +217,8 @@ class TestAddOrDeleteColumnsForBoardInteractor:
             self, storage_mock, sequence_reset,
             column_dtos_with_invalid_task_template_id, mocker):
         # Arrange
-        invalid_task_template_ids = ['TASK_TEMPLATE_ID_4', 'TASK_TEMPLATE_ID_5']
+        invalid_task_template_ids = ['TASK_TEMPLATE_ID_4',
+                                     'TASK_TEMPLATE_ID_5']
         task_template_ids = [
             'TASK_TEMPLATE_ID_1', 'TASK_TEMPLATE_ID_2', 'TASK_TEMPLATE_ID_3',
             'TASK_TEMPLATE_ID_4', 'TASK_TEMPLATE_ID_5',
@@ -409,7 +410,8 @@ class TestAddOrDeleteColumnsForBoardInteractor:
             adapter_mock
         adapter_mock = adapter_mock(mocker=mocker,
                                     user_roles=user_roles)
-        from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO
+        from ib_boards.interactors.storage_interfaces.dtos import \
+            BoardColumnDTO
         storage_mock.get_board_ids_for_column_ids.return_value = [
             BoardColumnDTO(
                 board_id='BOARD_ID_1',
@@ -440,7 +442,6 @@ class TestAddOrDeleteColumnsForBoardInteractor:
         # Arrange
         board_ids = ['BOARD_ID_0']
 
-        from ib_boards.interactors.dtos import BoardColumnsDTO
         present_column_ids = ['COLUMN_ID_1', 'COLUMN_ID_2', 'COLUMN_ID_3']
         user_roles = ['ALL_ROLES', 'MEMBER', 'USER']
         from ib_boards.tests.common_fixtures.adapters.iam_service import \

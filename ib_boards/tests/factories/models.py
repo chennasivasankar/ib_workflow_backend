@@ -21,7 +21,7 @@ class ColumnFactory(factory.django.DjangoModelFactory):
     display_order = factory.Sequence(lambda n: n + 1)
     task_selection_config = """
         {
-            "FIN_PR":["PR_PAYMENT_REQUEST_DRAFTS"]
+            "FIN_PR":["stage_id_1", "stage_id_2", "stage_id_3"]
         }
     """
     list_brief_view_config = """

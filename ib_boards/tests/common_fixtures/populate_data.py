@@ -142,7 +142,6 @@ def populate_dict_with_invalid_json():
 
 
 def populate_dict_with_valid_data():
-    import json
     json_object = """
                 {
                     "FIN_PR": ["PR_PAYMENT_REQUEST_DRAFTS", "PR_PENDING_RP_APPROVAL"],
@@ -182,7 +181,6 @@ def populate_dict_with_valid_data():
 
 
 def populate_dict_with_invalid_json_for_summary_fields():
-    import json
     json_object = """
                 {
                     "FIN_PR": ["PR_PAYMENT_REQUEST_DRAFTS", "PR_PENDING_RP_APPROVAL"],

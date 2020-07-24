@@ -1,5 +1,5 @@
 ROLE_NAME_SHOULD_NOT_BE_EMPTY = (
-    "role name should not be empty",
+    "role display_name should not be empty",
     "ROLE_NAME_SHOULD_NOT_BE_EMPTY"
 )
 
