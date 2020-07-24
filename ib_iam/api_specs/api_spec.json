@@ -473,7 +473,7 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "USER_NOT_FOUND"
+                  "USER_DOES_NOT_EXIST"
                 ]
               }
             },

@@ -32,3 +32,17 @@ class TestDeleteUserPresenter:
         assert response_dict['http_status_code'] == StatusCode.FORBIDDEN.value
         assert response_dict['res_status'] == response_status_code
         assert response_dict['response'] == expected_response
+
+    def test_raise_user_is_not_found_exception(self):
+        presenter = DeleteUserPresenterImplementation()
+        from ib_iam.constants.exception_messages import \
+            USER_DOES_NOT_EXIST
+        expected_response = USER_DOES_NOT_EXIST[0]
+        response_status_code = USER_DOES_NOT_EXIST[1]
+
+        actual_response = presenter.raise_user_is_not_found_exception()
+
+        response_dict = json.loads(actual_response.content)
+        assert response_dict['http_status_code'] == StatusCode.NOT_FOUND.value
+        assert response_dict['res_status'] == response_status_code
+        assert response_dict['response'] == expected_response

@@ -22,7 +22,16 @@ class DeleteUserPresenterImplementation(DeleteUserPresenterInterface,
             response_dict=response_dict)
 
     def raise_user_is_not_found_exception(self):
-        pass
+        from ib_iam.constants.exception_messages \
+            import USER_DOES_NOT_EXIST
+        response_dict = {
+            "response": USER_DOES_NOT_EXIST[0],
+            "http_status_code": StatusCode.NOT_FOUND.value,
+            "res_status": USER_DOES_NOT_EXIST[1]
+        }
+        response = self.prepare_404_not_found_response(
+            response_dict=response_dict)
+        return response
 
     def raise_user_does_not_have_delete_permission_exception(self):
         pass
