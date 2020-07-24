@@ -15,7 +15,8 @@ class GetUsersListStorageImplementation(GetUsersListStorageInterface):
     def get_users_who_are_not_admins(self, offset, limit) -> List[UserDTO]:
         from ib_iam.models import UserDetails
         user_dtos = []
-        users = UserDetails.objects.filter(is_admin=False)
+        users = UserDetails.objects. \
+                    filter(is_admin=False)[offset: offset+limit]
         for user in users:
             user_dtos.append(UserDTO(
                 user_id=user.user_id,
