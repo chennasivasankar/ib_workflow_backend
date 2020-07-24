@@ -813,3 +813,207 @@ class TestCreateOrUpdateTask:
         )
         presenter_mock.raise_exception_for_invalid_time_format.assert_called_once()
 
+    def test_create_or_update_task_with_invalid_image_url_raises_exception(
+            self, storage_mock, presenter_mock, mock_object
+    ):
+        # Arrange
+        gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
+            size=1, field_value="www.google.com"
+        )
+        field_ids = [
+            gof_field_values_dto.field_id
+            for gof_field_values_dto in gof_field_values_dtos
+        ]
+        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+            size=1, field_id=factory.Iterator(field_ids),
+            field_type=FieldTypes.IMAGE_UPLOADER.value,
+            allowed_formats='[".jpeg", ".svg"]'
+        )
+        gof_fields_dtos = GoFFieldsDTOFactory.create_batch(
+            size=1, field_values_dtos=gof_field_values_dtos
+        )
+        task_dto = TaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        gof_ids = [
+            gof_fields_dto.gof_id
+            for gof_fields_dto in task_dto.gof_fields_dtos
+        ]
+        storage_mock.get_existing_gof_ids.return_value = gof_ids
+        storage_mock.get_existing_field_ids.return_value = field_ids
+        storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
+        presenter_mock.raise_exception_for_invalid_image_url.return_value = mock_object
+        interactor = CreateOrUpdateTaskInteractor(storage_mock)
+
+        # Act
+        response = interactor.create_or_update_task_wrapper(presenter_mock,
+                                                            task_dto)
+
+        # Assert
+        assert response == mock_object
+        storage_mock.get_field_details_for_given_field_ids.assert_called_once_with(
+            field_ids=field_ids
+        )
+        presenter_mock.raise_exception_for_invalid_image_url.assert_called_once()
+
+    def test_create_or_update_task_with_valid_url_but_not_found_url_raises_exception(
+            self, storage_mock, presenter_mock, mock_object
+    ):
+        # Arrange
+        gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
+            size=1, field_value="https://www.google.com/sls"
+        )
+        field_ids = [
+            gof_field_values_dto.field_id
+            for gof_field_values_dto in gof_field_values_dtos
+        ]
+        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+            size=1, field_id=factory.Iterator(field_ids),
+            field_type=FieldTypes.IMAGE_UPLOADER.value,
+            allowed_formats='[".jpeg", ".svg"]'
+        )
+        gof_fields_dtos = GoFFieldsDTOFactory.create_batch(
+            size=1, field_values_dtos=gof_field_values_dtos
+        )
+        task_dto = TaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        gof_ids = [
+            gof_fields_dto.gof_id
+            for gof_fields_dto in task_dto.gof_fields_dtos
+        ]
+        storage_mock.get_existing_gof_ids.return_value = gof_ids
+        storage_mock.get_existing_field_ids.return_value = field_ids
+        storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
+        presenter_mock.raise_exception_for_could_not_read_image.return_value = mock_object
+        interactor = CreateOrUpdateTaskInteractor(storage_mock)
+
+        # Act
+        response = interactor.create_or_update_task_wrapper(presenter_mock,
+                                                            task_dto)
+
+        # Assert
+        assert response == mock_object
+        storage_mock.get_field_details_for_given_field_ids.assert_called_once_with(
+            field_ids=field_ids
+        )
+        presenter_mock.raise_exception_for_could_not_read_image.assert_called_once()
+
+    def test_create_or_update_task_with_valid_url_but_not_an_image_url_raises_exception(
+            self, storage_mock, presenter_mock, mock_object
+    ):
+        # Arrange
+        gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
+            size=1, field_value="https://www.google.com/"
+        )
+        field_ids = [
+            gof_field_values_dto.field_id
+            for gof_field_values_dto in gof_field_values_dtos
+        ]
+        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+            size=1, field_id=factory.Iterator(field_ids),
+            field_type=FieldTypes.IMAGE_UPLOADER.value,
+            allowed_formats='[".jpeg", ".svg"]'
+        )
+        gof_fields_dtos = GoFFieldsDTOFactory.create_batch(
+            size=1, field_values_dtos=gof_field_values_dtos
+        )
+        task_dto = TaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        gof_ids = [
+            gof_fields_dto.gof_id
+            for gof_fields_dto in task_dto.gof_fields_dtos
+        ]
+        storage_mock.get_existing_gof_ids.return_value = gof_ids
+        storage_mock.get_existing_field_ids.return_value = field_ids
+        storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
+        presenter_mock.raise_exception_for_not_an_image_url.return_value = mock_object
+        interactor = CreateOrUpdateTaskInteractor(storage_mock)
+
+        # Act
+        response = interactor.create_or_update_task_wrapper(presenter_mock,
+                                                            task_dto)
+
+        # Assert
+        assert response == mock_object
+        storage_mock.get_field_details_for_given_field_ids.assert_called_once_with(
+            field_ids=field_ids
+        )
+        presenter_mock.raise_exception_for_not_an_image_url.assert_called_once()
+
+    def test_create_or_update_task_with_valid_image_url_but_with_format_not_in_allowed_formats_raises_exception(
+            self, storage_mock, presenter_mock, mock_object
+    ):
+        # Arrange
+        gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
+            size=1, field_value="https://image.flaticon.com/icons/svg/1829/1829070.svg"
+        )
+        field_ids = [
+            gof_field_values_dto.field_id
+            for gof_field_values_dto in gof_field_values_dtos
+        ]
+        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+            size=1, field_id=factory.Iterator(field_ids),
+            field_type=FieldTypes.IMAGE_UPLOADER.value,
+            allowed_formats='[".jpeg", ".png"]'
+        )
+        gof_fields_dtos = GoFFieldsDTOFactory.create_batch(
+            size=1, field_values_dtos=gof_field_values_dtos
+        )
+        task_dto = TaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        gof_ids = [
+            gof_fields_dto.gof_id
+            for gof_fields_dto in task_dto.gof_fields_dtos
+        ]
+        storage_mock.get_existing_gof_ids.return_value = gof_ids
+        storage_mock.get_existing_field_ids.return_value = field_ids
+        storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
+        presenter_mock.raise_exception_for_not_acceptable_image_format.return_value = mock_object
+        interactor = CreateOrUpdateTaskInteractor(storage_mock)
+
+        # Act
+        response = interactor.create_or_update_task_wrapper(presenter_mock,
+                                                            task_dto)
+
+        # Assert
+        assert response == mock_object
+        storage_mock.get_field_details_for_given_field_ids.assert_called_once_with(
+            field_ids=field_ids
+        )
+        presenter_mock.raise_exception_for_not_acceptable_image_format.assert_called_once()
+
+    def test_create_or_update_task_with_invalid_folder_url_raises_exception(
+            self, storage_mock, presenter_mock, mock_object
+    ):
+        # Arrange
+        gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
+            size=1, field_value="www.google.comss"
+        )
+        field_ids = [
+            gof_field_values_dto.field_id
+            for gof_field_values_dto in gof_field_values_dtos
+        ]
+        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+            size=1, field_id=factory.Iterator(field_ids),
+            field_type=FieldTypes.FILE_UPLOADER.value,
+            allowed_formats='[".zip", ".tar"]'
+        )
+        gof_fields_dtos = GoFFieldsDTOFactory.create_batch(
+            size=1, field_values_dtos=gof_field_values_dtos
+        )
+        task_dto = TaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        gof_ids = [
+            gof_fields_dto.gof_id
+            for gof_fields_dto in task_dto.gof_fields_dtos
+        ]
+        storage_mock.get_existing_gof_ids.return_value = gof_ids
+        storage_mock.get_existing_field_ids.return_value = field_ids
+        storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
+        presenter_mock.raise_exception_for_invalid_folder_url.return_value = mock_object
+        interactor = CreateOrUpdateTaskInteractor(storage_mock)
+
+        # Act
+        response = interactor.create_or_update_task_wrapper(presenter_mock,
+                                                            task_dto)
+
+        # Assert
+        assert response == mock_object
+        storage_mock.get_field_details_for_given_field_ids.assert_called_once_with(
+            field_ids=field_ids
+        )
+        presenter_mock.raise_exception_for_invalid_folder_url.assert_called_once()

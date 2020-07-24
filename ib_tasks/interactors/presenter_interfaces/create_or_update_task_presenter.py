@@ -7,7 +7,8 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidGoFIDsInGoFSelectorField, IncorrectGoFIDInGoFSelectorField, \
     IncorrectRadioGroupChoice, IncorrectCheckBoxOptionsSelected, \
     IncorrectMultiSelectOptionsSelected, IncorrectMultiSelectLabelsSelected, \
-    InvalidDateFormat, InvalidTimeFormat
+    InvalidDateFormat, InvalidTimeFormat, CouldNotReadImage, NotAnImageUrl, \
+    InvalidImageFormat, InvalidUrlForImage, InvalidUrlForFolder
 from ib_tasks.exceptions.fields_custom_exceptions import \
     DuplicationOfFieldIdsExist, InvalidFieldIds
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
@@ -120,4 +121,24 @@ class CreateOrUpdateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_exception_for_invalid_time_format(self, err: InvalidTimeFormat):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_could_not_read_image(self, err: CouldNotReadImage):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_not_an_image_url(self, err: NotAnImageUrl):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_not_acceptable_image_format(self, err: InvalidImageFormat):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_image_url(self, err: InvalidUrlForImage):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_folder_url(self, err: InvalidUrlForFolder):
         pass

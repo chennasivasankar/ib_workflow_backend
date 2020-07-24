@@ -143,3 +143,44 @@ class InvalidTimeFormat(Exception):
         self.field_id = field_id
         self.field_value = field_value
         self.expected_format = expected_format
+
+
+class InvalidUrlForImage(Exception):
+
+    def __init__(
+            self, field_id: str, image_url: str
+    ):
+        self.field_id = field_id
+        self.image_url = image_url
+
+
+class InvalidUrlForFolder(Exception):
+
+    def __init__(
+            self, field_id: str, folder_url: str
+    ):
+        self.field_id = field_id
+        self.folder_url = folder_url
+
+
+class CouldNotReadImage(Exception):
+
+    def __init__(self, field_id: str, given_url: str):
+        self.field_id = field_id
+        self.given_url = given_url
+
+
+class InvalidImageFormat(Exception):
+
+    def __init__(
+            self, field_id: str, given_format: str, allowed_formats: List[str]
+    ):
+        self.field_id = field_id
+        self.given_format = given_format
+        self.allowed_formats = allowed_formats
+
+class NotAnImageUrl(Exception):
+
+    def __init__(self, field_id: str, given_url: str):
+        self.field_id = field_id
+        self.given_url = given_url

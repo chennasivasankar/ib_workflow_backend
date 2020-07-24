@@ -1,4 +1,3 @@
-
 import json
 from typing import Optional, List, Union
 
@@ -10,7 +9,9 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidValueForDropdownField, InvalidGoFIDsInGoFSelectorField, \
     IncorrectGoFIDInGoFSelectorField, IncorrectRadioGroupChoice, \
     IncorrectCheckBoxOptionsSelected, IncorrectMultiSelectOptionsSelected, \
-    IncorrectMultiSelectLabelsSelected, InvalidDateFormat, InvalidTimeFormat
+    IncorrectMultiSelectLabelsSelected, InvalidDateFormat, InvalidTimeFormat, \
+    InvalidUrlForImage, InvalidImageFormat, NotAnImageUrl, CouldNotReadImage, \
+    InvalidUrlForFolder
 from ib_tasks.exceptions.fields_custom_exceptions import \
     DuplicationOfFieldIdsExist, InvalidFieldIds
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
@@ -46,7 +47,8 @@ class CreateOrUpdateTaskInteractor:
         except InvalidFieldIds as err:
             return presenter.raise_exception_for_invalid_field_ids(err)
         except InvalidGoFIDsInGoFSelectorField as err:
-            return presenter.raise_exception_for_gof_ids_in_gof_selector_field_value(err)
+            return presenter.raise_exception_for_gof_ids_in_gof_selector_field_value(
+                err)
         except EmptyValueForPlainTextField as err:
             return presenter.raise_exception_for_empty_value_in_plain_text_field(
                 err)
@@ -66,19 +68,35 @@ class CreateOrUpdateTaskInteractor:
         except InvalidValueForDropdownField as err:
             return presenter.raise_exception_for_invalid_dropdown_value(err)
         except IncorrectGoFIDInGoFSelectorField as err:
-            return presenter.raise_exceptions_for_invalid_gof_id_selected_in_gof_selector(err)
+            return presenter.raise_exceptions_for_invalid_gof_id_selected_in_gof_selector(
+                err)
         except IncorrectRadioGroupChoice as err:
-            return presenter.raise_exception_for_invalid_choice_in_radio_group_field(err)
+            return presenter.raise_exception_for_invalid_choice_in_radio_group_field(
+                err)
         except IncorrectCheckBoxOptionsSelected as err:
-            return presenter.raise_exception_for_invalid_checkbox_group_options_selected(err)
+            return presenter.raise_exception_for_invalid_checkbox_group_options_selected(
+                err)
         except IncorrectMultiSelectOptionsSelected as err:
-            return presenter.raise_exception_for_invalid_multi_select_options_selected(err)
+            return presenter.raise_exception_for_invalid_multi_select_options_selected(
+                err)
         except IncorrectMultiSelectLabelsSelected as err:
-            return presenter.raise_exception_for_invalid_multi_select_labels_selected(err)
+            return presenter.raise_exception_for_invalid_multi_select_labels_selected(
+                err)
         except InvalidDateFormat as err:
             return presenter.raise_exception_for_invalid_date_format(err)
         except InvalidTimeFormat as err:
             return presenter.raise_exception_for_invalid_time_format(err)
+        except InvalidUrlForImage as err:
+            return presenter.raise_exception_for_invalid_image_url(err)
+        except CouldNotReadImage as err:
+            return presenter.raise_exception_for_could_not_read_image(err)
+        except NotAnImageUrl as err:
+            return presenter.raise_exception_for_not_an_image_url(err)
+        except InvalidImageFormat as err:
+            return presenter.raise_exception_for_not_acceptable_image_format(
+                err)
+        except InvalidUrlForFolder as err:
+            return presenter.raise_exception_for_invalid_folder_url(err)
 
     def _prepare_response_for_create_or_update_task(
             self, presenter: CreateOrUpdateTaskPresenterInterface,
@@ -127,7 +145,8 @@ class CreateOrUpdateTaskInteractor:
         valid_gof_ids = self.storage.get_existing_gof_ids(
             gof_ids_in_gof_selector
         )
-        invalid_gof_ids = list(set(gof_ids_in_gof_selector) - set(valid_gof_ids))
+        invalid_gof_ids = list(
+            set(gof_ids_in_gof_selector) - set(valid_gof_ids))
         if invalid_gof_ids:
             raise InvalidGoFIDsInGoFSelectorField(invalid_gof_ids)
 
@@ -162,37 +181,43 @@ class CreateOrUpdateTaskInteractor:
                 self._validate_for_float_value(field_value, field_id)
             field_type_is_dropdown = field_type == FieldTypes.DROPDOWN.value
             if field_type_is_dropdown:
-                valid_dropdown_values = json.loads(field_details_dto.field_values)
+                valid_dropdown_values = json.loads(
+                    field_details_dto.field_values)
                 self._validate_for_dropdown_field_value(
                     field_value, field_id, valid_dropdown_values
                 )
             field_type_is_gof_selector = field_type == FieldTypes.GOF_SELECTOR.value
             if field_type_is_gof_selector:
-                valid_gof_id_options = json.loads(field_details_dto.field_values)
+                valid_gof_id_options = json.loads(
+                    field_details_dto.field_values)
                 self._validate_gof_selector_value(
                     field_value, field_id, valid_gof_id_options
                 )
             field_type_is_radio_group = field_type == FieldTypes.RADIO_GROUP.value
             if field_type_is_radio_group:
-                valid_radio_group_options = json.loads(field_details_dto.field_values)
+                valid_radio_group_options = json.loads(
+                    field_details_dto.field_values)
                 self._validate_for_invalid_radio_group_value(
                     field_value, field_id, valid_radio_group_options
                 )
             field_type_is_check_box_group = field_type == FieldTypes.CHECKBOX_GROUP.value
             if field_type_is_check_box_group:
-                valid_check_box_options = json.loads(field_details_dto.field_values)
+                valid_check_box_options = json.loads(
+                    field_details_dto.field_values)
                 self._validate_for_invalid_checkbox_values(
                     field_value, field_id, valid_check_box_options
                 )
             field_type_is_multi_select_field = field_type == FieldTypes.MULTI_SELECT_FIELD.value
             if field_type_is_multi_select_field:
-                valid_multi_select_options = json.loads(field_details_dto.field_values)
+                valid_multi_select_options = json.loads(
+                    field_details_dto.field_values)
                 self._validate_for_invalid_multi_select_options(
                     field_value, field_id, valid_multi_select_options
                 )
             field_type_is_multi_select_labels = field_type == FieldTypes.MULTI_SELECT_LABELS.value
             if field_type_is_multi_select_labels:
-                valid_multi_select_labels = json.loads(field_details_dto.field_values)
+                valid_multi_select_labels = json.loads(
+                    field_details_dto.field_values)
                 self._validate_for_invalid_multi_select_labels(
                     field_value, field_id, valid_multi_select_labels
                 )
@@ -206,10 +231,63 @@ class CreateOrUpdateTaskInteractor:
                 self._validate_for_time_field_value(
                     field_value, field_id
                 )
+            field_type_is_image_uploader = field_type == FieldTypes.IMAGE_UPLOADER.value
+            if field_type_is_image_uploader:
+                allowed_formats = json.loads(field_details_dto.allowed_formats)
+                self._validate_for_image_uploader_value(
+                    field_value, field_id, allowed_formats
+                )
+            field_type_is_file_uploader = field_type == FieldTypes.FILE_UPLOADER.value
+            if field_type_is_file_uploader:
+                allowed_formats = json.loads(field_details_dto.allowed_formats)
+                self._validate_for_file_uploader_value(
+                    field_value, field_id, allowed_formats
+                )
+
+    @staticmethod
+    def _validate_for_file_uploader_value(
+            field_value: str, field_id: str, allowed_formats: List[str]
+    ) -> Optional[InvalidUrlForFolder]:
+        from ib_tasks.constants.config import VALID_URL_REGEX_PATTERN
+        invalid_url_path = not VALID_URL_REGEX_PATTERN.search(field_value)
+        if invalid_url_path:
+            raise InvalidUrlForFolder(field_id, field_value)
+        return
+
+    @staticmethod
+    def _validate_for_image_uploader_value(
+            field_value: str, field_id: str, allowed_formats: List[str]
+    ) -> Union[
+        None, InvalidUrlForImage, NotAnImageUrl, InvalidImageFormat,
+        CouldNotReadImage
+    ]:
+        from ib_tasks.constants.config import VALID_URL_REGEX_PATTERN
+        invalid_url_path = not VALID_URL_REGEX_PATTERN.search(field_value)
+        if invalid_url_path:
+            raise InvalidUrlForImage(field_id, field_value)
+        import requests
+        response = requests.head(field_value)
+        could_not_read_image = (
+                response.status_code < 200 or response.status_code >= 300
+        )
+        if could_not_read_image:
+            raise CouldNotReadImage(field_id, field_value)
+        given_format = response.headers['content-type']
+        not_an_image = given_format.find("image/") == -1
+        if not_an_image:
+            raise NotAnImageUrl(field_id, field_value)
+        given_image_format = given_format.replace("image/", '.')
+        given_image_format_not_in_allowed_formats = \
+            given_image_format not in allowed_formats
+        if given_image_format_not_in_allowed_formats:
+            raise InvalidImageFormat(
+                field_id, given_image_format, allowed_formats
+            )
+        return
 
     @staticmethod
     def _validate_for_time_field_value(
-        field_value: str, field_id: str
+            field_value: str, field_id: str
     ) -> Optional[InvalidTimeFormat]:
         import datetime
         from ib_tasks.constants.config import TIME_FORMAT
@@ -223,7 +301,7 @@ class CreateOrUpdateTaskInteractor:
 
     @staticmethod
     def _validate_for_date_field_value(
-        field_value: str, field_id: str
+            field_value: str, field_id: str
     ) -> Optional[InvalidDateFormat]:
         import datetime
         from ib_tasks.constants.config import DATE_FORMAT
@@ -254,21 +332,24 @@ class CreateOrUpdateTaskInteractor:
 
     @staticmethod
     def _validate_for_invalid_multi_select_options(
-        field_value: str, field_id: str, valid_multi_select_options: List[str]
+            field_value: str, field_id: str,
+            valid_multi_select_options: List[str]
     ) -> Optional[IncorrectMultiSelectOptionsSelected]:
         selected_multi_select_options = json.loads(field_value)
         invalid_multi_select_options = list(
-            set(selected_multi_select_options) - set(valid_multi_select_options)
+            set(selected_multi_select_options) - set(
+                valid_multi_select_options)
         )
         if invalid_multi_select_options:
             raise IncorrectMultiSelectOptionsSelected(
-                field_id, invalid_multi_select_options, valid_multi_select_options
+                field_id, invalid_multi_select_options,
+                valid_multi_select_options
             )
         return
 
     @staticmethod
     def _validate_for_invalid_checkbox_values(
-        field_value: str, field_id: str, valid_check_box_options: List[str]
+            field_value: str, field_id: str, valid_check_box_options: List[str]
     ) -> Optional[IncorrectCheckBoxOptionsSelected]:
         selected_check_box_options = json.loads(field_value)
         invalid_checkbox_options = list(
@@ -282,7 +363,8 @@ class CreateOrUpdateTaskInteractor:
 
     @staticmethod
     def _validate_for_invalid_radio_group_value(
-            field_value: str, field_id: str, valid_radio_group_options: List[str]
+            field_value: str, field_id: str,
+            valid_radio_group_options: List[str]
     ) -> Optional[IncorrectRadioGroupChoice]:
         invalid_radio_group_choice = field_value not in valid_radio_group_options
         if invalid_radio_group_choice:
