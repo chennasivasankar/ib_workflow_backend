@@ -1,5 +1,8 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Any
+
+from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
 
 
 @dataclass
@@ -33,3 +36,14 @@ class StageDTO:
     value: int
     stage_display_name: str
     stage_display_logic: str
+
+@dataclass
+class GetTaskStageCompleteDetailsDTO:
+    fields_dto: List[FieldDetailsDTO]
+    actions_dto: List[ActionDTO]
+
+
+@dataclass
+class StageValueDTO:
+    stage_id: str
+    value: Any

@@ -86,12 +86,12 @@ def validation_for_tasks_dict(tasks_dict: List[Dict]):
             Optional("button_color"): str
         }]
     )
-    validated_data = []
-    validated_data = schema.validate(tasks_dict)
+
     try:
         validated_data = schema.validate(tasks_dict)
     except SchemaError:
         raise_exception_for_valid_format()
+        return
     for action_dict in validated_data:
         _validate_action_logic(action_logic=action_dict['action_logic'])
 
@@ -104,7 +104,7 @@ def _validate_action_logic(action_logic: str):
         parse(action_logic)
     except AstroidSyntaxError:
         raise InvalidPythonCodeException()
-
+        return
 
 def raise_exception_for_valid_format():
     valid_format = {
