@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
                 ('last_update_datetime', models.DateTimeField(auto_now=True)),
                 ('id', models.UUIDField(default=ib_iam.models.role.generate_uuid4, editable=False, primary_key=True, serialize=False)),
                 ('role_id', models.CharField(max_length=30, unique=True)),
-                ('name', models.CharField(max_length=30)),
+                ('display_name', models.CharField(max_length=30)),
                 ('description', models.TextField(max_length=120)),
             ],
             options={

@@ -1,4 +1,3 @@
-
 import abc
 from dataclasses import dataclass
 from typing import List
@@ -37,7 +36,12 @@ class GetBoardsPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_response_for_get_boards(
-            self, board_dtos: List[BoardDTO], total_boards: int) -> response.HttpResponse:
+            self, board_dtos: List[BoardDTO],
+            total_boards: int) -> response.HttpResponse:
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_offset_exceeds_total_tasks(self):
         pass
 
 
@@ -46,47 +50,32 @@ class PresenterInterface(abc.ABC):
                                       task_fields_dto: List[TaskFieldsDTO],
                                       task_actions_dto: List[TaskActionsDTO],
                                       task_ids: List[str]):
-
-    pass
-
+        pass
 
     @abc.abstractmethod
     def response_for_invalid_board_id(self):
         pass
 
-
     @abc.abstractmethod
     def response_for_invalid_offset_value(self):
         pass
-
 
     @abc.abstractmethod
     def response_for_invalid_limit_value(self):
         pass
 
-
     @abc.abstractmethod
     def response_for_user_donot_have_access_for_board(self):
         pass
 
-
     @abc.abstractmethod
-    def get_response_for_column_details(self, column_details: List[ColumnDetailsDTO],
+    def get_response_for_column_details(self,
+                                        column_details: List[ColumnDetailsDTO],
                                         task_fields_dto: List[TaskFieldsDTO],
                                         task_actions_dto: List[TaskActionsDTO],
                                         task_details: List[TaskColumnDTO]
 
                                         ):
-        pass
-
-
-    @abc.abstractmethod
-    def get_response_for_offset_exceeds_total_tasks(self):
-        pass
-
-
-    @abc.abstractmethod
-    def get_response_for_offset_exceeds_total_tasks(self):
         pass
 
 

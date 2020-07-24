@@ -1,10 +1,9 @@
 from unittest.mock import create_autospec, patch
 import pytest
 
-from ib_boards.interactors.dtos import ColumnParametersDTO, PaginationParametersDTO
+from ib_boards.interactors.dtos import ColumnParametersDTO, PaginationParametersDTO, TaskStageDTO
 from ib_boards.interactors.get_column_details_interactor import GetColumnDetailsInteractor
 from ib_boards.interactors.presenter_interfaces.presenter_interface import PresenterInterface
-from ib_boards.interactors.dtos import TaskDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import StorageInterface
 from ib_boards.tests.factories.storage_dtos import (
     ColumnDetailsDTOFactory, TaskActionsDTOFactory, TaskFieldsDTOFactory)
@@ -189,7 +188,7 @@ class TestGetColumnDetailsInteractor:
             offset=0,
             limit=10
         )
-        column_ids = ["column_id_1", "column_id_2", "column_id_3"]
+        column_ids = ["COLUMN_ID_1", "COLUMN_ID_2", "COLUMN_ID_3"]
         user_roles = ["FIN_PAYMENT_REQUESTER",
                       "FIN_PAYMENT_POC",
                       "FIN_PAYMENT_APPROVER",
@@ -197,7 +196,7 @@ class TestGetColumnDetailsInteractor:
                       "FIN_PAYMENTS_LEVEL2_VERIFIER",
                       "FIN_PAYMENTS_LEVEL3_VERIFIER"]
 
-        tasks_dtos = [TaskDTO(task_id="task_id_1",
+        tasks_dtos = [TaskStageDTO(task_id="task_id_1",
                               stage_id="stage_id_1")]
 
         from ib_boards.tests.common_fixtures.adapters.task_service import prepare_task_details_dtos

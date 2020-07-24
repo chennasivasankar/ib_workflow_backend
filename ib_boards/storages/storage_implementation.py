@@ -1,14 +1,11 @@
-"""
-Created on: 18/07/20
-Author: Pavankumar Pamuru
 
-"""
 from typing import List, Tuple
 
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
     BoardColumnsDTO, TaskTemplateStagesDTO, TaskSummaryFieldsDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
     ColumnDetailsDTO
+from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, ColumnDetailsDTO, TaskBoardsDetailsDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_boards.models import Board, ColumnPermission, Column
@@ -17,12 +14,10 @@ from ib_boards.models import Board, ColumnPermission, Column
 class StorageImplementation(StorageInterface):
 
     def validate_board_id(self, board_id):
-        is_board_id_invalid = not Board.objects.filter(
+        is_board_id_valid = Board.objects.filter(
             board_id=board_id
         ).exists()
-        if is_board_id_invalid:
-            from ib_boards.exceptions.custom_exceptions import InvalidBoardId
-            raise InvalidBoardId
+        return is_board_id_valid
 
     def create_boards_and_columns(
             self, board_dtos: List[BoardDTO],
@@ -30,7 +25,7 @@ class StorageImplementation(StorageInterface):
         board_objects = [
             Board(
                 board_id=board_dto.board_id,
-                name=board_dto.display_name
+                name=board_dto.name
             )
             for board_dto in board_dtos
         ]
@@ -147,7 +142,7 @@ class StorageImplementation(StorageInterface):
 
     def _get_updated_column_object(
             self, column_dto: ColumnDTO, column_object: Column):
-        column_object.name = column_dto.display_name
+        column_object.name = column_dto.name
         column_object.display_order = column_dto.display_order
         column_object.task_selection_config = \
             self._get_json_string_for_task_selection_config(
@@ -188,7 +183,7 @@ class StorageImplementation(StorageInterface):
             Column(
                 column_id=column_dto.column_id,
                 board_id=column_dto.board_id,
-                name=column_dto.display_name,
+                name=column_dto.name,
                 display_order=column_dto.display_order,
                 task_selection_config=self._get_json_string_for_task_selection_config(
                     column_dto.task_template_stages
@@ -298,7 +293,7 @@ class StorageImplementation(StorageInterface):
         board_dtos = [
             BoardDTO(
                 board_id=board_object.board_id,
-                display_name=board_object.name
+                name=board_object.name
             )
             for board_object in board_objects
         ]
@@ -319,9 +314,43 @@ class StorageImplementation(StorageInterface):
             List[ColumnDetailsDTO]:
         pass
 
+    def get_columns_details(self, column_ids: List[str]) -> \
+            List[ColumnDetailsDTO]:
+        column_objs = Column.objects.filter(column_id__in=column_ids)
+        columns_dtos = self._convert_column_objs_to_dtos(column_objs)
+        return columns_dtos
+
+    @staticmethod
+    def _convert_column_objs_to_dtos(column_objs):
+        list_of_column_dtos = [
+            ColumnDetailsDTO(
+                column_id=obj.column_id,
+                name=obj.name
+            )
+            for obj in column_objs
+        ]
+        return list_of_column_dtos
+
     def get_column_ids_for_board(self, board_id: str, user_roles: List[str]) \
             -> List[str]:
-        pass
+        column_objs = Column.objects.filter(board__board_id=board_id)
+        roles = ColumnPermission.objects.filter(column__in=column_objs)
+        column_ids = []
+        for role in roles:
+            if role.user_role_id == "ALL_ROLES":
+                column_ids.append(role.column.column_id)
+            elif role.user_role_id in user_roles:
+                column_ids.append(role.column.column_id)
+        return sorted(list(set(column_ids)))
+
 
     def get_permitted_user_roles_for_board(self, board_id: str) -> List[str]:
+        return "ALL ROLES"
+
+    def get_board_complete_details(self, board_id: str, stage_ids: List[str]) -> \
+            TaskBoardsDetailsDTO:
+        pass
+
+    def get_column_details(self, board_id: str, user_roles: List[str]) \
+            -> List[BoardColumnDTO]:
         pass
