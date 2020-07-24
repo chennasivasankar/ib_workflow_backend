@@ -956,7 +956,7 @@ class TestCreateOrUpdateTask:
         task_storage_mock.get_existing_gof_ids.return_value = gof_ids
         task_storage_mock.get_existing_field_ids.return_value = field_ids
         task_storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
-        presenter_mock.raise_exception_for_invalid_folder_url.return_value = mock_object
+        presenter_mock.raise_exception_for_invalid_file_url.return_value = mock_object
         interactor = CreateOrUpdateTaskInteractor(
             task_storage_mock, create_task_storage_mock
         )
@@ -970,7 +970,7 @@ class TestCreateOrUpdateTask:
         task_storage_mock.get_field_details_for_given_field_ids.assert_called_once_with(
             field_ids=field_ids
         )
-        presenter_mock.raise_exception_for_invalid_folder_url.assert_called_once()
+        presenter_mock.raise_exception_for_invalid_file_url.assert_called_once()
 
     def test_create_or_update_task_with_valid_details_creates_task(
             self, task_storage_mock, create_task_storage_mock,

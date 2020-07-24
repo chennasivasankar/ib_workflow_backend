@@ -163,10 +163,10 @@ class InvalidUrlForImage(Exception):
 class InvalidUrlForFile(Exception):
 
     def __init__(
-            self, field_id: str, folder_url: str
+            self, field_id: str, file_url: str
     ):
         self.field_id = field_id
-        self.folder_url = folder_url
+        self.file_url = file_url
 
 
 class CouldNotReadImage(Exception):

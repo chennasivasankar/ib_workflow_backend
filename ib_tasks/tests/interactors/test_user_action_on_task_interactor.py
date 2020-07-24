@@ -76,7 +76,7 @@ class TestUserActionOnTaskInteractor:
         user_id = "user_1"
         board_id = "board_1"
         task_id = "task_1"
-        action_id = "action_1"
+        action_id = 1
 
         interactor = UserActionOnTaskInteractor(
             user_id=user_id, board_id=board_id, task_id=task_id,
@@ -97,7 +97,7 @@ class TestUserActionOnTaskInteractor:
         user_id = "user_1"
         board_id = "board_1"
         task_id = "task_1"
-        action_id = "action_1"
+        action_id = 1
         mock_obj = mocker.patch(
             'ib_tasks.adapters.service_adapter.get_service_adapter')
         mock_obj.boards_service.validate_board_id.return_value = False
@@ -121,7 +121,7 @@ class TestUserActionOnTaskInteractor:
         user_id = "user_1"
         board_id = "board_1"
         task_id = "task_1"
-        action_id = "action_1"
+        action_id = 1
         mock_obj = mocker.patch(
             'ib_tasks.adapters.boards_service.BoardsService.validate_board_id')
         mock_obj.return_value = True

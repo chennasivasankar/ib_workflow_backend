@@ -41,8 +41,9 @@ DUPLICATE_ORDER_VALUES_FOR_GOFS = \
     "Given duplicate order values {}! Gof orders of a template should be unique"
 INVALID_TYPE_FOR_ORDER = "Given value for order: {} is not an integer"
 INVALID_TYPE_FOR_VALUE = "Given value for order: {} is not an integer"
-TASK_TEMPLATES_DOES_NOT_EXISTS = "No Task Templates are exists"
-
+TASK_TEMPLATES_DOES_NOT_EXISTS = (
+    "No Task Templates are exists", "TASK_TEMPLATES_DOES_NOT_EXISTS"
+)
 INVALID_GOF_IDS_EXCEPTION_MESSAGE = "Invalid values for gof_ids {}"
 EMPTY_VALUE_FOR_FIELD_ID = "Field ids shouldn't be empty"
 EMPTY_VALUE_FOR_READ_PERMISSIONS = "Read Permission roles shouldn't be empty for these fields ids {}"
@@ -82,3 +83,81 @@ LIMIT_SHOULD_BE_GREATER_THAN_ZERO = ("Limit value should be greater than zero",
 OFFSET_SHOULD_BE_GREATER_THAN_OR_EQAL_TO_MINUS_ONE = (
     "Offset sould be greater than or equal to minus one",
     "OFFSET_SHOULD_BE_GREATER_THAN_OR_EQAL_TO_MINUS_ONE")
+
+INVALID_PHONE_NUMBER_VALUE = (
+    "Invalid value for phone number: {} for field: {}",
+    "INVALID_PHONE_NUMBER_VALUE"
+)
+INVALID_EMAIL = (
+    "Invalid value for email: {} for field: {}",
+    "INVALID_EMAIL"
+)
+INVALID_URL = (
+    "Invalid value for url: {} for field: {}",
+    "INVALID_URL"
+)
+NOT_A_STRONG_PASSWORD = (
+    "Given a weak password: {} for field: {}! Try with atleast 8 characters including special characters",
+    "NOT_A_STRONG_PASSWORD"
+)
+INVALID_NUMBER_VALUE = (
+    "Invalid number: {} for field: {}! Number should only consists digits",
+    "INVALID_NUMBER_VALUE"
+)
+INVALID_FLOAT_VALUE = (
+    "Invalid float value: {} for field: {}!", "INVALID_FLOAT_VALUE"
+)
+INVALID_VALUE_FOR_DROPDOWN = (
+    "Invalid dropdown value: {} for field: {}! Try with these dropdown values: {}",
+    "INVALID_VALUE_FOR_DROPDOWN"
+)
+INCORRECT_GOF_ID_IN_GOF_SELECTOR_FIELD = (
+    "Invalid gof_id: {} for field: {}! Try with these gof_id values: {}",
+    "INCORRECT_GOF_ID_IN_GOF_SELECTOR_FIELD"
+)
+INCORRECT_RADIO_GROUP_CHOICE = (
+    "Invalid radio group choice: {} for field: {}! Try with these valid options: {}",
+    "INCORRECT_RADIO_GROUP_CHOICE"
+)
+INCORRECT_CHECK_BOX_OPTIONS_SELECTED = (
+    "Invalid check box options selected: {} for field: {}! Try with these valid options: {}",
+    "INCORRECT_CHECK_BOX_OPTIONS_SELECTED"
+)
+INCORRECT_MULTI_SELECT_OPTIONS_SELECTED = (
+    "Invalid multi select options selected: {} for field: {}! Try with these valid options: {}",
+    "INCORRECT_MULTI_SELECT_OPTIONS_SELECTED"
+)
+INCORRECT_MULTI_SELECT_LABELS_SELECTED = (
+    "Invalid multi select labels selected: {} for field: {}! Try with these valid options: {}",
+    "INCORRECT_MULTI_SELECT_LABELS_SELECTED"
+)
+INVALID_DATE_FORMAT = (
+    "given invalid format for date: {} for field: {}! Try with this format: {}",
+    "INVALID_DATE_FORMAT"
+)
+INVALID_TIME_FORMAT = (
+    "given invalid format for time: {} for field: {}! Try with this format: {}",
+    "INVALID_TIME_FORMAT"
+)
+INVALID_IMAGE_FORMAT = (
+    "Invalid format for an image: {} for field: {}! Try with these formats: {}",
+    "INVALID_IMAGE_FORMAT"
+)
+INVALID_IMAGE_URL = (
+    "Invalid url for an image: {} for field: {}!", "INVALID_IMAGE_URL"
+)
+INVALID_FILE_URL = (
+    "Invalid url for a file: {} for field: {}!", "INVALID_FILE_URL"
+)
+INVALID_GOF_IDS_IN_GOF_SELECTOR_FIELD = (
+    "Invalid gof ids: {} in gof_selector_field!",
+    "INVALID_GOF_IDS_IN_GOF_SELECTOR_FIELD"
+)
+INVALID_FILE_FORMAT = (
+    "Invalid format for a file: {} for field: {}! Try with these formats: {}",
+    "INVALID_FILE_FORMAT"
+)
+EMPTY_VALUE_FOR_REQUIRED_FIELD = (
+    "Given Empty value for the required field of field_id: {}! Required field should not be empty",
+    "EMPTY_VALUE_FOR_REQUIRED_FIELD"
+)
