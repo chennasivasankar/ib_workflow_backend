@@ -2,17 +2,19 @@
 
 
 RESPONSE_200_JSON = """
-{
-    "id": 1,
-    "name": "string"
-}
+[
+    {
+        "id": 1,
+        "name": "string"
+    }
+]
 """
 
 RESPONSE_400_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "SEARCHABLE_TYPE_DOES_NOT_EXIST"
+    "res_status": "LIMIT_VALUE_SHOULD_BE_GREATER_THAN_ZERO"
 }
 """
 

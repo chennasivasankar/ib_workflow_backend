@@ -7,9 +7,10 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01GetSearchableValuesAPITestCase.test_case status_code'] = '200'
+snapshots['TestCase01GetSearchableValuesAPITestCase.test_case status_code'] = '400'
 
 snapshots['TestCase01GetSearchableValuesAPITestCase.test_case body'] = {
-    'id': 1,
-    'name': 'string'
+    'search_type': [
+        '"CITY" is not a valid choice.'
+    ]
 }

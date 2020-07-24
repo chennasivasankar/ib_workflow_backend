@@ -24,7 +24,8 @@
             "read":"read users",
             "write":"create users",
             "update":"update users",
-            "delete":"delete users"
+            "delete":"delete users",
+            "superuser": "superuser scope"
          },
          "type":"oauth2"
       }
@@ -152,7 +153,7 @@
                "type":"string"
             },
             "action_id":{
-               "type":"string"
+               "type": "string"
             },
             "task_gofs":{
                "type":"array",
@@ -402,7 +403,8 @@
          "type":"object",
          "properties":{
             "action_id":{
-               "type":"string"
+               "type":"integer",
+               "format": "int64"
             },
             "button_text":{
                "type":"string"
@@ -484,8 +486,7 @@
                   "type": "object",
                   "properties":{
                     "action_id": {
-                      "type": "integer",
-                      "format": "int64"
+                      "type": "string"
                     },
                     "button_text": {
                       "type": "string"
