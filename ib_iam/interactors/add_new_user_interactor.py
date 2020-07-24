@@ -8,20 +8,20 @@ from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, \
     RoleIdsAreInvalid, InvalidCompanyId, \
     TeamIdsAreInvalid
 from ib_iam.interactors.mixins.validation import ValidationMixin
-from ib_iam.interactors.presenter_interfaces.presenter_interface \
-    import PresenterInterface
-from ib_iam.interactors.storage_interfaces.storage_interface \
-    import StorageInterface
+from ib_iam.interactors.presenter_interfaces.add_new_user_presenter_inerface \
+    import AddUserPresenterInterface
+from ib_iam.interactors.storage_interfaces.add_new_user_storage_interface \
+    import AddNewUserStorageInterface
 
 
 class AddNewUserInteractor(ValidationMixin):
-    def __init__(self, storage: StorageInterface):
+    def __init__(self, storage: AddNewUserStorageInterface):
         self.storage = storage
 
     def add_new_user_wrapper(
             self, user_id: str, name: str, email: str,
             teams: List[str], roles: List[str], company_id: str,
-            presenter: PresenterInterface):
+            presenter: AddUserPresenterInterface):
         try:
             self.add_new_user(user_id=user_id, name=name, email=email,
                               roles=roles, teams=teams, company_id=company_id)

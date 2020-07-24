@@ -2,14 +2,16 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 from .validator_class import ValidatorClass
 from ib_iam.interactors.add_new_user_interactor import AddNewUserInteractor
-from ib_iam.presenters.presenter_implementation import PresenterImplementation
-from ib_iam.storages.storage_implementation import StorageImplementation
+from ib_iam.presenters.add_new_user_presenter_implementation \
+    import AddUserPresenterImplementation
+from ib_iam.storages.add_new_user_storage_implementation \
+    import AddNewUserStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    storage = StorageImplementation()
-    presenter = PresenterImplementation()
+    storage = AddNewUserStorageImplementation()
+    presenter = AddUserPresenterImplementation()
     interactor = AddNewUserInteractor(storage=storage)
 
     user = kwargs['user']
@@ -23,6 +25,6 @@ def api_wrapper(*args, **kwargs):
 
     response = interactor.add_new_user_wrapper(
         user_id=user_id, name=name, email=email, company_id=company_id,
-        roles=roles, teams=teams,presenter=presenter)
+        roles=roles, teams=teams, presenter=presenter)
 
     return response

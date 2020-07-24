@@ -32,7 +32,8 @@ class ValidationMixin:
         self._validate_offset_and_limit_value_constraints(
             offset=offset, limit=limit)
 
-    def _validate_string(self, value):
+    @staticmethod
+    def _validate_string(value):
         valid = bool(isinstance(value, str) and value != "")
         invalid = not valid
         if invalid:

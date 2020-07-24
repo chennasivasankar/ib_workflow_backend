@@ -10,17 +10,18 @@ class TestAddNewUserIneractor:
     @pytest.fixture
     def storage_mock(self):
         from unittest import mock
-        from ib_iam.interactors.storage_interfaces.storage_interface \
-            import StorageInterface
-        storage = mock.create_autospec(StorageInterface)
+
+        from ib_iam.interactors.storage_interfaces.add_new_user_storage_interface \
+            import AddNewUserStorageInterface
+        storage = mock.create_autospec(AddNewUserStorageInterface)
         return storage
 
     @pytest.fixture
     def presenter_mock(self):
         from unittest import mock
-        from ib_iam.interactors.presenter_interfaces.presenter_interface \
-            import PresenterInterface
-        storage = mock.create_autospec(PresenterInterface)
+        from ib_iam.interactors.presenter_interfaces.add_new_user_presenter_inerface \
+            import AddUserPresenterInterface
+        storage = mock.create_autospec(AddUserPresenterInterface)
         return storage
 
     def test_create_user_when_user_is_not_admin_then_throw_exception(
@@ -222,7 +223,7 @@ class TestAddNewUserIneractor:
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
         ids_of_role_objs = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
-             "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
+                            "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
         company_id = 'company0'
         interactor = AddNewUserInteractor(storage=storage_mock)
         storage_mock.check_is_admin_user.return_value = True

@@ -3,14 +3,15 @@ import json
 import pytest
 
 from ib_iam.constants.enums import StatusCode
-from ib_iam.presenters.presenter_implementation import PresenterImplementation
-from ib_iam.tests.common_fixtures.storages import reset_sequence
-
+from ib_iam.presenters.get_users_list_presenter_implementation \
+    import GetUsersListPresenterImplementation
 
 
 @pytest.fixture()
 def complete_user_details_dto():
-    reset_sequence()
+    from ib_iam.tests.common_fixtures.reset_fixture \
+        import reset_sequence_for_dto_factory
+    reset_sequence_for_dto_factory()
     from ib_iam.tests.factories.storage_dtos \
         import UserTeamDTOFactory, \
         UserRoleDTOFactory, UserCompanyDTOFactory
@@ -41,10 +42,10 @@ def complete_user_details_dto():
     return complete_user_details_dto
 
 
-class TestGetUsersPresenter:
+class TestGetUsersListPresenter:
     def test_raise_user_is_not_admin_exception(self):
         # Arrange
-        presenter = PresenterImplementation()
+        presenter = GetUsersListPresenterImplementation()
 
         from ib_iam.constants.exception_messages import USER_DOES_NOT_HAVE_PERMISSION
 
@@ -62,7 +63,7 @@ class TestGetUsersPresenter:
 
     def test_raise_invalid_offset_value_exception(self):
         # Arrange
-        presenter = PresenterImplementation()
+        presenter = GetUsersListPresenterImplementation()
 
         from ib_iam.constants.exception_messages import INVALID_OFFSET_VALUE
 
@@ -80,7 +81,7 @@ class TestGetUsersPresenter:
 
     def test_raise_invalid_limit_value_exception(self):
         # Arrange
-        presenter = PresenterImplementation()
+        presenter = GetUsersListPresenterImplementation()
 
         from ib_iam.constants.exception_messages import INVALID_LIMIT_VALUE
 
@@ -98,7 +99,7 @@ class TestGetUsersPresenter:
 
     def test_raise_offset_value_is_greater_than_limit_value_exception(self):
         # Arrange
-        presenter = PresenterImplementation()
+        presenter = GetUsersListPresenterImplementation()
 
         from ib_iam.constants.exception_messages \
             import OFFSET_VALUE_IS_GREATER_THAN_LIMIT
@@ -118,7 +119,7 @@ class TestGetUsersPresenter:
 
     def test_response_for_get_users(self, complete_user_details_dto, snapshot):
         # Arrange
-        presenter = PresenterImplementation()
+        presenter = GetUsersListPresenterImplementation()
 
         # Act
         response_object = presenter.response_for_get_users(complete_user_details_dto)

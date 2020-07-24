@@ -18,7 +18,7 @@ class ListOfCompleteUsersDTO:
 
 
 @dataclass
-class UserOptionsDetails:
+class UserOptionsDetailsDTO:
     companies: List[CompanyDTO]
     teams: List[TeamIdAndNameDTO]
     roles: List[RoleIdAndNameDTO]
