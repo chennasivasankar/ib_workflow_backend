@@ -143,11 +143,11 @@ class CreateUpdateDeleteStageActionsInteractor:
                                      db_roles: List[str],
                                      invalid_stage_roles: Dict[str, List],
                                      stage_id: str):
-        # TODO need to call get_invalid_roles_to_action
-        # invalid_action_roles = self._get_invalid_roles_to_action(
-        #     action_roles, db_roles)
-        invalid_action_roles =[]
-        is_invalid_action_roles_present = []
+
+        invalid_action_roles = self._get_invalid_roles_to_action(
+            action_roles, db_roles)
+
+        is_invalid_action_roles_present = invalid_action_roles
         if is_invalid_action_roles_present:
             self._append_invalid_action_roles_to_dict(invalid_action_roles,
                                                       stage_id,
@@ -209,6 +209,7 @@ class CreateUpdateDeleteStageActionsInteractor:
         is_db_stage_actions_empty = not db_stage_actions_dto
         if is_db_stage_actions_empty:
             self.storage.create_stage_actions(stage_actions=actions_dto)
+            return
         stage_actions = self._get_stage_actions(actions_dto)
         self._create_update_stage_actions(db_stage_actions_dto, stage_actions)
         stage_action_names = self._get_stage_action_names(actions_dto)
