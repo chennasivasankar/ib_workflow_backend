@@ -124,8 +124,20 @@ class TestGetUsers:
         storage = GetUsersListStorageImplementation()
 
         # Act
-        output = storage.get_users_who_are_not_admins()
+        output = storage.get_users_who_are_not_admins(0, 10)
 
+        assert output == expected_output
+
+    @pytest.mark.django_db
+    def test_get_users(self, users_company, user_dtos):
+        # Arrange
+        offset = 0
+        limit = 10
+        expected_output = 6
+        storage = GetUsersListStorageImplementation()
+
+        # Act
+        output = storage.get_total_count_of_users_for_query()
         assert output == expected_output
 
     @pytest.mark.django_db

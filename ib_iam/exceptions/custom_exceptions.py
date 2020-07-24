@@ -10,6 +10,10 @@ class UserIsNotAdmin(Exception):
     pass
 
 
+class InvalidUser(Exception):
+    pass
+
+
 class InvalidOffsetValue(Exception):
     pass
 

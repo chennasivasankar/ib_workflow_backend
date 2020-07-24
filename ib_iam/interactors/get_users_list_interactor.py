@@ -1,6 +1,6 @@
 from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, \
     InvalidOffsetValue, InvalidLimitValue, \
-    OffsetValueIsGreaterThanLimitValue
+    OffsetValueIsGreaterThanLimitValue, InvalidUser
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.dtos \
     import ListOfCompleteUsersDTO
@@ -31,16 +31,18 @@ class GetUsersDetailsInteractor(ValidationMixin):
         except OffsetValueIsGreaterThanLimitValue:
             response = presenter. \
                 raise_offset_value_is_greater_than_limit_value_exception()
+        except InvalidUser:
+            response = presenter.raise_invalid_user()
         return response
 
     def get_users_details(self, user_id: str, offset: int,
                           limit: int) -> ListOfCompleteUsersDTO:
         self._check_and_throw_user_is_admin(user_id=user_id)
         self._constants_validations(offset=offset, limit=limit)
-        user_dtos = self.storage.get_users_who_are_not_admins()
-        total_count = len(user_dtos)
-        required_user_dtos = user_dtos[offset: offset + limit]
-        user_ids = [user_dto.user_id for user_dto in required_user_dtos]
+        user_dtos = self.storage.get_users_who_are_not_admins(
+            offset=offset, limit=limit)
+        total_count = self.storage.get_total_count_of_users_for_query()
+        user_ids = [user_dto.user_id for user_dto in user_dtos]
         return self._get_complete_user_details_dto(user_ids, total_count)
 
     def _get_complete_user_details_dto(self, user_ids, total_count):

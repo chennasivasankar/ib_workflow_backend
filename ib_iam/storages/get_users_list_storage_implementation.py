@@ -12,10 +12,11 @@ class GetUsersListStorageImplementation(GetUsersListStorageInterface):
         user = UserDetails.objects.get(user_id=user_id)
         return user.is_admin
 
-    def get_users_who_are_not_admins(self) -> List[UserDTO]:
+    def get_users_who_are_not_admins(self, offset, limit) -> List[UserDTO]:
         from ib_iam.models import UserDetails
         user_dtos = []
-        users = UserDetails.objects.filter(is_admin=False)
+        users = UserDetails.objects. \
+                    filter(is_admin=False)[offset: offset+limit]
         for user in users:
             user_dtos.append(UserDTO(
                 user_id=user.user_id,
@@ -23,6 +24,12 @@ class GetUsersListStorageImplementation(GetUsersListStorageInterface):
                 company_id=str(user.company_id)
             ))
         return user_dtos
+
+    def get_total_count_of_users_for_query(self):
+        from ib_iam.models import UserDetails
+        total_count_of_users = \
+            UserDetails.objects.filter(is_admin=False).count()
+        return total_count_of_users
 
     def get_team_details_of_users_bulk(
             self, user_ids: List[str]) -> List[UserTeamDTO]:

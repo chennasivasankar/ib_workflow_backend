@@ -2,6 +2,10 @@ USER_DOES_NOT_HAVE_PERMISSION = (
     "forbidden access, user cannot access",
     "USER_DOES_NOT_HAVE_PERMISSION"
 )
+INVALID_USER = (
+    "invalid user",
+    "INVALID_USER"
+)
 
 INVALID_OFFSET_VALUE = (
     "given offset value is invalid, less than 0",
@@ -70,7 +74,7 @@ INVALID_TEAM_IDS = (
 
 INVALID_COMPANY_ID = (
     "given company id is invalid",
-    "InvalidComapnyId"
+    "INVALID_COMPANY_ID"
 )
 
 USER_DOES_NOT_EXIST = (
@@ -84,7 +88,7 @@ CREATE_USER_SUCCESSFULLY = (
 )
 
 EDIT_USER_SUCCESSFULLY = (
-    "Edit User successfully"
+    "Edit User successfully",
     "EDIT_USER_SUCCESSFULLY"
 )
 

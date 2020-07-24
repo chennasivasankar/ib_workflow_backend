@@ -247,12 +247,14 @@
           "type": "object",
           "properties": {
             "company_id": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             },
             "team_ids": {
               "type": "array",
               "items": {
-                "type": "string"
+                "type": "string",
+                "format": "uuid"
               }
             },
             "role_ids": {
@@ -466,7 +468,8 @@
       "name": "user_id",
       "in": "path",
       "required": true,
-      "type": "string"
+      "type": "string",
+      "format": "uuid"
     },
     "AddUserParameter": {
       "name": "AddUser",
@@ -617,7 +620,61 @@
                 "enum": [
                   "INVALID_EMAIL",
                   "INVALID_NAME",
-                  "USER_ALREADY_EXIST_WITH_THIS_EMAIL"
+                  "USER_ALREADY_EXIST_WITH_THIS_EMAIL",
+                  "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "EditUserBadRequestResponse": {
+      "description": "Failed to add user",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_EMAIL",
+                  "EMPTY_NAME_IS_INVALID",
+                  "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "NotFoundResponse": {
+      "description": "Edit User Not Found",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_COMPANY_ID",
+                  "INVALID_TEAM_IDS",
+                  "INVALID_ROLE_IDS",
+                  "USER_DOES_NOT_EXIST"
                 ]
               }
             },
@@ -1060,7 +1117,7 @@
         }
       }
     },
-    "/add_user/v1/": {
+    "/users/create/v1/": {
       "post": {
         "operationId": "add_user",
         "description": "add an user with valid details",
@@ -1073,7 +1130,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/AddUserParameter"
+            "$ref": "#/parameters/UserParameter"
           }
         ],
         "responses": {
@@ -1082,6 +1139,48 @@
           },
           "400": {
             "$ref": "#/responses/AddUserBadRequestResponse"
+          },
+          "403": {
+            "$ref": "#/responses/UserDoesNotHavePermissionResponse"
+          },
+          "404": {
+            "$ref": "#/responses/NotFoundResponse"
+          }
+        }
+      }
+    },
+    "/users/{user_id}/v1/": {
+      "put": {
+        "operationId": "edit_user",
+        "summary": "Edit User",
+        "description": "edit an user",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/UserParameter"
+          },
+          {
+            "$ref": "#/parameters/UserIdPathParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Edit User Successfully"
+          },
+          "400": {
+            "$ref": "#/responses/EditUserBadRequestResponse"
+          },
+          "403": {
+            "$ref": "#/responses/UserDoesNotHavePermissionResponse"
+          },
+          "404": {
+            "$ref": "#/responses/NotFoundResponse"
           }
         }
       }

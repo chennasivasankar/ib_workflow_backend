@@ -3,7 +3,7 @@
 APP_NAME = "ib_iam"
 OPERATION_NAME = "add_user"
 REQUEST_METHOD = "post"
-URL_SUFFIX = "add_user/v1/"
+URL_SUFFIX = "users/create/v1/"
 
 from .test_case_01 import TestCase01AddUserAPITestCase
 from .test_case_02 import TestCase02AddUserAPITestCase

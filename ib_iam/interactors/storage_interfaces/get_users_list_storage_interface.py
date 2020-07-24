@@ -11,7 +11,7 @@ class GetUsersListStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_users_who_are_not_admins(self) -> List[UserDTO]:
+    def get_users_who_are_not_admins(self, offset: int, limit: int) -> List[UserDTO]:
         pass
 
     @abstractmethod
@@ -27,4 +27,8 @@ class GetUsersListStorageInterface(ABC):
     @abstractmethod
     def get_company_details_of_users_bulk(
             self, user_ids: List[str]) -> List[UserCompanyDTO]:
+        pass
+
+    @abstractmethod
+    def get_total_count_of_users_for_query(self):
         pass

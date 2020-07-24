@@ -117,6 +117,26 @@ class TestGetUsersListPresenter:
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
 
+    def test_raise_invalid_user_exception(self):
+        # Arrange
+        presenter = GetUsersListPresenterImplementation()
+
+        from ib_iam.constants.exception_messages \
+            import INVALID_USER
+
+        expected_response = INVALID_USER[0]
+        response_status_code = INVALID_USER[1]
+
+        # Act
+        response_object = \
+            presenter.raise_invalid_user()
+
+        # Assert
+        response = json.loads(response_object.content)
+        assert response['http_status_code'] == StatusCode.NOT_FOUND.value
+        assert response['res_status'] == response_status_code
+        assert response['response'] == expected_response
+
     def test_response_for_get_users(self, complete_user_details_dto, snapshot):
         # Arrange
         presenter = GetUsersListPresenterImplementation()
