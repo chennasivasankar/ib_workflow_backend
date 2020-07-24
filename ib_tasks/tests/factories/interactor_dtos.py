@@ -1,11 +1,14 @@
 import factory
-from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
-from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO
-from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 
-from ib_tasks.interactors.stages_dtos import (
-    StagesActionDTO
-)
+from ib_tasks.adapters.dtos import UserDTO
+from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
+    SearchableFieldDetailDTO
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
+from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO, \
+    GoFsWithTemplateIdDTO
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
+from ib_tasks.constants.enum import Searchable
+from ib_tasks.interactors.stages_dtos import (StagesActionDTO)
 from ib_tasks.interactors.stages_dtos import \
     TaskTemplateStageActionDTO, StageActionDTO, StagesActionDTO
 from ib_tasks.interactors.task_dtos import TaskDTO, GoFFieldsDTO, \
@@ -16,25 +19,26 @@ class StageActionDTOFactory(factory.Factory):
     class Meta:
         model = StageActionDTO
 
-    stage_id = factory.Sequence(lambda n: 'stage_%d' % (n+1))
-    action_name = factory.Sequence(lambda n: 'action_name_%d' % (n+1))
-    logic = factory.Sequence(lambda n: 'logic%d' % (n+1))
-    roles = factory.Sequence(lambda n: [f'ROLE_{n+1}', f'ROLE_{n+2}'])
-    button_text = factory.Sequence(lambda n: 'button_text_%d' % (n+1))
-    button_color = factory.Sequence(lambda n: 'button_color_%d' % (n+1))
+    stage_id = factory.Sequence(lambda n: 'stage_%d' % (n + 1))
+    action_name = factory.Sequence(lambda n: 'action_name_%d' % (n + 1))
+    logic = factory.Sequence(lambda n: 'logic%d' % (n + 1))
+    roles = factory.Sequence(lambda n: [f'ROLE_{n + 1}', f'ROLE_{n + 2}'])
+    button_text = factory.Sequence(lambda n: 'button_text_%d' % (n + 1))
+    button_color = factory.Sequence(lambda n: 'button_color_%d' % (n + 1))
     function_path = "sample_function_path"
 
 
 class TaskTemplateStageActionDTOFactory(factory.Factory):
     class Meta:
         model = TaskTemplateStageActionDTO
-    task_template_id = factory.Sequence(lambda n: "task_template_%d" % (n+1))
-    stage_id = factory.Sequence(lambda n: 'stage_%d' % (n+1))
-    action_name = factory.Sequence(lambda n: 'action_name_%d' % (n+1))
-    logic = factory.Sequence(lambda n: 'logic%d' % (n+1))
-    roles = factory.Sequence(lambda n: [f'ROLE_{n+1}', f'ROLE_{n+2}'])
-    button_text = factory.Sequence(lambda n: 'button_text_%d' % (n+1))
-    button_color = factory.Sequence(lambda n: 'button_color_%d' % (n+1))
+
+    task_template_id = factory.Sequence(lambda n: "task_template_%d" % (n + 1))
+    stage_id = factory.Sequence(lambda n: 'stage_%d' % (n + 1))
+    action_name = factory.Sequence(lambda n: 'action_name_%d' % (n + 1))
+    logic = factory.Sequence(lambda n: 'logic%d' % (n + 1))
+    roles = factory.Sequence(lambda n: [f'ROLE_{n + 1}', f'ROLE_{n + 2}'])
+    button_text = factory.Sequence(lambda n: 'button_text_%d' % (n + 1))
+    button_color = factory.Sequence(lambda n: 'button_color_%d' % (n + 1))
     function_path = "sample_function_path"
 
 
@@ -62,6 +66,7 @@ class GoFsWithTemplateIdDTOFactory(factory.Factory):
     template_id = factory.sequence(lambda n: "template_{}".format(n + 1))
     gof_dtos = factory.SubFactory(GoFWithOrderAndAddAnotherDTOFactory)
 
+
 class ActionDTOFactory(factory.Factory):
     class Meta:
         model = StagesActionDTO
@@ -77,14 +82,15 @@ class ActionDTOFactory(factory.Factory):
     class Params:
         color = factory.Trait(button_color="#ffffff")
 
+
 class FieldValuesDTOFactory(factory.Factory):
     class Meta:
         model = FieldValuesDTO
 
     field_id = factory.sequence(lambda counter: "FIELD_ID-{}".format(counter))
     field_value = factory.sequence(
-        lambda counter: "FIELD_VALUE-{}".format(counter)
-    )
+        lambda counter: "FIELD_VALUE-{}".format(counter))
+
 
 class GoFFieldsDTOFactory(factory.Factory):
     class Meta:
@@ -103,10 +109,35 @@ class TaskDTOFactory(factory.Factory):
         model = TaskDTO
 
     task_template_id = factory.sequence(
-        lambda counter: "TASK_TEMPLATE_ID-{}".format(counter)
-    )
+        lambda counter: "TASK_TEMPLATE_ID-{}".format(counter))
 
     @factory.LazyAttribute
     def gof_fields_dtos(self):
         gof_fields_dtos = GoFFieldsDTOFactory.create_batch(size=2)
         return gof_fields_dtos
+
+
+class SearchableFieldTypeDTOFactory(factory.Factory):
+    class Meta:
+        model = SearchableFieldTypeDTO
+
+    searchable_type = Searchable.USER.value
+    limit = factory.Sequence(lambda n: n + 1)
+    offset = factory.Sequence(lambda n: n + 1)
+    search_query = ""
+
+
+class SearchableFieldUserDetailDTOFactory(factory.Factory):
+    class Meta:
+        model = SearchableFieldDetailDTO
+
+    id = factory.sequence(lambda n: "user_{}".format(n + 1))
+    name = factory.sequence(lambda n: "user_name_{}".format(n + 1))
+
+
+class UserDTOFactory(factory.Factory):
+    class Meta:
+        model = UserDTO
+
+    user_id = factory.sequence(lambda n: "user_{}".format(n + 1))
+    name = factory.sequence(lambda n: "user_name_{}".format(n + 1))

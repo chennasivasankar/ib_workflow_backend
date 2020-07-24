@@ -9,3 +9,9 @@ class SearchableFieldTypeDTO:
     limit: int
     offset: int
     search_query: str
+
+
+@dataclass
+class SearchableFieldDetailDTO:
+    id: str
+    name: str

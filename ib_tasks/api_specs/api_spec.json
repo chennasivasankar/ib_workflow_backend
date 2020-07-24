@@ -341,34 +341,28 @@
       },
 
      "SearchableTypeParameter": {
-      "name": "SearchableTypeParameter",
+      "name": "search_type",
       "description": "Searchable Type Parameter",
       "in": "query",
       "required": true,
       "type": "string",
       "enum": [
-       "CITY",
-       "STATE",
-      "COUNTRY",
-      "VENDOR",
-      "USER",
-     "COMPANY",
-    "TEAM"]
+      "USER"]
     },
     "LimitParameter": {
-      "name": "LimitParameter",
+      "name": "limit",
       "description": "Limit Parameter",
       "in": "query",
       "type": "integer"
     },
     "OffsetParameter": {
-      "name": "OffsetParameter",
+      "name": "offset",
       "description": "Offset Parameter",
       "in": "query",
       "type": "integer"
     },
     "SearchableQueryParameter": {
-      "name": "SearchableQueryParameter",
+      "name": "search_query",
       "description": "Searchable Query Parameter",
       "in": "query",
       "required": true,
@@ -453,21 +447,24 @@
      "SearchableValuesResponse": {
       "description": "OK",
       "schema": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer"
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "name": {
+              "type": "string"
+            }
           },
-          "name": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "name"
-        ]
+          "required": [
+            "id",
+            "name"
+          ]
+        }
       }
-    },
+     },
     "SearchableValuesFailureResponse": {
        "description": "Searchable Values Failure Response",
       "schema": {
@@ -485,7 +482,6 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "SEARCHABLE_TYPE_DOES_NOT_EXIST",
               "LIMIT_VALUE_SHOULD_BE_GREATER_THAN_ZERO",
               "OFFSET_VALUE_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE",
               "NO_SEARCH_RESULTS_FOUND"
