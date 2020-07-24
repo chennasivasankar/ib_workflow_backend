@@ -6,7 +6,7 @@ from django_swagger_utils.utils.test_v1 import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase02EditUserAPITestCase(TestUtils):
+class TestCase06EditUserAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -21,6 +21,8 @@ class TestCase02EditUserAPITestCase(TestUtils):
         reset_sequence_for_model_factories()
         from ib_iam.tests.factories.models import UserDetailsFactory
         UserDetailsFactory.create(user_id=user_id, is_admin=True, company=None)
+        UserDetailsFactory.create(user_id="ef6d1fc6-ac3f-4d2d-a983-752c992e8300", \
+                                  company=None, is_admin=False)
         from ib_iam.tests.factories.models \
             import CompanyFactory, TeamFactory, RoleFactory
         CompanyFactory.create(company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331')
@@ -34,7 +36,7 @@ class TestCase02EditUserAPITestCase(TestUtils):
                 'company_id': 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
                 'team_ids': ['ef6d1fc6-ac3f-4d2d-a983-752c992e8344',
                              'ef6d1fc6-ac3f-4d2d-a983-752c992e8343'],
-                'role_ids': ['ROLE_1']}
+                'role_ids': ['ROLE_100']}
         path_params = {"user_id": "ef6d1fc6-ac3f-4d2d-a983-752c992e8300"}
         query_params = {}
         headers = {}

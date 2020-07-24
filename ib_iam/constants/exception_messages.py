@@ -70,7 +70,7 @@ INVALID_TEAM_IDS = (
 
 INVALID_COMPANY_ID = (
     "given company id is invalid",
-    "InvalidComapnyId"
+    "INVALID_COMPANY_ID"
 )
 
 USER_DOES_NOT_EXIST = (
