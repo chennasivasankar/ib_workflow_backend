@@ -24,13 +24,9 @@ class TestCase01UpdateTeamDetailsAPITestCase(TestUtils):
         UserDetailsFactory(user_id=user_id, is_admin=True)
         team_id = "f2c02d98-f311-4ab2-8673-3daa00757002"
         team = TeamFactory.create(team_id=team_id)
-        from ib_iam.models import Team, UserTeam, UserDetails
-        print(Team.objects.values())
         for user_id in ["2", "3"]:
             UserTeamFactory.create(team=team, user_id=user_id)
-            print(UserTeam.objects.values())
             UserDetailsFactory.create(user_id=user_id)
-            print(UserDetails.objects.values())
         return team_id
 
     @pytest.mark.django_db
