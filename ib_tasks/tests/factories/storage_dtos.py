@@ -82,7 +82,6 @@ class TaskStagesDTOFactory(factory.Factory):
     stage_id = factory.Sequence(lambda n: 'stage_id_%d' % n)
     task_template_id = factory.Sequence(lambda n: 'task_template_id_%d' % n)
 
-
 class StageActionsDTOFactory(factory.Factory):
     class Meta:
         model = StageActionNamesDTO
@@ -180,6 +179,7 @@ class GoFRoleDTOFactory(factory.Factory):
     gof_id = factory.Sequence(lambda counter: "gof_{}".format(counter))
     role = factory.Sequence(lambda counter: "ROLE-{}".format(counter))
     permission_type = PermissionTypes.READ.value
+
 
 
 class FieldDTOFactory(factory.Factory):
