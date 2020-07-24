@@ -5,12 +5,13 @@ from django.db.models import Q
 from ib_tasks.interactors.stages_dtos import TemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO, StageTaskFieldsDTO, \
-    TaskTemplateStageFieldsDTO
+    TaskTemplateStageFieldsDTO, TaskAndFieldsDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import GetTaskStageCompleteDetailsDTO, TaskTemplateStageDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
-from ib_tasks.models import TaskStage, StageAction, Stage
+from ib_tasks.models import TaskStage, StageAction, Stage, Field
 from ib_tasks.models.task import Task
+from ib_tasks.models.task_gof_field import TaskGoFField
 
 
 class FieldsStorageImplementation(FieldsStorageInterface):
@@ -55,16 +56,46 @@ class FieldsStorageImplementation(FieldsStorageInterface):
             )
         return action_dtos
 
-    def get_fields_details(self, template_stage_dtos: List[StageTaskFieldsDTO]) -> \
+    def get_fields_details(self, task_fields_dtos: List[StageTaskFieldsDTO]) -> \
             List[FieldDetailsDTO]:
-        pass
+        q = None
+        for counter, item in enumerate(task_fields_dtos):
+            current_queue = Q(task_gof__task_id=item.task_id, field_id__in=item.field_ids)
+            if counter == 0:
+                q = current_queue
+            else:
+                q = q | current_queue
+
+        field_objs = TaskGoFField.objects.filter(q).select_related(
+            'field', 'task_gof'
+        )
+        task_fields_dtos = self._convert_field_objs_to_dtos(field_objs)
+        return task_fields_dtos
+
+    @staticmethod
+    def _convert_field_objs_to_dtos(field_objs):
+        task_fields_dtos = []
+        for field in field_objs:
+            task_fields_dtos.append(
+                FieldDetailsDTO(
+                    field_id=field.field_id,
+                    value=field.field_response,
+                    key=field.field.display_name,
+                    field_type=field.field.field_type
+                )
+            )
+        return task_fields_dtos
 
     def get_valid_task_ids(self, task_ids: List[str]) -> Optional[List[str]]:
         valid_task_ids = Task.objects.filter(id__in=task_ids).values_list('id', flat=True)
         return list(valid_task_ids)
 
-    def get_field_ids(self, task_dtos: List[TemplateStageDTO]) -> \
+    def get_field_ids(self, task_dtos: List[TaskTemplateStageDTO]) -> \
             List[TaskTemplateStageFieldsDTO]:
+        task_stages_dict = {}
+        for item in task_dtos:
+            task_stages_dict[item.stage_id] = item.task_id
+
         q = None
         for counter, item in enumerate(task_dtos):
             current_queue = Q(stage_id=item.stage_id, task_template_id=item.task_template_id)
@@ -73,11 +104,11 @@ class FieldsStorageImplementation(FieldsStorageInterface):
             else:
                 q = q | current_queue
         stage_objs = Stage.objects.filter(q)
-        task_fields_dtos = self._convert_stage_objs_to_dtos(stage_objs)
+        task_fields_dtos = self._convert_stage_objs_to_dtos(stage_objs, task_stages_dict)
         return task_fields_dtos
 
     @staticmethod
-    def _convert_stage_objs_to_dtos(stage_objs):
+    def _convert_stage_objs_to_dtos(stage_objs, task_stages_dict):
         task_fields_dtos = []
         import json
         for stage in stage_objs:
@@ -86,6 +117,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
             task_fields_dtos.append(
                 TaskTemplateStageFieldsDTO(
                     task_template_id=stage.task_template_id,
+                    task_id=task_stages_dict[stage.stage_id],
                     stage_id=stage.stage_id,
                     field_ids=field_ids
                 )

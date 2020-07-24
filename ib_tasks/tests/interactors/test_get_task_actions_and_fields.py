@@ -52,8 +52,9 @@ class TestGetFieldsAndActionsInteractor:
     def get_field_ids(self):
         return [TaskTemplateStageFieldsDTO(
             task_template_id="task_template_id_1",
+            task_id=1,
             stage_id="stage_id_1",
-            field_ids=["field_id_1"]
+            field_ids=["FIELD-ID-1", "FIELD-ID-2"]
         )]
 
     @pytest.fixture()

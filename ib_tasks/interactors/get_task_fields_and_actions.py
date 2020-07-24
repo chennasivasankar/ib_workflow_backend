@@ -1,6 +1,5 @@
 from typing import List
 
-from ib_boards.interactors.storage_interfaces.dtos import TaskFieldsDTO
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidTaskStageIds
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds, InvalidStageIds
 from ib_tasks.interactors.storage_interfaces.fields_dtos import StageTaskFieldsDTO
@@ -39,7 +38,7 @@ class GetTaskFieldsAndActionsInteractor:
         field_dtos = self.storage.get_fields_details(task_fields_dtos)
 
         task_details_dtos = self._map_fields_and_actions_based_on_their_stage_and_task_id(
-            action_dtos, field_dtos, stage_task_dtos
+            action_dtos, field_dtos, stage_fields_dtos
         )
         return task_details_dtos
 
@@ -79,9 +78,9 @@ class GetTaskFieldsAndActionsInteractor:
     def _map_fields_and_actions_based_on_their_stage_and_task_id(self,
                                                                  action_dtos,
                                                                  field_dtos,
-                                                                 task_dtos):
+                                                                 stage_fields_dtos):
         list_of_task_details_dtos = []
-        for task in task_dtos:
+        for task in stage_fields_dtos:
             list_of_field_dtos = self._get_list_of_fields_for_stage(
                 field_dtos, task)
             list_of_action_dtos = self._get_list_of_actions_dtos_for_stage(
@@ -108,7 +107,7 @@ class GetTaskFieldsAndActionsInteractor:
         list_of_field_dtos = []
         if field_dtos:
             for field in field_dtos:
-                if field.stage_id == task.stage_id:
+                if field.field_id in task.field_ids:
                     list_of_field_dtos.append(field)
         return list_of_field_dtos
 

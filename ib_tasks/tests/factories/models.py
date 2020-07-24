@@ -5,7 +5,7 @@ import factory
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
-    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage)
+    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage, TaskGoF, TaskGoFField)
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
@@ -175,3 +175,21 @@ class TaskTemplateWith2GoFsFactory(TaskTemplateFactory):
     gof2 = factory.RelatedFactory(
         GoFToTaskTemplateFactory, 'task_template', gof__gof_id='gof_2'
     )
+
+
+class TaskGoFFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskGoF
+
+    same_gof_order = 1
+    gof_id = factory.sequence(lambda n: "gof_id_%d" % n)
+    task = factory.SubFactory(TaskFactory)
+
+
+class TaskGoFFieldFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskGoFField
+
+    task_gof = factory.SubFactory(TaskGoFFactory)
+    field = factory.SubFactory(FieldFactory)
+    field_response = "response"

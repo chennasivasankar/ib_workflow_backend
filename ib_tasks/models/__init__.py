@@ -1,6 +1,8 @@
 from .action_permitted_roles import ActionPermittedRoles
 from .stage import Stage
 from .stage_actions import StageAction
+from .task_gof import TaskGoF
+from .task_gof_field import TaskGoFField
 from .task_stage import TaskStage
 from .task_template_initial_stages import TaskTemplateInitialStage
 
@@ -29,6 +31,8 @@ __all__ = [
     "Field", "FieldRole", "GoF", "GoFRole", "TaskTemplate", "GlobalConstant",
     "TaskTemplateGoFs",
     "Field", "FieldRole", "GoF", "GoFRole",
+    "TaskGoF",
+    "TaskGoFField",
     "Stage", "StageAction", "TaskTemplateStatusVariables",
     "TaskTemplate",
     "GlobalConstant"

@@ -107,15 +107,16 @@ class TaskFieldsDTOFactory(factory.Factory):
     class Meta:
         model = StageTaskFieldsDTO
 
-    field_ids = ["field_id_1"]
+    field_ids = ['FIELD-ID-1', 'FIELD-ID-2']
     task_id = factory.Sequence(lambda n: n + 1)
 
 
 class TemplateStagesDTOFactory(factory.Factory):
     class Meta:
-        model = TemplateStageDTO
+        model = TaskTemplateStageDTO
 
     stage_id = factory.Sequence(lambda n: 'stage_id_%d' % n)
+    task_id = factory.Sequence(lambda n: n)
     task_template_id = factory.Sequence(lambda n: 'task_template_id_%d' % n)
 
 
@@ -313,8 +314,7 @@ class FieldDetailsDTOFactory(factory.Factory):
     class Meta:
         model = FieldDetailsDTO
 
-    field_id = factory.Sequence(lambda n: "field_id_%d" % (n + 1))
-    stage_id = factory.Sequence(lambda n: "stage_id_%d" % (n + 1))
+    field_id = factory.Sequence(lambda n: "FIELD-ID-%d" % (n + 1))
     field_type = "Drop down"
     key = "key"
     value = "value"

@@ -2,7 +2,8 @@ import pytest
 
 from ib_tasks.storages.fields_storage_implementation import FieldsStorageImplementation
 from ib_tasks.tests.factories.models import (
-    StageModelFactory, TaskFactory, TaskTemplateFactory, TaskStageModelFactory)
+    StageModelFactory, TaskFactory, TaskTemplateFactory, TaskStageModelFactory, FieldFactory, TaskGoFFieldFactory,
+    TaskGoFFactory)
 from ib_tasks.tests.factories.storage_dtos import TaskFieldsDTOFactory
 
 
@@ -19,11 +20,10 @@ class TestGetFieldDetails:
         StageModelFactory.reset_sequence()
         StageModelFactory.create_batch(size=4)
         TaskFactory.reset_sequence()
-        TaskFactory.create_batch(size=3)
-        TaskTemplateFactory.reset_sequence()
-        TaskTemplateFactory.create_batch(size=3)
-        TaskStageModelFactory.reset_sequence()
-        TaskStageModelFactory.create_batch(size=4)
+        FieldFactory.reset_sequence()
+        TaskGoFFactory.reset_sequence()
+        TaskGoFFieldFactory.reset_sequence()
+        TaskGoFFieldFactory.create_batch(size=4)
 
     def test_get_field_details(self, get_task_template_stage_dtos,
                                populate_data,
