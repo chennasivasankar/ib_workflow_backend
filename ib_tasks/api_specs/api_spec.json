@@ -259,12 +259,6 @@
                     },
                     "field_response": {
                       "type": "string"
-                    },
-                    "is_readable": {
-                      "type": "boolean"
-                    },
-                    "is_writable": {
-                      "type": "boolean"
                     }
                   },
                   "required": [
@@ -275,7 +269,8 @@
             },
             "required": [
               "gof_id",
-              "gof_fields"
+              "gof_fields",
+              "same_gof_order"
             ]
           }
         },
@@ -304,13 +299,29 @@
                     "button_color": {
                       "type": "string"
                     }
-                  }
+                  },
+                  "required": [
+                    "action_id",
+                    "button_text",
+                    "button_color"
+                  ]
                 }
               }
-            }
+            },
+            "required": [
+              "stage_id",
+              "stage_display_name",
+              "actions"
+            ]
           }
         }
-      }
+      },
+      "required": [
+        "task_id",
+        "template_id",
+        "gofs",
+        "stages_with_actions"
+      ]
     }
   },
   "parameters": {

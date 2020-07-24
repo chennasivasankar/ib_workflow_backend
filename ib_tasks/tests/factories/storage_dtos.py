@@ -19,6 +19,10 @@ from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TaskTemplateDTO
 from ib_tasks.models import StageAction
 
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import (
+    TaskGoFFieldDTO,
+    TaskGoFDTO
+)
 
 class StageDTOFactory(factory.Factory):
     class Meta:
@@ -228,3 +232,21 @@ class GoFToTaskTemplateDTOFactory(factory.Factory):
     template_id = factory.Sequence(lambda n: 'template_{}'.format(n + 1))
     order = factory.Sequence(lambda n: n)
     enable_multiple_gofs = factory.Iterator([True, False])
+
+
+class TaskGoFDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskGoFDTO
+
+    task_gof_id = factory.Sequence(lambda n: n)
+    gof_id = factory.Sequence(lambda n: "gof{}".format(n))
+    same_gof_order = 0
+
+
+class TaskGoFFieldDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskGoFFieldDTO
+
+    task_gof_id = factory.Sequence(lambda n: n)
+    field_id = factory.Sequence(lambda n: "field{}".format(n))
+    field_response = factory.Sequence(lambda n: "field_response{}".format(n))
