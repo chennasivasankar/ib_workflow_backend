@@ -98,3 +98,47 @@ class TestCreateOrUpdateTaskPresenterImplementation:
         snapshot.assert_match(
             name="response_object", value=response_object.content
         )
+
+    def test_raise_exception_for_invalid_phone_number_value(selfself, presenter, snapshot):
+        # Arrange
+        from ib_tasks.exceptions.field_values_custom_exceptions import InvalidPhoneNumberValue
+        err = InvalidPhoneNumberValue(field_id="FIELD_ID-1", field_value="73247832")
+
+        # Act
+        response_object = presenter.raise_exception_for_invalid_phone_number_value(err)
+
+        # Assert
+        snapshot.assert_match(
+            name="response_object", value=response_object.content
+        )
+
+    def test_raise_exception_for_invalid_email_address(self, presenter, snapshot):
+        # Arrange
+        from ib_tasks.exceptions.field_values_custom_exceptions import InvalidEmailFieldValue
+        err = InvalidEmailFieldValue(
+            field_id="FIELD_ID-1", field_value="ibhubs@gmail.com"
+        )
+
+        # Act
+        response_object = presenter.raise_exception_for_invalid_email_address(err)
+
+        # Assert
+        snapshot.assert_match(
+            name="response_object", value=response_object.content
+        )
+
+    def test_raise_exception_for_invalid_url_address(self, presenter, snapshot):
+        # Arrange
+        from ib_tasks.exceptions.field_values_custom_exceptions import \
+            InvalidURLValue
+        err = InvalidURLValue(
+            field_id="FIELD_ID-1", field_value="https://eiiuwe.com"
+        )
+
+        # Act
+        response_object = presenter.raise_exception_for_invalid_url_address(err)
+
+        # Assert
+        snapshot.assert_match(
+            name="response_object", value=response_object.content
+        )

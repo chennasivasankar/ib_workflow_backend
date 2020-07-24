@@ -41,8 +41,9 @@ DUPLICATE_ORDER_VALUES_FOR_GOFS = \
     "Given duplicate order values {}! Gof orders of a template should be unique"
 INVALID_TYPE_FOR_ORDER = "Given value for order: {} is not an integer"
 INVALID_TYPE_FOR_VALUE = "Given value for order: {} is not an integer"
-TASK_TEMPLATES_DOES_NOT_EXISTS = "No Task Templates are exists"
-
+TASK_TEMPLATES_DOES_NOT_EXISTS = (
+    "No Task Templates are exists", "TASK_TEMPLATES_DOES_NOT_EXISTS"
+)
 INVALID_GOF_IDS_EXCEPTION_MESSAGE = "Invalid values for gof_ids {}"
 EMPTY_VALUE_FOR_FIELD_ID = "Field ids shouldn't be empty"
 EMPTY_VALUE_FOR_READ_PERMISSIONS = "Read Permission roles shouldn't be empty for these fields ids {}"
@@ -82,3 +83,16 @@ LIMIT_SHOULD_BE_GREATER_THAN_ZERO = ("Limit value should be greater than zero",
 OFFSET_SHOULD_BE_GREATER_THAN_OR_EQAL_TO_MINUS_ONE = (
     "Offset sould be greater than or equal to minus one",
     "OFFSET_SHOULD_BE_GREATER_THAN_OR_EQAL_TO_MINUS_ONE")
+
+INVALID_PHONE_NUMBER_VALUE = (
+    "Invalid value for phone number: {} for field: {}",
+    "INVALID_PHONE_NUMBER_VALUE"
+)
+INVALID_EMAIL = (
+    "Invalid value for email: {} for field: {}",
+    "INVALID_EMAIL"
+)
+INVALID_URL = (
+    "Invalid value for url: {} for field: {}",
+    "INVALID_URL"
+)

@@ -15,15 +15,13 @@ snapshots['TestCase01GetTaskAPITestCase.test_case body'] = {
             'gof_fields': [
                 {
                     'field_id': 'string',
-                    'field_response_multiple_values': [
-                        'string'
-                    ],
-                    'field_response_single_value': 'string',
+                    'field_response': 'string',
                     'is_readable': True,
                     'is_writable': True
                 }
             ],
-            'gof_id': 'string'
+            'gof_id': 'string',
+            'same_gof_order': 1.1
         }
     ],
     'stages_with_actions': [

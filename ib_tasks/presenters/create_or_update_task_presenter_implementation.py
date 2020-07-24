@@ -22,14 +22,52 @@ class CreateOrUpdateTaskPresenterImplementation(
 ):
     def raise_exception_for_invalid_phone_number_value(self,
                                                        err: InvalidPhoneNumberValue):
-        pass
+        from ib_tasks.constants.exception_messages import \
+            INVALID_PHONE_NUMBER_VALUE
+        response_message = INVALID_PHONE_NUMBER_VALUE[0].format(
+            err.field_value, err.field_id
+        )
+        data = json.dumps(
+            {
+                "response": response_message,
+                "http_status_code": 400,
+                "res_status": INVALID_PHONE_NUMBER_VALUE[1]
+            }
+        )
+        response_object = response.HttpResponse(data)
+        return response_object
 
     def raise_exception_for_invalid_email_address(self,
                                                   err: InvalidEmailFieldValue):
-        pass
+        from ib_tasks.constants.exception_messages import \
+            INVALID_EMAIL
+        response_message = INVALID_EMAIL[0].format(
+            err.field_value, err.field_id
+        )
+        data = json.dumps(
+            {
+                "response": response_message,
+                "http_status_code": 400,
+                "res_status": INVALID_EMAIL[1]
+            }
+        )
+        response_object = response.HttpResponse(data)
+        return response_object
 
     def raise_exception_for_invalid_url_address(self, err: InvalidURLValue):
-        pass
+        from ib_tasks.constants.exception_messages import INVALID_URL
+        response_message = INVALID_URL[0].format(
+            err.field_value, err.field_id
+        )
+        data = json.dumps(
+            {
+                "response": response_message,
+                "http_status_code": 400,
+                "res_status": INVALID_URL[1]
+            }
+        )
+        response_object = response.HttpResponse(data)
+        return response_object
 
     def raise_exception_for_weak_password(self, err: NotAStrongPassword):
         pass
