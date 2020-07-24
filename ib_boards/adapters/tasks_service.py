@@ -1,3 +1,4 @@
+class ServiceInterface:
 from typing import List
 
 from ib_boards.interactors.dtos import TaskStageIdDTO
@@ -5,8 +6,8 @@ from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
     TaskFieldsDTOFactory
 
 
-class ServiceInterface:
     pass
+
 
 
 class TaskService:

@@ -1,3 +1,4 @@
+
 import abc
 from dataclasses import dataclass
 from typing import List
@@ -7,6 +8,8 @@ from django.http import response
 from ib_boards.exceptions.custom_exceptions import InvalidBoardIds
 from ib_boards.interactors.dtos import TaskStageIdDTO, ActionDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardDTO
+from ib_boards.interactors.storage_interfaces.dtos import (
+    TaskFieldsDTO, TaskActionsDTO, ColumnDetailsDTO)
 
 
 @dataclass
@@ -33,7 +36,8 @@ class GetBoardsPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_response_for_get_boards(
-            self, board_dtos: List[BoardDTO], total_boards: int) -> response.HttpResponse:
+            self, board_dtos: List[BoardDTO],
+            total_boards: int) -> response.HttpResponse:
         pass
 
     def get_response_for_offset_exceeds_total_tasks(self):
@@ -54,29 +58,37 @@ class PresenterInterface(abc.ABC):
                                       task_fields_dto: List[TaskFieldsDTO],
                                       task_actions_dto: List[TaskActionsDTO],
                                       task_ids: List[str]):
+
         pass
+
 
     @abc.abstractmethod
     def response_for_invalid_board_id(self):
         pass
 
+
     @abc.abstractmethod
     def response_for_invalid_offset_value(self):
         pass
+
 
     @abc.abstractmethod
     def response_for_invalid_limit_value(self):
         pass
 
+
     @abc.abstractmethod
     def response_for_user_donot_have_access_for_board(self):
         pass
 
+
     @abc.abstractmethod
-    def get_response_for_column_details(self, column_details: List[ColumnDetailsDTO],
+    def get_response_for_column_details(self,
+                                        column_details: List[ColumnDetailsDTO],
                                         task_fields_dto: List[TaskFieldsDTO],
                                         task_actions_dto: List[TaskActionsDTO],
                                         task_details: List[TaskColumnDTO]
+
                                         ):
         pass
 

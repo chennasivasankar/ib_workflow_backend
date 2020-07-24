@@ -38,6 +38,14 @@ class CompleteGoFDetailsDTO:
 
 
 @dataclass()
-class GOFMultipleStatusDTO:
+class GOFMultipleEnableDTO:
     group_of_field_id: str
     multiple_status: bool
+
+
+@dataclass
+class GoFToTaskTemplateDTO:
+    gof_id: str
+    template_id: str
+    order: int
+    enable_multiple_gofs: bool

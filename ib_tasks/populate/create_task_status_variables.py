@@ -1,7 +1,7 @@
 
 from typing import Dict, Any, List
 
-from ib_tasks.interactors.storage_interfaces.status_dtos import TaskStatusDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import TaskTemplateStatusDTO
 
 
 def populate_status_variables(list_of_status_dict: List[Dict]):
@@ -21,7 +21,7 @@ def populate_status_variables(list_of_status_dict: List[Dict]):
 
 
 def append_status_dto(status_dict: Dict[str, Any]):
-    status_dto = TaskStatusDTO(
+    status_dto = TaskTemplateStatusDTO(
         task_template_id=status_dict['task_template_id'],
         status_variable_id=status_dict['status_variable_id']
     )

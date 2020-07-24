@@ -8,6 +8,7 @@ from ib_tasks.tests.factories.models import StageActionFactory
 
 @pytest.mark.django_db
 class TestUpdateStageActions:
+
     @pytest.fixture()
     def stage_actions_dtos(self):
         ActionDTOFactory.reset_sequence()

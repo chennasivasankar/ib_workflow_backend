@@ -10,7 +10,7 @@ from ib_tasks.models.global_constant import GlobalConstant
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
-    TaskTemplateGlobalConstants)
+    TaskTemplateGlobalConstants, TaskStatusVariable)
 
 
 class StageModelFactory(factory.django.DjangoModelFactory):
@@ -40,7 +40,7 @@ class ActionPermittedRolesFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ActionPermittedRoles
 
-    action_id = factory.SubFactory(StageActionFactory)
+    action = factory.SubFactory(StageActionFactory)
     role_id = factory.Sequence(lambda n: "role_%d" % n)
 
 
@@ -48,9 +48,17 @@ class TaskTemplateStatusVariableFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = TaskTemplateStatusVariable
 
-    task_id = factory.Sequence(lambda n: n)
+    task_template_id = factory.Sequence(lambda n: n)
     variable = factory.Sequence(lambda n: "variable%d" % n)
     value = factory.Sequence(lambda n: n)
+
+
+class TaskStatusVariableFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskStatusVariable
+    task_id = factory.Sequence(lambda n: "%d" % n)
+    variable = factory.Sequence(lambda n: "status_variable_%d" % n)
+    value = factory.Sequence(lambda n: "value_%d" % n)
 
 
 class TaskTemplateGlobalConstantsFactory(factory.django.DjangoModelFactory):

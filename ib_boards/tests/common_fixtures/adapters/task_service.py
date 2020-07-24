@@ -7,7 +7,7 @@ from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, TaskFi
 def prepare_task_details_dtos(mocker, task_dtos: List[TaskStageIdDTO],
                               user_id: str):
     mock = mocker.patch(
-        'ib_boards.adapters.tasks_service.TaskService'
+        'ib_boards.adapters.task_service.TaskService'
     )
 
     actions_dto = [
