@@ -268,6 +268,62 @@ class TestStorageImplementation:
             response, expected_complete_discussion_dtos
         )
 
+    @pytest.mark.django_db
+    def test_validate_discussion_id(self, create_entity_objects,
+                                    create_discussion_set_objects,
+                                    storage_implementation):
+        # Arrange
+        discussion_id = "12357db1-c123-4e16-a69d-98a6a4850b84"
+        from ib_discussions.tests.factories.models import DiscussionFactory
+        DiscussionFactory.create_batch(3)
+
+        # Assert
+        from ib_discussions.exception.custom_exceptions import \
+            DiscussionIdNotFound
+        with pytest.raises(DiscussionIdNotFound):
+            storage_implementation.validate_discussion_id(
+                discussion_id=discussion_id
+            )
+
+    @pytest.mark.django_db
+    def test_validate_is_user_can_mark_as_clarified(self, create_entity_objects,
+                                                    create_discussion_set_objects,
+                                                    storage_implementation):
+        # Arrange
+        discussion_id = "12357db1-c123-4e16-a69d-98a6a4850b84"
+        user_id = "755bb3ac-09c6-46ac-82bb-f2e39cb8fb32"
+        from ib_discussions.tests.factories.models import DiscussionFactory
+        DiscussionFactory.create_batch(3)
+
+        # Assert
+        from ib_discussions.exception.custom_exceptions import \
+            UserCannotMarkAsClarified
+        with pytest.raises(UserCannotMarkAsClarified):
+            storage_implementation.validate_is_user_can_mark_as_clarified(
+                discussion_id=discussion_id, user_id=user_id
+            )
+
+    @pytest.mark.django_db
+    def test_mark_discussion_clarified(self, create_entity_objects,
+                                       create_discussion_set_objects,
+                                       storage_implementation):
+        # Arrange
+        from ib_discussions.tests.factories.models import DiscussionFactory
+        discussion_id = "12357db1-c123-4e16-a69d-98a6a4850b84"
+        DiscussionFactory(id=discussion_id, is_clarified=False)
+        clarified = True
+
+        # Act
+        storage_implementation.mark_discussion_clarified(
+            discussion_id=discussion_id
+        )
+
+        # Assert
+        from ib_discussions.models import Discussion
+        discussion_object = Discussion.objects.get(id=discussion_id)
+
+        assert discussion_object.is_clarified == clarified
+
     def _compare_two_complete_discussion_dtos(self,
                                               complete_discussion_dtos2,
                                               complete_discussion_dtos1):

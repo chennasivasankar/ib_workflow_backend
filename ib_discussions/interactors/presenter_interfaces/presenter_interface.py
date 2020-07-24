@@ -48,3 +48,18 @@ class GetDiscussionsPresenterInterface(ABC):
     @abstractmethod
     def raise_exception_for_discussion_set_not_found(self):
         pass
+
+
+class MarkDiscussionClarifiedPresenterInterface(ABC):
+
+    @abstractmethod
+    def raise_exception_for_discussion_id_not_found(self):
+        pass
+
+    @abstractmethod
+    def raise_exception_for_user_cannot_mark_as_clarified(self):
+        pass
+
+    @abstractmethod
+    def raise_success_response_for_mark_discussion_as_clarified(self):
+        pass

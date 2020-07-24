@@ -124,7 +124,6 @@ class GetDiscussionPresenterImplementation(
             "discussions": discussions_list,
             "total_count": discussions_details_dto.total_count
         }
-        print(discussions_list)
         return self.prepare_200_success_response(
             response_dict=discussions_details_dict
         )

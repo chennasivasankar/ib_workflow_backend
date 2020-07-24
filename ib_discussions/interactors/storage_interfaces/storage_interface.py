@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from typing import Optional, List
 
 from ib_discussions.constants.enum import EntityType
+from ib_discussions.exception.custom_exceptions import DiscussionIdNotFound, \
+    UserCannotMarkAsClarified
 from ib_discussions.exceptions.custom_exceptions import EntityIdNotFound, \
     InvalidEntityTypeForEntityId
 from ib_discussions.interactors.DTOs.common_dtos import DiscussionDTO, \
@@ -49,4 +51,19 @@ class StorageInterface(ABC):
 
     @abstractmethod
     def get_total_discussion_count(self, discussion_set_id: str) -> int:
+        pass
+
+    @abstractmethod
+    def validate_discussion_id(self, discussion_id: str) \
+            -> Optional[DiscussionIdNotFound]:
+        pass
+
+    @abstractmethod
+    def validate_is_user_can_mark_as_clarified(
+            self, user_id: str, discussion_id: str
+    ) -> Optional[UserCannotMarkAsClarified]:
+        pass
+
+    @abstractmethod
+    def mark_discussion_clarified(self, discussion_id: str):
         pass

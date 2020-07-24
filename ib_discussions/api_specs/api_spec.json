@@ -285,6 +285,55 @@
           }
         ]
       }
+    },
+    "MarkClarifiedDiscussionNotFoundResponse": {
+      "description": "mark clarified discussion not found response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "DISCUSSION_ID_NOT_FOUND"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "MarkClarifiedDiscussionBadRequestResponse": {
+      "description": "mark clarified discussion bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_DISCUSSION_ID",
+                  "USER_CANNOT_MARK_AS_CLARIFIED"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
     }
   },
   "paths": {
@@ -358,6 +407,41 @@
           },
           "400": {
             "$ref": "#/responses/GetDiscussionBadRequestResponse"
+          }
+        }
+      }
+    },
+    "/discussion/{discussion_id}/mark_as_clarified/v1/": {
+      "post": {
+        "operationId": "clarify_discussion",
+        "summary": "Mark discussion is clarified",
+        "description": "Mark discussion is clarified for creator of discussion",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "discussion_id",
+            "required": true,
+            "description": "Discussion Id",
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfully updated"
+          },
+          "404": {
+            "$ref": "#/responses/MarkClarifiedDiscussionNotFoundResponse"
+          },
+          "400": {
+            "$ref": "#/responses/MarkClarifiedDiscussionBadRequestResponse"
           }
         }
       }

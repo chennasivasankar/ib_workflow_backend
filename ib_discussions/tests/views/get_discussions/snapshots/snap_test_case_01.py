@@ -19,7 +19,7 @@ snapshots['TestCase01GetDiscussionsAPITestCase.test_case body'] = {
             },
             'created_at': '2020-01-20 00:00:00',
             'description': 'description',
-            'discussion_id': '9137b75a-a933-41e1-9150-a494f4a7ef5e',
+            'discussion_id': '802bdcf5-efd2-4227-9c42-df8089712d52',
             'is_clarified': True,
             'title': 'title'
         },
@@ -31,7 +31,7 @@ snapshots['TestCase01GetDiscussionsAPITestCase.test_case body'] = {
             },
             'created_at': '2020-01-20 00:00:00',
             'description': 'description',
-            'discussion_id': 'decca11f-a86b-4256-9ca6-42ecfffa24ac',
+            'discussion_id': 'c30ad6d3-50fa-4d79-806a-a8d1b1e1be5e',
             'is_clarified': True,
             'title': 'title'
         }

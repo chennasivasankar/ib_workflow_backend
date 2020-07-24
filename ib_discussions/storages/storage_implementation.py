@@ -1,6 +1,8 @@
 from typing import List, Optional
 
 from ib_discussions.constants.enum import EntityType, FilterByEnum, SortByEnum
+from ib_discussions.exception.custom_exceptions import DiscussionIdNotFound, \
+    UserCannotMarkAsClarified
 from ib_discussions.exceptions.custom_exceptions import \
     InvalidEntityTypeForEntityId, EntityIdNotFound
 from ib_discussions.interactors.DTOs.common_dtos import DiscussionDTO, \
@@ -90,7 +92,7 @@ class StorageImplementation(StorageInterface):
         offset = offset_and_limit_dto.offset
         limit = offset_and_limit_dto.limit
         discussion_objects_after_applying_offset_and_limit \
-            = sort_discussion_objects[offset: offset+limit]
+            = sort_discussion_objects[offset: offset + limit]
         complete_discussion_dtos = self._convert_to_discussion_dtos(
             discussion_objects_after_applying_offset_and_limit
         )
@@ -102,6 +104,38 @@ class StorageImplementation(StorageInterface):
             discussion_set_id=discussion_set_id
         ).count()
         return count
+
+    def validate_discussion_id(self, discussion_id: str) \
+            -> Optional[DiscussionIdNotFound]:
+        from ib_discussions.models import Discussion
+        discussion_objects = Discussion.objects.filter(
+            id=discussion_id
+        )
+        is_discussion_objects_not_exists = not discussion_objects.exists()
+        if is_discussion_objects_not_exists:
+            raise DiscussionIdNotFound
+        return
+
+    def validate_is_user_can_mark_as_clarified(
+            self, user_id: str, discussion_id: str
+    ) -> Optional[UserCannotMarkAsClarified]:
+        from ib_discussions.models import Discussion
+        discussion_objects = Discussion.objects.filter(
+            id=discussion_id, user_id=user_id
+        )
+        is_user_cannot_mark_as_clarified = not discussion_objects.exists()
+        if is_user_cannot_mark_as_clarified:
+            raise UserCannotMarkAsClarified
+        return
+
+    def mark_discussion_clarified(self, discussion_id: str):
+        from ib_discussions.models import Discussion
+        discussion_object = Discussion.objects.get(
+            id=discussion_id
+        )
+        discussion_object.is_clarified = True
+        discussion_object.save()
+        return
 
     @staticmethod
     def _get_filter_discussion_objects(filter_by_dto, discussion_objects):
