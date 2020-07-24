@@ -1,9 +1,12 @@
 from typing import List
+
 from ib_boards.adapters.service_adapter import get_service_adapter
 from ib_boards.interactors.dtos import (
+    TaskColumnDTO, TaskDTO, TaskDetailsDTO, FieldsDTO, TaskStageDTO,
     TaskColumnDTO, TaskStageIdDTO, TaskDetailsDTO, FieldsDTO)
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
+from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, TaskFieldsDTOFactory
 
 
 class GetTaskDetailsInteractor:

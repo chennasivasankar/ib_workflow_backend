@@ -1,8 +1,11 @@
 import factory
 
+
+from ib_boards.interactors.dtos import TaskDTO, TaskDetailsDTO, FieldsDTO, TaskStageDTO
 from ib_boards.interactors.dtos import TaskStageIdDTO, TaskDetailsDTO, FieldsDTO
 from ib_boards.interactors.storage_interfaces.dtos import (
-    TaskFieldsDTO, TaskActionsDTO, ColumnDetailsDTO, BoardDTO)
+    TaskFieldsDTO, TaskActionsDTO, ColumnDetailsDTO, BoardDTO, TaskBoardsDetailsDTO, ColumnBoardDTO)
+
 
 class TaskDTOFactory(factory.Factory):
     class Meta:
@@ -33,7 +36,7 @@ class TaskActionsDTOFactory(factory.Factory):
 
     class Params:
         factory.Trait(
-            button_color = factory.Sequence(lambda n: "a%df1fd" % n)
+            button_color=factory.Sequence(lambda n: "a%df1fd" % n)
         )
 
 
@@ -51,8 +54,9 @@ class ColumnDetailsDTOFactory(factory.Factory):
     class Meta:
         model = ColumnDetailsDTO
 
-    column_id = factory.Sequence(lambda n: "column_id_%d" % n)
-    name = factory.Sequence(lambda n: "name_%d" % n)
+    column_id = factory.Sequence(lambda n: f'COLUMN_ID_{n + 1}')
+    name = factory.Sequence(
+        lambda n: f'COLUMN_DISPLAY_NAME_{n + 1}')
 
 class FieldsDTOFactory(factory.Factory):
     class Meta:
@@ -67,5 +71,5 @@ class BoardDTOFactory(factory.Factory):
         model = BoardDTO
 
     board_id = factory.Sequence(lambda n: f'BOARD_ID_{n + 1}')
-    display_name = factory.Sequence(lambda n: f'BOARD_DISPLAY_NAME')
+    name = factory.Sequence(lambda n: f'BOARD_DISPLAY_NAME')
 

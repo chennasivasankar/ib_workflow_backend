@@ -62,6 +62,7 @@ class GetBoardsInteractor:
         board_details_interactor = GetBoardsDetailsInteractor(
             storage=self.storage
         )
+
         boards_details_dtos = board_details_interactor.get_boards_details(
             board_ids=board_ids
         )

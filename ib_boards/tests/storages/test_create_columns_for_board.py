@@ -63,9 +63,9 @@ class TestAddColumnsForBoard:
         for column_object, column_dto in zip(column_objects, column_dtos):
             assert column_object.column_id == column_dto.column_id
             assert column_object.board_id == column_dto.board_id
-            assert column_object.name == column_dto.display_name
+            assert column_object.name == column_dto.name
             assert column_object.display_order == column_dto.display_order
-            assert column_object.name == column_dto.display_name
+            assert column_object.name == column_dto.name
             assert column_object.task_selection_config == \
                 self._get_json_string_for_task_selection_config(
                     column_dto.task_template_stages

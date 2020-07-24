@@ -189,7 +189,7 @@ class TestGetColumnDetailsInteractor:
             offset=0,
             limit=10
         )
-        column_ids = ["column_id_1", "column_id_2", "column_id_3"]
+        column_ids = ["COLUMN_ID_1", "COLUMN_ID_2", "COLUMN_ID_3"]
         user_roles = ["FIN_PAYMENT_REQUESTER",
                       "FIN_PAYMENT_POC",
                       "FIN_PAYMENT_APPROVER",

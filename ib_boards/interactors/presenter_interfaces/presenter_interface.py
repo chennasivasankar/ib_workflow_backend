@@ -40,6 +40,7 @@ class GetBoardsPresenterInterface(abc.ABC):
             total_boards: int) -> response.HttpResponse:
         pass
 
+    @abc.abstractmethod
     def get_response_for_offset_exceeds_total_tasks(self):
         pass
 
@@ -58,29 +59,23 @@ class PresenterInterface(abc.ABC):
                                       task_fields_dto: List[TaskFieldsDTO],
                                       task_actions_dto: List[TaskActionsDTO],
                                       task_ids: List[str]):
-
         pass
-
 
     @abc.abstractmethod
     def response_for_invalid_board_id(self):
         pass
 
-
     @abc.abstractmethod
     def response_for_invalid_offset_value(self):
         pass
-
 
     @abc.abstractmethod
     def response_for_invalid_limit_value(self):
         pass
 
-
     @abc.abstractmethod
     def response_for_user_donot_have_access_for_board(self):
         pass
-
 
     @abc.abstractmethod
     def get_response_for_column_details(self,
@@ -91,6 +86,12 @@ class PresenterInterface(abc.ABC):
 
                                         ):
         pass
+
+
+    @abc.abstractmethod
+    def get_response_for_offset_exceeds_total_tasks(self):
+        pass
+
 
     @abc.abstractmethod
     def get_response_for_offset_exceeds_total_tasks(self):

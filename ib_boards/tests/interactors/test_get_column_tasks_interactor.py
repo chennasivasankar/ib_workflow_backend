@@ -35,6 +35,7 @@ class TestGetColumnTasksInteractor:
     @pytest.fixture
     def get_column_tasks_dto(self):
         return ColumnTasksParametersDTO(
+            user_id=1,
             column_id='COLUMN_ID_1',
             offset=0,
             limit=5
@@ -43,6 +44,7 @@ class TestGetColumnTasksInteractor:
     @pytest.fixture
     def get_column_tasks_dto_with_invalid_offset(self):
         return ColumnTasksParametersDTO(
+            user_id=1,
             column_id='COLUMN_ID_1',
             offset=-1,
             limit=1
@@ -51,6 +53,7 @@ class TestGetColumnTasksInteractor:
     @pytest.fixture
     def get_column_tasks_dto_with_invalid_limit(self):
         return ColumnTasksParametersDTO(
+            user_id=1,
             column_id='COLUMN_ID_1',
             offset=1,
             limit=-1

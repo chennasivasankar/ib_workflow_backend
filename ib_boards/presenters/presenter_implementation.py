@@ -1,13 +1,5 @@
-"""
-Created on: 16/07/20
-Author: Pavankumar Pamuru
-
-"""
-
 from typing import List
-
 from django.http import response
-
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
@@ -64,6 +56,7 @@ class GetBoardsPresenterImplementation(
     def get_response_for_get_boards(
             self, board_dtos: List[BoardDTO], total_boards: int) \
             -> response.HttpResponse:
+
         board_details_dict = {
             "total_boards_count": total_boards,
             "boards_details": []
@@ -76,11 +69,12 @@ class GetBoardsPresenterImplementation(
             response_dict=board_details_dict
         )
 
+
     @staticmethod
     def _convert_board_dto_to_dict(board_dto):
         return {
             "board_id": board_dto.board_id,
-            "display_name": board_dto.display_name
+            "name": board_dto.name
         }
 
     def get_response_for_offset_exceeds_total_tasks(self):
@@ -117,7 +111,7 @@ class GetBoardsDetailsPresenterImplementation(
     def _convert_board_dto_to_dict(board_dto: BoardDTO):
         return {
             "board_id": board_dto.board_id,
-            "display_name": board_dto.display_name
+            "name": board_dto.name
         }
 
 
@@ -165,6 +159,9 @@ class GetColumnTasksPresenterImplementation(
         return self.prepare_403_forbidden_response(
             response_dict=response_dict
         )
+
+    def get_response_for_invalid_stage_ids(self, error):
+        pass
 
 
 class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
@@ -304,7 +301,6 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             for task_dto in task_details:
                 if task_dto.column_id == column_dto.column_id:
                     list_of_tasks.append(task_dto)
-            print(list_of_tasks)
             task_details_dict = self._convert_task_details_into_dict(
                 task_details=list_of_tasks, task_actions_dto=task_actions_dto,
                 task_fields_dto=task_fields_dto

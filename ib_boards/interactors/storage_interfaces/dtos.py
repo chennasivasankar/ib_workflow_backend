@@ -1,5 +1,12 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List
+
+
+@dataclass
+class TaskDetailsDTO:
+    task_id: str
+    stage_id: str
+    column_id: str
 
 
 @dataclass
@@ -28,10 +35,34 @@ class TaskActionsDTO:
 @dataclass
 class BoardDTO:
     board_id: str
-    display_name: str
+    name: str
 
 
 @dataclass
 class BoardColumnDTO:
     board_id: str
     column_id: str
+
+@dataclass()
+class ColumnBoardDTO:
+    column_id: str
+    board_id: str
+    name: str
+
+@dataclass()
+class ColumnFieldDTO:
+    column_id: str
+    field_ids: List[str]
+
+@dataclass()
+class ColumnStageDTO:
+    column_id: str
+    stage_id: str
+
+@dataclass()
+class TaskBoardsDetailsDTO:
+    board_dto: BoardDTO
+    column_stage_dtos: List[ColumnStageDTO]
+    columns_dtos: List[ColumnBoardDTO]
+
+

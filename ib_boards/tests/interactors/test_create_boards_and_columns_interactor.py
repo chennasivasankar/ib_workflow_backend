@@ -43,7 +43,7 @@ class TestCreateBoardsAndColumnsInteractor:
     @pytest.fixture
     def board_dtos_with_no_display_name(self):
         return [
-            BoardDTOFactory(display_name=''),
+            BoardDTOFactory(name=''),
             BoardDTOFactory()
         ]
 
@@ -68,7 +68,7 @@ class TestCreateBoardsAndColumnsInteractor:
     @pytest.fixture
     def column_dtos_with_no_display_name(self):
         return [
-            ColumnDTOFactory(display_name=''),
+            ColumnDTOFactory(name=''),
             ColumnDTOFactory()
         ]
 

@@ -44,7 +44,7 @@ class TestAddOrDeleteColumnsForBoardInteractor:
     @pytest.fixture
     def column_dtos_with_no_display_name(self):
         return [
-            ColumnDTOFactory(display_name=''),
+            ColumnDTOFactory(name=''),
             ColumnDTOFactory()
         ]
 
