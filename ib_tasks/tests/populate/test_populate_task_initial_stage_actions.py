@@ -30,7 +30,7 @@ class TestCasePopulateTasks:
                 "button_color": "button_color_1"
             }
         ]
-        from ib_tasks.populate.task_initial_stage_actions_logic \
+        from ib_tasks.populate.populate_task_initial_stage_actions \
             import populate_tasks
         from ib_tasks.exceptions.stage_custom_exceptions import InvalidFormatException
 
@@ -90,7 +90,7 @@ class TestCasePopulateTasks:
             button_text="button_text_1",
             button_color="button_color_1"
         )]
-        from ib_tasks.populate.task_initial_stage_actions_logic \
+        from ib_tasks.populate.populate_task_initial_stage_actions \
             import populate_tasks
 
         # Act

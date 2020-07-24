@@ -11,6 +11,9 @@ class RolesService:
     def get_db_roles(self):
         pass
 
+    def get_user_roles(self, user_id):
+        pass
+
     def get_valid_role_ids_in_given_role_ids(
             self, role_ids: List[str]
     ) -> List[str]:

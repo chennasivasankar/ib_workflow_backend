@@ -1,6 +1,11 @@
 from typing import List
 
 
+
+class InvalidTaskException(Exception):
+    def __init__(self, task_id: str):
+        self.task_id = task_id
+
 class InvalidTaskIdException(Exception):
     def __init__(self, task_id: str):
         self.task_id = task_id
