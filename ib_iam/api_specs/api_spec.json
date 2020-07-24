@@ -479,6 +479,14 @@
         "$ref": "#/definitions/UserWithCompanyWithTeamsAndRoles"
       }
     },
+    "UpdateUserParameter": {
+      "name": "UpdateUser",
+      "description": "Update the User details",
+      "in": "body",
+      "schema": {
+        "$ref": "#/definitions/UserWithCompanyWithTeamsAndRoles"
+      }
+    },
     "LoginParameter": {
       "name": "login",
       "description": "email and password to login in database",
@@ -1130,7 +1138,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/UserParameter"
+            "$ref": "#/parameters/AddUserParameter"
           }
         ],
         "responses": {
@@ -1163,7 +1171,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/UserParameter"
+            "$ref": "#/parameters/UpdateUserParameter"
           },
           {
             "$ref": "#/parameters/UserIdPathParameter"
