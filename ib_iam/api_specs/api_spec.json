@@ -666,7 +666,7 @@
         ]
       }
     },
-    "NotFoundResponse": {
+    "NotFoundResponseForEditUser": {
       "description": "Edit User Not Found",
       "schema": {
         "allOf": [
@@ -683,6 +683,32 @@
                   "INVALID_TEAM_IDS",
                   "INVALID_ROLE_IDS",
                   "USER_DOES_NOT_EXIST"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "NotFoundResponseForAddUser": {
+      "description": "Edit User Not Found",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_COMPANY_ID",
+                  "INVALID_TEAM_IDS",
+                  "INVALID_ROLE_IDS"
                 ]
               }
             },
@@ -1121,6 +1147,9 @@
           },
           "403": {
             "$ref": "#/responses/UserDoesNotHavePermissionResponse"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequestForGetListOfTeamsResponse"
           }
         }
       }
@@ -1152,7 +1181,7 @@
             "$ref": "#/responses/UserDoesNotHavePermissionResponse"
           },
           "404": {
-            "$ref": "#/responses/NotFoundResponse"
+            "$ref": "#/responses/NotFoundResponseForAddUser"
           }
         }
       }
@@ -1188,7 +1217,7 @@
             "$ref": "#/responses/UserDoesNotHavePermissionResponse"
           },
           "404": {
-            "$ref": "#/responses/NotFoundResponse"
+            "$ref": "#/responses/NotFoundResponseForEditUser"
           }
         }
       }

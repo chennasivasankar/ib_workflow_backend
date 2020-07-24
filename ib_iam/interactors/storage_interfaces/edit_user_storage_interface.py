@@ -28,15 +28,11 @@ class EditUserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def unassign_company_for_user(self, user_id: str):
+    def remove_roles_for_user(self, user_id: str):
         pass
 
     @abstractmethod
-    def unassign_roles_for_user(self, user_id: str):
-        pass
-
-    @abstractmethod
-    def unassign_teams_for_user(self, user_id: str):
+    def remove_teams_for_user(self, user_id: str):
         pass
 
     @abstractmethod
@@ -48,5 +44,5 @@ class EditUserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def add_company_to_user(self, company_id: str, user_id: str):
+    def change_company_for_user(self, company_id: str, user_id: str):
         pass

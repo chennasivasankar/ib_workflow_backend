@@ -97,26 +97,6 @@ class TestGetUsersListPresenter:
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
 
-    def test_raise_offset_value_is_greater_than_limit_value_exception(self):
-        # Arrange
-        presenter = GetUsersListPresenterImplementation()
-
-        from ib_iam.constants.exception_messages \
-            import OFFSET_VALUE_IS_GREATER_THAN_LIMIT
-
-        expected_response = OFFSET_VALUE_IS_GREATER_THAN_LIMIT[0]
-        response_status_code = OFFSET_VALUE_IS_GREATER_THAN_LIMIT[1]
-
-        # Act
-        response_object = \
-            presenter.raise_offset_value_is_greater_than_limit_value_exception()
-
-        # Assert
-        response = json.loads(response_object.content)
-        assert response['http_status_code'] == StatusCode.BAD_REQUEST.value
-        assert response['res_status'] == response_status_code
-        assert response['response'] == expected_response
-
     def test_raise_invalid_user_exception(self):
         # Arrange
         presenter = GetUsersListPresenterImplementation()

@@ -40,17 +40,11 @@ class EditUserStorageImplementation(EditUserStorageInterface):
         are_exists = team_objs_count == len(team_ids)
         return are_exists
 
-    def unassign_company_for_user(self, user_id: str):
-        from ib_iam.models import UserDetails
-        user = UserDetails.objects.get(user_id=user_id)
-        user.company = None
-        user.save()
-
-    def unassign_roles_for_user(self, user_id: str):
+    def remove_roles_for_user(self, user_id: str):
         from ib_iam.models import UserRole
         UserRole.objects.filter(user_id=user_id).delete()
 
-    def unassign_teams_for_user(self, user_id: str):
+    def remove_teams_for_user(self, user_id: str):
         from ib_iam.models import UserTeam
         UserTeam.objects.filter(user_id=user_id).delete()
 
@@ -66,6 +60,8 @@ class EditUserStorageImplementation(EditUserStorageInterface):
                       for team_id in team_ids]
         UserTeam.objects.bulk_create(user_teams)
 
-    def add_company_to_user(self, company_id: str, user_id: str):
+    def change_company_for_user(self, company_id: str, user_id: str):
         from ib_iam.models import UserDetails
-        UserDetails.objects.create(user_id=user_id, company_id=company_id)
+        user = UserDetails.objects.get(user_id=user_id)
+        user.company_id = company_id
+        user.save()

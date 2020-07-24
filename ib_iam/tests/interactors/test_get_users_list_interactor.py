@@ -138,25 +138,6 @@ class TestGetUsersDetailsInteractor:
         # Assert
         presenter_mock.raise_invalid_limit_value_exception.assert_called_once()
 
-    def test_get_users_when_offset_value_is_greater_than_limit_then_throw_exception(
-            self, storage_mock, presenter_mock):
-        # Arrange
-        user_id = USER_ID
-        limit = 5
-        offset = 10
-        interactor = GetUsersDetailsInteractor(storage=storage_mock)
-        storage_mock.check_is_admin_user.return_value = True
-
-        # Act
-        interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit,
-            presenter=presenter_mock
-        )
-
-        # Assert
-        presenter_mock.raise_offset_value_is_greater_than_limit_value_exception. \
-            assert_called_once()
-
     def test_get_users_returns_user_dtos(
             self, storage_mock, presenter_mock, user_dtos, mocker):
         # Arrange

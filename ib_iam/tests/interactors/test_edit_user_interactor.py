@@ -289,9 +289,8 @@ class TestEditNewUserInteractor:
 
         # Assert
         adapter_mock.assert_called_once()
-        storage_mock.unassign_company_for_user.assert_called_once()
-        storage_mock.unassign_roles_for_user.assert_called_once()
-        storage_mock.unassign_teams_for_user.assert_called_once()
+        storage_mock.remove_roles_for_user.assert_called_once()
+        storage_mock.remove_teams_for_user.assert_called_once()
 
     def test_edit_user_assign_existing_stats_for_user_after_unassigning_returns_success_response(
             self, storage_mock, presenter_mock, mocker):
@@ -320,5 +319,5 @@ class TestEditNewUserInteractor:
         adapter_mock.assert_called_once()
         storage_mock.add_roles_to_the_user.assert_called_once()
         storage_mock.add_user_to_the_teams.assert_called_once()
-        storage_mock.add_company_to_user.assert_called_once()
+        storage_mock.change_company_for_user.assert_called_once()
         presenter_mock.edit_user_success_response.assert_called_once()

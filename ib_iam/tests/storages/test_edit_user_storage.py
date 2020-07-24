@@ -64,13 +64,13 @@ class TestEditUserStorage:
     def test_add_company_to_user_adds_company_with_given_details(
             self, model_reset_sequence, user_companies):
         # Arrange
-        user_id = "user_1"
+        user_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8444"
         is_admin = True
         company_id = 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331'
         storage = EditUserStorageImplementation()
 
         # Act
-        storage.add_company_to_user(
+        storage.change_company_for_user(
             user_id=user_id, company_id=company_id)
 
         # Assert
@@ -82,7 +82,7 @@ class TestEditUserStorage:
     def test_add_roles_to_user_adds_roles_with_given_details(
             self, model_reset_sequence, roles):
         # Arrange
-        user_id = "user_1"
+        user_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8444"
         role_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
                     "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
         storage = EditUserStorageImplementation()
@@ -101,7 +101,7 @@ class TestEditUserStorage:
     def test_add_user_to_teams_adds_to_team_with_given_details(
             self, model_reset_sequence, teams):
         # Arrange
-        user_id = "user_1"
+        user_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8444"
         team_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
                     "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
         storage = EditUserStorageImplementation()
@@ -117,21 +117,6 @@ class TestEditUserStorage:
         assert str(user_objs[0].team_id) == team_ids[0]
 
     @pytest.mark.django_db
-    def test_unassign_company_for_user_removes_company(
-            self, model_reset_sequence, user_companies):
-        # Arrange
-        user_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8444"
-        storage = EditUserStorageImplementation()
-
-        # Act
-        storage.unassign_company_for_user(user_id=user_id)
-
-        # Assert
-        from ib_iam.models import UserDetails
-        user_obj = UserDetails.objects.get(user_id=user_id)
-        assert user_obj.company_id is None
-
-    @pytest.mark.django_db
     def test_unassign_roles_for_user_removes_roles(
             self, model_reset_sequence, user_roles):
         # Arrange
@@ -139,7 +124,7 @@ class TestEditUserStorage:
         storage = EditUserStorageImplementation()
 
         # Act
-        storage.unassign_roles_for_user(user_id=user_id)
+        storage.remove_roles_for_user(user_id=user_id)
 
         # Assert
         from ib_iam.models import UserRole
@@ -154,7 +139,7 @@ class TestEditUserStorage:
         storage = EditUserStorageImplementation()
 
         # Act
-        storage.unassign_teams_for_user(user_id=user_id)
+        storage.remove_teams_for_user(user_id=user_id)
 
         # Assert
         from ib_iam.models import UserTeam

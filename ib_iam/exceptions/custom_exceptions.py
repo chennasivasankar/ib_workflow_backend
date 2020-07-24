@@ -22,10 +22,6 @@ class InvalidLimitValue(Exception):
     pass
 
 
-class OffsetValueIsGreaterThanLimitValue(Exception):
-    pass
-
-
 class UserAccountAlreadyExistWithThisEmail(Exception):
     pass
 

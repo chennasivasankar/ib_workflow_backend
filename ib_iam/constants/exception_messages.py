@@ -17,11 +17,6 @@ INVALID_LIMIT_VALUE = (
     "INVALID_LIMIT_VALUE"
 )
 
-OFFSET_VALUE_IS_GREATER_THAN_LIMIT = (
-    "offset value should be less than or equal to limit",
-    "OFFSET_VALUE_IS_GREATER_THAN_LIMIT"
-)
-
 EMPTY_NAME_IS_INVALID = (
     "name should not be empty",
     "EMPTY_NAME_IS_INVALID"
@@ -91,7 +86,6 @@ EDIT_USER_SUCCESSFULLY = (
     "Edit User successfully",
     "EDIT_USER_SUCCESSFULLY"
 )
-
 
 USER_HAS_NO_ACCESS_FOR_GET_LIST_OF_TEAMS = (
     "User has no access to see teams as he is not an admin",
