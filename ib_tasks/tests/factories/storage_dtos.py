@@ -251,8 +251,7 @@ class ActionsOfTemplateDTOFactory(factory.Factory):
         model = ActionsOfTemplateDTO
 
     template_id = factory.Sequence(lambda n: 'template_{}'.format(n + 1))
-    action_id = factory.Sequence(lambda n: 'action_{}'.format(n + 1))
-    action_name = factory.Sequence(lambda n: 'Action {}'.format(n + 1))
+    action_id = factory.Sequence(lambda n: n + 1)
     button_text = factory.Sequence(lambda n: 'button_text__{}'.format(n + 1))
     button_color = factory.Sequence(lambda n: 'button_color_{}'.format(n + 1))
 

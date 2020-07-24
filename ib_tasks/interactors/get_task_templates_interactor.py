@@ -7,7 +7,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TaskTemplateDTO
-from ib_tasks.interactors.presenter_interfaces.\
+from ib_tasks.interactors.presenter_interfaces. \
     get_task_templates_presenter_interface import \
     GetTaskTemplatesPresenterInterface, CompleteTaskTemplatesDTO
 
@@ -17,7 +17,7 @@ class GetTaskTemplatesInteractor:
         self.task_storage = task_storage
 
     def get_task_templates_wrapper(
-            self, user_id: int,
+            self, user_id: str,
             presenter: GetTaskTemplatesPresenterInterface):
 
         from ib_tasks.exceptions.task_custom_exceptions import \
@@ -35,7 +35,7 @@ class GetTaskTemplatesInteractor:
             )
         return complete_task_templates_response_object
 
-    def get_task_templates(self, user_id: int):
+    def get_task_templates(self, user_id: str):
 
         from ib_tasks.adapters.roles_service_adapter import \
             get_roles_service_adapter
@@ -56,12 +56,13 @@ class GetTaskTemplatesInteractor:
         actions_of_templates_dtos = \
             self.task_storage.get_actions_of_templates_dtos()
         gof_ids_permitted_for_user = \
-            self.task_storage.get_gof_ids_with_read_permission_for_user(roles=user_roles)
+            self.task_storage.get_gof_ids_with_read_permission_for_user(
+                roles=user_roles)
         gofs_to_task_templates_dtos = \
             self.task_storage.get_gofs_to_task_templates_from_permitted_gofs(
                 gof_ids=gof_ids_permitted_for_user
             )
-        gof_ids= self._get_gof_ids_of_task_templates(
+        gof_ids = self._get_gof_ids_of_task_templates(
             gofs_to_task_templates_dtos=gofs_to_task_templates_dtos
         )
         gofs_details_dtos = \
@@ -69,10 +70,10 @@ class GetTaskTemplatesInteractor:
         field_dtos = \
             self.task_storage.get_fields_of_gofs_in_dtos(gof_ids=gof_ids)
         field_ids = self._get_field_ids(field_dtos=field_dtos)
-        user_field_permission_dtos = self.task_storage.\
+        user_field_permission_dtos = self.task_storage. \
             get_user_field_permission_dtos(
-                roles=user_roles, field_ids=field_ids
-            )
+            roles=user_roles, field_ids=field_ids
+        )
         complete_task_templates_dto = CompleteTaskTemplatesDTO(
             task_template_dtos=task_templates_dtos,
             actions_of_templates_dtos=actions_of_templates_dtos,

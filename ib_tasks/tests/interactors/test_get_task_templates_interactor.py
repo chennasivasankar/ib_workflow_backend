@@ -36,7 +36,7 @@ class TestGetTaskTemplatesInteractor:
                     "template_name": "string",
                     "actions": [
                         {
-                            "action_id": "string",
+                            "action_id": 0,
                             "action_name": "string",
                             "button_text": "string",
                             "button_color": "string"
@@ -86,7 +86,7 @@ class TestGetTaskTemplatesInteractor:
             self, task_storage_mock, presenter_mock,
             presenter_response_mock, mocker):
         # Arrange
-        user_id = 1
+        user_id = "user_1"
         expected_gof_ids = ['gof_1', 'gof_2']
         expected_field_ids = ['field0', 'field1', 'field2', 'field3']
         expected_roles = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC']
@@ -163,7 +163,7 @@ class TestGetTaskTemplatesInteractor:
             self, task_storage_mock, presenter_mock,
             presenter_response_mock):
         # Arrange
-        user_id = 1
+        user_id = "user_1"
         from ib_tasks.constants.exception_messages import \
             TASK_TEMPLATES_DOES_NOT_EXISTS
         expected_err_message = TASK_TEMPLATES_DOES_NOT_EXISTS
@@ -194,7 +194,7 @@ class TestGetTaskTemplatesInteractor:
             self, task_storage_mock, presenter_mock,
             presenter_response_mock, mocker):
         # Arrange
-        user_id = 1
+        user_id = "user_1"
         expected_gof_ids = ['gof_1', 'gof_2']
         expected_field_ids = ['field0', 'field1', 'field2', 'field3']
         expected_roles = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC']
@@ -271,7 +271,7 @@ class TestGetTaskTemplatesInteractor:
             self, task_storage_mock, presenter_mock,
             presenter_response_mock, mocker):
         # Arrange
-        user_id = 1
+        user_id = "user_1"
         expected_gof_ids = ['gof_1', 'gof_2']
         expected_field_ids = ['field0', 'field1', 'field2', 'field3']
         expected_roles = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC']
@@ -350,7 +350,7 @@ class TestGetTaskTemplatesInteractor:
             self, task_storage_mock, presenter_mock,
             presenter_response_mock, mocker):
         # Arrange
-        user_id = 1
+        user_id = "user_1"
         expected_gof_ids = ['gof_1', 'gof_2']
         expected_field_ids = []
         expected_roles = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC']
@@ -429,7 +429,7 @@ class TestGetTaskTemplatesInteractor:
             self, task_storage_mock, presenter_mock,
             presenter_response_mock, mocker):
         # Arrange
-        user_id = 1
+        user_id = "user_1"
         expected_gof_ids = ['gof_1', 'gof_2']
         expected_field_ids = ['field0', 'field1', 'field2', 'field3']
         expected_roles = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC']
@@ -507,7 +507,7 @@ class TestGetTaskTemplatesInteractor:
             self, task_storage_mock, presenter_mock,
             presenter_response_mock, mocker):
         # Arrange
-        user_id = 1
+        user_id = "user_1"
         expected_gof_ids = []
         expected_field_ids = ['field0', 'field1', 'field2', 'field3']
         expected_roles = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC']

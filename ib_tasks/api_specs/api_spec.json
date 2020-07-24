@@ -483,7 +483,8 @@
                   "type": "object",
                   "properties": {
                     "action_id": {
-                      "type": "string"
+                      "type": "integer",
+                      "format": "int64"
                     },
                     "button_text": {
                       "type": "string"

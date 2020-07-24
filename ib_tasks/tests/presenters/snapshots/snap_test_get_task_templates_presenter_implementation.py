@@ -10,12 +10,12 @@ snapshots = Snapshot()
 snapshots['TestGetTaskPresenterImplementation.test_when_complete_task_template_details_exists task_template_1'] = {
     'actions': [
         {
-            'action_id': 'action_1',
+            'action_id': 1,
             'button_color': 'button_color_1',
             'button_text': 'button_text__1'
         },
         {
-            'action_id': 'action_2',
+            'action_id': 2,
             'button_color': 'button_color_2',
             'button_text': 'button_text__2'
         }
@@ -137,12 +137,12 @@ snapshots['TestGetTaskPresenterImplementation.test_when_no_task_templates_exists
 snapshots['TestGetTaskPresenterImplementation.test_when_no_gofs_exists_returns_empty_gofs_list task_template_1'] = {
     'actions': [
         {
-            'action_id': 'action_1',
+            'action_id': 1,
             'button_color': 'button_color_1',
             'button_text': 'button_text__1'
         },
         {
-            'action_id': 'action_2',
+            'action_id': 2,
             'button_color': 'button_color_2',
             'button_text': 'button_text__2'
         }
@@ -277,12 +277,12 @@ snapshots['TestGetTaskPresenterImplementation.test_when_no_actions_for_user_exis
 snapshots['TestGetTaskPresenterImplementation.test_when_no_fields_exists_returns_empty_fields_list task_template_1'] = {
     'actions': [
         {
-            'action_id': 'action_1',
+            'action_id': 1,
             'button_color': 'button_color_1',
             'button_text': 'button_text__1'
         },
         {
-            'action_id': 'action_2',
+            'action_id': 2,
             'button_color': 'button_color_2',
             'button_text': 'button_text__2'
         }
