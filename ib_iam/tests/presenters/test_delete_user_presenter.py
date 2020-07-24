@@ -1,5 +1,6 @@
 import json
 
+from ib_iam.constants.enums import StatusCode
 from ib_iam.presenters.delete_user_presenter_implementation import \
     DeleteUserPresenterImplementation
 
@@ -15,4 +16,19 @@ class TestDeleteUserPresenter:
         actual_response = presenter.get_delete_user_response()
 
         response_dict = json.loads(actual_response.content)
-        print(response_dict)
+        assert expected_response.status_code == StatusCode.SUCCESS.value
+        assert response_dict == {}
+
+    def test_raise_user_is_not_admin_exception(self):
+        presenter = DeleteUserPresenterImplementation()
+        from ib_iam.constants.exception_messages import \
+            USER_DOES_NOT_HAVE_PERMISSION
+        expected_response = USER_DOES_NOT_HAVE_PERMISSION[0]
+        response_status_code = USER_DOES_NOT_HAVE_PERMISSION[1]
+
+        actual_response = presenter.raise_user_is_not_admin_exception()
+
+        response_dict = json.loads(actual_response.content)
+        assert response_dict['http_status_code'] == StatusCode.FORBIDDEN.value
+        assert response_dict['res_status'] == response_status_code
+        assert response_dict['response'] == expected_response
