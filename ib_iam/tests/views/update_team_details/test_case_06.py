@@ -14,7 +14,7 @@ class TestCase06UpdateTeamDetailsAPITestCase(TestUtils):
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
     URL_SUFFIX = URL_SUFFIX
-    SECURITY = {'oauth': {'scopes': ['update']}}
+    SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.fixture
     def setup(self, api_user):
