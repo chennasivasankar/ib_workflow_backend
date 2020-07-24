@@ -18,9 +18,8 @@ class CompanyStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_company_with_employees_count_dtos(
-            self, company_ids: List[str]
-    ) -> List[CompanyWithEmployeesCountDTO]:
+    def get_company_with_employees_count_dtos(self) -> \
+            List[CompanyWithEmployeesCountDTO]:
         pass
 
     @abstractmethod

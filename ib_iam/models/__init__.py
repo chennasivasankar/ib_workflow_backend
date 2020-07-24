@@ -1,7 +1,8 @@
 from .team import Team, TeamMember
 from .user import UserDetails
+from .company import Company
 
-__all__ = ["UserDetails", "Team", "TeamMember"]
+__all__ = ["UserDetails", "Team", "TeamMember", "Company"]
 
 # class DummyModel(AbstractDateTimeModel):
 #     """

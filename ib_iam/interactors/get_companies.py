@@ -6,7 +6,7 @@ from ib_iam.interactors.storage_interfaces.dtos import CompanyDTO
 from ib_iam.interactors.presenter_interfaces \
     .get_companies_presenter_interface import CompanyDetailsWithEmployeesCountDTO
 from typing import List
-from ib_iam.exceptions import UserHasNoAccess
+from ib_iam.exceptions.custom_exceptions import UserHasNoAccess
 
 
 class GetCompaniesInteractor:
@@ -32,22 +32,10 @@ class GetCompaniesInteractor:
         self.storage.validate_is_user_admin(user_id=user_id)
         company_dtos = \
             self.storage.get_company_dtos()
-        company_ids = self._get_company_ids_from_company_dtos(
-            company_dtos=company_dtos
-        )
         company_with_employees_count_dtos = \
-            self.storage.get_company_with_employees_count_dtos(
-                company_ids=company_ids
-            )
+            self.storage.get_company_with_employees_count_dtos()
         company_details_dtos = CompanyDetailsWithEmployeesCountDTO(
             company_dtos=company_dtos,
             company_with_employees_count_dtos=company_with_employees_count_dtos
         )
         return company_details_dtos
-
-    @staticmethod
-    def _get_company_ids_from_company_dtos(
-            company_dtos: List[CompanyDTO]
-    ) -> List[str]:
-        company_ids = [company_dto.company_id for company_dto in company_dtos]
-        return company_ids

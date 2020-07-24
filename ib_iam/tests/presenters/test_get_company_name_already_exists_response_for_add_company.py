@@ -1,5 +1,5 @@
 import json
-from ib_iam.exceptions import CompanyNameAlreadyExists
+from ib_iam.exceptions.custom_exceptions import CompanyNameAlreadyExists
 from ib_iam.presenters.add_company_presenter_implementation import (
     AddCompanyPresenterImplementation
 )

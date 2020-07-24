@@ -30,7 +30,7 @@ class TestCase04AddCompanyAPITestCase(TestUtils):
     def setup(self, api_user):
         user_obj = api_user
         user_id = str(user_obj.id)
-        from ib_iam.tests.factories.models import UserDetailsFactory
-        UserDetailsFactory.reset_sequence(1)
-        UserDetailsFactory.create(user_id=user_id, is_admin=True)
-        UserDetailsFactory.create(user_id="2")
+        from ib_iam.tests.factories.models import UserFactory
+        UserFactory.reset_sequence(1)
+        UserFactory.create(user_id=user_id, is_admin=True)
+        UserFactory.create(user_id="2")

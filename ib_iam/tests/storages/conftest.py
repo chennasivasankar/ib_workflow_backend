@@ -1,5 +1,5 @@
 from ib_iam.tests.factories.models import (
-    UserDetailsFactory, TeamFactory, TeamMemberFactory
+    UserFactory, TeamFactory, TeamMemberFactory
 )
 import pytest
 
@@ -21,9 +21,9 @@ member_ids = [
 
 @pytest.fixture()
 def create_users():
-    UserDetailsFactory.reset_sequence(1)
+    UserFactory.reset_sequence(1)
     for is_admin_value in [True, False]:
-        UserDetailsFactory(is_admin=is_admin_value)
+        UserFactory(is_admin=is_admin_value)
 
 
 @pytest.fixture()

@@ -1,8 +1,10 @@
+import uuid
+
 import factory, factory.django
-from ib_iam.models import UserDetails, Team, TeamMember
+from ib_iam.models import UserDetails, Team, TeamMember, Company
 
 
-class UserDetailsFactory(factory.django.DjangoModelFactory):
+class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = UserDetails
 
@@ -26,3 +28,30 @@ class TeamMemberFactory(factory.django.DjangoModelFactory):
 
     team = factory.SubFactory(TeamFactory)
     member_id = factory.sequence(lambda n: "user_id-%d" % n)
+
+
+class CompanyFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Company
+
+    company_id = factory.LazyFunction(uuid.uuid4)
+    name = factory.sequence(lambda number: "company %s" % number)
+
+
+class CompanyFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Company
+
+    company_id = factory.LazyFunction(uuid.uuid4)
+    name = factory.sequence(lambda number: "company %s" % number)
+    description = factory.sequence(lambda number: "description %s" % number)
+    logo_url = factory.sequence(lambda number: "url %s" % number)
+
+
+class UserDetailsFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = UserDetails
+
+    user_id = factory.sequence(lambda number: "user%s" % number)
+    is_admin = False
+    company = factory.SubFactory(CompanyFactory)

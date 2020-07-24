@@ -1,7 +1,7 @@
 import pytest
 from mock import create_autospec, Mock
 
-from ib_iam.exceptions import UserHasNoAccess
+from ib_iam.exceptions.custom_exceptions import UserHasNoAccess
 from ib_iam.interactors.get_companies import GetCompaniesInteractor
 from ib_iam.interactors.presenter_interfaces.get_companies_presenter_interface import GetCompaniesPresenterInterface, \
     CompanyDetailsWithEmployeesCountDTO
@@ -65,9 +65,7 @@ class TestGetCompaniesInteractor:
         interactor.get_companies_wrapper(user_id=user_id, presenter=presenter)
 
         storage.get_company_dtos.assert_called_once()
-        storage.get_company_with_employees_count_dtos.assert_called_once_with(
-            company_ids=company_ids
-        )
+        storage.get_company_with_employees_count_dtos.assert_called_once()
         presenter.get_response_for_get_companies.assert_called_once_with(
             company_details_dtos=company_details_dto
         )

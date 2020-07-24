@@ -1,4 +1,4 @@
-from ib_iam.exceptions import CompanyNameAlreadyExists
+from ib_iam.exceptions.custom_exceptions import CompanyNameAlreadyExists
 from ib_iam.presenters.update_company_presenter_implementation import (
     UpdateCompanyPresenterImplementation
 )

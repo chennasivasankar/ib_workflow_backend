@@ -1,6 +1,6 @@
 import pytest
 
-from ib_iam.exceptions import UserHasNoAccess
+from ib_iam.exceptions.custom_exceptions import UserHasNoAccess
 from ib_iam.storages.team_storage_implementation import TeamStorageImplementation
 
 

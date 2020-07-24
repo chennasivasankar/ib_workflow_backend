@@ -1,5 +1,5 @@
 from typing import List
-from ib_iam.exceptions import (
+from ib_iam.exceptions.custom_exceptions import (
     UserHasNoAccess,
     TeamNameAlreadyExists,
     InvalidUsers,
