@@ -42,6 +42,8 @@ class StageDTO:
 class TaskStageIdsDTO:
     task_id: str
     stage_id: str
+
+
 @dataclass
 class GetTaskStageCompleteDetailsDTO:
     fields_dto: List[FieldDetailsDTO]

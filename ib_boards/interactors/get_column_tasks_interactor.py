@@ -60,13 +60,14 @@ class GetColumnTasksInteractor:
         return self._get_tasks_complete_details(task_ids_stages_dtos)
 
     def _get_tasks_complete_details(
-            self, task_ids_stages_dtos: List[ColumnTaskIdsDTO]):
+            self, task_ids_stages_dtos: ColumnTaskIdsDTO):
         task_details_dtos = []
-        for task_ids_stages_dto in task_ids_stages_dtos:
+        for task_ids_stages_dto in task_ids_stages_dtos.task_stage_ids:
             from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
             task_details_dtos.append(
                 GetTaskDetailsDTO(
-
+                    task_id=task_ids_stages_dto.task_id,
+                    stage_id=task_ids_stages_dto.stage_id
                 )
             )
 
@@ -91,7 +92,7 @@ class GetColumnTasksInteractor:
     @staticmethod
     def _get_task_ids_with_respective_stages(
             stage_ids: List[str],
-            column_tasks_parameters: ColumnTasksParametersDTO) -> List[ColumnTaskIdsDTO]:
+            column_tasks_parameters: ColumnTasksParametersDTO) -> ColumnTaskIdsDTO:
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
@@ -106,4 +107,4 @@ class GetColumnTasksInteractor:
         task_ids_details = service_adapter.task_service.get_task_ids_for_stage_ids(
             task_config_dto=task_config_dto
         )
-        return task_ids_details
+        return task_ids_details[0]
