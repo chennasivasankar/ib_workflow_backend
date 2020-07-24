@@ -51,6 +51,8 @@ class SearchableFieldValuesPresenterImplementation(
                                              'name': searchable_detail_dto.name}
             searchable_value_details.append(searchable_values_detail_dict)
 
+        print("searchable_value_details", searchable_value_details)
+
         return self.prepare_200_success_response(
             response_dict=searchable_value_details
         )

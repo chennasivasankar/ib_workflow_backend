@@ -80,5 +80,5 @@ LIMIT_SHOULD_BE_GREATER_THAN_ZERO = ("Limit value should be greater than zero",
                                      "LIMIT_SHOULD_BE_GREATER_THAN_ZERO")
 
 OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE = (
-    "Offset sould be greater than or equal to minus one",
-    "OFFSET_SHOULD_BE_GREATER_THAN_OR_EQAL_TO_MINUS_ONE")
+    "Offset should be greater than or equal to minus one",
+    "OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE")
