@@ -105,7 +105,7 @@ class CreateOrUpdateTaskInteractor:
             return presenter.raise_exception_for_not_acceptable_image_format(
                 err)
         except InvalidUrlForFile as err:
-            return presenter.raise_exception_for_invalid_folder_url(err)
+            return presenter.raise_exception_for_invalid_file_url(err)
         except InvalidFileFormat as err:
             return presenter.raise_exception_for_not_acceptable_file_format(
                 err

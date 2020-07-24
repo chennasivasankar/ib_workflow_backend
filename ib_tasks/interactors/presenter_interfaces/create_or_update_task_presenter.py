@@ -125,14 +125,6 @@ class CreateOrUpdateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_could_not_read_image(self, err: CouldNotReadImage):
-        pass
-
-    @abc.abstractmethod
-    def raise_exception_for_not_an_image_url(self, err: NotAnImageUrl):
-        pass
-
-    @abc.abstractmethod
     def raise_exception_for_not_acceptable_image_format(self, err: InvalidImageFormat):
         pass
 
@@ -141,7 +133,7 @@ class CreateOrUpdateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_invalid_folder_url(self, err: InvalidUrlForFile):
+    def raise_exception_for_invalid_file_url(self, err: InvalidUrlForFile):
         pass
 
     @abc.abstractmethod

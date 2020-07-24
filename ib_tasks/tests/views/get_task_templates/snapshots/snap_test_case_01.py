@@ -62,7 +62,7 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                     'gof_display_name': 'GOF_DISPLAY_NAME-0',
                     'gof_id': 'gof_1',
                     'max_columns': 2,
-                    'order': 6
+                    'order': 0
                 },
                 {
                     'enable_add_another': True,
@@ -101,7 +101,7 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                     'gof_display_name': 'GOF_DISPLAY_NAME-0',
                     'gof_id': 'gof_1',
                     'max_columns': 2,
-                    'order': 10
+                    'order': 4
                 },
                 {
                     'enable_add_another': True,
@@ -125,7 +125,7 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                     'gof_display_name': 'GOF_DISPLAY_NAME-2',
                     'gof_id': 'gof_3',
                     'max_columns': 2,
-                    'order': 8
+                    'order': 2
                 }
             ],
             'template_id': 'template_1',
@@ -182,7 +182,7 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                     'gof_display_name': 'GOF_DISPLAY_NAME-1',
                     'gof_id': 'gof_2',
                     'max_columns': 2,
-                    'order': 7
+                    'order': 1
                 },
                 {
                     'enable_add_another': False,
@@ -221,7 +221,7 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                     'gof_display_name': 'GOF_DISPLAY_NAME-1',
                     'gof_id': 'gof_2',
                     'max_columns': 2,
-                    'order': 11
+                    'order': 5
                 },
                 {
                     'enable_add_another': False,
@@ -245,7 +245,7 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                     'gof_display_name': 'GOF_DISPLAY_NAME-3',
                     'gof_id': 'gof_4',
                     'max_columns': 2,
-                    'order': 9
+                    'order': 3
                 }
             ],
             'template_id': 'template_2',
