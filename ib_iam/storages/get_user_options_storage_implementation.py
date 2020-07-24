@@ -1,7 +1,7 @@
 from typing import List
 
 from ib_iam.interactors.storage_interfaces.dtos \
-    import RoleIdAndNameDTO, TeamDTO, CompanyDTO, TeamIdAndNameDTO
+    import RoleIdAndNameDTO, CompanyDTO, TeamIdAndNameDTO
 from ib_iam.interactors.storage_interfaces.get_user_options_storage_interface \
     import GetUserOptionsStorageInterface
 
