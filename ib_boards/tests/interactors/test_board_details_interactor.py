@@ -31,10 +31,6 @@ class TestBoardDetailsInteractor:
                 board_id="board_id_1",
                 name="name",
                 column_id="column_id_1"
-            )],
-            columns_fields_dtos=[ColumnFieldDTO(
-                column_id="column_id_1",
-                field_ids=["field_id_1", "field_id_2"]
             )])
         return task_details
 

@@ -4,7 +4,7 @@ from typing import List, Tuple
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
     BoardColumnsDTO, TaskTemplateStagesDTO, TaskSummaryFieldsDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
-    ColumnDetailsDTO
+    ColumnDetailsDTO, ColumnBoardDTO, ColumnStageDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, ColumnDetailsDTO, TaskBoardsDetailsDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
@@ -14,6 +14,7 @@ from ib_boards.models import Board, ColumnPermission, Column
 class StorageImplementation(StorageInterface):
 
     def validate_board_id(self, board_id):
+        boards = Board.objects.all().values('board_id')
         is_board_id_valid = Board.objects.filter(
             board_id=board_id
         ).exists()
@@ -349,8 +350,52 @@ class StorageImplementation(StorageInterface):
 
     def get_board_complete_details(self, board_id: str, stage_ids: List[str]) -> \
             TaskBoardsDetailsDTO:
-        pass
+
+        column_objs = Column.objects.filter(board_id=board_id)
+        board_obj = Board.objects.get(board_id=board_id)
+        board_dto = BoardDTO(
+            board_id=board_obj.board_id,
+            display_name=board_obj.name
+        )
+
+        list_of_column_dtos, column_stages = self._convert_column_details_to_dtos(column_objs,
+                                                                   stage_ids)
+        board_details_dto = TaskBoardsDetailsDTO(
+            board_dto=board_dto,
+            columns_dtos=list_of_column_dtos,
+            column_stage_dtos=column_stages
+        )
+        return board_details_dto
 
     def get_column_details(self, board_id: str, user_roles: List[str]) \
             -> List[BoardColumnDTO]:
         pass
+
+
+    def _convert_column_details_to_dtos(self, column_objs,
+                                        stage_ids):
+        list_of_column_dtos = []
+        for column_obj in column_objs:
+            list_of_column_dtos.append(
+                ColumnBoardDTO(
+                    column_id=column_obj.column_id,
+                    board_id=column_obj.board_id,
+                    name=column_obj.name
+                )
+            )
+        column_stages = []
+        for column_obj in column_objs:
+            tasks = column_obj.task_selection_config
+            import json
+            tasks_stages = json.loads(tasks)
+            for key, value in enumerate(tasks_stages):
+                stages = tasks_stages[value]
+                for stage in stages:
+                    if stage in stage_ids:
+                        column_stages.append(
+                            ColumnStageDTO(
+                                column_id=column_obj.column_id,
+                                stage_id=stage
+                            )
+                        )
+        return list_of_column_dtos, column_stages
