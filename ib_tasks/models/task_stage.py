@@ -8,6 +8,5 @@ class TaskStage(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     stage = models.ForeignKey(Stage, on_delete=models.CASCADE)
 
-
-class Meta:
-    unique_together = ('stage', 'task')
+    class Meta:
+        unique_together = ('stage', 'task')

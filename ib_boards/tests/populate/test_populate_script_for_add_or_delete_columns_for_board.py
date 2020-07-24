@@ -26,7 +26,7 @@ class TestPopulateBoardsAndColumnsInteractor:
 
     def test_with_invalid_keys_in_dict_raise_exception(self):
         # Arrange
-        from ib_boards.tests.common_fixtures.populate_data import\
+        from ib_boards.tests.common_fixtures.populate_data import \
             populate_dict_with_invalid_keys
 
         data_dict = populate_dict_with_invalid_keys()
@@ -54,7 +54,8 @@ class TestPopulateBoardsAndColumnsInteractor:
                 boards_columns_dicts=data_dict
             )
 
-    def test_with_invalid_json_in_task_summary_fields_dict_raise_exception(self):
+    def test_with_invalid_json_in_task_summary_fields_dict_raise_exception(
+            self):
         # Arrange
         from ib_boards.tests.common_fixtures.populate_data import \
             populate_dict_with_invalid_json_for_summary_fields
@@ -68,25 +69,28 @@ class TestPopulateBoardsAndColumnsInteractor:
                 boards_columns_dicts=data_dict
             )
 
-    def test_with_valid_data_return_dtos(self, snapshot, mocker, sequence_reset):
+    def test_with_valid_data_return_dtos(self, snapshot, mocker,
+                                         sequence_reset):
         # Arrange
         from ib_boards.tests.common_fixtures.populate_data import \
             populate_dict_with_valid_data
 
         data_dict = populate_dict_with_valid_data()
         populate_script = PopulateCreateBoardsAndColumns()
+        user_roles = ["USER", 'ADMIN']
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            adapter_mock
+        adapter_mock = adapter_mock(mocker=mocker,
+                                    user_roles=user_roles)
 
         task_template_ids_for_stages = [
-            'TASK_TEMPLATE_ID_1', 'TASK_TEMPLATE_ID_2',
-            'TASK_TEMPLATE_ID_3', 'TASK_TEMPLATE_ID_4'
+            'FIN_PR', 'FIN_IN',
         ]
         task_template_ids_list_view = [
-            'TASK_TEMPLATE_ID_1', 'TASK_TEMPLATE_ID_2',
-            'TASK_TEMPLATE_ID_5', 'TASK_TEMPLATE_ID_6'
+            'FIN_PR', 'FIN_IN',
         ]
         task_template_ids_kanban_view = [
-            'TASK_TEMPLATE_ID_3', 'TASK_TEMPLATE_ID_4',
-            'TASK_TEMPLATE_ID_7', 'TASK_TEMPLATE_ID_8'
+            'FIN_PR', 'FIN_IN',
         ]
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             get_valid_task_ids_for_kanban_view_mock

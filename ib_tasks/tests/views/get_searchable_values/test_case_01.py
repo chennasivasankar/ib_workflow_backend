@@ -12,6 +12,7 @@ class TestCase01GetSearchableValuesAPITestCase(TestUtils):
     REQUEST_METHOD = REQUEST_METHOD
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['read']}}
+
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {}

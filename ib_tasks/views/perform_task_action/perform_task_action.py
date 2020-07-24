@@ -1,6 +1,4 @@
 from functools import reduce
-
-
 def perform_task_action(*args, **kwargs):  # pylint: disable=invalid-name
     """
     Note: replace below mock implementation with your actual implementation

@@ -21,7 +21,7 @@ class TestValidateStageIds:
     def test_validate_stage_ids(self, create_stages, valid_stages_dto):
         # Arrange
         storage = StagesStorageImplementation()
-        expected_stage_dtos = valid_stages_dto
+        expected_stage_dtos = ["stage_id_0", "stage_id_1", "stage_id_2"]
         stage_ids = ["stage_id_0", "stage_id_1", "stage_id_2", "stage_id_3"]
 
         # Act

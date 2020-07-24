@@ -5,7 +5,6 @@ Author: Pavankumar Pamuru
 """
 from typing import List
 
-from ib_boards.interactors.dtos import TasksParameterDTO, TaskIdStageDTO
 from ib_boards.interactors.dtos import TaskIdStageDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface

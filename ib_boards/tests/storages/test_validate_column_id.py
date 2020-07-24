@@ -4,7 +4,6 @@ Author: Pavankumar Pamuru
 
 """
 import pytest
-from ib_boards.models import Board, Column
 
 
 @pytest.mark.django_db
@@ -18,7 +17,8 @@ class TestValidateColumnId:
 
     @pytest.fixture
     def reset_sequence(self):
-        from ib_boards.tests.factories.models import BoardFactory, ColumnFactory
+        from ib_boards.tests.factories.models import BoardFactory, \
+            ColumnFactory
         BoardFactory.reset_sequence()
         ColumnFactory.reset_sequence()
         from ib_boards.tests.factories.interactor_dtos import BoardDTOFactory
@@ -28,7 +28,8 @@ class TestValidateColumnId:
             self, storage, reset_sequence):
         # Arrange
         invalid_column_id = 'COLUMN_ID_100000'
-        from ib_boards.tests.factories.models import BoardFactory, ColumnFactory
+        from ib_boards.tests.factories.models import BoardFactory, \
+            ColumnFactory
         BoardFactory.create_batch(2)
         ColumnFactory.create_batch(3, board_id='BOARD_ID_1')
 
@@ -43,13 +44,10 @@ class TestValidateColumnId:
             self, storage, reset_sequence):
         # Arrange
         column_id = 'COLUMN_ID_1'
-        from ib_boards.tests.factories.models import BoardFactory, ColumnFactory
+        from ib_boards.tests.factories.models import BoardFactory, \
+            ColumnFactory
         BoardFactory.create_batch(2)
         ColumnFactory.create_batch(3, board_id='BOARD_ID_1')
 
         # Act
         storage.validate_column_id(column_id=column_id)
-
-
-
-

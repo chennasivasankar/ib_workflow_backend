@@ -44,14 +44,16 @@ def _define_single_method(file, action_dict: Dict[str, str]):
     action_logic = action_dict['action_logic']
     function_name = f'{stage_id}_{action_name}'
     function_name = function_name.replace(' ', '_').replace('-', '_').replace('\n', '')
-    file.write(f"\n\ndef {function_name}(task_dict):\n")
+    file.write(
+        f"\n\ndef {function_name}(task_dict, global_constants, stage_value_dict):\n")
     file.write(action_logic + "\n")
     file.write("\t" + "return task_dict\n")
 
 
 def _validate_action_logic(action_logic: str):
     from astroid import parse, AstroidSyntaxError
-    from ib_tasks.exceptions.stage_custom_exceptions import InvalidPythonCodeException
+    from ib_tasks.exceptions.custom_exceptions import \
+        InvalidPythonCodeException
     try:
         parse(action_logic)
     except AstroidSyntaxError:
@@ -108,5 +110,6 @@ def raise_exception_for_valid_format():
     }
     import json
     json_valid_format = json.dumps(valid_format)
-    from ib_tasks.exceptions.stage_custom_exceptions import InvalidFormatException
+    from ib_tasks.exceptions.custom_exceptions \
+        import InvalidFormatException
     raise InvalidFormatException(valid_format=json_valid_format)

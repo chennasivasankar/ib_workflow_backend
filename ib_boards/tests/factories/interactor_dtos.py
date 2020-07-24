@@ -3,15 +3,14 @@ Created on: 14/07/20
 Author: Pavankumar Pamuru
 
 """
-import json
 
 import factory
 
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
-    TaskTemplateStagesDTO, TaskSummaryFieldsDTO, TaskDTO, ActionDTO, \
-    TaskStatusDTO
-
+    TaskTemplateStagesDTO, TaskSummaryFieldsDTO, \
+    TaskStatusDTO, FieldDetailsDTO, ActionDetailsDTO
 from ib_boards.interactors.dtos import TaskColumnDTO
+
 
 class TaskColumnDTOFactory(factory.Factory):
     class Meta:
@@ -42,7 +41,7 @@ class BoardDTOFactory(factory.Factory):
         model = BoardDTO
 
     board_id = factory.Sequence(lambda n: f'BOARD_ID_{n + 1}')
-    display_name = factory.Sequence(lambda n: f'BOARD_DISPLAY_NAME')
+    name = factory.Sequence(lambda n: f'BOARD_DISPLAY_NAME')
 
 
 class ColumnDTOFactory(factory.Factory):
@@ -50,7 +49,7 @@ class ColumnDTOFactory(factory.Factory):
         model = ColumnDTO
 
     column_id = factory.Sequence(lambda n: f'COLUMN_ID_{n + 1}')
-    display_name = factory.Sequence(lambda n: f'COLUMN_DISPLAY_NAME_{n + 1}')
+    name = factory.Sequence(lambda n: f'COLUMN_DISPLAY_NAME_{n + 1}')
     display_order = factory.Sequence(lambda n: n + 1)
     task_template_stages = TaskTemplateStagesDTOFactory.create_batch(5)
     user_role_ids = ['ALL_ROLES']
@@ -61,25 +60,26 @@ class ColumnDTOFactory(factory.Factory):
     board_id = "BOARD_ID_0"
 
 
-class TaskDTOFactory(factory.Factory):
+class FieldDetailsDTOFactory(factory.Factory):
     class Meta:
-        model = TaskDTO
+        model = FieldDetailsDTO
 
-    task_id = factory.Sequence(lambda n: f'TASK_ID_{n + 1}')
+    field_id = factory.Sequence(lambda n: f'FIELD_ID_{n + 1}')
     field_type = factory.Sequence(lambda n: f'FIELD_TYPE_ID_{n + 1}')
     key = factory.Sequence(lambda n: f'KEY_{n + 1}')
     value = factory.Sequence(lambda n: f'VALUE_{n + 1}')
+    stage_id = factory.Sequence(lambda n: f'STAGE_ID_{n + 1}')
 
 
 class ActionDTOFactory(factory.Factory):
     class Meta:
-        model = ActionDTO
+        model = ActionDetailsDTO
 
     action_id = factory.Sequence(lambda n: f'ACTION_ID_{n + 1}')
     name = factory.Sequence(lambda n: f'NAME_{n + 1}')
     button_text = factory.Sequence(lambda n: f'BUTTON_TEXT_{n + 1}')
     button_color = factory.Sequence(lambda n: f'BUTTON_COLOR_{n + 1}')
-    task_id = factory.Sequence(lambda n: f'TASK_ID_{n + 1}')
+    stage_id = factory.Sequence(lambda n: f'STAGE_ID_{n + 1}')
 
 
 class TaskStatusDTOFactory(factory.Factory):

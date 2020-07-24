@@ -39,7 +39,9 @@ class TestTaskDetailsResponse:
 
         # Act
         response = presenter.get_response_for_task_details(
-            task_details=get_column_task_details, task_fields_dto=task_fields_dtos, task_actions_dto=task_actions_dtos)
+            task_details=get_column_task_details,
+            task_fields_dto=task_fields_dtos,
+            task_actions_dto=task_actions_dtos)
 
         # Assert
         import json

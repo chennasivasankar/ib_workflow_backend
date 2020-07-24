@@ -1,6 +1,6 @@
 from typing import List
 from typing import Optional
-
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.stages_dtos import StageActionDTO
 from ib_tasks.interactors.stages_dtos import StageDTO, TaskTemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
@@ -8,7 +8,8 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GOFMultipleEnableDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
+    StageValueDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface \
@@ -136,9 +137,9 @@ class StorageImplementation(StorageInterface):
     def get_valid_task_template_ids(self, task_template_ids: List[str]):
         pass
 
-    def validate_task_id(self, task_id: str) -> bool:
-        # return Task.objects.filter(id=task_id).exists()
-        pass
+    def validate_task_id(self, task_id: int) -> bool:
+
+        return Task.objects.filter(id=task_id).exists()
 
     def get_task_group_of_fields_dto(
             self, task_id: str) -> List[GroupOfFieldsDTO]:
@@ -164,7 +165,7 @@ class StorageImplementation(StorageInterface):
             ) for status_variable_obj in status_variable_objs
         ]
 
-    def get_path_name_to_action(self, action_id: str) -> str:
+    def get_path_name_to_action(self, action_id: int) -> str:
 
         action_obj = StageAction.objects.get(id=action_id)
         return action_obj.py_function_import_path
@@ -243,15 +244,48 @@ class StorageImplementation(StorageInterface):
         return StageAction.objects.filter(id=action_id).exists()
 
     def get_enable_multiple_gofs_field_to_gof_ids(
-            self, gof_ids: List[str]) -> List[GOFMultipleEnableDTO]:
+            self, task_id: int, gof_ids: List[str]) -> List[
+        GOFMultipleEnableDTO]:
 
-        # task_template_gofs = TaskTemplateGoFs.objects.filter(gof__gof_id__in=gof_ids)
-        #
-        # return [
-        #     GOFMultipleEnableDTO(
-        #         group_of_field_id=task_template_gof.gof_id,
-        #         multiple_status=task_template_gof.enable_add_another_gof
-        #     )
-        #     for task_template_gof in task_template_gofs
-        # ]
-        pass
+        from ib_tasks.models import TaskTemplateGoFs
+        task_obj = Task.objects.get(id=task_id)
+        template_id = task_obj.template_id
+        task_template_gofs = TaskTemplateGoFs.objects \
+            .filter(gof_id__in=gof_ids, task_template_id=template_id)
+
+        return [
+            GOFMultipleEnableDTO(
+                group_of_field_id=task_template_gof.gof_id,
+                multiple_status=task_template_gof.enable_add_another_gof
+            )
+            for task_template_gof in task_template_gofs
+        ]
+
+    def get_global_constants_to_task(
+            self, task_id: int) -> List[GlobalConstantsDTO]:
+
+        from ib_tasks.models.task import Task
+        task_obj = Task.objects.get(id=task_id)
+        global_constant_objs = GlobalConstant.objects \
+            .filter(task_template_id=task_obj.template_id)
+        return [
+            GlobalConstantsDTO(
+                constant_name=global_constant_obj.name,
+                value=global_constant_obj.value
+            )
+            for global_constant_obj in global_constant_objs
+        ]
+
+    def get_stage_dtos_to_task(self, task_id: int) -> List[StageValueDTO]:
+
+        from ib_tasks.models.task import Task
+        task_obj = Task.objects.get(id=task_id)
+        stage_objs = Stage.objects.filter(
+            task_template_id=task_obj.template_id)
+        return [
+            StageValueDTO(
+                stage_id=stage_obj.stage_id,
+                value=stage_obj.value
+            )
+            for stage_obj in stage_objs
+        ]

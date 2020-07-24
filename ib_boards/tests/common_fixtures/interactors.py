@@ -17,7 +17,8 @@ def get_board_details_mock(mocker):
     return mock
 
 
-def get_stage_display_logic_mock(mocker, task_status_dtos: List[TaskStatusDTOFactory]):
+def get_stage_display_logic_mock(mocker,
+                                 task_status_dtos: List[TaskStatusDTOFactory]):
     mock = mocker.patch(
         'ib_boards.interactors.get_stage_display_logic_interactor.StageDisplayLogicInteractor.get_stage_display_logic_condition'
     )

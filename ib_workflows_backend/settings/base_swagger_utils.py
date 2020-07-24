@@ -70,7 +70,7 @@ SWAGGER_UTILS = {
     "APPS": {
         "ib_iam": {"dsu_version": "1.0"},
         "ib_tasks": {"dsu_version": "1.0"},
-        "ib_boards": {}
+        "ib_boards": {"dsu_version": "1.0"},
     },
     "HOST": os.environ.get('APIGATEWAY_ENDPOINT', '127.0.0.1:8000'),
 }

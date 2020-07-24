@@ -35,5 +35,3 @@ class TestGetBoardIds:
 
         # Assert
         assert expected_board_ids == actual_board_ids
-
-

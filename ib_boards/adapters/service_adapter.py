@@ -11,8 +11,8 @@ class ServiceAdapter:
 
     @property
     def user_service(self):
-        from ib_boards.adapters.iam_service import IAMService
-        return IAMService()
+        from ib_boards.adapters.iam_service import IamService
+        return IamService()
 
 
 def get_service_adapter():

@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
+
 
 @dataclass
 class ColumnParametersDTO:
@@ -12,21 +13,25 @@ class TaskColumnDTO:
     column_id: str
     task_id: str
 
+
 @dataclass
 class PaginationParametersDTO:
     offset: int
     limit: int
 
+
 @dataclass
-class TaskDTO:
+class TaskStageIdDTO:
     task_id: str
     stage_id: str
+
 
 @dataclass
 class TaskDetailsDTO:
     task_id: str
     stage_id: str
     column_id: str
+
 
 @dataclass
 class FieldsDTO:
@@ -49,13 +54,13 @@ class TaskSummaryFieldsDTO:
 @dataclass
 class BoardDTO:
     board_id: str
-    display_name: str
+    name: str
 
 
 @dataclass
 class ColumnDTO:
     column_id: str
-    display_name: str
+    name: str
     display_order: int
     task_template_stages: List[TaskTemplateStagesDTO]
     user_role_ids: List[str]
@@ -81,7 +86,7 @@ class GetBoardsDTO:
 
 @dataclass
 class ColumnTasksParametersDTO:
-    user_id = 1
+    user_id: int
     column_id: str
     offset: int
     limit: int
@@ -120,3 +125,35 @@ class TaskIdStageDTO:
 class TasksParameterDTO(TaskIdStageDTO):
     column_id: str
 
+
+@dataclass
+class ColumnTaskIdsDTO:
+    unique_key: str
+    task_stage_ids: List[TaskIdStageDTO]
+    total_tasks: int
+
+
+@dataclass
+class FieldDetailsDTO:
+    field_type: str
+    field_id: int
+    stage_id: str
+    key: str
+    value: str
+
+
+@dataclass()
+class ActionDetailsDTO:
+    action_id: int
+    name: str
+    stage_id: str
+    button_text: str
+    button_color: Optional[str]
+
+
+@dataclass
+class TaskCompleteDetailsDTO:
+    task_id: int
+    stage_id: str
+    field_dtos: List[FieldDetailsDTO]
+    action_dtos: List[ActionDetailsDTO]

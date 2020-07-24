@@ -46,7 +46,8 @@ def _define_single_method(file, action_dict: Dict[str, str]):
     action_logic = action_dict['action_logic']
     function_name = f'{stage_id}_{action_name}'
     function_name = function_name.replace(' ', '_').replace('-', '_').replace('\n', '')
-    file.write(f"\n\ndef {function_name}(task_dict):\n")
+    file.write(
+        f"\n\ndef {function_name}(task_dict, global_constants, stage_value_dict):\n")
     file.write(action_logic + "\n")
     file.write("\t" + "return task_dict\n")
 
@@ -86,12 +87,12 @@ def validation_for_tasks_dict(tasks_dict: List[Dict]):
             Optional("button_color"): str
         }]
     )
-    validated_data = []
-    validated_data = schema.validate(tasks_dict)
+
     try:
         validated_data = schema.validate(tasks_dict)
     except SchemaError:
         raise_exception_for_valid_format()
+        return
     for action_dict in validated_data:
         _validate_action_logic(action_logic=action_dict['action_logic'])
 
@@ -104,7 +105,7 @@ def _validate_action_logic(action_logic: str):
         parse(action_logic)
     except AstroidSyntaxError:
         raise InvalidPythonCodeException()
-
+        return
 
 def raise_exception_for_valid_format():
     valid_format = {

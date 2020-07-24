@@ -41,8 +41,9 @@ DUPLICATE_ORDER_VALUES_FOR_GOFS = \
     "Given duplicate order values {}! Gof orders of a template should be unique"
 INVALID_TYPE_FOR_ORDER = "Given value for order: {} is not an integer"
 INVALID_TYPE_FOR_VALUE = "Given value for order: {} is not an integer"
-TASK_TEMPLATES_DOES_NOT_EXISTS = "No Task Templates are exists"
-
+TASK_TEMPLATES_DOES_NOT_EXISTS = (
+    "No Task Templates are exists", "TASK_TEMPLATES_DOES_NOT_EXISTS"
+)
 INVALID_GOF_IDS_EXCEPTION_MESSAGE = "Invalid values for gof_ids {}"
 EMPTY_VALUE_FOR_FIELD_ID = "Field ids shouldn't be empty"
 EMPTY_VALUE_FOR_READ_PERMISSIONS = "Read Permission roles shouldn't be empty for these fields ids {}"
@@ -72,6 +73,11 @@ INVALID_GOF_IDS = ["invalid gof ids: {}", "INVALID_GOF_IDS"]
 
 INVALID_FIELD_IDS = ["invalid field ids: {}", "INVALID_FIELD_IDS"]
 
+USER_DO_NOT_HAVE_ACCESS = [
+    "User do not have access to the action: {}",
+    "USER_DO_NOT_HAVE_ACCESS"
+]
+
 EMPTY_VALUE_FOR_PLAIN_TEXT_FIELD = [
     "got empty value in plain text field for field id: {}",
     "EMPTY_VALUE_FOR_PLAIN_TEXT_FIELD"
@@ -82,3 +88,18 @@ LIMIT_SHOULD_BE_GREATER_THAN_ZERO = ("Limit value should be greater than zero",
 OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE = (
     "Offset should be greater than or equal to minus one",
     "OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE")
+
+INVALID_TASK_ID = [
+    "invalid task id is: {}, please send valid task id",
+    "INVALID_TASK_ID"
+]
+
+INVALID_BOARD_ID = [
+    "invalid board id is: {}, please send valid board id",
+    "INVALID_BOARD_ID"
+]
+
+INVALID_ACTION_ID = [
+    "invalid action id is: {}, please send valid action id",
+    "INVALID_ACTION_ID"
+]

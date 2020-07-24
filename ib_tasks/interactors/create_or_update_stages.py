@@ -47,7 +47,9 @@ class CreateOrUpdateStagesInterface:
                 create_stages_details.append(stage_information)
             else:
                 update_stages_details.append(stage_information)
+        print("update_stages_details: ", update_stages_details)
         task_stages_dto = self._get_task_stages_dto(update_stages_details)
+        print("task_stages_dto: ", task_stages_dto)
         self._validate_stages_related_task_template_ids(task_stages_dto)
 
         if update_stages_details:
@@ -61,7 +63,8 @@ class CreateOrUpdateStagesInterface:
     def _validate_stage_display_logic(self, stages_details):
         list_of_logic_attributes = []
         invalid_stage_display_logic_stages = [
-            stage.stage_id for stage in stages_details if stage.stage_display_logic == ""
+            stage.stage_id for stage in stages_details
+            if stage.stage_display_logic == ""
         ]
         if invalid_stage_display_logic_stages:
             raise InvalidStageDisplayLogic(invalid_stage_display_logic_stages)
@@ -112,7 +115,7 @@ class CreateOrUpdateStagesInterface:
             raise DuplicateStageIds(duplicate_stage_ids)
 
     def _get_existing_stage_ids(self, stage_ids: List[str]):
-
+        print("stage_ids: ", stage_ids)
         existing_stage_ids = self.stage_storage.get_existing_stage_ids(
             stage_ids)
         return existing_stage_ids

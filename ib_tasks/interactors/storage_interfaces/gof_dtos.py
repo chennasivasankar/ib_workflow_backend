@@ -48,4 +48,4 @@ class GoFToTaskTemplateDTO:
     gof_id: str
     template_id: str
     order: int
-    enable_multiple_gofs: bool
+    enable_add_another: bool

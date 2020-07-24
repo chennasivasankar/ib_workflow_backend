@@ -1,4 +1,6 @@
 import factory
+
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.task_dtos import TaskStatusVariableDTO
 
 from ib_tasks.constants.constants import VALID_FIELD_TYPES
@@ -12,7 +14,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GroupOfFieldsDTO, \
     GOFMultipleEnableDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    StageActionNamesDTO, ValidStageDTO
+    StageActionNamesDTO, ValidStageDTO, TaskStageIdsDTO, StageValueDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO, GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (TaskStagesDTO)
@@ -25,12 +27,17 @@ from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TaskTemplateDTO
 from ib_tasks.models import StageAction
 
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import (
+    TaskGoFFieldDTO,
+    TaskGoFDTO
+)
+
 
 class FieldValueDTOFactory(factory.Factory):
     class Meta:
         model = FieldValueDTO
 
-    database_id = factory.Sequence(lambda n: 'database_%d' % (n + 1))
+    database_id = factory.Sequence(lambda n: (n + 1))
     gof_database_id = factory.Sequence(lambda n: 'gof_database_%d' % (n + 1))
     field_id = factory.Sequence(lambda n: 'field_%d' % (n + 1))
     value = factory.Sequence(lambda n: 'value_%d' % (n + 1))
@@ -42,7 +49,7 @@ class StatusVariableDTOFactory(factory.Factory):
 
     status_id = factory.Sequence(lambda n: (n + 1))
     status_variable = factory.Sequence(lambda n: 'status_variable_%d' %
-                                       (n + 1))
+                                                 (n + 1))
     value = factory.Sequence(lambda n: 'value_%d' % (n + 1))
 
 
@@ -52,7 +59,7 @@ class GroupOfFieldsDTOFactory(factory.Factory):
 
     database_id = factory.Sequence(lambda n: 'gof_database_%d' % (n + 1))
     group_of_field_id = factory.Sequence(lambda n: 'group_of_field_%d' %
-                                         (n + 1))
+                                                   (n + 1))
 
 
 class GOFMultipleStatusDTOFactory(factory.Factory):
@@ -61,7 +68,7 @@ class GOFMultipleStatusDTOFactory(factory.Factory):
 
     multiple_status = True
     group_of_field_id = factory.Sequence(lambda n: 'group_of_field_%d' %
-                                         (n + 1))
+                                                   (n + 1))
 
 
 class ActionDTOFactory(factory.Factory):
@@ -130,12 +137,28 @@ class StageDTOFactory(factory.Factory):
         id_value = factory.Trait(id=factory.Sequence(lambda n: n))
 
 
+class StageValueDTOFactory(factory.Factory):
+    class Meta:
+        model = StageValueDTO
+
+    stage_id = factory.Sequence(lambda n: 'stage_id_%d' % n)
+    value = factory.Sequence(lambda n: n)
+
+
 class ValidStageDTOFactory(factory.Factory):
     class Meta:
         model = ValidStageDTO
 
     id = factory.Sequence(lambda n: (n + 1))
     stage_id = factory.Sequence(lambda n: 'stage_id_%d' % n)
+
+
+class GOFMultipleEnableDTOFactory(factory.Factory):
+    class Meta:
+        model = GOFMultipleEnableDTO
+
+    group_of_field_id = factory.Sequence(lambda n: 'gof_%d' % n)
+    multiple_status = True
 
 
 class TaskStageDTOFactory(factory.Factory):
@@ -249,8 +272,7 @@ class ActionsOfTemplateDTOFactory(factory.Factory):
         model = ActionsOfTemplateDTO
 
     template_id = factory.Sequence(lambda n: 'template_{}'.format(n + 1))
-    action_id = factory.Sequence(lambda n: 'action_{}'.format(n + 1))
-    action_name = factory.Sequence(lambda n: 'Action {}'.format(n + 1))
+    action_id = factory.Sequence(lambda n: n + 1)
     button_text = factory.Sequence(lambda n: 'button_text__{}'.format(n + 1))
     button_color = factory.Sequence(lambda n: 'button_color_{}'.format(n + 1))
 
@@ -270,4 +292,38 @@ class GoFToTaskTemplateDTOFactory(factory.Factory):
     gof_id = factory.Sequence(lambda n: 'gof_{}'.format(n + 1))
     template_id = factory.Sequence(lambda n: 'template_{}'.format(n + 1))
     order = factory.Sequence(lambda n: n)
-    enable_multiple_gofs = factory.Iterator([True, False])
+    enable_add_another = factory.Iterator([True, False])
+
+
+class TaskGoFDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskGoFDTO
+
+    task_gof_id = factory.Sequence(lambda n: n)
+    gof_id = factory.Sequence(lambda n: "gof{}".format(n))
+    same_gof_order = 0
+
+
+class TaskGoFFieldDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskGoFFieldDTO
+
+    task_gof_id = factory.Sequence(lambda n: n)
+    field_id = factory.Sequence(lambda n: "field{}".format(n))
+    field_response = factory.Sequence(lambda n: "field_response{}".format(n))
+
+
+class GlobalConstantDTOFactory(factory.Factory):
+    class Meta:
+        model = GlobalConstantsDTO
+
+    constant_name = factory.sequence(lambda n: "constant_{}".format(n + 1))
+    value = factory.sequence(lambda n: (n + 1))
+
+
+class TaskStageIdsDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskStageIdsDTO
+
+    task_id = factory.Sequence(lambda n: f'TASK_ID_{n + 1}')
+    stage_id = factory.Sequence(lambda n: f'STAGE_ID_{n + 1}')

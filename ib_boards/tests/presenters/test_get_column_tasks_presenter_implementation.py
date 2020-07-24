@@ -13,7 +13,6 @@ class TestGetColumnTasksPresenterImplementation:
 
     def test_get_response_for_invalid_column_id(self):
         # Arrange
-        from ib_boards.exceptions.custom_exceptions import InvalidBoardIds
         from ib_boards.constants.exception_messages import \
             INVALID_COLUMN_ID
         expected_response = INVALID_COLUMN_ID[0]
