@@ -7,7 +7,6 @@ from .validator_class import ValidatorClass
 def api_wrapper(*args, **kwargs):
     user_object = kwargs["user"]
     request_data = kwargs["request_data"]
-
     from ib_discussions.interactors.DTOs.common_dtos import DiscussionDTO
     discussion_dto = DiscussionDTO(
         user_id=user_object.user_id,

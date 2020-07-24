@@ -43,6 +43,7 @@ class StorageImplementation(StorageInterface):
         self.validate_entity_type_for_entity_id(
             entity_id=entity_id, entity_type=entity_type
         )
+        # todo : fix this change
         try:
             from ib_discussions.models import DiscussionSet
             discussion_set_object = DiscussionSet.objects.get(
@@ -52,6 +53,12 @@ class StorageImplementation(StorageInterface):
             from ib_discussions.interactors.discussion_interactor import \
                 DiscussionSetNotFound
             raise DiscussionSetNotFound
+
+        # from ib_discussions.models import DiscussionSet
+        # discussion_set_object = DiscussionSet.objects.get_or_create(
+        #     entity_id=entity_id, entity_type=entity_type
+        # )
+        # return str(discussion_set_object[0].id)
         return str(discussion_set_object.id)
 
     def create_discussion_set_return_id(

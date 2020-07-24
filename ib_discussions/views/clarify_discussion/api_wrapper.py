@@ -8,6 +8,7 @@ from .validator_class import ValidatorClass
 def api_wrapper(*args, **kwargs):
     user = kwargs["user"]
     user_id = user.user_id
+
     path_params = kwargs["path_params"]
     discussion_id = path_params["discussion_id"]
 

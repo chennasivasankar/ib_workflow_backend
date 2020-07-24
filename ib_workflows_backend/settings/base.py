@@ -24,7 +24,8 @@ ALLOWED_HOSTS = [
     "ib-workflows-backend-beta.apigateway.in",
     "ib-workflows-backend-gamma.apigateway.in",
     "127.0.0.1",
-    "localhost"
+    "localhost",
+    "*"
 ]
 
 ROOT_URLCONF = 'ib_workflows_backend.urls'

@@ -17,9 +17,9 @@ snapshots['TestCase01GetDiscussionsAPITestCase.test_case body'] = {
                 'profile_pic_url': 'https://graph.ib_users.com/9cc22e39-2390-4d96-b7ac-6bb27816461f/picture',
                 'user_id': '9cc22e39-2390-4d96-b7ac-6bb27816461f'
             },
-            'created_at': '2020-01-20 00:00:00',
+            'created_at': '2020-05-01 00:00:00',
             'description': 'description',
-            'discussion_id': '802bdcf5-efd2-4227-9c42-df8089712d52',
+            'discussion_id': '7b9486ac-7eb6-424b-bc85-71598d000654',
             'is_clarified': True,
             'title': 'title'
         },
@@ -29,9 +29,9 @@ snapshots['TestCase01GetDiscussionsAPITestCase.test_case body'] = {
                 'profile_pic_url': 'https://graph.ib_users.com/cd4eb7da-6a5f-4f82-82ba-12e40ab7bf5a/picture',
                 'user_id': 'cd4eb7da-6a5f-4f82-82ba-12e40ab7bf5a'
             },
-            'created_at': '2020-01-20 00:00:00',
+            'created_at': '2020-05-01 00:00:00',
             'description': 'description',
-            'discussion_id': 'c30ad6d3-50fa-4d79-806a-a8d1b1e1be5e',
+            'discussion_id': 'b2ddc029-ab38-47d4-8d21-781f1add28d4',
             'is_clarified': True,
             'title': 'title'
         }
