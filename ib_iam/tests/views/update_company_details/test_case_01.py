@@ -15,7 +15,7 @@ class TestCase01UpdateCompanyDetailsAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_case(self, snapshot):
-        body = {'name': 'string', 'description': 'string', 'logo_url': 'string', 'user_ids': ['string']}
+        body = {'name': 'string', 'description': 'string', 'logo_url': 'string', 'employee_ids': ['string']}
         path_params = {"company_id": "413642ff-1272-4990-b878-6607a5e02bc1"}
         query_params = {}
         headers = {}

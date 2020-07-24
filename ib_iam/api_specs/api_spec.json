@@ -107,8 +107,7 @@
         }
       },
       "required": [
-        "name",
-        "logo_url"
+        "name"
       ]
     },
     "CompanyDetailsWithNoOfEmployees": {
@@ -171,17 +170,6 @@
           ]
         }
       ]
-    },
-    "ResponseForGetCompanies": {
-      "type": "object",
-      "properties": {
-        "companies": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/CompanyDetailsWithNoOfEmployees"
-          }
-        }
-      }
     },
     "CommonHttpExceptionFields": {
       "type": "object",
@@ -360,49 +348,6 @@
         }
       ]
     },
-    "NotFoundResponseForUpdateTeam": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/CommonHttpExceptionFields"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "res_status": {
-              "type": "string",
-              "enum": [
-                "INVALID_TEAM",
-                "INVALID_USERS"
-              ]
-            }
-          },
-          "required": [
-            "res_status"
-          ]
-        }
-      ]
-    },
-    "NotFoundResponseForDeleteTeam": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/CommonHttpExceptionFields"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "res_status": {
-              "type": "string",
-              "enum": [
-                "INVALID_TEAM"
-              ]
-            }
-          },
-          "required": [
-            "res_status"
-          ]
-        }
-      ]
-    },
     "UnauthorizedResponseForDeleteTeam": {
       "allOf": [
         {
@@ -424,7 +369,7 @@
         }
       ]
     },
-    "UnauthorizedResponseForGetCompanies": {
+    "UserHasNoAccessException": {
       "allOf": [
         {
           "$ref": "#/definitions/CommonHttpExceptionFields"
@@ -445,29 +390,7 @@
         }
       ]
     },
-    "BadRequestResponseForGetCompanies": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/CommonHttpExceptionFields"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "res_status": {
-              "type": "string",
-              "enum": [
-                "INVALID_LIMIT",
-                "INVALID_OFFSET"
-              ]
-            }
-          },
-          "required": [
-            "res_status"
-          ]
-        }
-      ]
-    },
-    "CompanyWithUserIds": {
+    "CompanyWithEmployeeIds": {
       "allOf": [
         {
           "$ref": "#/definitions/CompanyNameLogoAndDescription"
@@ -475,7 +398,7 @@
         {
           "type": "object",
           "properties": {
-            "user_ids": {
+            "employee_ids": {
               "type": "array",
               "items": {
                 "type": "string"
@@ -506,28 +429,7 @@
         }
       ]
     },
-    "NotFoundResponseForAddCompany": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/CommonHttpExceptionFields"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "res_status": {
-              "type": "string",
-              "enum": [
-                "INVALID_USERS"
-              ]
-            }
-          },
-          "required": [
-            "res_status"
-          ]
-        }
-      ]
-    },
-    "BadRequestResponseForAddCompany": {
+    "CompanyNameAlreadyExistsOrDuplicateUsersException": {
       "allOf": [
         {
           "$ref": "#/definitions/CommonHttpExceptionFields"
@@ -561,28 +463,7 @@
         "company_id"
       ]
     },
-    "NotFoundResponseForDeleteCompany": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/CommonHttpExceptionFields"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "res_status": {
-              "type": "string",
-              "enum": [
-                "INVALID_COMPANY"
-              ]
-            }
-          },
-          "required": [
-            "res_status"
-          ]
-        }
-      ]
-    },
-    "UnauthorizedResponseForDeleteCompany": {
+    "UnauthorizedForDeleteCompanyResponse": {
       "allOf": [
         {
           "$ref": "#/definitions/CommonHttpExceptionFields"
@@ -594,71 +475,6 @@
               "type": "string",
               "enum": [
                 "USER_HAS_NO_ACCESS"
-              ]
-            }
-          },
-          "required": [
-            "res_status"
-          ]
-        }
-      ]
-    },
-    "BadRequestResponseForUpdateCompany": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/CommonHttpExceptionFields"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "res_status": {
-              "type": "string",
-              "enum": [
-                "COMPANY_NAME_ALREADY_EXISTS",
-                "DUPLICATE_USERS"
-              ]
-            }
-          },
-          "required": [
-            "res_status"
-          ]
-        }
-      ]
-    },
-    "UnauthorizedResponseForUpdateCompany": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/CommonHttpExceptionFields"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "res_status": {
-              "type": "string",
-              "enum": [
-                "USER_HAS_NO_ACCESS"
-              ]
-            }
-          },
-          "required": [
-            "res_status"
-          ]
-        }
-      ]
-    },
-    "NotFoundResponseForUpdateCompany": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/CommonHttpExceptionFields"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "res_status": {
-              "type": "string",
-              "enum": [
-                "INVALID_COMPANY",
-                "INVALID_USERS"
               ]
             }
           },
@@ -715,7 +531,7 @@
       "required": true,
       "description": "parameters or details to create/add a company",
       "schema": {
-        "$ref": "#/definitions/CompanyWithUserIds"
+        "$ref": "#/definitions/CompanyWithEmployeeIds"
       }
     },
     "CompanyIdPathParameter": {
@@ -731,7 +547,7 @@
       "in": "body",
       "description": "details that are to be updated of a company",
       "schema": {
-        "$ref": "#/definitions/CompanyWithUserIds"
+        "$ref": "#/definitions/CompanyWithEmployeeIds"
       }
     }
   },
@@ -787,97 +603,191 @@
     "UnauthorizedResponseForUpdateTeam": {
       "description": "User has no access to update team",
       "schema": {
-        "$ref": "#/definitions/UnauthorizedResponseForUpdateTeam"
+        "$ref": "#/definitions/UserHasNoAccessException"
       }
     },
-    "NotFoundResponseForUpdateTeam": {
+    "NotFoundForUpdateTeamResponse": {
       "description": "Invalid team or Invalid Users sent",
       "schema": {
-        "$ref": "#/definitions/NotFoundResponseForUpdateTeam"
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_TEAM",
+                  "INVALID_USERS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
       }
     },
     "NotFoundResponseForDeleteTeam": {
       "description": "Requested team does not exist",
       "schema": {
-        "$ref": "#/definitions/NotFoundResponseForDeleteTeam"
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_TEAM"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
       }
     },
     "UnauthorizedResponseForDeleteTeam": {
       "description": "User has no access to delete a team",
       "schema": {
-        "$ref": "#/definitions/UnauthorizedResponseForDeleteTeam"
+        "$ref": "#/definitions/UserHasNoAccessException"
       }
     },
-    "SuccessResponseForGetCompanies": {
+    "SuccessForGetCompaniesResponse": {
       "description": "returns all companies and total companies count",
       "schema": {
-        "$ref": "#/definitions/ResponseForGetCompanies"
+        "type": "object",
+        "properties": {
+          "companies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/CompanyDetailsWithNoOfEmployees"
+            }
+          }
+        }
       }
     },
-    "UnauthorizedResponseForGetCompanies": {
+    "UnauthorizedForGetCompaniesResponse": {
       "description": "user has no access to see companies",
       "schema": {
-        "$ref": "#/definitions/UnauthorizedResponseForGetCompanies"
+        "$ref": "#/definitions/UserHasNoAccessException"
       }
     },
-    "BadRequestResponseForGetCompanies": {
-      "description": "given limit or offset is not valid",
-      "schema": {
-        "$ref": "#/definitions/BadRequestResponseForGetCompanies"
-      }
-    },
-    "UnauthorizedResponseForAddCompany": {
+    "UnauthorizedForAddCompanyResponse": {
       "description": "User has no access to add a company",
       "schema": {
-        "$ref": "#/definitions/UnauthorizedResponseForAddCompany"
+        "$ref": "#/definitions/UserHasNoAccessException"
       }
     },
-    "NotFoundResponseForAddCompany": {
+    "NotFoundForAddCompanyResponse": {
       "description": "Requested users not found to add",
       "schema": {
-        "$ref": "#/definitions/NotFoundResponseForAddCompany"
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_USERS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
       }
     },
-    "BadRequestResponseForAddCompany": {
+    "BadRequestForAddCompanyResponse": {
       "description": "Company name already exists or duplicate users has sent",
       "schema": {
-        "$ref": "#/definitions/BadRequestResponseForAddCompany"
+        "$ref": "#/definitions/CompanyNameAlreadyExistsOrDuplicateUsersException"
       }
     },
-    "SuccessfullyCreatedResponseForAddCompany": {
+    "SuccessfullyCreatedForAddCompanyResponse": {
       "description": "Company Created successfully",
       "schema": {
         "$ref": "#/definitions/CompanyId"
       }
     },
-    "NotFoundResponseForDeleteCompany": {
+    "NotFoundForDeleteCompanyResponse": {
       "description": "Requested company does not exist",
       "schema": {
-        "$ref": "#/definitions/NotFoundResponseForDeleteCompany"
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_COMPANY"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
       }
     },
-    "UnauthorizedResponseForDeleteCompany": {
+    "UnauthorizedForDeleteCompanyResponse": {
       "description": "User has no access to delete a company",
       "schema": {
-        "$ref": "#/definitions/UnauthorizedResponseForDeleteCompany"
+        "$ref": "#/definitions/UserHasNoAccessException"
       }
     },
-    "BadRequestResponseForUpdateCompany": {
+    "BadRequestForUpdateCompanyResponse": {
       "description": "Company name already exists or duplicate users has sent",
       "schema": {
-        "$ref": "#/definitions/BadRequestResponseForUpdateCompany"
+        "$ref": "#/definitions/CompanyNameAlreadyExistsOrDuplicateUsersException"
       }
     },
-    "UnauthorizedResponseForUpdateCompany": {
+    "UnauthorizedForUpdateCompanyResponse": {
       "description": "User has no access to update company",
       "schema": {
-        "$ref": "#/definitions/UnauthorizedResponseForUpdateCompany"
+        "$ref": "#/definitions/UserHasNoAccessException"
       }
     },
-    "NotFoundResponseForUpdateCompany": {
+    "NotFoundForUpdateCompanyResponse": {
       "description": "Invalid company or Invalid Users sent",
       "schema": {
-        "$ref": "#/definitions/NotFoundResponseForUpdateCompany"
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_COMPANY",
+                  "INVALID_USERS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
       }
     }
   },
@@ -979,7 +889,7 @@
             "$ref": "#/responses/UnauthorizedResponseForUpdateTeam"
           },
           "404": {
-            "$ref": "#/responses/NotFoundResponseForUpdateTeam"
+            "$ref": "#/responses/NotFoundForUpdateTeamResponse"
           }
         }
       },
@@ -1028,10 +938,10 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/responses/SuccessResponseForGetCompanies"
+            "$ref": "#/responses/SuccessForGetCompaniesResponse"
           },
           "401": {
-            "$ref": "#/responses/UnauthorizedResponseForGetCompanies"
+            "$ref": "#/responses/UnauthorizedForGetCompaniesResponse"
           }
         }
       }
@@ -1055,16 +965,16 @@
         ],
         "responses": {
           "201": {
-            "$ref": "#/responses/SuccessfullyCreatedResponseForAddCompany"
+            "$ref": "#/responses/SuccessfullyCreatedForAddCompanyResponse"
           },
           "400": {
-            "$ref": "#/responses/BadRequestResponseForAddCompany"
+            "$ref": "#/responses/BadRequestForAddCompanyResponse"
           },
           "401": {
-            "$ref": "#/responses/UnauthorizedResponseForAddCompany"
+            "$ref": "#/responses/UnauthorizedForAddCompanyResponse"
           },
           "404": {
-            "$ref": "#/responses/NotFoundResponseForAddCompany"
+            "$ref": "#/responses/NotFoundForAddCompanyResponse"
           }
         }
       }
@@ -1094,13 +1004,13 @@
             "description": "Company details updated Successfully"
           },
           "400": {
-            "$ref": "#/responses/BadRequestResponseForUpdateCompany"
+            "$ref": "#/responses/BadRequestForUpdateCompanyResponse"
           },
           "401": {
-            "$ref": "#/responses/UnauthorizedResponseForUpdateCompany"
+            "$ref": "#/responses/UnauthorizedForUpdateCompanyResponse"
           },
           "404": {
-            "$ref": "#/responses/NotFoundResponseForUpdateCompany"
+            "$ref": "#/responses/NotFoundForUpdateCompanyResponse"
           }
         }
       },
@@ -1125,10 +1035,10 @@
             "description": "Company deleted Successfully"
           },
           "404": {
-            "$ref": "#/responses/NotFoundResponseForDeleteCompany"
+            "$ref": "#/responses/NotFoundForDeleteCompanyResponse"
           },
           "401": {
-            "$ref": "#/responses/UnauthorizedResponseForDeleteCompany"
+            "$ref": "#/responses/UnauthorizedForDeleteCompanyResponse"
           }
         }
       }

@@ -21,7 +21,7 @@ class TestCase03AddCompanyAPITestCase(TestUtils):
     def test_case(self, mocker, snapshot, setup):
         mock = prepare_uuid_mock(mocker)
         mock.return_value = UUID("f2c02d98-f311-4ab2-8673-3daa00757002")
-        body = {'name': 'company1', 'description': '', 'logo_url': 'string', 'user_ids': ["2", "3"]}
+        body = {'name': 'company1', 'description': '', 'logo_url': 'string', 'employee_ids': ["2", "3"]}
         path_params = {}
         query_params = {}
         headers = {}

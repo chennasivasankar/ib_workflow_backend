@@ -18,7 +18,7 @@ def api_wrapper(*args, **kwargs):
     name = request_data["name"]
     description = request_data["description"]
     logo_url = request_data["logo_url"]
-    user_ids = request_data["user_ids"]
+    user_ids = request_data["employee_ids"]
 
     # TODO After implementing storages change the \
     #  below from storage interface to implementation

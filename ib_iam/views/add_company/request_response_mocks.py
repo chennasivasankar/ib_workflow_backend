@@ -5,7 +5,7 @@ REQUEST_BODY_JSON = """
     "name": "string",
     "description": "string",
     "logo_url": "string",
-    "user_ids": [
+    "employee_ids": [
         "string"
     ]
 }
@@ -14,7 +14,7 @@ REQUEST_BODY_JSON = """
 
 RESPONSE_201_JSON = """
 {
-    "company_id": "f68ceaf7-e488-437f-8ac0-7180761d15f4"
+    "company_id": "b87fb5d5-c277-4653-b51b-c87b7e05ee81"
 }
 """
 

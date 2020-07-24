@@ -5,7 +5,7 @@ REQUEST_BODY_JSON = """
     "name": "string",
     "description": "string",
     "logo_url": "string",
-    "user_ids": [
+    "employee_ids": [
         "string"
     ]
 }
