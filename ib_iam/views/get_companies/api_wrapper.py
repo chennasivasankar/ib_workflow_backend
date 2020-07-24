@@ -2,19 +2,17 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 from .validator_class import ValidatorClass
 from ib_iam.interactors.get_companies import GetCompaniesInteractor
-from ib_iam.interactors.storage_interfaces.company_storage_interface import \
-    CompanyStorageInterface
 from ib_iam.presenters.get_companies_presenter_implementation import \
     GetCompaniesPresenterImplementation
+from ib_iam.storages.company_storage_implementation import \
+    CompanyStorageImplementation
 
-
-# TODO After writing Company storages implement the storage in api wrapper(get_companies)
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     user_object = kwargs["user"]
     user_id = str(user_object.id)
-    storage = CompanyStorageInterface()
+    storage = CompanyStorageImplementation()
     presenter = GetCompaniesPresenterImplementation()
     interactor = GetCompaniesInteractor(storage=storage)
 

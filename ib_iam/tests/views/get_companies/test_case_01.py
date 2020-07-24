@@ -27,9 +27,13 @@ class TestCase01GetCompaniesAPITestCase(TestUtils):
     @pytest.fixture
     def setup(self, api_user):
         user_id = str(api_user.id)
-        from ib_iam.tests.factories import UserFactory
-        UserFactory.sequence(1)
-        UserFactory.create(user_id=user_id, is_admin=True)
-        # TODO : Create some companies with Company Factory after writing storages
-        # TODO : Create employess for the companies created above
+        from ib_iam.tests.factories.models import \
+            UserDetailsFactory, CompanyFactory
+        UserDetailsFactory.reset_sequence(1)
+        UserDetailsFactory.create(user_id=user_id, is_admin=True)
+        CompanyFactory.reset_sequence(1)
+        company_objects = CompanyFactory.create_batch(size=2)
+        for company_object in company_objects:
+            UserDetailsFactory.create_batch(size=2, company=company_object)
+        UserDetailsFactory.create_batch(size=1, company=company_objects[0])
 
