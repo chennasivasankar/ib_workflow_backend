@@ -41,13 +41,13 @@ class TestGetTaskIdsInteractor:
         )
         task_config_dtos = [
             TaskDetailsConfigDTO(
-                unique_key=1,
+                unique_key="1",
                 stage_ids=stage_ids[0],
                 offset=0,
                 limit=5
             ),
             TaskDetailsConfigDTO(
-                unique_key=1,
+                unique_key="1",
                 stage_ids=stage_ids[1],
                 offset=0,
                 limit=5
@@ -82,13 +82,13 @@ class TestGetTaskIdsInteractor:
                                  'STAGE_ID_4']
         task_config_dtos = [
             TaskDetailsConfigDTO(
-                unique_key=1,
+                unique_key='1',
                 stage_ids=stage_ids[0],
                 offset=0,
                 limit=5
             ),
             TaskDetailsConfigDTO(
-                unique_key=1,
+                unique_key="1",
                 stage_ids=stage_ids[1],
                 offset=0,
                 limit=5
@@ -96,12 +96,12 @@ class TestGetTaskIdsInteractor:
         ]
         task_ids_dtos = [
             TaskIdsDTO(
-                unique_key=1,
+                unique_key="1",
                 task_stage_ids=expected_response[0],
                 total_tasks=100
             ),
             TaskIdsDTO(
-                unique_key=1,
+                unique_key="1",
                 task_stage_ids=expected_response[1],
                 total_tasks=100
             )

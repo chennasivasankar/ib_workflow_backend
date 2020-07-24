@@ -9,7 +9,8 @@ from ib_boards.interactors.dtos import TaskTemplateStagesDTO, \
     TaskSummaryFieldsDTO, TaskStatusDTO, TaskDTO, ColumnTaskIdsDTO
 from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
     TaskFieldsDTOFactory
-from ib_tasks.interactors.task_dtos import TaskIdsDTO, TaskDetailsConfigDTO
+from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, \
+    GetTaskDetailsDTO
 
 
 class TaskService:
@@ -77,3 +78,23 @@ class TaskService:
             for task_ids_dto in task_ids_dtos
         ]
         return column_task_ids_dtos
+
+    def get_task_complete_details(self, task_stage_ids: List[GetTaskDetailsDTO]):
+        tasks_complete_details_dtos = self.interface.get_task_details(
+            task_dtos=task_stage_ids
+        )
+        from ib_boards.interactors.presenter_interfaces.presenter_interface import \
+            TaskCompleteDetailsDTO
+        tasks_details_dtos = []
+        for tasks_complete_details_dto in tasks_complete_details_dtos:
+            tasks_details_dtos.append(
+                TaskCompleteDetailsDTO(
+                    task_id=tasks_complete_details_dto.task_id,
+                    stage_id=tasks_complete_details_dto.stage_id,
+                    field_dtos=tasks_complete_details_dto.field_dtos,
+                    action_dtos=tasks_complete_details_dto.action_dtos
+                )
+            )
+
+        return tasks_details_dtos
+

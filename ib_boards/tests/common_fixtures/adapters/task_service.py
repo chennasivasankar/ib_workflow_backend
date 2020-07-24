@@ -1,6 +1,7 @@
 from typing import List
 
-from ib_boards.interactors.dtos import TaskStageIdDTO
+from ib_boards.interactors.dtos import TaskStageIdDTO, TaskCompleteDetailsDTO, \
+    ColumnTaskIdsDTO
 from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
     TaskFieldsDTOFactory
 
@@ -118,4 +119,20 @@ def get_stage_display_logics_mock(mocker):
         "STATUS_ID_4 == STAGE_ID_4"
     ]
     mock.return_value = stage_display_logics
+    return mock
+
+
+def task_details_mock(mocker, task_details: List[TaskCompleteDetailsDTO]):
+    mock = mocker.patch(
+        'ib_boards.adapters.task_service.TaskService.get_task_complete_details'
+    )
+    mock.return_value = task_details
+    return mock
+
+
+def task_ids_mock(mocker, task_stage_ids: List[ColumnTaskIdsDTO]):
+    mock = mocker.patch(
+        'ib_boards.adapters.task_service.TaskService.get_task_ids_for_stage_ids'
+    )
+    mock.return_value = task_stage_ids
     return mock

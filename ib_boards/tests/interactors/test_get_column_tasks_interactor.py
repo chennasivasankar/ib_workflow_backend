@@ -7,11 +7,13 @@ from unittest.mock import Mock
 
 import pytest
 
-from ib_boards.interactors.dtos import ColumnTasksParametersDTO, TaskIdStageDTO
+from ib_boards.interactors.dtos import ColumnTasksParametersDTO, TaskIdStageDTO, \
+    TaskCompleteDetailsDTO, ColumnTaskIdsDTO
 from ib_boards.interactors.get_column_tasks_interactor import \
     GetColumnTasksInteractor
 from ib_boards.tests.factories.interactor_dtos import ActionDTOFactory, \
-    TaskDTOFactory, TaskStatusDTOFactory
+    TaskStatusDTOFactory, FieldDetailsDTOFactory
+from ib_boards.tests.factories.storage_dtos import TaskDTOFactory
 
 
 class TestGetColumnTasksInteractor:
@@ -61,13 +63,30 @@ class TestGetColumnTasksInteractor:
 
     @pytest.fixture
     def task_complete_details_dto(self, task_dtos, action_dtos):
-        from ib_boards.interactors.presenter_interfaces.presenter_interface import \
-            TaskCompleteDetailsDTO
-        return TaskCompleteDetailsDTO(
-            total_tasks=3,
-            task_dtos=task_dtos,
-            action_dtos=action_dtos
-        )
+
+        return [
+            TaskCompleteDetailsDTO(
+                task_id=1,
+                stage_id='STAGE_ID_1',
+                field_dtos=FieldDetailsDTOFactory.create_batch(2),
+                action_dtos=ActionDTOFactory.create_batch(2)
+            )
+        ]
+
+    @pytest.fixture
+    def column_tasks_ids(self):
+        return [
+            ColumnTaskIdsDTO(
+                unique_key='COLUMN_ID_1',
+                task_stage_ids=[
+                    TaskIdStageDTO(
+                        task_id='task_id_1',
+                        stage_id='stage_id_1'
+                    )
+                ],
+                total_tasks=10
+            )
+        ]
 
     @pytest.fixture
     def task_stage_dtos(self):
@@ -165,8 +184,7 @@ class TestGetColumnTasksInteractor:
     def test_with_valid_details_return_task_details(
             self, storage_mock, presenter_mock, get_column_tasks_dto, mocker,
             task_complete_details_dto, task_status_dtos, task_dtos,
-            action_dtos,
-            task_stage_dtos):
+            action_dtos, column_tasks_ids, task_stage_dtos):
         # Arrange
         stage_ids = ['STAGE_ID_1', 'STAGE_ID_1']
         task_ids = ['TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3']
@@ -188,12 +206,6 @@ class TestGetColumnTasksInteractor:
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             get_task_ids_mock
 
-        from ib_boards.tests.common_fixtures.adapters.task_service import \
-            get_stage_display_logics_mock
-
-        stage_display_logic_mock = get_stage_display_logics_mock(
-            mocker=mocker
-        )
         task_ids_mock = get_task_ids_mock(
             mocker=mocker,
             task_stage_dtos=task_stage_dtos
@@ -201,9 +213,13 @@ class TestGetColumnTasksInteractor:
         task_details_mock = get_task_details_mock(
             mocker=mocker, task_dtos=task_dtos, action_dtos=action_dtos
         )
-        stage_display_logic_interactor_mock = get_stage_display_logic_mock(
-            mocker=mocker, task_status_dtos=task_status_dtos
-        )
+        from ib_boards.tests.common_fixtures.adapters.task_service import \
+            task_details_mock
+        task_details_mock(mocker, task_complete_details_dto)
+        from ib_boards.tests.common_fixtures.adapters.task_service import \
+            get_task_ids_mock
+
+        get_task_ids_mock(mocker, column_tasks_ids)
 
         # Act
         actual_response = interactor.get_column_tasks_wrapper(
@@ -220,14 +236,8 @@ class TestGetColumnTasksInteractor:
         task_ids_mock.assert_called_once_with(
             task_status_dtos=task_status_dtos
         )
-        stage_display_logic_interactor_mock.assert_called_once_with(
-            stage_display_logics=stage_display_logics
-        )
         presenter_mock.get_response_column_tasks.assert_called_once_with(
             task_complete_details_dto=task_complete_details_dto
-        )
-        stage_display_logic_mock.assert_called_once_with(
-            stage_ids=stage_ids
         )
 
     def test_with_user_id_not_have_permission_for_column_return_error_message(
