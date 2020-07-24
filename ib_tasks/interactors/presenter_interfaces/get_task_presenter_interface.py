@@ -1,6 +1,5 @@
 import abc
 from dataclasses import dataclass
-from typing import List
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
 
 

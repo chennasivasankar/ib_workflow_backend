@@ -26,6 +26,14 @@ TASK_TEMPLATE_SUB_SHEET_TITLE = "Task Templates"
 GOF_SUB_SHEET_TITLE = "GOF"
 FIELD_SUB_SHEET_TITLE = "Fields"
 
-UPLOADERS = [FieldTypes.IMAGE_UPLOADER.value, FieldTypes.FILE_UPLOADER.value]
-
 SEARCHABLE_TYPES = [searchable_type.value for searchable_type in Searchable]
+
+UPLOADERS = [
+    FieldTypes.IMAGE_UPLOADER.value,
+    FieldTypes.FILE_UPLOADER.value
+]
+
+STAGES_AND_ACTIONS_SUB_SHEET = "PR - Stages and Actions "
+TASK_CREATION_CONFIG_SUB_SHEET = "PR-Task Creation Config"
+STAGE_ID_AND_VALUES_SUB_SHEET = "PR - StageID and Values"
+STATUS_VARIABLES_SUB_SHEET = "PR - Status Variables"

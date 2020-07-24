@@ -20,6 +20,7 @@ class TestPopulateStatusVariables:
         TaskTemplateStatusDTOFactory.reset_sequence(1)
         return TaskTemplateStatusDTOFactory.create_batch(size=2)
 
+    @pytest.mark.django_db
     def test_with_invalid_keys_raises_exception(self, valid_format):
         # Arrange
         valid_json_format = valid_format
@@ -36,16 +37,18 @@ class TestPopulateStatusVariables:
 
         from ib_tasks.populate.create_task_status_variables import \
             populate_status_variables
-        from ib_tasks.exceptions.stage_custom_exceptions import InvalidFormatException
 
         # Act
 
+        from ib_tasks.exceptions.custom_exceptions import \
+            InvalidFormatException
         with pytest.raises(InvalidFormatException) as err:
             populate_status_variables(list_of_status_dict=list_of_status_dict)
 
         # Assert
         assert err.value.valid_format == valid_json_format
 
+    @pytest.mark.django_db
     def test_with_valid_keys_returns_list_of_status_dtos(self, expected_status_dto):
         # Arrange
         expected_status_dto = expected_status_dto

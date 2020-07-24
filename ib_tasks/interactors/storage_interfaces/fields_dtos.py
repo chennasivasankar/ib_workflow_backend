@@ -6,8 +6,8 @@ from ib_tasks.constants.enum import FieldTypes, PermissionTypes
 
 @dataclass
 class FieldValueDTO:
-    database_id: str
-    gof_database_id: str
+    database_id: int
+    gof_database_id: int
     field_id: str
     value: Any
 
@@ -46,6 +46,14 @@ class FieldRoleDTO:
 class FieldTypeDTO:
     field_id: str
     field_type: FieldTypes
+
+@dataclass
+class FieldDetailsDTO:
+    field_type: str
+    field_id: int
+    stage_id: str
+    key: str
+    value: str
 
 
 @dataclass

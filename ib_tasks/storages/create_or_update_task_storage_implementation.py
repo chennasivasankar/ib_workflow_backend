@@ -29,6 +29,15 @@ class CreateOrUpdateTaskStorageImplementation(CreateOrUpdateTaskStorageInterface
 
     def get_task_gof_dtos(self, task_id: int) -> List[TaskGoFDTO]:
         task_gof_objs = TaskGoF.objects.filter(task_id=task_id)
+        task_gof_dtos = []
+        for task_gof_obj in task_gof_objs:
+            task_gof_dto = TaskGoFDTO(
+                task_gof_id=task_gof_obj.id,
+                gof_id=task_gof_obj.gof_id,
+                same_gof_order=task_gof_obj.same_gof_order
+            )
+            task_gof_dtos.append(task_gof_dto)
+        return task_gof_dtos
 
     def get_gof_ids_having_permission(
             self, gof_ids: List[str], user_roles: List[str]
@@ -43,7 +52,18 @@ class CreateOrUpdateTaskStorageImplementation(CreateOrUpdateTaskStorageInterface
     def get_task_gof_field_dtos(
             self, task_gof_ids: List[int]
     ) -> List[TaskGoFFieldDTO]:
-        pass
+        task_gof_field_objs = TaskGoFField.objects.filter(
+            task_gof_id__in=task_gof_ids
+        )
+        task_gof_field_dtos = []
+        for task_gof_field_obj in task_gof_field_objs:
+            task_gof_field_dto = TaskGoFFieldDTO(
+                task_gof_id=task_gof_field_obj.task_gof_id,
+                field_id=task_gof_field_obj.field_id,
+                field_response=task_gof_field_obj.field_response
+            )
+            task_gof_field_dtos.append(task_gof_field_dto)
+        return task_gof_field_dtos
 
     def get_field_ids_having_permission(
             self, field_ids: List[str], user_roles: List[str]

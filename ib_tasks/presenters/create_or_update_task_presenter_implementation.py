@@ -10,7 +10,6 @@ from django.http import response
 import json
 
 
-
 class CreateOrUpdateTaskPresenterImplementation(
     CreateOrUpdateTaskPresenterInterface
 ):
