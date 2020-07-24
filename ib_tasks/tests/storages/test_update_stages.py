@@ -13,7 +13,7 @@ class TestUpdateStages:
     @pytest.fixture()
     def stage_dtos(self):
         StageDTOFactory.reset_sequence(50)
-        return  StageDTOFactory.create_batch(size=4, id_value=True)
+        return StageDTOFactory.create_batch(size=3, id_value=True)
 
     @pytest.fixture()
     def create_stages(self):

@@ -93,7 +93,7 @@ def adapter_mock_for_task_template_fields(mocker):
 
 def get_task_ids_mock(mocker, task_stage_dtos: List[TaskIdStageDTO]):
     mock = mocker.patch(
-        'ib_boards.adapters.task_service.TaskService.get_task_ids_with_respective_stages'
+        'ib_boards.adapters.task_service.TaskService.get_task_ids_for_stage_ids'
     )
 
     mock.return_value = task_stage_dtos

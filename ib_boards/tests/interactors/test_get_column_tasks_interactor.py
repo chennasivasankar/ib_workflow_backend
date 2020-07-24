@@ -14,6 +14,7 @@ from ib_boards.interactors.get_column_tasks_interactor import \
 from ib_boards.tests.factories.interactor_dtos import ActionDTOFactory, \
     TaskStatusDTOFactory, FieldDetailsDTOFactory
 from ib_boards.tests.factories.storage_dtos import TaskDTOFactory
+from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
 
 
 class TestGetColumnTasksInteractor:
@@ -187,12 +188,6 @@ class TestGetColumnTasksInteractor:
             action_dtos, column_tasks_ids, task_stage_dtos):
         # Arrange
         stage_ids = ['STAGE_ID_1', 'STAGE_ID_1']
-        task_ids = ['TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3']
-        stage_display_logics = [
-            'STATUS_ID_3 == STAGE_ID_3',
-            'STATUS_ID_4 == STAGE_ID_4'
-        ]
-
         expected_response = Mock()
         storage_mock.get_column_display_stage_ids.return_value = stage_ids
         presenter_mock.get_response_column_tasks. \
@@ -200,26 +195,22 @@ class TestGetColumnTasksInteractor:
         interactor = GetColumnTasksInteractor(
             storage=storage_mock
         )
-        from ib_boards.tests.common_fixtures.interactors import \
-            get_stage_display_logic_mock, get_task_details_mock
 
-        from ib_boards.tests.common_fixtures.adapters.task_service import \
-            get_task_ids_mock
-
-        task_ids_mock = get_task_ids_mock(
-            mocker=mocker,
-            task_stage_dtos=task_stage_dtos
-        )
-        task_details_mock = get_task_details_mock(
-            mocker=mocker, task_dtos=task_dtos, action_dtos=action_dtos
-        )
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             task_details_mock
-        task_details_mock(mocker, task_complete_details_dto)
+        task_details_mock = task_details_mock(mocker, task_complete_details_dto)
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             get_task_ids_mock
 
-        get_task_ids_mock(mocker, column_tasks_ids)
+        task_ids_mock = get_task_ids_mock(mocker, column_tasks_ids)
+        task_config_dto = [
+            TaskDetailsConfigDTO(
+                unique_key=get_column_tasks_dto.column_id,
+                stage_ids=stage_ids,
+                offset=get_column_tasks_dto.offset,
+                limit=get_column_tasks_dto.limit
+            )
+        ]
 
         # Act
         actual_response = interactor.get_column_tasks_wrapper(
@@ -229,15 +220,12 @@ class TestGetColumnTasksInteractor:
 
         # Assert
         assert actual_response == expected_response
-        task_details_mock.assert_called_once_with(
-            tasks_parameters=task_stage_dtos,
-            column_id=get_column_tasks_dto.column_id
-        )
         task_ids_mock.assert_called_once_with(
-            task_status_dtos=task_status_dtos
+            task_config_dtos=task_config_dto
         )
         presenter_mock.get_response_column_tasks.assert_called_once_with(
-            task_complete_details_dto=task_complete_details_dto
+            task_complete_details_dto=task_complete_details_dto,
+            total_tasks=10
         )
 
     def test_with_user_id_not_have_permission_for_column_return_error_message(

@@ -25,7 +25,7 @@ class GetColumnTasksInteractor:
             presenter: GetColumnTasksPresenterInterface):
         from ib_boards.exceptions.custom_exceptions import InvalidColumnId
         try:
-            task_complete_details_dto, total_tasks= self.get_column_tasks(
+            task_complete_details_dto, total_tasks = self.get_column_tasks(
                 column_tasks_parameters=column_tasks_parameters
             )
         except InvalidColumnId:
@@ -41,7 +41,8 @@ class GetColumnTasksInteractor:
         except InvalidStageIds as error:
             return presenter.get_response_for_invalid_stage_ids(error=error)
         return presenter.get_response_column_tasks(
-            task_complete_details_dto=task_complete_details_dto
+            task_complete_details_dto=task_complete_details_dto,
+            total_tasks=total_tasks
         )
 
     def get_column_tasks(self,
@@ -75,7 +76,7 @@ class GetColumnTasksInteractor:
             )
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
-        return service_adapter.task_service.get_task_details_dtos(
+        return service_adapter.task_service.get_task_complete_details(
             task_details_dtos)
 
     def _validate_given_data(self, column_tasks_parameters):

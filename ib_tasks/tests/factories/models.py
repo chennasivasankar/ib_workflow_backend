@@ -65,12 +65,14 @@ class ActionPermittedRolesFactory(factory.django.DjangoModelFactory):
     action = factory.SubFactory(StageActionFactory)
     role_id = factory.Sequence(lambda n: "role_%d" % n)
 
+
 class TaskTemplateFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = TaskTemplate
 
     template_id = factory.sequence(lambda n: "template_{}".format(n + 1))
     name = factory.sequence(lambda n: "Template {}".format(n + 1))
+
 
 class TaskTemplateStatusVariableFactory(factory.django.DjangoModelFactory):
     class Meta:
