@@ -472,7 +472,7 @@ class TasksStorageImplementation(TaskStorageInterface):
             else:
                 q = q | current_queue
 
-        stage_objs = Stage.objects.filter(q).values('stage_display_config', 'stage_id')
+        stage_objs = Stage.objects.filter(q).values('field_display_config', 'stage_id')
 
         stage_actions = self._get_stage_action_objs(task_template_and_stage_ids)
         stage_fields_dtos = self._get_fields_details(stage_objs)
@@ -512,7 +512,7 @@ class TasksStorageImplementation(TaskStorageInterface):
 
     @staticmethod
     def _get_fields_details(stage_objs):
-        fields_ids = [stage['stage_display_config'] for stage in stage_objs]
+        fields_ids = [stage['field_display_config'] for stage in stage_objs]
         field_objs = Field.objects.filter(field__in=fields_ids).values('field_id', 'field_type')
         field_response_objs = TaskGoFField.objects.filter(field_id__int=fields_ids).values('field_id', 'field_response')
         field_values = {}
@@ -521,7 +521,7 @@ class TasksStorageImplementation(TaskStorageInterface):
         fields_dtos = []
         for stage in stage_objs:
             for field in field_objs:
-                if field['field_id'] in stage['stage_display_config']:
+                if field['field_id'] in stage['field_display_config']:
                     field_id = field['field_id']
                     fields_dtos.append(
                         FieldDetailsDTO(
