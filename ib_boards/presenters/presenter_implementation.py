@@ -133,7 +133,8 @@ class GetColumnTasksPresenterImplementation(
         pass
 
     def get_response_column_tasks(
-            self, task_complete_details_dto: TaskCompleteDetailsDTO):
+            self, task_complete_details_dto: List[TaskCompleteDetailsDTO],
+            total_tasks: int) -> response.HttpResponse:
         pass
 
     def get_response_for_invalid_offset(self):

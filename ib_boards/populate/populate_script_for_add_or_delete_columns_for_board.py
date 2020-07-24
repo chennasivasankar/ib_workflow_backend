@@ -66,7 +66,7 @@ class PopulateAddOrDeleteColumnsForBoard:
             user_roles=column_dict['user_role_ids'])
         return ColumnDTO(
             column_id=column_dict['column_id'],
-            display_name=column_dict['column_display_name'],
+            name=column_dict['column_display_name'],
             display_order=column_dict['display_order'],
             task_template_stages=task_template_stages,
             user_role_ids=user_role_ids,

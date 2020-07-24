@@ -37,6 +37,13 @@ class StageDTO:
     stage_display_name: str
     stage_display_logic: str
 
+
+@dataclass
+class TaskStageIdsDTO:
+    task_id: str
+    stage_id: str
+
+
 @dataclass
 class GetTaskStageCompleteDetailsDTO:
     fields_dto: List[FieldDetailsDTO]

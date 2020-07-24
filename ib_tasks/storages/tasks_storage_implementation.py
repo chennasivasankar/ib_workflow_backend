@@ -8,18 +8,15 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionsOfTemplateDTO, ActionDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldRoleDTO, FieldTypeDTO, UserFieldPermissionDTO, FieldDetailsDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRoleDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import \
-    GoFToTaskTemplateDTO
+
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    GetTaskStageCompleteDetailsDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
+    GoFRoleDTO, GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
-    StageDTO, GetTaskStageCompleteDetailsDTO
+    StageDTO, TaskStageIdsDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
-from ib_tasks.interactors.storage_interfaces.status_dtos import \
-    TaskTemplateStatusDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRoleDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
-    StageDTO, GetTaskStageCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
@@ -96,8 +93,7 @@ class TasksStorageImplementation(TaskStorageInterface):
             TaskTemplate.objects.filter(pk__in=template_ids).
                 values_list("template_id", flat=True)
         )
-        # TODO need to set return value valid_template_ids
-        return ['FIN_PR']
+        return valid_template_ids
 
     def get_existing_gof_ids_in_given_gof_ids(
             self, gof_ids: List[str]
@@ -470,6 +466,10 @@ class TasksStorageImplementation(TaskStorageInterface):
         for gof_dto in gof_dtos:
             gofs_dict[gof_dto.gof_id] = gof_dto
         return gofs_dict
+
+    def get_task_ids_for_the_stage_ids(self, stage_ids: List[
+        str]) -> TaskStageIdsDTO:
+        pass
 
     def get_task_details(self, task_dtos: List[GetTaskDetailsDTO]) -> \
             GetTaskStageCompleteDetailsDTO:
