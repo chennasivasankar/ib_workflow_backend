@@ -30,10 +30,22 @@ class TestCase01GetCompaniesAPITestCase(TestUtils):
         from ib_iam.tests.factories.models import \
             UserDetailsFactory, CompanyFactory
         UserDetailsFactory.reset_sequence(1)
-        UserDetailsFactory.create(user_id=user_id, is_admin=True)
+        UserDetailsFactory.create(user_id=user_id, is_admin=True, company=None)
         CompanyFactory.reset_sequence(1)
-        company_objects = CompanyFactory.create_batch(size=2)
-        for company_object in company_objects:
-            UserDetailsFactory.create_batch(size=2, company=company_object)
-        UserDetailsFactory.create_batch(size=1, company=company_objects[0])
-
+        companies = [
+            {
+                "company_id": "f2c02d98-f311-4ab2-8673-3daa00757002",
+                "employees_ids": ['2bdb417e-4632-419a-8ddd-085ea272c6eb',
+                                  '548a803c-7b48-47ba-a700-24f2ea0d1280',
+                                  '4b8fb6eb-fa7d-47c1-8726-cd917901104e']
+            },
+            {
+                "company_id": "aa66c40f-6d93-484a-b418-984716514c7b",
+                "employees_ids": ['2bdb417e-4632-419a-8ddd-085ea272c6eb',
+                                  '7ee2c7b4-34c8-4d65-a83a-f87da75db24e']
+            }
+        ]
+        for company in companies:
+            company_object = CompanyFactory.create(company_id=company["company_id"])
+            for employee_id in company["employees_ids"]:
+                UserDetailsFactory(user_id=employee_id, company=company_object)

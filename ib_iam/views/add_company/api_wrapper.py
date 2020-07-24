@@ -2,8 +2,6 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 from .validator_class import ValidatorClass
 from ib_iam.interactors.company_interactor import CompanyInteractor
-from ib_iam.interactors.storage_interfaces \
-    .company_storage_interface import CompanyStorageInterface
 from ib_iam.interactors.storage_interfaces.dtos import \
     CompanyDetailsWithUserIdsDTO
 from ib_iam.presenters.add_company_presenter_implementation import \

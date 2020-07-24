@@ -42,6 +42,7 @@ class GetCompaniesPresenterImplementation(
     def _convert_company_details_dtos_into_company_dictionaries(
             self, company_details_dtos
     ):
+
         company_details_dictionaries = [
             self._convert_company_details_dto_into_company_details_dictionary(
                 company_dto=company_dto,
