@@ -7,6 +7,12 @@ class InvalidGoFIDsInGoFSelectorField(Exception):
         self.gof_ids = gof_ids
 
 
+class EmptyValueForRequiredField(Exception):
+
+    def __init__(self, field_id: str):
+        self.field_id = field_id
+
+
 class EmptyValueForPlainTextField(Exception):
 
     def __init__(self, field_id: str):
@@ -171,6 +177,16 @@ class CouldNotReadImage(Exception):
 
 
 class InvalidImageFormat(Exception):
+
+    def __init__(
+            self, field_id: str, given_format: str, allowed_formats: List[str]
+    ):
+        self.field_id = field_id
+        self.given_format = given_format
+        self.allowed_formats = allowed_formats
+
+
+class InvalidFileFormat(Exception):
 
     def __init__(
             self, field_id: str, given_format: str, allowed_formats: List[str]

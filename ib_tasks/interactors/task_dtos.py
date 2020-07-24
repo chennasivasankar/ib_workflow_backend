@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Union, List
+from typing import Union, List, Optional
 
 
 @dataclass
@@ -17,6 +17,7 @@ class GoFFieldsDTO:
 
 @dataclass
 class TaskDTO:
+    task_id: Optional[int]
     task_template_id: str
     created_by_id: str
     action_id: str

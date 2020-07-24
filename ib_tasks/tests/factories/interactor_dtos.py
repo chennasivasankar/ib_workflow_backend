@@ -123,6 +123,7 @@ class TaskDTOFactory(factory.Factory):
     class Meta:
         model = TaskDTO
 
+    task_id = None
     task_template_id = factory.sequence(
         lambda counter: "TASK_TEMPLATE_ID-{}".format(counter))
     action_id = factory.Sequence(

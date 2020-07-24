@@ -1,16 +1,102 @@
-from typing import List
+from typing import List, Optional
 
 from ib_tasks.interactors.storage_interfaces.\
     create_or_update_task_storage_interface \
     import CreateOrUpdateTaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_dtos import (
     TaskGoFFieldDTO, TaskGoFDTO, TaskGoFDetailsDTO)
-from ib_tasks.models import TaskGoF, TaskGoFField
+from ib_tasks.models import TaskGoF, TaskGoFField, Task
 
 
 class CreateOrUpdateTaskStorageImplementation(
     CreateOrUpdateTaskStorageInterface
 ):
+
+    def is_valid_task_id(self, task_id: str) -> bool:
+        task_existence = Task.objects.filter(id=task_id).exists()
+        return task_existence
+
+    def get_gof_ids_related_to_a_task(self, task_id: int) -> List[str]:
+        gof_ids = list(
+            TaskGoF.objects.filter(task_id=task_id).values_list(
+                'gof_id', flat=True
+            )
+        )
+        return gof_ids
+
+    def get_field_ids_related_to_given_task(self, task_id: int) -> List[
+        str]:
+        field_ids = list(
+            TaskGoFField.objects.filter(task_gof__task_id=task_id).\
+                                 values_list('field_id', flat=True)
+        )
+        return field_ids
+
+    def update_task_gofs(
+            self, task_gof_dtos: List[TaskGoFDTO]
+    ) -> List[TaskGoFDetailsDTO]:
+        task_id = task_gof_dtos[0].task_id
+        task_gof_objects = TaskGoF.objects.filter(task_id=task_id)
+        for task_gof_object in task_gof_objects:
+            task_gof_dto = self._get_matching_task_gof_dto(
+                task_gof_object, task_gof_dtos
+            )
+            task_gof_object.same_gof_order = task_gof_dto.same_gof_order
+        TaskGoF.objects.bulk_update(task_gof_objects, ['same_gof_order'])
+        task_gof_ids = [
+            task_gof_object.id for task_gof_object in task_gof_objects
+        ]
+        task_gof_objects = list(TaskGoF.objects.filter(id__in=task_gof_ids))
+        task_gof_details_dtos = self._prepare_task_gof_details_dtos(
+            task_gof_objects
+        )
+        return task_gof_details_dtos
+
+    @staticmethod
+    def _get_matching_task_gof_dto(
+        task_gof_object: TaskGoF, task_gof_dtos: List[TaskGoFDTO]
+    ) -> Optional[TaskGoFDTO]:
+        for task_gof_dto in task_gof_dtos:
+            dto_matched = (
+                task_gof_dto.task_id == task_gof_object.task_id,
+                task_gof_dto.gof_id == task_gof_object.gof_id
+            )
+            if dto_matched:
+                return task_gof_dto
+        return
+
+    def update_task_gof_fields(self,
+                               task_gof_field_dtos: List[TaskGoFFieldDTO]):
+        task_gof_ids = [
+            task_gof_field_dto.task_gof_id
+            for task_gof_field_dto in task_gof_field_dtos
+        ]
+        task_gof_field_objects = \
+            TaskGoFField.objects.filter(task_gof_id__in=task_gof_ids)
+        for task_gof_field_object in task_gof_field_objects:
+            task_gof_field_dto = self._get_matching_task_gof_field_dto(
+                task_gof_field_object, task_gof_field_dtos
+            )
+            task_gof_field_object.field_response = \
+                task_gof_field_dto.field_response
+        TaskGoFField.objects.bulk_update(
+            task_gof_field_objects, ['field_response']
+        )
+
+    @staticmethod
+    def _get_matching_task_gof_field_dto(
+        task_gof_field_object: TaskGoFField,
+        task_gof_field_dtos: List[TaskGoFFieldDTO]
+    ) -> Optional[TaskGoFFieldDTO]:
+        for task_gof_field_dto in task_gof_field_dtos:
+            dto_matched = (
+                task_gof_field_dto.task_gof_id == \
+                task_gof_field_object.task_gof_id and
+                task_gof_field_dto.field_id == task_gof_field_object.field_id
+            )
+            if dto_matched:
+                return task_gof_field_dto
+        return
 
     def validate_task_id(self, task_id: str):
         pass
