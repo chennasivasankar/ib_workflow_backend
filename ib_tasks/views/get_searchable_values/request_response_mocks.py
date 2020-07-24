@@ -1,7 +1,7 @@
 RESPONSE_200_JSON = """
 [
     {
-        "id": 1,
+        "id": "string",
         "name": "string"
     }
 ]
@@ -14,3 +14,4 @@ RESPONSE_400_JSON = """
     "res_status": "LIMIT_SHOULD_BE_GREATER_THAN_ZERO"
 }
 """
+
