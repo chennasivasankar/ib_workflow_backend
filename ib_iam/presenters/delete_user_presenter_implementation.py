@@ -34,4 +34,12 @@ class DeleteUserPresenterImplementation(DeleteUserPresenterInterface,
         return response
 
     def raise_user_does_not_have_delete_permission_exception(self):
-        pass
+        from ib_iam.constants.exception_messages import \
+            USER_DOES_NOT_HAVE_DELETE_PERMISSION
+        response_dict = {
+            "response": USER_DOES_NOT_HAVE_DELETE_PERMISSION[0],
+            "http_status_code": StatusCode.FORBIDDEN.value,
+            "res_status": USER_DOES_NOT_HAVE_DELETE_PERMISSION[1]
+        }
+        return self.prepare_403_forbidden_response(
+            response_dict=response_dict)
