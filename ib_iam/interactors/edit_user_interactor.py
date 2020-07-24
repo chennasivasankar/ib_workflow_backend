@@ -31,9 +31,6 @@ class EditUserInteractor(ValidationMixin):
             return presenter.raise_invalid_name_exception()
         except InvalidEmailAddress:
             return presenter.raise_invalid_email_exception()
-        except UserAccountAlreadyExistWithThisEmail:
-            return presenter. \
-                raise_user_account_already_exist_with_this_email_exception()
         except NameShouldNotContainsNumbersSpecCharacters:
             return presenter. \
                 raise_name_should_not_contain_special_characters_exception()
@@ -133,8 +130,7 @@ class EditUserInteractor(ValidationMixin):
         self.storage.add_roles_to_the_user(
             user_id=user_id, role_ids=ids_of_role_objs)
         self.storage.add_user_to_the_teams(user_id=user_id, team_ids=team_ids)
-        self.storage.add_company_to_user(user_id=user_id, company_id=company_id,
-                                         is_admin=False)
+        self.storage.add_company_to_user(user_id=user_id, company_id=company_id)
 
     def _unassign_existing_teams_roles_and_company(self, user_id):
         self.storage.unassign_company_for_user(user_id)

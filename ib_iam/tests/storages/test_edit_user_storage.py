@@ -1,0 +1,177 @@
+import pytest
+
+from ib_iam.storages.edit_user_storage_implementation import EditUserStorageImplementation
+from ib_iam.tests.factories.models \
+    import CompanyFactory, TeamFactory, RoleFactory, UserDetailsFactory, UserTeamFactory, UserRoleFactory
+
+
+@pytest.fixture()
+def reset_sequence_for_model_factories():
+    CompanyFactory.reset_sequence(0)
+    RoleFactory.reset_sequence(0)
+    TeamFactory.reset_sequence(0)
+    UserDetailsFactory.reset_sequence(0)
+    UserTeamFactory.reset_sequence(0)
+    UserRoleFactory.reset_sequence(0)
+
+
+@pytest.fixture()
+def user_companies():
+    company_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
+                   "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
+    companies = [CompanyFactory.create(company_id=company_id)
+                 for company_id in company_ids]
+    UserDetailsFactory.create(user_id="ef6d1fc6-ac3f-4d2d-a983-752c992e8444",
+                              company=companies[0])
+    return companies
+
+
+@pytest.fixture()
+def user_teams():
+    team_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
+                "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
+    teams = [TeamFactory.create(team_id=team_id)
+             for team_id in team_ids]
+    UserTeamFactory.create(user_id="ef6d1fc6-ac3f-4d2d-a983-752c992e8444",
+                           team=teams[0])
+
+
+@pytest.fixture()
+def teams():
+    team_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
+                "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
+    teams = [TeamFactory.create(team_id=team_id)
+             for team_id in team_ids]
+    return teams
+
+
+@pytest.fixture()
+def user_roles():
+    role_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
+                "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
+    roles = [RoleFactory.create(id=role_id) for role_id in role_ids]
+    UserRoleFactory.create(user_id="ef6d1fc6-ac3f-4d2d-a983-752c992e8444",
+                           role=roles[0])
+
+
+@pytest.fixture()
+def roles():
+    role_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
+                "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
+    roles = [RoleFactory.create(id=role_id) for role_id in role_ids]
+    return roles
+
+
+class TestEditUserStorage:
+    @pytest.mark.django_db
+    def test_add_company_to_user_adds_company_with_given_details(
+            self, reset_sequence_for_model_factories, user_companies):
+        # Arrange
+        user_id = "user_1"
+        is_admin = True
+        company_id = 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331'
+        storage = EditUserStorageImplementation()
+
+        # Act
+        storage.add_company_to_user(
+            user_id=user_id, company_id=company_id)
+
+        # Assert
+        from ib_iam.models import UserDetails
+        user = UserDetails.objects.get(user_id=user_id)
+        assert str(user.company_id) == company_id
+
+    @pytest.mark.django_db
+    def test_add_roles_to_user_adds_roles_with_given_details(
+            self, reset_sequence_for_model_factories, roles):
+        # Arrange
+        user_id = "user_1"
+        role_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
+                    "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
+        storage = EditUserStorageImplementation()
+
+        # Act
+        storage.add_roles_to_the_user(
+            user_id=user_id, role_ids=role_ids)
+
+        # Assert
+        from ib_iam.models import UserRole
+        user_objs = UserRole.objects.filter(user_id=user_id)
+        assert len(user_objs) == len(role_ids)
+        assert str(user_objs[0].role_id) == role_ids[0]
+
+    @pytest.mark.django_db
+    def test_add_user_to_teams_adds_to_team_with_given_details(
+            self, reset_sequence_for_model_factories, teams):
+        # Arrange
+        user_id = "user_1"
+        team_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
+                    "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
+        storage = EditUserStorageImplementation()
+
+        # Act
+        storage.add_user_to_the_teams(
+            user_id=user_id, team_ids=team_ids)
+
+        # Assert
+        from ib_iam.models import UserTeam
+        user_objs = UserTeam.objects.filter(user_id=user_id)
+        assert len(user_objs) == len(team_ids)
+        assert str(user_objs[0].team_id) == team_ids[0]
+
+    @pytest.mark.django_db
+    def test_unassign_company_for_user_removes_company(
+            self, reset_sequence_for_model_factories, user_companies):
+        # Arrange
+        user_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8444"
+        storage = EditUserStorageImplementation()
+
+        # Act
+        storage.unassign_company_for_user(user_id=user_id)
+
+        # Assert
+        from ib_iam.models import UserDetails
+        user_obj = UserDetails.objects.get(user_id=user_id)
+        assert user_obj.company_id is None
+
+    @pytest.mark.django_db
+    def test_unassign_roles_for_user_removes_roles(
+            self, reset_sequence_for_model_factories, user_roles):
+        # Arrange
+        user_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8444"
+        storage = EditUserStorageImplementation()
+
+        # Act
+        storage.unassign_roles_for_user(user_id=user_id)
+
+        # Assert
+        from ib_iam.models import UserRole
+        user_objs = UserRole.objects.filter(user_id=user_id)
+        assert len(user_objs) == 0
+
+    @pytest.mark.django_db
+    def test_unassign_teams_for_user_removes_teams(
+            self, reset_sequence_for_model_factories, user_teams):
+        # Arrange
+        user_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8444"
+        storage = EditUserStorageImplementation()
+
+        # Act
+        storage.unassign_teams_for_user(user_id=user_id)
+
+        # Assert
+        from ib_iam.models import UserTeam
+        user_objs = UserTeam.objects.filter(user_id=user_id)
+        assert len(user_objs) == 0
+
+    @pytest.mark.django_db
+    def test_is_user_exist_returns_false_when_user_did_not_exist(self):
+        # Arrange
+        user_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8444"
+        storage = EditUserStorageImplementation()
+
+        # Act
+        is_exist = storage.is_user_exist(user_id=user_id)
+
+        # Assert
+        assert is_exist is False

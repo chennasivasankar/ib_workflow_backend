@@ -16,11 +16,6 @@ class EditUserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def add_new_user(self, user_id: str, is_admin: bool, company_id: str,
-                     role_ids, team_ids: List[str]):
-        pass
-
-    @abstractmethod
     def validate_role_ids(self, role_ids):
         pass
 
@@ -53,5 +48,5 @@ class EditUserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def add_company_to_user(self, company_id: str, is_admin: bool, user_id: str):
+    def add_company_to_user(self, company_id: str, user_id: str):
         pass
