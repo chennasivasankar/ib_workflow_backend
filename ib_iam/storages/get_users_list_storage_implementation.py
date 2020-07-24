@@ -57,7 +57,7 @@ class GetUsersListStorageImplementation(GetUsersListStorageInterface):
             role = user_role.role
             role_dto = UserRoleDTO(
                 user_id=user_role.user_id,
-                role_id=str(role.id),
+                role_id=str(role.role_id),
                 name=role.name,
                 description=role.description
             )

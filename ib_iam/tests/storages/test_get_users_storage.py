@@ -52,28 +52,24 @@ class TestGetUsers:
         users_role_dtos = [
             UserRoleDTO(
                 user_id='user1',
-                role_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
+                role_id='ROLE_0',
                 name='role 0',
-                description='payment_description0'
-            ),
+                description='payment_description0'),
             UserRoleDTO(
                 user_id='user2',
-                role_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
+                role_id='ROLE_0',
                 name='role 0',
-                description='payment_description0'
-            ), UserRoleDTO(
+                description='payment_description0'),
+            UserRoleDTO(
                 user_id='user1',
-                role_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8332',
+                role_id='ROLE_1',
                 name='role 1',
-                description='payment_description1'
-            ),
+                description='payment_description1'),
             UserRoleDTO(
                 user_id='user2',
-                role_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8332',
+                role_id='ROLE_1',
                 name='role 1',
-                description='payment_description1'
-            )
-        ]
+                description='payment_description1')]
         return users_role_dtos
 
     @pytest.fixture()
