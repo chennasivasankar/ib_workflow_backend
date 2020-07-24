@@ -35,7 +35,7 @@ class UserService:
                 name=user.name,
                 email=user.email
             ))
-            return user_profile_dtos
+        return user_profile_dtos
 
     def create_user_account_with_email(self, email: str) -> str:
         from ib_iam.exceptions.custom_exceptions \

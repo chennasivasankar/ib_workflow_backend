@@ -1,6 +1,5 @@
 from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, \
-    InvalidOffsetValue, InvalidLimitValue, \
-    OffsetValueIsGreaterThanLimitValue, InvalidUser
+    InvalidOffsetValue, InvalidLimitValue, InvalidUser
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.dtos \
     import ListOfCompleteUsersDTO
@@ -28,9 +27,6 @@ class GetUsersDetailsInteractor(ValidationMixin):
             response = presenter.raise_invalid_offset_value_exception()
         except InvalidLimitValue:
             response = presenter.raise_invalid_limit_value_exception()
-        except OffsetValueIsGreaterThanLimitValue:
-            response = presenter. \
-                raise_offset_value_is_greater_than_limit_value_exception()
         except InvalidUser:
             response = presenter.raise_invalid_user()
         return response

@@ -1121,6 +1121,9 @@
           },
           "403": {
             "$ref": "#/responses/UserDoesNotHavePermissionResponse"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequestForGetListOfTeamsResponse"
           }
         }
       }

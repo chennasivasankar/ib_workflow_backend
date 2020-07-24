@@ -121,7 +121,7 @@ class EditUserInteractor(ValidationMixin):
     def _update_user_roles_company_roles(
             self, user_id: str, company_id: str,
             role_ids: List[str], team_ids: List[str]):
-        self._unassign_existing_teams_roles_and_company(user_id)
+        self._remove_existing_teams_roles_and_company(user_id)
         self._assaign_teams_roles_company_to_user(
             company_id, role_ids, team_ids, user_id)
 
@@ -131,9 +131,8 @@ class EditUserInteractor(ValidationMixin):
         self.storage.add_roles_to_the_user(
             user_id=user_id, role_ids=ids_of_role_objs)
         self.storage.add_user_to_the_teams(user_id=user_id, team_ids=team_ids)
-        self.storage.add_company_to_user(user_id=user_id, company_id=company_id)
+        self.storage.change_company_for_user(user_id=user_id, company_id=company_id)
 
-    def _unassign_existing_teams_roles_and_company(self, user_id):
-        self.storage.unassign_company_for_user(user_id)
-        self.storage.unassign_roles_for_user(user_id)
-        self.storage.unassign_teams_for_user(user_id)
+    def _remove_existing_teams_roles_and_company(self, user_id):
+        self.storage.remove_roles_for_user(user_id)
+        self.storage.remove_teams_for_user(user_id)

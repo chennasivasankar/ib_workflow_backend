@@ -43,17 +43,6 @@ class GetUsersListPresenterImplementation(GetUsersListPresenterInterface,
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
 
-    def raise_offset_value_is_greater_than_limit_value_exception(self):
-        from ib_iam.constants.exception_messages import \
-            OFFSET_VALUE_IS_GREATER_THAN_LIMIT
-        response_dict = {
-            "response": OFFSET_VALUE_IS_GREATER_THAN_LIMIT[0],
-            "http_status_code": StatusCode.BAD_REQUEST.value,
-            "res_status": OFFSET_VALUE_IS_GREATER_THAN_LIMIT[1]
-        }
-        return self.prepare_400_bad_request_response(
-            response_dict=response_dict)
-
     def response_for_get_users(
             self, complete_user_details_dtos: ListOfCompleteUsersDTO):
         user_dtos = complete_user_details_dtos.users
