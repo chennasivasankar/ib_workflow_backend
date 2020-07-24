@@ -22,11 +22,11 @@ class TestSearchableFieldValuesPresenterImplementation:
     def test_raise_exception_for_offset_less_than_minus_one(self):
         # Arrange
         from ib_tasks.constants.exception_messages import \
-            OFFSET_SHOULD_BE_GREATER_THAN_OR_EQAL_TO_MINUS_ONE
-        expected_response =\
-            OFFSET_SHOULD_BE_GREATER_THAN_OR_EQAL_TO_MINUS_ONE[0]
+            OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE
+        expected_response = \
+            OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE[0]
         response_status_code = \
-            OFFSET_SHOULD_BE_GREATER_THAN_OR_EQAL_TO_MINUS_ONE[1]
+            OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE[1]
         from ib_tasks.presenters. \
             searchable_field_values_presenter_implementation import \
             SearchableFieldValuesPresenterImplementation

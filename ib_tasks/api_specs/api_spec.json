@@ -546,13 +546,15 @@
       "name": "limit",
       "description": "Limit Parameter",
       "in": "query",
-      "type": "integer"
+      "type": "integer",
+      "required": true
     },
     "OffsetParameter": {
       "name": "offset",
       "description": "Offset Parameter",
       "in": "query",
-      "type": "integer"
+      "type": "integer",
+      "required": true
     },
     "SearchableQueryParameter": {
       "name": "search_query",
@@ -699,9 +701,8 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "LIMIT_VALUE_SHOULD_BE_GREATER_THAN_ZERO",
-              "OFFSET_VALUE_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE",
-              "NO_SEARCH_RESULTS_FOUND"
+              "LIMIT_SHOULD_BE_GREATER_THAN_ZERO",
+              "OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE"
             ]
           }
         },

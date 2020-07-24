@@ -1,5 +1,4 @@
 from typing import List
-from ib_tasks.adapters.dtos import UserDTO
 from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
 from ib_tasks.interactors.presenter_interfaces. \
@@ -35,12 +34,6 @@ class SearchableFieldValuesInteractor:
         limit = searchable_field_type_dto.limit
         offset = searchable_field_type_dto.offset
         search_query = searchable_field_type_dto.search_query
-        if offset is None:
-            from ib_tasks.constants.constants import OFFSET_VALUE
-            offset = OFFSET_VALUE
-        if limit is None:
-            from ib_tasks.constants.constants import LIMIT_VALUE
-            limit = LIMIT_VALUE
         self._validations_of_limit_and_offset(limit=limit, offset=offset)
         limit = offset + limit
 

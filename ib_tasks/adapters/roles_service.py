@@ -1,4 +1,3 @@
-
 from typing import List
 
 class RolesService:
@@ -22,5 +21,5 @@ class RolesService:
         return valid_roles
 
     def get_user_role_ids(self, user_id) -> List[str]:
-        user_role_ids = self.interface.get_user_role_ids(user_id)
+        user_role_ids = self.interface.get_user_role_ids(user_id=user_id)
         return user_role_ids

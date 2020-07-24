@@ -11,7 +11,6 @@ from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.constants.enum import Searchable
-from ib_tasks.interactors.stages_dtos import (StagesActionDTO)
 
 
 from ib_tasks.interactors.stages_dtos import \

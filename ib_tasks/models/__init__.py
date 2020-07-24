@@ -18,7 +18,6 @@ from .task_status_variable import TaskStatusVariable
 __all__ = [
     "TaskStatusVariable",
     "ActionPermittedRoles",
-    "Stage",
     "StageAction",
     "TaskTemplateStatusVariable",
     "TaskTemplateStatusVariables",
