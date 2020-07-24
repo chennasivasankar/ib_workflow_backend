@@ -4,13 +4,14 @@ from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionsOfTemplateDTO
-from ib_tasks.interactors.storage_interfaces.status_dtos import TaskStatusDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldRoleDTO, FieldTypeDTO, UserFieldPermissionDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFRoleDTO, GoFToTaskTemplateDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, StageDTO
-from ib_tasks.interactors.storage_interfaces.status_dtos import TaskTemplateStatusDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
+    StageDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import \
+    TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
@@ -19,16 +20,18 @@ from ib_tasks.models import TaskTemplateStatusVariable
 from ib_tasks.models import GoFRole, GoF
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
+from ib_tasks.models.task_template import TaskTemplate
+from ib_tasks.models.stage_actions import StageAction
+from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
 
 class TasksStorageImplementation(TaskStorageInterface):
 
-
     def get_field_types_for_given_field_ids(self, field_ids: List[str]) -> \
             List[FieldTypeDTO]:
         field_type_dicts = list(
-            Field.objects.filter(field_id__in=field_ids).\
-                          values('field_id', 'field_type')
+            Field.objects.filter(field_id__in=field_ids). \
+                values('field_id', 'field_type')
         )
         field_type_dtos = self._prepare_field_type_dtos(field_type_dicts)
         return field_type_dtos
@@ -44,26 +47,22 @@ class TasksStorageImplementation(TaskStorageInterface):
         ]
         return field_type_dtos
 
-
     def get_task_template_name_if_exists(self, template_id: str) -> str:
         pass
 
     def create_task_template(self, template_id: str, template_name: str):
-        from ib_tasks.models.task_template import TaskTemplate
         TaskTemplate.objects.create(
             template_id=template_id, name=template_name
         )
 
     def update_task_template(
             self, template_id: str, template_name: str):
-        from ib_tasks.models.task_template import TaskTemplate
         task_template = \
             TaskTemplate.objects.get(template_id=template_id)
         task_template.name = template_name
         task_template.save()
 
     def get_task_template_name(self, template_id: str) -> str:
-        from ib_tasks.models.task_template import TaskTemplate
         template_name_query_set = \
             TaskTemplate.objects.filter(
                 template_id=template_id
@@ -81,7 +80,6 @@ class TasksStorageImplementation(TaskStorageInterface):
     def get_valid_template_ids_in_given_template_ids(
             self, template_ids: List[str]
     ) -> List[str]:
-        from ib_tasks.models.task_template import TaskTemplate
         valid_template_ids = list(
             TaskTemplate.objects.filter(pk__in=template_ids).
                 values_list("template_id", flat=True)
@@ -147,7 +145,6 @@ class TasksStorageImplementation(TaskStorageInterface):
         GoFRole.objects.filter(gof_id__in=gof_ids).delete()
 
     def check_is_template_exists(self, template_id: str) -> bool:
-        from ib_tasks.models.task_template import TaskTemplate
         is_template_exists = \
             TaskTemplate.objects.filter(template_id=template_id).exists()
         return is_template_exists
@@ -204,7 +201,8 @@ class TasksStorageImplementation(TaskStorageInterface):
     def get_existing_gof_ids(self, gof_ids: List[str]) -> List[str]:
         from ib_tasks.models.gof import GoF
         existing_gof_ids = list(
-            GoF.objects.filter(gof_id__in=gof_ids).values_list("gof_id", flat=True)
+            GoF.objects.filter(gof_id__in=gof_ids).values_list("gof_id",
+                                                               flat=True)
         )
         return existing_gof_ids
 
@@ -285,7 +283,8 @@ class TasksStorageImplementation(TaskStorageInterface):
             gof_to_task_template_obj.order = \
                 gofs_dict[gof_to_task_template_obj.gof_id].order
             gof_to_task_template_obj.enable_add_another_gof = \
-                gofs_dict[gof_to_task_template_obj.gof_id].enable_add_another_gof
+                gofs_dict[
+                    gof_to_task_template_obj.gof_id].enable_add_another_gof
 
         TaskTemplateGoFs.objects.bulk_update(
             gof_to_task_template_objs, ['order', 'enable_add_another_gof']
@@ -320,7 +319,8 @@ class TasksStorageImplementation(TaskStorageInterface):
         ]
         return gof_dtos
 
-    def create_status_for_tasks(self, create_status_for_tasks: List[TaskTemplateStatusDTO]):
+    def create_status_for_tasks(self, create_status_for_tasks: List[
+        TaskTemplateStatusDTO]):
         list_of_status_tasks = [TaskTemplateStatusVariable(
             variable=status.status_variable_id,
             task_template_id=status.task_template_id
@@ -350,31 +350,64 @@ class TasksStorageImplementation(TaskStorageInterface):
         GlobalConstant.objects.bulk_update(global_constants_objs, ['value'])
 
     def get_task_templates_dtos(self) -> List[TaskTemplateDTO]:
-        pass
+        task_template_objs = TaskTemplate.objects.all()
+        task_template_dtos = self._convert_task_templates_objs_to_dtos(
+            task_template_objs=task_template_objs
+        )
+        return task_template_dtos
 
     def get_actions_of_templates_dtos(self) -> List[ActionsOfTemplateDTO]:
-        pass
+        stage_actions_details = StageAction.objects.all().select_related(
+            'stage'). \
+            values(
+            'id', 'button_text', 'button_color', 'stage__task_template_id'
+        )
+        actions_of_templates_dtos = self._convert_stage_actions_details_to_dto(
+            stage_actions_details=stage_actions_details
+        )
+        return actions_of_templates_dtos
 
     def get_gofs_details_dtos(
             self, gof_ids: List[str]) -> List[GoFDTO]:
-        pass
+        gof_details = GoF.objects.filter(gof_id__in=gof_ids).values(
+            'gof_id', 'max_columns', 'display_name'
+        )
+        gof_dtos = self._convert_gof_details_to_dtos(gof_details=gof_details)
+        return gof_dtos
 
     def get_gofs_to_task_templates_from_permitted_gofs(
             self, gof_ids: List[str]) -> List[GoFToTaskTemplateDTO]:
-        pass
+        task_template_gofs = \
+            TaskTemplateGoFs.objects.filter(gof_id__in=gof_ids)
+        gof_to_task_template_dtos = self._convert_task_template_gofs_to_dtos(
+            task_template_gofs=task_template_gofs
+        )
+        return gof_to_task_template_dtos
 
     def get_user_field_permission_dtos(
             self, roles: List[str],
             field_ids: List[str]) -> List[UserFieldPermissionDTO]:
-        pass
+        user_field_permission_details = FieldRole.objects.filter(
+            field_id__in=field_ids, role__in=roles).values('field_id',
+                                                           'permission_type')
+        user_field_permission_dtos = self._convert_user_field_permission_details_to_dtos(
+            user_field_permission_details=user_field_permission_details)
+        return user_field_permission_dtos
 
     def get_fields_of_gofs_in_dtos(
             self, gof_ids: List[str]) -> List[FieldDTO]:
-        pass
+        field_objs = Field.objects.filter(gof_id__in=gof_ids)
+        field_dtos = self._convert_field_objs_to_dtos(field_objs=field_objs)
+        return field_dtos
 
     def get_gof_ids_with_read_permission_for_user(
             self, roles: List[str]) -> List[str]:
-        pass
+        from ib_tasks.constants.enum import PermissionTypes
+        gof_ids_queryset = GoFRole.objects.filter(
+            permission_type=PermissionTypes.READ.value
+        ).values_list('gof_id', flat=True)
+        gof_ids_list = list(gof_ids_queryset)
+        return gof_ids_list
 
     def delete_field_roles(self, field_ids: List[str]):
         FieldRole.objects.filter(field_id__in=field_ids).delete()
@@ -424,3 +457,92 @@ class TasksStorageImplementation(TaskStorageInterface):
         for gof_dto in gof_dtos:
             gofs_dict[gof_dto.gof_id] = gof_dto
         return gofs_dict
+
+    @staticmethod
+    def _convert_task_templates_objs_to_dtos(
+            task_template_objs: List[TaskTemplate]) -> List[TaskTemplateDTO]:
+        task_template_dtos = [
+            TaskTemplateDTO(
+                template_id=task_template_obj.template_id,
+                template_name=task_template_obj.name
+            )
+            for task_template_obj in task_template_objs
+        ]
+        return task_template_dtos
+
+    @staticmethod
+    def _convert_stage_actions_details_to_dto(
+            stage_actions_details: List[Dict]) -> List[ActionsOfTemplateDTO]:
+        actions_of_template_dtos = [
+            ActionsOfTemplateDTO(
+                action_id=stage_action['id'],
+                template_id=stage_action['stage__task_template_id'],
+                button_color=stage_action['button_color'],
+                button_text=stage_action['button_text']
+            )
+            for stage_action in stage_actions_details
+        ]
+        return actions_of_template_dtos
+
+    @staticmethod
+    def _convert_task_template_gofs_to_dtos(
+            task_template_gofs: List[TaskTemplateGoFs]
+    ) -> List[GoFToTaskTemplateDTO]:
+        task_template_gof_dtos = [
+            GoFToTaskTemplateDTO(
+                template_id=task_template_gof.task_template_id,
+                gof_id=task_template_gof.gof_id,
+                order=task_template_gof.order,
+                enable_add_another=task_template_gof.enable_add_another_gof
+
+            )
+            for task_template_gof in task_template_gofs
+        ]
+        return task_template_gof_dtos
+
+    @staticmethod
+    def _convert_gof_details_to_dtos(gof_details: List[Dict]) -> List[GoFDTO]:
+        gof_dtos = [
+            GoFDTO(
+                gof_id=gof['gof_id'],
+                gof_display_name=gof['display_name'],
+                max_columns=gof['max_columns']
+            )
+            for gof in gof_details
+        ]
+        return gof_dtos
+
+    @staticmethod
+    def _convert_field_objs_to_dtos(
+            field_objs: List[Field]) -> List[FieldDTO]:
+        field_dtos = [
+            FieldDTO(
+                gof_id=field_obj.gof_id,
+                field_id=field_obj.field_id,
+                field_display_name=field_obj.display_name,
+                field_type=field_obj.field_type,
+                field_values=field_obj.field_values,
+                required=field_obj.required,
+                help_text=field_obj.help_text,
+                tooltip=field_obj.tooltip,
+                placeholder_text=field_obj.placeholder_text,
+                error_message=field_obj.error_messages,
+                allowed_formats=field_obj.allowed_formats,
+                validation_regex=field_obj.validation_regex
+            )
+            for field_obj in field_objs
+        ]
+        return field_dtos
+
+    @staticmethod
+    def _convert_user_field_permission_details_to_dtos(
+            user_field_permission_details: List[Dict]
+    ) -> List[UserFieldPermissionDTO]:
+        user_field_permission_dtos = [
+            UserFieldPermissionDTO(
+                field_id=user_field_permission['field_id'],
+                permission_type=user_field_permission['permission_type']
+            )
+            for user_field_permission in user_field_permission_details
+        ]
+        return user_field_permission_dtos

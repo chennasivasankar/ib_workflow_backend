@@ -13,6 +13,13 @@ snapshots['TestCase01CreateTaskAPITestCase.test_case body'] = {
     'action_id': [
         'This field is required.'
     ],
+    'task_gofs': [
+        {
+            'same_gof_order': [
+                'This field is required.'
+            ]
+        }
+    ],
     'task_template_id': [
         'This field is required.'
     ]
