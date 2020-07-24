@@ -145,7 +145,7 @@ class GetTaskTemplatesPresenterImplementation(
             field_dict = self._get_field_details_as_dict(field_dto=field_dto)
             field_dict['is_field_readable'] = False
             field_dict['is_field_writable'] = False
-            try:
+            if field_dto.field_id in user_permission_dtos_dict.keys():
                 permission_type = user_permission_dtos_dict[field_dto.field_id].permission_type
                 has_read_permission = permission_type == PermissionTypes.READ.value
                 has_write_permission = permission_type == PermissionTypes.WRITE.value
@@ -153,8 +153,7 @@ class GetTaskTemplatesPresenterImplementation(
                     field_dict['is_field_readable'] = True
                 if has_write_permission:
                     field_dict['is_field_writable'] = True
-            except KeyError:
-                continue
+
             field_dicts.append(field_dict)
         return field_dicts
 
