@@ -16,8 +16,10 @@ Field_Types = [(item.value, item.value) for item in FieldTypes]
 VALID_FIELD_TYPES = [field_type.value for field_type in FieldTypes]
 
 MULTI_VALUES_INPUT_FIELDS = [
-    FieldTypes.DROPDOWN.value, FieldTypes.RADIO_GROUP.value,
-    FieldTypes.CHECKBOX_GROUP.value, FieldTypes.MULTI_SELECT_FIELD.value,
+    FieldTypes.DROPDOWN.value,
+    FieldTypes.RADIO_GROUP.value,
+    FieldTypes.CHECKBOX_GROUP.value,
+    FieldTypes.MULTI_SELECT_FIELD.value,
     FieldTypes.MULTI_SELECT_LABELS.value
 ]
 
@@ -29,3 +31,8 @@ FIELD_SUB_SHEET_TITLE = "Fields"
 UPLOADERS = [FieldTypes.IMAGE_UPLOADER.value, FieldTypes.FILE_UPLOADER.value]
 
 SEARCHABLE_TYPES = [searchable_type.value for searchable_type in Searchable]
+
+STAGES_AND_ACTIONS_SUB_SHEET = "PR - Stages and Actions "
+TASK_CREATION_CONFIG_SUB_SHEET = "PR-Task Creation Config"
+STAGE_ID_AND_VALUES_SUB_SHEET = "PR - StageID and Values"
+STATUS_VARIABLES_SUB_SHEET = "PR - Status Variables"

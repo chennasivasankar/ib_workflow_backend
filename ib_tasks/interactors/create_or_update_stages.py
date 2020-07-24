@@ -22,7 +22,6 @@ class CreateOrUpdateStagesInterface:
     def create_or_update_stages(
             self,
             stages_details: List[StageDTO]):
-
         stage_ids = self._get_stage_ids(stages_details)
         self.check_for_duplicate_stage_ids(stage_ids)
         self._validate_stage_display_name(stages_details)
@@ -43,17 +42,13 @@ class CreateOrUpdateStagesInterface:
                                  ):
         update_stages_details = []
         create_stages_details = []
-        if existing_stage_ids:
-            task_stages_dto = self._get_task_stages_dto(stages_details)
-            self._validate_stages_related_task_template_ids(task_stages_dto)
-
-            for stage_information in stages_details:
+        for stage_information in stages_details:
+            if stage_information.stage_id not in existing_stage_ids:
+                create_stages_details.append(stage_information)
+            else:
                 update_stages_details.append(stage_information)
-
-        else:
-            for stage_information in stages_details:
-                if stage_information.stage_id not in existing_stage_ids:
-                    create_stages_details.append(stage_information)
+        task_stages_dto = self._get_task_stages_dto(update_stages_details)
+        self._validate_stages_related_task_template_ids(task_stages_dto)
 
         if update_stages_details:
             self.stage_storage.update_stages(
@@ -95,9 +90,9 @@ class CreateOrUpdateStagesInterface:
             if attribute.status_id not in valid_status_ids:
 
                 invalid_stage_display_logic_stages.append(attribute.stage_id)
-
-        if invalid_stage_display_logic_stages:
-            raise InvalidStageDisplayLogic(invalid_stage_display_logic_stages)
+        # TODO need to validate that is remove comments
+        # if invalid_stage_display_logic_stages:
+        #     raise InvalidStageDisplayLogic(invalid_stage_display_logic_stages)
         return
 
     @staticmethod
@@ -113,7 +108,6 @@ class CreateOrUpdateStagesInterface:
     def check_for_duplicate_stage_ids(stage_ids: List[str]):
         duplicate_stage_ids = list(set(
             [x for x in stage_ids if stage_ids.count(x) > 1]))
-        print(duplicate_stage_ids)
         if duplicate_stage_ids:
             raise DuplicateStageIds(duplicate_stage_ids)
 
@@ -179,31 +173,3 @@ class CreateOrUpdateStagesInterface:
         if invalid_value_stages:
             raise InvalidStageValues(invalid_value_stages)
         return
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
