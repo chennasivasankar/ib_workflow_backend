@@ -49,3 +49,4 @@ class StagesActionDTO:
 class TaskTemplateStageDTO:
     task_template_id: str
     stage_id: str
+
