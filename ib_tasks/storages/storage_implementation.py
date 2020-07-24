@@ -148,7 +148,7 @@ class StorageImplementation(StorageInterface):
             ) for status_variable_obj in status_variable_objs
         ]
 
-    def get_path_name_to_action(self, action_id: str) -> str:
+    def get_path_name_to_action(self, action_id: int) -> str:
 
         action_obj = StageAction.objects.get(id=action_id)
         return action_obj.py_function_import_path

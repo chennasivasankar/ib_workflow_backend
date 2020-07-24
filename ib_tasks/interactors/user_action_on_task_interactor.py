@@ -70,7 +70,7 @@ class UserActionOnTaskInteractor:
         field_ids = self._get_field_ids(column_fields_dtos=column_fields_dtos)
         field_dtos = self._get_fields_dtos(field_ids=field_ids)
         return TaskCompleteDetailsDTO(
-            board_id=self.board_id,
+            task_id=self.task_id,
             task_boards_details=task_boards_details,
             actions_dto=actions_dto,
             field_dtos=field_dtos
@@ -179,7 +179,7 @@ class UserActionOnTaskInteractor:
     @staticmethod
     def _validate_user_permission_to_user(user_roles: List[str],
                                           action_roles: List[str],
-                                          action_id: str):
+                                          action_id: int):
         permit = False
         for role in user_roles:
             if role in action_roles:

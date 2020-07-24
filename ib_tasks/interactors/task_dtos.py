@@ -13,6 +13,7 @@ class GoFFieldsDTO:
     gof_id: str
     field_values_dtos: List[FieldValuesDTO]
 
+
 @dataclass
 class TaskDTO:
     task_template_id: str

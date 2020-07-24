@@ -73,6 +73,23 @@ INVALID_TASK_TEMPLATE_IDS = [
     "INVALID_TASK_TEMPLATE_IDS"
 ]
 
+INVALID_TASK_ID = [
+    "invalid task id is: {}, please send valid task id",
+    "INVALID_TASK_ID"
+]
+
+
+INVALID_BOARD_ID = [
+    "invalid board id is: {}, please send valid board id",
+    "INVALID_BOARD_ID"
+]
+
+INVALID_ACTION_ID = [
+    "invalid action id is: {}, please send valid action id",
+    "INVALID_ACTION_ID"
+]
+
+
 INVALID_GOF_IDS = [
     "invalid gof ids: {}",
     "INVALID_GOF_IDS"
@@ -81,6 +98,11 @@ INVALID_GOF_IDS = [
 INVALID_FIELD_IDS = [
     "invalid field ids: {}",
     "INVALID_FIELD_IDS"
+]
+
+USER_DO_NOT_HAVE_ACCESS = [
+    "User do not have access to the action: {}",
+    "USER_DO_NOT_HAVE_ACCESS"
 ]
 
 EMPTY_VALUE_FOR_PLAIN_TEXT_FIELD = [

@@ -1,5 +1,6 @@
 import factory
 
+from ib_tasks.adapters.dtos import ColumnStageDTO
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
@@ -42,10 +43,12 @@ class FieldDisplayDTOFactory(factory.Factory):
     class Meta:
         model = FieldDisplayDTO
 
-    field_id = factory.Sequence(lambda n: 'field_%d' % (n + 1))
+    field_id = factory.Sequence(lambda n: '%d' % (n + 1))
+    stage_id = factory.Sequence(lambda n: 'stage_%d' % (n+1))
     field_type = factory.Sequence(lambda n: 'field_type_%d' % (n + 1))
     key = factory.Sequence(lambda n: 'key_%d' % (n + 1))
     value = factory.Sequence(lambda n: 'value_%d' % (n + 1))
+
 
 
 class GlobalConstantsDTOFactory(factory.Factory):
