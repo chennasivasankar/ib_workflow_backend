@@ -13,16 +13,16 @@ class TestGetUserIdWIthRoleIdsDTOS:
             UserIdWithRoleIdsDTO(
                 user_id='eca1a0c1-b9ef-4e59-b415-60a28ef17b10',
                 role_ids=[
-                    'b953895a-b77b-4a60-b94d-e4ee6a9b8c3a',
-                    '804c2d9f-8985-454f-a504-eb39482315c0'
+                    "e4ee6a9b8c3a",
+                    "eb39482315c0"
                 ]
             ),
             UserIdWithRoleIdsDTO(
                 user_id='abc1a0c1-b9ef-4e59-b415-60a28ef17b10',
                 role_ids=[
-                    '635bbec1-2054-4860-80fa-1af3f6458df3',
-                    '22832ab6-100e-4d8e-b3a3-f3e0c6aa65f6',
-                    '66040b6e-c8e5-46ab-a313-5e3fc083776b'
+                    '1af3f6458df3',
+                    'f3e0c6aa65f6',
+                    '5e3fc083776b'
                 ]
             ),
             UserIdWithRoleIdsDTO(
@@ -31,17 +31,17 @@ class TestGetUserIdWIthRoleIdsDTOS:
             )
         ]
 
-        expected_role_ids = [
-            'b953895a-b77b-4a60-b94d-e4ee6a9b8c3a',
-            '804c2d9f-8985-454f-a504-eb39482315c0',
-            '635bbec1-2054-4860-80fa-1af3f6458df3',
-            '22832ab6-100e-4d8e-b3a3-f3e0c6aa65f6',
-            '66040b6e-c8e5-46ab-a313-5e3fc083776b'
+        ids_and_role_ids = [
+            (UUID('b953895a-b77b-4a60-b94d-e4ee6a9b8c3a'), "e4ee6a9b8c3a"),
+            (UUID('804c2d9f-8985-454f-a504-eb39482315c0'), "eb39482315c0"),
+            (UUID('635bbec1-2054-4860-80fa-1af3f6458df3'), "1af3f6458df3"),
+            (UUID('22832ab6-100e-4d8e-b3a3-f3e0c6aa65f6'), "f3e0c6aa65f6"),
+            (UUID('66040b6e-c8e5-46ab-a313-5e3fc083776b'), "5e3fc083776b")
         ]
         from ib_iam.tests.factories.models import RoleFactory
         role_objects = [
-            RoleFactory(id=role_id)
-            for role_id in expected_role_ids
+            RoleFactory(id=id, role_id=role_id)
+            for id, role_id in ids_and_role_ids
         ]
 
         user_id1 = "eca1a0c1-b9ef-4e59-b415-60a28ef17b10"
@@ -64,3 +64,22 @@ class TestGetUserIdWIthRoleIdsDTOS:
 
         # Assert
         assert response == expected_user_id_with_role_ids_dtos
+
+    @pytest.mark.django_db
+    def test_invalid_user_ids_raise_exception(self):
+        # Arrange
+        user_ids = [
+            "eca1a0c1-b9ef-4e59-b415-60a28ef17b10",
+            "acd1a0c1-b9ef-4e59-b415-60a28ef17b10"
+        ]
+        invalid_user_ids = user_ids
+
+        from ib_iam.storages.storage_implementation import StorageImplementation
+        storage = StorageImplementation()
+
+        # Assert
+        from ib_iam.exceptions.custom_exceptions import InvalidUserIds
+        with pytest.raises(InvalidUserIds) as err:
+            storage.validate_user_ids(user_ids=user_ids)
+
+        assert err.value.user_ids == invalid_user_ids

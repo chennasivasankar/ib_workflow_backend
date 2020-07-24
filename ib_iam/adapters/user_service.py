@@ -1,11 +1,7 @@
-import dataclasses
 from typing import List
 
 from ib_iam.adapters.dtos import UserProfileDTO
-
-
-class InvalidUserId(Exception):
-    pass
+from ib_iam.exceptions.custom_exceptions import InvalidUserId
 
 
 class UserAccountDoesNotExist(Exception):

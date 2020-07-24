@@ -27,7 +27,7 @@ class RoleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Role
 
-    id = factory.LazyFunction(uuid.uuid4)
+    id = factory.Faker("uuid4")
     role_id = factory.sequence(lambda number: "ROLE_%s" % number)
     name = factory.sequence(lambda number: "role %s" % number)
     description = factory.Sequence(lambda n: 'payment_description%s' % n)
@@ -55,7 +55,7 @@ class UserRoleFactory(factory.django.DjangoModelFactory):
         model = UserRole
 
     user_id = factory.sequence(lambda number: "user%s" % number)
-    role = factory.Iterator(models.Role.objects.all())
+    role = factory.Iterator(Role.objects.all())
 
 
 class UserFactory(factory.django.DjangoModelFactory):

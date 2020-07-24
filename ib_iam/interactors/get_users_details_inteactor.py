@@ -1,3 +1,5 @@
+from typing import List
+
 from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, \
     InvalidOffsetValue, InvalidLimitValue, \
     OffsetValueIsGreaterThanLimitValue
@@ -56,6 +58,19 @@ class GetUsersDetailsInteractor(ValidationMixin):
         return self._convert_complete_user_details_dtos(
             user_team_dtos, user_role_dtos, user_company_dtos,
             user_profile_dtos, len(user_ids))
+
+    @staticmethod
+    def get_user_dtos(user_ids):
+        from ib_iam.adapters.user_service import UserService
+        user_service = UserService()
+        user_dtos = user_service.get_user_profile_bulk(
+            user_ids=user_ids
+        )
+        return user_dtos
+
+    def get_valid_user_ids(self, user_ids: List[str]):
+        valid_user_ids = self.storage.get_valid_user_ids(user_ids=user_ids)
+        return valid_user_ids
 
     def _check_and_throw_user_is_admin(self, user_id: str):
         is_admin = self.storage.check_is_admin_user(user_id=user_id)
