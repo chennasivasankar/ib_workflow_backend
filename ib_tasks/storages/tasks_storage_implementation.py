@@ -512,8 +512,8 @@ class TasksStorageImplementation(TaskStorageInterface):
 
     def _get_fields_details(self, stage_objs):
         fields_ids = [stage['field_display_config'] for stage in stage_objs]
-        field_objs = Field.objects.filter(field__in=fields_ids).values('field_id', 'field_type')
-        field_response_objs = TaskGoFField.objects.filter(field_id__int=fields_ids).values('field_id', 'field_response')
+        field_objs = Field.objects.filter(field_id__in=fields_ids).values('field_id', 'field_type')
+        field_response_objs = TaskGoFField.objects.filter(field_id__in=fields_ids).values('field_id', 'field_response')
         field_values = {}
         for item in field_response_objs:
             field_values[item['field_id']] = item['field_response']
