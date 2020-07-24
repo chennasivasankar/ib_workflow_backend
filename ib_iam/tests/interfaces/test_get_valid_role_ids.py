@@ -7,7 +7,7 @@ class TestGetValidRoleIds:
     def test_with_role_ids_return_valid_role_ids(self, snapshot):
         # Arrange
         role_ids = ["12233442", "12312323", "4141264557", "12312323"]
-        expected_valid_ids = ["12233442", "12312323"]
+        expected_valid_ids = ["12312323", "12233442"]
         from ib_iam.tests.factories.models import RoleFactory
         RoleFactory.create(role_id=expected_valid_ids[0])
         RoleFactory.create(role_id=expected_valid_ids[1])
@@ -23,4 +23,4 @@ class TestGetValidRoleIds:
 
         # Assert
         assert sorted(valid_role_ids) == sorted(expected_valid_ids)
-        snapshot.assert_match(valid_role_ids, "valid_role_ids")
+        snapshot.assert_match(sorted(valid_role_ids), "valid_role_ids")
