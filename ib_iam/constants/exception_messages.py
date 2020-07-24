@@ -84,6 +84,6 @@ CREATE_USER_SUCCESSFULLY = (
 )
 
 EDIT_USER_SUCCESSFULLY = (
-    "Edit User successfully"
+    "Edit User successfully",
     "EDIT_USER_SUCCESSFULLY"
 )

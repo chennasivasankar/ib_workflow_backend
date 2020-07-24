@@ -97,7 +97,8 @@
       "type": "object",
       "properties": {
         "user_id": {
-          "type": "string"
+          "type": "string",
+          "format": "uuid"
         }
       },
       "required": [
@@ -245,12 +246,14 @@
           "type": "object",
           "properties": {
             "company_id": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             },
             "team_ids": {
               "type": "array",
               "items": {
-                "type": "string"
+                "type": "string",
+                "format": "uuid"
               }
             },
             "role_ids": {
@@ -311,7 +314,8 @@
       "name": "user_id",
       "in": "path",
       "required": true,
-      "type": "string"
+      "type": "string",
+      "format": "uuid"
     },
     "OffsetQueryParameter": {
       "name": "offset",
@@ -325,7 +329,7 @@
       "required": true,
       "type": "integer"
     },
-    "AddUserParameter": {
+    "UserParameter": {
       "name": "AddUser",
       "description": "Details of User to add",
       "in": "body",
@@ -464,8 +468,31 @@
                 "type": "string",
                 "enum": [
                   "INVALID_EMAIL",
-                  "INVALID_NAME",
-                  "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS",
+                  "EMPTY_NAME_IS_INVALID",
+                  "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "EditUserNotFoundResponse": {
+      "description": "Edit User Not Found",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
                   "INVALID_COMPANY_ID",
                   "INVALID_TEAM_IDS",
                   "INVALID_ROLE_IDS",
@@ -538,7 +565,7 @@
         }
       }
     },
-    "/add_user/v1/": {
+    "/users/create/v1/": {
       "post": {
         "operationId": "add_user",
         "description": "add an user with valid details",
@@ -551,7 +578,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/AddUserParameter"
+            "$ref": "#/parameters/UserParameter"
           }
         ],
         "responses": {
@@ -560,11 +587,14 @@
           },
           "400": {
             "$ref": "#/responses/AddUserBadRequestResponse"
+          },
+          "403": {
+            "$ref": "#/responses/UserDoesNotHavePermissionResponse"
           }
         }
       }
     },
-    "/users/edit_user/{user_id}/v1/": {
+    "/users/{user_id}/v1/": {
       "put": {
         "operationId": "edit_user",
         "summary": "Edit User",
@@ -578,7 +608,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/AddUserParameter"
+            "$ref": "#/parameters/UserParameter"
           },
           {
             "$ref": "#/parameters/UserIdPathParameter"
@@ -590,6 +620,12 @@
           },
           "400": {
             "$ref": "#/responses/EditUserBadRequestResponse"
+          },
+          "403": {
+            "$ref": "#/responses/UserDoesNotHavePermissionResponse"
+          },
+          "404": {
+            "$ref": "#/responses/EditUserNotFoundResponse"
           }
         }
       }

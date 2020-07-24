@@ -24,24 +24,25 @@ class EditUserInteractor(ValidationMixin):
             self.edit_user(admin_user_id=admin_user_id, user_id=user_id,
                            name=name, email=email, roles=roles, teams=teams,
                            company_id=company_id)
-            return presenter.edit_user_success_response()
+            response = presenter.edit_user_success_response()
         except UserIsNotAdmin:
-            return presenter.raise_user_is_not_admin_exception()
+            response = presenter.raise_user_is_not_admin_exception()
+        except UserDoesNotExist:
+            response = presenter.raise_user_does_not_exist()
         except GivenNameIsEmpty:
-            return presenter.raise_invalid_name_exception()
+            response = presenter.raise_invalid_name_exception()
         except InvalidEmailAddress:
-            return presenter.raise_invalid_email_exception()
+            response = presenter.raise_invalid_email_exception()
         except NameShouldNotContainsNumbersSpecCharacters:
-            return presenter. \
+            response = presenter. \
                 raise_name_should_not_contain_special_characters_exception()
         except RoleIdsAreInvalid:
-            return presenter.raise_role_ids_are_invalid()
+            response = presenter.raise_role_ids_are_invalid()
         except InvalidCompanyId:
-            return presenter.raise_company_ids_is_invalid()
+            response = presenter.raise_company_ids_is_invalid()
         except TeamIdsAreInvalid:
-            return presenter.raise_team_ids_are_invalid()
-        except UserDoesNotExist:
-            return presenter.raise_user_does_not_exist()
+            response = presenter.raise_team_ids_are_invalid()
+        return response
 
     def edit_user(
             self, admin_user_id: str, user_id: str, name: str, email: str,
