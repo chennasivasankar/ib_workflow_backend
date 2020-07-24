@@ -7,6 +7,12 @@ class InvalidGoFIDsInGoFSelectorField(Exception):
         self.gof_ids = gof_ids
 
 
+class EmptyValueForRequiredField(Exception):
+
+    def __init__(self, field_id: str):
+        self.field_id = field_id
+
+
 class EmptyValueForPlainTextField(Exception):
 
     def __init__(self, field_id: str):
@@ -154,7 +160,7 @@ class InvalidUrlForImage(Exception):
         self.image_url = image_url
 
 
-class InvalidUrlForFolder(Exception):
+class InvalidUrlForFile(Exception):
 
     def __init__(
             self, field_id: str, folder_url: str
