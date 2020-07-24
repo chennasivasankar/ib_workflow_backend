@@ -18,7 +18,7 @@ class GetTaskInteractor:
         try:
             return self.get_task_response(user_id, task_id, presenter)
         except InvalidTaskIdException as err:
-            presenter.raise_exception_for_invalid_task_id(err)
+            return presenter.raise_exception_for_invalid_task_id(err)
 
     def get_task_response(
             self, user_id: int, task_id: str,
@@ -29,4 +29,4 @@ class GetTaskInteractor:
         return response
 
     def get_task(self, user_id: int, task_id: str):
-        self.storage.validate_task_id(task_id)
+        return self.storage.validate_task_id(task_id)
