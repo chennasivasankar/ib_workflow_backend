@@ -32,3 +32,9 @@ class TaskBoardsDetailsDTO:
     board_dto: BoardDTO
     column_stage_dtos: List[ColumnStageDTO]
     columns_dtos: List[ColumnDTO]
+
+
+@dataclass
+class UserDTO:
+    user_id: str
+    name: str

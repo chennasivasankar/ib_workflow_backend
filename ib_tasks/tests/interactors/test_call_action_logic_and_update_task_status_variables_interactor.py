@@ -61,7 +61,7 @@ class TestUpdateTaskStatusVariablesInteractor:
     @staticmethod
     def test_given_invalid_method_name_raises_exception(mocker):
         # Arrange
-        action_id = "action_1"
+        action_id = 1
         storage = create_autospec(StorageInterface)
         GOFMultipleStatusDTOFactory.reset_sequence()
         multiple_gof = GOFMultipleStatusDTOFactory()
@@ -81,7 +81,7 @@ class TestUpdateTaskStatusVariablesInteractor:
         statuses = [StatusVariableDTOFactory()]
         from ib_tasks.interactors.gofs_dtos import TaskGofAndStatusesDTO
         task_dto = TaskGofAndStatusesDTO(
-            task_id="task_1",
+            task_id=1,
             group_of_fields_dto=group_of_fields,
             fields_dto=fields,
             statuses_dto=statuses

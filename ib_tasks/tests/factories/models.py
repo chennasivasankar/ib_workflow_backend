@@ -2,6 +2,7 @@ import factory
 
 from ib_tasks.models.gof import GoF
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes
+from ib_tasks.models.task import Task
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.field import Field
 from ib_tasks.models.gof_role import GoFRole
@@ -22,6 +23,13 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     task_template_id = factory.Sequence(lambda n: "task_template_id_%d" % n)
     value = factory.Sequence(lambda n: n)
     display_logic = factory.Sequence(lambda n: "status_id_%d==stage_id" % n)
+
+
+class TaskModelFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Task
+    template_id = factory.Sequence(lambda n: "template_%d" % (n+1))
+    created_by = factory.Sequence(lambda n: (n+1))
 
 
 class StageActionFactory(factory.django.DjangoModelFactory):

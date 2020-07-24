@@ -27,6 +27,7 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
             self, task_dto: TaskGofAndStatusesDTO):
         group_of_fields_dto = task_dto.group_of_fields_dto
         gof_multiple_enable_dict = self._get_gof_multiple_enable_dict(
+            task_id=task_dto.task_id,
             group_of_fields_dto=group_of_fields_dto)
         fields_dto = task_dto.fields_dto
         gof_fields_dto_dict = self._get_gof_field_dtos_dict(fields_dto)
@@ -143,13 +144,14 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
         return field_dict
 
     def _get_gof_multiple_enable_dict(
-            self, group_of_fields_dto: List[GroupOfFieldsDTO]):
+            self, task_id: int, group_of_fields_dto: List[GroupOfFieldsDTO]):
 
         common_gof_ids = self._get_common_gof_ids(
             group_of_fields_dto=group_of_fields_dto
         )
         gof_multiple_enable_dtos = self.storage\
             .get_enable_multiple_gofs_field_to_gof_ids(
+                task_id=task_id,
                 gof_ids=common_gof_ids
             )
         gof_multiple_enable_dict = {}
