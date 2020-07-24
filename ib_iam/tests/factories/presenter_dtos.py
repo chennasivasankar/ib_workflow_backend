@@ -1,13 +1,13 @@
 import factory
 
 from ib_iam.interactors.presenter_interfaces.dtos import \
-    CompleteUsersDetailsDTO
+    ListOfCompleteUsersDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO
 
 
 class CompleteUserDetailsDTOFactory(factory.Factory):
     class Meta:
-        model = CompleteUsersDetailsDTO
+        model = ListOfCompleteUsersDTO
 
     user_id = factory.sequence(lambda number: "user%s" % number)
     name = factory.sequence(lambda number: "user%s" % number)
@@ -16,9 +16,9 @@ class CompleteUserDetailsDTOFactory(factory.Factory):
 
 
 from ib_iam.interactors.presenter_interfaces.dtos import \
-    TeamWithMembersDetailsDTO
+    TeamWithUsersDetailsDTO
 from ib_iam.tests.factories.storage_dtos import (
-    TeamDTOFactory, TeamUserIdsDTOFactory, MemberDTOFactory
+    TeamDTOFactory, TeamUserIdsDTOFactory, BasicUserDetailsDTOFactory
 )
 
 team_ids = [
@@ -40,13 +40,13 @@ team_user_ids_dtos = [
     TeamUserIdsDTOFactory(team_id=team_id) for team_id in team_ids
 ]
 members_dtos = [
-    MemberDTOFactory(user_id=user_id) for user_id in user_ids
+    BasicUserDetailsDTOFactory(user_id=user_id) for user_id in user_ids
 ]
 
 
 class TeamWithMembersDetailsDTOFactory(factory.Factory):
     class Meta:
-        model = TeamWithMembersDetailsDTO
+        model = TeamWithUsersDetailsDTO
 
     total_teams_count = 0
     team_dtos = factory.Iterator([
@@ -57,7 +57,7 @@ class TeamWithMembersDetailsDTOFactory(factory.Factory):
         [team_user_ids_dtos[0], team_user_ids_dtos[1]],
         [team_user_ids_dtos[2], team_user_ids_dtos[0]]
     ])
-    member_dtos = factory.Iterator([
+    user_dtos = factory.Iterator([
         [members_dtos[1], members_dtos[2], members_dtos[0]],
         [members_dtos[1], members_dtos[2], members_dtos[0]]
     ])

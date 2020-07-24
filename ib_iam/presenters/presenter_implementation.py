@@ -5,7 +5,7 @@ from django_swagger_utils.utils.http_response_mixin \
 
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.interactors.presenter_interfaces.dtos import \
-    CompleteUsersDetailsDTO, UserOptionsDetails
+    ListOfCompleteUsersDTO, UserOptionsDetails
 from ib_iam.interactors.presenter_interfaces.presenter_interface \
     import PresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO, \
@@ -116,7 +116,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             response_dict=response_dict)
 
     def response_for_get_users(
-            self, complete_user_details_dtos: CompleteUsersDetailsDTO):
+            self, complete_user_details_dtos: ListOfCompleteUsersDTO):
         user_dtos = complete_user_details_dtos.users
         team_dtos = complete_user_details_dtos.teams
         role_dtos = complete_user_details_dtos.roles

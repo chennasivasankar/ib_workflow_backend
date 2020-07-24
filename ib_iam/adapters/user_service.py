@@ -1,7 +1,7 @@
 import dataclasses
 from typing import List
 
-from ib_iam.adapters.dtos import UserProfileDTO
+from ib_iam.adapters.dtos import UserProfileDTO, UserProfileDTO
 
 
 class InvalidUserId(Exception):
@@ -97,10 +97,10 @@ class UserService:
         return converted_user_profile_dto
 
     def get_basic_user_dtos(self, user_ids: List[str]):
-        user_dtos_from_service = self.user_interface.get_user_profile_bulk(
-                                    user_ids=user_ids
-                                )
-        user_profile_dtos = [
+        user_dtos_from_service = self.interface.get_user_profile_bulk(
+            user_ids=user_ids
+        )
+        basic_user_profile_dto = [
             UserProfileDTO(
                 user_id=user_dto.user_id,
                 name=user_dto.name,
@@ -108,4 +108,4 @@ class UserService:
             )
             for user_dto in user_dtos_from_service
         ]
-        return user_profile_dtos
+        return basic_user_profile_dto

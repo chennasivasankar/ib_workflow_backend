@@ -1,7 +1,7 @@
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 from ib_iam.constants.enums import StatusCode
 from ib_iam.interactors.presenter_interfaces.dtos import \
-    TeamWithMembersDetailsDTO
+    TeamWithUsersDetailsDTO
 from ib_iam.interactors.presenter_interfaces.team_presenter_interface import (
     TeamPresenterInterface
 )
@@ -49,7 +49,7 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
         )
 
     def get_response_for_get_list_of_teams(
-            self, team_details_dtos: TeamWithMembersDetailsDTO
+            self, team_details_dtos: TeamWithUsersDetailsDTO
     ):
         teams = self._convert_team_details_dtos_to_teams_list(
             team_details_dtos=team_details_dtos)
@@ -108,11 +108,11 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
         )
 
     def _convert_team_details_dtos_to_teams_list(
-            self, team_details_dtos: TeamWithMembersDetailsDTO
+            self, team_details_dtos: TeamWithUsersDetailsDTO
     ):
         team_dtos = team_details_dtos.team_dtos
         team_user_ids_dtos = team_details_dtos.team_user_ids_dtos
-        member_dtos = team_details_dtos.member_dtos
+        member_dtos = team_details_dtos.user_dtos
         members_dictionary = self._get_members_dictionary(
             member_dtos=member_dtos)
         team_user_ids_dict = self._get_team_members_dict_from_team_user_ids_dtos(

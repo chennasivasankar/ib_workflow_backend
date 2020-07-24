@@ -30,9 +30,9 @@ def expected_list_of_user_dtos():
 
 @pytest.fixture()
 def expected_list_of_member_dtos():
-    from ib_iam.tests.factories.storage_dtos import MemberDTOFactory
-    MemberDTOFactory.reset_sequence(2)
+    from ib_iam.tests.factories.storage_dtos import BasicUserDetailsDTOFactory
+    BasicUserDetailsDTOFactory.reset_sequence(2)
     member_dtos = [
-        MemberDTOFactory() for _ in range(2)
+        BasicUserDetailsDTOFactory() for _ in range(2)
     ]
     return member_dtos

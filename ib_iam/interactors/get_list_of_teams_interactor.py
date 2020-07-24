@@ -4,15 +4,15 @@ from ib_iam.interactors.presenter_interfaces \
 from ib_iam.interactors.storage_interfaces \
     .team_storage_interface import TeamStorageInterface
 from ib_iam.interactors.presenter_interfaces.dtos import (
-    TeamWithMembersDetailsDTO
+    TeamWithUsersDetailsDTO
 )
 from ib_iam.interactors.storage_interfaces.dtos import (
-    PaginationDTO, TeamIdAndNameDTO, TeamUserIdsDTO, BasicUserDetailsDTO
-)
+    PaginationDTO, TeamUserIdsDTO, BasicUserDetailsDTO,
+    TeamDTO)
 from ib_iam.adapters.dtos import UserProfileDTO
 from typing import List
-from ib_iam.exceptions.custom_exceptions import UserHasNoAccess, InvalidLimit, \
-    InvalidOffset
+from ib_iam.exceptions.custom_exceptions import UserHasNoAccess, InvalidLimitValue, \
+    InvalidOffsetValue
 
 
 class GetListOfTeamsInteractor:
@@ -36,10 +36,10 @@ class GetListOfTeamsInteractor:
         except UserHasNoAccess:
             response = presenter \
                 .get_user_has_no_access_response_for_get_list_of_teams()
-        except InvalidLimit:
+        except InvalidLimitValue:
             response = \
                 presenter.get_invalid_limit_response_for_get_list_of_teams()
-        except InvalidOffset:
+        except InvalidOffsetValue:
             response = \
                 presenter.get_invalid_offset_response_for_get_list_of_teams()
         return response
@@ -60,24 +60,23 @@ class GetListOfTeamsInteractor:
             team_user_ids_dtos=team_user_ids_dtos)
         member_dtos = self._get_members_dtos_from_service(
             member_ids=member_ids)
-        team_with_memebers_dtos = TeamWithMembersDetailsDTO(
+        team_with_memebers_dtos = TeamWithUsersDetailsDTO(
             total_teams_count=teams_with_total_teams_count.total_teams_count,
             team_dtos=teams_with_total_teams_count.teams,
             team_user_ids_dtos=team_user_ids_dtos,
-            member_dtos=member_dtos)
-        print(team_with_memebers_dtos)
+            user_dtos=member_dtos)
         return team_with_memebers_dtos
 
     @staticmethod
     def _validate_pagination_details(pagination_dto: PaginationDTO):
         if pagination_dto.limit <= 0:
-            raise InvalidLimit()
+            raise InvalidLimitValue()
         if pagination_dto.offset < 0:
-            raise InvalidOffset()
+            raise InvalidOffsetValue()
 
     @staticmethod
     def _get_team_ids_from_team_dtos(
-            team_dtos: List[TeamIdAndNameDTO]
+            team_dtos: List[TeamDTO]
     ) -> List[str]:
         team_ids = [
             team_dto.team_id for team_dto in team_dtos

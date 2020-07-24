@@ -97,9 +97,8 @@ class TestGetListOfTeamsInteractor:
                 total_teams_count=total_teams_count,
                 team_dtos=expected_list_of_teams_dtos,
                 team_user_ids_dtos=expected_team_user_ids_dtos,
-                member_dtos=expected_list_of_member_dtos
+                user_dtos=expected_list_of_member_dtos
             )
-        print(expected_team_with_members_details_dtos, "************")
         storage.get_teams_with_total_teams_count_dto.return_value = \
             TeamsWithTotalTeamsCountDTOFactory(
                 teams=expected_list_of_teams_dtos,

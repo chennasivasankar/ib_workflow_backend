@@ -4,11 +4,12 @@ from typing import List
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.interactors.storage_interfaces.dtos \
     import UserTeamDTO, UserRoleDTO, UserCompanyDTO, \
-    CompanyDTO, TeamIdAndNameDTO, RoleIdAndNameDTO
+    CompanyDTO, RoleIdAndNameDTO, BasicUserDetailsDTO, \
+    TeamIdAndNameDTO, TeamUserIdsDTO, TeamDTO
 
 
 @dataclass
-class CompleteUsersDetailsDTO:
+class ListOfCompleteUsersDTO:
     users: List[UserProfileDTO]
     teams: List[UserTeamDTO]
     roles: List[UserRoleDTO]
@@ -23,14 +24,9 @@ class UserOptionsDetails:
     roles: List[RoleIdAndNameDTO]
 
 
-from ib_iam.interactors.storage_interfaces.dtos import (
-    BasicUserDetailsDTO, TeamIdAndNameDTO, TeamUserIdsDTO
-)
-
-
 @dataclass
-class TeamWithMembersDetailsDTO:
+class TeamWithUsersDetailsDTO:
     total_teams_count: int
-    team_dtos: List[TeamIdAndNameDTO]
+    team_dtos: List[TeamDTO]
     team_user_ids_dtos: List[TeamUserIdsDTO]
-    member_dtos: List[BasicUserDetailsDTO]
+    user_dtos: List[BasicUserDetailsDTO]

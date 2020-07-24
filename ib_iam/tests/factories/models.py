@@ -66,14 +66,3 @@ class UserFactory(factory.django.DjangoModelFactory):
 
     user_id = factory.sequence(lambda n: n)
     is_admin = factory.Iterator([True, False])
-
-
-from ib_iam.models import TeamMember
-
-
-class TeamMemberFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = TeamMember
-
-    team = factory.SubFactory(TeamFactory)
-    user_id = factory.sequence(lambda n: "user_id-%d" % n)

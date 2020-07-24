@@ -104,7 +104,7 @@ class TeamUserIdsDTOFactory(factory.Factory):
     ])
 
 
-class MemberDTOFactory(factory.Factory):
+class BasicUserDetailsDTOFactory(factory.Factory):
     class Meta:
         model = BasicUserDetailsDTO
 

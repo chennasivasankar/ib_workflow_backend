@@ -1,6 +1,6 @@
 import pytest
 from ib_iam.tests.factories.storage_dtos import (
-    TeamDTOFactory, TeamUserIdsDTOFactory, MemberDTOFactory
+    TeamDTOFactory, TeamUserIdsDTOFactory, BasicUserDetailsDTOFactory
 )
 from ib_iam.tests.factories.presenter_dtos import (
     TeamWithMembersDetailsDTOFactory
@@ -23,7 +23,7 @@ user_ids = [
 def get_list_of_team_dtos():
     TeamDTOFactory.reset_sequence(1)
     TeamUserIdsDTOFactory.reset_sequence(1)
-    MemberDTOFactory.reset_sequence(1)
+    BasicUserDetailsDTOFactory.reset_sequence(1)
 
     teams_dtos = [
         TeamDTOFactory(team_id=team_id) for team_id in team_ids
@@ -31,14 +31,14 @@ def get_list_of_team_dtos():
     team_user_ids_dtos = [
         TeamUserIdsDTOFactory(team_id=team_id) for team_id in team_ids
     ]
-    members_dtos = [
-        MemberDTOFactory(user_id=user_id) for user_id in user_ids
+    user_dtos = [
+        BasicUserDetailsDTOFactory(user_id=user_id) for user_id in user_ids
     ]
 
     teams_dto = TeamWithMembersDetailsDTOFactory(
         total_teams_count=3,
         team_dtos=teams_dtos,
         team_user_ids_dtos=team_user_ids_dtos,
-        member_dtos=members_dtos
+        user_dtos=user_dtos
     )
     return teams_dto

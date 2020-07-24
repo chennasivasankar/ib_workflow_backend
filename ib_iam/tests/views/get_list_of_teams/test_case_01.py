@@ -9,7 +9,7 @@ from django_swagger_utils.utils.test_v1 import TestUtils
 from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ib_iam.tests.factories.models import (
-    TeamFactory, UserDetailsFactory, TeamMemberFactory
+    TeamFactory, UserDetailsFactory, UserTeamFactory
 )
 from ib_iam.tests.common_fixtures.adapters.user_service_mocks import (
     prepare_user_profile_dtos_mock
@@ -52,7 +52,7 @@ class TestCase01GetListOfTeamsAPITestCase(TestUtils):
         user_obj = api_user
         UserDetailsFactory.reset_sequence(1)
         TeamFactory.reset_sequence(1)
-        TeamMemberFactory.reset_sequence(1)
+        UserTeamFactory.reset_sequence(1)
         UserDetailsFactory.create(user_id=user_obj.user_id, is_admin=True)
         teams = [
             {
@@ -83,4 +83,4 @@ class TestCase01GetListOfTeamsAPITestCase(TestUtils):
         for team in teams:
             team_object = TeamFactory(team_id=team["team_id"])
             for user_id in team["user_ids"]:
-                TeamMemberFactory(team=team_object, user_id=user_id)
+                UserTeamFactory(team=team_object, user_id=user_id)

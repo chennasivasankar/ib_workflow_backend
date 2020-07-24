@@ -20,14 +20,15 @@ class TestGetResponseForGetListOfTeams:
 
     def test_given_zero_teams_exists_returns_http_response(self):
         json_presenter = TeamPresenterImplementation()
-        from ib_iam.interactors.presenter_interfaces.dtos import TeamWithMembersDetailsDTO
+        from ib_iam.interactors.presenter_interfaces.dtos import \
+            TeamWithUsersDetailsDTO
 
         http_response = json_presenter.get_response_for_get_list_of_teams(
-            team_details_dtos=TeamWithMembersDetailsDTO(
+            team_details_dtos=TeamWithUsersDetailsDTO(
                 total_teams_count=0,
                 team_dtos=[],
                 team_user_ids_dtos=[],
-                member_dtos=[]
+                user_dtos=[]
             )
         )
 

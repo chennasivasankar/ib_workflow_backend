@@ -2,7 +2,7 @@ from abc import abstractmethod, ABC
 
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.interactors.presenter_interfaces.dtos \
-    import CompleteUsersDetailsDTO
+    import ListOfCompleteUsersDTO
 
 
 class PresenterInterface(ABC):
@@ -63,7 +63,7 @@ class PresenterInterface(ABC):
 
     @abstractmethod
     def response_for_get_users(
-            self, complete_user_details_dtos: CompleteUsersDetailsDTO):
+            self, complete_user_details_dtos: ListOfCompleteUsersDTO):
         pass
 
     # ADD ROLES
