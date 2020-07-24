@@ -64,3 +64,8 @@ class TaskTemplateStageDTO:
 class StageValueDTO:
     stage_id: str
     value: Any
+
+@dataclass
+class StageDetailsDTO:
+    stage_id: str
+    name: str

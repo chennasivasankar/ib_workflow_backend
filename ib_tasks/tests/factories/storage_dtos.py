@@ -14,8 +14,8 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GroupOfFieldsDTO, \
     GOFMultipleEnableDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    StageActionNamesDTO, ValidStageDTO, TaskTemplateStageDTO,
-    StageActionNamesDTO, ValidStageDTO, TaskStageIdsDTO, StageValueDTO
+    StageActionNamesDTO, ValidStageDTO, TaskTemplateStageDTO, \
+    StageActionNamesDTO, ValidStageDTO, TaskStageIdsDTO, StageValueDTO, StageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO, GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (TaskStagesDTO)
@@ -32,6 +32,14 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import (
     TaskGoFFieldDTO,
     TaskGoFDTO
 )
+
+
+class StageDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = StageDetailsDTO
+
+    stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)
+    name = factory.Sequence(lambda n: "name_%d" % n)
 
 
 class FieldValueDTOFactory(factory.Factory):
@@ -243,7 +251,6 @@ class GoFRoleDTOFactory(factory.Factory):
     permission_type = PermissionTypes.READ.value
 
 
-
 class FieldDTOFactory(factory.Factory):
     class Meta:
         model = FieldDTO
@@ -343,7 +350,6 @@ class TaskGoFDTOFactory(factory.Factory):
     same_gof_order = 0
 
 
-
 class FieldDetailsDTOFactory(factory.Factory):
     class Meta:
         model = FieldDetailsDTO
@@ -352,6 +358,7 @@ class FieldDetailsDTOFactory(factory.Factory):
     field_type = "Drop down"
     key = "key"
     value = "value"
+
 
 class TaskGoFFieldDTOFactory(factory.Factory):
     class Meta:
@@ -374,5 +381,5 @@ class TaskStageIdsDTOFactory(factory.Factory):
     class Meta:
         model = TaskStageIdsDTO
 
-    task_id = factory.Sequence(lambda n: f'TASK_ID_{ n + 1 }')
+    task_id = factory.Sequence(lambda n: f'TASK_ID_{n + 1}')
     stage_id = factory.Sequence(lambda n: f'STAGE_ID_{n + 1}')

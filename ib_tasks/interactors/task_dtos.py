@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from typing import Union, List
 
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
+from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDetailsDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO, StageDetailsDTO
 
 
 @dataclass
@@ -48,3 +49,7 @@ class GetTaskDetailsDTO:
     task_id: int
     stage_id: str
 
+@dataclass
+class TaskCompleteDetailsDTO:
+    stage_details_dto: StageDetailsDTO
+    actions_dtos: List[ActionDetailsDTO]

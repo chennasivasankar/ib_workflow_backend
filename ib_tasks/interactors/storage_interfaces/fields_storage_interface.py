@@ -42,3 +42,12 @@ class FieldsStorageInterface(abc.ABC):
                                         task_dtos: List[GetTaskDetailsDTO]) -> \
             List[GetTaskDetailsDTO]:
         pass
+
+    @abc.abstractmethod
+    def get_task_stages(self, task_id: int) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_stage_complete_details(self, stage_ids: List[str]) -> \
+            List[StageDetailsDTO]:
+        pass
