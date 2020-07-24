@@ -61,3 +61,6 @@ vedavidhbudimuri_ib-workflows-backend.aes
 
 .gitignore
 env_*.sh
+
+
+venv/
