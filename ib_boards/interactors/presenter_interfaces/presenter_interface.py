@@ -47,7 +47,7 @@ class PresenterInterface(abc.ABC):
                                       task_actions_dto: List[TaskActionsDTO],
                                       task_ids: List[str]):
 
-    pass
+        pass
 
 
     @abc.abstractmethod

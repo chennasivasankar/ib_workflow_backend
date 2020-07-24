@@ -319,3 +319,6 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             "columns": list_of_columns
         }
         return columns_dict
+
+    def get_response_for_offset_exceeds_total_tasks(self):
+        pass
