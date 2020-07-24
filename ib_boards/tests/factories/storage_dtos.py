@@ -1,10 +1,9 @@
 import factory
 
-
-from ib_boards.interactors.dtos import TaskDTO, TaskDetailsDTO, FieldsDTO, TaskStageDTO
-from ib_boards.interactors.dtos import TaskStageIdDTO, TaskDetailsDTO, FieldsDTO
+from ib_boards.interactors.dtos import TaskStageIdDTO, TaskDetailsDTO, \
+    FieldsDTO
 from ib_boards.interactors.storage_interfaces.dtos import (
-    TaskFieldsDTO, TaskActionsDTO, ColumnDetailsDTO, BoardDTO, TaskBoardsDetailsDTO, ColumnBoardDTO)
+    TaskFieldsDTO, TaskActionsDTO, ColumnDetailsDTO, BoardDTO)
 
 
 class TaskDTOFactory(factory.Factory):
