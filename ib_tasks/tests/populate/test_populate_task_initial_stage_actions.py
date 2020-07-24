@@ -21,18 +21,18 @@ class TestCasePopulateTasks:
         json_valid_format = json.dumps(valid_format)
         tasks = [
             {
-                "task_template_id": "task_template_1",
+                "task_template_": "task_template_1",
                 "stage": "stage_1",
-                "stage_display_logic": "logic_1",
+                "action_": "logic_1",
                 "action_name": "action_name_1",
-                "roles": "ROLE_!",
+                "roles": "ROLE_1",
                 "button_text": "button_text_1",
                 "button_color": "button_color_1"
             }
         ]
-        from ib_tasks.populate.populate_task_initial_stage_actions \
+        from ib_tasks.populate.populate_task_initial_stage_actions_logic \
             import populate_tasks
-        from ib_tasks.exceptions.stage_custom_exceptions import InvalidFormatException
+        from ib_tasks.exceptions.custom_exceptions import InvalidFormatException
 
         # Act
         with pytest.raises(InvalidFormatException) as err:
@@ -48,7 +48,7 @@ class TestCasePopulateTasks:
             {
                 "task_template_id": "task_template_1",
                 "stage_id": "stage_1",
-                "action_logic": "if a[] > 8 \n\t\tc=9",
+                "action_logic": "\tif : c=9",
                 "action_name": "action_name_1",
                 "roles": "ROLE_1",
                 "button_text": "button_text_1",
@@ -56,9 +56,10 @@ class TestCasePopulateTasks:
             }
         ]
         import pytest
-        from ib_tasks.populate.task_initial_stage_actions_logic \
+        from ib_tasks.populate.populate_task_initial_stage_actions_logic \
             import populate_tasks
-        from ib_tasks.exceptions.stage_custom_exceptions import InvalidPythonCodeException
+        from ib_tasks.exceptions.custom_exceptions \
+            import InvalidPythonCodeException
 
         # Act
         with pytest.raises(InvalidPythonCodeException):
@@ -66,7 +67,7 @@ class TestCasePopulateTasks:
 
     @staticmethod
     @mock.patch('builtins.open', new_callable=mock.mock_open)
-    def test_given_valid_key_creates_dtos(os_system):
+    def test_given_valid_key_creates_dtos(os_system, mocker):
         # Arrange
         tasks = [
             {
@@ -90,14 +91,17 @@ class TestCasePopulateTasks:
             button_text="button_text_1",
             button_color="button_color_1"
         )]
-        from ib_tasks.populate.populate_task_initial_stage_actions \
+        from ib_tasks.populate.populate_task_initial_stage_actions_logic \
             import populate_tasks
+        path = "ib_tasks.interactors.configur_initial_task_template_stage_actions" \
+               ".ConfigureInitialTaskTemplateStageActions.create_update_delete_stage_actions_to_task_template"
+        mock_obj = mocker.patch(path)
 
         # Act
         response = populate_tasks(tasks=tasks)
 
         # Assert
-        assert response == expected_action_dto
+        mock_obj.called_once()
         os_system.assert_called_with(
             'ib_tasks/populate/task_initial_stage_actions_logic.py', "a"
         )

@@ -18,8 +18,13 @@ from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
 from .task_status_variable import TaskStatusVariable
 from .task import Task
+from .task_gof import TaskGoF
+from .task_gof_field import TaskGoFField
+
 __all__ = [
     "Task",
+    "TaskGoF",
+    "TaskGoFField",
     "TaskStatusVariable",
     "ActionPermittedRoles",
     "Stage",
