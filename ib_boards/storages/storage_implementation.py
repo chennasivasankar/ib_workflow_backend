@@ -14,6 +14,7 @@ from ib_boards.models import Board, ColumnPermission, Column
 class StorageImplementation(StorageInterface):
 
     def validate_board_id(self, board_id):
+        boards = Board.objects.all().values('board_id')
         is_board_id_valid = Board.objects.filter(
             board_id=board_id
         ).exists()
