@@ -213,12 +213,6 @@ class TaskStorageInterface(abc.ABC):
     ) -> List[FieldTypeDTO]:
         pass
 
-
-    @abc.abstractmethod
-    def get_task_details(self, task_dtos: List[GetTaskDetailsDTO]) ->\
-            GetTaskStageCompleteDetailsDTO:
-        pass
-
     @abc.abstractmethod
     def get_valid_task_ids(self, task_ids: List[str]) -> Optional[List[str]]:
         pass
