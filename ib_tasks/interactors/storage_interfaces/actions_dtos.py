@@ -23,3 +23,12 @@ class ActionsOfTemplateDTO:
     action_id: int
     button_text: str
     button_color: str
+
+
+@dataclass()
+class ActionDetailsDTO:
+    action_id: int
+    name: str
+    stage_id: str
+    button_text: str
+    button_color: Optional[str]

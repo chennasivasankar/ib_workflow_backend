@@ -148,3 +148,7 @@ snapshots[
 
 snapshots[
     'TestPopulateGoFs.test_populate_gofs_with_empty_gof_display_names[  ] empty_gof_display_name_message'] = 'GoF name should not be empty'
+
+snapshots['TestPopulateGoFs.test_populate_gofs_with_empty_gof_ids[ ] empty_gof_id_message'] = 'GoF id should not be empty'
+
+snapshots['TestPopulateGoFs.test_populate_gofs_with_empty_gof_display_names[ ] empty_gof_display_name_message'] = 'GoF name should not be empty'

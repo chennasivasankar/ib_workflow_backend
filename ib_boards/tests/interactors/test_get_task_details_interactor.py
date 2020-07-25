@@ -40,8 +40,7 @@ class TestGetTaskDetailsInteractor:
 
         # Act
         result = interactor.get_task_details_wrapper(
-            presenter=presenter, tasks_dtos=tasks_stage_dto, user_id=user_id,
-            fields_dto=get_fields_dto)
+            presenter=presenter, tasks_dtos=tasks_stage_dto, user_id=user_id)
 
         # Assert
         assert result == task_details_response

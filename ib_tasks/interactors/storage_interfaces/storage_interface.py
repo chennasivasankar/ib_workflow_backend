@@ -2,6 +2,7 @@ import abc
 from typing import List, Optional
 
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
+from ib_tasks.interactors.stages_dtos import StageActionDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos \
     import ActionRolesDTO, ActionDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
@@ -10,7 +11,11 @@ from ib_tasks.interactors.storage_interfaces.gof_dtos \
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionNamesDTO, StageValueDTO
 from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
-    StageActionDTO, TaskTemplateStageDTO
+    StageActionDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import \
+    StatusVariableDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    StageActionNamesDTO, StageValueDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     StatusVariableDTO
 
