@@ -37,27 +37,4 @@ class GetUserProfileInteractor:
         is_admin = self.storage.check_is_admin_user(user_id=user_id)
         user_profile_dto.is_admin = is_admin
         return user_profile_dto
-    
-    def get_user_dtos_based_on_limit_and_offset(
-            self, limit: int, offset: int, search_query: str
-    ):
-        self._validate_offset(offset=offset)
-        self._validate_limit(limit=limit)
-        user_details_dtos = self.storage.get_user_details_dtos_based_on_limit_offset_and_search_query(
-            limit=limit, offset=offset, search_query=search_query
-        )
-        return user_details_dtos
 
-    @staticmethod
-    def _validate_offset(offset):
-        is_invalid_offset_value = offset < 0
-        if is_invalid_offset_value:
-            from ib_iam.exceptions.custom_exceptions import InvalidOffsetValue
-            raise InvalidOffsetValue
-
-    @staticmethod
-    def _validate_limit(limit):
-        is_invali_limit_value = limit < 0
-        if is_invali_limit_value:
-            from ib_iam.exceptions.custom_exceptions import InvalidLimitValue
-            raise InvalidLimitValue
