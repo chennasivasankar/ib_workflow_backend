@@ -45,7 +45,16 @@ class ServiceInterface:
 
     @staticmethod
     def get_task_details(task_dtos: List[GetTaskDetailsDTO]):
-        storage = TasksStorageImplementation()
-        interactor = GetTaskFieldsAndActionsInteractor(storage)
+        from ib_tasks.storages.fields_storage_implementation import \
+            FieldsStorageImplementation
+        from ib_tasks.storages.storage_implementation import \
+            StagesStorageImplementation
+        field_storage = FieldsStorageImplementation()
+        stage_storage = StagesStorageImplementation()
+
+        interactor = GetTaskFieldsAndActionsInteractor(
+            field_storage,
+            stage_storage
+        )
         result = interactor.get_task_fields_and_action(task_dtos)
         return result

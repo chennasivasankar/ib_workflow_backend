@@ -7,6 +7,15 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase03GetSearchableValuesAPITestCase.test_case status_code'] = '404'
+snapshots['TestCase03GetSearchableValuesAPITestCase.test_case status_code'] = '200'
 
-snapshots['TestCase03GetSearchableValuesAPITestCase.test_case body'] = b'<h1>Not Found</h1><p>The requested resource was not found on this server.</p>'
+snapshots['TestCase03GetSearchableValuesAPITestCase.test_case body'] = [
+    {
+        'id': 'user_1',
+        'name': 'user_name_1'
+    },
+    {
+        'id': 'user_2',
+        'name': 'user_name_2'
+    }
+]

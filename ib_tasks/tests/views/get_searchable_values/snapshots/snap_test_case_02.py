@@ -7,6 +7,10 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase02GetSearchableValuesAPITestCase.test_case status_code'] = '404'
+snapshots['TestCase02GetSearchableValuesAPITestCase.test_case status_code'] = '400'
 
-snapshots['TestCase02GetSearchableValuesAPITestCase.test_case body'] = b'<h1>Not Found</h1><p>The requested resource was not found on this server.</p>'
+snapshots['TestCase02GetSearchableValuesAPITestCase.test_case body'] = {
+    'http_status_code': 400,
+    'res_status': 'OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE',
+    'response': 'Offset should be greater than or equal to minus one'
+}

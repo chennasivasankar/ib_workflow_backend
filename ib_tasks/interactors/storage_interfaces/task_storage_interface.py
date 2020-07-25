@@ -124,7 +124,8 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def create_status_for_tasks(self,
-                                create_status_for_tasks: List[TaskTemplateStatusDTO]):
+                                create_status_for_tasks: List[
+                                    TaskTemplateStatusDTO]):
         pass
 
     @abc.abstractmethod
@@ -175,7 +176,8 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_gof_ids_with_read_permission_for_user(self, roles: List[str]) -> List[str]:
+    def get_gof_ids_with_read_permission_for_user(self, roles: List[str]) -> \
+    List[str]:
         pass
 
     @abc.abstractmethod
@@ -213,11 +215,6 @@ class TaskStorageInterface(abc.ABC):
     def get_field_types_for_given_field_ids(
             self, field_ids: List[str]
     ) -> List[FieldTypeDTO]:
-        pass
-
-    @abc.abstractmethod
-    def get_task_details(self, task_dtos: List[GetTaskDetailsDTO]) -> \
-            GetTaskStageCompleteDetailsDTO:
         pass
 
     @abc.abstractmethod
