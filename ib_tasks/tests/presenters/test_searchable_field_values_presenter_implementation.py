@@ -53,6 +53,7 @@ class TestSearchableFieldValuesPresenterImplementation:
         }]
         from ib_tasks.tests.factories.interactor_dtos import\
             SearchableFieldUserDetailDTOFactory
+        SearchableFieldUserDetailDTOFactory.reset_sequence()
         searchable_value_detail_dtos = SearchableFieldUserDetailDTOFactory. \
             create_batch(2)
 

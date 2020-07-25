@@ -88,8 +88,6 @@ class TestPopulateStagesAndValues:
         # Act
         response = populate_stages_values(
             list_of_stages_dict=list_of_stages_dict)
-        response = populate_stages_values(
-            list_of_stages_dict=list_of_stages_dict)
 
         # Assert
         assert response == expected_stages_dto
