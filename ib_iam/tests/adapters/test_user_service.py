@@ -87,3 +87,23 @@ class TestUserService:
 
         # Assert
         assert response == expected_user_profile_dto
+
+    @staticmethod
+    def deactivate_user_in_ib_users_mock(mocker):
+        mock = mocker.patch(
+            "ib_users.interfaces.service_interface.ServiceInterface.deactivate_user"
+        )
+        return mock
+
+    def test_deactivate_user_in_ib_users_given_valid_user_id(self, mocker):
+        mock = self.deactivate_user_in_ib_users_mock(mocker=mocker)
+        mock.return_value = None
+        user_id = "1234"
+
+        from ib_iam.adapters.service_adapter import ServiceAdapter
+        service_adapter = ServiceAdapter()
+
+        service_adapter.user_service.deactivate_delete_user_id_in_ib_users(
+            user_id=user_id)
+
+        mock.assert_called_once_with(user_id=user_id)
