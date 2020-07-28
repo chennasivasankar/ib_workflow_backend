@@ -3,82 +3,59 @@ from ib_iam.interactors.presenter_interfaces \
     .get_companies_presenter_interface import GetCompaniesPresenterInterface
 from ib_iam.interactors.storage_interfaces \
     .company_storage_interface import CompanyStorageInterface
-from ib_iam.interactors.presenter_interfaces\
+from ib_iam.interactors.presenter_interfaces \
     .get_companies_presenter_interface import CompanyWithEmployeesDetailsDTO
 from ib_iam.interactors.storage_interfaces.dtos import (
-    PaginationDTO, CompanyDTO, CompanyEmployeeIdsDTO, MemberDTO
-)
+    PaginationDTO, CompanyDTO, CompanyEmployeeIdsDTO, MemberDTO)
 from ib_iam.adapters.dtos import UserProfileDTO
 from typing import List
 from ib_iam.exceptions.custom_exceptions import (
-    UserHasNoAccess, InvalidLimit, InvalidOffset
-)
+    UserHasNoAccess, InvalidLimit, InvalidOffset)
 
 
-class GetListOfCompanysInteractor:
+class GetListOfCompaniesInteractor:
 
     def __init__(self, storage: CompanyStorageInterface):
         self.storage = storage
 
-    def get_list_of_companys_wrapper(
+    def get_list_of_companies_wrapper(
             self,
             user_id: str,
             pagination_dto: PaginationDTO,
-            presenter: CompanyPresenterInterface
+            presenter: GetCompaniesPresenterInterface
     ):
         try:
-            company_details_dtos = self.get_list_of_companys(
-                user_id=user_id, pagination_dto=pagination_dto
-            )
-            response = presenter.get_response_for_get_list_of_companys(
-                company_details_dtos=company_details_dtos
-            )
+            company_details_dtos = self.get_list_of_companies(
+                user_id=user_id, pagination_dto=pagination_dto)
+            response = presenter.get_response_for_get_companies(
+                company_details_dtos=company_details_dtos)
         except UserHasNoAccess:
             response = presenter \
-                .get_user_has_no_access_response_for_get_list_of_companys()
-        except InvalidLimit:
-            response = \
-                presenter.get_invalid_limit_response_for_get_list_of_companys()
-        except InvalidOffset:
-            response = \
-                presenter.get_invalid_offset_response_for_get_list_of_companys()
+                .get_user_has_no_access_response_for_get_companies()
         return response
 
-    def get_list_of_companys(self, user_id: str, pagination_dto: PaginationDTO):
-        self._validate_pagination_details(pagination_dto=pagination_dto)
+    def get_list_of_companies(
+            self, user_id: str, pagination_dto: PaginationDTO):
         self.storage.validate_is_user_admin(user_id=user_id)
-        companys_with_total_companys_count = \
-            self.storage.get_companys_with_total_companys_count_dto(
-                pagination_dto=pagination_dto
-            )
+        company_dtos = self.storage.get_company_dtos()
         company_ids = self._get_company_ids_from_company_dtos(
-            company_dtos=companys_with_total_companys_count.companys
-        )
-
-        company_member_ids_dtos = self.storage.get_company_member_ids_dtos(
-            company_ids=company_ids
-        )
-        member_ids = self._get_all_member_ids_from_company_member_ids_dtos(
+            company_dtos=company_dtos)
+        company_member_ids_dtos = self.storage.get_company_employee_ids_dtos(
+            company_ids=company_ids)
+        employee_ids = self._get_all_member_ids_from_company_member_ids_dtos(
             company_member_ids_dtos=company_member_ids_dtos
         )
         member_dtos = self._get_members_dtos_from_service(
             member_ids=member_ids
         )
         company_with_memebers_dtos = CompanyWithMembersDetailsDTO(
-            total_companys_count=companys_with_total_companys_count
-                .total_companys_count,
-            company_dtos=companys_with_total_companys_count.companys,
+            total_companies_count=companies_with_total_companies_count
+                .total_companies_count,
+            company_dtos=companies_with_total_companies_count.companies,
             company_member_ids_dtos=company_member_ids_dtos,
             member_dtos=member_dtos
         )
         return company_with_memebers_dtos
-
-    @staticmethod
-    def _validate_pagination_details(pagination_dto: PaginationDTO):
-        if pagination_dto.limit <= 0:
-            raise InvalidLimit()
-        if pagination_dto.offset < 0:
-            raise InvalidOffset()
 
     @staticmethod
     def _get_company_ids_from_company_dtos(

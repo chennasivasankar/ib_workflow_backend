@@ -2,7 +2,7 @@ from abc import ABC
 from abc import abstractmethod
 from typing import List
 from ib_iam.interactors.storage_interfaces.dtos import (
-    CompanyDTO, CompanyWithEmployeesCountDTO, CompanyDetailsWithUserIdsDTO,
+    CompanyDTO, CompanyEmployeeIdsDTO, CompanyDetailsWithUserIdsDTO,
     CompanyWithUserIdsDTO
 )
 
@@ -18,8 +18,8 @@ class CompanyStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_company_with_employees_count_dtos(self) -> \
-            List[CompanyWithEmployeesCountDTO]:
+    def get_company_employee_ids_dtos(self, company_ids: List[str]) -> \
+            List[CompanyEmployeesIdsDTO]:
         pass
 
     @abstractmethod
