@@ -1,5 +1,5 @@
 import pytest
-from ib_tasks.interactors.presenter_interfaces.\
+from ib_tasks.interactors.presenter_interfaces. \
     get_task_templates_presenter_interface import CompleteTaskTemplatesDTO
 from ib_tasks.presenters.get_task_templates_presenter_implementation import \
     GetTaskTemplatesPresenterImplementation
@@ -21,7 +21,7 @@ class TestGetTaskPresenterImplementation:
         GoFToTaskTemplateDTOFactory.reset_sequence()
 
     def test_when_complete_task_template_details_exists(self, snapshot):
-        #Arrange
+        # Arrange
         expected_gof_ids = ['gof_1', 'gof_2']
         expected_field_ids = ["field_1", "field_2", "field_3", "field_4"]
         import factory
@@ -50,12 +50,12 @@ class TestGetTaskPresenterImplementation:
         )
         presenter = GetTaskTemplatesPresenterImplementation()
 
-        #Act
+        # Act
         presenter_response_object = presenter.get_task_templates_response(
             complete_task_templates_dto=complete_task_templates_dto
         )
 
-        #Assert
+        # Assert
         import json
         response_content = json.loads(presenter_response_object.content)
 
@@ -67,7 +67,7 @@ class TestGetTaskPresenterImplementation:
             counter = counter + 1
 
     def test_when_no_task_templates_exists_returns_empty_list(self, snapshot):
-        #Arrange
+        # Arrange
         complete_task_templates_dto = CompleteTaskTemplatesDTO(
             task_template_dtos=[],
             actions_of_templates_dtos=[],
@@ -78,18 +78,18 @@ class TestGetTaskPresenterImplementation:
         )
         presenter = GetTaskTemplatesPresenterImplementation()
 
-        #Act
+        # Act
         presenter_response_object = presenter.get_task_templates_response(
             complete_task_templates_dto=complete_task_templates_dto
         )
 
-        #Assert
+        # Assert
         import json
         response_content = json.loads(presenter_response_object.content)
         snapshot.assert_match(response_content, 'task_templates')
 
     def test_when_no_gofs_exists_returns_empty_gofs_list(self, snapshot):
-        #Arrange
+        # Arrange
         task_template_dtos = TaskTemplateDTOFactory.create_batch(size=2)
         actions_of_template_dtos = \
             ActionsOfTemplateDTOFactory.create_batch(
@@ -106,12 +106,12 @@ class TestGetTaskPresenterImplementation:
         )
         presenter = GetTaskTemplatesPresenterImplementation()
 
-        #Act
+        # Act
         presenter_response_object = presenter.get_task_templates_response(
             complete_task_templates_dto=complete_task_templates_dto
         )
 
-        #Assert
+        # Assert
         import json
         response_content = json.loads(presenter_response_object.content)
 
@@ -122,7 +122,8 @@ class TestGetTaskPresenterImplementation:
             )
             counter = counter + 1
 
-    def test_when_no_actions_for_user_exists_returns_empty_actions_list(self, snapshot):
+    def test_when_no_actions_for_user_exists_returns_empty_actions_list(self,
+                                                                        snapshot):
         # Arrange
         expected_gof_ids = ['gof_1', 'gof_2']
         expected_field_ids = ["field_1", "field_2", "field_3", "field_4"]
@@ -165,7 +166,7 @@ class TestGetTaskPresenterImplementation:
             counter = counter + 1
 
     def test_when_no_fields_exists_returns_empty_fields_list(self, snapshot):
-        #Arrange
+        # Arrange
         task_template_dtos = TaskTemplateDTOFactory.create_batch(size=2)
         actions_of_template_dtos = \
             ActionsOfTemplateDTOFactory.create_batch(
@@ -187,12 +188,12 @@ class TestGetTaskPresenterImplementation:
         )
         presenter = GetTaskTemplatesPresenterImplementation()
 
-        #Act
+        # Act
         presenter_response_object = presenter.get_task_templates_response(
             complete_task_templates_dto=complete_task_templates_dto
         )
 
-        #Assert
+        # Assert
         import json
         response_content = json.loads(presenter_response_object.content)
 

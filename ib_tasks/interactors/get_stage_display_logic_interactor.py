@@ -12,7 +12,8 @@ class StageDisplayLogicInteractor:
     def __init__(self):
         pass
 
-    def get_stage_display_logic_condition(self, stage_display_logics: List[str]):
+    def get_stage_display_logic_condition(self,
+                                          stage_display_logics: List[str]):
         task_status_dtos = self._get_values_from_stage_display_logic(
             stage_display_logics=stage_display_logics
         )

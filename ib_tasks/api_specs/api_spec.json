@@ -21,11 +21,11 @@
          "tokenUrl":"http://auth.ibtspl.com/oauth2/",
          "flow":"password",
          "scopes":{
-            "read":"read users",
-            "write":"create users",
-            "update":"update users",
-            "delete":"delete users",
-            "superuser": "superuser scope"
+           "read": "read users",
+           "write": "create users",
+           "update": "update users",
+           "delete": "delete users",
+           "superuser": "superuser scope"
          },
          "type":"oauth2"
       }
@@ -153,7 +153,7 @@
                "type":"string"
             },
             "action_id":{
-               "type": "string"
+              "type": "string"
             },
             "task_gofs":{
                "type":"array",
@@ -402,9 +402,9 @@
       "Action":{
          "type":"object",
          "properties":{
-            "action_id":{
-               "type":"integer",
-               "format": "int64"
+            "action_id": {
+              "type": "integer",
+              "format": "int64"
             },
             "button_text":{
                "type":"string"
@@ -479,7 +479,7 @@
                 "type": "array",
                 "items": {
                   "type": "object",
-                  "properties":{
+                  "properties": {
                     "action_id": {
                       "type": "string"
                     },
@@ -506,13 +506,13 @@
           }
         }
       },
-      "required": [
-        "task_id",
-        "template_id",
-        "gofs",
-        "stages_with_actions"
-      ]
-    }
+        "required": [
+          "task_id",
+          "template_id",
+          "gofs",
+          "stages_with_actions"
+        ]
+      }
    },
    "parameters":{
       "CreateTaskBodyParameter":{
@@ -559,13 +559,15 @@
       "name": "limit",
       "description": "Limit Parameter",
       "in": "query",
-      "type": "integer"
+      "type": "integer",
+      "required": true
     },
     "OffsetParameter": {
       "name": "offset",
       "description": "Offset Parameter",
       "in": "query",
-      "type": "integer"
+      "type": "integer",
+      "required": true
     },
     "SearchableQueryParameter": {
       "name": "search_query",
@@ -682,7 +684,7 @@
           "type": "object",
           "properties": {
             "id": {
-              "type": "integer"
+              "type": "string"
             },
             "name": {
               "type": "string"
@@ -712,9 +714,8 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "LIMIT_VALUE_SHOULD_BE_GREATER_THAN_ZERO",
-              "OFFSET_VALUE_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE",
-              "NO_SEARCH_RESULTS_FOUND"
+              "LIMIT_SHOULD_BE_GREATER_THAN_ZERO",
+              "OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE"
             ]
           }
         },

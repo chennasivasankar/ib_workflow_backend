@@ -32,11 +32,16 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
         fields_dto = task_dto.fields_dto
         gof_fields_dto_dict = self._get_gof_field_dtos_dict(fields_dto)
         status_variables_dto = task_dto.statuses_dto
-        task_dict = self._get_task_dict(group_of_fields_dto, gof_multiple_enable_dict,
-                                        gof_fields_dto_dict, status_variables_dto)
-        method_object = self._get_method_object_for_condition(action_id=self.action_id)
-        global_constants = self._get_global_constants_to_task_template(task_id=task_dto.task_id)
-        stage_value_dict = self._get_stage_value_dict_to_task_template(task_id=task_dto.task_id)
+        task_dict = self._get_task_dict(group_of_fields_dto,
+                                        gof_multiple_enable_dict,
+                                        gof_fields_dto_dict,
+                                        status_variables_dto)
+        method_object = self._get_method_object_for_condition(
+            action_id=self.action_id)
+        global_constants = self._get_global_constants_to_task_template(
+            task_id=task_dto.task_id)
+        stage_value_dict = self._get_stage_value_dict_to_task_template(
+            task_id=task_dto.task_id)
         task_dict = method_object(
             task_dict=task_dict, global_constants=global_constants,
             stage_value_dict=stage_value_dict
@@ -149,11 +154,11 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
         common_gof_ids = self._get_common_gof_ids(
             group_of_fields_dto=group_of_fields_dto
         )
-        gof_multiple_enable_dtos = self.storage\
+        gof_multiple_enable_dtos = self.storage \
             .get_enable_multiple_gofs_field_to_gof_ids(
-                task_id=task_id,
-                gof_ids=common_gof_ids
-            )
+            task_id=task_id,
+            gof_ids=common_gof_ids
+        )
         gof_multiple_enable_dict = {}
         for gof_multiple_enable_dto in gof_multiple_enable_dtos:
             gof_multiple_enable_dict[
