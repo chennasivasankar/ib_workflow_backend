@@ -5,7 +5,7 @@ from ib_iam.interactors.presenter_interfaces.get_companies_presenter_interface i
     GetCompaniesPresenterInterface
 
 from ib_iam.interactors.presenter_interfaces.get_companies_presenter_interface import \
-    CompanyDetailsWithEmployeesCountDTO
+    CompanyWithEmployeesDetailsDTO
 from ib_iam.interactors.storage_interfaces.dtos import (
     CompanyDTO, CompanyWithEmployeesCountDTO
 )
@@ -28,7 +28,7 @@ class GetCompaniesPresenterImplementation(
 
     def get_response_for_get_companies(
             self,
-            company_details_dtos: CompanyDetailsWithEmployeesCountDTO
+            company_details_dtos: CompanyWithEmployeesDetailsDTO
     ):
         company_details_dictionaries = \
             self._convert_company_details_dtos_into_company_dictionaries(

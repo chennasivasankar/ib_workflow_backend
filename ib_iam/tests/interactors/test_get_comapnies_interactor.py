@@ -4,7 +4,7 @@ from mock import create_autospec, Mock
 from ib_iam.exceptions.custom_exceptions import UserHasNoAccess
 from ib_iam.interactors.get_companies import GetCompaniesInteractor
 from ib_iam.interactors.presenter_interfaces.get_companies_presenter_interface import GetCompaniesPresenterInterface, \
-    CompanyDetailsWithEmployeesCountDTO
+    CompanyWithEmployeesDetailsDTO
 from ib_iam.interactors.storage_interfaces.company_storage_interface import CompanyStorageInterface
 
 
@@ -56,7 +56,7 @@ class TestGetCompaniesInteractor:
         storage.get_company_dtos.return_value = expected_company_dtos
         storage.get_company_with_employees_count_dtos \
             .return_value = expected_company_with_employees_count_dtos
-        company_details_dto = CompanyDetailsWithEmployeesCountDTO(
+        company_details_dto = CompanyWithEmployeesDetailsDTO(
             company_dtos=expected_company_dtos,
             company_with_employees_count_dtos=expected_company_with_employees_count_dtos
         )

@@ -9,7 +9,13 @@ RESPONSE_200_JSON = """
             "description": "string",
             "logo_url": "string",
             "company_id": "string",
-            "no_of_employees": 1
+            "employees": [
+                {
+                    "member_id": "string",
+                    "name": "string",
+                    "profile_pic_url": "string"
+                }
+            ]
         }
     ]
 }

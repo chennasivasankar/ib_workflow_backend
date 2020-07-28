@@ -1,5 +1,5 @@
 """
-# Returns team_id as valid parameters are given
+Updates details as valid parameters are given
 """
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
@@ -24,12 +24,9 @@ class TestCase01UpdateTeamDetailsAPITestCase(TestUtils):
         team_id = "f2c02d98-f311-4ab2-8673-3daa00757002"
         team = TeamFactory.create(team_id=team_id)
         from ib_iam.models import Team, TeamMember, UserDetails
-        print(Team.objects.values())
         for user_id in ["2", "3"]:
             TeamMemberFactory.create(team=team, member_id=user_id)
-            print(TeamMember.objects.values())
             UserFactory.create(user_id=user_id)
-            print(UserDetails.objects.values())
         return team_id
 
     @pytest.mark.django_db

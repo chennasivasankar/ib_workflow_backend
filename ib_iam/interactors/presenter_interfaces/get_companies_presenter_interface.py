@@ -4,14 +4,15 @@ from dataclasses import dataclass
 from typing import List
 
 from ib_iam.interactors.storage_interfaces.dtos import (
-    CompanyDTO, CompanyWithEmployeesCountDTO
+    CompanyDTO, CompanyEmployeeIdsDTO, MemberDTO
 )
 
 
 @dataclass
-class CompanyDetailsWithEmployeesCountDTO:
+class CompanyWithEmployeesDetailsDTO:
     company_dtos: List[CompanyDTO]
-    company_with_employees_count_dtos: List[CompanyWithEmployeesCountDTO]
+    company_employee_ids_dtos: List[CompanyEmployeeIdsDTO]
+    member_dtos: List[MemberDTO]
 
 
 class GetCompaniesPresenterInterface(ABC):
@@ -22,6 +23,6 @@ class GetCompaniesPresenterInterface(ABC):
 
     @abstractmethod
     def get_response_for_get_companies(
-            self, company_details_dtos: CompanyDetailsWithEmployeesCountDTO
+            self, company_details_dtos: CompanyWithEmployeesDetailsDTO
     ):
         pass

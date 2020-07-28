@@ -110,7 +110,7 @@
         "name"
       ]
     },
-    "CompanyDetailsWithNoOfEmployees": {
+    "CompanyDetailsWithEmployeeDetails": {
       "allOf": [
         {
           "$ref": "#/definitions/CompanyNameLogoAndDescription"
@@ -121,13 +121,16 @@
             "company_id": {
               "type": "string"
             },
-            "no_of_employees": {
-              "type": "integer"
+            "employees": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/MemberDetails"
+              }
             }
           },
           "required": [
             "company_id",
-            "no_of_employees"
+            "employees"
           ]
         }
       ]
@@ -669,7 +672,7 @@
           "companies": {
             "type": "array",
             "items": {
-              "$ref": "#/definitions/CompanyDetailsWithNoOfEmployees"
+              "$ref": "#/definitions/CompanyDetailsWithEmployeeDetails"
             }
           }
         }

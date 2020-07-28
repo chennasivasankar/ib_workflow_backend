@@ -63,9 +63,9 @@ class CompanyDTO(CompanyNameLogoAndDescriptionDTO):
 
 
 @dataclass
-class CompanyWithEmployeesCountDTO:
+class CompanyEmployeeIdsDTO:
     company_id: str
-    no_of_employees: int
+    employee_ids: List[str]
 
 
 @dataclass

@@ -21,11 +21,11 @@ class TestGetResponseForGetCompanies:
 
     def test_given_zero_teams_exists_returns_http_response(self):
         from ib_iam.interactors.presenter_interfaces.get_companies_presenter_interface import \
-            CompanyDetailsWithEmployeesCountDTO
+            CompanyWithEmployeesDetailsDTO
 
         json_presenter = GetCompaniesPresenterImplementation()
         http_response = json_presenter.get_response_for_get_companies(
-            company_details_dtos=CompanyDetailsWithEmployeesCountDTO(
+            company_details_dtos=CompanyWithEmployeesDetailsDTO(
                 company_dtos=[],
                 company_with_employees_count_dtos=[]
             )
@@ -40,7 +40,7 @@ def get_company_details_dtos():
     from ib_iam.tests.factories.storage_dtos import CompanyDTOFactory, CompanyNameLogoAndDescriptionDTOFactory
     from ib_iam.tests.factories.storage_dtos import CompanyWithEmployeesCountDTOFactory
     from ib_iam.interactors.presenter_interfaces \
-        .get_companies_presenter_interface import CompanyDetailsWithEmployeesCountDTO
+        .get_companies_presenter_interface import CompanyWithEmployeesDetailsDTO
     company_ids = [
         "f2c02d98-f311-4ab2-8673-3daa00757003",
         "aa66c40f-6d93-484a-b418-984716514c7c",
@@ -57,7 +57,7 @@ def get_company_details_dtos():
         ) for company_id, i in zip(company_ids, range(3, 7, 2))
     ]
 
-    company_details_dtos = CompanyDetailsWithEmployeesCountDTO(
+    company_details_dtos = CompanyWithEmployeesDetailsDTO(
         company_dtos=company_dtos,
         company_with_employees_count_dtos=company_with_employees_count_dtos
     )

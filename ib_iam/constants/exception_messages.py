@@ -112,8 +112,8 @@ INVALID_COMPANY_FOR_UPDATE_COMPANY = (
 )
 
 COMPANY_NAME_ALREADY_EXISTS_FOR_UPDATE_COMPANY = (
-    "Given '%s' is already exists, so updating name is not possible.",
-    "TEAM_NAME_ALREADY_EXISTS"
+    "Given '%s' name is already exists, so updating name is not possible.",
+    "COMPANY_NAME_ALREADY_EXISTS"
 )
 
 DUPLICATE_USERS_FOR_UPDATE_COMPANY = (
