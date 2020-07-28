@@ -1,3 +1,5 @@
+import json
+
 import factory
 
 from ib_tasks.constants.constants import VALID_FIELD_TYPES
@@ -186,8 +188,8 @@ class StageDTOFactory(factory.Factory):
     task_template_id = factory.Sequence(lambda n: 'task_template_id_%d' % n)
     value = factory.Sequence(lambda n: n)
     id = None
-    card_info_kanban = ['field_id_1', "field_id_2"]
-    card_info_list = ['field_id_1', "field_id_2"]
+    card_info_kanban = json.dumps(['field_id_1', "field_id_2"])
+    card_info_list = json.dumps(['field_id_1', "field_id_2"])
     stage_display_name = factory.Sequence(lambda n: 'name_%d' % n)
     stage_display_logic = factory.Sequence(
         lambda n: 'status_id_%d==stage_id' % n)

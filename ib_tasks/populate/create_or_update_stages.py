@@ -1,3 +1,4 @@
+import json
 from typing import Dict, Any, List
 
 
@@ -57,10 +58,13 @@ def validation_for_list_of_stages_dict(stages_dict: List[Dict]):
 
 
 def raise_exception_for_invalid_format():
+    import json
     valid_format = {
         "task_template_id": "task_template_id_1",
         "stage_id": "stage_id_1",
         "value": 1,
+        "card_info_kanban": json.dumps(["field_id_1", "field_id_2"]),
+        "card_info_list": json.dumps(["field_id_1", "field_id_2"]),
         "stage_display_name": "stage_name",
         "stage_display_logic": "status_1==stage_id_1"
     }
