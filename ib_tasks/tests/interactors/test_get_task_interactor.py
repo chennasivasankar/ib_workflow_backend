@@ -17,7 +17,7 @@ class TestTaskInteractor:
 
     @pytest.fixture
     def presenter_mock(self):
-        from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface\
+        from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
             import GetTaskPresenterInterface
         presenter = create_autospec(GetTaskPresenterInterface)
         return presenter
@@ -64,11 +64,16 @@ class TestTaskInteractor:
         from ib_tasks.tests.factories.storage_dtos \
             import TaskGoFFieldDTOFactory
         task_gof_field_dtos = [
-            TaskGoFFieldDTOFactory(task_gof_id=0, field_id="field0", field_response="response0"),
-            TaskGoFFieldDTOFactory(task_gof_id=0, field_id="field1", field_response="response1"),
-            TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field2", field_response="response2"),
-            TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field3", field_response="response3"),
-            TaskGoFFieldDTOFactory(task_gof_id=2, field_id="field4", field_response="response4")
+            TaskGoFFieldDTOFactory(task_gof_id=0, field_id="field0",
+                                   field_response="response0"),
+            TaskGoFFieldDTOFactory(task_gof_id=0, field_id="field1",
+                                   field_response="response1"),
+            TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field2",
+                                   field_response="response2"),
+            TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field3",
+                                   field_response="response3"),
+            TaskGoFFieldDTOFactory(task_gof_id=2, field_id="field4",
+                                   field_response="response4")
         ]
         return task_gof_field_dtos
 
@@ -87,9 +92,12 @@ class TestTaskInteractor:
         from ib_tasks.tests.factories.storage_dtos \
             import TaskGoFFieldDTOFactory
         permission_task_gof_field_dtos = [
-            TaskGoFFieldDTOFactory(task_gof_id=0, field_id="field0", field_response="response0"),
-            TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field2", field_response="response2"),
-            TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field3", field_response="response3")
+            TaskGoFFieldDTOFactory(task_gof_id=0, field_id="field0",
+                                   field_response="response0"),
+            TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field2",
+                                   field_response="response2"),
+            TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field3",
+                                   field_response="response3")
         ]
         return permission_task_gof_field_dtos
 
@@ -152,12 +160,13 @@ class TestTaskInteractor:
         )
 
         # Assert
-        presenter_mock.raise_exception_for_invalid_task_id.\
+        presenter_mock.raise_exception_for_invalid_task_id. \
             assert_called_once_with(exception_object)
 
     @patch.object(GetTaskBaseInteractor, 'get_task')
     def test_given_valid_task_returns_task_details_dto(
-            self, get_task_mock, mocker, storage_mock, presenter_mock, task_details_dto
+            self, get_task_mock, mocker, storage_mock, presenter_mock,
+            task_details_dto
     ):
         # Arrange
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
@@ -208,6 +217,7 @@ class TestTaskInteractor:
         storage_mock.get_gof_ids_having_permission.assert_called_once_with(
             gof_ids, user_roles
         )
-        storage_mock.get_field_ids_having_permission.assert_called_once_with(field_ids, user_roles)
-        presenter_mock.get_task_response.assert_called_once_with(task_complete_details_dto)
-
+        storage_mock.get_field_ids_having_permission.assert_called_once_with(
+            field_ids, user_roles)
+        presenter_mock.get_task_response.assert_called_once_with(
+            task_complete_details_dto)

@@ -29,7 +29,7 @@ class GetBoardsAndColumnsDataFromSheet:
         ]
         return boards_columns_dicts
 
-    def populate_data_from_sheet_to_create_boards_and_columns(self):
+    def create_boards_and_columns(self):
         boards_columns_dicts = self.get_data_from_sheet()
         from ib_boards.populate.populate_script_to_create_boards_and_columns \
             import PopulateCreateBoardsAndColumns
@@ -38,7 +38,7 @@ class GetBoardsAndColumnsDataFromSheet:
             boards_columns_dicts=boards_columns_dicts
         )
 
-    def populate_data_from_sheet_to_add_or_delete_columns_for_board(self):
+    def add_or_delete_columns_for_board(self):
         boards_columns_dicts = self.get_data_from_sheet()
         from ib_boards.populate.populate_script_for_add_or_delete_columns_for_board \
             import PopulateAddOrDeleteColumnsForBoard

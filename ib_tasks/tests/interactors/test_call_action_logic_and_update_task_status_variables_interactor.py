@@ -140,10 +140,10 @@ class TestUpdateTaskStatusVariablesInteractor:
         )
 
         # Act
-        response = interactor\
+        response = interactor \
             .call_action_logic_function_and_update_task_status_variables(
-                task_dto=task_dto
-            )
+            task_dto=task_dto
+        )
 
         # Assert
         storage.get_path_name_to_action.assert_called_once_with(
@@ -153,7 +153,7 @@ class TestUpdateTaskStatusVariablesInteractor:
         storage.update_status_variables_to_task.assert_called_once_with(
             task_id=1, status_variables_dto=statuses
         )
-        storage.get_global_constants_to_task\
+        storage.get_global_constants_to_task \
             .assert_called_once_with(task_id=task_id)
-        storage.get_stage_dtos_to_task\
+        storage.get_stage_dtos_to_task \
             .assert_called_once_with(task_id=task_id)

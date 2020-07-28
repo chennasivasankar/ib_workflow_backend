@@ -10,7 +10,8 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import (
 )
 
 
-class CreateOrUpdateTaskStorageImplementation(CreateOrUpdateTaskStorageInterface):
+class CreateOrUpdateTaskStorageImplementation(
+    CreateOrUpdateTaskStorageInterface):
 
     def validate_task_id(
             self, task_id: int

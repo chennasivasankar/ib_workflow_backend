@@ -44,6 +44,7 @@ class TaskIdsDTO:
     task_stage_ids: List[TaskStageIdsDTO]
     total_tasks: int
 
+
 @dataclass
 class GetTaskDetailsDTO:
     task_id: int

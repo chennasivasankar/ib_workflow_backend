@@ -4,7 +4,6 @@ Author: Pavankumar Pamuru
 
 """
 
-
 import pytest
 
 from ib_tasks.interactors.get_task_ids_interactor import GetTaskIdsInteractor
@@ -30,7 +29,8 @@ class TestGetTaskIdsInteractor:
     def test_with_invalid_stage_ids_raise_error(
             self, task_storage, stage_storage):
         # Arrange
-        stage_ids = [['STAGE_ID_1', 'STAGE_ID_2'], ['STAGE_ID_3', 'STAGE_ID_4']]
+        stage_ids = [['STAGE_ID_1', 'STAGE_ID_2'],
+                     ['STAGE_ID_3', 'STAGE_ID_4']]
         stage_ids_single_list = ['STAGE_ID_1', 'STAGE_ID_2', 'STAGE_ID_3',
                                  'STAGE_ID_4']
         invalid_stage_ids = ['STAGE_ID_1', 'STAGE_ID_2']
@@ -69,7 +69,8 @@ class TestGetTaskIdsInteractor:
     def test_with_valid_stage_ids_return_task_ids_with_stage_ids_dict(
             self, stage_storage, task_storage):
         # Arrange
-        from ib_tasks.tests.factories.storage_dtos import TaskStageIdsDTOFactory
+        from ib_tasks.tests.factories.storage_dtos import \
+            TaskStageIdsDTOFactory
         expected_response = [
             TaskStageIdsDTOFactory.create_batch(4, stage_id='STAGE_ID_1') +
             TaskStageIdsDTOFactory.create_batch(4, stage_id='STAGE_ID_2'),
@@ -77,7 +78,8 @@ class TestGetTaskIdsInteractor:
             TaskStageIdsDTOFactory.create_batch(4, stage_id='STAGE_ID_4'),
 
         ]
-        stage_ids = [['STAGE_ID_1', 'STAGE_ID_2'], ['STAGE_ID_3', 'STAGE_ID_4']]
+        stage_ids = [['STAGE_ID_1', 'STAGE_ID_2'],
+                     ['STAGE_ID_3', 'STAGE_ID_4']]
         stage_ids_single_list = ['STAGE_ID_1', 'STAGE_ID_2', 'STAGE_ID_3',
                                  'STAGE_ID_4']
         task_config_dtos = [
@@ -129,6 +131,3 @@ class TestGetTaskIdsInteractor:
         )
         task_storage.get_task_ids_for_the_stage_ids.assert_has_calls(calls)
         assert actual_response == task_ids_dtos
-
-
-
