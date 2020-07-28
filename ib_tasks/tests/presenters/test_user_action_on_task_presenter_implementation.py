@@ -1,8 +1,8 @@
-
 import pytest
 import json
 from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO
-from ib_tasks.interactors.presenter_interfaces.dtos import TaskCompleteDetailsDTO
+from ib_tasks.interactors.presenter_interfaces.dtos import \
+    TaskCompleteDetailsDTO
 from ib_tasks.tests.factories.interactor_dtos import FieldDisplayDTOFactory
 from ib_tasks.tests.factories.storage_dtos import ActionDTOFactory
 from ib_tasks.tests.factories.adapter_dtos import (
@@ -21,7 +21,6 @@ class TestCreateOrUpdateTaskPresenterImplementation:
     def test_raise_exception_for_invalid_task(
             self, presenter, snapshot
     ):
-
         # Arrange
         task_id = 1
         from ib_tasks.exceptions.task_custom_exceptions \
@@ -40,7 +39,6 @@ class TestCreateOrUpdateTaskPresenterImplementation:
     def test_raise_exception_for_invalid_board(
             self, presenter, snapshot
     ):
-
         # Arrange
         board_id = "board_1"
 
@@ -60,11 +58,10 @@ class TestCreateOrUpdateTaskPresenterImplementation:
     def test_raise_exception_for_invalid_action(
             self, presenter, snapshot
     ):
-
         # Arrange
         action_id = 1
 
-        from ib_tasks.exceptions.action_custom_exceptions\
+        from ib_tasks.exceptions.action_custom_exceptions \
             import InvalidActionException
         error = InvalidActionException(action_id=action_id)
 
@@ -80,7 +77,6 @@ class TestCreateOrUpdateTaskPresenterImplementation:
     def test_raise_exception_for_invalid_user_permission(
             self, presenter, snapshot
     ):
-
         # Arrange
         action_id = 1
 
@@ -96,7 +92,8 @@ class TestCreateOrUpdateTaskPresenterImplementation:
 
         # Assert
         snapshot.assert_match(
-            name="invalid_user_permission", value=json.loads(response_object.content)
+            name="invalid_user_permission",
+            value=json.loads(response_object.content)
         )
 
     def reset_sequence(self):
@@ -135,5 +132,6 @@ class TestCreateOrUpdateTaskPresenterImplementation:
 
         # Assert
         snapshot.assert_match(
-            name="task_complete_details", value=json.loads(response_object.content)
+            name="task_complete_details",
+            value=json.loads(response_object.content)
         )

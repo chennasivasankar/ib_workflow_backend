@@ -1,16 +1,19 @@
-
 from typing import List, Dict
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO, ColumnStageDTO
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
-from ib_tasks.exceptions.permission_custom_exceptions import UserActionPermissionDenied
+from ib_tasks.exceptions.permission_custom_exceptions import \
+    UserActionPermissionDenied
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
-from ib_tasks.interactors.presenter_interfaces.dtos import TaskCompleteDetailsDTO
-from ib_tasks.interactors.presenter_interfaces.presenter_interface import PresenterInterface
+from ib_tasks.interactors.presenter_interfaces.dtos import \
+    TaskCompleteDetailsDTO
+from ib_tasks.interactors.presenter_interfaces.presenter_interface import \
+    PresenterInterface
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
-from ib_tasks.interactors.user_action_on_task_interactor import InvalidBoardIdException
+from ib_tasks.interactors.user_action_on_task_interactor import \
+    InvalidBoardIdException
 
 
 class UserActionOnTaskPresenterImplementation(PresenterInterface,

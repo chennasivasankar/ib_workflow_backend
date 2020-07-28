@@ -5,15 +5,19 @@ Author: Pavankumar Pamuru
 """
 
 import abc
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
-from ib_tasks.interactors.storage_interfaces.status_dtos import TaskTemplateStatusDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import \
+    TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldRoleDTO, FieldTypeDTO, UserFieldPermissionDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFRoleDTO, GoFToTaskTemplateDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
+    StageDTO, TaskStageIdsDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRoleDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, StageDTO, GetTaskStageCompleteDetailsDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
+    StageDTO, GetTaskStageCompleteDetailsDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
@@ -120,7 +124,8 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def create_status_for_tasks(self,
-                                create_status_for_tasks: List[TaskTemplateStatusDTO]):
+                                create_status_for_tasks: List[
+                                    TaskTemplateStatusDTO]):
         pass
 
     @abc.abstractmethod
@@ -171,7 +176,8 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_gof_ids_with_read_permission_for_user(self, roles: List[str]) -> List[str]:
+    def get_gof_ids_with_read_permission_for_user(self, roles: List[str]) -> \
+    List[str]:
         pass
 
     @abc.abstractmethod
@@ -211,13 +217,12 @@ class TaskStorageInterface(abc.ABC):
     ) -> List[FieldTypeDTO]:
         pass
 
-
-    @abc.abstractmethod
-    def get_task_details(self, task_dtos: List[GetTaskDetailsDTO]) ->\
-            GetTaskStageCompleteDetailsDTO:
-        pass
-
     @abc.abstractmethod
     def get_valid_task_ids(self, task_ids: List[str]) -> Optional[List[str]]:
         pass
 
+    @abc.abstractmethod
+    def get_task_ids_for_the_stage_ids(
+            self, stage_ids: List[str],
+            offset: int, limit: int) -> Tuple[List[TaskStageIdsDTO], int]:
+        pass

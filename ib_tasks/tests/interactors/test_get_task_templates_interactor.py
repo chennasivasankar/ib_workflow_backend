@@ -179,7 +179,7 @@ class TestGetTaskTemplatesInteractor:
             task_template_dtos
 
         from django_swagger_utils.drf_server.exceptions import NotFound
-        presenter_mock.raise_task_templates_does_not_exists_exception.\
+        presenter_mock.raise_task_templates_does_not_exists_exception. \
             side_effect = NotFound
 
         # Act
@@ -188,8 +188,8 @@ class TestGetTaskTemplatesInteractor:
                 user_id=user_id, presenter=presenter_mock
             )
 
-        #Assert
-        call_args = presenter_mock.\
+        # Assert
+        call_args = presenter_mock. \
             raise_task_templates_does_not_exists_exception.call_args
         assert call_args.args[0].args[0] == expected_err_message
         get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
