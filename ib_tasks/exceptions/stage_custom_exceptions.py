@@ -11,6 +11,10 @@ class InvalidStageIdsException(Exception):
         return self.stage_ids_dict
 
 
+class InvalidStageIdsListException(Exception):
+    def __init__(self, invalid_stage_ids: List[str]):
+        self.invalid_stage_ids = invalid_stage_ids
+
 class InvalidStageIds(Exception):
     def __init__(self, stage_ids: List[str]):
         self.stage_ids = stage_ids
@@ -46,3 +50,7 @@ class InvalidPythonCodeException(Exception):
 class InvalidTaskStageIds(Exception):
     def __init__(self, invalid_task_stage_ids: List[GetTaskDetailsDTO]):
         self.invalid_task_stage_ids = invalid_task_stage_ids
+
+
+class StageIdsListEmptyException(Exception):
+    pass

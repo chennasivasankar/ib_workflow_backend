@@ -64,3 +64,21 @@ class TaskTemplateStageDTO:
 class StageValueDTO:
     stage_id: str
     value: Any
+
+
+@dataclass
+class TaskIdWithStageValueDTO:
+    stage_value: int
+    task_id: str
+
+
+@dataclass
+class StageValueWithTaskIdsDTO:
+    task_ids: List[str]
+    stage_value: int
+
+@dataclass
+class TaskIdWithStageDetailsDTO:
+    task_id: str
+    stage_id: str
+    stage_display_name: str

@@ -3,15 +3,13 @@ import factory
 from ib_tasks.adapters.dtos import UserDTO
 from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
-from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
-from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO, \
-    GoFsWithTemplateIdDTO
 
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.constants.enum import Searchable
-from ib_tasks.interactors.stages_dtos import (StagesActionDTO)
+from ib_tasks.interactors.stages_dtos import (StagesActionDTO,
+                                              UserStagesWithPaginationDTO)
 
 
 from ib_tasks.interactors.stages_dtos import \
@@ -165,3 +163,14 @@ class UserDTOFactory(factory.Factory):
 
     user_id = factory.sequence(lambda n: "user_{}".format(n + 1))
     name = factory.sequence(lambda n: "user_name_{}".format(n + 1))
+
+
+
+class UserStagesWithPaginationDTOFactory(factory.Factory):
+    class Meta:
+        model = UserStagesWithPaginationDTO
+
+    stage_ids = ["stage_id_1", "stage_id_2"]
+    user_id = factory.sequence(lambda n: "user_{}".format(n + 1))
+    limit = factory.Sequence(lambda n: n + 1)
+    offset = factory.Sequence(lambda n: n + 1)
