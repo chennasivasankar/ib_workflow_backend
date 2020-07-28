@@ -19,13 +19,11 @@ class GetTaskDetailsInteractor:
             task_actions_dtos, task_fields_dtos, task_column_details)
 
     def get_task_details(self, tasks_dtos: List[TaskDetailsDTO], user_id: str):
-
         task_column_details = self._get_task_and_column_ids(tasks_dtos)
         task_stages_dto = self._get_task_stages_dto(tasks_dtos)
         task_service = get_service_adapter().task_service
-        task_fields_dtos, task_actions_dtos = task_service.\
+        task_fields_dtos, task_actions_dtos = task_service. \
             get_task_details_dtos(tasks_dtos=task_stages_dto, user_id=user_id)
-
 
         return task_fields_dtos, task_actions_dtos, task_column_details
 
@@ -35,7 +33,7 @@ class GetTaskDetailsInteractor:
             task_id=task.task_id,
             stage_id=task.stage_id
         ) for task in tasks_details_dto]
-        return  tasks_dto
+        return tasks_dto
 
     @staticmethod
     def _get_task_and_column_ids(tasks_dtos):

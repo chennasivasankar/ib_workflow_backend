@@ -9,6 +9,8 @@ class TestPopulateStagesAndValues:
             "task_template_id": "task_template_id_1",
             "stage_id": "stage_id_1",
             "value": 1,
+            "card_info_kanban": '["field_id_1", "field_id_2]',
+            "card_info_list": '["field_id_1", "field_id_2]',
             "stage_display_name": "stage_name",
             "stage_display_logic": "status_1==stage_id_1"
         }
@@ -32,6 +34,8 @@ class TestPopulateStagesAndValues:
                 "task_template_id": "task_template_id_1",
                 "stage_id": "stage_id_1",
                 "invalid_field_name": 1,
+                "card_info_kanban": '["field_id_1", "field_id_2]',
+                "card_info_list": '["field_id_1", "field_id_2]',
                 "stage_display_name": "stage_name",
                 "stage_display_logic": "status_1==stage_id_1"
             },
@@ -39,6 +43,8 @@ class TestPopulateStagesAndValues:
                 "task_template_id": "task_template_id_2",
                 "stage_id": "stage_id_2",
                 "values": -1,
+                "card_info_kanban": '["field_id_1", "field_id_2]',
+                "card_info_list": '["field_id_1", "field_id_2]',
                 "stage_display_name": "stage_name",
                 "stage_display_logic": "status_2==stage_id_2"
             }
@@ -68,6 +74,8 @@ class TestPopulateStagesAndValues:
                 "task_template_id": "task_template_id_1",
                 "stage_id": "stage_id_1",
                 "value": 1,
+                "card_info_kanban": '["field_id_1", "field_id_2]',
+                "card_info_list": '["field_id_1", "field_id_2]',
                 "stage_display_name": "name_1",
                 "stage_display_logic": "status_id_1==stage_id"
             },
@@ -75,6 +83,8 @@ class TestPopulateStagesAndValues:
                 "task_template_id": "task_template_id_2",
                 "stage_id": "stage_id_2",
                 "value": 2,
+                "card_info_kanban": '["field_id_1", "field_id_2]',
+                "card_info_list": '["field_id_1", "field_id_2]',
                 "stage_display_name": "name_2",
                 "stage_display_logic": "status_id_2==stage_id"
             }

@@ -26,6 +26,8 @@ def append_stage_dto(stage_dict: Dict[str, Any]):
         task_template_id=stage_dict['task_template_id'],
         value=stage_dict['value'],
         id=None,
+        card_info_kanban=stage_dict['card_info_kanban'],
+        card_info_list=stage_dict['card_info_list'],
         stage_display_name=stage_dict['stage_display_name'],
         stage_display_logic=stage_dict['stage_display_logic']
     )
@@ -40,6 +42,8 @@ def validation_for_list_of_stages_dict(stages_dict: List[Dict]):
             "task_template_id": str,
             "stage_id": str,
             "value": int,
+            "card_info_kanban": str,
+            "card_info_list": str,
             "stage_display_name": str,
             "stage_display_logic": str
         }]
