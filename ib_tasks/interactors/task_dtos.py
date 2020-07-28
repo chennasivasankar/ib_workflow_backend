@@ -51,6 +51,10 @@ class GetTaskDetailsDTO:
     stage_id: str
 
 @dataclass
-class TaskStageCompleteDetailsDTO:
+class StageDetailsDTO:
     stage_details_dto: StageDetailsDTO
+
+
+@dataclass
+class StageAndActionsDetailsDTO(StageDetailsDTO):
     actions_dtos: List[ActionDetailsDTO]
