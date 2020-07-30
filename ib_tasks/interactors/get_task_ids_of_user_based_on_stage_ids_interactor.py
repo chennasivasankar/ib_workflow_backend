@@ -90,10 +90,10 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
                 LimitShouldBeGreaterThanZeroException
             raise LimitShouldBeGreaterThanZeroException
 
-        if offset < -1:
+        if offset < 0:
             from ib_tasks.exceptions.fields_custom_exceptions import \
-                OffsetShouldBeGreaterThanOrEqualToMinusOneException
-            raise OffsetShouldBeGreaterThanOrEqualToMinusOneException
+                OffsetShouldBeGreaterThanZeroException
+            raise OffsetShouldBeGreaterThanZeroException
 
     @staticmethod
     def _validate_stage_ids(valid_stage_ids: List[str],

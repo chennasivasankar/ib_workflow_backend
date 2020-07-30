@@ -52,12 +52,12 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def validate_task_id(self, task_id: int) -> bool:
+    def validate_task_id(self, task_id: str) -> bool:
         pass
 
     @abc.abstractmethod
     def get_task_group_of_fields_dto(
-            self, task_id: int) -> List[GroupOfFieldsDTO]:
+            self, task_id: str) -> List[GroupOfFieldsDTO]:
         pass
 
     @abc.abstractmethod
@@ -67,12 +67,12 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_status_variables_to_task(
-            self, task_id: int) -> List[StatusVariableDTO]:
+            self, task_id: str) -> List[StatusVariableDTO]:
         pass
 
     @abc.abstractmethod
     def get_enable_multiple_gofs_field_to_gof_ids(
-            self, task_id: int, gof_ids: List[str]) -> List[
+            self, task_id: str, gof_ids: List[str]) -> List[
         GOFMultipleEnableDTO]:
         pass
 

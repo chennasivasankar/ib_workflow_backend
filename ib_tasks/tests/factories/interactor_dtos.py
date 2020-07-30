@@ -24,8 +24,6 @@ class GetTaskDetailsDTOFactory(factory.Factory):
 
     task_id = factory.Sequence(lambda n: "task_id_%d" % (n + 1))
     stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n + 1))
-    task_id = factory.Sequence(lambda n: n + 1)
-    stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n + 1))
 
 
 class StageActionDTOFactory(factory.Factory):

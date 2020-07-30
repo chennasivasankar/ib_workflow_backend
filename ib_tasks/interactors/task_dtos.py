@@ -46,5 +46,5 @@ class TaskIdsDTO:
 
 @dataclass
 class GetTaskDetailsDTO:
-    task_id: int
+    task_id: str
     stage_id: str

@@ -15,13 +15,6 @@ class InvalidStageIdsListException(Exception):
     def __init__(self, invalid_stage_ids: List[str]):
         self.invalid_stage_ids = invalid_stage_ids
 
-class InvalidStageIds(Exception):
-    def __init__(self, stage_ids: List[str]):
-        self.stage_ids = stage_ids
-
-    def __str__(self):
-        return self.stage_ids
-
 
 class InvalidStageValues(Exception):
     def __init__(self, invalid_value_stages: List[str]):

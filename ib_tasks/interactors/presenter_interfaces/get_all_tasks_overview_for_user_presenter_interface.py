@@ -1,6 +1,10 @@
 import abc
 from typing import List
 
+from ib_tasks.interactors.presenter_interfaces.dtos import \
+    AllTasksOverviewDetailsDTO
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
+
 
 class GetAllTasksOverviewForUserPresenterInterface(abc.ABC):
 
@@ -10,9 +14,10 @@ class GetAllTasksOverviewForUserPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_offset_should_be_greater_than_or_equal_to_minus_one_exception(
+    def raise_offset_should_be_greater_than_zero_exception(
             self):
         pass
+
 
     @abc.abstractmethod
     def raise_stage_ids_empty_exception(
@@ -20,6 +25,6 @@ class GetAllTasksOverviewForUserPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_stage_ids(
-            self, invalid_stage_ids: List[str]):
+    def all_tasks_overview_details_response(
+            self, all_tasks_overview_details_dto: AllTasksOverviewDetailsDTO):
         pass

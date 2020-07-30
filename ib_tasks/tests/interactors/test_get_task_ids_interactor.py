@@ -56,8 +56,8 @@ class TestGetTaskIdsInteractor:
         stage_storage.get_existing_stage_ids.return_value = valid_stage_ids
         # Act
         from ib_tasks.exceptions.stage_custom_exceptions import \
-            InvalidStageIds
-        with pytest.raises(InvalidStageIds) as error:
+            InvalidStageIdsListException
+        with pytest.raises(InvalidStageIdsListException) as error:
             interactor.get_task_ids(task_details_configs=task_config_dtos)
 
         # Assert
