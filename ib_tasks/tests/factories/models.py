@@ -21,6 +21,7 @@ class TaskFactory(factory.django.DjangoModelFactory):
     template_id = "task_template_id_1"
     created_by = factory.Iterator([1, 2, 3, 4, 5, 6, 7])
 
+
 class StageModelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Stage
@@ -32,12 +33,14 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     display_logic = factory.Sequence(lambda n: "status_id_%d==stage_id" % n)
     field_display_config = ["FIELD_ID_1", "FIELD_ID_2"]
 
+
 class TaskStageModelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = TaskStage
 
     task = factory.SubFactory(TaskFactory)
     stage = factory.SubFactory(StageModelFactory)
+
 
 class TaskModelFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -99,7 +102,6 @@ class TaskTemplateGlobalConstantsFactory(factory.django.DjangoModelFactory):
     variable = factory.Sequence(lambda n: "variable%d" % n)
     value = factory.Sequence(lambda n: "value%d" % n)
     data_type = factory.Sequence(lambda n: "data_type_%d" % n)
-
 
 
 class GoFFactory(factory.django.DjangoModelFactory):

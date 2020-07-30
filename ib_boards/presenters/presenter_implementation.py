@@ -18,7 +18,7 @@ from ib_boards.interactors.storage_interfaces.dtos import (
 
 
 class GetBoardsPresenterImplementation(
-    GetBoardsPresenterInterface, HTTPResponseMixin):
+        GetBoardsPresenterInterface, HTTPResponseMixin):
 
     def get_response_for_user_have_no_access_for_boards(
             self) -> response.HttpResponse:
@@ -82,7 +82,7 @@ class GetBoardsPresenterImplementation(
 
 
 class GetBoardsDetailsPresenterImplementation(
-    GetBoardsDetailsPresenterInterface, HTTPResponseMixin):
+        GetBoardsDetailsPresenterInterface, HTTPResponseMixin):
 
     def get_response_for_invalid_board_ids(
             self, error) -> response.HttpResponse:
@@ -116,7 +116,7 @@ class GetBoardsDetailsPresenterImplementation(
 
 
 class GetColumnTasksPresenterImplementation(
-    GetColumnTasksPresenterInterface, HTTPResponseMixin):
+        GetColumnTasksPresenterInterface, HTTPResponseMixin):
 
     def get_response_for_the_invalid_column_id(self):
         from ib_boards.constants.exception_messages import INVALID_COLUMN_ID
@@ -138,15 +138,28 @@ class GetColumnTasksPresenterImplementation(
         pass
 
     def get_response_for_invalid_offset(self):
-        pass
+        from ib_boards.constants.exception_messages import INVALID_OFFSET_VALUE
+        response_dict = {
+            "response": INVALID_OFFSET_VALUE[0],
+            "http_status_code": 400,
+            "res_status": INVALID_OFFSET_VALUE[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict
+        )
 
     def get_response_for_invalid_limit(self):
-        pass
+        from ib_boards.constants.exception_messages import INVALID_LIMIT_VALUE
+        response_dict = {
+            "response": INVALID_LIMIT_VALUE[0],
+            "http_status_code": 400,
+            "res_status": INVALID_LIMIT_VALUE[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict
+        )
 
     def get_response_for_offset_exceeds_total_tasks(self):
-        pass
-
-    def get_response_for_invalid_stage_ids(self, error):
         pass
 
     def get_response_for_user_have_no_access_for_column(self):
@@ -160,9 +173,6 @@ class GetColumnTasksPresenterImplementation(
         return self.prepare_403_forbidden_response(
             response_dict=response_dict
         )
-
-    def get_response_for_invalid_stage_ids(self, error):
-        pass
 
 
 class PresenterImplementation(PresenterInterface, HTTPResponseMixin):

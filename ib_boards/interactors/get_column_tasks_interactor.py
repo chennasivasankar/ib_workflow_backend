@@ -82,18 +82,18 @@ class GetColumnTasksInteractor:
     def _validate_given_data(self, column_tasks_parameters):
         column_id = column_tasks_parameters.column_id
         self.storage.validate_column_id(column_id=column_id)
-        from ib_boards.adapters.service_adapter import get_service_adapter
-        service_adapter = get_service_adapter()
-        user_id = column_tasks_parameters.user_id
-        user_role = service_adapter.user_service.get_user_roles(
-            user_id=user_id)
-        self.storage.validate_user_role_with_column_roles(user_role=user_role)
         offset = column_tasks_parameters.offset
         limit = column_tasks_parameters.limit
         if offset < 0:
             raise InvalidOffsetValue
         if limit < 0:
             raise InvalidLimitValue
+        from ib_boards.adapters.service_adapter import get_service_adapter
+        service_adapter = get_service_adapter()
+        user_id = column_tasks_parameters.user_id
+        user_role = service_adapter.user_service.get_user_roles(
+            user_id=user_id)
+        self.storage.validate_user_role_with_column_roles(user_role=user_role)
 
     @staticmethod
     def _get_task_ids_with_respective_stages(

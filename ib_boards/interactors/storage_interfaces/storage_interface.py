@@ -3,7 +3,8 @@ from typing import List, Optional
 
 from ib_boards.exceptions.custom_exceptions import InvalidBoardId
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, BoardColumnsDTO
-from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO
+from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
+    ColumnStageIdsDTO
 from ib_boards.interactors.storage_interfaces.dtos import ColumnDetailsDTO
 from ib_boards.interactors.storage_interfaces.dtos import TaskBoardsDetailsDTO
 
@@ -99,4 +100,8 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_existing_board_ids(self) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_columns_stage_ids(self, column_ids) -> List[ColumnStageIdsDTO]:
         pass

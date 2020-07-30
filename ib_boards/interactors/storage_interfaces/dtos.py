@@ -68,3 +68,9 @@ class TaskBoardsDetailsDTO:
     board_dto: BoardDTO
     column_stage_dtos: List[ColumnStageDTO]
     columns_dtos: List[ColumnBoardDTO]
+
+
+@dataclass
+class ColumnStageIdsDTO:
+    column_id: str
+    stage_ids: List[str]

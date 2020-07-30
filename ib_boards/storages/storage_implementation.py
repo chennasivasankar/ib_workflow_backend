@@ -3,7 +3,7 @@ from typing import List, Tuple
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
     BoardColumnsDTO, TaskTemplateStagesDTO, TaskSummaryFieldsDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
-    ColumnDetailsDTO, TaskBoardsDetailsDTO
+    ColumnDetailsDTO, TaskBoardsDetailsDTO, ColumnStageIdsDTO
 from ib_boards.interactors.storage_interfaces.dtos import ColumnBoardDTO, \
     ColumnStageDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
@@ -258,7 +258,6 @@ class StorageImplementation(StorageInterface):
         task_templates_stages = Column.objects.filter(
             column_id=column_id
         ).values_list('task_selection_config', flat=True)
-        print(task_templates_stages)
         stage_ids = self._get_stage_ids_from_json_string(
             task_templates_stages[0]
         )
@@ -356,7 +355,8 @@ class StorageImplementation(StorageInterface):
             -> List[BoardColumnDTO]:
         pass
 
-    def _convert_column_details_to_dtos(self, column_objs,
+    @staticmethod
+    def _convert_column_details_to_dtos(column_objs,
                                         stage_ids):
         list_of_column_dtos = []
         for column_obj in column_objs:
@@ -383,3 +383,6 @@ class StorageImplementation(StorageInterface):
                             )
                         )
         return list_of_column_dtos, column_stages
+
+    def get_columns_stage_ids(self, column_ids) -> List[ColumnStageIdsDTO]:
+        pass
