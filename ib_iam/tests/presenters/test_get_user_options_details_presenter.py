@@ -28,5 +28,4 @@ class TestGetUserOptionsDetailsResponse:
             set_up)
 
         # Assert
-        print(resonse)
         snapshot.assert_match(resonse, 'user_options_details')
