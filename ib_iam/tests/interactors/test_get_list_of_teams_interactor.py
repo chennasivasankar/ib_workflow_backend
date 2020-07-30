@@ -18,6 +18,41 @@ from ib_iam.tests.factories.storage_dtos import (
 
 
 class TestGetListOfTeamsInteractor:
+    import pytest
+
+    @pytest.fixture
+    def expected_list_of_teams_dtos(self):
+        from ib_iam.tests.factories.storage_dtos import TeamDTOFactory
+        TeamDTOFactory.reset_sequence(1)
+        team_dtos = [TeamDTOFactory(team_id="1")]
+        return team_dtos
+
+    @pytest.fixture()
+    def expected_team_user_ids_dtos(self):
+        from ib_iam.tests.factories.storage_dtos import TeamUserIdsDTOFactory
+        team_user_ids_dtos = [
+            TeamUserIdsDTOFactory(team_id="1", user_ids=["2", "3"])
+        ]
+        return team_user_ids_dtos
+
+    @pytest.fixture
+    def expected_list_of_user_dtos(self):
+        from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
+        UserProfileDTOFactory.reset_sequence(2)
+        user_profile_dtos = [
+            UserProfileDTOFactory() for _ in range(2)
+        ]
+        return user_profile_dtos
+
+    @pytest.fixture()
+    def expected_list_of_member_dtos(self):
+        from ib_iam.tests.factories.storage_dtos import \
+            BasicUserDetailsDTOFactory
+        BasicUserDetailsDTOFactory.reset_sequence(2)
+        member_dtos = [
+            BasicUserDetailsDTOFactory() for _ in range(2)
+        ]
+        return member_dtos
 
     def test_if_user_not_admin_returns_unauthorized_response(self):
         from ib_iam.exceptions.custom_exceptions import UserHasNoAccess
@@ -27,9 +62,9 @@ class TestGetListOfTeamsInteractor:
         user_id = "1"
         pagination_dto = PaginationDTOFactory()
         storage.validate_is_user_admin \
-               .side_effect = UserHasNoAccess
+            .side_effect = UserHasNoAccess
         presenter.get_user_has_no_access_response_for_get_list_of_teams \
-                 .return_value = Mock()
+            .return_value = Mock()
 
         interactor.get_list_of_teams_wrapper(
             user_id=user_id, pagination_dto=pagination_dto,
@@ -40,7 +75,7 @@ class TestGetListOfTeamsInteractor:
             user_id=user_id
         )
         presenter.get_user_has_no_access_response_for_get_list_of_teams \
-                 .assert_called_once()
+            .assert_called_once()
 
     @pytest.mark.parametrize("limit", [-1, 0])
     def test_invalid_limit_returns_invalid_limit_response(self, limit):
@@ -48,7 +83,7 @@ class TestGetListOfTeamsInteractor:
         presenter = create_autospec(TeamPresenterInterface)
         interactor = GetListOfTeamsInteractor(storage=storage)
         presenter.get_invalid_limit_response_for_get_list_of_teams \
-                 .return_value = Mock()
+            .return_value = Mock()
         pagination_dto = PaginationDTOFactory(limit=limit)
 
         interactor.get_list_of_teams_wrapper(
@@ -56,7 +91,7 @@ class TestGetListOfTeamsInteractor:
         )
 
         presenter.get_invalid_limit_response_for_get_list_of_teams \
-                 .assert_called_once()
+            .assert_called_once()
 
     def test_invalid_offset_returns_invalid_offset_response(self):
         storage = create_autospec(TeamStorageInterface)
@@ -64,22 +99,19 @@ class TestGetListOfTeamsInteractor:
         interactor = GetListOfTeamsInteractor(storage=storage)
         pagination_dto = PaginationDTOFactory(offset=-1)
         presenter.get_invalid_offset_response_for_get_list_of_teams \
-                 .return_value = Mock()
+            .return_value = Mock()
 
         interactor.get_list_of_teams_wrapper(
             user_id="1", pagination_dto=pagination_dto, presenter=presenter
         )
 
         presenter.get_invalid_offset_response_for_get_list_of_teams \
-                 .assert_called_once()
+            .assert_called_once()
 
     def test_given_valid_details_returns_list_of_teams(
             self,
-            mocker,
-            expected_list_of_teams_dtos,
-            expected_team_user_ids_dtos,
-            expected_list_of_user_dtos,
-            expected_list_of_member_dtos
+            mocker, expected_list_of_teams_dtos, expected_team_user_ids_dtos,
+            expected_list_of_user_dtos, expected_list_of_member_dtos
     ):
         # Arrange or Setup
         from ib_iam.tests.common_fixtures.adapters.user_service_mocks import (
