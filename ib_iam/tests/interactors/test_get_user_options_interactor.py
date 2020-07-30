@@ -34,9 +34,9 @@ class TestGetUserOptionsInteractor:
     def storage_mock(self):
         from unittest import mock
         from ib_iam.interactors.storage_interfaces.\
-            get_user_options_storage_interface import \
-            GetUserOptionsStorageInterface
-        storage = mock.create_autospec(GetUserOptionsStorageInterface)
+            user_storage_interface import \
+            UserStorageInterface
+        storage = mock.create_autospec(UserStorageInterface)
         return storage
 
     @pytest.fixture

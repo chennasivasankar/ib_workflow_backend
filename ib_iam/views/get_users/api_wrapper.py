@@ -7,12 +7,12 @@ from ib_iam.interactors.get_users_list_interactor \
     import GetUsersDetailsInteractor
 from ib_iam.presenters.get_users_list_presenter_implementation \
     import GetUsersListPresenterImplementation
-from ib_iam.storages.get_users_list_storage_implementation import GetUsersListStorageImplementation
+from ib_iam.storages.user_storage_implementation import UserStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    storage = GetUsersListStorageImplementation()
+    storage = UserStorageImplementation()
     presenter = GetUsersListPresenterImplementation()
     interactor = GetUsersDetailsInteractor(storage=storage)
 

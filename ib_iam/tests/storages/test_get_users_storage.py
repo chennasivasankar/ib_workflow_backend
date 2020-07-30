@@ -3,8 +3,8 @@ from unittest.mock import patch
 
 import pytest
 
-from ib_iam.storages.get_users_list_storage_implementation \
-    import GetUsersListStorageImplementation
+from ib_iam.storages.user_storage_implementation \
+    import UserStorageImplementation
 
 from ib_iam.tests.common_fixtures.storages import \
     user_not_admin, users_company, users_team, users_role
@@ -103,7 +103,7 @@ class TestGetUsers:
         # Arrange
         user_id = "user0"
         expected_output = False
-        storage = GetUsersListStorageImplementation()
+        storage = UserStorageImplementation()
 
         # Act
         output = storage.check_is_admin_user(user_id=user_id)
@@ -117,7 +117,7 @@ class TestGetUsers:
         offset = 0
         limit = 10
         expected_output = user_dtos
-        storage = GetUsersListStorageImplementation()
+        storage = UserStorageImplementation()
 
         # Act
         output = storage.get_users_who_are_not_admins(0, 10)
@@ -130,7 +130,7 @@ class TestGetUsers:
         offset = 0
         limit = 10
         expected_output = 6
-        storage = GetUsersListStorageImplementation()
+        storage = UserStorageImplementation()
 
         # Act
         output = storage.get_total_count_of_users_for_query()
@@ -141,7 +141,7 @@ class TestGetUsers:
         # Arrange
         user_ids = ['user1', 'user2']
         expected_output = user_team_dtos
-        storage = GetUsersListStorageImplementation()
+        storage = UserStorageImplementation()
 
         # Act
         output = storage.get_team_details_of_users_bulk(user_ids=user_ids)
@@ -155,7 +155,7 @@ class TestGetUsers:
         # Arrange
         user_ids = ['user1', 'user2']
         expected_output = user_role_dtos
-        storage = GetUsersListStorageImplementation()
+        storage = UserStorageImplementation()
 
         # Act
         output = storage.get_role_details_of_users_bulk(user_ids=user_ids)
@@ -169,7 +169,7 @@ class TestGetUsers:
         # Arrange
         user_ids = ['user0', 'user1']
         expected_output = users_company_dtos
-        storage = GetUsersListStorageImplementation()
+        storage = UserStorageImplementation()
 
         # Act
         output = storage.get_company_details_of_users_bulk(user_ids=user_ids)
@@ -183,7 +183,7 @@ class TestGetUsers:
         from ib_iam.tests.factories.models import UserDetailsFactory
         user_profile_object = UserDetailsFactory()
 
-        storage = GetUsersListStorageImplementation()
+        storage = UserStorageImplementation()
 
         # Act
         is_admin = storage.check_is_admin_user(

@@ -1,6 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import List
 
+from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
+    UserRoleDTO, UserCompanyDTO, CompanyIdAndNameDTO, TeamIdAndNameDTO, \
+    RoleIdAndNameDTO
+
 
 class UserStorageInterface(ABC):
     @abstractmethod
@@ -50,4 +54,40 @@ class UserStorageInterface(ABC):
     @abstractmethod
     def add_new_user(self, user_id: str, is_admin: bool, company_id: str,
                      role_ids, team_ids: List[str]):
+        pass
+
+    @abstractmethod
+    def get_users_who_are_not_admins(self, offset: int, limit: int) -> List[
+        UserDTO]:
+        pass
+
+    @abstractmethod
+    def get_team_details_of_users_bulk(
+            self, user_ids: List[str]) -> List[UserTeamDTO]:
+        pass
+
+    @abstractmethod
+    def get_role_details_of_users_bulk(
+            self, user_ids: List[str]) -> List[UserRoleDTO]:
+        pass
+
+    @abstractmethod
+    def get_company_details_of_users_bulk(
+            self, user_ids: List[str]) -> List[UserCompanyDTO]:
+        pass
+
+    @abstractmethod
+    def get_total_count_of_users_for_query(self):
+        pass
+
+    @abstractmethod
+    def get_companies(self) -> List[CompanyIdAndNameDTO]:
+        pass
+
+    @abstractmethod
+    def get_teams(self) -> List[TeamIdAndNameDTO]:
+        pass
+
+    @abstractmethod
+    def get_roles(self) -> List[RoleIdAndNameDTO]:
         pass

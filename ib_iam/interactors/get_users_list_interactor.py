@@ -5,12 +5,12 @@ from ib_iam.interactors.presenter_interfaces.dtos \
     import ListOfCompleteUsersDTO
 from ib_iam.interactors.presenter_interfaces.get_users_list_presenter_interface \
     import GetUsersListPresenterInterface
-from ib_iam.interactors.storage_interfaces.get_users_list_storage_interface \
-    import GetUsersListStorageInterface
+from ib_iam.interactors.storage_interfaces.user_storage_interface \
+    import UserStorageInterface
 
 
 class GetUsersDetailsInteractor(ValidationMixin):
-    def __init__(self, storage: GetUsersListStorageInterface):
+    def __init__(self, storage: UserStorageInterface):
         self.storage = storage
 
     def get_users_details_wrapper(

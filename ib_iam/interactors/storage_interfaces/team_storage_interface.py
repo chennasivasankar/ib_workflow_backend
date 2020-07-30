@@ -21,28 +21,23 @@ class TeamStorageInterface:
 
     @abstractmethod
     def get_team_user_ids_dtos(
-            self, team_ids: List[str]
-    ) -> List[TeamUserIdsDTO]:
+            self, team_ids: List[str]) -> List[TeamUserIdsDTO]:
         pass
 
     @abstractmethod
     def get_team_id_if_team_name_already_exists(
-            self, name: str
-    ) -> Optional[str]:
+            self, name: str) -> Optional[str]:
         pass
 
     @abstractmethod
     def get_valid_user_ids_among_the_given_user_ids(
-            self, user_ids: List[str]
-    ) -> List[str]:
+            self, user_ids: List[str]) -> List[str]:
         pass
 
     @abstractmethod
     def add_team(
-            self,
-            user_id: str,
-            team_details_with_user_ids_dto: TeamDetailsWithUserIdsDTO
-    ) -> str:
+            self, user_id: str,
+            team_details_with_user_ids_dto: TeamDetailsWithUserIdsDTO) -> str:
         pass
 
     @abstractmethod
@@ -55,8 +50,7 @@ class TeamStorageInterface:
 
     @abstractmethod
     def update_team_details(
-            self, team_with_user_ids_dto: TeamWithUserIdsDTO
-    ):
+            self, team_with_user_ids_dto: TeamWithUserIdsDTO):
         pass
 
     @abstractmethod
