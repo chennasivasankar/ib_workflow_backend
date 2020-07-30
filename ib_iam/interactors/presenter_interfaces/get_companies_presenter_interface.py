@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import List
 
 from ib_iam.interactors.storage_interfaces.dtos import (
-    CompanyDTO, CompanyEmployeeIdsDTO, MemberDTO
+    CompanyDTO, CompanyEmployeeIdsDTO, EmployeeDTO
 )
 
 
@@ -12,7 +12,7 @@ from ib_iam.interactors.storage_interfaces.dtos import (
 class CompanyWithEmployeesDetailsDTO:
     company_dtos: List[CompanyDTO]
     company_employee_ids_dtos: List[CompanyEmployeeIdsDTO]
-    member_dtos: List[MemberDTO]
+    employee_dtos: List[EmployeeDTO]
 
 
 class GetCompaniesPresenterInterface(ABC):

@@ -51,6 +51,13 @@ class MemberDTO:
 
 
 @dataclass
+class EmployeeDTO:
+    employee_id: str
+    name: str
+    profile_pic_url: str
+
+
+@dataclass
 class CompanyNameLogoAndDescriptionDTO:
     name: str
     description: str
