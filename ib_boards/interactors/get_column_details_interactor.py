@@ -51,14 +51,14 @@ class GetColumnDetailsInteractor:
         column_stage_dtos = self.storage.get_columns_stage_ids(
             column_ids=column_ids
         )
-        return self._get_task_ids_for_given_stages(
+        task_ids_details = self._get_task_ids_for_given_stages(
             column_stage_dtos=column_stage_dtos,
             limit=limit,
             offset=offset
         )
 
     @staticmethod
-    def _get_task_ids_for_given_stages(column_stage_dtos, limit, offset):
+    def _get_task_ids_for_given_stages(column_stage_dtos, limit: int, offset: int):
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
@@ -74,7 +74,7 @@ class GetColumnDetailsInteractor:
         task_ids_details = service_adapter.task_service.get_task_ids_for_stage_ids(
             task_config_dtos=task_config_dto
         )
-        return task_ids_details[0]
+        return task_ids_details
 
     def _get_column_details_dto(self, board_id, user_id):
         user_service = get_service_adapter().iam_service
