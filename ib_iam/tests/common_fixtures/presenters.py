@@ -3,8 +3,8 @@ import pytest
 
 @pytest.fixture()
 def company_dtos():
-    from ib_iam.tests.factories.storage_dtos import CompanyDTOFactory
-    company_dtos = CompanyDTOFactory.create_batch(3)
+    from ib_iam.tests.factories.storage_dtos import CompanyIdAndNameDTOFactory
+    company_dtos = CompanyIdAndNameDTOFactory.create_batch(3)
     return company_dtos
 
 

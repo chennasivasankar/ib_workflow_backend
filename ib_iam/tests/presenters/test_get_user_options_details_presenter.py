@@ -13,8 +13,8 @@ class TestGetUserOptionsDetailsResponse:
         from ib_iam.tests.common_fixtures.reset_fixture \
             import reset_sequence_for_company_dto_factory
         reset_sequence_for_company_dto_factory()
-        from ib_iam.tests.factories.storage_dtos import CompanyDTOFactory
-        company_dtos = CompanyDTOFactory.create_batch(3)
+        from ib_iam.tests.factories.storage_dtos import CompanyIdAndNameDTOFactory
+        company_dtos = CompanyIdAndNameDTOFactory.create_batch(3)
         return company_dtos
 
     @pytest.fixture()

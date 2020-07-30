@@ -11,7 +11,7 @@ class UserDTO:
 
 
 @dataclass
-class CompanyDTO:
+class CompanyIdAndNameDTO:
     company_id: str
     company_name: str
 

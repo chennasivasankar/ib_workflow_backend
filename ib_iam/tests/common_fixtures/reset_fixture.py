@@ -19,8 +19,8 @@ def reset_sequence_for_dto_factory():
 
 
 def reset_sequence_for_company_dto_factory():
-    from ib_iam.tests.factories.storage_dtos import CompanyDTOFactory
-    CompanyDTOFactory.reset_sequence(0)
+    from ib_iam.tests.factories.storage_dtos import CompanyIdAndNameDTOFactory
+    CompanyIdAndNameDTOFactory.reset_sequence(0)
 
 
 def reset_sequence_for_user_dto_factory():

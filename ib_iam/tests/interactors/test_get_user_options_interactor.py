@@ -12,8 +12,8 @@ class TestGetUserOptionsInteractor:
     @pytest.fixture()
     def company_dtos(self):
         reset_sequence()
-        from ib_iam.tests.factories.storage_dtos import CompanyDTOFactory
-        company_dtos = CompanyDTOFactory.create_batch(4)
+        from ib_iam.tests.factories.storage_dtos import CompanyIdAndNameDTOFactory
+        company_dtos = CompanyIdAndNameDTOFactory.create_batch(4)
         return company_dtos
 
     @pytest.fixture()

@@ -2,7 +2,7 @@ import factory
 
 from ib_iam.interactors.storage_interfaces.dtos \
     import UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamIdAndNameDTO, \
-    CompanyDTO, RoleDTO, TeamDTO
+    CompanyIdAndNameDTO, RoleDTO, TeamDTO
 
 
 class UserDTOFactory(factory.Factory):
@@ -42,9 +42,9 @@ class UserRoleDTOFactory(factory.Factory):
     description = factory.Sequence(lambda n: 'payment_description%s' % n)
 
 
-class CompanyDTOFactory(factory.Factory):
+class CompanyIdAndNameDTOFactory(factory.Factory):
     class Meta:
-        model = CompanyDTO
+        model = CompanyIdAndNameDTO
 
     company_id = factory.Sequence(lambda n: 'Company%s' % n)
     company_name = factory.Sequence(lambda n: 'company %s' % n)

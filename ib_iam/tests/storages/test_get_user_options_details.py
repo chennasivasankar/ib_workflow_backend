@@ -42,12 +42,12 @@ class TestGetUserOptionsDetailsStorage:
     def test_get_companies(self, companies):
         # Arrange
         storage = GetUserOptionsStorageImplementation()
-        from ib_iam.interactors.storage_interfaces.dtos import CompanyDTO
+        from ib_iam.interactors.storage_interfaces.dtos import CompanyIdAndNameDTO
         expected_ouput = [
-            CompanyDTO(company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
-                       company_name='company 0'),
-            CompanyDTO(company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8332',
-                       company_name='company 1')]
+            CompanyIdAndNameDTO(company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
+                                company_name='company 0'),
+            CompanyIdAndNameDTO(company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8332',
+                                company_name='company 1')]
 
         # Act
         output = storage.get_companies()
