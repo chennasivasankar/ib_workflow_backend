@@ -11,8 +11,8 @@ class TestStorageImplementation:
         UserFactory.reset_sequence(1)
         user_object = UserFactory(is_admin=True)
 
-        from ib_iam.storages.storage_implementation import StorageImplementation
-        storage = StorageImplementation()
+        from ib_iam.storages.user_storage_implementation import UserStorageImplementation
+        storage = UserStorageImplementation()
 
         # Act
         is_admin = storage.check_is_admin_user(

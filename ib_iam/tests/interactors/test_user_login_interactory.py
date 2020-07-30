@@ -8,9 +8,9 @@ class TestLoginInteractor:
     def storage_mock_setup(self):
         from unittest.mock import create_autospec
 
-        from ib_iam.interactors.storage_interfaces.storage_interface import \
-            StorageInterface
-        storage = create_autospec(StorageInterface)
+        from ib_iam.interactors.storage_interfaces.user_storage_interface import \
+            UserStorageInterface
+        storage = create_autospec(UserStorageInterface)
         return storage
 
     @pytest.fixture()

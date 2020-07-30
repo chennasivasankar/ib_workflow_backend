@@ -13,10 +13,10 @@ class TestGetUserProfileInteractor:
 
     @pytest.fixture()
     def storage_mock(self):
-        from ib_iam.interactors.storage_interfaces.storage_interface import \
-            StorageInterface
+        from ib_iam.interactors.storage_interfaces.user_storage_interface import \
+            UserStorageInterface
         from unittest.mock import create_autospec
-        storage = create_autospec(StorageInterface)
+        storage = create_autospec(UserStorageInterface)
         return storage
 
     def test_invalid_email_raise_exception(self, mocker, presenter_mock,

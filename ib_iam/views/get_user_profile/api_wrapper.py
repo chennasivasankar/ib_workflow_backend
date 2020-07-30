@@ -7,8 +7,8 @@ from .validator_class import ValidatorClass
 def api_wrapper(*args, **kwargs):
     user = kwargs["user"]
     user_id = str(user.user_id)
-    from ib_iam.storages.storage_implementation import StorageImplementation
-    storage = StorageImplementation()
+    from ib_iam.storages.user_storage_implementation import UserStorageImplementation
+    storage = UserStorageImplementation()
 
     from ib_iam.presenters.get_user_profile_presenter_implementation import \
         GetUserProfilePresenterImplementation

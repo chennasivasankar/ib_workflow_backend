@@ -4,8 +4,8 @@ from ib_iam.exceptions.custom_exceptions import InvalidEmail, \
 from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
     AuthPresenterInterface
 
-from ib_iam.interactors.storage_interfaces.storage_interface import \
-    StorageInterface
+from ib_iam.interactors.storage_interfaces.user_storage_interface import \
+    UserStorageInterface
 
 
 class IncorrectPassword(Exception):
@@ -13,7 +13,7 @@ class IncorrectPassword(Exception):
 
 
 class LoginInteractor:
-    def __init__(self, storage: StorageInterface):
+    def __init__(self, storage: UserStorageInterface):
         self.storage = storage
 
     def login_wrapper(self, presenter: AuthPresenterInterface,

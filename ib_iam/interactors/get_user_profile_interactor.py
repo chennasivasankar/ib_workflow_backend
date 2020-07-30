@@ -1,11 +1,11 @@
 from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
     GetUserProfilePresenterInterface
-from ib_iam.interactors.storage_interfaces.storage_interface import \
-    StorageInterface
+from ib_iam.interactors.storage_interfaces.user_storage_interface import \
+    UserStorageInterface
 
 
 class GetUserProfileInteractor:
-    def __init__(self, storage: StorageInterface):
+    def __init__(self, storage: UserStorageInterface):
         self.storage = storage
 
     def get_user_profile_wrapper(self, user_id: str,
