@@ -68,8 +68,7 @@ class GOFMultipleStatusDTOFactory(factory.Factory):
         model = GOFMultipleEnableDTO
 
     multiple_status = True
-    group_of_field_id = factory.Sequence(lambda n: 'group_of_field_%d' %
-                                                   (n + 1))
+    group_of_field_id = factory.Sequence(lambda n: 'gof%d' % (n + 1))
 
 
 class ActionDTOFactory(factory.Factory):
@@ -334,16 +333,6 @@ class GoFToTaskTemplateDTOFactory(factory.Factory):
     enable_add_another = factory.Iterator([True, False])
 
 
-class TaskGoFDTOFactory(factory.Factory):
-    class Meta:
-        model = TaskGoFDTO
-
-    task_gof_id = factory.Sequence(lambda n: n)
-    gof_id = factory.Sequence(lambda n: "gof{}".format(n))
-    same_gof_order = 0
-
-
-
 class FieldDetailsDTOFactory(factory.Factory):
     class Meta:
         model = FieldDetailsDTO
@@ -352,6 +341,16 @@ class FieldDetailsDTOFactory(factory.Factory):
     field_type = "Drop down"
     key = "key"
     value = "value"
+
+
+class TaskGoFDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskGoFDTO
+
+    task_gof_id = factory.Sequence(lambda n: n)
+    gof_id = factory.Sequence(lambda n: "gof{}".format(n))
+    same_gof_order = 0
+
 
 class TaskGoFFieldDTOFactory(factory.Factory):
     class Meta:

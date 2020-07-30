@@ -74,7 +74,7 @@ class StagesStorageImplementation(StageStorageInterface):
         return stage_object
 
     def validate_stages_related_task_template_ids(self,
-                                                  task_stages_dto: TaskStagesDTO) -> \
+                                                  task_stages_dto: List[TaskStagesDTO]) -> \
             Optional[List[str]]:
         invalid_task_id_stages = []
         stage_ids = [stage.stage_id for stage in task_stages_dto]
@@ -172,14 +172,16 @@ class StorageImplementation(StorageInterface):
         action_obj = StageAction.objects.get(id=action_id)
         return action_obj.py_function_import_path
 
-    def update_status_variables_to_task(self, task_id: int,
-                                        status_variables_dto):
+    def update_status_variables_to_task(
+            self, task_id: int, status_variables_dto: List[StatusVariableDTO]):
+
         status_variable_objs = TaskStatusVariable.objects \
             .filter(task_id=task_id)
         status_variable_dict = \
             self._get_status_variable_dict(status_variable_objs)
         for status_variable_dto in status_variables_dto:
-            status_obj = status_variable_dict[status_variable_dto.status_id]
+            status_obj = \
+                status_variable_dict[status_variable_dto.status_id]
             status_obj.variable = status_variable_dto.status_variable
             status_obj.value = status_variable_dto.value
 
