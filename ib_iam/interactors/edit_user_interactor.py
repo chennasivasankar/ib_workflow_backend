@@ -8,12 +8,12 @@ from ib_iam.exceptions.custom_exceptions \
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.edit_user_presenter_interface \
     import EditUserPresenterInterface
-from ib_iam.interactors.storage_interfaces.edit_user_storage_interface \
-    import EditUserStorageInterface
+from ib_iam.interactors.storage_interfaces.user_storage_interface \
+    import UserStorageInterface
 
 
 class EditUserInteractor(ValidationMixin):
-    def __init__(self, storage: EditUserStorageInterface):
+    def __init__(self, storage: UserStorageInterface):
         self.storage = storage
 
     def edit_user_wrapper(
@@ -86,19 +86,19 @@ class EditUserInteractor(ValidationMixin):
         self._validate_company(company)
 
     def _validate_roles(self, roles):
-        are_valid = self.storage.validate_role_ids(role_ids=roles)
+        are_valid = self.storage.check_are_valid_role_ids(role_ids=roles)
         are_not_valid = not are_valid
         if are_not_valid:
             raise RoleIdsAreInvalid()
 
     def _validate_teams(self, teams):
-        are_valid = self.storage.validate_teams(team_ids=teams)
+        are_valid = self.storage.check_are_valid_team_ids(team_ids=teams)
         are_not_valid = not are_valid
         if are_not_valid:
             raise TeamIdsAreInvalid()
 
     def _validate_company(self, company):
-        is_valid = self.storage.validate_company(company_id=company)
+        is_valid = self.storage.check_is_exists_company_id(company_id=company)
         is_not_valid = not is_valid
         if is_not_valid:
             raise InvalidCompanyId()

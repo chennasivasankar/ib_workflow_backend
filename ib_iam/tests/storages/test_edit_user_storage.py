@@ -1,6 +1,6 @@
 import pytest
 
-from ib_iam.storages.edit_user_storage_implementation import EditUserStorageImplementation
+from ib_iam.storages.user_storage_implementation import UserStorageImplementation
 from ib_iam.tests.factories.models \
     import CompanyFactory, TeamFactory, RoleFactory, UserDetailsFactory, UserTeamFactory, UserRoleFactory
 
@@ -67,7 +67,7 @@ class TestEditUserStorage:
         user_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8444"
         is_admin = True
         company_id = 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331'
-        storage = EditUserStorageImplementation()
+        storage = UserStorageImplementation()
 
         # Act
         storage.change_company_for_user(
@@ -85,7 +85,7 @@ class TestEditUserStorage:
         user_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8444"
         role_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
                     "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
-        storage = EditUserStorageImplementation()
+        storage = UserStorageImplementation()
 
         # Act
         storage.add_roles_to_the_user(
@@ -104,7 +104,7 @@ class TestEditUserStorage:
         user_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8444"
         team_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
                     "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
-        storage = EditUserStorageImplementation()
+        storage = UserStorageImplementation()
 
         # Act
         storage.add_user_to_the_teams(
@@ -121,7 +121,7 @@ class TestEditUserStorage:
             self, model_reset_sequence, user_roles):
         # Arrange
         user_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8444"
-        storage = EditUserStorageImplementation()
+        storage = UserStorageImplementation()
 
         # Act
         storage.remove_roles_for_user(user_id=user_id)
@@ -136,7 +136,7 @@ class TestEditUserStorage:
             self, model_reset_sequence, user_teams):
         # Arrange
         user_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8444"
-        storage = EditUserStorageImplementation()
+        storage = UserStorageImplementation()
 
         # Act
         storage.remove_teams_for_user(user_id=user_id)
@@ -150,7 +150,7 @@ class TestEditUserStorage:
     def test_is_user_exist_returns_false_when_user_did_not_exist(self):
         # Arrange
         user_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8444"
-        storage = EditUserStorageImplementation()
+        storage = UserStorageImplementation()
 
         # Act
         is_exist = storage.is_user_exist(user_id=user_id)

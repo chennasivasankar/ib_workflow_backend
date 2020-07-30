@@ -3,12 +3,12 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
 from .validator_class import ValidatorClass
 from ib_iam.interactors.edit_user_interactor import EditUserInteractor
 from ib_iam.presenters.edit_user_presenter_implementation import EditUserPresenterImplementation
-from ib_iam.storages.edit_user_storage_implementation import EditUserStorageImplementation
+from ib_iam.storages.user_storage_implementation import UserStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    storage = EditUserStorageImplementation()
+    storage = UserStorageImplementation()
     presenter = EditUserPresenterImplementation()
     interactor = EditUserInteractor(storage=storage)
 

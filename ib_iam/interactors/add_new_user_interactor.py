@@ -10,12 +10,12 @@ from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, \
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.add_new_user_presenter_inerface \
     import AddUserPresenterInterface
-from ib_iam.interactors.storage_interfaces.add_new_user_storage_interface \
-    import AddNewUserStorageInterface
+from ib_iam.interactors.storage_interfaces.user_storage_interface \
+    import UserStorageInterface
 
 
 class AddNewUserInteractor(ValidationMixin):
-    def __init__(self, storage: AddNewUserStorageInterface):
+    def __init__(self, storage: UserStorageInterface):
         self.storage = storage
 
     def add_new_user_wrapper(
@@ -48,15 +48,22 @@ class AddNewUserInteractor(ValidationMixin):
 
     def add_new_user(self, user_id: str, name: str, email: str,
                      roles: List[str], teams: List[str], company_id: str):
-        self._check_and_throw_user_is_admin(user_id=user_id)
-        self._validate_name_and_throw_exception(name=name)
-        self._validate_email_and_throw_exception(email=email)
-        self._validate_values(roles, teams, company_id)
+        self._validate_add_new_user_details(user_id, name, email, roles, teams,
+                                            company_id)
         new_user_id = self._create_user_in_ib_users(email, name)
         role_ids = self.storage.get_role_objs_ids(roles)
         self.storage.add_new_user(
             user_id=new_user_id, is_admin=False, company_id=company_id,
             role_ids=role_ids, team_ids=teams)
+
+    def _validate_add_new_user_details(self, user_id, name, email, roles,
+                                       teams, company_id):
+        self._check_and_throw_user_is_admin(user_id=user_id)
+        self._validate_name_and_throw_exception(name=name)
+        self._validate_email_and_throw_exception(email=email)
+        self._validate_roles(roles=roles)
+        self._validate_teams(teams=teams)
+        self._validate_company_id(company_id=company_id)
 
     def _create_user_in_ib_users(self, email, name):
         new_user_id = self._create_user_account_with_email(email=email)
@@ -103,25 +110,20 @@ class AddNewUserInteractor(ValidationMixin):
         )
         return user_profile_dto
 
-    def _validate_values(self, roles, teams, company):
-        self._validate_roles(roles)
-        self._validate_teams(teams)
-        self._validate_company(company)
-
     def _validate_roles(self, roles):
-        are_valid = self.storage.validate_role_ids(role_ids=roles)
+        are_valid = self.storage.check_are_valid_role_ids(role_ids=roles)
         are_not_valid = not are_valid
         if are_not_valid:
             raise RoleIdsAreInvalid()
 
     def _validate_teams(self, teams):
-        are_valid = self.storage.validate_teams(team_ids=teams)
+        are_valid = self.storage.check_are_valid_team_ids(team_ids=teams)
         are_not_valid = not are_valid
         if are_not_valid:
             raise TeamIdsAreInvalid()
 
-    def _validate_company(self, company):
-        is_valid = self.storage.validate_company(company_id=company)
+    def _validate_company_id(self, company_id):
+        is_valid = self.storage.check_is_exists_company_id(company_id=company_id)
         is_not_valid = not is_valid
         if is_not_valid:
             raise InvalidCompanyId()

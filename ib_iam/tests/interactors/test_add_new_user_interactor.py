@@ -11,9 +11,9 @@ class TestAddNewUserIneractor:
     def storage_mock(self):
         from unittest import mock
 
-        from ib_iam.interactors.storage_interfaces.add_new_user_storage_interface \
-            import AddNewUserStorageInterface
-        storage = mock.create_autospec(AddNewUserStorageInterface)
+        from ib_iam.interactors.storage_interfaces.user_storage_interface \
+            import UserStorageInterface
+        storage = mock.create_autospec(UserStorageInterface)
         return storage
 
     @pytest.fixture
@@ -127,7 +127,7 @@ class TestAddNewUserIneractor:
         role_ids = ['role0', 'role1']
         company_id = 'company0'
         interactor = AddNewUserInteractor(storage=storage_mock)
-        storage_mock.validate_role_ids.return_value = False
+        storage_mock.check_are_valid_role_ids.return_value = False
         presenter_mock.raise_role_ids_are_invalid.return_value = Mock()
 
         # Act
@@ -137,7 +137,7 @@ class TestAddNewUserIneractor:
             presenter=presenter_mock)
 
         # Assert
-        storage_mock.validate_role_ids.assert_called_once()
+        storage_mock.check_are_valid_role_ids.assert_called_once()
         presenter_mock.raise_role_ids_are_invalid.assert_called_once()
 
     def test_validate_teams_and_throw_exception(self, storage_mock,
@@ -150,7 +150,7 @@ class TestAddNewUserIneractor:
         role_ids = ['role0', 'role1']
         company_id = 'company0'
         interactor = AddNewUserInteractor(storage=storage_mock)
-        storage_mock.validate_teams.return_value = False
+        storage_mock.check_are_valid_team_ids.return_value = False
         presenter_mock.raise_team_ids_are_invalid.return_value = Mock()
 
         # Act
@@ -160,7 +160,7 @@ class TestAddNewUserIneractor:
             presenter=presenter_mock)
 
         # Assert
-        storage_mock.validate_teams.assert_called_once()
+        storage_mock.check_are_valid_team_ids.assert_called_once()
         presenter_mock.raise_team_ids_are_invalid.assert_called_once()
 
     def test_validate_company_id_and_throw_exception(self, storage_mock,
@@ -173,7 +173,7 @@ class TestAddNewUserIneractor:
         role_ids = ['role0', 'role1']
         company_id = 'company0'
         interactor = AddNewUserInteractor(storage=storage_mock)
-        storage_mock.validate_company.return_value = False
+        storage_mock.check_is_exists_company_id.return_value = False
         presenter_mock.raise_company_ids_is_invalid.return_value = Mock()
 
         # Act
@@ -183,7 +183,7 @@ class TestAddNewUserIneractor:
             presenter=presenter_mock)
 
         # Assert
-        storage_mock.validate_company.assert_called_once()
+        storage_mock.check_is_exists_company_id.assert_called_once()
         presenter_mock.raise_company_ids_is_invalid.assert_called_once()
 
     def test_create_user_account_with_email_already_exist_throws_exception(

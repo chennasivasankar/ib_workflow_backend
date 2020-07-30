@@ -10,9 +10,9 @@ class TestEditNewUserInteractor:
     def storage_mock(self):
         from unittest import mock
         from ib_iam.interactors.storage_interfaces. \
-            edit_user_storage_interface \
-            import EditUserStorageInterface
-        storage = mock.create_autospec(EditUserStorageInterface)
+            user_storage_interface \
+            import UserStorageInterface
+        storage = mock.create_autospec(UserStorageInterface)
         return storage
 
     @pytest.fixture
@@ -141,7 +141,9 @@ class TestEditNewUserInteractor:
 
         interactor = EditUserInteractor(storage=storage_mock)
         storage_mock.check_is_admin_user.return_value = True
-        storage_mock.validate_role_ids.return_value = False
+        storage_mock.check_are_valid_role_ids.return_value = False
+        storage_mock.check_are_valid_team_ids.return_value = True
+        storage_mock.check_is_exists_company_id.return_value = True
         presenter_mock.raise_role_ids_are_invalid.return_value = Mock()
 
         # Act
@@ -152,7 +154,7 @@ class TestEditNewUserInteractor:
             presenter=presenter_mock)
 
         # Assert
-        storage_mock.validate_role_ids.assert_called_once()
+        storage_mock.check_are_valid_role_ids.assert_called_once()
         presenter_mock.raise_role_ids_are_invalid.assert_called_once()
 
     def test_validate_teams_and_throw_exception(
@@ -168,7 +170,7 @@ class TestEditNewUserInteractor:
 
         interactor = EditUserInteractor(storage=storage_mock)
         storage_mock.check_is_admin_user.return_value = True
-        storage_mock.validate_teams.return_value = False
+        storage_mock.check_are_valid_team_ids.return_value = False
         presenter_mock.raise_team_ids_are_invalid.return_value = Mock()
 
         # Act
@@ -179,7 +181,7 @@ class TestEditNewUserInteractor:
             presenter=presenter_mock)
 
         # Assert
-        storage_mock.validate_teams.assert_called_once()
+        storage_mock.check_are_valid_team_ids.assert_called_once()
         presenter_mock.raise_team_ids_are_invalid.assert_called_once()
 
     def test_validate_company_id_and_throw_exception(
@@ -195,7 +197,9 @@ class TestEditNewUserInteractor:
 
         interactor = EditUserInteractor(storage=storage_mock)
         storage_mock.check_is_admin_user.return_value = True
-        storage_mock.validate_company.return_value = False
+        storage_mock.check_are_valid_role_ids.return_value = True
+        storage_mock.check_are_valid_team_ids.return_value = True
+        storage_mock.check_is_exists_company_id.return_value = False
         presenter_mock.raise_company_ids_is_invalid.return_value = Mock()
 
         # Act
@@ -206,7 +210,7 @@ class TestEditNewUserInteractor:
             presenter=presenter_mock)
 
         # Assert
-        storage_mock.validate_company.assert_called_once()
+        storage_mock.check_is_exists_company_id.assert_called_once()
         presenter_mock.raise_company_ids_is_invalid.assert_called_once()
 
     def test_edit_user_when_user_does_not_exist_raise_exception(

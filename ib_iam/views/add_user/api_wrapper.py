@@ -4,13 +4,13 @@ from .validator_class import ValidatorClass
 from ib_iam.interactors.add_new_user_interactor import AddNewUserInteractor
 from ib_iam.presenters.add_new_user_presenter_implementation \
     import AddUserPresenterImplementation
-from ib_iam.storages.add_new_user_storage_implementation \
-    import AddNewUserStorageImplementation
+from ib_iam.storages.user_storage_implementation \
+    import UserStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    storage = AddNewUserStorageImplementation()
+    storage = UserStorageImplementation()
     presenter = AddUserPresenterImplementation()
     interactor = AddNewUserInteractor(storage=storage)
 

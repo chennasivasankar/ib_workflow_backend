@@ -1,7 +1,7 @@
 import pytest
 
-from ib_iam.storages.add_new_user_storage_implementation \
-    import AddNewUserStorageImplementation
+from ib_iam.storages.user_storage_implementation \
+    import UserStorageImplementation
 from ib_iam.tests.factories.models import CompanyFactory, TeamFactory, RoleFactory
 
 
@@ -50,7 +50,7 @@ class TestAddNewUserStorage:
         role_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
                     "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
         company_id = 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331'
-        storage = AddNewUserStorageImplementation()
+        storage = UserStorageImplementation()
 
         # Act
         storage.add_new_user(
@@ -66,13 +66,13 @@ class TestAddNewUserStorage:
     def test_validate_role_ids_when_invalid_then_returns_false(
             self, reset_sequence_for_model_factories, roles):
         # Arrange
-        storage = AddNewUserStorageImplementation()
+        storage = UserStorageImplementation()
         role_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8000",
                     "ef6d1fc6-ac3f-4d2d-a983-752c992e8000"]
         expected_output = False
 
         # Act
-        output = storage.validate_role_ids(role_ids=role_ids)
+        output = storage.check_are_valid_role_ids(role_ids=role_ids)
 
         # Assert
         assert output == expected_output
@@ -81,13 +81,13 @@ class TestAddNewUserStorage:
     def test_validate_teams_if_invalid_returns_false(
             self, reset_sequence_for_model_factories, teams):
         # Arrange
-        storage = AddNewUserStorageImplementation()
+        storage = UserStorageImplementation()
         team_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8333",
                     "ef6d1fc6-ac3f-4d2d-a983-752c992e8344"]
         expected_output = False
 
         # Act
-        output = storage.validate_teams(team_ids=team_ids)
+        output = storage.check_are_valid_team_ids(team_ids=team_ids)
 
         # Assert
         assert output == expected_output
@@ -96,12 +96,12 @@ class TestAddNewUserStorage:
     def test_validate_company_when_invalid_returns_false(
             self, reset_sequence_for_model_factories, companies):
         # Arrange
-        storage = AddNewUserStorageImplementation()
+        storage = UserStorageImplementation()
         comapany_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8333"
         expected_output = False
 
         # Act
-        output = storage.validate_company(company_id=comapany_id)
+        output = storage.check_is_exists_company_id(company_id=comapany_id)
 
         # Assert
         assert output == expected_output

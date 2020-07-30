@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List
 
 
-class EditUserStorageInterface(ABC):
+class UserStorageInterface(ABC):
     @abstractmethod
     def check_is_admin_user(self, user_id: str) -> bool:
         pass
@@ -16,15 +16,15 @@ class EditUserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def validate_role_ids(self, role_ids):
+    def check_are_valid_role_ids(self, role_ids) -> bool:
         pass
 
     @abstractmethod
-    def validate_company(self, company_id):
+    def check_is_exists_company_id(self, company_id) -> bool:
         pass
 
     @abstractmethod
-    def validate_teams(self, team_ids):
+    def check_are_valid_team_ids(self, team_ids) -> bool:
         pass
 
     @abstractmethod
@@ -45,4 +45,9 @@ class EditUserStorageInterface(ABC):
 
     @abstractmethod
     def change_company_for_user(self, company_id: str, user_id: str):
+        pass
+
+    @abstractmethod
+    def add_new_user(self, user_id: str, is_admin: bool, company_id: str,
+                     role_ids, team_ids: List[str]):
         pass
