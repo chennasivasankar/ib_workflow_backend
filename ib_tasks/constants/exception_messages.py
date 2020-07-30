@@ -85,8 +85,9 @@ EMPTY_VALUE_FOR_PLAIN_TEXT_FIELD = [
 LIMIT_SHOULD_BE_GREATER_THAN_ZERO = ("Limit value should be greater than zero",
                                      "LIMIT_SHOULD_BE_GREATER_THAN_ZERO")
 
-OFFSET_SHOULD_BE_GREATER_THAN_ZERO = ("Offset value should be greater than zero",
-                                     "OFFSET_SHOULD_BE_GREATER_THAN_ZERO")
+OFFSET_SHOULD_BE_GREATER_THAN_ZERO = (
+"Offset value should be greater than zero",
+"OFFSET_SHOULD_BE_GREATER_THAN_ZERO")
 
 OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE = (
     "Offset should be greater than or equal to minus one",
@@ -108,5 +109,4 @@ INVALID_ACTION_ID = [
 ]
 
 EMPTY_STAGE_IDS_ARE_INVALID = ["Stage Ids list should not be empty",
-                   "EMPTY_STAGE_IDS"]
-
+                               "EMPTY_STAGE_IDS_ARE_INVALID"]

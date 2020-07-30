@@ -41,13 +41,13 @@ class StageDTO:
 
 @dataclass
 class TaskStageIdsDTO:
-    task_id: str
+    task_id: int
     stage_id: str
 
 
 @dataclass
 class GetTaskStageCompleteDetailsDTO:
-    task_id: str
+    task_id: int
     stage_id: str
     field_dtos: List[FieldDetailsDTO]
     action_dtos: List[ActionDetailsDTO]
@@ -69,16 +69,16 @@ class StageValueDTO:
 @dataclass
 class TaskIdWithStageValueDTO:
     stage_value: int
-    task_id: str
+    task_id: int
 
 
 @dataclass
 class StageValueWithTaskIdsDTO:
-    task_ids: List[str]
+    task_ids: List[int]
     stage_value: int
 
 @dataclass
 class TaskIdWithStageDetailsDTO:
-    task_id: str
+    task_id: int
     stage_id: str
     stage_display_name: str

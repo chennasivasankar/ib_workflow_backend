@@ -29,7 +29,7 @@ class FieldsStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_valid_task_ids(self, task_ids: List[str]) -> Optional[List[int]]:
+    def get_valid_task_ids(self, task_ids: List[int]) -> Optional[List[int]]:
         pass
 
     @abc.abstractmethod

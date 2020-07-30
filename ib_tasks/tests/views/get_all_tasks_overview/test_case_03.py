@@ -1,12 +1,12 @@
 """
-# Given invalid limit value raise exception
+# Given no data raise empty stage ids exception
 """
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01GetAllTasksOverviewAPITestCase(TestUtils):
+class TestCase03GetAllTasksOverviewAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -17,7 +17,7 @@ class TestCase01GetAllTasksOverviewAPITestCase(TestUtils):
     def test_case(self, snapshot):
         body = {}
         path_params = {}
-        query_params = {'limit': 0, 'offset': 18}
+        query_params = {'limit': 1, 'offset': 0}
         headers = {}
         response = self.default_test_case(
             body=body, path_params=path_params,

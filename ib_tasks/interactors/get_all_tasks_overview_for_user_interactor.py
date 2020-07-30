@@ -59,6 +59,7 @@ class GetAllTasksOverviewForUserInteractor:
             self, user_id_with_pagination_dto: UserIdPaginationDTO):
         user_id = user_id_with_pagination_dto.user_id
         stage_ids = self._get_allowed_stage_ids_of_user(user_id=user_id)
+        print("stage_ids", stage_ids)
         from ib_tasks.interactors.stages_dtos import \
             UserStagesWithPaginationDTO
         user_stages_with_pagination_dto = UserStagesWithPaginationDTO(
@@ -68,6 +69,9 @@ class GetAllTasksOverviewForUserInteractor:
             offset=user_id_with_pagination_dto.offset)
         task_id_with_stage_details_dtos = self._get_task_ids_of_user(
             user_stages_with_pagination_dto)
+
+        print("task_id_with_stage_details_dtos",
+              task_id_with_stage_details_dtos)
 
         from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
         task_id_with_stage_id_dtos = [

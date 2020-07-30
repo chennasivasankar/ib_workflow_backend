@@ -92,6 +92,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
 
     def get_field_ids(self, task_dtos: List[TaskTemplateStageDTO]) -> \
             List[TaskTemplateStageFieldsDTO]:
+        print(Stage.objects.all().values())
         task_stages_dict = {}
         for item in task_dtos:
             task_stages_dict[item.stage_id] = item.task_id

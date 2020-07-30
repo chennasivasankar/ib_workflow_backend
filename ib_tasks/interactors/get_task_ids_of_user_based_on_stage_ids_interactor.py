@@ -31,8 +31,8 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
         given_unique_stage_ids = sorted(list(set(given_stage_ids)))
         valid_stage_ids = self.stage_storage. \
             get_valid_stage_ids_in_given_stage_ids(given_unique_stage_ids)
-        self._validate_stage_ids(valid_stage_ids, given_unique_stage_ids)
 
+        self._validate_stage_ids(valid_stage_ids, given_unique_stage_ids)
         task_id_with_max_stage_value_dtos = self.task_storage. \
             get_user_task_and_max_stage_value_dto_based_on_given_stage_ids(
             user_id=user_id, stage_ids=valid_stage_ids, limit=limit,
@@ -43,6 +43,7 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
             for task_id_with_max_stage_value_dto in
             task_id_with_max_stage_value_dtos
         ]
+        stage_values = sorted(list(set(stage_values)))
         task_ids_group_by_stage_value_dtos = \
             self.get_task_ids_group_by_stage_value_dtos(
                 stage_values, task_id_with_max_stage_value_dtos

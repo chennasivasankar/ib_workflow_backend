@@ -1020,7 +1020,14 @@
             ]
           }
         ],
-        "parameters": [],
+        "parameters": [
+           {
+            "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetParameter"
+          }
+        ],
         "responses": {
           "200": {
             "$ref": "#/responses/AllTasksOverviewResponse"

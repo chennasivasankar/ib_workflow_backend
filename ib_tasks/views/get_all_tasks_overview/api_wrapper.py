@@ -1,48 +1,40 @@
+import json
+
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 from .validator_class import ValidatorClass
+from ...interactors.get_all_tasks_overview_for_user_interactor import \
+    GetAllTasksOverviewForUserInteractor, UserIdPaginationDTO
+from ...presenters.get_all_tasks_overview_for_user_presenter_impl import \
+    GetAllTasksOverviewForUserPresenterImpl
+from ...storages.fields_storage_implementation import \
+    FieldsStorageImplementation
+from ...storages.storage_implementation import StagesStorageImplementation
+from ...storages.tasks_storage_implementation import TasksStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    # ---------MOCK IMPLEMENTATION---------
+    user = kwargs['user']
+    print("user_id", str(user.id))
+    params = kwargs['query_params']
+    offset = params['offset']
+    limit = params['limit']
 
-    try:
-        from ib_tasks.views.get_all_tasks_overview.request_response_mocks \
-            import REQUEST_BODY_JSON
-        body = REQUEST_BODY_JSON
-    except ImportError:
-        body = {}
+    user_id_with_pagination_dto = UserIdPaginationDTO(user_id=str(user.id),
+                                                      offset=offset,
+                                                      limit=limit)
+    presenter = GetAllTasksOverviewForUserPresenterImpl()
+    stage_storage = StagesStorageImplementation()
+    task_storage = TasksStorageImplementation()
+    field_storage = FieldsStorageImplementation()
 
-    test_case = {
-        "path_params": {},
-        "query_params": {},
-        "header_params": {},
-        "body": body,
-        "securities": [{'oauth': ['read']}]
-    }
-
-    from django_swagger_utils.drf_server.utils.server_gen.mock_response \
-        import mock_response
-    try:
-        response = ''
-        status_code = 200
-        if '200' in ['200', '400']:
-            from ib_tasks.views.get_all_tasks_overview.request_response_mocks \
-                import RESPONSE_200_JSON
-            response = RESPONSE_200_JSON
-            status_code = 200
-        elif '201' in ['200', '400']:
-            from ib_tasks.views.get_all_tasks_overview.request_response_mocks \
-                import RESPONSE_201_JSON
-            response = RESPONSE_201_JSON
-            status_code = 201
-    except ImportError:
-        response = ''
-        status_code = 200
-    response_tuple = mock_response(
-        app_name="ib_tasks", test_case=test_case,
-        operation_name="get_all_tasks_overview",
-        kwargs=kwargs, default_response_body=response,
-        group_name="", status_code=status_code)
-    return response_tuple
+    interactor = GetAllTasksOverviewForUserInteractor(
+        stage_storage=stage_storage,
+        task_storage=task_storage,
+        field_storage=field_storage)
+    response = interactor. \
+        get_all_tasks_overview_for_user_wrapper(presenter=presenter,
+                                                user_id_with_pagination_dto=
+                                                user_id_with_pagination_dto)
+    return response
