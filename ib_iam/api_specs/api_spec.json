@@ -50,6 +50,25 @@
         "profile_pic_url"
       ]
     },
+    "EmployeeDetails": {
+      "type": "object",
+      "properties": {
+        "employee_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "profile_pic_url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "employee_id",
+        "name",
+        "profile_pic_url"
+      ]
+    },
     "TeamNameAndDescription": {
       "type": "object",
       "properties": {
@@ -124,7 +143,7 @@
             "employees": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/MemberDetails"
+                "$ref": "#/definitions/EmployeeDetails"
               }
             }
           },
@@ -411,27 +430,6 @@
         }
       ]
     },
-    "UnauthorizedResponseForAddCompany": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/CommonHttpExceptionFields"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "res_status": {
-              "type": "string",
-              "enum": [
-                "USER_HAS_NO_ACCESS"
-              ]
-            }
-          },
-          "required": [
-            "res_status"
-          ]
-        }
-      ]
-    },
     "CompanyNameAlreadyExistsOrDuplicateUsersException": {
       "allOf": [
         {
@@ -541,7 +539,7 @@
       "name": "company_id",
       "in": "path",
       "required": true,
-      "description": "company_id to identify a team",
+      "description": "company_id to identify a company",
       "type": "string",
       "format": "uuid"
     },
@@ -665,7 +663,7 @@
       }
     },
     "SuccessForGetCompaniesResponse": {
-      "description": "returns all companies and total companies count",
+      "description": "returns all companies with their employee details",
       "schema": {
         "type": "object",
         "properties": {

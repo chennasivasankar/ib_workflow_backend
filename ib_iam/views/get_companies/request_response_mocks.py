@@ -11,7 +11,7 @@ RESPONSE_200_JSON = """
             "company_id": "string",
             "employees": [
                 {
-                    "member_id": "string",
+                    "employee_id": "string",
                     "name": "string",
                     "profile_pic_url": "string"
                 }

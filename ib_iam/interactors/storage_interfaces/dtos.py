@@ -70,7 +70,7 @@ class CompanyDTO(CompanyNameLogoAndDescriptionDTO):
 
 
 @dataclass
-class CompanyEmployeeIdsDTO:
+class CompanyIdWithEmployeeIdsDTO:
     company_id: str
     employee_ids: List[str]
 

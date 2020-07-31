@@ -4,14 +4,14 @@ from dataclasses import dataclass
 from typing import List
 
 from ib_iam.interactors.storage_interfaces.dtos import (
-    CompanyDTO, CompanyEmployeeIdsDTO, EmployeeDTO
+    CompanyDTO, CompanyIdWithEmployeeIdsDTO, EmployeeDTO
 )
 
 
 @dataclass
 class CompanyWithEmployeesDetailsDTO:
     company_dtos: List[CompanyDTO]
-    company_employee_ids_dtos: List[CompanyEmployeeIdsDTO]
+    company_id_with_employee_ids_dtos: List[CompanyIdWithEmployeeIdsDTO]
     employee_dtos: List[EmployeeDTO]
 
 

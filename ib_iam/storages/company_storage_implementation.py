@@ -3,9 +3,10 @@ from ib_iam.interactors.storage_interfaces.company_storage_interface import \
     CompanyStorageInterface
 from ib_iam.models import UserDetails, Company
 from ib_iam.interactors.storage_interfaces.dtos import (
-    CompanyDTO, CompanyWithEmployeesCountDTO, CompanyDetailsWithUserIdsDTO,
-    CompanyWithUserIdsDTO
-)
+    CompanyDTO,
+    CompanyIdWithEmployeeIdsDTO,
+    CompanyDetailsWithUserIdsDTO,
+    CompanyWithUserIdsDTO)
 
 
 class CompanyStorageImplementation(CompanyStorageInterface):
@@ -26,17 +27,24 @@ class CompanyStorageImplementation(CompanyStorageInterface):
         ]
         return company_dtos
 
-    def get_company_with_employees_count_dtos(self) -> \
-            List[CompanyWithEmployeesCountDTO]:
-        from django.db.models import Count
-        company_with_employees_count_objects = \
-            Company.objects.all().annotate(employees_count=Count("users"))
-        company_with_employees_count_dtos = [
-            self._convert_company_with_employees_count_object_to_dto(
-                company_with_employees_count_object=company_with_employees_count_object)
-            for company_with_employees_count_object in company_with_employees_count_objects
+    def get_company_employee_ids_dtos(self, company_ids: List[str]) -> \
+            List[CompanyIdWithEmployeeIdsDTO]:
+        company_employees = \
+            UserDetails.objects.filter(company_id__in=company_ids) \
+                .values_list('company_id', 'user_id')
+        from collections import defaultdict
+        company_employee_ids_dictionary = defaultdict(list)
+        for company_employee in company_employees:
+            company_id = str(company_employee[0])
+            company_employee_ids_dictionary[company_id].extend([
+                company_employee[1]])
+        company_employee_ids_dtos = [
+            CompanyIdWithEmployeeIdsDTO(
+                company_id=company_id,
+                employee_ids=company_employee_ids_dictionary[company_id]
+            ) for company_id in company_ids
         ]
-        return company_with_employees_count_dtos
+        return company_employee_ids_dtos
 
     @staticmethod
     def _convert_company_object_to_company_dto(company_object) -> CompanyDTO:
@@ -44,18 +52,8 @@ class CompanyStorageImplementation(CompanyStorageInterface):
             company_id=str(company_object.company_id),
             name=company_object.name,
             description=company_object.description,
-            logo_url=company_object.logo_url
-        )
+            logo_url=company_object.logo_url)
         return company_dto
-
-    @staticmethod
-    def _convert_company_with_employees_count_object_to_dto(
-            company_with_employees_count_object) -> CompanyWithEmployeesCountDTO:
-        company_with_employees_count_dto = CompanyWithEmployeesCountDTO(
-            company_id=str(company_with_employees_count_object.company_id),
-            no_of_employees=company_with_employees_count_object.employees_count
-        )
-        return company_with_employees_count_dto
 
     def get_valid_user_ids_among_the_given_user_ids(self, user_ids: List[str]):
         user_ids = UserDetails.objects.filter(user_id__in=user_ids) \
@@ -72,13 +70,11 @@ class CompanyStorageImplementation(CompanyStorageInterface):
     def add_company(
             self,
             user_id: str,
-            company_details_with_user_ids_dto: CompanyDetailsWithUserIdsDTO
-    ):
+            company_details_with_user_ids_dto: CompanyDetailsWithUserIdsDTO):
         company_object = Company.objects.create(
             name=company_details_with_user_ids_dto.name,
             description=company_details_with_user_ids_dto.description,
-            logo_url=company_details_with_user_ids_dto.logo_url
-        )
+            logo_url=company_details_with_user_ids_dto.logo_url)
         return str(company_object.company_id)
 
     def add_users_to_company(self, company_id: str, user_ids: List[str]):
@@ -96,19 +92,19 @@ class CompanyStorageImplementation(CompanyStorageInterface):
         Company.objects.filter(company_id=company_id).delete()
 
     def update_company_details(
-            self, company_with_user_ids_dto: CompanyWithUserIdsDTO
-    ):
-        Company.objects\
-               .filter(company_id=company_with_user_ids_dto.company_id) \
-               .update(name=company_with_user_ids_dto.name,
-                       description=company_with_user_ids_dto.description,
-                       logo_url=company_with_user_ids_dto.logo_url)
+            self, company_with_user_ids_dto: CompanyWithUserIdsDTO):
+        Company.objects \
+            .filter(company_id=company_with_user_ids_dto.company_id) \
+            .update(name=company_with_user_ids_dto.name,
+                    description=company_with_user_ids_dto.description,
+                    logo_url=company_with_user_ids_dto.logo_url)
 
     def get_employee_ids_of_company(self, company_id: str):
         user_ids = UserDetails.objects.filter(company_id=company_id) \
             .values_list("user_id", flat=True)
         return list(user_ids)
 
-    def delete_employees_from_company(self, company_id: str, employee_ids: List[str]):
+    def delete_employees_from_company(self, company_id: str,
+                                      employee_ids: List[str]):
         UserDetails.objects.filter(user_id__in=employee_ids,
                                    company_id=company_id).delete()

@@ -17,7 +17,7 @@ def create_company():
 @pytest.mark.django_db
 class TestUpdateCompanyDetails:
     def test_whether_it_updates_the_company_details(self, create_company):
-        company_id = create_company
+        company_id = create_company.company_id
         expected_company_name = "new team"
         expected_description = "description"
         expected_logo_url = ""
@@ -26,8 +26,8 @@ class TestUpdateCompanyDetails:
             company_id=company_id,
             name=expected_company_name,
             description=expected_description,
-            logo_url=expected_logo_url
-        )
+            logo_url=expected_logo_url,
+            user_ids=[])
 
         storage.update_company_details(
             company_with_user_ids_dto=company_with_user_ids_dto)

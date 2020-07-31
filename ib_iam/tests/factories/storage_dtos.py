@@ -1,4 +1,6 @@
 import factory, factory.django
+
+from ib_iam.interactors.storage_interfaces.dtos import EmployeeDTO
 from ib_iam.interactors.storage_interfaces.dtos import (
     MemberDTO,
     TeamDTO,
@@ -9,7 +11,7 @@ from ib_iam.interactors.storage_interfaces.dtos import (
     TeamDetailsWithUserIdsDTO,
     TeamWithUserIdsDTO,
     CompanyDTO,
-    CompanyWithEmployeesCountDTO,
+    CompanyIdWithEmployeeIdsDTO,
     CompanyNameLogoAndDescriptionDTO,
     CompanyDetailsWithUserIdsDTO,
     CompanyWithUserIdsDTO
@@ -21,13 +23,14 @@ team_ids = [
     "c982032b-53a7-4dfa-a627-4701a5230765"
 ]
 
-member_ids = [
+user_ids = [
     '2bdb417e-4632-419a-8ddd-085ea272c6eb',
     '548a803c-7b48-47ba-a700-24f2ea0d1280',
     '4b8fb6eb-fa7d-47c1-8726-cd917901104e'
 ]
 
-user_ids = member_ids
+member_ids = user_ids
+employee_ids = user_ids
 
 
 class TeamDTOFactory(factory.Factory):
@@ -132,12 +135,16 @@ class CompanyDTOFactory(
     company_id = factory.Faker("uuid4")
 
 
-class CompanyWithEmployeesCountDTOFactory(factory.Factory):
+class CompanyIdWithEmployeeIdsDTOFactory(factory.Factory):
     class Meta:
-        model = CompanyWithEmployeesCountDTO
+        model = CompanyIdWithEmployeeIdsDTO
 
     company_id = factory.Faker("uuid4")
-    no_of_employees = 2
+    employee_ids = factory.Iterator([
+        [employee_ids[0], employee_ids[1]],
+        [employee_ids[1], employee_ids[2]],
+        [employee_ids[0], employee_ids[2]]
+    ])
 
 
 class CompanyDetailsWithUserIdsDTOFactory(
@@ -160,3 +167,12 @@ class CompanyWithUserIdsDTOFactory(
         model = CompanyWithUserIdsDTO
 
     company_id = factory.Faker("uuid4")
+
+
+class EmployeeDTOFactory(factory.Factory):
+    class Meta:
+        model = EmployeeDTO
+
+    employee_id = factory.sequence(lambda n: "user_id-%d" % n)
+    name = factory.sequence(lambda n: "user%d" % n)
+    profile_pic_url = factory.sequence(lambda n: "url%d" % n)

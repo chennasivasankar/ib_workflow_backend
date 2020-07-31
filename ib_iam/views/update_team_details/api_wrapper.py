@@ -15,8 +15,6 @@ from ib_iam.interactors.storage_interfaces.dtos import TeamWithUserIdsDTO
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    print("&*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
-    print(1)
     user_obj = kwargs["user"]
     user_id = str(user_obj.id)
     request_data = kwargs["request_data"]
@@ -24,7 +22,6 @@ def api_wrapper(*args, **kwargs):
     name = request_data["name"]
     description = request_data["description"]
     user_ids = request_data["user_ids"]
-    print(2)
 
     storage = TeamStorageImplementation()
     presenter = UpdateTeamPresenterImplementation()

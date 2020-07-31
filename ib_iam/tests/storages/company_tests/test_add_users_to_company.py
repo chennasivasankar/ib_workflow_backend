@@ -26,7 +26,8 @@ def create_users():
 @pytest.mark.django_db
 class TestAddUsersToCompany:
 
-    def test_given_valid_details_return_nothing(self, create_users, create_company):
+    def test_given_valid_details_return_nothing(
+            self, create_users, create_company):
         storage = CompanyStorageImplementation()
         company_id = create_company
         user_ids = create_users
