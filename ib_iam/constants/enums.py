@@ -3,8 +3,9 @@ from ib_common.constants import BaseEnumClass
 
 
 class StatusCode(BaseEnumClass, enum.Enum):
-    SUCCESS = 200
-    CREATE_SUCCESS = 201
+    UNAUTHORIZED = 401
     BAD_REQUEST = 400
-    FORBIDDEN = 403
     NOT_FOUND = 404
+    FORBIDDEN = 403
+    SUCCESS = 200
+    SUCCESS_CREATE = 201

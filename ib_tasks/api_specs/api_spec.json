@@ -370,6 +370,96 @@
       "properties": {
         "gof_id": {
           "type": "string"
+        "swagger": "2.0",
+        "host": "127.0.0.1:8000",
+        "basePath": "/api/ib_iam/",
+        "info": {
+            "version": "1.0.0",
+            "title": "Simple API",
+            "description": "A simple API to learn how to write OpenAPI Specification"
+        },
+        "schemes": [
+            "http"
+        ],
+        "consumes": [
+            "application/json"
+        ],
+        "produces": [
+            "application/json"
+        ],
+        "securityDefinitions": {
+            "oauth": {
+                "tokenUrl": "http://auth.ibtspl.com/oauth2/",
+                "flow": "password",
+                "scopes": {
+                    "read": "read users",
+                    "write": "create users",
+                    "update": "update users",
+                    "delete": "delete users"
+                },
+                "type": "oauth2"
+            }
+        },
+        "security": [],
+        "definitions": {
+            "DefaultHttpExceptionFields": {
+                "type": "object",
+                "properties": {
+                    "response": {
+                        "type": "string"
+                    },
+                    "http_status_code": {
+                        "type": "integer"
+                    },
+                    "res_status": {
+                        "type": "string",
+                        "enum": [
+                            "DUPLICATE_TO_IDS",
+                            "INVALID_INPUT_TO_IDS"
+                        ]
+                    }
+                },
+                "required": [
+                    "response",
+                    "http_status_code",
+                    "res_status"
+                ]
+            },
+            "TodoId": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "BasicTodo": {
+                "type": "object",
+                "properties": {
+                    "description": {
+                        "type": "string"
+                    },
+                    "is_completed": {
+                        "type": "boolean"
+                    },
+                    "remind_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "description"
+                ]
+            },
+            "Todo": {
+                "allOf": [
+                    {
+                        "$ref": "#/definitions/BasicTodo"
+                    },
+                    {
+                        "$ref": "#/definitions/TodoId"
+                    }
+                ]
+            }
         },
         "gof_display_name": {
           "type": "string"
