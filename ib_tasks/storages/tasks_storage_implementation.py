@@ -377,9 +377,11 @@ class TasksStorageImplementation(TaskStorageInterface):
     def get_user_field_permission_dtos(
             self, roles: List[str],
             field_ids: List[str]) -> List[UserFieldPermissionDTO]:
+        from django.db.models import Q
         user_field_permission_details = FieldRole.objects.filter(
-            field_id__in=field_ids, role__in=roles).values('field_id',
-                                                           'permission_type')
+            Q(field_id__in=field_ids),
+            (Q(role__in=roles) | Q(role="ALL_ROLES"))
+        ).values('field_id', 'permission_type')
         user_field_permission_dtos = self._convert_user_field_permission_details_to_dtos(
             user_field_permission_details=user_field_permission_details)
         return user_field_permission_dtos
@@ -392,10 +394,13 @@ class TasksStorageImplementation(TaskStorageInterface):
 
     def get_gof_ids_with_read_permission_for_user(
             self, roles: List[str]) -> List[str]:
+        from django.db.models import Q
         from ib_tasks.constants.enum import PermissionTypes
         gof_ids_queryset = GoFRole.objects.filter(
-            permission_type=PermissionTypes.READ.value).values_list('gof_id',
-                                                                    flat=True)
+            Q(permission_type=PermissionTypes.READ.value),
+            (Q(role__in=roles) | Q(role="ALL_ROLES"))
+        ).values_list('gof_id', flat=True)
+
         gof_ids_list = list(gof_ids_queryset)
         return gof_ids_list
 
