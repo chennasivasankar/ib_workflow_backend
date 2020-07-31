@@ -96,7 +96,10 @@ class GetColumnTasksInteractor:
         user_id = column_tasks_parameters.user_id
         user_role = service_adapter.user_service.get_user_roles(
             user_id=user_id)
-        self.storage.validate_user_role_with_column_roles(user_role=user_role)
+        self.storage.validate_user_role_with_column_roles(
+            user_role=user_role,
+            column_id=column_id
+        )
 
     @staticmethod
     def _get_task_ids_with_respective_stages(

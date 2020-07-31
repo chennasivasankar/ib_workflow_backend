@@ -264,9 +264,9 @@ class StorageImplementation(StorageInterface):
         return stage_ids
 
     # TODO: need to pass column  Id
-    def validate_user_role_with_column_roles(self, user_role: str):
+    def validate_user_role_with_column_roles(self, user_role: str, column_id: str):
         user_roles = ColumnPermission.objects.filter(
-            column_id='COLUMN_ID_1'
+            column_id=column_id
         ).values_list('user_role_id', flat=True)
 
         is_invalid_user = not (user_role in user_roles or

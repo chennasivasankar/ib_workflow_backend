@@ -18,6 +18,15 @@ from ib_boards.tests.factories.storage_dtos import (
 
 class TestGetColumnDetailsInteractor:
 
+    @classmethod
+    def setup_class(cls):
+        ColumnDetailsDTOFactory.reset_sequence()
+        ColumnTaskIdsDTOFactory.reset_sequence()
+
+    @classmethod
+    def teardown_class(cls):
+        pass
+
     @pytest.fixture()
     def mock_storage(self):
         storage = create_autospec(StorageInterface)

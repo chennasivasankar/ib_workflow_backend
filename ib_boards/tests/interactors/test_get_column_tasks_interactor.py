@@ -234,6 +234,7 @@ class TestGetColumnTasksInteractor:
             self, storage_mock, presenter_mock, get_column_tasks_dto, mocker):
         # Arrange
         user_role = 'User'
+        column_id = 'COLUMN_ID_1'
         expected_response = Mock()
         interactor = GetColumnTasksInteractor(
             storage=storage_mock
@@ -262,7 +263,7 @@ class TestGetColumnTasksInteractor:
             user_id=get_column_tasks_dto.user_id
         )
         storage_mock.validate_user_role_with_column_roles.assert_called_once_with(
-            user_role=user_role
+            user_role=user_role, column_id=column_id
         )
         presenter_mock.get_response_for_user_have_no_access_for_column. \
             assert_called_once_with()

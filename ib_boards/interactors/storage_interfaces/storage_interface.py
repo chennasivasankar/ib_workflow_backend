@@ -70,7 +70,7 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def validate_user_role_with_column_roles(self, user_role: str):
+    def validate_user_role_with_column_roles(self, user_role: str, column_id: int):
         pass
 
     @abc.abstractmethod
