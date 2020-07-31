@@ -21,12 +21,11 @@ __pycache__
 .pydevproject
 android_jars/
 .venv/
-
+venv
 .coverage
 ipython/
 
 *.DS_Store
-
 media/
 
 mysite.log
@@ -46,3 +45,18 @@ dist/
 *.egg-info
 
 doc_html/
+
+venv/
+
+utils/google_sheets_credentials.json
+
+ib_tasks/utils/workflow-types-4f1e079f438e.json
+ib_tasks/utils/ib-worksflows-dev-testing-d86743f0ecd1.json
+
+env
+
+vedavidhbudimuri_ib-workflows-backend.aes
+/venv/
+
+.gitignore
+env_*.sh
