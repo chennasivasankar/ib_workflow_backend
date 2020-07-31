@@ -477,6 +477,7 @@ class TasksStorageImplementation(TaskStorageInterface):
             fields_dto=stage_fields_dtos,
             actions_dto=stage_actions_dtos
         )
+
     def get_task_ids_for_the_stage_ids(
             self, stage_ids: List[str],
             offset: int, limit: int) -> Tuple[List[TaskStageIdsDTO], int]:
@@ -713,9 +714,3 @@ class TasksStorageImplementation(TaskStorageInterface):
             for task_id_with_stage_detail in task_id_with_stage_details
         ]
         return task_id_with_stage_details_dtos
-
-
-    def get_task_ids_for_the_stage_ids(
-            self, stage_ids: List[str],
-            offset: int, limit: int) -> Tuple[List[TaskStageIdsDTO], int]:
-        pass
