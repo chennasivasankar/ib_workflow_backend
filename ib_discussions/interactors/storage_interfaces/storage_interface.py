@@ -50,7 +50,8 @@ class StorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_total_discussion_count(self, discussion_set_id: str) -> int:
+    def get_total_discussion_count(self, discussion_set_id: str,
+                                   filter_by_dto: FilterByDTO) -> int:
         pass
 
     @abstractmethod

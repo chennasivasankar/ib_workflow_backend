@@ -36,5 +36,5 @@ snapshots['TestCase01GetDiscussionsAPITestCase.test_case body'] = {
             'title': 'title'
         }
     ],
-    'total_count': 12
+    'total_count': 6
 }

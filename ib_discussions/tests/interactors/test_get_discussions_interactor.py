@@ -258,7 +258,7 @@ class TestGetDiscussionsInteractor:
             filter_by_dto=filter_by_dto
         )
         storage_mock.get_total_discussion_count.assert_called_once_with(
-            discussion_set_id=discussion_set_id
+            discussion_set_id=discussion_set_id, filter_by_dto=filter_by_dto
         )
         presenter_mock.prepare_response_for_discussions_details_dto. \
             assert_called_once_with(discussions_details_dto)

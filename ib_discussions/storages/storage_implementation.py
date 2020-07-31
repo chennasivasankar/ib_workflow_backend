@@ -98,12 +98,16 @@ class StorageImplementation(StorageInterface):
         )
         return complete_discussion_dtos
 
-    def get_total_discussion_count(self, discussion_set_id: str) -> int:
+    def get_total_discussion_count(self, discussion_set_id: str,
+                                   filter_by_dto: FilterByDTO) -> int:
         from ib_discussions.models import Discussion
-        count = Discussion.objects.filter(
+        discussion_objects = Discussion.objects.filter(
             discussion_set_id=discussion_set_id
-        ).count()
-        return count
+        )
+        filter_discussion_objects = self._get_filter_discussion_objects(
+            filter_by_dto=filter_by_dto, discussion_objects=discussion_objects
+        )
+        return filter_discussion_objects.count()
 
     def validate_discussion_id(self, discussion_id: str) \
             -> Optional[DiscussionIdNotFound]:

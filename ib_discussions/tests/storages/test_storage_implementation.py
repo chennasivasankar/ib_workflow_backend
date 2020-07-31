@@ -181,6 +181,14 @@ class TestStorageImplementation:
             self, create_entity_objects, create_discussion_set_objects,
             storage_implementation):
         # Arrange
+        from ib_discussions.interactors.DTOs.common_dtos import FilterByDTO
+        from ib_discussions.constants.enum import FilterByEnum
+        filter_by_dto = FilterByDTO(
+            filter_by=FilterByEnum.CLARIFIED.value,
+            value=True
+        )
+        expected_discussion_count_after_filter = 3
+
         discussion_set_id1 = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
         size_of_discussion_set_id1 = 3
         self.create_discussion_objects(
@@ -196,11 +204,11 @@ class TestStorageImplementation:
 
         # Act
         response = storage_implementation.get_total_discussion_count(
-            discussion_set_id=discussion_set_id2
+            discussion_set_id=discussion_set_id2, filter_by_dto=filter_by_dto
         )
 
         # Assert
-        assert response == size_of_discussion_set_id2
+        assert response == expected_discussion_count_after_filter
 
     @pytest.mark.django_db
     def test_get_complete_discussion_dtos(

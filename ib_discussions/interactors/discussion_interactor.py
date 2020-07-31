@@ -151,7 +151,7 @@ class DiscussionInteractor:
             filter_by_dto=filter_by_dto, sort_by_dto=sort_by_dto
         )
         total_discussions_count = self.storage.get_total_discussion_count(
-            discussion_set_id=discussion_set_id
+            discussion_set_id=discussion_set_id, filter_by_dto=filter_by_dto
         )
         user_profile_dtos = self._get_user_profile_dtos(
             complete_discussion_dtos=complete_discussion_dtos
