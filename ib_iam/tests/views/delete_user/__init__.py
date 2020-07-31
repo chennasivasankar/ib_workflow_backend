@@ -6,7 +6,9 @@ REQUEST_METHOD = "delete"
 URL_SUFFIX = "users/{user_id}/v1/"
 
 from .test_case_01 import TestCase01DeleteUserAPITestCase
+from .test_case_02 import TestCase02DeleteUserAPITestCase
 
 __all__ = [
-    "TestCase01DeleteUserAPITestCase"
+    "TestCase01DeleteUserAPITestCase",
+    "TestCase02DeleteUserAPITestCase"
 ]

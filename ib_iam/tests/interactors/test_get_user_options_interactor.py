@@ -4,28 +4,34 @@ import pytest
 
 from ib_iam.interactors.get_user_options_interactor \
     import GetUserOptionsDetails
-from ib_iam.tests.common_fixtures.storages import reset_all_factories_sequence
 
 
 class TestGetUserOptionsInteractor:
 
     @pytest.fixture()
     def company_dtos(self):
-        reset_sequence()
-        from ib_iam.tests.factories.storage_dtos import CompanyIdAndNameDTOFactory
+        from ib_iam.tests.common_fixtures.reset_fixture import \
+            reset_sequence_for_company_dto_factory
+        reset_sequence_for_company_dto_factory()
+        from ib_iam.tests.factories.storage_dtos import \
+            CompanyIdAndNameDTOFactory
         company_dtos = CompanyIdAndNameDTOFactory.create_batch(4)
         return company_dtos
 
     @pytest.fixture()
     def team_dtos(self):
-        reset_all_factories_sequence()
+        from ib_iam.tests.common_fixtures.reset_fixture import \
+            reset_sequence_for_team_dto_factory
+        reset_sequence_for_team_dto_factory()
         from ib_iam.tests.factories.storage_dtos import TeamDTOFactory
         team_dtos = TeamDTOFactory.create_batch(4)
         return team_dtos
 
     @pytest.fixture()
     def role_dtos(self):
-        reset_all_factories_sequence()
+        from ib_iam.tests.common_fixtures.reset_fixture import \
+            reset_sequence_for_role_dto_factory
+        reset_sequence_for_role_dto_factory()
         from ib_iam.tests.factories.storage_dtos import RoleDTOFactory
         role_dtos = RoleDTOFactory.create_batch(4)
         return role_dtos
@@ -33,7 +39,7 @@ class TestGetUserOptionsInteractor:
     @pytest.fixture
     def storage_mock(self):
         from unittest import mock
-        from ib_iam.interactors.storage_interfaces.\
+        from ib_iam.interactors.storage_interfaces. \
             user_storage_interface import \
             UserStorageInterface
         storage = mock.create_autospec(UserStorageInterface)

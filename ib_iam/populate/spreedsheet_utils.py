@@ -21,7 +21,8 @@ class SpreadSheetUtil:
         spread_sheet_data = wks.get_all_values()
 
         headers = spread_sheet_data[0]
-        headers = [header.strip() for header in headers]
+        headers = [header.lower().strip().replace(" ", "_")
+                   for header in headers]
 
         row_wise_dicts = []
         row = 1

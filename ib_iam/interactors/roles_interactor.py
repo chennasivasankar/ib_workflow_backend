@@ -39,7 +39,7 @@ class RolesInteractor:
             role_dto = RoleDTO(
                 role_id=role['role_id'],
                 name=role['role_name'],
-                description=role['role_description']
+                description=role['description']
             )
             role_dtos.append(role_dto)
         self.storage.create_roles(role_dtos)
@@ -48,7 +48,7 @@ class RolesInteractor:
         self._validate_role_id_format(role_id=role['role_id'])
         self._validate_role_name(role_name=role['role_name'])
         self._validate_role_description(
-            role_description=role['role_description'])
+            role_description=role['description'])
 
     @staticmethod
     def _is_invalid_string(value):

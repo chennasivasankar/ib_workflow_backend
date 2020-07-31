@@ -5,12 +5,12 @@ RESPONSE_200_JSON = """
 {
     "users": [
         {
-            "user_id": "string",
+            "user_id": "c9aaea63-c404-4807-aa56-70cd13857287",
             "name": "string",
             "email": "string",
             "teams": [
                 {
-                    "team_id": "2feeb374-c671-44ad-9118-1c5e867047e3",
+                    "team_id": "ff9e2c2d-6693-43aa-b1e2-7b1c584e5707",
                     "team_name": "string"
                 }
             ],
@@ -21,7 +21,7 @@ RESPONSE_200_JSON = """
                 }
             ],
             "company": {
-                "company_id": "9ef61d7a-a8ed-49cc-bca8-1e4367e0a91b",
+                "company_id": "6381cd1c-eb54-4877-945c-625f04215dee",
                 "company_name": "string"
             }
         }
@@ -35,6 +35,14 @@ RESPONSE_403_JSON = """
     "response": "string",
     "http_status_code": 1,
     "res_status": "USER_DOES_NOT_HAVE_PERMISSION"
+}
+"""
+
+RESPONSE_400_JSON = """
+{
+    "response": "string",
+    "http_status_code": 1,
+    "res_status": "INVALID_LIMIT"
 }
 """
 

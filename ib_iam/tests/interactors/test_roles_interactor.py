@@ -14,17 +14,17 @@ class TestAddRolesInteractor:
             {
                 "role_id": "PAYMENT_POC",
                 "role_name": "payment poc",
-                "role_description": "payment poc"
+                "description": "payment poc"
             },
             {
                 "role_id": "PAYMENT_POC",
                 "role_name": "payment_poc",
-                "role_description": "payment poc"
+                "description": "payment poc"
             },
             {
                 "role_id": "PAYMENTPOC",
                 "role_name": "payment_poc",
-                "role_description": "payment poc"
+                "description": "payment poc"
             },
 
         ]
@@ -45,7 +45,7 @@ class TestAddRolesInteractor:
         roles = [{
             "role_id": "PAYMENT_POC",
             "role_name": "",
-            "role_description": "payment poc"
+            "description": "payment poc"
         }]
         storage = create_autospec(AddRolesStorageInterface)
         presenter = create_autospec(AddRolesPresenterInterface)
@@ -65,7 +65,7 @@ class TestAddRolesInteractor:
         list_of_roles = [{
             "role_id": "PAYMENT_POC",
             "role_name": "payment poc",
-            "role_description": ""
+            "description": ""
         }]
         storage = create_autospec(AddRolesStorageInterface)
         presenter = create_autospec(AddRolesPresenterInterface)
@@ -84,7 +84,7 @@ class TestAddRolesInteractor:
         list_of_roles = [{
             "role_id": "payment_poc",
             "role_name": "payment poc",
-            "role_description": "payment poc"
+            "description": "payment poc"
         }]
         storage = create_autospec(AddRolesStorageInterface)
         presenter = create_autospec(AddRolesPresenterInterface)
@@ -102,14 +102,14 @@ class TestAddRolesInteractor:
         roles = [{
             "role_id": "PAYMENT_POC",
             "role_name": "payment poc",
-            "role_description": "payment poc"
+            "description": "payment poc"
         }]
         from ib_iam.tests.factories.storage_dtos import RoleDTOFactory
         role_dtos = [
             RoleDTOFactory(
                 role_id=role["role_id"],
                 name=role["role_name"],
-                description=role["role_description"]
+                description=role["description"]
             )
             for role in roles]
         storage = create_autospec(AddRolesStorageInterface)

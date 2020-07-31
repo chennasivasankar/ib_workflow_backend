@@ -31,16 +31,19 @@ class TestDeleteUserInteractor:
         return mock
 
     def test_delete_user_given_valid_details_then_delete_user_from_user_details_db(
-            self, storage_mock, presenter_mock):
+            self, storage_mock, presenter_mock, mocker):
         admin_user_id = "1"
         delete_user_id = "2"
         interactor = DeleteUserInteractor(storage=storage_mock)
         from ib_iam.tests.factories.storage_dtos import UserDTOFactory
         user_details_dto = UserDTOFactory.create(user_id=delete_user_id,
                                                  is_admin=False)
+        deactivate_delete_user_mocker = self. \
+            deactivate_delete_user_id_in_ib_users(mocker=mocker)
 
         storage_mock.check_is_admin_user.return_value = True
         storage_mock.get_user_details.return_value = user_details_dto
+        deactivate_delete_user_mocker.return_value = None
         presenter_mock.get_delete_user_response.return_value = Mock()
 
         interactor.delete_user_wrapper(user_id=admin_user_id,
@@ -54,16 +57,19 @@ class TestDeleteUserInteractor:
         presenter_mock.get_delete_user_response.assert_called_once()
 
     def test_delete_user_given_valid_details_then_delete_user_roles_from_user_roles_db(
-            self, storage_mock, presenter_mock):
+            self, storage_mock, presenter_mock, mocker):
         admin_user_id = "1"
         delete_user_id = "2"
         interactor = DeleteUserInteractor(storage=storage_mock)
         from ib_iam.tests.factories.storage_dtos import UserDTOFactory
         user_details_dto = UserDTOFactory.create(user_id=delete_user_id,
                                                  is_admin=False)
+        deactivate_delete_user_mocker = self. \
+            deactivate_delete_user_id_in_ib_users(mocker=mocker)
 
         storage_mock.check_is_admin_user.return_value = True
         storage_mock.get_user_details.return_value = user_details_dto
+        deactivate_delete_user_mocker.return_value = None
         presenter_mock.get_delete_user_response.return_value = Mock()
 
         interactor.delete_user_wrapper(user_id=admin_user_id,
@@ -79,16 +85,19 @@ class TestDeleteUserInteractor:
         presenter_mock.get_delete_user_response.assert_called_once()
 
     def test_delete_user_given_valid_user_id_then_delete_user_teams_from_user_team_db(
-            self, storage_mock, presenter_mock):
+            self, storage_mock, presenter_mock, mocker):
         admin_user_id = "1"
         delete_user_id = "2"
         interactor = DeleteUserInteractor(storage=storage_mock)
         from ib_iam.tests.factories.storage_dtos import UserDTOFactory
         user_details_dto = UserDTOFactory.create(user_id=delete_user_id,
                                                  is_admin=False)
+        deactivate_delete_user_mocker = self. \
+            deactivate_delete_user_id_in_ib_users(mocker=mocker)
 
         storage_mock.check_is_admin_user.return_value = True
         storage_mock.get_user_details.return_value = user_details_dto
+        deactivate_delete_user_mocker.return_value = None
         presenter_mock.get_delete_user_response.return_value = Mock()
 
         interactor.delete_user_wrapper(user_id=admin_user_id,
