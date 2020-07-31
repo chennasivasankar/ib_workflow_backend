@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class TaskGoFDTO:
+class TaskGoFWithTaskIdDTO:
     task_id: int
     gof_id: str
     same_gof_order: int

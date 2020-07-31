@@ -33,6 +33,7 @@ class SpreadSheetUtil:
             row_wise_dicts.append(row_wise_dict)
 
             row += 1
+        print(row_wise_dicts)
 
         return row_wise_dicts
 

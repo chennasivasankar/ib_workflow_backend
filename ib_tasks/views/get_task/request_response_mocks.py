@@ -12,9 +12,7 @@ RESPONSE_200_JSON = """
             "gof_fields": [
                 {
                     "field_id": "string",
-                    "field_response": "string",
-                    "is_readable": true,
-                    "is_writable": true
+                    "field_response": "string"
                 }
             ]
         }

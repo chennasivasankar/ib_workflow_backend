@@ -4,8 +4,8 @@ import factory
 from ib_tasks.models import Task, TaskGoF, TaskGoFField
 from ib_tasks.tests.factories.models import TaskFactory, FieldFactory, \
     TaskGoFFactory, TaskGoFFieldFactory
-from ib_tasks.tests.factories.storage_dtos import TaskGoFDTOFactory, \
-    TaskGoFFieldDTOFactory
+from ib_tasks.tests.factories.storage_dtos import TaskGoFFieldDTOFactory,\
+    TaskGoFWithTaskIdDTOFactory
 
 
 @pytest.mark.django_db
@@ -13,7 +13,7 @@ class TestCreateOrUpdateTaskStorageImplementation:
 
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
-        TaskGoFDTOFactory.reset_sequence()
+        TaskGoFWithTaskIdDTOFactory.reset_sequence()
         TaskFactory.reset_sequence()
         TaskGoFFieldDTOFactory.reset_sequence()
         FieldFactory.reset_sequence()
@@ -37,12 +37,12 @@ class TestCreateOrUpdateTaskStorageImplementation:
         # Assert
         task = Task.objects.get(id=created_task_id)
         assert task.template_id == template_id
-        assert task.created_by_id == created_by_id
+        assert task.created_by == created_by_id
 
     def test_create_task_gofs(self, storage):
         # Arrange
         task = TaskFactory()
-        task_gof_dtos = TaskGoFDTOFactory.create_batch(
+        task_gof_dtos = TaskGoFWithTaskIdDTOFactory.create_batch(
             size=1, task_id=task.id
         )
 
@@ -141,7 +141,7 @@ class TestCreateOrUpdateTaskStorageImplementation:
             size=2, task_id=task_id
         )
         task_gof_dtos = [
-            TaskGoFDTOFactory(
+            TaskGoFWithTaskIdDTOFactory(
                 task_id=task_gof.task_id,
                 gof_id=task_gof.gof_id,
                 same_gof_order=2

@@ -1,20 +1,25 @@
 from typing import List
-from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO
-from ib_tasks.utils.get_google_sheet import get_google_sheet
+from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO, \
+    GoFsWithTemplateIdDTO
 
 
 class PopulateGoFsToTaskTemplate:
 
     def populate_gofs_to_task_template(self):
-        sheet = get_google_sheet()
+        from ib_tasks.utils.get_google_sheet import get_google_sheet
+        from ib_tasks.constants.constants import GOOGLE_SHEET_NAME
+        sheet = get_google_sheet(sheet_name=GOOGLE_SHEET_NAME)
+
+        from ib_tasks.constants.constants import TASK_TEMPLATE_SUB_SHEET_TITLE
         gofs_with_template_ids_dicts = \
-            sheet.worksheet("Task Templates").get_all_records()
+            sheet.worksheet(TASK_TEMPLATE_SUB_SHEET_TITLE).get_all_records()
 
         import collections
         group_by_template_id_dict = collections.defaultdict(list)
         for item in gofs_with_template_ids_dicts:
-            group_by_template_id_dict[item['Template ID']].append(
-                [item['GOF ID*'], item['Order'], item['Enable add another']]
+            group_by_template_id_dict[item['Template ID'].strip()].append(
+                [item['GOF ID*'].strip(), item['Order'],
+                 item['Enable add another'].strip()]
             )
 
         group_by_template_id_dict = collections.OrderedDict(
@@ -32,7 +37,6 @@ class PopulateGoFsToTaskTemplate:
 
     def _get_gofs_with_template_id_dto(
             self, template_id: str, gofs_list: List[str]):
-
 
         gof_with_order_and_add_another_dtos = \
             self._get_gof_with_order_and_add_another_dtos(
@@ -53,7 +57,8 @@ class PopulateGoFsToTaskTemplate:
         gof_with_order_and_add_another_dtos = []
         for gof in gofs_list:
             gof_id = gof[0]
-            from ib_tasks.exceptions.constants_custom_exceptions import InvalidTypeForOrder
+            from ib_tasks.exceptions.constants_custom_exceptions import \
+                InvalidTypeForOrder
             from ib_tasks.constants.exception_messages import \
                 INVALID_TYPE_FOR_ORDER
 

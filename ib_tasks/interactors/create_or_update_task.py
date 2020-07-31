@@ -21,32 +21,43 @@ from ib_tasks.interactors.storage_interfaces. \
     create_or_update_task_storage_interface import \
     CreateOrUpdateTaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
-from ib_tasks.interactors.storage_interfaces.task_dtos import TaskGoFDTO, \
-    TaskGoFDetailsDTO, TaskGoFFieldDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskGoFWithTaskIdDTO, \
+    TaskGoFDetailsDTO
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
+    TaskGoFFieldDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.presenter_interfaces. \
     create_or_update_task_presenter import CreateOrUpdateTaskPresenterInterface
 from ib_tasks.interactors.task_dtos import TaskDTO, FieldValuesDTO, \
     GoFFieldsDTO
+from ib_tasks.interactors.user_action_on_task_interactor import \
+    UserActionOnTaskInteractor
+from ib_tasks.interactors.storage_interfaces.storage_interface import \
+    StorageInterface
+from ib_tasks.interactors.presenter_interfaces.presenter_interface import \
+    PresenterInterface
 
 
 class CreateOrUpdateTaskInteractor:
 
     def __init__(
             self, task_storage: TaskStorageInterface,
-            create_task_storage: CreateOrUpdateTaskStorageInterface
+            create_task_storage: CreateOrUpdateTaskStorageInterface,
+            storage: StorageInterface
     ):
         self.task_storage = task_storage
         self.create_task_storage = create_task_storage
+        self.storage = storage
 
     def create_or_update_task_wrapper(
             self, presenter: CreateOrUpdateTaskPresenterInterface,
-            task_dto: TaskDTO
+            task_dto: TaskDTO, act_on_task_presenter: PresenterInterface
     ):
         try:
             return self._prepare_response_for_create_or_update_task(
-                presenter=presenter, task_dto=task_dto
+                presenter=presenter, task_dto=task_dto,
+                act_on_task_presenter=act_on_task_presenter
             )
         except DuplicationOfFieldIdsExist as err:
             return presenter.raise_exception_for_duplicate_field_ids(err)
@@ -116,13 +127,17 @@ class CreateOrUpdateTaskInteractor:
 
     def _prepare_response_for_create_or_update_task(
             self, presenter: CreateOrUpdateTaskPresenterInterface,
-            task_dto: TaskDTO
+            task_dto: TaskDTO, act_on_task_presenter: PresenterInterface
     ):
-        self.create_or_update_task(task_dto)
+        self.create_or_update_task(
+            task_dto, act_on_task_presenter
+        )
         response = presenter.get_response_for_create_or_update_task()
         return response
 
-    def create_or_update_task(self, task_dto: TaskDTO):
+    def create_or_update_task(
+            self, task_dto: TaskDTO, act_on_task_presenter: PresenterInterface
+    ):
         gof_ids = [
             gof_fields_dto.gof_id
             for gof_fields_dto in task_dto.gof_fields_dtos
@@ -142,7 +157,15 @@ class CreateOrUpdateTaskInteractor:
         if task_needs_to_be_updated:
             self._update_task(task_dto)
         else:
-            self._create_task(task_dto)
+            created_task_id = self._create_task(task_dto)
+            task_dto.task_id = created_task_id
+        act_on_task_interactor = UserActionOnTaskInteractor(
+            user_id=task_dto.created_by_id, board_id=None,
+            task_id=task_dto.task_id,
+            action_id=task_dto.action_id,
+            storage=self.storage
+        )
+        act_on_task_interactor.user_action_on_task(act_on_task_presenter)
 
     def _update_task(self, task_dto: TaskDTO):
         task_id = task_dto.task_id
@@ -159,7 +182,7 @@ class CreateOrUpdateTaskInteractor:
                 task_id
             )
         task_gof_dtos = [
-            TaskGoFDTO(
+            TaskGoFWithTaskIdDTO(
                 task_id=task_id,
                 gof_id=gof_fields_dto.gof_id,
                 same_gof_order=gof_fields_dto.same_gof_order
@@ -232,7 +255,7 @@ class CreateOrUpdateTaskInteractor:
                 task_dto.task_template_id, task_dto.created_by_id
             )
         task_gof_dtos = [
-            TaskGoFDTO(
+            TaskGoFWithTaskIdDTO(
                 task_id=created_task_id,
                 gof_id=gof_fields_dto.gof_id,
                 same_gof_order=gof_fields_dto.same_gof_order
@@ -246,6 +269,7 @@ class CreateOrUpdateTaskInteractor:
             task_dto, task_gof_details_dtos
         )
         self.create_task_storage.create_task_gof_fields(task_gof_field_dtos)
+        return created_task_id
 
     def _prepare_task_gof_fields_dtos(
             self, task_dto: TaskDTO,

@@ -15,9 +15,7 @@ snapshots['TestCase01GetTaskAPITestCase.test_case body'] = {
             'gof_fields': [
                 {
                     'field_id': 'string',
-                    'field_response': 'string',
-                    'is_readable': True,
-                    'is_writable': True
+                    'field_response': 'string'
                 }
             ],
             'gof_id': 'string',

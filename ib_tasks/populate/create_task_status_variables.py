@@ -1,3 +1,4 @@
+
 from typing import Dict, Any, List
 
 from ib_tasks.interactors.storage_interfaces.status_dtos import TaskTemplateStatusDTO
@@ -8,7 +9,15 @@ def populate_status_variables(list_of_status_dict: List[Dict]):
     status_dtos = [append_status_dto(status_dict)
                    for status_dict in list_of_status_dict]
 
-    return status_dtos
+    from ib_tasks.interactors.create_task_status_interactor import \
+        CreateTaskStatusInteractor
+
+    from ib_tasks.storages.tasks_storage_implementation import \
+        TasksStorageImplementation
+    interactor = CreateTaskStatusInteractor(
+        status_storage=TasksStorageImplementation()
+    )
+    interactor.create_task_status(task_status_details_dtos=status_dtos)
 
 
 def append_status_dto(status_dict: Dict[str, Any]):
@@ -45,5 +54,5 @@ def raise_exception_for_invalid_format():
     import json
     json_valid_format = json.dumps(valid_format)
 
-    from ib_tasks.exceptions.stage_custom_exceptions import InvalidFormatException
+    from ib_tasks.exceptions.custom_exceptions import InvalidFormatException
     raise InvalidFormatException(valid_format=json_valid_format)

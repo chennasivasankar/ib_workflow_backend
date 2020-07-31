@@ -5,7 +5,6 @@ class TestCasePopulateStageActions:
 
     @staticmethod
     def test_given_invalid_key_raises_exception():
-
         # Arrange
 
         valid_format = {
@@ -31,7 +30,8 @@ class TestCasePopulateStageActions:
         ]
         from ib_tasks.populate.populate_stage_actions \
             import populate_stage_actions
-        from ib_tasks.exceptions.stage_custom_exceptions import InvalidFormatException
+        from ib_tasks.exceptions.custom_exceptions import \
+            InvalidFormatException
 
         # Act
         with pytest.raises(InvalidFormatException) as err:
@@ -42,7 +42,6 @@ class TestCasePopulateStageActions:
 
     @staticmethod
     def test_given_invalid_python_code_raises_exception():
-
         # Arrange
         actions = [
             {
@@ -57,7 +56,8 @@ class TestCasePopulateStageActions:
         import pytest
         from ib_tasks.populate.populate_stage_actions \
             import populate_stage_actions
-        from ib_tasks.exceptions.stage_custom_exceptions import InvalidPythonCodeException
+        from ib_tasks.exceptions.custom_exceptions \
+            import InvalidPythonCodeException
 
         # Act
         with pytest.raises(InvalidPythonCodeException):
@@ -65,7 +65,7 @@ class TestCasePopulateStageActions:
 
     @staticmethod
     @mock.patch('builtins.open', new_callable=mock.mock_open)
-    def test_given_valid_key_creates_dtos(os_system):
+    def test_given_valid_key_creates_dtos(os_system, mocker):
         # Arrange
         actions = [
             {
@@ -89,11 +89,15 @@ class TestCasePopulateStageActions:
         )]
         from ib_tasks.populate.populate_stage_actions \
             import populate_stage_actions
+        path = "ib_tasks.interactors.create_update_delete_stage_actions.CreateUpdateDeleteStageActionsInteractor" \
+               ".create_update_delete_stage_actions"
+        mock_obj = mocker.patch(path)
 
         # Act
         response = populate_stage_actions(action_dicts=actions)
 
         # Assert
-        assert response == expected_action_dto
+
         os_system.assert_called_with(
             'ib_tasks/populate/stage_actions_logic.py', 'a')
+        mock_obj.called_once()

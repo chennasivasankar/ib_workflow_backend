@@ -10,7 +10,8 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import TaskGoFDetailsDTO
 from ib_tasks.tests.factories.interactor_dtos import TaskDTOFactory, \
     GoFFieldsDTOFactory, FieldValuesDTOFactory
 from ib_tasks.tests.factories.storage_dtos import FieldDetailsDTOFactory, \
-    TaskGoFDTOFactory, TaskGoFDetailsDTOFactory, TaskGoFFieldDTOFactory
+    TaskGoFWithTaskIdDTOFactory, TaskGoFDetailsDTOFactory, \
+    TaskGoFFieldDTOFactory
 
 
 class TestCreateOrUpdateTask:
@@ -21,7 +22,7 @@ class TestCreateOrUpdateTask:
         GoFFieldsDTOFactory.reset_sequence(1)
         FieldValuesDTOFactory.reset_sequence(1)
         FieldDetailsDTOFactory.reset_sequence(1)
-        TaskGoFDTOFactory.reset_sequence(1)
+        TaskGoFWithTaskIdDTOFactory.reset_sequence(1)
         TaskGoFDetailsDTOFactory.reset_sequence(1)
         TaskGoFFieldDTOFactory.reset_sequence(1)
 
@@ -41,6 +42,21 @@ class TestCreateOrUpdateTask:
         return create_autospec(CreateOrUpdateTaskStorageInterface)
 
     @pytest.fixture
+    def storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces.storage_interface import \
+            StorageInterface
+        from mock import create_autospec
+        storage_mock = create_autospec(StorageInterface)
+        return storage_mock
+
+    @pytest.fixture
+    def act_on_task_presenter_mock(self):
+        from ib_tasks.interactors.presenter_interfaces.presenter_interface import \
+            PresenterInterface
+        from mock import create_autospec
+        return create_autospec(PresenterInterface)
+
+    @pytest.fixture
     def presenter_mock(self):
         from ib_tasks.interactors.presenter_interfaces.create_or_update_task_presenter \
             import CreateOrUpdateTaskPresenterInterface
@@ -55,7 +71,8 @@ class TestCreateOrUpdateTask:
 
     def test_create_or_update_task_with_duplicate_field_ids_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object
+            presenter_mock, storage_mock, act_on_task_presenter_mock,
+            mock_object
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -67,42 +84,22 @@ class TestCreateOrUpdateTask:
 
         task_dto = TaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
         presenter_mock.raise_exception_for_duplicate_field_ids.return_value = mock_object
-        interactor = CreateOrUpdateTaskInteractor(task_storage_mock, create_task_storage_mock)
+        interactor = CreateOrUpdateTaskInteractor(
+            task_storage_mock, create_task_storage_mock, storage_mock
+        )
 
         # Act
-        response = interactor.create_or_update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_or_update_task_wrapper(
+            presenter_mock, task_dto, act_on_task_presenter_mock
+        )
 
         # Assert
         assert response == mock_object
         presenter_mock.raise_exception_for_duplicate_field_ids.assert_called_once()
 
-
-    def test_create_or_update_task_with_invalid_task_task_tempalte_id_raises_exception(
-            self, task_storage_mock, create_task_storage_mock, presenter_mock, mock_object
-    ):
-
-        # Arrange
-        task_template_id = "TASK_TEMPLATE_ID-1"
-        task_dto = TaskDTOFactory(task_template_id=task_template_id)
-        task_storage_mock.check_is_template_exists.return_value = False
-        interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
-        )
-        presenter_mock.raise_exception_for_invalid_task_template_id.return_value = mock_object
-
-        # Act
-        response = interactor.create_or_update_task_wrapper(presenter_mock, task_dto)
-
-        # Assert
-        assert response == mock_object
-        task_storage_mock.check_is_template_exists.assert_called_once_with(
-            template_id=task_template_id
-        )
-        presenter_mock.raise_exception_for_invalid_task_template_id.assert_called_once()
-
     def test_create_or_update_task_with_invalid_gof_ids_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object
+            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
     ):
 
         # Arrange
@@ -110,12 +107,14 @@ class TestCreateOrUpdateTask:
         task_storage_mock.check_is_template_exists.return_value = True
         task_storage_mock.get_existing_gof_ids.return_value = ["GOF_ID-5"]
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock
         )
         presenter_mock.raise_exception_for_invalid_gof_ids.return_value = mock_object
 
         # Act
-        response = interactor.create_or_update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_or_update_task_wrapper(
+            presenter_mock, task_dto, act_on_task_presenter_mock
+        )
 
         # Assert
         assert response == mock_object
@@ -130,7 +129,7 @@ class TestCreateOrUpdateTask:
 
     def test_create_or_update_task_with_invalid_field_ids_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object
+            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
     ):
         # Arrange
         task_dto = TaskDTOFactory()
@@ -142,13 +141,13 @@ class TestCreateOrUpdateTask:
         task_storage_mock.get_existing_gof_ids.return_value = gof_ids
         task_storage_mock.get_existing_field_ids.return_value = ["FIELD_ID-10"]
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock
         )
         presenter_mock.raise_exception_for_invalid_field_ids.return_value = mock_object
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto)
+                                                            task_dto, act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -163,7 +162,7 @@ class TestCreateOrUpdateTask:
 
     def test_create_or_update_task_with_invalid_gof_ids_in_gof_selector_value_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object
+            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -191,12 +190,12 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_gof_ids_in_gof_selector_field_value.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock
         )
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto)
+                                                            task_dto, act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -209,7 +208,8 @@ class TestCreateOrUpdateTask:
     @pytest.mark.parametrize("phone_number", ["phone_number", "989  89", "97979sjsljs"])
     def test_create_or_update_task_with_invalid_phone_number_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object, phone_number
+            presenter_mock, mock_object, phone_number, storage_mock,
+            act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -237,11 +237,12 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_invalid_phone_number_value.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock
         )
 
         # Act
-        response = interactor.create_or_update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_or_update_task_wrapper(
+            presenter_mock, task_dto, act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -254,7 +255,8 @@ class TestCreateOrUpdateTask:
                              ["email", "email  @gmail.com", "gmail.com"])
     def test_create_or_update_task_with_invalid_email_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object, email
+            presenter_mock, mock_object, email, storage_mock,
+            act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -282,12 +284,12 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_invalid_email_address.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock
         )
 
         # Act
-        response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto)
+        response = interactor.create_or_update_task_wrapper(
+            presenter_mock,task_dto, act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -300,7 +302,8 @@ class TestCreateOrUpdateTask:
                              ["google", "www.google.com", "google.in"])
     def test_create_or_update_task_with_invalid_url_address_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object, url_address
+            presenter_mock, mock_object, url_address, storage_mock,
+            act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -328,12 +331,12 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_invalid_url_address.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock
         )
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto)
+                                                            task_dto, act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -346,7 +349,7 @@ class TestCreateOrUpdateTask:
                              ["password", "8798", "Pas788", "7979passI"])
     def test_create_or_update_task_with_weak_password_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object, password
+            presenter_mock, mock_object, password, storage_mock, act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -374,12 +377,12 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_weak_password.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock
         )
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto)
+                                                            task_dto, act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -392,7 +395,7 @@ class TestCreateOrUpdateTask:
                              ["password", "87()", "7+8", "90!2"])
     def test_create_or_update_task_with_number_value_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object, number
+            presenter_mock, mock_object, number, storage_mock, act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -420,12 +423,12 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_invalid_number_value.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock
         )
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto)
+                                                            task_dto, act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -438,7 +441,7 @@ class TestCreateOrUpdateTask:
                              ["float_value", "87.2*3", "7+8.67"])
     def test_create_or_update_task_with_invalid_float_value_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object, float_value
+            presenter_mock, mock_object, float_value, storage_mock, act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -466,12 +469,12 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_invalid_float_value.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock
         )
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto)
+                                                            task_dto, act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -482,7 +485,7 @@ class TestCreateOrUpdateTask:
 
     def test_create_or_update_task_with_invalid_dropdown_value_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object
+            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -511,12 +514,12 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_invalid_dropdown_value.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock
         )
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto)
+                                                            task_dto, act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -527,7 +530,7 @@ class TestCreateOrUpdateTask:
 
     def test_create_or_update_task_with_invalid_gof_selector_value_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object
+            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -557,12 +560,12 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exceptions_for_invalid_gof_id_selected_in_gof_selector.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock
         )
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto)
+                                                            task_dto, act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -573,7 +576,7 @@ class TestCreateOrUpdateTask:
 
     def test_create_or_update_task_with_invalid_radio_group_choice_value_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object
+            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -602,12 +605,12 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_invalid_choice_in_radio_group_field.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock
         )
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto)
+                                                            task_dto, act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -619,7 +622,7 @@ class TestCreateOrUpdateTask:
 
     def test_create_or_update_task_with_invalid_checkbox_options_selected_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object
+            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -648,12 +651,12 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_invalid_checkbox_group_options_selected.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock
         )
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto)
+                                                            task_dto, act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -664,7 +667,7 @@ class TestCreateOrUpdateTask:
 
     def test_create_or_update_task_with_invalid_multi_select_options_selected_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object
+            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -693,12 +696,12 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_invalid_multi_select_options_selected.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock
         )
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto)
+                                                            task_dto, act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -709,7 +712,7 @@ class TestCreateOrUpdateTask:
 
     def test_create_or_update_task_with_invalid_multi_select_labels_selected_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object
+            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -737,12 +740,12 @@ class TestCreateOrUpdateTask:
         task_storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
         presenter_mock.raise_exception_for_invalid_multi_select_labels_selected.return_value = mock_object
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock
         )
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto)
+                                                            task_dto, act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -754,7 +757,8 @@ class TestCreateOrUpdateTask:
     @pytest.mark.parametrize("date_string", ["03-07-2020", "03/07/2020"])
     def test_create_or_update_task_with_invalid_date_format_date_string_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object, date_string
+            presenter_mock, mock_object, date_string, storage_mock,
+            act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -781,12 +785,12 @@ class TestCreateOrUpdateTask:
         task_storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
         presenter_mock.raise_exception_for_invalid_date_format.return_value = mock_object
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock
         )
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto)
+                                                            task_dto, act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -798,7 +802,8 @@ class TestCreateOrUpdateTask:
     @pytest.mark.parametrize("time_string", ["12:30", "12:60:23"])
     def test_create_or_update_task_with_invalid_date_format_date_string_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object, time_string
+            presenter_mock, mock_object, time_string, storage_mock,
+            act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -825,12 +830,12 @@ class TestCreateOrUpdateTask:
         task_storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
         presenter_mock.raise_exception_for_invalid_time_format.return_value = mock_object
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock
         )
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto)
+                                                            task_dto, act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -841,7 +846,8 @@ class TestCreateOrUpdateTask:
 
     def test_create_or_update_task_with_invalid_image_url_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object
+            presenter_mock, mock_object, storage_mock,
+            act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -869,12 +875,12 @@ class TestCreateOrUpdateTask:
         task_storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
         presenter_mock.raise_exception_for_invalid_image_url.return_value = mock_object
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock
         )
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto)
+                                                            task_dto, act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -886,7 +892,7 @@ class TestCreateOrUpdateTask:
 
     def test_create_or_update_task_with_valid_image_url_but_with_format_not_in_allowed_formats_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object
+            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -914,12 +920,12 @@ class TestCreateOrUpdateTask:
         task_storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
         presenter_mock.raise_exception_for_not_acceptable_image_format.return_value = mock_object
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock
         )
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto)
+                                                            task_dto, act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -930,7 +936,7 @@ class TestCreateOrUpdateTask:
 
     def test_create_or_update_task_with_invalid_file_url_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object
+            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -958,12 +964,12 @@ class TestCreateOrUpdateTask:
         task_storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
         presenter_mock.raise_exception_for_invalid_file_url.return_value = mock_object
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock
         )
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto)
+                                                            task_dto, act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -972,9 +978,60 @@ class TestCreateOrUpdateTask:
         )
         presenter_mock.raise_exception_for_invalid_file_url.assert_called_once()
 
+    def test_create_or_update_task_with_invalid_task_task_tempalte_id_raises_exception(
+            self, task_storage_mock, create_task_storage_mock, presenter_mock, mock_object,
+            storage_mock, act_on_task_presenter_mock
+    ):
+
+        # Arrange
+        task_template_id = "TASK_TEMPLATE_ID-1"
+        gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
+            size=1, field_response="text"
+        )
+        field_ids = [
+            gof_field_values_dto.field_id
+            for gof_field_values_dto in gof_field_values_dtos
+        ]
+        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+            size=1, field_id=factory.Iterator(field_ids),
+            field_type=FieldTypes.PLAIN_TEXT.value
+        )
+        gof_fields_dtos = GoFFieldsDTOFactory.create_batch(
+            size=1, field_values_dtos=gof_field_values_dtos
+        )
+        task_dto = TaskDTOFactory(
+            gof_fields_dtos=gof_fields_dtos, task_template_id=task_template_id
+        )
+        gof_ids = [
+            gof_fields_dto.gof_id
+            for gof_fields_dto in task_dto.gof_fields_dtos
+        ]
+        task_storage_mock.get_existing_gof_ids.return_value = gof_ids
+        task_storage_mock.get_existing_field_ids.return_value = field_ids
+        task_storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
+        task_storage_mock.check_is_template_exists.return_value = False
+        presenter_mock.raise_exception_for_invalid_task_template_id.return_value = mock_object
+        interactor = CreateOrUpdateTaskInteractor(
+            task_storage_mock, create_task_storage_mock, storage_mock
+        )
+
+        # Act
+        response = interactor.create_or_update_task_wrapper(presenter_mock,
+                                                            task_dto, act_on_task_presenter_mock)
+
+        # Assert
+        assert response == mock_object
+        task_storage_mock.get_field_details_for_given_field_ids.assert_called_once_with(
+            field_ids=field_ids
+        )
+        task_storage_mock.check_is_template_exists.assert_called_once_with(
+            template_id=task_template_id
+        )
+        presenter_mock.raise_exception_for_invalid_task_template_id.assert_called_once()
+
     def test_create_or_update_task_with_valid_details_creates_task(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object
+            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(1)
@@ -1003,12 +1060,12 @@ class TestCreateOrUpdateTask:
         create_task_storage_mock.create_task_gofs.return_value = task_gof_details_dtos
         presenter_mock.get_response_for_create_or_update_task.return_value = mock_object
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock
         )
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto)
+                                                            task_dto, act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -1019,7 +1076,7 @@ class TestCreateOrUpdateTask:
             task_dto.task_template_id, task_dto.created_by_id
         )
         task_gof_dtos = [
-            TaskGoFDTOFactory(
+            TaskGoFWithTaskIdDTOFactory(
                 task_id=created_task_id,
                 gof_id=gof_fields_dto.gof_id,
                 same_gof_order=gof_fields_dto.same_gof_order
@@ -1064,7 +1121,7 @@ class TestCreateOrUpdateTask:
 
     def test_create_or_update_task_with_invalid_task_id(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object
+            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(1)
@@ -1092,12 +1149,12 @@ class TestCreateOrUpdateTask:
         create_task_storage_mock.is_valid_task_id.return_value = False
         presenter_mock.raise_exception_for_invalid_task_id.return_value = mock_object
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock
         )
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto)
+                                                            task_dto, act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -1106,7 +1163,7 @@ class TestCreateOrUpdateTask:
 
     def test_create_or_update_task_with_valid_task_id_updates_task(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object
+            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(1)
@@ -1140,17 +1197,17 @@ class TestCreateOrUpdateTask:
             field_ids
         presenter_mock.get_response_for_create_or_update_task.return_value = mock_object
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock
         )
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto)
+                                                            task_dto, act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
         task_gof_dtos = [
-            TaskGoFDTOFactory(
+            TaskGoFWithTaskIdDTOFactory(
                 task_id=1,
                 gof_id=gof_fields_dto.gof_id,
                 same_gof_order=gof_fields_dto.same_gof_order

@@ -4,10 +4,10 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
-snapshots['TestGetTaskPresenterImplementation.test_when_complete_task_template_details_exists task_template_1'] = {
+snapshots[
+    'TestGetTaskPresenterImplementation.test_when_complete_task_template_details_exists task_template_1'] = {
     'actions': [
         {
             'action_id': 1,
@@ -73,7 +73,8 @@ snapshots['TestGetTaskPresenterImplementation.test_when_complete_task_template_d
     'template_name': 'Task Template 1'
 }
 
-snapshots['TestGetTaskPresenterImplementation.test_when_complete_task_template_details_exists task_template_2'] = {
+snapshots[
+    'TestGetTaskPresenterImplementation.test_when_complete_task_template_details_exists task_template_2'] = {
     'actions': [
     ],
     'group_of_fields': [
@@ -129,12 +130,14 @@ snapshots['TestGetTaskPresenterImplementation.test_when_complete_task_template_d
     'template_name': 'Task Template 2'
 }
 
-snapshots['TestGetTaskPresenterImplementation.test_when_no_task_templates_exists_returns_empty_list task_templates'] = {
+snapshots[
+    'TestGetTaskPresenterImplementation.test_when_no_task_templates_exists_returns_empty_list task_templates'] = {
     'task_templates': [
     ]
 }
 
-snapshots['TestGetTaskPresenterImplementation.test_when_no_gofs_exists_returns_empty_gofs_list task_template_1'] = {
+snapshots[
+    'TestGetTaskPresenterImplementation.test_when_no_gofs_exists_returns_empty_gofs_list task_template_1'] = {
     'actions': [
         {
             'action_id': 1,
@@ -153,7 +156,8 @@ snapshots['TestGetTaskPresenterImplementation.test_when_no_gofs_exists_returns_e
     'template_name': 'Task Template 1'
 }
 
-snapshots['TestGetTaskPresenterImplementation.test_when_no_gofs_exists_returns_empty_gofs_list task_template_2'] = {
+snapshots[
+    'TestGetTaskPresenterImplementation.test_when_no_gofs_exists_returns_empty_gofs_list task_template_2'] = {
     'actions': [
     ],
     'group_of_fields': [
@@ -162,7 +166,8 @@ snapshots['TestGetTaskPresenterImplementation.test_when_no_gofs_exists_returns_e
     'template_name': 'Task Template 2'
 }
 
-snapshots['TestGetTaskPresenterImplementation.test_when_no_actions_for_user_exists_returns_empty_actions_list task_template_1'] = {
+snapshots[
+    'TestGetTaskPresenterImplementation.test_when_no_actions_for_user_exists_returns_empty_actions_list task_template_1'] = {
     'actions': [
     ],
     'group_of_fields': [
@@ -218,7 +223,8 @@ snapshots['TestGetTaskPresenterImplementation.test_when_no_actions_for_user_exis
     'template_name': 'Task Template 1'
 }
 
-snapshots['TestGetTaskPresenterImplementation.test_when_no_actions_for_user_exists_returns_empty_actions_list task_template_2'] = {
+snapshots[
+    'TestGetTaskPresenterImplementation.test_when_no_actions_for_user_exists_returns_empty_actions_list task_template_2'] = {
     'actions': [
     ],
     'group_of_fields': [
@@ -274,7 +280,8 @@ snapshots['TestGetTaskPresenterImplementation.test_when_no_actions_for_user_exis
     'template_name': 'Task Template 2'
 }
 
-snapshots['TestGetTaskPresenterImplementation.test_when_no_fields_exists_returns_empty_fields_list task_template_1'] = {
+snapshots[
+    'TestGetTaskPresenterImplementation.test_when_no_fields_exists_returns_empty_fields_list task_template_1'] = {
     'actions': [
         {
             'action_id': 1,
@@ -302,7 +309,8 @@ snapshots['TestGetTaskPresenterImplementation.test_when_no_fields_exists_returns
     'template_name': 'Task Template 1'
 }
 
-snapshots['TestGetTaskPresenterImplementation.test_when_no_fields_exists_returns_empty_fields_list task_template_2'] = {
+snapshots[
+    'TestGetTaskPresenterImplementation.test_when_no_fields_exists_returns_empty_fields_list task_template_2'] = {
     'actions': [
     ],
     'group_of_fields': [
