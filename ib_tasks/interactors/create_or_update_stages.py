@@ -1,5 +1,6 @@
 from typing import List
 
+from ib_boards.exceptions.custom_exceptions import InvalidTemplateFields
 from ib_tasks.interactors.stages_dtos import StageLogicAttributes, StageDTO
 from ib_tasks.interactors.stage_display_logic import StageDisplayLogicInteractor
 
@@ -33,8 +34,28 @@ class CreateOrUpdateStagesInterface:
         self._validate_values_for_stages(stages_details)
 
         self._validate_stage_display_logic(stages_details)
-
+        task_fields_dtos = self.task_storage.get_field_ids_for_given_task_template_ids(
+            task_template_ids)
+        self._validate_task_related_field_ids(stages_details, task_fields_dtos)
         self._create_or_update_stages(existing_stage_ids, stages_details)
+
+    def _validate_task_related_field_ids(self, stage_details, task_fields_dtos):
+        stages_dict = {}
+        for stage in stage_details:
+            stages_dict[stage.task_template_id] = stage
+
+        tasks_dict = {}
+        for task in task_fields_dtos:
+            tasks_dict[task.template_id] = task.field_ids
+
+        invalid_field_ids = []
+        for stage in stages_dict:
+            if stage['card_info_kanban'] in task[stage.task_template_id]:
+                invalid_field_ids.append(stage['task_template_id'])
+            if stage['card_info_list'] in task[stage.task_template_id]:
+                invalid_field_ids.append(stage['task_template_id'])
+        if invalid_field_ids:
+            raise InvalidTemplateFields(invalid_field_ids)
 
     def _create_or_update_stages(self,
                                  existing_stage_ids: List[str],
@@ -84,14 +105,13 @@ class CreateOrUpdateStagesInterface:
         invalid_stage_display_logic_stages = []
 
         list_of_status_ids = [attribute.status_id
-                             for attribute in list_of_logic_attributes]
+                              for attribute in list_of_logic_attributes]
 
         valid_status_ids = self.stage_storage.get_existing_stage_ids(
             list_of_status_ids)
 
         for attribute in list_of_logic_attributes:
             if attribute.status_id not in valid_status_ids:
-
                 invalid_stage_display_logic_stages.append(attribute.stage_id)
         # TODO need to validate that is remove comments
         # if invalid_stage_display_logic_stages:
@@ -127,9 +147,9 @@ class CreateOrUpdateStagesInterface:
 
     def _validate_task_template_ids(self, task_template_ids: List[str]):
         invalid_task_template_ids = []
-        valid_task_template_ids = self.task_storage.\
+        valid_task_template_ids = self.task_storage. \
             get_valid_template_ids_in_given_template_ids(
-                task_template_ids)
+            task_template_ids)
         for task_template_id in task_template_ids:
             if task_template_id not in valid_task_template_ids:
                 invalid_task_template_ids.append(task_template_id)

@@ -1,6 +1,7 @@
 from unittest.mock import create_autospec, patch
 import pytest
 
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageValues, \
     DuplicateStageIds, InvalidStageDisplayLogic, \
@@ -288,3 +289,47 @@ class TestCreateOrUpdateStageInformation:
             )
 
         # Assert
+
+    @patch.object(StageDisplayLogicInteractor,
+                  'get_stage_display_logic_attributes')
+    def test_validate_fields_of_given_task_template_raises_exception(
+            self, logic_interactor, create_stage_dtos, create_task_stages_dtos,
+            valid_stages_dto, task_storage, stage_storage):
+        # Arrange
+        stages_details = create_stage_dtos
+
+        storage = stage_storage
+        storage.get_existing_stage_ids.return_value = \
+            ["stage_id_0", "stage_id_1"]
+        storage.validate_stages_related_task_template_ids.return_value = []
+        task_stages_dto = create_task_stages_dtos
+        logic_interactor.return_value = StageLogicAttributes(
+            status_id="status1",
+            stage_id="PR_PENDING RP APPROVAL"
+        )
+        valid_template_ids = ["task_template_id_0", "task_template_id_1"]
+        task_storage.get_valid_template_ids_in_given_template_ids. \
+            return_value = valid_template_ids
+
+        task_storage.get_field_ids_for_given_task_template_ids.return_value = [TemplateFieldsDTO(
+            template_id="task_template_id_0",
+            field_ids=["field_id_1", "field_id_2"]
+        ),
+            TemplateFieldsDTO(
+                template_id="task_template_id_1",
+                field_ids=["field_id_1", "field_id_0"]
+            )]
+        stage_interactor = CreateOrUpdateStagesInterface(
+            stage_storage=storage, task_storage=task_storage
+        )
+
+        # Act
+
+        stage_interactor.create_or_update_stages(
+            stages_details=stages_details
+        )
+
+        # Assert
+        storage.get_field_ids_for_given_task_template_ids.assert_called_once_with(
+            valid_template_ids
+        )
