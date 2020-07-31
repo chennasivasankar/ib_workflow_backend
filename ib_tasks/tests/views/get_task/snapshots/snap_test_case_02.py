@@ -50,24 +50,6 @@ snapshots['TestCase02GetTaskAPITestCase.test_case body'] = {
             ],
             'gof_id': 'gof_id_1',
             'same_gof_order': 1.0
-        },
-        {
-            'gof_fields': [
-                {
-                    'field_id': 'FIELD_ID-2',
-                    'field_response': 'response'
-                },
-                {
-                    'field_id': 'FIELD_ID-5',
-                    'field_response': 'response'
-                },
-                {
-                    'field_id': 'FIELD_ID-8',
-                    'field_response': 'response'
-                }
-            ],
-            'gof_id': 'gof_id_2',
-            'same_gof_order': 1.0
         }
     ],
     'stages_with_actions': [

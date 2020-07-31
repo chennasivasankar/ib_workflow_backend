@@ -57,7 +57,7 @@ class TestCase02GetTaskAPITestCase(TestUtils):
             PermissionTypes.WRITE.value
         ]
         GoFRoleFactory.create_batch(
-            size=3, gof=factory.Iterator(gof_objs),
+            size=2, gof=factory.Iterator(gof_objs),
             role=factory.Iterator(roles),
             permission_type=factory.Iterator(permission_type)
         )
