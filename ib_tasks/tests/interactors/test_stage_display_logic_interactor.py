@@ -29,12 +29,15 @@ class TestStageDisplayLogic:
     def test_with_valid_stage_ids_return_task_status_dtos(
             self):
         # Arrange
-        from ib_boards.tests.factories.interactor_dtos import \
-            TaskStatusDTOFactory
-        expected_response = TaskStatusDTOFactory.create_batch(2)
+
+        from ib_tasks.interactors.task_dtos import StatusOperandStageDTO
+        expected_response = [
+            StatusOperandStageDTO(
+                variable="STATUS_ID_1", operator="==", stage="STAGE_ID_1"
+            )
+        ]
         stage_display_logics = [
-            "STATUS_ID_1 == STAGE_ID_1",
-            "STATUS_ID_2 == STAGE_ID_2"
+            "STATUS_ID_1 == STAGE_ID_1"
         ]
         interactor = StageDisplayLogicInteractor()
 

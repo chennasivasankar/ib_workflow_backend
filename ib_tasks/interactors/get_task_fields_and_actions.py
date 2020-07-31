@@ -10,6 +10,8 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
+    TaskStorageInterface
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 
 
@@ -19,8 +21,9 @@ class GetTaskFieldsAndActionsInteractor:
         self.storage = storage
         self.stage_storage = stage_storage
 
-    def get_task_fields_and_action(self, task_dtos: List[GetTaskDetailsDTO]) -> \
+    def get_task_fields_and_action(self, task_dtos: List[GetTaskDetailsDTO], user_id: str) -> \
             List[GetTaskStageCompleteDetailsDTO]:
+        # TODO: validate user tasks
         task_ids = [task.task_id for task in task_dtos]
         stage_ids = [task.stage_id for task in task_dtos]
 

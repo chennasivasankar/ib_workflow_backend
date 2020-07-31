@@ -82,3 +82,17 @@ class TaskIdWithStageDetailsDTO:
     task_id: int
     stage_id: str
     stage_display_name: str
+
+
+@dataclass
+class StageDetailsDTO:
+    stage_id: str
+    name: str
+
+
+@dataclass()
+class StageDisplayValueDTO:
+    stage_id: str
+    display_logic: str
+    value: int
+

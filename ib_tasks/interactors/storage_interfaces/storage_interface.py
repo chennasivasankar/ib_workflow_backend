@@ -2,22 +2,14 @@ import abc
 from typing import List, Optional
 
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
-from ib_tasks.interactors.stages_dtos import StageActionDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos \
     import ActionRolesDTO, ActionDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos \
     import GroupOfFieldsDTO, GOFMultipleEnableDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    StageActionNamesDTO, StageValueDTO
-from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
-    StageActionDTO
-from ib_tasks.interactors.storage_interfaces.status_dtos import \
-    StatusVariableDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    StageActionNamesDTO, StageValueDTO
-from ib_tasks.interactors.storage_interfaces.status_dtos import \
-    StatusVariableDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO, StageValueDTO, StageDisplayValueDTO
+from ib_tasks.interactors.stages_dtos import StageActionDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import StatusVariableDTO
 
 
 class StorageInterface(abc.ABC):
@@ -52,12 +44,12 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def validate_task_id(self, task_id: str) -> bool:
+    def validate_task_id(self, task_id: int) -> bool:
         pass
 
     @abc.abstractmethod
     def get_task_group_of_fields_dto(
-            self, task_id: str) -> List[GroupOfFieldsDTO]:
+            self, task_id: int) -> List[GroupOfFieldsDTO]:
         pass
 
     @abc.abstractmethod
@@ -67,13 +59,12 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_status_variables_to_task(
-            self, task_id: str) -> List[StatusVariableDTO]:
+            self, task_id: int) -> List[StatusVariableDTO]:
         pass
 
     @abc.abstractmethod
     def get_enable_multiple_gofs_field_to_gof_ids(
-            self, task_id: str, gof_ids: List[str]) -> List[
-        GOFMultipleEnableDTO]:
+            self, template_id: str, gof_ids: List[str]) -> List[GOFMultipleEnableDTO]:
         pass
 
     @abc.abstractmethod
@@ -109,4 +100,9 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_stage_dtos_to_task(self, task_id: int) -> List[StageValueDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_task_template_stage_logic_to_task(
+            self, task_id: int) -> List[StageDisplayValueDTO]:
         pass
