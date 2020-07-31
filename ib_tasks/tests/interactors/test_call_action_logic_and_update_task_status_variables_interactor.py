@@ -33,10 +33,10 @@ class TestUpdateTaskStatusVariablesInteractor:
         action_id = 1
         storage = create_autospec(StorageInterface)
         GOFMultipleStatusDTOFactory.reset_sequence()
-        single_gof = GOFMultipleStatusDTOFactory()
+        single_gof = GOFMultipleStatusDTOFactory(multiple_status=False)
         TaskGoFFieldDTOFactory.reset_sequence(1)
         gof_field_dtos = TaskGoFFieldDTOFactory.create_batch(size=3)
-        multiple_gof = GOFMultipleStatusDTOFactory(multiple_status=False)
+        multiple_gof = GOFMultipleStatusDTOFactory()
         storage.get_enable_multiple_gofs_field_to_gof_ids.return_value = [
             single_gof, multiple_gof
         ]
@@ -76,10 +76,10 @@ class TestUpdateTaskStatusVariablesInteractor:
         action_id = 1
         storage = create_autospec(StorageInterface)
         GOFMultipleStatusDTOFactory.reset_sequence()
-        single_gof = GOFMultipleStatusDTOFactory()
+        single_gof = GOFMultipleStatusDTOFactory(multiple_status=False)
         TaskGoFFieldDTOFactory.reset_sequence(1)
         gof_field_dtos = TaskGoFFieldDTOFactory.create_batch(size=3)
-        multiple_gof = GOFMultipleStatusDTOFactory(multiple_status=False)
+        multiple_gof = GOFMultipleStatusDTOFactory()
         storage.get_enable_multiple_gofs_field_to_gof_ids.return_value = [
             single_gof, multiple_gof
         ]
@@ -125,16 +125,16 @@ class TestUpdateTaskStatusVariablesInteractor:
         task_id = 1
         storage = create_autospec(StorageInterface)
         GOFMultipleStatusDTOFactory.reset_sequence()
-        multiple_gof = GOFMultipleStatusDTOFactory()
+        single_gof = GOFMultipleStatusDTOFactory(multiple_status=False)
         TaskGoFFieldDTOFactory.reset_sequence(1)
         gof_field_dtos = TaskGoFFieldDTOFactory.create_batch(size=3)
-        single_gof = GOFMultipleStatusDTOFactory(multiple_status=False)
+        multiple_gof = GOFMultipleStatusDTOFactory()
         storage.get_enable_multiple_gofs_field_to_gof_ids.return_value = [
             single_gof, multiple_gof
         ]
         path_name = "ib_tasks.populate.stage_actions_logic.stage_1_action_name_1"
         mock_obj = mocker.patch("importlib.import_module")
-        mock_obj.return_value = 0
+        mock_obj.stage_1_action_name_1.return_value = 0
         storage.get_path_name_to_action.return_value = path_name
         StatusVariableDTOFactory.reset_sequence()
         statuses = [StatusVariableDTOFactory()]

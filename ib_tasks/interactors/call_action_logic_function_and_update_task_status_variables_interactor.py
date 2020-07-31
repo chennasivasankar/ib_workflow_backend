@@ -1,10 +1,9 @@
 from typing import List
 
-from ib_tasks.interactors.gofs_dtos import TaskGofAndStatusesDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import TaskDetailsDTO, TaskGoFDTO, TaskGoFFieldDTO
 from ib_tasks.interactors.storage_interfaces.storage_interface \
-    import StorageInterface, GroupOfFieldsDTO, StatusVariableDTO
+    import StorageInterface
 
 
 class InvalidModulePathFound(Exception):
@@ -32,20 +31,30 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
             template_id=task_dto.template_id,
             group_of_fields_dto=task_gof_dtos)
         task_gof_fields_dto = task_dto.task_gof_field_dtos
-        task_gof_fields_dto_dict = self._get_task_gof_fields_dict(task_gof_fields_dto)
+        task_gof_fields_dto_dict = \
+            self._get_task_gof_fields_dict(task_gof_fields_dto)
         status_variables_dto = self._get_task_status_dtos(self.task_id)
-        task_dict = self._get_task_dict(task_gof_dtos, gof_multiple_enable_dict,
-                                        task_gof_fields_dto_dict, status_variables_dto)
-        print(task_dict)
-        method_object = self._get_method_object_for_condition(action_id=self.action_id)
-        global_constants = self._get_global_constants_to_task_template(task_id=self.task_id)
-        stage_value_dict = self._get_stage_value_dict_to_task_template(task_id=self.task_id)
+        task_dict = self._get_task_dict(
+            task_gof_dtos, gof_multiple_enable_dict,
+            task_gof_fields_dto_dict, status_variables_dto)
+        task_dict = self._get_updated_task_dict(task_dict)
+
+        status_dict = task_dict["statuses"]
+        self._update_task_status_variables(status_dict, status_variables_dto)
+
+    def _get_updated_task_dict(self, task_dict):
+
+        method_object = \
+            self._get_method_object_for_condition(action_id=self.action_id)
+        global_constants = \
+            self._get_global_constants_to_task(task_id=self.task_id)
+        stage_value_dict = \
+            self._get_stage_value_dict_to_task(task_id=self.task_id)
         task_dict = method_object(
             task_dict=task_dict, global_constants=global_constants,
             stage_value_dict=stage_value_dict
         )
-        status_dict = task_dict["statuses"]
-        self._update_task_status_variables(status_dict, status_variables_dto)
+        return task_dict
 
     def _update_task_status_variables(self, status_dict, status_variables_dto):
         updated_status_variables_dto = self._get_updated_status_variable_dto(
@@ -60,7 +69,7 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
             self.storage.get_status_variables_to_task(task_id=task_id)
         return status_variable_dtos
 
-    def _get_global_constants_to_task_template(self, task_id: int):
+    def _get_global_constants_to_task(self, task_id: int):
 
         global_constants_dto = \
             self.storage.get_global_constants_to_task(task_id=task_id)
@@ -71,7 +80,7 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
             global_constants[constant_name] = global_constant_dto.value
         return global_constants
 
-    def _get_stage_value_dict_to_task_template(self, task_id: int):
+    def _get_stage_value_dict_to_task(self, task_id: int):
 
         task_stage_dtos = \
             self.storage.get_stage_dtos_to_task(task_id=task_id)
@@ -176,7 +185,7 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
     @staticmethod
     def _get_task_gof_fields_dict(fields_dto: List[TaskGoFFieldDTO]):
         from collections import defaultdict
-        task_gof_fields_dict = {}
+        task_gof_fields_dict = defaultdict(dict)
         for field_dto in fields_dto:
             field_id = field_dto.field_id
             response = field_dto.field_response
