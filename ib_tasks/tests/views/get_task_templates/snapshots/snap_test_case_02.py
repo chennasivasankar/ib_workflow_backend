@@ -7,14 +7,6 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case status_code'] = '404'
-
-snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
-    'http_status_code': 404,
-    'res_status': 'TASK_TEMPLATES_DOES_NOT_EXISTS',
-    'response': 'No Task Templates are exists'
-}
-
 snapshots['TestCase02GetTaskTemplatesAPITestCase.test_case status_code'] = '404'
 
 snapshots['TestCase02GetTaskTemplatesAPITestCase.test_case body'] = {

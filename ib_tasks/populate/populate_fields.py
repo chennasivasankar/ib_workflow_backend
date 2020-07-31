@@ -1,6 +1,7 @@
 from typing import List, Dict, Union
 
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, FieldRolesDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
+    FieldRolesDTO
 from ib_tasks.constants.constants import MULTI_VALUES_INPUT_FIELDS, UPLOADERS
 
 
@@ -22,7 +23,7 @@ class PopulateFields:
         field_roles_dtos = self.prepare_field_roles_dtos(field_records)
         storage = TasksStorageImplementation()
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
-        interactor.create_or_update_fields(field_dtos, field_roles_dtos)
+        # interactor.create_or_update_fields(field_dtos, field_roles_dtos)
 
     def prepare_field_dtos(self, field_records: List[Dict]) -> List[FieldDTO]:
         field_dtos = []
@@ -78,6 +79,7 @@ class PopulateFields:
             allowed_formats = None
         if field_type in UPLOADERS and allowed_formats is not None:
             allowed_formats = allowed_formats.split("\r\n")
+            allowed_formats = allowed_formats[0].split("\n")
         if field_type in UPLOADERS and allowed_formats is None:
             allowed_formats = []
         return allowed_formats
@@ -89,6 +91,7 @@ class PopulateFields:
             field_values = None
         if field_type in MULTI_VALUES_INPUT_FIELDS and field_values is not None:
             field_values = field_values.split("\r\n")
+            field_values = field_values[0].split("\n")
         if field_type in MULTI_VALUES_INPUT_FIELDS and field_values is None:
             field_values = []
         return field_values
