@@ -5,7 +5,7 @@ from ib_tasks.interactors.stages_dtos import TemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO, \
     TaskTemplateStageFieldsDTO, StageTaskFieldsDTO, TaskAndFieldsDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskTemplateStageDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskTemplateStageDTO, StageDetailsDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 
 
@@ -41,4 +41,13 @@ class FieldsStorageInterface(abc.ABC):
     def validate_task_related_stage_ids(self,
                                         task_dtos: List[GetTaskDetailsDTO]) -> \
             List[GetTaskDetailsDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_task_stages(self, task_id: int) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_stage_complete_details(self, stage_ids: List[str]) -> \
+            List[StageDetailsDTO]:
         pass
