@@ -40,6 +40,8 @@ class StagesStorageImplementation(StageStorageInterface):
                      display_name=stage.stage_display_name,
                      task_template_id=stage.task_template_id,
                      value=stage.value,
+                     card_info_kanban=stage.card_info_kanban,
+                     card_info_list=stage.card_info_list,
                      display_logic=stage.stage_display_logic)
 
     def get_existing_stage_ids(self, stage_ids: List[str]) -> Optional[
@@ -71,9 +73,10 @@ class StagesStorageImplementation(StageStorageInterface):
 
     @staticmethod
     def _get_update_stage_object(stage, stage_object):
-        # stage_object.stage_id = stage.stage_id
         stage_object.display_name = stage.stage_display_name
         stage_object.value = stage.value
+        stage_object.card_info_kanban = stage.card_info_kanban
+        stage_object.card_info_list = stage.card_info_list
         stage_object.display_logic = stage.stage_display_logic
         return stage_object
 

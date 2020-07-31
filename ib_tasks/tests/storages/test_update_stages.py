@@ -28,6 +28,8 @@ class TestUpdateStages:
             value=stage.value,
             id=stage.id,
             stage_display_name=stage.display_name,
+            card_info_kanban=stage.card_info_kanban,
+            card_info_list=stage.card_info_list,
             stage_display_logic=stage.display_logic
         ) for stage in stages]
 
@@ -42,6 +44,10 @@ class TestUpdateStages:
                    expected_dtos[dto_value].stage_display_logic
             assert returned_dtos[dto_value].stage_display_name == \
                    expected_dtos[dto_value].stage_display_name
+            assert returned_dtos[dto_value].card_info_list == \
+                   expected_dtos[dto_value].card_info_list
+            assert returned_dtos[dto_value].card_info_kanban == \
+                   expected_dtos[dto_value].card_info_kanban
 
     def test_update_stages_stage_details(self, stage_dtos, create_stages):
         # Arrange

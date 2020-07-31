@@ -47,9 +47,9 @@ class CreateOrUpdateStagesInterface:
                 create_stages_details.append(stage_information)
             else:
                 update_stages_details.append(stage_information)
-        print("update_stages_details: ", update_stages_details)
+
         task_stages_dto = self._get_task_stages_dto(update_stages_details)
-        print("task_stages_dto: ", task_stages_dto)
+
         self._validate_stages_related_task_template_ids(task_stages_dto)
 
         if update_stages_details:
