@@ -15,7 +15,7 @@ from ib_iam.interactors.team_interactor import (
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     user_obj = kwargs["user"]
-    user_id = str(user_obj.id)
+    user_id = str(user_obj.user_id)
     team_id = kwargs["team_id"]
 
     storage = TeamStorageImplementation()

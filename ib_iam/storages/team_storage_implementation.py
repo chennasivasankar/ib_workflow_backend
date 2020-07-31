@@ -1,13 +1,12 @@
 from typing import List, Optional
-from ib_iam.interactors.storage_interfaces.team_storage_interface import TeamStorageInterface
-from ib_iam.models import UserDetails, Team, TeamMember
-from ib_iam.exceptions.custom_exceptions import (
-    UserHasNoAccess, TeamNameAlreadyExists, InvalidTeam
-)
+from ib_iam.interactors.storage_interfaces.team_storage_interface import \
+    TeamStorageInterface
+from ib_iam.models import UserDetails, Team, UserTeam
+from ib_iam.exceptions.custom_exceptions import UserHasNoAccess, InvalidTeam
 from ib_iam.interactors.storage_interfaces.dtos import (
-    PaginationDTO, TeamDTO, TeamMemberIdsDTO,
-    TeamsWithTotalTeamsCountDTO, TeamDetailsWithUserIdsDTO, TeamWithUserIdsDTO
-)
+    PaginationDTO, TeamUserIdsDTO,
+    TeamsWithTotalTeamsCountDTO, TeamDetailsWithUserIdsDTO, TeamWithUserIdsDTO,
+    TeamDTO)
 
 
 class TeamStorageImplementation(TeamStorageInterface):
@@ -33,24 +32,24 @@ class TeamStorageImplementation(TeamStorageInterface):
         )
         return teams_with_total_teams_count_dto
 
-    def get_team_member_ids_dtos(
+    def get_team_user_ids_dtos(
             self, team_ids: List[str]
-    ) -> List[TeamMemberIdsDTO]:
-        team_members = TeamMember.objects.filter(
+    ) -> List[TeamUserIdsDTO]:
+        team_users = UserTeam.objects.filter(
             team__team_id__in=team_ids
-        ).values_list('team__team_id', 'member_id')
+        ).values_list('team__team_id', 'user_id')
         from collections import defaultdict
-        team_member_ids_dictionary = defaultdict(list)
-        for team_member in team_members:
-            team_id = str(team_member[0])
-            team_member_ids_dictionary[team_id].extend([team_member[1]])
-        team_member_ids_dtos = [
-            TeamMemberIdsDTO(
+        team_user_ids_dictionary = defaultdict(list)
+        for team_user in team_users:
+            team_id = str(team_user[0])
+            team_user_ids_dictionary[team_id].extend([team_user[1]])
+        team_user_ids_dtos = [
+            TeamUserIdsDTO(
                 team_id=team_id,
-                member_ids=team_member_ids_dictionary[team_id]
+                user_ids=team_user_ids_dictionary[team_id]
             ) for team_id in team_ids
         ]
-        return team_member_ids_dtos
+        return team_user_ids_dtos
 
     def get_team_id_if_team_name_already_exists(
             self, name: str
@@ -82,12 +81,12 @@ class TeamStorageImplementation(TeamStorageInterface):
 
     def add_users_to_team(self, team_id: str, user_ids: List[str]):
         team_members = [
-            TeamMember(
+            UserTeam(
                 team_id=team_id,
-                member_id=user_id
+                user_id=user_id
             ) for user_id in user_ids
         ]
-        TeamMember.objects.bulk_create(team_members)
+        UserTeam.objects.bulk_create(team_members)
 
     def raise_exception_if_team_not_exists(self, team_id: str):
         try:
@@ -104,13 +103,13 @@ class TeamStorageImplementation(TeamStorageInterface):
         )
 
     def get_member_ids_of_team(self, team_id: str):
-        member_ids = TeamMember.objects.filter(team_id=team_id) \
-                               .values_list("member_id", flat=True)
+        member_ids = UserTeam.objects.filter(team_id=team_id) \
+            .values_list("user_id", flat=True)
         return list(member_ids)
 
-    def delete_members_from_team(self, team_id: str, member_ids: List[str]):
-        TeamMember.objects.filter(team_id=team_id, member_id__in=member_ids) \
-                  .delete()
+    def delete_members_from_team(self, team_id: str, user_ids: List[str]):
+        UserTeam.objects.filter(team_id=team_id, user_id__in=user_ids) \
+            .delete()
 
     def delete_team(self, team_id: str):
         Team.objects.filter(team_id=team_id).delete()

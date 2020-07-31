@@ -1,10 +1,11 @@
 """
-Updates details as valid parameters are given
+# Returns team_id as valid parameters are given
 """
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...factories import TeamFactory, TeamMemberFactory, UserFactory
+from ...factories.models import TeamFactory, UserTeamFactory, \
+    UserDetailsFactory
 
 
 class TestCase01UpdateTeamDetailsAPITestCase(TestUtils):
@@ -12,21 +13,20 @@ class TestCase01UpdateTeamDetailsAPITestCase(TestUtils):
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
     URL_SUFFIX = URL_SUFFIX
-    SECURITY = {'oauth': {'scopes': ['update']}}
+    SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.fixture
     def setup(self, api_user):
-        user_id = str(api_user.id)
-        UserFactory.reset_sequence(1)
-        TeamMemberFactory.reset_sequence(1)
+        user_id = str(api_user.user_id)
+        UserDetailsFactory.reset_sequence(1)
+        UserTeamFactory.reset_sequence(1)
         TeamFactory.reset_sequence(1)
-        UserFactory(user_id=user_id, is_admin=True)
+        UserDetailsFactory(user_id=user_id, is_admin=True)
         team_id = "f2c02d98-f311-4ab2-8673-3daa00757002"
         team = TeamFactory.create(team_id=team_id)
-        from ib_iam.models import Team, TeamMember, UserDetails
         for user_id in ["2", "3"]:
-            TeamMemberFactory.create(team=team, member_id=user_id)
-            UserFactory.create(user_id=user_id)
+            UserTeamFactory.create(team=team, user_id=user_id)
+            UserDetailsFactory.create(user_id=user_id)
         return team_id
 
     @pytest.mark.django_db

@@ -29,7 +29,7 @@ class TestCase03AddTeamAPITestCase(TestUtils):
     @pytest.fixture()
     def setup(self, api_user):
         user_obj = api_user
-        user_id = str(user_obj.id)
+        user_id = str(user_obj.user_id)
         from ib_iam.tests.factories.models import (
             UserFactory, TeamFactory
         )

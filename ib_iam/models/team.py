@@ -17,8 +17,3 @@ class Team(AbstractDateTimeModel):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(null=True, blank=True)
     created_by = models.CharField(max_length=1000)
-
-
-class TeamMember(models.Model):
-    team = models.ForeignKey("Team", on_delete=models.CASCADE, related_name="members")
-    member_id = models.CharField(max_length=1000)

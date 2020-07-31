@@ -5,7 +5,7 @@ import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ib_iam.tests.factories.models import (
-    UserFactory
+    UserDetailsFactory
 )
 
 
@@ -30,5 +30,5 @@ class TestCase04GetListOfTeamsAPITestCase(TestUtils):
     @pytest.fixture()
     def setup(self, api_user):
         user_obj = api_user
-        UserFactory.reset_sequence(1)
-        UserFactory.create(user_id=user_obj.id, is_admin=True)
+        UserDetailsFactory.reset_sequence(1)
+        UserDetailsFactory.create(user_id=user_obj.user_id, is_admin=True)

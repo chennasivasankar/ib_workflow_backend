@@ -1,5 +1,60 @@
+import uuid
 from dataclasses import dataclass
-from typing import List
+from typing import Optional, List
+
+
+@dataclass
+class UserDTO:
+    user_id: str
+    is_admin: bool
+    company_id: Optional[str] = None
+
+
+@dataclass
+class CompanyIdAndNameDTO:
+    company_id: str
+    company_name: str
+
+
+@dataclass
+class TeamIdAndNameDTO:
+    team_id: str
+    team_name: str
+
+
+@dataclass
+class RoleIdAndNameDTO:
+    role_id: str
+    name: str
+
+
+@dataclass
+class UserTeamDTO:
+    user_id: str
+    team_id: str
+    team_name: str
+
+
+@dataclass
+class UserCompanyDTO:
+    user_id: str
+    company_id: str
+    company_name: str
+
+
+@dataclass
+class UserRoleDTO:
+    user_id: uuid.uuid4
+    role_id: str
+    name: str
+    description: str
+
+
+@dataclass
+class RoleDTO:
+    role_id: str
+    name: str
+    description: str
 
 
 @dataclass
@@ -32,9 +87,9 @@ class TeamDTO:
 
 
 @dataclass
-class TeamMemberIdsDTO:
+class TeamUserIdsDTO:
     team_id: str
-    member_ids: List[str]
+    user_ids: List[str]
 
 
 @dataclass
@@ -44,8 +99,8 @@ class TeamsWithTotalTeamsCountDTO:
 
 
 @dataclass
-class MemberDTO:
-    member_id: str
+class BasicUserDetailsDTO:
+    user_id: str
     name: str
     profile_pic_url: str
 

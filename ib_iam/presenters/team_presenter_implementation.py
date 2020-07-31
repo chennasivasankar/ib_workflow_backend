@@ -1,6 +1,7 @@
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 from ib_iam.constants.enums import StatusCode
-from ib_iam.interactors.presenter_interfaces.dtos import TeamWithMembersDetailsDTO
+from ib_iam.interactors.presenter_interfaces.dtos import \
+    TeamWithUsersDetailsDTO
 from ib_iam.interactors.presenter_interfaces.team_presenter_interface import (
     TeamPresenterInterface
 )
@@ -48,9 +49,10 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
         )
 
     def get_response_for_get_list_of_teams(
-            self, team_details_dtos: TeamWithMembersDetailsDTO
+            self, team_details_dtos: TeamWithUsersDetailsDTO
     ):
-        teams = self._convert_team_details_dtos_to_teams_list(team_details_dtos=team_details_dtos)
+        teams = self._convert_team_details_dtos_to_teams_list(
+            team_details_dtos=team_details_dtos)
         response_dict = {
             "total_teams_count": team_details_dtos.total_teams_count,
             "teams": teams
@@ -106,18 +108,19 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
         )
 
     def _convert_team_details_dtos_to_teams_list(
-            self, team_details_dtos: TeamWithMembersDetailsDTO
+            self, team_details_dtos: TeamWithUsersDetailsDTO
     ):
         team_dtos = team_details_dtos.team_dtos
-        team_member_ids_dtos = team_details_dtos.team_member_ids_dtos
-        member_dtos = team_details_dtos.member_dtos
-        members_dictionary = self._get_members_dictionary(member_dtos=member_dtos)
-        team_member_ids_dict = self._get_team_members_dict_from_team_member_ids_dtos(
-            team_member_ids_dtos=team_member_ids_dtos
+        team_user_ids_dtos = team_details_dtos.team_user_ids_dtos
+        member_dtos = team_details_dtos.user_dtos
+        members_dictionary = self._get_members_dictionary(
+            member_dtos=member_dtos)
+        team_user_ids_dict = self._get_team_members_dict_from_team_user_ids_dtos(
+            team_user_ids_dtos=team_user_ids_dtos
         )
         teams_details_dict_list = [
             self._convert_to_team_details_dictionary(
-                team_member_ids_dict=team_member_ids_dict,
+                team_user_ids_dict=team_user_ids_dict,
                 members_dictionary=members_dictionary,
                 team_dto=team_dto
             ) for team_dto in team_dtos
@@ -126,12 +129,12 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
 
     def _convert_to_team_details_dictionary(
             self,
-            team_member_ids_dict,
+            team_user_ids_dict,
             members_dictionary,
             team_dto
     ):
         team_members_dict_list = self._get_members(
-            members_ids=team_member_ids_dict[team_dto.team_id],
+            members_ids=team_user_ids_dict[team_dto.team_id],
             members_dictionary=members_dictionary
         )
         team_dictionary = self._convert_to_team_dictionary(
@@ -163,21 +166,21 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
         from collections import defaultdict
         members_dict = defaultdict()
         for member_dto in member_dtos:
-            members_dict[member_dto.member_id] = {
-                "member_id": member_dto.member_id,
+            members_dict[member_dto.user_id] = {
+                "member_id": member_dto.user_id,
                 "name": member_dto.name,
                 "profile_pic_url": member_dto.profile_pic_url
             }
         return members_dict
 
     @staticmethod
-    def _get_team_members_dict_from_team_member_ids_dtos(
-            team_member_ids_dtos
+    def _get_team_members_dict_from_team_user_ids_dtos(
+            team_user_ids_dtos
     ):
         from collections import defaultdict
-        team_member_ids_dict = defaultdict(list)
-        for team_member_ids_dto in team_member_ids_dtos:
-            team_member_ids_dict[
-                team_member_ids_dto.team_id
-            ] = team_member_ids_dto.member_ids
-        return team_member_ids_dict
+        team_user_ids_dict = defaultdict(list)
+        for team_user_ids_dto in team_user_ids_dtos:
+            team_user_ids_dict[
+                team_user_ids_dto.team_id
+            ] = team_user_ids_dto.user_ids
+        return team_user_ids_dict

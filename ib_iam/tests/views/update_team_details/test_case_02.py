@@ -4,7 +4,7 @@
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...factories import TeamFactory, UserFactory
+from ...factories.models import TeamFactory, UserDetailsFactory
 
 
 class TestCase02UpdateTeamDetailsAPITestCase(TestUtils):
@@ -12,14 +12,14 @@ class TestCase02UpdateTeamDetailsAPITestCase(TestUtils):
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
     URL_SUFFIX = URL_SUFFIX
-    SECURITY = {'oauth': {'scopes': ['update']}}
+    SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.fixture
     def setup(self, api_user):
-        user_id = str(api_user.id)
-        UserFactory.reset_sequence(1)
+        user_id = str(api_user.user_id)
+        UserDetailsFactory.reset_sequence(1)
         TeamFactory.reset_sequence(1)
-        UserFactory(user_id=user_id)
+        UserDetailsFactory(user_id=user_id)
         team_id = "f2c02d98-f311-4ab2-8673-3daa00757002"
         TeamFactory.create(team_id=team_id)
         return team_id

@@ -1,11 +1,6 @@
 from typing import List
-from ib_iam.exceptions.custom_exceptions import (
-    UserHasNoAccess,
-    TeamNameAlreadyExists,
-    InvalidUsers,
-    DuplicateUsers,
-    InvalidTeam
-)
+from ib_iam.exceptions.custom_exceptions import UserHasNoAccess, \
+    TeamNameAlreadyExists, InvalidUsers, DuplicateUsers, InvalidTeam
 from ib_iam.interactors.presenter_interfaces \
     .delete_team_presenter_interface import DeleteTeamPresenterInterface
 from ib_iam.interactors.presenter_interfaces \
@@ -41,7 +36,8 @@ class TeamInteractor:
         except UserHasNoAccess:
             response = presenter.get_user_has_no_access_response_for_add_team()
         except TeamNameAlreadyExists as exception:
-            response = presenter.get_team_name_already_exists_response_for_add_team(exception)
+            response = presenter.get_team_name_already_exists_response_for_add_team(
+                exception)
         except DuplicateUsers:
             response = presenter.get_duplicate_users_response_for_add_team()
         except InvalidUsers:
@@ -107,16 +103,17 @@ class TeamInteractor:
         self.storage.update_team_details(
             team_with_user_ids_dto=team_with_user_ids_dto
         )
-        team_member_ids = self.storage.get_member_ids_of_team(team_id=team_id)
+        team_user_ids = self.storage.get_member_ids_of_team(team_id=team_id)
         self._add_members_to_team(
-            user_ids=user_ids, team_member_ids=team_member_ids, team_id=team_id
+            user_ids=user_ids, team_user_ids=team_user_ids, team_id=team_id
         )
         self._delete_members_of_team(
-            user_ids=user_ids, team_member_ids=team_member_ids, team_id=team_id
+            user_ids=user_ids, team_user_ids=team_user_ids, team_id=team_id
         )
 
     def delete_team_wrapper(
-            self, user_id: str, team_id: str, presenter: DeleteTeamPresenterInterface
+            self, user_id: str, team_id: str,
+            presenter: DeleteTeamPresenterInterface
     ):
         try:
             self.delete_team(user_id=user_id, team_id=team_id)
@@ -149,15 +146,15 @@ class TeamInteractor:
         self._validate_is_team_name_exists_for_update_team(
             name=name, team_id=team_id)
 
-    def _add_members_to_team(self, user_ids, team_member_ids, team_id):
-        user_ids_to_add = list(set(user_ids) - set(team_member_ids))
+    def _add_members_to_team(self, user_ids, team_user_ids, team_id):
+        user_ids_to_add = list(set(user_ids) - set(team_user_ids))
         self.storage.add_users_to_team(
             team_id=team_id, user_ids=user_ids_to_add)
 
-    def _delete_members_of_team(self, user_ids, team_member_ids, team_id):
-        member_ids_to_delete = list(set(team_member_ids) - set(user_ids))
+    def _delete_members_of_team(self, user_ids, team_user_ids, team_id):
+        member_ids_to_delete = list(set(team_user_ids) - set(user_ids))
         self.storage.delete_members_from_team(
-            team_id=team_id, member_ids=member_ids_to_delete)
+            team_id=team_id, user_ids=member_ids_to_delete)
 
     def _validate_users(self, user_ids):
         self._validate_is_duplicate_users_exists(user_ids=user_ids)

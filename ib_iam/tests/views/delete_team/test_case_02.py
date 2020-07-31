@@ -27,7 +27,7 @@ class TestCase02DeleteTeamAPITestCase(TestUtils):
 
     @pytest.fixture
     def setup(self, api_user):
-        user_id = api_user.id
-        from ib_iam.tests.factories import UserFactory
-        UserFactory.reset_sequence(1)
-        UserFactory.create(user_id=user_id)
+        user_id = api_user.user_id
+        from ib_iam.tests.factories.models import UserDetailsFactory
+        UserDetailsFactory.reset_sequence(1)
+        UserDetailsFactory.create(user_id=user_id)

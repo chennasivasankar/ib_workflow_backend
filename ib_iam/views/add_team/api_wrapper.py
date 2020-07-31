@@ -16,7 +16,7 @@ from ib_iam.storages.team_storage_implementation import (
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     user_obj = kwargs["user"]
-    user_id = str(user_obj.id)
+    user_id = str(user_obj.user_id)
     request_data = kwargs["request_data"]
     name = request_data["name"]
     description = request_data["description"]

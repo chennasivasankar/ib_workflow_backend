@@ -10,8 +10,8 @@ class TestGetValidMemberIdsAmongTheGivenMemberIds:
             self, create_users
     ):
         storage = TeamStorageImplementation()
-        user_ids = ["user_id-1", "user_id-2", "user_id-3"]
-        expected_user_ids = ["user_id-1", "user_id-2"]
+        user_ids = ["user1", "user2", "user3"]
+        expected_user_ids = ["user1", "user2"]
 
         actual_user_ids = \
             storage.get_valid_user_ids_among_the_given_user_ids(

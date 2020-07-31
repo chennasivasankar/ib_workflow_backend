@@ -2,7 +2,7 @@ from abc import ABC
 from abc import abstractmethod
 
 from ib_iam.interactors.presenter_interfaces.dtos import (
-    TeamWithMembersDetailsDTO
+    TeamWithUsersDetailsDTO
 )
 
 
@@ -22,7 +22,7 @@ class TeamPresenterInterface(ABC):
 
     @abstractmethod
     def get_response_for_get_list_of_teams(
-            self, team_details_dtos: TeamWithMembersDetailsDTO
+            self, team_details_dtos: TeamWithUsersDetailsDTO
     ):
         pass
 

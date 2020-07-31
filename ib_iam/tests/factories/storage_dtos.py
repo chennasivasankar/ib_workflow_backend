@@ -1,10 +1,75 @@
-import factory, factory.django
+import factory
 
-from ib_iam.interactors.storage_interfaces.dtos import EmployeeDTO
+from ib_iam.interactors.storage_interfaces.dtos \
+    import UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamIdAndNameDTO, \
+    CompanyIdAndNameDTO, RoleDTO, TeamDTO
+
+
+class UserDTOFactory(factory.Factory):
+    class Meta:
+        model = UserDTO
+
+    user_id = factory.sequence(lambda number: "team%s" % number)
+    is_admin = True
+    company_id = factory.sequence(lambda number: "company%s" % number)
+
+
+class UserTeamDTOFactory(factory.Factory):
+    class Meta:
+        model = UserTeamDTO
+
+    user_id = factory.sequence(lambda number: "user%s" % number)
+    team_id = factory.sequence(lambda number: "team%s" % number)
+    team_name = factory.sequence(lambda number: "team %s" % number)
+
+
+class UserCompanyDTOFactory(factory.Factory):
+    class Meta:
+        model = UserCompanyDTO
+
+    user_id = factory.sequence(lambda number: "team%s" % number)
+    company_id = factory.sequence(lambda number: "company%s" % number)
+    company_name = factory.sequence(lambda number: "company %s" % number)
+
+
+class UserRoleDTOFactory(factory.Factory):
+    class Meta:
+        model = UserRoleDTO
+
+    user_id = factory.sequence(lambda number: "team%s" % number)
+    role_id = factory.Sequence(lambda n: 'PAYMENT%s' % n)
+    name = factory.Sequence(lambda n: 'payment %s' % n)
+    description = factory.Sequence(lambda n: 'payment_description%s' % n)
+
+
+class CompanyIdAndNameDTOFactory(factory.Factory):
+    class Meta:
+        model = CompanyIdAndNameDTO
+
+    company_id = factory.Sequence(lambda n: 'Company%s' % n)
+    company_name = factory.Sequence(lambda n: 'company %s' % n)
+
+
+class RoleDTOFactory(factory.Factory):
+    class Meta:
+        model = RoleDTO
+
+    role_id = factory.Sequence(lambda n: 'PAYMENT%s' % n)
+    name = factory.Sequence(lambda n: 'payment%s' % n)
+    description = factory.Sequence(lambda n: 'payment_description%s' % n)
+
+
+class TeamIdAndNameDTOFactory(factory.Factory):
+    class Meta:
+        model = TeamIdAndNameDTO
+
+    team_id = factory.sequence(lambda number: "team%s" % number)
+    team_name = factory.sequence(lambda number: "team %s" % number)
+
+
 from ib_iam.interactors.storage_interfaces.dtos import (
-    MemberDTO,
-    TeamDTO,
-    TeamMemberIdsDTO,
+    BasicUserDetailsDTO,
+    TeamUserIdsDTO,
     TeamNameAndDescriptionDTO,
     PaginationDTO,
     TeamsWithTotalTeamsCountDTO,
@@ -33,33 +98,25 @@ member_ids = user_ids
 employee_ids = user_ids
 
 
-class TeamDTOFactory(factory.Factory):
+
+class TeamUserIdsDTOFactory(factory.Factory):
     class Meta:
-        model = TeamDTO
+        model = TeamUserIdsDTO
 
     team_id = factory.Faker("uuid4")
-    name = factory.sequence(lambda n: "team%d" % n)
-    description = factory.sequence(lambda n: "team_description%d" % n)
-
-
-class TeamMemberIdsDTOFactory(factory.Factory):
-    class Meta:
-        model = TeamMemberIdsDTO
-
-    team_id = factory.Faker("uuid4")
-    member_ids = factory.Iterator([
-        [member_ids[1], member_ids[2]],
-        [member_ids[0], member_ids[1]],
-        [member_ids[0], member_ids[2]]
+    user_ids = factory.Iterator([
+        [user_ids[1], user_ids[2]],
+        [user_ids[0], user_ids[1]],
+        [user_ids[0], user_ids[2]]
     ])
 
 
-class MemberDTOFactory(factory.Factory):
+class BasicUserDetailsDTOFactory(factory.Factory):
     class Meta:
-        model = MemberDTO
+        model = BasicUserDetailsDTO
 
-    member_id = factory.sequence(lambda n: "user_id-%d" % n)
-    name = factory.sequence(lambda n: "user%d" % n)
+    user_id = factory.sequence(lambda n: "user%d" % n)
+    name = factory.sequence(lambda n: "name%d" % n)
     profile_pic_url = factory.sequence(lambda n: "url%d" % n)
 
 
@@ -84,9 +141,8 @@ class TeamDetailsWithUserIdsDTOFactory(
     ])
 
 
-class TeamWithUserIdsDTOFactory(
-    TeamDetailsWithUserIdsDTOFactory, factory.Factory
-):
+class TeamWithUserIdsDTOFactory(TeamDetailsWithUserIdsDTOFactory,
+                                factory.Factory):
     class Meta:
         model = TeamWithUserIdsDTO
 
@@ -99,6 +155,15 @@ class PaginationDTOFactory(factory.Factory):
 
     limit = factory.Iterator([5, 6, 3])
     offset = factory.Iterator([4, 3, 10])
+
+
+class TeamDTOFactory(factory.Factory):
+    class Meta:
+        model = TeamDTO
+
+    team_id = factory.sequence(lambda number: "team %s" % number)
+    name = factory.sequence(lambda number: "team %s" % number)
+    description = factory.sequence(lambda n: "team_description %d" % n)
 
 
 team_dtos = [
