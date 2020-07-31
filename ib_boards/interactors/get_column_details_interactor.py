@@ -2,7 +2,7 @@ from ib_boards.adapters.service_adapter import get_service_adapter
 from ib_boards.exceptions.custom_exceptions import (
     InvalidBoardId, InvalidOffsetValue, InvalidLimitValue, UserDonotHaveAccess)
 from ib_boards.interactors.dtos import ColumnParametersDTO, \
-    PaginationParametersDTO
+    PaginationParametersDTO, ColumnTaskIdsDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
 from ib_boards.interactors.storage_interfaces.storage_interface import \
@@ -51,11 +51,31 @@ class GetColumnDetailsInteractor:
         column_stage_dtos = self.storage.get_columns_stage_ids(
             column_ids=column_ids
         )
-        task_ids_details = self._get_task_ids_for_given_stages(
+        task_ids_stages_dtos = self._get_task_ids_for_given_stages(
             column_stage_dtos=column_stage_dtos,
             limit=limit,
             offset=offset
         )
+        task_complete_details = self._get_tasks_complete_details(
+            task_ids_stages_dtos=task_ids_stages_dtos
+        )
+
+    @staticmethod
+    def _get_tasks_complete_details(
+            task_ids_stages_dtos: ColumnTaskIdsDTO):
+        task_details_dtos = []
+        for task_ids_stages_dto in task_ids_stages_dtos.task_stage_ids:
+            from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
+            task_details_dtos.append(
+                GetTaskDetailsDTO(
+                    task_id=task_ids_stages_dto.task_id,
+                    stage_id=task_ids_stages_dto.stage_id
+                )
+            )
+        from ib_boards.adapters.service_adapter import get_service_adapter
+        service_adapter = get_service_adapter()
+        return service_adapter.task_service.get_task_complete_details(
+            task_details_dtos)
 
     @staticmethod
     def _get_task_ids_for_given_stages(column_stage_dtos, limit: int, offset: int):
