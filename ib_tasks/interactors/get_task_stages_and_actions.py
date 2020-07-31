@@ -35,9 +35,11 @@ class GetTaskStagesAndActions:
 
         list_of_stage_actions = []
         for stage in stage_ids:
+            stage_dto = stages_dtos[stage]
             list_of_stage_actions.append(
                 StageAndActionsDetailsDTO(
-                    stage_details_dto=stages_dtos[stage],
+                    stage_id=stage_dto.stage_id,
+                    name=stage_dto.name,
                     actions_dtos=list_of_actions[stage]
                 ))
         return list_of_stage_actions

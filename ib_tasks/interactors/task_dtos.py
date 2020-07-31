@@ -50,10 +50,6 @@ class GetTaskDetailsDTO:
     task_id: int
     stage_id: str
 
-@dataclass
-class StageDetailsDTO:
-    stage_details_dto: StageDetailsDTO
-
 
 @dataclass
 class StageAndActionsDetailsDTO(StageDetailsDTO):
