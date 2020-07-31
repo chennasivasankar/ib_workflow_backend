@@ -29,3 +29,14 @@ class StageStorageInterface(abc.ABC):
     @abc.abstractmethod
     def create_initial_stage_to_task_template(self, task_template_stage_dtos):
         pass
+
+    @abc.abstractmethod
+    def get_allowed_stage_ids_of_user(self) -> List[str]:
+        pass
+
+
+    @abc.abstractmethod
+    def get_valid_stage_ids_in_given_stage_ids(self, stage_ids: List[str]) -> \
+            List[str]:
+        pass
+

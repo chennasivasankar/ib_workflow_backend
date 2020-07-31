@@ -25,7 +25,7 @@ class TaskFactory(factory.django.DjangoModelFactory):
         model = Task
 
     template_id = "task_template_id_1"
-    created_by = factory.Iterator([1, 2, 3, 4, 5, 6, 7])
+    created_by = "123e4567-e89b-12d3-a456-426614174000"
 
 
 class StageModelFactory(factory.django.DjangoModelFactory):
@@ -37,7 +37,7 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     task_template_id = factory.Sequence(lambda n: "task_template_id_%d" % n)
     value = factory.Sequence(lambda n: n)
     display_logic = factory.Sequence(lambda n: "status_id_%d==stage_id" % n)
-    field_display_config = json.dumps(["FIELD_ID_1", "FIELD_ID_2"])
+    field_display_config = json.dumps(["FIELD_ID-1", "FIELD_ID-2"])
 
 
 class TaskStageModelFactory(factory.django.DjangoModelFactory):
@@ -211,4 +211,12 @@ class TaskTemplateInitialStageFactory(factory.django.DjangoModelFactory):
         model = TaskTemplateInitialStage
 
     task_template = factory.SubFactory(TaskTemplateFactory)
+    stage = factory.SubFactory(StageModelFactory)
+
+
+class TaskStageFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskStage
+
+    task = factory.SubFactory(TaskFactory)
     stage = factory.SubFactory(StageModelFactory)

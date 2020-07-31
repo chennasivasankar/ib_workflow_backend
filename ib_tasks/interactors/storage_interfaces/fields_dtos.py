@@ -52,19 +52,8 @@ class FieldTypeDTO:
 class FieldDetailsDTO:
     field_type: str
     field_id: int
-    stage_id: str
     key: str
     value: str
-
-
-
-@dataclass
-class FieldDetailsDTO:
-    field_type: str
-    field_id: int
-    key: str
-    value: str
-
 
 @dataclass
 class TaskAndFieldsDTO:
