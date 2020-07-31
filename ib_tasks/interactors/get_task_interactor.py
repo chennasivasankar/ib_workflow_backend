@@ -15,7 +15,7 @@ from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
     import TaskCompleteDetailsDTO
 
 from ib_tasks.interactors.get_task_base_interactor \
-            import GetTaskBaseInteractor
+    import GetTaskBaseInteractor
 
 
 class GetTaskInteractor:
@@ -129,6 +129,3 @@ class GetTaskInteractor:
         roles_service = roles_service_adapter.roles_service
         user_roles = roles_service.get_user_role_ids(user_id)
         return user_roles
-
-
-

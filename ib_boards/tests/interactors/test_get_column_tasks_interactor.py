@@ -7,7 +7,8 @@ from unittest.mock import Mock
 
 import pytest
 
-from ib_boards.interactors.dtos import ColumnTasksParametersDTO, TaskIdStageDTO, \
+from ib_boards.interactors.dtos import ColumnTasksParametersDTO, \
+    TaskIdStageDTO, \
     TaskCompleteDetailsDTO, ColumnTaskIdsDTO
 from ib_boards.interactors.get_column_tasks_interactor import \
     GetColumnTasksInteractor
@@ -64,7 +65,6 @@ class TestGetColumnTasksInteractor:
 
     @pytest.fixture
     def task_complete_details_dto(self, task_dtos, action_dtos):
-
         return [
             TaskCompleteDetailsDTO(
                 task_id=1,
@@ -198,7 +198,8 @@ class TestGetColumnTasksInteractor:
 
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             task_details_mock
-        task_details_mock = task_details_mock(mocker, task_complete_details_dto)
+        task_details_mock = task_details_mock(mocker,
+                                              task_complete_details_dto)
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             get_task_ids_mock
 

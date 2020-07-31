@@ -1,23 +1,29 @@
 from typing import List
 from typing import Optional
 
-from ib_tasks.interactors.stages_dtos import TemplateStageDTO
+from ib_tasks.interactors.stages_dtos import StageActionDTO, TemplateStageDTO
+from ib_tasks.interactors.stages_dtos import StageDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.stages_dtos import StageActionDTO
 from ib_tasks.interactors.stages_dtos import StageDTO
+from ib_tasks.interactors.stages_dtos import TemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
     ActionRolesDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GOFMultipleEnableDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, TaskTemplateStageDTO, StageDisplayValueDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, StageValueDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
+    StageValueDTO, StageDisplayValueDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
+    StageValueDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    TaskTemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import (
-        StorageInterface, GroupOfFieldsDTO,
-        StatusVariableDTO, StageActionNamesDTO
+    StorageInterface, GroupOfFieldsDTO,
+    StatusVariableDTO, StageActionNamesDTO
 )
 from ib_tasks.models import *
 from ib_tasks.models import TaskTemplateInitialStage, Stage
@@ -267,7 +273,7 @@ class StorageImplementation(StorageInterface):
 
         from ib_tasks.models.task import Task
         task_obj = Task.objects.get(id=task_id)
-        global_constant_objs = GlobalConstant.objects\
+        global_constant_objs = GlobalConstant.objects \
             .filter(task_template_id=task_obj.template_id)
         return [
             GlobalConstantsDTO(
@@ -281,7 +287,8 @@ class StorageImplementation(StorageInterface):
 
         from ib_tasks.models.task import Task
         task_obj = Task.objects.get(id=task_id)
-        stage_objs = Stage.objects.filter(task_template_id=task_obj.template_id)
+        stage_objs = Stage.objects.filter(
+            task_template_id=task_obj.template_id)
         return [
             StageValueDTO(
                 stage_id=stage_obj.stage_id,

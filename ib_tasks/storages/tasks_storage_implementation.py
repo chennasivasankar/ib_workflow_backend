@@ -483,36 +483,6 @@ class TasksStorageImplementation(TaskStorageInterface):
         ]
         return task_stage_dtos, total_count
 
-    def get_task_details(self, task_dtos: List[GetTaskDetailsDTO]) -> \
-            GetTaskStageCompleteDetailsDTO:
-        task_ids = [task.task_id for task in task_dtos]
-        task_objs = Task.objects.filter(id__in=task_ids).values('id',
-                                                                'template_id')
-
-        task_template_and_stage_ids = self._get_task_tempalate_and_stage_ids(
-            task_dtos, task_objs)
-        q = None
-        for counter, item in enumerate(task_template_and_stage_ids):
-            current_queue = Q(task_template_id=item['template_id'],
-                              stage_id=item['stage_id'])
-            if counter == 0:
-                q = current_queue
-            else:
-                q = q | current_queue
-
-        stage_objs = Stage.objects.filter(q).values('field_display_config',
-                                                    'stage_id')
-
-        stage_actions = self._get_stage_action_objs(
-            task_template_and_stage_ids)
-        stage_fields_dtos = self._get_fields_details(stage_objs)
-        stage_actions_dtos = self._convert_stage_actions_to_dtos(stage_actions)
-
-        return GetTaskStageCompleteDetailsDTO(
-            fields_dto=stage_fields_dtos,
-            actions_dto=stage_actions_dtos
-        )
-
     def _get_task_tempalate_and_stage_ids(self, task_dtos, task_objs):
         task_template_and_stage_ids = []
         for task in task_objs:

@@ -1,5 +1,5 @@
 """
-# TODO: Update test case description
+# Given invalid limit value raise exception
 """
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
@@ -12,11 +12,13 @@ class TestCase01GetSearchableValuesAPITestCase(TestUtils):
     REQUEST_METHOD = REQUEST_METHOD
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['read']}}
+
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {}
         path_params = {}
-        query_params = {'search_type': 'CITY', 'limit': 922, 'offset': 790, 'search_query': 'string'}
+        query_params = {'search_type': 'USER', 'limit': 0, 'offset': 18,
+                        'search_query': 'string'}
         headers = {}
         response = self.default_test_case(
             body=body, path_params=path_params,

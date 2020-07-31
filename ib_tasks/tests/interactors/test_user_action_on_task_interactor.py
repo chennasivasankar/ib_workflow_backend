@@ -177,12 +177,11 @@ class TestUserActionOnTaskInteractor:
         # Assert
         mock_obj.called_once()
         user_roles_mock.called_once()
-        dict_obj = presenter.raise_exception_for_user_action_permission_denied\
+        dict_obj = presenter.raise_exception_for_user_action_permission_denied \
             .call_args.kwargs
         expected_action_id = dict_obj['error_obj'].action_id
         assert action_id == expected_action_id
         validation_mock_obj.called_once()
-
 
         # TODO write valid testcase for task complete details dto
 
@@ -247,6 +246,3 @@ class TestUserActionOnTaskInteractor:
     #         task_complete_details_dto=task_complete_details
     #     )
     #     validation_mock_obj.called_once()
-
-
-

@@ -44,7 +44,8 @@ class TestPopulateStagesAndValues:
             }
         ]
 
-        from ib_tasks.populate.create_or_update_stages import populate_stages_values
+        from ib_tasks.populate.create_or_update_stages import \
+            populate_stages_values
 
         # Act
 
@@ -57,7 +58,9 @@ class TestPopulateStagesAndValues:
         assert err.value.valid_format == valid_json_format
 
     @pytest.mark.django_db
-    def test_with_valid_keys_returns_list_of_stage_dtos(self, expected_stages_dto, mocker):
+    def test_with_valid_keys_returns_list_of_stage_dtos(self,
+                                                        expected_stages_dto,
+                                                        mocker):
         # Arrange
         expected_stages_dto = expected_stages_dto
         list_of_stages_dict = [
@@ -79,7 +82,12 @@ class TestPopulateStagesAndValues:
         from ib_tasks.tests.common_fixtures.storages import mock_storage
         mock_storage(mocker, ['task_template_id_1', 'task_template_id_2'])
 
-        from ib_tasks.populate.create_or_update_stages import populate_stages_values
+        from ib_tasks.populate.create_or_update_stages import \
+            populate_stages_values
 
         # Act
-        response = populate_stages_values(list_of_stages_dict=list_of_stages_dict)
+        response = populate_stages_values(
+            list_of_stages_dict=list_of_stages_dict)
+
+        # Assert
+        assert response == expected_stages_dto

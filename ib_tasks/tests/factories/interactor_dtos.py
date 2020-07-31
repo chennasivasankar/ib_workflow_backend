@@ -13,6 +13,7 @@ from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.constants.enum import Searchable
 from ib_tasks.interactors.stages_dtos import (StagesActionDTO)
 
+
 from ib_tasks.interactors.stages_dtos import \
     TaskTemplateStageActionDTO, StageActionDTO, StagesActionDTO
 from ib_tasks.interactors.task_dtos import TaskDTO, GoFFieldsDTO, \
@@ -23,6 +24,8 @@ class GetTaskDetailsDTOFactory(factory.Factory):
     class Meta:
         model = GetTaskDetailsDTO
 
+    task_id = factory.Sequence(lambda n: "task_id_%d" % (n + 1))
+    stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n + 1))
     task_id = factory.Sequence(lambda n: n + 1)
     stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n + 1))
 
@@ -59,7 +62,7 @@ class FieldDisplayDTOFactory(factory.Factory):
         model = FieldDisplayDTO
 
     field_id = factory.Sequence(lambda n: '%d' % (n + 1))
-    stage_id = factory.Sequence(lambda n: 'stage_%d' % (n+1))
+    stage_id = factory.Sequence(lambda n: 'stage_%d' % (n + 1))
     field_type = factory.Sequence(lambda n: 'field_type_%d' % (n + 1))
     key = factory.Sequence(lambda n: 'key_%d' % (n + 1))
     value = factory.Sequence(lambda n: 'value_%d' % (n + 1))

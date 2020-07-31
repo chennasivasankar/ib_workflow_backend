@@ -1,4 +1,6 @@
 from functools import reduce
+
+
 def get_searchable_values(*args, **kwargs):  # pylint: disable=invalid-name
     """
     Note: replace below mock implementation with your actual implementation
@@ -53,4 +55,5 @@ def get_searchable_values(*args, **kwargs):  # pylint: disable=invalid-name
 
     from django_swagger_utils.drf_server.utils.server_gen.endpoint_response \
         import endpoint_response
-    return endpoint_response(response_object,response_status_code, response_headers_obj)
+    return endpoint_response(response_object, response_status_code,
+                             response_headers_obj)

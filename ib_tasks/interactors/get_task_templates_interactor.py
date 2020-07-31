@@ -26,7 +26,8 @@ class GetTaskTemplatesInteractor:
             complete_task_templates_dto = \
                 self.get_task_templates(user_id=user_id)
         except TaskTemplatesDoesNotExists as err:
-            return presenter.raise_task_templates_does_not_exists_exception(err)
+            return presenter.raise_task_templates_does_not_exists_exception(
+                err)
 
         complete_task_templates_response_object = \
             presenter.get_task_templates_response(

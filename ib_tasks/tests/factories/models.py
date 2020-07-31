@@ -39,6 +39,7 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     field_display_config = json.dumps(["FIELD_ID_1", "FIELD_ID_2"])
 
 
+
 class TaskStageModelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = TaskStage
@@ -50,8 +51,9 @@ class TaskStageModelFactory(factory.django.DjangoModelFactory):
 class TaskModelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Task
-    template_id = factory.Sequence(lambda n: "template_%d" % (n+1))
-    created_by = factory.Sequence(lambda n: (n+1))
+
+    template_id = factory.Sequence(lambda n: "template_%d" % (n + 1))
+    created_by = factory.Sequence(lambda n: (n + 1))
 
 
 class StageActionFactory(factory.django.DjangoModelFactory):

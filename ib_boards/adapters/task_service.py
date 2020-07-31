@@ -79,7 +79,8 @@ class TaskService:
         ]
         return column_task_ids_dtos
 
-    def get_task_complete_details(self, task_stage_ids: List[GetTaskDetailsDTO]):
+    def get_task_complete_details(self,
+                                  task_stage_ids: List[GetTaskDetailsDTO]):
         tasks_complete_details_dtos = self.interface.get_task_details(
             task_dtos=task_stage_ids
         )
@@ -97,4 +98,3 @@ class TaskService:
             )
 
         return tasks_details_dtos
-

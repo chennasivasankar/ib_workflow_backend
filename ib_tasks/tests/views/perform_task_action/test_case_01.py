@@ -15,7 +15,8 @@ class TestCase01PerformTaskActionAPITestCase(TestUtils):
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {}
-        path_params = {"task_id": "ibgroup", "action_id": "ibgroup", "board_id": "ibgroup"}
+        path_params = {"task_id": "ibgroup", "action_id": "ibgroup",
+                       "board_id": "ibgroup"}
         query_params = {}
         headers = {}
         response = self.default_test_case(

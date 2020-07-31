@@ -181,7 +181,7 @@ class UserActionOnTaskInteractor:
                                           action_roles: List[str],
                                           action_id: int):
 
-        from ib_tasks.interactors.user_role_validation_interactor\
+        from ib_tasks.interactors.user_role_validation_interactor \
             import UserRoleValidationInteractor
         interactor = UserRoleValidationInteractor()
         permit = interactor.does_user_has_required_permission(
@@ -190,4 +190,3 @@ class UserActionOnTaskInteractor:
         is_permission_denied = not permit
         if is_permission_denied:
             raise UserActionPermissionDenied(action_id=action_id)
-
