@@ -77,7 +77,7 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
               "gof_fields": [
                 {
                   "field_id": "FIELD_ID-0",
-                  "field_response": "string"
+                  "field_response": "new updated string"
                 }
               ]
             }

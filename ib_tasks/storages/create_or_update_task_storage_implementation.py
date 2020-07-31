@@ -77,8 +77,9 @@ class CreateOrUpdateTaskStorageImplementation(
             task_gof_field_dto = self._get_matching_task_gof_field_dto(
                 task_gof_field_object, task_gof_field_dtos
             )
-            task_gof_field_object.field_response = \
-                task_gof_field_dto.field_response
+            if task_gof_field_dto is not None:
+                task_gof_field_object.field_response = \
+                    task_gof_field_dto.field_response
         TaskGoFField.objects.bulk_update(
             task_gof_field_objects, ['field_response']
         )
@@ -105,7 +106,7 @@ class CreateOrUpdateTaskStorageImplementation(
                                      created_by_id: str) -> int:
         from ib_tasks.models.task import Task
         task_object = Task.objects.create(
-            template_id=template_id, created_by_id=created_by_id
+            template_id=template_id, created_by=created_by_id
         )
         return task_object.id
 

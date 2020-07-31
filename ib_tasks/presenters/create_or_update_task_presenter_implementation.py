@@ -17,13 +17,27 @@ from ib_tasks.interactors.presenter_interfaces.create_or_update_task_presenter \
     import CreateOrUpdateTaskPresenterInterface
 from django.http import response
 import json
+from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 
 class CreateOrUpdateTaskPresenterImplementation(
-    CreateOrUpdateTaskPresenterInterface
+    CreateOrUpdateTaskPresenterInterface, HTTPResponseMixin
 ):
     def raise_exception_for_invalid_task_id(self, err: InvalidTaskException):
-        pass
+        from ib_tasks.constants.exception_messages import \
+            INVALID_TASK_ID
+        response_message = INVALID_TASK_ID[0].format(
+            err.task_id
+        )
+        data = json.dumps(
+            {
+                "response": response_message,
+                "http_status_code": 400,
+                "res_status": INVALID_TASK_ID[1]
+            }
+        )
+        response_object = response.HttpResponse(data)
+        return response_object
 
     def raise_exception_for_empty_value_in_required_field(self,
                                                           err: EmptyValueForRequiredField):
@@ -98,15 +112,12 @@ class CreateOrUpdateTaskPresenterImplementation(
         response_message = INVALID_URL[0].format(
             err.field_value, err.field_id
         )
-        data = json.dumps(
-            {
+        data = {
                 "response": response_message,
                 "http_status_code": 400,
                 "res_status": INVALID_URL[1]
             }
-        )
-        response_object = response.HttpResponse(data)
-        return response_object
+        return self.prepare_400_bad_request_response(response_dict=data)
 
     def raise_exception_for_weak_password(self, err: NotAStrongPassword):
         from ib_tasks.constants.exception_messages import NOT_A_STRONG_PASSWORD
@@ -416,7 +427,10 @@ class CreateOrUpdateTaskPresenterImplementation(
         return response_object
 
     def get_response_for_create_or_update_task(self):
-        pass
+        data = {
+            "message": "task created or updated successfully"
+        }
+        return self.prepare_201_created_response(response_dict=data)
 
     def raise_exception_for_empty_value_in_plain_text_field(
             self, err: EmptyValueForPlainTextField

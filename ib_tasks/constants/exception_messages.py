@@ -161,3 +161,13 @@ EMPTY_VALUE_FOR_REQUIRED_FIELD = (
     "Given Empty value for the required field of field_id: {}! Required field should not be empty",
     "EMPTY_VALUE_FOR_REQUIRED_FIELD"
 )
+
+INVALID_TASK_ID = (
+    "{} is an invalid task id",
+    "INVALID_TASK_ID"
+)
+
+TASK_CREATED_SUCCESSFULLY = (
+    "task created or updated successfully",
+    "TASK_CREATED_SUCCESSFULLY"
+)

@@ -146,7 +146,8 @@ class CreateOrUpdateTaskInteractor:
 
     def _update_task(self, task_dto: TaskDTO):
         task_id = task_dto.task_id
-        invalid_task_id = not self.create_task_storage.is_valid_task_id(task_id)
+        invalid_task_id = \
+            not self.create_task_storage.is_valid_task_id(task_id)
         if invalid_task_id:
             raise InvalidTaskException(task_id)
         existing_gof_ids = \
@@ -189,6 +190,7 @@ class CreateOrUpdateTaskInteractor:
                 self.create_task_storage.update_task_gof_fields(
                     task_gof_field_dtos_for_updation
                 )
+
             if task_gof_field_dtos_for_creation:
                 self.create_task_storage.create_task_gof_fields(
                     task_gof_field_dtos_for_creation
