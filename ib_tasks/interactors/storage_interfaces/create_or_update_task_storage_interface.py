@@ -1,7 +1,7 @@
 import abc
 
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
-    TaskGoFDetailsDTO
+    TaskGoFDetailsDTO, TaskGoFWithTaskIdDTO
 from typing import Union, List
 from ib_tasks.exceptions.task_custom_exceptions \
     import InvalidTaskIdException
@@ -54,7 +54,7 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def create_task_gofs(
-            self, task_gof_dtos: List[TaskGoFDTO]
+            self, task_gof_dtos: List[TaskGoFWithTaskIdDTO]
     ) -> List[TaskGoFDetailsDTO]:
         pass
 
@@ -76,7 +76,7 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def update_task_gofs(
-            self, task_gof_dtos: List[TaskGoFDTO]
+            self, task_gof_dtos: List[TaskGoFWithTaskIdDTO]
     ) -> List[TaskGoFDetailsDTO]:
         pass
 

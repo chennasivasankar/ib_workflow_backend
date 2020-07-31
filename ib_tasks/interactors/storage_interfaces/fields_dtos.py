@@ -43,7 +43,7 @@ class FieldRoleDTO:
 
 
 @dataclass
-class FieldDetailsDTO:
+class FieldCompleteDetailsDTO:
     field_id: str
     field_type: FieldTypes
     required: bool
@@ -53,10 +53,9 @@ class FieldDetailsDTO:
 
 
 @dataclass
-class FieldDetailsWithStageIdDTO:
+class FieldDetailsDTO:
     field_type: str
     field_id: int
-    stage_id: str
     key: str
     value: str
 
@@ -85,6 +84,12 @@ class StageTaskFieldsDTO:
     task_id: int
     field_ids: List[str]
 
+
+@dataclass
+class FieldWithPermissionsDTO:
+    field_dto: FieldDTO
+    is_field_readable: bool
+    is_field_writable: bool
 
 @dataclass
 class FieldTypeDTO:

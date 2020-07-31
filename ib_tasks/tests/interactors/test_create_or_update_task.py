@@ -11,7 +11,7 @@ from ib_tasks.tests.common_fixtures.interactors import \
     mock_user_action_on_task_method
 from ib_tasks.tests.factories.interactor_dtos import TaskDTOFactory, \
     GoFFieldsDTOFactory, FieldValuesDTOFactory
-from ib_tasks.tests.factories.storage_dtos import FieldDetailsDTOFactory, \
+from ib_tasks.tests.factories.storage_dtos import FieldCompleteDetailsDTOFactory, \
     TaskGoFWithTaskIdDTOFactory, TaskGoFDetailsDTOFactory, \
     TaskGoFFieldDTOFactory
 
@@ -23,7 +23,7 @@ class TestCreateOrUpdateTask:
         TaskDTOFactory.reset_sequence(1)
         GoFFieldsDTOFactory.reset_sequence(1)
         FieldValuesDTOFactory.reset_sequence(1)
-        FieldDetailsDTOFactory.reset_sequence(1)
+        FieldCompleteDetailsDTOFactory.reset_sequence(1)
         TaskGoFWithTaskIdDTOFactory.reset_sequence(1)
         TaskGoFDetailsDTOFactory.reset_sequence(1)
         TaskGoFFieldDTOFactory.reset_sequence(1)
@@ -101,7 +101,8 @@ class TestCreateOrUpdateTask:
 
     def test_create_or_update_task_with_invalid_gof_ids_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
+            presenter_mock, mock_object, storage_mock,
+            act_on_task_presenter_mock
     ):
 
         # Arrange
@@ -131,7 +132,8 @@ class TestCreateOrUpdateTask:
 
     def test_create_or_update_task_with_invalid_field_ids_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
+            presenter_mock, mock_object, storage_mock,
+            act_on_task_presenter_mock
     ):
         # Arrange
         task_dto = TaskDTOFactory()
@@ -149,7 +151,8 @@ class TestCreateOrUpdateTask:
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto, act_on_task_presenter_mock)
+                                                            task_dto,
+                                                            act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -159,24 +162,27 @@ class TestCreateOrUpdateTask:
                 field_value_dto.field_id
                 for field_value_dto in gof_fields_dto.field_values_dtos
             ]
-        task_storage_mock.get_existing_field_ids.assert_called_once_with(field_ids)
+        task_storage_mock.get_existing_field_ids.assert_called_once_with(
+            field_ids)
         presenter_mock.raise_exception_for_invalid_field_ids.assert_called_once()
 
-    def test_create_or_update_task_with_invalid_gof_ids_in_gof_selector_value_raises_exception(
+    def test_create_or_update_task_with_invalid_name_in_gof_selector_value_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
+            presenter_mock, mock_object, storage_mock,
+            act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
-            size=1, field_response="GOF_ID-10"
+            size=1, field_response="company"
         )
         field_ids = [
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
-            field_type=FieldTypes.GOF_SELECTOR.value
+            field_type=FieldTypes.GOF_SELECTOR.value,
+            field_values='[{"name": "individual", "gof_ids": ["gof_0"]}]'
         )
         gof_fields_dtos = GoFFieldsDTOFactory.create_batch(
             size=1, field_values_dtos=gof_field_values_dtos
@@ -189,7 +195,7 @@ class TestCreateOrUpdateTask:
         task_storage_mock.get_existing_gof_ids.return_value = gof_ids
         task_storage_mock.get_existing_field_ids.return_value = field_ids
         task_storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
-        presenter_mock.raise_exception_for_gof_ids_in_gof_selector_field_value.return_value = mock_object
+        presenter_mock.raise_exception_for_invalid_name_in_gof_selector_field_value.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(
             task_storage_mock, create_task_storage_mock, storage_mock
@@ -197,17 +203,18 @@ class TestCreateOrUpdateTask:
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto, act_on_task_presenter_mock)
+                                                            task_dto,
+                                                            act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
         task_storage_mock.get_field_details_for_given_field_ids.assert_called_once_with(
             field_ids=field_ids
         )
-        presenter_mock.raise_exception_for_gof_ids_in_gof_selector_field_value.assert_called_once()
+        presenter_mock.raise_exception_for_invalid_name_in_gof_selector_field_value.assert_called_once()
 
-
-    @pytest.mark.parametrize("phone_number", ["phone_number", "989  89", "97979sjsljs"])
+    @pytest.mark.parametrize("phone_number",
+                             ["phone_number", "989  89", "97979sjsljs"])
     def test_create_or_update_task_with_invalid_phone_number_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, phone_number, storage_mock,
@@ -221,7 +228,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.PHONE_NUMBER.value
         )
@@ -268,7 +275,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.EMAIL.value
         )
@@ -291,7 +298,7 @@ class TestCreateOrUpdateTask:
 
         # Act
         response = interactor.create_or_update_task_wrapper(
-            presenter_mock,task_dto, act_on_task_presenter_mock)
+            presenter_mock, task_dto, act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -315,7 +322,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.URL.value
         )
@@ -338,7 +345,8 @@ class TestCreateOrUpdateTask:
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto, act_on_task_presenter_mock)
+                                                            task_dto,
+                                                            act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -351,7 +359,8 @@ class TestCreateOrUpdateTask:
                              ["password", "8798", "Pas788", "7979passI"])
     def test_create_or_update_task_with_weak_password_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object, password, storage_mock, act_on_task_presenter_mock
+            presenter_mock, mock_object, password, storage_mock,
+            act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -361,7 +370,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.PASSWORD.value
         )
@@ -384,7 +393,8 @@ class TestCreateOrUpdateTask:
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto, act_on_task_presenter_mock)
+                                                            task_dto,
+                                                            act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -397,7 +407,8 @@ class TestCreateOrUpdateTask:
                              ["password", "87()", "7+8", "90!2"])
     def test_create_or_update_task_with_number_value_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object, number, storage_mock, act_on_task_presenter_mock
+            presenter_mock, mock_object, number, storage_mock,
+            act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -407,7 +418,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.NUMBER.value
         )
@@ -430,7 +441,8 @@ class TestCreateOrUpdateTask:
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto, act_on_task_presenter_mock)
+                                                            task_dto,
+                                                            act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -443,7 +455,8 @@ class TestCreateOrUpdateTask:
                              ["float_value", "87.2*3", "7+8.67"])
     def test_create_or_update_task_with_invalid_float_value_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object, float_value, storage_mock, act_on_task_presenter_mock
+            presenter_mock, mock_object, float_value, storage_mock,
+            act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -453,7 +466,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.FLOAT.value
         )
@@ -476,7 +489,8 @@ class TestCreateOrUpdateTask:
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto, act_on_task_presenter_mock)
+                                                            task_dto,
+                                                            act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -487,7 +501,8 @@ class TestCreateOrUpdateTask:
 
     def test_create_or_update_task_with_invalid_dropdown_value_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
+            presenter_mock, mock_object, storage_mock,
+            act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -497,7 +512,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.DROPDOWN.value,
             field_values='["Kurnool", "Vizag"]'
@@ -521,7 +536,8 @@ class TestCreateOrUpdateTask:
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto, act_on_task_presenter_mock)
+                                                            task_dto,
+                                                            act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -530,55 +546,10 @@ class TestCreateOrUpdateTask:
         )
         presenter_mock.raise_exception_for_invalid_dropdown_value.assert_called_once()
 
-    def test_create_or_update_task_with_invalid_gof_selector_value_raises_exception(
-            self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
-    ):
-        # Arrange
-        gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
-            size=1, field_response="gof_2"
-        )
-        field_ids = [
-            gof_field_values_dto.field_id
-            for gof_field_values_dto in gof_field_values_dtos
-        ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
-            size=1, field_id=factory.Iterator(field_ids),
-            field_type=FieldTypes.GOF_SELECTOR.value,
-            field_values='["gof_1", "gof_3"]'
-        )
-        gof_fields_dtos = GoFFieldsDTOFactory.create_batch(
-            size=1, field_values_dtos=gof_field_values_dtos
-        )
-        task_dto = TaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
-        gof_ids = [
-            gof_fields_dto.gof_id
-            for gof_fields_dto in task_dto.gof_fields_dtos
-        ]
-        gof_ids += ['gof_2', 'gof_3']
-        task_storage_mock.get_existing_gof_ids.return_value = gof_ids
-        task_storage_mock.get_existing_field_ids.return_value = field_ids
-        task_storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
-        presenter_mock.raise_exceptions_for_invalid_gof_id_selected_in_gof_selector.return_value = mock_object
-
-        interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
-        )
-
-        # Act
-        response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto, act_on_task_presenter_mock)
-
-        # Assert
-        assert response == mock_object
-        task_storage_mock.get_field_details_for_given_field_ids.assert_called_once_with(
-            field_ids=field_ids
-        )
-        presenter_mock.raise_exceptions_for_invalid_gof_id_selected_in_gof_selector.assert_called_once()
-
     def test_create_or_update_task_with_invalid_radio_group_choice_value_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
+            presenter_mock, mock_object, storage_mock,
+            act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -588,7 +559,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.RADIO_GROUP.value,
             field_values='["male", "female"]'
@@ -612,7 +583,8 @@ class TestCreateOrUpdateTask:
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto, act_on_task_presenter_mock)
+                                                            task_dto,
+                                                            act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -621,10 +593,10 @@ class TestCreateOrUpdateTask:
         )
         presenter_mock.raise_exception_for_invalid_choice_in_radio_group_field.assert_called_once()
 
-
     def test_create_or_update_task_with_invalid_checkbox_options_selected_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
+            presenter_mock, mock_object, storage_mock,
+            act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -634,7 +606,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.CHECKBOX_GROUP.value,
             field_values='["storages", "presenters"]'
@@ -658,7 +630,8 @@ class TestCreateOrUpdateTask:
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto, act_on_task_presenter_mock)
+                                                            task_dto,
+                                                            act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -669,7 +642,8 @@ class TestCreateOrUpdateTask:
 
     def test_create_or_update_task_with_invalid_multi_select_options_selected_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
+            presenter_mock, mock_object, storage_mock,
+            act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -679,7 +653,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.MULTI_SELECT_FIELD.value,
             field_values='["storages", "presenters"]'
@@ -703,7 +677,8 @@ class TestCreateOrUpdateTask:
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto, act_on_task_presenter_mock)
+                                                            task_dto,
+                                                            act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -714,7 +689,8 @@ class TestCreateOrUpdateTask:
 
     def test_create_or_update_task_with_invalid_multi_select_labels_selected_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
+            presenter_mock, mock_object, storage_mock,
+            act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -724,7 +700,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.MULTI_SELECT_LABELS.value,
             field_values='["storages", "presenters"]'
@@ -747,7 +723,8 @@ class TestCreateOrUpdateTask:
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto, act_on_task_presenter_mock)
+                                                            task_dto,
+                                                            act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -756,7 +733,7 @@ class TestCreateOrUpdateTask:
         )
         presenter_mock.raise_exception_for_invalid_multi_select_labels_selected.assert_called_once()
 
-    @pytest.mark.parametrize("date_string", ["03-07-2020", "03/07/2020"])
+    @pytest.mark.parametrize("date_string", ["03-06-2020", "03/07/2020"])
     def test_create_or_update_task_with_invalid_date_format_date_string_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, date_string, storage_mock,
@@ -770,7 +747,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.DATE.value
         )
@@ -792,7 +769,8 @@ class TestCreateOrUpdateTask:
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto, act_on_task_presenter_mock)
+                                                            task_dto,
+                                                            act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -802,7 +780,7 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_invalid_date_format.assert_called_once()
 
     @pytest.mark.parametrize("time_string", ["12:30", "12:60:23"])
-    def test_create_or_update_task_with_invalid_date_format_date_string_raises_exception(
+    def test_create_or_update_task_with_invalid_time_format_time_string_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, time_string, storage_mock,
             act_on_task_presenter_mock
@@ -815,7 +793,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.TIME.value
         )
@@ -837,7 +815,8 @@ class TestCreateOrUpdateTask:
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto, act_on_task_presenter_mock)
+                                                            task_dto,
+                                                            act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -859,7 +838,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.IMAGE_UPLOADER.value,
             allowed_formats='[".jpeg", ".svg"]'
@@ -882,7 +861,8 @@ class TestCreateOrUpdateTask:
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto, act_on_task_presenter_mock)
+                                                            task_dto,
+                                                            act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -891,20 +871,21 @@ class TestCreateOrUpdateTask:
         )
         presenter_mock.raise_exception_for_invalid_image_url.assert_called_once()
 
-
     def test_create_or_update_task_with_valid_image_url_but_with_format_not_in_allowed_formats_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
+            presenter_mock, mock_object, storage_mock,
+            act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
-            size=1, field_response="https://image.flaticon.com/icons/svg/1829/1829070.svg"
+            size=1,
+            field_response="https://image.flaticon.com/icons/svg/1829/1829070.svg"
         )
         field_ids = [
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.IMAGE_UPLOADER.value,
             allowed_formats='[".jpeg", ".png"]'
@@ -927,7 +908,8 @@ class TestCreateOrUpdateTask:
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto, act_on_task_presenter_mock)
+                                                            task_dto,
+                                                            act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -938,7 +920,8 @@ class TestCreateOrUpdateTask:
 
     def test_create_or_update_task_with_invalid_file_url_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock
+            presenter_mock, mock_object, storage_mock,
+            act_on_task_presenter_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -948,7 +931,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.FILE_UPLOADER.value,
             allowed_formats='[".zip", ".tar"]'
@@ -971,7 +954,8 @@ class TestCreateOrUpdateTask:
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto, act_on_task_presenter_mock)
+                                                            task_dto,
+                                                            act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -981,7 +965,8 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_invalid_file_url.assert_called_once()
 
     def test_create_or_update_task_with_invalid_task_task_tempalte_id_raises_exception(
-            self, task_storage_mock, create_task_storage_mock, presenter_mock, mock_object,
+            self, task_storage_mock, create_task_storage_mock, presenter_mock,
+            mock_object,
             storage_mock, act_on_task_presenter_mock
     ):
 
@@ -994,7 +979,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.PLAIN_TEXT.value
         )
@@ -1019,7 +1004,8 @@ class TestCreateOrUpdateTask:
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto, act_on_task_presenter_mock)
+                                                            task_dto,
+                                                            act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -1033,7 +1019,8 @@ class TestCreateOrUpdateTask:
 
     def test_create_or_update_task_with_valid_details_creates_task(
             self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, mock_object, storage_mock, act_on_task_presenter_mock,
+            presenter_mock, mock_object, storage_mock,
+            act_on_task_presenter_mock,
             mocker
     ):
         # Arrange
@@ -1042,7 +1029,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.PLAIN_TEXT.value
         )
@@ -1062,14 +1049,16 @@ class TestCreateOrUpdateTask:
         create_task_storage_mock.create_task_with_template_id.return_value = created_task_id
         create_task_storage_mock.create_task_gofs.return_value = task_gof_details_dtos
         presenter_mock.get_response_for_create_or_update_task.return_value = mock_object
-        user_action_on_task_mock = mock_user_action_on_task_method(mocker, mock_object)
+        user_action_on_task_mock = mock_user_action_on_task_method(mocker,
+                                                                   mock_object)
         interactor = CreateOrUpdateTaskInteractor(
             task_storage_mock, create_task_storage_mock, storage_mock
         )
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto, act_on_task_presenter_mock)
+                                                            task_dto,
+                                                            act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -1135,7 +1124,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.PLAIN_TEXT.value
         )
@@ -1160,7 +1149,8 @@ class TestCreateOrUpdateTask:
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto, act_on_task_presenter_mock)
+                                                            task_dto,
+                                                            act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -1178,7 +1168,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.PLAIN_TEXT.value
         )
@@ -1211,7 +1201,8 @@ class TestCreateOrUpdateTask:
 
         # Act
         response = interactor.create_or_update_task_wrapper(presenter_mock,
-                                                            task_dto, act_on_task_presenter_mock)
+                                                            task_dto,
+                                                            act_on_task_presenter_mock)
 
         # Assert
         assert response == mock_object

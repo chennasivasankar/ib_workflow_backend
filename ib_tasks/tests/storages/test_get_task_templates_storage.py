@@ -80,8 +80,8 @@ class TestGetTaskTemplates:
         # Arrange
         from ib_tasks.tests.factories.models import GoFRoleFactory
         expected_output = ['gof_1', 'gof_2']
-        expected_roles = ['ROLE-1']
-        GoFRoleFactory.create_batch(size=2)
+        expected_roles = ['FIN_MAN']
+        GoFRoleFactory.create_batch(size=2, role="ALL_ROLES")
 
         # Act
         result = storage.get_gof_ids_with_read_permission_for_user(

@@ -54,8 +54,3 @@ class TaskTemplatesDoesNotExists(Exception):
 class InvalidTaskIds(Exception):
     def __init__(self, task_ids: List[str]):
         self.invalid_task_ids = task_ids
-
-
-class InvalidStageIds(Exception):
-    def __init__(self, stage_ids: List[str]):
-        self.invalid_stage_ids = stage_ids

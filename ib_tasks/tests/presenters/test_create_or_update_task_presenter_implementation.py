@@ -231,12 +231,12 @@ class TestCreateOrUpdateTaskPresenterImplementation:
                                                                           presenter,
                                                                           snapshot):
         # Arrange
-        expected_valid_gof_id_options = ["GOF_1", "GOF_2"]
+        expected_valid_gof_id_options = ["industry", "individual"]
         from ib_tasks.exceptions.field_values_custom_exceptions import \
-            IncorrectGoFIDInGoFSelectorField
-        err = IncorrectGoFIDInGoFSelectorField(
+            IncorrectNameInGoFSelectorField
+        err = IncorrectNameInGoFSelectorField(
             field_id="FIELD_ID-1", field_value="32684902319",
-            valid_gof_id_options=expected_valid_gof_id_options
+            valid_gof_selector_names=expected_valid_gof_id_options
         )
 
         # Act
@@ -459,7 +459,7 @@ class TestCreateOrUpdateTaskPresenterImplementation:
         )
 
         # Act
-        response_object = presenter.raise_exception_for_gof_ids_in_gof_selector_field_value(
+        response_object = presenter.raise_exception_for_invalid_name_in_gof_selector_field_value(
             err)
 
         # Assert
