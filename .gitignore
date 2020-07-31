@@ -59,5 +59,4 @@ vedavidhbudimuri_ib-workflows-backend.aes
 .gitignore
 env_*.sh
 
-*/migrations/*
 pyproject.toml
