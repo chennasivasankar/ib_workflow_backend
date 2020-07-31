@@ -1,3 +1,4 @@
+from django.db.models import Q
 from ib_tasks.interactors.storage_interfaces.create_or_update_task_storage_interface \
     import CreateOrUpdateTaskStorageInterface
 from typing import Union, List
@@ -44,9 +45,12 @@ class CreateOrUpdateTaskStorageImplementation(
     def get_gof_ids_having_permission(
             self, gof_ids: List[str], user_roles: List[str]
     ) -> List[str]:
+
+        from ib_tasks.constants.constants import ALL_ROLES_ID
         gof_ids = list(
             GoFRole.objects.filter(
-                gof_id__in=gof_ids, role__in=user_roles
+                Q(role__in=user_roles) | Q(role=ALL_ROLES_ID),
+                gof_id__in=gof_ids
             ).values_list('gof_id', flat=True)
         )
         return gof_ids
@@ -54,6 +58,7 @@ class CreateOrUpdateTaskStorageImplementation(
     def get_task_gof_field_dtos(
             self, task_gof_ids: List[int]
     ) -> List[TaskGoFFieldDTO]:
+
         task_gof_field_objs = TaskGoFField.objects.filter(
             task_gof_id__in=task_gof_ids
         )
@@ -71,12 +76,11 @@ class CreateOrUpdateTaskStorageImplementation(
             self, field_ids: List[str], user_roles: List[str]
     ) -> List[str]:
 
-        print("roles = ", FieldRole.objects.values())
-        print("user_roles = ", user_roles)
-
+        from ib_tasks.constants.constants import ALL_ROLES_ID
         field_ids = list(
             FieldRole.objects.filter(
-                field_id__in=field_ids, role__in=user_roles
+                Q(role__in=user_roles) | Q(role=ALL_ROLES_ID),
+                field_id__in=field_ids
             ).values_list('field_id', flat=True)
         )
         return field_ids

@@ -58,7 +58,9 @@ class TestCreateOrUpdateTaskStorageImplementation:
         # Assert
         snapshot.assert_match(name="task_gof_dtos", value=task_gof_dtos)
 
-    def test_given_task_gof_ids_returns_task_gof_field_dtos(self, storage, snapshot):
+    def test_given_task_gof_ids_returns_task_gof_field_dtos(
+            self, storage, snapshot
+    ):
         # Arrange
         task_obj = TaskFactory()
         task_id = task_obj.id
@@ -87,13 +89,16 @@ class TestCreateOrUpdateTaskStorageImplementation:
             self, storage, snapshot
     ):
         # Arrange
+        from ib_tasks.constants.constants import ALL_ROLES_ID
         gof_role_objs = GoFRoleFactory.create_batch(size=10)
+        gof_role_obj = GoFRoleFactory(role=ALL_ROLES_ID)
         gof_ids = [
             gof_role_objs[0].gof_id,
             gof_role_objs[3].gof_id,
             gof_role_objs[5].gof_id,
             gof_role_objs[9].gof_id,
-            gof_role_objs[1].gof_id
+            gof_role_objs[1].gof_id,
+            gof_role_obj.gof_id
         ]
         user_roles = [
             gof_role_objs[3].role,
@@ -115,12 +120,15 @@ class TestCreateOrUpdateTaskStorageImplementation:
             self, storage, snapshot
     ):
         # Arrange
+        from ib_tasks.constants.constants import ALL_ROLES_ID
         field_role_objs = FieldRoleFactory.create_batch(size=10)
+        field_role_obj = FieldRoleFactory(role=ALL_ROLES_ID)
         field_ids = [
             field_role_objs[0].field_id,
             field_role_objs[3].field_id,
             field_role_objs[9].field_id,
-            field_role_objs[6].field_id
+            field_role_objs[6].field_id,
+            field_role_obj.field_id
         ]
         user_roles = [
             field_role_objs[0].role

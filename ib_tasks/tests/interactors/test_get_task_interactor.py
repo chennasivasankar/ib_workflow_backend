@@ -18,6 +18,13 @@ class TestTaskInteractor:
         return storage
 
     @pytest.fixture
+    def stages_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces.fields_storage_interface \
+            import FieldsStorageInterface
+        storage = create_autospec(FieldsStorageInterface)
+        return storage
+
+    @pytest.fixture
     def presenter_mock(self):
         from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
             import GetTaskPresenterInterface
@@ -224,7 +231,8 @@ class TestTaskInteractor:
 
     @patch.object(GetTaskBaseInteractor, 'get_task')
     def test_given_invalid_task_id_raise_exception(
-            self, get_task_mock, storage_mock, presenter_mock, mock_object
+            self, get_task_mock, storage_mock, presenter_mock,
+            mock_object, stages_storage_mock
     ):
         # Arrange
         from ib_tasks.exceptions.task_custom_exceptions \
@@ -233,7 +241,9 @@ class TestTaskInteractor:
         task_id = "task0"
         exception_object = InvalidTaskIdException(task_id)
         get_task_mock.side_effect = exception_object
-        interactor = GetTaskInteractor(storage=storage_mock)
+        interactor = GetTaskInteractor(
+            storage=storage_mock, stages_storage=stages_storage_mock
+        )
         presenter_mock.raise_exception_for_invalid_task_id.return_value = mock_object
 
         # Act
@@ -249,7 +259,7 @@ class TestTaskInteractor:
     @patch.object(GetTaskBaseInteractor, 'get_task')
     def test_given_valid_task_returns_task_complete_details_dto(
             self, get_task_mock, get_task_stages_and_actions_mock,
-            mocker, storage_mock, presenter_mock,
+            mocker, storage_mock, presenter_mock, stages_storage_mock,
             task_details_dto, user_roles, gof_ids, permission_gof_ids,
             permission_task_gof_dtos, field_ids, permission_field_ids,
             permission_task_gof_field_dtos, task_complete_details_dto,
@@ -265,7 +275,9 @@ class TestTaskInteractor:
         task_id = "task0"
         get_task_mock.return_value = task_details_dto
         get_task_stages_and_actions_mock.return_value = stages_and_actions_details_dtos
-        interactor = GetTaskInteractor(storage=storage_mock)
+        interactor = GetTaskInteractor(
+            storage=storage_mock, stages_storage=stages_storage_mock
+        )
         storage_mock.get_gof_ids_having_permission.return_value = permission_gof_ids
         storage_mock.get_field_ids_having_permission.return_value = permission_field_ids
         presenter_mock.get_task_response.return_value = mock_object
