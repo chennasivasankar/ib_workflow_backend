@@ -14,9 +14,10 @@ from ib_tasks.storages.fields_storage_implementation \
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     user_obj = kwargs['user']
-    user_id = user_obj.id
-    query_parameter_dict = kwargs['request_query_params'].__dict__
-    task_id = query_parameter_dict['task_id']
+    query_params_dict = kwargs['query_params']
+    task_id = query_params_dict['task_id']
+    user_id = user_obj.user_id
+
     storage = CreateOrUpdateTaskStorageImplementation()
     stages_storage = FieldsStorageImplementation()
     presenter = GetTaskPresenterImplementation()
