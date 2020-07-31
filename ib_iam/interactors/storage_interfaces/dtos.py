@@ -11,13 +11,13 @@ class UserDTO:
 
 
 @dataclass
-class CompanyDTO:
+class CompanyIdAndNameDTO:
     company_id: str
     company_name: str
 
 
 @dataclass
-class TeamDTO:
+class TeamIdAndNameDTO:
     team_id: str
     team_name: str
 
@@ -55,3 +55,51 @@ class RoleDTO:
     role_id: str
     name: str
     description: str
+
+
+@dataclass
+class TeamNameAndDescriptionDTO:
+    name: str
+    description: str
+
+
+@dataclass
+class TeamDetailsWithUserIdsDTO(TeamNameAndDescriptionDTO):
+    user_ids: List[str]
+
+
+@dataclass
+class TeamWithUserIdsDTO(TeamDetailsWithUserIdsDTO):
+    team_id: str
+
+
+@dataclass
+class PaginationDTO:
+    limit: int
+    offset: int
+
+
+@dataclass
+class TeamDTO:
+    team_id: str
+    name: str
+    description: str
+
+
+@dataclass
+class TeamUserIdsDTO:
+    team_id: str
+    user_ids: List[str]
+
+
+@dataclass
+class TeamsWithTotalTeamsCountDTO:
+    total_teams_count: int
+    teams: List[TeamDTO]
+
+
+@dataclass
+class BasicUserDetailsDTO:
+    user_id: str
+    name: str
+    profile_pic_url: str

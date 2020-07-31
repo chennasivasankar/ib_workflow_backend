@@ -1,5 +1,5 @@
 from ib_iam.exceptions.custom_exceptions import InvalidOffsetValue, \
-    InvalidLimitValue, OffsetValueIsGreaterThanLimitValue, GivenNameIsEmpty, \
+    InvalidLimitValue, GivenNameIsEmpty, \
     NameShouldNotContainsNumbersSpecCharacters
 
 
@@ -21,18 +21,12 @@ class ValidationMixin:
             return False
         return True
 
-    @staticmethod
-    def _validate_offset_and_limit_value_constraints(offset: int, limit: int):
-        if offset >= limit:
-            raise OffsetValueIsGreaterThanLimitValue()
-
     def _constants_validations(self, offset: int, limit: int):
         self._validate_offset_value_and_throw_exception(offset=offset)
         self._validate_limit_value_and_throw_exception(limit=limit)
-        self._validate_offset_and_limit_value_constraints(
-            offset=offset, limit=limit)
 
-    def _validate_string(self, value):
+    @staticmethod
+    def _validate_string(value):
         valid = bool(isinstance(value, str) and value != "")
         invalid = not valid
         if invalid:

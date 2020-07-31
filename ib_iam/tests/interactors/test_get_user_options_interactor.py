@@ -8,10 +8,12 @@ from ib_iam.tests.common_fixtures.storages import reset_all_factories_sequence
 
 
 class TestGetUserOptionsInteractor:
+
     @pytest.fixture()
     def company_dtos(self):
-        from ib_iam.tests.factories.storage_dtos import CompanyDTOFactory
-        company_dtos = CompanyDTOFactory.create_batch(4)
+        reset_sequence()
+        from ib_iam.tests.factories.storage_dtos import CompanyIdAndNameDTOFactory
+        company_dtos = CompanyIdAndNameDTOFactory.create_batch(4)
         return company_dtos
 
     @pytest.fixture()
@@ -31,17 +33,18 @@ class TestGetUserOptionsInteractor:
     @pytest.fixture
     def storage_mock(self):
         from unittest import mock
-        from ib_iam.interactors.storage_interfaces.storage_interface \
-            import StorageInterface
-        storage = mock.create_autospec(StorageInterface)
+        from ib_iam.interactors.storage_interfaces.\
+            user_storage_interface import \
+            UserStorageInterface
+        storage = mock.create_autospec(UserStorageInterface)
         return storage
 
     @pytest.fixture
     def presenter_mock(self):
         from unittest import mock
-        from ib_iam.interactors.presenter_interfaces.presenter_interface \
-            import PresenterInterface
-        storage = mock.create_autospec(PresenterInterface)
+        from ib_iam.interactors.presenter_interfaces.get_user_options_presenter_interface \
+            import GetUserOptionsPresenterInterface
+        storage = mock.create_autospec(GetUserOptionsPresenterInterface)
         return storage
 
     def test_get_companies_details(

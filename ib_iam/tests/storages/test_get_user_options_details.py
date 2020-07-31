@@ -1,13 +1,15 @@
 import pytest
 
-from ib_iam.storages.storage_implementation import StorageImplementation
-from ib_iam.tests.common_fixtures.storages import reset_all_factories_sequence
+from ib_iam.storages.user_storage_implementation import UserStorageImplementation
+from ib_iam.tests.common_fixtures.storages import reset_sequence
 
 
 class TestGetUserOptionsDetailsStorage:
     @pytest.fixture()
     def companies(self):
-        reset_all_factories_sequence()
+        from ib_iam.tests.common_fixtures.reset_fixture \
+            import reset_sequence_company_factory
+        reset_sequence_company_factory()
         from ib_iam.tests.factories.models import CompanyFactory
         company_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
                        "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
@@ -17,7 +19,9 @@ class TestGetUserOptionsDetailsStorage:
 
     @pytest.fixture()
     def teams(self):
-        reset_all_factories_sequence()
+        from ib_iam.tests.common_fixtures.reset_fixture \
+            import reset_sequence_team_factory
+        reset_sequence_team_factory()
         from ib_iam.tests.factories.models import TeamFactory
         team_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
                     "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
@@ -26,7 +30,9 @@ class TestGetUserOptionsDetailsStorage:
 
     @pytest.fixture()
     def roles(self):
-        reset_all_factories_sequence()
+        from ib_iam.tests.common_fixtures.reset_fixture \
+            import reset_sequence_role_factory
+        reset_sequence_role_factory()
         role_ids = ["1", "2"]
         from ib_iam.tests.factories.models import RoleFactory
         roles = [RoleFactory.create(role_id=role_id) for role_id in role_ids]
@@ -35,13 +41,13 @@ class TestGetUserOptionsDetailsStorage:
     @pytest.mark.django_db
     def test_get_companies(self, companies):
         # Arrange
-        storage = StorageImplementation()
-        from ib_iam.interactors.storage_interfaces.dtos import CompanyDTO
+        storage = UserStorageImplementation()
+        from ib_iam.interactors.storage_interfaces.dtos import CompanyIdAndNameDTO
         expected_ouput = [
-            CompanyDTO(company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
-                       company_name='company 0'),
-            CompanyDTO(company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8332',
-                       company_name='company 1')]
+            CompanyIdAndNameDTO(company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
+                                company_name='company 0'),
+            CompanyIdAndNameDTO(company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8332',
+                                company_name='company 1')]
 
         # Act
         output = storage.get_companies()
@@ -52,13 +58,13 @@ class TestGetUserOptionsDetailsStorage:
     @pytest.mark.django_db
     def test_get_teams(self, teams):
         # Arrange
-        storage = StorageImplementation()
-        from ib_iam.interactors.storage_interfaces.dtos import TeamDTO
+        storage = UserStorageImplementation()
+        from ib_iam.interactors.storage_interfaces.dtos import TeamIdAndNameDTO
         expected_ouput = [
-            TeamDTO(team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
-                    team_name='team 0'),
-            TeamDTO(team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8332',
-                    team_name='team 1')]
+            TeamIdAndNameDTO(team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
+                             team_name='team 0'),
+            TeamIdAndNameDTO(team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8332',
+                             team_name='team 1')]
 
         # Act
         output = storage.get_teams()
@@ -69,7 +75,7 @@ class TestGetUserOptionsDetailsStorage:
     @pytest.mark.django_db
     def test_get_roles(self, roles):
         # Arrange
-        storage = StorageImplementation()
+        storage = UserStorageImplementation()
         from ib_iam.interactors.storage_interfaces.dtos import RoleIdAndNameDTO
         expected_ouput = [
             RoleIdAndNameDTO(role_id='1', name='role 0'),

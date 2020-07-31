@@ -1,5 +1,4 @@
 import uuid
-from unittest.mock import patch
 
 import factory
 
@@ -14,6 +13,8 @@ class TeamFactory(factory.django.DjangoModelFactory):
 
     team_id = factory.LazyFunction(uuid.uuid4)
     name = factory.sequence(lambda number: "team %s" % number)
+    description = factory.sequence(lambda n: "team_description %d" % n)
+    created_by = factory.sequence(lambda n: "user_id-%d" % n)
 
 
 class CompanyFactory(factory.django.DjangoModelFactory):
@@ -57,3 +58,11 @@ class UserRoleFactory(factory.django.DjangoModelFactory):
 
     user_id = factory.sequence(lambda number: "user%s" % number)
     role = factory.Iterator(models.Role.objects.all())
+
+
+class UserFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = UserDetails
+
+    user_id = factory.sequence(lambda n: n)
+    is_admin = factory.Iterator([True, False])

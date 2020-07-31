@@ -10,7 +10,8 @@ class SpreadSheetUtil:
 
         from oauth2client.service_account import ServiceAccountCredentials
         credentials = ServiceAccountCredentials.from_json_keyfile_name(
-            "ib_iam/populate/ib-worksflows-dev-testing-d86743f0ecd1.json", scope)
+            "ib_iam/populate/ib-worksflows-dev-testing-d86743f0ecd1.json",
+            scope)
 
         self.gc = gspread.authorize(credentials)
 
@@ -35,4 +36,3 @@ class SpreadSheetUtil:
             row += 1
 
         return row_wise_dicts
-

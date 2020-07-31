@@ -28,10 +28,10 @@ class TestCase02GetConfigurationDetailsAPITestCase(TestUtils):
     def user_set_up(self, api_user):
         user_id = api_user.user_id
         from ib_iam.tests.factories.models import UserDetailsFactory
-        from ib_iam.tests.common_fixtures.storages import reset_all_factories_sequence
-        reset_all_factories_sequence()
-        UserDetailsFactory.create(user_id=user_id, is_admin=True)
-        UserDetailsFactory.create_batch(4)
+        from ib_iam.tests.common_fixtures.reset_fixture \
+            import reset_sequence_user_details_factory
+        reset_sequence_user_details_factory()
+        UserDetailsFactory.create(user_id=user_id, is_admin=True, company=None)
 
     @pytest.fixture
     def set_up(self):
@@ -39,8 +39,9 @@ class TestCase02GetConfigurationDetailsAPITestCase(TestUtils):
             import TeamFactory, CompanyFactory, RoleFactory, \
             UserTeamFactory, \
             UserRoleFactory
-        from ib_iam.tests.common_fixtures.storages import reset_all_factories_sequence
-        reset_all_factories_sequence()
+        from ib_iam.tests.common_fixtures.reset_fixture \
+            import reset_sequence_for_model_factories
+        reset_sequence_for_model_factories()
         company = CompanyFactory.create(company_id=COMPANY_ID)
         teams = [TeamFactory.create(team_id=team_id) for team_id in TEAM_IDS]
         roles = [RoleFactory.create(id=role_id) for role_id in ROLE_IDS]
@@ -56,7 +57,7 @@ class TestCase02GetConfigurationDetailsAPITestCase(TestUtils):
         path_params = {}
         query_params = {}
         headers = {}
-        response = self.default_test_case(
+        self.default_test_case(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

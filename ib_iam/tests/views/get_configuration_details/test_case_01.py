@@ -15,11 +15,11 @@ class TestCase01GetConfigurationDetailsAPITestCase(TestUtils):
     @pytest.fixture
     def user_set_up(self, api_user):
         user_id = api_user.user_id
+        from ib_iam.tests.common_fixtures.reset_fixture \
+            import reset_sequence_user_details_factory
+        reset_sequence_user_details_factory()
         from ib_iam.tests.factories.models import UserDetailsFactory
-        from ib_iam.tests.common_fixtures.storages import reset_all_factories_sequence
-        reset_all_factories_sequence()
-        UserDetailsFactory.create(user_id=user_id, is_admin=False)
-        UserDetailsFactory.create_batch(4)
+        UserDetailsFactory.create(user_id=user_id, is_admin=False, company=None)
 
     @pytest.mark.django_db
     def test_case(self, user_set_up, snapshot):
@@ -27,7 +27,7 @@ class TestCase01GetConfigurationDetailsAPITestCase(TestUtils):
         path_params = {}
         query_params = {}
         headers = {}
-        response = self.default_test_case(
+        self.default_test_case(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

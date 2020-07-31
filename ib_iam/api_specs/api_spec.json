@@ -8,7 +8,8 @@
     "description": "A simple API to learn how to write OpenAPI Specification"
   },
   "schemes": [
-    "http"
+    "http",
+    "https"
   ],
   "consumes": [
     "application/json"
@@ -87,8 +88,8 @@
             }
           },
           "required": [
-            "profile_pic_url",
-            "is_admin"
+            "is_admin",
+            "profile_pic_url"
           ]
         }
       ]
@@ -97,7 +98,8 @@
       "type": "object",
       "properties": {
         "user_id": {
-          "type": "string"
+          "type": "string",
+          "format": "uuid"
         }
       },
       "required": [
@@ -245,12 +247,14 @@
           "type": "object",
           "properties": {
             "company_id": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             },
             "team_ids": {
               "type": "array",
               "items": {
-                "type": "string"
+                "type": "string",
+                "format": "uuid"
               }
             },
             "role_ids": {
@@ -304,6 +308,159 @@
         "roles",
         "teams"
       ]
+    },
+    "MemberDetails": {
+      "type": "object",
+      "properties": {
+        "member_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "profile_pic_url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "member_id",
+        "name",
+        "profile_pic_url"
+      ]
+    },
+    "TeamNameAndDescription": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "TeamWithMembersDetails": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/TeamNameAndDescription"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "team_id": {
+              "type": "string"
+            },
+            "no_of_members": {
+              "type": "integer"
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/MemberDetails"
+              }
+            }
+          },
+          "required": [
+            "team_id",
+            "no_of_members",
+            "members"
+          ]
+        }
+      ]
+    },
+    "TeamsWithTotalTeamsCount": {
+      "type": "object",
+      "properties": {
+        "total_teams_count": {
+          "type": "integer"
+        },
+        "teams": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TeamWithMembersDetails"
+          }
+        }
+      },
+      "required": [
+        "total_teams_count",
+        "teams"
+      ]
+    },
+    "TeamWithUserIds": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/TeamNameAndDescription"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "user_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "UserHasNoAccessException": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "USER_HAS_NO_ACCESS"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
+        }
+      ]
+    },
+    "TeamNameAlreadyExistsOrDuplicateUsersException": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CommonHttpExceptionFields"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "res_status": {
+              "type": "string",
+              "enum": [
+                "TEAM_NAME_ALREADY_EXISTS",
+                "DUPLICATE_USERS"
+              ]
+            }
+          },
+          "required": [
+            "res_status"
+          ]
+        }
+      ]
+    },
+    "TeamId": {
+      "type": "object",
+      "properties": {
+        "team_id": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "team_id"
+      ]
     }
   },
   "parameters": {
@@ -314,18 +471,6 @@
       "type": "string",
       "format": "uuid"
     },
-    "OffsetQueryParameter": {
-      "name": "offset",
-      "in": "query",
-      "required": true,
-      "type": "integer"
-    },
-    "LimitQueryParameter": {
-      "name": "limit",
-      "in": "query",
-      "required": true,
-      "type": "integer"
-    },
     "AddUserParameter": {
       "name": "AddUser",
       "description": "Details of User to add",
@@ -334,12 +479,12 @@
         "$ref": "#/definitions/UserWithCompanyWithTeamsAndRoles"
       }
     },
-    "EditUserDetailsBodyParameter": {
-      "name": "EditUser",
-      "description": "Details of User to edit",
+    "UpdateUserParameter": {
+      "name": "UpdateUser",
+      "description": "Update the User details",
       "in": "body",
       "schema": {
-        "$ref": "#/definitions/UserNameAndEmail"
+        "$ref": "#/definitions/UserWithCompanyWithTeamsAndRoles"
       }
     },
     "LoginParameter": {
@@ -396,6 +541,45 @@
           "password"
         ]
       }
+    },
+    "LimitQueryParameter": {
+      "name": "limit",
+      "in": "query",
+      "required": true,
+      "type": "integer",
+      "default": 5
+    },
+    "OffsetQueryParameter": {
+      "name": "offset",
+      "in": "query",
+      "required": true,
+      "type": "integer",
+      "default": 0
+    },
+    "AddTeamParameter": {
+      "name": "details_to_add_team",
+      "in": "body",
+      "required": true,
+      "description": "parameters or details to create/add a team",
+      "schema": {
+        "$ref": "#/definitions/TeamWithUserIds"
+      }
+    },
+    "TeamIdPathParameter": {
+      "name": "team_id",
+      "in": "path",
+      "required": true,
+      "description": "team_id to identify a team",
+      "type": "string",
+      "format": "uuid"
+    },
+    "UpdateTeamParameter": {
+      "name": "team_details_to_be_updated",
+      "in": "body",
+      "description": "details that are to be updated of a team",
+      "schema": {
+        "$ref": "#/definitions/TeamWithUserIds"
+      }
     }
   },
   "responses": {
@@ -445,7 +629,87 @@
                 "enum": [
                   "INVALID_EMAIL",
                   "INVALID_NAME",
-                  "USER_ALREADY_EXIST_WITH_THIS_EMAIL"
+                  "USER_ALREADY_EXIST_WITH_THIS_EMAIL",
+                  "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "EditUserBadRequestResponse": {
+      "description": "Failed to add user",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_EMAIL",
+                  "EMPTY_NAME_IS_INVALID",
+                  "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "NotFoundResponseForEditUser": {
+      "description": "Edit User Not Found",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_COMPANY_ID",
+                  "INVALID_TEAM_IDS",
+                  "INVALID_ROLE_IDS",
+                  "USER_DOES_NOT_EXIST"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "NotFoundResponseForAddUser": {
+      "description": "Edit User Not Found",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_COMPANY_ID",
+                  "INVALID_TEAM_IDS",
+                  "INVALID_ROLE_IDS"
                 ]
               }
             },
@@ -460,6 +724,380 @@
       "description": "Configuration Details",
       "schema": {
         "$ref": "#/definitions/ConfigurationDetails"
+      }
+    },
+    "LoginSuccessResponse": {
+      "description": "Success Response for login",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string"
+          },
+          "refresh_token": {
+            "type": "string"
+          },
+          "expires_in_seconds": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "is_admin": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "access_token",
+          "refresh_token",
+          "expires_in_seconds",
+          "is_admin"
+        ]
+      }
+    },
+    "LoginBadRequestResponse": {
+      "description": "login bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_EMAIL"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "LoginNotFoundResponse": {
+      "description": "login not found response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_ACCOUNT_DOES_NOT_EXIST",
+                  "INCORRECT_PASSWORD"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "SendResetPasswordLinkBadRequestResponse": {
+      "description": "send reset password link bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_EMAIL"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "SendResetPasswordLinkNotFoundResponse": {
+      "description": "send reset password link not found response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_ACCOUNT_DOES_NOT_EXIST"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "UpdatePasswordBadRequestResponse": {
+      "description": "update password bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "TOKEN_HAS_EXPIRED",
+                  "PASSWORD_MIN_LENGTH",
+                  "PASSWORD_AT_LEAST_ONE_SPECIAL_CHARACTER"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "UpdatePasswordNotFoundResponse": {
+      "description": "update password not found response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "TOKEN_DOES_NOT_EXIST"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "GetUserProfileSuccessResponse": {
+      "description": "get user profile success response",
+      "schema": {
+        "$ref": "#/definitions/UserWithExtraFields"
+      }
+    },
+    "GetUserProfileBadRequestResponse": {
+      "description": "get user profile bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_USER_ID"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "GetUserProfileNotFoundResponse": {
+      "description": "get user profile not found response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_ACCOUNT_DOES_NOT_EXIST"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "BadRequestForGetListOfTeamsResponse": {
+      "description": "given limit or offset is not valid",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_LIMIT",
+                  "INVALID_OFFSET"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "UnauthorizedRequestForGetListOfTeamsResponse": {
+      "description": "user has no access to see teams",
+      "schema": {
+        "$ref": "#/definitions/UserHasNoAccessException"
+      }
+    },
+    "SuccessForGetListOfTeamsResponse": {
+      "description": "returns list of teams",
+      "schema": {
+        "$ref": "#/definitions/TeamsWithTotalTeamsCount"
+      }
+    },
+    "UnauthorizedForAddTeamResponse": {
+      "description": "User has no access to add a team",
+      "schema": {
+        "$ref": "#/definitions/UserHasNoAccessException"
+      }
+    },
+    "NotFoundForAddTeamResponse": {
+      "description": "Requested users not found to add",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_USERS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "BadRequestForAddTeamResponse": {
+      "description": "Team name already exists or duplicate users has sent",
+      "schema": {
+        "$ref": "#/definitions/TeamNameAlreadyExistsOrDuplicateUsersException"
+      }
+    },
+    "SuccessfullyCreatedForAddTeamResponse": {
+      "description": "Team Created successfully",
+      "schema": {
+        "$ref": "#/definitions/TeamId"
+      }
+    },
+    "BadRequestForUpdateTeamResponse": {
+      "description": "Team name already exists or duplicate users has sent",
+      "schema": {
+        "$ref": "#/definitions/TeamNameAlreadyExistsOrDuplicateUsersException"
+      }
+    },
+    "UnauthorizedForUpdateTeamResponse": {
+      "description": "User has no access to update team",
+      "schema": {
+        "$ref": "#/definitions/UserHasNoAccessException"
+      }
+    },
+    "NotFoundForUpdateTeamResponse": {
+      "description": "Invalid team or Invalid Users sent",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_TEAM",
+                  "INVALID_USERS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "NotFoundForDeleteTeamResponse": {
+      "description": "Requested team does not exist",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_TEAM"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "UnauthorizedForDeleteTeamResponse": {
+      "description": "User has no access to delete a team",
+      "schema": {
+        "$ref": "#/definitions/UserHasNoAccessException"
       }
     },
     "UserDoesNotFoundResponse": {
@@ -534,11 +1172,14 @@
           },
           "403": {
             "$ref": "#/responses/UserDoesNotHavePermissionResponse"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequestForGetListOfTeamsResponse"
           }
         }
       }
     },
-    "/add_user/v1/": {
+    "/users/create/v1/": {
       "post": {
         "operationId": "add_user",
         "description": "add an user with valid details",
@@ -560,11 +1201,51 @@
           },
           "400": {
             "$ref": "#/responses/AddUserBadRequestResponse"
+          },
+          "403": {
+            "$ref": "#/responses/UserDoesNotHavePermissionResponse"
+          },
+          "404": {
+            "$ref": "#/responses/NotFoundResponseForAddUser"
           }
         }
       }
     },
     "/users/{user_id}/v1/": {
+      "put": {
+        "operationId": "edit_user",
+        "summary": "Edit User",
+        "description": "edit an user",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/UpdateUserParameter"
+          },
+          {
+            "$ref": "#/parameters/UserIdPathParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Edit User Successfully"
+          },
+          "400": {
+            "$ref": "#/responses/EditUserBadRequestResponse"
+          },
+          "403": {
+            "$ref": "#/responses/UserDoesNotHavePermissionResponse"
+          },
+          "404": {
+            "$ref": "#/responses/NotFoundResponseForEditUser"
+          }
+        }
+      },
       "delete": {
         "operationId": "delete_user",
         "description": "delete an user with valid details",
@@ -589,6 +1270,270 @@
           },
           "404": {
             "$ref": "#/responses/UserDoesNotFoundResponse"
+          }
+        }
+      }
+    },
+    "/login/v1/": {
+      "post": {
+        "operationId": "user_login",
+        "summary": "user login",
+        "description": "if user is exists return the access_token and is_admin",
+        "parameters": [
+          {
+            "$ref": "#/parameters/LoginParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/LoginSuccessResponse"
+          },
+          "404": {
+            "$ref": "#/responses/LoginNotFoundResponse"
+          },
+          "400": {
+            "$ref": "#/responses/LoginBadRequestResponse"
+          }
+        }
+      }
+    },
+    "/logout/v1/": {
+      "post": {
+        "operationId": "user_logout",
+        "summary": "user logout",
+        "description": "user want to log out from a device",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response"
+          }
+        }
+      }
+    },
+    "/send/reset_password_link/v1/": {
+      "post": {
+        "operationId": "send_user_reset_password_link",
+        "summary": "send user reset password link",
+        "description": "user reset password link to email",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/SendResetPasswordLinkParameter"
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/responses/SendResetPasswordLinkBadRequestResponse"
+          },
+          "404": {
+            "$ref": "#/responses/SendResetPasswordLinkNotFoundResponse"
+          },
+          "200": {
+            "description": "Success Response"
+          }
+        }
+      }
+    },
+    "/update_password/v1/": {
+      "post": {
+        "summary": "update user the password",
+        "operationId": "update_user_password",
+        "description": "update user password using token which we provided",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "user token with expires secs",
+            "type": "string",
+            "required": true
+          },
+          {
+            "$ref": "#/parameters/UpdatePasswordParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response"
+          },
+          "400": {
+            "$ref": "#/responses/UpdatePasswordBadRequestResponse"
+          },
+          "404": {
+            "$ref": "#/responses/UpdatePasswordNotFoundResponse"
+          }
+        }
+      }
+    },
+    "/user_profile/v1/": {
+      "get": {
+        "operationId": "get_user_profile",
+        "summary": "get user profile",
+        "description": "get user profile details",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetUserProfileSuccessResponse"
+          },
+          "400": {
+            "$ref": "#/responses/GetUserProfileBadRequestResponse"
+          },
+          "404": {
+            "$ref": "#/responses/GetUserProfileNotFoundResponse"
+          }
+        }
+      }
+    },
+    "/teams/v1/": {
+      "get": {
+        "summary": "get list of teams",
+        "description": "Returns a list containing all teams related to a user(admin).",
+        "operationId": "get_list_of_teams",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/LimitQueryParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetQueryParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/SuccessForGetListOfTeamsResponse"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequestForGetListOfTeamsResponse"
+          },
+          "401": {
+            "$ref": "#/responses/UnauthorizedRequestForGetListOfTeamsResponse"
+          }
+        }
+      }
+    },
+    "/team/add/v1/": {
+      "post": {
+        "summary": "Adds a new team",
+        "description": "Creates a new team",
+        "operationId": "add_team",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/AddTeamParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/SuccessfullyCreatedForAddTeamResponse"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequestForAddTeamResponse"
+          },
+          "401": {
+            "$ref": "#/responses/UnauthorizedForAddTeamResponse"
+          },
+          "404": {
+            "$ref": "#/responses/NotFoundForAddTeamResponse"
+          }
+        }
+      }
+    },
+    "/team/{team_id}/v1/": {
+      "put": {
+        "summary": "update team name",
+        "description": "updates a team name",
+        "operationId": "update_team_details",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TeamIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/UpdateTeamParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Team details updated Successfully"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequestForUpdateTeamResponse"
+          },
+          "401": {
+            "$ref": "#/responses/UnauthorizedForUpdateTeamResponse"
+          },
+          "404": {
+            "$ref": "#/responses/NotFoundForUpdateTeamResponse"
+          }
+        }
+      },
+      "delete": {
+        "summary": "delete team",
+        "description": "deletes a team",
+        "operationId": "delete_team",
+        "security": [
+          {
+            "oauth": [
+              "delete"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TeamIdPathParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Team deleted Successfully"
+          },
+          "404": {
+            "$ref": "#/responses/NotFoundForDeleteTeamResponse"
+          },
+          "401": {
+            "$ref": "#/responses/UnauthorizedForDeleteTeamResponse"
           }
         }
       }

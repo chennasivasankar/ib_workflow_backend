@@ -1,4 +1,16 @@
+class UserAccountDoesNotExist(Exception):
+    pass
+
+
+class InvalidEmail(Exception):
+    pass
+
+
 class UserIsNotAdmin(Exception):
+    pass
+
+
+class InvalidUser(Exception):
     pass
 
 
@@ -7,10 +19,6 @@ class InvalidOffsetValue(Exception):
 
 
 class InvalidLimitValue(Exception):
-    pass
-
-
-class OffsetValueIsGreaterThanLimitValue(Exception):
     pass
 
 
@@ -61,6 +69,26 @@ class RoleIdFormatIsInvalid(Exception):
 class DuplicateRoleIds(Exception):
     pass
 
+
+class UserHasNoAccess(Exception):
+    pass
+
+
+class TeamNameAlreadyExists(Exception):
+    def __init__(self, team_name: str):
+        self.team_name = team_name
+
+
+class InvalidTeam(Exception):
+    pass
+
+
+class InvalidUsers(Exception):
+    pass
+
+
+class DuplicateUsers(Exception):
+    pass
 
 class UserNotFound(Exception):
     pass

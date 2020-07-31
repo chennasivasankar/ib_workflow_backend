@@ -21,7 +21,7 @@ snapshots['TestCase03GetUsersAPITestCase.test_case body'] = {
             'name': 'name0',
             'roles': [
                 {
-                    'role_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb211',
+                    'role_id': 'ROLE_0',
                     'role_name': 'role 0'
                 }
             ],
@@ -42,7 +42,7 @@ snapshots['TestCase03GetUsersAPITestCase.test_case body'] = {
             'name': 'name1',
             'roles': [
                 {
-                    'role_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb222',
+                    'role_id': 'ROLE_1',
                     'role_name': 'role 1'
                 }
             ],
@@ -63,7 +63,7 @@ snapshots['TestCase03GetUsersAPITestCase.test_case body'] = {
             'name': 'name2',
             'roles': [
                 {
-                    'role_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb222',
+                    'role_id': 'ROLE_1',
                     'role_name': 'role 1'
                 }
             ],

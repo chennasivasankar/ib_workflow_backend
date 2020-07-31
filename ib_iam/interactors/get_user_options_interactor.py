@@ -1,24 +1,26 @@
 from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin
-from ib_iam.interactors.presenter_interfaces.presenter_interface \
-    import PresenterInterface
-from ib_iam.interactors.storage_interfaces.storage_interface \
-    import StorageInterface
+from ib_iam.interactors.presenter_interfaces.get_user_options_presenter_interface \
+    import GetUserOptionsPresenterInterface
+from ib_iam.interactors.storage_interfaces.user_storage_interface \
+    import UserStorageInterface
 
 
 class GetUserOptionsDetails:
 
-    def __init__(self, storage: StorageInterface):
+    def __init__(self, storage: UserStorageInterface):
         self.storage = storage
 
-    def get_configuration_details_wrapper(self, user_id: str,
-                                          presenter: PresenterInterface):
+    def get_configuration_details_wrapper(
+            self, user_id: str,
+            presenter: GetUserOptionsPresenterInterface):
         try:
             configuration_details_dto = self.get_configuration_details(
                 user_id=user_id)
-            return presenter.get_user_options_details_response(
+            response = presenter.get_user_options_details_response(
                 configuration_details_dto)
         except UserIsNotAdmin:
-            presenter.raise_user_is_not_admin_exception()
+            response = presenter.raise_user_is_not_admin_exception()
+        return response
 
     def get_configuration_details(self, user_id: str):
         self._check_and_throw_user_is_admin(user_id=user_id)
@@ -31,8 +33,8 @@ class GetUserOptionsDetails:
     @staticmethod
     def _create_configuration_details_dto(companies, teams, roles):
         from ib_iam.interactors.presenter_interfaces.dtos import \
-            UserOptionsDetails
-        configuration_details_dto = UserOptionsDetails(
+            UserOptionsDetailsDTO
+        configuration_details_dto = UserOptionsDetailsDTO(
             companies=companies,
             roles=roles,
             teams=teams

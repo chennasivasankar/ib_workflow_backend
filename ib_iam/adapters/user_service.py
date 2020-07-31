@@ -20,8 +20,14 @@ class UserService:
 
     def get_user_profile_bulk(
             self, user_ids: List[str]) -> List[UserProfileDTO]:
-        user_profiles = self.interface.get_user_profile_bulk(
-            user_ids=user_ids)
+        from ib_users.interactors.exceptions.user_profile \
+            import InvalidUserException
+        try:
+            user_profiles = self.interface.get_user_profile_bulk(
+                user_ids=user_ids)
+        except InvalidUserException:
+            from ib_iam.exceptions.custom_exceptions import InvalidUser
+            raise InvalidUser()
         user_profile_dtos = []
         for user in user_profiles:
             user_profile_dtos.append(UserProfileDTO(
@@ -29,19 +35,20 @@ class UserService:
                 name=user.name,
                 email=user.email
             ))
-            return user_profile_dtos
+        return user_profile_dtos
 
     def create_user_account_with_email(self, email: str) -> str:
         from ib_iam.exceptions.custom_exceptions \
             import UserAccountAlreadyExistWithThisEmail
         from ib_users.exceptions.registration_exceptions \
             import AccountWithThisEmailAlreadyExistsException
+
         try:
             user_id = self.interface.create_user_account_with_email(
                 email=email)
             return user_id
         except AccountWithThisEmailAlreadyExistsException:
-            raise UserAccountAlreadyExistWithThisEmail()
+            raise UserAccountAlreadyExistWithThisEmail
 
     def create_user_profile(
             self, user_id: str, user_profile_dto: UserProfileDTO):
@@ -49,7 +56,7 @@ class UserService:
             CreateUserProfileDTO
         create_user_profile_dto = CreateUserProfileDTO(
             name=user_profile_dto.name,
-            email=user_profile_dto.name,
+            email=user_profile_dto.email,
         )
         self.interface.create_user_profile(
             user_id=user_id, user_profile=create_user_profile_dto)
@@ -79,7 +86,7 @@ class UserService:
             if err.error_type == EMPTY_USER_ID_ERROR_TYPE:
                 raise InvalidUserId
             elif err.error_type == INVALID_USER_ID_ERROR_TYPE:
-                raise UserAccountDoesNotExist
+                raise UserAccountDoesNotExist()
         else:
             user_profile_dto = self._convert_to_user_profile_dto(
                 user_profile_dto=user_profile_dto
@@ -95,5 +102,20 @@ class UserService:
             user_id=user_profile_dto.user_id,
             name=user_profile_dto.name,
             email=user_profile_dto.email,
+            profile_pic_url=user_profile_dto.profile_pic_url
         )
         return converted_user_profile_dto
+
+    def get_basic_user_dtos(self, user_ids: List[str]):
+        user_dtos_from_service = self.interface.get_user_profile_bulk(
+            user_ids=user_ids
+        )
+        basic_user_profile_dto = [
+            UserProfileDTO(
+                user_id=user_dto.user_id,
+                name=user_dto.name,
+                profile_pic_url=user_dto.profile_pic_url,
+            )
+            for user_dto in user_dtos_from_service
+        ]
+        return basic_user_profile_dto
