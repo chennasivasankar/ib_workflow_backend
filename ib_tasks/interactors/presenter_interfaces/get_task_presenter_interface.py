@@ -1,16 +1,19 @@
 import abc
 from dataclasses import dataclass
+from typing import List
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
 
 
 from ib_tasks.interactors.storage_interfaces.get_task_dtos \
     import TaskDetailsDTO
+from ib_tasks.interactors.task_dtos import TaskStageCompleteDetailsDTO
 
 
 @dataclass
 class TaskCompleteDetailsDTO:
     task_id: int
     task_details_dto: TaskDetailsDTO
+    task_stages_complete_details_dtos: List[TaskStageCompleteDetailsDTO]
 
 
 class GetTaskPresenterInterface(abc.ABC):
