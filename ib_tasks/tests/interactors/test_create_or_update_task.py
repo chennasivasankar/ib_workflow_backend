@@ -11,7 +11,7 @@ from ib_tasks.tests.common_fixtures.interactors import \
     mock_user_action_on_task_method
 from ib_tasks.tests.factories.interactor_dtos import TaskDTOFactory, \
     GoFFieldsDTOFactory, FieldValuesDTOFactory
-from ib_tasks.tests.factories.storage_dtos import FieldDetailsDTOFactory, \
+from ib_tasks.tests.factories.storage_dtos import FieldCompleteDetailsDTOFactory, \
     TaskGoFWithTaskIdDTOFactory, TaskGoFDetailsDTOFactory, \
     TaskGoFFieldDTOFactory
 
@@ -23,7 +23,7 @@ class TestCreateOrUpdateTask:
         TaskDTOFactory.reset_sequence(1)
         GoFFieldsDTOFactory.reset_sequence(1)
         FieldValuesDTOFactory.reset_sequence(1)
-        FieldDetailsDTOFactory.reset_sequence(1)
+        FieldCompleteDetailsDTOFactory.reset_sequence(1)
         TaskGoFWithTaskIdDTOFactory.reset_sequence(1)
         TaskGoFDetailsDTOFactory.reset_sequence(1)
         TaskGoFFieldDTOFactory.reset_sequence(1)
@@ -179,7 +179,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.GOF_SELECTOR.value
         )
@@ -227,7 +227,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.PHONE_NUMBER.value
         )
@@ -274,7 +274,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.EMAIL.value
         )
@@ -321,7 +321,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.URL.value
         )
@@ -369,7 +369,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.PASSWORD.value
         )
@@ -417,7 +417,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.NUMBER.value
         )
@@ -465,7 +465,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.FLOAT.value
         )
@@ -511,7 +511,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.DROPDOWN.value,
             field_values='["Kurnool", "Vizag"]'
@@ -558,7 +558,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.GOF_SELECTOR.value,
             field_values='["gof_1", "gof_3"]'
@@ -606,7 +606,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.RADIO_GROUP.value,
             field_values='["male", "female"]'
@@ -653,7 +653,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.CHECKBOX_GROUP.value,
             field_values='["storages", "presenters"]'
@@ -700,7 +700,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.MULTI_SELECT_FIELD.value,
             field_values='["storages", "presenters"]'
@@ -747,7 +747,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.MULTI_SELECT_LABELS.value,
             field_values='["storages", "presenters"]'
@@ -794,7 +794,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.DATE.value
         )
@@ -840,7 +840,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.TIME.value
         )
@@ -885,7 +885,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.IMAGE_UPLOADER.value,
             allowed_formats='[".jpeg", ".svg"]'
@@ -932,7 +932,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.IMAGE_UPLOADER.value,
             allowed_formats='[".jpeg", ".png"]'
@@ -978,7 +978,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.FILE_UPLOADER.value,
             allowed_formats='[".zip", ".tar"]'
@@ -1026,7 +1026,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.PLAIN_TEXT.value
         )
@@ -1076,7 +1076,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.PLAIN_TEXT.value
         )
@@ -1171,7 +1171,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.PLAIN_TEXT.value
         )
@@ -1215,7 +1215,7 @@ class TestCreateOrUpdateTask:
             gof_field_values_dto.field_id
             for gof_field_values_dto in gof_field_values_dtos
         ]
-        field_details_dtos = FieldDetailsDTOFactory.create_batch(
+        field_details_dtos = FieldCompleteDetailsDTOFactory.create_batch(
             size=1, field_id=factory.Iterator(field_ids),
             field_type=FieldTypes.PLAIN_TEXT.value
         )

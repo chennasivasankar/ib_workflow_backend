@@ -46,7 +46,10 @@ class TestCase01GetTaskTemplatesAPITestCase(TestUtils):
         StageActionFactory.create_batch(
             size=4, stage=factory.Iterator(stage_objs)
         )
-        GoFRoleFactory.create_batch(size=4, gof=factory.Iterator(gof_objs))
+        GoFRoleFactory.create_batch(
+            size=4, gof=factory.Iterator(gof_objs),
+            role=factory.Iterator(["FIN_PAYMENT_REQUESTER", "ALL_ROLES"])
+        )
 
         field_objs = FieldFactory.create_batch(
             size=6, gof=factory.Iterator(gof_objs)

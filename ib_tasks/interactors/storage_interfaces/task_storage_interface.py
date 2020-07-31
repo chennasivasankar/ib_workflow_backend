@@ -10,7 +10,7 @@ from typing import List, Optional, Tuple
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
-    FieldRoleDTO, FieldTypeDTO, UserFieldPermissionDTO
+    FieldRoleDTO, FieldCompleteDetailsDTO, UserFieldPermissionDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO,\
     StageValueWithTaskIdsDTO, TaskIdWithStageDetailsDTO, \
     TaskIdWithStageValueDTO, FieldDetailsDTO

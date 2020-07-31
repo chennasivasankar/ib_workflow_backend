@@ -7,10 +7,9 @@ from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionsOfTemplateDTO, ActionDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
-    FieldRoleDTO, FieldTypeDTO, UserFieldPermissionDTO, FieldDetailsDTO, \
-    FieldRoleDTO, FieldTypeDTO, UserFieldPermissionDTO, FieldDetailsDTO, \
-    FieldDetailsWithStageIdDTO, \
-    FieldRoleDTO, FieldTypeDTO, UserFieldPermissionDTO, FieldDetailsDTO
+    FieldRoleDTO, FieldCompleteDetailsDTO, UserFieldPermissionDTO, FieldDetailsDTO, \
+    FieldRoleDTO, FieldCompleteDetailsDTO, UserFieldPermissionDTO, FieldDetailsDTO, \
+    FieldRoleDTO, FieldCompleteDetailsDTO, UserFieldPermissionDTO, FieldDetailsDTO
 
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskIdWithStageValueDTO, \
@@ -70,7 +69,7 @@ class TasksStorageImplementation(TaskStorageInterface):
         return field_details_dtos
 
     def get_field_types_for_given_field_ids(self, field_ids: List[str]) -> \
-            List[FieldTypeDTO]:
+            List[FieldCompleteDetailsDTO]:
         field_type_dicts = list(
             Field.objects.filter(field_id__in=field_ids). \
                 values('field_id', 'field_type')
@@ -81,8 +80,8 @@ class TasksStorageImplementation(TaskStorageInterface):
     @staticmethod
     def _prepare_field_type_dtos(field_type_dicts: List[Dict]):
         field_type_dtos = [
-            FieldTypeDTO(field_id=field_type_dict['field_id'],
-                         field_type=field_type_dict['field_type'])
+            FieldCompleteDetailsDTO(field_id=field_type_dict['field_id'],
+                                    field_type=field_type_dict['field_type'])
             for field_type_dict in field_type_dicts
         ]
         return field_type_dtos
@@ -406,9 +405,11 @@ class TasksStorageImplementation(TaskStorageInterface):
     def get_user_field_permission_dtos(
             self, roles: List[str],
             field_ids: List[str]) -> List[UserFieldPermissionDTO]:
+        from django.db.models import Q
         user_field_permission_details = FieldRole.objects.filter(
-            field_id__in=field_ids, role__in=roles).values('field_id',
-                                                           'permission_type')
+            Q(field_id__in=field_ids),
+            (Q(role__in=roles) | Q(role="ALL_ROLES"))
+        ).values('field_id', 'permission_type')
         user_field_permission_dtos = self._convert_user_field_permission_details_to_dtos(
             user_field_permission_details=user_field_permission_details)
         return user_field_permission_dtos
@@ -421,10 +422,13 @@ class TasksStorageImplementation(TaskStorageInterface):
 
     def get_gof_ids_with_read_permission_for_user(
             self, roles: List[str]) -> List[str]:
+        from django.db.models import Q
         from ib_tasks.constants.enum import PermissionTypes
         gof_ids_queryset = GoFRole.objects.filter(
-            permission_type=PermissionTypes.READ.value).values_list('gof_id',
-                                                                    flat=True)
+            Q(permission_type=PermissionTypes.READ.value),
+            (Q(role__in=roles) | Q(role="ALL_ROLES"))
+        ).values_list('gof_id', flat=True)
+
         gof_ids_list = list(gof_ids_queryset)
         return gof_ids_list
 
@@ -557,10 +561,9 @@ class TasksStorageImplementation(TaskStorageInterface):
 
     @staticmethod
     def get_field_dto(field, field_id, field_values, stage):
-        return FieldDetailsWithStageIdDTO(
+        return FieldDetailsDTO(
             field_id=field_id,
             field_type=field['field_type'],
-            stage_id=stage['stage_id'],
             key=field['display_name'],
             value=field_values[field_id]
         )
