@@ -1,7 +1,7 @@
 import pytest
 
 from ib_tasks.storages.fields_storage_implementation import FieldsStorageImplementation
-from ib_tasks.tests.factories.models import TaskStageModelFactory
+from ib_tasks.tests.factories.models import TaskStageModelFactory, TaskFactory, StageModelFactory
 
 
 @pytest.mark.django_db
@@ -9,6 +9,8 @@ class TestGetStagesDetails:
 
     @pytest.fixture()
     def create_task_stages(self):
+        TaskFactory.reset_sequence()
+        StageModelFactory.reset_sequence()
         TaskStageModelFactory.reset_sequence()
         TaskStageModelFactory.create_batch(size=10, task_id=1)
 
