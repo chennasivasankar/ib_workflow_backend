@@ -1,6 +1,5 @@
 import os
 
-
 from ib_workflows_backend.settings.base import *
 
 # swagger utils #
@@ -21,9 +20,13 @@ DSU_RAISE_EXCEPTION_FOR_API_RESPONSE_STATUS_CODE = True  # default value is Fals
 from django_swagger_utils.drf_server.utils.general.import_app_settings import \
     import_app_settings
 
-THIRD_PARTY_APPS = ["ib_users"]
+THIRD_PARTY_APPS = [
+    "ib_users",
+]
 APPS = [
     "ib_iam",
+    "ib_tasks",
+    "ib_boards"
     "ib_discussions",
 ]
 
@@ -54,7 +57,7 @@ from django_swagger_utils.drf_server.utils.decorator.getPrivateKeyFromClientKeyR
 
 SWAGGER_UTILS = {
     "DEFAULTS": {
-        "REQUEST_WRAPPING_REQUIRED": True,
+        "REQUEST_WRAPPING_REQUIRED": False,
         "REQUEST_ENCRYPTION_REQUIRED": False,
         "GET_CLIENT_KEY_DETAILS_FUNCTION": getPrivateKeyFromClientKeyRelatedDetails,
         "GET_DECRYPTED_DATA_FUNCTION": getDecryptedData,
@@ -68,6 +71,8 @@ SWAGGER_UTILS = {
     },
     "APPS": {
         "ib_iam": {"dsu_version": "1.0"},
+        "ib_tasks": {"dsu_version": "1.0"},
+        "ib_boards": {"dsu_version": "1.0"},
         "ib_discussions": {"dsu_version": "1.0"},
     },
     "HOST": os.environ.get('APIGATEWAY_ENDPOINT', '127.0.0.1:8000'),
