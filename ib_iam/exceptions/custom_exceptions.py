@@ -22,6 +22,10 @@ class InvalidLimitValue(Exception):
     pass
 
 
+class OffsetValueIsGreaterThanLimitValue(Exception):
+    pass
+
+
 class UserAccountAlreadyExistWithThisEmail(Exception):
     pass
 
@@ -96,3 +100,12 @@ class UserNotFound(Exception):
 
 class UserDoesNotHaveDeletePermission(Exception):
     pass
+
+
+class InvalidUserId(Exception):
+    pass
+
+
+class InvalidUserIds(Exception):
+    def __init__(self, user_ids):
+        self.user_ids = user_ids

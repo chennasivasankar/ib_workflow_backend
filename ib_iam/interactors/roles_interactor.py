@@ -83,3 +83,15 @@ class RolesInteractor:
         role_ids = list(set(role_ids))
         valid_role_ids = self.storage.get_valid_role_ids(role_ids=role_ids)
         return valid_role_ids
+
+    def get_user_role_ids(self, user_id: str) -> List[str]:
+        self.storage.validate_user_id(user_id=user_id)
+        role_ids = self.storage.get_user_role_ids(user_id=user_id)
+        return role_ids
+
+    def get_role_ids_for_each_user_id(self, user_ids: List[str]) \
+            -> List[UserIdWithRoleIdsDTO]:
+        self.storage.validate_user_ids(user_ids=user_ids)
+        user_id_with_role_ids_dtos \
+            = self.storage.get_user_id_with_role_ids_dtos(user_ids=user_ids)
+        return user_id_with_role_ids_dtos

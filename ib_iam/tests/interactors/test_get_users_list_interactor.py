@@ -1,5 +1,6 @@
+from unittest.mock import Mock
+
 import pytest
-from unittest.mock import Mock, patch
 
 from ib_iam.interactors.get_users_list_interactor import \
     GetUsersDetailsInteractor
@@ -314,3 +315,38 @@ class TestGetUsersDetailsInteractor:
         adapter_mock.assert_called_once()
         storage_mock.get_total_count_of_users_for_query.assert_called_once()
         presenter_mock.response_for_get_users.assert_called_once()
+
+    def test_get_user_dtos_return_response(self, mocker, storage_mock,
+                                           user_profile_dtos):
+        # Arrange
+        user_ids = ["user1", "user2", "user3"]
+
+        from ib_iam.tests.common_fixtures.adapters.user_service \
+            import get_users_adapter_mock
+        get_users_adapter_mock(
+            mocker=mocker,
+            user_profile_dtos=user_profile_dtos
+        )
+
+        interactor = GetUsersDetailsInteractor(storage=storage_mock)
+
+        # Act
+        response = interactor.get_user_dtos(user_ids=user_ids)
+
+        # Assert
+        assert response == user_profile_dtos
+
+    def test_get_valid_user_ids_return_response(self, storage_mock):
+        # Arrange
+        user_ids = ["user1", "user2", "user3"]
+        valid_user_ids = ["user1", "user2"]
+
+        storage_mock.get_valid_user_ids.return_value = valid_user_ids
+
+        interactor = GetUsersDetailsInteractor(storage=storage_mock)
+
+        # Act
+        response = interactor.get_valid_user_ids(user_ids=user_ids)
+
+        # Assert
+        assert response == valid_user_ids

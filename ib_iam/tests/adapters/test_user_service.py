@@ -52,7 +52,7 @@ class TestUserService:
         service_adapter = ServiceAdapter()
 
         # Assert
-        from ib_iam.adapters.user_service import InvalidUserId
+        from ib_iam.exceptions.custom_exceptions import InvalidUserId
         with pytest.raises(InvalidUserId):
             service_adapter.user_service.get_user_profile_dto(user_id=user_id)
 

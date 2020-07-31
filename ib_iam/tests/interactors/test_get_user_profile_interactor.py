@@ -29,7 +29,7 @@ class TestGetUserProfileInteractor:
         from ib_iam.tests.common_fixtures.adapters.user_service import \
             prepare_get_user_profile_dto_mock
         get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(mocker)
-        from ib_iam.adapters.user_service import InvalidUserId
+        from ib_iam.exceptions.custom_exceptions import InvalidUserId
         get_user_profile_dto_mock.side_effect = InvalidUserId
 
         presenter_mock.raise_exception_for_invalid_user_id.return_value \

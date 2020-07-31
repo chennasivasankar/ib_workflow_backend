@@ -10,7 +10,7 @@ class GetUserProfileInteractor:
 
     def get_user_profile_wrapper(self, user_id: str,
                                  presenter: GetUserProfilePresenterInterface):
-        from ib_iam.adapters.user_service import InvalidUserId
+        from ib_iam.exceptions.custom_exceptions import InvalidUserId
         from ib_iam.adapters.user_service import UserAccountDoesNotExist
         try:
             response = self._get_user_profile_response(
