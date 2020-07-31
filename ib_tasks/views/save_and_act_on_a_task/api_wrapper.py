@@ -9,7 +9,7 @@ from ib_tasks.interactors.task_dtos import FieldValuesDTO
 def api_wrapper(*args, **kwargs):
     user_id = kwargs['user'].id
     request_data = kwargs['request_data']
-    task_template_id = request_data['task_template_id']
+    task_id = request_data['task_id']
     action_id = request_data['action_id']
     task_gofs = request_data['task_gofs']
 
@@ -26,8 +26,8 @@ def api_wrapper(*args, **kwargs):
         task_gofs_dtos.append(gof_field_dto)
 
     task_dto = TaskDTO(
-        task_id=None,
-        task_template_id=task_template_id,
+        task_id=task_id,
+        task_template_id=None,
         created_by_id=user_id,
         action_id=action_id,
         gof_fields_dtos=task_gofs_dtos

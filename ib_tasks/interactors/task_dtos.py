@@ -18,7 +18,7 @@ class GoFFieldsDTO:
 @dataclass
 class TaskDTO:
     task_id: Optional[int]
-    task_template_id: str
+    task_template_id: Optional[str]
     created_by_id: str
     action_id: str
     gof_fields_dtos: List[GoFFieldsDTO]

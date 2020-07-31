@@ -134,13 +134,10 @@ class CreateOrUpdateTaskInteractor:
             field_values_dto.field_id
             for field_values_dto in field_values_dtos
         ]
-
         self._validate_for_duplicate_field_ids(field_ids)
-        self._validate_task_template_id(task_dto.task_template_id)
         self._validate_for_invalid_gof_ids(gof_ids)
         self._validate_for_invalid_field_ids(field_ids)
         self._validate_field_values(field_values_dtos)
-
         task_needs_to_be_updated = task_dto.task_id is not None
         if task_needs_to_be_updated:
             self._update_task(task_dto)
@@ -227,6 +224,7 @@ class CreateOrUpdateTaskInteractor:
                task_gof_field_dtos_for_creation
 
     def _create_task(self, task_dto: TaskDTO):
+        self._validate_task_template_id(task_dto.task_template_id)
         created_task_id = \
             self.create_task_storage.create_task_with_template_id(
                 task_dto.task_template_id, task_dto.created_by_id

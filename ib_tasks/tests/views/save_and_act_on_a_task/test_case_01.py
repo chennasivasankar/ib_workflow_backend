@@ -4,9 +4,10 @@
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ib_tasks.constants.enum import FieldTypes
 
 
-class TestCase01CreateTaskAPITestCase(TestUtils):
+class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -17,8 +18,9 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
     def setup(self):
         import factory
         from ib_tasks.tests.factories.models import TaskTemplateFactory, \
-            GoFFactory, GoFRoleFactory, \
-            FieldFactory, FieldRoleFactory, GoFToTaskTemplateFactory
+            GoFFactory, GoFRoleFactory, TaskFactory, TaskGoFFactory, \
+            FieldFactory, FieldRoleFactory, GoFToTaskTemplateFactory, \
+            TaskGoFFieldFactory
 
         TaskTemplateFactory.reset_sequence()
         GoFRoleFactory.reset_sequence()
@@ -27,28 +29,46 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
         FieldRoleFactory.reset_sequence()
         GoFToTaskTemplateFactory.reset_sequence()
 
-        template_ids = ['template_1', 'template_2']
+        task_template_obj = TaskTemplateFactory.create()
+        gof_objs = GoFFactory.create_batch(size=2)
+        gof_ids = [
+            gof.gof_id
+            for gof in gof_objs
+        ]
+        plain_text = FieldFactory.create(
+            gof=gof_objs[0], field_type=FieldTypes.PLAIN_TEXT.value
+        )
+        image_field = FieldFactory.create(
+            gof=gof_objs[0], field_type=FieldTypes.IMAGE_UPLOADER.value,
+            allowed_formats='[".jpeg", ".png", ".svg"]'
+        )
+        checkbox_group = FieldFactory.create(
+            gof=gof_objs[1], field_type=FieldTypes.CHECKBOX_GROUP.value,
+            field_values='["interactors", "storages", "presenters"]'
+        )
 
-        task_template_objs = TaskTemplateFactory.create_batch(
-            size=2, template_id=factory.Iterator(template_ids)
+        task_obj = TaskFactory.create(template_id=task_template_obj.template_id)
+        task_gofs = TaskGoFFactory.create_batch(
+            size=2, gof_id=factory.Iterator(gof_ids), task=task_obj
         )
-        gof_objs = GoFFactory.create_batch(size=4)
-        GoFToTaskTemplateFactory.create_batch(size=6,
-                                              gof=factory.Iterator(gof_objs),
-                                              task_template=factory.Iterator(
-                                                  task_template_objs))
-        GoFRoleFactory.create_batch(size=4, gof=factory.Iterator(gof_objs))
-        field_objs = FieldFactory.create_batch(
-            size=6, gof=factory.Iterator(gof_objs)
+        TaskGoFFieldFactory.create(
+            task_gof=task_gofs[0],
+            field=plain_text, field_response="string"
         )
-        FieldRoleFactory.create_batch(
-            size=6, field=factory.Iterator(field_objs)
+        TaskGoFFieldFactory.create(
+            task_gof=task_gofs[0],
+            field=image_field, field_response="https://www.freepngimg.com/thumb/light/20246-4-light-transparent.png"
+        )
+        TaskGoFFieldFactory.create(
+            task_gof=task_gofs[1],
+            field=checkbox_group,
+            field_response='["interactors", "storages"]'
         )
 
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {
-          "task_template_id": "template_1",
+          "task_id": 1,
           "action_id": 0,
           "task_gofs": [
             {
@@ -66,7 +86,7 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
         path_params = {}
         query_params = {}
         headers = {}
-        response = self.default_test_case(
+        self.default_test_case(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

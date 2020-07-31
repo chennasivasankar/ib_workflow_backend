@@ -2,7 +2,7 @@
 
 REQUEST_BODY_JSON = """
 {
-    "task_template_id": "string",
+    "task_id": 1,
     "action_id": 1,
     "task_gofs": [
         {

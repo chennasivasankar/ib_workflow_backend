@@ -25,9 +25,8 @@ from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
 class TasksStorageImplementation(TaskStorageInterface):
 
-    def get_field_details_for_given_field_ids(
-            self, field_ids: List[str]
-    ) -> List[FieldDetailsDTO]:
+    def get_field_details_for_given_field_ids(self, field_ids: List[str]) -> \
+    List[FieldDetailsDTO]:
         field_objects = list(
             Field.objects.filter(field_id__in=field_ids)
         )
