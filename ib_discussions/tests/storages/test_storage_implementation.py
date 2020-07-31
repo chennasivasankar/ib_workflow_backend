@@ -144,14 +144,15 @@ class TestStorageImplementation:
                                create_discussion_set_objects,
                                storage_implementation):
         # Arrange
-        from ib_discussions.interactors.DTOs.common_dtos import DiscussionDTO
         from ib_discussions.constants.enum import EntityType
         entity_id = '31be920b-7b4c-49e7-8adb-41a0c18da848'
         entity_type = EntityType.TASK.value
         user_id = "e1ed4b2d-f5d5-4b20-a5c4-8536130e704d"
         title = "interactor"
         description = "test for interactor"
-        discussion_dto = DiscussionDTO(
+        from ib_discussions.tests.factories.common_dtos import \
+            DiscussionDTOFactory
+        discussion_dto = DiscussionDTOFactory(
             user_id=user_id,
             entity_id=entity_id,
             entity_type=entity_type,

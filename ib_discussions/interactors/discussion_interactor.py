@@ -46,9 +46,10 @@ class DiscussionInteractor:
                 raise_exception_for_invalid_entity_type_for_entity_id()
         return response
 
-    def _create_discussion_response(self, discussion_dto: DiscussionDTO,
-                                    presenter: CreateDiscussionPresenterInterface
-                                    ):
+    def _create_discussion_response(
+            self, discussion_dto: DiscussionDTO,
+            presenter: CreateDiscussionPresenterInterface
+    ):
         self.create_discussion(discussion_dto=discussion_dto)
         return presenter.prepare_success_response_for_create_discussion()
 
@@ -140,7 +141,7 @@ class DiscussionInteractor:
             entity_id=entity_id_and_entity_type_dto.entity_id,
             entity_type=entity_id_and_entity_type_dto.entity_type
         )
-        discussion_set_id = self.storage.get_discussion_set_id_if_exists(
+        discussion_set_id = self._get_discussion_set_id(
             entity_id=entity_id_and_entity_type_dto.entity_id,
             entity_type=entity_id_and_entity_type_dto.entity_type
         )
@@ -190,3 +191,14 @@ class DiscussionInteractor:
             user_ids=user_ids
         )
         return user_profile_dtos
+
+    def _get_discussion_set_id(self, entity_id, entity_type):
+        try:
+            discussion_set_id = self.storage.get_discussion_set_id_if_exists(
+                entity_id=entity_id, entity_type=entity_type
+            )
+        except DiscussionSetNotFound:
+            discussion_set_id = self.storage.create_discussion_set_return_id(
+                entity_id=entity_id, entity_type=entity_type
+            )
+        return discussion_set_id

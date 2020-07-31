@@ -39,14 +39,6 @@ snapshots['TestCase02GetDiscussionsAPITestCase.test_invalid_entity_type_for_enti
     'response': 'Please valid entity type for entity id'
 }
 
-snapshots['TestCase02GetDiscussionsAPITestCase.test_discussion_set_not_found_raise_exception status_code'] = '404'
-
-snapshots['TestCase02GetDiscussionsAPITestCase.test_discussion_set_not_found_raise_exception body'] = {
-    'http_status_code': 404,
-    'res_status': 'DISCUSSION_SET_NOT_FOUND',
-    'response': 'There is no discussion for given entity id and entity type'
-}
-
 snapshots['TestCase02GetDiscussionsAPITestCase.test_user_profile_does_not_exist_raise_exception status_code'] = '400'
 
 snapshots['TestCase02GetDiscussionsAPITestCase.test_user_profile_does_not_exist_raise_exception body'] = {

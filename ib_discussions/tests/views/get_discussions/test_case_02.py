@@ -145,44 +145,6 @@ class TestCase02GetDiscussionsAPITestCase(TestUtils):
         )
 
     @pytest.mark.django_db
-    def test_discussion_set_not_found_raise_exception(self, snapshot):
-        from ib_discussions.tests.factories.models import EntityFactory
-        entity_ids = [
-            UUID('31be920b-7b4c-49e7-8adb-41a0c18da848'),
-            UUID('4c28801f-7084-4b93-a938-f261aedf8f29'),
-            UUID('64eade81-86d0-43d4-9575-d3482aaa30e5'),
-            UUID('9cbbe720-9244-441e-b910-1c695b3a7cd1'),
-            UUID('da145a02-e164-4203-9317-1d42bb68e3ce'),
-            UUID('5c27801f-9084-7b93-a038-f261aedf8f29')
-        ]
-        for entity_id in entity_ids:
-            EntityFactory(id=entity_id)
-
-        from ib_discussions.constants.enum import EntityType
-        from ib_discussions.constants.enum import SortByEnum
-        from ib_discussions.constants.enum import FilterByEnum
-
-        entity_id = '31be920b-7b4c-49e7-8adb-41a0c18da848'
-        entity_type = EntityType.TASK.value
-        offset = 1
-        limit = 2
-        filter_by = FilterByEnum.CLARIFIED.value
-        sort_by = SortByEnum.LATEST.value
-        body = {
-            'entity_id': entity_id,
-            'entity_type': entity_type,
-            'filter_by': filter_by,
-            'sort_by': sort_by
-        }
-        path_params = {}
-        query_params = {'offset': offset, 'limit': limit}
-        headers = {}
-        response = self.default_test_case(
-            body=body, path_params=path_params,
-            query_params=query_params, headers=headers, snapshot=snapshot
-        )
-
-    @pytest.mark.django_db
     def test_user_profile_does_not_exist_raise_exception(self, snapshot):
         from ib_discussions.tests.factories.models import EntityFactory
         from ib_discussions.tests.factories.models import DiscussionSetFactory
