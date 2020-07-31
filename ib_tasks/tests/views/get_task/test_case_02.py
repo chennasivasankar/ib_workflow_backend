@@ -38,10 +38,9 @@ class TestCase02GetTaskAPITestCase(TestUtils):
     @pytest.fixture
     def setup(self, reset_factories):
         task_obj = TaskFactory()
-        task_gof_objs = TaskGoFFactory.create_batch(size=3, task=task_obj)
-        gof_ids = [task_gof_obj.gof_id for task_gof_obj in task_gof_objs]
-        gof_objs = GoFFactory.create_batch(
-            size=3, gof_id=factory.Iterator(gof_ids)
+        gof_objs = GoFFactory.create_batch(size=3)
+        task_gof_objs = TaskGoFFactory.create_batch(
+            size=3, task=task_obj, gof=factory.Iterator(gof_objs)
         )
         field_objs = FieldFactory.create_batch(
             size=10, gof=factory.Iterator(gof_objs)

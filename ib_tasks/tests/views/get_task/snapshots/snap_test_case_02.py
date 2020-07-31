@@ -30,7 +30,7 @@ snapshots['TestCase02GetTaskAPITestCase.test_case body'] = {
                     'field_response': 'response'
                 }
             ],
-            'gof_id': 'gof_id_0',
+            'gof_id': 'gof_1',
             'same_gof_order': 1.0
         },
         {
@@ -48,7 +48,7 @@ snapshots['TestCase02GetTaskAPITestCase.test_case body'] = {
                     'field_response': 'response'
                 }
             ],
-            'gof_id': 'gof_id_1',
+            'gof_id': 'gof_2',
             'same_gof_order': 1.0
         }
     ],

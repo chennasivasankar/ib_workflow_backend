@@ -193,7 +193,7 @@ class TaskGoFFactory(factory.django.DjangoModelFactory):
         model = TaskGoF
 
     same_gof_order = 1
-    gof_id = factory.sequence(lambda n: "gof_id_%d" % n)
+    gof = factory.SubFactory(GoFFactory)
     task = factory.SubFactory(TaskFactory)
 
 
