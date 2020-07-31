@@ -7,7 +7,8 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDetailsDT
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO, StageTaskFieldsDTO, \
     TaskTemplateStageFieldsDTO, TaskAndFieldsDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import FieldsStorageInterface
-from ib_tasks.interactors.storage_interfaces.stage_dtos import GetTaskStageCompleteDetailsDTO, TaskTemplateStageDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import GetTaskStageCompleteDetailsDTO, TaskTemplateStageDTO, \
+    StageDetailsDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.models import TaskStage, StageAction, Stage, Field
 from ib_tasks.models.task import Task
@@ -138,7 +139,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         task_stage_dtos = self._convert_task_objs_to_dtos(task_objs)
         return task_stage_dtos
 
-    def _convert_task_objs_to_dtos(self, task_objs):
+    @staticmethod
+    def _convert_task_objs_to_dtos(task_objs):
         valid_task_stages_dtos = [
             GetTaskDetailsDTO(
                 task_id=task_obj['task_id'],
@@ -147,3 +149,21 @@ class FieldsStorageImplementation(FieldsStorageInterface):
             for task_obj in task_objs
         ]
         return valid_task_stages_dtos
+
+    def get_task_stages(self, task_id: int) -> List[str]:
+        stage_ids = TaskStage.objects.filter(task_id=task_id).values_list('stage__stage_id', flat=True)
+        return list(stage_ids)
+
+    def get_stage_complete_details(self, stage_ids: List[str]) -> \
+            List[StageDetailsDTO]:
+        stage_objs = Stage.objects.filter(stage_id__in=stage_ids
+                                          ).values('stage_id', 'display_name')
+        stage_dtos = []
+        for stage in stage_objs:
+            stage_dtos.append(
+                StageDetailsDTO(
+                    stage_id=stage['stage_id'],
+                    name=stage['display_name']
+                )
+            )
+        return stage_dtos

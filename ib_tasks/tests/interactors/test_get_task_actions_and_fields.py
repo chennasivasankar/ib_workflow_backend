@@ -2,19 +2,6 @@ from unittest.mock import create_autospec, Mock
 
 import pytest
 
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds, \
-    InvalidStageIds
-from ib_tasks.interactors.get_task_fields_and_actions import \
-    GetTaskFieldsAndActionsInteractor
-from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    GetTaskStageCompleteDetailsDTO
-from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
-    StageStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
-    TaskStorageInterface
-
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidTaskStageIds
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds, InvalidStageIds
 from ib_tasks.interactors.get_task_fields_and_actions import GetTaskFieldsAndActionsInteractor
@@ -80,6 +67,7 @@ class TestGetFieldsAndActionsInteractor:
             get_actions_dtos, get_fields_dtos, expected_response,
             get_field_ids, task_fields_dtos):
         # Arrange
+        user_id = 1
         task_dtos = [get_task_dtos]
         storage = create_autospec(FieldsStorageInterface)
         stage_storage = create_autospec(StageStorageInterface)
@@ -100,7 +88,7 @@ class TestGetFieldsAndActionsInteractor:
         storage.get_fields_details.return_value = field_dtos
 
         # Act
-        response = interactor.get_task_fields_and_action(task_dtos)
+        response = interactor.get_task_fields_and_action(task_dtos, user_id)
 
         # Assert
         storage.get_stage_details.assert_called_once_with(task_dtos)
@@ -113,6 +101,7 @@ class TestGetFieldsAndActionsInteractor:
     def test_with_invalid_task_ids_raises_exception(self,
                                                     get_task_dtos):
         # Arrange
+        user_id = 1
         storage = create_autospec(FieldsStorageInterface)
         stage_storage = create_autospec(StageStorageInterface)
         interactor = GetTaskFieldsAndActionsInteractor(
@@ -123,7 +112,7 @@ class TestGetFieldsAndActionsInteractor:
 
         # Act
         with pytest.raises(InvalidTaskIds):
-            interactor.get_task_fields_and_action([get_task_dtos])
+            interactor.get_task_fields_and_action([get_task_dtos], user_id)
 
         # Assert
         storage.get_valid_task_ids.assert_called_once_with(task_ids)
@@ -131,6 +120,7 @@ class TestGetFieldsAndActionsInteractor:
     def test_with_invalid_stage_ids_raises_exception(self,
                                                      get_task_dtos):
         # Arrange
+        user_id = 1
         storage = create_autospec(FieldsStorageInterface)
         stage_storage = create_autospec(StageStorageInterface)
         interactor = GetTaskFieldsAndActionsInteractor(
@@ -143,7 +133,7 @@ class TestGetFieldsAndActionsInteractor:
 
         # Act
         with pytest.raises(InvalidStageIds):
-            interactor.get_task_fields_and_action([get_task_dtos])
+            interactor.get_task_fields_and_action([get_task_dtos], user_id)
 
         # Assert
         stage_storage.get_existing_stage_ids.assert_called_once_with(stage_ids)
@@ -151,6 +141,7 @@ class TestGetFieldsAndActionsInteractor:
     def test_with_invalid_stage_related_task_ids_raises_exception(self,
                                                                   get_task_dtos):
         # Arrange
+        user_id = 1
         storage = create_autospec(FieldsStorageInterface)
         stage_storage = create_autospec(StageStorageInterface)
         interactor = GetTaskFieldsAndActionsInteractor(
@@ -164,7 +155,7 @@ class TestGetFieldsAndActionsInteractor:
 
         # Act
         with pytest.raises(InvalidTaskStageIds):
-            interactor.get_task_fields_and_action([get_task_dtos])
+            interactor.get_task_fields_and_action([get_task_dtos], user_id)
 
         # Assert
         stage_storage.get_existing_stage_ids.assert_called_once_with(stage_ids)
