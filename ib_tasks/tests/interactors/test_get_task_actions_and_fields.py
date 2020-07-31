@@ -133,7 +133,7 @@ class TestGetFieldsAndActionsInteractor:
         from ib_tasks.exceptions.stage_custom_exceptions import \
             InvalidStageIdsListException
         with pytest.raises(InvalidStageIdsListException):
-            interactor.get_task_fields_and_action([get_task_dtos])
+            interactor.get_task_fields_and_action([get_task_dtos], user_id)
 
         # Assert
         stage_storage.get_existing_stage_ids.assert_called_once_with(stage_ids)
