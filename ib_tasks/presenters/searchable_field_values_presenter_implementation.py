@@ -26,7 +26,6 @@ class SearchableFieldValuesPresenterImplementation(
 
     def raise_offset_should_be_greater_than_or_equal_to_minus_one_exception(
             self) -> response.HttpResponse:
-        import json
         from ib_tasks.constants.exception_messages import \
             OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE
         response_dict = {
@@ -50,8 +49,6 @@ class SearchableFieldValuesPresenterImplementation(
             searchable_values_detail_dict = {'id': searchable_detail_dto.id,
                                              'name': searchable_detail_dto.name}
             searchable_value_details.append(searchable_values_detail_dict)
-
-        print("searchable_value_details", searchable_value_details)
 
         return self.prepare_200_success_response(
             response_dict=searchable_value_details

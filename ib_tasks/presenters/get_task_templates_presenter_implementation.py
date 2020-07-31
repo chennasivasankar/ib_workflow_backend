@@ -78,7 +78,8 @@ class GetTaskTemplatesPresenterImplementation(
                 append(action_dict)
 
         actions_of_templates_dict = collections.defaultdict(list)
-        for template_id, action_dicts_list in actions_group_by_template_id_dict.items():
+        for template_id, action_dicts_list in actions_group_by_template_id_dict\
+                .items():
             action_dicts_list_with_out_template_id = \
                 self._get_action_dicts_list_without_template_id(
                     action_dicts_list=action_dicts_list
