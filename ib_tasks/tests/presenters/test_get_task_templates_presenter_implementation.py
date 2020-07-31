@@ -6,10 +6,10 @@ from ib_tasks.presenters.get_task_templates_presenter_implementation import \
 from ib_tasks.tests.factories.storage_dtos import \
     TaskTemplateDTOFactory, ActionsOfTemplateDTOFactory, \
     UserFieldPermissionDTOFactory, FieldDTOFactory, \
-    GoFToTaskTemplateDTOFactory, GoFDTOFactory
+    GoFToTaskTemplateDTOFactory, GoFDTOFactory, FieldWithPermissionsDTOFactory
 
 
-class TestGetTaskPresenterImplementation:
+class TestGetTaskTemplatesPresenterImplementation:
 
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
@@ -19,6 +19,9 @@ class TestGetTaskPresenterImplementation:
         GoFDTOFactory.reset_sequence(1)
         UserFieldPermissionDTOFactory.reset_sequence()
         GoFToTaskTemplateDTOFactory.reset_sequence()
+        FieldWithPermissionsDTOFactory.reset_sequence()
+        FieldWithPermissionsDTOFactory.is_field_writable.reset()
+        FieldWithPermissionsDTOFactory.is_field_readable.reset()
 
     def test_when_complete_task_template_details_exists(self, snapshot):
         # Arrange
@@ -35,18 +38,22 @@ class TestGetTaskPresenterImplementation:
             size=4, field_id=factory.Iterator(expected_field_ids),
             gof_id=factory.Iterator(expected_gof_ids)
         )
-        user_field_permission_dtos = \
-            UserFieldPermissionDTOFactory.create_batch(size=4)
+        UserFieldPermissionDTOFactory.create_batch(size=4)
         gof_to_task_template_dtos = \
             GoFToTaskTemplateDTOFactory.create_batch(size=2)
+        field_with_permissions_dtos = \
+            FieldWithPermissionsDTOFactory.create_batch(
+                size=2, field_dto=factory.Iterator(field_dtos),
+                is_field_readable=factory.Iterator([True]),
+                is_field_writable=factory.Iterator([False, True])
+            )
 
         complete_task_templates_dto = CompleteTaskTemplatesDTO(
             task_template_dtos=task_template_dtos,
             actions_of_templates_dtos=actions_of_template_dtos,
             gof_dtos=gof_dtos,
             gofs_to_task_templates_dtos=gof_to_task_template_dtos,
-            field_dtos=field_dtos,
-            user_field_permission_dtos=user_field_permission_dtos
+            field_with_permissions_dtos=field_with_permissions_dtos
         )
         presenter = GetTaskTemplatesPresenterImplementation()
 
@@ -73,8 +80,7 @@ class TestGetTaskPresenterImplementation:
             actions_of_templates_dtos=[],
             gof_dtos=[],
             gofs_to_task_templates_dtos=[],
-            field_dtos=[],
-            user_field_permission_dtos=[]
+            field_with_permissions_dtos=[]
         )
         presenter = GetTaskTemplatesPresenterImplementation()
 
@@ -101,8 +107,7 @@ class TestGetTaskPresenterImplementation:
             actions_of_templates_dtos=actions_of_template_dtos,
             gof_dtos=[],
             gofs_to_task_templates_dtos=[],
-            field_dtos=[],
-            user_field_permission_dtos=[]
+            field_with_permissions_dtos=[]
         )
         presenter = GetTaskTemplatesPresenterImplementation()
 
@@ -134,18 +139,22 @@ class TestGetTaskPresenterImplementation:
             size=4, field_id=factory.Iterator(expected_field_ids),
             gof_id=factory.Iterator(expected_gof_ids)
         )
-        user_field_permission_dtos = \
-            UserFieldPermissionDTOFactory.create_batch(size=4)
+        UserFieldPermissionDTOFactory.create_batch(size=4)
         gof_to_task_template_dtos = \
             GoFToTaskTemplateDTOFactory.create_batch(size=2)
+        field_with_permissions_dtos = \
+            FieldWithPermissionsDTOFactory.create_batch(
+                size=2, field_dto=factory.Iterator(field_dtos),
+                is_field_readable=factory.Iterator([True]),
+                is_field_writable=factory.Iterator([False, True])
+            )
 
         complete_task_templates_dto = CompleteTaskTemplatesDTO(
             task_template_dtos=task_template_dtos,
             actions_of_templates_dtos=[],
             gof_dtos=gof_dtos,
             gofs_to_task_templates_dtos=gof_to_task_template_dtos,
-            field_dtos=field_dtos,
-            user_field_permission_dtos=user_field_permission_dtos
+            field_with_permissions_dtos=field_with_permissions_dtos
         )
         presenter = GetTaskTemplatesPresenterImplementation()
 
@@ -173,8 +182,7 @@ class TestGetTaskPresenterImplementation:
                 size=2, template_id="template_1"
             )
         gof_dtos = GoFDTOFactory.create_batch(size=2)
-        user_field_permission_dtos = \
-            UserFieldPermissionDTOFactory.create_batch(size=4)
+        UserFieldPermissionDTOFactory.create_batch(size=4)
         gof_to_task_template_dtos = \
             GoFToTaskTemplateDTOFactory.create_batch(size=2)
 
@@ -183,8 +191,7 @@ class TestGetTaskPresenterImplementation:
             actions_of_templates_dtos=actions_of_template_dtos,
             gof_dtos=gof_dtos,
             gofs_to_task_templates_dtos=gof_to_task_template_dtos,
-            field_dtos=[],
-            user_field_permission_dtos=user_field_permission_dtos
+            field_with_permissions_dtos=[]
         )
         presenter = GetTaskTemplatesPresenterImplementation()
 
