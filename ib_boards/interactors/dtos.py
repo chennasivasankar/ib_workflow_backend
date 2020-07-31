@@ -157,3 +157,9 @@ class TaskCompleteDetailsDTO:
     stage_id: str
     field_dtos: List[FieldDetailsDTO]
     action_dtos: List[ActionDetailsDTO]
+
+
+@dataclass
+class ColumnTotalTasksDTO:
+    column_id: str
+    total_tasks: int

@@ -1,8 +1,10 @@
+from typing import List
+
 from ib_boards.adapters.service_adapter import get_service_adapter
 from ib_boards.exceptions.custom_exceptions import (
     InvalidBoardId, InvalidOffsetValue, InvalidLimitValue, UserDonotHaveAccess)
 from ib_boards.interactors.dtos import ColumnParametersDTO, \
-    PaginationParametersDTO, ColumnTaskIdsDTO
+    PaginationParametersDTO, ColumnTaskIdsDTO, ColumnTotalTasksDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
 from ib_boards.interactors.storage_interfaces.storage_interface import \
@@ -18,7 +20,7 @@ class GetColumnDetailsInteractor:
                                    columns_parameters: ColumnParametersDTO,
                                    pagination_parameters: PaginationParametersDTO):
         try:
-            task_details, task_actions_dto, task_fields_dto, column_dtos = self. \
+            task_complete_details, total_tasks_dtos = self. \
                 get_column_details(columns_parameters=columns_parameters,
                                    pagination_parameters=pagination_parameters)
         except InvalidBoardId:
@@ -59,26 +61,32 @@ class GetColumnDetailsInteractor:
         task_complete_details = self._get_tasks_complete_details(
             task_ids_stages_dtos=task_ids_stages_dtos
         )
+        total_tasks_dtos = self._get_total_tasks_for_the_columns(
+            task_ids_stages_dtos=task_ids_stages_dtos
+        )
+        return task_complete_details, total_tasks_dtos
 
     @staticmethod
     def _get_tasks_complete_details(
-            task_ids_stages_dtos: ColumnTaskIdsDTO):
+            task_ids_stages_dtos: List[ColumnTaskIdsDTO]):
         task_details_dtos = []
-        for task_ids_stages_dto in task_ids_stages_dtos.task_stage_ids:
-            from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
-            task_details_dtos.append(
-                GetTaskDetailsDTO(
-                    task_id=task_ids_stages_dto.task_id,
-                    stage_id=task_ids_stages_dto.stage_id
+        for task_ids_stages_dto in task_ids_stages_dtos:
+            for stage_id_dto in task_ids_stages_dto.task_stage_ids:
+                from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
+                task_details_dtos.append(
+                    GetTaskDetailsDTO(
+                        task_id=stage_id_dto.task_id,
+                        stage_id=stage_id_dto.stage_id
+                    )
                 )
-            )
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         return service_adapter.task_service.get_task_complete_details(
             task_details_dtos)
 
     @staticmethod
-    def _get_task_ids_for_given_stages(column_stage_dtos, limit: int, offset: int):
+    def _get_task_ids_for_given_stages(
+            column_stage_dtos, limit: int, offset: int) -> List[ColumnTaskIdsDTO]:
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
@@ -147,3 +155,14 @@ class GetColumnDetailsInteractor:
 
         if is_invalid:
             raise InvalidBoardId
+
+    @staticmethod
+    def _get_total_tasks_for_the_columns(
+            task_ids_stages_dtos: List[ColumnTaskIdsDTO]) -> List[ColumnTotalTasksDTO]:
+        return [
+            ColumnTotalTasksDTO(
+                column_id=task_ids_stages_dto.unique_key,
+                total_tasks=task_ids_stages_dto.total_tasks
+            )
+            for task_ids_stages_dto in task_ids_stages_dtos
+        ]
