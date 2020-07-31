@@ -32,7 +32,7 @@ class TestCase01AddCompanyAPITestCase(TestUtils):
     @pytest.fixture()
     def setup(self, api_user):
         user_obj = api_user
-        user_id = str(user_obj.id)
+        user_id = str(user_obj.user_id)
         from ib_iam.tests.factories.models import UserFactory
         UserFactory.reset_sequence(1)
         UserFactory.create(user_id=user_id, is_admin=True)

@@ -12,7 +12,7 @@ from ib_iam.storages.company_storage_implementation import CompanyStorageImpleme
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     user_object = kwargs["user"]
-    user_id = str(user_object.id)
+    user_id = str(user_object.user_id)
     request_data = kwargs["request_data"]
     name = request_data["name"]
     description = request_data["description"]

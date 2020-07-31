@@ -1,5 +1,5 @@
 from typing import List
-from ib_iam.adapters.services import get_service_adapter
+from ib_iam.adapters.service_adapter import get_service_adapter
 from ib_iam.interactors.presenter_interfaces \
     .get_companies_presenter_interface import GetCompaniesPresenterInterface
 from ib_iam.interactors.storage_interfaces \
@@ -50,7 +50,7 @@ class GetCompaniesInteractor:
         return company_with_employees_dto
 
     @staticmethod
-    def _get_company_ids_from_company_dtos(company_dtos: List[CompanyDTO]) ->\
+    def _get_company_ids_from_company_dtos(company_dtos: List[CompanyDTO]) -> \
             List[str]:
         company_ids = [company_dto.company_id for company_dto in company_dtos]
         return company_ids

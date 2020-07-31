@@ -26,6 +26,6 @@ class TestCase02UpdateCompanyDetailsAPITestCase(TestUtils):
 
     @pytest.fixture
     def setup(self, api_user):
-        user_id = str(api_user.id)
+        user_id = str(api_user.user_id)
         from ib_iam.tests.factories.models import UserDetailsFactory
         UserDetailsFactory(user_id=user_id, is_admin=False)

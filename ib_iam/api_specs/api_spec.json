@@ -574,7 +574,7 @@
       "required": [
         "company_id"
       ]
-    },
+    }
   },
   "parameters": {
     "UserIdPathParameter": {

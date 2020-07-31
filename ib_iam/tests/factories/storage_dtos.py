@@ -2,7 +2,7 @@ import factory
 
 from ib_iam.interactors.storage_interfaces.dtos \
     import UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamIdAndNameDTO, \
-    CompanyIdAndNameDTO, RoleDTO, TeamDTO
+    CompanyIdAndNameDTO, RoleDTO, TeamDTO, EmployeeDTO
 
 
 class UserDTOFactory(factory.Factory):
@@ -98,7 +98,6 @@ member_ids = user_ids
 employee_ids = user_ids
 
 
-
 class TeamUserIdsDTOFactory(factory.Factory):
     class Meta:
         model = TeamUserIdsDTO
@@ -186,7 +185,7 @@ class CompanyNameLogoAndDescriptionDTOFactory(factory.Factory):
     class Meta:
         model = CompanyNameLogoAndDescriptionDTO
 
-    name = factory.sequence(lambda n: "company1")
+    name = factory.sequence(lambda n: "company%d" % n)
     description = factory.sequence(lambda n: "company_description%d" % n)
     logo_url = factory.sequence(lambda n: "logo_url%d" % n)
 
@@ -238,6 +237,6 @@ class EmployeeDTOFactory(factory.Factory):
     class Meta:
         model = EmployeeDTO
 
-    employee_id = factory.sequence(lambda n: "user_id-%d" % n)
-    name = factory.sequence(lambda n: "user%d" % n)
+    employee_id = factory.sequence(lambda n: "user%d" % n)
+    name = factory.sequence(lambda n: "name%d" % n)
     profile_pic_url = factory.sequence(lambda n: "url%d" % n)

@@ -16,7 +16,8 @@ class TestCase02AddCompanyAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_case(self, snapshot, setup):
-        body = {'name': 'string', 'description': 'string', 'logo_url': 'string', 'employee_ids': ["2", "3"]}
+        body = {'name': 'string', 'description': 'string',
+                'logo_url': 'string', 'employee_ids': ["2", "3"]}
         path_params = {}
         query_params = {}
         headers = {}
@@ -28,6 +29,6 @@ class TestCase02AddCompanyAPITestCase(TestUtils):
     @pytest.fixture()
     def setup(self, api_user):
         user_obj = api_user
-        user_id = str(user_obj.id)
+        user_id = str(user_obj.user_id)
         from ib_iam.tests.factories.models import UserFactory
-        UserFactory.create(user_id=user_id)
+        UserFactory.create(user_id=user_id, is_admin=False)
