@@ -18,7 +18,7 @@ class GetSheetDataForStageActions:
         field_records = self.data_sheet.get_data_from_sub_sheet(
             sub_sheet_name=STAGES_AND_ACTIONS_SUB_SHEET
         )
-        # TODO need to remove list slicing
+
         self._validation_for_action_dict(field_records[:10])
         stage_actions_dict = [
             self._convert_stage_action_sheet_data_dict_to_our_format(

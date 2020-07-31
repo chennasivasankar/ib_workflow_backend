@@ -14,7 +14,7 @@ from ib_tasks.interactors.stage_display_logic import \
     StageDisplayLogicInteractor
 
 from ib_tasks.interactors.create_or_update_stages import \
-    CreateOrUpdateStagesInterface
+    CreateOrUpdateStagesInteractor
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
@@ -61,7 +61,7 @@ class TestCreateOrUpdateStageInformation:
         # Arrange
 
         stage_ids = ["stage_id_1", "stage_id_2"]
-        stage_interactor = CreateOrUpdateStagesInterface(
+        stage_interactor = CreateOrUpdateStagesInteractor(
             stage_storage=stage_storage, task_storage=task_storage
         )
         stage_storage.validate_stages_related_task_template_ids. \
@@ -123,7 +123,7 @@ class TestCreateOrUpdateStageInformation:
                 field_ids=["field_id_1", "field_id_2"]
             )]
 
-        stage_interactor = CreateOrUpdateStagesInterface(
+        stage_interactor = CreateOrUpdateStagesInteractor(
             stage_storage=storage, task_storage=task_storage
         )
 
@@ -153,7 +153,7 @@ class TestCreateOrUpdateStageInformation:
         storage.get_existing_stage_ids.return_value = []
         storage.validate_stages_related_task_template_ids.return_value = []
 
-        stage_interactor = CreateOrUpdateStagesInterface(
+        stage_interactor = CreateOrUpdateStagesInteractor(
             stage_storage=storage, task_storage=task_storage
         )
 
@@ -195,7 +195,7 @@ class TestCreateOrUpdateStageInformation:
                 task_template_id="task_template_id_2",
                 field_ids=["field_id_1", "field_id_2"]
             )]
-        stage_interactor = CreateOrUpdateStagesInterface(
+        stage_interactor = CreateOrUpdateStagesInteractor(
             stage_storage=storage, task_storage=task_storage
         )
         task_storage.get_valid_template_ids_in_given_template_ids. \
@@ -226,7 +226,7 @@ class TestCreateOrUpdateStageInformation:
             return_value = ["FIN_PR"]
         storage.validate_stages_related_task_template_ids.return_value = []
 
-        stage_interactor = CreateOrUpdateStagesInterface(
+        stage_interactor = CreateOrUpdateStagesInteractor(
             stage_storage=storage, task_storage=task_storage
         )
 
@@ -248,7 +248,7 @@ class TestCreateOrUpdateStageInformation:
         task_storage.get_valid_template_ids_in_given_template_ids.return_value = [
             ""]
 
-        stage_interactor = CreateOrUpdateStagesInterface(
+        stage_interactor = CreateOrUpdateStagesInteractor(
             stage_storage=storage, task_storage=task_storage
         )
 
@@ -282,7 +282,7 @@ class TestCreateOrUpdateStageInformation:
         task_storage.get_valid_template_ids_in_given_template_ids. \
             return_value = ["task_template_id_1", "task_template_id_2"]
 
-        stage_interactor = CreateOrUpdateStagesInterface(
+        stage_interactor = CreateOrUpdateStagesInteractor(
             stage_storage=storage, task_storage=task_storage
         )
 
@@ -303,7 +303,7 @@ class TestCreateOrUpdateStageInformation:
             stage_display_name="", size=2
         )
         storage = stage_storage
-        stage_interactor = CreateOrUpdateStagesInterface(
+        stage_interactor = CreateOrUpdateStagesInteractor(
             stage_storage=storage, task_storage=task_storage
         )
 
@@ -344,7 +344,7 @@ class TestCreateOrUpdateStageInformation:
                 task_template_id="task_template_id_2",
                 field_ids=["field_id_1", "field_id_0"]
             )]
-        stage_interactor = CreateOrUpdateStagesInterface(
+        stage_interactor = CreateOrUpdateStagesInteractor(
             stage_storage=storage, task_storage=task_storage
         )
 
