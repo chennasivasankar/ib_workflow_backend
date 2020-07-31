@@ -3,6 +3,9 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 from .validator_class import ValidatorClass
 from ib_tasks.interactors.task_dtos import FieldValuesDTO
+from ...presenters.user_action_on_task_presenter_implementation import \
+    UserActionOnTaskPresenterImplementation
+from ...storages.storage_implementation import StorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
@@ -44,13 +47,17 @@ def api_wrapper(*args, **kwargs):
     task_storage = TasksStorageImplementation()
     create_task_storage = CreateOrUpdateTaskStorageImplementation()
     presenter = CreateOrUpdateTaskPresenterImplementation()
+    act_on_task_presenter = UserActionOnTaskPresenterImplementation()
+    storage = StorageImplementation()
     interactor = CreateOrUpdateTaskInteractor(
         task_storage=task_storage,
-        create_task_storage=create_task_storage
+        create_task_storage=create_task_storage,
+        storage=storage
     )
 
     response = interactor.create_or_update_task_wrapper(
-        task_dto=task_dto, presenter=presenter
+        task_dto=task_dto, presenter=presenter,
+        act_on_task_presenter=act_on_task_presenter
     )
     return response
 

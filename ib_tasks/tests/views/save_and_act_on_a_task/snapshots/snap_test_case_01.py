@@ -7,9 +7,11 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01SaveAndActOnATaskAPITestCase.test_case status_code'] = '200'
+snapshots['TestCase01SaveAndActOnATaskAPITestCase.test_case status_code'] = '201'
 
-snapshots['TestCase01SaveAndActOnATaskAPITestCase.test_case body'] = b''
+snapshots['TestCase01SaveAndActOnATaskAPITestCase.test_case body'] = {
+    'message': 'task created or updated successfully'
+}
 
 snapshots['TestCase01SaveAndActOnATaskAPITestCase.test_case template_id'] = 'template_1'
 

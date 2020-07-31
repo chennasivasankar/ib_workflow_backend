@@ -93,7 +93,7 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
         from ib_tasks.models.task import Task
         task_object = Task.objects.get(id=1)
         snapshot.assert_match(task_object.template_id, 'template_id')
-        snapshot.assert_match(task_object.created_by_id, 'created_by_id')
+        snapshot.assert_match(task_object.created_by, 'created_by_id')
         snapshot.assert_match(task_object.template_id, 'task')
 
         from ib_tasks.models.task_gof import TaskGoF

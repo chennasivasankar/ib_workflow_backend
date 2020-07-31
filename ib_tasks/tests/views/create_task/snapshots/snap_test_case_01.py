@@ -9,7 +9,9 @@ snapshots = Snapshot()
 
 snapshots['TestCase01CreateTaskAPITestCase.test_case status_code'] = '201'
 
-snapshots['TestCase01CreateTaskAPITestCase.test_case body'] = b''
+snapshots['TestCase01CreateTaskAPITestCase.test_case body'] = {
+    'message': 'task created or updated successfully'
+}
 
 snapshots['TestCase01CreateTaskAPITestCase.test_case template_id'] = 'template_1'
 
