@@ -196,18 +196,18 @@ class StageDTOFactory(factory.Factory):
     class Meta:
         model = StageDTO
 
-    stage_id = factory.Sequence(lambda n: 'stage_id_%d' % n)
-    task_template_id = factory.Sequence(lambda n: 'task_template_id_%d' % n)
-    value = factory.Sequence(lambda n: n)
+    stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n+1))
+    task_template_id = factory.Sequence(lambda n: 'task_template_id_%d' % (n+1))
+    value = factory.Sequence(lambda n: (n+1))
     id = None
-    card_info_kanban = json.dumps(['field_id_1', "field_id_2"])
-    card_info_list = json.dumps(['field_id_1', "field_id_2"])
-    stage_display_name = factory.Sequence(lambda n: 'name_%d' % n)
+    card_info_kanban = json.dumps(["field_id_1", "field_id_2"])
+    card_info_list = json.dumps(["field_id_1", "field_id_2"])
+    stage_display_name = factory.Sequence(lambda n: 'name_%d' % (n+1))
     stage_display_logic = factory.Sequence(
-        lambda n: 'status_id_%d==stage_id' % n)
+        lambda n: 'status_id_%d==stage_id' % (n+1))
 
     class Params:
-        id_value = factory.Trait(id=factory.Sequence(lambda n: n))
+        id_value = factory.Trait(id=factory.Sequence(lambda n: (n+1)))
 
 
 class StageValueDTOFactory(factory.Factory):

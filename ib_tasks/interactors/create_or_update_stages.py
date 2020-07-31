@@ -1,3 +1,4 @@
+import json
 from typing import List
 
 from ib_boards.exceptions.custom_exceptions import InvalidTemplateFields
@@ -34,28 +35,46 @@ class CreateOrUpdateStagesInterface:
         self._validate_values_for_stages(stages_details)
 
         self._validate_stage_display_logic(stages_details)
+
         task_fields_dtos = self.task_storage.get_field_ids_for_given_task_template_ids(
             task_template_ids)
         self._validate_task_related_field_ids(stages_details, task_fields_dtos)
         self._create_or_update_stages(existing_stage_ids, stages_details)
 
     def _validate_task_related_field_ids(self, stage_details, task_fields_dtos):
+
+        if not task_fields_dtos:
+            task_template_ids = [stage.task_template_id
+                                 for stage in stage_details]
+            raise InvalidTemplateFields(task_template_ids)
+
         stages_dict = {}
         for stage in stage_details:
             stages_dict[stage.task_template_id] = stage
 
         tasks_dict = {}
         for task in task_fields_dtos:
-            tasks_dict[task.template_id] = task.field_ids
+            tasks_dict[task.task_template_id] = task.field_ids
 
         invalid_field_ids = []
         for stage in stages_dict:
-            if stage['card_info_kanban'] in task[stage.task_template_id]:
-                invalid_field_ids.append(stage['task_template_id'])
-            if stage['card_info_list'] in task[stage.task_template_id]:
-                invalid_field_ids.append(stage['task_template_id'])
+            kanban, list_value, task_template_id, template_id = self._get_required_constants(
+                stage, stages_dict)
+            if not kanban.issubset(set(tasks_dict[task_template_id])):
+                invalid_field_ids.append(template_id.task_template_id)
+            if not list_value.issubset(set(tasks_dict[task_template_id])):
+                invalid_field_ids.append(template_id.task_template_id)
+
         if invalid_field_ids:
-            raise InvalidTemplateFields(invalid_field_ids)
+            raise InvalidTemplateFields(list(set(invalid_field_ids)))
+
+    @staticmethod
+    def _get_required_constants(stage, stages_dict):
+        template_id = stages_dict[stage]
+        task_template_id = stages_dict[stage].task_template_id
+        kanban = set(json.loads(template_id.card_info_kanban))
+        list_value = set(json.loads(template_id.card_info_list))
+        return kanban, list_value, task_template_id, template_id
 
     def _create_or_update_stages(self,
                                  existing_stage_ids: List[str],
@@ -104,18 +123,18 @@ class CreateOrUpdateStagesInterface:
 
         invalid_stage_display_logic_stages = []
 
-        list_of_status_ids = [attribute.status_id
-                              for attribute in list_of_logic_attributes]
+        list_of_stage_ids = [attribute.stage_id
+                             for attribute in list_of_logic_attributes]
 
-        valid_status_ids = self.stage_storage.get_existing_stage_ids(
-            list_of_status_ids)
+        valid_stage_ids = self.stage_storage.get_existing_stage_ids(
+            list(set(list_of_stage_ids)))
 
         for attribute in list_of_logic_attributes:
-            if attribute.status_id not in valid_status_ids:
+            if attribute.stage_id not in valid_stage_ids:
                 invalid_stage_display_logic_stages.append(attribute.stage_id)
-        # TODO need to validate that is remove comments
-        # if invalid_stage_display_logic_stages:
-        #     raise InvalidStageDisplayLogic(invalid_stage_display_logic_stages)
+
+        if invalid_stage_display_logic_stages:
+            raise InvalidStageDisplayLogic(invalid_stage_display_logic_stages)
         return
 
     @staticmethod
@@ -135,7 +154,6 @@ class CreateOrUpdateStagesInterface:
             raise DuplicateStageIds(duplicate_stage_ids)
 
     def _get_existing_stage_ids(self, stage_ids: List[str]):
-        print("stage_ids: ", stage_ids)
         existing_stage_ids = self.stage_storage.get_existing_stage_ids(
             stage_ids)
         return existing_stage_ids

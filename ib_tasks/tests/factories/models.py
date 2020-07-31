@@ -41,7 +41,6 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     field_display_config = json.dumps(["FIELD_ID_1", "FIELD_ID_2"])
 
 
-
 class TaskStageModelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = TaskStage
@@ -85,6 +84,7 @@ class TaskTemplateFactory(factory.django.DjangoModelFactory):
     template_id = factory.sequence(lambda n: "template_{}".format(n + 1))
     name = factory.sequence(lambda n: "Template {}".format(n + 1))
 
+
 class TaskTemplateStatusVariableFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = TaskTemplateStatusVariable
@@ -97,6 +97,7 @@ class TaskTemplateStatusVariableFactory(factory.django.DjangoModelFactory):
 class TaskStatusVariableFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = TaskStatusVariable
+
     task_id = factory.Sequence(lambda n: "%d" % n)
     variable = factory.Sequence(lambda n: "status_variable_%d" % n)
     value = factory.Sequence(lambda n: "value_%d" % n)
@@ -110,7 +111,6 @@ class TaskTemplateGlobalConstantsFactory(factory.django.DjangoModelFactory):
     variable = factory.Sequence(lambda n: "variable%d" % n)
     value = factory.Sequence(lambda n: "value%d" % n)
     data_type = factory.Sequence(lambda n: "data_type_%d" % n)
-
 
 
 class GoFFactory(factory.django.DjangoModelFactory):

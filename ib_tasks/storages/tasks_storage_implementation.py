@@ -1,3 +1,4 @@
+from collections import defaultdict
 from typing import List, Optional, Dict, Tuple
 
 from django.db.models import Q
@@ -8,6 +9,7 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionsOfTemplateDTO, ActionDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldRoleDTO, FieldTypeDTO, UserFieldPermissionDTO, FieldDetailsDTO
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import TemplateFieldsDTO
 
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO
@@ -651,3 +653,26 @@ class TasksStorageImplementation(TaskStorageInterface):
             for user_field_permission in user_field_permission_details
         ]
         return user_field_permission_dtos
+
+    def get_field_ids_for_given_task_template_ids(self,
+                                                  task_template_ids: List[str]) -> List[TemplateFieldsDTO]:
+        task_field_objs = TaskTemplateGoFs.objects.filter(
+            task_template_id__in=task_template_ids).values('task_template_id', 'gof__field')
+        task_fields_dtos = self._convert_task_template_fields_to_dtos(task_field_objs)
+        return task_fields_dtos
+
+    @staticmethod
+    def _convert_task_template_fields_to_dtos(task_field_objs):
+        task_fields_dict = defaultdict(list)
+        for task in task_field_objs:
+            task_fields_dict[task['task_template_id']].append(task['gof__field'])
+
+        task_fields_dtos = []
+        for template_id, field_ids in task_fields_dict.items():
+            task_fields_dtos.append(
+                TemplateFieldsDTO(
+                    task_template_id=template_id,
+                    field_ids=field_ids
+                )
+            )
+        return task_fields_dtos

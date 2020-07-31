@@ -14,12 +14,12 @@ class TestUpdateStages:
     @pytest.fixture()
     def stage_dtos(self):
         StageDTOFactory.reset_sequence(50)
-        return StageDTOFactory.create_batch(size=3, id_value=True)
+        return StageDTOFactory.create_batch(size=3)
 
     @pytest.fixture()
     def create_stages(self):
         StageModelFactory.reset_sequence(50)
-        StageModelFactory.create_batch(size=3)
+        StageModelFactory.create_batch(size=4)
 
     def _validate_stages_details(self, stages, expected_dtos):
         returned_dtos = [StageDTO(
@@ -52,8 +52,7 @@ class TestUpdateStages:
     def test_update_stages_stage_details(self, stage_dtos, create_stages):
         # Arrange
         stage_dtos = stage_dtos
-        stage_ids = ["stage_id_50", "stage_id_51", "stage_id_52",
-                     "stage_id_53"]
+        stage_ids = ["stage_id_51", "stage_id_52", "stage_id_53"]
         storage = StagesStorageImplementation()
 
         # Act
