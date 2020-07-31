@@ -70,25 +70,27 @@ class ServiceInterface:
         valid_user_ids = interactor.get_valid_user_ids(user_ids=user_ids)
         return valid_user_ids
 
-    @staticmethod
-    def get_user_dtos_based_on_limit_and_offset(limit: int, offset: int,
-                                                search_query: str) \
-            -> List[UserDTO]:
-        storage = StorageImplementation()
-
-        user_dtos = storage.get_user_dtos_based_on_limit_and_offset(
-            limit=limit,
-            offset=offset,
-            search_query=
-            search_query)
-        return user_dtos
-
-    @staticmethod
-    def get_all_user_dtos_based_on_query(search_query: str) -> \
-            List[UserDTO]:
-        storage = StorageImplementation()
-
-        user_dtos = storage.get_all_user_dtos_based_on_query(
-            search_query=
-            search_query)
-        return user_dtos
+    # @staticmethod
+    # def get_user_dtos_based_on_limit_and_offset(limit: int, offset: int,
+    #                                             search_query: str) \
+    #         -> List[UserDTO]:
+    #     storage = StorageImplementation()
+    #
+    #     user_dtos = storage.get_user_dtos_based_on_limit_and_offset(
+    #         limit=limit,
+    #         offset=offset,
+    #         search_query=
+    #         search_query)
+    #     return user_dtos
+    #
+    # @staticmethod
+    # def get_all_user_dtos_based_on_query(search_query: str) -> \
+    #         List[UserDTO]:
+    #     from ib_iam.storages.storage_implementation import \
+    #         StorageImplementation
+    #     storage = StorageImplementation()
+    #
+    #     user_dtos = storage.get_all_user_dtos_based_on_query(
+    #         search_query=
+    #         search_query)
+    #     return user_dtos
