@@ -1,8 +1,10 @@
 from dataclasses import dataclass
-from typing import Union, List
+from typing import Union, List, Any
 
-from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDetailsDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO, StageDetailsDTO
+from ib_tasks.interactors.storage_interfaces.actions_dtos import \
+    ActionDetailsDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO, \
+    StageDetailsDTO
 
 
 @dataclass
@@ -50,7 +52,14 @@ class GetTaskDetailsDTO:
     task_id: int
     stage_id: str
 
+
 @dataclass
-class TaskStageCompleteDetailsDTO:
-    stage_details_dto: StageDetailsDTO
+class StageAndActionsDetailsDTO(StageDetailsDTO):
     actions_dtos: List[ActionDetailsDTO]
+
+
+@dataclass
+class StatusOperandStageDTO:
+    variable: Any
+    operator: str
+    stage: Any

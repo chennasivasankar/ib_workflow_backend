@@ -2,7 +2,7 @@ from collections import defaultdict
 from typing import List
 
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import FieldsStorageInterface
-from ib_tasks.interactors.task_dtos import TaskStageCompleteDetailsDTO
+from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
 
 
 class GetTaskStagesAndActions:
@@ -10,7 +10,7 @@ class GetTaskStagesAndActions:
         self.storage = storage
 
     def get_task_stages_and_actions(self, task_id: int, user_id: int) -> \
-            List[TaskStageCompleteDetailsDTO]:
+            List[StageAndActionsDetailsDTO]:
         # TODO: validate user tasks
         stage_ids = self.storage.get_task_stages(task_id)
         stage_details_dtos = self.storage.get_stage_complete_details(stage_ids)
@@ -35,9 +35,11 @@ class GetTaskStagesAndActions:
 
         list_of_stage_actions = []
         for stage in stage_ids:
+            stage_dto = stages_dtos[stage]
             list_of_stage_actions.append(
-                TaskStageCompleteDetailsDTO(
-                    stage_details_dto=stages_dtos[stage],
+                StageAndActionsDetailsDTO(
+                    stage_id=stage_dto.stage_id,
+                    name=stage_dto.name,
                     actions_dtos=list_of_actions[stage]
                 ))
         return list_of_stage_actions
