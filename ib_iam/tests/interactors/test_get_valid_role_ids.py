@@ -4,10 +4,10 @@ import pytest
 class TestGetValidRoleIds:
     @pytest.fixture()
     def storage_mock(self):
-        from ib_iam.interactors.storage_interfaces.add_roles_storage_interface import \
-            AddRolesStorageInterface
+        from ib_iam.interactors.storage_interfaces.roles_storage_interface import \
+            RolesStorageInterface
         from unittest.mock import create_autospec
-        storage = create_autospec(AddRolesStorageInterface)
+        storage = create_autospec(RolesStorageInterface)
         return storage
 
     def test_get_valid_role_ids_return_valid_ids(self, storage_mock):

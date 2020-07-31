@@ -1,8 +1,8 @@
 from unittest.mock import create_autospec, Mock
 
 from ib_iam.interactors.roles_interactor import RolesInteractor
-from ib_iam.interactors.storage_interfaces.add_roles_storage_interface \
-    import AddRolesStorageInterface
+from ib_iam.interactors.storage_interfaces.roles_storage_interface \
+    import RolesStorageInterface
 from ib_iam.interactors.presenter_interfaces.add_roles_presenter_interface \
     import AddRolesPresenterInterface
 
@@ -28,7 +28,7 @@ class TestAddRolesInteractor:
             },
 
         ]
-        storage = create_autospec(AddRolesStorageInterface)
+        storage = create_autospec(RolesStorageInterface)
         presenter = create_autospec(AddRolesPresenterInterface)
         interactor = RolesInteractor(storage=storage)
         presenter.raise_duplicate_role_ids_exception.return_value = \
@@ -47,7 +47,7 @@ class TestAddRolesInteractor:
             "role_name": "",
             "description": "payment poc"
         }]
-        storage = create_autospec(AddRolesStorageInterface)
+        storage = create_autospec(RolesStorageInterface)
         presenter = create_autospec(AddRolesPresenterInterface)
         interactor = RolesInteractor(storage=storage)
         presenter.raise_role_name_should_not_be_empty_exception.return_value = \
@@ -67,7 +67,7 @@ class TestAddRolesInteractor:
             "role_name": "payment poc",
             "description": ""
         }]
-        storage = create_autospec(AddRolesStorageInterface)
+        storage = create_autospec(RolesStorageInterface)
         presenter = create_autospec(AddRolesPresenterInterface)
         interactor = RolesInteractor(storage=storage)
         presenter.raise_role_description_should_not_be_empty_exception.return_value = \
@@ -86,7 +86,7 @@ class TestAddRolesInteractor:
             "role_name": "payment poc",
             "description": "payment poc"
         }]
-        storage = create_autospec(AddRolesStorageInterface)
+        storage = create_autospec(RolesStorageInterface)
         presenter = create_autospec(AddRolesPresenterInterface)
         interactor = RolesInteractor(storage=storage)
         presenter.raise_role_id_format_is_invalid_exception.return_value = Mock()
@@ -112,7 +112,7 @@ class TestAddRolesInteractor:
                 description=role["description"]
             )
             for role in roles]
-        storage = create_autospec(AddRolesStorageInterface)
+        storage = create_autospec(RolesStorageInterface)
         presenter = create_autospec(AddRolesPresenterInterface)
         interactor = RolesInteractor(storage=storage)
 

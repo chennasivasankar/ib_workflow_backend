@@ -24,8 +24,9 @@ class TestGetUserRoleIds:
         ]
         user_id = "eca1a0c1-b9ef-4e59-b415-60a28ef17b10"
 
-        from ib_iam.storages.storage_implementation import StorageImplementation
-        storage = StorageImplementation()
+        from ib_iam.storages.roles_storage_implementation import \
+            RolesStorageImplementation
+        storage = RolesStorageImplementation()
         from ib_iam.tests.factories.models import UserRoleFactory, RoleFactory
         role_objects = [
             RoleFactory(id=id, role_id=role_id)
@@ -49,8 +50,9 @@ class TestGetUserRoleIds:
         # Arrange
         user_id = "eca1a0c1-b9ef-4e59-b415-60a28ef17b10"
 
-        from ib_iam.storages.storage_implementation import StorageImplementation
-        storage = StorageImplementation()
+        from ib_iam.storages.roles_storage_implementation import \
+            RolesStorageImplementation
+        storage = RolesStorageImplementation()
 
         # Assert
         from ib_iam.exceptions.custom_exceptions import InvalidUserId

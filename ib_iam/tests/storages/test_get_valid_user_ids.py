@@ -15,8 +15,9 @@ class TestGetValidUserIds:
         from ib_iam.models import UserDetails
         UserDetails.objects.create(user_id=user_ids[0])
 
-        from ib_iam.storages.storage_implementation import StorageImplementation
-        storage = StorageImplementation()
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        storage = UserStorageImplementation()
 
         # Act
         response = storage.get_valid_user_ids(user_ids=user_ids)

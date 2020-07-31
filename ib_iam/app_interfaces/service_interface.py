@@ -8,9 +8,9 @@ class ServiceInterface:
 
     @staticmethod
     def get_valid_role_ids(role_ids: List[str]):
-        from ib_iam.storages.add_roles_storage_implementation import \
-            AddRolesStorageImplementation
-        storage = AddRolesStorageImplementation()
+        from ib_iam.storages.roles_storage_implementation import \
+            RolesStorageImplementation
+        storage = RolesStorageImplementation()
 
         from ib_iam.interactors.roles_interactor import RolesInteractor
         interactor = RolesInteractor(storage=storage)
@@ -20,9 +20,9 @@ class ServiceInterface:
 
     @staticmethod
     def get_user_role_ids(user_id: str) -> List[str]:
-        from ib_iam.storages.storage_implementation import \
-            StorageImplementation
-        storage = StorageImplementation()
+        from ib_iam.storages.roles_storage_implementation import \
+            RolesStorageImplementation
+        storage = RolesStorageImplementation()
 
         from ib_iam.interactors.roles_interactor import RolesInteractor
         interactor = RolesInteractor(storage=storage)
@@ -32,9 +32,9 @@ class ServiceInterface:
 
     @staticmethod
     def get_users_role_ids(user_ids: List[str]) -> List[UserIdWithRoleIdsDTO]:
-        from ib_iam.storages.storage_implementation import \
-            StorageImplementation
-        storage = StorageImplementation()
+        from ib_iam.storages.roles_storage_implementation import \
+            RolesStorageImplementation
+        storage = RolesStorageImplementation()
 
         from ib_iam.interactors.roles_interactor import RolesInteractor
         interactor = RolesInteractor(storage=storage)
@@ -46,11 +46,11 @@ class ServiceInterface:
 
     @staticmethod
     def get_user_details_bulk(user_ids: List[str]) -> List[UserProfileDTO]:
-        from ib_iam.storages.storage_implementation import \
-            StorageImplementation
-        storage = StorageImplementation()
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        storage = UserStorageImplementation()
 
-        from ib_iam.interactors.get_users_details_inteactor import \
+        from ib_iam.interactors.get_users_list_interactor import \
             GetUsersDetailsInteractor
         interactor = GetUsersDetailsInteractor(storage=storage)
 
@@ -59,11 +59,11 @@ class ServiceInterface:
 
     @staticmethod
     def get_valid_user_ids(user_ids: List[str]) -> List[str]:
-        from ib_iam.storages.storage_implementation import \
-            StorageImplementation
-        storage = StorageImplementation()
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        storage = UserStorageImplementation()
 
-        from ib_iam.interactors.get_users_details_inteactor import \
+        from ib_iam.interactors.get_users_list_interactor import \
             GetUsersDetailsInteractor
         interactor = GetUsersDetailsInteractor(storage=storage)
 

@@ -1,14 +1,14 @@
 import pytest
 
 from ib_iam.models.role import Role
-from ib_iam.storages.add_roles_storage_implementation import AddRolesStorageImplementation
+from ib_iam.storages.roles_storage_implementation import RolesStorageImplementation
 
 
 class TestCreateRoles:
     @pytest.mark.django_db
     def test_create_roles_given_role_dtos_then_store_roles_in_db(self):
         # Arrange
-        storage = AddRolesStorageImplementation()
+        storage = RolesStorageImplementation()
         previous_storage_len = Role.objects.count()
         objects_count = 3
         from ib_iam.tests.factories.storage_dtos import RoleDTOFactory

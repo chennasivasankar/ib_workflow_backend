@@ -1,5 +1,6 @@
 from typing import List
 
+from ib_iam.interactors.DTOs.common_dtos import UserIdWithRoleIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, RoleIdAndNameDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO
@@ -168,3 +169,33 @@ class UserStorageImplementation(UserStorageInterface):
             role_id=str(role_object['role_id']),
             name=role_object['name']) for role_object in role_query_set]
         return role_dtos
+
+    def validate_user_id(self, user_id):
+        from ib_iam.models import UserDetails
+        user_details_object = UserDetails.objects.filter(user_id=user_id)
+        is_user_details_object_not_exist = not user_details_object.exists()
+        if is_user_details_object_not_exist:
+            from ib_iam.exceptions.custom_exceptions import InvalidUserId
+            raise InvalidUserId
+        return
+
+    def validate_user_ids(self, user_ids: List[str]):
+        from ib_iam.models import UserDetails
+        valid_user_ids = UserDetails.objects.filter(
+            user_id__in=user_ids
+        ).values_list("user_id", flat=True)
+        invalid_user_ids = [
+            user_id
+            for user_id in user_ids if user_id not in valid_user_ids
+        ]
+        if invalid_user_ids:
+            from ib_iam.exceptions.custom_exceptions import InvalidUserIds
+            raise InvalidUserIds(user_ids=invalid_user_ids)
+        return
+
+    def get_valid_user_ids(self, user_ids: List[str]) -> List[str]:
+        from ib_iam.models import UserDetails
+        valid_user_ids = UserDetails.objects.filter(
+            user_id__in=user_ids
+        ).values_list("user_id", flat=True)
+        return list(valid_user_ids)

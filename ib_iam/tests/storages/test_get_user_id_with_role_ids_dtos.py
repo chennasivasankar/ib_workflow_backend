@@ -54,8 +54,9 @@ class TestGetUserIdWIthRoleIdsDTOS:
         UserRoleFactory.create(user_id=user_id2, role=role_objects[3])
         UserRoleFactory.create(user_id=user_id2, role=role_objects[4])
 
-        from ib_iam.storages.storage_implementation import StorageImplementation
-        storage = StorageImplementation()
+        from ib_iam.storages.roles_storage_implementation import \
+            RolesStorageImplementation
+        storage = RolesStorageImplementation()
 
         # Act
         response = storage.get_user_id_with_role_ids_dtos(
@@ -74,8 +75,9 @@ class TestGetUserIdWIthRoleIdsDTOS:
         ]
         invalid_user_ids = user_ids
 
-        from ib_iam.storages.storage_implementation import StorageImplementation
-        storage = StorageImplementation()
+        from ib_iam.storages.roles_storage_implementation import \
+            RolesStorageImplementation
+        storage = RolesStorageImplementation()
 
         # Assert
         from ib_iam.exceptions.custom_exceptions import InvalidUserIds

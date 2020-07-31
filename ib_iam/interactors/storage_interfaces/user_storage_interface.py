@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Optional
 
+from ib_iam.exceptions.custom_exceptions import InvalidUserId, InvalidUserIds
+from ib_iam.interactors.DTOs.common_dtos import UserIdWithRoleIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, CompanyIdAndNameDTO, TeamIdAndNameDTO, \
     RoleIdAndNameDTO
@@ -90,4 +92,17 @@ class UserStorageInterface(ABC):
 
     @abstractmethod
     def get_roles(self) -> List[RoleIdAndNameDTO]:
+        pass
+
+    @abstractmethod
+    def validate_user_id(self, user_id) -> Optional[InvalidUserId]:
+        pass
+
+    @abstractmethod
+    def validate_user_ids(self, user_ids: List[str]) \
+            -> Optional[InvalidUserIds]:
+        pass
+
+    @abstractmethod
+    def get_valid_user_ids(self, user_ids: List[str]) -> List[str]:
         pass

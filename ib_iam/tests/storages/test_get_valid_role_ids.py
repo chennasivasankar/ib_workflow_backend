@@ -9,9 +9,9 @@ class TestGetValidRoleIds:
         role_ids = ["12233442", "12312323", "4141264557"]
         expected_valid_role_ids = ["12233442", "12312323"]
 
-        from ib_iam.storages.add_roles_storage_implementation \
-            import AddRolesStorageImplementation
-        storage = AddRolesStorageImplementation()
+        from ib_iam.storages.roles_storage_implementation \
+            import RolesStorageImplementation
+        storage = RolesStorageImplementation()
         reset_sequence_role_factory()
         from ib_iam.tests.factories.models import RoleFactory
         for role_id in expected_valid_role_ids:
