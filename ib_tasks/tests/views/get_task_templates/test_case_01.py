@@ -27,6 +27,7 @@ class TestCase01GetTaskTemplatesAPITestCase(TestUtils):
         GoFFactory.reset_sequence()
         FieldFactory.reset_sequence()
         FieldRoleFactory.reset_sequence()
+        GoFToTaskTemplateFactory.reset_sequence()
 
         template_ids = ['template_1', 'template_2']
 
