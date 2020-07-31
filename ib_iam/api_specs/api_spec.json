@@ -1870,7 +1870,7 @@
         "security": [
           {
             "oauth": [
-              "update"
+              "write"
             ]
           }
         ],

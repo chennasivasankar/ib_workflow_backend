@@ -344,3 +344,9 @@ RESET_PASSWORD_LINK = \
 
 
 AUTH_USER_MODEL = "ib_users.UserAccount"
+#################### Default application name for oauth #########################
+DEFAULT_OAUTH_APPLICATION_NAME = "project_management_portal"
+DEFAULT_OAUTH_CLIENT_ID = ""
+DEFAULT_OAUTH_CLIENT_SECRET = ""
+DEFAULT_OAUTH_SCOPES = "read write delete superuser"
+DEFAULT_ACCESS_TOKEN_EXPIRY_IN_SECONDS = 1000000000
