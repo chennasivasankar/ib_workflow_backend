@@ -3,7 +3,6 @@ from typing import List
 from ib_tasks.interactors.get_task_fields_and_actions import \
     GetTaskFieldsAndActionsInteractor
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
-from ib_tasks.storages.storage_implementation import StagesStorageImplementation
 from ib_tasks.storages.tasks_storage_implementation import \
     TasksStorageImplementation
 
@@ -46,12 +45,16 @@ class ServiceInterface:
 
     @staticmethod
     def get_task_details(task_dtos: List[GetTaskDetailsDTO]):
-        storage = TasksStorageImplementation()
+        from ib_tasks.storages.fields_storage_implementation import \
+            FieldsStorageImplementation
+        from ib_tasks.storages.storage_implementation import \
+            StagesStorageImplementation
+        field_storage = FieldsStorageImplementation()
         stage_storage = StagesStorageImplementation()
+
         interactor = GetTaskFieldsAndActionsInteractor(
-            storage=storage,
-            stage_storage=stage_storage
+            field_storage,
+            stage_storage
         )
         result = interactor.get_task_fields_and_action(task_dtos)
         return result
-

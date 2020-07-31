@@ -2,7 +2,7 @@
 from typing import List
 
 from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
-    StageActionDTO, TaskTemplateStageDTO
+    StageActionDTO, TemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 
@@ -82,7 +82,7 @@ class ConfigureInitialTaskTemplateStageActions:
     @staticmethod
     def _append_task_dto(task_dto):
 
-        return TaskTemplateStageDTO(
+        return TemplateStageDTO(
             task_template_id=task_dto.task_template_id,
             stage_id=task_dto.stage_id
         )

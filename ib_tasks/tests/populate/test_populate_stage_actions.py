@@ -5,7 +5,6 @@ class TestCasePopulateStageActions:
 
     @staticmethod
     def test_given_invalid_key_raises_exception():
-
         # Arrange
 
         valid_format = {
@@ -31,7 +30,8 @@ class TestCasePopulateStageActions:
         ]
         from ib_tasks.populate.populate_stage_actions \
             import populate_stage_actions
-        from ib_tasks.exceptions.custom_exceptions import InvalidFormatException
+        from ib_tasks.exceptions.custom_exceptions import \
+            InvalidFormatException
 
         # Act
         with pytest.raises(InvalidFormatException) as err:
@@ -42,7 +42,6 @@ class TestCasePopulateStageActions:
 
     @staticmethod
     def test_given_invalid_python_code_raises_exception():
-
         # Arrange
         actions = [
             {

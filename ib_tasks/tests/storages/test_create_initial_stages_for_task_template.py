@@ -1,16 +1,19 @@
 import factory
 import pytest
 
-from ib_tasks.interactors.stages_dtos import TaskTemplateStageDTO
+from ib_tasks.interactors.stages_dtos import TemplateStageDTO
 from ib_tasks.models import TaskTemplateInitialStage
-from ib_tasks.storages.storage_implementation import StagesStorageImplementation
+from ib_tasks.storages.storage_implementation import \
+    StagesStorageImplementation
+
 
 class TaskTemplateStagesDTOFactory(factory.Factory):
     class Meta:
-        model = TaskTemplateStageDTO
+        model = TemplateStageDTO
 
     task_template_id = factory.sequence(lambda n: "task_template_id_%d" % n)
     stage_id = factory.Sequence(lambda n: n)
+
 
 @pytest.mark.django_db
 class TestCreateInitialStages:
@@ -23,7 +26,8 @@ class TestCreateInitialStages:
     def _validate_task_stage_objs(self, returned, expected):
         if len(returned) != len(expected):
             for val in range(len(returned)):
-                assert returned[val].task_template_id == expected[val].task_template_id
+                assert returned[val].task_template_id == expected[
+                    val].task_template_id
                 assert returned[val].stage__stage_id == expected[val].stage_id
         else:
             assert len(returned) == len(expected)
@@ -35,8 +39,10 @@ class TestCreateInitialStages:
         storage = StagesStorageImplementation()
 
         # Act
-        storage.create_initial_stage_to_task_template(task_template_stages_dtos)
+        storage.create_initial_stage_to_task_template(
+            task_template_stages_dtos)
 
         # Assert
-        task_stages = TaskTemplateInitialStage.objects.filter(task_template_id__in=task_template_ids)
+        task_stages = TaskTemplateInitialStage.objects.filter(
+            task_template_id__in=task_template_ids)
         self._validate_task_stage_objs(task_stages, task_template_stages_dtos)

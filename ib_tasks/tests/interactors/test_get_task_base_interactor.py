@@ -30,11 +30,16 @@ class TestGetTaskBaseInteractor:
         from ib_tasks.tests.factories.storage_dtos \
             import TaskGoFFieldDTOFactory
         task_gof_field_dtos = [
-            TaskGoFFieldDTOFactory(task_gof_id=0, field_id="field0", field_response="response0"),
-            TaskGoFFieldDTOFactory(task_gof_id=0, field_id="field1", field_response="response1"),
-            TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field2", field_response="response2"),
-            TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field3", field_response="response3"),
-            TaskGoFFieldDTOFactory(task_gof_id=2, field_id="field2", field_response="response3")
+            TaskGoFFieldDTOFactory(task_gof_id=0, field_id="field0",
+                                   field_response="response0"),
+            TaskGoFFieldDTOFactory(task_gof_id=0, field_id="field1",
+                                   field_response="response1"),
+            TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field2",
+                                   field_response="response2"),
+            TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field3",
+                                   field_response="response3"),
+            TaskGoFFieldDTOFactory(task_gof_id=2, field_id="field2",
+                                   field_response="response3")
         ]
         return task_gof_field_dtos
 
@@ -46,7 +51,8 @@ class TestGetTaskBaseInteractor:
             import InvalidTaskIdException
         task_id = "task0"
         interactor = GetTaskBaseInteractor(storage=storage_mock)
-        storage_mock.validate_task_id.side_effect = InvalidTaskIdException(task_id)
+        storage_mock.validate_task_id.side_effect = InvalidTaskIdException(
+            task_id)
 
         # Act
         with pytest.raises(InvalidTaskIdException) as err:
@@ -82,4 +88,5 @@ class TestGetTaskBaseInteractor:
         response == task_details_dto
         storage_mock.validate_task_id.assert_called_once_with(task_id=task_id)
         storage_mock.get_task_gof_dtos.assert_called_once_with(task_id=task_id)
-        storage_mock.get_task_gof_field_dtos.assert_called_once_with(task_gof_ids=task_gof_ids)
+        storage_mock.get_task_gof_field_dtos.assert_called_once_with(
+            task_gof_ids=task_gof_ids)

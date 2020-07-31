@@ -106,7 +106,7 @@ class ActionDTO:
     name: str
     button_text: str
     button_color: str
-    task_id: int
+    task_id: str
 
 
 @dataclass
@@ -163,3 +163,4 @@ class TaskCompleteDetailsDTO:
 class ColumnTotalTasksDTO:
     column_id: str
     total_tasks: int
+

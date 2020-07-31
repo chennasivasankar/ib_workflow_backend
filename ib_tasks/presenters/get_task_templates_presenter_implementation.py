@@ -16,7 +16,7 @@ from ib_tasks.exceptions.task_custom_exceptions import \
 
 
 class GetTaskTemplatesPresenterImplementation(
-        GetTaskTemplatesPresenterInterface):
+    GetTaskTemplatesPresenterInterface):
 
     def raise_task_templates_does_not_exists_exception(
             self, err: TaskTemplatesDoesNotExists):
@@ -55,8 +55,10 @@ class GetTaskTemplatesPresenterImplementation(
 
         for task_template in task_templates_dicts:
             task_template_id = task_template['template_id']
-            task_template['actions'] = actions_of_templates_dict[task_template_id]
-            task_template['group_of_fields'] = complete_gof_details_dicts[task_template_id]
+            task_template['actions'] = actions_of_templates_dict[
+                task_template_id]
+            task_template['group_of_fields'] = complete_gof_details_dicts[
+                task_template_id]
         import json
         from django.http import response
         data = json.dumps({"task_templates": task_templates_dicts})
@@ -74,7 +76,7 @@ class GetTaskTemplatesPresenterImplementation(
         import collections
         actions_group_by_template_id_dict = collections.defaultdict(list)
         for action_dict in actions_of_templates_dicts_list:
-            actions_group_by_template_id_dict[action_dict['template_id']].\
+            actions_group_by_template_id_dict[action_dict['template_id']]. \
                 append(action_dict)
 
         actions_of_templates_dict = collections.defaultdict(list)
@@ -100,7 +102,8 @@ class GetTaskTemplatesPresenterImplementation(
         import collections
         gofs_details_group_by_template_id_dict = collections.defaultdict(list)
         for gof_details_dict in gof_details_dicts:
-            gofs_details_group_by_template_id_dict[gof_details_dict['template_id']].\
+            gofs_details_group_by_template_id_dict[
+                gof_details_dict['template_id']]. \
                 append(gof_details_dict)
         gofs_details_of_templates_dict = collections.defaultdict(list)
         for template_id, gof_details_dicts in gofs_details_group_by_template_id_dict.items():
@@ -123,7 +126,8 @@ class GetTaskTemplatesPresenterImplementation(
         import collections
         fields_group_by_gof_id_dict = collections.defaultdict(list)
         for field_dict in field_dicts:
-            fields_group_by_gof_id_dict[field_dict['gof_id']].append(field_dict)
+            fields_group_by_gof_id_dict[field_dict['gof_id']].append(
+                field_dict)
         fields_of_gofs_dict = collections.defaultdict(list)
         for gof_id, field_dicts in fields_group_by_gof_id_dict.items():
             field_dicts_without_gof_id = \
@@ -146,7 +150,8 @@ class GetTaskTemplatesPresenterImplementation(
             field_dict['is_field_readable'] = False
             field_dict['is_field_writable'] = False
             if field_dto.field_id in user_permission_dtos_dict.keys():
-                permission_type = user_permission_dtos_dict[field_dto.field_id].permission_type
+                permission_type = user_permission_dtos_dict[
+                    field_dto.field_id].permission_type
                 has_read_permission = permission_type == PermissionTypes.READ.value
                 has_write_permission = permission_type == PermissionTypes.WRITE.value
                 if has_read_permission:
@@ -186,7 +191,8 @@ class GetTaskTemplatesPresenterImplementation(
                 'template_id': gofs_to_task_templates_dto.template_id,
                 'order': gofs_to_task_templates_dto.order,
                 'enable_add_another': gofs_to_task_templates_dto.enable_add_another,
-                'gof_display_name': gof_details_dto_dict[gof_id].gof_display_name,
+                'gof_display_name': gof_details_dto_dict[
+                    gof_id].gof_display_name,
                 'max_columns': gof_details_dto_dict[gof_id].max_columns
             }
             gofs_to_task_templates_dicts_list.append(complete_gof_details_dict)
