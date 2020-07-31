@@ -764,7 +764,7 @@
         "security": [
           {
             "oauth": [
-              "superuser"
+              "read"
             ]
           }
         ],

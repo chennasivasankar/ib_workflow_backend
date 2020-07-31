@@ -6,10 +6,11 @@ import factory
 from django_swagger_utils.utils.test_v1 import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ib_tasks.tests.factories.models import TaskTemplateFactory, \
-    TaskTemplateStatusVariableFactory, TaskTemplateWith2GoFsFactory, GoFFactory, \
+    TaskTemplateStatusVariableFactory, GoFFactory, \
     FieldFactory, StageModelFactory, StageActionFactory, \
     TaskFactory, TaskStatusVariableFactory, TaskGoFFactory, TaskGoFFieldFactory, \
-    TaskStageModelFactory, GoFToTaskTemplateFactory, ActionPermittedRolesFactory, TaskTemplateInitialStageFactory
+    TaskStageModelFactory, GoFToTaskTemplateFactory, ActionPermittedRolesFactory, \
+    TaskTemplateInitialStageFactory, GoFRoleFactory, FieldRoleFactory
 
 
 class TestCase01PerformTaskActionAPITestCase(TestUtils):
@@ -17,15 +18,20 @@ class TestCase01PerformTaskActionAPITestCase(TestUtils):
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
     URL_SUFFIX = URL_SUFFIX
-    SECURITY = {'oauth': {'scopes': ['superuser']}}
+    SECURITY = {'oauth': {'scopes': ['read']}}
 
     @pytest.fixture(autouse=True)
     def setup(self):
-        from ib_tasks.tests.factories.models import TaskTemplateFactory, \
-            StageModelFactory, StageActionFactory, GoFFactory, GoFRoleFactory, \
-            FieldFactory, FieldRoleFactory, GoFToTaskTemplateFactory, TaskFactory
-
+        TaskTemplateInitialStageFactory.reset_sequence()
+        ActionPermittedRolesFactory.reset_sequence()
+        TaskStageModelFactory.reset_sequence()
+        TaskGoFFieldFactory.reset_sequence()
+        TaskGoFFactory.reset_sequence()
+        TaskTemplateStatusVariableFactory.reset_sequence()
+        TaskStatusVariableFactory.reset_sequence()
         TaskTemplateFactory.reset_sequence()
+        GoFToTaskTemplateFactory.reset_sequence()
+        TaskFactory.reset_sequence()
         StageModelFactory.reset_sequence()
         StageActionFactory.reset_sequence()
         GoFRoleFactory.reset_sequence()
@@ -47,14 +53,25 @@ class TestCase01PerformTaskActionAPITestCase(TestUtils):
             6, task_template=factory.Iterator(tts),
             gof=factory.Iterator(gofs)
         )
-        stages = StageModelFactory.create_batch(
-            3, task_template_id='template_1',
+        stage1 = StageModelFactory(
+            task_template_id='template_1',
+            display_logic="variable0==stage_id_0",
             field_display_config=json.dumps(["FIELD_ID-1", "FIELD_ID-2"])
         )
-
+        stage2 = StageModelFactory(
+            task_template_id='template_1',
+            display_logic="variable1==stage_id_1",
+            field_display_config=json.dumps(["FIELD_ID-1", "FIELD_ID-2"])
+        )
+        stage3 = StageModelFactory(
+            task_template_id='template_1',
+            display_logic="variable2==stage_id_2",
+            field_display_config=json.dumps(["FIELD_ID-1", "FIELD_ID-2"])
+        )
+        stages = [stage1, stage2, stage3]
         path = 'ib_tasks.populate.stage_actions_logic.stage_1_action_name_1'
-        action = StageActionFactory(stage=stages[0], py_function_import_path=path)
-        actions = StageActionFactory.create_batch(6,stage=factory.Iterator(stages))
+        action = StageActionFactory(stage=stage1, py_function_import_path=path)
+        actions = StageActionFactory.create_batch(6, stage=factory.Iterator(stages))
         TaskTemplateInitialStageFactory.create_batch(
             6, task_template=factory.Iterator(tts),
             stage=factory.Iterator(stages)
@@ -84,12 +101,22 @@ class TestCase01PerformTaskActionAPITestCase(TestUtils):
     def test_case(self, snapshot, mocker):
         path = 'ib_tasks.adapters.boards_service.BoardsService.validate_board_id'
         mock_obj = mocker.patch(path)
+        mock_obj.return_value = True
         roles_path = 'ib_iam.app_interfaces.service_interface.ServiceInterface.get_user_role_ids'
         roles_mock = mocker.patch(roles_path)
         roles_mock.return_value = ['role_1', 'role_2', 'role_3']
+        path = 'ib_tasks.adapters.boards_service.BoardsService.get_display_boards_and_column_details'
+        board_mock = mocker.patch(path)
+        from ib_tasks.tests.common_fixtures.interactors \
+            import prepare_integration_task_boards_details
+        task_board_dto = prepare_integration_task_boards_details()
+        board_mock.return_value = task_board_dto
 
-        body = {"task_id": "1", "action_id": "1",
-                       "board_id": "board_1"}
+        body = {
+            "task_id": "1",
+            "action_id": "1",
+            "board_id": "board_1"
+        }
         path_params = {}
         query_params = {}
         headers = {}
@@ -97,4 +124,3 @@ class TestCase01PerformTaskActionAPITestCase(TestUtils):
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
-        mock_obj.called_once()

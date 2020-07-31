@@ -107,6 +107,7 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
     def get_response_for_user_action_on_task(
             self, task_complete_details_dto: TaskCompleteDetailsDTO):
 
+        print(task_complete_details_dto)
         task_id = task_complete_details_dto.task_id
         task_board_details = task_complete_details_dto.task_boards_details
         actions_dto = task_complete_details_dto.actions_dto

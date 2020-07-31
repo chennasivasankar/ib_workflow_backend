@@ -60,6 +60,27 @@ def prepare_task_boards_details():
     )
 
 
+def prepare_integration_task_boards_details():
+
+    from ib_tasks.tests.factories.adapter_dtos import (
+        BoardDTOFactory, ColumnDTOFactory, ColumnStageDTOFactory,
+        ColumnFieldDTOFactory
+    )
+    BoardDTOFactory.reset_sequence()
+    ColumnDTOFactory.reset_sequence()
+    ColumnStageDTOFactory.reset_sequence()
+    ColumnFieldDTOFactory.reset_sequence()
+    boards_dto = BoardDTOFactory()
+    column_dtos = ColumnDTOFactory.create_batch(size=2, board_id="board_1")
+    column1 = ColumnStageDTOFactory(column_id='column_1', stage_id='stage_id_1')
+    column2 = ColumnStageDTOFactory(column_id='column_2', stage_id='stage_id_2')
+    return TaskBoardsDetailsDTO(
+        board_dto=boards_dto,
+        column_stage_dtos=[column1, column2],
+        columns_dtos=column_dtos,
+    )
+
+
 def prepare_fields_and_actions_dto(mocker):
 
     path = 'ib_tasks.interactors.get_task_fields_and_actions.GetTaskFieldsAndActionsInteractor' \
