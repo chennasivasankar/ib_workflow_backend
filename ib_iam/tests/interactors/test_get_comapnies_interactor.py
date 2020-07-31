@@ -20,7 +20,7 @@ def expected_company_dtos():
 
 @pytest.fixture
 def expected_user_dtos():
-    from ib_iam.tests.factories import UserProfileDTOFactory
+    from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
     UserProfileDTOFactory.reset_sequence(1)
     user_profile_dtos = [UserProfileDTOFactory() for _ in range(3)]
     return user_profile_dtos

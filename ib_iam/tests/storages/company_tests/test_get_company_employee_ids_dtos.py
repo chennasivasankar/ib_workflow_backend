@@ -1,7 +1,8 @@
 import pytest
 from ib_iam.storages.company_storage_implementation import (
     CompanyStorageImplementation)
-from ib_iam.tests.factories import CompanyIdWithEmployeeIdsDTOFactory
+from ib_iam.tests.factories.storage_dtos import \
+    CompanyIdWithEmployeeIdsDTOFactory
 
 company_id = 'f2c02d98-f311-4ab2-8673-3daa00757002'
 user_ids = ['2bdb417e-4632-419a-8ddd-085ea272c6eb',

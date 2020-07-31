@@ -22,7 +22,7 @@ class TestCase01GetCompaniesAPITestCase(TestUtils):
             '548a803c-7b48-47ba-a700-24f2ea0d1280',
             '4b8fb6eb-fa7d-47c1-8726-cd917901104e',
             '7ee2c7b4-34c8-4d65-a83a-f87da75db24e']
-        from ib_iam.tests.factories import UserProfileDTOFactory
+        from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         UserProfileDTOFactory.reset_sequence(1)
         mock = prepare_user_profile_dtos_mock(mocker)
         mock.return_value = [
