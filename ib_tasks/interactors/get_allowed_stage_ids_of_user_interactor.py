@@ -9,5 +9,6 @@ class GetAllowedStageIdsOfUserInteractor:
         self.storage = storage
 
     def get_allowed_stage_ids_of_user(self, user_id: str) -> List[str]:
+        # ToDo: Filter stage ids with user id
         stage_ids = self.storage.get_allowed_stage_ids_of_user()
         return stage_ids
