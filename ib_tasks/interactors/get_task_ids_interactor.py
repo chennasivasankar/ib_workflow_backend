@@ -4,6 +4,7 @@ Author: Pavankumar Pamuru
 
 """
 from typing import List
+from ib_tasks.models import Stage
 
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface

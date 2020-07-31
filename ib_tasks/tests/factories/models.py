@@ -5,7 +5,8 @@ import factory
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
-    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage, TaskGoF, TaskGoFField)
+    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage, TaskGoF,
+    TaskGoFField, TaskTemplateInitialStage)
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
@@ -37,8 +38,6 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     value = factory.Sequence(lambda n: n)
     display_logic = factory.Sequence(lambda n: "status_id_%d==stage_id" % n)
     field_display_config = json.dumps(["FIELD_ID_1", "FIELD_ID_2"])
-
-
 
 
 class TaskStageModelFactory(factory.django.DjangoModelFactory):
@@ -83,6 +82,7 @@ class TaskTemplateFactory(factory.django.DjangoModelFactory):
 
     template_id = factory.sequence(lambda n: "template_{}".format(n + 1))
     name = factory.sequence(lambda n: "Template {}".format(n + 1))
+
 
 class TaskTemplateStatusVariableFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -204,3 +204,11 @@ class TaskGoFFieldFactory(factory.django.DjangoModelFactory):
     task_gof = factory.SubFactory(TaskGoFFactory)
     field = factory.SubFactory(FieldFactory)
     field_response = "response"
+
+
+class TaskTemplateInitialStageFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskTemplateInitialStage
+
+    task_template = factory.SubFactory(TaskTemplateFactory)
+    stage = factory.SubFactory(StageModelFactory)

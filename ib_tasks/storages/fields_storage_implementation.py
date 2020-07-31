@@ -66,7 +66,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                 q = current_queue
             else:
                 q = q | current_queue
-
+        if q is None:
+            return []
         field_objs = TaskGoFField.objects.filter(q).select_related(
             'field', 'task_gof'
         )

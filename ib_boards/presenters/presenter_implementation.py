@@ -19,7 +19,7 @@ from ib_boards.interactors.storage_interfaces.dtos import (
 
 
 class GetBoardsPresenterImplementation(
-        GetBoardsPresenterInterface, HTTPResponseMixin):
+    GetBoardsPresenterInterface, HTTPResponseMixin):
 
     def get_response_for_user_have_no_access_for_boards(
             self) -> response.HttpResponse:
@@ -83,7 +83,7 @@ class GetBoardsPresenterImplementation(
 
 
 class GetBoardsDetailsPresenterImplementation(
-        GetBoardsDetailsPresenterInterface, HTTPResponseMixin):
+    GetBoardsDetailsPresenterInterface, HTTPResponseMixin):
 
     def get_response_for_invalid_board_ids(
             self, error) -> response.HttpResponse:
@@ -117,7 +117,7 @@ class GetBoardsDetailsPresenterImplementation(
 
 
 class GetColumnTasksPresenterImplementation(
-        GetColumnTasksPresenterInterface, HTTPResponseMixin):
+    GetColumnTasksPresenterInterface, HTTPResponseMixin):
 
     def get_response_for_the_invalid_column_id(self):
         from ib_boards.constants.exception_messages import INVALID_COLUMN_ID
@@ -180,10 +180,28 @@ class GetColumnTasksPresenterImplementation(
             task_actions_dtos: List[ActionDTO],
             total_tasks: int):
         presenter = PresenterImplementation()
+        task_ids = [task_fields_dto.task_id for task_fields_dto in
+                    task_fields_dtos]
+
+        task_ids = sorted(list(set(task_ids)))
+        list_of_tasks = []
+        for task_id in task_ids:
+            list_of_fields = presenter.get_list_of_task_fields(task_id,
+                                                               task_fields_dtos)
+
+            list_of_actions = presenter.get_task_actions_dict(task_actions_dtos,
+                                                              task_id)
+            list_of_tasks.append(
+                {
+                    "task_id": task_id,
+                    "fields": list_of_fields,
+                    "actions": list_of_actions
+                }
+            )
 
         return {
             "total_tasks_count": total_tasks,
-            "tasks": []
+            "tasks": list_of_tasks
         }
 
 
@@ -237,11 +255,11 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
                                         ):
         list_of_tasks = []
         for task_dto in task_details:
-            list_of_fields = self._get_list_of_task_fields(task_dto.task_id,
-                                                           task_fields_dto)
+            list_of_fields = self.get_list_of_task_fields(task_dto.task_id,
+                                                          task_fields_dto)
 
-            list_of_actions = self._get_task_actions_dict(task_actions_dto,
-                                                          task_dto.task_id)
+            list_of_actions = self.get_task_actions_dict(task_actions_dto,
+                                                         task_dto.task_id)
             list_of_tasks.append(
                 {
                     "task_id": task_dto.task_id,
@@ -251,7 +269,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             )
         return list_of_tasks
 
-    def _get_task_actions_dict(self, task_actions_dto, task_id):
+    def get_task_actions_dict(self, task_actions_dto, task_id):
         task_actions = []
         for task_action_dto in task_actions_dto:
             if task_action_dto.task_id == task_id:
@@ -261,8 +279,8 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         )
         return list_of_actions
 
-    def _get_list_of_task_fields(self, task_id: str,
-                                 task_fields_dto: List[TaskDTO]):
+    def get_list_of_task_fields(self, task_id: int,
+                                task_fields_dto: List[TaskDTO]):
         task_fields = []
         for task_field in task_fields_dto:
             if task_field.task_id == task_id:
@@ -303,7 +321,8 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         return list_of_task_actions
 
     def get_response_for_column_details(self,
-                                        column_details: List[ColumnCompleteDetails],
+                                        column_details: List[
+                                            ColumnCompleteDetails],
                                         task_fields_dtos: List[TaskDTO],
                                         task_actions_dtos: List[ActionDTO],
                                         column_tasks: List[ColumnTasksDTO]

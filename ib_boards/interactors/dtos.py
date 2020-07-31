@@ -11,7 +11,7 @@ class ColumnParametersDTO:
 @dataclass
 class ColumnTasksDTO:
     column_id: str
-    task_id: str
+    task_id: int
 
 
 @dataclass
