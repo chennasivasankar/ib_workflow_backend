@@ -1,5 +1,6 @@
 from ib_boards.constants.exception_messages import INVALID_OFFSET_VALUE
-from ib_boards.presenters.presenter_implementation import PresenterImplementation
+from ib_boards.presenters.presenter_implementation import \
+    PresenterImplementation
 
 
 class TestInvalidOffsetValue:

@@ -8,6 +8,11 @@ class ServiceAdapter:
         return RolesService()
 
     @property
+    def auth_service(self):
+        from ib_tasks.adapters.auth_service import AuthService
+        return AuthService()
+
+    @property
     def boards_service(self):
         from .boards_service import BoardsService
         return BoardsService()

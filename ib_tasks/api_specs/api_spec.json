@@ -1,38 +1,40 @@
 {
-  "swagger": "2.0",
-  "host": "127.0.0.1:8000",
-  "basePath": "/api/ib_tasks/",
-  "info": {
-    "version": "1.0.0",
-    "title": "Simple API",
-    "description": "A simple API to learn how to write OpenAPI Specification"
-  },
-  "schemes": [
-    "http"
-  ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
-  "securityDefinitions": {
-    "oauth": {
-      "tokenUrl": "http://auth.ibtspl.com/oauth2/",
-      "flow": "password",
-      "scopes": {
-        "read": "read users",
-        "write": "create users",
-        "update": "update users",
-        "delete": "delete users"
-      },
-      "type": "oauth2"
-    }
-  },
-  "security": [
-  ],
-  "definitions": {
-    "InvalidTaskActionDetails": {
+   "swagger":"2.0",
+   "host":"127.0.0.1:8000",
+   "basePath":"/api/ib_tasks/",
+   "info":{
+      "version":"1.0.0",
+      "title":"Simple API",
+      "description":"A simple API to learn how to write OpenAPI Specification"
+   },
+   "schemes":[
+      "http"
+   ],
+   "consumes":[
+      "application/json"
+   ],
+   "produces":[
+      "application/json"
+   ],
+   "securityDefinitions":{
+      "oauth":{
+         "tokenUrl":"http://auth.ibtspl.com/oauth2/",
+         "flow":"password",
+         "scopes":{
+           "read": "read users",
+           "write": "create users",
+           "update": "update users",
+           "delete": "delete users",
+           "superuser": "superuser scope"
+         },
+         "type":"oauth2"
+      }
+   },
+   "security":[
+
+   ],
+   "definitions":{
+     "InvalidTaskActionDetails": {
       "type": "object",
       "properties": {
         "response": {
@@ -77,37 +79,37 @@
         "res_status"
       ]
     },
-    "FieldTypeEnum": {
-      "type": "object",
-      "properties": {
-        "field_type": {
-          "type": "string",
-          "enum": [
-            "PLAIN_TEXT",
-            "PHONE_NUMBER",
-            "EMAIL",
-            "URL",
-            "PASSWORD",
-            "NUMBER",
-            "FLOAT",
-            "LONG_TEXT",
-            "GOF_SELECTOR",
-            "RADIO_GROUP",
-            "CHECKBOX_GROUP",
-            "DROPDOWN",
-            "IMAGE_UPLOADER",
-            "FILE_UPLOADER",
-            "SEARCHABLE",
-            "DATE",
-            "MULTI_SELECT_FIELD"
-          ]
-        }
+      "FieldTypeEnum":{
+         "type":"object",
+         "properties":{
+            "field_type":{
+               "type":"string",
+               "enum":[
+                  "PLAIN_TEXT",
+                  "PHONE_NUMBER",
+                  "EMAIL",
+                  "URL",
+                  "PASSWORD",
+                  "NUMBER",
+                  "FLOAT",
+                  "LONG_TEXT",
+                  "GOF_SELECTOR",
+                  "RADIO_GROUP",
+                  "CHECKBOX_GROUP",
+                  "DROPDOWN",
+                  "IMAGE_UPLOADER",
+                  "FILE_UPLOADER",
+                  "SEARCHABLE",
+                  "DATE",
+                  "MULTI_SELECT_FIELD"
+               ]
+            }
+         },
+         "required":[
+            "field_type"
+         ]
       },
-      "required": [
-        "field_type"
-      ]
-    },
-    "GoFField": {
+       "GoFField": {
       "type": "object",
       "properties": {
         "field_id": {
@@ -122,7 +124,7 @@
         "field_id"
       ]
     },
-    "GoF": {
+      "GoF": {
       "type": "object",
       "properties": {
         "gof_id": {
@@ -144,29 +146,29 @@
         "gof_fields"
       ]
     },
-    "CreateTaskRequestBody": {
-      "type": "object",
-      "properties": {
-        "task_template_id": {
-          "type": "string"
-        },
-        "action_id": {
-          "type": "string"
-        },
-        "task_gofs": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/GoF"
-          }
-        }
+      "CreateTaskRequestBody":{
+         "type":"object",
+         "properties":{
+            "task_template_id":{
+               "type":"string"
+            },
+            "action_id":{
+              "type": "string"
+            },
+            "task_gofs":{
+               "type":"array",
+               "items":{
+                  "$ref":"#/definitions/GoF"
+               }
+            }
+         },
+         "required":[
+            "task_gofs",
+            "action_id",
+            "task_template_id"
+         ]
       },
-      "required": [
-        "task_gofs",
-        "action_id",
-        "task_template_id"
-      ]
-    },
-    "ActionDetailsResponse": {
+     "ActionDetailsResponse": {
       "type": "object",
       "properties": {
         "action_id": {
@@ -308,66 +310,156 @@
         "other_board_details"
       ]
     },
-    "Field": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/FieldTypeEnum"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "field_id": {
-              "type": "string"
+      "Field":{
+         "allOf":[
+            {
+               "$ref":"#/definitions/FieldTypeEnum"
             },
-            "display_name": {
-              "type": "string"
-            },
-            "is_field_required": {
-              "type": "boolean"
-            },
-            "field_values": {
-              "type": "string"
-            },
-            "allowed_formats": {
-              "type": "string"
-            },
-            "validation_regex": {
-              "type": "string"
-            },
-            "error_msg": {
-              "type": "string"
-            },
-            "tooltip": {
-              "type": "string"
-            },
-            "help_text": {
-              "type": "string"
-            },
-            "placeholder_text": {
-              "type": "string"
-            },
-            "is_field_readable": {
-              "type": "boolean"
-            },
-            "is_field_writable": {
-              "type": "boolean"
+            {
+               "type":"object",
+               "properties":{
+                  "field_id":{
+                     "type":"string"
+                  },
+                  "display_name":{
+                     "type":"string"
+                  },
+                  "is_field_required":{
+                     "type":"boolean"
+                  },
+                  "field_values":{
+                     "type":"string"
+                  },
+                  "allowed_formats":{
+                     "type":"string"
+                  },
+                  "validation_regex":{
+                     "type":"string"
+                  },
+                  "error_msg":{
+                     "type":"string"
+                  },
+                  "tooltip":{
+                     "type":"string"
+                  },
+                  "help_text":{
+                     "type":"string"
+                  },
+                  "placeholder_text":{
+                     "type":"string"
+                  },
+                  "is_field_readable":{
+                     "type":"boolean"
+                  },
+                  "is_field_writable":{
+                     "type":"boolean"
+                  }
+               },
+               "required":[
+                  "field_id",
+                  "display_name",
+                  "is_field_required",
+                  "is_field_readable",
+                  "is_field_writable"
+               ]
             }
-          },
-          "required": [
-            "field_id",
-            "display_name",
-            "is_field_required",
-            "is_field_readable",
-            "is_field_writable"
-          ]
-        }
-      ]
-    },
-    "GroupOfFields": {
+         ]
+      },
+      "GroupOfFields": {
       "type": "object",
       "properties": {
         "gof_id": {
           "type": "string"
+        "swagger": "2.0",
+        "host": "127.0.0.1:8000",
+        "basePath": "/api/ib_iam/",
+        "info": {
+            "version": "1.0.0",
+            "title": "Simple API",
+            "description": "A simple API to learn how to write OpenAPI Specification"
+        },
+        "schemes": [
+            "http"
+        ],
+        "consumes": [
+            "application/json"
+        ],
+        "produces": [
+            "application/json"
+        ],
+        "securityDefinitions": {
+            "oauth": {
+                "tokenUrl": "http://auth.ibtspl.com/oauth2/",
+                "flow": "password",
+                "scopes": {
+                    "read": "read users",
+                    "write": "create users",
+                    "update": "update users",
+                    "delete": "delete users"
+                },
+                "type": "oauth2"
+            }
+        },
+        "security": [],
+        "definitions": {
+            "DefaultHttpExceptionFields": {
+                "type": "object",
+                "properties": {
+                    "response": {
+                        "type": "string"
+                    },
+                    "http_status_code": {
+                        "type": "integer"
+                    },
+                    "res_status": {
+                        "type": "string",
+                        "enum": [
+                            "DUPLICATE_TO_IDS",
+                            "INVALID_INPUT_TO_IDS"
+                        ]
+                    }
+                },
+                "required": [
+                    "response",
+                    "http_status_code",
+                    "res_status"
+                ]
+            },
+            "TodoId": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "BasicTodo": {
+                "type": "object",
+                "properties": {
+                    "description": {
+                        "type": "string"
+                    },
+                    "is_completed": {
+                        "type": "boolean"
+                    },
+                    "remind_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "description"
+                ]
+            },
+            "Todo": {
+                "allOf": [
+                    {
+                        "$ref": "#/definitions/BasicTodo"
+                    },
+                    {
+                        "$ref": "#/definitions/TodoId"
+                    }
+                ]
+            }
         },
         "gof_display_name": {
           "type": "string"
@@ -397,26 +489,27 @@
         "fields"
       ]
     },
-    "Action": {
-      "type": "object",
-      "properties": {
-        "action_id": {
-          "type": "string"
-        },
-        "button_text": {
-          "type": "string"
-        },
-        "button_color": {
-          "type": "string"
-        }
+      "Action":{
+         "type":"object",
+         "properties":{
+            "action_id": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "button_text":{
+               "type":"string"
+            },
+            "button_color":{
+               "type":"string"
+            }
+         },
+         "required":[
+            "action_id",
+            "button_text",
+            "button_color"
+         ]
       },
-      "required": [
-        "action_id",
-        "button_text",
-        "button_color"
-      ]
-    },
-    "GetTaskResponseBody": {
+      "GetTaskResponseBody": {
       "type": "object",
       "properties": {
         "task_id": {
@@ -446,12 +539,6 @@
                     },
                     "field_response": {
                       "type": "string"
-                    },
-                    "is_readable": {
-                      "type": "boolean"
-                    },
-                    "is_writable": {
-                      "type": "boolean"
                     }
                   },
                   "required": [
@@ -462,7 +549,8 @@
             },
             "required": [
               "gof_id",
-              "gof_fields"
+              "gof_fields",
+              "same_gof_order"
             ]
           }
         },
@@ -491,26 +579,42 @@
                     "button_color": {
                       "type": "string"
                     }
-                  }
+                  },
+                  "required": [
+                    "action_id",
+                    "button_text",
+                    "button_color"
+                  ]
                 }
               }
-            }
+            },
+            "required": [
+              "stage_id",
+              "stage_display_name",
+              "actions"
+            ]
           }
         }
+      },
+        "required": [
+          "task_id",
+          "template_id",
+          "gofs",
+          "stages_with_actions"
+        ]
       }
-    }
-  },
-  "parameters": {
-    "CreateTaskBodyParameter": {
-      "in": "body",
-      "name": "CreateTaskRequestBody",
-      "description": "give valid details",
-      "required": true,
-      "schema": {
-        "$ref": "#/definitions/CreateTaskRequestBody"
-      }
-    },
-    "TaskParameterize": {
+   },
+   "parameters":{
+      "CreateTaskBodyParameter":{
+         "in":"body",
+         "name":"CreateTaskRequestBody",
+         "description":"give valid details",
+         "required":true,
+         "schema":{
+            "$ref":"#/definitions/CreateTaskRequestBody"
+         }
+      },
+     "TaskParameterize": {
       "name": "task_id",
       "in": "path",
       "required": true,
@@ -531,33 +635,29 @@
       "description": "Id of the Board",
       "type": "string"
     },
-    "SearchableTypeParameter": {
+
+     "SearchableTypeParameter": {
       "name": "search_type",
       "description": "Searchable Type Parameter",
       "in": "query",
       "required": true,
       "type": "string",
       "enum": [
-        "CITY",
-        "STATE",
-        "COUNTRY",
-        "VENDOR",
-        "USER",
-        "COMPANY",
-        "TEAM"
-      ]
+      "USER"]
     },
     "LimitParameter": {
       "name": "limit",
       "description": "Limit Parameter",
       "in": "query",
-      "type": "integer"
+      "type": "integer",
+      "required": true
     },
     "OffsetParameter": {
       "name": "offset",
       "description": "Offset Parameter",
       "in": "query",
-      "type": "integer"
+      "type": "integer",
+      "required": true
     },
     "SearchableQueryParameter": {
       "name": "search_query",
@@ -566,12 +666,12 @@
       "required": true,
       "type": "string"
     }
-  },
-  "responses": {
-    "CreateTaskSuccessResponse": {
-      "description": "task created successfully"
-    },
-    "TaskTemplatesDoesNotExistsResponse": {
+   },
+   "responses":{
+      "CreateTaskSuccessResponse":{
+         "description":"task created successfully"
+      },
+     "TaskTemplatesDoesNotExistsResponse": {
       "description": "No task templates exists",
       "schema": {
         "type": "object",
@@ -596,50 +696,50 @@
         ]
       }
     },
-    "GetTaskTemplateResponse": {
-      "description": "OK",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "task_templates": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "template_id": {
-                  "type": "string"
-                },
-                "template_name": {
-                  "type": "string"
-                },
-                "actions": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/Action"
+      "GetTaskTemplateResponse":{
+         "description":"OK",
+         "schema":{
+            "type":"object",
+            "properties":{
+               "task_templates":{
+                  "type":"array",
+                  "items":{
+                     "type":"object",
+                     "properties":{
+                        "template_id":{
+                           "type":"string"
+                        },
+                        "template_name":{
+                           "type":"string"
+                        },
+                        "actions":{
+                           "type":"array",
+                           "items":{
+                              "$ref":"#/definitions/Action"
+                           }
+                        },
+                        "group_of_fields":{
+                           "type":"array",
+                           "items":{
+                              "$ref":"#/definitions/GroupOfFields"
+                           }
+                        }
+                     },
+                     "required":[
+                        "template_id",
+                        "template_name",
+                        "actions",
+                        "group_of_fields"
+                     ]
                   }
-                },
-                "group_of_fields": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/GroupOfFields"
-                  }
-                }
-              },
-              "required": [
-                "template_id",
-                "template_name",
-                "actions",
-                "group_of_fields"
-              ]
-            }
-          }
-        },
-        "required": [
-          "task_templates"
-        ]
-      }
-    },
-    "GetTaskSuccessResponse": {
+               }
+            },
+            "required":[
+               "task_templates"
+            ]
+         }
+      },
+      "GetTaskSuccessResponse": {
       "description": "Success",
       "schema": {
         "$ref": "#/definitions/GetTaskResponseBody"
@@ -669,21 +769,24 @@
     "SearchableValuesResponse": {
       "description": "OK",
       "schema": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer"
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            }
           },
-          "name": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "name"
-        ]
+          "required": [
+            "id",
+            "name"
+          ]
+        }
       }
-    },
+     },
     "SearchableValuesFailureResponse": {
       "description": "Searchable Values Failure Response",
       "schema": {
@@ -701,10 +804,8 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "SEARCHABLE_TYPE_DOES_NOT_EXIST",
-              "LIMIT_VALUE_SHOULD_BE_GREATER_THAN_ZERO",
-              "OFFSET_VALUE_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE",
-              "NO_SEARCH_RESULTS_FOUND"
+              "LIMIT_SHOULD_BE_GREATER_THAN_ZERO",
+              "OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE"
             ]
           }
         },
@@ -715,9 +816,9 @@
         ]
       }
     }
-  },
-  "paths": {
-    "/boards/{board_id}/tasks/{task_id}/actions/{action_id}/v1/": {
+   },
+   "paths":{
+     "/boards/{board_id}/tasks/{task_id}/actions/{action_id}/v1/": {
       "post": {
         "operationId": "perform_task_action",
         "summary": "User Act On Specific Task in a Column",
@@ -762,97 +863,98 @@
         }
       }
     },
-    "/task_templates/v1/": {
-      "get": {
-        "operationId": "get_task_templates",
-        "summary": "Get list of task templates along with group of fields",
-        "description": "Get list of task templates along with group of fields",
-        "security": [
-          {
-            "oauth": [
-              "read"
-            ]
-          }
-        ],
-        "parameters": [
-        ],
-        "responses": {
-          "200": {
-            "$ref": "#/responses/GetTaskTemplateResponse"
-          },
-          "404": {
+      "/task_templates/v1/":{
+         "get":{
+            "operationId":"get_task_templates",
+            "summary":"Get list of task templates along with group of fields",
+            "description":"Get list of task templates along with group of fields",
+            "security":[
+               {
+                  "oauth":[
+                     "read"
+                  ]
+               }
+            ],
+            "parameters":[
+
+            ],
+            "responses":{
+               "200":{
+                  "$ref":"#/responses/GetTaskTemplateResponse"
+               },
+               "404": {
             "$ref": "#/responses/TaskTemplatesDoesNotExistsResponse"
           }
-        }
-      }
-    },
-    "/task/v1/": {
-      "post": {
-        "operationId": "create_task",
-        "summary": "create a task",
-        "description": "create a task with given details",
-        "security": [
-          {
-            "oauth": [
-              "write"
-            ]
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/parameters/CreateTaskBodyParameter"
-          }
-        ],
-        "responses": {
-          "201": {
-            "$ref": "#/responses/CreateTaskSuccessResponse"
-          },
-          "400": {
-            "description": ""
+            }
+         }
+      },
+      "/task/v1/":{
+         "post":{
+            "operationId":"create_task",
+            "summary":"create a task",
+            "description":"create a task with given details",
+            "security":[
+               {
+                  "oauth":[
+                     "write"
+                  ]
+               }
+            ],
+            "parameters":[
+               {
+                  "$ref":"#/parameters/CreateTaskBodyParameter"
+               }
+            ],
+            "responses":{
+               "201":{
+                  "$ref":"#/responses/CreateTaskSuccessResponse"
+               },
+               "400":{
+                  "description":""
+               }
+            }
+         },
+        "get": {
+          "operationId": "get_task",
+          "summary": "get task",
+          "description": "get task details",
+          "security": [
+            {
+              "oauth": [
+                "write",
+                "read"
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "name": "task_id",
+              "in": "query",
+              "description": "task id to get task details",
+              "type": "integer"
+            }
+          ],
+          "responses": {
+            "200": {
+              "$ref": "#/responses/GetTaskSuccessResponse"
+            },
+            "404": {
+              "$ref": "#/responses/GetTaskFailureResponse"
+            }
           }
         }
       },
-      "get": {
-        "operationId": "get_task",
-        "summary": "get task",
-        "description": "get task details",
-        "security": [
-          {
-            "oauth": [
-              "write",
-              "read"
-            ]
-          }
-        ],
-        "parameters": [
-          {
-            "name": "task_id",
-            "in": "query",
-            "description": "task id to get task details",
-            "type": "integer"
-          }
-        ],
-        "responses": {
-          "200": {
-            "$ref": "#/responses/GetTaskSuccessResponse"
-          },
-          "404": {
-            "$ref": "#/responses/GetTaskFailureResponse"
-          }
-        }
-      }
-    },
-    "/field_search/v1/": {
+     "/field_search/v1/": {
       "get": {
         "operationId": "get_searchable_values",
         "summary": "get searchable values based on search type",
         "description": "get searchable values based on search type given a query",
-        "security": [
-          {
-            "oauth": [
-              "read"
-            ]
-          }
+        "security":[
+           {
+              "oauth":[
+                 "read"
+              ]
+           }
         ],
         "parameters": [
           {

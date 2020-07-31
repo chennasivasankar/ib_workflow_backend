@@ -7,3 +7,4 @@ class Stage(models.Model):
     display_name = models.TextField()
     value = models.IntegerField()
     display_logic = models.TextField()
+    field_display_config = models.TextField(max_length=400)

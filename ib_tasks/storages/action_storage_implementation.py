@@ -3,7 +3,7 @@ from typing import List, Optional
 from django.db.models import F, Q
 
 from ib_tasks.interactors.stages_dtos import StagesActionDTO, \
-    TaskTemplateStageDTO
+    TemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO
@@ -134,7 +134,7 @@ class ActionsStorageImplementation(ActionStorageInterface):
 
     def create_initial_stage_to_task_template(self,
                                               task_template_stage_dtos: List[
-                                                  TaskTemplateStageDTO]):
+                                                  TemplateStageDTO]):
         stage_ids = [stage.stage_id for stage in task_template_stage_dtos]
         stages = Stage.objects.filter(stage_id__in=stage_ids).values('stage_id',
                                                                      'id')

@@ -1,5 +1,6 @@
 from ib_boards.constants.exception_messages import INVALID_BOARD_ID
-from ib_boards.presenters.presenter_implementation import PresenterImplementation
+from ib_boards.presenters.presenter_implementation import \
+    PresenterImplementation
 
 
 class TestInvalidBoardId:

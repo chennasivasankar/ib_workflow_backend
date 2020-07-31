@@ -5,7 +5,7 @@ Author: Pavankumar Pamuru
 """
 from typing import List, Dict
 
-from ib_boards.interactors.dtos import BoardDTO, ColumnDTO
+from ib_boards.interactors.dtos import BoardDTO
 
 
 class PopulateCreateBoardsAndColumns:
@@ -24,7 +24,7 @@ class PopulateCreateBoardsAndColumns:
         for board_dict in boards_columns_dicts:
             if board_dict['board_id'] not in board_ids:
                 board_ids.append(board_dict['board_id'])
-                board_dto  = self._convert_board_dict_to_board_dto(
+                board_dto = self._convert_board_dict_to_board_dto(
                     board_dict=board_dict
                 )
                 board_dtos.append(board_dto)
@@ -47,5 +47,5 @@ class PopulateCreateBoardsAndColumns:
     def _convert_board_dict_to_board_dto(board_dict: Dict) -> BoardDTO:
         return BoardDTO(
             board_id=board_dict['board_id'],
-            display_name=board_dict['board_display_name']
+            name=board_dict['board_display_name']
         )

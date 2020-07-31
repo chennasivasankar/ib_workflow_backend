@@ -1,14 +1,11 @@
-"""
-Created on: 18/07/20
-Author: Pavankumar Pamuru
-
-"""
 from typing import List, Tuple
 
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
     BoardColumnsDTO, TaskTemplateStagesDTO, TaskSummaryFieldsDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
-    ColumnDetailsDTO
+    ColumnDetailsDTO, TaskBoardsDetailsDTO
+from ib_boards.interactors.storage_interfaces.dtos import ColumnBoardDTO, \
+    ColumnStageDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_boards.models import Board, ColumnPermission, Column
@@ -17,12 +14,11 @@ from ib_boards.models import Board, ColumnPermission, Column
 class StorageImplementation(StorageInterface):
 
     def validate_board_id(self, board_id):
-        is_board_id_invalid = not Board.objects.filter(
+        boards = Board.objects.all().values('board_id')
+        is_board_id_valid = Board.objects.filter(
             board_id=board_id
         ).exists()
-        if is_board_id_invalid:
-            from ib_boards.exceptions.custom_exceptions import InvalidBoardId
-            raise InvalidBoardId
+        return is_board_id_valid
 
     def get_existing_board_ids(self) -> List[str]:
         board_ids = Board.objects.values_list('board_id', flat=True)
@@ -34,7 +30,7 @@ class StorageImplementation(StorageInterface):
         board_objects = [
             Board(
                 board_id=board_dto.board_id,
-                name=board_dto.display_name
+                name=board_dto.name
             )
             for board_dto in board_dtos
         ]
@@ -62,31 +58,18 @@ class StorageImplementation(StorageInterface):
         return board_column_id_dtos
 
     def get_boards_column_ids(
-            self, board_ids: List[str]) -> List[BoardColumnsDTO]:
+            self, board_ids: List[str]) -> List[str]:
 
-        board_column_ids = Column.objects.filter(
+        column_ids = Column.objects.filter(
             board_id__in=board_ids
-        ).values('board_id', 'column_id')
-        from collections import defaultdict
-        board_columns_map = defaultdict(lambda: [])
-        for board_column_id in board_column_ids:
-            board_columns_map[board_column_id['board_id']].append(
-                board_column_id['column_id']
-            )
-
-        board_columns_dtos = [
-            BoardColumnsDTO(
-                board_id=key,
-                column_ids=value
-            )
-            for key, value in board_columns_map.items()
-        ]
-        return board_columns_dtos
+        ).values_list('column_id', flat=True)
+        return list(column_ids)
 
     def update_columns_for_board(self, column_dtos: List[ColumnDTO]) -> None:
         column_ids = [column_dto.column_id for column_dto in column_dtos]
         column_objects = Column.objects.filter(column_id__in=column_ids)
-        user_role_ids = ColumnPermission.objects.filter(column_id__in=column_ids)
+        user_role_ids = ColumnPermission.objects.filter(
+            column_id__in=column_ids)
         updated_column_objects = self._get_updated_column_objects(
             column_dtos=column_dtos,
             column_objects=column_objects
@@ -143,13 +126,13 @@ class StorageImplementation(StorageInterface):
                                                 user_role_objects):
         for user_role in column_dto.user_role_ids:
             for user_role_object in user_role_objects:
-                user_role_object.user_role_id=user_role
+                user_role_object.user_role_id = user_role
 
         return user_role_objects
 
     def _get_updated_column_object(
             self, column_dto: ColumnDTO, column_object: Column):
-        column_object.name = column_dto.display_name
+        column_object.name = column_dto.name
         column_object.display_order = column_dto.display_order
         column_object.task_selection_config = \
             self._get_json_string_for_task_selection_config(
@@ -185,12 +168,12 @@ class StorageImplementation(StorageInterface):
 
     def _get_column_objects_and_column_permission_objects_from_dtos(
             self, column_dtos: List[ColumnDTO]) -> Tuple[
-            List[Column], List[ColumnPermission]]:
+        List[Column], List[ColumnPermission]]:
         column_objects = [
             Column(
                 column_id=column_dto.column_id,
                 board_id=column_dto.board_id,
-                name=column_dto.display_name,
+                name=column_dto.name,
                 display_order=column_dto.display_order,
                 task_selection_config=self._get_json_string_for_task_selection_config(
                     column_dto.task_template_stages
@@ -294,13 +277,12 @@ class StorageImplementation(StorageInterface):
                 UserDoNotHaveAccessToColumn
             raise UserDoNotHaveAccessToColumn
 
-
     @staticmethod
     def _convert_board_objects_to_board_dtos(board_objects):
         board_dtos = [
             BoardDTO(
                 board_id=board_object.board_id,
-                display_name=board_object.name
+                name=board_object.name
             )
             for board_object in board_objects
         ]
@@ -319,22 +301,85 @@ class StorageImplementation(StorageInterface):
 
     def get_columns_details(self, column_ids: List[str]) -> \
             List[ColumnDetailsDTO]:
-        pass
+        column_objs = Column.objects.filter(column_id__in=column_ids)
+        columns_dtos = self._convert_column_objs_to_dtos(column_objs)
+        return columns_dtos
+
+    @staticmethod
+    def _convert_column_objs_to_dtos(column_objs):
+        list_of_column_dtos = [
+            ColumnDetailsDTO(
+                column_id=obj.column_id,
+                name=obj.name
+            )
+            for obj in column_objs
+        ]
+        return list_of_column_dtos
 
     def get_column_ids_for_board(self, board_id: str, user_roles: List[str]) \
             -> List[str]:
-        pass
+        column_objs = Column.objects.filter(board__board_id=board_id)
+        roles = ColumnPermission.objects.filter(column__in=column_objs)
+        column_ids = []
+        for role in roles:
+            if role.user_role_id == "ALL_ROLES":
+                column_ids.append(role.column.column_id)
+            elif role.user_role_id in user_roles:
+                column_ids.append(role.column.column_id)
+        return sorted(list(set(column_ids)))
 
     def get_permitted_user_roles_for_board(self, board_id: str) -> List[str]:
+        return "ALL ROLES"
+
+    def get_board_complete_details(self, board_id: str,
+                                   stage_ids: List[str]) -> \
+            TaskBoardsDetailsDTO:
+
+        column_objs = Column.objects.filter(board_id=board_id)
+        board_obj = Board.objects.get(board_id=board_id)
+        board_dto = BoardDTO(
+            board_id=board_obj.board_id,
+            name=board_obj.name
+        )
+
+        list_of_column_dtos, column_stages = self._convert_column_details_to_dtos(
+            column_objs,
+            stage_ids)
+        board_details_dto = TaskBoardsDetailsDTO(
+            board_dto=board_dto,
+            columns_dtos=list_of_column_dtos,
+            column_stage_dtos=column_stages
+        )
+        return board_details_dto
+
+    def get_column_details(self, board_id: str, user_roles: List[str]) \
+            -> List[BoardColumnDTO]:
         pass
 
-    def get_columns_details(self, column_ids: List[str]) -> \
-            List[ColumnDetailsDTO]:
-        pass
-
-    def get_column_ids_for_board(self, board_id: str, user_roles: List[str]) \
-            -> List[str]:
-        pass
-
-    def get_permitted_user_roles_for_board(self, board_id: str) -> List[str]:
-        pass
+    def _convert_column_details_to_dtos(self, column_objs,
+                                        stage_ids):
+        list_of_column_dtos = []
+        for column_obj in column_objs:
+            list_of_column_dtos.append(
+                ColumnBoardDTO(
+                    column_id=column_obj.column_id,
+                    board_id=column_obj.board_id,
+                    name=column_obj.name
+                )
+            )
+        column_stages = []
+        for column_obj in column_objs:
+            tasks = column_obj.task_selection_config
+            import json
+            tasks_stages = json.loads(tasks)
+            for key, value in enumerate(tasks_stages):
+                stages = tasks_stages[value]
+                for stage in stages:
+                    if stage in stage_ids:
+                        column_stages.append(
+                            ColumnStageDTO(
+                                column_id=column_obj.column_id,
+                                stage_id=stage
+                            )
+                        )
+        return list_of_column_dtos, column_stages

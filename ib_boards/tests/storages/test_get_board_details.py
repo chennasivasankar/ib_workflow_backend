@@ -41,5 +41,3 @@ class TestGetBoardDetails:
         assert actual_board_dtos[0] == expected_board_dtos[0]
         assert actual_board_dtos[1] == expected_board_dtos[1]
         assert actual_board_dtos[2] == expected_board_dtos[2]
-
-

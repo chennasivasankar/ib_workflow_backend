@@ -17,14 +17,15 @@ class TestGetColumnDisplayStageIds:
 
     @pytest.fixture
     def reset_sequence(self):
-        from ib_boards.tests.factories.models import BoardFactory, ColumnFactory
+        from ib_boards.tests.factories.models import BoardFactory, \
+            ColumnFactory
         BoardFactory.reset_sequence()
         ColumnFactory.reset_sequence()
 
     def test_with_valid_column_id_return_column_stage_ids(
             self, storage, reset_sequence):
         # Arrange
-        expected_stage_ids = ['PR_PAYMENT_REQUEST_DRAFTS']
+        expected_stage_ids = ['stage_id_1', 'stage_id_2', 'stage_id_3']
         column_id = 'COLUMN_ID_1'
         from ib_boards.tests.factories.models import BoardFactory
         BoardFactory.create_batch(2)

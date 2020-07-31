@@ -29,7 +29,7 @@ class GetBoardsAndColumnsDataFromSheet:
         ]
         return boards_columns_dicts
 
-    def populate_data_from_sheet_to_create_boards_and_columns(self):
+    def create_boards_and_columns(self):
         boards_columns_dicts = self.get_data_from_sheet()
         from ib_boards.populate.populate_script_to_create_boards_and_columns \
             import PopulateCreateBoardsAndColumns
@@ -38,7 +38,7 @@ class GetBoardsAndColumnsDataFromSheet:
             boards_columns_dicts=boards_columns_dicts
         )
 
-    def populate_data_from_sheet_to_add_or_delete_columns_for_board(self):
+    def add_or_delete_columns_for_board(self):
         boards_columns_dicts = self.get_data_from_sheet()
         from ib_boards.populate.populate_script_for_add_or_delete_columns_for_board \
             import PopulateAddOrDeleteColumnsForBoard
@@ -56,7 +56,8 @@ class GetBoardsAndColumnsDataFromSheet:
                 "Column Order For Display": int,
                 "Column ID*": And(str, len),
                 "Column Display Name": str,
-                "Task Template Stages that are visible in columns": And(str, len),
+                "Task Template Stages that are visible in columns": And(str,
+                                                                        len),
                 "Visible to RoleIDs": And(str, len),
                 "Column Summary": And(str, len),
                 "Column Actions": And(str, len),
@@ -85,7 +86,8 @@ class GetBoardsAndColumnsDataFromSheet:
             "Card Info_List": "CardInfo_Requester_List\n{\nFIN_PR:[PR_PAYMENT_REQUEST_DRAFTS]\n}"
 
         }
-        self.data_sheet.raise_exception_for_valid_format(valid_format=valid_format)
+        self.data_sheet.raise_exception_for_valid_format(
+            valid_format=valid_format)
 
     @staticmethod
     def _get_list_of_dictionary_to_populate_data(
@@ -99,9 +101,8 @@ class GetBoardsAndColumnsDataFromSheet:
             "user_role_ids": field_record["Visible to RoleIDs"],
             "column_summary": field_record["Column Summary"],
             "column_actions": field_record["Column Actions"],
-            "task_template_stages": field_record["Task Template Stages that are visible in columns"],
+            "task_template_stages": field_record[
+                "Task Template Stages that are visible in columns"],
             "kanban_view_fields": field_record["Card Info_Kanban"],
             "list_view_fields": field_record["Card Info_List"],
         }
-
-

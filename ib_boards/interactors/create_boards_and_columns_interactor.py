@@ -29,6 +29,7 @@ class CreateBoardsAndColumnsInteractor:
         board_dtos, column_dtos = self._get_boards_and_columns_need_to_create(
             board_dtos=board_dtos, column_dtos=column_dtos
         )
+        print(board_dtos, column_dtos)
         boards_columns_to_create = board_dtos and column_dtos
         if boards_columns_to_create:
             self.storage.create_boards_and_columns(
@@ -50,6 +51,7 @@ class CreateBoardsAndColumnsInteractor:
             if board_dto.board_id not in existing_board_ids:
                 new_board_dtos.append(board_dto)
                 new_column_dtos += board_columns_dict[board_dto.board_id]
+
         return new_board_dtos, new_column_dtos
 
     def validate_columns_data(self, column_dtos: List[ColumnDTO]):
@@ -92,7 +94,7 @@ class CreateBoardsAndColumnsInteractor:
     @staticmethod
     def _validate_board_display_name(board_dtos: List[BoardDTO]):
         for board_dto in board_dtos:
-            is_invalid_display_name = not board_dto.display_name
+            is_invalid_display_name = not board_dto.name
             if is_invalid_display_name:
                 from ib_boards.exceptions.custom_exceptions import \
                     InvalidBoardDisplayName
@@ -110,7 +112,7 @@ class CreateBoardsAndColumnsInteractor:
     def _validate_column_display_name(column_dtos: List[ColumnDTO]):
         is_invalid_display_name_ids = []
         for column_dto in column_dtos:
-            is_invalid_display_name = not column_dto.display_name
+            is_invalid_display_name = not column_dto.name
             if is_invalid_display_name:
                 is_invalid_display_name_ids.append(column_dto.column_id)
         if is_invalid_display_name_ids:
@@ -146,8 +148,8 @@ class CreateBoardsAndColumnsInteractor:
         service_adapter = get_service_adapter()
         valid_task_template_ids = service_adapter.task_service. \
             get_valid_task_template_ids(
-                task_template_ids=task_template_ids
-            )
+            task_template_ids=task_template_ids
+        )
         invalid_task_template_ids = [
             task_template_id for task_template_id in task_template_ids
             if task_template_id not in valid_task_template_ids
@@ -227,7 +229,7 @@ class CreateBoardsAndColumnsInteractor:
             user_roles += column_dto.user_role_ids
         user_roles = sorted(list(set(user_roles)))
         valid_user_roles = service_adapter.user_service.get_valid_user_role_ids(
-            user_role_ids=user_roles
+            user_roles=user_roles
         )
         invalid_user_roles = [
             user_role

@@ -5,7 +5,6 @@ Author: Pavankumar Pamuru
 """
 from typing import List
 
-from ib_boards.exceptions.custom_exceptions import InvalidStageIds
 from ib_boards.interactors.dtos import TaskStatusDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     StageDisplayLogicPresenterInterface
@@ -25,7 +24,8 @@ class StageDisplayLogicInteractor:
             task_status_dtos=task_status_dtos
         )
 
-    def get_stage_display_logic_condition(self, stage_display_logics: List[str]):
+    def get_stage_display_logic_condition(self,
+                                          stage_display_logics: List[str]):
         task_status_dtos = self._get_values_from_stage_display_logic(
             stage_display_logics=stage_display_logics
         )

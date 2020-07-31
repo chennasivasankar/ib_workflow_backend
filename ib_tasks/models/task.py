@@ -5,4 +5,4 @@ from ib_common.models.abstract_date_time_model \
 
 class Task(AbstractDateTimeModel):
     template_id = models.CharField(max_length=100)
-    created_by = models.IntegerField()
+    created_by = models.CharField(max_length=50)
