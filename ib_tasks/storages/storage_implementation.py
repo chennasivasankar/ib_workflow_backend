@@ -34,6 +34,11 @@ class StagesStorageImplementation(StageStorageInterface):
             list_of_stages.append(self._get_stage_object(stage))
         Stage.objects.bulk_create(list_of_stages)
 
+    def get_allowed_stage_ids_of_user(self) -> List[str]:
+        stage_ids = list(
+            Stage.objects.all().values_list('stage_id', flat=True))
+        return stage_ids
+
     @staticmethod
     def _get_stage_object(stage):
         return Stage(stage_id=stage.stage_id,
@@ -48,6 +53,15 @@ class StagesStorageImplementation(StageStorageInterface):
             stage_id__in=stage_ids
         ).values_list('stage_id', flat=True)
         return list(valid_stage_ids)
+
+    def get_valid_stage_ids_in_given_stage_ids(self, stage_ids: List[str]) -> \
+            List[str]:
+
+        stage_ids = list(
+            Stage.objects.filter(stage_id__in=stage_ids).
+                values_list('stage_id', flat=True))
+        return stage_ids
+
 
     def update_stages(self,
                       update_stages_information: StageDTO):
@@ -78,8 +92,8 @@ class StagesStorageImplementation(StageStorageInterface):
         return stage_object
 
     def validate_stages_related_task_template_ids(self,
-                                                  task_stages_dto: List[
-                                                      TaskStagesDTO]) -> \
+                                                  task_stages_dto:
+                                                  List[TaskStagesDTO]) -> \
             Optional[List[str]]:
         invalid_task_id_stages = []
         stage_ids = [stage.stage_id for stage in task_stages_dto]

@@ -10,7 +10,7 @@ from ...storages.storage_implementation import StorageImplementation
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    user_id = kwargs['user'].id
+    user_id = kwargs['user'].user_id
     request_data = kwargs['request_data']
     task_id = request_data['task_id']
     action_id = request_data['action_id']

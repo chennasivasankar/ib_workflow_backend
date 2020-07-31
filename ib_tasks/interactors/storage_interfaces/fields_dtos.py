@@ -56,7 +56,6 @@ class FieldDetailsDTO:
 class FieldDetailsWithStageIdDTO:
     field_type: str
     field_id: int
-    stage_id: str
     key: str
     value: str
 
