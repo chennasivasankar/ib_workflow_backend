@@ -10,7 +10,7 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionsOfTemplateDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldRolesDTO, FieldRoleDTO, FieldTypeDTO, UserFieldPermissionDTO, \
-    FieldDetailsDTO, StageTaskFieldsDTO
+    FieldDetailsDTO, StageTaskFieldsDTO, FieldWithPermissionsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import (
     TaskGoFFieldDTO,
@@ -415,3 +415,12 @@ class StageDisplayValueDTOFactory(factory.Factory):
     stage_id = factory.sequence(lambda n: "stage_{}".format(n + 1))
     display_logic = factory.sequence(lambda n: "variable_{} == stage_{}".format((n+1), (n+1)))
     value = factory.sequence(lambda n: (n+1))
+
+
+class FieldWithPermissionsDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldWithPermissionsDTO
+
+    field_dto = factory.SubFactory(FieldDTOFactory)
+    is_field_readable = factory.Iterator([True, False])
+    is_field_writable = factory.Iterator([True, False])

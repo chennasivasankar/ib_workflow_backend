@@ -80,3 +80,10 @@ class TaskTemplateStageFieldsDTO:
 class StageTaskFieldsDTO:
     task_id: int
     field_ids: List[str]
+
+
+@dataclass
+class FieldWithPermissionsDTO:
+    field_dto: FieldDTO
+    is_field_readable: bool
+    is_field_writable: bool
