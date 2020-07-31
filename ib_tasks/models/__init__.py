@@ -37,5 +37,6 @@ __all__ = [
     "TaskTemplateGlobalConstants",
     "TaskTemplateGoFs",
     "TaskTemplateStatusVariable",
-    "TaskTemplateStatusVariables"
+    "TaskTemplateStatusVariables",
+    "TaskTemplateInitialStage"
 ]
