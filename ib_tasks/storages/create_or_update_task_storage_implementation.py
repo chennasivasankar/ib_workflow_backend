@@ -15,7 +15,9 @@ from ib_tasks.models.gof_role import GoFRole
 from ib_tasks.models.field_role import FieldRole
 
 
-class CreateOrUpdateTaskStorageImplementation(CreateOrUpdateTaskStorageInterface):
+class CreateOrUpdateTaskStorageImplementation(
+    CreateOrUpdateTaskStorageInterface
+):
 
     def validate_task_id(
             self, task_id: int
@@ -68,6 +70,9 @@ class CreateOrUpdateTaskStorageImplementation(CreateOrUpdateTaskStorageInterface
     def get_field_ids_having_permission(
             self, field_ids: List[str], user_roles: List[str]
     ) -> List[str]:
+
+        print("roles = ", FieldRole.objects.values())
+        print("user_roles = ", user_roles)
 
         field_ids = list(
             FieldRole.objects.filter(

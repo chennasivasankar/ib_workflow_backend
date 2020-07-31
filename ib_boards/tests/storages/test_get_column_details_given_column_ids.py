@@ -17,6 +17,7 @@ class TestColumnDetails:
     @pytest.fixture()
     def create_columns(self):
         BoardFactory.reset_sequence()
+        ColumnFactory.reset_sequence()
         board = BoardFactory()
         ColumnFactory.reset_sequence()
         ColumnPermissionFactory.reset_sequence()

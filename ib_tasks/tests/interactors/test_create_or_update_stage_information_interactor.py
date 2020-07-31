@@ -2,16 +2,21 @@ from unittest.mock import create_autospec, patch
 import pytest
 
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO
-from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageValues, DuplicateStageIds, InvalidStageDisplayLogic, \
+from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageValues, \
+    DuplicateStageIds, InvalidStageDisplayLogic, \
     InvalidStagesDisplayName
-from ib_tasks.exceptions.task_custom_exceptions import InvalidStagesTaskTemplateId, InvalidTaskTemplateIds
+from ib_tasks.exceptions.task_custom_exceptions import \
+    InvalidStagesTaskTemplateId, InvalidTaskTemplateIds
 from ib_tasks.interactors.stages_dtos import StageLogicAttributes, StageDTO
-from ib_tasks.interactors.stage_display_logic import StageDisplayLogicInteractor
+from ib_tasks.interactors.stage_display_logic import \
+    StageDisplayLogicInteractor
 
 from ib_tasks.interactors.create_or_update_stages import \
     CreateOrUpdateStagesInterface
-from ib_tasks.interactors.storage_interfaces.stages_storage_interface import StageStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_storage_interface import TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
+    StageStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
+    TaskStorageInterface
 from ib_tasks.tests.factories.storage_dtos import (
     StageDTOFactory, TaskStagesDTOFactory)
 from ib_tasks.tests.factories.storage_dtos import ValidStageDTOFactory
@@ -31,10 +36,12 @@ class TestCreateOrUpdateStageInformation:
         TaskStagesDTOFactory.reset_sequence()
         return TaskStagesDTOFactory.create_batch(size=2)
 
-    @patch.object(StageDisplayLogicInteractor, 'get_stage_display_logic_attributes')
+    @patch.object(StageDisplayLogicInteractor,
+                  'get_stage_display_logic_attributes')
     @pytest.fixture()
     def valid_stages_dto(self):
-        return ValidStageDTOFactory.create_batch(size=1, stage_id="PR_PENDING RP APPROVAL")
+        return ValidStageDTOFactory.create_batch(size=1,
+                                                 stage_id="PR_PENDING RP APPROVAL")
 
     @pytest.fixture()
     def stage_storage(self):
@@ -44,7 +51,8 @@ class TestCreateOrUpdateStageInformation:
     def task_storage(self):
         return create_autospec(TaskStorageInterface)
 
-    @patch.object(StageDisplayLogicInteractor, 'get_stage_display_logic_attributes')
+    @patch.object(StageDisplayLogicInteractor,
+                  'get_stage_display_logic_attributes')
     def test_create_stage_given_valid_information_creates_stage_with_given_information(
             self, logic_interactor, create_stage_dtos,
             valid_stages_dto, task_storage, stage_storage):
@@ -54,7 +62,7 @@ class TestCreateOrUpdateStageInformation:
         stage_interactor = CreateOrUpdateStagesInterface(
             stage_storage=stage_storage, task_storage=task_storage
         )
-        stage_storage.validate_stages_related_task_template_ids.\
+        stage_storage.validate_stages_related_task_template_ids. \
             return_value = []
 
         task_storage.get_valid_template_ids_in_given_template_ids. \
@@ -76,7 +84,8 @@ class TestCreateOrUpdateStageInformation:
             create_stage_dtos
         )
 
-    @patch.object(StageDisplayLogicInteractor, 'get_stage_display_logic_attributes')
+    @patch.object(StageDisplayLogicInteractor,
+                  'get_stage_display_logic_attributes')
     def test_update_stage_when_stage_id_already_exists_for_given_task_template_updates_stage_details(
             self, logic_interactor, create_stage_dtos, create_task_stages_dtos,
             valid_stages_dto, task_storage, stage_storage):
@@ -137,7 +146,8 @@ class TestCreateOrUpdateStageInformation:
 
         # Assert
 
-    @patch.object(StageDisplayLogicInteractor, 'get_stage_display_logic_attributes')
+    @patch.object(StageDisplayLogicInteractor,
+                  'get_stage_display_logic_attributes')
     def test_invalid_task_template_id_with_valid_stage_id_raises_exception(
             self, logic_interactor, create_stage_dtos, create_task_stages_dtos
     ):
@@ -146,7 +156,8 @@ class TestCreateOrUpdateStageInformation:
         task_stages_dto = create_task_stages_dtos
         storage = create_autospec(StageStorageInterface)
         task_storage = create_autospec(TaskStorageInterface)
-        storage.get_existing_stage_ids.return_value = ["PR_PENDING RP APPROVAL"]
+        storage.get_existing_stage_ids.return_value = [
+            "PR_PENDING RP APPROVAL"]
         storage.get_existing_stage_ids.return_value = [
             "stage_id_0", "stage_id_1"
         ]
@@ -171,7 +182,8 @@ class TestCreateOrUpdateStageInformation:
             )
 
         # Assert
-        task_storage.get_valid_template_ids_in_given_template_ids.assert_called_once_with(task_template_ids)
+        task_storage.get_valid_template_ids_in_given_template_ids.assert_called_once_with(
+            task_template_ids)
         storage.validate_stages_related_task_template_ids. \
             assert_called_once_with(task_stages_dto)
 
@@ -207,7 +219,8 @@ class TestCreateOrUpdateStageInformation:
         storage = create_autospec(StageStorageInterface)
         task_storage = create_autospec(TaskStorageInterface)
         task_template_ids = ["task_template_id_0", "task_template_id_1"]
-        task_storage.get_valid_template_ids_in_given_template_ids.return_value = [""]
+        task_storage.get_valid_template_ids_in_given_template_ids.return_value = [
+            ""]
 
         stage_interactor = CreateOrUpdateStagesInterface(
             stage_storage=storage, task_storage=task_storage
@@ -223,7 +236,8 @@ class TestCreateOrUpdateStageInformation:
         task_storage.get_valid_template_ids_in_given_template_ids. \
             assert_called_once_with(task_template_ids)
 
-    @patch.object(StageDisplayLogicInteractor, 'get_stage_display_logic_attributes')
+    @patch.object(StageDisplayLogicInteractor,
+                  'get_stage_display_logic_attributes')
     def test_validate_stage_display_logic_invalid_stage_display_logic_raises_exception(
             self, logic_interactor):
         # Arrange

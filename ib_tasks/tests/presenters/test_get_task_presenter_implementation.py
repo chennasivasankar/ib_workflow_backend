@@ -45,17 +45,7 @@ class TestGetTaskPresenterImplementation:
         return task_details_dto
 
     @pytest.fixture
-    def task_stages_dtos(self):
-        from ib_tasks.interactors.storage_interfaces.stage_dtos \
-            import StageDetailsDTO
-        stage_details_dtos = [
-            StageDetailsDTO(stage_id="stage1", name="stage_name1"),
-            StageDetailsDTO(stage_id="stage2", name="stage_name2")
-        ]
-        return stage_details_dtos
-
-    @pytest.fixture
-    def stage_actions_dtos(self):
+    def stage1_actions_dtos(self):
         from ib_tasks.interactors.storage_interfaces.actions_dtos \
             import ActionDTO
         actions_dtos = [
@@ -84,18 +74,47 @@ class TestGetTaskPresenterImplementation:
         return actions_dtos
 
     @pytest.fixture
-    def task_stage_complete_details_dto(
-            self, task_stages_dtos, stage_actions_dtos
-    ):
-        from ib_tasks.interactors.task_dtos import TaskStageCompleteDetailsDTO
-        stage_complete_details_dto = [
-            TaskStageCompleteDetailsDTO(
-                stage_details_dto=task_stages_dtos[0],
-                actions_dtos=stage_actions_dtos
+    def stage2_actions_dtos(self):
+        from ib_tasks.interactors.storage_interfaces.actions_dtos \
+            import ActionDTO
+        actions_dtos = [
+            ActionDTO(
+                action_id="action1",
+                name="action_name1",
+                stage_id="stage2",
+                button_text="button_text1",
+                button_color="blue"
             ),
-            TaskStageCompleteDetailsDTO(
-                stage_details_dto=task_stages_dtos[1],
-                actions_dtos=[]
+            ActionDTO(
+                action_id="action2",
+                name="action_name2",
+                stage_id="stage2",
+                button_text="button_text2",
+                button_color="blue"
+            ),
+            ActionDTO(
+                action_id="action3",
+                name="action_name3",
+                stage_id="stage2",
+                button_text="button_text3",
+                button_color="blue"
+            )
+        ]
+        return actions_dtos
+
+    @pytest.fixture
+    def task_stage_complete_details_dto(
+            self, stage1_actions_dtos, stage2_actions_dtos
+    ):
+        from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
+        stage_complete_details_dto = [
+            StageAndActionsDetailsDTO(
+                stage_id="stage1", name="stage_name1",
+                actions_dtos=stage1_actions_dtos
+            ),
+            StageAndActionsDetailsDTO(
+                stage_id="stage2", name="stage_name2",
+                actions_dtos=stage2_actions_dtos
             )
         ]
         return stage_complete_details_dto
@@ -110,7 +129,7 @@ class TestGetTaskPresenterImplementation:
         task_complete_details_dto = TaskCompleteDetailsDTO(
             task_id="task0",
             task_details_dto=permission_task_details_dto,
-            task_stages_complete_details_dtos=task_stage_complete_details_dto
+            stages_and_actions_details_dtos=task_stage_complete_details_dto
         )
         return task_complete_details_dto
 

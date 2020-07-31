@@ -1,4 +1,4 @@
-class RollsDetails:
+class RoleDetails:
 
     @staticmethod
     def add_roles_details_to_database(spread_sheet_name, sub_sheet_name):

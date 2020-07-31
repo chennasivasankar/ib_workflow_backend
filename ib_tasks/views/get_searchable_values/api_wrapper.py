@@ -1,48 +1,32 @@
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 from .validator_class import ValidatorClass
+from ...interactors.field_dtos import SearchableFieldTypeDTO
+from ...interactors.searchable_field_values_interactor import \
+    SearchableFieldValuesInteractor
+from ...presenters.searchable_field_values_presenter_implementation import \
+    SearchableFieldValuesPresenterImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    # ---------MOCK IMPLEMENTATION---------
+    params = kwargs['query_params']
+    searchable_type = params['search_type']
+    search_query = params['search_query']
+    offset = params['offset']
+    limit = params['limit']
 
-    try:
-        from ib_tasks.views.get_searchable_values.request_response_mocks \
-            import REQUEST_BODY_JSON
-        body = REQUEST_BODY_JSON
-    except ImportError:
-        body = {}
+    searchable_field_type_dto = SearchableFieldTypeDTO(
+        searchable_type=searchable_type,
+        offset=offset,
+        limit=limit,
+        search_query=search_query
+    )
+    presenter = SearchableFieldValuesPresenterImplementation()
 
-    test_case = {
-        "path_params": {},
-        "query_params": {'search_type': 'USER', 'limit': 581, 'offset': 420, 'search_query': 'string'},
-        "header_params": {},
-        "body": body,
-        "securities": [{'oauth': ['read']}]
-    }
-
-    from django_swagger_utils.drf_server.utils.server_gen.mock_response \
-        import mock_response
-    try:
-        response = ''
-        status_code = 200
-        if '200' in ['200', '400']:
-            from ib_tasks.views.get_searchable_values.request_response_mocks \
-                import RESPONSE_200_JSON
-            response = RESPONSE_200_JSON
-            status_code = 200
-        elif '201' in ['200', '400']:
-            from ib_tasks.views.get_searchable_values.request_response_mocks \
-                import RESPONSE_201_JSON
-            response = RESPONSE_201_JSON
-            status_code = 201
-    except ImportError:
-        response = ''
-        status_code = 200
-    response_tuple = mock_response(
-        app_name="ib_tasks", test_case=test_case,
-        operation_name="get_searchable_values",
-        kwargs=kwargs, default_response_body=response,
-        group_name="", status_code=status_code)
-    return response_tuple
+    interactor = SearchableFieldValuesInteractor()
+    response = interactor. \
+        searchable_field_values_wrapper(presenter=presenter,
+                                        searchable_field_type_dto=
+                                        searchable_field_type_dto)
+    return response

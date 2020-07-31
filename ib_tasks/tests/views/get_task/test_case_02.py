@@ -11,7 +11,10 @@ from ib_tasks.tests.factories.models import (
     GoFRoleFactory,
     GoFFactory,
     FieldRoleFactory,
-
+    FieldFactory,
+    StageModelFactory,
+    TaskStageModelFactory,
+    StageActionFactory,
 )
 import factory
 from ib_tasks.constants.enum import PermissionTypes
@@ -34,23 +37,42 @@ class TestCase02GetTaskAPITestCase(TestUtils):
 
     @pytest.fixture
     def setup(self, reset_factories):
-        task_obj = TaskFactory(id=1)
-        task_id = task_obj.id
+        task_obj = TaskFactory()
         task_gof_objs = TaskGoFFactory.create_batch(size=3, task=task_obj)
         gof_ids = [task_gof_obj.gof_id for task_gof_obj in task_gof_objs]
-        task_gof_field_objs = TaskGoFFieldFactory.create_batch(size=10, task_gof=factory.Iterator(task_gof_objs))
-        gof_objs = GoFFactory.create_batch(size=3, gof_id=factory.Iterator(gof_ids))
+        gof_objs = GoFFactory.create_batch(
+            size=3, gof_id=factory.Iterator(gof_ids)
+        )
+        field_objs = FieldFactory.create_batch(
+            size=10, gof=factory.Iterator(gof_objs)
+        )
+        TaskGoFFieldFactory.create_batch(
+            size=10,
+            task_gof=factory.Iterator(task_gof_objs),
+            field=factory.Iterator(field_objs)
+        )
         roles = ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC"]
-        permission_type = [PermissionTypes.READ.value, PermissionTypes.WRITE.value]
+        permission_type = [
+            PermissionTypes.READ.value,
+            PermissionTypes.WRITE.value
+        ]
         GoFRoleFactory.create_batch(
-            size=3, gof=gof_objs, role=factory.Iterator(roles),
+            size=3, gof=factory.Iterator(gof_objs),
+            role=factory.Iterator(roles),
             permission_type=factory.Iterator(permission_type)
         )
-        field_objs = [task_gof_field_obj.field for task_gof_field_obj in task_gof_field_objs]
         FieldRoleFactory.create_batch(
+            size=10,
             field=factory.Iterator(field_objs),
-            role=factory.Iterator(permission_type),
+            role=factory.Iterator(roles),
             permission_type=factory.Iterator(permission_type)
+        )
+        stage_objs = StageModelFactory.create_batch(size=10)
+        TaskStageModelFactory.create_batch(
+            size=3, task=task_obj, stage=factory.Iterator(stage_objs)
+        )
+        StageActionFactory.create_batch(
+            size=20, stage=factory.Iterator(stage_objs)
         )
 
     @pytest.mark.django_db

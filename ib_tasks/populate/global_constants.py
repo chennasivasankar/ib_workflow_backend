@@ -34,7 +34,6 @@ class PopulateGlobalConstantsToTemplate:
             self, template_id: str,
             global_constants_list: List[str]):
 
-
         global_constants_dtos = self._get_global_constant_dtos(
             global_constants_list=global_constants_list
         )

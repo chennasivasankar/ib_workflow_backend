@@ -1,5 +1,3 @@
-import json
-from django.http import response
 from typing import List
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
@@ -9,7 +7,7 @@ from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
     import TaskCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos \
     import TaskGoFFieldDTO, TaskGoFDTO
-from ib_tasks.interactors.task_dtos import TaskStageCompleteDetailsDTO
+from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
 
 
@@ -25,16 +23,20 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface, HTTPResponseMixi
             "http_status_code": 404,
             "res_status": INVALID_TASK_ID[1]
         }
-        response_object = self.prepare_404_not_found_response(response_dict=data)
+        response_object = self.prepare_404_not_found_response(
+            response_dict=data
+        )
         return response_object
 
-    def get_task_response(self, task_complete_details_dto: TaskCompleteDetailsDTO):
+    def get_task_response(
+            self, task_complete_details_dto: TaskCompleteDetailsDTO
+    ):
         task_details_dto = task_complete_details_dto.task_details_dto
         task_gof_dtos = task_details_dto.task_gof_dtos
         task_gof_field_dtos = task_details_dto.task_gof_field_dtos
         gofs = self._get_task_gofs(task_gof_dtos, task_gof_field_dtos)
         task_stage_complete_details_dtos = \
-            task_complete_details_dto.task_stages_complete_details_dtos
+            task_complete_details_dto.stages_and_actions_details_dtos
         stages_with_actions = self._get_task_satges_with_actions_details(
             task_stage_complete_details_dtos
         )
@@ -44,21 +46,22 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface, HTTPResponseMixi
             "gofs": gofs,
             "stages_with_actions": stages_with_actions
         }
-        response_object = self.prepare_200_success_response(response_dict=task_details_dict)
+        response_object = self.prepare_200_success_response(
+            response_dict=task_details_dict
+        )
         return response_object
 
     def _get_task_satges_with_actions_details(
             self,
-            task_stage_complete_details_dtos: List[TaskStageCompleteDetailsDTO]
+            task_stage_complete_details_dtos: List[StageAndActionsDetailsDTO]
     ):
         stages_with_actions = []
         for task_stage_complete_details_dto in task_stage_complete_details_dtos:
-            stage_details_dto = task_stage_complete_details_dto.stage_details_dto
             actions_dtos = task_stage_complete_details_dto.actions_dtos
             actions = self._get_action_details(actions_dtos)
             stage_details_dict = {
-                "stage_id": stage_details_dto.stage_id,
-                "stage_display_name": stage_details_dto.name,
+                "stage_id": task_stage_complete_details_dto.stage_id,
+                "stage_display_name": task_stage_complete_details_dto.name,
                 "actions": actions
             }
             stages_with_actions.append(stage_details_dict)
@@ -76,7 +79,8 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface, HTTPResponseMixi
         return actions
 
     def _get_task_gofs(
-            self, task_gof_dtos: List[TaskGoFDTO], task_gof_field_dtos: List[TaskGoFFieldDTO]
+            self, task_gof_dtos: List[TaskGoFDTO],
+            task_gof_field_dtos: List[TaskGoFFieldDTO]
     ):
         gofs = []
         for task_gof_dto in task_gof_dtos:

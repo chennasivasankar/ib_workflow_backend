@@ -301,10 +301,6 @@ class StorageImplementation(StorageInterface):
 
     def get_columns_details(self, column_ids: List[str]) -> \
             List[ColumnDetailsDTO]:
-        pass
-
-    def get_columns_details(self, column_ids: List[str]) -> \
-            List[ColumnDetailsDTO]:
         column_objs = Column.objects.filter(column_id__in=column_ids)
         columns_dtos = self._convert_column_objs_to_dtos(column_objs)
         return columns_dtos
@@ -343,7 +339,7 @@ class StorageImplementation(StorageInterface):
         board_obj = Board.objects.get(board_id=board_id)
         board_dto = BoardDTO(
             board_id=board_obj.board_id,
-            display_name=board_obj.name
+            name=board_obj.name
         )
 
         list_of_column_dtos, column_stages = self._convert_column_details_to_dtos(
@@ -358,17 +354,6 @@ class StorageImplementation(StorageInterface):
 
     def get_column_details(self, board_id: str, user_roles: List[str]) \
             -> List[BoardColumnDTO]:
-        pass
-
-    def get_columns_details(self, column_ids: List[str]) -> \
-            List[ColumnDetailsDTO]:
-        pass
-
-    def get_column_ids_for_board(self, board_id: str, user_roles: List[str]) \
-            -> List[str]:
-        pass
-
-    def get_permitted_user_roles_for_board(self, board_id: str) -> List[str]:
         pass
 
     def _convert_column_details_to_dtos(self, column_objs,

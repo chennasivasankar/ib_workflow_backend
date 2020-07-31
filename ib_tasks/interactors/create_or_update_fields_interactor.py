@@ -1,6 +1,5 @@
 from typing import List
-from ib_tasks.interactors.storage_interfaces.fields_dtos \
-    import FieldDTO, FieldRolesDTO, FieldRoleDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, FieldRolesDTO, FieldRoleDTO
 
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
@@ -44,6 +43,7 @@ class CreateOrUpdateFieldsInteractor:
             exist_field_ids = self._get_field_ids(existing_field_dtos)
             self.storage.delete_field_roles(exist_field_ids)
             self.storage.update_fields(existing_field_dtos)
+        # print('field_roles_dtos',field_roles_dtos)
         self.storage.create_fields_roles(field_role_dtos)
 
     @staticmethod
