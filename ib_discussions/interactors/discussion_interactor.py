@@ -132,8 +132,6 @@ class DiscussionInteractor:
             offset_and_limit_dto: OffsetAndLimitDTO,
             filter_by_dto: FilterByDTO, sort_by_dto: SortByDTO,
     ):
-        print("interactor")
-        print("******************")
         self._validate_offset(offset_and_limit_dto.offset)
         self._validate_limit(offset_and_limit_dto.limit)
         self.storage.validate_entity_id(
@@ -155,13 +153,9 @@ class DiscussionInteractor:
         total_discussions_count = self.storage.get_total_discussion_count(
             discussion_set_id=discussion_set_id, filter_by_dto=filter_by_dto
         )
-        print("before profile dtos")
-        print("******************")
         user_profile_dtos = self._get_user_profile_dtos(
             complete_discussion_dtos=complete_discussion_dtos
         )
-        print("after profile dtos")
-        print("******************")
         from ib_discussions.interactors.presenter_interfaces.dtos import \
             DiscussionsDetailsDTO
         discussions_details_dto = DiscussionsDetailsDTO(
@@ -191,8 +185,6 @@ class DiscussionInteractor:
             complete_discussion_dto.user_id
             for complete_discussion_dto in complete_discussion_dtos
         ]
-        print("user_ids", user_ids)
-        print("****************")
         from ib_discussions.adapters.service_adapter import get_service_adapter
         auth_service = get_service_adapter().auth_service
         user_profile_dtos = auth_service.get_user_profile_dtos(

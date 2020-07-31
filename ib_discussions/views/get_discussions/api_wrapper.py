@@ -9,11 +9,6 @@ def api_wrapper(*args, **kwargs):
     request_data = kwargs["request_data"]
     query_params = kwargs["query_params"]
 
-    print("*************************")
-    user = kwargs["user"]
-    print(user.user_id)
-    print("*****************************")
-
     entity_id_and_entity_type_dto = _prepare_entity_id_and_entity_type_dto(
         request_data)
 
