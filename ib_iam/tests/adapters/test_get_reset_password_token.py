@@ -4,17 +4,22 @@ import pytest
 
 
 class TestGetResetPasswordToken:
+    @staticmethod
+    def get_reset_password_token_mock(mocker):
+        mock = mocker.patch(
+            "ib_users.interfaces.service_interface.ServiceInterface.get_reset_password_token_for_reset_password"
+        )
+        return mock
 
-    @patch(
-        "ib_users.interfaces.service_interface.ServiceInterface.get_reset_password_token_for_reset_password"
-    )
     def test_get_reset_password_token(
-            self, get_reset_password_token_for_reset_password_mock
+            self, mocker
     ):
         # Arrange
         email = "test@gmail.com"
         expires_in_sec = 5647665599
         expected_token = "string"
+        get_reset_password_token_for_reset_password_mock = \
+            self.get_reset_password_token_mock(mocker)
 
         get_reset_password_token_for_reset_password_mock.return_value \
             = expected_token
@@ -32,15 +37,13 @@ class TestGetResetPasswordToken:
         assert response == expected_token
         get_reset_password_token_for_reset_password_mock.assert_called_once()
 
-    @patch(
-        "ib_users.interfaces.service_interface.ServiceInterface.get_reset_password_token_for_reset_password"
-    )
     def test_with_invalid_email_raise_exception_for_reset_password_token(
-            self, get_reset_password_token_for_reset_password_mock
-    ):
+            self, mocker):
         # Arrange
         email = "test@gmail.com"
         expires_in_sec = 5647665599
+        get_reset_password_token_for_reset_password_mock = \
+            self.get_reset_password_token_mock(mocker)
 
         from ib_users.constants.custom_exception_messages import INVALID_EMAIL
         from ib_users.validators.base_validator import CustomException
