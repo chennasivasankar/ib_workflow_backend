@@ -198,7 +198,7 @@ class TestGetColumnTasksInteractor:
 
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             task_details_mock
-        task_details_mock = task_details_mock(mocker, task_complete_details_dto)
+        task_details_mock(mocker, task_complete_details_dto)
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             get_task_ids_mock
 

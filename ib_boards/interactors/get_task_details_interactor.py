@@ -2,7 +2,7 @@ from typing import List
 
 from ib_boards.adapters.service_adapter import get_service_adapter
 from ib_boards.interactors.dtos import (
-    TaskColumnDTO, TaskStageIdDTO, TaskDetailsDTO, FieldsDTO)
+    ColumnTasksDTO, TaskStageIdDTO, TaskDetailsDTO, FieldsDTO)
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
 
@@ -46,7 +46,7 @@ class GetTaskDetailsInteractor:
 
     @staticmethod
     def _get_task_and_column_ids(tasks_dtos):
-        task_details = [TaskColumnDTO(
+        task_details = [ColumnTasksDTO(
             task_id=task_dto.task_id,
             column_id=task_dto.column_id)
             for task_dto in tasks_dtos]

@@ -24,15 +24,10 @@ def prepare_task_details_dtos(mocker, task_dtos: List[TaskStageIdDTO],
         ) for _index, task_dto in enumerate(task_dtos)
     ]
 
-    mock.return_value = actions_dto, fields_dto
+    mock.return_value = fields_dto, actions_dto
     return mock
 
 
-"""
-Created on: 14/07/20
-Author: Pavankumar Pamuru
-
-"""
 from typing import List
 
 from ib_boards.interactors.dtos import TaskIdStageDTO

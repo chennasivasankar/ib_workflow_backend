@@ -3,13 +3,13 @@ Created on: 16/07/20
 Author: Pavankumar Pamuru
 
 """
-from typing import List
+from typing import List, Tuple
 
 from ib_boards.exceptions.custom_exceptions import InvalidOffsetValue, \
     InvalidLimitValue, OffsetValueExceedsTotalTasksCount, \
     UserDoNotHaveAccessToColumn, InvalidStageIds
 from ib_boards.interactors.dtos import ColumnTasksParametersDTO, \
-    ColumnTaskIdsDTO
+    ColumnTaskIdsDTO, TaskDTO, ActionDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     GetColumnTasksPresenterInterface
 from ib_boards.interactors.storage_interfaces.storage_interface import \
@@ -25,7 +25,7 @@ class GetColumnTasksInteractor:
             presenter: GetColumnTasksPresenterInterface):
         from ib_boards.exceptions.custom_exceptions import InvalidColumnId
         try:
-            task_complete_details_dto, total_tasks = self.get_column_tasks(
+            task_fields_dtos, tasks_action_dtos, total_tasks = self.get_column_tasks(
                 column_tasks_parameters=column_tasks_parameters
             )
         except InvalidColumnId:
@@ -57,14 +57,14 @@ class GetColumnTasksInteractor:
             stage_ids=stage_ids,
             column_tasks_parameters=column_tasks_parameters)
 
-        task_complete_details = self._get_tasks_complete_details(
+        task_fields_dtos, tasks_action_dtos = self._get_tasks_complete_details(
             task_ids_stages_dto
         )
-        return task_complete_details, task_ids_stages_dto.total_tasks
+        return task_fields_dtos, tasks_action_dtos, task_ids_stages_dto.total_tasks
 
     @staticmethod
     def _get_tasks_complete_details(
-            task_ids_stages_dtos: ColumnTaskIdsDTO):
+            task_ids_stages_dtos: ColumnTaskIdsDTO) -> Tuple[List[TaskDTO], List[ActionDTO]]:
         task_details_dtos = []
         for task_ids_stages_dto in task_ids_stages_dtos.task_stage_ids:
             from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO

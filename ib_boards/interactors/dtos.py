@@ -9,7 +9,7 @@ class ColumnParametersDTO:
 
 
 @dataclass
-class TaskColumnDTO:
+class ColumnTasksDTO:
     column_id: str
     task_id: str
 
@@ -94,7 +94,7 @@ class ColumnTasksParametersDTO:
 
 @dataclass
 class TaskDTO:
-    task_id: str
+    task_id: int
     field_type: str
     key: str
     value: str
@@ -106,7 +106,7 @@ class ActionDTO:
     name: str
     button_text: str
     button_color: str
-    task_id: str
+    task_id: int
 
 
 @dataclass

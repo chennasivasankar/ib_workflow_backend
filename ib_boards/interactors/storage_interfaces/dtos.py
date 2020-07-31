@@ -16,6 +16,11 @@ class ColumnDetailsDTO:
 
 
 @dataclass
+class ColumnCompleteDetails(ColumnDetailsDTO):
+    total_tasks: int
+
+
+@dataclass
 class TaskFieldsDTO:
     task_id: str
     field_type: str

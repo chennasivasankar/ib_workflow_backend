@@ -6,8 +6,9 @@ from django.http import response
 
 from ib_boards.exceptions.custom_exceptions import InvalidBoardIds
 from ib_boards.interactors.dtos import TaskStageIdDTO, ActionDTO, \
-    TaskCompleteDetailsDTO
-from ib_boards.interactors.storage_interfaces.dtos import BoardDTO
+    TaskCompleteDetailsDTO, TaskDTO
+from ib_boards.interactors.storage_interfaces.dtos import BoardDTO, \
+    ColumnCompleteDetails
 
 
 class GetBoardsPresenterInterface(abc.ABC):
@@ -39,7 +40,7 @@ class GetBoardsPresenterInterface(abc.ABC):
 import abc
 from typing import List
 
-from ib_boards.interactors.dtos import TaskColumnDTO
+from ib_boards.interactors.dtos import ColumnTasksDTO
 from ib_boards.interactors.storage_interfaces.dtos import (
     TaskFieldsDTO, TaskActionsDTO, ColumnDetailsDTO)
 
@@ -70,11 +71,10 @@ class PresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_response_for_column_details(self,
-                                        column_details: List[ColumnDetailsDTO],
-                                        task_fields_dto: List[TaskFieldsDTO],
-                                        task_actions_dto: List[TaskActionsDTO],
-                                        task_details: List[TaskColumnDTO]
-
+                                        column_details: List[ColumnCompleteDetails],
+                                        task_fields_dtos: List[TaskDTO],
+                                        task_actions_dtos: List[ActionDTO],
+                                        column_tasks: List[ColumnTasksDTO]
                                         ):
         pass
 
