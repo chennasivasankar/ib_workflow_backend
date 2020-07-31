@@ -5,8 +5,8 @@ from .validator_class import ValidatorClass
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    user = kwargs['user']
-    user_id = user.id
+    user_account_obj = kwargs['user']
+    user_id = user_account_obj.user_id
     from ib_tasks.storages.tasks_storage_implementation \
         import TasksStorageImplementation
     from ib_tasks.presenters.get_task_templates_presenter_implementation \
@@ -18,7 +18,6 @@ def api_wrapper(*args, **kwargs):
     interactor = GetTaskTemplatesInteractor(
         task_storage=storage
     )
-
     response = interactor.get_task_templates_wrapper(
         user_id=user_id, presenter=presenter
     )
