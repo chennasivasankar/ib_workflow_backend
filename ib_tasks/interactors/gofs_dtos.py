@@ -35,7 +35,7 @@ class GoFsWithTemplateIdDTO:
 
 @dataclass()
 class FieldDisplayDTO:
-    field_id: int
+    field_id: str
     stage_id: str
     field_type: str
     key: str

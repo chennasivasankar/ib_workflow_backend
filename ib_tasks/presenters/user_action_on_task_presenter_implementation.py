@@ -4,7 +4,7 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO, ColumnStageDTO
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.permission_custom_exceptions import \
-    UserActionPermissionDenied
+    UserActionPermissionDenied, UserBoardPermissionDenied
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
 from ib_tasks.interactors.presenter_interfaces.dtos import \
@@ -82,6 +82,23 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
             "response": response_message,
             "http_status_code": 403,
             "res_status": USER_DO_NOT_HAVE_ACCESS[1]
+        }
+
+        response_object = self.prepare_403_forbidden_response(response_dict)
+        return response_object
+
+    def raise_exception_for_user_board_permission_denied(
+            self, error_obj: UserBoardPermissionDenied):
+        from ib_tasks.constants.exception_messages import \
+            USER_DO_NOT_HAVE_BOARD_ACCESS
+
+        response_message = USER_DO_NOT_HAVE_BOARD_ACCESS[0].format(
+            str(error_obj.board_id)
+        )
+        response_dict = {
+            "response": response_message,
+            "http_status_code": 403,
+            "res_status": USER_DO_NOT_HAVE_BOARD_ACCESS[1]
         }
 
         response_object = self.prepare_403_forbidden_response(response_dict)

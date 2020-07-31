@@ -312,3 +312,17 @@ class StorageImplementation(StorageInterface):
             )
             for stage_obj in stage_objs
         ]
+
+    def update_task_stages(self, task_id: int, stage_ids: List[str]):
+
+        TaskStage.objects.filter(task_id=task_id).delete()
+        stage_dict = {
+            obj.stage_id: obj
+            for obj in Stage.objects.filter(stage_id__in=stage_ids)
+        }
+
+        task_stage_objs = [
+            TaskStage(task_id=task_id, stage=stage_dict[stage_id])
+            for stage_id in stage_ids
+        ]
+        TaskStage.objects.bulk_create(task_stage_objs)

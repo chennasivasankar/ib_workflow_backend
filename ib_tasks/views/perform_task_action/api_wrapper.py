@@ -5,45 +5,37 @@ from .validator_class import ValidatorClass
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    # ---------MOCK IMPLEMENTATION---------
+    user = kwargs['user']
+    user_id = user.id
+    # task_id = int(kwargs['task_id'])
+    # action_id = int(kwargs['action_id'])
+    # board_id = kwargs['board_id']
+    request_dict = kwargs['request_data']
+    task_id = int(request_dict['task_id'])
+    action_id = int(request_dict['action_id'])
+    board_id = request_dict['board_id']
+    from ib_tasks.storages.create_or_update_task_storage_implementation \
+        import CreateOrUpdateTaskStorageImplementation
+    from ib_tasks.storages.fields_storage_implementation \
+        import FieldsStorageImplementation
+    from ib_tasks.storages.storage_implementation \
+        import StorageImplementation, StagesStorageImplementation
+    from ib_tasks.interactors.user_action_on_task_interactor \
+        import UserActionOnTaskInteractor
+    from ib_tasks.presenters.user_action_on_task_presenter_implementation \
+        import UserActionOnTaskPresenterImplementation
+    presenter = UserActionOnTaskPresenterImplementation()
+    field_storage = FieldsStorageImplementation()
+    storage = StorageImplementation()
+    stage_storage = StagesStorageImplementation()
+    gof_storage = CreateOrUpdateTaskStorageImplementation()
+    interactor = UserActionOnTaskInteractor(
+        user_id=user_id, task_id=task_id, action_id=action_id,
+        board_id=board_id, storage=storage, gof_storage=gof_storage,
+        stage_storage=stage_storage, field_storage=field_storage
+    )
 
-    try:
-        from ib_tasks.views.perform_task_action.request_response_mocks \
-            import REQUEST_BODY_JSON
-        body = REQUEST_BODY_JSON
-    except ImportError:
-        body = {}
-
-    test_case = {
-        "path_params": {'task_id': 'string', 'action_id': 'string',
-                        'board_id': 'string'},
-        "query_params": {},
-        "header_params": {},
-        "body": body,
-        "securities": [{'oauth': ['superuser']}]
-    }
-
-    from django_swagger_utils.drf_server.utils.server_gen.mock_response \
-        import mock_response
-    try:
-        response = ''
-        status_code = 200
-        if '200' in ['200', '403', '404']:
-            from ib_tasks.views.perform_task_action.request_response_mocks \
-                import RESPONSE_200_JSON
-            response = RESPONSE_200_JSON
-            status_code = 200
-        elif '201' in ['200', '403', '404']:
-            from ib_tasks.views.perform_task_action.request_response_mocks \
-                import RESPONSE_201_JSON
-            response = RESPONSE_201_JSON
-            status_code = 201
-    except ImportError:
-        response = ''
-        status_code = 200
-    response_tuple = mock_response(
-        app_name="ib_tasks", test_case=test_case,
-        operation_name="perform_task_action",
-        kwargs=kwargs, default_response_body=response,
-        group_name="", status_code=status_code)
-    return response_tuple
+    response = interactor.user_action_on_task(
+        presenter=presenter
+    )
+    return response

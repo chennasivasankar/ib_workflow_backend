@@ -1,17 +1,15 @@
 from typing import List, Optional
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
-from ib_tasks.exceptions.permission_custom_exceptions import UserActionPermissionDenied
+from ib_tasks.exceptions.permission_custom_exceptions import UserActionPermissionDenied, UserBoardPermissionDenied
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException
 from ib_tasks.interactors\
     .call_action_logic_function_and_update_task_status_variables_interactor \
     import CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor
 from ib_tasks.adapters.dtos import ColumnFieldDTO, ColumnStageDTO
 from ib_tasks.interactors.get_field_details import GetFieldsDetails
-from ib_tasks.interactors.get_gofs_and_status_variables_to_task import \
-    GetGroupOfFieldsAndStatusVariablesToTaskInteractor
 from ib_tasks.interactors.get_user_permitted_stage_actions \
     import GetUserPermittedStageActions
-from ib_tasks.interactors.gofs_dtos import TaskGofAndStatusesDTO
+from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
 from ib_tasks.interactors.presenter_interfaces.dtos import TaskCompleteDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.presenter_interface import PresenterInterface
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDetailsDTO, ActionDTO
@@ -67,6 +65,11 @@ class UserActionOnTaskInteractor:
                 error_obj=err
             )
             return
+        except UserBoardPermissionDenied as err:
+            presenter.raise_exception_for_user_board_permission_denied(
+                error_obj=err
+            )
+            return
         return presenter.get_response_for_user_action_on_task(
             task_complete_details_dto=task_complete_details_dto
         )
@@ -81,14 +84,13 @@ class UserActionOnTaskInteractor:
         stage_ids = self._get_task_stage_display_satifsied_stage_ids()
         self._update_task_stages(stage_ids=stage_ids)
         task_boards_details = self._get_task_boards_details(stage_ids)
-        task_fields_and_actions = self._get_task_fields_and_actions_dto(stage_ids)
-
-
+        actions_dto, fields_dto = \
+            self._get_task_fields_and_actions_dto(stage_ids)
         return TaskCompleteDetailsDTO(
             task_id=self.task_id,
             task_boards_details=task_boards_details,
-            actions_dto='1',
-            field_dtos='1'
+            actions_dto=actions_dto,
+            field_dtos=fields_dto
         )
 
     def _get_task_fields_and_actions_dto(self, stage_ids: List[str]):
@@ -107,10 +109,10 @@ class UserActionOnTaskInteractor:
             storage=self.field_storage,
             stage_storage=self.stage_storage)
         task_stage_details_dtos = interactor.get_task_fields_and_action(
-            task_dtos=task_stage_dtos)
-        task_fields_and_actions = self._get_field_dtos_and_actions_dtos(
-            task_stage_details_dtos)
-        return task_fields_and_actions
+            task_dtos=task_stage_dtos, user_id=self.user_id)
+        actions_dto, fields_dto = self._get_field_dtos_and_actions_dtos(
+            task_stage_details_dtos=task_stage_details_dtos)
+        return actions_dto, fields_dto
 
     def _get_field_dtos_and_actions_dtos(
             self, task_stage_details_dtos: List[GetTaskStageCompleteDetailsDTO]):
@@ -126,10 +128,18 @@ class UserActionOnTaskInteractor:
             stage_id = task_stage_details_dto.stage_id
             for field_dto in task_stage_details_dto.field_dtos:
                 fields_dto.append(self._get_field_dto(field_dto, stage_id))
+        return actions_dto, fields_dto
 
+    @staticmethod
+    def _get_field_dto(field_dto: FieldDetailsDTO, stage_id: str):
 
-    def _get_field_dto(self, field_dto: FieldDetailsDTO, stage_id):
-        pass
+        return FieldDisplayDTO(
+            field_id=str(field_dto.field_id),
+            field_type=field_dto.field_type,
+            stage_id=stage_id,
+            key=field_dto.key,
+            value=field_dto.value
+        )
 
     @staticmethod
     def _get_actions_dto(actions_dto: List[ActionDetailsDTO]):
@@ -179,18 +189,17 @@ class UserActionOnTaskInteractor:
 
         from ib_tasks.adapters.service_adapter import ServiceAdapter
         adapter = ServiceAdapter()
-        task_boards_details = adapter.boards_service \
+        return adapter.boards_service \
             .get_display_boards_and_column_details(
                 user_id=self.user_id, board_id=self.board_id,
                 stage_ids=stage_ids
             )
-        return task_boards_details
 
     def _call_logic_and_update_status_variables_and_get_stage_ids(
             self, task_dto: TaskDetailsDTO):
         update_status_variable_obj = \
             CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor(
-                action_id=self.action_id, storage=self.storage
+                action_id=self.action_id, storage=self.storage, task_id=self.task_id
             )
         stage_ids = update_status_variable_obj \
             .call_action_logic_function_and_update_task_status_variables(
@@ -229,8 +238,6 @@ class UserActionOnTaskInteractor:
 
     def _validations_for_task_action(self):
 
-        from ib_tasks.adapters.service_adapter import ServiceAdapter
-        adapter = ServiceAdapter()
         self._validate_task_id()
         self._validate_board_id()
         valid_action = self.storage.validate_action(action_id=self.action_id)

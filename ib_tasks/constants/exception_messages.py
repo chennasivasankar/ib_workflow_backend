@@ -78,6 +78,11 @@ USER_DO_NOT_HAVE_ACCESS = [
     "USER_DO_NOT_HAVE_ACCESS"
 ]
 
+USER_DO_NOT_HAVE_BOARD_ACCESS = [
+    "User do not have access to the board: {}",
+    "USER_DO_NOT_HAVE_ACCESS"
+]
+
 EMPTY_VALUE_FOR_PLAIN_TEXT_FIELD = [
     "got empty value in plain text field for field id: {}",
     "EMPTY_VALUE_FOR_PLAIN_TEXT_FIELD"

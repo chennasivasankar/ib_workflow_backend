@@ -57,7 +57,6 @@ class FieldDetailsDTO:
     value: str
 
 
-
 @dataclass
 class FieldDetailsDTO:
     field_type: str
