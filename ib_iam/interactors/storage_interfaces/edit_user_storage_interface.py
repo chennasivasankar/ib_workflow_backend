@@ -44,5 +44,5 @@ class EditUserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def change_company_for_user(self, company_id: str, user_id: str):
+    def update_user_details(self, company_id: str, user_id: str, name):
         pass

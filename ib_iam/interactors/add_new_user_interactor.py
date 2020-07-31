@@ -56,7 +56,8 @@ class AddNewUserInteractor(ValidationMixin):
         role_ids = self.storage.get_role_objs_ids(roles)
         self.storage.add_new_user(
             user_id=new_user_id, is_admin=False, company_id=company_id,
-            role_ids=role_ids, team_ids=teams)
+            role_ids=role_ids, team_ids=teams, name=name
+        )
 
     def _create_user_in_ib_users(self, email, name):
         new_user_id = self._create_user_account_with_email(email=email)

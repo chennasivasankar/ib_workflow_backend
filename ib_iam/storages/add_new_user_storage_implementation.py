@@ -17,8 +17,8 @@ class AddNewUserStorageImplementation(AddNewUserStorageInterface):
         return role_ids
 
     def add_new_user(self, user_id: str, is_admin: bool, company_id: str,
-                     role_ids, team_ids: List[str]):
-        self.create_user(company_id, is_admin, user_id)
+                     role_ids, team_ids: List[str], name: str):
+        self.create_user(company_id, is_admin, user_id, name)
         self.add_user_to_the_teams(team_ids, user_id)
         self.add_roles_to_the_user(role_ids, user_id)
 
@@ -37,10 +37,12 @@ class AddNewUserStorageImplementation(AddNewUserStorageInterface):
         UserTeam.objects.bulk_create(user_teams)
 
     @staticmethod
-    def create_user(company_id, is_admin, user_id):
+    def create_user(company_id, is_admin, user_id, name):
         from ib_iam.models import UserDetails
-        UserDetails.objects.create(user_id=user_id, is_admin=is_admin,
-                                   company_id=company_id)
+        UserDetails.objects.create(
+            user_id=user_id, is_admin=is_admin,
+            company_id=company_id, name=name
+        )
 
     def validate_role_ids(self, role_ids):
         from ib_iam.models import Role

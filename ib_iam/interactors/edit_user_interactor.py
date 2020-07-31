@@ -2,7 +2,7 @@ from typing import List
 
 from ib_iam.exceptions.custom_exceptions \
     import UserIsNotAdmin, GivenNameIsEmpty, InvalidEmailAddress, \
-    UserAccountAlreadyExistWithThisEmail, RoleIdsAreInvalid, \
+    RoleIdsAreInvalid, \
     InvalidCompanyId, TeamIdsAreInvalid, UserDoesNotExist, \
     NameShouldNotContainsNumbersSpecCharacters
 from ib_iam.interactors.mixins.validation import ValidationMixin
@@ -54,7 +54,8 @@ class EditUserInteractor(ValidationMixin):
         self._validate_values(roles, teams, company_id)
         self._update_user_profile_in_ib_users(
             user_id=user_id, email=email, name=name)
-        self._update_user_roles_company_roles(user_id, company_id, roles, teams)
+        self._update_user_roles_company_roles(user_id, company_id, roles, teams,
+                                              name)
 
     def _check_and_throw_user_is_admin(self, user_id: str):
         is_admin = self.storage.check_is_admin_user(user_id=user_id)
@@ -120,18 +121,20 @@ class EditUserInteractor(ValidationMixin):
 
     def _update_user_roles_company_roles(
             self, user_id: str, company_id: str,
-            role_ids: List[str], team_ids: List[str]):
+            role_ids: List[str], team_ids: List[str], name: str):
         self._remove_existing_teams_roles_and_company(user_id)
         self._assaign_teams_roles_company_to_user(
-            company_id, role_ids, team_ids, user_id)
+            company_id, role_ids, team_ids, user_id, name
+        )
 
     def _assaign_teams_roles_company_to_user(
-            self, company_id, role_ids, team_ids, user_id):
+            self, company_id, role_ids, team_ids, user_id, name):
         ids_of_role_objs = self.storage.get_role_objs_ids(role_ids)
         self.storage.add_roles_to_the_user(
             user_id=user_id, role_ids=ids_of_role_objs)
         self.storage.add_user_to_the_teams(user_id=user_id, team_ids=team_ids)
-        self.storage.change_company_for_user(user_id=user_id, company_id=company_id)
+        self.storage.update_user_details(user_id=user_id,
+                                         company_id=company_id, name=name)
 
     def _remove_existing_teams_roles_and_company(self, user_id):
         self.storage.remove_roles_for_user(user_id)

@@ -60,8 +60,9 @@ class EditUserStorageImplementation(EditUserStorageInterface):
                       for team_id in team_ids]
         UserTeam.objects.bulk_create(user_teams)
 
-    def change_company_for_user(self, company_id: str, user_id: str):
+    def update_user_details(self, company_id: str, user_id: str, name: str):
         from ib_iam.models import UserDetails
         user = UserDetails.objects.get(user_id=user_id)
         user.company_id = company_id
+        user.name = name
         user.save()

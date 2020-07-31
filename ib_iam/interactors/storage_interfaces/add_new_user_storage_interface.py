@@ -13,7 +13,7 @@ class AddNewUserStorageInterface(ABC):
 
     @abstractmethod
     def add_new_user(self, user_id: str, is_admin: bool, company_id: str,
-                     role_ids, team_ids: List[str]):
+                     role_ids, team_ids: List[str], name: str):
         pass
 
     @abstractmethod
