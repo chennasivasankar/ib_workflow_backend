@@ -12,20 +12,19 @@ from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldRoleDTO, FieldTypeDTO, UserFieldPermissionDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
-    GoFRoleDTO, GoFToTaskTemplateDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
-    StageDTO, TaskStageIdsDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFToTaskTemplateDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO,\
+    StageValueWithTaskIdsDTO, TaskIdWithStageDetailsDTO, \
+    TaskIdWithStageValueDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRoleDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
-    StageDTO, GetTaskStageCompleteDetailsDTO
+    StageDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionsOfTemplateDTO
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 
 
 class TaskStorageInterface(abc.ABC):
@@ -232,4 +231,17 @@ class TaskStorageInterface(abc.ABC):
     def get_field_ids_for_given_task_template_ids(self,
                                                   task_template_ids: List[str]) -> \
             List[TemplateFieldsDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_user_task_and_max_stage_value_dto_based_on_given_stage_ids(
+            self, user_id: str, stage_ids: List[str], limit: int, offset: int
+    ) -> List[TaskIdWithStageValueDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_task_id_with_stage_details_dtos_based_on_stage_value(
+            self, user_id: str, stage_values: List[int],
+            task_ids_group_by_stage_value_dtos: List[StageValueWithTaskIdsDTO]) \
+            -> [TaskIdWithStageDetailsDTO]:
         pass

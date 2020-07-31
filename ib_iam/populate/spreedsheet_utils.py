@@ -10,7 +10,8 @@ class SpreadSheetUtil:
 
         from oauth2client.service_account import ServiceAccountCredentials
         credentials = ServiceAccountCredentials.from_json_keyfile_name(
-            "ib_iam/populate/ib-worksflows-dev-testing-d86743f0ecd1.json", scope)
+            "ib_iam/populate/ib-worksflows-dev-testing-d86743f0ecd1.json",
+            scope)
 
         self.gc = gspread.authorize(credentials)
 
@@ -20,7 +21,8 @@ class SpreadSheetUtil:
         spread_sheet_data = wks.get_all_values()
 
         headers = spread_sheet_data[0]
-        headers = [header.strip() for header in headers]
+        headers = [header.lower().strip().replace(" ", "_")
+                   for header in headers]
 
         row_wise_dicts = []
         row = 1
@@ -33,6 +35,6 @@ class SpreadSheetUtil:
             row_wise_dicts.append(row_wise_dict)
 
             row += 1
+        print(row_wise_dicts)
 
         return row_wise_dicts
-

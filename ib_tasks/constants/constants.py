@@ -1,9 +1,8 @@
 from ib_tasks.constants.enum \
     import PermissionTypes, FieldTypes, Searchable
 
-all_roles_id = "ALL_ROLES"
-LIMIT_VALUE = 10
-OFFSET_VALUE = 0
+ALL_ROLES_ID = "ALL_ROLES"
+GOF_ORDER_WITH_MINUS_ONE_VALUE = -1
 
 FIELD_TYPES_LIST = [item.value for item in FieldTypes]
 

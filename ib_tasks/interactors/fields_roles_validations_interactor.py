@@ -17,6 +17,7 @@ class FieldsRolesValidationsInteractor:
     def fields_roles_validations(
             self, field_roles_dtos: List[FieldRolesDTO]
     ):
+
         self._check_read_permission_roles_empty(field_roles_dtos)
         self._check_write_permission_roles_empty(field_roles_dtos)
         self._check_for_duplication_of_read_permissions(field_roles_dtos)
@@ -26,6 +27,9 @@ class FieldsRolesValidationsInteractor:
         roles_service = roles_service_adapter.roles_service
         valid_role_ids = \
             roles_service.get_valid_role_ids_in_given_role_ids(role_ids)
+        from ib_tasks.constants.constants import ALL_ROLES_ID
+        if ALL_ROLES_ID in role_ids:
+            valid_role_ids.append(ALL_ROLES_ID)
         self._validate_read_permission_roles(field_roles_dtos, valid_role_ids)
         self._validate_write_permission_roles(field_roles_dtos, valid_role_ids)
 
@@ -36,6 +40,7 @@ class FieldsRolesValidationsInteractor:
             read_permission_roles = field_roles_dto.read_permission_roles
             write_permission_roles = field_roles_dto.write_permission_roles
             role_ids = role_ids + read_permission_roles + write_permission_roles
+        return role_ids
 
     @staticmethod
     def _check_read_permission_roles_empty(
