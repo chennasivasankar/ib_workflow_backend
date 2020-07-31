@@ -38,7 +38,6 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     display_logic = factory.Sequence(lambda n: "status_id_%d==stage_id" % n)
     card_info_kanban = json.dumps(['field_id_1', "field_id_2"])
     card_info_list = json.dumps(['field_id_1', "field_id_2"])
-    field_display_config = json.dumps(["FIELD_ID_1", "FIELD_ID_2"])
 
 
 class TaskStageModelFactory(factory.django.DjangoModelFactory):

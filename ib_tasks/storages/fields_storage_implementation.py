@@ -113,7 +113,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         task_fields_dtos = []
         import json
         for stage in stage_objs:
-            fields = stage.field_display_config
+            fields = stage.card_info_kanban
             field_ids = json.loads(fields)
             task_fields_dtos.append(
                 TaskTemplateStageFieldsDTO(
