@@ -1,5 +1,4 @@
-from typing import List
-
+from typing import List, Optional
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.permission_custom_exceptions import UserActionPermissionDenied
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException
@@ -10,7 +9,8 @@ from ib_tasks.adapters.dtos import ColumnFieldDTO, ColumnStageDTO
 from ib_tasks.interactors.get_field_details import GetFieldsDetails
 from ib_tasks.interactors.get_gofs_and_status_variables_to_task import \
     GetGroupOfFieldsAndStatusVariablesToTaskInteractor
-from ib_tasks.interactors.get_user_permitted_stage_actions import GetUserPermittedStageActions
+from ib_tasks.interactors.get_user_permitted_stage_actions \
+    import GetUserPermittedStageActions
 from ib_tasks.interactors.gofs_dtos import TaskGofAndStatusesDTO
 from ib_tasks.interactors.presenter_interfaces.dtos import TaskCompleteDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.presenter_interface import PresenterInterface
@@ -25,8 +25,9 @@ class InvalidBoardIdException(Exception):
 
 class UserActionOnTaskInteractor:
 
-    def __init__(self, user_id: str, board_id: str,
-                 task_id: int, action_id: int, storage: StorageInterface):
+    def __init__(self, user_id: str, task_id: int,
+                 action_id: int, storage: StorageInterface,
+                 board_id: Optional[str]):
         self.user_id = user_id
         self.board_id = board_id
         self.task_id = task_id
