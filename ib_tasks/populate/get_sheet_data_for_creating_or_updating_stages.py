@@ -36,6 +36,8 @@ class GetSheetDataForStages:
             "task_template_id": field_record["TaskTemplate ID*"],
             "stage_id": field_record["Stage ID*"],
             "value": field_record["Value"],
+            "card_info_kanban": field_record["Card Info_Kanban"],
+            "card_info_list": field_record["Card Info_List"],
             "stage_display_name": field_record["Stage Display Name"],
             "stage_display_logic": field_record["Stage Display Logic"]
         }
@@ -48,6 +50,8 @@ class GetSheetDataForStages:
                 "TaskTemplate ID*": And(str, len),
                 "Stage ID*": And(str, len),
                 "Stage Display Name": str,
+                "Card Info_Kanban": str,
+                "Card Info_List": str,
                 "Value": int,
                 "Stage Display Logic": And(str, len)
             }]
@@ -62,6 +66,8 @@ class GetSheetDataForStages:
             "TaskTemplate ID*": "FIN_PR",
             "Stage ID*": "PR_PAYMENT_REQUEST_DRAFTS",
             "Stage Display Name": "Payment Request Drafts",
+            "Card Info_Kanban": ["FIN_FIRST_NAME"],
+            "Card Info_List": ["FIN_FIRST_NAME"],
             "Value": 1,
             "Stage Display Logic": "Status1==PR_PAYMENT_REQUEST_DRAFTS"
         }

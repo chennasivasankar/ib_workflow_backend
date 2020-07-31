@@ -56,17 +56,17 @@ class CreateOrUpdateStagesInterface:
         for task in task_fields_dtos:
             tasks_dict[task.task_template_id] = task.field_ids
 
-        invalid_field_ids = []
+        invalid_template_ids = []
         for stage in stages_dict:
             kanban, list_value, task_template_id, template_id = self._get_required_constants(
                 stage, stages_dict)
             if not kanban.issubset(set(tasks_dict[task_template_id])):
-                invalid_field_ids.append(template_id.task_template_id)
+                invalid_template_ids.append(template_id.task_template_id)
             if not list_value.issubset(set(tasks_dict[task_template_id])):
-                invalid_field_ids.append(template_id.task_template_id)
+                invalid_template_ids.append(template_id.task_template_id)
 
-        if invalid_field_ids:
-            raise InvalidTemplateFields(list(set(invalid_field_ids)))
+        if invalid_template_ids:
+            raise InvalidTemplateFields(list(set(invalid_template_ids)))
 
     @staticmethod
     def _get_required_constants(stage, stages_dict):
@@ -100,7 +100,8 @@ class CreateOrUpdateStagesInterface:
             self.stage_storage.create_stages(
                 create_stages_details)
 
-    def _validate_stage_display_logic(self, stages_details):
+    @staticmethod
+    def _validate_stage_display_logic(stages_details):
         list_of_logic_attributes = []
         invalid_stage_display_logic_stages = [
             stage.stage_id for stage in stages_details
@@ -109,14 +110,15 @@ class CreateOrUpdateStagesInterface:
         if invalid_stage_display_logic_stages:
             raise InvalidStageDisplayLogic(invalid_stage_display_logic_stages)
 
-        for stage in stages_details:
-            logic_interactor = StageDisplayLogicInteractor()
-            stage_logic_attributes_dto = logic_interactor.get_stage_display_logic_attributes(
-                stage.stage_display_logic
-            )
-            list_of_logic_attributes.append(stage_logic_attributes_dto)
-
-        self._validate_stage_display_logic_attributes(list_of_logic_attributes)
+        # TODO: validate stage display logic
+        # for stage in stages_details:
+        #     logic_interactor = StageDisplayLogicInteractor()
+        #     stage_logic_attributes_dto = logic_interactor.get_stage_display_logic_attributes(
+        #         stage.stage_display_logic
+        #     )
+        #     list_of_logic_attributes.append(stage_logic_attributes_dto)
+        #
+        # self._validate_stage_display_logic_attributes(list_of_logic_attributes)
 
     def _validate_stage_display_logic_attributes(
             self, list_of_logic_attributes: List[StageLogicAttributes]):
@@ -208,7 +210,7 @@ class CreateOrUpdateStagesInterface:
     def _validate_values_for_stages(stages_details: List[StageDTO]):
         invalid_value_stages = []
         for stage in stages_details:
-            if stage.value < 0:
+            if stage.value < -1:
                 invalid_value_stages.append(stage.stage_id)
 
         if invalid_value_stages:

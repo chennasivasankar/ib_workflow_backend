@@ -21,7 +21,7 @@ MULTI_VALUES_INPUT_FIELDS = [
     FieldTypes.MULTI_SELECT_LABELS.value
 ]
 
-GOOGLE_SHEET_NAME = "FinMan Configuration_Dev_Test"
+GOOGLE_SHEET_NAME = "Vendor Configuration_v0"
 TASK_TEMPLATE_SUB_SHEET_TITLE = "Task Templates"
 GOF_SUB_SHEET_TITLE = "GOF"
 FIELD_SUB_SHEET_TITLE = "Fields"
@@ -31,5 +31,5 @@ UPLOADERS = [FieldTypes.IMAGE_UPLOADER.value, FieldTypes.FILE_UPLOADER.value]
 
 STAGES_AND_ACTIONS_SUB_SHEET = "PR - Stages and Actions "
 TASK_CREATION_CONFIG_SUB_SHEET = "PR-Task Creation Config"
-STAGE_ID_AND_VALUES_SUB_SHEET = "PR - StageID and Values"
+STAGE_ID_AND_VALUES_SUB_SHEET = "StageID and Values"
 STATUS_VARIABLES_SUB_SHEET = "PR - Status Variables"
