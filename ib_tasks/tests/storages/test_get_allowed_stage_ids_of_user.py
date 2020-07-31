@@ -6,6 +6,7 @@ class TestGetAllowedStageIdsOfUser:
     @pytest.fixture()
     def create_stages(self):
         from ib_tasks.tests.factories.models import StageModelFactory
+        StageModelFactory.reset_sequence()
         StageModelFactory.create_batch(size=3)
 
     def test_get_stage_actions(self, create_stages):

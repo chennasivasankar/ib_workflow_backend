@@ -589,7 +589,7 @@ class TasksStorageImplementation(TaskStorageInterface):
         from django.db.models import Max
         task_objs_with_max_stage_value = list(
             TaskStage.objects.filter(
-                task__created_by_id=user_id,
+                task__created_by=user_id,
                 stage__stage_id__in=stage_ids).values("task_id").annotate(
                     stage_value=Max("stage__value"))[offset:limit])
         task_id_with_max_stage_value_dtos = []
@@ -613,7 +613,7 @@ class TasksStorageImplementation(TaskStorageInterface):
                         == each_stage_value:
                     task_id_with_stage_details = list(
                         TaskStage.objects.filter(
-                            task__created_by_id=user_id,
+                            task__created_by=user_id,
                             stage__value=each_stage_value,
                             task_id__in=each_task_ids_group_by_stage_value_dto.
                             task_ids).values("task_id", "stage__stage_id",

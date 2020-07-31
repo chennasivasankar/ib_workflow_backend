@@ -3,16 +3,12 @@
 """
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
-
-from ib_tasks.models import Task, Stage, TaskStage, TaskGoFField, \
-    TaskTemplateGoFs, Field
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories.models import TaskFactory, StageModelFactory, \
-    TaskStageModelFactory, StageActionFactory, TaskGoFFieldFactory, \
-    FieldFactory, GoFToTaskTemplateFactory, TaskTemplateFactory
+    TaskStageModelFactory, StageActionFactory, TaskGoFFieldFactory,  TaskGoFFactory
 
 
-class TestCase01GetAllTasksOverviewAPITestCase(TestUtils):
+class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -21,15 +17,19 @@ class TestCase01GetAllTasksOverviewAPITestCase(TestUtils):
 
     @pytest.fixture(autouse=True)
     def setup(self):
-        task_objs = TaskFactory.create_batch(3, created_by_id=1)
-        print("tasks", Task.objects.all().values())
+        TaskFactory.reset_sequence()
+        StageModelFactory.reset_sequence()
+        TaskStageModelFactory.reset_sequence()
+        StageActionFactory.reset_sequence()
+        TaskGoFFactory.reset_sequence()
+        TaskGoFFieldFactory.reset_sequence()
+        task_objs = TaskFactory.create_batch(3, created_by=1)
         stage_objs = StageModelFactory.create_batch(
             3, task_template_id='task_template_id_1')
         stage_other_obj_1 = StageModelFactory(
             value=2, task_template_id='task_template_id_1')
         stage_other_obj_2 = StageModelFactory(
             value=2, task_template_id='task_template_id_1')
-        print("stages", Stage.objects.all().values())
         task_stage_obj_1 = TaskStageModelFactory(task=task_objs[0],
                                                  stage=stage_objs[2])
         task_stage_obj_2 = TaskStageModelFactory(task=task_objs[1],
@@ -38,26 +38,21 @@ class TestCase01GetAllTasksOverviewAPITestCase(TestUtils):
                                                  stage=stage_other_obj_2)
         task_stage_obj_4 = TaskStageModelFactory(task=task_objs[0],
                                                  stage=stage_objs[0])
-        # print("task_stages", TaskStage.objects.all().values())
         StageActionFactory(stage=stage_objs[2])
         StageActionFactory(stage=stage_other_obj_1)
-
-        field_objs = FieldFactory.create_batch(4)
-        print("field_objs", Field.objects.all().values('field_id','gof_id','display_name'))
-        task_template_obj = TaskTemplateFactory(template_id='task_template_id_1')
-        GoFToTaskTemplateFactory(gof=field_objs[1].gof,
-                                 task_template=task_template_obj)
-
-        print("TaskTemplateGoFs", TaskTemplateGoFs.objects.all().values())
-        GoFToTaskTemplateFactory(gof=field_objs[0].gof,
-                                 task_template='task_template_id_1')
-
+        StageActionFactory(stage=stage_other_obj_2)
+        task_gof_obj_1 = TaskGoFFactory(task=task_objs[0])
+        task_gof_obj_2 = TaskGoFFactory(task=task_objs[1])
+        task_gof_obj_3 = TaskGoFFactory(task=task_objs[0])
+        TaskGoFFieldFactory(task_gof=task_gof_obj_1)
+        TaskGoFFieldFactory(task_gof=task_gof_obj_2)
+        TaskGoFFieldFactory(task_gof=task_gof_obj_3)
 
     @pytest.mark.django_db
     def test_case(self, snapshot, setup):
         body = {}
         path_params = {}
-        query_params = {'limit': 2, 'offset': 0}
+        query_params = {'limit': 3, 'offset': 0}
         headers = {}
         response = self.default_test_case(body=body,
                                           path_params=path_params,

@@ -24,7 +24,7 @@ class TaskFactory(factory.django.DjangoModelFactory):
         model = Task
 
     template_id = "task_template_id_1"
-    created_by_id = "123e4567-e89b-12d3-a456-426614174000"
+    created_by = "123e4567-e89b-12d3-a456-426614174000"
 
 
 class StageModelFactory(factory.django.DjangoModelFactory):

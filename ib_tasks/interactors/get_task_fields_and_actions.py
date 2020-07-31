@@ -21,12 +21,10 @@ class GetTaskFieldsAndActionsInteractor:
 
     def get_task_fields_and_action(self, task_dtos: List[GetTaskDetailsDTO]) -> \
             List[GetTaskStageCompleteDetailsDTO]:
-        print("task_id_with_stage_id_dtos", task_dtos)
         task_ids = [task.task_id for task in task_dtos]
         stage_ids = [task.stage_id for task in task_dtos]
 
         valid_task_ids = self.storage.get_valid_task_ids(task_ids)
-        print("valid_task_ids", valid_task_ids)
         self._validate_task_ids(task_ids, valid_task_ids)
         stage_task_dtos = task_dtos
         valid_stage_ids = self.stage_storage.get_existing_stage_ids(stage_ids)
@@ -34,18 +32,13 @@ class GetTaskFieldsAndActionsInteractor:
 
         valid_stage_and_tasks = self.storage.validate_task_related_stage_ids(
             task_dtos)
-        print("valid_stage_and_tasks", valid_stage_and_tasks)
         self._validate_stage_and_tasks(valid_stage_and_tasks, task_dtos)
 
         task_stage_dtos = self.storage.get_stage_details(stage_task_dtos)
 
-        print("task_stage_dtos", task_stage_dtos)
-
         action_dtos = self.storage.get_actions_details(stage_ids)
-        print("action_dtos", action_dtos)
 
         stage_fields_dtos = self.storage.get_field_ids(task_stage_dtos)
-        print("stage_fields_dtos", stage_fields_dtos)
         task_fields_dtos = self._map_task_and_their_fields(
             stage_fields_dtos, task_stage_dtos)
         field_dtos = self.storage.get_fields_details(task_fields_dtos)
@@ -87,7 +80,6 @@ class GetTaskFieldsAndActionsInteractor:
         invalid_task_ids = [
             task_id for task_id in task_ids if task_id not in valid_task_ids
         ]
-        print("invalid_task_ids", invalid_task_ids)
         if invalid_task_ids:
             raise InvalidTaskIds(invalid_task_ids)
         return

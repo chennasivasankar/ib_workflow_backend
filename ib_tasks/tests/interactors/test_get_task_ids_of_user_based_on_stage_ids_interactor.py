@@ -65,9 +65,9 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
 
         # Act
         from ib_tasks.exceptions.fields_custom_exceptions import \
-            OffsetShouldBeGreaterThanOrEqualToMinusOneException
+            OffsetShouldBeGreaterThanZeroException
         with pytest.raises(
-                OffsetShouldBeGreaterThanOrEqualToMinusOneException):
+                OffsetShouldBeGreaterThanZeroException):
             interactor.get_task_ids_of_user_based_on_stage_ids(
                 user_stages_with_pagination_dto)
 

@@ -64,7 +64,7 @@ class TestGetTaskIdsInteractor:
         stage_storage.get_existing_stage_ids.assert_called_once_with(
             stage_ids=stage_ids_single_list
         )
-        assert error.value.stage_ids == invalid_stage_ids
+        assert error.value.invalid_stage_ids == invalid_stage_ids
 
     def test_with_valid_stage_ids_return_task_ids_with_stage_ids_dict(
             self, stage_storage, task_storage):
