@@ -26,7 +26,7 @@ THIRD_PARTY_APPS = [
 APPS = [
     "ib_iam",
     "ib_tasks",
-    "ib_boards"
+    "ib_boards",
     "ib_discussions",
 ]
 
