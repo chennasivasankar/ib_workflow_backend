@@ -108,8 +108,6 @@ class DiscussionInteractor:
                 raise_exception_for_invalid_entity_type_for_entity_id()
         except InvalidUserId:
             response = presenter.raise_exception_for_invalid_user_id()
-        except DiscussionSetNotFound:
-            response = presenter.raise_exception_for_discussion_set_not_found()
         return response
 
     def _get_discussions_response(
