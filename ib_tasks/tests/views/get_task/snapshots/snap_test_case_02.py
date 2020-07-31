@@ -7,10 +7,10 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01GetTaskAPITestCase.test_case status_code'] = '404'
+snapshots['TestCase02GetTaskAPITestCase.test_case status_code'] = '404'
 
-snapshots['TestCase01GetTaskAPITestCase.test_case body'] = {
+snapshots['TestCase02GetTaskAPITestCase.test_case body'] = {
     'http_status_code': 404,
     'res_status': 'INVALID_TASK_ID',
-    'response': 'invalid task id is: 506, please send valid task id'
+    'response': 'invalid task id is: 1, please send valid task id'
 }

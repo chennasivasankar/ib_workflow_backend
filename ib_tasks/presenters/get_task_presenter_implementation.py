@@ -1,6 +1,7 @@
 import json
 from django.http import response
 from typing import List
+from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
 from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
     import GetTaskPresenterInterface
@@ -12,20 +13,19 @@ from ib_tasks.interactors.task_dtos import TaskStageCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
 
 
-class GetTaskPresenterImplementation(GetTaskPresenterInterface):
+class GetTaskPresenterImplementation(GetTaskPresenterInterface, HTTPResponseMixin):
 
     def raise_exception_for_invalid_task_id(self, err: InvalidTaskIdException):
         from ib_tasks.constants.exception_messages import INVALID_TASK_ID
         task_id = err.task_id
+        print("task_uid = ", task_id)
         response_message = INVALID_TASK_ID[0].format(task_id)
-        data = json.dumps(
-            {
-                "response": response_message,
-                "http_status_code": 404,
-                "res_status": INVALID_TASK_ID[1]
-            }
-        )
-        response_object = response.HttpResponse(data)
+        data = {
+            "response": response_message,
+            "http_status_code": 404,
+            "res_status": INVALID_TASK_ID[1]
+        }
+        response_object = self.prepare_404_not_found_response(response_dict=data)
         return response_object
 
     def get_task_response(self, task_complete_details_dto: TaskCompleteDetailsDTO):
@@ -44,8 +44,7 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface):
             "gofs": gofs,
             "stages_with_actions": stages_with_actions
         }
-        data = json.dumps(task_details_dict)
-        response_object = response.HttpResponse(data)
+        response_object = self.prepare_200_success_response(response_dict=task_details_dict)
         return response_object
 
     def _get_task_satges_with_actions_details(

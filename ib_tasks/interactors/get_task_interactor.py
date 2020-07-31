@@ -27,18 +27,20 @@ class GetTaskInteractor:
             self, user_id: str, task_id: int,
             presenter: GetTaskPresenterInterface
     ):
+        print("*"*100)
         try:
             return self.get_task_details_response(user_id, task_id, presenter)
         except InvalidTaskIdException as err:
-            presenter.raise_exception_for_invalid_task_id(err)
+            response = presenter.raise_exception_for_invalid_task_id(err)
+            return response
 
     def get_task_details_response(
             self, user_id: str, task_id: int,
             presenter: GetTaskPresenterInterface
     ):
         task_complete_details_dto = self.get_task_details(user_id, task_id)
-        response = presenter.get_task_response(task_complete_details_dto)
-        return response
+        #response = presenter.get_task_response(task_complete_details_dto)
+        return "response"
 
     def get_task_details(self, user_id: str, task_id: int):
         get_task_base_interactor = GetTaskBaseInteractor(storage=self.storage)
@@ -61,9 +63,11 @@ class GetTaskInteractor:
             task_gof_dtos=permission_task_gof_dtos,
             task_gof_field_dtos=permission_task_gof_field_dtos
         )
+        print("task_details_dto = ", task_details_dto)
         task_complete_details_dto = TaskCompleteDetailsDTO(
             task_id=task_id,
-            task_details_dto=task_details_dto
+            task_details_dto=task_details_dto,
+
         )
         return task_complete_details_dto
 
