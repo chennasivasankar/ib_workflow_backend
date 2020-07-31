@@ -60,7 +60,8 @@ class GetColumnDetailsInteractor:
             offset=offset
         )
         task_field_dtos, task_action_dtos = self._get_tasks_complete_details(
-            task_ids_stages_dtos=task_ids_stages_dtos
+            task_ids_stages_dtos=task_ids_stages_dtos,
+            user_id=user_id
         )
         column_tasks = self._get_column_task_ids_map(
             task_ids_stages_dtos=task_ids_stages_dtos
@@ -73,7 +74,8 @@ class GetColumnDetailsInteractor:
 
     @staticmethod
     def _get_tasks_complete_details(
-            task_ids_stages_dtos: List[ColumnTaskIdsDTO]) \
+            task_ids_stages_dtos: List[ColumnTaskIdsDTO],
+            user_id: int) \
             -> Tuple[List[TaskDTO], List[ActionDTO]]:
         task_details_dtos = []
         for task_ids_stages_dto in task_ids_stages_dtos:
@@ -88,7 +90,7 @@ class GetColumnDetailsInteractor:
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         return service_adapter.task_service.get_task_complete_details(
-            task_details_dtos)
+            task_details_dtos, user_id=user_id)
 
     @staticmethod
     def _get_task_ids_for_given_stages(

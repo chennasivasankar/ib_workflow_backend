@@ -385,4 +385,14 @@ class StorageImplementation(StorageInterface):
         return list_of_column_dtos, column_stages
 
     def get_columns_stage_ids(self, column_ids) -> List[ColumnStageIdsDTO]:
-        pass
+        column_stages = Column.objects.filter(
+            column_id__in=column_ids
+        ).values_list('column_id', 'task_selection_config')
+
+        return [
+            ColumnStageIdsDTO(
+                column_id=key,
+                stage_ids=self._get_stage_ids_from_json_string(value)
+            )
+            for key, value in column_stages
+        ]

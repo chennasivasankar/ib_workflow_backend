@@ -40,8 +40,9 @@ class GetColumnTasksInteractor:
             return presenter.get_response_for_user_have_no_access_for_column()
         except InvalidStageIds as error:
             return presenter.get_response_for_invalid_stage_ids(error=error)
-        return presenter.get_response_column_tasks(
-            task_complete_details_dto=task_complete_details_dto,
+        return presenter.get_response_for_column_tasks(
+            task_actions_dtos=tasks_action_dtos,
+            task_fields_dtos=task_fields_dtos,
             total_tasks=total_tasks
         )
 
@@ -50,6 +51,7 @@ class GetColumnTasksInteractor:
         self._validate_given_data(
             column_tasks_parameters=column_tasks_parameters)
         column_id = column_tasks_parameters.column_id
+        user_id = column_tasks_parameters.user_id
         stage_ids = self.storage.get_column_display_stage_ids(
             column_id=column_id
         )
@@ -58,13 +60,14 @@ class GetColumnTasksInteractor:
             column_tasks_parameters=column_tasks_parameters)
 
         task_fields_dtos, tasks_action_dtos = self._get_tasks_complete_details(
-            task_ids_stages_dto
+            task_ids_stages_dtos=task_ids_stages_dto, user_id=user_id
         )
         return task_fields_dtos, tasks_action_dtos, task_ids_stages_dto.total_tasks
 
     @staticmethod
     def _get_tasks_complete_details(
-            task_ids_stages_dtos: ColumnTaskIdsDTO) -> Tuple[List[TaskDTO], List[ActionDTO]]:
+            task_ids_stages_dtos: ColumnTaskIdsDTO,
+            user_id: int) -> Tuple[List[TaskDTO], List[ActionDTO]]:
         task_details_dtos = []
         for task_ids_stages_dto in task_ids_stages_dtos.task_stage_ids:
             from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
@@ -77,7 +80,7 @@ class GetColumnTasksInteractor:
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         return service_adapter.task_service.get_task_complete_details(
-            task_details_dtos)
+            task_details_dtos, user_id=user_id)
 
     def _validate_given_data(self, column_tasks_parameters):
         column_id = column_tasks_parameters.column_id

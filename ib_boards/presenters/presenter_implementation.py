@@ -175,6 +175,17 @@ class GetColumnTasksPresenterImplementation(
             response_dict=response_dict
         )
 
+    def get_response_for_column_tasks(
+            self, task_fields_dtos: List[TaskDTO],
+            task_actions_dtos: List[ActionDTO],
+            total_tasks: int):
+        presenter = PresenterImplementation()
+
+        return {
+            "total_tasks_count": total_tasks,
+            "tasks": []
+        }
+
 
 class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
 

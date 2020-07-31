@@ -109,32 +109,39 @@ class GetColumnTasksPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_response_for_invalid_offset(self):
+    def get_response_for_invalid_offset(self) -> response.HttpResponse:
         pass
 
     @abc.abstractmethod
-    def get_response_for_invalid_limit(self):
+    def get_response_for_invalid_limit(self) -> response.HttpResponse:
         pass
 
     @abc.abstractmethod
-    def get_response_for_offset_exceeds_total_tasks(self):
+    def get_response_for_offset_exceeds_total_tasks(self) -> response.HttpResponse:
         pass
 
     @abc.abstractmethod
-    def get_response_for_user_have_no_access_for_column(self):
+    def get_response_for_user_have_no_access_for_column(self) -> response.HttpResponse:
         pass
 
     @abc.abstractmethod
-    def get_response_for_invalid_stage_ids(self, error):
+    def get_response_for_invalid_stage_ids(self, error) -> response.HttpResponse:
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_column_tasks(
+            self, task_fields_dtos: List[TaskDTO],
+            task_actions_dtos: List[ActionDTO],
+            total_tasks: int):
         pass
 
 
 class StageDisplayLogicPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
-    def get_response_for_invalid_stage_ids(self, error):
+    def get_response_for_invalid_stage_ids(self, error) -> response.HttpResponse:
         pass
 
     @abc.abstractmethod
-    def get_response_for_stage_display_logic(self, task_status_dtos):
+    def get_response_for_stage_display_logic(self, task_status_dtos) -> response.HttpResponse:
         pass

@@ -82,10 +82,11 @@ class TaskService:
         return column_task_ids_dtos
 
     def get_task_complete_details(
-            self, task_stage_ids: List[GetTaskDetailsDTO]) \
+            self, task_stage_ids: List[GetTaskDetailsDTO],
+            user_id: int) \
             -> Tuple[List[TaskDTO], List[ActionDTO]]:
         tasks_complete_details_dtos = self.interface.get_task_details(
-            task_dtos=task_stage_ids
+            task_dtos=task_stage_ids, user_id=user_id
         )
         tasks_dtos = []
         action_dtos = []

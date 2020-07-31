@@ -191,7 +191,7 @@ class TestGetColumnTasksInteractor:
         stage_ids = ['STAGE_ID_1', 'STAGE_ID_1']
         expected_response = Mock()
         storage_mock.get_column_display_stage_ids.return_value = stage_ids
-        presenter_mock.get_response_column_tasks. \
+        presenter_mock.get_response_for_column_tasks. \
             return_value = expected_response
         interactor = GetColumnTasksInteractor(
             storage=storage_mock
@@ -199,8 +199,7 @@ class TestGetColumnTasksInteractor:
 
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             task_details_mock
-        task_details_mock = task_details_mock(mocker,
-                                              task_complete_details_dto)
+        task_details_mock(mocker, task_complete_details_dto)
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             get_task_ids_mock
 
@@ -225,8 +224,9 @@ class TestGetColumnTasksInteractor:
         task_ids_mock.assert_called_once_with(
             task_config_dtos=task_config_dto
         )
-        presenter_mock.get_response_column_tasks.assert_called_once_with(
-            task_complete_details_dto=task_complete_details_dto,
+        presenter_mock.get_response_for_column_tasks.assert_called_once_with(
+            task_fields_dtos=task_complete_details_dto[0].field_dtos,
+            task_actions_dtos=task_complete_details_dto[0].action_dtos,
             total_tasks=10
         )
 
