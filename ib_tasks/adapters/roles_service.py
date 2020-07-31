@@ -23,5 +23,4 @@ class RolesService:
 
     def get_user_role_ids(self, user_id) -> List[str]:
         user_role_ids = self.interface.get_user_role_ids(user_id=user_id)
-        user_role_ids = []
         return user_role_ids
