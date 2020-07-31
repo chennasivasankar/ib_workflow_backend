@@ -77,15 +77,15 @@ class InvalidValueForDropdownField(Exception):
         self.valid_values = valid_values
 
 
-class IncorrectGoFIDInGoFSelectorField(Exception):
+class IncorrectNameInGoFSelectorField(Exception):
 
     def __init__(
             self, field_id: str, field_value: str,
-            valid_gof_id_options: List[str]
+            valid_gof_selector_names: List[str]
     ):
         self.field_id = field_id
         self.field_value = field_value
-        self.valid_gof_id_options = valid_gof_id_options
+        self.valid_gof_selector_names = valid_gof_selector_names
 
 
 class IncorrectRadioGroupChoice(Exception):

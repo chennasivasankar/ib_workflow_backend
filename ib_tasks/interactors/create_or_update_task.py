@@ -7,7 +7,7 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
     InvalidNumberValue, InvalidFloatValue, \
     InvalidValueForDropdownField, InvalidGoFIDsInGoFSelectorField, \
-    IncorrectGoFIDInGoFSelectorField, IncorrectRadioGroupChoice, \
+    IncorrectNameInGoFSelectorField, IncorrectRadioGroupChoice, \
     IncorrectCheckBoxOptionsSelected, IncorrectMultiSelectOptionsSelected, \
     IncorrectMultiSelectLabelsSelected, InvalidDateFormat, InvalidTimeFormat, \
     InvalidUrlForImage, InvalidImageFormat, NotAnImageUrl, CouldNotReadImage, \
@@ -20,7 +20,8 @@ from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateIds, \
 from ib_tasks.interactors.storage_interfaces. \
     create_or_update_task_storage_interface import \
     CreateOrUpdateTaskStorageInterface
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import \
+    FieldDetailsDTO, FieldCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFWithTaskIdDTO, \
     TaskGoFDetailsDTO
@@ -70,7 +71,7 @@ class CreateOrUpdateTaskInteractor:
             return presenter.raise_exception_for_invalid_field_ids(err)
         except InvalidGoFIDsInGoFSelectorField as err:
             return presenter. \
-                raise_exception_for_gof_ids_in_gof_selector_field_value(err)
+                raise_exception_for_invalid_name_in_gof_selector_field_value(err)
         except EmptyValueForRequiredField as err:
             return presenter. \
                 raise_exception_for_empty_value_in_required_field(err)
@@ -89,7 +90,7 @@ class CreateOrUpdateTaskInteractor:
             return presenter.raise_exception_for_invalid_float_value(err)
         except InvalidValueForDropdownField as err:
             return presenter.raise_exception_for_invalid_dropdown_value(err)
-        except IncorrectGoFIDInGoFSelectorField as err:
+        except IncorrectNameInGoFSelectorField as err:
             return presenter. \
                 raise_exceptions_for_invalid_gof_id_selected_in_gof_selector(
                 err
@@ -313,9 +314,7 @@ class CreateOrUpdateTaskInteractor:
             field_values_dto.field_id for field_values_dto in field_values_dtos
         ]
         field_details_dtos = self.task_storage. \
-            get_field_details_for_given_field_ids(
-            field_ids=field_ids
-        )
+            get_field_details_for_given_field_ids(field_ids=field_ids)
         gof_ids_in_gof_selector = []
         for field_values_dto in field_values_dtos:
             field_type = self._get_field_type_for_given_field_id(
@@ -378,10 +377,15 @@ class CreateOrUpdateTaskInteractor:
                     field_type == FieldTypes.GOF_SELECTOR.value
             )
             if field_type_is_gof_selector:
-                valid_gof_id_options = json.loads(
-                    field_details_dto.field_values)
+                field_values_dicts = json.loads(
+                    field_details_dto.field_values
+                )
+                valid_gof_selector_names = [
+                    field_values_dict['name']
+                    for field_values_dict in field_values_dicts
+                ]
                 self._validate_gof_selector_value(
-                    field_value, field_id, valid_gof_id_options
+                    field_value, field_id, valid_gof_selector_names
                 )
             field_type_is_radio_group = (
                     field_type == FieldTypes.RADIO_GROUP.value
@@ -583,12 +587,12 @@ class CreateOrUpdateTaskInteractor:
 
     @staticmethod
     def _validate_gof_selector_value(
-            field_value: str, field_id: str, valid_gof_id_options: List[str]
-    ) -> Optional[IncorrectGoFIDInGoFSelectorField]:
-        invalid_gof_option = field_value not in valid_gof_id_options
+            field_value: str, field_id: str, valid_gof_selector_names: List[str]
+    ) -> Optional[IncorrectNameInGoFSelectorField]:
+        invalid_gof_option = field_value not in valid_gof_selector_names
         if invalid_gof_option:
-            raise IncorrectGoFIDInGoFSelectorField(
-                field_id, field_value, valid_gof_id_options
+            raise IncorrectNameInGoFSelectorField(
+                field_id, field_value, valid_gof_selector_names
             )
         return
 
@@ -742,7 +746,7 @@ class CreateOrUpdateTaskInteractor:
 
     @staticmethod
     def _get_field_type_for_given_field_id(
-            field_id: str, field_details_dtos: List[FieldDetailsDTO]
+            field_id: str, field_details_dtos: List[FieldCompleteDetailsDTO]
     ) -> Union[None, FieldTypes]:
         for field_details_dto in field_details_dtos:
             field_id_matched = field_details_dto.field_id == field_id

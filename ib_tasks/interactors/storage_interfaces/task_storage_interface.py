@@ -216,7 +216,7 @@ class TaskStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_field_details_for_given_field_ids(
             self, field_ids: List[str]
-    ) -> List[FieldDetailsDTO]:
+    ) -> List[FieldCompleteDetailsDTO]:
         pass
 
     @abc.abstractmethod

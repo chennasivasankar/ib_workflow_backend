@@ -4,7 +4,7 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidTimeFormat, InvalidDateFormat, \
     IncorrectMultiSelectLabelsSelected, IncorrectMultiSelectOptionsSelected, \
     IncorrectCheckBoxOptionsSelected, IncorrectRadioGroupChoice, \
-    IncorrectGoFIDInGoFSelectorField, InvalidValueForDropdownField, \
+    IncorrectNameInGoFSelectorField, InvalidValueForDropdownField, \
     InvalidFloatValue, InvalidNumberValue, NotAStrongPassword, InvalidURLValue, \
     InvalidEmailFieldValue, InvalidPhoneNumberValue, InvalidFileFormat, \
     EmptyValueForRequiredField
@@ -183,17 +183,17 @@ class CreateOrUpdateTaskPresenterImplementation(
         return response_object
 
     def raise_exceptions_for_invalid_gof_id_selected_in_gof_selector(self,
-                                                                     err: IncorrectGoFIDInGoFSelectorField):
+                                                                     err: IncorrectNameInGoFSelectorField):
         from ib_tasks.constants.exception_messages import \
-            INCORRECT_GOF_ID_IN_GOF_SELECTOR_FIELD
-        response_message = INCORRECT_GOF_ID_IN_GOF_SELECTOR_FIELD[0].format(
-            err.field_value, err.field_id, err.valid_gof_id_options
+            INCORRECT_NAME_IN_GOF_SELECTOR_FIELD
+        response_message = INCORRECT_NAME_IN_GOF_SELECTOR_FIELD[0].format(
+            err.field_value, err.field_id, err.valid_gof_selector_names
         )
         data = json.dumps(
             {
                 "response": response_message,
                 "http_status_code": 400,
-                "res_status": INCORRECT_GOF_ID_IN_GOF_SELECTOR_FIELD[1]
+                "res_status": INCORRECT_NAME_IN_GOF_SELECTOR_FIELD[1]
             }
         )
         response_object = response.HttpResponse(data)
@@ -346,18 +346,18 @@ class CreateOrUpdateTaskPresenterImplementation(
         response_object = response.HttpResponse(data)
         return response_object
 
-    def raise_exception_for_gof_ids_in_gof_selector_field_value(self,
-                                                                err: InvalidGoFIDsInGoFSelectorField):
+    def raise_exception_for_invalid_name_in_gof_selector_field_value(
+            self, err: InvalidGoFIDsInGoFSelectorField):
         from ib_tasks.constants.exception_messages import \
-            INVALID_GOF_IDS_IN_GOF_SELECTOR_FIELD
-        response_message = INVALID_GOF_IDS_IN_GOF_SELECTOR_FIELD[0].format(
+            INVALID_NAME_IN_GOF_SELECTOR_FIELD
+        response_message = INVALID_NAME_IN_GOF_SELECTOR_FIELD[0].format(
             err.gof_ids
         )
         data = json.dumps(
             {
                 "response": response_message,
                 "http_status_code": 400,
-                "res_status": INVALID_GOF_IDS_IN_GOF_SELECTOR_FIELD[1]
+                "res_status": INVALID_NAME_IN_GOF_SELECTOR_FIELD[1]
             }
         )
         response_object = response.HttpResponse(data)
