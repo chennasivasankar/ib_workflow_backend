@@ -118,6 +118,12 @@ class GetUsersDetailsInteractor(ValidationMixin):
         )
         return user_details_dtos
 
+    def get_all_user_dtos_based_on_query(self, search_query: str):
+        user_details_dtos = self.storage.get_user_details_dtos_based_on_search_query(
+            search_query=search_query
+        )
+        return user_details_dtos
+
     @staticmethod
     def _validate_offset(offset):
         is_invalid_offset_value = offset < 0

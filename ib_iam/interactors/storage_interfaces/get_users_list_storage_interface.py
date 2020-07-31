@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List
 
 from ib_iam.interactors.storage_interfaces.dtos \
-    import UserDTO, UserTeamDTO, UserRoleDTO, UserCompanyDTO
+    import UserDTO, UserTeamDTO, UserRoleDTO, UserCompanyDTO, UserIdAndNameDTO
 
 
 class GetUsersListStorageInterface(ABC):
@@ -37,5 +37,11 @@ class GetUsersListStorageInterface(ABC):
     @abstractmethod
     def get_user_details_dtos_based_on_limit_offset_and_search_query(
             self, limit: int, offset: int, search_query: str
-    ):
+    ) -> List[UserIdAndNameDTO]:
+        pass
+
+    @abstractmethod
+    def get_user_details_dtos_based_on_search_query(
+            self, search_query: str
+    ) -> List[UserIdAndNameDTO]:
         pass

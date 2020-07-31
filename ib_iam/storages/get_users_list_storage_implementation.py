@@ -1,7 +1,7 @@
 from typing import List
 
 from ib_iam.interactors.storage_interfaces.dtos \
-    import UserCompanyDTO, UserDTO, UserTeamDTO, UserRoleDTO
+    import UserCompanyDTO, UserDTO, UserTeamDTO, UserRoleDTO, UserIdAndNameDTO
 from ib_iam.interactors.storage_interfaces.get_users_list_storage_interface \
     import GetUsersListStorageInterface
 
@@ -16,7 +16,7 @@ class GetUsersListStorageImplementation(GetUsersListStorageInterface):
         from ib_iam.models import UserDetails
         user_dtos = []
         users = UserDetails.objects. \
-                    filter(is_admin=False)[offset: offset+limit]
+                    filter(is_admin=False)[offset: offset + limit]
         for user in users:
             user_dtos.append(UserDTO(
                 user_id=user.user_id,
@@ -79,3 +79,43 @@ class GetUsersListStorageImplementation(GetUsersListStorageInterface):
             )
             company_dtos.append(company_dto)
         return company_dtos
+
+    def get_user_details_dtos_based_on_limit_offset_and_search_query(
+            self, limit: int, offset: int, search_query: str
+    ) -> List[UserIdAndNameDTO]:
+        from ib_iam.models import UserDetails
+        user_details_objects = UserDetails.objects.filter(
+            name__icontains=search_query
+        )[offset: limit + offset]
+        user_details_dtos = self._convert_to_user_details_dtos(
+            user_details_objects=user_details_objects
+        )
+        return user_details_dtos
+
+    def get_user_details_dtos_based_on_search_query(
+            self, search_query: str
+    ) -> List[UserIdAndNameDTO]:
+        from ib_iam.models import UserDetails
+        user_details_objects = UserDetails.objects.filter(
+            name__icontains=search_query
+        )
+        user_details_dtos = self._convert_to_user_details_dtos(
+            user_details_objects=user_details_objects
+        )
+        return user_details_dtos
+
+    def _convert_to_user_details_dtos(self, user_details_objects):
+        user_details_dtos = [
+            self._convert_to_user_details_dto(
+                user_details_object=user_details_object)
+            for user_details_object in user_details_objects
+        ]
+        return user_details_dtos
+
+    @staticmethod
+    def _convert_to_user_details_dto(user_details_object):
+        user_details_dto = UserIdAndNameDTO(
+            user_id=user_details_object.user_id,
+            name=user_details_object.name
+        )
+        return user_details_dto
