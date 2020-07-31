@@ -107,3 +107,7 @@ class StorageInterface(abc.ABC):
     def get_task_template_stage_logic_to_task(
             self, task_id: int) -> List[StageDisplayValueDTO]:
         pass
+
+    @abc.abstractmethod
+    def update_task_stages(self, task_id: int, stage_ids: List[str]):
+        pass

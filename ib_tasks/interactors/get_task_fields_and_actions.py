@@ -21,7 +21,8 @@ class GetTaskFieldsAndActionsInteractor:
         self.storage = storage
         self.stage_storage = stage_storage
 
-    def get_task_fields_and_action(self, task_dtos: List[GetTaskDetailsDTO]) -> List[GetTaskStageCompleteDetailsDTO]:
+    def get_task_fields_and_action(self, task_dtos: List[GetTaskDetailsDTO]
+                                   ) -> List[GetTaskStageCompleteDetailsDTO]:
         task_ids = [task.task_id for task in task_dtos]
         stage_ids = [task.stage_id for task in task_dtos]
 
