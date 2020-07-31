@@ -1,5 +1,3 @@
-from unittest.mock import patch
-
 import pytest
 from freezegun import freeze_time
 
@@ -156,11 +154,8 @@ class TestGetUserTokens:
             )
         get_user_auth_tokens_for_login_with_email_and_password_mock.assert_called_once()
 
-    @patch(
-        "ib_users.interfaces.service_interface.ServiceInterface.get_user_auth_tokens_for_login_with_email_and_password"
-    )
     def test_user_account_does_not_exist_raise_exception(
-            self, get_user_auth_tokens_for_login_with_email_and_password_mock
+            self, mocker
     ):
         # Arrange
         from ib_iam.adapters.auth_service import EmailAndPasswordDTO
@@ -168,6 +163,8 @@ class TestGetUserTokens:
             email="test@gmail.com",
             password="test123"
         )
+        get_user_auth_tokens_for_login_with_email_and_password_mock = \
+            self.get_user_auth_tokens_mock(mocker=mocker)
 
         from ib_users.constants.custom_exception_messages import \
             USER_ACCOUNT_IS_DEACTIVATED

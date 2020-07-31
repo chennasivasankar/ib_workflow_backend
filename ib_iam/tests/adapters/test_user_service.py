@@ -1,5 +1,3 @@
-from unittest.mock import patch
-
 import pytest
 
 
@@ -12,9 +10,7 @@ class TestUserService:
         )
         return mock
 
-    def test_user_account_does_not_exist_raise_excepiton(
-            self, mocker
-    ):
+    def test_user_account_does_not_exist_raise_exception(self, mocker):
         # Arrange
         user_id = "eca1a0c1-b9ef-4e59-b415-60a28ef17b10"
         get_user_profile_mock = self.get_user_profile_mock(mocker=mocker)
@@ -60,7 +56,7 @@ class TestUserService:
         with pytest.raises(InvalidUserId):
             service_adapter.user_service.get_user_profile_dto(user_id=user_id)
 
-    def test_with_valid_user_id_return_repsonse(
+    def test_with_valid_user_id_return_response(
             self, mocker
     ):
         # Arrange

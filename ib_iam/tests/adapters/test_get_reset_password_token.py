@@ -1,5 +1,3 @@
-from unittest.mock import patch
-
 import pytest
 
 
@@ -11,9 +9,7 @@ class TestGetResetPasswordToken:
         )
         return mock
 
-    def test_get_reset_password_token(
-            self, mocker
-    ):
+    def test_get_reset_password_token(self, mocker):
         # Arrange
         email = "test@gmail.com"
         expires_in_sec = 5647665599
