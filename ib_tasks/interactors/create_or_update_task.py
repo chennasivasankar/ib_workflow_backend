@@ -21,7 +21,8 @@ from ib_tasks.interactors.storage_interfaces. \
     create_or_update_task_storage_interface import \
     CreateOrUpdateTaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
-from ib_tasks.interactors.storage_interfaces.task_dtos import TaskGoFWithTaskIdDTO, \
+from ib_tasks.interactors.storage_interfaces.task_dtos import \
+    TaskGoFWithTaskIdDTO, \
     TaskGoFDetailsDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TaskGoFFieldDTO
@@ -233,8 +234,8 @@ class CreateOrUpdateTaskInteractor:
 
     @staticmethod
     def _filter_task_gof_field_dtos(
-        task_gof_field_dtos: List[TaskGoFFieldDTO],
-        existing_field_ids: List[str]
+            task_gof_field_dtos: List[TaskGoFFieldDTO],
+            existing_field_ids: List[str]
     ) -> (List[TaskGoFFieldDTO], List[TaskGoFFieldDTO]):
         task_gof_field_dtos_for_updation, task_gof_field_dtos_for_creation = \
             [], []
@@ -659,7 +660,7 @@ class CreateOrUpdateTaskInteractor:
     def _validate_phone_number_value(
             field_value: str, field_id: str
     ) -> Optional[InvalidPhoneNumberValue]:
-        phone_number_has_non_digit_chars = field_value.isdigit()
+        phone_number_has_non_digit_chars = not field_value.isdigit()
         if phone_number_has_non_digit_chars:
             raise InvalidPhoneNumberValue(field_id, field_value)
         phone_number_does_not_contain_10_digits = len(field_value) != 10
@@ -742,7 +743,7 @@ class CreateOrUpdateTaskInteractor:
     @staticmethod
     def _get_field_type_for_given_field_id(
             field_id: str, field_details_dtos: List[FieldDetailsDTO]
-    ) -> Union[None, str, List[str]]:
+    ) -> Union[None, FieldTypes]:
         for field_details_dto in field_details_dtos:
             field_id_matched = field_details_dto.field_id == field_id
             if field_id_matched:
