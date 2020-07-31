@@ -23,7 +23,7 @@ class PopulateFields:
         field_roles_dtos = self.prepare_field_roles_dtos(field_records)
         storage = TasksStorageImplementation()
         interactor = CreateOrUpdateFieldsInteractor(storage=storage)
-        # interactor.create_or_update_fields(field_dtos, field_roles_dtos)
+        interactor.create_or_update_fields(field_dtos, field_roles_dtos)
 
     def prepare_field_dtos(self, field_records: List[Dict]) -> List[FieldDTO]:
         field_dtos = []
