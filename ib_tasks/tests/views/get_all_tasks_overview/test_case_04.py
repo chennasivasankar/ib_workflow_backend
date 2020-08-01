@@ -1,6 +1,8 @@
 """
 # Given valid details get all tasks overview details
 """
+import json
+
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
@@ -31,11 +33,20 @@ class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
                                              created_by=user_id,
                                              template_id="task_template_id_1")
         stage_objs = StageModelFactory.create_batch(
-            3, task_template_id='task_template_id_1')
+            3,
+            task_template_id='task_template_id_1',
+            card_info_list=json.dumps(['FIELD_ID-2', "FIELD_ID-1"]),
+            card_info_kanban=json.dumps(['FIELD_ID-2', "FIELD_ID-1"]))
         stage_other_obj_1 = StageModelFactory(
-            value=2, task_template_id='task_template_id_1')
+            value=2,
+            task_template_id='task_template_id_1',
+            card_info_list=json.dumps(['FIELD_ID-2', "FIELD_ID-1"]),
+            card_info_kanban=json.dumps(['FIELD_ID-2', "FIELD_ID-1"]))
         stage_other_obj_2 = StageModelFactory(
-            value=2, task_template_id='task_template_id_1')
+            value=2,
+            task_template_id='task_template_id_1',
+            card_info_list=json.dumps(['FIELD_ID-2', "FIELD_ID-1"]),
+            card_info_kanban=json.dumps(['FIELD_ID-2', "FIELD_ID-1"]))
         task_stage_obj_1 = TaskStageModelFactory(task=task_objs[0],
                                                  stage=stage_objs[2])
         task_stage_obj_2 = TaskStageModelFactory(task=task_objs[1],
