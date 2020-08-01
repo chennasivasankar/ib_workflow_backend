@@ -6,9 +6,9 @@ class TestGetAllUserDTOsBasedOnQuery:
     @pytest.fixture()
     def storage_mock(self):
         from unittest.mock import create_autospec
-        from ib_iam.interactors.storage_interfaces.get_users_list_storage_interface import \
-            GetUsersListStorageInterface
-        storage = create_autospec(GetUsersListStorageInterface)
+        from ib_iam.interactors.storage_interfaces.user_storage_interface import \
+            UserStorageInterface
+        storage = create_autospec(UserStorageInterface)
         return storage
 
     @pytest.fixture()

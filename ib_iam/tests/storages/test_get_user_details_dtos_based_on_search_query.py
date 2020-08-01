@@ -66,9 +66,9 @@ class TestGetUsersDTOSBasedOnSearchQuery:
                 name=user_details["name"]
             )
 
-        from ib_iam.storages.get_users_list_storage_implementation import \
-            GetUsersListStorageImplementation
-        storage = GetUsersListStorageImplementation()
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        storage = UserStorageImplementation()
 
         # Act
         response = storage.get_user_details_dtos_based_on_search_query(

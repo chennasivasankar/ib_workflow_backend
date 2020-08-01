@@ -2,6 +2,7 @@ from typing import List
 
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.interactors.DTOs.common_dtos import UserIdWithRoleIdsDTO
+from ib_iam.interactors.storage_interfaces.dtos import UserIdAndNameDTO
 
 
 class ServiceInterface:
@@ -74,9 +75,9 @@ class ServiceInterface:
     def get_user_dtos_based_on_limit_and_offset(
             limit: int, offset: int, search_query: str
     ) -> List[UserIdAndNameDTO]:
-        from ib_iam.storages.get_users_list_storage_implementation import \
-            GetUsersListStorageImplementation
-        storage = GetUsersListStorageImplementation()
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        storage = UserStorageImplementation()
 
         from ib_iam.interactors.get_users_list_interactor import \
             GetUsersDetailsInteractor
@@ -90,9 +91,9 @@ class ServiceInterface:
     @staticmethod
     def get_all_user_dtos_based_on_query(search_query: str) -> \
             List[UserIdAndNameDTO]:
-        from ib_iam.storages.get_users_list_storage_implementation import \
-            GetUsersListStorageImplementation
-        storage = GetUsersListStorageImplementation()
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        storage = UserStorageImplementation()
 
         from ib_iam.interactors.get_users_list_interactor import \
             GetUsersDetailsInteractor
