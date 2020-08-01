@@ -1,8 +1,7 @@
+
 from typing import List
 from typing import Optional
 
-from ib_tasks.interactors.stages_dtos import StageActionDTO, TemplateStageDTO
-from ib_tasks.interactors.stages_dtos import StageDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.stages_dtos import StageActionDTO
 from ib_tasks.interactors.stages_dtos import StageDTO
@@ -12,16 +11,15 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GOFMultipleEnableDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
-    StageValueDTO,StageDisplayValueDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    StageValueDTO, StageDisplayValueDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
     StageValueDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskTemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
-from ib_tasks.interactors.storage_interfaces.storage_interface \
-    import (
+from ib_tasks.interactors.storage_interfaces.storage_interface import (
     StorageInterface, GroupOfFieldsDTO,
     StatusVariableDTO, StageActionNamesDTO
 )
@@ -47,6 +45,8 @@ class StagesStorageImplementation(StageStorageInterface):
                      display_name=stage.stage_display_name,
                      task_template_id=stage.task_template_id,
                      value=stage.value,
+                     card_info_kanban=stage.card_info_kanban,
+                     card_info_list=stage.card_info_list,
                      display_logic=stage.stage_display_logic)
 
     def get_existing_stage_ids(self, stage_ids: List[str]) -> Optional[
@@ -87,9 +87,10 @@ class StagesStorageImplementation(StageStorageInterface):
 
     @staticmethod
     def _get_update_stage_object(stage, stage_object):
-        # stage_object.stage_id = stage.stage_id
         stage_object.display_name = stage.stage_display_name
         stage_object.value = stage.value
+        stage_object.card_info_kanban = stage.card_info_kanban
+        stage_object.card_info_list = stage.card_info_list
         stage_object.display_logic = stage.stage_display_logic
         return stage_object
 
@@ -269,10 +270,11 @@ class StorageImplementation(StorageInterface):
         return StageAction.objects.filter(id=action_id).exists()
 
     def get_enable_multiple_gofs_field_to_gof_ids(
-            self, template_id: str, gof_ids: List[str]) -> List[GOFMultipleEnableDTO]:
+            self, template_id: str, gof_ids: List[str]) -> List[
+        GOFMultipleEnableDTO]:
 
         from ib_tasks.models import TaskTemplateGoFs
-        task_template_gofs = TaskTemplateGoFs.objects\
+        task_template_gofs = TaskTemplateGoFs.objects \
             .filter(gof_id__in=gof_ids, task_template_id=template_id)
 
         return [
@@ -317,7 +319,8 @@ class StorageImplementation(StorageInterface):
 
         from ib_tasks.models.task import Task
         task_obj = Task.objects.get(id=task_id)
-        stage_objs = Stage.objects.filter(task_template_id=task_obj.template_id)
+        stage_objs = Stage.objects.filter(
+            task_template_id=task_obj.template_id)
 
         return [
             StageDisplayValueDTO(

@@ -23,7 +23,7 @@ class GetSheetDataForTaskCreationConfig:
             self._convert_task_creation_sheet_data_dict_to_our_format(
                 field_record
             )
-            for field_record in field_records[:4]
+            for field_record in field_records
         ]
         from ib_tasks.populate.populate_task_initial_stage_actions_logic import \
             populate_tasks

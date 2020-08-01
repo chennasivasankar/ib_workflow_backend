@@ -1,6 +1,8 @@
-from typing import List
+from typing import List, Dict
 
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO
+from ib_tasks.constants.enum import PermissionTypes
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
+    UserFieldPermissionDTO, FieldWithPermissionsDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
@@ -53,8 +55,12 @@ class GetTaskTemplatesInteractor:
         self._validate_task_templates_are_exists(
             task_templates_dtos=task_templates_dtos
         )
+        templates_initial_stage_ids = \
+            self.task_storage.get_initial_stage_ids_of_templates()
         actions_of_templates_dtos = \
-            self.task_storage.get_actions_of_templates_dtos()
+            self.task_storage.get_actions_for_given_stage_ids(
+                stage_ids=templates_initial_stage_ids
+            )
         gof_ids_permitted_for_user = \
             self.task_storage.get_gof_ids_with_read_permission_for_user(
                 roles=user_roles)
@@ -67,6 +73,23 @@ class GetTaskTemplatesInteractor:
         )
         gofs_details_dtos = \
             self.task_storage.get_gofs_details_dtos(gof_ids=gof_ids)
+        field_with_permissions_dtos = \
+            self._get_field_with_permissions_of_gofs_in_dtos(
+                gof_ids=gof_ids, user_roles=user_roles
+            )
+
+        complete_task_templates_dto = CompleteTaskTemplatesDTO(
+            task_template_dtos=task_templates_dtos,
+            actions_of_templates_dtos=actions_of_templates_dtos,
+            gof_dtos=gofs_details_dtos,
+            gofs_to_task_templates_dtos=gofs_to_task_templates_dtos,
+            field_with_permissions_dtos=field_with_permissions_dtos
+        )
+        return complete_task_templates_dto
+
+    def _get_field_with_permissions_of_gofs_in_dtos(
+            self, gof_ids: List[str],
+            user_roles: List[str]) -> List[FieldWithPermissionsDTO]:
         field_dtos = \
             self.task_storage.get_fields_of_gofs_in_dtos(gof_ids=gof_ids)
         field_ids = self._get_field_ids(field_dtos=field_dtos)
@@ -74,15 +97,56 @@ class GetTaskTemplatesInteractor:
             get_user_field_permission_dtos(
             roles=user_roles, field_ids=field_ids
         )
-        complete_task_templates_dto = CompleteTaskTemplatesDTO(
-            task_template_dtos=task_templates_dtos,
-            actions_of_templates_dtos=actions_of_templates_dtos,
-            gof_dtos=gofs_details_dtos,
-            gofs_to_task_templates_dtos=gofs_to_task_templates_dtos,
-            field_dtos=field_dtos,
-            user_field_permission_dtos=user_field_permission_dtos
+
+        user_permission_dtos_dict = \
+            self._make_user_field_permission_dtos_dict(
+                user_field_permission_dtos=user_field_permission_dtos
+            )
+
+        field_with_permission_dtos = []
+        for field_dto in field_dtos:
+            if field_dto.field_id in user_permission_dtos_dict.keys():
+                permission_type = \
+                    user_permission_dtos_dict[
+                        field_dto.field_id].permission_type
+                field_with_permission_dto = \
+                    self._get_field_with_permissions_dto(
+                        field_dto=field_dto, permission_type=permission_type
+                    )
+                field_with_permission_dtos.append(field_with_permission_dto)
+        return field_with_permission_dtos
+
+    @staticmethod
+    def _get_field_with_permissions_dto(
+            field_dto: FieldDTO,
+            permission_type: PermissionTypes) -> FieldWithPermissionsDTO:
+        has_read_permission = permission_type == PermissionTypes.READ.value
+        has_write_permission = permission_type == PermissionTypes.WRITE.value
+        is_field_readable = False
+        is_field_writable = False
+        if has_read_permission:
+            is_field_readable = True
+        if has_write_permission:
+            is_field_readable = True
+            is_field_writable = True
+
+        field_with_permission_dto = FieldWithPermissionsDTO(
+            field_dto=field_dto, is_field_readable=is_field_readable,
+            is_field_writable=is_field_writable
         )
-        return complete_task_templates_dto
+        return field_with_permission_dto
+
+    @staticmethod
+    def _make_user_field_permission_dtos_dict(
+            user_field_permission_dtos: List[UserFieldPermissionDTO]) -> Dict:
+        import collections
+        user_permission_dtos_dict = collections.defaultdict()
+
+        for user_field_permission_dto in user_field_permission_dtos:
+            user_permission_dtos_dict[user_field_permission_dto.field_id] = \
+                user_field_permission_dto
+
+        return user_permission_dtos_dict
 
     @staticmethod
     def _validate_task_templates_are_exists(

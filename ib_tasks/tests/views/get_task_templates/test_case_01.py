@@ -18,7 +18,8 @@ class TestCase01GetTaskTemplatesAPITestCase(TestUtils):
         import factory
         from ib_tasks.tests.factories.models import TaskTemplateFactory, \
             StageModelFactory, StageActionFactory, GoFFactory, GoFRoleFactory, \
-            FieldFactory, FieldRoleFactory, GoFToTaskTemplateFactory
+            FieldFactory, FieldRoleFactory, GoFToTaskTemplateFactory, \
+            TaskTemplateInitialStageFactory
 
         TaskTemplateFactory.reset_sequence()
         StageModelFactory.reset_sequence()
@@ -28,6 +29,7 @@ class TestCase01GetTaskTemplatesAPITestCase(TestUtils):
         FieldFactory.reset_sequence()
         FieldRoleFactory.reset_sequence()
         GoFToTaskTemplateFactory.reset_sequence()
+        TaskTemplateInitialStageFactory.reset_sequence()
 
         template_ids = ['template_1', 'template_2']
 
@@ -46,7 +48,14 @@ class TestCase01GetTaskTemplatesAPITestCase(TestUtils):
         StageActionFactory.create_batch(
             size=4, stage=factory.Iterator(stage_objs)
         )
-        GoFRoleFactory.create_batch(size=4, gof=factory.Iterator(gof_objs))
+        TaskTemplateInitialStageFactory.create_batch(
+            size=4, stage=factory.Iterator(stage_objs),
+            task_template=factory.Iterator(task_template_objs)
+        )
+        GoFRoleFactory.create_batch(
+            size=4, gof=factory.Iterator(gof_objs),
+            role=factory.Iterator(["FIN_PAYMENT_REQUESTER", "ALL_ROLES"])
+        )
 
         field_objs = FieldFactory.create_batch(
             size=6, gof=factory.Iterator(gof_objs)
