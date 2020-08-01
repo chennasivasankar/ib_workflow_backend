@@ -1,7 +1,7 @@
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 from .validator_class import ValidatorClass
-from ib_iam.interactors.get_companies import GetCompaniesInteractor
+from ib_iam.interactors.get_companies_interactor import GetCompaniesInteractor
 from ib_iam.presenters.get_companies_presenter_implementation import \
     GetCompaniesPresenterImplementation
 from ib_iam.storages.company_storage_implementation import \

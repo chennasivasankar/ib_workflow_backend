@@ -2,7 +2,7 @@ import pytest
 from mock import create_autospec, Mock
 
 from ib_iam.exceptions.custom_exceptions import UserHasNoAccess
-from ib_iam.interactors.get_companies import GetCompaniesInteractor
+from ib_iam.interactors.get_companies_interactor import GetCompaniesInteractor
 from ib_iam.interactors.presenter_interfaces \
     .get_companies_presenter_interface import (GetCompaniesPresenterInterface,
                                                CompanyWithEmployeesDetailsDTO)
