@@ -2,6 +2,7 @@ from django.db import models
 
 from ib_tasks.models.gof import GoF
 from ib_tasks.models.task import Task
+from ib_tasks.models.gof import GoF
 
 
 class TaskGoF(models.Model):

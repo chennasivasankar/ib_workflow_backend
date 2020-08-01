@@ -14,6 +14,7 @@ from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from ib_tasks.models.task_gof_field import TaskGoFField
 from ib_tasks.models.task_gof import TaskGoF
 from ib_tasks.models.task_log import TaskLog
+from ib_tasks.models.task_stage import TaskStage
 
 admin.site.register(GoF)
 admin.site.register(Field)
@@ -45,3 +46,6 @@ class TaskAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Task, TaskAdmin)
+
+admin.site.register(TaskLog)
+admin.site.register(TaskStage)
