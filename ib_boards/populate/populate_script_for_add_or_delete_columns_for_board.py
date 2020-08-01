@@ -151,5 +151,5 @@ class PopulateAddOrDeleteColumnsForBoard:
     @staticmethod
     def _convert_user_role_to_list_from_string(user_roles: str):
         user_roles = user_roles.replace(" ", "")
-        user_roles = user_roles.split(",")
-        return user_roles
+        user_roles = user_roles.split("\n")
+        return [item for item in user_roles if item]
