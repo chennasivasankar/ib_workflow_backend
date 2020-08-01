@@ -8,3 +8,5 @@ class TaskGoFField(models.Model):
     field = models.ForeignKey(Field, on_delete=models.CASCADE)
     field_response = models.TextField()
 
+    def __str__(self):
+        return "{} has {}".format(self.field_id, self.field_response)

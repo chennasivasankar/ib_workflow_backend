@@ -16,7 +16,6 @@ class GetTaskStageLogicSatisfiedStages:
         self.storage = storage
 
     def get_task_stage_logic_satisfied_stages(self):
-
         self._validate_task_id(task_id=self.task_id)
         stage_display_value_dtos = self.storage\
             .get_task_template_stage_logic_to_task(

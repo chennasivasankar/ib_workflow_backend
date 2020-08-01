@@ -447,26 +447,6 @@ class TestCreateOrUpdateTaskPresenterImplementation:
             name="response_object", value=response_object.content
         )
 
-    def test_raise_exception_for_gof_ids_in_gof_selector_field_value(self,
-                                                                     presenter,
-                                                                     snapshot):
-        # Arrange
-        invalid_gof_ids = ['gof_1', 'gof_2']
-        from ib_tasks.exceptions.field_values_custom_exceptions import \
-            InvalidGoFIDsInGoFSelectorField
-        err = InvalidGoFIDsInGoFSelectorField(
-            gof_ids=invalid_gof_ids
-        )
-
-        # Act
-        response_object = presenter.raise_exception_for_invalid_name_in_gof_selector_field_value(
-            err)
-
-        # Assert
-        snapshot.assert_match(
-            name="response_object", value=response_object.content
-        )
-
     def test_raise_exception_for_not_acceptable_file_format(self, presenter,
                                                             snapshot):
         # Arrange
