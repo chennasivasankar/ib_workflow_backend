@@ -23,7 +23,7 @@ RESPONSE_200_JSON = """
             "stage_display_name": "string",
             "actions": [
                 {
-                    "action_id": "string",
+                    "action_id": 1,
                     "button_text": "string",
                     "button_color": "string"
                 }
