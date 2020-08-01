@@ -8,13 +8,14 @@ import factory
 
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
     TaskTemplateStagesDTO, TaskSummaryFieldsDTO, \
-    TaskStatusDTO, FieldDetailsDTO, ActionDetailsDTO
-from ib_boards.interactors.dtos import TaskColumnDTO
+    TaskStatusDTO, FieldDetailsDTO, ActionDetailsDTO, TaskIdStageDTO, \
+    ColumnTaskIdsDTO
+from ib_boards.interactors.dtos import ColumnTasksDTO
 
 
 class TaskColumnDTOFactory(factory.Factory):
     class Meta:
-        model = TaskColumnDTO
+        model = ColumnTasksDTO
 
     column_id = factory.Sequence(lambda n: "column_id_%d" % n)
     task_id = factory.Sequence(lambda n: "task_id_%d" % n)
@@ -88,3 +89,20 @@ class TaskStatusDTOFactory(factory.Factory):
 
     stage = factory.Sequence(lambda n: f'STAGE_ID_{n + 1}')
     status = factory.Sequence(lambda n: f'STATUS_ID_{n + 1}')
+
+
+class TaskStageIdDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskIdStageDTO
+
+    stage_id = factory.Sequence(lambda n: f'STAGE_ID_{n + 1}')
+    task_id = factory.Sequence(lambda n: f'TASK_ID_{n + 1}')
+
+
+class ColumnTaskIdsDTOFactory(factory.Factory):
+    class Meta:
+        model = ColumnTaskIdsDTO
+
+    unique_key = factory.Sequence(lambda n: f'COLUMN_ID_{n + 1}')
+    task_stage_ids = TaskStageIdDTOFactory.create_batch(3)
+    total_tasks = 10

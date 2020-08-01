@@ -1,25 +1,24 @@
 import json
 
 import factory
-
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
-    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage, TaskGoF,
-    TaskGoFField, TaskTemplateInitialStage)
+    Task, TaskGoF,
+    TaskGoFField,
+    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage)
+from ib_tasks.models import TaskTemplateInitialStage
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
 from ib_tasks.models.gof import GoF
 from ib_tasks.models.gof_role import GoFRole
-from ib_tasks.models.task import Task
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     TaskTemplateGlobalConstants, TaskStatusVariable, Task, TaskGoF,
-    TaskGoFField,
-    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage)
+    TaskGoFField, TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage)
 
 
 class TaskFactory(factory.django.DjangoModelFactory):
@@ -205,7 +204,7 @@ class TaskGoFFactory(factory.django.DjangoModelFactory):
         model = TaskGoF
 
     same_gof_order = 1
-    gof_id = factory.Sequence(lambda counter: "gof_{}".format(counter))
+    gof = factory.SubFactory(GoFFactory)
     task = factory.SubFactory(TaskFactory)
 
 
@@ -220,16 +219,17 @@ class TaskGoFFieldFactory(factory.django.DjangoModelFactory):
     )
 
 
+class TaskTemplateInitialStageFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskTemplateInitialStage
+
+    task_template = factory.SubFactory(TaskTemplateFactory)
+    stage = factory.SubFactory(StageModelFactory)
+
+
 class TaskStageFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = TaskStage
 
     task = factory.SubFactory(TaskFactory)
-    stage = factory.SubFactory(StageModelFactory)
-
-
-class TaskTemplateInitialStageFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = TaskTemplateInitialStage
-    task_template = factory.SubFactory(TaskTemplateFactory)
     stage = factory.SubFactory(StageModelFactory)

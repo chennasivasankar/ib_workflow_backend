@@ -9,7 +9,7 @@ class GetTaskStagesAndActions:
     def __init__(self, storage: FieldsStorageInterface):
         self.storage = storage
 
-    def get_task_stages_and_actions(self, task_id: int, user_id: int) -> \
+    def get_task_stages_and_actions(self, task_id: int, user_id: str) -> \
             List[StageAndActionsDetailsDTO]:
         # TODO: validate user tasks
         stage_ids = self.storage.get_task_stages(task_id)
