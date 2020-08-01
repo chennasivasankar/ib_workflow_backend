@@ -5,7 +5,8 @@ import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories.models import TaskFactory, StageModelFactory, \
-    TaskStageModelFactory, StageActionFactory, TaskGoFFieldFactory,  TaskGoFFactory
+    TaskStageModelFactory, StageActionFactory, TaskGoFFieldFactory, \
+    TaskGoFFactory, FieldFactory
 
 
 class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
@@ -16,14 +17,19 @@ class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['read']}}
 
     @pytest.fixture(autouse=True)
-    def setup(self):
+    def setup(self, api_user):
+        user_obj = api_user
+        user_id = str(user_obj.user_id)
         TaskFactory.reset_sequence()
         StageModelFactory.reset_sequence()
         TaskStageModelFactory.reset_sequence()
         StageActionFactory.reset_sequence()
         TaskGoFFactory.reset_sequence()
         TaskGoFFieldFactory.reset_sequence()
-        task_objs = TaskFactory.create_batch(3, created_by=1)
+        FieldFactory.reset_sequence()
+        task_objs = TaskFactory.create_batch(3,
+                                             created_by=user_id,
+                                             template_id="task_template_id_1")
         stage_objs = StageModelFactory.create_batch(
             3, task_template_id='task_template_id_1')
         stage_other_obj_1 = StageModelFactory(

@@ -37,7 +37,6 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
             get_user_task_and_max_stage_value_dto_based_on_given_stage_ids(
             user_id=user_id, stage_ids=valid_stage_ids, limit=limit,
             offset=offset)
-
         stage_values = [
             task_id_with_max_stage_value_dto.stage_value
             for task_id_with_max_stage_value_dto in
