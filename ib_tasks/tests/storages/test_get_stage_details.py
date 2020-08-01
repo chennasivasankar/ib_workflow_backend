@@ -2,7 +2,8 @@ import pytest
 
 from ib_tasks.storages.fields_storage_implementation import FieldsStorageImplementation
 from ib_tasks.tests.factories.interactor_dtos import GetTaskDetailsDTOFactory
-from ib_tasks.tests.factories.models import StageModelFactory, TaskFactory, TaskTemplateFactory, TaskStageModelFactory
+from ib_tasks.tests.factories.models import StageModelFactory, TaskFactory, TaskTemplateFactory, TaskStageModelFactory, \
+    GoFFactory
 
 
 @pytest.mark.django_db
@@ -15,6 +16,8 @@ class TestGetStageDetails:
 
     @pytest.fixture()
     def populate_data(self):
+        GoFFactory.reset_sequence(-1)
+        GoFFactory.create_batch(size=4)
         StageModelFactory.reset_sequence()
         StageModelFactory.create_batch(size=4)
         TaskFactory.reset_sequence()

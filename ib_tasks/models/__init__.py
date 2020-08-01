@@ -24,6 +24,7 @@ from ib_tasks.models.task_stage import TaskStage
 __all__ = [
     "TaskStatusVariable",
     "ActionPermittedRoles",
+    "TaskTemplateGoFs",
     "Stage",
     "StageAction",
     "TaskTemplateStatusVariable",
@@ -32,5 +33,9 @@ __all__ = [
     "Field", "FieldRole", "GoF", "GoFRole",
     "Stage", "StageAction", "TaskTemplateStatusVariables",
     "TaskTemplate", "Task", "TaskGoF", "TaskGoFField", "TaskLog",
-    "GlobalConstant", "TaskStage"
+    "GlobalConstant", "TaskStage",
+    "TaskTemplateGoFs",
+    "TaskTemplateStatusVariable",
+    "TaskTemplateStatusVariables",
+    "TaskTemplateInitialStage"
 ]

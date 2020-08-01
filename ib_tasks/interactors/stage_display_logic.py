@@ -8,6 +8,6 @@ class StageDisplayLogicInteractor:
     @staticmethod
     def get_stage_display_logic_attributes(stage_display_logic: str):
         return StageLogicAttributes(
-            stage_id="PR_PENDING RP APPROVAL",
-            status_id="status10"
+            stage_id="stage_id_1",
+            status_id="status1"
         )
