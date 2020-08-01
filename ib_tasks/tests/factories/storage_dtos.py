@@ -461,3 +461,6 @@ class FieldWithPermissionsDTOFactory(factory.Factory):
     field_dto = factory.SubFactory(FieldDTOFactory)
     is_field_readable = factory.Iterator([True, False])
     is_field_writable = factory.Iterator([True, False])
+
+    # display_logic = factory.sequence(lambda n: "variable_{} == stage_{}".format((n+1), (n+1)))
+    # value = factory.sequence(lambda n: (n+1))

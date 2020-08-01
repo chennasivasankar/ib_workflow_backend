@@ -5,7 +5,7 @@ import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories.models import TaskFactory, StageModelFactory, \
-    TaskStageModelFactory, StageActionFactory, TaskGoFFieldFactory,  TaskGoFFactory
+    TaskStageModelFactory, StageActionFactory, TaskGoFFieldFactory, TaskGoFFactory, GoFFactory
 
 
 class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
@@ -17,6 +17,8 @@ class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
 
     @pytest.fixture(autouse=True)
     def setup(self):
+        GoFFactory.reset_sequence(-1)
+        GoFFactory.create_batch(size=4)
         TaskFactory.reset_sequence()
         StageModelFactory.reset_sequence()
         TaskStageModelFactory.reset_sequence()

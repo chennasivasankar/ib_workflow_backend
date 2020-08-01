@@ -1,13 +1,16 @@
 from typing import List
 
-from ib_boards.interactors.get_board_complete_details_interactor import GetBoardDetailsInteractor
+from ib_boards.interactors.get_board_complete_details_interactor import \
+    GetBoardDetailsInteractor
 from ib_boards.storages.storage_implementation import StorageImplementation
 
 
-class ServiceInterface:
-    def get_board_and_columns_details(self, board_id: str, user_id: str,
-                                      stage_ids: List[str]):
+class BoardServiceInterface:
+
+    @staticmethod
+    def get_board_details(board_id: str, stages: List[str], user_id: str):
         storage = StorageImplementation()
         interactor = GetBoardDetailsInteractor(storage)
-        board_details = interactor.get_board_details(board_id=board_id,
-                                                     )
+        board_details_dto = interactor.get_board_details(board_id, stages,
+                                                         user_id)
+        return board_details_dto

@@ -13,6 +13,7 @@ class PopulateGlobalConstantsToTemplate:
 
     def populate_global_constants_to_template(self):
         sheet = get_google_sheet(GOOGLE_SHEET_NAME)
+        sheet = get_google_sheet(sheet_name=GOOGLE_SHEET_NAME)
         global_constants_with_template_ids_dicts = \
             sheet.worksheet(GLOBAL_CONSTANTS_SUB_SHEET_TITLE).get_all_records()
 
