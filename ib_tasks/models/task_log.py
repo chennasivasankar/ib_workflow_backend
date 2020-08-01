@@ -8,4 +8,4 @@ class TaskLog(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     user_id = models.CharField(max_length=100)
     action = models.ForeignKey(StageAction, on_delete=models.CASCADE)
-    acted_at = models.DateTimeField(auto_now=True)
+    acted_at = models.DateTimeField(auto_now_add=True)
