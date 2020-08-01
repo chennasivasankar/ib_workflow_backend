@@ -38,10 +38,10 @@ class StorageImplementation(StorageInterface):
     def get_discussion_set_id_if_exists(
             self, entity_id: str, entity_type: EntityType
     ) -> Optional[str]:
-        self.validate_entity_id(entity_id=entity_id)
-        self.validate_entity_type_for_entity_id(
-            entity_id=entity_id, entity_type=entity_type
-        )
+        # self.validate_entity_id(entity_id=entity_id)
+        # self.validate_entity_type_for_entity_id(
+        #     entity_id=entity_id, entity_type=entity_type
+        # )
         from ib_discussions.models import DiscussionSet
         try:
             discussion_set_object = DiscussionSet.objects.get(
