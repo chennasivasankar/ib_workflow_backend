@@ -405,6 +405,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         task_ids = [column_stage.task_id for column_stage in column_stages]
         task_details_list = []
         for column_stage in column_stages:
+            # TODO: Fix this properly
             fields = column_tasks_map[
                     column_stage.stage_id + str(column_stage.task_id)
             ]
