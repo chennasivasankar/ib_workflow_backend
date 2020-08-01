@@ -166,7 +166,8 @@ class TestCreateOrUpdateTask:
         ]
         task_storage_mock.get_existing_gof_ids.return_value = gof_ids
         task_storage_mock.get_existing_field_ids.return_value = field_ids
-        task_storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
+        task_storage_mock.get_field_details_for_given_field_ids.return_value = \
+            field_details_dtos
         presenter_mock.raise_exception_for_invalid_name_in_gof_selector_field_value.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(

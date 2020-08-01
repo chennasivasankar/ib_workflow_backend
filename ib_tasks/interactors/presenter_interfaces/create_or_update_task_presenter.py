@@ -47,7 +47,7 @@ class CreateOrUpdateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_exception_for_invalid_name_in_gof_selector_field_value(
-            self, err: InvalidGoFIDsInGoFSelectorField
+            self, err: IncorrectNameInGoFSelectorField
     ):
         pass
 

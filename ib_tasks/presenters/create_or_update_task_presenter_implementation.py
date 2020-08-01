@@ -290,11 +290,11 @@ class CreateOrUpdateTaskPresenterImplementation(
         return self.prepare_400_bad_request_response(data)
 
     def raise_exception_for_invalid_name_in_gof_selector_field_value(
-            self, err: InvalidGoFIDsInGoFSelectorField):
+            self, err: IncorrectNameInGoFSelectorField):
         from ib_tasks.constants.exception_messages import \
             INVALID_NAME_IN_GOF_SELECTOR_FIELD
         response_message = INVALID_NAME_IN_GOF_SELECTOR_FIELD[0].format(
-            err.gof_ids
+            err.valid_gof_selector_names
         )
         data = {
                 "response": response_message,

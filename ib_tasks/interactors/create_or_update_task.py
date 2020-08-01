@@ -72,7 +72,8 @@ class CreateOrUpdateTaskInteractor:
         except IncorrectNameInGoFSelectorField as err:
             return presenter. \
                 raise_exception_for_invalid_name_in_gof_selector_field_value(
-                err)
+                    err
+                )
         except EmptyValueForRequiredField as err:
             return presenter. \
                 raise_exception_for_empty_value_in_required_field(err)
@@ -91,11 +92,6 @@ class CreateOrUpdateTaskInteractor:
             return presenter.raise_exception_for_invalid_float_value(err)
         except InvalidValueForDropdownField as err:
             return presenter.raise_exception_for_invalid_dropdown_value(err)
-        except IncorrectNameInGoFSelectorField as err:
-            return presenter. \
-                raise_exceptions_for_invalid_gof_id_selected_in_gof_selector(
-                err
-            )
         except IncorrectRadioGroupChoice as err:
             return presenter. \
                 raise_exception_for_invalid_choice_in_radio_group_field(err)
