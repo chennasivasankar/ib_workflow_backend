@@ -2,7 +2,7 @@
 # snapshottest: v1 - https://goo.gl/zC4yUc
 from __future__ import unicode_literals
 
-from snapshottest import GenericRepr, Snapshot
+from snapshottest import Snapshot, GenericRepr
 
 
 snapshots = Snapshot()
@@ -22,10 +22,10 @@ snapshots['TestCreateOrUpdateTaskStorageImplementation.test_given_task_gof_ids_r
 ]
 
 snapshots['TestCreateOrUpdateTaskStorageImplementation.test_given_gof_ids_and_user_roles_returns_gof_ids_having_permission_for_roles gof_ids_having_permission'] = [
-    'gof_13',
-    'gof_15',
-    'gof_21',
-    'gof_22'
+    'gof_10',
+    'gof_11',
+    'gof_2',
+    'gof_4'
 ]
 
 snapshots['TestCreateOrUpdateTaskStorageImplementation.test_given_field_ids_and_user_roles_returns_field_ids_having_permission_for_roles field_ids_having_permission'] = [
