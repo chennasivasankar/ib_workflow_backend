@@ -18,13 +18,13 @@ class GetSheetDataForStages:
         field_records = self.data_sheet.get_data_from_sub_sheet(
             sub_sheet_name=STAGE_ID_AND_VALUES_SUB_SHEET
         )
-        # TODO need to remove list slicing
-        self._validation_for_stages_dict(field_records[:8])
+
+        self._validation_for_stages_dict(field_records)
         stages_dict = [
             self._convert_stages_sheet_data_dict_to_our_format(
                 field_record
             )
-            for field_record in field_records[:8]
+            for field_record in field_records
         ]
         from ib_tasks.populate.create_or_update_stages import \
             populate_stages_values
@@ -36,6 +36,8 @@ class GetSheetDataForStages:
             "task_template_id": field_record["TaskTemplate ID*"],
             "stage_id": field_record["Stage ID*"],
             "value": field_record["Value"],
+            "card_info_kanban": field_record["Card Info_Kanban"],
+            "card_info_list": field_record["Card Info_List"],
             "stage_display_name": field_record["Stage Display Name"],
             "stage_display_logic": field_record["Stage Display Logic"]
         }
@@ -48,6 +50,8 @@ class GetSheetDataForStages:
                 "TaskTemplate ID*": And(str, len),
                 "Stage ID*": And(str, len),
                 "Stage Display Name": str,
+                "Card Info_Kanban": str,
+                "Card Info_List": str,
                 "Value": int,
                 "Stage Display Logic": And(str, len)
             }]
@@ -62,6 +66,8 @@ class GetSheetDataForStages:
             "TaskTemplate ID*": "FIN_PR",
             "Stage ID*": "PR_PAYMENT_REQUEST_DRAFTS",
             "Stage Display Name": "Payment Request Drafts",
+            "Card Info_Kanban": ["FIN_FIRST_NAME"],
+            "Card Info_List": ["FIN_FIRST_NAME"],
             "Value": 1,
             "Stage Display Logic": "Status1==PR_PAYMENT_REQUEST_DRAFTS"
         }

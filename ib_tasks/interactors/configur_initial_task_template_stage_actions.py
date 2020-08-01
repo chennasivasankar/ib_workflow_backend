@@ -39,7 +39,6 @@ class ConfigureInitialTaskTemplateStageActions:
         )
 
     def _validate_task_template_ids(self, task_template_ids: List[str]):
-
         valid_task_template_ids = self.storage.get_valid_task_template_ids(
             task_template_ids=task_template_ids)
 
@@ -55,6 +54,7 @@ class ConfigureInitialTaskTemplateStageActions:
                 {"invalid_task_template_ids": invalid_ids})
             raise InvalidTaskTemplateIdsException(
                 task_template_ids_dict=task_template_ids_dict)
+        return
 
     @staticmethod
     def get_unique_task_template_ids(

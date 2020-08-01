@@ -14,6 +14,8 @@ from ib_tasks.tests.factories.storage_dtos import TaskGoFFieldDTOFactory,\
     TaskGoFWithTaskIdDTOFactory
 
 from ib_tasks.models import Task, TaskGoF, TaskGoFField
+from ib_tasks.tests.factories.models import TaskFactory, FieldFactory, \
+    TaskGoFFactory, TaskGoFFieldFactory, GoFFactory
 from ib_tasks.tests.factories.storage_dtos import TaskGoFFieldDTOFactory,\
     TaskGoFWithTaskIdDTOFactory
 
@@ -186,6 +188,7 @@ class TestCreateOrUpdateTaskStorageImplementation:
         # Arrange
         gof_obj = GoFFactory()
         task = TaskFactory()
+
         task_gof_dtos = TaskGoFWithTaskIdDTOFactory.create_batch(
             size=1, task_id=task.id, gof_id=gof_obj.gof_id
         )
@@ -213,6 +216,7 @@ class TestCreateOrUpdateTaskStorageImplementation:
     def test_create_task_gof_fields(self, storage, reset_sequence):
 
         # Arrange
+
         task_gof_field_dtos = TaskGoFFieldDTOFactory.create_batch(size=1)
         field_ids = [
             task_gof_field_dto.field_id
@@ -244,6 +248,7 @@ class TestCreateOrUpdateTaskStorageImplementation:
 
         # Arrange
         task_id = 1
+
         task_gofs = TaskGoFFactory.create_batch(
             size=2, task_id=task_id
         )
@@ -259,6 +264,7 @@ class TestCreateOrUpdateTaskStorageImplementation:
 
         # Arrange
         task_id = 1
+
         task_gofs = TaskGoFFactory.create_batch(
             size=2, task_id=task_id
         )
@@ -281,6 +287,7 @@ class TestCreateOrUpdateTaskStorageImplementation:
 
         # Arrange
         task_id = 1
+
         task_gofs = TaskGoFFactory.create_batch(
             size=2, task_id=task_id
         )
@@ -316,6 +323,7 @@ class TestCreateOrUpdateTaskStorageImplementation:
     def test_update_task_gof_fields(self, storage, reset_sequence):
 
         # Arrange
+
         task_gof_field_dtos = TaskGoFFieldDTOFactory.create_batch(
             size=1, field_response=factory.Iterator(["field_response"])
         )

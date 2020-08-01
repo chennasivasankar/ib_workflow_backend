@@ -157,8 +157,7 @@ class ActionsStorageImplementation(ActionStorageInterface):
             TaskTemplate.objects.filter(pk__in=task_template_ids).
                 values_list("template_id", flat=True)
         )
-        # TODO need to set return value valid_template_ids
-        return ['FIN_PR', 'FIN_PR-1']
+        return valid_template_ids
 
     def get_valid_stage_ids(self, stage_ids: List[str]) -> Optional[List[str]]:
         valid_stage_ids = Stage.objects.filter(
