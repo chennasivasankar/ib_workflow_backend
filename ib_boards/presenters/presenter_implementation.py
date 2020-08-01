@@ -474,10 +474,3 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
                 }
             )
         return task_actions_list
-
-
-
-
-
-
-
