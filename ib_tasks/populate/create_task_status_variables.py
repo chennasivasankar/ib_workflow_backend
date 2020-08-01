@@ -22,8 +22,8 @@ def populate_status_variables(list_of_status_dict: List[Dict]):
 
 def append_status_dto(status_dict: Dict[str, Any]):
     status_dto = TaskTemplateStatusDTO(
-        task_template_id=status_dict['task_template_id'],
-        status_variable_id=status_dict['status_variable_id']
+        task_template_id=status_dict['task_template_id'].strip('\n'),
+        status_variable_id=status_dict['status_variable_id'].strip('\n')
     )
     return status_dto
 

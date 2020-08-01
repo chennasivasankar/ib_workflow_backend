@@ -101,6 +101,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                 q = current_queue
             else:
                 q = q | current_queue
+        if q is None:
+            return []
         stage_objs = Stage.objects.filter(q)
         task_fields_dtos = self._convert_stage_objs_to_dtos(stage_objs, task_stages_dict)
         return task_fields_dtos
@@ -130,6 +132,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                 q = current_queue
             else:
                 q = q | current_queue
+        if q is None:
+            return []
         task_objs = TaskStage.objects.filter(q).values('task_id',
                                                        'stage__stage_id')
 

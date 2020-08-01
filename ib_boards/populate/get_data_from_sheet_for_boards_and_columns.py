@@ -21,11 +21,11 @@ class GetBoardsAndColumnsDataFromSheet:
         )
         # TODO need to remove list slicing
         self.validate_keys_in_given_dict(
-            boards_columns_dicts=field_records[:6]
+            boards_columns_dicts=field_records
         )
         boards_columns_dicts = [
             self._get_list_of_dictionary_to_populate_data(field_record)
-            for field_record in field_records[:7]
+            for field_record in field_records
         ]
         return boards_columns_dicts
 
@@ -61,8 +61,6 @@ class GetBoardsAndColumnsDataFromSheet:
                 "Visible to RoleIDs": And(str, len),
                 "Column Summary": And(str, len),
                 "Column Actions": And(str, len),
-                "Card Info_Kanban": And(str, len),
-                "Card Info_List": And(str, len)
 
             }]
         )
@@ -82,9 +80,6 @@ class GetBoardsAndColumnsDataFromSheet:
             "Visible to RoleIDs": "ALL_ROLES",
             "Column Summary": "ColumnSummary1",
             "Column Actions": "ColumnSummary3",
-            "Card Info_Kanban": "CardInfo_Requester_Kanban\n{\nFIN_PR:[PR_PAYMENT_REQUEST_DRAFTS]\n}",
-            "Card Info_List": "CardInfo_Requester_List\n{\nFIN_PR:[PR_PAYMENT_REQUEST_DRAFTS]\n}"
-
         }
         self.data_sheet.raise_exception_for_valid_format(
             valid_format=valid_format)
@@ -103,6 +98,6 @@ class GetBoardsAndColumnsDataFromSheet:
             "column_actions": field_record["Column Actions"],
             "task_template_stages": field_record[
                 "Task Template Stages that are visible in columns"],
-            "kanban_view_fields": field_record["Card Info_Kanban"],
-            "list_view_fields": field_record["Card Info_List"],
+            "kanban_view_fields": '{"ravi": "ravi"}',
+            "list_view_fields": '{"ravi": "ravi"}',
         }
