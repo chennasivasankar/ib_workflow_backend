@@ -18,7 +18,7 @@ def api_wrapper(*args, **kwargs):
     limit = params['limit']
     column_params = ColumnParametersDTO(
         board_id=board_id,
-        user_id=user.id
+        user_id=user.user_id
     )
     pagination_params = PaginationParametersDTO(
         offset=offset,

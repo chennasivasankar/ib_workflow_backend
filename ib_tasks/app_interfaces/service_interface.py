@@ -44,7 +44,7 @@ class ServiceInterface:
         return task_ids_dtos
 
     @staticmethod
-    def get_task_details(task_dtos: List[GetTaskDetailsDTO]):
+    def get_task_details(task_dtos: List[GetTaskDetailsDTO], user_id: int):
         from ib_tasks.storages.fields_storage_implementation import \
             FieldsStorageImplementation
         from ib_tasks.storages.storage_implementation import \
@@ -56,5 +56,5 @@ class ServiceInterface:
             field_storage,
             stage_storage
         )
-        result = interactor.get_task_fields_and_action(task_dtos)
+        result = interactor.get_task_fields_and_action(task_dtos, user_id)
         return result

@@ -1,5 +1,3 @@
-import os
-
 from ib_workflows_backend.settings.base import *
 
 # swagger utils #
@@ -82,3 +80,11 @@ API_KEY_AUTHENTICATION_CLASS = \
 CUSTOM_EXCEPTIONS_TO_LOG_IN_SENTRY = []
 
 AUTH_USER_MODEL = "ib_users.UserAccount"
+
+DEFAULT_OAUTH_APPLICATION_NAME = os.environ.get(
+    "DEFAULT_OAUTH_APPLICATION_NAME", "")
+DEFAULT_OAUTH_CLIENT_ID = os.environ.get("DEFAULT_OAUTH_CLIENT_ID", "")
+DEFAULT_OAUTH_CLIENT_SECRET = os.environ.get("DEFAULT_OAUTH_CLIENT_SECRET", "")
+DEFAULT_OAUTH_SCOPES = os.environ.get("DEFAULT_OAUTH_SCOPES", "read write")
+DEFAULT_ACCESS_TOKEN_EXPIRY_IN_SECONDS = int(
+    os.environ.get("DEFAULT_ACCESS_TOKEN_EXPIRY_IN_SECONDS", "100000000"))

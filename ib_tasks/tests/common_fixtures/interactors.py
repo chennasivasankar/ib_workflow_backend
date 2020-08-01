@@ -1,7 +1,6 @@
 from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO
 
 
-
 def prepare_gof_and_status_variables_dto():
     from ib_tasks.interactors.gofs_dtos import TaskGofAndStatusesDTO
 
@@ -25,7 +24,6 @@ def prepare_gof_and_status_variables_dto():
 
 
 def prepare_stage_ids_call_action_logic_update_stages(mocker):
-
     path = "ib_tasks.interactors.call_action_logic_function_and_update_task_status_variables_interactor" \
            ".CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor" \
            ".call_action_logic_function_and_update_task_status_variables"
@@ -36,7 +34,6 @@ def prepare_stage_ids_call_action_logic_update_stages(mocker):
 
 
 def prepare_task_boards_details():
-
     from ib_tasks.tests.factories.adapter_dtos import (
         BoardDTOFactory, ColumnDTOFactory, ColumnStageDTOFactory,
         ColumnFieldDTOFactory
@@ -68,3 +65,11 @@ def prepare_fields_dto():
     FieldDisplayDTOFactory.reset_sequence()
     field_dtos = FieldDisplayDTOFactory.create_batch(size=2)
     return field_dtos
+
+
+def mock_user_action_on_task_method(mocker, mock_object):
+    mock_method = mocker.patch(
+        "ib_tasks.interactors.user_action_on_task_interactor.UserActionOnTaskInteractor.user_action_on_task"
+    )
+    mock_method.return_value = mock_object
+    return mock_method

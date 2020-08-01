@@ -1,22 +1,24 @@
 import json
 
 import factory
-
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
-    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage, TaskGoF, TaskGoFField)
+    Task, TaskGoF,
+    TaskGoFField,
+    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage)
+from ib_tasks.models import TaskTemplateInitialStage
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
 from ib_tasks.models.gof import GoF
 from ib_tasks.models.gof_role import GoFRole
-from ib_tasks.models.task import Task
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
-    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage)
+    TaskTemplateGlobalConstants, TaskStatusVariable, Task, TaskGoF,
+    TaskGoFField, TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage)
 
 
 class TaskFactory(factory.django.DjangoModelFactory):
@@ -38,6 +40,14 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     display_logic = factory.Sequence(lambda n: "status_id_%d==stage_id" % n)
     card_info_kanban = json.dumps(['field_id_1', "field_id_2"])
     card_info_list = json.dumps(['field_id_1', "field_id_2"])
+
+class TaskFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Task
+
+    template_id = factory.Sequence(
+        lambda counter: "template_{}".format(counter))
+    created_by = "123e4567-e89b-12d3-a456-426614174000"
 
 
 class TaskStageModelFactory(factory.django.DjangoModelFactory):
@@ -194,7 +204,7 @@ class TaskGoFFactory(factory.django.DjangoModelFactory):
         model = TaskGoF
 
     same_gof_order = 1
-    gof_id = factory.sequence(lambda n: "gof_id_%d" % n)
+    gof = factory.SubFactory(GoFFactory)
     task = factory.SubFactory(TaskFactory)
 
 
@@ -204,7 +214,17 @@ class TaskGoFFieldFactory(factory.django.DjangoModelFactory):
 
     task_gof = factory.SubFactory(TaskGoFFactory)
     field = factory.SubFactory(FieldFactory)
-    field_response = "response"
+    field_response = factory.Sequence(
+        lambda counter: "field_response_{}".format(counter)
+    )
+
+
+class TaskTemplateInitialStageFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskTemplateInitialStage
+
+    task_template = factory.SubFactory(TaskTemplateFactory)
+    stage = factory.SubFactory(StageModelFactory)
 
 
 class TaskStageFactory(factory.django.DjangoModelFactory):
