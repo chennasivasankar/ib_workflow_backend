@@ -7,10 +7,6 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase02DeleteTeamAPITestCase.test_case status_code'] = '401'
+snapshots['TestCase02DeleteTeamAPITestCase.test_case status_code'] = '404'
 
-snapshots['TestCase02DeleteTeamAPITestCase.test_case body'] = {
-    'http_status_code': 401,
-    'res_status': 'USER_HAS_NO_ACCESS',
-    'response': 'User has no access to delete team details as he is not an admin'
-}
+snapshots['TestCase02DeleteTeamAPITestCase.test_case body'] = b'<h1>Not Found</h1><p>The requested resource was not found on this server.</p>'

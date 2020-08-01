@@ -7,10 +7,6 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase03GetListOfTeamsAPITestCase.test_case status_code'] = '400'
+snapshots['TestCase03GetListOfTeamsAPITestCase.test_case status_code'] = '404'
 
-snapshots['TestCase03GetListOfTeamsAPITestCase.test_case body'] = {
-    'http_status_code': 400,
-    'res_status': 'INVALID_LIMIT',
-    'response': 'Given limit is invalid to retrieve list of teams'
-}
+snapshots['TestCase03GetListOfTeamsAPITestCase.test_case body'] = b'<h1>Not Found</h1><p>The requested resource was not found on this server.</p>'

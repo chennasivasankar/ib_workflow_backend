@@ -9,8 +9,4 @@ snapshots = Snapshot()
 
 snapshots['TestCase02SendUserResetPasswordLinkAPITestCase.test_case status_code'] = '404'
 
-snapshots['TestCase02SendUserResetPasswordLinkAPITestCase.test_case body'] = {
-    'http_status_code': 404,
-    'res_status': 'USER_ACCOUNT_DOES_NOT_EXIST',
-    'response': 'user account does not exist. please send valid email'
-}
+snapshots['TestCase02SendUserResetPasswordLinkAPITestCase.test_case body'] = b'<h1>Not Found</h1><p>The requested resource was not found on this server.</p>'

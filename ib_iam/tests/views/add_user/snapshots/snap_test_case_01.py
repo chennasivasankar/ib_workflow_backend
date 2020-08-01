@@ -7,10 +7,6 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01AddUserAPITestCase.test_case status_code'] = '400'
+snapshots['TestCase01AddUserAPITestCase.test_case status_code'] = '404'
 
-snapshots['TestCase01AddUserAPITestCase.test_case body'] = {
-    'name': [
-        'This field may not be blank.'
-    ]
-}
+snapshots['TestCase01AddUserAPITestCase.test_case body'] = b'<h1>Not Found</h1><p>The requested resource was not found on this server.</p>'

@@ -7,10 +7,6 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01GetConfigurationDetailsAPITestCase.test_case status_code'] = '403'
+snapshots['TestCase01GetConfigurationDetailsAPITestCase.test_case status_code'] = '404'
 
-snapshots['TestCase01GetConfigurationDetailsAPITestCase.test_case body'] = {
-    'http_status_code': 403,
-    'res_status': 'USER_DOES_NOT_HAVE_PERMISSION',
-    'response': 'forbidden access, user cannot access'
-}
+snapshots['TestCase01GetConfigurationDetailsAPITestCase.test_case body'] = b'<h1>Not Found</h1><p>The requested resource was not found on this server.</p>'

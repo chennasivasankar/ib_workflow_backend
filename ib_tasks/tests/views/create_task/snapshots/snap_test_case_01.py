@@ -15,7 +15,7 @@ snapshots['TestCase01CreateTaskAPITestCase.test_case body'] = {
 
 snapshots['TestCase01CreateTaskAPITestCase.test_case template_id'] = 'template_1'
 
-snapshots['TestCase01CreateTaskAPITestCase.test_case created_by_id'] = '4ad3b3ea-0116-4b61-a3f8-38d20faf68e0'
+snapshots['TestCase01CreateTaskAPITestCase.test_case created_by_id'] = '7d69cfc1-a002-499b-8b1d-046386303a4b'
 
 snapshots['TestCase01CreateTaskAPITestCase.test_case task'] = 'template_1'
 

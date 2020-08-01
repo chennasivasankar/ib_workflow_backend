@@ -9,8 +9,4 @@ snapshots = Snapshot()
 
 snapshots['TestCase06EditUserAPITestCase.test_case status_code'] = '404'
 
-snapshots['TestCase06EditUserAPITestCase.test_case body'] = {
-    'http_status_code': 404,
-    'res_status': 'INVALID_ROLE_IDS',
-    'response': 'given role ids are invalid'
-}
+snapshots['TestCase06EditUserAPITestCase.test_case body'] = b'<h1>Not Found</h1><p>The requested resource was not found on this server.</p>'
