@@ -79,4 +79,4 @@ class TestCreateTaskLog:
         assert task_log.action_id == expected_action_id
         assert task_log.user_id == expected_user_id
         assert task_log.task_id == expected_task_id
-        assert task_log.acted_at == expected_acted_at
+        assert task_log.acted_at.replace(tzinfo=None) == expected_acted_at

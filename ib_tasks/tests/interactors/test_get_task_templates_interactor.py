@@ -184,9 +184,6 @@ class TestGetTaskTemplatesInteractor:
             presenter_response_mock, mocker):
         # Arrange
         user_id = "user_1"
-        from ib_tasks.constants.exception_messages import \
-            TASK_TEMPLATES_DOES_NOT_EXISTS
-        expected_err_message = TASK_TEMPLATES_DOES_NOT_EXISTS
         task_template_interactor = GetTaskTemplatesInteractor(
             task_storage=task_storage_mock
         )
@@ -198,20 +195,18 @@ class TestGetTaskTemplatesInteractor:
         task_storage_mock.get_task_templates_dtos.return_value = \
             task_template_dtos
 
-        from django_swagger_utils.drf_server.exceptions import NotFound
-        presenter_mock.raise_task_templates_does_not_exists_exception. \
-            side_effect = NotFound
+        from unittest.mock import Mock
+        mock_object = Mock()
+        presenter_mock.raise_task_templates_does_not_exists_exception.\
+            return_value = mock_object
 
         # Act
-        with pytest.raises(NotFound):
-            task_template_interactor.get_task_templates_wrapper(
-                user_id=user_id, presenter=presenter_mock
-            )
+        response = task_template_interactor.get_task_templates_wrapper(
+            user_id=user_id, presenter=presenter_mock
+        )
 
         # Assert
-        call_args = presenter_mock. \
-            raise_task_templates_does_not_exists_exception.call_args
-        assert call_args.args[0].args[0] == expected_err_message
+        assert response == mock_object
         get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
 
     def test_when_no_actions_for_templates_returns_empty_list_of_actions_of_templates(
