@@ -5,10 +5,7 @@ from ib_iam.interactors.storage_interfaces.dtos import \
     CompanyNameLogoAndDescriptionDTO
 from ib_iam.models import UserDetails, Company
 from ib_iam.interactors.storage_interfaces.dtos import (
-    CompanyDTO,
-    CompanyIdWithEmployeeIdsDTO,
-    CompanyDetailsWithUserIdsDTO,
-    CompanyWithUserIdsDTO)
+    CompanyDTO, CompanyIdWithEmployeeIdsDTO)
 
 
 class CompanyStorageImplementation(CompanyStorageInterface):

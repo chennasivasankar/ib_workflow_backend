@@ -59,7 +59,8 @@ class CompanyInteractor:
         )
         company_id = self.storage.add_company(
             user_id=user_id,
-            company_name_logo_and_description_dto=company_name_logo_and_description_dto)
+            company_name_logo_and_description_dto=
+            company_name_logo_and_description_dto)
         self.storage.add_users_to_company(company_id=company_id,
                                           user_ids=user_ids)
         return company_id
