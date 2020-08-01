@@ -20,7 +20,7 @@ class TestCase01PerformTaskActionAPITestCase(TestUtils):
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
     URL_SUFFIX = URL_SUFFIX
-    SECURITY = {'oauth': {'scopes': ['read']}}
+    SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.fixture(autouse=True)
     def setup(self):
@@ -60,17 +60,20 @@ class TestCase01PerformTaskActionAPITestCase(TestUtils):
         stage1 = StageModelFactory(
             task_template_id='template_1',
             display_logic="variable0==stage_id_0",
-            field_display_config=json.dumps(["FIELD_ID-1", "FIELD_ID-2"])
+            card_info_kanban=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
+            card_info_list=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
         )
         stage2 = StageModelFactory(
             task_template_id='template_1',
             display_logic="variable1==stage_id_1",
-            field_display_config=json.dumps(["FIELD_ID-1", "FIELD_ID-2"])
+            card_info_kanban=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
+            card_info_list=json.dumps(["FIELD_ID-1", "FIELD_ID-2"])
         )
         stage3 = StageModelFactory(
             task_template_id='template_1',
             display_logic="variable2==stage_id_2",
-            field_display_config=json.dumps(["FIELD_ID-1", "FIELD_ID-2"])
+            card_info_kanban=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
+            card_info_list=json.dumps(["FIELD_ID-1", "FIELD_ID-2"])
         )
         stages = [stage1, stage2, stage3]
         path = 'ib_tasks.populate.stage_actions_logic.stage_1_action_name_1'
