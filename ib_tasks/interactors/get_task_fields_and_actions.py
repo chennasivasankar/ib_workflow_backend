@@ -32,7 +32,6 @@ class GetTaskFieldsAndActionsInteractor:
         stage_task_dtos = task_dtos
         valid_stage_ids = self.stage_storage.get_existing_stage_ids(stage_ids)
         self._validate_stage_ids(stage_ids, valid_stage_ids)
-        print("task_dtos_fixture", task_dtos)
         valid_stage_and_tasks = self.storage.validate_task_related_stage_ids(
             task_dtos)
         self._validate_stage_and_tasks(valid_stage_and_tasks, task_dtos)
@@ -42,11 +41,9 @@ class GetTaskFieldsAndActionsInteractor:
         action_dtos = self.storage.get_actions_details(stage_ids)
 
         stage_fields_dtos = self.storage.get_field_ids(task_stage_dtos)
-        print("stage_fields_dtos", stage_fields_dtos)
         task_fields_dtos = self._map_task_and_their_fields(
             stage_fields_dtos, task_stage_dtos)
         field_dtos = self.storage.get_fields_details(task_fields_dtos)
-        print("field_dtos", field_dtos)
 
         task_details_dtos = self._map_fields_and_actions_based_on_their_stage_and_task_id(
             action_dtos, field_dtos, stage_fields_dtos)
