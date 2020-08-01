@@ -1,6 +1,8 @@
 from typing import List
 from ib_iam.interactors.storage_interfaces.company_storage_interface import \
     CompanyStorageInterface
+from ib_iam.interactors.storage_interfaces.dtos import \
+    CompanyNameLogoAndDescriptionDTO
 from ib_iam.models import UserDetails, Company
 from ib_iam.interactors.storage_interfaces.dtos import (
     CompanyDTO,
@@ -67,14 +69,13 @@ class CompanyStorageImplementation(CompanyStorageInterface):
         except Company.DoesNotExist:
             return None
 
-    def add_company(
-            self,
-            user_id: str,
-            company_details_with_user_ids_dto: CompanyDetailsWithUserIdsDTO):
+    def add_company(self, user_id: str,
+                    company_name_logo_and_description_dto:
+                    CompanyNameLogoAndDescriptionDTO):
         company_object = Company.objects.create(
-            name=company_details_with_user_ids_dto.name,
-            description=company_details_with_user_ids_dto.description,
-            logo_url=company_details_with_user_ids_dto.logo_url)
+            name=company_name_logo_and_description_dto.name,
+            description=company_name_logo_and_description_dto.description,
+            logo_url=company_name_logo_and_description_dto.logo_url)
         return str(company_object.company_id)
 
     def add_users_to_company(self, company_id: str, user_ids: List[str]):
@@ -91,20 +92,11 @@ class CompanyStorageImplementation(CompanyStorageInterface):
     def delete_company(self, company_id: str):
         Company.objects.filter(company_id=company_id).delete()
 
-    def update_company_details(
-            self, company_with_user_ids_dto: CompanyWithUserIdsDTO):
-        Company.objects \
-            .filter(company_id=company_with_user_ids_dto.company_id) \
-            .update(name=company_with_user_ids_dto.name,
-                    description=company_with_user_ids_dto.description,
-                    logo_url=company_with_user_ids_dto.logo_url)
+    def update_company_details(self, company_dto: CompanyDTO):
+        Company.objects.filter(company_id=company_dto.company_id) \
+            .update(name=company_dto.name,
+                    description=company_dto.description,
+                    logo_url=company_dto.logo_url)
 
-    def get_employee_ids_of_company(self, company_id: str):
-        user_ids = UserDetails.objects.filter(company_id=company_id) \
-            .values_list("user_id", flat=True)
-        return list(user_ids)
-
-    def delete_employees_from_company(self, company_id: str,
-                                      employee_ids: List[str]):
-        UserDetails.objects.filter(user_id__in=employee_ids,
-                                   company_id=company_id).delete()
+    def delete_all_existing_employees_of_company(self, company_id: str):
+        UserDetails.objects.filter(company_id=company_id).update(company=None)

@@ -4,6 +4,8 @@ from ib_iam.interactors.presenter_interfaces.update_company_presenter_interface 
 )
 from ib_iam.interactors.storage_interfaces.company_storage_interface import CompanyStorageInterface
 from ib_iam.interactors.company_interactor import CompanyInteractor
+from ib_iam.interactors.storage_interfaces.dtos import CompanyDTO
+from ib_iam.tests.factories.storage_dtos import CompanyDTOFactory
 from ib_iam.tests.factories.storage_dtos import CompanyWithUserIdsDTOFactory
 
 
@@ -18,13 +20,13 @@ class TestUpdateCompanyDetails:
         company_with_user_ids_dto = \
             CompanyWithUserIdsDTOFactory(company_id="1")
         storage.validate_is_user_admin.side_effect = UserHasNoAccess
-        presenter.get_user_has_no_access_response_for_update_company.side_effect = Mock()
+        presenter.get_user_has_no_access_response_for_update_company \
+            .side_effect = Mock()
 
         interactor.update_company_details_wrapper(
             user_id=user_id,
             company_with_user_ids_dto=company_with_user_ids_dto,
-            presenter=presenter
-        )
+            presenter=presenter)
 
         storage.validate_is_user_admin.assert_called_once_with(user_id=user_id)
         presenter.get_user_has_no_access_response_for_update_company \
@@ -40,13 +42,13 @@ class TestUpdateCompanyDetails:
         company_with_user_ids_dto = \
             CompanyWithUserIdsDTOFactory(company_id="2")
         storage.validate_is_company_exists.side_effect = InvalidCompany
-        presenter.get_invalid_company_response_for_update_company.side_effect = Mock()
+        presenter.get_invalid_company_response_for_update_company \
+            .side_effect = Mock()
 
         interactor.update_company_details_wrapper(
             user_id=user_id,
             company_with_user_ids_dto=company_with_user_ids_dto,
-            presenter=presenter
-        )
+            presenter=presenter)
 
         storage.validate_is_company_exists \
             .assert_called_once_with(company_id=company_id)
@@ -68,8 +70,7 @@ class TestUpdateCompanyDetails:
         interactor.update_company_details_wrapper(
             user_id=user_id,
             company_with_user_ids_dto=company_with_user_ids_dto,
-            presenter=presenter
-        )
+            presenter=presenter)
 
         presenter.get_duplicate_users_response_for_update_company \
                  .assert_called_once()
@@ -93,8 +94,7 @@ class TestUpdateCompanyDetails:
         interactor.update_company_details_wrapper(
             user_id=user_id,
             company_with_user_ids_dto=company_with_user_ids_dto,
-            presenter=presenter
-        )
+            presenter=presenter)
 
         storage.get_valid_user_ids_among_the_given_user_ids \
                .assert_called_once_with(user_ids=user_ids)
@@ -102,8 +102,7 @@ class TestUpdateCompanyDetails:
                  .assert_called_once()
 
     def test_if_company_name_already_exists_raises_bad_request_exception_response(
-            self
-    ):
+            self):
         storage = create_autospec(CompanyStorageInterface)
         presenter = create_autospec(UpdateCompanyPresenterInterface)
         interactor = CompanyInteractor(storage=storage)
@@ -112,8 +111,7 @@ class TestUpdateCompanyDetails:
         expected_company_name_from_error = company_name
         user_ids = ["2", "3", "1"]
         company_with_user_ids_dto = CompanyWithUserIdsDTOFactory(
-                company_id="3", name=company_name, user_ids=user_ids
-        )
+                company_id="3", name=company_name, user_ids=user_ids)
         storage.get_valid_user_ids_among_the_given_user_ids \
             .return_value = user_ids
         storage.get_company_id_if_company_name_already_exists.return_value = "2"
@@ -123,8 +121,7 @@ class TestUpdateCompanyDetails:
         interactor.update_company_details_wrapper(
             user_id=user_id,
             company_with_user_ids_dto=company_with_user_ids_dto,
-            presenter=presenter
-        )
+            presenter=presenter)
 
         storage.get_company_id_if_company_name_already_exists \
             .assert_called_once_with(name=company_name)
@@ -135,40 +132,49 @@ class TestUpdateCompanyDetails:
         assert actual_company_name_from_error == expected_company_name_from_error
 
     def test_company_requested_for_its_own_name_then_updation_will_be_done(
-            self
-    ):
+            self):
         storage = create_autospec(CompanyStorageInterface)
         presenter = create_autospec(UpdateCompanyPresenterInterface)
         interactor = CompanyInteractor(storage=storage)
         user_id = "1"
         user_ids = ["2", "3", "1"]
-        company_with_user_ids_dto = \
-            CompanyWithUserIdsDTOFactory(company_id="3", user_ids=user_ids)
+        company_id = "3"
+        CompanyWithUserIdsDTOFactory.reset_sequence(1, force=True)
+        company_with_user_ids_dto = CompanyWithUserIdsDTOFactory(
+                company_id=company_id, user_ids=user_ids)
+        CompanyDTOFactory.reset_sequence(1, force=True)
+        company_dto = CompanyDTOFactory(company_id=company_id)
         storage.get_valid_user_ids_among_the_given_user_ids \
             .return_value = user_ids
-        storage.get_company_id_if_company_name_already_exists.return_value = None
+        storage.get_company_id_if_company_name_already_exists \
+            .return_value = company_id
         presenter.get_success_response_for_update_company.return_value = Mock()
 
         interactor.update_company_details_wrapper(
             user_id=user_id,
             company_with_user_ids_dto=company_with_user_ids_dto,
-            presenter=presenter
-        )
+            presenter=presenter)
 
         storage.update_company_details.assert_called_once_with(
-            company_with_user_ids_dto=company_with_user_ids_dto
-        )
+            company_dto=company_dto)
+        storage.delete_all_existing_employees_of_company \
+            .assert_called_once_with(company_id=company_id)
+        storage.add_users_to_company.assert_called_once_with(
+            user_ids=user_ids, company_id=company_id)
         presenter.get_success_response_for_update_company.assert_called_once()
 
     def test_given_company_name_not_exists_then_updation_will_be_done(
-                self
-    ):
+                self):
         storage = create_autospec(CompanyStorageInterface)
         presenter = create_autospec(UpdateCompanyPresenterInterface)
         interactor = CompanyInteractor(storage=storage)
         user_ids = ["2", "3", "1"]
-        company_with_user_ids_dto = \
-            CompanyWithUserIdsDTOFactory(company_id="3", user_ids=user_ids)
+        company_id = "3"
+        CompanyWithUserIdsDTOFactory.reset_sequence(1, force=True)
+        company_with_user_ids_dto = CompanyWithUserIdsDTOFactory(
+            company_id=company_id, user_ids=user_ids)
+        CompanyDTOFactory.reset_sequence(1, force=True)
+        company_dto = CompanyDTOFactory(company_id=company_id)
         storage.get_valid_user_ids_among_the_given_user_ids \
             .return_value = user_ids
         storage.get_company_id_if_company_name_already_exists.return_value = None
@@ -177,10 +183,12 @@ class TestUpdateCompanyDetails:
         interactor.update_company_details_wrapper(
             user_id="1",
             company_with_user_ids_dto=company_with_user_ids_dto,
-            presenter=presenter
-        )
+            presenter=presenter)
 
         storage.update_company_details.assert_called_once_with(
-            company_with_user_ids_dto=company_with_user_ids_dto
-        )
+            company_dto=company_dto)
+        storage.delete_all_existing_employees_of_company \
+            .assert_called_once_with(company_id=company_id)
+        storage.add_users_to_company.assert_called_once_with(
+            user_ids=user_ids, company_id=company_id)
         presenter.get_success_response_for_update_company.assert_called_once()

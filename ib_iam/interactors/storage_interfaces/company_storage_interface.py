@@ -2,8 +2,9 @@ from abc import ABC
 from abc import abstractmethod
 from typing import List
 from ib_iam.interactors.storage_interfaces.dtos import (
-    CompanyDTO, CompanyIdWithEmployeeIdsDTO, CompanyDetailsWithUserIdsDTO,
-    CompanyWithUserIdsDTO)
+    CompanyDTO, CompanyIdWithEmployeeIdsDTO)
+from ib_iam.interactors.storage_interfaces.dtos import \
+    CompanyNameLogoAndDescriptionDTO
 
 
 class CompanyStorageInterface(ABC):
@@ -31,10 +32,8 @@ class CompanyStorageInterface(ABC):
 
     @abstractmethod
     def add_company(
-            self,
-            user_id: str,
-            company_details_with_user_ids_dto: CompanyDetailsWithUserIdsDTO
-    ):
+            self, user_id: str,
+            company_name_logo_and_description_dto: CompanyNameLogoAndDescriptionDTO):
         pass
 
     @abstractmethod
@@ -50,16 +49,9 @@ class CompanyStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_company_details(
-            self, company_with_user_ids_dto: CompanyWithUserIdsDTO
-    ):
+    def update_company_details(self, company_dto: CompanyDTO):
         pass
 
     @abstractmethod
-    def get_employee_ids_of_company(self, company_id: str):
-        pass
-
-    @abstractmethod
-    def delete_employees_from_company(self, company_id: str,
-                                      employee_ids: List[str]):
+    def delete_all_existing_employees_of_company(self, company_id: str):
         pass

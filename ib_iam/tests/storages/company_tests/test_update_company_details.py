@@ -2,8 +2,7 @@ import pytest
 from ib_iam.storages.company_storage_implementation import \
     CompanyStorageImplementation
 from ib_iam.models import Company
-from ib_iam.interactors.storage_interfaces.dtos import \
-    CompanyWithUserIdsDTO
+from ib_iam.tests.factories.storage_dtos import CompanyDTOFactory
 
 
 @pytest.fixture
@@ -22,15 +21,12 @@ class TestUpdateCompanyDetails:
         expected_description = "description"
         expected_logo_url = ""
         storage = CompanyStorageImplementation()
-        company_with_user_ids_dto = CompanyWithUserIdsDTO(
-            company_id=company_id,
-            name=expected_company_name,
-            description=expected_description,
-            logo_url=expected_logo_url,
-            user_ids=[])
+        company_dto = CompanyDTOFactory(company_id=company_id,
+                                        name=expected_company_name,
+                                        description=expected_description,
+                                        logo_url=expected_logo_url)
 
-        storage.update_company_details(
-            company_with_user_ids_dto=company_with_user_ids_dto)
+        storage.update_company_details(company_dto=company_dto)
 
         company_object = Company.objects.get(company_id=company_id)
         assert company_object.name == expected_company_name

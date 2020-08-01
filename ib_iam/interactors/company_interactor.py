@@ -1,10 +1,6 @@
 from typing import List
-
 from ib_iam.exceptions.custom_exceptions import (
-    UserHasNoAccess,
-    CompanyNameAlreadyExists,
-    InvalidUsers,
-    DuplicateUsers,
+    UserHasNoAccess, CompanyNameAlreadyExists, InvalidUsers, DuplicateUsers,
     InvalidCompany)
 from ib_iam.interactors.presenter_interfaces \
     .add_company_presenter_interface import AddCompanyPresenterInterface
@@ -14,8 +10,10 @@ from ib_iam.interactors.presenter_interfaces \
     .update_company_presenter_interface import UpdateCompanyPresenterInterface
 from ib_iam.interactors.storage_interfaces \
     .company_storage_interface import CompanyStorageInterface
+from ib_iam.interactors.storage_interfaces.dtos import CompanyDTO
 from ib_iam.interactors.storage_interfaces.dtos import (
-    CompanyDetailsWithUserIdsDTO, CompanyWithUserIdsDTO)
+    CompanyDetailsWithUserIdsDTO, CompanyWithUserIdsDTO,
+    CompanyNameLogoAndDescriptionDTO)
 
 
 class CompanyInteractor:
@@ -26,13 +24,11 @@ class CompanyInteractor:
     def add_company_wrapper(
             self, user_id: str,
             company_details_with_user_ids_dto: CompanyDetailsWithUserIdsDTO,
-            presenter: AddCompanyPresenterInterface
-    ):
+            presenter: AddCompanyPresenterInterface):
         try:
             company_id = self.add_company(
                 user_id=user_id,
-                company_details_with_user_ids_dto=
-                company_details_with_user_ids_dto)
+                company_details_with_user_ids_dto=company_details_with_user_ids_dto)
             response = presenter.get_response_for_add_company(
                 company_id=company_id)
         except UserHasNoAccess:
@@ -52,16 +48,20 @@ class CompanyInteractor:
             self, user_id: str,
             company_details_with_user_ids_dto: CompanyDetailsWithUserIdsDTO):
         user_ids = company_details_with_user_ids_dto.user_ids
+        company_name_logo_and_description_dto = \
+            CompanyNameLogoAndDescriptionDTO(
+                name=company_details_with_user_ids_dto.name,
+                description=company_details_with_user_ids_dto.description,
+                logo_url=company_details_with_user_ids_dto.logo_url)
         self.storage.validate_is_user_admin(user_id=user_id)
         self._validate_add_company_details(
             company_details_with_user_ids_dto=company_details_with_user_ids_dto
         )
         company_id = self.storage.add_company(
             user_id=user_id,
-            company_details_with_user_ids_dto=company_details_with_user_ids_dto
-        )
-        self.storage.add_users_to_company(
-            company_id=company_id, user_ids=user_ids)
+            company_name_logo_and_description_dto=company_name_logo_and_description_dto)
+        self.storage.add_users_to_company(company_id=company_id,
+                                          user_ids=user_ids)
         return company_id
 
     def delete_company_wrapper(
@@ -115,47 +115,35 @@ class CompanyInteractor:
             company_with_user_ids_dto: CompanyWithUserIdsDTO):
         user_ids = company_with_user_ids_dto.user_ids
         company_id = company_with_user_ids_dto.company_id
+        company_dto = CompanyDTO(
+            company_id=company_with_user_ids_dto.company_id,
+            name=company_with_user_ids_dto.name,
+            description=company_with_user_ids_dto.description,
+            logo_url=company_with_user_ids_dto.logo_url)
         self.storage.validate_is_user_admin(user_id=user_id)
         self._validate_update_company_details(
             company_with_user_ids_dto=company_with_user_ids_dto)
-        self.storage.update_company_details(
-            company_with_user_ids_dto=company_with_user_ids_dto)
-        company_member_ids = self.storage.get_employee_ids_of_company(
+        self.storage.update_company_details(company_dto=company_dto)
+        self.storage.delete_all_existing_employees_of_company(
             company_id=company_id)
-        self._add_members_to_company(
-            user_ids=user_ids, company_member_ids=company_member_ids,
-            company_id=company_id)
-        self._delete_members_of_company(
-            user_ids=user_ids, company_member_ids=company_member_ids,
-            company_id=company_id)
+        self.storage.add_users_to_company(user_ids=user_ids,
+                                          company_id=company_id)
 
     def _validate_add_company_details(
             self,
             company_details_with_user_ids_dto: CompanyDetailsWithUserIdsDTO):
-        name = company_details_with_user_ids_dto.name
         self._validate_users(
             user_ids=company_details_with_user_ids_dto.user_ids)
-        self._validate_is_company_name_already_exists_to_add_company(name=name)
+        self._validate_is_company_name_already_exists_to_add_company(
+            name=company_details_with_user_ids_dto.name)
 
     def _validate_update_company_details(
             self, company_with_user_ids_dto: CompanyWithUserIdsDTO):
-        name = company_with_user_ids_dto.name
         company_id = company_with_user_ids_dto.company_id
         self.storage.validate_is_company_exists(company_id=company_id)
         self._validate_users(user_ids=company_with_user_ids_dto.user_ids)
         self._validate_is_company_name_exists_to_update_company(
-            name=name, company_id=company_id)
-
-    def _add_members_to_company(self, user_ids, company_member_ids, company_id):
-        user_ids_to_add = list(set(user_ids) - set(company_member_ids))
-        self.storage.add_users_to_company(
-            company_id=company_id, user_ids=user_ids_to_add)
-
-    def _delete_members_of_company(self, user_ids, company_member_ids,
-                                   company_id):
-        member_ids_to_delete = list(set(company_member_ids) - set(user_ids))
-        self.storage.delete_employees_from_company(
-            company_id=company_id, employee_ids=member_ids_to_delete)
+            name=company_with_user_ids_dto.name, company_id=company_id)
 
     def _validate_users(self, user_ids):
         self._validate_is_duplicate_users_exists(user_ids=user_ids)

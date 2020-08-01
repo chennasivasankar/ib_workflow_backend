@@ -3,6 +3,8 @@ from ib_iam.interactors.company_interactor import CompanyInteractor
 from ib_iam.interactors.presenter_interfaces.add_company_presenter_interface import (
     AddCompanyPresenterInterface
 )
+from ib_iam.interactors.storage_interfaces.dtos import \
+    CompanyNameLogoAndDescriptionDTO
 from ib_iam.tests.factories.storage_dtos import CompanyDetailsWithUserIdsDTOFactory
 from ib_iam.interactors.storage_interfaces.company_storage_interface import (
     CompanyStorageInterface
@@ -121,6 +123,11 @@ class TestAddCompanyInteractor:
         company_id = "1"
         user_ids = ["2", "3"]
         company_details_with_user_ids_dto = CompanyDetailsWithUserIdsDTOFactory()
+        company_name_logo_and_description_dto = \
+            CompanyNameLogoAndDescriptionDTO(
+                name=company_details_with_user_ids_dto.name,
+                description=company_details_with_user_ids_dto.description,
+                logo_url=company_details_with_user_ids_dto.logo_url)
         storage.get_company_id_if_company_name_already_exists.return_value = None
         storage.get_valid_user_ids_among_the_given_user_ids \
             .return_value = user_ids
@@ -130,13 +137,11 @@ class TestAddCompanyInteractor:
         interactor.add_company_wrapper(
             user_id=user_id,
             company_details_with_user_ids_dto=company_details_with_user_ids_dto,
-            presenter=presenter
-        )
+            presenter=presenter)
 
         storage.add_company.assert_called_once_with(
             user_id=user_id,
-            company_details_with_user_ids_dto=company_details_with_user_ids_dto
-        )
+            company_name_logo_and_description_dto=company_name_logo_and_description_dto)
         storage.add_users_to_company(company_id=company_id, user_ids=user_ids)
         presenter.get_response_for_add_company \
             .assert_called_once_with(company_id=company_id)
