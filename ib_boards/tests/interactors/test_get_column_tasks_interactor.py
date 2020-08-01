@@ -212,6 +212,12 @@ class TestGetColumnTasksInteractor:
                 limit=get_column_tasks_dto.limit
             )
         ]
+        user_role = 'User'
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            adapter_mock_to_get_user_role
+        adapter_mock = adapter_mock_to_get_user_role(
+            mocker=mocker, user_role=user_role
+        )
 
         # Act
         actual_response = interactor.get_column_tasks_wrapper(
@@ -227,7 +233,8 @@ class TestGetColumnTasksInteractor:
         presenter_mock.get_response_for_column_tasks.assert_called_once_with(
             task_fields_dtos=task_complete_details_dto[0].field_dtos,
             task_actions_dtos=task_complete_details_dto[0].action_dtos,
-            total_tasks=10
+            total_tasks=10,
+            task_ids=['task_id_1']
         )
 
     def test_with_user_id_not_have_permission_for_column_return_error_message(

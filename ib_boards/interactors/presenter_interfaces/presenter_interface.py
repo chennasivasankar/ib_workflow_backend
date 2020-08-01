@@ -132,7 +132,8 @@ class GetColumnTasksPresenterInterface(abc.ABC):
     def get_response_for_column_tasks(
             self, task_fields_dtos: List[TaskDTO],
             task_actions_dtos: List[ActionDTO],
-            total_tasks: int):
+            total_tasks: int,
+            task_ids: List[int]):
         pass
 
 

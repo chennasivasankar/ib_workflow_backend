@@ -178,14 +178,8 @@ class GetColumnTasksPresenterImplementation(
     def get_response_for_column_tasks(
             self, task_fields_dtos: List[TaskDTO],
             task_actions_dtos: List[ActionDTO],
-            total_tasks: int):
+            total_tasks: int, task_ids: List[int]):
         presenter = PresenterImplementation()
-        task_ids = [
-            task_actions_dto.task_id
-            for task_actions_dto in task_actions_dtos
-        ]
-
-        task_ids = sorted(list(set(task_ids)))
         list_of_tasks = []
         for task_id in task_ids:
             list_of_fields = presenter.get_list_of_task_fields(task_id,
