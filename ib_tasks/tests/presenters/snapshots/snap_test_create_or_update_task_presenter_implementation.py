@@ -31,8 +31,6 @@ snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_raise_exception_fo
 
 snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_raise_exception_for_invalid_dropdown_value response_object'] = b'{"response": "Invalid dropdown value: 32684902319 for field: FIELD_ID-1! Try with these dropdown values: [\'DROPDOWN_1\', \'DROPDOWN_2\']", "http_status_code": 400, "res_status": "INVALID_VALUE_FOR_DROPDOWN"}'
 
-snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_raise_exceptions_for_invalid_gof_id_selected_in_gof_selector response_object'] = b'{"response": "Invalid gof_id: 32684902319 for field: FIELD_ID-1! Try with these gof_id values: [\'GOF_1\', \'GOF_2\']", "http_status_code": 400, "res_status": "INCORRECT_GOF_ID_IN_GOF_SELECTOR_FIELD"}'
-
 snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_raise_exception_for_invalid_choice_in_radio_group_field response_object'] = b'{"response": "Invalid radio group choice: 32684902319 for field: FIELD_ID-1! Try with these valid options: [\'RADIO_1\', \'RADIO_2\']", "http_status_code": 400, "res_status": "INCORRECT_RADIO_GROUP_CHOICE"}'
 
 snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_raise_exception_for_invalid_checkbox_group_options_selected response_object'] = b'{"response": "Invalid check box options selected: [\'CHECK_BOX_3\', \'CHECK_BOX_4\'] for field: FIELD_ID-1! Try with these valid options: [\'CHECK_BOX_1\', \'CHECK_BOX_2\']", "http_status_code": 400, "res_status": "INCORRECT_CHECK_BOX_OPTIONS_SELECTED"}'
@@ -51,8 +49,10 @@ snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_raise_exception_fo
 
 snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_raise_exception_for_invalid_file_url response_object'] = b'{"response": "Invalid url for a file: https://google.com/ib.pdf for field: FIELD_ID-1!", "http_status_code": 400, "res_status": "INVALID_FILE_URL"}'
 
-snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_raise_exception_for_gof_ids_in_gof_selector_field_value response_object'] = b'{"response": "Invalid gof ids: [\'gof_1\', \'gof_2\'] in gof_selector_field!", "http_status_code": 400, "res_status": "INVALID_GOF_IDS_IN_GOF_SELECTOR_FIELD"}'
+snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_raise_exception_for_gof_ids_in_gof_selector_field_value response_object'] = b'{"response": "Invalid gof selector name: [\'gof_1\', \'gof_2\'] in gof_selector_field!", "http_status_code": 400, "res_status": "INVALID_NAME_IN_GOF_SELECTOR_FIELD"}'
 
 snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_raise_exception_for_not_acceptable_file_format response_object'] = b'{"response": "Invalid format for a file: .mp4 for field: FIELD_1! Try with these formats: [\'pdf\']", "http_status_code": 400, "res_status": "INVALID_FILE_FORMAT"}'
 
 snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_raise_exception_for_empty_value_in_required_field response_object'] = b'{"response": "Given Empty value for the required field of field_id: FIELD_1! Required field should not be empty", "http_status_code": 400, "res_status": "EMPTY_VALUE_FOR_REQUIRED_FIELD"}'
+
+snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_raise_exceptions_for_invalid_gof_id_selected_in_gof_selector response_object'] = b'{"response": "Invalid gof_id: 32684902319 for field: FIELD_ID-1! Try with these gof_id values: [\'industry\', \'individual\']", "http_status_code": 400, "res_status": "INCORRECT_GOF_ID_IN_GOF_SELECTOR_FIELD"}'

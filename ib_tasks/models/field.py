@@ -17,3 +17,6 @@ class Field(models.Model):
     error_messages = models.CharField(max_length=200, null=True, blank=True)
     validation_regex = models.CharField(max_length=200, null=True, blank=True)
     gof = models.ForeignKey(GoF, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "{} in {}".format(self.field_id, self.gof_id)

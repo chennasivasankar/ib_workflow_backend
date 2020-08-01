@@ -6,7 +6,9 @@ REQUEST_METHOD = "get"
 URL_SUFFIX = "task/v1/"
 
 from .test_case_01 import TestCase01GetTaskAPITestCase
+from .test_case_02 import TestCase02GetTaskAPITestCase
 
 __all__ = [
-    "TestCase01GetTaskAPITestCase"
+    "TestCase01GetTaskAPITestCase",
+    "TestCase02GetTaskAPITestCase"
 ]
