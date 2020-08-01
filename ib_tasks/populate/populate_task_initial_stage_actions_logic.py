@@ -23,7 +23,6 @@ def populate_tasks(tasks: List[Dict]):
 
 def _remove_white_spaces_and_apply_replaces_to_roles(
         action_dicts: List[Dict]):
-
     for action_dict in action_dicts:
         roles = action_dict['roles']
         roles = roles.replace(" ", "")
@@ -33,8 +32,8 @@ def _remove_white_spaces_and_apply_replaces_to_roles(
 
 
 def writing_data_to_task_actions_logic(actions_dict: List[Dict]):
-
-    with open('ib_tasks/populate/task_initial_stage_actions_logic.py', "a") as file:
+    with open('ib_tasks/populate/task_initial_stage_actions_logic.py',
+              "a") as file:
         for action_dict in actions_dict:
             _define_single_method(file=file, action_dict=action_dict)
         file.close()
@@ -45,10 +44,19 @@ def _define_single_method(file, action_dict: Dict[str, str]):
     action_name = action_dict["action_name"]
     action_logic = action_dict['action_logic']
     function_name = f'{stage_id}_{action_name}'
-    function_name = function_name.replace(' ', '_').replace('-', '_').replace('\n', '')
+    function_name = function_name.replace(' ', '_').replace('-', '_').replace(
+        '\n', '')
     file.write(
         f"\n\ndef {function_name}(task_dict, global_constants, stage_value_dict):\n")
-    file.write(action_logic + "\n")
+
+    action_logic_lines = action_logic.split("\n")
+    new_lines = []
+    for line in action_logic_lines:
+        line = '\t' + line
+        new_lines.append(line)
+
+    new_action_logic = "\n".join(new_lines)
+    file.write(new_action_logic + "\n")
     file.write("\t" + "return task_dict\n")
 
 
@@ -74,7 +82,6 @@ def append_action_dict(action_dict: Dict[str, Any]):
 
 
 def validation_for_tasks_dict(tasks_dict: List[Dict]):
-
     from schema import Schema, Optional, SchemaError
     schema = Schema(
         [{
@@ -105,7 +112,7 @@ def _validate_action_logic(action_logic: str):
         parse(action_logic)
     except AstroidSyntaxError:
         raise InvalidPythonCodeException()
-        return
+
 
 def raise_exception_for_valid_format():
     valid_format = {
@@ -122,5 +129,3 @@ def raise_exception_for_valid_format():
     from ib_tasks.exceptions.custom_exceptions \
         import InvalidFormatException
     raise InvalidFormatException(valid_format=json_valid_format)
-
-

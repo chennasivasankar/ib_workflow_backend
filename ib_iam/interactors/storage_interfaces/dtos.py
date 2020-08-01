@@ -103,3 +103,9 @@ class BasicUserDetailsDTO:
     user_id: str
     name: str
     profile_pic_url: str
+
+
+@dataclass
+class UserIdAndNameDTO:
+    user_id: str
+    name: str

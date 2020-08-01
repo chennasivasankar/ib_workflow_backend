@@ -241,7 +241,7 @@
       "type": "object",
       "properties": {
         "task_id": {
-          "type": "string"
+          "type": "integer"
         },
         "current_board_details": {
           "type": "object",
@@ -460,7 +460,7 @@
             "type": "object",
             "properties": {
                 "task_id": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "task_overview_fields": {
                     "type": "array",
@@ -502,7 +502,7 @@
       "type": "object",
       "properties": {
         "task_id": {
-          "type": "string"
+          "type": "integer"
         },
         "template_id": {
           "type": "string"
@@ -560,7 +560,7 @@
                   "type": "object",
                   "properties": {
                     "action_id": {
-                      "type": "string"
+                      "type": "integer"
                     },
                     "button_text": {
                       "type": "string"
@@ -617,7 +617,7 @@
       "in": "path",
       "required": true,
       "description": "Id of the Task",
-      "type": "string"
+      "type": "integer"
     },
     "ActionParameterize": {
       "name": "action_id",
@@ -661,7 +661,6 @@
       "name": "search_query",
       "description": "Searchable Query Parameter",
       "in": "query",
-      "required": true,
       "type": "string"
     }
   },
