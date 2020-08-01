@@ -7,6 +7,7 @@ Author: Pavankumar Pamuru
 import abc
 from typing import List, Optional, Tuple
 
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
@@ -227,6 +228,12 @@ class TaskStorageInterface(abc.ABC):
     def get_task_ids_for_the_stage_ids(
             self, stage_ids: List[str],
             offset: int, limit: int) -> Tuple[List[TaskStageIdsDTO], int]:
+        pass
+
+    @abc.abstractmethod
+    def get_field_ids_for_given_task_template_ids(self,
+                                                  task_template_ids: List[str]) -> \
+            List[TemplateFieldsDTO]:
         pass
 
     @abc.abstractmethod
