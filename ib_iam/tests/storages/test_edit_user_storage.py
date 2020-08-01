@@ -66,12 +66,13 @@ class TestEditUserStorage:
         # Arrange
         user_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8444"
         is_admin = True
+        name = "test_name"
         company_id = 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331'
         storage = UserStorageImplementation()
 
         # Act
-        storage.change_company_for_user(
-            user_id=user_id, company_id=company_id)
+        storage.update_user_details(
+            user_id=user_id, company_id=company_id, name=name)
 
         # Assert
         from ib_iam.models import UserDetails

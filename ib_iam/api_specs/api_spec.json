@@ -1319,13 +1319,6 @@
         "operationId": "send_user_reset_password_link",
         "summary": "send user reset password link",
         "description": "user reset password link to email",
-        "security": [
-          {
-            "oauth": [
-              "read"
-            ]
-          }
-        ],
         "parameters": [
           {
             "$ref": "#/parameters/SendResetPasswordLinkParameter"
