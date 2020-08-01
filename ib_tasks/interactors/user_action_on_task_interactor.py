@@ -52,24 +52,19 @@ class UserActionOnTaskInteractor:
         try:
             task_complete_details_dto = self._user_action_on_task()
         except InvalidTaskException as err:
-            presenter.raise_exception_for_invalid_task(error_obj=err)
-            return
+            return presenter.raise_exception_for_invalid_task(error_obj=err)
         except InvalidBoardIdException as err:
-            presenter.raise_exception_for_invalid_board(error_obj=err)
-            return
+            return presenter.raise_exception_for_invalid_board(error_obj=err)
         except InvalidActionException as err:
-            presenter.raise_exception_for_invalid_action(error_obj=err)
-            return
+            return presenter.raise_exception_for_invalid_action(error_obj=err)
         except UserActionPermissionDenied as err:
-            presenter.raise_exception_for_user_action_permission_denied(
+            return presenter.raise_exception_for_user_action_permission_denied(
                 error_obj=err
             )
-            return
         except UserBoardPermissionDenied as err:
-            presenter.raise_exception_for_user_board_permission_denied(
+            return presenter.raise_exception_for_user_board_permission_denied(
                 error_obj=err
             )
-            return
         return presenter.get_response_for_user_action_on_task(
             task_complete_details_dto=task_complete_details_dto
         )
