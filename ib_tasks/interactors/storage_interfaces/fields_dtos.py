@@ -51,7 +51,6 @@ class FieldCompleteDetailsDTO:
     allowed_formats: Optional[str]
     validation_regex: Optional[str]
 
-
 @dataclass
 class FieldDetailsDTO:
     field_type: str
