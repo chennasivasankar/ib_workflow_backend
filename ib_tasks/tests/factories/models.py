@@ -22,12 +22,16 @@ from ib_tasks.models import (
     TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage)
 
 
+
+
 class TaskFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Task
 
-    template_id = "task_template_id_1"
+    template_id = factory.Sequence(
+        lambda counter: "template_{}".format(counter))
     created_by = "123e4567-e89b-12d3-a456-426614174000"
+
 
 
 class StageModelFactory(factory.django.DjangoModelFactory):
@@ -42,13 +46,6 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     field_display_config = json.dumps(["FIELD_ID-1", "FIELD_ID-2"])
 
 
-class TaskFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = Task
-
-    template_id = factory.Sequence(
-        lambda counter: "template_{}".format(counter))
-    created_by = "123e4567-e89b-12d3-a456-426614174000"
 
 
 class TaskStageModelFactory(factory.django.DjangoModelFactory):

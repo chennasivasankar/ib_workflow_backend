@@ -62,6 +62,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                 q = current_queue
             else:
                 q = q | current_queue
+        print("TaskGoFField",  TaskGoFField.objects.all().values())
 
         field_objs = TaskGoFField.objects.filter(q).select_related(
             'field', 'task_gof'
@@ -131,6 +132,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                 q = q | current_queue
         task_objs = TaskStage.objects.filter(q).values('task_id',
                                                        'stage__stage_id')
+
         task_stage_dtos = self._convert_task_objs_to_dtos(task_objs)
         return task_stage_dtos
 
