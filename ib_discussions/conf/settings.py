@@ -1,0 +1,1 @@
+# write your ib_discussions settings

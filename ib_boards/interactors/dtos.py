@@ -11,6 +11,7 @@ class ColumnParametersDTO:
 @dataclass
 class ColumnTasksDTO:
     column_id: str
+    stage_id: str
     task_id: int
 
 
@@ -98,6 +99,7 @@ class TaskDTO:
     field_type: str
     key: str
     value: str
+    stage_id: str
 
 
 @dataclass
@@ -106,7 +108,8 @@ class ActionDTO:
     name: str
     button_text: str
     button_color: str
-    task_id: str
+    task_id: int
+    stage_id: str
 
 
 @dataclass

@@ -55,7 +55,7 @@ class GetSheetDataForTaskCreationConfig:
         return {
             "task_template_id": field_record["TaskTemplate ID*"],
             "stage_id": field_record["Stage ID*"],
-            "action_logic": "\ta = '9'",
+            "action_logic": field_record["Logic"],
             "action_name": field_record["Action name"],
             "roles": field_record["Role"],
             "button_text": field_record["Button Text"],

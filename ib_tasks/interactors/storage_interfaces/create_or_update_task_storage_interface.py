@@ -86,3 +86,8 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
     ):
         pass
 
+    @abc.abstractmethod
+    def set_status_variables_for_template_and_task(self, task_template_id,
+                                                   task_id):
+        pass
+
