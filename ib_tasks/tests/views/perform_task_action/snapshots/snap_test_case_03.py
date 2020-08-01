@@ -59,8 +59,8 @@ snapshots['TestCase03PerformTaskActionAPITestCase.test_case body'] = {
     'task_id': '1'
 }
 
-snapshots['TestCase03PerformTaskActionAPITestCase.test_case deleted task stages'] = False
-
 snapshots['TestCase03PerformTaskActionAPITestCase.test_case stage_id_0'] = 'stage_id_0'
 
 snapshots['TestCase03PerformTaskActionAPITestCase.test_case stage_id_2'] = 'stage_id_2'
+
+snapshots['TestCase03PerformTaskActionAPITestCase.test_case deleted task stages'] = False
