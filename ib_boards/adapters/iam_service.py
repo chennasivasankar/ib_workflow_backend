@@ -22,4 +22,5 @@ class IamService:
         valid_role_ids = self.interface.get_valid_role_ids(
             role_ids=user_roles
         )
-        return valid_role_ids
+        # TODO - need to return valid user roles
+        return user_roles
