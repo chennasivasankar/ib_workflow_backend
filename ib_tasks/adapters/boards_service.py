@@ -1,6 +1,6 @@
 from typing import List
 
-from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO
+from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO, ColumnStageDTO, ColumnDTO
 from ib_tasks.exceptions.permission_custom_exceptions \
     import UserBoardPermissionDenied
 
@@ -29,11 +29,33 @@ class BoardsService:
 
         return TaskBoardsDetailsDTO(
             board_dto=board_details.board_dto,
-            column_stage_dtos="",
-            columns_dtos=""
+            column_stage_dtos=self._get_column_stage_dtos(board_details.column_stage_dtos),
+            columns_dtos=self._get_column_dtos(board_details.columns_dtos)
         )
+
+    @staticmethod
+    def _get_column_dtos(column_dtos):
+
+        return [
+            ColumnDTO(
+                column_id=column_dto.column_id,
+                board_id=column_dto.board_id,
+                name=column_dto.name
+            )
+            for column_dto in column_dtos
+        ]
+
+    @staticmethod
+    def _get_column_stage_dtos(column_stage_dtos):
+
+        return [
+            ColumnStageDTO(
+                column_id=column_stage_dto.column_id,
+                stage_id=column_stage_dto.stage_id
+            )
+            for column_stage_dto in column_stage_dtos
+        ]
 
     def validate_board_id(self, board_id: str):
 
         return True
-

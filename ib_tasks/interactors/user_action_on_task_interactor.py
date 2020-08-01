@@ -245,9 +245,10 @@ class UserActionOnTaskInteractor:
         if is_invalid_action:
             raise InvalidActionException(action_id=self.action_id)
         action_roles = self.storage.get_action_roles(action_id=self.action_id)
-        self._validate_user_permission_to_user(
-            self.user_id, action_roles, self.action_id
-        )
+        # TODO uncomment below code
+        # self._validate_user_permission_to_user(
+        #     self.user_id, action_roles, self.action_id
+        # )
 
     def _validate_task_id(self):
 
