@@ -2,10 +2,9 @@ from abc import ABC, abstractmethod
 from typing import List, Optional
 
 from ib_iam.exceptions.custom_exceptions import InvalidUserId, InvalidUserIds
-from ib_iam.interactors.DTOs.common_dtos import UserIdWithRoleIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, CompanyIdAndNameDTO, TeamIdAndNameDTO, \
-    RoleIdAndNameDTO
+    RoleIdAndNameDTO, UserIdAndNameDTO
 
 
 class UserStorageInterface(ABC):
@@ -50,12 +49,12 @@ class UserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def change_company_for_user(self, company_id: str, user_id: str):
+    def update_user_details(self, company_id: str, user_id: str, name: str):
         pass
 
     @abstractmethod
     def add_new_user(self, user_id: str, is_admin: bool, company_id: str,
-                     role_ids, team_ids: List[str]):
+                     role_ids, team_ids: List[str], name: str):
         pass
 
     @abstractmethod
@@ -105,4 +104,16 @@ class UserStorageInterface(ABC):
 
     @abstractmethod
     def get_valid_user_ids(self, user_ids: List[str]) -> List[str]:
+        pass
+
+    @abstractmethod
+    def get_user_details_dtos_based_on_limit_offset_and_search_query(
+            self, limit: int, offset: int, search_query: str
+    ) -> List[UserIdAndNameDTO]:
+        pass
+
+    @abstractmethod
+    def get_user_details_dtos_based_on_search_query(
+            self, search_query: str
+    ) -> List[UserIdAndNameDTO]:
         pass
