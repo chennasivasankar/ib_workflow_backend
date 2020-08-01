@@ -43,7 +43,9 @@ class GetTaskFieldsAndActionsInteractor:
         stage_fields_dtos = self.storage.get_field_ids(task_stage_dtos)
         task_fields_dtos = self._map_task_and_their_fields(
             stage_fields_dtos, task_stage_dtos)
+        print("task_fields_dtos", task_fields_dtos)
         field_dtos = self.storage.get_fields_details(task_fields_dtos)
+        print("field_dtos", field_dtos)
 
         task_details_dtos = self._map_fields_and_actions_based_on_their_stage_and_task_id(
             action_dtos, field_dtos, stage_fields_dtos)

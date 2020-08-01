@@ -55,6 +55,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
 
     def get_fields_details(self, task_fields_dtos: List[StageTaskFieldsDTO]) -> \
             List[FieldDetailsDTO]:
+        print("TaskGoFField", TaskGoFField.objects.values())
         q = None
         for counter, item in enumerate(task_fields_dtos):
             current_queue = Q(task_gof__task_id=item.task_id, field_id__in=item.field_ids)
