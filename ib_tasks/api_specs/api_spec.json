@@ -33,6 +33,28 @@
   "security": [
   ],
   "definitions": {
+    "SaveAndActOnATaskRequestBody":{
+         "type":"object",
+         "properties":{
+            "task_id":{
+               "type":"integer"
+            },
+            "action_id":{
+               "type":"integer"
+            },
+            "task_gofs":{
+               "type":"array",
+               "items":{
+                  "$ref":"#/definitions/GoF"
+               }
+            }
+         },
+         "required":[
+            "task_gofs",
+            "action_id",
+            "task_id"
+         ]
+      },
     "InvalidTaskActionDetails": {
       "type": "object",
       "properties": {
@@ -661,8 +683,18 @@
       "name": "search_query",
       "description": "Searchable Query Parameter",
       "in": "query",
+      "required": true,
       "type": "string"
-    }
+    },
+     "SaveAndActOnATaskBodyParameter":{
+         "in":"body",
+         "name":"SaveAndActOnATaskRequestBody",
+         "description":"give valid details",
+         "required":true,
+         "schema":{
+            "$ref":"#/definitions/SaveAndActOnATaskRequestBody"
+         }
+      }
   },
   "responses": {
     "CreateTaskSuccessResponse": {
@@ -866,7 +898,10 @@
           "res_status"
         ]
       }
-    }
+    },
+    "SaveAndActOnATaskTaskSuccessResponse":{
+         "description":"task updated successfully"
+      }
    },
    "paths":{
      "/perform_user_action_on_task/v1/": {
@@ -1054,6 +1089,32 @@
           }
         }
       }
-    }
+    },"/task/save_and_act/v1/":{
+         "post":{
+            "operationId":"save_and_act_on_a_task",
+            "summary":"update a task",
+            "description":"create a task with given details",
+            "security":[
+               {
+                  "oauth":[
+                     "write"
+                  ]
+               }
+            ],
+            "parameters":[
+               {
+                  "$ref":"#/parameters/SaveAndActOnATaskBodyParameter"
+               }
+            ],
+            "responses":{
+               "201":{
+                  "$ref":"#/responses/SaveAndActOnATaskTaskSuccessResponse"
+               },
+               "400":{
+                  "description":""
+               }
+            }
+         }
+      }
   }
 }

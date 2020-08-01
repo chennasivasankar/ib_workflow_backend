@@ -5,7 +5,10 @@ from .validator_class import ValidatorClass
 from ib_tasks.interactors.task_dtos import FieldValuesDTO
 from ...presenters.user_action_on_task_presenter_implementation import \
     UserActionOnTaskPresenterImplementation
-from ...storages.storage_implementation import StorageImplementation
+from ...storages.fields_storage_implementation import \
+    FieldsStorageImplementation
+from ...storages.storage_implementation import StorageImplementation, \
+    StagesStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
@@ -49,10 +52,13 @@ def api_wrapper(*args, **kwargs):
     presenter = CreateOrUpdateTaskPresenterImplementation()
     act_on_task_presenter = UserActionOnTaskPresenterImplementation()
     storage = StorageImplementation()
+    field_storage = FieldsStorageImplementation()
+    stage_storage = StagesStorageImplementation()
     interactor = CreateOrUpdateTaskInteractor(
         task_storage=task_storage,
         create_task_storage=create_task_storage,
-        storage=storage
+        storage=storage, field_storage=field_storage,
+        stage_storage=stage_storage
     )
 
     response = interactor.create_or_update_task_wrapper(
