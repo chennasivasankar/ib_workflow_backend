@@ -423,7 +423,7 @@
       "type": "object",
       "properties": {
         "task_id": {
-          "type": "string"
+          "type": "integer"
         },
         "template_id": {
           "type": "string"
