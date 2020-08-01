@@ -15,8 +15,6 @@ snapshots['TestCase01CreateTaskAPITestCase.test_case body'] = {
 
 snapshots['TestCase01CreateTaskAPITestCase.test_case template_id'] = 'template_1'
 
-snapshots['TestCase01CreateTaskAPITestCase.test_case created_by_id'] = '81115d05-d96d-4f2f-a43f-7ee05bb69ab8'
-
 snapshots['TestCase01CreateTaskAPITestCase.test_case task'] = 'template_1'
 
 snapshots['TestCase01CreateTaskAPITestCase.test_case same_gof_order_1'] = 0

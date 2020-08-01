@@ -71,34 +71,6 @@ class TestCreateOrUpdateTask:
         from unittest.mock import Mock
         return Mock()
 
-    def test_create_or_update_task_with_duplicate_field_ids_raises_exception(
-            self, task_storage_mock, create_task_storage_mock,
-            presenter_mock, storage_mock, act_on_task_presenter_mock,
-            mock_object
-    ):
-        # Arrange
-        gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
-            size=2, field_id="FIELD_ID-1"
-        )
-        gof_fields_dtos = GoFFieldsDTOFactory.create_batch(
-            size=1, field_values_dtos=gof_field_values_dtos
-        )
-
-        task_dto = TaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
-        presenter_mock.raise_exception_for_duplicate_field_ids.return_value = mock_object
-        interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
-        )
-
-        # Act
-        response = interactor.create_or_update_task_wrapper(
-            presenter_mock, task_dto, act_on_task_presenter_mock
-        )
-
-        # Assert
-        assert response == mock_object
-        presenter_mock.raise_exception_for_duplicate_field_ids.assert_called_once()
-
     def test_create_or_update_task_with_invalid_gof_ids_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, storage_mock,
@@ -261,7 +233,7 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_invalid_phone_number_value.assert_called_once()
 
     @pytest.mark.parametrize("email",
-                             ["email", "email  @gmail.com", "gmail.com"])
+                             ["email", "gmail.com"])
     def test_create_or_update_task_with_invalid_email_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, email, storage_mock,

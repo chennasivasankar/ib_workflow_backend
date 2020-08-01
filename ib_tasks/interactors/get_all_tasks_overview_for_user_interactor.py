@@ -68,7 +68,6 @@ class GetAllTasksOverviewForUserInteractor:
             offset=user_id_with_pagination_dto.offset)
         task_id_with_stage_details_dtos = self._get_task_ids_of_user(
             user_stages_with_pagination_dto)
-
         from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
         task_id_with_stage_id_dtos = [
             GetTaskDetailsDTO(
@@ -126,4 +125,5 @@ class GetAllTasksOverviewForUserInteractor:
         task_details_dtos = get_task_fields_and_actions_interactor. \
             get_task_fields_and_action(task_dtos=task_id_with_stage_id_dtos,
                                        user_id=user_id)
+
         return task_details_dtos

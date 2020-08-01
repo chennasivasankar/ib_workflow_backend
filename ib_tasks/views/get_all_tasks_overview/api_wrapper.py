@@ -15,13 +15,13 @@ from ...storages.tasks_storage_implementation import TasksStorageImplementation
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    user = kwargs['user']
-    print("user_id", str(user.id))
+    user_account_obj = kwargs['user']
+    user_id = user_account_obj.user_id
     params = kwargs['query_params']
     offset = params['offset']
     limit = params['limit']
 
-    user_id_with_pagination_dto = UserIdPaginationDTO(user_id=str(user.id),
+    user_id_with_pagination_dto = UserIdPaginationDTO(user_id=user_id,
                                                       offset=offset,
                                                       limit=limit)
     presenter = GetAllTasksOverviewForUserPresenterImpl()
