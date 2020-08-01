@@ -1,3 +1,4 @@
+from collections import defaultdict
 from typing import List, Optional, Dict, Tuple
 
 from django.db.models import Q
@@ -7,8 +8,9 @@ from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionsOfTemplateDTO, ActionDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
-    FieldRoleDTO, FieldCompleteDetailsDTO, UserFieldPermissionDTO, \
-    FieldDetailsDTO
+    FieldRoleDTO, FieldTypeDTO, UserFieldPermissionDTO, FieldDetailsDTO, \
+    FieldCompleteDetailsDTO
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import TemplateFieldsDTO
 
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskIdWithStageValueDTO, \
@@ -377,12 +379,24 @@ class TasksStorageImplementation(TaskStorageInterface):
             task_template_objs=task_template_objs)
         return task_template_dtos
 
-    def get_actions_of_templates_dtos(self) -> List[ActionsOfTemplateDTO]:
-        stage_actions_details = StageAction.objects.all().select_related(
-            'stage'). \
-            values(
+    def get_initial_stage_ids_of_templates(self) -> List[int]:
+        from ib_tasks.models.task_template_initial_stages import \
+            TaskTemplateInitialStage
+        templates_initial_stage_ids_queryset = \
+            TaskTemplateInitialStage.objects.all().\
+            values_list('stage_id', flat=True)
+        templates_initial_stage_ids = \
+            list(templates_initial_stage_ids_queryset)
+        return templates_initial_stage_ids
+
+    def get_actions_for_given_stage_ids(
+            self, stage_ids: List[int]) -> List[ActionsOfTemplateDTO]:
+        stage_actions_details = StageAction.objects.filter(
+            stage_id__in=stage_ids
+        ).select_related('stage').values(
             'id', 'button_text', 'button_color', 'stage__task_template_id'
         )
+
         actions_of_templates_dtos = self._convert_stage_actions_details_to_dto(
             stage_actions_details=stage_actions_details)
         return actions_of_templates_dtos
@@ -512,7 +526,24 @@ class TasksStorageImplementation(TaskStorageInterface):
             actions_dto=stage_actions_dtos
         )
 
-    def _get_task_tempalate_and_stage_ids(self, task_dtos, task_objs):
+    def get_task_ids_for_the_stage_ids(
+            self, stage_ids: List[str],
+            offset: int, limit: int) -> Tuple[List[TaskStageIdsDTO], int]:
+        task_stage_ids = TaskStage.objects.filter(
+            stage__stage_id__in=stage_ids
+        ).values('task_id', 'stage__stage_id')
+        total_count = len(task_stage_ids)
+        task_stage_dtos = [
+            TaskStageIdsDTO(
+                task_id=task_stage_id['task_id'],
+                stage_id=task_stage_id['stage__stage_id']
+            )
+            for task_stage_id in task_stage_ids[offset: offset + limit]
+        ]
+        return task_stage_dtos, total_count
+
+    @staticmethod
+    def _get_task_tempalate_and_stage_ids(task_dtos, task_objs):
         task_template_and_stage_ids = []
         for task in task_objs:
             for task_dto in task_dtos:
@@ -735,3 +766,26 @@ class TasksStorageImplementation(TaskStorageInterface):
             self, stage_ids: List[str],
             offset: int, limit: int) -> Tuple[List[TaskStageIdsDTO], int]:
         pass
+
+    def get_field_ids_for_given_task_template_ids(self,
+                                                  task_template_ids: List[str]) -> List[TemplateFieldsDTO]:
+        task_field_objs = TaskTemplateGoFs.objects.filter(
+            task_template_id__in=task_template_ids).values('task_template_id', 'gof__field')
+        task_fields_dtos = self._convert_task_template_fields_to_dtos(task_field_objs)
+        return task_fields_dtos
+
+    @staticmethod
+    def _convert_task_template_fields_to_dtos(task_field_objs):
+        task_fields_dict = defaultdict(list)
+        for task in task_field_objs:
+            task_fields_dict[task['task_template_id']].append(task['gof__field'])
+
+        task_fields_dtos = []
+        for template_id, field_ids in task_fields_dict.items():
+            task_fields_dtos.append(
+                TemplateFieldsDTO(
+                    task_template_id=template_id,
+                    field_ids=field_ids
+                )
+            )
+        return task_fields_dtos

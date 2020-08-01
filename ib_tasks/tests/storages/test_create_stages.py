@@ -12,7 +12,7 @@ class TestCreateStages:
     @pytest.fixture()
     def stage_dtos(self):
         StageDTOFactory.reset_sequence()
-        return StageDTOFactory.create_batch(size=4)
+        return StageDTOFactory.create_batch(size=3)
 
     def _validate_stages_details(self, stages, expected_dtos):
         returned_dtos = [StageDTO(
@@ -20,16 +20,22 @@ class TestCreateStages:
             task_template_id=stage.task_template_id,
             value=stage.value,
             id=None,
+            card_info_kanban=stage.card_info_kanban,
+            card_info_list=stage.card_info_list,
             stage_display_name=stage.display_name,
             stage_display_logic=stage.display_logic
         ) for stage in stages]
 
-        for dto_value in range(len(expected_dtos)):
-            assert returned_dtos[dto_value].stage_id == expected_dtos[dto_value].stage_id
-            assert returned_dtos[dto_value].task_template_id == expected_dtos[dto_value].task_template_id
-            assert returned_dtos[dto_value].value == expected_dtos[dto_value].value
-            assert returned_dtos[dto_value].stage_display_logic == expected_dtos[dto_value].stage_display_logic
-            assert returned_dtos[dto_value].stage_display_name == expected_dtos[dto_value].stage_display_name
+        for index, expected_dto in enumerate(expected_dtos):
+            assert returned_dtos[index].stage_id == expected_dto.stage_id
+            assert returned_dtos[index].task_template_id == expected_dto.task_template_id
+            assert returned_dtos[index].value == expected_dto.value
+            assert returned_dtos[index].stage_display_logic == expected_dto.stage_display_logic
+            assert returned_dtos[index].stage_display_name == expected_dto.stage_display_name
+            assert returned_dtos[index].card_info_list == \
+                   expected_dto.card_info_list
+            assert returned_dtos[index].card_info_kanban == \
+                   expected_dto.card_info_kanban
 
     def test_create_stages_create_stage_details(self, stage_dtos):
         # Arrange

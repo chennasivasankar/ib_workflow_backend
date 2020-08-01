@@ -3,7 +3,7 @@ from unittest.mock import create_autospec, patch
 import pytest
 
 from ib_boards.interactors.dtos import ColumnParametersDTO, \
-    PaginationParametersDTO
+    PaginationParametersDTO, ColumnTaskIdsDTO, TaskIdStageDTO
 from ib_boards.interactors.dtos import TaskStageIdDTO
 from ib_boards.interactors.get_column_details_interactor import \
     GetColumnDetailsInteractor
@@ -11,11 +11,21 @@ from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
+from ib_boards.tests.factories.interactor_dtos import ColumnTaskIdsDTOFactory
 from ib_boards.tests.factories.storage_dtos import (
     ColumnDetailsDTOFactory, TaskActionsDTOFactory, TaskFieldsDTOFactory)
 
 
 class TestGetColumnDetailsInteractor:
+
+    @classmethod
+    def setup_class(cls):
+        ColumnDetailsDTOFactory.reset_sequence()
+        ColumnTaskIdsDTOFactory.reset_sequence()
+
+    @classmethod
+    def teardown_class(cls):
+        pass
 
     @pytest.fixture()
     def mock_storage(self):
@@ -42,6 +52,10 @@ class TestGetColumnDetailsInteractor:
         TaskFieldsDTOFactory.reset_sequence()
 
         return TaskFieldsDTOFactory.create_batch(size=3)
+
+    @pytest.fixture
+    def column_tasks_ids(self):
+        return ColumnTaskIdsDTOFactory.create_batch(3)
 
     def test_with_invalid_board_id_raises_exception(self):
         # Arrange
@@ -179,7 +193,7 @@ class TestGetColumnDetailsInteractor:
     def test_get_columns_details_given_valid_board_id_returns_columns_details(
             self, user_roles_service, get_column_details_dto, mocker,
             get_task_actions_dtos, get_task_fields_dtos, mock_storage,
-            mock_presenter):
+            mock_presenter, column_tasks_ids):
         # Arrange
         storage = mock_storage
         presenter = mock_presenter
@@ -210,6 +224,10 @@ class TestGetColumnDetailsInteractor:
             prepare_task_details_dtos
         task_details_dto = prepare_task_details_dtos(mocker, tasks_dtos,
                                                      user_id=user_id)
+        from ib_boards.tests.common_fixtures.adapters.task_service import \
+            get_task_ids_mock
+
+        task_ids_mock = get_task_ids_mock(mocker, column_tasks_ids)
         task_details_dto.return_value = task_fields_dto, task_actions_dto
         user_roles_service.get_user_roles.return_value = user_roles
         board_permitted_user_roles = ["FIN_PAYMENT_POC"]

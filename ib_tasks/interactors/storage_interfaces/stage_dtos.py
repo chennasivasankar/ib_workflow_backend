@@ -95,4 +95,3 @@ class StageDisplayValueDTO:
     stage_id: str
     display_logic: str
     value: int
-
