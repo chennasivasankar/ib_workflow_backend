@@ -7,9 +7,8 @@ from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionsOfTemplateDTO, ActionDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
-    FieldRoleDTO, FieldCompleteDetailsDTO, UserFieldPermissionDTO, FieldDetailsDTO, \
-    FieldRoleDTO, FieldCompleteDetailsDTO, UserFieldPermissionDTO, FieldDetailsDTO, \
-    FieldRoleDTO, FieldCompleteDetailsDTO, UserFieldPermissionDTO, FieldDetailsDTO
+    FieldRoleDTO, FieldCompleteDetailsDTO, UserFieldPermissionDTO, \
+    FieldDetailsDTO
 
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskIdWithStageValueDTO, \
@@ -21,15 +20,15 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
 
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, StageDTO
-from ib_tasks.interactors.storage_interfaces.status_dtos import TaskTemplateStatusDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
+    StageDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import \
+    TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TaskTemplateDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
-from ib_tasks.models import TaskTemplateStatusVariable, TaskTemplate, Task, \
-    TaskTemplateGoFs, TaskGoFField
 from ib_tasks.models import GoFRole, GoF, TaskStage
 from ib_tasks.models import Stage, StageAction
 from ib_tasks.models import TaskTemplateStatusVariable
@@ -45,7 +44,7 @@ from ib_tasks.models.task_gof_field import TaskGoFField
 class TasksStorageImplementation(TaskStorageInterface):
 
     def get_field_details_for_given_field_ids(self, field_ids: List[str]) -> \
-    List[FieldDetailsDTO]:
+            List[FieldCompleteDetailsDTO]:
         field_objects = list(
             Field.objects.filter(field_id__in=field_ids)
         )
@@ -54,9 +53,9 @@ class TasksStorageImplementation(TaskStorageInterface):
 
     @staticmethod
     def _prepare_field_details_dtos(
-            field_objects: List[Field]) -> List[FieldDetailsDTO]:
+            field_objects: List[Field]) -> List[FieldCompleteDetailsDTO]:
         field_details_dtos = [
-            FieldDetailsDTO(
+            FieldCompleteDetailsDTO(
                 field_id=field_object.field_id,
                 field_type=field_object.field_type,
                 required=field_object.required,
@@ -406,9 +405,10 @@ class TasksStorageImplementation(TaskStorageInterface):
             self, roles: List[str],
             field_ids: List[str]) -> List[UserFieldPermissionDTO]:
         from django.db.models import Q
+        from ib_tasks.constants.constants import ALL_ROLES_ID
         user_field_permission_details = FieldRole.objects.filter(
             Q(field_id__in=field_ids),
-            (Q(role__in=roles) | Q(role="ALL_ROLES"))
+            (Q(role__in=roles) | Q(role=ALL_ROLES_ID))
         ).values('field_id', 'permission_type')
         user_field_permission_dtos = self._convert_user_field_permission_details_to_dtos(
             user_field_permission_details=user_field_permission_details)
@@ -424,9 +424,10 @@ class TasksStorageImplementation(TaskStorageInterface):
             self, roles: List[str]) -> List[str]:
         from django.db.models import Q
         from ib_tasks.constants.enum import PermissionTypes
+        from ib_tasks.constants.constants import ALL_ROLES_ID
         gof_ids_queryset = GoFRole.objects.filter(
             Q(permission_type=PermissionTypes.READ.value),
-            (Q(role__in=roles) | Q(role="ALL_ROLES"))
+            (Q(role__in=roles) | Q(role=ALL_ROLES_ID))
         ).values_list('gof_id', flat=True)
 
         gof_ids_list = list(gof_ids_queryset)
@@ -680,7 +681,7 @@ class TasksStorageImplementation(TaskStorageInterface):
             TaskStage.objects.filter(
                 task__created_by=user_id,
                 stage__stage_id__in=stage_ids).values("task_id").annotate(
-                    stage_value=Max("stage__value"))[offset:limit])
+                stage_value=Max("stage__value"))[offset:limit])
         task_id_with_max_stage_value_dtos = []
         for task_with_stage_value_item in task_objs_with_max_stage_value:
             task_id_with_max_stage_value_dtos.append(
@@ -705,8 +706,8 @@ class TasksStorageImplementation(TaskStorageInterface):
                             task__created_by=user_id,
                             stage__value=each_stage_value,
                             task_id__in=each_task_ids_group_by_stage_value_dto.
-                            task_ids).values("task_id", "stage__stage_id",
-                                             "stage__display_name"))
+                                task_ids).values("task_id", "stage__stage_id",
+                                                 "stage__display_name"))
 
                     task_id_with_stage_details_dtos = self. \
                         _get_task_id_with_stage_details_dtos(
@@ -718,7 +719,7 @@ class TasksStorageImplementation(TaskStorageInterface):
 
     @staticmethod
     def _get_task_id_with_stage_details_dtos(
-        task_id_with_stage_details: List[dict]
+            task_id_with_stage_details: List[dict]
     ) -> List[TaskIdWithStageDetailsDTO]:
         task_id_with_stage_details_dtos = [
             TaskIdWithStageDetailsDTO(
@@ -729,7 +730,6 @@ class TasksStorageImplementation(TaskStorageInterface):
             for task_id_with_stage_detail in task_id_with_stage_details
         ]
         return task_id_with_stage_details_dtos
-
 
     def get_task_ids_for_the_stage_ids(
             self, stage_ids: List[str],

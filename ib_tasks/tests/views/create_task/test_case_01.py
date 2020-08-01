@@ -80,7 +80,8 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
         task_gofs = TaskGoF.objects.filter(task_id=1)
         counter = 1
         for task_gof in task_gofs:
-            snapshot.assert_match(task_gof.same_gof_order, f'same_gof_order_{counter}')
+            snapshot.assert_match(
+                task_gof.same_gof_order, f'same_gof_order_{counter}')
             snapshot.assert_match(task_gof.gof_id, f'gof_id_{counter}')
             snapshot.assert_match(task_gof.task_id, f'task_id_{counter}')
             counter = counter + 1

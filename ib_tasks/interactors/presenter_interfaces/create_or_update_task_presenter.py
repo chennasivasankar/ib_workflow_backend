@@ -4,7 +4,7 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidPhoneNumberValue, EmptyValueForPlainTextField, \
     InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
     InvalidNumberValue, InvalidFloatValue, InvalidValueForDropdownField, \
-    InvalidGoFIDsInGoFSelectorField, IncorrectGoFIDInGoFSelectorField, \
+    InvalidGoFIDsInGoFSelectorField, IncorrectNameInGoFSelectorField, \
     IncorrectRadioGroupChoice, IncorrectCheckBoxOptionsSelected, \
     IncorrectMultiSelectOptionsSelected, IncorrectMultiSelectLabelsSelected, \
     InvalidDateFormat, InvalidTimeFormat, CouldNotReadImage, NotAnImageUrl, \
@@ -46,7 +46,7 @@ class CreateOrUpdateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_gof_ids_in_gof_selector_field_value(
+    def raise_exception_for_invalid_name_in_gof_selector_field_value(
             self, err: InvalidGoFIDsInGoFSelectorField
     ):
         pass
@@ -89,7 +89,7 @@ class CreateOrUpdateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_exceptions_for_invalid_gof_id_selected_in_gof_selector(
-            self, err: IncorrectGoFIDInGoFSelectorField
+            self, err: IncorrectNameInGoFSelectorField
     ):
         pass
 

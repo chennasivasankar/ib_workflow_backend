@@ -138,7 +138,7 @@ INVALID_VALUE_FOR_DROPDOWN = (
     "Invalid dropdown value: {} for field: {}! Try with these dropdown values: {}",
     "INVALID_VALUE_FOR_DROPDOWN"
 )
-INCORRECT_GOF_ID_IN_GOF_SELECTOR_FIELD = (
+INCORRECT_NAME_IN_GOF_SELECTOR_FIELD = (
     "Invalid gof_id: {} for field: {}! Try with these gof_id values: {}",
     "INCORRECT_GOF_ID_IN_GOF_SELECTOR_FIELD"
 )
@@ -176,23 +176,18 @@ INVALID_IMAGE_URL = (
 INVALID_FILE_URL = (
     "Invalid url for a file: {} for field: {}!", "INVALID_FILE_URL"
 )
-INVALID_GOF_IDS_IN_GOF_SELECTOR_FIELD = (
-    "Invalid gof ids: {} in gof_selector_field!",
-    "INVALID_GOF_IDS_IN_GOF_SELECTOR_FIELD"
+INVALID_NAME_IN_GOF_SELECTOR_FIELD = (
+    "Invalid gof selector name: {} in gof_selector_field!",
+    "INVALID_NAME_IN_GOF_SELECTOR_FIELD"
 )
 INVALID_FILE_FORMAT = (
     "Invalid format for a file: {} for field: {}! Try with these formats: {}",
     "INVALID_FILE_FORMAT"
 )
-EMPTY_VALUE_FOR_REQUIRED_FIELD = (
+EMPTY_VALUE_FOR_REQUIRED_FIELD = [
     "Given Empty value for the required field of field_id: {}! Required field should not be empty",
     "EMPTY_VALUE_FOR_REQUIRED_FIELD"
-)
-
-INVALID_TASK_ID = (
-    "{} is an invalid task id",
-    "INVALID_TASK_ID"
-)
+]
 
 TASK_CREATED_SUCCESSFULLY = (
     "task created or updated successfully",
