@@ -22,7 +22,6 @@ from ib_tasks.models.task_template_initial_stages import \
     TaskTemplateInitialStage
 
 
-
 class TaskFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Task
@@ -30,7 +29,6 @@ class TaskFactory(factory.django.DjangoModelFactory):
     template_id = factory.Sequence(
         lambda counter: "template_{}".format(counter))
     created_by = "123e4567-e89b-12d3-a456-426614174000"
-
 
 
 class StageModelFactory(factory.django.DjangoModelFactory):
@@ -44,7 +42,6 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     display_logic = factory.Sequence(lambda n: "status_id_%d==stage_id" % n)
     card_info_kanban = json.dumps(['field_id_1', "field_id_2"])
     card_info_list = json.dumps(['field_id_1', "field_id_2"])
-
 
 
 class TaskStageModelFactory(factory.django.DjangoModelFactory):

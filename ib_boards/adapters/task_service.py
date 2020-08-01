@@ -93,10 +93,12 @@ class TaskService:
         for tasks_complete_details_dto in tasks_complete_details_dtos:
             tasks_dtos += self._convert_task_fields_to_field_dtos(
                 task_id=tasks_complete_details_dto.task_id,
+                stage_id=tasks_complete_details_dto.stage_id,
                 field_dtos=tasks_complete_details_dto.field_dtos
             )
             action_dtos += self._convert_task_action_to_action_dtos(
                 task_id=tasks_complete_details_dto.task_id,
+                stage_id=tasks_complete_details_dto.stage_id,
                 action_dtos=tasks_complete_details_dto.action_dtos
             )
 
@@ -104,27 +106,29 @@ class TaskService:
 
     @staticmethod
     def _convert_task_fields_to_field_dtos(
-            task_id: int, field_dtos: List) -> List[TaskDTO]:
+            task_id: int, stage_id: str, field_dtos: List) -> List[TaskDTO]:
         return [
             TaskDTO(
                 task_id=task_id,
                 field_type=field_dto.field_type,
                 key=field_dto.key,
                 value=field_dto.value,
+                stage_id=stage_id
             )
             for field_dto in field_dtos
         ]
 
     @staticmethod
     def _convert_task_action_to_action_dtos(
-            task_id: int, action_dtos: List) -> List[ActionDTO]:
+            task_id: int, stage_id: str, action_dtos: List) -> List[ActionDTO]:
         return [
             ActionDTO(
                 action_id=action_dto.action_id,
                 name=action_dto.name,
                 button_text=action_dto.button_text,
                 button_color=action_dto.button_color,
-                task_id=task_id
+                task_id=task_id,
+                stage_id=stage_id
             )
             for action_dto in action_dtos
         ]

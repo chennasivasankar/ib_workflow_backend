@@ -761,12 +761,6 @@ class TasksStorageImplementation(TaskStorageInterface):
         ]
         return task_id_with_stage_details_dtos
 
-
-    def get_task_ids_for_the_stage_ids(
-            self, stage_ids: List[str],
-            offset: int, limit: int) -> Tuple[List[TaskStageIdsDTO], int]:
-        pass
-
     def get_field_ids_for_given_task_template_ids(self,
                                                   task_template_ids: List[str]) -> List[TemplateFieldsDTO]:
         task_field_objs = TaskTemplateGoFs.objects.filter(
