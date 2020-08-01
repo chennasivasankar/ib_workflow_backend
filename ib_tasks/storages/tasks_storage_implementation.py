@@ -8,10 +8,9 @@ from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionsOfTemplateDTO, ActionDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
-    FieldRoleDTO, FieldTypeDTO, UserFieldPermissionDTO, FieldDetailsDTO
+    FieldRoleDTO, FieldTypeDTO, UserFieldPermissionDTO, FieldDetailsDTO, \
+    FieldCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import TemplateFieldsDTO
-    FieldRoleDTO, FieldCompleteDetailsDTO, UserFieldPermissionDTO, \
-    FieldDetailsDTO
 
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskIdWithStageValueDTO, \
@@ -734,7 +733,6 @@ class TasksStorageImplementation(TaskStorageInterface):
             for task_id_with_stage_detail in task_id_with_stage_details
         ]
         return task_id_with_stage_details_dtos
-
 
     def get_task_ids_for_the_stage_ids(
             self, stage_ids: List[str],
