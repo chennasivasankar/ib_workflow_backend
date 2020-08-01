@@ -76,7 +76,7 @@ class TestCase02PerformTaskActionAPITestCase(TestUtils):
             card_info_list=json.dumps(["FIELD_ID-1", "FIELD_ID-2"])
         )
         stages = [stage1, stage2, stage3]
-        path = 'ib_tasks.populate.stage_actions_logic.stage_1_action_name_2'
+        path = 'ib_tasks.tests.populate.stage_actions_logic.stage_1_action_name_2'
         action = StageActionFactory(stage=stage1, py_function_import_path=path)
         actions = StageActionFactory.create_batch(6, stage=factory.Iterator(stages))
         TaskTemplateInitialStageFactory.create_batch(

@@ -65,7 +65,7 @@ class PopulateAddOrDeleteColumnsForBoard:
         user_role_ids = self._convert_user_role_to_list_from_string(
             user_roles=column_dict['user_role_ids'])
         return ColumnDTO(
-            column_id=column_dict['column_id'],
+            column_id=column_dict['column_id'].strip('\n'),
             name=column_dict['column_display_name'],
             display_order=column_dict['display_order'],
             task_template_stages=task_template_stages,
@@ -74,7 +74,7 @@ class PopulateAddOrDeleteColumnsForBoard:
             column_actions=column_dict['column_actions'],
             list_view_fields=list_view_fields,
             kanban_view_fields=kanban_view_fields,
-            board_id=column_dict['board_id']
+            board_id=column_dict['board_id'].strip('\n')
         )
 
     def validate_keys_in_given_dict(self, boards_columns_dicts: List[Dict]):
