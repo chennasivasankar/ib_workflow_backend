@@ -2,6 +2,12 @@ import json
 
 import factory
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes
+from ib_tasks.models import (
+    Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
+    Task, TaskGoF,
+    TaskGoFField,
+    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage)
+from ib_tasks.models import TaskTemplateInitialStage
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
@@ -211,6 +217,14 @@ class TaskGoFFieldFactory(factory.django.DjangoModelFactory):
     field_response = factory.Sequence(
         lambda counter: "field_response_{}".format(counter)
     )
+
+
+class TaskTemplateInitialStageFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskTemplateInitialStage
+
+    task_template = factory.SubFactory(TaskTemplateFactory)
+    stage = factory.SubFactory(StageModelFactory)
 
 
 class TaskStageFactory(factory.django.DjangoModelFactory):

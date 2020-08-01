@@ -514,7 +514,24 @@ class TasksStorageImplementation(TaskStorageInterface):
             actions_dto=stage_actions_dtos
         )
 
-    def _get_task_tempalate_and_stage_ids(self, task_dtos, task_objs):
+    def get_task_ids_for_the_stage_ids(
+            self, stage_ids: List[str],
+            offset: int, limit: int) -> Tuple[List[TaskStageIdsDTO], int]:
+        task_stage_ids = TaskStage.objects.filter(
+            stage__stage_id__in=stage_ids
+        ).values('task_id', 'stage__stage_id')
+        total_count = len(task_stage_ids)
+        task_stage_dtos = [
+            TaskStageIdsDTO(
+                task_id=task_stage_id['task_id'],
+                stage_id=task_stage_id['stage__stage_id']
+            )
+            for task_stage_id in task_stage_ids[offset: offset + limit]
+        ]
+        return task_stage_dtos, total_count
+
+    @staticmethod
+    def _get_task_tempalate_and_stage_ids(task_dtos, task_objs):
         task_template_and_stage_ids = []
         for task in task_objs:
             for task_dto in task_dtos:
@@ -567,7 +584,6 @@ class TasksStorageImplementation(TaskStorageInterface):
         return FieldDetailsDTO(
             field_id=field_id,
             field_type=field['field_type'],
-            stage_id=stage['stage_id'],
             key=field['display_name'],
             value=field_values[field_id]
         )
