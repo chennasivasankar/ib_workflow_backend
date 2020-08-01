@@ -7,7 +7,6 @@ from ib_tasks.models import (
     Task, TaskGoF,
     TaskGoFField,
     TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage)
-from ib_tasks.models import TaskTemplateInitialStage
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
@@ -19,7 +18,8 @@ from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     TaskTemplateGlobalConstants, TaskStatusVariable, Task, TaskGoF,
     TaskGoFField, TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage)
-
+from ib_tasks.models.task_template_initial_stages import \
+    TaskTemplateInitialStage
 
 
 
