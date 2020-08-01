@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Union, List, Optional
 from typing import Union, List, Any
 
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
@@ -10,18 +11,22 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO, 
 @dataclass
 class FieldValuesDTO:
     field_id: str
-    field_value: Union[str, List[str], int]
+    field_response: Union[str, List[str], int]
 
 
 @dataclass
 class GoFFieldsDTO:
     gof_id: str
+    same_gof_order: int
     field_values_dtos: List[FieldValuesDTO]
 
 
 @dataclass
 class TaskDTO:
-    task_template_id: str
+    task_id: Optional[int]
+    task_template_id: Optional[str]
+    created_by_id: str
+    action_id: int
     gof_fields_dtos: List[GoFFieldsDTO]
 
 
@@ -63,3 +68,4 @@ class StatusOperandStageDTO:
     variable: Any
     operator: str
     stage: Any
+

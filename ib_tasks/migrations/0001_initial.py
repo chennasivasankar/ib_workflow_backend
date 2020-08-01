@@ -67,7 +67,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('same_gof_order', models.IntegerField()),
-                ('gof_id', models.CharField(max_length=100)),
+                ('gof', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ib_tasks.GoF')),
                 ('task', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ib_tasks.Task')),
             ],
         ),
@@ -130,6 +130,15 @@ class Migration(migrations.Migration):
                 ('enable_add_another_gof', models.BooleanField(default=False)),
                 ('gof', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ib_tasks.GoF')),
                 ('task_template', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ib_tasks.TaskTemplate')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='TaskLog',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('task_json', models.TextField()),
+                ('user_id', models.IntegerField()),
+                ('task', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ib_tasks.Task')),
             ],
         ),
         migrations.CreateModel(
