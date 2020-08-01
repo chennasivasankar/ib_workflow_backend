@@ -7,6 +7,7 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase03SendUserResetPasswordLinkAPITestCase.test_case status_code'] = '404'
+snapshots['TestCase03SendUserResetPasswordLinkAPITestCase.test_case status_code'] = '200'
 
-snapshots['TestCase03SendUserResetPasswordLinkAPITestCase.test_case body'] = b'<h1>Not Found</h1><p>The requested resource was not found on this server.</p>'
+snapshots['TestCase03SendUserResetPasswordLinkAPITestCase.test_case body'] = {
+}

@@ -7,6 +7,10 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase04GetListOfTeamsAPITestCase.test_case status_code'] = '404'
+snapshots['TestCase04GetListOfTeamsAPITestCase.test_case status_code'] = '400'
 
-snapshots['TestCase04GetListOfTeamsAPITestCase.test_case body'] = b'<h1>Not Found</h1><p>The requested resource was not found on this server.</p>'
+snapshots['TestCase04GetListOfTeamsAPITestCase.test_case body'] = {
+    'http_status_code': 400,
+    'res_status': 'INVALID_OFFSET',
+    'response': 'Given offset is invalid to retrieve list of teams'
+}

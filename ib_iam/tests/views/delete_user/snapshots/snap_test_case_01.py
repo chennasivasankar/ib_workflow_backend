@@ -7,10 +7,11 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01DeleteUserAPITestCase.test_case status_code'] = '404'
+snapshots['TestCase01DeleteUserAPITestCase.test_case status_code'] = '200'
 
-snapshots['TestCase01DeleteUserAPITestCase.test_case body'] = b'<h1>Not Found</h1><p>The requested resource was not found on this server.</p>'
+snapshots['TestCase01DeleteUserAPITestCase.test_case body'] = {
+}
 
 snapshots['TestCase01DeleteUserAPITestCase.test_case before_delete_user_count'] = 2
 
-snapshots['TestCase01DeleteUserAPITestCase.test_case after_delete_user_count'] = 2
+snapshots['TestCase01DeleteUserAPITestCase.test_case after_delete_user_count'] = 1

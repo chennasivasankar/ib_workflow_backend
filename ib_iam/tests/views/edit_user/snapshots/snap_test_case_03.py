@@ -7,6 +7,10 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase03EditUserAPITestCase.test_case body'] = b'<h1>Not Found</h1><p>The requested resource was not found on this server.</p>'
+snapshots['TestCase03EditUserAPITestCase.test_case body'] = {
+    'http_status_code': 200,
+    'res_status': 'EDIT_USER_SUCCESSFULLY',
+    'response': 'Edit User successfully'
+}
 
-snapshots['TestCase03EditUserAPITestCase.test_case status_code'] = '404'
+snapshots['TestCase03EditUserAPITestCase.test_case status_code'] = '200'

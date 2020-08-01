@@ -7,6 +7,10 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase03AddTeamAPITestCase.test_case status_code'] = '404'
+snapshots['TestCase03AddTeamAPITestCase.test_case status_code'] = '400'
 
-snapshots['TestCase03AddTeamAPITestCase.test_case body'] = b'<h1>Not Found</h1><p>The requested resource was not found on this server.</p>'
+snapshots['TestCase03AddTeamAPITestCase.test_case body'] = {
+    'http_status_code': 400,
+    'res_status': 'TEAM_NAME_ALREADY_EXISTS',
+    'response': "Given 'team1' is already exists, so choose another"
+}
