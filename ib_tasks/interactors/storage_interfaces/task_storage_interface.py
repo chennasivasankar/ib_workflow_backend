@@ -12,7 +12,7 @@ from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldRoleDTO, FieldCompleteDetailsDTO, UserFieldPermissionDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO,\
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO, \
     StageValueWithTaskIdsDTO, TaskIdWithStageDetailsDTO, \
     TaskIdWithStageValueDTO, FieldDetailsDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
@@ -154,7 +154,8 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_actions_of_templates_dtos(self) -> List[ActionsOfTemplateDTO]:
+    def get_actions_for_given_stage_ids(
+            self, stage_ids: List[int]) -> List[ActionsOfTemplateDTO]:
         pass
 
     @abc.abstractmethod
@@ -247,4 +248,8 @@ class TaskStorageInterface(abc.ABC):
             self, user_id: str, stage_values: List[int],
             task_ids_group_by_stage_value_dtos: List[StageValueWithTaskIdsDTO]) \
             -> [TaskIdWithStageDetailsDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_initial_stage_ids_of_templates(self) -> List[int]:
         pass
