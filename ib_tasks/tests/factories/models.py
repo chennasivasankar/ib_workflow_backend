@@ -5,7 +5,9 @@ import factory
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
-    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage, TaskGoF,
+    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage)
+from ib_tasks.models import (
+    TaskGoF,
     TaskGoFField, TaskTemplateInitialStage)
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
@@ -15,9 +17,7 @@ from ib_tasks.models.gof_role import GoFRole
 from ib_tasks.models.task import Task
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
-from ib_tasks.models import (
-    Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
-    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage)
+
 
 
 class TaskFactory(factory.django.DjangoModelFactory):

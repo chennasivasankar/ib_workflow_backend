@@ -180,8 +180,10 @@ class GetColumnTasksPresenterImplementation(
             task_actions_dtos: List[ActionDTO],
             total_tasks: int):
         presenter = PresenterImplementation()
-        task_ids = [task_fields_dto.task_id for task_fields_dto in
-                    task_fields_dtos]
+        task_ids = [
+            task_actions_dto.task_id
+            for task_actions_dto in task_actions_dtos
+        ]
 
         task_ids = sorted(list(set(task_ids)))
         list_of_tasks = []
