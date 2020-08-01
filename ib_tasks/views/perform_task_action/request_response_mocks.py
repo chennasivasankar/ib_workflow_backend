@@ -1,5 +1,13 @@
 
 
+REQUEST_BODY_JSON = """
+{
+    "board_id": "string",
+    "task_id": "string",
+    "action_id": "string"
+}
+"""
+
 
 RESPONSE_200_JSON = """
 {

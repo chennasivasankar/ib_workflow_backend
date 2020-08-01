@@ -96,6 +96,28 @@ class TestCreateOrUpdateTaskPresenterImplementation:
             value=json.loads(response_object.content)
         )
 
+    def test_raise_exception_for_invalid_user_board_permission(
+            self, presenter, snapshot
+    ):
+        # Arrange
+        board_id = "board_1"
+
+        from ib_tasks.exceptions.permission_custom_exceptions \
+            import UserBoardPermissionDenied
+        error = UserBoardPermissionDenied(board_id=board_id)
+
+        # Act
+        response_object = \
+            presenter.raise_exception_for_user_board_permission_denied(
+                error_obj=error
+            )
+
+        # Assert
+        snapshot.assert_match(
+            name="invalid_user_board_permission",
+            value=json.loads(response_object.content)
+        )
+
     def reset_sequence(self):
         ColumnDTOFactory.reset_sequence(0)
         BoardDTOFactory.reset_sequence(0)
