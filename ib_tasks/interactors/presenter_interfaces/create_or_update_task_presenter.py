@@ -88,12 +88,6 @@ class CreateOrUpdateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_exceptions_for_invalid_gof_id_selected_in_gof_selector(
-            self, err: IncorrectNameInGoFSelectorField
-    ):
-        pass
-
-    @abc.abstractmethod
     def raise_exception_for_invalid_choice_in_radio_group_field(
             self, err: IncorrectRadioGroupChoice
     ):

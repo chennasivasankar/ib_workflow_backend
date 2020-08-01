@@ -22,6 +22,10 @@ from ib_tasks.interactors.storage_interfaces. \
     CreateOrUpdateTaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldDetailsDTO, FieldCompleteDetailsDTO
+from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
+    FieldsStorageInterface
+from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
+    StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFWithTaskIdDTO, \
     TaskGoFDetailsDTO
@@ -46,11 +50,14 @@ class CreateOrUpdateTaskInteractor:
     def __init__(
             self, task_storage: TaskStorageInterface,
             create_task_storage: CreateOrUpdateTaskStorageInterface,
-            storage: StorageInterface
+            storage: StorageInterface, field_storage: FieldsStorageInterface,
+            stage_storage: StageStorageInterface
     ):
         self.task_storage = task_storage
         self.create_task_storage = create_task_storage
         self.storage = storage
+        self.field_storage = field_storage
+        self.stage_storage = stage_storage
 
     def create_or_update_task_wrapper(
             self, presenter: CreateOrUpdateTaskPresenterInterface,
@@ -162,7 +169,12 @@ class CreateOrUpdateTaskInteractor:
             user_id=task_dto.created_by_id, board_id=None,
             task_id=task_dto.task_id,
             action_id=task_dto.action_id,
-            storage=self.storage
+            storage=self.storage, gof_storage=self.create_task_storage,
+            field_storage=self.field_storage, stage_storage=self.stage_storage
+        )
+
+        self.create_task_storage.set_status_variables_for_template_and_task(
+            task_dto.task_template_id, task_dto.task_id
         )
         act_on_task_interactor.user_action_on_task(act_on_task_presenter)
 

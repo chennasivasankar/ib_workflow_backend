@@ -206,6 +206,7 @@ class StorageImplementation(StorageInterface):
                 status_variable_dict[status_variable_dto.status_id]
             status_obj.variable = status_variable_dto.status_variable
             status_obj.value = status_variable_dto.value
+            status_obj.save()
 
     @staticmethod
     def _get_status_variable_dict(status_variable_objs):
@@ -276,7 +277,6 @@ class StorageImplementation(StorageInterface):
         from ib_tasks.models import TaskTemplateGoFs
         task_template_gofs = TaskTemplateGoFs.objects \
             .filter(gof_id__in=gof_ids, task_template_id=template_id)
-
         return [
             GOFMultipleEnableDTO(
                 group_of_field_id=task_template_gof.gof_id,
@@ -330,3 +330,17 @@ class StorageImplementation(StorageInterface):
             )
             for stage_obj in stage_objs
         ]
+
+    def update_task_stages(self, task_id: int, stage_ids: List[str]):
+
+        TaskStage.objects.filter(task_id=task_id).delete()
+        stage_dict = {
+            obj.stage_id: obj
+            for obj in Stage.objects.filter(stage_id__in=stage_ids)
+        }
+
+        task_stage_objs = [
+            TaskStage(task_id=task_id, stage=stage_dict[stage_id])
+            for stage_id in stage_ids
+        ]
+        TaskStage.objects.bulk_create(task_stage_objs)

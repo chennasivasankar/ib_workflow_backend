@@ -5,7 +5,7 @@ import pytest
 import factory
 from django_swagger_utils.utils.test_v1 import TestUtils
 
-from ib_tasks.models import TaskTemplateGoFs
+from ib_tasks.models import TaskStatusVariable, TaskTemplateGoFs
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ib_tasks.tests.factories.models import TaskTemplateFactory, \
     TaskTemplateStatusVariableFactory, GoFFactory, \
@@ -15,7 +15,7 @@ from ib_tasks.tests.factories.models import TaskTemplateFactory, \
     TaskTemplateInitialStageFactory, GoFRoleFactory, FieldRoleFactory
 
 
-class TestCase01PerformTaskActionAPITestCase(TestUtils):
+class TestCase02PerformTaskActionAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -73,9 +73,13 @@ class TestCase01PerformTaskActionAPITestCase(TestUtils):
             field_display_config=json.dumps(["FIELD_ID-1", "FIELD_ID-2"])
         )
         stages = [stage1, stage2, stage3]
-        path = 'ib_tasks.populate.stage_actions_logic.stage_1_action_name_1'
+        path = 'ib_tasks.populate.stage_actions_logic.stage_1_action_name_2'
         action = StageActionFactory(stage=stage1, py_function_import_path=path)
         actions = StageActionFactory.create_batch(6, stage=factory.Iterator(stages))
+        TaskTemplateInitialStageFactory.create_batch(
+            6, task_template=factory.Iterator(tts),
+            stage=factory.Iterator(stages)
+        )
 
         task = TaskFactory(template_id='template_1')
         TaskStatusVariableFactory(task_id=1, variable='variable0', value="stage_id_0")
@@ -124,3 +128,9 @@ class TestCase01PerformTaskActionAPITestCase(TestUtils):
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
+
+        task_status_obj = TaskStatusVariable.objects.get(task_id=1, variable='variable1')
+
+        assert task_status_obj.value == 'stage_id_0'
+        snapshot.assert_match(task_status_obj.value, 'value')
+        snapshot.assert_match(task_status_obj.variable, 'variable')

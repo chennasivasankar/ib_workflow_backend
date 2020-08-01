@@ -52,6 +52,20 @@ class TestCreateOrUpdateTask:
         return storage_mock
 
     @pytest.fixture
+    def field_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
+            FieldsStorageInterface
+        from mock import create_autospec
+        return create_autospec(FieldsStorageInterface)
+
+    @pytest.fixture
+    def stage_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
+            StageStorageInterface
+        from mock import create_autospec
+        return create_autospec(StageStorageInterface)
+
+    @pytest.fixture
     def act_on_task_presenter_mock(self):
         from ib_tasks.interactors.presenter_interfaces.presenter_interface import \
             PresenterInterface
@@ -74,7 +88,7 @@ class TestCreateOrUpdateTask:
     def test_create_or_update_task_with_invalid_gof_ids_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, storage_mock,
-            act_on_task_presenter_mock
+            act_on_task_presenter_mock, field_storage_mock, stage_storage_mock
     ):
 
         # Arrange
@@ -82,7 +96,8 @@ class TestCreateOrUpdateTask:
         task_storage_mock.check_is_template_exists.return_value = True
         task_storage_mock.get_existing_gof_ids.return_value = ["GOF_ID-5"]
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock
         )
         presenter_mock.raise_exception_for_invalid_gof_ids.return_value = mock_object
 
@@ -105,7 +120,7 @@ class TestCreateOrUpdateTask:
     def test_create_or_update_task_with_invalid_field_ids_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, storage_mock,
-            act_on_task_presenter_mock
+            act_on_task_presenter_mock, field_storage_mock, stage_storage_mock
     ):
         # Arrange
         task_dto = TaskDTOFactory()
@@ -117,7 +132,8 @@ class TestCreateOrUpdateTask:
         task_storage_mock.get_existing_gof_ids.return_value = gof_ids
         task_storage_mock.get_existing_field_ids.return_value = ["FIELD_ID-10"]
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock
         )
         presenter_mock.raise_exception_for_invalid_field_ids.return_value = mock_object
 
@@ -141,7 +157,7 @@ class TestCreateOrUpdateTask:
     def test_create_or_update_task_with_invalid_name_in_gof_selector_value_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, storage_mock,
-            act_on_task_presenter_mock
+            act_on_task_presenter_mock, field_storage_mock, stage_storage_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -171,7 +187,8 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_invalid_name_in_gof_selector_field_value.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock
         )
 
         # Act
@@ -191,7 +208,7 @@ class TestCreateOrUpdateTask:
     def test_create_or_update_task_with_invalid_phone_number_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, phone_number, storage_mock,
-            act_on_task_presenter_mock
+            act_on_task_presenter_mock, field_storage_mock, stage_storage_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -219,7 +236,8 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_invalid_phone_number_value.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock
         )
 
         # Act
@@ -238,7 +256,7 @@ class TestCreateOrUpdateTask:
     def test_create_or_update_task_with_invalid_email_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, email, storage_mock,
-            act_on_task_presenter_mock
+            act_on_task_presenter_mock, field_storage_mock, stage_storage_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -266,7 +284,8 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_invalid_email_address.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock
         )
 
         # Act
@@ -285,7 +304,7 @@ class TestCreateOrUpdateTask:
     def test_create_or_update_task_with_invalid_url_address_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, url_address, storage_mock,
-            act_on_task_presenter_mock
+            act_on_task_presenter_mock, field_storage_mock, stage_storage_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -313,7 +332,8 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_invalid_url_address.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock
         )
 
         # Act
@@ -333,7 +353,7 @@ class TestCreateOrUpdateTask:
     def test_create_or_update_task_with_weak_password_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, password, storage_mock,
-            act_on_task_presenter_mock
+            act_on_task_presenter_mock, field_storage_mock, stage_storage_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -361,7 +381,8 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_weak_password.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock
         )
 
         # Act
@@ -381,7 +402,7 @@ class TestCreateOrUpdateTask:
     def test_create_or_update_task_with_number_value_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, number, storage_mock,
-            act_on_task_presenter_mock
+            act_on_task_presenter_mock, field_storage_mock, stage_storage_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -409,7 +430,8 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_invalid_number_value.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock
         )
 
         # Act
@@ -429,7 +451,7 @@ class TestCreateOrUpdateTask:
     def test_create_or_update_task_with_invalid_float_value_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, float_value, storage_mock,
-            act_on_task_presenter_mock
+            act_on_task_presenter_mock, field_storage_mock, stage_storage_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -457,7 +479,8 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_invalid_float_value.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock
         )
 
         # Act
@@ -475,7 +498,7 @@ class TestCreateOrUpdateTask:
     def test_create_or_update_task_with_invalid_dropdown_value_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, storage_mock,
-            act_on_task_presenter_mock
+            act_on_task_presenter_mock, field_storage_mock, stage_storage_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -504,7 +527,8 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_invalid_dropdown_value.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock
         )
 
         # Act
@@ -522,7 +546,7 @@ class TestCreateOrUpdateTask:
     def test_create_or_update_task_with_invalid_radio_group_choice_value_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, storage_mock,
-            act_on_task_presenter_mock
+            act_on_task_presenter_mock, field_storage_mock, stage_storage_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -551,7 +575,8 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_invalid_choice_in_radio_group_field.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock
         )
 
         # Act
@@ -569,7 +594,7 @@ class TestCreateOrUpdateTask:
     def test_create_or_update_task_with_invalid_checkbox_options_selected_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, storage_mock,
-            act_on_task_presenter_mock
+            act_on_task_presenter_mock, field_storage_mock, stage_storage_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -598,7 +623,8 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_invalid_checkbox_group_options_selected.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock
         )
 
         # Act
@@ -616,7 +642,7 @@ class TestCreateOrUpdateTask:
     def test_create_or_update_task_with_invalid_multi_select_options_selected_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, storage_mock,
-            act_on_task_presenter_mock
+            act_on_task_presenter_mock, field_storage_mock, stage_storage_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -645,7 +671,8 @@ class TestCreateOrUpdateTask:
         presenter_mock.raise_exception_for_invalid_multi_select_options_selected.return_value = mock_object
 
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock
         )
 
         # Act
@@ -663,7 +690,7 @@ class TestCreateOrUpdateTask:
     def test_create_or_update_task_with_invalid_multi_select_labels_selected_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, storage_mock,
-            act_on_task_presenter_mock
+            act_on_task_presenter_mock, field_storage_mock, stage_storage_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -691,7 +718,8 @@ class TestCreateOrUpdateTask:
         task_storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
         presenter_mock.raise_exception_for_invalid_multi_select_labels_selected.return_value = mock_object
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock
         )
 
         # Act
@@ -710,7 +738,7 @@ class TestCreateOrUpdateTask:
     def test_create_or_update_task_with_invalid_date_format_date_string_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, date_string, storage_mock,
-            act_on_task_presenter_mock
+            act_on_task_presenter_mock, field_storage_mock, stage_storage_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -737,7 +765,8 @@ class TestCreateOrUpdateTask:
         task_storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
         presenter_mock.raise_exception_for_invalid_date_format.return_value = mock_object
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock
         )
 
         # Act
@@ -756,7 +785,7 @@ class TestCreateOrUpdateTask:
     def test_create_or_update_task_with_invalid_time_format_time_string_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, time_string, storage_mock,
-            act_on_task_presenter_mock
+            act_on_task_presenter_mock, field_storage_mock, stage_storage_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -783,7 +812,8 @@ class TestCreateOrUpdateTask:
         task_storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
         presenter_mock.raise_exception_for_invalid_time_format.return_value = mock_object
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock
         )
 
         # Act
@@ -801,7 +831,7 @@ class TestCreateOrUpdateTask:
     def test_create_or_update_task_with_invalid_image_url_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, storage_mock,
-            act_on_task_presenter_mock
+            act_on_task_presenter_mock, field_storage_mock, stage_storage_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -829,7 +859,8 @@ class TestCreateOrUpdateTask:
         task_storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
         presenter_mock.raise_exception_for_invalid_image_url.return_value = mock_object
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock
         )
 
         # Act
@@ -847,7 +878,7 @@ class TestCreateOrUpdateTask:
     def test_create_or_update_task_with_valid_image_url_but_with_format_not_in_allowed_formats_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, storage_mock,
-            act_on_task_presenter_mock
+            act_on_task_presenter_mock, field_storage_mock, stage_storage_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -876,7 +907,8 @@ class TestCreateOrUpdateTask:
         task_storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
         presenter_mock.raise_exception_for_not_acceptable_image_format.return_value = mock_object
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock
         )
 
         # Act
@@ -894,7 +926,7 @@ class TestCreateOrUpdateTask:
     def test_create_or_update_task_with_invalid_file_url_raises_exception(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, storage_mock,
-            act_on_task_presenter_mock
+            act_on_task_presenter_mock, field_storage_mock, stage_storage_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(
@@ -922,7 +954,8 @@ class TestCreateOrUpdateTask:
         task_storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
         presenter_mock.raise_exception_for_invalid_file_url.return_value = mock_object
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock
         )
 
         # Act
@@ -940,7 +973,8 @@ class TestCreateOrUpdateTask:
     def test_create_or_update_task_with_invalid_task_task_tempalte_id_raises_exception(
             self, task_storage_mock, create_task_storage_mock, presenter_mock,
             mock_object,
-            storage_mock, act_on_task_presenter_mock
+            storage_mock, act_on_task_presenter_mock, field_storage_mock,
+            stage_storage_mock
     ):
 
         # Arrange
@@ -972,7 +1006,8 @@ class TestCreateOrUpdateTask:
         task_storage_mock.check_is_template_exists.return_value = False
         presenter_mock.raise_exception_for_invalid_task_template_id.return_value = mock_object
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock
         )
 
         # Act
@@ -994,7 +1029,7 @@ class TestCreateOrUpdateTask:
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, storage_mock,
             act_on_task_presenter_mock,
-            mocker
+            mocker, field_storage_mock, stage_storage_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(1)
@@ -1025,7 +1060,8 @@ class TestCreateOrUpdateTask:
         user_action_on_task_mock = mock_user_action_on_task_method(mocker,
                                                                    mock_object)
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock
         )
 
         # Act
@@ -1089,7 +1125,7 @@ class TestCreateOrUpdateTask:
     def test_create_or_update_task_with_invalid_task_id(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, storage_mock,
-            act_on_task_presenter_mock
+            act_on_task_presenter_mock, field_storage_mock, stage_storage_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(1)
@@ -1117,7 +1153,8 @@ class TestCreateOrUpdateTask:
         create_task_storage_mock.is_valid_task_id.return_value = False
         presenter_mock.raise_exception_for_invalid_task_id.return_value = mock_object
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock
         )
 
         # Act
@@ -1133,7 +1170,8 @@ class TestCreateOrUpdateTask:
     def test_create_or_update_task_with_valid_task_id_updates_task(
             self, task_storage_mock, create_task_storage_mock,
             presenter_mock, mock_object, storage_mock,
-            act_on_task_presenter_mock, mocker
+            act_on_task_presenter_mock, mocker, field_storage_mock,
+            stage_storage_mock
     ):
         # Arrange
         gof_field_values_dtos = FieldValuesDTOFactory.create_batch(1)
@@ -1169,7 +1207,8 @@ class TestCreateOrUpdateTask:
         user_action_on_task_mock = mock_user_action_on_task_method(mocker,
                                                                    mock_object)
         interactor = CreateOrUpdateTaskInteractor(
-            task_storage_mock, create_task_storage_mock, storage_mock
+            task_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock
         )
 
         # Act

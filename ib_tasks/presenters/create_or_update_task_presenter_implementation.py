@@ -15,8 +15,6 @@ from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateIds, \
     InvalidTaskException
 from ib_tasks.interactors.presenter_interfaces.create_or_update_task_presenter \
     import CreateOrUpdateTaskPresenterInterface
-from django.http import response
-import json
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 

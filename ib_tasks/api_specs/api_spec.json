@@ -1074,7 +1074,7 @@
             }
          }
       },
-      "/task/save_and_act/v1":{
+      "/task/save_and_act/v1/":{
          "post":{
             "operationId":"save_and_act_on_a_task",
             "summary":"update a task",
