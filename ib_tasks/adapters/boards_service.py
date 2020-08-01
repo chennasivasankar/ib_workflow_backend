@@ -57,5 +57,5 @@ class BoardsService:
         ]
 
     def validate_board_id(self, board_id: str):
-
+        # TODO validate board id
         return True
