@@ -378,12 +378,24 @@ class TasksStorageImplementation(TaskStorageInterface):
             task_template_objs=task_template_objs)
         return task_template_dtos
 
-    def get_actions_of_templates_dtos(self) -> List[ActionsOfTemplateDTO]:
-        stage_actions_details = StageAction.objects.all().select_related(
-            'stage'). \
-            values(
+    def get_initial_stage_ids_of_templates(self) -> List[int]:
+        from ib_tasks.models.task_template_initial_stages import \
+            TaskTemplateInitialStage
+        templates_initial_stage_ids_queryset = \
+            TaskTemplateInitialStage.objects.all().\
+            values_list('stage_id', flat=True)
+        templates_initial_stage_ids = \
+            list(templates_initial_stage_ids_queryset)
+        return templates_initial_stage_ids
+
+    def get_actions_for_given_stage_ids(
+            self, stage_ids: List[int]) -> List[ActionsOfTemplateDTO]:
+        stage_actions_details = StageAction.objects.filter(
+            stage_id__in=stage_ids
+        ).select_related('stage').values(
             'id', 'button_text', 'button_color', 'stage__task_template_id'
         )
+
         actions_of_templates_dtos = self._convert_stage_actions_details_to_dto(
             stage_actions_details=stage_actions_details)
         return actions_of_templates_dtos
