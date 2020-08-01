@@ -363,7 +363,6 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
 
         from collections import defaultdict
         column_stages_map = defaultdict(lambda: [])
-
         for column_stage in column_tasks:
             column_stages_map[column_stage.column_id].append(column_stage)
 
