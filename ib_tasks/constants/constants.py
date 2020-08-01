@@ -1,9 +1,8 @@
 from ib_tasks.constants.enum \
     import PermissionTypes, FieldTypes, Searchable
 
-all_roles_id = "ALL_ROLES"
-LIMIT_VALUE = 10
-OFFSET_VALUE = 0
+ALL_ROLES_ID = "ALL_ROLES"
+GOF_ORDER_WITH_MINUS_ONE_VALUE = -1
 
 FIELD_TYPES_LIST = [item.value for item in FieldTypes]
 
@@ -21,10 +20,11 @@ MULTI_VALUES_INPUT_FIELDS = [
     FieldTypes.MULTI_SELECT_LABELS.value
 ]
 
-GOOGLE_SHEET_NAME = "FinMan Configuration_Dev_Test"
+GOOGLE_SHEET_NAME = "Vendor Configuration_v0"
 TASK_TEMPLATE_SUB_SHEET_TITLE = "Task Templates"
 GOF_SUB_SHEET_TITLE = "GOF"
 FIELD_SUB_SHEET_TITLE = "Fields"
+GLOBAL_CONSTANTS_SUB_SHEET_TITLE = "Global Constants"
 
 SEARCHABLE_TYPES = [searchable_type.value for searchable_type in Searchable]
 UPLOADERS = [FieldTypes.IMAGE_UPLOADER.value, FieldTypes.FILE_UPLOADER.value]

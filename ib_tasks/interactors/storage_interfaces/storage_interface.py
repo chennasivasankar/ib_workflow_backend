@@ -7,7 +7,6 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos \
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos \
     import GroupOfFieldsDTO, GOFMultipleEnableDTO
-
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO, StageValueDTO, StageDisplayValueDTO
 from ib_tasks.interactors.stages_dtos import StageActionDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import StatusVariableDTO

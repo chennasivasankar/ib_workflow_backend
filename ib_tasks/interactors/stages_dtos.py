@@ -18,7 +18,7 @@ class StageDTO:
     stage_display_logic: str
 
 
-@dataclass()
+@dataclass
 class StageActionDTO:
     stage_id: str
     action_name: str
@@ -49,3 +49,11 @@ class StagesActionDTO:
 class TemplateStageDTO:
     task_template_id: str
     stage_id: str
+
+
+@dataclass
+class UserStagesWithPaginationDTO:
+    stage_ids: List[str]
+    user_id: str
+    limit: int
+    offset: int

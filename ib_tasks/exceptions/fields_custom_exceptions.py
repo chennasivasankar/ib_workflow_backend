@@ -125,3 +125,6 @@ class LimitShouldBeGreaterThanZeroException(Exception):
 class OffsetShouldBeGreaterThanOrEqualToMinusOneException(Exception):
     pass
 
+
+class OffsetShouldBeGreaterThanZeroException(Exception):
+    pass

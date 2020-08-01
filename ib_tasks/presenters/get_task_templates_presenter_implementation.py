@@ -4,13 +4,12 @@ from ib_tasks.interactors.presenter_interfaces. \
     GetTaskTemplatesPresenterInterface, CompleteTaskTemplatesDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionsOfTemplateDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
-    UserFieldPermissionDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import \
+    FieldWithPermissionsDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TaskTemplateDTO
-from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.exceptions.task_custom_exceptions import \
     TaskTemplatesDoesNotExists
 
@@ -46,8 +45,7 @@ class GetTaskTemplatesPresenterImplementation(
             gof_dtos=complete_task_templates_dto.gof_dtos
         )
         fields_of_gofs_dict = self._get_fields_of_gofs_dict(
-            field_dtos=complete_task_templates_dto.field_dtos,
-            user_field_permission_dtos=complete_task_templates_dto.user_field_permission_dtos
+            field_with_permissions_dtos=complete_task_templates_dto.field_with_permissions_dtos
         )
         complete_gof_details_dicts = self._merge_gofs_with_fields(
             gofs_of_templates_dict, fields_of_gofs_dict
@@ -80,7 +78,8 @@ class GetTaskTemplatesPresenterImplementation(
                 append(action_dict)
 
         actions_of_templates_dict = collections.defaultdict(list)
-        for template_id, action_dicts_list in actions_group_by_template_id_dict.items():
+        for template_id, action_dicts_list in actions_group_by_template_id_dict\
+                .items():
             action_dicts_list_with_out_template_id = \
                 self._get_action_dicts_list_without_template_id(
                     action_dicts_list=action_dicts_list
@@ -116,11 +115,9 @@ class GetTaskTemplatesPresenterImplementation(
         return gofs_details_of_templates_dict
 
     def _get_fields_of_gofs_dict(
-            self, field_dtos: List[FieldDTO],
-            user_field_permission_dtos: List[UserFieldPermissionDTO]):
+            self, field_with_permissions_dtos: List[FieldWithPermissionsDTO]):
         field_dicts = self._get_fields_details_dicts(
-            field_dtos=field_dtos,
-            user_field_permission_dtos=user_field_permission_dtos
+            field_with_permissions_dtos=field_with_permissions_dtos
         )
 
         import collections
@@ -136,29 +133,14 @@ class GetTaskTemplatesPresenterImplementation(
         return fields_of_gofs_dict
 
     def _get_fields_details_dicts(
-            self, field_dtos: List[FieldDTO],
-            user_field_permission_dtos: List[UserFieldPermissionDTO]
+            self, field_with_permissions_dtos: List[FieldWithPermissionsDTO]
     ) -> List[Dict]:
-        user_permission_dtos_dict = \
-            self._make_user_field_permission_dtos_dict(
-                user_field_permission_dtos=user_field_permission_dtos
-            )
 
         field_dicts = []
-        for field_dto in field_dtos:
-            field_dict = self._get_field_details_as_dict(field_dto=field_dto)
-            field_dict['is_field_readable'] = False
-            field_dict['is_field_writable'] = False
-            if field_dto.field_id in user_permission_dtos_dict.keys():
-                permission_type = user_permission_dtos_dict[
-                    field_dto.field_id].permission_type
-                has_read_permission = permission_type == PermissionTypes.READ.value
-                has_write_permission = permission_type == PermissionTypes.WRITE.value
-                if has_read_permission:
-                    field_dict['is_field_readable'] = True
-                if has_write_permission:
-                    field_dict['is_field_writable'] = True
-
+        for field_with_permissions_dto in field_with_permissions_dtos:
+            field_dict = self._get_field_details_as_dict(
+                field_with_permissions_dto=field_with_permissions_dto
+            )
             field_dicts.append(field_dict)
         return field_dicts
 
@@ -214,7 +196,9 @@ class GetTaskTemplatesPresenterImplementation(
         return actions_of_templates_dicts_list
 
     @staticmethod
-    def _get_field_details_as_dict(field_dto: FieldDTO) -> Dict:
+    def _get_field_details_as_dict(
+            field_with_permissions_dto: FieldWithPermissionsDTO) -> Dict:
+        field_dto = field_with_permissions_dto.field_dto
         field_dict = {
             "field_id": field_dto.field_id,
             'gof_id': field_dto.gof_id,
@@ -227,21 +211,11 @@ class GetTaskTemplatesPresenterImplementation(
             "error_msg": field_dto.error_message,
             "tooltip": field_dto.tooltip,
             "help_text": field_dto.help_text,
-            "placeholder_text": field_dto.placeholder_text
+            "placeholder_text": field_dto.placeholder_text,
+            "is_field_readable": field_with_permissions_dto.is_field_readable,
+            "is_field_writable": field_with_permissions_dto.is_field_writable
         }
         return field_dict
-
-    @staticmethod
-    def _make_user_field_permission_dtos_dict(
-            user_field_permission_dtos: List[UserFieldPermissionDTO]) -> Dict:
-        import collections
-        user_permission_dtos_dict = collections.defaultdict()
-
-        for user_field_permission_dto in user_field_permission_dtos:
-            user_permission_dtos_dict[user_field_permission_dto.field_id] = \
-                user_field_permission_dto
-
-        return user_permission_dtos_dict
 
     @staticmethod
     def _get_action_dicts_list_without_template_id(

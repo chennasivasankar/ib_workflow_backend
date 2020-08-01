@@ -115,3 +115,11 @@ def prepare_fields_dto():
     FieldDisplayDTOFactory.reset_sequence()
     field_dtos = FieldDisplayDTOFactory.create_batch(size=2)
     return field_dtos
+
+
+def mock_user_action_on_task_method(mocker, mock_object):
+    mock_method = mocker.patch(
+        "ib_tasks.interactors.user_action_on_task_interactor.UserActionOnTaskInteractor.user_action_on_task"
+    )
+    mock_method.return_value = mock_object
+    return mock_method

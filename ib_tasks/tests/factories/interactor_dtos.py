@@ -3,16 +3,13 @@ import factory
 from ib_tasks.adapters.dtos import UserDTO
 from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
-from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
-from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO, \
-    GoFsWithTemplateIdDTO
 
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.constants.enum import Searchable
-from ib_tasks.interactors.stages_dtos import (StagesActionDTO)
-
+from ib_tasks.interactors.stages_dtos import (StagesActionDTO,
+                                              UserStagesWithPaginationDTO)
 
 from ib_tasks.interactors.stages_dtos import \
     TaskTemplateStageActionDTO, StageActionDTO, StagesActionDTO
@@ -26,8 +23,6 @@ class GetTaskDetailsDTOFactory(factory.Factory):
     class Meta:
         model = GetTaskDetailsDTO
 
-    task_id = factory.Sequence(lambda n: "task_id_%d" % (n + 1))
-    stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n + 1))
     task_id = factory.Sequence(lambda n: n + 1)
     stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n + 1))
 
@@ -133,7 +128,7 @@ class FieldValuesDTOFactory(factory.Factory):
         model = FieldValuesDTO
 
     field_id = factory.sequence(lambda counter: "FIELD_ID-{}".format(counter))
-    field_value = factory.sequence(
+    field_response = factory.sequence(
         lambda counter: "FIELD_VALUE-{}".format(counter))
 
 
@@ -141,7 +136,8 @@ class GoFFieldsDTOFactory(factory.Factory):
     class Meta:
         model = GoFFieldsDTO
 
-    gof_id = factory.sequence(lambda counter: "GOF_ID-{}".format(counter))
+    gof_id = factory.sequence(lambda counter: "gof_{}".format(counter))
+    same_gof_order = 1
 
     @factory.LazyAttribute
     def field_values_dtos(self):
@@ -153,8 +149,12 @@ class TaskDTOFactory(factory.Factory):
     class Meta:
         model = TaskDTO
 
+    task_id = None
     task_template_id = factory.sequence(
         lambda counter: "TASK_TEMPLATE_ID-{}".format(counter))
+    action_id = factory.Sequence(
+        lambda counter: "ACTION-{}".format(counter))
+    created_by_id = "123e4567-e89b-12d3-a456-426614174000"
 
     @factory.LazyAttribute
     def gof_fields_dtos(self):
@@ -186,3 +186,14 @@ class UserDTOFactory(factory.Factory):
 
     user_id = factory.sequence(lambda n: "user_{}".format(n + 1))
     name = factory.sequence(lambda n: "user_name_{}".format(n + 1))
+
+
+
+class UserStagesWithPaginationDTOFactory(factory.Factory):
+    class Meta:
+        model = UserStagesWithPaginationDTO
+
+    stage_ids = ["stage_id_1", "stage_id_2"]
+    user_id = factory.sequence(lambda n: "user_{}".format(n + 1))
+    limit = factory.Sequence(lambda n: n + 1)
+    offset = factory.Sequence(lambda n: n + 1)
