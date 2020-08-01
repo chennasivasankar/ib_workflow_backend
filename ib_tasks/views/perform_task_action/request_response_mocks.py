@@ -11,7 +11,7 @@ REQUEST_BODY_JSON = """
 
 RESPONSE_200_JSON = """
 {
-    "task_id": "string",
+    "task_id": 1,
     "current_board_details": {
         "board_id": "string",
         "board_name": "string",
