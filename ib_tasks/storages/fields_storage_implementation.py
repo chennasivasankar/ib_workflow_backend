@@ -90,10 +90,10 @@ class FieldsStorageImplementation(FieldsStorageInterface):
 
     def get_field_ids(self, task_dtos: List[TaskTemplateStageDTO]) -> \
             List[TaskTemplateStageFieldsDTO]:
-        task_stages_dict = {}
+        from collections import defaultdict
+        task_stages_dict = defaultdict(list)
         for item in task_dtos:
-            task_stages_dict[item.stage_id] = item.task_id
-
+            task_stages_dict[item.stage_id].append(item.task_id)
         q = None
         for counter, item in enumerate(task_dtos):
             current_queue = Q(stage_id=item.stage_id, task_template_id=item.task_template_id)
@@ -112,12 +112,13 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         for stage in stage_objs:
             fields = stage.card_info_kanban
             field_ids = json.loads(fields)
-            task_fields_dtos.append(
-                TaskTemplateStageFieldsDTO(
-                    task_template_id=stage.task_template_id,
-                    task_id=task_stages_dict[stage.stage_id],
-                    stage_id=stage.stage_id,
-                    field_ids=field_ids))
+            for task_id in task_stages_dict[stage.stage_id]:
+                task_fields_dtos.append(
+                    TaskTemplateStageFieldsDTO(
+                        task_template_id=stage.task_template_id,
+                        task_id=task_id,
+                        stage_id=stage.stage_id,
+                        field_ids=field_ids))
         return task_fields_dtos
 
     def validate_task_related_stage_ids(self,
