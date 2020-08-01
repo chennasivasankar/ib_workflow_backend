@@ -364,3 +364,75 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
 
     def get_response_for_offset_exceeds_total_tasks(self):
         pass
+
+    def get_response_for_column_details(
+            self, column_details: List[ColumnCompleteDetails],
+            task_fields_dtos: List[TaskDTO], task_actions_dtos: List[ActionDTO],
+            column_tasks: List[ColumnTasksDTO]) -> response.HttpResponse:
+
+        from collections import defaultdict
+        column_stages_map = defaultdict(lambda: [])
+
+        for column_stage in column_tasks:
+            column_stages_map[column_stage.column_id].append(column_stage)
+
+        columns_complete_details = []
+        for column_dto in column_details:
+            column_details = self._get_column_complete_details(
+                column_dto=column_dto,
+                column_stages=column_stages_map[column_dto.column_id],
+                task_fields_dtos=task_fields_dtos,
+                task_actions_dtos=task_actions_dtos
+            )
+            columns_complete_details.append(column_details)
+
+        return self.prepare_200_success_response(columns_complete_details)
+
+    def _get_column_complete_details(
+            self, column_dto: ColumnCompleteDetails,
+            task_fields_dtos: List[TaskDTO], task_actions_dtos: List[ActionDTO],
+            column_stages: List[ColumnTasksDTO]):
+        from collections import defaultdict
+        column_tasks_map = defaultdict(lambda: [])
+        for task_fields_dto in task_fields_dtos:
+            column_tasks_map[
+                task_fields_dto.stage_id + str(task_fields_dto.task_id)
+                ].append(task_fields_dto)
+
+        task_actions_map = defaultdict(lambda: [])
+        for task_actions_dto in task_actions_dtos:
+            task_actions_map[
+                task_actions_dto.stage_id + str(task_actions_dto.task_id)
+                ].append(task_actions_dto)
+
+        task_details_list = [
+            self.get_task_details_dict_from_dtos(
+                task_fields_dtos=column_tasks_map[
+                    column_stage.stage_id + str(column_stage.task_id)],
+                task_actions_dtos=task_actions_map[
+                    column_stage.stage_id + str(column_stage.task_id)]
+            )
+            for column_stage in column_stages
+        ]
+        return {
+            "column_id": column_dto.column_id,
+            "name": column_dto.name,
+            "total_tasks_count": column_dto.total_tasks,
+            "tasks": task_details_list
+        }
+
+    def get_task_details_dict_from_dtos(
+            self, task_fields_dtos: List[TaskDTO],
+            task_actions_dtos: List[ActionDTO]):
+        from collections import defaultdict
+
+        tasks_fields_map = defaultdict(lambda: [])
+        for task_fields_dto in task_fields_dtos:
+            tasks_fields_map[task_fields_dto.task_id].append(task_fields_dto)
+
+        tasks_actions_map = defaultdict(lambda: [])
+        for task_actions_dto in task_actions_dtos:
+            tasks_actions_map[task_actions_dto.task_id].append(task_actions_dto)
+
+
+

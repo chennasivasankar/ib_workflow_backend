@@ -111,6 +111,7 @@ class TaskService:
                 field_type=field_dto.field_type,
                 key=field_dto.key,
                 value=field_dto.value,
+                stage_id=field_dto.stage_id
             )
             for field_dto in field_dtos
         ]
@@ -124,7 +125,8 @@ class TaskService:
                 name=action_dto.name,
                 button_text=action_dto.button_text,
                 button_color=action_dto.button_color,
-                task_id=task_id
+                task_id=task_id,
+                stage_id=action_dto.stage_id
             )
             for action_dto in action_dtos
         ]

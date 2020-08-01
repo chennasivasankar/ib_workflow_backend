@@ -4,8 +4,8 @@ from ib_boards.adapters.service_adapter import get_service_adapter
 from ib_boards.exceptions.custom_exceptions import (
     InvalidBoardId, InvalidOffsetValue, InvalidLimitValue, UserDonotHaveAccess)
 from ib_boards.interactors.dtos import ColumnParametersDTO, \
-    PaginationParametersDTO, ColumnTaskIdsDTO, ColumnTotalTasksDTO, \
-    TaskCompleteDetailsDTO, TaskDTO, ActionDTO, ColumnTasksDTO
+    PaginationParametersDTO, ColumnTaskIdsDTO, TaskDTO, ActionDTO, \
+    ColumnTasksDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
 from ib_boards.interactors.storage_interfaces.dtos import ColumnDetailsDTO, \
@@ -192,6 +192,7 @@ class GetColumnDetailsInteractor:
                 column_tasks.append(
                     ColumnTasksDTO(
                         column_id=task_ids_stages_dto.unique_key,
+                        stage_id=task_stage_dto.stage_id,
                         task_id=task_stage_dto.task_id
                     )
                 )
