@@ -389,7 +389,7 @@ class TasksStorageImplementation(TaskStorageInterface):
             list(templates_initial_stage_ids_queryset)
         return templates_initial_stage_ids
 
-    def get_actions_of_for_given_stage_ids(
+    def get_actions_for_given_stage_ids(
             self, stage_ids: List[int]) -> List[ActionsOfTemplateDTO]:
         stage_actions_details = StageAction.objects.filter(
             stage_id__in=stage_ids

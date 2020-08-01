@@ -128,7 +128,7 @@ class TestGetTaskTemplatesInteractor:
             expected_stage_ids
         task_storage_mock.get_initial_stage_ids_of_templates.return_value = \
             expected_stage_ids
-        task_storage_mock.get_actions_of_for_given_stage_ids.return_value = \
+        task_storage_mock.get_actions_for_given_stage_ids.return_value = \
             actions_of_template_dtos
         task_storage_mock.get_gof_ids_with_read_permission_for_user.return_value = \
             expected_gof_ids
@@ -161,7 +161,7 @@ class TestGetTaskTemplatesInteractor:
         get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
         task_storage_mock.get_task_templates_dtos.assert_called_once()
         task_storage_mock.get_initial_stage_ids_of_templates.assert_called_once()
-        task_storage_mock.get_actions_of_for_given_stage_ids. \
+        task_storage_mock.get_actions_for_given_stage_ids. \
             assert_called_once_with(stage_ids=expected_stage_ids)
         task_storage_mock.get_gofs_details_dtos. \
             assert_called_once_with(gof_ids=expected_gof_ids)
@@ -244,7 +244,7 @@ class TestGetTaskTemplatesInteractor:
             task_template_dtos
         task_storage_mock.get_initial_stage_ids_of_templates.return_value = \
             expected_stage_ids
-        task_storage_mock.get_actions_of_for_given_stage_ids.return_value = \
+        task_storage_mock.get_actions_for_given_stage_ids.return_value = \
             actions_of_template_dtos
         task_storage_mock.get_gof_ids_with_read_permission_for_user.return_value = \
             expected_gof_ids
@@ -277,7 +277,7 @@ class TestGetTaskTemplatesInteractor:
         get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
         task_storage_mock.get_task_templates_dtos.assert_called_once()
         task_storage_mock.get_initial_stage_ids_of_templates.assert_called_once()
-        task_storage_mock.get_actions_of_for_given_stage_ids. \
+        task_storage_mock.get_actions_for_given_stage_ids. \
             assert_called_once_with(stage_ids=expected_stage_ids)
         task_storage_mock.get_gofs_details_dtos. \
             assert_called_once_with(gof_ids=expected_gof_ids)
@@ -328,7 +328,7 @@ class TestGetTaskTemplatesInteractor:
             task_template_dtos
         task_storage_mock.get_initial_stage_ids_of_templates.return_value = \
             expected_stage_ids
-        task_storage_mock.get_actions_of_for_given_stage_ids.return_value = \
+        task_storage_mock.get_actions_for_given_stage_ids.return_value = \
             actions_of_template_dtos
         task_storage_mock.get_gof_ids_with_read_permission_for_user.return_value = \
             expected_gof_ids
@@ -361,7 +361,7 @@ class TestGetTaskTemplatesInteractor:
         get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
         task_storage_mock.get_task_templates_dtos.assert_called_once()
         task_storage_mock.get_initial_stage_ids_of_templates.assert_called_once()
-        task_storage_mock.get_actions_of_for_given_stage_ids. \
+        task_storage_mock.get_actions_for_given_stage_ids. \
             assert_called_once_with(stage_ids=expected_stage_ids)
         task_storage_mock.get_gofs_details_dtos. \
             assert_called_once_with(gof_ids=expected_gof_ids)
@@ -412,7 +412,7 @@ class TestGetTaskTemplatesInteractor:
             task_template_dtos
         task_storage_mock.get_initial_stage_ids_of_templates.return_value = \
             expected_stage_ids
-        task_storage_mock.get_actions_of_for_given_stage_ids.return_value = \
+        task_storage_mock.get_actions_for_given_stage_ids.return_value = \
             actions_of_template_dtos
         task_storage_mock.get_gof_ids_with_read_permission_for_user.return_value = \
             expected_gof_ids
@@ -445,7 +445,7 @@ class TestGetTaskTemplatesInteractor:
         get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
         task_storage_mock.get_task_templates_dtos.assert_called_once()
         task_storage_mock.get_initial_stage_ids_of_templates.assert_called_once()
-        task_storage_mock.get_actions_of_for_given_stage_ids. \
+        task_storage_mock.get_actions_for_given_stage_ids. \
             assert_called_once_with(stage_ids=expected_stage_ids)
         task_storage_mock.get_gofs_details_dtos. \
             assert_called_once_with(gof_ids=expected_gof_ids)
@@ -495,7 +495,7 @@ class TestGetTaskTemplatesInteractor:
             task_template_dtos
         task_storage_mock.get_initial_stage_ids_of_templates.return_value = \
             expected_stage_ids
-        task_storage_mock.get_actions_of_for_given_stage_ids.return_value = \
+        task_storage_mock.get_actions_for_given_stage_ids.return_value = \
             actions_of_template_dtos
         task_storage_mock.get_gof_ids_with_read_permission_for_user.return_value = \
             expected_gof_ids
@@ -528,7 +528,7 @@ class TestGetTaskTemplatesInteractor:
         get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
         task_storage_mock.get_task_templates_dtos.assert_called_once()
         task_storage_mock.get_initial_stage_ids_of_templates.assert_called_once()
-        task_storage_mock.get_actions_of_for_given_stage_ids. \
+        task_storage_mock.get_actions_for_given_stage_ids. \
             assert_called_once_with(stage_ids=expected_stage_ids)
         task_storage_mock.get_gofs_details_dtos. \
             assert_called_once_with(gof_ids=expected_gof_ids)
@@ -576,7 +576,7 @@ class TestGetTaskTemplatesInteractor:
             task_template_dtos
         task_storage_mock.get_initial_stage_ids_of_templates.return_value = \
             expected_stage_ids
-        task_storage_mock.get_actions_of_for_given_stage_ids.return_value = \
+        task_storage_mock.get_actions_for_given_stage_ids.return_value = \
             actions_of_template_dtos
         task_storage_mock.get_gof_ids_with_read_permission_for_user.return_value = \
             expected_gof_ids
@@ -609,7 +609,7 @@ class TestGetTaskTemplatesInteractor:
         get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
         task_storage_mock.get_task_templates_dtos.assert_called_once()
         task_storage_mock.get_initial_stage_ids_of_templates.assert_called_once()
-        task_storage_mock.get_actions_of_for_given_stage_ids. \
+        task_storage_mock.get_actions_for_given_stage_ids. \
             assert_called_once_with(stage_ids=expected_stage_ids)
         task_storage_mock.get_gofs_details_dtos. \
             assert_called_once_with(gof_ids=expected_gof_ids)

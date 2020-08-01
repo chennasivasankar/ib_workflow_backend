@@ -154,7 +154,7 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_actions_of_for_given_stage_ids(
+    def get_actions_for_given_stage_ids(
             self, stage_ids: List[int]) -> List[ActionsOfTemplateDTO]:
         pass
 

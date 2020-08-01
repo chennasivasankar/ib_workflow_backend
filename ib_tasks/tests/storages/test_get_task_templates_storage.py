@@ -49,7 +49,7 @@ class TestGetTaskTemplates:
         # Assert
         assert result == expected_output
 
-    def test_get_actions_of_for_given_stage_ids(self, storage):
+    def test_get_actions_for_given_stage_ids(self, storage):
         # Arrange
         from ib_tasks.interactors.storage_interfaces.actions_dtos \
             import ActionsOfTemplateDTO
@@ -77,7 +77,7 @@ class TestGetTaskTemplates:
         )
 
         # Act
-        result = storage.get_actions_of_for_given_stage_ids(
+        result = storage.get_actions_for_given_stage_ids(
             stage_ids=expected_stage_ids
         )
 

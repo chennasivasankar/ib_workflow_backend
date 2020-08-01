@@ -58,7 +58,7 @@ class GetTaskTemplatesInteractor:
         templates_initial_stage_ids = \
             self.task_storage.get_initial_stage_ids_of_templates()
         actions_of_templates_dtos = \
-            self.task_storage.get_actions_of_for_given_stage_ids(
+            self.task_storage.get_actions_for_given_stage_ids(
                 stage_ids=templates_initial_stage_ids
             )
         gof_ids_permitted_for_user = \
