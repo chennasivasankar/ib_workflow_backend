@@ -20,6 +20,7 @@ from django_swagger_utils.drf_server.utils.general.import_app_settings import \
 
 THIRD_PARTY_APPS = [
     "ib_users",
+    "s3_uploader"
 ]
 APPS = [
     "ib_iam",
