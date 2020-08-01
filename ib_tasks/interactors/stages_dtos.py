@@ -18,7 +18,7 @@ class StageDTO:
     stage_display_logic: str
 
 
-@dataclass()
+@dataclass
 class StageActionDTO:
     stage_id: str
     action_name: str

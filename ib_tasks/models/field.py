@@ -19,4 +19,4 @@ class Field(models.Model):
     gof = models.ForeignKey(GoF, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.field_id
+        return "{} in {}".format(self.field_id, self.gof_id)

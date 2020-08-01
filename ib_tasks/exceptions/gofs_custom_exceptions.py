@@ -65,6 +65,7 @@ class DuplicateOrderValuesForGoFs(Exception):
 class DifferentDisplayNamesForSameGOF(Exception):
     pass
 
+
 class DuplicateReadPermissionRolesForAGoF(Exception):
 
     def __init__(
@@ -84,12 +85,8 @@ class DuplicateWritePermissionRolesForAGoF(Exception):
         self.role_ids = duplicate_write_permission_role_ids
         self.gof_id = gof_id
 
+
 class InvalidGoFIds(Exception):
 
     def __init__(self, invalid_gof_ids: List[str]):
         self.gof_ids = invalid_gof_ids
-
-class EmptyValueForPlainTextField(Exception):
-
-    def __init__(self, field_id: str):
-        self.field_id = field_id

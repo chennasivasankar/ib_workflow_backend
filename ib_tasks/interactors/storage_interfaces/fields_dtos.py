@@ -43,9 +43,13 @@ class FieldRoleDTO:
 
 
 @dataclass
-class FieldTypeDTO:
+class FieldCompleteDetailsDTO:
     field_id: str
     field_type: FieldTypes
+    required: bool
+    field_values: Optional[str]
+    allowed_formats: Optional[str]
+    validation_regex: Optional[str]
 
 
 @dataclass
@@ -79,3 +83,15 @@ class TaskTemplateStageFieldsDTO:
 class StageTaskFieldsDTO:
     task_id: int
     field_ids: List[str]
+
+
+@dataclass
+class FieldWithPermissionsDTO:
+    field_dto: FieldDTO
+    is_field_readable: bool
+    is_field_writable: bool
+
+@dataclass
+class FieldTypeDTO:
+    field_id: str
+    field_type: FieldTypes
