@@ -18,7 +18,7 @@ class StorageImplementation(StorageInterface):
         try:
             from ib_discussions.models import Entity
             Entity.objects.get(id=entity_id)
-        except Exception:
+        except Entity.DoesNotExist:
             raise EntityIdNotFound
         return
 
@@ -28,7 +28,7 @@ class StorageImplementation(StorageInterface):
         try:
             from ib_discussions.models import Entity
             entity_object = Entity.objects.get(id=entity_id)
-        except Exception:
+        except Entity.DoesNotExist:
             raise EntityIdNotFound
         is_invalid_entity_type_for_entity_object \
             = entity_object.entity_type != entity_type
@@ -48,7 +48,7 @@ class StorageImplementation(StorageInterface):
             discussion_set_object = DiscussionSet.objects.get(
                 entity_id=entity_id, entity_type=entity_type
             )
-        except Exception:
+        except DiscussionSet.DoesNotExist:
             from ib_discussions.interactors.discussion_interactor import \
                 DiscussionSetNotFound
             raise DiscussionSetNotFound

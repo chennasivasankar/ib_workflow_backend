@@ -28,9 +28,9 @@ class TestCase01GetDiscussionsAPITestCase(TestUtils):
         ]
 
         from ib_discussions.tests.factories.adapter_dtos import \
-            UserProfileFactory
+            UserProfileDTOFactory
         user_profile_dtos = [
-            UserProfileFactory(user_id=user_id)
+            UserProfileDTOFactory(user_id=user_id)
             for user_id in user_ids
         ]
         get_user_profile_dtos_mock.return_value = user_profile_dtos

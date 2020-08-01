@@ -130,14 +130,14 @@ class TestGetDiscussionsPresenterImplementation:
     def get_discussions_details_dto(self):
         discussion_set_id = "e892e8db-6064-4d8f-9ce2-7c9032dbd8a5"
         from ib_discussions.tests.factories.adapter_dtos import \
-            UserProfileFactory
+            UserProfileDTOFactory
         user_ids = [
             'fc4c3c81-ebc3-4957-8c62-e1cbb6238b27',
             '458813d7-9954-44fd-a014-a9faafce5948',
             '06b0bdc4-76ac-4a01-a4da-68156f0527f5'
         ]
         user_profile_dtos = [
-            UserProfileFactory.create(user_id=user_id)
+            UserProfileDTOFactory.create(user_id=user_id)
             for user_id in user_ids
         ]
         discussion_ids = [
@@ -165,76 +165,13 @@ class TestGetDiscussionsPresenterImplementation:
         return discussions_details_dto
 
     def test_prepare_response_for_discussions_details_dto(
-            self, presenter, get_discussions_details_dto
+            self, presenter, get_discussions_details_dto, snapshot
     ):
         # Act
         response_object = presenter.prepare_response_for_discussions_details_dto(
             get_discussions_details_dto)
-        expected_discussion_details_response = {
-            'discussions': [{
-                'discussion_id': 'c5a444ea-589a-4e8f-b006-cfac3c1c0b78',
-                'description': 'description',
-                'title': 'title',
-                'created_at': '2008-01-01 00:00:00',
-                'author': {
-                    'user_id': 'fc4c3c81-ebc3-4957-8c62-e1cbb6238b27',
-                    'name': 'name of user_id is fc4c3c81-ebc3-4957-8c62-e1cbb6238b27',
-                    'profile_pic_url': 'https://graph.ib_users.com/fc4c3c81-ebc3-4957-8c62-e1cbb6238b27/picture'
-                },
-                "is_clarified": True
-            }, {
-                'discussion_id': '5ce6581b-86ce-4246-8551-2c8a8ed4df87',
-                'description': 'description',
-                'title': 'title',
-                'created_at': '2008-01-01 00:00:00',
-                'author': {
-                    'user_id': '458813d7-9954-44fd-a014-a9faafce5948',
-                    'name': 'name of user_id is 458813d7-9954-44fd-a014-a9faafce5948',
-                    'profile_pic_url': 'https://graph.ib_users.com/458813d7-9954-44fd-a014-a9faafce5948/picture'
-                },
-                "is_clarified": False
-            }, {
-                'discussion_id': 'ed10c17c-8995-4d84-9807-189a54a2049d',
-                'description': 'description',
-                'title': 'title',
-                'created_at': '2008-01-01 00:00:00',
-                'author': {
-                    'user_id': '06b0bdc4-76ac-4a01-a4da-68156f0527f5',
-                    'name': 'name of user_id is 06b0bdc4-76ac-4a01-a4da-68156f0527f5',
-                    'profile_pic_url': 'https://graph.ib_users.com/06b0bdc4-76ac-4a01-a4da-68156f0527f5/picture'
-                },
-                "is_clarified": True
-            }],
-            'total_count': 3
-        }
 
         # Assert
         response_dict = json.loads(response_object.content)
 
-        self._compare_two_discussions_list(
-            expected_discussion_details_response["discussions"],
-            response_dict["discussions"]
-        )
-        assert expected_discussion_details_response["total_count"] \
-               == response_dict["total_count"]
-
-    def _compare_two_discussions_list(self, discussion_list1, discussion_list2):
-        discussion_list1 = sorted(
-            discussion_list1,
-            key=lambda x: x['discussion_id']
-        )
-        discussion_list2 = sorted(
-            discussion_list2,
-            key=lambda x: x['discussion_id']
-        )
-        map_of_two_discussion_lists = list(zip(
-            discussion_list1, discussion_list2
-        ))
-
-        for discussion_dict1, discussion_dict2 in map_of_two_discussion_lists:
-            self._compare_two_discussion_dict(discussion_dict1,
-                                              discussion_dict2)
-
-    @staticmethod
-    def _compare_two_discussion_dict(discussion_dict1, discussion_dict2):
-        assert discussion_dict1 == discussion_dict2
+        snapshot.assert_match(response_dict, "discussion details response")

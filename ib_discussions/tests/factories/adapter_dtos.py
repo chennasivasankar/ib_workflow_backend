@@ -3,7 +3,7 @@ import factory
 from ib_discussions.adapters.auth_service import UserProfileDTO
 
 
-class UserProfileFactory(factory.Factory):
+class UserProfileDTOFactory(factory.Factory):
     class Meta:
         model = UserProfileDTO
     user_id = factory.Faker("uuid4")

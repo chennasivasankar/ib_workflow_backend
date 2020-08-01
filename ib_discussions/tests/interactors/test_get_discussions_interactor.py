@@ -84,8 +84,8 @@ class TestGetDiscussionsInteractor:
     @staticmethod
     def _get_user_profile_dtos():
         from ib_discussions.tests.factories.adapter_dtos import \
-            UserProfileFactory
-        user_profile_factory = UserProfileFactory.create_batch(size=3)
+            UserProfileDTOFactory
+        user_profile_factory = UserProfileDTOFactory.create_batch(size=3)
         return user_profile_factory
 
     def test_validate_offset_value_raise_exception(
