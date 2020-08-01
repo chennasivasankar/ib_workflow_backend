@@ -7,9 +7,9 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01PerformTaskActionAPITestCase.test_case status_code'] = '200'
+snapshots['TestCase03PerformTaskActionAPITestCase.test_case status_code'] = '200'
 
-snapshots['TestCase01PerformTaskActionAPITestCase.test_case body'] = {
+snapshots['TestCase03PerformTaskActionAPITestCase.test_case body'] = {
     'current_board_details': {
         'board_id': 'board__1',
         'board_name': 'name_1',
@@ -58,3 +58,9 @@ snapshots['TestCase01PerformTaskActionAPITestCase.test_case body'] = {
     ],
     'task_id': '1'
 }
+
+snapshots['TestCase03PerformTaskActionAPITestCase.test_case stage_id_0'] = 'stage_id_0'
+
+snapshots['TestCase03PerformTaskActionAPITestCase.test_case stage_id_2'] = 'stage_id_2'
+
+snapshots['TestCase03PerformTaskActionAPITestCase.test_case deleted task stages'] = False
