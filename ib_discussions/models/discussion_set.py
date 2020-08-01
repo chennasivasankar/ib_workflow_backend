@@ -10,7 +10,7 @@ def generate_uuid():
 class DiscussionSet(models.Model):
     id = models.UUIDField(primary_key=True, default=generate_uuid,
                           editable=False)
-    entity_id = models.UUIDField(editable=False)
+    entity_id = models.TextField()
     entity_type = models.CharField(max_length=50)
 
     class Meta:

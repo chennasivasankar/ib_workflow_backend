@@ -139,67 +139,67 @@ class TestGetDiscussionsInteractor:
         assert response == \
                expected_presenter_raise_exception_for_invalid_limit_mock
 
-    def test_validate_entity_id_raise_exception(
-            self, presenter_mock, entity_id_and_entity_type_dto, storage_mock,
-            offset_and_limit_dto, initialise_discussions_interactor,
-            filter_by_dto, sort_by_dto
-    ):
-        # Arrange
-        from unittest.mock import Mock
-        expected_presenter_raise_exception_for_entity_id_not_found_mock = Mock()
-
-        from ib_discussions.exceptions.custom_exceptions import EntityIdNotFound
-        storage_mock.validate_entity_id.side_effect \
-            = EntityIdNotFound
-
-        presenter_mock.raise_exception_for_entity_id_not_found.return_value \
-            = expected_presenter_raise_exception_for_entity_id_not_found_mock
-
-        interactor = initialise_discussions_interactor
-
-        # Act
-        response = interactor.get_discussions_wrapper(
-            entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
-            offset_and_limit_dto=offset_and_limit_dto, presenter=presenter_mock,
-            sort_by_dto=sort_by_dto, filter_by_dto=filter_by_dto
-        )
-
-        # Assert
-        assert response \
-               == expected_presenter_raise_exception_for_entity_id_not_found_mock
-        presenter_mock.raise_exception_for_entity_id_not_found. \
-            assert_called_once()
-
-    def test_validate_entity_type_for_entity_id_raise_exception(
-            self, presenter_mock, entity_id_and_entity_type_dto, storage_mock,
-            offset_and_limit_dto, initialise_discussions_interactor,
-            filter_by_dto, sort_by_dto
-    ):
-        # Arrange
-        from unittest.mock import Mock
-        expected_presenter_invalid_entity_type_mock = Mock()
-
-        from ib_discussions.exceptions.custom_exceptions import \
-            InvalidEntityTypeForEntityId
-        storage_mock.validate_entity_type_for_entity_id.side_effect \
-            = InvalidEntityTypeForEntityId
-
-        presenter_mock.raise_exception_for_invalid_entity_type_for_entity_id \
-            .return_value = expected_presenter_invalid_entity_type_mock
-
-        interactor = initialise_discussions_interactor
-
-        # Act
-        response = interactor.get_discussions_wrapper(
-            entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
-            offset_and_limit_dto=offset_and_limit_dto, presenter=presenter_mock,
-            sort_by_dto=sort_by_dto, filter_by_dto=filter_by_dto
-        )
-
-        # Assert
-        assert response == expected_presenter_invalid_entity_type_mock
-        presenter_mock.raise_exception_for_invalid_entity_type_for_entity_id. \
-            assert_called_once()
+    # def test_validate_entity_id_raise_exception(
+    #         self, presenter_mock, entity_id_and_entity_type_dto, storage_mock,
+    #         offset_and_limit_dto, initialise_discussions_interactor,
+    #         filter_by_dto, sort_by_dto
+    # ):
+    #     # Arrange
+    #     from unittest.mock import Mock
+    #     expected_presenter_raise_exception_for_entity_id_not_found_mock = Mock()
+    #
+    #     from ib_discussions.exceptions.custom_exceptions import EntityIdNotFound
+    #     storage_mock.validate_entity_id.side_effect \
+    #         = EntityIdNotFound
+    #
+    #     presenter_mock.raise_exception_for_entity_id_not_found.return_value \
+    #         = expected_presenter_raise_exception_for_entity_id_not_found_mock
+    #
+    #     interactor = initialise_discussions_interactor
+    #
+    #     # Act
+    #     response = interactor.get_discussions_wrapper(
+    #         entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
+    #         offset_and_limit_dto=offset_and_limit_dto, presenter=presenter_mock,
+    #         sort_by_dto=sort_by_dto, filter_by_dto=filter_by_dto
+    #     )
+    #
+    #     # Assert
+    #     assert response \
+    #            == expected_presenter_raise_exception_for_entity_id_not_found_mock
+    #     presenter_mock.raise_exception_for_entity_id_not_found. \
+    #         assert_called_once()
+    #
+    # def test_validate_entity_type_for_entity_id_raise_exception(
+    #         self, presenter_mock, entity_id_and_entity_type_dto, storage_mock,
+    #         offset_and_limit_dto, initialise_discussions_interactor,
+    #         filter_by_dto, sort_by_dto
+    # ):
+    #     # Arrange
+    #     from unittest.mock import Mock
+    #     expected_presenter_invalid_entity_type_mock = Mock()
+    #
+    #     from ib_discussions.exceptions.custom_exceptions import \
+    #         InvalidEntityTypeForEntityId
+    #     storage_mock.validate_entity_type_for_entity_id.side_effect \
+    #         = InvalidEntityTypeForEntityId
+    #
+    #     presenter_mock.raise_exception_for_invalid_entity_type_for_entity_id \
+    #         .return_value = expected_presenter_invalid_entity_type_mock
+    #
+    #     interactor = initialise_discussions_interactor
+    #
+    #     # Act
+    #     response = interactor.get_discussions_wrapper(
+    #         entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
+    #         offset_and_limit_dto=offset_and_limit_dto, presenter=presenter_mock,
+    #         sort_by_dto=sort_by_dto, filter_by_dto=filter_by_dto
+    #     )
+    #
+    #     # Assert
+    #     assert response == expected_presenter_invalid_entity_type_mock
+    #     presenter_mock.raise_exception_for_invalid_entity_type_for_entity_id. \
+    #         assert_called_once()
 
     def test_get_discussions_details_return_response(
             self, presenter_mock, entity_id_and_entity_type_dto, storage_mock,
