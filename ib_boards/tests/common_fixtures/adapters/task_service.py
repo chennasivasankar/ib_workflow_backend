@@ -9,7 +9,7 @@ from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
 def prepare_task_details_dtos(mocker, task_dtos: List[TaskStageIdDTO],
                               user_id: str):
     mock = mocker.patch(
-        'ib_boards.adapters.task_service.TaskService.get_task_details_dtos'
+        'ib_boards.adapters.task_service.TaskService.get_task_complete_details'
     )
 
     actions_dto = [
@@ -24,15 +24,10 @@ def prepare_task_details_dtos(mocker, task_dtos: List[TaskStageIdDTO],
         ) for _index, task_dto in enumerate(task_dtos)
     ]
 
-    mock.return_value = actions_dto, fields_dto
+    mock.return_value = fields_dto, actions_dto
     return mock
 
 
-"""
-Created on: 14/07/20
-Author: Pavankumar Pamuru
-
-"""
 from typing import List
 
 from ib_boards.interactors.dtos import TaskIdStageDTO
@@ -126,7 +121,7 @@ def task_details_mock(mocker, task_details: List[TaskCompleteDetailsDTO]):
     mock = mocker.patch(
         'ib_boards.adapters.task_service.TaskService.get_task_complete_details'
     )
-    mock.return_value = task_details
+    mock.return_value = task_details[0].field_dtos, task_details[0].action_dtos
     return mock
 
 

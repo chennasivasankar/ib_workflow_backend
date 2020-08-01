@@ -398,6 +398,20 @@
         "fields"
       ]
     },
+     "PerformActionRequestBody": {
+          "type": "object",
+          "properties": {
+            "board_id": {
+              "type": "string"
+            },
+            "task_id": {
+              "type": "string"
+            },
+            "action_id": {
+              "type": "string"
+            }
+          }
+      },
     "TaskOverviewFields": {
       "allOf": [
         {
@@ -571,25 +585,34 @@
           }
         }
       },
-      "required": [
-        "task_id",
-        "template_id",
-        "gofs",
-        "stages_with_actions"
-      ]
-    }
-  },
-  "parameters": {
-    "CreateTaskBodyParameter": {
-      "in": "body",
-      "name": "CreateTaskRequestBody",
-      "description": "give valid details",
-      "required": true,
-      "schema": {
-        "$ref": "#/definitions/CreateTaskRequestBody"
+        "required": [
+          "task_id",
+          "template_id",
+          "gofs",
+          "stages_with_actions"
+        ]
       }
-    },
-    "TaskParameterize": {
+   },
+   "parameters":{
+      "CreateTaskBodyParameter":{
+         "in":"body",
+         "name":"CreateTaskRequestBody",
+         "description":"give valid details",
+         "required":true,
+         "schema":{
+            "$ref":"#/definitions/CreateTaskRequestBody"
+         }
+      },
+     "PerformActionBodyParameter": {
+       "in":"body",
+       "name":"CreateTaskRequestBody",
+       "description":"give valid details",
+       "required":true,
+       "schema":{
+          "$ref":"#/definitions/PerformActionRequestBody"
+       }
+     },
+     "TaskParameterize": {
       "name": "task_id",
       "in": "path",
       "required": true,
@@ -845,28 +868,22 @@
         ]
       }
     }
-  },
-  "paths": {
-    "/boards/{board_id}/tasks/{task_id}/actions/{action_id}/v1/": {
+   },
+   "paths":{
+     "/perform_user_action_on_task/v1/": {
       "post": {
         "operationId": "perform_task_action",
         "summary": "User Act On Specific Task in a Column",
         "description": "User Submitting Response by acting on a task",
         "parameters": [
           {
-            "$ref": "#/parameters/TaskParameterize"
-          },
-          {
-            "$ref": "#/parameters/ActionParameterize"
-          },
-          {
-            "$ref": "#/parameters/BoardParameterize"
+            "$ref": "#/parameters/PerformActionBodyParameter"
           }
         ],
         "security": [
           {
             "oauth": [
-              "superuser"
+              "write"
             ]
           }
         ],

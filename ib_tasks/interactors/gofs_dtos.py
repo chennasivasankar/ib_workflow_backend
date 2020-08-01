@@ -8,7 +8,7 @@ from ib_tasks.interactors.storage_interfaces.status_dtos import StatusVariableDT
 
 @dataclass()
 class TaskGofAndStatusesDTO:
-    task_id: int
+    task_id: str
     group_of_fields_dto: List[GroupOfFieldsDTO]
     fields_dto: List[FieldValueDTO]
     statuses_dto: List[StatusVariableDTO]
@@ -16,7 +16,7 @@ class TaskGofAndStatusesDTO:
 
 @dataclass()
 class TaskStatusVariablesDTO:
-    task_id: int
+    task_id: str
     status_variables_dto: List[StatusVariableDTO]
 
 
@@ -35,7 +35,7 @@ class GoFsWithTemplateIdDTO:
 
 @dataclass()
 class FieldDisplayDTO:
-    field_id: int
+    field_id: str
     stage_id: str
     field_type: str
     key: str

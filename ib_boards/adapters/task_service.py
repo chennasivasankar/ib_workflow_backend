@@ -3,14 +3,16 @@ Created on: 14/07/20
 Author: Pavankumar Pamuru
 
 """
-from typing import List
+from typing import List, Tuple
 
 from ib_boards.interactors.dtos import TaskTemplateStagesDTO, \
-    TaskSummaryFieldsDTO, TaskStatusDTO, TaskDTO, ColumnTaskIdsDTO
+    TaskSummaryFieldsDTO, TaskStatusDTO, TaskDTO, ColumnTaskIdsDTO, ActionDTO
 from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
     TaskFieldsDTOFactory
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, \
     GetTaskDetailsDTO
+from ib_boards.interactors.presenter_interfaces.presenter_interface import \
+    TaskCompleteDetailsDTO
 
 
 class TaskService:
@@ -79,22 +81,51 @@ class TaskService:
         ]
         return column_task_ids_dtos
 
-    def get_task_complete_details(self,
-                                  task_stage_ids: List[GetTaskDetailsDTO]):
+    def get_task_complete_details(
+            self, task_stage_ids: List[GetTaskDetailsDTO],
+            user_id: int) \
+            -> Tuple[List[TaskDTO], List[ActionDTO]]:
         tasks_complete_details_dtos = self.interface.get_task_details(
-            task_dtos=task_stage_ids
+            task_dtos=task_stage_ids, user_id=user_id
         )
-        from ib_boards.interactors.presenter_interfaces.presenter_interface import \
-            TaskCompleteDetailsDTO
-        tasks_details_dtos = []
+        tasks_dtos = []
+        action_dtos = []
         for tasks_complete_details_dto in tasks_complete_details_dtos:
-            tasks_details_dtos.append(
-                TaskCompleteDetailsDTO(
-                    task_id=tasks_complete_details_dto.task_id,
-                    stage_id=tasks_complete_details_dto.stage_id,
-                    field_dtos=tasks_complete_details_dto.field_dtos,
-                    action_dtos=tasks_complete_details_dto.action_dtos
-                )
+            tasks_dtos += self._convert_task_fields_to_field_dtos(
+                task_id=tasks_complete_details_dto.task_id,
+                field_dtos=tasks_complete_details_dto.field_dtos
+            )
+            action_dtos += self._convert_task_action_to_action_dtos(
+                task_id=tasks_complete_details_dto.task_id,
+                action_dtos=tasks_complete_details_dto.action_dtos
             )
 
-        return tasks_details_dtos
+        return tasks_dtos, action_dtos
+
+    @staticmethod
+    def _convert_task_fields_to_field_dtos(
+            task_id: int, field_dtos: List) -> List[TaskDTO]:
+        return [
+            TaskDTO(
+                task_id=task_id,
+                field_type=field_dto.field_type,
+                key=field_dto.key,
+                value=field_dto.value,
+            )
+            for field_dto in field_dtos
+        ]
+
+    @staticmethod
+    def _convert_task_action_to_action_dtos(
+            task_id: int, action_dtos: List) -> List[ActionDTO]:
+        return [
+            ActionDTO(
+                action_id=action_dto.action_id,
+                name=action_dto.name,
+                button_text=action_dto.button_text,
+                button_color=action_dto.button_color,
+                task_id=task_id
+            )
+            for action_dto in action_dtos
+        ]
+

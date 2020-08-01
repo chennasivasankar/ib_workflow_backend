@@ -4,6 +4,7 @@ Author: Pavankumar Pamuru
 
 """
 from typing import List
+from ib_tasks.models import Stage
 
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
@@ -34,8 +35,8 @@ class GetTaskIdsInteractor:
         ]
         if invalid_stage_ids:
             from ib_tasks.exceptions.stage_custom_exceptions import \
-                InvalidStageIds
-            raise InvalidStageIds(stage_ids=invalid_stage_ids)
+                InvalidStageIdsListException
+            raise InvalidStageIdsListException(invalid_stage_ids=invalid_stage_ids)
 
         total_task_ids_dtos = []
         # TODO need optimize db hits

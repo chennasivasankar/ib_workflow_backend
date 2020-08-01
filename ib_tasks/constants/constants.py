@@ -24,11 +24,13 @@ GOOGLE_SHEET_NAME = "Vendor Configuration_v0"
 TASK_TEMPLATE_SUB_SHEET_TITLE = "Task Templates"
 GOF_SUB_SHEET_TITLE = "GOF"
 FIELD_SUB_SHEET_TITLE = "Fields"
+GLOBAL_CONSTANTS_SUB_SHEET_TITLE = "Global Constants"
 
 SEARCHABLE_TYPES = [searchable_type.value for searchable_type in Searchable]
 UPLOADERS = [FieldTypes.IMAGE_UPLOADER.value, FieldTypes.FILE_UPLOADER.value]
 
-STAGES_AND_ACTIONS_SUB_SHEET = "PR - Stages and Actions "
-TASK_CREATION_CONFIG_SUB_SHEET = "PR-Task Creation Config"
-STAGE_ID_AND_VALUES_SUB_SHEET = "PR - StageID and Values"
-STATUS_VARIABLES_SUB_SHEET = "PR - Status Variables"
+STAGES_AND_ACTIONS_SUB_SHEET = "Stages and Actions "
+TASK_CREATION_CONFIG_SUB_SHEET = "Task Creation Config"
+STAGE_ID_AND_VALUES_SUB_SHEET = "StageID and Values"
+STATUS_VARIABLES_SUB_SHEET = "Status Variables"
+ROLES_SUB_SHEET = "Roles"

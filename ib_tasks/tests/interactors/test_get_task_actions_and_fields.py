@@ -1,11 +1,9 @@
 from unittest.mock import create_autospec, Mock
-
 import pytest
-
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidTaskStageIds
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds, InvalidStageIds
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds
 from ib_tasks.interactors.get_task_fields_and_actions import GetTaskFieldsAndActionsInteractor
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO, TaskTemplateStageFieldsDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import TaskTemplateStageFieldsDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import GetTaskStageCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import StageStorageInterface
@@ -67,7 +65,7 @@ class TestGetFieldsAndActionsInteractor:
             get_actions_dtos, get_fields_dtos, expected_response,
             get_field_ids, task_fields_dtos):
         # Arrange
-        user_id = 1
+        user_id = "user_id_1"
         task_dtos = [get_task_dtos]
         storage = create_autospec(FieldsStorageInterface)
         stage_storage = create_autospec(StageStorageInterface)
@@ -101,7 +99,7 @@ class TestGetFieldsAndActionsInteractor:
     def test_with_invalid_task_ids_raises_exception(self,
                                                     get_task_dtos):
         # Arrange
-        user_id = 1
+        user_id = "user_id_1"
         storage = create_autospec(FieldsStorageInterface)
         stage_storage = create_autospec(StageStorageInterface)
         interactor = GetTaskFieldsAndActionsInteractor(
@@ -120,7 +118,7 @@ class TestGetFieldsAndActionsInteractor:
     def test_with_invalid_stage_ids_raises_exception(self,
                                                      get_task_dtos):
         # Arrange
-        user_id = 1
+        user_id = "user_id_1"
         storage = create_autospec(FieldsStorageInterface)
         stage_storage = create_autospec(StageStorageInterface)
         interactor = GetTaskFieldsAndActionsInteractor(
@@ -132,7 +130,9 @@ class TestGetFieldsAndActionsInteractor:
         stage_storage.get_existing_stage_ids.return_value = []
 
         # Act
-        with pytest.raises(InvalidStageIds):
+        from ib_tasks.exceptions.stage_custom_exceptions import \
+            InvalidStageIdsListException
+        with pytest.raises(InvalidStageIdsListException):
             interactor.get_task_fields_and_action([get_task_dtos], user_id)
 
         # Assert
@@ -141,7 +141,7 @@ class TestGetFieldsAndActionsInteractor:
     def test_with_invalid_stage_related_task_ids_raises_exception(self,
                                                                   get_task_dtos):
         # Arrange
-        user_id = 1
+        user_id = "user_id_1"
         storage = create_autospec(FieldsStorageInterface)
         stage_storage = create_autospec(StageStorageInterface)
         interactor = GetTaskFieldsAndActionsInteractor(
@@ -160,3 +160,4 @@ class TestGetFieldsAndActionsInteractor:
         # Assert
         stage_storage.get_existing_stage_ids.assert_called_once_with(stage_ids)
         storage.validate_task_related_stage_ids.assert_called_once_with([get_task_dtos])
+

@@ -1,16 +1,15 @@
 from typing import List, Optional
 
 from django.db.models import Q
-
-from ib_tasks.interactors.stages_dtos import TemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO, StageTaskFieldsDTO, \
-    TaskTemplateStageFieldsDTO, TaskAndFieldsDTO
+    TaskTemplateStageFieldsDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import FieldsStorageInterface
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskTemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import GetTaskStageCompleteDetailsDTO, TaskTemplateStageDTO, \
     StageDetailsDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
-from ib_tasks.models import TaskStage, StageAction, Stage, Field
+from ib_tasks.models import TaskStage, StageAction, Stage
 from ib_tasks.models.task import Task
 from ib_tasks.models.task_gof_field import TaskGoFField
 
@@ -19,20 +18,17 @@ class FieldsStorageImplementation(FieldsStorageInterface):
     def get_stage_details(self, task_dtos: List[GetTaskDetailsDTO]) -> \
             List[TaskTemplateStageDTO]:
         task_ids = [task.task_id for task in task_dtos]
-        task_objs = Task.objects.filter(id__in=task_ids
-                                        ).values('id', 'template_id')
+        task_objs = Task.objects.filter(id__in=task_ids).values(
+            'id', 'template_id')
         template_stage_ids_list = []
         task_stages_dict = {}
         for item in task_dtos:
             task_stages_dict[item.task_id] = item.stage_id
         for task in task_objs:
             template_stage_ids_list.append(
-                TaskTemplateStageDTO(
-                    task_id=task['id'],
-                    task_template_id=task['template_id'],
-                    stage_id=task_stages_dict[task['id']]
-                )
-            )
+                TaskTemplateStageDTO(task_id=task['id'],
+                                     task_template_id=task['template_id'],
+                                     stage_id=task_stages_dict[task['id']]))
         return template_stage_ids_list
 
     def get_actions_details(self,
@@ -66,7 +62,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                 q = current_queue
             else:
                 q = q | current_queue
-
+        if q is None:
+            return []
         field_objs = TaskGoFField.objects.filter(q).select_related(
             'field', 'task_gof'
         )
@@ -113,16 +110,14 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         task_fields_dtos = []
         import json
         for stage in stage_objs:
-            fields = stage.field_display_config
+            fields = stage.card_info_kanban
             field_ids = json.loads(fields)
             task_fields_dtos.append(
                 TaskTemplateStageFieldsDTO(
                     task_template_id=stage.task_template_id,
                     task_id=task_stages_dict[stage.stage_id],
                     stage_id=stage.stage_id,
-                    field_ids=field_ids
-                )
-            )
+                    field_ids=field_ids))
         return task_fields_dtos
 
     def validate_task_related_stage_ids(self,
@@ -135,17 +130,17 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                 q = current_queue
             else:
                 q = q | current_queue
-        task_objs = TaskStage.objects.filter(q).values('task_id', 'stage__stage_id')
+        task_objs = TaskStage.objects.filter(q).values('task_id',
+                                                       'stage__stage_id')
+
         task_stage_dtos = self._convert_task_objs_to_dtos(task_objs)
         return task_stage_dtos
 
     @staticmethod
     def _convert_task_objs_to_dtos(task_objs):
         valid_task_stages_dtos = [
-            GetTaskDetailsDTO(
-                task_id=task_obj['task_id'],
-                stage_id=task_obj['stage__stage_id']
-            )
+            GetTaskDetailsDTO(task_id=task_obj['task_id'],
+                              stage_id=task_obj['stage__stage_id'])
             for task_obj in task_objs
         ]
         return valid_task_stages_dtos
