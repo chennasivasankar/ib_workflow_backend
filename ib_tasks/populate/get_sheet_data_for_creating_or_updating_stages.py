@@ -59,6 +59,7 @@ class GetSheetDataForStages:
         try:
             schema.validate(actions_dict)
         except SchemaError:
+            print("actions_dict: ", actions_dict)
             self._raise_exception_for_valid_stage_format()
 
     def _raise_exception_for_valid_stage_format(self):

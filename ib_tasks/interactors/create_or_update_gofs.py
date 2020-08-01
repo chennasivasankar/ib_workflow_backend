@@ -42,6 +42,9 @@ class CreateOrUpdateGoFsInteractor:
         valid_roles = roles_service.get_valid_role_ids_in_given_role_ids(
             role_ids=role_ids
         )
+        from ib_tasks.constants.constants import ALL_ROLES_ID
+        if ALL_ROLES_ID in role_ids:
+            valid_roles.append(ALL_ROLES_ID)
         self._validate_read_permission_roles(
             gof_roles_dtos=gof_roles_dtos, valid_roles=valid_roles
         )
