@@ -99,7 +99,7 @@ class GetAllTasksOverviewForUserPresenterImpl(
                     each_task_fields_and_action_details_dto)
 
                 return task_overview_fields_details, action_details
-        return
+        return [], []
 
     @staticmethod
     def _get_task_overview_fields_details(
