@@ -73,7 +73,7 @@ from ib_common.logger.log_custom_formatter import LogCustomFormatter
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
+    'disable_existing_loggers': True,
     'filters': {
         'request_id': {
             '()': 'log_request_id.filters.RequestIDFilter'
