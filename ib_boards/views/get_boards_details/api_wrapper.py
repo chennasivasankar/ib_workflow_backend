@@ -17,7 +17,7 @@ def api_wrapper(*args, **kwargs):
     limit = params['limit']
 
     boards_dto = GetBoardsDTO(
-        user_id=user.id,
+        user_id=user.user_id,
         offset=offset,
         limit=limit
     )

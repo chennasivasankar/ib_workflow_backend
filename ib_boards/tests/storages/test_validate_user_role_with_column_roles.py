@@ -38,7 +38,7 @@ class TestInvalidUserRoleForColumn:
         ColumnPermissionFactory(column_id='COLUMN_ID_1', user_role_id='ADMIN')
 
         # Act
-        storage.validate_user_role_with_column_roles(user_role=user_role)
+        storage.validate_user_role_with_column_roles(user_role=user_role, column_id=column_id)
 
     def test_with_invalid_user_role_for_the_column(self, storage,
                                                    reset_sequence):
@@ -56,7 +56,7 @@ class TestInvalidUserRoleForColumn:
         from ib_boards.exceptions.custom_exceptions import \
             UserDoNotHaveAccessToColumn
         with pytest.raises(UserDoNotHaveAccessToColumn):
-            storage.validate_user_role_with_column_roles(user_role=user_role)
+            storage.validate_user_role_with_column_roles(user_role=user_role, column_id=column_id)
 
     def test_with_all_user_roles_for_the_column(self, storage, reset_sequence):
         # Arrange
@@ -71,4 +71,4 @@ class TestInvalidUserRoleForColumn:
                                 user_role_id='ALL_ROLES')
 
         # Act
-        storage.validate_user_role_with_column_roles(user_role=user_role)
+        storage.validate_user_role_with_column_roles(user_role=user_role, column_id=column_id)

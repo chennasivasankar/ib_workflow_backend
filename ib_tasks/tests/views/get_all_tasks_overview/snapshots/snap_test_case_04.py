@@ -27,12 +27,12 @@ snapshots['TestCase04GetAllTasksOverviewAPITestCase.test_case body'] = {
             'task_overview_fields': [
                 {
                     'field_display_name': 'DISPLAY_NAME-1',
-                    'field_response': 'response',
+                    'field_response': 'field_response_1',
                     'field_type': 'PLAIN_TEXT'
                 },
                 {
                     'field_display_name': 'DISPLAY_NAME-2',
-                    'field_response': 'response',
+                    'field_response': 'field_response_2',
                     'field_type': 'PLAIN_TEXT'
                 }
             ]
@@ -53,12 +53,12 @@ snapshots['TestCase04GetAllTasksOverviewAPITestCase.test_case body'] = {
             'task_overview_fields': [
                 {
                     'field_display_name': 'DISPLAY_NAME-1',
-                    'field_response': 'response',
+                    'field_response': 'field_response_1',
                     'field_type': 'PLAIN_TEXT'
                 },
                 {
                     'field_display_name': 'DISPLAY_NAME-2',
-                    'field_response': 'response',
+                    'field_response': 'field_response_2',
                     'field_type': 'PLAIN_TEXT'
                 }
             ]
@@ -79,12 +79,12 @@ snapshots['TestCase04GetAllTasksOverviewAPITestCase.test_case body'] = {
             'task_overview_fields': [
                 {
                     'field_display_name': 'DISPLAY_NAME-1',
-                    'field_response': 'response',
+                    'field_response': 'field_response_1',
                     'field_type': 'PLAIN_TEXT'
                 },
                 {
                     'field_display_name': 'DISPLAY_NAME-2',
-                    'field_response': 'response',
+                    'field_response': 'field_response_2',
                     'field_type': 'PLAIN_TEXT'
                 }
             ]

@@ -8,3 +8,6 @@ class Stage(models.Model):
     value = models.IntegerField()
     display_logic = models.TextField()
     field_display_config = models.TextField(max_length=400)
+
+    def __str__(self):
+        return self.stage_id
