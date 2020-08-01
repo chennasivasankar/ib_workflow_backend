@@ -31,7 +31,6 @@ class GetTaskFieldsAndActionsInteractor:
 
         valid_task_ids = self.storage.get_valid_task_ids(task_ids)
         self._validate_task_ids(task_ids, valid_task_ids)
-
         stage_task_dtos = task_dtos
         valid_stage_ids = self.stage_storage.get_existing_stage_ids(stage_ids)
         self._validate_stage_ids(stage_ids, valid_stage_ids)
