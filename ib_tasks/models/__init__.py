@@ -32,5 +32,9 @@ __all__ = [
     "Field", "FieldRole", "GoF", "GoFRole",
     "Stage", "StageAction", "TaskTemplateStatusVariables",
     "TaskTemplate", "Task", "TaskGoF", "TaskGoFField", "TaskLog",
-    "GlobalConstant", "TaskStage"
+    "GlobalConstant", "TaskStage",
+    "TaskTemplateGoFs",
+    "TaskTemplateStatusVariable",
+    "TaskTemplateStatusVariables",
+    "TaskTemplateInitialStage"
 ]
