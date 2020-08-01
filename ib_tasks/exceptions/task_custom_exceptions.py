@@ -2,14 +2,13 @@ from typing import List
 
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO
 
-
 class InvalidTaskException(Exception):
     def __init__(self, task_id: int):
         self.task_id = task_id
 
 
 class InvalidTaskIdException(Exception):
-    def __init__(self, task_id: str):
+    def __init__(self, task_id: int):
         self.task_id = task_id
 
 

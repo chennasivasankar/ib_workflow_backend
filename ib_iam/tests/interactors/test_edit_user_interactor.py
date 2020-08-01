@@ -323,5 +323,5 @@ class TestEditNewUserInteractor:
         adapter_mock.assert_called_once()
         storage_mock.add_roles_to_the_user.assert_called_once()
         storage_mock.add_user_to_the_teams.assert_called_once()
-        storage_mock.change_company_for_user.assert_called_once()
+        storage_mock.update_user_details.assert_called_once()
         presenter_mock.edit_user_success_response.assert_called_once()

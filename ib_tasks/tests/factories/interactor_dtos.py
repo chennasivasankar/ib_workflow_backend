@@ -11,9 +11,10 @@ from ib_tasks.constants.enum import Searchable
 from ib_tasks.interactors.stages_dtos import (StagesActionDTO,
                                               UserStagesWithPaginationDTO)
 
-
 from ib_tasks.interactors.stages_dtos import \
     TaskTemplateStageActionDTO, StageActionDTO, StagesActionDTO
+from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDetailsDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskDTO, GoFFieldsDTO, \
     FieldValuesDTO, GetTaskDetailsDTO
 
@@ -71,6 +72,25 @@ class GlobalConstantsDTOFactory(factory.Factory):
     constant_name = factory.sequence(lambda n: "Constant_{}".format(n + 1))
     value = factory.sequence(lambda n: n)
 
+class FieldDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldDetailsDTO
+
+    field_type = factory.Sequence(lambda n: 'field_type_%d' % (n + 1))
+    field_id = factory.Sequence(lambda n: "%d" % (n + 1))
+    key = factory.Sequence(lambda n: 'key_%d' % (n + 1))
+    value = factory.Sequence(lambda n: 'value_%d' % (n + 1))
+
+class ActionDetailsDTOFactory(factory.Factory):
+
+    class Meta:
+        model = ActionDetailsDTO
+
+    action_id = factory.Sequence(lambda n: (n + 1))
+    name = factory.Sequence(lambda n: 'name_%d' % (n + 1))
+    stage_id = factory.Sequence(lambda n: 'stage_%d' % (n + 1))
+    button_text = factory.Sequence(lambda n: 'button_text_%d' % (n + 1))
+    button_color = None
 
 class GoFWithOrderAndAddAnotherDTOFactory(factory.Factory):
     class Meta:
@@ -108,7 +128,7 @@ class FieldValuesDTOFactory(factory.Factory):
         model = FieldValuesDTO
 
     field_id = factory.sequence(lambda counter: "FIELD_ID-{}".format(counter))
-    field_value = factory.sequence(
+    field_response = factory.sequence(
         lambda counter: "FIELD_VALUE-{}".format(counter))
 
 
@@ -116,7 +136,8 @@ class GoFFieldsDTOFactory(factory.Factory):
     class Meta:
         model = GoFFieldsDTO
 
-    gof_id = factory.sequence(lambda counter: "GOF_ID-{}".format(counter))
+    gof_id = factory.sequence(lambda counter: "gof_{}".format(counter))
+    same_gof_order = 1
 
     @factory.LazyAttribute
     def field_values_dtos(self):
@@ -128,8 +149,12 @@ class TaskDTOFactory(factory.Factory):
     class Meta:
         model = TaskDTO
 
+    task_id = None
     task_template_id = factory.sequence(
         lambda counter: "TASK_TEMPLATE_ID-{}".format(counter))
+    action_id = factory.Sequence(
+        lambda counter: "ACTION-{}".format(counter))
+    created_by_id = "123e4567-e89b-12d3-a456-426614174000"
 
     @factory.LazyAttribute
     def gof_fields_dtos(self):

@@ -11,11 +11,14 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import TemplateFields
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
-    FieldRoleDTO, FieldTypeDTO, UserFieldPermissionDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFToTaskTemplateDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO,\
+    FieldRoleDTO, FieldCompleteDetailsDTO, UserFieldPermissionDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO, \
     StageValueWithTaskIdsDTO, TaskIdWithStageDetailsDTO, \
-    TaskIdWithStageValueDTO
+    TaskIdWithStageValueDTO, FieldDetailsDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
+    GoFRoleDTO, GoFToTaskTemplateDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
+    StageDTO, TaskStageIdsDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRoleDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
     StageDTO
@@ -151,7 +154,8 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_actions_of_templates_dtos(self) -> List[ActionsOfTemplateDTO]:
+    def get_actions_for_given_stage_ids(
+            self, stage_ids: List[int]) -> List[ActionsOfTemplateDTO]:
         pass
 
     @abc.abstractmethod
@@ -212,9 +216,9 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_field_types_for_given_field_ids(
+    def get_field_details_for_given_field_ids(
             self, field_ids: List[str]
-    ) -> List[FieldTypeDTO]:
+    ) -> List[FieldCompleteDetailsDTO]:
         pass
 
     @abc.abstractmethod
@@ -244,4 +248,8 @@ class TaskStorageInterface(abc.ABC):
             self, user_id: str, stage_values: List[int],
             task_ids_group_by_stage_value_dtos: List[StageValueWithTaskIdsDTO]) \
             -> [TaskIdWithStageDetailsDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_initial_stage_ids_of_templates(self) -> List[int]:
         pass

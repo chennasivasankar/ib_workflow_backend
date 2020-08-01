@@ -4,6 +4,8 @@ from ib_tasks.interactors.get_task_interactor \
     import GetTaskInteractor
 from ib_tasks.interactors.get_task_base_interactor \
     import GetTaskBaseInteractor
+from ib_tasks.interactors.get_task_stages_and_actions \
+    import GetTaskStagesAndActions
 
 
 class TestTaskInteractor:
@@ -13,6 +15,13 @@ class TestTaskInteractor:
         from ib_tasks.interactors.storage_interfaces.create_or_update_task_storage_interface \
             import CreateOrUpdateTaskStorageInterface
         storage = create_autospec(CreateOrUpdateTaskStorageInterface)
+        return storage
+
+    @pytest.fixture
+    def stages_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces.fields_storage_interface \
+            import FieldsStorageInterface
+        storage = create_autospec(FieldsStorageInterface)
         return storage
 
     @pytest.fixture
@@ -131,18 +140,99 @@ class TestTaskInteractor:
         return user_roles
 
     @pytest.fixture
-    def task_complete_details_dto(self, permission_task_details_dto):
+    def stage1_actions_dtos(self):
+        from ib_tasks.interactors.storage_interfaces.actions_dtos \
+            import ActionDTO
+        actions_dtos = [
+            ActionDTO(
+                action_id="action1",
+                name="action_name1",
+                stage_id="stage1",
+                button_text="button_text1",
+                button_color="blue"
+            ),
+            ActionDTO(
+                action_id="action2",
+                name="action_name2",
+                stage_id="stage1",
+                button_text="button_text2",
+                button_color="blue"
+            ),
+            ActionDTO(
+                action_id="action3",
+                name="action_name3",
+                stage_id="stage1",
+                button_text="button_text3",
+                button_color="blue"
+            )
+        ]
+        return actions_dtos
+
+    @pytest.fixture
+    def stage2_actions_dtos(self):
+        from ib_tasks.interactors.storage_interfaces.actions_dtos \
+            import ActionDTO
+        actions_dtos = [
+            ActionDTO(
+                action_id="action1",
+                name="action_name1",
+                stage_id="stage2",
+                button_text="button_text1",
+                button_color="blue"
+            ),
+            ActionDTO(
+                action_id="action2",
+                name="action_name2",
+                stage_id="stage2",
+                button_text="button_text2",
+                button_color="blue"
+            ),
+            ActionDTO(
+                action_id="action3",
+                name="action_name3",
+                stage_id="stage2",
+                button_text="button_text3",
+                button_color="blue"
+            )
+        ]
+        return actions_dtos
+
+    @pytest.fixture
+    def stages_and_actions_details_dtos(
+            self, stage1_actions_dtos,
+            stage2_actions_dtos
+    ):
+        from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
+        stages_and_actions_details_dtos = [
+            StageAndActionsDetailsDTO(
+                stage_id="stage1", name="stage_name1",
+                actions_dtos=stage1_actions_dtos
+            ),
+            StageAndActionsDetailsDTO(
+                stage_id="stage2", name="stage_name2",
+                actions_dtos=stage2_actions_dtos
+            )
+        ]
+        return stages_and_actions_details_dtos
+
+    @pytest.fixture
+    def task_complete_details_dto(
+            self, permission_task_details_dto,
+            stages_and_actions_details_dtos
+    ):
         from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
             import TaskCompleteDetailsDTO
         task_complete_details_dto = TaskCompleteDetailsDTO(
             task_id="task0",
-            task_details_dto=permission_task_details_dto
+            task_details_dto=permission_task_details_dto,
+            stages_and_actions_details_dtos=stages_and_actions_details_dtos
         )
         return task_complete_details_dto
 
     @patch.object(GetTaskBaseInteractor, 'get_task')
     def test_given_invalid_task_id_raise_exception(
-            self, get_task_mock, storage_mock, presenter_mock, mock_object
+            self, get_task_mock, storage_mock, presenter_mock,
+            mock_object, stages_storage_mock
     ):
         # Arrange
         from ib_tasks.exceptions.task_custom_exceptions \
@@ -151,7 +241,9 @@ class TestTaskInteractor:
         task_id = "task0"
         exception_object = InvalidTaskIdException(task_id)
         get_task_mock.side_effect = exception_object
-        interactor = GetTaskInteractor(storage=storage_mock)
+        interactor = GetTaskInteractor(
+            storage=storage_mock, stages_storage=stages_storage_mock
+        )
         presenter_mock.raise_exception_for_invalid_task_id.return_value = mock_object
 
         # Act
@@ -163,36 +255,15 @@ class TestTaskInteractor:
         presenter_mock.raise_exception_for_invalid_task_id. \
             assert_called_once_with(exception_object)
 
-    @patch.object(GetTaskBaseInteractor, 'get_task')
-    def test_given_valid_task_returns_task_details_dto(
-            self, get_task_mock, mocker, storage_mock, presenter_mock,
-            task_details_dto
-    ):
-        # Arrange
-        from ib_tasks.tests.common_fixtures.adapters.roles_service \
-            import get_user_role_ids
-        get_user_role_ids_mock_method = get_user_role_ids(mocker)
-
-        user_id = "user1"
-        task_id = "task0"
-        get_task_mock.return_value = task_details_dto
-        interactor = GetTaskInteractor(storage=storage_mock)
-
-        # Act
-        interactor.get_task_details_wrapper(
-            user_id=user_id, task_id=task_id, presenter=presenter_mock
-        )
-
-        # Assert
-        get_user_role_ids_mock_method.assert_called_once()
-
+    @patch.object(GetTaskStagesAndActions, "get_task_stages_and_actions")
     @patch.object(GetTaskBaseInteractor, 'get_task')
     def test_given_valid_task_returns_task_complete_details_dto(
-            self, get_task_mock, mocker, storage_mock, presenter_mock,
+            self, get_task_mock, get_task_stages_and_actions_mock,
+            mocker, storage_mock, presenter_mock, stages_storage_mock,
             task_details_dto, user_roles, gof_ids, permission_gof_ids,
             permission_task_gof_dtos, field_ids, permission_field_ids,
             permission_task_gof_field_dtos, task_complete_details_dto,
-            mock_object
+            mock_object, stages_and_actions_details_dtos
 
     ):
         # Arrange
@@ -203,7 +274,10 @@ class TestTaskInteractor:
         user_id = "user1"
         task_id = "task0"
         get_task_mock.return_value = task_details_dto
-        interactor = GetTaskInteractor(storage=storage_mock)
+        get_task_stages_and_actions_mock.return_value = stages_and_actions_details_dtos
+        interactor = GetTaskInteractor(
+            storage=storage_mock, stages_storage=stages_storage_mock
+        )
         storage_mock.get_gof_ids_having_permission.return_value = permission_gof_ids
         storage_mock.get_field_ids_having_permission.return_value = permission_field_ids
         presenter_mock.get_task_response.return_value = mock_object

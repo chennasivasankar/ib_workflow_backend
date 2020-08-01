@@ -134,7 +134,7 @@ class TestUpdateTaskStatusVariablesInteractor:
         ]
         path_name = "ib_tasks.populate.stage_actions_logic.stage_1_action_name_1"
         mock_obj = mocker.patch("importlib.import_module")
-        mock_obj.stage_1_action_name_1.return_value = 0
+        mock_obj.stage_1_action_name_1.return_value = mock_task_dict
         storage.get_path_name_to_action.return_value = path_name
         StatusVariableDTOFactory.reset_sequence()
         statuses = [StatusVariableDTOFactory()]

@@ -5,13 +5,14 @@ from typing import List, Optional
 @dataclass
 class ColumnParametersDTO:
     board_id: str
-    user_id: str
+    user_id: int
 
 
 @dataclass
-class TaskColumnDTO:
+class ColumnTasksDTO:
     column_id: str
-    task_id: str
+    stage_id: str
+    task_id: int
 
 
 @dataclass
@@ -94,10 +95,11 @@ class ColumnTasksParametersDTO:
 
 @dataclass
 class TaskDTO:
-    task_id: str
+    task_id: int
     field_type: str
     key: str
     value: str
+    stage_id: str
 
 
 @dataclass
@@ -106,7 +108,8 @@ class ActionDTO:
     name: str
     button_text: str
     button_color: str
-    task_id: str
+    task_id: int
+    stage_id: str
 
 
 @dataclass
@@ -117,7 +120,7 @@ class TaskStatusDTO:
 
 @dataclass
 class TaskIdStageDTO:
-    task_id: str
+    task_id: int
     stage_id: str
 
 
@@ -157,3 +160,10 @@ class TaskCompleteDetailsDTO:
     stage_id: str
     field_dtos: List[FieldDetailsDTO]
     action_dtos: List[ActionDetailsDTO]
+
+
+@dataclass
+class ColumnTotalTasksDTO:
+    column_id: str
+    total_tasks: int
+

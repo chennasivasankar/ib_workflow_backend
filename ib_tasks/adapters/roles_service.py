@@ -1,5 +1,5 @@
-
 from typing import List
+
 
 class RolesService:
 
@@ -9,6 +9,7 @@ class RolesService:
         return ServiceInterface()
 
     def get_db_roles(self):
+        # TODO: call service interface
         return ['FIN_PAYMENT_APPROVER', 'FIN_FINANCE_RP', 'FIN_ACCOUNTS_LEVEL4_VERIFIER', 'FIN_PAYMENTS_RP']
 
     def get_user_roles(self, user_id):

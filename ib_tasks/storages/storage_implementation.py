@@ -1,8 +1,7 @@
+
 from typing import List
 from typing import Optional
 
-from ib_tasks.interactors.stages_dtos import StageActionDTO, TemplateStageDTO
-from ib_tasks.interactors.stages_dtos import StageDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.stages_dtos import StageActionDTO
 from ib_tasks.interactors.stages_dtos import StageDTO
@@ -12,16 +11,15 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GOFMultipleEnableDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
-    StageValueDTO,StageDisplayValueDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    StageValueDTO, StageDisplayValueDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
     StageValueDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskTemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
-from ib_tasks.interactors.storage_interfaces.storage_interface \
-    import (
+from ib_tasks.interactors.storage_interfaces.storage_interface import (
     StorageInterface, GroupOfFieldsDTO,
     StatusVariableDTO, StageActionNamesDTO
 )
@@ -208,6 +206,7 @@ class StorageImplementation(StorageInterface):
                 status_variable_dict[status_variable_dto.status_id]
             status_obj.variable = status_variable_dto.status_variable
             status_obj.value = status_variable_dto.value
+            status_obj.save()
 
     @staticmethod
     def _get_status_variable_dict(status_variable_objs):
@@ -272,12 +271,12 @@ class StorageImplementation(StorageInterface):
         return StageAction.objects.filter(id=action_id).exists()
 
     def get_enable_multiple_gofs_field_to_gof_ids(
-            self, template_id: str, gof_ids: List[str]) -> List[GOFMultipleEnableDTO]:
+            self, template_id: str, gof_ids: List[str]) -> List[
+        GOFMultipleEnableDTO]:
 
         from ib_tasks.models import TaskTemplateGoFs
-        task_template_gofs = TaskTemplateGoFs.objects\
+        task_template_gofs = TaskTemplateGoFs.objects \
             .filter(gof_id__in=gof_ids, task_template_id=template_id)
-
         return [
             GOFMultipleEnableDTO(
                 group_of_field_id=task_template_gof.gof_id,
@@ -320,7 +319,8 @@ class StorageImplementation(StorageInterface):
 
         from ib_tasks.models.task import Task
         task_obj = Task.objects.get(id=task_id)
-        stage_objs = Stage.objects.filter(task_template_id=task_obj.template_id)
+        stage_objs = Stage.objects.filter(
+            task_template_id=task_obj.template_id)
 
         return [
             StageDisplayValueDTO(
@@ -330,3 +330,17 @@ class StorageImplementation(StorageInterface):
             )
             for stage_obj in stage_objs
         ]
+
+    def update_task_stages(self, task_id: int, stage_ids: List[str]):
+
+        TaskStage.objects.filter(task_id=task_id).delete()
+        stage_dict = {
+            obj.stage_id: obj
+            for obj in Stage.objects.filter(stage_id__in=stage_ids)
+        }
+
+        task_stage_objs = [
+            TaskStage(task_id=task_id, stage=stage_dict[stage_id])
+            for stage_id in stage_ids
+        ]
+        TaskStage.objects.bulk_create(task_stage_objs)

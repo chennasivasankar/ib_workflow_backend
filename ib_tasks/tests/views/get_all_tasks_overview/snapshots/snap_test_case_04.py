@@ -23,16 +23,16 @@ snapshots['TestCase04GetAllTasksOverviewAPITestCase.test_case body'] = {
                 'stage_display_name': 'name_2',
                 'stage_id': 'stage_id_2'
             },
-            'task_id': '1',
+            'task_id': 1,
             'task_overview_fields': [
                 {
                     'field_display_name': 'DISPLAY_NAME-1',
-                    'field_response': 'response',
+                    'field_response': 'field_response_1',
                     'field_type': 'PLAIN_TEXT'
                 },
                 {
                     'field_display_name': 'DISPLAY_NAME-2',
-                    'field_response': 'response',
+                    'field_response': 'field_response_2',
                     'field_type': 'PLAIN_TEXT'
                 }
             ]
@@ -49,16 +49,16 @@ snapshots['TestCase04GetAllTasksOverviewAPITestCase.test_case body'] = {
                 'stage_display_name': 'name_3',
                 'stage_id': 'stage_id_3'
             },
-            'task_id': '2',
+            'task_id': 2,
             'task_overview_fields': [
                 {
                     'field_display_name': 'DISPLAY_NAME-1',
-                    'field_response': 'response',
+                    'field_response': 'field_response_1',
                     'field_type': 'PLAIN_TEXT'
                 },
                 {
                     'field_display_name': 'DISPLAY_NAME-2',
-                    'field_response': 'response',
+                    'field_response': 'field_response_2',
                     'field_type': 'PLAIN_TEXT'
                 }
             ]
@@ -75,16 +75,16 @@ snapshots['TestCase04GetAllTasksOverviewAPITestCase.test_case body'] = {
                 'stage_display_name': 'name_4',
                 'stage_id': 'stage_id_4'
             },
-            'task_id': '3',
+            'task_id': 3,
             'task_overview_fields': [
                 {
                     'field_display_name': 'DISPLAY_NAME-1',
-                    'field_response': 'response',
+                    'field_response': 'field_response_1',
                     'field_type': 'PLAIN_TEXT'
                 },
                 {
                     'field_display_name': 'DISPLAY_NAME-2',
-                    'field_response': 'response',
+                    'field_response': 'field_response_2',
                     'field_type': 'PLAIN_TEXT'
                 }
             ]

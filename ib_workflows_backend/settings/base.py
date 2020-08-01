@@ -13,7 +13,8 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Quick-start development conf - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
@@ -67,13 +68,13 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = False
+USE_TZ = True
 
 from ib_common.logger.log_custom_formatter import LogCustomFormatter
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
+    'disable_existing_loggers': True,
     'filters': {
         'request_id': {
             '()': 'log_request_id.filters.RequestIDFilter'
@@ -143,7 +144,8 @@ LOGGING = {
             '()': LogCustomFormatter,
         },
         'console': {
-            'format': "[%(request_id)s] [ib_workflows_backend - "+os.environ.get("STAGE", "local")+
+            'format': "[%(request_id)s] [ib_workflows_backend - " + os.environ.get(
+                "STAGE", "local") +
                       '] %(levelname)-8s [%(asctime)s]  '
                       '[%(pathname)s] [%(filename)s]'
                       '[%(funcName)s] [%(lineno)d]: %(message)s',
@@ -190,7 +192,8 @@ INSTALLED_APPS = [
     'django.contrib.auth',  # django authentication
     'django.contrib.contenttypes',  # response content types used in admin
     'django.contrib.sessions',  # django sessions used in admin
-    'django.contrib.messages',  # info, success, error message in response. admin requires this
+    'django.contrib.messages',
+    # info, success, error message in response. admin requires this
     'django.contrib.staticfiles',  # host the static files
 ]
 
@@ -274,7 +277,6 @@ TEMPLATES = [
     },
 ]
 
-
 # *********************** Middleware *************************#
 
 MIDDLEWARE = [
@@ -283,12 +285,14 @@ MIDDLEWARE = [
     'ib_sentry_wrapper.utils.response_status_code_4xx_5xx_middleware.ResponseStatusCode4xx5xxMiddleware',
     'ib_sentry_wrapper.utils.request_id_middleware.RequestIdMiddleware',
     'ib_sentry_wrapper.utils.dsu_data_middleware.DSUDataMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',  # django sessions, usefull in admin
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    # django sessions, usefull in admin
     'corsheaders.middleware.CorsMiddleware',  # cors headers middleware
     'django.middleware.common.CommonMiddleware',
     # handling the url redirect, adding / in the end of url.
     # ref https://docs.djangoproject.com/en/1.9/ref/middleware/#django.middleware.common.CommonMiddleware
-    'django.contrib.auth.middleware.AuthenticationMiddleware',  # set request.user value after authenticating
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # set request.user value after authenticating
     'django.contrib.messages.middleware.MessageMiddleware',
     # messaging framework middleware, django admin requires this
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -298,9 +302,11 @@ MIDDLEWARE = [
 
 ### api log config
 
-MIDDLEWARE.insert(0, 'ib_common.logger.log_filters_middleware.LogFiltersMiddleware')
+MIDDLEWARE.insert(0,
+                  'ib_common.logger.log_filters_middleware.LogFiltersMiddleware')
 
 from django.utils.translation import ugettext_lazy as _
+
 LANGUAGES = (
     ('en', _('English')),
     ('te', _('Telugu')),
@@ -314,7 +320,8 @@ LOCALE_PATHS = (
 OTP_LIMIT = int(os.environ.get('OTP_LIMIT', 4))
 SMSCOUNTRY_USERNAME = os.environ.get('SMSCOUNTRY_USERNAME', '')
 SMSCOUNTRY_PASSWORD = os.environ.get('SMSCOUNTRY_PASSWORD', '')
-SMSCOUNTRY_DEFAULT_SENDER_ID = os.environ.get('SMSCOUNTRY_DEFAULT_SENDER_ID', 'IBHUBS')
+SMSCOUNTRY_DEFAULT_SENDER_ID = os.environ.get('SMSCOUNTRY_DEFAULT_SENDER_ID',
+                                              'IBHUBS')
 
 # sms & email
 import base64
@@ -323,7 +330,8 @@ EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
 EMAIL_HOST = str(os.environ.get("EMAIL_HOST", ""))
 EMAIL_PORT = str(os.environ.get("EMAIL_PORT", ""))
 EMAIL_HOST_USER = str(os.environ.get("EMAIL_HOST_USER", ""))
-EMAIL_HOST_PASSWORD = base64.b64decode(os.environ.get("EMAIL_HOST_PASSWORD", "")).decode("utf-8")
+EMAIL_HOST_PASSWORD = base64.b64decode(
+    os.environ.get("EMAIL_HOST_PASSWORD", "")).decode("utf-8")
 EMAIL_USE_TLS = str(os.environ.get("EMAIL_USE_TLS", ""))
 DEFAULT_SENDER_EMAIL = str(os.environ.get("DEFAULT_SENDER_EMAIL", ""))
 
@@ -341,6 +349,3 @@ RESET_PASSWORD_LINK = \
     os.environ.get(
         "RESET_PASSWORD_LINK",
         'https://127.0.0.1:8000/api/ib_iam/update_password/v1/?token=')
-
-
-AUTH_USER_MODEL = "ib_users.UserAccount"

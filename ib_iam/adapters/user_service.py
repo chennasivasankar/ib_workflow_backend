@@ -111,8 +111,15 @@ class UserService:
             UserProfileDTO(
                 user_id=user_dto.user_id,
                 name=user_dto.name,
-                profile_pic_url=user_dto.profile_pic_url,
+                profile_pic_url=self._get_user_profile_pic_url(
+                    user_dto.profile_pic_url),
             )
             for user_dto in user_dtos_from_service
         ]
         return basic_user_profile_dto
+
+    @staticmethod
+    def _get_user_profile_pic_url(profile_pic_url) -> str:
+        if profile_pic_url is None:
+            profile_pic_url = ""
+        return profile_pic_url

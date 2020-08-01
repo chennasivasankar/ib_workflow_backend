@@ -1,9 +1,7 @@
 from typing import List
-
-from ib_iam.interactors.DTOs.common_dtos import UserIdWithRoleIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, RoleIdAndNameDTO, TeamIdAndNameDTO, \
-    CompanyIdAndNameDTO
+    CompanyIdAndNameDTO, UserIdAndNameDTO
 from ib_iam.interactors.storage_interfaces.user_storage_interface \
     import UserStorageInterface
 
@@ -64,23 +62,26 @@ class UserStorageImplementation(UserStorageInterface):
                       for team_id in team_ids]
         UserTeam.objects.bulk_create(user_teams)
 
-    def change_company_for_user(self, company_id: str, user_id: str):
+    def update_user_details(self, company_id: str, user_id: str, name: str):
         from ib_iam.models import UserDetails
         user = UserDetails.objects.get(user_id=user_id)
         user.company_id = company_id
+        user.name = name
         user.save()
 
     def add_new_user(self, user_id: str, is_admin: bool, company_id: str,
-                     role_ids, team_ids: List[str]):
-        self.create_user(company_id, is_admin, user_id)
+                     role_ids, team_ids: List[str], name: str):
+        self.create_user(company_id, is_admin, user_id, name)
         self.add_user_to_the_teams(user_id, team_ids)
         self.add_roles_to_the_user(user_id, role_ids)
 
     @staticmethod
-    def create_user(company_id, is_admin, user_id):
+    def create_user(company_id, is_admin, user_id, name):
         from ib_iam.models import UserDetails
-        UserDetails.objects.create(user_id=user_id, is_admin=is_admin,
-                                   company_id=company_id)
+        UserDetails.objects.create(
+            user_id=user_id, is_admin=is_admin,
+            company_id=company_id, name=name
+        )
 
     def get_users_who_are_not_admins(self, offset, limit) -> List[UserDTO]:
         from ib_iam.models import UserDetails
@@ -199,3 +200,43 @@ class UserStorageImplementation(UserStorageInterface):
             user_id__in=user_ids
         ).values_list("user_id", flat=True)
         return list(valid_user_ids)
+
+    def get_user_details_dtos_based_on_limit_offset_and_search_query(
+            self, limit: int, offset: int, search_query: str
+    ) -> List[UserIdAndNameDTO]:
+        from ib_iam.models import UserDetails
+        user_details_objects = UserDetails.objects.filter(
+            name__icontains=search_query
+        )[offset: limit + offset]
+        user_details_dtos = self._convert_to_user_details_dtos(
+            user_details_objects=user_details_objects
+        )
+        return user_details_dtos
+
+    def get_user_details_dtos_based_on_search_query(
+            self, search_query: str
+    ) -> List[UserIdAndNameDTO]:
+        from ib_iam.models import UserDetails
+        user_details_objects = UserDetails.objects.filter(
+            name__icontains=search_query
+        )
+        user_details_dtos = self._convert_to_user_details_dtos(
+            user_details_objects=user_details_objects
+        )
+        return user_details_dtos
+
+    def _convert_to_user_details_dtos(self, user_details_objects):
+        user_details_dtos = [
+            self._convert_to_user_details_dto(
+                user_details_object=user_details_object)
+            for user_details_object in user_details_objects
+        ]
+        return user_details_dtos
+
+    @staticmethod
+    def _convert_to_user_details_dto(user_details_object):
+        user_details_dto = UserIdAndNameDTO(
+            user_id=user_details_object.user_id,
+            name=user_details_object.name
+        )
+        return user_details_dto

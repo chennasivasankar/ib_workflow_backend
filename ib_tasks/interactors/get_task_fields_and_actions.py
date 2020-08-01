@@ -1,17 +1,18 @@
 from typing import List
 
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidTaskStageIds
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds
+from ib_tasks.interactors.storage_interfaces.actions_dtos import \
+    ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    StageTaskFieldsDTO
+    StageTaskFieldsDTO, FieldDetailsDTO, TaskTemplateStageFieldsDTO, \
+    TaskAndFieldsDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
-    TaskStorageInterface
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 
 
@@ -21,7 +22,8 @@ class GetTaskFieldsAndActionsInteractor:
         self.storage = storage
         self.stage_storage = stage_storage
 
-    def get_task_fields_and_action(self, task_dtos: List[GetTaskDetailsDTO], user_id: str) -> \
+    def get_task_fields_and_action(self, task_dtos: List[GetTaskDetailsDTO],
+                                   user_id: str) -> \
             List[GetTaskStageCompleteDetailsDTO]:
         # TODO: validate user tasks
         task_ids = [task.task_id for task in task_dtos]
@@ -29,10 +31,10 @@ class GetTaskFieldsAndActionsInteractor:
 
         valid_task_ids = self.storage.get_valid_task_ids(task_ids)
         self._validate_task_ids(task_ids, valid_task_ids)
+
         stage_task_dtos = task_dtos
         valid_stage_ids = self.stage_storage.get_existing_stage_ids(stage_ids)
         self._validate_stage_ids(stage_ids, valid_stage_ids)
-
         valid_stage_and_tasks = self.storage.validate_task_related_stage_ids(
             task_dtos)
         self._validate_stage_and_tasks(valid_stage_and_tasks, task_dtos)
@@ -88,7 +90,11 @@ class GetTaskFieldsAndActionsInteractor:
         return
 
     def _map_fields_and_actions_based_on_their_stage_and_task_id(
-            self, action_dtos, field_dtos, stage_fields_dtos):
+            self,
+            action_dtos: List[ActionDetailsDTO],
+            field_dtos: List[TaskAndFieldsDTO],
+            stage_fields_dtos: List[TaskTemplateStageFieldsDTO]
+    ):
         list_of_task_details_dtos = []
         for task in stage_fields_dtos:
             list_of_field_dtos = self._get_list_of_fields_for_stage(
@@ -102,11 +108,17 @@ class GetTaskFieldsAndActionsInteractor:
         return list_of_task_details_dtos
 
     @staticmethod
-    def _get_task_stage_details(list_of_action_dtos, list_of_field_dtos, task):
-        return GetTaskStageCompleteDetailsDTO(task_id=task.task_id,
-                                              stage_id=task.stage_id,
-                                              field_dtos=list_of_field_dtos,
-                                              action_dtos=list_of_action_dtos)
+    def _get_task_stage_details(
+            list_of_action_dtos: List[ActionDetailsDTO],
+            list_of_field_dtos: List[FieldDetailsDTO],
+            task
+    ):
+        return GetTaskStageCompleteDetailsDTO(
+            task_id=task.task_id,
+            stage_id=task.stage_id,
+            field_dtos=list_of_field_dtos,
+            action_dtos=list_of_action_dtos
+        )
 
     @staticmethod
     def _get_list_of_fields_for_stage(field_dtos, task):

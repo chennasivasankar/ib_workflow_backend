@@ -14,39 +14,38 @@ from ib_tasks.populate.gofs_to_task_template import PopulateGoFsToTaskTemplate
 from ib_tasks.populate.populate_fields import PopulateFields
 from ib_tasks.populate.populate_gofs import PopulateGoFs
 from ib_tasks.populate.task_templates import PopulateTaskTemplates
+from django.db import transaction
 
 
-class PopulationUtils:
+@transaction.atomic()
+def populate_data():
+    task_template = PopulateTaskTemplates()
+    task_template.populate_task_templates()
 
-    @staticmethod
-    def populate_data():
-        task_template = PopulateTaskTemplates()
-        task_template.populate_task_templates()
+    roles = RoleDetails()
+    roles.add_roles_details_to_database(
+        GOOGLE_SHEET_NAME, ROLES_SUB_SHEET)
 
-        roles = RoleDetails()
-        roles.add_roles_details_to_database(
-            GOOGLE_SHEET_NAME, ROLES_SUB_SHEET)
+    gofs = PopulateGoFs()
+    gofs.create_or_update_gofs()
 
-        gofs = PopulateGoFs()
-        gofs.create_or_update_gofs()
+    template_gofs = PopulateGoFsToTaskTemplate()
+    template_gofs.populate_gofs_to_task_template()
 
-        template_gofs = PopulateGoFsToTaskTemplate()
-        template_gofs.populate_gofs_to_task_template()
+    fields = PopulateFields()
+    fields.create_fields()
 
-        fields = PopulateFields()
-        fields.create_fields()
+    global_constants = PopulateGlobalConstantsToTemplate()
+    global_constants.populate_global_constants_to_template()
 
-        global_constants = PopulateGlobalConstantsToTemplate()
-        global_constants.populate_global_constants_to_template()
+    status_variables = GetSheetDataForStatusVariables()
+    status_variables.get_data_from_status_variables_sub_sheet()
 
-        status_variables = GetSheetDataForStatusVariables()
-        status_variables.get_data_from_status_variables_sub_sheet()
+    stage_values = GetSheetDataForStages()
+    stage_values.get_data_from_stage_id_and_values_sub_sheet()
 
-        stage_values = GetSheetDataForStages()
-        stage_values.get_data_from_stage_id_and_values_sub_sheet()
+    stage_actions = GetSheetDataForStageActions()
+    stage_actions.get_data_from_stages_and_actions_sub_sheet()
 
-        stage_actions = GetSheetDataForStageActions()
-        stage_actions.get_data_from_stages_and_actions_sub_sheet()
-
-        task_creation_config = GetSheetDataForTaskCreationConfig()
-        task_creation_config.get_data_from_task_creation_config_sub_sheet()
+    task_creation_config = GetSheetDataForTaskCreationConfig()
+    task_creation_config.get_data_from_task_creation_config_sub_sheet()

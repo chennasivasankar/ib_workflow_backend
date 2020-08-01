@@ -9,3 +9,6 @@ class Stage(models.Model):
     display_logic = models.TextField()
     card_info_kanban = models.TextField()
     card_info_list = models.TextField()
+
+    def __str__(self):
+        return self.stage_id

@@ -78,6 +78,11 @@ USER_DO_NOT_HAVE_ACCESS = [
     "USER_DO_NOT_HAVE_ACCESS"
 ]
 
+USER_DO_NOT_HAVE_BOARD_ACCESS = [
+    "User do not have access to the board: {}",
+    "USER_DO_NOT_HAVE_ACCESS"
+]
+
 EMPTY_VALUE_FOR_PLAIN_TEXT_FIELD = [
     "got empty value in plain text field for field id: {}",
     "EMPTY_VALUE_FOR_PLAIN_TEXT_FIELD"
@@ -110,3 +115,86 @@ INVALID_ACTION_ID = [
 
 EMPTY_STAGE_IDS_ARE_INVALID = ["Stage Ids list should not be empty",
                                "EMPTY_STAGE_IDS_ARE_INVALID"]
+
+INVALID_PHONE_NUMBER_VALUE = (
+    "Invalid value for phone number: {} for field: {}",
+    "INVALID_PHONE_NUMBER_VALUE"
+)
+INVALID_EMAIL = (
+    "Invalid value for email: {} for field: {}",
+    "INVALID_EMAIL"
+)
+INVALID_URL = (
+    "Invalid value for url: {} for field: {}",
+    "INVALID_URL"
+)
+NOT_A_STRONG_PASSWORD = (
+    "Given a weak password: {} for field: {}! Try with atleast 8 characters including special characters",
+    "NOT_A_STRONG_PASSWORD"
+)
+INVALID_NUMBER_VALUE = (
+    "Invalid number: {} for field: {}! Number should only consists digits",
+    "INVALID_NUMBER_VALUE"
+)
+INVALID_FLOAT_VALUE = (
+    "Invalid float value: {} for field: {}!", "INVALID_FLOAT_VALUE"
+)
+INVALID_VALUE_FOR_DROPDOWN = (
+    "Invalid dropdown value: {} for field: {}! Try with these dropdown values: {}",
+    "INVALID_VALUE_FOR_DROPDOWN"
+)
+INCORRECT_NAME_IN_GOF_SELECTOR_FIELD = (
+    "Invalid gof_id: {} for field: {}! Try with these gof_id values: {}",
+    "INCORRECT_GOF_ID_IN_GOF_SELECTOR_FIELD"
+)
+INCORRECT_RADIO_GROUP_CHOICE = (
+    "Invalid radio group choice: {} for field: {}! Try with these valid options: {}",
+    "INCORRECT_RADIO_GROUP_CHOICE"
+)
+INCORRECT_CHECK_BOX_OPTIONS_SELECTED = (
+    "Invalid check box options selected: {} for field: {}! Try with these valid options: {}",
+    "INCORRECT_CHECK_BOX_OPTIONS_SELECTED"
+)
+INCORRECT_MULTI_SELECT_OPTIONS_SELECTED = (
+    "Invalid multi select options selected: {} for field: {}! Try with these valid options: {}",
+    "INCORRECT_MULTI_SELECT_OPTIONS_SELECTED"
+)
+INCORRECT_MULTI_SELECT_LABELS_SELECTED = (
+    "Invalid multi select labels selected: {} for field: {}! Try with these valid options: {}",
+    "INCORRECT_MULTI_SELECT_LABELS_SELECTED"
+)
+INVALID_DATE_FORMAT = (
+    "given invalid format for date: {} for field: {}! Try with this format: {}",
+    "INVALID_DATE_FORMAT"
+)
+INVALID_TIME_FORMAT = (
+    "given invalid format for time: {} for field: {}! Try with this format: {}",
+    "INVALID_TIME_FORMAT"
+)
+INVALID_IMAGE_FORMAT = (
+    "Invalid format for an image: {} for field: {}! Try with these formats: {}",
+    "INVALID_IMAGE_FORMAT"
+)
+INVALID_IMAGE_URL = (
+    "Invalid url for an image: {} for field: {}!", "INVALID_IMAGE_URL"
+)
+INVALID_FILE_URL = (
+    "Invalid url for a file: {} for field: {}!", "INVALID_FILE_URL"
+)
+INVALID_NAME_IN_GOF_SELECTOR_FIELD = (
+    "Invalid gof selector name: {} in gof_selector_field!",
+    "INVALID_NAME_IN_GOF_SELECTOR_FIELD"
+)
+INVALID_FILE_FORMAT = (
+    "Invalid format for a file: {} for field: {}! Try with these formats: {}",
+    "INVALID_FILE_FORMAT"
+)
+EMPTY_VALUE_FOR_REQUIRED_FIELD = [
+    "Given Empty value for the required field of field_id: {}! Required field should not be empty",
+    "EMPTY_VALUE_FOR_REQUIRED_FIELD"
+]
+
+TASK_CREATED_SUCCESSFULLY = (
+    "task created or updated successfully",
+    "TASK_CREATED_SUCCESSFULLY"
+)

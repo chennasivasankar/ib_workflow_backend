@@ -1,10 +1,20 @@
 import abc
 
+from ib_tasks.exceptions.field_values_custom_exceptions import \
+    InvalidPhoneNumberValue, EmptyValueForPlainTextField, \
+    InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
+    InvalidNumberValue, InvalidFloatValue, InvalidValueForDropdownField, \
+    InvalidGoFIDsInGoFSelectorField, IncorrectNameInGoFSelectorField, \
+    IncorrectRadioGroupChoice, IncorrectCheckBoxOptionsSelected, \
+    IncorrectMultiSelectOptionsSelected, IncorrectMultiSelectLabelsSelected, \
+    InvalidDateFormat, InvalidTimeFormat, CouldNotReadImage, NotAnImageUrl, \
+    InvalidImageFormat, InvalidUrlForImage, InvalidUrlForFile, \
+    EmptyValueForRequiredField, InvalidFileFormat
 from ib_tasks.exceptions.fields_custom_exceptions import \
     DuplicationOfFieldIdsExist, InvalidFieldIds
-from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
-    EmptyValueForPlainTextField
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateIds
+from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateIds, \
+    InvalidTaskException
 
 
 class CreateOrUpdateTaskPresenterInterface(abc.ABC):
@@ -36,7 +46,103 @@ class CreateOrUpdateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def raise_exception_for_invalid_name_in_gof_selector_field_value(
+            self, err: IncorrectNameInGoFSelectorField
+    ):
+        pass
+
+    @abc.abstractmethod
     def raise_exception_for_empty_value_in_plain_text_field(
             self, err: EmptyValueForPlainTextField
     ):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_phone_number_value(self, err: InvalidPhoneNumberValue):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_email_address(self, err: InvalidEmailFieldValue):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_url_address(self, err: InvalidURLValue):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_weak_password(self, err: NotAStrongPassword):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_number_value(self, err: InvalidNumberValue):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_float_value(self, err: InvalidFloatValue):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_dropdown_value(
+            self, err: InvalidValueForDropdownField
+    ):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_choice_in_radio_group_field(
+            self, err: IncorrectRadioGroupChoice
+    ):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_checkbox_group_options_selected(
+            self, err: IncorrectCheckBoxOptionsSelected
+    ):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_multi_select_options_selected(
+            self, err: IncorrectMultiSelectOptionsSelected
+    ):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_multi_select_labels_selected(
+            self, err: IncorrectMultiSelectLabelsSelected
+    ):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_date_format(self, err: InvalidDateFormat):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_time_format(self, err: InvalidTimeFormat):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_not_acceptable_image_format(self, err: InvalidImageFormat):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_image_url(self, err: InvalidUrlForImage):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_file_url(self, err: InvalidUrlForFile):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_empty_value_in_required_field(
+        self, err: EmptyValueForRequiredField
+    ):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_not_acceptable_file_format(
+        self, err: InvalidFileFormat
+    ):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_task_id(self, err: InvalidTaskException):
         pass

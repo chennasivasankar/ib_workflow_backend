@@ -1,5 +1,3 @@
-import os
-
 from ib_workflows_backend.settings.base import *
 
 # swagger utils #
@@ -22,11 +20,13 @@ from django_swagger_utils.drf_server.utils.general.import_app_settings import \
 
 THIRD_PARTY_APPS = [
     "ib_users",
+    "s3_uploader"
 ]
 APPS = [
     "ib_iam",
     "ib_tasks",
-    "ib_boards"
+    "ib_boards",
+    "ib_discussions",
 ]
 
 INSTALLED_APPS += THIRD_PARTY_APPS
@@ -72,6 +72,7 @@ SWAGGER_UTILS = {
         "ib_iam": {"dsu_version": "1.0"},
         "ib_tasks": {"dsu_version": "1.0"},
         "ib_boards": {"dsu_version": "1.0"},
+        "ib_discussions": {"dsu_version": "1.0"},
     },
     "HOST": os.environ.get('APIGATEWAY_ENDPOINT', '127.0.0.1:8000'),
 }
@@ -82,3 +83,23 @@ API_KEY_AUTHENTICATION_CLASS = \
 CUSTOM_EXCEPTIONS_TO_LOG_IN_SENTRY = []
 
 AUTH_USER_MODEL = "ib_users.UserAccount"
+
+DEFAULT_OAUTH_APPLICATION_NAME = os.environ.get(
+    "DEFAULT_OAUTH_APPLICATION_NAME", "")
+DEFAULT_OAUTH_CLIENT_ID = os.environ.get("DEFAULT_OAUTH_CLIENT_ID", "")
+DEFAULT_OAUTH_CLIENT_SECRET = os.environ.get("DEFAULT_OAUTH_CLIENT_SECRET", "")
+DEFAULT_OAUTH_SCOPES = os.environ.get("DEFAULT_OAUTH_SCOPES", "read write")
+DEFAULT_ACCESS_TOKEN_EXPIRY_IN_SECONDS = int(
+    os.environ.get("DEFAULT_ACCESS_TOKEN_EXPIRY_IN_SECONDS", "100000000"))
+
+
+# ****************** S3 Uploader Config ******************
+S3_COGNITO_POOL_REGION_NAME = os.environ.get("S3_COGNITO_POOL_REGION_NAME")
+S3_COGNITO_IDENTITY_POOL_ID = os.environ.get("S3_COGNITO_IDENTITY_POOL_ID")
+S3_COGNITO_DEVELOPER_IDENTITY_NAME = os.environ.get(
+    "S3_COGNITO_DEVELOPER_IDENTITY_NAME")
+
+S3_UPLOADER_FOLDER_PREFIX = "uploads"
+S3_UPLOADER_OBJECT_ACL = "public-read"
+S3_UPLOADER_URL_TYPE = "cloudfront"
+

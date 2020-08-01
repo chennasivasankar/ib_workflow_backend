@@ -22,7 +22,6 @@ class FieldsStorageInterface(abc.ABC):
             List[ActionDetailsDTO]:
         pass
 
-
     @abc.abstractmethod
     def get_fields_details(self, template_stage_dtos: List[StageTaskFieldsDTO]) -> \
             List[TaskAndFieldsDTO]:

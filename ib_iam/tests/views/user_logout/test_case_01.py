@@ -1,5 +1,5 @@
 """
-Update user password
+User Logout from all devices
 """
 
 import pytest

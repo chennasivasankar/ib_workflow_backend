@@ -103,3 +103,44 @@ class BasicUserDetailsDTO:
     user_id: str
     name: str
     profile_pic_url: str
+
+
+@dataclass
+class UserIdAndNameDTO:
+    user_id: str
+    name: str
+
+
+@dataclass
+class EmployeeDTO:
+    employee_id: str
+    name: str
+    profile_pic_url: str
+
+
+@dataclass
+class CompanyNameLogoAndDescriptionDTO:
+    name: str
+    description: str
+    logo_url: str
+
+
+@dataclass
+class CompanyDTO(CompanyNameLogoAndDescriptionDTO):
+    company_id: str
+
+
+@dataclass
+class CompanyIdWithEmployeeIdsDTO:
+    company_id: str
+    employee_ids: List[str]
+
+
+@dataclass
+class CompanyDetailsWithUserIdsDTO(CompanyNameLogoAndDescriptionDTO):
+    user_ids: List[str]
+
+
+@dataclass
+class CompanyWithUserIdsDTO(CompanyDetailsWithUserIdsDTO):
+    company_id: str

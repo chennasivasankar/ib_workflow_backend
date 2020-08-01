@@ -101,11 +101,17 @@ class TestGetBoardsInteractor:
         assert actual_response == expected_response
 
     def test_with_invalid_offset_value_return_error_message(
-            self, storage_mock, presenter_mock, get_boards_dto_invalid_offset):
+            self, storage_mock, presenter_mock, get_boards_dto_invalid_offset, mocker):
         # Arrange
         expected_response = Mock()
         interactor = GetBoardsInteractor(
             storage=storage_mock
+        )
+        user_role = 'User'
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            adapter_mock_to_get_user_role
+        adapter_mock = adapter_mock_to_get_user_role(
+            mocker=mocker, user_role=user_role
         )
         presenter_mock.get_response_for_invalid_offset. \
             return_value = expected_response
@@ -121,11 +127,17 @@ class TestGetBoardsInteractor:
         assert actual_response == expected_response
 
     def test_with_invalid_limit_value_return_error_message(
-            self, storage_mock, presenter_mock, get_boards_dto_invalid_limit):
+            self, storage_mock, presenter_mock, get_boards_dto_invalid_limit, mocker):
         # Arrange
         expected_response = Mock()
         interactor = GetBoardsInteractor(
             storage=storage_mock
+        )
+        user_role = 'User'
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            adapter_mock_to_get_user_role
+        adapter_mock = adapter_mock_to_get_user_role(
+            mocker=mocker, user_role=user_role
         )
         presenter_mock.get_response_for_invalid_limit. \
             return_value = expected_response
@@ -152,6 +164,12 @@ class TestGetBoardsInteractor:
         interactor = GetBoardsInteractor(
             storage=storage_mock
         )
+        user_role = 'User'
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            adapter_mock_to_get_user_role
+        adapter_mock = adapter_mock_to_get_user_role(
+            mocker=mocker, user_role=user_role
+        )
         expected_response = Mock()
         storage_mock.get_board_ids.return_value = board_ids
         presenter_mock.get_response_for_get_boards. \
@@ -167,7 +185,7 @@ class TestGetBoardsInteractor:
 
         # Assert
         storage_mock.get_board_ids.assert_called_once_with(
-            user_role=None
+            user_role=user_role
         )
         interactor_mock.assert_called_once_with(
             board_ids=board_ids_need_to_send
@@ -190,6 +208,12 @@ class TestGetBoardsInteractor:
         interactor = GetBoardsInteractor(
             storage=storage_mock
         )
+        user_role = 'User'
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            adapter_mock_to_get_user_role
+        adapter_mock = adapter_mock_to_get_user_role(
+            mocker=mocker, user_role=user_role
+        )
         expected_response = Mock()
         storage_mock.get_board_ids.return_value = board_ids
         presenter_mock.get_response_for_offset_exceeds_total_tasks. \
@@ -205,7 +229,7 @@ class TestGetBoardsInteractor:
 
         # Assert
         storage_mock.get_board_ids.assert_called_once_with(
-            user_role=None
+            user_role=user_role
         )
         presenter_mock.get_response_for_offset_exceeds_total_tasks. \
             assert_called_once_with()

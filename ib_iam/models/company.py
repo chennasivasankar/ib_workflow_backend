@@ -12,3 +12,4 @@ class Company(models.Model):
                                   editable=False)
     name = models.CharField(max_length=1000)
     description = models.CharField(max_length=1000)
+    logo_url = models.URLField(max_length=1000)

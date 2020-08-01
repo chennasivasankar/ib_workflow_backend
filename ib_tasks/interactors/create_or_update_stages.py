@@ -2,12 +2,12 @@ import json
 from typing import List
 
 from ib_boards.exceptions.custom_exceptions import InvalidTemplateFields
+from ib_tasks.exceptions.stage_custom_exceptions import (
+    InvalidStageValues, DuplicateStageIds, InvalidStageDisplayLogic,
+    InvalidStagesDisplayName)
+from ib_tasks.exceptions.task_custom_exceptions import \
+    InvalidStagesTaskTemplateId, InvalidTaskTemplateIds
 from ib_tasks.interactors.stages_dtos import StageLogicAttributes, StageDTO
-from ib_tasks.interactors.stage_display_logic import StageDisplayLogicInteractor
-
-from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageValues, DuplicateStageIds, InvalidStageDisplayLogic, \
-    InvalidStagesDisplayName
-from ib_tasks.exceptions.task_custom_exceptions import InvalidStagesTaskTemplateId, InvalidTaskTemplateIds
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
@@ -15,7 +15,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 
 
-class CreateOrUpdateStagesInterface:
+class CreateOrUpdateStagesInteractor:
     def __init__(self, stage_storage: StageStorageInterface,
                  task_storage: TaskStorageInterface):
         self.stage_storage = stage_storage
@@ -41,7 +41,8 @@ class CreateOrUpdateStagesInterface:
         self._validate_task_related_field_ids(stages_details, task_fields_dtos)
         self._create_or_update_stages(existing_stage_ids, stages_details)
 
-    def _validate_task_related_field_ids(self, stage_details, task_fields_dtos):
+    def _validate_task_related_field_ids(self, stage_details,
+                                         task_fields_dtos):
 
         if not task_fields_dtos:
             task_template_ids = [stage.task_template_id
@@ -102,13 +103,13 @@ class CreateOrUpdateStagesInterface:
 
     @staticmethod
     def _validate_stage_display_logic(stages_details):
-        list_of_logic_attributes = []
-        invalid_stage_display_logic_stages = [
-            stage.stage_id for stage in stages_details
-            if stage.stage_display_logic == ""
-        ]
-        if invalid_stage_display_logic_stages:
-            raise InvalidStageDisplayLogic(invalid_stage_display_logic_stages)
+        # list_of_logic_attributes = []
+        # invalid_stage_display_logic_stages = [
+        #     stage.stage_id for stage in stages_details
+        #     if stage.stage_display_logic == ""
+        # ]
+        # if invalid_stage_display_logic_stages:
+        #     raise InvalidStageDisplayLogic(invalid_stage_display_logic_stages)
 
         # TODO: validate stage display logic
         # for stage in stages_details:
@@ -119,6 +120,7 @@ class CreateOrUpdateStagesInterface:
         #     list_of_logic_attributes.append(stage_logic_attributes_dto)
         #
         # self._validate_stage_display_logic_attributes(list_of_logic_attributes)
+        pass
 
     def _validate_stage_display_logic_attributes(
             self, list_of_logic_attributes: List[StageLogicAttributes]):
@@ -142,7 +144,8 @@ class CreateOrUpdateStagesInterface:
     @staticmethod
     def _validate_stage_display_name(stages_details):
         invalid_stage_display_name_stages = [
-            stage.stage_id for stage in stages_details if stage.stage_display_name == ""
+            stage.stage_id for stage in stages_details if
+            stage.stage_display_name == ""
         ]
         if invalid_stage_display_name_stages:
             raise InvalidStagesDisplayName(invalid_stage_display_name_stages)
@@ -162,7 +165,8 @@ class CreateOrUpdateStagesInterface:
 
     @staticmethod
     def _get_task_template_ids(stages_details: List[StageDTO]):
-        task_template_ids = [stage.task_template_id for stage in stages_details]
+        task_template_ids = [stage.task_template_id for stage in
+                             stages_details]
         return task_template_ids
 
     def _validate_task_template_ids(self, task_template_ids: List[str]):

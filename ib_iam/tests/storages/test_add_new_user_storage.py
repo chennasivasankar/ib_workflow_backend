@@ -44,6 +44,7 @@ class TestAddNewUserStorage:
             self, reset_sequence_for_model_factories, companies, roles, teams):
         # Arrange
         user_id = "user_1"
+        name = "test_name"
         is_admin = True
         team_ids = ["ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
                     "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"]
@@ -55,7 +56,9 @@ class TestAddNewUserStorage:
         # Act
         storage.add_new_user(
             user_id=user_id, is_admin=is_admin,
-            company_id=company_id, role_ids=role_ids, team_ids=team_ids)
+            company_id=company_id, role_ids=role_ids, team_ids=team_ids,
+            name=name
+        )
 
         # Assert
         from ib_iam.models import UserDetails
