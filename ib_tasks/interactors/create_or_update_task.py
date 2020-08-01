@@ -22,6 +22,10 @@ from ib_tasks.interactors.storage_interfaces. \
     CreateOrUpdateTaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldDetailsDTO, FieldCompleteDetailsDTO
+from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
+    FieldsStorageInterface
+from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
+    StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFWithTaskIdDTO, \
     TaskGoFDetailsDTO
@@ -46,11 +50,14 @@ class CreateOrUpdateTaskInteractor:
     def __init__(
             self, task_storage: TaskStorageInterface,
             create_task_storage: CreateOrUpdateTaskStorageInterface,
-            storage: StorageInterface
+            storage: StorageInterface, field_storage: FieldsStorageInterface,
+            stage_storage: StageStorageInterface
     ):
         self.task_storage = task_storage
         self.create_task_storage = create_task_storage
         self.storage = storage
+        self.field_storage = field_storage
+        self.stage_storage = stage_storage
 
     def create_or_update_task_wrapper(
             self, presenter: CreateOrUpdateTaskPresenterInterface,
@@ -72,7 +79,8 @@ class CreateOrUpdateTaskInteractor:
         except IncorrectNameInGoFSelectorField as err:
             return presenter. \
                 raise_exception_for_invalid_name_in_gof_selector_field_value(
-                err)
+                    err
+                )
         except EmptyValueForRequiredField as err:
             return presenter. \
                 raise_exception_for_empty_value_in_required_field(err)
@@ -91,11 +99,6 @@ class CreateOrUpdateTaskInteractor:
             return presenter.raise_exception_for_invalid_float_value(err)
         except InvalidValueForDropdownField as err:
             return presenter.raise_exception_for_invalid_dropdown_value(err)
-        except IncorrectNameInGoFSelectorField as err:
-            return presenter. \
-                raise_exceptions_for_invalid_gof_id_selected_in_gof_selector(
-                err
-            )
         except IncorrectRadioGroupChoice as err:
             return presenter. \
                 raise_exception_for_invalid_choice_in_radio_group_field(err)
@@ -152,7 +155,6 @@ class CreateOrUpdateTaskInteractor:
             field_values_dto.field_id
             for field_values_dto in field_values_dtos
         ]
-        # self._validate_for_duplicate_field_ids(field_ids)
         self._validate_for_invalid_gof_ids(gof_ids)
         self._validate_for_invalid_field_ids(field_ids)
         self._validate_field_values(field_values_dtos)
@@ -167,7 +169,12 @@ class CreateOrUpdateTaskInteractor:
             user_id=task_dto.created_by_id, board_id=None,
             task_id=task_dto.task_id,
             action_id=task_dto.action_id,
-            storage=self.storage
+            storage=self.storage, gof_storage=self.create_task_storage,
+            field_storage=self.field_storage, stage_storage=self.stage_storage
+        )
+
+        self.create_task_storage.set_status_variables_for_template_and_task(
+            task_dto.task_template_id, task_dto.task_id
         )
         act_on_task_interactor.user_action_on_task(act_on_task_presenter)
 
@@ -704,14 +711,6 @@ class CreateOrUpdateTaskInteractor:
                 for field_value_dto in gof_fields_dto.field_values_dtos
             ]
         return field_values_dtos
-
-    def _validate_for_duplicate_field_ids(
-            self, field_ids: List[str]
-    ) -> Optional[DuplicationOfFieldIdsExist]:
-        duplicate_field_ids = self._get_duplicates_in_given_list(field_ids)
-        if duplicate_field_ids:
-            raise DuplicationOfFieldIdsExist(duplicate_field_ids)
-        return
 
     @staticmethod
     def _get_duplicates_in_given_list(values: List):
