@@ -53,12 +53,13 @@ class GetSheetDataForStages:
                 "Card Info_Kanban": str,
                 "Card Info_List": str,
                 "Value": int,
-                "Stage Display Logic": And(str, len)
+                "Stage Display Logic": str
             }]
         )
         try:
             schema.validate(actions_dict)
         except SchemaError:
+            print("actions_dict: ", actions_dict)
             self._raise_exception_for_valid_stage_format()
 
     def _raise_exception_for_valid_stage_format(self):

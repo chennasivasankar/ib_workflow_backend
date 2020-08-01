@@ -9,8 +9,10 @@ from ib_tasks.populate.gofs_to_task_template import PopulateGoFsToTaskTemplate
 from ib_tasks.populate.populate_fields import PopulateFields
 from ib_tasks.populate.populate_gofs import PopulateGoFs
 from ib_tasks.populate.task_templates import PopulateTaskTemplates
+from django.db import transaction
 
 
+@transaction.atomic()
 def populate_data():
     task_template = PopulateTaskTemplates()
     task_template.populate_task_templates()
