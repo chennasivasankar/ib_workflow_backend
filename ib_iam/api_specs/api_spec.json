@@ -87,8 +87,7 @@
       },
       "required": [
         "employee_id",
-        "name",
-        "profile_pic_url"
+        "name"
       ]
     },
     "UserWithExtraFields": {
