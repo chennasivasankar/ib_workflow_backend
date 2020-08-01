@@ -10,11 +10,14 @@ from typing import List, Optional, Tuple
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
-    FieldRoleDTO, FieldTypeDTO, UserFieldPermissionDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFToTaskTemplateDTO
+    FieldRoleDTO, FieldCompleteDetailsDTO, UserFieldPermissionDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO,\
     StageValueWithTaskIdsDTO, TaskIdWithStageDetailsDTO, \
-    TaskIdWithStageValueDTO
+    TaskIdWithStageValueDTO, FieldDetailsDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
+    GoFRoleDTO, GoFToTaskTemplateDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
+    StageDTO, TaskStageIdsDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRoleDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
     StageDTO
@@ -211,9 +214,9 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_field_types_for_given_field_ids(
+    def get_field_details_for_given_field_ids(
             self, field_ids: List[str]
-    ) -> List[FieldTypeDTO]:
+    ) -> List[FieldCompleteDetailsDTO]:
         pass
 
     @abc.abstractmethod

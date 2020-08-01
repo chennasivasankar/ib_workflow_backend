@@ -34,6 +34,13 @@ class TestCase02GetTaskAPITestCase(TestUtils):
         GoFRoleFactory.reset_sequence()
         GoFFactory.reset_sequence()
         FieldRoleFactory.reset_sequence()
+        FieldFactory.reset_sequence()
+        TaskGoFFieldFactory.reset_sequence()
+        StageModelFactory.reset_sequence()
+        TaskStageModelFactory.reset_sequence()
+        StageActionFactory.reset_sequence()
+
+
 
     @pytest.fixture
     def setup(self, reset_factories):
