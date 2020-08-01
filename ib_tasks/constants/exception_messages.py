@@ -198,3 +198,5 @@ TASK_CREATED_SUCCESSFULLY = (
     "task created or updated successfully",
     "TASK_CREATED_SUCCESSFULLY"
 )
+
+INVALID_TASK_JSON = ("Task Json should not be empty", "INVALID_TASK_JSON")

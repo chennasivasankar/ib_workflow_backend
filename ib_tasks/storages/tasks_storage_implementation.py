@@ -29,7 +29,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TaskTemplateDTO
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, CreateTaskLogDTO
 from ib_tasks.models import GoFRole, GoF, TaskStage
 from ib_tasks.models import Stage, StageAction
 from ib_tasks.models import TaskTemplateStatusVariable
@@ -789,3 +789,9 @@ class TasksStorageImplementation(TaskStorageInterface):
                 )
             )
         return task_fields_dtos
+
+    def check_is_task_exists(self, task_id: int) -> bool:
+        pass
+
+    def create_task_log(self, create_task_log_dto: CreateTaskLogDTO):
+        pass

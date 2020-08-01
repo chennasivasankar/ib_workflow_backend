@@ -16,7 +16,7 @@ from ib_tasks.interactors.stages_dtos import \
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskDTO, GoFFieldsDTO, \
-    FieldValuesDTO, GetTaskDetailsDTO
+    FieldValuesDTO, GetTaskDetailsDTO, CreateTaskLogDTO
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
@@ -197,3 +197,13 @@ class UserStagesWithPaginationDTOFactory(factory.Factory):
     user_id = factory.sequence(lambda n: "user_{}".format(n + 1))
     limit = factory.Sequence(lambda n: n + 1)
     offset = factory.Sequence(lambda n: n + 1)
+
+
+class CreateTaskLogDTOFactory(factory.Factory):
+    class Meta:
+        model = CreateTaskLogDTO
+
+    task_json = factory.sequence(lambda n: "{{'task_json'_'{}'}}".format(n))
+    task_id = factory.sequence(lambda n: n)
+    user_id = factory.sequence(lambda n: "user_{}".format(n))
+    action_id = factory.sequence(lambda n:n)

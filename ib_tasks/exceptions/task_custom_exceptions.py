@@ -54,3 +54,13 @@ class TaskTemplatesDoesNotExists(Exception):
 class InvalidTaskIds(Exception):
     def __init__(self, task_ids: List[str]):
         self.invalid_task_ids = task_ids
+
+
+class InvalidTaskJson(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class TaskDoesNotExists(Exception):
+    def __init__(self, message: str):
+        self.message = message

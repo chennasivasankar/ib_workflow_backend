@@ -28,6 +28,7 @@ from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionsOfTemplateDTO
+from ib_tasks.interactors.task_dtos import CreateTaskLogDTO
 
 
 class TaskStorageInterface(abc.ABC):
@@ -252,4 +253,12 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_initial_stage_ids_of_templates(self) -> List[int]:
+        pass
+
+    @abc.abstractmethod
+    def check_is_task_exists(self, task_id: int) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def create_task_log(self, create_task_log_dto: CreateTaskLogDTO):
         pass
