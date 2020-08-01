@@ -1,6 +1,7 @@
 """
 get all discussions
 """
+import datetime
 from uuid import UUID
 
 import pytest
@@ -75,10 +76,12 @@ class TestCase01GetDiscussionsAPITestCase(TestUtils):
             UUID('f59c5963-271f-4c3c-8761-c801bd2a83db')
         ]
         from ib_discussions.tests.factories.models import DiscussionFactory
+        DiscussionFactory.created_at.reset()
         for discussion_id in discussion_ids:
             DiscussionFactory(
                 discussion_set_id=discussion_set_id,
-                id=discussion_id
+                id=discussion_id,
+                created_at=datetime.datetime(2008, 1, 1, tzinfo=datetime.timezone.utc)
             )
 
         from ib_discussions.constants.enum import EntityType
