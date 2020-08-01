@@ -24,6 +24,7 @@ GOOGLE_SHEET_NAME = "Vendor Configuration_v0"
 TASK_TEMPLATE_SUB_SHEET_TITLE = "Task Templates"
 GOF_SUB_SHEET_TITLE = "GOF"
 FIELD_SUB_SHEET_TITLE = "Fields"
+GLOBAL_CONSTANTS_SUB_SHEET_TITLE = "Global Constants"
 
 SEARCHABLE_TYPES = [searchable_type.value for searchable_type in Searchable]
 UPLOADERS = [FieldTypes.IMAGE_UPLOADER.value, FieldTypes.FILE_UPLOADER.value]
