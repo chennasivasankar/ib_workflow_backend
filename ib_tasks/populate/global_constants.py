@@ -1,4 +1,6 @@
 from typing import List
+
+from ib_tasks.constants.constants import GOOGLE_SHEET_NAME
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO, GlobalConstantsWithTemplateIdDTO
 from ib_tasks.utils.get_google_sheet import get_google_sheet
 
@@ -6,7 +8,7 @@ from ib_tasks.utils.get_google_sheet import get_google_sheet
 class PopulateGlobalConstantsToTemplate:
 
     def populate_global_constants_to_template(self):
-        sheet = get_google_sheet()
+        sheet = get_google_sheet(sheet_name=GOOGLE_SHEET_NAME)
         global_constants_with_template_ids_dicts = \
             sheet.worksheet("Global Constants").get_all_records()
 

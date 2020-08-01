@@ -8,12 +8,12 @@ def populate_stages_values(list_of_stages_dict: List[Dict]):
                    for stage_dict in list_of_stages_dict]
 
     from ib_tasks.interactors.create_or_update_stages \
-        import CreateOrUpdateStagesInterface
+        import CreateOrUpdateStagesInteractor
     from ib_tasks.storages.tasks_storage_implementation import \
         TasksStorageImplementation
     from ib_tasks.storages.storage_implementation import \
         StagesStorageImplementation
-    interactor = CreateOrUpdateStagesInterface(
+    interactor = CreateOrUpdateStagesInteractor(
         stage_storage=StagesStorageImplementation(),
         task_storage=TasksStorageImplementation()
     )
