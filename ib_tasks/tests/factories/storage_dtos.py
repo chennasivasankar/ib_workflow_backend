@@ -1,3 +1,5 @@
+import json
+
 import factory
 
 from ib_tasks.constants.constants import VALID_FIELD_TYPES
@@ -41,6 +43,8 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO, GoFToTaskTemplateDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import (TaskStagesDTO,
+    TaskTemplateStageDTO)
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (TaskStagesDTO)
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     StatusVariableDTO
@@ -195,16 +199,18 @@ class StageDTOFactory(factory.Factory):
     class Meta:
         model = StageDTO
 
-    stage_id = factory.Sequence(lambda n: 'stage_id_%d' % n)
-    task_template_id = factory.Sequence(lambda n: 'task_template_id_%d' % n)
-    value = factory.Sequence(lambda n: n)
+    stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n+1))
+    task_template_id = factory.Sequence(lambda n: 'task_template_id_%d' % (n+1))
+    value = factory.Sequence(lambda n: (n+1))
     id = None
-    stage_display_name = factory.Sequence(lambda n: 'name_%d' % n)
+    card_info_kanban = json.dumps(["field_id_1", "field_id_2"])
+    card_info_list = json.dumps(["field_id_1", "field_id_2"])
+    stage_display_name = factory.Sequence(lambda n: 'name_%d' % (n+1))
     stage_display_logic = factory.Sequence(
-        lambda n: 'status_id_%d==stage_id' % n)
+        lambda n: 'status_id_%d==stage_id' % (n+1))
 
     class Params:
-        id_value = factory.Trait(id=factory.Sequence(lambda n: n))
+        id_value = factory.Trait(id=factory.Sequence(lambda n: (n+1)))
 
 
 class StageValueDTOFactory(factory.Factory):
@@ -273,6 +279,7 @@ class GoFRoleDTOFactory(factory.Factory):
     gof_id = factory.Sequence(lambda counter: "gof_{}".format(counter))
     role = factory.Sequence(lambda counter: "ROLE-{}".format(counter))
     permission_type = PermissionTypes.READ.value
+
 
 
 class FieldDTOFactory(factory.Factory):
@@ -454,3 +461,6 @@ class FieldWithPermissionsDTOFactory(factory.Factory):
     field_dto = factory.SubFactory(FieldDTOFactory)
     is_field_readable = factory.Iterator([True, False])
     is_field_writable = factory.Iterator([True, False])
+
+    # display_logic = factory.sequence(lambda n: "variable_{} == stage_{}".format((n+1), (n+1)))
+    # value = factory.sequence(lambda n: (n+1))

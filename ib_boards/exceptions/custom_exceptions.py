@@ -154,3 +154,8 @@ class InvalidStageIds(Exception):
 class DuplicateValuesInColumnDisplayOrder(Exception):
     def __init__(self, display_order_values: List[int]):
         self.display_order_values = display_order_values
+
+
+class InvalidTemplateFields(Exception):
+    def __init__(self, invalid_field_template_ids: List[str]):
+        self.invalid_field_template_ids = invalid_field_template_ids
