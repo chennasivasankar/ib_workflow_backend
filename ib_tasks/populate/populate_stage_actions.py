@@ -77,7 +77,7 @@ def append_action_dict(action_dict: Dict[str, Any]):
     function_name = function_name.replace(' ', '_').replace('-', '_').replace('\n', '')
     function_path = function_path + function_name
     return StageActionDTO(
-        stage_id=action_dict['stage_id'],
+        stage_id=action_dict['stage_id'].strip('\n'),
         action_name=action_dict['action_name'],
         logic=action_dict['action_logic'],
         roles=action_dict['roles'],

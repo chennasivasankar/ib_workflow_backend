@@ -541,7 +541,7 @@ class TestCreateBoardsAndColumnsInteractor:
                 column_dtos=column_dtos_with_empty_task_list_view_fields
             )
 
-    def test_with_duplicate_column_display_order_raise_exception(
+    def with_duplicate_column_display_order_raise_exception(
             self, storage_mock, sequence_reset,
             column_dtos_with_invalid_display_name, board_dtos,
             mock_valid_task_and_template_ids):
