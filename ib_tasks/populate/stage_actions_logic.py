@@ -52,3 +52,17 @@ def VENDOR_PENDING_ACCOUNTS_LEVEL_5_VERIFICATION_Verify(task_dict, global_consta
             task_dict["status_variables"]["Status2"] == "VENDOR_PAYMENTS_LEVEL-4_VERIFICATION_COMPLETED":
         task_dict["status_variables"]["Status4"] = "VENDOR_VERIFICATION_COMPLETED"
     return task_dict
+
+
+def stage_1_action_name_1(task_dict, global_constants, stage_value_dict):
+    return task_dict
+
+
+def stage_1_action_name_2(task_dict, global_constants, stage_value_dict):
+    task_dict['statuses']['variable1'] = "stage_id_0"
+    return task_dict
+
+
+def stage_1_action_name_3(task_dict, global_constants, stage_value_dict):
+    task_dict['statuses']['variable1'] = "stage_id_0"
+    return task_dict

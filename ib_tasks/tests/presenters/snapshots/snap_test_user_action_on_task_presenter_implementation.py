@@ -99,3 +99,9 @@ snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_raise_exception_fo
     'res_status': 'INVALID_TASK_ID',
     'response': 'invalid task id is: 1, please send valid task id'
 }
+
+snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_raise_exception_for_invalid_user_board_permission invalid_user_board_permission'] = {
+    'http_status_code': 403,
+    'res_status': 'USER_DO_NOT_HAVE_ACCESS',
+    'response': 'User do not have access to the board: board_1'
+}

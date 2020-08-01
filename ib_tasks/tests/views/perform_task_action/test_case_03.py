@@ -5,7 +5,7 @@ import pytest
 import factory
 from django_swagger_utils.utils.test_v1 import TestUtils
 
-from ib_tasks.models import TaskTemplateGoFs
+from ib_tasks.models import TaskStatusVariable, TaskStage, TaskTemplateGoFs
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ib_tasks.tests.factories.models import TaskTemplateFactory, \
     TaskTemplateStatusVariableFactory, GoFFactory, \
@@ -15,7 +15,7 @@ from ib_tasks.tests.factories.models import TaskTemplateFactory, \
     TaskTemplateInitialStageFactory, GoFRoleFactory, FieldRoleFactory
 
 
-class TestCase01PerformTaskActionAPITestCase(TestUtils):
+class TestCase03PerformTaskActionAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -56,7 +56,6 @@ class TestCase01PerformTaskActionAPITestCase(TestUtils):
         ttgs = [ttg1, ttg2, ttg3]
         TaskTemplateGoFs.objects.bulk_create(ttgs)
         fields = FieldFactory.create_batch(12, gof=factory.Iterator(gofs))
-
         stage1 = StageModelFactory(
             task_template_id='template_1',
             display_logic="variable0==stage_id_0",
@@ -73,9 +72,13 @@ class TestCase01PerformTaskActionAPITestCase(TestUtils):
             field_display_config=json.dumps(["FIELD_ID-1", "FIELD_ID-2"])
         )
         stages = [stage1, stage2, stage3]
-        path = 'ib_tasks.populate.stage_actions_logic.stage_1_action_name_1'
+        path = 'ib_tasks.populate.stage_actions_logic.stage_1_action_name_3'
         action = StageActionFactory(stage=stage1, py_function_import_path=path)
         actions = StageActionFactory.create_batch(6, stage=factory.Iterator(stages))
+        TaskTemplateInitialStageFactory.create_batch(
+            6, task_template=factory.Iterator(tts),
+            stage=factory.Iterator(stages)
+        )
 
         task = TaskFactory(template_id='template_1')
         TaskStatusVariableFactory(task_id=1, variable='variable0', value="stage_id_0")
@@ -124,3 +127,11 @@ class TestCase01PerformTaskActionAPITestCase(TestUtils):
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
+
+        task_stage_objs = TaskStage.objects.filter(id__in=[4, 5])
+        task_stage_3 = task_stage_objs[0]
+        task_stage_4 = task_stage_objs[1]
+        boolean = TaskStage.objects.filter(id__in=[1, 2, 3]).exists()
+        snapshot.assert_match(task_stage_3.stage.stage_id, "stage_id_0")
+        snapshot.assert_match(task_stage_4.stage.stage_id, "stage_id_2")
+        snapshot.assert_match(boolean, 'deleted task stages')
