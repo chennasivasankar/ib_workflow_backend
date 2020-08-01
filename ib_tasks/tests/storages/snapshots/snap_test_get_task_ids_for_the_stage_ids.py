@@ -7,4 +7,8 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestGetTaskStageIds.test_with_valid_details_returns_task_details_dtos result'] = None
+snapshots['TestGetTaskStageIds.test_with_valid_details_returns_task_details_dtos result'] = (
+    [
+    ],
+    0
+)

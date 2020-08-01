@@ -51,12 +51,14 @@ class FieldCompleteDetailsDTO:
     allowed_formats: Optional[str]
     validation_regex: Optional[str]
 
+
 @dataclass
 class FieldDetailsDTO:
     field_type: str
     field_id: int
     key: str
     value: str
+
 
 @dataclass
 class TaskAndFieldsDTO:
