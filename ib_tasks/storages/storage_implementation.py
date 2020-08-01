@@ -203,6 +203,7 @@ class StorageImplementation(StorageInterface):
                 status_variable_dict[status_variable_dto.status_id]
             status_obj.variable = status_variable_dto.status_variable
             status_obj.value = status_variable_dto.value
+            status_obj.save()
 
     @staticmethod
     def _get_status_variable_dict(status_variable_objs):

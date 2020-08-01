@@ -6,10 +6,7 @@ from .validator_class import ValidatorClass
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     user = kwargs['user']
-    user_id = user.id
-    # task_id = int(kwargs['task_id'])
-    # action_id = int(kwargs['action_id'])
-    # board_id = kwargs['board_id']
+    user_id = user.user_id
     request_dict = kwargs['request_data']
     task_id = int(request_dict['task_id'])
     action_id = int(request_dict['action_id'])

@@ -37,7 +37,6 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
         task_dict = self._get_task_dict(
             task_gof_dtos, gof_multiple_enable_dict,
             task_gof_fields_dto_dict, status_variables_dto)
-        print(task_dict)
         task_dict = self._get_updated_task_dict(task_dict)
         # TODO update fields
         status_dict = task_dict.get("statuses")
@@ -111,9 +110,11 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
 
     @staticmethod
     def _get_updated_status_variable_dto(status_dict, status_variables_dto):
+        lst = []
         for status_dto in status_variables_dto:
             status_dto.value = status_dict[status_dto.status_variable]
-        return status_variables_dto
+            lst.append(status_dto)
+        return lst
 
     def _get_task_dict(self, task_gof_dtos, gof_multiple_enable_dict,
                        task_gof_fields_dto_dict, status_variables_dto):

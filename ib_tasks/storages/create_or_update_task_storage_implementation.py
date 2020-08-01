@@ -15,7 +15,7 @@ class CreateOrUpdateTaskStorageImplementation(
 ):
 
     def get_task_gof_dtos(self, task_id: int) -> List[TaskGoFDTO]:
-        pass
+        return []
 
     def get_gof_ids_having_permission(self, gof_ids: List[str],
                                       user_roles: List[str]) -> List[str]:
@@ -23,7 +23,7 @@ class CreateOrUpdateTaskStorageImplementation(
 
     def get_task_gof_field_dtos(self, task_gof_ids: List[int]) -> List[
         TaskGoFFieldDTO]:
-        pass
+        return []
 
     def get_field_ids_having_permission(self, field_ids: List[str],
                                         user_roles: List[str]) -> List[str]:
