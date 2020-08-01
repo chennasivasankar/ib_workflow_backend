@@ -6,7 +6,7 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     StageTaskFieldsDTO, FieldDetailsDTO, TaskTemplateStageFieldsDTO, \
-    TaskAndFieldsDTO
+    TaskAndFieldsDTO, FieldDetailsDTOWithTaskId
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
@@ -92,7 +92,7 @@ class GetTaskFieldsAndActionsInteractor:
     def _map_fields_and_actions_based_on_their_stage_and_task_id(
             self,
             action_dtos: List[ActionDetailsDTO],
-            field_dtos: List[TaskAndFieldsDTO],
+            field_dtos: List[FieldDetailsDTOWithTaskId],
             stage_fields_dtos: List[TaskTemplateStageFieldsDTO]
     ):
         list_of_task_details_dtos = []
@@ -121,12 +121,16 @@ class GetTaskFieldsAndActionsInteractor:
         )
 
     @staticmethod
-    def _get_list_of_fields_for_stage(field_dtos, task):
+    def _get_list_of_fields_for_stage(
+            field_dtos: List[FieldDetailsDTOWithTaskId],
+            task: TaskTemplateStageFieldsDTO
+    ):
         list_of_field_dtos = []
-        if field_dtos:
-            for field in field_dtos:
-                if field.field_id in task.field_ids:
-                    list_of_field_dtos.append(field)
+        if not field_dtos:
+            return []
+        for field in field_dtos:
+            if field.field_id in task.field_ids and field.task_id == task.task_id:
+                list_of_field_dtos.append(field)
         return list_of_field_dtos
 
     @staticmethod

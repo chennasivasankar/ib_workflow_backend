@@ -2,8 +2,9 @@ from typing import List, Optional
 
 from django.db.models import Q
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDetailsDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO, StageTaskFieldsDTO, \
-    TaskTemplateStageFieldsDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import \
+    FieldDetailsDTO, StageTaskFieldsDTO, \
+    TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskTemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import GetTaskStageCompleteDetailsDTO, TaskTemplateStageDTO, \
@@ -54,7 +55,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         return action_dtos
 
     def get_fields_details(self, task_fields_dtos: List[StageTaskFieldsDTO]) -> \
-            List[FieldDetailsDTO]:
+            List[FieldDetailsDTOWithTaskId]:
         q = None
         for counter, item in enumerate(task_fields_dtos):
             current_queue = Q(task_gof__task_id=item.task_id, field_id__in=item.field_ids)
@@ -75,7 +76,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         task_fields_dtos = []
         for field in field_objs:
             task_fields_dtos.append(
-                FieldDetailsDTO(
+                FieldDetailsDTOWithTaskId(
+                    task_id=field.task_gof.task_id,
                     field_id=field.field_id,
                     value=field.field_response,
                     key=field.field.display_name,
