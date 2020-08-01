@@ -1,19 +1,20 @@
-from unittest.mock import patch
-
 import pytest
 
 
 class TestUpdateUserPasswordAdapter:
+    def reset_password_mock(self, mocker):
+        mock = mocker.patch(
+            "ib_users.interfaces.service_interface.ServiceInterface.reset_password_for_given_user_password_reset_token"
+        )
+        return mock
 
-    @patch(
-        "ib_users.interfaces.service_interface.ServiceInterface.reset_password_for_given_user_password_reset_token"
-    )
     def test_update_user_password_with_reset_password_token(
-            self, reset_password_for_given_user_password_reset_token_mock
-    ):
+            self, mocker):
         # Arrange
         reset_password_token = "string"
         password = "string123"
+        reset_password_for_given_user_password_reset_token_mock = \
+            self.reset_password_mock(mocker=mocker)
 
         # Act
         from ib_iam.adapters.service_adapter import ServiceAdapter
@@ -30,15 +31,14 @@ class TestUpdateUserPasswordAdapter:
         reset_password_for_given_user_password_reset_token_mock. \
             assert_called_once()
 
-    @patch(
-        "ib_users.interfaces.service_interface.ServiceInterface.reset_password_for_given_user_password_reset_token"
-    )
     def test_incorrect_password_for_password_at_least_one_special_character_raise_exception(
-            self, reset_password_for_given_user_password_reset_token_mock
+            self, mocker
     ):
         # Arrange
         reset_password_token = "string"
         password = "string123"
+        reset_password_for_given_user_password_reset_token_mock = \
+            self.reset_password_mock(mocker=mocker)
 
         from ib_users.constants.custom_exception_messages import \
             PASSWORD_AT_LEAST_1_SPECIAL_CHARACTER
@@ -64,15 +64,14 @@ class TestUpdateUserPasswordAdapter:
         reset_password_for_given_user_password_reset_token_mock. \
             assert_called_once()
 
-    @patch(
-        "ib_users.interfaces.service_interface.ServiceInterface.reset_password_for_given_user_password_reset_token"
-    )
     def test_incorrect_password_for_password_min_length_raise_exception(
-            self, reset_password_for_given_user_password_reset_token_mock
+            self, mocker
     ):
         # Arrange
         reset_password_token = "string"
         password = "string123"
+        reset_password_for_given_user_password_reset_token_mock = \
+            self.reset_password_mock(mocker=mocker)
 
         from ib_users.constants.custom_exception_messages import \
             PASSWORD_MIN_LENGTH_IS
@@ -100,15 +99,14 @@ class TestUpdateUserPasswordAdapter:
         reset_password_for_given_user_password_reset_token_mock. \
             assert_called_once()
 
-    @patch(
-        "ib_users.interfaces.service_interface.ServiceInterface.reset_password_for_given_user_password_reset_token"
-    )
     def test_with_token_does_not_exist_raise_exception(
-            self, reset_password_for_given_user_password_reset_token_mock
+            self, mocker
     ):
         # Arrange
         reset_password_token = "string"
         password = "string123"
+        reset_password_for_given_user_password_reset_token_mock = \
+            self.reset_password_mock(mocker=mocker)
 
         from ib_users.interactors.exceptions.user_credentials_exceptions import \
             InvalidTokenException
@@ -131,15 +129,14 @@ class TestUpdateUserPasswordAdapter:
         reset_password_for_given_user_password_reset_token_mock. \
             assert_called_once()
 
-    @patch(
-        "ib_users.interfaces.service_interface.ServiceInterface.reset_password_for_given_user_password_reset_token"
-    )
     def test_with_token_has_expired_raise_exception(
-            self, reset_password_for_given_user_password_reset_token_mock
+            self, mocker
     ):
         # Arrange
         reset_password_token = "string"
         password = "string123"
+        reset_password_for_given_user_password_reset_token_mock = \
+            self.reset_password_mock(mocker=mocker)
 
         from ib_users.interactors.exceptions.user_credentials_exceptions import \
             TokenExpiredException

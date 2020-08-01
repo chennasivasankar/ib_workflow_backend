@@ -31,9 +31,9 @@ class TestCase03AddTeamAPITestCase(TestUtils):
         user_obj = api_user
         user_id = str(user_obj.user_id)
         from ib_iam.tests.factories.models import (
-            UserDetailsFactory, TeamFactory
+            UserFactory, TeamFactory
         )
-        UserDetailsFactory.reset_sequence(1)
+        UserFactory.reset_sequence(1)
         TeamFactory.reset_sequence(1)
-        UserDetailsFactory.create(user_id=user_id, is_admin=True)
+        UserFactory.create(user_id=user_id, is_admin=True)
         TeamFactory.create(name="team1")

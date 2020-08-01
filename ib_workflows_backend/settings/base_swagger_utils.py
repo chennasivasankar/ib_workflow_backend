@@ -20,6 +20,7 @@ from django_swagger_utils.drf_server.utils.general.import_app_settings import \
 
 THIRD_PARTY_APPS = [
     "ib_users",
+    "s3_uploader"
 ]
 APPS = [
     "ib_iam",
@@ -90,3 +91,15 @@ DEFAULT_OAUTH_CLIENT_SECRET = os.environ.get("DEFAULT_OAUTH_CLIENT_SECRET", "")
 DEFAULT_OAUTH_SCOPES = os.environ.get("DEFAULT_OAUTH_SCOPES", "read write")
 DEFAULT_ACCESS_TOKEN_EXPIRY_IN_SECONDS = int(
     os.environ.get("DEFAULT_ACCESS_TOKEN_EXPIRY_IN_SECONDS", "100000000"))
+
+
+# ****************** S3 Uploader Config ******************
+S3_COGNITO_POOL_REGION_NAME = os.environ.get("S3_COGNITO_POOL_REGION_NAME")
+S3_COGNITO_IDENTITY_POOL_ID = os.environ.get("S3_COGNITO_IDENTITY_POOL_ID")
+S3_COGNITO_DEVELOPER_IDENTITY_NAME = os.environ.get(
+    "S3_COGNITO_DEVELOPER_IDENTITY_NAME")
+
+S3_UPLOADER_FOLDER_PREFIX = "uploads"
+S3_UPLOADER_OBJECT_ACL = "public-read"
+S3_UPLOADER_URL_TYPE = "cloudfront"
+
