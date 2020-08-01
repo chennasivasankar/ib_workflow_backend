@@ -46,7 +46,15 @@ def _define_single_method(file, action_dict: Dict[str, str]):
     function_name = function_name.replace(' ', '_').replace('-', '_').replace('\n', '')
     file.write(
         f"\n\ndef {function_name}(task_dict, global_constants, stage_value_dict):\n")
-    file.write(action_logic + "\n")
+
+    action_logic_lines = action_logic.split("\n")
+    new_lines = []
+    for line in action_logic_lines:
+        line = '\t' + line
+        new_lines.append(line)
+
+    new_action_logic = "\n".join(new_lines)
+    file.write(new_action_logic + "\n")
     file.write("\t" + "return task_dict\n")
 
 

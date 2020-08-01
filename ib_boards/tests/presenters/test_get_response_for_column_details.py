@@ -5,7 +5,7 @@ from ib_boards.presenters.presenter_implementation import \
 from ib_boards.tests.factories.interactor_dtos import TaskColumnDTOFactory
 from ib_boards.tests.factories.storage_dtos import (
     TaskDTOFactory, TaskActionsDTOFactory, TaskFieldsDTOFactory,
-    ColumnDetailsDTOFactory)
+    ColumnDetailsDTOFactory, ColumnCompleteDetailsDTOFactory)
 
 
 class TestGetColumnDetails:
@@ -31,8 +31,8 @@ class TestGetColumnDetails:
 
     @pytest.fixture()
     def get_column_details(self):
-        ColumnDetailsDTOFactory.reset_sequence()
-        return ColumnDetailsDTOFactory.create_batch(size=3)
+        ColumnCompleteDetailsDTOFactory.reset_sequence()
+        return ColumnCompleteDetailsDTOFactory.create_batch(size=3)
 
     def test_get_response_for_column_details(self, get_task_fields_dtos,
                                              get_column_task_details,
@@ -48,8 +48,8 @@ class TestGetColumnDetails:
         # Act
         response = presenter.get_response_for_column_details(
             column_details=column_details,
-            task_details=task_details, task_fields_dto=task_fields_dtos,
-            task_actions_dto=task_actions_dtos)
+            column_tasks=task_details, task_fields_dtos=task_fields_dtos,
+            task_actions_dtos=task_actions_dtos)
 
         # Assert
         import json

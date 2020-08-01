@@ -65,6 +65,7 @@ class TestGetColumnTasksInteractor:
 
     @pytest.fixture
     def task_complete_details_dto(self, task_dtos, action_dtos):
+
         return [
             TaskCompleteDetailsDTO(
                 task_id=1,
@@ -190,7 +191,7 @@ class TestGetColumnTasksInteractor:
         stage_ids = ['STAGE_ID_1', 'STAGE_ID_1']
         expected_response = Mock()
         storage_mock.get_column_display_stage_ids.return_value = stage_ids
-        presenter_mock.get_response_column_tasks. \
+        presenter_mock.get_response_for_column_tasks. \
             return_value = expected_response
         interactor = GetColumnTasksInteractor(
             storage=storage_mock
@@ -198,8 +199,7 @@ class TestGetColumnTasksInteractor:
 
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             task_details_mock
-        task_details_mock = task_details_mock(mocker,
-                                              task_complete_details_dto)
+        task_details_mock(mocker, task_complete_details_dto)
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             get_task_ids_mock
 
@@ -212,6 +212,12 @@ class TestGetColumnTasksInteractor:
                 limit=get_column_tasks_dto.limit
             )
         ]
+        user_role = 'User'
+        from ib_boards.tests.common_fixtures.adapters.iam_service import \
+            adapter_mock_to_get_user_role
+        adapter_mock = adapter_mock_to_get_user_role(
+            mocker=mocker, user_role=user_role
+        )
 
         # Act
         actual_response = interactor.get_column_tasks_wrapper(
@@ -224,15 +230,18 @@ class TestGetColumnTasksInteractor:
         task_ids_mock.assert_called_once_with(
             task_config_dtos=task_config_dto
         )
-        presenter_mock.get_response_column_tasks.assert_called_once_with(
-            task_complete_details_dto=task_complete_details_dto,
-            total_tasks=10
+        presenter_mock.get_response_for_column_tasks.assert_called_once_with(
+            task_fields_dtos=task_complete_details_dto[0].field_dtos,
+            task_actions_dtos=task_complete_details_dto[0].action_dtos,
+            total_tasks=10,
+            task_ids=['task_id_1']
         )
 
     def test_with_user_id_not_have_permission_for_column_return_error_message(
             self, storage_mock, presenter_mock, get_column_tasks_dto, mocker):
         # Arrange
         user_role = 'User'
+        column_id = 'COLUMN_ID_1'
         expected_response = Mock()
         interactor = GetColumnTasksInteractor(
             storage=storage_mock
@@ -261,7 +270,7 @@ class TestGetColumnTasksInteractor:
             user_id=get_column_tasks_dto.user_id
         )
         storage_mock.validate_user_role_with_column_roles.assert_called_once_with(
-            user_role=user_role
+            user_role=user_role, column_id=column_id
         )
         presenter_mock.get_response_for_user_have_no_access_for_column. \
             assert_called_once_with()

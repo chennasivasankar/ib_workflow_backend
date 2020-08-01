@@ -16,6 +16,11 @@ class ColumnDetailsDTO:
 
 
 @dataclass
+class ColumnCompleteDetails(ColumnDetailsDTO):
+    total_tasks: int
+
+
+@dataclass
 class TaskFieldsDTO:
     task_id: str
     field_type: str
@@ -68,3 +73,9 @@ class TaskBoardsDetailsDTO:
     board_dto: BoardDTO
     column_stage_dtos: List[ColumnStageDTO]
     columns_dtos: List[ColumnBoardDTO]
+
+
+@dataclass
+class ColumnStageIdsDTO:
+    column_id: str
+    stage_ids: List[str]

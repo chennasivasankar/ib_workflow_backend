@@ -1,3 +1,4 @@
+import json
 from typing import Dict, Any, List
 
 
@@ -7,12 +8,12 @@ def populate_stages_values(list_of_stages_dict: List[Dict]):
                    for stage_dict in list_of_stages_dict]
 
     from ib_tasks.interactors.create_or_update_stages \
-        import CreateOrUpdateStagesInterface
+        import CreateOrUpdateStagesInteractor
     from ib_tasks.storages.tasks_storage_implementation import \
         TasksStorageImplementation
     from ib_tasks.storages.storage_implementation import \
         StagesStorageImplementation
-    interactor = CreateOrUpdateStagesInterface(
+    interactor = CreateOrUpdateStagesInteractor(
         stage_storage=StagesStorageImplementation(),
         task_storage=TasksStorageImplementation()
     )
@@ -26,6 +27,8 @@ def append_stage_dto(stage_dict: Dict[str, Any]):
         task_template_id=stage_dict['task_template_id'],
         value=stage_dict['value'],
         id=None,
+        card_info_kanban=stage_dict['card_info_kanban'],
+        card_info_list=stage_dict['card_info_list'],
         stage_display_name=stage_dict['stage_display_name'],
         stage_display_logic=stage_dict['stage_display_logic']
     )
@@ -40,6 +43,8 @@ def validation_for_list_of_stages_dict(stages_dict: List[Dict]):
             "task_template_id": str,
             "stage_id": str,
             "value": int,
+            "card_info_kanban": str,
+            "card_info_list": str,
             "stage_display_name": str,
             "stage_display_logic": str
         }]
@@ -57,6 +62,8 @@ def raise_exception_for_invalid_format():
         "task_template_id": "task_template_id_1",
         "stage_id": "stage_id_1",
         "value": 1,
+        "card_info_kanban": '["field_id_1", "field_id_2"]',
+        "card_info_list": '["field_id_1", "field_id_2"]',
         "stage_display_name": "stage_name",
         "stage_display_logic": "status_1==stage_id_1"
     }
