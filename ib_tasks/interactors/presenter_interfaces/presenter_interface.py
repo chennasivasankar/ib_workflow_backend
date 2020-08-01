@@ -22,6 +22,10 @@ class PresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def raise_exception_for_user_board_permission_denied(self, error_obj):
+        pass
+
+    @abc.abstractmethod
     def get_response_for_user_action_on_task(
             self, task_complete_details_dto: TaskCompleteDetailsDTO):
         pass
