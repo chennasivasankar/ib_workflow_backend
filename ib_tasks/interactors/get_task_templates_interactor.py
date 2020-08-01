@@ -55,8 +55,12 @@ class GetTaskTemplatesInteractor:
         self._validate_task_templates_are_exists(
             task_templates_dtos=task_templates_dtos
         )
+        templates_initial_stage_ids = \
+            self.task_storage.get_initial_stage_ids_of_templates()
         actions_of_templates_dtos = \
-            self.task_storage.get_actions_of_templates_dtos()
+            self.task_storage.get_actions_for_given_stage_ids(
+                stage_ids=templates_initial_stage_ids
+            )
         gof_ids_permitted_for_user = \
             self.task_storage.get_gof_ids_with_read_permission_for_user(
                 roles=user_roles)

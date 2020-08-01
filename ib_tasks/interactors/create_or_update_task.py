@@ -69,9 +69,10 @@ class CreateOrUpdateTaskInteractor:
             return presenter.raise_exception_for_invalid_gof_ids(err)
         except InvalidFieldIds as err:
             return presenter.raise_exception_for_invalid_field_ids(err)
-        except InvalidGoFIDsInGoFSelectorField as err:
+        except IncorrectNameInGoFSelectorField as err:
             return presenter. \
-                raise_exception_for_invalid_name_in_gof_selector_field_value(err)
+                raise_exception_for_invalid_name_in_gof_selector_field_value(
+                err)
         except EmptyValueForRequiredField as err:
             return presenter. \
                 raise_exception_for_empty_value_in_required_field(err)
@@ -151,10 +152,11 @@ class CreateOrUpdateTaskInteractor:
             field_values_dto.field_id
             for field_values_dto in field_values_dtos
         ]
-        self._validate_for_duplicate_field_ids(field_ids)
+        # self._validate_for_duplicate_field_ids(field_ids)
         self._validate_for_invalid_gof_ids(gof_ids)
         self._validate_for_invalid_field_ids(field_ids)
         self._validate_field_values(field_values_dtos)
+
         task_needs_to_be_updated = task_dto.task_id is not None
         if task_needs_to_be_updated:
             self._update_task(task_dto)
@@ -315,23 +317,6 @@ class CreateOrUpdateTaskInteractor:
         ]
         field_details_dtos = self.task_storage. \
             get_field_details_for_given_field_ids(field_ids=field_ids)
-        gof_ids_in_gof_selector = []
-        for field_values_dto in field_values_dtos:
-            field_type = self._get_field_type_for_given_field_id(
-                field_values_dto.field_id, field_details_dtos
-            )
-            field_type_is_gof_selector = (
-                    field_type == FieldTypes.GOF_SELECTOR.value
-            )
-            if field_type_is_gof_selector:
-                gof_ids_in_gof_selector.append(field_values_dto.field_response)
-        valid_gof_ids = self.task_storage.get_existing_gof_ids(
-            gof_ids_in_gof_selector
-        )
-        invalid_gof_ids = list(
-            set(gof_ids_in_gof_selector) - set(valid_gof_ids))
-        if invalid_gof_ids:
-            raise InvalidGoFIDsInGoFSelectorField(invalid_gof_ids)
 
         for field_details_dto in field_details_dtos:
             field_value = self._get_field_value_for_given_field_id(
@@ -345,6 +330,10 @@ class CreateOrUpdateTaskInteractor:
             )
             if field_is_required_but_not_given:
                 raise EmptyValueForRequiredField(field_id)
+            field_is_not_required_and_empty_string_given = \
+                not field_value and not field_details_dto.required
+            if field_is_not_required_and_empty_string_given:
+                continue
             field_type = field_details_dto.field_type
             field_type_is_phone_number = (
                     field_type == FieldTypes.PHONE_NUMBER.value
@@ -384,6 +373,7 @@ class CreateOrUpdateTaskInteractor:
                     field_values_dict['name']
                     for field_values_dict in field_values_dicts
                 ]
+
                 self._validate_gof_selector_value(
                     field_value, field_id, valid_gof_selector_names
                 )
@@ -587,7 +577,8 @@ class CreateOrUpdateTaskInteractor:
 
     @staticmethod
     def _validate_gof_selector_value(
-            field_value: str, field_id: str, valid_gof_selector_names: List[str]
+            field_value: str, field_id: str,
+            valid_gof_selector_names: List[str]
     ) -> Optional[IncorrectNameInGoFSelectorField]:
         invalid_gof_option = field_value not in valid_gof_selector_names
         if invalid_gof_option:

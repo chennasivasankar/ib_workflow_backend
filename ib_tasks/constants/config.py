@@ -4,7 +4,7 @@ import re
 DATE_FORMAT = "%Y-%m-%d"
 TIME_FORMAT = "%H:%M:%S"
 
-VALID_EMAIL_REGEX = '\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b'
+VALID_EMAIL_REGEX = '[^@]+@[^@]+\.[^@]+'
 
 VALID_URL_REGEX_PATTERN = re.compile(
         r'^https?://'  # http:// or https://

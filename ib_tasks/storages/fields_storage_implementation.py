@@ -62,7 +62,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                 q = current_queue
             else:
                 q = q | current_queue
-
+        if q is None:
+            return []
         field_objs = TaskGoFField.objects.filter(q).select_related(
             'field', 'task_gof'
         )
@@ -109,7 +110,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         task_fields_dtos = []
         import json
         for stage in stage_objs:
-            fields = stage.field_display_config
+            fields = stage.card_info_kanban
             field_ids = json.loads(fields)
             task_fields_dtos.append(
                 TaskTemplateStageFieldsDTO(
@@ -131,6 +132,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                 q = q | current_queue
         task_objs = TaskStage.objects.filter(q).values('task_id',
                                                        'stage__stage_id')
+
         task_stage_dtos = self._convert_task_objs_to_dtos(task_objs)
         return task_stage_dtos
 

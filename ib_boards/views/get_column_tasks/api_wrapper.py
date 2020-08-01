@@ -23,7 +23,7 @@ def api_wrapper(*args, **kwargs):
         storage=storage
     )
     column_tasks_parameters = ColumnTasksParametersDTO(
-        user_id=user.id,
+        user_id=user.user_id,
         column_id=column_id,
         offset=offset,
         limit=limit
