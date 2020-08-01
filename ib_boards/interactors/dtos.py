@@ -108,7 +108,7 @@ class ActionDTO:
     name: str
     button_text: str
     button_color: str
-    task_id: str
+    task_id: int
     stage_id: str
 
 
