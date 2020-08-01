@@ -791,7 +791,14 @@ class TasksStorageImplementation(TaskStorageInterface):
         return task_fields_dtos
 
     def check_is_task_exists(self, task_id: int) -> bool:
-        pass
+        is_task_exists = Task.objects.filter(id=task_id).exists()
+        return is_task_exists
 
     def create_task_log(self, create_task_log_dto: CreateTaskLogDTO):
-        pass
+        from ib_tasks.models.task_log import TaskLog
+        TaskLog.objects.create(
+            task_json=create_task_log_dto.task_json,
+            action_id=create_task_log_dto.action_id,
+            user_id=create_task_log_dto.user_id,
+            task_id=create_task_log_dto.task_id
+        )
