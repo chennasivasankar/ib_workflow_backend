@@ -22,10 +22,6 @@ class InvalidLimitValue(Exception):
     pass
 
 
-class OffsetValueIsGreaterThanLimitValue(Exception):
-    pass
-
-
 class UserAccountAlreadyExistWithThisEmail(Exception):
     pass
 
@@ -92,6 +88,15 @@ class InvalidUsers(Exception):
 
 
 class DuplicateUsers(Exception):
+    pass
+
+
+class CompanyNameAlreadyExists(Exception):
+    def __init__(self, company_name: str):
+        self.company_name = company_name
+
+
+class InvalidCompany(Exception):
     pass
 
 class UserNotFound(Exception):
