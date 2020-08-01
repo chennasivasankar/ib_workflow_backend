@@ -405,11 +405,18 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         task_ids = [column_stage.task_id for column_stage in column_stages]
         task_details_list = []
         for column_stage in column_stages:
+            fields = column_tasks_map[
+                    column_stage.stage_id + str(column_stage.task_id)
+            ]
+            if not fields:
+                continue
+            actions = task_actions_map[
+                    column_stage.stage_id + str(column_stage.task_id)]
+            if not actions:
+                continue
             task_details_list.append(self.get_task_details_dict_from_dtos(
-                task_fields_dtos=column_tasks_map[
-                    column_stage.stage_id + str(column_stage.task_id)],
-                task_actions_dtos=task_actions_map[
-                    column_stage.stage_id + str(column_stage.task_id)],
+                task_fields_dtos=fields,
+                task_actions_dtos=actions,
                 task_id=column_stage.task_id
             ))
 
