@@ -20,6 +20,8 @@ from ib_tasks.models import (
     TaskTemplateGlobalConstants, TaskStatusVariable, Task, TaskGoF,
     TaskGoFField,
     TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage)
+from ib_tasks.models.task_template_initial_stages import \
+    TaskTemplateInitialStage
 
 
 class TaskFactory(factory.django.DjangoModelFactory):
@@ -225,4 +227,12 @@ class TaskStageFactory(factory.django.DjangoModelFactory):
         model = TaskStage
 
     task = factory.SubFactory(TaskFactory)
+    stage = factory.SubFactory(StageModelFactory)
+
+
+class TaskTemplateInitialStageFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskTemplateInitialStage
+
+    task_template = factory.SubFactory(TaskTemplateFactory)
     stage = factory.SubFactory(StageModelFactory)
