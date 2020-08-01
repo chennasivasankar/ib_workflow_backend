@@ -3,7 +3,6 @@ from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
 
-
 class GetUserProfileInteractor:
     def __init__(self, storage: UserStorageInterface):
         self.storage = storage
@@ -38,3 +37,4 @@ class GetUserProfileInteractor:
         is_admin = self.storage.check_is_admin_user(user_id=user_id)
         user_profile_dto.is_admin = is_admin
         return user_profile_dto
+

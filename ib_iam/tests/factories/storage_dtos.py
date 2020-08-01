@@ -2,7 +2,7 @@ import factory
 
 from ib_iam.interactors.storage_interfaces.dtos \
     import UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamIdAndNameDTO, \
-    CompanyIdAndNameDTO, RoleDTO, TeamDTO
+    CompanyIdAndNameDTO, RoleDTO, TeamDTO, UserIdAndNameDTO
 
 
 class UserDTOFactory(factory.Factory):
@@ -173,3 +173,11 @@ class TeamsWithTotalTeamsCountDTOFactory(factory.Factory):
         [team_dtos[1], team_dtos[2]]
     ])
     total_teams_count = 2
+
+
+class UserIdAndNameFactory(factory.Factory):
+    class Meta:
+        model = UserIdAndNameDTO
+
+    user_id = factory.Iterator(user_ids)
+    name = factory.Faker("name")
