@@ -211,9 +211,10 @@ class TestStorageImplementation:
         assert response == expected_discussion_count_after_filter
 
     @pytest.mark.django_db
-    def test_get_complete_discussion_dtos(
+    def test_with_filter_by_CLARIFIED_return_response(
             self, create_entity_objects, create_discussion_set_objects,
-            storage_implementation):
+            storage_implementation
+    ):
         # Arrange
         discussion_set_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
         from ib_discussions.tests.factories.storage_dtos import \
@@ -241,21 +242,150 @@ class TestStorageImplementation:
             )
         ]
 
-        self.create_discussion_objects(
-            discussion_set_id=discussion_set_id, size=12
-        )
+        size = 12
+        from ib_discussions.tests.factories.models import DiscussionFactory
+        for i in range(size):
+            DiscussionFactory(discussion_set_id=discussion_set_id)
 
         from ib_discussions.interactors.DTOs.common_dtos import FilterByDTO
         from ib_discussions.constants.enum import FilterByEnum
         filter_by_dto = FilterByDTO(
             filter_by=FilterByEnum.POSTED_BY_ME.value,
-            value="9cc22e39-2390-4d96-b7ac-6bb27816461f"
+            value=True
         )
 
         from ib_discussions.interactors.discussion_interactor import \
             OffsetAndLimitDTO
         offset_and_limit_dto = OffsetAndLimitDTO(
             offset=1,
+            limit=2
+        )
+
+        from ib_discussions.interactors.DTOs.common_dtos import SortByDTO
+        from ib_discussions.constants.enum import SortByEnum
+        from ib_discussions.constants.enum import OrderByEnum
+        sort_by_dto = SortByDTO(
+            sort_by=SortByEnum.LATEST.value,
+            order=OrderByEnum.ASC.value
+        )
+        # Act
+        response = storage_implementation.get_complete_discussion_dtos(
+            discussion_set_id=discussion_set_id, filter_by_dto=filter_by_dto,
+            sort_by_dto=sort_by_dto, offset_and_limit_dto=offset_and_limit_dto
+        )
+
+        # Assert
+        self._compare_two_complete_discussion_dtos(
+            response, expected_complete_discussion_dtos
+        )
+
+    @pytest.mark.django_db
+    def test_with_filter_by_ALL_return_response(
+            self, create_entity_objects, create_discussion_set_objects,
+            storage_implementation
+    ):
+        # Arrange
+        discussion_set_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
+        from ib_discussions.tests.factories.storage_dtos import \
+            CompleteDiscussionFactory
+        expected_complete_discussion_dtos = [
+            CompleteDiscussionFactory(
+                user_id='cd4eb7da-6a5f-4f82-82ba-12e40ab7bf5a',
+                discussion_id='cc38d53c-679c-4924-b110-69b697a1b888',
+                discussion_set_id='641bfcc5-e1ea-4231-b482-f7f34fb5c7c4',
+                description='description',
+                title='title',
+                created_at=datetime.datetime(2020, 5, 1, 0, 0,
+                                             tzinfo=datetime.timezone.utc),
+                is_clarified=False
+            ),
+            CompleteDiscussionFactory(
+                user_id='e597ab2f-a10c-4164-930e-23af375741cb',
+                discussion_id='85b72743-aeaf-4000-be5f-6764807b90a1',
+                discussion_set_id='641bfcc5-e1ea-4231-b482-f7f34fb5c7c4',
+                description='description',
+                title='title',
+                created_at=datetime.datetime(2020, 1, 20, 0, 0,
+                                             tzinfo=datetime.timezone.utc),
+                is_clarified=True
+            )
+        ]
+
+        size = 4
+        from ib_discussions.tests.factories.models import DiscussionFactory
+        for i in range(size):
+            DiscussionFactory(discussion_set_id=discussion_set_id)
+
+        from ib_discussions.interactors.DTOs.common_dtos import FilterByDTO
+        from ib_discussions.constants.enum import FilterByEnum
+        filter_by_dto = FilterByDTO(
+            filter_by=FilterByEnum.ALL.value,
+            value=FilterByEnum.ALL.value
+        )
+
+        from ib_discussions.interactors.discussion_interactor import \
+            OffsetAndLimitDTO
+        offset_and_limit_dto = OffsetAndLimitDTO(
+            offset=0,
+            limit=2
+        )
+
+        from ib_discussions.interactors.DTOs.common_dtos import SortByDTO
+        from ib_discussions.constants.enum import SortByEnum
+        from ib_discussions.constants.enum import OrderByEnum
+        sort_by_dto = SortByDTO(
+            sort_by=SortByEnum.LATEST.value,
+            order=OrderByEnum.ASC.value
+        )
+        # Act
+        response = storage_implementation.get_complete_discussion_dtos(
+            discussion_set_id=discussion_set_id, filter_by_dto=filter_by_dto,
+            sort_by_dto=sort_by_dto, offset_and_limit_dto=offset_and_limit_dto
+        )
+
+        # Assert
+        self._compare_two_complete_discussion_dtos(
+            response, expected_complete_discussion_dtos
+        )
+
+    @pytest.mark.django_db
+    def test_with_filter_by_POSTED_BY_ME_return_response(
+            self, create_entity_objects, create_discussion_set_objects,
+            storage_implementation
+    ):
+        # Arrange
+        discussion_set_id = "641bfcc5-e1ea-4231-b482-f7f34fb5c7c4"
+        from ib_discussions.tests.factories.storage_dtos import \
+            CompleteDiscussionFactory
+        expected_complete_discussion_dtos = [
+            CompleteDiscussionFactory(
+                user_id='cd4eb7da-6a5f-4f82-82ba-12e40ab7bf5a',
+                discussion_id='b7c61479-d9c3-4fbe-b08b-c7069c72f5a7',
+                discussion_set_id='641bfcc5-e1ea-4231-b482-f7f34fb5c7c4',
+                description='description',
+                title='title',
+                created_at=datetime.datetime(2008, 1, 1, 0, 0,
+                                             tzinfo=datetime.timezone.utc),
+                is_clarified=True
+            )
+        ]
+
+        size = 3
+        from ib_discussions.tests.factories.models import DiscussionFactory
+        for i in range(size):
+            DiscussionFactory(discussion_set_id=discussion_set_id)
+
+        from ib_discussions.interactors.DTOs.common_dtos import FilterByDTO
+        from ib_discussions.constants.enum import FilterByEnum
+        filter_by_dto = FilterByDTO(
+            filter_by=FilterByEnum.POSTED_BY_ME.value,
+            value="cd4eb7da-6a5f-4f82-82ba-12e40ab7bf5a"
+        )
+
+        from ib_discussions.interactors.discussion_interactor import \
+            OffsetAndLimitDTO
+        offset_and_limit_dto = OffsetAndLimitDTO(
+            offset=0,
             limit=2
         )
 
@@ -287,7 +417,7 @@ class TestStorageImplementation:
         DiscussionFactory.create_batch(3)
 
         # Assert
-        from ib_discussions.exception.custom_exceptions import \
+        from ib_discussions.exceptions.custom_exceptions import \
             DiscussionIdNotFound
         with pytest.raises(DiscussionIdNotFound):
             storage_implementation.validate_discussion_id(
@@ -305,7 +435,7 @@ class TestStorageImplementation:
         DiscussionFactory.create_batch(3)
 
         # Assert
-        from ib_discussions.exception.custom_exceptions import \
+        from ib_discussions.exceptions.custom_exceptions import \
             UserCannotMarkAsClarified
         with pytest.raises(UserCannotMarkAsClarified):
             storage_implementation.validate_is_user_can_mark_as_clarified(

@@ -4,3 +4,11 @@ class EntityIdNotFound(Exception):
 
 class InvalidEntityTypeForEntityId(Exception):
     pass
+
+
+class DiscussionIdNotFound(Exception):
+    pass
+
+
+class UserCannotMarkAsClarified(Exception):
+    pass

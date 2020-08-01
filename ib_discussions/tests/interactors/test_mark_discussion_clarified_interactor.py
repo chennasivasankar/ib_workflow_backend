@@ -30,7 +30,7 @@ class TestMarkDiscussionClarifiedInteractor:
         expected_presenter_raise_exception_for_discussion_id_not_found_mock \
             = Mock()
 
-        from ib_discussions.exception.custom_exceptions import \
+        from ib_discussions.exceptions.custom_exceptions import \
             DiscussionIdNotFound
         storage_mock.validate_discussion_id.side_effect \
             = DiscussionIdNotFound
@@ -65,7 +65,7 @@ class TestMarkDiscussionClarifiedInteractor:
         expected_presenter_raise_exception_for_user_cannot_mark_as_clarified_mock \
             = Mock()
 
-        from ib_discussions.exception.custom_exceptions import \
+        from ib_discussions.exceptions.custom_exceptions import \
             UserCannotMarkAsClarified
         storage_mock.validate_is_user_can_mark_as_clarified.side_effect \
             = UserCannotMarkAsClarified

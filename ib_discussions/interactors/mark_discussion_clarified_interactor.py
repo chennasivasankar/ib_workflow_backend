@@ -1,4 +1,4 @@
-from ib_discussions.exception.custom_exceptions import DiscussionIdNotFound, \
+from ib_discussions.exceptions.custom_exceptions import DiscussionIdNotFound, \
     UserCannotMarkAsClarified
 from ib_discussions.interactors.presenter_interfaces.presenter_interface import \
     MarkDiscussionClarifiedPresenterInterface

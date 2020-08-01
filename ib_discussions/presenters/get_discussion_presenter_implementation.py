@@ -99,24 +99,11 @@ class GetDiscussionPresenterImplementation(
     def prepare_response_for_discussions_details_dto(
             self, discussions_details_dto: DiscussionsDetailsDTO
     ):
-        user_profiles_dict = self._convert_to_dict_with_key_ids(
-            user_profile_dtos=discussions_details_dto.user_profile_dtos
-        )
-        from ib_discussions.utils.datetime_utils import get_datetime_as_string
         discussions_list = [
-            {
-                "discussion_id": complete_discussion_dto.discussion_id,
-                "description": complete_discussion_dto.description,
-                "title": complete_discussion_dto.title,
-                "created_at": get_datetime_as_string(
-                    complete_discussion_dto.created_at
-                ),
-                "author": self._prepare_user_profile_dict(
-                    user_profile_dto \
-                        =user_profiles_dict[str(complete_discussion_dto.user_id)]
-                ),
-                "is_clarified": complete_discussion_dto.is_clarified
-            }
+            self._convert_complete_discussion_dto_to_dict(
+                complete_discussion_dto=complete_discussion_dto,
+                discussions_details_dto=discussions_details_dto
+            )
             for complete_discussion_dto in
             discussions_details_dto.complete_discussion_dtos
         ]
@@ -127,6 +114,28 @@ class GetDiscussionPresenterImplementation(
         return self.prepare_200_success_response(
             response_dict=discussions_details_dict
         )
+
+    def _convert_complete_discussion_dto_to_dict(
+            self, complete_discussion_dto, discussions_details_dto
+    ):
+        user_profiles_dict = self._convert_to_dict_with_key_ids(
+            user_profile_dtos=discussions_details_dto.user_profile_dtos
+        )
+        from ib_discussions.utils.datetime_utils import get_datetime_as_string
+        complete_discussion_dict = {
+            "discussion_id": complete_discussion_dto.discussion_id,
+            "description": complete_discussion_dto.description,
+            "title": complete_discussion_dto.title,
+            "created_at": get_datetime_as_string(
+                complete_discussion_dto.created_at
+            ),
+            "author": self._prepare_user_profile_dict(
+                user_profile_dto \
+                    =user_profiles_dict[str(complete_discussion_dto.user_id)]
+            ),
+            "is_clarified": complete_discussion_dto.is_clarified
+        }
+        return complete_discussion_dict
 
     @staticmethod
     def _convert_to_dict_with_key_ids(user_profile_dtos):

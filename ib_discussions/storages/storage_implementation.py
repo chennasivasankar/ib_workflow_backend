@@ -1,10 +1,9 @@
 from typing import List, Optional
 
 from ib_discussions.constants.enum import EntityType, FilterByEnum, SortByEnum
-from ib_discussions.exception.custom_exceptions import DiscussionIdNotFound, \
-    UserCannotMarkAsClarified
 from ib_discussions.exceptions.custom_exceptions import \
-    InvalidEntityTypeForEntityId, EntityIdNotFound
+    InvalidEntityTypeForEntityId, EntityIdNotFound, DiscussionIdNotFound, \
+    UserCannotMarkAsClarified
 from ib_discussions.interactors.DTOs.common_dtos import DiscussionDTO, \
     OffsetAndLimitDTO, FilterByDTO, SortByDTO
 from ib_discussions.interactors.storage_interfaces.dtos import \
@@ -15,8 +14,8 @@ from ib_discussions.interactors.storage_interfaces.storage_interface import \
 
 class StorageImplementation(StorageInterface):
     def validate_entity_id(self, entity_id: str) -> Optional[EntityIdNotFound]:
+        from ib_discussions.models import Entity
         try:
-            from ib_discussions.models import Entity
             Entity.objects.get(id=entity_id)
         except Entity.DoesNotExist:
             raise EntityIdNotFound
@@ -25,8 +24,8 @@ class StorageImplementation(StorageInterface):
     def validate_entity_type_for_entity_id(
             self, entity_id: str, entity_type: EntityType
     ) -> Optional[InvalidEntityTypeForEntityId]:
+        from ib_discussions.models import Entity
         try:
-            from ib_discussions.models import Entity
             entity_object = Entity.objects.get(id=entity_id)
         except Entity.DoesNotExist:
             raise EntityIdNotFound
@@ -43,8 +42,8 @@ class StorageImplementation(StorageInterface):
         self.validate_entity_type_for_entity_id(
             entity_id=entity_id, entity_type=entity_type
         )
+        from ib_discussions.models import DiscussionSet
         try:
-            from ib_discussions.models import DiscussionSet
             discussion_set_object = DiscussionSet.objects.get(
                 entity_id=entity_id, entity_type=entity_type
             )

@@ -2,10 +2,9 @@ from abc import ABC, abstractmethod
 from typing import Optional, List
 
 from ib_discussions.constants.enum import EntityType
-from ib_discussions.exception.custom_exceptions import DiscussionIdNotFound, \
-    UserCannotMarkAsClarified
 from ib_discussions.exceptions.custom_exceptions import EntityIdNotFound, \
-    InvalidEntityTypeForEntityId
+    InvalidEntityTypeForEntityId, DiscussionIdNotFound, \
+    UserCannotMarkAsClarified
 from ib_discussions.interactors.DTOs.common_dtos import DiscussionDTO, \
     OffsetAndLimitDTO, FilterByDTO, SortByDTO
 from ib_discussions.interactors.storage_interfaces.dtos import \

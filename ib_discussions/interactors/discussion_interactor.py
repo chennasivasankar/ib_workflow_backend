@@ -130,15 +130,8 @@ class DiscussionInteractor:
             offset_and_limit_dto: OffsetAndLimitDTO,
             filter_by_dto: FilterByDTO, sort_by_dto: SortByDTO,
     ):
-        self._validate_offset(offset_and_limit_dto.offset)
-        self._validate_limit(offset_and_limit_dto.limit)
-        self.storage.validate_entity_id(
-            entity_id=entity_id_and_entity_type_dto.entity_id
-        )
-        self.storage.validate_entity_type_for_entity_id(
-            entity_id=entity_id_and_entity_type_dto.entity_id,
-            entity_type=entity_id_and_entity_type_dto.entity_type
-        )
+        self._validate_limit_offset_entity_id_and_entity_type(
+            entity_id_and_entity_type_dto, offset_and_limit_dto)
         discussion_set_id = self._get_discussion_set_id(
             entity_id=entity_id_and_entity_type_dto.entity_id,
             entity_type=entity_id_and_entity_type_dto.entity_type
@@ -162,6 +155,19 @@ class DiscussionInteractor:
             total_count=total_discussions_count
         )
         return discussions_details_dto
+
+    def _validate_limit_offset_entity_id_and_entity_type(
+            self, entity_id_and_entity_type_dto, offset_and_limit_dto
+    ):
+        self._validate_offset(offset_and_limit_dto.offset)
+        self._validate_limit(offset_and_limit_dto.limit)
+        self.storage.validate_entity_id(
+            entity_id=entity_id_and_entity_type_dto.entity_id
+        )
+        self.storage.validate_entity_type_for_entity_id(
+            entity_id=entity_id_and_entity_type_dto.entity_id,
+            entity_type=entity_id_and_entity_type_dto.entity_type
+        )
 
     @staticmethod
     def _validate_offset(offset):
