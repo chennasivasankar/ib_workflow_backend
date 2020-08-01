@@ -5,7 +5,7 @@ import pytest
 import factory
 from django_swagger_utils.utils.test_v1 import TestUtils
 
-from ib_tasks.models import TaskStatusVariable, TaskStage
+from ib_tasks.models import TaskStatusVariable, TaskStage, TaskTemplateGoFs
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ib_tasks.tests.factories.models import TaskTemplateFactory, \
     TaskTemplateStatusVariableFactory, GoFFactory, \
@@ -50,11 +50,12 @@ class TestCase03PerformTaskActionAPITestCase(TestUtils):
             4, task_template_id='template_1')
         import json
         gofs = GoFFactory.create_batch(3)
+        ttg1 = TaskTemplateGoFs(task_template=tts[0], gof_id='gof_1', order=1)
+        ttg2 = TaskTemplateGoFs(task_template=tts[0], gof_id='gof_2', order=1)
+        ttg3 = TaskTemplateGoFs(task_template=tts[0], gof_id='gof_3', order=1)
+        ttgs = [ttg1, ttg2, ttg3]
+        TaskTemplateGoFs.objects.bulk_create(ttgs)
         fields = FieldFactory.create_batch(12, gof=factory.Iterator(gofs))
-        GoFToTaskTemplateFactory.create_batch(
-            6, task_template=factory.Iterator(tts),
-            gof=factory.Iterator(gofs)
-        )
         stage1 = StageModelFactory(
             task_template_id='template_1',
             display_logic="variable0==stage_id_0",

@@ -274,7 +274,7 @@ class StorageImplementation(StorageInterface):
         from ib_tasks.models import TaskTemplateGoFs
         task_template_gofs = TaskTemplateGoFs.objects \
             .filter(gof_id__in=gof_ids, task_template_id=template_id)
-
+        print(task_template_gofs)
         return [
             GOFMultipleEnableDTO(
                 group_of_field_id=task_template_gof.gof_id,

@@ -7,10 +7,6 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase03GetAllTasksOverviewAPITestCase.test_case status_code'] = '400'
+snapshots['TestCase03GetAllTasksOverviewAPITestCase.test_case status_code'] = '404'
 
-snapshots['TestCase03GetAllTasksOverviewAPITestCase.test_case body'] = {
-    'http_status_code': 400,
-    'res_status': 'EMPTY_STAGE_IDS_ARE_INVALID',
-    'response': 'Stage Ids list should not be empty'
-}
+snapshots['TestCase03GetAllTasksOverviewAPITestCase.test_case body'] = b'<h1>Not Found</h1><p>The requested resource was not found on this server.</p>'
