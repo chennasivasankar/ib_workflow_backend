@@ -148,7 +148,6 @@ class CreateOrUpdateTaskInteractor:
             field_values_dto.field_id
             for field_values_dto in field_values_dtos
         ]
-        # self._validate_for_duplicate_field_ids(field_ids)
         self._validate_for_invalid_gof_ids(gof_ids)
         self._validate_for_invalid_field_ids(field_ids)
         self._validate_field_values(field_values_dtos)
@@ -700,14 +699,6 @@ class CreateOrUpdateTaskInteractor:
                 for field_value_dto in gof_fields_dto.field_values_dtos
             ]
         return field_values_dtos
-
-    def _validate_for_duplicate_field_ids(
-            self, field_ids: List[str]
-    ) -> Optional[DuplicationOfFieldIdsExist]:
-        duplicate_field_ids = self._get_duplicates_in_given_list(field_ids)
-        if duplicate_field_ids:
-            raise DuplicationOfFieldIdsExist(duplicate_field_ids)
-        return
 
     @staticmethod
     def _get_duplicates_in_given_list(values: List):
