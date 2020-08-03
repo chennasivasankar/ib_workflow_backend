@@ -13,6 +13,7 @@ class GetTaskStagesAndActions:
     def get_task_stages_and_actions(self, task_id: int, user_id: str) -> \
             List[StageAndActionsDetailsDTO]:
         # TODO: validate user tasks
+
         is_valid = self.storage.validate_task_id(task_id)
         is_invalid = not is_valid
         if is_invalid:
@@ -27,8 +28,7 @@ class GetTaskStagesAndActions:
             stage_details_dtos, stage_actions_dtos, stage_ids)
         return stage_actions_dtos
 
-    @staticmethod
-    def _convert_to_task_complete_details_dto(stage_details_dtos,
+    def _convert_to_task_complete_details_dto(self, stage_details_dtos,
                                               stage_actions_dtos,
                                               stage_ids):
         stages_dtos = {}
@@ -42,14 +42,15 @@ class GetTaskStagesAndActions:
         list_of_stage_actions = []
         for stage in stage_ids:
             stage_dto = stages_dtos[stage]
-            GetTaskStagesAndActions._get_stage_actions_dto(list_of_actions, list_of_stage_actions, stage, stage_dto)
+            list_of_stage_actions.append(self._get_stage_actions_dto(
+                list_of_actions[stage], stage_dto))
+
         return list_of_stage_actions
 
     @staticmethod
-    def _get_stage_actions_dto(list_of_actions, list_of_stage_actions, stage, stage_dto):
-        list_of_stage_actions.append(
-            StageAndActionsDetailsDTO(
+    def _get_stage_actions_dto(actions_dtos, stage_dto):
+        return StageAndActionsDetailsDTO(
                 stage_id=stage_dto.stage_id,
                 name=stage_dto.name,
-                actions_dtos=list_of_actions[stage]
-            ))
+                actions_dtos=actions_dtos
+            )

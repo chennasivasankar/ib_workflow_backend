@@ -21,7 +21,7 @@ class TestGetTaskStagesAndActions:
     @pytest.fixture()
     def get_stage_details(self):
         StageDetailsDTOFactory.reset_sequence()
-        return StageDetailsDTOFactory.create_batch(size=4)
+        return StageDetailsDTOFactory.create_batch(size=3)
 
     def test_given_valid_details_get_details(self, snapshot,
                                              get_stage_actions,
@@ -41,7 +41,7 @@ class TestGetTaskStagesAndActions:
         # Assert
         snapshot.assert_match(response, "response")
 
-    def test_given_valid_details_but_task_has_no_actions_returns_actions_as_empty(
+    def test_given_valid_details_but_task_has_no_actions_returns_actions_as_empty_list(
             self, snapshot, get_stage_details):
         # Arrange
         task_id = 1
