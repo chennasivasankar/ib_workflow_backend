@@ -68,7 +68,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 from ib_common.logger.log_custom_formatter import LogCustomFormatter
 
@@ -348,4 +348,4 @@ RESET_PASSWORD_LINK_EXPIRY_IN_SECONDS = \
 RESET_PASSWORD_LINK = \
     os.environ.get(
         "RESET_PASSWORD_LINK",
-        'https://127.0.0.1:8000/api/ib_iam/update_password/v1/?token=')
+        'https://ib-workflows-web-beta.apigateway.in/update-password?token=')
