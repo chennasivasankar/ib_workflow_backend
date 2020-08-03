@@ -1,5 +1,6 @@
 from typing import List
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, FieldRolesDTO, FieldRoleDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos \
+    import FieldDTO, FieldRolesDTO, FieldRoleDTO
 
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
@@ -55,7 +56,8 @@ class CreateOrUpdateFieldsInteractor:
 
     def _check_for_base_validations(self, field_dtos: List[FieldDTO]):
 
-        from ib_tasks.interactors.create_or_update_fields_base_validations_interactor \
+        from ib_tasks.interactors.\
+            create_or_update_fields_base_validations_interactor \
             import CreateOrUpdateFieldsBaseValidationInteractor
         base_validation_interactor = \
             CreateOrUpdateFieldsBaseValidationInteractor(storage=self.storage)
@@ -68,7 +70,9 @@ class CreateOrUpdateFieldsInteractor:
             import FieldsRolesValidationsInteractor
 
         field_roles_validation_interactor = FieldsRolesValidationsInteractor()
-        field_roles_validation_interactor.fields_roles_validations(field_roles_dtos)
+        field_roles_validation_interactor.fields_roles_validations(
+            field_roles_dtos
+        )
 
     def _validate_field_values_based_on_field_types(
             self, field_dtos: List[FieldDTO]
@@ -80,6 +84,7 @@ class CreateOrUpdateFieldsInteractor:
     def _get_field_role_dtos(
             self, field_roles_dtos: List[FieldRolesDTO]
     ) -> List[FieldRoleDTO]:
+
         field_role_dtos = []
         for field_roles_dto in field_roles_dtos:
             read_permission_field_role_dtos = \

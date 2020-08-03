@@ -1,24 +1,16 @@
-import pytest
 import factory
-
-from ib_tasks.tests.factories.models import (
-    TaskFactory,
-    TaskGoFFactory,
-    TaskGoFFieldFactory,
-    GoFRoleFactory,
-    FieldRoleFactory,
-    FieldFactory,
-    GoFFactory
-)
-from ib_tasks.tests.factories.storage_dtos import TaskGoFFieldDTOFactory,\
-    TaskGoFWithTaskIdDTOFactory
+import pytest
 
 from ib_tasks.models import Task, TaskGoF, TaskGoFField
+from ib_tasks.tests.factories.models import (
+    GoFRoleFactory,
+    FieldRoleFactory
+)
 from ib_tasks.tests.factories.models import TaskFactory, FieldFactory, \
     TaskGoFFactory, TaskGoFFieldFactory, GoFFactory
-from ib_tasks.tests.factories.storage_dtos import TaskGoFFieldDTOFactory,\
+from ib_tasks.tests.factories.storage_dtos import TaskGoFFieldDTOFactory, \
     TaskGoFWithTaskIdDTOFactory
-
+from ib_tasks.constants.constants import ALL_ROLES_ID
 
 
 @pytest.mark.django_db
@@ -43,7 +35,8 @@ class TestCreateOrUpdateTaskStorageImplementation:
         storage = CreateOrUpdateTaskStorageImplementation()
         return storage
 
-    def test_given_invalid_task_id_raise_exception(self, storage, reset_sequence):
+    def test_given_invalid_task_id_raise_exception(self, storage,
+                                                   reset_sequence):
         # Arrange
         from ib_tasks.exceptions.task_custom_exceptions \
             import InvalidTaskIdException
@@ -57,7 +50,8 @@ class TestCreateOrUpdateTaskStorageImplementation:
         exception_obj = err.value
         assert exception_obj.task_id == task_id
 
-    def test_given_valid_task_id_returns_template_id(self, storage, reset_sequence):
+    def test_given_valid_task_id_returns_template_id(self, storage,
+                                                     reset_sequence):
         # Arrange
         task_id = 1
         task_obj = TaskFactory()
@@ -76,6 +70,19 @@ class TestCreateOrUpdateTaskStorageImplementation:
         TaskGoFFactory(task_id=task_id)
         TaskGoFFactory(task_id=task_id)
         TaskGoFFactory(task_id=task_id)
+
+        # Act
+        task_gof_dtos = storage.get_task_gof_dtos(task_id)
+
+        # Assert
+        snapshot.assert_match(name="task_gof_dtos", value=task_gof_dtos)
+
+    def test_given_task_id_with_no_gof_ids_returns_empty_list(
+            self, storage, snapshot
+    ):
+        # Arrange
+        task_obj = TaskFactory()
+        task_id = task_obj.id
 
         # Act
         task_gof_dtos = storage.get_task_gof_dtos(task_id)
@@ -109,13 +116,13 @@ class TestCreateOrUpdateTaskStorageImplementation:
         task_gof_field_dtos = storage.get_task_gof_field_dtos(task_gof_ids)
 
         # Assert
-        snapshot.assert_match(name="task_gof_field_dtos", value=task_gof_field_dtos)
+        snapshot.assert_match(name="task_gof_field_dtos",
+                              value=task_gof_field_dtos)
 
     def test_given_gof_ids_and_user_roles_returns_gof_ids_having_permission_for_roles(
             self, storage, snapshot, reset_sequence
     ):
         # Arrange
-        from ib_tasks.constants.constants import ALL_ROLES_ID
         gof_role_objs = GoFRoleFactory.create_batch(size=10)
         gof_role_obj = GoFRoleFactory(role=ALL_ROLES_ID)
         gof_ids = [
@@ -142,11 +149,38 @@ class TestCreateOrUpdateTaskStorageImplementation:
             name="gof_ids_having_permission", value=gof_ids_having_permission
         )
 
+    def test_given_gof_ids_and_user_roles_not_having_permission_for_gof_ids_but_permission_for_all_roles_returns_gof_ids(
+            self, reset_sequence, snapshot, storage
+    ):
+        # Arrange
+        gof_role_objs = GoFRoleFactory.create_batch(size=10)
+        gof_role_obj = GoFRoleFactory(role=ALL_ROLES_ID)
+        gof_ids = [
+            gof_role_objs[0].gof_id,
+            gof_role_objs[3].gof_id,
+            gof_role_objs[5].gof_id,
+            gof_role_objs[9].gof_id,
+            gof_role_objs[1].gof_id,
+            gof_role_obj.gof_id
+        ]
+        user_roles = [
+            "ADMIN"
+        ]
+
+        # Act
+        gof_ids_having_permission = storage.get_gof_ids_having_permission(
+            gof_ids=gof_ids, user_roles=user_roles
+        )
+
+        # Assert
+        snapshot.assert_match(
+            name="gof_ids_having_permission", value=gof_ids_having_permission
+        )
+
     def test_given_field_ids_and_user_roles_returns_field_ids_having_permission_for_roles(
             self, storage, snapshot, reset_sequence
     ):
         # Arrange
-        from ib_tasks.constants.constants import ALL_ROLES_ID
         field_role_objs = FieldRoleFactory.create_batch(size=10)
         field_role_obj = FieldRoleFactory(role=ALL_ROLES_ID)
         field_ids = [
@@ -167,7 +201,36 @@ class TestCreateOrUpdateTaskStorageImplementation:
 
         # Assert
         snapshot.assert_match(
-            name="field_ids_having_permission", value=field_ids_having_permission
+            name="field_ids_having_permission",
+            value=field_ids_having_permission
+        )
+
+    def test_given_field_ids_and_user_roles_not_having_permission_for_field_ids_but_permission_for_all_roles_returns_field_ids(
+            self, reset_sequence, snapshot, storage
+    ):
+        # Arrange
+        field_role_objs = FieldRoleFactory.create_batch(size=10)
+        field_role_obj = FieldRoleFactory(role=ALL_ROLES_ID)
+        field_ids = [
+            field_role_objs[0].field_id,
+            field_role_objs[3].field_id,
+            field_role_objs[9].field_id,
+            field_role_objs[6].field_id,
+            field_role_obj.field_id
+        ]
+        user_roles = [
+            "ADMIN"
+        ]
+
+        # Act
+        field_ids_having_permission = storage.get_field_ids_having_permission(
+            field_ids=field_ids, user_roles=user_roles
+        )
+
+        # Assert
+        snapshot.assert_match(
+            name="field_ids_having_permission",
+            value=field_ids_having_permission
         )
 
     def test_create_task_with_template_id(self, storage, reset_sequence):
@@ -260,7 +323,8 @@ class TestCreateOrUpdateTaskStorageImplementation:
         # Assert
         assert expected_gof_ids == actual_gof_ids
 
-    def test_get_field_ids_related_to_given_task(self, storage, reset_sequence):
+    def test_get_field_ids_related_to_given_task(self, storage,
+                                                 reset_sequence):
 
         # Arrange
         task_id = 1
@@ -356,7 +420,8 @@ class TestCreateOrUpdateTaskStorageImplementation:
                 task_gof_id=task_gof_field_dto.task_gof_id
             )
 
-    def test_is_valid_task_id_with_valid_task_id(self, storage, reset_sequence):
+    def test_is_valid_task_id_with_valid_task_id(self, storage,
+                                                 reset_sequence):
 
         # Arrange
         task = TaskFactory.create()
@@ -369,7 +434,8 @@ class TestCreateOrUpdateTaskStorageImplementation:
         # Assert
         assert actual_response == expected_response
 
-    def test_is_valid_task_id_with_invalid_task_id(self, storage, reset_sequence):
+    def test_is_valid_task_id_with_invalid_task_id(self, storage,
+                                                   reset_sequence):
 
         # Arrange
         TaskFactory.create_batch(size=5)

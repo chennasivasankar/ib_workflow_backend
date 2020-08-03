@@ -1,21 +1,22 @@
-import factory
-import pytest
 from typing import List
 
-from ib_tasks.constants.constants import VALID_FIELD_TYPES
+import factory
+import pytest
+
+from ib_tasks.constants.enum import FieldTypes
 from ib_tasks.models import FieldRole
+from ib_tasks.models.field import Field
 from ib_tasks.models.gof_role import GoFRole
 from ib_tasks.tests.factories.models import GoFFactory, TaskTemplateFactory, \
     GoFRoleFactory, FieldFactory, FieldRoleFactory
-from ib_tasks.tests.factories.storage_dtos import (GoFRoleDTOFactory,
-                                                   GoFDTOFactory,
-                                                   GoFRolesDTOFactory,
-                                                   CompleteGoFDetailsDTOFactory,
-                                                   FieldCompleteDetailsDTOFactory)
+from ib_tasks.tests.factories.storage_dtos import (
+    GoFDTOFactory,
+    GoFRolesDTOFactory,
+    CompleteGoFDetailsDTOFactory,
+    FieldCompleteDetailsDTOFactory
+)
 from ib_tasks.tests.factories.storage_dtos \
     import GoFRoleDTOFactory, FieldDTOFactory
-from ib_tasks.constants.enum import FieldTypes
-from ib_tasks.models.field import Field
 
 
 @pytest.mark.django_db
@@ -330,7 +331,8 @@ class TestTasksStorageImplementation:
 
         # Arrange
         field_objects = FieldFactory.create_batch(size=2)
-        field_ids_list = [field_object.field_id for field_object in field_objects]
+        field_ids_list = [field_object.field_id for field_object in
+                          field_objects]
         field_types_list = [
             field_object.field_type for field_object in field_objects
         ]
