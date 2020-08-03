@@ -1,13 +1,13 @@
 from typing import List, Optional
 
 from django.db.models import Q
+
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldDetailsDTO, StageTaskFieldsDTO, \
+    StageTaskFieldsDTO, \
     TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import FieldsStorageInterface
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskTemplateStageDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import GetTaskStageCompleteDetailsDTO, TaskTemplateStageDTO, \
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskTemplateStageDTO, \
     StageDetailsDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.models import TaskStage, StageAction, Stage
@@ -36,7 +36,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                             stage_ids: List[str]) -> \
             List[ActionDetailsDTO]:
         action_objs = StageAction.objects.filter(stage__stage_id__in=stage_ids)
-        print("StageAction",StageAction.objects.all().values())
+        print("StageAction", StageAction.objects.all().values())
         action_dtos = self._convert_action_objs_to_dtos(action_objs)
         return action_dtos
 
@@ -129,6 +129,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                         stage_id=stage.stage_id,
                         field_ids=field_ids))
         return task_fields_dtos
+
     def validate_task_related_stage_ids(self,
                                         task_dtos: List[GetTaskDetailsDTO]) -> \
             List[GetTaskDetailsDTO]:
