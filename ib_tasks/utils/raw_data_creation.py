@@ -52,7 +52,15 @@ class DataCreation:
             6, task_template_id=factory.Iterator([
                 'template_1', 'template_2', 'template_3'
             ]),
-            field_display_config=json.dumps([
+            card_info_kanban=json.dumps([
+                "FIELD_ID-0", "FIELD_ID-1", "FIELD_ID-2", "FIELD_ID-3",
+                "FIELD_ID-4", "FIELD_ID-5", "FIELD_ID-6", "FIELD_ID-7",
+                "FIELD_ID-8", "FIELD_ID-9", "FIELD_ID-10", "FIELD_ID-11",
+                "FIELD_ID-12", "FIELD_ID-13", "FIELD_ID-14", "FIELD_ID-15",
+                "FIELD_ID-16", "FIELD_ID-17", "FIELD_ID-18", "FIELD_ID-19",
+                "FIELD_ID-20", "FIELD_ID-21", "FIELD_ID-22", "FIELD_ID-23"
+            ]),
+            card_info_list=json.dumps([
                 "FIELD_ID-0", "FIELD_ID-1", "FIELD_ID-2", "FIELD_ID-3",
                 "FIELD_ID-4", "FIELD_ID-5", "FIELD_ID-6", "FIELD_ID-7",
                 "FIELD_ID-8", "FIELD_ID-9", "FIELD_ID-10", "FIELD_ID-11",

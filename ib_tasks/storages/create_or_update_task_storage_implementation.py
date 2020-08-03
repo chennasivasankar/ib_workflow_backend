@@ -20,6 +20,26 @@ class CreateOrUpdateTaskStorageImplementation(
     CreateOrUpdateTaskStorageInterface
 ):
 
+    def set_status_variables_for_template_and_task(self, task_template_id,
+                                                   task_id):
+        from ib_tasks.models import \
+            TaskTemplateStatusVariable
+
+        status_variables = TaskTemplateStatusVariable.objects.filter(
+            task_template_id=task_template_id
+        ).values_list('variable', flat=True)
+
+        from ib_tasks.models.task_status_variable import TaskStatusVariable
+        task_status_variables = [
+            TaskStatusVariable(
+                task_id=task_id,
+                variable=status_variable,
+                value=''
+            )
+            for status_variable in status_variables
+        ]
+        TaskStatusVariable.objects.bulk_create(task_status_variables)
+
     def get_task_gof_dtos(self, task_id: int) -> List[TaskGoFDTO]:
         task_gof_objs = TaskGoF.objects.filter(task_id=task_id)
         task_gof_dtos = []

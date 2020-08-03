@@ -2,6 +2,7 @@ from typing import List
 
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.interactors.DTOs.common_dtos import UserIdWithRoleIdsDTO
+from ib_iam.interactors.storage_interfaces.dtos import UserIdAndNameDTO
 
 
 class ServiceInterface:
@@ -70,27 +71,35 @@ class ServiceInterface:
         valid_user_ids = interactor.get_valid_user_ids(user_ids=user_ids)
         return valid_user_ids
 
-    # @staticmethod
-    # def get_user_dtos_based_on_limit_and_offset(limit: int, offset: int,
-    #                                             search_query: str) \
-    #         -> List[UserDTO]:
-    #     storage = StorageImplementation()
-    #
-    #     user_dtos = storage.get_user_dtos_based_on_limit_and_offset(
-    #         limit=limit,
-    #         offset=offset,
-    #         search_query=
-    #         search_query)
-    #     return user_dtos
-    #
-    # @staticmethod
-    # def get_all_user_dtos_based_on_query(search_query: str) -> \
-    #         List[UserDTO]:
-    #     from ib_iam.storages.storage_implementation import \
-    #         StorageImplementation
-    #     storage = StorageImplementation()
-    #
-    #     user_dtos = storage.get_all_user_dtos_based_on_query(
-    #         search_query=
-    #         search_query)
-    #     return user_dtos
+    @staticmethod
+    def get_user_dtos_based_on_limit_and_offset(
+            limit: int, offset: int, search_query: str
+    ) -> List[UserIdAndNameDTO]:
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        storage = UserStorageImplementation()
+
+        from ib_iam.interactors.get_users_list_interactor import \
+            GetUsersDetailsInteractor
+        interactor = GetUsersDetailsInteractor(storage=storage)
+
+        user_details_dtos = interactor.get_user_dtos_based_on_limit_and_offset(
+            limit=limit, offset=offset, search_query=search_query
+        )
+        return user_details_dtos
+
+    @staticmethod
+    def get_all_user_dtos_based_on_query(search_query: str) -> \
+            List[UserIdAndNameDTO]:
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        storage = UserStorageImplementation()
+
+        from ib_iam.interactors.get_users_list_interactor import \
+            GetUsersDetailsInteractor
+        interactor = GetUsersDetailsInteractor(storage=storage)
+
+        user_details_dtos = interactor.get_all_user_dtos_based_on_query(
+            search_query=search_query
+        )
+        return user_details_dtos

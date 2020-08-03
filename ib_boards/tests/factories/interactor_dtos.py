@@ -19,6 +19,7 @@ class TaskColumnDTOFactory(factory.Factory):
 
     column_id = factory.Sequence(lambda n: "column_id_%d" % n)
     task_id = factory.Sequence(lambda n: "task_id_%d" % n)
+    stage_id = factory.Sequence(lambda n: f'STAGE_ID_{n + 1}')
 
 
 class TaskTemplateStagesDTOFactory(factory.Factory):

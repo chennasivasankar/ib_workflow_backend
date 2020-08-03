@@ -57,7 +57,8 @@ class CreateBoardsAndColumnsInteractor:
     def validate_columns_data(self, column_dtos: List[ColumnDTO]):
         self._validate_column_ids(column_dtos=column_dtos)
         self._validate_column_display_name(column_dtos=column_dtos)
-        self._validate_column_display_order(column_dtos=column_dtos)
+        # TODO-validate column order properly
+        # self._validate_column_display_order(column_dtos=column_dtos)
         self._validate_task_template_ids_in_task_template_stage(
             column_dtos=column_dtos
         )

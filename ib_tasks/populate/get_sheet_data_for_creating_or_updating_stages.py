@@ -53,7 +53,7 @@ class GetSheetDataForStages:
                 "Card Info_Kanban": str,
                 "Card Info_List": str,
                 "Value": int,
-                "Stage Display Logic": And(str, len)
+                "Stage Display Logic": str
             }]
         )
         try:

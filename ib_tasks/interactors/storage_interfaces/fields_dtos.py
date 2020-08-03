@@ -51,12 +51,19 @@ class FieldCompleteDetailsDTO:
     allowed_formats: Optional[str]
     validation_regex: Optional[str]
 
+
 @dataclass
 class FieldDetailsDTO:
     field_type: str
     field_id: int
     key: str
     value: str
+
+
+@dataclass
+class FieldDetailsDTOWithTaskId(FieldDetailsDTO):
+    task_id: int
+
 
 @dataclass
 class TaskAndFieldsDTO:
@@ -89,6 +96,7 @@ class FieldWithPermissionsDTO:
     field_dto: FieldDTO
     is_field_readable: bool
     is_field_writable: bool
+
 
 @dataclass
 class FieldTypeDTO:

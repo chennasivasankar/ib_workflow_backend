@@ -1,0 +1,448 @@
+{
+  "swagger": "2.0",
+  "host": "127.0.0.1:8000",
+  "basePath": "/api/ib_discussions/",
+  "info": {
+    "version": "1.0.0",
+    "title": "Simple API",
+    "description": "A simple API to learn how to write OpenAPI Specification"
+  },
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "oauth": {
+      "tokenUrl": "http://auth.ibtspl.com/oauth2/",
+      "flow": "password",
+      "scopes": {
+        "read": "read users",
+        "write": "create users",
+        "update": "update users",
+        "delete": "delete users"
+      },
+      "type": "oauth2"
+    }
+  },
+  "security": [],
+  "definitions": {
+    "HttpResponseAndStatusCode": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code"
+      ]
+    },
+    "EntityDetails": {
+      "type": "object",
+      "properties": {
+        "entity_id": {
+          "type": "string"
+        },
+        "entity_type": {
+          "type": "string",
+          "enum": [
+            "TASK",
+            "COLUMN",
+            "BOARD"
+          ]
+        }
+      },
+      "required": [
+        "entity_id",
+        "entity_type"
+      ]
+    },
+    "Discussion": {
+      "type": "object",
+      "properties": {
+        "discussion_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "description": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "author": {
+          "type": "object",
+          "properties": {
+            "user_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": {
+              "type": "string"
+            },
+            "profile_pic_url": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "user_id",
+            "name",
+            "profile_pic_url"
+          ]
+        },
+        "is_clarified": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "discussion_id",
+        "description",
+        "title",
+        "created_at",
+        "author",
+        "is_clarified"
+      ]
+    }
+  },
+  "parameters": {
+    "CreateDiscussionParameter": {
+      "name": "CreateDiscussionParameter",
+      "description": "Create Discussion for user",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/EntityDetails"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "title",
+              "description"
+            ]
+          }
+        ]
+      }
+    },
+    "GetDiscussionsParameter": {
+      "name": "GetDiscussionsParameter",
+      "description": "get discussions parameter",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/EntityDetails"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "filter_by": {
+                "type": "string",
+                "enum": [
+                  "ALL",
+                  "POSTED_BY_ME",
+                  "CLARIFIED",
+                  "NOT_CLARIFIED"
+                ]
+              },
+              "sort_by": {
+                "type": "string",
+                "enum": [
+                  "LATEST"
+                ]
+              }
+            },
+            "required": [
+              "filter_by",
+              "sort_by"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "responses": {
+    "EntityDetailsNotFoundResponse": {
+      "description": "create discussion not found response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "ENTITY_ID_NOT_FOUND"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "CreateDiscussionBadRequestResponse": {
+      "description": "create discussion bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "EMPTY_TITLE",
+                  "INVALID_ENTITY_TYPE_FOR_ENTITY_ID"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "GetDiscussionSuccessResponse": {
+      "description": "get discussion success response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "discussions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Discussion"
+            }
+          },
+          "total_count": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "discussions",
+          "total_count"
+        ]
+      }
+    },
+    "GetDiscussionBadRequestResponse": {
+      "description": "get discussion bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_ENTITY_TYPE_FOR_ENTITY_ID",
+                  "INVALID_OFFSET",
+                  "INVALID_LIMIT",
+                  "INVALID_USER_ID"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "MarkClarifiedDiscussionNotFoundResponse": {
+      "description": "mark clarified discussion not found response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "DISCUSSION_ID_NOT_FOUND"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "MarkClarifiedDiscussionBadRequestResponse": {
+      "description": "mark clarified discussion bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_DISCUSSION_ID",
+                  "USER_CANNOT_MARK_AS_CLARIFIED"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "paths": {
+    "/discussion/v1/": {
+      "post": {
+        "operationId": "create_discussion",
+        "summary": "create the discussion ",
+        "description": "create the discussion with title and description",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/CreateDiscussionParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success response for create discussion"
+          },
+          "404": {
+            "$ref": "#/responses/EntityDetailsNotFoundResponse"
+          },
+          "400": {
+            "$ref": "#/responses/CreateDiscussionBadRequestResponse"
+          }
+        }
+      }
+    },
+    "/get_discussions/v1/": {
+      "post": {
+        "operationId": "get_discussions",
+        "summary": "get discussions",
+        "description": "get all discussion for given entity id and entity type",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/GetDiscussionsParameter"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "offset count for discussions",
+            "type": "integer",
+            "required": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "limit count for discussions",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetDiscussionSuccessResponse"
+          },
+          "404": {
+            "$ref": "#/responses/EntityDetailsNotFoundResponse"
+          },
+          "400": {
+            "$ref": "#/responses/GetDiscussionBadRequestResponse"
+          }
+        }
+      }
+    },
+    "/discussion/{discussion_id}/mark_as_clarified/v1/": {
+      "post": {
+        "operationId": "clarify_discussion",
+        "summary": "Mark discussion is clarified",
+        "description": "Mark discussion is clarified for creator of discussion",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "discussion_id",
+            "required": true,
+            "description": "Discussion Id",
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfully updated"
+          },
+          "404": {
+            "$ref": "#/responses/MarkClarifiedDiscussionNotFoundResponse"
+          },
+          "400": {
+            "$ref": "#/responses/MarkClarifiedDiscussionBadRequestResponse"
+          }
+        }
+      }
+    }
+  }
+}

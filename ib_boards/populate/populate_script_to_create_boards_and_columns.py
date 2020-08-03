@@ -46,6 +46,6 @@ class PopulateCreateBoardsAndColumns:
     @staticmethod
     def _convert_board_dict_to_board_dto(board_dict: Dict) -> BoardDTO:
         return BoardDTO(
-            board_id=board_dict['board_id'],
+            board_id=board_dict['board_id'].strip('\n'),
             name=board_dict['board_display_name']
         )
