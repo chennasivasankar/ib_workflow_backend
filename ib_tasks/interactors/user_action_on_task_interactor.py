@@ -61,6 +61,10 @@ class UserActionOnTaskInteractor:
             return presenter.raise_exception_for_user_action_permission_denied(
                 error_obj=err
             )
+        except InvalidPresentStageAction as err:
+            return presenter.raise_exception_for_invalid_present_actions(
+                error_obj=err
+            )
         except UserBoardPermissionDenied as err:
             return presenter.raise_exception_for_user_board_permission_denied(
                 error_obj=err
@@ -240,10 +244,22 @@ class UserActionOnTaskInteractor:
         if is_invalid_action:
             raise InvalidActionException(action_id=self.action_id)
         action_roles = self.storage.get_action_roles(action_id=self.action_id)
-        # TODO uncomment below code
-        # self._validate_user_permission_to_user(
-        #     self.user_id, action_roles, self.action_id
-        # )
+        self._validate_present_task_stage_actions()
+        self._validate_user_permission_to_user(
+            self.user_id, action_roles, self.action_id
+        )
+
+    def _validate_present_task_stage_actions(self):
+
+        action_id = self.action_id
+        action_ids = self.storage.get_task_present_stage_actions(
+            task_id=self.task_id
+        )
+        is_not_present_stage_actions = action_id not in action_ids
+        if is_not_present_stage_actions:
+            from ib_tasks.exceptions.action_custom_exceptions \
+                import InvalidPresentStageAction
+            raise InvalidPresentStageAction(action_id=action_id)
 
     def _validate_task_id(self):
 

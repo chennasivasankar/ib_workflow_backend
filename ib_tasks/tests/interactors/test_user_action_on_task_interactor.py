@@ -193,6 +193,39 @@ class TestUserActionOnTaskInteractor:
         expected_action_id = dict_obj['error_obj'].action_id
         assert action_id == expected_action_id
 
+    def test_invalid_present_stage_action_raises_exception(
+            self, mocker, storage, presenter,
+            gof_storage, field_storage, stage_storage):
+        # Arrange
+        user_id = "user_1"
+        board_id = "board_1"
+        task_id = 1
+        action_id = 1
+        action_ids = [2, 3, 4]
+        mock_obj = mocker.patch(
+            'ib_tasks.adapters.boards_service.BoardsService.validate_board_id')
+        mock_obj.return_value = True
+
+        storage.validate_task_id.return_value = True
+        interactor = UserActionOnTaskInteractor(
+            user_id=user_id, board_id=board_id, task_id=task_id,
+            action_id=action_id, storage=storage, gof_storage=gof_storage,
+            field_storage=field_storage, stage_storage=stage_storage
+        )
+        storage.validate_action.return_value = True
+        storage.get_task_present_stage_actions.return_value = action_ids
+
+        # Act
+        interactor.user_action_on_task(presenter=presenter)
+
+        # Assert
+        mock_obj.called_once()
+        storage.validate_action.assert_called_once_with(action_id=action_id)
+        dict_obj = \
+            presenter.raise_exception_for_invalid_present_actions.call_args.kwargs
+        expected_action_id = dict_obj['error_obj'].action_id
+        assert action_id == expected_action_id
+
     def test_given_user_permission_denied_raises_exception(
             self, mocker, storage, presenter,
             gof_storage, field_storage, stage_storage):
@@ -201,6 +234,8 @@ class TestUserActionOnTaskInteractor:
         board_id = "board_1"
         task_id = 1
         action_id = 1
+        action_ids = [1, 3, 4]
+        storage.get_task_present_stage_actions.return_value = action_ids
         mock_obj = mocker.patch(
             'ib_tasks.adapters.boards_service.BoardsService.validate_board_id')
         mock_obj.return_value = True
@@ -240,6 +275,8 @@ class TestUserActionOnTaskInteractor:
         board_id = "board_1"
         task_id = 1
         action_id = 1
+        action_ids = [1, 3, 4]
+        storage.get_task_present_stage_actions.return_value = action_ids
         mock_obj = mocker.patch(
             'ib_tasks.adapters.boards_service.BoardsService.validate_board_id')
         mock_obj.return_value = True
@@ -296,6 +333,8 @@ class TestUserActionOnTaskInteractor:
         board_id = "board_1"
         task_id = 1
         action_id = 1
+        action_ids = [1, 3, 4]
+        storage.get_task_present_stage_actions.return_value = action_ids
         mock_obj = mocker.patch(
             'ib_tasks.adapters.boards_service.BoardsService.validate_board_id')
         mock_obj.return_value = True
