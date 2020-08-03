@@ -5,10 +5,12 @@ import json
 
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
+
+from ib_tasks.models import GoF
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories.models import TaskFactory, StageModelFactory, \
     TaskStageModelFactory, StageActionFactory, TaskGoFFieldFactory, \
-    TaskGoFFactory, FieldFactory
+    TaskGoFFactory, FieldFactory, GoFFactory
 
 
 class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
@@ -37,33 +39,49 @@ class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
             task_template_id='task_template_id_1',
             card_info_list=json.dumps(['FIELD_ID-2', "FIELD_ID-1"]),
             card_info_kanban=json.dumps(['FIELD_ID-2', "FIELD_ID-1"]))
-        stage_other_obj_1 = StageModelFactory(
-            value=2,
-            task_template_id='task_template_id_1',
-            card_info_list=json.dumps(['FIELD_ID-2', "FIELD_ID-1"]),
-            card_info_kanban=json.dumps(['FIELD_ID-2', "FIELD_ID-1"]))
-        stage_other_obj_2 = StageModelFactory(
-            value=2,
-            task_template_id='task_template_id_1',
-            card_info_list=json.dumps(['FIELD_ID-2', "FIELD_ID-1"]),
-            card_info_kanban=json.dumps(['FIELD_ID-2', "FIELD_ID-1"]))
+        stage_other_objs = StageModelFactory.create_batch(2,
+                                                          value=2,
+                                                          task_template_id='task_template_id_1',
+                                                          card_info_list=json.dumps(
+                                                              ['FIELD_ID-3',
+                                                               "FIELD_ID-1"]),
+                                                          card_info_kanban=json.dumps(
+                                                              ['FIELD_ID-3',
+                                                               "FIELD_ID-1"]))
+
         task_stage_obj_1 = TaskStageModelFactory(task=task_objs[0],
                                                  stage=stage_objs[2])
         task_stage_obj_2 = TaskStageModelFactory(task=task_objs[1],
-                                                 stage=stage_other_obj_1)
+                                                 stage=stage_objs[2])
         task_stage_obj_3 = TaskStageModelFactory(task=task_objs[2],
-                                                 stage=stage_other_obj_2)
+                                                 stage=stage_other_objs[1])
         task_stage_obj_4 = TaskStageModelFactory(task=task_objs[0],
                                                  stage=stage_objs[0])
         StageActionFactory(stage=stage_objs[2])
-        StageActionFactory(stage=stage_other_obj_1)
-        StageActionFactory(stage=stage_other_obj_2)
-        task_gof_obj_1 = TaskGoFFactory(task=task_objs[0])
-        task_gof_obj_2 = TaskGoFFactory(task=task_objs[1])
-        task_gof_obj_3 = TaskGoFFactory(task=task_objs[0])
-        TaskGoFFieldFactory(task_gof=task_gof_obj_1)
-        TaskGoFFieldFactory(task_gof=task_gof_obj_2)
-        TaskGoFFieldFactory(task_gof=task_gof_obj_3)
+        StageActionFactory(stage=stage_other_objs[1])
+        gof_obj = GoFFactory()
+        field_objs_of_gof_1 = FieldFactory.create_batch(3, gof=gof_obj)
+        task_gof_obj_1 = TaskGoFFactory(task=task_objs[0],  gof=gof_obj)
+        task_gof_obj_2 = TaskGoFFactory(task=task_objs[1],  gof=gof_obj)
+        task_gof_obj_3 = TaskGoFFactory(task=task_objs[2],  gof=gof_obj)
+        TaskGoFFieldFactory(task_gof=task_gof_obj_1, field=field_objs_of_gof_1[0])
+        TaskGoFFieldFactory(task_gof=task_gof_obj_1,
+                            field=field_objs_of_gof_1[1])
+        TaskGoFFieldFactory(task_gof=task_gof_obj_1,
+                            field=field_objs_of_gof_1[2])
+        TaskGoFFieldFactory(task_gof=task_gof_obj_2,
+                            field=field_objs_of_gof_1[0])
+        TaskGoFFieldFactory(task_gof=task_gof_obj_2,
+                            field=field_objs_of_gof_1[1])
+        TaskGoFFieldFactory(task_gof=task_gof_obj_2,
+                            field=field_objs_of_gof_1[2])
+        TaskGoFFieldFactory(task_gof=task_gof_obj_3,
+                            field=field_objs_of_gof_1[0])
+        TaskGoFFieldFactory(task_gof=task_gof_obj_3,
+                            field=field_objs_of_gof_1[1])
+        TaskGoFFieldFactory(task_gof=task_gof_obj_3,
+                            field=field_objs_of_gof_1[2])
+
 
     @pytest.mark.django_db
     def test_case(self, snapshot, setup):

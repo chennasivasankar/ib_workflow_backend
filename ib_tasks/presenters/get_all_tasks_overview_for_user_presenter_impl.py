@@ -41,7 +41,8 @@ class GetAllTasksOverviewForUserPresenterImpl(
             response_dict=response_dict)
 
     def raise_stage_ids_empty_exception(self) -> response.HttpResponse:
-        from ib_tasks.constants.exception_messages import EMPTY_STAGE_IDS_ARE_INVALID
+        from ib_tasks.constants.exception_messages import \
+            EMPTY_STAGE_IDS_ARE_INVALID
         response_dict = {
             "response": EMPTY_STAGE_IDS_ARE_INVALID[0],
             "http_status_code": 400,
@@ -99,7 +100,7 @@ class GetAllTasksOverviewForUserPresenterImpl(
                     each_task_fields_and_action_details_dto)
 
                 return task_overview_fields_details, action_details
-        return [],[]
+        return [], []
 
     @staticmethod
     def _get_task_overview_fields_details(
