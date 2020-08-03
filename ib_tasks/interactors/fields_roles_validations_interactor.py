@@ -119,7 +119,6 @@ class FieldsRolesValidationsInteractor:
 
         from ib_tasks.constants.exception_messages \
             import DUPLICATED_VALUES_FOR_WRITE_PERMISSIONS
-
         duplication_of_write_permission_roles = []
         for field_roles_dto in field_roles_dtos:
             write_permissions_roles = field_roles_dto.write_permission_roles

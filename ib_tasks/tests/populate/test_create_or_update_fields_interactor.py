@@ -411,9 +411,19 @@ class TestCreateOrUpdateFields:
         snapshot.assert_match(name="exception_message = ",
                               value=exception_object.roles)
 
+    @pytest.mark.parametrize(
+        "field_type",
+        [
+            FieldTypes.DROPDOWN.value,
+            FieldTypes.RADIO_GROUP.value,
+            FieldTypes.CHECKBOX_GROUP.value,
+            FieldTypes.MULTI_SELECT_LABELS.value,
+            FieldTypes.MULTI_SELECT_FIELD.value
+        ]
+    )
     def test_given_empty_values_in_field_values_raise_exceptions(
             self, storage, valid_field_roles_dtos,
-            populate_gofs, snapshot
+            populate_gofs, snapshot, field_type
     ):
         # Arrange
         from ib_tasks.exceptions.fields_custom_exceptions import \
@@ -421,7 +431,8 @@ class TestCreateOrUpdateFields:
 
         field_dtos = [
             FieldDTOFactory(
-                field_id="field1", field_values=["Mr", "  ", "Mrs"]
+                field_id="field1", field_type=field_type,
+                field_values=["Mr", "  ", "Mrs"]
             )
         ]
         field_id = "field1"
@@ -438,9 +449,19 @@ class TestCreateOrUpdateFields:
         snapshot.assert_match(name="exception_message = ",
                               value=str(err.value))
 
+    @pytest.mark.parametrize(
+        "field_type",
+        [
+            FieldTypes.DROPDOWN.value,
+            FieldTypes.RADIO_GROUP.value,
+            FieldTypes.CHECKBOX_GROUP.value,
+            FieldTypes.MULTI_SELECT_LABELS.value,
+            FieldTypes.MULTI_SELECT_FIELD.value
+        ]
+    )
     def test_given_field_values_is_empty_raise_exceptions(
             self, storage, valid_field_roles_dtos,
-            populate_gofs, snapshot
+            populate_gofs, snapshot, field_type
     ):
         # Arrange
         from ib_tasks.exceptions.fields_custom_exceptions import \
@@ -448,7 +469,9 @@ class TestCreateOrUpdateFields:
 
         field_dtos = [
             FieldDTOFactory(
-                field_id="field1", field_values=[]
+                field_id="field1",
+                field_values=[],
+                field_type=field_type
             )
         ]
         field_id = "field1"
@@ -465,9 +488,19 @@ class TestCreateOrUpdateFields:
         snapshot.assert_match(name="exception_message = ",
                               value=str(err.value))
 
+    @pytest.mark.parametrize(
+        "field_type",
+        [
+            FieldTypes.DROPDOWN.value,
+            FieldTypes.RADIO_GROUP.value,
+            FieldTypes.CHECKBOX_GROUP.value,
+            FieldTypes.MULTI_SELECT_LABELS.value,
+            FieldTypes.MULTI_SELECT_FIELD.value
+        ]
+    )
     def test_given_duplication_of_field_values_raise_exception(
             self, storage, valid_field_roles_dtos,
-            populate_gofs, snapshot
+            populate_gofs, snapshot, field_type
     ):
         # Arrange
         from ib_tasks.exceptions.fields_custom_exceptions \
@@ -475,7 +508,8 @@ class TestCreateOrUpdateFields:
 
         field_dtos = [
             FieldDTOFactory(
-                field_id="field1", field_values=["Mr", "Mrs", "Mrs"]
+                field_id="field1", field_type=field_type,
+                field_values=["Mr", "Mrs", "Mrs"]
             )
         ]
         duplication_of_field_values = ["Mrs"]
