@@ -17,9 +17,9 @@ class TaskColumnDTOFactory(factory.Factory):
     class Meta:
         model = ColumnTasksDTO
 
-    column_id = factory.Sequence(lambda n: "column_id_%d" % n)
+    column_id = factory.Sequence(lambda n: "COLUMN_ID_%d" % n)
     task_id = factory.Sequence(lambda n: "task_id_%d" % n)
-    stage_id = factory.Sequence(lambda n: f'STAGE_ID_{n + 1}')
+    stage_id = factory.Sequence(lambda n: f'stage_id_{n}')
 
 
 class TaskTemplateStagesDTOFactory(factory.Factory):
@@ -104,6 +104,6 @@ class ColumnTaskIdsDTOFactory(factory.Factory):
     class Meta:
         model = ColumnTaskIdsDTO
 
-    unique_key = factory.Sequence(lambda n: f'COLUMN_ID_{n + 1}')
+    unique_key = factory.Sequence(lambda n: f'COLUMN_ID_{n}')
     task_stage_ids = TaskStageIdDTOFactory.create_batch(3)
     total_tasks = 10

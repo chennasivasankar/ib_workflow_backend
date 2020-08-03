@@ -19,7 +19,7 @@ from ib_boards.interactors.storage_interfaces.dtos import (
 
 
 class GetBoardsPresenterImplementation(
-    GetBoardsPresenterInterface, HTTPResponseMixin):
+        GetBoardsPresenterInterface, HTTPResponseMixin):
 
     def get_response_for_user_have_no_access_for_boards(
             self) -> response.HttpResponse:
@@ -83,7 +83,7 @@ class GetBoardsPresenterImplementation(
 
 
 class GetBoardsDetailsPresenterImplementation(
-    GetBoardsDetailsPresenterInterface, HTTPResponseMixin):
+        GetBoardsDetailsPresenterInterface, HTTPResponseMixin):
 
     def get_response_for_invalid_board_ids(
             self, error) -> response.HttpResponse:
@@ -116,8 +116,8 @@ class GetBoardsDetailsPresenterImplementation(
         }
 
 
-class GetColumnTasksPresenterImplementation(
-    GetColumnTasksPresenterInterface, HTTPResponseMixin):
+class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
+                                            HTTPResponseMixin):
 
     def get_response_for_the_invalid_column_id(self):
         from ib_boards.constants.exception_messages import INVALID_COLUMN_ID
@@ -179,17 +179,83 @@ class GetColumnTasksPresenterImplementation(
             self, task_fields_dtos: List[TaskDTO],
             task_actions_dtos: List[ActionDTO],
             total_tasks: int, task_ids: List[int]):
-        presenter = PresenterImplementation()
-        tasks_list = presenter.get_task_details_dict_from_dtos(
+
+        task_ids_with_duplicates = task_ids
+
+        task_ids = []
+        for task_id in task_ids_with_duplicates:
+            if task_id not in task_ids:
+                task_ids.append(task_id)
+
+        tasks_list = self.get_task_details_dict_from_dtos(
                 task_fields_dtos=task_fields_dtos,
                 task_actions_dtos=task_actions_dtos,
                 task_ids=task_ids
             )
 
-        return {
+        response_dict = {
             "total_tasks_count": total_tasks,
             "tasks": tasks_list
         }
+
+        return self.prepare_200_success_response(response_dict)
+
+    def get_task_details_dict_from_dtos(
+            self, task_fields_dtos: List[TaskDTO],
+            task_actions_dtos: List[ActionDTO], task_ids: List[int]):
+        from collections import defaultdict
+
+        tasks_fields_map = defaultdict(lambda: [])
+        for task_fields_dto in task_fields_dtos:
+            tasks_fields_map[task_fields_dto.task_id].append(task_fields_dto)
+
+        tasks_actions_map = defaultdict(lambda: [])
+        for task_actions_dto in task_actions_dtos:
+            tasks_actions_map[task_actions_dto.task_id].append(task_actions_dto)
+
+        tasks_list = []
+        for task_id in task_ids:
+            fields_list = self._convert_fields_dtos_to_dict(
+                field_dtos=tasks_fields_map[task_id]
+            )
+            actions_list = self._convert_action_dtos_to_dict(
+                action_dtos=tasks_actions_map[task_id]
+            )
+            tasks_list.append(
+                {
+                    "task_id": task_id,
+                    "fields": fields_list,
+                    "actions": actions_list
+                }
+            )
+        return tasks_list
+
+    @staticmethod
+    def _convert_fields_dtos_to_dict(field_dtos: List[TaskDTO]):
+        task_fields_list = []
+        for field_dto in field_dtos:
+            task_fields_list.append(
+                {
+                    "field_type": field_dto.field_type,
+                    "key": field_dto.key,
+                    "value": field_dto.value
+                }
+            )
+        return task_fields_list
+
+    @staticmethod
+    def _convert_action_dtos_to_dict(action_dtos: List[ActionDTO]):
+        task_actions_list = []
+        for action_dto in action_dtos:
+            task_actions_list.append(
+                {
+                    "action_id": action_dto.action_id,
+                    "name": action_dto.name,
+                    "button_text": action_dto.button_text,
+                    "button_color": action_dto.button_color
+                }
+            )
+        return task_actions_list
 
 
 class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
@@ -255,8 +321,9 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
 
         return self.prepare_200_success_response(response_dict)
 
+    @staticmethod
     def _get_column_complete_details(
-            self, column_dto: ColumnCompleteDetails,
+            column_dto: ColumnCompleteDetails,
             task_fields_dtos: List[TaskDTO], task_actions_dtos: List[ActionDTO],
             column_stages: List[ColumnTasksDTO]):
         from collections import defaultdict
@@ -285,7 +352,9 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             task_actions_dtos_list += task_actions_map[
                 column_stage.stage_id + str(column_stage.task_id)]
 
-        task_details_list = self.get_task_details_dict_from_dtos(
+        presenter = GetColumnTasksPresenterImplementation()
+
+        task_details_list = presenter.get_task_details_dict_from_dtos(
             task_fields_dtos=task_fields_dtos_list,
             task_actions_dtos=task_actions_dtos_list,
             task_ids=task_ids
@@ -297,60 +366,3 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             "total_tasks_count": column_dto.total_tasks,
             "tasks": task_details_list
         }
-
-    def get_task_details_dict_from_dtos(
-            self, task_fields_dtos: List[TaskDTO],
-            task_actions_dtos: List[ActionDTO], task_ids: List[int]):
-        from collections import defaultdict
-
-        tasks_fields_map = defaultdict(lambda: [])
-        for task_fields_dto in task_fields_dtos:
-            tasks_fields_map[task_fields_dto.task_id].append(task_fields_dto)
-
-        tasks_actions_map = defaultdict(lambda: [])
-        for task_actions_dto in task_actions_dtos:
-            tasks_actions_map[task_actions_dto.task_id].append(task_actions_dto)
-
-        tasks_list = []
-        for task_id in task_ids:
-            fields_list = self._convert_fields_dtos_to_dict(
-                field_dtos=tasks_fields_map[task_id]
-            )
-            actions_list = self._convert_action_dtos_to_dict(
-                action_dtos=tasks_actions_map[task_id]
-            )
-            tasks_list.append(
-                {
-                    "task_id": task_id,
-                    "fields": fields_list,
-                    "actions": actions_list
-                }
-            )
-        return tasks_list
-
-    @staticmethod
-    def _convert_fields_dtos_to_dict(field_dtos: List[TaskDTO]):
-        task_fields_list = []
-        for field_dto in field_dtos:
-            task_fields_list.append(
-                {
-                    "field_type": field_dto.field_type,
-                    "key": field_dto.key,
-                    "value": field_dto.value
-                }
-            )
-        return task_fields_list
-
-    @staticmethod
-    def _convert_action_dtos_to_dict(action_dtos: List[ActionDTO]):
-        task_actions_list = []
-        for action_dto in action_dtos:
-            task_actions_list.append(
-                {
-                    "action_id": action_dto.action_id,
-                    "name": action_dto.name,
-                    "button_text": action_dto.button_text,
-                    "button_color": action_dto.button_color
-                }
-            )
-        return task_actions_list

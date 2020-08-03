@@ -56,10 +56,10 @@ class ColumnCompleteDetailsDTOFactory(factory.Factory):
     class Meta:
         model = ColumnCompleteDetails
 
-    column_id = factory.Sequence(lambda n: f'COLUMN_ID_{n + 1}')
+    column_id = factory.Sequence(lambda n: f'COLUMN_ID_{n}')
     name = factory.Sequence(
         lambda n: f'COLUMN_DISPLAY_NAME_{n + 1}')
-    total_tasks = 0
+    total_tasks = 1
 
 
 class ColumnDetailsDTOFactory(factory.Factory):
