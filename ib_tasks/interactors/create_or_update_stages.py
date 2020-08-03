@@ -104,14 +104,14 @@ class CreateOrUpdateStagesInteractor:
                 create_stages_details)
 
     def _validate_stage_display_logic(self, stages_details):
-        stage_display_logic_stages = [
+        list_of_stage_display_logics = [
             stage.stage_id for stage in stages_details
             if not stage.stage_display_logic == ""
         ]
 
         logic_interactor = StageDisplayLogicInteractor()
         stage_logic_attributes_dto = logic_interactor.get_stage_display_logic_condition(
-            stage_display_logic_stages
+            list_of_stage_display_logics
         )
 
         self._validate_stage_display_logic_attributes(stage_logic_attributes_dto)
