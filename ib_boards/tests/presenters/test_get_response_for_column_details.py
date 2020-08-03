@@ -34,7 +34,7 @@ class TestGetColumnDetails:
         ColumnCompleteDetailsDTOFactory.reset_sequence()
         return ColumnCompleteDetailsDTOFactory.create_batch(size=3)
 
-    def get_response_for_column_details(self, get_task_fields_dtos,
+    def test_get_response_for_column_details(self, get_task_fields_dtos,
                                              get_column_task_details,
                                              get_task_actions_dtos,
                                              get_column_details, snapshot):

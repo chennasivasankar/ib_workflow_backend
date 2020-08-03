@@ -238,6 +238,18 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         for column_stage in column_tasks:
             column_stages_map[column_stage.column_id].append(column_stage)
 
+        column_tasks_map = defaultdict(lambda: [])
+        for task_fields_dto in task_fields_dtos:
+            column_tasks_map[
+                task_fields_dto.stage_id + str(task_fields_dto.task_id)
+                ].append(task_fields_dto)
+
+        task_actions_map = defaultdict(lambda: [])
+        for task_actions_dto in task_actions_dtos:
+            task_actions_map[
+                task_actions_dto.stage_id + str(task_actions_dto.task_id)
+                ].append(task_actions_dto)
+
         columns_complete_details = []
         for column_dto in column_details:
             column_details = self._get_column_complete_details(
@@ -276,15 +288,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         for column_stage in column_stages:
             if column_stage.task_id not in task_ids:
                 task_ids.append(column_stage.task_id)
-        # task_details_list = []
-        # for column_stage in column_stages:
-        #     task_details_list.append(self.get_task_details_dict_from_dtos(
-        #         task_fields_dtos=column_tasks_map[
-        #             column_stage.stage_id + str(column_stage.task_id)],
-        #         task_actions_dtos=task_actions_map[
-        #             column_stage.stage_id + str(column_stage.task_id)],
-        #         task_id=column_stage.task_id
-        #     ))
+
         task_fields_dtos_list = []
         task_actions_dtos_list = []
         for column_stage in column_stages:
@@ -337,7 +341,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         return tasks_list
 
     @staticmethod
-    def _convert_fields_dtos_to_dict(field_dtos):
+    def _convert_fields_dtos_to_dict(field_dtos: List[TaskDTO]):
         task_fields_list = []
         for field_dto in field_dtos:
             task_fields_list.append(
@@ -350,7 +354,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         return task_fields_list
 
     @staticmethod
-    def _convert_action_dtos_to_dict(action_dtos):
+    def _convert_action_dtos_to_dict(action_dtos: List[ActionDTO]):
         task_actions_list = []
         for action_dto in action_dtos:
             task_actions_list.append(
