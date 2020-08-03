@@ -27,7 +27,7 @@ class TestInvalidUserRoleForColumn:
     def test_with_valid_user_role_for_the_column(self, storage,
                                                  reset_sequence):
         # Arrange
-        user_role = 'USER'
+        user_role = ['USER']
         column_id = 'COLUMN_ID_1'
         from ib_boards.tests.factories.models import BoardFactory, \
             ColumnFactory

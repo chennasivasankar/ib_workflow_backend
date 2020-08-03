@@ -157,10 +157,7 @@ class StorageImplementation(StorageInterface):
         ColumnPermission.objects.bulk_create(user_role_ids)
 
     def delete_columns_which_are_not_in_configuration(
-            self, column_for_delete_dtos: List[BoardColumnsDTO]) -> None:
-        column_ids = []
-        for column_for_delete_dto in column_for_delete_dtos:
-            column_ids += column_for_delete_dto.column_ids
+            self, column_ids: List[str]) -> None:
         column_objects = Column.objects.filter(
             column_id__in=column_ids
         )
@@ -168,7 +165,7 @@ class StorageImplementation(StorageInterface):
 
     def _get_column_objects_and_column_permission_objects_from_dtos(
             self, column_dtos: List[ColumnDTO]) -> Tuple[
-        List[Column], List[ColumnPermission]]:
+            List[Column], List[ColumnPermission]]:
         column_objects = [
             Column(
                 column_id=column_dto.column_id,
