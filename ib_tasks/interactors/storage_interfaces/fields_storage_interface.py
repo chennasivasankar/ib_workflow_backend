@@ -4,7 +4,7 @@ from typing import List, Optional
 from ib_tasks.interactors.stages_dtos import TemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO, \
-    TaskTemplateStageFieldsDTO, StageTaskFieldsDTO, TaskAndFieldsDTO
+    TaskTemplateStageFieldsDTO, StageTaskFieldsDTO, TaskAndFieldsDTO, FieldDetailsDTOWithTaskId
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskTemplateStageDTO, StageDetailsDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 
@@ -24,7 +24,7 @@ class FieldsStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_fields_details(self, template_stage_dtos: List[StageTaskFieldsDTO]) -> \
-            List[TaskAndFieldsDTO]:
+            List[FieldDetailsDTOWithTaskId]:
         pass
 
     @abc.abstractmethod

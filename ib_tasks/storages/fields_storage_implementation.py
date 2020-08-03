@@ -36,7 +36,6 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                             stage_ids: List[str]) -> \
             List[ActionDetailsDTO]:
         action_objs = StageAction.objects.filter(stage__stage_id__in=stage_ids)
-        print("StageAction",StageAction.objects.all().values())
         action_dtos = self._convert_action_objs_to_dtos(action_objs)
         return action_dtos
 
