@@ -20,3 +20,11 @@ def adapter_mock_to_get_user_role(mocker, user_role: str):
     )
     mock.return_value = user_role
     return mock
+
+
+def mock_get_user_roles(mocker, user_id: str):
+    mock = mocker.patch(
+        'ib_boards.adapters.iam_service.IamService.get_user_roles'
+    )
+    mock.return_value = user_id
+    return mock
