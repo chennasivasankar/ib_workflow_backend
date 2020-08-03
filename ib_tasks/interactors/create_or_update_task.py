@@ -3,11 +3,11 @@ from typing import Optional, List, Union
 
 from ib_tasks.constants.enum import FieldTypes
 from ib_tasks.exceptions.field_values_custom_exceptions import \
-    InvalidPhoneNumberValue, EmptyValueForPlainTextField, \
-    InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
+    InvalidPhoneNumberValue, InvalidEmailFieldValue, InvalidURLValue, \
+    NotAStrongPassword, \
     InvalidNumberValue, InvalidFloatValue, \
-    InvalidValueForDropdownField, InvalidGoFIDsInGoFSelectorField, \
-    IncorrectNameInGoFSelectorField, IncorrectRadioGroupChoice, \
+    InvalidValueForDropdownField, IncorrectNameInGoFSelectorField, \
+    IncorrectRadioGroupChoice, \
     IncorrectCheckBoxOptionsSelected, IncorrectMultiSelectOptionsSelected, \
     IncorrectMultiSelectLabelsSelected, InvalidDateFormat, InvalidTimeFormat, \
     InvalidUrlForImage, InvalidImageFormat, NotAnImageUrl, CouldNotReadImage, \
@@ -17,32 +17,32 @@ from ib_tasks.exceptions.fields_custom_exceptions import \
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateIds, \
     InvalidTaskException
+from ib_tasks.interactors.presenter_interfaces. \
+    create_or_update_task_presenter import CreateOrUpdateTaskPresenterInterface
+from ib_tasks.interactors.presenter_interfaces.presenter_interface import \
+    PresenterInterface
 from ib_tasks.interactors.storage_interfaces. \
     create_or_update_task_storage_interface import \
     CreateOrUpdateTaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldDetailsDTO, FieldCompleteDetailsDTO
+    FieldCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
+    TaskGoFFieldDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
+from ib_tasks.interactors.storage_interfaces.storage_interface import \
+    StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFWithTaskIdDTO, \
     TaskGoFDetailsDTO
-from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
-    TaskGoFFieldDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.presenter_interfaces. \
-    create_or_update_task_presenter import CreateOrUpdateTaskPresenterInterface
 from ib_tasks.interactors.task_dtos import TaskDTO, FieldValuesDTO, \
     GoFFieldsDTO
 from ib_tasks.interactors.user_action_on_task_interactor import \
     UserActionOnTaskInteractor
-from ib_tasks.interactors.storage_interfaces.storage_interface import \
-    StorageInterface
-from ib_tasks.interactors.presenter_interfaces.presenter_interface import \
-    PresenterInterface
 
 
 class CreateOrUpdateTaskInteractor:
@@ -105,8 +105,8 @@ class CreateOrUpdateTaskInteractor:
         except IncorrectCheckBoxOptionsSelected as err:
             return presenter. \
                 raise_exception_for_invalid_checkbox_group_options_selected(
-                err
-            )
+                    err
+                )
         except IncorrectMultiSelectOptionsSelected as err:
             return presenter. \
                 raise_exception_for_invalid_multi_select_options_selected(err)
