@@ -15,7 +15,7 @@ from ib_boards.interactors.presenter_interfaces.presenter_interface import \
 from ib_boards.interactors.storage_interfaces.dtos import BoardDTO, \
     ColumnCompleteDetails
 from ib_boards.interactors.storage_interfaces.dtos import (
-    TaskFieldsDTO, TaskActionsDTO, ColumnDetailsDTO)
+    TaskFieldsDTO, TaskActionsDTO)
 
 
 class GetBoardsPresenterImplementation(

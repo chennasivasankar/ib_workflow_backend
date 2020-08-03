@@ -29,6 +29,22 @@ class TestGetColumnDetails:
         )]
 
     @pytest.fixture()
+    def get_task_actions_dtos_with_duplicate_fields(self):
+        TaskActionsDTOFactory.reset_sequence()
+        return TaskActionsDTOFactory.create_batch(size=3) + [
+            TaskActionsDTOFactory(
+                task_id='task_id_0', action_id='action_id_0'
+            )]
+
+    @pytest.fixture()
+    def get_task_fields_dtos_with_duplicates_fields(self):
+        TaskFieldsDTOFactory.reset_sequence()
+        return TaskFieldsDTOFactory.create_batch(size=3) + [
+            TaskFieldsDTOFactory(
+                task_id='task_id_0', field_id='field_id_0'
+            )]
+
+    @pytest.fixture()
     def get_task_actions_dtos(self):
         TaskActionsDTOFactory.reset_sequence()
         return TaskActionsDTOFactory.create_batch(size=3)
@@ -60,6 +76,29 @@ class TestGetColumnDetails:
         result = json.loads(response.content)
 
         snapshot.assert_match(result, "column_details_with_duplicates")
+
+    def test_with_duplicate_tasks_in_same_column_and_duplicate_fields(
+            self, get_task_fields_dtos_with_duplicates_fields,
+            get_task_actions_dtos_with_duplicate_fields, snapshot):
+        # Arrange
+        task_fields_dtos = get_task_fields_dtos_with_duplicates_fields
+        task_actions_dtos = get_task_actions_dtos_with_duplicate_fields
+        total_tasks = 10
+        task_ids = ['task_id_0', 'task_id_0', 'task_id_1', 'task_id_2']
+        presenter = GetColumnTasksPresenterImplementation()
+
+        # Act
+        response = presenter.get_response_for_column_tasks(
+            total_tasks=total_tasks, task_fields_dtos=task_fields_dtos,
+            task_actions_dtos=task_actions_dtos,
+            task_ids=task_ids
+        )
+
+        # Assert
+        import json
+        result = json.loads(response.content)
+
+        snapshot.assert_match(result, "column_details_with_duplicates_fields")
 
     def test_get_response_for_column_details_with_proper_data(
             self, get_task_fields_dtos,
