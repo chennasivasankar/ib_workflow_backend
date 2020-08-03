@@ -87,8 +87,7 @@
       },
       "required": [
         "employee_id",
-        "name",
-        "profile_pic_url"
+        "name"
       ]
     },
     "UserWithExtraFields": {
@@ -164,11 +163,7 @@
         "company_name": {
           "type": "string"
         }
-      },
-      "required": [
-        "company_id",
-        "company_name"
-      ]
+      }
     },
     "RoleDetails": {
       "type": "object",
@@ -293,7 +288,20 @@
     "Companies": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/CompanyDetails"
+        "type": "object",
+        "properties": {
+          "company_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "company_name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "company_id",
+          "company_name"
+        ]
       }
     },
     "Roles": {

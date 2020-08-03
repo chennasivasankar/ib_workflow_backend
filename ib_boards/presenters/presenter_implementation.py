@@ -238,18 +238,6 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         for column_stage in column_tasks:
             column_stages_map[column_stage.column_id].append(column_stage)
 
-        column_tasks_map = defaultdict(lambda: [])
-        for task_fields_dto in task_fields_dtos:
-            column_tasks_map[
-                task_fields_dto.stage_id + str(task_fields_dto.task_id)
-                ].append(task_fields_dto)
-
-        task_actions_map = defaultdict(lambda: [])
-        for task_actions_dto in task_actions_dtos:
-            task_actions_map[
-                task_actions_dto.stage_id + str(task_actions_dto.task_id)
-                ].append(task_actions_dto)
-
         columns_complete_details = []
         for column_dto in column_details:
             column_details = self._get_column_complete_details(

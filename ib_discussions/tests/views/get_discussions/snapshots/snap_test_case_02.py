@@ -23,22 +23,6 @@ snapshots['TestCase02GetDiscussionsAPITestCase.test_invalid_limit_raise_exceptio
     'response': 'Please send the valid limit value'
 }
 
-snapshots['TestCase02GetDiscussionsAPITestCase.test_invalid_entity_id_raise_exception status_code'] = '404'
-
-snapshots['TestCase02GetDiscussionsAPITestCase.test_invalid_entity_id_raise_exception body'] = {
-    'http_status_code': 404,
-    'res_status': 'ENTITY_ID_NOT_FOUND',
-    'response': 'Please send valid entity id'
-}
-
-snapshots['TestCase02GetDiscussionsAPITestCase.test_invalid_entity_type_for_entity_id_raise_exception status_code'] = '400'
-
-snapshots['TestCase02GetDiscussionsAPITestCase.test_invalid_entity_type_for_entity_id_raise_exception body'] = {
-    'http_status_code': 400,
-    'res_status': 'INVALID_ENTITY_TYPE_FOR_ENTITY_ID',
-    'response': 'Please valid entity type for entity id'
-}
-
 snapshots['TestCase02GetDiscussionsAPITestCase.test_user_profile_does_not_exist_raise_exception status_code'] = '400'
 
 snapshots['TestCase02GetDiscussionsAPITestCase.test_user_profile_does_not_exist_raise_exception body'] = {
