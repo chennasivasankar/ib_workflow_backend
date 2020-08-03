@@ -10,15 +10,15 @@ snapshots[
     'TestGetBoardsPresenterImplementation.test_get_response_for_get_boards boards'] = {
     'boards_details': [
         {
-            'board_id': 'BOARD_ID_7',
+            'board_id': 'BOARD_ID_1',
             'name': 'BOARD_DISPLAY_NAME'
         },
         {
-            'board_id': 'BOARD_ID_8',
+            'board_id': 'BOARD_ID_2',
             'name': 'BOARD_DISPLAY_NAME'
         },
         {
-            'board_id': 'BOARD_ID_9',
+            'board_id': 'BOARD_ID_3',
             'name': 'BOARD_DISPLAY_NAME'
         }
     ],

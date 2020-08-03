@@ -83,19 +83,6 @@ class PresenterInterface(abc.ABC):
         pass
 
 
-class GetBoardsDetailsPresenterInterface(abc.ABC):
-
-    @abc.abstractmethod
-    def get_response_for_invalid_board_ids(
-            self, error: InvalidBoardIds) -> response.HttpResponse:
-        pass
-
-    @abc.abstractmethod
-    def get_response_for_board_details(
-            self, board_dtos: List[BoardDTO]) -> response.HttpResponse:
-        pass
-
-
 class GetColumnTasksPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
@@ -136,13 +123,3 @@ class GetColumnTasksPresenterInterface(abc.ABC):
             task_ids: List[int]):
         pass
 
-
-class StageDisplayLogicPresenterInterface(abc.ABC):
-
-    @abc.abstractmethod
-    def get_response_for_invalid_stage_ids(self, error) -> response.HttpResponse:
-        pass
-
-    @abc.abstractmethod
-    def get_response_for_stage_display_logic(self, task_status_dtos) -> response.HttpResponse:
-        pass

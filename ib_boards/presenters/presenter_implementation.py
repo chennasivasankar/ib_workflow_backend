@@ -8,18 +8,16 @@ from ib_boards.constants.exception_messages import (
     USER_DONOT_HAVE_ACCESS)
 from ib_boards.interactors.dtos import ColumnTasksDTO, TaskDTO, ActionDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
-    GetBoardsPresenterInterface, GetBoardsDetailsPresenterInterface, \
-    GetColumnTasksPresenterInterface, TaskCompleteDetailsDTO
+    GetBoardsPresenterInterface, GetColumnTasksPresenterInterface, \
+    TaskCompleteDetailsDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
 from ib_boards.interactors.storage_interfaces.dtos import BoardDTO, \
     ColumnCompleteDetails
-from ib_boards.interactors.storage_interfaces.dtos import (
-    TaskFieldsDTO, TaskActionsDTO, ColumnDetailsDTO)
 
 
-class GetBoardsPresenterImplementation(
-    GetBoardsPresenterInterface, HTTPResponseMixin):
+class GetBoardsPresenterImplementation(GetBoardsPresenterInterface,
+                                       HTTPResponseMixin):
 
     def get_response_for_user_have_no_access_for_boards(
             self) -> response.HttpResponse:
@@ -82,42 +80,8 @@ class GetBoardsPresenterImplementation(
         pass
 
 
-class GetBoardsDetailsPresenterImplementation(
-    GetBoardsDetailsPresenterInterface, HTTPResponseMixin):
-
-    def get_response_for_invalid_board_ids(
-            self, error) -> response.HttpResponse:
-        from ib_boards.constants.exception_messages import INVALID_BOARD_IDS
-        response_dict = {
-            "response": f"{INVALID_BOARD_IDS[0]}: {error.board_ids}",
-            "http_status_code": 404,
-            "res_status": INVALID_BOARD_IDS[1]
-        }
-        return self.prepare_404_not_found_response(
-            response_dict=response_dict
-        )
-
-    def get_response_for_board_details(
-            self, board_dtos: List[BoardDTO]) -> response.HttpResponse:
-        board_details_dict = []
-        for board_dto in board_dtos:
-            board_dict = self._convert_board_dto_to_dict(board_dto=board_dto)
-            board_details_dict.append(board_dict)
-
-        return self.prepare_200_success_response(
-            response_dict=board_details_dict
-        )
-
-    @staticmethod
-    def _convert_board_dto_to_dict(board_dto: BoardDTO):
-        return {
-            "board_id": board_dto.board_id,
-            "name": board_dto.name
-        }
-
-
-class GetColumnTasksPresenterImplementation(
-    GetColumnTasksPresenterInterface, HTTPResponseMixin):
+class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
+                                            HTTPResponseMixin):
 
     def get_response_for_the_invalid_column_id(self):
         from ib_boards.constants.exception_messages import INVALID_COLUMN_ID
