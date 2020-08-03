@@ -4,8 +4,8 @@ from ib_boards.presenters.presenter_implementation import \
     PresenterImplementation
 from ib_boards.tests.factories.interactor_dtos import TaskColumnDTOFactory
 from ib_boards.tests.factories.storage_dtos import (
-    TaskDTOFactory, TaskActionsDTOFactory, TaskFieldsDTOFactory,
-    ColumnDetailsDTOFactory, ColumnCompleteDetailsDTOFactory)
+    TaskActionsDTOFactory, TaskFieldsDTOFactory,
+    ColumnCompleteDetailsDTOFactory)
 
 
 class TestGetColumnDetails:
@@ -28,7 +28,7 @@ class TestGetColumnDetails:
     def get_column_task_details_with_duplicates(self):
         TaskColumnDTOFactory.reset_sequence()
         return TaskColumnDTOFactory.create_batch(size=3) + [TaskColumnDTOFactory(
-            column_id='COLUMN_ID_0', task_id='task_id_0'
+            column_id='COLUMN_ID_1', task_id='task_id_0'
         )]
 
     @pytest.fixture()
@@ -36,7 +36,7 @@ class TestGetColumnDetails:
         TaskActionsDTOFactory.reset_sequence()
         return TaskActionsDTOFactory.create_batch(size=3) + [
             TaskActionsDTOFactory(
-                task_id='task_id_0'
+                task_id='task_id_0', action_id='action_id_0'
             )]
 
     @pytest.fixture()
@@ -44,7 +44,7 @@ class TestGetColumnDetails:
         TaskFieldsDTOFactory.reset_sequence()
         return TaskFieldsDTOFactory.create_batch(size=3) + [
             TaskFieldsDTOFactory(
-                task_id='task_id_0'
+                task_id='task_id_0', field_id='field_id_0'
             )]
 
     @pytest.fixture()
@@ -93,10 +93,10 @@ class TestGetColumnDetails:
     def test_with_duplicate_tasks_in_same_column_and_duplicate_fields(
             self, get_task_fields_dtos_with_duplicates_fields,
             get_column_task_details_with_duplicates,
-            get_task_actions_dtos_with_duplicates_fields, get_column_details, snapshot):
+            get_task_actions_dtos_with_duplicate_fields, get_column_details, snapshot):
         # Arrange
         task_fields_dtos = get_task_fields_dtos_with_duplicates_fields
-        task_actions_dtos = get_task_actions_dtos_with_duplicates_fields
+        task_actions_dtos = get_task_actions_dtos_with_duplicate_fields
         task_details = get_column_task_details_with_duplicates
         column_details = get_column_details
         presenter = PresenterImplementation()
@@ -111,7 +111,7 @@ class TestGetColumnDetails:
         import json
         result = json.loads(response.content)
 
-        snapshot.assert_match(result, "column_details_with_duplicates")
+        snapshot.assert_match(result, "column_details_with_duplicates_fields")
 
     def test_get_response_for_column_details_with_proper_data(
             self, get_task_fields_dtos, get_column_task_details,
