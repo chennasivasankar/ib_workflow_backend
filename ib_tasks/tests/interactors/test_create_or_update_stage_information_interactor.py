@@ -82,6 +82,50 @@ class TestCreateOrUpdateStageInformation:
         )]
 
         stage_storage.get_existing_status_ids.return_value = ["status1"]
+        stage_storage.get_existing_stage_ids.side_effect = [[], []]
+
+        # Act
+        stage_interactor.create_or_update_stages(
+            stages_details=create_stage_dtos
+        )
+
+        # Assert
+        stage_storage.get_existing_stage_ids.assert_called()
+        stage_storage.create_stages.assert_called_once_with(
+            create_stage_dtos
+        )
+
+    @patch.object(StageDisplayLogicInteractor,
+                  'get_stage_display_logic_condition')
+    def test_create_and_update_stage_given_valid_information_creates_and_updates(
+            self, logic_interactor, create_stage_dtos,
+            valid_stages_dto, task_storage, stage_storage):
+        # Arrange
+
+        stage_ids = ["stage_id_1", "stage_id_2"]
+        stage_interactor = CreateOrUpdateStagesInteractor(
+            stage_storage=stage_storage, task_storage=task_storage
+        )
+        stage_storage.validate_stages_related_task_template_ids. \
+            return_value = []
+
+        task_storage.get_valid_template_ids_in_given_template_ids. \
+            return_value = ["task_template_id_1", "task_template_id_2"]
+        task_storage.get_field_ids_for_given_task_template_ids.return_value = [TemplateFieldsDTO(
+            task_template_id="task_template_id_1",
+            field_ids=["field_id_1", "field_id_2"]
+        ),
+            TemplateFieldsDTO(
+                task_template_id="task_template_id_2",
+                field_ids=["field_id_1", "field_id_2"]
+            )]
+        logic_interactor.return_value = [StatusOperandStageDTO(
+            variable="status1",
+            operator="==",
+            stage="stage_id_1"
+        )]
+
+        stage_storage.get_existing_status_ids.return_value = ["status1"]
         stage_storage.get_existing_stage_ids.side_effect = [[], ["stage_id_1"]]
 
         # Act
