@@ -21,6 +21,8 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import TaskDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import GetTaskStageCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import StorageInterface
+from ib_tasks.exceptions.action_custom_exceptions \
+    import InvalidPresentStageAction
 
 
 class InvalidBoardIdException(Exception):
@@ -257,8 +259,6 @@ class UserActionOnTaskInteractor:
         )
         is_not_present_stage_actions = action_id not in action_ids
         if is_not_present_stage_actions:
-            from ib_tasks.exceptions.action_custom_exceptions \
-                import InvalidPresentStageAction
             raise InvalidPresentStageAction(action_id=action_id)
 
     def _validate_task_id(self):
