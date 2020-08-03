@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Any, Dict
 
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import TaskDetailsDTO, TaskGoFDTO, TaskGoFFieldDTO
@@ -42,7 +42,7 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
         status_dict = task_dict.get("status_variables", {})
         self._update_task_status_variables(status_dict, status_variables_dto)
 
-    def _get_updated_task_dict(self, task_dict):
+    def _get_updated_task_dict(self, task_dict: Dict[str, Any]):
 
         method_object = \
             self._get_method_object_for_condition(action_id=self.action_id)
@@ -50,10 +50,20 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
             self._get_global_constants_to_task(task_id=self.task_id)
         stage_value_dict = \
             self._get_stage_value_dict_to_task(task_id=self.task_id)
-        task_dict = method_object(
-            task_dict=task_dict, global_constants=global_constants,
-            stage_value_dict=stage_value_dict
-        )
+        try:
+            task_dict = method_object(
+                task_dict=task_dict, global_constants=global_constants,
+                stage_value_dict=stage_value_dict
+            )
+        except KeyError:
+            from ib_tasks.exceptions.action_custom_exceptions \
+                import InvalidKeyError
+            raise InvalidKeyError()
+        except:
+            from ib_tasks.exceptions.action_custom_exceptions \
+                import InvalidCustomLogicException
+            raise InvalidCustomLogicException()
+
         return task_dict
 
     def _update_task_status_variables(self, status_dict, status_variables_dto):
@@ -99,7 +109,6 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
         from importlib import import_module
         try:
             module = import_module(path)
-            print(module)
         except ModuleNotFoundError:
             raise InvalidModulePathFound(path_name=path_name)
         try:
@@ -133,7 +142,6 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
         for status_dto in status_variables_dto:
             statuses_dict[status_dto.status_variable] = status_dto.value
 
-        task_dict["statuses"] = statuses_dict
         task_dict["status_variables"] = statuses_dict
         return task_dict
 
@@ -173,16 +181,16 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
         common_gof_ids = self._get_common_gof_ids(
             group_of_fields_dto=group_of_fields_dto
         )
-        gof_multiple_enable_dtos = self.storage\
+        gof_multiple_enable_dtos = self.storage \
             .get_enable_multiple_gofs_field_to_gof_ids(
-                template_id=template_id,
-                gof_ids=common_gof_ids
-            )
+            template_id=template_id,
+            gof_ids=common_gof_ids
+        )
         gof_multiple_enable_dict = {}
         for gof_multiple_enable_dto in gof_multiple_enable_dtos:
             gof_multiple_enable_dict[
                 gof_multiple_enable_dto.group_of_field_id] = \
-                    gof_multiple_enable_dto.multiple_status
+                gof_multiple_enable_dto.multiple_status
         return gof_multiple_enable_dict
 
     @staticmethod
