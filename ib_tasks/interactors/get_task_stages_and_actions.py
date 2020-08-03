@@ -1,6 +1,7 @@
 from collections import defaultdict
 from typing import List
 
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import FieldsStorageInterface
 from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
 
@@ -12,6 +13,11 @@ class GetTaskStagesAndActions:
     def get_task_stages_and_actions(self, task_id: int, user_id: str) -> \
             List[StageAndActionsDetailsDTO]:
         # TODO: validate user tasks
+        is_valid = self.storage.validate_task_id(task_id)
+        is_invalid = not is_valid
+        if is_invalid:
+            raise InvalidTaskIdException(task_id)
+
         stage_ids = self.storage.get_task_stages(task_id)
         stage_details_dtos = self.storage.get_stage_complete_details(stage_ids)
 
@@ -36,10 +42,14 @@ class GetTaskStagesAndActions:
         list_of_stage_actions = []
         for stage in stage_ids:
             stage_dto = stages_dtos[stage]
-            list_of_stage_actions.append(
-                StageAndActionsDetailsDTO(
-                    stage_id=stage_dto.stage_id,
-                    name=stage_dto.name,
-                    actions_dtos=list_of_actions[stage]
-                ))
+            GetTaskStagesAndActions._get_stage_actions_dto(list_of_actions, list_of_stage_actions, stage, stage_dto)
         return list_of_stage_actions
+
+    @staticmethod
+    def _get_stage_actions_dto(list_of_actions, list_of_stage_actions, stage, stage_dto):
+        list_of_stage_actions.append(
+            StageAndActionsDetailsDTO(
+                stage_id=stage_dto.stage_id,
+                name=stage_dto.name,
+                actions_dtos=list_of_actions[stage]
+            ))

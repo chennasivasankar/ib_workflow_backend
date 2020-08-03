@@ -50,3 +50,7 @@ class FieldsStorageInterface(abc.ABC):
     def get_stage_complete_details(self, stage_ids: List[str]) -> \
             List[StageDetailsDTO]:
         pass
+
+    @abc.abstractmethod
+    def validate_task_id(self, task_id: int) -> bool:
+        pass
