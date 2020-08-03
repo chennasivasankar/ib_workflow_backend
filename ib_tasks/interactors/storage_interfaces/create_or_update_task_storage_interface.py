@@ -91,3 +91,8 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
                                                    task_id):
         pass
 
+    @abc.abstractmethod
+    def get_all_gof_ids_related_to_a_task_template(
+            self, task_template_id: str
+    ) -> List[str]:
+        pass

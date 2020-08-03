@@ -267,7 +267,6 @@ class StorageImplementation(StorageInterface):
         ]
 
     def validate_action(self, action_id: int) -> bool:
-
         return StageAction.objects.filter(id=action_id).exists()
 
     def get_enable_multiple_gofs_field_to_gof_ids(
