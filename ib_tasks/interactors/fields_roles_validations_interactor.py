@@ -17,7 +17,6 @@ class FieldsRolesValidationsInteractor:
     def fields_roles_validations(
             self, field_roles_dtos: List[FieldRolesDTO]
     ):
-
         self._check_read_permission_roles_empty(field_roles_dtos)
         self._check_write_permission_roles_empty(field_roles_dtos)
         self._check_for_duplication_of_read_permissions(field_roles_dtos)

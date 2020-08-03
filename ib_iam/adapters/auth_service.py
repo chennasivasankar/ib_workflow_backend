@@ -67,6 +67,8 @@ class AuthService:
 
     def get_reset_password_token(self, email: str,
                                  expires_in_sec: int) -> str:
+        from ib_users.interactors.exceptions.user_credentials_exceptions import \
+            AccountWithEmailDoesntExistException
         try:
             reset_password_token = self.interface. \
                 get_reset_password_token_for_reset_password(
@@ -78,6 +80,10 @@ class AuthService:
             if err.error_type == INVALID_EMAIL.code:
                 from ib_iam.exceptions.custom_exceptions import InvalidEmail
                 raise InvalidEmail
+        except AccountWithEmailDoesntExistException:
+            from ib_iam.exceptions.custom_exceptions import \
+                UserAccountDoesNotExist
+            raise UserAccountDoesNotExist
 
     def update_user_password_with_reset_password_token(
             self, reset_password_token: str, password: str

@@ -54,11 +54,12 @@ class DiscussionInteractor:
         return presenter.prepare_success_response_for_create_discussion()
 
     def create_discussion(self, discussion_dto):
-        self.storage.validate_entity_id(entity_id=discussion_dto.entity_id)
-        self.storage.validate_entity_type_for_entity_id(
-            entity_id=discussion_dto.entity_id,
-            entity_type=discussion_dto.entity_type
-        )
+        # TODO: FIX IT
+        # self.storage.validate_entity_id(entity_id=discussion_dto.entity_id)
+        # self.storage.validate_entity_type_for_entity_id(
+        #     entity_id=discussion_dto.entity_id,
+        #     entity_type=discussion_dto.entity_type
+        # )
         discussion_set_id = self._get_or_create_the_discussion_set(
             discussion_dto=discussion_dto
         )
@@ -161,13 +162,14 @@ class DiscussionInteractor:
     ):
         self._validate_offset(offset_and_limit_dto.offset)
         self._validate_limit(offset_and_limit_dto.limit)
-        self.storage.validate_entity_id(
-            entity_id=entity_id_and_entity_type_dto.entity_id
-        )
-        self.storage.validate_entity_type_for_entity_id(
-            entity_id=entity_id_and_entity_type_dto.entity_id,
-            entity_type=entity_id_and_entity_type_dto.entity_type
-        )
+        # TODO: FIX IT
+        # self.storage.validate_entity_id(
+        #     entity_id=entity_id_and_entity_type_dto.entity_id
+        # )
+        # self.storage.validate_entity_type_for_entity_id(
+        #     entity_id=entity_id_and_entity_type_dto.entity_id,
+        #     entity_type=entity_id_and_entity_type_dto.entity_type
+        # )
 
     @staticmethod
     def _validate_offset(offset):
