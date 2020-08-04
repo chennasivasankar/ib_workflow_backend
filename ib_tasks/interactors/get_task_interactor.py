@@ -92,6 +92,7 @@ class GetTaskInteractor:
             import GetTaskStagesAndActions
         from ib_tasks.storages.storage_implementation import \
             StorageImplementation
+        # TODO: Make necessary changes for the new storage method
         interactor = GetTaskStagesAndActions(
             storage=self.stages_storage,
             task_storage=StorageImplementation()
