@@ -6,12 +6,15 @@ from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import FieldsStorageInterface
+from ib_tasks.interactors.storage_interfaces.storage_interface import StorageInterface
 from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
 
 
 class GetTaskStagesAndActions:
-    def __init__(self, storage: FieldsStorageInterface):
+    def __init__(self, storage: FieldsStorageInterface,
+                 task_storage: StorageInterface):
         self.storage = storage
+        self.task_storage = task_storage
 
     def get_task_stages_and_actions(self, task_id: int, user_id: str) -> \
             List[StageAndActionsDetailsDTO]:
@@ -19,7 +22,7 @@ class GetTaskStagesAndActions:
         roles_service = get_roles_service_adapter().roles_service
         user_roles = roles_service.get_user_role_ids(user_id)
 
-        is_valid = self.storage.validate_task_id(task_id)
+        is_valid = self.task_storage.validate_task_id(task_id)
         is_invalid = not is_valid
         if is_invalid:
             raise InvalidTaskIdException(task_id)
