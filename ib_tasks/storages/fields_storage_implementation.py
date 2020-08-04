@@ -1,6 +1,13 @@
 from typing import List, Optional
 
 from django.db.models import Q
+from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDetailsDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO, StageTaskFieldsDTO, \
+    TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId, FieldIdWithGoFIdDTO
+from ib_tasks.interactors.storage_interfaces.fields_storage_interface import FieldsStorageInterface
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskTemplateStageDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import GetTaskStageCompleteDetailsDTO, TaskTemplateStageDTO, \
+    StageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
@@ -11,10 +18,30 @@ from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (
     TaskTemplateStageDTO, StageDetailsDTO)
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
+from ib_tasks.models import Field
 from ib_tasks.models import TaskStage, StageAction, Stage, Task, TaskGoFField
 
 
 class FieldsStorageImplementation(FieldsStorageInterface):
+    def get_field_ids_related_to_given_gof_ids(self, gof_ids: List[str]) -> \
+            List[FieldIdWithGoFIdDTO]:
+        field_objects = Field.objects.filter(gof_id__in=gof_ids)
+        field_id_with_gof_id_dtos = \
+            self._prepare_field_id_with_gof_id_dtos(field_objects)
+        return field_id_with_gof_id_dtos
+
+    @staticmethod
+    def _prepare_field_id_with_gof_id_dtos(
+            field_objects: List[Field]
+    ) -> List[FieldIdWithGoFIdDTO]:
+        field_id_with_gof_id_dtos = [
+            FieldIdWithGoFIdDTO(
+                field_id=field_obj.field_id,
+                gof_id=field_obj.gof_id
+            )
+            for field_obj in field_objects
+        ]
+        return field_id_with_gof_id_dtos
 
     def get_stage_details(self, task_dtos: List[GetTaskDetailsDTO]) -> \
             List[TaskTemplateStageDTO]:

@@ -15,7 +15,6 @@ class TaskGoFFieldDTO:
     field_id: str
     field_response: str
 
-
 @dataclass
 class TaskDetailsDTO:
     template_id: str
