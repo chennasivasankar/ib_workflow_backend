@@ -29,16 +29,10 @@ class TestGetFieldIds:
                            populate_data,
                            snapshot):
         # Arrange
-        user_roles = ["FIN_PAYMENT_REQUESTER",
-                      "FIN_PAYMENT_POC",
-                      "FIN_PAYMENT_APPROVER",
-                      "FIN_PAYMENTS_RP",
-                      "FIN_FINANCE_RP"]
         storage = FieldsStorageImplementation()
 
         # Act
-        response = storage.get_field_ids(get_task_template_stage_dtos,
-                                         user_roles=user_roles)
+        response = storage.get_field_ids(get_task_template_stage_dtos)
 
         # Assert
         snapshot.assert_match(response, "response")

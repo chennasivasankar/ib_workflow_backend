@@ -247,7 +247,8 @@ class TestGetFieldsAndActionsInteractor:
         storage.get_field_ids.assert_called()
         storage.validate_task_related_stage_ids.assert_called_once_with(
             task_dtos)
-        storage.get_fields_details.assert_called_once_with(task_fields_dtos)
+        storage.get_fields_details.assert_called_once_with(task_fields_dtos,
+                                                           user_roles)
 
         snapshot.assert_match(response, "response")
 
@@ -298,7 +299,7 @@ class TestGetFieldsAndActionsInteractor:
         storage.get_field_ids.assert_called()
         storage.validate_task_related_stage_ids.assert_called_once_with(task_dtos)
         storage.get_fields_details.assert_called_once_with(
-            task_fields_dtos_with_for_same_stage_tasks)
+            task_fields_dtos_with_for_same_stage_tasks, user_roles)
 
         snapshot.assert_match(response, "response")
 
@@ -347,7 +348,8 @@ class TestGetFieldsAndActionsInteractor:
         storage.get_field_ids.assert_called()
         storage.validate_task_related_stage_ids.assert_called_once_with(
             task_dtos)
-        storage.get_fields_details.assert_called_once_with(task_fields_dtos)
+        storage.get_fields_details.assert_called_once_with(task_fields_dtos,
+                                                           user_roles)
 
         snapshot.assert_match(response, "response")
 
@@ -395,7 +397,8 @@ class TestGetFieldsAndActionsInteractor:
         storage.get_field_ids.assert_called()
         storage.validate_task_related_stage_ids.assert_called_once_with(
             task_dtos)
-        storage.get_fields_details.assert_called_once_with(task_fields_dtos)
+        storage.get_fields_details.assert_called_once_with(task_fields_dtos,
+                                                           user_roles)
 
         snapshot.assert_match(response, "response")
 

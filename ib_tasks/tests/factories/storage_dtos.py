@@ -155,6 +155,14 @@ class TaskFieldsDTOFactory(factory.Factory):
     task_id = factory.Sequence(lambda n: n + 1)
 
 
+class TaskWithFieldsDTOFactory(factory.Factory):
+    class Meta:
+        model = StageTaskFieldsDTO
+
+    field_ids = ['FIELD_ID-1', 'FIELD_ID-2']
+    task_id = factory.Sequence(lambda n: n + 1)
+
+
 class TemplateStagesDTOFactory(factory.Factory):
     class Meta:
         model = TaskTemplateStageDTO
