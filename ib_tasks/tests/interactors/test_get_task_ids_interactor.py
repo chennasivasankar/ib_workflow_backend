@@ -107,7 +107,7 @@ class TestGetTaskIdsInteractor:
             TaskDetailsConfigDTO(
                 unique_key="1",
                 stage_ids=stage_ids[0],
-                offset=0,
+                offset=-3,
                 limit=2
             ),
             TaskDetailsConfigDTO(
