@@ -1,18 +1,21 @@
+import json
 from ib_iam.presenters.update_team_presenter_implementation import (
-    UpdateTeamPresenterImplementation
-)
-from ib_iam.constants.exception_messages import DUPLICATE_USERS_FOR_UPDATE_TEAM
+    UpdateTeamPresenterImplementation)
+from ib_iam.constants.exception_messages import DUPLICATE_USER_IDS_FOR_UPDATE_TEAM
 
 
 class TestRaiseExceptionForDuplicateMembers:
     def test_when_it_is_called_it_returns_http_response(self):
         json_presenter = UpdateTeamPresenterImplementation()
-        import json
-        expected_response = DUPLICATE_USERS_FOR_UPDATE_TEAM[0]
-        expected_res_status = DUPLICATE_USERS_FOR_UPDATE_TEAM[1]
+        user_ids = ["1", "2"]
+        expected_response = DUPLICATE_USER_IDS_FOR_UPDATE_TEAM[0] % user_ids
+        expected_res_status = DUPLICATE_USER_IDS_FOR_UPDATE_TEAM[1]
         expected_http_status_code = 400
 
-        result = json_presenter.get_duplicate_users_response_for_update_team()
+        from ib_iam.exceptions.custom_exceptions import DuplicateUserIds
+        result = json_presenter.get_duplicate_users_response_for_update_team(
+            exception=DuplicateUserIds(user_ids=user_ids)
+        )
         response_dict = json.loads(result.content)
         actual_response = response_dict["response"]
         actual_res_status = response_dict["res_status"]

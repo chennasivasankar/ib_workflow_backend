@@ -1,11 +1,14 @@
 from typing import List, Optional
+
+from ib_iam.interactors.storage_interfaces.dtos import TeamNameAndDescriptionDTO
 from ib_iam.interactors.storage_interfaces.team_storage_interface import \
     TeamStorageInterface
 from ib_iam.models import UserDetails, Team, UserTeam
-from ib_iam.exceptions.custom_exceptions import UserHasNoAccess, InvalidTeam
+from ib_iam.exceptions.custom_exceptions import UserHasNoAccess, InvalidTeamId
 from ib_iam.interactors.storage_interfaces.dtos import (
     PaginationDTO, TeamUserIdsDTO,
-    TeamsWithTotalTeamsCountDTO, TeamDetailsWithUserIdsDTO, TeamWithUserIdsDTO,
+    TeamsWithTotalTeamsCountDTO, TeamWithUserIdsDTO,
+    TeamWithTeamIdAndUserIdsDTO,
     TeamDTO)
 
 
@@ -67,16 +70,13 @@ class TeamStorageImplementation(TeamStorageInterface):
             .values_list('user_id', flat=True)
         return list(user_ids)
 
-    def add_team(
-            self,
-            user_id: str,
-            team_details_with_user_ids_dto: TeamDetailsWithUserIdsDTO
-    ) -> str:
+    def add_team(self, user_id: str,
+                 team_name_and_description_dto: TeamNameAndDescriptionDTO) -> \
+            str:
         team_object = Team.objects.create(
-            name=team_details_with_user_ids_dto.name,
-            description=team_details_with_user_ids_dto.description,
-            created_by=user_id
-        )
+            name=team_name_and_description_dto.name,
+            description=team_name_and_description_dto.description,
+            created_by=user_id)
         return str(team_object.team_id)
 
     def add_users_to_team(self, team_id: str, user_ids: List[str]):
@@ -92,14 +92,15 @@ class TeamStorageImplementation(TeamStorageInterface):
         try:
             Team.objects.get(team_id=team_id)
         except Team.DoesNotExist:
-            raise InvalidTeam()
+            raise InvalidTeamId()
 
     def update_team_details(
-            self, team_with_user_ids_dto: TeamWithUserIdsDTO
-    ):
-        Team.objects.filter(team_id=team_with_user_ids_dto.team_id).update(
-            name=team_with_user_ids_dto.name,
-            description=team_with_user_ids_dto.description
+            self,
+            team_dto: TeamWithTeamIdAndUserIdsDTO):
+        Team.objects.filter(
+            team_id=team_dto.team_id).update(
+            name=team_dto.name,
+            description=team_dto.description
         )
 
     def get_member_ids_of_team(self, team_id: str):
@@ -107,9 +108,8 @@ class TeamStorageImplementation(TeamStorageInterface):
             .values_list("user_id", flat=True)
         return list(member_ids)
 
-    def delete_members_from_team(self, team_id: str, user_ids: List[str]):
-        UserTeam.objects.filter(team_id=team_id, user_id__in=user_ids) \
-            .delete()
+    def delete_all_members_of_team(self, team_id: str):
+        UserTeam.objects.filter(team_id=team_id).delete()
 
     def delete_team(self, team_id: str):
         Team.objects.filter(team_id=team_id).delete()

@@ -1,12 +1,11 @@
 from mock import create_autospec, Mock
 from ib_iam.interactors.team_interactor import TeamInteractor
 from ib_iam.interactors.presenter_interfaces.team_presenter_interface import (
-    TeamPresenterInterface
-)
-from ib_iam.tests.factories.storage_dtos import TeamDetailsWithUserIdsDTOFactory
+    TeamPresenterInterface)
+from ib_iam.tests.factories.storage_dtos import (
+    TeamNameAndDescriptionDTOFactory, TeamWithUserIdsDTOFactory)
 from ib_iam.interactors.storage_interfaces.team_storage_interface import (
-    TeamStorageInterface
-)
+    TeamStorageInterface)
 
 
 class TestAddTeamInteractor:
@@ -17,7 +16,7 @@ class TestAddTeamInteractor:
         presenter = create_autospec(TeamPresenterInterface)
         interactor = TeamInteractor(storage=storage)
         user_id = "1"
-        team_details_with_user_ids_dto = TeamDetailsWithUserIdsDTOFactory()
+        team_with_user_ids_dto = TeamWithUserIdsDTOFactory()
         storage.validate_is_user_admin \
             .side_effect = UserHasNoAccess
         presenter.get_user_has_no_access_response_for_add_team \
@@ -25,7 +24,7 @@ class TestAddTeamInteractor:
 
         interactor.add_team_wrapper(
             user_id=user_id,
-            team_details_with_user_ids_dto=team_details_with_user_ids_dto,
+            team_with_user_ids_dto=team_with_user_ids_dto,
             presenter=presenter
         )
 
@@ -40,7 +39,8 @@ class TestAddTeamInteractor:
         interactor = TeamInteractor(storage=storage)
         user_id = "1"
         user_ids = ["2", "2", "3", "1"]
-        team_details_with_user_ids_dto = TeamDetailsWithUserIdsDTOFactory(
+        expected_user_ids_from_exception = ["2"]
+        team_with_user_ids_dto = TeamWithUserIdsDTOFactory(
             name="team1", user_ids=user_ids
         )
         storage.get_team_id_if_team_name_already_exists.return_value = None
@@ -49,11 +49,15 @@ class TestAddTeamInteractor:
 
         interactor.add_team_wrapper(
             user_id=user_id,
-            team_details_with_user_ids_dto=team_details_with_user_ids_dto,
-            presenter=presenter
-        )
+            team_with_user_ids_dto=team_with_user_ids_dto,
+            presenter=presenter)
 
-        presenter.get_duplicate_users_response_for_add_team.assert_called_once()
+        call_obj = \
+            presenter.get_duplicate_users_response_for_add_team.call_args
+        error_obj = call_obj.args[0]
+        actual_user_ids_from_exception = error_obj.user_ids
+        assert actual_user_ids_from_exception == \
+               expected_user_ids_from_exception
 
     def test_given_invalid_users_returns_invalid_users_response(self):
         storage = create_autospec(TeamStorageInterface)
@@ -62,7 +66,8 @@ class TestAddTeamInteractor:
         user_id = "1"
         valid_user_ids = ["2", "3"]
         invalid_user_ids = ["2", "3", "4"]
-        team_details_with_user_ids_dto = TeamDetailsWithUserIdsDTOFactory(
+        expected_user_ids_from_exception = ["4"]
+        team_with_user_ids_dto = TeamWithUserIdsDTOFactory(
             name="team1", user_ids=invalid_user_ids
         )
         storage.get_team_id_if_team_name_already_exists.return_value = None
@@ -72,13 +77,18 @@ class TestAddTeamInteractor:
 
         interactor.add_team_wrapper(
             user_id=user_id,
-            team_details_with_user_ids_dto=team_details_with_user_ids_dto,
+            team_with_user_ids_dto=team_with_user_ids_dto,
             presenter=presenter
         )
 
         storage.get_valid_user_ids_among_the_given_user_ids \
             .assert_called_once_with(user_ids=invalid_user_ids)
-        presenter.get_invalid_users_response_for_add_team.assert_called_once()
+        call_obj = \
+            presenter.get_invalid_users_response_for_add_team.call_args
+        error_obj = call_obj.args[0]
+        actual_user_ids_from_exception = error_obj.user_ids
+        assert actual_user_ids_from_exception == \
+               expected_user_ids_from_exception
 
     def test_team_name_exists_returns_team_name_already_exists_response(self):
         storage = create_autospec(TeamStorageInterface)
@@ -90,7 +100,7 @@ class TestAddTeamInteractor:
         expected_team_name_from_team_name_already_exists_error = team_name
         storage.get_valid_user_ids_among_the_given_user_ids \
             .return_value = user_ids
-        team_details_with_user_ids_dto = TeamDetailsWithUserIdsDTOFactory(
+        team_with_user_ids_dto = TeamWithUserIdsDTOFactory(
             name="team1", user_ids=user_ids
         )
         storage.get_team_id_if_team_name_already_exists.return_value = "1"
@@ -99,12 +109,12 @@ class TestAddTeamInteractor:
 
         interactor.add_team_wrapper(
             user_id=user_id,
-            team_details_with_user_ids_dto=team_details_with_user_ids_dto,
+            team_with_user_ids_dto=team_with_user_ids_dto,
             presenter=presenter
         )
 
         storage.get_team_id_if_team_name_already_exists \
-            .assert_called_once_with(name=team_details_with_user_ids_dto.name)
+            .assert_called_once_with(name=team_with_user_ids_dto.name)
         call_obj = \
             presenter.get_team_name_already_exists_response_for_add_team.call_args
         error_obj = call_obj.args[0]
@@ -120,7 +130,10 @@ class TestAddTeamInteractor:
         user_id = "1"
         team_id = "1"
         user_ids = ["2", "3"]
-        team_details_with_user_ids_dto = TeamDetailsWithUserIdsDTOFactory()
+        TeamWithUserIdsDTOFactory.reset_sequence(1, force=True)
+        team_with_user_ids_dto = TeamWithUserIdsDTOFactory()
+        TeamNameAndDescriptionDTOFactory.reset_sequence(1)
+        team_name_and_description_dto = TeamNameAndDescriptionDTOFactory()
         storage.get_team_id_if_team_name_already_exists.return_value = None
         storage.get_valid_user_ids_among_the_given_user_ids \
             .return_value = user_ids
@@ -129,14 +142,12 @@ class TestAddTeamInteractor:
 
         interactor.add_team_wrapper(
             user_id=user_id,
-            team_details_with_user_ids_dto=team_details_with_user_ids_dto,
-            presenter=presenter
-        )
+            team_with_user_ids_dto=team_with_user_ids_dto,
+            presenter=presenter)
 
         storage.add_team.assert_called_once_with(
             user_id=user_id,
-            team_details_with_user_ids_dto=team_details_with_user_ids_dto
-        )
+            team_name_and_description_dto=team_name_and_description_dto)
         storage.add_users_to_team(team_id=team_id, user_ids=user_ids)
         presenter.get_response_for_add_team \
             .assert_called_once_with(team_id=team_id)

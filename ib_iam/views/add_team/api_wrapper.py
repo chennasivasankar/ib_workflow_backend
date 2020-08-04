@@ -3,14 +3,11 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
 from .validator_class import ValidatorClass
 from ib_iam.interactors.team_interactor import TeamInteractor
 from ib_iam.interactors.storage_interfaces.dtos import (
-    TeamDetailsWithUserIdsDTO
-)
+    TeamWithUserIdsDTO)
 from ib_iam.presenters.team_presenter_implementation import (
-    TeamPresenterImplementation
-)
+    TeamPresenterImplementation)
 from ib_iam.storages.team_storage_implementation import (
-    TeamStorageImplementation
-)
+    TeamStorageImplementation)
 
 
 @validate_decorator(validator_class=ValidatorClass)
@@ -26,15 +23,13 @@ def api_wrapper(*args, **kwargs):
     presenter = TeamPresenterImplementation()
     interactor = TeamInteractor(storage=storage)
 
-    team_details_with_user_ids_dto = TeamDetailsWithUserIdsDTO(
+    team_with_user_ids_dto = TeamWithUserIdsDTO(
         name=name,
         description=description,
-        user_ids=user_ids
-    )
+        user_ids=user_ids)
 
     response_data = interactor.add_team_wrapper(
         user_id=user_id,
-        team_details_with_user_ids_dto=team_details_with_user_ids_dto,
-        presenter=presenter
-    )
+        team_with_user_ids_dto=team_with_user_ids_dto,
+        presenter=presenter)
     return response_data

@@ -43,8 +43,7 @@ class TestAddCompanyInteractor:
         user_id = "1"
         user_ids = ["2", "2", "3", "1"]
         company_details_with_user_ids_dto = CompanyDetailsWithUserIdsDTOFactory(
-            name="company1", user_ids=user_ids
-        )
+            name="company1", user_ids=user_ids)
         storage.get_company_id_if_company_name_already_exists.return_value = None
         presenter.get_duplicate_users_response_for_add_company \
             .return_value = Mock()
@@ -52,8 +51,7 @@ class TestAddCompanyInteractor:
         interactor.add_company_wrapper(
             user_id=user_id,
             company_details_with_user_ids_dto=company_details_with_user_ids_dto,
-            presenter=presenter
-        )
+            presenter=presenter)
 
         presenter.get_duplicate_users_response_for_add_company.assert_called_once()
 

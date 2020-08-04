@@ -80,11 +80,11 @@ class CompanyStorageImplementation(CompanyStorageInterface):
             .update(company_id=company_id)
 
     def validate_is_company_exists(self, company_id: str):
-        from ib_iam.exceptions.custom_exceptions import InvalidCompany
+        from ib_iam.exceptions.custom_exceptions import InvalidCompanyId
         try:
             Company.objects.get(company_id=company_id)
         except Company.DoesNotExist:
-            raise InvalidCompany()
+            raise InvalidCompanyId()
 
     def delete_company(self, company_id: str):
         Company.objects.filter(company_id=company_id).delete()

@@ -5,7 +5,7 @@ RESPONSE_404_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "INVALID_COMPANY"
+    "res_status": "INVALID_COMPANY_ID"
 }
 """
 

@@ -28,13 +28,13 @@ class TestDeleteTeam:
                  .assert_called_once()
 
     def test_if_invalid_team_id_raises_not_found_exception(self):
-        from ib_iam.exceptions.custom_exceptions import InvalidTeam
+        from ib_iam.exceptions.custom_exceptions import InvalidTeamId
         storage = create_autospec(TeamStorageInterface)
         presenter = create_autospec(DeleteTeamPresenterInterface)
         interactor = TeamInteractor(storage=storage)
         user_id = "1"
         team_id = "1"
-        storage.raise_exception_if_team_not_exists.side_effect = InvalidTeam
+        storage.raise_exception_if_team_not_exists.side_effect = InvalidTeamId
         presenter.get_invalid_team_response_for_delete_team \
                  .side_effect = Mock()
 

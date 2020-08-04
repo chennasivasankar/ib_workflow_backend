@@ -64,12 +64,12 @@ class TeamNameAndDescriptionDTO:
 
 
 @dataclass
-class TeamDetailsWithUserIdsDTO(TeamNameAndDescriptionDTO):
+class TeamWithUserIdsDTO(TeamNameAndDescriptionDTO):
     user_ids: List[str]
 
 
 @dataclass
-class TeamWithUserIdsDTO(TeamDetailsWithUserIdsDTO):
+class TeamWithTeamIdAndUserIdsDTO(TeamWithUserIdsDTO):
     team_id: str
 
 

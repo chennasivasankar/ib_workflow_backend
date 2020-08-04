@@ -12,6 +12,11 @@ class UserStorageImplementation(UserStorageInterface):
         user = UserDetails.objects.get(user_id=user_id)
         return user.is_admin
 
+    def is_user_admin(self, user_id: str) -> bool:
+        from ib_iam.models.user import UserDetails
+        user = UserDetails.objects.get(user_id=user_id)
+        return user.is_admin
+
     def is_user_exist(self, user_id: str) -> bool:
         from ib_iam.models import UserDetails
         is_exists = UserDetails.objects.filter(user_id=user_id).exists()

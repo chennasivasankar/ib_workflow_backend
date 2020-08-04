@@ -3,9 +3,11 @@ from abc import abstractmethod
 from typing import List, Optional
 from ib_iam.interactors.storage_interfaces.dtos import (
     PaginationDTO, TeamUserIdsDTO,
-    TeamsWithTotalTeamsCountDTO, TeamDetailsWithUserIdsDTO,
-    TeamWithUserIdsDTO
+    TeamsWithTotalTeamsCountDTO, TeamWithUserIdsDTO,
+    TeamWithTeamIdAndUserIdsDTO
 )
+from ib_iam.interactors.storage_interfaces.dtos import TeamDTO
+from ib_iam.interactors.storage_interfaces.dtos import TeamNameAndDescriptionDTO
 
 
 class TeamStorageInterface(ABC):
@@ -38,7 +40,7 @@ class TeamStorageInterface(ABC):
     @abstractmethod
     def add_team(
             self, user_id: str,
-            team_details_with_user_ids_dto: TeamDetailsWithUserIdsDTO) -> str:
+            team_name_and_description_dto: TeamNameAndDescriptionDTO) -> str:
         pass
 
     @abstractmethod
@@ -50,8 +52,7 @@ class TeamStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_team_details(
-            self, team_with_user_ids_dto: TeamWithUserIdsDTO):
+    def update_team_details(self, team_dto: TeamDTO):
         pass
 
     @abstractmethod
@@ -59,7 +60,7 @@ class TeamStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def delete_members_from_team(self, team_id: str, user_ids: List[str]):
+    def delete_all_members_of_team(self, team_id: str):
         pass
 
     @abstractmethod

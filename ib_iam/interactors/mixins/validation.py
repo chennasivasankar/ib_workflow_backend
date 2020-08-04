@@ -42,3 +42,10 @@ class ValidationMixin:
     def _check_name_contains_special_characters_and_throw_exception(name):
         if not name.isalpha():
             raise NameShouldNotContainsNumbersSpecCharacters()
+
+    def _validate_is_user_admin(self, user_id: str):
+        is_admin = self.storage.is_user_admin(user_id=user_id)
+        is_not_admin = not is_admin
+        if is_not_admin:
+            from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin
+            raise UserIsNotAdmin()

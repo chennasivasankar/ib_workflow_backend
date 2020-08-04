@@ -1,7 +1,7 @@
 from typing import List
 from ib_iam.exceptions.custom_exceptions import (
-    UserHasNoAccess, CompanyNameAlreadyExists, InvalidUsers, DuplicateUsers,
-    InvalidCompany)
+    UserHasNoAccess, CompanyNameAlreadyExists, InvalidUserIds, DuplicateUserIds,
+    InvalidCompanyId)
 from ib_iam.interactors.presenter_interfaces \
     .add_company_presenter_interface import AddCompanyPresenterInterface
 from ib_iam.interactors.presenter_interfaces \
@@ -38,9 +38,9 @@ class CompanyInteractor:
             response = presenter \
                 .get_company_name_already_exists_response_for_add_company(
                 exception)
-        except DuplicateUsers:
+        except DuplicateUserIds:
             response = presenter.get_duplicate_users_response_for_add_company()
-        except InvalidUsers:
+        except InvalidUserIds:
             response = presenter.get_invalid_users_response_for_add_company()
         return response
 
@@ -74,7 +74,7 @@ class CompanyInteractor:
         except UserHasNoAccess:
             response = \
                 presenter.get_user_has_no_access_response_for_delete_company()
-        except InvalidCompany:
+        except InvalidCompanyId:
             response = \
                 presenter.get_invalid_company_response_for_delete_company()
         return response
@@ -97,13 +97,13 @@ class CompanyInteractor:
         except UserHasNoAccess:
             response = \
                 presenter.get_user_has_no_access_response_for_update_company()
-        except InvalidCompany:
+        except InvalidCompanyId:
             response = \
                 presenter.get_invalid_company_response_for_update_company()
-        except DuplicateUsers:
+        except DuplicateUserIds:
             response = \
                 presenter.get_duplicate_users_response_for_update_company()
-        except InvalidUsers:
+        except InvalidUserIds:
             response = presenter.get_invalid_users_response_for_update_company()
         except CompanyNameAlreadyExists as exception:
             response = presenter \
@@ -154,7 +154,7 @@ class CompanyInteractor:
     def _validate_is_duplicate_users_exists(user_ids: List[str]):
         is_duplicate_user_ids_exist = len(user_ids) != len(set(user_ids))
         if is_duplicate_user_ids_exist:
-            raise DuplicateUsers()
+            raise DuplicateUserIds()
 
     def _validate_is_invalid_users_exists(self, user_ids: List[str]):
         user_ids_from_db = \
@@ -162,7 +162,7 @@ class CompanyInteractor:
                 user_ids=user_ids)
         is_invalid_users_found = len(user_ids) != len(user_ids_from_db)
         if is_invalid_users_found:
-            raise InvalidUsers()
+            raise InvalidUserIds()
 
     def _validate_is_company_name_already_exists_to_add_company(
             self, name: str):

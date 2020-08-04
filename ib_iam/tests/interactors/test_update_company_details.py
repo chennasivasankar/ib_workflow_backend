@@ -33,7 +33,7 @@ class TestUpdateCompanyDetails:
                  .assert_called_once()
 
     def test_if_invalid_company_id_raises_not_found_exception_response(self):
-        from ib_iam.exceptions.custom_exceptions import InvalidCompany
+        from ib_iam.exceptions.custom_exceptions import InvalidCompanyId
         storage = create_autospec(CompanyStorageInterface)
         presenter = create_autospec(UpdateCompanyPresenterInterface)
         interactor = CompanyInteractor(storage=storage)
@@ -41,7 +41,7 @@ class TestUpdateCompanyDetails:
         company_id = "2"
         company_with_user_ids_dto = \
             CompanyWithUserIdsDTOFactory(company_id="2")
-        storage.validate_is_company_exists.side_effect = InvalidCompany
+        storage.validate_is_company_exists.side_effect = InvalidCompanyId
         presenter.get_invalid_company_response_for_update_company \
             .side_effect = Mock()
 

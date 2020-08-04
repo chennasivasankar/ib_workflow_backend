@@ -28,13 +28,13 @@ class TestDeleteCompany:
                  .assert_called_once()
 
     def test_if_invalid_company_id_raises_not_found_exception(self):
-        from ib_iam.exceptions.custom_exceptions import InvalidCompany
+        from ib_iam.exceptions.custom_exceptions import InvalidCompanyId
         storage = create_autospec(CompanyStorageInterface)
         presenter = create_autospec(DeleteCompanyPresenterInterface)
         interactor = CompanyInteractor(storage=storage)
         user_id = "1"
         company_id = "1"
-        storage.validate_is_company_exists.side_effect = InvalidCompany
+        storage.validate_is_company_exists.side_effect = InvalidCompanyId
         presenter.get_invalid_company_response_for_delete_company \
                  .side_effect = Mock()
 

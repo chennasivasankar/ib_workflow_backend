@@ -4,7 +4,8 @@ from ib_iam.interactors.presenter_interfaces.update_team_presenter_interface imp
 )
 from ib_iam.interactors.storage_interfaces.team_storage_interface import TeamStorageInterface
 from ib_iam.interactors.team_interactor import TeamInteractor
-from ib_iam.tests.factories.storage_dtos import TeamWithUserIdsDTOFactory
+from ib_iam.tests.factories.storage_dtos import TeamDTOFactory
+from ib_iam.tests.factories.storage_dtos import TeamWithTeamIdAndUserIdsDTOFactory
 
 
 class TestUpdateTeamDetails:
@@ -15,14 +16,14 @@ class TestUpdateTeamDetails:
         presenter = create_autospec(UpdateTeamPresenterInterface)
         interactor = TeamInteractor(storage=storage)
         user_id = "1"
-        team_with_user_ids_dto = \
-            TeamWithUserIdsDTOFactory(team_id="1")
+        team_with_team_id_and_user_ids_dto = \
+            TeamWithTeamIdAndUserIdsDTOFactory(team_id="1")
         storage.validate_is_user_admin.side_effect = UserHasNoAccess
         presenter.get_user_has_no_access_response_for_update_team.side_effect = Mock()
 
         interactor.update_team_details_wrapper(
             user_id=user_id,
-            team_with_user_ids_dto=team_with_user_ids_dto,
+            team_with_team_id_and_user_ids_dto=team_with_team_id_and_user_ids_dto,
             presenter=presenter
         )
 
@@ -31,20 +32,20 @@ class TestUpdateTeamDetails:
                  .assert_called_once()
 
     def test_if_invalid_team_id_raises_not_found_exception_response(self):
-        from ib_iam.exceptions.custom_exceptions import InvalidTeam
+        from ib_iam.exceptions.custom_exceptions import InvalidTeamId
         storage = create_autospec(TeamStorageInterface)
         presenter = create_autospec(UpdateTeamPresenterInterface)
         interactor = TeamInteractor(storage=storage)
         user_id = "1"
         team_id = "2"
-        team_with_user_ids_dto = \
-            TeamWithUserIdsDTOFactory(team_id="2")
-        storage.raise_exception_if_team_not_exists.side_effect = InvalidTeam
+        team_with_team_id_and_user_ids_dto = \
+            TeamWithTeamIdAndUserIdsDTOFactory(team_id="2")
+        storage.raise_exception_if_team_not_exists.side_effect = InvalidTeamId
         presenter.get_invalid_team_response_for_update_team.side_effect = Mock()
 
         interactor.update_team_details_wrapper(
             user_id=user_id,
-            team_with_user_ids_dto=team_with_user_ids_dto,
+            team_with_team_id_and_user_ids_dto=team_with_team_id_and_user_ids_dto,
             presenter=presenter
         )
 
@@ -59,15 +60,15 @@ class TestUpdateTeamDetails:
         user_id = "1"
         team_name = "team1"
         user_ids = ["2", "2", "3", "1"]
-        team_with_user_ids_dto = \
-            TeamWithUserIdsDTOFactory(team_id="3", user_ids=user_ids)
+        team_with_team_id_and_user_ids_dto = \
+            TeamWithTeamIdAndUserIdsDTOFactory(team_id="3", user_ids=user_ids)
         storage.raise_exception_if_team_not_exists.return_value = None
         presenter.get_duplicate_users_response_for_update_team \
             .return_value = Mock()
 
         interactor.update_team_details_wrapper(
             user_id=user_id,
-            team_with_user_ids_dto=team_with_user_ids_dto,
+            team_with_team_id_and_user_ids_dto=team_with_team_id_and_user_ids_dto,
             presenter=presenter
         )
 
@@ -82,8 +83,8 @@ class TestUpdateTeamDetails:
         team_name = "team1"
         user_ids = ["2", "3", "1"]
         valid_user_ids = ["2", "3"]
-        team_with_user_ids_dto = \
-            TeamWithUserIdsDTOFactory(team_id="3", user_ids=user_ids)
+        team_with_team_id_and_user_ids_dto = \
+            TeamWithTeamIdAndUserIdsDTOFactory(team_id="3", user_ids=user_ids)
         storage.raise_exception_if_team_not_exists.return_value = None
         storage.get_valid_user_ids_among_the_given_user_ids \
                .return_value = valid_user_ids
@@ -92,7 +93,7 @@ class TestUpdateTeamDetails:
 
         interactor.update_team_details_wrapper(
             user_id=user_id,
-            team_with_user_ids_dto=team_with_user_ids_dto,
+            team_with_team_id_and_user_ids_dto=team_with_team_id_and_user_ids_dto,
             presenter=presenter
         )
 
@@ -111,7 +112,7 @@ class TestUpdateTeamDetails:
         team_name = "team4"
         expected_team_name_from_error = team_name
         user_ids = ["2", "3", "1"]
-        team_with_user_ids_dto = TeamWithUserIdsDTOFactory(
+        team_with_team_id_and_user_ids_dto = TeamWithTeamIdAndUserIdsDTOFactory(
                 team_id="3", name=team_name, user_ids=user_ids
         )
         storage.get_valid_user_ids_among_the_given_user_ids \
@@ -122,7 +123,7 @@ class TestUpdateTeamDetails:
 
         interactor.update_team_details_wrapper(
             user_id=user_id,
-            team_with_user_ids_dto=team_with_user_ids_dto,
+            team_with_team_id_and_user_ids_dto=team_with_team_id_and_user_ids_dto,
             presenter=presenter
         )
 
@@ -142,8 +143,13 @@ class TestUpdateTeamDetails:
         interactor = TeamInteractor(storage=storage)
         user_id = "1"
         user_ids = ["2", "3", "1"]
-        team_with_user_ids_dto = \
-            TeamWithUserIdsDTOFactory(team_id="3", user_ids=user_ids)
+        team_with_team_id_and_user_ids_dto = \
+            TeamWithTeamIdAndUserIdsDTOFactory(user_ids=user_ids)
+        from ib_iam.interactors.storage_interfaces.dtos import TeamDTO
+        team_dto = TeamDTO(
+            team_id=team_with_team_id_and_user_ids_dto.team_id,
+            name=team_with_team_id_and_user_ids_dto.name,
+            description=team_with_team_id_and_user_ids_dto.description)
         storage.get_valid_user_ids_among_the_given_user_ids \
             .return_value = user_ids
         storage.get_team_id_if_team_name_already_exists.return_value = None
@@ -151,12 +157,12 @@ class TestUpdateTeamDetails:
 
         interactor.update_team_details_wrapper(
             user_id=user_id,
-            team_with_user_ids_dto=team_with_user_ids_dto,
+            team_with_team_id_and_user_ids_dto=team_with_team_id_and_user_ids_dto,
             presenter=presenter
         )
 
         storage.update_team_details.assert_called_once_with(
-            team_with_user_ids_dto=team_with_user_ids_dto
+            team_dto=team_dto
         )
         presenter.get_success_response_for_update_team.assert_called_once()
 
@@ -167,8 +173,13 @@ class TestUpdateTeamDetails:
         presenter = create_autospec(UpdateTeamPresenterInterface)
         interactor = TeamInteractor(storage=storage)
         user_ids = ["2", "3", "1"]
-        team_with_user_ids_dto = \
-            TeamWithUserIdsDTOFactory(team_id="3", user_ids=user_ids)
+        team_with_team_id_and_user_ids_dto = \
+            TeamWithTeamIdAndUserIdsDTOFactory(user_ids=user_ids)
+        from ib_iam.interactors.storage_interfaces.dtos import TeamDTO
+        team_dto = TeamDTO(
+            team_id=team_with_team_id_and_user_ids_dto.team_id,
+            name=team_with_team_id_and_user_ids_dto.name,
+            description=team_with_team_id_and_user_ids_dto.description)
         storage.get_valid_user_ids_among_the_given_user_ids \
             .return_value = user_ids
         storage.get_team_id_if_team_name_already_exists.return_value = None
@@ -176,11 +187,9 @@ class TestUpdateTeamDetails:
 
         interactor.update_team_details_wrapper(
             user_id="1",
-            team_with_user_ids_dto=team_with_user_ids_dto,
-            presenter=presenter
-        )
+            team_with_team_id_and_user_ids_dto=team_with_team_id_and_user_ids_dto,
+            presenter=presenter)
 
         storage.update_team_details.assert_called_once_with(
-            team_with_user_ids_dto=team_with_user_ids_dto
-        )
+            team_dto=team_dto)
         presenter.get_success_response_for_update_team.assert_called_once()
