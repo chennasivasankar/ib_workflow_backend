@@ -140,7 +140,8 @@ class ValidateFieldResponsesInteractor:
             self._get_field_validation_interactor_based_on_field_details(
                 field_id, field_response, field_details_dto
             )
-        field_validation_interactor.validate_field_response()
+        if field_validation_interactor is not None:
+            field_validation_interactor.validate_field_response()
         return
 
     @staticmethod

@@ -103,3 +103,7 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_template_id_for_given_task(self, task_id: int) -> str:
         pass
+
+    @abc.abstractmethod
+    def create_initial_task_stage(self, task_id: int, template_id: str):
+        pass
