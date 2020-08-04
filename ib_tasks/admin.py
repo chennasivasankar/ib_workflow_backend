@@ -14,6 +14,7 @@ from ib_tasks.models.task_stage import TaskStage
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
+
 admin.site.register(GoF)
 admin.site.register(Field)
 admin.site.register(TaskTemplate)
@@ -26,7 +27,13 @@ admin.site.register(TaskTemplateInitialStage)
 admin.site.register(TaskStatusVariable)
 admin.site.register(TaskStage)
 admin.site.register(TaskGoF)
-admin.site.register(TaskGoFField)
+
+
+class TaskGofFieldAdmin(admin.ModelAdmin):
+    list_display = ('field_id', "field_response", 'task_gof_id')
+
+
+admin.site.register(TaskGoFField, TaskGofFieldAdmin)
 admin.site.register(TaskTemplateGoFs)
 
 
@@ -39,8 +46,13 @@ class TaskGoFInline(admin.StackedInline):
     model = TaskGoF
 
 
+class TaskTemplateInline(admin.StackedInline):
+    model = TaskTemplate
+
+
 class TaskAdmin(admin.ModelAdmin):
-    inlines = [TaskStageInline, TaskGoFInline]
+    inlines = [TaskStageInline, TaskGoFInline, ]
+    list_display = ('id',)
 
 
 admin.site.register(Task, TaskAdmin)
