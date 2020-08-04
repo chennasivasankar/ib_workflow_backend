@@ -16,12 +16,12 @@ snapshots['TestCase04GetTaskAPITestCase.test_case body'] = {
         {
             'actions': [
                 {
-                    'action_id': 1,
+                    'action_id': '1',
                     'button_color': '#fafafa',
                     'button_text': 'hey'
                 },
                 {
-                    'action_id': 11,
+                    'action_id': '11',
                     'button_color': '#fafafa',
                     'button_text': 'hey'
                 }
@@ -32,12 +32,12 @@ snapshots['TestCase04GetTaskAPITestCase.test_case body'] = {
         {
             'actions': [
                 {
-                    'action_id': 2,
+                    'action_id': '2',
                     'button_color': '#fafafa',
                     'button_text': 'hey'
                 },
                 {
-                    'action_id': 12,
+                    'action_id': '12',
                     'button_color': '#fafafa',
                     'button_text': 'hey'
                 }
@@ -48,12 +48,12 @@ snapshots['TestCase04GetTaskAPITestCase.test_case body'] = {
         {
             'actions': [
                 {
-                    'action_id': 3,
+                    'action_id': '3',
                     'button_color': '#fafafa',
                     'button_text': 'hey'
                 },
                 {
-                    'action_id': 13,
+                    'action_id': '13',
                     'button_color': '#fafafa',
                     'button_text': 'hey'
                 }
@@ -62,6 +62,6 @@ snapshots['TestCase04GetTaskAPITestCase.test_case body'] = {
             'stage_id': 'stage_id_2'
         }
     ],
-    'task_id': 1,
+    'task_id': '1',
     'template_id': 'template_0'
 }

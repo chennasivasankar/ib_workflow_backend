@@ -89,12 +89,17 @@ class TestGetUsersDetailsInteractor:
         user_id = USER_ID
         limit = 10
         offset = 0
+        from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
+        pagination_dto = PaginationDTO(
+            offset=offset,
+            limit=limit
+        )
         interactor = GetUsersDetailsInteractor(storage=storage_mock)
         storage_mock.check_is_admin_user.return_value = False
         presenter_mock.raise_user_is_not_admin_exception.return_value = Mock()
         # Act
         interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit,
+            user_id=user_id, pagination_dto=pagination_dto,
             presenter=presenter_mock
         )
 
@@ -109,12 +114,17 @@ class TestGetUsersDetailsInteractor:
         user_id = USER_ID
         limit = 10
         offset = -1
+        from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
+        pagination_dto = PaginationDTO(
+            offset=offset,
+            limit=limit
+        )
         interactor = GetUsersDetailsInteractor(storage=storage_mock)
         storage_mock.check_is_admin_user.return_value = True
 
         # Act
         interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit,
+            user_id=user_id, pagination_dto=pagination_dto,
             presenter=presenter_mock
         )
 
@@ -127,12 +137,17 @@ class TestGetUsersDetailsInteractor:
         user_id = USER_ID
         limit = -10
         offset = 0
+        from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
+        pagination_dto = PaginationDTO(
+            offset=offset,
+            limit=limit
+        )
         interactor = GetUsersDetailsInteractor(storage=storage_mock)
         storage_mock.check_is_admin_user.return_value = True
 
         # Act
         interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit,
+            user_id=user_id, pagination_dto=pagination_dto,
             presenter=presenter_mock
         )
 
@@ -145,6 +160,11 @@ class TestGetUsersDetailsInteractor:
         user_id = USER_ID
         limit = 10
         offset = 0
+        from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
+        pagination_dto = PaginationDTO(
+            offset=offset,
+            limit=limit
+        )
         interactor = GetUsersDetailsInteractor(storage=storage_mock)
         storage_mock.check_is_admin_user.return_value = True
         storage_mock.get_users_who_are_not_admins.return_value = user_dtos
@@ -157,7 +177,7 @@ class TestGetUsersDetailsInteractor:
 
         # Act
         interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit,
+            user_id=user_id, pagination_dto=pagination_dto,
             presenter=presenter_mock
         )
 
@@ -171,6 +191,11 @@ class TestGetUsersDetailsInteractor:
         user_id = USER_ID
         limit = 10
         offset = 0
+        from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
+        pagination_dto = PaginationDTO(
+            offset=offset,
+            limit=limit
+        )
         user_ids = ["user1", "user2", "user3"]
         interactor = GetUsersDetailsInteractor(storage=storage_mock)
         storage_mock.check_is_admin_user.return_value = True
@@ -185,7 +210,7 @@ class TestGetUsersDetailsInteractor:
 
         # Act
         interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit,
+            user_id=user_id, pagination_dto=pagination_dto,
             presenter=presenter_mock
         )
 
@@ -201,6 +226,11 @@ class TestGetUsersDetailsInteractor:
         user_id = USER_ID
         limit = 10
         offset = 0
+        from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
+        pagination_dto = PaginationDTO(
+            offset=offset,
+            limit=limit
+        )
         user_ids = ["user1", "user2", "user3"]
         interactor = GetUsersDetailsInteractor(storage=storage_mock)
         storage_mock.check_is_admin_user.return_value = True
@@ -215,7 +245,7 @@ class TestGetUsersDetailsInteractor:
 
         # Act
         interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit,
+            user_id=user_id, pagination_dto=pagination_dto,
             presenter=presenter_mock
         )
         adapter_mock.assert_called_once()
@@ -231,6 +261,11 @@ class TestGetUsersDetailsInteractor:
         user_id = USER_ID
         limit = 10
         offset = 0
+        from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
+        pagination_dto = PaginationDTO(
+            offset=offset,
+            limit=limit
+        )
         interactor = GetUsersDetailsInteractor(storage=storage_mock)
         storage_mock.check_is_admin_user.return_value = True
 
@@ -245,7 +280,7 @@ class TestGetUsersDetailsInteractor:
 
         # Act
         interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit,
+            user_id=user_id, pagination_dto=pagination_dto,
             presenter=presenter_mock
         )
 
@@ -260,6 +295,11 @@ class TestGetUsersDetailsInteractor:
         limit = 10
         offset = 0
         user_ids = ["user1", "user2", "user3"]
+        from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
+        pagination_dto = PaginationDTO(
+            offset=offset,
+            limit=limit
+        )
         interactor = GetUsersDetailsInteractor(storage=storage_mock)
         storage_mock.check_is_admin_user.return_value = True
         user_dtos = [UserDTOFactory.create(user_id=user_id)
@@ -275,7 +315,7 @@ class TestGetUsersDetailsInteractor:
 
         # Act
         interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit,
+            user_id=user_id, pagination_dto=pagination_dto,
             presenter=presenter_mock
         )
 
@@ -289,6 +329,11 @@ class TestGetUsersDetailsInteractor:
         user_id = USER_ID
         limit = 10
         offset = 0
+        from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
+        pagination_dto = PaginationDTO(
+            offset=offset,
+            limit=limit
+        )
         interactor = GetUsersDetailsInteractor(storage=storage_mock)
         storage_mock.check_is_admin_user.return_value = True
         storage_mock.get_users_who_are_not_admins.return_value = user_dtos
@@ -307,7 +352,7 @@ class TestGetUsersDetailsInteractor:
 
         # Act
         interactor.get_users_details_wrapper(
-            user_id=user_id, offset=offset, limit=limit,
+            user_id=user_id, pagination_dto=pagination_dto,
             presenter=presenter_mock
         )
 

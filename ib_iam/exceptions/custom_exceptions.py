@@ -1,3 +1,6 @@
+from typing import List
+
+
 class UserAccountDoesNotExist(Exception):
     pass
 
@@ -7,10 +10,6 @@ class InvalidEmail(Exception):
 
 
 class UserIsNotAdmin(Exception):
-    pass
-
-
-class InvalidUser(Exception):
     pass
 
 
@@ -67,7 +66,8 @@ class RoleIdFormatIsInvalid(Exception):
 
 
 class DuplicateRoleIds(Exception):
-    pass
+    def __init__(self, role_ids: List[str]):
+        self.role_ids = role_ids
 
 
 class UserHasNoAccess(Exception):
@@ -98,6 +98,7 @@ class CompanyNameAlreadyExists(Exception):
 
 class InvalidCompany(Exception):
     pass
+
 
 class UserNotFound(Exception):
     pass

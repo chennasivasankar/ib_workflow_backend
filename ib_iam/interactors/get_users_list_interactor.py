@@ -1,12 +1,13 @@
 from typing import List
 
 from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, \
-    InvalidOffsetValue, InvalidLimitValue, InvalidUser
+    InvalidOffsetValue, InvalidLimitValue, InvalidUserId
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.dtos \
     import ListOfCompleteUsersDTO
 from ib_iam.interactors.presenter_interfaces.get_users_list_presenter_interface \
     import GetUsersListPresenterInterface
+from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
 from ib_iam.interactors.storage_interfaces.user_storage_interface \
     import UserStorageInterface
 
@@ -16,11 +17,12 @@ class GetUsersDetailsInteractor(ValidationMixin):
         self.storage = storage
 
     def get_users_details_wrapper(
-            self, user_id: str, offset: int,
-            limit: int, presenter: GetUsersListPresenterInterface):
+            self, user_id: str, pagination_dto: PaginationDTO,
+            presenter: GetUsersListPresenterInterface):
         try:
             complete_user_details_dtos = self.get_users_details(
-                user_id=user_id, offset=offset, limit=limit)
+                user_id=user_id, offset=pagination_dto.offset,
+                limit=pagination_dto.limit)
             response = presenter.response_for_get_users(
                 complete_user_details_dtos)
         except UserIsNotAdmin:
@@ -29,14 +31,14 @@ class GetUsersDetailsInteractor(ValidationMixin):
             response = presenter.raise_invalid_offset_value_exception()
         except InvalidLimitValue:
             response = presenter.raise_invalid_limit_value_exception()
-        except InvalidUser:
+        except InvalidUserId:
             response = presenter.raise_invalid_user()
         return response
 
     def get_users_details(self, user_id: str, offset: int,
                           limit: int) -> ListOfCompleteUsersDTO:
         self._check_and_throw_user_is_admin(user_id=user_id)
-        self._constants_validations(offset=offset, limit=limit)
+        self._pagination_validations(offset=offset, limit=limit)
         user_dtos = self.storage.get_users_who_are_not_admins(
             offset=offset, limit=limit)
         total_count = self.storage.get_total_count_of_users_for_query()
@@ -126,8 +128,7 @@ class GetUsersDetailsInteractor(ValidationMixin):
     def get_user_dtos_based_on_limit_and_offset(
             self, limit: int, offset: int, search_query: str
     ):
-        self._validate_offset(offset=offset)
-        self._validate_limit(limit=limit)
+        self._pagination_validations(offset=offset, limit=limit)
         user_details_dtos = self.storage.get_user_details_dtos_based_on_limit_offset_and_search_query(
             limit=limit, offset=offset, search_query=search_query
         )
@@ -138,17 +139,3 @@ class GetUsersDetailsInteractor(ValidationMixin):
             search_query=search_query
         )
         return user_details_dtos
-
-    @staticmethod
-    def _validate_offset(offset):
-        is_invalid_offset_value = offset < 0
-        if is_invalid_offset_value:
-            from ib_iam.exceptions.custom_exceptions import InvalidOffsetValue
-            raise InvalidOffsetValue
-
-    @staticmethod
-    def _validate_limit(limit):
-        is_invali_limit_value = limit < 0
-        if is_invali_limit_value:
-            from ib_iam.exceptions.custom_exceptions import InvalidLimitValue
-            raise InvalidLimitValue

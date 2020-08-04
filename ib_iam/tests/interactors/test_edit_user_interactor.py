@@ -3,6 +3,8 @@ from unittest.mock import Mock
 import pytest
 
 from ib_iam.interactors.edit_user_interactor import EditUserInteractor
+from ib_iam.tests.factories.interactor_dtos import \
+    UserDetailsWithTeamRoleAndCompanyIdsDTOFactory
 
 
 class TestEditNewUserInteractor:
@@ -39,11 +41,18 @@ class TestEditNewUserInteractor:
         interactor = EditUserInteractor(storage=storage_mock)
         storage_mock.check_is_admin_user.return_value = False
         presenter_mock.raise_user_is_not_admin_exception.return_value = Mock()
+
+        user_details_with_team_role_and_company_ids_dto \
+            = UserDetailsWithTeamRoleAndCompanyIdsDTOFactory(
+            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+            company_id=company_id
+        )
+
         # Act
         interactor.edit_user_wrapper(
-            admin_user_id=admin_user_id, user_id=user_id, name=name,
-            email=email, teams=team_ids, roles=role_ids,
-            company_id=company_id,
+            admin_user_id=admin_user_id, user_id=user_id,
+            user_details_with_team_role_and_company_ids_dto\
+                =user_details_with_team_role_and_company_ids_dto,
             presenter=presenter_mock)
 
         # Assert
@@ -66,11 +75,17 @@ class TestEditNewUserInteractor:
         storage_mock.check_is_admin_user.return_value = True
         presenter_mock.raise_invalid_name_exception.return_value = Mock()
 
+        user_details_with_team_role_and_company_ids_dto \
+            = UserDetailsWithTeamRoleAndCompanyIdsDTOFactory(
+            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+            company_id=company_id
+        )
+
         # Act
         interactor.edit_user_wrapper(
-            admin_user_id=admin_user_id, user_id=user_id, name=name,
-            email=email, teams=team_ids, roles=role_ids,
-            company_id=company_id,
+            admin_user_id=admin_user_id, user_id=user_id,
+            user_details_with_team_role_and_company_ids_dto \
+                =user_details_with_team_role_and_company_ids_dto,
             presenter=presenter_mock)
 
         # Assert
@@ -91,11 +106,17 @@ class TestEditNewUserInteractor:
         storage_mock.check_is_admin_user.return_value = True
         presenter_mock.raise_invalid_name_exception.return_value = Mock()
 
+        user_details_with_team_role_and_company_ids_dto \
+            = UserDetailsWithTeamRoleAndCompanyIdsDTOFactory(
+            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+            company_id=company_id
+        )
+
         # Act
         interactor.edit_user_wrapper(
-            admin_user_id=admin_user_id, user_id=user_id, name=name,
-            email=email, teams=team_ids, roles=role_ids,
-            company_id=company_id,
+            admin_user_id=admin_user_id, user_id=user_id,
+            user_details_with_team_role_and_company_ids_dto \
+                =user_details_with_team_role_and_company_ids_dto,
             presenter=presenter_mock)
 
         # Assert
@@ -118,11 +139,17 @@ class TestEditNewUserInteractor:
         storage_mock.check_is_admin_user.return_value = True
         presenter_mock.raise_invalid_email_exception.return_value = Mock()
 
+        user_details_with_team_role_and_company_ids_dto \
+            = UserDetailsWithTeamRoleAndCompanyIdsDTOFactory(
+            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+            company_id=company_id
+        )
+
         # Act
         interactor.edit_user_wrapper(
-            admin_user_id=admin_user_id, user_id=user_id, name=name,
-            email=email, teams=team_ids, roles=role_ids,
-            company_id=company_id,
+            admin_user_id=admin_user_id, user_id=user_id,
+            user_details_with_team_role_and_company_ids_dto \
+                =user_details_with_team_role_and_company_ids_dto,
             presenter=presenter_mock)
 
         # Assert
@@ -146,11 +173,17 @@ class TestEditNewUserInteractor:
         storage_mock.check_is_exists_company_id.return_value = True
         presenter_mock.raise_role_ids_are_invalid.return_value = Mock()
 
+        user_details_with_team_role_and_company_ids_dto \
+            = UserDetailsWithTeamRoleAndCompanyIdsDTOFactory(
+            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+            company_id=company_id
+        )
+
         # Act
         interactor.edit_user_wrapper(
-            admin_user_id=admin_user_id, user_id=user_id, name=name,
-            email=email, teams=team_ids, roles=role_ids,
-            company_id=company_id,
+            admin_user_id=admin_user_id, user_id=user_id,
+            user_details_with_team_role_and_company_ids_dto \
+                =user_details_with_team_role_and_company_ids_dto,
             presenter=presenter_mock)
 
         # Assert
@@ -173,11 +206,17 @@ class TestEditNewUserInteractor:
         storage_mock.check_are_valid_team_ids.return_value = False
         presenter_mock.raise_team_ids_are_invalid.return_value = Mock()
 
+        user_details_with_team_role_and_company_ids_dto \
+            = UserDetailsWithTeamRoleAndCompanyIdsDTOFactory(
+            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+            company_id=company_id
+        )
+
         # Act
         interactor.edit_user_wrapper(
-            admin_user_id=admin_user_id, user_id=user_id, name=name,
-            email=email, teams=team_ids, roles=role_ids,
-            company_id=company_id,
+            admin_user_id=admin_user_id, user_id=user_id,
+            user_details_with_team_role_and_company_ids_dto \
+                =user_details_with_team_role_and_company_ids_dto,
             presenter=presenter_mock)
 
         # Assert
@@ -202,11 +241,17 @@ class TestEditNewUserInteractor:
         storage_mock.check_is_exists_company_id.return_value = False
         presenter_mock.raise_company_ids_is_invalid.return_value = Mock()
 
+        user_details_with_team_role_and_company_ids_dto \
+            = UserDetailsWithTeamRoleAndCompanyIdsDTOFactory(
+            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+            company_id=company_id
+        )
+
         # Act
         interactor.edit_user_wrapper(
-            admin_user_id=admin_user_id, user_id=user_id, name=name,
-            email=email, teams=team_ids, roles=role_ids,
-            company_id=company_id,
+            admin_user_id=admin_user_id, user_id=user_id,
+            user_details_with_team_role_and_company_ids_dto \
+                =user_details_with_team_role_and_company_ids_dto,
             presenter=presenter_mock)
 
         # Assert
@@ -229,11 +274,17 @@ class TestEditNewUserInteractor:
         storage_mock.is_user_exist.return_value = False
         presenter_mock.raise_user_does_not_exist.return_value = Mock()
 
+        user_details_with_team_role_and_company_ids_dto \
+            = UserDetailsWithTeamRoleAndCompanyIdsDTOFactory(
+            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+            company_id=company_id
+        )
+
         # Act
         interactor.edit_user_wrapper(
-            admin_user_id=admin_user_id, user_id=user_id, name=name,
-            email=email, teams=team_ids, roles=role_ids,
-            company_id=company_id,
+            admin_user_id=admin_user_id, user_id=user_id,
+            user_details_with_team_role_and_company_ids_dto \
+                =user_details_with_team_role_and_company_ids_dto,
             presenter=presenter_mock)
 
         # Assert
@@ -258,11 +309,18 @@ class TestEditNewUserInteractor:
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import update_user_profile_adapter_mock
         adapter_mock = update_user_profile_adapter_mock(mocker=mocker)
+
+        user_details_with_team_role_and_company_ids_dto \
+            = UserDetailsWithTeamRoleAndCompanyIdsDTOFactory(
+            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+            company_id=company_id
+        )
+
         # Act
         interactor.edit_user_wrapper(
-            admin_user_id=admin_user_id, user_id=user_id, name=name,
-            email=email, teams=team_ids, roles=role_ids,
-            company_id=company_id,
+            admin_user_id=admin_user_id, user_id=user_id,
+            user_details_with_team_role_and_company_ids_dto \
+                =user_details_with_team_role_and_company_ids_dto,
             presenter=presenter_mock)
 
         # Assert
@@ -284,11 +342,18 @@ class TestEditNewUserInteractor:
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import update_user_profile_adapter_mock
         adapter_mock = update_user_profile_adapter_mock(mocker=mocker)
+
+        user_details_with_team_role_and_company_ids_dto \
+            = UserDetailsWithTeamRoleAndCompanyIdsDTOFactory(
+            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+            company_id=company_id
+        )
+
         # Act
         interactor.edit_user_wrapper(
-            admin_user_id=admin_user_id, user_id=user_id, name=name,
-            email=email, teams=team_ids, roles=role_ids,
-            company_id=company_id,
+            admin_user_id=admin_user_id, user_id=user_id,
+            user_details_with_team_role_and_company_ids_dto \
+                =user_details_with_team_role_and_company_ids_dto,
             presenter=presenter_mock)
 
         # Assert
@@ -312,11 +377,18 @@ class TestEditNewUserInteractor:
             import update_user_profile_adapter_mock
         adapter_mock = update_user_profile_adapter_mock(mocker=mocker)
         presenter_mock.edit_user_success_response.return_value = Mock()
+
+        user_details_with_team_role_and_company_ids_dto \
+            = UserDetailsWithTeamRoleAndCompanyIdsDTOFactory(
+            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+            company_id=company_id
+        )
+
         # Act
         interactor.edit_user_wrapper(
-            admin_user_id=admin_user_id, user_id=user_id, name=name,
-            email=email, teams=team_ids, roles=role_ids,
-            company_id=company_id,
+            admin_user_id=admin_user_id, user_id=user_id,
+            user_details_with_team_role_and_company_ids_dto \
+                =user_details_with_team_role_and_company_ids_dto,
             presenter=presenter_mock)
 
         # Assert

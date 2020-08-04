@@ -21,7 +21,7 @@ class ValidationMixin:
             return False
         return True
 
-    def _constants_validations(self, offset: int, limit: int):
+    def _pagination_validations(self, offset: int, limit: int):
         self._validate_offset_value_and_throw_exception(offset=offset)
         self._validate_limit_value_and_throw_exception(limit=limit)
 

@@ -21,7 +21,12 @@ def api_wrapper(*args, **kwargs):
     query_params = kwargs['query_params']
     offset = query_params["offset"]
     limit = query_params["limit"]
+    from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
+    pagination_dto = PaginationDTO(
+        offset=offset,
+        limit=limit
+    )
     response = interactor.get_users_details_wrapper(
-        user_id=user_id, limit=limit, offset=offset, presenter=presenter)
+        user_id=user_id, pagination_dto=pagination_dto, presenter=presenter)
 
     return response
