@@ -369,9 +369,6 @@
             "placeholder_text": {
               "type": "string"
             },
-            "is_field_readable": {
-              "type": "boolean"
-            },
             "is_field_writable": {
               "type": "boolean"
             }
@@ -380,7 +377,6 @@
             "field_id",
             "display_name",
             "is_field_required",
-            "is_field_readable",
             "is_field_writable"
           ]
         }

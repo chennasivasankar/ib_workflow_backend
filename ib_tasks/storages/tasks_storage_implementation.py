@@ -6,14 +6,15 @@ from django.db.models import Q
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    ActionsOfTemplateDTO, ActionDTO
+    ActionWithStageIdDTO, ActionDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldRoleDTO, FieldTypeDTO, UserFieldPermissionDTO, FieldDetailsDTO, FieldCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import TemplateFieldsDTO
 
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskIdWithStageValueDTO, \
-    TaskIdWithStageDetailsDTO, StageValueWithTaskIdsDTO
+    TaskIdWithStageDetailsDTO, StageValueWithTaskIdsDTO, \
+    StageIdWithTemplateIdDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFRoleDTO, GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
@@ -378,27 +379,32 @@ class TasksStorageImplementation(TaskStorageInterface):
             task_template_objs=task_template_objs)
         return task_template_dtos
 
-    def get_initial_stage_ids_of_templates(self) -> List[int]:
+    def get_initial_stage_id_with_template_id_dtos(
+            self) -> List[StageIdWithTemplateIdDTO]:
+
         from ib_tasks.models.task_template_initial_stages import \
             TaskTemplateInitialStage
-        templates_initial_stage_ids_queryset = \
+        template_id_with_stage_id_dicts = \
             TaskTemplateInitialStage.objects.all().\
-            values_list('stage_id', flat=True)
-        templates_initial_stage_ids = \
-            list(templates_initial_stage_ids_queryset)
-        return templates_initial_stage_ids
+            values('stage_id', 'task_template_id')
 
-    def get_actions_for_given_stage_ids(
-            self, stage_ids: List[int]) -> List[ActionsOfTemplateDTO]:
-        stage_actions_details = StageAction.objects.filter(
+        template_id_with_stage_id_dtos = \
+            self._convert_template_id_with_stage_id_dicts_to_dtos(
+                template_id_with_stage_id_dicts=template_id_with_stage_id_dicts
+            )
+        return template_id_with_stage_id_dtos
+
+    def get_actions_for_given_stage_ids_in_dtos(
+            self, stage_ids: List[int]) -> List[ActionWithStageIdDTO]:
+        stage_action_details = StageAction.objects.filter(
             stage_id__in=stage_ids
-        ).select_related('stage').values(
-            'id', 'button_text', 'button_color', 'stage__task_template_id'
-        )
+        ).values('id', 'button_text', 'button_color', 'stage_id')
 
-        actions_of_templates_dtos = self._convert_stage_actions_details_to_dto(
-            stage_actions_details=stage_actions_details)
-        return actions_of_templates_dtos
+        action_with_stage_id_dtos = \
+            self._convert_stage_actions_details_to_dtos(
+                stage_action_details=stage_action_details
+            )
+        return action_with_stage_id_dtos
 
     def get_gofs_details_dtos(self, gof_ids: List[str]) -> List[GoFDTO]:
         gof_details = GoF.objects.filter(gof_id__in=gof_ids).values(
@@ -631,16 +637,16 @@ class TasksStorageImplementation(TaskStorageInterface):
         return task_template_dtos
 
     @staticmethod
-    def _convert_stage_actions_details_to_dto(
-            stage_actions_details: List[Dict]) -> List[ActionsOfTemplateDTO]:
+    def _convert_stage_actions_details_to_dtos(
+            stage_action_details: List[Dict]) -> List[ActionWithStageIdDTO]:
         actions_of_template_dtos = [
-            ActionsOfTemplateDTO(
+            ActionWithStageIdDTO(
                 action_id=stage_action['id'],
-                template_id=stage_action['stage__task_template_id'],
+                stage_id=stage_action['stage_id'],
                 button_color=stage_action['button_color'],
                 button_text=stage_action['button_text']
             )
-            for stage_action in stage_actions_details
+            for stage_action in stage_action_details
         ]
         return actions_of_template_dtos
 
@@ -796,3 +802,16 @@ class TasksStorageImplementation(TaskStorageInterface):
             user_id=create_task_log_dto.user_id,
             task_id=create_task_log_dto.task_id
         )
+
+    @staticmethod
+    def _convert_template_id_with_stage_id_dicts_to_dtos(
+            template_id_with_stage_id_dicts: List[Dict]
+    ) -> List[StageIdWithTemplateIdDTO]:
+        template_id_with_stage_id_dtos = [
+            StageIdWithTemplateIdDTO(
+                template_id=template_id_with_stage_id_dict['task_template_id'],
+                stage_id=template_id_with_stage_id_dict['stage_id']
+            )
+            for template_id_with_stage_id_dict in template_id_with_stage_id_dicts
+        ]
+        return template_id_with_stage_id_dtos

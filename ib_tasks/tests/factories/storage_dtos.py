@@ -12,17 +12,17 @@ from ib_tasks.interactors.stages_dtos import StageDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    ActionsOfTemplateDTO
+    ActionWithStageIdDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldRolesDTO, FieldRoleDTO, FieldCompleteDetailsDTO, UserFieldPermissionDTO, \
     FieldDetailsDTO, StageTaskFieldsDTO, \
     FieldRolesDTO, FieldRoleDTO, UserFieldPermissionDTO, \
-    FieldDetailsDTO, StageTaskFieldsDTO, FieldWithPermissionsDTO
+    FieldDetailsDTO, StageTaskFieldsDTO, FieldWithWritePermissionDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionNamesDTO, ValidStageDTO, TaskTemplateStageDTO, \
     StageActionNamesDTO, ValidStageDTO, TaskStageIdsDTO, StageValueDTO, \
-    StageDisplayValueDTO
+    StageDisplayValueDTO, StageIdWithTemplateIdDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO, GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (TaskStagesDTO)
@@ -354,11 +354,11 @@ class TaskTemplateDTOFactory(factory.Factory):
         factory.sequence(lambda n: 'Task Template {}'.format(n + 1))
 
 
-class ActionsOfTemplateDTOFactory(factory.Factory):
+class ActionWithStageIdDTOFactory(factory.Factory):
     class Meta:
-        model = ActionsOfTemplateDTO
+        model = ActionWithStageIdDTO
 
-    template_id = factory.Sequence(lambda n: 'template_{}'.format(n + 1))
+    stage_id = factory.Sequence(lambda n: n + 1)
     action_id = factory.Sequence(lambda n: n + 1)
     button_text = factory.Sequence(lambda n: 'button_text__{}'.format(n + 1))
     button_color = factory.Sequence(lambda n: 'button_color_{}'.format(n + 1))
@@ -454,13 +454,20 @@ class StageDisplayValueDTOFactory(factory.Factory):
     value = factory.sequence(lambda n: (n + 1))
 
 
-class FieldWithPermissionsDTOFactory(factory.Factory):
+class FieldWithWritePermissionDTOFactory(factory.Factory):
     class Meta:
-        model = FieldWithPermissionsDTO
+        model = FieldWithWritePermissionDTO
 
     field_dto = factory.SubFactory(FieldDTOFactory)
-    is_field_readable = factory.Iterator([True, False])
     is_field_writable = factory.Iterator([True, False])
 
     # display_logic = factory.sequence(lambda n: "variable_{} == stage_{}".format((n+1), (n+1)))
     # value = factory.sequence(lambda n: (n+1))
+
+
+class StageIdWithTemplateIdDTOFactory(factory.Factory):
+    class Meta:
+        model = StageIdWithTemplateIdDTO
+
+    template_id = factory.sequence(lambda n: "template_{}".format(n))
+    stage_id = factory.Sequence(lambda n: n)

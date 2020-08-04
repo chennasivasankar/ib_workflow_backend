@@ -92,9 +92,8 @@ class StageTaskFieldsDTO:
 
 
 @dataclass
-class FieldWithPermissionsDTO:
+class FieldWithWritePermissionDTO:
     field_dto: FieldDTO
-    is_field_readable: bool
     is_field_writable: bool
 
 

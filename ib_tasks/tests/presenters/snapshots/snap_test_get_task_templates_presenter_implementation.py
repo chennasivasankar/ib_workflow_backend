@@ -36,7 +36,6 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_complete_task_t
                         'Ms'
                     ],
                     'help_text': None,
-                    'is_field_readable': True,
                     'is_field_required': True,
                     'is_field_writable': False,
                     'placeholder_text': None,
@@ -73,7 +72,6 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_complete_task_t
                         'Ms'
                     ],
                     'help_text': None,
-                    'is_field_readable': True,
                     'is_field_required': True,
                     'is_field_writable': True,
                     'placeholder_text': None,
@@ -143,7 +141,6 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_actions_for_
                         'Ms'
                     ],
                     'help_text': None,
-                    'is_field_readable': True,
                     'is_field_required': True,
                     'is_field_writable': False,
                     'placeholder_text': None,
@@ -180,7 +177,6 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_actions_for_
                         'Ms'
                     ],
                     'help_text': None,
-                    'is_field_readable': True,
                     'is_field_required': True,
                     'is_field_writable': True,
                     'placeholder_text': None,

@@ -14,7 +14,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldRoleDTO, FieldCompleteDetailsDTO, UserFieldPermissionDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO, \
     StageValueWithTaskIdsDTO, TaskIdWithStageDetailsDTO, \
-    TaskIdWithStageValueDTO, FieldDetailsDTO
+    TaskIdWithStageValueDTO, FieldDetailsDTO, StageIdWithTemplateIdDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFRoleDTO, GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
@@ -27,7 +27,7 @@ from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    ActionsOfTemplateDTO
+    ActionWithStageIdDTO
 from ib_tasks.interactors.task_dtos import CreateTaskLogDTO
 
 
@@ -155,8 +155,8 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_actions_for_given_stage_ids(
-            self, stage_ids: List[int]) -> List[ActionsOfTemplateDTO]:
+    def get_actions_for_given_stage_ids_in_dtos(
+            self, stage_ids: List[int]) -> List[ActionWithStageIdDTO]:
         pass
 
     @abc.abstractmethod
@@ -252,7 +252,8 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_initial_stage_ids_of_templates(self) -> List[int]:
+    def get_initial_stage_id_with_template_id_dtos(
+            self) -> List[StageIdWithTemplateIdDTO]:
         pass
 
     @abc.abstractmethod

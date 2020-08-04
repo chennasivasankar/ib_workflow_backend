@@ -1,4 +1,5 @@
 import pytest
+import factory
 
 
 @pytest.mark.django_db
@@ -6,19 +7,20 @@ class TestGetTaskTemplates:
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
         from ib_tasks.tests.factories.storage_dtos import \
-            ActionsOfTemplateDTOFactory
+            ActionWithStageIdDTOFactory, StageIdWithTemplateIdDTOFactory
         from ib_tasks.tests.factories.models import StageModelFactory, \
             StageActionFactory, GoFToTaskTemplateFactory, GoFFactory, \
             TaskTemplateFactory, FieldFactory, TaskTemplateInitialStageFactory
 
         StageModelFactory.reset_sequence()
-        ActionsOfTemplateDTOFactory.reset_sequence()
+        ActionWithStageIdDTOFactory.reset_sequence()
         StageActionFactory.reset_sequence()
         GoFToTaskTemplateFactory.reset_sequence()
         GoFFactory.reset_sequence()
         FieldFactory.reset_sequence()
         TaskTemplateFactory.reset_sequence()
         TaskTemplateInitialStageFactory.reset_sequence()
+        StageIdWithTemplateIdDTOFactory.reset_sequence(1)
 
     @pytest.fixture
     def storage(self):
@@ -49,26 +51,25 @@ class TestGetTaskTemplates:
         # Assert
         assert result == expected_output
 
-    def test_get_actions_for_given_stage_ids(self, storage):
+    def test_get_actions_for_given_stage_ids_in_dtos(self, storage):
         # Arrange
         from ib_tasks.interactors.storage_interfaces.actions_dtos \
-            import ActionsOfTemplateDTO
+            import ActionWithStageIdDTO
         from ib_tasks.tests.factories.models import \
             StageModelFactory, StageActionFactory
         expected_stage_ids = [1, 2]
         expected_output = [
-            ActionsOfTemplateDTO(
-                template_id='task_template_id_0',
+            ActionWithStageIdDTO(
+                stage_id=1,
                 action_id=1, button_text='hey',
                 button_color='#fafafa'
             ),
-            ActionsOfTemplateDTO(
-                template_id='task_template_id_1',
+            ActionWithStageIdDTO(
+                stage_id=2,
                 action_id=2, button_text='hey',
                 button_color='#fafafa'
             )
         ]
-        import factory
         StageModelFactory.create_batch(
             size=2, stage_id=factory.Iterator(expected_stage_ids)
         )
@@ -77,7 +78,7 @@ class TestGetTaskTemplates:
         )
 
         # Act
-        result = storage.get_actions_for_given_stage_ids(
+        result = storage.get_actions_for_given_stage_ids_in_dtos(
             stage_ids=expected_stage_ids
         )
 
@@ -111,7 +112,6 @@ class TestGetTaskTemplates:
             GoFToTaskTemplateDTO(gof_id='gof_2', template_id='template_2',
                                  order=1, enable_add_another=False)]
 
-        import factory
         gof_objs = GoFFactory.create_batch(
             size=2, gof_id=factory.Iterator(expected_gof_ids)
         )
@@ -137,7 +137,6 @@ class TestGetTaskTemplates:
             GoFDTO(gof_id='gof_2', gof_display_name='GOF_DISPLAY_NAME-1',
                    max_columns=2)]
 
-        import factory
         GoFFactory.create_batch(
             size=2, gof_id=factory.Iterator(expected_gof_ids)
         )
@@ -173,7 +172,6 @@ class TestGetTaskTemplates:
                                         allowed_formats=None,
                                         validation_regex=None)]
 
-        import factory
         gof_objs = GoFFactory.create_batch(
             size=2, gof_id=factory.Iterator(expected_gof_ids)
         )
@@ -197,7 +195,6 @@ class TestGetTaskTemplates:
             UserFieldPermissionDTO(field_id='field_1',
                                    permission_type=PermissionTypes.READ.value)]
 
-        import factory
         field_objs = FieldFactory.create_batch(size=2,
                                                field_id=factory.Iterator(
                                                    expected_field_ids))
@@ -211,12 +208,15 @@ class TestGetTaskTemplates:
         # Assert
         assert result == expected_user_field_permission_dtos
 
-    def test_get_initial_stage_ids_of_templates(self, storage):
+    def test_get_initial_stage_id_with_template_id_dtos(self, storage):
         # Arrange
+        from ib_tasks.tests.factories.storage_dtos import \
+            StageIdWithTemplateIdDTOFactory
+        expected_stage_id_with_template_id_dtos = \
+            StageIdWithTemplateIdDTOFactory.create_batch(size=2)
+
         from ib_tasks.tests.factories.models import StageModelFactory, \
             TaskTemplateInitialStageFactory, TaskTemplateFactory
-        expected_stage_ids = [1, 2]
-        import factory
         stages = StageModelFactory.create_batch(size=2)
         task_templates = TaskTemplateFactory.create_batch(size=2)
         TaskTemplateInitialStageFactory.create_batch(
@@ -225,7 +225,7 @@ class TestGetTaskTemplates:
         )
 
         # Act
-        result = storage.get_initial_stage_ids_of_templates()
+        result = storage.get_initial_stage_id_with_template_id_dtos()
 
         # Assert
-        assert result == expected_stage_ids
+        assert result == expected_stage_id_with_template_id_dtos
