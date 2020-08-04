@@ -2,8 +2,8 @@ from typing import List, Optional
 
 from django.db.models import Q
 
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO, StageTaskFieldsDTO, \
-    TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId, FieldIdWithGoFIdDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import \
+    FieldIdWithGoFIdDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \

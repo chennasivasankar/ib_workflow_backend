@@ -72,6 +72,7 @@ class GlobalConstantsDTOFactory(factory.Factory):
     constant_name = factory.sequence(lambda n: "Constant_{}".format(n + 1))
     value = factory.sequence(lambda n: n)
 
+
 class FieldDetailsDTOFactory(factory.Factory):
     class Meta:
         model = FieldDetailsDTO
@@ -81,8 +82,8 @@ class FieldDetailsDTOFactory(factory.Factory):
     key = factory.Sequence(lambda n: 'key_%d' % (n + 1))
     value = factory.Sequence(lambda n: 'value_%d' % (n + 1))
 
-class ActionDetailsDTOFactory(factory.Factory):
 
+class ActionDetailsDTOFactory(factory.Factory):
     class Meta:
         model = ActionDetailsDTO
 
@@ -91,6 +92,7 @@ class ActionDetailsDTOFactory(factory.Factory):
     stage_id = factory.Sequence(lambda n: 'stage_%d' % (n + 1))
     button_text = factory.Sequence(lambda n: 'button_text_%d' % (n + 1))
     button_color = None
+
 
 class GoFWithOrderAndAddAnotherDTOFactory(factory.Factory):
     class Meta:
@@ -108,6 +110,7 @@ class GoFsWithTemplateIdDTOFactory(factory.Factory):
     template_id = factory.sequence(lambda n: "template_{}".format(n + 1))
     gof_dtos = factory.SubFactory(GoFWithOrderAndAddAnotherDTOFactory)
 
+
 class ActionDTOFactory(factory.Factory):
     class Meta:
         model = StagesActionDTO
@@ -122,6 +125,7 @@ class ActionDTOFactory(factory.Factory):
 
     class Params:
         color = factory.Trait(button_color="#ffffff")
+
 
 class FieldValuesDTOFactory(factory.Factory):
     class Meta:
@@ -186,7 +190,6 @@ class UserDTOFactory(factory.Factory):
 
     user_id = factory.sequence(lambda n: "user_{}".format(n + 1))
     name = factory.sequence(lambda n: "user_name_{}".format(n + 1))
-
 
 
 class UserStagesWithPaginationDTOFactory(factory.Factory):
