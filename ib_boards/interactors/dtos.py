@@ -5,7 +5,7 @@ from typing import List, Optional
 @dataclass
 class ColumnParametersDTO:
     board_id: str
-    user_id: int
+    user_id: str
 
 
 @dataclass

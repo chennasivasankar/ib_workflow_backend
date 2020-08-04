@@ -75,7 +75,7 @@ class GetColumnDetailsInteractor:
     @staticmethod
     def _get_tasks_complete_details(
             task_ids_stages_dtos: List[ColumnTaskIdsDTO],
-            user_id: int) \
+            user_id: str) \
             -> Tuple[List[FieldDTO], List[ActionDTO]]:
         task_details_dtos = []
         for task_ids_stages_dto in task_ids_stages_dtos:
