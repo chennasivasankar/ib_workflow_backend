@@ -70,8 +70,8 @@ def append_action_dict(action_dict: Dict[str, Any]):
     function_path = function_path + function_name
     from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO
     return TaskTemplateStageActionDTO(
-        task_template_id=action_dict['task_template_id'],
-        stage_id=action_dict['stage_id'],
+        task_template_id=action_dict['task_template_id'].strip('\n'),
+        stage_id=action_dict['stage_id'].strip('\n'),
         action_name=action_dict['action_name'],
         logic=action_dict['action_logic'],
         roles=action_dict['roles'],

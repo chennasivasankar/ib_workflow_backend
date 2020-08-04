@@ -87,10 +87,21 @@ class UserStorageImplementation(UserStorageInterface):
         from ib_iam.models import UserDetails
         users = UserDetails.objects.filter(is_admin=False)[
                 offset: offset + limit]
-        user_dtos = [UserDTO(
-            user_id=user_object.user_id, is_admin=user_object.is_admin,
-            company_id=str(user_object.company_id)) for user_object in users]
+        user_dtos = [self._convert_to_user_dto(user_object=user_object) for
+                     user_object in users]
         return user_dtos
+
+    @staticmethod
+    def _convert_to_user_dto(user_object):
+        if user_object.company is None:
+            user_dto = UserDTO(
+                user_id=user_object.user_id, is_admin=user_object.is_admin,
+                company_id="")
+        else:
+            user_dto = UserDTO(
+                user_id=user_object.user_id, is_admin=user_object.is_admin,
+                company_id=str(user_object.company_id))
+        return user_dto
 
     def get_total_count_of_users_for_query(self):
         from ib_iam.models import UserDetails
@@ -142,9 +153,13 @@ class UserStorageImplementation(UserStorageInterface):
     @staticmethod
     def _convert_user_company_dto(user_company) -> UserCompanyDTO:
         company = user_company.company
-        return UserCompanyDTO(
-            user_id=user_company.user_id,
-            company_id=str(company.company_id), company_name=company.name)
+        if company is None:
+            return UserCompanyDTO(user_id=user_company.user_id,
+                                  company_id="", company_name="")
+        else:
+            return UserCompanyDTO(
+                user_id=user_company.user_id,
+                company_id=str(company.company_id), company_name=company.name)
 
     def get_companies(self) -> List[CompanyIdAndNameDTO]:
         from ib_iam.models import Company

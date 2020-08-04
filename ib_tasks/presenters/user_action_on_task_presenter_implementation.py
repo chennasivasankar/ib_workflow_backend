@@ -160,14 +160,15 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
             stage_actions_dict: Dict[str, List[ActionDTO]],
             stage_fields_dict: Dict[str, List[FieldDisplayDTO]]
     ):
-        column_fields_dict = {}
-        column_actions_dict = {}
+        from collections import defaultdict
+        column_fields_dict = defaultdict(lambda: list())
+        column_actions_dict = defaultdict(lambda: list())
 
         for column_stage_dto in column_stage_dtos:
             column_id = column_stage_dto.column_id
             stage_id = column_stage_dto.stage_id
-            column_fields_dict[column_id] = stage_fields_dict[stage_id]
-            column_actions_dict[column_id] = stage_actions_dict[stage_id]
+            column_fields_dict[column_id] += stage_fields_dict[stage_id]
+            column_actions_dict[column_id] += stage_actions_dict[stage_id]
         return column_fields_dict, column_actions_dict
 
     @staticmethod

@@ -19,8 +19,7 @@ from django_swagger_utils.drf_server.utils.general.import_app_settings import \
     import_app_settings
 
 THIRD_PARTY_APPS = [
-    "ib_users",
-    "s3_uploader"
+    "ib_users"
 ]
 APPS = [
     "ib_iam",
@@ -35,6 +34,7 @@ INSTALLED_APPS += APPS
 THIRD_PARTY_SWAGGER_APPS = [
     # insert your apps here, in this order third part apps specific settings will be loaded.
     "ib_sentry_wrapper",
+    "s3_uploader"
 ]
 INSTALLED_APPS += THIRD_PARTY_SWAGGER_APPS
 
