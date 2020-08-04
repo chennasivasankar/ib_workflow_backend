@@ -1,3 +1,4 @@
+import json
 from typing import List, Tuple
 
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
@@ -331,8 +332,16 @@ class StorageImplementation(StorageInterface):
     def get_board_complete_details(self, board_id: str,
                                    stage_ids: List[str]) -> \
             TaskBoardsDetailsDTO:
-
+        stage_related_columns = []
         column_objs = Column.objects.filter(board_id=board_id)
+        for stage in stage_ids:
+            for column in column_objs:
+                task_selection_config = json.loads(
+                    column.task_selection_config)
+                for key, value in enumerate(task_selection_config.values()):
+                    if stage in value:
+                        stage_related_columns.append(column)
+
         board_obj = Board.objects.get(board_id=board_id)
         board_dto = BoardDTO(
             board_id=board_obj.board_id,
@@ -340,7 +349,7 @@ class StorageImplementation(StorageInterface):
         )
 
         list_of_column_dtos, column_stages = self._convert_column_details_to_dtos(
-            column_objs,
+            list(set(stage_related_columns)),
             stage_ids)
         board_details_dto = TaskBoardsDetailsDTO(
             board_dto=board_dto,
