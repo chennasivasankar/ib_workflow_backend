@@ -338,7 +338,8 @@ class StorageImplementation(StorageInterface):
         column_objs = Column.objects.filter(board_id=board_id)
         for stage in stage_ids:
             for column in column_objs:
-                task_selection_config = json.loads(column.task_selection_config)
+                task_selection_config = json.loads(
+                    column.task_selection_config)
                 for key, value in enumerate(task_selection_config.values()):
                     if stage in value:
                         stage_related_columns.append(column)
@@ -350,7 +351,7 @@ class StorageImplementation(StorageInterface):
         )
 
         list_of_column_dtos, column_stages = self._convert_column_details_to_dtos(
-            stage_related_columns,
+            list(set(stage_related_columns)),
             stage_ids)
         board_details_dto = TaskBoardsDetailsDTO(
             board_dto=board_dto,
