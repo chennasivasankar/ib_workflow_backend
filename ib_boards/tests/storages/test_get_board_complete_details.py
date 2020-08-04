@@ -51,6 +51,19 @@ class TestGetBoardDetails:
                                                          create_columns):
         # Arrange
         board_id = "BOARD_ID_11"
+        stages = ["stage_id_1", "stage_id_2", "stage_id_3"]
+        storage = StorageImplementation()
+
+        # Act
+        response = storage.get_board_complete_details(board_id, stages)
+
+        # Assert
+        snapshot.assert_match(response, "response")
+
+    def test_given_board_id_and_stages_when_a_column_has_no_given_stages(
+            self, snapshot, create_columns):
+        # Arrange
+        board_id = "BOARD_ID_11"
         stages = ["stage_id_1", "stage_id_2"]
         storage = StorageImplementation()
 
