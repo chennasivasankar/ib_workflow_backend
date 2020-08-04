@@ -272,8 +272,8 @@ class TestUpdateTaskStatusVariablesInteractor:
         # Act
         interactor \
             .call_action_logic_function_and_update_task_status_variables(
-            task_dto=task_dto
-        )
+                task_dto=task_dto
+            )
 
         # Assert
         storage.get_path_name_to_action.assert_called_once_with(
@@ -366,8 +366,8 @@ class TestUpdateTaskStatusVariablesInteractor:
         with pytest.raises(InvalidCustomLogicException):
             interactor \
                 .call_action_logic_function_and_update_task_status_variables(
-                task_dto=task_dto
-            )
+                    task_dto=task_dto
+                )
 
         # Assert
         storage.get_path_name_to_action.assert_called_once_with(
@@ -390,12 +390,14 @@ class TestUpdateTaskStatusVariablesInteractor:
         TaskGoFFieldDTOFactory.reset_sequence(1)
         gof_field_dtos = TaskGoFFieldDTOFactory.create_batch(size=3)
         storage.get_enable_multiple_gofs_field_to_gof_ids.return_value = multiple_gof
-        path_name = "ib_tasks.populate.dynamic_logic_test_file.stage_1_action_name_2"
-        mock_obj = mocker.patch(path_name)
-        mock_obj.stage_1_action_name_2.return_value = mock_task_dict
+        path_name = "ib_tasks.populate.dynamic_logic_test_file.stage_1_action_name_3"
         storage.get_path_name_to_action.return_value = path_name
         StatusVariableDTOFactory.reset_sequence()
         statuses = [StatusVariableDTOFactory()]
+        from ib_tasks.interactors.storage_interfaces.status_dtos import StatusVariableDTO
+        expected_status = [
+            StatusVariableDTO(status_id=1, status_variable='status_variable_1', value='value_2')
+        ]
         storage.get_status_variables_to_task.return_value = statuses
         from ib_tasks.interactors.storage_interfaces.get_task_dtos \
             import TaskDetailsDTO
@@ -418,6 +420,8 @@ class TestUpdateTaskStatusVariablesInteractor:
         storage.get_path_name_to_action.assert_called_once_with(
             action_id=action_id
         )
-        mock_obj.called_once()
+        storage.update_status_variables_to_task.assert_called_once_with(
+            task_id=1, status_variables_dto=expected_status
+        )
 
     # TODO fields update test case
