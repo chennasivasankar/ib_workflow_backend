@@ -252,13 +252,22 @@ class CreateOrUpdateTaskStorageImplementation(
     ) -> List[TaskGoFDetailsDTO]:
         task_ids = [task_gof.task_id for task_gof in task_gofs]
         task_gof_objects = list(TaskGoF.objects.filter(task_id__in=task_ids))
+        refined_task_gof_objects = []
+        for task_gof_object in task_gof_objects:
+            for task_gof in task_gofs:
+                task_gof_matched = (
+                    task_gof.gof_id == task_gof_object.gof_id and
+                    task_gof.same_gof_order == task_gof_object.same_gof_order
+                )
+                if task_gof_matched:
+                    refined_task_gof_objects.append(task_gof_object)
         task_gof_details_dtos = [
             TaskGoFDetailsDTO(
                 task_gof_id=task_gof_object.id,
                 gof_id=task_gof_object.gof_id,
                 same_gof_order=task_gof_object.same_gof_order
             )
-            for task_gof_object in task_gof_objects
+            for task_gof_object in refined_task_gof_objects
         ]
         return task_gof_details_dtos
 
