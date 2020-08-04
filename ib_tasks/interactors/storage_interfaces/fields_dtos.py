@@ -61,6 +61,11 @@ class FieldDetailsDTO:
 
 
 @dataclass
+class FieldDetailsDTOWithTaskId(FieldDetailsDTO):
+    task_id: int
+
+
+@dataclass
 class TaskAndFieldsDTO:
     task_id: int
     field_dtos: List[FieldDetailsDTO]

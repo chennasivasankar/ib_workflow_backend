@@ -29,7 +29,8 @@ class TestCase01DeleteTeamAPITestCase(TestUtils):
     def setup(self, api_user):
         user_id = api_user.user_id
         team_id = "413642ff-1272-4990-b878-6607a5e02bc1"
-        from ib_iam.tests.factories.models import TeamFactory, UserDetailsFactory
+        from ib_iam.tests.factories.models import TeamFactory, \
+            UserDetailsFactory
         UserDetailsFactory.reset_sequence(1)
         TeamFactory.reset_sequence(1)
         UserDetailsFactory.create(user_id=user_id, is_admin=True)

@@ -7,6 +7,16 @@ from ib_iam.models import Role, Team, Company
 from ib_iam.models.user import UserDetails, UserTeam, UserRole
 
 
+class CompanyFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Company
+
+    company_id = factory.LazyFunction(uuid.uuid4)
+    name = factory.sequence(lambda number: "company %s" % number)
+    description = factory.sequence(lambda number: "description %s" % number)
+    logo_url = factory.sequence(lambda number: "url %s" % number)
+
+
 class TeamFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Team
@@ -15,14 +25,6 @@ class TeamFactory(factory.django.DjangoModelFactory):
     name = factory.sequence(lambda number: "team %s" % number)
     description = factory.sequence(lambda n: "team_description %d" % n)
     created_by = factory.sequence(lambda n: "user_id-%d" % n)
-
-
-class CompanyFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = Company
-
-    company_id = factory.LazyFunction(uuid.uuid4)
-    name = factory.sequence(lambda number: "company %s" % number)
 
 
 class RoleFactory(factory.django.DjangoModelFactory):
@@ -66,4 +68,4 @@ class UserFactory(factory.django.DjangoModelFactory):
         model = UserDetails
 
     user_id = factory.sequence(lambda n: n)
-    is_admin = factory.Iterator([True, False])
+    is_admin = False

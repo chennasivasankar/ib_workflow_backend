@@ -25,7 +25,7 @@ class TestCase01UserLoginAPITestCase(TestUtils):
         )
         from ib_iam.tests.factories.models import UserFactory
         UserFactory.reset_sequence(1)
-        UserFactory()
+        UserFactory(is_admin=True)
 
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
             prepare_get_user_tokens_dto_for_given_email_and_password_dto_mock

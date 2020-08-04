@@ -1,16 +1,18 @@
-from unittest.mock import patch
-
 import pytest
 from freezegun import freeze_time
 
 
 class TestGetUserTokens:
-    @patch(
-        "ib_users.interfaces.service_interface.ServiceInterface.get_user_auth_tokens_for_login_with_email_and_password"
-    )
+
+    def get_user_auth_tokens_mock(self, mocker):
+        mock = mocker.patch(
+            "ib_users.interfaces.service_interface.ServiceInterface.get_user_auth_tokens_for_login_with_email_and_password"
+        )
+        return mock
+
     @freeze_time("2020-01-14 12:00:01")
     def test_get_user_tokens_dto_for_given_email_and_password_dto(
-            self, get_user_auth_tokens_for_login_with_email_and_password_mock
+            self, mocker
     ):
         # Arrange
         from ib_iam.adapters.auth_service import EmailAndPasswordDTO
@@ -18,6 +20,8 @@ class TestGetUserTokens:
             email="test@gmail.com",
             password="test123"
         )
+        get_user_auth_tokens_for_login_with_email_and_password_mock = \
+            self.get_user_auth_tokens_mock(mocker=mocker)
 
         from ib_users.interactors.third_party.user_tokens_generator import \
             UserAuthTokensDTO
@@ -54,11 +58,8 @@ class TestGetUserTokens:
         assert response == expected_user_tokens_dtos
         get_user_auth_tokens_for_login_with_email_and_password_mock.assert_called_once()
 
-    @patch(
-        "ib_users.interfaces.service_interface.ServiceInterface.get_user_auth_tokens_for_login_with_email_and_password"
-    )
     def test_with_invalid_email_raise_exception(
-            self, get_user_auth_tokens_for_login_with_email_and_password_mock
+            self, mocker
     ):
         # Arrange
         from ib_iam.adapters.auth_service import EmailAndPasswordDTO
@@ -66,6 +67,8 @@ class TestGetUserTokens:
             email="test@gmail.com",
             password="test123"
         )
+        get_user_auth_tokens_for_login_with_email_and_password_mock = \
+            self.get_user_auth_tokens_mock(mocker=mocker)
 
         from ib_users.constants.custom_exception_messages import INVALID_EMAIL
         from ib_users.validators.base_validator import CustomException
@@ -85,11 +88,8 @@ class TestGetUserTokens:
             )
         get_user_auth_tokens_for_login_with_email_and_password_mock.assert_called_once()
 
-    @patch(
-        "ib_users.interfaces.service_interface.ServiceInterface.get_user_auth_tokens_for_login_with_email_and_password"
-    )
     def test_incorrect_password_for_password_at_least_one_special_character_raise_exception(
-            self, get_user_auth_tokens_for_login_with_email_and_password_mock
+            self, mocker
     ):
         # Arrange
         from ib_iam.adapters.auth_service import EmailAndPasswordDTO
@@ -97,6 +97,8 @@ class TestGetUserTokens:
             email="test@gmail.com",
             password="test123"
         )
+        get_user_auth_tokens_for_login_with_email_and_password_mock = \
+            self.get_user_auth_tokens_mock(mocker=mocker)
 
         from ib_users.constants.custom_exception_messages import \
             PASSWORD_AT_LEAST_1_SPECIAL_CHARACTER
@@ -118,11 +120,8 @@ class TestGetUserTokens:
             )
         get_user_auth_tokens_for_login_with_email_and_password_mock.assert_called_once()
 
-    @patch(
-        "ib_users.interfaces.service_interface.ServiceInterface.get_user_auth_tokens_for_login_with_email_and_password"
-    )
     def test_incorrect_password_for_password_min_length_raise_exception(
-            self, get_user_auth_tokens_for_login_with_email_and_password_mock
+            self, mocker
     ):
         # Arrange
         from ib_iam.adapters.auth_service import EmailAndPasswordDTO
@@ -130,6 +129,8 @@ class TestGetUserTokens:
             email="test@gmail.com",
             password="test123"
         )
+        get_user_auth_tokens_for_login_with_email_and_password_mock = \
+            self.get_user_auth_tokens_mock(mocker=mocker)
 
         from ib_users.constants.custom_exception_messages import \
             PASSWORD_MIN_LENGTH_IS
@@ -153,11 +154,8 @@ class TestGetUserTokens:
             )
         get_user_auth_tokens_for_login_with_email_and_password_mock.assert_called_once()
 
-    @patch(
-        "ib_users.interfaces.service_interface.ServiceInterface.get_user_auth_tokens_for_login_with_email_and_password"
-    )
     def test_user_account_does_not_exist_raise_exception(
-            self, get_user_auth_tokens_for_login_with_email_and_password_mock
+            self, mocker
     ):
         # Arrange
         from ib_iam.adapters.auth_service import EmailAndPasswordDTO
@@ -165,6 +163,8 @@ class TestGetUserTokens:
             email="test@gmail.com",
             password="test123"
         )
+        get_user_auth_tokens_for_login_with_email_and_password_mock = \
+            self.get_user_auth_tokens_mock(mocker=mocker)
 
         from ib_users.constants.custom_exception_messages import \
             USER_ACCOUNT_IS_DEACTIVATED

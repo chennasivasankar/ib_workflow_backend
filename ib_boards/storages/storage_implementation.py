@@ -263,13 +263,13 @@ class StorageImplementation(StorageInterface):
         )
         return stage_ids
 
-    # TODO: need to pass column  Id
-    def validate_user_role_with_column_roles(self, user_role: str, column_id: str):
-        user_roles = ColumnPermission.objects.filter(
+    def validate_user_role_with_column_roles(self, user_role: List[str], column_id: str):
+        user_roles = list(ColumnPermission.objects.filter(
             column_id=column_id
-        ).values_list('user_role_id', flat=True)
+        ).values_list('user_role_id', flat=True))
 
-        is_invalid_user = not (user_role in user_roles or
+        is_invalid_user = not (set(user_role).issubset(set(user_roles)) or
+                               set(user_roles).issubset(set(user_role)) or
                                'ALL_ROLES' in user_roles)
         if is_invalid_user:
             from ib_boards.exceptions.custom_exceptions import \
