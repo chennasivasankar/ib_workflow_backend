@@ -36,28 +36,18 @@ class TestDeleteColumnsForBoard:
         board_dtos = BoardDTOFactory.create_batch(2)
         column_dtos = ColumnDTOFactory.create_batch(4, board_id='BOARD_ID_1')
         column_dtos += ColumnDTOFactory.create_batch(4, board_id='BOARD_ID_2')
-        column_ids_for_first_board = ['COLUMN_ID_1', 'COLUMN_ID_2']
-        column_ids_for_second_board = ['COLUMN_ID_7', 'COLUMN_ID_8']
-        column_for_delete_dtos = [
-            BoardColumnsDTO(
-                board_id='BOARD_ID_1',
-                column_ids=column_ids_for_first_board
-            ),
-            BoardColumnsDTO(
-                board_id='BOARD_ID_2',
-                column_ids=column_ids_for_second_board
-            )
+        column_ids = [
+            'COLUMN_ID_1', 'COLUMN_ID_2', 'COLUMN_ID_7', 'COLUMN_ID_8'
         ]
 
         # Act
         storage.delete_columns_which_are_not_in_configuration(
-            column_for_delete_dtos=column_for_delete_dtos,
+            column_ids=column_ids
         )
 
         # Assert
         is_deleted = not Column.objects.filter(
-            board_id__in=['BOARD_ID_1', 'BOARD_ID_2'],
-            column_id__in=column_ids_for_first_board + column_ids_for_second_board
+            column_id__in=column_ids
         )
 
         assert is_deleted is True

@@ -27,7 +27,7 @@ class TestInvalidUserRoleForColumn:
     def test_with_valid_user_role_for_the_column(self, storage,
                                                  reset_sequence):
         # Arrange
-        user_role = 'USER'
+        user_roles = ['USER']
         column_id = 'COLUMN_ID_1'
         from ib_boards.tests.factories.models import BoardFactory, \
             ColumnFactory
@@ -38,7 +38,7 @@ class TestInvalidUserRoleForColumn:
         ColumnPermissionFactory(column_id='COLUMN_ID_1', user_role_id='ADMIN')
 
         # Act
-        storage.validate_user_role_with_column_roles(user_role=user_role, column_id=column_id)
+        storage.validate_user_role_with_column_roles(user_role=user_roles, column_id=column_id)
 
     def test_with_invalid_user_role_for_the_column(self, storage,
                                                    reset_sequence):
