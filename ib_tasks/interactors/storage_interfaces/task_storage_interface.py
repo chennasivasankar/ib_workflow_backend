@@ -7,45 +7,33 @@ Author: Pavankumar Pamuru
 import abc
 from typing import List, Optional, Tuple
 
-from ib_tasks.interactors.storage_interfaces.get_task_dtos import TemplateFieldsDTO
-from ib_tasks.interactors.storage_interfaces.status_dtos import \
-    TaskTemplateStatusDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
-    FieldRoleDTO, FieldCompleteDetailsDTO, UserFieldPermissionDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO, \
-    StageValueWithTaskIdsDTO, TaskIdWithStageDetailsDTO, \
-    TaskIdWithStageValueDTO, FieldDetailsDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
-    GoFRoleDTO, GoFToTaskTemplateDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
-    StageDTO, TaskStageIdsDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRoleDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
-    StageDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
-from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionsOfTemplateDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
+    FieldRoleDTO, FieldCompleteDetailsDTO, UserFieldPermissionDTO
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
+    TemplateFieldsDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRoleDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import \
+    GoFToTaskTemplateDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    StageValueWithTaskIdsDTO, TaskIdWithStageDetailsDTO, \
+    TaskIdWithStageValueDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
+    StageDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import \
+    TaskTemplateStatusDTO
+from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
+    TaskTemplateDTO
 
 
 class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def create_task_template(self, template_id: str, template_name: str):
-        pass
-
-    @abc.abstractmethod
-    def get_task_template_name_if_exists(self, template_id: str) -> str:
-        pass
-
-    @abc.abstractmethod
-    def get_task_template_ids(self) -> List[str]:
-        pass
-
-    @abc.abstractmethod
-    def create_fields(self, field_dtos: List[FieldDTO]):
         pass
 
     @abc.abstractmethod
@@ -87,14 +75,6 @@ class TaskStorageInterface(abc.ABC):
     def create_global_constants_to_template(
             self, template_id: str,
             global_constants_dtos: List[GlobalConstantsDTO]):
-        pass
-
-    @abc.abstractmethod
-    def update_fields(self, field_dtos: List[FieldDTO]):
-        pass
-
-    @abc.abstractmethod
-    def create_fields_roles(self, field_role_dtos: List[FieldRoleDTO]):
         pass
 
     @abc.abstractmethod
@@ -181,11 +161,7 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_gof_ids_with_read_permission_for_user(self, roles: List[str]) -> \
-    List[str]:
-        pass
-
-    @abc.abstractmethod
-    def delete_field_roles(self, field_ids: List[str]):
+            List[str]:
         pass
 
     @abc.abstractmethod
@@ -233,7 +209,8 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_field_ids_for_given_task_template_ids(self,
-                                                  task_template_ids: List[str]) -> \
+                                                  task_template_ids: List[
+                                                      str]) -> \
             List[TemplateFieldsDTO]:
         pass
 

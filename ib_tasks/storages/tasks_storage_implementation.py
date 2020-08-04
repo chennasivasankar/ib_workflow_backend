@@ -8,19 +8,17 @@ from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionsOfTemplateDTO, ActionDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
-    FieldRoleDTO, FieldTypeDTO, UserFieldPermissionDTO, FieldDetailsDTO, FieldCompleteDetailsDTO
-from ib_tasks.interactors.storage_interfaces.get_task_dtos import TemplateFieldsDTO
-
+    FieldRoleDTO, UserFieldPermissionDTO, FieldDetailsDTO, \
+    FieldCompleteDetailsDTO
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
+    TemplateFieldsDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
+    GoFRoleDTO, GoFToTaskTemplateDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    GetTaskStageCompleteDetailsDTO, TaskStageIdsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskIdWithStageValueDTO, \
     TaskIdWithStageDetailsDTO, StageValueWithTaskIdsDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
-    GoFRoleDTO, GoFToTaskTemplateDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
-    StageDTO, GetTaskStageCompleteDetailsDTO, TaskStageIdsDTO
-
-from ib_tasks.interactors.storage_interfaces.status_dtos import \
-    TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
     StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
@@ -31,15 +29,15 @@ from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TaskTemplateDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.models import GoFRole, GoF, TaskStage
-from ib_tasks.models import Stage, StageAction
+from ib_tasks.models import Stage
 from ib_tasks.models import TaskTemplateStatusVariable
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
-from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.stage_actions import StageAction
-from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from ib_tasks.models.task import Task
 from ib_tasks.models.task_gof_field import TaskGoFField
+from ib_tasks.models.task_template import TaskTemplate
+from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
 
 class TasksStorageImplementation(TaskStorageInterface):
@@ -109,13 +107,6 @@ class TasksStorageImplementation(TaskStorageInterface):
             ).values_list('name', flat=True)
         return template_name_query_set.first()
 
-    def get_task_template_ids(self) -> List[str]:
-        pass
-
-    def create_fields(self, field_dtos: List[FieldDTO]):
-        from ib_tasks.models.field import Field
-        fields = self._get_fields(field_dtos)
-        Field.objects.bulk_create(fields)
 
     def get_valid_template_ids_in_given_template_ids(
             self, template_ids: List[str]) -> List[str]:
@@ -205,22 +196,6 @@ class TasksStorageImplementation(TaskStorageInterface):
         ]
         GlobalConstant.objects.bulk_create(global_constants_objs)
 
-    def update_fields(self, field_dtos: List[FieldDTO]):
-        list_of_fields = [
-            'display_name', 'gof_id',
-            'required', 'field_type',
-            'field_values', 'allowed_formats',
-            'help_text', 'tooltip',
-            'placeholder_text', 'error_messages',
-            'validation_regex'
-        ]
-        fields = self._get_fields(field_dtos)
-        Field.objects.bulk_update(fields, list_of_fields)
-
-    def create_fields_roles(self, field_role_dtos: List[FieldRoleDTO]):
-        fields_roles = self._get_fields_roles(field_role_dtos)
-        FieldRole.objects.bulk_create(fields_roles)
-
     def get_existing_field_ids(self, field_ids: List[str]) -> List[str]:
         from ib_tasks.models.field import Field
         existing_field_ids = list(
@@ -236,27 +211,6 @@ class TasksStorageImplementation(TaskStorageInterface):
             GoF.objects.filter(gof_id__in=gof_ids).values_list("gof_id",
                                                                flat=True))
         return existing_gof_ids
-
-    @staticmethod
-    def _get_fields(field_dtos: List[FieldDTO]):
-        fields = [
-            Field(
-                field_id=field_dto.field_id,
-                display_name=field_dto.field_display_name,
-                required=field_dto.required,
-                field_type=field_dto.field_type,
-                field_values=field_dto.field_values,
-                allowed_formats=field_dto.allowed_formats,
-                help_text=field_dto.help_text,
-                tooltip=field_dto.tooltip,
-                placeholder_text=field_dto.placeholder_text,
-                error_messages=field_dto.error_message,
-                validation_regex=field_dto.validation_regex,
-                gof_id=field_dto.gof_id
-            )
-            for field_dto in field_dtos
-        ]
-        return fields
 
     @staticmethod
     def _get_fields_roles(field_role_dtos):
@@ -382,8 +336,8 @@ class TasksStorageImplementation(TaskStorageInterface):
         from ib_tasks.models.task_template_initial_stages import \
             TaskTemplateInitialStage
         templates_initial_stage_ids_queryset = \
-            TaskTemplateInitialStage.objects.all().\
-            values_list('stage_id', flat=True)
+            TaskTemplateInitialStage.objects.all(). \
+                values_list('stage_id', flat=True)
         templates_initial_stage_ids = \
             list(templates_initial_stage_ids_queryset)
         return templates_initial_stage_ids
@@ -445,9 +399,6 @@ class TasksStorageImplementation(TaskStorageInterface):
 
         gof_ids_list = list(gof_ids_queryset)
         return gof_ids_list
-
-    def delete_field_roles(self, field_ids: List[str]):
-        FieldRole.objects.filter(field_id__in=field_ids).delete()
 
     def create_stages_with_given_information(self,
                                              stage_information: StageDTO):
@@ -762,17 +713,22 @@ class TasksStorageImplementation(TaskStorageInterface):
         return task_id_with_stage_details_dtos
 
     def get_field_ids_for_given_task_template_ids(self,
-                                                  task_template_ids: List[str]) -> List[TemplateFieldsDTO]:
+                                                  task_template_ids: List[
+                                                      str]) -> List[
+        TemplateFieldsDTO]:
         task_field_objs = TaskTemplateGoFs.objects.filter(
-            task_template_id__in=task_template_ids).values('task_template_id', 'gof__field')
-        task_fields_dtos = self._convert_task_template_fields_to_dtos(task_field_objs)
+            task_template_id__in=task_template_ids).values('task_template_id',
+                                                           'gof__field')
+        task_fields_dtos = self._convert_task_template_fields_to_dtos(
+            task_field_objs)
         return task_fields_dtos
 
     @staticmethod
     def _convert_task_template_fields_to_dtos(task_field_objs):
         task_fields_dict = defaultdict(list)
         for task in task_field_objs:
-            task_fields_dict[task['task_template_id']].append(task['gof__field'])
+            task_fields_dict[task['task_template_id']].append(
+                task['gof__field'])
 
         task_fields_dtos = []
         for template_id, field_ids in task_fields_dict.items():

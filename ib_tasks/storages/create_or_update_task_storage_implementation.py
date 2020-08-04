@@ -107,8 +107,9 @@ class CreateOrUpdateTaskStorageImplementation(
         )
         return gof_ids
 
-    def get_field_ids_related_to_given_task(self, task_id: int) -> List[
-        str]:
+    def get_field_ids_related_to_given_task(
+            self, task_id: int
+    ) -> List[str]:
         field_ids = list(
             TaskGoFField.objects.filter(task_gof__task_id=task_id). \
                 values_list('field_id', flat=True)
