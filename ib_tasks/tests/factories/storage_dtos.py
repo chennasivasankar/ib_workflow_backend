@@ -84,9 +84,9 @@ class StatusVariableDTOFactory(factory.Factory):
         model = StatusVariableDTO
 
     status_id = factory.Sequence(lambda n: (n + 1))
-    status_variable = factory.Sequence(lambda n: 'status_variable_%d' %
+    status_variable = factory.Sequence(lambda n: 'variable_%d' %
                                                  (n + 1))
-    value = factory.Sequence(lambda n: 'value_%d' % (n + 1))
+    value = factory.Sequence(lambda n: 'stage_%d' % (n + 1))
 
 
 class GroupOfFieldsDTOFactory(factory.Factory):

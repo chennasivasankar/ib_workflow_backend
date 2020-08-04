@@ -202,6 +202,7 @@ class UserStagesWithPaginationDTOFactory(factory.Factory):
 class StatusOperandStageDTOFactory(factory.Factory):
     class Meta:
         model = StatusOperandStageDTO
+
     variable = factory.sequence(lambda n: "variable_{}".format(n + 1))
-    operator = '=='
+    operator = "=="
     stage = factory.sequence(lambda n: "stage_{}".format(n + 1))
