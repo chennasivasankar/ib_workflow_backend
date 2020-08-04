@@ -1,4 +1,3 @@
-from functools import reduce
 def get_all_tasks_overview(*args, **kwargs):  # pylint: disable=invalid-name
     """
     Note: replace below mock implementation with your actual implementation
@@ -49,8 +48,10 @@ def get_all_tasks_overview(*args, **kwargs):  # pylint: disable=invalid-name
         response_object = HttpResponse(str(response_object))
 
     elif isinstance(response_object, tuple):
-        response_status_code, response_object, response_headers_obj = response_object
+        response_status_code, response_object, response_headers_obj = \
+            response_object
 
     from django_swagger_utils.drf_server.utils.server_gen.endpoint_response \
         import endpoint_response
-    return endpoint_response(response_object,response_status_code, response_headers_obj)
+    return endpoint_response(response_object, response_status_code,
+                             response_headers_obj)

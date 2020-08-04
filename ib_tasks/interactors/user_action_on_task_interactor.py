@@ -69,13 +69,11 @@ class UserActionOnTaskInteractor:
             task_complete_details_dto=task_complete_details_dto
         )
 
-    def _user_action_on_task(self):
+    def _user_action_on_task(self) -> TaskCompleteDetailsDTO:
         self._validations_for_task_action()
         task_dto = self._get_task_dto()
         self._call_logic_and_update_status_variables_and_get_stage_ids(
-            task_dto=task_dto
-        )
-
+            task_dto=task_dto)
         stage_ids = self._get_task_stage_display_satifsied_stage_ids()
         self._update_task_stages(stage_ids=stage_ids)
         task_boards_details = self._get_task_boards_details(stage_ids)
