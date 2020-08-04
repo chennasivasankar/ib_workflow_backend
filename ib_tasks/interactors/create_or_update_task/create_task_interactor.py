@@ -142,7 +142,9 @@ class CreateTaskInteractor:
         self.create_task_storage.create_initial_task_stage(
             task_id=created_task_id, template_id=task_dto.task_template_id
         )
-        act_on_task_interactor.user_action_on_task(act_on_task_presenter)
+        return act_on_task_interactor.user_action_on_task_wrapper(
+            act_on_task_presenter
+        )
 
     def _validate_task_template_id(
             self, task_template_id: str
