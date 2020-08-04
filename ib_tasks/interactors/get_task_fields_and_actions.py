@@ -100,13 +100,13 @@ class GetTaskFieldsAndActionsInteractor:
             stage_fields_dtos: List[TaskTemplateStageFieldsDTO]
     ):
         list_of_task_details_dtos = []
-        for task in stage_fields_dtos:
+        for stage in stage_fields_dtos:
             list_of_field_dtos = self._get_list_of_fields_for_stage(
-                field_dtos, task)
+                field_dtos, stage)
             list_of_action_dtos = self._get_list_of_actions_dtos_for_stage(
-                action_dtos, task)
+                action_dtos, stage)
             task_stage_dtos = self._get_task_stage_details(
-                list_of_action_dtos, list_of_field_dtos, task)
+                list_of_action_dtos, list_of_field_dtos, stage)
             list_of_task_details_dtos.append(task_stage_dtos)
 
         return list_of_task_details_dtos
@@ -115,7 +115,7 @@ class GetTaskFieldsAndActionsInteractor:
     def _get_task_stage_details(
             list_of_action_dtos: List[ActionDetailsDTO],
             list_of_field_dtos: List[FieldDetailsDTOWithTaskId],
-            task
+            stage
     ):
         fields_dtos = [
             FieldDetailsDTO(
@@ -127,8 +127,8 @@ class GetTaskFieldsAndActionsInteractor:
             for field in list_of_field_dtos
         ]
         return GetTaskStageCompleteDetailsDTO(
-            task_id=task.task_id,
-            stage_id=task.stage_id,
+            task_id=stage.task_id,
+            stage_id=stage.stage_id,
             field_dtos=fields_dtos,
             action_dtos=list_of_action_dtos
         )
@@ -136,22 +136,22 @@ class GetTaskFieldsAndActionsInteractor:
     @staticmethod
     def _get_list_of_fields_for_stage(
             field_dtos: List[FieldDetailsDTOWithTaskId],
-            task: TaskTemplateStageFieldsDTO
+            stage: TaskTemplateStageFieldsDTO
     ):
         list_of_field_dtos = []
         if not field_dtos:
             return []
         for field in field_dtos:
-            if field.field_id in task.field_ids and field.task_id == task.task_id:
+            if field.field_id in stage.field_ids and field.task_id == stage.task_id:
                 list_of_field_dtos.append(field)
         return list_of_field_dtos
 
     @staticmethod
-    def _get_list_of_actions_dtos_for_stage(action_dtos, task):
+    def _get_list_of_actions_dtos_for_stage(action_dtos, stage):
         list_of_action_dtos = []
         if action_dtos:
             for action in action_dtos:
-                if action.stage_id == task.stage_id:
+                if action.stage_id == stage.stage_id:
                     list_of_action_dtos.append(action)
         return list_of_action_dtos
 
