@@ -14,26 +14,18 @@ from ib_tasks.models.task_stage import TaskStage
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
-
 admin.site.register(GoF)
 admin.site.register(Field)
 admin.site.register(TaskTemplate)
 admin.site.register(GoFRole)
 admin.site.register(FieldRole)
-admin.site.register(Stage)
+
 admin.site.register(TaskTemplateStatusVariable)
-admin.site.register(StageAction)
 admin.site.register(TaskTemplateInitialStage)
 admin.site.register(TaskStatusVariable)
 admin.site.register(TaskStage)
 admin.site.register(TaskGoF)
-
-
-class TaskGofFieldAdmin(admin.ModelAdmin):
-    list_display = ('field_id', "field_response", 'task_gof_id')
-
-
-admin.site.register(TaskGoFField, TaskGofFieldAdmin)
+admin.site.register(TaskGoFField)
 admin.site.register(TaskTemplateGoFs)
 
 
@@ -46,15 +38,28 @@ class TaskGoFInline(admin.StackedInline):
     model = TaskGoF
 
 
-class TaskTemplateInline(admin.StackedInline):
-    model = TaskTemplate
+class StagesAdmin(admin.ModelAdmin):
+    list_display_links = ('display_name', )
+    list_display = ('stage_id', 'display_name')
+    list_editable = ('stage_id', )
+
+
+class StagesActionsAdmin(admin.ModelAdmin):
+    list_display = ('id', 'stage_name', 'name')
+
+    def stage_name(self, obj):
+        return "%s" % obj.stage.stage_id
 
 
 class TaskAdmin(admin.ModelAdmin):
-    inlines = [TaskStageInline, TaskGoFInline, ]
-    list_display = ('id',)
+    inlines = [TaskStageInline, TaskGoFInline]
 
 
 admin.site.register(Task, TaskAdmin)
 
 admin.site.register(TaskLog)
+
+admin.site.register(Stage, StagesAdmin)
+
+
+admin.site.register(StageAction, StagesActionsAdmin)
