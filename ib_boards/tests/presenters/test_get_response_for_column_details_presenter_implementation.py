@@ -134,3 +134,25 @@ class TestGetColumnDetails:
         result = json.loads(response.content)
 
         snapshot.assert_match(result, "column_details_with_proper_data")
+
+    def test_get_response_for_column_details_with_no_tasks(
+            self, get_task_fields_dtos, get_column_task_details,
+            get_task_actions_dtos, get_column_details, snapshot):
+        # Arrange
+        task_fields_dtos = []
+        task_actions_dtos = []
+        task_details = []
+        column_details = get_column_details
+        presenter = PresenterImplementation()
+
+        # Act
+        response = presenter.get_response_for_column_details(
+            column_details=column_details,
+            column_tasks=task_details, task_fields_dtos=task_fields_dtos,
+            task_actions_dtos=task_actions_dtos)
+
+        # Assert
+        import json
+        result = json.loads(response.content)
+
+        snapshot.assert_match(result, "column_details_with_proper_data")
