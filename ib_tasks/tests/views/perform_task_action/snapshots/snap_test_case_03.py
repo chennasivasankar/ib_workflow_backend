@@ -56,7 +56,7 @@ snapshots['TestCase03PerformTaskActionAPITestCase.test_case body'] = {
     },
     'other_board_details': [
     ],
-    'task_id': '1'
+    'task_id': 1
 }
 
 snapshots['TestCase03PerformTaskActionAPITestCase.test_case stage_id_0'] = 'stage_id_0'
