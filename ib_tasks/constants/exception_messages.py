@@ -66,7 +66,7 @@ INVALID_VALUE_FOR_SEARCHABLE = "Searchable value should be one of these  {} for 
 DUPLICATE_FIELD_IDS = ["duplicate field ids: {}", "DUPLICATE_FIELD_IDS"]
 
 INVALID_TASK_TEMPLATE_IDS = [
-    "duplicate task template ids: {}", "INVALID_TASK_TEMPLATE_IDS"
+    "invalid task template ids: {}", "INVALID_TASK_TEMPLATE_IDS"
 ]
 
 INVALID_GOF_IDS = ["invalid gof ids: {}", "INVALID_GOF_IDS"]
@@ -91,8 +91,8 @@ LIMIT_SHOULD_BE_GREATER_THAN_ZERO = ("Limit value should be greater than zero",
                                      "LIMIT_SHOULD_BE_GREATER_THAN_ZERO")
 
 OFFSET_SHOULD_BE_GREATER_THAN_ZERO = (
-"Offset value should be greater than zero",
-"OFFSET_SHOULD_BE_GREATER_THAN_ZERO")
+    "Offset value should be greater than zero",
+    "OFFSET_SHOULD_BE_GREATER_THAN_ZERO")
 
 OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE = (
     "Offset should be greater than or equal to minus one",
@@ -200,3 +200,28 @@ TASK_CREATED_SUCCESSFULLY = (
 )
 
 INVALID_TASK_JSON = ("Task Json should not be empty", "INVALID_TASK_JSON")
+
+
+INVALID_GOFS_OF_TASK_TEMPLATE = (
+    "invalid gofs {}  given to the task template {}",
+    "INVALID_GOFS_OF_TASK_TEMPLATE"
+)
+
+DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF = (
+    "gof id {} has duplicate field ids {}", "DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF"
+)
+
+INVALID_FIELDS_OF_TASK_TEMPLATE = (
+    "invalid fields {}  given to the gof {}",
+    "INVALID_FIELDS_OF_TASK_TEMPLATE"
+)
+
+USER_NEEDS_GOF_WRITABLE_PERMISSION = (
+    "user {} needs write access on gof {}, because user does not have {} roles",
+    "USER_NEEDS_GOF_WRITABLE_PERMISSION"
+)
+
+USER_NEEDS_FILED_WRITABLE_PERMISSION = (
+    "user {} needs write access on field {}, because user does not have {} roles",
+    "USER_NEEDS_FILED_WRITABLE_PERMISSION"
+)

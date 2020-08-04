@@ -33,3 +33,14 @@ snapshots['TestCreateOrUpdateTaskStorageImplementation.test_given_field_ids_and_
     'FIELD_ID-10',
     'FIELD_ID-6'
 ]
+
+snapshots['TestCreateOrUpdateTaskStorageImplementation.test_given_gof_ids_and_user_roles_not_having_permission_for_gof_ids_but_permission_for_all_roles_returns_gof_ids gof_ids_having_permission'] = [
+    'gof_11'
+]
+
+snapshots['TestCreateOrUpdateTaskStorageImplementation.test_given_field_ids_and_user_roles_not_having_permission_for_field_ids_but_permission_for_all_roles_returns_field_ids field_ids_having_permission'] = [
+    'FIELD_ID-10'
+]
+
+snapshots['TestCreateOrUpdateTaskStorageImplementation.test_given_task_id_with_no_gof_ids_returns_empty_list task_gof_dtos'] = [
+]

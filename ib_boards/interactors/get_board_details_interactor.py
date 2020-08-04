@@ -6,8 +6,6 @@ Author: Pavankumar Pamuru
 from typing import List
 
 from ib_boards.exceptions.custom_exceptions import InvalidBoardIds
-from ib_boards.interactors.presenter_interfaces.presenter_interface import \
-    GetBoardsDetailsPresenterInterface
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
@@ -15,20 +13,6 @@ from ib_boards.interactors.storage_interfaces.storage_interface import \
 class GetBoardsDetailsInteractor:
     def __init__(self, storage: StorageInterface):
         self.storage = storage
-
-    def get_boards_details_wrapper(
-            self, board_ids: List[str],
-            presenter: GetBoardsDetailsPresenterInterface):
-
-        try:
-            board_details_dtos = self.get_boards_details(
-                board_ids=board_ids
-            )
-        except InvalidBoardIds as error:
-            return presenter.get_response_for_invalid_board_ids(error=error)
-        return presenter.get_response_for_board_details(
-            board_dtos=board_details_dtos
-        )
 
     def get_boards_details(self, board_ids: List[str]):
         board_ids = self.get_unique_board_ids(board_ids=board_ids)

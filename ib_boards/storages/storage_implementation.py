@@ -157,10 +157,7 @@ class StorageImplementation(StorageInterface):
         ColumnPermission.objects.bulk_create(user_role_ids)
 
     def delete_columns_which_are_not_in_configuration(
-            self, column_for_delete_dtos: List[BoardColumnsDTO]) -> None:
-        column_ids = []
-        for column_for_delete_dto in column_for_delete_dtos:
-            column_ids += column_for_delete_dto.column_ids
+            self, column_ids: List[str]) -> None:
         column_objects = Column.objects.filter(
             column_id__in=column_ids
         )
@@ -168,7 +165,7 @@ class StorageImplementation(StorageInterface):
 
     def _get_column_objects_and_column_permission_objects_from_dtos(
             self, column_dtos: List[ColumnDTO]) -> Tuple[
-        List[Column], List[ColumnPermission]]:
+            List[Column], List[ColumnPermission]]:
         column_objects = [
             Column(
                 column_id=column_dto.column_id,
@@ -300,7 +297,8 @@ class StorageImplementation(StorageInterface):
 
     def get_columns_details(self, column_ids: List[str]) -> \
             List[ColumnDetailsDTO]:
-        column_objs = Column.objects.filter(column_id__in=column_ids)
+        column_objs = (Column.objects.filter(column_id__in=column_ids)
+                       .order_by('display_order'))
         columns_dtos = self._convert_column_objs_to_dtos(column_objs)
         return columns_dtos
 
@@ -317,9 +315,9 @@ class StorageImplementation(StorageInterface):
 
     def get_column_ids_for_board(self, board_id: str, user_roles: List[str]) \
             -> List[str]:
+        column_ids = []
         column_objs = Column.objects.filter(board__board_id=board_id)
         roles = ColumnPermission.objects.filter(column__in=column_objs)
-        column_ids = []
         for role in roles:
             if role.user_role_id == "ALL_ROLES":
                 column_ids.append(role.column.column_id)
@@ -328,7 +326,7 @@ class StorageImplementation(StorageInterface):
         return sorted(list(set(column_ids)))
 
     def get_permitted_user_roles_for_board(self, board_id: str) -> List[str]:
-        return "ALL ROLES"
+        return ["ALL ROLES"]
 
     def get_board_complete_details(self, board_id: str,
                                    stage_ids: List[str]) -> \
@@ -384,10 +382,11 @@ class StorageImplementation(StorageInterface):
                         )
         return list_of_column_dtos, column_stages
 
-    def get_columns_stage_ids(self, column_ids) -> List[ColumnStageIdsDTO]:
-        column_stages = Column.objects.filter(
-            column_id__in=column_ids
-        ).values_list('column_id', 'task_selection_config')
+    def get_columns_stage_ids(self, column_ids: List[str]) -> \
+            List[ColumnStageIdsDTO]:
+        column_stages = (Column.objects.filter(column_id__in=column_ids)
+                         .values_list('column_id', 'task_selection_config')
+                         .order_by('display_order'))
 
         return [
             ColumnStageIdsDTO(

@@ -65,8 +65,8 @@ class GetTaskStageLogicSatisfiedStages:
             stage_value_dict[stage_id] = value
         return stage_value_dict
 
-    def _get_stage_logic_satisfied_stages(self,
-            status_stage_dtos: List[StatusOperandStageDTO],
+    def _get_stage_logic_satisfied_stages(
+            self, status_stage_dtos: List[StatusOperandStageDTO],
             status_variable_dict: Dict[str, str],
             stage_value_dict: Dict[str, int]):
 

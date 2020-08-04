@@ -7,14 +7,14 @@ from ib_tasks.storages.tasks_storage_implementation import \
     TasksStorageImplementation
 
 
-class TaskDetailsServiceInterface:
-
-    @staticmethod
-    def get_task_details(task_dtos: List[GetTaskDetailsDTO]):
-        storage = TasksStorageImplementation()
-        interactor = GetTaskFieldsAndActionsInteractor(storage)
-        result = interactor.get_task_fields_and_action(task_dtos)
-        return result
+# class TaskDetailsServiceInterface:
+#
+#     @staticmethod
+#     def get_task_details(task_dtos: List[GetTaskDetailsDTO]):
+#         storage = TasksStorageImplementation()
+#         interactor = GetTaskFieldsAndActionsInteractor(storage)
+#         result = interactor.get_task_fields_and_action(task_dtos)
+#         return result
 
 
 from typing import List
@@ -44,7 +44,7 @@ class ServiceInterface:
         return task_ids_dtos
 
     @staticmethod
-    def get_task_details(task_dtos: List[GetTaskDetailsDTO], user_id: int):
+    def get_task_details(task_dtos: List[GetTaskDetailsDTO], user_id: str):
         from ib_tasks.storages.fields_storage_implementation import \
             FieldsStorageImplementation
         from ib_tasks.storages.storage_implementation import \

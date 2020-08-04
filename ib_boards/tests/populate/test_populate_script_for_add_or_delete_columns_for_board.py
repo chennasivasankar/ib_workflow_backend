@@ -86,19 +86,12 @@ class TestPopulateBoardsAndColumnsInteractor:
         task_template_ids_for_stages = [
             'FIN_PR', 'FIN_IN',
         ]
-        task_template_ids_list_view = [
-            'FIN_PR', 'FIN_IN',
-        ]
-        task_template_ids_kanban_view = [
-            'FIN_PR', 'FIN_IN',
-        ]
         from ib_boards.tests.common_fixtures.adapters.task_service import \
-            get_valid_task_ids_for_kanban_view_mock
-        get_valid_task_ids_for_kanban_view_mock(
+            get_valid_task_ids_mock
+        get_valid_task_ids_mock(
             mocker=mocker,
-            task_template_ids_for_stages=task_template_ids_for_stages,
-            task_template_ids_list_view=task_template_ids_list_view,
-            task_ids=task_template_ids_kanban_view
+            task_template_ids=task_template_ids_for_stages,
+            task_ids=task_template_ids_for_stages
         )
 
         # Act
