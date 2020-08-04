@@ -176,7 +176,17 @@ class CreateOrUpdateTaskInteractor:
         self.create_task_storage.set_status_variables_for_template_and_task(
             task_dto.task_template_id, task_dto.task_id
         )
-        act_on_task_interactor.user_action_on_task(act_on_task_presenter)
+        # TODO: fix the return value
+
+        from ib_tasks.models import TaskStage
+        from ib_tasks.models import TaskTemplateInitialStage
+        TaskStage.objects.get_or_create(
+            task_id=task_dto.task_id,
+            stage=TaskTemplateInitialStage.objects.get(
+                task_template_id=task_dto.task_template_id
+            ).stage
+        )
+        act_on_task_interactor.user_action_on_task()
 
     def _update_task(self, task_dto: TaskDTO):
         task_id = task_dto.task_id
