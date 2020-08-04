@@ -2,6 +2,7 @@ from typing import List
 from ib_iam.exceptions.custom_exceptions import (
     UserHasNoAccess, CompanyNameAlreadyExists, InvalidUserIds, DuplicateUserIds,
     InvalidCompanyId)
+from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces \
     .add_company_presenter_interface import AddCompanyPresenterInterface
 from ib_iam.interactors.presenter_interfaces \
@@ -16,7 +17,7 @@ from ib_iam.interactors.storage_interfaces.dtos import (
     CompanyNameLogoAndDescriptionDTO)
 
 
-class CompanyInteractor:
+class CompanyInteractor(ValidationMixin):
 
     def __init__(self, storage: CompanyStorageInterface):
         self.storage = storage
@@ -145,24 +146,6 @@ class CompanyInteractor:
         self._validate_users(user_ids=company_with_user_ids_dto.user_ids)
         self._validate_is_company_name_exists_to_update_company(
             name=company_with_user_ids_dto.name, company_id=company_id)
-
-    def _validate_users(self, user_ids):
-        self._validate_is_duplicate_users_exists(user_ids=user_ids)
-        self._validate_is_invalid_users_exists(user_ids=user_ids)
-
-    @staticmethod
-    def _validate_is_duplicate_users_exists(user_ids: List[str]):
-        is_duplicate_user_ids_exist = len(user_ids) != len(set(user_ids))
-        if is_duplicate_user_ids_exist:
-            raise DuplicateUserIds()
-
-    def _validate_is_invalid_users_exists(self, user_ids: List[str]):
-        user_ids_from_db = \
-            self.storage.get_valid_user_ids_among_the_given_user_ids(
-                user_ids=user_ids)
-        is_invalid_users_found = len(user_ids) != len(user_ids_from_db)
-        if is_invalid_users_found:
-            raise InvalidUserIds()
 
     def _validate_is_company_name_already_exists_to_add_company(
             self, name: str):
