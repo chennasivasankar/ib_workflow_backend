@@ -17,6 +17,6 @@ def stage_1_action_name_2(task_dict, global_constants,
 
 def stage_1_action_name_3(task_dict, global_constants,
                           stage_value_dict):
-    task_dict['status_variables']['status_variable_1'] = 'value_2'
+    task_dict['status_variables']['variable_1'] = 'stage_2'
 
     return task_dict
