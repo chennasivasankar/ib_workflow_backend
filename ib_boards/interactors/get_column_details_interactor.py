@@ -4,7 +4,7 @@ from ib_boards.adapters.service_adapter import get_service_adapter
 from ib_boards.exceptions.custom_exceptions import (
     InvalidBoardId, InvalidOffsetValue, InvalidLimitValue, UserDonotHaveAccess)
 from ib_boards.interactors.dtos import ColumnParametersDTO, \
-    PaginationParametersDTO, ColumnTaskIdsDTO, TaskDTO, ActionDTO, \
+    PaginationParametersDTO, ColumnTaskIdsDTO, FieldDTO, ActionDTO, \
     ColumnTasksDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
@@ -75,8 +75,8 @@ class GetColumnDetailsInteractor:
     @staticmethod
     def _get_tasks_complete_details(
             task_ids_stages_dtos: List[ColumnTaskIdsDTO],
-            user_id: int) \
-            -> Tuple[List[TaskDTO], List[ActionDTO]]:
+            user_id: str) \
+            -> Tuple[List[FieldDTO], List[ActionDTO]]:
         task_details_dtos = []
         for task_ids_stages_dto in task_ids_stages_dtos:
             for stage_id_dto in task_ids_stages_dto.task_stage_ids:

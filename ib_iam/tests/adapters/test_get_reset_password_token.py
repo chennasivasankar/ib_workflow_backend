@@ -58,3 +58,28 @@ class TestGetResetPasswordToken:
                 email=email, expires_in_sec=expires_in_sec
             )
         get_reset_password_token_for_reset_password_mock.assert_called_once()
+
+    def test_with_user_account_does_not_exist_raise_exception(
+            self, mocker):
+        # Arrange
+        email = "test@gmail.com"
+        expires_in_sec = 5647665599
+        get_reset_password_token_for_reset_password_mock = \
+            self.get_reset_password_token_mock(mocker)
+
+        from ib_users.interactors.exceptions.user_credentials_exceptions import \
+            AccountWithEmailDoesntExistException
+        get_reset_password_token_for_reset_password_mock.side_effect \
+            = AccountWithEmailDoesntExistException
+
+        from ib_iam.adapters.service_adapter import ServiceAdapter
+        service_adapter = ServiceAdapter()
+        auth_service = service_adapter.auth_service
+
+        # Assert
+        from ib_iam.exceptions.custom_exceptions import UserAccountDoesNotExist
+        with pytest.raises(UserAccountDoesNotExist):
+            auth_service.get_reset_password_token(
+                email=email, expires_in_sec=expires_in_sec
+            )
+        get_reset_password_token_for_reset_password_mock.assert_called_once()
