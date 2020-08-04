@@ -58,7 +58,7 @@ class TestGetTaskStagesAndActions:
         # Assert
         snapshot.assert_match(response, "response")
 
-    def test_given_task_id_returns_task_related_stages_and_their_actions_when_a_task_has_only_one_stage(
+    def test_given_task_id_with_one_stage_returns_stage_and_their_actions(
             self, snapshot,
             get_stage_actions_for_one_stage,
             get_stage_details_for_one_stage):
@@ -86,6 +86,25 @@ class TestGetTaskStagesAndActions:
         storage = create_autospec(FieldsStorageInterface)
         storage.validate_task_id.return_value = True
         storage.get_task_stages.return_value = ["stage_id_0", "stage_id_1", "stage_id_2"]
+        storage.get_actions_details.return_value = []
+        storage.get_stage_complete_details.return_value = get_stage_details
+        interactor = GetTaskStagesAndActions(storage=storage)
+
+        # Act
+        response = interactor.get_task_stages_and_actions(
+            task_id=task_id,
+            user_id="123e4567-e89b-12d3-a456-426614174000")
+
+        # Assert
+        snapshot.assert_match(response, "response")
+
+    def test_given_task_id_with_one_stage_without_no_actions_returns_actions_as_empty_list(
+            self, snapshot, get_stage_details):
+        # Arrange
+        task_id = 1
+        storage = create_autospec(FieldsStorageInterface)
+        storage.validate_task_id.return_value = True
+        storage.get_task_stages.return_value = ["stage_id_0"]
         storage.get_actions_details.return_value = []
         storage.get_stage_complete_details.return_value = get_stage_details
         interactor = GetTaskStagesAndActions(storage=storage)
