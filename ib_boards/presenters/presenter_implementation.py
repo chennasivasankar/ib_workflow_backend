@@ -205,20 +205,21 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
             task_actions_dtos: List[ActionDTO], task_ids: List[int]):
         from collections import defaultdict
 
-        actions_dict = {}
-        for action_dto in task_actions_dtos:
-            actions_dict[action_dto.action_id] = action_dto
-
         tasks_fields_map = defaultdict(lambda: [])
+        field_ids = []
         for task_fields_dto in task_fields_dtos:
-            tasks_fields_map[task_fields_dto.task_id].append(task_fields_dto)
+            if task_fields_dto.field_id not in field_ids:
+                tasks_fields_map[task_fields_dto.task_id].append(
+                    task_fields_dto
+                )
+                field_ids.append(task_fields_dto.field_id)
 
         tasks_actions_map = defaultdict(lambda: [])
         action_ids = []
         for task_actions_dto in task_actions_dtos:
             if task_actions_dto.action_id not in action_ids:
                 tasks_actions_map[task_actions_dto.task_id].append(
-                    actions_dict[task_actions_dto.action_id]
+                    task_actions_dto
                 )
                 action_ids.append(task_actions_dto.action_id)
 

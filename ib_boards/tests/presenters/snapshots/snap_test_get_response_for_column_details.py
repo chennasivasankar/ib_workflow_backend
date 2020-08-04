@@ -191,8 +191,8 @@ snapshots['TestGetColumnDetails.test_with_duplicate_tasks_in_same_column_and_dup
                         {
                             'action_id': 'action_id_0',
                             'button_color': None,
-                            'button_text': 'button_text_3',
-                            'name': 'name_3'
+                            'button_text': 'button_text_0',
+                            'name': 'name_0'
                         }
                     ],
                     'fields': [
@@ -200,11 +200,6 @@ snapshots['TestGetColumnDetails.test_with_duplicate_tasks_in_same_column_and_dup
                             'field_type': 'field_type_0',
                             'key': 'key_0',
                             'value': 'value_0'
-                        },
-                        {
-                            'field_type': 'field_type_3',
-                            'key': 'key_3',
-                            'value': 'value_3'
                         }
                     ],
                     'task_id': 'task_id_0'
