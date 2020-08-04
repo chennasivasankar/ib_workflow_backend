@@ -28,7 +28,7 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_boards_column_ids(
-            self, board_ids: List[str]) -> List[BoardColumnDTO]:
+            self, board_ids: List[str]) -> List[str]:
         pass
 
     @abc.abstractmethod
@@ -41,7 +41,7 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def delete_columns_which_are_not_in_configuration(
-            self, column_for_delete_dtos: List[BoardColumnsDTO]) -> None:
+            self, column_ids: List[str]) -> None:
         pass
 
     @abc.abstractmethod
