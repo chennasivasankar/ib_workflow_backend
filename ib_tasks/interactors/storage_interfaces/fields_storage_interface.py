@@ -18,7 +18,8 @@ class FieldsStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_actions_details(self,
-                            stage_ids: List[str]) -> \
+                            stage_ids: List[str],
+                            user_roles: List[str]) -> \
             List[ActionDetailsDTO]:
         pass
 
@@ -32,7 +33,8 @@ class FieldsStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_field_ids(self, task_dto: List[TaskTemplateStageDTO]) -> \
+    def get_field_ids(self, task_dto: List[TaskTemplateStageDTO],
+                      user_roles: List[str]) -> \
             List[TaskTemplateStageFieldsDTO]:
         pass
 

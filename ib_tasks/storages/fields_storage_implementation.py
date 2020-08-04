@@ -33,7 +33,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         return template_stage_ids_list
 
     def get_actions_details(self,
-                            stage_ids: List[str]) -> \
+                            stage_ids: List[str],
+                            user_roles: List[str]) -> \
             List[ActionDetailsDTO]:
         action_objs = StageAction.objects.filter(stage__stage_id__in=stage_ids)
         action_dtos = self._convert_action_objs_to_dtos(action_objs)
@@ -91,7 +92,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         valid_task_ids = Task.objects.filter(id__in=task_ids).values_list('id', flat=True)
         return list(valid_task_ids)
 
-    def get_field_ids(self, task_dtos: List[TaskTemplateStageDTO]) -> \
+    def get_field_ids(self, task_dtos: List[TaskTemplateStageDTO],
+                      user_roles: List[str]) -> \
             List[TaskTemplateStageFieldsDTO]:
         from collections import defaultdict
         task_stages_dict = defaultdict(list)

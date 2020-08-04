@@ -1,5 +1,6 @@
 from typing import List
 
+from ib_tasks.adapters.roles_service_adapter import get_roles_service_adapter
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidTaskStageIds
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
@@ -25,7 +26,10 @@ class GetTaskFieldsAndActionsInteractor:
     def get_task_fields_and_action(self, task_dtos: List[GetTaskDetailsDTO],
                                    user_id: str) -> \
             List[GetTaskStageCompleteDetailsDTO]:
-        # TODO: validate user tasks
+
+        roles_service = get_roles_service_adapter().roles_service
+        user_roles = roles_service.get_user_role_ids(user_id)
+
         task_ids = [task.task_id for task in task_dtos]
         stage_ids = [task.stage_id for task in task_dtos]
 
@@ -45,9 +49,9 @@ class GetTaskFieldsAndActionsInteractor:
 
         task_stage_dtos = self.storage.get_stage_details(stage_task_dtos)
 
-        action_dtos = self.storage.get_actions_details(unique_stage_ids)
+        action_dtos = self.storage.get_actions_details(unique_stage_ids, user_roles)
 
-        stage_fields_dtos = self.storage.get_field_ids(task_stage_dtos)
+        stage_fields_dtos = self.storage.get_field_ids(task_stage_dtos, user_roles)
         task_fields_dtos = self._map_task_and_their_fields(
             stage_fields_dtos, task_stage_dtos)
         field_dtos = self.storage.get_fields_details(task_fields_dtos)

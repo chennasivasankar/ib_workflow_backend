@@ -4,6 +4,7 @@ import pytest
 
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidTaskStageIds
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds
+
 from ib_tasks.interactors.get_task_fields_and_actions import \
     GetTaskFieldsAndActionsInteractor
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
@@ -14,10 +15,13 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
-from ib_tasks.tests.factories.interactor_dtos import GetTaskDetailsDTOFactory
+from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+    get_user_role_ids
+from ib_tasks.tests.factories.interactor_dtos import \
+    GetTaskDetailsDTOFactory
 from ib_tasks.tests.factories.storage_dtos import (
-    ActionDetailsDTOFactory, FieldDetailsDTOFactory, TaskFieldsDTOFactory,
-    TaskTemplateStagesDTOFactory,
+    ActionDetailsDTOFactory, FieldDetailsDTOFactory,
+    TaskFieldsDTOFactory, TaskTemplateStagesDTOFactory,
     FieldDetailsDTOWithTaskIdFactory)
 
 
@@ -43,7 +47,8 @@ class TestGetFieldsAndActionsInteractor:
     @pytest.fixture()
     def get_actions_dtos(self):
         ActionDetailsDTOFactory.reset_sequence()
-        actions = ActionDetailsDTOFactory.create_batch(size=2, stage_id="stage_id_1")
+        actions = ActionDetailsDTOFactory.create_batch(
+            size=2, stage_id="stage_id_1")
         actions.append(ActionDetailsDTOFactory(stage_id="stage_id_2"))
         actions.append(ActionDetailsDTOFactory(stage_id="stage_id_2"))
         return actions
@@ -196,8 +201,58 @@ class TestGetFieldsAndActionsInteractor:
         fields.append(FieldDetailsDTOWithTaskIdFactory(task_id=1))
         return fields
 
+    def test_get_user_permitted_fields_and_actions(
+            self, mocker,
+            get_task_template_stage_dtos_for_two_tasks,
+            get_actions_dtos,
+            get_fields_dtos, expected_response,
+            get_field_ids_for_two_tasks, task_fields_dtos, snapshot):
+
+        # Arrange
+        user_id = "user_id_1"
+        user_roles = ["FIN_PAYMENT_REQUESTER",
+                      "FIN_PAYMENT_POC",
+                      "FIN_PAYMENT_APPROVER",
+                      "FIN_PAYMENTS_RP",
+                      "FIN_FINANCE_RP"]
+        user_roles_mock = get_user_role_ids(mocker)
+        user_roles_mock.return_value = user_roles
+        GetTaskDetailsDTOFactory.reset_sequence()
+        task_dtos = GetTaskDetailsDTOFactory.create_batch(size=2)
+
+        storage = create_autospec(FieldsStorageInterface)
+        stage_storage = create_autospec(StageStorageInterface)
+        interactor = GetTaskFieldsAndActionsInteractor(
+            storage=storage, stage_storage=stage_storage)
+        task_ids = [1, 2]
+        task_template_stages_dtos = get_task_template_stage_dtos_for_two_tasks
+        stage_ids = ["stage_id_1", "stage_id_2"]
+        action_dtos = get_actions_dtos
+        field_dtos = get_fields_dtos
+        storage.get_valid_task_ids.return_value = task_ids
+        stage_storage.get_existing_stage_ids.return_value = stage_ids
+        storage.validate_task_related_stage_ids.return_value = task_dtos
+        storage.get_stage_details.return_value = task_template_stages_dtos
+        storage.get_field_ids.return_value = get_field_ids_for_two_tasks
+        storage.get_actions_details.return_value = action_dtos
+        storage.get_fields_details.return_value = field_dtos
+
+        # Act
+        response = interactor.get_task_fields_and_action(task_dtos, user_id)
+
+        # Assert
+        storage.get_stage_details.assert_called_once_with(task_dtos)
+        storage.get_actions_details.assert_called_once_with(stage_ids,
+                                                            user_roles)
+        storage.get_field_ids.assert_called()
+        storage.validate_task_related_stage_ids.assert_called_once_with(
+            task_dtos)
+        storage.get_fields_details.assert_called_once_with(task_fields_dtos)
+
+        snapshot.assert_match(response, "response")
+
     def test_get_actions_and_fields_when_two_tasks_are_in_same_stage(
-            self, snapshot, get_task_dtos_for_two_tasks_in_same_stage,
+            self, mocker, snapshot, get_task_dtos_for_two_tasks_in_same_stage,
             get_task_template_stage_dtos_for_two_tasks_in_same_stage,
             get_actions_dtos_for_a_stage,
             get_field_ids_for_two_tasks_in_same_stage,
@@ -205,6 +260,13 @@ class TestGetFieldsAndActionsInteractor:
             task_fields_dtos_with_for_same_stage_tasks):
         # Arrange
         user_id = "user_id_1"
+        user_roles = ["FIN_PAYMENT_REQUESTER",
+                      "FIN_PAYMENT_POC",
+                      "FIN_PAYMENT_APPROVER",
+                      "FIN_PAYMENTS_RP",
+                      "FIN_FINANCE_RP"]
+        user_roles_mock = get_user_role_ids(mocker)
+        user_roles_mock.return_value = user_roles
         task_dtos = get_task_dtos_for_two_tasks_in_same_stage
         storage = create_autospec(FieldsStorageInterface)
         stage_storage = create_autospec(StageStorageInterface)
@@ -231,7 +293,8 @@ class TestGetFieldsAndActionsInteractor:
 
         # Assert
         storage.get_stage_details.assert_called_once_with(task_dtos)
-        storage.get_actions_details.assert_called_once_with(stage_ids)
+        storage.get_actions_details.assert_called_once_with(stage_ids,
+                                                            user_roles)
         storage.get_field_ids.assert_called()
         storage.validate_task_related_stage_ids.assert_called_once_with(task_dtos)
         storage.get_fields_details.assert_called_once_with(
@@ -240,12 +303,19 @@ class TestGetFieldsAndActionsInteractor:
         snapshot.assert_match(response, "response")
 
     def test_get_actions_and_fields_given_valid_task_template_id_and_stage_id(
-            self, get_task_template_stage_dtos_for_two_tasks,
+            self, mocker, get_task_template_stage_dtos_for_two_tasks,
             get_actions_dtos,
             get_fields_dtos, expected_response,
             get_field_ids_for_two_tasks, task_fields_dtos, snapshot):
         # Arrange
         user_id = "user_id_1"
+        user_roles = ["FIN_PAYMENT_REQUESTER",
+                      "FIN_PAYMENT_POC",
+                      "FIN_PAYMENT_APPROVER",
+                      "FIN_PAYMENTS_RP",
+                      "FIN_FINANCE_RP"]
+        user_roles_mock = get_user_role_ids(mocker)
+        user_roles_mock.return_value = user_roles
         GetTaskDetailsDTOFactory.reset_sequence()
         task_dtos = GetTaskDetailsDTOFactory.create_batch(size=2)
 
@@ -272,7 +342,8 @@ class TestGetFieldsAndActionsInteractor:
 
         # Assert
         storage.get_stage_details.assert_called_once_with(task_dtos)
-        storage.get_actions_details.assert_called_once_with(stage_ids)
+        storage.get_actions_details.assert_called_once_with(stage_ids,
+                                                            user_roles)
         storage.get_field_ids.assert_called()
         storage.validate_task_related_stage_ids.assert_called_once_with(
             task_dtos)
@@ -281,11 +352,18 @@ class TestGetFieldsAndActionsInteractor:
         snapshot.assert_match(response, "response")
 
     def test_get_actions_and_fields_when_task_is_in_two_stages(
-            self, get_task_dtos, get_task_template_stage_dtos,
+            self, mocker, get_task_dtos, get_task_template_stage_dtos,
             get_actions_dtos, get_fields_dtos_for_a_tasks_with_two_stage,
             get_field_ids, snapshot):
         # Arrange
         user_id = "user_id_1"
+        user_roles = ["FIN_PAYMENT_REQUESTER",
+                      "FIN_PAYMENT_POC",
+                      "FIN_PAYMENT_APPROVER",
+                      "FIN_PAYMENTS_RP",
+                      "FIN_FINANCE_RP"]
+        user_roles_mock = get_user_role_ids(mocker)
+        user_roles_mock.return_value = user_roles
         task_dtos = get_task_dtos
         TaskFieldsDTOFactory.reset_sequence()
         task_fields_dtos = [TaskFieldsDTOFactory()]
@@ -312,7 +390,8 @@ class TestGetFieldsAndActionsInteractor:
 
         # Assert
         storage.get_stage_details.assert_called_once_with(task_dtos)
-        storage.get_actions_details.assert_called_once_with(stage_ids)
+        storage.get_actions_details.assert_called_once_with(stage_ids,
+                                                            user_roles)
         storage.get_field_ids.assert_called()
         storage.validate_task_related_stage_ids.assert_called_once_with(
             task_dtos)
@@ -321,9 +400,17 @@ class TestGetFieldsAndActionsInteractor:
         snapshot.assert_match(response, "response")
 
     def test_with_invalid_task_ids_raises_exception(self,
+                                                    mocker,
                                                     get_task_dtos):
         # Arrange
         user_id = "user_id_1"
+        user_roles = ["FIN_PAYMENT_REQUESTER",
+                      "FIN_PAYMENT_POC",
+                      "FIN_PAYMENT_APPROVER",
+                      "FIN_PAYMENTS_RP",
+                      "FIN_FINANCE_RP"]
+        user_roles_mock = get_user_role_ids(mocker)
+        user_roles_mock.return_value = user_roles
         storage = create_autospec(FieldsStorageInterface)
         stage_storage = create_autospec(StageStorageInterface)
         interactor = GetTaskFieldsAndActionsInteractor(
@@ -340,9 +427,17 @@ class TestGetFieldsAndActionsInteractor:
         storage.get_valid_task_ids.assert_called_once_with(task_ids)
 
     def test_with_invalid_stage_ids_raises_exception(self,
+                                                     mocker,
                                                      get_task_dtos):
         # Arrange
         user_id = "user_id_1"
+        user_roles = ["FIN_PAYMENT_REQUESTER",
+                      "FIN_PAYMENT_POC",
+                      "FIN_PAYMENT_APPROVER",
+                      "FIN_PAYMENTS_RP",
+                      "FIN_FINANCE_RP"]
+        user_roles_mock = get_user_role_ids(mocker)
+        user_roles_mock.return_value = user_roles
         storage = create_autospec(FieldsStorageInterface)
         stage_storage = create_autospec(StageStorageInterface)
         interactor = GetTaskFieldsAndActionsInteractor(
@@ -364,9 +459,17 @@ class TestGetFieldsAndActionsInteractor:
             stage_ids)
 
     def test_with_invalid_stage_related_task_ids_raises_exception(self,
+                                                                  mocker,
                                                                   get_task_dtos):
         # Arrange
         user_id = "user_id_1"
+        user_roles = ["FIN_PAYMENT_REQUESTER",
+                      "FIN_PAYMENT_POC",
+                      "FIN_PAYMENT_APPROVER",
+                      "FIN_PAYMENTS_RP",
+                      "FIN_FINANCE_RP"]
+        user_roles_mock = get_user_role_ids(mocker)
+        user_roles_mock.return_value = user_roles
         storage = create_autospec(FieldsStorageInterface)
         stage_storage = create_autospec(StageStorageInterface)
         interactor = GetTaskFieldsAndActionsInteractor(
@@ -389,11 +492,18 @@ class TestGetFieldsAndActionsInteractor:
             get_task_dtos)
 
     def test_get_actions_and_fields_when_task_has_no_actions_or_fields_returns_empty_list(
-            self, get_task_dtos, get_task_template_stage_dtos,
+            self, mocker, get_task_dtos, get_task_template_stage_dtos,
             get_actions_dtos, get_fields_dtos, expected_response,
             task_with_no_fields, snapshot):
         # Arrange
         user_id = "user_id_1"
+        user_roles = ["FIN_PAYMENT_REQUESTER",
+                      "FIN_PAYMENT_POC",
+                      "FIN_PAYMENT_APPROVER",
+                      "FIN_PAYMENTS_RP",
+                      "FIN_FINANCE_RP"]
+        user_roles_mock = get_user_role_ids(mocker)
+        user_roles_mock.return_value = user_roles
         task_dtos = [get_task_dtos[0]]
         storage = create_autospec(FieldsStorageInterface)
         stage_storage = create_autospec(StageStorageInterface)
@@ -417,7 +527,8 @@ class TestGetFieldsAndActionsInteractor:
 
         # Assert
         storage.get_stage_details.assert_called_once_with(task_dtos)
-        storage.get_actions_details.assert_called_once_with(stage_ids)
+        storage.get_actions_details.assert_called_once_with(stage_ids,
+                                                            user_roles)
         storage.get_field_ids.assert_called()
         storage.validate_task_related_stage_ids.assert_called_once_with(
             task_dtos)
