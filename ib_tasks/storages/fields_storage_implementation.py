@@ -37,7 +37,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
             List[ActionDetailsDTO]:
         action_objs = (StageAction.objects
                        .filter(stage__stage_id__in=stage_ids)
-                       .filter(actionpermittedroles__role_id__in=user_roles
+                       .filter(Q(actionpermittedroles__role_id="ALL_ROLES") |
+                               Q(actionpermittedroles__role_id__in=user_roles)
                                ))
         unique_action_objs = list(set(action_objs))
         action_dtos = self._convert_action_objs_to_dtos(unique_action_objs)
@@ -66,7 +67,11 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         for counter, item in enumerate(task_fields_dtos):
             current_queue = Q(task_gof__task_id=item.task_id,
                               field_id__in=item.field_ids,
-                              field__fieldrole__role__in=user_roles)
+                              field__fieldrole__role="ALL_ROLES") | Q(
+                        task_gof__task_id=item.task_id,
+                        field_id__in=item.field_ids,
+                        field__fieldrole__role__in=user_roles
+                    )
             if counter == 0:
                 q = current_queue
             else:
