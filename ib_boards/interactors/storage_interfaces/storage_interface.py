@@ -103,5 +103,5 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_columns_stage_ids(self, column_ids) -> List[ColumnStageIdsDTO]:
+    def get_columns_stage_ids(self, column_ids: List[str]) -> List[ColumnStageIdsDTO]:
         pass

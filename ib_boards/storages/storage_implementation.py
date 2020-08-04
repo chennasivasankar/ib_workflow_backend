@@ -300,7 +300,8 @@ class StorageImplementation(StorageInterface):
 
     def get_columns_details(self, column_ids: List[str]) -> \
             List[ColumnDetailsDTO]:
-        column_objs = Column.objects.filter(column_id__in=column_ids)
+        column_objs = (Column.objects.filter(column_id__in=column_ids)
+                       .order_by('display_order'))
         columns_dtos = self._convert_column_objs_to_dtos(column_objs)
         return columns_dtos
 
@@ -317,9 +318,9 @@ class StorageImplementation(StorageInterface):
 
     def get_column_ids_for_board(self, board_id: str, user_roles: List[str]) \
             -> List[str]:
+        column_ids = []
         column_objs = Column.objects.filter(board__board_id=board_id)
         roles = ColumnPermission.objects.filter(column__in=column_objs)
-        column_ids = []
         for role in roles:
             if role.user_role_id == "ALL_ROLES":
                 column_ids.append(role.column.column_id)
@@ -384,10 +385,10 @@ class StorageImplementation(StorageInterface):
                         )
         return list_of_column_dtos, column_stages
 
-    def get_columns_stage_ids(self, column_ids) -> List[ColumnStageIdsDTO]:
+    def get_columns_stage_ids(self, column_ids: List[str]) -> List[ColumnStageIdsDTO]:
         column_stages = Column.objects.filter(
             column_id__in=column_ids
-        ).values_list('column_id', 'task_selection_config')
+        ).values_list('column_id', 'task_selection_config').order_by('display_order')
 
         return [
             ColumnStageIdsDTO(
