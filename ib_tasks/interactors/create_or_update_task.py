@@ -160,9 +160,11 @@ class CreateOrUpdateTaskInteractor:
         self._validate_field_values(field_values_dtos)
 
         task_needs_to_be_updated = task_dto.task_id is not None
+        is_created = False
         if task_needs_to_be_updated:
             self._update_task(task_dto)
         else:
+            is_created = True
             created_task_id = self._create_task(task_dto)
             task_dto.task_id = created_task_id
         act_on_task_interactor = UserActionOnTaskInteractor(
@@ -172,20 +174,20 @@ class CreateOrUpdateTaskInteractor:
             storage=self.storage, gof_storage=self.create_task_storage,
             field_storage=self.field_storage, stage_storage=self.stage_storage
         )
+        if is_created:
+            self.create_task_storage.set_status_variables_for_template_and_task(
+                task_dto.task_template_id, task_dto.task_id
+            )
+            # TODO: fix the return value
 
-        self.create_task_storage.set_status_variables_for_template_and_task(
-            task_dto.task_template_id, task_dto.task_id
-        )
-        # TODO: fix the return value
-
-        from ib_tasks.models import TaskStage
-        from ib_tasks.models import TaskTemplateInitialStage
-        TaskStage.objects.get_or_create(
-            task_id=task_dto.task_id,
-            stage=TaskTemplateInitialStage.objects.get(
-                task_template_id=task_dto.task_template_id
-            ).stage
-        )
+            from ib_tasks.models import TaskStage
+            from ib_tasks.models import TaskTemplateInitialStage
+            TaskStage.objects.get_or_create(
+                task_id=task_dto.task_id,
+                stage=TaskTemplateInitialStage.objects.get(
+                    task_template_id=task_dto.task_template_id
+                ).stage
+            )
         act_on_task_interactor.user_action_on_task()
 
     def _update_task(self, task_dto: TaskDTO):

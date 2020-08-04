@@ -1,7 +1,7 @@
 from collections import defaultdict
 from typing import List, Optional, Dict, Tuple
 
-from django.db.models import Q
+from django.db.models import Q, Count
 
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
@@ -528,10 +528,21 @@ class TasksStorageImplementation(TaskStorageInterface):
     def get_task_ids_for_the_stage_ids(
             self, stage_ids: List[str],
             offset: int, limit: int) -> Tuple[List[TaskStageIdsDTO], int]:
+        total_tasks = TaskStage.objects.aggregate(
+            tasks_count=Count(
+                'task',
+                filter=Q(stage__stage_id__in=stage_ids),
+                distinct=True
+            )
+        )['tasks_count']
         task_stage_ids = TaskStage.objects.filter(
             stage__stage_id__in=stage_ids
         ).values('task_id', 'stage__stage_id')
-        total_count = len(task_stage_ids)
+        # dup_task_ids = []
+        # for task_stage_id in task_stage_ids:
+        #     if task_stage_id['task_id'] not in dup_task_ids:
+
+        # TODO:
         task_stage_dtos = [
             TaskStageIdsDTO(
                 task_id=task_stage_id['task_id'],
@@ -539,7 +550,7 @@ class TasksStorageImplementation(TaskStorageInterface):
             )
             for task_stage_id in task_stage_ids[offset: offset + limit]
         ]
-        return task_stage_dtos, total_count
+        return task_stage_dtos, total_tasks
 
     @staticmethod
     def _get_task_tempalate_and_stage_ids(task_dtos, task_objs):
