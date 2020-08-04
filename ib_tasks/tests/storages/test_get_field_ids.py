@@ -31,7 +31,8 @@ class TestGetFieldIds:
     @pytest.fixture()
     def get_task_template_stage_dtos_with_one_task_with_two_stages(self):
         TemplateStagesDTOFactory.reset_sequence()
-        templates = TemplateStagesDTOFactory.create_batch(size=2, task_id=1, task_template_id="task_template_id_0")
+        templates = TemplateStagesDTOFactory.create_batch(
+            size=2, task_id=1, task_template_id="task_template_id_0")
         templates.append(TemplateStagesDTOFactory(task_id=2))
         templates.append(TemplateStagesDTOFactory(task_id=2))
         return templates
@@ -50,6 +51,13 @@ class TestGetFieldIds:
         TaskTemplateFactory.reset_sequence()
         TaskTemplateFactory.create_batch(size=3)
         TaskStageModelFactory.create_batch(size=4)
+
+    @pytest.fixture()
+    def get_task_template_stage_dtos_with_two_tasks_on_stage(self):
+        TemplateStagesDTOFactory.reset_sequence()
+        templates = TemplateStagesDTOFactory.create_batch(
+            size=2, stage_id="stage_id_0", task_template_id="task_template_id_0")
+        return templates
 
     def test_get_field_ids(self, get_task_template_stage_dtos,
                            populate_data,
@@ -73,6 +81,20 @@ class TestGetFieldIds:
         # Act
         response = storage.get_field_ids(
             get_task_template_stage_dtos_with_one_task_with_two_stages)
+
+        # Assert
+        snapshot.assert_match(response, "response")
+
+    def test_get_field_ids_when_two_tasks_are_in_one_stage(
+            self, get_task_template_stage_dtos_with_two_tasks_on_stage,
+            populate_data,
+            snapshot):
+        # Arrange
+        storage = FieldsStorageImplementation()
+
+        # Act
+        response = storage.get_field_ids(
+            get_task_template_stage_dtos_with_two_tasks_on_stage)
 
         # Assert
         snapshot.assert_match(response, "response")
