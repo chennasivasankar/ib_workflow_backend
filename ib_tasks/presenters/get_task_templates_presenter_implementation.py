@@ -1,3 +1,4 @@
+import collections
 from typing import List, Dict
 from ib_tasks.interactors.presenter_interfaces. \
     get_task_templates_presenter_interface import \
@@ -51,13 +52,13 @@ class GetTaskTemplatesPresenterImplementation(
         complete_gof_details_dicts = self._merge_gofs_with_fields(
             gofs_of_templates_dict, fields_of_gofs_dict
         )
-
         for task_template in task_templates_dicts:
             task_template_id = task_template['template_id']
             task_template['actions'] = actions_of_templates_dict[
                 task_template_id]
             task_template['group_of_fields'] = complete_gof_details_dicts[
                 task_template_id]
+
         import json
         from django.http import response
         data = json.dumps({"task_templates": task_templates_dicts})
@@ -69,7 +70,6 @@ class GetTaskTemplatesPresenterImplementation(
             stage_id_with_template_id_dtos: List[StageIdWithTemplateIdDTO]
     ) -> Dict:
 
-        import collections
         stage_ids_group_by_template_id_dict = collections.defaultdict(list)
         for stage_id_with_template_id_dto in stage_id_with_template_id_dtos:
             stage_ids_group_by_template_id_dict[
@@ -77,20 +77,20 @@ class GetTaskTemplatesPresenterImplementation(
                 stage_id_with_template_id_dto.stage_id
             )
 
-        action_with_stage_id_dto_dict = \
+        actions_with_stage_id_dto_dict = \
             self._convert_action_dtos_into_dict(
                 action_with_stage_id_dtos=action_with_stage_id_dtos,
             )
 
-        actions_of_templates_dict = collections.defaultdict(list)
-        for template_id, stage_ids in stage_ids_group_by_template_id_dict \
-                .items():
+        actions_of_templates_dict = {}
+        for template_id, stage_ids in stage_ids_group_by_template_id_dict.items():
             for stage_id in stage_ids:
-                action_dict = self._convert_action_dto_into_dict(
-                    action_with_stage_id_dto=action_with_stage_id_dto_dict[
-                        stage_id]
-                )
-                actions_of_templates_dict[template_id].append(action_dict)
+                action_dicts_list = \
+                    self._convert_action_dtos_into_action_details_dict(
+                        action_with_stage_id_dtos=
+                        actions_with_stage_id_dto_dict[stage_id]
+                    )
+                actions_of_templates_dict[template_id] = action_dicts_list
         return actions_of_templates_dict
 
     def _get_gofs_of_templates_dict(
@@ -102,8 +102,6 @@ class GetTaskTemplatesPresenterImplementation(
                 gofs_of_task_templates_dtos=gofs_of_task_templates_dtos,
                 gof_details_dto_dict=gof_details_dto_dict
             )
-
-        import collections
         gofs_details_group_by_template_id_dict = collections.defaultdict(list)
         for gof_details_dict in gof_details_dicts:
             gofs_details_group_by_template_id_dict[
@@ -120,12 +118,11 @@ class GetTaskTemplatesPresenterImplementation(
         return gofs_details_of_templates_dict
 
     def _get_fields_of_gofs_dict(
-            self, field_with_permissions_dtos: List[FieldWithWritePermissionDTO]):
+            self,
+            field_with_permissions_dtos: List[FieldWithWritePermissionDTO]):
         field_dicts = self._get_fields_details_dicts(
             field_with_permissions_dtos=field_with_permissions_dtos
         )
-
-        import collections
         fields_group_by_gof_id_dict = collections.defaultdict(list)
         for field_dict in field_dicts:
             fields_group_by_gof_id_dict[field_dict['gof_id']].append(
@@ -138,7 +135,8 @@ class GetTaskTemplatesPresenterImplementation(
         return fields_of_gofs_dict
 
     def _get_fields_details_dicts(
-            self, field_with_permissions_dtos: List[FieldWithWritePermissionDTO]
+            self,
+            field_with_permissions_dtos: List[FieldWithWritePermissionDTO]
     ) -> List[Dict]:
         field_dicts = []
         for field_with_permissions_dto in field_with_permissions_dtos:
@@ -185,14 +183,18 @@ class GetTaskTemplatesPresenterImplementation(
         return gofs_to_task_templates_dicts_list
 
     @staticmethod
-    def _convert_action_dto_into_dict(
-            action_with_stage_id_dto: ActionWithStageIdDTO) -> Dict:
-        action_dict = {
-            "action_id": action_with_stage_id_dto.action_id,
-            "button_text": action_with_stage_id_dto.button_text,
-            "button_color": action_with_stage_id_dto.button_color
-        }
-        return action_dict
+    def _convert_action_dtos_into_action_details_dict(
+            action_with_stage_id_dtos: List[ActionWithStageIdDTO]
+    ) -> List[Dict]:
+        action_dicts_list = []
+        for action_with_stage_id_dto in action_with_stage_id_dtos:
+            action_dict = {
+                "action_id": action_with_stage_id_dto.action_id,
+                "button_text": action_with_stage_id_dto.button_text,
+                "button_color": action_with_stage_id_dto.button_color
+            }
+            action_dicts_list.append(action_dict)
+        return action_dicts_list
 
     @staticmethod
     def _get_field_details_as_dict(
@@ -241,8 +243,9 @@ class GetTaskTemplatesPresenterImplementation(
     @staticmethod
     def _convert_action_dtos_into_dict(
             action_with_stage_id_dtos: List[ActionWithStageIdDTO]) -> Dict:
-        action_with_stage_id_dict = {
-            action_with_stage_id_dto.stage_id: action_with_stage_id_dto
-            for action_with_stage_id_dto in action_with_stage_id_dtos
-        }
-        return action_with_stage_id_dict
+        actions_with_stage_id_dict = collections.defaultdict(list)
+        for action_with_stage_id_dto in action_with_stage_id_dtos:
+            actions_with_stage_id_dict[
+                action_with_stage_id_dto.stage_id].append(
+                action_with_stage_id_dto)
+        return actions_with_stage_id_dict
