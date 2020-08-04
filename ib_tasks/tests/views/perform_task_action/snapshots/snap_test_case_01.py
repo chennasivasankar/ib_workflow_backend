@@ -56,5 +56,5 @@ snapshots['TestCase01PerformTaskActionAPITestCase.test_case body'] = {
     },
     'other_board_details': [
     ],
-    'task_id': '1'
+    'task_id': 1
 }

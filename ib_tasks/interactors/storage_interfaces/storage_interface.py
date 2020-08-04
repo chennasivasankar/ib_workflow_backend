@@ -110,3 +110,7 @@ class StorageInterface(abc.ABC):
     @abc.abstractmethod
     def update_task_stages(self, task_id: int, stage_ids: List[str]):
         pass
+
+    @abc.abstractmethod
+    def get_task_present_stage_actions(self, task_id: int) -> List[int]:
+        pass

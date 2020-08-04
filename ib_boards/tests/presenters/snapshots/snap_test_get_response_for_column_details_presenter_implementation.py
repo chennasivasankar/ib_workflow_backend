@@ -99,7 +99,7 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_duplic
     'total_columns_count': 4
 }
 
-snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_proper_data column_details_with_proper_data'] = {
+snapshots['TestGetColumnDetails.test_with_duplicate_tasks_in_same_column_and_duplicate_fields column_details_with_duplicates_fields'] = {
     'columns': [
         {
             'column_id': 'COLUMN_ID_1',
@@ -180,7 +180,7 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_proper
     'total_columns_count': 4
 }
 
-snapshots['TestGetColumnDetails.test_with_duplicate_tasks_in_same_column_and_duplicate_fields column_details_with_duplicates_fields'] = {
+snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_proper_data column_details_with_proper_data'] = {
     'columns': [
         {
             'column_id': 'COLUMN_ID_1',
