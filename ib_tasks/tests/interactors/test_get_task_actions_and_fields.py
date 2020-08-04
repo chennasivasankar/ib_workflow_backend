@@ -138,12 +138,14 @@ class TestGetFieldsAndActionsInteractor:
     @pytest.fixture()
     def get_task_dtos_for_two_tasks_in_same_stage(self):
         GetTaskDetailsDTOFactory.reset_sequence()
-        return GetTaskDetailsDTOFactory.create_batch(size=2, stage_id="stage_id_1")
+        return GetTaskDetailsDTOFactory.create_batch(size=2,
+                                                     stage_id="stage_id_1")
 
     @pytest.fixture()
     def get_task_template_stage_dtos_for_two_tasks_in_same_stage(self):
         TaskTemplateStagesDTOFactory.reset_sequence()
-        return TaskTemplateStagesDTOFactory.create_batch(size=2, stage_id="stage_id_1")
+        return TaskTemplateStagesDTOFactory.create_batch(size=2,
+                                                         stage_id="stage_id_1", task_template_id="task_template_id_1")
 
     @pytest.fixture()
     def get_actions_dtos_for_a_stage(self):
@@ -160,26 +162,33 @@ class TestGetFieldsAndActionsInteractor:
             field_ids=["FIELD-ID-1", "FIELD-ID-2"]
         ),
             TaskTemplateStageFieldsDTO(
-                task_template_id="task_template_id_2",
+                task_template_id="task_template_id_1",
                 task_id=2,
                 stage_id="stage_id_1",
-                field_ids=["FIELD-ID-3", "FIELD-ID-4"]
+                field_ids=["FIELD-ID-1", "FIELD-ID-2"]
             )
         ]
+
+    @pytest.fixture()
+    def task_fields_dtos_with_for_same_stage_tasks(self):
+        TaskFieldsDTOFactory.reset_sequence()
+        tasks = TaskFieldsDTOFactory.create_batch(size=2)
+        return tasks
 
     @pytest.fixture()
     def get_fields_dtos_for_two_tasks_in_same_stage(self):
         FieldDetailsDTOWithTaskIdFactory.reset_sequence()
         fields = FieldDetailsDTOWithTaskIdFactory.create_batch(size=2, task_id=1)
-        fields.append(FieldDetailsDTOWithTaskIdFactory(task_id=2))
-        fields.append(FieldDetailsDTOWithTaskIdFactory(task_id=2))
+        FieldDetailsDTOWithTaskIdFactory.reset_sequence()
+        fields.append(FieldDetailsDTOWithTaskIdFactory(task_id=1))
+        fields.append(FieldDetailsDTOWithTaskIdFactory(task_id=1))
         return fields
 
     def test_get_actions_and_fields_when_two_tasks_are_in_same_stage(
             self, snapshot, get_task_dtos_for_two_tasks_in_same_stage,
             get_task_template_stage_dtos_for_two_tasks_in_same_stage,
             get_actions_dtos_for_a_stage, get_field_ids_for_two_tasks_in_same_stage,
-            get_fields_dtos_for_two_tasks_in_same_stage, task_fields_dtos):
+            get_fields_dtos_for_two_tasks_in_same_stage, task_fields_dtos_with_for_same_stage_tasks):
 
         # Arrange
         user_id = "user_id_1"
@@ -210,7 +219,7 @@ class TestGetFieldsAndActionsInteractor:
         storage.get_actions_details.assert_called_once_with(stage_ids)
         storage.get_field_ids.assert_called()
         storage.validate_task_related_stage_ids.assert_called_once_with(task_dtos)
-        storage.get_fields_details.assert_called_once_with(task_fields_dtos)
+        storage.get_fields_details.assert_called_once_with(task_fields_dtos_with_for_same_stage_tasks)
 
         snapshot.assert_match(response, "response")
 

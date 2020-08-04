@@ -6,7 +6,7 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     StageTaskFieldsDTO, FieldDetailsDTO, TaskTemplateStageFieldsDTO, \
-    TaskAndFieldsDTO, FieldDetailsDTOWithTaskId
+    FieldDetailsDTOWithTaskId
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
@@ -58,11 +58,13 @@ class GetTaskFieldsAndActionsInteractor:
 
     def _map_task_and_their_fields(self, stage_fields_dtos, task_stage_dtos):
         list_of_stage_fields = []
+        task_ids = []
         for task in task_stage_dtos:
             for stage in stage_fields_dtos:
                 task_template_condition = stage.task_template_id == task.task_template_id
                 stage_condition = stage.stage_id == task.stage_id
-                if stage_condition and task_template_condition:
+                if stage_condition and task_template_condition and task.task_id not in task_ids:
+                    task_ids.append(task.task_id)
                     list_of_stage_fields.append(
                         self._get_task_fields(stage, task))
         return list_of_stage_fields
