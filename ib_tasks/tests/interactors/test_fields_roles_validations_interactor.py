@@ -217,11 +217,14 @@ class TestFieldsRolesValidationsInteractor:
 
         # Act
         with pytest.raises(InvalidFieldRolesException) as err:
-            interactor.fields_roles_validations(field_roles_dtos=field_roles_dtos)
+            interactor.fields_roles_validations(
+                field_roles_dtos=field_roles_dtos
+            )
 
         # Assert
         exception_object = err.value
-        assert exception_object.roles == fields_invalid_roles_for_read_permission
+        assert exception_object.roles == \
+               fields_invalid_roles_for_read_permission
         get_valid_role_ids_mock_method.assert_called_once()
 
     def test_given_invalid_roles_for_write_permissions_raise_exception(
@@ -233,7 +236,9 @@ class TestFieldsRolesValidationsInteractor:
             import InvalidFieldRolesException
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
             import get_valid_role_ids_in_given_role_ids
-        get_valid_role_ids_mock_method = get_valid_role_ids_in_given_role_ids(mocker)
+        get_valid_role_ids_mock_method = get_valid_role_ids_in_given_role_ids(
+            mocker
+        )
 
         field_roles_dtos = [
             FieldRolesDTOFactory(
@@ -241,7 +246,8 @@ class TestFieldsRolesValidationsInteractor:
                     "FIN_PAYMENT_POC", "FIN_PAYMENT_REQUESTER"
                 ],
                 write_permission_roles=[
-                    "FIN_PAYMENT_POC", "User", "Vendor", "FIN_PAYMENTS_LEVEL1_VERIFIER"
+                    "FIN_PAYMENT_POC", "User",
+                    "Vendor", "FIN_PAYMENTS_LEVEL1_VERIFIER"
                 ]
             ),
             FieldRolesDTOFactory(
@@ -257,7 +263,10 @@ class TestFieldsRolesValidationsInteractor:
         fields_invalid_roles_for_write_permission = [
             {
                 "field_id": "field1",
-                "invalid_roles": ["User", "Vendor", "FIN_PAYMENTS_LEVEL1_VERIFIER"],
+                "invalid_roles": [
+                    "User", "Vendor",
+                    "FIN_PAYMENTS_LEVEL1_VERIFIER"
+                ],
                 "permissions": "write_permissions",
             },
             {
@@ -270,9 +279,12 @@ class TestFieldsRolesValidationsInteractor:
 
         # Act
         with pytest.raises(InvalidFieldRolesException) as err:
-            interactor.fields_roles_validations(field_roles_dtos=field_roles_dtos)
+            interactor.fields_roles_validations(
+                field_roles_dtos=field_roles_dtos
+            )
 
         # Assert
         exception_object = err.value
-        assert exception_object.roles == fields_invalid_roles_for_write_permission
+        assert exception_object.roles == \
+               fields_invalid_roles_for_write_permission
         get_valid_role_ids_mock_method.assert_called_once()

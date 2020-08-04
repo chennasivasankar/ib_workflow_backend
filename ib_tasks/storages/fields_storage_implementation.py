@@ -2,20 +2,47 @@ from typing import List, Optional
 
 from django.db.models import Q
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDetailsDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldDetailsDTO, StageTaskFieldsDTO, \
-    TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO, StageTaskFieldsDTO, \
+    TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId, FieldIdWithGoFIdDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskTemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import GetTaskStageCompleteDetailsDTO, TaskTemplateStageDTO, \
     StageDetailsDTO
+from ib_tasks.interactors.storage_interfaces.actions_dtos import \
+    ActionDetailsDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import \
+    FieldDetailsDTO, StageTaskFieldsDTO, \
+    TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId
+from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
+    FieldsStorageInterface
+from ib_tasks.interactors.storage_interfaces.stage_dtos import (
+    TaskTemplateStageDTO, StageDetailsDTO)
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
-from ib_tasks.models import TaskStage, StageAction, Stage
-from ib_tasks.models.task import Task
-from ib_tasks.models.task_gof_field import TaskGoFField
+from ib_tasks.models import Field
+from ib_tasks.models import TaskStage, StageAction, Stage, Task, TaskGoFField
 
 
 class FieldsStorageImplementation(FieldsStorageInterface):
+    def get_field_ids_related_to_given_gof_ids(self, gof_ids: List[str]) -> \
+            List[FieldIdWithGoFIdDTO]:
+        field_objects = Field.objects.filter(gof_id__in=gof_ids)
+        field_id_with_gof_id_dtos = \
+            self._prepare_field_id_with_gof_id_dtos(field_objects)
+        return field_id_with_gof_id_dtos
+
+    @staticmethod
+    def _prepare_field_id_with_gof_id_dtos(
+            field_objects: List[Field]
+    ) -> List[FieldIdWithGoFIdDTO]:
+        field_id_with_gof_id_dtos = [
+            FieldIdWithGoFIdDTO(
+                field_id=field_obj.field_id,
+                gof_id=field_obj.gof_id
+            )
+            for field_obj in field_objects
+        ]
+        return field_id_with_gof_id_dtos
+
     def get_stage_details(self, task_dtos: List[GetTaskDetailsDTO]) -> \
             List[TaskTemplateStageDTO]:
         task_ids = [task.task_id for task in task_dtos]
@@ -33,11 +60,16 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         return template_stage_ids_list
 
     def get_actions_details(self,
-                            stage_ids: List[str]) -> \
+                            stage_ids: List[str],
+                            user_roles: List[str]) -> \
             List[ActionDetailsDTO]:
-        action_objs = StageAction.objects.filter(stage__stage_id__in=stage_ids)
-        print("StageAction", StageAction.objects.all().values())
-        action_dtos = self._convert_action_objs_to_dtos(action_objs)
+        action_objs = (StageAction.objects
+                       .filter(stage__stage_id__in=stage_ids)
+                       .filter(Q(actionpermittedroles__role_id="ALL_ROLES") |
+                               Q(actionpermittedroles__role_id__in=user_roles)
+                               ))
+        unique_action_objs = list(set(action_objs))
+        action_dtos = self._convert_action_objs_to_dtos(unique_action_objs)
         return action_dtos
 
     @staticmethod
@@ -55,20 +87,28 @@ class FieldsStorageImplementation(FieldsStorageInterface):
             )
         return action_dtos
 
-    def get_fields_details(self, task_fields_dtos: List[StageTaskFieldsDTO]) -> \
+    def get_fields_details(self,
+                           task_fields_dtos: List[StageTaskFieldsDTO],
+                           user_roles: List[str]) -> \
             List[FieldDetailsDTOWithTaskId]:
         q = None
         for counter, item in enumerate(task_fields_dtos):
-            current_queue = Q(task_gof__task_id=item.task_id, field_id__in=item.field_ids)
+            current_queue = Q(task_gof__task_id=item.task_id,
+                              field_id__in=item.field_ids,
+                              field__fieldrole__role="ALL_ROLES") | Q(
+                        task_gof__task_id=item.task_id,
+                        field_id__in=item.field_ids,
+                        field__fieldrole__role__in=user_roles
+                    )
             if counter == 0:
                 q = current_queue
             else:
                 q = q | current_queue
         if q is None:
             return []
-        field_objs = TaskGoFField.objects.filter(q).select_related(
+        field_objs = list(set(TaskGoFField.objects.filter(q).select_related(
             'field', 'task_gof'
-        )
+        )))
 
         task_fields_dtos = self._convert_field_objs_to_dtos(field_objs)
         return task_fields_dtos
@@ -89,7 +129,9 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         return task_fields_dtos
 
     def get_valid_task_ids(self, task_ids: List[str]) -> Optional[List[str]]:
-        valid_task_ids = Task.objects.filter(id__in=task_ids).values_list('id', flat=True)
+        valid_task_ids = (
+            Task.objects.filter(id__in=task_ids)
+                .values_list('id', flat=True))
         return list(valid_task_ids)
 
     def get_field_ids(self, task_dtos: List[TaskTemplateStageDTO]) -> \
@@ -131,11 +173,12 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         return task_fields_dtos
 
     def validate_task_related_stage_ids(self,
-                                        task_dtos: List[GetTaskDetailsDTO]) -> \
-            List[GetTaskDetailsDTO]:
+                                        task_dtos: List[GetTaskDetailsDTO]
+                                        ) -> List[GetTaskDetailsDTO]:
         q = None
         for counter, item in enumerate(task_dtos):
-            current_queue = Q(stage__stage_id=item.stage_id, task_id=item.task_id)
+            current_queue = Q(stage__stage_id=item.stage_id,
+                              task_id=item.task_id)
             if counter == 0:
                 q = current_queue
             else:

@@ -1199,9 +1199,9 @@ class TestCreateOrUpdateTask:
         task_storage_mock.get_field_details_for_given_field_ids.return_value = field_details_dtos
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.update_task_gofs.return_value = task_gof_details_dtos
-        create_task_storage_mock.get_gof_ids_related_to_a_task.return_value = \
+        create_task_storage_mock.get_gof_ids_with_same_gof_order_related_to_a_task.return_value = \
             gof_ids
-        create_task_storage_mock.get_field_ids_related_to_given_task.return_value = \
+        create_task_storage_mock.get_field_ids_with_task_gof_id_related_to_given_task.return_value = \
             field_ids
         presenter_mock.get_response_for_create_or_update_task.return_value = mock_object
         user_action_on_task_mock = mock_user_action_on_task_method(mocker,

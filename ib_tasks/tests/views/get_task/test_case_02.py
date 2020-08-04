@@ -40,8 +40,6 @@ class TestCase02GetTaskAPITestCase(TestUtils):
         TaskStageModelFactory.reset_sequence()
         StageActionFactory.reset_sequence()
 
-
-
     @pytest.fixture
     def setup(self, reset_factories):
         task_obj = TaskFactory()

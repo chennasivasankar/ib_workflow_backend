@@ -11,8 +11,15 @@ class TestColumnDetails:
 
     @pytest.fixture()
     def column_details(self):
+        ColumnDetailsDTOFactory.reset_sequence(1)
+        columns = [ColumnDetailsDTOFactory()]
+        ColumnDetailsDTOFactory.reset_sequence(3)
+        columns.append(ColumnDetailsDTOFactory())
+        ColumnDetailsDTOFactory.reset_sequence(2)
+        columns.append(ColumnDetailsDTOFactory())
         ColumnDetailsDTOFactory.reset_sequence()
-        return ColumnDetailsDTOFactory.create_batch(size=4)
+        columns.append(ColumnDetailsDTOFactory())
+        return columns
 
     @pytest.fixture()
     def create_columns(self):
@@ -21,11 +28,14 @@ class TestColumnDetails:
         board = BoardFactory()
         ColumnFactory.reset_sequence()
         ColumnPermissionFactory.reset_sequence()
-        columns = ColumnFactory.create_batch(size=4, board=board)
-        ColumnPermissionFactory.create_batch(size=2, column=columns[0])
-        ColumnPermissionFactory.create_batch(size=2, column=columns[1])
-        ColumnPermissionFactory.create_batch(size=2, column=columns[2])
-        ColumnPermissionFactory.create_batch(size=2, column=columns[3])
+        column_1 = ColumnFactory(board=board, display_order=4)
+        column_2 = ColumnFactory(board=board, display_order=1)
+        column_3 = ColumnFactory(board=board, display_order=3)
+        column_4 = ColumnFactory(board=board, display_order=2)
+        ColumnPermissionFactory.create_batch(size=2, column=column_1)
+        ColumnPermissionFactory.create_batch(size=2, column=column_2)
+        ColumnPermissionFactory.create_batch(size=2, column=column_3)
+        ColumnPermissionFactory.create_batch(size=2, column=column_4)
 
     def test_get_column_details_given_column_ids(self, create_columns,
                                                  column_details):
