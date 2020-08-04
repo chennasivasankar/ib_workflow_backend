@@ -153,7 +153,7 @@ class UpdateTaskInteractor:
             storage=self.storage, gof_storage=self.create_task_storage,
             field_storage=self.field_storage, stage_storage=self.stage_storage
         )
-        act_on_task_interactor.user_action_on_task(act_on_task_presenter)
+        return act_on_task_interactor.user_action_on_task_wrapper(act_on_task_presenter)
 
     def _validate_task_id(
             self, task_id: int) -> Optional[InvalidTaskException]:
