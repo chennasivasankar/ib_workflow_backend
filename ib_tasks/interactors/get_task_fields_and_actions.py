@@ -29,21 +29,23 @@ class GetTaskFieldsAndActionsInteractor:
         task_ids = [task.task_id for task in task_dtos]
         stage_ids = [task.stage_id for task in task_dtos]
 
-        unique_task_ids = list(set(task_ids))
+        unique_task_ids = list(sorted(set(task_ids)))
+        unique_stage_ids = list(sorted(set(stage_ids)))
 
         valid_task_ids = self.storage.get_valid_task_ids(unique_task_ids)
         self._validate_task_ids(unique_task_ids, valid_task_ids)
 
         stage_task_dtos = task_dtos
-        valid_stage_ids = self.stage_storage.get_existing_stage_ids(stage_ids)
-        self._validate_stage_ids(stage_ids, valid_stage_ids)
+        valid_stage_ids = self.stage_storage.get_existing_stage_ids(unique_stage_ids)
+
+        self._validate_stage_ids(unique_stage_ids, valid_stage_ids)
         valid_stage_and_tasks = self.storage.validate_task_related_stage_ids(
             task_dtos)
         self._validate_stage_and_tasks(valid_stage_and_tasks, task_dtos)
 
         task_stage_dtos = self.storage.get_stage_details(stage_task_dtos)
 
-        action_dtos = self.storage.get_actions_details(stage_ids)
+        action_dtos = self.storage.get_actions_details(unique_stage_ids)
 
         stage_fields_dtos = self.storage.get_field_ids(task_stage_dtos)
         task_fields_dtos = self._map_task_and_their_fields(
@@ -112,13 +114,22 @@ class GetTaskFieldsAndActionsInteractor:
     @staticmethod
     def _get_task_stage_details(
             list_of_action_dtos: List[ActionDetailsDTO],
-            list_of_field_dtos: List[FieldDetailsDTO],
+            list_of_field_dtos: List[FieldDetailsDTOWithTaskId],
             task
     ):
+        fields_dtos = [
+            FieldDetailsDTO(
+                field_type=field.field_type,
+                value=field.value,
+                key=field.key,
+                field_id=field.field_id
+            )
+            for field in list_of_field_dtos
+        ]
         return GetTaskStageCompleteDetailsDTO(
             task_id=task.task_id,
             stage_id=task.stage_id,
-            field_dtos=list_of_field_dtos,
+            field_dtos=fields_dtos,
             action_dtos=list_of_action_dtos
         )
 

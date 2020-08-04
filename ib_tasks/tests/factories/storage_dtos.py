@@ -405,7 +405,7 @@ class FieldDetailsDTOWithTaskIdFactory(factory.Factory):
         model = FieldDetailsDTOWithTaskId
 
     field_id = factory.Sequence(lambda n: "FIELD-ID-%d" % (n + 1))
-    task_id = factory.Sequence(lambda n: "task_id_%d" % (n + 1))
+    task_id = factory.Sequence(lambda n: (n + 1))
     field_type = "Drop down"
     key = "key"
     value = "value"

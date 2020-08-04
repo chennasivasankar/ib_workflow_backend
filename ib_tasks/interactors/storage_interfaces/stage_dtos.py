@@ -49,7 +49,7 @@ class TaskStageIdsDTO:
 class GetTaskStageCompleteDetailsDTO:
     task_id: int
     stage_id: str
-    field_dtos: List[FieldDetailsDTOWithTaskId]
+    field_dtos: List[FieldDetailsDTO]
     action_dtos: List[ActionDetailsDTO]
 
 

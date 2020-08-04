@@ -128,6 +128,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                         stage_id=stage.stage_id,
                         field_ids=field_ids))
         return task_fields_dtos
+
     def validate_task_related_stage_ids(self,
                                         task_dtos: List[GetTaskDetailsDTO]) -> \
             List[GetTaskDetailsDTO]:
