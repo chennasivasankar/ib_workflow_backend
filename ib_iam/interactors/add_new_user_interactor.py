@@ -14,8 +14,8 @@ from ib_iam.interactors.storage_interfaces.user_storage_interface \
 
 
 class AddNewUserInteractor(ValidationMixin):
-    def __init__(self, storage: UserStorageInterface):
-        self.storage = storage
+    def __init__(self, user_storage: UserStorageInterface):
+        self.user_storage = user_storage
 
     def add_new_user_wrapper(
             self, user_id: str,
@@ -60,15 +60,15 @@ class AddNewUserInteractor(ValidationMixin):
         team_ids = user_details_with_team_role_and_company_ids_dto.team_ids
         role_ids = user_details_with_team_role_and_company_ids_dto.role_ids
         new_user_id = self._create_user_in_ib_users(email, name)
-        role_obj_ids = self.storage.get_role_objs_ids(role_ids=role_ids)
+        role_obj_ids = self.user_storage.get_role_objs_ids(role_ids=role_ids)
         is_admin = False
 
-        self.storage.create_user(
+        self.user_storage.create_user(
             is_admin=is_admin, company_id=company_id,
             user_id=new_user_id, name=name)
-        self.storage.add_user_to_the_teams(
+        self.user_storage.add_user_to_the_teams(
             user_id=new_user_id, team_ids=team_ids)
-        self.storage.add_roles_to_the_user(
+        self.user_storage.add_roles_to_the_user(
             user_id=new_user_id, role_ids=role_obj_ids)
 
     def _validate_add_new_user_details(
@@ -81,7 +81,7 @@ class AddNewUserInteractor(ValidationMixin):
         role_ids = user_details_with_team_role_and_company_ids_dto.role_ids
         team_ids = user_details_with_team_role_and_company_ids_dto.team_ids
         company_id = user_details_with_team_role_and_company_ids_dto.company_id
-        self._check_and_throw_user_is_admin(user_id=user_id)
+        self._validate_is_user_admin(user_id=user_id)
         self._validate_name_and_throw_exception(name=name)
         self._validate_email_and_throw_exception(email=email)
         self._validate_roles(role_ids=role_ids)
@@ -94,7 +94,7 @@ class AddNewUserInteractor(ValidationMixin):
         return new_user_id
 
     def _check_and_throw_user_is_admin(self, user_id: str):
-        is_admin = self.storage.check_is_admin_user(user_id=user_id)
+        is_admin = self.user_storage.check_is_admin_user(user_id=user_id)
         is_not_admin = not is_admin
         if is_not_admin:
             raise UserIsNotAdmin()
@@ -134,19 +134,19 @@ class AddNewUserInteractor(ValidationMixin):
         return user_profile_dto
 
     def _validate_roles(self, role_ids):
-        are_valid = self.storage.check_are_valid_role_ids(role_ids=role_ids)
+        are_valid = self.user_storage.check_are_valid_role_ids(role_ids=role_ids)
         are_not_valid = not are_valid
         if are_not_valid:
             raise RoleIdsAreInvalid()
 
     def _validate_teams(self, team_ids):
-        are_valid = self.storage.check_are_valid_team_ids(team_ids=team_ids)
+        are_valid = self.user_storage.check_are_valid_team_ids(team_ids=team_ids)
         are_not_valid = not are_valid
         if are_not_valid:
             raise TeamIdsAreInvalid()
 
     def _validate_company_id(self, company_id):
-        is_valid = self.storage.check_is_exists_company_id(
+        is_valid = self.user_storage.check_is_exists_company_id(
             company_id=company_id)
         is_not_valid = not is_valid
         if is_not_valid:

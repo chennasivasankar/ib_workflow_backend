@@ -13,8 +13,8 @@ from ib_iam.interactors.storage_interfaces.user_storage_interface \
 
 
 class GetUsersDetailsInteractor(ValidationMixin):
-    def __init__(self, storage: UserStorageInterface):
-        self.storage = storage
+    def __init__(self, user_storage: UserStorageInterface):
+        self.user_storage = user_storage
 
     def get_users_details_wrapper(
             self, user_id: str, pagination_dto: PaginationDTO,
@@ -37,20 +37,20 @@ class GetUsersDetailsInteractor(ValidationMixin):
 
     def get_users_details(self, user_id: str, offset: int,
                           limit: int) -> ListOfCompleteUsersDTO:
-        self._check_and_throw_user_is_admin(user_id=user_id)
-        self._pagination_validations(offset=offset, limit=limit)
-        user_dtos = self.storage.get_users_who_are_not_admins(
+        self._validate_is_user_admin(user_id=user_id)
+        self._validate_pagination_details(offset=offset, limit=limit)
+        user_dtos = self.user_storage.get_users_who_are_not_admins(
             offset=offset, limit=limit)
-        total_count = self.storage.get_total_count_of_users_for_query()
+        total_count = self.user_storage.get_total_count_of_users_for_query()
         user_ids = [user_dto.user_id for user_dto in user_dtos]
         return self._get_complete_user_details_dto(user_ids, total_count)
 
     def _get_complete_user_details_dto(self, user_ids, total_count):
-        user_team_dtos = self.storage.get_team_details_of_users_bulk(
+        user_team_dtos = self.user_storage.get_team_details_of_users_bulk(
             user_ids=user_ids)
-        user_role_dtos = self.storage.get_role_details_of_users_bulk(
+        user_role_dtos = self.user_storage.get_role_details_of_users_bulk(
             user_ids=user_ids)
-        user_company_dtos = self.storage.get_company_details_of_users_bulk(
+        user_company_dtos = self.user_storage.get_company_details_of_users_bulk(
             user_ids=user_ids)
         user_profile_dtos = self._get_user_profile_dtos(user_ids)
         return self._convert_complete_user_details_dtos(
@@ -75,14 +75,8 @@ class GetUsersDetailsInteractor(ValidationMixin):
         return user_dtos
 
     def get_valid_user_ids(self, user_ids: List[str]):
-        valid_user_ids = self.storage.get_valid_user_ids(user_ids=user_ids)
+        valid_user_ids = self.user_storage.get_valid_user_ids(user_ids=user_ids)
         return valid_user_ids
-
-    def _check_and_throw_user_is_admin(self, user_id: str):
-        is_admin = self.storage.check_is_admin_user(user_id=user_id)
-        is_not_admin = not is_admin
-        if is_not_admin:
-            raise UserIsNotAdmin()
 
     @staticmethod
     def _convert_complete_user_details_dtos(
@@ -128,14 +122,14 @@ class GetUsersDetailsInteractor(ValidationMixin):
     def get_user_dtos_based_on_limit_and_offset(
             self, limit: int, offset: int, search_query: str
     ):
-        self._pagination_validations(offset=offset, limit=limit)
-        user_details_dtos = self.storage.get_user_details_dtos_based_on_limit_offset_and_search_query(
+        self._validate_pagination_details(offset=offset, limit=limit)
+        user_details_dtos = self.user_storage.get_user_details_dtos_based_on_limit_offset_and_search_query(
             limit=limit, offset=offset, search_query=search_query
         )
         return user_details_dtos
 
     def get_all_user_dtos_based_on_query(self, search_query: str):
-        user_details_dtos = self.storage.get_user_details_dtos_based_on_search_query(
+        user_details_dtos = self.user_storage.get_user_details_dtos_based_on_search_query(
             search_query=search_query
         )
         return user_details_dtos

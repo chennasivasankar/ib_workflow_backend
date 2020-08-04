@@ -61,8 +61,7 @@ class TestGetListOfTeamsInteractor:
         presenter.get_user_has_no_access_response_for_get_list_of_teams \
             .assert_called_once()
 
-    @pytest.mark.parametrize("limit", [-1, 0])
-    def test_invalid_limit_returns_invalid_limit_response(self, limit):
+    def test_invalid_limit_returns_invalid_limit_response(self):
         team_storage = create_autospec(TeamStorageInterface)
         user_storage = create_autospec(UserStorageInterface)
         presenter = create_autospec(TeamPresenterInterface)
@@ -70,7 +69,7 @@ class TestGetListOfTeamsInteractor:
                                               user_storage=user_storage)
         presenter.get_invalid_limit_response_for_get_list_of_teams \
             .return_value = Mock()
-        pagination_dto = PaginationDTOFactory(limit=limit)
+        pagination_dto = PaginationDTOFactory(limit=-1)
 
         interactor.get_list_of_teams_wrapper(
             user_id="1", pagination_dto=pagination_dto, presenter=presenter)

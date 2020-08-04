@@ -38,8 +38,8 @@ class TestEditNewUserInteractor:
         role_ids = ['role0', 'role1']
         company_id = 'company0'
 
-        interactor = EditUserInteractor(storage=storage_mock)
-        storage_mock.check_is_admin_user.return_value = False
+        interactor = EditUserInteractor(user_storage=storage_mock)
+        storage_mock.is_user_admin.return_value = False
         presenter_mock.raise_user_is_not_admin_exception.return_value = Mock()
 
         user_details_with_team_role_and_company_ids_dto \
@@ -56,7 +56,7 @@ class TestEditNewUserInteractor:
             presenter=presenter_mock)
 
         # Assert
-        storage_mock.check_is_admin_user.assert_called_once_with(
+        storage_mock.is_user_admin.assert_called_once_with(
             user_id=admin_user_id)
         presenter_mock.raise_user_is_not_admin_exception.assert_called_once()
 
@@ -71,8 +71,8 @@ class TestEditNewUserInteractor:
         role_ids = ['role0', 'role1']
         company_id = 'company0'
 
-        interactor = EditUserInteractor(storage=storage_mock)
-        storage_mock.check_is_admin_user.return_value = True
+        interactor = EditUserInteractor(user_storage=storage_mock)
+        storage_mock.is_user_admin.return_value = True
         presenter_mock.raise_invalid_name_exception.return_value = Mock()
 
         user_details_with_team_role_and_company_ids_dto \
@@ -102,8 +102,8 @@ class TestEditNewUserInteractor:
         role_ids = ['role0', 'role1']
         company_id = 'company0'
 
-        interactor = EditUserInteractor(storage=storage_mock)
-        storage_mock.check_is_admin_user.return_value = True
+        interactor = EditUserInteractor(user_storage=storage_mock)
+        storage_mock.is_user_admin.return_value = True
         presenter_mock.raise_invalid_name_exception.return_value = Mock()
 
         user_details_with_team_role_and_company_ids_dto \
@@ -135,8 +135,8 @@ class TestEditNewUserInteractor:
         role_ids = ['role0', 'role1']
         company_id = 'company0'
 
-        interactor = EditUserInteractor(storage=storage_mock)
-        storage_mock.check_is_admin_user.return_value = True
+        interactor = EditUserInteractor(user_storage=storage_mock)
+        storage_mock.is_user_admin.return_value = True
         presenter_mock.raise_invalid_email_exception.return_value = Mock()
 
         user_details_with_team_role_and_company_ids_dto \
@@ -166,8 +166,8 @@ class TestEditNewUserInteractor:
         role_ids = ['role0', 'role1']
         company_id = 'company0'
 
-        interactor = EditUserInteractor(storage=storage_mock)
-        storage_mock.check_is_admin_user.return_value = True
+        interactor = EditUserInteractor(user_storage=storage_mock)
+        storage_mock.is_user_admin.return_value = True
         storage_mock.check_are_valid_role_ids.return_value = False
         storage_mock.check_are_valid_team_ids.return_value = True
         storage_mock.check_is_exists_company_id.return_value = True
@@ -201,8 +201,8 @@ class TestEditNewUserInteractor:
         role_ids = ['role0', 'role1']
         company_id = 'company0'
 
-        interactor = EditUserInteractor(storage=storage_mock)
-        storage_mock.check_is_admin_user.return_value = True
+        interactor = EditUserInteractor(user_storage=storage_mock)
+        storage_mock.is_user_admin.return_value = True
         storage_mock.check_are_valid_team_ids.return_value = False
         presenter_mock.raise_team_ids_are_invalid.return_value = Mock()
 
@@ -234,8 +234,8 @@ class TestEditNewUserInteractor:
         role_ids = ['role0', 'role1']
         company_id = 'company0'
 
-        interactor = EditUserInteractor(storage=storage_mock)
-        storage_mock.check_is_admin_user.return_value = True
+        interactor = EditUserInteractor(user_storage=storage_mock)
+        storage_mock.is_user_admin.return_value = True
         storage_mock.check_are_valid_role_ids.return_value = True
         storage_mock.check_are_valid_team_ids.return_value = True
         storage_mock.check_is_exists_company_id.return_value = False
@@ -269,8 +269,8 @@ class TestEditNewUserInteractor:
         role_ids = ['role0', 'role1']
         company_id = 'company0'
 
-        interactor = EditUserInteractor(storage=storage_mock)
-        storage_mock.check_is_admin_user.return_value = True
+        interactor = EditUserInteractor(user_storage=storage_mock)
+        storage_mock.is_user_admin.return_value = True
         storage_mock.is_user_exist.return_value = False
         presenter_mock.raise_user_does_not_exist.return_value = Mock()
 
@@ -302,8 +302,8 @@ class TestEditNewUserInteractor:
         role_ids = ['role0', 'role1']
         company_id = 'company0'
 
-        interactor = EditUserInteractor(storage=storage_mock)
-        storage_mock.check_is_admin_user.return_value = True
+        interactor = EditUserInteractor(user_storage=storage_mock)
+        storage_mock.is_user_admin.return_value = True
         storage_mock.is_user_exist.return_value = True
         presenter_mock.raise_user_does_not_exist.return_value = Mock()
         from ib_iam.tests.common_fixtures.adapters.user_service \
@@ -338,7 +338,7 @@ class TestEditNewUserInteractor:
         role_ids = ['role0', 'role1']
         company_id = 'company0'
 
-        interactor = EditUserInteractor(storage=storage_mock)
+        interactor = EditUserInteractor(user_storage=storage_mock)
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import update_user_profile_adapter_mock
         adapter_mock = update_user_profile_adapter_mock(mocker=mocker)
@@ -372,7 +372,7 @@ class TestEditNewUserInteractor:
         role_ids = ['role0', 'role1']
         company_id = 'company0'
 
-        interactor = EditUserInteractor(storage=storage_mock)
+        interactor = EditUserInteractor(user_storage=storage_mock)
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import update_user_profile_adapter_mock
         adapter_mock = update_user_profile_adapter_mock(mocker=mocker)

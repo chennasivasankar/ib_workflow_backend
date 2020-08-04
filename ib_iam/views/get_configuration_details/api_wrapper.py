@@ -12,7 +12,7 @@ from ib_iam.storages.user_storage_implementation \
 def api_wrapper(*args, **kwargs):
     storage = UserStorageImplementation()
     presenter = GetUserOptionsPresenterImplementation()
-    interactor = GetUserOptionsDetails(storage=storage)
+    interactor = GetUserOptionsDetails(user_storage=storage)
 
     user = kwargs['user']
     user_id = user.user_id

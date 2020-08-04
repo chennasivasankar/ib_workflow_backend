@@ -15,8 +15,8 @@ from ib_iam.interactors.storage_interfaces.user_storage_interface \
 
 
 class EditUserInteractor(ValidationMixin):
-    def __init__(self, storage: UserStorageInterface):
-        self.storage = storage
+    def __init__(self, user_storage: UserStorageInterface):
+        self.user_storage = user_storage
 
     def edit_user_wrapper(
             self, admin_user_id: str, user_id: str,
@@ -58,7 +58,7 @@ class EditUserInteractor(ValidationMixin):
         company_id = user_details_with_team_role_and_company_ids_dto.company_id
         email = user_details_with_team_role_and_company_ids_dto.email
 
-        self._check_and_throw_user_is_admin(user_id=admin_user_id)
+        self._validate_is_user_admin(user_id=admin_user_id)
         self._is_user_exist(user_id=user_id)
         self._validate_name_and_throw_exception(name=name)
         self._validate_email_and_throw_exception(email=email)
@@ -72,7 +72,7 @@ class EditUserInteractor(ValidationMixin):
         )
 
     def _check_and_throw_user_is_admin(self, user_id: str):
-        is_admin = self.storage.check_is_admin_user(user_id=user_id)
+        is_admin = self.user_storage.check_is_admin_user(user_id=user_id)
         is_not_admin = not is_admin
         if is_not_admin:
             raise UserIsNotAdmin()
@@ -102,19 +102,19 @@ class EditUserInteractor(ValidationMixin):
         self._validate_company(company_id=company_id)
 
     def _validate_roles(self, role_ids: List[str]):
-        are_valid = self.storage.check_are_valid_role_ids(role_ids=role_ids)
+        are_valid = self.user_storage.check_are_valid_role_ids(role_ids=role_ids)
         are_not_valid = not are_valid
         if are_not_valid:
             raise RoleIdsAreInvalid()
 
     def _validate_teams(self, team_ids: List[str]):
-        are_valid = self.storage.check_are_valid_team_ids(team_ids=team_ids)
+        are_valid = self.user_storage.check_are_valid_team_ids(team_ids=team_ids)
         are_not_valid = not are_valid
         if are_not_valid:
             raise TeamIdsAreInvalid()
 
     def _validate_company(self, company_id: str):
-        is_valid = self.storage.check_is_exists_company_id(
+        is_valid = self.user_storage.check_is_exists_company_id(
             company_id=company_id
         )
         is_not_valid = not is_valid
@@ -122,7 +122,7 @@ class EditUserInteractor(ValidationMixin):
             raise InvalidCompanyId()
 
     def _is_user_exist(self, user_id: str):
-        is_exist = self.storage.is_user_exist(user_id)
+        is_exist = self.user_storage.is_user_exist(user_id)
         is_not_exist = not is_exist
         if is_not_exist:
             raise UserDoesNotExist
@@ -147,13 +147,13 @@ class EditUserInteractor(ValidationMixin):
     def _assaign_teams_roles_company_to_user(
             self, company_id: str, role_ids: List[str], team_ids: List[str],
             user_id: str, name: str):
-        ids_of_role_objs = self.storage.get_role_objs_ids(role_ids)
-        self.storage.add_roles_to_the_user(
+        ids_of_role_objs = self.user_storage.get_role_objs_ids(role_ids)
+        self.user_storage.add_roles_to_the_user(
             user_id=user_id, role_ids=ids_of_role_objs)
-        self.storage.add_user_to_the_teams(user_id=user_id, team_ids=team_ids)
-        self.storage.update_user_details(user_id=user_id,
-                                         company_id=company_id, name=name)
+        self.user_storage.add_user_to_the_teams(user_id=user_id, team_ids=team_ids)
+        self.user_storage.update_user_details(user_id=user_id,
+                                              company_id=company_id, name=name)
 
     def _remove_existing_teams_roles_and_company(self, user_id: str):
-        self.storage.remove_roles_for_user(user_id)
-        self.storage.remove_teams_for_user(user_id)
+        self.user_storage.remove_roles_for_user(user_id)
+        self.user_storage.remove_teams_for_user(user_id)

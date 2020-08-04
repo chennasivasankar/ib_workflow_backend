@@ -45,7 +45,8 @@ class GetListOfTeamsInteractor(ValidationMixin):
         return response
 
     def get_list_of_teams(self, user_id: str, pagination_dto: PaginationDTO):
-        self._validate_pagination_details(pagination_dto=pagination_dto)
+        self._validate_pagination_details(limit=pagination_dto.limit,
+                                          offset=pagination_dto.offset)
         self._validate_is_user_admin(user_id=user_id)
         teams_with_total_teams_count = \
             self.team_storage.get_teams_with_total_teams_count_dto(
@@ -67,25 +68,13 @@ class GetListOfTeamsInteractor(ValidationMixin):
         return team_with_memebers_dtos
 
     @staticmethod
-    def _validate_pagination_details(pagination_dto: PaginationDTO):
-        if pagination_dto.limit <= 0:
-            raise InvalidLimitValue()
-        if pagination_dto.offset < 0:
-            raise InvalidOffsetValue()
-
-    @staticmethod
-    def _get_team_ids_from_team_dtos(
-            team_dtos: List[TeamDTO]
-    ) -> List[str]:
-        team_ids = [
-            team_dto.team_id for team_dto in team_dtos
-        ]
+    def _get_team_ids_from_team_dtos(team_dtos: List[TeamDTO]) -> List[str]:
+        team_ids = [team_dto.team_id for team_dto in team_dtos]
         return team_ids
 
     @staticmethod
     def _get_all_member_ids_from_team_user_ids_dtos(
-            team_user_ids_dtos: List[TeamUserIdsDTO]
-    ):
+            team_user_ids_dtos: List[TeamUserIdsDTO]):
         member_ids = []
         for team_user_ids_dto in team_user_ids_dtos:
             member_ids.extend(team_user_ids_dto.user_ids)
@@ -95,7 +84,5 @@ class GetListOfTeamsInteractor(ValidationMixin):
     def _get_user_dtos_from_service(self, member_ids: List[str]):
         service = get_service_adapter()
         user_dtos = service.user_service.get_basic_user_dtos(
-            user_ids=member_ids
-        )
+            user_ids=member_ids)
         return user_dtos
-

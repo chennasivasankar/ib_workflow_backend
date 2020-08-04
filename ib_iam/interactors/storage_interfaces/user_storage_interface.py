@@ -8,9 +8,6 @@ from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
 
 
 class UserStorageInterface(ABC):
-    @abstractmethod
-    def check_is_admin_user(self, user_id: str) -> bool:
-        pass
 
     @abstractmethod
     def is_user_admin(self, user_id: str) -> bool:

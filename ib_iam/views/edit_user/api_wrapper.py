@@ -13,7 +13,7 @@ from .validator_class import ValidatorClass
 def api_wrapper(*args, **kwargs):
     storage = UserStorageImplementation()
     presenter = EditUserPresenterImplementation()
-    interactor = EditUserInteractor(storage=storage)
+    interactor = EditUserInteractor(user_storage=storage)
 
     admin_user_id = kwargs['user'].user_id
     user_id = kwargs["path_params"]["user_id"]
