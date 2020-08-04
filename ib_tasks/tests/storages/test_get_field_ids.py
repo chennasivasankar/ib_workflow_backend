@@ -19,8 +19,10 @@ class TestGetFieldIds:
         StageModelFactory.reset_sequence()
         StageModelFactory()
         import json
-        StageModelFactory(card_info_kanban=json.dumps(['field_id_3', 'field_id_4']))
-        StageModelFactory(card_info_kanban=json.dumps(['field_id_5', 'field_id_6']))
+        StageModelFactory(card_info_kanban=json.dumps(
+            ['field_id_3', 'field_id_4']))
+        StageModelFactory(card_info_kanban=json.dumps(
+            ['field_id_5', 'field_id_6']))
         TaskFactory.reset_sequence()
         TaskFactory.create_batch(size=3)
         TaskTemplateFactory.reset_sequence()
@@ -42,10 +44,13 @@ class TestGetFieldIds:
         StageModelFactory.reset_sequence()
         StageModelFactory(task_template_id="task_template_id_0")
         import json
-        StageModelFactory(card_info_kanban=json.dumps(['field_id_3', 'field_id_4']),
+        StageModelFactory(card_info_kanban=json.dumps(
+            ['field_id_3', 'field_id_4']),
                           task_template_id="task_template_id_0")
-        StageModelFactory(card_info_kanban=json.dumps(['field_id_5', 'field_id_6']))
-        StageModelFactory(card_info_kanban=json.dumps(['field_id_7', 'field_id_8']))
+        StageModelFactory(card_info_kanban=json.dumps(
+            ['field_id_5', 'field_id_6']))
+        StageModelFactory(card_info_kanban=json.dumps(
+            ['field_id_7', 'field_id_8']))
         TaskFactory.reset_sequence()
         TaskFactory.create_batch(size=3)
         TaskTemplateFactory.reset_sequence()
@@ -56,7 +61,8 @@ class TestGetFieldIds:
     def get_task_template_stage_dtos_with_two_tasks_on_stage(self):
         TemplateStagesDTOFactory.reset_sequence()
         templates = TemplateStagesDTOFactory.create_batch(
-            size=2, stage_id="stage_id_0", task_template_id="task_template_id_0")
+            size=2, stage_id="stage_id_0",
+            task_template_id="task_template_id_0")
         return templates
 
     def test_get_field_ids(self, get_task_template_stage_dtos,
@@ -72,7 +78,8 @@ class TestGetFieldIds:
         snapshot.assert_match(response, "response")
 
     def test_get_field_ids_when_one_task_is_in_two_stages(
-            self, get_task_template_stage_dtos_with_one_task_with_two_stages,
+            self,
+            get_task_template_stage_dtos_with_one_task_with_two_stages,
             populate_data_for_one_task_in_two_stages,
             snapshot):
         # Arrange
