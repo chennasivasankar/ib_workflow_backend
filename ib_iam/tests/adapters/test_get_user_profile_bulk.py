@@ -49,8 +49,8 @@ class TestGetUserProfileBulk:
         service_adapter = ServiceAdapter()
 
         # Act
-        from ib_iam.exceptions.custom_exceptions import InvalidUser
-        with pytest.raises(InvalidUser):
+        from ib_iam.exceptions.custom_exceptions import InvalidUserId
+        with pytest.raises(InvalidUserId):
             service_adapter.user_service.get_user_profile_bulk(
                 user_ids=user_ids)
         get_user_profile_bulk_mock.assert_called_once_with(user_ids=user_ids)

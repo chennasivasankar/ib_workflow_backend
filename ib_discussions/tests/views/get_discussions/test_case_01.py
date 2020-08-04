@@ -77,6 +77,8 @@ class TestCase01GetDiscussionsAPITestCase(TestUtils):
         ]
         from ib_discussions.tests.factories.models import DiscussionFactory
         DiscussionFactory.created_at.reset()
+        DiscussionFactory.user_id.reset()
+        DiscussionFactory.is_clarified.reset()
         for discussion_id in discussion_ids:
             DiscussionFactory(
                 discussion_set_id=discussion_set_id,

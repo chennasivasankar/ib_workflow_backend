@@ -1,4 +1,5 @@
 from typing import List
+
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, RoleIdAndNameDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO, UserIdAndNameDTO
@@ -22,11 +23,11 @@ class UserStorageImplementation(UserStorageInterface):
         is_exists = UserDetails.objects.filter(user_id=user_id).exists()
         return is_exists
 
-    def get_role_objs_ids(self, roles):
+    def get_role_objs_ids(self, role_ids: List[str]) -> List[str]:
         from ib_iam.models import Role
-        role_ids = Role.objects.filter(role_id__in=roles) \
+        role_obj_ids = Role.objects.filter(role_id__in=role_ids) \
             .values_list('id', flat=True)
-        return role_ids
+        return role_obj_ids
 
     def check_are_valid_role_ids(self, role_ids):
         from ib_iam.models import Role
@@ -74,14 +75,8 @@ class UserStorageImplementation(UserStorageInterface):
         user.name = name
         user.save()
 
-    def add_new_user(self, user_id: str, is_admin: bool, company_id: str,
-                     role_ids, team_ids: List[str], name: str):
-        self.create_user(company_id, is_admin, user_id, name)
-        self.add_user_to_the_teams(user_id, team_ids)
-        self.add_roles_to_the_user(user_id, role_ids)
-
-    @staticmethod
-    def create_user(company_id, is_admin, user_id, name):
+    def create_user(self, company_id: str, is_admin: bool, user_id: str,
+                    name: str):
         from ib_iam.models import UserDetails
         UserDetails.objects.create(
             user_id=user_id, is_admin=is_admin,

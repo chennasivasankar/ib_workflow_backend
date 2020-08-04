@@ -48,7 +48,7 @@ ROLE_DESCRIPTION_SHOULD_NOT_BE_EMPTY = (
 )
 
 DUPLICATE_ROLE_IDS = (
-    "can't create roles with duplicate role_ids",
+    "can't create roles with duplicate role_ids are {duplicate_role_ids}",
     "DUPLICATE_ROLE_IDS"
 )
 

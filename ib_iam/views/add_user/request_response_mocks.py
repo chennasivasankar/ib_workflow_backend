@@ -4,9 +4,9 @@ REQUEST_BODY_JSON = """
 {
     "name": "string",
     "email": "string",
-    "company_id": "575de9fb-766e-484a-8bad-46d243bf47d8",
+    "company_id": "32d90d38-1124-4af1-baa2-bf0f8e1f1108",
     "team_ids": [
-        "e999211b-6633-42be-9e7f-28a20b542d48"
+        "cd0c38eb-a40c-4c62-8082-77d50c61ca6b"
     ],
     "role_ids": [
         "string"

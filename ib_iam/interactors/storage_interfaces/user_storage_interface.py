@@ -21,7 +21,7 @@ class UserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_role_objs_ids(self, roles):
+    def get_role_objs_ids(self, role_ids: List[str]) -> List[str]:
         pass
 
     @abstractmethod
@@ -54,11 +54,6 @@ class UserStorageInterface(ABC):
 
     @abstractmethod
     def update_user_details(self, company_id: str, user_id: str, name: str):
-        pass
-
-    @abstractmethod
-    def add_new_user(self, user_id: str, is_admin: bool, company_id: str,
-                     role_ids, team_ids: List[str], name: str):
         pass
 
     @abstractmethod
@@ -125,4 +120,9 @@ class UserStorageInterface(ABC):
     @abstractmethod
     def get_valid_user_ids_among_the_given_user_ids(
             self, user_ids: List[str]) -> List[str]:
+        pass
+
+    @abstractmethod
+    def create_user(self, company_id: str, is_admin: bool, user_id: str,
+                    name: str):
         pass

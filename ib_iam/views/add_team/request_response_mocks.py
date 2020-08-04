@@ -13,7 +13,7 @@ REQUEST_BODY_JSON = """
 
 RESPONSE_201_JSON = """
 {
-    "team_id": "59770f86-382b-442d-8971-94fab9e756c0"
+    "team_id": "6b3f3b71-e660-4c3e-a797-f547f0868511"
 }
 """
 
@@ -37,7 +37,7 @@ RESPONSE_404_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "INVALID_USER_IDS"
+    "res_status": "INVALID_USERS"
 }
 """
 
