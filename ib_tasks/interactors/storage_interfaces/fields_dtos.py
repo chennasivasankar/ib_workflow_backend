@@ -92,7 +92,20 @@ class FieldWithPermissionsDTO:
     is_field_readable: bool
     is_field_writable: bool
 
+
 @dataclass
 class FieldTypeDTO:
     field_id: str
     field_type: FieldTypes
+
+
+@dataclass
+class FieldIdWithGoFIdDTO:
+    field_id: str
+    gof_id: str
+
+
+@dataclass
+class FieldWritePermissionRolesDTO:
+    field_id: str
+    write_permission_roles: List[str]

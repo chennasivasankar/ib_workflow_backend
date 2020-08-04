@@ -19,8 +19,8 @@ from ib_tasks.interactors.create_or_update_task.field_response_validations \
     MultiSelectFieldValidationInteractor, DateFieldValidationInteractor, \
     TimeFieldValidationInteractor, ImageUploaderFieldValidationInteractor, \
     FileUploaderFieldValidationInteractor
-from ib_tasks.interactors.presenter_interfaces. \
-    create_or_update_task_presenter import CreateOrUpdateTaskPresenterInterface
+from ib_tasks.interactors.presenter_interfaces.field_response_validations_presenter import \
+    FieldResponseValidationsPresenter
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
@@ -31,17 +31,16 @@ from ib_tasks.interactors.task_dtos import FieldValuesDTO
 class ValidateFieldResponsesInteractor:
 
     def __init__(
-            self, field_values_dtos: List[FieldValuesDTO],
-            task_storage: TaskStorageInterface
+            self, task_storage: TaskStorageInterface
     ):
-        self.field_values_dtos = field_values_dtos
         self.task_storage = task_storage
 
     def validate_field_responses_wrapper(
-            self, presenter: CreateOrUpdateTaskPresenterInterface
+            self, presenter: FieldResponseValidationsPresenter,
+            field_values_dtos: List[FieldValuesDTO]
     ):
         try:
-            self.validate_field_responses()
+            self.validate_field_responses(field_values_dtos)
         except EmptyValueForRequiredField as err:
             return presenter. \
                 raise_exception_for_empty_value_in_required_field(err)
@@ -95,17 +94,19 @@ class ValidateFieldResponsesInteractor:
                 err
             )
 
-    def validate_field_responses(self) -> Optional[Exception]:
+    def validate_field_responses(
+            self, field_values_dtos: List[FieldValuesDTO]
+    ) -> Optional[Exception]:
         field_ids = [
             field_values_dto.field_id
-            for field_values_dto in self.field_values_dtos
+            for field_values_dto in field_values_dtos
         ]
         field_details_dtos = self.task_storage. \
             get_field_details_for_given_field_ids(field_ids=field_ids)
         for field_details_dto in field_details_dtos:
             field_response = self._get_field_response_for_given_field_id(
                 field_id=field_details_dto.field_id,
-                field_values_dtos=self.field_values_dtos
+                field_values_dtos=field_values_dtos
             )
             field_validation_required = \
                 field_response or field_details_dto.required

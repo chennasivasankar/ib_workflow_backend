@@ -4,9 +4,10 @@ from typing import List, Optional
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos \
     import ActionRolesDTO, ActionDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO, \
+    FieldWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos \
-    import GroupOfFieldsDTO, GOFMultipleEnableDTO
+    import GroupOfFieldsDTO, GOFMultipleEnableDTO, GoFWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO, StageValueDTO, StageDisplayValueDTO
 from ib_tasks.interactors.stages_dtos import StageActionDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import StatusVariableDTO
@@ -109,4 +110,14 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def update_task_stages(self, task_id: int, stage_ids: List[str]):
+        pass
+
+    @abc.abstractmethod
+    def get_write_permission_roles_for_given_gof_ids(
+            self, gof_ids: List[str]) -> List[GoFWritePermissionRolesDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_write_permission_roles_for_given_field_ids(
+            self, field_ids: List[str]) -> List[FieldWritePermissionRolesDTO]:
         pass
