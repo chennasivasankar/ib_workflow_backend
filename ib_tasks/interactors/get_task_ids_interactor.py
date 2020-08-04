@@ -29,6 +29,11 @@ class GetTaskIdsInteractor:
         self.task_storage = task_storage
 
     def get_task_ids(self, task_details_configs: List[TaskDetailsConfigDTO]):
+        for task_details_config in task_details_configs:
+            if task_details_config.offset < 0:
+                raise InvalidOffsetValue
+            if task_details_config.limit < 1:
+                raise InvalidLimitValue
 
         total_stage_ids = []
         for task_details_config in task_details_configs:
@@ -56,10 +61,7 @@ class GetTaskIdsInteractor:
         return total_task_ids_dtos
 
     def _get_task_ids_dto(self, task_details_config: TaskDetailsConfigDTO):
-        if task_details_config.offset < 0:
-            raise InvalidOffsetValue
-        if task_details_config.limit < 1:
-            raise InvalidLimitValue
+
         task_ids_dtos, total_count = self.task_storage.get_task_ids_for_the_stage_ids(
             stage_ids=task_details_config.stage_ids,
             offset=task_details_config.offset,
