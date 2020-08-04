@@ -20,5 +20,5 @@ class TaskCompleteDetailsDTO:
 
 @dataclass
 class AllTasksOverviewDetailsDTO:
-    task_id_with_stage_details_dtos:List[TaskIdWithStageDetailsDTO]
+    task_id_with_stage_details_dtos: List[TaskIdWithStageDetailsDTO]
     task_fields_and_action_details_dtos: List[GetTaskStageCompleteDetailsDTO]

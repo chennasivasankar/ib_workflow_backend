@@ -11,4 +11,4 @@ class TaskGoF(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.gof_id
+        return "{} of order {}".format(self.gof_id, self.same_gof_order)
