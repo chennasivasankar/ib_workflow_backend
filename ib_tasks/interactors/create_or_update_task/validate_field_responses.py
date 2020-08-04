@@ -16,7 +16,10 @@ from ib_tasks.interactors.create_or_update_task.field_response_validations \
     CheckBoxGroupFieldValidationInteractor, \
     MultiSelectFieldValidationInteractor, DateFieldValidationInteractor, \
     TimeFieldValidationInteractor, ImageUploaderFieldValidationInteractor, \
-    FileUploaderFieldValidationInteractor
+    FileUploaderFieldValidationInteractor, \
+    PhoneNumberFieldValidationInteractor, URLFieldValidationInteractor, \
+    EmailFieldValidationInteractor, PasswordFieldValidationInteractor, \
+    MultiSelectLabelFieldValidationInteractor
 from ib_tasks.interactors.create_or_update_task.field_response_validations. \
     base_field_validation import BaseFieldValidation
 from ib_tasks.interactors.presenter_interfaces. \
@@ -147,8 +150,17 @@ class ValidateFieldResponsesInteractor:
         from ib_tasks.constants.enum import FieldTypes
         import json
         field_type = field_details_dto.field_type
+        if field_type == FieldTypes.PHONE_NUMBER.value:
+            return PhoneNumberFieldValidationInteractor(field_id,
+                                                        field_response)
+        if field_type == FieldTypes.URL.value:
+            return URLFieldValidationInteractor(field_id, field_response)
+        if field_type == FieldTypes.EMAIL.value:
+            return EmailFieldValidationInteractor(field_id, field_response)
         if field_type == FieldTypes.NUMBER.value:
             return NumberFieldValidationInteractor(field_id, field_response)
+        if field_type == FieldTypes.PASSWORD.value:
+            return PasswordFieldValidationInteractor(field_id, field_response)
         if field_type == FieldTypes.FLOAT.value:
             return FloatFieldValidationInteractor(field_id, field_response)
         if field_type == FieldTypes.DROPDOWN.value:
@@ -181,6 +193,12 @@ class ValidateFieldResponsesInteractor:
             return MultiSelectFieldValidationInteractor(
                 field_id, field_response, valid_multi_select_options
             )
+        if field_type == FieldTypes.MULTI_SELECT_LABELS.value:
+            valid_multi_select_labels = json.loads(
+                field_details_dto.field_values
+            )
+            return MultiSelectLabelFieldValidationInteractor(
+                field_id, field_response, valid_multi_select_labels)
         if field_type == FieldTypes.DATE.value:
             return DateFieldValidationInteractor(field_id, field_response)
         if field_type == FieldTypes.TIME.value:

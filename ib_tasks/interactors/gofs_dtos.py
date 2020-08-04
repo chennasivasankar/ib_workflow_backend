@@ -3,7 +3,16 @@ from typing import List, Any
 
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GroupOfFieldsDTO
-from ib_tasks.interactors.storage_interfaces.status_dtos import StatusVariableDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import \
+    StatusVariableDTO
+
+from dataclasses import dataclass
+from typing import List, Any
+
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GroupOfFieldsDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import \
+    StatusVariableDTO
 
 
 @dataclass()
@@ -40,3 +49,9 @@ class FieldDisplayDTO:
     field_type: str
     key: str
     value: Any
+
+
+@dataclass
+class GoFIdWithSameGoFOrder:
+    gof_id: str
+    same_gof_order: str

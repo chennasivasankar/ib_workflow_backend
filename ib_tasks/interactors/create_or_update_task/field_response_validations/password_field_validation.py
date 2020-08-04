@@ -6,7 +6,7 @@ from ib_tasks.interactors.create_or_update_task.field_response_validations. \
     base_field_validation import BaseFieldValidation
 
 
-class PasswordFieldValidation(BaseFieldValidation):
+class PasswordFieldValidationInteractor(BaseFieldValidation):
 
     def __init__(self, field_id: str, field_response: str):
         self.field_id = field_id

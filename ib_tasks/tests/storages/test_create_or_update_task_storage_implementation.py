@@ -255,7 +255,7 @@ class TestCreateOrUpdateTaskStorageImplementation:
         expected_gof_ids = [task_gof.gof_id for task_gof in task_gofs]
 
         # Act
-        actual_gof_ids = storage.get_gof_ids_related_to_a_task(task_id)
+        actual_gof_ids = storage.get_gof_ids_with_same_gof_order_related_to_a_task(task_id)
 
         # Assert
         assert expected_gof_ids == actual_gof_ids
@@ -278,7 +278,7 @@ class TestCreateOrUpdateTaskStorageImplementation:
 
         # Act
         actual_field_ids = \
-            storage.get_field_ids_related_to_given_task(task_id)
+            storage.get_field_ids_with_task_gof_id_related_to_given_task(task_id)
 
         # Assert
         assert actual_field_ids == expected_field_ids

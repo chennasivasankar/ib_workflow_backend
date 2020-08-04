@@ -11,6 +11,8 @@ from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
 from ib_tasks.interactors.create_or_update_task. \
     create_or_update_task_base_validations import \
     CreateOrUpdateTaskBaseValidationsInteractor
+from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
+from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrder
 from ib_tasks.interactors.presenter_interfaces. \
     field_response_validations_presenter import \
     FieldResponseValidationsPresenterInterface
@@ -55,7 +57,8 @@ class UpdateTaskInteractor:
     def update_task_wrapper(
             self, presenter: UpdateTaskPresenterInterface,
             task_dto: UpdateTaskDTO, act_on_task_presenter: PresenterInterface,
-            field_validations_presenter: FieldResponseValidationsPresenterInterface
+            field_validations_presenter:
+            FieldResponseValidationsPresenterInterface
     ):
         try:
             return self._prepare_update_task_response(
@@ -85,7 +88,8 @@ class UpdateTaskInteractor:
             self, task_dto: UpdateTaskDTO,
             presenter: UpdateTaskPresenterInterface,
             act_on_task_presenter: PresenterInterface,
-            field_validations_presenter: FieldResponseValidationsPresenterInterface
+            field_validations_presenter:
+            FieldResponseValidationsPresenterInterface
     ):
         self.update_task(
             task_dto, field_validations_presenter, act_on_task_presenter
@@ -94,7 +98,8 @@ class UpdateTaskInteractor:
 
     def update_task(
             self, task_dto: UpdateTaskDTO,
-            field_validations_presenter: FieldResponseValidationsPresenterInterface,
+            field_validations_presenter:
+            FieldResponseValidationsPresenterInterface,
             act_on_task_presenter: PresenterInterface
     ):
         task_id = task_dto.task_id
@@ -109,12 +114,13 @@ class UpdateTaskInteractor:
         base_validations_interactor. \
             perform_base_validations_for_create_or_update_task(
                 task_dto, task_template_id, field_validations_presenter)
-        existing_gof_ids = \
-            self.create_task_storage.get_gof_ids_related_to_a_task(
-                task_id)
-        existing_field_ids = \
-            self.create_task_storage.get_field_ids_related_to_given_task(
-                task_id)
+        existing_gofs = \
+            self.create_task_storage \
+                .get_gof_ids_with_same_gof_order_related_to_a_task(task_id)
+        existing_fields = \
+            self.create_task_storage \
+                .get_field_ids_with_task_gof_id_related_to_given_task(
+                    task_id)
         task_gof_dtos = [
             TaskGoFWithTaskIdDTO(
                 task_id=task_id,
@@ -125,14 +131,18 @@ class UpdateTaskInteractor:
         ]
         task_gof_dtos_for_updation, task_gof_dtos_for_creation = [], []
         for task_gof_dto in task_gof_dtos:
-            gof_id_already_exists = task_gof_dto.gof_id in existing_gof_ids
-            if gof_id_already_exists:
+            gof_already_exists = \
+                self._is_gof_already_exists(
+                    task_gof_dto.gof_id, task_gof_dto.same_gof_order,
+                    existing_gofs
+                )
+            if gof_already_exists:
                 task_gof_dtos_for_updation.append(task_gof_dto)
             else:
                 task_gof_dtos_for_creation.append(task_gof_dto)
         if task_gof_dtos_for_updation:
             self._update_task_gofs(
-                task_gof_dtos_for_updation, task_dto, existing_field_ids)
+                task_gof_dtos_for_updation, task_dto, existing_fields)
         if task_gof_dtos_for_creation:
             self._create_task_gofs(task_gof_dtos_for_creation, task_dto)
 
@@ -159,22 +169,22 @@ class UpdateTaskInteractor:
     ) -> List[TaskGoFFieldDTO]:
         task_gof_field_dtos = []
         for gof_fields_dto in task_dto.gof_fields_dtos:
-            task_gof_id = self._get_gof_id_for_field_in_task_gof_details(
+            task_gof_id = self._get_task_gof_id_for_field_in_task_gof_details(
                 gof_fields_dto.gof_id, gof_fields_dto.same_gof_order,
-                task_gof_details_dtos
-            )
-            task_gof_field_dtos += [
-                TaskGoFFieldDTO(
-                    field_id=field_values_dto.field_id,
-                    field_response=field_values_dto.field_response,
-                    task_gof_id=task_gof_id
-                )
-                for field_values_dto in gof_fields_dto.field_values_dtos
-            ]
+                task_gof_details_dtos)
+            if task_gof_id is not None:
+                task_gof_field_dtos += [
+                    TaskGoFFieldDTO(
+                        field_id=field_values_dto.field_id,
+                        field_response=field_values_dto.field_response,
+                        task_gof_id=task_gof_id
+                    )
+                    for field_values_dto in gof_fields_dto.field_values_dtos
+                ]
         return task_gof_field_dtos
 
     @staticmethod
-    def _get_gof_id_for_field_in_task_gof_details(
+    def _get_task_gof_id_for_field_in_task_gof_details(
             gof_id: str, same_gof_order: int,
             task_gof_details_dtos: List[TaskGoFDetailsDTO]
     ) -> Optional[int]:
@@ -187,16 +197,17 @@ class UpdateTaskInteractor:
                 return task_gof_details_dto.task_gof_id
         return
 
-    @staticmethod
     def _filter_task_gof_field_dtos(
-            task_gof_field_dtos: List[TaskGoFFieldDTO],
-            existing_field_ids: List[str]
+            self, task_gof_field_dtos: List[TaskGoFFieldDTO],
+            existing_fields: List[FieldIdWithTaskGoFIdDTO]
     ) -> (List[TaskGoFFieldDTO], List[TaskGoFFieldDTO]):
         task_gof_field_dtos_for_updation, task_gof_field_dtos_for_creation = \
             [], []
         for task_gof_field_dto in task_gof_field_dtos:
-            field_id_already_exists = \
-                task_gof_field_dto.field_id in existing_field_ids
+            field_id_already_exists = self._is_field_already_exists(
+                task_gof_field_dto.field_id, task_gof_field_dto.task_gof_id,
+                existing_fields
+            )
             if field_id_already_exists:
                 task_gof_field_dtos_for_updation.append(task_gof_field_dto)
             else:
@@ -207,7 +218,8 @@ class UpdateTaskInteractor:
 
     def _update_task_gofs(
             self, task_gof_dtos_for_updation: List[TaskGoFWithTaskIdDTO],
-            task_dto: UpdateTaskDTO, existing_field_ids: List[str]
+            task_dto: UpdateTaskDTO,
+            existing_fields: List[FieldIdWithTaskGoFIdDTO]
     ):
         task_gof_details_dtos = \
             self.create_task_storage.update_task_gofs(
@@ -217,8 +229,7 @@ class UpdateTaskInteractor:
             task_dto, task_gof_details_dtos)
         task_gof_field_dtos_for_updation, task_gof_field_dtos_for_creation = \
             self._filter_task_gof_field_dtos(
-                task_gof_field_dtos, existing_field_ids
-            )
+                task_gof_field_dtos, existing_fields)
         if task_gof_field_dtos_for_updation:
             self.create_task_storage.update_task_gof_fields(
                 task_gof_field_dtos_for_updation
@@ -244,3 +255,29 @@ class UpdateTaskInteractor:
         self.create_task_storage.create_task_gof_fields(
             task_gof_field_dtos
         )
+
+    @staticmethod
+    def _is_field_already_exists(
+            field_id: str, task_gof_id: int,
+            existing_fields: List[FieldIdWithTaskGoFIdDTO]
+    ) -> bool:
+        for existing_field in existing_fields:
+            field_already_exists = (
+                    field_id == existing_field.field_id and
+                    task_gof_id == existing_field.task_gof_id)
+            if field_already_exists:
+                return True
+        return False
+
+    @staticmethod
+    def _is_gof_already_exists(
+            gof_id: str, same_gof_order: int,
+            existing_gofs_with_same_gof_order: List[GoFIdWithSameGoFOrder]
+    ) -> bool:
+        for existing_gof in existing_gofs_with_same_gof_order:
+            gof_already_exists = (
+                    gof_id == existing_gof.gof_id and
+                    same_gof_order == existing_gof.same_gof_order)
+            if gof_already_exists:
+                return True
+        return False

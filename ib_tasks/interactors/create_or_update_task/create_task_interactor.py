@@ -6,13 +6,16 @@ from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateIds, \
+from ib_tasks.exceptions.task_custom_exceptions import \
+    InvalidTaskTemplateIds, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
-from ib_tasks.interactors.create_or_update_task.create_or_update_task_base_validations import \
+from ib_tasks.interactors.create_or_update_task \
+    .create_or_update_task_base_validations import \
     CreateOrUpdateTaskBaseValidationsInteractor
 from ib_tasks.interactors.presenter_interfaces.create_task_presenter import \
     CreateTaskPresenterInterface
-from ib_tasks.interactors.presenter_interfaces.field_response_validations_presenter import \
+from ib_tasks.interactors.presenter_interfaces \
+    .field_response_validations_presenter import \
     FieldResponseValidationsPresenterInterface
 from ib_tasks.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
@@ -51,7 +54,8 @@ class CreateTaskInteractor:
     def create_task_wrapper(
             self, presenter: CreateTaskPresenterInterface,
             task_dto: CreateTaskDTO, act_on_task_presenter: PresenterInterface,
-            field_validations_presenter: FieldResponseValidationsPresenterInterface
+            field_validations_presenter:
+            FieldResponseValidationsPresenterInterface
     ):
         try:
             return self._prepare_create_task_response(
@@ -81,7 +85,8 @@ class CreateTaskInteractor:
             self, task_dto: CreateTaskDTO,
             presenter: CreateTaskPresenterInterface,
             act_on_task_presenter: PresenterInterface,
-            field_validations_presenter: FieldResponseValidationsPresenterInterface
+            field_validations_presenter:
+            FieldResponseValidationsPresenterInterface
     ):
         self.create_task(
             task_dto, field_validations_presenter, act_on_task_presenter
@@ -90,7 +95,8 @@ class CreateTaskInteractor:
 
     def create_task(
             self, task_dto: CreateTaskDTO,
-            field_validations_presenter: FieldResponseValidationsPresenterInterface,
+            field_validations_presenter:
+            FieldResponseValidationsPresenterInterface,
             act_on_task_presenter: PresenterInterface
     ):
         self._validate_task_template_id(task_dto.task_template_id)
@@ -99,7 +105,7 @@ class CreateTaskInteractor:
                 self.task_storage, self.create_task_storage, self.storage,
                 self.field_storage
             )
-        base_validations_interactor.\
+        base_validations_interactor. \
             perform_base_validations_for_create_or_update_task(
                 task_dto, task_dto.task_template_id,
                 field_validations_presenter

@@ -1,14 +1,16 @@
+from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
+
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
     DuplicateFieldIdsToGoF
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateIds, \
+from ib_tasks.exceptions.task_custom_exceptions import \
+    InvalidTaskTemplateIds, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
 from ib_tasks.interactors.presenter_interfaces.create_task_presenter import \
     CreateTaskPresenterInterface
-from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 
 class CreateTaskPresenterImplementation(

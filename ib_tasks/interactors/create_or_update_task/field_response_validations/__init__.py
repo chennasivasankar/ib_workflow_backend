@@ -13,7 +13,7 @@ from .multi_select_field_validation import MultiSelectFieldValidationInteractor
 from .multi_select_labels_field_validation import \
     MultiSelectLabelFieldValidationInteractor
 from .number_field_validation import NumberFieldValidationInteractor
-from .password_field_validation import PasswordFieldValidation
+from .password_field_validation import PasswordFieldValidationInteractor
 from .phone_number_field_validation import PhoneNumberFieldValidationInteractor
 from .radio_group_field_validation import RadioGroupFieldValidationInteractor
 from .radio_group_field_validation import RadioGroupFieldValidationInteractor
@@ -30,7 +30,7 @@ __all__ = [
     'DropDownFieldValidationInteractor', 'EmailFieldValidationInteractor',
     'FloatFieldValidationInteractor',
     'MultiSelectLabelFieldValidationInteractor',
-    'NumberFieldValidationInteractor', 'PasswordFieldValidation',
+    'NumberFieldValidationInteractor', 'PasswordFieldValidationInteractor',
     'RadioGroupFieldValidationInteractor',
     'PhoneNumberFieldValidationInteractor',
     'RadioGroupFieldValidationInteractor',
