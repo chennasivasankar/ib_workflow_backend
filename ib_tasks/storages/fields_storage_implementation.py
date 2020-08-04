@@ -35,11 +35,12 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                             stage_ids: List[str],
                             user_roles: List[str]) -> \
             List[ActionDetailsDTO]:
-        action_objs = list(set((StageAction.objects
-                                .filter(stage__stage_id__in=stage_ids)
-                                .filter(actionpermittedroles__role_id__in=user_roles
-                                        ))))
-        action_dtos = self._convert_action_objs_to_dtos(action_objs)
+        action_objs = (StageAction.objects
+                       .filter(stage__stage_id__in=stage_ids)
+                       .filter(actionpermittedroles__role_id__in=user_roles
+                               ))
+        unique_action_objs = list(set(action_objs))
+        action_dtos = self._convert_action_objs_to_dtos(unique_action_objs)
         return action_dtos
 
     @staticmethod
@@ -63,7 +64,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
             List[FieldDetailsDTOWithTaskId]:
         q = None
         for counter, item in enumerate(task_fields_dtos):
-            current_queue = Q(task_gof__task_id=item.task_id, field_id__in=item.field_ids,
+            current_queue = Q(task_gof__task_id=item.task_id,
+                              field_id__in=item.field_ids,
                               field__fieldrole__role__in=user_roles)
             if counter == 0:
                 q = current_queue
@@ -142,7 +144,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                                         ) -> List[GetTaskDetailsDTO]:
         q = None
         for counter, item in enumerate(task_dtos):
-            current_queue = Q(stage__stage_id=item.stage_id, task_id=item.task_id)
+            current_queue = Q(stage__stage_id=item.stage_id,
+                              task_id=item.task_id)
             if counter == 0:
                 q = current_queue
             else:

@@ -17,7 +17,8 @@ class TestGetTaskStagesAndActions:
     @pytest.fixture()
     def get_stage_actions(self):
         ActionDetailsDTOFactory.reset_sequence()
-        actions = ActionDetailsDTOFactory.create_batch(size=3, stage_id="stage_id_1")
+        actions = ActionDetailsDTOFactory.create_batch(
+            size=3, stage_id="stage_id_1")
         actions.append(ActionDetailsDTOFactory(stage_id="stage_id_2"))
         actions.append(ActionDetailsDTOFactory(stage_id="stage_id_2"))
         actions.append(ActionDetailsDTOFactory(stage_id="stage_id_3"))
@@ -29,18 +30,24 @@ class TestGetTaskStagesAndActions:
         StageDetailsDTOFactory.reset_sequence(1)
         return StageDetailsDTOFactory.create_batch(size=4)
 
-    def test_when_user_has_permissions_get_stage_actions(
-            self, snapshot,
-            mocker,
-            get_stage_actions,
-            get_stage_details):
-        # Arrange
-        task_id = 1
+    @pytest.fixture()
+    def get_user_roles(self):
         user_roles = ["FIN_PAYMENT_REQUESTER",
                       "FIN_PAYMENT_POC",
                       "FIN_PAYMENT_APPROVER",
                       "FIN_PAYMENTS_RP",
                       "FIN_FINANCE_RP"]
+        return user_roles
+
+    def test_when_user_has_permissions_get_stage_actions(
+            self, snapshot,
+            mocker,
+            get_stage_actions,
+            get_stage_details,
+            get_user_roles):
+        # Arrange
+        task_id = 1
+        user_roles = get_user_roles
         user_roles_mock = get_user_role_ids(mocker)
         user_roles_mock.return_value = user_roles
         storage = create_autospec(FieldsStorageInterface)
@@ -60,14 +67,11 @@ class TestGetTaskStagesAndActions:
     def test_when_user_has_no_permissions_returns_empty_actions(
             self, snapshot,
             mocker,
+            get_user_roles,
             get_stage_details):
         # Arrange
         task_id = 1
-        user_roles = ["FIN_PAYMENT_REQUESTER",
-                      "FIN_PAYMENT_POC",
-                      "FIN_PAYMENT_APPROVER",
-                      "FIN_PAYMENTS_RP",
-                      "FIN_FINANCE_RP"]
+        user_roles = get_user_roles
         user_roles_mock = get_user_role_ids(mocker)
         user_roles_mock.return_value = user_roles
         storage = create_autospec(FieldsStorageInterface)
@@ -83,3 +87,4 @@ class TestGetTaskStagesAndActions:
 
         # Assert
         snapshot.assert_match(response, "response")
+

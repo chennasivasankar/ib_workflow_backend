@@ -40,7 +40,8 @@ class GetTaskFieldsAndActionsInteractor:
         self._validate_task_ids(unique_task_ids, valid_task_ids)
 
         stage_task_dtos = task_dtos
-        valid_stage_ids = self.stage_storage.get_existing_stage_ids(unique_stage_ids)
+        valid_stage_ids = self.stage_storage.get_existing_stage_ids(
+            unique_stage_ids)
 
         self._validate_stage_ids(unique_stage_ids, valid_stage_ids)
         valid_stage_and_tasks = self.storage.validate_task_related_stage_ids(
@@ -49,15 +50,18 @@ class GetTaskFieldsAndActionsInteractor:
 
         task_stage_dtos = self.storage.get_stage_details(stage_task_dtos)
 
-        action_dtos = self.storage.get_actions_details(unique_stage_ids, user_roles)
+        action_dtos = self.storage.get_actions_details(
+            unique_stage_ids, user_roles)
 
         stage_fields_dtos = self.storage.get_field_ids(task_stage_dtos)
         task_fields_dtos = self._map_task_and_their_fields(
             stage_fields_dtos, task_stage_dtos)
-        field_dtos = self.storage.get_fields_details(task_fields_dtos, user_roles)
+        field_dtos = self.storage.get_fields_details(
+            task_fields_dtos, user_roles)
 
-        task_details_dtos = self._map_fields_and_actions_based_on_their_stage_and_task_id(
-            action_dtos, field_dtos, stage_fields_dtos)
+        task_details_dtos = self.\
+            _map_fields_and_actions_based_on_their_stage_and_task_id(
+                action_dtos, field_dtos, stage_fields_dtos)
         return task_details_dtos
 
     def _map_task_and_their_fields(self, stage_fields_dtos, task_stage_dtos):
@@ -65,9 +69,10 @@ class GetTaskFieldsAndActionsInteractor:
         task_ids = []
         for task in task_stage_dtos:
             for stage in stage_fields_dtos:
-                task_template_condition = stage.task_template_id == task.task_template_id
+                template_condition = stage.task_template_id == \
+                                     task.task_template_id
                 stage_condition = stage.stage_id == task.stage_id
-                if stage_condition and task_template_condition and task.task_id not in task_ids:
+                if task.task_id not in task_ids and stage_condition and template_condition:
                     task_ids.append(task.task_id)
                     list_of_stage_fields.append(
                         self._get_task_fields(stage, task))
