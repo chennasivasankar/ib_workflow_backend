@@ -90,7 +90,12 @@ class GetTaskInteractor:
     ):
         from ib_tasks.interactors.get_task_stages_and_actions \
             import GetTaskStagesAndActions
-        interactor = GetTaskStagesAndActions(storage=self.stages_storage)
+        from ib_tasks.storages.storage_implementation import \
+            StorageImplementation
+        interactor = GetTaskStagesAndActions(
+            storage=self.stages_storage,
+            task_storage=StorageImplementation()
+        )
         stages_and_actions_details_dtos = \
             interactor.get_task_stages_and_actions(task_id, user_id)
         return stages_and_actions_details_dtos
