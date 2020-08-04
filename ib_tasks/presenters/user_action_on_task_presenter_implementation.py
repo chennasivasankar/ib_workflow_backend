@@ -87,6 +87,9 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
         response_object = self.prepare_403_forbidden_response(response_dict)
         return response_object
 
+    def raise_exception_for_invalid_present_actions(self, error_obj):
+        pass
+
     def raise_exception_for_user_board_permission_denied(
             self, error_obj: UserBoardPermissionDenied):
         from ib_tasks.constants.exception_messages import \
@@ -160,14 +163,15 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
             stage_actions_dict: Dict[str, List[ActionDTO]],
             stage_fields_dict: Dict[str, List[FieldDisplayDTO]]
     ):
-        column_fields_dict = {}
-        column_actions_dict = {}
+        from collections import defaultdict
+        column_fields_dict = defaultdict(lambda: list())
+        column_actions_dict = defaultdict(lambda: list())
 
         for column_stage_dto in column_stage_dtos:
             column_id = column_stage_dto.column_id
             stage_id = column_stage_dto.stage_id
-            column_fields_dict[column_id] = stage_fields_dict[stage_id]
-            column_actions_dict[column_id] = stage_actions_dict[stage_id]
+            column_fields_dict[column_id] += stage_fields_dict[stage_id]
+            column_actions_dict[column_id] += stage_actions_dict[stage_id]
         return column_fields_dict, column_actions_dict
 
     @staticmethod

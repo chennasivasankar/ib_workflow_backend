@@ -29,3 +29,7 @@ class PresenterInterface(abc.ABC):
     def get_response_for_user_action_on_task(
             self, task_complete_details_dto: TaskCompleteDetailsDTO):
         pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_present_actions(self, error_obj):
+        pass
