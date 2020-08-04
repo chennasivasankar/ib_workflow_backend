@@ -16,8 +16,8 @@ class StageDisplayLogicInteractor:
         return task_status_dtos
 
     def _get_values_from_stage_display_logic(
-            self, stage_display_logics: List[str]) -> List[
-        StatusOperandStageDTO]:
+            self, stage_display_logics: List[str]
+    ) -> List[StatusOperandStageDTO]:
         task_status_dtos = []
         for stage_display_logic in stage_display_logics:
             if not stage_display_logic:
