@@ -19,7 +19,7 @@ from ib_boards.interactors.storage_interfaces.dtos import (
 
 
 class GetBoardsPresenterImplementation(
-        GetBoardsPresenterInterface, HTTPResponseMixin):
+    GetBoardsPresenterInterface, HTTPResponseMixin):
 
     def get_response_for_user_have_no_access_for_boards(
             self) -> response.HttpResponse:
@@ -154,10 +154,10 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
                 task_ids.append(task_id)
 
         tasks_list = self.get_task_details_dict_from_dtos(
-                task_fields_dtos=task_fields_dtos,
-                task_actions_dtos=task_actions_dtos,
-                task_ids=task_ids
-            )
+            task_fields_dtos=task_fields_dtos,
+            task_actions_dtos=task_actions_dtos,
+            task_ids=task_ids
+        )
 
         response_dict = {
             "total_tasks_count": total_tasks,
@@ -172,22 +172,18 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
         from collections import defaultdict
 
         tasks_fields_map = defaultdict(lambda: [])
-        field_ids = []
+
         for task_fields_dto in task_fields_dtos:
-            if task_fields_dto.field_id not in field_ids:
-                tasks_fields_map[task_fields_dto.task_id].append(
-                    task_fields_dto
-                )
-                field_ids.append(task_fields_dto.field_id)
+            tasks_fields_map[task_fields_dto.task_id].append(
+                task_fields_dto
+            )
 
         tasks_actions_map = defaultdict(lambda: [])
-        action_ids = []
+
         for task_actions_dto in task_actions_dtos:
-            if task_actions_dto.action_id not in action_ids:
-                tasks_actions_map[task_actions_dto.task_id].append(
-                    task_actions_dto
-                )
-                action_ids.append(task_actions_dto.action_id)
+            tasks_actions_map[task_actions_dto.task_id].append(
+                task_actions_dto
+            )
 
         tasks_list = []
         for task_id in task_ids:
@@ -209,28 +205,34 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
     @staticmethod
     def _convert_fields_dtos_to_dict(field_dtos: List[FieldDTO]):
         task_fields_list = []
+        field_ids = []
         for field_dto in field_dtos:
-            task_fields_list.append(
-                {
-                    "field_type": field_dto.field_type,
-                    "key": field_dto.key,
-                    "value": field_dto.value
-                }
-            )
+            if field_dto.field_id not in field_ids:
+                task_fields_list.append(
+                    {
+                        "field_type": field_dto.field_type,
+                        "key": field_dto.key,
+                        "value": field_dto.value
+                    }
+                )
+                field_ids.append(field_dto.field_id)
         return task_fields_list
 
     @staticmethod
     def _convert_action_dtos_to_dict(action_dtos: List[ActionDTO]):
         task_actions_list = []
+        action_ids = []
         for action_dto in action_dtos:
-            task_actions_list.append(
-                {
-                    "action_id": action_dto.action_id,
-                    "name": action_dto.name,
-                    "button_text": action_dto.button_text,
-                    "button_color": action_dto.button_color
-                }
-            )
+            if action_dto.action_id not in action_ids:
+                task_actions_list.append(
+                    {
+                        "action_id": action_dto.action_id,
+                        "name": action_dto.name,
+                        "button_text": action_dto.button_text,
+                        "button_color": action_dto.button_color
+                    }
+                )
+                action_ids.append(action_dto.action_id)
         return task_actions_list
 
 
@@ -272,7 +274,8 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
 
     def get_response_for_column_details(
             self, column_details: List[ColumnCompleteDetails],
-            task_fields_dtos: List[FieldDTO], task_actions_dtos: List[ActionDTO],
+            task_fields_dtos: List[FieldDTO],
+            task_actions_dtos: List[ActionDTO],
             column_tasks: List[ColumnTasksDTO]) -> response.HttpResponse:
 
         from collections import defaultdict
@@ -300,7 +303,8 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
     @staticmethod
     def _get_column_complete_details(
             column_dto: ColumnCompleteDetails,
-            task_fields_dtos: List[FieldDTO], task_actions_dtos: List[ActionDTO],
+            task_fields_dtos: List[FieldDTO],
+            task_actions_dtos: List[ActionDTO],
             column_stages: List[ColumnTasksDTO]):
         from collections import defaultdict
         column_tasks_map = defaultdict(lambda: [])

@@ -34,8 +34,6 @@ class TestCase03GetTaskAPITestCase(TestUtils):
         FieldFactory.reset_sequence()
         TaskGoFFieldFactory.reset_sequence()
 
-
-
     @pytest.fixture
     def setup(self, reset_factories):
         task_obj = TaskFactory()

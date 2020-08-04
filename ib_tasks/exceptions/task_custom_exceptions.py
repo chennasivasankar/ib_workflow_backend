@@ -57,6 +57,18 @@ class InvalidTaskIds(Exception):
         self.invalid_task_ids = task_ids
 
 
+class InvalidGoFsOfTaskTemplate(Exception):
+    def __init__(self, invalid_gof_ids: List[str], task_template_id: str):
+        self.gof_ids = invalid_gof_ids
+        self.task_template_id = task_template_id
+
+
+class InvalidFieldsOfGoF(Exception):
+    def __init__(self, gof_id: str, invalid_field_ids: List[str]):
+        self.gof_id = gof_id
+        self.field_ids = invalid_field_ids
+
+
 class ManyStagesToInitialTaskTemplate(Exception):
     def __init__(self, task_template_stages_dict: str):
         self.task_template_stages_dict = task_template_stages_dict
