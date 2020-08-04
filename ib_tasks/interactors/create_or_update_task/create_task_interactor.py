@@ -1,12 +1,19 @@
 from typing import List, Optional
 
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateIds
+from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
+from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
+    DuplicateFieldIdsToGoF
+from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
+from ib_tasks.exceptions.permission_custom_exceptions import \
+    UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateIds, \
+    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
 from ib_tasks.interactors.create_or_update_task.create_or_update_task_base_validations import \
     CreateOrUpdateTaskBaseValidationsInteractor
 from ib_tasks.interactors.presenter_interfaces.create_task_presenter import \
     CreateTaskPresenterInterface
 from ib_tasks.interactors.presenter_interfaces.field_response_validations_presenter import \
-    FieldResponseValidationsPresenter
+    FieldResponseValidationsPresenterInterface
 from ib_tasks.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
 from ib_tasks.interactors.storage_interfaces. \
@@ -43,13 +50,47 @@ class CreateTaskInteractor:
 
     def create_task_wrapper(
             self, presenter: CreateTaskPresenterInterface,
-            task_dto: CreateTaskDTO, act_on_task_presenter: PresenterInterface
+            task_dto: CreateTaskDTO, act_on_task_presenter: PresenterInterface,
+            field_validations_presenter: FieldResponseValidationsPresenterInterface
     ):
-        pass
+        try:
+            return self._prepare_create_task_response(
+                task_dto, presenter, act_on_task_presenter,
+                field_validations_presenter
+            )
+        except InvalidTaskTemplateIds as err:
+            return presenter.raise_invalid_task_template_ids(err)
+        except InvalidActionException as err:
+            return presenter.raise_invalid_action_id(err)
+        except InvalidGoFIds as err:
+            return presenter.raise_invalid_gof_ids(err)
+        except InvalidFieldIds as err:
+            return presenter.raise_invalid_field_ids(err)
+        except InvalidGoFsOfTaskTemplate as err:
+            return presenter.raise_invalid_gofs_given_to_a_task_template(err)
+        except DuplicateFieldIdsToGoF as err:
+            return presenter.raise_duplicate_field_ids_to_a_gof(err)
+        except InvalidFieldsOfGoF as err:
+            return presenter.raise_invalid_fields_given_to_a_gof(err)
+        except UserNeedsGoFWritablePermission as err:
+            return presenter.raise_user_needs_gof_writable_permission(err)
+        except UserNeedsFieldWritablePermission as err:
+            return presenter.raise_user_needs_field_writable_permission(err)
+
+    def _prepare_create_task_response(
+            self, task_dto: CreateTaskDTO,
+            presenter: CreateTaskPresenterInterface,
+            act_on_task_presenter: PresenterInterface,
+            field_validations_presenter: FieldResponseValidationsPresenterInterface
+    ):
+        self.create_task(
+            task_dto, field_validations_presenter, act_on_task_presenter
+        )
+        return presenter.get_create_task_response()
 
     def create_task(
             self, task_dto: CreateTaskDTO,
-            field_validations_presenter: FieldResponseValidationsPresenter,
+            field_validations_presenter: FieldResponseValidationsPresenterInterface,
             act_on_task_presenter: PresenterInterface
     ):
         self._validate_task_template_id(task_dto.task_template_id)

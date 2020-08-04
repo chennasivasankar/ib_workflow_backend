@@ -2,15 +2,16 @@ from typing import List, Optional, Union
 
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
-    DuplicationOfFieldIdsExist
+    DuplicateFieldIdsToGoF
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
-from ib_tasks.interactors.presenter_interfaces.field_response_validations_presenter import \
-    FieldResponseValidationsPresenter
-from ib_tasks.interactors.storage_interfaces.\
+from ib_tasks.interactors.presenter_interfaces.\
+    field_response_validations_presenter import \
+    FieldResponseValidationsPresenterInterface
+from ib_tasks.interactors.storage_interfaces. \
     create_or_update_task_storage_interface import \
     CreateOrUpdateTaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
@@ -38,7 +39,7 @@ class CreateOrUpdateTaskBaseValidationsInteractor:
     def perform_base_validations_for_create_or_update_task(
             self, task_dto: Union[CreateTaskDTO, UpdateTaskDTO],
             task_template_id: str,
-            presenter: FieldResponseValidationsPresenter
+            presenter: FieldResponseValidationsPresenterInterface
     ):
         is_valid_action_id = self.storage.validate_action(task_dto.action_id)
         if not is_valid_action_id:
@@ -63,7 +64,7 @@ class CreateOrUpdateTaskBaseValidationsInteractor:
         self._validate_user_permission_on_given_fields_and_gofs(
             gof_ids, field_ids, task_dto.created_by_id
         )
-        from ib_tasks.interactors.create_or_update_task.\
+        from ib_tasks.interactors.create_or_update_task. \
             validate_field_responses import ValidateFieldResponsesInteractor
         interactor = ValidateFieldResponsesInteractor(self.task_storage)
         field_values_dtos = \
@@ -107,7 +108,7 @@ class CreateOrUpdateTaskBaseValidationsInteractor:
 
     def _validate_for_given_fields_are_related_to_given_gofs(
             self, gof_fields_dtos: List[GoFFieldsDTO], gof_ids: List[str]
-    ):
+    ) -> Union[None, InvalidFieldsOfGoF, DuplicateFieldIdsToGoF]:
         from collections import defaultdict
         field_id_with_gof_id_dtos = \
             self.field_storage.get_field_ids_related_to_given_gof_ids(gof_ids)
@@ -124,15 +125,16 @@ class CreateOrUpdateTaskBaseValidationsInteractor:
             self._validate_for_invalid_fields_to_given_gof(
                 gof_fields_dto.gof_id, given_gof_field_ids, valid_gof_field_ids
             )
+        return
 
     def _validate_for_invalid_fields_to_given_gof(
             self, gof_id: str, given_gof_field_ids: List[str],
             valid_gof_field_ids: List[str]
-    ) -> Union[None, InvalidFieldsOfGoF, DuplicationOfFieldIdsExist]:
+    ) -> Union[None, InvalidFieldsOfGoF, DuplicateFieldIdsToGoF]:
         duplicate_field_ids = self._get_duplicates_in_given_list(
             given_gof_field_ids)
         if duplicate_field_ids:
-            raise DuplicationOfFieldIdsExist(duplicate_field_ids)
+            raise DuplicateFieldIdsToGoF(gof_id, duplicate_field_ids)
         invalid_gof_field_ids = list(
             set(given_gof_field_ids) - set(valid_gof_field_ids)
         )

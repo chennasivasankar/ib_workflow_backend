@@ -1,7 +1,7 @@
 import abc
 
 
-class FieldResponseValidationsPresenter(abc.ABC):
+class FieldResponseValidationsPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_exception_for_empty_value_in_required_field(self, err):

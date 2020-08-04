@@ -1,7 +1,5 @@
 from typing import List, Optional
 
-from ib_tasks.interactors.create_or_update_task.field_response_validations.\
-    base_field_validation import BaseFieldValidation
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     EmptyValueForRequiredField, InvalidPhoneNumberValue, \
     InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
@@ -19,8 +17,11 @@ from ib_tasks.interactors.create_or_update_task.field_response_validations \
     MultiSelectFieldValidationInteractor, DateFieldValidationInteractor, \
     TimeFieldValidationInteractor, ImageUploaderFieldValidationInteractor, \
     FileUploaderFieldValidationInteractor
-from ib_tasks.interactors.presenter_interfaces.field_response_validations_presenter import \
-    FieldResponseValidationsPresenter
+from ib_tasks.interactors.create_or_update_task.field_response_validations. \
+    base_field_validation import BaseFieldValidation
+from ib_tasks.interactors.presenter_interfaces. \
+    field_response_validations_presenter import \
+    FieldResponseValidationsPresenterInterface
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
@@ -36,7 +37,7 @@ class ValidateFieldResponsesInteractor:
         self.task_storage = task_storage
 
     def validate_field_responses_wrapper(
-            self, presenter: FieldResponseValidationsPresenter,
+            self, presenter: FieldResponseValidationsPresenterInterface,
             field_values_dtos: List[FieldValuesDTO]
     ):
         try:
@@ -62,16 +63,14 @@ class ValidateFieldResponsesInteractor:
         except IncorrectNameInGoFSelectorField as err:
             return presenter. \
                 raise_exception_for_invalid_name_in_gof_selector_field_value(
-                    err
-                )
+                err)
         except IncorrectRadioGroupChoice as err:
             return presenter. \
                 raise_exception_for_invalid_choice_in_radio_group_field(err)
         except IncorrectCheckBoxOptionsSelected as err:
             return presenter. \
                 raise_exception_for_invalid_checkbox_group_options_selected(
-                    err
-                )
+                err)
         except IncorrectMultiSelectOptionsSelected as err:
             return presenter. \
                 raise_exception_for_invalid_multi_select_options_selected(err)
@@ -91,8 +90,7 @@ class ValidateFieldResponsesInteractor:
             return presenter.raise_exception_for_invalid_file_url(err)
         except InvalidFileFormat as err:
             return presenter.raise_exception_for_not_acceptable_file_format(
-                err
-            )
+                err)
 
     def validate_field_responses(
             self, field_values_dtos: List[FieldValuesDTO]

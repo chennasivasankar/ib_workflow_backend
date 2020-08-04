@@ -20,6 +20,21 @@ class CreateOrUpdateTaskStorageImplementation(
     CreateOrUpdateTaskStorageInterface
 ):
 
+    def get_all_gof_ids_related_to_a_task_template(self,
+                                                   task_template_id: str) -> \
+    List[str]:
+        from ib_tasks.models import TaskTemplateGoFs
+        gof_ids = list(
+            TaskTemplateGoFs.objects.filter(task_template_id=task_template_id)\
+            .values_list('gof_id', flat=True)
+        )
+        return gof_ids
+
+    def get_template_id_for_given_task(self, task_id: int) -> str:
+        from ib_tasks.models import Task
+        template_id = Task.objects.get(pk=task_id).template_id
+        return template_id
+
     def set_status_variables_for_template_and_task(self, task_template_id,
                                                    task_id):
         from ib_tasks.models import \
