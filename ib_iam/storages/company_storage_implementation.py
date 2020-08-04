@@ -10,13 +10,6 @@ from ib_iam.interactors.storage_interfaces.dtos import (
 
 class CompanyStorageImplementation(CompanyStorageInterface):
 
-    def validate_is_user_admin(self, user_id: str):
-        from ib_iam.exceptions.custom_exceptions import UserHasNoAccess
-        try:
-            UserDetails.objects.get(user_id=user_id, is_admin=True)
-        except UserDetails.DoesNotExist:
-            raise UserHasNoAccess
-
     def get_company_dtos(self) -> List[CompanyDTO]:
         company_objects = Company.objects.all()
         company_dtos = [
@@ -53,11 +46,6 @@ class CompanyStorageImplementation(CompanyStorageInterface):
             description=company_object.description,
             logo_url=company_object.logo_url)
         return company_dto
-
-    def get_valid_user_ids_among_the_given_user_ids(self, user_ids: List[str]):
-        user_ids = UserDetails.objects.filter(user_id__in=user_ids) \
-            .values_list('user_id', flat=True)
-        return list(user_ids)
 
     def get_company_id_if_company_name_already_exists(self, name: str):
         try:

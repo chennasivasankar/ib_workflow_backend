@@ -45,7 +45,7 @@ class ValidationMixin:
             raise NameShouldNotContainsNumbersSpecCharacters()
 
     def _validate_is_user_admin(self, user_id: str):
-        is_admin = self.storage.is_user_admin(user_id=user_id)
+        is_admin = self.user_storage.is_user_admin(user_id=user_id)
         is_not_admin = not is_admin
         if is_not_admin:
             from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin
@@ -71,7 +71,7 @@ class ValidationMixin:
 
     def _validate_is_invalid_users_exists(self, user_ids: List[str]):
         user_ids_from_db = \
-            self.storage.get_valid_user_ids_among_the_given_user_ids(
+            self.user_storage.get_valid_user_ids_among_the_given_user_ids(
                 user_ids=user_ids)
         is_invalid_users_found = len(user_ids) != len(user_ids_from_db)
         if is_invalid_users_found:

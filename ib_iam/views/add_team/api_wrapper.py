@@ -8,6 +8,7 @@ from ib_iam.presenters.team_presenter_implementation import (
     TeamPresenterImplementation)
 from ib_iam.storages.team_storage_implementation import (
     TeamStorageImplementation)
+from ...storages.user_storage_implementation import UserStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
@@ -19,9 +20,11 @@ def api_wrapper(*args, **kwargs):
     description = request_data["description"]
     user_ids = request_data["user_ids"]
 
-    storage = TeamStorageImplementation()
+    team_storage = TeamStorageImplementation()
+    user_storage = UserStorageImplementation()
     presenter = TeamPresenterImplementation()
-    interactor = TeamInteractor(storage=storage)
+    interactor = TeamInteractor(team_storage=team_storage,
+                                user_storage=user_storage)
 
     team_with_user_ids_dto = TeamWithUserIdsDTO(
         name=name,

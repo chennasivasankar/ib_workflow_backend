@@ -13,6 +13,10 @@ class UserStorageInterface(ABC):
         pass
 
     @abstractmethod
+    def is_user_admin(self, user_id: str) -> bool:
+        pass
+
+    @abstractmethod
     def is_user_exist(self, user_id: str) -> bool:
         pass
 
@@ -116,4 +120,9 @@ class UserStorageInterface(ABC):
     def get_user_details_dtos_based_on_search_query(
             self, search_query: str
     ) -> List[UserIdAndNameDTO]:
+        pass
+
+    @abstractmethod
+    def get_valid_user_ids_among_the_given_user_ids(
+            self, user_ids: List[str]) -> List[str]:
         pass

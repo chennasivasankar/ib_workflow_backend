@@ -1,28 +1,26 @@
 import pytest
-
-from ib_iam.exceptions.custom_exceptions import UserHasNoAccess
-from ib_iam.storages.team_storage_implementation import \
-    TeamStorageImplementation
+from ib_iam.storages.user_storage_implementation import \
+    UserStorageImplementation
 
 
 @pytest.mark.django_db
-class TestRaiseExceptionIfUserIsNotAdmin:
-    def test_given_user_is_not_admin_raises_user_has_no_access_error(self):
+class TestIsUserAdmin:
+    def test_given_user_is_not_admin_returns_false(self):
         from ib_iam.tests.factories.models import UserDetailsFactory
         UserDetailsFactory.create(user_id="user_id-2", is_admin=False)
-        storage = TeamStorageImplementation()
+        expected_response = False
+        storage = UserStorageImplementation()
 
-        with pytest.raises(UserHasNoAccess):
-            storage.validate_is_user_admin(user_id="user_id-2")
+        actual_response = storage.is_user_admin(user_id="user_id-2")
 
-    def test_if_user_is_admin_returns_none(self):
+        assert actual_response == expected_response
+
+    def test_given_user_is_admin_returns_true(self):
         from ib_iam.tests.factories.models import UserDetailsFactory
-        UserDetailsFactory.create(user_id="user_id-1", is_admin=True)
-        storage = TeamStorageImplementation()
-        expected_result = None
+        UserDetailsFactory.create(user_id="user_id-2", is_admin=True)
+        expected_response = True
+        storage = UserStorageImplementation()
 
-        actual_result = storage.validate_is_user_admin(
-            user_id="user_id-1"
-        )
+        actual_response = storage.is_user_admin(user_id="user_id-2")
 
-        assert actual_result == expected_result
+        assert actual_response == expected_response

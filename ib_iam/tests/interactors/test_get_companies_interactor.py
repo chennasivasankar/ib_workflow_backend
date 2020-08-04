@@ -8,6 +8,8 @@ from ib_iam.interactors.presenter_interfaces \
                                                CompanyWithEmployeeIdsAndUserDetailsDTO)
 from ib_iam.interactors.storage_interfaces.company_storage_interface import \
     CompanyStorageInterface
+from ib_iam.interactors.storage_interfaces.user_storage_interface import \
+    UserStorageInterface
 
 
 @pytest.fixture
@@ -40,17 +42,20 @@ def expected_company_employee_ids_dtos():
 
 class TestGetCompaniesInteractor:
     def test_if_user_is_not_admin_returns_user_has_no_access_response(self):
-        storage = create_autospec(CompanyStorageInterface)
+        company_storage = create_autospec(CompanyStorageInterface)
+        user_storage = create_autospec(UserStorageInterface)
         presenter = create_autospec(GetCompaniesPresenterInterface)
-        interactor = GetCompaniesInteractor(storage=storage)
+        interactor = GetCompaniesInteractor(company_storage=company_storage,
+                                            user_storage=user_storage)
         user_id = "1"
-        storage.validate_is_user_admin.side_effect = UserHasNoAccess
+        user_storage.is_user_admin.return_value = False
         presenter.get_user_has_no_access_response_for_get_companies \
             .return_value = Mock()
 
         interactor.get_companies_wrapper(user_id=user_id, presenter=presenter)
 
-        storage.validate_is_user_admin.assert_called_once_with(user_id=user_id)
+        user_storage.is_user_admin.assert_called_once_with(
+            user_id=user_id)
         presenter.get_user_has_no_access_response_for_get_companies \
             .assert_called_once()
 
@@ -59,17 +64,18 @@ class TestGetCompaniesInteractor:
             mocker,
             expected_company_dtos,
             expected_company_employee_ids_dtos,
-            expected_user_dtos
-    ):
+            expected_user_dtos):
         from ib_iam.tests.common_fixtures.adapters.user_service_mocks import (
             prepare_user_profile_dtos_mock)
-        storage = create_autospec(CompanyStorageInterface)
+        company_storage = create_autospec(CompanyStorageInterface)
+        user_storage = create_autospec(UserStorageInterface)
         presenter = create_autospec(GetCompaniesPresenterInterface)
+        interactor = GetCompaniesInteractor(company_storage=company_storage,
+                                            user_storage=user_storage)
         user_id = "4"
         company_ids = ["1", "2"]
-        interactor = GetCompaniesInteractor(storage=storage)
-        storage.get_company_dtos.return_value = expected_company_dtos
-        storage.get_company_employee_ids_dtos \
+        company_storage.get_company_dtos.return_value = expected_company_dtos
+        company_storage.get_company_employee_ids_dtos \
             .return_value = expected_company_employee_ids_dtos
         mock = prepare_user_profile_dtos_mock(mocker)
         mock.return_value = expected_user_dtos
@@ -82,8 +88,8 @@ class TestGetCompaniesInteractor:
 
         interactor.get_companies_wrapper(user_id=user_id, presenter=presenter)
 
-        storage.get_company_dtos.assert_called_once()
-        storage.get_company_employee_ids_dtos.assert_called_once_with(
+        company_storage.get_company_dtos.assert_called_once()
+        company_storage.get_company_employee_ids_dtos.assert_called_once_with(
             company_ids=company_ids)
         presenter.get_response_for_get_companies.assert_called_once_with(
             company_details_dtos=company_details_dto)

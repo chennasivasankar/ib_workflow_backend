@@ -6,6 +6,7 @@ from ib_iam.interactors.storage_interfaces.dtos import CompanyWithCompanyIdAndUs
 from ib_iam.presenters.update_company_presenter_implementation import \
     UpdateCompanyPresenterImplementation
 from ib_iam.storages.company_storage_implementation import CompanyStorageImplementation
+from ...storages.user_storage_implementation import UserStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
@@ -19,9 +20,11 @@ def api_wrapper(*args, **kwargs):
     logo_url = request_data["logo_url"]
     user_ids = request_data["employee_ids"]
 
-    storage = CompanyStorageImplementation()
+    company_storage = CompanyStorageImplementation()
+    user_storage = UserStorageImplementation()
     presenter = UpdateCompanyPresenterImplementation()
-    interactor = CompanyInteractor(storage=storage)
+    interactor = CompanyInteractor(company_storage=company_storage,
+                                   user_storage=user_storage)
 
     company_with_company_id_and_user_ids_dto = \
         CompanyWithCompanyIdAndUserIdsDTO(company_id=company_id,

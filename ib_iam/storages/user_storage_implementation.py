@@ -245,6 +245,12 @@ class UserStorageImplementation(UserStorageInterface):
         )
         return user_details_dtos
 
+    def get_valid_user_ids_among_the_given_user_ids(self, user_ids: List[str]):
+        from ib_iam.models import UserDetails
+        user_ids = UserDetails.objects.filter(user_id__in=user_ids) \
+            .values_list('user_id', flat=True)
+        return list(user_ids)
+
     def _convert_to_user_details_dtos(self, user_details_objects):
         user_details_dtos = [
             self._convert_to_user_details_dto(

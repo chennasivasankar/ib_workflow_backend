@@ -24,6 +24,10 @@ class TestCase01DeleteCompanyAPITestCase(TestUtils):
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
+        print("*" * 80)
+        from ib_iam.models import UserDetails
+        print(UserDetails.objects.values_list())
+        print("*" * 80)
 
     @pytest.fixture
     def setup(self, api_user):
@@ -35,4 +39,8 @@ class TestCase01DeleteCompanyAPITestCase(TestUtils):
         UserDetailsFactory.create(user_id=user_id, is_admin=True)
         company_object = CompanyFactory.create(company_id=company_id)
         UserDetailsFactory.create_batch(size=3, company=company_object)
+        print("*"*80)
+        from ib_iam.models import UserDetails
+        print(UserDetails.objects.values_list())
+        print("*" * 80)
         return company_id

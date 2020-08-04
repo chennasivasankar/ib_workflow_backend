@@ -1,5 +1,7 @@
 from typing import List
 from ib_iam.adapters.service_adapter import get_service_adapter
+from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin
+from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces \
     .get_companies_presenter_interface import GetCompaniesPresenterInterface
 from ib_iam.interactors.storage_interfaces \
@@ -8,13 +10,17 @@ from ib_iam.interactors.presenter_interfaces \
     .get_companies_presenter_interface import CompanyWithEmployeeIdsAndUserDetailsDTO
 from ib_iam.interactors.storage_interfaces.dtos import (
     CompanyDTO, CompanyIdWithEmployeeIdsDTO)
-from ib_iam.exceptions.custom_exceptions import UserHasNoAccess
+from ib_iam.interactors.storage_interfaces.user_storage_interface import \
+    UserStorageInterface
 
 
-class GetCompaniesInteractor:
+class GetCompaniesInteractor(ValidationMixin):
 
-    def __init__(self, storage: CompanyStorageInterface):
-        self.storage = storage
+    def __init__(self,
+                 company_storage: CompanyStorageInterface,
+                 user_storage: UserStorageInterface):
+        self.user_storage = user_storage
+        self.company_storage = company_storage
 
     def get_companies_wrapper(self, user_id: str,
                               presenter: GetCompaniesPresenterInterface):
@@ -22,17 +28,17 @@ class GetCompaniesInteractor:
             company_details_dtos = self.get_companies(user_id=user_id)
             response = presenter.get_response_for_get_companies(
                 company_details_dtos=company_details_dtos)
-        except UserHasNoAccess:
+        except UserIsNotAdmin:
             response = presenter \
                 .get_user_has_no_access_response_for_get_companies()
         return response
 
     def get_companies(self, user_id: str):
-        self.storage.validate_is_user_admin(user_id=user_id)
-        company_dtos = self.storage.get_company_dtos()
+        self._validate_is_user_admin(user_id=user_id)
+        company_dtos = self.company_storage.get_company_dtos()
         company_ids = self._get_company_ids_from_company_dtos(
             company_dtos=company_dtos)
-        company_id_with_employee_ids_dtos = self.storage \
+        company_id_with_employee_ids_dtos = self.company_storage \
             .get_company_employee_ids_dtos(company_ids=company_ids)
         employee_ids = \
             self._get_all_employee_ids_from_company_employee_ids_dtos(
