@@ -144,7 +144,7 @@ class TestGetColumnDetailsInteractor:
         presenter.response_for_invalid_limit_value.assert_called_once()
 
     @patch("ib_boards.adapters.service_adapter.ServiceAdapter.iam_service")
-    def test_with_board_which_donot_have_access_raises_exception(
+    def test_with_board_which_do_not_have_access_raises_exception(
             self, user_roles_service, mock_storage, mock_presenter):
         # Arrange
         storage = mock_storage
