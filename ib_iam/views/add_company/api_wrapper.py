@@ -3,7 +3,7 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
 from .validator_class import ValidatorClass
 from ib_iam.interactors.company_interactor import CompanyInteractor
 from ib_iam.interactors.storage_interfaces.dtos import \
-    CompanyDetailsWithUserIdsDTO
+    CompanyWithUserIdsDTO
 from ib_iam.presenters.add_company_presenter_implementation import \
     AddCompanyPresenterImplementation
 from ib_iam.storages.company_storage_implementation import CompanyStorageImplementation
@@ -23,17 +23,14 @@ def api_wrapper(*args, **kwargs):
     presenter = AddCompanyPresenterImplementation()
     interactor = CompanyInteractor(storage=storage)
 
-    company_details_with_user_ids_dto = CompanyDetailsWithUserIdsDTO(
-        name=name,
-        logo_url=logo_url,
-        description=description,
-        user_ids=user_ids
-    )
+    company_with_user_ids_dto = CompanyWithUserIdsDTO(name=name,
+                                                      logo_url=logo_url,
+                                                      description=description,
+                                                      user_ids=user_ids)
 
     response_data = interactor.add_company_wrapper(
         user_id=user_id,
-        company_details_with_user_ids_dto=company_details_with_user_ids_dto,
-        presenter=presenter
-    )
+        company_with_user_ids_dto=company_with_user_ids_dto,
+        presenter=presenter)
 
     return response_data

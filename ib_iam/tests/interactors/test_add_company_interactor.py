@@ -5,7 +5,8 @@ from ib_iam.interactors.presenter_interfaces.add_company_presenter_interface imp
 )
 from ib_iam.interactors.storage_interfaces.dtos import \
     CompanyNameLogoAndDescriptionDTO
-from ib_iam.tests.factories.storage_dtos import CompanyDetailsWithUserIdsDTOFactory
+from ib_iam.tests.factories.storage_dtos import \
+    CompanyWithUserIdsDTOFactory
 from ib_iam.interactors.storage_interfaces.company_storage_interface import (
     CompanyStorageInterface
 )
@@ -19,7 +20,7 @@ class TestAddCompanyInteractor:
         presenter = create_autospec(AddCompanyPresenterInterface)
         interactor = CompanyInteractor(storage=storage)
         user_id = "1"
-        company_details_with_user_ids_dto = CompanyDetailsWithUserIdsDTOFactory()
+        company_with_user_ids_dto = CompanyWithUserIdsDTOFactory()
         storage.validate_is_user_admin \
             .side_effect = UserHasNoAccess
         presenter.get_user_has_no_access_response_for_add_company \
@@ -27,7 +28,7 @@ class TestAddCompanyInteractor:
 
         interactor.add_company_wrapper(
             user_id=user_id,
-            company_details_with_user_ids_dto=company_details_with_user_ids_dto,
+            company_with_user_ids_dto=company_with_user_ids_dto,
             presenter=presenter
         )
 
@@ -42,7 +43,8 @@ class TestAddCompanyInteractor:
         interactor = CompanyInteractor(storage=storage)
         user_id = "1"
         user_ids = ["2", "2", "3", "1"]
-        company_details_with_user_ids_dto = CompanyDetailsWithUserIdsDTOFactory(
+        expected_user_ids_from_exception = ["2"]
+        company_with_user_ids_dto = CompanyWithUserIdsDTOFactory(
             name="company1", user_ids=user_ids)
         storage.get_company_id_if_company_name_already_exists.return_value = None
         presenter.get_duplicate_users_response_for_add_company \
@@ -50,10 +52,15 @@ class TestAddCompanyInteractor:
 
         interactor.add_company_wrapper(
             user_id=user_id,
-            company_details_with_user_ids_dto=company_details_with_user_ids_dto,
+            company_with_user_ids_dto=company_with_user_ids_dto,
             presenter=presenter)
 
-        presenter.get_duplicate_users_response_for_add_company.assert_called_once()
+        call_obj = \
+            presenter.get_duplicate_users_response_for_add_company.call_args
+        error_obj = call_obj.args[0]
+        actual_user_ids_from_exception = error_obj.user_ids
+        assert actual_user_ids_from_exception == \
+               expected_user_ids_from_exception
 
     def test_given_invalid_users_returns_invalid_users_response(self):
         storage = create_autospec(CompanyStorageInterface)
@@ -62,9 +69,9 @@ class TestAddCompanyInteractor:
         user_id = "1"
         valid_user_ids = ["2", "3"]
         invalid_user_ids = ["2", "3", "4"]
-        company_details_with_user_ids_dto = CompanyDetailsWithUserIdsDTOFactory(
-            name="company1", user_ids=invalid_user_ids
-        )
+        expected_user_ids_from_exception = ["4"]
+        company_with_user_ids_dto = CompanyWithUserIdsDTOFactory(
+            name="company1", user_ids=invalid_user_ids)
         storage.get_company_id_if_company_name_already_exists.return_value = None
         storage.get_valid_user_ids_among_the_given_user_ids \
             .return_value = valid_user_ids
@@ -72,15 +79,21 @@ class TestAddCompanyInteractor:
 
         interactor.add_company_wrapper(
             user_id=user_id,
-            company_details_with_user_ids_dto=company_details_with_user_ids_dto,
+            company_with_user_ids_dto=company_with_user_ids_dto,
             presenter=presenter
         )
 
         storage.get_valid_user_ids_among_the_given_user_ids \
             .assert_called_once_with(user_ids=invalid_user_ids)
-        presenter.get_invalid_users_response_for_add_company.assert_called_once()
+        call_obj = \
+            presenter.get_invalid_users_response_for_add_company.call_args
+        error_obj = call_obj.args[0]
+        actual_user_ids_from_exception = error_obj.user_ids
+        assert actual_user_ids_from_exception == \
+               expected_user_ids_from_exception
 
-    def test_company_name_exists_returns_company_name_already_exists_response(self):
+    def test_company_name_exists_returns_company_name_already_exists_response(
+            self):
         storage = create_autospec(CompanyStorageInterface)
         presenter = create_autospec(AddCompanyPresenterInterface)
         interactor = CompanyInteractor(storage=storage)
@@ -90,7 +103,7 @@ class TestAddCompanyInteractor:
         expected_company_name_from_company_name_already_exists_error = company_name
         storage.get_valid_user_ids_among_the_given_user_ids \
             .return_value = user_ids
-        company_details_with_user_ids_dto = CompanyDetailsWithUserIdsDTOFactory(
+        company_with_user_ids_dto = CompanyWithUserIdsDTOFactory(
             name="company1", user_ids=user_ids
         )
         storage.get_company_id_if_company_name_already_exists.return_value = "1"
@@ -99,12 +112,13 @@ class TestAddCompanyInteractor:
 
         interactor.add_company_wrapper(
             user_id=user_id,
-            company_details_with_user_ids_dto=company_details_with_user_ids_dto,
+            company_with_user_ids_dto=company_with_user_ids_dto,
             presenter=presenter
         )
 
         storage.get_company_id_if_company_name_already_exists \
-            .assert_called_once_with(name=company_details_with_user_ids_dto.name)
+            .assert_called_once_with(
+            name=company_with_user_ids_dto.name)
         call_obj = \
             presenter.get_company_name_already_exists_response_for_add_company.call_args
         error_obj = call_obj.args[0]
@@ -120,12 +134,12 @@ class TestAddCompanyInteractor:
         user_id = "1"
         company_id = "1"
         user_ids = ["2", "3"]
-        company_details_with_user_ids_dto = CompanyDetailsWithUserIdsDTOFactory()
+        company_with_user_ids_dto = CompanyWithUserIdsDTOFactory()
         company_name_logo_and_description_dto = \
             CompanyNameLogoAndDescriptionDTO(
-                name=company_details_with_user_ids_dto.name,
-                description=company_details_with_user_ids_dto.description,
-                logo_url=company_details_with_user_ids_dto.logo_url)
+                name=company_with_user_ids_dto.name,
+                description=company_with_user_ids_dto.description,
+                logo_url=company_with_user_ids_dto.logo_url)
         storage.get_company_id_if_company_name_already_exists.return_value = None
         storage.get_valid_user_ids_among_the_given_user_ids \
             .return_value = user_ids
@@ -134,7 +148,7 @@ class TestAddCompanyInteractor:
 
         interactor.add_company_wrapper(
             user_id=user_id,
-            company_details_with_user_ids_dto=company_details_with_user_ids_dto,
+            company_with_user_ids_dto=company_with_user_ids_dto,
             presenter=presenter)
 
         storage.add_company.assert_called_once_with(

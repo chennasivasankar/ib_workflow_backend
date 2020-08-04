@@ -5,10 +5,9 @@ from ib_iam.interactors.presenter_interfaces \
 from ib_iam.interactors.storage_interfaces \
     .company_storage_interface import CompanyStorageInterface
 from ib_iam.interactors.presenter_interfaces \
-    .get_companies_presenter_interface import CompanyWithEmployeesDetailsDTO
+    .get_companies_presenter_interface import CompanyWithEmployeeIdsAndUserDetailsDTO
 from ib_iam.interactors.storage_interfaces.dtos import (
-    CompanyDTO, CompanyIdWithEmployeeIdsDTO, EmployeeDTO)
-from ib_iam.adapters.dtos import UserProfileDTO
+    CompanyDTO, CompanyIdWithEmployeeIdsDTO)
 from ib_iam.exceptions.custom_exceptions import UserHasNoAccess
 
 
@@ -17,10 +16,8 @@ class GetCompaniesInteractor:
     def __init__(self, storage: CompanyStorageInterface):
         self.storage = storage
 
-    def get_companies_wrapper(
-            self,
-            user_id: str,
-            presenter: GetCompaniesPresenterInterface):
+    def get_companies_wrapper(self, user_id: str,
+                              presenter: GetCompaniesPresenterInterface):
         try:
             company_details_dtos = self.get_companies(user_id=user_id)
             response = presenter.get_response_for_get_companies(
@@ -41,13 +38,14 @@ class GetCompaniesInteractor:
             self._get_all_employee_ids_from_company_employee_ids_dtos(
                 company_id_with_employee_ids_dtos=
                 company_id_with_employee_ids_dtos)
-        employee_dtos = self._get_employees_dtos_from_service(
+        user_dtos = self._get_user_dtos_from_service(
             employee_ids=employee_ids)
-        company_with_employees_dto = CompanyWithEmployeesDetailsDTO(
-            company_dtos=company_dtos,
-            company_id_with_employee_ids_dtos=company_id_with_employee_ids_dtos,
-            employee_dtos=employee_dtos)
-        return company_with_employees_dto
+        company_with_employee_ids_and_users_dto = \
+            CompanyWithEmployeeIdsAndUserDetailsDTO(
+                company_dtos=company_dtos,
+                company_id_with_employee_ids_dtos=company_id_with_employee_ids_dtos,
+                user_dtos=user_dtos)
+        return company_with_employee_ids_and_users_dto
 
     @staticmethod
     def _get_company_ids_from_company_dtos(company_dtos: List[CompanyDTO]) -> \
@@ -65,21 +63,9 @@ class GetCompaniesInteractor:
         unique_employee_ids = list(set(employee_ids))
         return unique_employee_ids
 
-    def _get_employees_dtos_from_service(self, employee_ids: List[str]):
+    @staticmethod
+    def _get_user_dtos_from_service(employee_ids: List[str]):
         service = get_service_adapter()
         user_dtos = service.user_service.get_basic_user_dtos(
             user_ids=employee_ids)
-        employee_dtos = self._convert_user_dtos_to_employee_dtos(
-            user_dtos=user_dtos)
-        return employee_dtos
-
-    @staticmethod
-    def _convert_user_dtos_to_employee_dtos(user_dtos: List[UserProfileDTO]) \
-            -> List[EmployeeDTO]:
-        employee_dtos = [
-            EmployeeDTO(employee_id=user_dto.user_id,
-                        name=user_dto.name,
-                        profile_pic_url=user_dto.profile_pic_url)
-            for user_dto in user_dtos
-        ]
-        return employee_dtos
+        return user_dtos

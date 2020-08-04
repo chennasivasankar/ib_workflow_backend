@@ -4,7 +4,7 @@ from ib_iam.presenters.update_team_presenter_implementation import (
 from ib_iam.constants.exception_messages import DUPLICATE_USER_IDS_FOR_UPDATE_TEAM
 
 
-class TestRaiseExceptionForDuplicateMembers:
+class TestRaiseExceptionForDuplicateUserIdsForUpdateTeam:
     def test_when_it_is_called_it_returns_http_response(self):
         json_presenter = UpdateTeamPresenterImplementation()
         user_ids = ["1", "2"]

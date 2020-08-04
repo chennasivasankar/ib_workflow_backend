@@ -2,10 +2,7 @@ from abc import ABC
 from abc import abstractmethod
 from typing import List, Optional
 from ib_iam.interactors.storage_interfaces.dtos import (
-    PaginationDTO, TeamUserIdsDTO,
-    TeamsWithTotalTeamsCountDTO, TeamWithUserIdsDTO,
-    TeamWithTeamIdAndUserIdsDTO
-)
+    PaginationDTO, TeamUserIdsDTO, TeamsWithTotalTeamsCountDTO)
 from ib_iam.interactors.storage_interfaces.dtos import TeamDTO
 from ib_iam.interactors.storage_interfaces.dtos import TeamNameAndDescriptionDTO
 

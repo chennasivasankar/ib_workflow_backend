@@ -1,4 +1,3 @@
-from typing import List
 from ib_iam.exceptions.custom_exceptions import (
     UserHasNoAccess, CompanyNameAlreadyExists, InvalidUserIds, DuplicateUserIds,
     InvalidCompanyId)
@@ -13,7 +12,7 @@ from ib_iam.interactors.storage_interfaces \
     .company_storage_interface import CompanyStorageInterface
 from ib_iam.interactors.storage_interfaces.dtos import CompanyDTO
 from ib_iam.interactors.storage_interfaces.dtos import (
-    CompanyDetailsWithUserIdsDTO, CompanyWithUserIdsDTO,
+    CompanyWithUserIdsDTO, CompanyWithCompanyIdAndUserIdsDTO,
     CompanyNameLogoAndDescriptionDTO)
 
 
@@ -24,12 +23,12 @@ class CompanyInteractor(ValidationMixin):
 
     def add_company_wrapper(
             self, user_id: str,
-            company_details_with_user_ids_dto: CompanyDetailsWithUserIdsDTO,
+            company_with_user_ids_dto: CompanyWithUserIdsDTO,
             presenter: AddCompanyPresenterInterface):
         try:
             company_id = self.add_company(
                 user_id=user_id,
-                company_details_with_user_ids_dto=company_details_with_user_ids_dto)
+                company_with_user_ids_dto=company_with_user_ids_dto)
             response = presenter.get_response_for_add_company(
                 company_id=company_id)
         except UserHasNoAccess:
@@ -39,24 +38,26 @@ class CompanyInteractor(ValidationMixin):
             response = presenter \
                 .get_company_name_already_exists_response_for_add_company(
                 exception)
-        except DuplicateUserIds:
-            response = presenter.get_duplicate_users_response_for_add_company()
-        except InvalidUserIds:
-            response = presenter.get_invalid_users_response_for_add_company()
+        except DuplicateUserIds as exception:
+            response = presenter \
+                .get_duplicate_users_response_for_add_company(exception)
+        except InvalidUserIds as exception:
+            response = \
+                presenter.get_invalid_users_response_for_add_company(exception)
         return response
 
     def add_company(
             self, user_id: str,
-            company_details_with_user_ids_dto: CompanyDetailsWithUserIdsDTO):
-        user_ids = company_details_with_user_ids_dto.user_ids
+            company_with_user_ids_dto: CompanyWithUserIdsDTO):
+        user_ids = company_with_user_ids_dto.user_ids
         company_name_logo_and_description_dto = \
             CompanyNameLogoAndDescriptionDTO(
-                name=company_details_with_user_ids_dto.name,
-                description=company_details_with_user_ids_dto.description,
-                logo_url=company_details_with_user_ids_dto.logo_url)
+                name=company_with_user_ids_dto.name,
+                description=company_with_user_ids_dto.description,
+                logo_url=company_with_user_ids_dto.logo_url)
         self.storage.validate_is_user_admin(user_id=user_id)
         self._validate_add_company_details(
-            company_details_with_user_ids_dto=company_details_with_user_ids_dto
+            company_with_user_ids_dto=company_with_user_ids_dto
         )
         company_id = self.storage.add_company(
             user_id=user_id,
@@ -88,12 +89,13 @@ class CompanyInteractor(ValidationMixin):
     def update_company_details_wrapper(
             self,
             user_id: str,
-            company_with_user_ids_dto: CompanyWithUserIdsDTO,
+            company_with_company_id_and_user_ids_dto:
+            CompanyWithCompanyIdAndUserIdsDTO,
             presenter: UpdateCompanyPresenterInterface):
         try:
             self.update_company_details(
                 user_id=user_id,
-                company_with_user_ids_dto=company_with_user_ids_dto)
+                company_with_company_id_and_user_ids_dto=company_with_company_id_and_user_ids_dto)
             response = presenter.get_success_response_for_update_company()
         except UserHasNoAccess:
             response = \
@@ -101,11 +103,12 @@ class CompanyInteractor(ValidationMixin):
         except InvalidCompanyId:
             response = \
                 presenter.get_invalid_company_response_for_update_company()
-        except DuplicateUserIds:
-            response = \
-                presenter.get_duplicate_users_response_for_update_company()
-        except InvalidUserIds:
-            response = presenter.get_invalid_users_response_for_update_company()
+        except DuplicateUserIds as exception:
+            response = presenter \
+                .get_duplicate_users_response_for_update_company(exception)
+        except InvalidUserIds as exception:
+            response = presenter \
+                .get_invalid_users_response_for_update_company(exception)
         except CompanyNameAlreadyExists as exception:
             response = presenter \
                 .get_company_name_already_exists_response_for_update_company(
@@ -114,17 +117,17 @@ class CompanyInteractor(ValidationMixin):
 
     def update_company_details(
             self, user_id: str,
-            company_with_user_ids_dto: CompanyWithUserIdsDTO):
-        user_ids = company_with_user_ids_dto.user_ids
-        company_id = company_with_user_ids_dto.company_id
+            company_with_company_id_and_user_ids_dto: CompanyWithCompanyIdAndUserIdsDTO):
+        user_ids = company_with_company_id_and_user_ids_dto.user_ids
+        company_id = company_with_company_id_and_user_ids_dto.company_id
         company_dto = CompanyDTO(
-            company_id=company_with_user_ids_dto.company_id,
-            name=company_with_user_ids_dto.name,
-            description=company_with_user_ids_dto.description,
-            logo_url=company_with_user_ids_dto.logo_url)
+            company_id=company_with_company_id_and_user_ids_dto.company_id,
+            name=company_with_company_id_and_user_ids_dto.name,
+            description=company_with_company_id_and_user_ids_dto.description,
+            logo_url=company_with_company_id_and_user_ids_dto.logo_url)
         self.storage.validate_is_user_admin(user_id=user_id)
         self._validate_update_company_details(
-            company_with_user_ids_dto=company_with_user_ids_dto)
+            company_with_company_id_and_user_ids_dto=company_with_company_id_and_user_ids_dto)
         self.storage.update_company_details(company_dto=company_dto)
         self.storage.delete_all_existing_employees_of_company(
             company_id=company_id)
@@ -133,19 +136,22 @@ class CompanyInteractor(ValidationMixin):
 
     def _validate_add_company_details(
             self,
-            company_details_with_user_ids_dto: CompanyDetailsWithUserIdsDTO):
-        self._validate_users(
-            user_ids=company_details_with_user_ids_dto.user_ids)
+            company_with_user_ids_dto: CompanyWithUserIdsDTO):
+        self._validate_duplicate_or_invalid_users(
+            user_ids=company_with_user_ids_dto.user_ids)
         self._validate_is_company_name_already_exists_to_add_company(
-            name=company_details_with_user_ids_dto.name)
+            name=company_with_user_ids_dto.name)
 
     def _validate_update_company_details(
-            self, company_with_user_ids_dto: CompanyWithUserIdsDTO):
-        company_id = company_with_user_ids_dto.company_id
+            self,
+            company_with_company_id_and_user_ids_dto: CompanyWithCompanyIdAndUserIdsDTO):
+        company_id = company_with_company_id_and_user_ids_dto.company_id
         self.storage.validate_is_company_exists(company_id=company_id)
-        self._validate_users(user_ids=company_with_user_ids_dto.user_ids)
-        self._validate_is_company_name_exists_to_update_company(
-            name=company_with_user_ids_dto.name, company_id=company_id)
+        self._validate_duplicate_or_invalid_users(
+            user_ids=company_with_company_id_and_user_ids_dto.user_ids)
+        self._validate_is_company_name_already_exists_to_update_company(
+            name=company_with_company_id_and_user_ids_dto.name,
+            company_id=company_id)
 
     def _validate_is_company_name_already_exists_to_add_company(
             self, name: str):
@@ -155,7 +161,7 @@ class CompanyInteractor(ValidationMixin):
         if is_company_name_already_exists:
             raise CompanyNameAlreadyExists(company_name=name)
 
-    def _validate_is_company_name_exists_to_update_company(
+    def _validate_is_company_name_already_exists_to_update_company(
             self, name, company_id):
         company_id_from_db = self.storage \
             .get_company_id_if_company_name_already_exists(name=name)

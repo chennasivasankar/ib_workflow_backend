@@ -137,10 +137,10 @@ class CompanyIdWithEmployeeIdsDTO:
 
 
 @dataclass
-class CompanyDetailsWithUserIdsDTO(CompanyNameLogoAndDescriptionDTO):
+class CompanyWithUserIdsDTO(CompanyNameLogoAndDescriptionDTO):
     user_ids: List[str]
 
 
 @dataclass
-class CompanyWithUserIdsDTO(CompanyDetailsWithUserIdsDTO):
+class CompanyWithCompanyIdAndUserIdsDTO(CompanyWithUserIdsDTO):
     company_id: str

@@ -156,7 +156,7 @@ USER_HAS_NO_ACCESS_FOR_DELETE_TEAM = (
     "USER_HAS_NO_ACCESS"
 )
 
-INVALID_TEAM_FOR_DELETE_TEAM = (
+INVALID_TEAM_ID_FOR_DELETE_TEAM = (
     "Given team is invalid(NotFound)",
     "INVALID_TEAM_ID"
 )
@@ -175,22 +175,22 @@ COMPANY_NAME_ALREADY_EXISTS_FOR_ADD_COMPANY = (
     "Given '%s' is already exists, so choose another",
     "COMPANY_NAME_ALREADY_EXISTS"
 )
-INVALID_USERS_FOR_ADD_COMPANY = (
-    "Given users are invalid(not found), please check it",
+INVALID_USER_IDS_FOR_ADD_COMPANY = (
+    "Given users '%s' are invalid(not found), please check it",
     "INVALID_USER_IDS"
 )
 
-DUPLICATE_USERS_FOR_ADD_COMPANY = (
-    "Given users consists of duplicates, please check it",
+DUPLICATE_USER_IDS_FOR_ADD_COMPANY = (
+    "Given users '%s' are duplicated, please check it",
     "DUPLICATE_USER_IDS"
 )
 
 USER_HAS_NO_ACCESS_FOR_DELETE_COMPANY = (
-    "User has no access to delete team details as he is not an admin",
+    "User has no access to delete company details as he is not an admin",
     "USER_HAS_NO_ACCESS"
 )
 
-INVALID_COMPANY_FOR_DELETE_COMPANY = (
+INVALID_COMPANY_ID_FOR_DELETE_COMPANY = (
     "Given company id is invalid(NotFound)",
     "INVALID_COMPANY_ID"
 )
@@ -200,9 +200,9 @@ USER_HAS_NO_ACCESS_FOR_UPDATE_COMPANY = (
     "USER_HAS_NO_ACCESS"
 )
 
-INVALID_COMPANY_FOR_UPDATE_COMPANY = (
-    "Given company is invalid(NotFound)",
-    "INVALID_COMPANY"
+INVALID_COMPANY_ID_FOR_UPDATE_COMPANY = (
+    "Given company id is invalid(NotFound)",
+    "INVALID_COMPANY_ID"
 )
 
 COMPANY_NAME_ALREADY_EXISTS_FOR_UPDATE_COMPANY = (
@@ -210,13 +210,13 @@ COMPANY_NAME_ALREADY_EXISTS_FOR_UPDATE_COMPANY = (
     "COMPANY_NAME_ALREADY_EXISTS"
 )
 
-DUPLICATE_USERS_FOR_UPDATE_COMPANY = (
-    "Given users consists of duplicates, so update is not possible",
-    "DUPLICATE_USERS_IDS"
+DUPLICATE_USER_IDS_FOR_UPDATE_COMPANY = (
+    "Given users '%s' are duplicated, so update is not possible",
+    "DUPLICATE_USER_IDS"
 )
 
 
-INVALID_USERS_FOR_UPDATE_COMPANY = (
-    "Given users are invalid(not found), so update is not possible",
+INVALID_USER_IDS_FOR_UPDATE_COMPANY = (
+    "Given users '%s' invalid(not found), so update is not possible",
     "INVALID_USER_IDS"
 )

@@ -78,8 +78,8 @@ from ib_iam.interactors.storage_interfaces.dtos import (
     CompanyDTO,
     CompanyIdWithEmployeeIdsDTO,
     CompanyNameLogoAndDescriptionDTO,
-    CompanyDetailsWithUserIdsDTO,
-    CompanyWithUserIdsDTO
+    CompanyWithUserIdsDTO,
+    CompanyWithCompanyIdAndUserIdsDTO
 )
 
 team_ids = [
@@ -219,11 +219,11 @@ class CompanyIdWithEmployeeIdsDTOFactory(factory.Factory):
     ])
 
 
-class CompanyDetailsWithUserIdsDTOFactory(
+class CompanyWithUserIdsDTOFactory(
     CompanyNameLogoAndDescriptionDTOFactory, factory.Factory
 ):
     class Meta:
-        model = CompanyDetailsWithUserIdsDTO
+        model = CompanyWithUserIdsDTO
 
     user_ids = factory.Iterator([
         [user_ids[0], user_ids[2]],
@@ -232,19 +232,10 @@ class CompanyDetailsWithUserIdsDTOFactory(
     ])
 
 
-class CompanyWithUserIdsDTOFactory(
-    CompanyDetailsWithUserIdsDTOFactory, factory.Factory
+class CompanyWithCompanyIdAndUserIdsDTOFactory(
+    CompanyWithUserIdsDTOFactory, factory.Factory
 ):
     class Meta:
-        model = CompanyWithUserIdsDTO
+        model = CompanyWithCompanyIdAndUserIdsDTO
 
     company_id = factory.Faker("uuid4")
-
-
-class EmployeeDTOFactory(factory.Factory):
-    class Meta:
-        model = EmployeeDTO
-
-    employee_id = factory.sequence(lambda n: "user%d" % n)
-    name = factory.sequence(lambda n: "name%d" % n)
-    profile_pic_url = factory.sequence(lambda n: "url%d" % n)

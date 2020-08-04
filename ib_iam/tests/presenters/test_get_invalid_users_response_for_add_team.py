@@ -11,7 +11,8 @@ class TestRaiseExceptionForInvalidUsersForAddTeam:
         user_ids = ["1", "2"]
         expected_response = INVALID_USER_IDS_FOR_ADD_TEAM[0] % user_ids
         expected_res_status = INVALID_USER_IDS_FOR_ADD_TEAM[1]
-        expected_http_status_code = 404
+        from ib_iam.constants.enums import StatusCode
+        expected_http_status_code = StatusCode.NOT_FOUND.value
 
         from ib_iam.exceptions.custom_exceptions import InvalidUserIds
         result = json_presenter.get_invalid_users_response_for_add_team(

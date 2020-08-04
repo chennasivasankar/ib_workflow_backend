@@ -5,7 +5,7 @@ from ib_iam.exceptions.custom_exceptions import UserHasNoAccess
 from ib_iam.interactors.get_companies_interactor import GetCompaniesInteractor
 from ib_iam.interactors.presenter_interfaces \
     .get_companies_presenter_interface import (GetCompaniesPresenterInterface,
-                                               CompanyWithEmployeesDetailsDTO)
+                                               CompanyWithEmployeeIdsAndUserDetailsDTO)
 from ib_iam.interactors.storage_interfaces.company_storage_interface import \
     CompanyStorageInterface
 
@@ -38,14 +38,6 @@ def expected_company_employee_ids_dtos():
     return expected_company_id_with_employee_id_dtos
 
 
-@pytest.fixture
-def expected_employee_dtos():
-    from ib_iam.tests.factories.storage_dtos import EmployeeDTOFactory
-    EmployeeDTOFactory.reset_sequence(1)
-    employee_dtos = [EmployeeDTOFactory() for _ in range(1, 4)]
-    return employee_dtos
-
-
 class TestGetCompaniesInteractor:
     def test_if_user_is_not_admin_returns_user_has_no_access_response(self):
         storage = create_autospec(CompanyStorageInterface)
@@ -67,8 +59,7 @@ class TestGetCompaniesInteractor:
             mocker,
             expected_company_dtos,
             expected_company_employee_ids_dtos,
-            expected_user_dtos,
-            expected_employee_dtos,
+            expected_user_dtos
     ):
         from ib_iam.tests.common_fixtures.adapters.user_service_mocks import (
             prepare_user_profile_dtos_mock)
@@ -82,11 +73,11 @@ class TestGetCompaniesInteractor:
             .return_value = expected_company_employee_ids_dtos
         mock = prepare_user_profile_dtos_mock(mocker)
         mock.return_value = expected_user_dtos
-        company_details_dto = CompanyWithEmployeesDetailsDTO(
+        company_details_dto = CompanyWithEmployeeIdsAndUserDetailsDTO(
             company_dtos=expected_company_dtos,
             company_id_with_employee_ids_dtos
             =expected_company_employee_ids_dtos,
-            employee_dtos=expected_employee_dtos)
+            user_dtos=expected_user_dtos)
         presenter.get_response_for_get_companies.return_value = Mock()
 
         interactor.get_companies_wrapper(user_id=user_id, presenter=presenter)

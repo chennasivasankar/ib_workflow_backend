@@ -14,14 +14,13 @@ class AddCompanyPresenterInterface(ABC):
 
     @abstractmethod
     def get_company_name_already_exists_response_for_add_company(
-            self, exception
-    ):
+            self, exception):
         pass
 
     @abstractmethod
-    def get_duplicate_users_response_for_add_company(self):
+    def get_duplicate_users_response_for_add_company(self, exception):
         pass
 
     @abstractmethod
-    def get_invalid_users_response_for_add_company(self):
+    def get_invalid_users_response_for_add_company(self, exception):
         pass
