@@ -49,3 +49,9 @@ class GoFToTaskTemplateDTO:
     template_id: str
     order: int
     enable_add_another: bool
+
+
+@dataclass
+class GoFWritePermissionRolesDTO:
+    gof_id: str
+    write_permission_roles: List[str]
