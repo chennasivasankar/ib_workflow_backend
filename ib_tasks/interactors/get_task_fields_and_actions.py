@@ -72,6 +72,7 @@ class GetTaskFieldsAndActionsInteractor:
                 template_condition = stage.task_template_id == \
                                      task.task_template_id
                 stage_condition = stage.stage_id == task.stage_id
+                # TODO: check for case where a task is in two stages
                 if task.task_id not in task_ids and stage_condition and template_condition:
                     task_ids.append(task.task_id)
                     list_of_stage_fields.append(
