@@ -24,7 +24,7 @@ class AuthService:
                 user_ids=user_ids
             )
         except InvalidUserException as err:
-            from ib_discussions.interactors.discussion_interactor import \
+            from ib_discussions.exceptions.custom_exceptions import \
                 InvalidUserId
             from ib_users.constants.user_profile.error_types import \
                 INVALID_USER_ID_ERROR_TYPE

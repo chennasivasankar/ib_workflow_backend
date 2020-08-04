@@ -1,7 +1,10 @@
 from abc import ABC, abstractmethod
+from typing import List
 
 from ib_discussions.interactors.presenter_interfaces.dtos import \
-    DiscussionsDetailsDTO
+    DiscussionsWithUsersAndDiscussionCountDTO
+from ib_iam.interactors.presenter_interfaces.dtos import \
+    DiscussionIdWithEditableStatusDTO
 
 
 class CreateDiscussionPresenterInterface(ABC):
@@ -37,7 +40,10 @@ class GetDiscussionsPresenterInterface(ABC):
 
     @abstractmethod
     def prepare_response_for_discussions_details_dto(
-            self, discussions_details_dto: DiscussionsDetailsDTO
+            self,
+            discussions_with_users_and_discussion_count_dto: DiscussionsWithUsersAndDiscussionCountDTO,
+            discussion_id_with_editable_status_dtos: List[
+                DiscussionIdWithEditableStatusDTO]
     ):
         pass
 
@@ -62,4 +68,19 @@ class MarkDiscussionClarifiedPresenterInterface(ABC):
 
     @abstractmethod
     def raise_success_response_for_mark_discussion_as_clarified(self):
+        pass
+
+
+class UpdateDiscussionPresenterInterface(ABC):
+
+    @abstractmethod
+    def response_for_empty_title(self):
+        pass
+
+    @abstractmethod
+    def response_for_discussion_id_not_found(self):
+        pass
+
+    @abstractmethod
+    def response_for_user_cannot_update_discussion(self):
         pass

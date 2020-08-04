@@ -106,6 +106,9 @@
         },
         "is_clarified": {
           "type": "boolean"
+        },
+        "is_editable": {
+          "type": "boolean"
         }
       },
       "required": [
@@ -114,7 +117,8 @@
         "title",
         "created_at",
         "author",
-        "is_clarified"
+        "is_clarified",
+        "is_editable"
       ]
     }
   },
@@ -181,6 +185,34 @@
               "sort_by"
             ]
           }
+        ]
+      }
+    },
+    "DiscussionIdPathParameter": {
+      "in": "path",
+      "name": "discussion_id",
+      "required": true,
+      "description": "Discussion Id",
+      "type": "string",
+      "format": "uuid"
+    },
+    "UpdateDiscussionParameter": {
+      "name": "UpdateDiscussionParameter",
+      "description": "update discussion parameter",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
         ]
       }
     }
@@ -332,6 +364,80 @@
           }
         ]
       }
+    },
+    "UpdateDiscussionNotFoundResponse": {
+      "description": "update discussion not found response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "DISCUSSION_ID_NOT_FOUND"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "UpdateDiscussionBadRequestResponse": {
+      "description": "update discussion bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_CANNOT_EDIT_DISCUSSION",
+                  "EMPTY_TITLE"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "DeleteDiscussionBadRequestResponse": {
+      "description": "delete discussion bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_CANNOT_EDIT_DISCUSSION",
+                  "EMPTY_TITLE"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
     }
   },
   "paths": {
@@ -423,12 +529,7 @@
         ],
         "parameters": [
           {
-            "in": "path",
-            "name": "discussion_id",
-            "required": true,
-            "description": "Discussion Id",
-            "type": "string",
-            "format": "uuid"
+            "$ref": "#/parameters/DiscussionIdPathParameter"
           }
         ],
         "responses": {
@@ -440,6 +541,58 @@
           },
           "400": {
             "$ref": "#/responses/MarkClarifiedDiscussionBadRequestResponse"
+          }
+        }
+      }
+    },
+    "/discussion/{discussion_id}/update/v1/": {
+      "post": {
+        "operationId": "update_discussion",
+        "summary": "Update Discussion",
+        "description": "update Discussion of discussion id",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/DiscussionIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/UpdateDiscussionParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfully Edit the Discussion"
+          },
+          "400": {
+            "$ref": "#/responses/UpdateDiscussionBadRequestResponse"
+          },
+          "404": {
+            "$ref": "#/responses/UpdateDiscussionNotFoundResponse"
+          }
+        }
+      }
+    },
+    "/discussion/{discussion_id}/v1/": {
+      "delete": {
+        "summary": "delete discussion of discussion id",
+        "operationId": "delete_discussion",
+        "parameters": [
+          {
+            "$ref": "#/parameters/DiscussionIdPathParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted the discussion"
+          },
+          "400": {
+            "$ref": "#/responses/DeleteDiscussionBadRequestResponse"
           }
         }
       }

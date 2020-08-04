@@ -5,7 +5,7 @@ from ib_discussions.constants.enum import EntityType, FilterByEnum, SortByEnum, 
 
 
 @dataclass
-class DiscussionDTO:
+class DiscussionWithEntityDetailsDTO:
     user_id: str
     entity_id: str
     entity_type: EntityType
@@ -35,3 +35,10 @@ class FilterByDTO:
 class SortByDTO:
     sort_by: SortByEnum
     order: OrderByEnum
+
+
+@dataclass
+class DiscussionIdWithTitleAndDescriptionDTO:
+    discussion_id: str
+    title: str
+    description: str

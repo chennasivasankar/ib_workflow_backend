@@ -5,10 +5,12 @@ from ib_discussions.constants.enum import EntityType
 from ib_discussions.exceptions.custom_exceptions import EntityIdNotFound, \
     InvalidEntityTypeForEntityId, DiscussionIdNotFound, \
     UserCannotMarkAsClarified
-from ib_discussions.interactors.DTOs.common_dtos import DiscussionDTO, \
-    OffsetAndLimitDTO, FilterByDTO, SortByDTO
+from ib_discussions.interactors.dtos.dtos import \
+    DiscussionWithEntityDetailsDTO, \
+    OffsetAndLimitDTO, FilterByDTO, SortByDTO, \
+    DiscussionIdWithTitleAndDescriptionDTO
 from ib_discussions.interactors.storage_interfaces.dtos import \
-    CompleteDiscussionDTO
+    DiscussionDTO
 
 
 class StorageInterface(ABC):
@@ -36,16 +38,17 @@ class StorageInterface(ABC):
         pass
 
     @abstractmethod
-    def create_discussion(self, discussion_dto: DiscussionDTO,
-                          discussion_set_id: str
-                          ):
+    def create_discussion(
+            self, discussion_set_id: str,
+            discussion_with_entity_details_dto: DiscussionWithEntityDetailsDTO
+    ):
         pass
 
     @abstractmethod
-    def get_complete_discussion_dtos(
+    def get_discussion_dtos(
             self, discussion_set_id: str, sort_by_dto: SortByDTO,
             offset_and_limit_dto: OffsetAndLimitDTO, filter_by_dto: FilterByDTO
-    ) -> List[CompleteDiscussionDTO]:
+    ) -> List[DiscussionDTO]:
         pass
 
     @abstractmethod
@@ -66,4 +69,19 @@ class StorageInterface(ABC):
 
     @abstractmethod
     def mark_discussion_clarified(self, discussion_id: str):
+        pass
+
+    @abstractmethod
+    def is_user_can_update_discussion(self, user_id: str, discussion_id: str) \
+            -> bool:
+        pass
+
+    @abstractmethod
+    def is_discussion_id_exists(self, discussion_id: str) -> bool:
+        pass
+
+    @abstractmethod
+    def update_discussion(
+            self,
+            discussion_id_with_title_and_description_dto: DiscussionIdWithTitleAndDescriptionDTO):
         pass

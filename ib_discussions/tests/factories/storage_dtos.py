@@ -2,12 +2,12 @@ import datetime
 
 import factory
 from ib_discussions.interactors.storage_interfaces.dtos import \
-    CompleteDiscussionDTO
+    DiscussionDTO
 
 
-class CompleteDiscussionFactory(factory.Factory):
+class DiscussionDTOFactory(factory.Factory):
     class Meta:
-        model = CompleteDiscussionDTO
+        model = DiscussionDTO
 
     user_id = factory.Faker("uuid4")
     discussion_id = factory.Faker("uuid4")

@@ -3,11 +3,12 @@ from typing import List, Optional
 from ib_discussions.constants.enum import EntityType, FilterByEnum, SortByEnum
 from ib_discussions.exceptions.custom_exceptions import \
     InvalidEntityTypeForEntityId, EntityIdNotFound, DiscussionIdNotFound, \
-    UserCannotMarkAsClarified
-from ib_discussions.interactors.DTOs.common_dtos import DiscussionDTO, \
+    UserCannotMarkAsClarified, DiscussionSetNotFound
+from ib_discussions.interactors.dtos.dtos import \
+    DiscussionWithEntityDetailsDTO, \
     OffsetAndLimitDTO, FilterByDTO, SortByDTO
 from ib_discussions.interactors.storage_interfaces.dtos import \
-    CompleteDiscussionDTO
+    DiscussionDTO
 from ib_discussions.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
@@ -48,8 +49,6 @@ class StorageImplementation(StorageInterface):
                 entity_id=entity_id, entity_type=entity_type
             )
         except DiscussionSet.DoesNotExist:
-            from ib_discussions.interactors.discussion_interactor import \
-                DiscussionSetNotFound
             raise DiscussionSetNotFound
         return str(discussion_set_object.id)
 
@@ -62,21 +61,23 @@ class StorageImplementation(StorageInterface):
         )
         return discussion_set_object.id
 
-    def create_discussion(self, discussion_dto: DiscussionDTO,
-                          discussion_set_id: str
-                          ):
+    def create_discussion(
+            self, discussion_set_id: str,
+            discussion_with_entity_details_dto: DiscussionWithEntityDetailsDTO
+
+    ):
         from ib_discussions.models import Discussion
         Discussion.objects.create(
             discussion_set_id=discussion_set_id,
-            user_id=discussion_dto.user_id,
-            description=discussion_dto.description,
-            title=discussion_dto.title,
+            user_id=discussion_with_entity_details_dto.user_id,
+            description=discussion_with_entity_details_dto.description,
+            title=discussion_with_entity_details_dto.title,
         )
 
-    def get_complete_discussion_dtos(
+    def get_discussion_dtos(
             self, discussion_set_id: str, sort_by_dto: SortByDTO,
             offset_and_limit_dto: OffsetAndLimitDTO, filter_by_dto: FilterByDTO
-    ) -> List[CompleteDiscussionDTO]:
+    ) -> List[DiscussionDTO]:
         from ib_discussions.models import Discussion
         discussion_objects = Discussion.objects.filter(
             discussion_set_id=discussion_set_id
@@ -163,7 +164,7 @@ class StorageImplementation(StorageInterface):
 
     @staticmethod
     def _convert_to_disucssion_dto(discussion_object):
-        discussion_dto = CompleteDiscussionDTO(
+        discussion_dto = DiscussionDTO(
             user_id=discussion_object.user_id,
             discussion_id=str(discussion_object.id),
             discussion_set_id=str(discussion_object.discussion_set_id),

@@ -3,11 +3,11 @@ from typing import List
 
 from ib_discussions.adapters.auth_service import UserProfileDTO
 from ib_discussions.interactors.storage_interfaces.dtos import \
-    CompleteDiscussionDTO
+    DiscussionDTO
 
 
 @dataclass
-class DiscussionsDetailsDTO:
-    complete_discussion_dtos: List[CompleteDiscussionDTO]
+class DiscussionsWithUsersAndDiscussionCountDTO:
+    discussion_dtos: List[DiscussionDTO]
     user_profile_dtos: List[UserProfileDTO]
     total_count: int

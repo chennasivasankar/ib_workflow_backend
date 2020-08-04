@@ -3,7 +3,7 @@ from datetime import datetime
 
 
 @dataclass
-class CompleteDiscussionDTO:
+class DiscussionDTO:
     user_id: str
     discussion_id: str
     discussion_set_id: str
