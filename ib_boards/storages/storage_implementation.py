@@ -168,7 +168,7 @@ class StorageImplementation(StorageInterface):
 
     def _get_column_objects_and_column_permission_objects_from_dtos(
             self, column_dtos: List[ColumnDTO]) -> Tuple[
-        List[Column], List[ColumnPermission]]:
+            List[Column], List[ColumnPermission]]:
         column_objects = [
             Column(
                 column_id=column_dto.column_id,
@@ -385,10 +385,11 @@ class StorageImplementation(StorageInterface):
                         )
         return list_of_column_dtos, column_stages
 
-    def get_columns_stage_ids(self, column_ids: List[str]) -> List[ColumnStageIdsDTO]:
-        column_stages = Column.objects.filter(
-            column_id__in=column_ids
-        ).values_list('column_id', 'task_selection_config').order_by('display_order')
+    def get_columns_stage_ids(self, column_ids: List[str]) -> \
+            List[ColumnStageIdsDTO]:
+        column_stages = (Column.objects.filter(column_id__in=column_ids)
+                         .values_list('column_id', 'task_selection_config')
+                         .order_by('display_order'))
 
         return [
             ColumnStageIdsDTO(

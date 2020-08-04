@@ -13,7 +13,6 @@ class TestGetColumnStageIds:
         BoardFactory.reset_sequence()
         board = BoardFactory()
         ColumnFactory.reset_sequence()
-        ColumnPermissionFactory.reset_sequence()
         ColumnFactory(board=board, display_order=4)
         ColumnFactory(board=board, display_order=1)
         ColumnFactory(board=board, display_order=2)
