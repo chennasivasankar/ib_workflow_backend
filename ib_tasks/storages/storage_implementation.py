@@ -344,3 +344,6 @@ class StorageImplementation(StorageInterface):
             for stage_id in stage_ids
         ]
         TaskStage.objects.bulk_create(task_stage_objs)
+
+    def get_task_present_stage_actions(self, task_id: int):
+        pass

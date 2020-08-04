@@ -2,6 +2,7 @@ from typing import List
 
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO
 
+
 class InvalidTaskException(Exception):
     def __init__(self, task_id: int):
         self.task_id = task_id
@@ -54,3 +55,8 @@ class TaskTemplatesDoesNotExists(Exception):
 class InvalidTaskIds(Exception):
     def __init__(self, task_ids: List[str]):
         self.invalid_task_ids = task_ids
+
+
+class ManyStagesToInitialTaskTemplate(Exception):
+    def __init__(self, task_template_stages_dict: str):
+        self.task_template_stages_dict = task_template_stages_dict

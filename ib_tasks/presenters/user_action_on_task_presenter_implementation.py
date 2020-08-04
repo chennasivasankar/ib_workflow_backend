@@ -87,6 +87,9 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
         response_object = self.prepare_403_forbidden_response(response_dict)
         return response_object
 
+    def raise_exception_for_invalid_present_actions(self, error_obj):
+        pass
+
     def raise_exception_for_user_board_permission_denied(
             self, error_obj: UserBoardPermissionDenied):
         from ib_tasks.constants.exception_messages import \
