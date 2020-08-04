@@ -325,7 +325,7 @@ class StorageImplementation(StorageInterface):
         return sorted(list(set(column_ids)))
 
     def get_permitted_user_roles_for_board(self, board_id: str) -> List[str]:
-        return "ALL ROLES"
+        return ["ALL ROLES"]
 
     def get_board_complete_details(self, board_id: str,
                                    stage_ids: List[str]) -> \
