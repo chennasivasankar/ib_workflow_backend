@@ -130,7 +130,7 @@ class TestUpdateTaskStatusVariablesInteractor:
         mock_task_dict = {'gof2': [{'field2': 'field_response2'},
                                    {'field3': 'field_response3'}],
                           'gof1': {'field1': 'field_response1'},
-                          'status_variables': {'status_variable_1': 'value_1'}}
+                          'status_variables': {'variable_1': 'stage_1'}}
         action_id = 1
         task_id = 1
         storage = create_autospec(StorageInterface)
@@ -188,7 +188,7 @@ class TestUpdateTaskStatusVariablesInteractor:
         mock_task_dict = {'gof2': [{'field2': 'field_response2'},
                                    {'field3': 'field_response3'}],
                           'gof1': [{'field1': 'field_response1'}],
-                          'status_variables': {'status_variable_1': 'value_1'}}
+                          'status_variables': {'variable_1': 'stage_1'}}
         action_id = 1
         task_id = 1
         storage = create_autospec(StorageInterface)
@@ -239,7 +239,7 @@ class TestUpdateTaskStatusVariablesInteractor:
         mock_task_dict = {'gof2': {'field2': 'field_response2'},
                           'gof3': {'field3': 'field_response3'},
                           'gof1': {'field1': 'field_response1'},
-                          'status_variables': {'status_variable_1': 'value_1'}}
+                          'status_variables': {'variable_1': 'stage_1'}}
         action_id = 1
         task_id = 1
         storage = create_autospec(StorageInterface)
@@ -396,7 +396,7 @@ class TestUpdateTaskStatusVariablesInteractor:
         statuses = [StatusVariableDTOFactory()]
         from ib_tasks.interactors.storage_interfaces.status_dtos import StatusVariableDTO
         expected_status = [
-            StatusVariableDTO(status_id=1, status_variable='status_variable_1', value='value_2')
+            StatusVariableDTO(status_id=1, status_variable='variable_1', value='stage_2')
         ]
         storage.get_status_variables_to_task.return_value = statuses
         from ib_tasks.interactors.storage_interfaces.get_task_dtos \
