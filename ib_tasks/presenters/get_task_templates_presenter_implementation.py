@@ -76,13 +76,12 @@ class GetTaskTemplatesPresenterImplementation(
                 stage_id_with_template_id_dto.template_id].append(
                 stage_id_with_template_id_dto.stage_id
             )
-
         actions_with_stage_id_dto_dict = \
             self._convert_action_dtos_into_dict(
                 action_with_stage_id_dtos=action_with_stage_id_dtos,
             )
 
-        actions_of_templates_dict = {}
+        actions_of_templates_dict = collections.defaultdict(list)
         for template_id, stage_ids in stage_ids_group_by_template_id_dict.items():
             for stage_id in stage_ids:
                 action_dicts_list = \
@@ -90,7 +89,7 @@ class GetTaskTemplatesPresenterImplementation(
                         action_with_stage_id_dtos=
                         actions_with_stage_id_dto_dict[stage_id]
                     )
-                actions_of_templates_dict[template_id] = action_dicts_list
+                actions_of_templates_dict[template_id] += action_dicts_list
         return actions_of_templates_dict
 
     def _get_gofs_of_templates_dict(
