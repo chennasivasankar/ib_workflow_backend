@@ -25,7 +25,7 @@ class GetBoardsInteractor:
             self, get_boards_dto: GetBoardsDTO,
             presenter: GetBoardsPresenterInterface):
         try:
-            board_dtos, total_boards = self.get_boards(
+            starred_and_other_boards_dto, total_boards = self.get_boards(
                 get_boards_dto=get_boards_dto
             )
         except UserDoNotHaveAccessToBoards:
@@ -37,7 +37,8 @@ class GetBoardsInteractor:
         except OffsetValueExceedsTotalTasksCount:
             return presenter.get_response_for_offset_exceeds_total_tasks()
         return presenter.get_response_for_get_boards(
-            board_dtos=board_dtos, total_boards=total_boards
+            starred_and_other_boards_dto=starred_and_other_boards_dto,
+            total_boards=total_boards
         )
 
     def get_boards(self, get_boards_dto: GetBoardsDTO):
@@ -63,12 +64,7 @@ class GetBoardsInteractor:
         board_details_interactor = GetBoardsDetailsInteractor(
             storage=self.storage
         )
-        all_board_ids = []
-        for board_id in other_boards_ids:
-            all_board_ids.append(board_id)
-
-        for board_id in starred_board_ids:
-            all_board_ids.append(board_id)
+        all_board_ids = other_boards_ids + starred_board_ids
 
         total_boards = len(all_board_ids)
         if offset >= total_boards:
@@ -78,12 +74,9 @@ class GetBoardsInteractor:
         boards_details_dtos = board_details_interactor.get_boards_details(
             board_ids=board_ids
         )
-        boards_details_dict = {}
-        for board in boards_details_dtos:
-            boards_details_dict[board.board_id] = board
 
         starred_board_dtos, other_boards_dtos = self._map_starred_boards_and_all_boards(
-            boards_details_dict, starred_board_ids, other_boards_ids)
+            boards_details_dtos, starred_board_ids, other_boards_ids)
 
         all_boards_details_dtos = StarredAndOtherBoardsDTO(
             starred_boards_dtos=starred_board_dtos,
@@ -93,17 +86,14 @@ class GetBoardsInteractor:
 
     @staticmethod
     def _map_starred_boards_and_all_boards(
-            board_details_dict,
+            boards_details_dtos: List[BoardDTO],
             starred_board_ids: List[str], other_board_ids: List[str]):
         starred_boards_dtos = []
         other_boards_dtos = []
-        for board_id in starred_board_ids:
-            starred_boards_dtos.append(
-                board_details_dict[board_id]
-            )
+        for board in boards_details_dtos:
+            if board.board_id in starred_board_ids:
+                starred_boards_dtos.append(board)
+            if board.board_id in other_board_ids:
+                other_boards_dtos.append(board)
 
-        for board_id in other_board_ids:
-            other_boards_dtos.append(
-                board_details_dict[board_id]
-            )
         return starred_boards_dtos, other_boards_dtos

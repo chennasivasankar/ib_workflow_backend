@@ -29,7 +29,7 @@ class GetBoardsPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_response_for_get_boards(
-            self, board_dtos: StarredAndOtherBoardsDTO,
+            self, starred_and_other_boards_dto: StarredAndOtherBoardsDTO,
             total_boards: int) -> response.HttpResponse:
         pass
 

@@ -242,7 +242,7 @@ class TestGetBoardsInteractor:
             board_ids=all_board_ids
         )
         presenter_mock.get_response_for_get_boards.assert_called_once_with(
-            board_dtos=all_board_dtos, total_boards=total_boards
+            starred_and_other_boards_dto=all_board_dtos, total_boards=total_boards
         )
         assert actual_response == expected_response
 
@@ -292,6 +292,6 @@ class TestGetBoardsInteractor:
             board_ids=board_ids
         )
         presenter_mock.get_response_for_get_boards.assert_called_once_with(
-            board_dtos=all_board_dtos, total_boards=total_boards
+            starred_and_other_boards_dto=all_board_dtos, total_boards=total_boards
         )
         assert actual_response == expected_response

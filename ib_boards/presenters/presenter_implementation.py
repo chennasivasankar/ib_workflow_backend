@@ -57,14 +57,14 @@ class GetBoardsPresenterImplementation(
         )
 
     def get_response_for_get_boards(
-            self, board_dtos: StarredAndOtherBoardsDTO,
+            self, starred_and_other_boards_dto: StarredAndOtherBoardsDTO,
             total_boards: int) \
             -> response.HttpResponse:
         board_details_dict = {
             "total_boards_count": total_boards,
             "boards_details": []
         }
-        for board_dto in board_dtos:
+        for board_dto in starred_and_other_boards_dto:
             board_dict = self._convert_board_dto_to_dict(board_dto=board_dto)
             board_details_dict["boards_details"].append(board_dict)
 
