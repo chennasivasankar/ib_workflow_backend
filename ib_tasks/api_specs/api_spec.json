@@ -1259,7 +1259,7 @@
             }
          }
       },
-      "/select_filter/v1/": {
+      "/filter/select/v1/": {
           "put": {
             "operationId":"select_filter",
             "summary":"update filter status",
