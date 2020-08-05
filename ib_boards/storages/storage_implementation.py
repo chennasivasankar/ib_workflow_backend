@@ -225,7 +225,7 @@ class StorageImplementation(StorageInterface):
         pass
 
     def get_board_ids(
-            self, user_role: str, ) -> List[str]:
+            self, user_id: str, ) -> List[str]:
         board_ids = Board.objects.values_list('board_id', flat=True)
         return list(board_ids)
 
