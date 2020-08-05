@@ -207,6 +207,30 @@
         "tasks"
       ]
     },
+    "InvalidStarBoardDetails": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_BOARD_ID",
+            "BOARD_ID_IS_ALREADY_STARRED",
+            "BOARD_ID_IS_NOT_STARRED"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+      },
     "TaskCompleteDetails": {
       "type": "object",
       "properties": {
@@ -299,6 +323,12 @@
       "description": "invalid offset or invalid limit",
       "schema": {
         "$ref": "#/definitions/InvalidPaginationDetails"
+      }
+    },
+    "InvalidStarResponse": {
+      "description": "invalid starred board response",
+      "schema": {
+        "$ref": "#/definitions/InvalidStarBoardDetails"
       }
     },
     "GetBoardsResponse": {
@@ -424,7 +454,7 @@
             "$ref": "#/responses/InvalidAccessResponse"
           },
             "404": {
-            "$ref": "#/responses/InvalidColumnsResponse"
+            "$ref": "#/responses/InvalidStarResponse"
           },
           "200": {
             "description": "OK"
