@@ -33,28 +33,28 @@
   "security": [
   ],
   "definitions": {
-    "SaveAndActOnATaskRequestBody":{
-         "type":"object",
-         "properties":{
-            "task_id":{
-               "type":"integer"
-            },
-            "action_id":{
-               "type":"integer"
-            },
-            "task_gofs":{
-               "type":"array",
-               "items":{
-                  "$ref":"#/definitions/GoF"
-               }
-            }
-         },
-         "required":[
-            "task_gofs",
-            "action_id",
-            "task_id"
-         ]
+    "SaveAndActOnATaskRequestBody": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "integer"
+        },
+        "action_id": {
+          "type": "integer"
+        },
+        "task_gofs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GoF"
+          }
+        }
       },
+      "required": [
+        "task_gofs",
+        "action_id",
+        "task_id"
+      ]
+    },
     "InvalidTaskActionDetails": {
       "type": "object",
       "properties": {
@@ -420,20 +420,20 @@
         "fields"
       ]
     },
-     "PerformActionRequestBody": {
-          "type": "object",
-          "properties": {
-            "board_id": {
-              "type": "string"
-            },
-            "task_id": {
-              "type": "string"
-            },
-            "action_id": {
-              "type": "string"
-            }
-          }
-      },
+    "PerformActionRequestBody": {
+      "type": "object",
+      "properties": {
+        "board_id": {
+          "type": "string"
+        },
+        "task_id": {
+          "type": "string"
+        },
+        "action_id": {
+          "type": "string"
+        }
+      }
+    },
     "TaskOverviewFields": {
       "allOf": [
         {
@@ -445,67 +445,101 @@
             "field_display_name": {
               "type": "string"
             },
-                        "field_response": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "field_display_name",
-                        "field_response"
-                    ]
-                }
-            ]
-        },
-    "StagesWithActions": {
-            "type": "object",
-            "properties": {
-                "stage_id": {
-                    "type": "string"
-                },
-                "stage_display_name": {
-                    "type": "string"
-                },
-                "actions": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/Action"
-                    }
-                }
-            },
-            "required": [
-                "stage_id",
-                "stage_display_name",
-                "actions"
-            ]
-        },
-    "TaskOverviewWithStageAndActions": {
-            "type": "object",
-            "properties": {
-                "task_id": {
-                    "type": "integer"
-                },
-                "task_overview_fields": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/TaskOverviewFields"
-                    }
-                },
-              "stage_with_actions": {
-                "$ref": "#/definitions/StagesWithActions"
-              }
-            },
+            "field_response": {
+              "type": "string"
+            }
+          },
           "required": [
-            "task_id",
-            "task_overview_fields",
-            "stage_with_actions"
+            "field_display_name",
+            "field_response"
           ]
+        }
+      ]
+    },
+     "StageAssignee": {
+      "type": "object",
+      "properties": {
+        "assignee_id": {
+          "type": "string"
         },
-    "Action": {
+        "name": {
+          "type": "string"
+        },
+
+        "profile_pic_url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "assignee_id",
+        "name"
+      ]
+    },
+     "StagesWithActions": {
+
+
+          "type": "object",
+          "properties": {
+            "stage_id": {
+              "type": "string"
+            },
+             "stage_display_name": {
+              "type": "string"
+            },
+            "stage_color": {
+              "type": "string"},
+            "stage_assignee": {
+              "$ref": "#/definitions/StageAssignee"
+            },
+            "actions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Action"
+              }
+            }
+          },
+          "required": [
+             "stage_id",
+            "stage_display_name",
+             "stage_assignee",
+            "stage_color",
+            "actions"
+          ]
+
+
+    },
+
+    "TaskOverviewWithStageAndActions": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "integer"
+        },
+        "task_overview_fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TaskOverviewFields"
+          }
+        },
+        "stage_with_actions": {
+          "$ref": "#/definitions/StagesWithActions"
+        }
+      },
+      "required": [
+        "task_id",
+        "task_overview_fields",
+        "stage_with_actions"
+      ]
+    },
+     "Action": {
       "type": "object",
       "properties": {
         "action_id": {
-          "type": "integer",
+           "type": "integer",
           "format": "int64"
+        },
+        "action_type": {
+          "type": "string"
         },
         "button_text": {
           "type": "string"
@@ -516,10 +550,13 @@
       },
       "required": [
         "action_id",
+        "action_type",
         "button_text",
         "button_color"
       ]
     },
+
+
     "GetTaskResponseBody": {
       "type": "object",
       "properties": {
@@ -607,34 +644,34 @@
           }
         }
       },
-        "required": [
-          "task_id",
-          "template_id",
-          "gofs",
-          "stages_with_actions"
-        ]
+      "required": [
+        "task_id",
+        "template_id",
+        "gofs",
+        "stages_with_actions"
+      ]
+    }
+  },
+  "parameters": {
+    "CreateTaskBodyParameter": {
+      "in": "body",
+      "name": "CreateTaskRequestBody",
+      "description": "give valid details",
+      "required": true,
+      "schema": {
+        "$ref": "#/definitions/CreateTaskRequestBody"
       }
-   },
-   "parameters":{
-      "CreateTaskBodyParameter":{
-         "in":"body",
-         "name":"CreateTaskRequestBody",
-         "description":"give valid details",
-         "required":true,
-         "schema":{
-            "$ref":"#/definitions/CreateTaskRequestBody"
-         }
-      },
-     "PerformActionBodyParameter": {
-       "in":"body",
-       "name":"CreateTaskRequestBody",
-       "description":"give valid details",
-       "required":true,
-       "schema":{
-          "$ref":"#/definitions/PerformActionRequestBody"
-       }
-     },
-     "TaskParameterize": {
+    },
+    "PerformActionBodyParameter": {
+      "in": "body",
+      "name": "CreateTaskRequestBody",
+      "description": "give valid details",
+      "required": true,
+      "schema": {
+        "$ref": "#/definitions/PerformActionRequestBody"
+      }
+    },
+    "TaskParameterize": {
       "name": "task_id",
       "in": "path",
       "required": true,
@@ -686,15 +723,22 @@
       "required": true,
       "type": "string"
     },
-     "SaveAndActOnATaskBodyParameter":{
-         "in":"body",
-         "name":"SaveAndActOnATaskRequestBody",
-         "description":"give valid details",
-         "required":true,
-         "schema":{
-            "$ref":"#/definitions/SaveAndActOnATaskRequestBody"
-         }
+    "SaveAndActOnATaskBodyParameter": {
+      "in": "body",
+      "name": "SaveAndActOnATaskRequestBody",
+      "description": "give valid details",
+      "required": true,
+      "schema": {
+        "$ref": "#/definitions/SaveAndActOnATaskRequestBody"
       }
+    },
+    "TaskIDParameter": {
+                "description": "task id",
+                "in": "path",
+                "name": "task_id",
+                "required": true,
+                "type": "integer"
+            }
   },
   "responses": {
     "CreateTaskSuccessResponse": {
@@ -809,7 +853,7 @@
               ]
             }
           },
-          "total_tasks":{
+          "total_tasks": {
             "type": "integer"
           }
         },
@@ -838,6 +882,67 @@
             "name"
           ]
         }
+      }
+    },
+    "TaskStageAssigneesResponse":{
+      "description": "OK",
+      "schema": {
+        "type": "object",
+          "properties":{
+            "stage_assignees": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "stage_id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "assignee": {
+              "$ref": "#/definitions/StageAssignee"
+            }
+          },
+        "required": [
+            "stage_id",
+            "name",
+            "assignee"
+
+          ]}
+
+        }
+      },
+        "required": ["stage_assignees"]
+      }
+    },
+    "TaskStageAssigneesFailureResponse": {
+      "description": "Task Stage Assignees Failure Response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer",
+            "enum": [
+              404
+            ]
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "TASK_ID_DOESNT_EXIST"
+
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
       }
     },
     "AllTasksOverviewFailureResponse": {
@@ -899,12 +1004,12 @@
         ]
       }
     },
-    "SaveAndActOnATaskTaskSuccessResponse":{
-         "description":"task updated successfully"
-      }
-   },
-   "paths":{
-     "/perform_user_action_on_task/v1/": {
+    "SaveAndActOnATaskTaskSuccessResponse": {
+      "description": "task updated successfully"
+    }
+  },
+  "paths": {
+    "/perform_user_action_on_task/v1/": {
       "post": {
         "operationId": "perform_task_action",
         "summary": "User Act On Specific Task in a Column",
@@ -1072,7 +1177,7 @@
           }
         ],
         "parameters": [
-           {
+          {
             "$ref": "#/parameters/LimitParameter"
           },
           {
@@ -1083,38 +1188,66 @@
           "200": {
             "$ref": "#/responses/AllTasksOverviewResponse"
           },
-
           "400": {
             "$ref": "#/responses/AllTasksOverviewFailureResponse"
           }
         }
       }
-    },"/task/save_and_act/v1/":{
-         "post":{
-            "operationId":"save_and_act_on_a_task",
-            "summary":"update a task",
-            "description":"create a task with given details",
-            "security":[
-               {
-                  "oauth":[
-                     "write"
-                  ]
-               }
-            ],
-            "parameters":[
-               {
-                  "$ref":"#/parameters/SaveAndActOnATaskBodyParameter"
-               }
-            ],
-            "responses":{
-               "201":{
-                  "$ref":"#/responses/SaveAndActOnATaskTaskSuccessResponse"
-               },
-               "400":{
-                  "description":""
-               }
-            }
-         }
+    },
+    "/task/save_and_act/v1/": {
+      "post": {
+        "operationId": "save_and_act_on_a_task",
+        "summary": "update a task",
+        "description": "create a task with given details",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/SaveAndActOnATaskBodyParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/SaveAndActOnATaskTaskSuccessResponse"
+          },
+          "400": {
+            "description": ""
+          }
+        }
       }
-  }
+    },
+
+  "/task/{task_id}/stage_assignees/v1/":
+  {
+      "get": {
+        "operationId": "get_task_assignees_of_diff_stages",
+        "summary": "get assignees of diff stages for a task",
+        "description": "get assignees of diff stages for a task",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TaskIDParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/TaskStageAssigneesResponse"
+          },
+          "404": {
+            "$ref": "#/responses/TaskStageAssigneesFailureResponse"
+          }
+        }
+      }
+    }}
 }

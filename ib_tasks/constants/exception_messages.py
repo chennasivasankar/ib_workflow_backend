@@ -222,3 +222,7 @@ USER_NEEDS_FILED_WRITABLE_PERMISSION = (
     "user {} needs write access on field {}, because user does not have {} roles",
     "USER_NEEDS_FILED_WRITABLE_PERMISSION"
 )
+TASK_ID_DOESNT_EXIST = (
+    "Task id doesnt exist, please send valid task id",
+    "TASK_ID_DOESNT_EXIST"
+)
