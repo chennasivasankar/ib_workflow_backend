@@ -1,3 +1,8 @@
+from ib_iam.exceptions.custom_exceptions import CompanyNameAlreadyExists
+from ib_iam.exceptions.custom_exceptions import DuplicateUserIds
+from ib_iam.exceptions.custom_exceptions import InvalidCompanyId
+from ib_iam.exceptions.custom_exceptions import InvalidUserIds
+from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces \
     .add_company_presenter_interface import AddCompanyPresenterInterface
@@ -7,14 +12,14 @@ from ib_iam.interactors.presenter_interfaces \
     .update_company_presenter_interface import UpdateCompanyPresenterInterface
 from ib_iam.interactors.storage_interfaces \
     .company_storage_interface import CompanyStorageInterface
+from ib_iam.interactors.storage_interfaces.dtos import CompanyDTO
+from ib_iam.interactors.storage_interfaces.dtos import \
+    CompanyNameLogoAndDescriptionDTO
+from ib_iam.interactors.storage_interfaces.dtos import \
+    CompanyWithCompanyIdAndUserIdsDTO
+from ib_iam.interactors.storage_interfaces.dtos import CompanyWithUserIdsDTO
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
-from ib_iam.interactors.storage_interfaces.dtos import (
-    CompanyWithUserIdsDTO, CompanyWithCompanyIdAndUserIdsDTO,
-    CompanyNameLogoAndDescriptionDTO, CompanyDTO)
-from ib_iam.exceptions.custom_exceptions import (
-    CompanyNameAlreadyExists, InvalidUserIds, DuplicateUserIds,
-    InvalidCompanyId, UserIsNotAdmin)
 
 
 class CompanyInteractor(ValidationMixin):

@@ -8,10 +8,6 @@ from ib_iam.interactors.storage_interfaces.user_storage_interface \
 
 
 class UserStorageImplementation(UserStorageInterface):
-    def check_is_admin_user(self, user_id: str) -> bool:
-        from ib_iam.models.user import UserDetails
-        user = UserDetails.objects.get(user_id=user_id)
-        return user.is_admin
 
     def is_user_admin(self, user_id: str) -> bool:
         from ib_iam.models.user import UserDetails

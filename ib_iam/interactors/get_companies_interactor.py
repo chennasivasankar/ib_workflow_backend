@@ -1,6 +1,4 @@
 from typing import List
-from ib_iam.adapters.service_adapter import get_service_adapter
-from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces \
     .get_companies_presenter_interface import GetCompaniesPresenterInterface
@@ -24,6 +22,7 @@ class GetCompaniesInteractor(ValidationMixin):
 
     def get_companies_wrapper(self, user_id: str,
                               presenter: GetCompaniesPresenterInterface):
+        from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin
         try:
             company_details_dtos = self.get_companies(user_id=user_id)
             response = presenter.get_response_for_get_companies(
@@ -71,6 +70,7 @@ class GetCompaniesInteractor(ValidationMixin):
 
     @staticmethod
     def _get_user_dtos_from_service(employee_ids: List[str]):
+        from ib_iam.adapters.service_adapter import get_service_adapter
         service = get_service_adapter()
         user_dtos = service.user_service.get_basic_user_dtos(
             user_ids=employee_ids)
