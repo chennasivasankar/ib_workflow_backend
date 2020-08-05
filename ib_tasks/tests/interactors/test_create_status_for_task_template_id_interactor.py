@@ -43,16 +43,9 @@ class TestCreateStatusInteractor:
     def test_create_status_for_task_given_valid_details(
             self, task_status_dtos):
         # Arrange
-        task_status_details_dtos = [TaskTemplateStatusDTO(
-            task_template_id="FIN_PR",
-            status_variable_id="Status 1"),
-TaskTemplateStatusDTO(
-            task_template_id="FIN_PR",
-            status_variable_id="Status 2"
-        )
-        ]
         storage = create_autospec(TaskStorageInterface)
-        storage.get_valid_template_ids_in_given_template_ids.return_value = ["task_template_id_1", "task_template_id_2"]
+        storage.get_valid_template_ids_in_given_template_ids.return_value = \
+            ["task_template_id_1", "task_template_id_2"]
         interactor = CreateTaskStatusInteractor(
             status_storage=storage
         )
@@ -67,24 +60,9 @@ TaskTemplateStatusDTO(
     def test_duplicate_status_ids_for_task_template_id_raises_exception(
             self, duplicate_status_dtos):
         # Arrange
-        task_status_details = [
-            TaskTemplateStatusDTO(
-                task_template_id="FIN_PR",
-                status_variable_id="Status 1"
-            ), TaskTemplateStatusDTO(
-                task_template_id="FIN_PR",
-                status_variable_id="Status 1"
-            ),
-            TaskTemplateStatusDTO(
-                task_template_id="BACKEND",
-                status_variable_id="Status 2"
-            ), TaskTemplateStatusDTO(
-                task_template_id="BACKEND",
-                status_variable_id="Status 2"
-            )
-        ]
         storage = create_autospec(TaskStorageInterface)
-        storage.get_valid_template_ids_in_given_template_ids.return_value = ["task_template_id_1"]
+        storage.get_valid_template_ids_in_given_template_ids.return_value = \
+            ["task_template_id_1"]
         interactor = CreateTaskStatusInteractor(
             status_storage=storage
         )

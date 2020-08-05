@@ -5,12 +5,8 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
 
 from ib_tasks.interactors.task_dtos import FieldValuesDTO
 from .validator_class import ValidatorClass
-from ...presenters.field_responses_validation_presenter_implementation import \
-    FieldResponseValidationsPresenterImplementation
 from ...presenters.update_task_presenter import \
     UpdateTaskPresenterImplementation
-from ...presenters.user_action_on_task_presenter_implementation import \
-    UserActionOnTaskPresenterImplementation
 from ...storages.fields_storage_implementation import \
     FieldsStorageImplementation
 from ...storages.storage_implementation import StorageImplementation, \
@@ -57,10 +53,7 @@ def api_wrapper(*args, **kwargs):
     field_storage = FieldsStorageImplementation()
     stage_storage = StagesStorageImplementation()
 
-    act_on_task_presenter = UserActionOnTaskPresenterImplementation()
     presenter = UpdateTaskPresenterImplementation()
-    field_validations_presenter = \
-        FieldResponseValidationsPresenterImplementation()
     interactor = UpdateTaskInteractor(
         task_storage=task_storage,
         create_task_storage=create_task_storage,
@@ -69,9 +62,7 @@ def api_wrapper(*args, **kwargs):
     )
 
     response = interactor.update_task_wrapper(
-        task_dto=task_dto, presenter=presenter,
-        act_on_task_presenter=act_on_task_presenter,
-        field_validations_presenter=field_validations_presenter
+        task_dto=task_dto, presenter=presenter
     )
     return response
 
