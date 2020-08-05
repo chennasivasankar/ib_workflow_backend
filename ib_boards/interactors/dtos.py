@@ -168,3 +168,8 @@ class ColumnTotalTasksDTO:
     column_id: str
     total_tasks: int
 
+
+@dataclass
+class StarredAndOtherBoardsDTO:
+    starred_boards_dtos: List[BoardDTO]
+    other_boards_dtos: List[BoardDTO]
