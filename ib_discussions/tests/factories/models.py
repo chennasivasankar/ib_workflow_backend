@@ -49,9 +49,9 @@ class DiscussionFactory(factory.django.DjangoModelFactory):
         lambda obj: "description"
     )
     created_at = factory.Iterator([
-        datetime.datetime(2008, 1, 1, tzinfo=datetime.timezone.utc),
-        datetime.datetime(2020, 5, 1, tzinfo=datetime.timezone.utc),
-        datetime.datetime(2020, 1, 20, tzinfo=datetime.timezone.utc),
-        datetime.datetime(2007, 2, 5, tzinfo=datetime.timezone.utc)
+        datetime.datetime(2008, 1, 1),
+        datetime.datetime(2020, 5, 1),
+        datetime.datetime(2020, 1, 20),
+        datetime.datetime(2007, 2, 5)
     ])
     is_clarified = factory.Iterator([True, False])

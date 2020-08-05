@@ -13,7 +13,7 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
-    FieldValuesDTO, GetTaskDetailsDTO
+    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
@@ -180,3 +180,12 @@ class UserStagesWithPaginationDTOFactory(factory.Factory):
     user_id = factory.sequence(lambda n: "user_{}".format(n + 1))
     limit = factory.Sequence(lambda n: n + 1)
     offset = factory.Sequence(lambda n: n + 1)
+
+
+class StatusOperandStageDTOFactory(factory.Factory):
+    class Meta:
+        model = StatusOperandStageDTO
+
+    variable = factory.sequence(lambda n: "variable_{}".format(n + 1))
+    operator = "=="
+    stage = factory.sequence(lambda n: "stage_{}".format(n + 1))

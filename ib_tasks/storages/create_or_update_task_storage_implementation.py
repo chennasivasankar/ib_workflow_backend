@@ -260,6 +260,7 @@ class CreateOrUpdateTaskStorageImplementation(
     def _prepare_task_gof_details_dtos(
             task_gofs: List[TaskGoF]
     ) -> List[TaskGoFDetailsDTO]:
+
         task_ids = [task_gof.task_id for task_gof in task_gofs]
         task_gof_objects = list(TaskGoF.objects.filter(task_id__in=task_ids))
         refined_task_gof_objects = []

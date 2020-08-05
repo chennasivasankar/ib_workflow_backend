@@ -6,7 +6,7 @@ from django.http import response
 
 from ib_boards.exceptions.custom_exceptions import InvalidBoardIds
 from ib_boards.interactors.dtos import TaskStageIdDTO, ActionDTO, \
-    TaskCompleteDetailsDTO, TaskDTO
+    TaskCompleteDetailsDTO, FieldDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardDTO, \
     ColumnCompleteDetails
 
@@ -72,7 +72,7 @@ class PresenterInterface(abc.ABC):
     @abc.abstractmethod
     def get_response_for_column_details(self,
                                         column_details: List[ColumnCompleteDetails],
-                                        task_fields_dtos: List[TaskDTO],
+                                        task_fields_dtos: List[FieldDTO],
                                         task_actions_dtos: List[ActionDTO],
                                         column_tasks: List[ColumnTasksDTO]
                                         ):
@@ -80,19 +80,6 @@ class PresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_response_for_offset_exceeds_total_tasks(self):
-        pass
-
-
-class GetBoardsDetailsPresenterInterface(abc.ABC):
-
-    @abc.abstractmethod
-    def get_response_for_invalid_board_ids(
-            self, error: InvalidBoardIds) -> response.HttpResponse:
-        pass
-
-    @abc.abstractmethod
-    def get_response_for_board_details(
-            self, board_dtos: List[BoardDTO]) -> response.HttpResponse:
         pass
 
 
@@ -130,19 +117,9 @@ class GetColumnTasksPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_response_for_column_tasks(
-            self, task_fields_dtos: List[TaskDTO],
+            self, task_fields_dtos: List[FieldDTO],
             task_actions_dtos: List[ActionDTO],
             total_tasks: int,
             task_ids: List[int]):
         pass
 
-
-class StageDisplayLogicPresenterInterface(abc.ABC):
-
-    @abc.abstractmethod
-    def get_response_for_invalid_stage_ids(self, error) -> response.HttpResponse:
-        pass
-
-    @abc.abstractmethod
-    def get_response_for_stage_display_logic(self, task_status_dtos) -> response.HttpResponse:
-        pass

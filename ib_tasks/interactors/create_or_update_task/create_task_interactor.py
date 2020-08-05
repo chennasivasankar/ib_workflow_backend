@@ -191,7 +191,7 @@ class CreateTaskInteractor:
         self.create_task_storage.create_initial_task_stage(
             task_id=created_task_id, template_id=task_dto.task_template_id
         )
-        act_on_task_interactor._user_action_on_task()
+        act_on_task_interactor.user_action_on_task()
 
     def _validate_task_template_id(
             self, task_template_id: str
@@ -201,8 +201,7 @@ class CreateTaskInteractor:
                 template_id=task_template_id)
         if not task_template_existence:
             raise InvalidTaskTemplateIds(
-                invalid_task_template_ids=[task_template_id]
-            )
+                invalid_task_template_ids=[task_template_id])
         return
 
     def _prepare_task_gof_fields_dtos(

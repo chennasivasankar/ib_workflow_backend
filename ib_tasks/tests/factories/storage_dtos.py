@@ -17,7 +17,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldRolesDTO, FieldRoleDTO, FieldCompleteDetailsDTO, UserFieldPermissionDTO, \
     FieldDetailsDTO, StageTaskFieldsDTO, \
     FieldRolesDTO, FieldRoleDTO, UserFieldPermissionDTO, \
-    FieldDetailsDTO, StageTaskFieldsDTO, FieldWithPermissionsDTO
+    FieldDetailsDTO, StageTaskFieldsDTO, FieldWithPermissionsDTO, FieldDetailsDTOWithTaskId
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionNamesDTO, ValidStageDTO, TaskTemplateStageDTO, \
@@ -44,7 +44,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO, GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (TaskStagesDTO,
-    TaskTemplateStageDTO)
+                                                                TaskTemplateStageDTO)
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (TaskStagesDTO)
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     StatusVariableDTO
@@ -84,9 +84,9 @@ class StatusVariableDTOFactory(factory.Factory):
         model = StatusVariableDTO
 
     status_id = factory.Sequence(lambda n: (n + 1))
-    status_variable = factory.Sequence(lambda n: 'status_variable_%d' %
+    status_variable = factory.Sequence(lambda n: 'variable_%d' %
                                                  (n + 1))
-    value = factory.Sequence(lambda n: 'value_%d' % (n + 1))
+    value = factory.Sequence(lambda n: 'stage_%d' % (n + 1))
 
 
 class GroupOfFieldsDTOFactory(factory.Factory):
@@ -155,6 +155,14 @@ class TaskFieldsDTOFactory(factory.Factory):
     task_id = factory.Sequence(lambda n: n + 1)
 
 
+class TaskWithFieldsDTOFactory(factory.Factory):
+    class Meta:
+        model = StageTaskFieldsDTO
+
+    field_ids = ['FIELD_ID-1', 'FIELD_ID-2']
+    task_id = factory.Sequence(lambda n: n + 1)
+
+
 class TemplateStagesDTOFactory(factory.Factory):
     class Meta:
         model = TaskTemplateStageDTO
@@ -199,18 +207,18 @@ class StageDTOFactory(factory.Factory):
     class Meta:
         model = StageDTO
 
-    stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n+1))
-    task_template_id = factory.Sequence(lambda n: 'task_template_id_%d' % (n+1))
-    value = factory.Sequence(lambda n: (n+1))
+    stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n + 1))
+    task_template_id = factory.Sequence(lambda n: 'task_template_id_%d' % (n + 1))
+    value = factory.Sequence(lambda n: (n + 1))
     id = None
     card_info_kanban = json.dumps(["field_id_1", "field_id_2"])
     card_info_list = json.dumps(["field_id_1", "field_id_2"])
-    stage_display_name = factory.Sequence(lambda n: 'name_%d' % (n+1))
+    stage_display_name = factory.Sequence(lambda n: 'name_%d' % (n + 1))
     stage_display_logic = factory.Sequence(
-        lambda n: 'status_id_%d==stage_id' % (n+1))
+        lambda n: 'status_id_%d==stage_id' % (n + 1))
 
     class Params:
-        id_value = factory.Trait(id=factory.Sequence(lambda n: (n+1)))
+        id_value = factory.Trait(id=factory.Sequence(lambda n: (n + 1)))
 
 
 class StageValueDTOFactory(factory.Factory):
@@ -279,7 +287,6 @@ class GoFRoleDTOFactory(factory.Factory):
     gof_id = factory.Sequence(lambda counter: "gof_{}".format(counter))
     role = factory.Sequence(lambda counter: "ROLE-{}".format(counter))
     permission_type = PermissionTypes.READ.value
-
 
 
 class FieldDTOFactory(factory.Factory):
@@ -396,6 +403,17 @@ class FieldDetailsDTOFactory(factory.Factory):
         model = FieldDetailsDTO
 
     field_id = factory.Sequence(lambda n: "FIELD-ID-%d" % (n + 1))
+    field_type = "Drop down"
+    key = "key"
+    value = "value"
+
+
+class FieldDetailsDTOWithTaskIdFactory(factory.Factory):
+    class Meta:
+        model = FieldDetailsDTOWithTaskId
+
+    field_id = factory.Sequence(lambda n: "FIELD-ID-%d" % (n + 1))
+    task_id = factory.Sequence(lambda n: (n + 1))
     field_type = "Drop down"
     key = "key"
     value = "value"

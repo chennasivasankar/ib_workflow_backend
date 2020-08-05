@@ -121,3 +121,7 @@ class StorageInterface(abc.ABC):
     def get_write_permission_roles_for_given_field_ids(
             self, field_ids: List[str]) -> List[FieldWritePermissionRolesDTO]:
         pass
+
+    @abc.abstractmethod
+    def get_task_present_stage_actions(self, task_id: int) -> List[int]:
+        pass

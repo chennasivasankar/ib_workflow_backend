@@ -10,6 +10,8 @@ from ib_tasks.exceptions.fields_custom_exceptions import (
 )
 from ib_tasks.adapters.roles_service_adapter \
     import get_roles_service_adapter
+from ib_tasks.constants.exception_messages \
+        import DUPLICATED_VALUES_FOR_READ_PERMISSIONS
 
 
 class FieldsRolesValidationsInteractor:
@@ -30,10 +32,14 @@ class FieldsRolesValidationsInteractor:
         if ALL_ROLES_ID in role_ids:
             valid_role_ids.append(ALL_ROLES_ID)
         self._validate_read_permission_roles(field_roles_dtos, valid_role_ids)
-        self._validate_write_permission_roles(field_roles_dtos, valid_role_ids)
+        self._validate_write_permission_roles(
+            field_roles_dtos, valid_role_ids
+        )
 
     @staticmethod
-    def _get_all_role_ids(field_roles_dtos: List[FieldRolesDTO]):
+    def _get_all_role_ids(
+            field_roles_dtos: List[FieldRolesDTO]
+    ) -> List[str]:
         role_ids = []
         for field_roles_dto in field_roles_dtos:
             read_permission_roles = field_roles_dto.read_permission_roles
@@ -85,9 +91,6 @@ class FieldsRolesValidationsInteractor:
             self, field_roles_dtos: List[FieldRolesDTO]
     ) -> Optional[DuplicationOfPermissionRoles]:
 
-        from ib_tasks.constants.exception_messages \
-            import DUPLICATED_VALUES_FOR_READ_PERMISSIONS
-
         duplication_of_read_permission_roles = []
         for field_roles_dto in field_roles_dtos:
             read_permissions_roles = field_roles_dto.read_permission_roles
@@ -101,7 +104,6 @@ class FieldsRolesValidationsInteractor:
                 duplication_of_read_permission_roles.append(
                     duplication_of_roles_dict
                 )
-
         if duplication_of_read_permission_roles:
             raise DuplicationOfPermissionRoles(
                 DUPLICATED_VALUES_FOR_READ_PERMISSIONS.format(
@@ -116,7 +118,6 @@ class FieldsRolesValidationsInteractor:
 
         from ib_tasks.constants.exception_messages \
             import DUPLICATED_VALUES_FOR_WRITE_PERMISSIONS
-
         duplication_of_write_permission_roles = []
         for field_roles_dto in field_roles_dtos:
             write_permissions_roles = field_roles_dto.write_permission_roles
@@ -130,7 +131,6 @@ class FieldsRolesValidationsInteractor:
                 }
                 duplication_of_write_permission_roles.\
                     append(duplication_of_roles_dict)
-
         if duplication_of_write_permission_roles:
             raise DuplicationOfPermissionRoles(
                 DUPLICATED_VALUES_FOR_WRITE_PERMISSIONS.format(
@@ -150,7 +150,8 @@ class FieldsRolesValidationsInteractor:
     def _validate_read_permission_roles(
             self, field_roles_dtos: List[FieldRolesDTO],
             valid_role_ids: List[str]
-    ):
+    ) -> Optional[InvalidFieldRolesException]:
+
         fields_invalid_roles_for_read_permission = []
         for field_roles_dto in field_roles_dtos:
             read_permission_roles = field_roles_dto.read_permission_roles
@@ -171,7 +172,7 @@ class FieldsRolesValidationsInteractor:
     def _validate_write_permission_roles(
             self, field_roles_dtos: List[FieldRolesDTO],
             valid_role_ids: List[str]
-    ):
+    ) -> List[InvalidFieldRolesException]:
 
         fields_invalid_roles_for_write_permission = []
         for field_roles_dto in field_roles_dtos:
@@ -183,6 +184,7 @@ class FieldsRolesValidationsInteractor:
                 invalid_roles_dict["permissions"] = "write_permissions"
                 fields_invalid_roles_for_write_permission. \
                     append(invalid_roles_dict)
+
         if fields_invalid_roles_for_write_permission:
             raise InvalidFieldRolesException(
                 fields_invalid_roles_for_write_permission
