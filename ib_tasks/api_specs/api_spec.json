@@ -78,6 +78,50 @@
         "res_status"
       ]
     },
+    "InvalidFilterIdResponse": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_FILTER_ID"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
+    "UserDoNotHavePermissionToFilter": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "USER_DO_NOT_HAVE_PERMISSION_TO_FILTER"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
     "AccessUnauthorized": {
       "type": "object",
       "properties": {
@@ -645,54 +689,8 @@
           "required": [
             "task_template_id", "name", "fields"
           ]
-      },
-      "GetUserFiltersDetailsResponse": {
-          "type": "object",
-          "properties": {
-              "filter_id": {
-                "type": "string"
-              },
-              "name": {
-                "type": "string"
-              },
-              "task_template_id": {
-                "type": "string"
-              },
-              "is_selected": {
-                "type": "boolean"
-              },
-              "conditions": {
-                  "type": "array",
-                  "items": {
-                      "type": "object",
-                      "properties": {
-                        "field_id": {
-                          "type": "string"
-                        },
-                        "operator": {
-                          "type": "string",
-                          "enum": [
-                            "GTE", "LTE", "GT", "LE",
-                            "NE", "EQ", "CONTAINS"
-                          ]
-                        },
-                        "value": {
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "field_id", "operator", "value"
-                      ]
-                  }
-
-              }
-          },
-          "required": [
-            "filter_id", "name", "task_template_id",
-            "is_selected", "conditions"
-          ]
       }
-   },
+    },
    "parameters":{
       "CreateTaskBodyParameter":{
          "in":"body",
@@ -772,7 +770,26 @@
          "schema":{
             "$ref":"#/definitions/SaveAndActOnATaskRequestBody"
          }
-      }
+      },
+    "SelectFilterRequestBody": {
+        "in": "body",
+        "name": "select_filter_status",
+        "description": "select filter status",
+        "required": true,
+        "schema": {
+            "type": "object",
+            "properties": {
+              "filter_id": {
+                  "type": "integer"
+              },
+              "is_selected": {
+                "type": "boolean"
+              }
+            },
+            "required": ["filter_id", "is_selected"]
+
+        }
+    }
   },
   "responses": {
     "CreateTaskSuccessResponse": {
@@ -1238,36 +1255,56 @@
                }
             }
          }
-
       },
-      "/filters_details/v1/": {
-        "get": {
-            "operationId":"get_user_filters_details",
-            "summary":"get user filters details",
-            "description":"Get User Filters Details",
+      "/select_filter/v1/": {
+          "put": {
+            "operationId":"select_filter",
+            "summary":"update filter status",
+            "description":"Update filter selected status",
             "security":[
                {
                   "oauth":[
-                     'read'
+                     'write'
                   ]
                }
             ],
             "parameters":[
+              {
+                "$ref":"#/parameters/SelectFilterRequestBody"
+              }
             ],
             "responses":{
                "200":{
-                  "description": "success",
+                  "description": "succcessful",
                   "schema": {
-                    "type": "array",
-                    "items": {
-                        "$ref":"#/definitions/GetUserFiltersDetailsResponse"
-                    }
-
+                      "type": "object",
+                      "properties": {
+                          "filter_id": {
+                            "type": "integer"
+                          },
+                          "is_selected": {
+                            "type": "boolean"
+                          }
+                      },
+                      "required": [
+                        "filter_id", "is_selected"
+                      ]
                   }
-
+               },
+               "403": {
+                 "description": "forbidden",
+                 "schema": {
+                    "$ref":"#/definitions/InvalidFilterIdResponse"
+                 }
+               },
+               "404": {
+                 "description": "Not found",
+                 "schema": {
+                    "$ref":"#/definitions/UserDoNotHavePermissionToFilter"
+                 }
                }
             }
-        }
+          }
       }
   }
 }
