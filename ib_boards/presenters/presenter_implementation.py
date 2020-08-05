@@ -65,11 +65,13 @@ class GetBoardsPresenterImplementation(
             "starred_boards": [],
             "all_boards": []
         }
-        for board_dto in starred_and_other_boards_dto:
-        for starred_boards_dto in starred_and_other_boards.starred_board_dtos:
-            board_dict = self._convert_board_dto_to_dict(board_dto=board_dto)
+        for starred_boards_dto in starred_and_other_boards_dto.starred_boards_dtos:
+            board_dict = self._convert_board_dto_to_dict(board_dto=starred_boards_dto)
             board_details_dict["starred_boards"].append(board_dict)
 
+        for other_boards_dto in starred_and_other_boards_dto.other_boards_dtos:
+            board_dict = self._convert_board_dto_to_dict(board_dto=other_boards_dto)
+            board_details_dict["all_boards"].append(board_dict)
         return self.prepare_200_success_response(
             response_dict=board_details_dict
         )
