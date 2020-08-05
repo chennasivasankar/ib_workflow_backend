@@ -19,9 +19,6 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import (
     TaskTemplateStageDTO, StageDetailsDTO)
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.models import Field
-from ib_tasks.models import TaskStage, StageAction, Stage
-from ib_tasks.models.task import Task
-from ib_tasks.models.task_gof_field import TaskGoFField
 from ib_tasks.models import TaskStage, StageAction, Stage, Task, TaskGoFField
 
 

@@ -1,12 +1,15 @@
 import collections
 from typing import List, Dict
+
+from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
+
 from ib_tasks.interactors.presenter_interfaces. \
     get_task_templates_presenter_interface import \
     GetTaskTemplatesPresenterInterface, CompleteTaskTemplatesDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionWithStageIdDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldWithWritePermissionDTO
+    FieldPermissionDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
@@ -18,20 +21,19 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 
 
 class GetTaskTemplatesPresenterImplementation(
-        GetTaskTemplatesPresenterInterface):
+        GetTaskTemplatesPresenterInterface, HTTPResponseMixin):
 
-    def raise_task_templates_does_not_exists_exception(
-            self, err: TaskTemplatesDoesNotExists):
+    def raise_task_templates_does_not_exists_exception(self):
+
         import json
-        from django.http import response
-
-        data = json.dumps({
-            "response": err.message[0],
+        from ib_tasks.constants.exception_messages import \
+            TASK_TEMPLATES_DOES_NOT_EXISTS
+        response_dict = ({
+            "response": TASK_TEMPLATES_DOES_NOT_EXISTS[0],
             "http_status_code": 404,
-            "res_status": err.message[1]
+            "res_status": TASK_TEMPLATES_DOES_NOT_EXISTS[1]
         })
-        response_object = response.HttpResponse(data, status=404)
-        return response_object
+        return self.prepare_404_not_found_response(response_dict)
 
     def get_task_templates_response(
             self, complete_task_templates_dto: CompleteTaskTemplatesDTO):
@@ -60,10 +62,8 @@ class GetTaskTemplatesPresenterImplementation(
                 task_template_id]
 
         import json
-        from django.http import response
-        data = json.dumps({"task_templates": task_templates_dicts})
-        response_object = response.HttpResponse(data, status=200)
-        return response_object
+        complete_task_templates_dict = {"task_templates": task_templates_dicts}
+        return self.prepare_200_success_response(complete_task_templates_dict)
 
     def _get_actions_of_templates_dict(
             self, action_with_stage_id_dtos: List[ActionWithStageIdDTO],
@@ -118,7 +118,7 @@ class GetTaskTemplatesPresenterImplementation(
 
     def _get_fields_of_gofs_dict(
             self,
-            field_with_permissions_dtos: List[FieldWithWritePermissionDTO]):
+            field_with_permissions_dtos: List[FieldPermissionDTO]):
         field_dicts = self._get_fields_details_dicts(
             field_with_permissions_dtos=field_with_permissions_dtos
         )
@@ -135,7 +135,7 @@ class GetTaskTemplatesPresenterImplementation(
 
     def _get_fields_details_dicts(
             self,
-            field_with_permissions_dtos: List[FieldWithWritePermissionDTO]
+            field_with_permissions_dtos: List[FieldPermissionDTO]
     ) -> List[Dict]:
         field_dicts = []
         for field_with_permissions_dto in field_with_permissions_dtos:
@@ -197,7 +197,7 @@ class GetTaskTemplatesPresenterImplementation(
 
     @staticmethod
     def _get_field_details_as_dict(
-            field_with_permissions_dto: FieldWithWritePermissionDTO) -> Dict:
+            field_with_permissions_dto: FieldPermissionDTO) -> Dict:
         field_dto = field_with_permissions_dto.field_dto
         field_dict = {
             "field_id": field_dto.field_id,

@@ -7,7 +7,7 @@ from ib_tasks.tests.factories.storage_dtos import \
     TaskTemplateDTOFactory, ActionWithStageIdDTOFactory, \
     UserFieldPermissionDTOFactory, FieldDTOFactory, \
     GoFToTaskTemplateDTOFactory, GoFDTOFactory, \
-    FieldWithWritePermissionDTOFactory, StageIdWithTemplateIdDTOFactory
+    FieldPermissionDTOFactory, StageIdWithTemplateIdDTOFactory
 from ib_tasks.interactors.presenter_interfaces. \
     get_task_templates_presenter_interface import \
     CompleteTaskTemplatesDTO
@@ -85,8 +85,8 @@ class TestGetTaskTemplatesInteractor:
         GoFDTOFactory.reset_sequence()
         UserFieldPermissionDTOFactory.reset_sequence()
         GoFToTaskTemplateDTOFactory.reset_sequence()
-        FieldWithWritePermissionDTOFactory.reset_sequence()
-        FieldWithWritePermissionDTOFactory.is_field_writable.reset()
+        FieldPermissionDTOFactory.reset_sequence()
+        FieldPermissionDTOFactory.is_field_writable.reset()
         StageIdWithTemplateIdDTOFactory.reset_sequence(1)
 
     def test_when_complete_task_details_exists(
@@ -111,7 +111,7 @@ class TestGetTaskTemplatesInteractor:
                 size=2, field_id=factory.Iterator(expected_field_ids)
             )
         field_with_permissions_dtos = \
-            FieldWithWritePermissionDTOFactory.create_batch(
+            FieldPermissionDTOFactory.create_batch(
                 size=2, field_dto=factory.Iterator(field_dtos),
                 is_field_writable=factory.Iterator([False, True])
             )
@@ -230,7 +230,7 @@ class TestGetTaskTemplatesInteractor:
                 size=2, field_id=factory.Iterator(expected_field_ids)
             )
         field_with_permissions_dtos = \
-            FieldWithWritePermissionDTOFactory.create_batch(
+            FieldPermissionDTOFactory.create_batch(
                 size=2, field_dto=factory.Iterator(field_dtos),
                 is_field_writable=factory.Iterator([False, True])
             )
@@ -321,7 +321,7 @@ class TestGetTaskTemplatesInteractor:
                 size=2, field_id=factory.Iterator(expected_field_ids)
             )
         field_with_permissions_dtos = \
-            FieldWithWritePermissionDTOFactory.create_batch(
+            FieldPermissionDTOFactory.create_batch(
                 size=2, field_dto=factory.Iterator(field_dtos),
                 is_field_writable=factory.Iterator([False, True])
             )
@@ -579,7 +579,7 @@ class TestGetTaskTemplatesInteractor:
                 size=2, field_id=factory.Iterator(expected_field_ids)
             )
         field_with_permissions_dtos = \
-            FieldWithWritePermissionDTOFactory.create_batch(
+            FieldPermissionDTOFactory.create_batch(
                 size=2, field_dto=factory.Iterator(field_dtos),
                 is_field_writable=factory.Iterator([False, True])
             )

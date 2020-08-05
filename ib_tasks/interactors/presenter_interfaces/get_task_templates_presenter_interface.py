@@ -4,7 +4,7 @@ from typing import List
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionWithStageIdDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldWithWritePermissionDTO
+    FieldPermissionDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
@@ -22,13 +22,12 @@ class CompleteTaskTemplatesDTO:
     action_with_stage_id_dtos: List[ActionWithStageIdDTO]
     gof_dtos: List[GoFDTO]
     gofs_of_task_templates_dtos: List[GoFToTaskTemplateDTO]
-    field_with_permissions_dtos: List[FieldWithWritePermissionDTO]
+    field_with_permissions_dtos: List[FieldPermissionDTO]
 
 
 class GetTaskTemplatesPresenterInterface(abc.ABC):
     @abc.abstractmethod
-    def raise_task_templates_does_not_exists_exception(
-            self, err: TaskTemplatesDoesNotExists):
+    def raise_task_templates_does_not_exists_exception(self):
         pass
 
     @abc.abstractmethod

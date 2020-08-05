@@ -8,7 +8,7 @@ from ib_tasks.tests.factories.storage_dtos import \
     TaskTemplateDTOFactory, ActionWithStageIdDTOFactory, \
     UserFieldPermissionDTOFactory, FieldDTOFactory, \
     GoFToTaskTemplateDTOFactory, GoFDTOFactory, \
-    FieldWithWritePermissionDTOFactory, StageIdWithTemplateIdDTOFactory
+    FieldPermissionDTOFactory, StageIdWithTemplateIdDTOFactory
 
 
 class TestGetTaskTemplatesPresenterImplementation:
@@ -21,8 +21,8 @@ class TestGetTaskTemplatesPresenterImplementation:
         GoFDTOFactory.reset_sequence(1)
         UserFieldPermissionDTOFactory.reset_sequence()
         GoFToTaskTemplateDTOFactory.reset_sequence()
-        FieldWithWritePermissionDTOFactory.reset_sequence()
-        FieldWithWritePermissionDTOFactory.is_field_writable.reset()
+        FieldPermissionDTOFactory.reset_sequence()
+        FieldPermissionDTOFactory.is_field_writable.reset()
         StageIdWithTemplateIdDTOFactory.reset_sequence(1)
 
     def test_when_complete_task_template_details_exists(self, snapshot):
@@ -48,7 +48,7 @@ class TestGetTaskTemplatesPresenterImplementation:
         gof_to_task_template_dtos = \
             GoFToTaskTemplateDTOFactory.create_batch(size=2)
         field_with_permissions_dtos = \
-            FieldWithWritePermissionDTOFactory.create_batch(
+            FieldPermissionDTOFactory.create_batch(
                 size=2, field_dto=factory.Iterator(field_dtos),
                 is_field_writable=factory.Iterator([False, True])
             )
@@ -139,8 +139,8 @@ class TestGetTaskTemplatesPresenterImplementation:
             )
             counter = counter + 1
 
-    def test_when_no_actions_for_user_exists_returns_empty_actions_list(self,
-                                                                        snapshot):
+    def test_when_no_actions_for_user_exists_returns_empty_actions_list(
+            self, snapshot):
         # Arrange
         expected_gof_ids = ['gof_1', 'gof_2']
         expected_field_ids = ["field_1", "field_2", "field_3", "field_4"]
@@ -155,7 +155,7 @@ class TestGetTaskTemplatesPresenterImplementation:
         gof_to_task_template_dtos = \
             GoFToTaskTemplateDTOFactory.create_batch(size=2)
         field_with_permissions_dtos = \
-            FieldWithWritePermissionDTOFactory.create_batch(
+            FieldPermissionDTOFactory.create_batch(
                 size=2, field_dto=factory.Iterator(field_dtos),
                 is_field_writable=factory.Iterator([False, True])
             )
@@ -227,3 +227,18 @@ class TestGetTaskTemplatesPresenterImplementation:
                 task_template, 'task_template_{}'.format(counter)
             )
             counter = counter + 1
+
+    def test_raise_task_templates_does_not_exists_exception(self, snapshot):
+        # Arrange
+        presenter = GetTaskTemplatesPresenterImplementation()
+
+        # Act
+        response_object = \
+            presenter.raise_task_templates_does_not_exists_exception()
+
+        # Assert
+        import json
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(response['res_status'], 'res_status')
+        snapshot.assert_match(response['response'], 'response')

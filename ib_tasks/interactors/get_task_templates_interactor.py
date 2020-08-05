@@ -4,7 +4,7 @@ from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageIdWithTemplateIdDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
-    UserFieldPermissionDTO, FieldWithWritePermissionDTO
+    UserFieldPermissionDTO, FieldPermissionDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
@@ -29,9 +29,8 @@ class GetTaskTemplatesInteractor:
         try:
             complete_task_templates_dto = \
                 self.get_task_templates(user_id=user_id)
-        except TaskTemplatesDoesNotExists as err:
-            return presenter.raise_task_templates_does_not_exists_exception(
-                err)
+        except TaskTemplatesDoesNotExists:
+            return presenter.raise_task_templates_does_not_exists_exception()
 
         complete_task_templates_response_object = \
             presenter.get_task_templates_response(
@@ -86,7 +85,7 @@ class GetTaskTemplatesInteractor:
 
     def _get_field_with_permissions_of_gofs_in_dtos(
             self, gof_ids: List[str],
-            user_roles: List[str]) -> List[FieldWithWritePermissionDTO]:
+            user_roles: List[str]) -> List[FieldPermissionDTO]:
         field_dtos = \
             self.task_storage.get_fields_of_gofs_in_dtos(gof_ids=gof_ids)
         field_ids = self._get_field_ids(field_dtos=field_dtos)
@@ -110,20 +109,20 @@ class GetTaskTemplatesInteractor:
                         field_dto=field_dto,
                         permission_type=permission_type
                     )
-                field_with_write_permission_dtos.\
+                field_with_write_permission_dtos. \
                     append(field_with_write_permission_dto)
         return field_with_write_permission_dtos
 
     @staticmethod
     def _get_field_with_permissions_dto(
             field_dto: FieldDTO,
-            permission_type: PermissionTypes) -> FieldWithWritePermissionDTO:
+            permission_type: PermissionTypes) -> FieldPermissionDTO:
         has_write_permission = permission_type == PermissionTypes.WRITE.value
         is_field_writable = False
         if has_write_permission:
             is_field_writable = True
 
-        field_with_write_permission_dto = FieldWithWritePermissionDTO(
+        field_with_write_permission_dto = FieldPermissionDTO(
             field_dto=field_dto,
             is_field_writable=is_field_writable
         )
@@ -147,11 +146,9 @@ class GetTaskTemplatesInteractor:
         task_templates_are_empty = not task_templates_dtos
         from ib_tasks.exceptions.task_custom_exceptions import \
             TaskTemplatesDoesNotExists
-        from ib_tasks.constants.exception_messages import \
-            TASK_TEMPLATES_DOES_NOT_EXISTS
+
         if task_templates_are_empty:
-            message = TASK_TEMPLATES_DOES_NOT_EXISTS
-            raise TaskTemplatesDoesNotExists(message)
+            raise TaskTemplatesDoesNotExists()
 
     @staticmethod
     def _get_gof_ids_of_task_templates(

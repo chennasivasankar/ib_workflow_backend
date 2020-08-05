@@ -81,7 +81,7 @@ class TestCase01GetDiscussionsAPITestCase(TestUtils):
             DiscussionFactory(
                 discussion_set_id=discussion_set_id,
                 id=discussion_id,
-                created_at=datetime.datetime(2008, 1, 1, tzinfo=datetime.timezone.utc)
+                created_at=datetime.datetime(2008, 1, 1)
             )
 
         from ib_discussions.constants.enum import EntityType

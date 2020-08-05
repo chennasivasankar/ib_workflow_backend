@@ -239,3 +239,9 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_fields_exist
     'template_id': 'template_2',
     'template_name': 'Task Template 2'
 }
+
+snapshots['TestGetTaskTemplatesPresenterImplementation.test_raise_task_templates_does_not_exists_exception http_status_code'] = 404
+
+snapshots['TestGetTaskTemplatesPresenterImplementation.test_raise_task_templates_does_not_exists_exception res_status'] = 'TASK_TEMPLATES_DOES_NOT_EXISTS'
+
+snapshots['TestGetTaskTemplatesPresenterImplementation.test_raise_task_templates_does_not_exists_exception response'] = 'No Task Templates are exists'

@@ -14,7 +14,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldCompleteDetailsDTO, FieldRolesDTO, FieldRoleDTO, \
     UserFieldPermissionDTO, \
     FieldDetailsDTOWithTaskId, \
-    FieldDetailsDTO, StageTaskFieldsDTO, FieldWithWritePermissionDTO
+    FieldDetailsDTO, StageTaskFieldsDTO, FieldPermissionDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import (
     TaskGoFFieldDTO,
@@ -456,9 +456,9 @@ class StageDisplayValueDTOFactory(factory.Factory):
     value = factory.sequence(lambda n: (n + 1))
 
 
-class FieldWithWritePermissionDTOFactory(factory.Factory):
+class FieldPermissionDTOFactory(factory.Factory):
     class Meta:
-        model = FieldWithWritePermissionDTO
+        model = FieldPermissionDTO
 
     field_dto = factory.SubFactory(FieldDTOFactory)
     is_field_writable = factory.Iterator([True, False])
