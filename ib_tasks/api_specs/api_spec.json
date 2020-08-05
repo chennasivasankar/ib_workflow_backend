@@ -614,6 +614,34 @@
         "stages_with_actions"
       ]
     },
+    "FilterCondition": {
+      "type": "object",
+      "properties": {
+        "field_id": {
+          "type": "string"
+        },
+        "operator": {
+          "type": "string",
+          "enum": [
+            "EQ",
+            "NE",
+            "GTE",
+            "GT",
+            "LTE",
+            "LT",
+            "CONTAINS"
+          ]
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "field_id",
+        "operator",
+        "value"
+      ]
+    },
     "FilterDetails": {
       "type": "object",
       "properties": {
@@ -626,32 +654,7 @@
         "conditions": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "field_id": {
-                "type": "string"
-              },
-              "operator": {
-                "type": "string",
-                "enum": [
-                  "EQ",
-                  "NE",
-                  "GTE",
-                  "GT",
-                  "LTE",
-                  "LT",
-                  "CONTAINS"
-                ]
-              },
-              "value": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "field_id",
-              "operator",
-              "value"
-            ]
+            "$ref": "#/definitions/FilterCondition"
           }
         }
       },
@@ -1163,7 +1166,7 @@
         ]
       }
     },
-    "FieldAndUserForbiddenResponse":{
+    "FieldAndUserForbiddenResponse": {
       "description": "fields not belongs to task template",
       "schema": {
         "type": "object",
