@@ -8,10 +8,14 @@ from ib_tasks.tests.factories.models import (
 )
 from ib_tasks.tests.factories.models import TaskFactory, FieldFactory, \
     TaskGoFFactory, TaskGoFFieldFactory, GoFFactory
+from ib_tasks.tests.factories.storage_dtos import TaskGoFFieldDTOFactory
+from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrder
+from ib_tasks.models import Task, TaskGoF, TaskGoFField
+from ib_tasks.tests.factories.models import GoFRoleFactory, FieldRoleFactory, \
+    TaskFactory, FieldFactory, TaskGoFFactory, TaskGoFFieldFactory, GoFFactory
 from ib_tasks.tests.factories.storage_dtos import TaskGoFFieldDTOFactory, \
     TaskGoFWithTaskIdDTOFactory
 from ib_tasks.constants.constants import ALL_ROLES_ID
-
 
 @pytest.mark.django_db
 class TestCreateOrUpdateTaskStorageImplementation:
@@ -315,13 +319,21 @@ class TestCreateOrUpdateTaskStorageImplementation:
         task_gofs = TaskGoFFactory.create_batch(
             size=2, task_id=task_id
         )
-        expected_gof_ids = [task_gof.gof_id for task_gof in task_gofs]
+        expected_task_gof_dtos = [
+            GoFIdWithSameGoFOrder(
+                gof_id=task_gof.gof_id,
+                same_gof_order=task_gof.same_gof_order
+            )
+            for task_gof in task_gofs
+        ]
 
         # Act
-        actual_gof_ids = storage.get_gof_ids_with_same_gof_order_related_to_a_task(task_id)
+        actual_task_gof_dtos = \
+            storage.get_gof_ids_with_same_gof_order_related_to_a_task(
+            task_id)
 
         # Assert
-        assert expected_gof_ids == actual_gof_ids
+        assert expected_task_gof_dtos == actual_task_gof_dtos
 
     def test_get_field_ids_related_to_given_task(self, storage,
                                                  reset_sequence):
@@ -335,17 +347,22 @@ class TestCreateOrUpdateTaskStorageImplementation:
         task_gof_fields = TaskGoFFieldFactory.create_batch(
             size=2, task_gof=factory.Iterator(task_gofs)
         )
-        expected_field_ids = [
-            task_gof_field.field_id
+        from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
+        expected_fields_dtos = [
+            FieldIdWithTaskGoFIdDTO(
+                field_id=task_gof_field.field_id,
+                task_gof_id=task_gof_field.task_gof_id
+            )
             for task_gof_field in task_gof_fields
         ]
 
         # Act
-        actual_field_ids = \
-            storage.get_field_ids_with_task_gof_id_related_to_given_task(task_id)
+        actual_fields_dtos = \
+            storage.get_field_ids_with_task_gof_id_related_to_given_task(
+                task_id)
 
         # Assert
-        assert actual_field_ids == expected_field_ids
+        assert expected_fields_dtos == actual_fields_dtos
 
     def test_update_task_gofs(self, storage, reset_sequence):
 

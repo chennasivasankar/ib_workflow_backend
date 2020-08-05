@@ -7,9 +7,8 @@ from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
-from ib_tasks.interactors.stages_dtos import \
+from ib_tasks.interactors.stages_dtos import UserStagesWithPaginationDTO, \
     TaskTemplateStageActionDTO, StageActionDTO, StagesActionDTO
-from ib_tasks.interactors.stages_dtos import (UserStagesWithPaginationDTO)
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
@@ -145,23 +144,6 @@ class GoFFieldsDTOFactory(factory.Factory):
     def field_values_dtos(self):
         field_values_dtos = FieldValuesDTOFactory.create_batch(size=2)
         return field_values_dtos
-
-
-class TaskDTOFactory(factory.Factory):
-    class Meta:
-        model = TaskDTO
-
-    task_id = None
-    task_template_id = factory.sequence(
-        lambda counter: "TASK_TEMPLATE_ID-{}".format(counter))
-    action_id = factory.Sequence(
-        lambda counter: "ACTION-{}".format(counter))
-    created_by_id = "123e4567-e89b-12d3-a456-426614174000"
-
-    @factory.LazyAttribute
-    def gof_fields_dtos(self):
-        gof_fields_dtos = GoFFieldsDTOFactory.create_batch(size=2)
-        return gof_fields_dtos
 
 
 class SearchableFieldTypeDTOFactory(factory.Factory):
