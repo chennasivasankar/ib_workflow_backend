@@ -613,6 +613,84 @@
           "gofs",
           "stages_with_actions"
         ]
+      },
+      "TaskTemplateFieldsResponse": {
+          "type": "object",
+          "properties": {
+             "task_template_id": {
+                "type": "string"
+             },
+             "name": {
+               "type": "string"
+             },
+             "fields": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "field_id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+
+                    },
+                    "required": [
+                      "field_id", "name"
+                    ]
+                }
+             }
+          },
+          "required": [
+            "task_template_id", "name", "fields"
+          ]
+      },
+      "GetUserFiltersDetailsResponse": {
+          "type": "object",
+          "properties": {
+              "filter_id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "task_template_id": {
+                "type": "string"
+              },
+              "is_selected": {
+                "type": "boolean"
+              },
+              "conditions": {
+                  "type": "array",
+                  "items": {
+                      "type": "object",
+                      "properties": {
+                        "field_id": {
+                          "type": "string"
+                        },
+                        "operator": {
+                          "type": "string",
+                          "enum": [
+                            "GTE", "LTE", "GT", "LE",
+                            "NE", "EQ", "CONTAINS"
+                          ]
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "field_id", "operator", "value"
+                      ]
+                  }
+
+              }
+          },
+          "required": [
+            "filter_id", "name", "task_template_id",
+            "is_selected", "conditions"
+          ]
       }
    },
    "parameters":{
@@ -901,6 +979,30 @@
     },
     "SaveAndActOnATaskTaskSuccessResponse":{
          "description":"task updated successfully"
+      },
+      "GetTaskTemplateFieldsResponse":{
+        "description": "Get Task Template Fileds Response",
+        "schema": {
+            "type": "object",
+            "properties": {
+                "task_template_fields_details": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/TaskTemplateFieldsResponse"
+                    }
+                },
+                "operators": {
+                  "type": "string",
+                  "enum": [
+                    "GTE", "LTE", "GT", "LE", "NE", "EQ", "CONTAINS"
+                  ]
+
+                }
+            },
+            "required": [
+              "task_template_fields_details", "operators"
+            ]
+        }
       }
    },
    "paths":{
@@ -1115,6 +1217,57 @@
                }
             }
          }
+      },
+      "/task_templates_fields/v1/": {
+         "get": {
+            "operationId":"get_task_templates_fields_details",
+            "summary":"Get Task Templates Fields Details",
+            "description":"Get Task Templates Fileds Details",
+            "security":[
+               {
+                  "oauth":[
+                     'read'
+                  ]
+               }
+            ],
+            "parameters":[
+            ],
+            "responses":{
+               "200":{
+                  "$ref":"#/responses/GetTaskTemplateFieldsResponse"
+               }
+            }
+         }
+
+      },
+      "/filters_details/v1/": {
+        "get": {
+            "operationId":"get_user_filters_details",
+            "summary":"get user filters details",
+            "description":"Get User Filters Details",
+            "security":[
+               {
+                  "oauth":[
+                     'read'
+                  ]
+               }
+            ],
+            "parameters":[
+            ],
+            "responses":{
+               "200":{
+                  "description": "success",
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                        "$ref":"#/definitions/GetUserFiltersDetailsResponse"
+                    }
+
+                  }
+
+               }
+            }
+        }
       }
   }
 }
