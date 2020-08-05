@@ -640,6 +640,17 @@
             "task_id":{
                "type":"integer"
             },
+            "stage_assignee":{
+               "type":"object",
+               "properties":{
+                  "stage_id":{
+                     "type":"integer"
+                  },
+                  "assignee_id":{
+                     "type":"string"
+                  }
+               }
+            },
             "task_gofs":{
                "type":"array",
                "items":{
