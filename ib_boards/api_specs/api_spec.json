@@ -257,6 +257,23 @@
       "description": "column id value",
       "type": "string",
       "required": true
+    },
+    "IsStarredParameter": {
+      "name": "is_starred",
+      "in": "body",
+      "description": "is starred value",
+      "schema": {
+        "type": "object",
+      "properties": {
+        "is_starred": {
+          "type": "string",
+          "format": "bool"
+        }
+      },
+        "required": [
+          "is_starred"
+        ]
+      }
     }
   },
   "responses": {
@@ -289,11 +306,25 @@
       "schema": {
         "type": "object",
         "properties": {
-          "total_boards_count": {
-            "type": "integer",
-            "format": "int64"
+          "starred_boards": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "board_id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "board_id",
+                "name"
+              ]
+            }
           },
-          "boards_details": {
+          "all_boards": {
             "type": "array",
             "items": {
               "type": "object",
@@ -314,7 +345,8 @@
         },
         "required": [
           "total_boards_count",
-          "boards_details"
+          "starred_boards",
+          "all_boards"
         ]
       }
     },
@@ -358,22 +390,44 @@
           }
         ],
         "parameters": [
-          {
-            "$ref": "#/parameters/LimitParameter"
-          },
-          {
-            "$ref": "#/parameters/OffsetParameter"
-          }
         ],
         "responses": {
-          "400": {
-            "$ref": "#/responses/InvalidPaginationResponse"
-          },
           "403": {
             "$ref": "#/responses/InvalidAccessResponse"
           },
           "200": {
             "$ref": "#/responses/GetBoardsResponse"
+          }
+        }
+      }
+    },
+    "/boards/{board_id}/star/v1/": {
+      "post": {
+        "operationId": "add_or_remove_given_board_id_from_starred_boards",
+        "summary": "Add Or Remove Given BoardId From Starred Boards",
+        "description": "add or remove given board id from starred boards",
+        "security": [
+          {
+            "oauth": [
+              "read",
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/IsStarredParameter"
+          }
+        ],
+        "responses": {
+          "403": {
+            "$ref": "#/responses/InvalidAccessResponse"
+          },
+            "404": {
+            "$ref": "#/responses/InvalidColumnsResponse"
+          },
+          "200": {
+            "description": "OK"
           }
         }
       }
