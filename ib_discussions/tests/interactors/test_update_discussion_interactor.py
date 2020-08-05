@@ -1,15 +1,3 @@
-'''
-TODO:
-
-4. Success for Update
-
-completed
-1. Title is empty
-3. Discussion Id not found
-2. user cannot update the
-
-
-'''
 from unittest.mock import Mock
 
 import pytest
@@ -70,7 +58,7 @@ class TestUpdateDiscussionInteractor:
 
         # Act
         response = interactor.update_discussion_wrapper(
-            discussion_id_with_title_and_description_dto\
+            discussion_id_with_title_and_description_dto \
                 =get_discussion_id_with_title_and_description_dto,
             user_id=user_id, presenter=presenter_mock
         )
@@ -117,7 +105,7 @@ class TestUpdateDiscussionInteractor:
         expected_presenter_response_for_user_cannot_update_discussion_mock = Mock()
 
         storage_mock.is_discussion_id_exists.return_value = True
-        storage_mock.is_user_can_update_discussion.return_value = False
+        storage_mock.is_user_can_edit_discussion.return_value = False
 
         presenter_mock.response_for_user_cannot_update_discussion.return_value \
             = expected_presenter_response_for_user_cannot_update_discussion_mock
@@ -132,7 +120,7 @@ class TestUpdateDiscussionInteractor:
         # Assert
         assert response == expected_presenter_response_for_user_cannot_update_discussion_mock
         presenter_mock.response_for_user_cannot_update_discussion.assert_called_once()
-        storage_mock.is_user_can_update_discussion.assert_called_once()
+        storage_mock.is_user_can_edit_discussion.assert_called_once()
 
     def test_with_valid_details_return_response(
             self, storage_mock, presenter_mock, interactor,
@@ -141,13 +129,13 @@ class TestUpdateDiscussionInteractor:
         # Arrange
         user_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
 
-        expected_presenter_response_for_user_cannot_update_discussion_mock = Mock()
+        expected_presenter_prepare_success_response_for_update_discussion_mock = Mock()
 
         storage_mock.is_discussion_id_exists.return_value = True
-        storage_mock.is_user_can_update_discussion.return_value = True
+        storage_mock.is_user_can_edit_discussion.return_value = True
 
-        presenter_mock.response_for_user_cannot_update_discussion.return_value \
-            = expected_presenter_response_for_user_cannot_update_discussion_mock
+        presenter_mock.prepare_success_response_for_update_discussion.return_value \
+            = expected_presenter_prepare_success_response_for_update_discussion_mock
 
         # Act
         response = interactor.update_discussion_wrapper(
@@ -157,5 +145,5 @@ class TestUpdateDiscussionInteractor:
         )
 
         # Assert
-        assert response == expected_presenter_response_for_user_cannot_update_discussion_mock
-        presenter_mock.response_for_user_cannot_update_discussion.assert_called_once()
+        assert response == expected_presenter_prepare_success_response_for_update_discussion_mock
+        presenter_mock.prepare_success_response_for_update_discussion.assert_called_once()

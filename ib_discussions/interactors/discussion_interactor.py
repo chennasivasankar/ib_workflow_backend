@@ -3,7 +3,8 @@ from ib_discussions.exceptions.custom_exceptions import DiscussionSetNotFound, \
 from ib_discussions.interactors.dtos.dtos import \
     DiscussionWithEntityDetailsDTO, DiscussionIdWithTitleAndDescriptionDTO
 from ib_discussions.interactors.presenter_interfaces.presenter_interface import \
-    CreateDiscussionPresenterInterface, UpdateDiscussionPresenterInterface
+    CreateDiscussionPresenterInterface, UpdateDiscussionPresenterInterface, \
+    DeleteDiscussionPresenterInterface
 from ib_discussions.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
@@ -12,7 +13,7 @@ class EmptyTitle(Exception):
     pass
 
 
-class UserCannotUpdateDiscussion(Exception):
+class UserCannotEditDiscussion(Exception):
     pass
 
 
@@ -101,12 +102,12 @@ class DiscussionInteractor:
                 discussion_id_with_title_and_description_dto \
                     =discussion_id_with_title_and_description_dto
             )
-            return
+            response = presenter.prepare_success_response_for_update_discussion()
         except EmptyTitle:
             response = presenter.response_for_empty_title()
         except DiscussionIdNotFound:
             response = presenter.response_for_discussion_id_not_found()
-        except UserCannotUpdateDiscussion:
+        except UserCannotEditDiscussion:
             response = presenter.response_for_user_cannot_update_discussion()
         return response
 
@@ -116,23 +117,46 @@ class DiscussionInteractor:
             user_id: str
     ):
         title = discussion_id_with_title_and_description_dto.title
-        description = discussion_id_with_title_and_description_dto.description
         discussion_id \
             = discussion_id_with_title_and_description_dto.discussion_id
         is_title_empty = not title
         if is_title_empty:
             raise EmptyTitle
+        self._validate_discussion_id(discussion_id)
+        self._validate_is_user_cannot_edit_discussion(discussion_id, user_id)
+        self.storage.update_discussion(
+            discussion_id_with_title_and_description_dto
+        )
+        return
+
+    def _validate_is_user_cannot_edit_discussion(self, discussion_id,
+                                                 user_id):
+        is_user_cannot_update = not self.storage.is_user_can_edit_discussion(
+            user_id=user_id, discussion_id=discussion_id
+        )
+        if is_user_cannot_update:
+            raise UserCannotEditDiscussion
+
+    def _validate_discussion_id(self, discussion_id):
         is_discussion_id_not_exists = not self.storage.is_discussion_id_exists(
             discussion_id=discussion_id
         )
         if is_discussion_id_not_exists:
             raise DiscussionIdNotFound
-        is_user_cannot_update = not self.storage.is_user_can_update_discussion(
-            user_id=user_id, discussion_id=discussion_id
-        )
-        if is_user_cannot_update:
-            raise UserCannotUpdateDiscussion
-        self.storage.update_discussion(
-            discussion_id_with_title_and_description_dto
-        )
-        return
+
+    def delete_discussion_wrapper(self, discussion_id: str, user_id: str,
+                                  presenter: DeleteDiscussionPresenterInterface):
+        try:
+            self.delete_discussion(discussion_id=discussion_id, user_id=user_id)
+            response \
+                = presenter.prepare_success_response_for_delete_discussion()
+        except DiscussionIdNotFound:
+            response = presenter.response_for_discussion_id_not_found()
+        except UserCannotEditDiscussion:
+            response = presenter.response_for_user_cannot_delete_discussion()
+        return response
+
+    def delete_discussion(self, discussion_id, user_id):
+        self._validate_discussion_id(discussion_id)
+        self._validate_is_user_cannot_edit_discussion(discussion_id, user_id)
+        self.storage.delete_discussion(discussion_id=discussion_id)

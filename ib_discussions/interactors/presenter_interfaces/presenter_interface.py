@@ -84,3 +84,22 @@ class UpdateDiscussionPresenterInterface(ABC):
     @abstractmethod
     def response_for_user_cannot_update_discussion(self):
         pass
+
+    @abstractmethod
+    def prepare_success_response_for_update_discussion(self):
+        pass
+
+
+class DeleteDiscussionPresenterInterface(ABC):
+
+    @abstractmethod
+    def response_for_discussion_id_not_found(self):
+        pass
+
+    @abstractmethod
+    def response_for_user_cannot_delete_discussion(self):
+        pass
+
+    @abstractmethod
+    def prepare_success_response_for_delete_discussion(self):
+        pass

@@ -72,7 +72,7 @@ class StorageInterface(ABC):
         pass
 
     @abstractmethod
-    def is_user_can_update_discussion(self, user_id: str, discussion_id: str) \
+    def is_user_can_edit_discussion(self, user_id: str, discussion_id: str) \
             -> bool:
         pass
 
@@ -84,4 +84,8 @@ class StorageInterface(ABC):
     def update_discussion(
             self,
             discussion_id_with_title_and_description_dto: DiscussionIdWithTitleAndDescriptionDTO):
+        pass
+
+    @abstractmethod
+    def delete_discussion(self, discussion_id: str):
         pass

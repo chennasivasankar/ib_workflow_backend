@@ -21,6 +21,7 @@ snapshots['TestCase01GetDiscussionsAPITestCase.test_case body'] = {
             'description': 'description',
             'discussion_id': '75e86ce9-337b-4720-9edb-ff9e7d006be1',
             'is_clarified': True,
+            'is_editable': False,
             'title': 'title'
         },
         {
@@ -33,6 +34,7 @@ snapshots['TestCase01GetDiscussionsAPITestCase.test_case body'] = {
             'description': 'description',
             'discussion_id': '7b9486ac-7eb6-424b-bc85-71598d000654',
             'is_clarified': True,
+            'is_editable': False,
             'title': 'title'
         }
     ],

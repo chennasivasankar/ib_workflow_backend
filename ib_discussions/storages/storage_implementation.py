@@ -6,7 +6,8 @@ from ib_discussions.exceptions.custom_exceptions import \
     UserCannotMarkAsClarified, DiscussionSetNotFound
 from ib_discussions.interactors.dtos.dtos import \
     DiscussionWithEntityDetailsDTO, \
-    OffsetAndLimitDTO, FilterByDTO, SortByDTO
+    OffsetAndLimitDTO, FilterByDTO, SortByDTO, \
+    DiscussionIdWithTitleAndDescriptionDTO
 from ib_discussions.interactors.storage_interfaces.dtos import \
     DiscussionDTO
 from ib_discussions.interactors.storage_interfaces.storage_interface import \
@@ -179,3 +180,43 @@ class StorageImplementation(StorageInterface):
     def _get_sort_discussion_objects(sort_by_dto, discussion_objects):
         if sort_by_dto.sort_by == SortByEnum.LATEST.value:
             return discussion_objects.order_by("-created_at")
+
+    def is_user_can_edit_discussion(self, user_id: str, discussion_id: str) \
+            -> bool:
+        from ib_discussions.models import Discussion
+        discussion_objects = Discussion.objects.filter(
+            id=discussion_id, user_id=user_id
+        )
+        is_discussion_objects_not_exists = not discussion_objects.exists()
+        if is_discussion_objects_not_exists:
+            return False
+        return True
+
+    def is_discussion_id_exists(self, discussion_id: str) -> bool:
+        from ib_discussions.models import Discussion
+        discussion_objects = Discussion.objects.filter(
+            id=discussion_id
+        )
+        is_discussion_objects_not_exists = not discussion_objects.exists()
+        if is_discussion_objects_not_exists:
+            return False
+        return True
+
+    def update_discussion(
+            self,
+            discussion_id_with_title_and_description_dto: DiscussionIdWithTitleAndDescriptionDTO):
+        discussion_id \
+            = discussion_id_with_title_and_description_dto.discussion_id
+        title = discussion_id_with_title_and_description_dto.title
+        description = discussion_id_with_title_and_description_dto.description
+        from ib_discussions.models import Discussion
+        discussion_object = Discussion.objects.get(id=discussion_id)
+
+        discussion_object.title = title
+        discussion_object.description = description
+        discussion_object.save()
+
+    def delete_discussion(self, discussion_id: str):
+        from ib_discussions.models import Discussion
+        Discussion.objects.filter(id=discussion_id).delete()
+

@@ -14,16 +14,17 @@ RESPONSE_200_JSON = """
 {
     "discussions": [
         {
-            "discussion_id": "aea71bf4-13c0-4b82-94f2-1dd509e65af2",
+            "discussion_id": "07bc66d9-0b44-413d-a7c7-d5259fd4e136",
             "description": "string",
             "title": "string",
             "created_at": "2099-12-31 00:00:00",
             "author": {
-                "user_id": "0fbb2c2e-e532-49be-9705-5a9cded372e2",
+                "user_id": "74838539-d2ac-4bdd-a094-f03c0c64fb05",
                 "name": "string",
                 "profile_pic_url": "string"
             },
-            "is_clarified": true
+            "is_clarified": true,
+            "is_editable": true
         }
     ],
     "total_count": 1
