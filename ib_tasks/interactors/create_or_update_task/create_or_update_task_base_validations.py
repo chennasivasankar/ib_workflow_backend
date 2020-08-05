@@ -66,7 +66,7 @@ class CreateOrUpdateTaskBaseValidationsInteractor:
         )
         from ib_tasks.interactors.create_or_update_task. \
             validate_field_responses import ValidateFieldResponsesInteractor
-        interactor = ValidateFieldResponsesInteractor(self.task_storage)
+        interactor = ValidateFieldResponsesInteractor(self.field_storage)
         field_values_dtos = \
             self._get_field_values_dtos(task_dto.gof_fields_dtos)
         interactor.validate_field_responses(field_values_dtos)
