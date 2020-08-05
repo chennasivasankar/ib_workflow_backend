@@ -1,14 +1,15 @@
-import pytest
 import mock
+import pytest
+
 from ib_tasks.interactors.get_task_templates_interactor \
     import GetTaskTemplatesInteractor
+from ib_tasks.interactors.presenter_interfaces. \
+    get_task_templates_presenter_interface import \
+    CompleteTaskTemplatesDTO
 from ib_tasks.tests.factories.storage_dtos import \
     TaskTemplateDTOFactory, ActionsOfTemplateDTOFactory, \
     UserFieldPermissionDTOFactory, FieldDTOFactory, \
     GoFToTaskTemplateDTOFactory, GoFDTOFactory, FieldWithPermissionsDTOFactory
-from ib_tasks.interactors.presenter_interfaces. \
-    get_task_templates_presenter_interface import \
-    CompleteTaskTemplatesDTO
 
 
 class TestGetTaskTemplatesInteractor:
@@ -18,6 +19,27 @@ class TestGetTaskTemplatesInteractor:
             import TaskStorageInterface
         task_storage = mock.create_autospec(TaskStorageInterface)
         return task_storage
+
+    @pytest.fixture
+    def task_template_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces \
+            .task_template_storage_interface import \
+            TaskTemplateStorageInterface
+        return mock.create_autospec(TaskTemplateStorageInterface)
+
+    @pytest.fixture
+    def gof_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces.gof_storage_interface \
+            import \
+            GoFStorageInterface
+        return mock.create_autospec(GoFStorageInterface)
+
+    @pytest.fixture
+    def field_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces \
+            .fields_storage_interface import \
+            FieldsStorageInterface
+        return mock.create_autospec(FieldsStorageInterface)
 
     @pytest.fixture
     def presenter_mock(self):
@@ -87,7 +109,9 @@ class TestGetTaskTemplatesInteractor:
 
     def test_when_complete_task_details_exists(
             self, task_storage_mock, presenter_mock,
-            presenter_response_mock, mocker):
+            presenter_response_mock, mocker,
+            field_storage_mock, gof_storage_mock, task_template_storage_mock
+    ):
         # Arrange
         user_id = "user_1"
         expected_gof_ids = ['gof_1', 'gof_2']
@@ -95,7 +119,9 @@ class TestGetTaskTemplatesInteractor:
         expected_roles = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC']
         expected_stage_ids = [1, 2]
         task_template_interactor = GetTaskTemplatesInteractor(
-            task_storage=task_storage_mock
+            task_storage=task_storage_mock,
+            task_template_storage=task_template_storage_mock,
+            gof_storage=gof_storage_mock, field_storage=field_storage_mock
         )
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids
@@ -122,7 +148,7 @@ class TestGetTaskTemplatesInteractor:
         gof_to_task_template_dtos = \
             GoFToTaskTemplateDTOFactory.create_batch(size=2)
 
-        task_storage_mock.get_task_templates_dtos.return_value = \
+        task_template_storage_mock.get_task_templates_dtos.return_value = \
             task_template_dtos
         task_storage_mock.get_initial_stage_ids_of_templates.return_value = \
             expected_stage_ids
@@ -130,14 +156,16 @@ class TestGetTaskTemplatesInteractor:
             expected_stage_ids
         task_storage_mock.get_actions_for_given_stage_ids.return_value = \
             actions_of_template_dtos
-        task_storage_mock.get_gof_ids_with_read_permission_for_user.return_value = \
+        gof_storage_mock.get_gof_ids_with_read_permission_for_user \
+            .return_value = \
             expected_gof_ids
-        task_storage_mock.get_gofs_details_dtos. \
+        gof_storage_mock.get_gofs_details_dtos_for_given_gof_ids. \
             return_value = gof_dtos
-        task_storage_mock.get_gofs_to_task_templates_from_permitted_gofs \
+        task_template_storage_mock \
+            .get_gofs_to_task_templates_from_permitted_gofs \
             .return_value = gof_to_task_template_dtos
-        task_storage_mock.get_fields_of_gofs_in_dtos.return_value = field_dtos
-        task_storage_mock.get_user_field_permission_dtos.return_value = \
+        field_storage_mock.get_fields_of_gofs_in_dtos.return_value = field_dtos
+        field_storage_mock.get_user_field_permission_dtos.return_value = \
             user_field_permission_dtos
         presenter_mock.get_task_templates_response.return_value = \
             presenter_response_mock
@@ -159,19 +187,21 @@ class TestGetTaskTemplatesInteractor:
         # Assert
         assert complete_task_templates == presenter_response_mock
         get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
-        task_storage_mock.get_task_templates_dtos.assert_called_once()
-        task_storage_mock.get_initial_stage_ids_of_templates.assert_called_once()
+        task_template_storage_mock.get_task_templates_dtos.assert_called_once()
+        task_storage_mock.get_initial_stage_ids_of_templates \
+            .assert_called_once()
         task_storage_mock.get_actions_for_given_stage_ids. \
             assert_called_once_with(stage_ids=expected_stage_ids)
-        task_storage_mock.get_gofs_details_dtos. \
+        gof_storage_mock.get_gofs_details_dtos_for_given_gof_ids. \
             assert_called_once_with(gof_ids=expected_gof_ids)
-        task_storage_mock.get_gofs_to_task_templates_from_permitted_gofs. \
+        task_template_storage_mock \
+            .get_gofs_to_task_templates_from_permitted_gofs. \
             assert_called_once_with(gof_ids=expected_gof_ids)
-        task_storage_mock.get_gof_ids_with_read_permission_for_user. \
+        gof_storage_mock.get_gof_ids_with_read_permission_for_user. \
             assert_called_once_with(roles=expected_roles)
-        task_storage_mock.get_fields_of_gofs_in_dtos. \
+        field_storage_mock.get_fields_of_gofs_in_dtos. \
             assert_called_once_with(gof_ids=expected_gof_ids)
-        task_storage_mock.get_user_field_permission_dtos. \
+        field_storage_mock.get_user_field_permission_dtos. \
             assert_called_once_with(
             roles=expected_roles, field_ids=expected_field_ids
         )
@@ -181,19 +211,22 @@ class TestGetTaskTemplatesInteractor:
 
     def test_when_no_task_templates_present_raises_exception(
             self, task_storage_mock, presenter_mock,
-            presenter_response_mock, mocker):
+            presenter_response_mock, mocker,
+            field_storage_mock, gof_storage_mock, task_template_storage_mock):
         # Arrange
         user_id = "user_1"
 
         task_template_interactor = GetTaskTemplatesInteractor(
-            task_storage=task_storage_mock
+            task_storage=task_storage_mock,
+            task_template_storage=task_template_storage_mock,
+            gof_storage=gof_storage_mock, field_storage=field_storage_mock
         )
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids
         get_user_role_ids_mock_method = get_user_role_ids(mocker)
 
         task_template_dtos = []
-        task_storage_mock.get_task_templates_dtos.return_value = \
+        task_template_storage_mock.get_task_templates_dtos.return_value = \
             task_template_dtos
 
         from unittest.mock import Mock
@@ -213,7 +246,8 @@ class TestGetTaskTemplatesInteractor:
 
     def test_when_no_actions_for_templates_returns_empty_list_of_actions_of_templates(
             self, task_storage_mock, presenter_mock,
-            presenter_response_mock, mocker):
+            presenter_response_mock, mocker,
+            field_storage_mock, gof_storage_mock, task_template_storage_mock):
         # Arrange
         user_id = "user_1"
         expected_gof_ids = ['gof_1', 'gof_2']
@@ -225,7 +259,9 @@ class TestGetTaskTemplatesInteractor:
         get_user_role_ids_mock_method = get_user_role_ids(mocker)
 
         task_template_interactor = GetTaskTemplatesInteractor(
-            task_storage=task_storage_mock
+            task_storage=task_storage_mock,
+            task_template_storage=task_template_storage_mock,
+            gof_storage=gof_storage_mock, field_storage=field_storage_mock
         )
 
         task_template_dtos = TaskTemplateDTOFactory.create_batch(size=2)
@@ -237,20 +273,22 @@ class TestGetTaskTemplatesInteractor:
         gof_to_task_template_dtos = \
             GoFToTaskTemplateDTOFactory.create_batch(size=2)
 
-        task_storage_mock.get_task_templates_dtos.return_value = \
+        task_template_storage_mock.get_task_templates_dtos.return_value = \
             task_template_dtos
         task_storage_mock.get_initial_stage_ids_of_templates.return_value = \
             expected_stage_ids
         task_storage_mock.get_actions_for_given_stage_ids.return_value = \
             actions_of_template_dtos
-        task_storage_mock.get_gof_ids_with_read_permission_for_user.return_value = \
+        gof_storage_mock.get_gof_ids_with_read_permission_for_user \
+            .return_value = \
             expected_gof_ids
-        task_storage_mock.get_gofs_details_dtos. \
+        gof_storage_mock.get_gofs_details_dtos_for_given_gof_ids. \
             return_value = gof_dtos
-        task_storage_mock.get_gofs_to_task_templates_from_permitted_gofs. \
+        task_template_storage_mock\
+            .get_gofs_to_task_templates_from_permitted_gofs. \
             return_value = gof_to_task_template_dtos
-        task_storage_mock.get_fields_of_gofs_in_dtos.return_value = field_dtos
-        task_storage_mock.get_user_field_permission_dtos.return_value = \
+        field_storage_mock.get_fields_of_gofs_in_dtos.return_value = field_dtos
+        field_storage_mock.get_user_field_permission_dtos.return_value = \
             user_field_permission_dtos
         presenter_mock.get_task_templates_response.return_value = \
             presenter_response_mock
@@ -272,19 +310,21 @@ class TestGetTaskTemplatesInteractor:
         # Assert
         assert complete_task_templates == presenter_response_mock
         get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
-        task_storage_mock.get_task_templates_dtos.assert_called_once()
-        task_storage_mock.get_initial_stage_ids_of_templates.assert_called_once()
+        task_template_storage_mock.get_task_templates_dtos.assert_called_once()
+        task_storage_mock.get_initial_stage_ids_of_templates \
+            .assert_called_once()
         task_storage_mock.get_actions_for_given_stage_ids. \
             assert_called_once_with(stage_ids=expected_stage_ids)
-        task_storage_mock.get_gofs_details_dtos. \
+        gof_storage_mock.get_gofs_details_dtos_for_given_gof_ids. \
             assert_called_once_with(gof_ids=expected_gof_ids)
-        task_storage_mock.get_gofs_to_task_templates_from_permitted_gofs. \
+        task_template_storage_mock\
+            .get_gofs_to_task_templates_from_permitted_gofs. \
             assert_called_once_with(gof_ids=expected_gof_ids)
-        task_storage_mock.get_gof_ids_with_read_permission_for_user. \
+        gof_storage_mock.get_gof_ids_with_read_permission_for_user. \
             assert_called_once_with(roles=expected_roles)
-        task_storage_mock.get_fields_of_gofs_in_dtos. \
+        field_storage_mock.get_fields_of_gofs_in_dtos. \
             assert_called_once_with(gof_ids=expected_gof_ids)
-        task_storage_mock.get_user_field_permission_dtos. \
+        field_storage_mock.get_user_field_permission_dtos. \
             assert_called_once_with(
             roles=expected_roles, field_ids=expected_field_ids
         )
@@ -294,7 +334,8 @@ class TestGetTaskTemplatesInteractor:
 
     def test_when_no_gofs_for_templates_return_empty_gofs_list(
             self, task_storage_mock, presenter_mock,
-            presenter_response_mock, mocker):
+            presenter_response_mock, mocker,
+            field_storage_mock, gof_storage_mock, task_template_storage_mock):
         # Arrange
         user_id = "user_1"
         expected_gof_ids = ['gof_1', 'gof_2']
@@ -306,7 +347,9 @@ class TestGetTaskTemplatesInteractor:
         get_user_role_ids_mock_method = get_user_role_ids(mocker)
 
         task_template_interactor = GetTaskTemplatesInteractor(
-            task_storage=task_storage_mock
+            task_storage=task_storage_mock,
+            task_template_storage=task_template_storage_mock,
+            gof_storage=gof_storage_mock, field_storage=field_storage_mock
         )
 
         task_template_dtos = TaskTemplateDTOFactory.create_batch(size=2)
@@ -321,20 +364,22 @@ class TestGetTaskTemplatesInteractor:
         gof_to_task_template_dtos = \
             GoFToTaskTemplateDTOFactory.create_batch(size=2)
 
-        task_storage_mock.get_task_templates_dtos.return_value = \
+        task_template_storage_mock.get_task_templates_dtos.return_value = \
             task_template_dtos
         task_storage_mock.get_initial_stage_ids_of_templates.return_value = \
             expected_stage_ids
         task_storage_mock.get_actions_for_given_stage_ids.return_value = \
             actions_of_template_dtos
-        task_storage_mock.get_gof_ids_with_read_permission_for_user.return_value = \
+        gof_storage_mock.get_gof_ids_with_read_permission_for_user \
+            .return_value = \
             expected_gof_ids
-        task_storage_mock.get_gofs_details_dtos. \
+        gof_storage_mock.get_gofs_details_dtos_for_given_gof_ids. \
             return_value = gof_dtos
-        task_storage_mock.get_gofs_to_task_templates_from_permitted_gofs. \
+        task_template_storage_mock\
+            .get_gofs_to_task_templates_from_permitted_gofs. \
             return_value = gof_to_task_template_dtos
-        task_storage_mock.get_fields_of_gofs_in_dtos.return_value = field_dtos
-        task_storage_mock.get_user_field_permission_dtos.return_value = \
+        field_storage_mock.get_fields_of_gofs_in_dtos.return_value = field_dtos
+        field_storage_mock.get_user_field_permission_dtos.return_value = \
             user_field_permission_dtos
         presenter_mock.get_task_templates_response.return_value = \
             presenter_response_mock
@@ -356,19 +401,21 @@ class TestGetTaskTemplatesInteractor:
         # Assert
         assert complete_task_templates == presenter_response_mock
         get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
-        task_storage_mock.get_task_templates_dtos.assert_called_once()
-        task_storage_mock.get_initial_stage_ids_of_templates.assert_called_once()
+        task_template_storage_mock.get_task_templates_dtos.assert_called_once()
+        task_storage_mock.get_initial_stage_ids_of_templates \
+            .assert_called_once()
         task_storage_mock.get_actions_for_given_stage_ids. \
             assert_called_once_with(stage_ids=expected_stage_ids)
-        task_storage_mock.get_gofs_details_dtos. \
+        gof_storage_mock.get_gofs_details_dtos_for_given_gof_ids. \
             assert_called_once_with(gof_ids=expected_gof_ids)
-        task_storage_mock.get_gofs_to_task_templates_from_permitted_gofs. \
+        task_template_storage_mock\
+            .get_gofs_to_task_templates_from_permitted_gofs. \
             assert_called_once_with(gof_ids=expected_gof_ids)
-        task_storage_mock.get_gof_ids_with_read_permission_for_user. \
+        gof_storage_mock.get_gof_ids_with_read_permission_for_user. \
             assert_called_once_with(roles=expected_roles)
-        task_storage_mock.get_fields_of_gofs_in_dtos. \
+        field_storage_mock.get_fields_of_gofs_in_dtos. \
             assert_called_once_with(gof_ids=expected_gof_ids)
-        task_storage_mock.get_user_field_permission_dtos. \
+        field_storage_mock.get_user_field_permission_dtos. \
             assert_called_once_with(
             roles=expected_roles, field_ids=expected_field_ids
         )
@@ -378,7 +425,8 @@ class TestGetTaskTemplatesInteractor:
 
     def test_when_no_field_dtos_returns_empty_field_dtos_list(
             self, task_storage_mock, presenter_mock,
-            presenter_response_mock, mocker):
+            presenter_response_mock, mocker,
+            field_storage_mock, gof_storage_mock, task_template_storage_mock):
         # Arrange
         user_id = "user_1"
         expected_gof_ids = ['gof_1', 'gof_2']
@@ -390,7 +438,9 @@ class TestGetTaskTemplatesInteractor:
         get_user_role_ids_mock_method = get_user_role_ids(mocker)
 
         task_template_interactor = GetTaskTemplatesInteractor(
-            task_storage=task_storage_mock
+            task_storage=task_storage_mock,
+            task_template_storage=task_template_storage_mock,
+            gof_storage=gof_storage_mock, field_storage=field_storage_mock
         )
 
         task_template_dtos = TaskTemplateDTOFactory.create_batch(size=2)
@@ -405,20 +455,22 @@ class TestGetTaskTemplatesInteractor:
         gof_to_task_template_dtos = \
             GoFToTaskTemplateDTOFactory.create_batch(size=2)
 
-        task_storage_mock.get_task_templates_dtos.return_value = \
+        task_template_storage_mock.get_task_templates_dtos.return_value = \
             task_template_dtos
         task_storage_mock.get_initial_stage_ids_of_templates.return_value = \
             expected_stage_ids
         task_storage_mock.get_actions_for_given_stage_ids.return_value = \
             actions_of_template_dtos
-        task_storage_mock.get_gof_ids_with_read_permission_for_user.return_value = \
+        gof_storage_mock.get_gof_ids_with_read_permission_for_user \
+            .return_value = \
             expected_gof_ids
-        task_storage_mock.get_gofs_details_dtos. \
+        gof_storage_mock.get_gofs_details_dtos_for_given_gof_ids. \
             return_value = gof_dtos
-        task_storage_mock.get_gofs_to_task_templates_from_permitted_gofs. \
+        task_template_storage_mock\
+            .get_gofs_to_task_templates_from_permitted_gofs. \
             return_value = gof_to_task_template_dtos
-        task_storage_mock.get_fields_of_gofs_in_dtos.return_value = field_dtos
-        task_storage_mock.get_user_field_permission_dtos.return_value = \
+        field_storage_mock.get_fields_of_gofs_in_dtos.return_value = field_dtos
+        field_storage_mock.get_user_field_permission_dtos.return_value = \
             user_field_permission_dtos
         presenter_mock.get_task_templates_response.return_value = \
             presenter_response_mock
@@ -440,19 +492,21 @@ class TestGetTaskTemplatesInteractor:
         # Assert
         assert complete_task_templates == presenter_response_mock
         get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
-        task_storage_mock.get_task_templates_dtos.assert_called_once()
-        task_storage_mock.get_initial_stage_ids_of_templates.assert_called_once()
+        task_template_storage_mock.get_task_templates_dtos.assert_called_once()
+        task_storage_mock.get_initial_stage_ids_of_templates \
+            .assert_called_once()
         task_storage_mock.get_actions_for_given_stage_ids. \
             assert_called_once_with(stage_ids=expected_stage_ids)
-        task_storage_mock.get_gofs_details_dtos. \
+        gof_storage_mock.get_gofs_details_dtos_for_given_gof_ids. \
             assert_called_once_with(gof_ids=expected_gof_ids)
-        task_storage_mock.get_gofs_to_task_templates_from_permitted_gofs. \
+        task_template_storage_mock\
+            .get_gofs_to_task_templates_from_permitted_gofs. \
             assert_called_once_with(gof_ids=expected_gof_ids)
-        task_storage_mock.get_gof_ids_with_read_permission_for_user. \
+        gof_storage_mock.get_gof_ids_with_read_permission_for_user. \
             assert_called_once_with(roles=expected_roles)
-        task_storage_mock.get_fields_of_gofs_in_dtos. \
+        field_storage_mock.get_fields_of_gofs_in_dtos. \
             assert_called_once_with(gof_ids=expected_gof_ids)
-        task_storage_mock.get_user_field_permission_dtos. \
+        field_storage_mock.get_user_field_permission_dtos. \
             assert_called_once_with(
             roles=expected_roles, field_ids=expected_field_ids
         )
@@ -462,7 +516,8 @@ class TestGetTaskTemplatesInteractor:
 
     def test_when_no_user_field_permissions_returns_empty_user_field_permissions_list(
             self, task_storage_mock, presenter_mock,
-            presenter_response_mock, mocker):
+            presenter_response_mock, mocker,
+            field_storage_mock, gof_storage_mock, task_template_storage_mock):
         # Arrange
         user_id = "user_1"
         expected_gof_ids = ['gof_1', 'gof_2']
@@ -474,7 +529,9 @@ class TestGetTaskTemplatesInteractor:
         get_user_role_ids_mock_method = get_user_role_ids(mocker)
 
         task_template_interactor = GetTaskTemplatesInteractor(
-            task_storage=task_storage_mock
+            task_storage=task_storage_mock,
+            task_template_storage=task_template_storage_mock,
+            gof_storage=gof_storage_mock, field_storage=field_storage_mock
         )
 
         task_template_dtos = TaskTemplateDTOFactory.create_batch(size=2)
@@ -488,20 +545,22 @@ class TestGetTaskTemplatesInteractor:
         gof_to_task_template_dtos = \
             GoFToTaskTemplateDTOFactory.create_batch(size=2)
 
-        task_storage_mock.get_task_templates_dtos.return_value = \
+        task_template_storage_mock.get_task_templates_dtos.return_value = \
             task_template_dtos
         task_storage_mock.get_initial_stage_ids_of_templates.return_value = \
             expected_stage_ids
         task_storage_mock.get_actions_for_given_stage_ids.return_value = \
             actions_of_template_dtos
-        task_storage_mock.get_gof_ids_with_read_permission_for_user.return_value = \
+        gof_storage_mock.get_gof_ids_with_read_permission_for_user \
+            .return_value = \
             expected_gof_ids
-        task_storage_mock.get_gofs_details_dtos. \
+        gof_storage_mock.get_gofs_details_dtos_for_given_gof_ids. \
             return_value = gof_dtos
-        task_storage_mock.get_gofs_to_task_templates_from_permitted_gofs. \
+        task_template_storage_mock\
+            .get_gofs_to_task_templates_from_permitted_gofs. \
             return_value = gof_to_task_template_dtos
-        task_storage_mock.get_fields_of_gofs_in_dtos.return_value = field_dtos
-        task_storage_mock.get_user_field_permission_dtos.return_value = \
+        field_storage_mock.get_fields_of_gofs_in_dtos.return_value = field_dtos
+        field_storage_mock.get_user_field_permission_dtos.return_value = \
             user_field_permission_dtos
         presenter_mock.get_task_templates_response.return_value = \
             presenter_response_mock
@@ -523,19 +582,21 @@ class TestGetTaskTemplatesInteractor:
         # Assert
         assert complete_task_templates == presenter_response_mock
         get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
-        task_storage_mock.get_task_templates_dtos.assert_called_once()
-        task_storage_mock.get_initial_stage_ids_of_templates.assert_called_once()
+        task_template_storage_mock.get_task_templates_dtos.assert_called_once()
+        task_storage_mock.get_initial_stage_ids_of_templates \
+            .assert_called_once()
         task_storage_mock.get_actions_for_given_stage_ids. \
             assert_called_once_with(stage_ids=expected_stage_ids)
-        task_storage_mock.get_gofs_details_dtos. \
+        gof_storage_mock.get_gofs_details_dtos_for_given_gof_ids. \
             assert_called_once_with(gof_ids=expected_gof_ids)
-        task_storage_mock.get_gofs_to_task_templates_from_permitted_gofs. \
+        task_template_storage_mock\
+            .get_gofs_to_task_templates_from_permitted_gofs. \
             assert_called_once_with(gof_ids=expected_gof_ids)
-        task_storage_mock.get_gof_ids_with_read_permission_for_user. \
+        gof_storage_mock.get_gof_ids_with_read_permission_for_user. \
             assert_called_once_with(roles=expected_roles)
-        task_storage_mock.get_fields_of_gofs_in_dtos. \
+        field_storage_mock.get_fields_of_gofs_in_dtos. \
             assert_called_once_with(gof_ids=expected_gof_ids)
-        task_storage_mock.get_user_field_permission_dtos. \
+        field_storage_mock.get_user_field_permission_dtos. \
             assert_called_once_with(
             roles=expected_roles, field_ids=expected_field_ids
         )
@@ -545,7 +606,8 @@ class TestGetTaskTemplatesInteractor:
 
     def test_when_no_gofs_to_task_templates_exists_return_empty_gofs_to_task_templates(
             self, task_storage_mock, presenter_mock,
-            presenter_response_mock, mocker):
+            presenter_response_mock, mocker,
+            field_storage_mock, gof_storage_mock, task_template_storage_mock):
         # Arrange
         user_id = "user_1"
         expected_gof_ids = []
@@ -556,7 +618,9 @@ class TestGetTaskTemplatesInteractor:
             get_user_role_ids
         get_user_role_ids_mock_method = get_user_role_ids(mocker)
         task_template_interactor = GetTaskTemplatesInteractor(
-            task_storage=task_storage_mock
+            task_storage=task_storage_mock,
+            task_template_storage=task_template_storage_mock,
+            gof_storage=gof_storage_mock, field_storage=field_storage_mock
         )
 
         task_template_dtos = TaskTemplateDTOFactory.create_batch(size=2)
@@ -569,20 +633,22 @@ class TestGetTaskTemplatesInteractor:
         gof_to_task_template_dtos = []
         field_with_permissions_dtos = []
 
-        task_storage_mock.get_task_templates_dtos.return_value = \
+        task_template_storage_mock.get_task_templates_dtos.return_value = \
             task_template_dtos
         task_storage_mock.get_initial_stage_ids_of_templates.return_value = \
             expected_stage_ids
         task_storage_mock.get_actions_for_given_stage_ids.return_value = \
             actions_of_template_dtos
-        task_storage_mock.get_gof_ids_with_read_permission_for_user.return_value = \
+        gof_storage_mock.get_gof_ids_with_read_permission_for_user \
+            .return_value = \
             expected_gof_ids
-        task_storage_mock.get_gofs_details_dtos. \
+        gof_storage_mock.get_gofs_details_dtos_for_given_gof_ids. \
             return_value = gof_dtos
-        task_storage_mock.get_gofs_to_task_templates_from_permitted_gofs. \
+        task_template_storage_mock\
+            .get_gofs_to_task_templates_from_permitted_gofs. \
             return_value = gof_to_task_template_dtos
-        task_storage_mock.get_fields_of_gofs_in_dtos.return_value = field_dtos
-        task_storage_mock.get_user_field_permission_dtos.return_value = \
+        field_storage_mock.get_fields_of_gofs_in_dtos.return_value = field_dtos
+        field_storage_mock.get_user_field_permission_dtos.return_value = \
             user_field_permission_dtos
         presenter_mock.get_task_templates_response.return_value = \
             presenter_response_mock
@@ -604,19 +670,21 @@ class TestGetTaskTemplatesInteractor:
         # Assert
         assert complete_task_templates == presenter_response_mock
         get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
-        task_storage_mock.get_task_templates_dtos.assert_called_once()
-        task_storage_mock.get_initial_stage_ids_of_templates.assert_called_once()
+        task_template_storage_mock.get_task_templates_dtos.assert_called_once()
+        task_storage_mock.get_initial_stage_ids_of_templates \
+            .assert_called_once()
         task_storage_mock.get_actions_for_given_stage_ids. \
             assert_called_once_with(stage_ids=expected_stage_ids)
-        task_storage_mock.get_gofs_details_dtos. \
+        gof_storage_mock.get_gofs_details_dtos_for_given_gof_ids. \
             assert_called_once_with(gof_ids=expected_gof_ids)
-        task_storage_mock.get_gofs_to_task_templates_from_permitted_gofs. \
+        task_template_storage_mock\
+            .get_gofs_to_task_templates_from_permitted_gofs. \
             assert_called_once_with(gof_ids=expected_gof_ids)
-        task_storage_mock.get_gof_ids_with_read_permission_for_user. \
+        gof_storage_mock.get_gof_ids_with_read_permission_for_user. \
             assert_called_once_with(roles=expected_roles)
-        task_storage_mock.get_fields_of_gofs_in_dtos. \
+        field_storage_mock.get_fields_of_gofs_in_dtos. \
             assert_called_once_with(gof_ids=expected_gof_ids)
-        task_storage_mock.get_user_field_permission_dtos. \
+        field_storage_mock.get_user_field_permission_dtos. \
             assert_called_once_with(
             roles=expected_roles, field_ids=expected_field_ids
         )

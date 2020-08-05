@@ -1,18 +1,22 @@
 from typing import List, Optional, Union
-from ib_tasks.exceptions.columns_custom_exceptions import MaxColumnsMustBeAPositiveInteger
-from ib_tasks.exceptions.roles_custom_exceptions import InvalidReadPermissionRoles, InvalidWritePermissionRoles
+
+from ib_tasks.exceptions.columns_custom_exceptions import \
+    MaxColumnsMustBeAPositiveInteger
 from ib_tasks.exceptions.gofs_custom_exceptions import GOFIdCantBeEmpty, \
     GOFDisplayNameCantBeEmpty, \
     GOFReadPermissionsCantBeEmpty, GOFWritePermissionsCantBeEmpty, \
     DuplicateReadPermissionRolesForAGoF, DuplicateWritePermissionRolesForAGoF
-from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO
-from ib_tasks.interactors.storage_interfaces.task_storage_interface \
-    import TaskStorageInterface
+from ib_tasks.exceptions.roles_custom_exceptions import \
+    InvalidReadPermissionRoles, InvalidWritePermissionRoles
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
+    GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO
+from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
+    GoFStorageInterface
 
 
 class CreateOrUpdateGoFsInteractor:
 
-    def __init__(self, storage: TaskStorageInterface):
+    def __init__(self, storage: GoFStorageInterface):
         self.storage = storage
 
     def create_or_update_gofs_wrapper(self):
@@ -350,7 +354,8 @@ class CreateOrUpdateGoFsInteractor:
                 )
             if duplicate_read_permission_roles:
                 raise DuplicateReadPermissionRolesForAGoF(
-                    duplicate_read_permission_role_ids=duplicate_read_permission_roles,
+                    duplicate_read_permission_role_ids
+                    =duplicate_read_permission_roles,
                     gof_id=gof_roles_dto.gof_id
                 )
             duplicate_write_permission_roles = \
@@ -359,7 +364,8 @@ class CreateOrUpdateGoFsInteractor:
                 )
             if duplicate_write_permission_roles:
                 raise DuplicateWritePermissionRolesForAGoF(
-                    duplicate_write_permission_role_ids=duplicate_write_permission_roles,
+                    duplicate_write_permission_role_ids
+                    =duplicate_write_permission_roles,
                     gof_id=gof_roles_dto.gof_id
                 )
         return
