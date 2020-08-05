@@ -231,15 +231,8 @@
         "res_status"
       ]
       },
-    "BoardsDetails": {
-      "type": "object",
-        "properties": {
-          "total_boards": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "starred_boards": {
-            "type": "array",
+    "BoardDetails": {
+      "type": "array",
             "items": {
               "type": "object",
               "properties": {
@@ -253,33 +246,7 @@
               "required": [
                 "board_id",
                 "name"
-              ]
-            }
-          },
-          "all_boards": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "board_id": {
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "board_id",
-                "name"
-              ]
-            }
-          }
-        },
-        "required": [
-          "total_boards_count",
-          "starred_boards",
-          "all_boards"
-        ]
+              ]}
     },
     "TaskCompleteDetails": {
       "type": "object",
@@ -383,7 +350,24 @@
     "GetBoardsResponse": {
       "description": "get boards response",
       "schema": {
-        "$ref": "#/definitions/BoardsDetails"
+        "type": "object",
+          "properties": {
+            "total_boards": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "starred_boards": {
+              "$ref": "#/definitions/BoardDetails"
+            },
+            "all_boards": {
+              "$ref": "#/definitions/BoardDetails"
+              }
+            },
+          "required": [
+            "total_boards_count",
+            "starred_boards",
+            "all_boards"
+          ]
       }
     },
     "ColumnsDetailsResponse": {
