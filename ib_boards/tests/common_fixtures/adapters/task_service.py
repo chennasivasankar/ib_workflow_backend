@@ -51,16 +51,12 @@ def get_valid_task_ids_mock(
 
 
 def get_valid_task_ids_for_kanban_view_mock(
-        mocker, task_template_ids_for_stages: List[str],
-        task_template_ids_list_view: List[str], task_ids: List[str]):
+        mocker, task_template_ids_for_stages: List[str]):
     mock = mocker.patch(
         'ib_boards.adapters.task_service.TaskService.get_valid_task_template_ids'
     )
-    mock.side_effect = [
-        task_template_ids_for_stages,
-        task_template_ids_list_view,
-        task_ids
-    ]
+    mock.return_value = task_template_ids_for_stages,
+
     return mock
 
 
@@ -102,18 +98,6 @@ def validate_stage_ids_mock(mocker, stage_ids: List[str]):
 
     from ib_boards.exceptions.custom_exceptions import InvalidStageIds
     mock.side_effect = InvalidStageIds(stage_ids=stage_ids)
-    return mock
-
-
-def get_stage_display_logics_mock(mocker):
-    mock = mocker.patch(
-        'ib_boards.adapters.task_service.TaskService.get_stage_display_logics'
-    )
-    stage_display_logics = [
-        "STATUS_ID_3 == STAGE_ID_3",
-        "STATUS_ID_4 == STAGE_ID_4"
-    ]
-    mock.return_value = stage_display_logics
     return mock
 
 

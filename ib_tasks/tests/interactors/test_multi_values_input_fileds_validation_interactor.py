@@ -3,11 +3,22 @@ from ib_tasks.tests.factories.storage_dtos import \
     FieldDTOFactory
 from ib_tasks.interactors.multi_values_input_fileds_validation_interactor \
     import MultiValuesInputFieldsValidationInteractor
+from ib_tasks.constants.enum import FieldTypes
 
 
 class TestMultiValuesInputFieldsValidationInteractor:
 
-    def test_given_field_values_is_empty_raise_exceptions(self):
+    @pytest.mark.parametrize(
+        "field_type",
+        [
+            FieldTypes.DROPDOWN.value,
+            FieldTypes.RADIO_GROUP.value,
+            FieldTypes.CHECKBOX_GROUP.value,
+            FieldTypes.MULTI_SELECT_LABELS.value,
+            FieldTypes.MULTI_SELECT_FIELD.value
+        ]
+    )
+    def test_given_field_values_is_empty_raise_exceptions(self, field_type):
         # Arrange
         from ib_tasks.exceptions.fields_custom_exceptions \
             import EmptyValuesForFieldValues
@@ -15,7 +26,7 @@ class TestMultiValuesInputFieldsValidationInteractor:
             import EMPTY_VALUE_FOR_FIELD_VALUE
 
         field_dto = FieldDTOFactory(
-            field_id="field1", field_values=[]
+            field_id="field1", field_type=field_type, field_values=[]
         )
         field_id = "field1"
         exception_message = EMPTY_VALUE_FOR_FIELD_VALUE.format(field_id)
@@ -28,7 +39,19 @@ class TestMultiValuesInputFieldsValidationInteractor:
         # Assert
         assert str(err.value) == exception_message
 
-    def test_given_empty_values_in_field_values_raise_exceptions(self):
+    @pytest.mark.parametrize(
+        "field_type",
+        [
+            FieldTypes.DROPDOWN.value,
+            FieldTypes.RADIO_GROUP.value,
+            FieldTypes.CHECKBOX_GROUP.value,
+            FieldTypes.MULTI_SELECT_LABELS.value,
+            FieldTypes.MULTI_SELECT_FIELD.value
+        ]
+    )
+    def test_given_empty_values_in_field_values_raise_exceptions(
+            self, field_type
+    ):
         # Arrange
         from ib_tasks.exceptions.fields_custom_exceptions \
             import EmptyValuesForFieldValues
@@ -36,7 +59,8 @@ class TestMultiValuesInputFieldsValidationInteractor:
             import EMPTY_VALUE_FOR_FIELD_VALUE
 
         field_dto = FieldDTOFactory(
-            field_id="field1", field_values=["Mr", "  ", "Mrs"]
+            field_id="field1", field_type=field_type,
+            field_values=["Mr", "  ", "Mrs"]
         )
         field_id = "field1"
         exception_message = EMPTY_VALUE_FOR_FIELD_VALUE.format(field_id)
@@ -49,7 +73,19 @@ class TestMultiValuesInputFieldsValidationInteractor:
         # Assert
         assert str(err.value) == exception_message
 
-    def test_given_duplication_of_field_values_raise_exception(self):
+    @pytest.mark.parametrize(
+        "field_type",
+        [
+            FieldTypes.DROPDOWN.value,
+            FieldTypes.RADIO_GROUP.value,
+            FieldTypes.CHECKBOX_GROUP.value,
+            FieldTypes.MULTI_SELECT_LABELS.value,
+            FieldTypes.MULTI_SELECT_FIELD.value
+        ]
+    )
+    def test_given_duplication_of_field_values_raise_exception(
+            self, field_type
+    ):
         # Arrange
         from ib_tasks.exceptions.fields_custom_exceptions \
             import DuplicationOfFieldValuesForFieldTypeMultiValues
@@ -57,7 +93,8 @@ class TestMultiValuesInputFieldsValidationInteractor:
             import DUPLICATION_OF_FIELD_VALUES
 
         field_dto = FieldDTOFactory(
-            field_id="field1", field_values=["Mr", "Mrs", "Mrs"]
+            field_id="field1", field_type=field_type,
+            field_values=["Mr", "Mrs", "Mrs"]
         )
         duplication_of_field_values = ["Mrs"]
         field_dict = {
@@ -69,7 +106,9 @@ class TestMultiValuesInputFieldsValidationInteractor:
         interactor = MultiValuesInputFieldsValidationInteractor()
 
         # Act
-        with pytest.raises(DuplicationOfFieldValuesForFieldTypeMultiValues) as err:
+        with pytest.raises(
+                DuplicationOfFieldValuesForFieldTypeMultiValues
+        ) as err:
             interactor.multi_values_input_fields_validations(field_dto)
 
         # Assert

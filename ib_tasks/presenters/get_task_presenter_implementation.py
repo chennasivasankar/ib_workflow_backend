@@ -1,17 +1,20 @@
-from typing import List
+from typing import List, Dict
+
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
+
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
 from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
     import GetTaskPresenterInterface
 from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
     import TaskCompleteDetailsDTO
+from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos \
     import TaskGoFFieldDTO, TaskGoFDTO
 from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
-from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
 
 
-class GetTaskPresenterImplementation(GetTaskPresenterInterface, HTTPResponseMixin):
+class GetTaskPresenterImplementation(GetTaskPresenterInterface,
+                                     HTTPResponseMixin):
 
     def raise_exception_for_invalid_task_id(self, err: InvalidTaskIdException):
         from ib_tasks.constants.exception_messages import INVALID_TASK_ID
@@ -37,7 +40,7 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface, HTTPResponseMixi
         gofs = self._get_task_gofs(task_gof_dtos, task_gof_field_dtos)
         task_stage_complete_details_dtos = \
             task_complete_details_dto.stages_and_actions_details_dtos
-        stages_with_actions = self._get_task_satges_with_actions_details(
+        stages_with_actions = self._get_task_stages_with_actions_details(
             task_stage_complete_details_dtos
         )
         task_details_dict = {
@@ -51,7 +54,7 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface, HTTPResponseMixi
         )
         return response_object
 
-    def _get_task_satges_with_actions_details(
+    def _get_task_stages_with_actions_details(
             self,
             task_stage_complete_details_dtos: List[StageAndActionsDetailsDTO]
     ):
@@ -59,24 +62,39 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface, HTTPResponseMixi
         for task_stage_complete_details_dto in task_stage_complete_details_dtos:
             actions_dtos = task_stage_complete_details_dto.actions_dtos
             actions = self._get_action_details(actions_dtos)
-            stage_details_dict = {
-                "stage_id": task_stage_complete_details_dto.stage_id,
-                "stage_display_name": task_stage_complete_details_dto.name,
-                "actions": actions
-            }
+            stage_details_dict = self._prepare_stage_details_dict(
+                task_stage_complete_details_dto, actions
+            )
             stages_with_actions.append(stage_details_dict)
         return stages_with_actions
+
+    @staticmethod
+    def _prepare_stage_details_dict(
+            task_stage_complete_details_dto: TaskCompleteDetailsDTO,
+            actions: List[Dict]
+    ):
+        stage_details_dict = {
+            "stage_id": task_stage_complete_details_dto.stage_id,
+            "stage_display_name": task_stage_complete_details_dto.name,
+            "actions": actions
+        }
+        return stage_details_dict
 
     def _get_action_details(self, actions_dtos: List[ActionDTO]):
         actions = []
         for actions_dto in actions_dtos:
-            action = {
-                "action_id": actions_dto.action_id,
-                "button_text": actions_dto.button_text,
-                "button_color": actions_dto.button_color
-            }
-            actions.append(action)
+            action_dict = self._prepare_action_dict(actions_dto)
+            actions.append(action_dict)
         return actions
+
+    @staticmethod
+    def _prepare_action_dict(actions_dto: ActionDTO):
+        action_dict = {
+            "action_id": actions_dto.action_id,
+            "button_text": actions_dto.button_text,
+            "button_color": actions_dto.button_color
+        }
+        return action_dict
 
     def _get_task_gofs(
             self, task_gof_dtos: List[TaskGoFDTO],
@@ -86,13 +104,18 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface, HTTPResponseMixi
         for task_gof_dto in task_gof_dtos:
             task_gof_id = task_gof_dto.task_gof_id
             gof_fields = self._get_gof_fields(task_gof_id, task_gof_field_dtos)
-            gof = {
-                "gof_id": task_gof_dto.gof_id,
-                "same_gof_order": task_gof_dto.same_gof_order,
-                "gof_fields": gof_fields
-            }
-            gofs.append(gof)
+            gof_dict = self._prepare_gof_dict(task_gof_dto, gof_fields)
+            gofs.append(gof_dict)
         return gofs
+
+    @staticmethod
+    def _prepare_gof_dict(task_gof_dto: TaskGoFDTO, gof_fields: List[Dict]):
+        gof_dict = {
+            "gof_id": task_gof_dto.gof_id,
+            "same_gof_order": task_gof_dto.same_gof_order,
+            "gof_fields": gof_fields
+        }
+        return gof_dict
 
     def _get_gof_fields(
             self, task_gof_id: int, task_gof_field_dtos: List[TaskGoFFieldDTO]
@@ -100,9 +123,14 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface, HTTPResponseMixi
         gof_fields = []
         for task_gof_field_dto in task_gof_field_dtos:
             if task_gof_id == task_gof_field_dto.task_gof_id:
-                field_dict = {
-                    "field_id": task_gof_field_dto.field_id,
-                    "field_response": task_gof_field_dto.field_response
-                }
+                field_dict = self._prepare_field_dict(task_gof_field_dto)
                 gof_fields.append(field_dict)
         return gof_fields
+
+    @staticmethod
+    def _prepare_field_dict(task_gof_field_dto: TaskGoFFieldDTO):
+        field_dict = {
+            "field_id": task_gof_field_dto.field_id,
+            "field_response": task_gof_field_dto.field_response
+        }
+        return field_dict

@@ -21,13 +21,11 @@ class GetTaskTemplatesPresenterImplementation(
             self, err: TaskTemplatesDoesNotExists):
         import json
         from django.http import response
-        from ib_tasks.constants.exception_messages import \
-            TASK_TEMPLATES_DOES_NOT_EXISTS
 
         data = json.dumps({
-            "response": TASK_TEMPLATES_DOES_NOT_EXISTS[0],
+            "response": err.message[0],
             "http_status_code": 404,
-            "res_status": TASK_TEMPLATES_DOES_NOT_EXISTS[1]
+            "res_status": err.message[1]
         })
         response_object = response.HttpResponse(data, status=404)
         return response_object

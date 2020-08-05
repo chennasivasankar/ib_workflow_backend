@@ -66,7 +66,8 @@ class GetAllTasksOverviewForUserPresenterImpl(
             task_overview_fields_details, actions_details = self. \
                 task_fields_and_actions_details(
                 each_task_id_with_stage_details_dto.task_id,
-                task_fields_and_action_details_dtos)
+                task_fields_and_action_details_dtos
+            )
             task_overview_details_dict = {
                 "task_id": each_task_id_with_stage_details_dto.task_id,
                 "task_overview_fields": task_overview_fields_details,
@@ -94,11 +95,10 @@ class GetAllTasksOverviewForUserPresenterImpl(
             if given_task_id == each_task_fields_and_action_details_dto.task_id:
                 task_overview_fields_details = self. \
                     _get_task_overview_fields_details(
-                    each_task_fields_and_action_details_dto)
-
+                    each_task_fields_and_action_details_dto
+                )
                 action_details = self._get_actions_details_of_task_stage(
                     each_task_fields_and_action_details_dto)
-
                 return task_overview_fields_details, action_details
         return [], []
 
