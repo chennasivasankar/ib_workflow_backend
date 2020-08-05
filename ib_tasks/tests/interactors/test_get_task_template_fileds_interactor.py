@@ -27,8 +27,10 @@ class TestGetTaskTemplatesFieldsInteractor:
 
         # Arrange
         from ib_tasks.tests.factories.storage_dtos \
-            import TaskTemplateDTOFactory
+            import TaskTemplateDTOFactory, GoFToTaskTemplateDTOFactory
+        GoFToTaskTemplateDTOFactory.reset_sequence()
         TaskTemplateDTOFactory.reset_sequence()
+
         task_templates = TaskTemplateDTOFactory.create_batch(2)
         task_storage.get_task_templates_dto.return_value = task_templates
 
