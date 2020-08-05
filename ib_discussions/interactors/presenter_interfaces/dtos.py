@@ -21,7 +21,7 @@ class CommentIdWithEditableStatusDTO:
 
 
 @dataclass
-class CommentWithRepliesCountDTO:
+class CommentWithRepliesCountAndEditableDTO:
     comment_id: str
     comment_content: str
     user_id: str
