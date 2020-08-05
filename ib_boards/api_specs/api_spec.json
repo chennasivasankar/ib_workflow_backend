@@ -446,6 +446,9 @@
         ],
         "parameters": [
           {
+            "$ref": "#/parameters/BoardIdParameter"
+          },
+          {
             "$ref": "#/parameters/IsStarredParameter"
           }
         ],
