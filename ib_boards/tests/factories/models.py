@@ -16,7 +16,7 @@ class UserStarredBoardFactory(factory.django.DjangoModelFactory):
         model = UserStarredBoard
 
     user_id = factory.Sequence(lambda n: f'user_id_{n}')
-    board_id = factory.SubFactory(BoardFactory)
+    board = factory.SubFactory(BoardFactory)
 
 
 class ColumnFactory(factory.django.DjangoModelFactory):
