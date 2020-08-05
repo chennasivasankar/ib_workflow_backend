@@ -56,7 +56,7 @@ class GetBoardsInteractor:
             raise InvalidLimitValue
 
         other_boards_ids, starred_board_ids = self.storage.get_board_ids(
-            user_role=user_role,
+            user_id=user_id,
         )
         from ib_boards.interactors.get_board_details_interactor \
             import GetBoardsDetailsInteractor

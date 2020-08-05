@@ -33,7 +33,7 @@ class TestGetBoardsInteractor:
     @pytest.fixture
     def get_boards_dto(self):
         return GetBoardsDTO(
-            user_id=1,
+            user_id="user_id_1",
             offset=0,
             limit=100
         )
@@ -41,7 +41,7 @@ class TestGetBoardsInteractor:
     @pytest.fixture
     def get_boards_dto_invalid_offset(self):
         return GetBoardsDTO(
-            user_id=1,
+            user_id="user_id_1",
             offset=-1,
             limit=1
         )
@@ -49,7 +49,7 @@ class TestGetBoardsInteractor:
     @pytest.fixture
     def get_boards_dto_invalid_limit(self):
         return GetBoardsDTO(
-            user_id=1,
+            user_id="user_id_1",
             offset=1,
             limit=-2
         )
@@ -57,7 +57,7 @@ class TestGetBoardsInteractor:
     @pytest.fixture
     def get_boards_dto_with_offset_exceeds(self):
         return GetBoardsDTO(
-            user_id=1,
+            user_id="user_id_1",
             offset=10,
             limit=2
         )
@@ -127,7 +127,8 @@ class TestGetBoardsInteractor:
         interactor = GetBoardsInteractor(
             storage=storage_mock
         )
-        user_role = 'User'
+        user_id = "user_id_1"
+        user_role = "User"
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             adapter_mock_to_get_user_role
         adapter_mock = adapter_mock_to_get_user_role(
@@ -149,7 +150,7 @@ class TestGetBoardsInteractor:
 
         # Assert
         storage_mock.get_board_ids.assert_called_once_with(
-            user_role=user_role
+            user_id=user_id
         )
         presenter_mock.get_response_for_offset_exceeds_total_tasks. \
             assert_called_once_with()
@@ -213,7 +214,8 @@ class TestGetBoardsInteractor:
         interactor = GetBoardsInteractor(
             storage=storage_mock
         )
-        user_role = 'User'
+        user_role = "User"
+        user_id = 'user_id_1'
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             adapter_mock_to_get_user_role
         adapter_mock = adapter_mock_to_get_user_role(
@@ -234,7 +236,7 @@ class TestGetBoardsInteractor:
 
         # Assert
         storage_mock.get_board_ids.assert_called_once_with(
-            user_role=user_role
+            user_id=user_id
         )
         interactor_mock.assert_called_once_with(
             board_ids=all_board_ids
@@ -262,6 +264,7 @@ class TestGetBoardsInteractor:
             storage=storage_mock
         )
         user_role = 'User'
+        user_id = "user_id_1"
         from ib_boards.tests.common_fixtures.adapters.iam_service import \
             adapter_mock_to_get_user_role
         adapter_mock = adapter_mock_to_get_user_role(
@@ -283,7 +286,7 @@ class TestGetBoardsInteractor:
 
         # Assert
         storage_mock.get_board_ids.assert_called_once_with(
-            user_role=user_role
+            user_id=user_id
         )
         interactor_mock.assert_called_once_with(
             board_ids=board_ids
