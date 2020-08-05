@@ -1009,10 +1009,13 @@
                     }
                 },
                 "operators": {
-                  "type": "string",
-                  "enum": [
-                    "GTE", "LTE", "GT", "LE", "NE", "EQ", "CONTAINS"
-                  ]
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "GTE", "LTE", "GT", "LE", "NE", "EQ", "CONTAINS"
+                    ]
+                  }
 
                 }
             },
@@ -1264,7 +1267,7 @@
             "security":[
                {
                   "oauth":[
-                     'write'
+                     "write"
                   ]
                }
             ],
@@ -1275,7 +1278,7 @@
             ],
             "responses":{
                "200":{
-                  "description": "succcessful",
+                  "description": "successful",
                   "schema": {
                       "type": "object",
                       "properties": {
