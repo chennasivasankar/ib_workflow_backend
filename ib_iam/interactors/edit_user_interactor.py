@@ -21,7 +21,7 @@ class EditUserInteractor(ValidationMixin):
     def edit_user_wrapper(
             self, admin_user_id: str, user_id: str,
             user_details_with_team_role_and_company_ids_dto \
-                : UserDetailsWithTeamRoleAndCompanyIdsDTO,
+                    : UserDetailsWithTeamRoleAndCompanyIdsDTO,
             presenter: EditUserPresenterInterface
     ):
         try:
@@ -71,12 +71,6 @@ class EditUserInteractor(ValidationMixin):
             team_ids=team_ids, name=name
         )
 
-    def _check_and_throw_user_is_admin(self, user_id: str):
-        is_admin = self.user_storage.check_is_admin_user(user_id=user_id)
-        is_not_admin = not is_admin
-        if is_not_admin:
-            raise UserIsNotAdmin()
-
     @staticmethod
     def _validate_email_and_throw_exception(email: str):
         import re
@@ -102,13 +96,15 @@ class EditUserInteractor(ValidationMixin):
         self._validate_company(company_id=company_id)
 
     def _validate_roles(self, role_ids: List[str]):
-        are_valid = self.user_storage.check_are_valid_role_ids(role_ids=role_ids)
+        are_valid = self.user_storage.check_are_valid_role_ids(
+            role_ids=role_ids)
         are_not_valid = not are_valid
         if are_not_valid:
             raise RoleIdsAreInvalid()
 
     def _validate_teams(self, team_ids: List[str]):
-        are_valid = self.user_storage.check_are_valid_team_ids(team_ids=team_ids)
+        are_valid = self.user_storage.check_are_valid_team_ids(
+            team_ids=team_ids)
         are_not_valid = not are_valid
         if are_not_valid:
             raise TeamIdsAreInvalid()
@@ -150,7 +146,8 @@ class EditUserInteractor(ValidationMixin):
         ids_of_role_objs = self.user_storage.get_role_objs_ids(role_ids)
         self.user_storage.add_roles_to_the_user(
             user_id=user_id, role_ids=ids_of_role_objs)
-        self.user_storage.add_user_to_the_teams(user_id=user_id, team_ids=team_ids)
+        self.user_storage.add_user_to_the_teams(user_id=user_id,
+                                                team_ids=team_ids)
         self.user_storage.update_user_details(user_id=user_id,
                                               company_id=company_id, name=name)
 

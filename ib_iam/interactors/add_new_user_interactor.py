@@ -93,12 +93,6 @@ class AddNewUserInteractor(ValidationMixin):
         self._create_user_profile(user_id=new_user_id, email=email, name=name)
         return new_user_id
 
-    def _check_and_throw_user_is_admin(self, user_id: str):
-        is_admin = self.user_storage.check_is_admin_user(user_id=user_id)
-        is_not_admin = not is_admin
-        if is_not_admin:
-            raise UserIsNotAdmin()
-
     @staticmethod
     def _validate_email_and_throw_exception(email: str):
         import re
@@ -134,13 +128,15 @@ class AddNewUserInteractor(ValidationMixin):
         return user_profile_dto
 
     def _validate_roles(self, role_ids):
-        are_valid = self.user_storage.check_are_valid_role_ids(role_ids=role_ids)
+        are_valid = self.user_storage.check_are_valid_role_ids(
+            role_ids=role_ids)
         are_not_valid = not are_valid
         if are_not_valid:
             raise RoleIdsAreInvalid()
 
     def _validate_teams(self, team_ids):
-        are_valid = self.user_storage.check_are_valid_team_ids(team_ids=team_ids)
+        are_valid = self.user_storage.check_are_valid_team_ids(
+            team_ids=team_ids)
         are_not_valid = not are_valid
         if are_not_valid:
             raise TeamIdsAreInvalid()

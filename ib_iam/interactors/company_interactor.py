@@ -1,8 +1,8 @@
-from ib_iam.exceptions.custom_exceptions import CompanyNameAlreadyExists
-from ib_iam.exceptions.custom_exceptions import DuplicateUserIds
-from ib_iam.exceptions.custom_exceptions import InvalidCompanyId
-from ib_iam.exceptions.custom_exceptions import InvalidUserIds
-from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin
+from ib_iam.exceptions.custom_exceptions import (CompanyNameAlreadyExists,
+                                                 DuplicateUserIds,
+                                                 InvalidCompanyId,
+                                                 InvalidUserIds,
+                                                 UserIsNotAdmin)
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces \
     .add_company_presenter_interface import AddCompanyPresenterInterface
@@ -12,12 +12,9 @@ from ib_iam.interactors.presenter_interfaces \
     .update_company_presenter_interface import UpdateCompanyPresenterInterface
 from ib_iam.interactors.storage_interfaces \
     .company_storage_interface import CompanyStorageInterface
-from ib_iam.interactors.storage_interfaces.dtos import CompanyDTO
-from ib_iam.interactors.storage_interfaces.dtos import \
-    CompanyNameLogoAndDescriptionDTO
-from ib_iam.interactors.storage_interfaces.dtos import \
-    CompanyWithCompanyIdAndUserIdsDTO
-from ib_iam.interactors.storage_interfaces.dtos import CompanyWithUserIdsDTO
+from ib_iam.interactors.storage_interfaces.dtos import CompanyDTO, \
+    CompanyNameLogoAndDescriptionDTO, CompanyWithCompanyIdAndUserIdsDTO, \
+    CompanyWithUserIdsDTO
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
 
@@ -103,7 +100,8 @@ class CompanyInteractor(ValidationMixin):
         try:
             self.update_company_details(
                 user_id=user_id,
-                company_with_company_id_and_user_ids_dto=company_with_company_id_and_user_ids_dto)
+                company_with_company_id_and_user_ids_dto=
+                company_with_company_id_and_user_ids_dto)
             response = presenter.get_success_response_for_update_company()
         except UserIsNotAdmin:
             response = \
@@ -125,10 +123,12 @@ class CompanyInteractor(ValidationMixin):
 
     def update_company_details(
             self, user_id: str,
-            company_with_company_id_and_user_ids_dto: CompanyWithCompanyIdAndUserIdsDTO):
+            company_with_company_id_and_user_ids_dto:
+            CompanyWithCompanyIdAndUserIdsDTO):
         self._validate_is_user_admin(user_id=user_id)
         self._validate_update_company_details(
-            company_with_company_id_and_user_ids_dto=company_with_company_id_and_user_ids_dto)
+            company_with_company_id_and_user_ids_dto=
+            company_with_company_id_and_user_ids_dto)
         user_ids = company_with_company_id_and_user_ids_dto.user_ids
         company_id = company_with_company_id_and_user_ids_dto.company_id
         company_dto = CompanyDTO(
@@ -152,7 +152,8 @@ class CompanyInteractor(ValidationMixin):
 
     def _validate_update_company_details(
             self,
-            company_with_company_id_and_user_ids_dto: CompanyWithCompanyIdAndUserIdsDTO):
+            company_with_company_id_and_user_ids_dto:
+            CompanyWithCompanyIdAndUserIdsDTO):
         company_id = company_with_company_id_and_user_ids_dto.company_id
         self.company_storage.validate_is_company_exists(company_id=company_id)
         self._validate_duplicate_or_invalid_users(

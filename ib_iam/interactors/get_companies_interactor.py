@@ -1,13 +1,13 @@
 from typing import List
+
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces \
-    .get_companies_presenter_interface import GetCompaniesPresenterInterface
+    .get_companies_presenter_interface import \
+    GetCompaniesPresenterInterface, CompanyWithEmployeeIdsAndUserDetailsDTO
 from ib_iam.interactors.storage_interfaces \
     .company_storage_interface import CompanyStorageInterface
-from ib_iam.interactors.presenter_interfaces \
-    .get_companies_presenter_interface import CompanyWithEmployeeIdsAndUserDetailsDTO
-from ib_iam.interactors.storage_interfaces.dtos import (
-    CompanyDTO, CompanyIdWithEmployeeIdsDTO)
+from ib_iam.interactors.storage_interfaces.dtos import \
+    CompanyDTO, CompanyIdWithEmployeeIdsDTO
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
 
@@ -48,7 +48,8 @@ class GetCompaniesInteractor(ValidationMixin):
         company_with_employee_ids_and_users_dto = \
             CompanyWithEmployeeIdsAndUserDetailsDTO(
                 company_dtos=company_dtos,
-                company_id_with_employee_ids_dtos=company_id_with_employee_ids_dtos,
+                company_id_with_employee_ids_dtos=
+                company_id_with_employee_ids_dtos,
                 user_dtos=user_dtos)
         return company_with_employee_ids_and_users_dto
 
