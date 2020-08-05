@@ -24,6 +24,7 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import (
     StorageInterface, GroupOfFieldsDTO,
     StatusVariableDTO, StageActionNamesDTO
 )
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.models import *
 from ib_tasks.models import GoFRole
 from ib_tasks.models import TaskTemplateInitialStage, Stage
@@ -65,6 +66,22 @@ class StagesStorageImplementation(StageStorageInterface):
             Stage.objects.filter(stage_id__in=stage_ids).
                 values_list('stage_id', flat=True))
         return stage_ids
+
+    def get_stage_details(self, task_dtos: List[GetTaskDetailsDTO]) -> \
+            List[TaskTemplateStageDTO]:
+        task_ids = [task.task_id for task in task_dtos]
+        task_objs = Task.objects.filter(id__in=task_ids).values(
+            'id', 'template_id')
+        template_stage_ids_list = []
+        task_stages_dict = {}
+        for item in task_dtos:
+            task_stages_dict[item.task_id] = item.stage_id
+        for task in task_objs:
+            template_stage_ids_list.append(
+                TaskTemplateStageDTO(task_id=task['id'],
+                                     task_template_id=task['template_id'],
+                                     stage_id=task_stages_dict[task['id']]))
+        return template_stage_ids_list
 
     def update_stages(self,
                       update_stages_information: StageDTO):
@@ -400,9 +417,8 @@ class StorageImplementation(StorageInterface):
 
     def get_task_present_stage_actions(self, task_id: int):
 
-        task_stage_ids = TaskStage.objects.filter(task_id=task_id)\
+        task_stage_ids = TaskStage.objects.filter(task_id=task_id) \
             .values_list('stage_id', flat=True)
-        action_ids = StageAction.objects.filter(stage_id__in=task_stage_ids)\
+        action_ids = StageAction.objects.filter(stage_id__in=task_stage_ids) \
             .values_list('id', flat=True)
         return action_ids
-

@@ -6,6 +6,8 @@ from ib_tasks.interactors.stages_dtos import StagesActionDTO, \
     TemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
+from ib_tasks.interactors.storage_interfaces.actions_dtos import \
+    ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO
 from ib_tasks.models import StageAction, Stage, ActionPermittedRoles, \
     TaskTemplateInitialStage
@@ -166,3 +168,30 @@ class ActionsStorageImplementation(ActionStorageInterface):
 
         return list(valid_stage_ids)
 
+    def get_actions_details(self,
+                            stage_ids: List[str],
+                            user_roles: List[str]) -> \
+            List[ActionDetailsDTO]:
+        action_objs = (StageAction.objects
+                       .filter(stage__stage_id__in=stage_ids)
+                       .filter(Q(actionpermittedroles__role_id="ALL_ROLES") |
+                               Q(actionpermittedroles__role_id__in=user_roles)
+                               ))
+        unique_action_objs = list(set(action_objs))
+        action_dtos = self._convert_action_objs_to_dtos(unique_action_objs)
+        return action_dtos
+
+    @staticmethod
+    def _convert_action_objs_to_dtos(action_objs):
+        action_dtos = []
+        for action in action_objs:
+            action_dtos.append(
+                ActionDetailsDTO(
+                    action_id=action.id,
+                    name=action.name,
+                    stage_id=action.stage.stage_id,
+                    button_text=action.button_text,
+                    button_color=action.button_color
+                )
+            )
+        return action_dtos

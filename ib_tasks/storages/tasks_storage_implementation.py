@@ -291,8 +291,10 @@ class TasksStorageImplementation(TaskStorageInterface):
         return stage_actions_dtos
 
     def get_valid_task_ids(self, task_ids: List[str]) -> Optional[List[str]]:
-        valid_task_ids = Task.objects.filter(id__in=task_ids)
-        return valid_task_ids
+        valid_task_ids = (
+            Task.objects.filter(id__in=task_ids)
+                .values_list('id', flat=True))
+        return list(valid_task_ids)
 
     @staticmethod
     def _convert_stage_actions_details_to_dto(
@@ -393,3 +395,31 @@ class TasksStorageImplementation(TaskStorageInterface):
                 )
             )
         return task_fields_dtos
+
+    def validate_task_related_stage_ids(self,
+                                        task_dtos: List[GetTaskDetailsDTO]
+                                        ) -> List[GetTaskDetailsDTO]:
+        q = None
+        for counter, item in enumerate(task_dtos):
+            current_queue = Q(stage__stage_id=item.stage_id,
+                              task_id=item.task_id)
+            if counter == 0:
+                q = current_queue
+            else:
+                q = q | current_queue
+        if q is None:
+            return []
+        task_objs = TaskStage.objects.filter(q).values('task_id',
+                                                       'stage__stage_id')
+
+        task_stage_dtos = self._convert_task_objs_to_dtos(task_objs)
+        return task_stage_dtos
+
+    @staticmethod
+    def _convert_task_objs_to_dtos(task_objs):
+        valid_task_stages_dtos = [
+            GetTaskDetailsDTO(task_id=task_obj['task_id'],
+                              stage_id=task_obj['stage__stage_id'])
+            for task_obj in task_objs
+        ]
+        return valid_task_stages_dtos

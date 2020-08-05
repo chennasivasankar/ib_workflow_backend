@@ -2,7 +2,9 @@ import abc
 from typing import Optional, List
 
 from ib_tasks.interactors.stages_dtos import StageDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
+    TaskTemplateStageDTO
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 
 
 class StageStorageInterface(abc.ABC):
@@ -34,9 +36,12 @@ class StageStorageInterface(abc.ABC):
     def get_allowed_stage_ids_of_user(self) -> List[str]:
         pass
 
-
     @abc.abstractmethod
     def get_valid_stage_ids_in_given_stage_ids(self, stage_ids: List[str]) -> \
             List[str]:
         pass
 
+    @abc.abstractmethod
+    def get_stage_details(self, task_dtos: List[GetTaskDetailsDTO]) -> \
+            List[TaskTemplateStageDTO]:
+        pass
