@@ -35,25 +35,18 @@
    ],
    "definitions":{
       "SaveAndActOnATaskRequestBody":{
-         "type":"object",
-         "properties":{
-            "task_id":{
-               "type":"integer"
-            },
-            "action_id":{
-               "type":"integer"
-            },
-            "task_gofs":{
-               "type":"array",
-               "items":{
-                  "$ref":"#/definitions/GoF"
+         "allOf":[
+            {
+               "type":"object",
+               "properties":{
+                  "action_id":{
+                     "type":"string"
+                  }
                }
+            },
+            {
+               "$ref":"#/definitions/UpdateTaskRequestBody"
             }
-         },
-         "required":[
-            "task_gofs",
-            "action_id",
-            "task_id"
          ]
       },
       "InvalidTaskActionDetails":{
