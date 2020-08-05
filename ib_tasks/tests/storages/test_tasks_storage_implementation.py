@@ -34,65 +34,56 @@ class TestTasksStorageImplementation:
         GoFRoleDTOFactory.reset_sequence(1)
         FieldCompleteDetailsDTOFactory.reset_sequence(1)
 
-    def test_get_valid_template_ids_in_given_template_ids(self, storage):
+    def test_get_initial_stage_ids_of_templates(self, storage):
         # Arrange
-        task_template = TaskTemplateFactory()
-        template_ids = [task_template.template_id, "FIN_VENDOR"]
-        expected_valid_template_ids = [task_template.template_id]
-
-        # Act
-        actual_valid_template_ids = \
-            storage.get_valid_template_ids_in_given_template_ids(template_ids)
-
-        # Assert
-        assert expected_valid_template_ids == actual_valid_template_ids
-
-    def test_get_field_details_for_given_field_ids(self, storage):
-        # Arrange
-        field_objects = FieldFactory.create_batch(size=2)
-        field_ids_list = [field_object.field_id for field_object in
-                          field_objects]
-        field_types_list = [
-            field_object.field_type for field_object in field_objects
-        ]
-        field_required_list = [
-            field_object.required for field_object in field_objects
-        ]
-        field_values_list = [
-            field_object.field_values for field_object in field_objects
-        ]
-        allowed_formats_list = [
-            field_object.allowed_formats for field_object in field_objects
-        ]
-        validation_regex_list = [
-            field_object.validation_regex for field_object in field_objects
-        ]
-        expected_field_type_dtos = FieldCompleteDetailsDTOFactory.create_batch(
-            size=2, field_id=factory.Iterator(field_ids_list),
-            field_type=factory.Iterator(field_types_list),
-            required=factory.Iterator(field_required_list),
-            field_values=factory.Iterator(field_values_list),
-            allowed_formats=factory.Iterator(allowed_formats_list),
-            validation_regex=factory.Iterator(validation_regex_list)
+        from ib_tasks.tests.factories.models import StageModelFactory, \
+            TaskTemplateInitialStageFactory, TaskTemplateFactory
+        expected_stage_ids = [1, 2]
+        import factory
+        stages = StageModelFactory.create_batch(size=2)
+        task_templates = TaskTemplateFactory.create_batch(size=2)
+        TaskTemplateInitialStageFactory.create_batch(
+            size=2, stage=factory.Iterator(stages),
+            task_template=factory.Iterator(task_templates)
         )
 
         # Act
-        actual_field_type_dtos = storage.get_field_details_for_given_field_ids(
-            field_ids=field_ids_list
+        result = storage.get_initial_stage_ids_of_templates()
+
+        # Assert
+        assert result == expected_stage_ids
+
+    def test_get_actions_for_given_stage_ids(self, storage):
+        # Arrange
+        from ib_tasks.interactors.storage_interfaces.actions_dtos \
+            import ActionsOfTemplateDTO
+        from ib_tasks.tests.factories.models import \
+            StageModelFactory, StageActionFactory
+        expected_stage_ids = [1, 2]
+        expected_output = [
+            ActionsOfTemplateDTO(
+                template_id='task_template_id_0',
+                action_id=1, button_text='hey',
+                button_color='#fafafa'
+            ),
+            ActionsOfTemplateDTO(
+                template_id='task_template_id_1',
+                action_id=2, button_text='hey',
+                button_color='#fafafa'
+            )
+        ]
+        import factory
+        StageModelFactory.create_batch(
+            size=2, stage_id=factory.Iterator(expected_stage_ids)
+        )
+        StageActionFactory.create_batch(
+            size=2, stage_id=factory.Iterator(expected_stage_ids)
+        )
+
+        # Act
+        result = storage.get_actions_for_given_stage_ids(
+            stage_ids=expected_stage_ids
         )
 
         # Assert
-        assert expected_field_type_dtos == actual_field_type_dtos
-
-    def test_check_is_template_exists_with_valid_template_id_returns_true(self,
-                                                                          storage):
-        # Arrange
-        task_template = TaskTemplateFactory()
-        template_id = task_template.template_id
-        expected_response = True
-
-        # Act
-        actual_response = storage.check_is_template_exists(template_id)
-
-        # Assert
-        assert expected_response == actual_response
+        assert result == expected_output

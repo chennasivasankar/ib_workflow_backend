@@ -24,6 +24,69 @@ class TestTaskTemplateStorageImplementation:
             GlobalConstantsDTOFactory
         GlobalConstantsDTOFactory.reset_sequence()
 
+    def test_get_valid_template_ids_in_given_template_ids(self, storage):
+        # Arrange
+        task_template = TaskTemplateFactory()
+        template_ids = [task_template.template_id, "FIN_VENDOR"]
+        expected_valid_template_ids = [task_template.template_id]
+
+        # Act
+        actual_valid_template_ids = \
+            storage.get_valid_template_ids_in_given_template_ids(template_ids)
+
+        # Assert
+        assert expected_valid_template_ids == actual_valid_template_ids
+
+    def test_get_gofs_to_task_templates_from_permitted_gofs(self, storage):
+        from ib_tasks.tests.factories.models import \
+            GoFToTaskTemplateFactory, GoFFactory
+        from ib_tasks.interactors.storage_interfaces.gof_dtos import \
+            GoFToTaskTemplateDTO
+        expected_gof_ids = ['gof_1', 'gof_2']
+        expected_gof_to_task_templates_dtos = [
+            GoFToTaskTemplateDTO(gof_id='gof_1', template_id='template_1',
+                                 order=0, enable_add_another=True),
+            GoFToTaskTemplateDTO(gof_id='gof_2', template_id='template_2',
+                                 order=1, enable_add_another=False)]
+
+        import factory
+        gof_objs = GoFFactory.create_batch(
+            size=2, gof_id=factory.Iterator(expected_gof_ids)
+        )
+        GoFToTaskTemplateFactory.create_batch(
+            size=2, gof_id=factory.Iterator(gof_objs)
+        )
+
+        # Act
+        result = storage.get_gofs_to_task_templates_from_permitted_gofs(
+            gof_ids=expected_gof_ids
+        )
+
+        # Assert
+        assert result == expected_gof_to_task_templates_dtos
+
+    def test_get_task_templates_dtos(self, storage):
+        # Arrange
+        from ib_tasks.tests.factories.models import TaskTemplateFactory
+        from ib_tasks.interactors.storage_interfaces.task_templates_dtos \
+            import TaskTemplateDTO
+        expected_output = [
+            TaskTemplateDTO(
+                template_id='template_1', template_name='Template 1'
+            ),
+            TaskTemplateDTO(
+                template_id='template_2', template_name='Template 2'
+            )
+        ]
+
+        TaskTemplateFactory.create_batch(size=2)
+
+        # Act
+        result = storage.get_task_templates_dtos()
+
+        # Assert
+        assert result == expected_output
+
    
     def test_check_is_template_exists_with_invalid_template_id_returns_false(
             self, storage):

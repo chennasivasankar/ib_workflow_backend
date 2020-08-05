@@ -3,7 +3,7 @@ import pytest
 
 from ib_tasks.models import GoFRole
 from ib_tasks.tests.factories.models import GoFFactory, TaskTemplateFactory, \
-    GoFRoleFactory, FieldFactory
+    GoFRoleFactory, FieldFactory, TaskTemplateWith2GoFsFactory
 from ib_tasks.tests.factories.storage_dtos import (
     GoFDTOFactory,
     GoFRolesDTOFactory,
@@ -34,6 +34,35 @@ class TestGoFStorageImplementation:
         CompleteGoFDetailsDTOFactory.reset_sequence(1)
         GoFRoleDTOFactory.reset_sequence(1)
         FieldCompleteDetailsDTOFactory.reset_sequence(1)
+
+    def test_get_gof_ids_with_read_permission_for_user(self, storage, reset_sequence):
+        # Arrange
+        from ib_tasks.tests.factories.models import GoFRoleFactory
+        expected_output = ['gof_2', 'gof_3']
+        expected_roles = ['FIN_MAN']
+        GoFRoleFactory.create_batch(size=2, role="ALL_ROLES")
+
+        # Act
+        result = storage.get_gof_ids_with_read_permission_for_user(
+            roles=expected_roles
+        )
+
+        # Assert
+        assert result == expected_output
+
+    def test_get_valid_gof_ids_in_given_gof_ids(self, storage):
+        # Arrange
+        template_id = "FIN_VENDOR"
+        gof_ids = ['gof_1', 'gof_3']
+        expected_gof_ids = ['gof_1']
+        TaskTemplateWith2GoFsFactory(template_id=template_id)
+
+        # Act
+        valid_gof_ids = \
+            storage.get_valid_gof_ids_in_given_gof_ids(gof_ids=gof_ids)
+
+        # Assert
+        assert valid_gof_ids == expected_gof_ids
 
     def test_get_existing_gof_ids_in_given_gof_ids(
             self, storage
