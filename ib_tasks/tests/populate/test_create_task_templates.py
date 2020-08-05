@@ -1,4 +1,5 @@
 import pytest
+
 from ib_tasks.interactors.task_template_dtos import CreateTaskTemplateDTO
 
 
@@ -13,33 +14,33 @@ class TestCreateTaskTemplate:
     def create_task_templates_interactor(self):
         from ib_tasks.interactors.create_task_template_interactor import \
             CreateTaskTemplateInteractor
-        from ib_tasks.storages.tasks_storage_implementation import \
-            TasksStorageImplementation
-
-        task_storage = TasksStorageImplementation()
+        from ib_tasks.storages.task_template_storage_implementation import \
+            TaskTemplateStorageImplementation
+        task_template_storage = TaskTemplateStorageImplementation()
         task_template_interactor = CreateTaskTemplateInteractor(
-            task_storage=task_storage
+            task_template_storage=task_template_storage
         )
         return task_template_interactor
 
     @pytest.mark.django_db
     def test_with_invalid_template_id_raises_exception(
             self, create_task_templates_interactor, snapshot):
-        #Arrange
+        # Arrange
         template_id = "  "
         template_name = "IB"
 
-        create_task_template_dto= CreateTaskTemplateDTO(
+        create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name
         )
-        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import \
+            InvalidValueForField
 
-        #Asssert
+        # Asssert
         with pytest.raises(InvalidValueForField) as err:
-            create_task_templates_interactor.\
+            create_task_templates_interactor. \
                 create_task_template_wrapper(
-                    create_task_template_dto=create_task_template_dto
-                )
+                create_task_template_dto=create_task_template_dto
+            )
 
         snapshot.assert_match(err.value.args[0], 'message')
 
@@ -52,7 +53,8 @@ class TestCreateTaskTemplate:
         create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name
         )
-        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import \
+            InvalidValueForField
 
         # Asssert
         with pytest.raises(InvalidValueForField) as err:
@@ -73,13 +75,13 @@ class TestCreateTaskTemplate:
             template_id=template_id, template_name=template_name
         )
 
-        #Act
+        # Act
         create_task_templates_interactor. \
             create_task_template_wrapper(
             create_task_template_dto=create_task_template_dto
         )
 
-        #Assert
+        # Assert
         from ib_tasks.models.task_template import TaskTemplate
         task_template = \
             TaskTemplate.objects.filter(template_id=template_id).first()
@@ -100,13 +102,13 @@ class TestCreateTaskTemplate:
             template_id=template_id, template_name=template_name
         )
 
-        #Act
+        # Act
         create_task_templates_interactor. \
             create_task_template_wrapper(
             create_task_template_dto=create_task_template_dto
         )
 
-        #Assert
+        # Assert
         from ib_tasks.models.task_template import TaskTemplate
         task_template = \
             TaskTemplate.objects.filter(template_id=template_id).first()
