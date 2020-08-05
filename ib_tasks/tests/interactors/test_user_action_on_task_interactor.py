@@ -126,7 +126,7 @@ class TestUserActionOnTaskInteractor:
         storage.validate_task_id.return_value = False
 
         # Act
-        interactor.user_action_on_task(presenter=presenter)
+        interactor.user_action_on_task_wrapper(presenter=presenter)
 
         # Assert
         dict_obj = presenter.raise_exception_for_invalid_task.call_args.kwargs
@@ -152,7 +152,7 @@ class TestUserActionOnTaskInteractor:
         storage.validate_task_id.return_value = True
 
         # Act
-        interactor.user_action_on_task(presenter=presenter)
+        interactor.user_action_on_task_wrapper(presenter=presenter)
 
         # Assert
         mock_obj.called_once()
@@ -181,7 +181,7 @@ class TestUserActionOnTaskInteractor:
         storage.validate_action.return_value = False
 
         # Act
-        interactor.user_action_on_task(presenter=presenter)
+        interactor.user_action_on_task_wrapper(presenter=presenter)
 
         # Assert
         mock_obj.called_once()
@@ -214,7 +214,7 @@ class TestUserActionOnTaskInteractor:
         storage.get_task_present_stage_actions.return_value = action_ids
 
         # Act
-        interactor.user_action_on_task(presenter=presenter)
+        interactor.user_action_on_task_wrapper(presenter=presenter)
 
         # Assert
         mock_obj.called_once()
@@ -254,7 +254,7 @@ class TestUserActionOnTaskInteractor:
         validation_mock_obj.return_value = False
 
         # Act
-        interactor.user_action_on_task(presenter=presenter)
+        interactor.user_action_on_task_wrapper(presenter=presenter)
 
         # Assert
         mock_obj.called_once()
@@ -308,7 +308,7 @@ class TestUserActionOnTaskInteractor:
         board_mock.side_effect = UserBoardPermissionDenied(board_id=board_id)
 
         # Act
-        interactor.user_action_on_task(presenter=presenter)
+        interactor.user_action_on_task_wrapper(presenter=presenter)
 
         # Assert
         mock_obj.called_once()
@@ -370,7 +370,7 @@ class TestUserActionOnTaskInteractor:
         board_mock.return_value = task_board_details
 
         # Act
-        interactor.user_action_on_task(presenter=presenter)
+        interactor.user_action_on_task_wrapper(presenter=presenter)
 
         # Assert
         mock_obj.called_once()

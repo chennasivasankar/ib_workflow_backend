@@ -25,9 +25,12 @@ class TestGetTaskPresenterImplementation:
         from ib_tasks.tests.factories.storage_dtos \
             import TaskGoFFieldDTOFactory
         permission_task_gof_field_dtos = [
-            TaskGoFFieldDTOFactory(task_gof_id=0, field_id="field0", field_response="response0"),
-            TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field2", field_response="response2"),
-            TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field3", field_response="response3")
+            TaskGoFFieldDTOFactory(task_gof_id=0, field_id="field0",
+                                   field_response="response0"),
+            TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field2",
+                                   field_response="response2"),
+            TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field3",
+                                   field_response="response3")
         ]
         return permission_task_gof_field_dtos
 
@@ -145,7 +148,8 @@ class TestGetTaskPresenterImplementation:
         response_object = presenter.raise_exception_for_invalid_task_id(err)
 
         # Assert
-        snapshot.assert_match(name="exception_object", value=response_object.content)
+        snapshot.assert_match(name="exception_object",
+                              value=response_object.content)
 
     def test_given_task_complete_details_dto_returns_task_details(
             self, presenter, task_complete_details_dto, snapshot
@@ -153,7 +157,9 @@ class TestGetTaskPresenterImplementation:
         # Arrange
 
         # Act
-        response_object = presenter.get_task_response(task_complete_details_dto)
+        response_object = presenter.get_task_response(
+            task_complete_details_dto)
 
         # Assert
-        snapshot.assert_match(name="task_details = ", value=response_object.content)
+        snapshot.assert_match(name="task_details = ",
+                              value=response_object.content)

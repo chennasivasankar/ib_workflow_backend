@@ -32,7 +32,7 @@ def api_wrapper(*args, **kwargs):
         stage_storage=stage_storage, field_storage=field_storage
     )
 
-    response = interactor.user_action_on_task(
+    response = interactor.user_action_on_task_wrapper(
         presenter=presenter
     )
     return response

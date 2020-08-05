@@ -112,19 +112,26 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
 
         print(task_complete_details_dto)
         task_id = task_complete_details_dto.task_id
-        task_board_details = task_complete_details_dto.task_boards_details
-        actions_dto = task_complete_details_dto.actions_dto
-        fields_dto = task_complete_details_dto.field_dtos
-        board_dto = task_board_details.board_dto
-        response_dict = {
-            "task_id": str(task_id),
-            "current_board_details": {
+        # TODO: Need to refactor
+        if task_complete_details_dto.task_boards_details:
+            actions_dto = task_complete_details_dto.actions_dto
+            fields_dto = task_complete_details_dto.field_dtos
+            task_board_details = task_complete_details_dto.task_boards_details
+            board_dto = task_board_details.board_dto
+
+            current_board_details = {
                 "board_id": board_dto.board_id,
                 "board_name": board_dto.name,
                 "column_details": self._get_column_details(
                     actions_dto, fields_dto, task_board_details
                 )
-            },
+            }
+        else:
+            current_board_details = None
+
+        response_dict = {
+            "task_id": str(task_id),
+            "current_board_details": current_board_details,
             "other_board_details": []
         }
         response_object = self.prepare_200_success_response(response_dict)

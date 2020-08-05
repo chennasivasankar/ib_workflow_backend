@@ -49,10 +49,10 @@ class UserActionOnTaskInteractor:
         self.field_storage = field_storage
         self.stage_storage = stage_storage
 
-    def user_action_on_task(self, presenter: PresenterInterface):
+    def user_action_on_task_wrapper(self, presenter: PresenterInterface):
 
         try:
-            task_complete_details_dto = self._user_action_on_task()
+            task_complete_details_dto = self.user_action_on_task()
         except InvalidTaskException as err:
             return presenter.raise_exception_for_invalid_task(error_obj=err)
         except InvalidBoardIdException as err:
@@ -75,7 +75,7 @@ class UserActionOnTaskInteractor:
             task_complete_details_dto=task_complete_details_dto
         )
 
-    def _user_action_on_task(self):
+    def user_action_on_task(self):
         self._validations_for_task_action()
         task_dto = self._get_task_dto()
         self._call_logic_and_update_status_variables_and_get_stage_ids(
@@ -84,7 +84,10 @@ class UserActionOnTaskInteractor:
 
         stage_ids = self._get_task_stage_display_satifsied_stage_ids()
         self._update_task_stages(stage_ids=stage_ids)
-        task_boards_details = self._get_task_boards_details(stage_ids)
+        if self.board_id:
+            task_boards_details = self._get_task_boards_details(stage_ids)
+        else:
+            task_boards_details = None
         actions_dto, fields_dto = \
             self._get_task_fields_and_actions_dto(stage_ids)
         return TaskCompleteDetailsDTO(
@@ -240,7 +243,8 @@ class UserActionOnTaskInteractor:
     def _validations_for_task_action(self):
 
         self._validate_task_id()
-        self._validate_board_id()
+        if self.board_id:
+            self._validate_board_id()
         valid_action = self.storage.validate_action(action_id=self.action_id)
         is_invalid_action = not valid_action
         if is_invalid_action:
@@ -257,7 +261,7 @@ class UserActionOnTaskInteractor:
         action_ids = self.storage.get_task_present_stage_actions(
             task_id=self.task_id
         )
-        is_not_present_stage_actions = action_id not in action_ids
+        is_not_present_stage_actions = int(action_id) not in action_ids
         if is_not_present_stage_actions:
             raise InvalidPresentStageAction(action_id=action_id)
 

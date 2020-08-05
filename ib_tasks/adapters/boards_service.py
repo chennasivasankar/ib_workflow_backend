@@ -16,11 +16,12 @@ class BoardsService:
     def get_display_boards_and_column_details(self, user_id: str,
                                               board_id: str,
                                               stage_ids: List[str]):
+        from ib_boards.exceptions.custom_exceptions import UserDonotHaveAccess
         try:
             board_details = self.interface.get_board_details(
                 user_id=user_id, board_id=board_id, stage_ids=stage_ids
             )
-        except:
+        except UserDonotHaveAccess:
             raise UserBoardPermissionDenied(board_id=board_id)
         task_board_details = self._get_board_details(board_details)
         return task_board_details
