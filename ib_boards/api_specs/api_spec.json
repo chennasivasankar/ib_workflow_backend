@@ -336,6 +336,10 @@
       "schema": {
         "type": "object",
         "properties": {
+          "total_boards": {
+            "type": "integer",
+            "format": "int64"
+          },
           "starred_boards": {
             "type": "array",
             "items": {
@@ -420,10 +424,19 @@
           }
         ],
         "parameters": [
+          {
+            "$ref": "#/parameters/OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/LimitParameter"
+          }
         ],
         "responses": {
           "403": {
             "$ref": "#/responses/InvalidAccessResponse"
+          },
+          "400": {
+            "$ref": "#/responses/InvalidPaginationResponse"
           },
           "200": {
             "$ref": "#/responses/GetBoardsResponse"
