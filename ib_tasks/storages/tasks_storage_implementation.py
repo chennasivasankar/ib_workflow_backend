@@ -12,8 +12,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
-    GoFToTaskTemplateDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO, TaskStageIdsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
@@ -25,18 +24,14 @@ from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TaskTemplateDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.models import Stage
 from ib_tasks.models import TaskStage
 from ib_tasks.models import TaskTemplateStatusVariable
 from ib_tasks.models.field import Field
-from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.stage_actions import StageAction
 from ib_tasks.models.task import Task
 from ib_tasks.models.task_gof_field import TaskGoFField
-from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
 
@@ -300,18 +295,6 @@ class TasksStorageImplementation(TaskStorageInterface):
         return valid_task_ids
 
     @staticmethod
-    def _convert_task_templates_objs_to_dtos(
-            task_template_objs: List[TaskTemplate]) -> List[TaskTemplateDTO]:
-        task_template_dtos = [
-            TaskTemplateDTO(
-                template_id=task_template_obj.template_id,
-                template_name=task_template_obj.name
-            )
-            for task_template_obj in task_template_objs
-        ]
-        return task_template_dtos
-
-    @staticmethod
     def _convert_stage_actions_details_to_dto(
             stage_actions_details: List[Dict]) -> List[ActionsOfTemplateDTO]:
         actions_of_template_dtos = [
@@ -324,21 +307,6 @@ class TasksStorageImplementation(TaskStorageInterface):
             for stage_action in stage_actions_details
         ]
         return actions_of_template_dtos
-
-    @staticmethod
-    def _convert_task_template_gofs_to_dtos(
-            task_template_gofs) -> List[GoFToTaskTemplateDTO]:
-        task_template_gof_dtos = [
-            GoFToTaskTemplateDTO(
-                template_id=task_template_gof.task_template_id,
-                gof_id=task_template_gof.gof_id,
-                order=task_template_gof.order,
-                enable_add_another=task_template_gof.enable_add_another_gof
-
-            )
-            for task_template_gof in task_template_gofs
-        ]
-        return task_template_gof_dtos
 
     def get_user_task_and_max_stage_value_dto_based_on_given_stage_ids(
             self, user_id: str, stage_ids: List[str], limit: int,
