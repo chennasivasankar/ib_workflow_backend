@@ -757,7 +757,7 @@
             }
           },
           "required": [
-            "field_id",
+            "filter_id",
             "is_selected"
           ]
         }
@@ -1605,6 +1605,13 @@
          "operationId": "create_filter",
          "summary": "create filter",
          "description": "create filter with given details",
+         "security": [
+           {
+             "oauth": [
+               "write"
+             ]
+           }
+         ],
          "parameters": [
            {
              "$ref": "#/parameters/CreateFilterBodyParameter"
@@ -1628,6 +1635,13 @@
        "get": {
          "summary": "get filters",
          "operationId": "get_filters",
+         "security": [
+           {
+             "oauth": [
+               "read"
+             ]
+           }
+         ],
          "parameters": [
          ],
          "responses": {
@@ -1648,6 +1662,13 @@
          "operationId": "update_filter",
          "summary": "update filter",
          "description": "update filter with given details",
+         "security": [
+           {
+             "oauth": [
+               "write"
+             ]
+           }
+         ],
          "parameters": [
            {
              "$ref": "#/parameters/UpdateFilterBodyParameter"
@@ -1674,6 +1695,14 @@
        "delete": {
          "summary": "delete filter",
          "operationId": "delete_filter",
+         "security": [
+           {
+             "oauth": [
+               "write",
+               "delete"
+             ]
+           }
+         ],
          "parameters": [
            {
              "$ref": "#/parameters/DeleteFilterPathParameter"
