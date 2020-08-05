@@ -696,6 +696,9 @@
         "field_id": {
           "type": "string"
         },
+        "field_name": {
+          "type": "string"
+        },
         "operator": {
           "type": "string",
           "enum": [
@@ -727,6 +730,9 @@
         "template_id": {
           "type": "string"
         },
+        "template_name": {
+          "type": "string"
+        },
         "conditions": {
           "type": "array",
           "items": {
@@ -752,12 +758,19 @@
               "type": "integer",
               "format": "int64"
             },
+            "filter_name": {
+              "type": "string"
+            },
+            "template_name": {
+              "type": "string"
+            },
             "is_selected": {
               "type": "boolean"
             }
           },
           "required": [
             "filter_id",
+            "filter_name",
             "is_selected"
           ]
         }
