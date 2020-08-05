@@ -98,20 +98,19 @@ class GetTaskTemplatesInteractor:
                 user_field_permission_dtos=user_field_permission_dtos
             )
 
-        field_with_write_permission_dtos = []
+        field_permission_dtos = []
         for field_dto in field_dtos:
             if field_dto.field_id in user_field_permission_dtos_dict.keys():
                 permission_type = \
                     user_field_permission_dtos_dict[
                         field_dto.field_id].permission_type
-                field_with_write_permission_dto = \
+                field_permission_dto = \
                     self._get_field_with_permissions_dto(
                         field_dto=field_dto,
                         permission_type=permission_type
                     )
-                field_with_write_permission_dtos. \
-                    append(field_with_write_permission_dto)
-        return field_with_write_permission_dtos
+                field_permission_dtos.append(field_permission_dto)
+        return field_permission_dtos
 
     @staticmethod
     def _get_field_with_permissions_dto(
@@ -122,11 +121,11 @@ class GetTaskTemplatesInteractor:
         if has_write_permission:
             is_field_writable = True
 
-        field_with_write_permission_dto = FieldPermissionDTO(
+        field_permission_dto = FieldPermissionDTO(
             field_dto=field_dto,
             is_field_writable=is_field_writable
         )
-        return field_with_write_permission_dto
+        return field_permission_dto
 
     @staticmethod
     def _make_user_field_permission_dtos_dict(
