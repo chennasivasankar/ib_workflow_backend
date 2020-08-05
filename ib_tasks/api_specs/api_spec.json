@@ -456,7 +456,7 @@
         }
       ]
     },
-     "StageAssignee": {
+     "Assignee": {
       "type": "object",
       "properties": {
         "assignee_id": {
@@ -475,6 +475,22 @@
         "name"
       ]
     },
+    "StageWithAssignee":  {
+      "type": "object",
+      "properties": {
+        "stage_id": {
+          "type": "string"
+        },
+        "assignee_id": {
+          "type": "string"
+        }
+
+      },
+      "required": [
+        "assignee_id",
+        "stage_id"
+      ]
+    },
      "StagesWithActions": {
 
 
@@ -489,8 +505,9 @@
             "stage_color": {
               "type": "string"},
             "stage_assignee": {
-              "$ref": "#/definitions/StageAssignee"
+              "$ref": "#/definitions/Assignee"
             },
+
             "actions": {
               "type": "array",
               "items": {
@@ -516,7 +533,7 @@
           "type": "integer"
         },
         "transition_template_id": {
-          "type": "integer"
+          "type": "string"
         },
         "task_overview_fields": {
           "type": "array",
@@ -531,8 +548,23 @@
       "required": [
         "task_id",
         "task_overview_fields",
-        "stage_with_actions",
-        "transition_template_id"
+        "stage_with_actions"
+
+      ]
+    },
+    "TaskStageAssignees": {
+      "type": "object",
+      "properties": {
+
+        "stage_assignees": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StageWithAssignee"
+          }
+        }
+      },
+      "required": [
+        "task_stage_assignees"
 
       ]
     },
@@ -544,7 +576,10 @@
           "format": "int64"
         },
         "action_type": {
-          "type": "string"
+          "type": "string",
+           "enum": [
+        "NO_VALIDATIONS"
+      ]
         },
         "button_text": {
           "type": "string"
@@ -555,7 +590,6 @@
       },
       "required": [
         "action_id",
-        "action_type",
         "button_text",
         "button_color"
       ]
@@ -743,7 +777,23 @@
                 "name": "task_id",
                 "required": true,
                 "type": "integer"
-            }
+            },
+     "TaskStageAssigneesParameter": {
+                "description": "Task Stage Assignees Parameter",
+                "in": "body",
+                "name": "TaskStageAssigneesParameter",
+                "required": true,
+                "schema": {
+                    "$ref": "#/definitions/TaskStageAssignees"
+                }
+            },
+    "ActionIDParameter": {
+      "description": "action id",
+      "in": "path",
+      "name": "action_id",
+      "required": true,
+      "type": "integer"
+    }
   },
   "responses": {
     "CreateTaskSuccessResponse": {
@@ -906,7 +956,7 @@
               "type": "string"
             },
             "assignee": {
-              "$ref": "#/definitions/StageAssignee"
+              "$ref": "#/definitions/Assignee"
             }
           },
         "required": [
@@ -919,6 +969,35 @@
         }
       },
         "required": ["stage_assignees"]
+      }
+    },
+    "UpdateTaskStageAssigneesFailureResponse": {
+      "description": "Task Stage Assignees Failure Response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer",
+            "enum": [
+              404
+            ]
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "TASK_ID_DOESNT_EXIST"
+
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
       }
     },
     "TaskStageAssigneesFailureResponse": {
@@ -938,7 +1017,8 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "TASK_ID_DOESNT_EXIST"
+              "TASK_ID_DOESNT_EXIST",
+              "ACTION_ID_DOESNT_EXIST"
 
             ]
           }
@@ -1227,12 +1307,12 @@
       }
     },
 
-  "/task/{task_id}/stage_assignees/v1/":
+  "/task/{task_id}/action/{action_id}/stage_assignees/v1/":
   {
       "get": {
-        "operationId": "get_task_assignees_of_diff_stages",
-        "summary": "get assignees of diff stages for a task",
-        "description": "get assignees of diff stages for a task",
+        "operationId": "get_task_assignees_of_diff_stages_for_an_action",
+        "summary": "get assignees of diff stages for a task when an action is performed",
+        "description": "get assignees of diff stages for a task when an action is performed",
         "security": [
           {
             "oauth": [
@@ -1243,6 +1323,9 @@
         "parameters": [
           {
             "$ref": "#/parameters/TaskIDParameter"
+          },
+           {
+            "$ref": "#/parameters/ActionIDParameter"
           }
         ],
         "responses": {
@@ -1251,6 +1334,37 @@
           },
           "404": {
             "$ref": "#/responses/TaskStageAssigneesFailureResponse"
+          }
+        }
+      }
+    },
+   "/task/{task_id}/stage_assignees/update/v1/":
+  {
+      "put": {
+        "operationId": "update_assignees_of_diff_stages_for_a_task",
+        "summary": "update assignees of different stages for a given task",
+        "description": "update assignees of different stages for a given task",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TaskIDParameter"
+          },
+           {
+            "$ref": "#/parameters/TaskStageAssigneesParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "$ref": "#/responses/UpdateTaskStageAssigneesFailureResponse"
           }
         }
       }
