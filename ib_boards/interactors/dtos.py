@@ -5,7 +5,7 @@ from typing import List, Optional
 @dataclass
 class ColumnParametersDTO:
     board_id: str
-    user_id: int
+    user_id: str
 
 
 @dataclass
@@ -94,9 +94,10 @@ class ColumnTasksParametersDTO:
 
 
 @dataclass
-class TaskDTO:
+class FieldDTO:
     task_id: int
     field_type: str
+    field_id: int
     key: str
     value: str
     stage_id: str
