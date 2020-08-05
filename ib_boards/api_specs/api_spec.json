@@ -231,6 +231,56 @@
         "res_status"
       ]
       },
+    "BoardsDetails": {
+      "type": "object",
+        "properties": {
+          "total_boards": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "starred_boards": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "board_id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "board_id",
+                "name"
+              ]
+            }
+          },
+          "all_boards": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "board_id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "board_id",
+                "name"
+              ]
+            }
+          }
+        },
+        "required": [
+          "total_boards_count",
+          "starred_boards",
+          "all_boards"
+        ]
+    },
     "TaskCompleteDetails": {
       "type": "object",
       "properties": {
@@ -290,8 +340,7 @@
         "type": "object",
       "properties": {
         "is_starred": {
-          "type": "string",
-          "format": "bool"
+          "type": "boolean"
         }
       },
         "required": [
@@ -334,54 +383,7 @@
     "GetBoardsResponse": {
       "description": "get boards response",
       "schema": {
-        "type": "object",
-        "properties": {
-          "total_boards": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "starred_boards": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "board_id": {
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "board_id",
-                "name"
-              ]
-            }
-          },
-          "all_boards": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "board_id": {
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "board_id",
-                "name"
-              ]
-            }
-          }
-        },
-        "required": [
-          "total_boards_count",
-          "starred_boards",
-          "all_boards"
-        ]
+        "$ref": "#/definitions/BoardsDetails"
       }
     },
     "ColumnsDetailsResponse": {
