@@ -180,6 +180,9 @@
             "title":{
                "type":"string"
             },
+            "description":{
+               "type":"string"
+            },
             "start_date":{
                "type":"string",
                "format":"date"
@@ -206,7 +209,8 @@
          "required":[
             "task_gofs",
             "action_id",
-            "task_template_id"
+            "task_template_id",
+            "title"
          ]
       },
       "ActionDetailsResponse":{
@@ -640,6 +644,28 @@
             "task_id":{
                "type":"integer"
             },
+            "title":{
+               "type":"string"
+            },
+            "description":{
+               "type":"string"
+            },
+            "start_date":{
+               "type":"string",
+               "format":"date"
+            },
+            "due_date":{
+               "type":"string",
+               "format":"date"
+            },
+            "priority":{
+               "type":"string",
+               "enum":[
+                  "HIGH",
+                  "MEDIUM",
+                  "LOW"
+               ]
+            },
             "stage_assignee":{
                "type":"object",
                "properties":{
@@ -660,7 +686,9 @@
          },
          "required":[
             "task_gofs",
-            "task_id"
+            "task_id",
+            "title",
+            "stage_assignee"
          ]
       },
       "CreateTaskFailureResponseBody":{
