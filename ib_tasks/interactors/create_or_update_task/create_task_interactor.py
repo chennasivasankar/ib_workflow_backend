@@ -137,8 +137,7 @@ class CreateTaskInteractor:
             )
         except UserBoardPermissionDenied as err:
             return presenter.raise_exception_for_user_board_permission_denied(
-                error_obj=err
-            )
+                error_obj=err)
 
     def _prepare_create_task_response(
             self, task_dto: CreateTaskDTO,
