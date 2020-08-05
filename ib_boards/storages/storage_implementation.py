@@ -9,7 +9,7 @@ from ib_boards.interactors.storage_interfaces.dtos import ColumnBoardDTO, \
     ColumnStageDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
-from ib_boards.models import Board, ColumnPermission, Column
+from ib_boards.models import Board, ColumnPermission, Column, UserStarredBoards
 
 
 class StorageImplementation(StorageInterface):
@@ -224,8 +224,8 @@ class StorageImplementation(StorageInterface):
     def validate_user_role_with_boards_roles(self, user_role: str):
         pass
 
-    def get_board_ids(
-            self, user_role: str, ) -> List[str]:
+    def get_board_ids(self, user_id: str) -> List[str]:
+        starred_board_ids = UserStarredBoards.objects.filter(user_id=user_id).values_list('board_id', flat=True)
         board_ids = Board.objects.values_list('board_id', flat=True)
         return list(board_ids)
 

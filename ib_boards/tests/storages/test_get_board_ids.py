@@ -29,9 +29,7 @@ class TestGetBoardIds:
         BoardFactory.create_batch(3)
 
         # Act
-        actual_board_ids = storage.get_board_ids(
-            user_role=user_role
-        )
+        actual_board_ids = storage.get_board_ids(user_id=user_role)
 
         # Assert
         assert expected_board_ids == actual_board_ids
