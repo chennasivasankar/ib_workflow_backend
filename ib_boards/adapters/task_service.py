@@ -6,7 +6,7 @@ Author: Pavankumar Pamuru
 from typing import List, Tuple
 
 from ib_boards.interactors.dtos import TaskTemplateStagesDTO, \
-    TaskSummaryFieldsDTO, TaskStatusDTO, TaskDTO, ColumnTaskIdsDTO, ActionDTO
+    TaskSummaryFieldsDTO, TaskStatusDTO, FieldDTO, ColumnTaskIdsDTO, ActionDTO
 from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
     TaskFieldsDTOFactory
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, \
@@ -49,7 +49,7 @@ class TaskService:
         pass
 
     @staticmethod
-    def get_task_details_dtos(task_dtos: List[TaskDTO],
+    def get_task_details_dtos(task_dtos: List[FieldDTO],
                               field_ids: List[str],
                               user_id: str):
         actions_dto = [
@@ -84,7 +84,7 @@ class TaskService:
     def get_task_complete_details(
             self, task_stage_ids: List[GetTaskDetailsDTO],
             user_id: int) \
-            -> Tuple[List[TaskDTO], List[ActionDTO]]:
+            -> Tuple[List[FieldDTO], List[ActionDTO]]:
         tasks_complete_details_dtos = self.interface.get_task_details(
             task_dtos=task_stage_ids, user_id=user_id
         )
@@ -106,10 +106,11 @@ class TaskService:
 
     @staticmethod
     def _convert_task_fields_to_field_dtos(
-            task_id: int, stage_id: str, field_dtos: List) -> List[TaskDTO]:
+            task_id: int, stage_id: str, field_dtos: List) -> List[FieldDTO]:
         return [
-            TaskDTO(
+            FieldDTO(
                 task_id=task_id,
+                field_id=field_dto.field_id,
                 field_type=field_dto.field_type,
                 key=field_dto.key,
                 value=field_dto.value,

@@ -9,7 +9,7 @@ from ib_boards.exceptions.custom_exceptions import InvalidOffsetValue, \
     InvalidLimitValue, OffsetValueExceedsTotalTasksCount, \
     UserDoNotHaveAccessToColumn, InvalidStageIds
 from ib_boards.interactors.dtos import ColumnTasksParametersDTO, \
-    ColumnTaskIdsDTO, TaskDTO, ActionDTO
+    ColumnTaskIdsDTO, FieldDTO, ActionDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     GetColumnTasksPresenterInterface
 from ib_boards.interactors.storage_interfaces.storage_interface import \
@@ -72,7 +72,7 @@ class GetColumnTasksInteractor:
     @staticmethod
     def _get_tasks_complete_details(
             task_ids_stages_dtos: ColumnTaskIdsDTO,
-            user_id: int) -> Tuple[List[TaskDTO], List[ActionDTO]]:
+            user_id: int) -> Tuple[List[FieldDTO], List[ActionDTO]]:
         task_details_dtos = []
         for task_ids_stages_dto in task_ids_stages_dtos.task_stage_ids:
             from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO

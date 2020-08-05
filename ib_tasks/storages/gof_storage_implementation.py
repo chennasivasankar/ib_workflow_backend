@@ -97,6 +97,21 @@ class GoFStorageImplementation(GoFStorageInterface):
         gof_ids_list = list(gof_ids_queryset)
         return gof_ids_list
 
+    def get_gof_dtos_for_given_gof_ids(self,
+                                       gof_ids: List[str]) -> List[GoFDTO]:
+        gofs = GoF.objects.filter(pk__in=gof_ids)
+        gof_dtos = self._prepare_gof_dtos(gofs)
+        return gof_dtos
+
+    @staticmethod
+    def _prepare_gof_dtos(gofs: List[GoF]):
+        gof_dtos = [
+            GoFDTO(gof_id=gof.gof_id,
+                   gof_display_name=gof.display_name,
+                   max_columns=gof.max_columns) for gof in gofs
+        ]
+        return gof_dtos
+
     @staticmethod
     def _convert_gof_details_to_dtos(gof_details: List[Dict]) -> List[GoFDTO]:
         gof_dtos = [

@@ -11,15 +11,32 @@ from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
     TaskStatusDTO, FieldDetailsDTO, ActionDetailsDTO, TaskIdStageDTO, \
     ColumnTaskIdsDTO
 from ib_boards.interactors.dtos import ColumnTasksDTO
+from ib_boards.interactors.storage_interfaces.dtos import ColumnStageIdsDTO
+from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, \
+    GetTaskDetailsDTO
 
 
 class TaskColumnDTOFactory(factory.Factory):
     class Meta:
         model = ColumnTasksDTO
 
-    column_id = factory.Sequence(lambda n: "column_id_%d" % n)
+    column_id = factory.Sequence(lambda n: f"COLUMN_ID_{n + 1}")
     task_id = factory.Sequence(lambda n: "task_id_%d" % n)
-    stage_id = factory.Sequence(lambda n: f'STAGE_ID_{n + 1}')
+    stage_id = factory.Sequence(lambda n: f'stage_id_{n}')
+
+
+class ColumnStageIdsDTOFactory(factory.Factory):
+    class Meta:
+        model = ColumnStageIdsDTO
+
+    column_id = factory.Sequence(lambda n: f"COLUMN_ID_{n + 1}")
+    stage_ids = factory.Iterator(
+        [
+            ['STAGE_ID_1', 'STAGE_ID_2'],
+            ['STAGE_ID_3', 'STAGE_ID_4'],
+            ['STAGE_ID_5', 'STAGE_ID_6'],
+        ]
+    )
 
 
 class TaskTemplateStagesDTOFactory(factory.Factory):
@@ -107,3 +124,27 @@ class ColumnTaskIdsDTOFactory(factory.Factory):
     unique_key = factory.Sequence(lambda n: f'COLUMN_ID_{n + 1}')
     task_stage_ids = TaskStageIdDTOFactory.create_batch(3)
     total_tasks = 10
+
+
+class TaskDetailsConfigDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskDetailsConfigDTO
+
+    unique_key = factory.Sequence(lambda n: f'COLUMN_ID_{n + 1}')
+    stage_ids = factory.Iterator(
+        [
+            ['STAGE_ID_1', 'STAGE_ID_2'],
+            ['STAGE_ID_3', 'STAGE_ID_4'],
+            ['STAGE_ID_5', 'STAGE_ID_6'],
+        ]
+    )
+    offset = 0
+    limit = 10
+
+
+class GetTaskDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = GetTaskDetailsDTO
+
+    stage_id = factory.Sequence(lambda n: f'STAGE_ID_{n + 1}')
+    task_id = factory.Sequence(lambda n: f'TASK_ID_{n + 1}')

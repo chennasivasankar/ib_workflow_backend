@@ -75,6 +75,7 @@ class TestGetBoardsPresenterImplementation:
         # Arrange
         total_boards = 3
         from ib_boards.tests.factories.storage_dtos import BoardDTOFactory
+        BoardDTOFactory.reset_sequence()
         board_dtos = BoardDTOFactory.create_batch(3)
 
         presenter = GetBoardsPresenterImplementation()

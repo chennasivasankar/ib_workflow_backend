@@ -19,9 +19,6 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
         TaskTemplate.objects.create(template_id=template_id,
                                     name=template_name)
 
-    def get_task_template_ids(self) -> List[str]:
-        pass
-
     def check_is_template_exists(self, template_id: str) -> bool:
         is_template_exists = \
             TaskTemplate.objects.filter(template_id=template_id).exists()

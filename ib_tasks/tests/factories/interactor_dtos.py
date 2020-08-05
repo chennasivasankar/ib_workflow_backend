@@ -15,8 +15,8 @@ from ib_tasks.interactors.stages_dtos import \
     TaskTemplateStageActionDTO, StageActionDTO, StagesActionDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
-from ib_tasks.interactors.task_dtos import TaskDTO, GoFFieldsDTO, \
-    FieldValuesDTO, GetTaskDetailsDTO
+from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
+    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
@@ -145,23 +145,6 @@ class GoFFieldsDTOFactory(factory.Factory):
         return field_values_dtos
 
 
-class TaskDTOFactory(factory.Factory):
-    class Meta:
-        model = TaskDTO
-
-    task_id = None
-    task_template_id = factory.sequence(
-        lambda counter: "TASK_TEMPLATE_ID-{}".format(counter))
-    action_id = factory.Sequence(
-        lambda counter: "ACTION-{}".format(counter))
-    created_by_id = "123e4567-e89b-12d3-a456-426614174000"
-
-    @factory.LazyAttribute
-    def gof_fields_dtos(self):
-        gof_fields_dtos = GoFFieldsDTOFactory.create_batch(size=2)
-        return gof_fields_dtos
-
-
 class SearchableFieldTypeDTOFactory(factory.Factory):
     class Meta:
         model = SearchableFieldTypeDTO
@@ -197,3 +180,12 @@ class UserStagesWithPaginationDTOFactory(factory.Factory):
     user_id = factory.sequence(lambda n: "user_{}".format(n + 1))
     limit = factory.Sequence(lambda n: n + 1)
     offset = factory.Sequence(lambda n: n + 1)
+
+
+class StatusOperandStageDTOFactory(factory.Factory):
+    class Meta:
+        model = StatusOperandStageDTO
+
+    variable = factory.sequence(lambda n: "variable_{}".format(n + 1))
+    operator = "=="
+    stage = factory.sequence(lambda n: "stage_{}".format(n + 1))

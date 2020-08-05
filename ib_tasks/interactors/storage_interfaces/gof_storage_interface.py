@@ -51,3 +51,9 @@ class GoFStorageInterface(abc.ABC):
     def get_valid_gof_ids_in_given_gof_ids(
             self, gof_ids: List[str]) -> List[str]:
         pass
+
+    @abc.abstractmethod
+    def get_gof_dtos_for_given_gof_ids(
+            self, gof_ids: List[str]
+    ) -> List[GoFDTO]:
+        pass

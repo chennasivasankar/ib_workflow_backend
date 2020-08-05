@@ -15,10 +15,6 @@ class TaskTemplateStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_task_template_ids(self) -> List[str]:
-        pass
-
-    @abc.abstractmethod
     def check_is_template_exists(self, template_id: str) -> bool:
         pass
 
