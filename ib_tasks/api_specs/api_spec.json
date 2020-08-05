@@ -33,28 +33,28 @@
   "security": [
   ],
   "definitions": {
-    "SaveAndActOnATaskRequestBody":{
-         "type":"object",
-         "properties":{
-            "task_id":{
-               "type":"integer"
-            },
-            "action_id":{
-               "type":"integer"
-            },
-            "task_gofs":{
-               "type":"array",
-               "items":{
-                  "$ref":"#/definitions/GoF"
-               }
-            }
-         },
-         "required":[
-            "task_gofs",
-            "action_id",
-            "task_id"
-         ]
+    "SaveAndActOnATaskRequestBody": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "integer"
+        },
+        "action_id": {
+          "type": "integer"
+        },
+        "task_gofs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GoF"
+          }
+        }
       },
+      "required": [
+        "task_gofs",
+        "action_id",
+        "task_id"
+      ]
+    },
     "InvalidTaskActionDetails": {
       "type": "object",
       "properties": {
@@ -420,20 +420,20 @@
         "fields"
       ]
     },
-     "PerformActionRequestBody": {
-          "type": "object",
-          "properties": {
-            "board_id": {
-              "type": "string"
-            },
-            "task_id": {
-              "type": "string"
-            },
-            "action_id": {
-              "type": "string"
-            }
-          }
-      },
+    "PerformActionRequestBody": {
+      "type": "object",
+      "properties": {
+        "board_id": {
+          "type": "string"
+        },
+        "task_id": {
+          "type": "string"
+        },
+        "action_id": {
+          "type": "string"
+        }
+      }
+    },
     "TaskOverviewFields": {
       "allOf": [
         {
@@ -445,61 +445,61 @@
             "field_display_name": {
               "type": "string"
             },
-                        "field_response": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "field_display_name",
-                        "field_response"
-                    ]
-                }
-            ]
-        },
-    "StagesWithActions": {
-            "type": "object",
-            "properties": {
-                "stage_id": {
-                    "type": "string"
-                },
-                "stage_display_name": {
-                    "type": "string"
-                },
-                "actions": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/Action"
-                    }
-                }
-            },
-            "required": [
-                "stage_id",
-                "stage_display_name",
-                "actions"
-            ]
-        },
-    "TaskOverviewWithStageAndActions": {
-            "type": "object",
-            "properties": {
-                "task_id": {
-                    "type": "integer"
-                },
-                "task_overview_fields": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/TaskOverviewFields"
-                    }
-                },
-              "stage_with_actions": {
-                "$ref": "#/definitions/StagesWithActions"
-              }
-            },
+            "field_response": {
+              "type": "string"
+            }
+          },
           "required": [
-            "task_id",
-            "task_overview_fields",
-            "stage_with_actions"
+            "field_display_name",
+            "field_response"
           ]
+        }
+      ]
+    },
+    "StagesWithActions": {
+      "type": "object",
+      "properties": {
+        "stage_id": {
+          "type": "string"
         },
+        "stage_display_name": {
+          "type": "string"
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Action"
+          }
+        }
+      },
+      "required": [
+        "stage_id",
+        "stage_display_name",
+        "actions"
+      ]
+    },
+    "TaskOverviewWithStageAndActions": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "integer"
+        },
+        "task_overview_fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TaskOverviewFields"
+          }
+        },
+        "stage_with_actions": {
+          "$ref": "#/definitions/StagesWithActions"
+        }
+      },
+      "required": [
+        "task_id",
+        "task_overview_fields",
+        "stage_with_actions"
+      ]
+    },
     "Action": {
       "type": "object",
       "properties": {
@@ -607,34 +607,103 @@
           }
         }
       },
-        "required": [
-          "task_id",
-          "template_id",
-          "gofs",
-          "stages_with_actions"
-        ]
-      }
-   },
-   "parameters":{
-      "CreateTaskBodyParameter":{
-         "in":"body",
-         "name":"CreateTaskRequestBody",
-         "description":"give valid details",
-         "required":true,
-         "schema":{
-            "$ref":"#/definitions/CreateTaskRequestBody"
-         }
+      "required": [
+        "task_id",
+        "template_id",
+        "gofs",
+        "stages_with_actions"
+      ]
+    },
+    "FilterDetails": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "template_id": {
+          "type": "string"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "field_id": {
+                "type": "string"
+              },
+              "operator": {
+                "type": "string",
+                "enum": [
+                  "EQ",
+                  "NE",
+                  "GTE",
+                  "GT",
+                  "LTE",
+                  "LT",
+                  "CONTAINS"
+                ]
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "field_id",
+              "operator",
+              "value"
+            ]
+          }
+        }
       },
-     "PerformActionBodyParameter": {
-       "in":"body",
-       "name":"CreateTaskRequestBody",
-       "description":"give valid details",
-       "required":true,
-       "schema":{
-          "$ref":"#/definitions/PerformActionRequestBody"
-       }
-     },
-     "TaskParameterize": {
+      "required": [
+        "name",
+        "template_id"
+      ]
+    },
+    "FilterDetailsWithID": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/FilterDetails"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "filter_id": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "is_selected": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "field_id",
+            "is_selected"
+          ]
+        }
+      ]
+    }
+  },
+  "parameters": {
+    "CreateTaskBodyParameter": {
+      "in": "body",
+      "name": "CreateTaskRequestBody",
+      "description": "give valid details",
+      "required": true,
+      "schema": {
+        "$ref": "#/definitions/CreateTaskRequestBody"
+      }
+    },
+    "PerformActionBodyParameter": {
+      "in": "body",
+      "name": "CreateTaskRequestBody",
+      "description": "give valid details",
+      "required": true,
+      "schema": {
+        "$ref": "#/definitions/PerformActionRequestBody"
+      }
+    },
+    "TaskParameterize": {
       "name": "task_id",
       "in": "path",
       "required": true,
@@ -686,15 +755,49 @@
       "required": true,
       "type": "string"
     },
-     "SaveAndActOnATaskBodyParameter":{
-         "in":"body",
-         "name":"SaveAndActOnATaskRequestBody",
-         "description":"give valid details",
-         "required":true,
-         "schema":{
-            "$ref":"#/definitions/SaveAndActOnATaskRequestBody"
-         }
+    "SaveAndActOnATaskBodyParameter": {
+      "in": "body",
+      "name": "SaveAndActOnATaskRequestBody",
+      "description": "give valid details",
+      "required": true,
+      "schema": {
+        "$ref": "#/definitions/SaveAndActOnATaskRequestBody"
       }
+    },
+    "CreateFilterBodyParameter": {
+      "in": "body",
+      "name": "CreateFilterBodyParameter",
+      "description": "create filter details",
+      "required": true,
+      "schema": {
+        "$ref": "#/definitions/FilterDetails"
+      }
+    },
+    "UpdateFilterBodyParameter": {
+      "in": "body",
+      "name": "UpdateFilterBodyParameter",
+      "description": "update filter details",
+      "required": true,
+      "schema": {
+        "$ref": "#/definitions/FilterDetails"
+      }
+    },
+    "UpdateFilterPathParameter": {
+      "name": "filter_id",
+      "in": "path",
+      "required": true,
+      "description": "Id of the filter",
+      "type": "integer",
+      "format": "int64"
+    },
+    "DeleteFilterPathParameter": {
+      "name": "filter_id",
+      "in": "path",
+      "required": true,
+      "description": "Id of the filter",
+      "type": "integer",
+      "format": "int64"
+    }
   },
   "responses": {
     "CreateTaskSuccessResponse": {
@@ -809,7 +912,7 @@
               ]
             }
           },
-          "total_tasks":{
+          "total_tasks": {
             "type": "integer"
           }
         },
@@ -899,12 +1002,145 @@
         ]
       }
     },
-    "SaveAndActOnATaskTaskSuccessResponse":{
-         "description":"task updated successfully"
+    "SaveAndActOnATaskTaskSuccessResponse": {
+      "description": "task updated successfully"
+    },
+    "FilterDetailsResponse": {
+      "description": "filter details",
+      "schema": {
+        "$ref": "#/definitions/FilterDetailsWithID"
       }
-   },
-   "paths":{
-     "/perform_user_action_on_task/v1/": {
+    },
+    "FilterFailedResponse": {
+      "description": "creating filter is failed",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer"
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "TASK_TEMPLATES_DOES_NOT_EXISTS",
+              "FIELDS_DOES_NOT_EXIST"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
+    "InvalidFilterValueResponse": {
+      "description": "creating filter is failed",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer"
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "VALUE_SHOULD_NOT_BE_EMPTY"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
+    "UserNotBelongsToResponse": {
+      "description": "creating filter is failed",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer"
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "USER_NOT_HAVE_PERMISSIONS_TO_UPDATE"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
+    "DeleteFailedResponse": {
+      "description": "deleting filter is failed",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer"
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "INVALID_FILTER_ID",
+              "USER_NOT_HAVE_PERMISSIONS_TO_UPDATE"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
+    "FieldNotExistResponse": {
+      "description": "deleting filter is failed",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer"
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "INVALID_FILTER_ID"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    }
+  },
+  "paths": {
+    "/perform_user_action_on_task/v1/": {
       "post": {
         "operationId": "perform_task_action",
         "summary": "User Act On Specific Task in a Column",
@@ -1072,7 +1308,7 @@
           }
         ],
         "parameters": [
-           {
+          {
             "$ref": "#/parameters/LimitParameter"
           },
           {
@@ -1083,38 +1319,127 @@
           "200": {
             "$ref": "#/responses/AllTasksOverviewResponse"
           },
-
           "400": {
             "$ref": "#/responses/AllTasksOverviewFailureResponse"
           }
         }
       }
-    },"/task/save_and_act/v1/":{
-         "post":{
-            "operationId":"save_and_act_on_a_task",
-            "summary":"update a task",
-            "description":"create a task with given details",
-            "security":[
-               {
-                  "oauth":[
-                     "write"
-                  ]
-               }
-            ],
-            "parameters":[
-               {
-                  "$ref":"#/parameters/SaveAndActOnATaskBodyParameter"
-               }
-            ],
-            "responses":{
-               "201":{
-                  "$ref":"#/responses/SaveAndActOnATaskTaskSuccessResponse"
-               },
-               "400":{
-                  "description":""
-               }
-            }
-         }
+    },
+    "/task/save_and_act/v1/": {
+      "post": {
+        "operationId": "save_and_act_on_a_task",
+        "summary": "update a task",
+        "description": "create a task with given details",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/SaveAndActOnATaskBodyParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/SaveAndActOnATaskTaskSuccessResponse"
+          },
+          "400": {
+            "description": ""
+          }
+        }
       }
+    },
+    "/filters/v1/": {
+      "post": {
+        "operationId": "create_filter",
+        "summary": "create filter",
+        "description": "create filter with given details",
+        "parameters": [
+          {
+            "$ref": "#/parameters/CreateFilterBodyParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/FilterDetailsResponse"
+          },
+          "404": {
+            "$ref": "#/responses/FilterFailedResponse"
+          },
+          "417": {
+            "$ref": "#/responses/InvalidFilterValueResponse"
+          }
+        }
+      },
+      "get": {
+        "summary": "get filters",
+        "operationId": "get_filters",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "description": "Field details",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/FilterDetailsWithID"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/filters/{filter_id}/v1/": {
+      "put": {
+        "operationId": "update_filter",
+        "summary": "update filter",
+        "description": "update filter with given details",
+        "parameters": [
+          {
+            "$ref": "#/parameters/UpdateFilterBodyParameter"
+          },
+          {
+            "$ref": "#/parameters/UpdateFilterPathParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/FilterDetailsResponse"
+          },
+          "404": {
+            "$ref": "#/responses/FilterFailedResponse"
+          },
+          "417": {
+            "$ref": "#/responses/InvalidFilterValueResponse"
+          },
+          "403": {
+            "$ref": "#/responses/UserNotBelongsToResponse"
+          }
+        }
+      },
+      "delete": {
+        "summary": "delete filter",
+        "operationId": "delete_filter",
+        "parameters": [
+          {
+            "$ref": "#/parameters/DeleteFilterPathParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "filter deleted"
+          },
+          "404": {
+            "$ref": "#/responses/FieldNotExistResponse"
+          },
+          "403": {
+            "$ref": "#/responses/UserNotBelongsToResponse"
+          }
+        }
+      }
+    }
   }
 }
