@@ -1,11 +1,21 @@
 from typing import Optional, List
 
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
+from ib_tasks.exceptions.field_values_custom_exceptions import \
+    EmptyValueForRequiredField, InvalidPhoneNumberValue, \
+    InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
+    InvalidNumberValue, InvalidFloatValue, InvalidValueForDropdownField, \
+    IncorrectNameInGoFSelectorField, IncorrectRadioGroupChoice, \
+    IncorrectCheckBoxOptionsSelected, IncorrectMultiSelectOptionsSelected, \
+    IncorrectMultiSelectLabelsSelected, InvalidDateFormat, InvalidTimeFormat, \
+    InvalidUrlForImage, InvalidImageFormat, InvalidUrlForFile, \
+    InvalidFileFormat
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
     DuplicateFieldIdsToGoF
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
 from ib_tasks.exceptions.permission_custom_exceptions import \
-    UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
+    UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
+    UserActionPermissionDenied, UserBoardPermissionDenied
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
 from ib_tasks.interactors.create_or_update_task. \
@@ -13,11 +23,6 @@ from ib_tasks.interactors.create_or_update_task. \
     CreateOrUpdateTaskBaseValidationsInteractor
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
 from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrder
-from ib_tasks.interactors.presenter_interfaces. \
-    field_response_validations_presenter import \
-    FieldResponseValidationsPresenterInterface
-from ib_tasks.interactors.presenter_interfaces.presenter_interface import \
-    PresenterInterface
 from ib_tasks.interactors.presenter_interfaces.update_task_presenter import \
     UpdateTaskPresenterInterface
 from ib_tasks.interactors.storage_interfaces. \
@@ -56,15 +61,11 @@ class UpdateTaskInteractor:
 
     def update_task_wrapper(
             self, presenter: UpdateTaskPresenterInterface,
-            task_dto: UpdateTaskDTO, act_on_task_presenter: PresenterInterface,
-            field_validations_presenter:
-            FieldResponseValidationsPresenterInterface
+            task_dto: UpdateTaskDTO
     ):
         try:
             return self._prepare_update_task_response(
-                task_dto, presenter, act_on_task_presenter,
-                field_validations_presenter
-            )
+                task_dto, presenter)
         except InvalidTaskException as err:
             return presenter.raise_invalid_task_id(err)
         except InvalidActionException as err:
@@ -83,25 +84,72 @@ class UpdateTaskInteractor:
             return presenter.raise_user_needs_gof_writable_permission(err)
         except UserNeedsFieldWritablePermission as err:
             return presenter.raise_user_needs_field_writable_permission(err)
+        except EmptyValueForRequiredField as err:
+            return presenter. \
+                raise_exception_for_empty_value_in_required_field(err)
+        except InvalidPhoneNumberValue as err:
+            return presenter.raise_exception_for_invalid_phone_number_value(
+                err)
+        except InvalidEmailFieldValue as err:
+            return presenter.raise_exception_for_invalid_email_address(err)
+        except InvalidURLValue as err:
+            return presenter.raise_exception_for_invalid_url_address(err)
+        except NotAStrongPassword as err:
+            return presenter.raise_exception_for_weak_password(err)
+        except InvalidNumberValue as err:
+            return presenter.raise_exception_for_invalid_number_value(err)
+        except InvalidFloatValue as err:
+            return presenter.raise_exception_for_invalid_float_value(err)
+        except InvalidValueForDropdownField as err:
+            return presenter.raise_exception_for_invalid_dropdown_value(err)
+        except IncorrectNameInGoFSelectorField as err:
+            return presenter. \
+                raise_exception_for_invalid_name_in_gof_selector_field_value(
+                err)
+        except IncorrectRadioGroupChoice as err:
+            return presenter. \
+                raise_exception_for_invalid_choice_in_radio_group_field(err)
+        except IncorrectCheckBoxOptionsSelected as err:
+            return presenter. \
+                raise_exception_for_invalid_checkbox_group_options_selected(
+                err)
+        except IncorrectMultiSelectOptionsSelected as err:
+            return presenter. \
+                raise_exception_for_invalid_multi_select_options_selected(err)
+        except IncorrectMultiSelectLabelsSelected as err:
+            return presenter. \
+                raise_exception_for_invalid_multi_select_labels_selected(err)
+        except InvalidDateFormat as err:
+            return presenter.raise_exception_for_invalid_date_format(err)
+        except InvalidTimeFormat as err:
+            return presenter.raise_exception_for_invalid_time_format(err)
+        except InvalidUrlForImage as err:
+            return presenter.raise_exception_for_invalid_image_url(err)
+        except InvalidImageFormat as err:
+            return presenter.raise_exception_for_not_acceptable_image_format(
+                err)
+        except InvalidUrlForFile as err:
+            return presenter.raise_exception_for_invalid_file_url(err)
+        except InvalidFileFormat as err:
+            return presenter.raise_exception_for_not_acceptable_file_format(
+                err)
+        except UserActionPermissionDenied as err:
+            return presenter.raise_exception_for_user_action_permission_denied(
+                error_obj=err
+            )
+        except UserBoardPermissionDenied as err:
+            return presenter.raise_exception_for_user_board_permission_denied(
+                error_obj=err
+            )
 
     def _prepare_update_task_response(
             self, task_dto: UpdateTaskDTO,
-            presenter: UpdateTaskPresenterInterface,
-            act_on_task_presenter: PresenterInterface,
-            field_validations_presenter:
-            FieldResponseValidationsPresenterInterface
+            presenter: UpdateTaskPresenterInterface
     ):
-        self.update_task(
-            task_dto, field_validations_presenter, act_on_task_presenter
-        )
+        self.update_task(task_dto)
         return presenter.get_update_task_response()
 
-    def update_task(
-            self, task_dto: UpdateTaskDTO,
-            field_validations_presenter:
-            FieldResponseValidationsPresenterInterface,
-            act_on_task_presenter: PresenterInterface
-    ):
+    def update_task(self, task_dto: UpdateTaskDTO):
         task_id = task_dto.task_id
         self._validate_task_id(task_id)
         task_template_id = \
@@ -113,14 +161,14 @@ class UpdateTaskInteractor:
             )
         base_validations_interactor. \
             perform_base_validations_for_create_or_update_task(
-                task_dto, task_template_id, field_validations_presenter)
+            task_dto, task_template_id)
         existing_gofs = \
             self.create_task_storage \
                 .get_gof_ids_with_same_gof_order_related_to_a_task(task_id)
         existing_fields = \
             self.create_task_storage \
                 .get_field_ids_with_task_gof_id_related_to_given_task(
-                    task_id)
+                task_id)
         task_gof_dtos = [
             TaskGoFWithTaskIdDTO(
                 task_id=task_id,
@@ -153,7 +201,7 @@ class UpdateTaskInteractor:
             storage=self.storage, gof_storage=self.create_task_storage,
             field_storage=self.field_storage, stage_storage=self.stage_storage
         )
-        return act_on_task_interactor.user_action_on_task_wrapper(act_on_task_presenter)
+        act_on_task_interactor.user_action_on_task()
 
     def _validate_task_id(
             self, task_id: int) -> Optional[InvalidTaskException]:
