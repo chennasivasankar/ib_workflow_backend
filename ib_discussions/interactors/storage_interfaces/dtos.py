@@ -11,3 +11,23 @@ class DiscussionDTO:
     title: str
     created_at: datetime
     is_clarified: bool
+
+
+@dataclass
+class CommentIdWithRepliesCountDTO:
+    comment_id: str
+    replies_count: int
+
+
+@dataclass
+class CommentDTO:
+    comment_id: str
+    comment_content: str
+    user_id: str
+    created_at: datetime
+
+
+@dataclass
+class CommentIdWithRepliesCountDTO:
+    comment_id: str
+    replies_count: int

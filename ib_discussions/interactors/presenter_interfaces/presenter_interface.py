@@ -103,3 +103,10 @@ class DeleteDiscussionPresenterInterface(ABC):
     @abstractmethod
     def prepare_success_response_for_delete_discussion(self):
         pass
+
+
+class CreateCommentPresenterInterface(ABC):
+
+    @abstractmethod
+    def response_for_discussion_id_not_found(self):
+        pass

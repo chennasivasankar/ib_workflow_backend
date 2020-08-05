@@ -67,6 +67,26 @@
         "entity_type"
       ]
     },
+    "UserDetails": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "profile_pic_url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "user_id",
+        "name",
+        "profile_pic_url"
+      ]
+    },
     "Discussion": {
       "type": "object",
       "properties": {
@@ -85,24 +105,7 @@
           "format": "date-time"
         },
         "author": {
-          "type": "object",
-          "properties": {
-            "user_id": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "name": {
-              "type": "string"
-            },
-            "profile_pic_url": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "user_id",
-            "name",
-            "profile_pic_url"
-          ]
+          "$ref": "#/definitions/UserDetails"
         },
         "is_clarified": {
           "type": "boolean"
@@ -119,6 +122,38 @@
         "author",
         "is_clarified",
         "is_editable"
+      ]
+    },
+    "Comment": {
+      "type": "object",
+      "properties": {
+        "author": {
+          "$ref": "#/definitions/UserDetails"
+        },
+        "comment_id": {
+          "type": "string"
+        },
+        "comment_content": {
+          "type": "string"
+        },
+        "replies_count": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "is_editable": {
+          "type": "boolean"
+        },
+        "creation_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "replies_count",
+        "author",
+        "creation_datetime",
+        "is_editable",
+        "comment_id"
       ]
     }
   },
@@ -215,6 +250,37 @@
           "title"
         ]
       }
+    },
+    "AddCommentParameter": {
+      "in": "body",
+      "name": "AddCommentParameter",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "comment_content": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "comment_content"
+        ]
+      }
+    },
+    "OffsetQueryParameter": {
+      "in": "query",
+      "name": "offset",
+      "description": "off set parameter",
+      "type": "integer",
+      "format": "int64",
+      "required": true
+    },
+    "LimitQueryParameter": {
+      "in": "query",
+      "name": "limit",
+      "description": "limit Parameter",
+      "type": "integer",
+      "format": "int64",
+      "required": true
     }
   },
   "responses": {
@@ -461,6 +527,82 @@
           }
         ]
       }
+    },
+    "AddCommentResponse": {
+      "description": "get comment details",
+      "schema": {
+        "$ref": "#/definitions/Comment"
+      }
+    },
+    "CommentNotFoundResponse": {
+      "description": "comment not found response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "DISCUSSION_ID_NOT_FOUND"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "CommentBadRequestResponse": {
+      "description": "comment bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_OFFSET",
+                  "INVALID_LIMIT"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "GetCommentsResponse": {
+      "description": "List of comments with replies count and reactions for a discussions",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "comments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Comment"
+            }
+          },
+          "total_comments_count": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "total_comments_count"
+        ]
+      }
     }
   },
   "paths": {
@@ -511,18 +653,10 @@
             "$ref": "#/parameters/GetDiscussionsParameter"
           },
           {
-            "name": "offset",
-            "in": "query",
-            "description": "offset count for discussions",
-            "type": "integer",
-            "required": true
+            "$ref": "#/parameters/OffsetQueryParameter"
           },
           {
-            "name": "limit",
-            "in": "query",
-            "description": "limit count for discussions",
-            "type": "integer",
-            "required": true
+            "$ref": "#/parameters/LimitQueryParameter"
           }
         ],
         "responses": {
@@ -626,6 +760,68 @@
           },
           "404": {
             "$ref": "#/responses/DeleteDiscussionNotFoundResponse"
+          }
+        }
+      }
+    },
+    "/discussion/{discussion_id}/comment/v1/": {
+      "post": {
+        "summary": "add comment to a discussion",
+        "operationId": "add_comment",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/DiscussionIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/AddCommentParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/AddCommentResponse"
+          },
+          "404": {
+            "$ref": "#/responses/CommentNotFoundResponse"
+          }
+        }
+      },
+      "get": {
+        "summary": "Comments for a discussion",
+        "operationId": "get_comments_for_discussion",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/OffsetQueryParameter"
+          },
+          {
+            "$ref": "#/parameters/LimitQueryParameter"
+          },
+          {
+            "$ref": "#/parameters/DiscussionIdPathParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetCommentsResponse"
+          },
+          "404": {
+            "$ref": "#/responses/CommentNotFoundResponse"
+          },
+          "400": {
+            "$ref": "#/responses/CommentBadRequestResponse"
           }
         }
       }
