@@ -9,7 +9,7 @@ from ib_boards.interactors.storage_interfaces.dtos import ColumnBoardDTO, \
     ColumnStageDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
-from ib_boards.models import Board, ColumnPermission, Column, UserStarredBoards
+from ib_boards.models import Board, ColumnPermission, Column, UserStarredBoard
 
 
 class StorageImplementation(StorageInterface):
@@ -166,7 +166,7 @@ class StorageImplementation(StorageInterface):
 
     def _get_column_objects_and_column_permission_objects_from_dtos(
             self, column_dtos: List[ColumnDTO]) -> Tuple[
-            List[Column], List[ColumnPermission]]:
+        List[Column], List[ColumnPermission]]:
         column_objects = [
             Column(
                 column_id=column_dto.column_id,
@@ -225,9 +225,11 @@ class StorageImplementation(StorageInterface):
         pass
 
     def get_board_ids(self, user_id: str) -> List[str]:
-        starred_board_ids = UserStarredBoards.objects.filter(user_id=user_id).values_list('board_id', flat=True)
-        board_ids = Board.objects.values_list('board_id', flat=True)
-        return list(board_ids)
+        starred_board_ids = list(UserStarredBoard.objects.filter(user_id=user_id)
+                                 .values_list('board_id', flat=True))
+        board_ids = list(Board.objects.exclude(board_id__in=starred_board_ids)\
+                         .values_list('board_id', flat=True))
+        return board_ids, starred_board_ids
 
     def get_board_details(self, board_ids: List[str]) -> List[BoardDTO]:
         board_objects = Board.objects.filter(
