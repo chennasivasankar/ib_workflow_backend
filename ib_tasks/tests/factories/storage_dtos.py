@@ -30,7 +30,7 @@ from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GroupOfFieldsDTO, GOFMultipleEnableDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionNamesDTO, ValidStageDTO, TaskStageIdsDTO, StageValueDTO, \
-    StageDetailsDTO
+    StageDetailsDTO, StageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageDisplayValueDTO, StageIdWithTemplateIdDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (TaskStagesDTO)
@@ -535,3 +535,13 @@ class TaskDetailsDTOFactory(factory.Factory):
     @factory.lazy_attribute
     def task_gof_field_dtos(self):
         return [TaskGoFFieldDTOFactory()]
+
+
+class StageAssigneeDTOFactory:
+    class Meta:
+        model = StageAssigneeDTO
+
+    stage_id = factory.Sequence(lambda counter: counter)
+    assignee_id = factory.Sequence(
+        lambda counter: "assignee_{}".format(counter)
+    )

@@ -1,3 +1,5 @@
+from typing import List
+
 import factory
 
 from ib_tasks.adapters.dtos import UserDTO
@@ -8,13 +10,15 @@ from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
 from ib_tasks.interactors.stages_dtos import \
-    TaskTemplateStageActionDTO, StageActionDTO, StagesActionDTO
+    TaskTemplateStageActionDTO, StageActionDTO, StagesActionDTO, \
+    StageAssigneeDetailsDTO
 from ib_tasks.interactors.stages_dtos import UserStagesWithPaginationDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, CreateTaskLogDTO
+from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
@@ -200,3 +204,14 @@ class CreateTaskLogDTOFactory(factory.Factory):
     task_id = factory.sequence(lambda n: n)
     user_id = factory.sequence(lambda n: "user_{}".format(n))
     action_id = factory.sequence(lambda n: n)
+
+
+class StageAssigneeDetailsDTOFactory:
+    class Meta:
+        model = StageAssigneeDetailsDTO
+
+    stage_id = factory.sequence(lambda counter: counter)
+
+    @factory.lazy_attribute
+    def assignee_details_dto(self):
+        return List[AssigneeDetailsDTOFactory()]

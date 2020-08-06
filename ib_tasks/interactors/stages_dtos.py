@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Optional, List
 
+from ib_tasks.adapters.dtos import AssigneeDetailsDTO
+
 
 @dataclass
 class StageLogicAttributes:
@@ -59,3 +61,9 @@ class UserStagesWithPaginationDTO:
     user_id: str
     limit: int
     offset: int
+
+
+@dataclass
+class StageAssigneeDetailsDTO:
+    stage_id: int
+    assignee_details_dto: Optional[AssigneeDetailsDTO]

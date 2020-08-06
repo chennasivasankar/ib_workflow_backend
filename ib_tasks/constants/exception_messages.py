@@ -257,3 +257,4 @@ USER_DO_NOT_ACCESS_TO_DELETE_FILTER = (
     'user not have access to delete the filter',
     'USER_DO_NOT_ACCESS_TO_DELETE_FILTER'
 )
+INVALID_STAGE_IDS_FOR_TASK = "Invalid stage_ids : {} for the task_id: {}"
