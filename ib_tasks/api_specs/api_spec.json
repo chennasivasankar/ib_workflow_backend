@@ -544,7 +544,7 @@
          "type":"object",
          "properties":{
             "stage_id":{
-               "type":"string"
+               "type":"integer"
             },
             "assignee_id":{
                "type":"string"
@@ -559,7 +559,7 @@
          "type":"object",
          "properties":{
             "stage_id":{
-               "type":"string"
+               "type":"integer"
             },
             "stage_display_name":{
                "type":"string"
@@ -713,7 +713,7 @@
                   "type":"object",
                   "properties":{
                      "stage_id":{
-                        "type":"string"
+                        "type":"integer"
                      },
                      "stage_display_name":{
                         "type":"string"
@@ -1532,7 +1532,7 @@
                      "type":"object",
                      "properties":{
                         "stage_id":{
-                           "type":"string"
+                           "type":"integer"
                         },
                         "name":{
                            "type":"string"
