@@ -13,15 +13,39 @@ snapshots['TestCase01GetCommentsForDiscussionAPITestCase.test_case body'] = {
     'comments': [
         {
             'author': {
-                'name': 'string',
-                'profile_pic_url': 'string',
-                'user_id': '6e41a6b0-d8ae-4324-959e-ec4786974624'
+                'name': 'name',
+                'profile_pic_url': 'https://graph.ib_users.com/',
+                'user_id': '31be920b-7b4c-49e7-8adb-41a0c18da848'
             },
-            'comment_content': 'string',
-            'comment_id': 'aafb9eaf-8653-434d-9421-ee060166da85',
-            'created_at': '2099-12-31 00:00:00',
-            'is_editable': True,
-            'replies_count': 1
+            'comment_content': 'content',
+            'comment_id': '91be920b-7b4c-49e7-8adb-41a0c18da848',
+            'created_at': '2008-01-01 00:00:00',
+            'is_editable': False,
+            'replies_count': 0
+        },
+        {
+            'author': {
+                'name': 'name',
+                'profile_pic_url': 'https://graph.ib_users.com/',
+                'user_id': '01be920b-7b4c-49e7-8adb-41a0c18da848'
+            },
+            'comment_content': 'content',
+            'comment_id': '11be920b-7b4c-49e7-8adb-41a0c18da848',
+            'created_at': '2020-05-01 00:00:00',
+            'is_editable': False,
+            'replies_count': 0
+        },
+        {
+            'author': {
+                'name': 'name',
+                'profile_pic_url': 'https://graph.ib_users.com/',
+                'user_id': '77be920b-7b4c-49e7-8adb-41a0c18da848'
+            },
+            'comment_content': 'content',
+            'comment_id': '21be920b-7b4c-49e7-8adb-41a0c18da848',
+            'created_at': '2020-01-20 00:00:00',
+            'is_editable': False,
+            'replies_count': 0
         }
     ]
 }

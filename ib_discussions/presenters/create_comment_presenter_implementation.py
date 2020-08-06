@@ -30,7 +30,6 @@ class CreateCommentPresenterImplementation(CreateCommentPresenterInterface,
             user_profile_dto: UserProfileDTO
     ):
         from ib_discussions.utils.datetime_utils import get_datetime_as_string
-
         comment_id = comment_with_replies_count_and_editable_dto.comment_id
         comment_content = comment_with_replies_count_and_editable_dto. \
             comment_content
@@ -42,10 +41,10 @@ class CreateCommentPresenterImplementation(CreateCommentPresenterInterface,
         is_editable = comment_with_replies_count_and_editable_dto.is_editable
 
         response = {
-            "comment_id": comment_id,
+            "comment_id": str(comment_id),
             "comment_content": comment_content,
             "author": {
-                "user_id": user_profile_dto.user_id,
+                "user_id": str(user_profile_dto.user_id),
                 "name": user_profile_dto.name,
                 "profile_pic_url": user_profile_dto.profile_pic_url
             },

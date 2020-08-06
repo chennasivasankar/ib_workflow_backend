@@ -1,6 +1,8 @@
 """
 add comment
 """
+from unittest.mock import patch
+
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
 
@@ -15,24 +17,39 @@ class TestCase01AddCommentAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.mark.django_db
-    def test_case(self, snapshot):
-        user_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+    @patch(
+        "ib_discussions.storages.comment_storage_implementaion.CommentStorageImplementation.create_comment_for_discussion"
+    )
+    def test_case(self, create_comment_for_discussion_mock, snapshot, mocker):
         discussion_id = "71be920b-7b4c-49e7-8adb-41a0c18da848"
         comment_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
         comment_content = "content"
 
-        discussion_id = "71be920b-7b4c-49e7-8adb-41a0c18da848"
+        create_comment_for_discussion_mock.return_value = comment_id
+
+        from ib_discussions.tests.factories.models import CommentFactory
+        CommentFactory(
+            id=comment_id,
+            discussion_id=discussion_id,
+            user_id="31be920b-7b4c-49e7-8adb-41a0c18da848"
+        )
+
         from ib_discussions.tests.factories.models import DiscussionFactory
         DiscussionFactory(id=discussion_id)
 
-        from ib_discussions.tests.factories.models import CommentFactory
-        CommentFactory.created_at.reset()
-        CommentFactory(
-            comment_id=comment_id,
-            user_id=user_id,
-            comment_content=comment_content,
-            discussion_id=discussion_id
-        )
+        user_ids = [
+            "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        ]
+        from ib_discussions.tests.common_fixtures.adapters import \
+            prepare_get_user_profile_dtos_mock
+        get_user_profile_dtos_mock = prepare_get_user_profile_dtos_mock(mocker)
+        from ib_discussions.tests.factories.adapter_dtos import \
+            UserProfileDTOFactory
+        user_profile_dtos = [
+            UserProfileDTOFactory(user_id=user_id)
+            for user_id in user_ids
+        ]
+        get_user_profile_dtos_mock.return_value = user_profile_dtos
 
         body = {'comment_content': comment_content}
         path_params = {"discussion_id": discussion_id}

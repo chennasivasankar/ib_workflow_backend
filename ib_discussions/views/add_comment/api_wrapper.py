@@ -15,8 +15,6 @@ def api_wrapper(*args, **kwargs):
     request_data = kwargs["request_data"]
     comment_content = request_data["comment_content"]
 
-    from ib_discussions.interactors.create_comment_interactor import \
-        CreateCommentInteractor
     from ib_discussions.storages.comment_storage_implementaion import \
         CommentStorageImplementation
     comment_storage = CommentStorageImplementation()
@@ -25,6 +23,8 @@ def api_wrapper(*args, **kwargs):
         CreateCommentPresenterImplementation
     presenter = CreateCommentPresenterImplementation()
 
+    from ib_discussions.interactors.create_comment_interactor import \
+        CreateCommentInteractor
     interactor = CreateCommentInteractor(storage=comment_storage)
 
     response = interactor.create_comment_for_discussion_wrapper(

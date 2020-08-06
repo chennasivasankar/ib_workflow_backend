@@ -147,7 +147,7 @@ class CreateCommentInteractor:
                 comment_id=comment_dto.comment_id,
                 comment_content=comment_dto.comment_content,
                 user_id=comment_dto.user_id,
-                created_at=comment_dto.user_id,
+                created_at=comment_dto.created_at,
                 replies_count=comment_id_wise_comment_replies_count_dto_dict[
                     comment_dto.comment_id
                 ].replies_count,
