@@ -488,12 +488,12 @@ class FieldWithPermissionsDTOFactory(factory.Factory):
 class FilterDTOFactory(factory.Factory):
     class Meta:
         model = FilterDTO
-    filter_id = factory.sequence(lambda n: "filter_{}".format(n))
+    filter_id = factory.sequence(lambda n: n)
     filter_name = factory.sequence(lambda n: "filter_name_{}".format(n))
     user_id = factory.sequence(lambda n: "{}".format(n))
     is_selected = False
     template_id = factory.sequence(lambda n: "template_{}".format(n))
-    template_name = factory.sequence(lambda n: "template_name_{}".format(n))
+    template_name = factory.sequence(lambda n: "Template {}".format(n))
 
 
 class ConditionDTOFactory(factory.Factory):
