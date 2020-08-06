@@ -2,7 +2,7 @@ from django.db import models
 from ib_common.models.abstract_date_time_model \
     import AbstractDateTimeModel
 
-from ib_tasks.constants.enum import Priority
+from ib_tasks.constants.constants import PRIORITY_TYPES
 
 
 class Task(AbstractDateTimeModel):
@@ -12,4 +12,5 @@ class Task(AbstractDateTimeModel):
     description = models.TextField(null=True, blank=True)
     start_date = models.DateTimeField()
     due_date = models.DateTimeField()
-    priority = models.CharField(max_length=20, choices=Priority)
+    priority = models.CharField(max_length=20, choices=PRIORITY_TYPES,
+                                default=PRIORITY_TYPES[0][0])
