@@ -420,9 +420,6 @@ class StorageImplementation(StorageInterface):
                          parameters: StarOrUnstarParametersDTO):
         user_id = parameters.user_id
         board_id = parameters.board_id
-        is_starred = parameters.is_starred
-        exists = UserStarredBoard.objects.filter(
-                board_id=board_id, user_id=user_id).exists()
-        if not is_starred and not exists:
-            UserStarredBoard.objects.get_or_create(
+
+        UserStarredBoard.objects.get_or_create(
                 board_id=board_id, user_id=user_id)
