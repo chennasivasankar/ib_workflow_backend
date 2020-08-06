@@ -37,3 +37,13 @@ class Searchable(enum.Enum):
     USER = "USER"
     COMPANY = "COMPANY"
     TEAM = "TEAM"
+
+
+class Operators(enum.Enum):
+    GTE = "GTE"
+    LTE = "LTE"
+    GT = "GT"
+    LT = "LT"
+    NE = "NE"
+    EQ = "EQ"
+    CONTAINS = "CONTAINS"

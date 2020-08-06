@@ -1,12 +1,12 @@
 import json
 
 import factory
-from ib_tasks.constants.enum import PermissionTypes, FieldTypes
+from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     Task, TaskGoF,
     TaskGoFField,
-    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage)
+    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage, Filter, FilterCondition)
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
@@ -227,3 +227,23 @@ class TaskStageFactory(factory.django.DjangoModelFactory):
 
     task = factory.SubFactory(TaskFactory)
     stage = factory.SubFactory(StageModelFactory)
+
+
+class FilterFactory(factory.django.DjangoModelFactory):
+
+    class Meta:
+        model = Filter
+    created_by = factory.sequence(lambda n: "{}".format(n))
+    name = factory.sequence(lambda n: "filter_name_{}".format(n))
+    template = factory.SubFactory(TaskTemplateFactory)
+    is_selected = False
+
+
+class FilterConditionFactory(factory.django.DjangoModelFactory):
+
+    class Meta:
+        model = FilterCondition
+    filter = factory.SubFactory(FilterFactory)
+    field = factory.SubFactory(FieldFactory)
+    operator = Operators.GTE.value
+    value = factory.sequence(lambda n: "value_{}".format(n))

@@ -1,8 +1,8 @@
 import pytest
+
+from ib_tasks.interactors.gofs_dtos import GoFsWithTemplateIdDTO
 from ib_tasks.tests.factories.interactor_dtos import \
     GoFWithOrderAndAddAnotherDTOFactory
-from ib_tasks.interactors.gofs_dtos import GoFsWithTemplateIdDTO
-
 
 
 class TestGoFsToTaskTemplate:
@@ -20,12 +20,15 @@ class TestGoFsToTaskTemplate:
     def gofs_to_task_template_interactor(self):
         from ib_tasks.interactors.add_gofs_to_task_template_interactor \
             import AddGoFsToTaskTemplateInteractor
-        from ib_tasks.storages.tasks_storage_implementation import \
-            TasksStorageImplementation
-
-        task_storage = TasksStorageImplementation()
+        from ib_tasks.storages.task_template_storage_implementation import \
+            TaskTemplateStorageImplementation
+        task_template_storage = TaskTemplateStorageImplementation()
+        from ib_tasks.storages.gof_storage_implementation import \
+            GoFStorageImplementation
+        gof_storage = GoFStorageImplementation()
         gofs_to_task_template_interactor = AddGoFsToTaskTemplateInteractor(
-            task_storage=task_storage
+            task_template_storage=task_template_storage,
+            gof_storage=gof_storage
         )
         return gofs_to_task_template_interactor
 

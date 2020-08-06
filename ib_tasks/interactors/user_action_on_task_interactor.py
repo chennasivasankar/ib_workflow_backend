@@ -12,6 +12,8 @@ from ib_tasks.interactors.get_user_permitted_stage_actions \
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
 from ib_tasks.interactors.presenter_interfaces.dtos import TaskCompleteDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.presenter_interface import PresenterInterface
+from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
+    ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDetailsDTO, ActionDTO
 from ib_tasks.interactors.storage_interfaces.create_or_update_task_storage_interface import \
     CreateOrUpdateTaskStorageInterface
@@ -23,6 +25,8 @@ from ib_tasks.interactors.storage_interfaces.stages_storage_interface import Sta
 from ib_tasks.interactors.storage_interfaces.storage_interface import StorageInterface
 from ib_tasks.exceptions.action_custom_exceptions \
     import InvalidPresentStageAction
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
+    TaskStorageInterface
 
 
 class InvalidBoardIdException(Exception):
@@ -38,7 +42,9 @@ class UserActionOnTaskInteractor:
                  gof_storage: CreateOrUpdateTaskStorageInterface,
                  board_id: Optional[str],
                  field_storage: FieldsStorageInterface,
-                 stage_storage: StageStorageInterface
+                 stage_storage: StageStorageInterface,
+                 task_storage: TaskStorageInterface,
+                 action_storage: ActionStorageInterface
                  ):
         self.user_id = user_id
         self.board_id = board_id
@@ -48,6 +54,8 @@ class UserActionOnTaskInteractor:
         self.gof_storage = gof_storage
         self.field_storage = field_storage
         self.stage_storage = stage_storage
+        self.task_storage = task_storage
+        self.action_storage = action_storage
 
     def user_action_on_task_wrapper(self, presenter: PresenterInterface):
 
@@ -110,8 +118,11 @@ class UserActionOnTaskInteractor:
         from ib_tasks.interactors.get_task_fields_and_actions \
             import GetTaskFieldsAndActionsInteractor
         interactor = GetTaskFieldsAndActionsInteractor(
-            storage=self.field_storage,
-            stage_storage=self.stage_storage)
+            field_storage=self.field_storage,
+            task_storage=self.task_storage,
+            action_storage=self.action_storage,
+            stage_storage=self.stage_storage
+        )
         task_stage_details_dtos = interactor.get_task_fields_and_action(
             task_dtos=task_stage_dtos, user_id=self.user_id)
         actions_dto, fields_dto = self._get_field_dtos_and_actions_dtos(

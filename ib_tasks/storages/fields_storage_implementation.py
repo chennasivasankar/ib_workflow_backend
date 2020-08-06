@@ -73,50 +73,6 @@ class FieldsStorageImplementation(FieldsStorageInterface):
             task_field_objs)
         return task_fields_dtos
 
-    def get_stage_details(self, task_dtos: List[GetTaskDetailsDTO]) -> \
-            List[TaskTemplateStageDTO]:
-        task_ids = [task.task_id for task in task_dtos]
-        task_objs = Task.objects.filter(id__in=task_ids).values(
-            'id', 'template_id')
-        template_stage_ids_list = []
-        task_stages_dict = {}
-        for item in task_dtos:
-            task_stages_dict[item.task_id] = item.stage_id
-        for task in task_objs:
-            template_stage_ids_list.append(
-                TaskTemplateStageDTO(task_id=task['id'],
-                                     task_template_id=task['template_id'],
-                                     stage_id=task_stages_dict[task['id']]))
-        return template_stage_ids_list
-
-    def get_actions_details(self,
-                            stage_ids: List[str],
-                            user_roles: List[str]) -> \
-            List[ActionDetailsDTO]:
-        action_objs = (StageAction.objects
-                       .filter(stage__stage_id__in=stage_ids)
-                       .filter(Q(actionpermittedroles__role_id="ALL_ROLES") |
-                               Q(actionpermittedroles__role_id__in=user_roles)
-                               ))
-        unique_action_objs = list(set(action_objs))
-        action_dtos = self._convert_action_objs_to_dtos(unique_action_objs)
-        return action_dtos
-
-    @staticmethod
-    def _convert_action_objs_to_dtos(action_objs):
-        action_dtos = []
-        for action in action_objs:
-            action_dtos.append(
-                ActionDetailsDTO(
-                    action_id=action.id,
-                    name=action.name,
-                    stage_id=action.stage.stage_id,
-                    button_text=action.button_text,
-                    button_color=action.button_color
-                )
-            )
-        return action_dtos
-
     def get_fields_details(self,
                            task_fields_dtos: List[StageTaskFieldsDTO],
                            user_roles: List[str]) -> \
@@ -158,12 +114,6 @@ class FieldsStorageImplementation(FieldsStorageInterface):
             )
         return task_fields_dtos
 
-    def get_valid_task_ids(self, task_ids: List[str]) -> Optional[List[str]]:
-        valid_task_ids = (
-            Task.objects.filter(id__in=task_ids)
-                .values_list('id', flat=True))
-        return list(valid_task_ids)
-
     def get_field_ids(self, task_dtos: List[TaskTemplateStageDTO]) -> \
             List[TaskTemplateStageFieldsDTO]:
         from collections import defaultdict
@@ -201,34 +151,6 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                         stage_id=stage.stage_id,
                         field_ids=field_ids))
         return task_fields_dtos
-
-    def validate_task_related_stage_ids(self,
-                                        task_dtos: List[GetTaskDetailsDTO]
-                                        ) -> List[GetTaskDetailsDTO]:
-        q = None
-        for counter, item in enumerate(task_dtos):
-            current_queue = Q(stage__stage_id=item.stage_id,
-                              task_id=item.task_id)
-            if counter == 0:
-                q = current_queue
-            else:
-                q = q | current_queue
-        if q is None:
-            return []
-        task_objs = TaskStage.objects.filter(q).values('task_id',
-                                                       'stage__stage_id')
-
-        task_stage_dtos = self._convert_task_objs_to_dtos(task_objs)
-        return task_stage_dtos
-
-    @staticmethod
-    def _convert_task_objs_to_dtos(task_objs):
-        valid_task_stages_dtos = [
-            GetTaskDetailsDTO(task_id=task_obj['task_id'],
-                              stage_id=task_obj['stage__stage_id'])
-            for task_obj in task_objs
-        ]
-        return valid_task_stages_dtos
 
     def get_task_stages(self, task_id: int) -> List[str]:
         stage_ids = TaskStage.objects.filter(task_id=task_id).values_list(

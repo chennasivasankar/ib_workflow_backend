@@ -1,4 +1,5 @@
-from ib_tasks.interactors.storage_interfaces.create_or_update_task_storage_interface \
+from ib_tasks.interactors.storage_interfaces\
+    .create_or_update_task_storage_interface \
     import CreateOrUpdateTaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos \
     import TaskDetailsDTO

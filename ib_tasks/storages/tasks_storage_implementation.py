@@ -6,26 +6,29 @@ from django.db.models import Q, Count
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    ActionsOfTemplateDTO, ActionDTO
+    ActionDTO, ActionWithStageIdDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldDetailsDTO, \
-    FieldCompleteDetailsDTO
+    FieldDetailsDTO, FieldCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
+    GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    GetTaskStageCompleteDetailsDTO, TaskStageIdsDTO
+    GetTaskStageCompleteDetailsDTO, TaskStageIdsDTO, StageIdWithTemplateIdDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskIdWithStageValueDTO, \
-    TaskIdWithStageDetailsDTO, StageValueWithTaskIdsDTO
+    TaskIdWithStageValueDTO, TaskIdWithStageDetailsDTO, \
+    StageValueWithTaskIdsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
     StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
+    TaskTemplateDTO
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, CreateTaskLogDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
-from ib_tasks.models import Stage
+from ib_tasks.models import Stage, TaskTemplate
 from ib_tasks.models import TaskStage
 from ib_tasks.models import TaskTemplateStatusVariable
 from ib_tasks.models.field import Field
@@ -99,18 +102,6 @@ class TasksStorageImplementation(TaskStorageInterface):
         templates_initial_stage_ids = \
             list(templates_initial_stage_ids_queryset)
         return templates_initial_stage_ids
-
-    def get_actions_for_given_stage_ids(
-            self, stage_ids: List[int]) -> List[ActionsOfTemplateDTO]:
-        stage_actions_details = StageAction.objects.filter(
-            stage_id__in=stage_ids
-        ).select_related('stage').values(
-            'id', 'button_text', 'button_color', 'stage__task_template_id'
-        )
-
-        actions_of_templates_dtos = self._convert_stage_actions_details_to_dto(
-            stage_actions_details=stage_actions_details)
-        return actions_of_templates_dtos
 
     def create_stages_with_given_information(self,
                                              stage_information: StageDTO):
@@ -291,22 +282,37 @@ class TasksStorageImplementation(TaskStorageInterface):
         return stage_actions_dtos
 
     def get_valid_task_ids(self, task_ids: List[str]) -> Optional[List[str]]:
-        valid_task_ids = Task.objects.filter(id__in=task_ids)
-        return valid_task_ids
+        valid_task_ids = (
+            Task.objects.filter(id__in=task_ids)
+                .values_list('id', flat=True))
+        return list(valid_task_ids)
 
     @staticmethod
-    def _convert_stage_actions_details_to_dto(
-            stage_actions_details: List[Dict]) -> List[ActionsOfTemplateDTO]:
-        actions_of_template_dtos = [
-            ActionsOfTemplateDTO(
-                action_id=stage_action['id'],
-                template_id=stage_action['stage__task_template_id'],
-                button_color=stage_action['button_color'],
-                button_text=stage_action['button_text']
+    def _convert_task_templates_objs_to_dtos(
+            task_template_objs: List[TaskTemplate]) -> List[TaskTemplateDTO]:
+        task_template_dtos = [
+            TaskTemplateDTO(
+                template_id=task_template_obj.template_id,
+                template_name=task_template_obj.name
             )
-            for stage_action in stage_actions_details
+            for task_template_obj in task_template_objs
         ]
-        return actions_of_template_dtos
+        return task_template_dtos
+
+    @staticmethod
+    def _convert_task_template_gofs_to_dtos(
+            task_template_gofs) -> List[GoFToTaskTemplateDTO]:
+        task_template_gof_dtos = [
+            GoFToTaskTemplateDTO(
+                template_id=task_template_gof.task_template_id,
+                gof_id=task_template_gof.gof_id,
+                order=task_template_gof.order,
+                enable_add_another=task_template_gof.enable_add_another_gof
+
+            )
+            for task_template_gof in task_template_gofs
+        ]
+        return task_template_gof_dtos
 
     def get_user_task_and_max_stage_value_dto_based_on_given_stage_ids(
             self, user_id: str, stage_ids: List[str], limit: int,
@@ -324,47 +330,6 @@ class TasksStorageImplementation(TaskStorageInterface):
                     task_id=task_with_stage_value_item['task_id'],
                     stage_value=task_with_stage_value_item['stage_value']))
         return task_id_with_max_stage_value_dtos
-
-    def get_task_id_with_stage_details_dtos_based_on_stage_value(
-            self, stage_values: List[int],
-            task_ids_group_by_stage_value_dtos: List[StageValueWithTaskIdsDTO],
-            user_id: str) -> List[TaskIdWithStageDetailsDTO]:
-        # ToDo: Need to optimize the storage calls which are in for loop
-        all_task_id_with_stage_details_dtos = []
-        for each_stage_value in stage_values:
-            for each_task_ids_group_by_stage_value_dto in \
-                    task_ids_group_by_stage_value_dtos:
-                if each_task_ids_group_by_stage_value_dto.stage_value \
-                        == each_stage_value:
-                    task_id_with_stage_details = list(
-                        TaskStage.objects.filter(
-                            task__created_by=user_id,
-                            stage__value=each_stage_value,
-                            task_id__in=each_task_ids_group_by_stage_value_dto.
-                                task_ids).values("task_id", "stage__stage_id",
-                                                 "stage__display_name"))
-
-                    task_id_with_stage_details_dtos = self. \
-                        _get_task_id_with_stage_details_dtos(
-                        task_id_with_stage_details)
-
-                    all_task_id_with_stage_details_dtos.extend(
-                        task_id_with_stage_details_dtos)
-        return all_task_id_with_stage_details_dtos
-
-    @staticmethod
-    def _get_task_id_with_stage_details_dtos(
-            task_id_with_stage_details: List[dict]
-    ) -> List[TaskIdWithStageDetailsDTO]:
-        task_id_with_stage_details_dtos = [
-            TaskIdWithStageDetailsDTO(
-                task_id=task_id_with_stage_detail["task_id"],
-                stage_id=task_id_with_stage_detail["stage__stage_id"],
-                stage_display_name=task_id_with_stage_detail[
-                    "stage__display_name"])
-            for task_id_with_stage_detail in task_id_with_stage_details
-        ]
-        return task_id_with_stage_details_dtos
 
     def get_field_ids_for_given_task_template_ids(self,
                                                   task_template_ids: List[
@@ -393,3 +358,98 @@ class TasksStorageImplementation(TaskStorageInterface):
                 )
             )
         return task_fields_dtos
+
+    def get_initial_stage_id_with_template_id_dtos(
+            self) -> List[StageIdWithTemplateIdDTO]:
+
+        from ib_tasks.models.task_template_initial_stages import \
+            TaskTemplateInitialStage
+        template_id_with_stage_id_dicts = \
+            TaskTemplateInitialStage.objects.all().values('stage_id', 'task_template_id')
+
+        template_id_with_stage_id_dtos = \
+            self._convert_template_id_with_stage_id_dicts_to_dtos(
+                template_id_with_stage_id_dicts=template_id_with_stage_id_dicts
+            )
+        return template_id_with_stage_id_dtos
+
+    @staticmethod
+    def _convert_template_id_with_stage_id_dicts_to_dtos(
+            template_id_with_stage_id_dicts: List[Dict]
+    ) -> List[StageIdWithTemplateIdDTO]:
+        template_id_with_stage_id_dtos = [
+            StageIdWithTemplateIdDTO(
+                template_id=template_id_with_stage_id_dict['task_template_id'],
+                stage_id=template_id_with_stage_id_dict['stage_id']
+            )
+            for template_id_with_stage_id_dict in
+            template_id_with_stage_id_dicts
+        ]
+        return template_id_with_stage_id_dtos
+
+    @staticmethod
+    def _convert_stage_actions_details_to_dtos(
+            stage_action_details: List[Dict]) -> List[ActionWithStageIdDTO]:
+        actions_of_template_dtos = [
+            ActionWithStageIdDTO(
+                action_id=stage_action['id'],
+                stage_id=stage_action['stage_id'],
+                button_color=stage_action['button_color'],
+                button_text=stage_action['button_text']
+            )
+            for stage_action in stage_action_details
+        ]
+        return actions_of_template_dtos
+
+    def get_actions_for_given_stage_ids_in_dtos(
+            self, stage_ids: List[int]) -> List[ActionWithStageIdDTO]:
+        stage_action_details = StageAction.objects.filter(
+            stage_id__in=stage_ids
+        ).values('id', 'button_text', 'button_color', 'stage_id')
+
+        action_with_stage_id_dtos = \
+            self._convert_stage_actions_details_to_dtos(
+                stage_action_details=stage_action_details
+            )
+        return action_with_stage_id_dtos
+
+    def check_is_task_exists(self, task_id: int) -> bool:
+        is_task_exists = Task.objects.filter(id=task_id).exists()
+        return is_task_exists
+
+    def create_task_log(self, create_task_log_dto: CreateTaskLogDTO):
+        from ib_tasks.models.task_log import TaskLog
+        TaskLog.objects.create(
+            task_json=create_task_log_dto.task_json,
+            action_id=create_task_log_dto.action_id,
+            user_id=create_task_log_dto.user_id,
+            task_id=create_task_log_dto.task_id
+        )
+
+    def validate_task_related_stage_ids(self,
+                                        task_dtos: List[GetTaskDetailsDTO]
+                                        ) -> List[GetTaskDetailsDTO]:
+        q = None
+        for counter, item in enumerate(task_dtos):
+            current_queue = Q(stage__stage_id=item.stage_id,
+                              task_id=item.task_id)
+            if counter == 0:
+                q = current_queue
+            else:
+                q = q | current_queue
+        if q is None:
+            return []
+        task_objs = TaskStage.objects.filter(q).values('task_id',
+                                                       'stage__stage_id')
+
+        task_stage_dtos = self._convert_task_objs_to_dtos(task_objs)
+        return task_stage_dtos
+
+    @staticmethod
+    def _convert_task_objs_to_dtos(task_objs):
+        valid_task_stages_dtos = [
+            GetTaskDetailsDTO(task_id=task_obj['task_id'],
+                              stage_id=task_obj['stage__stage_id'])
+            for task_obj in task_objs
+        ]
+        return valid_task_stages_dtos

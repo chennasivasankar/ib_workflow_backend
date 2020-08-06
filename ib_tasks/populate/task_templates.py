@@ -17,16 +17,17 @@ class PopulateTaskTemplates:
 
     @staticmethod
     def _populate_task_template_in_db(template_id: str, template_name: str):
-
-        from ib_tasks.storages.tasks_storage_implementation import \
-            TasksStorageImplementation
-        task_storage = TasksStorageImplementation()
+        from ib_tasks.storages.task_template_storage_implementation import \
+            TaskTemplateStorageImplementation
+        task_template_storage = TaskTemplateStorageImplementation()
 
         from ib_tasks.interactors.create_task_template_interactor import \
             CreateTaskTemplateInteractor
-        interactor = CreateTaskTemplateInteractor(task_storage=task_storage)
+        interactor = CreateTaskTemplateInteractor(
+            task_template_storage=task_template_storage)
 
-        from ib_tasks.interactors.task_template_dtos import CreateTaskTemplateDTO
+        from ib_tasks.interactors.task_template_dtos import \
+            CreateTaskTemplateDTO
         create_task_template_dto = CreateTaskTemplateDTO(
             template_id=template_id, template_name=template_name
         )

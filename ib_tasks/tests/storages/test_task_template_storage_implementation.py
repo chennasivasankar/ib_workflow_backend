@@ -1,7 +1,6 @@
 import pytest
 
-from ib_tasks.tests.factories.models import TaskTemplateFactory, \
-    TaskTemplateWith2GoFsFactory
+from ib_tasks.tests.factories.models import TaskTemplateFactory
 
 
 @pytest.mark.django_db
@@ -15,14 +14,16 @@ class TestTaskTemplateStorageImplementation:
 
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
-        TaskTemplateFactory.reset_sequence()
-
-        from ib_tasks.tests.factories.models import GlobalConstantFactory
-        GlobalConstantFactory.reset_sequence()
-
         from ib_tasks.tests.factories.interactor_dtos import \
-            GlobalConstantsDTOFactory
+            GoFWithOrderAndAddAnotherDTOFactory, GlobalConstantsDTOFactory
+        from ib_tasks.tests.factories.models import GoFFactory, \
+            GlobalConstantFactory, GoFToTaskTemplateFactory
+        GoFWithOrderAndAddAnotherDTOFactory.reset_sequence()
+        TaskTemplateFactory.reset_sequence()
+        GoFFactory.reset_sequence()
+        GlobalConstantFactory.reset_sequence()
         GlobalConstantsDTOFactory.reset_sequence()
+        GoFToTaskTemplateFactory.reset_sequence()
 
     def test_get_valid_template_ids_in_given_template_ids(self, storage):
         # Arrange
@@ -87,7 +88,6 @@ class TestTaskTemplateStorageImplementation:
         # Assert
         assert result == expected_output
 
-   
     def test_check_is_template_exists_with_invalid_template_id_returns_false(
             self, storage):
         # Arrange
@@ -100,7 +100,6 @@ class TestTaskTemplateStorageImplementation:
         # Assert
         assert is_template_exists is False
 
-   
     def test_get_constant_names_of_existing_global_constants_of_template_returns_constant_names(
             self, storage):
         # Arrange
@@ -116,13 +115,12 @@ class TestTaskTemplateStorageImplementation:
         # Act
         global_constants_of_template = storage. \
             get_constant_names_of_existing_global_constants_of_template(
-            template_id=template_id
-        )
+                template_id=template_id
+            )
 
         # Assert
         assert global_constants_of_template == expected_constant_names
 
-   
     def test_get_constant_names_of_existing_global_constants_of_template_when_no_constants_returns_empty_list(
             self, storage):
         # Arrange
@@ -132,13 +130,12 @@ class TestTaskTemplateStorageImplementation:
         # Act
         global_constants_of_template = storage. \
             get_constant_names_of_existing_global_constants_of_template(
-            template_id=template_id
-        )
+                template_id=template_id
+            )
 
         # Assert
         assert global_constants_of_template == []
 
-   
     def test_create_global_constants_to_template(self, storage):
         # Arrange
 
@@ -171,7 +168,6 @@ class TestTaskTemplateStorageImplementation:
         assert global_constants_objs[1].value == \
                global_constants_dtos[1].value
 
-   
     def test_update_global_constants_to_template(self, storage):
         # Arrange
 
@@ -204,7 +200,6 @@ class TestTaskTemplateStorageImplementation:
         assert global_constants_objs[0].value == \
                global_constants_dtos[0].value
 
-   
     def test_check_is_template_exists_with_valid_template_id_returns_true(
             self, storage):
         # Arrange
@@ -218,7 +213,6 @@ class TestTaskTemplateStorageImplementation:
         # Assert
         assert is_template_exists is True
 
-   
     def test_get_task_template_name(self, storage):
         # Arrange
         task_template = TaskTemplateFactory()
@@ -232,7 +226,6 @@ class TestTaskTemplateStorageImplementation:
         # Assert
         assert template_name == expected_template_name
 
-   
     def test_create_task_template(self, storage):
         # Arrange
         template_id = "FIN_VENDOR"
@@ -250,7 +243,6 @@ class TestTaskTemplateStorageImplementation:
         assert task_template.template_id == template_id
         assert task_template.name == template_name
 
-   
     def test_update_task_template(self, storage):
         # Arrange
         template_id = "FIN_VENDOR"
@@ -269,9 +261,11 @@ class TestTaskTemplateStorageImplementation:
         assert task_template.template_id == template_id
         assert task_template.name == template_name
 
-   
     def test_get_existing_gof_ids_of_template(self, storage):
         # Arrange
+        from ib_tasks.tests.factories.models import \
+            TaskTemplateWith2GoFsFactory
+
         template_id = "FIN_VENDOR"
         expected_gof_ids = ['gof_1', 'gof_2']
         TaskTemplateWith2GoFsFactory(template_id=template_id)
@@ -284,22 +278,24 @@ class TestTaskTemplateStorageImplementation:
         assert existing_gof_ids_of_template == expected_gof_ids
 
     def test_add_gofs_to_template(self, storage):
-        #Arrange
+        # Arrange
         template_id = "FIN_VENDOR"
         from ib_tasks.tests.factories.models import TaskTemplateFactory
         TaskTemplateFactory(template_id=template_id)
+
         from ib_tasks.tests.factories.models import GoFFactory
         GoFFactory.create_batch(size=2)
+
         from ib_tasks.tests.factories.interactor_dtos import \
             GoFWithOrderAndAddAnotherDTOFactory
         gof_dtos = GoFWithOrderAndAddAnotherDTOFactory.create_batch(size=2)
 
-        #Act
+        # Act
         storage.add_gofs_to_template(
             template_id=template_id, gof_dtos=gof_dtos
         )
 
-        #Assert
+        # Assert
         from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
         gof_to_task_template_objs = \
             TaskTemplateGoFs.objects.filter(task_template_id=template_id)

@@ -1,5 +1,7 @@
-import pytest
 from unittest.mock import create_autospec
+
+import pytest
+
 from ib_tasks.interactors.user_action_on_task_interactor \
     import UserActionOnTaskInteractor
 
@@ -9,7 +11,6 @@ class TestUserActionOnTaskInteractor:
     @staticmethod
     @pytest.fixture()
     def storage():
-
         from ib_tasks.interactors.storage_interfaces.storage_interface \
             import StorageInterface
         storage = create_autospec(StorageInterface)
@@ -18,7 +19,7 @@ class TestUserActionOnTaskInteractor:
     @staticmethod
     @pytest.fixture()
     def gof_storage():
-        from ib_tasks.interactors.storage_interfaces\
+        from ib_tasks.interactors.storage_interfaces \
             .create_or_update_task_storage_interface import \
             CreateOrUpdateTaskStorageInterface
         storage = create_autospec(CreateOrUpdateTaskStorageInterface)
@@ -27,7 +28,7 @@ class TestUserActionOnTaskInteractor:
     @staticmethod
     @pytest.fixture()
     def field_storage():
-        from ib_tasks.interactors.storage_interfaces\
+        from ib_tasks.interactors.storage_interfaces \
             .fields_storage_interface import FieldsStorageInterface
         storage = create_autospec(FieldsStorageInterface)
         return storage
@@ -35,7 +36,7 @@ class TestUserActionOnTaskInteractor:
     @staticmethod
     @pytest.fixture()
     def stage_storage():
-        from ib_tasks.interactors.storage_interfaces\
+        from ib_tasks.interactors.storage_interfaces \
             .stages_storage_interface import StageStorageInterface
         storage = create_autospec(StageStorageInterface)
         return storage
@@ -51,7 +52,8 @@ class TestUserActionOnTaskInteractor:
 
     @staticmethod
     def gof_and_fields_mock(mocker, task_dto):
-        path = 'ib_tasks.interactors.get_task_base_interactor.GetTaskBaseInteractor.get_task'
+        path = 'ib_tasks.interactors.get_task_base_interactor' \
+               '.GetTaskBaseInteractor.get_task'
 
         mock_obj = mocker.patch(path)
         mock_obj.return_value = task_dto
@@ -60,15 +62,31 @@ class TestUserActionOnTaskInteractor:
     @staticmethod
     @pytest.fixture()
     def board_mock(mocker):
-        path = 'ib_tasks.adapters.boards_service.BoardsService.get_display_boards_and_column_details'
+        path = 'ib_tasks.adapters.boards_service.BoardsService' \
+               '.get_display_boards_and_column_details'
         mock_obj = mocker.patch(path)
         return mock_obj
 
+    @pytest.fixture
+    def task_storage_mock(self):
+        from mock import create_autospec
+        from ib_tasks.interactors.storage_interfaces.task_storage_interface \
+            import \
+            TaskStorageInterface
+        return create_autospec(TaskStorageInterface)
+
+    @pytest.fixture
+    def action_storage_mock(self):
+        from mock import create_autospec
+        from ib_tasks.interactors.storage_interfaces\
+            .action_storage_interface import \
+            ActionStorageInterface
+        return create_autospec(ActionStorageInterface)
 
     @staticmethod
     def task_boards_mock(mocker, task_board_details):
-
-        path = 'ib_tasks.adapters.boards_service.BoardsService.get_display_boards_and_column_details'
+        path = 'ib_tasks.adapters.boards_service.BoardsService' \
+               '.get_display_boards_and_column_details'
 
         mock_obj = mocker.patch(path)
         mock_obj.return_value = task_board_details
@@ -76,8 +94,7 @@ class TestUserActionOnTaskInteractor:
 
     @staticmethod
     def actions_dto_mock(mocker, actions_dto):
-
-        path = 'ib_tasks.interactors.get_user_permitted_stage_actions'\
+        path = 'ib_tasks.interactors.get_user_permitted_stage_actions' \
                '.GetUserPermittedStageActions' \
                '.get_user_permitted_stage_actions'
         mock_obj = mocker.patch(path)
@@ -86,8 +103,8 @@ class TestUserActionOnTaskInteractor:
 
     @staticmethod
     def fields_mock(mocker, fields_dto):
-
-        path = 'ib_tasks.interactors.get_field_details.GetFieldsDetails.get_fields_details'
+        path = 'ib_tasks.interactors.get_field_details.GetFieldsDetails' \
+               '.get_fields_details'
         mock_obj = mocker.patch(path)
         mock_obj.return_value = fields_dto
         return mock_obj
@@ -111,17 +128,18 @@ class TestUserActionOnTaskInteractor:
         )
 
     def test_invalid_task_raises_exception(
-            self, storage, presenter, gof_storage, field_storage, stage_storage):
+            self, storage, presenter, gof_storage, field_storage,
+            stage_storage, task_storage_mock, action_storage_mock):
         # Arrange
         user_id = "user_1"
         board_id = "board_1"
         task_id = 1
         action_id = 1
-
         interactor = UserActionOnTaskInteractor(
             user_id=user_id, board_id=board_id, task_id=task_id,
             action_id=action_id, storage=storage, gof_storage=gof_storage,
-            field_storage=field_storage, stage_storage=stage_storage
+            field_storage=field_storage, stage_storage=stage_storage,
+            task_storage=task_storage_mock, action_storage=action_storage_mock
         )
         storage.validate_task_id.return_value = False
 
@@ -135,7 +153,7 @@ class TestUserActionOnTaskInteractor:
 
     def test_invalid_board_raises_exception(
             self, mocker, storage, presenter, gof_storage,
-            field_storage, stage_storage):
+            field_storage, stage_storage, task_storage_mock, action_storage_mock):
         # Arrange
         user_id = "user_1"
         board_id = "board_1"
@@ -147,7 +165,8 @@ class TestUserActionOnTaskInteractor:
         interactor = UserActionOnTaskInteractor(
             user_id=user_id, board_id=board_id, task_id=task_id,
             action_id=action_id, storage=storage, gof_storage=gof_storage,
-            field_storage=field_storage, stage_storage=stage_storage
+            field_storage=field_storage, stage_storage=stage_storage,
+            task_storage=task_storage_mock, action_storage=action_storage_mock
         )
         storage.validate_task_id.return_value = True
 
@@ -162,7 +181,7 @@ class TestUserActionOnTaskInteractor:
 
     def test_invalid_action_raises_exception(
             self, mocker, storage, presenter,
-            gof_storage, field_storage, stage_storage):
+            gof_storage, field_storage, stage_storage, task_storage_mock, action_storage_mock):
         # Arrange
         user_id = "user_1"
         board_id = "board_1"
@@ -176,7 +195,8 @@ class TestUserActionOnTaskInteractor:
         interactor = UserActionOnTaskInteractor(
             user_id=user_id, board_id=board_id, task_id=task_id,
             action_id=action_id, storage=storage, gof_storage=gof_storage,
-            field_storage=field_storage, stage_storage=stage_storage
+            field_storage=field_storage, stage_storage=stage_storage,
+            task_storage=task_storage_mock, action_storage=action_storage_mock
         )
         storage.validate_action.return_value = False
 
@@ -193,7 +213,7 @@ class TestUserActionOnTaskInteractor:
 
     def test_invalid_present_stage_action_raises_exception(
             self, mocker, storage, presenter,
-            gof_storage, field_storage, stage_storage):
+            gof_storage, field_storage, stage_storage, task_storage_mock, action_storage_mock):
         # Arrange
         user_id = "user_1"
         board_id = "board_1"
@@ -208,7 +228,8 @@ class TestUserActionOnTaskInteractor:
         interactor = UserActionOnTaskInteractor(
             user_id=user_id, board_id=board_id, task_id=task_id,
             action_id=action_id, storage=storage, gof_storage=gof_storage,
-            field_storage=field_storage, stage_storage=stage_storage
+            field_storage=field_storage, stage_storage=stage_storage,
+            task_storage=task_storage_mock, action_storage=action_storage_mock
         )
         storage.validate_action.return_value = True
         storage.get_task_present_stage_actions.return_value = action_ids
@@ -220,13 +241,14 @@ class TestUserActionOnTaskInteractor:
         mock_obj.called_once()
         storage.validate_action.assert_called_once_with(action_id=action_id)
         dict_obj = \
-            presenter.raise_exception_for_invalid_present_actions.call_args.kwargs
+            presenter.raise_exception_for_invalid_present_actions.call_args\
+                .kwargs
         expected_action_id = dict_obj['error_obj'].action_id
         assert action_id == expected_action_id
 
     def test_given_user_permission_denied_raises_exception(
             self, mocker, storage, presenter,
-            gof_storage, field_storage, stage_storage):
+            gof_storage, field_storage, stage_storage, task_storage_mock, action_storage_mock):
         # Arrange
         user_id = "user_1"
         board_id = "board_1"
@@ -244,11 +266,13 @@ class TestUserActionOnTaskInteractor:
         interactor = UserActionOnTaskInteractor(
             user_id=user_id, board_id=board_id, task_id=task_id,
             action_id=action_id, storage=storage, gof_storage=gof_storage,
-            field_storage=field_storage, stage_storage=stage_storage
+            field_storage=field_storage, stage_storage=stage_storage,
+            task_storage=task_storage_mock, action_storage=action_storage_mock
         )
         storage.validate_action.return_value = True
         storage.get_action_roles.return_value = ["ROLE_2", "ROLE_4"]
-        path = 'ib_tasks.interactors.user_role_validation_interactor.UserRoleValidationInteractor' \
+        path = 'ib_tasks.interactors.user_role_validation_interactor' \
+               '.UserRoleValidationInteractor' \
                '.does_user_has_required_permission'
         validation_mock_obj = mocker.patch(path)
         validation_mock_obj.return_value = False
@@ -259,7 +283,8 @@ class TestUserActionOnTaskInteractor:
         # Assert
         mock_obj.called_once()
         user_roles_mock.called_once()
-        dict_obj = presenter.raise_exception_for_user_action_permission_denied \
+        dict_obj = \
+            presenter.raise_exception_for_user_action_permission_denied \
             .call_args.kwargs
         expected_action_id = dict_obj['error_obj'].action_id
         assert action_id == expected_action_id
@@ -267,7 +292,7 @@ class TestUserActionOnTaskInteractor:
 
     def test_given_user_board_permission_denied_raises_exception(
             self, mocker, storage, presenter,
-            gof_storage, field_storage, stage_storage, board_mock):
+            gof_storage, field_storage, stage_storage, board_mock, task_storage_mock, action_storage_mock):
         # Arrange
         user_id = "user_1"
         board_id = "board_1"
@@ -282,7 +307,8 @@ class TestUserActionOnTaskInteractor:
         interactor = UserActionOnTaskInteractor(
             user_id=user_id, board_id=board_id, task_id=task_id,
             action_id=action_id, storage=storage, gof_storage=gof_storage,
-            field_storage=field_storage, stage_storage=stage_storage
+            field_storage=field_storage, stage_storage=stage_storage,
+            task_storage=task_storage_mock, action_storage=action_storage_mock
         )
         from ib_tasks.tests.common_fixtures.interactors \
             import prepare_task_gof_and_fields_dto
@@ -293,7 +319,8 @@ class TestUserActionOnTaskInteractor:
         call_action_mock = prepare_call_action_logic_update_stages_mock(mocker)
         storage.validate_action.return_value = True
         storage.get_action_roles.return_value = ["ROLE_2", "ROLE_4"]
-        path = 'ib_tasks.interactors.user_role_validation_interactor.UserRoleValidationInteractor' \
+        path = 'ib_tasks.interactors.user_role_validation_interactor' \
+               '.UserRoleValidationInteractor' \
                '.does_user_has_required_permission'
         validation_mock_obj = mocker.patch(path)
         validation_mock_obj.return_value = True
@@ -318,14 +345,14 @@ class TestUserActionOnTaskInteractor:
             .call_args.kwargs
         expected_action_id = dict_obj['error_obj'].board_id
         assert board_id == expected_action_id
-        storage.update_task_stages\
+        storage.update_task_stages \
             .assert_called_once_with(stage_ids=stage_ids, task_id=task_id)
 
         validation_mock_obj.called_once()
 
     def test_given_valid_details_returns_task_complete_details(
             self, mocker, storage, presenter,
-            gof_storage, field_storage, stage_storage, board_mock):
+            gof_storage, field_storage, stage_storage, board_mock, task_storage_mock, action_storage_mock):
         # Arrange
         user_id = "1"
         board_id = "board_1"
@@ -340,7 +367,8 @@ class TestUserActionOnTaskInteractor:
         interactor = UserActionOnTaskInteractor(
             user_id=user_id, board_id=board_id, task_id=task_id,
             action_id=action_id, storage=storage, gof_storage=gof_storage,
-            field_storage=field_storage, stage_storage=stage_storage
+            field_storage=field_storage, stage_storage=stage_storage,
+            task_storage=task_storage_mock, action_storage=action_storage_mock
         )
         from ib_tasks.tests.common_fixtures.interactors \
             import prepare_task_gof_and_fields_dto
@@ -351,13 +379,15 @@ class TestUserActionOnTaskInteractor:
         call_action_mock = prepare_call_action_logic_update_stages_mock(mocker)
         storage.validate_action.return_value = True
         storage.get_action_roles.return_value = ["ROLE_2", "ROLE_4"]
-        path = 'ib_tasks.interactors.user_role_validation_interactor.UserRoleValidationInteractor' \
+        path = 'ib_tasks.interactors.user_role_validation_interactor' \
+               '.UserRoleValidationInteractor' \
                '.does_user_has_required_permission'
         validation_mock_obj = mocker.patch(path)
         validation_mock_obj.return_value = True
         from ib_tasks.tests.common_fixtures.interactors \
             import (
-            prepare_stage_display_satisfied_stage_ids, prepare_task_boards_details,
+            prepare_stage_display_satisfied_stage_ids,
+            prepare_task_boards_details,
             prepare_fields_and_actions_dto
         )
         task_board_details = prepare_task_boards_details()
@@ -381,5 +411,6 @@ class TestUserActionOnTaskInteractor:
             .assert_called_once_with(stage_ids=stage_ids, task_id=task_id)
         task_stage_details_dto.called_once()
         validation_mock_obj.called_once()
-        presenter.get_response_for_user_action_on_task\
-            .assert_called_once_with(task_complete_details_dto=task_complete_details)
+        presenter.get_response_for_user_action_on_task \
+            .assert_called_once_with(
+            task_complete_details_dto=task_complete_details)
