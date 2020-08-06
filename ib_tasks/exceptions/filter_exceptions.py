@@ -14,9 +14,9 @@ class InvalidFilterId(Exception):
     pass
 
 
-class FieldIdsNotBelongsToTemplateId(Exception):
+class FieldIdsNotBelongsToTemplateId:
 
-    def __init__(self, field_ids: List[int]):
+    def __init__(self, field_ids: List[str]):
         self.field_ids = field_ids
 
     def __str__(self):

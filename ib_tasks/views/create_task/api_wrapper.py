@@ -7,10 +7,6 @@ from ib_tasks.interactors.task_dtos import FieldValuesDTO
 from .validator_class import ValidatorClass
 from ...presenters.create_task_presenter import \
     CreateTaskPresenterImplementation
-from ...presenters.field_responses_validation_presenter_implementation import \
-    FieldResponseValidationsPresenterImplementation
-from ...presenters.user_action_on_task_presenter_implementation import \
-    UserActionOnTaskPresenterImplementation
 from ...storages.fields_storage_implementation import \
     FieldsStorageImplementation
 from ...storages.storage_implementation import StorageImplementation, \
@@ -55,11 +51,7 @@ def api_wrapper(*args, **kwargs):
     storage = StorageImplementation()
     field_storage = FieldsStorageImplementation()
     stage_storage = StagesStorageImplementation()
-
-    act_on_task_presenter = UserActionOnTaskPresenterImplementation()
     presenter = CreateTaskPresenterImplementation()
-    field_validations_presenter = \
-        FieldResponseValidationsPresenterImplementation()
 
     interactor = CreateTaskInteractor(
         task_storage=task_storage,
@@ -69,9 +61,7 @@ def api_wrapper(*args, **kwargs):
     )
 
     response = interactor.create_task_wrapper(
-        task_dto=task_dto, presenter=presenter,
-        act_on_task_presenter=act_on_task_presenter,
-        field_validations_presenter=field_validations_presenter
+        task_dto=task_dto, presenter=presenter
     )
     return response
 

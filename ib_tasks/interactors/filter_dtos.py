@@ -36,3 +36,22 @@ class FilterDTO:
 class FilterCompleteDetailsDTO:
     filters_dto: List[FilterDTO]
     conditions_dto: List[ConditionDTO]
+
+
+@dataclass
+class CreateFilterDTO:
+    filter_name: str
+    user_id: str
+    template_id: str
+
+
+@dataclass
+class UpdateFilterDTO(CreateFilterDTO):
+    filter_id: int
+
+
+@dataclass
+class CreateConditionDTO:
+    field_id: int
+    operator: Operators
+    value: Any

@@ -8,9 +8,6 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
-from ib_tasks.interactors.presenter_interfaces.\
-    field_response_validations_presenter import \
-    FieldResponseValidationsPresenterInterface
 from ib_tasks.interactors.storage_interfaces. \
     create_or_update_task_storage_interface import \
     CreateOrUpdateTaskStorageInterface
@@ -38,8 +35,7 @@ class CreateOrUpdateTaskBaseValidationsInteractor:
 
     def perform_base_validations_for_create_or_update_task(
             self, task_dto: Union[CreateTaskDTO, UpdateTaskDTO],
-            task_template_id: str,
-            presenter: FieldResponseValidationsPresenterInterface
+            task_template_id: str
     ):
         is_valid_action_id = self.storage.validate_action(task_dto.action_id)
         if not is_valid_action_id:
@@ -69,8 +65,7 @@ class CreateOrUpdateTaskBaseValidationsInteractor:
         interactor = ValidateFieldResponsesInteractor(self.task_storage)
         field_values_dtos = \
             self._get_field_values_dtos(task_dto.gof_fields_dtos)
-        interactor.validate_field_responses_wrapper(
-            presenter, field_values_dtos)
+        interactor.validate_field_responses(field_values_dtos)
 
     def _validate_user_permission_on_given_fields_and_gofs(
             self, gof_ids: List[str], field_ids: List[str], user_id: str
