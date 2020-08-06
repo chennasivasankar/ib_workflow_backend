@@ -71,6 +71,50 @@
         "res_status"
       ]
     },
+    "InvalidFilterIdResponse": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_FILTER_ID"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
+    "UserDoNotHavePermissionToFilter": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "USER_DO_NOT_HAVE_PERMISSION_TO_FILTER"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
     "AccessUnauthorized": {
       "type": "object",
       "properties": {
@@ -826,6 +870,168 @@
         "http_status_code",
         "res_status"
       ]
+    },
+    "TaskTemplateFieldsResponse": {
+      "type": "object",
+      "properties": {
+        "task_template_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "field_id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "field_id",
+              "name"
+            ]
+          }
+        }
+      },
+      "required": [
+        "task_template_id",
+        "name",
+        "fields"
+      ]
+    },
+    "FilterCondition": {
+      "type": "object",
+      "properties": {
+        "field_id": {
+          "type": "string"
+        },
+        "operator": {
+          "type": "string",
+          "enum": [
+            "EQ",
+            "NE",
+            "GTE",
+            "GT",
+            "LTE",
+            "LT",
+            "CONTAINS"
+          ]
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "field_id",
+        "operator",
+        "value"
+      ]
+    },
+    "FilterConditionWithFieldName": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/FilterCondition"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "field_name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "field_name"
+          ]
+        }
+      ]
+    },
+    "FilterDetails": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "template_id": {
+          "type": "string"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FilterCondition"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "conditions",
+        "template_id"
+      ]
+    },
+    "FilterDetailsWithID": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/FilterDetails"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "filter_id": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "filter_name": {
+              "type": "string"
+            },
+            "template_name": {
+              "type": "string"
+            },
+            "is_selected": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "filter_id",
+            "filter_name",
+            "is_selected"
+          ]
+        }
+      ]
+    },
+    "FilterDetailsCompleteDetails": {
+      "type": "object",
+      "properties": {
+        "filter_id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "template_id": {
+          "type": "string"
+        },
+        "template_name": {
+          "type": "string"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FilterConditionWithFieldName"
+          }
+        }
+      },
+      "required": [
+        "filter_id",
+        "name",
+        "conditions",
+        "template_id"
+      ]
     }
   },
   "parameters": {
@@ -916,6 +1122,61 @@
       "schema": {
         "$ref": "#/definitions/UpdateTaskRequestBody"
       }
+    },
+    "SelectFilterRequestBody": {
+      "in": "body",
+      "name": "select_filter_status",
+      "description": "select filter status",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "filter_id": {
+            "type": "integer"
+          },
+          "is_selected": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "filter_id",
+          "is_selected"
+        ]
+      }
+    },
+    "CreateFilterBodyParameter": {
+      "in": "body",
+      "name": "CreateFilterBodyParameter",
+      "description": "create filter details",
+      "required": true,
+      "schema": {
+        "$ref": "#/definitions/FilterDetails"
+      }
+    },
+    "UpdateFilterBodyParameter": {
+      "in": "body",
+      "name": "UpdateFilterBodyParameter",
+      "description": "update filter details",
+      "required": true,
+      "schema": {
+        "$ref": "#/definitions/FilterDetails"
+      }
+    },
+    "UpdateFilterPathParameter": {
+      "name": "filter_id",
+      "in": "path",
+      "required": true,
+      "description": "Id of the filter",
+      "type": "integer",
+      "format": "int64"
+    },
+    "DeleteFilterPathParameter": {
+      "name": "filter_id",
+      "in": "path",
+      "required": true,
+      "description": "Id of the filter",
+      "type": "integer",
+      "format": "int64"
     }
   },
   "responses": {
@@ -1143,6 +1404,222 @@
       "description": "can not update task",
       "schema": {
         "$ref": "#/definitions/UpdateTaskFailureResponseBody"
+      }
+    },
+    "GetTaskTemplateFieldsResponse": {
+      "description": "Get Task Template Fileds Response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "task_template_fields_details": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/TaskTemplateFieldsResponse"
+            }
+          },
+          "operators": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "GTE",
+                "LTE",
+                "GT",
+                "LE",
+                "NE",
+                "EQ",
+                "CONTAINS"
+              ]
+            }
+          }
+        },
+        "required": [
+          "task_template_fields_details",
+          "operators"
+        ]
+      }
+    },
+    "FilterDetailsResponse": {
+      "description": "filter details",
+      "schema": {
+        "$ref": "#/definitions/FilterDetailsCompleteDetails"
+      }
+    },
+    "FilterFailedResponse": {
+      "description": "creating filter is failed",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer"
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "TASK_TEMPLATES_DOES_NOT_EXISTS",
+              "FIELDS_DOES_NOT_EXIST"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
+    "InvalidFilterValueResponse": {
+      "description": "value empty response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer"
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "VALUE_SHOULD_NOT_BE_EMPTY"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
+    "UserNotBelongsToResponse": {
+      "description": "user not belongs to filter",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer"
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "USER_NOT_HAVE_PERMISSIONS_TO_UPDATE"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
+    "FieldNotBelongsToTaskTemplate": {
+      "description": "fields not belongs to task template",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer"
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "FIELDS_NOT_BELONGS_TASK_TEMPLATE"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
+    "DeleteFailedResponse": {
+      "description": "deleting filter is failed",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer"
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "USER_NOT_HAVE_PERMISSIONS_TO_DELETE"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
+    "FieldNotExistResponse": {
+      "description": "deleting filter is failed",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer"
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "INVALID_FILTER_ID"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
+    "FieldAndUserForbiddenResponse": {
+      "description": "fields not belongs to task template",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer"
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "FIELDS_NOT_BELONGS_TASK_TEMPLATE",
+              "USER_NOT_HAVE_PERMISSIONS_TO_UPDATE"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
       }
     }
   },
@@ -1380,6 +1857,203 @@
           },
           "400": {
             "$ref": "#/responses/SaveAndActOnATaskTaskFailureResponse"
+          }
+        }
+      }
+    },
+    "/task_templates_fields/v1/": {
+      "get": {
+        "operationId": "get_task_templates_fields_details",
+        "summary": "Get Task Templates Fields Details",
+        "description": "Get Task Templates Fileds Details",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetTaskTemplateFieldsResponse"
+          }
+        }
+      }
+    },
+    "/filter/select/v1/": {
+      "put": {
+        "operationId": "select_filter",
+        "summary": "update filter status",
+        "description": "Update filter selected status",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/SelectFilterRequestBody"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "filter_id": {
+                  "type": "integer"
+                },
+                "action": {
+                  "type": "string",
+                  "enum": [
+                    "ENABLED",
+                    "DISABLED"
+                  ]
+                }
+              },
+              "required": [
+                "filter_id",
+                "is_selected"
+              ]
+            }
+          },
+          "403": {
+            "description": "forbidden",
+            "schema": {
+              "$ref": "#/definitions/InvalidFilterIdResponse"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/UserDoNotHavePermissionToFilter"
+            }
+          }
+        }
+      }
+    },
+    "/filters/v1/": {
+      "post": {
+        "operationId": "create_filter",
+        "summary": "create filter",
+        "description": "create filter with given details",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/CreateFilterBodyParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/FilterDetailsResponse"
+          },
+          "404": {
+            "$ref": "#/responses/FilterFailedResponse"
+          },
+          "417": {
+            "$ref": "#/responses/InvalidFilterValueResponse"
+          },
+          "403": {
+            "$ref": "#/responses/FieldNotBelongsToTaskTemplate"
+          }
+        }
+      },
+      "get": {
+        "summary": "get filters",
+        "operationId": "get_filters",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "description": "Field details",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/FilterDetailsCompleteDetails"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/filters/{filter_id}/v1/": {
+      "put": {
+        "operationId": "update_filter",
+        "summary": "update filter",
+        "description": "update filter with given details",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/UpdateFilterBodyParameter"
+          },
+          {
+            "$ref": "#/parameters/UpdateFilterPathParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/FilterDetailsResponse"
+          },
+          "404": {
+            "$ref": "#/responses/FilterFailedResponse"
+          },
+          "417": {
+            "$ref": "#/responses/InvalidFilterValueResponse"
+          },
+          "403": {
+            "$ref": "#/responses/FieldAndUserForbiddenResponse"
+          }
+        }
+      },
+      "delete": {
+        "summary": "delete filter",
+        "operationId": "delete_filter",
+        "security": [
+          {
+            "oauth": [
+              "write",
+              "delete"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/DeleteFilterPathParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "filter deleted"
+          },
+          "404": {
+            "$ref": "#/responses/FieldNotExistResponse"
+          },
+          "403": {
+            "$ref": "#/responses/DeleteFailedResponse"
           }
         }
       }
