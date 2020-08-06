@@ -26,7 +26,7 @@ class CommentInteractor:
                     user_id=user_id, discussion_id=discussion_id,
                     comment_content=comment_content,
                 )
-            response = presenter.prepare_response_for_create_comment(
+            response = presenter.prepare_response_for_comment(
                 comment_with_replies_count_and_editable_dto \
                     =comment_with_replies_count_and_editable_dto,
                 user_profile_dto=user_profile_dto
@@ -60,13 +60,13 @@ class CommentInteractor:
         comment_dto = self.storage.get_comment_details_dto(comment_id)
 
         comment_with_replies_count_and_editable_dtos, user_profile_dtos = \
-            self._get_comments_for_discussion([comment_dto], user_id)
+            self.get_comments_for_discussion([comment_dto], user_id)
 
         return comment_with_replies_count_and_editable_dtos[0], \
             user_profile_dtos[0]
 
-    def _get_comments_for_discussion(self, comment_dtos: List[CommentDTO],
-                                     user_id):
+    def get_comments_for_discussion(self, comment_dtos: List[CommentDTO],
+                                    user_id):
         comment_ids = [comment.comment_id for comment in comment_dtos]
 
         user_ids = list(set(comment.user_id for comment in comment_dtos))
@@ -90,7 +90,7 @@ class CommentInteractor:
             )
 
         return comment_with_replies_count_and_editable_dtos, \
-               user_profile_dtos
+            user_profile_dtos
 
     @staticmethod
     def _get_user_profile_dtos(user_ids: List[str]):

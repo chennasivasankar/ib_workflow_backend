@@ -6,7 +6,7 @@ from typing import List
 class UserProfileDTO:
     user_id: str
     name: str
-    profile_pic_url: str = None
+    profile_pic_url: str = "https://picsum.photos/200"
 
 
 class AuthService:

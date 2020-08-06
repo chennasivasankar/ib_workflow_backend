@@ -16,7 +16,8 @@ USER_CANNOT_DELETE_DISCUSSION = (
 
 
 class DeleteDiscussionPresenterImplementation(
-    DeleteDiscussionPresenterInterface, HTTPResponseMixin):
+    DeleteDiscussionPresenterInterface, HTTPResponseMixin
+):
 
     def response_for_discussion_id_not_found(self):
         response_dict = {

@@ -24,3 +24,7 @@ class CommentStorageInterface(ABC):
     def get_replies_count_for_comments(
             self, comment_ids: List[str]) -> List[CommentIdWithRepliesCountDTO]:
         pass
+
+    @abstractmethod
+    def get_comments_for_discussion(self, discussion_id: str):
+        pass

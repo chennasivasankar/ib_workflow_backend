@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
+from ib_discussions.adapters.auth_service import UserProfileDTO
 from ib_discussions.interactors.presenter_interfaces.dtos import \
     DiscussionsWithUsersAndDiscussionCountDTO, \
     CommentWithRepliesCountAndEditableDTO
@@ -113,8 +114,24 @@ class CreateCommentPresenterInterface(ABC):
         pass
 
     @abstractmethod
-    def prepare_response_for_create_comment(
-        self, comment_with_replies_count_and_editable_dto: CommentWithRepliesCountAndEditableDTO,
-        user_profile_dto
+    def prepare_response_for_comment(
+            self,
+            comment_with_replies_count_and_editable_dto: CommentWithRepliesCountAndEditableDTO,
+            user_profile_dto: UserProfileDTO
+    ):
+        pass
+
+
+class GetCommentsForDiscussionPresenterInterface(ABC):
+
+    @abstractmethod
+    def response_for_discussion_id_not_found(self):
+        pass
+
+    @abstractmethod
+    def return_response_for_comments_with_users_dtos(
+            self,
+            comment_with_replies_count_and_editable_dtos: List[CommentWithRepliesCountAndEditableDTO],
+            user_profile_dtos: List[UserProfileDTO]
     ):
         pass

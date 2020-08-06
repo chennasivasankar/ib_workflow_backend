@@ -131,7 +131,8 @@
           "$ref": "#/definitions/UserDetails"
         },
         "comment_id": {
-          "type": "string"
+          "type": "string",
+          "format": "uuid"
         },
         "comment_content": {
           "type": "string"
@@ -143,7 +144,7 @@
         "is_editable": {
           "type": "boolean"
         },
-        "creation_at": {
+        "created_at": {
           "type": "string",
           "format": "date-time"
         }
@@ -151,9 +152,39 @@
       "required": [
         "replies_count",
         "author",
-        "creation_datetime",
+        "created_at",
         "is_editable",
-        "comment_id"
+        "comment_id",
+        "comment_content"
+      ]
+    },
+    "Reply": {
+      "type": "object",
+      "properties": {
+        "comment_id": {
+          "type": "integer",
+          "format": "uuid"
+        },
+        "author": {
+          "$ref": "#/definitions/UserDetails"
+        },
+        "comment_content": {
+          "type": "string"
+        },
+        "is_editable": {
+          "type": "boolean"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "author",
+        "created_at",
+        "is_editable",
+        "comment_id",
+        "comment_content"
       ]
     }
   },
@@ -281,6 +312,30 @@
       "type": "integer",
       "format": "int64",
       "required": true
+    },
+    "CommentIdPathParameter": {
+      "in": "path",
+      "name": "comment_id",
+      "type": "string",
+      "format": "uuid",
+      "description": "Comment Id",
+      "required": true
+    },
+    "ReplyToCommentParameter": {
+      "in": "body",
+      "description": "Reply to a Comment",
+      "name": "ReplyToCommentParameter",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "comment_content": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "comment_content"
+        ]
+      }
     }
   },
   "responses": {
@@ -505,7 +560,7 @@
       }
     },
     "DeleteDiscussionNotFoundResponse": {
-      "description": "delete discussion bad request response",
+      "description": "delete discussion not found response",
       "schema": {
         "allOf": [
           {
@@ -593,14 +648,75 @@
             "items": {
               "$ref": "#/definitions/Comment"
             }
-          },
-          "total_comments_count": {
-            "type": "integer",
-            "format": "int64"
           }
-        },
-        "required": [
-          "total_comments_count"
+        }
+      }
+    },
+    "ReplyToCommentResponse": {
+      "description": "get reply details",
+      "schema": {
+        "$ref": "#/definitions/Reply"
+      }
+    },
+    "ReplyToCommentNotFoundResponse": {
+      "description": "reply to comment not found response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "COMMENT_ID_NOT_FOUND"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "GetRepliesResponse": {
+      "description": "Get List of replies with reaction details for a comment",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "replies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Reply"
+            }
+          }
+        }
+      }
+    },
+    "GetRepliesNotFoundResponse": {
+      "description": "get replies not found response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "COMMENT_ID_NOT_FOUND"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
         ]
       }
     }
@@ -804,12 +920,6 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/OffsetQueryParameter"
-          },
-          {
-            "$ref": "#/parameters/LimitQueryParameter"
-          },
-          {
             "$ref": "#/parameters/DiscussionIdPathParameter"
           }
         ],
@@ -822,6 +932,59 @@
           },
           "400": {
             "$ref": "#/responses/CommentBadRequestResponse"
+          }
+        }
+      }
+    },
+    "/comment/{comment_id}/reply/v1/": {
+      "post": {
+        "summary": "Reply to comment",
+        "operationId": "reply_to_comment",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/CommentIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/ReplyToCommentParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/ReplyToCommentResponse"
+          },
+          "404": {
+            "$ref": "#/responses/ReplyToCommentNotFoundResponse"
+          }
+        }
+      },
+      "get": {
+        "summary": "Replies for comment",
+        "operationId": "get_replies_for_comment",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/CommentIdPathParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetRepliesResponse"
+          },
+          "404": {
+            "$ref": "#/responses/GetRepliesNotFoundResponse"
           }
         }
       }
