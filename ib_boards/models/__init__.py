@@ -1,10 +1,13 @@
 from ib_boards.models.board import Board
 from ib_boards.models.column import Column, ColumnPermission
+from ib_boards.models.user_starred_boards import UserStarredBoard
+
 
 __all__ = [
     'Board',
     'Column',
-    'ColumnPermission'
+    'ColumnPermission',
+    'UserStarredBoard'
 ]
 
 # class DummyModel(AbstractDateTimeModel):

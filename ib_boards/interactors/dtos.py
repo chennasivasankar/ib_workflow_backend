@@ -80,7 +80,7 @@ class BoardColumnsDTO:
 
 @dataclass
 class GetBoardsDTO:
-    user_id: int
+    user_id: str
     offset: int
     limit: int
 
@@ -168,3 +168,9 @@ class ColumnTotalTasksDTO:
     column_id: str
     total_tasks: int
 
+
+@dataclass
+class StarOrUnstarParametersDTO:
+    board_id: str
+    user_id: str
+    action: str
