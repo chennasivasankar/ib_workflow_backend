@@ -47,3 +47,4 @@ class Operators(enum.Enum):
     NE = "NE"
     EQ = "EQ"
     CONTAINS = "CONTAINS"
+

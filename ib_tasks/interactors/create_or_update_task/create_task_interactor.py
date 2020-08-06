@@ -41,7 +41,7 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFWithTaskIdDTO, TaskGoFFieldDTO, TaskGoFDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_template_storage_interface\
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import CreateTaskDTO
@@ -171,8 +171,8 @@ class CreateTaskInteractor:
             )
         base_validations_interactor. \
             perform_base_validations_for_create_or_update_task(
-                task_dto, task_dto.task_template_id
-            )
+            task_dto, task_dto.task_template_id
+        )
         created_task_id = \
             self.create_task_storage.create_task_with_template_id(
                 task_dto.task_template_id, task_dto.created_by_id

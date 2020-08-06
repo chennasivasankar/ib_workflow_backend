@@ -1,5 +1,6 @@
+import datetime
 from dataclasses import dataclass
-from typing import Union, List, Any, Optional
+from typing import Union, List, Any
 
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
@@ -26,6 +27,12 @@ class CreateTaskDTO:
     task_template_id: str
     created_by_id: str
     action_id: int
+    title: str
+    description: str
+    start_date: datetime.date
+    due_date: datetime.date
+    due_time: str
+    priority: str
     gof_fields_dtos: List[GoFFieldsDTO]
 
 
