@@ -15,9 +15,8 @@ class TestStarOrUnstarGivenBoard:
         UserStarredBoardFactory.reset_sequence()
         UserStarredBoardFactory.create_batch(size=2)
 
-    def test_given_is_starred_true_and_board_is_starred_for_user_unstars_board(
-            self, populate_data):
-        # Arrange
+    @pytest.fixture()
+    def is_starred_true_parameters(self):
         board_id = "BOARD_ID_1"
         is_starred = True
         user_id = "user_id_0"
@@ -26,11 +25,31 @@ class TestStarOrUnstarGivenBoard:
             user_id=user_id,
             is_starred=is_starred
         )
+        return paramters
+
+    @pytest.fixture()
+    def is_starred_false_parameters(self):
+        board_id = "BOARD_ID_1"
+        is_starred = False
+        user_id = "user_id_0"
+        paramters = StarOrUnstarParametersDTO(
+            board_id=board_id,
+            user_id=user_id,
+            is_starred=is_starred
+        )
+        return paramters
+
+    def test_given_is_starred_true_and_board_is_starred_for_user_unstars_board(
+            self, populate_data, is_starred_true_parameters):
+        # Arrange
+        parameters = is_starred_true_parameters
+        user_id = parameters.user_id
+        board_id = parameters.board_id
         expected_output = False
         storage = StorageImplementation()
 
         # Act
-        storage.unstar_given_board(paramters)
+        storage.unstar_given_board(parameters)
 
         # Assert
         starred_board = UserStarredBoard.objects.filter(
@@ -38,16 +57,11 @@ class TestStarOrUnstarGivenBoard:
         assert starred_board == expected_output
 
     def test_given_is_starred_true_and_board_is_not_starred_for_user_does_nothing(
-            self, populate_data):
+            self, populate_data, is_starred_true_parameters):
         # Arrange
-        board_id = "BOARD_ID_1"
-        is_starred = True
-        user_id = "user_id_0"
-        paramters = StarOrUnstarParametersDTO(
-            board_id=board_id,
-            user_id=user_id,
-            is_starred=is_starred
-        )
+        paramters = is_starred_true_parameters
+        user_id = paramters.user_id
+        board_id = paramters.board_id
         expected_output = False
         storage = StorageImplementation()
 
@@ -60,23 +74,18 @@ class TestStarOrUnstarGivenBoard:
         assert starred_board == expected_output
 
     def test_given_is_starred_false_and_board_is_not_starred_for_user_creates_starred_board(
-            self):
+            self, is_starred_false_parameters):
         # Arrange
         BoardFactory.reset_sequence()
         BoardFactory()
-        board_id = "BOARD_ID_1"
-        is_starred = False
-        user_id = "user_id_0"
-        paramters = StarOrUnstarParametersDTO(
-            board_id=board_id,
-            user_id=user_id,
-            is_starred=is_starred
-        )
+        parameters = is_starred_false_parameters
+        user_id = parameters.user_id
+        board_id = parameters.board_id
         expected_output = True
         storage = StorageImplementation()
 
         # Act
-        storage.star_given_board(paramters)
+        storage.star_given_board(parameters)
 
         # Assert
         starred_board = UserStarredBoard.objects.filter(
@@ -84,21 +93,16 @@ class TestStarOrUnstarGivenBoard:
         assert starred_board == expected_output
 
     def test_given_is_starred_false_and_board_is_starred_for_user(
-            self, populate_data):
+            self, populate_data, is_starred_false_parameters):
         # Arrange
-        board_id = "BOARD_ID_1"
-        is_starred = False
-        user_id = "user_id_0"
-        paramters = StarOrUnstarParametersDTO(
-            board_id=board_id,
-            user_id=user_id,
-            is_starred=is_starred
-        )
+        parameters = is_starred_false_parameters
+        user_id = parameters.user_id
+        board_id = parameters.board_id
         expected_output = True
         storage = StorageImplementation()
 
         # Act
-        storage.star_given_board(paramters)
+        storage.star_given_board(parameters)
 
         # Assert
         starred_board = UserStarredBoard.objects.filter(
