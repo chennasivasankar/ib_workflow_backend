@@ -61,7 +61,8 @@ class FilterInteractor:
     def update_filter_select_status_wrapper(
             self, user_id: str, filter_id: int, is_selected: Status):
         from ib_tasks.exceptions.filter_exceptions import InvalidFilterId
-        from ib_tasks.exceptions.filter_exceptions import UserNotHaveAccessToFilter
+        from ib_tasks.exceptions.filter_exceptions \
+            import UserNotHaveAccessToFilter
         try:
             response = self.update_filter_select_status(
                 user_id=user_id, filter_id=filter_id, is_selected=is_selected

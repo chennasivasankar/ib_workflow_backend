@@ -1656,7 +1656,7 @@
               },
               "required": [
                 "filter_id",
-                "is_selected"
+                "action"
               ]
             }
           },
