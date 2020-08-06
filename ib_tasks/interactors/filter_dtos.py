@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from typing import List, Any
 
-from ib_tasks.constants.enum import Operators
+from ib_tasks.constants.enum import Operators, Status
 
 
 @dataclass()
@@ -27,7 +27,7 @@ class FilterDTO:
     filter_id: int
     filter_name: str
     user_id: str
-    is_selected: bool
+    is_selected: Status
     template_id: str
     template_name: str
 

@@ -809,7 +809,7 @@
         "template_name": {
           "type": "string"
         },
-        "action": {
+        "status": {
           "type": "string",
           "enum": ["ENABLED", "DISABLED"]
         },
@@ -825,7 +825,7 @@
         "name",
         "conditions",
         "template_id",
-        "action"
+        "status"
       ]
     }
   },

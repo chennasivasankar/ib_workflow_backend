@@ -46,6 +46,7 @@ class FilterPresenterImplementation(
             {
                 "filter_id": filter_dto.filter_id,
                 "name": filter_dto.filter_name,
+                "status": filter_dto.is_selected,
                 "template_id": filter_dto.template_id,
                 "template_name": filter_dto.template_name,
                 "conditions": self._get_conditions_to_filter(

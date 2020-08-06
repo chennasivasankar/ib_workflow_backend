@@ -8,7 +8,7 @@ RESPONSE_200_JSON = """
         "name": "string",
         "template_id": "string",
         "template_name": "string",
-        "action": "ENABLED",
+        "status": "ENABLED",
         "conditions": [
             {
                 "field_id": "string",
