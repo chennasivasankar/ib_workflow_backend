@@ -101,7 +101,7 @@ class TestGetCommentsForDiscussionInteractor:
         storage_mock.get_replies_count_for_comments.return_value \
             = comment_id_with_replies_count_dtos
 
-        presenter_mock.return_response_for_comments_with_users_dtos.return_value \
+        presenter_mock.prepare_response_for_comments_with_users_dtos.return_value \
             = expected_presenter_return_response_for_comments_with_users_dtos_mock
 
         # Act
@@ -113,7 +113,7 @@ class TestGetCommentsForDiscussionInteractor:
         # Assert
         assert response \
                == expected_presenter_return_response_for_comments_with_users_dtos_mock
-        presenter_mock.return_response_for_comments_with_users_dtos. \
+        presenter_mock.prepare_response_for_comments_with_users_dtos. \
             assert_called_once()
         storage_mock.get_comments_for_discussion.assert_called_once_with(
             discussion_id=discussion_id,

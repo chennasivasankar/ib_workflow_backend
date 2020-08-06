@@ -31,7 +31,7 @@ class GetCommentsForDiscussionInteractor:
             self.get_comments_for_discussion(
                 discussion_id=discussion_id, user_id=user_id,
             )
-        return presenter.return_response_for_comments_with_users_dtos(
+        return presenter.prepare_response_for_comments_with_users_dtos(
             comment_with_replies_count_and_editable_dtos \
                 =comment_with_replies_count_and_editable_dtos,
             user_profile_dtos=user_profile_dtos

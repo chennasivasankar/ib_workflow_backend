@@ -32,6 +32,7 @@ class CommentDTOFactory(factory.Factory):
         model = CommentDTO
 
     comment_id = factory.Faker("uuid4")
+    parent_comment_id = factory.Faker("uuid4")
     comment_content = factory.LazyAttribute(lambda obj: "content")
     user_id = factory.Faker("uuid4")
     created_at = datetime.datetime(2008, 1, 1)

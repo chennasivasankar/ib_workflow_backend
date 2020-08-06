@@ -28,7 +28,7 @@ class GetCommentsForDiscussionPresenterImplementation(
         }
         return self.prepare_404_not_found_response(response_dict=response_dict)
 
-    def return_response_for_comments_with_users_dtos(
+    def prepare_response_for_comments_with_users_dtos(
             self,
             comment_with_replies_count_and_editable_dtos: List[
                 CommentWithRepliesCountAndEditableDTO],

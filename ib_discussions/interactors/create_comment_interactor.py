@@ -66,7 +66,7 @@ class CommentInteractor:
             user_profile_dtos[0]
 
     def get_comments_for_discussion(self, comment_dtos: List[CommentDTO],
-                                    user_id):
+                                    user_id: str):
         comment_ids = [comment.comment_id for comment in comment_dtos]
 
         user_ids = list(set(comment.user_id for comment in comment_dtos))

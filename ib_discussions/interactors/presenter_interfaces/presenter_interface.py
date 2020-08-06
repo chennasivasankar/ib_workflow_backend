@@ -4,7 +4,8 @@ from typing import List
 from ib_discussions.adapters.auth_service import UserProfileDTO
 from ib_discussions.interactors.presenter_interfaces.dtos import \
     DiscussionsWithUsersAndDiscussionCountDTO, \
-    CommentWithRepliesCountAndEditableDTO
+    CommentWithRepliesCountAndEditableDTO, CommentIdWithEditableStatusDTO
+from ib_discussions.interactors.storage_interfaces.dtos import CommentDTO
 from ib_iam.interactors.presenter_interfaces.dtos import \
     DiscussionIdWithEditableStatusDTO
 
@@ -129,9 +130,41 @@ class GetCommentsForDiscussionPresenterInterface(ABC):
         pass
 
     @abstractmethod
-    def return_response_for_comments_with_users_dtos(
+    def prepare_response_for_comments_with_users_dtos(
             self,
-            comment_with_replies_count_and_editable_dtos: List[CommentWithRepliesCountAndEditableDTO],
+            comment_with_replies_count_and_editable_dtos: List[
+                CommentWithRepliesCountAndEditableDTO],
             user_profile_dtos: List[UserProfileDTO]
+    ):
+        pass
+
+
+class CreateReplyPresenterInterface(ABC):
+
+    @abstractmethod
+    def response_for_comment_id_not_found(self):
+        pass
+
+    @abstractmethod
+    def prepare_response_for_reply(
+            self, comment_dto: CommentDTO,
+            comment_with_editable_status_dto: CommentIdWithEditableStatusDTO,
+            user_profile_dto: UserProfileDTO
+    ):
+        pass
+
+
+class GetRepliesForCommentPresenterInterface(ABC):
+
+    @abstractmethod
+    def response_for_comment_id_not_found(self):
+        pass
+
+    @abstractmethod
+    def prepare_response_for_replies_with_users_dtos(
+            self, user_profile_dtos: List[UserProfileDTO],
+            comment_with_editable_status_dtos: List[
+                CommentIdWithEditableStatusDTO],
+            comment_dtos: List[CommentDTO]
     ):
         pass

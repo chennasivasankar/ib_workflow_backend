@@ -28,3 +28,7 @@ class InvalidUserId(Exception):
 
 class DiscussionSetNotFound(Exception):
     pass
+
+
+class CommentIdNotFound(Exception):
+    pass

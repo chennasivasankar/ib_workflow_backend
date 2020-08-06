@@ -11,8 +11,8 @@ snapshots['TestGetDiscussionsPresenterImplementation.test_prepare_response_for_d
     'discussions': [
         {
             'author': {
-                'name': 'name of user_id is fc4c3c81-ebc3-4957-8c62-e1cbb6238b27',
-                'profile_pic_url': 'https://graph.ib_users.com/fc4c3c81-ebc3-4957-8c62-e1cbb6238b27/picture',
+                'name': 'name',
+                'profile_pic_url': 'https://graph.ib_users.com/',
                 'user_id': 'fc4c3c81-ebc3-4957-8c62-e1cbb6238b27'
             },
             'created_at': '2008-01-01 00:00:00',
@@ -24,8 +24,8 @@ snapshots['TestGetDiscussionsPresenterImplementation.test_prepare_response_for_d
         },
         {
             'author': {
-                'name': 'name of user_id is 458813d7-9954-44fd-a014-a9faafce5948',
-                'profile_pic_url': 'https://graph.ib_users.com/458813d7-9954-44fd-a014-a9faafce5948/picture',
+                'name': 'name',
+                'profile_pic_url': 'https://graph.ib_users.com/',
                 'user_id': '458813d7-9954-44fd-a014-a9faafce5948'
             },
             'created_at': '2008-01-01 00:00:00',
@@ -37,8 +37,8 @@ snapshots['TestGetDiscussionsPresenterImplementation.test_prepare_response_for_d
         },
         {
             'author': {
-                'name': 'name of user_id is 06b0bdc4-76ac-4a01-a4da-68156f0527f5',
-                'profile_pic_url': 'https://graph.ib_users.com/06b0bdc4-76ac-4a01-a4da-68156f0527f5/picture',
+                'name': 'name',
+                'profile_pic_url': 'https://graph.ib_users.com/',
                 'user_id': '06b0bdc4-76ac-4a01-a4da-68156f0527f5'
             },
             'created_at': '2008-01-01 00:00:00',

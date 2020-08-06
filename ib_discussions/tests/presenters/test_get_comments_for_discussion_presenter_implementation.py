@@ -69,7 +69,7 @@ class TestGetCommentsForDiscussionPresenterImplementation:
         ]
 
         # Act
-        response_object = presenter.return_response_for_comments_with_users_dtos(
+        response_object = presenter.prepare_response_for_comments_with_users_dtos(
             comment_with_replies_count_and_editable_dtos= \
                 comment_with_replies_count_and_editable_dtos,
             user_profile_dtos=user_profile_dtos

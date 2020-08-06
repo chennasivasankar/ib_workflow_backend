@@ -25,6 +25,7 @@ class CommentDTO:
     comment_content: str
     user_id: str
     created_at: datetime
+    parent_comment_id: str = None
 
 
 @dataclass
