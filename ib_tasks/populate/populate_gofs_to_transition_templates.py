@@ -4,16 +4,16 @@ from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO, \
     GoFsWithTemplateIdDTO
 
 
-class PopulateGoFsToTaskTemplate:
+class PopulateGoFsToTransitionTemplate:
 
-    def populate_gofs_to_task_template(self):
+    def populate_gofs_to_transition_templates(self):
         from ib_tasks.utils.get_google_sheet import get_google_sheet
         from ib_tasks.constants.constants import GOOGLE_SHEET_NAME
         sheet = get_google_sheet(sheet_name=GOOGLE_SHEET_NAME)
 
-        from ib_tasks.constants.constants import TASK_TEMPLATE_SUB_SHEET_TITLE
+        from ib_tasks.constants.constants import TRANSITION_TEMPLATES_SUB_SHEET
         gofs_with_template_ids_dicts = \
-            sheet.worksheet(TASK_TEMPLATE_SUB_SHEET_TITLE).get_all_records()
+            sheet.worksheet(TRANSITION_TEMPLATES_SUB_SHEET).get_all_records()
 
         import collections
         group_by_template_id_dict = collections.defaultdict(list)
@@ -23,16 +23,15 @@ class PopulateGoFsToTaskTemplate:
                  item['Enable add another'].strip()]
             )
 
-        group_by_template_id_dict = collections.OrderedDict(
-            sorted(dict.items(group_by_template_id_dict))
-        )
-
+        from ib_tasks.populate.populate_gofs_to_template import \
+            PopulateGoFsToTemplate
+        populate_gofs_to_template = PopulateGoFsToTemplate()
         for template_id, group in group_by_template_id_dict.items():
             gofs_with_template_id_dto = \
                 self._get_gofs_with_template_id_dto(
                     template_id=template_id, gofs_list=group
                 )
-            self._populate_gofs_to_template_in_db(
+            populate_gofs_to_template.populate_gofs_to_template(
                 gofs_with_template_id_dto=gofs_with_template_id_dto
             )
 
@@ -84,24 +83,3 @@ class PopulateGoFsToTaskTemplate:
                 gof_with_order_and_add_another_dto
             )
         return gof_with_order_and_add_another_dtos
-
-    @staticmethod
-    def _populate_gofs_to_template_in_db(
-            gofs_with_template_id_dto: GoFsWithTemplateIdDTO):
-        from ib_tasks.storages.task_template_storage_implementation import \
-            TaskTemplateStorageImplementation
-        task_template_storage = TaskTemplateStorageImplementation()
-        from ib_tasks.storages.gof_storage_implementation import \
-            GoFStorageImplementation
-        gof_storage = GoFStorageImplementation()
-
-        from ib_tasks.interactors.add_gofs_to_task_template_interactor \
-            import AddGoFsToTaskTemplateInteractor
-        interactor = \
-            AddGoFsToTaskTemplateInteractor(
-                task_template_storage=task_template_storage,
-                gof_storage=gof_storage
-            )
-        interactor.add_gofs_to_task_template_wrapper(
-            gofs_with_template_id_dto=gofs_with_template_id_dto
-        )

@@ -24,8 +24,6 @@ from .filter import Filter
 from .filter_condition import FilterCondition
 
 __all__ = [
-    "Filter",
-    "FilterCondition",
     "TaskStatusVariable",
     "ActionPermittedRoles",
     "TaskTemplateGoFs",
@@ -42,5 +40,7 @@ __all__ = [
     "TaskTemplateGoFs",
     "TaskTemplateStatusVariable",
     "TaskTemplateStatusVariables",
-    "TaskTemplateInitialStage"
+    "TaskTemplateInitialStage",
+    'Filter',
+    'FilterCondition'
 ]
