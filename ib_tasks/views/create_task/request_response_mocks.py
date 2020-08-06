@@ -3,7 +3,12 @@
 REQUEST_BODY_JSON = """
 {
     "task_template_id": "string",
-    "action_id": "string",
+    "action_id": 1,
+    "title": "string",
+    "description": "string",
+    "start_date": "2099-12-31",
+    "due_date": "2099-12-31",
+    "priority": "HIGH",
     "task_gofs": [
         {
             "gof_id": "string",
@@ -19,4 +24,12 @@ REQUEST_BODY_JSON = """
 }
 """
 
+
+RESPONSE_400_JSON = """
+{
+    "response": "string",
+    "http_status_code": 1,
+    "res_status": "INVALID_TASK_TEMPLATE_IDS"
+}
+"""
 

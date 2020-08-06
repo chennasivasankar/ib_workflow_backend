@@ -116,10 +116,23 @@ class TestGetTaskTemplatesInteractor:
             field_storage_mock, gof_storage_mock, task_template_storage_mock
     ):
         # Arrange
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_user_role_ids
+        get_user_role_ids_mock_method = get_user_role_ids(mocker)
+
         user_id = "user_1"
         expected_gof_ids = ['gof_1', 'gof_2']
         expected_field_ids = ['field0', 'field1', 'field2', 'field3']
-        expected_roles = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC']
+        expected_roles = ['ALL_ROLES', 'FIN_PAYMENT_REQUESTER',
+                          'FIN_PAYMENT_POC',
+                          'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER',
+                          'FIN_COMPLIANCE_APPROVER',
+                          'FIN_PAYMENTS_LEVEL1_VERIFIER',
+                          'FIN_PAYMENTS_LEVEL2_VERIFIER',
+                          'FIN_PAYMENTS_LEVEL3_VERIFIER',
+                          'FIN_PAYMENTS_RP', 'FIN_FINANCE_RP',
+                          'FIN_ACCOUNTS_LEVEL1_VERIFIER',
+                          'FIN_ACCOUNTS_LEVEL2_VERIFIER']
         expected_stage_ids = [1, 2]
 
         task_template_dtos = TaskTemplateDTOFactory.create_batch(size=2)
@@ -250,7 +263,16 @@ class TestGetTaskTemplatesInteractor:
         user_id = "user_1"
         expected_gof_ids = ['gof_1', 'gof_2']
         expected_field_ids = ['field0', 'field1', 'field2', 'field3']
-        expected_roles = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC']
+        expected_roles = ['ALL_ROLES', 'FIN_PAYMENT_REQUESTER',
+                          'FIN_PAYMENT_POC',
+                          'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER',
+                          'FIN_COMPLIANCE_APPROVER',
+                          'FIN_PAYMENTS_LEVEL1_VERIFIER',
+                          'FIN_PAYMENTS_LEVEL2_VERIFIER',
+                          'FIN_PAYMENTS_LEVEL3_VERIFIER',
+                          'FIN_PAYMENTS_RP', 'FIN_FINANCE_RP',
+                          'FIN_ACCOUNTS_LEVEL1_VERIFIER',
+                          'FIN_ACCOUNTS_LEVEL2_VERIFIER']
         expected_stage_ids = []
 
         task_template_dtos = TaskTemplateDTOFactory.create_batch(size=2)
@@ -345,7 +367,16 @@ class TestGetTaskTemplatesInteractor:
         user_id = "user_1"
         expected_gof_ids = []
         expected_field_ids = ['field0', 'field1', 'field2', 'field3']
-        expected_roles = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC']
+        expected_roles = ['ALL_ROLES', 'FIN_PAYMENT_REQUESTER',
+                          'FIN_PAYMENT_POC',
+                          'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER',
+                          'FIN_COMPLIANCE_APPROVER',
+                          'FIN_PAYMENTS_LEVEL1_VERIFIER',
+                          'FIN_PAYMENTS_LEVEL2_VERIFIER',
+                          'FIN_PAYMENTS_LEVEL3_VERIFIER',
+                          'FIN_PAYMENTS_RP', 'FIN_FINANCE_RP',
+                          'FIN_ACCOUNTS_LEVEL1_VERIFIER',
+                          'FIN_ACCOUNTS_LEVEL2_VERIFIER']
         expected_stage_ids = [1, 2]
 
         task_template_dtos = TaskTemplateDTOFactory.create_batch(size=2)
@@ -441,7 +472,16 @@ class TestGetTaskTemplatesInteractor:
         user_id = "user_1"
         expected_gof_ids = ['gof_1', 'gof_2']
         expected_field_ids = []
-        expected_roles = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC']
+        expected_roles = ['ALL_ROLES', 'FIN_PAYMENT_REQUESTER',
+                          'FIN_PAYMENT_POC',
+                          'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER',
+                          'FIN_COMPLIANCE_APPROVER',
+                          'FIN_PAYMENTS_LEVEL1_VERIFIER',
+                          'FIN_PAYMENTS_LEVEL2_VERIFIER',
+                          'FIN_PAYMENTS_LEVEL3_VERIFIER',
+                          'FIN_PAYMENTS_RP', 'FIN_FINANCE_RP',
+                          'FIN_ACCOUNTS_LEVEL1_VERIFIER',
+                          'FIN_ACCOUNTS_LEVEL2_VERIFIER']
         expected_stage_ids = [1, 2]
 
         task_template_dtos = TaskTemplateDTOFactory.create_batch(size=2)
@@ -531,7 +571,16 @@ class TestGetTaskTemplatesInteractor:
         user_id = "user_1"
         expected_gof_ids = ['gof_1', 'gof_2']
         expected_field_ids = ['field0', 'field1', 'field2', 'field3']
-        expected_roles = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC']
+        expected_roles = ['ALL_ROLES', 'FIN_PAYMENT_REQUESTER',
+                          'FIN_PAYMENT_POC',
+                          'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER',
+                          'FIN_COMPLIANCE_APPROVER',
+                          'FIN_PAYMENTS_LEVEL1_VERIFIER',
+                          'FIN_PAYMENTS_LEVEL2_VERIFIER',
+                          'FIN_PAYMENTS_LEVEL3_VERIFIER',
+                          'FIN_PAYMENTS_RP', 'FIN_FINANCE_RP',
+                          'FIN_ACCOUNTS_LEVEL1_VERIFIER',
+                          'FIN_ACCOUNTS_LEVEL2_VERIFIER']
         expected_stage_ids = [1, 2]
 
         task_template_dtos = TaskTemplateDTOFactory.create_batch(size=2)
@@ -621,7 +670,16 @@ class TestGetTaskTemplatesInteractor:
         user_id = "user_1"
         expected_gof_ids = ['gof_1', 'gof_2']
         expected_field_ids = ['field0', 'field1', 'field2', 'field3']
-        expected_roles = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC']
+        expected_roles = ['ALL_ROLES', 'FIN_PAYMENT_REQUESTER',
+                          'FIN_PAYMENT_POC',
+                          'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER',
+                          'FIN_COMPLIANCE_APPROVER',
+                          'FIN_PAYMENTS_LEVEL1_VERIFIER',
+                          'FIN_PAYMENTS_LEVEL2_VERIFIER',
+                          'FIN_PAYMENTS_LEVEL3_VERIFIER',
+                          'FIN_PAYMENTS_RP', 'FIN_FINANCE_RP',
+                          'FIN_ACCOUNTS_LEVEL1_VERIFIER',
+                          'FIN_ACCOUNTS_LEVEL2_VERIFIER']
         expected_stage_ids = [1, 2]
 
         task_template_dtos = TaskTemplateDTOFactory.create_batch(size=2)

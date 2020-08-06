@@ -13,6 +13,8 @@ from ib_tasks.interactors.storage_interfaces. \
     CreateOrUpdateTaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
+from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
+    GoFStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
@@ -25,9 +27,11 @@ class CreateOrUpdateTaskBaseValidationsInteractor:
 
     def __init__(
             self, task_storage: TaskStorageInterface,
+            gof_storage: GoFStorageInterface,
             create_task_storage: CreateOrUpdateTaskStorageInterface,
             storage: StorageInterface, field_storage: FieldsStorageInterface
     ):
+        self.gof_storage = gof_storage
         self.field_storage = field_storage
         self.task_storage = task_storage
         self.create_task_storage = create_task_storage
@@ -62,7 +66,7 @@ class CreateOrUpdateTaskBaseValidationsInteractor:
         )
         from ib_tasks.interactors.create_or_update_task. \
             validate_field_responses import ValidateFieldResponsesInteractor
-        interactor = ValidateFieldResponsesInteractor(self.task_storage)
+        interactor = ValidateFieldResponsesInteractor(self.field_storage)
         field_values_dtos = \
             self._get_field_values_dtos(task_dto.gof_fields_dtos)
         interactor.validate_field_responses(field_values_dtos)
@@ -164,7 +168,7 @@ class CreateOrUpdateTaskBaseValidationsInteractor:
     def _validate_for_invalid_gof_ids(
             self, gof_ids: List[str]
     ) -> Optional[InvalidGoFIds]:
-        valid_gof_ids = self.task_storage.get_existing_gof_ids(gof_ids)
+        valid_gof_ids = self.gof_storage.get_existing_gof_ids(gof_ids)
         invalid_gof_ids = list(set(gof_ids) - set(valid_gof_ids))
         if invalid_gof_ids:
             raise InvalidGoFIds(gof_ids)

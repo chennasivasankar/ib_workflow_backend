@@ -27,14 +27,14 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TaskTemplateDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, CreateTaskLogDTO
-from ib_tasks.models import Stage
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
+from ib_tasks.models import Stage, TaskTemplate
 from ib_tasks.models import TaskStage
 from ib_tasks.models import TaskTemplateStatusVariable
 from ib_tasks.models.field import Field
 from ib_tasks.models.stage_actions import StageAction
 from ib_tasks.models.task import Task
 from ib_tasks.models.task_gof_field import TaskGoFField
-from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
 
