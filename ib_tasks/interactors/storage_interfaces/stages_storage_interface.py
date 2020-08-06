@@ -44,7 +44,8 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_valid_db_stage_ids_in_given_db_stage_ids(self, db_stage_ids: List[int]) -> \
+    def get_valid_db_stage_ids_in_given_db_stage_ids(self, db_stage_ids: List[
+        int]) -> \
             List[int]:
         pass
 
@@ -62,14 +63,15 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_stage_role_dtos_given_db_stage_ids(self, db_stage_ids: List[int]) -> \
+    def get_stage_role_dtos_given_db_stage_ids(self,
+                                               db_stage_ids: List[int]) -> \
             List[StageRoleDTO]:
         pass
 
     @abc.abstractmethod
-    def get_task_stage_ids_and_db_stage_ids_in_given_stage_ids(self, task_id: int,
-                                              stage_ids: List[str]) -> \
-           List[StageWithDbStage] :
+    def get_task_stage_ids_in_given_stage_ids(self, task_id: int,
+                                              stage_ids: List[int]) -> \
+            List[int]:
         pass
 
     @abc.abstractmethod

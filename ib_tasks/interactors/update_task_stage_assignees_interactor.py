@@ -2,7 +2,7 @@ from typing import List
 
 from ib_tasks.exceptions.stage_custom_exceptions import \
     InvalidStageIdsListException, DuplicateStageIds, \
-    StageIdsWithInvalidPermissionForAssignee
+    StageIdsWithInvalidPermissionForAssignee, InvalidDbStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
 from ib_tasks.interactors.presenter_interfaces.update_task_stage_assignees_presenter_interface import \
     UpdateTaskStageAssigneesPresenterInterface
@@ -36,7 +36,7 @@ class UpdateTaskStageAssigneesInteractor:
         except DuplicateStageIds as exception:
             return presenter.raise_duplicate_stage_ids_not_valid(
                 duplicate_stage_ids=exception.duplicate_stage_ids)
-        except InvalidStageIdsListException as exception:
+        except InvalidDbStageIdsListException as exception:
             return presenter.raise_invalid_stage_ids_exception(
                 invalid_stage_ids=exception.invalid_stage_ids)
         except StageIdsWithInvalidPermissionForAssignee as exception:
@@ -103,7 +103,7 @@ class UpdateTaskStageAssigneesInteractor:
                         TaskIdWithStageAssigneeDTO(
                             assignee_id=each_task_id_with_stage_assignees_dto.
                                 assignee_id,
-                            stage_id=each_task_stage_id, task_id=task_id))
+                            db_stage_id=each_task_stage_id, task_id=task_id))
 
         return task_id_with_stage_assignee_dtos
 
@@ -146,7 +146,7 @@ class UpdateTaskStageAssigneesInteractor:
                 if each_stage_role_dto.db_stage_id == \
                         each_stage_id:
                     list_of_role_ids.append(each_stage_role_dto.role_id)
-            stage_assignee_id = ""
+            stage_assignee_id = None
             for each_stage_assignee_dto in task_id_with_stage_assignees_dto. \
                     stage_assignees:
                 if each_stage_assignee_dto.db_stage_id == each_stage_id:
@@ -154,7 +154,7 @@ class UpdateTaskStageAssigneesInteractor:
 
             each_stage_id_with_role_ids_and_assignee_id_dto = \
                 StageIdWithRoleIdsAndAssigneeIdDTO(
-                    stage_id=each_stage_id,
+                    db_stage_id=each_stage_id,
                     role_ids=list_of_role_ids,
                     assignee_id=stage_assignee_id)
             role_ids_and_assignee_id_group_by_stage_id_dtos.append(
@@ -187,8 +187,8 @@ class UpdateTaskStageAssigneesInteractor:
         ]
         if invalid_stage_ids:
             from ib_tasks.exceptions.stage_custom_exceptions import \
-                InvalidStageIdsListException
-            raise InvalidStageIdsListException(invalid_stage_ids)
+                InvalidDbStageIdsListException
+            raise InvalidDbStageIdsListException(invalid_stage_ids)
         return
 
     @staticmethod

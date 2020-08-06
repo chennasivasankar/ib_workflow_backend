@@ -4,8 +4,6 @@ import mock
 import pytest
 
 from ib_tasks.constants.constants import ALL_ROLES_ID
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
-
 from ib_tasks.interactors.stages_dtos import TaskIdWithStageAssigneesDTO, \
     StageAssigneeDTO, TaskIdWithStageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO
@@ -39,17 +37,17 @@ class TestUpdateTaskStageAssigneesInteractor:
     def task_id_with_duplicate_stage_assignees_dto(self):
         task_id_with_stage_assignees_dto = \
             TaskIdWithStageAssigneesDTO(task_id=1, stage_assignees=[
-                StageAssigneeDTO(stage_id="VENDOR_DRAFTS",
+                StageAssigneeDTO(db_stage_id=1,
                                  assignee_id="user_1"),
-                StageAssigneeDTO(stage_id="VENDOR_DRAFTS",
+                StageAssigneeDTO(db_stage_id=1,
                                  assignee_id="user_2")])
         return task_id_with_stage_assignees_dto
 
     @pytest.fixture
     def stage_role_dtos(self):
         stage_role_dtos = [
-            StageRoleDTO(stage_id="VENDOR_DRAFTS", role_id=ALL_ROLES_ID),
-            StageRoleDTO(stage_id="VENDOR_PENDING_RP_APPROVAL",
+            StageRoleDTO(db_stage_id=1, role_id=ALL_ROLES_ID),
+            StageRoleDTO(db_stage_id=2,
                          role_id=ALL_ROLES_ID)]
         return stage_role_dtos
 
@@ -57,9 +55,9 @@ class TestUpdateTaskStageAssigneesInteractor:
     def task_id_with_stage_assignees_dto(self):
         task_id_with_stage_assignees_dto = \
             TaskIdWithStageAssigneesDTO(task_id=1, stage_assignees=[
-                StageAssigneeDTO(stage_id="VENDOR_DRAFTS",
+                StageAssigneeDTO(db_stage_id=1,
                                  assignee_id="user_1"),
-                StageAssigneeDTO(stage_id="VENDOR_PENDING_RP_APPROVAL",
+                StageAssigneeDTO(db_stage_id=2,
                                  assignee_id="user_2")])
         return task_id_with_stage_assignees_dto
 
@@ -101,7 +99,7 @@ class TestUpdateTaskStageAssigneesInteractor:
             task_id_with_duplicate_stage_assignees_dto,
             presenter=presenter_mock)
         presenter_mock.raise_duplicate_stage_ids_not_valid.assert_called_once_with(
-            duplicate_stage_ids=["VENDOR_DRAFTS"])
+            duplicate_stage_ids=[1])
 
     def test_given_invalid_stage_ids_raise_exception(self,
                                                      task_id_with_stage_assignees_dto,
@@ -110,8 +108,7 @@ class TestUpdateTaskStageAssigneesInteractor:
                                                      presenter_mock):
         task_storage_mock.check_is_task_exists.return_value = True
         stage_storage_mock. \
-            get_valid_stage_ids_in_given_stage_ids.return_value = [
-            "VENDOR_DRAFTS"]
+            get_valid_db_stage_ids_in_given_db_stage_ids.return_value = [1]
         presenter_mock.raise_invalid_stage_ids_exception.return_value = Mock()
         from ib_tasks.interactors.update_task_stage_assignees_interactor import \
             UpdateTaskStageAssigneesInteractor
@@ -125,7 +122,7 @@ class TestUpdateTaskStageAssigneesInteractor:
             task_id_with_stage_assignees_dto,
             presenter=presenter_mock)
         presenter_mock.raise_invalid_stage_ids_exception.assert_called_once_with(
-            invalid_stage_ids=["VENDOR_PENDING_RP_APPROVAL"])
+            invalid_stage_ids=[2])
 
     def test_given_valid_details(self, task_id_with_stage_assignees_dto,
                                  task_storage_mock,
@@ -133,13 +130,13 @@ class TestUpdateTaskStageAssigneesInteractor:
                                  presenter_mock, stage_role_dtos):
         task_storage_mock.check_is_task_exists.return_value = True
         stage_storage_mock. \
-            get_valid_stage_ids_in_given_stage_ids.return_value = [
-            "VENDOR_DRAFTS", "VENDOR_PENDING_RP_APPROVAL"]
+            get_valid_db_stage_ids_in_given_db_stage_ids.return_value = [
+            1, 2]
         stage_storage_mock. \
             get_task_stage_ids_in_given_stage_ids.return_value = \
-            ["VENDOR_DRAFTS"]
+            [1]
         stage_storage_mock. \
-            get_stage_role_dtos_given_stage_ids.return_value = stage_role_dtos
+            get_stage_role_dtos_given_db_stage_ids.return_value = stage_role_dtos
         from ib_tasks.interactors.update_task_stage_assignees_interactor import \
             UpdateTaskStageAssigneesInteractor
         update_task_stage_assignees_interactor = \
@@ -154,10 +151,10 @@ class TestUpdateTaskStageAssigneesInteractor:
             task_id_with_stage_assignee_dtos_for_updation=[
                 TaskIdWithStageAssigneeDTO(
                     task_id=task_id_with_stage_assignees_dto.task_id,
-                    stage_id="VENDOR_DRAFTS", assignee_id="user_1")])
+                    db_stage_id=1, assignee_id="user_1")])
         stage_storage_mock.create_task_stage_assignees.assert_called_once_with(
             task_id_with_stage_assignee_dtos_for_creation=[
                 TaskIdWithStageAssigneeDTO(
                     task_id=task_id_with_stage_assignees_dto.task_id,
-                    stage_id="VENDOR_PENDING_RP_APPROVAL",
+                    db_stage_id=2,
                     assignee_id="user_2")])

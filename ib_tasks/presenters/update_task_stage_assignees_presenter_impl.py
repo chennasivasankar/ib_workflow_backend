@@ -7,7 +7,7 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 class UpdateTaskStageAssigneesPresenterInterface(abc.ABC, HTTPResponseMixin):
 
     def raise_duplicate_stage_ids_not_valid(self,
-                                            duplicate_stage_ids: List[str]):
+                                            duplicate_stage_ids: List[int]):
         from ib_tasks.constants.exception_messages import DUPLICATE_STAGE_IDS
         response_dict = {
             "response": DUPLICATE_STAGE_IDS[0].format(duplicate_stage_ids),
@@ -28,7 +28,7 @@ class UpdateTaskStageAssigneesPresenterInterface(abc.ABC, HTTPResponseMixin):
         return response_object
 
     def raise_invalid_stage_ids_exception(self,
-                                          invalid_stage_ids: List[str]):
+                                          invalid_stage_ids: List[int]):
         from ib_tasks.constants.exception_messages import INVALID_STAGE_IDS
         response_dict = {
             "response": INVALID_STAGE_IDS[0].format(invalid_stage_ids),
@@ -39,7 +39,7 @@ class UpdateTaskStageAssigneesPresenterInterface(abc.ABC, HTTPResponseMixin):
         return response_object
 
     def raise_stage_ids_with_invalid_permission_for_assignee_exception(
-            self, invalid_stage_ids: List[str]):
+            self, invalid_stage_ids: List[int]):
         from ib_tasks.constants.exception_messages import \
             STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE
         response_dict = {

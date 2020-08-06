@@ -207,6 +207,6 @@ class TaskIdWithStageAssigneeDTOFactory(factory.Factory):
     class Meta:
         model = TaskIdWithStageAssigneeDTO
 
-    task_id = factory.sequence(lambda n: n)
-    stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)
+    task_id = factory.sequence(lambda n: n+1)
+    db_stage_id = factory.Sequence(lambda n: n+1)
     assignee_id = factory.sequence(lambda n: "user_{}".format(n))

@@ -26,7 +26,7 @@ class TestGetStageRoles:
             StagesStorageImplementation
         storage = StagesStorageImplementation()
         # Act
-        actual_result = storage.get_stage_role_dtos_given_stage_ids(
-            stage_ids=["stage_id_0", "stage_id_1"])
+        actual_result = storage.get_stage_role_dtos_given_db_stage_ids(
+            db_stage_ids=[1, 2])
         # Assert
         assert stage_role_dtos == actual_result

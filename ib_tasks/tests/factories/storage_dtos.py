@@ -543,7 +543,7 @@ class StageRoleDTOFactory(factory.Factory):
     class Meta:
         model = StageRoleDTO
 
-    stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)
+    db_stage_id = factory.Sequence(lambda n: n+1)
     role_id = factory.Iterator(
         ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"]
     )

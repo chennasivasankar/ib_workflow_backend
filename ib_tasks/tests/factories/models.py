@@ -9,7 +9,8 @@ from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     Task, TaskGoF,
     TaskGoFField,
-     StageRole,TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage, Filter,
+    StageRole, TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage,
+    Filter,
     FilterCondition)
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
@@ -56,6 +57,7 @@ class TaskStageModelFactory(factory.django.DjangoModelFactory):
 
     task = factory.SubFactory(TaskFactory)
     stage = factory.SubFactory(StageModelFactory)
+    stage_assignee = "123e4567-e89b-12d3-a456-426614174000"
 
 
 class TaskModelFactory(factory.django.DjangoModelFactory):
