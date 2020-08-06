@@ -168,3 +168,9 @@ class ColumnTotalTasksDTO:
     column_id: str
     total_tasks: int
 
+
+@dataclass
+class StarOrUnstarParametersDTO:
+    board_id: str
+    user_id: str
+    is_starred: bool

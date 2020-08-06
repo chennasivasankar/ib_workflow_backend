@@ -43,3 +43,8 @@ class ColumnPermissionFactory(factory.django.DjangoModelFactory):
 
     column = factory.SubFactory(ColumnFactory)
     user_role_id = 'ALL_ROLES'
+
+
+class UserStarredBoardsFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = UserStarredBoard

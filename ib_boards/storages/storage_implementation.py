@@ -2,7 +2,7 @@ import json
 from typing import List, Tuple
 
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
-    BoardColumnsDTO, TaskTemplateStagesDTO, TaskSummaryFieldsDTO
+    BoardColumnsDTO, TaskTemplateStagesDTO, TaskSummaryFieldsDTO, StarOrUnstarParametersDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
     ColumnDetailsDTO, TaskBoardsDetailsDTO, ColumnStageIdsDTO
 from ib_boards.interactors.storage_interfaces.dtos import ColumnBoardDTO, \
@@ -166,7 +166,7 @@ class StorageImplementation(StorageInterface):
 
     def _get_column_objects_and_column_permission_objects_from_dtos(
             self, column_dtos: List[ColumnDTO]) -> Tuple[
-            List[Column], List[ColumnPermission]]:
+        List[Column], List[ColumnPermission]]:
         column_objects = [
             Column(
                 column_id=column_dto.column_id,
@@ -404,3 +404,7 @@ class StorageImplementation(StorageInterface):
             )
             for key, value in column_stages
         ]
+
+    def star_or_unstar_given_board_id(self,
+                                      parameters: StarOrUnstarParametersDTO):
+        pass
