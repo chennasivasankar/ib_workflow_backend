@@ -81,13 +81,14 @@ class PopulateGlobalConstantsToTemplate:
             global_constants_with_template_id_dto:
             GlobalConstantsWithTemplateIdDTO
     ):
-        from ib_tasks.storages.tasks_storage_implementation import \
-            TasksStorageImplementation
-        task_storage = TasksStorageImplementation()
+        from ib_tasks.storages.task_template_storage_implementation import \
+            TaskTemplateStorageImplementation
+        task_template_storage = TaskTemplateStorageImplementation()
 
         from ib_tasks.interactors.global_constants_interactor import \
             GlobalConstantsInteractor
-        interactor = GlobalConstantsInteractor(task_storage=task_storage)
+        interactor = GlobalConstantsInteractor(
+            task_template_storage=task_template_storage)
         interactor.create_global_constants_to_template_wrapper(
             global_constants_with_template_id_dto
             =global_constants_with_template_id_dto
