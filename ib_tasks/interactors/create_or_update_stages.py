@@ -13,13 +13,17 @@ from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface import \
+    TaskTemplateStorageInterface
 
 
 class CreateOrUpdateStagesInteractor:
     def __init__(self, stage_storage: StageStorageInterface,
-                 task_storage: TaskStorageInterface):
+                 task_storage: TaskStorageInterface,
+                 task_template_storage: TaskTemplateStorageInterface):
         self.stage_storage = stage_storage
         self.task_storage = task_storage
+        self.task_template_storage = task_template_storage
 
     def create_or_update_stages(
             self,
@@ -171,7 +175,7 @@ class CreateOrUpdateStagesInteractor:
 
     def _validate_task_template_ids(self, task_template_ids: List[str]):
         invalid_task_template_ids = []
-        valid_task_template_ids = self.task_storage. \
+        valid_task_template_ids = self.task_template_storage. \
             get_valid_template_ids_in_given_template_ids(
             task_template_ids)
         for task_template_id in task_template_ids:

@@ -18,6 +18,8 @@ class TestPopulateStagesAndValues:
             "value": 1,
             "card_info_kanban": json.dumps(["field_id_1", "field_id_2"]),
             "card_info_list": json.dumps(["field_id_1", "field_id_2"]),
+            "stage_color": "blue",
+            "roles": '["ALL_ROLES", "FIN_PAYMENT_REQUESTER"]',
             "stage_display_name": "stage_name",
             "stage_display_logic": "status_1==stage_id_1"
         }
@@ -60,6 +62,8 @@ class TestPopulateStagesAndValues:
                 "invalid_field_name": 1,
                 "card_info_kanban": json.dumps(["field_id_1", "field_id_2"]),
                 "card_info_list": json.dumps(["field_id_1", "field_id_2"]),
+                "stage_color": "blue",
+                "roles": '["ALL_ROLES", "FIN_PAYMENT_REQUESTER"]',
                 "stage_display_name": "stage_name",
                 "stage_display_logic": "status_1==stage_id_1"
             },
@@ -69,6 +73,8 @@ class TestPopulateStagesAndValues:
                 "values": -1,
                 "card_info_kanban": json.dumps(["field_id_1", "field_id_2"]),
                 "card_info_list": json.dumps(["field_id_1", "field_id_2"]),
+                "stage_color": "blue",
+                "roles": '["ALL_ROLES", "FIN_PAYMENT_REQUESTER"]',
                 "stage_display_name": "stage_name",
                 "stage_display_logic": "status_2==stage_id_2"
             }
@@ -103,6 +109,8 @@ class TestPopulateStagesAndValues:
                 "value": 1,
                 "card_info_kanban": json.dumps(["field_id_1", "field_id_2"]),
                 "card_info_list": json.dumps(["field_id_1", "field_id_2"]),
+                "stage_color": "blue",
+                "roles": '["ALL_ROLES", "FIN_PAYMENT_REQUESTER"]',
                 "stage_display_name": "name_1",
                 "stage_display_logic": "status_id_1==stage_id"
             },
@@ -112,6 +120,8 @@ class TestPopulateStagesAndValues:
                 "value": 2,
                 "card_info_kanban": json.dumps(["field_id_1", "field_id_2"]),
                 "card_info_list": json.dumps(["field_id_1", "field_id_2"]),
+                "stage_color": "blue",
+                "roles": '["ALL_ROLES", "FIN_PAYMENT_REQUESTER"]',
                 "stage_display_name": "name_2",
                 "stage_display_logic": "status_id_2==stage_id"
             }

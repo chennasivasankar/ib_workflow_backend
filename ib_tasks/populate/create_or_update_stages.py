@@ -26,9 +26,10 @@ def append_stage_dto(stage_dict: Dict[str, Any]):
         stage_id=stage_dict['stage_id'].strip('\n'),
         task_template_id=stage_dict['task_template_id'],
         value=stage_dict['value'],
-        id=None,
         card_info_kanban=stage_dict['card_info_kanban'],
         card_info_list=stage_dict['card_info_list'],
+        stage_color=stage_dict['stage_color'],
+        roles=stage_dict['roles'],
         stage_display_name=stage_dict['stage_display_name'],
         stage_display_logic=stage_dict['stage_display_logic']
     )
@@ -46,7 +47,9 @@ def validation_for_list_of_stages_dict(stages_dict: List[Dict]):
             "card_info_kanban": str,
             "card_info_list": str,
             "stage_display_name": str,
-            "stage_display_logic": str
+            "stage_display_logic": str,
+            "roles": str,
+            "stage_color": str
         }]
 
     )
@@ -64,8 +67,11 @@ def raise_exception_for_invalid_format():
         "value": 1,
         "card_info_kanban": '["field_id_1", "field_id_2"]',
         "card_info_list": '["field_id_1", "field_id_2"]',
+        "stage_color": "blue",
+        "roles": '["ALL_ROLES", "FIN_PAYMENT_REQUESTER"]',
         "stage_display_name": "stage_name",
         "stage_display_logic": "status_1==stage_id_1"
+
     }
 
     import json

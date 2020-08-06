@@ -1,8 +1,3 @@
-"""
-Created on: 22/07/20
-Author: Pavankumar Pamuru
-
-"""
 from typing import Dict, List
 
 
@@ -39,7 +34,9 @@ class GetSheetDataForStages:
             "card_info_kanban": field_record["Card Info_Kanban"],
             "card_info_list": field_record["Card Info_List"],
             "stage_display_name": field_record["Stage Display Name"],
-            "stage_display_logic": field_record["Stage Display Logic"]
+            "stage_display_logic": field_record["Stage Display Logic"],
+            "roles": field_record["Roles"],
+            "stage_color": field_record["Stage Color"]
         }
 
     def _validation_for_stages_dict(self, actions_dict: List[Dict]):
@@ -53,13 +50,14 @@ class GetSheetDataForStages:
                 "Card Info_Kanban": str,
                 "Card Info_List": str,
                 "Value": int,
-                "Stage Display Logic": str
+                "Stage Display Logic": str,
+                "Roles": str,
+                "Stage Color": str
             }]
         )
         try:
             schema.validate(actions_dict)
         except SchemaError:
-            print("actions_dict: ", actions_dict)
             self._raise_exception_for_valid_stage_format()
 
     def _raise_exception_for_valid_stage_format(self):
@@ -70,6 +68,7 @@ class GetSheetDataForStages:
             "Card Info_Kanban": ["FIN_FIRST_NAME"],
             "Card Info_List": ["FIN_FIRST_NAME"],
             "Value": 1,
-            "Stage Display Logic": "Status1==PR_PAYMENT_REQUEST_DRAFTS"
+            "Stage Display Logic": "Status1==PR_PAYMENT_REQUEST_DRAFTS",
+            "Roles": '["ALL_ROLES", "FIN_PAYMENT_REQUESTER"]'
         }
         self.data_sheet.raise_exception_for_valid_format(valid_format)

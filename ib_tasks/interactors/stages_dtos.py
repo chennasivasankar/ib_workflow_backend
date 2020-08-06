@@ -13,9 +13,10 @@ class StageDTO:
     stage_id: str
     task_template_id: str
     value: int
-    id: Optional[int]
     card_info_kanban: str
     card_info_list: str
+    stage_color: Optional[str]
+    roles: List[str]
     stage_display_name: str
     stage_display_logic: str
 
