@@ -6,7 +6,7 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 from ib_boards.constants.exception_messages import (
     INVALID_BOARD_ID, INVALID_OFFSET_VALUE, INVALID_LIMIT_VALUE,
     USER_DONOT_HAVE_ACCESS)
-from ib_boards.interactors.dtos import ColumnTasksDTO, FieldDTO, ActionDTO
+from ib_boards.interactors.dtos import ColumnTasksDTO, FieldDTO, ActionDTO, StarredAndOtherBoardsDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     GetBoardsPresenterInterface, \
     GetColumnTasksPresenterInterface, TaskCompleteDetailsDTO
@@ -57,13 +57,14 @@ class GetBoardsPresenterImplementation(
         )
 
     def get_response_for_get_boards(
-            self, board_dtos: List[BoardDTO], total_boards: int) \
+            self, starred_and_other_boards_dto: StarredAndOtherBoardsDTO,
+            total_boards: int) \
             -> response.HttpResponse:
         board_details_dict = {
             "total_boards_count": total_boards,
             "boards_details": []
         }
-        for board_dto in board_dtos:
+        for board_dto in starred_and_other_boards_dto:
             board_dict = self._convert_board_dto_to_dict(board_dto=board_dto)
             board_details_dict["boards_details"].append(board_dict)
 
