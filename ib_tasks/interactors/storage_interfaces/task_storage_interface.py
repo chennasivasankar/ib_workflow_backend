@@ -19,7 +19,6 @@ from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
 from ib_tasks.interactors.task_dtos import CreateTaskLogDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
-from ib_tasks.models import TaskStage
 
 
 class TaskStorageInterface(abc.ABC):
@@ -77,14 +76,6 @@ class TaskStorageInterface(abc.ABC):
     def get_user_task_and_max_stage_value_dto_based_on_given_stage_ids(
             self, user_id: str, stage_ids: List[str], limit: int, offset: int
     ) -> List[TaskIdWithStageValueDTO]:
-        pass
-
-    @abc.abstractmethod
-    def get_task_id_with_stage_details_dtos_based_on_stage_value(
-            self, user_id: str, stage_values: List[int],
-            task_ids_group_by_stage_value_dtos: List[
-                StageValueWithTaskIdsDTO]) \
-            -> [TaskIdWithStageDetailsDTO]:
         pass
 
     @abc.abstractmethod
