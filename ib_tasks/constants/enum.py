@@ -47,3 +47,8 @@ class Operators(enum.Enum):
     NE = "NE"
     EQ = "EQ"
     CONTAINS = "CONTAINS"
+
+
+class Status(enum.Enum):
+    ENABLED = "ENABLED"
+    DISABLED = "DISABLED"
