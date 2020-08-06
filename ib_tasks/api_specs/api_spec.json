@@ -30,8 +30,7 @@
       "type": "oauth2"
     }
   },
-  "security": [
-  ],
+  "security": [],
   "definitions": {
     "SaveAndActOnATaskRequestBody": {
       "allOf": [
@@ -224,8 +223,17 @@
           "format": "date"
         },
         "due_date": {
-          "type": "string",
-          "format": "date"
+          "type": "object",
+          "properties": {
+            "date": {
+              "type": "string",
+              "format": "date"
+            },
+            "time": {
+              "type": "string",
+              "example": "14:30:00"
+            }
+          }
         },
         "priority": {
           "type": "string",
@@ -585,6 +593,26 @@
         "template_id": {
           "type": "string"
         },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "start_date": {
+          "type": "string",
+        },
+        "due_date": {
+          "type": "string",
+        },
+        "priority": {
+          "type": "string",
+          "enum": [
+            "HIGH",
+            "MEDIUM",
+            "LOW"
+          ]
+        },
         "gofs": {
           "type": "array",
           "items": {
@@ -632,6 +660,27 @@
               "stage_display_name": {
                 "type": "string"
               },
+              "stage_color": {
+                "type": "string"
+              },
+              "assignee": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "profile_pic": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "name"
+                ]
+              },
               "actions": {
                 "type": "array",
                 "items": {
@@ -645,12 +694,22 @@
                     },
                     "button_color": {
                       "type": "string"
+                    },
+                    "action_type": {
+                      "type": "string",
+                      "enum": [
+                        "NO_VALIDATIONS"
+                      ]
+                    },
+                    "transition_template_id": {
+                      "type": "string"
                     }
                   },
                   "required": [
                     "action_id",
                     "button_text",
-                    "button_color"
+                    "button_color",
+                    "action_type"
                   ]
                 }
               }
@@ -658,7 +717,9 @@
             "required": [
               "stage_id",
               "stage_display_name",
-              "actions"
+              "actions",
+              "assignee",
+              "stage_color"
             ]
           }
         }
@@ -667,7 +728,11 @@
         "task_id",
         "template_id",
         "gofs",
-        "stages_with_actions"
+        "stages_with_actions",
+        "title",
+        "start_date",
+        "due_date",
+        "priority"
       ]
     },
     "UpdateTaskRequestBody": {
@@ -687,8 +752,17 @@
           "format": "date"
         },
         "due_date": {
-          "type": "string",
-          "format": "date"
+          "type": "object",
+          "properties": {
+            "date": {
+              "type": "string",
+              "format": "date"
+            },
+            "time": {
+              "type": "string",
+              "example": "14:30:00"
+            }
+          }
         },
         "priority": {
           "type": "string",
@@ -1031,6 +1105,7 @@
         }
       },
       "required": [
+        "filter_id",
         "status",
         "name",
         "conditions",
@@ -1182,6 +1257,20 @@
       "description": "Id of the filter",
       "type": "integer",
       "format": "int64"
+    },
+    "ActionIdParameter": {
+      "name": "action_id",
+      "in": "query",
+      "required": true,
+      "description": "Id of the action",
+      "type": "integer"
+    },
+    "StageIdParameter": {
+      "name": "stage_id",
+      "in": "query",
+      "required": true,
+      "description": "Id of the stage",
+      "type": "integer"
     }
   },
   "responses": {
@@ -1253,6 +1342,58 @@
         },
         "required": [
           "task_templates"
+        ]
+      }
+    },
+    "GetTransitionTemplateResponse": {
+      "description": "OK",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "transition_template_id": {
+            "type": "string"
+          },
+          "transition_template_name": {
+            "type": "string"
+          },
+          "group_of_fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/GroupOfFields"
+            }
+          }
+        },
+        "required": [
+          "transition_template_id",
+          "transition_template_name",
+          "group_of_fields"
+        ]
+      }
+    },
+    "GetTransitionTemplateFailureResponse": {
+      "description": "get transition template failure response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer"
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "INVALID_STAGE_ID",
+              "INVALID_ACTION_ID",
+              "TRANSITION_TEMPLATE_DOES_NOT_EXISTS"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
         ]
       }
     },
@@ -1680,14 +1821,43 @@
             ]
           }
         ],
-        "parameters": [
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "$ref": "#/responses/GetTaskTemplateResponse"
           },
           "404": {
             "$ref": "#/responses/TaskTemplatesDoesNotExistsResponse"
+          }
+        }
+      }
+    },
+    "/transition_template/v1/": {
+      "get": {
+        "operationId": "get_transition_template",
+        "summary": "Get transition template",
+        "description": "Get transition template based on the action and stage",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ActionIdParameter"
+          },
+          {
+            "$ref": "#/parameters/StageIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetTransitionTemplateResponse"
+          },
+          "404": {
+            "$ref": "#/responses/GetTransitionTemplateFailureResponse"
           }
         }
       }
@@ -1878,8 +2048,7 @@
             ]
           }
         ],
-        "parameters": [
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "$ref": "#/responses/GetTaskTemplateFieldsResponse"
@@ -1984,8 +2153,7 @@
             ]
           }
         ],
-        "parameters": [
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "Field details",

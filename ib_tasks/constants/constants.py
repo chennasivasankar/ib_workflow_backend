@@ -36,3 +36,5 @@ TASK_CREATION_CONFIG_SUB_SHEET = "Task Creation Config"
 STAGE_ID_AND_VALUES_SUB_SHEET = "StageID and Values"
 STATUS_VARIABLES_SUB_SHEET = "Status Variables"
 ROLES_SUB_SHEET = "Roles"
+
+OPERATOR_TYPES = [(item.value, item.value)for item in Operators]

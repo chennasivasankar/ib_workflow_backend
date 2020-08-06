@@ -8,18 +8,18 @@ def api_wrapper(*args, **kwargs):
     # ---------MOCK IMPLEMENTATION---------
 
     try:
-        from ib_tasks.views.update_filter.request_response_mocks \
+        from ib_tasks.views.get_transition_template.request_response_mocks \
             import REQUEST_BODY_JSON
         body = REQUEST_BODY_JSON
     except ImportError:
         body = {}
 
     test_case = {
-        "path_params": {'filter_id': 350},
-        "query_params": {},
+        "path_params": {},
+        "query_params": {'action_id': 920, 'stage_id': 151},
         "header_params": {},
         "body": body,
-        "securities": [{'oauth': ['write']}]
+        "securities": [{'oauth': ['read']}]
     }
 
     from django_swagger_utils.drf_server.utils.server_gen.mock_response \
@@ -27,13 +27,13 @@ def api_wrapper(*args, **kwargs):
     try:
         response = ''
         status_code = 200
-        if '200' in ['201', '404', '417', '403']:
-            from ib_tasks.views.update_filter.request_response_mocks \
+        if '200' in ['200', '404']:
+            from ib_tasks.views.get_transition_template.request_response_mocks \
                 import RESPONSE_200_JSON
             response = RESPONSE_200_JSON
             status_code = 200
-        elif '201' in ['201', '404', '417', '403']:
-            from ib_tasks.views.update_filter.request_response_mocks \
+        elif '201' in ['200', '404']:
+            from ib_tasks.views.get_transition_template.request_response_mocks \
                 import RESPONSE_201_JSON
             response = RESPONSE_201_JSON
             status_code = 201
@@ -42,7 +42,7 @@ def api_wrapper(*args, **kwargs):
         status_code = 200
     response_tuple = mock_response(
         app_name="ib_tasks", test_case=test_case,
-        operation_name="update_filter",
+        operation_name="get_transition_template",
         kwargs=kwargs, default_response_body=response,
         group_name="", status_code=status_code)
     return response_tuple

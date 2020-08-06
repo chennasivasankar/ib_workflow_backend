@@ -14,7 +14,7 @@ class TestCase01UpdateFilterAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['write']}}
     @pytest.mark.django_db
     def test_case(self, snapshot):
-        body = {'name': 'string', 'template_id': 'string', 'conditions': [{'field_id': 'string', 'operator': 'EQ', 'value': 'string', 'condition_id': 1}]}
+        body = {'name': 'string', 'template_id': 'string', 'conditions': [{'field_id': 'string', 'operator': 'EQ', 'value': 'string'}]}
         path_params = {"filter_id": "1234"}
         query_params = {}
         headers = {}

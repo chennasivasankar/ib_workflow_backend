@@ -55,3 +55,8 @@ class CreateConditionDTO:
     field_id: int
     operator: Operators
     value: Any
+
+
+@dataclass
+class UpdateConditionDTO(CreateConditionDTO):
+    condition_id: int
