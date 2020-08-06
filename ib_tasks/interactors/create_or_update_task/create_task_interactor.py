@@ -162,7 +162,13 @@ class CreateTaskInteractor:
     def create_task(
             self, task_dto: CreateTaskDTO
     ):
+        is_valid_action_id = self.storage.validate_action(task_dto.action_id)
+        if not is_valid_action_id:
+            raise InvalidActionException(task_dto.action_id)
         self._validate_task_template_id(task_dto.task_template_id)
+        action_type = self.action_storage.get_action_type_for_given_action_id(
+            action_id=task_dto.action_id
+        )
         base_validations_interactor = \
             CreateOrUpdateTaskBaseValidationsInteractor(
                 self.task_storage, self.gof_storage,
@@ -171,12 +177,11 @@ class CreateTaskInteractor:
             )
         base_validations_interactor. \
             perform_base_validations_for_create_or_update_task(
-            task_dto, task_dto.task_template_id
-        )
-        created_task_id = \
-            self.create_task_storage.create_task_with_template_id(
-                task_dto.task_template_id, task_dto.created_by_id
+                task_dto, task_dto.task_template_id, action_type
             )
+        created_task_id = \
+            self.create_task_storage.create_task_with_given_task_details(
+                task_dto)
         task_gof_dtos = [
             TaskGoFWithTaskIdDTO(
                 task_id=created_task_id,

@@ -48,3 +48,12 @@ class Operators(enum.Enum):
     EQ = "EQ"
     CONTAINS = "CONTAINS"
 
+
+class Priority(enum.Enum):
+    HIGH = "HIGH"
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+
+
+class ActionTypes(enum.Enum):
+    NO_VALIDATIONS = "NO_VALIDATIONS"

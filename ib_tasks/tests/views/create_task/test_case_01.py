@@ -67,6 +67,14 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
         body = {
             "task_template_id": "template_1",
             "action_id": 1,
+            "title": "task_title",
+            "description": "task_description",
+            "start_date": "2099-12-31",
+            "due_date": {
+                "date": "2099-12-31",
+                "time": "12:00:00"
+            },
+            "priority": "HIGH",
             "task_gofs": [
                 {
                     "gof_id": "gof_1",
@@ -92,6 +100,11 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
         task_object = Task.objects.get(id=1)
         snapshot.assert_match(task_object.id, 'task_id')
         snapshot.assert_match(task_object.template_id, 'template_id')
+        snapshot.assert_match(task_object.title, 'task_title')
+        snapshot.assert_match(task_object.description, 'task_description')
+        snapshot.assert_match(task_object.start_date, 'task_start_date')
+        snapshot.assert_match(task_object.due_date, 'task_due_date')
+        snapshot.assert_match(task_object.priority, 'task_priority')
 
         from ib_tasks.models.task_gof import TaskGoF
         task_gofs = TaskGoF.objects.filter(task_id=1)

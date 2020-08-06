@@ -142,6 +142,9 @@ class SaveAndActOnATaskInteractor:
         return presenter.get_save_and_act_on_task_response()
 
     def save_and_act_on_task(self, task_dto: SaveAndActOnTaskDTO):
+        is_valid_action_id = self.storage.validate_action(task_dto.action_id)
+        if not is_valid_action_id:
+            raise InvalidActionException(task_dto.action_id)
         update_task_interactor = UpdateTaskInteractor(
             task_storage=self.task_storage, gof_storage=self.gof_storage,
             create_task_storage=self.create_task_storage,

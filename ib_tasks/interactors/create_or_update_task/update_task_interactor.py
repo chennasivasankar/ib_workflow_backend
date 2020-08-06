@@ -150,9 +150,11 @@ class UpdateTaskInteractor:
                 self.create_task_storage, self.storage,
                 self.field_storage
             )
-        base_validations_interactor. \
-            perform_base_validations_for_create_or_update_task(
-            task_dto, task_template_id)
+        base_validations_interactor\
+            .perform_base_validations_for_create_or_update_task(
+            task_dto, task_template_id, action_type=None)
+        self.create_task_storage.update_task_with_given_task_details(
+            task_dto=task_dto)
         existing_gofs = \
             self.create_task_storage \
                 .get_gof_ids_with_same_gof_order_related_to_a_task(task_id)

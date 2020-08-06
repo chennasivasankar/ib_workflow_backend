@@ -7,6 +7,7 @@ import abc
 from abc import ABC
 from typing import List, Optional
 
+from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.interactors.stages_dtos import StageActionDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
@@ -50,4 +51,9 @@ class ActionStorageInterface(ABC):
                             stage_ids: List[str],
                             user_roles: List[str]) -> \
             List[ActionDetailsDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_action_type_for_given_action_id(self,
+                                            action_id: int) -> ActionTypes:
         pass

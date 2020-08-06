@@ -1,6 +1,11 @@
 from typing import List, Optional, Union
 
-from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
+from ib_tasks.constants.config import TIME_FORMAT
+from ib_tasks.constants.enum import ActionTypes
+from ib_tasks.exceptions.datetime_custom_exceptions import \
+    StartDateIsAheadOfDueDate, DueDateIsBehindStartDate, \
+    InvalidDueTimeFormat, \
+    DueTimeHasExpiredForToday
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
     DuplicateFieldIdsToGoF
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
@@ -39,11 +44,9 @@ class CreateOrUpdateTaskBaseValidationsInteractor:
 
     def perform_base_validations_for_create_or_update_task(
             self, task_dto: Union[CreateTaskDTO, UpdateTaskDTO],
-            task_template_id: str
+            task_template_id: str, action_type: Optional[ActionTypes]
     ):
-        is_valid_action_id = self.storage.validate_action(task_dto.action_id)
-        if not is_valid_action_id:
-            raise InvalidActionException(task_dto.action_id)
+        self._validate_task_details(task_dto)
         gof_ids = [
             gof_fields_dto.gof_id
             for gof_fields_dto in task_dto.gof_fields_dtos
@@ -66,10 +69,13 @@ class CreateOrUpdateTaskBaseValidationsInteractor:
         )
         from ib_tasks.interactors.create_or_update_task. \
             validate_field_responses import ValidateFieldResponsesInteractor
-        interactor = ValidateFieldResponsesInteractor(self.field_storage)
+        field_validation_interactor = ValidateFieldResponsesInteractor(
+            self.field_storage)
         field_values_dtos = \
             self._get_field_values_dtos(task_dto.gof_fields_dtos)
-        interactor.validate_field_responses(field_values_dtos)
+        field_validation_interactor.validate_field_responses(
+            field_values_dtos, action_type
+        )
 
     def _validate_user_permission_on_given_fields_and_gofs(
             self, gof_ids: List[str], field_ids: List[str], user_id: str
@@ -194,3 +200,39 @@ class CreateOrUpdateTaskBaseValidationsInteractor:
             )
         )
         return duplicate_values
+
+    def _validate_task_details(self,
+                               task_dto: Union[CreateTaskDTO, UpdateTaskDTO]):
+        start_date = task_dto.start_date
+        due_date = task_dto.due_date
+        due_time = task_dto.due_time
+        self._validate_start_date_and_due_date_dependencies(
+            start_date, due_date
+        )
+        import datetime
+        self._validate_due_time_format(due_time)
+        due_time_obj = datetime.datetime.strptime(due_time, TIME_FORMAT).time()
+        now_time = datetime.datetime.now().time()
+        due_time_is_expired_if_due_date_is_today = (
+                due_date == datetime.datetime.today().date() and
+                due_time_obj < now_time)
+        if due_time_is_expired_if_due_date_is_today:
+            raise DueTimeHasExpiredForToday(due_time)
+
+    @staticmethod
+    def _validate_due_time_format(due_time: str):
+        import datetime
+        try:
+            datetime.datetime.strptime(due_time, TIME_FORMAT)
+        except ValueError:
+            raise InvalidDueTimeFormat(due_time)
+
+    @staticmethod
+    def _validate_start_date_and_due_date_dependencies(start_date,
+                                                       due_date):
+        start_date_is_ahead_of_due_date = start_date > due_date
+        if start_date_is_ahead_of_due_date:
+            raise StartDateIsAheadOfDueDate(start_date, due_date)
+        due_date_is_behind_start_date = due_date < start_date
+        if due_date_is_behind_start_date:
+            raise DueDateIsBehindStartDate(due_date, start_date)

@@ -1,21 +1,14 @@
 import factory
 import pytest
 
-from ib_tasks.models import Task, TaskGoF, TaskGoFField
-from ib_tasks.tests.factories.models import (
-    GoFRoleFactory,
-    FieldRoleFactory
-)
-from ib_tasks.tests.factories.models import TaskFactory, FieldFactory, \
-    TaskGoFFactory, TaskGoFFieldFactory, GoFFactory
-from ib_tasks.tests.factories.storage_dtos import TaskGoFFieldDTOFactory
+from ib_tasks.constants.constants import ALL_ROLES_ID
 from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrder
 from ib_tasks.models import Task, TaskGoF, TaskGoFField
 from ib_tasks.tests.factories.models import GoFRoleFactory, FieldRoleFactory, \
     TaskFactory, FieldFactory, TaskGoFFactory, TaskGoFFieldFactory, GoFFactory
 from ib_tasks.tests.factories.storage_dtos import TaskGoFFieldDTOFactory, \
     TaskGoFWithTaskIdDTOFactory
-from ib_tasks.constants.constants import ALL_ROLES_ID
+
 
 @pytest.mark.django_db
 class TestCreateOrUpdateTaskStorageImplementation:
@@ -244,7 +237,7 @@ class TestCreateOrUpdateTaskStorageImplementation:
 
         # Act
         created_task_id = \
-            storage.create_task_with_template_id(template_id, created_by_id)
+            storage.create_task_with_given_task_details(template_id)
 
         # Assert
         task = Task.objects.get(id=created_task_id)
