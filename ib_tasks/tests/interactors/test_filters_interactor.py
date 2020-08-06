@@ -125,9 +125,16 @@ class TestFiltersInteractor:
             self, storage_mock, presenter_mock, filter_dto, condition_dtos,
             mocker):
         # Arrange
-        user_roles = [
-            "FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC"
-        ]
+        user_roles = ['ALL_ROLES', 'FIN_PAYMENT_REQUESTER',
+                         'FIN_PAYMENT_POC',
+                         'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER',
+                         'FIN_COMPLIANCE_APPROVER',
+                         'FIN_PAYMENTS_LEVEL1_VERIFIER',
+                         'FIN_PAYMENTS_LEVEL2_VERIFIER',
+                         'FIN_PAYMENTS_LEVEL3_VERIFIER',
+                         'FIN_PAYMENTS_RP', 'FIN_FINANCE_RP',
+                         'FIN_ACCOUNTS_LEVEL1_VERIFIER',
+                         'FIN_ACCOUNTS_LEVEL2_VERIFIER']
         field_ids = [condition_dto.field_id for condition_dto in condition_dtos]
         expected_response = Mock()
         interactor = FilterInteractor(
@@ -154,7 +161,7 @@ class TestFiltersInteractor:
         # Assert
         storage_mock.validate_user_roles_with_field_ids_roles. \
             assert_called_once_with(
-                field_ids=field_ids, user_roles=user_roles
+                user_roles=user_roles, field_ids=field_ids
             )
         presenter_mock.get_response_for_user_not_have_access_to_fields. \
             assert_called_once_with()
