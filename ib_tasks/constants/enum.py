@@ -37,3 +37,9 @@ class Searchable(enum.Enum):
     USER = "USER"
     COMPANY = "COMPANY"
     TEAM = "TEAM"
+
+
+class Priority(enum.Enum):
+    HIGH = "HIGH"
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"

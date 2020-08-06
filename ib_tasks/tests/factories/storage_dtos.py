@@ -1,9 +1,10 @@
 import json
 
 import factory
+from datetime import datetime, timedelta
 
 from ib_tasks.constants.constants import VALID_FIELD_TYPES
-from ib_tasks.constants.enum import FieldTypes, PermissionTypes
+from ib_tasks.constants.enum import FieldTypes, PermissionTypes, Priority
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.stages_dtos import StageDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
@@ -18,7 +19,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import (
     TaskGoFFieldDTO,
-    TaskGoFDTO
+    TaskGoFDTO, TaskDetailsDTO
 )
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO, GoFToTaskTemplateDTO
@@ -473,3 +474,22 @@ class StageIdWithTemplateIdDTOFactory(factory.Factory):
 
     template_id = factory.sequence(lambda n: "template_{}".format(n))
     stage_id = factory.Sequence(lambda n: n)
+
+
+class TaskDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskDetailsDTO
+    template_id = factory.sequence(lambda counter: "template_{}".format(counter))
+    title = factory.sequence(lambda counter: "title_{}".format(counter))
+    description = factory.sequence(lambda counter: "description_{}".format(counter))
+    start_date = datetime.now()
+    due_date = datetime.now() + timedelta(10)
+    priority = Priority.HIGH.value
+
+    @factory.lazy_attribute
+    def task_gof_dtos(self):
+        return [TaskGoFDTOFactory()]
+
+    @factory.lazy_attribute
+    def task_gof_field_dtos(self):
+        return [TaskGoFFieldDTOFactory()]
