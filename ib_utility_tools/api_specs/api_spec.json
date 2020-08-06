@@ -1,0 +1,228 @@
+{
+  "swagger": "2.0",
+  "host": "127.0.0.1:8000",
+  "basePath": "/api/ib_utility_tools/",
+  "info": {
+    "version": "1.0.0",
+    "title": "IB Utility Tools",
+    "description": "IB Utility Tools"
+  },
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "oauth": {
+      "tokenUrl": "http://auth.ibtspl.com/oauth2/",
+      "flow": "password",
+      "scopes": {
+        "read": "read users",
+        "write": "create users",
+        "update": "update users",
+        "delete": "delete users"
+      },
+      "type": "oauth2"
+    }
+  },
+  "security": [],
+  "definitions": {
+    "CommonHttpExceptionFields": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code"
+      ]
+    },
+    "EntityDetails": {
+      "type": "object",
+      "properties": {
+        "entity_id": {
+          "type": "string"
+        },
+        "entity_type": {
+          "type": "string",
+          "enum": [
+            "TASK",
+            "COLUMN",
+            "BOARD"
+          ]
+        }
+      },
+      "required": [
+        "entity_id",
+        "entity_type"
+      ]
+    },
+    "ChecklistItem": {
+      "type": "object",
+      "properties": {
+        "checklist_item_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "description": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "author": {
+          "type": "object",
+          "properties": {
+            "user_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": {
+              "type": "string"
+            },
+            "profile_pic_url": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "user_id",
+            "name",
+            "profile_pic_url"
+          ]
+        },
+        "is_clarified": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "discussion_id",
+        "description",
+        "title",
+        "created_at",
+        "author",
+        "is_clarified"
+      ]
+    }
+  },
+  "parameters": {
+    "CreateChecklistItemParameter": {
+      "name": "CreateChecklistItemParameter",
+      "description": "Create checklist item",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/EntityDetails"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "description": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "description"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "responses": {
+    "EntityDetailsNotFoundResponse": {
+      "description": "create checklist item not found response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "ENTITY_ID_NOT_FOUND"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "CreateChecklistItemBadRequestResponse": {
+      "description": "create checklist item bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "EMPTY_TEXT"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "paths": {
+    "/checklist/item/create/v1/": {
+      "post": {
+        "operationId": "create_checklist_item",
+        "summary": "create checklist item ",
+        "description": "create the checklist item with given description",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/CreateChecklistItemParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success response for create checklist item"
+          },
+          "404": {
+            "$ref": "#/responses/EntityDetailsNotFoundResponse"
+          },
+          "400": {
+            "$ref": "#/responses/CreateChecklistItemBadRequestResponse"
+          }
+        }
+      }
+    }
+  }
+}
