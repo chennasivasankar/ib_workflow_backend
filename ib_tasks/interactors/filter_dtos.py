@@ -11,6 +11,7 @@ class ConditionDTO:
     filter_id: int
     condition_id: int
     field_id: str
+    field_name: str
     operator: Operators
     value: Any
 

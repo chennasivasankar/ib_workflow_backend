@@ -38,7 +38,7 @@ class TestGetFilterInteractor:
             filters_dto=filters, conditions_dto=conditions
         )
         filter_storage.get_filters_dto_to_user.return_value = filters
-        filter_ids = ['filter_1', 'filter_2']
+        filter_ids = [1, 2]
         filter_storage.get_conditions_to_filters.return_value = conditions
         from ib_tasks.interactors.filter_interactor import FilterInteractor
         interactor = FilterInteractor(

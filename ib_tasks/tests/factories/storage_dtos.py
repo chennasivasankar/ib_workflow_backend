@@ -500,8 +500,9 @@ class ConditionDTOFactory(factory.Factory):
     class Meta:
         model = ConditionDTO
 
-    filter_id = factory.sequence(lambda n: "filter_{}".format(n))
-    condition_id = factory.sequence(lambda n: "condition_{}".format(n))
-    field_id = factory.sequence(lambda n: "field_{}".format(n))
+    filter_id = factory.sequence(lambda n: n)
+    condition_id = factory.sequence(lambda n: n)
+    field_id = factory.sequence(lambda n: "FIELD_ID-{}".format(n))
+    field_name = factory.sequence(lambda n: "DISPLAY_NAME-{}".format(n))
     operator = Operators.GTE.value
     value = factory.sequence(lambda n: "value_{}".format(n))

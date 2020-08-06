@@ -17,6 +17,7 @@ class FilterStorageImplementation(FilterStorageInterface):
                 filter_id=condition_obj.filter_id,
                 condition_id=condition_obj.id,
                 field_id=condition_obj.field_id,
+                field_name=condition_obj.field_name,
                 operator=condition_obj.operator,
                 value=condition_obj.value
             )
