@@ -61,7 +61,7 @@ class GetBoardsPresenterImplementation(
             total_boards: int) \
             -> response.HttpResponse:
         board_details_dict = {
-            "total_boards_count": total_boards,
+            "total_boards": total_boards,
             "starred_boards": [],
             "all_boards": []
         }
