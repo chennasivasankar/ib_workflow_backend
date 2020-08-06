@@ -59,7 +59,7 @@ class TestStarOrUnstar:
 
         # Assert
         storage.validate_board_id.assert_called_once_with(board_id)
-        storage.star_or_unstar_given_board_id.assert_called_once_with(paramters)
+        storage.star_given_board.assert_called_once_with(paramters)
 
     def test_given_is_starred_true_deletes_starred_board(self):
         # Arrange
@@ -84,4 +84,4 @@ class TestStarOrUnstar:
 
         # Assert
         storage.validate_board_id.assert_called_once_with(board_id)
-        storage.star_or_unstar_given_board_id.assert_called_once_with(paramters)
+        storage.unstar_given_board.assert_called_once_with(paramters)

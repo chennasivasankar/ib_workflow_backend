@@ -30,7 +30,29 @@ class TestStarOrUnstarGivenBoard:
         storage = StorageImplementation()
 
         # Act
-        storage.star_or_unstar_given_board_id(paramters)
+        storage.unstar_given_board(paramters)
+
+        # Assert
+        starred_board = UserStarredBoard.objects.filter(
+            board_id=board_id, user_id=user_id).exists()
+        assert starred_board == expected_output
+
+    def test_given_is_starred_true_and_board_is_not_starred_for_user_does_nothing(
+            self, populate_data):
+        # Arrange
+        board_id = "BOARD_ID_1"
+        is_starred = True
+        user_id = "user_id_0"
+        paramters = StarOrUnstarParametersDTO(
+            board_id=board_id,
+            user_id=user_id,
+            is_starred=is_starred
+        )
+        expected_output = False
+        storage = StorageImplementation()
+
+        # Act
+        storage.unstar_given_board(paramters)
 
         # Assert
         starred_board = UserStarredBoard.objects.filter(
@@ -54,29 +76,7 @@ class TestStarOrUnstarGivenBoard:
         storage = StorageImplementation()
 
         # Act
-        storage.star_or_unstar_given_board_id(paramters)
-
-        # Assert
-        starred_board = UserStarredBoard.objects.filter(
-            board_id=board_id, user_id=user_id).exists()
-        assert starred_board == expected_output
-
-    def test_given_is_starred_true_and_board_is_not_starred_for_user_does_nothing(
-            self, populate_data):
-        # Arrange
-        board_id = "BOARD_ID_1"
-        is_starred = True
-        user_id = "user_id_0"
-        paramters = StarOrUnstarParametersDTO(
-            board_id=board_id,
-            user_id=user_id,
-            is_starred=is_starred
-        )
-        expected_output = False
-        storage = StorageImplementation()
-
-        # Act
-        storage.star_or_unstar_given_board_id(paramters)
+        storage.star_given_board(paramters)
 
         # Assert
         starred_board = UserStarredBoard.objects.filter(
@@ -98,7 +98,7 @@ class TestStarOrUnstarGivenBoard:
         storage = StorageImplementation()
 
         # Act
-        storage.star_or_unstar_given_board_id(paramters)
+        storage.star_given_board(paramters)
 
         # Assert
         starred_board = UserStarredBoard.objects.filter(

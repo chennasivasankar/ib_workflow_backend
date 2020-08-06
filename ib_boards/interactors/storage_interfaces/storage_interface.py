@@ -107,6 +107,11 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def star_or_unstar_given_board_id(self,
-                                      parameters: StarOrUnstarParametersDTO):
+    def star_given_board(self,
+                         parameters: StarOrUnstarParametersDTO):
+        pass
+
+    @abc.abstractmethod
+    def unstar_given_board(self,
+                           parameters: StarOrUnstarParametersDTO):
         pass

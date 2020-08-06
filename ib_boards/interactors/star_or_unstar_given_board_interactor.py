@@ -17,9 +17,13 @@ class StarOrUnstarBoardInteractor:
 
     def star_or_unstar_board(self, parameters):
         board_id = parameters.board_id
+        is_starred = parameters.is_starred
         is_exists = self.storage.validate_board_id(board_id)
         does_not_exists = not is_exists
         if does_not_exists:
             raise InvalidBoardId
 
-        self.storage.star_or_unstar_given_board_id(parameters)
+        if is_starred:
+            self.storage.unstar_given_board(parameters)
+        else:
+            self.storage.star_given_board(parameters)

@@ -227,7 +227,7 @@ class StorageImplementation(StorageInterface):
     def get_board_ids(self, user_id: str) -> List[str]:
         starred_board_ids = list(UserStarredBoard.objects.filter(user_id=user_id)
                                  .values_list('board_id', flat=True))
-        board_ids = list(Board.objects.exclude(board_id__in=starred_board_ids)\
+        board_ids = list(Board.objects.exclude(board_id__in=starred_board_ids) \
                          .values_list('board_id', flat=True))
         return board_ids, starred_board_ids
 
@@ -407,18 +407,23 @@ class StorageImplementation(StorageInterface):
             for key, value in column_stages
         ]
 
-    def star_or_unstar_given_board_id(self,
-                                      parameters: StarOrUnstarParametersDTO):
+    def unstar_given_board(self,
+                           parameters: StarOrUnstarParametersDTO):
+        user_id = parameters.user_id
+        board_id = parameters.board_id
+        is_starred = parameters.is_starred
+
+        if is_starred:
+            UserStarredBoard.objects.filter(
+                board_id=board_id, user_id=user_id).delete()
+
+    def star_given_board(self,
+                         parameters: StarOrUnstarParametersDTO):
         user_id = parameters.user_id
         board_id = parameters.board_id
         is_starred = parameters.is_starred
         exists = UserStarredBoard.objects.filter(
                 board_id=board_id, user_id=user_id).exists()
-
-        if is_starred and exists:
-            UserStarredBoard.objects.filter(
-                board_id=board_id, user_id=user_id).delete()
-
-        elif not is_starred and not exists:
-            UserStarredBoard.objects.create(board_id=board_id, user_id=user_id)
-
+        if not is_starred and not exists:
+            UserStarredBoard.objects.create(
+                board_id=board_id, user_id=user_id)
