@@ -12,7 +12,8 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidFileFormat
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
     DuplicateFieldIdsToGoF
-from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
+from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
+    DuplicateSameGoFOrderForAGoF
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
     UserActionPermissionDenied, UserBoardPermissionDenied
@@ -44,7 +45,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
-from ib_tasks.interactors.task_dtos import CreateTaskDTO
+from ib_tasks.interactors.task_dtos import CreateTaskDTO, GoFFieldsDTO
 from ib_tasks.interactors.user_action_on_task_interactor import \
     UserActionOnTaskInteractor
 
@@ -81,6 +82,8 @@ class CreateTaskInteractor:
             return presenter.raise_invalid_task_template_ids(err)
         except InvalidActionException as err:
             return presenter.raise_invalid_action_id(err)
+        except DuplicateSameGoFOrderForAGoF as err:
+            return presenter.raise_duplicate_same_gof_orders_for_a_gof(err)
         except InvalidGoFIds as err:
             return presenter.raise_invalid_gof_ids(err)
         except InvalidFieldIds as err:
@@ -169,6 +172,7 @@ class CreateTaskInteractor:
         action_type = self.action_storage.get_action_type_for_given_action_id(
             action_id=task_dto.action_id
         )
+        self._validate_same_gof_order(task_dto.gof_fields_dtos)
         base_validations_interactor = \
             CreateOrUpdateTaskBaseValidationsInteractor(
                 self.task_storage, self.gof_storage,
@@ -177,8 +181,8 @@ class CreateTaskInteractor:
             )
         base_validations_interactor. \
             perform_base_validations_for_create_or_update_task(
-                task_dto, task_dto.task_template_id, action_type
-            )
+            task_dto, task_dto.task_template_id, action_type
+        )
         created_task_id = \
             self.create_task_storage.create_task_with_given_task_details(
                 task_dto)
@@ -260,3 +264,28 @@ class CreateTaskInteractor:
             if gof_matched:
                 return task_gof_details_dto.task_gof_id
         return
+
+    def _validate_same_gof_order(self, gof_fields_dtos: List[GoFFieldsDTO]):
+        from collections import defaultdict
+        gof_with_order_dict = defaultdict(list)
+        for gof_fields_dto in gof_fields_dtos:
+            gof_with_order_dict[
+                gof_fields_dto.gof_id].append(gof_fields_dto.same_gof_order)
+        for gof_id, same_gof_orders in gof_with_order_dict.items():
+            duplicate_same_gof_orders = self._get_duplicates_in_given_list(
+                same_gof_orders)
+            if duplicate_same_gof_orders:
+                raise DuplicateSameGoFOrderForAGoF(gof_id,
+                                                   duplicate_same_gof_orders)
+
+    @staticmethod
+    def _get_duplicates_in_given_list(values: List) -> List:
+        duplicate_values = list(
+            set(
+                [
+                    value
+                    for value in values if values.count(value) > 1
+                ]
+            )
+        )
+        return duplicate_values
