@@ -39,7 +39,7 @@ class TestUserRoleValidationInteractor:
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids
         user_id = "user_1"
-        role_ids = ["FIN_PAYMENTS_LEVEL3_VERIFIER", "FIN_PAYMENT_APPROVER"]
+        role_ids = ["user_role_1", "user_role_2"]
         get_user_role_ids_mock_method = \
             get_user_role_ids(mocker)
         interactor = UserRoleValidationInteractor()

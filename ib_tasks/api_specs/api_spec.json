@@ -34,25 +34,18 @@
   ],
   "definitions": {
     "SaveAndActOnATaskRequestBody": {
-      "type": "object",
-      "properties": {
-        "task_id": {
-          "type": "integer"
-        },
-        "action_id": {
-          "type": "integer"
-        },
-        "task_gofs": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/GoF"
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "action_id": {
+              "type": "string"
+            }
           }
+        },
+        {
+          "$ref": "#/definitions/UpdateTaskRequestBody"
         }
-      },
-      "required": [
-        "task_gofs",
-        "action_id",
-        "task_id"
       ]
     },
     "InvalidTaskActionDetails": {
@@ -218,7 +211,29 @@
           "type": "string"
         },
         "action_id": {
+          "type": "integer"
+        },
+        "title": {
           "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "start_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "due_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "priority": {
+          "type": "string",
+          "enum": [
+            "HIGH",
+            "MEDIUM",
+            "LOW"
+          ]
         },
         "task_gofs": {
           "type": "array",
@@ -230,7 +245,8 @@
       "required": [
         "task_gofs",
         "action_id",
-        "task_template_id"
+        "task_template_id",
+        "title"
       ]
     },
     "ActionDetailsResponse": {
@@ -413,9 +429,6 @@
             "placeholder_text": {
               "type": "string"
             },
-            "is_field_readable": {
-              "type": "boolean"
-            },
             "is_field_writable": {
               "type": "boolean"
             }
@@ -424,7 +437,6 @@
             "field_id",
             "display_name",
             "is_field_required",
-            "is_field_readable",
             "is_field_writable"
           ]
         }
@@ -656,6 +668,207 @@
         "template_id",
         "gofs",
         "stages_with_actions"
+      ]
+    },
+    "UpdateTaskRequestBody": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "integer"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "start_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "due_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "priority": {
+          "type": "string",
+          "enum": [
+            "HIGH",
+            "MEDIUM",
+            "LOW"
+          ]
+        },
+        "stage_assignee": {
+          "type": "object",
+          "properties": {
+            "stage_id": {
+              "type": "integer"
+            },
+            "assignee_id": {
+              "type": "string"
+            }
+          }
+        },
+        "task_gofs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GoF"
+          }
+        }
+      },
+      "required": [
+        "task_gofs",
+        "task_id",
+        "title",
+        "stage_assignee"
+      ]
+    },
+    "CreateTaskFailureResponseBody": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_TASK_TEMPLATE_IDS",
+            "INVALID_ACTION_ID",
+            "INVALID_GOF_IDS",
+            "INVALID_FIELD_IDS",
+            "INVALID_GOFS_OF_TASK_TEMPLATE",
+            "DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF",
+            "INVALID_FIELDS_OF_TASK_TEMPLATE",
+            "USER_NEEDS_GOF_WRITABLE_PERMISSION",
+            "USER_NEEDS_FILED_WRITABLE_PERMISSION",
+            "EMPTY_VALUE_FOR_REQUIRED_FIELD",
+            "INVALID_PHONE_NUMBER_VALUE",
+            "INVALID_EMAIL",
+            "NOT_A_STRONG_PASSWORD",
+            "INVALID_NUMBER_VALUE",
+            "INVALID_FLOAT_VALUE",
+            "INVALID_VALUE_FOR_DROPDOWN",
+            "INCORRECT_NAME_IN_GOF_SELECTOR_FIELD",
+            "INCORRECT_RADIO_GROUP_CHOICE",
+            "INCORRECT_CHECK_BOX_OPTIONS_SELECTED",
+            "INCORRECT_MULTI_SELECT_OPTIONS_SELECTED",
+            "INCORRECT_MULTI_SELECT_LABELS_SELECTED",
+            "INVALID_DATE_FORMAT",
+            "INVALID_TIME_FORMAT",
+            "INVALID_IMAGE_URL",
+            "INVALID_IMAGE_FORMAT",
+            "INVALID_FILE_URL",
+            "INVALID_FILE_FORMAT",
+            "USER_DO_NOT_HAVE_ACCESS",
+            "USER_DO_NOT_HAVE_BOARD_ACCESS"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
+    "SaveAndActOnATaskTaskFailureResponseBody": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_TASK_ID",
+            "INVALID_ACTION_ID",
+            "INVALID_GOF_IDS",
+            "INVALID_FIELD_IDS",
+            "INVALID_GOFS_OF_TASK_TEMPLATE",
+            "DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF",
+            "INVALID_FIELDS_OF_TASK_TEMPLATE",
+            "USER_NEEDS_GOF_WRITABLE_PERMISSION",
+            "USER_NEEDS_FILED_WRITABLE_PERMISSION",
+            "EMPTY_VALUE_FOR_REQUIRED_FIELD",
+            "INVALID_PHONE_NUMBER_VALUE",
+            "INVALID_EMAIL",
+            "NOT_A_STRONG_PASSWORD",
+            "INVALID_NUMBER_VALUE",
+            "INVALID_FLOAT_VALUE",
+            "INVALID_VALUE_FOR_DROPDOWN",
+            "INCORRECT_NAME_IN_GOF_SELECTOR_FIELD",
+            "INCORRECT_RADIO_GROUP_CHOICE",
+            "INCORRECT_CHECK_BOX_OPTIONS_SELECTED",
+            "INCORRECT_MULTI_SELECT_OPTIONS_SELECTED",
+            "INCORRECT_MULTI_SELECT_LABELS_SELECTED",
+            "INVALID_DATE_FORMAT",
+            "INVALID_TIME_FORMAT",
+            "INVALID_IMAGE_URL",
+            "INVALID_IMAGE_FORMAT",
+            "INVALID_FILE_URL",
+            "INVALID_FILE_FORMAT",
+            "USER_DO_NOT_HAVE_ACCESS",
+            "USER_DO_NOT_HAVE_BOARD_ACCESS"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+    },
+    "UpdateTaskFailureResponseBody": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_TASK_ID",
+            "INVALID_GOF_IDS",
+            "INVALID_FIELD_IDS",
+            "INVALID_GOFS_OF_TASK_TEMPLATE",
+            "DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF",
+            "INVALID_FIELDS_OF_TASK_TEMPLATE",
+            "USER_NEEDS_GOF_WRITABLE_PERMISSION",
+            "USER_NEEDS_FILED_WRITABLE_PERMISSION",
+            "EMPTY_VALUE_FOR_REQUIRED_FIELD",
+            "INVALID_PHONE_NUMBER_VALUE",
+            "INVALID_EMAIL",
+            "NOT_A_STRONG_PASSWORD",
+            "INVALID_NUMBER_VALUE",
+            "INVALID_FLOAT_VALUE",
+            "INVALID_VALUE_FOR_DROPDOWN",
+            "INCORRECT_NAME_IN_GOF_SELECTOR_FIELD",
+            "INCORRECT_RADIO_GROUP_CHOICE",
+            "INCORRECT_CHECK_BOX_OPTIONS_SELECTED",
+            "INCORRECT_MULTI_SELECT_OPTIONS_SELECTED",
+            "INCORRECT_MULTI_SELECT_LABELS_SELECTED",
+            "INVALID_DATE_FORMAT",
+            "INVALID_TIME_FORMAT",
+            "INVALID_IMAGE_URL",
+            "INVALID_IMAGE_FORMAT",
+            "INVALID_FILE_URL",
+            "INVALID_FILE_FORMAT",
+            "USER_DO_NOT_HAVE_BOARD_ACCESS"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
       ]
     },
     "TaskTemplateFieldsResponse": {
@@ -899,6 +1112,15 @@
       "required": true,
       "schema": {
         "$ref": "#/definitions/SaveAndActOnATaskRequestBody"
+      }
+    },
+    "UpdateTaskRequestBodyParameter": {
+      "in": "body",
+      "name": "UpdateTaskRequestBody",
+      "description": "give valid details",
+      "required": true,
+      "schema": {
+        "$ref": "#/definitions/UpdateTaskRequestBody"
       }
     },
     "SelectFilterRequestBody": {
@@ -1161,7 +1383,28 @@
       }
     },
     "SaveAndActOnATaskTaskSuccessResponse": {
+      "description": "task saved and action performed successfully"
+    },
+    "UpdateTaskSuccessResponse": {
       "description": "task updated successfully"
+    },
+    "CreateTaskFailureResponse": {
+      "description": "can not create a task",
+      "schema": {
+        "$ref": "#/definitions/CreateTaskFailureResponseBody"
+      }
+    },
+    "SaveAndActOnATaskTaskFailureResponse": {
+      "description": "can not update and act on a task",
+      "schema": {
+        "$ref": "#/definitions/SaveAndActOnATaskTaskFailureResponseBody"
+      }
+    },
+    "UpdateTaskFailureResponse": {
+      "description": "can not update task",
+      "schema": {
+        "$ref": "#/definitions/UpdateTaskFailureResponseBody"
+      }
     },
     "GetTaskTemplateFieldsResponse": {
       "description": "Get Task Template Fileds Response",
@@ -1466,7 +1709,32 @@
             "$ref": "#/responses/CreateTaskSuccessResponse"
           },
           "400": {
-            "description": ""
+            "$ref": "#/responses/CreateTaskFailureResponse"
+          }
+        }
+      },
+      "put": {
+        "operationId": "update_task",
+        "summary": "update a task",
+        "description": "update a task with given details",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/UpdateTaskRequestBodyParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/UpdateTaskSuccessResponse"
+          },
+          "400": {
+            "$ref": "#/responses/UpdateTaskFailureResponse"
           }
         }
       },
@@ -1569,8 +1837,8 @@
     "/task/save_and_act/v1/": {
       "post": {
         "operationId": "save_and_act_on_a_task",
-        "summary": "update a task",
-        "description": "create a task with given details",
+        "summary": "save and act on a task",
+        "description": "update and act on a task with given details",
         "security": [
           {
             "oauth": [
@@ -1588,7 +1856,7 @@
             "$ref": "#/responses/SaveAndActOnATaskTaskSuccessResponse"
           },
           "400": {
-            "description": ""
+            "$ref": "#/responses/SaveAndActOnATaskTaskFailureResponse"
           }
         }
       }
@@ -1642,7 +1910,10 @@
                 },
                 "action": {
                   "type": "string",
-                  "enum": ["ENABLED", "DISABLED"]
+                  "enum": [
+                    "ENABLED",
+                    "DISABLED"
+                  ]
                 }
               },
               "required": [

@@ -7,13 +7,14 @@ from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
-from ib_tasks.interactors.stages_dtos import UserStagesWithPaginationDTO, \
+from ib_tasks.interactors.stages_dtos import \
     TaskTemplateStageActionDTO, StageActionDTO, StagesActionDTO
+from ib_tasks.interactors.stages_dtos import UserStagesWithPaginationDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
-    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO
+    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, CreateTaskLogDTO
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
@@ -189,3 +190,13 @@ class StatusOperandStageDTOFactory(factory.Factory):
     variable = factory.sequence(lambda n: "variable_{}".format(n + 1))
     operator = "=="
     stage = factory.sequence(lambda n: "stage_{}".format(n + 1))
+
+
+class CreateTaskLogDTOFactory(factory.Factory):
+    class Meta:
+        model = CreateTaskLogDTO
+
+    task_json = factory.sequence(lambda n: "{{'task_json'_'{}'}}".format(n))
+    task_id = factory.sequence(lambda n: n)
+    user_id = factory.sequence(lambda n: "user_{}".format(n))
+    action_id = factory.sequence(lambda n: n)
