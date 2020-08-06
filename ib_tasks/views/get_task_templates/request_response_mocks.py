@@ -10,6 +10,7 @@ RESPONSE_200_JSON = """
             "actions": [
                 {
                     "action_id": 1,
+                    "action_type": "NO_VALIDATIONS",
                     "button_text": "string",
                     "button_color": "string"
                 }

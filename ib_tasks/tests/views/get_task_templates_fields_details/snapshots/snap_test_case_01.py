@@ -7,6 +7,22 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01GetTaskTemplatesFieldsDetailsAPITestCase.test_case status_code'] = '404'
+snapshots['TestCase01GetTaskTemplatesFieldsDetailsAPITestCase.test_case status_code'] = '200'
 
-snapshots['TestCase01GetTaskTemplatesFieldsDetailsAPITestCase.test_case body'] = b'<h1>Not Found</h1><p>The requested resource was not found on this server.</p>'
+snapshots['TestCase01GetTaskTemplatesFieldsDetailsAPITestCase.test_case body'] = {
+    'operators': [
+        'GTE'
+    ],
+    'task_template_fields_details': [
+        {
+            'fields': [
+                {
+                    'field_id': 'string',
+                    'name': 'string'
+                }
+            ],
+            'name': 'string',
+            'task_template_id': 'string'
+        }
+    ]
+}

@@ -3,7 +3,7 @@
 """
 import pytest
 import factory
-from django_swagger_utils.utils.test_v1 import TestUtils
+from django_swagger_utils.utils.test_utils import TestUtils
 
 from ib_tasks.models import TaskTemplateGoFs
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX

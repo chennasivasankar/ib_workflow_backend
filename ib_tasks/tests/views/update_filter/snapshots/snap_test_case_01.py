@@ -7,6 +7,19 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01UpdateFilterAPITestCase.test_case status_code'] = '404'
+snapshots['TestCase01UpdateFilterAPITestCase.test_case status_code'] = '201'
 
-snapshots['TestCase01UpdateFilterAPITestCase.test_case body'] = b'<h1>Not Found</h1><p>The requested resource was not found on this server.</p>'
+snapshots['TestCase01UpdateFilterAPITestCase.test_case body'] = {
+    'conditions': [
+        {
+            'field_id': 'string',
+            'field_name': 'string',
+            'operator': 'EQ',
+            'value': 'string'
+        }
+    ],
+    'filter_id': 1,
+    'name': 'string',
+    'template_id': 'string',
+    'template_name': 'string'
+}
