@@ -1,10 +1,13 @@
 import json
-
-import factory
 from datetime import datetime, timedelta
 
+import factory
+
 from ib_tasks.constants.constants import VALID_FIELD_TYPES
-from ib_tasks.constants.enum import FieldTypes, PermissionTypes, Priority
+from ib_tasks.constants.enum import FieldTypes, PermissionTypes
+from ib_tasks.constants.enum import Operators, \
+    Priority
+from ib_tasks.interactors.filter_dtos import FilterDTO, ConditionDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.stages_dtos import StageDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
@@ -171,7 +174,9 @@ class StageActionModelFactory(factory.django.DjangoModelFactory):
     stage_id = factory.Sequence(lambda n: 'stage_id_%d' % n)
     name = factory.Sequence(lambda n: "name_%d" % n)
     logic = factory.Sequence(lambda n: 'status_id_%d==stage_id' % n)
-    py_function_import_path = "ib_tasks.interactors.storage_interfaces.storage_interface.StorageInterface"
+    py_function_import_path = \
+        "ib_tasks.interactors.storage_interfaces.storage_interface" \
+        ".StorageInterface"
     button_text = "text"
     button_color = None
 
@@ -464,7 +469,8 @@ class FieldPermissionDTOFactory(factory.Factory):
     field_dto = factory.SubFactory(FieldDTOFactory)
     is_field_writable = factory.Iterator([True, False])
 
-    # display_logic = factory.sequence(lambda n: "variable_{} == stage_{}".format((n+1), (n+1)))
+    # display_logic = factory.sequence(lambda n: "variable_{} == stage_{
+    # }".format((n+1), (n+1)))
     # value = factory.sequence(lambda n: (n+1))
 
 
@@ -474,6 +480,30 @@ class StageIdWithTemplateIdDTOFactory(factory.Factory):
 
     template_id = factory.sequence(lambda n: "template_{}".format(n))
     stage_id = factory.Sequence(lambda n: n)
+
+
+class FilterDTOFactory(factory.Factory):
+    class Meta:
+        model = FilterDTO
+
+    filter_id = factory.sequence(lambda n: n)
+    filter_name = factory.sequence(lambda n: "filter_name_{}".format(n))
+    user_id = factory.sequence(lambda n: "{}".format(n))
+    is_selected = False
+    template_id = factory.sequence(lambda n: "template_{}".format(n))
+    template_name = factory.sequence(lambda n: "Template {}".format(n))
+
+
+class ConditionDTOFactory(factory.Factory):
+    class Meta:
+        model = ConditionDTO
+
+    filter_id = factory.sequence(lambda n: n)
+    condition_id = factory.sequence(lambda n: n)
+    field_id = factory.sequence(lambda n: "FIELD_ID-{}".format(n))
+    field_name = factory.sequence(lambda n: "DISPLAY_NAME-{}".format(n))
+    operator = Operators.GTE.value
+    value = factory.sequence(lambda n: "value_{}".format(n))
 
 
 class TaskBaseDetailsDTOFactory(factory.Factory):

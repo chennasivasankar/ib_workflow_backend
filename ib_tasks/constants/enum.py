@@ -39,6 +39,16 @@ class Searchable(enum.Enum):
     TEAM = "TEAM"
 
 
+class Operators(enum.Enum):
+    GTE = "GTE"
+    LTE = "LTE"
+    GT = "GT"
+    LT = "LT"
+    NE = "NE"
+    EQ = "EQ"
+    CONTAINS = "CONTAINS"
+
+
 class Priority(enum.Enum):
     HIGH = "HIGH"
     LOW = "LOW"
