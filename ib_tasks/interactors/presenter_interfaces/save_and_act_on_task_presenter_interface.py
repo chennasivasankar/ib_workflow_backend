@@ -1,10 +1,18 @@
 import abc
 
 
-class UpdateTaskPresenterInterface(abc.ABC):
+class SaveAndActOnATaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
-    def get_update_task_response(self):
+    def get_save_and_act_on_task_response(self):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_task_id(self, err):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_action_id(self, err):
         pass
 
     @abc.abstractmethod
@@ -33,10 +41,6 @@ class UpdateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_user_needs_field_writable_permission(self, err):
-        pass
-
-    @abc.abstractmethod
-    def raise_invalid_task_id(self, err):
         pass
 
     @abc.abstractmethod
@@ -116,3 +120,10 @@ class UpdateTaskPresenterInterface(abc.ABC):
     def raise_exception_for_not_acceptable_file_format(self, err):
         pass
 
+    @abc.abstractmethod
+    def raise_exception_for_user_action_permission_denied(self, error_obj):
+        pass
+
+    @abc.abstractmethod
+    def raise_exception_for_user_board_permission_denied(self, error_obj):
+        pass

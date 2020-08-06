@@ -1,6 +1,5 @@
 from typing import Optional, List
 
-from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     EmptyValueForRequiredField, InvalidPhoneNumberValue, \
     InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
@@ -14,8 +13,7 @@ from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
     DuplicateFieldIdsToGoF
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
 from ib_tasks.exceptions.permission_custom_exceptions import \
-    UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
-    UserActionPermissionDenied, UserBoardPermissionDenied
+    UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
 from ib_tasks.interactors.create_or_update_task. \
@@ -43,8 +41,6 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import \
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.task_dtos import UpdateTaskDTO
-from ib_tasks.interactors.user_action_on_task_interactor import \
-    UserActionOnTaskInteractor
 
 
 class UpdateTaskInteractor:
@@ -72,8 +68,6 @@ class UpdateTaskInteractor:
                 task_dto, presenter)
         except InvalidTaskException as err:
             return presenter.raise_invalid_task_id(err)
-        except InvalidActionException as err:
-            return presenter.raise_invalid_action_id(err)
         except InvalidGoFIds as err:
             return presenter.raise_invalid_gof_ids(err)
         except InvalidFieldIds as err:
@@ -137,14 +131,6 @@ class UpdateTaskInteractor:
         except InvalidFileFormat as err:
             return presenter.raise_exception_for_not_acceptable_file_format(
                 err)
-        except UserActionPermissionDenied as err:
-            return presenter.raise_exception_for_user_action_permission_denied(
-                error_obj=err
-            )
-        except UserBoardPermissionDenied as err:
-            return presenter.raise_exception_for_user_board_permission_denied(
-                error_obj=err
-            )
 
     def _prepare_update_task_response(
             self, task_dto: UpdateTaskDTO,
@@ -166,14 +152,14 @@ class UpdateTaskInteractor:
             )
         base_validations_interactor. \
             perform_base_validations_for_create_or_update_task(
-                task_dto, task_template_id)
+            task_dto, task_template_id)
         existing_gofs = \
             self.create_task_storage \
                 .get_gof_ids_with_same_gof_order_related_to_a_task(task_id)
         existing_fields = \
             self.create_task_storage \
                 .get_field_ids_with_task_gof_id_related_to_given_task(
-                    task_id)
+                task_id)
         task_gof_dtos = [
             TaskGoFWithTaskIdDTO(
                 task_id=task_id,
@@ -198,15 +184,6 @@ class UpdateTaskInteractor:
                 task_gof_dtos_for_updation, task_dto, existing_fields)
         if task_gof_dtos_for_creation:
             self._create_task_gofs(task_gof_dtos_for_creation, task_dto)
-
-        act_on_task_interactor = UserActionOnTaskInteractor(
-            user_id=task_dto.created_by_id, board_id=None,
-            task_id=task_id,
-            action_id=task_dto.action_id,
-            storage=self.storage, gof_storage=self.create_task_storage,
-            field_storage=self.field_storage, stage_storage=self.stage_storage
-        )
-        act_on_task_interactor.user_action_on_task()
 
     def _validate_task_id(
             self, task_id: int) -> Optional[InvalidTaskException]:

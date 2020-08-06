@@ -3,7 +3,8 @@ from typing import Union, List, Any
 
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO, \
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    TaskStageIdsDTO, \
     StageDetailsDTO
 
 
@@ -30,6 +31,13 @@ class CreateTaskDTO:
 
 @dataclass
 class UpdateTaskDTO:
+    task_id: int
+    created_by_id: str
+    gof_fields_dtos: List[GoFFieldsDTO]
+
+
+@dataclass
+class SaveAndActOnTaskDTO:
     task_id: int
     created_by_id: str
     action_id: int

@@ -2,34 +2,35 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.field_values_custom_exceptions import \
-    InvalidFileFormat, InvalidUrlForFile, InvalidImageFormat, \
-    InvalidUrlForImage, InvalidTimeFormat, InvalidDateFormat, \
-    IncorrectMultiSelectLabelsSelected, IncorrectMultiSelectOptionsSelected, \
-    IncorrectCheckBoxOptionsSelected, IncorrectRadioGroupChoice, \
-    IncorrectNameInGoFSelectorField, InvalidValueForDropdownField, \
-    InvalidFloatValue, InvalidNumberValue, NotAStrongPassword, \
-    InvalidURLValue, \
-    InvalidEmailFieldValue, InvalidPhoneNumberValue, EmptyValueForRequiredField
+    EmptyValueForRequiredField, InvalidPhoneNumberValue, \
+    InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
+    InvalidNumberValue, InvalidFloatValue, InvalidValueForDropdownField, \
+    IncorrectNameInGoFSelectorField, IncorrectRadioGroupChoice, \
+    IncorrectCheckBoxOptionsSelected, IncorrectMultiSelectOptionsSelected, \
+    IncorrectMultiSelectLabelsSelected, InvalidDateFormat, InvalidTimeFormat, \
+    InvalidUrlForImage, InvalidImageFormat, InvalidUrlForFile, \
+    InvalidFileFormat
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
     DuplicateFieldIdsToGoF
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
-    UserActionPermissionDenied, UserBoardPermissionDenied
+    UserBoardPermissionDenied, UserActionPermissionDenied
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskTemplateIds, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
-from ib_tasks.interactors.presenter_interfaces.update_task_presenter import \
-    UpdateTaskPresenterInterface
+from ib_tasks.interactors.presenter_interfaces \
+    .save_and_act_on_task_presenter_interface import \
+    SaveAndActOnATaskPresenterInterface
 
 
-class UpdateTaskPresenterImplementation(
-    UpdateTaskPresenterInterface, HTTPResponseMixin
+class SaveAndActOnATaskPresenterImplementation(
+    SaveAndActOnATaskPresenterInterface, HTTPResponseMixin
 ):
 
-    def get_update_task_response(self):
+    def get_save_and_act_on_task_response(self):
         data = {
-            "message": "task updated successfully"
+            "message": "task saved and acted successfully"
         }
         return self.prepare_201_created_response(response_dict=data)
 
@@ -43,6 +44,16 @@ class UpdateTaskPresenterImplementation(
             "response": response_message,
             "http_status_code": 400,
             "res_status": INVALID_TASK_ID[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_action_id(self, err: InvalidActionException):
+        from ib_tasks.constants.exception_messages import INVALID_ACTION_ID
+        response_message = INVALID_ACTION_ID[0].format(err.action_id)
+        data = {
+            "response": response_message,
+            "http_status_code": 400,
+            "res_status": INVALID_ACTION_ID[1]
         }
         return self.prepare_400_bad_request_response(data)
 
@@ -399,3 +410,36 @@ class UpdateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
+    def raise_exception_for_user_action_permission_denied(
+            self, error_obj: UserActionPermissionDenied):
+        from ib_tasks.constants.exception_messages import \
+            USER_DO_NOT_HAVE_ACCESS
+
+        response_message = USER_DO_NOT_HAVE_ACCESS[0].format(
+            str(error_obj.action_id)
+        )
+        response_dict = {
+            "response": response_message,
+            "http_status_code": 403,
+            "res_status": USER_DO_NOT_HAVE_ACCESS[1]
+        }
+
+        response_object = self.prepare_403_forbidden_response(response_dict)
+        return response_object
+
+    def raise_exception_for_user_board_permission_denied(
+            self, error_obj: UserBoardPermissionDenied):
+        from ib_tasks.constants.exception_messages import \
+            USER_DO_NOT_HAVE_BOARD_ACCESS
+
+        response_message = USER_DO_NOT_HAVE_BOARD_ACCESS[0].format(
+            str(error_obj.board_id)
+        )
+        response_dict = {
+            "response": response_message,
+            "http_status_code": 403,
+            "res_status": USER_DO_NOT_HAVE_BOARD_ACCESS[1]
+        }
+
+        response_object = self.prepare_403_forbidden_response(response_dict)
+        return response_object
