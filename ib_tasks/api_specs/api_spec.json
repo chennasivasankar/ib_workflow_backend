@@ -782,7 +782,7 @@
               "filter_id": {
                   "type": "integer"
               },
-              "is_selected": {
+              "action": {
                 "type": "string",
                 "enum": ["ENABLED", "DISABLED"]
               }
@@ -1286,7 +1286,7 @@
                           "filter_id": {
                             "type": "integer"
                           },
-                          "is_selected": {
+                          "action": {
                             "type": "string",
                             "enum": ["ENABLED", "DISABLED"]
                           }
