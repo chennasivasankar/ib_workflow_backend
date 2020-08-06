@@ -409,4 +409,16 @@ class StorageImplementation(StorageInterface):
 
     def star_or_unstar_given_board_id(self,
                                       parameters: StarOrUnstarParametersDTO):
-        pass
+        user_id = parameters.user_id
+        board_id = parameters.board_id
+        is_starred = parameters.is_starred
+        exists = UserStarredBoard.objects.filter(
+                board_id=board_id, user_id=user_id).exists()
+
+        if is_starred and exists:
+            UserStarredBoard.objects.filter(
+                board_id=board_id, user_id=user_id).delete()
+
+        elif not is_starred and not exists:
+            UserStarredBoard.objects.create(board_id=board_id, user_id=user_id)
+
