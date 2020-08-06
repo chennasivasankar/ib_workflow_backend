@@ -22,7 +22,7 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.fixture(autouse=True)
-    def setup(self):
+    def setup(self, mocker):
         import factory
         from ib_tasks.tests.factories.models import TaskTemplateFactory, \
             GoFFactory, GoFRoleFactory, TaskFactory, TaskGoFFactory, \
@@ -36,6 +36,9 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
         FieldRoleFactory.reset_sequence()
         GoFToTaskTemplateFactory.reset_sequence()
 
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_user_role_ids
+        get_user_role_ids(mocker)
         TaskTemplateWith2GoFsFactory.create(
             template_id="template_1")
         gof_objs = list(GoF.objects.all())

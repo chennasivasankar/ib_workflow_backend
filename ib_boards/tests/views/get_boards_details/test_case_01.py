@@ -36,7 +36,6 @@ class TestCase01GetBoardsDetailsAPITestCase(TestUtils):
         ColumnPermissionFactory.create_batch(size=2, column=columns[2])
         ColumnPermissionFactory.create_batch(size=2, column=columns[3])
 
-
     @pytest.mark.django_db
     def test_case(self, snapshot, setup):
         body = {}

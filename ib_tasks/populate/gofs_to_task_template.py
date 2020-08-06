@@ -1,4 +1,5 @@
 from typing import List
+
 from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO, \
     GoFsWithTemplateIdDTO
 
@@ -87,14 +88,20 @@ class PopulateGoFsToTaskTemplate:
     @staticmethod
     def _populate_gofs_to_template_in_db(
             gofs_with_template_id_dto: GoFsWithTemplateIdDTO):
-        from ib_tasks.storages.tasks_storage_implementation import \
-            TasksStorageImplementation
-        task_storage = TasksStorageImplementation()
+        from ib_tasks.storages.task_template_storage_implementation import \
+            TaskTemplateStorageImplementation
+        task_template_storage = TaskTemplateStorageImplementation()
+        from ib_tasks.storages.gof_storage_implementation import \
+            GoFStorageImplementation
+        gof_storage = GoFStorageImplementation()
 
         from ib_tasks.interactors.add_gofs_to_task_template_interactor \
             import AddGoFsToTaskTemplateInteractor
         interactor = \
-            AddGoFsToTaskTemplateInteractor(task_storage=task_storage)
+            AddGoFsToTaskTemplateInteractor(
+                task_template_storage=task_template_storage,
+                gof_storage=gof_storage
+            )
         interactor.add_gofs_to_task_template_wrapper(
             gofs_with_template_id_dto=gofs_with_template_id_dto
         )

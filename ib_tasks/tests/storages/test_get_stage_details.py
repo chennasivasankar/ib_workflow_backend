@@ -1,8 +1,10 @@
 import pytest
 
-from ib_tasks.storages.fields_storage_implementation import FieldsStorageImplementation
+from ib_tasks.storages.storage_implementation import \
+    StagesStorageImplementation
 from ib_tasks.tests.factories.interactor_dtos import GetTaskDetailsDTOFactory
-from ib_tasks.tests.factories.models import StageModelFactory, TaskFactory, TaskTemplateFactory, TaskStageModelFactory, \
+from ib_tasks.tests.factories.models import StageModelFactory, TaskFactory, \
+    TaskTemplateFactory, TaskStageModelFactory, \
     GoFFactory
 
 
@@ -31,7 +33,7 @@ class TestGetStageDetails:
                                populate_data,
                                snapshot):
         # Arrange
-        storage = FieldsStorageImplementation()
+        storage = StagesStorageImplementation()
 
         # Act
         response = storage.get_stage_details(get_task_stage_dtos)

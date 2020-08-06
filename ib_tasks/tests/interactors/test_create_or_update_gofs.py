@@ -7,8 +7,8 @@ from ib_tasks.exceptions.gofs_custom_exceptions import \
 from ib_tasks.interactors.create_or_update_gofs import \
     CreateOrUpdateGoFsInteractor
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFRoleDTO
-from ib_tasks.interactors.storage_interfaces.task_storage_interface \
-    import TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
+    GoFStorageInterface
 from ib_tasks.tests.factories.storage_dtos import (
     CompleteGoFDetailsDTOFactory, GoFDTOFactory, GoFRolesDTOFactory
 )
@@ -19,7 +19,7 @@ class TestCreateOrUpdateGOFs:
     @pytest.fixture
     def storage_mock(self):
         from mock import create_autospec
-        storage_mock = create_autospec(TaskStorageInterface)
+        storage_mock = create_autospec(GoFStorageInterface)
         return storage_mock
 
     def test_create_or_update_gofs_with_valid_details(self, mocker,

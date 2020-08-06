@@ -1,5 +1,7 @@
 import pytest
 
+from ib_tasks.storages.action_storage_implementation import \
+    ActionsStorageImplementation
 from ib_tasks.storages.fields_storage_implementation import FieldsStorageImplementation
 from ib_tasks.tests.factories.models import StageModelFactory, StageActionFactory, ActionPermittedRolesFactory
 
@@ -59,7 +61,7 @@ class TestGetActionDetails:
         # Arrange
         stage_ids = ["stage_id_0", "stage_id_1", "stage_id_2"]
         user_roles = ["role_1", "role_2", "role_3", "role_4"]
-        storage = FieldsStorageImplementation()
+        storage = ActionsStorageImplementation()
 
         # Act
         response = storage.get_actions_details(stage_ids=stage_ids,
@@ -74,7 +76,7 @@ class TestGetActionDetails:
         # Arrange
         stage_ids = ["stage_id_1", "stage_id_2", "stage_id_3"]
         user_roles = ["role_10", "role_12", "role_13", "role_14"]
-        storage = FieldsStorageImplementation()
+        storage = ActionsStorageImplementation()
 
         # Act
         response = storage.get_actions_details(stage_ids=stage_ids,
@@ -89,7 +91,7 @@ class TestGetActionDetails:
         # Arrange
         stage_ids = ["stage_id_0", "stage_id_1", "stage_id_2"]
         user_roles = ["role_1", "role_2", "role_3", "role_4"]
-        storage = FieldsStorageImplementation()
+        storage = ActionsStorageImplementation()
 
         # Act
         response = storage.get_actions_details(stage_ids=stage_ids,
