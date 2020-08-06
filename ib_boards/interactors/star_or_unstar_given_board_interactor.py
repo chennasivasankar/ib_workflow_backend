@@ -1,14 +1,17 @@
 from ib_boards.exceptions.custom_exceptions import InvalidBoardId
 from ib_boards.interactors.dtos import StarOrUnstarParametersDTO
-from ib_boards.interactors.presenter_interfaces.presenter_interface import PresenterInterface
-from ib_boards.interactors.storage_interfaces.storage_interface import StorageInterface
+from ib_boards.interactors.presenter_interfaces.presenter_interface import \
+    PresenterInterface
+from ib_boards.interactors.storage_interfaces.storage_interface import \
+    StorageInterface
 
 
 class StarOrUnstarBoardInteractor:
     def __init__(self, storage: StorageInterface):
         self.storage = storage
 
-    def star_or_unstar_board_wrapper(self, parameters: StarOrUnstarParametersDTO,
+    def star_or_unstar_board_wrapper(self,
+                                     parameters: StarOrUnstarParametersDTO,
                                      presenter: PresenterInterface):
         try:
             self.star_or_unstar_board(parameters)

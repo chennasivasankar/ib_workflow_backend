@@ -1,5 +1,7 @@
 from unittest.mock import create_autospec
 
+import pytest
+
 from ib_boards.interactors.dtos import StarOrUnstarParametersDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
@@ -11,16 +13,22 @@ from ib_boards.interactors.storage_interfaces.storage_interface import \
 
 class TestStarOrUnstar:
 
-    def test_given_invalid_board_id_raises_exception(self):
-        # Arrange
+    @pytest.fixture()
+    def paramters(self):
         board_id = "board_id_1"
-        is_starred = False
+        is_starred = True
         user_id = "user_id_1"
         paramters = StarOrUnstarParametersDTO(
             board_id=board_id,
             user_id=user_id,
             is_starred=is_starred
         )
+        return paramters
+
+    def test_given_invalid_board_id_raises_exception(self, paramters):
+        # Arrange
+        paramters = paramters
+        board_id = paramters.board_id
         storage = create_autospec(StorageInterface)
         presenter = create_autospec(PresenterInterface)
         interactor = StarOrUnstarBoardInteractor(
@@ -61,16 +69,10 @@ class TestStarOrUnstar:
         storage.validate_board_id.assert_called_once_with(board_id)
         storage.star_given_board.assert_called_once_with(paramters)
 
-    def test_given_is_starred_true_deletes_starred_board(self):
+    def test_given_is_starred_true_deletes_starred_board(self, paramters):
         # Arrange
-        board_id = "board_id_1"
-        is_starred = True
-        user_id = "user_id_1"
-        paramters = StarOrUnstarParametersDTO(
-            board_id=board_id,
-            user_id=user_id,
-            is_starred=is_starred
-        )
+        paramters = paramters
+        board_id = paramters.board_id
         storage = create_autospec(StorageInterface)
         presenter = create_autospec(PresenterInterface)
         interactor = StarOrUnstarBoardInteractor(
