@@ -69,6 +69,6 @@ class GetSheetDataForStages:
             "Card Info_List": ["FIN_FIRST_NAME"],
             "Value": 1,
             "Stage Display Logic": "Status1==PR_PAYMENT_REQUEST_DRAFTS",
-            "Roles": '["ALL_ROLES", "FIN_PAYMENT_REQUESTER"]'
+            "roles": "ALL_ROLES\nFIN_PAYMENT_REQUESTER",
         }
         self.data_sheet.raise_exception_for_valid_format(valid_format)

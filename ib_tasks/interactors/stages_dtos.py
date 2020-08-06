@@ -16,7 +16,7 @@ class StageDTO:
     card_info_kanban: str
     card_info_list: str
     stage_color: Optional[str]
-    roles: List[str]
+    roles: str
     stage_display_name: str
     stage_display_logic: str
 

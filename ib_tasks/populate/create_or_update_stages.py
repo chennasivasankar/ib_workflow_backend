@@ -13,9 +13,12 @@ def populate_stages_values(list_of_stages_dict: List[Dict]):
         TasksStorageImplementation
     from ib_tasks.storages.storage_implementation import \
         StagesStorageImplementation
+    from ib_tasks.storages.task_template_storage_implementation import \
+        TaskTemplateStorageImplementation
     interactor = CreateOrUpdateStagesInteractor(
         stage_storage=StagesStorageImplementation(),
-        task_storage=TasksStorageImplementation()
+        task_storage=TasksStorageImplementation(),
+        task_template_storage=TaskTemplateStorageImplementation()
     )
     interactor.create_or_update_stages(stages_details=stages_dtos)
 
@@ -68,7 +71,7 @@ def raise_exception_for_invalid_format():
         "card_info_kanban": '["field_id_1", "field_id_2"]',
         "card_info_list": '["field_id_1", "field_id_2"]',
         "stage_color": "blue",
-        "roles": '["ALL_ROLES", "FIN_PAYMENT_REQUESTER"]',
+        "roles": "ALL_ROLES\nFIN_PAYMENT_REQUESTER",
         "stage_display_name": "stage_name",
         "stage_display_logic": "status_1==stage_id_1"
 
