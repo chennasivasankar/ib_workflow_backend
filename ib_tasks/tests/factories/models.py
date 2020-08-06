@@ -1,12 +1,16 @@
 import json
+from datetime import datetime, timedelta
 
 import factory
-from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators
+
+from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
+    Priority
+from ib_tasks.models import (
+    Filter, FilterCondition)
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     Task, TaskGoF,
-    TaskGoFField,
-    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage, Filter, FilterCondition)
+    TaskGoFField, TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage)
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
@@ -14,10 +18,6 @@ from ib_tasks.models.gof import GoF
 from ib_tasks.models.gof_role import GoFRole
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
-from ib_tasks.models import (
-    Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
-    TaskTemplateGlobalConstants, TaskStatusVariable, Task, TaskGoF,
-    TaskGoFField, TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage)
 from ib_tasks.models.task_template_initial_stages import \
     TaskTemplateInitialStage
 
@@ -29,6 +29,12 @@ class TaskFactory(factory.django.DjangoModelFactory):
     template_id = factory.Sequence(
         lambda counter: "template_{}".format(counter))
     created_by = "123e4567-e89b-12d3-a456-426614174000"
+    title = factory.sequence(lambda counter: "title_{}".format(counter))
+    description = factory.sequence(
+        lambda counter: "description_{}".format(counter))
+    start_date = datetime(2020, 10, 12, 4, 40)
+    due_date = datetime(2020, 10, 12, 4, 40) + timedelta(10)
+    priority = Priority.HIGH.value
 
 
 class StageModelFactory(factory.django.DjangoModelFactory):
@@ -230,9 +236,9 @@ class TaskStageFactory(factory.django.DjangoModelFactory):
 
 
 class FilterFactory(factory.django.DjangoModelFactory):
-
     class Meta:
         model = Filter
+
     created_by = factory.sequence(lambda n: "{}".format(n))
     name = factory.sequence(lambda n: "filter_name_{}".format(n))
     template = factory.SubFactory(TaskTemplateFactory)
@@ -240,9 +246,9 @@ class FilterFactory(factory.django.DjangoModelFactory):
 
 
 class FilterConditionFactory(factory.django.DjangoModelFactory):
-
     class Meta:
         model = FilterCondition
+
     filter = factory.SubFactory(FilterFactory)
     field = factory.SubFactory(FieldFactory)
     operator = Operators.GTE.value
