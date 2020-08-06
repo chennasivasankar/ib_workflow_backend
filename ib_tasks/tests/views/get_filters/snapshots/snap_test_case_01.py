@@ -13,7 +13,6 @@ snapshots['TestCase01GetFiltersAPITestCase.test_case body'] = [
     {
         'conditions': [
             {
-                'condition_id': 1,
                 'field_id': 'FIELD_ID-1',
                 'field_name': 'DISPLAY_NAME-1',
                 'operator': 'GTE',

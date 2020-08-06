@@ -14,7 +14,6 @@ RESPONSE_200_JSON = """
                 "field_id": "string",
                 "operator": "EQ",
                 "value": "string",
-                "condition_id": 1,
                 "field_name": "string"
             }
         ]

@@ -8,8 +8,7 @@ REQUEST_BODY_JSON = """
         {
             "field_id": "string",
             "operator": "EQ",
-            "value": "string",
-            "condition_id": 1
+            "value": "string"
         }
     ]
 }
@@ -28,7 +27,6 @@ RESPONSE_201_JSON = """
             "field_id": "string",
             "operator": "EQ",
             "value": "string",
-            "condition_id": 1,
             "field_name": "string"
         }
     ]

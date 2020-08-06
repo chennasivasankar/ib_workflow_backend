@@ -11,7 +11,6 @@ snapshots['TestGetFiltersDetailsPresenter.test_get_filter_details filters'] = [
     {
         'conditions': [
             {
-                'condition_id': 1,
                 'field_id': 'FIELD_ID-1',
                 'field_name': 'DISPLAY_NAME-1',
                 'operator': 'GTE',
@@ -27,7 +26,6 @@ snapshots['TestGetFiltersDetailsPresenter.test_get_filter_details filters'] = [
     {
         'conditions': [
             {
-                'condition_id': 2,
                 'field_id': 'FIELD_ID-2',
                 'field_name': 'DISPLAY_NAME-2',
                 'operator': 'GTE',
