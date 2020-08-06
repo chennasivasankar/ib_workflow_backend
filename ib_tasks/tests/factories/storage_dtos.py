@@ -3,10 +3,11 @@ import json
 import factory
 
 from ib_tasks.constants.constants import VALID_FIELD_TYPES
+from ib_tasks.interactors.filter_dtos import FilterDTO, ConditionDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO
 
-from ib_tasks.constants.enum import FieldTypes, PermissionTypes
+from ib_tasks.constants.enum import FieldTypes, PermissionTypes, Operators
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.stages_dtos import StageDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
@@ -482,3 +483,26 @@ class FieldWithPermissionsDTOFactory(factory.Factory):
 
     # display_logic = factory.sequence(lambda n: "variable_{} == stage_{}".format((n+1), (n+1)))
     # value = factory.sequence(lambda n: (n+1))
+
+
+class FilterDTOFactory(factory.Factory):
+    class Meta:
+        model = FilterDTO
+    filter_id = factory.sequence(lambda n: n)
+    filter_name = factory.sequence(lambda n: "filter_name_{}".format(n))
+    user_id = factory.sequence(lambda n: "{}".format(n))
+    is_selected = False
+    template_id = factory.sequence(lambda n: "template_{}".format(n))
+    template_name = factory.sequence(lambda n: "Template {}".format(n))
+
+
+class ConditionDTOFactory(factory.Factory):
+    class Meta:
+        model = ConditionDTO
+
+    filter_id = factory.sequence(lambda n: n)
+    condition_id = factory.sequence(lambda n: n)
+    field_id = factory.sequence(lambda n: "FIELD_ID-{}".format(n))
+    field_name = factory.sequence(lambda n: "DISPLAY_NAME-{}".format(n))
+    operator = Operators.GTE.value
+    value = factory.sequence(lambda n: "value_{}".format(n))
