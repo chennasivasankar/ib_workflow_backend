@@ -1,5 +1,5 @@
 """
-# given action UNSTAR removes board from starred board
+# given invalid board id
 """
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
@@ -8,7 +8,7 @@ from ...common_fixtures.adapters.iam_service import adapter_mock_to_get_user_rol
 from ...factories.models import UserStarredBoardFactory
 
 
-class TestCase01AddOrRemoveGivenBoardIdFromStarredBoardsAPITestCase(TestUtils):
+class TestCase02AddOrRemoveGivenBoardIdFromStarredBoardsAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -21,13 +21,11 @@ class TestCase01AddOrRemoveGivenBoardIdFromStarredBoardsAPITestCase(TestUtils):
                  "FIN_PAYMENTS_LEVEL1_VERIFIER", "FIN_PAYMENTS_LEVEL2_VERIFIER", "FIN_PAYMENTS_LEVEL3_VERIFIER"]
         user_roles = adapter_mock_to_get_user_role(mocker, "user_id_0")
         user_roles.return_value = roles
-        UserStarredBoardFactory.reset_sequence()
-        UserStarredBoardFactory.create_batch(size=7)
 
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {'action': 'UNSTAR'}
-        path_params = {"board_id": "BOARD_ID_1"}
+        path_params = {"board_id": "board_id_1"}
         query_params = {}
         headers = {}
         response = self.default_test_case(
