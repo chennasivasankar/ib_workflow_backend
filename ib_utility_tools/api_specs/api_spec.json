@@ -66,54 +66,47 @@
         "entity_type"
       ]
     },
-    "ChecklistItem": {
+    "ChecklistItemDetails": {
       "type": "object",
       "properties": {
-        "checklist_item_id": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "description": {
+        "text": {
           "type": "string"
         },
-        "title": {
-          "type": "string"
-        },
-        "created_at": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "author": {
-          "type": "object",
-          "properties": {
-            "user_id": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "name": {
-              "type": "string"
-            },
-            "profile_pic_url": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "user_id",
-            "name",
-            "profile_pic_url"
-          ]
-        },
-        "is_clarified": {
+        "is_checked": {
           "type": "boolean"
         }
       },
       "required": [
-        "discussion_id",
-        "description",
-        "title",
-        "created_at",
-        "author",
-        "is_clarified"
+        "text",
+        "is_checked"
+      ]
+    },
+    "ChecklistItemWithIdAndDetails": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/ChecklistItemDetails"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "checklist_item_id": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "checklist_item_id"
+          ]
+        }
+      ]
+    },
+    "ChecklistItemWithEntityDetails": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/EntityDetails"
+        },
+        {
+          "$ref": "#/definitions/ChecklistItemDetails"
+        }
       ]
     }
   },
@@ -124,28 +117,112 @@
       "in": "body",
       "required": true,
       "schema": {
-        "allOf": [
-          {
-            "$ref": "#/definitions/EntityDetails"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "description": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "description"
-            ]
-          }
-        ]
+        "$ref": "#/definitions/ChecklistItemWithEntityDetails"
+      }
+    },
+    "UpdateChecklistItemParameter": {
+      "name": "UpdateChecklistItemParameter",
+      "description": "update checklist item",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "$ref": "#/definitions/ChecklistItemDetails"
+      }
+    },
+    "ChecklistItemIdPathParameter": {
+      "name": "checklist_item_id",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "format": "uuid"
+    },
+    "GetChecklistParameter": {
+      "name": "GetChecklistParameter",
+      "description": "get checklist",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "$ref": "#/definitions/EntityDetails"
       }
     }
   },
   "responses": {
-    "EntityDetailsNotFoundResponse": {
+    "CreateChecklistItemBadRequestResponse": {
+      "description": "create checklist item bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_ENTITY_TYPE_FOR_ENTITY_ID",
+                  "EMPTY_CHECKLIST_ITEM_TEXT"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "UpdateChecklistItemBadRequestResponse": {
+      "description": "create checklist item bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_CANNOT_UPDATE_CHECKLIST_ITEM",
+                  "EMPTY_CHECKLIST_ITEM_TEXT"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "UpdateChecklistItemNotFoundResponse": {
       "description": "create checklist item not found response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "CHECKLIST_ITEM_ID_NOT_FOUND"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "GetChecklistNotFoundResponse": {
+      "description": "get checklist not found response",
       "schema": {
         "allOf": [
           {
@@ -168,8 +245,8 @@
         ]
       }
     },
-    "CreateChecklistItemBadRequestResponse": {
-      "description": "create checklist item bad request response",
+    "GetChecklistBadRequestResponse": {
+      "description": "get checklist bad request response",
       "schema": {
         "allOf": [
           {
@@ -181,13 +258,34 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "EMPTY_TEXT"
+                  "INVALID_ENTITY_TYPE_FOR_ENTITY_ID"
                 ]
               }
             },
             "required": [
               "res_status"
             ]
+          }
+        ]
+      }
+    },
+    "GetChecklistResponse": {
+      "description": "get checklist response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/EntityDetails"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "checklist": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/ChecklistItemWithIdAndDetails"
+                }
+              }
+            }
           }
         ]
       }
@@ -215,11 +313,71 @@
           "201": {
             "description": "Success response for create checklist item"
           },
-          "404": {
-            "$ref": "#/responses/EntityDetailsNotFoundResponse"
-          },
           "400": {
             "$ref": "#/responses/CreateChecklistItemBadRequestResponse"
+          }
+        }
+      }
+    },
+    "/checklist/item/{checklist_item_id}/v1/": {
+      "put": {
+        "operationId": "update_checklist_item",
+        "summary": "update checklist item ",
+        "description": "update the checklist item with given details",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/UpdateChecklistItemParameter"
+          },
+          {
+            "$ref": "#/parameters/ChecklistItemIdPathParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response for update checklist item"
+          },
+          "400": {
+            "$ref": "#/responses/UpdateChecklistItemBadRequestResponse"
+          },
+          "404": {
+            "$ref": "#/responses/UpdateChecklistItemNotFoundResponse"
+          }
+        }
+      }
+    },
+    "/checklist/v1/": {
+      "post": {
+        "operationId": "get_checklist",
+        "summary": "get checklist",
+        "description": "get checklist for given entity details",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/GetChecklistParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetChecklistResponse"
+          },
+          "400": {
+            "$ref": "#/responses/GetChecklistBadRequestResponse"
+          },
+          "404": {
+            "$ref": "#/responses/GetChecklistNotFoundResponse"
           }
         }
       }
