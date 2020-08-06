@@ -10,7 +10,7 @@ from ib_tasks.populate.get_sheet_data_for_task_status_variables import \
     GetSheetDataForStatusVariables
 from ib_tasks.populate.global_constants import \
     PopulateGlobalConstantsToTemplate
-from ib_tasks.populate.gofs_to_task_template import PopulateGoFsToTaskTemplate
+from ib_tasks.populate.populate_gofs_to_task_templates import PopulateGoFsToTaskTemplate
 from ib_tasks.populate.populate_fields import PopulateFields
 from ib_tasks.populate.populate_gofs import PopulateGoFs
 from ib_tasks.populate.task_templates import PopulateTaskTemplates
