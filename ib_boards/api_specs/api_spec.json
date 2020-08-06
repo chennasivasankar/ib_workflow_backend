@@ -219,9 +219,7 @@
         "res_status": {
           "type": "string",
           "enum": [
-            "INVALID_BOARD_ID",
-            "BOARD_ID_IS_ALREADY_STARRED",
-            "BOARD_ID_IS_NOT_STARRED"
+            "INVALID_BOARD_ID"
           ]
         }
       },
@@ -299,20 +297,20 @@
       "type": "string",
       "required": true
     },
-    "IsStarredParameter": {
-      "name": "is_starred",
+    "ActionParameter": {
+      "name": "action",
       "in": "body",
       "description": "is starred value",
       "schema": {
         "type": "object",
       "properties": {
-        "is_starred": {
+        "action": {
           "type": "string",
           "enum": ["STAR" , "UNSTAR"]
         }
       },
         "required": [
-          "is_starred"
+          "action"
         ]
       }
     }
@@ -449,7 +447,7 @@
             "$ref": "#/parameters/BoardIdParameter"
           },
           {
-            "$ref": "#/parameters/IsStarredParameter"
+            "$ref": "#/parameters/ActionParameter"
           }
         ],
         "responses": {
