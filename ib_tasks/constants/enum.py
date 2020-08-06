@@ -47,3 +47,9 @@ class Operators(enum.Enum):
     NE = "NE"
     EQ = "EQ"
     CONTAINS = "CONTAINS"
+
+
+class Priority(enum.Enum):
+    HIGH = "HIGH"
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
