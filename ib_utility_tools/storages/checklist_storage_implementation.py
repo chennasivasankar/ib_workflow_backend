@@ -21,15 +21,17 @@ class ChecklistStorageImplementation(ChecklistStorageInterface):
     def get_checklist_id_if_exists(self,
                                    entity_dto: EntityDTO) -> Optional[str]:
         try:
-            Checklist.objects.get(entity_id=entity_dto.entity_id,
-                                  entity_type=entity_dto.entity_type)
+            checklist_object = Checklist.objects.get(
+                entity_id=entity_dto.entity_id,
+                entity_type=entity_dto.entity_type)
+            return str(checklist_object.checklist_id)
         except Checklist.DoesNotExist:
             return None
 
     def create_checklist(self, entity_dto: EntityDTO) -> str:
         checklist_object = Checklist.objects.create(
             entity_id=entity_dto.entity_id, entity_type=entity_dto.entity_type)
-        return checklist_object.id
+        return str(checklist_object.checklist_id)
 
     def update_checklist_item(
             self, checklist_item_with_id_dto: ChecklistItemWithIdDTO):
@@ -40,7 +42,7 @@ class ChecklistStorageImplementation(ChecklistStorageInterface):
             is_checked=checklist_item_with_id_dto.is_checked)
 
     def validate_checklist_item_id(self, checklist_item_id: str) -> bool:
-        is_checklist_item_exists = ChecklistItem.objects.get(
+        is_checklist_item_exists = ChecklistItem.objects.filter(
             checklist_item_id=checklist_item_id).exists()
         return is_checklist_item_exists
 
@@ -59,7 +61,7 @@ class ChecklistStorageImplementation(ChecklistStorageInterface):
     def _prepare_checklist_item_dto_from_checklist_item_object(
             checklist_item_object) -> ChecklistItemWithIdDTO:
         checklist_item_with_id_dto = ChecklistItemWithIdDTO(
-            checklist_item_id=checklist_item_object.checklist_item_id,
+            checklist_item_id=str(checklist_item_object.checklist_item_id),
             text=checklist_item_object.text,
             is_checked=checklist_item_object.is_checked)
         return checklist_item_with_id_dto

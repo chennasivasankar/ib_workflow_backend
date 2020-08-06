@@ -10,21 +10,16 @@ snapshots = Snapshot()
 snapshots['TestGetChecklistPresenterImplementation.test_whether_it_returns_checklist_items_and_entity_http_response response'] = {
     'checklist': [
         {
-            'checklist_item_id': 'aacb164b-343e-4a8a-990a-f67a0c3f1f39',
+            'checklist_item_id': '7ee2c7b4-34c8-4d65-a83a-f87da75db24e',
             'is_checked': False,
-            'text': 'text7'
+            'text': 'text1'
         },
         {
-            'checklist_item_id': 'd59ffc8d-e530-4e2e-95b2-d0f5ee3f5485',
+            'checklist_item_id': '09b6cf6d-90ea-43ac-b0ee-3cee3c59ce5a',
             'is_checked': False,
-            'text': 'text8'
-        },
-        {
-            'checklist_item_id': 'c9414ad0-aa48-423f-adcf-31ef96dd4e8a',
-            'is_checked': False,
-            'text': 'text9'
+            'text': 'text2'
         }
     ],
-    'entity_id': '29aa0d0b-75ce-433a-87a7-f14ab71738d6',
+    'entity_id': 'bb3e538e-a18a-4268-b2d6-0b6dba669ba0',
     'entity_type': 'TASK'
 }
