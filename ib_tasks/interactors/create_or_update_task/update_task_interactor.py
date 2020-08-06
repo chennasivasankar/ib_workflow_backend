@@ -166,14 +166,14 @@ class UpdateTaskInteractor:
             )
         base_validations_interactor. \
             perform_base_validations_for_create_or_update_task(
-            task_dto, task_template_id)
+                task_dto, task_template_id)
         existing_gofs = \
             self.create_task_storage \
                 .get_gof_ids_with_same_gof_order_related_to_a_task(task_id)
         existing_fields = \
             self.create_task_storage \
                 .get_field_ids_with_task_gof_id_related_to_given_task(
-                task_id)
+                    task_id)
         task_gof_dtos = [
             TaskGoFWithTaskIdDTO(
                 task_id=task_id,
