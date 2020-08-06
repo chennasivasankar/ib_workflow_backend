@@ -2,7 +2,7 @@ import json
 from typing import List, Tuple
 
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
-    BoardColumnsDTO, TaskTemplateStagesDTO, TaskSummaryFieldsDTO
+    BoardColumnsDTO, TaskTemplateStagesDTO, TaskSummaryFieldsDTO, StarOrUnstarParametersDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
     ColumnDetailsDTO, TaskBoardsDetailsDTO, ColumnStageIdsDTO
 from ib_boards.interactors.storage_interfaces.dtos import ColumnBoardDTO, \
@@ -227,7 +227,7 @@ class StorageImplementation(StorageInterface):
     def get_board_ids(self, user_id: str) -> List[str]:
         starred_board_ids = list(UserStarredBoard.objects.filter(user_id=user_id)
                                  .values_list('board_id', flat=True))
-        board_ids = list(Board.objects.exclude(board_id__in=starred_board_ids)\
+        board_ids = list(Board.objects.exclude(board_id__in=starred_board_ids) \
                          .values_list('board_id', flat=True))
         return board_ids, starred_board_ids
 
@@ -406,3 +406,19 @@ class StorageImplementation(StorageInterface):
             )
             for key, value in column_stages
         ]
+
+    def unstar_given_board(self,
+                           parameters: StarOrUnstarParametersDTO):
+        user_id = parameters.user_id
+        board_id = parameters.board_id
+
+        UserStarredBoard.objects.filter(
+                board_id=board_id, user_id=user_id).delete()
+
+    def star_given_board(self,
+                         parameters: StarOrUnstarParametersDTO):
+        user_id = parameters.user_id
+        board_id = parameters.board_id
+
+        UserStarredBoard.objects.get_or_create(
+                board_id=board_id, user_id=user_id)
