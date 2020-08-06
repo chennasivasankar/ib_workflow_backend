@@ -5,6 +5,8 @@ import factory
 
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
     Priority
+from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
+    Status
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     Task, TaskGoF,
@@ -247,6 +249,7 @@ class FilterFactory(factory.django.DjangoModelFactory):
 
 
 class FilterConditionFactory(factory.django.DjangoModelFactory):
+
     class Meta:
         model = FilterCondition
 

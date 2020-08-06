@@ -4,7 +4,6 @@
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
-from ib_boards.models import UserStarredBoard
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...common_fixtures.adapters.iam_service import adapter_mock_to_get_user_role
 from ...factories.models import UserStarredBoardFactory, BoardFactory
