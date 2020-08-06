@@ -75,6 +75,10 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def check_is_task_exists(self, task_id: int) -> bool:
+        pass
+
+    @abc.abstractmethod
     def get_constant_names_of_existing_global_constants_of_template(
             self, template_id: str):
         pass

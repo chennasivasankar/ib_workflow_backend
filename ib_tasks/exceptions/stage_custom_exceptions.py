@@ -16,6 +16,12 @@ class InvalidStageIdsListException(Exception):
         self.invalid_stage_ids = invalid_stage_ids
 
 
+class StageIdsWithInvalidPermissionForAssignee(Exception):
+    def __init__(self,
+                 invalid_stage_ids: List[str]):
+        self.invalid_stage_ids = invalid_stage_ids
+
+
 class InvalidStageValues(Exception):
     def __init__(self, invalid_value_stages: List[str]):
         self.invalid_value_stages = invalid_value_stages
