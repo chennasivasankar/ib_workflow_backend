@@ -4,10 +4,10 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
-snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case status_code'] = '200'
+snapshots[
+    'TestCase01GetTaskTemplatesAPITestCase.test_case status_code'] = '200'
 
 snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
     'task_templates': [
@@ -36,7 +36,6 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                             'field_type': 'PLAIN_TEXT',
                             'field_values': None,
                             'help_text': None,
-                            'is_field_readable': True,
                             'is_field_required': True,
                             'is_field_writable': False,
                             'placeholder_text': None,
@@ -51,7 +50,6 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                             'field_type': 'PLAIN_TEXT',
                             'field_values': None,
                             'help_text': None,
-                            'is_field_readable': True,
                             'is_field_required': True,
                             'is_field_writable': False,
                             'placeholder_text': None,
@@ -75,7 +73,6 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                             'field_type': 'PLAIN_TEXT',
                             'field_values': None,
                             'help_text': None,
-                            'is_field_readable': True,
                             'is_field_required': True,
                             'is_field_writable': False,
                             'placeholder_text': None,
@@ -90,7 +87,6 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                             'field_type': 'PLAIN_TEXT',
                             'field_values': None,
                             'help_text': None,
-                            'is_field_readable': True,
                             'is_field_required': True,
                             'is_field_writable': False,
                             'placeholder_text': None,
@@ -114,7 +110,6 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                             'field_type': 'PLAIN_TEXT',
                             'field_values': None,
                             'help_text': None,
-                            'is_field_readable': True,
                             'is_field_required': True,
                             'is_field_writable': False,
                             'placeholder_text': None,

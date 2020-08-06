@@ -98,3 +98,9 @@ class StageDisplayValueDTO:
     stage_id: str
     display_logic: str
     value: int
+
+
+@dataclass
+class StageIdWithTemplateIdDTO:
+    template_id: str
+    stage_id: int

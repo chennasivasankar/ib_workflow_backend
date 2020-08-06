@@ -1,17 +1,6 @@
 import factory
 import pytest
 
-from ib_tasks.tests.factories.models import GoFFactory, TaskTemplateFactory, \
-    GoFRoleFactory, FieldFactory
-from ib_tasks.tests.factories.storage_dtos import (
-    GoFDTOFactory,
-    GoFRolesDTOFactory,
-    CompleteGoFDetailsDTOFactory,
-    FieldCompleteDetailsDTOFactory
-)
-from ib_tasks.tests.factories.storage_dtos \
-    import GoFRoleDTOFactory
-
 
 @pytest.mark.django_db
 class TestTasksStorageImplementation:
@@ -24,15 +13,14 @@ class TestTasksStorageImplementation:
 
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
-        GoFFactory.reset_sequence(1)
+        from ib_tasks.tests.factories.models import StageModelFactory, \
+            TaskTemplateInitialStageFactory, TaskTemplateFactory, \
+            StageActionFactory
+
         TaskTemplateFactory.reset_sequence(1)
-        FieldFactory.reset_sequence(1)
-        GoFRoleFactory.reset_sequence(1)
-        GoFDTOFactory.reset_sequence(1)
-        GoFRolesDTOFactory.reset_sequence(1)
-        CompleteGoFDetailsDTOFactory.reset_sequence(1)
-        GoFRoleDTOFactory.reset_sequence(1)
-        FieldCompleteDetailsDTOFactory.reset_sequence(1)
+        StageModelFactory.reset_sequence(1)
+        TaskTemplateInitialStageFactory.reset_sequence(1)
+        StageActionFactory.reset_sequence(1)
 
     def test_get_initial_stage_ids_of_templates(self, storage):
         # Arrange
@@ -53,26 +41,25 @@ class TestTasksStorageImplementation:
         # Assert
         assert result == expected_stage_ids
 
-    def test_get_actions_for_given_stage_ids(self, storage):
+    def test_get_actions_for_given_stage_ids_in_dtos(self, storage):
         # Arrange
         from ib_tasks.interactors.storage_interfaces.actions_dtos \
-            import ActionsOfTemplateDTO
+            import ActionWithStageIdDTO
         from ib_tasks.tests.factories.models import \
             StageModelFactory, StageActionFactory
         expected_stage_ids = [1, 2]
         expected_output = [
-            ActionsOfTemplateDTO(
-                template_id='task_template_id_0',
+            ActionWithStageIdDTO(
+                stage_id=1,
                 action_id=1, button_text='hey',
                 button_color='#fafafa'
             ),
-            ActionsOfTemplateDTO(
-                template_id='task_template_id_1',
+            ActionWithStageIdDTO(
+                stage_id=2,
                 action_id=2, button_text='hey',
                 button_color='#fafafa'
             )
         ]
-        import factory
         StageModelFactory.create_batch(
             size=2, stage_id=factory.Iterator(expected_stage_ids)
         )
@@ -81,7 +68,7 @@ class TestTasksStorageImplementation:
         )
 
         # Act
-        result = storage.get_actions_for_given_stage_ids(
+        result = storage.get_actions_for_given_stage_ids_in_dtos(
             stage_ids=expected_stage_ids
         )
 

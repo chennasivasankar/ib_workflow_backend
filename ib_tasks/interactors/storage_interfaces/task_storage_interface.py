@@ -7,18 +7,17 @@ Author: Pavankumar Pamuru
 import abc
 from typing import List, Optional, Tuple
 
-from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    ActionsOfTemplateDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageValueWithTaskIdsDTO, TaskIdWithStageDetailsDTO, \
-    TaskIdWithStageValueDTO
+    TaskIdWithStageValueDTO, StageIdWithTemplateIdDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
     StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
+from ib_tasks.interactors.task_dtos import CreateTaskLogDTO
 
 
 class TaskStorageInterface(abc.ABC):
@@ -56,11 +55,6 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_actions_for_given_stage_ids(
-            self, stage_ids: List[int]) -> List[ActionsOfTemplateDTO]:
-        pass
-
-    @abc.abstractmethod
     def get_valid_task_ids(self, task_ids: List[str]) -> Optional[List[str]]:
         pass
 
@@ -93,4 +87,21 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_initial_stage_ids_of_templates(self) -> List[int]:
+        pass
+
+    @abc.abstractmethod
+    def get_initial_stage_id_with_template_id_dtos(
+            self) -> List[StageIdWithTemplateIdDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_actions_for_given_stage_ids_in_dtos(self, stage_ids: List[int]):
+        pass
+
+    @abc.abstractmethod
+    def check_is_task_exists(self, task_id: int) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def create_task_log(self, create_task_log_dto: CreateTaskLogDTO):
         pass

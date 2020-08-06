@@ -15,6 +15,12 @@ class TestFieldsStorageImplementation:
             FieldsStorageImplementation
         return FieldsStorageImplementation()
 
+    @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        from ib_tasks.tests.factories.models import GoFFactory, FieldFactory
+        GoFFactory.reset_sequence()
+        FieldFactory.reset_sequence()
+
     def test_get_fields_of_gofs_in_dtos(self, storage):
         from ib_tasks.tests.factories.models import GoFFactory, FieldFactory
         from ib_tasks.interactors.storage_interfaces.fields_dtos \
