@@ -30,6 +30,7 @@ class TestCase01GetBoardsDetailsAPITestCase(TestUtils):
         UserStarredBoardFactory.reset_sequence()
         UserStarredBoardFactory(board=boards[1], user_id=api_user.user_id)
         UserStarredBoardFactory(board=boards[3], user_id=api_user.user_id)
+        UserStarredBoardFactory(board=boards[7], user_id=api_user.user_id)
         roles = ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC", "FIN_PAYMENT_APPROVER",
                  "FIN_PAYMENTS_LEVEL1_VERIFIER", "FIN_PAYMENTS_LEVEL2_VERIFIER", "FIN_PAYMENTS_LEVEL3_VERIFIER"]
         user_roles = adapter_mock_to_get_user_role(mocker, api_user.user_id)
@@ -47,7 +48,7 @@ class TestCase01GetBoardsDetailsAPITestCase(TestUtils):
     def test_case(self, mocker, snapshot, setup, api_user):
         body = {}
         path_params = {}
-        query_params = {'limit': 10, 'offset': 0}
+        query_params = {'limit': 11, 'offset': 0}
         headers = {}
 
         response = self.default_test_case(

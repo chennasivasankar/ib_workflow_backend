@@ -52,6 +52,10 @@ snapshots['TestCase01GetBoardsDetailsAPITestCase.test_case body'] = {
         {
             'board_id': 'BOARD_ID_4',
             'name': 'BOARD_DISPLAY_NAME'
+        },
+        {
+            'board_id': 'BOARD_ID_8',
+            'name': 'BOARD_DISPLAY_NAME'
         }
     ],
     'total_boards_count': 11
