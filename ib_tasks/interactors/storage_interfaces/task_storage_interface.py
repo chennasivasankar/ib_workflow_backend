@@ -18,6 +18,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
 from ib_tasks.interactors.task_dtos import CreateTaskLogDTO
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 
 
 class TaskStorageInterface(abc.ABC):
@@ -55,7 +56,7 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_valid_task_ids(self, task_ids: List[str]) -> Optional[List[str]]:
+    def get_valid_task_ids(self, task_ids: List[int]) -> Optional[List[int]]:
         pass
 
     @abc.abstractmethod
@@ -78,11 +79,10 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_task_id_with_stage_details_dtos_based_on_stage_value(
-            self, user_id: str, stage_values: List[int],
-            task_ids_group_by_stage_value_dtos: List[
-                StageValueWithTaskIdsDTO]) \
-            -> [TaskIdWithStageDetailsDTO]:
+    def validate_task_related_stage_ids(self,
+                                        task_dtos: List[GetTaskDetailsDTO]) \
+            -> \
+                    List[GetTaskDetailsDTO]:
         pass
 
     @abc.abstractmethod

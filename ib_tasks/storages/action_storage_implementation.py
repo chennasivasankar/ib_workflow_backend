@@ -6,7 +6,10 @@ from ib_tasks.interactors.stages_dtos import StagesActionDTO, \
     TemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
-from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO
+from ib_tasks.interactors.storage_interfaces.actions_dtos import \
+    ActionDetailsDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    StageActionNamesDTO
 from ib_tasks.models import StageAction, Stage, ActionPermittedRoles, \
     TaskTemplateInitialStage
 
@@ -41,7 +44,8 @@ class ActionsStorageImplementation(ActionStorageInterface):
     def create_stage_actions(self, stage_actions: List[StagesActionDTO]):
         names_list = [stage.action_name for stage in stage_actions]
         stage_ids = [stage.stage_id for stage in stage_actions]
-        stages = Stage.objects.filter(stage_id__in=stage_ids).values('stage_id', 'id')
+        stages = Stage.objects.filter(stage_id__in=stage_ids).values(
+            'stage_id', 'id')
 
         list_of_stages = {}
         for item in stages:
@@ -53,7 +57,8 @@ class ActionsStorageImplementation(ActionStorageInterface):
         StageAction.objects.bulk_create(list_of_actions)
         q = None
         for counter, item in enumerate(stage_actions):
-            current_queue = Q(stage_id__stage_id=item.stage_id, name=item.action_name)
+            current_queue = Q(stage_id__stage_id=item.stage_id,
+                              name=item.action_name)
             if counter == 0:
                 q = current_queue
             else:
@@ -84,7 +89,7 @@ class ActionsStorageImplementation(ActionStorageInterface):
         # TODO: Optimize db hits
         for stage_action in stage_actions:
             StageAction.objects.filter(stage__stage_id=stage_action.stage_id,
-                                       name=stage_action.action_name)\
+                                       name=stage_action.action_name) \
                 .update(
                 logic=stage_action.logic,
                 py_function_import_path=stage_action.function_path,
@@ -115,7 +120,8 @@ class ActionsStorageImplementation(ActionStorageInterface):
                 if action_obj.name == stage.action_name:
                     for role in stage.roles:
                         list_of_permitted_roles.append(
-                            ActionPermittedRoles(action_id=action_obj.id, role_id=role))
+                            ActionPermittedRoles(action_id=action_obj.id,
+                                                 role_id=role))
         return list_of_permitted_roles
 
     def delete_stage_actions(self, stage_actions: List[StageActionNamesDTO]):
@@ -124,7 +130,8 @@ class ActionsStorageImplementation(ActionStorageInterface):
                               for stage in stage_actions]
         q = None
         for counter, item in enumerate(stage_actions_dict):
-            current_queue = Q(stage_id__stage_id=item['stage_id'], name__in=item["action_names"])
+            current_queue = Q(stage_id__stage_id=item['stage_id'],
+                              name__in=item["action_names"])
             if counter == 0:
                 q = current_queue
             else:
@@ -136,8 +143,9 @@ class ActionsStorageImplementation(ActionStorageInterface):
                                               task_template_stage_dtos: List[
                                                   TemplateStageDTO]):
         stage_ids = [stage.stage_id for stage in task_template_stage_dtos]
-        stages = Stage.objects.filter(stage_id__in=stage_ids).values('stage_id',
-                                                                     'id')
+        stages = Stage.objects.filter(stage_id__in=stage_ids).values(
+            'stage_id',
+            'id')
 
         list_of_stages = {}
         for item in stages:
@@ -166,3 +174,30 @@ class ActionsStorageImplementation(ActionStorageInterface):
 
         return list(valid_stage_ids)
 
+    def get_actions_details(self,
+                            stage_ids: List[str],
+                            user_roles: List[str]) -> \
+            List[ActionDetailsDTO]:
+        action_objs = (StageAction.objects
+                       .filter(stage__stage_id__in=stage_ids)
+                       .filter(Q(actionpermittedroles__role_id="ALL_ROLES") |
+                               Q(actionpermittedroles__role_id__in=user_roles)
+                               ))
+        unique_action_objs = list(set(action_objs))
+        action_dtos = self._convert_action_objs_to_dtos(unique_action_objs)
+        return action_dtos
+
+    @staticmethod
+    def _convert_action_objs_to_dtos(action_objs):
+        action_dtos = []
+        for action in action_objs:
+            action_dtos.append(
+                ActionDetailsDTO(
+                    action_id=action.id,
+                    name=action.name,
+                    stage_id=action.stage.stage_id,
+                    button_text=action.button_text,
+                    button_color=action.button_color
+                )
+            )
+        return action_dtos

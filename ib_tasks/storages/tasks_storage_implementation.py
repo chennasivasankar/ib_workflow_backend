@@ -282,8 +282,10 @@ class TasksStorageImplementation(TaskStorageInterface):
         return stage_actions_dtos
 
     def get_valid_task_ids(self, task_ids: List[str]) -> Optional[List[str]]:
-        valid_task_ids = Task.objects.filter(id__in=task_ids)
-        return valid_task_ids
+        valid_task_ids = (
+            Task.objects.filter(id__in=task_ids)
+                .values_list('id', flat=True))
+        return list(valid_task_ids)
 
     @staticmethod
     def _convert_task_templates_objs_to_dtos(
@@ -328,47 +330,6 @@ class TasksStorageImplementation(TaskStorageInterface):
                     task_id=task_with_stage_value_item['task_id'],
                     stage_value=task_with_stage_value_item['stage_value']))
         return task_id_with_max_stage_value_dtos
-
-    def get_task_id_with_stage_details_dtos_based_on_stage_value(
-            self, stage_values: List[int],
-            task_ids_group_by_stage_value_dtos: List[StageValueWithTaskIdsDTO],
-            user_id: str) -> List[TaskIdWithStageDetailsDTO]:
-        # ToDo: Need to optimize the storage calls which are in for loop
-        all_task_id_with_stage_details_dtos = []
-        for each_stage_value in stage_values:
-            for each_task_ids_group_by_stage_value_dto in \
-                    task_ids_group_by_stage_value_dtos:
-                if each_task_ids_group_by_stage_value_dto.stage_value \
-                        == each_stage_value:
-                    task_id_with_stage_details = list(
-                        TaskStage.objects.filter(
-                            task__created_by=user_id,
-                            stage__value=each_stage_value,
-                            task_id__in=each_task_ids_group_by_stage_value_dto.
-                                task_ids).values("task_id", "stage__stage_id",
-                                                 "stage__display_name"))
-
-                    task_id_with_stage_details_dtos = self. \
-                        _get_task_id_with_stage_details_dtos(
-                        task_id_with_stage_details)
-
-                    all_task_id_with_stage_details_dtos.extend(
-                        task_id_with_stage_details_dtos)
-        return all_task_id_with_stage_details_dtos
-
-    @staticmethod
-    def _get_task_id_with_stage_details_dtos(
-            task_id_with_stage_details: List[dict]
-    ) -> List[TaskIdWithStageDetailsDTO]:
-        task_id_with_stage_details_dtos = [
-            TaskIdWithStageDetailsDTO(
-                task_id=task_id_with_stage_detail["task_id"],
-                stage_id=task_id_with_stage_detail["stage__stage_id"],
-                stage_display_name=task_id_with_stage_detail[
-                    "stage__display_name"])
-            for task_id_with_stage_detail in task_id_with_stage_details
-        ]
-        return task_id_with_stage_details_dtos
 
     def get_field_ids_for_given_task_template_ids(self,
                                                   task_template_ids: List[
@@ -464,3 +425,31 @@ class TasksStorageImplementation(TaskStorageInterface):
             user_id=create_task_log_dto.user_id,
             task_id=create_task_log_dto.task_id
         )
+
+    def validate_task_related_stage_ids(self,
+                                        task_dtos: List[GetTaskDetailsDTO]
+                                        ) -> List[GetTaskDetailsDTO]:
+        q = None
+        for counter, item in enumerate(task_dtos):
+            current_queue = Q(stage__stage_id=item.stage_id,
+                              task_id=item.task_id)
+            if counter == 0:
+                q = current_queue
+            else:
+                q = q | current_queue
+        if q is None:
+            return []
+        task_objs = TaskStage.objects.filter(q).values('task_id',
+                                                       'stage__stage_id')
+
+        task_stage_dtos = self._convert_task_objs_to_dtos(task_objs)
+        return task_stage_dtos
+
+    @staticmethod
+    def _convert_task_objs_to_dtos(task_objs):
+        valid_task_stages_dtos = [
+            GetTaskDetailsDTO(task_id=task_obj['task_id'],
+                              stage_id=task_obj['stage__stage_id'])
+            for task_obj in task_objs
+        ]
+        return valid_task_stages_dtos
