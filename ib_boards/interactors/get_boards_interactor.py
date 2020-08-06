@@ -64,7 +64,7 @@ class GetBoardsInteractor:
         board_details_interactor = GetBoardsDetailsInteractor(
             storage=self.storage
         )
-        all_board_ids = other_boards_ids + starred_board_ids
+        all_board_ids = starred_board_ids + other_boards_ids
 
         total_boards = len(all_board_ids)
         if offset >= total_boards:

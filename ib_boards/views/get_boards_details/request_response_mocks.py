@@ -19,7 +19,7 @@ RESPONSE_400_JSON = """
 
 RESPONSE_200_JSON = """
 {
-    "total_boards": 1,
+    "total_boards_count": 1,
     "starred_boards": [
         {
             "board_id": "string",
