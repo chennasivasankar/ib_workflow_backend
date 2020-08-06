@@ -47,7 +47,7 @@ class UpdateFilterDTOFactory(factory.Factory):
     class Meta:
         model = UpdateFilterDTO
 
-    filter_id = factory.sequence(lambda n: "filed_id_{}".format(n))
+    filter_id = factory.sequence(lambda n: "{}".format(n + 1))
     filter_name = factory.sequence(lambda n: "filed_name_{}".format(n))
     user_id = factory.sequence(lambda n: "{}".format(n))
     template_id = factory.sequence(lambda n: "template_{}".format(n))

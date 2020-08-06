@@ -20,6 +20,8 @@ from ib_tasks.models.global_constant import GlobalConstant
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from .task_status_variable import TaskStatusVariable
 from ib_tasks.models.task_stage import TaskStage
+from ib_tasks.models.filter import Filter
+from ib_tasks.models.filter_condition import FilterCondition
 
 __all__ = [
     "TaskStatusVariable",
@@ -38,5 +40,7 @@ __all__ = [
     "TaskTemplateGoFs",
     "TaskTemplateStatusVariable",
     "TaskTemplateStatusVariables",
-    "TaskTemplateInitialStage"
+    "TaskTemplateInitialStage",
+    'Filter',
+    'FilterCondition'
 ]

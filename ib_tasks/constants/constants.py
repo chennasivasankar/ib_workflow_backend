@@ -1,5 +1,5 @@
 from ib_tasks.constants.enum \
-    import PermissionTypes, FieldTypes, Searchable
+    import PermissionTypes, FieldTypes, Searchable, Operators
 
 ALL_ROLES_ID = "ALL_ROLES"
 GOF_ORDER_WITH_MINUS_ONE_VALUE = -1
@@ -34,3 +34,5 @@ TASK_CREATION_CONFIG_SUB_SHEET = "Task Creation Config"
 STAGE_ID_AND_VALUES_SUB_SHEET = "StageID and Values"
 STATUS_VARIABLES_SUB_SHEET = "Status Variables"
 ROLES_SUB_SHEET = "Roles"
+
+OPERATOR_TYPES = [(item.value, item.value)for item in Operators]
