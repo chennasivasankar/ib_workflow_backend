@@ -170,6 +170,11 @@ class ColumnTotalTasksDTO:
 
 
 @dataclass
+class StarredAndOtherBoardsDTO:
+    starred_boards_dtos: List[BoardDTO]
+    other_boards_dtos: List[BoardDTO]
+
+@dataclass
 class StarOrUnstarParametersDTO:
     board_id: str
     user_id: str
