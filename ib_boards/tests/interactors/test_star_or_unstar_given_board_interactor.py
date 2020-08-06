@@ -36,10 +36,35 @@ class TestStarOrUnstar:
         storage.validate_board_id.assert_called_once_with(board_id)
         presenter.response_for_invalid_board_id.assert_called_once()
 
-    def test_given_valid_details_creates_a_starred_board(self):
+    def test_given_is_starred_false_creates_starred_board(self):
         # Arrange
         board_id = "board_id_1"
         is_starred = False
+        user_id = "user_id_1"
+        paramters = StarOrUnstarParametersDTO(
+            board_id=board_id,
+            user_id=user_id,
+            is_starred=is_starred
+        )
+        storage = create_autospec(StorageInterface)
+        presenter = create_autospec(PresenterInterface)
+        interactor = StarOrUnstarBoardInteractor(
+            storage=storage
+        )
+        storage.validate_board_id.return_value = True
+
+        # Act
+        interactor.star_or_unstar_board_wrapper(
+            presenter=presenter, parameters=paramters)
+
+        # Assert
+        storage.validate_board_id.assert_called_once_with(board_id)
+        storage.star_or_unstar_given_board_id.assert_called_once_with(paramters)
+
+    def test_given_is_starred_true_deletes_starred_board(self):
+        # Arrange
+        board_id = "board_id_1"
+        is_starred = True
         user_id = "user_id_1"
         paramters = StarOrUnstarParametersDTO(
             board_id=board_id,
