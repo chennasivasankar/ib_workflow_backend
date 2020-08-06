@@ -11,7 +11,7 @@ REQUEST_BODY_JSON = """
 RESPONSE_200_JSON = """
 {
     "filter_id": 1,
-    "is_selected": true
+    "action": "ENABLED"
 }
 """
 

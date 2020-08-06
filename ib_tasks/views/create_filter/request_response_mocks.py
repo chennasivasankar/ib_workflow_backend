@@ -17,17 +17,18 @@ REQUEST_BODY_JSON = """
 
 RESPONSE_201_JSON = """
 {
+    "filter_id": 1,
     "name": "string",
     "template_id": "string",
+    "template_name": "string",
     "conditions": [
         {
             "field_id": "string",
             "operator": "EQ",
-            "value": "string"
+            "value": "string",
+            "field_name": "string"
         }
-    ],
-    "filter_id": 1,
-    "is_selected": true
+    ]
 }
 """
 

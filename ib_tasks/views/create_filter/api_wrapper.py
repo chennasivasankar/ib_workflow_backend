@@ -19,7 +19,7 @@ def api_wrapper(*args, **kwargs):
         "query_params": {},
         "header_params": {},
         "body": body,
-        "securities": []
+        "securities": [{'oauth': ['write']}]
     }
 
     from django_swagger_utils.drf_server.utils.server_gen.mock_response \
