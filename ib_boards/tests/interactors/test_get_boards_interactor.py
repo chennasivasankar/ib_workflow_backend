@@ -158,6 +158,7 @@ class TestGetBoardsInteractor:
         total_boards = 3
         board_ids = ['BOARD_ID_1', 'BOARD_ID_2', 'BOARD_ID_3']
         board_ids_need_to_send = ['BOARD_ID_2']
+        user_id = "user_id_1"
         board_dtos = BoardDTOFactory.create_batch(3)
         BoardDTOFactory.reset_sequence()
 
@@ -185,7 +186,7 @@ class TestGetBoardsInteractor:
 
         # Assert
         storage_mock.get_board_ids.assert_called_once_with(
-            user_role=user_role
+            user_id=user_id
         )
         interactor_mock.assert_called_once_with(
             board_ids=board_ids_need_to_send
@@ -202,6 +203,7 @@ class TestGetBoardsInteractor:
         total_boards = 3
         board_ids = ['BOARD_ID_1', 'BOARD_ID_2', 'BOARD_ID_3']
         board_ids_need_to_send = ['BOARD_ID_2']
+        user_id="user_id_1"
         board_dtos = BoardDTOFactory.create_batch(3)
         BoardDTOFactory.reset_sequence()
 
@@ -229,7 +231,7 @@ class TestGetBoardsInteractor:
 
         # Assert
         storage_mock.get_board_ids.assert_called_once_with(
-            user_role=user_role
+            user_id=user_id
         )
         presenter_mock.get_response_for_offset_exceeds_total_tasks. \
             assert_called_once_with()

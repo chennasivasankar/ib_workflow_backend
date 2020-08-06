@@ -50,7 +50,7 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_board_ids(
-            self, user_role: str, ) -> List[str]:
+            self, user_id: str, ) -> List[str]:
         pass
 
     @abc.abstractmethod
