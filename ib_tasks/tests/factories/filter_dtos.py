@@ -6,8 +6,8 @@ Author: Pavankumar Pamuru
 import factory
 
 from ib_tasks.constants.enum import Operators
-from ib_tasks.interactors.filter_dtos import FilterDTO, FilterConditionDTO, \
-    CreateConditionDTO, CreateFilterDTO
+from ib_tasks.interactors.filter_dtos import FilterDTO, \
+    CreateConditionDTO, CreateFilterDTO, ConditionDTO, UpdateFilterDTO
 
 
 class FilterDTOFactory(factory.Factory):
@@ -24,7 +24,7 @@ class FilterDTOFactory(factory.Factory):
 
 class ConditionDTOFactory(factory.Factory):
     class Meta:
-        model = FilterConditionDTO
+        model = ConditionDTO
 
     filter_id = factory.sequence(lambda n: "filter_{}".format(n))
     condition_id = factory.sequence(lambda n: "condition_{}".format(n))
@@ -38,6 +38,16 @@ class CreateFilterDTOFactory(factory.Factory):
     class Meta:
         model = CreateFilterDTO
 
+    filter_name = factory.sequence(lambda n: "filed_name_{}".format(n))
+    user_id = factory.sequence(lambda n: "{}".format(n))
+    template_id = factory.sequence(lambda n: "template_{}".format(n))
+
+
+class UpdateFilterDTOFactory(factory.Factory):
+    class Meta:
+        model = UpdateFilterDTO
+
+    filter_id = factory.sequence(lambda n: "filed_id_{}".format(n))
     filter_name = factory.sequence(lambda n: "filed_name_{}".format(n))
     user_id = factory.sequence(lambda n: "{}".format(n))
     template_id = factory.sequence(lambda n: "template_{}".format(n))
