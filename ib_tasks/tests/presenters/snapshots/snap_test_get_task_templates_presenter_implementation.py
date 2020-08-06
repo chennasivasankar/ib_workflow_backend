@@ -36,7 +36,6 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_complete_task_t
                         'Ms'
                     ],
                     'help_text': None,
-                    'is_field_readable': True,
                     'is_field_required': True,
                     'is_field_writable': False,
                     'placeholder_text': None,
@@ -73,7 +72,6 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_complete_task_t
                         'Ms'
                     ],
                     'help_text': None,
-                    'is_field_readable': True,
                     'is_field_required': True,
                     'is_field_writable': True,
                     'placeholder_text': None,
@@ -143,7 +141,6 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_actions_for_
                         'Ms'
                     ],
                     'help_text': None,
-                    'is_field_readable': True,
                     'is_field_required': True,
                     'is_field_writable': False,
                     'placeholder_text': None,
@@ -180,7 +177,6 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_actions_for_
                         'Ms'
                     ],
                     'help_text': None,
-                    'is_field_readable': True,
                     'is_field_required': True,
                     'is_field_writable': True,
                     'placeholder_text': None,
@@ -243,3 +239,9 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_fields_exist
     'template_id': 'template_2',
     'template_name': 'Task Template 2'
 }
+
+snapshots['TestGetTaskTemplatesPresenterImplementation.test_raise_task_templates_does_not_exists_exception http_status_code'] = 404
+
+snapshots['TestGetTaskTemplatesPresenterImplementation.test_raise_task_templates_does_not_exists_exception res_status'] = 'TASK_TEMPLATES_DOES_NOT_EXISTS'
+
+snapshots['TestGetTaskTemplatesPresenterImplementation.test_raise_task_templates_does_not_exists_exception response'] = 'No Task Templates are exists'

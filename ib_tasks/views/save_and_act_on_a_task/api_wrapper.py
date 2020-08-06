@@ -9,6 +9,7 @@ from ...presenters.update_task_presenter import \
     UpdateTaskPresenterImplementation
 from ...storages.fields_storage_implementation import \
     FieldsStorageImplementation
+from ...storages.gof_storage_implementation import GoFStorageImplementation
 from ...storages.storage_implementation import StorageImplementation, \
     StagesStorageImplementation
 
@@ -50,12 +51,13 @@ def api_wrapper(*args, **kwargs):
     task_storage = TasksStorageImplementation()
     create_task_storage = CreateOrUpdateTaskStorageImplementation()
     storage = StorageImplementation()
+    gof_storage = GoFStorageImplementation()
     field_storage = FieldsStorageImplementation()
     stage_storage = StagesStorageImplementation()
 
     presenter = UpdateTaskPresenterImplementation()
     interactor = UpdateTaskInteractor(
-        task_storage=task_storage,
+        task_storage=task_storage, gof_storage=gof_storage,
         create_task_storage=create_task_storage,
         storage=storage, field_storage=field_storage,
         stage_storage=stage_storage

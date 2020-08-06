@@ -199,6 +199,9 @@ TASK_CREATED_SUCCESSFULLY = (
     "TASK_CREATED_SUCCESSFULLY"
 )
 
+INVALID_TASK_JSON = ("Task Json should not be empty", "INVALID_TASK_JSON")
+
+
 INVALID_GOFS_OF_TASK_TEMPLATE = (
     "invalid gofs {}  given to the task template {}",
     "INVALID_GOFS_OF_TASK_TEMPLATE"

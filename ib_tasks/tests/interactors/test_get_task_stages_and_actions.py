@@ -5,10 +5,14 @@ import pytest
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
 from ib_tasks.interactors.get_task_stages_and_actions import \
     GetTaskStagesAndActions
+from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
+    ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
-from ib_tasks.interactors.storage_interfaces.storage_interface import StorageInterface
-from ib_tasks.tests.common_fixtures.adapters.roles_service import get_user_role_ids
+from ib_tasks.interactors.storage_interfaces.storage_interface import \
+    StorageInterface
+from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+    get_user_role_ids
 from ib_tasks.tests.factories.storage_dtos import ActionDetailsDTOFactory, \
     StageDetailsDTOFactory
 
@@ -34,7 +38,8 @@ class TestGetTaskStagesAndActions:
     @pytest.fixture()
     def get_stage_actions_for_one_stage(self):
         ActionDetailsDTOFactory.reset_sequence()
-        actions = ActionDetailsDTOFactory.create_batch(size=2, stage_id="stage_id_0")
+        actions = ActionDetailsDTOFactory.create_batch(size=2,
+                                                       stage_id="stage_id_0")
         return actions
 
     @pytest.fixture()
@@ -63,13 +68,15 @@ class TestGetTaskStagesAndActions:
         user_roles_mock = get_user_role_ids(mocker)
         user_roles_mock.return_value = user_roles
         storage = create_autospec(FieldsStorageInterface)
+        action_storage = create_autospec(ActionStorageInterface)
         task_storage = create_autospec(StorageInterface)
         storage.get_task_stages.return_value = [
             "stage_id_0", "stage_id_1", "stage_id_2"]
-        storage.get_actions_details.return_value = get_stage_actions
+        action_storage.get_actions_details.return_value = get_stage_actions
         storage.get_stage_complete_details.return_value = get_stage_details
         interactor = GetTaskStagesAndActions(storage=storage,
-                                             task_storage=task_storage)
+                                             task_storage=task_storage,
+                                             action_storage=action_storage)
 
         # Act
         response = interactor.get_task_stages_and_actions(task_id=task_id,
@@ -91,14 +98,18 @@ class TestGetTaskStagesAndActions:
         user_roles_mock.return_value = user_roles
         storage = create_autospec(FieldsStorageInterface)
         task_storage = create_autospec(StorageInterface)
+        action_storage = create_autospec(ActionStorageInterface)
         task_storage.validate_task_id.return_value = True
-        storage.get_task_stages.return_value = ["stage_id_0", "stage_id_1", "stage_id_2"]
-        storage.get_actions_details.return_value = get_stage_actions
+        storage.get_task_stages.return_value = ["stage_id_0", "stage_id_1",
+                                                "stage_id_2"]
+        action_storage.get_actions_details.return_value = get_stage_actions
         storage.get_task_stages.return_value = [
             "stage_id_0", "stage_id_1", "stage_id_2"]
-        storage.get_actions_details.return_value = []
+        action_storage.get_actions_details.return_value = []
         storage.get_stage_complete_details.return_value = get_stage_details
-        interactor = GetTaskStagesAndActions(storage=storage, task_storage=task_storage)
+        interactor = GetTaskStagesAndActions(storage=storage,
+                                             task_storage=task_storage,
+                                             action_storage=action_storage)
 
         # Act
         response = interactor.get_task_stages_and_actions(
@@ -117,15 +128,17 @@ class TestGetTaskStagesAndActions:
         task_id = 1
         storage = create_autospec(FieldsStorageInterface)
         task_storage = create_autospec(StorageInterface)
+        action_storage = create_autospec(ActionStorageInterface)
         task_storage.validate_task_id.return_value = True
         user_roles = get_user_roles
         user_roles_mock = get_user_role_ids(mocker)
         user_roles_mock.return_value = user_roles
         storage.get_task_stages.return_value = ["stage_id_0"]
-        storage.get_actions_details.return_value = get_stage_actions_for_one_stage
+        action_storage.get_actions_details.return_value = get_stage_actions_for_one_stage
         storage.get_stage_complete_details.return_value = get_stage_details_for_one_stage
         interactor = GetTaskStagesAndActions(storage=storage,
-                                             task_storage=task_storage)
+                                             task_storage=task_storage,
+                                             action_storage=action_storage)
 
         # Act
         response = interactor.get_task_stages_and_actions(
@@ -141,15 +154,18 @@ class TestGetTaskStagesAndActions:
         task_id = 1
         storage = create_autospec(FieldsStorageInterface)
         task_storage = create_autospec(StorageInterface)
+        action_storage = create_autospec(ActionStorageInterface)
         task_storage.validate_task_id.return_value = True
         user_roles = get_user_roles
         user_roles_mock = get_user_role_ids(mocker)
         user_roles_mock.return_value = user_roles
-        storage.get_task_stages.return_value = ["stage_id_0", "stage_id_1", "stage_id_2"]
-        storage.get_actions_details.return_value = []
+        storage.get_task_stages.return_value = ["stage_id_0", "stage_id_1",
+                                                "stage_id_2"]
+        action_storage.get_actions_details.return_value = []
         storage.get_stage_complete_details.return_value = get_stage_details
         interactor = GetTaskStagesAndActions(storage=storage,
-                                             task_storage=task_storage)
+                                             task_storage=task_storage,
+                                             action_storage=action_storage)
 
         # Act
         response = interactor.get_task_stages_and_actions(
@@ -169,13 +185,15 @@ class TestGetTaskStagesAndActions:
         user_roles_mock = get_user_role_ids(mocker)
         user_roles_mock.return_value = user_roles
         storage = create_autospec(FieldsStorageInterface)
+        action_storage = create_autospec(ActionStorageInterface)
         task_storage = create_autospec(StorageInterface)
         task_storage.validate_task_id.return_value = True
         storage.get_task_stages.return_value = ["stage_id_0"]
-        storage.get_actions_details.return_value = []
+        action_storage.get_actions_details.return_value = []
         storage.get_stage_complete_details.return_value = get_stage_details
         interactor = GetTaskStagesAndActions(storage=storage,
-                                             task_storage=task_storage)
+                                             task_storage=task_storage,
+                                             action_storage=action_storage)
 
         # Act
         response = interactor.get_task_stages_and_actions(
@@ -193,16 +211,18 @@ class TestGetTaskStagesAndActions:
         user_roles_mock = get_user_role_ids(mocker)
         user_roles_mock.return_value = user_roles
         storage = create_autospec(FieldsStorageInterface)
+        action_storage = create_autospec(ActionStorageInterface)
         task_storage = create_autospec(StorageInterface)
         task_storage.validate_task_id.return_value = False
         interactor = GetTaskStagesAndActions(storage=storage,
-                                             task_storage=task_storage)
+                                             task_storage=task_storage,
+                                             action_storage=action_storage)
 
         # Act
         with pytest.raises(InvalidTaskIdException) as error:
             interactor.get_task_stages_and_actions(
-                task_id=task_id, user_id="123e4567-e89b-12d3-a456-426614174000")
+                task_id=task_id,
+                user_id="123e4567-e89b-12d3-a456-426614174000")
 
         # Assert
         task_storage.validate_task_id.assert_called_once_with(task_id)
-
