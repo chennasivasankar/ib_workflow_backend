@@ -2,7 +2,7 @@
 # snapshottest: v1 - https://goo.gl/zC4yUc
 from __future__ import unicode_literals
 
-from snapshottest import Snapshot, GenericRepr
+from snapshottest import GenericRepr, Snapshot
 
 
 snapshots = Snapshot()
@@ -44,3 +44,5 @@ snapshots['TestCreateOrUpdateTaskStorageImplementation.test_given_field_ids_and_
 
 snapshots['TestCreateOrUpdateTaskStorageImplementation.test_given_task_id_with_no_gof_ids_returns_empty_list task_gof_dtos'] = [
 ]
+
+snapshots['TestCreateOrUpdateTaskStorageImplementation.test_given_valid_task_id_returns_template_id task_base_details_dtos'] = GenericRepr("TaskBaseDetailsDTO(template_id='template_0', title='title_0', description='description_0', start_date=datetime.datetime(2020, 8, 6, 16, 28, 45, 783523), due_date=datetime.datetime(2020, 8, 16, 16, 28, 45, 783530), priority='HIGH')")

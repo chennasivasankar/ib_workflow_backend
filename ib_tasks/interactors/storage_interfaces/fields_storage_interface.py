@@ -1,8 +1,6 @@
 import abc
 from typing import List
 
-from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldDTO, \
     FieldCompleteDetailsDTO, UserFieldPermissionDTO

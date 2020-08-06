@@ -4,13 +4,11 @@ from typing import List
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionWithStageIdDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldPermissionDTO
+    FieldPermissionDTO, FieldDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TaskTemplateDTO
-from ib_tasks.exceptions.task_custom_exceptions import \
-    TaskTemplatesDoesNotExists
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageIdWithTemplateIdDTO
 

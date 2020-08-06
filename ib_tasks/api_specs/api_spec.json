@@ -611,7 +611,7 @@
         }
       },
       "required": [
-        "task_stage_assignees"
+        "stage_assignees"
       ]
     },
     "Action": {
@@ -1150,11 +1150,8 @@
           "type": "string"
         },
         "status": {
-          "type": "string",
-          "enum": [
-            "ENABLED",
-            "DISABLED"
-          ]
+            "type": "string",
+            "enum": ["ENABLED", "DISABLED"]
         },
         "conditions": {
           "type": "array",
@@ -1167,7 +1164,8 @@
         "filter_id",
         "name",
         "conditions",
-        "template_id"
+        "template_id",
+        "status"
       ]
     }
   },
@@ -1294,13 +1292,14 @@
           "filter_id": {
             "type": "integer"
           },
-          "is_selected": {
-            "type": "boolean"
+          "action": {
+              "type": "string",
+              "enum": ["ENABLED", "DISABLED"]
           }
         },
         "required": [
           "filter_id",
-          "is_selected"
+          "action"
         ]
       }
     },
@@ -1338,19 +1337,12 @@
       "type": "integer",
       "format": "int64"
     },
-    "ActionIdParameter": {
-      "name": "action_id",
-      "in": "query",
+    "TransitionTemplateIdParameter": {
+      "name": "transition_template_id",
+      "in": "path",
       "required": true,
-      "description": "Id of the action",
-      "type": "integer"
-    },
-    "StageIdParameter": {
-      "name": "stage_id",
-      "in": "query",
-      "required": true,
-      "description": "Id of the stage",
-      "type": "integer"
+      "description": "transition template Id",
+      "type": "string"
     }
   },
   "responses": {
@@ -1464,8 +1456,6 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "INVALID_STAGE_ID",
-              "INVALID_ACTION_ID",
               "TRANSITION_TEMPLATE_DOES_NOT_EXISTS"
             ]
           }
@@ -2002,7 +1992,7 @@
         }
       }
     },
-    "/transition_template/v1/": {
+    "/transition_template/{transition_template_id}/v1/": {
       "get": {
         "operationId": "get_transition_template",
         "summary": "Get transition template",
@@ -2016,10 +2006,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/ActionIdParameter"
-          },
-          {
-            "$ref": "#/parameters/StageIdParameter"
+            "$ref": "#/parameters/TransitionTemplateIdParameter"
           }
         ],
         "responses": {

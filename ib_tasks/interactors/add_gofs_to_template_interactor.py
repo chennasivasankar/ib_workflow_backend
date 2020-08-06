@@ -7,10 +7,9 @@ from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
-from ib_tasks.tests.factories.models import TaskTemplateWith2GoFsFactory
 
 
-class AddGoFsToTaskTemplateInteractor:
+class AddGoFsToTemplateInteractor:
     def __init__(
             self, task_template_storage: TaskTemplateStorageInterface,
             gof_storage: GoFStorageInterface
@@ -18,12 +17,12 @@ class AddGoFsToTaskTemplateInteractor:
         self.gof_storage = gof_storage
         self.task_template_storage = task_template_storage
 
-    def add_gofs_to_task_template_wrapper(
+    def add_gofs_to_template_wrapper(
             self, gofs_with_template_id_dto: GoFsWithTemplateIdDTO):
-        self.add_gofs_to_task_template(
+        self.add_gofs_to_template(
             gofs_with_template_id_dto=gofs_with_template_id_dto)
 
-    def add_gofs_to_task_template(
+    def add_gofs_to_template(
             self, gofs_with_template_id_dto: GoFsWithTemplateIdDTO):
         self._make_validations(
             gofs_with_template_id_dto=gofs_with_template_id_dto)
@@ -37,7 +36,7 @@ class AddGoFsToTaskTemplateInteractor:
                 existing_gof_ids=existing_gof_ids_of_template,
                 gof_dtos=gof_dtos
             )
-        self._add_gofs_to_task_template_in_db(
+        self._add_gofs_to_template_in_db(
             template_id=template_id,
             gof_dtos=gof_dtos,
             existing_gof_ids_of_template=existing_gof_ids_of_template)
@@ -50,7 +49,7 @@ class AddGoFsToTaskTemplateInteractor:
                 existing_gof_ids_not_in_given_data)
             raise ExistingGoFsNotInGivenData(message)
 
-    def _add_gofs_to_task_template_in_db(
+    def _add_gofs_to_template_in_db(
             self, template_id: str,
             gof_dtos: List[GoFWithOrderAndAddAnotherDTO],
             existing_gof_ids_of_template: List[str]):
@@ -90,7 +89,7 @@ class AddGoFsToTaskTemplateInteractor:
         template_id = gofs_with_template_id_dto.template_id
         is_template_exists = \
             self.task_template_storage.check_is_template_exists(
-            template_id=template_id)
+                template_id=template_id)
         is_template_does_not_exists = not is_template_exists
         from ib_tasks.exceptions.task_custom_exceptions import \
             TemplateDoesNotExists
@@ -245,44 +244,3 @@ class AddGoFsToTaskTemplateInteractor:
             message = DUPLICATE_ORDER_VALUES_FOR_GOFS.format(
                 duplicate_orders_of_gofs)
             raise DuplicateOrderValuesForGoFs(message)
-
-    def test_get_existing_gof_ids_of_template(self, storage):
-        # Arrange
-        template_id = "FIN_VENDOR"
-        expected_gof_ids = ['gof_1', 'gof_2']
-        TaskTemplateWith2GoFsFactory(template_id=template_id)
-
-        # Act
-        existing_gof_ids_of_template = \
-            storage.get_existing_gof_ids_of_template(template_id=template_id)
-
-        # Assert
-        assert existing_gof_ids_of_template == expected_gof_ids
-
-    def test_update_gofs_to_template(self, storage):
-        # Arrange
-        template_id = "FIN_VENDOR"
-        from ib_tasks.tests.factories.interactor_dtos import \
-            GoFWithOrderAndAddAnotherDTOFactory
-        gof_dtos = GoFWithOrderAndAddAnotherDTOFactory.create_batch(
-            size=2, order=5, enable_add_another_gof=True
-        )
-        TaskTemplateWith2GoFsFactory(template_id=template_id)
-
-        # Act
-        storage.update_gofs_to_template(
-            template_id=template_id, gof_dtos=gof_dtos
-        )
-
-        # Assert
-        from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
-        gof_to_task_template_objs = \
-            TaskTemplateGoFs.objects.filter(task_template_id=template_id)
-
-        assert gof_to_task_template_objs[0].order == \
-               gof_dtos[0].order
-        assert gof_to_task_template_objs[0].enable_add_another_gof == \
-               gof_dtos[0].enable_add_another_gof
-        assert gof_to_task_template_objs[1].order == gof_dtos[0].order
-        assert gof_to_task_template_objs[1].enable_add_another_gof == \
-               gof_dtos[1].enable_add_another_gof

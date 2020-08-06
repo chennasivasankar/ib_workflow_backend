@@ -1,6 +1,10 @@
 import json
+from datetime import datetime, timedelta
 
 import factory
+
+from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
+    Priority
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
     Status
 from ib_tasks.models import (
@@ -27,6 +31,12 @@ class TaskFactory(factory.django.DjangoModelFactory):
     template_id = factory.Sequence(
         lambda counter: "template_{}".format(counter))
     created_by = "123e4567-e89b-12d3-a456-426614174000"
+    title = factory.sequence(lambda counter: "title_{}".format(counter))
+    description = factory.sequence(
+        lambda counter: "description_{}".format(counter))
+    start_date = datetime(2020, 10, 12, 4, 40)
+    due_date = datetime(2020, 10, 12, 4, 40) + timedelta(10)
+    priority = Priority.HIGH.value
 
 
 class StageModelFactory(factory.django.DjangoModelFactory):
@@ -37,6 +47,7 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     display_name = factory.Sequence(lambda n: "name_%d" % n)
     task_template_id = factory.Sequence(lambda n: "task_template_id_%d" % n)
     value = factory.Sequence(lambda n: n)
+    stage_color = "blue"
     display_logic = factory.Sequence(lambda n: "status_id_%d==stage_id" % n)
     card_info_kanban = json.dumps(['field_id_1', "field_id_2"])
     card_info_list = json.dumps(['field_id_1', "field_id_2"])
@@ -228,19 +239,20 @@ class TaskStageFactory(factory.django.DjangoModelFactory):
 
 
 class FilterFactory(factory.django.DjangoModelFactory):
-
     class Meta:
         model = Filter
+
     created_by = factory.sequence(lambda n: "{}".format(n))
     name = factory.sequence(lambda n: "filter_name_{}".format(n))
     template = factory.SubFactory(TaskTemplateFactory)
-    is_selected = Status.ENABLED.value
+    is_selected = "ENABLED"
 
 
 class FilterConditionFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = FilterCondition
+
     filter = factory.SubFactory(FilterFactory)
     field = factory.SubFactory(FieldFactory)
     operator = Operators.GTE.value

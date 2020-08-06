@@ -1,7 +1,7 @@
 from unittest.mock import patch
 
 import pytest
-from django_swagger_utils.utils.test_v1 import TestUtils
+from django_swagger_utils.utils.test_utils import TestUtils
 
 from ib_iam.tests.common_fixtures.reset_fixture import \
     reset_sequence_for_user_profile_dto_factory
@@ -70,7 +70,7 @@ class TestCase03GetUsersAPITestCase(TestUtils):
         path_params = {}
         query_params = {'offset': 0, 'limit': 5}
         headers = {}
-        response = self.default_test_case(
+        response = self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

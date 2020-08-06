@@ -83,3 +83,97 @@ class TestGetFilterInteractor:
             .assert_called_once_with(filter_ids=filter_ids)
         presenter.get_response_for_get_filters_details\
             .assert_called_once_with(filter_complete_details=response)
+
+    def test_update_filter_status_raises_invalid_filter_exception(
+            self, filter_storage, presenter):
+        # Arrange
+        from ib_tasks.interactors.filter_interactor import FilterInteractor
+        interactor = FilterInteractor(
+            filter_storage=filter_storage, presenter=presenter
+        )
+        from ib_tasks.exceptions.filter_exceptions import InvalidFilterId
+        filter_storage.validate_filter_id.side_effect = InvalidFilterId()
+        user_id = "1"
+        filter_id = 1
+        from ib_tasks.constants.enum import Status
+        is_selected = Status.ENABLED.value
+
+        # Act
+        interactor.update_filter_select_status_wrapper(
+            user_id=user_id, filter_id=filter_id, is_selected=is_selected
+        )
+
+        # Assert
+        presenter.get_response_for_invalid_filter_id.assert_called_once()
+
+    def test_raises_invalid_user_permission(
+            self, filter_storage, presenter):
+        # Arrange
+        from ib_tasks.interactors.filter_interactor import FilterInteractor
+        interactor = FilterInteractor(
+            filter_storage=filter_storage, presenter=presenter
+        )
+        from ib_tasks.exceptions.filter_exceptions import UserNotHaveAccessToFilter
+        filter_storage.validate_user_with_filter_id\
+            .side_effect = UserNotHaveAccessToFilter()
+        user_id = "1"
+        filter_id = 1
+        from ib_tasks.constants.enum import Status
+        is_selected = Status.ENABLED.value
+
+        # Act
+        interactor.update_filter_select_status_wrapper(
+            user_id=user_id, filter_id=filter_id, is_selected=is_selected
+        )
+
+        # Assert
+        presenter.get_response_for_invalid_user_to_update_filter_status\
+            .assert_called_once()
+
+    def test_returns_update_status(
+            self, filter_storage, presenter):
+        # Arrange
+        from ib_tasks.interactors.filter_interactor import FilterInteractor
+        interactor = FilterInteractor(
+            filter_storage=filter_storage, presenter=presenter
+        )
+        from ib_tasks.constants.enum import Status
+        boolean_field = Status.ENABLED.value
+        filter_storage.enable_filter_status.return_value = boolean_field
+        user_id = "1"
+        filter_id = 1
+
+        is_selected = Status.ENABLED.value
+
+        # Act
+        interactor.update_filter_select_status_wrapper(
+            user_id=user_id, filter_id=filter_id, is_selected=is_selected
+        )
+
+        # Assert
+        presenter.get_response_for_update_filter_status\
+            .assert_called_once_with(filter_id=filter_id, is_selected=is_selected)
+
+    def test_returns_disabled_update_status(
+            self, filter_storage, presenter):
+        # Arrange
+        from ib_tasks.interactors.filter_interactor import FilterInteractor
+        interactor = FilterInteractor(
+            filter_storage=filter_storage, presenter=presenter
+        )
+        from ib_tasks.constants.enum import Status
+        boolean_field = Status.DISABLED.value
+        filter_storage.disable_filter_status.return_value = boolean_field
+        user_id = "1"
+        filter_id = 1
+
+        is_selected = Status.DISABLED.value
+
+        # Act
+        interactor.update_filter_select_status_wrapper(
+            user_id=user_id, filter_id=filter_id, is_selected=is_selected
+        )
+
+        # Assert
+        presenter.get_response_for_update_filter_status\
+            .assert_called_once_with(filter_id=filter_id, is_selected=is_selected)
