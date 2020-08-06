@@ -43,7 +43,7 @@ from ib_tasks.interactors.storage_interfaces.status_dtos import (
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TaskTemplateDTO
+    TemplateDTO
 from ib_tasks.interactors.task_dtos import TaskStatusVariableDTO
 from ib_tasks.models import StageAction
 
@@ -344,7 +344,7 @@ class FieldCompleteDetailsDTOFactory(factory.Factory):
 
 class TaskTemplateDTOFactory(factory.Factory):
     class Meta:
-        model = TaskTemplateDTO
+        model = TemplateDTO
 
     template_id = factory.Sequence(lambda n: 'template_{}'.format(n + 1))
     template_name = \

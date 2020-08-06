@@ -8,7 +8,7 @@ from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TaskTemplateDTO
+    TemplateDTO
 from ib_tasks.models import TaskTemplate, TaskTemplateGoFs
 
 
@@ -74,14 +74,14 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
                 "template_id", flat=True))
         return valid_template_ids
 
-    def get_task_templates_dtos(self) -> List[TaskTemplateDTO]:
+    def get_task_templates_dtos(self) -> List[TemplateDTO]:
         task_template_objs = TaskTemplate.objects.all()
         task_template_dtos = self._convert_task_templates_objs_to_dtos(
             task_template_objs=task_template_objs)
         return task_template_dtos
 
-    def get_gofs_to_task_templates_from_permitted_gofs(self,
-                                                       gof_ids: List[str]) -> \
+    def get_gofs_to_template_from_permitted_gofs(self,
+                                                 gof_ids: List[str]) -> \
             List[GoFToTaskTemplateDTO]:
         task_template_gofs = \
             TaskTemplateGoFs.objects.filter(gof_id__in=gof_ids)
@@ -159,9 +159,9 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
     @staticmethod
     def _convert_task_templates_objs_to_dtos(
-            task_template_objs: List[TaskTemplate]) -> List[TaskTemplateDTO]:
+            task_template_objs: List[TaskTemplate]) -> List[TemplateDTO]:
         task_template_dtos = [
-            TaskTemplateDTO(
+            TemplateDTO(
                 template_id=task_template_obj.template_id,
                 template_name=task_template_obj.name
             )
