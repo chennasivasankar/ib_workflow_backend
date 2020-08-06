@@ -12,6 +12,7 @@ class TestCase01AddOrRemoveGivenBoardIdFromStarredBoardsAPITestCase(TestUtils):
     REQUEST_METHOD = REQUEST_METHOD
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['read', 'write']}}
+
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {'action': 'STAR'}
