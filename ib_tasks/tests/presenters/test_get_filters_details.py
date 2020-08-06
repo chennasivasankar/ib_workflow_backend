@@ -30,3 +30,44 @@ class TestGetFiltersDetailsPresenter:
         snapshot.assert_match(
             name="filters", value=json.loads(response_object.content)
         )
+
+    @staticmethod
+    def test_get_update_filter_status(snapshot):
+        # Arrange
+        from ib_tasks.presenters.filter_presenter_implementation \
+            import FilterPresenterImplementation
+        presenter = FilterPresenterImplementation()
+        import json
+        filter_id = 1
+        from ib_tasks.constants.enum import Status
+        is_selected = Status.ENABLED.value
+
+        # Act
+        response_object = presenter.get_response_for_update_filter_status(
+            filter_id=filter_id, is_selected=is_selected
+        )
+
+        # Assert
+        snapshot.assert_match(
+            name="filters", value=json.loads(response_object.content)
+        )
+
+    @staticmethod
+    def test_get_raises_exception(snapshot):
+        # Arrange
+        from ib_tasks.presenters.filter_presenter_implementation \
+            import FilterPresenterImplementation
+        presenter = FilterPresenterImplementation()
+        import json
+        filter_id = 1
+        from ib_tasks.constants.enum import Status
+        is_selected = Status.ENABLED.value
+
+        # Act
+        response_object = \
+            presenter.get_response_for_invalid_user_to_update_filter_status()
+
+        # Assert
+        snapshot.assert_match(
+            name="filters", value=json.loads(response_object.content)
+        )

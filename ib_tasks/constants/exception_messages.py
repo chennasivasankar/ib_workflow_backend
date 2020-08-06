@@ -222,3 +222,8 @@ USER_NEEDS_FILED_WRITABLE_PERMISSION = (
     "user {} needs write access on field {}, because user does not have {} roles",
     "USER_NEEDS_FILED_WRITABLE_PERMISSION"
 )
+
+USER_DO_NOT_ACCESS_TO_UPDATE_FILTER_STATUS = (
+    "user do not have access to change filter status",
+    "USER_DO_NOT_ACCESS_TO_UPDATE_FILTER_STATUS"
+)

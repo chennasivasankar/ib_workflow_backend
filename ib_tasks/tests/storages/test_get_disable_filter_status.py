@@ -10,7 +10,7 @@ class TestGetFiltersDetails:
         from ib_tasks.tests.factories.models import FilterFactory
         FilterFactory.reset_sequence(1)
         from ib_tasks.constants.enum import Status
-        FilterFactory(is_selected=Status.DISABLED.value)
+        FilterFactory(is_selected=Status.ENABLED.value)
         from ib_tasks.storages.filter_storage_implementation \
             import FilterStorageImplementation
         storage = FilterStorageImplementation()

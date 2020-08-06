@@ -37,3 +37,14 @@ snapshots['TestGetFiltersDetailsPresenter.test_get_filter_details filters'] = [
         'template_name': 'Template 2'
     }
 ]
+
+snapshots['TestGetFiltersDetailsPresenter.test_get_update_filter_status filters'] = {
+    'action': 'ENABLED',
+    'filter_id': 1
+}
+
+snapshots['TestGetFiltersDetailsPresenter.test_get_raises_exception filters'] = {
+    'http_status_code': 403,
+    'res_status': 'USER_DO_NOT_ACCESS_TO_UPDATE_FILTER_STATUS',
+    'response': 'user do not have access to change filter status'
+}
