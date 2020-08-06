@@ -2,11 +2,11 @@ import json
 from datetime import datetime, timedelta
 
 import factory
+from prompt_toolkit.styles import Priority
 
 from ib_tasks.constants.constants import VALID_FIELD_TYPES
-from ib_tasks.constants.enum import FieldTypes, PermissionTypes
-from ib_tasks.constants.enum import Operators, \
-    Priority
+from ib_tasks.constants.enum import FieldTypes, PermissionTypes, Status
+from ib_tasks.constants.enum import Operators
 from ib_tasks.interactors.filter_dtos import FilterDTO, ConditionDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.stages_dtos import StageDTO
@@ -487,7 +487,7 @@ class FilterDTOFactory(factory.Factory):
     filter_id = factory.sequence(lambda n: n)
     filter_name = factory.sequence(lambda n: "filter_name_{}".format(n))
     user_id = factory.sequence(lambda n: "{}".format(n))
-    is_selected = False
+    is_selected = Status.ENABLED.value
     template_id = factory.sequence(lambda n: "template_{}".format(n))
     template_name = factory.sequence(lambda n: "Template {}".format(n))
 

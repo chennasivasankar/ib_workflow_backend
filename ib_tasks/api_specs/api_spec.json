@@ -1149,6 +1149,10 @@
         "template_name": {
           "type": "string"
         },
+        "status": {
+            "type": "string",
+            "enum": ["ENABLED", "DISABLED"]
+        },
         "conditions": {
           "type": "array",
           "items": {
@@ -1160,7 +1164,8 @@
         "filter_id",
         "name",
         "conditions",
-        "template_id"
+        "template_id",
+        "status"
       ]
     }
   },
@@ -1287,13 +1292,14 @@
           "filter_id": {
             "type": "integer"
           },
-          "is_selected": {
-            "type": "boolean"
+          "action": {
+              "type": "string",
+              "enum": ["ENABLED", "DISABLED"]
           }
         },
         "required": [
           "filter_id",
-          "is_selected"
+          "action"
         ]
       }
     },

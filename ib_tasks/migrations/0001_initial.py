@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_by', models.CharField(max_length=30)),
                 ('name', models.CharField(max_length=120)),
-                ('is_selected', models.BooleanField(default=False)),
+                ('is_selected', models.CharField(choices=[('ENABLED', 'ENABLED'), ('DISABLED', 'DISABLED')], max_length=100)),
             ],
         ),
         migrations.CreateModel(

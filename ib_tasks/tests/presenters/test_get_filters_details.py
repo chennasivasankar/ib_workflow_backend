@@ -1,3 +1,5 @@
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO
+
 
 class TestGetFiltersDetailsPresenter:
 
@@ -204,6 +206,81 @@ class TestGetFiltersDetailsPresenter:
 
         # Assert
         import json
+        snapshot.assert_match(
+            name="filters", value=json.loads(response_object.content)
+        )
+
+    @staticmethod
+    def test_get_update_filter_status(snapshot):
+        # Arrange
+        from ib_tasks.presenters.filter_presenter_implementation \
+            import FilterPresenterImplementation
+        presenter = FilterPresenterImplementation()
+        import json
+        filter_id = 1
+        from ib_tasks.constants.enum import Status
+        is_selected = Status.ENABLED.value
+
+        # Act
+        response_object = presenter.get_response_for_update_filter_status(
+            filter_id=filter_id, is_selected=is_selected
+        )
+
+        # Assert
+        snapshot.assert_match(
+            name="filters", value=json.loads(response_object.content)
+        )
+
+    @staticmethod
+    def test_get_raises_exception(snapshot):
+        # Arrange
+        from ib_tasks.presenters.filter_presenter_implementation \
+            import FilterPresenterImplementation
+        presenter = FilterPresenterImplementation()
+        import json
+        filter_id = 1
+        from ib_tasks.constants.enum import Status
+        is_selected = Status.ENABLED.value
+
+        # Act
+        response_object = \
+            presenter.get_response_for_invalid_user_to_update_filter_status()
+
+        # Assert
+        snapshot.assert_match(
+            name="filters", value=json.loads(response_object.content)
+        )
+
+    def response(self):
+        from ib_tasks.tests.factories.storage_dtos import TaskTemplateDTOFactory
+        TaskTemplateDTOFactory.reset_sequence()
+        from ib_tasks.tests.factories.storage_dtos \
+            import GoFToTaskTemplateDTOFactory
+        GoFToTaskTemplateDTOFactory.reset_sequence()
+        from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
+            import TaskTemplateFieldsDto
+        return TaskTemplateFieldsDto(
+            task_template_dtos=TaskTemplateDTOFactory.create_batch(size=2),
+            gofs_of_task_templates_dtos=GoFToTaskTemplateDTOFactory.create_batch(size=2),
+            fields_dto=[
+                FieldNameDTO(field_id='field0', gof_id='gof_1', field_display_name='field name'),
+                FieldNameDTO(field_id='field1', gof_id='gof_2', field_display_name='field name')]
+        )
+
+    def test_returns_templates_fields(self, snapshot):
+        from ib_tasks.presenters.filter_presenter_implementation \
+            import FilterPresenterImplementation
+        presenter = FilterPresenterImplementation()
+        import json
+        input = self.response()
+
+        # Act
+        response_object = \
+            presenter.get_response_for_get_task_templates_fields(
+                task_template_fields=input
+            )
+
+        # Assert
         snapshot.assert_match(
             name="filters", value=json.loads(response_object.content)
         )

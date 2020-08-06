@@ -18,8 +18,8 @@ snapshots['TestGetFiltersDetailsPresenter.test_get_filter_details filters'] = [
             }
         ],
         'filter_id': 1,
-        'is_selected': False,
         'name': 'filter_name_1',
+        'status': 'ENABLED',
         'template_id': 'template_1',
         'template_name': 'Template 1'
     },
@@ -33,12 +33,23 @@ snapshots['TestGetFiltersDetailsPresenter.test_get_filter_details filters'] = [
             }
         ],
         'filter_id': 2,
-        'is_selected': False,
         'name': 'filter_name_2',
+        'status': 'ENABLED',
         'template_id': 'template_2',
         'template_name': 'Template 2'
     }
 ]
+
+snapshots['TestGetFiltersDetailsPresenter.test_get_update_filter_status filters'] = {
+    'action': 'ENABLED',
+    'filter_id': 1
+}
+
+snapshots['TestGetFiltersDetailsPresenter.test_get_raises_exception filters'] = {
+    'http_status_code': 403,
+    'res_status': 'USER_DO_NOT_ACCESS_TO_UPDATE_FILTER_STATUS',
+    'response': 'user not have access to update the filter status'
+}
 
 snapshots['TestGetFiltersDetailsPresenter.test_create_filter_details filters'] = {
     'conditions': [
@@ -124,4 +135,38 @@ snapshots['TestGetFiltersDetailsPresenter.test_get_response_for_user_not_have_ac
     'http_status_code': 403,
     'res_status': 'USER_DO_NOT_ACCESS_TO_DELETE_FILTER',
     'response': 'user not have access to delete the filter'
+}
+
+snapshots['TestGetFiltersDetailsPresenter.test_returns_templates_fields filters'] = {
+    'operators': [
+        'GTE',
+        'LTE',
+        'GT',
+        'LE',
+        'NE',
+        'EQ',
+        'CONTAINS'
+    ],
+    'task_template_fields_details': [
+        {
+            'fields': [
+                {
+                    'field_id': 'field0',
+                    'name': 'field name'
+                }
+            ],
+            'name': 'Task Template 1',
+            'task_template_id': 'template_1'
+        },
+        {
+            'fields': [
+                {
+                    'field_id': 'field1',
+                    'name': 'field name'
+                }
+            ],
+            'name': 'Task Template 2',
+            'task_template_id': 'template_2'
+        }
+    ]
 }

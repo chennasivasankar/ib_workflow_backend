@@ -243,7 +243,7 @@ class FilterFactory(factory.django.DjangoModelFactory):
     created_by = factory.sequence(lambda n: "{}".format(n))
     name = factory.sequence(lambda n: "filter_name_{}".format(n))
     template = factory.SubFactory(TaskTemplateFactory)
-    is_selected = False
+    is_selected = "ENABLED"
 
 
 class FilterConditionFactory(factory.django.DjangoModelFactory):

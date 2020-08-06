@@ -12,6 +12,18 @@ class TestCase01GetFiltersAPITestCase(TestUtils):
     REQUEST_METHOD = REQUEST_METHOD
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['read']}}
+
+    @pytest.fixture(autouse=True)
+    def setup(self, api_user):
+        from ib_tasks.tests.factories.models \
+            import FilterConditionFactory, FieldFactory, FilterFactory
+        FilterConditionFactory.reset_sequence(1)
+        FieldFactory.reset_sequence(1)
+        FilterFactory.reset_sequence(1)
+        filters = FilterFactory(created_by=api_user.user_id)
+        FilterConditionFactory(filter=filters)
+
+
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {}
