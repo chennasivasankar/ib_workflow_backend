@@ -1,14 +1,7 @@
 from typing import List, Optional
 
 from ib_tasks.exceptions.field_values_custom_exceptions import \
-    EmptyValueForRequiredField, InvalidPhoneNumberValue, \
-    InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
-    InvalidNumberValue, InvalidFloatValue, InvalidValueForDropdownField, \
-    IncorrectRadioGroupChoice, IncorrectCheckBoxOptionsSelected, \
-    IncorrectMultiSelectOptionsSelected, IncorrectMultiSelectLabelsSelected, \
-    InvalidDateFormat, InvalidTimeFormat, InvalidUrlForImage, \
-    InvalidImageFormat, InvalidUrlForFile, InvalidFileFormat, \
-    IncorrectNameInGoFSelectorField
+    EmptyValueForRequiredField
 from ib_tasks.interactors.create_or_update_task.field_response_validations \
     import NumberFieldValidationInteractor, FloatFieldValidationInteractor, \
     DropDownFieldValidationInteractor, GoFSelectorFieldValidationInteractor, \
@@ -22,9 +15,6 @@ from ib_tasks.interactors.create_or_update_task.field_response_validations \
     MultiSelectLabelFieldValidationInteractor
 from ib_tasks.interactors.create_or_update_task.field_response_validations. \
     base_field_validation import BaseFieldValidation
-from ib_tasks.interactors.presenter_interfaces. \
-    field_response_validations_presenter import \
-    FieldResponseValidationsPresenterInterface
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
@@ -38,62 +28,6 @@ class ValidateFieldResponsesInteractor:
             self, task_storage: TaskStorageInterface
     ):
         self.task_storage = task_storage
-
-    def validate_field_responses_wrapper(
-            self, presenter: FieldResponseValidationsPresenterInterface,
-            field_values_dtos: List[FieldValuesDTO]
-    ):
-        try:
-            self.validate_field_responses(field_values_dtos)
-        except EmptyValueForRequiredField as err:
-            return presenter. \
-                raise_exception_for_empty_value_in_required_field(err)
-        except InvalidPhoneNumberValue as err:
-            return presenter.raise_exception_for_invalid_phone_number_value(
-                err)
-        except InvalidEmailFieldValue as err:
-            return presenter.raise_exception_for_invalid_email_address(err)
-        except InvalidURLValue as err:
-            return presenter.raise_exception_for_invalid_url_address(err)
-        except NotAStrongPassword as err:
-            return presenter.raise_exception_for_weak_password(err)
-        except InvalidNumberValue as err:
-            return presenter.raise_exception_for_invalid_number_value(err)
-        except InvalidFloatValue as err:
-            return presenter.raise_exception_for_invalid_float_value(err)
-        except InvalidValueForDropdownField as err:
-            return presenter.raise_exception_for_invalid_dropdown_value(err)
-        except IncorrectNameInGoFSelectorField as err:
-            return presenter. \
-                raise_exception_for_invalid_name_in_gof_selector_field_value(
-                err)
-        except IncorrectRadioGroupChoice as err:
-            return presenter. \
-                raise_exception_for_invalid_choice_in_radio_group_field(err)
-        except IncorrectCheckBoxOptionsSelected as err:
-            return presenter. \
-                raise_exception_for_invalid_checkbox_group_options_selected(
-                err)
-        except IncorrectMultiSelectOptionsSelected as err:
-            return presenter. \
-                raise_exception_for_invalid_multi_select_options_selected(err)
-        except IncorrectMultiSelectLabelsSelected as err:
-            return presenter. \
-                raise_exception_for_invalid_multi_select_labels_selected(err)
-        except InvalidDateFormat as err:
-            return presenter.raise_exception_for_invalid_date_format(err)
-        except InvalidTimeFormat as err:
-            return presenter.raise_exception_for_invalid_time_format(err)
-        except InvalidUrlForImage as err:
-            return presenter.raise_exception_for_invalid_image_url(err)
-        except InvalidImageFormat as err:
-            return presenter.raise_exception_for_not_acceptable_image_format(
-                err)
-        except InvalidUrlForFile as err:
-            return presenter.raise_exception_for_invalid_file_url(err)
-        except InvalidFileFormat as err:
-            return presenter.raise_exception_for_not_acceptable_file_format(
-                err)
 
     def validate_field_responses(
             self, field_values_dtos: List[FieldValuesDTO]

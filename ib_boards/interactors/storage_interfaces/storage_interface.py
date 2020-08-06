@@ -2,7 +2,7 @@ import abc
 from typing import List, Optional
 
 from ib_boards.exceptions.custom_exceptions import InvalidBoardId
-from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, BoardColumnsDTO
+from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, BoardColumnsDTO, StarOrUnstarParametersDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
     ColumnStageIdsDTO
 from ib_boards.interactors.storage_interfaces.dtos import ColumnDetailsDTO
@@ -12,7 +12,7 @@ from ib_boards.interactors.storage_interfaces.dtos import TaskBoardsDetailsDTO
 class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
-    def validate_board_id(self, board_id) -> Optional[InvalidBoardId]:
+    def validate_board_id(self, board_id) -> bool:
         pass
 
     @abc.abstractmethod
@@ -104,4 +104,14 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_columns_stage_ids(self, column_ids: List[str]) -> List[ColumnStageIdsDTO]:
+        pass
+
+    @abc.abstractmethod
+    def star_given_board(self,
+                         parameters: StarOrUnstarParametersDTO):
+        pass
+
+    @abc.abstractmethod
+    def unstar_given_board(self,
+                           parameters: StarOrUnstarParametersDTO):
         pass

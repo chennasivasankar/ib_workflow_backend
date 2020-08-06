@@ -76,7 +76,6 @@ class GetAllTasksOverviewForUserInteractor:
             for each_task_id_with_stage_details_dto in
             task_id_with_stage_details_dtos
         ]
-
         task_fields_and_action_details_dtos = self._get_task_fields_and_action(
             task_id_with_stage_id_dtos, user_id)
         from ib_tasks.interactors.presenter_interfaces.dtos import \
