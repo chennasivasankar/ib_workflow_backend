@@ -14,15 +14,17 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionsOfTemplateDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
-    FieldRolesDTO, FieldRoleDTO, FieldCompleteDetailsDTO, UserFieldPermissionDTO, \
+    FieldRolesDTO, FieldRoleDTO, FieldCompleteDetailsDTO, \
+    UserFieldPermissionDTO, \
     FieldDetailsDTO, StageTaskFieldsDTO, \
     FieldRolesDTO, FieldRoleDTO, UserFieldPermissionDTO, \
-    FieldDetailsDTO, StageTaskFieldsDTO, FieldWithPermissionsDTO, FieldDetailsDTOWithTaskId
+    FieldDetailsDTO, StageTaskFieldsDTO, FieldWithPermissionsDTO, \
+    FieldDetailsDTOWithTaskId
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionNamesDTO, ValidStageDTO, TaskTemplateStageDTO, \
     StageActionNamesDTO, ValidStageDTO, TaskStageIdsDTO, StageValueDTO, \
-    StageDisplayValueDTO
+    StageDisplayValueDTO, StageRoleDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO, GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (TaskStagesDTO)
@@ -208,7 +210,8 @@ class StageDTOFactory(factory.Factory):
         model = StageDTO
 
     stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n + 1))
-    task_template_id = factory.Sequence(lambda n: 'task_template_id_%d' % (n + 1))
+    task_template_id = factory.Sequence(
+        lambda n: 'task_template_id_%d' % (n + 1))
     value = factory.Sequence(lambda n: (n + 1))
     id = None
     card_info_kanban = json.dumps(["field_id_1", "field_id_2"])
@@ -482,3 +485,13 @@ class FieldWithPermissionsDTOFactory(factory.Factory):
 
     # display_logic = factory.sequence(lambda n: "variable_{} == stage_{}".format((n+1), (n+1)))
     # value = factory.sequence(lambda n: (n+1))
+
+
+class StageRoleDTOFactory(factory.Factory):
+    class Meta:
+        model = StageRoleDTO
+
+    stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)
+    role = factory.Iterator(
+        ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"]
+    )

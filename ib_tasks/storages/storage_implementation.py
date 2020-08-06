@@ -13,7 +13,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO, \
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GOFMultipleEnableDTO, GoFWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    StageDisplayValueDTO
+    StageDisplayValueDTO, StageRoleDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
     StageValueDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
@@ -26,7 +26,7 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import (
 )
 from ib_tasks.models import *
 from ib_tasks.models import GoFRole
-from ib_tasks.models import TaskTemplateInitialStage, Stage
+from ib_tasks.models import TaskTemplateInitialStage, Stage, StageRole
 
 
 class StagesStorageImplementation(StageStorageInterface):
@@ -113,6 +113,17 @@ class StagesStorageImplementation(StageStorageInterface):
             if stage.stage_id not in stages:
                 invalid_task_id_stages.append(stage.stage_id)
         return invalid_task_id_stages
+
+    def get_stage_role_dtos_given_stage_ids(self, stage_ids: List[str]) -> \
+            List[StageRoleDTO]:
+        stage_roles = list(
+            StageRole.objects.filter(stage__stage_id__in=stage_ids).values(
+                'stage__stage_id', 'role_id'))
+        stage_role_dtos = [
+            StageRoleDTO(stage_id=each_stage_role['stage__stage_id'],
+                         role_id=each_stage_role['role_id']) for
+            each_stage_role in stage_roles]
+        return stage_role_dtos
 
     def create_initial_stage_to_task_template(self,
                                               task_template_stage_dtos: List[
@@ -400,9 +411,10 @@ class StorageImplementation(StorageInterface):
 
     def get_task_present_stage_actions(self, task_id: int):
 
-        task_stage_ids = TaskStage.objects.filter(task_id=task_id)\
+        task_stage_ids = TaskStage.objects.filter(task_id=task_id) \
             .values_list('stage_id', flat=True)
-        action_ids = StageAction.objects.filter(stage_id__in=task_stage_ids)\
+        action_ids = StageAction.objects.filter(stage_id__in=task_stage_ids) \
             .values_list('id', flat=True)
         return action_ids
+
 

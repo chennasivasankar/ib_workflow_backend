@@ -6,7 +6,7 @@ from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     Task, TaskGoF,
     TaskGoFField,
-    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage)
+    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage, StageRole)
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
@@ -227,3 +227,13 @@ class TaskStageFactory(factory.django.DjangoModelFactory):
 
     task = factory.SubFactory(TaskFactory)
     stage = factory.SubFactory(StageModelFactory)
+
+
+class StageRoleFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = StageRole
+
+    stage = factory.SubFactory(StageModelFactory)
+    role = factory.Iterator(
+        ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"]
+    )
