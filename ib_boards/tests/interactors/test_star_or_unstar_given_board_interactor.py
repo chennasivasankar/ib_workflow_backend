@@ -16,7 +16,7 @@ class TestStarOrUnstar:
     @pytest.fixture()
     def paramters(self):
         board_id = "board_id_1"
-        is_starred = True
+        is_starred = "UNSTAR"
         user_id = "user_id_1"
         paramters = StarOrUnstarParametersDTO(
             board_id=board_id,
@@ -44,10 +44,10 @@ class TestStarOrUnstar:
         storage.validate_board_id.assert_called_once_with(board_id)
         presenter.response_for_invalid_board_id.assert_called_once()
 
-    def test_given_is_starred_false_creates_starred_board(self):
+    def test_given_is_starred_star_creates_starred_board(self):
         # Arrange
         board_id = "board_id_1"
-        is_starred = False
+        is_starred = "STAR"
         user_id = "user_id_1"
         paramters = StarOrUnstarParametersDTO(
             board_id=board_id,

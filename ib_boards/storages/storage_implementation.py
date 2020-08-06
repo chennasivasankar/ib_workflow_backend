@@ -413,8 +413,7 @@ class StorageImplementation(StorageInterface):
         board_id = parameters.board_id
         is_starred = parameters.is_starred
 
-        if is_starred:
-            UserStarredBoard.objects.filter(
+        UserStarredBoard.objects.filter(
                 board_id=board_id, user_id=user_id).delete()
 
     def star_given_board(self,
@@ -425,5 +424,5 @@ class StorageImplementation(StorageInterface):
         exists = UserStarredBoard.objects.filter(
                 board_id=board_id, user_id=user_id).exists()
         if not is_starred and not exists:
-            UserStarredBoard.objects.create(
+            UserStarredBoard.objects.get_or_create(
                 board_id=board_id, user_id=user_id)
