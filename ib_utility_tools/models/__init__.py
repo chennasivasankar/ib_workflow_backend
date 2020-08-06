@@ -1,4 +1,6 @@
-__all__ = []
+from .checklist import Checklist
+from .checklist_item import ChecklistItem
+__all__ = ["Checklist", "ChecklistItem"]
 
 # class DummyModel(AbstractDateTimeModel):
 #     """

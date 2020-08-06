@@ -5,7 +5,7 @@ from ib_utility_tools.tests.factories.storage_dtos import \
     ChecklistItemWithIdDTOFactory
 
 
-class TestCreateCommentInteractor:
+class TestUpdateChecklistItemInteractor:
 
     @pytest.fixture()
     def storage_mock(self):

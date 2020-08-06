@@ -1,5 +1,5 @@
 import abc
-from typing import Optional
+from typing import Optional, List
 
 from ib_utility_tools.interactors.storage_interfaces.dtos import \
     ChecklistItemWithChecklistIdDTO, EntityDTO, ChecklistItemWithIdDTO
@@ -24,4 +24,8 @@ class ChecklistStorageInterface(abc.ABC):
         pass
 
     def validate_checklist_item_id(self, checklist_item_id: str) -> bool:
+        pass
+
+    def get_checklist_items_dto(self, checklist_id: str) -> \
+            List[ChecklistItemWithIdDTO]:
         pass

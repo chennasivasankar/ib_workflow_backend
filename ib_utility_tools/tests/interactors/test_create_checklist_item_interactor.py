@@ -1,11 +1,11 @@
-import pytest
 import mock
+import pytest
 
 from ib_utility_tools.tests.factories.storage_dtos import \
     ChecklistItemWithEntityDTOFactory
 
 
-class TestCreateCommentInteractor:
+class TestCreateChecklistItemInteractor:
 
     @pytest.fixture()
     def storage_mock(self):
