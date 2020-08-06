@@ -8,8 +8,10 @@ URL_SUFFIX = "boards/{board_id}/star/v1/"
 
 from .test_case_01 import TestCase01AddOrRemoveGivenBoardIdFromStarredBoardsAPITestCase
 from .test_case_02 import TestCase02AddOrRemoveGivenBoardIdFromStarredBoardsAPITestCase
+from .test_case_03 import TestCase03AddOrRemoveGivenBoardIdFromStarredBoardsAPITestCase
 
 __all__ = [
     "TestCase01AddOrRemoveGivenBoardIdFromStarredBoardsAPITestCase",
-    "TestCase02AddOrRemoveGivenBoardIdFromStarredBoardsAPITestCase"
+    "TestCase02AddOrRemoveGivenBoardIdFromStarredBoardsAPITestCase",
+    "TestCase03AddOrRemoveGivenBoardIdFromStarredBoardsAPITestCase"
 ]

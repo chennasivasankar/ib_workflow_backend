@@ -2,7 +2,7 @@
 # snapshottest: v1 - https://goo.gl/zC4yUc
 from __future__ import unicode_literals
 
-from snapshottest import Snapshot
+from snapshottest import GenericRepr, Snapshot
 
 
 snapshots = Snapshot()
@@ -10,3 +10,7 @@ snapshots = Snapshot()
 snapshots['TestCase01AddOrRemoveGivenBoardIdFromStarredBoardsAPITestCase.test_case status_code'] = '200'
 
 snapshots['TestCase01AddOrRemoveGivenBoardIdFromStarredBoardsAPITestCase.test_case body'] = b''
+
+snapshots['TestCase01AddOrRemoveGivenBoardIdFromStarredBoardsAPITestCase.test_case starred board'] = True
+
+snapshots['TestCase01AddOrRemoveGivenBoardIdFromStarredBoardsAPITestCase.test_case starr'] = GenericRepr("<QuerySet [{'id': 1, 'user_id': 'user_id_0', 'board_id': 'BOARD_ID_1'}]>")
