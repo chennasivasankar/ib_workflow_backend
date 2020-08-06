@@ -363,7 +363,7 @@
               }
             },
           "required": [
-            "total_boards_count",
+            "total_boards",
             "starred_boards",
             "all_boards"
           ]
