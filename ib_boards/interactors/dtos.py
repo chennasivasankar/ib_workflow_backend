@@ -173,4 +173,4 @@ class ColumnTotalTasksDTO:
 class StarOrUnstarParametersDTO:
     board_id: str
     user_id: str
-    is_starred: str
+    action: str

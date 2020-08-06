@@ -1,5 +1,6 @@
 import pytest
 
+from ib_boards.constants.enum import STARORUNSTAR
 from ib_boards.interactors.dtos import StarOrUnstarParametersDTO
 from ib_boards.models import UserStarredBoard
 from ib_boards.storages.storage_implementation import StorageImplementation
@@ -18,24 +19,24 @@ class TestStarOrUnstarGivenBoard:
     @pytest.fixture()
     def is_starred_true_parameters(self):
         board_id = "BOARD_ID_1"
-        is_starred = True
+        action = STARORUNSTAR.UNSTAR.value
         user_id = "user_id_0"
         paramters = StarOrUnstarParametersDTO(
             board_id=board_id,
             user_id=user_id,
-            is_starred=is_starred
+            action=action
         )
         return paramters
 
     @pytest.fixture()
     def is_starred_false_parameters(self):
         board_id = "BOARD_ID_1"
-        is_starred = False
+        action = STARORUNSTAR.STAR.value
         user_id = "user_id_0"
         paramters = StarOrUnstarParametersDTO(
             board_id=board_id,
             user_id=user_id,
-            is_starred=is_starred
+            action=action
         )
         return paramters
 

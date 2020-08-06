@@ -17,12 +17,12 @@ class TestStarOrUnstar:
     @pytest.fixture()
     def paramters(self):
         board_id = "board_id_1"
-        is_starred = STARORUNSTAR.UNSTAR.value
+        action = STARORUNSTAR.UNSTAR.value
         user_id = "user_id_1"
         paramters = StarOrUnstarParametersDTO(
             board_id=board_id,
             user_id=user_id,
-            is_starred=is_starred
+            action=action
         )
         return paramters
 
@@ -48,12 +48,12 @@ class TestStarOrUnstar:
     def test_given_is_starred_star_creates_starred_board(self):
         # Arrange
         board_id = "board_id_1"
-        is_starred = STARORUNSTAR.STAR.value
+        action = STARORUNSTAR.STAR.value
         user_id = "user_id_1"
         paramters = StarOrUnstarParametersDTO(
             board_id=board_id,
             user_id=user_id,
-            is_starred=is_starred
+            action=action
         )
         storage = create_autospec(StorageInterface)
         presenter = create_autospec(PresenterInterface)
