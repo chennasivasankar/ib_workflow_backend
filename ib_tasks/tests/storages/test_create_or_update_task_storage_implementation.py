@@ -47,18 +47,26 @@ class TestCreateOrUpdateTaskStorageImplementation:
         exception_obj = err.value
         assert exception_obj.task_id == task_id
 
-    def test_given_valid_task_id_returns_template_id(self, storage,
-                                                     reset_sequence):
+    def test_given_valid_task_id_returns_task_base_details_dto(
+            self, storage, reset_sequence, snapshot):
         # Arrange
         task_id = 1
         task_obj = TaskFactory()
-        excepted_template_id = task_obj.template_id
-
+        from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
+            TaskBaseDetailsDTO
+        excepted_task_base_details_dto = TaskBaseDetailsDTO(
+            template_id=task_obj.template_id,
+            title=task_obj.title,
+            description=task_obj.description,
+            start_date=task_obj.start_date,
+            due_date=task_obj.due_date,
+            priority=task_obj.priority
+        )
         # Act
-        actual_template_id = storage.validate_task_id(task_id)
+        actual_task_base_details_dto = storage.validate_task_id(task_id)
 
         # Assert
-        assert excepted_template_id == actual_template_id
+        assert actual_task_base_details_dto == excepted_task_base_details_dto
 
     def test_given_task_id_returns_task_gof_dtos(self, storage, snapshot):
         # Arrange
@@ -323,7 +331,7 @@ class TestCreateOrUpdateTaskStorageImplementation:
         # Act
         actual_task_gof_dtos = \
             storage.get_gof_ids_with_same_gof_order_related_to_a_task(
-            task_id)
+                task_id)
 
         # Assert
         assert expected_task_gof_dtos == actual_task_gof_dtos

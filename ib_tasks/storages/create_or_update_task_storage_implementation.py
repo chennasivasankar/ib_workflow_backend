@@ -11,7 +11,7 @@ from ib_tasks.interactors.storage_interfaces. \
     create_or_update_task_storage_interface \
     import CreateOrUpdateTaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
-    TaskGoFFieldDTO, TaskGoFDTO
+    TaskGoFFieldDTO, TaskGoFDTO, TaskBaseDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import (
     TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO)
 from ib_tasks.interactors.task_dtos import CreateTaskDTO, UpdateTaskDTO
@@ -244,13 +244,26 @@ class CreateOrUpdateTaskStorageImplementation(
 
     def validate_task_id(
             self, task_id: int
-    ) -> Union[str, InvalidTaskIdException]:
+    ) -> Union[TaskBaseDetailsDTO, InvalidTaskIdException]:
+
         try:
             task_obj = Task.objects.get(id=task_id)
         except Task.DoesNotExist:
             raise InvalidTaskIdException(task_id)
-        template_id = task_obj.template_id
-        return template_id
+        task_base_details_dto = self._get_task_base_details_dto(task_obj)
+        return task_base_details_dto
+
+    @staticmethod
+    def _get_task_base_details_dto(task_obj: Task):
+        task_base_details_dto = TaskBaseDetailsDTO(
+            template_id=task_obj.template_id,
+            title=task_obj.title,
+            description=task_obj.description,
+            start_date=task_obj.start_date,
+            due_date=task_obj.due_date,
+            priority=task_obj.priority
+        )
+        return task_base_details_dto
 
     def create_task_with_given_task_details(self,
                                             task_dto: CreateTaskDTO) -> int:
@@ -262,7 +275,8 @@ class CreateOrUpdateTaskStorageImplementation(
             datetime.datetime.strptime(task_dto.due_time, TIME_FORMAT).time()
         )
         task_object = Task.objects.create(
-            template_id=task_dto, created_by=task_dto.created_by_id,
+            template_id=task_dto.task_template_id,
+            created_by=task_dto.created_by_id,
             title=task_dto.title, description=task_dto.description,
             start_date=task_dto.start_date, due_date=due_date_time,
             priority=task_dto.priority

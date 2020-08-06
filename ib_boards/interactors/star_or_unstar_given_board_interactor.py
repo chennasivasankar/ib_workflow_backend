@@ -17,7 +17,7 @@ class StarOrUnstarBoardInteractor:
         try:
             self.star_or_unstar_board(parameters)
         except InvalidBoardId:
-            presenter.response_for_invalid_board_id()
+            return presenter.response_for_invalid_board_id()
 
     def star_or_unstar_board(self, parameters):
         board_id = parameters.board_id

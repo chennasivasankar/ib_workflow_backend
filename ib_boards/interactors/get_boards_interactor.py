@@ -3,7 +3,7 @@ Created on: 15/07/20
 Author: Pavankumar Pamuru
 
 """
-from typing import Dict, List, Any
+from typing import List
 
 from ib_boards.exceptions.custom_exceptions import InvalidOffsetValue, \
     InvalidLimitValue, UserDoNotHaveAccessToBoards, \
@@ -64,7 +64,7 @@ class GetBoardsInteractor:
         board_details_interactor = GetBoardsDetailsInteractor(
             storage=self.storage
         )
-        all_board_ids = other_boards_ids + starred_board_ids
+        all_board_ids = starred_board_ids + other_boards_ids
 
         total_boards = len(all_board_ids)
         if offset >= total_boards:

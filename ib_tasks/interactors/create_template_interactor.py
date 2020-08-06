@@ -1,23 +1,21 @@
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
-from ib_tasks.interactors.task_template_dtos import CreateTaskTemplateDTO
+from ib_tasks.interactors.task_template_dtos import CreateTemplateDTO
 
 
-class CreateTaskTemplateInteractor:
+class CreateTemplateInteractor:
     def __init__(self, task_template_storage: TaskTemplateStorageInterface):
         self.task_template_storage = task_template_storage
 
-    def create_task_template_wrapper(
-            self, create_task_template_dto: CreateTaskTemplateDTO):
-        self.create_task_template(
-            create_task_template_dto=create_task_template_dto
-        )
+    def create_template_wrapper(
+            self, create_template_dto: CreateTemplateDTO):
+        self.create_template(create_template_dto=create_template_dto)
 
-    def create_task_template(
-            self, create_task_template_dto: CreateTaskTemplateDTO):
-        template_id = create_task_template_dto.template_id
-        template_name = create_task_template_dto.template_name
+    def create_template(self, create_template_dto: CreateTemplateDTO):
+        template_id = create_template_dto.template_id
+        template_name = create_template_dto.template_name
+        is_transition_template = create_template_dto.is_transition_template
 
         self._make_validations(
             template_id=template_id, template_name=template_name
@@ -27,22 +25,15 @@ class CreateTaskTemplateInteractor:
                 template_id=template_id
             )
         if is_template_exists:
-            existing_template_name = \
-                self.task_template_storage.get_task_template_name(
-                    template_id=template_id
-                )
-            is_template_names_are_equal = \
-                existing_template_name == template_name
-            is_template_names_are_not_equal = not is_template_names_are_equal
-
-            if is_template_names_are_not_equal:
-                self.task_template_storage.update_task_template(
-                    template_id=template_id, template_name=template_name
-                )
+            self.task_template_storage.update_template(
+                template_id=template_id, template_name=template_name,
+                is_transition_template=is_transition_template
+            )
             return
 
-        self.task_template_storage.create_task_template(
-            template_id=template_id, template_name=template_name
+        self.task_template_storage.create_template(
+            template_id=template_id, template_name=template_name,
+            is_transition_template=is_transition_template
         )
 
     def _make_validations(

@@ -2,6 +2,7 @@ from typing import List, Optional
 
 from django.db.models import F, Q
 
+from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.interactors.stages_dtos import StagesActionDTO, \
     TemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
@@ -15,6 +16,10 @@ from ib_tasks.models import StageAction, Stage, ActionPermittedRoles, \
 
 
 class ActionsStorageImplementation(ActionStorageInterface):
+
+    def get_action_type_for_given_action_id(self,
+                                            action_id: int) -> ActionTypes:
+        pass
 
     def get_stage_action_names(
             self, stage_ids: List[str]) -> List[StageActionNamesDTO]:
