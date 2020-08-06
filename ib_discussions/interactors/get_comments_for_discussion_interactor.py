@@ -51,8 +51,8 @@ class GetCommentsForDiscussionInteractor:
         )
 
         from ib_discussions.interactors.create_comment_interactor import \
-            CommentInteractor
-        interactor = CommentInteractor(storage=self.storage)
+            CreateCommentInteractor
+        interactor = CreateCommentInteractor(storage=self.storage)
 
         comment_with_replies_count_and_editable_dtos, user_profile_dtos = \
             interactor.get_comments_for_discussion(comment_dtos=comment_dtos,

@@ -11,7 +11,7 @@ from ib_discussions.interactors.storage_interfaces.dtos import CommentDTO, \
     CommentIdWithRepliesCountDTO
 
 
-class CommentInteractor:
+class CreateCommentInteractor:
 
     def __init__(self, storage: CommentStorageInterface):
         self.storage = storage
@@ -105,7 +105,7 @@ class CommentInteractor:
     def _prepare_comment_editable_status_dtos(comment_dtos: List[CommentDTO],
                                               user_id):
         comment_editable_status_dtos = [
-            CommentInteractor._prepare_comment_editable_status_dto(
+            CreateCommentInteractor._prepare_comment_editable_status_dto(
                 comment_dto=comment_dto, user_id=user_id
             )
             for comment_dto in comment_dtos

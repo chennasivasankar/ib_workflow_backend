@@ -4,38 +4,29 @@ from uuid import UUID
 import pytest
 
 
-class TestGetCommentsForDiscussion:
+class TestGetRepliesDTOS:
 
     @pytest.mark.django_db
     def test_with_valid_details_return_response(self, comment_storage,
                                                 create_comments):
         # Arrange
-        discussion_id = "71be920b-7b4c-49e7-8adb-41a0c18da848"
-
-        comment_list = [
+        comment_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
+        comments_list = [
             {
-                "comment_id": UUID('91be920b-7b4c-49e7-8adb-41a0c18da848'),
-                "comment_content": 'content',
-                "user_id": '31be920b-7b4c-49e7-8adb-41a0c18da848',
-                "created_at": datetime.datetime(2008, 1, 1, 0, 0),
-                "parent_comment_id": None
-            },
-            {
-                "comment_id": UUID('11be920b-7b4c-49e7-8adb-41a0c18da848'),
+                "comment_id": UUID('19be920b-7b4c-49e7-8adb-41a0c18da848'),
                 "comment_content": 'content',
                 "user_id": '01be920b-7b4c-49e7-8adb-41a0c18da848',
-                "created_at": datetime.datetime(2020, 5, 1, 0, 0),
-                "parent_comment_id": None
+                "created_at": datetime.datetime(2008, 1, 1, 0, 0),
+                "parent_comment_id": UUID('91be920b-7b4c-49e7-8adb-41a0c18da848')
             },
             {
-                "comment_id": UUID('21be920b-7b4c-49e7-8adb-41a0c18da848'),
+                "comment_id": UUID('12be920b-7b4c-49e7-8adb-41a0c18da848'),
                 "comment_content": 'content',
                 "user_id": '77be920b-7b4c-49e7-8adb-41a0c18da848',
-                "created_at": datetime.datetime(2020, 1, 20, 0, 0),
-                "parent_comment_id": None
+                "created_at": datetime.datetime(2020, 5, 1, 0, 0),
+                "parent_comment_id": UUID('91be920b-7b4c-49e7-8adb-41a0c18da848')
             }
         ]
-
         from ib_discussions.tests.factories.storage_dtos import \
             CommentDTOFactory
         expected_comment_dtos = [
@@ -46,12 +37,11 @@ class TestGetCommentsForDiscussion:
                 created_at=comment_dict["created_at"],
                 parent_comment_id=comment_dict["parent_comment_id"]
             )
-            for comment_dict in comment_list
+            for comment_dict in comments_list
         ]
+
         # Act
-        response = comment_storage.get_comments_for_discussion(
-            discussion_id=discussion_id
-        )
+        response = comment_storage.get_replies_dtos(comment_id=comment_id)
 
         # Assert
         assert response == expected_comment_dtos

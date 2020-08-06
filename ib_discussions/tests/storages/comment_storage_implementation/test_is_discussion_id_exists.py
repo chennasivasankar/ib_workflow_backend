@@ -3,13 +3,6 @@ import pytest
 
 class TestIsDiscussionIdExists:
 
-    @pytest.fixture()
-    def comment_storage(self):
-        from ib_discussions.storages.comment_storage_implementaion import \
-            CommentStorageImplementation
-        comment_storage = CommentStorageImplementation()
-        return comment_storage
-
     @pytest.mark.django_db
     def test_discussion_id_not_exists_return_false(self, comment_storage):
         # Arrange

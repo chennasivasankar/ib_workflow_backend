@@ -2,17 +2,9 @@ import datetime
 from uuid import UUID
 
 import pytest
-from freezegun import freeze_time
 
 
 class TestGetCommentDetailsDTO:
-
-    @pytest.fixture()
-    def comment_storage(self):
-        from ib_discussions.storages.comment_storage_implementaion import \
-            CommentStorageImplementation
-        comment_storage = CommentStorageImplementation()
-        return comment_storage
 
     @pytest.mark.django_db
     def test_with_valid_comment_id_return_response(self, comment_storage,

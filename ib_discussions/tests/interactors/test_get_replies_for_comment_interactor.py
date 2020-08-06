@@ -88,7 +88,7 @@ class TestGetRepliesForCommentInteractor:
             Mock()
 
         storage_mock.is_comment_id_exists.return_value = True
-        storage_mock.get_comment_dtos.return_value = reply_dtos
+        storage_mock.get_replies_dtos.return_value = reply_dtos
 
         presenter_mock.prepare_response_for_replies_with_users_dtos. \
             return_value = expected_presenter_prepare_response_for_replies_with_users_dtos_mock
@@ -104,7 +104,7 @@ class TestGetRepliesForCommentInteractor:
         storage_mock.is_comment_id_exists.assert_called_once_with(
             comment_id=comment_id
         )
-        storage_mock.get_comment_dtos.assert_called_once_with(
+        storage_mock.get_replies_dtos.assert_called_once_with(
             comment_id=comment_id
         )
         presenter_mock.prepare_response_for_replies_with_users_dtos. \

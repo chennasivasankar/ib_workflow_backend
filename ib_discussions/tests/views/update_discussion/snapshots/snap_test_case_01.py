@@ -7,14 +7,6 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01UpdateDiscussionAPITestCase.test_case status_code'] = '404'
-
-snapshots['TestCase01UpdateDiscussionAPITestCase.test_case body'] = {
-    'http_status_code': 404,
-    'res_status': 'DISCUSSION_ID_NOT_FOUND',
-    'response': 'Please send valid discussion id to update discussion'
-}
-
 snapshots['TestCase01UpdateDiscussionAPITestCase.test_discussion_id_not_found_return_response status_code'] = '404'
 
 snapshots['TestCase01UpdateDiscussionAPITestCase.test_discussion_id_not_found_return_response body'] = {

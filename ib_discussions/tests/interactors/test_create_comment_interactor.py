@@ -24,8 +24,8 @@ class TestCreateCommentInteractor:
     @pytest.fixture()
     def interactor(self, storage_mock):
         from ib_discussions.interactors.create_comment_interactor import \
-            CommentInteractor
-        interactor = CommentInteractor(storage=storage_mock)
+            CreateCommentInteractor
+        interactor = CreateCommentInteractor(storage=storage_mock)
         return interactor
 
     def test_discussion_id_not_found_return_response(

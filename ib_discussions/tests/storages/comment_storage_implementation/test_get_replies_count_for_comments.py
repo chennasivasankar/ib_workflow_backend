@@ -3,13 +3,6 @@ import pytest
 
 class TestGetRepliesForComments:
 
-    @pytest.fixture()
-    def comment_storage(self):
-        from ib_discussions.storages.comment_storage_implementaion import \
-            CommentStorageImplementation
-        comment_storage = CommentStorageImplementation()
-        return comment_storage
-
     @pytest.mark.django_db
     def test_get_replies_for_comments(self, comment_storage, create_comments):
         # Arrange

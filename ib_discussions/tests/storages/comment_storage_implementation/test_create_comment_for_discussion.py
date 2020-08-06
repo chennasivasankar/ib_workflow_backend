@@ -3,13 +3,6 @@ import pytest
 
 class TestCreateCommentForDiscussion:
 
-    @pytest.fixture()
-    def comment_storage(self):
-        from ib_discussions.storages.comment_storage_implementaion import \
-            CommentStorageImplementation
-        comment_storage = CommentStorageImplementation()
-        return comment_storage
-
     @pytest.mark.django_db
     def test_with_valid_details_create_comment(self, comment_storage):
         # Arrange
@@ -30,16 +23,16 @@ class TestCreateCommentForDiscussion:
         )
 
         # Act
-        comment_storage.create_comment_for_discussion(
+        created_comment_id = comment_storage.create_comment_for_discussion(
             user_id=user_id, discussion_id=discussion_id,
             comment_content=comment_content
         )
 
         # Assert
         from ib_discussions.models.comment import Comment
-        comment_object = Comment.objects.get(id=comment_id)
+        comment_object = Comment.objects.get(id=created_comment_id)
 
-        assert str(comment_object.id) == comment_id
+        assert str(comment_object.id) == created_comment_id
         assert comment_object.content == comment_content
         assert comment_object.parent_comment_id is None
         assert str(comment_object.discussion_id) == discussion_id

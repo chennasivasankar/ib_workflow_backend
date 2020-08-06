@@ -2,6 +2,14 @@ import pytest
 
 
 @pytest.fixture()
+def comment_storage():
+    from ib_discussions.storages.comment_storage_implementaion import \
+        CommentStorageImplementation
+    comment_storage = CommentStorageImplementation()
+    return comment_storage
+
+
+@pytest.fixture()
 def create_comments():
     discussion_id = "71be920b-7b4c-49e7-8adb-41a0c18da848"
     from ib_discussions.tests.factories.models import DiscussionFactory

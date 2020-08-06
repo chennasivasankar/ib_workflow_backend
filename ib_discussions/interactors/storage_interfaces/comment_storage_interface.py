@@ -49,5 +49,5 @@ class CommentStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_comment_dtos(self, comment_id: str) -> List[CommentDTO]:
+    def get_replies_dtos(self, comment_id: str) -> List[CommentDTO]:
         pass

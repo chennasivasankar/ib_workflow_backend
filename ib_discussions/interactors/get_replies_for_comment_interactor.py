@@ -44,7 +44,7 @@ class GetRepliesForCommentInteractor:
         if is_comment_id_not_exists:
             raise CommentIdNotFound
 
-        reply_dtos = self.storage.get_comment_dtos(
+        reply_dtos = self.storage.get_replies_dtos(
             comment_id=comment_id)
 
         from ib_discussions.interactors.create_reply_to_comment_interactor import \
