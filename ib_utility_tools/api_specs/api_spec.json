@@ -160,7 +160,6 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_ENTITY_TYPE_FOR_ENTITY_ID",
                   "EMPTY_CHECKLIST_ITEM_TEXT"
                 ]
               }
