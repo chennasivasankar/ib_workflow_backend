@@ -31,8 +31,7 @@ APPS = [
     "ib_iam",
     "ib_tasks",
     "ib_boards",
-    "ib_discussions",
-    "django_elasticsearch_dsl"
+    "ib_discussions"
 ]
 
 INSTALLED_APPS += THIRD_PARTY_APPS
