@@ -2,7 +2,6 @@
 
 REQUEST_BODY_JSON = """
 {
-    "action_id": "string",
     "task_id": 1,
     "title": "string",
     "description": "string",
