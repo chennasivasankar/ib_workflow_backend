@@ -153,3 +153,27 @@ class TestGetFilterInteractor:
         # Assert
         presenter.get_response_for_update_filter_status\
             .assert_called_once_with(filter_id=filter_id, is_selected=is_selected)
+
+    def test_returns_disabled_update_status(
+            self, filter_storage, presenter):
+        # Arrange
+        from ib_tasks.interactors.filter_interactor import FilterInteractor
+        interactor = FilterInteractor(
+            filter_storage=filter_storage, presenter=presenter
+        )
+        from ib_tasks.constants.enum import Status
+        boolean_field = Status.DISABLED.value
+        filter_storage.disable_filter_status.return_value = boolean_field
+        user_id = "1"
+        filter_id = 1
+
+        is_selected = Status.DISABLED.value
+
+        # Act
+        interactor.update_filter_select_status_wrapper(
+            user_id=user_id, filter_id=filter_id, is_selected=is_selected
+        )
+
+        # Assert
+        presenter.get_response_for_update_filter_status\
+            .assert_called_once_with(filter_id=filter_id, is_selected=is_selected)

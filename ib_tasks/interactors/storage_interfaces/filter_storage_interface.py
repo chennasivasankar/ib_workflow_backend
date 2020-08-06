@@ -25,7 +25,7 @@ class FilterStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def enable_filter_status(self, filter_id: int) -> bool:
+    def enable_filter_status(self, filter_id: int) -> Status:
         pass
 
     @abc.abstractmethod

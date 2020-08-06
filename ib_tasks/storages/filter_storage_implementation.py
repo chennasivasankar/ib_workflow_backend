@@ -1,5 +1,7 @@
 from typing import List
 from django.db.models import F
+
+from ib_tasks.constants.enum import Status
 from ib_tasks.interactors.filter_dtos import FilterDTO, ConditionDTO
 from ib_tasks.interactors.storage_interfaces.filter_storage_interface \
     import FilterStorageInterface
@@ -7,6 +9,26 @@ from ib_tasks.models import Filter, TaskTemplate, FilterCondition
 
 
 class FilterStorageImplementation(FilterStorageInterface):
+
+    def validate_filter_id(self, filter_id: int):
+        pass
+
+    def validate_user_with_filter_id(self, user_id: str, filter_id: int):
+        pass
+
+    def enable_filter_status(self, filter_id: int) -> Status:
+
+        filter_obj = Filter.objects.get(id=filter_id)
+        filter_obj.is_selected = Status.ENABLED.value
+        filter_obj.save()
+        return filter_obj.is_selected
+
+    def disable_filter_status(self, filter_id: int) -> Status:
+
+        filter_obj = Filter.objects.get(id=filter_id)
+        filter_obj.is_selected = Status.DISABLED.value
+        filter_obj.save()
+        return filter_obj.is_selected
 
     def get_conditions_to_filters(
             self, filter_ids: List[int]) -> List[ConditionDTO]:
