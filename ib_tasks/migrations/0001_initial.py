@@ -29,15 +29,6 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='Filter',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_by', models.CharField(max_length=30)),
-                ('name', models.CharField(max_length=120)),
-                ('is_selected', models.CharField(choices=[('ENABLED', 'ENABLED'), ('DISABLED', 'DISABLED')], max_length=100)),
-            ],
-        ),
-        migrations.CreateModel(
             name='GoF',
             fields=[
                 ('gof_id', models.CharField(max_length=50, primary_key=True, serialize=False)),
@@ -203,21 +194,6 @@ class Migration(migrations.Migration):
                 ('value', models.IntegerField()),
                 ('task_template', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='global_constants', to='ib_tasks.TaskTemplate')),
             ],
-        ),
-        migrations.CreateModel(
-            name='FilterCondition',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('operator', models.CharField(choices=[('GTE', 'GTE'), ('LTE', 'LTE'), ('GT', 'GT'), ('LT', 'LT'), ('NE', 'NE'), ('EQ', 'EQ'), ('CONTAINS', 'CONTAINS')], max_length=100)),
-                ('value', models.TextField()),
-                ('field', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ib_tasks.Field')),
-                ('filter', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ib_tasks.Filter')),
-            ],
-        ),
-        migrations.AddField(
-            model_name='filter',
-            name='template',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ib_tasks.TaskTemplate'),
         ),
         migrations.CreateModel(
             name='FieldRole',
