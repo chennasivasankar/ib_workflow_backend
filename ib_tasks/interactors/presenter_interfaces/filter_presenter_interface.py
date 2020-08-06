@@ -1,10 +1,20 @@
 import abc
 from typing import List
-
+from dataclasses import dataclass
 from ib_tasks.interactors.filter_dtos import FilterDTO, ConditionDTO
 
 from ib_tasks.constants.enum import Status
 from ib_tasks.interactors.filter_dtos import FilterCompleteDetailsDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFToTaskTemplateDTO
+from ib_tasks.interactors.storage_interfaces.task_templates_dtos import TaskTemplateDTO
+
+
+@dataclass()
+class TaskTemplateFieldsDto:
+    task_template_dtos: List[TaskTemplateDTO]
+    gofs_of_task_templates_dtos: List[GoFToTaskTemplateDTO]
+    fields_dto: List[FieldNameDTO]
 
 
 class FilterPresenterInterface(abc.ABC):
@@ -48,14 +58,15 @@ class FilterPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_response_for_invalid_filter_id(self):
-        pass
-
-    @abc.abstractmethod
     def get_response_for_invalid_user_to_update_filter_status(self):
         pass
 
     @abc.abstractmethod
     def get_response_for_update_filter_status(
             self, filter_id: int, is_selected: Status):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_get_task_templates_fields(
+            self, task_template_fields: TaskTemplateFieldsDto):
         pass

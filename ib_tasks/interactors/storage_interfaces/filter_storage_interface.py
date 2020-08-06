@@ -1,6 +1,7 @@
 import abc
 from typing import List, Tuple
 
+from ib_tasks.constants.enum import Status
 from ib_tasks.interactors.filter_dtos import CreateFilterDTO, \
     CreateConditionDTO, FilterDTO, ConditionDTO, UpdateFilterDTO
 
