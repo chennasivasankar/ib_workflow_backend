@@ -13,8 +13,8 @@ snapshots['TestCase01GetDiscussionsAPITestCase.test_case body'] = {
     'discussions': [
         {
             'author': {
-                'name': 'name of user_id is e597ab2f-a10c-4164-930e-23af375741cb',
-                'profile_pic_url': 'https://graph.ib_users.com/e597ab2f-a10c-4164-930e-23af375741cb/picture',
+                'name': 'name',
+                'profile_pic_url': 'https://graph.ib_users.com/',
                 'user_id': 'e597ab2f-a10c-4164-930e-23af375741cb'
             },
             'created_at': '2008-01-01 00:00:00',
@@ -26,8 +26,8 @@ snapshots['TestCase01GetDiscussionsAPITestCase.test_case body'] = {
         },
         {
             'author': {
-                'name': 'name of user_id is cd4eb7da-6a5f-4f82-82ba-12e40ab7bf5a',
-                'profile_pic_url': 'https://graph.ib_users.com/cd4eb7da-6a5f-4f82-82ba-12e40ab7bf5a/picture',
+                'name': 'name',
+                'profile_pic_url': 'https://graph.ib_users.com/',
                 'user_id': 'cd4eb7da-6a5f-4f82-82ba-12e40ab7bf5a'
             },
             'created_at': '2008-01-01 00:00:00',

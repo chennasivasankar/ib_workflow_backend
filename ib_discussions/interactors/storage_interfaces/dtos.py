@@ -16,7 +16,7 @@ class DiscussionDTO:
 @dataclass
 class CommentIdWithRepliesCountDTO:
     comment_id: str
-    replies_count: int
+    replies_count: int = 0
 
 
 @dataclass

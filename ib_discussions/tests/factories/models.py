@@ -3,6 +3,7 @@ import datetime
 import factory
 
 from ib_discussions.constants.enum import EntityType
+from ib_discussions.models.comment import Comment
 from ib_discussions.models.discussion import Discussion
 from ib_discussions.models.discussion_set import DiscussionSet
 from ib_discussions.models.entity import Entity
@@ -49,9 +50,42 @@ class DiscussionFactory(factory.django.DjangoModelFactory):
         lambda obj: "description"
     )
     created_at = factory.Iterator([
-        datetime.datetime(2008, 1, 1, tzinfo=datetime.timezone.utc),
-        datetime.datetime(2020, 5, 1, tzinfo=datetime.timezone.utc),
-        datetime.datetime(2020, 1, 20, tzinfo=datetime.timezone.utc),
-        datetime.datetime(2007, 2, 5, tzinfo=datetime.timezone.utc)
+        datetime.datetime(2008, 1, 1),
+        datetime.datetime(2020, 5, 1),
+        datetime.datetime(2020, 1, 20),
+        datetime.datetime(2007, 2, 5)
     ])
     is_clarified = factory.Iterator([True, False])
+
+
+class CommentFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Comment
+
+    id = factory.Faker("uuid4")
+    user_id = factory.Faker("uuid4")
+    discussion = factory.SubFactory(DiscussionFactory)
+    content = factory.LazyAttribute(lambda obj: "content")
+    created_at = factory.Iterator([
+        datetime.datetime(2008, 1, 1),
+        datetime.datetime(2020, 5, 1),
+        datetime.datetime(2020, 1, 20),
+        datetime.datetime(2007, 2, 5)
+    ])
+
+
+class ReplyToCommentFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Comment
+
+    id = factory.Faker("uuid4")
+    user_id = factory.Faker("uuid4")
+    discussion = factory.SubFactory(DiscussionFactory)
+    parent_comment = factory.SubFactory(CommentFactory)
+    content = factory.LazyAttribute(lambda obj: "content")
+    created_at = factory.Iterator([
+        datetime.datetime(2008, 1, 1),
+        datetime.datetime(2020, 5, 1),
+        datetime.datetime(2020, 1, 20),
+        datetime.datetime(2007, 2, 5)
+    ])
