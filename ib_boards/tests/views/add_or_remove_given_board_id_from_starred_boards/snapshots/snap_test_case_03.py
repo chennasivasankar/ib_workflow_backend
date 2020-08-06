@@ -10,5 +10,3 @@ snapshots = Snapshot()
 snapshots['TestCase03AddOrRemoveGivenBoardIdFromStarredBoardsAPITestCase.test_case status_code'] = '200'
 
 snapshots['TestCase03AddOrRemoveGivenBoardIdFromStarredBoardsAPITestCase.test_case body'] = b''
-
-snapshots['TestCase03AddOrRemoveGivenBoardIdFromStarredBoardsAPITestCase.test_case starred board'] = True

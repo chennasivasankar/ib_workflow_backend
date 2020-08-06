@@ -11,6 +11,3 @@ snapshots['TestCase01AddOrRemoveGivenBoardIdFromStarredBoardsAPITestCase.test_ca
 
 snapshots['TestCase01AddOrRemoveGivenBoardIdFromStarredBoardsAPITestCase.test_case body'] = b''
 
-snapshots['TestCase01AddOrRemoveGivenBoardIdFromStarredBoardsAPITestCase.test_case starred board'] = True
-
-snapshots['TestCase01AddOrRemoveGivenBoardIdFromStarredBoardsAPITestCase.test_case starr'] = GenericRepr("<QuerySet [{'id': 1, 'user_id': 'user_id_0', 'board_id': 'BOARD_ID_1'}]>")
