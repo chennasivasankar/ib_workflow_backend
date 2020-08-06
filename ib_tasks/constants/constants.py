@@ -38,3 +38,5 @@ STATUS_VARIABLES_SUB_SHEET = "Status Variables"
 ROLES_SUB_SHEET = "Roles"
 
 PRIORITY_TYPES = [(item.value, item.value) for item in Priority]
+
+OPERATOR_TYPES = [(item.value, item.value)for item in Operators]
