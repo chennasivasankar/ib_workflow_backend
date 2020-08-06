@@ -2,6 +2,7 @@ from unittest.mock import create_autospec
 
 import pytest
 
+from ib_boards.constants.enum import STARORUNSTAR
 from ib_boards.interactors.dtos import StarOrUnstarParametersDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
@@ -16,7 +17,7 @@ class TestStarOrUnstar:
     @pytest.fixture()
     def paramters(self):
         board_id = "board_id_1"
-        is_starred = "UNSTAR"
+        is_starred = STARORUNSTAR.UNSTAR.value
         user_id = "user_id_1"
         paramters = StarOrUnstarParametersDTO(
             board_id=board_id,
@@ -47,7 +48,7 @@ class TestStarOrUnstar:
     def test_given_is_starred_star_creates_starred_board(self):
         # Arrange
         board_id = "board_id_1"
-        is_starred = "STAR"
+        is_starred = STARORUNSTAR.STAR.value
         user_id = "user_id_1"
         paramters = StarOrUnstarParametersDTO(
             board_id=board_id,
