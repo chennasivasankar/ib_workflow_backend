@@ -593,6 +593,26 @@
         "template_id": {
           "type": "string"
         },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "start_date": {
+          "type": "string",
+        },
+        "due_date": {
+          "type": "string",
+        },
+        "priority": {
+          "type": "string",
+          "enum": [
+            "HIGH",
+            "MEDIUM",
+            "LOW"
+          ]
+        },
         "gofs": {
           "type": "array",
           "items": {
@@ -640,6 +660,27 @@
               "stage_display_name": {
                 "type": "string"
               },
+              "stage_color": {
+                "type": "string"
+              },
+              "assignee": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "profile_pic": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "name"
+                ]
+              },
               "actions": {
                 "type": "array",
                 "items": {
@@ -653,12 +694,22 @@
                     },
                     "button_color": {
                       "type": "string"
+                    },
+                    "action_type": {
+                      "type": "string",
+                      "enum": [
+                        "NO_VALIDATIONS"
+                      ]
+                    },
+                    "transition_template_id": {
+                      "type": "string"
                     }
                   },
                   "required": [
                     "action_id",
                     "button_text",
-                    "button_color"
+                    "button_color",
+                    "action_type"
                   ]
                 }
               }
@@ -666,7 +717,9 @@
             "required": [
               "stage_id",
               "stage_display_name",
-              "actions"
+              "actions",
+              "assignee",
+              "stage_color"
             ]
           }
         }
@@ -675,7 +728,11 @@
         "task_id",
         "template_id",
         "gofs",
-        "stages_with_actions"
+        "stages_with_actions",
+        "title",
+        "start_date",
+        "due_date",
+        "priority"
       ]
     },
     "UpdateTaskRequestBody": {
