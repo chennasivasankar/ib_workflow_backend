@@ -6,7 +6,8 @@ from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     Task, TaskGoF,
     TaskGoFField,
-    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage, Filter, FilterCondition)
+    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage, Filter,
+    FilterCondition)
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
@@ -14,10 +15,6 @@ from ib_tasks.models.gof import GoF
 from ib_tasks.models.gof_role import GoFRole
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
-from ib_tasks.models import (
-    Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
-    TaskTemplateGlobalConstants, TaskStatusVariable, Task, TaskGoF,
-    TaskGoFField, TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage)
 from ib_tasks.models.task_template_initial_stages import \
     TaskTemplateInitialStage
 

@@ -201,7 +201,6 @@ TASK_CREATED_SUCCESSFULLY = (
 
 INVALID_TASK_JSON = ("Task Json should not be empty", "INVALID_TASK_JSON")
 
-
 INVALID_GOFS_OF_TASK_TEMPLATE = (
     "invalid gofs {}  given to the task template {}",
     "INVALID_GOFS_OF_TASK_TEMPLATE"
@@ -224,4 +223,37 @@ USER_NEEDS_GOF_WRITABLE_PERMISSION = (
 USER_NEEDS_FILED_WRITABLE_PERMISSION = (
     "user {} needs write access on field {}, because user does not have {} roles",
     "USER_NEEDS_FILED_WRITABLE_PERMISSION"
+)
+INVALID_FILTER_ID = (
+    'invalid filter id', 'INVALID_FILTER_ID'
+)
+
+USER_DO_NOT_ACCESS_TO_UPDATE_FILTER_STATUS = (
+    'user not have access to update the filter status',
+    'USER_DO_NOT_ACCESS_TO_UPDATE_FILTER_STATUS'
+)
+TASK_ID_DOESNT_EXIST = (
+    "Task id doesnt exist, please send valid task id",
+    "TASK_ID_DOESNT_EXIST"
+)
+
+INVALID_TASK_TEMPLATE_ID = (
+    'invalid task template id', 'INVALID_TASK_TEMPLATE_ID'
+)
+USER_NOT_ACCESS_TO_FIELDS = (
+    'user not have access to fields', 'USER_NOT_ACCESS_TO_FIELDS'
+)
+FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE = (
+    'fields not belongs to task template: {}',
+    'FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE'
+)
+
+USER_DO_NOT_ACCESS_TO_UPDATE_FILTER = (
+    'user not have access to update the filter',
+    'USER_DO_NOT_ACCESS_TO_UPDATE_FILTER'
+)
+
+USER_DO_NOT_ACCESS_TO_DELETE_FILTER = (
+    'user not have access to delete the filter',
+    'USER_DO_NOT_ACCESS_TO_DELETE_FILTER'
 )
