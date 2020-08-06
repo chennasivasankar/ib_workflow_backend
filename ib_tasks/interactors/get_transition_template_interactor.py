@@ -1,23 +1,19 @@
 from typing import List, Dict
 
 from ib_tasks.constants.enum import PermissionTypes
-from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
-    FieldsStorageInterface
-from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    StageIdWithTemplateIdDTO
-from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
-    import TaskTemplateStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_storage_interface \
-    import TaskStorageInterface
-from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
-    GoFStorageInterface
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
-    UserFieldPermissionDTO, FieldPermissionDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import \
-    GoFToTaskTemplateDTO
 from ib_tasks.interactors.presenter_interfaces. \
     get_transition_template_presenter_interface import \
-    GetTransitionTemplatePresenterInterface, CompleteTransitionTemplatesDTO
+    GetTransitionTemplatePresenterInterface, CompleteTransitionTemplateDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
+    UserFieldPermissionDTO, FieldPermissionDTO
+from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
+    FieldsStorageInterface
+from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
+    GoFStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_storage_interface \
+    import TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
+    import TaskTemplateStorageInterface
 
 
 class GetTransitionTemplateInteractor:
@@ -54,7 +50,7 @@ class GetTransitionTemplateInteractor:
 
     def get_transition_template(
             self, user_id: str, transition_template_id: str
-    ) -> CompleteTransitionTemplatesDTO:
+    ) -> CompleteTransitionTemplateDTO:
 
         self._validate_transition_template_id(
             transition_template_id=transition_template_id)
@@ -76,7 +72,7 @@ class GetTransitionTemplateInteractor:
             self._get_field_with_permissions_of_gofs_in_dtos(
                 gof_ids=gof_ids_permitted_for_user, user_roles=user_roles)
 
-        return CompleteTransitionTemplatesDTO(
+        return CompleteTransitionTemplateDTO(
             transition_template_dto=transition_template_dto,
             gof_dtos=gofs_details_dtos,
             gofs_of_transition_template_dtos=gofs_of_transition_template_dtos,
@@ -151,29 +147,9 @@ class GetTransitionTemplateInteractor:
         return user_permission_dtos_dict
 
     @staticmethod
-    def _get_gof_ids_of_transition_template(
-            gofs_of_transition_templates_dtos: List[GoFToTaskTemplateDTO]
-    ) -> List[str]:
-        gof_ids = [
-            gofs_to_transition_templates_dto.gof_id
-            for gofs_to_transition_templates_dto in gofs_of_transition_templates_dtos
-        ]
-        return gof_ids
-
-    @staticmethod
     def _get_field_ids(field_dtos: List[FieldDTO]) -> List[str]:
         field_ids = [field_dto.field_id for field_dto in field_dtos]
         return field_ids
-
-    @staticmethod
-    def _get_stage_ids(
-            stage_id_with_template_id_dtos: List[StageIdWithTemplateIdDTO]
-    ) -> List[int]:
-        stage_ids = [
-            stage_id_with_template_id_dto.stage_id
-            for stage_id_with_template_id_dto in stage_id_with_template_id_dtos
-        ]
-        return stage_ids
 
     @staticmethod
     def _get_user_role_ids(user_id: str) -> List[str]:

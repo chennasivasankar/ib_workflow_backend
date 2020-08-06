@@ -6,7 +6,7 @@ from ib_tasks.interactors.get_transition_template_interactor \
     import GetTransitionTemplateInteractor
 from ib_tasks.interactors.presenter_interfaces. \
     get_transition_template_presenter_interface import \
-    CompleteTransitionTemplatesDTO
+    CompleteTransitionTemplateDTO
 from ib_tasks.tests.common_fixtures.adapters.roles_service import \
     get_user_role_ids
 # TODO refactor TaskTemplateDTOFactory to TemplateDTOFactory
@@ -151,7 +151,7 @@ class TestGetTransitionTemplateInteractor:
         presenter_mock.get_transition_template_response.return_value = \
             presenter_response_mock
 
-        complete_transition_template_dto = CompleteTransitionTemplatesDTO(
+        complete_transition_template_dto = CompleteTransitionTemplateDTO(
             transition_template_dto=transition_template_dto,
             gof_dtos=gof_dtos,
             gofs_of_transition_template_dtos=gof_to_template_dtos,

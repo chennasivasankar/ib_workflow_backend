@@ -13,7 +13,7 @@ from ib_tasks.exceptions.task_custom_exceptions import \
 
 
 @dataclass
-class CompleteTransitionTemplatesDTO:
+class CompleteTransitionTemplateDTO:
     transition_template_dto: TemplateDTO
     gof_dtos: List[GoFDTO]
     gofs_of_transition_template_dtos: List[GoFToTaskTemplateDTO]
@@ -30,5 +30,5 @@ class GetTransitionTemplatePresenterInterface(abc.ABC):
     @abc.abstractmethod
     def get_transition_template_response(
             self,
-            complete_transition_template_dto: CompleteTransitionTemplatesDTO):
+            complete_transition_template_dto: CompleteTransitionTemplateDTO):
         pass
