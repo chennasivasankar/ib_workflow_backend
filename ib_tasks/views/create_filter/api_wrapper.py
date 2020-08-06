@@ -39,8 +39,10 @@ def api_wrapper(*args, **kwargs):
         filter_storage=storage,
         presenter=presenter
     )
-    return interactor.create_filter(
+    response = interactor.create_filter_wrapper(
         filter_dto=filter_dto,
         condition_dtos=condition_dtos
     )
+    content = response.content
+    return response
 

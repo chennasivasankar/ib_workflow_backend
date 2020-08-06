@@ -20,7 +20,7 @@ def api_wrapper(*args, **kwargs):
         filter_storage=storage,
         presenter=presenter
     )
-    return interactor.delete_filter(
+    return interactor.delete_filter_wrapper(
         filter_id=filter_id,
         user_id=user_id
     )

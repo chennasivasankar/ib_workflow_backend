@@ -1,7 +1,8 @@
 import json
 
 import factory
-from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators
+from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
+    Status
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     Task, TaskGoF,
@@ -233,7 +234,7 @@ class FilterFactory(factory.django.DjangoModelFactory):
     created_by = factory.sequence(lambda n: "{}".format(n))
     name = factory.sequence(lambda n: "filter_name_{}".format(n))
     template = factory.SubFactory(TaskTemplateFactory)
-    is_selected = False
+    is_selected = Status.ENABLED.value
 
 
 class FilterConditionFactory(factory.django.DjangoModelFactory):

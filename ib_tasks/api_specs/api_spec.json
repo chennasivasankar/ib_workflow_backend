@@ -1036,6 +1036,13 @@
         "template_name": {
           "type": "string"
         },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
         "conditions": {
           "type": "array",
           "items": {

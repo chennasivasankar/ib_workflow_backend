@@ -57,7 +57,7 @@ class FilterPresenterImplementation(
                 "name": filter_dto.filter_name,
                 "template_id": filter_dto.template_id,
                 "template_name": filter_dto.template_name,
-                "is_selected": filter_dto.is_selected,
+                "status": filter_dto.is_selected,
                 "conditions": self._get_conditions_to_filter(
                     conditions_dto=filter_conditions_dict[filter_dto.filter_id]
                 )
@@ -107,7 +107,7 @@ class FilterPresenterImplementation(
         response_object = self._get_filter_details_dict(
             condition_dtos=condition_dtos, filter_dto=filter_dto
         )
-        response_object = self.prepare_200_success_response(response_object)
+        response_object = self.prepare_201_created_response(response_object)
         return response_object
 
     def get_response_for_invalid_field_ids(self, error):
@@ -138,7 +138,7 @@ class FilterPresenterImplementation(
         response_object = self._get_filter_details_dict(
             condition_dtos=condition_dtos, filter_dto=filter_dto
         )
-        response_object = self.prepare_200_success_response(response_object)
+        response_object = self.prepare_201_created_response(response_object)
         return response_object
 
     def _get_filter_details_dict(
@@ -148,7 +148,7 @@ class FilterPresenterImplementation(
             "name": filter_dto.filter_name,
             "template_id": filter_dto.template_id,
             "template_name": filter_dto.template_name,
-            "is_selected": filter_dto.is_selected,
+            "status": filter_dto.is_selected,
             "conditions": self._get_conditions_to_filter(
                 conditions_dto=condition_dtos
             )

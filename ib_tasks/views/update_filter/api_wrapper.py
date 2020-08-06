@@ -22,7 +22,7 @@ def api_wrapper(*args, **kwargs):
     request_data = kwargs['request_data']
     from ib_tasks.interactors.filter_dtos import UpdateFilterDTO
     filter_dto = UpdateFilterDTO(
-        filter_id=request_data['filter_id'],
+        filter_id=kwargs['filter_id'],
         filter_name=request_data['name'],
         template_id=request_data['template_id'],
         user_id=user_id
@@ -40,7 +40,7 @@ def api_wrapper(*args, **kwargs):
         filter_storage=storage,
         presenter=presenter
     )
-    return interactor.update_filter(
+    return interactor.update_filter_wrapper(
         filter_dto=filter_dto,
         condition_dtos=condition_dtos
     )
