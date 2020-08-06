@@ -31,7 +31,8 @@ class UpdateTaskStageAssigneesInteractor:
         try:
             self.update_task_stage_assignees(task_id_with_stage_assignees_dto)
         except InvalidTaskIdException as exception:
-            return presenter.raise_invalid_task_id_exception(task_id=exception.task_id)
+            return presenter.raise_invalid_task_id_exception(
+                task_id=exception.task_id)
         except DuplicateStageIds as exception:
             return presenter.raise_duplicate_stage_ids_not_valid(
                 duplicate_stage_ids=exception.duplicate_stage_ids)
@@ -52,10 +53,10 @@ class UpdateTaskStageAssigneesInteractor:
             task_id_with_stage_assignees_dto)
         self._check_duplicate_stage_ids(stage_ids)
         valid_stage_ids = self.stage_storage. \
-            get_valid_stage_ids_in_given_stage_ids(stage_ids)
+            get_valid_db_stage_ids_in_given_db_stage_ids(stage_ids)
         self._validate_stage_ids(stage_ids, valid_stage_ids)
         stage_role_dtos = self.stage_storage. \
-            get_stage_role_dtos_given_stage_ids(stage_ids)
+            get_stage_role_dtos_given_db_stage_ids(stage_ids)
 
         role_ids_and_assignee_id_group_by_stage_id_dtos = \
             self._get_role_ids_and_assignee_id_group_by_stage_id_dtos(
@@ -66,7 +67,10 @@ class UpdateTaskStageAssigneesInteractor:
         self._validate_does_given_assignee_of_stage_ids_have_valid_permission(
             role_ids_and_assignee_id_group_by_stage_id_dtos)
         task_stage_ids_for_updation = self.stage_storage. \
-            get_task_stage_ids_in_given_stage_ids(stage_ids)
+            get_task_stage_ids_in_given_stage_ids(
+            stage_ids=stage_ids,
+            task_id=task_id_with_stage_assignees_dto.task_id)
+
         task_stage_ids_for_creation = self._get_task_stage_ids_for_creation(
             task_stage_ids_for_updation, stage_ids)
         if task_stage_ids_for_updation:
@@ -93,7 +97,7 @@ class UpdateTaskStageAssigneesInteractor:
         for each_task_stage_id in task_stage_ids:
             for each_task_id_with_stage_assignees_dto in \
                     task_id_with_stage_assignees_dto.stage_assignees:
-                if each_task_id_with_stage_assignees_dto.stage_id == \
+                if each_task_id_with_stage_assignees_dto.db_stage_id == \
                         each_task_stage_id:
                     task_id_with_stage_assignee_dtos.append(
                         TaskIdWithStageAssigneeDTO(
@@ -129,7 +133,7 @@ class UpdateTaskStageAssigneesInteractor:
 
     @staticmethod
     def _get_role_ids_and_assignee_id_group_by_stage_id_dtos(
-            stage_ids: List[str],
+            stage_ids: List[int],
             task_id_with_stage_assignees_dto: TaskIdWithStageAssigneesDTO,
             stage_role_dtos: List[StageRoleDTO]
     ) -> List[StageIdWithRoleIdsAndAssigneeIdDTO]:
@@ -139,13 +143,13 @@ class UpdateTaskStageAssigneesInteractor:
             list_of_role_ids = []
             for each_stage_role_dto in \
                     stage_role_dtos:
-                if each_stage_role_dto.stage_id == \
+                if each_stage_role_dto.db_stage_id == \
                         each_stage_id:
                     list_of_role_ids.append(each_stage_role_dto.role_id)
             stage_assignee_id = ""
             for each_stage_assignee_dto in task_id_with_stage_assignees_dto. \
                     stage_assignees:
-                if each_stage_assignee_dto.stage_id == each_stage_id:
+                if each_stage_assignee_dto.db_stage_id == each_stage_id:
                     stage_assignee_id = each_stage_assignee_dto.assignee_id
 
             each_stage_id_with_role_ids_and_assignee_id_dto = \
@@ -170,7 +174,7 @@ class UpdateTaskStageAssigneesInteractor:
     def _get_stage_ids_from_given_dto(
             task_id_with_stage_assignees_dto: TaskIdWithStageAssigneesDTO):
         stage_ids = [
-            stage_assignee_dto.stage_id for stage_assignee_dto in
+            stage_assignee_dto.db_stage_id for stage_assignee_dto in
             task_id_with_stage_assignees_dto.stage_assignees
         ]
         return stage_ids
@@ -197,7 +201,7 @@ class UpdateTaskStageAssigneesInteractor:
         return task_stage_ids_for_creation
 
     @staticmethod
-    def _check_duplicate_stage_ids(stage_ids: List[str]):
+    def _check_duplicate_stage_ids(stage_ids: List[int]):
 
         length_of_stage_ids = len(stage_ids)
         duplicate_stage_ids = []

@@ -260,6 +260,6 @@ class StageRoleFactory(factory.django.DjangoModelFactory):
         model = StageRole
 
     stage = factory.SubFactory(StageModelFactory)
-    role = factory.Iterator(
+    role_id = factory.Iterator(
         ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"]
     )

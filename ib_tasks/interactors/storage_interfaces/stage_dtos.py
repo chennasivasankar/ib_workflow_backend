@@ -99,13 +99,13 @@ class StageDisplayValueDTO:
 
 @dataclass
 class StageRoleDTO:
-    stage_id: str
+    db_stage_id: int
     role_id: str
 
 
 @dataclass
 class StageIdWithRoleIdsAndAssigneeIdDTO:
-    stage_id: str
+    db_stage_id: int
     role_ids: List[str]
     assignee_id: str
 

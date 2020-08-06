@@ -28,7 +28,7 @@ class InvalidStageValues(Exception):
 
 
 class DuplicateStageIds(Exception):
-    def __init__(self, duplicate_stage_ids: List[str]):
+    def __init__(self, duplicate_stage_ids: List[int]):
         self.duplicate_stage_ids = duplicate_stage_ids
 
 
