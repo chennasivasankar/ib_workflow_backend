@@ -17,6 +17,8 @@ from ib_tasks.interactors.create_or_update_task.field_response_validations. \
     base_field_validation import BaseFieldValidation
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldCompleteDetailsDTO
+from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
+    FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.task_dtos import FieldValuesDTO
@@ -25,9 +27,9 @@ from ib_tasks.interactors.task_dtos import FieldValuesDTO
 class ValidateFieldResponsesInteractor:
 
     def __init__(
-            self, task_storage: TaskStorageInterface
+            self, field_storage: FieldsStorageInterface
     ):
-        self.task_storage = task_storage
+        self.field_storage = field_storage
 
     def validate_field_responses(
             self, field_values_dtos: List[FieldValuesDTO]
@@ -36,7 +38,7 @@ class ValidateFieldResponsesInteractor:
             field_values_dto.field_id
             for field_values_dto in field_values_dtos
         ]
-        field_details_dtos = self.task_storage. \
+        field_details_dtos = self.field_storage. \
             get_field_details_for_given_field_ids(field_ids=field_ids)
         for field_details_dto in field_details_dtos:
             field_response = self._get_field_response_for_given_field_id(

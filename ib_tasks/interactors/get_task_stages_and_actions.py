@@ -2,6 +2,8 @@ from collections import defaultdict
 from typing import List
 
 from ib_tasks.adapters.roles_service_adapter import get_roles_service_adapter
+from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
+    ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
@@ -12,9 +14,10 @@ from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
 
 class GetTaskStagesAndActions:
     def __init__(self, storage: FieldsStorageInterface,
-                 task_storage: StorageInterface):
+                 task_storage: StorageInterface, action_storage:ActionStorageInterface):
         self.storage = storage
         self.task_storage = task_storage
+        self.action_storage=action_storage
 
     def get_task_stages_and_actions(self, task_id: int, user_id: str) -> \
             List[StageAndActionsDetailsDTO]:
@@ -31,7 +34,7 @@ class GetTaskStagesAndActions:
         stage_details_dtos = self.storage.get_stage_complete_details(
             stage_ids)
 
-        stage_actions_dtos = self.storage.get_actions_details(stage_ids,
+        stage_actions_dtos = self.action_storage.get_actions_details(stage_ids,
                                                               user_roles)
 
         stage_actions_dtos = self._convert_to_task_complete_details_dto(

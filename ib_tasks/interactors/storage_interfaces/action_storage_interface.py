@@ -8,6 +8,8 @@ from abc import ABC
 from typing import List, Optional
 
 from ib_tasks.interactors.stages_dtos import StageActionDTO
+from ib_tasks.interactors.storage_interfaces.actions_dtos import \
+    ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionNamesDTO
 
@@ -41,4 +43,11 @@ class ActionStorageInterface(ABC):
 
     @abc.abstractmethod
     def get_valid_task_template_ids(self, task_template_ids: List[str]):
+        pass
+
+    @abc.abstractmethod
+    def get_actions_details(self,
+                            stage_ids: List[str],
+                            user_roles: List[str]) -> \
+            List[ActionDetailsDTO]:
         pass

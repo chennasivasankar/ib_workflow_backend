@@ -1,6 +1,8 @@
 import pytest
 
 from ib_tasks.storages.fields_storage_implementation import FieldsStorageImplementation
+from ib_tasks.storages.tasks_storage_implementation import \
+    TasksStorageImplementation
 from ib_tasks.tests.factories.interactor_dtos import GetTaskDetailsDTOFactory
 from ib_tasks.tests.factories.models import StageModelFactory, TaskFactory, TaskTemplateFactory, TaskStageModelFactory
 
@@ -22,7 +24,7 @@ class TestValidateTaskStageIds:
                                          populate_data,
                                          snapshot):
         # Arrange
-        storage = FieldsStorageImplementation()
+        storage = TasksStorageImplementation()
 
         # Act
         response = storage.validate_task_related_stage_ids(get_task_stage_dtos)

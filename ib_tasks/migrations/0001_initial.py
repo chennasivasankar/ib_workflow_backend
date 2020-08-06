@@ -59,6 +59,21 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='StageAction',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('name', models.CharField(max_length=100)),
+                ('button_text', models.TextField()),
+                ('button_color', models.TextField(null=True)),
+                ('logic', models.TextField()),
+                ('py_function_import_path', models.TextField()),
+                ('stage', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ib_tasks.Stage')),
+            ],
+            options={
+                'unique_together': {('stage', 'name')},
+            },
+        ),
+        migrations.CreateModel(
             name='Task',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
@@ -146,7 +161,9 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('task_json', models.TextField()),
-                ('user_id', models.CharField(max_length=50)),
+                ('user_id', models.CharField(max_length=100)),
+                ('acted_at', models.DateTimeField(auto_now_add=True)),
+                ('action', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ib_tasks.StageAction')),
                 ('task', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ib_tasks.Task')),
             ],
         ),
@@ -158,21 +175,6 @@ class Migration(migrations.Migration):
                 ('field', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ib_tasks.Field')),
                 ('task_gof', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ib_tasks.TaskGoF')),
             ],
-        ),
-        migrations.CreateModel(
-            name='StageAction',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('button_text', models.TextField()),
-                ('button_color', models.TextField(null=True)),
-                ('logic', models.TextField()),
-                ('py_function_import_path', models.TextField()),
-                ('stage', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ib_tasks.Stage')),
-            ],
-            options={
-                'unique_together': {('stage', 'name')},
-            },
         ),
         migrations.CreateModel(
             name='GoFRole',

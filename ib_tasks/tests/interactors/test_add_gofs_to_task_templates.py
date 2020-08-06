@@ -1,5 +1,6 @@
-import pytest
 import mock
+import pytest
+
 from ib_tasks.interactors.add_gofs_to_task_template_interactor import \
     AddGoFsToTaskTemplateInteractor
 from ib_tasks.tests.factories.interactor_dtos import \
@@ -8,11 +9,20 @@ from ib_tasks.tests.factories.interactor_dtos import \
 
 class TestAddGoFsToTaskTemplates:
     @pytest.fixture
-    def task_storage_mock(self):
-        from ib_tasks.interactors.storage_interfaces.task_storage_interface \
-            import TaskStorageInterface
-        task_storage = mock.create_autospec(TaskStorageInterface)
-        return task_storage
+    def task_template_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces \
+            .task_template_storage_interface import \
+            TaskTemplateStorageInterface
+        task_template_storage = mock.create_autospec(
+            TaskTemplateStorageInterface)
+        return task_template_storage
+
+    @pytest.fixture
+    def gof_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces.gof_storage_interface \
+            import \
+            GoFStorageInterface
+        return mock.create_autospec(GoFStorageInterface)
 
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
@@ -20,7 +30,7 @@ class TestAddGoFsToTaskTemplates:
         GoFsWithTemplateIdDTOFactory.reset_sequence()
 
     def test_with_invalid_value_for_template_id_field_raises_exception(
-            self, task_storage_mock):
+            self, task_template_storage_mock, gof_storage_mock):
         # Arrange
 
         template_id = " "
@@ -34,9 +44,11 @@ class TestAddGoFsToTaskTemplates:
         )
 
         interactor = AddGoFsToTaskTemplateInteractor(
-            task_storage=task_storage_mock
+            task_template_storage=task_template_storage_mock,
+            gof_storage=gof_storage_mock
         )
-        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import \
+            InvalidValueForField
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
@@ -46,7 +58,7 @@ class TestAddGoFsToTaskTemplates:
         assert err.value.args[0] == expected_exception_message
 
     def test_with_invalid_value_for_gof_id_field_raises_exception(
-            self, task_storage_mock):
+            self, task_template_storage_mock, gof_storage_mock):
         # Arrange
         from ib_tasks.constants.exception_messages import \
             INVALID_VALUE_FOR_GOF_IDS
@@ -59,9 +71,11 @@ class TestAddGoFsToTaskTemplates:
             gof_dtos=gof_dtos
         )
         interactor = AddGoFsToTaskTemplateInteractor(
-            task_storage=task_storage_mock
+            task_template_storage=task_template_storage_mock,
+            gof_storage=gof_storage_mock
         )
-        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import \
+            InvalidValueForField
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
@@ -71,7 +85,7 @@ class TestAddGoFsToTaskTemplates:
         assert err.value.args[0] == expected_exception_message
 
     def test_with_invalid_order_values_for_gof_ids_field_raises_exception(
-            self, task_storage_mock):
+            self, task_template_storage_mock, gof_storage_mock):
         # Arrange
         from ib_tasks.constants.exception_messages import \
             INVALID_ORDERS_FOR_GOFS
@@ -86,9 +100,11 @@ class TestAddGoFsToTaskTemplates:
         )
 
         interactor = AddGoFsToTaskTemplateInteractor(
-            task_storage=task_storage_mock
+            task_template_storage=task_template_storage_mock,
+            gof_storage=gof_storage_mock
         )
-        from ib_tasks.exceptions.gofs_custom_exceptions import InvalidOrdersForGoFs
+        from ib_tasks.exceptions.gofs_custom_exceptions import \
+            InvalidOrdersForGoFs
 
         # Assert
         with pytest.raises(InvalidOrdersForGoFs) as err:
@@ -98,7 +114,7 @@ class TestAddGoFsToTaskTemplates:
         assert err.value.args[0] == expected_exception_message
 
     def test_with_duplicate_order_values_for_gof_ids_raises_exception(
-            self, task_storage_mock):
+            self, task_template_storage_mock, gof_storage_mock):
         # Arrange
         from ib_tasks.constants.exception_messages import \
             DUPLICATE_ORDER_VALUES_FOR_GOFS
@@ -113,9 +129,11 @@ class TestAddGoFsToTaskTemplates:
         )
 
         interactor = AddGoFsToTaskTemplateInteractor(
-            task_storage=task_storage_mock
+            task_template_storage=task_template_storage_mock,
+            gof_storage=gof_storage_mock
         )
-        from ib_tasks.exceptions.gofs_custom_exceptions import DuplicateOrderValuesForGoFs
+        from ib_tasks.exceptions.gofs_custom_exceptions import \
+            DuplicateOrderValuesForGoFs
 
         # Assert
         with pytest.raises(DuplicateOrderValuesForGoFs) as err:
@@ -124,7 +142,9 @@ class TestAddGoFsToTaskTemplates:
             )
         assert err.value.args[0] == expected_exception_message
 
-    def test_with_duplicate_gof_ids_raises_exception(self, task_storage_mock):
+    def test_with_duplicate_gof_ids_raises_exception(self,
+                                                     task_template_storage_mock,
+                                                     gof_storage_mock):
         # Arrange
         from ib_tasks.constants.exception_messages import \
             DUPLICATE_GOF_IDS
@@ -139,7 +159,8 @@ class TestAddGoFsToTaskTemplates:
         )
 
         interactor = AddGoFsToTaskTemplateInteractor(
-            task_storage=task_storage_mock
+            task_template_storage=task_template_storage_mock,
+            gof_storage=gof_storage_mock
         )
         from ib_tasks.exceptions.gofs_custom_exceptions import DuplicateGoFIds
 
@@ -151,7 +172,7 @@ class TestAddGoFsToTaskTemplates:
         assert err.value.args[0] == expected_exception_message
 
     def test_with_invalid_template_id_raises_exception(
-            self, task_storage_mock):
+            self, task_template_storage_mock, gof_storage_mock):
         # Arrange
         invalid_template_id = "template_3"
         from ib_tasks.constants.exception_messages import \
@@ -167,10 +188,13 @@ class TestAddGoFsToTaskTemplates:
         )
 
         interactor = AddGoFsToTaskTemplateInteractor(
-            task_storage=task_storage_mock
+            task_template_storage=task_template_storage_mock,
+            gof_storage=gof_storage_mock
         )
-        task_storage_mock.check_is_template_exists.return_value = False
-        from ib_tasks.exceptions.task_custom_exceptions import TemplateDoesNotExists
+        task_template_storage_mock.check_is_template_exists.return_value = \
+            False
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            TemplateDoesNotExists
 
         # Assert
         with pytest.raises(TemplateDoesNotExists) as err:
@@ -179,7 +203,9 @@ class TestAddGoFsToTaskTemplates:
             )
         assert err.value.args[0] == expected_exception_message
 
-    def test_with_invalid_gof_ids_raises_exception(self, task_storage_mock):
+    def test_with_invalid_gof_ids_raises_exception(self,
+                                                   task_template_storage_mock,
+                                                   gof_storage_mock):
         # Arrange
         template_id = "template_1"
         expected_invalid_gof_ids = ['gof_1']
@@ -196,11 +222,14 @@ class TestAddGoFsToTaskTemplates:
         )
 
         interactor = AddGoFsToTaskTemplateInteractor(
-            task_storage=task_storage_mock
+            task_template_storage=task_template_storage_mock,
+            gof_storage=gof_storage_mock
         )
-        task_storage_mock.check_is_template_exists.return_value = True
-        task_storage_mock.get_existing_gof_ids_of_template.return_value = []
-        task_storage_mock.get_valid_gof_ids_in_given_gof_ids.return_value = \
+        task_template_storage_mock.check_is_template_exists.return_value = True
+        task_template_storage_mock.get_existing_gof_ids_of_template \
+            .return_value = []
+        gof_storage_mock.get_valid_gof_ids_in_given_gof_ids \
+            .return_value = \
             ['gof_2']
         from ib_tasks.exceptions.gofs_custom_exceptions import GofsDoesNotExist
 
@@ -211,7 +240,9 @@ class TestAddGoFsToTaskTemplates:
             )
         assert err.value.args[0] == expected_exception_message
 
-    def test_add_gofs_to_template_with_valid_data(self, task_storage_mock):
+    def test_add_gofs_to_template_with_valid_data(self,
+                                                  task_template_storage_mock,
+                                                  gof_storage_mock):
         # Arrange
         template_id = "template_1"
 
@@ -221,25 +252,29 @@ class TestAddGoFsToTaskTemplates:
         )
 
         interactor = AddGoFsToTaskTemplateInteractor(
-            task_storage=task_storage_mock
+            task_template_storage=task_template_storage_mock,
+            gof_storage=gof_storage_mock
         )
-        task_storage_mock.check_is_template_exists.return_value = True
-        task_storage_mock.get_existing_gof_ids_of_template.return_value = []
-        task_storage_mock.get_valid_gof_ids_in_given_gof_ids.return_value = \
+        task_template_storage_mock.check_is_template_exists.return_value = True
+        task_template_storage_mock.get_existing_gof_ids_of_template \
+            .return_value = []
+        gof_storage_mock.get_valid_gof_ids_in_given_gof_ids \
+            .return_value = \
             ['gof_1', 'gof_2']
 
-        #Act
+        # Act
         interactor.add_gofs_to_task_template_wrapper(
             gofs_with_template_id_dto=gofs_with_template_id_dto
         )
 
-        #Assert
-        task_storage_mock.add_gofs_to_template.assert_called_once_with(
+        # Assert
+        task_template_storage_mock.add_gofs_to_template \
+            .assert_called_once_with(
             template_id=template_id, gof_dtos=gof_dtos
         )
 
     def test_when_gofs_already_exists_but_given_different_configuration_updates_gofs_to_template(
-            self, task_storage_mock):
+            self, task_template_storage_mock, gof_storage_mock):
         # Arrange
         template_id = "template_1"
 
@@ -249,12 +284,15 @@ class TestAddGoFsToTaskTemplates:
         )
 
         interactor = AddGoFsToTaskTemplateInteractor(
-            task_storage=task_storage_mock
+            task_template_storage=task_template_storage_mock,
+            gof_storage=gof_storage_mock
         )
-        task_storage_mock.check_is_template_exists.return_value = True
-        task_storage_mock.get_existing_gof_ids_of_template.return_value = \
+        task_template_storage_mock.check_is_template_exists.return_value = True
+        task_template_storage_mock.get_existing_gof_ids_of_template \
+            .return_value = \
             ['gof_2']
-        task_storage_mock.get_valid_gof_ids_in_given_gof_ids.return_value = \
+        gof_storage_mock.get_valid_gof_ids_in_given_gof_ids \
+            .return_value = \
             ['gof_1', 'gof_2']
 
         from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
@@ -264,18 +302,19 @@ class TestAddGoFsToTaskTemplates:
             )
         ]
 
-        #Act
+        # Act
         interactor.add_gofs_to_task_template_wrapper(
             gofs_with_template_id_dto=gofs_with_template_id_dto
         )
 
-        #Assert
-        task_storage_mock.update_gofs_to_template.assert_called_once_with(
+        # Assert
+        task_template_storage_mock.update_gofs_to_template \
+            .assert_called_once_with(
             template_id=template_id, gof_dtos=expected_gof_dtos_to_update
         )
 
     def test_when_gofs_already_exists_but_not_given_in_present_configuraton_adds_gofs_and_raises_exception(
-            self, task_storage_mock):
+            self, task_template_storage_mock, gof_storage_mock):
         # Arrange
         template_id = "template_1"
         expected_existing_gof_ids_that_are_not_in_given_data = \
@@ -292,23 +331,27 @@ class TestAddGoFsToTaskTemplates:
             gof_dtos=gof_dtos, template_id=template_id
         )
         interactor = AddGoFsToTaskTemplateInteractor(
-            task_storage=task_storage_mock
+            task_template_storage=task_template_storage_mock,
+            gof_storage=gof_storage_mock
         )
-        task_storage_mock.check_is_template_exists.return_value = True
-        task_storage_mock.get_existing_gof_ids_of_template.return_value = \
+        task_template_storage_mock.check_is_template_exists.return_value = True
+        task_template_storage_mock.get_existing_gof_ids_of_template \
+            .return_value = \
             expected_existing_gof_ids_that_are_not_in_given_data
-        task_storage_mock.get_valid_gof_ids_in_given_gof_ids.return_value = \
+        gof_storage_mock.get_valid_gof_ids_in_given_gof_ids \
+            .return_value = \
             ['gof_1', 'gof_2']
 
-        from ib_tasks.exceptions.gofs_custom_exceptions import ExistingGoFsNotInGivenData
+        from ib_tasks.exceptions.gofs_custom_exceptions import \
+            ExistingGoFsNotInGivenData
 
-        #Assert
+        # Assert
         with pytest.raises(ExistingGoFsNotInGivenData) as err:
             interactor.add_gofs_to_task_template_wrapper(
                 gofs_with_template_id_dto=gofs_with_template_id_dto
             )
 
         assert err.value.args[0] == expected_exception_message
-        task_storage_mock.add_gofs_to_template.assert_called_once_with(
+        task_template_storage_mock.add_gofs_to_template.assert_called_once_with(
             template_id=template_id, gof_dtos=gof_dtos
         )

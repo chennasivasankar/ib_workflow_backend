@@ -24,11 +24,15 @@ from ib_tasks.interactors.create_or_update_task \
     CreateOrUpdateTaskBaseValidationsInteractor
 from ib_tasks.interactors.presenter_interfaces.create_task_presenter import \
     CreateTaskPresenterInterface
+from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
+    ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces. \
     create_or_update_task_storage_interface import \
     CreateOrUpdateTaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
+from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
+    GoFStorageInterface
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
@@ -37,6 +41,9 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFWithTaskIdDTO, TaskGoFFieldDTO, TaskGoFDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface\
+    import \
+    TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import CreateTaskDTO
 from ib_tasks.interactors.user_action_on_task_interactor import \
     UserActionOnTaskInteractor
@@ -46,15 +53,21 @@ class CreateTaskInteractor:
 
     def __init__(
             self, task_storage: TaskStorageInterface,
+            gof_storage: GoFStorageInterface,
+            task_template_storage: TaskTemplateStorageInterface,
             create_task_storage: CreateOrUpdateTaskStorageInterface,
             storage: StorageInterface, field_storage: FieldsStorageInterface,
-            stage_storage: StageStorageInterface
+            stage_storage: StageStorageInterface,
+            action_storage: ActionStorageInterface
     ):
+        self.task_template_storage = task_template_storage
+        self.gof_storage = gof_storage
         self.task_storage = task_storage
         self.create_task_storage = create_task_storage
         self.storage = storage
         self.field_storage = field_storage
         self.stage_storage = stage_storage
+        self.action_storage = action_storage
 
     def create_task_wrapper(
             self, presenter: CreateTaskPresenterInterface,
@@ -152,7 +165,8 @@ class CreateTaskInteractor:
         self._validate_task_template_id(task_dto.task_template_id)
         base_validations_interactor = \
             CreateOrUpdateTaskBaseValidationsInteractor(
-                self.task_storage, self.create_task_storage, self.storage,
+                self.task_storage, self.gof_storage,
+                self.create_task_storage, self.storage,
                 self.field_storage
             )
         base_validations_interactor. \
@@ -182,8 +196,12 @@ class CreateTaskInteractor:
             user_id=task_dto.created_by_id, board_id=None,
             task_id=created_task_id,
             action_id=task_dto.action_id,
-            storage=self.storage, gof_storage=self.create_task_storage,
-            field_storage=self.field_storage, stage_storage=self.stage_storage
+            storage=self.storage,
+            gof_storage=self.create_task_storage,
+            field_storage=self.field_storage,
+            stage_storage=self.stage_storage,
+            task_storage=self.task_storage,
+            action_storage=self.action_storage,
         )
         self.create_task_storage.set_status_variables_for_template_and_task(
             task_dto.task_template_id, created_task_id
@@ -197,7 +215,7 @@ class CreateTaskInteractor:
             self, task_template_id: str
     ) -> Optional[InvalidTaskTemplateIds]:
         task_template_existence = \
-            self.task_storage.check_is_template_exists(
+            self.task_template_storage.check_is_template_exists(
                 template_id=task_template_id)
         if not task_template_existence:
             raise InvalidTaskTemplateIds(

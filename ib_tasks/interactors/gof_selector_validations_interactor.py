@@ -7,15 +7,14 @@ from ib_tasks.exceptions.fields_custom_exceptions import (
     InvalidGOFIds, InvalidJsonForFieldValue,
     EmptyValuesForGoFNames, DuplicationOfGoFNamesForFieldValues
 )
-
-from ib_tasks.interactors.storage_interfaces.task_storage_interface \
-    import TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
+    GoFStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO
 
 
 class GoFSelectorValidationsInteractor:
-    def __init__(self, storage: TaskStorageInterface):
-        self.storage = storage
+    def __init__(self, gof_storage: GoFStorageInterface):
+        self.gof_storage = gof_storage
 
     def gof_selector_validations(self, field_dto: FieldDTO):
         field_values = self._check_for_valid_json(field_dto)
@@ -117,7 +116,7 @@ class GoFSelectorValidationsInteractor:
         from ib_tasks.constants.exception_messages \
             import INVALID_GOF_IDS_EXCEPTION_MESSAGE
         gof_ids = sorted(list(set(gof_ids)))
-        existing_gof_ids = self.storage.get_existing_gof_ids(gof_ids)
+        existing_gof_ids = self.gof_storage.get_existing_gof_ids(gof_ids)
         invalid_gof_ids = []
 
         for gof_id in gof_ids:
