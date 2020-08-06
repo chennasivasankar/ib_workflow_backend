@@ -80,7 +80,7 @@ class BoardColumnsDTO:
 
 @dataclass
 class GetBoardsDTO:
-    user_id: int
+    user_id: str
     offset: int
     limit: int
 
