@@ -51,7 +51,7 @@ class GetBoardsInteractor:
             raise InvalidOffsetValue
         if limit < 0:
             raise InvalidLimitValue
-        board_ids = self.storage.get_board_ids(user_id=user_role)
+        board_ids = self.storage.get_board_ids(user_id=user_id)
         total_boards = len(board_ids)
         if offset >= total_boards:
             raise OffsetValueExceedsTotalTasksCount
