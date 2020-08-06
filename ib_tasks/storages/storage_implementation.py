@@ -13,7 +13,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO, \
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GOFMultipleEnableDTO, GoFWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    StageDisplayValueDTO
+    StageDisplayValueDTO, StageValueWithTaskIdsDTO, TaskIdWithStageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
     StageValueDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
@@ -150,6 +150,47 @@ class StagesStorageImplementation(StageStorageInterface):
                 stage_id=list_of_stages[task.stage_id]
             ))
         TaskTemplateInitialStage.objects.bulk_create(list_of_task_stages)
+
+    def get_task_id_with_stage_details_dtos_based_on_stage_value(
+            self, stage_values: List[int],
+            task_ids_group_by_stage_value_dtos: List[StageValueWithTaskIdsDTO],
+            user_id: str) -> List[TaskIdWithStageDetailsDTO]:
+        # ToDo: Need to optimize the storage calls which are in for loop
+        all_task_id_with_stage_details_dtos = []
+        for each_stage_value in stage_values:
+            for each_task_ids_group_by_stage_value_dto in \
+                    task_ids_group_by_stage_value_dtos:
+                if each_task_ids_group_by_stage_value_dto.stage_value \
+                        == each_stage_value:
+                    task_id_with_stage_details = list(
+                        TaskStage.objects.filter(
+                            task__created_by=user_id,
+                            stage__value=each_stage_value,
+                            task_id__in=each_task_ids_group_by_stage_value_dto.
+                                task_ids).values("task_id", "stage__stage_id",
+                                                 "stage__display_name"))
+
+                    task_id_with_stage_details_dtos = self. \
+                        _get_task_id_with_stage_details_dtos(
+                        task_id_with_stage_details)
+
+                    all_task_id_with_stage_details_dtos.extend(
+                        task_id_with_stage_details_dtos)
+        return all_task_id_with_stage_details_dtos
+
+    @staticmethod
+    def _get_task_id_with_stage_details_dtos(
+            task_id_with_stage_details: List[dict]
+    ) -> List[TaskIdWithStageDetailsDTO]:
+        task_id_with_stage_details_dtos = [
+            TaskIdWithStageDetailsDTO(
+                task_id=task_id_with_stage_detail["task_id"],
+                stage_id=task_id_with_stage_detail["stage__stage_id"],
+                stage_display_name=task_id_with_stage_detail[
+                    "stage__display_name"])
+            for task_id_with_stage_detail in task_id_with_stage_details
+        ]
+        return task_id_with_stage_details_dtos
 
 
 class StorageImplementation(StorageInterface):

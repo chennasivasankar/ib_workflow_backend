@@ -3,7 +3,7 @@ from typing import Optional, List
 
 from ib_tasks.interactors.stages_dtos import StageDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
-    TaskTemplateStageDTO
+    TaskTemplateStageDTO, StageValueWithTaskIdsDTO, TaskIdWithStageDetailsDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 
 
@@ -44,4 +44,12 @@ class StageStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_stage_details(self, task_dtos: List[GetTaskDetailsDTO]) -> \
             List[TaskTemplateStageDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_task_id_with_stage_details_dtos_based_on_stage_value(
+            self, user_id: str, stage_values: List[int],
+            task_ids_group_by_stage_value_dtos: List[
+                StageValueWithTaskIdsDTO]) \
+            -> [TaskIdWithStageDetailsDTO]:
         pass

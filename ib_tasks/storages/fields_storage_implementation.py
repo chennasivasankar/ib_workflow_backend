@@ -73,8 +73,6 @@ class FieldsStorageImplementation(FieldsStorageInterface):
             task_field_objs)
         return task_fields_dtos
 
-
-
     def get_fields_details(self,
                            task_fields_dtos: List[StageTaskFieldsDTO],
                            user_roles: List[str]) -> \

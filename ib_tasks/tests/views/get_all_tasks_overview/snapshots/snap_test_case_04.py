@@ -78,6 +78,11 @@ snapshots['TestCase04GetAllTasksOverviewAPITestCase.test_case body'] = {
             'task_id': '3',
             'task_overview_fields': [
                 {
+                    'field_display_name': 'DISPLAY_NAME-0',
+                    'field_response': 'field_response_6',
+                    'field_type': 'PLAIN_TEXT'
+                },
+                {
                     'field_display_name': 'DISPLAY_NAME-1',
                     'field_response': 'field_response_7',
                     'field_type': 'PLAIN_TEXT'
@@ -85,11 +90,6 @@ snapshots['TestCase04GetAllTasksOverviewAPITestCase.test_case body'] = {
                 {
                     'field_display_name': 'DISPLAY_NAME-2',
                     'field_response': 'field_response_8',
-                    'field_type': 'PLAIN_TEXT'
-                },
-                {
-                    'field_display_name': 'DISPLAY_NAME-0',
-                    'field_response': 'field_response_6',
                     'field_type': 'PLAIN_TEXT'
                 }
             ]

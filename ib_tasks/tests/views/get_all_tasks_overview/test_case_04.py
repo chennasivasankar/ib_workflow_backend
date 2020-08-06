@@ -6,11 +6,13 @@ import json
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
 
-from ib_tasks.models import GoF, TaskGoFField
+from ib_iam.tests.factories.models import UserRoleFactory, RoleFactory
+from ib_tasks.models import GoF, TaskGoFField, TaskStage, StageAction
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories.models import TaskFactory, StageModelFactory, \
     TaskStageModelFactory, StageActionFactory, TaskGoFFieldFactory, \
-    TaskGoFFactory, FieldFactory, GoFFactory
+    TaskGoFFactory, FieldFactory, GoFFactory, ActionPermittedRolesFactory, \
+    FieldRoleFactory
 
 
 class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
@@ -24,6 +26,9 @@ class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
     def setup(self, api_user):
         user_obj = api_user
         user_id = str(user_obj.user_id)
+        from ib_iam.tests.factories.models import UserDetailsFactory
+        UserDetailsFactory.reset_sequence()
+        UserDetailsFactory.create(user_id=user_id, is_admin=True)
         TaskFactory.reset_sequence()
         StageModelFactory.reset_sequence()
         TaskStageModelFactory.reset_sequence()
@@ -31,6 +36,14 @@ class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
         TaskGoFFactory.reset_sequence()
         TaskGoFFieldFactory.reset_sequence()
         FieldFactory.reset_sequence()
+        FieldRoleFactory.reset_sequence()
+        ActionPermittedRolesFactory.reset_sequence()
+        UserRoleFactory.reset_sequence()
+        RoleFactory.reset_sequence()
+        role_obj_1=RoleFactory(role_id="FIN_PAYMENT_REQUESTER")
+        role_obj_2 = RoleFactory(role_id="FIN_PAYMENT_APPROVER")
+        UserRoleFactory(user_id=user_id, role=role_obj_1)
+        UserRoleFactory(user_id=user_id, role=role_obj_2)
         task_objs = TaskFactory.create_batch(3,
                                              created_by=user_id,
                                              template_id="task_template_id_1")
@@ -54,8 +67,11 @@ class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
                                                  stage=stage_other_objs[1])
         task_stage_obj_4 = TaskStageModelFactory(task=task_objs[0],
                                                  stage=stage_objs[0])
-        StageActionFactory(stage=stage_objs[2])
-        StageActionFactory(stage=stage_other_objs[1])
+
+        action_obj_1 = StageActionFactory(stage=stage_objs[2])
+        action_obj_2 = StageActionFactory(stage=stage_other_objs[1])
+        ActionPermittedRolesFactory(action=action_obj_1, role_id="ALL_ROLES")
+        ActionPermittedRolesFactory(action=action_obj_2, role_id="ALL_ROLES")
         gof_obj = GoFFactory()
         field_objs_of_gof_1 = FieldFactory.create_batch(3, gof=gof_obj)
         task_gof_obj_1 = TaskGoFFactory(task=task_objs[0], gof=gof_obj)
@@ -79,6 +95,12 @@ class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
                             field=field_objs_of_gof_1[1])
         TaskGoFFieldFactory(task_gof=task_gof_obj_3,
                             field=field_objs_of_gof_1[2])
+        FieldRoleFactory(field=field_objs_of_gof_1[0])
+        FieldRoleFactory(field=field_objs_of_gof_1[0])
+        FieldRoleFactory(field=field_objs_of_gof_1[1])
+        FieldRoleFactory(field=field_objs_of_gof_1[1])
+        FieldRoleFactory(field=field_objs_of_gof_1[2])
+        FieldRoleFactory(field=field_objs_of_gof_1[2])
 
     @pytest.mark.django_db
     def test_case(self, snapshot, setup):

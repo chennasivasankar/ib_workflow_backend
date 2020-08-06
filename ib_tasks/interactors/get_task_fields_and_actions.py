@@ -57,7 +57,6 @@ class GetTaskFieldsAndActionsInteractor:
         self._validate_stage_and_tasks(valid_stage_and_tasks, task_dtos)
 
         task_stage_dtos = self.stage_storage.get_stage_details(stage_task_dtos)
-
         action_dtos = self.action_storage.get_actions_details(
             unique_stage_ids, user_roles)
 

@@ -86,14 +86,6 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_task_id_with_stage_details_dtos_based_on_stage_value(
-            self, user_id: str, stage_values: List[int],
-            task_ids_group_by_stage_value_dtos: List[
-                StageValueWithTaskIdsDTO]) \
-            -> [TaskIdWithStageDetailsDTO]:
-        pass
-
-    @abc.abstractmethod
     def get_initial_stage_ids_of_templates(self) -> List[int]:
         pass
 
