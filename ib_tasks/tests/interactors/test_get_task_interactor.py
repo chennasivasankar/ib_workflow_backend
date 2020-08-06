@@ -35,6 +35,14 @@ class TestTaskInteractor:
         return storage
 
     @pytest.fixture
+    def action_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces\
+            .action_storage_interface import \
+            ActionStorageInterface
+        storage = create_autospec(ActionStorageInterface)
+        return storage
+
+    @pytest.fixture
     def presenter_mock(self):
         from ib_tasks.interactors.presenter_interfaces\
             .get_task_presenter_interface \
@@ -253,7 +261,8 @@ class TestTaskInteractor:
     @patch.object(GetTaskBaseInteractor, 'get_task')
     def test_given_invalid_task_id_raise_exception(
             self, get_task_mock, storage_mock, presenter_mock,
-            mock_object, stages_storage_mock, task_storage_mock
+            mock_object, stages_storage_mock, task_storage_mock,
+            action_storage_mock
     ):
         # Arrange
         from ib_tasks.exceptions.task_custom_exceptions \
@@ -264,7 +273,7 @@ class TestTaskInteractor:
         get_task_mock.side_effect = exception_object
         interactor = GetTaskInteractor(
             storage=storage_mock, stages_storage=stages_storage_mock,
-            task_storage=task_storage_mock
+            task_storage=task_storage_mock, action_storage=action_storage_mock
         )
         presenter_mock.raise_exception_for_invalid_task_id.return_value = \
             mock_object
@@ -286,8 +295,8 @@ class TestTaskInteractor:
             task_details_dto, user_roles, gof_ids, permission_gof_ids,
             permission_task_gof_dtos, field_ids, permission_field_ids,
             permission_task_gof_field_dtos, task_complete_details_dto,
-            mock_object, stages_and_actions_details_dtos, task_storage_mock
-
+            mock_object, stages_and_actions_details_dtos, task_storage_mock,
+            action_storage_mock
     ):
         # Arrange
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
@@ -301,7 +310,7 @@ class TestTaskInteractor:
             stages_and_actions_details_dtos
         interactor = GetTaskInteractor(
             storage=storage_mock, stages_storage=stages_storage_mock,
-            task_storage=task_storage_mock
+            task_storage=task_storage_mock, action_storage=action_storage_mock
         )
         storage_mock.get_gof_ids_having_permission.return_value = \
             permission_gof_ids
