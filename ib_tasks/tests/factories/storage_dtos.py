@@ -19,7 +19,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import (
     TaskGoFFieldDTO,
-    TaskGoFDTO, TaskDetailsDTO
+    TaskGoFDTO, TaskDetailsDTO, TaskBaseDetailsDTO
 )
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO, GoFToTaskTemplateDTO
@@ -476,15 +476,27 @@ class StageIdWithTemplateIdDTOFactory(factory.Factory):
     stage_id = factory.Sequence(lambda n: n)
 
 
-class TaskDetailsDTOFactory(factory.Factory):
+class TaskBaseDetailsDTOFactory(factory.Factory):
     class Meta:
-        model = TaskDetailsDTO
-    template_id = factory.sequence(lambda counter: "template_{}".format(counter))
+        model = TaskBaseDetailsDTO
+
+    template_id = factory.sequence(
+        lambda counter: "template_{}".format(counter))
     title = factory.sequence(lambda counter: "title_{}".format(counter))
-    description = factory.sequence(lambda counter: "description_{}".format(counter))
+    description = factory.sequence(
+        lambda counter: "description_{}".format(counter))
     start_date = datetime.now()
     due_date = datetime.now() + timedelta(10)
     priority = Priority.HIGH.value
+
+
+class TaskDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskDetailsDTO
+
+    @factory.lazy_attribute
+    def task_base_details_dto(self):
+        return TaskBaseDetailsDTOFactory()
 
     @factory.lazy_attribute
     def task_gof_dtos(self):
