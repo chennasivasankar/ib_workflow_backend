@@ -3,9 +3,8 @@ from typing import List, Optional
 import collections
 
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO
-
-from ib_tasks.interactors.storage_interfaces.task_storage_interface \
-    import TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
+    GoFStorageInterface
 
 from ib_tasks.exceptions.fields_custom_exceptions import (
     FieldIdEmptyValueException,
@@ -18,8 +17,8 @@ from ib_tasks.exceptions.fields_custom_exceptions import (
 
 class CreateOrUpdateFieldsBaseValidationInteractor:
 
-    def __init__(self, storage: TaskStorageInterface):
-        self.storage = storage
+    def __init__(self, gof_storage: GoFStorageInterface):
+        self.gof_storage = gof_storage
 
     def fields_base_validations(self, field_dtos: List[FieldDTO]):
         self._validate_field_ids(field_dtos)
@@ -34,9 +33,8 @@ class CreateOrUpdateFieldsBaseValidationInteractor:
 
         from ib_tasks.constants.exception_messages \
             import INVALID_GOF_IDS_EXCEPTION_MESSAGE
-
         gof_ids = [field_dto.gof_id for field_dto in field_dtos]
-        existing_gof_ids = self.storage.get_existing_gof_ids(gof_ids)
+        existing_gof_ids = self.gof_storage.get_existing_gof_ids(gof_ids)
         invalid_gof_ids = []
         for gof_id in gof_ids:
             if gof_id not in existing_gof_ids:

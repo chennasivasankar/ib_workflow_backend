@@ -3,6 +3,8 @@ import pytest
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskIdWithStageValueDTO, StageValueWithTaskIdsDTO, \
     TaskIdWithStageDetailsDTO
+from ib_tasks.storages.storage_implementation import \
+    StagesStorageImplementation
 from ib_tasks.storages.tasks_storage_implementation import \
     TasksStorageImplementation
 from ib_tasks.tests.factories.models import TaskStageFactory, TaskFactory, \
@@ -77,7 +79,7 @@ class TestUserTaskWithRecentStageDetails:
             StageValueWithTaskIdsDTO(
                 task_ids=[task_objs[0].id, task_objs[1].id], stage_value=2)
         ]
-        storage = TasksStorageImplementation()
+        storage = StagesStorageImplementation()
 
         # Act
         result = storage. \

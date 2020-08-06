@@ -48,7 +48,7 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
                 stage_values, task_id_with_max_stage_value_dtos
             )
         task_id_with_stage_details_dtos = self. \
-            task_storage. \
+            stage_storage. \
             get_task_id_with_stage_details_dtos_based_on_stage_value(
             stage_values=stage_values,
             task_ids_group_by_stage_value_dtos=
