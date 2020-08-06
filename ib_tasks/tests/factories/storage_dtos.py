@@ -7,7 +7,7 @@ from ib_tasks.interactors.filter_dtos import FilterDTO, ConditionDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO
 
-from ib_tasks.constants.enum import FieldTypes, PermissionTypes, Operators
+from ib_tasks.constants.enum import FieldTypes, PermissionTypes, Operators, Status
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.stages_dtos import StageDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
@@ -491,7 +491,7 @@ class FilterDTOFactory(factory.Factory):
     filter_id = factory.sequence(lambda n: n)
     filter_name = factory.sequence(lambda n: "filter_name_{}".format(n))
     user_id = factory.sequence(lambda n: "{}".format(n))
-    is_selected = False
+    is_selected = Status.ENABLED.value
     template_id = factory.sequence(lambda n: "template_{}".format(n))
     template_name = factory.sequence(lambda n: "Template {}".format(n))
 
