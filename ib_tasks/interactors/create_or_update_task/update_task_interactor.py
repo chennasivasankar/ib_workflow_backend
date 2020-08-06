@@ -32,6 +32,8 @@ from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TaskGoFFieldDTO
+from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
+    GoFStorageInterface
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
@@ -49,10 +51,12 @@ class UpdateTaskInteractor:
 
     def __init__(
             self, task_storage: TaskStorageInterface,
+            gof_storage: GoFStorageInterface,
             create_task_storage: CreateOrUpdateTaskStorageInterface,
             storage: StorageInterface, field_storage: FieldsStorageInterface,
             stage_storage: StageStorageInterface
     ):
+        self.gof_storage = gof_storage
         self.task_storage = task_storage
         self.create_task_storage = create_task_storage
         self.storage = storage
@@ -156,7 +160,8 @@ class UpdateTaskInteractor:
             self.create_task_storage.get_template_id_for_given_task(task_id)
         base_validations_interactor = \
             CreateOrUpdateTaskBaseValidationsInteractor(
-                self.task_storage, self.create_task_storage, self.storage,
+                self.task_storage, self.gof_storage,
+                self.create_task_storage, self.storage,
                 self.field_storage
             )
         base_validations_interactor. \

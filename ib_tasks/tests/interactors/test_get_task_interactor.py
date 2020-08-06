@@ -1,9 +1,11 @@
-import pytest
 from unittest.mock import create_autospec, patch
-from ib_tasks.interactors.get_task_interactor \
-    import GetTaskInteractor
+
+import pytest
+
 from ib_tasks.interactors.get_task_base_interactor \
     import GetTaskBaseInteractor
+from ib_tasks.interactors.get_task_interactor \
+    import GetTaskInteractor
 from ib_tasks.interactors.get_task_stages_and_actions \
     import GetTaskStagesAndActions
 
@@ -12,7 +14,8 @@ class TestTaskInteractor:
 
     @pytest.fixture
     def storage_mock(self):
-        from ib_tasks.interactors.storage_interfaces.create_or_update_task_storage_interface \
+        from ib_tasks.interactors.storage_interfaces\
+            .create_or_update_task_storage_interface \
             import CreateOrUpdateTaskStorageInterface
         storage = create_autospec(CreateOrUpdateTaskStorageInterface)
         return storage
@@ -25,8 +28,16 @@ class TestTaskInteractor:
         return storage
 
     @pytest.fixture
+    def task_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces.storage_interface import \
+            StorageInterface
+        storage = create_autospec(StorageInterface)
+        return storage
+
+    @pytest.fixture
     def presenter_mock(self):
-        from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
+        from ib_tasks.interactors.presenter_interfaces\
+            .get_task_presenter_interface \
             import GetTaskPresenterInterface
         presenter = create_autospec(GetTaskPresenterInterface)
         return presenter
@@ -136,8 +147,17 @@ class TestTaskInteractor:
 
     @pytest.fixture
     def user_roles(self):
-        user_roles = ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC"]
-        return user_roles
+        user_role_ids = ['ALL_ROLES', 'FIN_PAYMENT_REQUESTER',
+                         'FIN_PAYMENT_POC',
+                         'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER',
+                         'FIN_COMPLIANCE_APPROVER',
+                         'FIN_PAYMENTS_LEVEL1_VERIFIER',
+                         'FIN_PAYMENTS_LEVEL2_VERIFIER',
+                         'FIN_PAYMENTS_LEVEL3_VERIFIER',
+                         'FIN_PAYMENTS_RP', 'FIN_FINANCE_RP',
+                         'FIN_ACCOUNTS_LEVEL1_VERIFIER',
+                         'FIN_ACCOUNTS_LEVEL2_VERIFIER']
+        return user_role_ids
 
     @pytest.fixture
     def stage1_actions_dtos(self):
@@ -220,7 +240,8 @@ class TestTaskInteractor:
             self, permission_task_details_dto,
             stages_and_actions_details_dtos
     ):
-        from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
+        from ib_tasks.interactors.presenter_interfaces\
+            .get_task_presenter_interface \
             import TaskCompleteDetailsDTO
         task_complete_details_dto = TaskCompleteDetailsDTO(
             task_id="task0",
@@ -232,7 +253,7 @@ class TestTaskInteractor:
     @patch.object(GetTaskBaseInteractor, 'get_task')
     def test_given_invalid_task_id_raise_exception(
             self, get_task_mock, storage_mock, presenter_mock,
-            mock_object, stages_storage_mock
+            mock_object, stages_storage_mock, task_storage_mock
     ):
         # Arrange
         from ib_tasks.exceptions.task_custom_exceptions \
@@ -242,9 +263,11 @@ class TestTaskInteractor:
         exception_object = InvalidTaskIdException(task_id)
         get_task_mock.side_effect = exception_object
         interactor = GetTaskInteractor(
-            storage=storage_mock, stages_storage=stages_storage_mock
+            storage=storage_mock, stages_storage=stages_storage_mock,
+            task_storage=task_storage_mock
         )
-        presenter_mock.raise_exception_for_invalid_task_id.return_value = mock_object
+        presenter_mock.raise_exception_for_invalid_task_id.return_value = \
+            mock_object
 
         # Act
         interactor.get_task_details_wrapper(
@@ -263,7 +286,7 @@ class TestTaskInteractor:
             task_details_dto, user_roles, gof_ids, permission_gof_ids,
             permission_task_gof_dtos, field_ids, permission_field_ids,
             permission_task_gof_field_dtos, task_complete_details_dto,
-            mock_object, stages_and_actions_details_dtos
+            mock_object, stages_and_actions_details_dtos, task_storage_mock
 
     ):
         # Arrange
@@ -274,12 +297,16 @@ class TestTaskInteractor:
         user_id = "user1"
         task_id = "task0"
         get_task_mock.return_value = task_details_dto
-        get_task_stages_and_actions_mock.return_value = stages_and_actions_details_dtos
+        get_task_stages_and_actions_mock.return_value = \
+            stages_and_actions_details_dtos
         interactor = GetTaskInteractor(
-            storage=storage_mock, stages_storage=stages_storage_mock
+            storage=storage_mock, stages_storage=stages_storage_mock,
+            task_storage=task_storage_mock
         )
-        storage_mock.get_gof_ids_having_permission.return_value = permission_gof_ids
-        storage_mock.get_field_ids_having_permission.return_value = permission_field_ids
+        storage_mock.get_gof_ids_having_permission.return_value = \
+            permission_gof_ids
+        storage_mock.get_field_ids_having_permission.return_value = \
+            permission_field_ids
         presenter_mock.get_task_response.return_value = mock_object
 
         # Act

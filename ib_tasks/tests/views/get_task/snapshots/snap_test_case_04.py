@@ -15,48 +15,18 @@ snapshots['TestCase04GetTaskAPITestCase.test_case body'] = {
     'stages_with_actions': [
         {
             'actions': [
-                {
-                    'action_id': 1,
-                    'button_color': '#fafafa',
-                    'button_text': 'hey'
-                },
-                {
-                    'action_id': 11,
-                    'button_color': '#fafafa',
-                    'button_text': 'hey'
-                }
             ],
             'stage_display_name': 'name_0',
             'stage_id': 'stage_id_0'
         },
         {
             'actions': [
-                {
-                    'action_id': 2,
-                    'button_color': '#fafafa',
-                    'button_text': 'hey'
-                },
-                {
-                    'action_id': 12,
-                    'button_color': '#fafafa',
-                    'button_text': 'hey'
-                }
             ],
             'stage_display_name': 'name_1',
             'stage_id': 'stage_id_1'
         },
         {
             'actions': [
-                {
-                    'action_id': 3,
-                    'button_color': '#fafafa',
-                    'button_text': 'hey'
-                },
-                {
-                    'action_id': 13,
-                    'button_color': '#fafafa',
-                    'button_text': 'hey'
-                }
             ],
             'stage_display_name': 'name_2',
             'stage_id': 'stage_id_2'
