@@ -698,9 +698,6 @@
         "field_id": {
           "type": "string"
         },
-        "field_name": {
-          "type": "string"
-        },
         "operator": {
           "type": "string",
           "enum": [
@@ -748,9 +745,6 @@
           "type": "string"
         },
         "template_id": {
-          "type": "string"
-        },
-        "template_name": {
           "type": "string"
         },
         "conditions": {
@@ -820,6 +814,7 @@
         }
       },
       "required": [
+        "filter_id",
         "name",
         "conditions",
         "template_id"
