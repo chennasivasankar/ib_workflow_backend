@@ -712,6 +712,9 @@
         },
         "value": {
           "type": "string"
+        },
+        "condition_id": {
+          "type": "integer"
         }
       },
       "required": [
@@ -806,6 +809,10 @@
         "template_name": {
           "type": "string"
         },
+        "action_id": {
+          "type": "string",
+          "enum": ["ENABLED", "DISABLED"]
+        },
         "conditions": {
           "type": "array",
           "items": {
@@ -817,7 +824,8 @@
         "filter_id",
         "name",
         "conditions",
-        "template_id"
+        "template_id",
+        "action_id"
       ]
     }
   },
@@ -912,13 +920,14 @@
           "filter_id": {
             "type": "integer"
           },
-          "is_selected": {
-            "type": "boolean"
+          "action": {
+            "type": "string",
+            "enum": [ "ENABLED", "DISABLED" ]
           }
         },
         "required": [
           "filter_id",
-          "is_selected"
+          "action"
         ]
       }
     },
