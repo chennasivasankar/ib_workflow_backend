@@ -18,8 +18,8 @@ class ActionRolesDTO:
 
 
 @dataclass
-class ActionsOfTemplateDTO:
-    template_id: str
+class ActionWithStageIdDTO:
+    stage_id: int
     action_id: int
     button_text: str
     button_color: str

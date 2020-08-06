@@ -46,3 +46,12 @@ class FilterStorageInterface(abc.ABC):
     @abc.abstractmethod
     def delete_filter(self, filter_id: int, user_id: str):
         pass
+
+    @abc.abstractmethod
+    def get_filters_dto_to_user(self, user_id: str) -> List[FilterDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_conditions_to_filters(
+            self, filter_ids: List[int]) -> List[ConditionDTO]:
+        pass

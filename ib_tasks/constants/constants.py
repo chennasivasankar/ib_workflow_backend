@@ -10,6 +10,8 @@ SEARCHABLE_VALUES = [item.value for item in Searchable]
 
 Permission_Types = [(item.value, item.value) for item in PermissionTypes]
 
+OPERATOR_TYPES = [(item.value, item.value)for item in Operators]
+
 Field_Types = [(item.value, item.value) for item in FieldTypes]
 
 VALID_FIELD_TYPES = [field_type.value for field_type in FieldTypes]

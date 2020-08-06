@@ -3,6 +3,8 @@ from typing import List
 
 from ib_tasks.interactors.filter_dtos import FilterDTO, ConditionDTO
 
+from ib_tasks.interactors.filter_dtos import FilterCompleteDetailsDTO
+
 
 class FilterPresenterInterface(abc.ABC):
 
@@ -38,4 +40,8 @@ class FilterPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_response_for_user_not_have_access_to_delete_filter(self):
+        pass
+
+    def get_response_for_get_filters_details(
+            self, filter_complete_details: FilterCompleteDetailsDTO):
         pass

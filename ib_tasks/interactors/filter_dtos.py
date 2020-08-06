@@ -17,6 +17,12 @@ class ConditionDTO:
 
 
 @dataclass()
+class FilterConditionDTO:
+    filter_id: int
+    condition_ids: List[int]
+
+
+@dataclass()
 class FilterDTO:
     filter_id: int
     filter_name: str
@@ -24,6 +30,12 @@ class FilterDTO:
     is_selected: bool
     template_id: str
     template_name: str
+
+
+@dataclass()
+class FilterCompleteDetailsDTO:
+    filters_dto: List[FilterDTO]
+    conditions_dto: List[ConditionDTO]
 
 
 @dataclass

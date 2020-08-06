@@ -8,6 +8,7 @@ from ib_tasks.models import (
     TaskGoFField,
     TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage, Filter,
     FilterCondition)
+    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage, Filter, FilterCondition)
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
@@ -231,6 +232,7 @@ class TaskStageFactory(factory.django.DjangoModelFactory):
 
 
 class FilterFactory(factory.django.DjangoModelFactory):
+
     class Meta:
         model = Filter
     created_by = factory.sequence(lambda n: "{}".format(n))
@@ -240,6 +242,7 @@ class FilterFactory(factory.django.DjangoModelFactory):
 
 
 class FilterConditionFactory(factory.django.DjangoModelFactory):
+
     class Meta:
         model = FilterCondition
     filter = factory.SubFactory(FilterFactory)
