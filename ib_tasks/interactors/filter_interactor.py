@@ -1,7 +1,8 @@
 from typing import Tuple, List
 
 from ib_tasks.exceptions.filter_exceptions import \
-    FieldIdsNotBelongsToTemplateId, UserNotHaveAccessToFields
+    FieldIdsNotBelongsToTemplateId, UserNotHaveAccessToFields, InvalidFilterId, \
+    UserNotHaveAccessToFilter
 from ib_tasks.interactors.filter_dtos import CreateConditionDTO, \
     CreateFilterDTO, FilterDTO, ConditionDTO, UpdateFilterDTO
 from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface import \
@@ -60,6 +61,10 @@ class FilterInteractor:
                 filter_dto=filter_dto,
                 condition_dtos=condition_dtos
             )
+        except InvalidFilterId:
+            return self.presenter.get_response_for_invalid_filter_id()
+        except UserNotHaveAccessToFilter:
+            return self.presenter.get_response_for_user_not_have_access_to_update_filter()
         except InvalidTemplateID:
             return self.presenter.get_response_for_invalid_task_template_id()
         except FieldIdsNotBelongsToTemplateId as error:
@@ -75,6 +80,14 @@ class FilterInteractor:
     def update_filter(
             self, filter_dto: UpdateFilterDTO,
             condition_dtos: List[CreateConditionDTO]):
+        filter_id = filter_dto.filter_id
+        user_id = filter_dto.user_id
+        self._validate_filter_id(
+            filter_id=filter_id
+        )
+        self._validate_user_with_filter_id(
+            filter_id=filter_id, user_id=user_id
+        )
         self._validate_filter_data(
             filter_dto=filter_dto,
             condition_dtos=condition_dtos
@@ -85,11 +98,24 @@ class FilterInteractor:
         return filter_dto, condition_dtos
         pass
 
-    def delete_filter_wrapper(self, filter_id: int, user_id: int):
-        pass
+    def delete_filter_wrapper(self, filter_id: int, user_id: str):
+        try:
+            self.delete_filter(filter_id=filter_id, user_id=user_id)
+        except InvalidFilterId:
+            return self.presenter.get_response_for_invalid_filter_id()
+        except UserNotHaveAccessToFilter:
+            return self.presenter.get_response_for_user_not_have_access_to_delete_filter()
 
-    def delete_filter(self, filter_id: int, user_id: int):
-        pass
+    def delete_filter(self, filter_id: int, user_id: str):
+        self._validate_filter_id(
+            filter_id=filter_id
+        )
+        self._validate_user_with_filter_id(
+            filter_id=filter_id, user_id=user_id
+        )
+        self.filter_storage.delete_filter(
+            filter_id=filter_id, user_id=user_id
+        )
 
     def _validate_filter_data(
             self, filter_dto: CreateFilterDTO,
@@ -115,4 +141,14 @@ class FilterInteractor:
         )
         self.filter_storage.validate_user_roles_with_field_ids_roles(
             user_roles=user_roles, field_ids=field_ids
+        )
+
+    def _validate_filter_id(self, filter_id: int):
+        self.filter_storage.validate_filter_id(
+            filter_id=filter_id
+        )
+
+    def _validate_user_with_filter_id(self, user_id: str, filter_id: int):
+        self.filter_storage.validate_user_with_filter_id(
+            user_id=user_id, filter_id=filter_id
         )

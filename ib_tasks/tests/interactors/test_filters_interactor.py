@@ -7,7 +7,8 @@ from unittest.mock import Mock, create_autospec
 
 import pytest
 
-from ib_tasks.exceptions.filter_exceptions import UserNotHaveAccessToFields
+from ib_tasks.exceptions.filter_exceptions import UserNotHaveAccessToFields, \
+    InvalidFilterId, UserNotHaveAccessToFilter
 from ib_tasks.interactors.filter_interactor import FilterInteractor
 
 
@@ -245,24 +246,16 @@ class TestFiltersInteractor:
             mocker, new_filter_dto, new_condition_dtos):
         # Arrange
         filter_dto = update_filter_dto
-        user_roles = [
-            "FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC"
-        ]
-        field_ids = [condition_dto.field_id for condition_dto in condition_dtos]
+        filter_id = filter_dto.filter_id
         expected_response = Mock()
         interactor = FilterInteractor(
             filter_storage=storage_mock,
             presenter=presenter_mock
         )
 
-        storage_mock.get_field_ids_for_task_template. \
-            return_value = field_ids
-        storage_mock.update_filter.return_value = new_filter_dto, new_condition_dtos
-        presenter_mock.get_response_for_update_filter. \
+        storage_mock.validate_filter_id.side_effect = InvalidFilterId
+        presenter_mock.get_response_for_invalid_filter_id. \
             return_value = expected_response
-        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids
-        get_user_role_ids(mocker)
 
         # Act
         actual_response = interactor.update_filter_wrapper(
@@ -271,14 +264,99 @@ class TestFiltersInteractor:
         )
 
         # Assert
-        storage_mock.update_filter. \
+        storage_mock.validate_filter_id. \
             assert_called_once_with(
-                filter_dto=filter_dto, condition_dtos=condition_dtos
+                filter_id=filter_id
             )
-        presenter_mock.get_response_for_update_filter. \
-            assert_called_once_with(
-                filter_dto=new_filter_dto, condition_dtos=new_condition_dtos
-            )
+        presenter_mock.get_response_for_invalid_filter_id. \
+            assert_called_once_with()
         assert actual_response == expected_response
+
+    def test_with_invalid_user_id_filter_in_update_return_error_message(
+            self, storage_mock, presenter_mock, update_filter_dto, condition_dtos,
+            mocker, new_filter_dto, new_condition_dtos):
+        # Arrange
+        filter_dto = update_filter_dto
+        filter_id = filter_dto.filter_id
+        user_id = filter_dto.user_id
+        expected_response = Mock()
+        interactor = FilterInteractor(
+            filter_storage=storage_mock,
+            presenter=presenter_mock
+        )
+
+        storage_mock.validate_user_with_filter_id.side_effect = UserNotHaveAccessToFilter
+        presenter_mock.get_response_for_user_not_have_access_to_update_filter. \
+            return_value = expected_response
+
+        # Act
+        actual_response = interactor.update_filter_wrapper(
+            filter_dto=filter_dto,
+            condition_dtos=condition_dtos
+        )
+
+        # Assert
+        storage_mock.validate_user_with_filter_id. \
+            assert_called_once_with(
+                filter_id=filter_id,
+                user_id=user_id
+            )
+        presenter_mock.get_response_for_user_not_have_access_to_update_filter. \
+            assert_called_once_with()
+        assert actual_response == expected_response
+
+    def test_with_invalid_user_id_filter_in_delete_return_error_message(
+            self, storage_mock, presenter_mock):
+        # Arrange
+
+        filter_id = 1
+        user_id = 'user_id_0'
+        expected_response = Mock()
+        interactor = FilterInteractor(
+            filter_storage=storage_mock,
+            presenter=presenter_mock
+        )
+
+        storage_mock.validate_user_with_filter_id.side_effect = UserNotHaveAccessToFilter
+        presenter_mock.get_response_for_user_not_have_access_to_delete_filter. \
+            return_value = expected_response
+
+        # Act
+        actual_response = interactor.delete_filter_wrapper(
+            filter_id=filter_id, user_id=user_id
+        )
+
+        # Assert
+        storage_mock.validate_user_with_filter_id. \
+            assert_called_once_with(
+                filter_id=filter_id,
+                user_id=user_id
+            )
+        presenter_mock.get_response_for_user_not_have_access_to_delete_filter. \
+            assert_called_once_with()
+        assert actual_response == expected_response
+
+    def test_delete_filter_with_details_delete_filter(
+            self, storage_mock, presenter_mock):
+        # Arrange
+
+        filter_id = 1
+        user_id = 'user_id_0'
+        expected_response = Mock()
+        interactor = FilterInteractor(
+            filter_storage=storage_mock,
+            presenter=presenter_mock
+        )
+
+        # Act
+        actual_response = interactor.delete_filter_wrapper(
+            filter_id=filter_id, user_id=user_id
+        )
+
+        # Assert
+        storage_mock.delete_filter.assert_called_once_with(
+            filter_id=filter_id,
+            user_id=user_id
+        )
 
 

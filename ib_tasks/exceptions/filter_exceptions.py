@@ -10,6 +10,10 @@ class InvalidTemplateID(Exception):
     pass
 
 
+class InvalidFilterId(Exception):
+    pass
+
+
 class FieldIdsNotBelongsToTemplateId(Exception):
 
     def __init__(self, field_ids: List[int]):
@@ -20,4 +24,8 @@ class FieldIdsNotBelongsToTemplateId(Exception):
 
 
 class UserNotHaveAccessToFields(Exception):
+    pass
+
+
+class UserNotHaveAccessToFilter(Exception):
     pass
