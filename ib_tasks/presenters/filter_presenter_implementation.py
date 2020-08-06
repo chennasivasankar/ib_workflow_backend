@@ -62,6 +62,7 @@ class FilterPresenterImplementation(
     def _get_conditions_to_filter(conditions_dto: List[ConditionDTO]):
         return [
             {
+                "condition_id": condition_dto.condition_id,
                 "field_id": condition_dto.field_id,
                 "operator": condition_dto.operator,
                 "value": condition_dto.value,

@@ -1037,8 +1037,7 @@
         "status",
         "name",
         "conditions",
-        "template_id",
-        "status"
+        "template_id"
       ]
     }
   },
