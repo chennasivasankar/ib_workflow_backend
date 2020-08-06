@@ -20,7 +20,6 @@ snapshots['TestCase01UpdateFilterAPITestCase.test_case body'] = {
     ],
     'filter_id': 1,
     'name': 'string',
-    'status': 'ENABLED',
     'template_id': 'string',
     'template_name': 'string'
 }

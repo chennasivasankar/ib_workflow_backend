@@ -1,6 +1,7 @@
 import pytest
 
-from ib_tasks.tests.factories.models import TaskTemplateFactory
+from ib_tasks.tests.factories.models import TaskTemplateFactory, \
+    TaskTemplateWith2GoFsFactory
 
 
 @pytest.mark.django_db
@@ -213,53 +214,48 @@ class TestTaskTemplateStorageImplementation:
         # Assert
         assert is_template_exists is True
 
-    def test_get_task_template_name(self, storage):
-        # Arrange
-        task_template = TaskTemplateFactory()
-        template_id = task_template.template_id
-        expected_template_name = task_template.name
-
-        # Act
-        template_name = \
-            storage.get_task_template_name(template_id=template_id)
-
-        # Assert
-        assert template_name == expected_template_name
-
-    def test_create_task_template(self, storage):
+    def test_create_template(self, storage):
         # Arrange
         template_id = "FIN_VENDOR"
         template_name = "Task Template 1"
+        is_transition_template = True
 
         # Act
-        storage.create_task_template(
-            template_id=template_id, template_name=template_name
+        storage.create_template(
+            template_id=template_id, template_name=template_name,
+            is_transition_template=is_transition_template
         )
 
         # Assert
         from ib_tasks.models.task_template import TaskTemplate
-        task_template = TaskTemplate.objects.get(template_id=template_id)
+        template = TaskTemplate.objects.get(template_id=template_id)
 
-        assert task_template.template_id == template_id
-        assert task_template.name == template_name
+        assert template.template_id == template_id
+        assert template.name == template_name
+        assert template.is_transition_template == is_transition_template
 
-    def test_update_task_template(self, storage):
+    def test_update_template(self, storage):
         # Arrange
         template_id = "FIN_VENDOR"
         template_name = "iB Template"
-        TaskTemplateFactory(template_id=template_id, name=template_name)
+        is_transition_template = True
+        TaskTemplateFactory(
+            template_id=template_id, name=template_name
+        )
 
         # Act
-        storage.update_task_template(
-            template_id=template_id, template_name=template_name
+        storage.update_template(
+            template_id=template_id, template_name=template_name,
+            is_transition_template=is_transition_template
         )
 
         # Assert
         from ib_tasks.models.task_template import TaskTemplate
-        task_template = TaskTemplate.objects.get(template_id=template_id)
+        template = TaskTemplate.objects.get(template_id=template_id)
 
-        assert task_template.template_id == template_id
-        assert task_template.name == template_name
+        assert template.template_id == template_id
+        assert template.name == template_name
+        assert template.is_transition_template == is_transition_template
 
     def test_get_existing_gof_ids_of_template(self, storage):
         # Arrange
@@ -312,5 +308,33 @@ class TestTaskTemplateStorageImplementation:
                gof_dtos[1].gof_id
         assert gof_to_task_template_objs[1].order == \
                gof_dtos[1].order
+        assert gof_to_task_template_objs[1].enable_add_another_gof == \
+               gof_dtos[1].enable_add_another_gof
+
+    def test_update_gofs_to_template(self, storage):
+        # Arrange
+        template_id = "FIN_VENDOR"
+        from ib_tasks.tests.factories.interactor_dtos import \
+            GoFWithOrderAndAddAnotherDTOFactory
+        gof_dtos = GoFWithOrderAndAddAnotherDTOFactory.create_batch(
+            size=2, order=5, enable_add_another_gof=True
+        )
+        TaskTemplateWith2GoFsFactory(template_id=template_id)
+
+        # Act
+        storage.update_gofs_to_template(
+            template_id=template_id, gof_dtos=gof_dtos
+        )
+
+        # Assert
+        from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
+        gof_to_task_template_objs = \
+            TaskTemplateGoFs.objects.filter(task_template_id=template_id)
+
+        assert gof_to_task_template_objs[0].order == \
+               gof_dtos[0].order
+        assert gof_to_task_template_objs[0].enable_add_another_gof == \
+               gof_dtos[0].enable_add_another_gof
+        assert gof_to_task_template_objs[1].order == gof_dtos[0].order
         assert gof_to_task_template_objs[1].enable_add_another_gof == \
                gof_dtos[1].enable_add_another_gof

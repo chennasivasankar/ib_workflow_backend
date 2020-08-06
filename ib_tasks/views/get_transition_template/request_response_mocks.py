@@ -37,7 +37,7 @@ RESPONSE_404_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "INVALID_STAGE_ID"
+    "res_status": "TRANSITION_TEMPLATE_DOES_NOT_EXISTS"
 }
 """
 

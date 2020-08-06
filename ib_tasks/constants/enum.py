@@ -52,3 +52,9 @@ class Operators(enum.Enum):
 class Status(enum.Enum):
     ENABLED = "ENABLED"
     DISABLED = "DISABLED"
+
+
+class Priority(enum.Enum):
+    HIGH = "HIGH"
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"

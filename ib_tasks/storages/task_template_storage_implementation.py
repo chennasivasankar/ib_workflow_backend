@@ -14,10 +14,14 @@ from ib_tasks.models import TaskTemplate, TaskTemplateGoFs
 
 class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
-    def create_task_template(self, template_id: str, template_name: str):
+    def create_template(self, template_id: str,
+                        template_name: str,
+                        is_transition_template: bool):
         from ib_tasks.models.task_template import TaskTemplate
-        TaskTemplate.objects.create(template_id=template_id,
-                                    name=template_name)
+        TaskTemplate.objects.create(
+            template_id=template_id, name=template_name,
+            is_transition_template=is_transition_template
+        )
 
     def check_is_template_exists(self, template_id: str) -> bool:
         is_template_exists = \
@@ -32,14 +36,6 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
         constant_names_of_template_list = list(constant_names_of_template)
         return constant_names_of_template_list
-
-    def get_task_template_name(self, template_id: str):
-        from ib_tasks.models.task_template import TaskTemplate
-        template_name_query_set = \
-            TaskTemplate.objects.filter(
-                template_id=template_id
-            ).values_list('name', flat=True)
-        return template_name_query_set.first()
 
     def create_global_constants_to_template(self, template_id: str,
                                             global_constants_dtos: List[
@@ -135,12 +131,13 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
         TaskTemplateGoFs.objects.bulk_update(
             gof_to_task_template_objs, ['order', 'enable_add_another_gof'])
 
-    def update_task_template(self, template_id: str, template_name: str):
+    def update_template(self, template_id: str, template_name: str,
+                        is_transition_template: bool):
         from ib_tasks.models.task_template import TaskTemplate
-        task_template = \
-            TaskTemplate.objects.get(template_id=template_id)
-        task_template.name = template_name
-        task_template.save()
+        template = TaskTemplate.objects.get(template_id=template_id)
+        template.name = template_name
+        template.is_transition_template = is_transition_template
+        template.save()
 
     @staticmethod
     def _get_global_constant_names(

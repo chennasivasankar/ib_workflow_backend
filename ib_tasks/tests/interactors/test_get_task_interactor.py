@@ -14,7 +14,7 @@ class TestTaskInteractor:
 
     @pytest.fixture
     def storage_mock(self):
-        from ib_tasks.interactors.storage_interfaces\
+        from ib_tasks.interactors.storage_interfaces \
             .create_or_update_task_storage_interface \
             import CreateOrUpdateTaskStorageInterface
         storage = create_autospec(CreateOrUpdateTaskStorageInterface)
@@ -36,7 +36,7 @@ class TestTaskInteractor:
 
     @pytest.fixture
     def action_storage_mock(self):
-        from ib_tasks.interactors.storage_interfaces\
+        from ib_tasks.interactors.storage_interfaces \
             .action_storage_interface import \
             ActionStorageInterface
         storage = create_autospec(ActionStorageInterface)
@@ -44,7 +44,7 @@ class TestTaskInteractor:
 
     @pytest.fixture
     def presenter_mock(self):
-        from ib_tasks.interactors.presenter_interfaces\
+        from ib_tasks.interactors.presenter_interfaces \
             .get_task_presenter_interface \
             import GetTaskPresenterInterface
         presenter = create_autospec(GetTaskPresenterInterface)
@@ -106,6 +106,13 @@ class TestTaskInteractor:
         return task_gof_field_dtos
 
     @pytest.fixture
+    def task_base_details_dto(self):
+        from ib_tasks.tests.factories.storage_dtos import \
+            TaskBaseDetailsDTOFactory
+        task_base_details_dto = TaskBaseDetailsDTOFactory()
+        return task_base_details_dto
+
+    @pytest.fixture
     def field_ids(self):
         field_ids = ["field0", "field1", "field2", "field3"]
         return field_ids
@@ -130,11 +137,13 @@ class TestTaskInteractor:
         return permission_task_gof_field_dtos
 
     @pytest.fixture
-    def task_details_dto(self, task_gof_dtos, task_gof_field_dtos):
+    def task_details_dto(
+            self, task_gof_dtos, task_gof_field_dtos, task_base_details_dto
+    ):
         from ib_tasks.interactors.storage_interfaces.get_task_dtos \
             import TaskDetailsDTO
         task_details_dto = TaskDetailsDTO(
-            template_id="template0",
+            task_base_details_dto=task_base_details_dto,
             task_gof_dtos=task_gof_dtos,
             task_gof_field_dtos=task_gof_field_dtos
         )
@@ -142,12 +151,13 @@ class TestTaskInteractor:
 
     @pytest.fixture
     def permission_task_details_dto(
-            self, permission_task_gof_dtos, permission_task_gof_field_dtos
+            self, permission_task_gof_dtos, permission_task_gof_field_dtos,
+            task_base_details_dto
     ):
         from ib_tasks.interactors.storage_interfaces.get_task_dtos \
             import TaskDetailsDTO
         task_details_dto = TaskDetailsDTO(
-            template_id="template0",
+            task_base_details_dto=task_base_details_dto,
             task_gof_dtos=permission_task_gof_dtos,
             task_gof_field_dtos=permission_task_gof_field_dtos
         )
@@ -248,7 +258,7 @@ class TestTaskInteractor:
             self, permission_task_details_dto,
             stages_and_actions_details_dtos
     ):
-        from ib_tasks.interactors.presenter_interfaces\
+        from ib_tasks.interactors.presenter_interfaces \
             .get_task_presenter_interface \
             import TaskCompleteDetailsDTO
         task_complete_details_dto = TaskCompleteDetailsDTO(

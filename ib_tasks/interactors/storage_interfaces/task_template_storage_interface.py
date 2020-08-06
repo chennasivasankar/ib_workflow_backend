@@ -11,7 +11,9 @@ from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
 
 class TaskTemplateStorageInterface(abc.ABC):
     @abc.abstractmethod
-    def create_task_template(self, template_id: str, template_name: str):
+    def create_template(self, template_id: str,
+                        template_name: str,
+                        is_transition_template: bool):
         pass
 
     @abc.abstractmethod
@@ -21,10 +23,6 @@ class TaskTemplateStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_constant_names_of_existing_global_constants_of_template(
             self, template_id: str):
-        pass
-
-    @abc.abstractmethod
-    def get_task_template_name(self, template_id: str):
         pass
 
     @abc.abstractmethod
@@ -72,7 +70,7 @@ class TaskTemplateStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def update_task_template(
-            self, template_id: str, template_name: str):
+    def update_template(
+            self, template_id: str, template_name: str,
+            is_transition_template: bool):
         pass
-
