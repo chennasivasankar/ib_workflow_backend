@@ -185,7 +185,7 @@ class TestGetBoardsInteractor:
 
         # Assert
         storage_mock.get_board_ids.assert_called_once_with(
-            user_role=user_role
+            user_id=user_role
         )
         interactor_mock.assert_called_once_with(
             board_ids=board_ids_need_to_send
@@ -229,7 +229,7 @@ class TestGetBoardsInteractor:
 
         # Assert
         storage_mock.get_board_ids.assert_called_once_with(
-            user_role=user_role
+            user_id=user_role
         )
         presenter_mock.get_response_for_offset_exceeds_total_tasks. \
             assert_called_once_with()
