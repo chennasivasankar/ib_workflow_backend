@@ -81,3 +81,8 @@ class InvalidFieldsOfGoF(Exception):
 class ManyStagesToInitialTaskTemplate(Exception):
     def __init__(self, task_template_stages_dict: str):
         self.task_template_stages_dict = task_template_stages_dict
+
+
+class InvalidTransitionTemplateIds(Exception):
+    def __init__(self, invalid_transition_ids: List[str]):
+        self.invalid_transition_ids = invalid_transition_ids

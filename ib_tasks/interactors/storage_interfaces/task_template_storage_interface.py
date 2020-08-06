@@ -74,3 +74,8 @@ class TaskTemplateStorageInterface(abc.ABC):
             self, template_id: str, template_name: str,
             is_transition_template: bool):
         pass
+
+    @abc.abstractmethod
+    def get_valid_transition_template_ids(self,
+                                          transition_template_ids: List[str]):
+        pass

@@ -7,6 +7,8 @@ from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageIdsException
 from ib_tasks.interactors.stages_dtos import StageActionDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface import \
+    TaskTemplateStorageInterface
 
 
 class EmptyStageDisplayLogic(Exception):
@@ -32,8 +34,10 @@ class DuplicateStageActionNamesException(Exception):
 class CreateUpdateDeleteStageActionsInteractor:
 
     def __init__(self, storage: ActionStorageInterface,
+                 template_storage: TaskTemplateStorageInterface,
                  actions_dto: List[StageActionDTO]):
         self.storage = storage
+        self.template_storage = template_storage
         self.actions_dto = actions_dto
 
     def create_update_delete_stage_actions(self):
@@ -43,9 +47,21 @@ class CreateUpdateDeleteStageActionsInteractor:
         self._validations_for_stage_roles(actions_dto)
         self._validations_for_empty_stage_display_logic(actions_dto)
         self._validations_for_empty_button_texts(actions_dto)
+        transition_template_ids = self._get_transition_template_ids(actions_dto)
+        self._validtions_for_transition_template_ids(transition_template_ids)
         self._validations_for_button_texts(actions_dto)
         self._validations_for_duplicate_stage_actions(actions_dto)
         self._create_update_delete_stage_actions(actions_dto)
+
+    def _validtions_for_transition_template_ids(self,
+                                                transition_template_ids: List[str]):
+        valid_transition_template_ids = self.template_storage. \
+            get_valid_transition_template_ids(transition_template_ids)
+        invalid_transition_ids = [transition_id
+                                  for transition_id in transition_template_ids
+                                  if transition_id not in valid_transition_template_ids]
+        if invalid_transition_ids:
+            raise InvalidTransitionTemplateIds(invalid_transition_ids)
 
     def _validations_for_duplicate_stage_actions(
             self, actions_dto: List[StageActionDTO]):
@@ -62,6 +78,13 @@ class CreateUpdateDeleteStageActionsInteractor:
             raise DuplicateStageActionNamesException(
                 stage_actions=stage_actions
             )
+
+    @staticmethod
+    def _get_transition_template_ids(actions_dto: List[StageActionDTO]):
+        transition_template_ids = [
+            action.transition_template_id for action in actions_dto
+        ]
+        return transition_template_ids
 
     @staticmethod
     def _get_stage_action_names(actions_dto: List[StageActionDTO]):
