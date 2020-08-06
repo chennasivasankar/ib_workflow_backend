@@ -1,12 +1,22 @@
 from typing import List
-from ib_tasks.interactors.storage_interfaces.task_storage_interface \
-    import TaskStorageInterface
-from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO
+
+from ib_tasks.interactors.gofs_dtos import \
+    GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO
+from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
+    GoFStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
+    import \
+    TaskTemplateStorageInterface
+from ib_tasks.tests.factories.models import TaskTemplateWith2GoFsFactory
 
 
 class AddGoFsToTaskTemplateInteractor:
-    def __init__(self, task_storage: TaskStorageInterface):
-        self.task_storage = task_storage
+    def __init__(
+            self, task_template_storage: TaskTemplateStorageInterface,
+            gof_storage: GoFStorageInterface
+    ):
+        self.gof_storage = gof_storage
+        self.task_template_storage = task_template_storage
 
     def add_gofs_to_task_template_wrapper(
             self, gofs_with_template_id_dto: GoFsWithTemplateIdDTO):
@@ -20,7 +30,7 @@ class AddGoFsToTaskTemplateInteractor:
         template_id = gofs_with_template_id_dto.template_id
         gof_dtos = gofs_with_template_id_dto.gof_dtos
 
-        existing_gof_ids_of_template = self.task_storage.\
+        existing_gof_ids_of_template = self.task_template_storage. \
             get_existing_gof_ids_of_template(template_id=template_id)
         existing_gof_ids_not_in_given_data = \
             self._get_existing_gof_ids_that_are_not_in_given_data(
@@ -31,7 +41,8 @@ class AddGoFsToTaskTemplateInteractor:
             template_id=template_id,
             gof_dtos=gof_dtos,
             existing_gof_ids_of_template=existing_gof_ids_of_template)
-        from ib_tasks.exceptions.gofs_custom_exceptions import ExistingGoFsNotInGivenData
+        from ib_tasks.exceptions.gofs_custom_exceptions import \
+            ExistingGoFsNotInGivenData
         from ib_tasks.constants.exception_messages import \
             EXISTING_GOFS_NOT_IN_GIVEN_DATA
         if existing_gof_ids_not_in_given_data:
@@ -50,10 +61,12 @@ class AddGoFsToTaskTemplateInteractor:
                 existing_gof_ids_of_template=existing_gof_ids_of_template
             )
 
-        self.task_storage.add_gofs_to_template(template_id=template_id,
-                                               gof_dtos=gof_dtos_to_add)
-        self.task_storage.update_gofs_to_template(template_id=template_id,
-                                                  gof_dtos=gof_dtos_to_update)
+        self.task_template_storage.add_gofs_to_template(
+            template_id=template_id,
+            gof_dtos=gof_dtos_to_add)
+        self.task_template_storage.update_gofs_to_template(
+            template_id=template_id,
+            gof_dtos=gof_dtos_to_update)
 
     def _make_validations(self,
                           gofs_with_template_id_dto: GoFsWithTemplateIdDTO):
@@ -75,10 +88,12 @@ class AddGoFsToTaskTemplateInteractor:
     def _make_database_validations(
             self, gofs_with_template_id_dto: GoFsWithTemplateIdDTO):
         template_id = gofs_with_template_id_dto.template_id
-        is_template_exists = self.task_storage.check_is_template_exists(
+        is_template_exists = \
+            self.task_template_storage.check_is_template_exists(
             template_id=template_id)
         is_template_does_not_exists = not is_template_exists
-        from ib_tasks.exceptions.task_custom_exceptions import TemplateDoesNotExists
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            TemplateDoesNotExists
         from ib_tasks.constants.exception_messages import \
             TEMPLATE_DOES_NOT_EXISTS
         if is_template_does_not_exists:
@@ -87,7 +102,7 @@ class AddGoFsToTaskTemplateInteractor:
 
         given_gof_ids = \
             self._get_gof_ids(gof_dtos=gofs_with_template_id_dto.gof_dtos)
-        valid_gof_ids = self.task_storage.\
+        valid_gof_ids = self.gof_storage. \
             get_valid_gof_ids_in_given_gof_ids(gof_ids=given_gof_ids)
 
         invalid_gof_ids = [
@@ -107,7 +122,8 @@ class AddGoFsToTaskTemplateInteractor:
 
         invalid_gof_ids = self._get_invalid_gof_ids(
             gof_dtos=gofs_with_template_id_dto.gof_dtos)
-        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import \
+            InvalidValueForField
         from ib_tasks.constants.exception_messages import \
             INVALID_VALUE_FOR_GOF_IDS
         if invalid_gof_ids:
@@ -115,7 +131,8 @@ class AddGoFsToTaskTemplateInteractor:
 
         gof_ids_of_invalid_orders = self._get_gof_ids_of_invalid_orders(
             gof_dtos=gofs_with_template_id_dto.gof_dtos)
-        from ib_tasks.exceptions.gofs_custom_exceptions import InvalidOrdersForGoFs
+        from ib_tasks.exceptions.gofs_custom_exceptions import \
+            InvalidOrdersForGoFs
         from ib_tasks.constants.exception_messages import \
             INVALID_ORDERS_FOR_GOFS
         if gof_ids_of_invalid_orders:
@@ -135,7 +152,8 @@ class AddGoFsToTaskTemplateInteractor:
 
     @staticmethod
     def _validate_template_id(template_id: str):
-        from ib_tasks.exceptions.fields_custom_exceptions import InvalidValueForField
+        from ib_tasks.exceptions.fields_custom_exceptions import \
+            InvalidValueForField
         from ib_tasks.constants.exception_messages import \
             INVALID_VALUE_FOR_TEMPLATE_ID
 
@@ -227,3 +245,44 @@ class AddGoFsToTaskTemplateInteractor:
             message = DUPLICATE_ORDER_VALUES_FOR_GOFS.format(
                 duplicate_orders_of_gofs)
             raise DuplicateOrderValuesForGoFs(message)
+
+    def test_get_existing_gof_ids_of_template(self, storage):
+        # Arrange
+        template_id = "FIN_VENDOR"
+        expected_gof_ids = ['gof_1', 'gof_2']
+        TaskTemplateWith2GoFsFactory(template_id=template_id)
+
+        # Act
+        existing_gof_ids_of_template = \
+            storage.get_existing_gof_ids_of_template(template_id=template_id)
+
+        # Assert
+        assert existing_gof_ids_of_template == expected_gof_ids
+
+    def test_update_gofs_to_template(self, storage):
+        # Arrange
+        template_id = "FIN_VENDOR"
+        from ib_tasks.tests.factories.interactor_dtos import \
+            GoFWithOrderAndAddAnotherDTOFactory
+        gof_dtos = GoFWithOrderAndAddAnotherDTOFactory.create_batch(
+            size=2, order=5, enable_add_another_gof=True
+        )
+        TaskTemplateWith2GoFsFactory(template_id=template_id)
+
+        # Act
+        storage.update_gofs_to_template(
+            template_id=template_id, gof_dtos=gof_dtos
+        )
+
+        # Assert
+        from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
+        gof_to_task_template_objs = \
+            TaskTemplateGoFs.objects.filter(task_template_id=template_id)
+
+        assert gof_to_task_template_objs[0].order == \
+               gof_dtos[0].order
+        assert gof_to_task_template_objs[0].enable_add_another_gof == \
+               gof_dtos[0].enable_add_another_gof
+        assert gof_to_task_template_objs[1].order == gof_dtos[0].order
+        assert gof_to_task_template_objs[1].enable_add_another_gof == \
+               gof_dtos[1].enable_add_another_gof

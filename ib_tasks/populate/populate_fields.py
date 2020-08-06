@@ -1,8 +1,8 @@
 from typing import List, Dict, Union
 
+from ib_tasks.constants.constants import MULTI_VALUES_INPUT_FIELDS, UPLOADERS
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldRolesDTO
-from ib_tasks.constants.constants import MULTI_VALUES_INPUT_FIELDS, UPLOADERS
 
 
 class PopulateFields:
@@ -10,8 +10,6 @@ class PopulateFields:
         from ib_tasks.constants.constants import GOOGLE_SHEET_NAME, \
             FIELD_SUB_SHEET_TITLE
 
-        from ib_tasks.storages.tasks_storage_implementation import (
-            TasksStorageImplementation)
         from ib_tasks.interactors.create_or_update_fields_interactor \
             import CreateOrUpdateFieldsInteractor
         from ib_tasks.utils.get_google_sheet import get_google_sheet
@@ -21,8 +19,14 @@ class PopulateFields:
         field_records = fields_config_sheet.get_all_records()
         field_dtos = self.prepare_field_dtos(field_records)
         field_roles_dtos = self.prepare_field_roles_dtos(field_records)
-        storage = TasksStorageImplementation()
-        interactor = CreateOrUpdateFieldsInteractor(storage=storage)
+        from ib_tasks.storages.field_config_storage_implementation import \
+            FieldConfigStorageImplementation
+        storage = FieldConfigStorageImplementation()
+        from ib_tasks.storages.gof_storage_implementation import \
+            GoFStorageImplementation
+        gof_storage = GoFStorageImplementation()
+        interactor = CreateOrUpdateFieldsInteractor(storage=storage,
+                                                    gof_storage=gof_storage)
         interactor.create_or_update_fields(field_dtos, field_roles_dtos)
 
     def prepare_field_dtos(self, field_records: List[Dict]) -> List[FieldDTO]:
@@ -89,7 +93,8 @@ class PopulateFields:
                          field_values) -> Union[None, str, List[str]]:
         if field_values == "":
             field_values = None
-        if field_type in MULTI_VALUES_INPUT_FIELDS and field_values is not None:
+        if field_type in MULTI_VALUES_INPUT_FIELDS and field_values is not \
+                None:
             field_values = field_values.split("\r\n")
             field_values = field_values[0].split("\n")
         if field_type in MULTI_VALUES_INPUT_FIELDS and field_values is None:

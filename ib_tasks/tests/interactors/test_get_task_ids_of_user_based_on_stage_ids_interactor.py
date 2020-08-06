@@ -157,7 +157,7 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
             user_id=user_id,
             stage_ids=valid_stage_ids, limit=limit,
             offset=user_stages_with_pagination_dto.offset)
-        task_storage_mock. \
+        stage_storage_mock. \
             get_task_id_with_stage_details_dtos_based_on_stage_value(
             stage_values=[2],
             task_ids_group_by_stage_value_dtos=

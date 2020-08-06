@@ -24,9 +24,9 @@ class TestPopulateGoFs:
     def interactor(self):
         from ib_tasks.interactors.create_or_update_gofs import \
             CreateOrUpdateGoFsInteractor
-        from ib_tasks.storages.tasks_storage_implementation import \
-            TasksStorageImplementation
-        storage = TasksStorageImplementation()
+        from ib_tasks.storages.gof_storage_implementation import \
+            GoFStorageImplementation
+        storage = GoFStorageImplementation()
         interactor = CreateOrUpdateGoFsInteractor(storage)
         return interactor
 
