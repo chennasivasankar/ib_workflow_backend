@@ -60,7 +60,7 @@ class TestTaskTemplateStorageImplementation:
         )
 
         # Act
-        result = storage.get_gofs_to_task_templates_from_permitted_gofs(
+        result = storage.get_gofs_to_template_from_permitted_gofs(
             gof_ids=expected_gof_ids
         )
 
@@ -71,12 +71,12 @@ class TestTaskTemplateStorageImplementation:
         # Arrange
         from ib_tasks.tests.factories.models import TaskTemplateFactory
         from ib_tasks.interactors.storage_interfaces.task_templates_dtos \
-            import TaskTemplateDTO
+            import TemplateDTO
         expected_output = [
-            TaskTemplateDTO(
+            TemplateDTO(
                 template_id='template_1', template_name='Template 1'
             ),
-            TaskTemplateDTO(
+            TemplateDTO(
                 template_id='template_2', template_name='Template 2'
             )
         ]

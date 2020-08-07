@@ -198,7 +198,7 @@ class TestGetBoardsInteractor:
             self, storage_mock, presenter_mock, get_boards_dto, mocker):
         # Arrange
         total_boards = 3
-        all_board_ids = ['BOARD_ID_1', 'BOARD_ID_2', 'BOARD_ID_3']
+        all_board_ids = ['BOARD_ID_3', 'BOARD_ID_1', 'BOARD_ID_2']
         board_ids = ['BOARD_ID_1', 'BOARD_ID_2']
         starred_boards = ['BOARD_ID_3']
 

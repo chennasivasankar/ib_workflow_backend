@@ -2,13 +2,13 @@ from collections import defaultdict
 from typing import List
 
 from ib_tasks.adapters.roles_service_adapter import get_roles_service_adapter
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
-from ib_tasks.interactors.storage_interfaces.fields_storage_interface import FieldsStorageInterface
-from ib_tasks.interactors.storage_interfaces.storage_interface import StorageInterface
+from ib_tasks.interactors.storage_interfaces.storage_interface import \
+    StorageInterface
 from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
 
 

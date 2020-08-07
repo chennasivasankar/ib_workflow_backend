@@ -13,7 +13,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import \
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TaskTemplateDTO
+    TemplateDTO
 from ib_tasks.exceptions.task_custom_exceptions import \
     TaskTemplatesDoesNotExists
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
@@ -147,7 +147,7 @@ class GetTaskTemplatesPresenterImplementation(
 
     @staticmethod
     def _get_task_templates_in_dicts(
-            task_templates_dtos: List[TaskTemplateDTO]) -> List[Dict]:
+            task_templates_dtos: List[TemplateDTO]) -> List[Dict]:
         task_templates_dicts_list = []
         for task_template_dto in task_templates_dtos:
             task_template_details = {
