@@ -563,11 +563,12 @@
         "stage_display_name": {
           "type": "string"
         },
-
-              "stage_color": {
-                "type": "string"
-              },
-        "assignee": {"$ref": "#/definitions/Assignee"},
+        "stage_color": {
+          "type": "string"
+        },
+        "assignee": {
+          "$ref": "#/definitions/Assignee"
+        },
         "actions": {
           "type": "array",
           "items": {
@@ -589,7 +590,6 @@
         "task_id": {
           "type": "integer"
         },
-
         "task_overview_fields": {
           "type": "array",
           "items": {
@@ -634,8 +634,8 @@
           ]
         },
         "transition_template_id": {
-                      "type": "string"
-                    },
+          "type": "string"
+        },
         "button_text": {
           "type": "string"
         },
@@ -1158,8 +1158,11 @@
           "type": "string"
         },
         "status": {
-            "type": "string",
-            "enum": ["ENABLED", "DISABLED"]
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
         },
         "conditions": {
           "type": "array",
@@ -1324,8 +1327,11 @@
             "type": "integer"
           },
           "action": {
-              "type": "string",
-              "enum": ["ENABLED", "DISABLED"]
+            "type": "string",
+            "enum": [
+              "ENABLED",
+              "DISABLED"
+            ]
           }
         },
         "required": [
