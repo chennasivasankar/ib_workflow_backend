@@ -46,4 +46,4 @@ class TestCreateInitialStages:
         # Assert
         task_stages = TaskTemplateInitialStage.objects.filter(
             task_template_id__in=task_template_ids)
-        _validate_task_stage_objs(task_stages, task_template_stages_dtos)
+        self._validate_task_stage_objs(task_stages, task_template_stages_dtos)
