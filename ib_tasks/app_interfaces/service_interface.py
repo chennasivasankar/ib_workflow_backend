@@ -1,5 +1,6 @@
 from typing import List
 
+from ib_tasks.constants.enum import VIEWTYPE
 from ib_tasks.interactors.get_task_fields_and_actions import \
     GetTaskFieldsAndActionsInteractor
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
@@ -45,7 +46,8 @@ class ServiceInterface:
         return task_ids_dtos
 
     @staticmethod
-    def get_task_details(task_dtos: List[GetTaskDetailsDTO], user_id: str):
+    def get_task_details(task_dtos: List[GetTaskDetailsDTO], user_id: str,
+                         view_type: VIEWTYPE):
         from ib_tasks.storages.fields_storage_implementation import \
             FieldsStorageImplementation
         from ib_tasks.storages.storage_implementation import \
@@ -61,5 +63,5 @@ class ServiceInterface:
             action_storage=action_storage,
             task_storage=task_storage,
         )
-        result = interactor.get_task_fields_and_action(task_dtos, user_id)
+        result = interactor.get_task_fields_and_action(task_dtos, user_id, view_type)
         return result
