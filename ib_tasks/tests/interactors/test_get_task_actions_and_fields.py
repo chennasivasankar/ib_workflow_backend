@@ -25,7 +25,7 @@ from ib_tasks.tests.common_fixtures.adapters.roles_service import \
 from ib_tasks.tests.factories.interactor_dtos import \
     GetTaskDetailsDTOFactory
 from ib_tasks.tests.factories.storage_dtos import (
-    ActionDetailsDTOFactory, FieldDetailsDTOFactory,
+    StageActionDetailsDTOFactory, FieldDetailsDTOFactory,
     TaskFieldsDTOFactory, TaskTemplateStagesDTOFactory,
     FieldDetailsDTOWithTaskIdFactory)
 
@@ -51,11 +51,11 @@ class TestGetFieldsAndActionsInteractor:
 
     @pytest.fixture()
     def get_actions_dtos(self):
-        ActionDetailsDTOFactory.reset_sequence()
-        actions = ActionDetailsDTOFactory.create_batch(
+        StageActionDetailsDTOFactory.reset_sequence()
+        actions = StageActionDetailsDTOFactory.create_batch(
             size=2, stage_id="stage_id_1")
-        actions.append(ActionDetailsDTOFactory(stage_id="stage_id_2"))
-        actions.append(ActionDetailsDTOFactory(stage_id="stage_id_2"))
+        actions.append(StageActionDetailsDTOFactory(stage_id="stage_id_2"))
+        actions.append(StageActionDetailsDTOFactory(stage_id="stage_id_2"))
         return actions
 
     @pytest.fixture()
@@ -85,19 +85,19 @@ class TestGetFieldsAndActionsInteractor:
 
     @pytest.fixture()
     def expected_response(self):
-        ActionDetailsDTOFactory.reset_sequence()
+        StageActionDetailsDTOFactory.reset_sequence()
         FieldDetailsDTOFactory.reset_sequence()
         response = [GetTaskStageCompleteDetailsDTO(
             task_id=1,
             stage_id="stage_id_1",
             field_dtos=[FieldDetailsDTOFactory()],
-            action_dtos=[ActionDetailsDTOFactory()]
+            action_dtos=[StageActionDetailsDTOFactory()]
         ),
             GetTaskStageCompleteDetailsDTO(
                 task_id=1,
                 stage_id="stage_id_2",
                 field_dtos=[FieldDetailsDTOFactory()],
-                action_dtos=[ActionDetailsDTOFactory()]
+                action_dtos=[StageActionDetailsDTOFactory()]
             )
         ]
         return response
@@ -180,8 +180,8 @@ class TestGetFieldsAndActionsInteractor:
 
     @pytest.fixture()
     def get_actions_dtos_for_a_stage(self):
-        ActionDetailsDTOFactory.reset_sequence()
-        actions = ActionDetailsDTOFactory.create_batch(
+        StageActionDetailsDTOFactory.reset_sequence()
+        actions = StageActionDetailsDTOFactory.create_batch(
             size=2, stage_id="stage_id_1")
         return actions
 

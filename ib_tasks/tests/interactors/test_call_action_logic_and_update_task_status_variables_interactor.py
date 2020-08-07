@@ -10,7 +10,7 @@ from ib_tasks \
     )
 from ib_tasks.tests.factories.storage_dtos import (
     StatusVariableDTOFactory, GOFMultipleStatusDTOFactory,
-    TaskGoFFieldDTOFactory, TaskGoFDTOFactory
+    TaskGoFFieldDTOFactory, TaskGoFDTOFactory, TaskDetailsDTOFactory
 )
 
 
@@ -55,10 +55,7 @@ class TestUpdateTaskStatusVariablesInteractor:
         StatusVariableDTOFactory.reset_sequence()
         statuses = [StatusVariableDTOFactory()]
         storage.get_status_variables_to_task.return_value = statuses
-        from ib_tasks.interactors.storage_interfaces.get_task_dtos \
-            import TaskDetailsDTO
-        task_dto = TaskDetailsDTO(
-            template_id="template_1",
+        task_dto = TaskDetailsDTOFactory(
             task_gof_dtos=task_gof_dtos,
             task_gof_field_dtos=gof_field_dtos
         )
@@ -100,10 +97,8 @@ class TestUpdateTaskStatusVariablesInteractor:
         StatusVariableDTOFactory.reset_sequence()
         statuses = [StatusVariableDTOFactory()]
         storage.get_status_variables_to_task.return_value = statuses
-        from ib_tasks.interactors.storage_interfaces.get_task_dtos \
-            import TaskDetailsDTO
-        task_dto = TaskDetailsDTO(
-            template_id="template_1",
+
+        task_dto = TaskDetailsDTOFactory(
             task_gof_dtos=task_gof_dtos,
             task_gof_field_dtos=gof_field_dtos
         )
@@ -149,10 +144,7 @@ class TestUpdateTaskStatusVariablesInteractor:
         StatusVariableDTOFactory.reset_sequence()
         statuses = [StatusVariableDTOFactory()]
         storage.get_status_variables_to_task.return_value = statuses
-        from ib_tasks.interactors.storage_interfaces.get_task_dtos \
-            import TaskDetailsDTO
-        task_dto = TaskDetailsDTO(
-            template_id="template_1",
+        task_dto = TaskDetailsDTOFactory(
             task_gof_dtos=task_gof_dtos,
             task_gof_field_dtos=gof_field_dtos
         )
@@ -207,10 +199,7 @@ class TestUpdateTaskStatusVariablesInteractor:
         StatusVariableDTOFactory.reset_sequence()
         statuses = [StatusVariableDTOFactory()]
         storage.get_status_variables_to_task.return_value = statuses
-        from ib_tasks.interactors.storage_interfaces.get_task_dtos \
-            import TaskDetailsDTO
-        task_dto = TaskDetailsDTO(
-            template_id="template_1",
+        task_dto = TaskDetailsDTOFactory(
             task_gof_dtos=task_gof_dtos,
             task_gof_field_dtos=gof_field_dtos
         )
@@ -258,10 +247,7 @@ class TestUpdateTaskStatusVariablesInteractor:
         StatusVariableDTOFactory.reset_sequence()
         statuses = [StatusVariableDTOFactory()]
         storage.get_status_variables_to_task.return_value = statuses
-        from ib_tasks.interactors.storage_interfaces.get_task_dtos \
-            import TaskDetailsDTO
-        task_dto = TaskDetailsDTO(
-            template_id="template_1",
+        task_dto = TaskDetailsDTOFactory(
             task_gof_dtos=single_task_gof_dtos,
             task_gof_field_dtos=gof_field_dtos
         )
@@ -304,10 +290,7 @@ class TestUpdateTaskStatusVariablesInteractor:
         StatusVariableDTOFactory.reset_sequence()
         statuses = [StatusVariableDTOFactory()]
         storage.get_status_variables_to_task.return_value = statuses
-        from ib_tasks.interactors.storage_interfaces.get_task_dtos \
-            import TaskDetailsDTO
-        task_dto = TaskDetailsDTO(
-            template_id="template_1",
+        task_dto = TaskDetailsDTOFactory(
             task_gof_dtos=task_gof_dtos,
             task_gof_field_dtos=gof_field_dtos
         )
@@ -349,10 +332,7 @@ class TestUpdateTaskStatusVariablesInteractor:
         StatusVariableDTOFactory.reset_sequence()
         statuses = [StatusVariableDTOFactory()]
         storage.get_status_variables_to_task.return_value = statuses
-        from ib_tasks.interactors.storage_interfaces.get_task_dtos \
-            import TaskDetailsDTO
-        task_dto = TaskDetailsDTO(
-            template_id="template_1",
+        task_dto = TaskDetailsDTOFactory(
             task_gof_dtos=task_gof_dtos,
             task_gof_field_dtos=gof_field_dtos
         )
@@ -399,10 +379,7 @@ class TestUpdateTaskStatusVariablesInteractor:
             StatusVariableDTO(status_id=1, status_variable='variable_1', value='stage_2')
         ]
         storage.get_status_variables_to_task.return_value = statuses
-        from ib_tasks.interactors.storage_interfaces.get_task_dtos \
-            import TaskDetailsDTO
-        task_dto = TaskDetailsDTO(
-            template_id="template_1",
+        task_dto = TaskDetailsDTOFactory(
             task_gof_dtos=single_task_gof_dtos,
             task_gof_field_dtos=gof_field_dtos
         )

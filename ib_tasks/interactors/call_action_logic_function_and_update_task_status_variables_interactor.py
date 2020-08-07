@@ -31,7 +31,7 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
             self, task_dto: TaskDetailsDTO):
         task_gof_dtos = task_dto.task_gof_dtos
         gof_multiple_enable_dict = self._get_gof_multiple_enable_dict(
-            template_id=task_dto.template_id,
+            template_id=task_dto.task_base_details_dto.template_id,
             group_of_fields_dto=task_gof_dtos)
         task_gof_fields_dto = task_dto.task_gof_field_dtos
         task_gof_fields_dto_dict = \

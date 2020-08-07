@@ -52,6 +52,8 @@ class TaskTemplateStageActionDTOFactory(factory.Factory):
     button_text = factory.Sequence(lambda n: 'button_text_%d' % (n + 1))
     button_color = factory.Sequence(lambda n: 'button_color_%d' % (n + 1))
     function_path = "sample_function_path"
+    action_type = "action_type"
+    transition_template_id = factory.Sequence(lambda n: "transition_template_id_%d" % (n + 1))
 
 
 class FieldDisplayDTOFactory(factory.Factory):
