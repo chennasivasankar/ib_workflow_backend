@@ -14,7 +14,6 @@ from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsListEmptyException
 from ib_tasks.interactors.presenter_interfaces.get_all_tasks_overview_for_user_presenter_interface import \
     GetAllTasksOverviewForUserPresenterInterface
-from ib_tasks.interactors.stages_dtos import UserStagesWithPaginationDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
@@ -35,7 +34,7 @@ class UserIdPaginationDTO:
     offset: int
 
 
-class GetAllTasksOverviewForUserInteractor:
+class GetTasksOverviewForUserInteractor:
     def __init__(self, stage_storage: StageStorageInterface,
                  task_storage: TaskStorageInterface,
                  field_storage: FieldsStorageInterface,
@@ -45,39 +44,18 @@ class GetAllTasksOverviewForUserInteractor:
         self.field_storage = field_storage
         self.action_storage = action_storage
 
-    def get_all_tasks_overview_for_user_wrapper(
-            self, user_id_with_pagination_dto: UserIdPaginationDTO,
-            presenter: GetAllTasksOverviewForUserPresenterInterface):
-        try:
-            all_tasks_overview_details_dto = self.get_all_tasks_overview_for_user(
-                user_id_with_pagination_dto)
-        except StageIdsListEmptyException:
-            return presenter.raise_stage_ids_empty_exception()
-
-        except LimitShouldBeGreaterThanZeroException:
-            return presenter.raise_limit_should_be_greater_than_zero_exception(
-            )
-
-        except OffsetShouldBeGreaterThanZeroException:
-            return presenter. \
-                raise_offset_should_be_greater_than_zero_exception(
-            )
-        return presenter.all_tasks_overview_details_response(
-            all_tasks_overview_details_dto)
-
-    def get_all_tasks_overview_for_user(
-            self, user_id_with_pagination_dto: UserIdPaginationDTO):
-        user_id = user_id_with_pagination_dto.user_id
+    def get_filtered_tasks_overview_for_user(
+            self, user_id: str, task_ids: List[int]):
         stage_ids = self._get_allowed_stage_ids_of_user(user_id=user_id)
-        from ib_tasks.interactors.stages_dtos import \
-            UserStagesWithPaginationDTO
-        user_stages_with_pagination_dto = UserStagesWithPaginationDTO(
-            stage_ids=stage_ids,
+        task_id_with_stage_ids_dtos = self._get_task_ids_of_user(
             user_id=user_id,
-            limit=user_id_with_pagination_dto.limit,
-            offset=user_id_with_pagination_dto.offset)
-        task_id_with_stage_details_dtos = self._get_task_ids_of_user(
-            user_stages_with_pagination_dto)
+            stage_ids=stage_ids
+        )
+        task_id_with_stage_details_dtos = [
+            task_id_with_stage_ids_dto
+            for task_id_with_stage_ids_dto in task_id_with_stage_ids_dtos
+            if task_id_with_stage_ids_dto.task_id in task_ids
+        ]
         from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
         task_id_with_stage_id_dtos = [
             GetTaskDetailsDTO(
@@ -107,31 +85,20 @@ class GetAllTasksOverviewForUserInteractor:
         return stage_ids
 
     def _get_task_ids_of_user(
-            self, user_stages_with_pagination_dto: UserStagesWithPaginationDTO
-    ) -> List[TaskIdWithStageDetailsDTO]:
-        user_id = user_stages_with_pagination_dto.user_id
-        limit = user_stages_with_pagination_dto.limit * 5
-        offset = user_stages_with_pagination_dto.limit
-        task_ids = self._get_filtered_task_ids(
-            user_id=user_id, offset=offset, limit=limit
-        )
+            self, user_id: str, stage_ids: List[str]) -> List[TaskIdWithStageDetailsDTO]:
         from ib_tasks.interactors. \
-            get_task_ids_of_user_based_on_stage_ids_interactor import \
+            get_valid_task_ids_for_user_based_on_stage_ids import \
             GetTaskIdsOfUserBasedOnStagesInteractor
-        get_task_ids_of_user_based_on_stage_ids_interactor = \
+        task_ids_of_user_based_on_stage_ids_interactor = \
             GetTaskIdsOfUserBasedOnStagesInteractor(
                 stage_storage=self.stage_storage,
-                task_storage=self.task_storage)
-        task_id_with_stage_details_dtos = \
-            get_task_ids_of_user_based_on_stage_ids_interactor. \
-                get_task_ids_of_user_based_on_stage_ids(
-                user_stages_with_pagination_dto=user_stages_with_pagination_dto
+                task_storage=self.task_storage
             )
-        task_id_with_stage_details_dtos = self._get_filtered_task_id_with_stage_details_dtos(
-            task_id_with_stage_details_dtos=task_id_with_stage_details_dtos,
-            task_ids=task_ids
-        )
-        return task_id_with_stage_details_dtos
+        task_id_with_stage_ids_dtos = task_ids_of_user_based_on_stage_ids_interactor. \
+            get_task_ids_of_user_based_on_stage_ids(
+                user_id=user_id, stage_ids=stage_ids
+            )
+        return task_id_with_stage_ids_dtos
 
     def _get_task_fields_and_action(
             self, task_id_with_stage_id_dtos: List[GetTaskDetailsDTO],
@@ -148,21 +115,6 @@ class GetAllTasksOverviewForUserInteractor:
             get_task_fields_and_action(task_dtos=task_id_with_stage_id_dtos,
                                        user_id=user_id)
         return task_details_dtos
-
-    @staticmethod
-    def _get_filtered_task_ids(user_id: str, limit: int, offset: int) -> List[str]:
-        from ib_tasks.storages.filter_storage_implementation import \
-            FilterStorageImplementation
-        filter_storage = FilterStorageImplementation()
-        from ib_tasks.interactors.get_task_ids_by_applying_filters_interactor import \
-            GetTaskIdsBasedOnFilters
-        filtered_task_ids_interactor = GetTaskIdsBasedOnFilters(
-            filter_storage=filter_storage
-        )
-        task_ids = filtered_task_ids_interactor.get_task_ids_by_applying_filters(
-            user_id=user_id
-        )
-        return task_ids
 
     @staticmethod
     def _get_filtered_task_id_with_stage_details_dtos(

@@ -453,3 +453,20 @@ class TasksStorageImplementation(TaskStorageInterface):
             for task_obj in task_objs
         ]
         return valid_task_stages_dtos
+
+    def get_user_task_ids_and_max_stage_value_dto_based_on_given_stage_ids(
+            self, user_id: str, stage_ids: List[str]) -> List[TaskIdWithStageValueDTO]:
+        from django.db.models import Max
+        task_objs_with_max_stage_value = list(
+            TaskStage.objects.filter(
+                task__created_by=user_id,
+                stage__stage_id__in=stage_ids).values("task_id").annotate(
+                stage_value=Max("stage__value")))
+        task_id_with_max_stage_value_dtos = []
+        for task_with_stage_value_item in task_objs_with_max_stage_value:
+            task_id_with_max_stage_value_dtos.append(
+                TaskIdWithStageValueDTO(
+                    task_id=task_with_stage_value_item['task_id'],
+                    stage_value=task_with_stage_value_item['stage_value']))
+        return task_id_with_max_stage_value_dtos
+
