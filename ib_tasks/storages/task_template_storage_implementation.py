@@ -198,8 +198,9 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
     def get_transition_template_dto(
             self, transition_template_id: str) -> TemplateDTO:
-        transition_template = TaskTemplate.objects.filter(
+        transition_template_queryset = TaskTemplate.objects.filter(
             template_id=transition_template_id).values('template_id', 'name')
+        transition_template = transition_template_queryset.first()
 
         return TemplateDTO(
             template_id=transition_template['template_id'],
@@ -208,4 +209,7 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
     def check_is_transition_template_exists(
             self, transition_template_id: str) -> bool:
-        pass
+        is_transition_template_exists = TaskTemplate.objects.filter(
+            template_id=transition_template_id, is_transition_template=True
+        ).exists()
+        return is_transition_template_exists
