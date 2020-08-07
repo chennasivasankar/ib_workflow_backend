@@ -195,3 +195,17 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
         for gof_dto in gof_dtos:
             gofs_dict[gof_dto.gof_id] = gof_dto
         return gofs_dict
+
+    def get_transition_template_dto(
+            self, transition_template_id: str) -> TemplateDTO:
+        transition_template = TaskTemplate.objects.filter(
+            template_id=transition_template_id).values('template_id', 'name')
+
+        return TemplateDTO(
+            template_id=transition_template['template_id'],
+            template_name=transition_template['name']
+        )
+
+    def check_is_transition_template_exists(
+            self, transition_template_id: str) -> bool:
+        pass
