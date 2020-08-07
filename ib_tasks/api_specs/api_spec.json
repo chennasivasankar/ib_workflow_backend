@@ -542,7 +542,7 @@
       "type": "object",
       "properties": {
         "stage_id": {
-          "type": "string"
+          "type": "integer"
         },
         "assignee_id": {
           "type": "string"
@@ -562,6 +562,11 @@
         "stage_display_name": {
           "type": "string"
         },
+
+              "stage_color": {
+                "type": "string"
+              },
+        "assignee": {"$ref": "#/definitions/Assignee"},
         "actions": {
           "type": "array",
           "items": {
@@ -572,6 +577,8 @@
       "required": [
         "stage_id",
         "stage_display_name",
+        "stage_color",
+        "assignee",
         "actions"
       ]
     },
@@ -581,9 +588,7 @@
         "task_id": {
           "type": "integer"
         },
-        "transition_template_id": {
-          "type": "string"
-        },
+
         "task_overview_fields": {
           "type": "array",
           "items": {
@@ -627,6 +632,9 @@
             "NO_VALIDATIONS"
           ]
         },
+        "transition_template_id": {
+                      "type": "string"
+                    },
         "button_text": {
           "type": "string"
         },
@@ -1499,7 +1507,7 @@
               "type": "object",
               "properties": {
                 "stage_id": {
-                  "type": "string"
+                  "type": "integer"
                 },
                 "name": {
                   "type": "string"
