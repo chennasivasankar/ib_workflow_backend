@@ -26,3 +26,16 @@ class TestValidateStageIds:
 
         # Assert
         assert valid_stage_ids == expected_result
+
+    def test_get_valid_db_stage_ids_in_given_db_stage_ids(self, create_stages):
+        # Arrange
+        storage = StagesStorageImplementation()
+        given_stage_ids = [1, 2, 3, 4]
+        expected_result = [1, 2, 3]
+
+        # Act
+        valid_stage_ids = storage.get_valid_db_stage_ids_in_given_db_stage_ids(
+            given_stage_ids)
+
+        # Assert
+        assert valid_stage_ids == expected_result

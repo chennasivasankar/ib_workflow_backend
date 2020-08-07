@@ -107,11 +107,11 @@ class FilterPresenterImplementation(
 
     def get_response_for_invalid_task_template_id(self):
         from ib_tasks.constants.exception_messages import \
-            INVALID_TASK_TEMPLATE_ID
+            TASK_TEMPLATES_DOES_NOT_EXISTS
         response_dict = {
-            "response": INVALID_TASK_TEMPLATE_ID[0],
+            "response": TASK_TEMPLATES_DOES_NOT_EXISTS[0],
             "http_status_code": 403,
-            "res_status": INVALID_TASK_TEMPLATE_ID[1]
+            "res_status": TASK_TEMPLATES_DOES_NOT_EXISTS[1]
         }
 
         response_object = self.prepare_403_forbidden_response(response_dict)
@@ -138,11 +138,11 @@ class FilterPresenterImplementation(
 
     def get_response_for_user_not_have_access_to_fields(self):
         from ib_tasks.constants.exception_messages import \
-            USER_NOT_ACCESS_TO_FIELDS
+            USER_NOT_HAVE_PERMISSIONS_TO_FIELDS
         response_dict = {
-            "response": USER_NOT_ACCESS_TO_FIELDS[0],
+            "response": USER_NOT_HAVE_PERMISSIONS_TO_FIELDS[0],
             "http_status_code": 403,
-            "res_status": USER_NOT_ACCESS_TO_FIELDS[1]
+            "res_status": USER_NOT_HAVE_PERMISSIONS_TO_FIELDS[1]
         }
 
         response_object = self.prepare_403_forbidden_response(response_dict)
@@ -172,11 +172,11 @@ class FilterPresenterImplementation(
 
     def get_response_for_user_not_have_access_to_update_filter(self):
         from ib_tasks.constants.exception_messages import \
-            USER_DO_NOT_ACCESS_TO_UPDATE_FILTER
+            USER_NOT_HAVE_PERMISSIONS_TO_UPDATE
         response_dict = {
-            "response": USER_DO_NOT_ACCESS_TO_UPDATE_FILTER[0],
+            "response": USER_NOT_HAVE_PERMISSIONS_TO_UPDATE[0],
             "http_status_code": 403,
-            "res_status": USER_DO_NOT_ACCESS_TO_UPDATE_FILTER[1]
+            "res_status": USER_NOT_HAVE_PERMISSIONS_TO_UPDATE[1]
         }
 
         response_object = self.prepare_403_forbidden_response(response_dict)
@@ -184,11 +184,11 @@ class FilterPresenterImplementation(
 
     def get_response_for_user_not_have_access_to_delete_filter(self):
         from ib_tasks.constants.exception_messages import \
-            USER_DO_NOT_ACCESS_TO_DELETE_FILTER
+            USER_NOT_HAVE_PERMISSIONS_TO_DELETE
         response_dict = {
-            "response": USER_DO_NOT_ACCESS_TO_DELETE_FILTER[0],
+            "response": USER_NOT_HAVE_PERMISSIONS_TO_DELETE[0],
             "http_status_code": 403,
-            "res_status": USER_DO_NOT_ACCESS_TO_DELETE_FILTER[1]
+            "res_status": USER_NOT_HAVE_PERMISSIONS_TO_DELETE[1]
         }
 
         response_object = self.prepare_403_forbidden_response(response_dict)

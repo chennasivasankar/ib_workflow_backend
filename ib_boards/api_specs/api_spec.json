@@ -313,6 +313,23 @@
           "action"
         ]
       }
+    },
+    "ViewTypeParameter": {
+      "name": "view_type",
+      "in": "body",
+      "description": "view type",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "view_type": {
+            "type": "string",
+            "enum": ["LIST", "KANBAN"]
+          }
+        },
+        "required": [
+          "view_type"
+        ]
+      }
     }
   },
   "responses": {
@@ -485,6 +502,9 @@
           },
           {
             "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/ViewTypeParameter"
           }
         ],
         "responses": {
@@ -525,6 +545,9 @@
           },
           {
             "$ref": "#/parameters/ColumnIdParameter"
+          },
+          {
+            "$ref": "#/parameters/ViewTypeParameter"
           }
         ],
         "responses": {

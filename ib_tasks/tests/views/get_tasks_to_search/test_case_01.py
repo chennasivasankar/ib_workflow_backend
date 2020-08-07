@@ -18,7 +18,7 @@ class TestCase01GetTasksToSearchAPITestCase(TestUtils):
     def test_case(self, snapshot):
         body = {}
         path_params = {}
-        query_params = {'limit': 307, 'offset': 51, 'search_query': 'string'}
+        query_params = {'limit': 468, 'offset': 241, 'search_query': 'string'}
         headers = {}
         response = self.make_api_call(body=body,
                                       path_params=path_params,

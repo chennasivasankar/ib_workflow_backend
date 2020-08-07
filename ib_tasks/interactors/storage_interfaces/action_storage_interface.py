@@ -13,7 +13,7 @@ from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId, \
     TransitionTemplateIsNotRelatedToGivenStageAction
 from ib_tasks.interactors.stages_dtos import StageActionDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    ActionDetailsDTO
+    StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionNamesDTO
 
@@ -53,7 +53,7 @@ class ActionStorageInterface(ABC):
     def get_actions_details(self,
                             stage_ids: List[str],
                             user_roles: List[str]) -> \
-            List[ActionDetailsDTO]:
+            List[StageActionDetailsDTO]:
         pass
 
     @abc.abstractmethod

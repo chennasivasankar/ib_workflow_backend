@@ -64,7 +64,9 @@ class GetTransitionTemplateInteractor:
                 roles=user_roles)
         gofs_of_transition_template_dtos = self.task_template_storage. \
             get_gofs_to_template_from_permitted_gofs(
-                gof_ids=gof_ids_permitted_for_user)
+                gof_ids=gof_ids_permitted_for_user,
+                template_id=transition_template_id
+            )
         gofs_details_dtos = \
             self.gof_storage.get_gofs_details_dtos_for_given_gof_ids(
                 gof_ids=gof_ids_permitted_for_user)

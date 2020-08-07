@@ -11,7 +11,7 @@ from ib_tasks.interactors.stages_dtos import StagesActionDTO, \
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    ActionDetailsDTO
+    StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionNamesDTO
 from ib_tasks.models import StageAction, Stage, ActionPermittedRoles, \
@@ -215,7 +215,7 @@ class ActionsStorageImplementation(ActionStorageInterface):
     def get_actions_details(self,
                             stage_ids: List[str],
                             user_roles: List[str]) -> \
-            List[ActionDetailsDTO]:
+            List[StageActionDetailsDTO]:
         action_objs = (StageAction.objects
                        .filter(stage__stage_id__in=stage_ids)
                        .filter(Q(actionpermittedroles__role_id="ALL_ROLES") |
@@ -230,12 +230,14 @@ class ActionsStorageImplementation(ActionStorageInterface):
         action_dtos = []
         for action in action_objs:
             action_dtos.append(
-                ActionDetailsDTO(
+                StageActionDetailsDTO(
                     action_id=action.id,
                     name=action.name,
                     stage_id=action.stage.stage_id,
                     button_text=action.button_text,
-                    button_color=action.button_color
+                    button_color=action.button_color,
+                    action_type=action.action_type,
+                    transition_template_id=action.transition_template_id
                 )
             )
         return action_dtos

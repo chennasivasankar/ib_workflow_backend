@@ -42,5 +42,6 @@ __all__ = [
     "TaskTemplateStatusVariable",
     "TaskTemplateStatusVariables",
     "TaskTemplateInitialStage",
+    "TaskTemplateInitialStage",
     "StagePermittedRoles"
 ]

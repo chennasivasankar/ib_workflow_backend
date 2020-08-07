@@ -15,6 +15,16 @@ class TaskTemplateStagesDTOFactory(factory.Factory):
     stage_id = factory.Sequence(lambda n: n)
 
 
+def _validate_task_stage_objs(returned, expected):
+    if len(returned) != len(expected):
+        for val in range(len(returned)):
+            assert returned[val].task_template_id == expected[
+                val].task_template_id
+            assert returned[val].stage__stage_id == expected[val].stage_id
+    else:
+        assert len(returned) == len(expected)
+
+
 @pytest.mark.django_db
 class TestCreateInitialStages:
 
@@ -22,15 +32,6 @@ class TestCreateInitialStages:
     def task_template_stages_dtos(self):
         TaskTemplateStagesDTOFactory.reset_sequence(1)
         return TaskTemplateStagesDTOFactory.create_batch(size=2)
-
-    def _validate_task_stage_objs(self, returned, expected):
-        if len(returned) != len(expected):
-            for val in range(len(returned)):
-                assert returned[val].task_template_id == expected[
-                    val].task_template_id
-                assert returned[val].stage__stage_id == expected[val].stage_id
-        else:
-            assert len(returned) == len(expected)
 
     def test_creates_intital_stages_for_given_task_template_ids(self,
                                                                 task_template_stages_dtos):
