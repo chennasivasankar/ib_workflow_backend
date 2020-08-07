@@ -3,16 +3,14 @@ from datetime import datetime, timedelta
 
 import factory
 
-from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
-    Priority
-from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
-    Status
+from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators
+from ib_tasks.constants.enum import Priority
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     Task, TaskGoF,
-    TaskGoFField,
-    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage, Filter,
-    FilterCondition)
+    TaskGoFField, TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage,
+    Filter,
+    FilterCondition, StagePermittedRoles)
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
@@ -59,6 +57,7 @@ class TaskStageModelFactory(factory.django.DjangoModelFactory):
 
     task = factory.SubFactory(TaskFactory)
     stage = factory.SubFactory(StageModelFactory)
+    assignee_id = "123e4567-e89b-12d3-a456-426614174000"
 
 
 class TaskModelFactory(factory.django.DjangoModelFactory):
@@ -265,3 +264,13 @@ class FilterConditionFactory(factory.django.DjangoModelFactory):
     field = factory.SubFactory(FieldFactory)
     operator = Operators.GTE.value
     value = factory.sequence(lambda n: "value_{}".format(n))
+
+
+class StagePermittedRolesFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = StagePermittedRoles
+
+    stage = factory.SubFactory(StageModelFactory)
+    role_id = factory.Iterator(
+        ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"]
+    )

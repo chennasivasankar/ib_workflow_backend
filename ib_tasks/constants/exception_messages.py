@@ -255,7 +255,23 @@ USER_NOT_HAVE_PERMISSIONS_TO_DELETE = (
     'user not have access to delete the filter',
     'USER_DO_NOT_ACCESS_TO_DELETE_FILTER'
 )
+DUPLICATE_STAGE_IDS = (
+    "Duplicate stage ids that you have sent are: {},"
+    "please send unique stage ids",
+    "DUPLICATE_STAGE_IDS"
+)
 TRANSITION_TEMPLATE_DOES_NOT_EXISTS = (
     "Given invalid transition template Id: {}, that does not exists",
     "TRANSITION_TEMPLATE_DOES_NOT_EXISTS"
+)
+
+INVALID_STAGE_IDS = (
+    "Invalid stage ids that you have sent are: {},"
+    "please send valid stage ids",
+    "INVALID_STAGE_IDS"
+)
+STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE = (
+    "Stage ids with invalid permission of assignees that you have sent are: {},"
+    "please assign valid assignees for stages",
+    "STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE"
 )
