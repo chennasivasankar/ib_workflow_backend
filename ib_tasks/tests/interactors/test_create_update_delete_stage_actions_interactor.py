@@ -77,6 +77,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
 
     @staticmethod
     def test_given_invalid_roles_raises_exception(mocker):
+        stage_ids = ["stage_1", "stage_2", "stage_3"]
         expected_stage_roles = {
             "stage_1": ["ROLE_1", "ROLE_2"],
             "stage_2": ["ROLE_2"],
@@ -86,10 +87,14 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         StageActionDTOFactory.reset_sequence(0)
         actions_dto = StageActionDTOFactory.create_batch(size=3)
         storage = create_autospec(StorageInterface)
+        template_storage = create_autospec(TaskTemplateStorageInterface)
+        template_storage.get_valid_transition_template_ids.return_value =\
+        ["transition_template_id_1", "transition_template_id_2", "transition_template_id_3"]
         stage_ids = ["stage_1", "stage_2", "stage_3"]
         storage.get_valid_stage_ids.return_value = stage_ids
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
+            template_storage=template_storage,
             actions_dto=actions_dto
         )
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
@@ -116,9 +121,13 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         actions_dto.append(action_dto)
         storage = create_autospec(StorageInterface)
         stage_ids = ["stage_1", "stage_2", "stage_3"]
+        template_storage = create_autospec(TaskTemplateStorageInterface)
+        template_storage.get_valid_transition_template_ids.return_value = \
+            ["transition_template_id_1", "transition_template_id_2", "transition_template_id_3"]
         storage.get_valid_stage_ids.return_value = stage_ids
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
+            template_storage=template_storage,
             actions_dto=actions_dto
         )
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
