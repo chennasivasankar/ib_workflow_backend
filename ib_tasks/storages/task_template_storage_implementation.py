@@ -75,7 +75,9 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
         return valid_template_ids
 
     def get_task_templates_dtos(self) -> List[TemplateDTO]:
-        task_template_objs = TaskTemplate.objects.all()
+        task_template_objs = TaskTemplate.objects.filter(
+            is_transition_template=False
+        )
         task_template_dtos = self._convert_task_templates_objs_to_dtos(
             task_template_objs=task_template_objs)
         return task_template_dtos
