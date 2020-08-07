@@ -25,6 +25,7 @@ class TestTaskTemplateStorageImplementation:
         GlobalConstantFactory.reset_sequence()
         GlobalConstantsDTOFactory.reset_sequence()
         GoFToTaskTemplateFactory.reset_sequence()
+        GoFToTaskTemplateFactory.enable_add_another_gof.reset()
 
     def test_get_valid_template_ids_in_given_template_ids(self, storage):
         # Arrange

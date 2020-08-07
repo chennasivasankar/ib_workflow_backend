@@ -33,8 +33,10 @@ class TestCase01GetTransitionTemplateAPITestCase(TestUtils):
 
         transition_template_id = 'template_1'
 
-        template_obj = \
-            TaskTemplateFactory.create(template_id=transition_template_id)
+        template_obj = TaskTemplateFactory.create(
+            template_id=transition_template_id,
+            is_transition_template=True
+        )
         gof_objs = GoFFactory.create_batch(size=4)
         GoFToTaskTemplateFactory.create_batch(size=2,
                                               gof=factory.Iterator(gof_objs),

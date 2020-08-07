@@ -515,7 +515,7 @@ class TaskBaseDetailsDTOFactory(factory.Factory):
         lambda counter: "description_{}".format(counter))
     start_date = datetime.now()
     due_date = datetime.now() + timedelta(10)
-    priority = "HIGH"
+    priority = Priority.HIGH.value
 
 
 class TaskDetailsDTOFactory(factory.Factory):
