@@ -6,8 +6,10 @@ from ib_tasks.interactors.filter_dtos import FilterDTO, ConditionDTO
 from ib_tasks.constants.enum import Status
 from ib_tasks.interactors.filter_dtos import FilterCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFToTaskTemplateDTO
-from ib_tasks.interactors.storage_interfaces.task_templates_dtos import TemplateDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import \
+    GoFToTaskTemplateDTO
+from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
+    TemplateDTO
 
 
 @dataclass()
