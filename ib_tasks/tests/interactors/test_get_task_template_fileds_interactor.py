@@ -1,19 +1,10 @@
-mport pytest
-import factory
-
-from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface import TaskTemplateFieldsDto
-from ib_tasks.interactors.presenter_interfaces.get_task_templates_presenter_interface import CompleteTaskTemplatesDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO
-from ib_tasks.tests.factories.storage_dtos import TaskTemplateDTOFactory, StageIdWithTemplateIdDTOFactory, \
-    ActionWithStageIdDTOFactory, GoFDTOFactory, FieldDTOFactory, FieldPermissionDTOFactory, GoFToTaskTemplateDTOFactory
-
 import factory
 import pytest
 
 from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
     import \
     TaskTemplateFieldsDto
-from ib_tasks.interactors.presenter_interfaces\
+from ib_tasks.interactors.presenter_interfaces \
     .get_task_templates_presenter_interface import \
     CompleteTaskTemplatesDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO

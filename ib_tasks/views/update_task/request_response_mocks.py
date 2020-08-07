@@ -18,7 +18,7 @@ REQUEST_BODY_JSON = """
     "task_gofs": [
         {
             "gof_id": "string",
-            "same_gof_order": 1.1,
+            "same_gof_order": 1,
             "gof_fields": [
                 {
                     "field_id": "string",

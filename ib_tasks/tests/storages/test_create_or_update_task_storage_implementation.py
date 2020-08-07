@@ -7,7 +7,7 @@ from ib_tasks.models import Task, TaskGoF, TaskGoFField
 from ib_tasks.tests.factories.models import GoFRoleFactory, FieldRoleFactory, \
     TaskFactory, FieldFactory, TaskGoFFactory, TaskGoFFieldFactory, GoFFactory
 from ib_tasks.tests.factories.storage_dtos import TaskGoFFieldDTOFactory, \
-    TaskGoFWithTaskIdDTOFactory
+    TaskGoFWithTaskIdDTOFactory, CreateTaskDTOFactory
 
 
 @pytest.mark.django_db
@@ -240,17 +240,28 @@ class TestCreateOrUpdateTaskStorageImplementation:
 
     def test_create_task_with_template_id(self, storage, reset_sequence):
         # Arrange
-        template_id = "TEMPLATE_ID-1"
-        created_by_id = "123e4567-e89b-12d3-a456-426614174000"
+        create_task_dto = CreateTaskDTOFactory()
 
         # Act
         created_task_id = \
-            storage.create_task_with_given_task_details(template_id)
+            storage.create_task_with_given_task_details(create_task_dto)
 
         # Assert
+        import datetime
+        from ib_tasks.constants.config import TIME_FORMAT
+        due_date_time = datetime.datetime.combine(
+            create_task_dto.due_date,
+            datetime.datetime.strptime(create_task_dto.due_time,
+                                       TIME_FORMAT).time()
+        )
         task = Task.objects.get(id=created_task_id)
-        assert task.template_id == template_id
-        assert task.created_by == created_by_id
+        assert task.template_id == create_task_dto.task_template_id
+        assert task.created_by == create_task_dto.created_by_id
+        assert task.title == create_task_dto.title
+        assert task.description == create_task_dto.description
+        assert task.start_date.date() == create_task_dto.start_date
+        assert task.due_date == due_date_time
+        assert task.priority == create_task_dto.priority
 
     def test_create_task_gofs(self, storage, reset_sequence):
         # Arrange

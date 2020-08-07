@@ -65,6 +65,18 @@ class TaskModelFactory(factory.django.DjangoModelFactory):
 
     template_id = factory.Sequence(lambda n: "template_%d" % (n + 1))
     created_by = factory.Sequence(lambda n: (n + 1))
+    title = factory.Sequence(lambda c: "title_{}".format(c))
+    description = factory.Sequence(lambda c: "description_{}".format(c))
+    start_date = datetime.now()
+    due_date = datetime.now() + timedelta(days=2)
+
+
+class TaskTemplateFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskTemplate
+
+    template_id = factory.sequence(lambda n: "template_{}".format(n + 1))
+    name = factory.sequence(lambda n: "Template {}".format(n + 1))
 
 
 class StageActionFactory(factory.django.DjangoModelFactory):
@@ -77,6 +89,8 @@ class StageActionFactory(factory.django.DjangoModelFactory):
     button_color = "#fafafa"
     logic = "Status1 = PR_PAYMENT_REQUEST_DRAFTS"
     py_function_import_path = "path"
+    action_type = factory.Sequence(lambda c: "action_type{}".format(c))
+    transition_template = factory.SubFactory(TaskTemplateFactory)
 
 
 class ActionPermittedRolesFactory(factory.django.DjangoModelFactory):
@@ -87,16 +101,7 @@ class ActionPermittedRolesFactory(factory.django.DjangoModelFactory):
     role_id = factory.Sequence(lambda n: "role_%d" % n)
 
 
-class TaskTemplateFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = TaskTemplate
-
-    template_id = factory.sequence(lambda n: "template_{}".format(n + 1))
-    name = factory.sequence(lambda n: "Template {}".format(n + 1))
-
-
 class TaskTemplateWithTransitionFactory(TaskTemplateFactory):
-
     is_transition_template = factory.Iterator([True, False])
 
 

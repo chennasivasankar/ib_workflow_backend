@@ -5,7 +5,7 @@ RESPONSE_200_JSON = """
 {
     "stage_assignees": [
         {
-            "stage_id": "string",
+            "stage_id": 1,
             "name": "string",
             "assignee": {
                 "assignee_id": "string",

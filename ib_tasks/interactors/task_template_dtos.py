@@ -1,5 +1,7 @@
 from dataclasses import dataclass
-from typing import Union, List
+from typing import List
+
+from ib_tasks.interactors.task_dtos import GoFFieldsDTO
 
 
 @dataclass
@@ -10,19 +12,6 @@ class CreateTemplateDTO:
 
 
 @dataclass
-class FieldValuesDTO:
-    field_id: str
-    field_response: Union[str, List[str], int]
-
-
-@dataclass
-class GoFFieldsDTO:
-    gof_id: str
-    same_gof_order: int
-    field_values_dtos: List[FieldValuesDTO]
-
-
-@dataclass
 class CreateTransitionChecklistTemplateDTO:
     task_id: int
     created_by_id: str
@@ -30,4 +19,3 @@ class CreateTransitionChecklistTemplateDTO:
     action_id: int
     stage_id: int
     transition_checklist_gofs: List[GoFFieldsDTO]
-
