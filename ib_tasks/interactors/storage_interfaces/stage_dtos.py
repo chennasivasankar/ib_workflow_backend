@@ -1,9 +1,8 @@
 from dataclasses import dataclass
 from typing import List, Any, Optional
 
-from ib_tasks.interactors.storage_interfaces.actions_dtos import StageActionDetailsDTO
-from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
-    ActionDetailsDTO
+from ib_tasks.interactors.storage_interfaces.actions_dtos import \
+    StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
 
 

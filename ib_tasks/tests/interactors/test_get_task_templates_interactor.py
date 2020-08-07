@@ -1,18 +1,19 @@
-import pytest
-import mock
 import factory
+import mock
+import pytest
+
 from ib_tasks.interactors.get_task_templates_interactor \
     import GetTaskTemplatesInteractor
-from ib_tasks.tests.factories.storage_dtos import \
-    TaskTemplateDTOFactory, ActionWithStageIdDTOFactory, \
-    UserFieldPermissionDTOFactory, FieldDTOFactory, \
-    GoFToTaskTemplateDTOFactory, GoFDTOFactory, \
-    FieldPermissionDTOFactory, StageIdWithTemplateIdDTOFactory
 from ib_tasks.interactors.presenter_interfaces. \
     get_task_templates_presenter_interface import \
     CompleteTaskTemplatesDTO
 from ib_tasks.tests.common_fixtures.adapters.roles_service import \
     get_user_role_ids
+from ib_tasks.tests.factories.storage_dtos import \
+    TaskTemplateDTOFactory, ActionWithStageIdDTOFactory, \
+    UserFieldPermissionDTOFactory, FieldDTOFactory, \
+    GoFToTaskTemplateDTOFactory, GoFDTOFactory, \
+    FieldPermissionDTOFactory, StageIdWithTemplateIdDTOFactory
 
 
 class TestGetTaskTemplatesInteractor:

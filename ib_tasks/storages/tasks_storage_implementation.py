@@ -14,22 +14,18 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    GetTaskStageCompleteDetailsDTO, TaskStageIdsDTO, StageIdWithTemplateIdDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskIdWithStageValueDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
-    StageDTO
+    GetTaskStageCompleteDetailsDTO, TaskStageIdsDTO, \
+    StageIdWithTemplateIdDTO, \
+    TaskIdWithStageValueDTO, TaskStagesDTO, StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO
-from ib_tasks.interactors.task_dtos import CreateTaskLogDTO
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
-from ib_tasks.models import Stage, TaskTemplate
-from ib_tasks.models import TaskStage
-from ib_tasks.models import TaskTemplateStatusVariable
+from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO
+from ib_tasks.models import Stage, TaskTemplate, TaskStage, \
+    TaskTemplateStatusVariable
 from ib_tasks.models.field import Field
 from ib_tasks.models.stage_actions import StageAction
 from ib_tasks.models.task import Task

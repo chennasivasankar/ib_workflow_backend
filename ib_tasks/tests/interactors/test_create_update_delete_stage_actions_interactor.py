@@ -1,18 +1,19 @@
-import pytest
 import json
 from unittest.mock import create_autospec
 
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTransitionTemplateIds
+import pytest
+
+from ib_tasks.exceptions.task_custom_exceptions import \
+    InvalidTransitionTemplateIds
+from ib_tasks.interactors.create_update_delete_stage_actions import \
+    EmptyStageDisplayLogic, DuplicateStageButtonsException, \
+    DuplicateStageActionNamesException, EmptyStageButtonText, \
+    CreateUpdateDeleteStageActionsInteractor
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
-from ib_tasks.interactors.create_update_delete_stage_actions \
-    import (
-        EmptyStageDisplayLogic, DuplicateStageButtonsException,
-        DuplicateStageActionNamesException, EmptyStageButtonText
-    )
-from ib_tasks.interactors.create_update_delete_stage_actions \
-    import CreateUpdateDeleteStageActionsInteractor
-from ib_tasks.interactors.storage_interfaces.task_template_storage_interface import TaskTemplateStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface\
+    import \
+    TaskTemplateStorageInterface
 from ib_tasks.tests.factories.interactor_dtos import StageActionDTOFactory
 
 

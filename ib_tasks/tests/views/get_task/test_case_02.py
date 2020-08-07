@@ -1,9 +1,11 @@
 """
 # TODO: Update test case description
 """
+import factory
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
-from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+
+from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.tests.factories.models import (
     TaskFactory,
     TaskGoFFactory,
@@ -16,8 +18,7 @@ from ib_tasks.tests.factories.models import (
     TaskStageModelFactory,
     StageActionFactory,
 )
-import factory
-from ib_tasks.constants.enum import PermissionTypes
+from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
 class TestCase02GetTaskAPITestCase(TestUtils):

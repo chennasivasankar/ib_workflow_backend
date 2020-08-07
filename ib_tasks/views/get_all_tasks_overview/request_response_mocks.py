@@ -19,7 +19,7 @@ RESPONSE_200_JSON = """
                 "stage_color": "string",
                 "assignee": {
                     "assignee_id": "string",
-                    "name": "string",
+                    "assignee_name": "string",
                     "profile_pic_url": "string"
                 },
                 "actions": [
@@ -28,8 +28,7 @@ RESPONSE_200_JSON = """
                         "action_type": "NO_VALIDATIONS",
                         "transition_template_id": "string",
                         "button_text": "string",
-                        "button_color": "string",
-                        "transition_template_id": "string"
+                        "button_color": "string"
                     }
                 ]
             }

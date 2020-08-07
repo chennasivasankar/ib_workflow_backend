@@ -8,10 +8,6 @@ class UpdateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_invalid_action_id(self, err):
-        pass
-
-    @abc.abstractmethod
     def raise_invalid_gof_ids(self, err):
         pass
 
@@ -120,10 +116,3 @@ class UpdateTaskPresenterInterface(abc.ABC):
     def raise_exception_for_not_acceptable_file_format(self, err):
         pass
 
-    @abc.abstractmethod
-    def raise_exception_for_user_action_permission_denied(self, error_obj):
-        pass
-
-    @abc.abstractmethod
-    def raise_exception_for_user_board_permission_denied(self, error_obj):
-        pass

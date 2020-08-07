@@ -2,7 +2,8 @@ import pytest
 
 from ib_tasks.interactors.stages_dtos import StageDTO
 from ib_tasks.models import Stage, StagePermittedRoles
-from ib_tasks.storages.storage_implementation import StagesStorageImplementation
+from ib_tasks.storages.storage_implementation import \
+    StagesStorageImplementation
 from ib_tasks.tests.factories.storage_dtos import StageDTOFactory
 
 

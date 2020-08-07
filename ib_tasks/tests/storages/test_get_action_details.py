@@ -2,8 +2,8 @@ import pytest
 
 from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
-from ib_tasks.storages.fields_storage_implementation import FieldsStorageImplementation
-from ib_tasks.tests.factories.models import StageModelFactory, StageActionFactory, ActionPermittedRolesFactory, \
+from ib_tasks.tests.factories.models import StageModelFactory, \
+    StageActionFactory, ActionPermittedRolesFactory, \
     StageActionWithTransitionFactory
 
 

@@ -1,16 +1,15 @@
-from typing import List
-
-from ib_tasks.constants.enum import Status
-from ib_tasks.interactors.filter_dtos import FilterDTO, FilterCompleteDetailsDTO
-from ib_tasks.interactors.filter_dtos import CreateConditionDTO, CreateFilterDTO
 from typing import Tuple, List
 
+from ib_tasks.constants.enum import Status
 from ib_tasks.exceptions.filter_exceptions import \
-    FieldIdsNotBelongsToTemplateId, UserNotHaveAccessToFields, InvalidFilterId, \
+    FieldIdsNotBelongsToTemplateId, UserNotHaveAccessToFields, \
+    InvalidFilterId, \
     UserNotHaveAccessToFilter
-from ib_tasks.interactors.filter_dtos import CreateConditionDTO, \
-    CreateFilterDTO, FilterDTO, ConditionDTO, UpdateFilterDTO
-from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface import \
+from ib_tasks.interactors.filter_dtos import FilterCompleteDetailsDTO, \
+    CreateConditionDTO, CreateFilterDTO, FilterDTO, ConditionDTO, \
+    UpdateFilterDTO
+from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
+    import \
     FilterPresenterInterface
 from ib_tasks.interactors.storage_interfaces.filter_storage_interface \
     import FilterStorageInterface

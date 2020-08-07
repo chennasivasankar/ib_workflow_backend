@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_complete_task_template_details_exists task_template_1'] = {

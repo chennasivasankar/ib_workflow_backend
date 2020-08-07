@@ -16,9 +16,15 @@ def api_wrapper(*args, **kwargs):
     params = kwargs['request_query_params']
     offset = params['offset']
     limit = params['limit']
+    request_body = params['request_data']
+
+    from ib_boards.constants.enum import ViewType
+    view_type = request_body.get('view_type', ViewType.KANBAN.value)
+
     column_params = ColumnParametersDTO(
         board_id=board_id,
-        user_id=user.user_id
+        user_id=user.user_id,
+        view_type=view_type
     )
     pagination_params = PaginationParametersDTO(
         offset=offset,

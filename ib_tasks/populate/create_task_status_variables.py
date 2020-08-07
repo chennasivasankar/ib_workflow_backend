@@ -1,7 +1,8 @@
 
 from typing import Dict, Any, List
 
-from ib_tasks.interactors.storage_interfaces.status_dtos import TaskTemplateStatusDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import \
+    TaskTemplateStatusDTO
 from ib_tasks.storages.task_template_storage_implementation import \
     TaskTemplateStorageImplementation
 

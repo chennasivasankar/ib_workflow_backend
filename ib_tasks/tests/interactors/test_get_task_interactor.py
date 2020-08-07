@@ -213,13 +213,18 @@ class TestGetTaskInteractor:
 
     @pytest.fixture
     def stages_and_actions_details_dtos(self, stages_action_dtos):
-        from ib_tasks.tests.factories.interactor_dtos import \
-            StageAndActionsDetailsDTOFactory
+        from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
         stages_and_actions_details_dtos = [
-            StageAndActionsDetailsDTOFactory(
+            StageAndActionsDetailsDTO(
+                stage_id="stage0",
+                name="name1",
+                db_stage_id=1,
                 actions_dtos=[stages_action_dtos[0], stages_action_dtos[1]]
             ),
-            StageAndActionsDetailsDTOFactory(
+            StageAndActionsDetailsDTO(
+                stage_id="stage1",
+                name="name2",
+                db_stage_id=1,
                 actions_dtos=[stages_action_dtos[2], stages_action_dtos[3]]
             )
         ]
