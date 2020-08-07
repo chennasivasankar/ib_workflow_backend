@@ -1,7 +1,8 @@
 import pytest
 
 from ib_tasks.constants.enum import VIEWTYPE
-from ib_tasks.storages.fields_storage_implementation import FieldsStorageImplementation
+from ib_tasks.storages.fields_storage_implementation import \
+    FieldsStorageImplementation
 from ib_tasks.tests.factories.models import (
     StageModelFactory, TaskFactory, TaskTemplateFactory, TaskStageModelFactory)
 from ib_tasks.tests.factories.storage_dtos import TemplateStagesDTOFactory

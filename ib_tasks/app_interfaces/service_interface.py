@@ -3,10 +3,10 @@ from typing import List
 from ib_tasks.constants.enum import VIEWTYPE
 from ib_tasks.interactors.get_task_fields_and_actions import \
     GetTaskFieldsAndActionsInteractor
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
-from ib_tasks.storages.action_storage_implementation import ActionsStorageImplementation
-from ib_tasks.storages.tasks_storage_implementation import \
-    TasksStorageImplementation
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
+    TaskDetailsConfigDTO
+from ib_tasks.storages.action_storage_implementation import \
+    ActionsStorageImplementation
 
 
 # class TaskDetailsServiceInterface:
@@ -17,11 +17,6 @@ from ib_tasks.storages.tasks_storage_implementation import \
 #         interactor = GetTaskFieldsAndActionsInteractor(storage)
 #         result = interactor.get_task_fields_and_action(task_dtos)
 #         return result
-
-
-from typing import List
-
-from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
 
 
 class ServiceInterface:

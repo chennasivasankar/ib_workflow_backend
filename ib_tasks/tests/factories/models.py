@@ -3,8 +3,8 @@ from datetime import datetime, timedelta
 
 import factory
 
-from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators
-from ib_tasks.constants.enum import Priority
+from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
+    Priority
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     Task, TaskGoF,
@@ -66,6 +66,18 @@ class TaskModelFactory(factory.django.DjangoModelFactory):
 
     template_id = factory.Sequence(lambda n: "template_%d" % (n + 1))
     created_by = factory.Sequence(lambda n: (n + 1))
+    title = factory.Sequence(lambda c: "title_{}".format(c))
+    description = factory.Sequence(lambda c: "description_{}".format(c))
+    start_date = datetime.now()
+    due_date = datetime.now() + timedelta(days=2)
+
+
+class TaskTemplateFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskTemplate
+
+    template_id = factory.sequence(lambda n: "template_{}".format(n + 1))
+    name = factory.sequence(lambda n: "Template {}".format(n + 1))
 
 
 class TaskTemplateFactory(factory.django.DjangoModelFactory):
@@ -90,6 +102,8 @@ class StageActionFactory(factory.django.DjangoModelFactory):
     button_color = "#fafafa"
     logic = "Status1 = PR_PAYMENT_REQUEST_DRAFTS"
     py_function_import_path = "path"
+    action_type = factory.Sequence(lambda c: "action_type{}".format(c))
+    transition_template = factory.SubFactory(TaskTemplateFactory)
 
 
 class StageActionWithTransitionFactory(StageActionFactory):

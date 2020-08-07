@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from typing import List, Optional
 from datetime import datetime
+from typing import List, Optional
 
 from ib_tasks.constants.enum import Priority
 

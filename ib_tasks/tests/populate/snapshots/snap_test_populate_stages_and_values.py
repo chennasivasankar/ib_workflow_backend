@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestPopulateStagesAndValues.test_with_valid_keys_returns_list_of_stage_dtos populated_stages'] = [

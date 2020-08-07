@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestGetTransitionTemplatePresenterImplementation.test_raise_transition_template_does_not_exists_exception http_status_code'] = 404

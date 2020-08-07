@@ -3,7 +3,8 @@ import json
 import pytest
 
 from ib_tasks.models import Stage
-from ib_tasks.tests.factories.models import TaskStatusVariableFactory, GoFFactory, TaskTemplateFactory, \
+from ib_tasks.tests.factories.models import TaskStatusVariableFactory, \
+    GoFFactory, TaskTemplateFactory, \
     GoFToTaskTemplateFactory, FieldFactory, StageModelFactory
 
 

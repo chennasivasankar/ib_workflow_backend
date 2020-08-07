@@ -1,9 +1,9 @@
-import abc
 from typing import List
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
-from ib_tasks.interactors.presenter_interfaces.update_task_stage_assignees_presenter_interface import \
+from ib_tasks.interactors.presenter_interfaces\
+    .update_task_stage_assignees_presenter_interface import \
     UpdateTaskStageAssigneesPresenterInterface
 
 

@@ -1,25 +1,25 @@
 from typing import List, Dict
 
 from ib_tasks.constants.enum import PermissionTypes
+from ib_tasks.interactors.presenter_interfaces. \
+    get_task_templates_presenter_interface import \
+    GetTaskTemplatesPresenterInterface, CompleteTaskTemplatesDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
+    UserFieldPermissionDTO, FieldPermissionDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
+from ib_tasks.interactors.storage_interfaces.gof_dtos import \
+    GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
     GoFStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageIdWithTemplateIdDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
-    UserFieldPermissionDTO, FieldPermissionDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import \
-    GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import TaskTemplateStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO
-from ib_tasks.interactors.presenter_interfaces. \
-    get_task_templates_presenter_interface import \
-    GetTaskTemplatesPresenterInterface, CompleteTaskTemplatesDTO
 
 
 class GetTaskTemplatesInteractor:

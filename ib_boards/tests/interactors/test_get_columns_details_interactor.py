@@ -1,20 +1,21 @@
 from unittest.mock import create_autospec, patch, Mock
 
-import pytest
 import factory
+import pytest
 
 from ib_boards.constants.enum import ViewType
 from ib_boards.interactors.dtos import ColumnParametersDTO, \
-    PaginationParametersDTO
-from ib_boards.interactors.dtos import TaskStageIdDTO
+    PaginationParametersDTO, TaskStageIdDTO
 from ib_boards.interactors.get_column_details_interactor import \
     GetColumnDetailsInteractor
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
-from ib_boards.tests.factories.interactor_dtos import ColumnTaskIdsDTOFactory, \
-    TaskColumnDTOFactory, ColumnStageIdsDTOFactory, TaskDetailsConfigDTOFactory, \
+from ib_boards.tests.factories.interactor_dtos import \
+    ColumnTaskIdsDTOFactory, \
+    TaskColumnDTOFactory, ColumnStageIdsDTOFactory, \
+    TaskDetailsConfigDTOFactory, \
     GetTaskDetailsDTOFactory, TaskStageIdDTOFactory
 from ib_boards.tests.factories.storage_dtos import (
     ColumnDetailsDTOFactory, TaskActionsDTOFactory, TaskFieldsDTOFactory,

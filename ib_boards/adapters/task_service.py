@@ -12,8 +12,6 @@ from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
     TaskFieldsDTOFactory
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, \
     GetTaskDetailsDTO
-from ib_boards.interactors.presenter_interfaces.presenter_interface import \
-    TaskCompleteDetailsDTO
 
 
 class TaskService:

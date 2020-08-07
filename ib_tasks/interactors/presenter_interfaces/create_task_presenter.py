@@ -127,3 +127,7 @@ class CreateTaskPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def raise_exception_for_user_board_permission_denied(self, error_obj):
         pass
+
+    @abc.abstractmethod
+    def raise_duplicate_same_gof_orders_for_a_gof(self, err):
+        pass

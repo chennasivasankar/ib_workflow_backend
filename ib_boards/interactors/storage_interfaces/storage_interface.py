@@ -1,12 +1,10 @@
 import abc
-from typing import List, Optional
+from typing import List
 
-from ib_boards.exceptions.custom_exceptions import InvalidBoardId
-from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, BoardColumnsDTO, StarOrUnstarParametersDTO
+from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
+    StarOrUnstarParametersDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
-    ColumnStageIdsDTO
-from ib_boards.interactors.storage_interfaces.dtos import ColumnDetailsDTO
-from ib_boards.interactors.storage_interfaces.dtos import TaskBoardsDetailsDTO
+    ColumnStageIdsDTO, ColumnDetailsDTO, TaskBoardsDetailsDTO
 
 
 class StorageInterface(abc.ABC):

@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot, GenericRepr
 
-
 snapshots = Snapshot()
 
 snapshots['TestGetActionDetails.test_get_action_details response'] = [

@@ -1,5 +1,6 @@
 from typing import List, Optional
 
+from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     EmptyValueForRequiredField
 from ib_tasks.interactors.create_or_update_task.field_response_validations \
@@ -19,8 +20,6 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
-    TaskStorageInterface
 from ib_tasks.interactors.task_dtos import FieldValuesDTO
 
 
@@ -32,7 +31,8 @@ class ValidateFieldResponsesInteractor:
         self.field_storage = field_storage
 
     def validate_field_responses(
-            self, field_values_dtos: List[FieldValuesDTO]
+            self, field_values_dtos: List[FieldValuesDTO],
+            action_type: Optional[ActionTypes]
     ) -> Optional[Exception]:
         field_ids = [
             field_values_dto.field_id
@@ -48,8 +48,8 @@ class ValidateFieldResponsesInteractor:
             field_validation_required = \
                 field_response or field_details_dto.required
             if field_validation_required:
-                self._validate_field_response(
-                    field_response, field_details_dto)
+                self._validate_field_response(field_response, action_type,
+                                              field_details_dto)
         return
 
     @staticmethod
@@ -63,11 +63,17 @@ class ValidateFieldResponsesInteractor:
         return
 
     def _validate_field_response(
-            self, field_response: str,
+            self, field_response: str, action_type: Optional[ActionTypes],
             field_details_dto: FieldCompleteDetailsDTO
     ) -> Optional[Exception]:
         field_response = field_response.strip()
         field_id = field_details_dto.field_id
+        field_response_is_empty_and_action_type_is_no_validations = (
+                not field_response and action_type ==
+                ActionTypes.NO_VALIDATIONS.value
+        )
+        if field_response_is_empty_and_action_type_is_no_validations:
+            return
         field_is_required_but_not_given = (
                 not field_response and field_details_dto.required)
         if field_is_required_but_not_given:
@@ -76,7 +82,8 @@ class ValidateFieldResponsesInteractor:
             self._get_field_validation_interactor_based_on_field_details(
                 field_id, field_response, field_details_dto
             )
-        if field_validation_interactor is not None:
+        validations_is_required = field_validation_interactor is not None
+        if validations_is_required:
             field_validation_interactor.validate_field_response()
         return
 
