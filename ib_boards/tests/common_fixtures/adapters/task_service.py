@@ -1,6 +1,6 @@
 from typing import List
 
-from ib_boards.constants.enum import VIEWTYPE
+from ib_boards.constants.enum import ViewType
 from ib_boards.interactors.dtos import TaskStageIdDTO, TaskCompleteDetailsDTO, \
     ColumnTaskIdsDTO
 from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
@@ -8,7 +8,7 @@ from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
 
 
 def prepare_task_details_dtos(mocker, task_dtos: List[TaskStageIdDTO],
-                              user_id: str, view_type: VIEWTYPE):
+                              user_id: str, view_type: ViewType):
     mock = mocker.patch(
         'ib_boards.adapters.task_service.TaskService.get_task_complete_details'
     )

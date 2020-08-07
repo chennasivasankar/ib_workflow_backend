@@ -1,14 +1,14 @@
 from dataclasses import dataclass
 from typing import List, Optional
 
-from ib_boards.constants.enum import VIEWTYPE
+from ib_boards.constants.enum import ViewType
 
 
 @dataclass
 class ColumnParametersDTO:
     board_id: str
     user_id: str
-    view_type: VIEWTYPE
+    view_type: ViewType
 
 
 @dataclass
@@ -94,7 +94,7 @@ class ColumnTasksParametersDTO:
     column_id: str
     offset: int
     limit: int
-    view_type: VIEWTYPE
+    view_type: ViewType
 
 
 @dataclass

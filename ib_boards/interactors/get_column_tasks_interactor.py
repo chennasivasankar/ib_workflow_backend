@@ -5,7 +5,7 @@ Author: Pavankumar Pamuru
 """
 from typing import List, Tuple
 
-from ib_boards.constants.enum import VIEWTYPE
+from ib_boards.constants.enum import ViewType
 from ib_boards.exceptions.custom_exceptions import InvalidOffsetValue, \
     InvalidLimitValue, OffsetValueExceedsTotalTasksCount, \
     UserDoNotHaveAccessToColumn, InvalidStageIds
@@ -75,7 +75,7 @@ class GetColumnTasksInteractor:
     @staticmethod
     def _get_tasks_complete_details(
             task_ids_stages_dtos: ColumnTaskIdsDTO,
-            user_id: str, view_type: VIEWTYPE) -> \
+            user_id: str, view_type: ViewType) -> \
             Tuple[List[FieldDTO], List[ActionDTO]]:
         task_details_dtos = []
         for task_ids_stages_dto in task_ids_stages_dtos.task_stage_ids:
