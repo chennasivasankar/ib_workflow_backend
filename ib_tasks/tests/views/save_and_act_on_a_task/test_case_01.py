@@ -4,7 +4,7 @@ save and act on a task (update task) success test case
 import json
 
 import pytest
-from django_swagger_utils.utils.test_v1 import TestUtils
+from django_swagger_utils.utils.test_utils import TestUtils
 
 from ib_tasks.constants.enum import FieldTypes
 from ib_tasks.models import GoF
@@ -132,7 +132,7 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
         path_params = {}
         query_params = {}
         headers = {}
-        self.default_test_case(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

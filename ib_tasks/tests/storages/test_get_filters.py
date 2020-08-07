@@ -7,7 +7,9 @@ class TestGetFiltersDetails:
     def test_get_filter_details(self):
 
         # Arrange
-        from ib_tasks.tests.factories.models import FilterFactory
+        from ib_tasks.tests.factories.models \
+            import FilterFactory, TaskTemplateFactory
+        TaskTemplateFactory.reset_sequence(0)
         FilterFactory.reset_sequence(1)
         FilterFactory()
         from ib_tasks.storages.filter_storage_implementation \
