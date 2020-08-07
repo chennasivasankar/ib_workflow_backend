@@ -313,6 +313,20 @@
           "action"
         ]
       }
+    },
+    "ViewTypeParameter": {
+      "name": "view_type",
+      "in": "body",
+      "description": "view type",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "view_type": {
+            "type": "string",
+            "enum": ["LIST", ]
+          }
+        }
+      }
     }
   },
   "responses": {
@@ -485,6 +499,9 @@
           },
           {
             "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/ViewTypeParameter"
           }
         ],
         "responses": {
