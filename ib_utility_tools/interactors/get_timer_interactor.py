@@ -20,6 +20,7 @@ class GetTimerInteractor:
         return response
 
     def get_timer(self, timer_entity_dto: TimerEntityDTO):
+        self._create_timer_if_not_exists(timer_entity_dto)
         timer_details_dto = self.timer_storage.get_timer_details_dto(
             timer_entity_dto=timer_entity_dto)
         if timer_details_dto.is_running is False:
@@ -30,10 +31,18 @@ class GetTimerInteractor:
         time_delta = present_datetime - start_datetime
         duration_in_seconds = duration_in_seconds + time_delta.seconds
         self.timer_storage.update_start_datetime_to_present_and_duration(
+            timer_entity_dto=timer_entity_dto,
             present_datetime=present_datetime,
             duration_in_seconds=duration_in_seconds)
         timer_details_dto = TimerDetailsDTO(
             duration_in_seconds=duration_in_seconds,
-            is_running=False)
+            is_running=True)
 
         return timer_details_dto
+
+    def _create_timer_if_not_exists(self, timer_entity_dto: TimerEntityDTO):
+        timer_id = self.timer_storage.get_timer_id_if_exists(
+            timer_entity_dto=timer_entity_dto)
+        if timer_id is None:
+            _ = self.timer_storage.create_timer(
+                timer_entity_dto=timer_entity_dto)
