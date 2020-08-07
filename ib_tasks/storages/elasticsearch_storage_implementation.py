@@ -3,7 +3,7 @@ Created on: 07/08/20
 Author: Pavankumar Pamuru
 
 """
-from typing import List
+from typing import List, Tuple
 
 from elasticsearch_dsl import Q, Search
 
@@ -34,7 +34,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         task.save()
 
     def filter_tasks(
-            self, filter_dtos: List[ApplyFilterDTO], offset: int, limit: int) -> List[int]:
+            self, filter_dtos: List[ApplyFilterDTO], offset: int, limit: int) -> Tuple[List[int], int]:
         query = None
         for counter, item in enumerate(filter_dtos):
             current_queue = Q('term', template_id__keyword=item.template_id) \
@@ -46,13 +46,15 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
                 query = query & current_queue
 
         search = Search(index='task')
-        task_objects = search.filter(query)
         if query is None:
-            return []
+            task_objects = search
+        else:
+            task_objects = search.filter(query)
+        total_tasks = task_objects.count()
         return [
             task_object.task_id
             for task_object in task_objects[offset: offset + limit]
-        ]
+        ], total_tasks
 
     def query_tasks(
             self, offset: int, limit: int, search_query: str) -> QueryTasksDTO:
