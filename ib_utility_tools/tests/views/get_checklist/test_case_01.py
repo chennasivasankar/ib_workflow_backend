@@ -1,5 +1,5 @@
 """
-# TODO: Update test case description
+Check Whether it gets checklist items for given details
 """
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils

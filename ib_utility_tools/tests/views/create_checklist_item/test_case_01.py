@@ -1,5 +1,5 @@
 """
-# TODO: Update test case description
+Check whether It creates a checklist item and returns checklist item id
 """
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils

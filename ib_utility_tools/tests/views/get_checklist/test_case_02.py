@@ -1,5 +1,6 @@
 """
-# TODO: Update test case description
+Check whether it returns and empty list if
+no checklist exist for given entity details
 """
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
