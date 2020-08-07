@@ -3,17 +3,14 @@ from datetime import datetime, timedelta
 
 import factory
 
-from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
-    Priority
-from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
-    Status
+from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators
+from ib_tasks.constants.enum import Priority
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     Task, TaskGoF,
-    TaskGoFField,
-    StageRole, TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage,
+    TaskGoFField, TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage,
     Filter,
-    FilterCondition)
+    FilterCondition, StagePermittedRoles)
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
@@ -265,9 +262,9 @@ class FilterConditionFactory(factory.django.DjangoModelFactory):
     value = factory.sequence(lambda n: "value_{}".format(n))
 
 
-class StageRoleFactory(factory.django.DjangoModelFactory):
+class StagePermittedRolesFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = StageRole
+        model = StagePermittedRoles
 
     stage = factory.SubFactory(StageModelFactory)
     role_id = factory.Iterator(

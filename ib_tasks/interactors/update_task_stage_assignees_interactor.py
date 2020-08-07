@@ -1,7 +1,7 @@
 from typing import List
 
 from ib_tasks.exceptions.stage_custom_exceptions import \
-    InvalidStageIdsListException, DuplicateStageIds, \
+    DuplicateStageIds, \
     StageIdsWithInvalidPermissionForAssignee, InvalidDbStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
 from ib_tasks.interactors.presenter_interfaces.update_task_stage_assignees_presenter_interface import \
@@ -109,7 +109,8 @@ class UpdateTaskStageAssigneesInteractor:
 
     @staticmethod
     def _validate_does_given_assignee_of_stage_ids_have_valid_permission(
-            role_ids_and_assignee_id_group_by_stage_id_dtos:List[StageIdWithRoleIdsAndAssigneeIdDTO]):
+            role_ids_and_assignee_id_group_by_stage_id_dtos:List[
+                StageIdWithRoleIdsAndAssigneeIdDTO]):
         stage_ids_with_invalid_permission_for_assignee_id = []
         user_role_validation_interactor = UserRoleValidationInteractor()
         for each_stage_id_with_role_ids_and_assignee_id_dto in \

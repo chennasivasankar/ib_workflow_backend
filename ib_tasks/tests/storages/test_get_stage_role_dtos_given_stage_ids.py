@@ -1,6 +1,6 @@
 import pytest
 
-from ib_tasks.tests.factories.models import StageRoleFactory
+from ib_tasks.tests.factories.models import StagePermittedRolesFactory
 from ib_tasks.tests.factories.storage_dtos import StageRoleDTOFactory
 
 
@@ -8,8 +8,8 @@ from ib_tasks.tests.factories.storage_dtos import StageRoleDTOFactory
 class TestGetStageRoles:
     @pytest.fixture()
     def stage_role_objs(self):
-        StageRoleFactory.reset_sequence()
-        stage_role_objs = StageRoleFactory.create_batch(2)
+        StagePermittedRolesFactory.reset_sequence()
+        stage_role_objs = StagePermittedRolesFactory.create_batch(2)
         return stage_role_objs
 
     @pytest.fixture()

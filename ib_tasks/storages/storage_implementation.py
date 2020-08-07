@@ -1,8 +1,6 @@
 from typing import List
 from typing import Optional
 
-from django.db.models import Q
-
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.stages_dtos import StageActionDTO, \
@@ -32,7 +30,7 @@ from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
     ActionPermittedRoles, StageAction, TaskStage, FieldRole, GlobalConstant, \
     StagePermittedRoles
-from ib_tasks.models import TaskTemplateInitialStage, Stage, StageRole
+from ib_tasks.models import TaskTemplateInitialStage, Stage
 
 
 class StagesStorageImplementation(StageStorageInterface):
@@ -177,7 +175,7 @@ class StagesStorageImplementation(StageStorageInterface):
                                                db_stage_ids: List[int]) -> \
             List[StageRoleDTO]:
         stage_roles = list(
-            StageRole.objects.filter(stage_id__in=db_stage_ids).values(
+            StagePermittedRoles.objects.filter(stage_id__in=db_stage_ids).values(
                 'stage_id', 'role_id'))
         stage_role_dtos = [
             StageRoleDTO(db_stage_id=each_stage_role['stage_id'],
