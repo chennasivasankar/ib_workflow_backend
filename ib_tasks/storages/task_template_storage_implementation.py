@@ -80,9 +80,8 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
             task_template_objs=task_template_objs)
         return task_template_dtos
 
-    def get_gofs_to_templates_from_permitted_gofs(self,
-                                                 gof_ids: List[str]) -> \
-            List[GoFToTaskTemplateDTO]:
+    def get_gofs_to_templates_from_permitted_gofs(
+                self, gof_ids: List[str]) -> List[GoFToTaskTemplateDTO]:
         task_template_gofs = \
             TaskTemplateGoFs.objects.filter(gof_id__in=gof_ids)
         gof_to_task_template_dtos = self._convert_task_template_gofs_to_dtos(
@@ -213,3 +212,13 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
             template_id=transition_template_id, is_transition_template=True
         ).exists()
         return is_transition_template_exists
+
+    def get_gofs_to_template_from_permitted_gofs(
+            self, gof_ids: List[str],
+            template_id: str) -> List[GoFToTaskTemplateDTO]:
+        task_template_gofs = TaskTemplateGoFs.objects.filter(
+            gof_id__in=gof_ids, task_template_id=template_id
+        )
+        gof_to_task_template_dtos = self._convert_task_template_gofs_to_dtos(
+            task_template_gofs=task_template_gofs)
+        return gof_to_task_template_dtos
