@@ -38,6 +38,10 @@ class ActionsStorageImplementation(ActionStorageInterface):
     def validate_transition_template_id_is_related_to_given_stage_action(
             self, transition_checklist_template_id, action_id, stage_id
     ) -> Optional[TransitionTemplateIsNotRelatedToGivenStageAction]:
+        # transition_checklist_template_is_related_to_given_stage_action = \
+        #     StageAction.objects.filter(
+        #         transition_checklist_template_id
+        #     )
         pass
 
     def get_action_type_for_given_action_id(self,

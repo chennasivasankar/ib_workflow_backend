@@ -2,6 +2,7 @@ from typing import List, Tuple
 
 from django.db.models import F
 
+from ib_tasks.constants.enum import Status
 from ib_tasks.exceptions.filter_exceptions import InvalidTemplateID, \
     InvalidFilterId, UserNotHaveAccessToFilter, UserNotHaveAccessToFields
 from ib_tasks.interactors.filter_dtos import FilterDTO, ConditionDTO, \
@@ -14,9 +15,22 @@ from ib_tasks.models import Filter, TaskTemplate, FilterCondition, FieldRole, \
 
 class FilterStorageImplementation(FilterStorageInterface):
 
-    @staticmethod
+    def enable_filter_status(self, filter_id: int) -> Status:
+
+        filter_obj = Filter.objects.get(id=filter_id)
+        filter_obj.is_selected = Status.ENABLED.value
+        filter_obj.save()
+        return filter_obj.is_selected
+
+    def disable_filter_status(self, filter_id: int) -> Status:
+
+        filter_obj = Filter.objects.get(id=filter_id)
+        filter_obj.is_selected = Status.DISABLED.value
+        filter_obj.save()
+        return filter_obj.is_selected
+
     def get_conditions_to_filters(
-            filter_ids: List[int]) -> List[ConditionDTO]:
+            self, filter_ids: List[int]) -> List[ConditionDTO]:
         condition_objs = FilterCondition.objects.filter(
             filter_id__in=filter_ids) \
             .annotate(field_name=F('field__display_name'))

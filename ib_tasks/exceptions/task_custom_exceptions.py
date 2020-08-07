@@ -89,3 +89,13 @@ class InvalidTransitionChecklistTemplateId(Exception):
     def __init__(self, transition_checklist_template_id: str):
         self.transition_checklist_template_id = \
             transition_checklist_template_id
+
+
+class TransitionTemplateDoesNotExist(Exception):
+    def __init__(self, transition_template_id: str):
+        self.transition_template_id = transition_template_id
+
+
+class InvalidTransitionTemplateIds(Exception):
+    def __init__(self, invalid_transition_ids: List[str]):
+        self.invalid_transition_ids = invalid_transition_ids

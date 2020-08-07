@@ -24,8 +24,8 @@ from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 class GetTaskFieldsAndActionsInteractor:
     def __init__(self, task_storage: TaskStorageInterface,
                  field_storage: FieldsStorageInterface,
-                 stage_storage: StageStorageInterface, action_storage:
-            ActionStorageInterface):
+                 stage_storage: StageStorageInterface,
+                 action_storage: ActionStorageInterface):
         self.field_storage = field_storage
         self.stage_storage = stage_storage
         self.task_storage = task_storage

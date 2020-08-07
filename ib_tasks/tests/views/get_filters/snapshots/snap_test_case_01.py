@@ -12,15 +12,16 @@ snapshots['TestCase01GetFiltersAPITestCase.test_case body'] = [
     {
         'conditions': [
             {
-                'field_id': 'string',
-                'field_name': 'string',
-                'operator': 'EQ',
-                'value': 'string'
+                'field_id': 'FIELD_ID-1',
+                'field_name': 'DISPLAY_NAME-1',
+                'operator': 'GTE',
+                'value': 'value_1'
             }
         ],
         'filter_id': 1,
-        'name': 'string',
-        'template_id': 'string',
-        'template_name': 'string'
+        'name': 'filter_name_1',
+        'status': 'ENABLED',
+        'template_id': 'template_1',
+        'template_name': 'Template 1'
     }
 ]

@@ -1,25 +1,25 @@
 from typing import List, Dict
 
 from ib_tasks.constants.enum import PermissionTypes
+from ib_tasks.interactors.presenter_interfaces. \
+    get_task_templates_presenter_interface import \
+    GetTaskTemplatesPresenterInterface, CompleteTaskTemplatesDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
+    UserFieldPermissionDTO, FieldPermissionDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
+from ib_tasks.interactors.storage_interfaces.gof_dtos import \
+    GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
     GoFStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageIdWithTemplateIdDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
-    UserFieldPermissionDTO, FieldPermissionDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import \
-    GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import TaskTemplateStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TaskTemplateDTO
-from ib_tasks.interactors.presenter_interfaces. \
-    get_task_templates_presenter_interface import \
-    GetTaskTemplatesPresenterInterface, CompleteTaskTemplatesDTO
+    TemplateDTO
 
 
 class GetTaskTemplatesInteractor:
@@ -81,7 +81,7 @@ class GetTaskTemplatesInteractor:
             self.gof_storage.get_gof_ids_with_read_permission_for_user(
                 roles=user_roles)
         gofs_of_task_templates_dtos = self.task_template_storage. \
-            get_gofs_to_task_templates_from_permitted_gofs(
+            get_gofs_to_template_from_permitted_gofs(
                 gof_ids=gof_ids_permitted_for_user)
         gofs_details_dtos = \
             self.gof_storage.get_gofs_details_dtos_for_given_gof_ids(
@@ -156,7 +156,7 @@ class GetTaskTemplatesInteractor:
 
     @staticmethod
     def _validate_task_templates_are_exists(
-            task_templates_dtos: List[TaskTemplateDTO]):
+            task_templates_dtos: List[TemplateDTO]):
         task_templates_are_empty = not task_templates_dtos
         from ib_tasks.exceptions.task_custom_exceptions import \
             TaskTemplatesDoesNotExists

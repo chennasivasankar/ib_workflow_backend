@@ -3,7 +3,7 @@
 REQUEST_BODY_JSON = """
 {
     "filter_id": 1,
-    "is_selected": true
+    "action": "ENABLED"
 }
 """
 

@@ -218,6 +218,3 @@ class TestFilterStorageImplementation:
 
         # Assert
         assert actual_field_ids == expected_field_ids[:1]
-
-
-

@@ -2,6 +2,8 @@ import json
 from typing import List
 
 from ib_boards.exceptions.custom_exceptions import InvalidTemplateFields
+from ib_tasks.exceptions.roles_custom_exceptions import \
+    InvalidStageRolesException
 from ib_tasks.exceptions.stage_custom_exceptions import (
     InvalidStageValues, DuplicateStageIds, InvalidStageDisplayLogic,
     InvalidStagesDisplayName)
@@ -13,13 +15,18 @@ from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface\
+    import \
+    TaskTemplateStorageInterface
 
 
 class CreateOrUpdateStagesInteractor:
     def __init__(self, stage_storage: StageStorageInterface,
-                 task_storage: TaskStorageInterface):
+                 task_storage: TaskStorageInterface,
+                 task_template_storage: TaskTemplateStorageInterface):
         self.stage_storage = stage_storage
         self.task_storage = task_storage
+        self.task_template_storage = task_template_storage
 
     def create_or_update_stages(
             self,
@@ -27,6 +34,7 @@ class CreateOrUpdateStagesInteractor:
         stage_ids = self._get_stage_ids(stages_details)
         self.check_for_duplicate_stage_ids(stage_ids)
         self._validate_stage_display_name(stages_details)
+        self._validate_stage_roles(stages_details)
 
         task_template_ids = self._get_task_template_ids(stages_details)
         self._validate_task_template_ids(task_template_ids)
@@ -70,6 +78,27 @@ class CreateOrUpdateStagesInteractor:
             raise InvalidTemplateFields(list(set(invalid_template_ids)))
 
     @staticmethod
+    def _validate_stage_roles(stage_details: List[StageDTO]):
+        all_roles = []
+        for stage in stage_details:
+            roles = stage.roles.split('\n')
+            for role in roles:
+                all_roles.append(role)
+
+        all_unique_roles = list(set(all_roles))
+        from ib_tasks.adapters.service_adapter import get_service_adapter
+        db_roles = get_service_adapter().roles_service.\
+            get_valid_role_ids_in_given_role_ids(all_unique_roles)
+
+        invalid_role_ids = []
+        for role in all_unique_roles:
+            if role not in db_roles:
+                invalid_role_ids.append(role)
+
+        if invalid_role_ids:
+            raise InvalidStageRolesException(invalid_role_ids)
+
+    @staticmethod
     def _get_required_constants(stage, stages_dict):
         template_id = stages_dict[stage]
         task_template_id = stages_dict[stage].task_template_id
@@ -103,13 +132,13 @@ class CreateOrUpdateStagesInteractor:
 
     @staticmethod
     def _validate_stage_display_logic(stages_details):
-        # list_of_logic_attributes = []
-        # invalid_stage_display_logic_stages = [
-        #     stage.stage_id for stage in stages_details
-        #     if stage.stage_display_logic == ""
-        # ]
-        # if invalid_stage_display_logic_stages:
-        #     raise InvalidStageDisplayLogic(invalid_stage_display_logic_stages)
+        list_of_logic_attributes = []
+        invalid_stage_display_logic_stages = [
+            stage.stage_id for stage in stages_details
+            if stage.stage_display_logic == ""
+        ]
+        if invalid_stage_display_logic_stages:
+            raise InvalidStageDisplayLogic(invalid_stage_display_logic_stages)
 
         # TODO: validate stage display logic
         # for stage in stages_details:
@@ -120,7 +149,6 @@ class CreateOrUpdateStagesInteractor:
         #     list_of_logic_attributes.append(stage_logic_attributes_dto)
         #
         # self._validate_stage_display_logic_attributes(list_of_logic_attributes)
-        pass
 
     def _validate_stage_display_logic_attributes(
             self, list_of_logic_attributes: List[StageLogicAttributes]):
@@ -171,7 +199,7 @@ class CreateOrUpdateStagesInteractor:
 
     def _validate_task_template_ids(self, task_template_ids: List[str]):
         invalid_task_template_ids = []
-        valid_task_template_ids = self.task_storage. \
+        valid_task_template_ids = self.task_template_storage. \
             get_valid_template_ids_in_given_template_ids(
             task_template_ids)
         for task_template_id in task_template_ids:

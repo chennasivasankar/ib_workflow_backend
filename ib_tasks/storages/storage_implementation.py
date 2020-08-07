@@ -1,23 +1,20 @@
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
-from ib_tasks.interactors.stages_dtos import StageActionDTO
-from ib_tasks.interactors.stages_dtos import StageDTO
-from ib_tasks.interactors.stages_dtos import TemplateStageDTO
+from ib_tasks.interactors.stages_dtos import StageActionDTO, StageDTO, \
+    TemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
     ActionRolesDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO, \
+from ib_tasks.interactors.storage_interfaces.fields_dtos import \
+    FieldValueDTO, \
     FieldWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GOFMultipleEnableDTO, GoFWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    StageDisplayValueDTO, StageValueWithTaskIdsDTO, TaskIdWithStageDetailsDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
-    StageValueDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskTemplateStageDTO
+    StageDisplayValueDTO, StageValueWithTaskIdsDTO, \
+    TaskIdWithStageDetailsDTO, \
+    TaskStagesDTO, StageValueDTO, TaskTemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import (
@@ -26,8 +23,7 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import (
 )
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.models import *
-from ib_tasks.models import GoFRole
-from ib_tasks.models import TaskTemplateInitialStage, Stage
+from ib_tasks.models import GoFRole, TaskTemplateInitialStage, Stage
 
 
 class StagesStorageImplementation(StageStorageInterface):
@@ -36,6 +32,27 @@ class StagesStorageImplementation(StageStorageInterface):
         for stage in stage_information:
             list_of_stages.append(self._get_stage_object(stage))
         Stage.objects.bulk_create(list_of_stages)
+        list_of_stage_ids = [stage.stage_id for stage in stage_information]
+        stages = Stage.objects.filter(stage_id__in=list_of_stage_ids)
+        list_of_permitted_roles = self._get_list_of_permitted_roles_objs(
+            stages, stage_information)
+        StagePermittedRoles.objects.bulk_create(list_of_permitted_roles)
+
+    @staticmethod
+    def _get_list_of_permitted_roles_objs(stage_objs,
+                                          stage_dtos):
+        stage_roles = {}
+        for stage in stage_dtos:
+            stage_roles[stage.stage_id] = stage.roles.split('\n')
+
+        list_of_permitted_roles = []
+        for stage_obj in stage_objs:
+            roles = stage_roles[stage_obj.stage_id]
+            for role in roles:
+                list_of_permitted_roles.append(
+                            StagePermittedRoles(stage=stage_obj,
+                                                role_id=role))
+        return list_of_permitted_roles
 
     def get_allowed_stage_ids_of_user(self) -> List[str]:
         stage_ids = list(
@@ -50,6 +67,7 @@ class StagesStorageImplementation(StageStorageInterface):
                      value=stage.value,
                      card_info_kanban=stage.card_info_kanban,
                      card_info_list=stage.card_info_list,
+                     stage_color=stage.stage_color,
                      display_logic=stage.stage_display_logic)
 
     def get_existing_stage_ids(self, stage_ids: List[str]) -> Optional[
@@ -84,7 +102,7 @@ class StagesStorageImplementation(StageStorageInterface):
         return template_stage_ids_list
 
     def update_stages(self,
-                      update_stages_information: StageDTO):
+                      update_stages_information: List[StageDTO]):
         stage_ids = [
             update_stage_information.stage_id
             for update_stage_information in update_stages_information
@@ -96,12 +114,18 @@ class StagesStorageImplementation(StageStorageInterface):
         list_of_stages = []
         for stage in update_stages_information:
             list_of_stages.append(self._get_update_stage_object(
-                stage, stage_object
-            )
-            )
+                stage, stage_objects_dict[stage.stage_id]))
+
         Stage.objects.bulk_update(list_of_stages,
-                                  ['task_template_id',
+                                  ['task_template_id', 'stage_color',
                                    'value', 'display_name', 'display_logic'])
+
+        list_of_stage_ids = [stage.stage_id
+                             for stage in update_stages_information]
+        stages = Stage.objects.filter(stage_id__in=list_of_stage_ids)
+        list_of_permitted_roles = self._get_list_of_permitted_roles_objs(
+            stages, update_stages_information)
+        StagePermittedRoles.objects.bulk_create(list_of_permitted_roles)
 
     @staticmethod
     def _get_update_stage_object(stage, stage_object):

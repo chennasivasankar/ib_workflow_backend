@@ -14,23 +14,18 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    GetTaskStageCompleteDetailsDTO, TaskStageIdsDTO, StageIdWithTemplateIdDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskIdWithStageValueDTO, TaskIdWithStageDetailsDTO, \
-    StageValueWithTaskIdsDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
-    StageDTO
+    GetTaskStageCompleteDetailsDTO, TaskStageIdsDTO, \
+    StageIdWithTemplateIdDTO, \
+    TaskIdWithStageValueDTO, TaskStagesDTO, StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TaskTemplateDTO
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, CreateTaskLogDTO
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
-from ib_tasks.models import Stage, TaskTemplate
-from ib_tasks.models import TaskStage
-from ib_tasks.models import TaskTemplateStatusVariable
+    TemplateDTO
+from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO
+from ib_tasks.models import Stage, TaskTemplate, TaskStage, \
+    TaskTemplateStatusVariable
 from ib_tasks.models.field import Field
 from ib_tasks.models.stage_actions import StageAction
 from ib_tasks.models.task import Task
@@ -289,9 +284,9 @@ class TasksStorageImplementation(TaskStorageInterface):
 
     @staticmethod
     def _convert_task_templates_objs_to_dtos(
-            task_template_objs: List[TaskTemplate]) -> List[TaskTemplateDTO]:
+            task_template_objs: List[TaskTemplate]) -> List[TemplateDTO]:
         task_template_dtos = [
-            TaskTemplateDTO(
+            TemplateDTO(
                 template_id=task_template_obj.template_id,
                 template_name=task_template_obj.name
             )

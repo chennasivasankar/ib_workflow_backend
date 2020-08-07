@@ -1,9 +1,13 @@
 """
 # given invalid board id
 """
+import pytest
+from django_swagger_utils.utils.test_utils import TestUtils
+from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ...common_fixtures.adapters.iam_service import adapter_mock_to_get_user_role
 
 import pytest
-from django_swagger_utils.utils.test_v1 import TestUtils
+from django_swagger_utils.utils.test_utils import TestUtils
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...common_fixtures.adapters.iam_service import \

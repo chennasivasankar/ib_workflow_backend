@@ -11,8 +11,6 @@ from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
     TaskFieldsDTOFactory
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, \
     GetTaskDetailsDTO
-from ib_boards.interactors.presenter_interfaces.presenter_interface import \
-    TaskCompleteDetailsDTO
 
 
 class TaskService:
@@ -83,7 +81,7 @@ class TaskService:
 
     def get_task_complete_details(
             self, task_stage_ids: List[GetTaskDetailsDTO],
-            user_id: int) \
+            user_id: str) \
             -> Tuple[List[FieldDTO], List[ActionDTO]]:
         tasks_complete_details_dtos = self.interface.get_task_details(
             task_dtos=task_stage_ids, user_id=user_id

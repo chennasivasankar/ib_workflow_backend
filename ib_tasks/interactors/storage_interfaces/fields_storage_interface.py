@@ -1,14 +1,8 @@
 import abc
 from typing import List
 
-from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    ActionDetailsDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldDTO, \
-    FieldCompleteDetailsDTO, UserFieldPermissionDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldIdWithGoFIdDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import \
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
+    FieldCompleteDetailsDTO, UserFieldPermissionDTO, FieldIdWithGoFIdDTO, \
     TaskTemplateStageFieldsDTO, StageTaskFieldsDTO, FieldDetailsDTOWithTaskId
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
