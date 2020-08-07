@@ -189,20 +189,20 @@ class GlobalConstantFactory(factory.django.DjangoModelFactory):
 
     name = factory.sequence(lambda n: "constant_{}".format(n + 1))
     value = factory.sequence(lambda n: (n + 1))
-    task_template = factory.SubFactory(TaskTemplateWithTransitionFactory)
+    task_template = factory.SubFactory(TaskTemplateFactory)
 
 
 class GoFToTaskTemplateFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = TaskTemplateGoFs
 
-    task_template = factory.SubFactory(TaskTemplateWithTransitionFactory)
+    task_template = factory.SubFactory(TaskTemplateFactory)
     gof = factory.SubFactory(GoFFactory)
     order = factory.sequence(lambda n: n)
     enable_add_another_gof = factory.Iterator([True, False])
 
 
-class TaskTemplateWith2GoFsFactory(TaskTemplateWithTransitionFactory):
+class TaskTemplateWith2GoFsFactory(TaskTemplateFactory):
     gof1 = factory.RelatedFactory(
         GoFToTaskTemplateFactory, 'task_template', gof__gof_id='gof_1'
     )
@@ -235,7 +235,7 @@ class TaskTemplateInitialStageFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = TaskTemplateInitialStage
 
-    task_template = factory.SubFactory(TaskTemplateWithTransitionFactory)
+    task_template = factory.SubFactory(TaskTemplateFactory)
     stage = factory.SubFactory(StageModelFactory)
 
 
@@ -253,7 +253,7 @@ class FilterFactory(factory.django.DjangoModelFactory):
 
     created_by = factory.sequence(lambda n: "{}".format(n))
     name = factory.sequence(lambda n: "filter_name_{}".format(n))
-    template = factory.SubFactory(TaskTemplateWithTransitionFactory)
+    template = factory.SubFactory(TaskTemplateFactory)
     is_selected = "ENABLED"
 
 
