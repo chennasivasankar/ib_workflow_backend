@@ -37,6 +37,6 @@ class ColumnFieldDTOFactory(factory.Factory):
 class AssigneeDetailsDTOFactory(factory.Factory):
     class Meta:
         model = AssigneeDetailsDTO
-    id = factory.sequence(lambda counter: "assignee_{}".format(counter))
+    assignee_id = factory.sequence(lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(counter))
     name = factory.sequence(lambda counter: "name_{}".format(counter))
-    profile_pic = "https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM"
+    profile_pic_url = "https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM"

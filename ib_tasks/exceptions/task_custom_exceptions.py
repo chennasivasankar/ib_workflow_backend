@@ -83,7 +83,7 @@ class ManyStagesToInitialTaskTemplate(Exception):
         self.task_template_stages_dict = task_template_stages_dict
 
 
-class InvalidStageIdsForTask:
+class InvalidStageIdsForTask(Exception):
     def __init__(self, message: str):
         self.message = message
 

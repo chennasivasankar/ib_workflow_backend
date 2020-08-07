@@ -1,10 +1,14 @@
-from typing import List
+from typing import List, Optional
 
+from ib_tasks.adapters.dtos import AssigneeDetailsDTO
+from ib_tasks.adapters.service_adapter import get_service_adapter
 from ib_tasks.interactors.stages_dtos import StageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import \
     TaskStageStorageInterface
+from ib_tasks.exceptions.task_custom_exceptions import \
+            InvalidStageIdsForTask
 
 
 class GetStagesAssigneesDetailsInteractor:
@@ -20,13 +24,63 @@ class GetStagesAssigneesDetailsInteractor:
             task_id, stage_ids
         )
         assignee_ids = self._get_assignee_ids(stage_assignee_dtos)
+        assignee_details_dtos = self._get_assignee_details_dtos(assignee_ids)
+        stage_assignee_details_dtos = self._get_stage_assignee_details_dtos(
+            stage_assignee_dtos, assignee_details_dtos
+        )
+        return stage_assignee_details_dtos
 
-    def _validate_stage_ids_of_task(self, task_id: int, stage_ids: List[str]):
-        from ib_tasks.exceptions.task_custom_exceptions import \
-            InvalidStageIdsForTask
+    def _get_stage_assignee_details_dtos(
+            self, stage_assignee_dtos: List[StageAssigneeDTO],
+            assignee_details_dtos: List[AssigneeDetailsDTO]
+    ) -> List[StageAssigneeDetailsDTO]:
+
+        stage_assignee_details_dtos = []
+        for stage_assignee_dto in stage_assignee_dtos:
+            stage_assignee_details_dto = self._get_stage_assignee_details_dto(
+                stage_assignee_dto, assignee_details_dtos
+            )
+            stage_assignee_details_dtos.append(stage_assignee_details_dto)
+        return stage_assignee_details_dtos
+
+    def _get_stage_assignee_details_dto(
+            self, stage_assignee_dto: StageAssigneeDTO,
+            assignee_details_dtos: List[AssigneeDetailsDTO]
+    ) -> StageAssigneeDetailsDTO:
+        stage_assignee_id = stage_assignee_dto.assignee_id
+
+        assignee_details = None
+        for assignee_details_dto in assignee_details_dtos:
+            assignee_id = assignee_details_dto.assignee_id
+            if stage_assignee_id == assignee_id:
+                assignee_details = assignee_details_dto
+                break
+
+        stage_assignee_details_dto = StageAssigneeDetailsDTO(
+            stage_id=stage_assignee_dto.stage_id,
+            assignee_details_dto=assignee_details
+        )
+        return stage_assignee_details_dto
+
+    def _get_assignee_details_dtos(
+            self, assignee_ids: List[str]
+    ) -> List[AssigneeDetailsDTO]:
+
+        service_adapter = get_service_adapter()
+        assignees_details_service = service_adapter.assignee_details_service
+        assignee_details_dtos = \
+            assignees_details_service.get_assignees_details_dtos(
+                assignee_ids
+            )
+        return assignee_details_dtos
+
+    def _validate_stage_ids_of_task(
+            self, task_id: int, stage_ids: List[str]
+    ) -> Optional[InvalidStageIdsForTask]:
+
         from ib_tasks.constants.exception_messages import \
             INVALID_STAGE_IDS_FOR_TASK
-        valid_stage_ids = self.task_stage_storage.get_stage_ids_of_task(
+        valid_stage_ids = self.task_stage_storage.get_valid_stage_ids_of_task(
             task_id, stage_ids
         )
         invalid_stage_ids = []
@@ -37,6 +91,7 @@ class GetStagesAssigneesDetailsInteractor:
             raise InvalidStageIdsForTask(
                 INVALID_STAGE_IDS_FOR_TASK.format(invalid_stage_ids, task_id)
             )
+        return
 
     def _get_assignee_ids(self, stage_assignee_dtos: List[StageAssigneeDTO]):
         assignee_ids = []

@@ -206,7 +206,7 @@ class CreateTaskLogDTOFactory(factory.Factory):
     action_id = factory.sequence(lambda n: n)
 
 
-class StageAssigneeDetailsDTOFactory:
+class StageAssigneeDetailsDTOFactory(factory.Factory):
     class Meta:
         model = StageAssigneeDetailsDTO
 
