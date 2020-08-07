@@ -191,7 +191,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='stageaction',
-            name='transition_template_id',
+            name='transition_template',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ib_tasks.TaskTemplate'),
         ),
         migrations.CreateModel(

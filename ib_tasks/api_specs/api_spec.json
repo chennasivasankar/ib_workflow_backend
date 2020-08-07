@@ -2175,6 +2175,39 @@
         }
       }
     },
+    "/tasks/search/v1/": {
+      "get": {
+        "operationId": "get_tasks_to_search",
+        "summary": "get tasks to relevant to search",
+        "description": "view the tasks that satisfies the search",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/SearchableQueryParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/AllTasksOverviewResponse"
+          },
+          "400": {
+            "$ref": "#/responses/AllTasksOverviewFailureResponse"
+          }
+        }
+      }
+    },
     "/tasks_overview/v1/": {
       "get": {
         "operationId": "get_all_tasks_overview",

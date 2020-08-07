@@ -76,6 +76,11 @@ class TaskTemplateStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_valid_transition_template_ids(
+            self, transition_template_ids: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
     def get_transition_template_dto(
             self, transition_template_id: str) -> TemplateDTO:
         pass
