@@ -81,7 +81,7 @@ class GetTaskTemplatesInteractor:
             self.gof_storage.get_gof_ids_with_read_permission_for_user(
                 roles=user_roles)
         gofs_of_task_templates_dtos = self.task_template_storage. \
-            get_gofs_to_template_from_permitted_gofs(
+            get_gofs_to_templates_from_permitted_gofs(
                 gof_ids=gof_ids_permitted_for_user)
         gofs_details_dtos = \
             self.gof_storage.get_gofs_details_dtos_for_given_gof_ids(
