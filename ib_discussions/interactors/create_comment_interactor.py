@@ -1,6 +1,7 @@
 from typing import Optional, List
 
 from ib_discussions.exceptions.custom_exceptions import DiscussionIdNotFound
+from ib_discussions.interactors.dtos.dtos import MultiMediaDTO
 from ib_discussions.interactors.presenter_interfaces.dtos import \
     CommentIdWithEditableStatusDTO, CommentWithRepliesCountAndEditableDTO
 from ib_discussions.interactors.presenter_interfaces.presenter_interface import \
@@ -19,13 +20,18 @@ class CreateCommentInteractor:
     def create_comment_for_discussion_wrapper(
             self, presenter: CreateCommentPresenterInterface,
             user_id: str, discussion_id: str, comment_content: str,
+            mention_user_ids: List[str], multi_media_dtos: List[MultiMediaDTO]
     ):
+        # TODO: Validate mention_user_ids and multi_media_dtos
         try:
             comment_with_replies_count_and_editable_dto, user_profile_dto = \
                 self.create_comment_for_discussion(
                     user_id=user_id, discussion_id=discussion_id,
                     comment_content=comment_content,
+                    mention_user_ids=mention_user_ids,
+                    multi_media_dtos=multi_media_dtos
                 )
+
             response = presenter.prepare_response_for_comment(
                 comment_with_replies_count_and_editable_dto \
                     =comment_with_replies_count_and_editable_dto,
@@ -38,6 +44,7 @@ class CreateCommentInteractor:
     def create_comment_for_discussion(
             self, user_id: str, discussion_id: str,
             comment_content: Optional[str],
+            mention_user_ids: List[str], multi_media_dtos: List[MultiMediaDTO]
     ):
         is_discussion_id_not_exists = not self.storage. \
             is_discussion_id_exists(discussion_id=discussion_id)
@@ -49,7 +56,11 @@ class CreateCommentInteractor:
             user_id=user_id, discussion_id=discussion_id,
             comment_content=comment_content,
         )
-
+        self.storage.add_mention_users_to_comment(
+            comment_id=comment_id, mention_user_ids=mention_user_ids)
+        self.storage.add_multi_media_to_comment(
+            comment_id=comment_id, multi_media_dtos=multi_media_dtos
+        )
         comment_with_replies_count_and_editable_dto, user_profile_dto = \
             self.get_comment_details(comment_id=comment_id,
                                      user_id=user_id)

@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
+from ib_discussions.interactors.dtos.dtos import MultiMediaDTO
 from ib_discussions.interactors.storage_interfaces.dtos import \
     CommentIdWithRepliesCountDTO, CommentDTO
 
@@ -50,4 +51,14 @@ class CommentStorageInterface(ABC):
 
     @abstractmethod
     def get_replies_dtos(self, comment_id: str) -> List[CommentDTO]:
+        pass
+
+    @abstractmethod
+    def add_mention_users_to_comment(self, comment_id: str,
+                                     mention_user_ids: List[str]):
+        pass
+
+    @abstractmethod
+    def add_multi_media_to_comment(self, comment_id,
+                                   multi_media_dtos: List[MultiMediaDTO]):
         pass

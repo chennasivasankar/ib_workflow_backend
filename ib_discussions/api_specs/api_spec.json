@@ -152,6 +152,15 @@
         "created_at": {
           "type": "string",
           "format": "date-time"
+        },
+        "mention_users": {
+          "$ref": "#/definitions/MentionUsers"
+        },
+        "multi_media": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Multimedia"
+          }
         }
       },
       "required": [
@@ -160,7 +169,28 @@
         "created_at",
         "is_editable",
         "comment_id",
-        "comment_content"
+        "comment_content",
+        "mention_users",
+        "multi_media"
+      ]
+    },
+    "Multimedia": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": [
+            "IMAGE",
+            "VIDEO"
+          ]
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "format",
+        "url"
       ]
     },
     "Reply": {
@@ -191,6 +221,25 @@
         "comment_id",
         "comment_content"
       ]
+    },
+    "MentionUsers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id",
+          "name"
+        ]
+      }
     }
   },
   "parameters": {
@@ -295,10 +344,25 @@
         "properties": {
           "comment_content": {
             "type": "string"
+          },
+          "mention_user_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "multi_media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Multimedia"
+            }
           }
         },
         "required": [
-          "comment_content"
+          "comment_content",
+          "mention_user_ids",
+          "multi_media"
         ]
       }
     },
