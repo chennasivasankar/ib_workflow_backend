@@ -1,0 +1,18 @@
+{
+  "ib_tasks/tests/interactors/test_call_action_logic_and_update_task_status_variables_interactor.py": true,
+  "ib_tasks/tests/interactors/test_create_or_update_fields_base_validations_interactor.py": true,
+  "ib_tasks/tests/interactors/test_create_or_update_fields_interactor.py": true,
+  "ib_tasks/tests/interactors/test_create_or_update_gofs.py": true,
+  "ib_tasks/tests/interactors/test_create_or_update_stage_information_interactor.py": true,
+  "ib_tasks/tests/interactors/test_create_or_update_task.py": true,
+  "ib_tasks/tests/interactors/test_create_status_for_task_template_id_interactor.py": true,
+  "ib_tasks/tests/interactors/test_field_type_searchable_validations_interactor.py": true,
+  "ib_tasks/tests/interactors/test_fields_roles_validations_interactor.py": true,
+  "ib_tasks/tests/interactors/test_get_task_actions_and_fields.py": true,
+  "ib_tasks/tests/interactors/test_get_task_ids_interactor.py": true,
+  "ib_tasks/tests/interactors/test_get_task_stages_and_actions.py": true,
+  "ib_tasks/tests/interactors/test_get_task_templates_interactor.py": true,
+  "ib_tasks/tests/interactors/test_gof_selector_validations_interactor.py": true,
+  "ib_tasks/tests/interactors/test_image_or_file_uploader_validations_interactor.py": true,
+  "ib_tasks/tests/interactors/test_multi_values_input_fileds_validation_interactor.py": true
+}

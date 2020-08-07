@@ -87,6 +87,9 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
         response_object = self.prepare_403_forbidden_response(response_dict)
         return response_object
 
+    def raise_exception_for_invalid_present_actions(self, error_obj):
+        pass
+
     def raise_exception_for_user_board_permission_denied(
             self, error_obj: UserBoardPermissionDenied):
         from ib_tasks.constants.exception_messages import \
@@ -109,19 +112,26 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
 
         print(task_complete_details_dto)
         task_id = task_complete_details_dto.task_id
-        task_board_details = task_complete_details_dto.task_boards_details
-        actions_dto = task_complete_details_dto.actions_dto
-        fields_dto = task_complete_details_dto.field_dtos
-        board_dto = task_board_details.board_dto
-        response_dict = {
-            "task_id": str(task_id),
-            "current_board_details": {
+        # TODO: Need to refactor
+        if task_complete_details_dto.task_boards_details:
+            actions_dto = task_complete_details_dto.actions_dto
+            fields_dto = task_complete_details_dto.field_dtos
+            task_board_details = task_complete_details_dto.task_boards_details
+            board_dto = task_board_details.board_dto
+
+            current_board_details = {
                 "board_id": board_dto.board_id,
                 "board_name": board_dto.name,
                 "column_details": self._get_column_details(
                     actions_dto, fields_dto, task_board_details
                 )
-            },
+            }
+        else:
+            current_board_details = None
+
+        response_dict = {
+            "task_id": str(task_id),
+            "current_board_details": current_board_details,
             "other_board_details": []
         }
         response_object = self.prepare_200_success_response(response_dict)
@@ -160,14 +170,15 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
             stage_actions_dict: Dict[str, List[ActionDTO]],
             stage_fields_dict: Dict[str, List[FieldDisplayDTO]]
     ):
-        column_fields_dict = {}
-        column_actions_dict = {}
+        from collections import defaultdict
+        column_fields_dict = defaultdict(lambda: list())
+        column_actions_dict = defaultdict(lambda: list())
 
         for column_stage_dto in column_stage_dtos:
             column_id = column_stage_dto.column_id
             stage_id = column_stage_dto.stage_id
-            column_fields_dict[column_id] = stage_fields_dict[stage_id]
-            column_actions_dict[column_id] = stage_actions_dict[stage_id]
+            column_fields_dict[column_id] += stage_fields_dict[stage_id]
+            column_actions_dict[column_id] += stage_actions_dict[stage_id]
         return column_fields_dict, column_actions_dict
 
     @staticmethod

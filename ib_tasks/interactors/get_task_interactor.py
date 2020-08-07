@@ -1,31 +1,40 @@
 from typing import List
 
-from ib_tasks.interactors.storage_interfaces.create_or_update_task_storage_interface \
-    import CreateOrUpdateTaskStorageInterface
-from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
-    import GetTaskPresenterInterface
 from ib_tasks.exceptions.task_custom_exceptions \
     import InvalidTaskIdException
+from ib_tasks.interactors.get_task_base_interactor \
+    import GetTaskBaseInteractor
+from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
+    import GetTaskPresenterInterface
+from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
+    import TaskCompleteDetailsDTO
+from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
+    ActionStorageInterface
+from ib_tasks.interactors.storage_interfaces \
+    .create_or_update_task_storage_interface \
+    import CreateOrUpdateTaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.fields_storage_interface \
+    import FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import (
     TaskGoFDTO,
     TaskGoFFieldDTO,
     TaskDetailsDTO
 )
-from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
-    import TaskCompleteDetailsDTO
-from ib_tasks.interactors.storage_interfaces.fields_storage_interface \
-    import FieldsStorageInterface
-
-from ib_tasks.interactors.get_task_base_interactor \
-    import GetTaskBaseInteractor
+from ib_tasks.interactors.storage_interfaces.storage_interface import \
+    StorageInterface
 
 
 class GetTaskInteractor:
 
     def __init__(
             self, storage: CreateOrUpdateTaskStorageInterface,
-            stages_storage: FieldsStorageInterface
+            stages_storage: FieldsStorageInterface,
+            task_storage: StorageInterface,
+            action_storage: ActionStorageInterface
+
     ):
+        self.action_storage = action_storage
+        self.task_storage = task_storage
         self.storage = storage
         self.stages_storage = stages_storage
 
@@ -50,25 +59,10 @@ class GetTaskInteractor:
     def get_task_details(self, user_id: str, task_id: int):
         get_task_base_interactor = GetTaskBaseInteractor(storage=self.storage)
         task_details_dto = get_task_base_interactor.get_task(task_id)
-        task_gof_dtos = task_details_dto.task_gof_dtos
-        all_task_gof_field_dtos = task_details_dto.task_gof_field_dtos
-        template_id = task_details_dto.template_id
         user_roles = self._get_user_roles(user_id)
-        permission_task_gof_dtos = self._get_permission_task_gof_dtos(
-            task_gof_dtos, user_roles
+        task_details_dto = self._get_task_details_dto(
+            task_details_dto, user_roles
         )
-        task_gof_field_dtos = self._get_task_gof_field_dtos(
-            permission_task_gof_dtos, all_task_gof_field_dtos
-        )
-        permission_task_gof_field_dtos = self._get_permission_task_gof_field_dtos(
-            task_gof_field_dtos, user_roles
-        )
-        task_details_dto = TaskDetailsDTO(
-            template_id=template_id,
-            task_gof_dtos=permission_task_gof_dtos,
-            task_gof_field_dtos=permission_task_gof_field_dtos
-        )
-
         stages_and_actions_details_dtos = \
             self._get_stages_and_actions_details_dtos(task_id, user_id)
         task_complete_details_dto = TaskCompleteDetailsDTO(
@@ -79,12 +73,38 @@ class GetTaskInteractor:
         )
         return task_complete_details_dto
 
+    def _get_task_details_dto(
+            self, task_details_dto: TaskDetailsDTO, user_roles: List[str]
+    ):
+        task_gof_dtos = task_details_dto.task_gof_dtos
+        all_task_gof_field_dtos = task_details_dto.task_gof_field_dtos
+        permission_task_gof_dtos = self._get_permission_task_gof_dtos(
+            task_gof_dtos, user_roles
+        )
+        task_gof_field_dtos = self._get_task_gof_field_dtos(
+            permission_task_gof_dtos, all_task_gof_field_dtos
+        )
+        permission_task_gof_field_dtos = \
+            self._get_permission_task_gof_field_dtos(
+                task_gof_field_dtos, user_roles
+            )
+        task_details_dto = TaskDetailsDTO(
+            task_base_details_dto=task_details_dto.task_base_details_dto,
+            task_gof_dtos=permission_task_gof_dtos,
+            task_gof_field_dtos=permission_task_gof_field_dtos
+        )
+        return task_details_dto
+
     def _get_stages_and_actions_details_dtos(
             self, task_id: int, user_id: str
     ):
         from ib_tasks.interactors.get_task_stages_and_actions \
             import GetTaskStagesAndActions
-        interactor = GetTaskStagesAndActions(storage=self.stages_storage)
+        interactor = GetTaskStagesAndActions(
+            storage=self.stages_storage,
+            task_storage=self.task_storage,
+            action_storage=self.action_storage
+        )
         stages_and_actions_details_dtos = \
             interactor.get_task_stages_and_actions(task_id, user_id)
         return stages_and_actions_details_dtos

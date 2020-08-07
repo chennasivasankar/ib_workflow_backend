@@ -1,6 +1,7 @@
 from .action_permitted_roles import ActionPermittedRoles
 from .stage import Stage
 from .stage_actions import StageAction
+from .stage_permitted_roles import StagePermittedRoles
 from .task import Task
 from .task_gof import TaskGoF
 from .task_gof_field import TaskGoFField
@@ -20,8 +21,12 @@ from ib_tasks.models.global_constant import GlobalConstant
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from .task_status_variable import TaskStatusVariable
 from ib_tasks.models.task_stage import TaskStage
+from .filter import Filter
+from .filter_condition import FilterCondition
 
 __all__ = [
+    "Filter",
+    "FilterCondition",
     "TaskStatusVariable",
     "ActionPermittedRoles",
     "TaskTemplateGoFs",
@@ -38,5 +43,6 @@ __all__ = [
     "TaskTemplateGoFs",
     "TaskTemplateStatusVariable",
     "TaskTemplateStatusVariables",
-    "TaskTemplateInitialStage"
+    "TaskTemplateInitialStage",
+    "StagePermittedRoles"
 ]

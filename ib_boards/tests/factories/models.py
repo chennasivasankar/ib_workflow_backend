@@ -1,6 +1,6 @@
 import factory
 
-from ib_boards.models import Board, Column, ColumnPermission
+from ib_boards.models import Board, Column, ColumnPermission, UserStarredBoard
 
 
 class BoardFactory(factory.django.DjangoModelFactory):
@@ -9,6 +9,14 @@ class BoardFactory(factory.django.DjangoModelFactory):
 
     board_id = factory.Sequence(lambda n: f'BOARD_ID_{n + 1}')
     name = factory.Sequence(lambda n: f'BOARD_DISPLAY_NAME')
+
+
+class UserStarredBoardFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = UserStarredBoard
+
+    user_id = factory.Sequence(lambda n: f'user_id_{n}')
+    board = factory.SubFactory(BoardFactory)
 
 
 class ColumnFactory(factory.django.DjangoModelFactory):

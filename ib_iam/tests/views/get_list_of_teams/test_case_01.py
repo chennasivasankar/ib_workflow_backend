@@ -4,7 +4,7 @@ Returns a dictionary with total_teams_count and teams list
 
 """
 import pytest
-from django_swagger_utils.utils.test_v1 import TestUtils
+from django_swagger_utils.utils.test_utils import TestUtils
 
 from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
@@ -42,7 +42,7 @@ class TestCase01GetListOfTeamsAPITestCase(TestUtils):
         path_params = {}
         query_params = {'limit': 5, 'offset': 0}
         headers = {}
-        response = self.default_test_case(
+        response = self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

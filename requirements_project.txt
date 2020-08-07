@@ -30,4 +30,4 @@ s3_uploader==1.0.1
 
 
 # always last
-django-swagger-utils==2.1.0
+django-swagger-utils==2.2.1

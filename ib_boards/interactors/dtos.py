@@ -5,7 +5,7 @@ from typing import List, Optional
 @dataclass
 class ColumnParametersDTO:
     board_id: str
-    user_id: int
+    user_id: str
 
 
 @dataclass
@@ -80,23 +80,24 @@ class BoardColumnsDTO:
 
 @dataclass
 class GetBoardsDTO:
-    user_id: int
+    user_id: str
     offset: int
     limit: int
 
 
 @dataclass
 class ColumnTasksParametersDTO:
-    user_id: int
+    user_id: str
     column_id: str
     offset: int
     limit: int
 
 
 @dataclass
-class TaskDTO:
+class FieldDTO:
     task_id: int
     field_type: str
+    field_id: int
     key: str
     value: str
     stage_id: str
@@ -167,3 +168,14 @@ class ColumnTotalTasksDTO:
     column_id: str
     total_tasks: int
 
+
+@dataclass
+class StarredAndOtherBoardsDTO:
+    starred_boards_dtos: List[BoardDTO]
+    other_boards_dtos: List[BoardDTO]
+
+@dataclass
+class StarOrUnstarParametersDTO:
+    board_id: str
+    user_id: str
+    action: str

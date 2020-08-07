@@ -1,7 +1,7 @@
-from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
-    GoFRolesDTO, CompleteGoFDetailsDTO
 from typing import List, Dict
 
+from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
+    GoFRolesDTO, CompleteGoFDetailsDTO
 from ib_tasks.utils.get_google_sheet import get_google_sheet
 
 
@@ -12,8 +12,6 @@ class PopulateGoFs:
         )
         from ib_tasks.interactors.create_or_update_gofs import \
             CreateOrUpdateGoFsInteractor
-        from ib_tasks.storages.tasks_storage_implementation import \
-            TasksStorageImplementation
 
         sheet = get_google_sheet(sheet_name=GOOGLE_SHEET_NAME)
         gof_sheet = sheet.worksheet(GOF_SUB_SHEET_TITLE)
@@ -21,7 +19,9 @@ class PopulateGoFs:
         complete_gof_details_dtos = self.prepare_complete_gof_details_dtos(
             gof_records)
 
-        storage = TasksStorageImplementation()
+        from ib_tasks.storages.gof_storage_implementation import \
+            GoFStorageImplementation
+        storage = GoFStorageImplementation()
         interactor = CreateOrUpdateGoFsInteractor(storage=storage)
         interactor.create_or_update_gofs(complete_gof_details_dtos)
 

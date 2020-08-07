@@ -16,7 +16,7 @@ def VENDOR_DRAFTS_Discard(task_dict, global_constants, stage_value_dict):
 
 def VENDOR_PENDING_RP_APPROVAL_Reject(task_dict, global_constants,
                                       stage_value_dict):
-    task_dict["status_variables"]["Status1"] = "VENDOR_REJECTION_LIST"
+    task_dict["status_variables"]["Status1"] = "VENDOR_REJECTED"
     return task_dict
 
 
