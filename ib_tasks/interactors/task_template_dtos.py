@@ -25,6 +25,7 @@ class GoFFieldsDTO:
 @dataclass
 class CreateTransitionChecklistTemplateDTO:
     task_id: int
+    created_by_id: str
     transition_checklist_template_id: str
     action_id: int
     stage_id: int

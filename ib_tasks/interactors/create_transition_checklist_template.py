@@ -11,6 +11,18 @@ from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
 from ib_tasks.interactors.storage_interfaces \
     .create_or_update_task_storage_interface import \
     CreateOrUpdateTaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
+    FieldsStorageInterface
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
+    TaskGoFFieldDTO
+from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
+    GoFStorageInterface
+from ib_tasks.interactors.storage_interfaces.storage_interface import \
+    StorageInterface
+from ib_tasks.interactors.storage_interfaces.task_dtos import \
+    TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
+    TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
@@ -26,8 +38,14 @@ class CreateTransitionChecklistTemplateInteractor:
                  CreateOrUpdateTaskStorageInterface,
                  template_storage: TaskTemplateStorageInterface,
                  stage_action_storage: ActionStorageInterface,
-                 task
-        ):
+                 task_storage: TaskStorageInterface,
+                 gof_storage: GoFStorageInterface, storage: StorageInterface,
+                 field_storage: FieldsStorageInterface
+                 ):
+        self.field_storage = field_storage
+        self.storage = storage
+        self.gof_storage = gof_storage
+        self.task_storage = task_storage
         self.stage_action_storage = stage_action_storage
         self.template_storage = template_storage
         self.create_or_update_task_storage = create_or_update_task_storage
@@ -55,10 +73,36 @@ class CreateTransitionChecklistTemplateInteractor:
                 create_task_storage=self.create_or_update_task_storage,
                 storage=self.storage, field_storage=self.field_storage
             )
-        template_gofs_fields_validation_interactor.perform_base_validations_for_template_gofs_and_fields(
-            task_dto.gof_fields_dtos, task_dto.created_by_id,
-            task_dto.task_template_id, action_type
+        action_type = \
+            self.stage_action_storage.get_action_type_for_given_action_id(
+                action_id=transition_template_dto.action_id
+            )
+        template_gofs_fields_validation_interactor \
+            .perform_base_validations_for_template_gofs_and_fields(
+            transition_template_dto.transition_checklist_gofs,
+            transition_template_dto.created_by_id,
+            transition_template_dto.transition_checklist_template_id,
+            action_type
         )
+        task_gof_dtos = [
+            TaskGoFWithTaskIdDTO(
+                task_id=transition_template_dto.task_id,
+                gof_id=gof_fields_dto.gof_id,
+                same_gof_order=gof_fields_dto.same_gof_order
+            )
+            for gof_fields_dto in
+            transition_template_dto.transition_checklist_gofs
+        ]
+        task_gof_details_dtos = \
+            self.create_or_update_task_storage.create_task_gofs(
+            task_gof_dtos=task_gof_dtos
+        )
+        task_gof_field_dtos = self._prepare_task_gof_fields_dtos(
+            transition_template_dto.transition_checklist_gofs,
+            task_gof_details_dtos
+        )
+        self.create_or_update_task_storage.create_task_gof_fields(
+            task_gof_field_dtos)
 
     def _validate_task_id(self, task_id) -> Optional[InvalidTaskIdException]:
         is_valid_task_id = self.create_or_update_task_storage.is_valid_task_id(
@@ -115,3 +159,36 @@ class CreateTransitionChecklistTemplateInteractor:
             )
         )
         return duplicate_values
+
+    def _prepare_task_gof_fields_dtos(
+            self, transition_checklist_gofs, task_gof_details_dtos
+    ) -> List[TaskGoFFieldDTO]:
+        task_gof_field_dtos = []
+        for checklist_gof_dto in transition_checklist_gofs:
+            task_gof_id = self._get_gof_id_for_field_in_task_gof_details(
+                checklist_gof_dto.gof_id, checklist_gof_dto.same_gof_order,
+                task_gof_details_dtos
+            )
+            task_gof_field_dtos += [
+                TaskGoFFieldDTO(
+                    field_id=field_values_dto.field_id,
+                    field_response=field_values_dto.field_response,
+                    task_gof_id=task_gof_id
+                )
+                for field_values_dto in checklist_gof_dto.field_values_dtos
+            ]
+        return task_gof_field_dtos
+
+    @staticmethod
+    def _get_gof_id_for_field_in_task_gof_details(
+            gof_id: str, same_gof_order: int,
+            task_gof_details_dtos: List[TaskGoFDetailsDTO]
+    ) -> Optional[int]:
+        for task_gof_details_dto in task_gof_details_dtos:
+            gof_matched = (
+                    task_gof_details_dto.gof_id == gof_id and
+                    task_gof_details_dto.same_gof_order == same_gof_order
+            )
+            if gof_matched:
+                return task_gof_details_dto.task_gof_id
+        return

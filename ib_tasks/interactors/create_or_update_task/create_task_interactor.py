@@ -168,9 +168,7 @@ class CreateTaskInteractor:
         self.create_task(task_dto)
         return presenter.get_create_task_response()
 
-    def create_task(
-            self, task_dto: CreateTaskDTO
-    ):
+    def create_task(self, task_dto: CreateTaskDTO):
         is_valid_action_id = self.storage.validate_action(task_dto.action_id)
         if not is_valid_action_id:
             raise InvalidActionException(task_dto.action_id)
