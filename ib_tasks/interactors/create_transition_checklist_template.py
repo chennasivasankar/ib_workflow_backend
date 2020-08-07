@@ -1,11 +1,33 @@
 from typing import Optional, List
 
+from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
+from ib_tasks.exceptions.field_values_custom_exceptions import \
+    EmptyValueForRequiredField, InvalidPhoneNumberValue, \
+    InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
+    InvalidNumberValue, InvalidFloatValue, InvalidValueForDropdownField, \
+    IncorrectNameInGoFSelectorField, IncorrectRadioGroupChoice, \
+    IncorrectCheckBoxOptionsSelected, IncorrectMultiSelectOptionsSelected, \
+    IncorrectMultiSelectLabelsSelected, InvalidDateFormat, InvalidTimeFormat, \
+    InvalidUrlForImage, InvalidImageFormat, InvalidUrlForFile, \
+    InvalidFileFormat
+from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
+    DuplicateFieldIdsToGoF
 from ib_tasks.exceptions.gofs_custom_exceptions import \
-    DuplicateSameGoFOrderForAGoF
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
+    DuplicateSameGoFOrderForAGoF, InvalidGoFIds
+from ib_tasks.exceptions.permission_custom_exceptions import \
+    UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
+from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId, \
+    TransitionTemplateIsNotRelatedToGivenStageAction
+from ib_tasks.exceptions.task_custom_exceptions import \
+    InvalidTaskIdException, \
+    InvalidTransitionChecklistTemplateId, InvalidGoFsOfTaskTemplate, \
+    InvalidFieldsOfGoF
 from ib_tasks.interactors.create_or_update_task \
     .template_gofs_fields_base_validations import \
     TemplateGoFsFieldsBaseValidationsInteractor
+from ib_tasks.interactors.presenter_interfaces \
+    .create_transition_checklist_presenter_interface import \
+    CreateTransitionChecklistTemplatePresenterInterface
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces \
@@ -50,8 +72,102 @@ class CreateTransitionChecklistTemplateInteractor:
         self.template_storage = template_storage
         self.create_or_update_task_storage = create_or_update_task_storage
 
-    def create_transition_checklist_wrapper(self):
-        pass
+    def create_transition_checklist_wrapper(
+            self,
+            transition_template_dto: CreateTransitionChecklistTemplateDTO,
+            presenter: CreateTransitionChecklistTemplatePresenterInterface
+    ):
+        try:
+            return self._prepare_create_transition_checklist_response(
+                transition_template_dto, presenter
+            )
+        except InvalidTaskIdException as err:
+            return presenter.raise_invalid_task_id(err)
+        except InvalidTransitionChecklistTemplateId as err:
+            return presenter.raise_invalid_transition_checklist_template_id(
+                err)
+        except InvalidActionException as err:
+            return presenter.raise_invalid_action(err)
+        except InvalidStageId as err:
+            return presenter.raise_invalid_stage_id(err)
+        except TransitionTemplateIsNotRelatedToGivenStageAction as err:
+            return \
+                presenter.raise_transition_template_is_not_related_to_given_stage_action(
+                    err)
+        except DuplicateSameGoFOrderForAGoF as err:
+            return presenter.raise_same_gof_order_for_a_gof(err)
+        except InvalidGoFIds as err:
+            return presenter.raise_invalid_gof_ids(err)
+        except InvalidFieldIds as err:
+            return presenter.raise_invalid_field_ids(err)
+        except InvalidGoFsOfTaskTemplate as err:
+            return presenter.raise_invalid_gofs_given_to_a_task_template(err)
+        except DuplicateFieldIdsToGoF as err:
+            return presenter.raise_duplicate_field_ids_to_a_gof(err)
+        except InvalidFieldsOfGoF as err:
+            return presenter.raise_invalid_fields_given_to_a_gof(err)
+        except UserNeedsGoFWritablePermission as err:
+            return presenter.raise_user_needs_gof_writable_permission(err)
+        except UserNeedsFieldWritablePermission as err:
+            return presenter.raise_user_needs_field_writable_permission(err)
+        except EmptyValueForRequiredField as err:
+            return presenter. \
+                raise_exception_for_empty_value_in_required_field(err)
+        except InvalidPhoneNumberValue as err:
+            return presenter.raise_exception_for_invalid_phone_number_value(
+                err)
+        except InvalidEmailFieldValue as err:
+            return presenter.raise_exception_for_invalid_email_address(err)
+        except InvalidURLValue as err:
+            return presenter.raise_exception_for_invalid_url_address(err)
+        except NotAStrongPassword as err:
+            return presenter.raise_exception_for_weak_password(err)
+        except InvalidNumberValue as err:
+            return presenter.raise_exception_for_invalid_number_value(err)
+        except InvalidFloatValue as err:
+            return presenter.raise_exception_for_invalid_float_value(err)
+        except InvalidValueForDropdownField as err:
+            return presenter.raise_exception_for_invalid_dropdown_value(err)
+        except IncorrectNameInGoFSelectorField as err:
+            return presenter. \
+                raise_exception_for_invalid_name_in_gof_selector_field_value(
+                err)
+        except IncorrectRadioGroupChoice as err:
+            return presenter. \
+                raise_exception_for_invalid_choice_in_radio_group_field(err)
+        except IncorrectCheckBoxOptionsSelected as err:
+            return presenter. \
+                raise_exception_for_invalid_checkbox_group_options_selected(
+                err)
+        except IncorrectMultiSelectOptionsSelected as err:
+            return presenter. \
+                raise_exception_for_invalid_multi_select_options_selected(err)
+        except IncorrectMultiSelectLabelsSelected as err:
+            return presenter. \
+                raise_exception_for_invalid_multi_select_labels_selected(err)
+        except InvalidDateFormat as err:
+            return presenter.raise_exception_for_invalid_date_format(err)
+        except InvalidTimeFormat as err:
+            return presenter.raise_exception_for_invalid_time_format(err)
+        except InvalidUrlForImage as err:
+            return presenter.raise_exception_for_invalid_image_url(err)
+        except InvalidImageFormat as err:
+            return presenter.raise_exception_for_not_acceptable_image_format(
+                err)
+        except InvalidUrlForFile as err:
+            return presenter.raise_exception_for_invalid_file_url(err)
+        except InvalidFileFormat as err:
+            return presenter.raise_exception_for_not_acceptable_file_format(
+                err)
+
+    def _prepare_create_transition_checklist_response(
+            self,
+            transition_template_dto: CreateTransitionChecklistTemplateDTO,
+            presenter: CreateTransitionChecklistTemplatePresenterInterface
+    ):
+        self.create_transition_checklist(transition_template_dto)
+        response = presenter.get_create_transition_checklist_response()
+        return response
 
     def create_transition_checklist(
             self,
@@ -95,8 +211,8 @@ class CreateTransitionChecklistTemplateInteractor:
         ]
         task_gof_details_dtos = \
             self.create_or_update_task_storage.create_task_gofs(
-            task_gof_dtos=task_gof_dtos
-        )
+                task_gof_dtos=task_gof_dtos
+            )
         task_gof_field_dtos = self._prepare_task_gof_fields_dtos(
             transition_template_dto.transition_checklist_gofs,
             task_gof_details_dtos
@@ -112,24 +228,30 @@ class CreateTransitionChecklistTemplateInteractor:
             raise InvalidTaskIdException(task_id)
         return
 
-    def _validate_transition_template_id(self,
-                                         transition_checklist_template_id):
+    def _validate_transition_template_id(
+            self, transition_checklist_template_id: str
+    ) -> Optional[InvalidTransitionChecklistTemplateId]:
         self.template_storage.validate_transition_template_id(
             transition_checklist_template_id)
+        return
 
-    def _validate_action_id(self, action_id):
+    def _validate_action_id(self, action_id) -> Optional[
+        InvalidActionException]:
         self.stage_action_storage.validate_action_id(action_id)
+        return
 
-    def _validate_stage_id(self, stage_id):
+    def _validate_stage_id(self, stage_id: int) -> Optional[InvalidStageId]:
         self.stage_action_storage.validate_stage_id(stage_id)
+        return
 
     def _validate_transition_template_id_related_to_given_stage_action(
             self, transition_checklist_template_id, action_id, stage_id
-    ):
+    ) -> Optional[TransitionTemplateIsNotRelatedToGivenStageAction]:
         self.stage_action_storage \
             .validate_transition_template_id_is_related_to_given_stage_action(
             transition_checklist_template_id, action_id, stage_id
         )
+        return
 
     def _validate_same_gof_order(
             self, transition_checklist_gof_dtos: List[GoFFieldsDTO]

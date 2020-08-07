@@ -50,6 +50,7 @@ TASK_TEMPLATES_DOES_NOT_EXISTS = (
 INVALID_GOF_IDS_EXCEPTION_MESSAGE = "Invalid values for gof_ids {}"
 EMPTY_VALUE_FOR_FIELD_ID = "Field ids shouldn't be empty"
 EMPTY_VALUE_FOR_READ_PERMISSIONS = "Read Permission roles shouldn't be empty " \
+                                   "" \
                                    "for these fields ids {}"
 DUPLICATED_VALUES_FOR_READ_PERMISSIONS = "Repeated roles for read " \
                                          "permissions for these fields {}"
@@ -289,4 +290,21 @@ USER_DO_NOT_ACCESS_TO_DELETE_FILTER = (
 DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF = (
     "duplicate same gof orders given for gof {}, duplicates are {}",
     "DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF"
+)
+
+INVALID_TRANSITION_CHECKLIST_TEMPLATE_ID = (
+    "please give a valid transition checklist template id, {} is invalid \
+    transition checklist template id",
+    "INVALID_TRANSITION_CHECKLIST_TEMPLATE_ID"
+)
+
+INVALID_STAGE_ID = (
+    "please give a valid stage id, {} is invalid stage id",
+    "INVALID_STAGE_ID"
+)
+
+TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION = (
+    "given transition template id {} is not linked to given stage id {} and \
+    action id {}",
+    "TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION"
 )

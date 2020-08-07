@@ -1,5 +1,6 @@
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
+from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidFileFormat, InvalidUrlForFile, InvalidImageFormat, \
     InvalidUrlForImage, InvalidTimeFormat, InvalidDateFormat, \
@@ -11,23 +12,93 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidEmailFieldValue, InvalidPhoneNumberValue, EmptyValueForRequiredField
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
     DuplicateFieldIdsToGoF
-from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
+from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
+    DuplicateSameGoFOrderForAGoF
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
+from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId, \
+    TransitionTemplateIsNotRelatedToGivenStageAction
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskTemplateIds, \
-    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
-from ib_tasks.interactors.presenter_interfaces.update_task_presenter import \
-    UpdateTaskPresenterInterface
+    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, \
+    InvalidTransitionChecklistTemplateId
+from ib_tasks.interactors.presenter_interfaces \
+    .create_transition_checklist_presenter_interface import \
+    CreateTransitionChecklistTemplatePresenterInterface
 
 
-class UpdateTaskPresenterImplementation(
-    UpdateTaskPresenterInterface, HTTPResponseMixin
+class CreateTransitionChecklistTemplatePresenterImplementation(
+    CreateTransitionChecklistTemplatePresenterInterface, HTTPResponseMixin
 ):
-
-    def get_update_task_response(self):
+    def raise_invalid_transition_checklist_template_id(
+            self, err: InvalidTransitionChecklistTemplateId
+    ):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_TRANSITION_CHECKLIST_TEMPLATE_ID
+        response_message = INVALID_TRANSITION_CHECKLIST_TEMPLATE_ID[0].format(
+            err.transition_checklist_template_id
+        )
         data = {
-            "message": "task updated successfully"
+            "response": response_message,
+            "http_status_code": 400,
+            "res_status": INVALID_TRANSITION_CHECKLIST_TEMPLATE_ID[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_action(self, err: InvalidActionException):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_ACTION_ID
+        response_message = INVALID_ACTION_ID[0].format(err.action_id)
+        data = {
+            "response": response_message,
+            "http_status_code": 400,
+            "res_status": INVALID_ACTION_ID[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_stage_id(self, err: InvalidStageId):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_STAGE_ID
+        response_message = INVALID_STAGE_ID[0].format(err.stage_id)
+        data = {
+            "response": response_message,
+            "http_status_code": 400,
+            "res_status": INVALID_STAGE_ID[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_same_gof_order_for_a_gof(self,
+                                       err: DuplicateSameGoFOrderForAGoF):
+        from ib_tasks.constants.exception_messages import \
+            DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF
+        response_message = DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF[0].format(
+            err.gof_id, str(err.same_gof_orders))
+        data = {
+            "response": response_message,
+            "http_status_code": 400,
+            "res_status": DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_transition_template_is_not_related_to_given_stage_action(
+            self, err: TransitionTemplateIsNotRelatedToGivenStageAction
+    ):
+        from ib_tasks.constants.exception_messages import \
+            TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION
+        response_message = \
+        TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION[0].format(
+            err.transition_checklist_template_id, err.stage_id, err.action_id)
+        data = {
+            "response": response_message,
+            "http_status_code": 400,
+            "res_status":
+                TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def get_create_transition_checklist_response(self):
+        data = {
+            "message": "transition checklist created successfully"
         }
         return self.prepare_201_created_response(response_dict=data)
 
