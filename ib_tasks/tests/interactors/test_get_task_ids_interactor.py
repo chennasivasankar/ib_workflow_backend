@@ -6,7 +6,8 @@ Author: Pavankumar Pamuru
 
 import pytest
 
-from ib_tasks.interactors.get_task_ids_interactor import GetTaskIdsInteractor
+from ib_tasks.interactors.get_task_ids_interactor import GetTaskIdsInteractor, \
+    InvalidLimitValue, InvalidOffsetValue
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, TaskIdsDTO
 
 
@@ -60,11 +61,67 @@ class TestGetTaskIdsInteractor:
         with pytest.raises(InvalidStageIdsListException) as error:
             interactor.get_task_ids(task_details_configs=task_config_dtos)
 
-        # Assert
-        stage_storage.get_existing_stage_ids.assert_called_once_with(
-            stage_ids=stage_ids_single_list
+    def test_with_invalid_limit_raise_error(
+            self, task_storage, stage_storage):
+        # Arrange
+        stage_ids = [['STAGE_ID_1', 'STAGE_ID_2'],
+                     ['STAGE_ID_3', 'STAGE_ID_4']]
+        stage_ids_single_list = ['STAGE_ID_1', 'STAGE_ID_2', 'STAGE_ID_3',
+                                 'STAGE_ID_4']
+        interactor = GetTaskIdsInteractor(
+            stage_storage=stage_storage,
+            task_storage=task_storage
         )
-        assert error.value.invalid_stage_ids == invalid_stage_ids
+        task_config_dtos = [
+            TaskDetailsConfigDTO(
+                unique_key="1",
+                stage_ids=stage_ids[0],
+                offset=0,
+                limit=-2
+            ),
+            TaskDetailsConfigDTO(
+                unique_key="1",
+                stage_ids=stage_ids[1],
+                offset=0,
+                limit=5
+            )
+        ]
+        stage_storage.get_existing_stage_ids.return_value = stage_ids_single_list
+        # Act
+
+        with pytest.raises(InvalidLimitValue) as error:
+            interactor.get_task_ids(task_details_configs=task_config_dtos)
+
+    def test_with_invalid_offset_raise_error(
+            self, task_storage, stage_storage):
+        # Arrange
+        stage_ids = [['STAGE_ID_1', 'STAGE_ID_2'],
+                     ['STAGE_ID_3', 'STAGE_ID_4']]
+        stage_ids_single_list = ['STAGE_ID_1', 'STAGE_ID_2', 'STAGE_ID_3',
+                                 'STAGE_ID_4']
+        interactor = GetTaskIdsInteractor(
+            stage_storage=stage_storage,
+            task_storage=task_storage
+        )
+        task_config_dtos = [
+            TaskDetailsConfigDTO(
+                unique_key="1",
+                stage_ids=stage_ids[0],
+                offset=3,
+                limit=2
+            ),
+            TaskDetailsConfigDTO(
+                unique_key="1",
+                stage_ids=stage_ids[1],
+                offset=-3,
+                limit=5
+            )
+        ]
+        stage_storage.get_existing_stage_ids.return_value = stage_ids_single_list
+        # Act
+
+        with pytest.raises(InvalidOffsetValue) as error:
+            interactor.get_task_ids(task_details_configs=task_config_dtos)
 
     def test_with_valid_stage_ids_return_task_ids_with_stage_ids_dict(
             self, stage_storage, task_storage):

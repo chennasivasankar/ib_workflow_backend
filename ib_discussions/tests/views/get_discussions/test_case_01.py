@@ -5,7 +5,7 @@ import datetime
 from uuid import UUID
 
 import pytest
-from django_swagger_utils.utils.test_v1 import TestUtils
+from django_swagger_utils.utils.test_utils import TestUtils
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
@@ -83,7 +83,7 @@ class TestCase01GetDiscussionsAPITestCase(TestUtils):
             DiscussionFactory(
                 discussion_set_id=discussion_set_id,
                 id=discussion_id,
-                created_at=datetime.datetime(2008, 1, 1, tzinfo=datetime.timezone.utc)
+                created_at=datetime.datetime(2008, 1, 1)
             )
 
         from ib_discussions.constants.enum import EntityType
@@ -105,7 +105,7 @@ class TestCase01GetDiscussionsAPITestCase(TestUtils):
         path_params = {}
         query_params = {'offset': offset, 'limit': limit}
         headers = {}
-        response = self.default_test_case(
+        response = self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

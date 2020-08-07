@@ -2,6 +2,9 @@ from dataclasses import dataclass
 from typing import List, Any
 
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, ActionDetailsDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO, FieldDetailsDTOWithTaskId
+from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
+    ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
 
 
@@ -36,7 +39,6 @@ class StageDTO:
     value: int
     stage_display_name: str
     stage_display_logic: str
-
 
 
 @dataclass
@@ -77,6 +79,7 @@ class StageValueWithTaskIdsDTO:
     task_ids: List[int]
     stage_value: int
 
+
 @dataclass
 class TaskIdWithStageDetailsDTO:
     task_id: int
@@ -95,3 +98,9 @@ class StageDisplayValueDTO:
     stage_id: str
     display_logic: str
     value: int
+
+
+@dataclass
+class StageIdWithTemplateIdDTO:
+    template_id: str
+    stage_id: int

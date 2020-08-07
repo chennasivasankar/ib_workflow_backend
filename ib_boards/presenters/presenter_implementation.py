@@ -6,9 +6,9 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 from ib_boards.constants.exception_messages import (
     INVALID_BOARD_ID, INVALID_OFFSET_VALUE, INVALID_LIMIT_VALUE,
     USER_DONOT_HAVE_ACCESS)
-from ib_boards.interactors.dtos import ColumnTasksDTO, FieldDTO, ActionDTO
+from ib_boards.interactors.dtos import ColumnTasksDTO, FieldDTO, ActionDTO, StarredAndOtherBoardsDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
-    GetBoardsPresenterInterface, GetBoardsDetailsPresenterInterface, \
+    GetBoardsPresenterInterface, \
     GetColumnTasksPresenterInterface, TaskCompleteDetailsDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
@@ -19,7 +19,7 @@ from ib_boards.interactors.storage_interfaces.dtos import (
 
 
 class GetBoardsPresenterImplementation(
-        GetBoardsPresenterInterface, HTTPResponseMixin):
+    GetBoardsPresenterInterface, HTTPResponseMixin):
 
     def get_response_for_user_have_no_access_for_boards(
             self) -> response.HttpResponse:
@@ -57,16 +57,21 @@ class GetBoardsPresenterImplementation(
         )
 
     def get_response_for_get_boards(
-            self, board_dtos: List[BoardDTO], total_boards: int) \
+            self, starred_and_other_boards_dto: StarredAndOtherBoardsDTO,
+            total_boards: int) \
             -> response.HttpResponse:
         board_details_dict = {
             "total_boards_count": total_boards,
-            "boards_details": []
+            "starred_boards": [],
+            "all_boards": []
         }
-        for board_dto in board_dtos:
-            board_dict = self._convert_board_dto_to_dict(board_dto=board_dto)
-            board_details_dict["boards_details"].append(board_dict)
+        for starred_boards_dto in starred_and_other_boards_dto.starred_boards_dtos:
+            board_dict = self._convert_board_dto_to_dict(board_dto=starred_boards_dto)
+            board_details_dict["starred_boards"].append(board_dict)
 
+        for other_boards_dto in starred_and_other_boards_dto.other_boards_dtos:
+            board_dict = self._convert_board_dto_to_dict(board_dto=other_boards_dto)
+            board_details_dict["all_boards"].append(board_dict)
         return self.prepare_200_success_response(
             response_dict=board_details_dict
         )
@@ -80,40 +85,6 @@ class GetBoardsPresenterImplementation(
 
     def get_response_for_offset_exceeds_total_tasks(self):
         pass
-
-
-class GetBoardsDetailsPresenterImplementation(
-        GetBoardsDetailsPresenterInterface, HTTPResponseMixin):
-
-    def get_response_for_invalid_board_ids(
-            self, error) -> response.HttpResponse:
-        from ib_boards.constants.exception_messages import INVALID_BOARD_IDS
-        response_dict = {
-            "response": f"{INVALID_BOARD_IDS[0]}: {error.board_ids}",
-            "http_status_code": 404,
-            "res_status": INVALID_BOARD_IDS[1]
-        }
-        return self.prepare_404_not_found_response(
-            response_dict=response_dict
-        )
-
-    def get_response_for_board_details(
-            self, board_dtos: List[BoardDTO]) -> response.HttpResponse:
-        board_details_dict = []
-        for board_dto in board_dtos:
-            board_dict = self._convert_board_dto_to_dict(board_dto=board_dto)
-            board_details_dict.append(board_dict)
-
-        return self.prepare_200_success_response(
-            response_dict=board_details_dict
-        )
-
-    @staticmethod
-    def _convert_board_dto_to_dict(board_dto: BoardDTO):
-        return {
-            "board_id": board_dto.board_id,
-            "name": board_dto.name
-        }
 
 
 class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
@@ -188,10 +159,10 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
                 task_ids.append(task_id)
 
         tasks_list = self.get_task_details_dict_from_dtos(
-                task_fields_dtos=task_fields_dtos,
-                task_actions_dtos=task_actions_dtos,
-                task_ids=task_ids
-            )
+            task_fields_dtos=task_fields_dtos,
+            task_actions_dtos=task_actions_dtos,
+            task_ids=task_ids
+        )
 
         response_dict = {
             "total_tasks_count": total_tasks,
@@ -206,22 +177,18 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
         from collections import defaultdict
 
         tasks_fields_map = defaultdict(lambda: [])
-        field_ids = []
+
         for task_fields_dto in task_fields_dtos:
-            if task_fields_dto.field_id not in field_ids:
-                tasks_fields_map[task_fields_dto.task_id].append(
-                    task_fields_dto
-                )
-                field_ids.append(task_fields_dto.field_id)
+            tasks_fields_map[task_fields_dto.task_id].append(
+                task_fields_dto
+            )
 
         tasks_actions_map = defaultdict(lambda: [])
-        action_ids = []
+
         for task_actions_dto in task_actions_dtos:
-            if task_actions_dto.action_id not in action_ids:
-                tasks_actions_map[task_actions_dto.task_id].append(
-                    task_actions_dto
-                )
-                action_ids.append(task_actions_dto.action_id)
+            tasks_actions_map[task_actions_dto.task_id].append(
+                task_actions_dto
+            )
 
         tasks_list = []
         for task_id in task_ids:
@@ -243,28 +210,34 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
     @staticmethod
     def _convert_fields_dtos_to_dict(field_dtos: List[FieldDTO]):
         task_fields_list = []
+        field_ids = []
         for field_dto in field_dtos:
-            task_fields_list.append(
-                {
-                    "field_type": field_dto.field_type,
-                    "key": field_dto.key,
-                    "value": field_dto.value
-                }
-            )
+            if field_dto.field_id not in field_ids:
+                task_fields_list.append(
+                    {
+                        "field_type": field_dto.field_type,
+                        "key": field_dto.key,
+                        "value": field_dto.value
+                    }
+                )
+                field_ids.append(field_dto.field_id)
         return task_fields_list
 
     @staticmethod
     def _convert_action_dtos_to_dict(action_dtos: List[ActionDTO]):
         task_actions_list = []
+        action_ids = []
         for action_dto in action_dtos:
-            task_actions_list.append(
-                {
-                    "action_id": action_dto.action_id,
-                    "name": action_dto.name,
-                    "button_text": action_dto.button_text,
-                    "button_color": action_dto.button_color
-                }
-            )
+            if action_dto.action_id not in action_ids:
+                task_actions_list.append(
+                    {
+                        "action_id": action_dto.action_id,
+                        "name": action_dto.name,
+                        "button_text": action_dto.button_text,
+                        "button_color": action_dto.button_color
+                    }
+                )
+                action_ids.append(action_dto.action_id)
         return task_actions_list
 
 
@@ -306,7 +279,8 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
 
     def get_response_for_column_details(
             self, column_details: List[ColumnCompleteDetails],
-            task_fields_dtos: List[FieldDTO], task_actions_dtos: List[ActionDTO],
+            task_fields_dtos: List[FieldDTO],
+            task_actions_dtos: List[ActionDTO],
             column_tasks: List[ColumnTasksDTO]) -> response.HttpResponse:
 
         from collections import defaultdict
@@ -334,7 +308,8 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
     @staticmethod
     def _get_column_complete_details(
             column_dto: ColumnCompleteDetails,
-            task_fields_dtos: List[FieldDTO], task_actions_dtos: List[ActionDTO],
+            task_fields_dtos: List[FieldDTO],
+            task_actions_dtos: List[ActionDTO],
             column_stages: List[ColumnTasksDTO]):
         from collections import defaultdict
         column_tasks_map = defaultdict(lambda: [])

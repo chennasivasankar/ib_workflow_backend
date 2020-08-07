@@ -3,18 +3,19 @@ from typing import List
 from ib_tasks.interactors.get_task_fields_and_actions import \
     GetTaskFieldsAndActionsInteractor
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
+from ib_tasks.storages.action_storage_implementation import ActionsStorageImplementation
 from ib_tasks.storages.tasks_storage_implementation import \
     TasksStorageImplementation
 
 
-class TaskDetailsServiceInterface:
-
-    @staticmethod
-    def get_task_details(task_dtos: List[GetTaskDetailsDTO]):
-        storage = TasksStorageImplementation()
-        interactor = GetTaskFieldsAndActionsInteractor(storage)
-        result = interactor.get_task_fields_and_action(task_dtos)
-        return result
+# class TaskDetailsServiceInterface:
+#
+#     @staticmethod
+#     def get_task_details(task_dtos: List[GetTaskDetailsDTO]):
+#         storage = TasksStorageImplementation()
+#         interactor = GetTaskFieldsAndActionsInteractor(storage)
+#         result = interactor.get_task_fields_and_action(task_dtos)
+#         return result
 
 
 from typing import List
@@ -44,17 +45,19 @@ class ServiceInterface:
         return task_ids_dtos
 
     @staticmethod
-    def get_task_details(task_dtos: List[GetTaskDetailsDTO], user_id: int):
+    def get_task_details(task_dtos: List[GetTaskDetailsDTO], user_id: str):
         from ib_tasks.storages.fields_storage_implementation import \
             FieldsStorageImplementation
         from ib_tasks.storages.storage_implementation import \
             StagesStorageImplementation
         field_storage = FieldsStorageImplementation()
         stage_storage = StagesStorageImplementation()
+        action_storage = ActionsStorageImplementation()
 
         interactor = GetTaskFieldsAndActionsInteractor(
             field_storage,
-            stage_storage
+            stage_storage,
+            action_storage
         )
         result = interactor.get_task_fields_and_action(task_dtos, user_id)
         return result

@@ -157,8 +157,7 @@
       "type": "object",
       "properties": {
         "company_id": {
-          "type": "string",
-          "format": "uuid"
+          "type": "string"
         },
         "company_name": {
           "type": "string"

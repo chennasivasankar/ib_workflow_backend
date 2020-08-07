@@ -1,22 +1,20 @@
 import factory
 
 from ib_tasks.adapters.dtos import UserDTO
+from ib_tasks.constants.enum import Searchable
 from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
-
+from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
-from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
-from ib_tasks.constants.enum import Searchable
-from ib_tasks.interactors.stages_dtos import (StagesActionDTO,
-                                              UserStagesWithPaginationDTO)
-
 from ib_tasks.interactors.stages_dtos import \
     TaskTemplateStageActionDTO, StageActionDTO, StagesActionDTO
-from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDetailsDTO
+from ib_tasks.interactors.stages_dtos import UserStagesWithPaginationDTO
+from ib_tasks.interactors.storage_interfaces.actions_dtos import \
+    ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
-from ib_tasks.interactors.task_dtos import TaskDTO, GoFFieldsDTO, \
-    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO
+from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
+    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, CreateTaskLogDTO
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
@@ -72,6 +70,7 @@ class GlobalConstantsDTOFactory(factory.Factory):
     constant_name = factory.sequence(lambda n: "Constant_{}".format(n + 1))
     value = factory.sequence(lambda n: n)
 
+
 class FieldDetailsDTOFactory(factory.Factory):
     class Meta:
         model = FieldDetailsDTO
@@ -81,8 +80,8 @@ class FieldDetailsDTOFactory(factory.Factory):
     key = factory.Sequence(lambda n: 'key_%d' % (n + 1))
     value = factory.Sequence(lambda n: 'value_%d' % (n + 1))
 
-class ActionDetailsDTOFactory(factory.Factory):
 
+class ActionDetailsDTOFactory(factory.Factory):
     class Meta:
         model = ActionDetailsDTO
 
@@ -91,6 +90,7 @@ class ActionDetailsDTOFactory(factory.Factory):
     stage_id = factory.Sequence(lambda n: 'stage_%d' % (n + 1))
     button_text = factory.Sequence(lambda n: 'button_text_%d' % (n + 1))
     button_color = None
+
 
 class GoFWithOrderAndAddAnotherDTOFactory(factory.Factory):
     class Meta:
@@ -108,6 +108,7 @@ class GoFsWithTemplateIdDTOFactory(factory.Factory):
     template_id = factory.sequence(lambda n: "template_{}".format(n + 1))
     gof_dtos = factory.SubFactory(GoFWithOrderAndAddAnotherDTOFactory)
 
+
 class ActionDTOFactory(factory.Factory):
     class Meta:
         model = StagesActionDTO
@@ -122,6 +123,7 @@ class ActionDTOFactory(factory.Factory):
 
     class Params:
         color = factory.Trait(button_color="#ffffff")
+
 
 class FieldValuesDTOFactory(factory.Factory):
     class Meta:
@@ -143,23 +145,6 @@ class GoFFieldsDTOFactory(factory.Factory):
     def field_values_dtos(self):
         field_values_dtos = FieldValuesDTOFactory.create_batch(size=2)
         return field_values_dtos
-
-
-class TaskDTOFactory(factory.Factory):
-    class Meta:
-        model = TaskDTO
-
-    task_id = None
-    task_template_id = factory.sequence(
-        lambda counter: "TASK_TEMPLATE_ID-{}".format(counter))
-    action_id = factory.Sequence(
-        lambda counter: "ACTION-{}".format(counter))
-    created_by_id = "123e4567-e89b-12d3-a456-426614174000"
-
-    @factory.LazyAttribute
-    def gof_fields_dtos(self):
-        gof_fields_dtos = GoFFieldsDTOFactory.create_batch(size=2)
-        return gof_fields_dtos
 
 
 class SearchableFieldTypeDTOFactory(factory.Factory):
@@ -188,7 +173,6 @@ class UserDTOFactory(factory.Factory):
     name = factory.sequence(lambda n: "user_name_{}".format(n + 1))
 
 
-
 class UserStagesWithPaginationDTOFactory(factory.Factory):
     class Meta:
         model = UserStagesWithPaginationDTO
@@ -206,3 +190,13 @@ class StatusOperandStageDTOFactory(factory.Factory):
     variable = factory.sequence(lambda n: "variable_{}".format(n + 1))
     operator = "=="
     stage = factory.sequence(lambda n: "stage_{}".format(n + 1))
+
+
+class CreateTaskLogDTOFactory(factory.Factory):
+    class Meta:
+        model = CreateTaskLogDTO
+
+    task_json = factory.sequence(lambda n: "{{'task_json'_'{}'}}".format(n))
+    task_id = factory.sequence(lambda n: n)
+    user_id = factory.sequence(lambda n: "user_{}".format(n))
+    action_id = factory.sequence(lambda n: n)
