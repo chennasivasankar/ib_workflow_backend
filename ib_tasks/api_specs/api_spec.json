@@ -1619,6 +1619,35 @@
         ]
       }
     },
+    "InvalidTaskReasonsResponse": {
+      "description": "invalid add task reasons response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer",
+            "enum": [
+              400
+            ]
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "INVALID_REASON",
+              "INVALID_DUE_DATE_TIME"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
     "UpdateTaskStageAssigneesNotFoundResponse": {
       "description": "Task Stage Assignees Not Found Response",
       "schema": {
@@ -1944,6 +1973,32 @@
             "type": "string",
             "enum": [
               "VALUE_SHOULD_NOT_BE_EMPTY"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
+    "TaskIsNotAssignedToUserResponse": {
+      "description": "given task is not assigned to user",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer",
+            "example": 403
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "TASK_IS_NOT_ASSIGNED_TO_TASK"
             ]
           }
         },
@@ -2696,6 +2751,9 @@
           },
           "404": {
             "$ref": "#/responses/GetTaskFailureResponse"
+          },
+          "403": {
+            "$ref": "#/responses/TaskIsNotAssignedToUserResponse"
           }
         }
       },
@@ -2724,6 +2782,12 @@
           },
           "404": {
             "$ref": "#/responses/GetTaskFailureResponse"
+          },
+          "400": {
+            "$ref": "#/responses/InvalidTaskReasonsResponse"
+          },
+          "403": {
+            "$ref": "#/responses/TaskIsNotAssignedToUserResponse"
           }
         }
       }
