@@ -5,6 +5,7 @@ Author: Pavankumar Pamuru
 """
 from typing import List, Tuple
 
+from ib_boards.constants.enum import ViewType
 from ib_boards.exceptions.custom_exceptions import InvalidOffsetValue, \
     InvalidLimitValue, OffsetValueExceedsTotalTasksCount, \
     UserDoNotHaveAccessToColumn, InvalidStageIds
@@ -53,6 +54,7 @@ class GetColumnTasksInteractor:
             column_tasks_parameters=column_tasks_parameters)
         column_id = column_tasks_parameters.column_id
         user_id = column_tasks_parameters.user_id
+        view_type = column_tasks_parameters.view_type
         stage_ids = self.storage.get_column_display_stage_ids(
             column_id=column_id
         )
@@ -61,7 +63,8 @@ class GetColumnTasksInteractor:
             column_tasks_parameters=column_tasks_parameters)
 
         task_fields_dtos, tasks_action_dtos = self._get_tasks_complete_details(
-            task_ids_stages_dtos=task_ids_stages_dto, user_id=user_id
+            task_ids_stages_dtos=task_ids_stages_dto, user_id=user_id,
+            view_type=view_type
         )
         task_ids = [
             task_ids_stage_dto.task_id
@@ -72,7 +75,8 @@ class GetColumnTasksInteractor:
     @staticmethod
     def _get_tasks_complete_details(
             task_ids_stages_dtos: ColumnTaskIdsDTO,
-            user_id: int) -> Tuple[List[FieldDTO], List[ActionDTO]]:
+            user_id: str, view_type: ViewType) -> \
+            Tuple[List[FieldDTO], List[ActionDTO]]:
         task_details_dtos = []
         for task_ids_stages_dto in task_ids_stages_dtos.task_stage_ids:
             from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
@@ -85,7 +89,7 @@ class GetColumnTasksInteractor:
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         return service_adapter.task_service.get_task_complete_details(
-            task_details_dtos, user_id=user_id)
+            task_details_dtos, user_id=user_id, view_type=view_type)
 
     def _validate_given_data(self, column_tasks_parameters):
         column_id = column_tasks_parameters.column_id

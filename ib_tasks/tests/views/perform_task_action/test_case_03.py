@@ -1,18 +1,20 @@
 """
 # TODO: Update test case description
 """
-import pytest
 import factory
+import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
-from ib_tasks.models import TaskStatusVariable, TaskStage, TaskTemplateGoFs
-from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ib_tasks.models import TaskStage, TaskTemplateGoFs
 from ib_tasks.tests.factories.models import TaskTemplateFactory, \
     TaskTemplateStatusVariableFactory, GoFFactory, \
     FieldFactory, StageModelFactory, StageActionFactory, \
-    TaskFactory, TaskStatusVariableFactory, TaskGoFFactory, TaskGoFFieldFactory, \
-    TaskStageModelFactory, GoFToTaskTemplateFactory, ActionPermittedRolesFactory, \
+    TaskFactory, TaskStatusVariableFactory, TaskGoFFactory, \
+    TaskGoFFieldFactory, \
+    TaskStageModelFactory, GoFToTaskTemplateFactory, \
+    ActionPermittedRolesFactory, \
     TaskTemplateInitialStageFactory, GoFRoleFactory, FieldRoleFactory
+from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
 class TestCase03PerformTaskActionAPITestCase(TestUtils):

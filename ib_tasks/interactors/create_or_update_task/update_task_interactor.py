@@ -1,6 +1,10 @@
-from typing import Optional, List
+from typing import Optional, List, Union
 
-from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
+from ib_tasks.constants.config import TIME_FORMAT
+from ib_tasks.exceptions.datetime_custom_exceptions import \
+    DueTimeHasExpiredForToday, InvalidDueTimeFormat, \
+    StartDateIsAheadOfDueDate, \
+    DueDateIsBehindStartDate
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     EmptyValueForRequiredField, InvalidPhoneNumberValue, \
     InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
@@ -14,13 +18,12 @@ from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
     DuplicateFieldIdsToGoF
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
 from ib_tasks.exceptions.permission_custom_exceptions import \
-    UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
-    UserActionPermissionDenied, UserBoardPermissionDenied
+    UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
 from ib_tasks.interactors.create_or_update_task. \
-    create_or_update_task_base_validations import \
-    CreateOrUpdateTaskBaseValidationsInteractor
+    template_gofs_fields_base_validations import \
+    TemplateGoFsFieldsBaseValidationsInteractor
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
 from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrder
 from ib_tasks.interactors.presenter_interfaces.update_task_presenter import \
@@ -42,9 +45,7 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.task_dtos import UpdateTaskDTO
-from ib_tasks.interactors.user_action_on_task_interactor import \
-    UserActionOnTaskInteractor
+from ib_tasks.interactors.task_dtos import UpdateTaskDTO, CreateTaskDTO
 
 
 class UpdateTaskInteractor:
@@ -72,8 +73,6 @@ class UpdateTaskInteractor:
                 task_dto, presenter)
         except InvalidTaskException as err:
             return presenter.raise_invalid_task_id(err)
-        except InvalidActionException as err:
-            return presenter.raise_invalid_action_id(err)
         except InvalidGoFIds as err:
             return presenter.raise_invalid_gof_ids(err)
         except InvalidFieldIds as err:
@@ -137,14 +136,6 @@ class UpdateTaskInteractor:
         except InvalidFileFormat as err:
             return presenter.raise_exception_for_not_acceptable_file_format(
                 err)
-        except UserActionPermissionDenied as err:
-            return presenter.raise_exception_for_user_action_permission_denied(
-                error_obj=err
-            )
-        except UserBoardPermissionDenied as err:
-            return presenter.raise_exception_for_user_board_permission_denied(
-                error_obj=err
-            )
 
     def _prepare_update_task_response(
             self, task_dto: UpdateTaskDTO,
@@ -158,15 +149,19 @@ class UpdateTaskInteractor:
         self._validate_task_id(task_id)
         task_template_id = \
             self.create_task_storage.get_template_id_for_given_task(task_id)
+        self._validate_task_details(task_dto)
         base_validations_interactor = \
-            CreateOrUpdateTaskBaseValidationsInteractor(
+            TemplateGoFsFieldsBaseValidationsInteractor(
                 self.task_storage, self.gof_storage,
                 self.create_task_storage, self.storage,
                 self.field_storage
             )
-        base_validations_interactor. \
-            perform_base_validations_for_create_or_update_task(
-            task_dto, task_template_id)
+        base_validations_interactor \
+            .perform_base_validations_for_template_gofs_and_fields(
+            task_dto.gof_fields_dtos, task_dto.created_by_id,
+            task_template_id, action_type=None)
+        self.create_task_storage.update_task_with_given_task_details(
+            task_dto=task_dto)
         existing_gofs = \
             self.create_task_storage \
                 .get_gof_ids_with_same_gof_order_related_to_a_task(task_id)
@@ -198,15 +193,6 @@ class UpdateTaskInteractor:
                 task_gof_dtos_for_updation, task_dto, existing_fields)
         if task_gof_dtos_for_creation:
             self._create_task_gofs(task_gof_dtos_for_creation, task_dto)
-
-        act_on_task_interactor = UserActionOnTaskInteractor(
-            user_id=task_dto.created_by_id, board_id=None,
-            task_id=task_id,
-            action_id=task_dto.action_id,
-            storage=self.storage, gof_storage=self.create_task_storage,
-            field_storage=self.field_storage, stage_storage=self.stage_storage
-        )
-        act_on_task_interactor.user_action_on_task()
 
     def _validate_task_id(
             self, task_id: int) -> Optional[InvalidTaskException]:
@@ -334,3 +320,39 @@ class UpdateTaskInteractor:
             if gof_already_exists:
                 return True
         return False
+
+    def _validate_task_details(self,
+                               task_dto: Union[CreateTaskDTO, UpdateTaskDTO]):
+        start_date = task_dto.start_date
+        due_date = task_dto.due_date
+        due_time = task_dto.due_time
+        self._validate_start_date_and_due_date_dependencies(
+            start_date, due_date
+        )
+        import datetime
+        self._validate_due_time_format(due_time)
+        due_time_obj = datetime.datetime.strptime(due_time, TIME_FORMAT).time()
+        now_time = datetime.datetime.now().time()
+        due_time_is_expired_if_due_date_is_today = (
+                due_date == datetime.datetime.today().date() and
+                due_time_obj < now_time)
+        if due_time_is_expired_if_due_date_is_today:
+            raise DueTimeHasExpiredForToday(due_time)
+
+    @staticmethod
+    def _validate_due_time_format(due_time: str):
+        import datetime
+        try:
+            datetime.datetime.strptime(due_time, TIME_FORMAT)
+        except ValueError:
+            raise InvalidDueTimeFormat(due_time)
+
+    @staticmethod
+    def _validate_start_date_and_due_date_dependencies(start_date,
+                                                       due_date):
+        start_date_is_ahead_of_due_date = start_date > due_date
+        if start_date_is_ahead_of_due_date:
+            raise StartDateIsAheadOfDueDate(start_date, due_date)
+        due_date_is_behind_start_date = due_date < start_date
+        if due_date_is_behind_start_date:
+            raise DueDateIsBehindStartDate(due_date, start_date)

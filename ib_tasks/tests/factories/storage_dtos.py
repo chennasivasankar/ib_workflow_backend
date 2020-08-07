@@ -2,50 +2,39 @@ import json
 from datetime import datetime, timedelta
 
 import factory
-from prompt_toolkit.styles import Priority
 
 from ib_tasks.constants.constants import VALID_FIELD_TYPES
-from ib_tasks.constants.enum import FieldTypes, PermissionTypes, Status
-from ib_tasks.constants.enum import Operators
+from ib_tasks.constants.enum import Priority, ValidationType, FieldTypes, \
+    PermissionTypes, Status, Operators
 from ib_tasks.interactors.filter_dtos import FilterDTO, ConditionDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.stages_dtos import StageDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
-    ActionDetailsDTO
-from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    ActionWithStageIdDTO
+    StageActionDetailsDTO, ActionDetailsDTO, ActionWithStageIdDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
     FieldCompleteDetailsDTO, FieldRolesDTO, FieldRoleDTO, \
-    UserFieldPermissionDTO, \
-    FieldDetailsDTOWithTaskId, \
-    FieldDetailsDTO, StageTaskFieldsDTO, FieldPermissionDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO
+    UserFieldPermissionDTO, FieldDetailsDTOWithTaskId, FieldDetailsDTO, \
+    StageTaskFieldsDTO, FieldPermissionDTO, FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import (
     TaskGoFFieldDTO,
     TaskGoFDTO, TaskDetailsDTO, TaskBaseDetailsDTO
 )
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
-    GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO, GoFToTaskTemplateDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import \
+    GoFRolesDTO, GoFRoleDTO, CompleteGoFDetailsDTO, GoFToTaskTemplateDTO, \
     GroupOfFieldsDTO, GOFMultipleEnableDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionNamesDTO, ValidStageDTO, TaskStageIdsDTO, StageValueDTO, \
-    StageDetailsDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    StageDisplayValueDTO, StageIdWithTemplateIdDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import (TaskStagesDTO)
-from ib_tasks.interactors.storage_interfaces.stage_dtos import (
-    TaskTemplateStageDTO)
+    StageDetailsDTO, StageDisplayValueDTO, StageIdWithTemplateIdDTO, \
+    StageRoleDTO, TaskStagesDTO, TaskTemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
-    StatusVariableDTO
-from ib_tasks.interactors.storage_interfaces.status_dtos import (
-    TaskTemplateStatusDTO)
+    StatusVariableDTO, TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO
-from ib_tasks.interactors.task_dtos import TaskStatusVariableDTO
+from ib_tasks.interactors.task_dtos import TaskStatusVariableDTO, CreateTaskDTO
 from ib_tasks.models import StageAction
+from ib_tasks.tests.factories.interactor_dtos import GoFFieldsDTOFactory
 
 
 class StageDetailsDTOFactory(factory.Factory):
@@ -54,6 +43,7 @@ class StageDetailsDTOFactory(factory.Factory):
 
     stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)
     name = factory.Sequence(lambda n: "name_%d" % n)
+    db_stage_id = factory.Sequence(lambda n: (n + 1))
 
 
 class FieldValueDTOFactory(factory.Factory):
@@ -113,6 +103,20 @@ class ActionDetailsDTOFactory(factory.Factory):
     stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n + 1))
     button_text = factory.Sequence(lambda n: 'button_text_%d' % (n + 1))
     button_color = None
+
+
+class StageActionDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = StageActionDetailsDTO
+
+    action_id = factory.Sequence(lambda n: (n + 1))
+    name = factory.Sequence(lambda n: 'name_%d' % (n + 1))
+    stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n + 1))
+    button_text = factory.Sequence(lambda n: 'button_text_%d' % (n + 1))
+    button_color = None
+    action_type = factory.Sequence(lambda n: "action_type_%d" % (n + 1))
+    transition_template_id = factory.Sequence(
+        lambda n: 'template_id_%d' % (n + 1))
 
 
 class TaskStagesDTOFactory(factory.Factory):
@@ -206,7 +210,7 @@ class StageDTOFactory(factory.Factory):
     stage_display_logic = factory.Sequence(
         lambda n: 'status_id_%d==stage_id' % (n + 1))
     stage_color = "blue"
-    roles = factory.Sequence(lambda n: "role_id_0\nrole_id_%d" % (n+1))
+    roles = factory.Sequence(lambda n: "role_id_0\nrole_id_%d" % (n + 1))
 
 
 class StageValueDTOFactory(factory.Factory):
@@ -353,10 +357,13 @@ class ActionWithStageIdDTOFactory(factory.Factory):
     class Meta:
         model = ActionWithStageIdDTO
 
-    stage_id = factory.Sequence(lambda n: n + 1)
-    action_id = factory.Sequence(lambda n: n + 1)
-    button_text = factory.Sequence(lambda n: 'button_text__{}'.format(n + 1))
-    button_color = factory.Sequence(lambda n: 'button_color_{}'.format(n + 1))
+    stage_id = factory.Sequence(lambda n: n)
+    action_id = factory.Sequence(lambda n: n)
+    button_text = factory.Sequence(lambda n: 'button_text__{}'.format(n))
+    button_color = factory.Sequence(lambda n: 'button_color_{}'.format(n))
+    action_type = ValidationType.NO_VALIDATIONS.value
+    transition_template_id = \
+        factory.Sequence(lambda n: 'transition_template_{}'.format(n))
 
 
 class UserFieldPermissionDTOFactory(factory.Factory):
@@ -533,3 +540,32 @@ class TaskDetailsDTOFactory(factory.Factory):
     @factory.lazy_attribute
     def task_gof_field_dtos(self):
         return [TaskGoFFieldDTOFactory()]
+
+
+class StageRoleDTOFactory(factory.Factory):
+    class Meta:
+        model = StageRoleDTO
+
+    db_stage_id = factory.Sequence(lambda n: n + 1)
+    role_id = factory.Iterator(
+        ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"]
+    )
+
+
+class CreateTaskDTOFactory(factory.Factory):
+    class Meta:
+        model = CreateTaskDTO
+
+    task_template_id = factory.Sequence(lambda c: "task_template_{}".format(c))
+    created_by_id = "123e4567-e89b-12d3-a456-426614174000"
+    action_id = factory.Sequence(lambda c: "action_id_{}".format(c))
+    title = factory.Sequence(lambda c: "title_{}".format(c))
+    description = factory.Sequence(lambda c: "description{}".format(c))
+    start_date = datetime.today().date()
+    due_date = datetime.today().date() + timedelta(days=2)
+    due_time = "12:30:20"
+    priority = Priority.HIGH.value
+
+    @factory.lazy_attribute
+    def gof_fields_dtos(self):
+        return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]

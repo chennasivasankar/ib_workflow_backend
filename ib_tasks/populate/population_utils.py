@@ -1,3 +1,5 @@
+from django.db import transaction
+
 from ib_iam.populate.add_roles_details import RoleDetails
 from ib_tasks.constants.constants import GOOGLE_SHEET_NAME, ROLES_SUB_SHEET
 from ib_tasks.populate.get_sheet_data_for_creating_or_updating_stages import \
@@ -10,11 +12,14 @@ from ib_tasks.populate.get_sheet_data_for_task_status_variables import \
     GetSheetDataForStatusVariables
 from ib_tasks.populate.global_constants import \
     PopulateGlobalConstantsToTemplate
-from ib_tasks.populate.populate_gofs_to_task_templates import PopulateGoFsToTaskTemplate
 from ib_tasks.populate.populate_fields import PopulateFields
 from ib_tasks.populate.populate_gofs import PopulateGoFs
+from ib_tasks.populate.populate_gofs_to_task_templates import \
+    PopulateGoFsToTaskTemplate
+from ib_tasks.populate.populate_gofs_to_transition_templates import \
+    PopulateGoFsToTransitionTemplate
 from ib_tasks.populate.task_templates import PopulateTaskTemplates
-from django.db import transaction
+from ib_tasks.populate.transition_template import PopulateTransitionTemplates
 
 
 @transaction.atomic()
@@ -31,6 +36,12 @@ def populate_data():
 
     template_gofs = PopulateGoFsToTaskTemplate()
     template_gofs.populate_gofs_to_task_template()
+
+    transition_template = PopulateTransitionTemplates()
+    transition_template.populate_transition_templates()
+
+    gofs_to_transition_template = PopulateGoFsToTransitionTemplate()
+    gofs_to_transition_template.populate_gofs_to_transition_templates()
 
     fields = PopulateFields()
     fields.create_fields()

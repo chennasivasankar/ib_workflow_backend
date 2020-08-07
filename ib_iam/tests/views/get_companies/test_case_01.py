@@ -3,9 +3,10 @@ Gives all available companies if accessed by an admin
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
-from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+
 from ib_iam.tests.common_fixtures.adapters.user_service_mocks import (
     prepare_user_profile_dtos_mock)
+from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
 class TestCase01GetCompaniesAPITestCase(TestUtils):

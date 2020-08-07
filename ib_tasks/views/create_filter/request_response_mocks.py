@@ -53,7 +53,7 @@ RESPONSE_403_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "FIELDS_NOT_BELONGS_TASK_TEMPLATE"
+    "res_status": "FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE"
 }
 """
 

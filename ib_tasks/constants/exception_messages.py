@@ -237,10 +237,8 @@ TASK_ID_DOESNT_EXIST = (
     "TASK_ID_DOESNT_EXIST"
 )
 
-INVALID_TASK_TEMPLATE_ID = (
-    'invalid task template id', 'INVALID_TASK_TEMPLATE_ID'
-)
-USER_NOT_ACCESS_TO_FIELDS = (
+
+USER_NOT_HAVE_PERMISSIONS_TO_FIELDS = (
     'user not have access to fields', 'USER_NOT_ACCESS_TO_FIELDS'
 )
 FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE = (
@@ -248,12 +246,54 @@ FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE = (
     'FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE'
 )
 
-USER_DO_NOT_ACCESS_TO_UPDATE_FILTER = (
+USER_NOT_HAVE_PERMISSIONS_TO_UPDATE = (
     'user not have access to update the filter',
     'USER_DO_NOT_ACCESS_TO_UPDATE_FILTER'
 )
 
-USER_DO_NOT_ACCESS_TO_DELETE_FILTER = (
+USER_NOT_HAVE_PERMISSIONS_TO_DELETE = (
     'user not have access to delete the filter',
     'USER_DO_NOT_ACCESS_TO_DELETE_FILTER'
+)
+DUPLICATE_STAGE_IDS = (
+    "Duplicate stage ids that you have sent are: {},"
+    "please send unique stage ids",
+    "DUPLICATE_STAGE_IDS"
+)
+TRANSITION_TEMPLATE_DOES_NOT_EXISTS = (
+    "Given invalid transition template Id: {}, that does not exists",
+    "TRANSITION_TEMPLATE_DOES_NOT_EXISTS"
+)
+
+DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF = (
+    "duplicate same gof orders given for gof {}, duplicates are {}",
+    "DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF"
+)
+
+INVALID_TRANSITION_CHECKLIST_TEMPLATE_ID = (
+    "please give a valid transition checklist template id, {} is invalid \
+    transition checklist template id",
+    "INVALID_TRANSITION_CHECKLIST_TEMPLATE_ID"
+)
+
+INVALID_STAGE_ID = (
+    "please give a valid stage id, {} is invalid stage id",
+    "INVALID_STAGE_ID"
+)
+
+TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION = (
+    "given transition template id {} is not linked to given stage id {} and \
+    action id {}",
+    "TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION"
+)
+
+INVALID_STAGE_IDS = (
+    "Invalid stage ids that you have sent are: {},"
+    "please send valid stage ids",
+    "INVALID_STAGE_IDS"
+)
+STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE = (
+    "Stage ids with invalid permission of assignees that you have sent are: {},"
+    "please assign valid assignees for stages",
+    "STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE"
 )
