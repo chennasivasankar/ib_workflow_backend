@@ -5,6 +5,8 @@ import factory
 
 from ib_tasks.constants.constants import VALID_FIELD_TYPES
 from ib_tasks.constants.enum import FieldTypes, PermissionTypes, Status, Priority
+from ib_tasks.constants.enum import FieldTypes, PermissionTypes, Status, \
+    Priority
 from ib_tasks.constants.enum import ValidationType
 from ib_tasks.constants.enum import FieldTypes, PermissionTypes, Status
 from ib_tasks.constants.enum import Operators
@@ -34,6 +36,8 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageDisplayValueDTO, StageIdWithTemplateIdDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    StageRoleDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (TaskStagesDTO)
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (
     TaskTemplateStageDTO)
@@ -551,3 +555,13 @@ class TaskDetailsDTOFactory(factory.Factory):
     @factory.lazy_attribute
     def task_gof_field_dtos(self):
         return [TaskGoFFieldDTOFactory()]
+
+
+class StageRoleDTOFactory(factory.Factory):
+    class Meta:
+        model = StageRoleDTO
+
+    db_stage_id = factory.Sequence(lambda n: n+1)
+    role_id = factory.Iterator(
+        ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"]
+    )

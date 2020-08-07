@@ -51,7 +51,7 @@ class StagesActionDTO:
     button_color: Optional[str]
 
 
-@dataclass()
+@dataclass
 class TemplateStageDTO:
     task_template_id: str
     stage_id: str
@@ -63,3 +63,22 @@ class UserStagesWithPaginationDTO:
     user_id: str
     limit: int
     offset: int
+
+
+@dataclass
+class StageAssigneeDTO:
+    db_stage_id: int
+    assignee_id: str
+
+
+@dataclass
+class TaskIdWithStageAssigneesDTO:
+    task_id: int
+    stage_assignees: List[StageAssigneeDTO]
+
+
+@dataclass
+class TaskIdWithStageAssigneeDTO:
+    task_id: int
+    db_stage_id: int
+    assignee_id: str

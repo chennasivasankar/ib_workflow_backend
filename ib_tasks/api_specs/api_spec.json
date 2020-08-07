@@ -527,7 +527,7 @@
         "assignee_id": {
           "type": "string"
         },
-        "name": {
+        "assignee_name": {
           "type": "string"
         },
         "profile_pic_url": {
@@ -536,7 +536,7 @@
       },
       "required": [
         "assignee_id",
-        "name"
+        "assignee_name"
       ]
     },
     "StageWithAssignee": {
@@ -1556,7 +1556,7 @@
                 "stage_id": {
                   "type": "integer"
                 },
-                "name": {
+                "stage_name": {
                   "type": "string"
                 },
                 "assignee": {
@@ -1565,7 +1565,7 @@
               },
               "required": [
                 "stage_id",
-                "name",
+                "stage_name",
                 "assignee"
               ]
             }
@@ -1576,8 +1576,8 @@
         ]
       }
     },
-    "UpdateTaskStageAssigneesFailureResponse": {
-      "description": "Task Stage Assignees Failure Response",
+    "UpdateTaskStageAssigneesNotFoundResponse": {
+      "description": "Task Stage Assignees Not Found Response",
       "schema": {
         "type": "object",
         "properties": {
@@ -1593,7 +1593,38 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "TASK_ID_DOESNT_EXIST"
+              "INVALID_TASK_ID",
+              "INVALID_STAGE_IDS"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
+    "UpdateTaskStageAssigneesFailureResponse": {
+      "description": "Task Stage Assignees Failure Response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer",
+            "enum": [
+              400
+            ]
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "DUPLICATE_STAGE_IDS",
+              "STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE"
+
             ]
           }
         },
@@ -2532,8 +2563,11 @@
           "200": {
             "description": "OK"
           },
-          "404": {
+          "400": {
             "$ref": "#/responses/UpdateTaskStageAssigneesFailureResponse"
+          },
+          "404": {
+            "$ref": "#/responses/UpdateTaskStageAssigneesNotFoundResponse"
           }
         }
       }
@@ -2567,3 +2601,5 @@
     }
   }
 }
+
+

@@ -8,7 +8,8 @@ from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
 from ib_tasks.interactors.stages_dtos import \
-    TaskTemplateStageActionDTO, StageActionDTO, StagesActionDTO
+    TaskTemplateStageActionDTO, StageActionDTO, StagesActionDTO, \
+    TaskIdWithStageAssigneeDTO
 from ib_tasks.interactors.stages_dtos import UserStagesWithPaginationDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
@@ -204,3 +205,12 @@ class CreateTaskLogDTOFactory(factory.Factory):
     task_id = factory.sequence(lambda n: n)
     user_id = factory.sequence(lambda n: "user_{}".format(n))
     action_id = factory.sequence(lambda n: n)
+
+
+class TaskIdWithStageAssigneeDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskIdWithStageAssigneeDTO
+
+    task_id = factory.sequence(lambda n: n+1)
+    db_stage_id = factory.Sequence(lambda n: n+1)
+    assignee_id = factory.sequence(lambda n: "user_{}".format(n))
