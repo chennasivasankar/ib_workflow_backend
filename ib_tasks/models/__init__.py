@@ -23,6 +23,7 @@ from .task_status_variable import TaskStatusVariable
 from ib_tasks.models.task_stage import TaskStage
 from .filter import Filter
 from .filter_condition import FilterCondition
+from ib_tasks.models.task import ElasticSearchTask
 
 __all__ = [
     "Filter",
@@ -44,5 +45,6 @@ __all__ = [
     "TaskTemplateStatusVariable",
     "TaskTemplateStatusVariables",
     "TaskTemplateInitialStage",
-    "StagePermittedRoles"
+    "StagePermittedRoles",
+    "ElasticSearchTask"
 ]
