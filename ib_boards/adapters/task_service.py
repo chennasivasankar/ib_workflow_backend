@@ -6,7 +6,7 @@ Author: Pavankumar Pamuru
 from typing import List, Tuple
 
 from ib_boards.interactors.dtos import TaskTemplateStagesDTO, \
-    TaskSummaryFieldsDTO, TaskStatusDTO, FieldDTO, ColumnTaskIdsDTO, ActionDTO, StageActionDetailsDTO
+    TaskSummaryFieldsDTO, TaskStatusDTO, FieldDTO, ColumnTaskIdsDTO, ActionDTO
 from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
     TaskFieldsDTOFactory
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, \
@@ -84,7 +84,7 @@ class TaskService:
     def get_task_complete_details(
             self, task_stage_ids: List[GetTaskDetailsDTO],
             user_id: str) \
-            -> Tuple[List[FieldDTO], List[StageActionDetailsDTO]]:
+            -> Tuple[List[FieldDTO], List[ActionDTO]]:
         tasks_complete_details_dtos = self.interface.get_task_details(
             task_dtos=task_stage_ids, user_id=user_id
         )
