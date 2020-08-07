@@ -5,6 +5,8 @@ import factory
 
 from ib_tasks.constants.constants import VALID_FIELD_TYPES
 from ib_tasks.constants.enum import FieldTypes, PermissionTypes, Status, Priority
+from ib_tasks.constants.enum import ValidationType
+from ib_tasks.constants.enum import FieldTypes, PermissionTypes, Status
 from ib_tasks.constants.enum import Operators
 from ib_tasks.interactors.filter_dtos import FilterDTO, ConditionDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
@@ -366,10 +368,13 @@ class ActionWithStageIdDTOFactory(factory.Factory):
     class Meta:
         model = ActionWithStageIdDTO
 
-    stage_id = factory.Sequence(lambda n: n + 1)
-    action_id = factory.Sequence(lambda n: n + 1)
-    button_text = factory.Sequence(lambda n: 'button_text__{}'.format(n + 1))
-    button_color = factory.Sequence(lambda n: 'button_color_{}'.format(n + 1))
+    stage_id = factory.Sequence(lambda n: n)
+    action_id = factory.Sequence(lambda n: n)
+    button_text = factory.Sequence(lambda n: 'button_text__{}'.format(n))
+    button_color = factory.Sequence(lambda n: 'button_color_{}'.format(n))
+    action_type = ValidationType.NO_VALIDATIONS.value
+    transition_template_id = \
+        factory.Sequence(lambda n: 'transition_template_{}'.format(n))
 
 
 class UserFieldPermissionDTOFactory(factory.Factory):

@@ -58,3 +58,7 @@ class Priority(enum.Enum):
     HIGH = "HIGH"
     LOW = "LOW"
     MEDIUM = "MEDIUM"
+
+
+class ValidationType(enum.Enum):
+    NO_VALIDATIONS = "NO_VALIDATIONS"
