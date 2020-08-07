@@ -5,6 +5,8 @@ import factory
 
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
     Priority
+from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
+    Status
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     Task, TaskGoF,
@@ -45,6 +47,7 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     display_name = factory.Sequence(lambda n: "name_%d" % n)
     task_template_id = factory.Sequence(lambda n: "task_template_id_%d" % n)
     value = factory.Sequence(lambda n: n)
+    stage_color = "blue"
     display_logic = factory.Sequence(lambda n: "status_id_%d==stage_id" % n)
     card_info_kanban = json.dumps(['field_id_1', "field_id_2"])
     card_info_list = json.dumps(['field_id_1', "field_id_2"])
@@ -246,6 +249,7 @@ class FilterFactory(factory.django.DjangoModelFactory):
 
 
 class FilterConditionFactory(factory.django.DjangoModelFactory):
+
     class Meta:
         model = FilterCondition
 

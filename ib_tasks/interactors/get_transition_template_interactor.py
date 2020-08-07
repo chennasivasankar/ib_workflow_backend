@@ -1,28 +1,22 @@
 from typing import List, Dict
 
 from ib_tasks.constants.enum import PermissionTypes
+from ib_tasks.interactors.presenter_interfaces. \
+    get_transition_template_presenter_interface import \
+    GetTransitionTemplatePresenterInterface, CompleteTransitionTemplateDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
+    UserFieldPermissionDTO, FieldPermissionDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
     GoFStorageInterface
-from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    StageIdWithTemplateIdDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
-    UserFieldPermissionDTO, FieldPermissionDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import \
-    GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import TaskTemplateStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TemplateDTO
-from ib_tasks.interactors.presenter_interfaces. \
-    get_task_templates_presenter_interface import \
-    GetTaskTemplatesPresenterInterface, CompleteTaskTemplatesDTO
 
 
-class GetTaskTemplatesInteractor:
+class GetTransitionTemplateInteractor:
     def __init__(
             self, task_storage: TaskStorageInterface,
             task_template_storage: TaskTemplateStorageInterface,
@@ -34,53 +28,41 @@ class GetTaskTemplatesInteractor:
         self.task_template_storage = task_template_storage
         self.gof_storage = gof_storage
 
-    def get_task_templates_wrapper(
-            self, user_id: str,
-            presenter: GetTaskTemplatesPresenterInterface):
+    def get_transition_template_wrapper(
+            self, user_id: str, transition_template_id: str,
+            presenter: GetTransitionTemplatePresenterInterface):
 
         from ib_tasks.exceptions.task_custom_exceptions import \
-            TaskTemplatesDoesNotExists
+            TransitionTemplateDoesNotExist
         try:
-            complete_task_templates_dto = \
-                self.get_task_templates(user_id=user_id)
-        except TaskTemplatesDoesNotExists:
-            return presenter.raise_task_templates_does_not_exists_exception()
-
-        complete_task_templates_response_object = \
-            presenter.get_task_templates_response(
-                complete_task_templates_dto=complete_task_templates_dto
+            complete_transition_template_dto = self.get_transition_template(
+                user_id=user_id, transition_template_id=transition_template_id
             )
-        return complete_task_templates_response_object
+        except TransitionTemplateDoesNotExist as err:
+            return presenter.\
+                raise_transition_template_does_not_exists_exception(err)
 
-    def get_task_templates(self, user_id: str):
+        transition_template_response_object = \
+            presenter.get_transition_template_response(
+                complete_transition_template_dto=complete_transition_template_dto
+            )
+        return transition_template_response_object
 
-        from ib_tasks.adapters.roles_service_adapter import \
-            get_roles_service_adapter
-        service_adapter = get_roles_service_adapter()
-        user_roles = \
-            service_adapter.roles_service.get_user_role_ids(user_id=user_id)
+    def get_transition_template(
+            self, user_id: str, transition_template_id: str
+    ) -> CompleteTransitionTemplateDTO:
 
-        complete_task_templates_dto = \
-            self._get_complete_task_templates_dto(user_roles=user_roles)
-        return complete_task_templates_dto
+        self._validate_transition_template_id(
+            transition_template_id=transition_template_id)
+        user_roles = self._get_user_role_ids(user_id=user_id)
 
-    def _get_complete_task_templates_dto(
-            self, user_roles: List[str]) -> CompleteTaskTemplatesDTO:
-        task_templates_dtos = \
-            self.task_template_storage.get_task_templates_dtos()
-        self._validate_task_templates_are_exists(
-            task_templates_dtos=task_templates_dtos)
-        stage_id_with_template_id_dtos = \
-            self.task_storage.get_initial_stage_id_with_template_id_dtos()
-        stage_ids = self._get_stage_ids(
-            stage_id_with_template_id_dtos=stage_id_with_template_id_dtos)
-        action_with_stage_id_dtos = \
-            self.task_storage.get_actions_for_given_stage_ids_in_dtos(
-                stage_ids=stage_ids)
+        transition_template_dto = \
+            self.task_template_storage.get_transition_template_dto(
+                transition_template_id=transition_template_id)
         gof_ids_permitted_for_user = \
             self.gof_storage.get_gof_ids_with_read_permission_for_user(
                 roles=user_roles)
-        gofs_of_task_templates_dtos = self.task_template_storage. \
+        gofs_of_transition_template_dtos = self.task_template_storage. \
             get_gofs_to_template_from_permitted_gofs(
                 gof_ids=gof_ids_permitted_for_user)
         gofs_details_dtos = \
@@ -90,13 +72,23 @@ class GetTaskTemplatesInteractor:
             self._get_field_with_permissions_of_gofs_in_dtos(
                 gof_ids=gof_ids_permitted_for_user, user_roles=user_roles)
 
-        return CompleteTaskTemplatesDTO(
-            task_template_dtos=task_templates_dtos,
-            stage_id_with_template_id_dtos=stage_id_with_template_id_dtos,
-            action_with_stage_id_dtos=action_with_stage_id_dtos,
+        return CompleteTransitionTemplateDTO(
+            transition_template_dto=transition_template_dto,
             gof_dtos=gofs_details_dtos,
-            gofs_of_task_templates_dtos=gofs_of_task_templates_dtos,
-            field_with_permissions_dtos=field_with_permissions_dtos)
+            gofs_of_transition_template_dtos=gofs_of_transition_template_dtos,
+            field_with_permissions_dtos=field_with_permissions_dtos
+        )
+
+    def _validate_transition_template_id(self, transition_template_id: str):
+        is_valid_transition_template_id = \
+            self.task_template_storage.check_is_transition_template_exists(
+                transition_template_id=transition_template_id)
+        is_invalid_transition_template_id = not is_valid_transition_template_id
+
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            TransitionTemplateDoesNotExist
+        if is_invalid_transition_template_id:
+            raise TransitionTemplateDoesNotExist(transition_template_id)
 
     def _get_field_with_permissions_of_gofs_in_dtos(
             self, gof_ids: List[str],
@@ -155,36 +147,15 @@ class GetTaskTemplatesInteractor:
         return user_permission_dtos_dict
 
     @staticmethod
-    def _validate_task_templates_are_exists(
-            task_templates_dtos: List[TemplateDTO]):
-        task_templates_are_empty = not task_templates_dtos
-        from ib_tasks.exceptions.task_custom_exceptions import \
-            TaskTemplatesDoesNotExists
-
-        if task_templates_are_empty:
-            raise TaskTemplatesDoesNotExists()
-
-    @staticmethod
-    def _get_gof_ids_of_task_templates(
-            gofs_of_task_templates_dtos: List[GoFToTaskTemplateDTO]
-    ) -> List[str]:
-        gof_ids = [
-            gofs_to_task_templates_dto.gof_id
-            for gofs_to_task_templates_dto in gofs_of_task_templates_dtos
-        ]
-        return gof_ids
-
-    @staticmethod
     def _get_field_ids(field_dtos: List[FieldDTO]) -> List[str]:
         field_ids = [field_dto.field_id for field_dto in field_dtos]
         return field_ids
 
     @staticmethod
-    def _get_stage_ids(
-            stage_id_with_template_id_dtos: List[StageIdWithTemplateIdDTO]
-    ) -> List[int]:
-        stage_ids = [
-            stage_id_with_template_id_dto.stage_id
-            for stage_id_with_template_id_dto in stage_id_with_template_id_dtos
-        ]
-        return stage_ids
+    def _get_user_role_ids(user_id: str) -> List[str]:
+        from ib_tasks.adapters.roles_service_adapter import \
+            get_roles_service_adapter
+        service_adapter = get_roles_service_adapter()
+        user_roles = \
+            service_adapter.roles_service.get_user_role_ids(user_id=user_id)
+        return user_roles
