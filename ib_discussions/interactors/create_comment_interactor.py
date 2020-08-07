@@ -117,7 +117,7 @@ class CreateCommentInteractor:
             comment_dto: CommentDTO, user_id: str
     ) -> CommentIdWithEditableStatusDTO:
         is_editable = False
-        if user_id == comment_dto.user_id:
+        if str(user_id) == str(comment_dto.user_id):
             is_editable = True
         comment_editable_status_dto = CommentIdWithEditableStatusDTO(
             comment_id=comment_dto.comment_id,

@@ -41,7 +41,7 @@ class CommentStorageImplementation(CommentStorageInterface):
     def get_replies_count_for_comments(
             self, comment_ids: List[str]) -> List[CommentIdWithRepliesCountDTO]:
         comment_id_wise_replies_count_dto_dict = {
-            comment_id: CommentIdWithRepliesCountDTO(
+            str(comment_id): CommentIdWithRepliesCountDTO(
                 comment_id=comment_id, replies_count=0
             )
             for comment_id in comment_ids
@@ -54,7 +54,6 @@ class CommentStorageImplementation(CommentStorageInterface):
         ).annotate(
             replies_count=Count("parent_comment_id")
         )
-
         for comment_id_with_replies_count_dict in comment_id_with_replies_count_list:
             comment_id = comment_id_with_replies_count_dict[
                 "parent_comment_id"]
@@ -89,6 +88,8 @@ class CommentStorageImplementation(CommentStorageInterface):
 
     def get_parent_comment_id(self, comment_id: str) -> Optional[str]:
         comment_object = Comment.objects.get(id=comment_id)
+        if comment_object.parent_comment_id is None:
+            return None
         return str(comment_object.parent_comment_id)
 
     def get_discussion_id(self, comment_id: str) -> str:
@@ -98,10 +99,18 @@ class CommentStorageImplementation(CommentStorageInterface):
     def create_reply_to_comment(
             self, parent_comment_id: str, comment_content: str,
             user_id: str, discussion_id: str) -> str:
-        comment_object = Comment.objects.create(
-            user_id=user_id, discussion_id=discussion_id,
-            content=comment_content, parent_comment_id=parent_comment_id
-        )
+        parent_comment_objects = Comment.objects.filter(id=parent_comment_id)
+        is_parent_comment_object_exists = parent_comment_objects.exists()
+        if is_parent_comment_object_exists:
+            comment_object = Comment.objects.create(
+                user_id=user_id, discussion_id=discussion_id,
+                content=comment_content, parent_comment=parent_comment_objects[0]
+            )
+        else:
+            comment_object = Comment.objects.create(
+                user_id=user_id, discussion_id=discussion_id,
+                content=comment_content
+            )
         return str(comment_object.id)
 
     def get_replies_dtos(self, comment_id: str) -> List[CommentDTO]:
