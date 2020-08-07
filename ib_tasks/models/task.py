@@ -1,3 +1,7 @@
+from dataclasses import dataclass
+from datetime import datetime
+from typing import List
+
 from django.db import models
 from ib_common.models.abstract_date_time_model \
     import AbstractDateTimeModel
@@ -14,3 +18,11 @@ class Task(AbstractDateTimeModel):
     due_date = models.DateTimeField()
     priority = models.CharField(max_length=20, choices=PRIORITY_TYPES,
                                 default=PRIORITY_TYPES[0][0])
+
+
+class ElasticSearchTask(models.Model):
+    elasticsearch_id = models.CharField(max_length=200, unique=True)
+    task_id = models.IntegerField(unique=True)
+
+    class Meta:
+        unique_together = ('elasticsearch_id', 'task_id')

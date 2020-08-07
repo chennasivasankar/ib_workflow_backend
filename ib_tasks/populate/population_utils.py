@@ -16,6 +16,8 @@ from ib_tasks.populate.populate_gofs import PopulateGoFs
 from ib_tasks.populate.task_templates import PopulateTaskTemplates
 from django.db import transaction
 
+from ib_tasks.populate.transition_template import PopulateTransitionTemplates
+
 
 @transaction.atomic()
 def populate_data():
@@ -31,6 +33,9 @@ def populate_data():
 
     template_gofs = PopulateGoFsToTaskTemplate()
     template_gofs.populate_gofs_to_task_template()
+
+    transition_template = PopulateTransitionTemplates()
+    transition_template.populate_transition_templates()
 
     fields = PopulateFields()
     fields.create_fields()

@@ -1,12 +1,11 @@
 from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO
+from ib_tasks.tests.factories.storage_dtos import TaskDetailsDTOFactory
 
 
 def prepare_task_gof_and_fields_dto():
 
     from ib_tasks.tests.factories.storage_dtos import TaskGoFDTOFactory
     TaskGoFDTOFactory.reset_sequence()
-    from ib_tasks.interactors.storage_interfaces.get_task_dtos \
-        import TaskDetailsDTO
     task_gof_dtos = [
         TaskGoFDTOFactory(task_gof_id=1, gof_id="gof1", same_gof_order=1),
         TaskGoFDTOFactory(task_gof_id=2, gof_id="gof2", same_gof_order=1),
@@ -15,8 +14,7 @@ def prepare_task_gof_and_fields_dto():
     from ib_tasks.tests.factories.storage_dtos import TaskGoFFieldDTOFactory
     TaskGoFFieldDTOFactory.reset_sequence(1)
     gof_field_dtos = TaskGoFFieldDTOFactory.create_batch(size=3)
-    task_dto = TaskDetailsDTO(
-        template_id="template_1",
+    task_dto = TaskDetailsDTOFactory(
         task_gof_dtos=task_gof_dtos,
         task_gof_field_dtos=gof_field_dtos
     )

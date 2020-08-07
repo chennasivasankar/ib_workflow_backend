@@ -5,6 +5,7 @@ from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
     StageActionDTO, TemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface import TaskTemplateStorageInterface
 
 
 class InvalidTaskTemplateIdsException(Exception):
@@ -15,8 +16,10 @@ class InvalidTaskTemplateIdsException(Exception):
 class ConfigureInitialTaskTemplateStageActions:
 
     def __init__(self, storage: ActionStorageInterface,
+                 template_storage: TaskTemplateStorageInterface,
                  tasks_dto: List[TaskTemplateStageActionDTO]):
         self.storage = storage
+        self.template_storage = template_storage
         self.tasks_dto = tasks_dto
 
     def create_update_delete_stage_actions_to_task_template(self):
@@ -27,7 +30,8 @@ class ConfigureInitialTaskTemplateStageActions:
         from ib_tasks.interactors.create_update_delete_stage_actions \
             import CreateUpdateDeleteStageActionsInteractor
         interactor_obj = CreateUpdateDeleteStageActionsInteractor(
-            storage=self.storage, actions_dto=actions_dto
+            storage=self.storage, actions_dto=actions_dto,
+            template_storage=self.template_storage
         )
         interactor_obj.create_update_delete_stage_actions()
 
@@ -140,7 +144,9 @@ class ConfigureInitialTaskTemplateStageActions:
                 roles=task_dto.roles,
                 function_path=task_dto.function_path,
                 button_text=task_dto.button_text,
-                button_color=task_dto.button_color
+                button_color=task_dto.button_color,
+                action_type=task_dto.action_type,
+                transition_template_id=task_dto.transition_template_id
             )
             for task_dto in tasks_dto
         ]

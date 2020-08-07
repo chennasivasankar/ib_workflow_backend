@@ -186,7 +186,9 @@ class GetTaskTemplatesPresenterImplementation(
             action_dict = {
                 "action_id": action_with_stage_id_dto.action_id,
                 "button_text": action_with_stage_id_dto.button_text,
-                "button_color": action_with_stage_id_dto.button_color
+                "button_color": action_with_stage_id_dto.button_color,
+                "action_type": action_with_stage_id_dto.action_type,
+                "transition_template_id": action_with_stage_id_dto.transition_template_id
             }
             action_dicts_list.append(action_dict)
         return action_dicts_list

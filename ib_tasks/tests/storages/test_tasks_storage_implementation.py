@@ -45,6 +45,7 @@ class TestTasksStorageImplementation:
         # Arrange
         from ib_tasks.interactors.storage_interfaces.actions_dtos \
             import ActionWithStageIdDTO
+        from ib_tasks.constants.enum import ValidationType
         from ib_tasks.tests.factories.models import \
             StageModelFactory, StageActionFactory
         expected_stage_ids = [1, 2]
@@ -52,19 +53,24 @@ class TestTasksStorageImplementation:
             ActionWithStageIdDTO(
                 stage_id=1,
                 action_id=1, button_text='hey',
-                button_color='#fafafa'
+                button_color='#fafafa',
+                action_type=ValidationType.NO_VALIDATIONS.value,
+                transition_template_id=None
             ),
             ActionWithStageIdDTO(
                 stage_id=2,
                 action_id=2, button_text='hey',
-                button_color='#fafafa'
+                button_color='#fafafa',
+                action_type=ValidationType.NO_VALIDATIONS.value,
+                transition_template_id=None
             )
         ]
         StageModelFactory.create_batch(
             size=2, stage_id=factory.Iterator(expected_stage_ids)
         )
         StageActionFactory.create_batch(
-            size=2, stage_id=factory.Iterator(expected_stage_ids)
+            size=2, stage_id=factory.Iterator(expected_stage_ids),
+            action_type=ValidationType.NO_VALIDATIONS.value
         )
 
         # Act
