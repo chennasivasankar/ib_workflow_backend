@@ -3,8 +3,12 @@ from typing import List
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
+from ib_tasks.interactors.presenter_interfaces.update_task_stage_assignees_presenter_interface import \
+    UpdateTaskStageAssigneesPresenterInterface
 
-class UpdateTaskStageAssigneesPresenterInterface(abc.ABC, HTTPResponseMixin):
+
+class UpdateTaskStageAssigneesPresenterImplementation(
+    UpdateTaskStageAssigneesPresenterInterface, HTTPResponseMixin):
 
     def raise_duplicate_stage_ids_not_valid(self,
                                             duplicate_stage_ids: List[int]):

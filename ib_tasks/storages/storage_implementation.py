@@ -30,7 +30,8 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import (
 )
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
-    ActionPermittedRoles, StageAction, TaskStage, FieldRole, GlobalConstant
+    ActionPermittedRoles, StageAction, TaskStage, FieldRole, GlobalConstant, \
+    StagePermittedRoles
 from ib_tasks.models import TaskTemplateInitialStage, Stage, StageRole
 
 

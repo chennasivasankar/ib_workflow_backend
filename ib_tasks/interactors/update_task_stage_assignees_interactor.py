@@ -109,7 +109,7 @@ class UpdateTaskStageAssigneesInteractor:
 
     @staticmethod
     def _validate_does_given_assignee_of_stage_ids_have_valid_permission(
-            role_ids_and_assignee_id_group_by_stage_id_dtos):
+            role_ids_and_assignee_id_group_by_stage_id_dtos:List[StageIdWithRoleIdsAndAssigneeIdDTO]):
         stage_ids_with_invalid_permission_for_assignee_id = []
         user_role_validation_interactor = UserRoleValidationInteractor()
         for each_stage_id_with_role_ids_and_assignee_id_dto in \
@@ -125,7 +125,7 @@ class UpdateTaskStageAssigneesInteractor:
             if user_doesnt_has_required_permission:
                 stage_ids_with_invalid_permission_for_assignee_id. \
                     append(each_stage_id_with_role_ids_and_assignee_id_dto.
-                           stage_id)
+                           db_stage_id)
         if stage_ids_with_invalid_permission_for_assignee_id:
             raise StageIdsWithInvalidPermissionForAssignee(
                 stage_ids_with_invalid_permission_for_assignee_id)

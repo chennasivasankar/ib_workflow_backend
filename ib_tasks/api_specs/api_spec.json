@@ -527,7 +527,7 @@
         "assignee_id": {
           "type": "string"
         },
-        "name": {
+        "assignee_name": {
           "type": "string"
         },
         "profile_pic_url": {
@@ -536,7 +536,7 @@
       },
       "required": [
         "assignee_id",
-        "name"
+        "assignee_name"
       ]
     },
     "StageWithAssignee": {
@@ -1553,7 +1553,7 @@
                 "stage_id": {
                   "type": "integer"
                 },
-                "name": {
+                "stage_name": {
                   "type": "string"
                 },
                 "assignee": {
@@ -1562,7 +1562,7 @@
               },
               "required": [
                 "stage_id",
-                "name",
+                "stage_name",
                 "assignee"
               ]
             }
