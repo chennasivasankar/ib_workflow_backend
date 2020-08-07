@@ -27,6 +27,11 @@ class ElasticTaskDTO:
     fields: List[ElasticFieldDTO]
 
 
+@dataclass
+class QueryTasksDTO:
+    pass
+
+
 class Field(InnerDoc):
     field_id = Text()
     value = Text()

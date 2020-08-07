@@ -50,10 +50,11 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
         task_id_with_stage_details_dtos = self. \
             stage_storage. \
             get_task_id_with_stage_details_dtos_based_on_stage_value(
-            stage_values=stage_values,
-            task_ids_group_by_stage_value_dtos=
-            task_ids_group_by_stage_value_dtos,
-            user_id=user_id)
+                stage_values=stage_values,
+                task_ids_group_by_stage_value_dtos=
+                task_ids_group_by_stage_value_dtos,
+                user_id=user_id
+            )
         return task_id_with_stage_details_dtos
 
     @staticmethod

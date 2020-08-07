@@ -10,6 +10,8 @@ from ib_tasks.interactors.storage_interfaces.filter_storage_interface \
     import FilterStorageInterface
 from ib_tasks.models import Filter, TaskTemplate, FilterCondition, FieldRole, \
     TaskTemplateGoFs, Field
+from ib_tasks.storages.elasticsearch_storage_implementation import \
+    ApplyFilterDTO
 
 
 class FilterStorageImplementation(FilterStorageInterface):
@@ -182,3 +184,18 @@ class FilterStorageImplementation(FilterStorageInterface):
             condition_dtos=condition_dtos,
             filter_id=filter_id
         )
+
+    def get_enabled_filters_dto_to_user(self, user_id: str) -> List[ApplyFilterDTO]:
+        filter_objects = FilterCondition.objects.filter(
+            filter__created_by=user_id, filter__is_selected=Status.ENABLED.value
+        ).annotate(template_name=F('filter__template_id'))
+        filter_dtos = [
+            ApplyFilterDTO(
+                template_id=filter_object.template_id,
+                field_id=filter_object.field_id,
+                operator=filter_object.operator,
+                value=filter_object.value
+            )
+            for filter_object in filter_objects
+        ]
+        return filter_dtos

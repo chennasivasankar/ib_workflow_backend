@@ -3,26 +3,19 @@ Created on: 07/08/20
 Author: Pavankumar Pamuru
 
 """
-from dataclasses import dataclass
 from typing import List
 
 from elasticsearch_dsl import Q, Search
 
-from ib_tasks.constants.enum import Operators
 from ib_tasks.documents.elastic_task import ElasticTaskDTO, ElasticFieldDTO, \
-    Field
+    Field, QueryTasksDTO
+from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
+    ApplyFilterDTO, ElasticSearchStorageInterface
 
 
-@dataclass
-class ApplyFilterDTO:
-    template_id: str
-    field_id: str
-    operator: Operators
-    value: str
+class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
 
-
-class ElasticSearchStorageImplementation:
-    def create_task(self):
+    def create_task(self, elastic_task_dto: ElasticTaskDTO) -> str:
         pass
 
     def update_task(self, task_dto: ElasticTaskDTO):
@@ -40,8 +33,8 @@ class ElasticSearchStorageImplementation:
         task.fields = field_objects
         task.save()
 
-    @staticmethod
-    def filter_tasks(filter_dtos: List[ApplyFilterDTO]):
+    def filter_tasks(
+            self, filter_dtos: List[ApplyFilterDTO], offset: int, limit: int) -> List[int]:
         query = None
         for counter, item in enumerate(filter_dtos):
             current_queue = Q('term', template_id__keyword=item.template_id) \
@@ -54,12 +47,15 @@ class ElasticSearchStorageImplementation:
 
         search = Search(index='task')
         task_objects = search.filter(query)
+        if query is None:
+            return []
         return [
             task_object.task_id
-            for task_object in task_objects
+            for task_object in task_objects[offset: offset + limit]
         ]
 
-    def query_tasks(self):
+    def query_tasks(
+            self, offset: int, limit: int, search_query: str) -> QueryTasksDTO:
         pass
 
     @staticmethod
