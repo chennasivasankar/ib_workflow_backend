@@ -1,3 +1,4 @@
+import json
 from ib_iam.exceptions.custom_exceptions import TeamNameAlreadyExists
 from ib_iam.presenters.update_team_presenter_implementation import (
     UpdateTeamPresenterImplementation
@@ -7,14 +8,14 @@ from ib_iam.constants.exception_messages import (
 )
 
 
-class TestRaiseExceptionIfTeamNameAlreadyExists:
+class TestRaiseExceptionIfTeamNameAlreadyExistsForUpdateTeam:
     def test_whether_it_returns_team_name_already_exists_http_response(self):
         json_presenter = UpdateTeamPresenterImplementation()
         team_name = "team_name1"
-        import json
         expected_response = TEAM_NAME_ALREADY_EXISTS_FOR_UPDATE_TEAM[0] % team_name
         expected_res_status = TEAM_NAME_ALREADY_EXISTS_FOR_UPDATE_TEAM[1]
-        expected_http_status_code = 400
+        from ib_iam.constants.enums import StatusCode
+        expected_http_status_code = StatusCode.BAD_REQUEST.value
 
         result = json_presenter \
             .get_team_name_already_exists_response_for_update_team(

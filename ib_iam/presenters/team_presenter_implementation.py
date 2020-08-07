@@ -11,8 +11,8 @@ from ib_iam.constants.exception_messages import (
     INVALID_OFFSET_FOR_GET_LIST_OF_TEAMS,
     USER_HAS_NO_ACCESS_FOR_ADD_TEAM,
     TEAM_NAME_ALREADY_EXISTS_FOR_ADD_TEAM,
-    INVALID_USERS_FOR_ADD_TEAM,
-    DUPLICATE_USERS_FOR_ADD_TEAM
+    INVALID_USER_IDS_FOR_ADD_TEAM,
+    DUPLICATE_USER_IDS_FOR_ADD_TEAM
 )
 
 
@@ -82,21 +82,21 @@ class TeamPresenterImplementation(TeamPresenterInterface, HTTPResponseMixin):
             response_dict=response_dict
         )
 
-    def get_duplicate_users_response_for_add_team(self):
+    def get_duplicate_users_response_for_add_team(self, exception):
         response_dict = {
-            "response": DUPLICATE_USERS_FOR_ADD_TEAM[0],
+            "response": DUPLICATE_USER_IDS_FOR_ADD_TEAM[0] % exception.user_ids,
             "http_status_code": StatusCode.BAD_REQUEST.value,
-            "res_status": DUPLICATE_USERS_FOR_ADD_TEAM[1]
+            "res_status": DUPLICATE_USER_IDS_FOR_ADD_TEAM[1]
         }
         return self.prepare_400_bad_request_response(
             response_dict=response_dict
         )
 
-    def get_invalid_users_response_for_add_team(self):
+    def get_invalid_users_response_for_add_team(self, exception):
         response_dict = {
-            "response": INVALID_USERS_FOR_ADD_TEAM[0],
+            "response": INVALID_USER_IDS_FOR_ADD_TEAM[0] % exception.user_ids,
             "http_status_code": StatusCode.NOT_FOUND.value,
-            "res_status": INVALID_USERS_FOR_ADD_TEAM[1]
+            "res_status": INVALID_USER_IDS_FOR_ADD_TEAM[1]
         }
         return self.prepare_404_not_found_response(
             response_dict=response_dict

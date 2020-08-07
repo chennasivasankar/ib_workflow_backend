@@ -12,7 +12,8 @@ class TestRaiseExceptionForUserHasNoAccessForAddCompany:
         json_presenter = AddCompanyPresenterImplementation()
         expected_response = USER_HAS_NO_ACCESS_FOR_ADD_COMPANY[0]
         expected_res_status = USER_HAS_NO_ACCESS_FOR_ADD_COMPANY[1]
-        expected_http_status_code = 401
+        from ib_iam.constants.enums import StatusCode
+        expected_http_status_code = StatusCode.UNAUTHORIZED.value
 
         result = \
             json_presenter.get_user_has_no_access_response_for_add_company()

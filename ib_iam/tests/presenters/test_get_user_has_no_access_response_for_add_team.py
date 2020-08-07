@@ -12,7 +12,8 @@ class TestRaiseExceptionForUserHasNoAccessForAddTeam:
         json_presenter = TeamPresenterImplementation()
         expected_response = USER_HAS_NO_ACCESS_FOR_ADD_TEAM[0]
         expected_res_status = USER_HAS_NO_ACCESS_FOR_ADD_TEAM[1]
-        expected_http_status_code = 401
+        from ib_iam.constants.enums import StatusCode
+        expected_http_status_code = StatusCode.UNAUTHORIZED.value
 
         result = \
             json_presenter.get_user_has_no_access_response_for_add_team()

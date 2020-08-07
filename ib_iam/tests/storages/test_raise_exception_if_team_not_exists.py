@@ -1,5 +1,5 @@
 import pytest
-from ib_iam.exceptions.custom_exceptions import InvalidTeam
+from ib_iam.exceptions.custom_exceptions import InvalidTeamId
 from ib_iam.storages.team_storage_implementation import (
     TeamStorageImplementation
 )
@@ -15,7 +15,7 @@ class TestRaiseExceptionIfTeamNotExists:
         storage = TeamStorageImplementation()
         invalid_team_id = 'd81337b5-da0c-44e7-9773-245338c01ccc'
 
-        with pytest.raises(InvalidTeam):
+        with pytest.raises(InvalidTeamId):
             storage.raise_exception_if_team_not_exists(team_id=invalid_team_id)
 
     def test_given_team_exists_returns_none(
