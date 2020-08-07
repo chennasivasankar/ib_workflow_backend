@@ -1,8 +1,9 @@
 from collections import defaultdict
 from typing import List, Optional, Dict
 
-from django.db.models import Q
+from django.db.models import Q, F
 
+from ib_tasks.constants.enum import VIEWTYPE
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
@@ -114,7 +115,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
             )
         return task_fields_dtos
 
-    def get_field_ids(self, task_dtos: List[TaskTemplateStageDTO]) -> \
+    def get_field_ids(self, task_dtos: List[TaskTemplateStageDTO],
+                      view_type: VIEWTYPE) -> \
             List[TaskTemplateStageFieldsDTO]:
         from collections import defaultdict
         task_stages_dict = defaultdict(list)
@@ -130,7 +132,16 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                 q = q | current_queue
         if q is None:
             return []
-        stage_objs = Stage.objects.filter(q)
+
+        if view_type == VIEWTYPE.LIST.value:
+            stage_objs = (Stage.objects.filter(q)
+                          .annotate(view_type=F('card_info_list'))
+                          .values('task_template_id', 'stage_id', 'view_type'))
+        else:
+            stage_objs = (Stage.objects.filter(q)
+                          .annotate(view_type=F('card_info_kanban'))
+                          .values('task_template_id', 'stage_id', 'view_type'))
+
         task_fields_dtos = self._convert_stage_objs_to_dtos(stage_objs,
                                                             task_stages_dict)
 
@@ -141,14 +152,14 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         task_fields_dtos = []
         import json
         for stage in stage_objs:
-            fields = stage.card_info_kanban
+            fields = stage['view_type']
             field_ids = json.loads(fields)
-            for task_id in task_stages_dict[stage.stage_id]:
+            for task_id in task_stages_dict[stage['stage_id']]:
                 task_fields_dtos.append(
                     TaskTemplateStageFieldsDTO(
-                        task_template_id=stage.task_template_id,
+                        task_template_id=stage['task_template_id'],
                         task_id=task_id,
-                        stage_id=stage.stage_id,
+                        stage_id=stage['stage_id'],
                         field_ids=field_ids))
         return task_fields_dtos
 

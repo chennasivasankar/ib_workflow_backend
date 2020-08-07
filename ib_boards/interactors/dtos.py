@@ -1,11 +1,14 @@
 from dataclasses import dataclass
 from typing import List, Optional
 
+from ib_boards.constants.enum import VIEWTYPE
+
 
 @dataclass
 class ColumnParametersDTO:
     board_id: str
     user_id: str
+    view_type: VIEWTYPE
 
 
 @dataclass

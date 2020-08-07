@@ -2,10 +2,9 @@ import json
 from datetime import datetime, timedelta
 
 import factory
-from prompt_toolkit.styles import Priority
 
 from ib_tasks.constants.constants import VALID_FIELD_TYPES
-from ib_tasks.constants.enum import FieldTypes, PermissionTypes, Status
+from ib_tasks.constants.enum import FieldTypes, PermissionTypes, Status, Priority
 from ib_tasks.constants.enum import Operators
 from ib_tasks.interactors.filter_dtos import FilterDTO, ConditionDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO

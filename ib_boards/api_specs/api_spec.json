@@ -323,9 +323,12 @@
         "properties": {
           "view_type": {
             "type": "string",
-            "enum": ["LIST", ]
+            "enum": ["LIST", "KANBAN"]
           }
-        }
+        },
+        "required": [
+          "view_type"
+        ]
       }
     }
   },
@@ -542,6 +545,9 @@
           },
           {
             "$ref": "#/parameters/ColumnIdParameter"
+          },
+          {
+            "$ref": "#/parameters/ViewTypeParameter"
           }
         ],
         "responses": {
