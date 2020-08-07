@@ -7,6 +7,8 @@ from ...interactors.get_all_tasks_overview_for_user_interactor import \
     GetAllTasksOverviewForUserInteractor, UserIdPaginationDTO
 from ...presenters.get_all_tasks_overview_for_user_presenter_impl import \
     GetAllTasksOverviewForUserPresenterImpl
+from ...storages.action_storage_implementation import \
+    ActionsStorageImplementation
 from ...storages.fields_storage_implementation import \
     FieldsStorageImplementation
 from ...storages.storage_implementation import StagesStorageImplementation
@@ -28,11 +30,12 @@ def api_wrapper(*args, **kwargs):
     stage_storage = StagesStorageImplementation()
     task_storage = TasksStorageImplementation()
     field_storage = FieldsStorageImplementation()
+    action_storage=ActionsStorageImplementation()
 
     interactor = GetAllTasksOverviewForUserInteractor(
         stage_storage=stage_storage,
         task_storage=task_storage,
-        field_storage=field_storage)
+        field_storage=field_storage, action_storage=action_storage)
     response = interactor. \
         get_all_tasks_overview_for_user_wrapper(presenter=presenter,
                                                 user_id_with_pagination_dto=

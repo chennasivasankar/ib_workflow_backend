@@ -2,7 +2,7 @@
 test all cases
 """
 import pytest
-from django_swagger_utils.utils.test_v1 import TestUtils
+from django_swagger_utils.utils.test_utils import TestUtils
 from ib_users.models import UserAccount
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
@@ -27,7 +27,7 @@ class TestCase01GetUserProfileAPITestCase(TestUtils):
         get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(mocker)
         from ib_iam.adapters.user_service import UserAccountDoesNotExist
         get_user_profile_dto_mock.side_effect = UserAccountDoesNotExist
-        response = self.default_test_case(
+        response = self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
@@ -59,7 +59,7 @@ class TestCase01GetUserProfileAPITestCase(TestUtils):
         from ib_iam.tests.factories.models import UserDetailsFactory
         UserDetailsFactory(user_id=user_id, is_admin=False)
 
-        response = self.default_test_case(
+        response = self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

@@ -1,14 +1,21 @@
 from typing import List, Dict
+
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
-from .validator_class import ValidatorClass
+
 from ib_tasks.interactors.task_dtos import FieldValuesDTO
-from ...presenters.user_action_on_task_presenter_implementation import \
-    UserActionOnTaskPresenterImplementation
+from .validator_class import ValidatorClass
+from ...presenters.create_task_presenter import \
+    CreateTaskPresenterImplementation
+from ...storages.action_storage_implementation import \
+    ActionsStorageImplementation
 from ...storages.fields_storage_implementation import \
     FieldsStorageImplementation
+from ...storages.gof_storage_implementation import GoFStorageImplementation
 from ...storages.storage_implementation import StorageImplementation, \
     StagesStorageImplementation
+from ...storages.task_template_storage_implementation import \
+    TaskTemplateStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
@@ -19,7 +26,7 @@ def api_wrapper(*args, **kwargs):
     action_id = request_data['action_id']
     task_gofs = request_data['task_gofs']
 
-    from ib_tasks.interactors.task_dtos import GoFFieldsDTO, TaskDTO
+    from ib_tasks.interactors.task_dtos import GoFFieldsDTO, CreateTaskDTO
 
     task_gofs_dtos = []
     for task_gof in task_gofs:
@@ -31,8 +38,7 @@ def api_wrapper(*args, **kwargs):
         )
         task_gofs_dtos.append(gof_field_dto)
 
-    task_dto = TaskDTO(
-        task_id=None,
+    task_dto = CreateTaskDTO(
         task_template_id=task_template_id,
         created_by_id=user_id,
         action_id=action_id,
@@ -41,29 +47,31 @@ def api_wrapper(*args, **kwargs):
 
     from ib_tasks.storages.tasks_storage_implementation \
         import TasksStorageImplementation
-    from ib_tasks.storages.create_or_update_task_storage_implementation import \
-        CreateOrUpdateTaskStorageImplementation
-    from ib_tasks.presenters.create_or_update_task_presenter_implementation \
-        import CreateOrUpdateTaskPresenterImplementation
-    from ib_tasks.interactors.create_or_update_task import \
-        CreateOrUpdateTaskInteractor
+    from ib_tasks.storages.create_or_update_task_storage_implementation \
+        import CreateOrUpdateTaskStorageImplementation
+    from ib_tasks.interactors.create_or_update_task.create_task_interactor \
+        import CreateTaskInteractor
     task_storage = TasksStorageImplementation()
     create_task_storage = CreateOrUpdateTaskStorageImplementation()
-    presenter = CreateOrUpdateTaskPresenterImplementation()
-    act_on_task_presenter = UserActionOnTaskPresenterImplementation()
     storage = StorageImplementation()
     field_storage = FieldsStorageImplementation()
     stage_storage = StagesStorageImplementation()
-    interactor = CreateOrUpdateTaskInteractor(
+    gof_storage = GoFStorageImplementation()
+    task_template_storage = TaskTemplateStorageImplementation()
+    action_storage = ActionsStorageImplementation()
+    presenter = CreateTaskPresenterImplementation()
+
+    interactor = CreateTaskInteractor(
         task_storage=task_storage,
         create_task_storage=create_task_storage,
         storage=storage, field_storage=field_storage,
-        stage_storage=stage_storage
+        stage_storage=stage_storage, gof_storage=gof_storage,
+        task_template_storage=task_template_storage,
+        action_storage=action_storage
     )
 
-    response = interactor.create_or_update_task_wrapper(
-        task_dto=task_dto, presenter=presenter,
-        act_on_task_presenter=act_on_task_presenter
+    response = interactor.create_task_wrapper(
+        task_dto=task_dto, presenter=presenter
     )
     return response
 

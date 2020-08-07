@@ -10,10 +10,11 @@ class TestGoFSelectorValidationsInteractor:
 
     @pytest.fixture
     def storage_mock(self):
-        from ib_tasks.interactors.storage_interfaces.task_storage_interface \
-            import TaskStorageInterface
+        from ib_tasks.interactors.storage_interfaces.gof_storage_interface \
+            import \
+            GoFStorageInterface
         from unittest.mock import create_autospec
-        storage = create_autospec(TaskStorageInterface)
+        storage = create_autospec(GoFStorageInterface)
         return storage
 
     @pytest.fixture
@@ -46,7 +47,7 @@ class TestGoFSelectorValidationsInteractor:
         error_message = INVALID_JSON.format(field_id)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
         storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
-        interactor = GoFSelectorValidationsInteractor(storage=storage_mock)
+        interactor = GoFSelectorValidationsInteractor(gof_storage=storage_mock)
 
         # Act
         with pytest.raises(InvalidJsonForFieldValue) as err:
@@ -83,7 +84,7 @@ class TestGoFSelectorValidationsInteractor:
         error_message = EMPTY_VALUE_FOR_GOF_NAMES.format(field_id)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
         storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
-        interactor = GoFSelectorValidationsInteractor(storage=storage_mock)
+        interactor = GoFSelectorValidationsInteractor(gof_storage=storage_mock)
 
         # Act
         with pytest.raises(EmptyValuesForGoFNames) as err:
@@ -127,7 +128,7 @@ class TestGoFSelectorValidationsInteractor:
         error_message = DUPLICATED_OF_GOF_NAMES_FOR_FIELD_VALUES.format(exception_message)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
         storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
-        interactor = GoFSelectorValidationsInteractor(storage=storage_mock)
+        interactor = GoFSelectorValidationsInteractor(gof_storage=storage_mock)
 
         # Act
         with pytest.raises(DuplicationOfGoFNamesForFieldValues) as err:
@@ -169,7 +170,7 @@ class TestGoFSelectorValidationsInteractor:
         error_message = INVALID_GOF_IDS_EXCEPTION_MESSAGE.format(exception_message)
         existing_gof_ids = ["FIN_VENDOR_BASIC_DETAILS"]
         storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
-        interactor = GoFSelectorValidationsInteractor(storage=storage_mock)
+        interactor = GoFSelectorValidationsInteractor(gof_storage=storage_mock)
 
         # Act
         with pytest.raises(InvalidGOFIds) as err:
@@ -210,7 +211,7 @@ class TestGoFSelectorValidationsInteractor:
         storage_mock.get_existing_gof_ids.return_value = existing_gof_ids
 
         expected_field_values = json.dumps(expected_field_values)
-        interactor = GoFSelectorValidationsInteractor(storage=storage_mock)
+        interactor = GoFSelectorValidationsInteractor(gof_storage=storage_mock)
 
         # Act
         interactor.gof_selector_validations(field_dto)

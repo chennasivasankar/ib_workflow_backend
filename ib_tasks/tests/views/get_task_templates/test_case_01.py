@@ -2,7 +2,7 @@
 get task templates when complete task details exists returns task templates details
 """
 import pytest
-from django_swagger_utils.utils.test_v1 import TestUtils
+from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -14,7 +14,11 @@ class TestCase01GetTaskTemplatesAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['read']}}
 
     @pytest.fixture(autouse=True)
-    def setup(self):
+    def setup(self, mocker):
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_user_role_ids
+        get_user_role_ids(mocker)
+
         import factory
         from ib_tasks.tests.factories.models import TaskTemplateFactory, \
             StageModelFactory, StageActionFactory, GoFFactory, GoFRoleFactory, \
@@ -65,11 +69,7 @@ class TestCase01GetTaskTemplatesAPITestCase(TestUtils):
         )
 
     @pytest.mark.django_db
-    def test_case(self, snapshot, mocker):
-        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids
-        get_user_role_ids_mock_method = get_user_role_ids(mocker)
-
+    def test_case(self, snapshot):
         body = {}
         path_params = {}
         query_params = {}

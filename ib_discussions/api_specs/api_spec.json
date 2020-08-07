@@ -83,8 +83,7 @@
       },
       "required": [
         "user_id",
-        "name",
-        "profile_pic_url"
+        "name"
       ]
     },
     "Discussion": {
