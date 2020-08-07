@@ -121,6 +121,15 @@ class TestGetCommentsForDiscussionInteractor:
         storage_mock.get_replies_count_for_comments.assert_called_once_with(
             comment_ids=comment_ids
         )
+        storage_mock.get_mention_user_ids.assert_called_once_with(
+            comment_ids=comment_ids
+        )
+        storage_mock.get_comment_id_with_mention_user_id_dtos.assert_called_once_with(
+            comment_ids=comment_ids
+        )
+        storage_mock.get_multi_media_dtos.assert_called_once_with(
+            comment_ids=comment_ids
+        )
 
     @staticmethod
     def _get_user_profile_dtos():

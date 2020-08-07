@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from datetime import datetime
 
+from ib_discussions.constants.enum import MultiMediaFormatEnum
+
 
 @dataclass
 class DiscussionDTO:
@@ -38,3 +40,16 @@ class CommentIdWithRepliesCountDTO:
 class DiscussionIdWithCommentsCountDTO:
     discussion_id: str
     comments_count: int = 0
+
+
+@dataclass
+class CommentIdWithMentionUserIdDTO:
+    comment_id: str
+    user_id: str
+
+
+@dataclass
+class CommentIdWithMultiMediaDTO:
+    comment_id: str
+    format: MultiMediaFormatEnum
+    url: str

@@ -24,18 +24,20 @@ class CreateCommentInteractor:
     ):
         # TODO: Validate mention_user_ids and multi_media_dtos
         try:
-            comment_with_replies_count_and_editable_dto, user_profile_dto = \
+            comment_with_replies_count_and_editable_dto, user_profile_dtos, \
+            comment_id_with_mention_user_id_dtos, comment_id_with_multi_media_dtos = \
                 self.create_comment_for_discussion(
                     user_id=user_id, discussion_id=discussion_id,
                     comment_content=comment_content,
                     mention_user_ids=mention_user_ids,
                     multi_media_dtos=multi_media_dtos
                 )
-
             response = presenter.prepare_response_for_comment(
                 comment_with_replies_count_and_editable_dto \
                     =comment_with_replies_count_and_editable_dto,
-                user_profile_dto=user_profile_dto
+                user_profile_dtos=user_profile_dtos,
+                comment_id_with_mention_user_id_dtos=comment_id_with_mention_user_id_dtos,
+                comment_id_with_multi_media_dtos=comment_id_with_multi_media_dtos
             )
         except DiscussionIdNotFound:
             response = presenter.response_for_discussion_id_not_found()
@@ -61,26 +63,35 @@ class CreateCommentInteractor:
         self.storage.add_multi_media_to_comment(
             comment_id=comment_id, multi_media_dtos=multi_media_dtos
         )
-        comment_with_replies_count_and_editable_dto, user_profile_dto = \
+        comment_with_replies_count_and_editable_dto, user_profile_dtos, \
+        comment_id_with_mention_user_id_dtos, comment_id_with_multi_media_dtos = \
             self.get_comment_details(comment_id=comment_id,
                                      user_id=user_id)
 
-        return comment_with_replies_count_and_editable_dto, user_profile_dto
+        return comment_with_replies_count_and_editable_dto, user_profile_dtos, \
+            comment_id_with_mention_user_id_dtos, comment_id_with_multi_media_dtos
 
-    def get_comment_details(self, comment_id: str, user_id: str):
+    def get_comment_details(self, comment_id: str, user_id: str, ):
         comment_dto = self.storage.get_comment_details_dto(comment_id)
 
-        comment_with_replies_count_and_editable_dtos, user_profile_dtos = \
-            self.get_comments_for_discussion([comment_dto], user_id)
+        comment_with_replies_count_and_editable_dtos, user_profile_dtos, \
+        comment_id_with_mention_user_id_dtos, comment_id_with_multi_media_dtos = \
+            self.get_comments_for_discussion(
+                comment_dtos=[comment_dto], user_id=user_id)
 
         return comment_with_replies_count_and_editable_dtos[0], \
-            user_profile_dtos[0]
+               user_profile_dtos, comment_id_with_mention_user_id_dtos, \
+               comment_id_with_multi_media_dtos
 
     def get_comments_for_discussion(self, comment_dtos: List[CommentDTO],
                                     user_id: str):
         comment_ids = [comment.comment_id for comment in comment_dtos]
 
+        mention_user_ids = self.storage.get_mention_user_ids(
+            comment_ids=comment_ids)
+
         user_ids = list(set(comment.user_id for comment in comment_dtos))
+        user_ids = list(set(user_ids + mention_user_ids))
 
         user_profile_dtos = self._get_user_profile_dtos(user_ids=user_ids)
 
@@ -92,6 +103,13 @@ class CreateCommentInteractor:
             self.storage.get_replies_count_for_comments(
                 comment_ids=comment_ids
             )
+        comment_id_with_mention_user_id_dtos = \
+            self.storage.get_comment_id_with_mention_user_id_dtos(
+                comment_ids=comment_ids
+            )
+        comment_id_with_multi_media_dtos = self.storage.get_multi_media_dtos(
+            comment_ids=comment_ids
+        )
         comment_with_replies_count_and_editable_dtos = \
             self._prepare_comment_with_replies_count_and_editable_dtos(
                 comment_dtos=comment_dtos,
@@ -101,7 +119,8 @@ class CreateCommentInteractor:
             )
 
         return comment_with_replies_count_and_editable_dtos, \
-            user_profile_dtos
+               user_profile_dtos, comment_id_with_mention_user_id_dtos, \
+               comment_id_with_multi_media_dtos
 
     @staticmethod
     def _get_user_profile_dtos(user_ids: List[str]):

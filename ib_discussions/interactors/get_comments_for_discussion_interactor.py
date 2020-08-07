@@ -15,14 +15,12 @@ class GetCommentsForDiscussionInteractor:
 
     def get_comments_for_discussion_wrapper(
             self, presenter: GetCommentsForDiscussionPresenterInterface,
-            discussion_id: str, user_id: str, mention_user_ids: List[str],
-            multi_media_dtos: List[MultiMediaDTO]
+            discussion_id: str, user_id: str
     ):
         try:
             response = self._get_comments_for_discussion_response(
                 discussion_id=discussion_id, user_id=user_id,
-                presenter=presenter, mention_user_ids=mention_user_ids,
-                multi_media_dtos=multi_media_dtos
+                presenter=presenter
             )
         except DiscussionIdNotFound:
             response = presenter.response_for_discussion_id_not_found()
@@ -30,24 +28,23 @@ class GetCommentsForDiscussionInteractor:
 
     def _get_comments_for_discussion_response(
             self, discussion_id: str, user_id: str,
-            presenter: GetCommentsForDiscussionPresenterInterface,
-            mention_user_ids: List[str], multi_media_dtos: List[MultiMediaDTO]
+            presenter: GetCommentsForDiscussionPresenterInterface
     ):
-        comment_with_replies_count_and_editable_dtos, user_profile_dtos = \
+        comment_with_replies_count_and_editable_dtos, user_profile_dtos, \
+            comment_id_with_mention_user_id_dtos, comment_id_with_multi_media_dtos= \
             self.get_comments_for_discussion(
                 discussion_id=discussion_id, user_id=user_id,
-                mention_user_ids=mention_user_ids,
-                multi_media_dtos=multi_media_dtos
             )
         return presenter.prepare_response_for_comments_with_users_dtos(
             comment_with_replies_count_and_editable_dtos \
                 =comment_with_replies_count_and_editable_dtos,
-            user_profile_dtos=user_profile_dtos
+            user_profile_dtos=user_profile_dtos,
+            comment_id_with_mention_user_id_dtos=comment_id_with_mention_user_id_dtos,
+            comment_id_with_multi_media_dtos=comment_id_with_multi_media_dtos
         )
 
     def get_comments_for_discussion(
-            self, discussion_id: str, user_id: str, mention_user_ids: List[str],
-            multi_media_dtos: List[MultiMediaDTO]
+            self, discussion_id: str, user_id: str,
     ):
         is_discussion_id_not_exists = not self.storage. \
             is_discussion_id_exists(discussion_id=discussion_id)
@@ -63,7 +60,9 @@ class GetCommentsForDiscussionInteractor:
             CreateCommentInteractor
         interactor = CreateCommentInteractor(storage=self.storage)
 
-        comment_with_replies_count_and_editable_dtos, user_profile_dtos = \
+        comment_with_replies_count_and_editable_dtos, user_profile_dtos,\
+        comment_id_with_mention_user_id_dtos, comment_id_with_multi_media_dtos = \
             interactor.get_comments_for_discussion(comment_dtos=comment_dtos,
                                                    user_id=user_id)
-        return comment_with_replies_count_and_editable_dtos, user_profile_dtos
+        return comment_with_replies_count_and_editable_dtos, user_profile_dtos, \
+            comment_id_with_mention_user_id_dtos, comment_id_with_multi_media_dtos

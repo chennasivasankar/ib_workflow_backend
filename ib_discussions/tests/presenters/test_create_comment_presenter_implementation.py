@@ -33,10 +33,17 @@ class TestCreateCommentPresenterImplementation:
         assert response_data["res_status"] == expected_res_status
 
     def test_prepare_response_for_create_comment(self, presenter, snapshot):
+        user_ids = [
+            '01be920b-7b4c-49e7-8adb-41a0c18da848',
+            '91be920b-7b4c-49e7-8adb-41a0c18da848',
+            '31be920b-7b4c-49e7-8adb-41a0c18da848'
+        ]
+
         from ib_discussions.tests.factories.presenter_dtos import \
             CommentWithRepliesCountAndEditableDTOFactory
+        comment_id = '91be920b-7b4c-49e7-8adb-41a0c18da848'
         comment_with_replies_count_and_editable_dto = CommentWithRepliesCountAndEditableDTOFactory(
-            comment_id='91be920b-7b4c-49e7-8adb-41a0c18da848',
+            comment_id=comment_id,
             comment_content='content',
             user_id='31be920b-7b4c-49e7-8adb-41a0c18da848',
             replies_count=0,
@@ -44,17 +51,39 @@ class TestCreateCommentPresenterImplementation:
         )
         from ib_discussions.tests.factories.adapter_dtos import \
             UserProfileDTOFactory
-        user_profile_dto = UserProfileDTOFactory(
-            user_id='31be920b-7b4c-49e7-8adb-41a0c18da848',
-            name='name ',
-            profile_pic_url='https://graph.ib_users.com/'
-        )
+        user_profile_dtos = [
+            UserProfileDTOFactory(
+                user_id=user_id,
+                name='name ',
+                profile_pic_url='https://graph.ib_users.com/'
+            )
+            for user_id in user_ids
+        ]
+
+        from ib_discussions.tests.factories.storage_dtos import \
+            CommentIdWithMultiMediaDTOFactory
+        CommentIdWithMultiMediaDTOFactory.format.reset()
+        comment_id_with_multi_media_dtos = [
+            CommentIdWithMultiMediaDTOFactory(comment_id=comment_id)
+            for _ in range(2)
+        ]
+
+        from ib_discussions.tests.factories.storage_dtos import \
+            CommentIdWithMentionUserIdDTOFactory
+        comment_id_with_mention_user_id_dtos = [
+            CommentIdWithMentionUserIdDTOFactory(
+                comment_id=comment_id, user_id=user_ids[0]),
+            CommentIdWithMentionUserIdDTOFactory(
+                comment_id=comment_id, user_id=user_ids[1])
+        ]
 
         # Act
         response_object = presenter.prepare_response_for_comment(
-            comment_with_replies_count_and_editable_dto=\
+            comment_with_replies_count_and_editable_dto= \
                 comment_with_replies_count_and_editable_dto,
-            user_profile_dto=user_profile_dto
+            user_profile_dtos=user_profile_dtos,
+            comment_id_with_mention_user_id_dtos=comment_id_with_mention_user_id_dtos,
+            comment_id_with_multi_media_dtos=comment_id_with_multi_media_dtos
         )
 
         # Assert

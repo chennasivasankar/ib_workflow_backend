@@ -2,11 +2,13 @@ import datetime
 
 import factory
 
-from ib_discussions.constants.enum import EntityType
-from ib_discussions.models.comment import Comment
+from ib_discussions.constants.enum import EntityType, MultiMediaFormatEnum
+from ib_discussions.models.comment import Comment, CommentWithMultiMedia, \
+    CommentWithMentionUserId
 from ib_discussions.models.discussion import Discussion
 from ib_discussions.models.discussion_set import DiscussionSet
 from ib_discussions.models.entity import Entity
+from ib_discussions.models.multi_media import MultiMedia
 
 
 class EntityFactory(factory.django.DjangoModelFactory):
@@ -89,3 +91,31 @@ class ReplyToCommentFactory(factory.django.DjangoModelFactory):
         datetime.datetime(2020, 1, 20),
         datetime.datetime(2007, 2, 5)
     ])
+
+
+class MultiMediaFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = MultiMedia
+
+    id = factory.Faker("uuid")
+    format_type = factory.Iterator([
+        MultiMediaFormatEnum.IMAGE.value,
+        MultiMediaFormatEnum.VIDEO.value
+    ])
+    url = "https://picsum.photos/200"
+
+
+class CommentWithMultiMediaFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CommentWithMultiMedia
+
+    comment = factory.SubFactory(CommentFactory)
+    multi_media = factory.SubFactory(MultiMediaFactory)
+
+
+class CommentWithMentionUserIdFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CommentWithMentionUserId
+
+    comment = factory.SubFactory(CommentFactory)
+    mention_user_id = factory.Faker("uuid")

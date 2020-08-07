@@ -2,10 +2,12 @@ from typing import List, Optional
 
 from django.db.models import Count
 
+from ib_discussions.interactors.dtos.dtos import MultiMediaDTO
 from ib_discussions.interactors.storage_interfaces.comment_storage_interface import \
     CommentStorageInterface
 from ib_discussions.interactors.storage_interfaces.dtos import CommentDTO, \
-    CommentIdWithRepliesCountDTO
+    CommentIdWithRepliesCountDTO, CommentIdWithMentionUserIdDTO, \
+    CommentIdWithMultiMediaDTO
 from ib_discussions.models import Comment
 
 
@@ -126,3 +128,47 @@ class CommentStorageImplementation(CommentStorageInterface):
             for comment_object in comment_objects
         ]
         return comment_dtos
+
+    def add_mention_users_to_comment(self, comment_id: str,
+                                     mention_user_ids: List[str]):
+        from ib_discussions.models.comment import CommentWithMentionUserId
+        comment_with_mention_user_ids_objects = [
+            CommentWithMentionUserId(comment_id=comment_id,
+                                     mention_user_id=mention_user_id)
+            for mention_user_id in mention_user_ids
+        ]
+        CommentWithMentionUserId.objects.bulk_create(
+            comment_with_mention_user_ids_objects)
+
+    def add_multi_media_to_comment(self, comment_id,
+                                   multi_media_dtos: List[MultiMediaDTO]):
+        from ib_discussions.models.comment import CommentWithMultiMedia
+        from ib_discussions.models.multi_media import MultiMedia
+        multi_media_objects = [
+            CommentWithMultiMedia(
+                comment_id=comment_id,
+                multi_media=MultiMedia.objects.get_or_create(
+                    format_type=multi_media_dto.format_type,
+                    url=multi_media_dto.url
+                )
+            )
+            for multi_media_dto in multi_media_dtos
+        ]
+        CommentWithMultiMedia.objects.bulk_create(multi_media_objects)
+
+    def get_mention_user_ids(self, comment_ids: List[str]) -> List[str]:
+        from ib_discussions.models.comment import CommentWithMentionUserId
+        mention_user_ids = CommentWithMentionUserId.objects.filter(
+            comment_id__in=comment_ids
+        ).values_list(
+            "mention_user_id", flat=True
+        )
+        return list(set(mention_user_ids))
+
+    def get_comment_id_with_mention_user_id_dtos(self, comment_ids: List[str]) \
+            -> List[CommentIdWithMentionUserIdDTO]:
+        pass
+
+    def get_multi_media_dtos(self, comment_ids: List[str]) -> \
+            List[CommentIdWithMultiMediaDTO]:
+        pass

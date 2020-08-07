@@ -34,20 +34,27 @@ class TestGetCommentsForDiscussionPresenterImplementation:
 
     def test_response_for_comments_with_users_dtos(self, presenter, snapshot):
         # Arrange
+        comment_id = "11be920b-7b4c-49e7-8adb-41a0c18da848"
+        user_ids = [
+            '01be920b-7b4c-49e7-8adb-41a0c18da848',
+            '91be920b-7b4c-49e7-8adb-41a0c18da848',
+            '31be920b-7b4c-49e7-8adb-41a0c18da848'
+        ]
+
         from ib_discussions.tests.factories.presenter_dtos import \
             CommentWithRepliesCountAndEditableDTOFactory
         comment_with_replies_count_and_editable_dtos = [
             CommentWithRepliesCountAndEditableDTOFactory(
-                comment_id='91be920b-7b4c-49e7-8adb-41a0c18da848',
+                comment_id=comment_id,
                 comment_content='content',
-                user_id='31be920b-7b4c-49e7-8adb-41a0c18da848',
+                user_id=user_ids[0],
                 replies_count=0,
                 is_editable=True
             ),
             CommentWithRepliesCountAndEditableDTOFactory(
-                comment_id='11be920b-7b4c-49e7-8adb-41a0c18da848',
+                comment_id='12be920b-7b4c-49e7-8adb-41a0c18da848',
                 comment_content='content',
-                user_id='41be920b-7b4c-49e7-8adb-41a0c18da848',
+                user_id=user_ids[1],
                 replies_count=2,
                 is_editable=False
             ),
@@ -57,22 +64,41 @@ class TestGetCommentsForDiscussionPresenterImplementation:
             UserProfileDTOFactory
         user_profile_dtos = [
             UserProfileDTOFactory(
-                user_id='31be920b-7b4c-49e7-8adb-41a0c18da848',
+                user_id=user_ids[0],
                 name='name ',
                 profile_pic_url='https://graph.ib_users.com/'
             ),
             UserProfileDTOFactory(
-                user_id='41be920b-7b4c-49e7-8adb-41a0c18da848',
+                user_id=user_ids[1],
                 name='name ',
                 profile_pic_url='https://graph.ib_users.com/'
             ),
+        ]
+
+        from ib_discussions.tests.factories.storage_dtos import \
+            CommentIdWithMultiMediaDTOFactory
+        CommentIdWithMultiMediaDTOFactory.format.reset()
+        comment_id_with_multi_media_dtos = [
+            CommentIdWithMultiMediaDTOFactory(comment_id=comment_id)
+            for _ in range(2)
+        ]
+
+        from ib_discussions.tests.factories.storage_dtos import \
+            CommentIdWithMentionUserIdDTOFactory
+        comment_id_with_mention_user_id_dtos = [
+            CommentIdWithMentionUserIdDTOFactory(
+                comment_id=comment_id, user_id=user_ids[0]),
+            CommentIdWithMentionUserIdDTOFactory(
+                comment_id=comment_id, user_id=user_ids[1])
         ]
 
         # Act
         response_object = presenter.prepare_response_for_comments_with_users_dtos(
             comment_with_replies_count_and_editable_dtos= \
                 comment_with_replies_count_and_editable_dtos,
-            user_profile_dtos=user_profile_dtos
+            user_profile_dtos=user_profile_dtos,
+            comment_id_with_multi_media_dtos=comment_id_with_multi_media_dtos,
+            comment_id_with_mention_user_id_dtos=comment_id_with_mention_user_id_dtos
         )
 
         # Assert

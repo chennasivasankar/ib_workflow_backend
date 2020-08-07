@@ -6,7 +6,8 @@ from ib_discussions.interactors.presenter_interfaces.dtos import \
     DiscussionsWithUsersAndDiscussionCountDTO, \
     CommentWithRepliesCountAndEditableDTO, CommentIdWithEditableStatusDTO
 from ib_discussions.interactors.storage_interfaces.dtos import CommentDTO, \
-    DiscussionIdWithCommentsCountDTO
+    DiscussionIdWithCommentsCountDTO, CommentIdWithMultiMediaDTO, \
+    CommentIdWithMentionUserIdDTO
 from ib_iam.interactors.presenter_interfaces.dtos import \
     DiscussionIdWithEditableStatusDTO
 
@@ -120,7 +121,9 @@ class CreateCommentPresenterInterface(ABC):
     def prepare_response_for_comment(
             self,
             comment_with_replies_count_and_editable_dto: CommentWithRepliesCountAndEditableDTO,
-            user_profile_dto: UserProfileDTO
+            user_profile_dtos: List[UserProfileDTO],
+            comment_id_with_multi_media_dtos: List[CommentIdWithMultiMediaDTO],
+            comment_id_with_mention_user_id_dtos: List[CommentIdWithMentionUserIdDTO]
     ):
         pass
 
@@ -136,7 +139,10 @@ class GetCommentsForDiscussionPresenterInterface(ABC):
             self,
             comment_with_replies_count_and_editable_dtos: List[
                 CommentWithRepliesCountAndEditableDTO],
-            user_profile_dtos: List[UserProfileDTO]
+            user_profile_dtos: List[UserProfileDTO],
+            comment_id_with_multi_media_dtos: List[CommentIdWithMultiMediaDTO],
+            comment_id_with_mention_user_id_dtos: List[
+                CommentIdWithMentionUserIdDTO]
     ):
         pass
 

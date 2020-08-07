@@ -177,7 +177,7 @@
     "Multimedia": {
       "type": "object",
       "properties": {
-        "format": {
+        "format_type": {
           "type": "string",
           "enum": [
             "IMAGE",
@@ -233,11 +233,15 @@
           },
           "name": {
             "type": "string"
+          },
+          "profile_pic_url": {
+            "type": "string"
           }
         },
         "required": [
           "user_id",
-          "name"
+          "name",
+          "profile_pic_url"
         ]
       }
     }

@@ -46,5 +46,5 @@ class DiscussionIdWithTitleAndDescriptionDTO:
 
 @dataclass
 class MultiMediaDTO:
-    format: MultiMediaFormatEnum
+    format_type: MultiMediaFormatEnum
     url: str
