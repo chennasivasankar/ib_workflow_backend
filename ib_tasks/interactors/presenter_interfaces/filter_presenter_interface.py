@@ -7,12 +7,12 @@ from ib_tasks.constants.enum import Status
 from ib_tasks.interactors.filter_dtos import FilterCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFToTaskTemplateDTO
-from ib_tasks.interactors.storage_interfaces.task_templates_dtos import TaskTemplateDTO
+from ib_tasks.interactors.storage_interfaces.task_templates_dtos import TemplateDTO
 
 
 @dataclass()
 class TaskTemplateFieldsDto:
-    task_template_dtos: List[TaskTemplateDTO]
+    task_template_dtos: List[TemplateDTO]
     gofs_of_task_templates_dtos: List[GoFToTaskTemplateDTO]
     fields_dto: List[FieldNameDTO]
 

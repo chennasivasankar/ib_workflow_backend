@@ -14,7 +14,7 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import \
 from ib_tasks.tests.common_fixtures.adapters.roles_service import \
     get_user_role_ids
 from ib_tasks.tests.factories.storage_dtos import ActionDetailsDTOFactory, \
-    StageDetailsDTOFactory
+    StageDetailsDTOFactory, StageActionDetailsDTOFactory
 
 
 class TestGetTaskStagesAndActions:
@@ -22,12 +22,12 @@ class TestGetTaskStagesAndActions:
     @pytest.fixture()
     def get_stage_actions(self):
         ActionDetailsDTOFactory.reset_sequence()
-        actions = ActionDetailsDTOFactory.create_batch(
+        actions = StageActionDetailsDTOFactory.create_batch(
             size=3, stage_id="stage_id_0")
-        actions.append(ActionDetailsDTOFactory(stage_id="stage_id_1"))
-        actions.append(ActionDetailsDTOFactory(stage_id="stage_id_1"))
-        actions.append(ActionDetailsDTOFactory(stage_id="stage_id_2"))
-        actions.append(ActionDetailsDTOFactory(stage_id="stage_id_2"))
+        actions.append(StageActionDetailsDTOFactory(stage_id="stage_id_1"))
+        actions.append(StageActionDetailsDTOFactory(stage_id="stage_id_1"))
+        actions.append(StageActionDetailsDTOFactory(stage_id="stage_id_2"))
+        actions.append(StageActionDetailsDTOFactory(stage_id="stage_id_2"))
         return actions
 
     @pytest.fixture()
@@ -38,7 +38,7 @@ class TestGetTaskStagesAndActions:
     @pytest.fixture()
     def get_stage_actions_for_one_stage(self):
         ActionDetailsDTOFactory.reset_sequence()
-        actions = ActionDetailsDTOFactory.create_batch(size=2,
+        actions = StageActionDetailsDTOFactory.create_batch(size=2,
                                                        stage_id="stage_id_0")
         return actions
 

@@ -69,6 +69,18 @@ class TaskModelFactory(factory.django.DjangoModelFactory):
     created_by = factory.Sequence(lambda n: (n + 1))
 
 
+class TaskTemplateFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskTemplate
+
+    template_id = factory.sequence(lambda n: "template_{}".format(n + 1))
+    name = factory.sequence(lambda n: "Template {}".format(n + 1))
+
+
+class TaskTemplateWithTransitionFactory(TaskTemplateFactory):
+    is_transition_template = factory.Iterator([True, False])
+
+
 class StageActionFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = StageAction
@@ -81,25 +93,17 @@ class StageActionFactory(factory.django.DjangoModelFactory):
     py_function_import_path = "path"
 
 
+class StageActionWithTransitionFactory(StageActionFactory):
+    action_type = "action_type"
+    transition_template = factory.SubFactory(TaskTemplateWithTransitionFactory)
+
+
 class ActionPermittedRolesFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ActionPermittedRoles
 
     action = factory.SubFactory(StageActionFactory)
     role_id = factory.Sequence(lambda n: "role_%d" % n)
-
-
-class TaskTemplateFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = TaskTemplate
-
-    template_id = factory.sequence(lambda n: "template_{}".format(n + 1))
-    name = factory.sequence(lambda n: "Template {}".format(n + 1))
-
-
-class TaskTemplateWithTransitionFactory(TaskTemplateFactory):
-
-    is_transition_template = factory.Iterator([True, False])
 
 
 class TaskTemplateStatusVariableFactory(factory.django.DjangoModelFactory):

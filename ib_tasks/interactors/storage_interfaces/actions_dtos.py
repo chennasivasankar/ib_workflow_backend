@@ -32,3 +32,9 @@ class ActionDetailsDTO:
     stage_id: str
     button_text: str
     button_color: Optional[str]
+
+
+@dataclass
+class StageActionDetailsDTO(ActionDetailsDTO):
+    action_type: str
+    transition_template_id: str
