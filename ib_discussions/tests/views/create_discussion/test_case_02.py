@@ -41,7 +41,7 @@ class TestCase02CreateDiscussionAPITestCase(TestUtils):
     #     path_params = {}
     #     query_params = {}
     #     headers = {}
-    #     response = self.default_test_case(
+    #     response = self.make_api_call(
     #         body=body, path_params=path_params,
     #         query_params=query_params, headers=headers, snapshot=snapshot
     #     )
@@ -71,7 +71,7 @@ class TestCase02CreateDiscussionAPITestCase(TestUtils):
     #     path_params = {}
     #     query_params = {}
     #     headers = {}
-    #     response = self.default_test_case(
+    #     response = self.make_api_call(
     #         body=body, path_params=path_params,
     #         query_params=query_params, headers=headers, snapshot=snapshot
     #     )
