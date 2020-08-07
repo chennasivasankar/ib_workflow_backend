@@ -1,5 +1,7 @@
 from typing import List, Optional
 
+from django.db.models import Count
+
 from ib_discussions.constants.enum import EntityType, FilterByEnum, SortByEnum
 from ib_discussions.exceptions.custom_exceptions import \
     InvalidEntityTypeForEntityId, EntityIdNotFound, DiscussionIdNotFound, \
@@ -9,7 +11,7 @@ from ib_discussions.interactors.dtos.dtos import \
     OffsetAndLimitDTO, FilterByDTO, SortByDTO, \
     DiscussionIdWithTitleAndDescriptionDTO
 from ib_discussions.interactors.storage_interfaces.dtos import \
-    DiscussionDTO
+    DiscussionDTO, DiscussionIdWithCommentsCountDTO
 from ib_discussions.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 
@@ -220,3 +222,34 @@ class StorageImplementation(StorageInterface):
         from ib_discussions.models import Discussion
         Discussion.objects.filter(id=discussion_id).delete()
 
+    def get_comments_count_for_discussions(self, discussion_set_id: str) -> \
+            List[DiscussionIdWithCommentsCountDTO]:
+        from ib_discussions.models import Discussion
+        discussion_ids = Discussion.objects.filter(
+            discussion_set_id=discussion_set_id
+        ).values_list("id", flat=True)
+
+        discussion_id_wise_comments_count_dto_dict = {
+            str(discussion_id): DiscussionIdWithCommentsCountDTO(
+                discussion_id=str(discussion_id), comments_count=0
+            )
+            for discussion_id in discussion_ids
+        }
+
+        from ib_discussions.models import Comment
+        discussion_id_with_comments_count_list = Comment.objects.filter(
+            discussion_id__in=discussion_ids
+        ).values(
+            "discussion_id"
+        ).annotate(
+            comments_count=Count("id")
+        )
+
+        for discussion_id_with_comments_count_dict in discussion_id_with_comments_count_list:
+            discussion_id = \
+                discussion_id_with_comments_count_dict["discussion_id"]
+            discussion_id_wise_comments_count_dto_dict[
+                str(discussion_id)].comments_count = \
+                discussion_id_with_comments_count_dict["comments_count"]
+
+        return list(discussion_id_wise_comments_count_dto_dict.values())

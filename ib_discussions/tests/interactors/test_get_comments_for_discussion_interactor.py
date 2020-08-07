@@ -97,7 +97,7 @@ class TestGetCommentsForDiscussionInteractor:
             Mock()
 
         storage_mock.is_discussion_id_exists.return_value = True
-        storage_mock.get_comments_for_discussion.return_value = comment_dtos
+        storage_mock.get_comments_for_discussion_dtos.return_value = comment_dtos
         storage_mock.get_replies_count_for_comments.return_value \
             = comment_id_with_replies_count_dtos
 
@@ -115,7 +115,7 @@ class TestGetCommentsForDiscussionInteractor:
                == expected_presenter_return_response_for_comments_with_users_dtos_mock
         presenter_mock.prepare_response_for_comments_with_users_dtos. \
             assert_called_once()
-        storage_mock.get_comments_for_discussion.assert_called_once_with(
+        storage_mock.get_comments_for_discussion_dtos.assert_called_once_with(
             discussion_id=discussion_id,
         )
         storage_mock.get_replies_count_for_comments.assert_called_once_with(

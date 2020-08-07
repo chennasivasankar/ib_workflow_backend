@@ -112,6 +112,10 @@
         },
         "is_editable": {
           "type": "boolean"
+        },
+        "total_comments_count": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "required": [
@@ -121,7 +125,8 @@
         "created_at",
         "author",
         "is_clarified",
-        "is_editable"
+        "is_editable",
+        "total_comments_count"
       ]
     },
     "Comment": {
@@ -137,7 +142,7 @@
         "comment_content": {
           "type": "string"
         },
-        "replies_count": {
+        "total_replies_count": {
           "type": "integer",
           "format": "int64"
         },
@@ -150,7 +155,7 @@
         }
       },
       "required": [
-        "replies_count",
+        "total_replies_count",
         "author",
         "created_at",
         "is_editable",

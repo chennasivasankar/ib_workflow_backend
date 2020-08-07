@@ -10,13 +10,13 @@ REQUEST_BODY_JSON = """
 RESPONSE_200_JSON = """
 {
     "author": {
-        "user_id": "dd47eb61-b44a-4936-aea4-67cedd395b48",
+        "user_id": "37cea4c1-ad24-4e7f-95b3-35aab25a4c4e",
         "name": "string",
         "profile_pic_url": "string"
     },
-    "comment_id": "451e6f29-5d82-4452-b74b-d57e7287848a",
+    "comment_id": "c4221f4c-a016-49da-87b8-8118a6c6295f",
     "comment_content": "string",
-    "replies_count": 1,
+    "total_replies_count": 1,
     "is_editable": true,
     "created_at": "2099-12-31 00:00:00"
 }

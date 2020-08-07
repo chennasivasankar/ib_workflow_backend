@@ -5,7 +5,8 @@ from ib_discussions.adapters.auth_service import UserProfileDTO
 from ib_discussions.interactors.presenter_interfaces.dtos import \
     DiscussionsWithUsersAndDiscussionCountDTO, \
     CommentWithRepliesCountAndEditableDTO, CommentIdWithEditableStatusDTO
-from ib_discussions.interactors.storage_interfaces.dtos import CommentDTO
+from ib_discussions.interactors.storage_interfaces.dtos import CommentDTO, \
+    DiscussionIdWithCommentsCountDTO
 from ib_iam.interactors.presenter_interfaces.dtos import \
     DiscussionIdWithEditableStatusDTO
 
@@ -46,7 +47,8 @@ class GetDiscussionsPresenterInterface(ABC):
             self,
             discussions_with_users_and_discussion_count_dto: DiscussionsWithUsersAndDiscussionCountDTO,
             discussion_id_with_editable_status_dtos: List[
-                DiscussionIdWithEditableStatusDTO]
+                DiscussionIdWithEditableStatusDTO],
+            discussion_id_with_comments_count_dtos: List[DiscussionIdWithCommentsCountDTO]
     ):
         pass
 

@@ -3,7 +3,8 @@ import datetime
 import factory
 
 from ib_discussions.interactors.storage_interfaces.dtos import \
-    DiscussionDTO, CommentDTO, CommentIdWithRepliesCountDTO
+    DiscussionDTO, CommentDTO, CommentIdWithRepliesCountDTO, \
+    DiscussionIdWithCommentsCountDTO
 
 
 class DiscussionDTOFactory(factory.Factory):
@@ -44,3 +45,11 @@ class CommentIdWithRepliesCountDTOFactory(factory.Factory):
 
     comment_id = factory.Faker("uuid4")
     replies_count = factory.Iterator([1, 2, 3, 4])
+
+
+class DiscussionIdWithCommentsCountDTOFactory(factory.Factory):
+    class Meta:
+        model = DiscussionIdWithCommentsCountDTO
+
+    discussion_id = factory.Faker("uuid4")
+    comments_count = factory.Iterator([1, 2, 3, 4])

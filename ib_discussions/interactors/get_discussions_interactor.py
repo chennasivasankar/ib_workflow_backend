@@ -49,7 +49,8 @@ class GetDiscussionInteractor:
             filter_by_dto: FilterByDTO, sort_by_dto: SortByDTO,
             presenter: GetDiscussionsPresenterInterface
     ):
-        discussions_with_users_and_discussion_count_dto, discussion_id_with_editable_status_dtos \
+        discussions_with_users_and_discussion_count_dto, \
+        discussion_id_with_editable_status_dtos, discussion_id_with_comments_count_dtos\
             = self.get_discussions_details_dto(
             entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
             offset_and_limit_dto=offset_and_limit_dto, user_id=user_id,
@@ -57,8 +58,9 @@ class GetDiscussionInteractor:
         )
         return presenter.prepare_response_for_discussions_details_dto(
             discussions_with_users_and_discussion_count_dto=discussions_with_users_and_discussion_count_dto,
-            discussion_id_with_editable_status_dtos\
-                =discussion_id_with_editable_status_dtos
+            discussion_id_with_editable_status_dtos \
+                =discussion_id_with_editable_status_dtos,
+            discussion_id_with_comments_count_dtos=discussion_id_with_comments_count_dtos
         )
 
     def get_discussions_details_dto(
@@ -83,10 +85,14 @@ class GetDiscussionInteractor:
         user_profile_dtos = self._get_user_profile_dtos(
             discussion_dtos=discussion_dtos
         )
-        discussion_id_with_editable_status_dtos \
-            = self._prepare_discussion_id_with_editable_status_dtos(
-            discussion_dtos=discussion_dtos, user_id=user_id
-        )
+        discussion_id_with_comments_count_dtos = \
+            self.storage.get_comments_count_for_discussions(
+                discussion_set_id=discussion_set_id
+            )
+        discussion_id_with_editable_status_dtos = \
+            self._prepare_discussion_id_with_editable_status_dtos(
+                discussion_dtos=discussion_dtos, user_id=user_id
+            )
         from ib_discussions.interactors.presenter_interfaces.dtos import \
             DiscussionsWithUsersAndDiscussionCountDTO
         discussions_with_users_and_discussion_count_dto = DiscussionsWithUsersAndDiscussionCountDTO(
@@ -94,7 +100,8 @@ class GetDiscussionInteractor:
             user_profile_dtos=user_profile_dtos,
             total_count=total_discussions_count
         )
-        return discussions_with_users_and_discussion_count_dto, discussion_id_with_editable_status_dtos
+        return discussions_with_users_and_discussion_count_dto, discussion_id_with_editable_status_dtos, \
+            discussion_id_with_comments_count_dtos
 
     def _validate_limit_offset_entity_id_and_entity_type(
             self, entity_id_and_entity_type_dto, offset_and_limit_dto

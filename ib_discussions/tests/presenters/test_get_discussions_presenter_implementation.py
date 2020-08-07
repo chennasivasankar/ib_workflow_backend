@@ -181,14 +181,46 @@ class TestGetDiscussionsPresenterImplementation:
             for discussion_id in discussion_ids
         ]
 
+    @pytest.fixture()
+    def get_comments_for_discussion_dtos(self):
+        discussion_id_with_comments_count_list = [
+            {
+                "discussion_id": 'c5a444ea-589a-4e8f-b006-cfac3c1c0b78',
+                "comments_count": 2
+            },
+            {
+                "discussion_id": '5ce6581b-86ce-4246-8551-2c8a8ed4df87',
+                "comments_count": 1
+            },
+            {
+                "discussion_id": 'ed10c17c-8995-4d84-9807-189a54a2049d',
+                "comments_count": 0
+            }
+        ]
+        from ib_discussions.tests.factories.storage_dtos import \
+            DiscussionIdWithCommentsCountDTOFactory
+        discussion_with_comments_count_dtos = [
+            DiscussionIdWithCommentsCountDTOFactory(
+                discussion_id=discussion_id_with_comments_count_dict[
+                    "discussion_id"],
+                comments_count=discussion_id_with_comments_count_dict[
+                    "comments_count"]
+            )
+            for discussion_id_with_comments_count_dict in
+            discussion_id_with_comments_count_list
+        ]
+        return discussion_with_comments_count_dtos
+
     def test_prepare_response_for_discussions_details_dto(
             self, presenter, get_discussions_details_dto,
-            get_discussion_id_with_editable_status_dtos, snapshot
+            get_discussion_id_with_editable_status_dtos, snapshot,
+            get_comments_for_discussion_dtos
     ):
         # Act
         response_object = presenter.prepare_response_for_discussions_details_dto(
             discussions_with_users_and_discussion_count_dto=get_discussions_details_dto,
-            discussion_id_with_editable_status_dtos=get_discussion_id_with_editable_status_dtos
+            discussion_id_with_editable_status_dtos=get_discussion_id_with_editable_status_dtos,
+            discussion_id_with_comments_count_dtos=get_comments_for_discussion_dtos
         )
 
         # Assert

@@ -64,7 +64,7 @@ class CommentStorageImplementation(CommentStorageInterface):
 
         return list(comment_id_wise_replies_count_dto_dict.values())
 
-    def get_comments_for_discussion(self, discussion_id: str) -> \
+    def get_comments_for_discussion_dtos(self, discussion_id: str) -> \
             List[CommentDTO]:
         comment_objects = Comment.objects.filter(
             discussion_id=discussion_id,

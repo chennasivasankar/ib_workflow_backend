@@ -21,7 +21,7 @@ snapshots['TestCase01GetCommentsForDiscussionAPITestCase.test_case body'] = {
             'comment_id': '91be920b-7b4c-49e7-8adb-41a0c18da848',
             'created_at': '2008-01-01 00:00:00',
             'is_editable': False,
-            'replies_count': 0
+            'total_replies_count': 0
         },
         {
             'author': {
@@ -33,7 +33,7 @@ snapshots['TestCase01GetCommentsForDiscussionAPITestCase.test_case body'] = {
             'comment_id': '11be920b-7b4c-49e7-8adb-41a0c18da848',
             'created_at': '2020-05-01 00:00:00',
             'is_editable': False,
-            'replies_count': 0
+            'total_replies_count': 0
         },
         {
             'author': {
@@ -45,7 +45,7 @@ snapshots['TestCase01GetCommentsForDiscussionAPITestCase.test_case body'] = {
             'comment_id': '21be920b-7b4c-49e7-8adb-41a0c18da848',
             'created_at': '2020-01-20 00:00:00',
             'is_editable': False,
-            'replies_count': 0
+            'total_replies_count': 0
         }
     ]
 }

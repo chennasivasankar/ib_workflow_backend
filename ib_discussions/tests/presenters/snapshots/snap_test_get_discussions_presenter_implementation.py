@@ -20,7 +20,8 @@ snapshots['TestGetDiscussionsPresenterImplementation.test_prepare_response_for_d
             'discussion_id': 'c5a444ea-589a-4e8f-b006-cfac3c1c0b78',
             'is_clarified': True,
             'is_editable': True,
-            'title': 'title'
+            'title': 'title',
+            'total_comments_count': 2
         },
         {
             'author': {
@@ -33,7 +34,8 @@ snapshots['TestGetDiscussionsPresenterImplementation.test_prepare_response_for_d
             'discussion_id': '5ce6581b-86ce-4246-8551-2c8a8ed4df87',
             'is_clarified': False,
             'is_editable': False,
-            'title': 'title'
+            'title': 'title',
+            'total_comments_count': 1
         },
         {
             'author': {
@@ -46,7 +48,8 @@ snapshots['TestGetDiscussionsPresenterImplementation.test_prepare_response_for_d
             'discussion_id': 'ed10c17c-8995-4d84-9807-189a54a2049d',
             'is_clarified': True,
             'is_editable': True,
-            'title': 'title'
+            'title': 'title',
+            'total_comments_count': 0
         }
     ],
     'total_count': 3

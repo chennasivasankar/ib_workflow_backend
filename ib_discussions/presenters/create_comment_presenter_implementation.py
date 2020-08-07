@@ -49,7 +49,7 @@ class CreateCommentPresenterImplementation(CreateCommentPresenterInterface,
                 "profile_pic_url": user_profile_dto.profile_pic_url
             },
             "created_at": created_at,
-            "replies_count": replies_count,
+            "total_replies_count": replies_count,
             "is_editable": is_editable
         }
         return self.prepare_200_success_response(response_dict=response)

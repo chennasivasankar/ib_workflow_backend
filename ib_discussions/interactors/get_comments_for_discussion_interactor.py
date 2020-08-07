@@ -46,7 +46,7 @@ class GetCommentsForDiscussionInteractor:
         if is_discussion_id_not_exists:
             raise DiscussionIdNotFound
 
-        comment_dtos = self.storage.get_comments_for_discussion(
+        comment_dtos = self.storage.get_comments_for_discussion_dtos(
             discussion_id=discussion_id
         )
 

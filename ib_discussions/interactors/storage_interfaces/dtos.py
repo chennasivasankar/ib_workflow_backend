@@ -32,3 +32,9 @@ class CommentDTO:
 class CommentIdWithRepliesCountDTO:
     comment_id: str
     replies_count: int
+
+
+@dataclass
+class DiscussionIdWithCommentsCountDTO:
+    discussion_id: str
+    comments_count: int = 0

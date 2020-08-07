@@ -10,7 +10,7 @@ from ib_discussions.interactors.dtos.dtos import \
     OffsetAndLimitDTO, FilterByDTO, SortByDTO, \
     DiscussionIdWithTitleAndDescriptionDTO
 from ib_discussions.interactors.storage_interfaces.dtos import \
-    DiscussionDTO
+    DiscussionDTO, DiscussionIdWithCommentsCountDTO
 
 
 class StorageInterface(ABC):
@@ -88,4 +88,9 @@ class StorageInterface(ABC):
 
     @abstractmethod
     def delete_discussion(self, discussion_id: str):
+        pass
+
+    @abstractmethod
+    def get_comments_count_for_discussions(self, discussion_set_id: str) -> \
+            List[DiscussionIdWithCommentsCountDTO]:
         pass

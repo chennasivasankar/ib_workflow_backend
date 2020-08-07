@@ -49,7 +49,7 @@ class TestGetCommentsForDiscussion:
             for comment_dict in comment_list
         ]
         # Act
-        response = comment_storage.get_comments_for_discussion(
+        response = comment_storage.get_comments_for_discussion_dtos(
             discussion_id=discussion_id
         )
 

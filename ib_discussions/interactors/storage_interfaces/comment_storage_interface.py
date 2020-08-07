@@ -26,7 +26,7 @@ class CommentStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_comments_for_discussion(self, discussion_id: str) -> \
+    def get_comments_for_discussion_dtos(self, discussion_id: str) -> \
             List[CommentDTO]:
         pass
 

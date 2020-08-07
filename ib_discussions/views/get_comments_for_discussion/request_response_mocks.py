@@ -6,13 +6,13 @@ RESPONSE_200_JSON = """
     "comments": [
         {
             "author": {
-                "user_id": "50ef10c1-480a-49c1-a6ed-dfc355757854",
+                "user_id": "927c6669-dfb6-4a44-80ac-77ae05ab7d22",
                 "name": "string",
                 "profile_pic_url": "string"
             },
-            "comment_id": "acf8f860-ec63-41bd-8515-c5ab482b9b5a",
+            "comment_id": "d7d534db-9f96-46d2-a4a0-b98f83ef639a",
             "comment_content": "string",
-            "replies_count": 1,
+            "total_replies_count": 1,
             "is_editable": true,
             "created_at": "2099-12-31 00:00:00"
         }

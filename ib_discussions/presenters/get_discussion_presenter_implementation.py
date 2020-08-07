@@ -8,6 +8,8 @@ from ib_discussions.interactors.presenter_interfaces.dtos import \
     DiscussionsWithUsersAndDiscussionCountDTO
 from ib_discussions.interactors.presenter_interfaces.presenter_interface import \
     GetDiscussionsPresenterInterface
+from ib_discussions.interactors.storage_interfaces.dtos import \
+    DiscussionIdWithCommentsCountDTO
 from ib_iam.interactors.presenter_interfaces.dtos import \
     DiscussionIdWithEditableStatusDTO
 
@@ -105,7 +107,10 @@ class GetDiscussionPresenterImplementation(
             self,
             discussions_with_users_and_discussion_count_dto: DiscussionsWithUsersAndDiscussionCountDTO,
             discussion_id_with_editable_status_dtos: List[
-                DiscussionIdWithEditableStatusDTO]
+                DiscussionIdWithEditableStatusDTO],
+            discussion_id_with_comments_count_dtos: List[
+                DiscussionIdWithCommentsCountDTO]
+
     ):
         user_profiles_dtos_with_user_id_key = self._convert_to_dict_with_key_user_id(
             discussions_with_users_and_discussion_count_dto.user_profile_dtos
@@ -113,6 +118,11 @@ class GetDiscussionPresenterImplementation(
         discussion_id_with_editable_status_dtos_with_discussion_key = self._convert_to_dict_with_key_discussion_id(
             discussion_id_with_editable_status_dtos
         )
+        discussion_id_wise_comments_count_dto_dict = {
+            discussion_id_with_comments_count_dto.discussion_id: discussion_id_with_comments_count_dto
+            for discussion_id_with_comments_count_dto in
+            discussion_id_with_comments_count_dtos
+        }
         discussions_list = [
             self._convert_discussion_dto_to_dict_with_user_profile(
                 discussion_dto=discussion_dto,
@@ -121,7 +131,9 @@ class GetDiscussionPresenterImplementation(
                 ],
                 discussion_id_with_editable_status_dto=
                 discussion_id_with_editable_status_dtos_with_discussion_key[
-                    discussion_dto.discussion_id]
+                    discussion_dto.discussion_id],
+                comments_count=discussion_id_wise_comments_count_dto_dict[
+                    str(discussion_dto.discussion_id)].comments_count
             )
             for discussion_dto in
             discussions_with_users_and_discussion_count_dto.discussion_dtos
@@ -136,7 +148,8 @@ class GetDiscussionPresenterImplementation(
 
     def _convert_discussion_dto_to_dict_with_user_profile(
             self, discussion_dto, user_profile_dto: UserProfileDTO,
-            discussion_id_with_editable_status_dto: DiscussionIdWithEditableStatusDTO
+            discussion_id_with_editable_status_dto: DiscussionIdWithEditableStatusDTO,
+            comments_count: int
     ):
         from ib_discussions.utils.datetime_utils import get_datetime_as_string
         is_editable = discussion_id_with_editable_status_dto.is_editable
@@ -151,7 +164,8 @@ class GetDiscussionPresenterImplementation(
                 user_profile_dto=user_profile_dto
             ),
             "is_clarified": discussion_dto.is_clarified,
-            "is_editable": is_editable
+            "is_editable": is_editable,
+            "total_comments_count": comments_count
         }
         return complete_discussion_dict
 
