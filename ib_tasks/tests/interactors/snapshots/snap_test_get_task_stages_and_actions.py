@@ -14,7 +14,7 @@ snapshots['TestGetTaskStagesAndActions.test_given_task_id_but_task_has_no_action
 ]
 
 snapshots['TestGetTaskStagesAndActions.test_given_task_id_with_one_stage_returns_stage_and_their_actions response'] = [
-    GenericRepr("StageAndActionsDetailsDTO(db_stage_id=1, stage_id='stage_id_0', name='name_0', actions_dtos=[StageActionDetailsDTO(action_id=15, name='name_15', stage_id='stage_id_0', button_text='button_text_15', button_color=None, action_type='action_type_15', transition_template_id='template_id_15'), StageActionDetailsDTO(action_id=16, name='name_16', stage_id='stage_id_0', button_text='button_text_16', button_color=None, action_type='action_type_16', transition_template_id='template_id_16')])")
+    GenericRepr("StageAndActionsDetailsDTO(db_stage_id=1, stage_id='stage_id_0', name='name_0', actions_dtos=[StageActionDetailsDTO(action_id=2, name='name_2', stage_id='stage_id_0', button_text='button_text_2', button_color=None, action_type='action_type_2', transition_template_id='template_id_2'), StageActionDetailsDTO(action_id=3, name='name_3', stage_id='stage_id_0', button_text='button_text_3', button_color=None, action_type='action_type_3', transition_template_id='template_id_3')])")
 ]
 
 snapshots['TestGetTaskStagesAndActions.test_given_task_id_with_one_stage_without_no_actions_returns_actions_as_empty_list response'] = [

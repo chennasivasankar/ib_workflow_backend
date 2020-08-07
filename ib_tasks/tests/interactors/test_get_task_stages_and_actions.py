@@ -21,7 +21,7 @@ class TestGetTaskStagesAndActions:
 
     @pytest.fixture()
     def get_stage_actions(self):
-        ActionDetailsDTOFactory.reset_sequence()
+        StageActionDetailsDTOFactory.reset_sequence()
         actions = StageActionDetailsDTOFactory.create_batch(
             size=3, stage_id="stage_id_0")
         actions.append(StageActionDetailsDTOFactory(stage_id="stage_id_1"))
@@ -37,9 +37,9 @@ class TestGetTaskStagesAndActions:
 
     @pytest.fixture()
     def get_stage_actions_for_one_stage(self):
-        ActionDetailsDTOFactory.reset_sequence()
+        StageActionDetailsDTOFactory.reset_sequence(1)
         actions = StageActionDetailsDTOFactory.create_batch(size=2,
-                                                       stage_id="stage_id_0")
+                                                            stage_id="stage_id_0")
         return actions
 
     @pytest.fixture()
