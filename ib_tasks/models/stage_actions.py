@@ -13,4 +13,4 @@ class StageAction(models.Model):
     py_function_import_path = models.TextField()
 
     class Meta:
-        unique_together = (('stage', 'name'), ('id', 'transition_template_id'))
+        unique_together = ('stage', 'name')
