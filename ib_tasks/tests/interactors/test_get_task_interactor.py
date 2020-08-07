@@ -2,15 +2,19 @@ from unittest.mock import create_autospec, patch
 
 import pytest
 
+from ib_tasks.constants.enum import ValidationType
+from ib_tasks.interactors.get_stages_assignees_details_interactor import \
+    GetStagesAssigneesDetailsInteractor
 from ib_tasks.interactors.get_task_base_interactor \
     import GetTaskBaseInteractor
 from ib_tasks.interactors.get_task_interactor \
     import GetTaskInteractor
 from ib_tasks.interactors.get_task_stages_and_actions \
     import GetTaskStagesAndActions
+from ib_tasks.tests.factories.storage_dtos import StageActionDetailsDTOFactory
 
 
-class TestTaskInteractor:
+class TestGetTaskInteractor:
 
     @pytest.fixture
     def storage_mock(self):
@@ -40,6 +44,14 @@ class TestTaskInteractor:
             .action_storage_interface import \
             ActionStorageInterface
         storage = create_autospec(ActionStorageInterface)
+        return storage
+
+    @pytest.fixture
+    def task_stage_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces \
+            .task_stage_storage_interface import \
+            TaskStageStorageInterface
+        storage = create_autospec(TaskStageStorageInterface)
         return storage
 
     @pytest.fixture
@@ -178,85 +190,97 @@ class TestTaskInteractor:
         return user_role_ids
 
     @pytest.fixture
-    def stage1_actions_dtos(self):
-        from ib_tasks.interactors.storage_interfaces.actions_dtos \
-            import ActionDTO
-        actions_dtos = [
-            ActionDTO(
-                action_id="action1",
-                name="action_name1",
-                stage_id="stage1",
-                button_text="button_text1",
-                button_color="blue"
+    def stages_action_dtos(self):
+        stages_action_dtos = [
+            StageActionDetailsDTOFactory(
+                stage_id="stage0",
+                action_type=ValidationType.NO_VALIDATIONS.value
             ),
-            ActionDTO(
-                action_id="action2",
-                name="action_name2",
-                stage_id="stage1",
-                button_text="button_text2",
-                button_color="blue"
+            StageActionDetailsDTOFactory(
+                stage_id="stage0",
+                action_type=None
             ),
-            ActionDTO(
-                action_id="action3",
-                name="action_name3",
+            StageActionDetailsDTOFactory(
                 stage_id="stage1",
-                button_text="button_text3",
-                button_color="blue"
-            )
+                action_type=ValidationType.NO_VALIDATIONS.value
+            ),
+            StageActionDetailsDTOFactory(
+                stage_id="stage1",
+                action_type=None
+            ),
         ]
-        return actions_dtos
+        return stages_action_dtos
 
     @pytest.fixture
-    def stage2_actions_dtos(self):
-        from ib_tasks.interactors.storage_interfaces.actions_dtos \
-            import ActionDTO
-        actions_dtos = [
-            ActionDTO(
-                action_id="action1",
-                name="action_name1",
-                stage_id="stage2",
-                button_text="button_text1",
-                button_color="blue"
-            ),
-            ActionDTO(
-                action_id="action2",
-                name="action_name2",
-                stage_id="stage2",
-                button_text="button_text2",
-                button_color="blue"
-            ),
-            ActionDTO(
-                action_id="action3",
-                name="action_name3",
-                stage_id="stage2",
-                button_text="button_text3",
-                button_color="blue"
-            )
-        ]
-        return actions_dtos
-
-    @pytest.fixture
-    def stages_and_actions_details_dtos(
-            self, stage1_actions_dtos,
-            stage2_actions_dtos
-    ):
-        from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
+    def stages_and_actions_details_dtos(self, stages_action_dtos):
+        from ib_tasks.tests.factories.interactor_dtos import \
+            StageAndActionsDetailsDTOFactory
         stages_and_actions_details_dtos = [
-            StageAndActionsDetailsDTO(
-                stage_id="stage1", name="stage_name1",
-                actions_dtos=stage1_actions_dtos
+            StageAndActionsDetailsDTOFactory(
+                actions_dtos=[stages_action_dtos[0], stages_action_dtos[1]]
             ),
-            StageAndActionsDetailsDTO(
-                stage_id="stage2", name="stage_name2",
-                actions_dtos=stage2_actions_dtos
+            StageAndActionsDetailsDTOFactory(
+                actions_dtos=[stages_action_dtos[2], stages_action_dtos[3]]
             )
         ]
         return stages_and_actions_details_dtos
 
     @pytest.fixture
+    def assignee_details_dtos(self):
+        from ib_tasks.tests.factories.adapter_dtos import \
+            AssigneeDetailsDTOFactory
+        assignee_details_dtos = [
+            AssigneeDetailsDTOFactory(
+                assignee_id="123e4567-e89b-12d3-a456-426614174001"),
+            AssigneeDetailsDTOFactory(
+                assignee_id="123e4567-e89b-12d3-a456-426614174002"),
+            AssigneeDetailsDTOFactory(
+                assignee_id="123e4567-e89b-12d3-a456-426614174003")
+        ]
+        return assignee_details_dtos
+
+    @pytest.fixture
+    def stage_assignee_dtos(self):
+        from ib_tasks.tests.factories.storage_dtos import \
+            StageAssigneeDTOFactory
+        stage_assignee_dtos = [
+            StageAssigneeDTOFactory(
+                assignee_id="123e4567-e89b-12d3-a456-426614174001"),
+            StageAssigneeDTOFactory(
+                assignee_id="123e4567-e89b-12d3-a456-426614174002"),
+            StageAssigneeDTOFactory(
+                assignee_id="123e4567-e89b-12d3-a456-426614174003"),
+            StageAssigneeDTOFactory(assignee_id=None)
+        ]
+        return stage_assignee_dtos
+
+    @pytest.fixture
+    def stage_assignee_details_dtos(
+            self, assignee_details_dtos, stage_assignee_dtos
+    ):
+        from ib_tasks.tests.factories.interactor_dtos import \
+            StageAssigneeDetailsDTOFactory
+        stage_assignee_details_dtos = [
+            StageAssigneeDetailsDTOFactory(
+                stage_id=stage_assignee_dtos[0].stage_id,
+                assignee_details_dto=assignee_details_dtos[0]),
+            StageAssigneeDetailsDTOFactory(
+                stage_id=stage_assignee_dtos[1].stage_id,
+                assignee_details_dto=assignee_details_dtos[1]),
+            StageAssigneeDetailsDTOFactory(
+                stage_id=stage_assignee_dtos[2].stage_id,
+                assignee_details_dto=assignee_details_dtos[2]),
+            StageAssigneeDetailsDTOFactory(
+                stage_id=stage_assignee_dtos[3].stage_id,
+                assignee_details_dto=None)
+        ]
+        return stage_assignee_details_dtos
+
+    @pytest.fixture
     def task_complete_details_dto(
             self, permission_task_details_dto,
-            stages_and_actions_details_dtos
+            stages_and_actions_details_dtos,
+            stage_assignee_details_dtos
     ):
         from ib_tasks.interactors.presenter_interfaces \
             .get_task_presenter_interface \
@@ -264,7 +288,8 @@ class TestTaskInteractor:
         task_complete_details_dto = TaskCompleteDetailsDTO(
             task_id="task0",
             task_details_dto=permission_task_details_dto,
-            stages_and_actions_details_dtos=stages_and_actions_details_dtos
+            stages_and_actions_details_dtos=stages_and_actions_details_dtos,
+            stage_assignee_details_dtos=stage_assignee_details_dtos
         )
         return task_complete_details_dto
 
@@ -272,7 +297,7 @@ class TestTaskInteractor:
     def test_given_invalid_task_id_raise_exception(
             self, get_task_mock, storage_mock, presenter_mock,
             mock_object, stages_storage_mock, task_storage_mock,
-            action_storage_mock
+            action_storage_mock, task_stage_storage_mock
     ):
         # Arrange
         from ib_tasks.exceptions.task_custom_exceptions \
@@ -283,7 +308,8 @@ class TestTaskInteractor:
         get_task_mock.side_effect = exception_object
         interactor = GetTaskInteractor(
             storage=storage_mock, stages_storage=stages_storage_mock,
-            task_storage=task_storage_mock, action_storage=action_storage_mock
+            task_storage=task_storage_mock, action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         presenter_mock.raise_exception_for_invalid_task_id.return_value = \
             mock_object
@@ -299,28 +325,34 @@ class TestTaskInteractor:
 
     @patch.object(GetTaskStagesAndActions, "get_task_stages_and_actions")
     @patch.object(GetTaskBaseInteractor, 'get_task')
+    @patch.object(GetStagesAssigneesDetailsInteractor,
+                   "get_stages_assignee_details_dtos")
     def test_given_valid_task_returns_task_complete_details_dto(
-            self, get_task_mock, get_task_stages_and_actions_mock,
+            self, stage_assignee_details_dtos_mock, get_task_mock,
+            get_task_stages_and_actions_mock, stage_assignee_details_dtos,
             mocker, storage_mock, presenter_mock, stages_storage_mock,
             task_details_dto, user_roles, gof_ids, permission_gof_ids,
             permission_task_gof_dtos, field_ids, permission_field_ids,
             permission_task_gof_field_dtos, task_complete_details_dto,
             mock_object, stages_and_actions_details_dtos, task_storage_mock,
-            action_storage_mock
+            action_storage_mock, task_stage_storage_mock,
     ):
         # Arrange
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
             import get_user_role_ids
         get_user_role_ids_mock_method = get_user_role_ids(mocker)
-
         user_id = "user1"
         task_id = "task0"
         get_task_mock.return_value = task_details_dto
+        stage_assignee_details_dtos_mock.return_value = \
+            stage_assignee_details_dtos
         get_task_stages_and_actions_mock.return_value = \
             stages_and_actions_details_dtos
+
         interactor = GetTaskInteractor(
             storage=storage_mock, stages_storage=stages_storage_mock,
-            task_storage=task_storage_mock, action_storage=action_storage_mock
+            task_storage=task_storage_mock, action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         storage_mock.get_gof_ids_having_permission.return_value = \
             permission_gof_ids

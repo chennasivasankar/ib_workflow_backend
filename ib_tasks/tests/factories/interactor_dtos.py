@@ -17,8 +17,10 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
-    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, CreateTaskLogDTO
+    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, CreateTaskLogDTO, \
+    StageAndActionsDetailsDTO
 from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory
+from ib_tasks.tests.factories.storage_dtos import StageActionDetailsDTOFactory
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
@@ -228,3 +230,16 @@ class StageAssigneeDetailsDTOFactory(factory.Factory):
     @factory.lazy_attribute
     def assignee_details_dto(self):
         return List[AssigneeDetailsDTOFactory()]
+
+
+class StageAndActionsDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = StageAndActionsDetailsDTO
+
+    stage_id = factory.sequence(lambda counter: "stage{}".format(counter))
+    name = factory.sequence(lambda counter: "name{}".format(counter))
+    db_stage_id = factory.sequence(lambda counter: counter)
+
+    @factory.lazy_attribute
+    def actions_dtos(self):
+        return [StageActionDetailsDTOFactory()]
