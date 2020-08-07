@@ -1,6 +1,8 @@
 import pytest
 import json
 from unittest.mock import create_autospec
+
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTransitionTemplateIds
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 from ib_tasks.interactors.create_update_delete_stage_actions \
@@ -10,6 +12,7 @@ from ib_tasks.interactors.create_update_delete_stage_actions \
     )
 from ib_tasks.interactors.create_update_delete_stage_actions \
     import CreateUpdateDeleteStageActionsInteractor
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface import TaskTemplateStorageInterface
 from ib_tasks.tests.factories.interactor_dtos import StageActionDTOFactory
 
 
@@ -26,9 +29,11 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         actions_dto = StageActionDTOFactory.create_batch(size=2)
         stage_ids = ["stage_1", "stage_2"]
         storage = create_autospec(StorageInterface)
+        template_storage = create_autospec(TaskTemplateStorageInterface)
         storage.get_valid_stage_ids.return_value = ["stage_1"]
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
+            template_storage=template_storage,
             actions_dto=actions_dto
         )
         from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageIdsException
@@ -41,6 +46,34 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         assert err.value.stage_ids_dict == expected_stage_ids_dict
         storage.get_valid_stage_ids\
             .assert_called_once_with(stage_ids=stage_ids)
+
+    @staticmethod
+    def test_given_invalid_transition_template_ids_raises_exception():
+        # Arrange
+        StageActionDTOFactory.reset_sequence(0)
+        actions_dto = StageActionDTOFactory.create_batch(size=2)
+        stage_ids = ["stage_1", "stage_2"]
+        transition_ids = ["transition_template_id_1", "transition_template_id_2"]
+        storage = create_autospec(StorageInterface)
+        template_storage = create_autospec(TaskTemplateStorageInterface)
+        storage.get_valid_stage_ids.return_value = ["stage_1", "stage_2"]
+        template_storage.get_valid_transition_template_ids.return_value = []
+        interactor = CreateUpdateDeleteStageActionsInteractor(
+            storage=storage,
+            template_storage=template_storage,
+            actions_dto=actions_dto
+        )
+
+        # Act
+        with pytest.raises(InvalidTransitionTemplateIds) as err:
+            assert interactor.create_update_delete_stage_actions()
+
+        # Assert
+
+        storage.get_valid_stage_ids \
+            .assert_called_once_with(stage_ids=stage_ids)
+        template_storage.get_valid_transition_template_ids.\
+            assert_called_once_with(transition_ids)
 
     @staticmethod
     def test_given_invalid_roles_raises_exception(mocker):

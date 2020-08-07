@@ -4,6 +4,7 @@ from typing import List, Dict
 
 from ib_tasks.exceptions.roles_custom_exceptions import InvalidRolesException
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageIdsException
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTransitionTemplateIds
 from ib_tasks.interactors.stages_dtos import StageActionDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
@@ -44,11 +45,11 @@ class CreateUpdateDeleteStageActionsInteractor:
         actions_dto = self.actions_dto
         stage_ids = self._get_stage_ids(actions_dto)
         self._validations_for_stage_ids(stage_ids=stage_ids)
+        transition_template_ids = self._get_transition_template_ids(actions_dto)
+        self._validtions_for_transition_template_ids(transition_template_ids)
         self._validations_for_stage_roles(actions_dto)
         self._validations_for_empty_stage_display_logic(actions_dto)
         self._validations_for_empty_button_texts(actions_dto)
-        transition_template_ids = self._get_transition_template_ids(actions_dto)
-        self._validtions_for_transition_template_ids(transition_template_ids)
         self._validations_for_button_texts(actions_dto)
         self._validations_for_duplicate_stage_actions(actions_dto)
         self._create_update_delete_stage_actions(actions_dto)
