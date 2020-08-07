@@ -1890,7 +1890,8 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "FIELDS_NOT_BELONGS_TASK_TEMPLATE"
+              "FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE",
+              "USER_NOT_HAVE_PERMISSIONS_TO_FIELDS"
             ]
           }
         },
@@ -1965,7 +1966,8 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "FIELDS_NOT_BELONGS_TASK_TEMPLATE",
+              "FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE",
+              "USER_NOT_HAVE_PERMISSIONS_TO_FIELDS",
               "USER_NOT_HAVE_PERMISSIONS_TO_UPDATE"
             ]
           }

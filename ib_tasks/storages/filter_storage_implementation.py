@@ -90,7 +90,7 @@ class FilterStorageImplementation(FilterStorageInterface):
         user_roles = sorted(list(set(user_roles)))
         fields_user_roles = sorted(list(set(fields_user_roles)))
         invalid_user = not (user_roles == fields_user_roles \
-                       or set(fields_user_roles).issubset(set(user_roles)))
+                            or set(fields_user_roles).issubset(set(user_roles)))
         if invalid_user:
             raise UserNotHaveAccessToFields
 
