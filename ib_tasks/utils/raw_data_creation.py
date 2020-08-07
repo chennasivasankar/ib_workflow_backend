@@ -9,7 +9,7 @@ import factory
 
 from ib_tasks.constants.enum import FieldTypes
 from ib_tasks.models import Field
-from ib_tasks.tests.factories.models import TaskTemplateWithTransitionFactory, \
+from ib_tasks.tests.factories.models import TaskTemplateFactory, \
     TaskTemplateStatusVariableFactory, GoFFactory, \
     StageModelFactory, StageActionFactory, \
     TaskTemplateInitialStageFactory, TaskFactory, TaskStatusVariableFactory, \
@@ -36,7 +36,7 @@ class DataCreation:
 
     @staticmethod
     def create_task_templates():
-        tts = TaskTemplateWithTransitionFactory.create_batch(3)
+        tts = TaskTemplateFactory.create_batch(3)
         TaskTemplateStatusVariableFactory.create_batch(
             16, task_template_id=factory.Iterator([
                 'template_1', 'template_2', 'template_3'

@@ -10,10 +10,10 @@ class TestGlobalConstants:
 
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
-        from ib_tasks.tests.factories.models import TaskTemplateWithTransitionFactory, \
+        from ib_tasks.tests.factories.models import TaskTemplateFactory, \
             GlobalConstantFactory
         GlobalConstantsDTOFactory.reset_sequence()
-        TaskTemplateWithTransitionFactory.reset_sequence()
+        TaskTemplateFactory.reset_sequence()
         GlobalConstantFactory.reset_sequence()
 
     @pytest.fixture
@@ -157,9 +157,9 @@ class TestGlobalConstants:
     def test_with_valid_data(self, global_constants_interactor, snapshot):
         # Arrange
         template_id = "TEMPLATE_ID-0"
-        from ib_tasks.tests.factories.models import TaskTemplateWithTransitionFactory
-        TaskTemplateWithTransitionFactory(template_id=template_id)
-        TaskTemplateWithTransitionFactory.create_batch(size=2)
+        from ib_tasks.tests.factories.models import TaskTemplateFactory
+        TaskTemplateFactory(template_id=template_id)
+        TaskTemplateFactory.create_batch(size=2)
         global_constants_dtos = GlobalConstantsDTOFactory.create_batch(
             size=2
         )
@@ -199,9 +199,9 @@ class TestGlobalConstants:
             self, global_constants_interactor, snapshot):
         # Arrange
         template_id = "TEMPLATE_ID-0"
-        from ib_tasks.tests.factories.models import TaskTemplateWithTransitionFactory
-        TaskTemplateWithTransitionFactory(template_id=template_id)
-        TaskTemplateWithTransitionFactory.create_batch(size=2)
+        from ib_tasks.tests.factories.models import TaskTemplateFactory
+        TaskTemplateFactory(template_id=template_id)
+        TaskTemplateFactory.create_batch(size=2)
 
         from ib_tasks.tests.factories.models import GlobalConstantFactory
         GlobalConstantFactory.create_batch(
@@ -248,9 +248,9 @@ class TestGlobalConstants:
             self, global_constants_interactor, snapshot):
         # Arrange
         template_id = "TEMPLATE_ID-0"
-        from ib_tasks.tests.factories.models import TaskTemplateWithTransitionFactory
-        TaskTemplateWithTransitionFactory(template_id=template_id)
-        TaskTemplateWithTransitionFactory.create_batch(size=2)
+        from ib_tasks.tests.factories.models import TaskTemplateFactory
+        TaskTemplateFactory(template_id=template_id)
+        TaskTemplateFactory.create_batch(size=2)
 
         from ib_tasks.tests.factories.models import GlobalConstantFactory
         GlobalConstantFactory.create_batch(

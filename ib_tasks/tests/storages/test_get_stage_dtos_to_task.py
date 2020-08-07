@@ -11,13 +11,13 @@ class TestGetStageDTOsToTask:
             import StorageImplementation
 
         from ib_tasks.tests.factories.models import (
-            TaskTemplateWithTransitionFactory, TaskModelFactory, StageModelFactory
+            TaskTemplateFactory, TaskModelFactory, StageModelFactory
         )
-        TaskTemplateWithTransitionFactory.reset_sequence(0)
+        TaskTemplateFactory.reset_sequence(0)
         TaskModelFactory.reset_sequence(0)
         StageModelFactory.reset_sequence(1)
         TaskModelFactory()
-        task_template = TaskTemplateWithTransitionFactory()
+        task_template = TaskTemplateFactory()
         StageModelFactory.create_batch(
             size=3, task_template_id=task_template.template_id)
         from ib_tasks.tests.factories.storage_dtos \

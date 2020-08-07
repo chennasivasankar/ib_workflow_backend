@@ -2,7 +2,8 @@ import pytest
 
 from ib_tasks.storages.task_template_storage_implementation import \
     TaskTemplateStorageImplementation
-from ib_tasks.tests.factories.models import TaskTemplateWithTransitionFactory
+from ib_tasks.tests.factories.models import TaskTemplateWithTransitionFactory, \
+    TaskTemplateFactory
 
 
 @pytest.mark.django_db
@@ -10,7 +11,7 @@ class TestGetValidTaskTemplateIds:
 
     @pytest.fixture()
     def populate_data(self):
-        TaskTemplateWithTransitionFactory.reset_sequence()
+        TaskTemplateFactory.reset_sequence()
         TaskTemplateWithTransitionFactory.create_batch(size=6)
 
     def test_get_valid_task_template_ids_given_ids(self, populate_data):

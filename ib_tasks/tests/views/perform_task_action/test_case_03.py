@@ -7,7 +7,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 
 from ib_tasks.models import TaskStatusVariable, TaskStage, TaskTemplateGoFs
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ib_tasks.tests.factories.models import TaskTemplateWithTransitionFactory, \
+from ib_tasks.tests.factories.models import TaskTemplateFactory, \
     TaskTemplateStatusVariableFactory, GoFFactory, \
     FieldFactory, StageModelFactory, StageActionFactory, \
     TaskFactory, TaskStatusVariableFactory, TaskGoFFactory, TaskGoFFieldFactory, \
@@ -31,7 +31,7 @@ class TestCase03PerformTaskActionAPITestCase(TestUtils):
         TaskGoFFactory.reset_sequence()
         TaskTemplateStatusVariableFactory.reset_sequence()
         TaskStatusVariableFactory.reset_sequence()
-        TaskTemplateWithTransitionFactory.reset_sequence()
+        TaskTemplateFactory.reset_sequence()
         GoFToTaskTemplateFactory.reset_sequence()
         TaskFactory.reset_sequence()
         StageModelFactory.reset_sequence()
@@ -45,7 +45,7 @@ class TestCase03PerformTaskActionAPITestCase(TestUtils):
 
     @staticmethod
     def create_task_templates():
-        tts = TaskTemplateWithTransitionFactory.create_batch(3)
+        tts = TaskTemplateFactory.create_batch(3)
         TaskTemplateStatusVariableFactory.create_batch(
             4, task_template_id='template_1')
         import json

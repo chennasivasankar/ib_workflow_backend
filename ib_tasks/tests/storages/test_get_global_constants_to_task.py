@@ -11,14 +11,14 @@ class TestGetGlobalConstantsToTask:
             import StorageImplementation
 
         from ib_tasks.tests.factories.models import (
-            TaskTemplateWithTransitionFactory, GlobalConstantFactory,
+            TaskTemplateFactory, GlobalConstantFactory,
             TaskModelFactory
         )
-        TaskTemplateWithTransitionFactory.reset_sequence(0)
+        TaskTemplateFactory.reset_sequence(0)
         TaskModelFactory.reset_sequence(0)
         GlobalConstantFactory.reset_sequence(0)
         TaskModelFactory()
-        task_template = TaskTemplateWithTransitionFactory()
+        task_template = TaskTemplateFactory()
         GlobalConstantFactory.create_batch(size=3, task_template=task_template)
         from ib_tasks.tests.factories.storage_dtos \
             import GlobalConstantDTOFactory

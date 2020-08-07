@@ -8,8 +8,8 @@ class TestCreateTaskTemplate:
 
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
-        from ib_tasks.tests.factories.models import TaskTemplateWithTransitionFactory
-        TaskTemplateWithTransitionFactory.reset_sequence()
+        from ib_tasks.tests.factories.models import TaskTemplateFactory
+        TaskTemplateFactory.reset_sequence()
 
     @pytest.fixture
     def create_template_interactor(self):
@@ -102,8 +102,8 @@ class TestCreateTaskTemplate:
         template_id = "template_1"
         template_name = "iBHubs 1"
         is_transition_template = False
-        from ib_tasks.tests.factories.models import TaskTemplateWithTransitionFactory
-        TaskTemplateWithTransitionFactory(template_id=template_id, name=template_name)
+        from ib_tasks.tests.factories.models import TaskTemplateFactory
+        TaskTemplateFactory(template_id=template_id, name=template_name)
 
         create_template_dto = CreateTemplateDTO(
             template_id=template_id, template_name=template_name,
@@ -132,8 +132,8 @@ class TestCreateTaskTemplate:
         template_id = "template_1"
         template_name = "iBHubs 1"
         is_transition_template = True
-        from ib_tasks.tests.factories.models import TaskTemplateWithTransitionFactory
-        TaskTemplateWithTransitionFactory(template_id=template_id, name=template_name)
+        from ib_tasks.tests.factories.models import TaskTemplateFactory
+        TaskTemplateFactory(template_id=template_id, name=template_name)
 
         create_template_dto = CreateTemplateDTO(
             template_id=template_id, template_name=template_name,

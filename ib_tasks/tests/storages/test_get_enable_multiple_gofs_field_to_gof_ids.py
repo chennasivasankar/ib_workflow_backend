@@ -14,15 +14,15 @@ class TestGetEnableMultipleGofIds:
             import StorageImplementation
 
         from ib_tasks.tests.factories.models import (
-            TaskTemplateWithTransitionFactory, TaskModelFactory,
+            TaskTemplateFactory, TaskModelFactory,
             GoFToTaskTemplateFactory, GoFFactory
         )
         GoFFactory.reset_sequence(0)
-        TaskTemplateWithTransitionFactory.reset_sequence(0)
+        TaskTemplateFactory.reset_sequence(0)
         TaskModelFactory.reset_sequence(0)
         GoFToTaskTemplateFactory.reset_sequence(0)
         TaskModelFactory()
-        task_template = TaskTemplateWithTransitionFactory()
+        task_template = TaskTemplateFactory()
         GoFToTaskTemplateFactory.create_batch(
             size=2, task_template=task_template,
             enable_add_another_gof=True

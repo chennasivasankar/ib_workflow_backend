@@ -21,10 +21,10 @@ class TestCase01CreateFilterAPITestCase(TestUtils):
         get_user_role_ids(mocker)
 
         import factory
-        from ib_tasks.tests.factories.models import TaskTemplateWithTransitionFactory, \
+        from ib_tasks.tests.factories.models import TaskTemplateFactory, \
             GoFFactory, FieldFactory, FieldRoleFactory, GoFToTaskTemplateFactory
 
-        TaskTemplateWithTransitionFactory.reset_sequence()
+        TaskTemplateFactory.reset_sequence()
         GoFFactory.reset_sequence()
         FieldFactory.reset_sequence()
         FieldRoleFactory.reset_sequence()
@@ -32,7 +32,7 @@ class TestCase01CreateFilterAPITestCase(TestUtils):
 
         template_ids = ['template_1', 'template_2']
 
-        task_template_objs = TaskTemplateWithTransitionFactory.create_batch(
+        task_template_objs = TaskTemplateFactory.create_batch(
             size=2, template_id=factory.Iterator(template_ids)
         )
         gof_objs = GoFFactory.create_batch(size=4)

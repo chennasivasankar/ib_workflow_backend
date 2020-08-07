@@ -24,12 +24,12 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
         import factory
-        from ib_tasks.tests.factories.models import TaskTemplateWithTransitionFactory, \
+        from ib_tasks.tests.factories.models import TaskTemplateFactory, \
             GoFFactory, GoFRoleFactory, TaskFactory, TaskGoFFactory, \
             FieldFactory, FieldRoleFactory, GoFToTaskTemplateFactory, \
             TaskGoFFieldFactory
 
-        TaskTemplateWithTransitionFactory.reset_sequence()
+        TaskTemplateFactory.reset_sequence()
         GoFRoleFactory.reset_sequence()
         GoFFactory.reset_sequence()
         FieldFactory.reset_sequence()

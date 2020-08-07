@@ -7,7 +7,7 @@ import pytest
 
 import factory
 
-from ib_tasks.tests.factories.models import TaskTemplateWithTransitionFactory, FilterFactory, \
+from ib_tasks.tests.factories.models import TaskTemplateFactory, FilterFactory, \
     FieldFactory, FilterConditionFactory, FieldRoleFactory, \
     GoFToTaskTemplateFactory
 
@@ -67,7 +67,7 @@ class TestFilterStorageImplementation:
     def test_validate_template_id_with_valid_template_id(self, storage):
         # Arrange
         template_id = 'template_1'
-        TaskTemplateWithTransitionFactory()
+        TaskTemplateFactory()
 
         # Act
         storage.validate_template_id(template_id=template_id)
@@ -137,7 +137,7 @@ class TestFilterStorageImplementation:
             self, storage, filter_dto, condition_dtos, snapshot):
         # Arrange
         template_id = 'template_0'
-        TaskTemplateWithTransitionFactory(template_id=template_id)
+        TaskTemplateFactory(template_id=template_id)
         FieldFactory.create_batch(
             3, field_id=factory.Iterator(
                 ['field_0', 'field_1', 'field_2']
@@ -157,7 +157,7 @@ class TestFilterStorageImplementation:
             self, storage, update_filter_dto, condition_dtos, snapshot):
         # Arrange
         template_id = 'template_0'
-        TaskTemplateWithTransitionFactory(template_id=template_id)
+        TaskTemplateFactory(template_id=template_id)
         FilterFactory(template_id=template_id)
         FilterConditionFactory.create_batch(3, filter_id=1)
         FieldFactory.create_batch(

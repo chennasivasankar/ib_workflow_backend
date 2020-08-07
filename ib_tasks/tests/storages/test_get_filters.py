@@ -8,8 +8,8 @@ class TestGetFiltersDetails:
 
         # Arrange
         from ib_tasks.tests.factories.models \
-            import FilterFactory, TaskTemplateWithTransitionFactory
-        TaskTemplateWithTransitionFactory.reset_sequence(0)
+            import FilterFactory, TaskTemplateFactory
+        TaskTemplateFactory.reset_sequence(0)
         FilterFactory.reset_sequence(1)
         FilterFactory()
         from ib_tasks.storages.filter_storage_implementation \

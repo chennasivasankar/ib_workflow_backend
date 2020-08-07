@@ -2,7 +2,7 @@ import pytest
 
 from ib_tasks.storages.fields_storage_implementation import FieldsStorageImplementation
 from ib_tasks.tests.factories.models import (
-    StageModelFactory, TaskFactory, TaskTemplateWithTransitionFactory, TaskStageModelFactory, FieldFactory, TaskGoFFieldFactory,
+    StageModelFactory, TaskFactory, TaskTemplateFactory, TaskStageModelFactory, FieldFactory, TaskGoFFieldFactory,
     TaskGoFFactory, GoFFactory, FieldRoleFactory)
 from ib_tasks.tests.factories.storage_dtos import TaskFieldsDTOFactory, TaskWithFieldsDTOFactory
 
