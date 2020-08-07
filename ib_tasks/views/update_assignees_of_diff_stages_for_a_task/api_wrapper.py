@@ -1,48 +1,38 @@
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 from .validator_class import ValidatorClass
+from ...interactors.stages_dtos import StageAssigneeDTO, \
+    TaskIdWithStageAssigneesDTO
+from ...interactors.update_task_stage_assignees_interactor import \
+    UpdateTaskStageAssigneesInteractor
+from ...presenters.update_task_stage_assignees_presenter_impl import \
+    UpdateTaskStageAssigneesPresenterImplementation
+from ...storages.storage_implementation import StagesStorageImplementation
+from ...storages.tasks_storage_implementation import TasksStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    # ---------MOCK IMPLEMENTATION---------
+    params = kwargs['path_params']
+    task_id = params['task_id']
+    request_data = kwargs['request_data']
+    stage_assignees = request_data['stage_assignees']
+    stage_assignee_dtos = \
+        [StageAssigneeDTO(db_stage_id=each_stage_assignee_item['stage_id'],
+                          assignee_id=each_stage_assignee_item['assignee_id']) for
+         each_stage_assignee_item in stage_assignees]
 
-    try:
-        from ib_tasks.views.update_assignees_of_diff_stages_for_a_task.request_response_mocks \
-            import REQUEST_BODY_JSON
-        body = REQUEST_BODY_JSON
-    except ImportError:
-        body = {}
+    task_id_with_stage_assignees_dto = TaskIdWithStageAssigneesDTO(
+        task_id=task_id, stage_assignees=stage_assignee_dtos)
 
-    test_case = {
-        "path_params": {'task_id': 277},
-        "query_params": {},
-        "header_params": {},
-        "body": body,
-        "securities": [{'oauth': ['read']}]
-    }
+    stage_storage = StagesStorageImplementation()
+    task_storage = TasksStorageImplementation()
+    presenter = UpdateTaskStageAssigneesPresenterImplementation()
 
-    from django_swagger_utils.drf_server.utils.server_gen.mock_response \
-        import mock_response
-    try:
-        response = ''
-        status_code = 200
-        if '200' in ['200', '404']:
-            from ib_tasks.views.update_assignees_of_diff_stages_for_a_task.request_response_mocks \
-                import RESPONSE_200_JSON
-            response = RESPONSE_200_JSON
-            status_code = 200
-        elif '201' in ['200', '404']:
-            from ib_tasks.views.update_assignees_of_diff_stages_for_a_task.request_response_mocks \
-                import RESPONSE_201_JSON
-            response = RESPONSE_201_JSON
-            status_code = 201
-    except ImportError:
-        response = ''
-        status_code = 200
-    response_tuple = mock_response(
-        app_name="ib_tasks", test_case=test_case,
-        operation_name="update_assignees_of_diff_stages_for_a_task",
-        kwargs=kwargs, default_response_body=response,
-        group_name="", status_code=status_code)
-    return response_tuple
+    interactor = UpdateTaskStageAssigneesInteractor(
+        stage_storage=stage_storage, task_storage=task_storage)
+    response = interactor. \
+        update_task_stage_assignees_wrapper(presenter=presenter,
+                                            task_id_with_stage_assignees_dto=
+                                            task_id_with_stage_assignees_dto)
+    return response
