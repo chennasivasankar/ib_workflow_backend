@@ -3,19 +3,20 @@ from datetime import datetime, timedelta
 
 import factory
 
-from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
-    Priority
+from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators
+from ib_tasks.constants.enum import Priority
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     Task, TaskGoF,
     TaskGoFField,
-    TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage, Filter,
+    TaskTemplateGlobalConstants, TaskStatusVariable, Filter,
     FilterCondition)
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
 from ib_tasks.models.gof import GoF
 from ib_tasks.models.gof_role import GoFRole
+from ib_tasks.models.task_stage import TaskStage
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from ib_tasks.models.task_template_initial_stages import \
@@ -45,6 +46,7 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     display_name = factory.Sequence(lambda n: "name_%d" % n)
     task_template_id = factory.Sequence(lambda n: "task_template_id_%d" % n)
     value = factory.Sequence(lambda n: n)
+    stage_color = "blue"
     display_logic = factory.Sequence(lambda n: "status_id_%d==stage_id" % n)
     card_info_kanban = json.dumps(['field_id_1', "field_id_2"])
     card_info_list = json.dumps(['field_id_1', "field_id_2"])
@@ -92,6 +94,10 @@ class TaskTemplateFactory(factory.django.DjangoModelFactory):
 
     template_id = factory.sequence(lambda n: "template_{}".format(n + 1))
     name = factory.sequence(lambda n: "Template {}".format(n + 1))
+
+
+class TaskTemplateWithTransitionFactory(TaskTemplateFactory):
+    is_transition_template = factory.Iterator([True, False])
 
 
 class TaskTemplateStatusVariableFactory(factory.django.DjangoModelFactory):
@@ -233,6 +239,8 @@ class TaskStageFactory(factory.django.DjangoModelFactory):
 
     task = factory.SubFactory(TaskFactory)
     stage = factory.SubFactory(StageModelFactory)
+    assignee_id = factory.sequence(
+        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format())
 
 
 class FilterFactory(factory.django.DjangoModelFactory):
@@ -242,7 +250,7 @@ class FilterFactory(factory.django.DjangoModelFactory):
     created_by = factory.sequence(lambda n: "{}".format(n))
     name = factory.sequence(lambda n: "filter_name_{}".format(n))
     template = factory.SubFactory(TaskTemplateFactory)
-    is_selected = False
+    is_selected = "ENABLED"
 
 
 class FilterConditionFactory(factory.django.DjangoModelFactory):

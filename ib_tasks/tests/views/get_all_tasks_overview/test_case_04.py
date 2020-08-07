@@ -4,7 +4,7 @@
 import json
 
 import pytest
-from django_swagger_utils.utils.test_v1 import TestUtils
+from django_swagger_utils.utils.test_utils import TestUtils
 
 from ib_iam.tests.factories.models import UserRoleFactory, RoleFactory
 from ib_tasks.models import GoF, TaskGoFField, TaskStage, StageAction
@@ -108,7 +108,7 @@ class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
         path_params = {}
         query_params = {'limit': 3, 'offset': 0}
         headers = {}
-        response = self.default_test_case(body=body,
+        response = self.make_api_call(body=body,
                                           path_params=path_params,
                                           query_params=query_params,
                                           headers=headers,

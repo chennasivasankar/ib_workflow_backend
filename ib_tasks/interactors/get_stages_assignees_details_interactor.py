@@ -3,7 +3,7 @@ from typing import List, Optional
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
 from ib_tasks.adapters.service_adapter import get_service_adapter
 from ib_tasks.interactors.stages_dtos import StageAssigneeDetailsDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import StageAssigneeDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import \
     TaskStageStorageInterface
@@ -31,7 +31,7 @@ class GetStagesAssigneesDetailsInteractor:
         return stage_assignee_details_dtos
 
     def _get_stage_assignee_details_dtos(
-            self, stage_assignee_dtos: List[StageAssigneeDTO],
+            self, stage_assignee_dtos: List[TaskStageAssigneeDTO],
             assignee_details_dtos: List[AssigneeDetailsDTO]
     ) -> List[StageAssigneeDetailsDTO]:
 
@@ -44,7 +44,7 @@ class GetStagesAssigneesDetailsInteractor:
         return stage_assignee_details_dtos
 
     def _get_stage_assignee_details_dto(
-            self, stage_assignee_dto: StageAssigneeDTO,
+            self, stage_assignee_dto: TaskStageAssigneeDTO,
             assignee_details_dtos: List[AssigneeDetailsDTO]
     ) -> StageAssigneeDetailsDTO:
         stage_assignee_id = stage_assignee_dto.assignee_id
@@ -93,7 +93,7 @@ class GetStagesAssigneesDetailsInteractor:
             )
         return
 
-    def _get_assignee_ids(self, stage_assignee_dtos: List[StageAssigneeDTO]):
+    def _get_assignee_ids(self, stage_assignee_dtos: List[TaskStageAssigneeDTO]):
         assignee_ids = []
         for stage_assignee_dto in stage_assignee_dtos:
             assignee_id = not stage_assignee_dto.assignee_id

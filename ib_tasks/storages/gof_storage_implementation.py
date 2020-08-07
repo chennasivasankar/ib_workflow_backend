@@ -66,7 +66,7 @@ class GoFStorageImplementation(GoFStorageInterface):
         gof_dtos = self._convert_gof_details_to_dtos(gof_details=gof_details)
         return gof_dtos
 
-    def get_gofs_to_task_templates_from_permitted_gofs(self,
+    def get_gofs_to_templates_from_permitted_gofs(self,
                                                        gof_ids: List[str]) -> \
             List[GoFToTaskTemplateDTO]:
         task_template_gofs = \

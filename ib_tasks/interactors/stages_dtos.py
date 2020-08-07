@@ -15,9 +15,10 @@ class StageDTO:
     stage_id: str
     task_template_id: str
     value: int
-    id: Optional[int]
     card_info_kanban: str
     card_info_list: str
+    stage_color: Optional[str]
+    roles: str
     stage_display_name: str
     stage_display_logic: str
 
@@ -31,6 +32,9 @@ class StageActionDTO:
     function_path: str
     button_text: str
     button_color: Optional[str]
+    action_type: str
+    transition_template_id: str
+
 
 
 @dataclass()

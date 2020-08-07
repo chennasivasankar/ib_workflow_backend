@@ -107,7 +107,7 @@ class StageIdWithTemplateIdDTO:
 
 
 @dataclass
-class StageAssigneeDTO:
+class TaskStageAssigneeDTO:
     task_stage_id: int
     stage_id: int
     assignee_id: Optional[str]

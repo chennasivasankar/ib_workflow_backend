@@ -257,4 +257,9 @@ USER_DO_NOT_ACCESS_TO_DELETE_FILTER = (
     'user not have access to delete the filter',
     'USER_DO_NOT_ACCESS_TO_DELETE_FILTER'
 )
+TRANSITION_TEMPLATE_DOES_NOT_EXISTS = (
+    "Given invalid transition template Id: {}, that does not exists",
+    "TRANSITION_TEMPLATE_DOES_NOT_EXISTS"
+)
 INVALID_STAGE_IDS_FOR_TASK = "Invalid stage_ids : {} for the task_id: {}"
+

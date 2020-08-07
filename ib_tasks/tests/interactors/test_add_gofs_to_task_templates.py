@@ -1,8 +1,8 @@
 import mock
 import pytest
 
-from ib_tasks.interactors.add_gofs_to_task_template_interactor import \
-    AddGoFsToTaskTemplateInteractor
+from ib_tasks.interactors.add_gofs_to_template_interactor import \
+    AddGoFsToTemplateInteractor
 from ib_tasks.tests.factories.interactor_dtos import \
     GoFWithOrderAndAddAnotherDTOFactory, GoFsWithTemplateIdDTOFactory
 
@@ -43,7 +43,7 @@ class TestAddGoFsToTaskTemplates:
             template_id=template_id
         )
 
-        interactor = AddGoFsToTaskTemplateInteractor(
+        interactor = AddGoFsToTemplateInteractor(
             task_template_storage=task_template_storage_mock,
             gof_storage=gof_storage_mock
         )
@@ -52,7 +52,7 @@ class TestAddGoFsToTaskTemplates:
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
-            interactor.add_gofs_to_task_template_wrapper(
+            interactor.add_gofs_to_template_wrapper(
                 gofs_with_template_id_dto=gofs_with_template_id_dto
             )
         assert err.value.args[0] == expected_exception_message
@@ -70,7 +70,7 @@ class TestAddGoFsToTaskTemplates:
         gofs_with_template_id_dto = GoFsWithTemplateIdDTOFactory(
             gof_dtos=gof_dtos
         )
-        interactor = AddGoFsToTaskTemplateInteractor(
+        interactor = AddGoFsToTemplateInteractor(
             task_template_storage=task_template_storage_mock,
             gof_storage=gof_storage_mock
         )
@@ -79,7 +79,7 @@ class TestAddGoFsToTaskTemplates:
 
         # Assert
         with pytest.raises(InvalidValueForField) as err:
-            interactor.add_gofs_to_task_template_wrapper(
+            interactor.add_gofs_to_template_wrapper(
                 gofs_with_template_id_dto=gofs_with_template_id_dto
             )
         assert err.value.args[0] == expected_exception_message
@@ -99,7 +99,7 @@ class TestAddGoFsToTaskTemplates:
             gof_dtos=gof_dtos
         )
 
-        interactor = AddGoFsToTaskTemplateInteractor(
+        interactor = AddGoFsToTemplateInteractor(
             task_template_storage=task_template_storage_mock,
             gof_storage=gof_storage_mock
         )
@@ -108,7 +108,7 @@ class TestAddGoFsToTaskTemplates:
 
         # Assert
         with pytest.raises(InvalidOrdersForGoFs) as err:
-            interactor.add_gofs_to_task_template_wrapper(
+            interactor.add_gofs_to_template_wrapper(
                 gofs_with_template_id_dto=gofs_with_template_id_dto
             )
         assert err.value.args[0] == expected_exception_message
@@ -128,7 +128,7 @@ class TestAddGoFsToTaskTemplates:
             gof_dtos=gof_dtos
         )
 
-        interactor = AddGoFsToTaskTemplateInteractor(
+        interactor = AddGoFsToTemplateInteractor(
             task_template_storage=task_template_storage_mock,
             gof_storage=gof_storage_mock
         )
@@ -137,7 +137,7 @@ class TestAddGoFsToTaskTemplates:
 
         # Assert
         with pytest.raises(DuplicateOrderValuesForGoFs) as err:
-            interactor.add_gofs_to_task_template_wrapper(
+            interactor.add_gofs_to_template_wrapper(
                 gofs_with_template_id_dto=gofs_with_template_id_dto
             )
         assert err.value.args[0] == expected_exception_message
@@ -158,7 +158,7 @@ class TestAddGoFsToTaskTemplates:
             gof_dtos=gof_dtos
         )
 
-        interactor = AddGoFsToTaskTemplateInteractor(
+        interactor = AddGoFsToTemplateInteractor(
             task_template_storage=task_template_storage_mock,
             gof_storage=gof_storage_mock
         )
@@ -166,7 +166,7 @@ class TestAddGoFsToTaskTemplates:
 
         # Assert
         with pytest.raises(DuplicateGoFIds) as err:
-            interactor.add_gofs_to_task_template_wrapper(
+            interactor.add_gofs_to_template_wrapper(
                 gofs_with_template_id_dto=gofs_with_template_id_dto
             )
         assert err.value.args[0] == expected_exception_message
@@ -187,7 +187,7 @@ class TestAddGoFsToTaskTemplates:
             gof_dtos=gof_dtos, template_id=invalid_template_id
         )
 
-        interactor = AddGoFsToTaskTemplateInteractor(
+        interactor = AddGoFsToTemplateInteractor(
             task_template_storage=task_template_storage_mock,
             gof_storage=gof_storage_mock
         )
@@ -198,7 +198,7 @@ class TestAddGoFsToTaskTemplates:
 
         # Assert
         with pytest.raises(TemplateDoesNotExists) as err:
-            interactor.add_gofs_to_task_template_wrapper(
+            interactor.add_gofs_to_template_wrapper(
                 gofs_with_template_id_dto=gofs_with_template_id_dto
             )
         assert err.value.args[0] == expected_exception_message
@@ -221,7 +221,7 @@ class TestAddGoFsToTaskTemplates:
             gof_dtos=gof_dtos, template_id=template_id
         )
 
-        interactor = AddGoFsToTaskTemplateInteractor(
+        interactor = AddGoFsToTemplateInteractor(
             task_template_storage=task_template_storage_mock,
             gof_storage=gof_storage_mock
         )
@@ -235,7 +235,7 @@ class TestAddGoFsToTaskTemplates:
 
         # Assert
         with pytest.raises(GofsDoesNotExist) as err:
-            interactor.add_gofs_to_task_template_wrapper(
+            interactor.add_gofs_to_template_wrapper(
                 gofs_with_template_id_dto=gofs_with_template_id_dto
             )
         assert err.value.args[0] == expected_exception_message
@@ -251,7 +251,7 @@ class TestAddGoFsToTaskTemplates:
             gof_dtos=gof_dtos, template_id=template_id
         )
 
-        interactor = AddGoFsToTaskTemplateInteractor(
+        interactor = AddGoFsToTemplateInteractor(
             task_template_storage=task_template_storage_mock,
             gof_storage=gof_storage_mock
         )
@@ -263,7 +263,7 @@ class TestAddGoFsToTaskTemplates:
             ['gof_1', 'gof_2']
 
         # Act
-        interactor.add_gofs_to_task_template_wrapper(
+        interactor.add_gofs_to_template_wrapper(
             gofs_with_template_id_dto=gofs_with_template_id_dto
         )
 
@@ -283,7 +283,7 @@ class TestAddGoFsToTaskTemplates:
             gof_dtos=gof_dtos, template_id=template_id
         )
 
-        interactor = AddGoFsToTaskTemplateInteractor(
+        interactor = AddGoFsToTemplateInteractor(
             task_template_storage=task_template_storage_mock,
             gof_storage=gof_storage_mock
         )
@@ -303,7 +303,7 @@ class TestAddGoFsToTaskTemplates:
         ]
 
         # Act
-        interactor.add_gofs_to_task_template_wrapper(
+        interactor.add_gofs_to_template_wrapper(
             gofs_with_template_id_dto=gofs_with_template_id_dto
         )
 
@@ -330,7 +330,7 @@ class TestAddGoFsToTaskTemplates:
         gofs_with_template_id_dto = GoFsWithTemplateIdDTOFactory(
             gof_dtos=gof_dtos, template_id=template_id
         )
-        interactor = AddGoFsToTaskTemplateInteractor(
+        interactor = AddGoFsToTemplateInteractor(
             task_template_storage=task_template_storage_mock,
             gof_storage=gof_storage_mock
         )
@@ -347,7 +347,7 @@ class TestAddGoFsToTaskTemplates:
 
         # Assert
         with pytest.raises(ExistingGoFsNotInGivenData) as err:
-            interactor.add_gofs_to_task_template_wrapper(
+            interactor.add_gofs_to_template_wrapper(
                 gofs_with_template_id_dto=gofs_with_template_id_dto
             )
 

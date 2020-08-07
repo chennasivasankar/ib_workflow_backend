@@ -5,6 +5,11 @@ RESPONSE_200_JSON = """
 {
     "task_id": 1,
     "template_id": "string",
+    "title": "string",
+    "description": "string",
+    "start_date": "string",
+    "due_date": "string",
+    "priority": "HIGH",
     "gofs": [
         {
             "gof_id": "string",
@@ -19,13 +24,21 @@ RESPONSE_200_JSON = """
     ],
     "stages_with_actions": [
         {
-            "stage_id": "string",
+            "stage_id": 1,
             "stage_display_name": "string",
+            "stage_color": "string",
+            "assignee": {
+                "id": "string",
+                "name": "string",
+                "profile_pic": "string"
+            },
             "actions": [
                 {
                     "action_id": 1,
                     "button_text": "string",
-                    "button_color": "string"
+                    "button_color": "string",
+                    "action_type": "NO_VALIDATIONS",
+                    "transition_template_id": "string"
                 }
             ]
         }

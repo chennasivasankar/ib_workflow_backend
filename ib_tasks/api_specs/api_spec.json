@@ -30,7 +30,8 @@
       "type": "oauth2"
     }
   },
-  "security": [],
+  "security": [
+  ],
   "definitions": {
     "SaveAndActOnATaskRequestBody": {
       "allOf": [
@@ -188,7 +189,7 @@
           "type": "string"
         },
         "same_gof_order": {
-          "type": "number"
+          "type": "integer"
         },
         "gof_fields": {
           "type": "array",
@@ -542,7 +543,7 @@
       "type": "object",
       "properties": {
         "stage_id": {
-          "type": "string"
+          "type": "integer"
         },
         "assignee_id": {
           "type": "string"
@@ -557,10 +558,16 @@
       "type": "object",
       "properties": {
         "stage_id": {
-          "type": "string"
+          "type": "integer"
         },
         "stage_display_name": {
           "type": "string"
+        },
+        "stage_color": {
+          "type": "string"
+        },
+        "assignee": {
+          "$ref": "#/definitions/Assignee"
         },
         "actions": {
           "type": "array",
@@ -572,6 +579,8 @@
       "required": [
         "stage_id",
         "stage_display_name",
+        "stage_color",
+        "assignee",
         "actions"
       ]
     },
@@ -580,9 +589,6 @@
       "properties": {
         "task_id": {
           "type": "integer"
-        },
-        "transition_template_id": {
-          "type": "string"
         },
         "task_overview_fields": {
           "type": "array",
@@ -611,7 +617,7 @@
         }
       },
       "required": [
-        "task_stage_assignees"
+        "stage_assignees"
       ]
     },
     "Action": {
@@ -626,6 +632,9 @@
           "enum": [
             "NO_VALIDATIONS"
           ]
+        },
+        "transition_template_id": {
+          "type": "string"
         },
         "button_text": {
           "type": "string"
@@ -711,7 +720,7 @@
             "type": "object",
             "properties": {
               "stage_id": {
-                "type": "string"
+                "type": "integer"
               },
               "stage_display_name": {
                 "type": "string"
@@ -774,7 +783,6 @@
               "stage_id",
               "stage_display_name",
               "actions",
-              "assignee",
               "stage_color"
             ]
           }
@@ -1149,6 +1157,13 @@
         "template_name": {
           "type": "string"
         },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
         "conditions": {
           "type": "array",
           "items": {
@@ -1160,8 +1175,32 @@
         "filter_id",
         "name",
         "conditions",
-        "template_id"
+        "template_id",
+        "status"
       ]
+    },
+    "CreateTransitionChecklistRequestBody": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "integer"
+        },
+        "transition_checklist_template_id": {
+          "type": "string"
+        },
+        "action_id": {
+          "type": "integer"
+        },
+        "stage_id": {
+          "type": "integer"
+        },
+        "transition_checklist_gofs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GoF"
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -1287,13 +1326,17 @@
           "filter_id": {
             "type": "integer"
           },
-          "is_selected": {
-            "type": "boolean"
+          "action": {
+            "type": "string",
+            "enum": [
+              "ENABLED",
+              "DISABLED"
+            ]
           }
         },
         "required": [
           "filter_id",
-          "is_selected"
+          "action"
         ]
       }
     },
@@ -1331,19 +1374,21 @@
       "type": "integer",
       "format": "int64"
     },
-    "ActionIdParameter": {
-      "name": "action_id",
-      "in": "query",
+    "TransitionTemplateIdParameter": {
+      "name": "transition_template_id",
+      "in": "path",
       "required": true,
-      "description": "Id of the action",
-      "type": "integer"
+      "description": "transition template Id",
+      "type": "string"
     },
-    "StageIdParameter": {
-      "name": "stage_id",
-      "in": "query",
+    "CreateTransitionChecklistRequestBodyParameter": {
+      "in": "body",
+      "name": "CreateTransitionChecklistRequestBody",
+      "description": "create transition checklist request body",
       "required": true,
-      "description": "Id of the stage",
-      "type": "integer"
+      "schema": {
+        "$ref": "#/definitions/CreateTransitionChecklistRequestBody"
+      }
     }
   },
   "responses": {
@@ -1457,8 +1502,6 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "INVALID_STAGE_ID",
-              "INVALID_ACTION_ID",
               "TRANSITION_TEMPLATE_DOES_NOT_EXISTS"
             ]
           }
@@ -1508,7 +1551,7 @@
               "type": "object",
               "properties": {
                 "stage_id": {
-                  "type": "string"
+                  "type": "integer"
                 },
                 "name": {
                   "type": "string"
@@ -1930,6 +1973,12 @@
           "res_status"
         ]
       }
+    },
+    "CreateTransitionChecklistSuccessResponse": {
+      "description": "transition checklist created successfully"
+    },
+    "CreateTransitionChecklistFailureResponse": {
+      "description": "transition checklist creation failed"
     }
   },
   "paths": {
@@ -1984,7 +2033,8 @@
             ]
           }
         ],
-        "parameters": [],
+        "parameters": [
+        ],
         "responses": {
           "200": {
             "$ref": "#/responses/GetTaskTemplateResponse"
@@ -1995,7 +2045,7 @@
         }
       }
     },
-    "/transition_template/v1/": {
+    "/transition_template/{transition_template_id}/v1/": {
       "get": {
         "operationId": "get_transition_template",
         "summary": "Get transition template",
@@ -2009,10 +2059,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/ActionIdParameter"
-          },
-          {
-            "$ref": "#/parameters/StageIdParameter"
+            "$ref": "#/parameters/TransitionTemplateIdParameter"
           }
         ],
         "responses": {
@@ -2142,6 +2189,39 @@
         }
       }
     },
+    "/tasks/search/v1/": {
+      "get": {
+        "operationId": "get_tasks_to_search",
+        "summary": "get tasks to relevant to search",
+        "description": "view the tasks that satisfies the search",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/SearchableQueryParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/AllTasksOverviewResponse"
+          },
+          "400": {
+            "$ref": "#/responses/AllTasksOverviewFailureResponse"
+          }
+        }
+      }
+    },
     "/tasks_overview/v1/": {
       "get": {
         "operationId": "get_all_tasks_overview",
@@ -2211,7 +2291,8 @@
             ]
           }
         ],
-        "parameters": [],
+        "parameters": [
+        ],
         "responses": {
           "200": {
             "$ref": "#/responses/GetTaskTemplateFieldsResponse"
@@ -2315,7 +2396,8 @@
             ]
           }
         ],
-        "parameters": [],
+        "parameters": [
+        ],
         "responses": {
           "200": {
             "description": "Field details",
@@ -2449,6 +2531,33 @@
           },
           "404": {
             "$ref": "#/responses/UpdateTaskStageAssigneesFailureResponse"
+          }
+        }
+      }
+    },
+    "/transition_checklist/v1/": {
+      "post": {
+        "operationId": "create_transistion_checklist",
+        "summary": "create transition checklist",
+        "description": "create transition checklist",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/CreateTransitionChecklistRequestBodyParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/CreateTransitionChecklistSuccessResponse"
+          },
+          "404": {
+            "$ref": "#/responses/CreateTransitionChecklistFailureResponse"
           }
         }
       }

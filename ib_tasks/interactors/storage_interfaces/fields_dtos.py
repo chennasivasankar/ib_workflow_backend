@@ -28,6 +28,13 @@ class FieldDTO:
     validation_regex: Optional[str]
 
 
+@dataclass()
+class FieldNameDTO:
+    field_id: str
+    gof_id: str
+    field_display_name: str
+
+
 @dataclass
 class FieldRolesDTO:
     field_id: str

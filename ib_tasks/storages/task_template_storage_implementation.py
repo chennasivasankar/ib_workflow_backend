@@ -8,16 +8,20 @@ from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TaskTemplateDTO
+    TemplateDTO
 from ib_tasks.models import TaskTemplate, TaskTemplateGoFs
 
 
 class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
-    def create_task_template(self, template_id: str, template_name: str):
+    def create_template(self, template_id: str,
+                        template_name: str,
+                        is_transition_template: bool):
         from ib_tasks.models.task_template import TaskTemplate
-        TaskTemplate.objects.create(template_id=template_id,
-                                    name=template_name)
+        TaskTemplate.objects.create(
+            template_id=template_id, name=template_name,
+            is_transition_template=is_transition_template
+        )
 
     def check_is_template_exists(self, template_id: str) -> bool:
         is_template_exists = \
@@ -32,14 +36,6 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
         constant_names_of_template_list = list(constant_names_of_template)
         return constant_names_of_template_list
-
-    def get_task_template_name(self, template_id: str):
-        from ib_tasks.models.task_template import TaskTemplate
-        template_name_query_set = \
-            TaskTemplate.objects.filter(
-                template_id=template_id
-            ).values_list('name', flat=True)
-        return template_name_query_set.first()
 
     def create_global_constants_to_template(self, template_id: str,
                                             global_constants_dtos: List[
@@ -78,15 +74,14 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
                 "template_id", flat=True))
         return valid_template_ids
 
-    def get_task_templates_dtos(self) -> List[TaskTemplateDTO]:
+    def get_task_templates_dtos(self) -> List[TemplateDTO]:
         task_template_objs = TaskTemplate.objects.all()
         task_template_dtos = self._convert_task_templates_objs_to_dtos(
             task_template_objs=task_template_objs)
         return task_template_dtos
 
-    def get_gofs_to_task_templates_from_permitted_gofs(self,
-                                                       gof_ids: List[str]) -> \
-            List[GoFToTaskTemplateDTO]:
+    def get_gofs_to_templates_from_permitted_gofs(
+                self, gof_ids: List[str]) -> List[GoFToTaskTemplateDTO]:
         task_template_gofs = \
             TaskTemplateGoFs.objects.filter(gof_id__in=gof_ids)
         gof_to_task_template_dtos = self._convert_task_template_gofs_to_dtos(
@@ -135,12 +130,13 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
         TaskTemplateGoFs.objects.bulk_update(
             gof_to_task_template_objs, ['order', 'enable_add_another_gof'])
 
-    def update_task_template(self, template_id: str, template_name: str):
+    def update_template(self, template_id: str, template_name: str,
+                        is_transition_template: bool):
         from ib_tasks.models.task_template import TaskTemplate
-        task_template = \
-            TaskTemplate.objects.get(template_id=template_id)
-        task_template.name = template_name
-        task_template.save()
+        template = TaskTemplate.objects.get(template_id=template_id)
+        template.name = template_name
+        template.is_transition_template = is_transition_template
+        template.save()
 
     @staticmethod
     def _get_global_constant_names(
@@ -162,9 +158,9 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
     @staticmethod
     def _convert_task_templates_objs_to_dtos(
-            task_template_objs: List[TaskTemplate]) -> List[TaskTemplateDTO]:
+            task_template_objs: List[TaskTemplate]) -> List[TemplateDTO]:
         task_template_dtos = [
-            TaskTemplateDTO(
+            TemplateDTO(
                 template_id=task_template_obj.template_id,
                 template_name=task_template_obj.name
             )
@@ -198,3 +194,38 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
         for gof_dto in gof_dtos:
             gofs_dict[gof_dto.gof_id] = gof_dto
         return gofs_dict
+
+    def get_transition_template_dto(
+            self, transition_template_id: str) -> TemplateDTO:
+        transition_template_queryset = TaskTemplate.objects.filter(
+            template_id=transition_template_id).values('template_id', 'name')
+        transition_template = transition_template_queryset.first()
+
+        return TemplateDTO(
+            template_id=transition_template['template_id'],
+            template_name=transition_template['name']
+        )
+
+    def check_is_transition_template_exists(
+            self, transition_template_id: str) -> bool:
+        is_transition_template_exists = TaskTemplate.objects.filter(
+            template_id=transition_template_id, is_transition_template=True
+        ).exists()
+        return is_transition_template_exists
+
+    def get_valid_transition_template_ids(
+            self, transition_template_ids: List[str]) -> List[str]:
+        transition_ids = list(TaskTemplate.objects.filter(
+            template_id__in=transition_template_ids).filter(
+            is_transition_template=True).values_list('template_id', flat=True))
+        return transition_ids
+
+    def get_gofs_to_template_from_permitted_gofs(
+            self, gof_ids: List[str],
+            template_id: str) -> List[GoFToTaskTemplateDTO]:
+        task_template_gofs = TaskTemplateGoFs.objects.filter(
+            gof_id__in=gof_ids, task_template_id=template_id
+        )
+        gof_to_task_template_dtos = self._convert_task_template_gofs_to_dtos(
+            task_template_gofs=task_template_gofs)
+        return gof_to_task_template_dtos
