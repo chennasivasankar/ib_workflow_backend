@@ -12,12 +12,10 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldPermissionDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFToTaskTemplateDTO
-from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TemplateDTO
-from ib_tasks.exceptions.task_custom_exceptions import \
-    TaskTemplatesDoesNotExists
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageIdWithTemplateIdDTO
+from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
+    TemplateDTO
 
 
 class GetTaskTemplatesPresenterImplementation(
@@ -25,7 +23,6 @@ class GetTaskTemplatesPresenterImplementation(
 
     def raise_task_templates_does_not_exists_exception(self):
 
-        import json
         from ib_tasks.constants.exception_messages import \
             TASK_TEMPLATES_DOES_NOT_EXISTS
         response_dict = ({
@@ -61,7 +58,6 @@ class GetTaskTemplatesPresenterImplementation(
             task_template['group_of_fields'] = complete_gof_details_dicts[
                 task_template_id]
 
-        import json
         complete_task_templates_dict = {"task_templates": task_templates_dicts}
         return self.prepare_200_success_response(complete_task_templates_dict)
 
