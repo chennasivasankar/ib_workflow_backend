@@ -16,10 +16,11 @@ class TestGetValidTaskTemplateIds:
 
     def test_get_valid_task_template_ids_given_ids(self, populate_data):
         # Arrange
-        expected_response = ["transition_template_id_1", "transition_template_id_3",
-                             "transition_template_id_5"]
-        transition_template_ids = ["transition_template_id_1", "transition_template_id_3",
-                                   "transition_template_id_5"]
+        expected_response = ["template_1", "template_3",
+                             "template_5"]
+        transition_template_ids = ["template_2", "template_4",
+                                   "template_6", "template_1", "template_3",
+                                   "template_5"]
         storage = TaskTemplateStorageImplementation()
 
         # Act
@@ -30,10 +31,9 @@ class TestGetValidTaskTemplateIds:
 
     def test_get_valid_task_template_ids_given_ids_are_invalid(self, populate_data):
         # Arrange
-        expected_response = ["transition_template_id_2", "transition_template_id_4",
-                             "transition_template_id_6"]
-        transition_template_ids = ["transition_template_id_2", "transition_template_id_4",
-                                   "transition_template_id_6"]
+        expected_response = []
+        transition_template_ids = ["template_2", "template_4",
+                                   "template_6"]
         storage = TaskTemplateStorageImplementation()
 
         # Act
