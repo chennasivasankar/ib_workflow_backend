@@ -60,7 +60,7 @@ class TestTaskTemplateStorageImplementation:
         )
 
         # Act
-        result = storage.get_gofs_to_task_templates_from_permitted_gofs(
+        result = storage.get_gofs_to_template_from_permitted_gofs(
             gof_ids=expected_gof_ids
         )
 
@@ -71,12 +71,12 @@ class TestTaskTemplateStorageImplementation:
         # Arrange
         from ib_tasks.tests.factories.models import TaskTemplateFactory
         from ib_tasks.interactors.storage_interfaces.task_templates_dtos \
-            import TaskTemplateDTO
+            import TemplateDTO
         expected_output = [
-            TaskTemplateDTO(
+            TemplateDTO(
                 template_id='template_1', template_name='Template 1'
             ),
-            TaskTemplateDTO(
+            TemplateDTO(
                 template_id='template_2', template_name='Template 2'
             )
         ]
@@ -116,8 +116,8 @@ class TestTaskTemplateStorageImplementation:
         # Act
         global_constants_of_template = storage. \
             get_constant_names_of_existing_global_constants_of_template(
-                template_id=template_id
-            )
+            template_id=template_id
+        )
 
         # Assert
         assert global_constants_of_template == expected_constant_names
@@ -131,8 +131,8 @@ class TestTaskTemplateStorageImplementation:
         # Act
         global_constants_of_template = storage. \
             get_constant_names_of_existing_global_constants_of_template(
-                template_id=template_id
-            )
+            template_id=template_id
+        )
 
         # Assert
         assert global_constants_of_template == []
@@ -338,3 +338,42 @@ class TestTaskTemplateStorageImplementation:
         assert gof_to_task_template_objs[1].order == gof_dtos[0].order
         assert gof_to_task_template_objs[1].enable_add_another_gof == \
                gof_dtos[1].enable_add_another_gof
+
+    def test_get_transition_template_dto(self, storage):
+        # Arrange
+        transition_template = TaskTemplateFactory()
+
+        # Act
+        transition_template_dto = storage.get_transition_template_dto(
+            transition_template_id=transition_template.template_id)
+
+        # Assert
+        assert transition_template_dto.template_id == \
+            transition_template.template_id
+        assert transition_template_dto.template_name == \
+            transition_template.name
+
+    def test_check_is_transition_template_exists_with_invalid_transition_template_id_returns_false(self, storage):
+        # Arrange
+        transition_template_id = "template_1"
+
+        # Act
+        is_transition_template_exists = \
+            storage.check_is_transition_template_exists(
+                transition_template_id=transition_template_id)
+
+        # Assert
+        assert is_transition_template_exists is False
+
+    def test_check_is_transition_template_exists_with_valid_transition_template_id_returns_true(self, storage):
+        # Arrange
+        transition_template = TaskTemplateFactory(is_transition_template=True)
+        transition_template_id = transition_template.template_id
+
+        # Act
+        is_transition_template_exists = \
+            storage.check_is_transition_template_exists(
+                transition_template_id=transition_template_id)
+
+        # Assert
+        assert is_transition_template_exists is True

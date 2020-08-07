@@ -9,7 +9,7 @@ like wise
 from unittest.mock import patch
 
 import pytest
-from django_swagger_utils.utils.test_v1 import TestUtils
+from django_swagger_utils.utils.test_utils import TestUtils
 
 from ib_iam.tests.common_fixtures.reset_fixture import \
     reset_sequence_for_user_profile_dto_factory

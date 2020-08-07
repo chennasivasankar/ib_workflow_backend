@@ -1,12 +1,12 @@
 from .action_permitted_roles import ActionPermittedRoles
 from .stage import Stage
 from .stage_actions import StageAction
+from .stage_permitted_roles import StagePermittedRoles
 from .task import Task
 from .task_gof import TaskGoF
 from .task_gof_field import TaskGoFField
 from .task_log import TaskLog
 from .task_template_initial_stages import TaskTemplateInitialStage
-
 from .task_template_status_variable import TaskTemplateStatusVariable
 from .task_template import TaskTemplate
 from .template_status_variables import TaskTemplateStatusVariables
@@ -25,6 +25,8 @@ from .filter import Filter
 from .filter_condition import FilterCondition
 
 __all__ = [
+    "Filter",
+    "FilterCondition",
     "TaskStatusVariable",
     "ActionPermittedRoles",
     "TaskTemplateGoFs",
@@ -44,6 +46,5 @@ __all__ = [
     "TaskTemplateInitialStage",
     "StageRole"
     "TaskTemplateInitialStage",
-    'Filter',
-    'FilterCondition'
+    "StagePermittedRoles"
 ]
