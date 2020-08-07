@@ -97,6 +97,11 @@ class TaskTemplateFactory(factory.django.DjangoModelFactory):
     name = factory.sequence(lambda n: "Template {}".format(n + 1))
 
 
+class TaskTemplateWithTransitionFactory(TaskTemplateFactory):
+
+    is_transition_template = factory.Iterator([True, False])
+
+
 class TaskTemplateStatusVariableFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = TaskTemplateStatusVariable
@@ -249,7 +254,6 @@ class FilterFactory(factory.django.DjangoModelFactory):
 
 
 class FilterConditionFactory(factory.django.DjangoModelFactory):
-
     class Meta:
         model = FilterCondition
 
