@@ -39,22 +39,22 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids
         get_user_role_ids(mocker)
-        TaskTemplateWith2GoFsFactory.create(
-            template_id="template_1")
-        gof_objs = list(GoF.objects.all())
-        gof_ids = [
-            gof.gof_id
-            for gof in gof_objs
-        ]
+        template_id = "template_1"
+        gofs = GoFFactory.create_batch(size=2)
+        task_template = TaskTemplateFactory.create(template_id=template_id)
+        GoFToTaskTemplateFactory.create_batch(
+            size=2, task_template=task_template, gof=factory.Iterator(gofs)
+        )
+        gof_ids = [gof.gof_id for gof in gofs]
         plain_text = FieldFactory.create(
-            gof=gof_objs[0], field_type=FieldTypes.PLAIN_TEXT.value
+            gof=gofs[0], field_type=FieldTypes.PLAIN_TEXT.value
         )
         image_field = FieldFactory.create(
-            gof=gof_objs[0], field_type=FieldTypes.IMAGE_UPLOADER.value,
+            gof=gofs[0], field_type=FieldTypes.IMAGE_UPLOADER.value,
             allowed_formats='[".jpeg", ".png", ".svg"]'
         )
         checkbox_group = FieldFactory.create(
-            gof=gof_objs[1], field_type=FieldTypes.CHECKBOX_GROUP.value,
+            gof=gofs[1], field_type=FieldTypes.CHECKBOX_GROUP.value,
             field_values='["interactors", "storages", "presenters"]'
         )
 
@@ -102,6 +102,18 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
         body = {
             "task_id": 1,
             "action_id": 1,
+            "title": "updated_title",
+            "description": "updated_description",
+            "start_date": "2099-12-31",
+            "due_date": {
+                "date": "2099-12-31",
+                "time": "12:00:00"
+            },
+            "priority": "HIGH",
+            "stage_assignee": {
+                "stage_id": 1,
+                "assignee_id": "assignee_id_1"
+            },
             "task_gofs": [
                 {
                     "gof_id": "gof_1",
@@ -113,7 +125,8 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
                         },
                         {
                             "field_id": "FIELD_ID-1",
-                            "field_response": "https://image.flaticon.com/icons/svg/1829/1829070.svg"
+                            "field_response":
+                                "https://image.flaticon.com/icons/svg/1829/1829070.svg"
                         }
                     ]
                 },
@@ -140,7 +153,12 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
         task_object = Task.objects.get(id=1)
         snapshot.assert_match(task_object.template_id, 'template_id')
         snapshot.assert_match(task_object.created_by, 'created_by_id')
-        snapshot.assert_match(task_object.template_id, 'task')
+        snapshot.assert_match(task_object.template_id, 'task_template_id')
+        snapshot.assert_match(task_object.title, 'task_title')
+        snapshot.assert_match(task_object.description, 'task_description')
+        snapshot.assert_match(str(task_object.start_date), 'task_start_date')
+        snapshot.assert_match(str(task_object.due_date), 'task_due_date')
+        snapshot.assert_match(task_object.priority, 'task_priority')
 
         from ib_tasks.models.task_gof import TaskGoF
         task_gofs = TaskGoF.objects.filter(task_id=1)
@@ -150,6 +168,7 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
                                   f'same_gof_order_{counter}')
             snapshot.assert_match(task_gof.gof_id, f'gof_id_{counter}')
             snapshot.assert_match(task_gof.task_id, f'task_id_{counter}')
+
             counter = counter + 1
 
         from ib_tasks.models.task_gof_field import TaskGoFField

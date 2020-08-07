@@ -123,8 +123,11 @@ class UserActionOnTaskInteractor:
             action_storage=self.action_storage,
             stage_storage=self.stage_storage
         )
+        from ib_boards.constants.enum import VIEWTYPE
         task_stage_details_dtos = interactor.get_task_fields_and_action(
-            task_dtos=task_stage_dtos, user_id=self.user_id)
+            task_dtos=task_stage_dtos, user_id=self.user_id,
+            view_type=VIEWTYPE.KANBAN.value
+        )
         actions_dto, fields_dto = self._get_field_dtos_and_actions_dtos(
             task_stage_details_dtos=task_stage_details_dtos)
         return actions_dto, fields_dto
