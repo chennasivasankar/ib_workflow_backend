@@ -34,7 +34,6 @@ class StageActionDTO:
     transition_template_id: str
 
 
-
 @dataclass()
 class TaskTemplateStageActionDTO(StageActionDTO):
     task_template_id: str
@@ -82,3 +81,18 @@ class TaskIdWithStageAssigneeDTO:
     task_id: int
     db_stage_id: int
     assignee_id: str
+
+
+@dataclass
+class UserDetailsDTO:
+    assignee_id: str
+    assignee_name: str
+    profile_pic_url: str
+
+
+
+
+@dataclass
+class StageWithUserDetailsDTO(UserDetailsDTO):
+    db_stage_id: int
+    stage_display_name: str

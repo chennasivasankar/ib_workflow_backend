@@ -51,3 +51,7 @@ class ActionStorageInterface(ABC):
                             user_roles: List[str]) -> \
             List[StageActionDetailsDTO]:
         pass
+
+    @abc.abstractmethod
+    def validate_action(self, action_id: int) -> bool:
+        pass
