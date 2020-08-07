@@ -28,7 +28,8 @@ class DuplicateStageIds(Exception):
 
 class InvalidStageDisplayLogic(Exception):
     def __init__(self, invalid_stage_display_logic_stages: List[str]):
-        self.invalid_stage_display_logic_stages = invalid_stage_display_logic_stages
+        self.invalid_stage_display_logic_stages = \
+            invalid_stage_display_logic_stages
 
 
 class InvalidStagesDisplayName(Exception):
@@ -47,3 +48,18 @@ class InvalidTaskStageIds(Exception):
 
 class StageIdsListEmptyException(Exception):
     pass
+
+
+class InvalidStageId(Exception):
+
+    def __init__(self, stage_id: int):
+        self.stage_id = stage_id
+
+
+class TransitionTemplateIsNotRelatedToGivenStageAction(Exception):
+
+    def __init__(self, transition_checklist_template_id, action_id, stage_id):
+        self.stage_id = stage_id
+        self.action_id = action_id
+        self.transition_checklist_template_id = \
+            transition_checklist_template_id

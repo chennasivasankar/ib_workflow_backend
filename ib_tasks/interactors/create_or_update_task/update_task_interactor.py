@@ -1,5 +1,10 @@
-from typing import Optional, List
+from typing import Optional, List, Union
 
+from ib_tasks.constants.config import TIME_FORMAT
+from ib_tasks.exceptions.datetime_custom_exceptions import \
+    DueTimeHasExpiredForToday, InvalidDueTimeFormat, \
+    StartDateIsAheadOfDueDate, \
+    DueDateIsBehindStartDate
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     EmptyValueForRequiredField, InvalidPhoneNumberValue, \
     InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
@@ -17,8 +22,8 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
 from ib_tasks.interactors.create_or_update_task. \
-    create_or_update_task_base_validations import \
-    CreateOrUpdateTaskBaseValidationsInteractor
+    template_gofs_fields_base_validations import \
+    TemplateGoFsFieldsBaseValidationsInteractor
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
 from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrder
 from ib_tasks.interactors.presenter_interfaces.update_task_presenter import \
@@ -40,7 +45,7 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.task_dtos import UpdateTaskDTO
+from ib_tasks.interactors.task_dtos import UpdateTaskDTO, CreateTaskDTO
 
 
 class UpdateTaskInteractor:
@@ -144,15 +149,17 @@ class UpdateTaskInteractor:
         self._validate_task_id(task_id)
         task_template_id = \
             self.create_task_storage.get_template_id_for_given_task(task_id)
+        self._validate_task_details(task_dto)
         base_validations_interactor = \
-            CreateOrUpdateTaskBaseValidationsInteractor(
+            TemplateGoFsFieldsBaseValidationsInteractor(
                 self.task_storage, self.gof_storage,
                 self.create_task_storage, self.storage,
                 self.field_storage
             )
-        base_validations_interactor\
-            .perform_base_validations_for_create_or_update_task(
-            task_dto, task_template_id, action_type=None)
+        base_validations_interactor \
+            .perform_base_validations_for_template_gofs_and_fields(
+            task_dto.gof_fields_dtos, task_dto.created_by_id,
+            task_template_id, action_type=None)
         self.create_task_storage.update_task_with_given_task_details(
             task_dto=task_dto)
         existing_gofs = \
@@ -313,3 +320,39 @@ class UpdateTaskInteractor:
             if gof_already_exists:
                 return True
         return False
+
+    def _validate_task_details(self,
+                               task_dto: Union[CreateTaskDTO, UpdateTaskDTO]):
+        start_date = task_dto.start_date
+        due_date = task_dto.due_date
+        due_time = task_dto.due_time
+        self._validate_start_date_and_due_date_dependencies(
+            start_date, due_date
+        )
+        import datetime
+        self._validate_due_time_format(due_time)
+        due_time_obj = datetime.datetime.strptime(due_time, TIME_FORMAT).time()
+        now_time = datetime.datetime.now().time()
+        due_time_is_expired_if_due_date_is_today = (
+                due_date == datetime.datetime.today().date() and
+                due_time_obj < now_time)
+        if due_time_is_expired_if_due_date_is_today:
+            raise DueTimeHasExpiredForToday(due_time)
+
+    @staticmethod
+    def _validate_due_time_format(due_time: str):
+        import datetime
+        try:
+            datetime.datetime.strptime(due_time, TIME_FORMAT)
+        except ValueError:
+            raise InvalidDueTimeFormat(due_time)
+
+    @staticmethod
+    def _validate_start_date_and_due_date_dependencies(start_date,
+                                                       due_date):
+        start_date_is_ahead_of_due_date = start_date > due_date
+        if start_date_is_ahead_of_due_date:
+            raise StartDateIsAheadOfDueDate(start_date, due_date)
+        due_date_is_behind_start_date = due_date < start_date
+        if due_date_is_behind_start_date:
+            raise DueDateIsBehindStartDate(due_date, start_date)
