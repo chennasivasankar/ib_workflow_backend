@@ -2,6 +2,7 @@ import json
 from typing import List
 
 from ib_boards.exceptions.custom_exceptions import InvalidTemplateFields
+from ib_tasks.constants.constants import ALL_ROLES_ID
 from ib_tasks.exceptions.roles_custom_exceptions import InvalidStageRolesException
 from ib_tasks.exceptions.stage_custom_exceptions import (
     InvalidStageValues, DuplicateStageIds, InvalidStageDisplayLogic,
@@ -40,7 +41,7 @@ class CreateOrUpdateStagesInteractor:
         existing_stage_ids = self._get_existing_stage_ids(stage_ids)
         self._validate_values_for_stages(stages_details)
 
-        self._validate_stage_display_logic(stages_details)
+        # self._validate_stage_display_logic(stages_details)
 
         task_fields_dtos = self.task_storage.get_field_ids_for_given_task_template_ids(
             task_template_ids)
@@ -90,7 +91,7 @@ class CreateOrUpdateStagesInteractor:
 
         invalid_role_ids = []
         for role in all_unique_roles:
-            if role not in db_roles:
+            if role not in db_roles and role != ALL_ROLES_ID and role.strip():
                 invalid_role_ids.append(role)
 
         if invalid_role_ids:
@@ -99,9 +100,15 @@ class CreateOrUpdateStagesInteractor:
     @staticmethod
     def _get_required_constants(stage, stages_dict):
         template_id = stages_dict[stage]
+        kanban = set([])
+        list_value = set([])
+
         task_template_id = stages_dict[stage].task_template_id
-        kanban = set(json.loads(template_id.card_info_kanban))
-        list_value = set(json.loads(template_id.card_info_list))
+        if template_id.card_info_kanban:
+            kanban = set(json.loads(template_id.card_info_kanban))
+        if template_id.card_info_list:
+            list_value = set(json.loads(template_id.card_info_list))
+
         return kanban, list_value, task_template_id, template_id
 
     def _create_or_update_stages(self,

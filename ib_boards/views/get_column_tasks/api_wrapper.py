@@ -17,7 +17,9 @@ def api_wrapper(*args, **kwargs):
     offset = params['offset']
     limit = params['limit']
     request_body = params['request_data']
-    view_type = request_body['view_type']
+
+    from ib_boards.constants.enum import ViewType
+    view_type = request_body.get('view_type', ViewType.KANBAN.value)
 
     storage = StorageImplementation()
     presenter = GetColumnTasksPresenterImplementation()
