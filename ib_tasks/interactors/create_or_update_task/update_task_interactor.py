@@ -19,6 +19,8 @@ from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
+from ib_tasks.exceptions.stage_custom_exceptions import \
+    StageIdsWithInvalidPermissionForAssignee
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
 from ib_tasks.interactors.create_or_update_task. \
@@ -28,6 +30,8 @@ from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
 from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrder
 from ib_tasks.interactors.presenter_interfaces.update_task_presenter import \
     UpdateTaskPresenterInterface
+from ib_tasks.interactors.stages_dtos import StageAssigneeDTO, \
+    TaskIdWithStageAssigneesDTO
 from ib_tasks.interactors.storage_interfaces. \
     create_or_update_task_storage_interface import \
     CreateOrUpdateTaskStorageInterface
@@ -46,6 +50,8 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import \
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.task_dtos import UpdateTaskDTO, CreateTaskDTO
+from ib_tasks.interactors.update_task_stage_assignees_interactor import \
+    UpdateTaskStageAssigneesInteractor
 
 
 class UpdateTaskInteractor:
@@ -136,6 +142,11 @@ class UpdateTaskInteractor:
         except InvalidFileFormat as err:
             return presenter.raise_exception_for_not_acceptable_file_format(
                 err)
+        except StageIdsWithInvalidPermissionForAssignee as err:
+            return \
+                presenter.raise_stage_ids_with_invalid_permission_for_assignee_exception(
+                err
+            )
 
     def _prepare_update_task_response(
             self, task_dto: UpdateTaskDTO,
@@ -193,6 +204,20 @@ class UpdateTaskInteractor:
                 task_gof_dtos_for_updation, task_dto, existing_fields)
         if task_gof_dtos_for_creation:
             self._create_task_gofs(task_gof_dtos_for_creation, task_dto)
+        update_stage_assignee_interactor = UpdateTaskStageAssigneesInteractor(
+            stage_storage=self.stage_storage, task_storage=self.task_storage
+        )
+        stage_assignees = [
+            StageAssigneeDTO(
+                db_stage_id=task_dto.stage_assignee.stage_id,
+                assignee_id=task_dto.stage_assignee.assignee_id
+            )
+        ]
+        task_stage_assignee_dto = TaskIdWithStageAssigneesDTO(
+            task_id=task_dto.task_id, stage_assignees=stage_assignees
+        )
+        update_stage_assignee_interactor.update_task_stage_assignees(
+            task_stage_assignee_dto)
 
     def _validate_task_id(
             self, task_id: int) -> Optional[InvalidTaskException]:

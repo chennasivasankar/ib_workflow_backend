@@ -14,6 +14,8 @@ from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
     UserActionPermissionDenied, UserBoardPermissionDenied
+from ib_tasks.exceptions.stage_custom_exceptions import \
+    StageIdsWithInvalidPermissionForAssignee
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
 from ib_tasks.interactors.create_or_update_task.update_task_interactor import \
@@ -139,6 +141,11 @@ class SaveAndActOnATaskInteractor:
         except UserBoardPermissionDenied as err:
             return presenter.raise_exception_for_user_board_permission_denied(
                 error_obj=err
+            )
+        except StageIdsWithInvalidPermissionForAssignee as err:
+            return \
+                presenter.raise_stage_ids_with_invalid_permission_for_assignee_exception(
+                err
             )
 
     def _prepare_save_and_act_response(self, presenter, task_dto):

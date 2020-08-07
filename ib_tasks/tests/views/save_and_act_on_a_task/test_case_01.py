@@ -11,7 +11,8 @@ from ib_tasks.models import GoF
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories.models import StageModelFactory, StageActionFactory, \
     ActionPermittedRolesFactory, \
-    TaskTemplateWith2GoFsFactory, TaskStageFactory, TaskStatusVariableFactory
+    TaskTemplateWith2GoFsFactory, TaskStageFactory, TaskStatusVariableFactory, \
+    StagePermittedRolesFactory
 
 
 class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
@@ -35,6 +36,7 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
         FieldFactory.reset_sequence()
         FieldRoleFactory.reset_sequence()
         GoFToTaskTemplateFactory.reset_sequence()
+        StagePermittedRolesFactory.reset_sequence()
 
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids
@@ -96,6 +98,7 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
         ActionPermittedRolesFactory.create(
             action=action, role_id="FIN_PAYMENT_REQUESTER")
         TaskStageFactory.create(task=task_obj, stage=stage)
+        StagePermittedRolesFactory.create(stage=stage)
 
     @pytest.mark.django_db
     def test_case(self, snapshot):
