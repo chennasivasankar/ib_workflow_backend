@@ -149,12 +149,16 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         actions_dto = StageActionDTOFactory.create_batch(size=2)
         action_dto = StageActionDTOFactory(button_text="")
         actions_dto.append(action_dto)
-
+        template_storage = create_autospec(TaskTemplateStorageInterface)
+        template_storage.get_valid_transition_template_ids.return_value = \
+            ["transition_template_id_1", "transition_template_id_2",
+             "transition_template_id_3"]
         storage = create_autospec(StorageInterface)
         stage_ids = ["stage_1", "stage_2", "stage_3"]
         storage.get_valid_stage_ids.return_value = stage_ids
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
+            template_storage=template_storage,
             actions_dto=actions_dto
         )
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
@@ -181,10 +185,15 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         action_dto = StageActionDTOFactory(stage_id="stage_2", button_text="pay")
         actions_dto.append(action_dto)
         storage = create_autospec(StorageInterface)
+        template_storage = create_autospec(TaskTemplateStorageInterface)
+        template_storage.get_valid_transition_template_ids.return_value = \
+            ["transition_template_id_1", "transition_template_id_2",
+             "transition_template_id_3"]
         stage_ids = ["stage_1", "stage_2"]
         storage.get_valid_stage_ids.return_value = stage_ids
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
+            template_storage=template_storage,
             actions_dto=actions_dto
         )
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
@@ -211,9 +220,14 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         action_dto = StageActionDTOFactory(stage_id="stage_2")
         actions_dto.append(action_dto)
         storage = create_autospec(StorageInterface)
+        template_storage = create_autospec(TaskTemplateStorageInterface)
+        template_storage.get_valid_transition_template_ids.return_value = \
+            ["transition_template_id_1", "transition_template_id_2",
+             "transition_template_id_3"]
         storage.get_valid_stage_ids.return_value = ["stage_1", "stage_2"]
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
+            template_storage=template_storage,
             actions_dto=actions_dto
         )
 
@@ -237,10 +251,15 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         create_stage_actions_dto = actions_dto
         stage_ids = ["stage_1", "stage_2"]
         storage = create_autospec(StorageInterface)
+        template_storage = create_autospec(TaskTemplateStorageInterface)
+        template_storage.get_valid_transition_template_ids.return_value = \
+            ["transition_template_id_1", "transition_template_id_2",
+             "transition_template_id_3"]
         storage.get_valid_stage_ids.return_value = stage_ids
         storage.get_stage_action_names.return_value = stage_actions_dto
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
+            template_storage=template_storage,
             actions_dto=actions_dto
         )
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
@@ -271,10 +290,15 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         update_stage_actions_dto = [actions_dto[0]]
         stage_ids = ["stage_1", "stage_2"]
         storage = create_autospec(StorageInterface)
+        template_storage = create_autospec(TaskTemplateStorageInterface)
+        template_storage.get_valid_transition_template_ids.return_value = \
+            ["transition_template_id_1", "transition_template_id_2",
+             "transition_template_id_3"]
         storage.get_valid_stage_ids.return_value = stage_ids
         storage.get_stage_action_names.return_value = stage_actions_dto
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
+            template_storage=template_storage,
             actions_dto=actions_dto
         )
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
@@ -313,10 +337,15 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         update_stage_actions_dto = [actions_dto[0]]
         stage_ids = ["stage_1", "stage_2"]
         storage = create_autospec(StorageInterface)
+        template_storage = create_autospec(TaskTemplateStorageInterface)
+        template_storage.get_valid_transition_template_ids.return_value = \
+            ["transition_template_id_1", "transition_template_id_2",
+             "transition_template_id_3"]
         storage.get_valid_stage_ids.return_value = stage_ids
         storage.get_stage_action_names.return_value = stage_actions_dto
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
+            template_storage=template_storage,
             actions_dto=actions_dto
         )
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
