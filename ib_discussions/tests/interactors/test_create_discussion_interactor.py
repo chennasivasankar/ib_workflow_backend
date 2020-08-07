@@ -21,9 +21,9 @@ class TestCreateDiscussionInteractor:
 
     @pytest.fixture()
     def discussion_dto(self):
-        from ib_discussions.interactors.DTOs.common_dtos import DiscussionDTO
+        from ib_discussions.interactors.dtos.dtos import DiscussionWithEntityDetailsDTO
         from ib_discussions.constants.enum import EntityType
-        discussion_dto = DiscussionDTO(
+        discussion_dto = DiscussionWithEntityDetailsDTO(
             user_id="1",
             entity_id="6a76277b-fb73-4920-a79d-4c65814f9de5",
             entity_type=EntityType.TASK.value,
@@ -93,7 +93,7 @@ class TestCreateDiscussionInteractor:
             self, storage_mock, presenter_mock, discussion_dto
     ):
         # Arrange
-        from ib_discussions.interactors.discussion_interactor import \
+        from ib_discussions.exceptions.custom_exceptions import \
             DiscussionSetNotFound
         storage_mock.get_discussion_set_id_if_exists.side_effect \
             = DiscussionSetNotFound
@@ -104,7 +104,7 @@ class TestCreateDiscussionInteractor:
 
         # Act
         response = interactor.create_discussion_wrapper(
-            discussion_dto=discussion_dto, presenter=presenter_mock
+            discussion_with_entity_details_dto=discussion_dto, presenter=presenter_mock
         )
 
         # Assert
@@ -132,7 +132,7 @@ class TestCreateDiscussionInteractor:
 
         # Act
         response = interactor.create_discussion_wrapper(
-            discussion_dto=discussion_dto, presenter=presenter_mock
+            discussion_with_entity_details_dto=discussion_dto, presenter=presenter_mock
         )
 
         # Assert

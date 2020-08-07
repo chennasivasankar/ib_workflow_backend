@@ -31,11 +31,11 @@ class TeamPresenterInterface(ABC):
         pass
 
     @abstractmethod
-    def get_invalid_users_response_for_add_team(self):
+    def get_invalid_users_response_for_add_team(self, exception):
         pass
 
     @abstractmethod
-    def get_duplicate_users_response_for_add_team(self):
+    def get_duplicate_users_response_for_add_team(self, exception):
         pass
 
     @abstractmethod

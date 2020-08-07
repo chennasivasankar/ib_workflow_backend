@@ -22,9 +22,9 @@ class UpdateCompanyPresenterInterface(ABC):
         pass
 
     @abstractmethod
-    def get_duplicate_users_response_for_update_company(self):
+    def get_duplicate_users_response_for_update_company(self, exception):
         pass
 
     @abstractmethod
-    def get_invalid_users_response_for_update_company(self):
+    def get_invalid_users_response_for_update_company(self, exception):
         pass

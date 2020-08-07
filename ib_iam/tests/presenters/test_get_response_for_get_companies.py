@@ -21,14 +21,14 @@ class TestGetResponseForGetCompanies:
     def test_given_zero_companies_exists_returns_http_response(self):
         from ib_iam.interactors.presenter_interfaces \
             .get_companies_presenter_interface import \
-            CompanyWithEmployeesDetailsDTO
+            CompanyWithEmployeeIdsAndUserDetailsDTO
 
         json_presenter = GetCompaniesPresenterImplementation()
         http_response = json_presenter.get_response_for_get_companies(
-            company_details_dtos=CompanyWithEmployeesDetailsDTO(
+            company_details_dtos=CompanyWithEmployeeIdsAndUserDetailsDTO(
                 company_dtos=[],
                 company_id_with_employee_ids_dtos=[],
-                employee_dtos=[])
+                user_dtos=[])
         )
 
         response = json.loads(http_response.content)
@@ -37,36 +37,35 @@ class TestGetResponseForGetCompanies:
 
 @pytest.fixture
 def get_company_details_dtos(
-        expected_employee_dtos,
+        expected_user_dtos,
         expected_comapny_and_company_employee_ids_dto):
     from ib_iam.interactors.presenter_interfaces \
         .get_companies_presenter_interface import \
-        CompanyWithEmployeesDetailsDTO
+        CompanyWithEmployeeIdsAndUserDetailsDTO
 
     company_dtos = expected_comapny_and_company_employee_ids_dto[0]
     company_id_with_employee_ids_dtos = \
         expected_comapny_and_company_employee_ids_dto[1]
-    employee_dtos = expected_employee_dtos
-    company_details_dtos = CompanyWithEmployeesDetailsDTO(
+    company_details_dtos = CompanyWithEmployeeIdsAndUserDetailsDTO(
         company_dtos=company_dtos,
         company_id_with_employee_ids_dtos=company_id_with_employee_ids_dtos,
-        employee_dtos=employee_dtos
+        user_dtos=expected_user_dtos
     )
     return company_details_dtos
 
 
 @pytest.fixture
-def expected_employee_dtos():
-    from ib_iam.tests.factories.storage_dtos import EmployeeDTOFactory
-    EmployeeDTOFactory.reset_sequence(1)
+def expected_user_dtos():
+    from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
+    UserProfileDTOFactory.reset_sequence(1)
     employee_ids = [
         '2bdb417e-4632-419a-8ddd-085ea272c6eb',
         '548a803c-7b48-47ba-a700-24f2ea0d1280',
         '4b8fb6eb-fa7d-47c1-8726-cd917901104e',
         '7ee2c7b4-34c8-4d65-a83a-f87da75db24e']
-    employee_dtos = [EmployeeDTOFactory(employee_id=employee_id)
+    user_dtos = [UserProfileDTOFactory(user_id=employee_id)
                      for employee_id in employee_ids]
-    return employee_dtos
+    return user_dtos
 
 
 @pytest.fixture

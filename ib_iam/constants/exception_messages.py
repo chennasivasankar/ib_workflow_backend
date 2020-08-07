@@ -48,7 +48,7 @@ ROLE_DESCRIPTION_SHOULD_NOT_BE_EMPTY = (
 )
 
 DUPLICATE_ROLE_IDS = (
-    "can't create roles with duplicate role_ids",
+    "can't create roles with duplicate role_ids are {duplicate_role_ids}",
     "DUPLICATE_ROLE_IDS"
 )
 
@@ -116,14 +116,14 @@ TEAM_NAME_ALREADY_EXISTS_FOR_ADD_TEAM = (
     "Given '%s' is already exists, so choose another",
     "TEAM_NAME_ALREADY_EXISTS"
 )
-INVALID_USERS_FOR_ADD_TEAM = (
-    "Given users are invalid(not found), please check it",
-    "INVALID_USERS"
+INVALID_USER_IDS_FOR_ADD_TEAM = (
+    "Given user ids '%s' are not found",
+    "INVALID_USER_IDS"
 )
 
-DUPLICATE_USERS_FOR_ADD_TEAM = (
-    "Given users consists of duplicates, please check it",
-    "DUPLICATE_USERS"
+DUPLICATE_USER_IDS_FOR_ADD_TEAM = (
+    "Given user ids '%s' are duplicated, please check it",
+    "DUPLICATE_USER_IDS"
 )
 
 USER_HAS_NO_ACCESS_FOR_UPDATE_TEAM = (
@@ -131,9 +131,9 @@ USER_HAS_NO_ACCESS_FOR_UPDATE_TEAM = (
     "USER_HAS_NO_ACCESS"
 )
 
-INVALID_TEAM_FOR_UPDATE_TEAM = (
-    "Given team is invalid(NotFound)",
-    "INVALID_TEAM"
+INVALID_TEAM_ID_FOR_UPDATE_TEAM = (
+    "Given team id is invalid(NotFound)",
+    "INVALID_TEAM_ID"
 )
 
 TEAM_NAME_ALREADY_EXISTS_FOR_UPDATE_TEAM = (
@@ -141,14 +141,14 @@ TEAM_NAME_ALREADY_EXISTS_FOR_UPDATE_TEAM = (
     "TEAM_NAME_ALREADY_EXISTS"
 )
 
-DUPLICATE_USERS_FOR_UPDATE_TEAM = (
-    "Given users consists of duplicates, so update is not possible",
-    "DUPLICATE_USERS"
+DUPLICATE_USER_IDS_FOR_UPDATE_TEAM = (
+    "Given users '%s' are duplicated, so update is not possible",
+    "DUPLICATE_USER_IDS"
 )
 
-INVALID_USERS_FOR_UPDATE_TEAM = (
-    "Given users are invalid(not found), so update is not possible",
-    "INVALID_USERS"
+INVALID_USER_IDS_FOR_UPDATE_TEAM = (
+    "Given users '%s' are invalid(not found), so update is not possible",
+    "INVALID_USER_IDS"
 )
 
 USER_HAS_NO_ACCESS_FOR_DELETE_TEAM = (
@@ -156,9 +156,9 @@ USER_HAS_NO_ACCESS_FOR_DELETE_TEAM = (
     "USER_HAS_NO_ACCESS"
 )
 
-INVALID_TEAM_FOR_DELETE_TEAM = (
+INVALID_TEAM_ID_FOR_DELETE_TEAM = (
     "Given team is invalid(NotFound)",
-    "INVALID_TEAM"
+    "INVALID_TEAM_ID"
 )
 
 USER_HAS_NO_ACCESS_FOR_GET_COMPANIES = (
@@ -175,24 +175,24 @@ COMPANY_NAME_ALREADY_EXISTS_FOR_ADD_COMPANY = (
     "Given '%s' is already exists, so choose another",
     "COMPANY_NAME_ALREADY_EXISTS"
 )
-INVALID_USERS_FOR_ADD_COMPANY = (
-    "Given users are invalid(not found), please check it",
-    "INVALID_USERS"
+INVALID_USER_IDS_FOR_ADD_COMPANY = (
+    "Given users '%s' are invalid(not found), please check it",
+    "INVALID_USER_IDS"
 )
 
-DUPLICATE_USERS_FOR_ADD_COMPANY = (
-    "Given users consists of duplicates, please check it",
-    "DUPLICATE_USERS"
+DUPLICATE_USER_IDS_FOR_ADD_COMPANY = (
+    "Given users '%s' are duplicated, please check it",
+    "DUPLICATE_USER_IDS"
 )
 
 USER_HAS_NO_ACCESS_FOR_DELETE_COMPANY = (
-    "User has no access to delete team details as he is not an admin",
+    "User has no access to delete company details as he is not an admin",
     "USER_HAS_NO_ACCESS"
 )
 
-INVALID_COMPANY_FOR_DELETE_COMPANY = (
-    "Given company is invalid(NotFound)",
-    "INVALID_COMPANY"
+INVALID_COMPANY_ID_FOR_DELETE_COMPANY = (
+    "Given company id is invalid(NotFound)",
+    "INVALID_COMPANY_ID"
 )
 
 USER_HAS_NO_ACCESS_FOR_UPDATE_COMPANY = (
@@ -200,9 +200,9 @@ USER_HAS_NO_ACCESS_FOR_UPDATE_COMPANY = (
     "USER_HAS_NO_ACCESS"
 )
 
-INVALID_COMPANY_FOR_UPDATE_COMPANY = (
-    "Given company is invalid(NotFound)",
-    "INVALID_COMPANY"
+INVALID_COMPANY_ID_FOR_UPDATE_COMPANY = (
+    "Given company id is invalid(NotFound)",
+    "INVALID_COMPANY_ID"
 )
 
 COMPANY_NAME_ALREADY_EXISTS_FOR_UPDATE_COMPANY = (
@@ -210,12 +210,13 @@ COMPANY_NAME_ALREADY_EXISTS_FOR_UPDATE_COMPANY = (
     "COMPANY_NAME_ALREADY_EXISTS"
 )
 
-DUPLICATE_USERS_FOR_UPDATE_COMPANY = (
-    "Given users consists of duplicates, so update is not possible",
-    "DUPLICATE_USERS"
+DUPLICATE_USER_IDS_FOR_UPDATE_COMPANY = (
+    "Given users '%s' are duplicated, so update is not possible",
+    "DUPLICATE_USER_IDS"
 )
 
-INVALID_USERS_FOR_UPDATE_COMPANY = (
-    "Given users are invalid(not found), so update is not possible",
-    "INVALID_USERS"
+
+INVALID_USER_IDS_FOR_UPDATE_COMPANY = (
+    "Given users '%s' invalid(not found), so update is not possible",
+    "INVALID_USER_IDS"
 )

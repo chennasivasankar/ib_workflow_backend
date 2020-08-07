@@ -30,3 +30,9 @@ class TeamWithUsersDetailsDTO:
     team_dtos: List[TeamDTO]
     team_user_ids_dtos: List[TeamUserIdsDTO]
     user_dtos: List[BasicUserDetailsDTO]
+
+
+@dataclass
+class DiscussionIdWithEditableStatusDTO:
+    discussion_id: str
+    is_editable: bool

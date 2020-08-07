@@ -1,5 +1,5 @@
 import pytest
-from ib_iam.exceptions.custom_exceptions import InvalidCompany
+from ib_iam.exceptions.custom_exceptions import InvalidCompanyId
 from ib_iam.storages.company_storage_implementation import (
     CompanyStorageImplementation
 )
@@ -21,7 +21,7 @@ class TestValidateIsCompanyExists:
         storage = CompanyStorageImplementation()
         invalid_company_id = 'd81337b5-da0c-44e7-9773-245338c01ccc'
 
-        with pytest.raises(InvalidCompany):
+        with pytest.raises(InvalidCompanyId):
             storage.validate_is_company_exists(company_id=invalid_company_id)
 
     def test_given_company_exists_returns_none(

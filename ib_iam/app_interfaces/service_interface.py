@@ -53,7 +53,7 @@ class ServiceInterface:
 
         from ib_iam.interactors.get_users_list_interactor import \
             GetUsersDetailsInteractor
-        interactor = GetUsersDetailsInteractor(storage=storage)
+        interactor = GetUsersDetailsInteractor(user_storage=storage)
 
         user_dtos = interactor.get_user_dtos(user_ids=user_ids)
         return user_dtos
@@ -66,7 +66,7 @@ class ServiceInterface:
 
         from ib_iam.interactors.get_users_list_interactor import \
             GetUsersDetailsInteractor
-        interactor = GetUsersDetailsInteractor(storage=storage)
+        interactor = GetUsersDetailsInteractor(user_storage=storage)
 
         valid_user_ids = interactor.get_valid_user_ids(user_ids=user_ids)
         return valid_user_ids
@@ -81,7 +81,7 @@ class ServiceInterface:
 
         from ib_iam.interactors.get_users_list_interactor import \
             GetUsersDetailsInteractor
-        interactor = GetUsersDetailsInteractor(storage=storage)
+        interactor = GetUsersDetailsInteractor(user_storage=storage)
 
         user_details_dtos = interactor.get_user_dtos_based_on_limit_and_offset(
             limit=limit, offset=offset, search_query=search_query
@@ -97,7 +97,7 @@ class ServiceInterface:
 
         from ib_iam.interactors.get_users_list_interactor import \
             GetUsersDetailsInteractor
-        interactor = GetUsersDetailsInteractor(storage=storage)
+        interactor = GetUsersDetailsInteractor(user_storage=storage)
 
         user_details_dtos = interactor.get_all_user_dtos_based_on_query(
             search_query=search_query
