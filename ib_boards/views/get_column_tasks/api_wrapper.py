@@ -16,6 +16,8 @@ def api_wrapper(*args, **kwargs):
     params = kwargs['request_query_params']
     offset = params['offset']
     limit = params['limit']
+    request_body = params['request_data']
+    view_type = request_body['view_type']
 
     storage = StorageImplementation()
     presenter = GetColumnTasksPresenterImplementation()
@@ -26,7 +28,8 @@ def api_wrapper(*args, **kwargs):
         user_id=user.user_id,
         column_id=column_id,
         offset=offset,
-        limit=limit
+        limit=limit,
+        view_type=view_type
     )
     response = interactor.get_column_tasks_wrapper(
         presenter=presenter, column_tasks_parameters=column_tasks_parameters

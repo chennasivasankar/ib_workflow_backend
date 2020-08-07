@@ -8,6 +8,7 @@ from unittest.mock import Mock
 import pytest
 import factory
 
+from ib_boards.constants.enum import VIEWTYPE
 from ib_boards.interactors.dtos import ColumnTasksParametersDTO, \
     TaskIdStageDTO, \
     TaskCompleteDetailsDTO, ColumnTaskIdsDTO
@@ -42,6 +43,7 @@ class TestGetColumnTasksInteractor:
     def get_column_tasks_dto(self):
         return ColumnTasksParametersDTO(
             user_id=1,
+            view_type=VIEWTYPE.LIST.value,
             column_id='COLUMN_ID_1',
             offset=0,
             limit=5
@@ -51,6 +53,7 @@ class TestGetColumnTasksInteractor:
     def get_column_tasks_dto_with_invalid_offset(self):
         return ColumnTasksParametersDTO(
             user_id=1,
+            view_type=VIEWTYPE.LIST.value,
             column_id='COLUMN_ID_1',
             offset=-1,
             limit=1
@@ -60,6 +63,7 @@ class TestGetColumnTasksInteractor:
     def get_column_tasks_dto_with_invalid_limit(self):
         return ColumnTasksParametersDTO(
             user_id=1,
+            view_type=VIEWTYPE.LIST.value,
             column_id='COLUMN_ID_1',
             offset=1,
             limit=-1
@@ -239,6 +243,7 @@ class TestGetColumnTasksInteractor:
             action_dtos, column_tasks_ids, task_stage_dtos,
             get_task_details_dto):
         # Arrange
+        view_type = get_column_tasks_dto.view_type
         stage_ids = ['STAGE_ID_1', 'STAGE_ID_2']
         task_ids = ['TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3']
         expected_response = Mock()
@@ -283,7 +288,7 @@ class TestGetColumnTasksInteractor:
             task_config_dtos=task_config_dto
         )
         task_details_mock.assert_called_once_with(
-            get_task_details_dto, user_id=user_id
+            get_task_details_dto, user_id=user_id, view_type=view_type
         )
         presenter_mock.get_response_for_column_tasks.assert_called_once_with(
             task_actions_dtos=task_complete_details_dto[0].action_dtos,

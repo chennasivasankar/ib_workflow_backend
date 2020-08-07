@@ -94,6 +94,7 @@ class ColumnTasksParametersDTO:
     column_id: str
     offset: int
     limit: int
+    view_type: VIEWTYPE
 
 
 @dataclass
