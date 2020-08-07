@@ -11,6 +11,7 @@ from ib_iam.interactors.get_list_of_teams_interactor import (
     GetListOfTeamsInteractor
 )
 from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
+from ...storages.user_storage_implementation import UserStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
@@ -21,18 +22,16 @@ def api_wrapper(*args, **kwargs):
     offset = query_params.get("offset")
     limit = query_params.get("limit")
 
-    storage = TeamStorageImplementation()
+    team_storage = TeamStorageImplementation()
+    user_storage = UserStorageImplementation()
     presenter = TeamPresenterImplementation()
-    interactor = GetListOfTeamsInteractor(storage=storage)
+    interactor = GetListOfTeamsInteractor(team_storage=team_storage,
+                                          user_storage=user_storage)
 
-    pagination_dto = PaginationDTO(
-        offset=offset,
-        limit=limit
-    )
+    pagination_dto = PaginationDTO(offset=offset, limit=limit)
 
     response = interactor.get_list_of_teams_wrapper(
         user_id=user_id,
         pagination_dto=pagination_dto,
-        presenter=presenter
-    )
+        presenter=presenter)
     return response

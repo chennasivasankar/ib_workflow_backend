@@ -14,6 +14,6 @@ snapshots['TestCase05GetTaskAPITestCase.test_case body'] = {
     ],
     'stages_with_actions': [
     ],
-    'task_id': 1,
+    'task_id': '1',
     'template_id': 'template_0'
 }

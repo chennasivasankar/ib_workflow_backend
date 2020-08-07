@@ -9,9 +9,9 @@ team_id = 'f2c02d98-f311-4ab2-8673-3daa00757002'
 
 
 @pytest.mark.django_db
-class TestGetTeamMemberIds:
+class TestDeleteAllMembersOfTeam:
 
-    def test_whether_it_returns_list_of_team_members_dtos(
+    def test_whether_it_returns_an_empty_users_list(
             self, create_members, create_teams
     ):
         storage = TeamStorageImplementation()
@@ -20,9 +20,7 @@ class TestGetTeamMemberIds:
             '4b8fb6eb-fa7d-47c1-8726-cd917901104e'
         ]
 
-        storage.delete_members_from_team(
-            team_id=team_id, user_ids=user_ids_to_delete
-        )
+        storage.delete_all_members_of_team(team_id=team_id)
 
         team_objects = UserTeam.objects.filter(
             team_id=team_id, user_id__in=user_ids_to_delete

@@ -11,6 +11,6 @@ snapshots['TestCase03DeleteTeamAPITestCase.test_case status_code'] = '404'
 
 snapshots['TestCase03DeleteTeamAPITestCase.test_case body'] = {
     'http_status_code': 404,
-    'res_status': 'INVALID_TEAM',
+    'res_status': 'INVALID_TEAM_ID',
     'response': 'Given team is invalid(NotFound)'
 }
