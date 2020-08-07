@@ -2,7 +2,7 @@ import pytest
 
 from ib_tasks.storages.fields_storage_implementation import FieldsStorageImplementation
 from ib_tasks.tests.factories.models import (
-    StageModelFactory, TaskFactory, TaskTemplateFactory, TaskStageModelFactory)
+    StageModelFactory, TaskFactory, TaskTemplateWithTransitionFactory, TaskStageModelFactory)
 from ib_tasks.tests.factories.storage_dtos import TemplateStagesDTOFactory
 
 
@@ -25,8 +25,8 @@ class TestGetFieldIds:
             ['field_id_5', 'field_id_6']))
         TaskFactory.reset_sequence()
         TaskFactory.create_batch(size=3)
-        TaskTemplateFactory.reset_sequence()
-        TaskTemplateFactory.create_batch(size=3)
+        TaskTemplateWithTransitionFactory.reset_sequence()
+        TaskTemplateWithTransitionFactory.create_batch(size=3)
         TaskStageModelFactory.reset_sequence()
         TaskStageModelFactory.create_batch(size=4)
 
@@ -53,8 +53,8 @@ class TestGetFieldIds:
             ['field_id_7', 'field_id_8']))
         TaskFactory.reset_sequence()
         TaskFactory.create_batch(size=3)
-        TaskTemplateFactory.reset_sequence()
-        TaskTemplateFactory.create_batch(size=3)
+        TaskTemplateWithTransitionFactory.reset_sequence()
+        TaskTemplateWithTransitionFactory.create_batch(size=3)
         TaskStageModelFactory.create_batch(size=4)
 
     @pytest.fixture()

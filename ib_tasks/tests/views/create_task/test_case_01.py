@@ -20,10 +20,10 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
         from ib_tasks.tests.factories.models import \
             ActionPermittedRolesFactory, \
             StageModelFactory, TaskTemplateStatusVariableFactory, \
-            TaskTemplateWith2GoFsFactory, TaskTemplateFactory, FieldFactory, \
+            TaskTemplateWith2GoFsFactory, TaskTemplateWithTransitionFactory, FieldFactory, \
             StageActionFactory, TaskTemplateInitialStageFactory
 
-        TaskTemplateFactory.reset_sequence()
+        TaskTemplateWithTransitionFactory.reset_sequence()
         TaskTemplateStatusVariableFactory.reset_sequence()
         ActionPermittedRolesFactory.reset_sequence()
         StageModelFactory.reset_sequence()

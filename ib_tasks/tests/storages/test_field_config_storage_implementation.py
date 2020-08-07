@@ -4,7 +4,7 @@ import pytest
 from ib_tasks.constants.enum import FieldTypes
 from ib_tasks.models import FieldRole
 from ib_tasks.models.field import Field
-from ib_tasks.tests.factories.models import GoFFactory, TaskTemplateFactory, \
+from ib_tasks.tests.factories.models import GoFFactory, TaskTemplateWithTransitionFactory, \
     GoFRoleFactory, FieldFactory, FieldRoleFactory
 from ib_tasks.tests.factories.storage_dtos import (
     GoFDTOFactory,
@@ -34,7 +34,7 @@ class TestFieldConfigStorageImplementation:
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
         GoFFactory.reset_sequence(1)
-        TaskTemplateFactory.reset_sequence(1)
+        TaskTemplateWithTransitionFactory.reset_sequence(1)
         FieldFactory.reset_sequence(1)
         GoFRoleFactory.reset_sequence(1)
         GoFDTOFactory.reset_sequence(1)

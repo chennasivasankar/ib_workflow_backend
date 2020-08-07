@@ -4,7 +4,7 @@ from ib_tasks.storages.fields_storage_implementation import FieldsStorageImpleme
 from ib_tasks.storages.tasks_storage_implementation import \
     TasksStorageImplementation
 from ib_tasks.tests.factories.interactor_dtos import GetTaskDetailsDTOFactory
-from ib_tasks.tests.factories.models import StageModelFactory, TaskFactory, TaskTemplateFactory, TaskStageModelFactory
+from ib_tasks.tests.factories.models import StageModelFactory, TaskFactory, TaskTemplateWithTransitionFactory, TaskStageModelFactory
 
 
 @pytest.mark.django_db

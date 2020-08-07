@@ -1,5 +1,5 @@
 from ib_tasks.tests.factories.models import (
-    GoFFactory, TaskTemplateFactory, FieldFactory, GoFRoleFactory
+    GoFFactory, TaskTemplateWithTransitionFactory, FieldFactory, GoFRoleFactory
 )
 from ib_tasks.tests.factories.storage_dtos import (
     GoFDTOFactory, GoFRolesDTOFactory, CompleteGoFDetailsDTOFactory,
@@ -17,7 +17,7 @@ def reset_sequence(func):
 
     def wrapper(*args, **kwargs):
         GoFFactory.reset_sequence(1)
-        TaskTemplateFactory.reset_sequence(1)
+        TaskTemplateWithTransitionFactory.reset_sequence(1)
         FieldFactory.reset_sequence(1)
         GoFRoleFactory.reset_sequence(1)
         GoFDTOFactory.reset_sequence(1)

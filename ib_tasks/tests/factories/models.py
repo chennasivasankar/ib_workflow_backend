@@ -97,6 +97,15 @@ class TaskTemplateFactory(factory.django.DjangoModelFactory):
     name = factory.sequence(lambda n: "Template {}".format(n + 1))
 
 
+class TaskTemplateWithTransitionFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskTemplate
+
+    template_id = factory.sequence(lambda n: "template_{}".format(n + 1))
+    name = factory.sequence(lambda n: "Template {}".format(n + 1))
+    is_transition_template = factory.Iterator([True, False])
+
+
 class TaskTemplateStatusVariableFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = TaskTemplateStatusVariable
@@ -180,20 +189,20 @@ class GlobalConstantFactory(factory.django.DjangoModelFactory):
 
     name = factory.sequence(lambda n: "constant_{}".format(n + 1))
     value = factory.sequence(lambda n: (n + 1))
-    task_template = factory.SubFactory(TaskTemplateFactory)
+    task_template = factory.SubFactory(TaskTemplateWithTransitionFactory)
 
 
 class GoFToTaskTemplateFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = TaskTemplateGoFs
 
-    task_template = factory.SubFactory(TaskTemplateFactory)
+    task_template = factory.SubFactory(TaskTemplateWithTransitionFactory)
     gof = factory.SubFactory(GoFFactory)
     order = factory.sequence(lambda n: n)
     enable_add_another_gof = factory.Iterator([True, False])
 
 
-class TaskTemplateWith2GoFsFactory(TaskTemplateFactory):
+class TaskTemplateWith2GoFsFactory(TaskTemplateWithTransitionFactory):
     gof1 = factory.RelatedFactory(
         GoFToTaskTemplateFactory, 'task_template', gof__gof_id='gof_1'
     )
@@ -226,7 +235,7 @@ class TaskTemplateInitialStageFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = TaskTemplateInitialStage
 
-    task_template = factory.SubFactory(TaskTemplateFactory)
+    task_template = factory.SubFactory(TaskTemplateWithTransitionFactory)
     stage = factory.SubFactory(StageModelFactory)
 
 
@@ -244,12 +253,11 @@ class FilterFactory(factory.django.DjangoModelFactory):
 
     created_by = factory.sequence(lambda n: "{}".format(n))
     name = factory.sequence(lambda n: "filter_name_{}".format(n))
-    template = factory.SubFactory(TaskTemplateFactory)
+    template = factory.SubFactory(TaskTemplateWithTransitionFactory)
     is_selected = "ENABLED"
 
 
 class FilterConditionFactory(factory.django.DjangoModelFactory):
-
     class Meta:
         model = FilterCondition
 

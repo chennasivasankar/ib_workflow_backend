@@ -1,7 +1,7 @@
 import pytest
 
 from ib_tasks.storages.tasks_storage_implementation import TasksStorageImplementation
-from ib_tasks.tests.factories.models import GoFToTaskTemplateFactory, GoFFactory, TaskTemplateFactory, FieldFactory
+from ib_tasks.tests.factories.models import GoFToTaskTemplateFactory, GoFFactory, TaskTemplateWithTransitionFactory, FieldFactory
 
 
 @pytest.mark.django_db
@@ -11,8 +11,8 @@ class TestGetTaskTemplateFieldIds:
     def create_task_fields(self):
         GoFFactory.reset_sequence()
         gof_obj = GoFFactory()
-        TaskTemplateFactory.reset_sequence()
-        task_objs = TaskTemplateFactory.create_batch(size=2)
+        TaskTemplateWithTransitionFactory.reset_sequence()
+        task_objs = TaskTemplateWithTransitionFactory.create_batch(size=2)
         GoFToTaskTemplateFactory.reset_sequence()
         GoFToTaskTemplateFactory(gof=gof_obj, task_template=task_objs[0])
         GoFToTaskTemplateFactory(gof=gof_obj, task_template=task_objs[1])

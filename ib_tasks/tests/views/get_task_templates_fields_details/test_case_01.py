@@ -20,12 +20,12 @@ class TestCase01GetTaskTemplatesFieldsDetailsAPITestCase(TestUtils):
         get_user_role_ids(mocker)
 
         import factory
-        from ib_tasks.tests.factories.models import TaskTemplateFactory, \
+        from ib_tasks.tests.factories.models import TaskTemplateWithTransitionFactory, \
             StageModelFactory, StageActionFactory, GoFFactory, GoFRoleFactory, \
             FieldFactory, FieldRoleFactory, GoFToTaskTemplateFactory, \
             TaskTemplateInitialStageFactory
 
-        TaskTemplateFactory.reset_sequence()
+        TaskTemplateWithTransitionFactory.reset_sequence()
         StageModelFactory.reset_sequence()
         StageActionFactory.reset_sequence()
         GoFRoleFactory.reset_sequence()
@@ -37,7 +37,7 @@ class TestCase01GetTaskTemplatesFieldsDetailsAPITestCase(TestUtils):
 
         template_ids = ['template_1', 'template_2']
 
-        task_template_objs = TaskTemplateFactory.create_batch(
+        task_template_objs = TaskTemplateWithTransitionFactory.create_batch(
             size=2, template_id=factory.Iterator(template_ids)
         )
         gof_objs = GoFFactory.create_batch(size=4)

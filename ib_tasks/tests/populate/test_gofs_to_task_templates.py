@@ -9,12 +9,12 @@ class TestGoFsToTaskTemplate:
 
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
-        from ib_tasks.tests.factories.models import TaskTemplateFactory, \
+        from ib_tasks.tests.factories.models import TaskTemplateWithTransitionFactory, \
             GoFFactory
         GoFFactory.reset_sequence()
         GoFWithOrderAndAddAnotherDTOFactory.reset_sequence()
         GoFWithOrderAndAddAnotherDTOFactory.enable_add_another_gof.reset()
-        TaskTemplateFactory.reset_sequence()
+        TaskTemplateWithTransitionFactory.reset_sequence()
 
     @pytest.fixture
     def gofs_to_task_template_interactor(self):
@@ -171,8 +171,8 @@ class TestGoFsToTaskTemplate:
             self, gofs_to_task_template_interactor, snapshot):
         # Arrange
         template_id = "template_1"
-        from ib_tasks.tests.factories.models import TaskTemplateFactory
-        TaskTemplateFactory(template_id=template_id)
+        from ib_tasks.tests.factories.models import TaskTemplateWithTransitionFactory
+        TaskTemplateWithTransitionFactory(template_id=template_id)
         gof_dtos = GoFWithOrderAndAddAnotherDTOFactory.create_batch(size=2)
         gofs_with_template_id_dto = GoFsWithTemplateIdDTO(
             template_id=template_id, gof_dtos=gof_dtos
@@ -193,8 +193,8 @@ class TestGoFsToTaskTemplate:
             self, gofs_to_task_template_interactor, snapshot):
         # Arrange
         template_id = "template_1"
-        from ib_tasks.tests.factories.models import TaskTemplateFactory
-        TaskTemplateFactory(template_id=template_id)
+        from ib_tasks.tests.factories.models import TaskTemplateWithTransitionFactory
+        TaskTemplateWithTransitionFactory(template_id=template_id)
         from ib_tasks.tests.factories.models import GoFFactory
         GoFFactory.create_batch(size=2)
         gof_dtos = GoFWithOrderAndAddAnotherDTOFactory.create_batch(size=2)

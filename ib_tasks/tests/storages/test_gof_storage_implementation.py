@@ -2,7 +2,7 @@ import factory
 import pytest
 
 from ib_tasks.models import GoFRole
-from ib_tasks.tests.factories.models import GoFFactory, TaskTemplateFactory, \
+from ib_tasks.tests.factories.models import GoFFactory, TaskTemplateWithTransitionFactory, \
     GoFRoleFactory, FieldFactory, TaskTemplateWith2GoFsFactory
 from ib_tasks.tests.factories.storage_dtos import (
     GoFDTOFactory,
@@ -26,7 +26,7 @@ class TestGoFStorageImplementation:
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
         GoFFactory.reset_sequence(1)
-        TaskTemplateFactory.reset_sequence(1)
+        TaskTemplateWithTransitionFactory.reset_sequence(1)
         FieldFactory.reset_sequence(1)
         GoFRoleFactory.reset_sequence(1)
         GoFDTOFactory.reset_sequence(1)

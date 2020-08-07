@@ -1,6 +1,6 @@
 import pytest
 
-from ib_tasks.tests.factories.models import TaskTemplateFactory, \
+from ib_tasks.tests.factories.models import TaskTemplateWithTransitionFactory, \
     TaskTemplateWith2GoFsFactory
 
 
@@ -20,7 +20,7 @@ class TestTaskTemplateStorageImplementation:
         from ib_tasks.tests.factories.models import GoFFactory, \
             GlobalConstantFactory, GoFToTaskTemplateFactory
         GoFWithOrderAndAddAnotherDTOFactory.reset_sequence()
-        TaskTemplateFactory.reset_sequence()
+        TaskTemplateWithTransitionFactory.reset_sequence()
         GoFFactory.reset_sequence()
         GlobalConstantFactory.reset_sequence()
         GlobalConstantsDTOFactory.reset_sequence()
@@ -28,7 +28,7 @@ class TestTaskTemplateStorageImplementation:
 
     def test_get_valid_template_ids_in_given_template_ids(self, storage):
         # Arrange
-        task_template = TaskTemplateFactory()
+        task_template = TaskTemplateWithTransitionFactory()
         template_ids = [task_template.template_id, "FIN_VENDOR"]
         expected_valid_template_ids = [task_template.template_id]
 
@@ -69,7 +69,7 @@ class TestTaskTemplateStorageImplementation:
 
     def test_get_task_templates_dtos(self, storage):
         # Arrange
-        from ib_tasks.tests.factories.models import TaskTemplateFactory
+        from ib_tasks.tests.factories.models import TaskTemplateWithTransitionFactory
         from ib_tasks.interactors.storage_interfaces.task_templates_dtos \
             import TemplateDTO
         expected_output = [
@@ -81,7 +81,7 @@ class TestTaskTemplateStorageImplementation:
             )
         ]
 
-        TaskTemplateFactory.create_batch(size=2)
+        TaskTemplateWithTransitionFactory.create_batch(size=2)
 
         # Act
         result = storage.get_task_templates_dtos()
@@ -105,7 +105,7 @@ class TestTaskTemplateStorageImplementation:
             self, storage):
         # Arrange
         template_id = "FIN_PR"
-        task_template = TaskTemplateFactory(template_id=template_id)
+        task_template = TaskTemplateWithTransitionFactory(template_id=template_id)
         expected_constant_names = ['constant_1', 'constant_2', 'constant_3']
 
         from ib_tasks.tests.factories.models import GlobalConstantFactory
@@ -126,7 +126,7 @@ class TestTaskTemplateStorageImplementation:
             self, storage):
         # Arrange
         template_id = "template_1"
-        TaskTemplateFactory(template_id=template_id)
+        TaskTemplateWithTransitionFactory(template_id=template_id)
 
         # Act
         global_constants_of_template = storage. \
@@ -144,7 +144,7 @@ class TestTaskTemplateStorageImplementation:
         from ib_tasks.tests.factories.interactor_dtos import \
             GlobalConstantsDTOFactory
 
-        TaskTemplateFactory.create_batch(size=1, template_id=template_id)
+        TaskTemplateWithTransitionFactory.create_batch(size=1, template_id=template_id)
         global_constants_dtos = GlobalConstantsDTOFactory.create_batch(size=2)
 
         # Act
@@ -177,7 +177,7 @@ class TestTaskTemplateStorageImplementation:
             GlobalConstantsDTOFactory
         from ib_tasks.tests.factories.models import GlobalConstantFactory
 
-        TaskTemplateFactory.create_batch(size=1, template_id=template_id)
+        TaskTemplateWithTransitionFactory.create_batch(size=1, template_id=template_id)
         GlobalConstantFactory.create_batch(
             size=1, task_template_id=template_id, value=100000,
             name="Constant_1"
@@ -204,7 +204,7 @@ class TestTaskTemplateStorageImplementation:
     def test_check_is_template_exists_with_valid_template_id_returns_true(
             self, storage):
         # Arrange
-        task_template = TaskTemplateFactory()
+        task_template = TaskTemplateWithTransitionFactory()
         template_id = task_template.template_id
 
         # Act
@@ -239,7 +239,7 @@ class TestTaskTemplateStorageImplementation:
         template_id = "FIN_VENDOR"
         template_name = "iB Template"
         is_transition_template = True
-        TaskTemplateFactory(
+        TaskTemplateWithTransitionFactory(
             template_id=template_id, name=template_name
         )
 
@@ -276,8 +276,8 @@ class TestTaskTemplateStorageImplementation:
     def test_add_gofs_to_template(self, storage):
         # Arrange
         template_id = "FIN_VENDOR"
-        from ib_tasks.tests.factories.models import TaskTemplateFactory
-        TaskTemplateFactory(template_id=template_id)
+        from ib_tasks.tests.factories.models import TaskTemplateWithTransitionFactory
+        TaskTemplateWithTransitionFactory(template_id=template_id)
 
         from ib_tasks.tests.factories.models import GoFFactory
         GoFFactory.create_batch(size=2)
