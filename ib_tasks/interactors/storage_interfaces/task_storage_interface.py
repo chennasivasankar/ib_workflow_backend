@@ -7,10 +7,11 @@ Author: Pavankumar Pamuru
 import abc
 from typing import List, Optional, Tuple
 
+from ib_tasks.interactors.storage_interfaces.actions_dtos import \
+    ActionWithStageIdDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    StageValueWithTaskIdsDTO, TaskIdWithStageDetailsDTO, \
     TaskIdWithStageValueDTO, StageIdWithTemplateIdDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
@@ -95,7 +96,8 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_actions_for_given_stage_ids_in_dtos(self, stage_ids: List[int]):
+    def get_actions_for_given_stage_ids_in_dtos(
+            self, stage_ids: List[int]) -> List[ActionWithStageIdDTO]:
         pass
 
     @abc.abstractmethod

@@ -112,6 +112,10 @@ class ActionDTO:
     task_id: int
     stage_id: str
 
+@dataclass
+class StageActionDetailsDTO(ActionDTO):
+    action_type: str
+    transition_template_id: str
 
 @dataclass
 class TaskStatusDTO:

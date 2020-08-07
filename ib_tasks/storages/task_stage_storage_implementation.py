@@ -26,7 +26,6 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
         task_stage_objs = TaskStage.objects.filter(
             task_id=task_id, stage_id__in=stage_ids
         )
-
         task_stage_assignee_dtos = [
             TaskStageAssigneeDTO(
                 task_stage_id=task_stage_obj.id,

@@ -16,8 +16,7 @@ from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO, TaskStageIdsDTO, StageIdWithTemplateIdDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskIdWithStageValueDTO, TaskIdWithStageDetailsDTO, \
-    StageValueWithTaskIdsDTO
+    TaskIdWithStageValueDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
     StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
@@ -26,7 +25,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, CreateTaskLogDTO
+from ib_tasks.interactors.task_dtos import CreateTaskLogDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.models import Stage, TaskTemplate
 from ib_tasks.models import TaskStage
@@ -365,7 +364,8 @@ class TasksStorageImplementation(TaskStorageInterface):
         from ib_tasks.models.task_template_initial_stages import \
             TaskTemplateInitialStage
         template_id_with_stage_id_dicts = \
-            TaskTemplateInitialStage.objects.all().values('stage_id', 'task_template_id')
+            TaskTemplateInitialStage.objects.all().values(
+                'stage_id', 'task_template_id')
 
         template_id_with_stage_id_dtos = \
             self._convert_template_id_with_stage_id_dicts_to_dtos(
@@ -395,7 +395,9 @@ class TasksStorageImplementation(TaskStorageInterface):
                 action_id=stage_action['id'],
                 stage_id=stage_action['stage_id'],
                 button_color=stage_action['button_color'],
-                button_text=stage_action['button_text']
+                button_text=stage_action['button_text'],
+                action_type=stage_action['action_type'],
+                transition_template_id=stage_action['transition_template_id']
             )
             for stage_action in stage_action_details
         ]
@@ -405,7 +407,10 @@ class TasksStorageImplementation(TaskStorageInterface):
             self, stage_ids: List[int]) -> List[ActionWithStageIdDTO]:
         stage_action_details = StageAction.objects.filter(
             stage_id__in=stage_ids
-        ).values('id', 'button_text', 'button_color', 'stage_id')
+        ).values(
+            'id', 'button_text', 'button_color', 'stage_id',
+            'action_type', 'transition_template_id'
+        )
 
         action_with_stage_id_dtos = \
             self._convert_stage_actions_details_to_dtos(

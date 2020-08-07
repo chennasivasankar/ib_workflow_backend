@@ -8,9 +8,9 @@ from ib_tasks.constants.enum import Priority
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     Task, TaskGoF,
-    TaskGoFField,
-    TaskTemplateGlobalConstants, TaskStatusVariable, Filter,
-    FilterCondition)
+    TaskGoFField, TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage,
+    Filter,
+    FilterCondition, StagePermittedRoles)
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
@@ -58,6 +58,7 @@ class TaskStageModelFactory(factory.django.DjangoModelFactory):
 
     task = factory.SubFactory(TaskFactory)
     stage = factory.SubFactory(StageModelFactory)
+    assignee_id = "123e4567-e89b-12d3-a456-426614174000"
 
 
 class TaskModelFactory(factory.django.DjangoModelFactory):
@@ -66,6 +67,18 @@ class TaskModelFactory(factory.django.DjangoModelFactory):
 
     template_id = factory.Sequence(lambda n: "template_%d" % (n + 1))
     created_by = factory.Sequence(lambda n: (n + 1))
+
+
+class TaskTemplateFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskTemplate
+
+    template_id = factory.sequence(lambda n: "template_{}".format(n + 1))
+    name = factory.sequence(lambda n: "Template {}".format(n + 1))
+
+
+class TaskTemplateWithTransitionFactory(TaskTemplateFactory):
+    is_transition_template = factory.Iterator([True, False])
 
 
 class StageActionFactory(factory.django.DjangoModelFactory):
@@ -80,24 +93,17 @@ class StageActionFactory(factory.django.DjangoModelFactory):
     py_function_import_path = "path"
 
 
+class StageActionWithTransitionFactory(StageActionFactory):
+    action_type = "action_type"
+    transition_template = factory.SubFactory(TaskTemplateWithTransitionFactory)
+
+
 class ActionPermittedRolesFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ActionPermittedRoles
 
     action = factory.SubFactory(StageActionFactory)
     role_id = factory.Sequence(lambda n: "role_%d" % n)
-
-
-class TaskTemplateFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = TaskTemplate
-
-    template_id = factory.sequence(lambda n: "template_{}".format(n + 1))
-    name = factory.sequence(lambda n: "Template {}".format(n + 1))
-
-
-class TaskTemplateWithTransitionFactory(TaskTemplateFactory):
-    is_transition_template = factory.Iterator([True, False])
 
 
 class TaskTemplateStatusVariableFactory(factory.django.DjangoModelFactory):
@@ -240,7 +246,7 @@ class TaskStageFactory(factory.django.DjangoModelFactory):
     task = factory.SubFactory(TaskFactory)
     stage = factory.SubFactory(StageModelFactory)
     assignee_id = factory.sequence(
-        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format())
+        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(counter))
 
 
 class FilterFactory(factory.django.DjangoModelFactory):
@@ -261,3 +267,13 @@ class FilterConditionFactory(factory.django.DjangoModelFactory):
     field = factory.SubFactory(FieldFactory)
     operator = Operators.GTE.value
     value = factory.sequence(lambda n: "value_{}".format(n))
+
+
+class StagePermittedRolesFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = StagePermittedRoles
+
+    stage = factory.SubFactory(StageModelFactory)
+    role_id = factory.Iterator(
+        ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"]
+    )

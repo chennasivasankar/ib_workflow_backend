@@ -160,13 +160,14 @@ class FieldsStorageImplementation(FieldsStorageInterface):
     def get_stage_complete_details(self, stage_ids: List[str]) -> \
             List[StageDetailsDTO]:
         stage_objs = Stage.objects.filter(stage_id__in=stage_ids
-                                          ).values('stage_id', 'display_name')
+                                          ).values('id', 'stage_id', 'display_name')
         stage_dtos = []
         for stage in stage_objs:
             stage_dtos.append(
                 StageDetailsDTO(
                     stage_id=stage['stage_id'],
-                    name=stage['display_name']
+                    name=stage['display_name'],
+                    db_stage_id=stage['id']
                 )
             )
         return stage_dtos

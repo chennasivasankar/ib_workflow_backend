@@ -3,16 +3,16 @@ from datetime import datetime, timedelta
 
 import factory
 
-
 from ib_tasks.constants.constants import VALID_FIELD_TYPES
-from ib_tasks.constants.enum import FieldTypes, PermissionTypes, Status, \
-    Priority
+from ib_tasks.constants.enum import FieldTypes, PermissionTypes, Status
 from ib_tasks.constants.enum import Operators
+from ib_tasks.constants.enum import Priority
+from ib_tasks.constants.enum import ValidationType
 from ib_tasks.interactors.filter_dtos import FilterDTO, ConditionDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.stages_dtos import StageDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
-    ActionDetailsDTO
+    ActionDetailsDTO, StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionWithStageIdDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
@@ -34,6 +34,8 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageDetailsDTO, TaskStageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageDisplayValueDTO, StageIdWithTemplateIdDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    StageRoleDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (TaskStagesDTO)
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (
     TaskTemplateStageDTO)
@@ -55,6 +57,7 @@ class StageDetailsDTOFactory(factory.Factory):
 
     stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)
     name = factory.Sequence(lambda n: "name_%d" % n)
+    db_stage_id = factory.Sequence(lambda n: (n + 1))
 
 
 class FieldValueDTOFactory(factory.Factory):
@@ -114,6 +117,20 @@ class ActionDetailsDTOFactory(factory.Factory):
     stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n + 1))
     button_text = factory.Sequence(lambda n: 'button_text_%d' % (n + 1))
     button_color = None
+
+
+class StageActionDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = StageActionDetailsDTO
+
+    action_id = factory.Sequence(lambda n: (n + 1))
+    name = factory.Sequence(lambda n: 'name_%d' % (n + 1))
+    stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n + 1))
+    button_text = factory.Sequence(lambda n: 'button_text_%d' % (n + 1))
+    button_color = None
+    action_type = factory.Sequence(lambda n: "action_type_%d" % (n + 1))
+    transition_template_id = factory.Sequence(
+        lambda n: 'template_id_%d' % (n + 1))
 
 
 class TaskStagesDTOFactory(factory.Factory):
@@ -207,7 +224,7 @@ class StageDTOFactory(factory.Factory):
     stage_display_logic = factory.Sequence(
         lambda n: 'status_id_%d==stage_id' % (n + 1))
     stage_color = "blue"
-    roles = factory.Sequence(lambda n: "role_id_0\nrole_id_%d" % (n+1))
+    roles = factory.Sequence(lambda n: "role_id_0\nrole_id_%d" % (n + 1))
 
 
 class StageValueDTOFactory(factory.Factory):
@@ -354,10 +371,13 @@ class ActionWithStageIdDTOFactory(factory.Factory):
     class Meta:
         model = ActionWithStageIdDTO
 
-    stage_id = factory.Sequence(lambda n: n + 1)
-    action_id = factory.Sequence(lambda n: n + 1)
-    button_text = factory.Sequence(lambda n: 'button_text__{}'.format(n + 1))
-    button_color = factory.Sequence(lambda n: 'button_color_{}'.format(n + 1))
+    stage_id = factory.Sequence(lambda n: n)
+    action_id = factory.Sequence(lambda n: n)
+    button_text = factory.Sequence(lambda n: 'button_text__{}'.format(n))
+    button_color = factory.Sequence(lambda n: 'button_color_{}'.format(n))
+    action_type = ValidationType.NO_VALIDATIONS.value
+    transition_template_id = \
+        factory.Sequence(lambda n: 'transition_template_{}'.format(n))
 
 
 class UserFieldPermissionDTOFactory(factory.Factory):
@@ -536,10 +556,22 @@ class TaskDetailsDTOFactory(factory.Factory):
         return [TaskGoFFieldDTOFactory()]
 
 
+class StageRoleDTOFactory(factory.Factory):
+    class Meta:
+        model = StageRoleDTO
+
+    db_stage_id = factory.Sequence(lambda n: n + 1)
+    role_id = factory.Iterator(
+        ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"]
+    )
+
+
 class StageAssigneeDTOFactory(factory.Factory):
     class Meta:
         model = TaskStageAssigneeDTO
 
     task_stage_id = factory.sequence(lambda counter: counter)
     stage_id = factory.Sequence(lambda counter: counter)
-    assignee_id = factory.sequence(lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(counter))
+    assignee_id = factory.sequence(
+        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
+            counter))
