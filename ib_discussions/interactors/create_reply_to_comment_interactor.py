@@ -60,7 +60,7 @@ class CreateReplyToCommentInteractor:
             parent_comment_id = comment_id
 
         discussion_id = self.storage.get_discussion_id(
-            comment_id=parent_comment_id)
+            comment_id=comment_id)
 
         reply_comment_id = self.storage.create_reply_to_comment(
             parent_comment_id=parent_comment_id,

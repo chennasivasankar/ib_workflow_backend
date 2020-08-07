@@ -17,17 +17,19 @@ class TestCase01AddCommentAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.mark.django_db
-    @patch(
-        "ib_discussions.storages.comment_storage_implementaion.CommentStorageImplementation.create_comment_for_discussion"
-    )
-    def test_case(self, create_comment_for_discussion_mock, snapshot, mocker):
+    def test_case(self, mocker, snapshot):
         discussion_id = "71be920b-7b4c-49e7-8adb-41a0c18da848"
         comment_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
         comment_content = "content"
 
+        from ib_discussions.tests.common_fixtures.storages import \
+            prepare_create_comment_for_discussion_mock
+        create_comment_for_discussion_mock = \
+            prepare_create_comment_for_discussion_mock(mocker)
         create_comment_for_discussion_mock.return_value = comment_id
 
         from ib_discussions.tests.factories.models import CommentFactory
+        CommentFactory.created_at.reset()
         CommentFactory(
             id=comment_id,
             discussion_id=discussion_id,

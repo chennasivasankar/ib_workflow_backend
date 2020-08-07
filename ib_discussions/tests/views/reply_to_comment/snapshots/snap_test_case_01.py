@@ -11,12 +11,12 @@ snapshots['TestCase01ReplyToCommentAPITestCase.test_case status_code'] = '200'
 
 snapshots['TestCase01ReplyToCommentAPITestCase.test_case body'] = {
     'author': {
-        'name': 'string',
-        'profile_pic_url': 'string',
-        'user_id': '49a9f26b-93e7-4636-8cd1-39b606dc56da'
+        'name': 'name',
+        'profile_pic_url': 'https://graph.ib_users.com/',
+        'user_id': 'c8939223-79a0-4566-ba13-b4fbf7db6f93'
     },
-    'comment_content': 'string',
-    'comment_id': 1,
-    'created_at': '2099-12-31 00:00:00',
-    'is_editable': True
+    'comment_content': 'content',
+    'comment_id': '01be920b-7b4c-49e7-8adb-41a0c18da848',
+    'created_at': '2020-05-01 00:00:00',
+    'is_editable': False
 }

@@ -35,7 +35,7 @@ class CreateReplyPresenterImplementation(
         created_at = get_datetime_as_string(comment_dto.created_at)
 
         response = {
-            "comment_id": comment_dto.comment_id,
+            "comment_id": str(comment_dto.comment_id),
             "comment_content": comment_dto.comment_content,
             "author": {
                 "user_id": user_profile_dto.user_id,

@@ -125,7 +125,7 @@ class TestCreateReplyToCommentInteractor:
         # Arrange
         user_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         discussion_id = "71be920b-7b4c-49e7-8adb-41a0c18da848"
-        parent_comment_id = "71be920b-7b4c-49e7-8adb-41a0c18da848"
+        parent_comment_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
         reply_comment_id = "01be920b-7b4c-49e7-8adb-41a0c18da848"
         comment_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
         comment_content = "content"

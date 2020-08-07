@@ -13,14 +13,25 @@ snapshots['TestCase01GetRepliesForCommentAPITestCase.test_case body'] = {
     'replies': [
         {
             'author': {
-                'name': 'string',
-                'profile_pic_url': 'string',
-                'user_id': '063cf768-a69f-4eb3-a68d-941a4b6d2984'
+                'name': 'name',
+                'profile_pic_url': 'https://graph.ib_users.com/',
+                'user_id': '01be920b-7b4c-49e7-8adb-41a0c18da848'
             },
-            'comment_content': 'string',
-            'comment_id': 1,
-            'created_at': '2099-12-31 00:00:00',
-            'is_editable': True
+            'comment_content': 'content',
+            'comment_id': '19be920b-7b4c-49e7-8adb-41a0c18da848',
+            'created_at': '2008-01-01 00:00:00',
+            'is_editable': False
+        },
+        {
+            'author': {
+                'name': 'name',
+                'profile_pic_url': 'https://graph.ib_users.com/',
+                'user_id': '77be920b-7b4c-49e7-8adb-41a0c18da848'
+            },
+            'comment_content': 'content',
+            'comment_id': '12be920b-7b4c-49e7-8adb-41a0c18da848',
+            'created_at': '2020-05-01 00:00:00',
+            'is_editable': False
         }
     ]
 }

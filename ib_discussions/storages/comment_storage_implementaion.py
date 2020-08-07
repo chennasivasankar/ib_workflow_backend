@@ -100,7 +100,7 @@ class CommentStorageImplementation(CommentStorageInterface):
             user_id: str, discussion_id: str) -> str:
         comment_object = Comment.objects.create(
             user_id=user_id, discussion_id=discussion_id,
-            parent_comment_id=parent_comment_id, content=comment_content
+            content=comment_content, parent_comment_id=parent_comment_id
         )
         return str(comment_object.id)
 

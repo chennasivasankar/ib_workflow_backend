@@ -6,11 +6,11 @@ RESPONSE_200_JSON = """
     "comments": [
         {
             "author": {
-                "user_id": "6e41a6b0-d8ae-4324-959e-ec4786974624",
+                "user_id": "50ef10c1-480a-49c1-a6ed-dfc355757854",
                 "name": "string",
                 "profile_pic_url": "string"
             },
-            "comment_id": "aafb9eaf-8653-434d-9421-ee060166da85",
+            "comment_id": "acf8f860-ec63-41bd-8515-c5ab482b9b5a",
             "comment_content": "string",
             "replies_count": 1,
             "is_editable": true,

@@ -162,7 +162,7 @@
       "type": "object",
       "properties": {
         "comment_id": {
-          "type": "integer",
+          "type": "string",
           "format": "uuid"
         },
         "author": {
