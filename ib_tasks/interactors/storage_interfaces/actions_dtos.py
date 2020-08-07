@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional, List
+from ib_tasks.constants.enum import ValidationType
 
 
 @dataclass()
@@ -23,6 +24,8 @@ class ActionWithStageIdDTO:
     action_id: int
     button_text: str
     button_color: str
+    action_type: Optional[ValidationType]
+    transition_template_id: Optional[str]
 
 
 @dataclass()

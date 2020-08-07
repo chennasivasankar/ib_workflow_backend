@@ -16,7 +16,7 @@ class TestGetTaskTemplatesPresenterImplementation:
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
         TaskTemplateDTOFactory.reset_sequence()
-        ActionWithStageIdDTOFactory.reset_sequence()
+        ActionWithStageIdDTOFactory.reset_sequence(1)
         FieldDTOFactory.reset_sequence(1)
         GoFDTOFactory.reset_sequence(1)
         UserFieldPermissionDTOFactory.reset_sequence()

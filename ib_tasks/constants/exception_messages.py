@@ -262,6 +262,10 @@ DUPLICATE_STAGE_IDS = (
     "please send unique stage ids",
     "DUPLICATE_STAGE_IDS"
 )
+TRANSITION_TEMPLATE_DOES_NOT_EXISTS = (
+    "Given invalid transition template Id: {}, that does not exists",
+    "TRANSITION_TEMPLATE_DOES_NOT_EXISTS"
+)
 
 INVALID_STAGE_IDS = (
     "Invalid stage ids that you have sent are: {},"

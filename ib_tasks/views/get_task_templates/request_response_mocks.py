@@ -13,7 +13,8 @@ RESPONSE_200_JSON = """
                     "action_type": "NO_VALIDATIONS",
                     "transition_template_id": "string",
                     "button_text": "string",
-                    "button_color": "string"
+                    "button_color": "string",
+                    "transition_template_id": "string"
                 }
             ],
             "group_of_fields": [

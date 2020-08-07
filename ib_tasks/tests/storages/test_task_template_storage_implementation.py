@@ -25,6 +25,7 @@ class TestTaskTemplateStorageImplementation:
         GlobalConstantFactory.reset_sequence()
         GlobalConstantsDTOFactory.reset_sequence()
         GoFToTaskTemplateFactory.reset_sequence()
+        GoFToTaskTemplateFactory.enable_add_another_gof.reset()
 
     def test_get_valid_template_ids_in_given_template_ids(self, storage):
         # Arrange
@@ -39,7 +40,8 @@ class TestTaskTemplateStorageImplementation:
         # Assert
         assert expected_valid_template_ids == actual_valid_template_ids
 
-    def test_get_gofs_to_task_templates_from_permitted_gofs(self, storage):
+    def test_get_gofs_to_templates_from_permitted_gofs(self, storage):
+        # Arrange
         from ib_tasks.tests.factories.models import \
             GoFToTaskTemplateFactory, GoFFactory
         from ib_tasks.interactors.storage_interfaces.gof_dtos import \
@@ -60,7 +62,7 @@ class TestTaskTemplateStorageImplementation:
         )
 
         # Act
-        result = storage.get_gofs_to_template_from_permitted_gofs(
+        result = storage.get_gofs_to_templates_from_permitted_gofs(
             gof_ids=expected_gof_ids
         )
 
@@ -349,11 +351,12 @@ class TestTaskTemplateStorageImplementation:
 
         # Assert
         assert transition_template_dto.template_id == \
-            transition_template.template_id
+               transition_template.template_id
         assert transition_template_dto.template_name == \
-            transition_template.name
+               transition_template.name
 
-    def test_check_is_transition_template_exists_with_invalid_transition_template_id_returns_false(self, storage):
+    def test_check_is_transition_template_exists_with_invalid_transition_template_id_returns_false(
+            self, storage):
         # Arrange
         transition_template_id = "template_1"
 
@@ -365,7 +368,8 @@ class TestTaskTemplateStorageImplementation:
         # Assert
         assert is_transition_template_exists is False
 
-    def test_check_is_transition_template_exists_with_valid_transition_template_id_returns_true(self, storage):
+    def test_check_is_transition_template_exists_with_valid_transition_template_id_returns_true(
+            self, storage):
         # Arrange
         transition_template = TaskTemplateFactory(is_transition_template=True)
         transition_template_id = transition_template.template_id
@@ -377,3 +381,34 @@ class TestTaskTemplateStorageImplementation:
 
         # Assert
         assert is_transition_template_exists is True
+
+    def test_get_gofs_to_template_from_permitted_gofs(self, storage):
+        # Arrange
+        import factory
+        from ib_tasks.tests.factories.models import \
+            GoFToTaskTemplateFactory, GoFFactory
+        from ib_tasks.tests.factories.storage_dtos import \
+            GoFToTaskTemplateDTOFactory
+        template_id = "template_1"
+        expected_gof_ids = ['gof_1', 'gof_2']
+        expected_gof_to_task_templates_dtos = \
+            GoFToTaskTemplateDTOFactory.create_batch(
+                size=2, gof_id=factory.Iterator(expected_gof_ids),
+                template_id=template_id
+            )
+
+        gof_objs = GoFFactory.create_batch(
+            size=2, gof_id=factory.Iterator(expected_gof_ids),
+        )
+        GoFToTaskTemplateFactory.create_batch(
+            size=2, gof_id=factory.Iterator(gof_objs),
+            task_template_id=template_id
+        )
+
+        # Act
+        result = storage.get_gofs_to_template_from_permitted_gofs(
+            gof_ids=expected_gof_ids, template_id=template_id
+        )
+
+        # Assert
+        assert result == expected_gof_to_task_templates_dtos

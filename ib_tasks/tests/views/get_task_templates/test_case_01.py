@@ -24,6 +24,7 @@ class TestCase01GetTaskTemplatesAPITestCase(TestUtils):
             StageModelFactory, StageActionFactory, GoFFactory, GoFRoleFactory, \
             FieldFactory, FieldRoleFactory, GoFToTaskTemplateFactory, \
             TaskTemplateInitialStageFactory
+        from ib_tasks.constants.enum import ValidationType
 
         TaskTemplateFactory.reset_sequence()
         StageModelFactory.reset_sequence()
@@ -50,7 +51,8 @@ class TestCase01GetTaskTemplatesAPITestCase(TestUtils):
             size=4, task_template_id=factory.Iterator(template_ids)
         )
         StageActionFactory.create_batch(
-            size=4, stage=factory.Iterator(stage_objs)
+            size=4, stage=factory.Iterator(stage_objs),
+            action_type=ValidationType.NO_VALIDATIONS.value
         )
         TaskTemplateInitialStageFactory.create_batch(
             size=4, stage=factory.Iterator(stage_objs),
@@ -74,7 +76,7 @@ class TestCase01GetTaskTemplatesAPITestCase(TestUtils):
         path_params = {}
         query_params = {}
         headers = {}
-        self.default_test_case(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

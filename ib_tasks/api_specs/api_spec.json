@@ -641,6 +641,9 @@
         },
         "button_color": {
           "type": "string"
+        },
+        "transition_template_id": {
+          "type": "string"
         }
       },
       "required": [
