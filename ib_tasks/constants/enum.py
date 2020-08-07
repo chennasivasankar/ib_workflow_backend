@@ -1,6 +1,11 @@
 import enum
 
 
+class VIEWTYPE(enum.Enum):
+    LIST = "LIST"
+    KANBAN = "KANBAN"
+
+
 class FieldTypes(enum.Enum):
     PLAIN_TEXT = "PLAIN_TEXT"
     PHONE_NUMBER = "PHONE_NUMBER"

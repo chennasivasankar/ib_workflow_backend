@@ -4,7 +4,7 @@
 import json
 
 import pytest
-from django_swagger_utils.utils.test_v1 import TestUtils
+from django_swagger_utils.utils.test_utils import TestUtils
 
 from ib_iam.tests.factories.models import UserRoleFactory, RoleFactory
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
@@ -39,7 +39,7 @@ class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
         ActionPermittedRolesFactory.reset_sequence()
         UserRoleFactory.reset_sequence()
         RoleFactory.reset_sequence()
-        role_obj_1=RoleFactory(role_id="FIN_PAYMENT_REQUESTER")
+        role_obj_1 = RoleFactory(role_id="FIN_PAYMENT_REQUESTER")
         role_obj_2 = RoleFactory(role_id="FIN_PAYMENT_APPROVER")
         UserRoleFactory(user_id=user_id, role=role_obj_1)
         UserRoleFactory(user_id=user_id, role=role_obj_2)
@@ -107,7 +107,7 @@ class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
         path_params = {}
         query_params = {'limit': 3, 'offset': 0}
         headers = {}
-        response = self.default_test_case(
+        response = self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
