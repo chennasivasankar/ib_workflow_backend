@@ -16,7 +16,7 @@ RESPONSE_200_JSON = """
         {
             "text": "string",
             "is_checked": true,
-            "checklist_item_id": 1
+            "checklist_item_id": "string"
         }
     ]
 }

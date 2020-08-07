@@ -90,7 +90,7 @@
           "type": "object",
           "properties": {
             "checklist_item_id": {
-              "type": "integer"
+              "type": "string"
             }
           },
           "required": [
