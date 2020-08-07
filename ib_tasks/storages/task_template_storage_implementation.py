@@ -198,7 +198,10 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
 
     def get_valid_transition_template_ids(
             self, transition_template_ids: List[str]) -> List[str]:
-        pass
+        transition_ids = list(TaskTemplate.objects.filter(
+            template_id__in=transition_template_ids,
+            is_transition_template=True).values_list('template_id', flat=True))
+        return transition_template_ids
 
     def get_transition_template_dto(
             self, transition_template_id: str) -> TemplateDTO:
