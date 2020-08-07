@@ -1,11 +1,16 @@
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
+
 from .validator_class import ValidatorClass
-from ...interactors.get_task_templates_fields_interactor import GetTaskTemplatesFieldsInteractor
-from ...presenters.filter_presenter_implementation import FilterPresenterImplementation
-from ...storages.fields_storage_implementation import FieldsStorageImplementation
+from ...interactors.get_task_templates_fields_interactor import \
+    GetTaskTemplatesFieldsInteractor
+from ...presenters.filter_presenter_implementation import \
+    FilterPresenterImplementation
+from ...storages.fields_storage_implementation import \
+    FieldsStorageImplementation
 from ...storages.gof_storage_implementation import GoFStorageImplementation
-from ...storages.task_template_storage_implementation import TaskTemplateStorageImplementation
+from ...storages.task_template_storage_implementation import \
+    TaskTemplateStorageImplementation
 from ...storages.tasks_storage_implementation import TasksStorageImplementation
 
 

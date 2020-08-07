@@ -1,5 +1,6 @@
 
 from django.db import models
+
 from .task_template import TaskTemplate
 from ..constants.enum import Status
 

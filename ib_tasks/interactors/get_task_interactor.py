@@ -5,9 +5,8 @@ from ib_tasks.exceptions.task_custom_exceptions \
 from ib_tasks.interactors.get_task_base_interactor \
     import GetTaskBaseInteractor
 from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
-    import GetTaskPresenterInterface
-from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
-    import TaskCompleteDetailsDTO
+    import \
+    GetTaskPresenterInterface, TaskCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces \

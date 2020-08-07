@@ -1,6 +1,6 @@
 from typing import List, Optional, Union
 
-from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
+from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
     DuplicateFieldIdsToGoF
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
@@ -19,11 +19,10 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.task_dtos import CreateTaskDTO, UpdateTaskDTO, \
-    GoFFieldsDTO, FieldValuesDTO
+from ib_tasks.interactors.task_dtos import GoFFieldsDTO, FieldValuesDTO
 
 
-class CreateOrUpdateTaskBaseValidationsInteractor:
+class TemplateGoFsFieldsBaseValidationsInteractor:
 
     def __init__(
             self, task_storage: TaskStorageInterface,
@@ -37,20 +36,15 @@ class CreateOrUpdateTaskBaseValidationsInteractor:
         self.create_task_storage = create_task_storage
         self.storage = storage
 
-    def perform_base_validations_for_create_or_update_task(
-            self, task_dto: Union[CreateTaskDTO, UpdateTaskDTO],
-            task_template_id: str
+    def perform_base_validations_for_template_gofs_and_fields(
+            self, gof_fields_dtos: List[GoFFieldsDTO], created_by_id: str,
+            task_template_id: str, action_type: Optional[ActionTypes]
     ):
-        is_valid_action_id = self.storage.validate_action(task_dto.action_id)
-        if not is_valid_action_id:
-            raise InvalidActionException(task_dto.action_id)
         gof_ids = [
             gof_fields_dto.gof_id
-            for gof_fields_dto in task_dto.gof_fields_dtos
+            for gof_fields_dto in gof_fields_dtos
         ]
-        field_values_dtos = self._get_field_values_dtos(
-            task_dto.gof_fields_dtos
-        )
+        field_values_dtos = self._get_field_values_dtos(gof_fields_dtos)
         field_ids = [
             field_values_dto.field_id
             for field_values_dto in field_values_dtos
@@ -60,16 +54,19 @@ class CreateOrUpdateTaskBaseValidationsInteractor:
         self._validate_for_given_gofs_are_related_to_given_task_template(
             task_template_id, gof_ids)
         self._validate_for_given_fields_are_related_to_given_gofs(
-            task_dto.gof_fields_dtos, gof_ids)
+            gof_fields_dtos, gof_ids)
         self._validate_user_permission_on_given_fields_and_gofs(
-            gof_ids, field_ids, task_dto.created_by_id
+            gof_ids, field_ids, created_by_id
         )
         from ib_tasks.interactors.create_or_update_task. \
             validate_field_responses import ValidateFieldResponsesInteractor
-        interactor = ValidateFieldResponsesInteractor(self.field_storage)
+        field_validation_interactor = ValidateFieldResponsesInteractor(
+            self.field_storage)
         field_values_dtos = \
-            self._get_field_values_dtos(task_dto.gof_fields_dtos)
-        interactor.validate_field_responses(field_values_dtos)
+            self._get_field_values_dtos(gof_fields_dtos)
+        field_validation_interactor.validate_field_responses(
+            field_values_dtos, action_type
+        )
 
     def _validate_user_permission_on_given_fields_and_gofs(
             self, gof_ids: List[str], field_ids: List[str], user_id: str

@@ -1,30 +1,21 @@
 from collections import defaultdict
-from typing import List, Optional, Dict
+from typing import List, Dict
 
 from django.db.models import Q, F
 
 from ib_tasks.constants.enum import VIEWTYPE
-from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldCompleteDetailsDTO, FieldDTO, UserFieldPermissionDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldIdWithGoFIdDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    StageTaskFieldsDTO, \
-    TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId
+    FieldCompleteDetailsDTO, FieldDTO, UserFieldPermissionDTO, \
+    FieldIdWithGoFIdDTO, StageTaskFieldsDTO, TaskTemplateStageFieldsDTO, \
+    FieldDetailsDTOWithTaskId
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (
     TaskTemplateStageDTO, StageDetailsDTO)
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
-from ib_tasks.models import TaskStage, StageAction, Stage, Task, \
-    TaskGoFField, \
-    FieldRole
-from ib_tasks.models import TaskTemplateGoFs, \
-    Field
+from ib_tasks.models import TaskStage, Stage, TaskGoFField, FieldRole, \
+    TaskTemplateGoFs, Field
 
 
 class FieldsStorageImplementation(FieldsStorageInterface):

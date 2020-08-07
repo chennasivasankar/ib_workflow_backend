@@ -1,7 +1,3 @@
-from dataclasses import dataclass
-from datetime import datetime
-from typing import List
-
 from django.db import models
 from ib_common.models.abstract_date_time_model \
     import AbstractDateTimeModel

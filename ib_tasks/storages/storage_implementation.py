@@ -1,25 +1,20 @@
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
-from ib_tasks.interactors.stages_dtos import StageActionDTO, \
-    TaskIdWithStageAssigneeDTO
-from ib_tasks.interactors.stages_dtos import StageDTO
-from ib_tasks.interactors.stages_dtos import TemplateStageDTO
+from ib_tasks.interactors.stages_dtos import StageActionDTO, StageDTO, \
+    TemplateStageDTO, TaskIdWithStageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
     ActionRolesDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO, \
+from ib_tasks.interactors.storage_interfaces.fields_dtos import \
+    FieldValueDTO, \
     FieldWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GOFMultipleEnableDTO, GoFWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    StageRoleDTO, StageDisplayValueDTO, StageValueWithTaskIdsDTO, \
-    TaskIdWithStageDetailsDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
-    StageValueDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskTemplateStageDTO
+    StageDisplayValueDTO, StageValueWithTaskIdsDTO, \
+    TaskIdWithStageDetailsDTO, \
+    TaskStagesDTO, StageValueDTO, TaskTemplateStageDTO, StageRoleDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import (
@@ -29,8 +24,7 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import (
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
     ActionPermittedRoles, StageAction, TaskStage, FieldRole, GlobalConstant, \
-    StagePermittedRoles
-from ib_tasks.models import TaskTemplateInitialStage, Stage
+    StagePermittedRoles, TaskTemplateInitialStage, Stage
 
 
 class StagesStorageImplementation(StageStorageInterface):
@@ -326,8 +320,9 @@ class StorageImplementation(StorageInterface):
         return gof_write_permission_roles_dtos
 
     def get_write_permission_roles_for_given_field_ids(self,
-                                                       field_ids: List[str]) -> \
-            List[FieldWritePermissionRolesDTO]:
+                                                       field_ids: List[str]) \
+            -> \
+                    List[FieldWritePermissionRolesDTO]:
         field_role_objects = FieldRole.objects.filter(
             field_id__in=field_ids, permission_type=PermissionTypes.WRITE.value
         )

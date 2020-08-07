@@ -20,7 +20,8 @@ class InvalidTaskTemplateId(Exception):
 
 class InvalidStagesTaskTemplateId(Exception):
     def __init__(self, invalid_stages_task_template_ids: List[TaskStagesDTO]):
-        self.invalid_stages_task_template_ids = invalid_stages_task_template_ids
+        self.invalid_stages_task_template_ids = \
+            invalid_stages_task_template_ids
 
 
 class InvalidTaskTemplateIds(Exception):
@@ -83,10 +84,16 @@ class ManyStagesToInitialTaskTemplate(Exception):
         self.task_template_stages_dict = task_template_stages_dict
 
 
+class InvalidTransitionChecklistTemplateId(Exception):
+
+    def __init__(self, transition_checklist_template_id: str):
+        self.transition_checklist_template_id = \
+            transition_checklist_template_id
+
+
 class TransitionTemplateDoesNotExist(Exception):
     def __init__(self, transition_template_id: str):
         self.transition_template_id = transition_template_id
-
 
 
 class InvalidTransitionTemplateIds(Exception):

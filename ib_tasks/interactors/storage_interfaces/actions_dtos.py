@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional, List
+
 from ib_tasks.constants.enum import ValidationType
 
 

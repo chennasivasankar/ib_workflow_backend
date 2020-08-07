@@ -1,16 +1,17 @@
 
 from unittest.mock import create_autospec
 
+from ib_tasks.interactors.configur_initial_task_template_stage_actions \
+    import (
+    ConfigureInitialTaskTemplateStageActions,
+    InvalidTaskTemplateIdsException
+)
 from ib_tasks.interactors.stages_dtos import TemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
-
-from ib_tasks.interactors.configur_initial_task_template_stage_actions \
-    import (
-        ConfigureInitialTaskTemplateStageActions,
-        InvalidTaskTemplateIdsException
-    )
-from ib_tasks.interactors.storage_interfaces.task_template_storage_interface import TaskTemplateStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface\
+    import \
+    TaskTemplateStorageInterface
 from ib_tasks.tests.factories.interactor_dtos \
     import TaskTemplateStageActionDTOFactory
 

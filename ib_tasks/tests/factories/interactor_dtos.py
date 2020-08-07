@@ -7,10 +7,9 @@ from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
-from ib_tasks.interactors.stages_dtos import \
-    TaskTemplateStageActionDTO, StageActionDTO, StagesActionDTO, \
-    TaskIdWithStageAssigneeDTO
-from ib_tasks.interactors.stages_dtos import UserStagesWithPaginationDTO
+from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
+    StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
+    UserStagesWithPaginationDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO

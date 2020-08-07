@@ -2,14 +2,14 @@ import abc
 from dataclasses import dataclass
 from typing import List
 
+from ib_tasks.exceptions.task_custom_exceptions import \
+    TransitionTemplateDoesNotExist
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldPermissionDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO
-from ib_tasks.exceptions.task_custom_exceptions import \
-    TransitionTemplateDoesNotExist
 
 
 @dataclass

@@ -1,5 +1,6 @@
-import pytest
 import factory
+import pytest
+
 from ib_tasks.interactors.presenter_interfaces. \
     get_task_templates_presenter_interface import CompleteTaskTemplatesDTO
 from ib_tasks.presenters.get_task_templates_presenter_implementation import \

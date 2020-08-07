@@ -1,13 +1,16 @@
-import pytest
 from unittest.mock import create_autospec
+
+import pytest
+
+from ib_tasks \
+    .interactors\
+    .call_action_logic_function_and_update_task_status_variables_interactor \
+    import (
+    CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor,
+    InvalidModulePathFound, InvalidMethodFound
+)
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
-from ib_tasks \
-    .interactors.call_action_logic_function_and_update_task_status_variables_interactor \
-    import (
-        CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor,
-        InvalidModulePathFound, InvalidMethodFound
-    )
 from ib_tasks.tests.factories.storage_dtos import (
     StatusVariableDTOFactory, GOFMultipleStatusDTOFactory,
     TaskGoFFieldDTOFactory, TaskGoFDTOFactory, TaskDetailsDTOFactory

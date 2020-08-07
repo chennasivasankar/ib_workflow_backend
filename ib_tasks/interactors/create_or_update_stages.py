@@ -3,7 +3,10 @@ from typing import List
 
 from ib_boards.exceptions.custom_exceptions import InvalidTemplateFields
 from ib_tasks.constants.constants import ALL_ROLES_ID
-from ib_tasks.exceptions.roles_custom_exceptions import InvalidStageRolesException
+from ib_tasks.exceptions.roles_custom_exceptions import \
+    InvalidStageRolesException
+from ib_tasks.exceptions.roles_custom_exceptions import \
+    InvalidStageRolesException
 from ib_tasks.exceptions.stage_custom_exceptions import (
     InvalidStageValues, DuplicateStageIds, InvalidStageDisplayLogic,
     InvalidStagesDisplayName)
@@ -15,7 +18,8 @@ from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_template_storage_interface import \
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
+    import \
     TaskTemplateStorageInterface
 
 
@@ -86,7 +90,7 @@ class CreateOrUpdateStagesInteractor:
 
         all_unique_roles = list(set(all_roles))
         from ib_tasks.adapters.service_adapter import get_service_adapter
-        db_roles = get_service_adapter().roles_service.\
+        db_roles = get_service_adapter().roles_service. \
             get_valid_role_ids_in_given_role_ids(all_unique_roles)
 
         invalid_role_ids = []
