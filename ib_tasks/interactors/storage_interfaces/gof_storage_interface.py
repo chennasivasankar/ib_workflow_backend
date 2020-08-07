@@ -38,7 +38,7 @@ class GoFStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_gofs_to_task_templates_from_permitted_gofs(
+    def get_gofs_to_template_from_permitted_gofs(
             self, gof_ids: List[str]) -> List[GoFToTaskTemplateDTO]:
         pass
 

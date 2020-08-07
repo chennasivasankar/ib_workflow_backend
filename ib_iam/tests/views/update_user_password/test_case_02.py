@@ -3,7 +3,7 @@ All Exception in the user update password
 """
 
 import pytest
-from django_swagger_utils.utils.test_v1 import TestUtils
+from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -28,7 +28,7 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
         path_params = {}
         query_params = {'token': "184"}
         headers = {}
-        response = self.default_test_case(
+        response = self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
@@ -47,7 +47,7 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
         path_params = {}
         query_params = {'token': "184"}
         headers = {}
-        response = self.default_test_case(
+        response = self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
@@ -70,7 +70,7 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
         path_params = {}
         query_params = {'token': "184"}
         headers = {}
-        response = self.default_test_case(
+        response = self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
@@ -93,7 +93,7 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
         path_params = {}
         query_params = {'token': reset_password_token}
         headers = {}
-        response = self.default_test_case(
+        response = self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

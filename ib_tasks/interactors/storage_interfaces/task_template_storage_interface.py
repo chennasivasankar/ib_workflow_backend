@@ -6,7 +6,7 @@ from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TaskTemplateDTO
+    TemplateDTO
 
 
 class TaskTemplateStorageInterface(abc.ABC):
@@ -44,11 +44,11 @@ class TaskTemplateStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_task_templates_dtos(self) -> List[TaskTemplateDTO]:
+    def get_task_templates_dtos(self) -> List[TemplateDTO]:
         pass
 
     @abc.abstractmethod
-    def get_gofs_to_task_templates_from_permitted_gofs(
+    def get_gofs_to_template_from_permitted_gofs(
             self, gof_ids: List[str]) -> List[GoFToTaskTemplateDTO]:
         pass
 
@@ -73,4 +73,19 @@ class TaskTemplateStorageInterface(abc.ABC):
     def update_template(
             self, template_id: str, template_name: str,
             is_transition_template: bool):
+        pass
+
+    @abc.abstractmethod
+    def get_valid_transition_template_ids(
+            self, transition_template_ids: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_transition_template_dto(
+            self, transition_template_id: str) -> TemplateDTO:
+        pass
+
+    @abc.abstractmethod
+    def check_is_transition_template_exists(
+            self, transition_template_id: str) -> bool:
         pass

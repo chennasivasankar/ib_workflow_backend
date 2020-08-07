@@ -83,7 +83,9 @@ def append_action_dict(action_dict: Dict[str, Any]):
         roles=action_dict['roles'],
         function_path=function_path,
         button_text=action_dict['button_text'],
-        button_color=action_dict.get("button_color")
+        button_color=action_dict.get("button_color"),
+        action_type=action_dict['action_type'],
+        transition_template_id=action_dict['transition_template_id']
     )
 
 
@@ -96,7 +98,9 @@ def validation_for_action_dict(actions_dict: List[Dict]):
             "action_name": str,
             "roles": str,
             "button_text": str,
-            Optional("button_color"): str
+            Optional("button_color"): str,
+            "action_type": str,
+            "transition_template_id": str
         }]
     )
     try:
@@ -114,7 +118,9 @@ def raise_exception_for_valid_format():
         "action_name": "action_name_1",
         "roles": "ROLE_1, ROLE_2",
         "button_text": "button_text_1",
-        "button_color": "button_color_1"
+        "button_color": "button_color_1",
+        "action_type": "NO VALIDATIONS",
+        "transition_template_id": "transition_id"
     }
     import json
     json_valid_format = json.dumps(valid_format)

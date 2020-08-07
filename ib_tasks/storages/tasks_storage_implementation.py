@@ -25,7 +25,7 @@ from ib_tasks.interactors.storage_interfaces.status_dtos import \
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TaskTemplateDTO
+    TemplateDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, CreateTaskLogDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.models import Stage, TaskTemplate
@@ -289,9 +289,9 @@ class TasksStorageImplementation(TaskStorageInterface):
 
     @staticmethod
     def _convert_task_templates_objs_to_dtos(
-            task_template_objs: List[TaskTemplate]) -> List[TaskTemplateDTO]:
+            task_template_objs: List[TaskTemplate]) -> List[TemplateDTO]:
         task_template_dtos = [
-            TaskTemplateDTO(
+            TemplateDTO(
                 template_id=task_template_obj.template_id,
                 template_name=task_template_obj.name
             )

@@ -1,6 +1,7 @@
 import abc
 from typing import List, Tuple
 
+from ib_tasks.constants.enum import Status
 from ib_tasks.interactors.filter_dtos import CreateFilterDTO, \
     CreateConditionDTO, FilterDTO, ConditionDTO, UpdateFilterDTO
 
@@ -54,4 +55,12 @@ class FilterStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_conditions_to_filters(
             self, filter_ids: List[int]) -> List[ConditionDTO]:
+        pass
+
+    @abc.abstractmethod
+    def enable_filter_status(self, filter_id: int) -> Status:
+        pass
+
+    @abc.abstractmethod
+    def disable_filter_status(self, filter_id: int) -> Status:
         pass
