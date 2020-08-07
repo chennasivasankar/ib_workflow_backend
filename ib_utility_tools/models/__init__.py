@@ -1,6 +1,8 @@
 from .checklist import Checklist
 from .checklist_item import ChecklistItem
-__all__ = ["Checklist", "ChecklistItem"]
+from .timer import Timer
+
+__all__ = ["Checklist", "ChecklistItem", "Timer"]
 
 # class DummyModel(AbstractDateTimeModel):
 #     """
