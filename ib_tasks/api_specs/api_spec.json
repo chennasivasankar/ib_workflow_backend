@@ -409,7 +409,6 @@
       },
       "required": [
         "task_id",
-        "current_board_details",
         "other_board_details"
       ]
     },
@@ -1307,7 +1306,7 @@
       "name": "search_query",
       "description": "Searchable Query Parameter",
       "in": "query",
-      "required": true,
+      "required": false,
       "type": "string"
     },
     "SaveAndActOnATaskBodyParameter": {
@@ -1589,7 +1588,7 @@
                 "stage_id": {
                   "type": "integer"
                 },
-                "stage_name": {
+                "stage_display_name": {
                   "type": "string"
                 },
                 "assignee": {
@@ -1598,7 +1597,7 @@
               },
               "required": [
                 "stage_id",
-                "stage_name",
+                "stage_display_name",
                 "assignee"
               ]
             }
@@ -1695,8 +1694,8 @@
         ]
       }
     },
-    "TaskStageAssigneesFailureResponse": {
-      "description": "Task Stage Assignees Failure Response",
+    "TaskStageAssigneesNotFoundResponse": {
+      "description": "Task Stage Assignees Not Found Response",
       "schema": {
         "type": "object",
         "properties": {
@@ -1712,8 +1711,39 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "TASK_ID_DOESNT_EXIST",
-              "ACTION_ID_DOESNT_EXIST"
+              "INVALID_TASK_ID",
+              "INVALID_ACTION_ID"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
+     "TaskStageAssigneesFailureResponse": {
+      "description": "Task Stage Assignees Failure Response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer",
+            "enum": [
+              400
+            ]
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "INVALID_KEY_ERROR",
+              "INVALID_CUSTOM_LOGIC",
+              "PATH_NOT_FOUND",
+              "METHOD_NOT_FOUND"
             ]
           }
         },
@@ -2571,9 +2601,9 @@
     },
     "/task/{task_id}/action/{action_id}/stage_assignees/v1/": {
       "get": {
-        "operationId": "get_task_assignees_of_diff_stages_for_an_action",
-        "summary": "get assignees of diff stages for a task when an action is performed",
-        "description": "get assignees of diff stages for a task when an action is performed",
+        "operationId": "get_next_stages_random_assignees_of_a_task",
+        "summary": "get next stages random assignees for a task when an action is performed",
+        "description": "get next stages random assignees for a task when an action is performed",
         "security": [{
           "oauth": [
             "read"
@@ -2590,8 +2620,11 @@
           "200": {
             "$ref": "#/responses/TaskStageAssigneesResponse"
           },
-          "404": {
+          "400": {
             "$ref": "#/responses/TaskStageAssigneesFailureResponse"
+          },
+           "404": {
+            "$ref": "#/responses/TaskStageAssigneesNotFoundResponse"
           }
         }
       }

@@ -14,6 +14,8 @@ from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
     UserActionPermissionDenied, UserBoardPermissionDenied
+from ib_tasks.exceptions.stage_custom_exceptions import \
+    StageIdsWithInvalidPermissionForAssignee
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
 from ib_tasks.interactors.create_or_update_task.update_task_interactor import \
@@ -21,9 +23,13 @@ from ib_tasks.interactors.create_or_update_task.update_task_interactor import \
 from ib_tasks.interactors.presenter_interfaces \
     .save_and_act_on_task_presenter_interface import \
     SaveAndActOnATaskPresenterInterface
+from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
+    ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces \
     .create_or_update_task_storage_interface import \
     CreateOrUpdateTaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
+    ElasticSearchStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
@@ -46,8 +52,12 @@ class SaveAndActOnATaskInteractor:
             gof_storage: GoFStorageInterface,
             create_task_storage: CreateOrUpdateTaskStorageInterface,
             storage: StorageInterface, field_storage: FieldsStorageInterface,
-            stage_storage: StageStorageInterface
+            stage_storage: StageStorageInterface,
+            action_storage: ActionStorageInterface,
+            elastic_storage: ElasticSearchStorageInterface
     ):
+        self.elastic_storage = elastic_storage
+        self.action_storage = action_storage
         self.gof_storage = gof_storage
         self.task_storage = task_storage
         self.create_task_storage = create_task_storage
@@ -136,6 +146,11 @@ class SaveAndActOnATaskInteractor:
             return presenter.raise_exception_for_user_board_permission_denied(
                 error_obj=err
             )
+        except StageIdsWithInvalidPermissionForAssignee as err:
+            return \
+                presenter.raise_stage_ids_with_invalid_permission_for_assignee_exception(
+                    err
+                )
 
     def _prepare_save_and_act_response(self, presenter, task_dto):
         self.save_and_act_on_task(task_dto)
@@ -149,17 +164,22 @@ class SaveAndActOnATaskInteractor:
             task_storage=self.task_storage, gof_storage=self.gof_storage,
             create_task_storage=self.create_task_storage,
             storage=self.storage, field_storage=self.field_storage,
-            stage_storage=self.stage_storage
+            stage_storage=self.stage_storage,
+            elastic_storage=self.elastic_storage
         )
         update_task_dto = UpdateTaskDTO(
             task_id=task_dto.task_id, created_by_id=task_dto.created_by_id,
+            title=task_dto.title, description=task_dto.description,
+            start_date=task_dto.start_date, due_date=task_dto.due_date,
+            due_time=task_dto.due_time, priority=task_dto.priority,
+            stage_assignee=task_dto.stage_assignee,
             gof_fields_dtos=task_dto.gof_fields_dtos
         )
         update_task_interactor.update_task(update_task_dto)
         act_on_task_interactor = UserActionOnTaskInteractor(
             user_id=task_dto.created_by_id, board_id=None,
-            task_id=task_dto.task_id,
-            action_id=task_dto.action_id,
+            task_id=task_dto.task_id, task_storage=self.task_storage,
+            action_storage=self.action_storage, action_id=task_dto.action_id,
             storage=self.storage, gof_storage=self.create_task_storage,
             field_storage=self.field_storage, stage_storage=self.stage_storage
         )

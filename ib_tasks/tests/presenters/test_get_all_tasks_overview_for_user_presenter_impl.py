@@ -86,6 +86,11 @@ class TestGetAllTasksOverviewForUserPresenterImpl:
                     "stage_display_name":
                         "stage_display_1",
                     "stage_color": "color_1",
+                    "assignee": {
+                        "assignee_id": "123e4567-e89b-12d3-a456-426614174000",
+                        "name": "name_0",
+                        "profile_pic_url": "https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM"
+                    },
                     "actions": [{
                         "action_id": 1,
                         "button_text": "button_text_1",
@@ -113,6 +118,11 @@ class TestGetAllTasksOverviewForUserPresenterImpl:
                     "stage_display_name":
                         "stage_display_2",
                     "stage_color": "color_2",
+                    "assignee": {
+                        "assignee_id": "123e4567-e89b-12d3-a456-426614174001",
+                        "name": "name_1",
+                        "profile_pic_url": "https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM"
+                    },
                     "actions": [{
                         "action_id": 1,
                         'action_type': 'action_type_1',
@@ -143,7 +153,6 @@ class TestGetAllTasksOverviewForUserPresenterImpl:
         TaskWithCompleteStageDetailsDTOFactory.reset_sequence()
         task_with_complete_stage_details_dtos = \
             TaskWithCompleteStageDetailsDTOFactory.create_batch(2)
-
         task_fields_and_action_details_dtos = \
             GetTaskStageCompleteDetailsDTOFactory.create_batch(
                 2, field_dtos=[FieldDetailsDTOFactory()],

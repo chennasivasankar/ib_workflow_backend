@@ -86,15 +86,16 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         from elasticsearch_dsl import Q, Search
 
         search = Search(index=TASK_INDEX_NAME)
-        search = search.query(
-            Q(
-                "match",
-                title={
-                    "query": search_query,
-                    "fuzziness": "2"
-                }
+        if search_query:
+            search = search.query(
+                Q(
+                    "match",
+                    title={
+                        "query": search_query,
+                        "fuzziness": "2"
+                    }
+                )
             )
-        )
         total_tasks_count = search.count()
         task_ids = [
             hit.task_id
@@ -118,15 +119,16 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         from elasticsearch_dsl import Q, Search
 
         search = Search(index=USER_INDEX_NAME)
-        search = search.query(
-            Q(
-                "match",
-                username={
-                    "query": search_query,
-                    "fuzziness": "2"
-                }
+        if search_query:
+            search = search.query(
+                Q(
+                    "match",
+                    username={
+                        "query": search_query,
+                        "fuzziness": "2"
+                    }
+                )
             )
-        )
         user_dtos = [
             ElasticUserDTO(
                 user_id=hit.user_id,
@@ -151,16 +153,16 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         from elasticsearch_dsl import Q, Search
 
         search = Search(index=COUNTRY_INDEX_NAME)
-        search = search.query(
-            Q(
-                "match",
-                country_name={
-                    "query": search_query,
-                    "fuzziness": "2"
-                }
+        if search_query:
+            search = search.query(
+                Q(
+                    "match",
+                    country_name={
+                        "query": search_query,
+                        "fuzziness": "2"
+                    }
+                )
             )
-        )
-        total_countries_count = search.count()
         country_dtos = [
             ElasticCountryDTO(
                 country_id=hit.country_id,
@@ -185,16 +187,16 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         from elasticsearch_dsl import Q, Search
 
         search = Search(index=STATE_INDEX_NAME)
-        search = search.query(
-            Q(
-                "match",
-                state_name={
-                    "query": search_query,
-                    "fuzziness": "2"
-                }
+        if search_query:
+            search = search.query(
+                Q(
+                    "match",
+                    state_name={
+                        "query": search_query,
+                        "fuzziness": "2"
+                    }
+                )
             )
-        )
-        total_states_count = search.count()
         state_dtos = [
             ElasticStateDTO(
                 state_id=hit.state_id,
@@ -219,16 +221,16 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         from elasticsearch_dsl import Q, Search
 
         search = Search(index=CITY_INDEX_NAME)
-        search = search.query(
-            Q(
-                "match",
-                city_name={
-                    "query": search_query,
-                    "fuzziness": "2"
-                }
+        if search_query:
+            search = search.query(
+                Q(
+                    "match",
+                    city_name={
+                        "query": search_query,
+                        "fuzziness": "2"
+                    }
+                )
             )
-        )
-        total_cities_count = search.count()
         city_dtos = [
             ElasticCityDTO(
                 city_id=hit.city_id,
