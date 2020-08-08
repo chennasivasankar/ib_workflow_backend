@@ -38,7 +38,7 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
         import json
         template_id = 'template_1'
         gof = GoFFactory.create()
-        GoFToTaskTemplateFactory.create(task_template_id=template_id,gof=gof)
+        GoFToTaskTemplateFactory.create(task_template_id=template_id, gof=gof)
 
         TaskTemplateStatusVariableFactory.create_batch(
             4, task_template_id=template_id
@@ -63,7 +63,7 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {
-            "task_template_id": "template_1",
+            "task_template_id": "template_2",
             "action_id": 1,
             "title": "task_title",
             "description": "task_description",
@@ -94,33 +94,3 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
                                       query_params=query_params,
                                       headers=headers,
                                       snapshot=snapshot)
-        from ib_tasks.models.task import Task
-        task_object = Task.objects.get(id=1)
-        snapshot.assert_match(task_object.id, 'task_id')
-        snapshot.assert_match(task_object.template_id, 'template_id')
-        snapshot.assert_match(task_object.title, 'task_title')
-        snapshot.assert_match(task_object.description, 'task_description')
-        snapshot.assert_match(str(task_object.start_date), 'task_start_date')
-        snapshot.assert_match(str(task_object.due_date), 'task_due_date')
-        snapshot.assert_match(task_object.priority, 'task_priority')
-
-        from ib_tasks.models.task_gof import TaskGoF
-        task_gofs = TaskGoF.objects.filter(task_id=1)
-        counter = 1
-        for task_gof in task_gofs:
-            snapshot.assert_match(
-                task_gof.same_gof_order, f'same_gof_order_{counter}')
-            snapshot.assert_match(task_gof.gof_id, f'gof_id_{counter}')
-            snapshot.assert_match(task_gof.task_id, f'gof_task_id_{counter}')
-            counter = counter + 1
-
-        from ib_tasks.models.task_gof_field import TaskGoFField
-        task_gof_fields = TaskGoFField.objects.filter(task_gof__task_id=1)
-        counter = 1
-        for task_gof_field in task_gof_fields:
-            snapshot.assert_match(task_gof_field.task_gof_id,
-                                  f'task_gof_{counter}')
-            snapshot.assert_match(task_gof_field.field_id, f'field_{counter}')
-            snapshot.assert_match(task_gof_field.field_response,
-                                  f'field_response_{counter}')
-            counter = counter + 1
