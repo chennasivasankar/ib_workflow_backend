@@ -9,15 +9,17 @@ from typing import List, Any, Optional
 from elasticsearch_dsl import connections
 
 from django.conf import settings
-connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT], timeout=20)
-from elasticsearch_dsl import Document, Nested, InnerDoc, Text, Integer
 
+connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
+                              timeout=20)
+from elasticsearch_dsl import Document, Nested, InnerDoc, Text, Integer
 
 TASK_INDEX_NAME = 'task-{}'.format(settings.STAGE)
 USER_INDEX_NAME = 'user-{}'.format(settings.STAGE)
 COUNTRY_INDEX_NAME = 'country-{}'.format(settings.STAGE)
 STATE_INDEX_NAME = 'state-{}'.format(settings.STAGE)
 CITY_INDEX_NAME = 'city-{}'.format(settings.STAGE)
+
 
 @dataclass
 class ElasticFieldDTO:

@@ -4,8 +4,22 @@ Author: Pavankumar Pamuru
 
 """
 import abc
+from dataclasses import dataclass
+from typing import List
 from typing import Union
 
+from ib_tasks.constants.enum import Operators
+
+
+@dataclass
+class ApplyFilterDTO:
+    template_id: str
+    field_id: str
+    operator: Operators
+    value: str
+
+
+from ib_tasks.documents.elastic_task import ElasticTaskDTO, Task, QueryTasksDTO
 from ib_tasks.documents.elastic_task import *
 
 
@@ -20,7 +34,7 @@ class ElasticSearchStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def filter_tasks(self):
+    def filter_tasks(self, filter_dtos: List[ApplyFilterDTO], offset: int, limit: int) -> List[int]:
         pass
 
     @abc.abstractmethod
