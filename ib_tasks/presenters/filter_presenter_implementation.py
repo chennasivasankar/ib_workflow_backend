@@ -10,21 +10,10 @@ from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFToTaskTemplateDTO
-from typing import List, Dict
-
-from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
-
-from ib_tasks.constants.enum import Status
-from ib_tasks.interactors.filter_dtos import FilterCompleteDetailsDTO, \
-    ConditionDTO, FilterDTO
-from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
-    import FilterPresenterInterface, TaskTemplateFieldsDto
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import \
-    GoFToTaskTemplateDTO
 
 
-class FilterPresenterImplementation(FilterPresenterInterface, HTTPResponseMixin):
+class FilterPresenterImplementation(FilterPresenterInterface,
+                                    HTTPResponseMixin):
 
     def get_response_for_invalid_filter_id(self):
         from ib_tasks.constants.exception_messages import INVALID_FILTER_ID
