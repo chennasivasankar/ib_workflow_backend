@@ -1,4 +1,5 @@
-rom typing import List, Dict
+from typing import List, Dict
+
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.constants.enum import Status
@@ -7,8 +8,8 @@ from ib_tasks.interactors.filter_dtos import FilterCompleteDetailsDTO, \
 from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
     import FilterPresenterInterface, TaskTemplateFieldsDto
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO
-from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFToTaskTemplateDTO
-
+from ib_tasks.interactors.storage_interfaces.gof_dtos import \
+    GoFToTaskTemplateDTO
 from typing import List, Dict
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
@@ -23,8 +24,7 @@ from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFToTaskTemplateDTO
 
 
-class FilterPresenterImplementation(
-        FilterPresenterInterface, HTTPResponseMixin):
+class FilterPresenterImplementation(FilterPresenterInterface, HTTPResponseMixin):
 
     def get_response_for_invalid_filter_id(self):
         from ib_tasks.constants.exception_messages import INVALID_FILTER_ID
@@ -65,7 +65,8 @@ class FilterPresenterImplementation(
 
         filters_dto = filter_complete_details.filters_dto
         conditions_dto = filter_complete_details.conditions_dto
-        filter_conditions_dict = self._get_filter_conditions_dict(conditions_dto)
+        filter_conditions_dict = self._get_filter_conditions_dict(
+            conditions_dto)
         response_object = [
             {
                 "filter_id": filter_dto.filter_id,
@@ -129,7 +130,8 @@ class FilterPresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE
         response_dict = {
-            "response": FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE[0].format(error.field_ids),
+            "response": FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE[0].format(
+                error.field_ids),
             "http_status_code": 403,
             "res_status": FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE[1]
         }
