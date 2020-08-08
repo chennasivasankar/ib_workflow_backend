@@ -3,7 +3,7 @@ Created on: 07/08/20
 Author: Pavankumar Pamuru
 
 """
-
+from ib_tasks.constants.enum import VIEWTYPE
 from ib_tasks.exceptions.fields_custom_exceptions import \
     LimitShouldBeGreaterThanZeroException, \
     OffsetShouldBeGreaterThanZeroException
@@ -40,7 +40,7 @@ class GetTaskDetailsByFilterInteractor:
         self.elasticsearch_storage = elasticsearch_storage
 
     def get_filtered_tasks_overview_for_user_wrapper(
-            self, user_id: str, limit: int, offset: int,
+            self, user_id: str, limit: int, offset: int, view_type: VIEWTYPE,
             presenter: GetFilteredTasksOverviewForUserPresenterInterface):
         try:
             filtered_tasks_overview_details_dto, total_tasks = self.get_filtered_tasks_overview_for_user(
@@ -62,7 +62,8 @@ class GetTaskDetailsByFilterInteractor:
             total_tasks=total_tasks
         )
 
-    def get_filtered_tasks_overview_for_user(self, user_id: str, limit: int, offset: int):
+    def get_filtered_tasks_overview_for_user(
+            self, user_id: str, limit: int, offset: int, view_type: VIEWTYPE):
 
         from ib_tasks.interactors.get_task_ids_by_applying_filters_interactor import \
             GetTaskIdsBasedOnUserFilters
@@ -83,7 +84,7 @@ class GetTaskDetailsByFilterInteractor:
         )
         all_tasks_overview_details_dto = task_details_interactor.\
             get_filtered_tasks_overview_for_user(
-                user_id=user_id, task_ids=task_ids
+                user_id=user_id, task_ids=task_ids, view_type=view_type
         )
         return all_tasks_overview_details_dto, total_tasks
 

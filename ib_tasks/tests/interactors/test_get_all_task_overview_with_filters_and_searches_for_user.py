@@ -100,11 +100,13 @@ class TestGetTasksOverviewForUserInteractor:
             fields_and_actions=fields_and_actions,
             stage_ids=stage_ids
         )
-
+        from ib_tasks.constants.enum import VIEWTYPE
+        view_type = VIEWTYPE.KANBAN.value
         # Act
         actual_response = interactor.get_filtered_tasks_overview_for_user(
             user_id=user_id,
-            task_ids=task_ids
+            task_ids=task_ids,
+            view_type=view_type
         )
 
         # Assert

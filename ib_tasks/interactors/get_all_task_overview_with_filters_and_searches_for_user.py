@@ -7,6 +7,7 @@ Author: Pavankumar Pamuru
 from dataclasses import dataclass
 from typing import List
 
+from ib_tasks.constants.enum import VIEWTYPE
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
@@ -38,7 +39,7 @@ class GetTasksOverviewForUserInteractor:
         self.action_storage = action_storage
 
     def get_filtered_tasks_overview_for_user(
-            self, user_id: str, task_ids: List[int]):
+            self, user_id: str, task_ids: List[int], view_type: VIEWTYPE):
         stage_ids = self._get_allowed_stage_ids_of_user(user_id=user_id)
         task_id_with_stage_ids_dtos = self._get_task_ids_of_user(
             user_id=user_id,
@@ -58,7 +59,7 @@ class GetTasksOverviewForUserInteractor:
             task_id_with_stage_details_dtos
         ]
         task_fields_and_action_details_dtos = self._get_task_fields_and_action(
-            task_id_with_stage_id_dtos, user_id)
+            task_id_with_stage_id_dtos, user_id, view_type=view_type)
         from ib_tasks.interactors.presenter_interfaces.dtos import \
             AllTasksOverviewDetailsDTO
         all_tasks_overview_details_dto = AllTasksOverviewDetailsDTO(
@@ -95,7 +96,7 @@ class GetTasksOverviewForUserInteractor:
 
     def _get_task_fields_and_action(
             self, task_id_with_stage_id_dtos: List[GetTaskDetailsDTO],
-            user_id: str
+            user_id: str, view_type: VIEWTYPE
     ) -> List[GetTaskStageCompleteDetailsDTO]:
         from ib_tasks.interactors.get_task_fields_and_actions import \
             GetTaskFieldsAndActionsInteractor
@@ -106,7 +107,7 @@ class GetTasksOverviewForUserInteractor:
                                               action_storage=self.action_storage)
         task_details_dtos = get_task_fields_and_actions_interactor. \
             get_task_fields_and_action(task_dtos=task_id_with_stage_id_dtos,
-                                       user_id=user_id)
+                                       user_id=user_id, view_type=view_type)
         return task_details_dtos
 
     @staticmethod
