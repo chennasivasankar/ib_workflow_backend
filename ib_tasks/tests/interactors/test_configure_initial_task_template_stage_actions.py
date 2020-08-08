@@ -1,15 +1,17 @@
 
 from unittest.mock import create_autospec
 
+from ib_tasks.interactors.configur_initial_task_template_stage_actions \
+    import (
+    ConfigureInitialTaskTemplateStageActions,
+    InvalidTaskTemplateIdsException
+)
 from ib_tasks.interactors.stages_dtos import TemplateStageDTO
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
-
-from ib_tasks.interactors.configur_initial_task_template_stage_actions \
-    import (
-        ConfigureInitialTaskTemplateStageActions,
-        InvalidTaskTemplateIdsException
-    )
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface\
+    import \
+    TaskTemplateStorageInterface
 from ib_tasks.tests.factories.interactor_dtos \
     import TaskTemplateStageActionDTOFactory
 
@@ -31,10 +33,12 @@ class TestConfigureInitialTaskTemplateStageActions:
 
         task_template_ids = ["task_template_1", "task_template_2"]
         storage = create_autospec(StorageInterface)
+        template_storage = create_autospec(TaskTemplateStorageInterface)
         storage.get_valid_task_template_ids.return_value = ["task_template_1"]
 
         interactor = ConfigureInitialTaskTemplateStageActions(
             storage=storage,
+            template_storage=template_storage,
             tasks_dto=tasks_dto
         )
 
@@ -65,10 +69,12 @@ class TestConfigureInitialTaskTemplateStageActions:
 
         task_template_ids = ["task_template_1", "task_template_2"]
         storage = create_autospec(StorageInterface)
+        template_storage = create_autospec(TaskTemplateStorageInterface)
         storage.get_valid_task_template_ids.return_value = task_template_ids
 
         interactor = ConfigureInitialTaskTemplateStageActions(
             storage=storage,
+            template_storage=template_storage,
             tasks_dto=tasks_dto
         )
         from ib_tasks.exceptions.task_custom_exceptions \
@@ -94,6 +100,7 @@ class TestConfigureInitialTaskTemplateStageActions:
 
         task_template_ids = ["task_template_1", "task_template_2"]
         storage = create_autospec(StorageInterface)
+        template_storage = create_autospec(TaskTemplateStorageInterface)
         storage.get_valid_task_template_ids.return_value = task_template_ids
         task_template_stage_dtos = [
             TemplateStageDTO(
@@ -111,6 +118,7 @@ class TestConfigureInitialTaskTemplateStageActions:
 
         interactor = ConfigureInitialTaskTemplateStageActions(
             storage=storage,
+            template_storage=template_storage,
             tasks_dto=tasks_dto
         )
 

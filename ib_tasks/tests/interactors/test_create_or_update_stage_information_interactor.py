@@ -1,29 +1,31 @@
 from unittest.mock import create_autospec, patch
+
 import pytest
 
 from ib_boards.exceptions.custom_exceptions import InvalidTemplateFields
-from ib_tasks.exceptions.roles_custom_exceptions import InvalidStageRolesException
-from ib_tasks.interactors.storage_interfaces.get_task_dtos import TemplateFieldsDTO
+from ib_tasks.exceptions.roles_custom_exceptions import \
+    InvalidStageRolesException
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageValues, \
     DuplicateStageIds, InvalidStageDisplayLogic, \
     InvalidStagesDisplayName
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidStagesTaskTemplateId, InvalidTaskTemplateIds
-from ib_tasks.interactors.stages_dtos import StageLogicAttributes
-from ib_tasks.interactors.stage_display_logic import \
-    StageDisplayLogicInteractor
-
 from ib_tasks.interactors.create_or_update_stages import \
     CreateOrUpdateStagesInteractor
+from ib_tasks.interactors.stage_display_logic import \
+    StageDisplayLogicInteractor
+from ib_tasks.interactors.stages_dtos import StageLogicAttributes
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
+    TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_template_storage_interface import \
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface\
+    import \
     TaskTemplateStorageInterface
-from ib_tasks.tests.factories.storage_dtos import (
-    StageDTOFactory, TaskStagesDTOFactory)
-from ib_tasks.tests.factories.storage_dtos import ValidStageDTOFactory
+from ib_tasks.tests.factories.storage_dtos import StageDTOFactory, \
+    TaskStagesDTOFactory, ValidStageDTOFactory
 
 
 class TestCreateOrUpdateStageInformation:

@@ -4,20 +4,23 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_complete_task_template_details_exists task_template_1'] = {
     'actions': [
         {
             'action_id': 1,
+            'action_type': 'NO_VALIDATIONS',
             'button_color': 'button_color_1',
-            'button_text': 'button_text__1'
+            'button_text': 'button_text__1',
+            'transition_template_id': 'transition_template_1'
         },
         {
             'action_id': 2,
+            'action_type': 'NO_VALIDATIONS',
             'button_color': 'button_color_2',
-            'button_text': 'button_text__2'
+            'button_text': 'button_text__2',
+            'transition_template_id': 'transition_template_2'
         }
     ],
     'group_of_fields': [
@@ -98,13 +101,17 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_gofs_exists_
     'actions': [
         {
             'action_id': 1,
+            'action_type': 'NO_VALIDATIONS',
             'button_color': 'button_color_1',
-            'button_text': 'button_text__1'
+            'button_text': 'button_text__1',
+            'transition_template_id': 'transition_template_1'
         },
         {
             'action_id': 2,
+            'action_type': 'NO_VALIDATIONS',
             'button_color': 'button_color_2',
-            'button_text': 'button_text__2'
+            'button_text': 'button_text__2',
+            'transition_template_id': 'transition_template_2'
         }
     ],
     'group_of_fields': [
@@ -198,13 +205,17 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_fields_exist
     'actions': [
         {
             'action_id': 1,
+            'action_type': 'NO_VALIDATIONS',
             'button_color': 'button_color_1',
-            'button_text': 'button_text__1'
+            'button_text': 'button_text__1',
+            'transition_template_id': 'transition_template_1'
         },
         {
             'action_id': 2,
+            'action_type': 'NO_VALIDATIONS',
             'button_color': 'button_color_2',
-            'button_text': 'button_text__2'
+            'button_text': 'button_text__2',
+            'transition_template_id': 'transition_template_2'
         }
     ],
     'group_of_fields': [

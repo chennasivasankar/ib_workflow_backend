@@ -123,3 +123,11 @@ class UserStorageInterface(ABC):
     def create_user(self, company_id: str, is_admin: bool, user_id: str,
                     name: str):
         pass
+
+    @abstractmethod
+    def get_user_ids(self, role_ids: List[str]) -> List[str]:
+        pass
+
+    @abstractmethod
+    def get_valid_role_ids(self, role_ids: List[str]) -> List[str]:
+        pass

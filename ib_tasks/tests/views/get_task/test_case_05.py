@@ -3,10 +3,11 @@
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
-from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+
 from ib_tasks.tests.factories.models import (
     TaskFactory
 )
+from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
 class TestCase05GetTaskAPITestCase(TestUtils):

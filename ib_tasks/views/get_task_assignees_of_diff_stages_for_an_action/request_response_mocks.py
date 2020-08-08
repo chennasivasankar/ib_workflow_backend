@@ -5,11 +5,11 @@ RESPONSE_200_JSON = """
 {
     "stage_assignees": [
         {
-            "stage_id": "string",
-            "name": "string",
+            "stage_id": 1,
+            "stage_name": "string",
             "assignee": {
                 "assignee_id": "string",
-                "name": "string",
+                "assignee_name": "string",
                 "profile_pic_url": "string"
             }
         }

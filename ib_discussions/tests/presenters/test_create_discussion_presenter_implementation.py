@@ -1,7 +1,6 @@
 import json
 
 import pytest
-from freezegun import freeze_time
 
 from ib_discussions.constants.enum import StatusCode
 
