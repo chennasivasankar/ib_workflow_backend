@@ -77,9 +77,9 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
             stage_assignee_details_dtos = \
                 get_stage_assignees_details_interactor. \
                     get_stages_assignee_details_dtos(
-                    task_id=task_id_with_stage_details_dto.task_id,
-                    stage_ids=[task_id_with_stage_details_dto.db_stage_id]
-                )
+                        task_id=task_id_with_stage_details_dto.task_id,
+                        stage_ids=[task_id_with_stage_details_dto.db_stage_id]
+                    )
             task_with_complete_stage_details_dto = \
                 TaskWithCompleteStageDetailsDTO(
                     task_with_stage_details_dto=task_id_with_stage_details_dto,
