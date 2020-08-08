@@ -20,7 +20,7 @@ class TestCase03DeleteTeamAPITestCase(TestUtils):
         path_params = {"team_id": "413642ff-1272-4990-b878-6607a5e02bc1"}
         query_params = {}
         headers = {}
-        response = self.default_test_case(
+        response = self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
