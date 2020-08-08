@@ -9,7 +9,7 @@ RESPONSE_200_JSON = """
             "stage_name": "string",
             "assignee": {
                 "assignee_id": "string",
-                "assignee_name": "string",
+                "name": "string",
                 "profile_pic_url": "string"
             }
         }

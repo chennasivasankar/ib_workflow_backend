@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Any, Optional
 
+from ib_tasks.interactors.stages_dtos import StageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
@@ -79,10 +80,26 @@ class StageValueWithTaskIdsDTO:
 
 
 @dataclass
+class TaskStageAssigneeDTO:
+    task_stage_id: int
+    stage_id: int
+    assignee_id: Optional[str]
+
+
+@dataclass
 class TaskIdWithStageDetailsDTO:
+    #TODO refactor stage_id_db name after removal of stage_id
+    db_stage_id: int
     task_id: int
     stage_id: str
     stage_display_name: str
+    stage_color: str
+
+
+@dataclass
+class TaskWithCompleteStageDetailsDTO:
+    task_with_stage_details_dto: TaskIdWithStageDetailsDTO
+    stage_assignee_dto: Optional[StageAssigneeDetailsDTO]
 
 
 @dataclass
@@ -124,9 +141,3 @@ class StageIdWithTemplateIdDTO:
     template_id: str
     stage_id: int
 
-
-@dataclass
-class TaskStageAssigneeDTO:
-    task_stage_id: int
-    stage_id: int
-    assignee_id: Optional[str]

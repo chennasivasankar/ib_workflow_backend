@@ -2,14 +2,14 @@ from typing import List, Optional
 
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
 from ib_tasks.adapters.service_adapter import get_service_adapter
-from ib_tasks.exceptions.task_custom_exceptions import \
-    InvalidStageIdsForTask
 from ib_tasks.interactors.stages_dtos import StageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskStageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import \
     TaskStageStorageInterface
+from ib_tasks.exceptions.task_custom_exceptions import \
+    InvalidStageIdsForTask
 
 
 class GetStagesAssigneesDetailsInteractor:
