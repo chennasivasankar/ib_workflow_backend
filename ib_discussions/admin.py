@@ -22,14 +22,9 @@ class DiscussionSetAdmin(admin.ModelAdmin):
     inlines = [DiscussionInline]
 
 
-class RepliesInline(admin.TabularInline):
-    model = Comment
-    extra = 0
-
-
 class CommentAdmin(admin.ModelAdmin):
     list_display = ("id", "user_id", "discussion_id", "content")
-    inlines = [RepliesInline]
+    list_filter = ["discussion_id"]
 
 
 admin.site.register(Discussion, DiscussionAdmin)
