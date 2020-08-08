@@ -317,6 +317,7 @@
     "ViewTypeParameter": {
       "name": "view_type",
       "in": "body",
+      "required": true,
       "description": "view type",
       "schema": {
         "type": "object",
