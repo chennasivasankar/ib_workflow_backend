@@ -9,6 +9,16 @@ from ib_iam.interactors.storage_interfaces.user_storage_interface \
 
 class UserStorageImplementation(UserStorageInterface):
 
+    def get_user_ids(self, role_ids: List[str]) -> List[str]:
+        from ib_iam.models import UserRole
+        return list(UserRole.objects.filter(
+            role__role_id__in=role_ids).values_list('user_id', flat=True))
+
+    def get_valid_role_ids(self, role_ids: List[str]) -> List[str]:
+        from ib_iam.models import Role
+        return list(Role.objects.filter(
+            role_id__in=role_ids).values_list('role_id', flat=True))
+
     def is_user_admin(self, user_id: str) -> bool:
         from ib_iam.models.user import UserDetails
         user = UserDetails.objects.get(user_id=user_id)

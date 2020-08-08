@@ -9,6 +9,10 @@ class EntityType(BaseEnumClass, Enum):
     BOARD = "BOARD"
 
 
+class TimerEntityType(BaseEnumClass, Enum):
+    STAGE_TASK = "STAGE_TASK"
+
+
 class StatusCode(Enum):
     SUCCESS = 200
     NOT_FOUND = 404
