@@ -1,5 +1,5 @@
-from ib_tasks.constants.enum \
-    import PermissionTypes, FieldTypes, Searchable, Operators, Priority
+from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Searchable, \
+    Operators, Priority
 
 ALL_ROLES_ID = "ALL_ROLES"
 GOF_ORDER_WITH_MINUS_ONE_VALUE = -1

@@ -1,4 +1,5 @@
 from typing import List
+
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, RoleIdAndNameDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO, UserIdAndNameDTO
@@ -7,7 +8,8 @@ from ib_iam.interactors.storage_interfaces.user_storage_interface \
 
 
 class UserStorageImplementation(UserStorageInterface):
-    def check_is_admin_user(self, user_id: str) -> bool:
+
+    def is_user_admin(self, user_id: str) -> bool:
         from ib_iam.models.user import UserDetails
         user = UserDetails.objects.get(user_id=user_id)
         return user.is_admin
@@ -17,11 +19,11 @@ class UserStorageImplementation(UserStorageInterface):
         is_exists = UserDetails.objects.filter(user_id=user_id).exists()
         return is_exists
 
-    def get_role_objs_ids(self, roles):
+    def get_role_objs_ids(self, role_ids: List[str]) -> List[str]:
         from ib_iam.models import Role
-        role_ids = Role.objects.filter(role_id__in=roles) \
+        role_obj_ids = Role.objects.filter(role_id__in=role_ids) \
             .values_list('id', flat=True)
-        return role_ids
+        return role_obj_ids
 
     def check_are_valid_role_ids(self, role_ids):
         from ib_iam.models import Role
@@ -69,14 +71,8 @@ class UserStorageImplementation(UserStorageInterface):
         user.name = name
         user.save()
 
-    def add_new_user(self, user_id: str, is_admin: bool, company_id: str,
-                     role_ids, team_ids: List[str], name: str):
-        self.create_user(company_id, is_admin, user_id, name)
-        self.add_user_to_the_teams(user_id, team_ids)
-        self.add_roles_to_the_user(user_id, role_ids)
-
-    @staticmethod
-    def create_user(company_id, is_admin, user_id, name):
+    def create_user(self, company_id: str, is_admin: bool, user_id: str,
+                    name: str):
         from ib_iam.models import UserDetails
         UserDetails.objects.create(
             user_id=user_id, is_admin=is_admin,
@@ -239,6 +235,12 @@ class UserStorageImplementation(UserStorageInterface):
             user_details_objects=user_details_objects
         )
         return user_details_dtos
+
+    def get_valid_user_ids_among_the_given_user_ids(self, user_ids: List[str]):
+        from ib_iam.models import UserDetails
+        user_ids = UserDetails.objects.filter(user_id__in=user_ids) \
+            .values_list('user_id', flat=True)
+        return list(user_ids)
 
     def _convert_to_user_details_dtos(self, user_details_objects):
         user_details_dtos = [

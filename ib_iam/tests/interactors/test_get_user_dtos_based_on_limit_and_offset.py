@@ -21,7 +21,7 @@ class TestGetUserDTOSBasedOnLimitAndOffset:
     def interactor(self, storage_mock):
         from ib_iam.interactors.get_users_list_interactor import \
             GetUsersDetailsInteractor
-        interactor = GetUsersDetailsInteractor(storage=storage_mock)
+        interactor = GetUsersDetailsInteractor(user_storage=storage_mock)
         return interactor
 
     def test_invalid_offset_raise_exception(self, interactor):

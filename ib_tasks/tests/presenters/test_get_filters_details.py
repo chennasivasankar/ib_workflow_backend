@@ -159,8 +159,6 @@ class TestGetFiltersDetailsPresenter:
         from ib_tasks.presenters.filter_presenter_implementation \
             import FilterPresenterImplementation
         presenter = FilterPresenterImplementation()
-        from ib_tasks.exceptions.filter_exceptions import \
-            FieldIdsNotBelongsToTemplateId
 
         # Act
         response_object = presenter. \
@@ -178,8 +176,6 @@ class TestGetFiltersDetailsPresenter:
         from ib_tasks.presenters.filter_presenter_implementation \
             import FilterPresenterImplementation
         presenter = FilterPresenterImplementation()
-        from ib_tasks.exceptions.filter_exceptions import \
-            FieldIdsNotBelongsToTemplateId
 
         # Act
         response_object = presenter. \
@@ -197,8 +193,6 @@ class TestGetFiltersDetailsPresenter:
         from ib_tasks.presenters.filter_presenter_implementation \
             import FilterPresenterImplementation
         presenter = FilterPresenterImplementation()
-        from ib_tasks.exceptions.filter_exceptions import \
-            FieldIdsNotBelongsToTemplateId
 
         # Act
         response_object = presenter. \

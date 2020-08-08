@@ -58,3 +58,23 @@ class TestGetUserOptionsDetailsResponse:
         # Assert
         response_dict = json.loads(resonse.content)
         snapshot.assert_match(response_dict, 'user_options_details')
+
+    def test_raise_user_is_not_admin_exception(self):
+        # Arrange
+        presenter = GetUserOptionsPresenterImplementation()
+
+        from ib_iam.constants.exception_messages import \
+            USER_DOES_NOT_HAVE_PERMISSION
+
+        expected_response = USER_DOES_NOT_HAVE_PERMISSION[0]
+        response_status_code = USER_DOES_NOT_HAVE_PERMISSION[1]
+
+        # Act
+        response_object = presenter.raise_user_is_not_admin_exception()
+
+        # Assert
+        response = json.loads(response_object.content)
+        from ib_iam.constants.enums import StatusCode
+        assert response['http_status_code'] == StatusCode.FORBIDDEN.value
+        assert response['res_status'] == response_status_code
+        assert response['response'] == expected_response

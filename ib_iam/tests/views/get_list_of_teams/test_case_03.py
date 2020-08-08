@@ -4,10 +4,11 @@ as the given limit is invalid
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
-from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+
 from ib_iam.tests.factories.models import (
     UserDetailsFactory
 )
+from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
 class TestCase03GetListOfTeamsAPITestCase(TestUtils):
@@ -21,7 +22,7 @@ class TestCase03GetListOfTeamsAPITestCase(TestUtils):
     def test_case(self, snapshot, setup):
         body = {}
         path_params = {}
-        query_params = {'limit': 0, 'offset': 5}
+        query_params = {'limit': -1, 'offset': 5}
         headers = {}
         response = self.make_api_call(
             body=body, path_params=path_params,

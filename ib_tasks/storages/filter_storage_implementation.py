@@ -1,4 +1,5 @@
 from typing import List, Tuple
+
 from django.db.models import F
 
 from ib_tasks.constants.enum import Status

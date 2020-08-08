@@ -1,4 +1,4 @@
-from typing import List, Dict
+rom typing import List, Dict
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.constants.enum import Status
@@ -8,7 +8,19 @@ from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
     import FilterPresenterInterface, TaskTemplateFieldsDto
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFToTaskTemplateDTO
-from ib_tasks.interactors.storage_interfaces.task_templates_dtos import TemplateDTO
+
+from typing import List, Dict
+
+from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
+
+from ib_tasks.constants.enum import Status
+from ib_tasks.interactors.filter_dtos import FilterCompleteDetailsDTO, \
+    ConditionDTO, FilterDTO
+from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
+    import FilterPresenterInterface, TaskTemplateFieldsDto
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import \
+    GoFToTaskTemplateDTO
 
 
 class FilterPresenterImplementation(

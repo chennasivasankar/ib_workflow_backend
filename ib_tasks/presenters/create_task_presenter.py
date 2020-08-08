@@ -12,7 +12,8 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidEmailFieldValue, InvalidPhoneNumberValue, EmptyValueForRequiredField
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
     DuplicateFieldIdsToGoF
-from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
+from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
+    DuplicateSameGoFOrderForAGoF
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
     UserBoardPermissionDenied, UserActionPermissionDenied
@@ -26,6 +27,21 @@ from ib_tasks.interactors.presenter_interfaces.create_task_presenter import \
 class CreateTaskPresenterImplementation(
     CreateTaskPresenterInterface, HTTPResponseMixin
 ):
+
+    def raise_duplicate_same_gof_orders_for_a_gof(self,
+                                                  err:
+                                                  DuplicateSameGoFOrderForAGoF):
+        from ib_tasks.constants.exception_messages import \
+            DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF
+        response_message = DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF[0].format(
+            err.gof_id, err.same_gof_orders
+        )
+        data = {
+            "response": response_message,
+            "http_status_code": 400,
+            "res_status": DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def get_create_task_response(self):
         data = {

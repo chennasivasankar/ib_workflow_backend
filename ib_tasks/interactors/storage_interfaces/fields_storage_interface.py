@@ -1,12 +1,9 @@
 import abc
 from typing import List
 
-from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldDTO, \
-    FieldCompleteDetailsDTO, UserFieldPermissionDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldIdWithGoFIdDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import \
+from ib_tasks.constants.enum import VIEWTYPE
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
+    FieldCompleteDetailsDTO, UserFieldPermissionDTO, FieldIdWithGoFIdDTO, \
     TaskTemplateStageFieldsDTO, StageTaskFieldsDTO, FieldDetailsDTOWithTaskId
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
@@ -22,13 +19,11 @@ class FieldsStorageInterface(abc.ABC):
             List[FieldDetailsDTOWithTaskId]:
         pass
 
-
-
     @abc.abstractmethod
-    def get_field_ids(self, task_dto: List[TaskTemplateStageDTO]) -> \
+    def get_field_ids(self, task_dto: List[TaskTemplateStageDTO],
+                      view_type: VIEWTYPE) -> \
             List[TaskTemplateStageFieldsDTO]:
         pass
-
 
     @abc.abstractmethod
     def get_task_stages(self, task_id: int) -> List[str]:

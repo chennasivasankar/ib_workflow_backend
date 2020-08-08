@@ -1,4 +1,3 @@
-from functools import reduce
 def add_or_remove_given_board_id_from_starred_boards(*args, **kwargs):  # pylint: disable=invalid-name
     """
     Note: replace below mock implementation with your actual implementation

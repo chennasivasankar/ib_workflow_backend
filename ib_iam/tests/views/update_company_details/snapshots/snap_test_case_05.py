@@ -11,6 +11,6 @@ snapshots['TestCase05UpdateCompanyDetailsAPITestCase.test_case status_code'] = '
 
 snapshots['TestCase05UpdateCompanyDetailsAPITestCase.test_case body'] = {
     'http_status_code': 404,
-    'res_status': 'INVALID_USERS',
-    'response': 'Given users are invalid(not found), so update is not possible'
+    'res_status': 'INVALID_USER_IDS',
+    'response': "Given users '['4']' invalid(not found), so update is not possible"
 }

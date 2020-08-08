@@ -17,9 +17,5 @@ class DeleteUserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def check_is_admin_user(self, user_id: str) -> bool:
-        pass
-
-    @abstractmethod
     def get_user_details(self, user_id: str) -> UserDTO:
         pass
