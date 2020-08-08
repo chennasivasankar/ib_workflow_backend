@@ -13,6 +13,7 @@ class TaskIdWithStageDetailsDTOFactory(factory.Factory):
     stage_id = factory.Sequence(lambda n: 'stage_%d' % (n + 1))
     stage_display_name = factory.Sequence(
         lambda n: 'stage_display_%d' % (n + 1))
+    stage_color = factory.sequence(lambda n: "color_{}".format(n + 1))
 
 
 class GetTaskStageCompleteDetailsDTOFactory(factory.Factory):

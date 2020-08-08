@@ -75,6 +75,8 @@ class GetAllTasksOverviewForUserPresenterImpl(
                     "stage_id": each_task_id_with_stage_details_dto.stage_id,
                     "stage_display_name":
                         each_task_id_with_stage_details_dto.stage_display_name,
+                    "stage_color":
+                        each_task_id_with_stage_details_dto.stage_color,
                     "actions": actions_details
                 }
             }

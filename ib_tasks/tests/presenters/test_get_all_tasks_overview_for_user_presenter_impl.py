@@ -2,8 +2,6 @@ import pytest
 
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskIdWithStageDetailsDTO
 from ib_tasks.presenters.get_all_tasks_overview_for_user_presenter_impl import \
     GetAllTasksOverviewForUserPresenterImpl
 from ib_tasks.tests.factories.presenter_dtos import \
@@ -87,6 +85,7 @@ class TestGetAllTasksOverviewForUserPresenterImpl:
                         "stage_1",
                     "stage_display_name":
                         "stage_display_1",
+                    "stage_color": "color_1",
                     "actions": [{
                         "action_id": 1,
                         "button_text": "button_text_1",
@@ -110,6 +109,7 @@ class TestGetAllTasksOverviewForUserPresenterImpl:
                         "stage_2",
                     "stage_display_name":
                         "stage_display_2",
+                    "stage_color": "color_2",
                     "actions": [{
                         "action_id": 1,
                         "button_text": "button_text_1",

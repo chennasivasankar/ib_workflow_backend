@@ -83,6 +83,7 @@ class TaskIdWithStageDetailsDTO:
     task_id: int
     stage_id: str
     stage_display_name: str
+    stage_color: str
 
 
 @dataclass

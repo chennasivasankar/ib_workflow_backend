@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 from snapshottest import GenericRepr, Snapshot
 
+
 snapshots = Snapshot()
 
 snapshots['TestGetFieldDetails.test_when_user_donot_have_permissions_for_fields response'] = [

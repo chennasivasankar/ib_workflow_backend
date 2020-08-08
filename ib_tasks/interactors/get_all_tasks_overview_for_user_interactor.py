@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 
+from ib_tasks.constants.enum import VIEWTYPE
 from ib_tasks.exceptions.fields_custom_exceptions import \
     LimitShouldBeGreaterThanZeroException, \
     OffsetShouldBeGreaterThanZeroException
@@ -87,7 +88,8 @@ class GetAllTasksOverviewForUserInteractor:
         all_tasks_overview_details_dto = AllTasksOverviewDetailsDTO(
             task_id_with_stage_details_dtos=task_id_with_stage_details_dtos,
             task_fields_and_action_details_dtos=
-            task_fields_and_action_details_dtos)
+            task_fields_and_action_details_dtos,
+        )
         return all_tasks_overview_details_dto
 
     def _get_allowed_stage_ids_of_user(self, user_id: str) -> List[str]:
@@ -130,5 +132,6 @@ class GetAllTasksOverviewForUserInteractor:
                                               action_storage=self.action_storage)
         task_details_dtos = get_task_fields_and_actions_interactor. \
             get_task_fields_and_action(task_dtos=task_id_with_stage_id_dtos,
-                                       user_id=user_id)
+                                       user_id=user_id,
+                                       view_type=VIEWTYPE.KANBAN.value)
         return task_details_dtos
