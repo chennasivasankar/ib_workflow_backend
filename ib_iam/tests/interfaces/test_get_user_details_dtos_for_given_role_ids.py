@@ -1,7 +1,9 @@
 import pytest
 
 from ib_iam.tests.common_fixtures.reset_fixture import \
-    reset_sequence_role_factory
+    reset_sequence_role_factory, reset_sequence_company_factory, \
+    reset_sequence_user_details_factory
+from ib_iam.tests.factories.models import CompanyFactory, UserDetailsFactory
 
 
 class TestGetUserDetailsBulkForGivenRoleIds:
@@ -59,6 +61,54 @@ class TestGetUserDetailsBulkForGivenRoleIds:
         with pytest.raises(RoleIdsAreInvalid):
             service_interface.get_user_details_for_given_role_ids(
                 role_ids=invalid_role_ids)
+
+    @pytest.mark.django_db
+    def test_given_valid_role_ids_with_all_role_id_then_return_all_users(
+            self, mocker):
+        role_ids = ["ALL_ROLES", "1", "2"]
+        users = [
+            {
+                "user_id": "3",
+                "is_admin": True
+            },
+            {
+                "user_id": "4",
+                "is_admin": False
+            },
+            {
+                "user_id": "5",
+                "is_admin": False
+            },
+            {
+                "user_id": "6",
+                "is_admin": False
+            }
+        ]
+        actual_user_ids = ["4", "5", "6"]
+        reset_sequence_company_factory()
+        reset_sequence_user_details_factory()
+        for user in users:
+            company = CompanyFactory.create()
+            UserDetailsFactory.create(
+                user_id=user["user_id"], is_admin=user["is_admin"],
+                company=company)
+        from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
+        user_profile_dtos = [
+            UserProfileDTOFactory.create(user_id=user_id)
+            for user_id in actual_user_ids]
+        from ib_iam.tests.common_fixtures.adapters.user_service_mocks import \
+            prepare_user_profile_dtos_mock
+        get_user_profile_mock = prepare_user_profile_dtos_mock(mocker)
+        get_user_profile_mock.return_value = user_profile_dtos
+        from ib_iam.app_interfaces.service_interface import ServiceInterface
+        service_interface = ServiceInterface()
+
+        expected_result = service_interface. \
+            get_user_details_for_given_role_ids(role_ids=role_ids)
+
+        assert len(expected_result) == len(user_profile_dtos)
+        self._check_are_valid_user_dtos(
+            expected_result=expected_result, actual_result=user_profile_dtos)
 
     @staticmethod
     def _check_are_valid_user_dtos(expected_result, actual_result):

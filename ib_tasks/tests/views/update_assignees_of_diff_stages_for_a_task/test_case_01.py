@@ -1,5 +1,5 @@
 """
-# TODO: Update test case description
+# TODO: Update snapshot asserts to get know what are the details getting save in db
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils

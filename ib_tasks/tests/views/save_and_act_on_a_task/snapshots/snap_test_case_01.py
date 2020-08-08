@@ -10,14 +10,24 @@ snapshots = Snapshot()
 snapshots['TestCase01SaveAndActOnATaskAPITestCase.test_case status_code'] = '201'
 
 snapshots['TestCase01SaveAndActOnATaskAPITestCase.test_case body'] = {
-    'message': 'task updated successfully'
+    'message': 'task saved and acted successfully'
 }
 
 snapshots['TestCase01SaveAndActOnATaskAPITestCase.test_case template_id'] = 'template_1'
 
 snapshots['TestCase01SaveAndActOnATaskAPITestCase.test_case created_by_id'] = '123e4567-e89b-12d3-a456-426614174000'
 
-snapshots['TestCase01SaveAndActOnATaskAPITestCase.test_case task'] = 'template_1'
+snapshots['TestCase01SaveAndActOnATaskAPITestCase.test_case task_template_id'] = 'template_1'
+
+snapshots['TestCase01SaveAndActOnATaskAPITestCase.test_case task_title'] = 'updated_title'
+
+snapshots['TestCase01SaveAndActOnATaskAPITestCase.test_case task_description'] = 'updated_description'
+
+snapshots['TestCase01SaveAndActOnATaskAPITestCase.test_case task_start_date'] = '2099-12-31 00:00:00'
+
+snapshots['TestCase01SaveAndActOnATaskAPITestCase.test_case task_due_date'] = '2099-12-31 12:00:00'
+
+snapshots['TestCase01SaveAndActOnATaskAPITestCase.test_case task_priority'] = 'HIGH'
 
 snapshots['TestCase01SaveAndActOnATaskAPITestCase.test_case same_gof_order_1'] = 1
 
