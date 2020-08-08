@@ -5,8 +5,7 @@ Author: Pavankumar Pamuru
 """
 from typing import List, Union
 
-from ib_tasks.documents.elastic_task import ElasticTaskDTO, Task, QueryTasksDTO, ElasticUserDTO, User, \
-    ElasticCountryDTO, Country, ElasticStateDTO, State, City, ElasticCityDTO
+from ib_tasks.documents.elastic_task import *
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import ElasticSearchStorageInterface
 
 
@@ -36,7 +35,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     ) -> QueryTasksDTO:
         from elasticsearch_dsl import Q, Search
 
-        search = Search(index='task')
+        search = Search(index=TASK_INDEX_NAME)
         search = search.query(
             Q(
                 "match",
@@ -68,7 +67,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     ) -> List[ElasticUserDTO]:
         from elasticsearch_dsl import Q, Search
 
-        search = Search(index='user')
+        search = Search(index=USER_INDEX_NAME)
         search = search.query(
             Q(
                 "match",
@@ -101,7 +100,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     ) -> List[ElasticCountryDTO]:
         from elasticsearch_dsl import Q, Search
 
-        search = Search(index='country')
+        search = Search(index=COUNTRY_INDEX_NAME)
         search = search.query(
             Q(
                 "match",
@@ -115,7 +114,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         country_dtos = [
             ElasticCountryDTO(
                 country_id=hit.country_id,
-                country_name=hit.elastic_name,
+                country_name=hit.country_name,
                 elastic_country_id=None
             )
             for hit in search[offset: offset + limit]
@@ -135,7 +134,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     ) -> List[ElasticStateDTO]:
         from elasticsearch_dsl import Q, Search
 
-        search = Search(index='state')
+        search = Search(index=STATE_INDEX_NAME)
         search = search.query(
             Q(
                 "match",
@@ -169,7 +168,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     ) -> List[ElasticCityDTO]:
         from elasticsearch_dsl import Q, Search
 
-        search = Search(index='city')
+        search = Search(index=CITY_INDEX_NAME)
         search = search.query(
             Q(
                 "match",

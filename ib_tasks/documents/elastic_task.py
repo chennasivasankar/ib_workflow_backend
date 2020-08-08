@@ -9,9 +9,15 @@ from typing import List, Any, Optional
 from elasticsearch_dsl import connections
 
 connections.create_connection(hosts=['localhost'], timeout=20)
-
+from django.conf import settings
 from elasticsearch_dsl import Document, Nested, InnerDoc, Text, Integer
 
+
+TASK_INDEX_NAME = 'task-{}'.format(settings.STAGE)
+USER_INDEX_NAME = 'user-{}'.format(settings.STAGE)
+COUNTRY_INDEX_NAME = 'country-{}'.format(settings.STAGE)
+STATE_INDEX_NAME = 'state-{}'.format(settings.STAGE)
+CITY_INDEX_NAME = 'city-{}'.format(settings.STAGE)
 
 @dataclass
 class ElasticFieldDTO:
@@ -51,7 +57,7 @@ class Task(Document):
     fields = Nested(Field)
 
     class Index:
-        name = 'task'
+        name = TASK_INDEX_NAME
 
     def add_fields(self, field_dtos: List[ElasticFieldDTO]):
         self.fields = [
@@ -72,7 +78,7 @@ class User(Document):
     username = Text()
 
     class Index:
-        name = 'user'
+        name = USER_INDEX_NAME
 
 
 @dataclass()
@@ -87,7 +93,7 @@ class Country(Document):
     country_name = Text()
 
     class Index:
-        name = 'country'
+        name = COUNTRY_INDEX_NAME
 
 
 @dataclass()
@@ -102,7 +108,7 @@ class State(Document):
     state_name = Text()
 
     class Index:
-        name = 'state'
+        name = STATE_INDEX_NAME
 
 
 @dataclass()
@@ -117,4 +123,4 @@ class City(Document):
     city_name = Text()
 
     class Index:
-        name = 'city'
+        name = CITY_INDEX_NAME
