@@ -22,13 +22,6 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 
 
-@dataclass
-class UserIdPaginationDTO:
-    user_id: str
-    limit: int
-    offset: int
-
-
 class GetTasksOverviewForUserInteractor:
     def __init__(self, stage_storage: StageStorageInterface,
                  task_storage: TaskStorageInterface,
@@ -63,10 +56,17 @@ class GetTasksOverviewForUserInteractor:
         ]
         task_fields_and_action_details_dtos = self._get_task_fields_and_action(
             task_id_with_stage_id_dtos, user_id, view_type=view_type)
+        task_with_stage_details_having_actions_dtos = \
+            self._filter_tasks_with_stage_details_having_actions(
+                task_with_complete_stage_details_dtos=
+                task_id_with_stage_details_dtos,
+                task_fields_and_action_details_dtos=
+                task_fields_and_action_details_dtos
+            )
         from ib_tasks.interactors.presenter_interfaces.dtos import \
             AllTasksOverviewDetailsDTO
         all_tasks_overview_details_dto = AllTasksOverviewDetailsDTO(
-            task_with_complete_stage_details_dtos=task_id_with_stage_details_dtos,
+            task_with_complete_stage_details_dtos=task_with_stage_details_having_actions_dtos,
             task_fields_and_action_details_dtos=
             task_fields_and_action_details_dtos)
         return all_tasks_overview_details_dto
@@ -126,3 +126,44 @@ class GetTasksOverviewForUserInteractor:
             if task_id_with_stage_details_dto.task_id in task_ids
         ]
         return new_task_id_with_stage_details_dtos
+
+    def _filter_tasks_with_stage_details_having_actions(
+            self,
+            task_with_complete_stage_details_dtos: List[
+                TaskWithCompleteStageDetailsDTO],
+            task_fields_and_action_details_dtos: List[
+                GetTaskStageCompleteDetailsDTO]
+    ) -> List[TaskWithCompleteStageDetailsDTO]:
+        task_with_stage_details_having_actions_dtos = []
+
+        for task_with_complete_stage_details_dto in task_with_complete_stage_details_dtos:
+            task_id_with_stage_details_dto = \
+                task_with_complete_stage_details_dto.task_with_stage_details_dto
+            is_task_has_actions = self._check_is_task_having_actions(
+                task_id=task_id_with_stage_details_dto.task_id,
+                task_fields_and_action_details_dtos=
+                task_fields_and_action_details_dtos)
+            if is_task_has_actions:
+                task_with_stage_details_having_actions_dtos.append(
+                    task_with_complete_stage_details_dto
+                )
+
+        return task_with_stage_details_having_actions_dtos
+
+    @staticmethod
+    def _check_is_task_having_actions(
+            task_id: int,
+            task_fields_and_action_details_dtos:
+            List[GetTaskStageCompleteDetailsDTO]) -> bool:
+        for task_fields_and_action_details_dto in task_fields_and_action_details_dtos:
+            task_id_in_task_fields_and_actions_dto = \
+                task_fields_and_action_details_dto.task_id
+            is_task_id_same = task_id == task_id_in_task_fields_and_actions_dto
+            is_task_having_actions = \
+                task_fields_and_action_details_dto.action_dtos
+            is_given_task_having_actions = \
+                is_task_id_same and is_task_having_actions
+            if is_given_task_having_actions:
+                return True
+            else:
+                return False

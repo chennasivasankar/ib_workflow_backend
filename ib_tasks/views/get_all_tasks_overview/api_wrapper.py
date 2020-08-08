@@ -4,10 +4,8 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 from .validator_class import ValidatorClass
 from ...constants.enum import ViewType
-from ...interactors.get_all_tasks_overview_for_user_interactor import \
-    GetAllTasksOverviewForUserInteractor, UserIdPaginationDTO
+from ...interactors.get_all_tasks_overview_for_user_interactor import UserIdPaginationDTO
 from ...presenters.get_all_tasks_overview_for_user_presenter_impl import \
-    GetAllTasksOverviewForUserPresenterImpl, \
     GetFilteredTasksOverviewForUserPresenterImplementation
 from ...storages.action_storage_implementation import \
     ActionsStorageImplementation
