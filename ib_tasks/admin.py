@@ -13,6 +13,7 @@ from ib_tasks.models.task_log import TaskLog
 from ib_tasks.models.task_stage import TaskStage
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
+from ib_tasks.models import Filter, FilterCondition
 
 admin.site.register(GoF)
 admin.site.register(Field)
@@ -27,6 +28,7 @@ admin.site.register(TaskStage)
 admin.site.register(TaskGoF)
 admin.site.register(TaskGoFField)
 admin.site.register(TaskTemplateGoFs)
+
 
 
 class TaskStageInline(admin.StackedInline):
@@ -63,3 +65,8 @@ admin.site.register(Stage, StagesAdmin)
 
 
 admin.site.register(StageAction, StagesActionsAdmin)
+
+
+admin.site.register(Filter)
+
+admin.site.register(FilterCondition)
