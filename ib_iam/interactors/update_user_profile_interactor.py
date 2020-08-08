@@ -1,6 +1,7 @@
-from ib_iam.exceptions.custom_exceptions import GivenNameIsEmpty, \
-    NameMinimumLengthShouldBeFiveOrMore, \
-    NameShouldNotContainsNumbersSpecCharacters
+from ib_iam.exceptions.custom_exceptions import (
+    GivenNameIsEmpty, NameMinimumLengthShouldBe,
+    NameShouldNotContainsNumbersSpecCharacters, InvalidEmail,
+    UserAccountAlreadyExistWithThisEmail)
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces \
     .update_user_profile_presenter_interface import \
@@ -27,11 +28,15 @@ class UpdateUserProfileInteractor(ValidationMixin):
             response = presenter.get_success_response_for_update_user_profile()
         except GivenNameIsEmpty:
             response = presenter.get_response_for_empty_name_exception()
-        except NameMinimumLengthShouldBeFiveOrMore:
+        except NameMinimumLengthShouldBe:
             response = presenter.get_response_for_minimum_name_length()
         except NameShouldNotContainsNumbersSpecCharacters:
             response = presenter \
                 .get_response_for_name_contains_special_chars_and_numbers_exception()
+        except InvalidEmail:
+            response = presenter.get_response_for_invalid_email_exception()
+        except UserAccountAlreadyExistWithThisEmail:
+            response = presenter.get_response_for_email_already_exists()
         return response
 
     def update_user_profile(self,
