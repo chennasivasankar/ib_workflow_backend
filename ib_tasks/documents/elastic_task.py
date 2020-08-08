@@ -8,8 +8,8 @@ from typing import List, Any, Optional
 
 from elasticsearch_dsl import connections
 
-connections.create_connection(hosts=['localhost'], timeout=20)
 from django.conf import settings
+connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT], timeout=20)
 from elasticsearch_dsl import Document, Nested, InnerDoc, Text, Integer
 
 
