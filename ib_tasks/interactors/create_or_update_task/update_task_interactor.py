@@ -37,7 +37,8 @@ from ib_tasks.interactors.stages_dtos import StageAssigneeDTO, \
 from ib_tasks.interactors.storage_interfaces. \
     create_or_update_task_storage_interface import \
     CreateOrUpdateTaskStorageInterface
-from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import ElasticSearchStorageInterface
+from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
+    ElasticSearchStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
@@ -55,7 +56,8 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.task_dtos import UpdateTaskDTO, CreateTaskDTO
 from ib_tasks.interactors.update_task_stage_assignees_interactor import \
     UpdateTaskStageAssigneesInteractor
-from ib_tasks.interactors.task_dtos import UpdateTaskDTO, CreateTaskDTO, FieldValuesDTO
+from ib_tasks.interactors.task_dtos import UpdateTaskDTO, CreateTaskDTO, \
+    FieldValuesDTO
 
 
 class UpdateTaskInteractor:
@@ -151,8 +153,8 @@ class UpdateTaskInteractor:
         except StageIdsWithInvalidPermissionForAssignee as err:
             return \
                 presenter.raise_stage_ids_with_invalid_permission_for_assignee_exception(
-                err
-            )
+                    err
+                )
 
     def _prepare_update_task_response(
             self, task_dto: UpdateTaskDTO,
@@ -255,7 +257,6 @@ class UpdateTaskInteractor:
             field_id=field_dto.field_id,
             value=field_dto.field_response
         )
-
 
     def _validate_task_id(
             self, task_id: int) -> Optional[InvalidTaskException]:
