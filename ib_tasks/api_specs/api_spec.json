@@ -1590,7 +1590,7 @@
                 "stage_id": {
                   "type": "integer"
                 },
-                "stage_name": {
+                "stage_display_name": {
                   "type": "string"
                 },
                 "assignee": {
@@ -1599,7 +1599,7 @@
               },
               "required": [
                 "stage_id",
-                "stage_name",
+                "stage_display_name",
                 "assignee"
               ]
             }
@@ -1696,8 +1696,8 @@
         ]
       }
     },
-    "TaskStageAssigneesFailureResponse": {
-      "description": "Task Stage Assignees Failure Response",
+    "TaskStageAssigneesNotFoundResponse": {
+      "description": "Task Stage Assignees Not Found Response",
       "schema": {
         "type": "object",
         "properties": {
@@ -1715,6 +1715,37 @@
             "enum": [
               "TASK_ID_DOESNT_EXIST",
               "ACTION_ID_DOESNT_EXIST"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
+     "TaskStageAssigneesFailureResponse": {
+      "description": "Task Stage Assignees Failure Response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer",
+            "enum": [
+              400
+            ]
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "INVALID_KEY_ERROR",
+              "INVALID_CUSTOM_LOGIC",
+              "PATH_NOT_FOUND",
+              "METHOD_NOT_FOUND"
             ]
           }
         },
@@ -2591,8 +2622,11 @@
           "200": {
             "$ref": "#/responses/TaskStageAssigneesResponse"
           },
-          "404": {
+          "400": {
             "$ref": "#/responses/TaskStageAssigneesFailureResponse"
+          },
+           "404": {
+            "$ref": "#/responses/TaskStageAssigneesNotFoundResponse"
           }
         }
       }

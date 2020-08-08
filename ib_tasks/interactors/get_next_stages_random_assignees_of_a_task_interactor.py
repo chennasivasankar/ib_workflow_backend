@@ -74,7 +74,8 @@ class GetNextStagesRandomAssigneesOfATaskInteractor:
                 method_name=exception.method_name)
 
     def get_next_stages_random_assignees_of_a_task(self, task_id: int,
-                                                   action_id: int):
+                                                   action_id: int)-> List[
+        StageWithUserDetailsDTO]:
         self._validate_task_id(task_id=task_id)
         self._validate_action_id(action_id=action_id)
         updated_status_variable_dtos = self. \
