@@ -44,7 +44,7 @@ class StageDetailsDTOFactory(factory.Factory):
     stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)
     name = factory.Sequence(lambda n: "name_%d" % n)
     db_stage_id = factory.Sequence(lambda n: (n + 1))
-    color = 'green'
+    color = factory.Sequence(lambda counter: "color{}".format(counter))
 
 
 class FieldValueDTOFactory(factory.Factory):
@@ -521,8 +521,8 @@ class TaskBaseDetailsDTOFactory(factory.Factory):
     title = factory.sequence(lambda counter: "title_{}".format(counter))
     description = factory.sequence(
         lambda counter: "description_{}".format(counter))
-    start_date = datetime.now()
-    due_date = datetime.now() + timedelta(10)
+    start_date = datetime(2020, 4, 5, 4, 50, 40)
+    due_date = datetime(2020, 4, 5, 4, 50, 40) + timedelta(10)
     priority = Priority.HIGH.value
 
 
@@ -577,7 +577,7 @@ class StageAssigneeDTOFactory(factory.Factory):
         model = TaskStageAssigneeDTO
 
     task_stage_id = factory.sequence(lambda counter: counter + 1)
-    stage_id = factory.Sequence(lambda counter: counter)
+    stage_id = factory.Sequence(lambda counter: counter + 1)
     assignee_id = factory.sequence(
         lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
             counter))
