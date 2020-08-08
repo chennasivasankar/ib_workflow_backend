@@ -14,9 +14,6 @@ class DeleteUserStorageImplementation(DeleteUserStorageInterface):
     def delete_user_teams(self, user_id: str):
         UserTeam.objects.filter(user_id=user_id).delete()
 
-    def check_is_admin_user(self, user_id: str) -> bool:
-        return UserDetails.objects.get(user_id=user_id).is_admin
-
     def get_user_details(self, user_id: str) -> UserDTO:
         try:
             user_object = UserDetails.objects.get(user_id=user_id)

@@ -64,12 +64,12 @@ class TeamNameAndDescriptionDTO:
 
 
 @dataclass
-class TeamDetailsWithUserIdsDTO(TeamNameAndDescriptionDTO):
+class TeamWithUserIdsDTO(TeamNameAndDescriptionDTO):
     user_ids: List[str]
 
 
 @dataclass
-class TeamWithUserIdsDTO(TeamDetailsWithUserIdsDTO):
+class TeamWithTeamIdAndUserIdsDTO(TeamWithUserIdsDTO):
     team_id: str
 
 
@@ -137,10 +137,10 @@ class CompanyIdWithEmployeeIdsDTO:
 
 
 @dataclass
-class CompanyDetailsWithUserIdsDTO(CompanyNameLogoAndDescriptionDTO):
+class CompanyWithUserIdsDTO(CompanyNameLogoAndDescriptionDTO):
     user_ids: List[str]
 
 
 @dataclass
-class CompanyWithUserIdsDTO(CompanyDetailsWithUserIdsDTO):
+class CompanyWithCompanyIdAndUserIdsDTO(CompanyWithUserIdsDTO):
     company_id: str

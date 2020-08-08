@@ -16,7 +16,8 @@ class AuthService:
         service_interface = ServiceInterface()
         return service_interface
 
-    def get_user_profile_dtos(self, user_ids: List[str]):
+    def get_user_profile_dtos(
+            self, user_ids: List[str]) -> List[UserProfileDTO]:
         from ib_users.interactors.exceptions.user_profile import \
             InvalidUserException
         try:
@@ -24,7 +25,7 @@ class AuthService:
                 user_ids=user_ids
             )
         except InvalidUserException as err:
-            from ib_discussions.interactors.discussion_interactor import \
+            from ib_discussions.exceptions.custom_exceptions import \
                 InvalidUserId
             from ib_users.constants.user_profile.error_types import \
                 INVALID_USER_ID_ERROR_TYPE
@@ -47,11 +48,17 @@ class AuthService:
         ]
         return converted_user_profile_dtos
 
-    @staticmethod
-    def _convert_to_required_user_profile_dto(user_details_dto):
+    def _convert_to_required_user_profile_dto(self, user_details_dto):
         converted_user_profile_dto = UserProfileDTO(
             user_id=user_details_dto.user_id,
             name=user_details_dto.name,
-            profile_pic_url=user_details_dto.profile_pic_url
+            profile_pic_url=self._get_user_profile_pic_url(
+                user_details_dto.profile_pic_url)
         )
         return converted_user_profile_dto
+
+    @staticmethod
+    def _get_user_profile_pic_url(profile_pic_url: str) -> str:
+        if profile_pic_url is None:
+            profile_pic_url = ""
+        return profile_pic_url
