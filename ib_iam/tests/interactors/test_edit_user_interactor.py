@@ -121,7 +121,7 @@ class TestEditNewUserInteractor:
 
         # Assert
         presenter_mock. \
-            raise_name_should_contain_minimum_5_characters. \
+            raise_name_minimum_length_should_be_equal_or_more_than. \
             assert_called_once()
 
     def test_validate_name_when_contains_special_characters_and_numbers_throw_exception(

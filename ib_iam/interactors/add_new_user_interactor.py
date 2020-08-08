@@ -34,7 +34,7 @@ class AddNewUserInteractor(ValidationMixin):
             response = presenter.raise_invalid_name_exception()
         except NameMinimumLengthShouldBeFiveOrMore:
             response = presenter \
-                .raise_name_should_contain_minimum_5_characters()
+                .raise_name_minimum_length_should_be_equal_or_more_than()
         except InvalidEmailAddress:
             response = presenter.raise_invalid_email_exception()
         except UserAccountAlreadyExistWithThisEmail:

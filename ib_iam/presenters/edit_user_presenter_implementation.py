@@ -39,11 +39,13 @@ class EditUserPresenterImplementation(EditUserPresenterInterface,
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
 
-    def raise_name_should_contain_minimum_5_characters(self):
+    def raise_name_minimum_length_should_be_equal_or_more_than(self):
         from ib_iam.constants.exception_messages \
-            import NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE
-        response = NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE[0]
-        res_status = NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE[1]
+            import NAME_MINIMUM_LENGTH_SHOULD_BE
+        from ib_iam.constants.enums import LengthConstants
+        response = NAME_MINIMUM_LENGTH_SHOULD_BE[0].format(
+            minimum_name_length=LengthConstants.MIN_USER_NAME_LENGTH.value)
+        res_status = NAME_MINIMUM_LENGTH_SHOULD_BE[1]
         response_dict = {
             "response": response,
             "http_status_code": StatusCode.BAD_REQUEST.value,
