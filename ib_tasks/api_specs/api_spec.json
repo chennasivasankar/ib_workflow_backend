@@ -1712,8 +1712,8 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "TASK_ID_DOESNT_EXIST",
-              "ACTION_ID_DOESNT_EXIST"
+              "INVALID_TASK_ID",
+              "INVALID_ACTION_ID"
             ]
           }
         },

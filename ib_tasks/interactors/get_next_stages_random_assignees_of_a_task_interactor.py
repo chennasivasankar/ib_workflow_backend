@@ -22,7 +22,7 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.presenters.get_next_stages_random_assignees_of_a_task_presenter import \
+from ib_tasks.interactors.presenter_interfaces.get_next_stages_random_assignees_of_a_task_presenter import \
     GetNextStagesRandomAssigneesOfATaskPresenterInterface
 
 

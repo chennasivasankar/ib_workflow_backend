@@ -3,7 +3,7 @@ from typing import List
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.interactors.stages_dtos import StageWithUserDetailsDTO
-from ib_tasks.presenters.get_next_stages_random_assignees_of_a_task_presenter import \
+from ib_tasks.interactors.presenter_interfaces.get_next_stages_random_assignees_of_a_task_presenter import \
     GetNextStagesRandomAssigneesOfATaskPresenterInterface
 
 
