@@ -123,3 +123,7 @@ class UserStorageInterface(ABC):
     def create_user(self, company_id: str, is_admin: bool, user_id: str,
                     name: str):
         pass
+
+    @abstractmethod
+    def update_user_name(self, user_id: str, name: str):
+        pass

@@ -4,6 +4,14 @@ from typing import Optional, List
 
 
 @dataclass
+class UserIdNameEmailAndProfilePicUrlDTO:
+    user_id: str
+    name: str
+    email: str
+    profile_pic_url: str
+
+
+@dataclass
 class UserDTO:
     user_id: str
     is_admin: bool
