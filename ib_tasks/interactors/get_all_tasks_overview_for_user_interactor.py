@@ -1,16 +1,14 @@
 from dataclasses import dataclass
 from typing import List
 
-from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
-    TaskStageStorageInterface
-
 from ib_tasks.constants.enum import ViewType
 from ib_tasks.exceptions.fields_custom_exceptions import \
     LimitShouldBeGreaterThanZeroException, \
     OffsetShouldBeGreaterThanZeroException
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsListEmptyException
-from ib_tasks.interactors.presenter_interfaces.get_all_tasks_overview_for_user_presenter_interface import \
+from ib_tasks.interactors.presenter_interfaces.\
+    get_all_tasks_overview_for_user_presenter_interface import \
     GetAllTasksOverviewForUserPresenterInterface
 from ib_tasks.interactors.stages_dtos import UserStagesWithPaginationDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
@@ -22,6 +20,8 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskWithCompleteStageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
+    TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
