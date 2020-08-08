@@ -47,8 +47,6 @@ class AssigneeDetailsDTO:
     profile_pic_url: str
 
 
-
-
 @dataclass
 class UserDetailsDTO:
     user_id: str

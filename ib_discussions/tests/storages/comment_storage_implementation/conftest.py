@@ -48,6 +48,37 @@ def create_comments():
         for comment_dict in comments_list
     ]
 
+    multimedia_ids = [
+        "97be920b-7b4c-49e7-8adb-41a0c18da848",
+        "92be920b-7b4c-49e7-8adb-41a0c18da848",
+        "93be920b-7b4c-49e7-8adb-41a0c18da848"
+    ]
+
+    from ib_discussions.tests.factories.models import MultiMediaFactory
+    MultiMediaFactory.format_type.reset()
+    multimedia_objects = [
+        MultiMediaFactory(id=multimedia_id)
+        for multimedia_id in multimedia_ids
+    ]
+
+    from ib_discussions.tests.factories.models import \
+        CommentWithMultiMediaFactory
+    CommentWithMultiMediaFactory(comment=comment_objects[0],
+                                 multimedia=multimedia_objects[0])
+    CommentWithMultiMediaFactory(comment=comment_objects[0],
+                                 multimedia=multimedia_objects[1])
+    CommentWithMultiMediaFactory(comment=comment_objects[1],
+                                 multimedia=multimedia_objects[1])
+
+    from ib_discussions.tests.factories.models import \
+        CommentWithMentionUserIdFactory
+    CommentWithMentionUserIdFactory(comment=comment_objects[0],
+                                    mention_user_id=user_ids[0])
+    CommentWithMentionUserIdFactory(comment=comment_objects[0],
+                                    mention_user_id=user_ids[1])
+    CommentWithMentionUserIdFactory(comment=comment_objects[1],
+                                    mention_user_id=user_ids[1])
+
     replies_list = [
         {
             "id": "19be920b-7b4c-49e7-8adb-41a0c18da848",

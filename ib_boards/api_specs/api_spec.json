@@ -126,6 +126,9 @@
         "task_id": {
           "type": "string"
         },
+        "stage_color": {
+          "type": "string"
+        },
         "fields": {
           "type": "array",
           "items": {
@@ -164,12 +167,16 @@
               },
               "button_color": {
                 "type": "string"
+              },
+              "transition_template_id": {
+                "type": "string"
               }
             },
             "required": [
               "action_id",
               "name",
-              "button_text"
+              "button_text",
+              "transition_template_id"
             ]
           }
         }
@@ -177,7 +184,8 @@
       "required": [
         "task_id",
         "fields",
-        "actions"
+        "actions",
+        "stage_color"
       ]
     },
     "ColumnDetails": {

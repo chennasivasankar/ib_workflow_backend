@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from ib_discussions.constants.enum import EntityType, FilterByEnum, SortByEnum, \
-    OrderByEnum
+    OrderByEnum, MultiMediaFormatEnum
 
 
 @dataclass
@@ -42,3 +42,9 @@ class DiscussionIdWithTitleAndDescriptionDTO:
     discussion_id: str
     title: str
     description: str
+
+
+@dataclass
+class MultiMediaDTO:
+    format_type: MultiMediaFormatEnum
+    url: str

@@ -32,19 +32,13 @@ class GetRepliesForCommentPresenterImplementation(
     def prepare_response_for_replies_with_users_dtos(
             self, user_profile_dtos: List[UserProfileDTO],
             comment_with_editable_status_dtos: List[
-                CommentIdWithEditableStatusDTO],
-            comment_dtos: List[CommentDTO]
+                CommentIdWithEditableStatusDTO], comment_dtos: List[CommentDTO]
     ):
-        user_id_wise_user_profile_dto_dict = {
-            user_profile_dto.user_id: user_profile_dto
-            for user_profile_dto in user_profile_dtos
-        }
-
-        comment_id_wise_editable_status_dto_dict = {
-            comment_with_editable_status_dto.comment_id: comment_with_editable_status_dto
-            for comment_with_editable_status_dto in
-            comment_with_editable_status_dtos
-        }
+        user_id_wise_user_profile_dto_dict = \
+            self._prepare_user_id_wise_user_profile_dto_dict(user_profile_dtos)
+        comment_id_wise_editable_status_dto_dict = \
+            self._prepare_comment_id_wise_editable_status_dto_dict(
+                comment_with_editable_status_dtos)
 
         replies = [
             self._prepare_response_for_reply(
@@ -57,10 +51,26 @@ class GetRepliesForCommentPresenterImplementation(
             )
             for comment_dto in comment_dtos
         ]
-        response_dict = {
-            "replies": replies
-        }
+        response_dict = {"replies": replies}
         return self.prepare_200_success_response(response_dict=response_dict)
+
+    @staticmethod
+    def _prepare_user_id_wise_user_profile_dto_dict(user_profile_dtos):
+        user_id_wise_user_profile_dto_dict = {
+            user_profile_dto.user_id: user_profile_dto
+            for user_profile_dto in user_profile_dtos
+        }
+        return user_id_wise_user_profile_dto_dict
+
+    @staticmethod
+    def _prepare_comment_id_wise_editable_status_dto_dict(
+            comment_with_editable_status_dtos):
+        comment_id_wise_editable_status_dto_dict = {
+            comment_with_editable_status_dto.comment_id: comment_with_editable_status_dto
+            for comment_with_editable_status_dto in
+            comment_with_editable_status_dtos
+        }
+        return comment_id_wise_editable_status_dto_dict
 
     @staticmethod
     def _prepare_response_for_reply(
