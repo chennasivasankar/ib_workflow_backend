@@ -9,9 +9,9 @@ REQUEST_BODY_JSON = """
 
 RESPONSE_200_JSON = """
 {
-    "comment_id": "b8a29492-c4e6-42da-8fca-1a7241562aef",
+    "comment_id": "555b3691-d7cc-41de-9737-3d04ead0b1d4",
     "author": {
-        "user_id": "8a92f7b8-912e-4dfb-af45-da003e38a76d",
+        "user_id": "4e25a839-59e7-4f05-814c-73183c75f094",
         "name": "string",
         "profile_pic_url": "string"
     },

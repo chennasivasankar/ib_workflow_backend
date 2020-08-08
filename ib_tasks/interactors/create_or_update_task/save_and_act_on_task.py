@@ -28,6 +28,8 @@ from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
 from ib_tasks.interactors.storage_interfaces \
     .create_or_update_task_storage_interface import \
     CreateOrUpdateTaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
+    ElasticSearchStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
@@ -51,8 +53,10 @@ class SaveAndActOnATaskInteractor:
             create_task_storage: CreateOrUpdateTaskStorageInterface,
             storage: StorageInterface, field_storage: FieldsStorageInterface,
             stage_storage: StageStorageInterface,
-            action_storage: ActionStorageInterface
+            action_storage: ActionStorageInterface,
+            elastic_storage: ElasticSearchStorageInterface
     ):
+        self.elastic_storage = elastic_storage
         self.action_storage = action_storage
         self.gof_storage = gof_storage
         self.task_storage = task_storage
@@ -145,8 +149,8 @@ class SaveAndActOnATaskInteractor:
         except StageIdsWithInvalidPermissionForAssignee as err:
             return \
                 presenter.raise_stage_ids_with_invalid_permission_for_assignee_exception(
-                err
-            )
+                    err
+                )
 
     def _prepare_save_and_act_response(self, presenter, task_dto):
         self.save_and_act_on_task(task_dto)
@@ -160,7 +164,8 @@ class SaveAndActOnATaskInteractor:
             task_storage=self.task_storage, gof_storage=self.gof_storage,
             create_task_storage=self.create_task_storage,
             storage=self.storage, field_storage=self.field_storage,
-            stage_storage=self.stage_storage
+            stage_storage=self.stage_storage,
+            elastic_storage=self.elastic_storage
         )
         update_task_dto = UpdateTaskDTO(
             task_id=task_dto.task_id, created_by_id=task_dto.created_by_id,

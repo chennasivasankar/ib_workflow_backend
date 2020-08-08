@@ -136,7 +136,7 @@ class UserActionOnTaskInteractor:
             )
         set_stage_assignees_interactor \
             .get_random_assignees_of_next_stages_and_update_in_db(
-            task_id=self.task_id, action_id=task_dto.action_id
+            task_id=self.task_id, action_id=self.action_id
         )
         return TaskCompleteDetailsDTO(
             task_id=self.task_id,

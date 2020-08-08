@@ -13,6 +13,8 @@ from ...presenters.save_and_act_on_task_presenter_implementation import \
     SaveAndActOnATaskPresenterImplementation
 from ...storages.action_storage_implementation import \
     ActionsStorageImplementation
+from ...storages.elasticsearch_storage_implementation import \
+    ElasticSearchStorageImplementation
 from ...storages.fields_storage_implementation import \
     FieldsStorageImplementation
 from ...storages.gof_storage_implementation import GoFStorageImplementation
@@ -73,13 +75,15 @@ def api_wrapper(*args, **kwargs):
     field_storage = FieldsStorageImplementation()
     stage_storage = StagesStorageImplementation()
     action_storage = ActionsStorageImplementation()
+    elastic_storage = ElasticSearchStorageImplementation()
 
     presenter = SaveAndActOnATaskPresenterImplementation()
     interactor = SaveAndActOnATaskInteractor(
         task_storage=task_storage, gof_storage=gof_storage,
         create_task_storage=create_task_storage,
         storage=storage, field_storage=field_storage,
-        stage_storage=stage_storage, action_storage=action_storage
+        stage_storage=stage_storage, action_storage=action_storage,
+        elastic_storage=elastic_storage
     )
 
     response = interactor.save_and_act_on_task_wrapper(

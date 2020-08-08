@@ -10,11 +10,11 @@ REQUEST_BODY_JSON = """
 RESPONSE_200_JSON = """
 {
     "author": {
-        "user_id": "d11abfdd-a92e-469a-844b-75ba321988b8",
+        "user_id": "42a3a39d-235e-4641-82ba-6e04612dfee3",
         "name": "string",
         "profile_pic_url": "string"
     },
-    "comment_id": "7da013bf-92a4-4af9-ada0-96ae4bc82215",
+    "comment_id": "dae946d9-2324-41bb-b336-b649ce505ad1",
     "comment_content": "string",
     "total_replies_count": 1,
     "is_editable": true,
