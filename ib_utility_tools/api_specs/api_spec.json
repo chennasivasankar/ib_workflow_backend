@@ -66,6 +66,25 @@
         "entity_type"
       ]
     },
+    "TimerEntityDetails": {
+      "type": "object",
+      "properties": {
+        "entity_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "entity_type": {
+          "type": "string",
+          "enum": [
+            "STAGE_TASK"
+          ]
+        }
+      },
+      "required": [
+        "entity_id",
+        "entity_type"
+      ]
+    },
     "ChecklistItemDetails": {
       "type": "object",
       "properties": {
@@ -165,6 +184,15 @@
       "schema": {
         "$ref": "#/definitions/EntityDetails"
       }
+    },
+    "TimerEntityParameter": {
+      "name": "TimerEntityParameter",
+      "description": "timer entity details",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "$ref": "#/definitions/TimerEntityDetails"
+      }
     }
   },
   "responses": {
@@ -236,6 +264,24 @@
               }
             }
           }
+        ]
+      }
+    },
+    "TimerResponse": {
+      "description": "timer response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "duration_in_seconds": {
+            "type": "integer"
+          },
+          "is_running": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "duration_in_seconds",
+          "is_running"
         ]
       }
     }
@@ -321,6 +367,78 @@
         "responses": {
           "200": {
             "$ref": "#/responses/GetChecklistResponse"
+          }
+        }
+      }
+    },
+    "/timer/start/v1/": {
+      "post": {
+        "operationId": "start_timer",
+        "summary": "start timer",
+        "description": "start the timer",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TimerEntityParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/TimerResponse"
+          }
+        }
+      }
+    },
+    "/timer/stop/v1/": {
+      "post": {
+        "operationId": "stop_timer",
+        "summary": "stop timer",
+        "description": "stops the timer",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TimerEntityParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/TimerResponse"
+          }
+        }
+      }
+    },
+    "/timer/v1/": {
+      "post": {
+        "operationId": "get_timer",
+        "summary": "get timer",
+        "description": "gets the timer duration",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TimerEntityParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/TimerResponse"
           }
         }
       }

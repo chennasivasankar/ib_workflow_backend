@@ -4,7 +4,6 @@ Test ALL Exceptions
 
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
-
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 

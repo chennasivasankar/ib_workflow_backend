@@ -1,5 +1,11 @@
 
 
+REQUEST_BODY_JSON = """
+{
+    "view_type": "LIST"
+}
+"""
+
 
 RESPONSE_403_JSON = """
 {

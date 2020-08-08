@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Optional, List
 
+from ib_tasks.adapters.dtos import AssigneeDetailsDTO
+
 
 @dataclass
 class StageLogicAttributes:
@@ -32,7 +34,6 @@ class StageActionDTO:
     button_color: Optional[str]
     action_type: str
     transition_template_id: str
-
 
 
 @dataclass()
@@ -82,3 +83,25 @@ class TaskIdWithStageAssigneeDTO:
     task_id: int
     db_stage_id: int
     assignee_id: str
+
+
+@dataclass
+class StageAssigneeDetailsDTO:
+    task_stage_id: int
+    stage_id: int
+    assignee_details_dto: Optional[AssigneeDetailsDTO]
+
+
+@dataclass
+class UserDetailsDTO:
+    assignee_id: str
+    assignee_name: str
+    profile_pic_url: str
+
+
+
+
+@dataclass
+class StageWithUserDetailsDTO(UserDetailsDTO):
+    db_stage_id: int
+    stage_display_name: str

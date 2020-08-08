@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional, List
 
-from ib_tasks.constants.enum import ValidationType
+from ib_tasks.constants.enum import ValidationType, ActionTypes
 
 
 @dataclass()
@@ -40,5 +40,5 @@ class ActionDetailsDTO:
 
 @dataclass
 class StageActionDetailsDTO(ActionDetailsDTO):
-    action_type: str
-    transition_template_id: str
+    action_type: Optional[ActionTypes]
+    transition_template_id: Optional[str]

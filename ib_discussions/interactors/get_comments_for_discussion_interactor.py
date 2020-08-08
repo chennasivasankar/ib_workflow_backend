@@ -1,4 +1,7 @@
+from typing import List
+
 from ib_discussions.exceptions.custom_exceptions import DiscussionIdNotFound
+from ib_discussions.interactors.dtos.dtos import MultiMediaDTO
 from ib_discussions.interactors.presenter_interfaces.presenter_interface import \
     GetCommentsForDiscussionPresenterInterface
 from ib_discussions.interactors.storage_interfaces.comment_storage_interface import \
@@ -12,7 +15,7 @@ class GetCommentsForDiscussionInteractor:
 
     def get_comments_for_discussion_wrapper(
             self, presenter: GetCommentsForDiscussionPresenterInterface,
-            discussion_id: str, user_id: str,
+            discussion_id: str, user_id: str
     ):
         try:
             response = self._get_comments_for_discussion_response(
@@ -27,14 +30,17 @@ class GetCommentsForDiscussionInteractor:
             self, discussion_id: str, user_id: str,
             presenter: GetCommentsForDiscussionPresenterInterface
     ):
-        comment_with_replies_count_and_editable_dtos, user_profile_dtos = \
+        comment_with_replies_count_and_editable_dtos, user_profile_dtos, \
+            comment_id_with_mention_user_id_dtos, comment_id_with_multimedia_dtos= \
             self.get_comments_for_discussion(
                 discussion_id=discussion_id, user_id=user_id,
             )
         return presenter.prepare_response_for_comments_with_users_dtos(
             comment_with_replies_count_and_editable_dtos \
                 =comment_with_replies_count_and_editable_dtos,
-            user_profile_dtos=user_profile_dtos
+            user_profile_dtos=user_profile_dtos,
+            comment_id_with_mention_user_id_dtos=comment_id_with_mention_user_id_dtos,
+            comment_id_with_multimedia_dtos=comment_id_with_multimedia_dtos
         )
 
     def get_comments_for_discussion(
@@ -54,7 +60,9 @@ class GetCommentsForDiscussionInteractor:
             CreateCommentInteractor
         interactor = CreateCommentInteractor(storage=self.storage)
 
-        comment_with_replies_count_and_editable_dtos, user_profile_dtos = \
+        comment_with_replies_count_and_editable_dtos, user_profile_dtos,\
+        comment_id_with_mention_user_id_dtos, comment_id_with_multimedia_dtos = \
             interactor.get_comments_for_discussion(comment_dtos=comment_dtos,
                                                    user_id=user_id)
-        return comment_with_replies_count_and_editable_dtos, user_profile_dtos
+        return comment_with_replies_count_and_editable_dtos, user_profile_dtos, \
+            comment_id_with_mention_user_id_dtos, comment_id_with_multimedia_dtos
