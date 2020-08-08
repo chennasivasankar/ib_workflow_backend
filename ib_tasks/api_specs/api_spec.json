@@ -2602,9 +2602,9 @@
     },
     "/task/{task_id}/action/{action_id}/stage_assignees/v1/": {
       "get": {
-        "operationId": "get_task_assignees_of_diff_stages_for_an_action",
-        "summary": "get assignees of diff stages for a task when an action is performed",
-        "description": "get assignees of diff stages for a task when an action is performed",
+        "operationId": "get_next_stages_random_assignees_of_a_task",
+        "summary": "get next stages random assignees for a task when an action is performed",
+        "description": "get next stages random assignees for a task when an action is performed",
         "security": [{
           "oauth": [
             "read"
