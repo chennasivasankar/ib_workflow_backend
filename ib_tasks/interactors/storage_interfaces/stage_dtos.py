@@ -113,6 +113,11 @@ class StageIdWithRoleIdsAndAssigneeIdDTO:
     role_ids: List[str]
     assignee_id: str
 
+@dataclass
+class StageIdWithRoleIdsDTO:
+    db_stage_id: int
+    role_ids: List[str]
+
 
 @dataclass
 class StageIdWithTemplateIdDTO:
