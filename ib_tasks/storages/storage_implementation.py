@@ -230,7 +230,9 @@ class StagesStorageImplementation(StageStorageInterface):
                             stage__value=each_stage_value,
                             task_id__in=each_task_ids_group_by_stage_value_dto.
                                 task_ids).values("task_id", "stage__stage_id",
-                                                 "stage__display_name"))
+                                                 "stage__display_name",
+                                                 "stage__stage_color",
+                                                 "stage__id"))
 
                     task_id_with_stage_details_dtos = self. \
                         _get_task_id_with_stage_details_dtos(
@@ -249,7 +251,10 @@ class StagesStorageImplementation(StageStorageInterface):
                 task_id=task_id_with_stage_detail["task_id"],
                 stage_id=task_id_with_stage_detail["stage__stage_id"],
                 stage_display_name=task_id_with_stage_detail[
-                    "stage__display_name"])
+                    "stage__display_name"],
+                stage_color=task_id_with_stage_detail["stage__stage_color"],
+                db_stage_id=task_id_with_stage_detail["stage__id"]
+            )
             for task_id_with_stage_detail in task_id_with_stage_details
         ]
         return task_id_with_stage_details_dtos

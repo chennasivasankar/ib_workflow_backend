@@ -4,9 +4,23 @@ Author: Pavankumar Pamuru
 
 """
 import abc
+from dataclasses import dataclass
 from typing import List
+from typing import Union
+
+from ib_tasks.constants.enum import Operators
+
+
+@dataclass
+class ApplyFilterDTO:
+    template_id: str
+    field_id: str
+    operator: Operators
+    value: str
+
 
 from ib_tasks.documents.elastic_task import ElasticTaskDTO, Task, QueryTasksDTO
+from ib_tasks.documents.elastic_task import *
 
 
 class ElasticSearchStorageInterface(abc.ABC):
@@ -20,11 +34,51 @@ class ElasticSearchStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def filter_tasks(self):
+    def filter_tasks(self, filter_dtos: List[ApplyFilterDTO], offset: int, limit: int) -> List[int]:
         pass
 
     @abc.abstractmethod
     def query_tasks(
             self, offset: int, limit: int, search_query: str
     ) -> QueryTasksDTO:
+        pass
+
+    @abc.abstractmethod
+    def create_elastic_user(self, user_dto: ElasticUserDTO):
+        pass
+
+    @abc.abstractmethod
+    def query_users(
+            self, offset: int, limit: int, search_query: str
+    ) -> List[ElasticUserDTO]:
+        pass
+
+    @abc.abstractmethod
+    def create_elastic_country(self, country_dto: ElasticCountryDTO):
+        pass
+
+    @abc.abstractmethod
+    def query_countries(
+            self, offset: int, limit: int, search_query: str
+    ) -> List[ElasticCountryDTO]:
+        pass
+
+    @abc.abstractmethod
+    def create_elastic_state(self, state_dto: ElasticStateDTO):
+        pass
+
+    @abc.abstractmethod
+    def query_states(
+            self, offset: int, limit: int, search_query: str
+    ) -> List[ElasticStateDTO]:
+        pass
+
+    @abc.abstractmethod
+    def create_elastic_city(self, city_dto: ElasticCityDTO):
+        pass
+
+    @abc.abstractmethod
+    def query_cities(
+            self, offset: int, limit: int, search_query: str
+    ) -> List[ElasticCityDTO]:
         pass

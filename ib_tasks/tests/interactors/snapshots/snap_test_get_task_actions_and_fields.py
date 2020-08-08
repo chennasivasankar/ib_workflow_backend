@@ -2,7 +2,9 @@
 # snapshottest: v1 - https://goo.gl/zC4yUc
 from __future__ import unicode_literals
 
-from snapshottest import GenericRepr, Snapshot
+from snapshottest import Snapshot, GenericRepr
+
+
 
 
 snapshots = Snapshot()
