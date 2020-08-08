@@ -1,6 +1,6 @@
 import pytest
 
-from ib_tasks.constants.enum import VIEWTYPE
+from ib_tasks.constants.enum import ViewType
 from ib_tasks.storages.fields_storage_implementation import FieldsStorageImplementation
 from ib_tasks.tests.factories.models import (
     StageModelFactory, TaskFactory, TaskTemplateFactory, TaskStageModelFactory)
@@ -84,7 +84,7 @@ class TestGetFieldIds:
                                                   populate_data,
                                                   snapshot):
         # Arrange
-        view_type = VIEWTYPE.LIST.value
+        view_type = ViewType.LIST.value
         storage = FieldsStorageImplementation()
 
         # Act
@@ -97,7 +97,7 @@ class TestGetFieldIds:
                                                     populate_data,
                                                     snapshot):
         # Arrange
-        view_type = VIEWTYPE.KANBAN.value
+        view_type = ViewType.KANBAN.value
         storage = FieldsStorageImplementation()
 
         # Act
@@ -112,7 +112,7 @@ class TestGetFieldIds:
             populate_data_for_one_task_in_two_stages,
             snapshot):
         # Arrange
-        view_type = VIEWTYPE.LIST.value
+        view_type = ViewType.LIST.value
         storage = FieldsStorageImplementation()
 
         # Act
@@ -127,7 +127,7 @@ class TestGetFieldIds:
             populate_data,
             snapshot):
         # Arrange
-        view_type = VIEWTYPE.LIST.value
+        view_type = ViewType.LIST.value
         storage = FieldsStorageImplementation()
 
         # Act

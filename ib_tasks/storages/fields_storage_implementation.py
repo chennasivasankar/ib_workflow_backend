@@ -3,7 +3,7 @@ from typing import List, Optional, Dict
 
 from django.db.models import Q, F
 
-from ib_tasks.constants.enum import VIEWTYPE
+from ib_tasks.constants.enum import ViewType
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
@@ -116,7 +116,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         return task_fields_dtos
 
     def get_field_ids(self, task_dtos: List[TaskTemplateStageDTO],
-                      view_type: VIEWTYPE) -> \
+                      view_type: ViewType) -> \
             List[TaskTemplateStageFieldsDTO]:
         from collections import defaultdict
         task_stages_dict = defaultdict(list)
@@ -133,7 +133,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         if q is None:
             return []
 
-        if view_type == VIEWTYPE.LIST.value:
+        if view_type == ViewType.LIST.value:
             stage_objs = (Stage.objects.filter(q)
                           .annotate(view_type=F('card_info_list'))
                           .values('task_template_id', 'stage_id', 'view_type'))

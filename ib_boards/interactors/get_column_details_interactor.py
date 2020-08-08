@@ -1,7 +1,7 @@
 from typing import List, Tuple
 
 from ib_boards.adapters.service_adapter import get_service_adapter
-from ib_boards.constants.enum import VIEWTYPE
+from ib_boards.constants.enum import ViewType
 from ib_boards.exceptions.custom_exceptions import (
     InvalidBoardId, InvalidOffsetValue, InvalidLimitValue, UserDonotHaveAccess)
 from ib_boards.interactors.dtos import ColumnParametersDTO, \
@@ -79,7 +79,7 @@ class GetColumnDetailsInteractor:
     def _get_tasks_complete_details(
             task_ids_stages_dtos: List[ColumnTaskIdsDTO],
             user_id: str,
-            view_type: VIEWTYPE) \
+            view_type: ViewType) \
             -> Tuple[List[FieldDTO], List[ActionDTO]]:
         task_details_dtos = []
         for task_ids_stages_dto in task_ids_stages_dtos:

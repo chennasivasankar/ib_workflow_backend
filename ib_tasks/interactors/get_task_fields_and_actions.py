@@ -1,7 +1,7 @@
 from typing import List
 
 from ib_tasks.adapters.roles_service_adapter import get_roles_service_adapter
-from ib_tasks.constants.enum import VIEWTYPE
+from ib_tasks.constants.enum import ViewType
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidTaskStageIds
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
@@ -33,7 +33,7 @@ class GetTaskFieldsAndActionsInteractor:
         self.action_storage = action_storage
 
     def get_task_fields_and_action(self, task_dtos: List[GetTaskDetailsDTO],
-                                   user_id: str, view_type: VIEWTYPE) -> \
+                                   user_id: str, view_type: ViewType) -> \
             List[GetTaskStageCompleteDetailsDTO]:
 
         roles_service = get_roles_service_adapter().roles_service

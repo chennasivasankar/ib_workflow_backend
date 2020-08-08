@@ -6,6 +6,6 @@ class STARORUNSTAR(enum.Enum):
     UNSTAR = "UNSTAR"
 
 
-class VIEWTYPE(enum.Enum):
+class ViewType(enum.Enum):
     LIST = "LIST"
     KANBAN = "KANBAN"
