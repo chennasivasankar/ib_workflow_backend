@@ -1,4 +1,6 @@
+
 from typing import List
+from ib_tasks.interactors.get_tasks_to_relevant_search_query import SearchQueryDTO
 
 import factory
 
@@ -19,9 +21,6 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, CreateTaskLogDTO
 from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory
-from typing import List
-from ib_tasks.interactors.get_tasks_to_relevant_search_query import SearchQueryDTO
-
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
