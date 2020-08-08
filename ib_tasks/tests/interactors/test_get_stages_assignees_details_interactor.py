@@ -69,15 +69,19 @@ class TestGetStagesAssigneesDetailsInteractor:
             StageAssigneeDetailsDTOFactory
         stage_assignee_details_dtos = [
             StageAssigneeDetailsDTOFactory(
+                task_stage_id=stage_assignee_dtos[0].task_stage_id,
                 stage_id=stage_assignee_dtos[0].stage_id,
                 assignee_details_dto=assignee_details_dtos[0]),
             StageAssigneeDetailsDTOFactory(
+                task_stage_id=stage_assignee_dtos[1].task_stage_id,
                 stage_id=stage_assignee_dtos[1].stage_id,
                 assignee_details_dto=assignee_details_dtos[1]),
             StageAssigneeDetailsDTOFactory(
+                task_stage_id=stage_assignee_dtos[2].task_stage_id,
                 stage_id=stage_assignee_dtos[2].stage_id,
                 assignee_details_dto=assignee_details_dtos[2]),
             StageAssigneeDetailsDTOFactory(
+                task_stage_id=stage_assignee_dtos[3].task_stage_id,
                 stage_id=stage_assignee_dtos[3].stage_id,
                 assignee_details_dto=None)
         ]

@@ -88,5 +88,6 @@ class TaskIdWithStageAssigneeDTO:
 
 @dataclass
 class StageAssigneeDetailsDTO:
+    task_stage_id: int
     stage_id: int
     assignee_details_dto: Optional[AssigneeDetailsDTO]

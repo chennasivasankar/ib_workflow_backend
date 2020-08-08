@@ -57,6 +57,7 @@ class GetStagesAssigneesDetailsInteractor:
                 break
 
         stage_assignee_details_dto = StageAssigneeDetailsDTO(
+            task_stage_id=stage_assignee_dto.task_stage_id,
             stage_id=stage_assignee_dto.stage_id,
             assignee_details_dto=assignee_details
         )

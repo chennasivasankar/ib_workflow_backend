@@ -575,7 +575,7 @@ class StageAssigneeDTOFactory(factory.Factory):
     class Meta:
         model = TaskStageAssigneeDTO
 
-    task_stage_id = factory.sequence(lambda counter: counter)
+    task_stage_id = factory.sequence(lambda counter: counter + 1)
     stage_id = factory.Sequence(lambda counter: counter)
     assignee_id = factory.sequence(
         lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(

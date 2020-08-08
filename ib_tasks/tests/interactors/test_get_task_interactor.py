@@ -55,6 +55,15 @@ class TestGetTaskInteractor:
         return storage
 
     @pytest.fixture
+    def reset_sequence(self):
+        from ib_tasks.tests.factories.storage_dtos import \
+            StageAssigneeDTOFactory
+        StageAssigneeDTOFactory.reset_sequence()
+        from ib_tasks.tests.factories.adapter_dtos import \
+            AssigneeDetailsDTOFactory
+        AssigneeDetailsDTOFactory.reset_sequence()
+
+    @pytest.fixture
     def presenter_mock(self):
         from ib_tasks.interactors.presenter_interfaces \
             .get_task_presenter_interface \
@@ -267,15 +276,19 @@ class TestGetTaskInteractor:
             StageAssigneeDetailsDTOFactory
         stage_assignee_details_dtos = [
             StageAssigneeDetailsDTOFactory(
+                task_stage_id=stage_assignee_dtos[0].task_stage_id,
                 stage_id=stage_assignee_dtos[0].stage_id,
                 assignee_details_dto=assignee_details_dtos[0]),
             StageAssigneeDetailsDTOFactory(
+                task_stage_id=stage_assignee_dtos[1].task_stage_id,
                 stage_id=stage_assignee_dtos[1].stage_id,
                 assignee_details_dto=assignee_details_dtos[1]),
             StageAssigneeDetailsDTOFactory(
+                task_stage_id=stage_assignee_dtos[2].task_stage_id,
                 stage_id=stage_assignee_dtos[2].stage_id,
                 assignee_details_dto=assignee_details_dtos[2]),
             StageAssigneeDetailsDTOFactory(
+                task_stage_id=stage_assignee_dtos[3].task_stage_id,
                 stage_id=stage_assignee_dtos[3].stage_id,
                 assignee_details_dto=None)
         ]
@@ -302,7 +315,7 @@ class TestGetTaskInteractor:
     def test_given_invalid_task_id_raise_exception(
             self, get_task_mock, storage_mock, presenter_mock,
             mock_object, stages_storage_mock, task_storage_mock,
-            action_storage_mock, task_stage_storage_mock
+            action_storage_mock, task_stage_storage_mock, reset_sequence
     ):
         # Arrange
         from ib_tasks.exceptions.task_custom_exceptions \
@@ -340,7 +353,7 @@ class TestGetTaskInteractor:
             permission_task_gof_dtos, field_ids, permission_field_ids,
             permission_task_gof_field_dtos, task_complete_details_dto,
             mock_object, stages_and_actions_details_dtos, task_storage_mock,
-            action_storage_mock, task_stage_storage_mock,
+            action_storage_mock, task_stage_storage_mock, reset_sequence
     ):
         # Arrange
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
