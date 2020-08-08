@@ -37,6 +37,10 @@ class NameShouldNotContainsNumbersSpecCharacters(Exception):
     pass
 
 
+class NameMinimumLengthShouldBeFiveOrMore(Exception):
+    pass
+
+
 class RoleIdsAreInvalid(Exception):
     pass
 

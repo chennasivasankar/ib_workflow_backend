@@ -5,7 +5,8 @@ from ib_iam.interactors.presenter_interfaces.add_new_user_presenter_inerface \
     import AddUserPresenterInterface
 
 
-class AddUserPresenterImplementation(AddUserPresenterInterface, HTTPResponseMixin):
+class AddUserPresenterImplementation(AddUserPresenterInterface,
+                                     HTTPResponseMixin):
     def raise_user_is_not_admin_exception(self):
         from ib_iam.constants.exception_messages import \
             USER_DOES_NOT_HAVE_PERMISSION
@@ -44,6 +45,19 @@ class AddUserPresenterImplementation(AddUserPresenterInterface, HTTPResponseMixi
             "response": USER_ALREADY_EXIST_WITH_THIS_EMAIL[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": USER_ALREADY_EXIST_WITH_THIS_EMAIL[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict)
+
+    def raise_name_should_contain_minimum_5_characters(self):
+        from ib_iam.constants.exception_messages \
+            import NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE
+        response = NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE[0]
+        res_status = NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE[1]
+        response_dict = {
+            "response": response,
+            "http_status_code": StatusCode.BAD_REQUEST.value,
+            "res_status": res_status
         }
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)

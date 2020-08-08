@@ -3,7 +3,8 @@ from typing import List
 from ib_iam.exceptions.custom_exceptions import (
     UserIsNotAdmin, GivenNameIsEmpty, InvalidEmailAddress,
     RoleIdsAreInvalid, InvalidCompanyId, TeamIdsAreInvalid, UserDoesNotExist,
-    NameShouldNotContainsNumbersSpecCharacters
+    NameShouldNotContainsNumbersSpecCharacters,
+    NameMinimumLengthShouldBeFiveOrMore
 )
 from ib_iam.interactors.DTOs.common_dtos import \
     UserDetailsWithTeamRoleAndCompanyIdsDTO
@@ -38,6 +39,9 @@ class EditUserInteractor(ValidationMixin):
             response = presenter.raise_invalid_name_exception()
         except InvalidEmailAddress:
             response = presenter.raise_invalid_email_exception()
+        except NameMinimumLengthShouldBeFiveOrMore:
+            response = presenter \
+                .raise_name_should_contain_minimum_5_characters()
         except NameShouldNotContainsNumbersSpecCharacters:
             response = presenter. \
                 raise_name_should_not_contain_special_characters_exception()

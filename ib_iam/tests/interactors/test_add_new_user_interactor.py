@@ -3,8 +3,6 @@ from unittest.mock import Mock
 import pytest
 
 from ib_iam.interactors.add_new_user_interactor import AddNewUserInteractor
-from ib_iam.interactors.DTOs.common_dtos import \
-    UserDetailsWithTeamRoleAndCompanyIdsDTO
 from ib_iam.tests.factories.interactor_dtos import \
     UserDetailsWithTeamRoleAndCompanyIdsDTOFactory
 
@@ -92,14 +90,16 @@ class TestAddNewUserIneractor:
             self, storage_mock, presenter_mock):
         # Arrange
         user_id = "user_1"
-        name = "user@2"
+        name = "user@1"
         email = "user@email.com"
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
         company_id = 'company0'
         interactor = AddNewUserInteractor(user_storage=storage_mock)
         storage_mock.is_user_admin.return_value = True
-        presenter_mock.raise_invalid_name_exception.return_value = Mock()
+        presenter_mock \
+            .raise_name_should_not_contain_special_characters_exception \
+            .return_value = Mock()
 
         user_details_with_team_role_and_company_ids_dto \
             = UserDetailsWithTeamRoleAndCompanyIdsDTOFactory(
@@ -119,11 +119,42 @@ class TestAddNewUserIneractor:
             raise_name_should_not_contain_special_characters_exception. \
             assert_called_once()
 
+    def test_validate_name_returns_should_contain_minimum_5_characters_exception(
+            self, storage_mock, presenter_mock):
+        # Arrange
+        user_id = "user_1"
+        name = "user"
+        email = "user@email.com"
+        team_ids = ['team0', 'team1']
+        role_ids = ['role0', 'role1']
+        company_id = 'company0'
+        interactor = AddNewUserInteractor(user_storage=storage_mock)
+        storage_mock.is_user_admin.return_value = True
+        presenter_mock.raise_name_should_contain_minimum_5_characters \
+            .return_value = Mock()
+
+        user_details_with_team_role_and_company_ids_dto \
+            = UserDetailsWithTeamRoleAndCompanyIdsDTOFactory(
+            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+            company_id=company_id
+        )
+
+        # Act
+        interactor.add_new_user_wrapper(
+            user_id=user_id,
+            user_details_with_team_role_and_company_ids_dto \
+                =user_details_with_team_role_and_company_ids_dto,
+            presenter=presenter_mock)
+
+        # Assert
+        presenter_mock.raise_name_should_contain_minimum_5_characters. \
+            assert_called_once()
+
     def test_validate_email_and_throw_exception(self, storage_mock,
                                                 presenter_mock):
         # Arrange
         user_id = "user_1"
-        name = "name"
+        name = "username"
         email = ""
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
@@ -152,7 +183,7 @@ class TestAddNewUserIneractor:
                                                 presenter_mock):
         # Arrange
         user_id = "user_1"
-        name = "name"
+        name = "username"
         email = "user@gmail.com"
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
@@ -182,7 +213,7 @@ class TestAddNewUserIneractor:
                                                 presenter_mock):
         # Arrange
         user_id = "user_1"
-        name = "name"
+        name = "username"
         email = "user@gmail.com"
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
@@ -212,7 +243,7 @@ class TestAddNewUserIneractor:
                                                      presenter_mock):
         # Arrange
         user_id = "user_1"
-        name = "name"
+        name = "username"
         email = "user@gmail.com"
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
@@ -242,7 +273,7 @@ class TestAddNewUserIneractor:
             self, storage_mock, presenter_mock, mocker):
         # Arrange
         user_id = "user_1"
-        name = "user"
+        name = "username"
         email = "user@email.com"
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
@@ -277,7 +308,7 @@ class TestAddNewUserIneractor:
             self, storage_mock, presenter_mock, mocker):
         # Arrange
         user_id = "user_1"
-        name = "user"
+        name = "username"
         email = "user@email.com"
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
@@ -319,7 +350,7 @@ class TestAddNewUserIneractor:
             self, storage_mock, presenter_mock, mocker):
         # Arrange
         user_id = "user_1"
-        name = "user"
+        name = "username"
         email = "user@email.com"
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
@@ -357,7 +388,7 @@ class TestAddNewUserIneractor:
             self, storage_mock, presenter_mock, mocker):
         # Arrange
         user_id = "user_1"
-        name = "user"
+        name = "username"
         email = "user@email.com"
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']

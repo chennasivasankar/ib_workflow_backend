@@ -1,7 +1,7 @@
 from typing import List
+
 from ib_iam.exceptions.custom_exceptions import InvalidOffsetValue, \
-    InvalidLimitValue, GivenNameIsEmpty, \
-    NameShouldNotContainsNumbersSpecCharacters
+    InvalidLimitValue
 
 
 class ValidationMixin:
@@ -27,21 +27,40 @@ class ValidationMixin:
         self._validate_limit_value_and_throw_exception(limit=limit)
 
     @staticmethod
-    def _validate_string(value):
-        valid = bool(isinstance(value, str) and value != "")
-        invalid = not valid
-        if invalid:
-            return False
-        return True
+    def _validate_is_string_empty(value):
+        is_in_string_format = bool(isinstance(value, str))
+        is_not_in_string_format = not is_in_string_format
+        is_string_empty = not value
+        is_string_contains_only_white_spaces = value.isspace()
+        is_string_empty = (is_not_in_string_format or
+                           is_string_empty or
+                           is_string_contains_only_white_spaces)
+        if is_string_empty:
+            from ib_iam.exceptions.custom_exceptions import GivenNameIsEmpty
+            raise GivenNameIsEmpty
 
     def _validate_name_and_throw_exception(self, name: str):
-        if not self._validate_string(value=name):
-            raise GivenNameIsEmpty()
-        self._check_name_contains_special_characters_and_throw_exception(name)
+        self._validate_is_string_empty(name)
+        self._validate_is_string_contains_minimum_5_characters(name)
+        self._check_string_contains_special_characters_and_throw_exception(
+            name)
 
     @staticmethod
-    def _check_name_contains_special_characters_and_throw_exception(name):
-        if not name.isalpha():
+    def _validate_is_string_contains_minimum_5_characters(value):
+        is_string_not_in_minimum_length = len(value) < 5
+        if is_string_not_in_minimum_length:
+            from ib_iam.exceptions.custom_exceptions import \
+                NameMinimumLengthShouldBeFiveOrMore
+            raise NameMinimumLengthShouldBeFiveOrMore
+
+    @staticmethod
+    def _check_string_contains_special_characters_and_throw_exception(value):
+        spaces_removed_string = value.replace(" ", "")
+        is_special_characters_and_numbers_not_exists_in_string = \
+            not spaces_removed_string.isalpha()
+        if is_special_characters_and_numbers_not_exists_in_string:
+            from ib_iam.exceptions.custom_exceptions import \
+                NameShouldNotContainsNumbersSpecCharacters
             raise NameShouldNotContainsNumbersSpecCharacters()
 
     def _validate_is_user_admin(self, user_id: str):

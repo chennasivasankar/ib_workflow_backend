@@ -51,7 +51,7 @@ class TestEditNewUserInteractor:
         # Act
         interactor.edit_user_wrapper(
             admin_user_id=admin_user_id, user_id=user_id,
-            user_details_with_team_role_and_company_ids_dto\
+            user_details_with_team_role_and_company_ids_dto \
                 =user_details_with_team_role_and_company_ids_dto,
             presenter=presenter_mock)
 
@@ -91,6 +91,39 @@ class TestEditNewUserInteractor:
         # Assert
         presenter_mock.raise_invalid_name_exception.assert_called_once()
 
+    def test_validate_name_returns_should_contain_minimum_5_characters_exception(
+            self, storage_mock, presenter_mock):
+        # Arrange
+        user_id = "user_1"
+        admin_user_id = "user_0"
+        name = "user"
+        email = "user@email.com"
+        team_ids = ['team0', 'team1']
+        role_ids = ['role0', 'role1']
+        company_id = 'company0'
+
+        interactor = EditUserInteractor(user_storage=storage_mock)
+        storage_mock.is_user_admin.return_value = True
+        presenter_mock.raise_invalid_name_exception.return_value = Mock()
+
+        user_details_with_team_role_and_company_ids_dto \
+            = UserDetailsWithTeamRoleAndCompanyIdsDTOFactory(
+            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+            company_id=company_id
+        )
+
+        # Act
+        interactor.edit_user_wrapper(
+            admin_user_id=admin_user_id, user_id=user_id,
+            user_details_with_team_role_and_company_ids_dto \
+                =user_details_with_team_role_and_company_ids_dto,
+            presenter=presenter_mock)
+
+        # Assert
+        presenter_mock. \
+            raise_name_should_contain_minimum_5_characters. \
+            assert_called_once()
+
     def test_validate_name_when_contains_special_characters_and_numbers_throw_exception(
             self, storage_mock, presenter_mock):
         # Arrange
@@ -129,7 +162,7 @@ class TestEditNewUserInteractor:
         # Arrange
         user_id = "user_1"
         admin_user_id = "user_0"
-        name = "name"
+        name = "username"
         email = ""
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
@@ -160,7 +193,7 @@ class TestEditNewUserInteractor:
         # Arrange
         user_id = "user_1"
         admin_user_id = "user_0"
-        name = "name"
+        name = "username"
         email = "user@gmail.com"
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
@@ -195,7 +228,7 @@ class TestEditNewUserInteractor:
         # Arrange
         user_id = "user_1"
         admin_user_id = "user_0"
-        name = "name"
+        name = "username"
         email = "user@gmail.com"
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
@@ -228,7 +261,7 @@ class TestEditNewUserInteractor:
         # Arrange
         user_id = "user_1"
         admin_user_id = "user_0"
-        name = "name"
+        name = "username"
         email = "user@gmail.com"
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
@@ -263,7 +296,7 @@ class TestEditNewUserInteractor:
         # Arrange
         user_id = "user_1"
         admin_user_id = "user_0"
-        name = "name"
+        name = "username"
         email = "user@gmail.com"
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
@@ -296,7 +329,7 @@ class TestEditNewUserInteractor:
         # Arrange
         user_id = "user_1"
         admin_user_id = "user_0"
-        name = "name"
+        name = "username"
         email = "user@gmail.com"
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
@@ -332,7 +365,7 @@ class TestEditNewUserInteractor:
         # Arrange
         user_id = "user_1"
         admin_user_id = "user_0"
-        name = "name"
+        name = "username"
         email = "user@gmail.com"
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
@@ -366,7 +399,7 @@ class TestEditNewUserInteractor:
         # Arrange
         user_id = "user_1"
         admin_user_id = "user_0"
-        name = "name"
+        name = "username"
         email = "user@gmail.com"
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']

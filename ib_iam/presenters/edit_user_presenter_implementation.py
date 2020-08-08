@@ -5,7 +5,8 @@ from ib_iam.interactors.presenter_interfaces.edit_user_presenter_interface \
     import EditUserPresenterInterface
 
 
-class EditUserPresenterImplementation(EditUserPresenterInterface, HTTPResponseMixin):
+class EditUserPresenterImplementation(EditUserPresenterInterface,
+                                      HTTPResponseMixin):
     def edit_user_success_response(self):
         from ib_iam.constants.exception_messages import EDIT_USER_SUCCESSFULLY
         response_dict = {
@@ -34,6 +35,19 @@ class EditUserPresenterImplementation(EditUserPresenterInterface, HTTPResponseMi
             "response": EMPTY_NAME_IS_INVALID[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
             "res_status": EMPTY_NAME_IS_INVALID[1]
+        }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict)
+
+    def raise_name_should_contain_minimum_5_characters(self):
+        from ib_iam.constants.exception_messages \
+            import NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE
+        response = NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE[0]
+        res_status = NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE[1]
+        response_dict = {
+            "response": response,
+            "http_status_code": StatusCode.BAD_REQUEST.value,
+            "res_status": res_status
         }
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)

@@ -15,6 +15,10 @@ class EditUserPresenterInterface(ABC):
         pass
 
     @abstractmethod
+    def raise_name_should_contain_minimum_5_characters(self):
+        pass
+
+    @abstractmethod
     def raise_invalid_email_exception(self):
         pass
 

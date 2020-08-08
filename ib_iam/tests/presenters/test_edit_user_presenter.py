@@ -39,6 +39,24 @@ class TestEditUserPresenter:
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
 
+    def test_raise_name_should_contain_minimum_of_5_characters_exception(self):
+        # Arrange
+        presenter = EditUserPresenterImplementation()
+        from ib_iam.constants.exception_messages \
+            import NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE
+        expected_response = NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE[0]
+        response_status_code = NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE[1]
+
+        # Act
+        response_object = \
+            presenter.raise_name_should_contain_minimum_5_characters()
+
+        # Assert
+        response = json.loads(response_object.content)
+        assert response['http_status_code'] == StatusCode.BAD_REQUEST.value
+        assert response['res_status'] == response_status_code
+        assert response['response'] == expected_response
+
     def test_raise_name_should_not_contain_special_characters_exception(self):
         # Arrange
         presenter = EditUserPresenterImplementation()
