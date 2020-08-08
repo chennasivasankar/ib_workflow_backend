@@ -7,6 +7,9 @@ from ib_tasks.interactors\
     import CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor
 from ib_tasks.adapters.dtos import ColumnFieldDTO, ColumnStageDTO
 from ib_tasks.interactors.get_field_details import GetFieldsDetails
+from ib_tasks.interactors\
+    .get_random_assignees_of_next_stages_and_update_in_db_interactor import \
+    GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor
 from ib_tasks.interactors.get_user_permitted_stage_actions \
     import GetUserPermittedStageActions
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
@@ -98,6 +101,16 @@ class UserActionOnTaskInteractor:
             task_boards_details = None
         actions_dto, fields_dto = \
             self._get_task_fields_and_actions_dto(stage_ids)
+        # set_stage_assignees_interactor = \
+        #     GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor(
+        #         storage=self.storage, stage_storage=self.stage_storage,
+        #         task_storage=self.task_storage,
+        #         action_storage=self.action_storage
+        #     )
+        # set_stage_assignees_interactor \
+        #     .get_random_assignees_of_next_stages_and_update_in_db(
+        #     task_id=self.task_id, action_id=task_dto.action_id
+        # )
         return TaskCompleteDetailsDTO(
             task_id=self.task_id,
             task_boards_details=task_boards_details,

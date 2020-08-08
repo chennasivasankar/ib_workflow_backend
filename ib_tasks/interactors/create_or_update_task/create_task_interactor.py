@@ -226,12 +226,12 @@ class CreateTaskInteractor:
         created_task_id = \
             self.create_task_storage.create_task_with_given_task_details(
                 task_dto)
-        elastic_dto = self._get_elastic_task_dto(task_dto, created_task_id)
-        elastic_task_id = \
-            self.elastic_storage.create_task(elastic_task_dto=elastic_dto)
-        self.task_storage.create_elastic_task(
-            task_id=created_task_id, elastic_task_id=elastic_task_id
-        )
+        # elastic_dto = self._get_elastic_task_dto(task_dto, created_task_id)
+        # elastic_task_id = \
+        #     self.elastic_storage.create_task(elastic_task_dto=elastic_dto)
+        # self.task_storage.create_elastic_task(
+        #     task_id=created_task_id, elastic_task_id=elastic_task_id
+        # )
         task_gof_dtos = [
             TaskGoFWithTaskIdDTO(
                 task_id=created_task_id,
@@ -247,16 +247,6 @@ class CreateTaskInteractor:
             task_dto, task_gof_details_dtos
         )
         self.create_task_storage.create_task_gof_fields(task_gof_field_dtos)
-        set_stage_assignees_interactor = \
-            GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor(
-                storage=self.storage, stage_storage=self.stage_storage,
-                task_storage=self.task_storage,
-                action_storage=self.action_storage
-            )
-        set_stage_assignees_interactor\
-            .get_random_assignees_of_next_stages_and_update_in_db(
-            task_id=created_task_id, action_id=task_dto.action_id
-        )
         act_on_task_interactor = UserActionOnTaskInteractor(
             user_id=task_dto.created_by_id, board_id=None,
             task_id=created_task_id,
@@ -275,6 +265,16 @@ class CreateTaskInteractor:
             task_id=created_task_id, template_id=task_dto.task_template_id
         )
         act_on_task_interactor.user_action_on_task()
+        set_stage_assignees_interactor = \
+            GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor(
+                storage=self.storage, stage_storage=self.stage_storage,
+                task_storage=self.task_storage,
+                action_storage=self.action_storage
+            )
+        set_stage_assignees_interactor \
+            .get_random_assignees_of_next_stages_and_update_in_db(
+            task_id=created_task_id, action_id=task_dto.action_id
+        )
 
     def _get_elastic_task_dto(self, task_dto: CreateTaskDTO, task_id: int):
 
