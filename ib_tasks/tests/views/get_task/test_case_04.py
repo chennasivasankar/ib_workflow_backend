@@ -43,7 +43,11 @@ class TestCase04GetTaskAPITestCase(TestUtils):
     def test_case(self, snapshot, setup, mocker):
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids
-        get_user_role_ids_mock_method = get_user_role_ids(mocker)
+        get_user_role_ids(mocker)
+        from ib_tasks.tests.common_fixtures.adapters\
+            .assignees_details_service \
+            import assignee_details_dtos_mock
+        assignee_details_dtos_mock(mocker)
         body = {}
         path_params = {}
         query_params = {'task_id': 1}

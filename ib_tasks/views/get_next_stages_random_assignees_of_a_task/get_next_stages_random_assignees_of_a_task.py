@@ -1,4 +1,5 @@
-def get_task_assignees_of_diff_stages_for_an_action(*args, **kwargs):  # pylint: disable=invalid-name
+from functools import reduce
+def get_next_stages_random_assignees_of_a_task(*args, **kwargs):  # pylint: disable=invalid-name
     """
     Note: replace below mock implementation with your actual implementation
 
