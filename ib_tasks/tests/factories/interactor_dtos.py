@@ -1,25 +1,6 @@
-from typing import List
 
-import factory
-
-from ib_tasks.adapters.dtos import UserDTO
-from ib_tasks.constants.enum import Searchable
-from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
-    SearchableFieldDetailDTO
-from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
-from ib_tasks.interactors.gofs_dtos \
-    import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
-from ib_tasks.interactors.stages_dtos import \
-    TaskTemplateStageActionDTO, StageActionDTO, StagesActionDTO, \
-    TaskIdWithStageAssigneeDTO, StageAssigneeDetailsDTO
-from ib_tasks.interactors.stages_dtos import UserStagesWithPaginationDTO
-from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    ActionDetailsDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
-from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
-    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, CreateTaskLogDTO
-from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory
 from typing import List
+from ib_tasks.interactors.get_tasks_to_relevant_search_query import SearchQueryDTO
 
 import factory
 
@@ -263,3 +244,12 @@ class StageAssigneeDetailsWithOneAssigneeDTOFactory(factory.Factory):
     @factory.lazy_attribute
     def assignee_details_dto(self):
         return AssigneeDetailsDTOFactory()
+
+class SearchQueryDTOFactory(factory.Factory):
+    class Meta:
+        model = SearchQueryDTO
+
+    user_id = factory.sequence(lambda n: n)
+    offset = factory.sequence(lambda n: n-1)
+    limit = factory.sequence(lambda n: n)
+    search_query = factory.sequence(lambda n: "value_{}" % n)

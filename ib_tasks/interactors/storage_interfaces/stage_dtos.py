@@ -50,6 +50,7 @@ class TaskStageIdsDTO:
 class GetTaskStageCompleteDetailsDTO:
     task_id: int
     stage_id: str
+    stage_color: str
     field_dtos: List[FieldDetailsDTO]
     action_dtos: List[StageActionDetailsDTO]
 
@@ -60,6 +61,12 @@ class TaskTemplateStageDTO:
     task_template_id: str
     stage_id: str
 
+@dataclass
+class TaskTemplateWithStageColorDTO:
+    task_id: int
+    task_template_id: str
+    stage_color: str
+    stage_id: str
 
 @dataclass
 class StageValueDTO:

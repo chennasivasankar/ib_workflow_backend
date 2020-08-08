@@ -5,9 +5,9 @@ RESPONSE_200_JSON = """
 {
     "replies": [
         {
-            "comment_id": "4933af0c-0c83-4e20-b10a-03c52fa87673",
+            "comment_id": "73881524-e522-4560-8d0e-3947963f60ea",
             "author": {
-                "user_id": "ba2e4856-5c0d-4e3e-96e0-79103db4b7b3",
+                "user_id": "c34bdbf5-8ac0-4c23-aac4-f9bccce75aee",
                 "name": "string",
                 "profile_pic_url": "string"
             },
