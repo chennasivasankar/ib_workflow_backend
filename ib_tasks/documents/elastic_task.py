@@ -58,3 +58,63 @@ class Task(Document):
             Field(field_id=field_dto.field_id, value=field_dto.value)
             for field_dto in field_dtos
         ]
+
+
+@dataclass()
+class ElasticUserDTO:
+    user_id: str
+    username: Optional[str]
+    elastic_user_id: Optional[str]
+
+
+class User(Document):
+    user_id = Text()
+    username = Text()
+
+    class Index:
+        name = 'user'
+
+
+@dataclass()
+class ElasticCountryDTO:
+    country_id: int
+    country_name: Optional[str]
+    elastic_country_id: Optional[str]
+
+
+class Country(Document):
+    country_id = Integer()
+    country_name = Text()
+
+    class Index:
+        name = 'country'
+
+
+@dataclass()
+class ElasticStateDTO:
+    state_id: int
+    state_name: Optional[str]
+    elastic_state_name: Optional[str]
+
+
+class State(Document):
+    state_id = Integer()
+    state_name = Text()
+
+    class Index:
+        name = 'state'
+
+
+@dataclass()
+class ElasticCityDTO:
+    city_id: int
+    city_name: Optional[str]
+    elastic_city_name: Optional[str]
+
+
+class City(Document):
+    city_id = Integer()
+    city_name = Text()
+
+    class Index:
+        name = 'city'

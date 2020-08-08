@@ -4,6 +4,7 @@ from ib_tasks.adapters.dtos import UserDTO
 from ib_tasks.constants.enum import Searchable
 from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
+from ib_tasks.interactors.get_tasks_to_relevant_search_query import SearchQueryDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
@@ -213,3 +214,13 @@ class TaskIdWithStageAssigneeDTOFactory(factory.Factory):
     task_id = factory.sequence(lambda n: n+1)
     db_stage_id = factory.Sequence(lambda n: n+1)
     assignee_id = factory.sequence(lambda n: "user_{}".format(n))
+
+
+class SearchQueryDTOFactory(factory.Factory):
+    class Meta:
+        model = SearchQueryDTO
+
+    user_id = factory.sequence(lambda n: n)
+    offset = factory.sequence(lambda n: n-1)
+    limit = factory.sequence(lambda n: n)
+    search_query = factory.sequence(lambda n: "value_{}" % n)
