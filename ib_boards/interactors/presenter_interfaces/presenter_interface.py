@@ -4,7 +4,7 @@ from typing import List
 from django.http import response
 
 from ib_boards.interactors.dtos import ActionDTO, \
-    TaskCompleteDetailsDTO, FieldDTO, StarredAndOtherBoardsDTO
+    TaskCompleteDetailsDTO, FieldDTO, StarredAndOtherBoardsDTO, TaskStageColorDTO
 from ib_boards.interactors.storage_interfaces.dtos import ColumnCompleteDetails
 
 from ib_boards.interactors.dtos import ColumnTasksDTO
@@ -67,7 +67,8 @@ class PresenterInterface(abc.ABC):
                                         column_details: List[ColumnCompleteDetails],
                                         task_fields_dtos: List[FieldDTO],
                                         task_actions_dtos: List[ActionDTO],
-                                        column_tasks: List[ColumnTasksDTO]
+                                        column_tasks: List[ColumnTasksDTO],
+                                        task_stage_color_dtos: List[TaskStageColorDTO]
                                         ):
         pass
 
@@ -113,5 +114,6 @@ class GetColumnTasksPresenterInterface(abc.ABC):
             self, task_fields_dtos: List[FieldDTO],
             task_actions_dtos: List[ActionDTO],
             total_tasks: int,
-            task_ids: List[int]):
+            task_ids: List[int],
+            task_stage_color_dtos: List[TaskStageColorDTO]):
         pass

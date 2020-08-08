@@ -37,6 +37,7 @@ RESPONSE_200_JSON = """
     "tasks": [
         {
             "task_id": "string",
+            "stage_color": "string",
             "fields": [
                 {
                     "field_type": "string",
@@ -49,7 +50,8 @@ RESPONSE_200_JSON = """
                     "action_id": "string",
                     "name": "string",
                     "button_text": "string",
-                    "button_color": "string"
+                    "button_color": "string",
+                    "transition_template_id": "string"
                 }
             ]
         }

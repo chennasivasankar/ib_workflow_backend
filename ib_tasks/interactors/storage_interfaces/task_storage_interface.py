@@ -106,5 +106,10 @@ class TaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_user_task_ids_and_max_stage_value_dto_based_on_given_stage_ids(
+            self, user_id: str, stage_ids: List[str]) -> List[TaskIdWithStageValueDTO]:
+        pass
+
+    @abc.abstractmethod
     def create_elastic_task(self, task_id: int, elastic_task_id: str):
         pass

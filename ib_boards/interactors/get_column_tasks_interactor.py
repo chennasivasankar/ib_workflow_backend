@@ -26,9 +26,10 @@ class GetColumnTasksInteractor:
             presenter: GetColumnTasksPresenterInterface):
         from ib_boards.exceptions.custom_exceptions import InvalidColumnId
         try:
-            task_fields_dtos, tasks_action_dtos, total_tasks, task_ids = self.get_column_tasks(
-                column_tasks_parameters=column_tasks_parameters
-            )
+            task_fields_dtos, tasks_action_dtos, total_tasks, task_ids, task_stage_color_dtos = \
+                self.get_column_tasks(
+                    column_tasks_parameters=column_tasks_parameters
+                )
         except InvalidColumnId:
             return presenter.get_response_for_the_invalid_column_id()
         except InvalidOffsetValue:
@@ -45,7 +46,8 @@ class GetColumnTasksInteractor:
             task_actions_dtos=tasks_action_dtos,
             task_fields_dtos=task_fields_dtos,
             total_tasks=total_tasks,
-            task_ids=task_ids
+            task_ids=task_ids,
+            task_stage_color_dtos=task_stage_color_dtos
         )
 
     def get_column_tasks(self,
@@ -62,15 +64,17 @@ class GetColumnTasksInteractor:
             stage_ids=stage_ids,
             column_tasks_parameters=column_tasks_parameters)
 
-        task_fields_dtos, tasks_action_dtos = self._get_tasks_complete_details(
-            task_ids_stages_dtos=task_ids_stages_dto, user_id=user_id,
-            view_type=view_type
-        )
+        task_fields_dtos, tasks_action_dtos, task_stage_color_dtos = \
+            self._get_tasks_complete_details(
+                task_ids_stages_dtos=task_ids_stages_dto, user_id=user_id,
+                view_type=view_type
+            )
         task_ids = [
             task_ids_stage_dto.task_id
             for task_ids_stage_dto in task_ids_stages_dto.task_stage_ids
         ]
-        return task_fields_dtos, tasks_action_dtos, task_ids_stages_dto.total_tasks, task_ids
+        return task_fields_dtos, tasks_action_dtos, \
+            task_ids_stages_dto.total_tasks, task_ids, task_stage_color_dtos
 
     @staticmethod
     def _get_tasks_complete_details(

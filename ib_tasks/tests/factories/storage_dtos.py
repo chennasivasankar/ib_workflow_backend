@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 import factory
 
+from ib_tasks.adapters.dtos import UserDetailsDTO
 from ib_tasks.constants.constants import VALID_FIELD_TYPES
 from ib_tasks.constants.enum import Priority, ValidationType, FieldTypes, \
     PermissionTypes, Status, Operators
@@ -29,7 +30,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     StatusVariableDTO, TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
-    TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO
+    TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO, TaskDueMissingDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO
 from ib_tasks.interactors.task_dtos import TaskStatusVariableDTO, CreateTaskDTO
@@ -210,7 +211,7 @@ class StageDTOFactory(factory.Factory):
     stage_display_name = factory.Sequence(lambda n: 'name_%d' % (n + 1))
     stage_display_logic = factory.Sequence(
         lambda n: 'status_id_%d==stage_id' % (n + 1))
-    stage_color = "blue"
+    stage_color = factory.Iterator(["blue", "orange", "green"])
     roles = factory.Sequence(lambda n: "role_id_0\nrole_id_%d" % (n + 1))
 
 
@@ -570,6 +571,26 @@ class CreateTaskDTOFactory(factory.Factory):
     @factory.lazy_attribute
     def gof_fields_dtos(self):
         return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]
+
+
+class TaskDueMissingDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskDueMissingDTO
+
+    task_id = factory.Sequence(lambda n: "task_id_%d" % n)
+    due_missed_count = factory.Sequence(lambda n: n)
+    due_date_time = datetime.today().date() + timedelta(days=2)
+    user_id = factory.Sequence(lambda n: "user_id_%d" % n)
+    reason = "reason"
+
+
+class UserDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = UserDetailsDTO
+
+    user_id = factory.Sequence(lambda n: "user_id_%d" % n)
+    name = factory.Sequence(lambda n: "name_%d" % n)
+    profile_pic = "pic"
 
 
 class StageAssigneeDTOFactory(factory.Factory):
