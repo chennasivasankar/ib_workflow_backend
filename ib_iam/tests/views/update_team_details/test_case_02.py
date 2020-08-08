@@ -2,7 +2,7 @@
 # Returns user has no access exception as he is not admin
 """
 import pytest
-from django_swagger_utils.utils.test_v1 import TestUtils
+from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories.models import TeamFactory, UserDetailsFactory
 
@@ -31,7 +31,7 @@ class TestCase02UpdateTeamDetailsAPITestCase(TestUtils):
         path_params = {"team_id": team_id}
         query_params = {}
         headers = {}
-        response = self.default_test_case(
+        response = self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
