@@ -25,11 +25,7 @@ def prepare_task_details_dtos(mocker, task_dtos: List[TaskStageIdDTO],
             task_id=task_dto.task_id
         ) for _index, task_dto in enumerate(task_dtos)
     ]
-    # task_stage_color_dtos = [
-    #     TaskStageDTOFactory.create(
-    #         task_id=task_dto.task_id
-    #     ) for _index, task_dto in enumerate(task_dtos)
-    # ]
+
     mock.return_value = fields_dto, actions_dto
     return mock
 
