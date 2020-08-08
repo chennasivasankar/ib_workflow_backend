@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import GenericRepr, Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestGetTaskTemplateFieldIds.test_given_template_ids_get_their_related_field_ids task_fields'] = [

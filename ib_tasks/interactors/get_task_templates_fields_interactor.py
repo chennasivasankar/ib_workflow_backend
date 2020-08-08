@@ -2,14 +2,12 @@ from typing import List
 
 from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
     import FilterPresenterInterface, TaskTemplateFieldsDto
+from ib_tasks.interactors.storage_interfaces.fields_dtos \
+    import FieldPermissionDTO, FieldNameDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
     GoFStorageInterface
-
-from ib_tasks.interactors.storage_interfaces.fields_dtos \
-    import FieldPermissionDTO, FieldNameDTO
-
 from ib_tasks.interactors.storage_interfaces.task_storage_interface \
     import TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \

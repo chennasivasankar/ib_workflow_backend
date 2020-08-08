@@ -3,10 +3,11 @@ Raise UserHasNoAccess exception as the user is not admin
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
-from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+
 from ib_iam.tests.factories.models import (
     UserDetailsFactory
 )
+from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
 class TestCase02GetListOfTeamsAPITestCase(TestUtils):

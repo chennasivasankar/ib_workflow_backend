@@ -1,4 +1,4 @@
-from ib_boards.constants.enum import STARORUNSTAR
+from ib_boards.constants.enum import StartAction
 from ib_boards.exceptions.custom_exceptions import InvalidBoardId
 from ib_boards.interactors.dtos import StarOrUnstarParametersDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
@@ -27,8 +27,8 @@ class StarOrUnstarBoardInteractor:
         if does_not_exists:
             raise InvalidBoardId
 
-        if action == STARORUNSTAR.STAR.value:
+        if action == StartAction.STAR.value:
             self.storage.star_given_board(parameters)
 
-        elif action == STARORUNSTAR.UNSTAR.value:
+        elif action == StartAction.UNSTAR.value:
             self.storage.unstar_given_board(parameters)

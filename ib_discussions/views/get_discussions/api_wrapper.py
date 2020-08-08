@@ -8,6 +8,7 @@ from .validator_class import ValidatorClass
 def api_wrapper(*args, **kwargs):
     request_data = kwargs["request_data"]
     query_params = kwargs["query_params"]
+    user_object = kwargs["user"]
 
     entity_id_and_entity_type_dto = _prepare_entity_id_and_entity_type_dto(
         request_data)
@@ -26,15 +27,15 @@ def api_wrapper(*args, **kwargs):
         StorageImplementation
     storage = StorageImplementation()
 
-    from ib_discussions.interactors.discussion_interactor import \
-        DiscussionInteractor
-    interactor = DiscussionInteractor(storage=storage)
+    from ib_discussions.interactors.get_discussions_interactor import \
+        GetDiscussionInteractor
+    interactor = GetDiscussionInteractor(storage=storage)
 
     response = interactor.get_discussions_wrapper(
         entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
         offset_and_limit_dto=offset_and_limit_dto,
         filter_by_dto=filter_by_dto, sort_by_dto=sort_by_dto,
-        presenter=presenter
+        presenter=presenter, user_id=user_object.user_id
     )
     return response
 
@@ -42,7 +43,7 @@ def api_wrapper(*args, **kwargs):
 def _prepare_sort_by_dto(request_data):
     from ib_discussions.constants.enum import SortByEnum
     from ib_discussions.constants.enum import OrderByEnum
-    from ib_discussions.interactors.DTOs.common_dtos import SortByDTO
+    from ib_discussions.interactors.dtos.dtos import SortByDTO
 
     sort_by = request_data["sort_by"]
     order = OrderByEnum.ASC.value
@@ -57,7 +58,7 @@ def _prepare_sort_by_dto(request_data):
 
 def _prepare_filter_by_dto(kwargs, request_data):
     from ib_discussions.constants.enum import FilterByEnum
-    from ib_discussions.interactors.DTOs.common_dtos import FilterByDTO
+    from ib_discussions.interactors.dtos.dtos import FilterByDTO
 
     filter_by = request_data["filter_by"]
     value = None
@@ -78,7 +79,7 @@ def _prepare_filter_by_dto(kwargs, request_data):
 
 
 def _prepare_offset_and_limit_dto(query_params):
-    from ib_discussions.interactors.DTOs.common_dtos import \
+    from ib_discussions.interactors.dtos.dtos import \
         OffsetAndLimitDTO
 
     offset_and_limit_dto = OffsetAndLimitDTO(
@@ -89,7 +90,7 @@ def _prepare_offset_and_limit_dto(query_params):
 
 
 def _prepare_entity_id_and_entity_type_dto(request_data):
-    from ib_discussions.interactors.DTOs.common_dtos import \
+    from ib_discussions.interactors.dtos.dtos import \
         EntityIdAndEntityTypeDTO
 
     entity_id_and_entity_type_dto = EntityIdAndEntityTypeDTO(

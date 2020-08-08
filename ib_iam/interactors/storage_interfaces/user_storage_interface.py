@@ -127,3 +127,11 @@ class UserStorageInterface(ABC):
     @abstractmethod
     def update_user_name(self, user_id: str, name: str):
         pass
+
+    @abstractmethod
+    def get_user_ids(self, role_ids: List[str]) -> List[str]:
+        pass
+
+    @abstractmethod
+    def get_valid_role_ids(self, role_ids: List[str]) -> List[str]:
+        pass
