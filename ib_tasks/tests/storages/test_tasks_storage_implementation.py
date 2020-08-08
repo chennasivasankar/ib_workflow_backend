@@ -55,14 +55,14 @@ class TestTasksStorageImplementation:
                 action_id=1, button_text='hey',
                 button_color='#fafafa',
                 action_type=ValidationType.NO_VALIDATIONS.value,
-                transition_template_id=None
+                transition_template_id='template_2'
             ),
             ActionWithStageIdDTO(
                 stage_id=2,
                 action_id=2, button_text='hey',
                 button_color='#fafafa',
                 action_type=ValidationType.NO_VALIDATIONS.value,
-                transition_template_id=None
+                transition_template_id='template_3'
             )
         ]
         StageModelFactory.create_batch(
@@ -70,7 +70,7 @@ class TestTasksStorageImplementation:
         )
         StageActionFactory.create_batch(
             size=2, stage_id=factory.Iterator(expected_stage_ids),
-            action_type=ValidationType.NO_VALIDATIONS.value
+            action_type=ValidationType.NO_VALIDATIONS.value,
         )
 
         # Act

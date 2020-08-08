@@ -15,9 +15,12 @@ from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskIdWithStageDetailsDTO, GetTaskStageCompleteDetailsDTO
+    GetTaskStageCompleteDetailsDTO, \
+    TaskWithCompleteStageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
+    TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
@@ -34,11 +37,13 @@ class GetAllTasksOverviewForUserInteractor:
     def __init__(self, stage_storage: StageStorageInterface,
                  task_storage: TaskStorageInterface,
                  field_storage: FieldsStorageInterface,
-                 action_storage: ActionStorageInterface):
+                 action_storage: ActionStorageInterface,
+                 task_stage_storage: TaskStageStorageInterface):
         self.stage_storage = stage_storage
         self.task_storage = task_storage
         self.field_storage = field_storage
         self.action_storage = action_storage
+        self.task_stage_storage = task_stage_storage
 
     def get_all_tasks_overview_for_user_wrapper(
             self, user_id_with_pagination_dto: UserIdPaginationDTO,
@@ -70,8 +75,14 @@ class GetAllTasksOverviewForUserInteractor:
             user_id=user_id,
             limit=user_id_with_pagination_dto.limit,
             offset=user_id_with_pagination_dto.offset)
-        task_id_with_stage_details_dtos = self._get_task_ids_of_user(
-            user_stages_with_pagination_dto)
+        task_with_complete_stage_details_dtos = \
+            self._get_task_with_complete_stage_details_dtos(
+                user_stages_with_pagination_dto)
+        task_id_with_stage_details_dtos = [
+            task_with_complete_stage_details_dto.task_with_stage_details_dto
+            for task_with_complete_stage_details_dto in
+            task_with_complete_stage_details_dtos
+        ]
         from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
         task_id_with_stage_id_dtos = [
             GetTaskDetailsDTO(
@@ -80,12 +91,13 @@ class GetAllTasksOverviewForUserInteractor:
             for each_task_id_with_stage_details_dto in
             task_id_with_stage_details_dtos
         ]
+
         task_fields_and_action_details_dtos = self._get_task_fields_and_action(
             task_id_with_stage_id_dtos, user_id)
         from ib_tasks.interactors.presenter_interfaces.dtos import \
             AllTasksOverviewDetailsDTO
         all_tasks_overview_details_dto = AllTasksOverviewDetailsDTO(
-            task_id_with_stage_details_dtos=task_id_with_stage_details_dtos,
+            task_with_complete_stage_details_dtos=task_with_complete_stage_details_dtos,
             task_fields_and_action_details_dtos=
             task_fields_and_action_details_dtos,
         )
@@ -101,22 +113,24 @@ class GetAllTasksOverviewForUserInteractor:
             get_allowed_stage_ids_of_user(user_id=user_id)
         return stage_ids
 
-    def _get_task_ids_of_user(
+    def _get_task_with_complete_stage_details_dtos(
             self, user_stages_with_pagination_dto: UserStagesWithPaginationDTO
-    ) -> List[TaskIdWithStageDetailsDTO]:
+    ) -> List[TaskWithCompleteStageDetailsDTO]:
         from ib_tasks.interactors. \
             get_task_ids_of_user_based_on_stage_ids_interactor import \
             GetTaskIdsOfUserBasedOnStagesInteractor
         get_task_ids_of_user_based_on_stage_ids_interactor = \
             GetTaskIdsOfUserBasedOnStagesInteractor(
                 stage_storage=self.stage_storage,
-                task_storage=self.task_storage)
-        task_id_with_stage_details_dtos = \
+                task_storage=self.task_storage,
+                task_stage_storage=self.task_stage_storage
+            )
+        task_with_complete_stage_details_dtos = \
             get_task_ids_of_user_based_on_stage_ids_interactor. \
                 get_task_ids_of_user_based_on_stage_ids(
                 user_stages_with_pagination_dto=
                 user_stages_with_pagination_dto)
-        return task_id_with_stage_details_dtos
+        return task_with_complete_stage_details_dtos
 
     def _get_task_fields_and_action(
             self, task_id_with_stage_id_dtos: List[GetTaskDetailsDTO],
