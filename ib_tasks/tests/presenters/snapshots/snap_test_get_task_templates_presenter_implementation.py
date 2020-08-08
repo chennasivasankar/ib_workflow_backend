@@ -4,20 +4,23 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_complete_task_template_details_exists task_template_1'] = {
     'actions': [
         {
             'action_id': 1,
+            'action_type': 'NO_VALIDATIONS',
             'button_color': 'button_color_1',
-            'button_text': 'button_text__1'
+            'button_text': 'button_text__1',
+            'transition_template_id': 'transition_template_1'
         },
         {
             'action_id': 2,
+            'action_type': 'NO_VALIDATIONS',
             'button_color': 'button_color_2',
-            'button_text': 'button_text__2'
+            'button_text': 'button_text__2',
+            'transition_template_id': 'transition_template_2'
         }
     ],
     'group_of_fields': [
@@ -36,7 +39,6 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_complete_task_t
                         'Ms'
                     ],
                     'help_text': None,
-                    'is_field_readable': True,
                     'is_field_required': True,
                     'is_field_writable': False,
                     'placeholder_text': None,
@@ -73,7 +75,6 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_complete_task_t
                         'Ms'
                     ],
                     'help_text': None,
-                    'is_field_readable': True,
                     'is_field_required': True,
                     'is_field_writable': True,
                     'placeholder_text': None,
@@ -100,13 +101,17 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_gofs_exists_
     'actions': [
         {
             'action_id': 1,
+            'action_type': 'NO_VALIDATIONS',
             'button_color': 'button_color_1',
-            'button_text': 'button_text__1'
+            'button_text': 'button_text__1',
+            'transition_template_id': 'transition_template_1'
         },
         {
             'action_id': 2,
+            'action_type': 'NO_VALIDATIONS',
             'button_color': 'button_color_2',
-            'button_text': 'button_text__2'
+            'button_text': 'button_text__2',
+            'transition_template_id': 'transition_template_2'
         }
     ],
     'group_of_fields': [
@@ -143,7 +148,6 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_actions_for_
                         'Ms'
                     ],
                     'help_text': None,
-                    'is_field_readable': True,
                     'is_field_required': True,
                     'is_field_writable': False,
                     'placeholder_text': None,
@@ -180,7 +184,6 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_actions_for_
                         'Ms'
                     ],
                     'help_text': None,
-                    'is_field_readable': True,
                     'is_field_required': True,
                     'is_field_writable': True,
                     'placeholder_text': None,
@@ -202,13 +205,17 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_fields_exist
     'actions': [
         {
             'action_id': 1,
+            'action_type': 'NO_VALIDATIONS',
             'button_color': 'button_color_1',
-            'button_text': 'button_text__1'
+            'button_text': 'button_text__1',
+            'transition_template_id': 'transition_template_1'
         },
         {
             'action_id': 2,
+            'action_type': 'NO_VALIDATIONS',
             'button_color': 'button_color_2',
-            'button_text': 'button_text__2'
+            'button_text': 'button_text__2',
+            'transition_template_id': 'transition_template_2'
         }
     ],
     'group_of_fields': [
@@ -243,3 +250,9 @@ snapshots['TestGetTaskTemplatesPresenterImplementation.test_when_no_fields_exist
     'template_id': 'template_2',
     'template_name': 'Task Template 2'
 }
+
+snapshots['TestGetTaskTemplatesPresenterImplementation.test_raise_task_templates_does_not_exists_exception http_status_code'] = 404
+
+snapshots['TestGetTaskTemplatesPresenterImplementation.test_raise_task_templates_does_not_exists_exception res_status'] = 'TASK_TEMPLATES_DOES_NOT_EXISTS'
+
+snapshots['TestGetTaskTemplatesPresenterImplementation.test_raise_task_templates_does_not_exists_exception response'] = 'No Task Templates are exists'

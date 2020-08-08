@@ -1,6 +1,11 @@
 import enum
 
 
+class VIEWTYPE(enum.Enum):
+    LIST = "LIST"
+    KANBAN = "KANBAN"
+
+
 class FieldTypes(enum.Enum):
     PLAIN_TEXT = "PLAIN_TEXT"
     PHONE_NUMBER = "PHONE_NUMBER"
@@ -37,3 +42,32 @@ class Searchable(enum.Enum):
     USER = "USER"
     COMPANY = "COMPANY"
     TEAM = "TEAM"
+
+
+class Operators(enum.Enum):
+    GTE = "GTE"
+    LTE = "LTE"
+    GT = "GT"
+    LT = "LT"
+    NE = "NE"
+    EQ = "EQ"
+    CONTAINS = "CONTAINS"
+
+
+class Status(enum.Enum):
+    ENABLED = "ENABLED"
+    DISABLED = "DISABLED"
+
+
+class Priority(enum.Enum):
+    HIGH = "HIGH"
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+
+
+class ValidationType(enum.Enum):
+    NO_VALIDATIONS = "NO_VALIDATIONS"
+
+
+class ActionTypes(enum.Enum):
+    NO_VALIDATIONS = "NO_VALIDATIONS"

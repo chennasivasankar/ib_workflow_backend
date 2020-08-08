@@ -20,7 +20,8 @@ class InvalidTaskTemplateId(Exception):
 
 class InvalidStagesTaskTemplateId(Exception):
     def __init__(self, invalid_stages_task_template_ids: List[TaskStagesDTO]):
-        self.invalid_stages_task_template_ids = invalid_stages_task_template_ids
+        self.invalid_stages_task_template_ids = \
+            invalid_stages_task_template_ids
 
 
 class InvalidTaskTemplateIds(Exception):
@@ -48,8 +49,7 @@ class InvalidTemplateIds(Exception):
 
 
 class TaskTemplatesDoesNotExists(Exception):
-    def __init__(self, message: str):
-        self.message = message
+    pass
 
 
 class InvalidTaskIds(Exception):
@@ -57,6 +57,50 @@ class InvalidTaskIds(Exception):
         self.invalid_task_ids = task_ids
 
 
+class InvalidTaskJson(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class TaskDoesNotExists(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class InvalidGoFsOfTaskTemplate(Exception):
+    def __init__(self, invalid_gof_ids: List[str], task_template_id: str):
+        self.gof_ids = invalid_gof_ids
+        self.task_template_id = task_template_id
+
+
+class InvalidFieldsOfGoF(Exception):
+    def __init__(self, gof_id: str, invalid_field_ids: List[str]):
+        self.gof_id = gof_id
+        self.field_ids = invalid_field_ids
+
+
 class ManyStagesToInitialTaskTemplate(Exception):
     def __init__(self, task_template_stages_dict: str):
         self.task_template_stages_dict = task_template_stages_dict
+
+
+class InvalidTransitionChecklistTemplateId(Exception):
+
+    def __init__(self, transition_checklist_template_id: str):
+        self.transition_checklist_template_id = \
+            transition_checklist_template_id
+
+
+class TransitionTemplateDoesNotExist(Exception):
+    def __init__(self, transition_template_id: str):
+        self.transition_template_id = transition_template_id
+
+
+class InvalidTransitionTemplateIds(Exception):
+    def __init__(self, invalid_transition_ids: List[str]):
+        self.invalid_transition_ids = invalid_transition_ids
+
+
+class InvalidStageIdsForTask(Exception):
+    def __init__(self, message: str):
+        self.message = message

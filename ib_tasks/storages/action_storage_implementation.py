@@ -2,16 +2,57 @@ from typing import List, Optional
 
 from django.db.models import F, Q
 
+from ib_tasks.constants.enum import ActionTypes
+from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
+from ib_tasks.exceptions.stage_custom_exceptions import \
+    TransitionTemplateIsNotRelatedToGivenStageAction, InvalidStageId
 from ib_tasks.interactors.stages_dtos import StagesActionDTO, \
-    TemplateStageDTO
+    TemplateStageDTO, StageActionDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
-from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO
+from ib_tasks.interactors.storage_interfaces.actions_dtos import \
+    StageActionDetailsDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    StageActionNamesDTO
 from ib_tasks.models import StageAction, Stage, ActionPermittedRoles, \
     TaskTemplateInitialStage
 
 
 class ActionsStorageImplementation(ActionStorageInterface):
+
+    def validate_action_id(
+            self, action_id) -> Optional[InvalidActionException]:
+        try:
+            StageAction.objects.get(id=action_id)
+        except StageAction.DoesNotExists:
+            raise InvalidActionException(action_id)
+        return
+
+    def validate_stage_id(self, stage_id) -> Optional[InvalidStageId]:
+        try:
+            Stage.objects.get(id=stage_id)
+        except Stage.DoesNotExists:
+            raise InvalidStageId(stage_id)
+        return
+
+    def validate_transition_template_id_is_related_to_given_stage_action(
+            self, transition_checklist_template_id, action_id, stage_id
+    ) -> Optional[TransitionTemplateIsNotRelatedToGivenStageAction]:
+        transition_checklist_template_is_related_to_given_stage_action = \
+            StageAction.objects.filter(
+                transition_template_id=transition_checklist_template_id,
+                stage_id=stage_id, id=action_id
+            )
+        if not transition_checklist_template_is_related_to_given_stage_action:
+            raise TransitionTemplateIsNotRelatedToGivenStageAction(
+                transition_checklist_template_id, action_id, stage_id
+            )
+        return
+
+    def get_action_type_for_given_action_id(self,
+                                            action_id: int) -> ActionTypes:
+        action_type = StageAction.objecs.get(id=action_id).action_type
+        return action_type
 
     def get_stage_action_names(
             self, stage_ids: List[str]) -> List[StageActionNamesDTO]:
@@ -38,10 +79,11 @@ class ActionsStorageImplementation(ActionStorageInterface):
             ))
         return list_of_dtos
 
-    def create_stage_actions(self, stage_actions: List[StagesActionDTO]):
+    def create_stage_actions(self, stage_actions: List[StageActionDTO]):
         names_list = [stage.action_name for stage in stage_actions]
         stage_ids = [stage.stage_id for stage in stage_actions]
-        stages = Stage.objects.filter(stage_id__in=stage_ids).values('stage_id', 'id')
+        stages = Stage.objects.filter(stage_id__in=stage_ids).values(
+            'stage_id', 'id')
 
         list_of_stages = {}
         for item in stages:
@@ -53,7 +95,8 @@ class ActionsStorageImplementation(ActionStorageInterface):
         StageAction.objects.bulk_create(list_of_actions)
         q = None
         for counter, item in enumerate(stage_actions):
-            current_queue = Q(stage_id__stage_id=item.stage_id, name=item.action_name)
+            current_queue = Q(stage_id__stage_id=item.stage_id,
+                              name=item.action_name)
             if counter == 0:
                 q = current_queue
             else:
@@ -75,20 +118,24 @@ class ActionsStorageImplementation(ActionStorageInterface):
                 name=stage_action.action_name,
                 logic=stage_action.logic,
                 py_function_import_path=stage_action.function_path,
+                action_type=stage_action.action_type,
+                transition_template_id=stage_action.transition_template_id,
                 button_text=stage_action.button_text,
                 button_color=stage_action.button_color
             ))
         return list_of_actions
 
-    def update_stage_actions(self, stage_actions: List[StagesActionDTO]):
+    def update_stage_actions(self, stage_actions: List[StageActionDTO]):
         # TODO: Optimize db hits
         for stage_action in stage_actions:
             StageAction.objects.filter(stage__stage_id=stage_action.stage_id,
-                                       name=stage_action.action_name)\
+                                       name=stage_action.action_name) \
                 .update(
                 logic=stage_action.logic,
                 py_function_import_path=stage_action.function_path,
                 button_text=stage_action.button_text,
+                action_type=stage_action.action_type,
+                transition_template_id=stage_action.transition_template_id,
                 button_color=stage_action.button_color
             )
         action_objs = []
@@ -115,7 +162,8 @@ class ActionsStorageImplementation(ActionStorageInterface):
                 if action_obj.name == stage.action_name:
                     for role in stage.roles:
                         list_of_permitted_roles.append(
-                            ActionPermittedRoles(action_id=action_obj.id, role_id=role))
+                            ActionPermittedRoles(action_id=action_obj.id,
+                                                 role_id=role))
         return list_of_permitted_roles
 
     def delete_stage_actions(self, stage_actions: List[StageActionNamesDTO]):
@@ -124,7 +172,8 @@ class ActionsStorageImplementation(ActionStorageInterface):
                               for stage in stage_actions]
         q = None
         for counter, item in enumerate(stage_actions_dict):
-            current_queue = Q(stage_id__stage_id=item['stage_id'], name__in=item["action_names"])
+            current_queue = Q(stage_id__stage_id=item['stage_id'],
+                              name__in=item["action_names"])
             if counter == 0:
                 q = current_queue
             else:
@@ -136,8 +185,9 @@ class ActionsStorageImplementation(ActionStorageInterface):
                                               task_template_stage_dtos: List[
                                                   TemplateStageDTO]):
         stage_ids = [stage.stage_id for stage in task_template_stage_dtos]
-        stages = Stage.objects.filter(stage_id__in=stage_ids).values('stage_id',
-                                                                     'id')
+        stages = Stage.objects.filter(stage_id__in=stage_ids).values(
+            'stage_id',
+            'id')
 
         list_of_stages = {}
         for item in stages:
@@ -166,3 +216,36 @@ class ActionsStorageImplementation(ActionStorageInterface):
 
         return list(valid_stage_ids)
 
+    def get_actions_details(self,
+                            stage_ids: List[str],
+                            user_roles: List[str]) -> \
+            List[StageActionDetailsDTO]:
+        action_objs = (StageAction.objects
+                       .filter(stage__stage_id__in=stage_ids)
+                       .filter(Q(actionpermittedroles__role_id="ALL_ROLES") |
+                               Q(actionpermittedroles__role_id__in=user_roles)
+                               ))
+        unique_action_objs = list(set(action_objs))
+        action_dtos = self._convert_action_objs_to_dtos(unique_action_objs)
+        return action_dtos
+
+    @staticmethod
+    def _convert_action_objs_to_dtos(action_objs):
+        action_dtos = []
+        for action in action_objs:
+            action_dtos.append(
+                StageActionDetailsDTO(
+                    action_id=action.id,
+                    name=action.name,
+                    stage_id=action.stage.stage_id,
+                    button_text=action.button_text,
+                    button_color=action.button_color,
+                    action_type=action.action_type,
+                    transition_template_id=action.transition_template_id
+                )
+            )
+        return action_dtos
+
+
+    def validate_action(self, action_id: int) -> bool:
+        return StageAction.objects.filter(id=action_id).exists()

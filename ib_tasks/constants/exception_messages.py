@@ -66,7 +66,7 @@ INVALID_VALUE_FOR_SEARCHABLE = "Searchable value should be one of these  {} for 
 DUPLICATE_FIELD_IDS = ["duplicate field ids: {}", "DUPLICATE_FIELD_IDS"]
 
 INVALID_TASK_TEMPLATE_IDS = [
-    "duplicate task template ids: {}", "INVALID_TASK_TEMPLATE_IDS"
+    "invalid task template ids: {}", "INVALID_TASK_TEMPLATE_IDS"
 ]
 
 INVALID_GOF_IDS = ["invalid gof ids: {}", "INVALID_GOF_IDS"]
@@ -91,8 +91,8 @@ LIMIT_SHOULD_BE_GREATER_THAN_ZERO = ("Limit value should be greater than zero",
                                      "LIMIT_SHOULD_BE_GREATER_THAN_ZERO")
 
 OFFSET_SHOULD_BE_GREATER_THAN_ZERO = (
-"Offset value should be greater than zero",
-"OFFSET_SHOULD_BE_GREATER_THAN_ZERO")
+    "Offset value should be greater than zero",
+    "OFFSET_SHOULD_BE_GREATER_THAN_ZERO")
 
 OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE = (
     "Offset should be greater than or equal to minus one",
@@ -198,3 +198,104 @@ TASK_CREATED_SUCCESSFULLY = (
     "task created or updated successfully",
     "TASK_CREATED_SUCCESSFULLY"
 )
+
+INVALID_TASK_JSON = ("Task Json should not be empty", "INVALID_TASK_JSON")
+
+INVALID_GOFS_OF_TASK_TEMPLATE = (
+    "invalid gofs {}  given to the task template {}",
+    "INVALID_GOFS_OF_TASK_TEMPLATE"
+)
+
+DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF = (
+    "gof id {} has duplicate field ids {}", "DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF"
+)
+
+INVALID_FIELDS_OF_TASK_TEMPLATE = (
+    "invalid fields {}  given to the gof {}",
+    "INVALID_FIELDS_OF_TASK_TEMPLATE"
+)
+
+USER_NEEDS_GOF_WRITABLE_PERMISSION = (
+    "user {} needs write access on gof {}, because user does not have {} roles",
+    "USER_NEEDS_GOF_WRITABLE_PERMISSION"
+)
+
+USER_NEEDS_FILED_WRITABLE_PERMISSION = (
+    "user {} needs write access on field {}, because user does not have {} roles",
+    "USER_NEEDS_FILED_WRITABLE_PERMISSION"
+)
+INVALID_FILTER_ID = (
+    'invalid filter id', 'INVALID_FILTER_ID'
+)
+
+USER_DO_NOT_ACCESS_TO_UPDATE_FILTER_STATUS = (
+    'user not have access to update the filter status',
+    'USER_DO_NOT_ACCESS_TO_UPDATE_FILTER_STATUS'
+)
+TASK_ID_DOESNT_EXIST = (
+    "Task id doesnt exist, please send valid task id",
+    "TASK_ID_DOESNT_EXIST"
+)
+
+
+USER_NOT_HAVE_PERMISSIONS_TO_FIELDS = (
+    'user not have access to fields', 'USER_NOT_ACCESS_TO_FIELDS'
+)
+FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE = (
+    'fields not belongs to task template: {}',
+    'FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE'
+)
+
+USER_NOT_HAVE_PERMISSIONS_TO_UPDATE = (
+    'user not have access to update the filter',
+    'USER_DO_NOT_ACCESS_TO_UPDATE_FILTER'
+)
+
+USER_NOT_HAVE_PERMISSIONS_TO_DELETE = (
+    'user not have access to delete the filter',
+    'USER_DO_NOT_ACCESS_TO_DELETE_FILTER'
+)
+DUPLICATE_STAGE_IDS = (
+    "Duplicate stage ids that you have sent are: {},"
+    "please send unique stage ids",
+    "DUPLICATE_STAGE_IDS"
+)
+TRANSITION_TEMPLATE_DOES_NOT_EXISTS = (
+    "Given invalid transition template Id: {}, that does not exists",
+    "TRANSITION_TEMPLATE_DOES_NOT_EXISTS"
+)
+
+DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF = (
+    "duplicate same gof orders given for gof {}, duplicates are {}",
+    "DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF"
+)
+
+INVALID_TRANSITION_CHECKLIST_TEMPLATE_ID = (
+    "please give a valid transition checklist template id, {} is invalid \
+    transition checklist template id",
+    "INVALID_TRANSITION_CHECKLIST_TEMPLATE_ID"
+)
+
+INVALID_STAGE_ID = (
+    "please give a valid stage id, {} is invalid stage id",
+    "INVALID_STAGE_ID"
+)
+
+TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION = (
+    "given transition template id {} is not linked to given stage id {} and \
+    action id {}",
+    "TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION"
+)
+
+INVALID_STAGE_IDS = (
+    "Invalid stage ids that you have sent are: {},"
+    "please send valid stage ids",
+    "INVALID_STAGE_IDS"
+)
+STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE = (
+    "Stage ids with invalid permission of assignees that you have sent are: {},"
+    "please assign valid assignees for stages",
+    "STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE"
+)
+
+INVALID_STAGE_IDS_FOR_TASK = "Invalid stage_ids : {} for the task_id: {}"

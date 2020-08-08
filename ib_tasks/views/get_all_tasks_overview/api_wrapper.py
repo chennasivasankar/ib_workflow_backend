@@ -1,16 +1,21 @@
-import json
-
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
-from .validator_class import ValidatorClass
-from ...interactors.get_all_tasks_overview_for_user_interactor import \
+
+from ib_tasks.interactors.get_all_tasks_overview_for_user_interactor import \
     GetAllTasksOverviewForUserInteractor, UserIdPaginationDTO
-from ...presenters.get_all_tasks_overview_for_user_presenter_impl import \
+from .validator_class import ValidatorClass
+from ib_tasks.presenters.get_all_tasks_overview_for_user_presenter_impl import \
     GetAllTasksOverviewForUserPresenterImpl
-from ...storages.fields_storage_implementation import \
+from ib_tasks.storages.action_storage_implementation import \
+    ActionsStorageImplementation
+from ib_tasks.storages.fields_storage_implementation import \
     FieldsStorageImplementation
-from ...storages.storage_implementation import StagesStorageImplementation
-from ...storages.tasks_storage_implementation import TasksStorageImplementation
+from ib_tasks.storages.storage_implementation import \
+    StagesStorageImplementation
+from ib_tasks.storages.task_stage_storage_implementation import \
+    TaskStageStorageImplementation
+from ib_tasks.storages.tasks_storage_implementation import \
+    TasksStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
@@ -28,11 +33,15 @@ def api_wrapper(*args, **kwargs):
     stage_storage = StagesStorageImplementation()
     task_storage = TasksStorageImplementation()
     field_storage = FieldsStorageImplementation()
+    action_storage = ActionsStorageImplementation()
+    task_stage_storage = TaskStageStorageImplementation()
 
     interactor = GetAllTasksOverviewForUserInteractor(
         stage_storage=stage_storage,
         task_storage=task_storage,
-        field_storage=field_storage)
+        field_storage=field_storage, action_storage=action_storage,
+        task_stage_storage=task_stage_storage
+    )
     response = interactor. \
         get_all_tasks_overview_for_user_wrapper(presenter=presenter,
                                                 user_id_with_pagination_dto=

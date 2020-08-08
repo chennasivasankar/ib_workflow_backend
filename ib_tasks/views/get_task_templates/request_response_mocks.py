@@ -10,6 +10,8 @@ RESPONSE_200_JSON = """
             "actions": [
                 {
                     "action_id": 1,
+                    "action_type": "NO_VALIDATIONS",
+                    "transition_template_id": "string",
                     "button_text": "string",
                     "button_color": "string"
                 }
@@ -34,7 +36,6 @@ RESPONSE_200_JSON = """
                             "tooltip": "string",
                             "help_text": "string",
                             "placeholder_text": "string",
-                            "is_field_readable": true,
                             "is_field_writable": true
                         }
                     ]

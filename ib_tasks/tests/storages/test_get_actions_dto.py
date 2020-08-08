@@ -21,7 +21,7 @@ class TestGetActionsDto:
         expected_dtos = [
             ActionDTO(
                 action_id=1,
-                name="name_1",
+                name="action_name_1",
                 stage_id="stage_id_0",
                 button_text="hey",
                 button_color="#fafafa"

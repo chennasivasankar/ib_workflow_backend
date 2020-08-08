@@ -1,11 +1,10 @@
+import datetime
 from dataclasses import dataclass
-from typing import Union, List, Optional
 from typing import Union, List, Any
 
-from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    ActionDetailsDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO, \
-    StageDetailsDTO
+from ib_tasks.constants.enum import Priority
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    StageActionDetailsDTO, TaskStageIdsDTO, StageDetailsDTO
 
 
 @dataclass
@@ -22,11 +21,51 @@ class GoFFieldsDTO:
 
 
 @dataclass
-class TaskDTO:
-    task_id: Optional[int]
-    task_template_id: Optional[str]
+class CreateTaskDTO:
+    task_template_id: str
     created_by_id: str
     action_id: int
+    title: str
+    description: str
+    start_date: datetime.date
+    due_date: datetime.date
+    due_time: str
+    priority: Priority
+    gof_fields_dtos: List[GoFFieldsDTO]
+
+
+@dataclass
+class StageIdWithAssigneeIdDTO:
+    stage_id: int
+    assignee_id: str
+
+
+@dataclass
+class UpdateTaskDTO:
+    task_id: int
+    created_by_id: str
+    title: str
+    description: str
+    start_date: datetime.date
+    due_date: datetime.date
+    due_time: str
+    priority: Priority
+    stage_assignee: StageIdWithAssigneeIdDTO
+    gof_fields_dtos: List[GoFFieldsDTO]
+
+
+@dataclass
+class SaveAndActOnTaskDTO:
+    task_id: int
+    created_by_id: str
+    action_id: int
+    title: str
+    description: str
+    start_date: datetime.date
+    due_date: datetime.date
+    due_time: str
+    priority: Priority
+    stage_assignee: StageIdWithAssigneeIdDTO
     gof_fields_dtos: List[GoFFieldsDTO]
 
 
@@ -60,7 +99,7 @@ class GetTaskDetailsDTO:
 
 @dataclass
 class StageAndActionsDetailsDTO(StageDetailsDTO):
-    actions_dtos: List[ActionDetailsDTO]
+    actions_dtos: List[StageActionDetailsDTO]
 
 
 @dataclass
@@ -69,3 +108,10 @@ class StatusOperandStageDTO:
     operator: str
     stage: Any
 
+
+@dataclass
+class CreateTaskLogDTO:
+    task_json: str
+    task_id: int
+    user_id: str
+    action_id: int

@@ -1,8 +1,12 @@
 from typing import List
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, FieldRolesDTO, FieldRoleDTO
 
-from ib_tasks.interactors.storage_interfaces.task_storage_interface \
-    import TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.field_config_storage_interface \
+    import \
+    FieldConfigStorageInterface
+from ib_tasks.interactors.storage_interfaces.fields_dtos \
+    import FieldDTO, FieldRolesDTO, FieldRoleDTO
+from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
+    GoFStorageInterface
 
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes
 
@@ -23,8 +27,12 @@ from ib_tasks.constants.constants import MULTI_VALUES_INPUT_FIELDS, UPLOADERS
 
 class CreateOrUpdateFieldsInteractor:
 
-    def __init__(self, storage: TaskStorageInterface):
+    def __init__(
+            self, storage: FieldConfigStorageInterface,
+            gof_storage: GoFStorageInterface
+    ):
         self.storage = storage
+        self.gof_storage = gof_storage
 
     def create_or_update_fields(
             self, field_dtos: List[FieldDTO],
@@ -55,10 +63,11 @@ class CreateOrUpdateFieldsInteractor:
 
     def _check_for_base_validations(self, field_dtos: List[FieldDTO]):
 
-        from ib_tasks.interactors.create_or_update_fields_base_validations_interactor \
+        from ib_tasks.interactors.\
+            create_or_update_fields_base_validations_interactor \
             import CreateOrUpdateFieldsBaseValidationInteractor
         base_validation_interactor = \
-            CreateOrUpdateFieldsBaseValidationInteractor(storage=self.storage)
+            CreateOrUpdateFieldsBaseValidationInteractor(gof_storage=self.gof_storage)
         base_validation_interactor.fields_base_validations(field_dtos)
 
     def _check_for_field_roles_validations(
@@ -68,7 +77,9 @@ class CreateOrUpdateFieldsInteractor:
             import FieldsRolesValidationsInteractor
 
         field_roles_validation_interactor = FieldsRolesValidationsInteractor()
-        field_roles_validation_interactor.fields_roles_validations(field_roles_dtos)
+        field_roles_validation_interactor.fields_roles_validations(
+            field_roles_dtos
+        )
 
     def _validate_field_values_based_on_field_types(
             self, field_dtos: List[FieldDTO]
@@ -80,6 +91,7 @@ class CreateOrUpdateFieldsInteractor:
     def _get_field_role_dtos(
             self, field_roles_dtos: List[FieldRolesDTO]
     ) -> List[FieldRoleDTO]:
+
         field_role_dtos = []
         for field_roles_dto in field_roles_dtos:
             read_permission_field_role_dtos = \
@@ -152,7 +164,7 @@ class CreateOrUpdateFieldsInteractor:
 
         if field_type == FieldTypes.GOF_SELECTOR.value:
             interactor = GoFSelectorValidationsInteractor(
-                storage=self.storage
+                gof_storage=self.gof_storage
             )
             interactor.gof_selector_validations(field_dto)
         if field_type in UPLOADERS:

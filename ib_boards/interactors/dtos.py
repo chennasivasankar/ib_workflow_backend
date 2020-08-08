@@ -1,11 +1,14 @@
 from dataclasses import dataclass
 from typing import List, Optional
 
+from ib_boards.constants.enum import ViewType
+
 
 @dataclass
 class ColumnParametersDTO:
     board_id: str
     user_id: str
+    view_type: ViewType
 
 
 @dataclass
@@ -80,17 +83,18 @@ class BoardColumnsDTO:
 
 @dataclass
 class GetBoardsDTO:
-    user_id: int
+    user_id: str
     offset: int
     limit: int
 
 
 @dataclass
 class ColumnTasksParametersDTO:
-    user_id: int
+    user_id: str
     column_id: str
     offset: int
     limit: int
+    view_type: ViewType
 
 
 @dataclass
@@ -112,6 +116,10 @@ class ActionDTO:
     task_id: int
     stage_id: str
 
+@dataclass
+class StageActionDetailsDTO(ActionDTO):
+    action_type: str
+    transition_template_id: str
 
 @dataclass
 class TaskStatusDTO:
@@ -168,3 +176,14 @@ class ColumnTotalTasksDTO:
     column_id: str
     total_tasks: int
 
+
+@dataclass
+class StarredAndOtherBoardsDTO:
+    starred_boards_dtos: List[BoardDTO]
+    other_boards_dtos: List[BoardDTO]
+
+@dataclass
+class StarOrUnstarParametersDTO:
+    board_id: str
+    user_id: str
+    action: str

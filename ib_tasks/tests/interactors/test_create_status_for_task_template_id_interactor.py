@@ -2,12 +2,16 @@ from unittest.mock import create_autospec
 
 import pytest
 
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateIds, DuplicateTaskStatusVariableIds
+from ib_tasks.exceptions.task_custom_exceptions import \
+    InvalidTaskTemplateIds, \
+    DuplicateTaskStatusVariableIds
 from ib_tasks.interactors.create_task_status_interactor import \
     CreateTaskStatusInteractor
-from ib_tasks.interactors.storage_interfaces.status_dtos import TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface\
+    import \
+    TaskTemplateStorageInterface
 from ib_tasks.tests.factories.storage_dtos import TaskTemplateStatusDTOFactory
 
 
@@ -28,9 +32,11 @@ class TestCreateStatusInteractor:
         # Arrange
 
         storage = create_autospec(TaskStorageInterface)
-        storage.get_valid_template_ids_in_given_template_ids.return_value = []
+        template_storage = create_autospec(TaskTemplateStorageInterface)
+        template_storage.get_valid_template_ids_in_given_template_ids.return_value = []
         interactor = CreateTaskStatusInteractor(
-            status_storage=storage
+            status_storage=storage,
+            template_storage=template_storage
         )
 
         # Act
@@ -38,23 +44,18 @@ class TestCreateStatusInteractor:
             interactor.create_task_status(task_status_dtos)
 
         # Assert
-        storage.get_valid_template_ids_in_given_template_ids.assert_called_once()
+        template_storage.get_valid_template_ids_in_given_template_ids.assert_called_once()
 
     def test_create_status_for_task_given_valid_details(
             self, task_status_dtos):
         # Arrange
-        task_status_details_dtos = [TaskTemplateStatusDTO(
-            task_template_id="FIN_PR",
-            status_variable_id="Status 1"),
-TaskTemplateStatusDTO(
-            task_template_id="FIN_PR",
-            status_variable_id="Status 2"
-        )
-        ]
         storage = create_autospec(TaskStorageInterface)
-        storage.get_valid_template_ids_in_given_template_ids.return_value = ["task_template_id_1", "task_template_id_2"]
+        template_storage = create_autospec(TaskTemplateStorageInterface)
+        template_storage.get_valid_template_ids_in_given_template_ids\
+            .return_value = \
+            ["task_template_id_1", "task_template_id_2"]
         interactor = CreateTaskStatusInteractor(
-            status_storage=storage
+            status_storage=storage, template_storage=template_storage
         )
 
         # Act
@@ -67,26 +68,12 @@ TaskTemplateStatusDTO(
     def test_duplicate_status_ids_for_task_template_id_raises_exception(
             self, duplicate_status_dtos):
         # Arrange
-        task_status_details = [
-            TaskTemplateStatusDTO(
-                task_template_id="FIN_PR",
-                status_variable_id="Status 1"
-            ), TaskTemplateStatusDTO(
-                task_template_id="FIN_PR",
-                status_variable_id="Status 1"
-            ),
-            TaskTemplateStatusDTO(
-                task_template_id="BACKEND",
-                status_variable_id="Status 2"
-            ), TaskTemplateStatusDTO(
-                task_template_id="BACKEND",
-                status_variable_id="Status 2"
-            )
-        ]
         storage = create_autospec(TaskStorageInterface)
-        storage.get_valid_template_ids_in_given_template_ids.return_value = ["task_template_id_1"]
+        template_storage = create_autospec(TaskTemplateStorageInterface)
+        template_storage.get_valid_template_ids_in_given_template_ids.return_value = \
+            ["task_template_id_1"]
         interactor = CreateTaskStatusInteractor(
-            status_storage=storage
+            status_storage=storage, template_storage=template_storage
         )
 
         # Act
@@ -94,4 +81,4 @@ TaskTemplateStatusDTO(
             interactor.create_task_status(duplicate_status_dtos)
 
         # Assert
-        storage.get_valid_template_ids_in_given_template_ids.assert_called_once()
+        template_storage.get_valid_template_ids_in_given_template_ids.assert_called_once()
