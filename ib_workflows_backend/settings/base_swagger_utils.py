@@ -18,12 +18,6 @@ DSU_RAISE_EXCEPTION_FOR_API_RESPONSE_STATUS_CODE = True  # default value is Fals
 from django_swagger_utils.drf_server.utils.general.import_app_settings import \
     import_app_settings
 
-ELASTICSEARCH_DSL = {
-    'default': {
-        'hosts': 'localhost:9200'
-    },
-}
-
 THIRD_PARTY_APPS = [
     "ib_users"
 ]
@@ -97,7 +91,8 @@ DEFAULT_OAUTH_APPLICATION_NAME = os.environ.get(
     "DEFAULT_OAUTH_APPLICATION_NAME", "")
 DEFAULT_OAUTH_CLIENT_ID = os.environ.get("DEFAULT_OAUTH_CLIENT_ID", "")
 DEFAULT_OAUTH_CLIENT_SECRET = os.environ.get("DEFAULT_OAUTH_CLIENT_SECRET", "")
-DEFAULT_OAUTH_SCOPES = os.environ.get("DEFAULT_OAUTH_SCOPES", "read write update delete")
+DEFAULT_OAUTH_SCOPES = os.environ.get("DEFAULT_OAUTH_SCOPES",
+                                      "read write update delete")
 DEFAULT_ACCESS_TOKEN_EXPIRY_IN_SECONDS = int(
     os.environ.get("DEFAULT_ACCESS_TOKEN_EXPIRY_IN_SECONDS", "100000000"))
 
@@ -111,3 +106,12 @@ S3_UPLOADER_FOLDER_PREFIX = "uploads"
 S3_UPLOADER_OBJECT_ACL = "public-read"
 S3_UPLOADER_URL_TYPE = "cloudfront"
 
+# ****************** ElasticSearch Config ******************
+ELASTICSEARCH_ENDPOINT = os.environ.get(
+    'ELASTICSEARCH_ENDPOINT', 'localhost:9200'
+)
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': ELASTICSEARCH_ENDPOINT
+    },
+}
