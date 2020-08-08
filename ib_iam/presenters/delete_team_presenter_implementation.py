@@ -6,7 +6,7 @@ from ib_iam.interactors.presenter_interfaces \
 from ib_iam.constants.enums import StatusCode
 from ib_iam.constants.exception_messages import (
     USER_HAS_NO_ACCESS_FOR_DELETE_TEAM,
-    INVALID_TEAM_FOR_DELETE_TEAM
+    INVALID_TEAM_ID_FOR_DELETE_TEAM
 
 )
 
@@ -30,9 +30,9 @@ class DeleteTeamPresenterImplementation(DeleteTeamPresenterInterface,
 
     def get_invalid_team_response_for_delete_team(self):
         response_dict = {
-            "response": INVALID_TEAM_FOR_DELETE_TEAM[0],
+            "response": INVALID_TEAM_ID_FOR_DELETE_TEAM[0],
             "http_status_code": StatusCode.NOT_FOUND.value,
-            "res_status": INVALID_TEAM_FOR_DELETE_TEAM[1]
+            "res_status": INVALID_TEAM_ID_FOR_DELETE_TEAM[1]
         }
         return self.prepare_404_not_found_response(
             response_dict=response_dict

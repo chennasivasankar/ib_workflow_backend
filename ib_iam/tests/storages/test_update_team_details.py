@@ -3,7 +3,7 @@ from ib_iam.storages.team_storage_implementation import \
     TeamStorageImplementation
 from ib_iam.models import Team
 from ib_iam.interactors.storage_interfaces.dtos import \
-    TeamWithUserIdsDTO
+    TeamWithTeamIdAndUserIdsDTO
 
 
 @pytest.fixture
@@ -22,14 +22,14 @@ class TestUpdateTeamDetails:
         expected_description = "description"
         expected_logo_url = ""
         storage = TeamStorageImplementation()
-        team_with_user_ids_dto = TeamWithUserIdsDTO(
+        team_with_team_id_and_user_ids_dto = TeamWithTeamIdAndUserIdsDTO(
             team_id=team_id,
             name=expected_team_name,
             description=expected_description,
             user_ids=[])
 
         storage.update_team_details(
-            team_with_user_ids_dto=team_with_user_ids_dto)
+            team_dto=team_with_team_id_and_user_ids_dto)
 
         team_object = Team.objects.get(team_id=team_id)
         assert team_object.name == expected_team_name

@@ -6,15 +6,18 @@ from ib_iam.presenters.get_companies_presenter_implementation import \
     GetCompaniesPresenterImplementation
 from ib_iam.storages.company_storage_implementation import \
     CompanyStorageImplementation
+from ...storages.user_storage_implementation import UserStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     user_object = kwargs["user"]
     user_id = str(user_object.user_id)
-    storage = CompanyStorageImplementation()
+    company_storage = CompanyStorageImplementation()
+    user_storage = UserStorageImplementation()
     presenter = GetCompaniesPresenterImplementation()
-    interactor = GetCompaniesInteractor(storage=storage)
+    interactor = GetCompaniesInteractor(company_storage=company_storage,
+                                        user_storage=user_storage)
 
     response_data = interactor.get_companies_wrapper(
         user_id=user_id, presenter=presenter

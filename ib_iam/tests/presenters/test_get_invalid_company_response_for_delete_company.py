@@ -1,16 +1,18 @@
+import json
 from ib_iam.presenters.delete_company_presenter_implementation import (
     DeleteCompanyPresenterImplementation
 )
-from ib_iam.constants.exception_messages import INVALID_COMPANY_FOR_DELETE_COMPANY
+from ib_iam.constants.exception_messages import \
+    INVALID_COMPANY_ID_FOR_DELETE_COMPANY
 
 
-class TestRaiseExceptionForInvalidCompanyId:
+class TestRaiseExceptionForInvalidCompanyIdForDeleteCompany:
     def test_whether_it_returns_invalid_company_exception_response(self):
         json_presenter = DeleteCompanyPresenterImplementation()
-        import json
-        expected_response = INVALID_COMPANY_FOR_DELETE_COMPANY[0]
-        expected_res_status = INVALID_COMPANY_FOR_DELETE_COMPANY[1]
-        expected_http_status_code = 404
+        expected_response = INVALID_COMPANY_ID_FOR_DELETE_COMPANY[0]
+        expected_res_status = INVALID_COMPANY_ID_FOR_DELETE_COMPANY[1]
+        from ib_iam.constants.enums import StatusCode
+        expected_http_status_code = StatusCode.NOT_FOUND.value
 
         result = json_presenter.get_invalid_company_response_for_delete_company()
         response_dict = json.loads(result.content)

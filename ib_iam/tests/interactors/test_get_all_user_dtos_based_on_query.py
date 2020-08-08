@@ -15,7 +15,7 @@ class TestGetAllUserDTOsBasedOnQuery:
     def interactor(self, storage_mock):
         from ib_iam.interactors.get_users_list_interactor import \
             GetUsersDetailsInteractor
-        interactor = GetUsersDetailsInteractor(storage=storage_mock)
+        interactor = GetUsersDetailsInteractor(user_storage=storage_mock)
         return interactor
 
     def test_get_all_user_dtos_based_on_query_return_response(

@@ -202,6 +202,21 @@
         "gof_fields"
       ]
     },
+    "AddTaskReasons": {
+      "type": "object",
+      "properties": {
+        "updated_due_date_time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "updated_due_date_time", "reason"
+      ]
+    },
     "CreateTaskRequestBody": {
       "type": "object",
       "properties": {
@@ -798,6 +813,23 @@
         "priority"
       ]
     },
+    "UserDetails": {
+      "type": "object",
+              "properties": {
+                "user_id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "profile_pic": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "user_id", "name", "profile_pic"
+              ]
+    },
     "UpdateTaskRequestBody": {
       "type": "object",
       "properties": {
@@ -1201,6 +1233,14 @@
     }
   },
   "parameters": {
+    "AddTaskReasonsParameter": {
+      "in": "body",
+      "name": "AddTaskReasonRequestBody",
+      "required": true,
+      "schema": {
+        "$ref": "#/definitions/AddTaskReasons"
+      }
+    },
     "CreateTaskBodyParameter": {
       "in": "body",
       "name": "CreateTaskRequestBody",
@@ -1570,6 +1610,33 @@
         ]
       }
     },
+    "InvalidTaskReasonsResponse": {
+      "description": "invalid add task reasons response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer",
+            "example": 400
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "INVALID_REASON",
+              "INVALID_DUE_DATE_TIME"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
     "UpdateTaskStageAssigneesNotFoundResponse": {
       "description": "Task Stage Assignees Not Found Response",
       "schema": {
@@ -1851,6 +1918,35 @@
         ]
       }
     },
+    "GetTaskReasonsResponse": {
+      "description": "Ok",
+      "schema": {
+          "type": "array",
+          "items": {
+            "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "due_date_time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "due_missed_count": {
+          "type": "integer",
+          "format": "int64"
+        },
+            "user": {
+              "$ref": "#/definitions/UserDetails"
+            }
+      },
+      "required": [
+        "task_id", "user", "due_date_time", "due_missed_count"
+      ]
+        }
+      }
+    },
     "InvalidFilterValueResponse": {
       "description": "value empty response",
       "schema": {
@@ -1866,6 +1962,32 @@
             "type": "string",
             "enum": [
               "VALUE_SHOULD_NOT_BE_EMPTY"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
+    "TaskIsNotAssignedToUserResponse": {
+      "description": "given task is not assigned to user",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer",
+            "example": 403
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "TASK_IS_NOT_ASSIGNED_TO_TASK"
             ]
           }
         },
@@ -2524,6 +2646,70 @@
           },
           "404": {
             "$ref": "#/responses/CreateTransitionChecklistFailureResponse"
+          }
+        }
+      }
+    },
+    "/task/{task_id}/reasons/v1/": {
+      "get": {
+        "operationId": "get_reasons_for_missing_task_due_date_time",
+        "summary": "get reasons for missing task due date time",
+        "description": "get reasons for missing task due date time",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TaskIDParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetTaskReasonsResponse"
+          },
+          "404": {
+            "$ref": "#/responses/GetTaskFailureResponse"
+          },
+          "403": {
+            "$ref": "#/responses/TaskIsNotAssignedToUserResponse"
+          }
+        }
+      },
+      "post": {
+         "operationId": "add_reason_for_missing_due_date_time",
+        "summary": "add reason for missing due date time",
+        "description": "add reason for missing due date time",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TaskIDParameter"
+          },
+          {
+            "$ref": "#/parameters/AddTaskReasonsParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "404": {
+            "$ref": "#/responses/GetTaskFailureResponse"
+          },
+          "400": {
+            "$ref": "#/responses/InvalidTaskReasonsResponse"
+          },
+          "403": {
+            "$ref": "#/responses/TaskIsNotAssignedToUserResponse"
           }
         }
       }

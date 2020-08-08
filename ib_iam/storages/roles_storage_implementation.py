@@ -8,11 +8,6 @@ from ib_iam.interactors.storage_interfaces.roles_storage_interface import \
 
 class RolesStorageImplementation(RolesStorageInterface):
 
-    def check_is_admin_user(self, user_id: str) -> bool:
-        from ib_iam.models.user import UserDetails
-        user = UserDetails.objects.get(user_id=user_id)
-        return user.is_admin
-
     def create_roles(self, role_dtos: List[RoleDTO]):
         from ib_iam.models import Role
         role_objects = [

@@ -1,6 +1,7 @@
 import pytest
 from ib_iam.tests.common_fixtures.reset_fixture \
-            import reset_sequence_role_factory
+    import reset_sequence_role_factory
+
 
 class TestGetValidRoleIds:
     @pytest.mark.django_db

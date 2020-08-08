@@ -5,6 +5,7 @@ from ib_iam.interactors.company_interactor import CompanyInteractor
 from ib_iam.presenters.delete_company_presenter_implementation import \
     DeleteCompanyPresenterImplementation
 from ib_iam.storages.company_storage_implementation import CompanyStorageImplementation
+from ...storages.user_storage_implementation import UserStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
@@ -13,9 +14,11 @@ def api_wrapper(*args, **kwargs):
     user_id = str(user_obj.user_id)
     company_id = kwargs["company_id"]
 
-    storage = CompanyStorageImplementation()
+    company_storage = CompanyStorageImplementation()
+    user_storage = UserStorageImplementation()
     presenter = DeleteCompanyPresenterImplementation()
-    interactor = CompanyInteractor(storage=storage)
+    interactor = CompanyInteractor(company_storage=company_storage,
+                                   user_storage=user_storage)
 
     response = interactor.delete_company_wrapper(
         user_id=user_id,

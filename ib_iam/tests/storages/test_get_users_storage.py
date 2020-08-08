@@ -99,14 +99,17 @@ class TestGetUsers:
         return user_team_dtos
 
     @pytest.mark.django_db
-    def test_validate_user_is_admin(self, user_not_admin):
+    @pytest.mark.parametrize("expected_output, is_admin",
+                             [(False, False), (True, True)])
+    def test_validate_is_user_admin(self, expected_output, is_admin):
         # Arrange
         user_id = "user0"
-        expected_output = False
+        from ib_iam.tests.factories.models import UserDetailsFactory
+        UserDetailsFactory.create(user_id=user_id, is_admin=is_admin)
         storage = UserStorageImplementation()
 
         # Act
-        output = storage.check_is_admin_user(user_id=user_id)
+        output = storage.is_user_admin(user_id=user_id)
 
         # Assert
         assert output == expected_output
@@ -114,21 +117,17 @@ class TestGetUsers:
     @pytest.mark.django_db
     def test_get_users(self, users_company, user_dtos):
         # Arrange
-        offset = 0
-        limit = 10
         expected_output = user_dtos
         storage = UserStorageImplementation()
 
         # Act
-        output = storage.get_users_who_are_not_admins(0, 10)
+        output = storage.get_users_who_are_not_admins(offset=0, limit=10)
 
         assert output == expected_output
 
     @pytest.mark.django_db
-    def test_get_users(self, users_company, user_dtos):
+    def test_get_users_count_for_query(self, users_company, user_dtos):
         # Arrange
-        offset = 0
-        limit = 10
         expected_output = 6
         storage = UserStorageImplementation()
 
@@ -178,17 +177,16 @@ class TestGetUsers:
         assert output == expected_output
 
     @pytest.mark.django_db
-    def test_is_user_is_a_admin(self):
-        # Arrange
-        from ib_iam.tests.factories.models import UserDetailsFactory
-        user_profile_object = UserDetailsFactory()
-
+    @pytest.mark.parametrize("given_user_ids, expected_user_ids", [
+                            (["user1", "user2", "user3"], ["user1", "user2"]),
+                              (["user_id-3", "user_id-4"], [])
+    ])
+    def test_given_some_valid_members_it_returns_member_ids(
+            self, create_users, given_user_ids, expected_user_ids):
         storage = UserStorageImplementation()
 
-        # Act
-        is_admin = storage.check_is_admin_user(
-            user_id=user_profile_object.user_id
-        )
+        actual_user_ids = \
+            storage.get_valid_user_ids_among_the_given_user_ids(
+                user_ids=given_user_ids)
 
-        # Assert
-        assert is_admin == user_profile_object.is_admin
+        assert actual_user_ids == expected_user_ids

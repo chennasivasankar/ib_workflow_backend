@@ -17,6 +17,7 @@ from ib_tasks.storages.action_storage_implementation import \
 #         interactor = GetTaskFieldsAndActionsInteractor(storage)
 #         result = interactor.get_task_fields_and_action(task_dtos)
 #         return result
+from ib_tasks.storages.tasks_storage_implementation import TasksStorageImplementation
 
 
 class ServiceInterface:
