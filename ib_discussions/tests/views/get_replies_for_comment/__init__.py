@@ -8,5 +8,5 @@ URL_SUFFIX = "comment/{comment_id}/reply/v1/"
 from .test_case_01 import TestCase01GetRepliesForCommentAPITestCase
 
 __all__ = [
-    "TestCase01GetRepliesForCommentAPITestCase"
+    "TestCase01GetRepliesForCommentAPITestCase",
 ]

@@ -217,6 +217,15 @@
         "created_at": {
           "type": "string",
           "format": "date-time"
+        },
+        "mention_users": {
+          "$ref": "#/definitions/MentionUsers"
+        },
+        "multimedia": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Multimedia"
+          }
         }
       },
       "required": [
@@ -224,7 +233,9 @@
         "created_at",
         "is_editable",
         "comment_id",
-        "comment_content"
+        "comment_content",
+        "mention_users",
+        "multimedia"
       ]
     },
     "MentionUsers": {
@@ -424,10 +435,41 @@
         "properties": {
           "comment_content": {
             "type": "string"
+          },
+          "mention_user_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "multimedia": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "format_type": {
+                  "type": "string",
+                  "enum": [
+                    "IMAGE",
+                    "VIDEO"
+                  ]
+                },
+                "url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "format_type",
+                "url"
+              ]
+            }
           }
         },
         "required": [
-          "comment_content"
+          "comment_content",
+          "mention_user_ids",
+          "multimedia"
         ]
       }
     }
@@ -696,7 +738,7 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "COMMENT_ID_NOT_FOUND"
+                  "DISCUSSION_ID_NOT_FOUND"
                 ]
               }
             },

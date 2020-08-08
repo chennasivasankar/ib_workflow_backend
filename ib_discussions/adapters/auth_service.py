@@ -16,7 +16,8 @@ class AuthService:
         service_interface = ServiceInterface()
         return service_interface
 
-    def get_user_profile_dtos(self, user_ids: List[str]) -> List[UserProfileDTO]:
+    def get_user_profile_dtos(self, user_ids: List[str]) -> List[
+        UserProfileDTO]:
         from ib_users.interactors.exceptions.user_profile import \
             InvalidUserException
         try:

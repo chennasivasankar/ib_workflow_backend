@@ -6,7 +6,9 @@ REQUEST_METHOD = "get"
 URL_SUFFIX = "discussion/{discussion_id}/comment/v1/"
 
 from .test_case_01 import TestCase01GetCommentsForDiscussionAPITestCase
+from .test_case_02 import TestCase02GetCommentsForDiscussionAPITestCase
 
 __all__ = [
-    "TestCase01GetCommentsForDiscussionAPITestCase"
+    "TestCase01GetCommentsForDiscussionAPITestCase",
+    "TestCase02GetCommentsForDiscussionAPITestCase"
 ]
