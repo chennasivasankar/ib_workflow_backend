@@ -28,12 +28,18 @@ from ib_tasks.models import Stage, TaskTemplate, TaskStage, \
     TaskTemplateStatusVariable
 from ib_tasks.models.field import Field
 from ib_tasks.models.stage_actions import StageAction
-from ib_tasks.models.task import Task
+from ib_tasks.models.task import Task, ElasticSearchTask
 from ib_tasks.models.task_gof_field import TaskGoFField
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
 
 class TasksStorageImplementation(TaskStorageInterface):
+
+    def create_elastic_task(self, task_id: int, elastic_task_id: str):
+
+        ElasticSearchTask.objects.create(
+            task_id=task_id, elasticsearch_id=elastic_task_id
+        )
 
     def get_field_types_for_given_field_ids(self, field_ids: List[str]) -> \
             List[FieldCompleteDetailsDTO]:

@@ -1,6 +1,7 @@
 from typing import List, Optional, Union
 
 from ib_tasks.constants.config import TIME_FORMAT
+from ib_tasks.documents.elastic_task import ElasticTaskDTO, ElasticFieldDTO
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     DueTimeHasExpiredForToday, InvalidDueTimeFormat, \
@@ -28,6 +29,8 @@ from ib_tasks.exceptions.task_custom_exceptions import \
 from ib_tasks.interactors.create_or_update_task \
     .template_gofs_fields_base_validations import \
     TemplateGoFsFieldsBaseValidationsInteractor
+from ib_tasks.interactors.storage_interfaces.elastic_storage_interface \
+    import ElasticSearchStorageInterface
 from ib_tasks.interactors.presenter_interfaces.create_task_presenter import \
     CreateTaskPresenterInterface
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
@@ -51,9 +54,11 @@ from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import CreateTaskDTO, GoFFieldsDTO, \
-    UpdateTaskDTO
+    UpdateTaskDTO, FieldValuesDTO
 from ib_tasks.interactors.user_action_on_task_interactor import \
     UserActionOnTaskInteractor
+
+
 
 
 class CreateTaskInteractor:
@@ -65,7 +70,8 @@ class CreateTaskInteractor:
             create_task_storage: CreateOrUpdateTaskStorageInterface,
             storage: StorageInterface, field_storage: FieldsStorageInterface,
             stage_storage: StageStorageInterface,
-            action_storage: ActionStorageInterface
+            action_storage: ActionStorageInterface,
+            elastic_storage: ElasticSearchStorageInterface
     ):
         self.task_template_storage = task_template_storage
         self.gof_storage = gof_storage
@@ -75,6 +81,7 @@ class CreateTaskInteractor:
         self.field_storage = field_storage
         self.stage_storage = stage_storage
         self.action_storage = action_storage
+        self.elastic_storage = elastic_storage
 
     def create_task_wrapper(
             self, presenter: CreateTaskPresenterInterface,
@@ -192,6 +199,12 @@ class CreateTaskInteractor:
         created_task_id = \
             self.create_task_storage.create_task_with_given_task_details(
                 task_dto)
+        elastic_dto = self._get_elastic_task_dto(task_dto, created_task_id)
+        elastic_task_id = \
+            self.elastic_storage.create_task(elastic_task_dto=elastic_dto)
+        self.task_storage.create_elastic_task(
+            task_id=created_task_id, elastic_task_id=elastic_task_id
+        )
         task_gof_dtos = [
             TaskGoFWithTaskIdDTO(
                 task_id=created_task_id,
@@ -225,6 +238,35 @@ class CreateTaskInteractor:
             task_id=created_task_id, template_id=task_dto.task_template_id
         )
         act_on_task_interactor.user_action_on_task()
+
+    def _get_elastic_task_dto(self, task_dto: CreateTaskDTO, task_id: int):
+
+        fields_dto = self._get_fields_dto(task_dto)
+        elastic_task_dto = ElasticTaskDTO(
+            template_id=task_dto.task_template_id,
+            task_id=task_id,
+            title=task_dto.title,
+            fields=fields_dto
+        )
+        return elastic_task_dto
+
+    def _get_fields_dto(
+            self, task_dto: CreateTaskDTO) -> List[ElasticFieldDTO]:
+
+        fields_dto = []
+        gof_fields_dtos = task_dto.gof_fields_dtos
+        for gof_fields_dto in gof_fields_dtos:
+            for field_value_dto in gof_fields_dto.field_values_dtos:
+                fields_dto.append(self._get_elastic_field_dto(field_value_dto))
+
+        return fields_dto
+
+    @staticmethod
+    def _get_elastic_field_dto(field_dto: FieldValuesDTO) -> ElasticFieldDTO:
+        return ElasticFieldDTO(
+            field_id=field_dto.field_id,
+            value=field_dto.field_response
+        )
 
     def _validate_task_template_id(
             self, task_template_id: str
