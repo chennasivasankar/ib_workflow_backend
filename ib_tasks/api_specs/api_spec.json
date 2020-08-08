@@ -1306,7 +1306,7 @@
       "name": "search_query",
       "description": "Searchable Query Parameter",
       "in": "query",
-      "required": true,
+      "required": false,
       "type": "string"
     },
     "SaveAndActOnATaskBodyParameter": {

@@ -1,6 +1,9 @@
 from typing import List, Optional
 from ib_tasks.exceptions.action_custom_exceptions import \
     InvalidActionException, InvalidKeyError, InvalidCustomLogicException
+
+from ib_tasks.constants.enum import ViewType
+from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.permission_custom_exceptions import UserActionPermissionDenied, UserBoardPermissionDenied
 
 from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
