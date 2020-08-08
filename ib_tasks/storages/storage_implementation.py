@@ -14,7 +14,8 @@ from ib_tasks.interactors.storage_interfaces.gof_dtos import \
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageDisplayValueDTO, StageValueWithTaskIdsDTO, \
     TaskIdWithStageDetailsDTO, \
-    TaskStagesDTO, StageValueDTO, TaskTemplateStageDTO, StageRoleDTO
+    TaskStagesDTO, StageValueDTO, TaskTemplateStageDTO, StageRoleDTO, \
+    StageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import (
@@ -38,6 +39,19 @@ class StagesStorageImplementation(StageStorageInterface):
         list_of_permitted_roles = self._get_list_of_permitted_roles_objs(
             stages, stage_information)
         StagePermittedRoles.objects.bulk_create(list_of_permitted_roles)
+
+    def get_stage_detail_dtos_given_stage_ids(self, stage_ids: List[str]) -> \
+            List[StageDetailsDTO]:
+        stage_objs = Stage.objects.filter(stage_id__in=stage_ids).values('id',
+                                                                         'stage_id',
+                                                                         'display_name',
+                                                                         'stage_color')
+        stage_detail_dtos = [StageDetailsDTO(db_stage_id=stage_obj['id'],
+                                             stage_id=stage_obj['stage_id'],
+                                             name=stage_obj['display_name'],
+                                             color=stage_obj['stage_color'])
+                             for stage_obj in stage_objs]
+        return stage_detail_dtos
 
     @staticmethod
     def _get_list_of_permitted_roles_objs(stage_objs,
