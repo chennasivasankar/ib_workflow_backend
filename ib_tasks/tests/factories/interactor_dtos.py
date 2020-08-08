@@ -29,13 +29,13 @@ class StageActionDTOFactory(factory.Factory):
     class Meta:
         model = StageActionDTO
 
-    stage_id = factory.Sequence(lambda n: 'stage_%d' % (n + 1))
+    stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n + 1))
     action_name = factory.Sequence(lambda n: 'action_name_%d' % (n + 1))
     logic = factory.Sequence(lambda n: 'logic%d' % (n + 1))
     roles = factory.Sequence(lambda n: [f'ROLE_{n + 1}', f'ROLE_{n + 2}'])
     button_text = factory.Sequence(lambda n: 'button_text_%d' % (n + 1))
     action_type = "action_type"
-    transition_template_id = factory.Sequence(lambda n: "transition_template_id_%d" % (n + 1))
+    transition_template_id = factory.Sequence(lambda n: "template_%d" % (n + 1))
     button_color = factory.Sequence(lambda n: 'button_color_%d' % (n + 1))
     function_path = "sample_function_path"
 

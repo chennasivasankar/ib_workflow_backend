@@ -97,7 +97,7 @@ class StageActionFactory(factory.django.DjangoModelFactory):
         model = StageAction
 
     stage = factory.SubFactory(StageModelFactory)
-    name = factory.Sequence(lambda n: "name_%d" % n)
+    name = factory.Sequence(lambda n: "action_name_%d" % n)
     button_text = "hey"
     button_color = "#fafafa"
     logic = "Status1 = PR_PAYMENT_REQUEST_DRAFTS"

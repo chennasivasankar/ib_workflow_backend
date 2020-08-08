@@ -243,10 +243,12 @@ class TestTaskInteractor:
         from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
         stages_and_actions_details_dtos = [
             StageAndActionsDetailsDTO(
+                db_stage_id=1,
                 stage_id="stage1", name="stage_name1",
                 actions_dtos=stage1_actions_dtos
             ),
             StageAndActionsDetailsDTO(
+                db_stage_id=2,
                 stage_id="stage2", name="stage_name2",
                 actions_dtos=stage2_actions_dtos
             )
