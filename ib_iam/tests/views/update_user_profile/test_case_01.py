@@ -19,12 +19,10 @@ class TestCase01UpdateUserProfileAPITestCase(TestUtils):
         user_id = setup
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import update_user_profile_adapter_mock
-        adapter_mock = update_user_profile_adapter_mock(mocker=mocker)
-        body = {
-            'name': 'updatedusername',
-            'email': 'jaswanthmamidipudi@gmail.com',
-            'profile_pic_url': 'https://sample.com'
-        }
+        update_user_profile_adapter_mock(mocker=mocker)
+        body = {'name': 'updatedusername',
+                'email': 'jaswanthmamidipudi@gmail.com',
+                'profile_pic_url': 'https://sample.com'}
         path_params = {}
         query_params = {}
         headers = {}
@@ -39,13 +37,7 @@ class TestCase01UpdateUserProfileAPITestCase(TestUtils):
 
     @pytest.fixture
     def setup(self, api_user):
-        print("*" * 80)
-        print(api_user.__dict__)
-        print("*" * 80)
         user_id = str(api_user.user_id)
-        print("*" * 80)
-        print(user_id)
-        print("*" * 80)
         from ib_iam.tests.factories.models import UserDetailsFactory
         UserDetailsFactory.create(user_id=user_id)
         return user_id
