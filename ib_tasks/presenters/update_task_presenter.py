@@ -14,6 +14,8 @@ from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
+from ib_tasks.exceptions.stage_custom_exceptions import \
+    StageIdsWithInvalidPermissionForAssignee
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskTemplateIds, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
@@ -24,6 +26,19 @@ from ib_tasks.interactors.presenter_interfaces.update_task_presenter import \
 class UpdateTaskPresenterImplementation(
     UpdateTaskPresenterInterface, HTTPResponseMixin
 ):
+
+    def raise_stage_ids_with_invalid_permission_for_assignee_exception(
+            self, err: StageIdsWithInvalidPermissionForAssignee):
+        from ib_tasks.constants.exception_messages import \
+            STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE
+        response_dict = {
+            "response": STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE[0].
+                format(err.invalid_stage_ids),
+            "http_status_code": 400,
+            "res_status": STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE[1]
+        }
+        response_object = self.prepare_400_bad_request_response(response_dict)
+        return response_object
 
     def get_update_task_response(self):
         data = {
