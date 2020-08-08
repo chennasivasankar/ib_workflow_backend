@@ -45,7 +45,7 @@ def populate_data():
 
     fields = PopulateFields()
     fields.create_fields()
-    #
+
     global_constants = PopulateGlobalConstantsToTemplate()
     global_constants.populate_global_constants_to_template()
 
