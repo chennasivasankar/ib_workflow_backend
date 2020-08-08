@@ -139,14 +139,14 @@ class FilterStorageImplementation(FilterStorageInterface):
 
     def validate_filter_id(self, filter_id: int):
         invalid_filter_id = not Filter.objects.filter(
-            id=filter_id
+            id=int(filter_id)
         ).exists()
         if invalid_filter_id:
             raise InvalidFilterId()
 
     def validate_user_with_filter_id(self, user_id: str, filter_id: int):
         invalid_user = not Filter.objects.filter(
-            id=filter_id, created_by=user_id
+            id=int(filter_id), created_by=user_id
         ).exists()
         if invalid_user:
             raise UserNotHaveAccessToFilter()

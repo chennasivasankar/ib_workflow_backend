@@ -6,7 +6,7 @@ from ..constants.enum import Status
 
 
 class Filter(models.Model):
-    created_by = models.CharField(max_length=30)
+    created_by = models.CharField(max_length=120)
     name = models.CharField(max_length=120)
     template = models.ForeignKey(TaskTemplate, on_delete=models.CASCADE)
     is_selected = models.CharField(max_length=100, choices=[
