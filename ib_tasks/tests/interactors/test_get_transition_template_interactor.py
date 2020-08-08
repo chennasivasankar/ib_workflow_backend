@@ -236,3 +236,4 @@ class TestGetTransitionTemplateInteractor:
             assert_called_once_with(
                 transition_template_id=transition_template_id
             )
+
