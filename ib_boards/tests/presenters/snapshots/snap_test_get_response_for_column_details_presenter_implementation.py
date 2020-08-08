@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 # snapshottest: v1 - https://goo.gl/zC4yUc
 from __future__ import unicode_literals
@@ -20,13 +19,15 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_duplic
                             'action_id': 'action_id_0',
                             'button_color': None,
                             'button_text': 'button_text_0',
-                            'name': 'name_0'
+                            'name': 'name_0',
+                            'transition_template_id': 'template_0'
                         },
                         {
                             'action_id': 'action_id_3',
                             'button_color': None,
                             'button_text': 'button_text_3',
-                            'name': 'name_3'
+                            'name': 'name_3',
+                            'transition_template_id': None
                         }
                     ],
                     'fields': [
@@ -41,6 +42,7 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_duplic
                             'value': 'value_3'
                         }
                     ],
+                    'stage_color': 'blue',
                     'task_id': 'task_id_0'
                 }
             ],
@@ -56,7 +58,8 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_duplic
                             'action_id': 'action_id_1',
                             'button_color': None,
                             'button_text': 'button_text_1',
-                            'name': 'name_1'
+                            'name': 'name_1',
+                            'transition_template_id': 'template_1'
                         }
                     ],
                     'fields': [
@@ -66,6 +69,7 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_duplic
                             'value': 'value_1'
                         }
                     ],
+                    'stage_color': 'orange',
                     'task_id': 'task_id_1'
                 }
             ],
@@ -81,7 +85,8 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_duplic
                             'action_id': 'action_id_2',
                             'button_color': None,
                             'button_text': 'button_text_2',
-                            'name': 'name_2'
+                            'name': 'name_2',
+                            'transition_template_id': 'template_2'
                         }
                     ],
                     'fields': [
@@ -91,6 +96,7 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_duplic
                             'value': 'value_2'
                         }
                     ],
+                    'stage_color': 'green',
                     'task_id': 'task_id_2'
                 }
             ],
@@ -112,7 +118,8 @@ snapshots['TestGetColumnDetails.test_with_duplicate_tasks_in_same_column_and_dup
                             'action_id': 'action_id_0',
                             'button_color': None,
                             'button_text': 'button_text_0',
-                            'name': 'name_0'
+                            'name': 'name_0',
+                            'transition_template_id': 'template_0'
                         }
                     ],
                     'fields': [
@@ -122,6 +129,7 @@ snapshots['TestGetColumnDetails.test_with_duplicate_tasks_in_same_column_and_dup
                             'value': 'value_0'
                         }
                     ],
+                    'stage_color': 'blue',
                     'task_id': 'task_id_0'
                 }
             ],
@@ -137,7 +145,8 @@ snapshots['TestGetColumnDetails.test_with_duplicate_tasks_in_same_column_and_dup
                             'action_id': 'action_id_1',
                             'button_color': None,
                             'button_text': 'button_text_1',
-                            'name': 'name_1'
+                            'name': 'name_1',
+                            'transition_template_id': 'template_1'
                         }
                     ],
                     'fields': [
@@ -147,6 +156,7 @@ snapshots['TestGetColumnDetails.test_with_duplicate_tasks_in_same_column_and_dup
                             'value': 'value_1'
                         }
                     ],
+                    'stage_color': 'orange',
                     'task_id': 'task_id_1'
                 }
             ],
@@ -162,7 +172,8 @@ snapshots['TestGetColumnDetails.test_with_duplicate_tasks_in_same_column_and_dup
                             'action_id': 'action_id_2',
                             'button_color': None,
                             'button_text': 'button_text_2',
-                            'name': 'name_2'
+                            'name': 'name_2',
+                            'transition_template_id': 'template_2'
                         }
                     ],
                     'fields': [
@@ -172,6 +183,7 @@ snapshots['TestGetColumnDetails.test_with_duplicate_tasks_in_same_column_and_dup
                             'value': 'value_2'
                         }
                     ],
+                    'stage_color': 'green',
                     'task_id': 'task_id_2'
                 }
             ],
@@ -193,7 +205,8 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_proper
                             'action_id': 'action_id_0',
                             'button_color': None,
                             'button_text': 'button_text_0',
-                            'name': 'name_0'
+                            'name': 'name_0',
+                            'transition_template_id': 'template_0'
                         }
                     ],
                     'fields': [
@@ -203,6 +216,7 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_proper
                             'value': 'value_0'
                         }
                     ],
+                    'stage_color': 'blue',
                     'task_id': 'task_id_0'
                 }
             ],
@@ -218,7 +232,8 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_proper
                             'action_id': 'action_id_1',
                             'button_color': None,
                             'button_text': 'button_text_1',
-                            'name': 'name_1'
+                            'name': 'name_1',
+                            'transition_template_id': 'template_1'
                         }
                     ],
                     'fields': [
@@ -228,6 +243,7 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_proper
                             'value': 'value_1'
                         }
                     ],
+                    'stage_color': 'orange',
                     'task_id': 'task_id_1'
                 }
             ],
@@ -243,7 +259,8 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_proper
                             'action_id': 'action_id_2',
                             'button_color': None,
                             'button_text': 'button_text_2',
-                            'name': 'name_2'
+                            'name': 'name_2',
+                            'transition_template_id': 'template_2'
                         }
                     ],
                     'fields': [
@@ -253,6 +270,7 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_proper
                             'value': 'value_2'
                         }
                     ],
+                    'stage_color': 'green',
                     'task_id': 'task_id_2'
                 }
             ],

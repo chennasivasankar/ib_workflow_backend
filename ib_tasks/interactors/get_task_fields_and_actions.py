@@ -1,7 +1,8 @@
 from typing import List
 
+from ib_boards.interactors.dtos import StageActionDetailsDTO
 from ib_tasks.adapters.roles_service_adapter import get_roles_service_adapter
-from ib_tasks.constants.enum import VIEWTYPE
+from ib_tasks.constants.enum import ViewType
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidTaskStageIds
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
@@ -14,7 +15,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import \
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    GetTaskStageCompleteDetailsDTO
+    GetTaskStageCompleteDetailsDTO, TaskTemplateWithStageColorDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
@@ -33,7 +34,7 @@ class GetTaskFieldsAndActionsInteractor:
         self.action_storage = action_storage
 
     def get_task_fields_and_action(self, task_dtos: List[GetTaskDetailsDTO],
-                                   user_id: str, view_type: VIEWTYPE) -> \
+                                   user_id: str, view_type: ViewType) -> \
             List[GetTaskStageCompleteDetailsDTO]:
 
         roles_service = get_roles_service_adapter().roles_service
@@ -58,6 +59,7 @@ class GetTaskFieldsAndActionsInteractor:
         self._validate_stage_and_tasks(valid_stage_and_tasks, task_dtos)
 
         task_stage_dtos = self.stage_storage.get_stage_details(stage_task_dtos)
+
         action_dtos = self.action_storage.get_actions_details(
             unique_stage_ids, user_roles)
 
@@ -69,7 +71,7 @@ class GetTaskFieldsAndActionsInteractor:
 
         task_details_dtos = self. \
             _map_fields_and_actions_based_on_their_stage_and_task_id(
-            action_dtos, field_dtos, stage_fields_dtos)
+                action_dtos, field_dtos, stage_fields_dtos)
         return task_details_dtos
 
     def _map_task_and_their_fields(self, stage_fields_dtos, task_stage_dtos):
@@ -133,7 +135,7 @@ class GetTaskFieldsAndActionsInteractor:
 
     @staticmethod
     def _get_task_stage_details(
-            list_of_action_dtos: List[ActionDetailsDTO],
+            list_of_action_dtos: List[StageActionDetailsDTO],
             list_of_field_dtos: List[FieldDetailsDTOWithTaskId],
             stage
     ):
@@ -149,6 +151,7 @@ class GetTaskFieldsAndActionsInteractor:
         return GetTaskStageCompleteDetailsDTO(
             task_id=stage.task_id,
             stage_id=stage.stage_id,
+            stage_color=stage.stage_color,
             field_dtos=fields_dtos,
             action_dtos=list_of_action_dtos
         )
