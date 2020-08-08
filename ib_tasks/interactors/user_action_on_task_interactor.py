@@ -1,6 +1,4 @@
 from typing import List, Optional
-
-from ib_tasks.constants.enum import VIEWTYPE
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.permission_custom_exceptions import UserActionPermissionDenied, UserBoardPermissionDenied
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException
@@ -126,7 +124,7 @@ class UserActionOnTaskInteractor:
             stage_storage=self.stage_storage
         )
         task_stage_details_dtos = interactor.get_task_fields_and_action(
-            task_dtos=task_stage_dtos, user_id=self.user_id, view_type=VIEWTYPE.KANBAN.value)
+            task_dtos=task_stage_dtos, user_id=self.user_id)
         actions_dto, fields_dto = self._get_field_dtos_and_actions_dtos(
             task_stage_details_dtos=task_stage_details_dtos)
         return actions_dto, fields_dto

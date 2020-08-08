@@ -25,9 +25,9 @@ class GetUserProfileInteractor:
 
     def _get_user_profile_response(self, user_id: str,
                                    presenter: GetUserProfilePresenterInterface):
-        # user_profile_dto = self.get_user_profile_dto(user_id=user_id)
+        user_profile_dto = self.get_user_profile_dto(user_id=user_id)
         response = presenter.prepare_response_for_user_profile_dto(
-            user_profile_dto=None
+            user_profile_dto=user_profile_dto
         )
         return response
 

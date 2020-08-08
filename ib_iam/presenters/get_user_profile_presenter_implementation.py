@@ -40,10 +40,10 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
     def prepare_response_for_user_profile_dto(self,
                                               user_profile_dto: UserProfileDTO):
         response_dict = {
-            "user_id": '0500b237-446a-4d68-b994-6a67e7090825',
-            "name": 'Pavan',
-            "is_admin": True,
-            "email": 'pavan@gmail.com',
-            "profile_pic_url": ""
+            "user_id": user_profile_dto.user_id,
+            "name": user_profile_dto.name,
+            "is_admin": user_profile_dto.is_admin,
+            "email": user_profile_dto.email,
+            "profile_pic_url": user_profile_dto.profile_pic_url
         }
         return self.prepare_200_success_response(response_dict=response_dict)

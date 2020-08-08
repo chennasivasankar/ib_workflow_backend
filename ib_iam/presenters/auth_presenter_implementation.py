@@ -71,10 +71,10 @@ class AuthPresenterImplementation(AuthPresenterInterface, HTTPResponseMixin):
             self, tokens_dto: UserTokensDTO, is_admin: int
     ) -> HttpResponse:
         response_dict = {
-            "access_token": 'access_token',
-            "refresh_token": 'access_token',
-            "expires_in_seconds": '1000000000',
-            "is_admin": True
+            "access_token": tokens_dto.access_token,
+            "refresh_token": tokens_dto.refresh_token,
+            "expires_in_seconds": tokens_dto.expires_in_seconds,
+            "is_admin": is_admin
         }
         return self.prepare_200_success_response(
             response_dict=response_dict

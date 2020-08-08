@@ -267,7 +267,8 @@
       "required": [
         "task_gofs",
         "action_id",
-        "task_template_id"
+        "task_template_id",
+        "title"
       ]
     },
     "ActionDetailsResponse": {
@@ -568,7 +569,7 @@
       "type": "object",
       "properties": {
         "stage_id": {
-          "type": "string"
+          "type": "integer"
         },
         "stage_display_name": {
           "type": "string"

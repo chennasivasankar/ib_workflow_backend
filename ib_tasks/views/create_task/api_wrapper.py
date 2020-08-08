@@ -24,13 +24,12 @@ def api_wrapper(*args, **kwargs):
     request_data = kwargs['request_data']
     task_template_id = request_data['task_template_id']
     action_id = request_data['action_id']
-    title = request_data.get('title', 'Task')
-    description = request_data.get('description', 'description')
-    import datetime
-    start_date = request_data.get('start_date', datetime.date(year=2020, month=8, day=8))
-    due_date = request_data.get('due_date', {"date": datetime.date(year=2020, month=8, day=9), "time": "12:30:00"})['date']
-    due_time = request_data.get('due_date', {"date": "2020-08-08", "time": "12:00:00"})['time']
-    priority = request_data.get('priority', 'HIGH')
+    title = request_data['title']
+    description = request_data['description']
+    start_date = request_data['start_date']
+    due_date = request_data['due_date']['date']
+    due_time = request_data['due_date']['time']
+    priority = request_data['priority']
     task_gofs = request_data['task_gofs']
 
     from ib_tasks.interactors.task_dtos import GoFFieldsDTO, CreateTaskDTO
