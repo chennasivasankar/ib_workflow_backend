@@ -19,6 +19,15 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
         storage = create_autospec(StageStorageInterface)
         return storage
 
+    @pytest.fixture()
+    def task_stage_storage_mock(self):
+        from mock import create_autospec
+        from ib_tasks.interactors.storage_interfaces.task_storage_interface \
+            import TaskStorageInterface
+
+        storage = create_autospec(TaskStorageInterface)
+        return storage
+
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
         from ib_tasks.tests.factories.interactor_dtos import \
@@ -27,7 +36,8 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
 
     @pytest.mark.parametrize("limit", [0, -1])
     def test_given_limit_values_less_than_one_raise_exception(
-            self, limit, task_storage_mock, stage_storage_mock):
+            self, limit, task_storage_mock, stage_storage_mock,
+            task_stage_storage_mock):
         # Arrange
         from ib_tasks.tests.factories.interactor_dtos import \
             UserStagesWithPaginationDTOFactory
@@ -39,7 +49,9 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
             GetTaskIdsOfUserBasedOnStagesInteractor
 
         interactor = GetTaskIdsOfUserBasedOnStagesInteractor(
-            task_storage=task_storage_mock, stage_storage=stage_storage_mock)
+            task_storage=task_storage_mock, stage_storage=stage_storage_mock,
+            task_stage_storage=task_stage_storage_mock
+        )
 
         # Act
         from ib_tasks.exceptions.fields_custom_exceptions import \
@@ -50,7 +62,8 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
 
     @pytest.mark.parametrize("offset", [-1, -2])
     def test_given_offset_values_less_than_zero_raise_exception(
-            self, offset, task_storage_mock, stage_storage_mock):
+            self, offset, task_storage_mock, stage_storage_mock,
+            task_stage_storage_mock):
         from ib_tasks.tests.factories.interactor_dtos import \
             UserStagesWithPaginationDTOFactory
         user_stages_with_pagination_dto = UserStagesWithPaginationDTOFactory(
@@ -61,7 +74,8 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
             GetTaskIdsOfUserBasedOnStagesInteractor
 
         interactor = GetTaskIdsOfUserBasedOnStagesInteractor(
-            task_storage=task_storage_mock, stage_storage=stage_storage_mock)
+            task_storage=task_storage_mock, stage_storage=stage_storage_mock,
+            task_stage_storage=task_stage_storage_mock)
 
         # Act
         from ib_tasks.exceptions.fields_custom_exceptions import \
@@ -72,7 +86,8 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
                 user_stages_with_pagination_dto)
 
     def test_given_empty_stage_ids_list_raise_exception(
-            self, task_storage_mock, stage_storage_mock):
+            self, task_storage_mock, stage_storage_mock,
+            task_stage_storage_mock):
         from ib_tasks.tests.factories.interactor_dtos import \
             UserStagesWithPaginationDTOFactory
         user_stages_with_pagination_dto = UserStagesWithPaginationDTOFactory(
@@ -83,7 +98,8 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
             GetTaskIdsOfUserBasedOnStagesInteractor
 
         interactor = GetTaskIdsOfUserBasedOnStagesInteractor(
-            task_storage=task_storage_mock, stage_storage=stage_storage_mock)
+            task_storage=task_storage_mock, stage_storage=stage_storage_mock,
+            task_stage_storage=task_stage_storage_mock)
 
         from ib_tasks.exceptions.stage_custom_exceptions import \
             StageIdsListEmptyException
@@ -92,7 +108,8 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
                 user_stages_with_pagination_dto)
 
     def test_given_invalid_stage_ids_raise_exception_with_ids(
-            self, task_storage_mock, stage_storage_mock):
+            self, task_storage_mock, stage_storage_mock,
+            task_stage_storage_mock):
         from ib_tasks.tests.factories.interactor_dtos import \
             UserStagesWithPaginationDTOFactory
         user_stages_with_pagination_dto = UserStagesWithPaginationDTOFactory()
@@ -104,7 +121,8 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
             GetTaskIdsOfUserBasedOnStagesInteractor
 
         interactor = GetTaskIdsOfUserBasedOnStagesInteractor(
-            task_storage=task_storage_mock, stage_storage=stage_storage_mock)
+            task_storage=task_storage_mock, stage_storage=stage_storage_mock,
+            task_stage_storage=task_stage_storage_mock)
 
         from ib_tasks.exceptions.stage_custom_exceptions import \
             InvalidStageIdsListException
@@ -115,7 +133,8 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
             user_stages_with_pagination_dto.stage_ids)
 
     def test_given_valid_stage_ids_get_tasks_with_max_stage_value_dtos(
-            self, task_storage_mock, stage_storage_mock):
+            self, task_storage_mock, stage_storage_mock,
+            task_stage_storage_mock):
         # Arrange
         valid_stage_ids = ["stage_id_1", "stage_id_2"]
         from ib_tasks.tests.factories.interactor_dtos import \
@@ -144,7 +163,8 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
             GetTaskIdsOfUserBasedOnStagesInteractor
         # Act
         interactor = GetTaskIdsOfUserBasedOnStagesInteractor(
-            task_storage=task_storage_mock, stage_storage=stage_storage_mock)
+            task_storage=task_storage_mock, stage_storage=stage_storage_mock,
+            task_stage_storage=task_stage_storage_mock)
         interactor.get_task_ids_of_user_based_on_stage_ids(
             user_stages_with_pagination_dto)
 
