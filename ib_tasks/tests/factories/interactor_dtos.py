@@ -253,7 +253,13 @@ class StageAssigneeDetailsDTOFactory(factory.Factory):
         return [AssigneeDetailsDTOFactory()]
 
 
+class StageAssigneeDetailsWithOneAssigneeDTOFactory(factory.Factory):
+    class Meta:
+        model = StageAssigneeDetailsDTO
 
+    task_stage_id = factory.sequence(lambda counter: counter + 1)
+    stage_id = factory.sequence(lambda counter: counter)
 
-
-
+    @factory.lazy_attribute
+    def assignee_details_dto(self):
+        return AssigneeDetailsDTOFactory()

@@ -1,3 +1,6 @@
+from ib_tasks.adapters.dtos import AssigneeDetailsDTO
+
+
 def get_valid_role_ids_in_given_role_ids(mocker):
     mock = mocker.patch(
         "ib_tasks.adapters.roles_service.RolesService"
@@ -42,3 +45,16 @@ def get_user_role_ids(mocker):
                      'FIN_ACCOUNTS_LEVEL2_VERIFIER']
     mock.return_value = user_role_ids
     return mock
+
+
+def get_assignees_details_dtos(mocker):
+    mock = mocker.patch(
+        "ib_tasks.adapters.assignees_details_service.AssigneeDetailsService.get_assignees_details_dtos"
+    )
+    assignees_details_dtos = [AssigneeDetailsDTO(
+        assignee_id='assignee_id_1',
+        name='assignee_1',
+        profile_pic_url='https://google.com'
+    )]
+    mock.return_value = assignees_details_dtos
+    return assignees_details_dtos
