@@ -1,4 +1,5 @@
 import dataclasses
+from typing import List
 
 from ib_users.validators.base_validator import CustomException
 
