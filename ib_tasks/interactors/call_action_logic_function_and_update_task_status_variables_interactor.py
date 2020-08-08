@@ -162,7 +162,8 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
         task_gof_id = task_gof_dto.task_gof_id
         fields_dict = task_gof_fields_dict[task_gof_id]
 
-        if gof_multiple_enable_dict[gof_id]:
+        # TODO: Fixme
+        if gof_multiple_enable_dict.get(gof_id, False):
             multiple_gof_dict[gof_id].append(fields_dict)
         else:
             single_gof_dict[gof_id] = fields_dict
