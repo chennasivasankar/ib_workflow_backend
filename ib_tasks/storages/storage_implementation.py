@@ -22,6 +22,7 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import (
     StorageInterface, GroupOfFieldsDTO,
     StatusVariableDTO, StageActionNamesDTO
 )
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
     ActionPermittedRoles, StageAction, TaskStage, FieldRole, GlobalConstant, \
@@ -582,3 +583,11 @@ class StorageImplementation(StorageInterface):
         action_ids = StageAction.objects.filter(stage_id__in=task_stage_ids) \
             .values_list('id', flat=True)
         return action_ids
+
+    def validate_if_task_is_assigned_to_user(self,
+                                             task_id: int, user_id: str) -> bool:
+        pass
+
+    def get_task_due_missing_reasons_details(self, task_id: int) -> \
+            List[TaskDueMissingDTO]:
+        pass

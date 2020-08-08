@@ -1,9 +1,9 @@
 from typing import List
 
-from ib_tasks.adapters.dtos import UserDetailsDTO
 from ib_tasks.tests.factories.adapter_dtos import UserDetailsDTOFactory
 from ib_tasks.tests.factories.interactor_dtos import \
     SearchableFieldUserDetailDTOFactory
+from ib_tasks.tests.factories.storage_dtos import UserDetailsDTOFactory
 
 
 def get_user_dtos_based_on_limit_and_offset_mock(mocker):
@@ -33,4 +33,14 @@ def prepare_permitted_user_details_mock(mocker):
     )
     user_details_dtos = [UserDetailsDTOFactory()]
     mock.return_value = user_details_dtos
+    return mock
+
+
+def get_user_dtos_given_user_ids(mocker):
+    mock = mocker.patch(
+        "ib_tasks.adapters.auth_service.AuthService."
+        "get_user_details"
+    )
+    user_dtos = UserDetailsDTOFactory.create_batch(size=2)
+    mock.return_value = user_dtos
     return mock

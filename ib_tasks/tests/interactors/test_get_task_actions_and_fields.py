@@ -2,7 +2,7 @@ from unittest.mock import create_autospec
 
 import pytest
 
-from ib_tasks.constants.enum import VIEWTYPE
+from ib_tasks.constants.enum import ViewType
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidTaskStageIds
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds
 from ib_tasks.interactors.get_task_fields_and_actions import \
@@ -89,12 +89,14 @@ class TestGetFieldsAndActionsInteractor:
         response = [GetTaskStageCompleteDetailsDTO(
             task_id=1,
             stage_id="stage_id_1",
+            stage_color="blue",
             field_dtos=[FieldDetailsDTOFactory()],
             action_dtos=[StageActionDetailsDTOFactory()]
         ),
             GetTaskStageCompleteDetailsDTO(
                 task_id=1,
                 stage_id="stage_id_2",
+                stage_color="blue",
                 field_dtos=[FieldDetailsDTOFactory()],
                 action_dtos=[StageActionDetailsDTOFactory()]
             )
@@ -106,12 +108,14 @@ class TestGetFieldsAndActionsInteractor:
         return [TaskTemplateStageFieldsDTO(
             task_template_id="task_template_id_1",
             task_id=1,
+            stage_color="blue",
             stage_id="stage_id_1",
             field_ids=["FIELD-ID-1", "FIELD-ID-2"]
         ),
             TaskTemplateStageFieldsDTO(
                 task_template_id="task_template_id_1",
                 task_id=1,
+                stage_color="blue",
                 stage_id="stage_id_2",
                 field_ids=["FIELD-ID-1", "FIELD-ID-2"]
             )
@@ -122,12 +126,14 @@ class TestGetFieldsAndActionsInteractor:
         return [TaskTemplateStageFieldsDTO(
             task_template_id="task_template_id_1",
             task_id=1,
+            stage_color="blue",
             stage_id="stage_id_1",
             field_ids=["FIELD-ID-1", "FIELD-ID-2"]
         ),
             TaskTemplateStageFieldsDTO(
                 task_template_id="task_template_id_1",
                 task_id=2,
+                stage_color="blue",
                 stage_id="stage_id_2",
                 field_ids=["FIELD-ID-3", "FIELD-ID-4"]
             )
@@ -138,12 +144,14 @@ class TestGetFieldsAndActionsInteractor:
         return [TaskTemplateStageFieldsDTO(
             task_template_id="task_template_id_1",
             task_id=1,
+            stage_color="orange",
             stage_id="stage_id_1",
             field_ids=[]
         ),
             TaskTemplateStageFieldsDTO(
                 task_template_id="task_template_id_1",
                 task_id=1,
+                stage_color="blue",
                 stage_id="stage_id_2",
                 field_ids=[]
             )
@@ -189,12 +197,14 @@ class TestGetFieldsAndActionsInteractor:
         return [TaskTemplateStageFieldsDTO(
             task_template_id="task_template_id_1",
             task_id=1,
+            stage_color="green",
             stage_id="stage_id_1",
             field_ids=["FIELD-ID-1", "FIELD-ID-2"]
         ),
             TaskTemplateStageFieldsDTO(
                 task_template_id="task_template_id_1",
                 task_id=2,
+                stage_color="blue",
                 stage_id="stage_id_1",
                 field_ids=["FIELD-ID-1", "FIELD-ID-2"]
             )
@@ -224,7 +234,7 @@ class TestGetFieldsAndActionsInteractor:
             get_field_ids_for_two_tasks, task_fields_dtos, snapshot):
         # Arrange
         user_id = "user_id_1"
-        view_type = VIEWTYPE.LIST.value
+        view_type = ViewType.LIST.value
         user_roles = ["FIN_PAYMENT_REQUESTER",
                       "FIN_PAYMENT_POC",
                       "FIN_PAYMENT_APPROVER",
@@ -280,7 +290,7 @@ class TestGetFieldsAndActionsInteractor:
             task_fields_dtos_with_for_same_stage_tasks):
         # Arrange
         user_id = "user_id_1"
-        view_type = VIEWTYPE.LIST.value
+        view_type = ViewType.LIST.value
         user_roles = ["FIN_PAYMENT_REQUESTER",
                       "FIN_PAYMENT_POC",
                       "FIN_PAYMENT_APPROVER",
@@ -333,7 +343,7 @@ class TestGetFieldsAndActionsInteractor:
             get_field_ids_for_two_tasks, task_fields_dtos, snapshot):
         # Arrange
         user_id = "user_id_1"
-        view_type = VIEWTYPE.LIST.value
+        view_type = ViewType.LIST.value
         user_roles = ["FIN_PAYMENT_REQUESTER",
                       "FIN_PAYMENT_POC",
                       "FIN_PAYMENT_APPROVER",
@@ -386,7 +396,7 @@ class TestGetFieldsAndActionsInteractor:
             get_field_ids_for_two_tasks, task_fields_dtos, snapshot):
         # Arrange
         user_id = "user_id_1"
-        view_type = VIEWTYPE.KANBAN.value
+        view_type = ViewType.KANBAN.value
         user_roles = ["FIN_PAYMENT_REQUESTER",
                       "FIN_PAYMENT_POC",
                       "FIN_PAYMENT_APPROVER",
@@ -438,7 +448,7 @@ class TestGetFieldsAndActionsInteractor:
             get_field_ids, snapshot):
         # Arrange
         user_id = "user_id_1"
-        view_type = VIEWTYPE.LIST.value
+        view_type = ViewType.LIST.value
         user_roles = ["FIN_PAYMENT_REQUESTER",
                       "FIN_PAYMENT_POC",
                       "FIN_PAYMENT_APPROVER",
@@ -489,7 +499,7 @@ class TestGetFieldsAndActionsInteractor:
                                                     get_task_dtos):
         # Arrange
         user_id = "user_id_1"
-        view_type = VIEWTYPE.LIST.value
+        view_type = ViewType.LIST.value
         user_roles = ["FIN_PAYMENT_REQUESTER",
                       "FIN_PAYMENT_POC",
                       "FIN_PAYMENT_APPROVER",
@@ -519,7 +529,7 @@ class TestGetFieldsAndActionsInteractor:
                                                      get_task_dtos):
         # Arrange
         user_id = "user_id_1"
-        view_type = VIEWTYPE.LIST.value
+        view_type = ViewType.LIST.value
         user_roles = ["FIN_PAYMENT_REQUESTER",
                       "FIN_PAYMENT_POC",
                       "FIN_PAYMENT_APPROVER",
@@ -554,7 +564,7 @@ class TestGetFieldsAndActionsInteractor:
                                                                   get_task_dtos):
         # Arrange
         user_id = "user_id_1"
-        view_type = VIEWTYPE.LIST.value
+        view_type = ViewType.LIST.value
         user_roles = ["FIN_PAYMENT_REQUESTER",
                       "FIN_PAYMENT_POC",
                       "FIN_PAYMENT_APPROVER",
@@ -591,7 +601,7 @@ class TestGetFieldsAndActionsInteractor:
             task_with_no_fields, snapshot):
         # Arrange
         user_id = "user_id_1"
-        view_type = VIEWTYPE.LIST.value
+        view_type = ViewType.LIST.value
         user_roles = ["FIN_PAYMENT_REQUESTER",
                       "FIN_PAYMENT_POC",
                       "FIN_PAYMENT_APPROVER",

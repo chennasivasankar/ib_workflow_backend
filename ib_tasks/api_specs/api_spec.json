@@ -1286,7 +1286,7 @@
       "required": true,
       "type": "string",
       "enum": [
-        "USER"
+        "USER", "COUNTRY", "STATE", "CITY"
       ]
     },
     "LimitParameter": {

@@ -67,6 +67,7 @@ class TestFilterStorageImplementation:
     def test_validate_template_id_with_valid_template_id(self, storage):
         # Arrange
         template_id = 'template_1'
+        TaskTemplateFactory.reset_sequence()
         TaskTemplateFactory()
 
         # Act
