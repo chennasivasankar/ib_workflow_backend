@@ -11,4 +11,4 @@ class Filter(models.Model):
     template = models.ForeignKey(TaskTemplate, on_delete=models.CASCADE)
     is_selected = models.CharField(max_length=100, choices=[
         (item.value, item.value) for item in Status
-    ])
+    ], default=Status.ENABLED.value)
