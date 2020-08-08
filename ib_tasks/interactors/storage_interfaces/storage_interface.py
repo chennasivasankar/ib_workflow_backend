@@ -125,3 +125,12 @@ class StorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_task_present_stage_actions(self, task_id: int) -> List[int]:
         pass
+
+    @abc.abstractmethod
+    def validate_if_task_is_assigned_to_user(self,
+                                             task_id: int, user_id: str) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def get_task_due_missing_reasons(self, task_id: int) -> :
+        pass

@@ -24,3 +24,11 @@ class GetTaskPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def get_task_response(self, task_complete_details_dto: TaskCompleteDetailsDTO):
         pass
+
+    @abc.abstractmethod
+    def response_for_invalid_task_id(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_user_is_not_assignee_for_task(self):
+        pass

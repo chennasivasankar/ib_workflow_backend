@@ -20,3 +20,8 @@ class TaskGoFFieldDTO:
     field_id: str
     field_response: str
     task_gof_id: int
+
+@dataclass
+class TaskDueMissingReasons:
+    task_id: int
+    due_date_time

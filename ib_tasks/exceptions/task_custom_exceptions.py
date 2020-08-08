@@ -99,3 +99,7 @@ class TransitionTemplateDoesNotExist(Exception):
 class InvalidTransitionTemplateIds(Exception):
     def __init__(self, invalid_transition_ids: List[str]):
         self.invalid_transition_ids = invalid_transition_ids
+
+
+class UserIsNotAssigneeToTask(Exception):
+    pass
