@@ -591,7 +591,6 @@
         "stage_id",
         "stage_display_name",
         "stage_color",
-        "assignee",
         "actions"
       ]
     },
