@@ -409,7 +409,6 @@
       },
       "required": [
         "task_id",
-        "current_board_details",
         "other_board_details"
       ]
     },
