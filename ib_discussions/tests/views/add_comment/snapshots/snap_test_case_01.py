@@ -34,12 +34,12 @@ snapshots['TestCase01AddCommentAPITestCase.test_case body'] = {
     'multi_media': [
         {
             'format_type': 'IMAGE',
-            'multi_media_id': '01ea2b66-eec5-4c4b-9abc-cb13b1842dd6',
+            'multi_media_id': '97be920b-7b4c-49e7-8adb-41a0c18da848',
             'url': 'https://picsum.photos/200'
         },
         {
             'format_type': 'VIDEO',
-            'multi_media_id': '037b575f-9101-4530-bd1d-fe38b8ae76e7',
+            'multi_media_id': '92be920b-7b4c-49e7-8adb-41a0c18da848',
             'url': 'https://picsum.photos/200'
         }
     ],
