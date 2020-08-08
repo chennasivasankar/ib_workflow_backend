@@ -72,7 +72,8 @@ class GetAllTasksOverviewForUserPresenterImpl(
                 "task_id": each_task_id_with_stage_details_dto.task_id,
                 "task_overview_fields": task_overview_fields_details,
                 "stage_with_actions": {
-                    "stage_id": each_task_id_with_stage_details_dto.stage_id,
+                    "stage_id":
+                        each_task_id_with_stage_details_dto.db_stage_id,
                     "stage_display_name":
                         each_task_id_with_stage_details_dto.stage_display_name,
                     "stage_color":
@@ -123,7 +124,9 @@ class GetAllTasksOverviewForUserPresenterImpl(
         action_details = [{
             "action_id": each_action_dto.action_id,
             "button_text": each_action_dto.button_text,
-            "button_color": each_action_dto.button_color
+            "button_color": each_action_dto.button_color,
+            "action_type": each_action_dto.action_type,
+            "transition_template_id": each_action_dto.transition_template_id
         } for each_action_dto in
             each_task_fields_and_action_details_dto.action_dtos]
         return action_details

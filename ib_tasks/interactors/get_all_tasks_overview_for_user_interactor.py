@@ -55,8 +55,7 @@ class GetAllTasksOverviewForUserInteractor:
 
         except OffsetShouldBeGreaterThanZeroException:
             return presenter. \
-                raise_offset_should_be_greater_than_zero_exception(
-            )
+                raise_offset_should_be_greater_than_zero_exception()
         return presenter.all_tasks_overview_details_response(
             all_tasks_overview_details_dto)
 

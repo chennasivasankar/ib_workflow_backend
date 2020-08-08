@@ -80,6 +80,8 @@ class StageValueWithTaskIdsDTO:
 
 @dataclass
 class TaskIdWithStageDetailsDTO:
+    #TODO refactor stage_id_db name after removal of stage_id
+    db_stage_id: int
     task_id: int
     stage_id: str
     stage_display_name: str
