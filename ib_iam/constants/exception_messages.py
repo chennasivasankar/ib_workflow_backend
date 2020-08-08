@@ -43,6 +43,11 @@ USER_ALREADY_EXIST_WITH_THIS_EMAIL = (
     "USER_ALREADY_EXIST_WITH_THIS_EMAIL"
 )
 
+EMAIL_ALREADY_IN_USE = (
+    "Email is already in use",
+    "EMAIL_ALREADY_IN_USE"
+)
+
 ROLE_NAME_SHOULD_NOT_BE_EMPTY = (
     "role display_name should not be empty",
     "ROLE_NAME_SHOULD_NOT_BE_EMPTY"
