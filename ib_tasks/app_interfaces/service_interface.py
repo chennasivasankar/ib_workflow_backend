@@ -50,11 +50,13 @@ class ServiceInterface:
         field_storage = FieldsStorageImplementation()
         stage_storage = StagesStorageImplementation()
         action_storage = ActionsStorageImplementation()
+        task_storage = TasksStorageImplementation()
 
         interactor = GetTaskFieldsAndActionsInteractor(
-            field_storage,
-            stage_storage,
-            action_storage
+            field_storage=field_storage,
+            stage_storage=stage_storage,
+            action_storage=action_storage,
+            task_storage=task_storage,
         )
         result = interactor.get_task_fields_and_action(task_dtos, user_id, view_type)
         return result

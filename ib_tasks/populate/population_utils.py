@@ -16,6 +16,8 @@ from ib_tasks.populate.populate_fields import PopulateFields
 from ib_tasks.populate.populate_gofs import PopulateGoFs
 from ib_tasks.populate.populate_gofs_to_task_templates import \
     PopulateGoFsToTaskTemplate
+from ib_tasks.populate.populate_gofs_to_transition_templates import \
+    PopulateGoFsToTransitionTemplate
 from ib_tasks.populate.task_templates import PopulateTaskTemplates
 from ib_tasks.populate.transition_template import PopulateTransitionTemplates
 
@@ -37,6 +39,9 @@ def populate_data():
 
     transition_template = PopulateTransitionTemplates()
     transition_template.populate_transition_templates()
+
+    gofs_to_transition_template = PopulateGoFsToTransitionTemplate()
+    gofs_to_transition_template.populate_gofs_to_transition_templates()
 
     fields = PopulateFields()
     fields.create_fields()

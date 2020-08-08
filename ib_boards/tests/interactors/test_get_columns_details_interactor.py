@@ -3,7 +3,7 @@ from unittest.mock import create_autospec, patch, Mock
 import factory
 import pytest
 
-from ib_boards.constants.enum import VIEWTYPE
+from ib_boards.constants.enum import ViewType
 from ib_boards.interactors.dtos import ColumnParametersDTO, \
     PaginationParametersDTO, TaskStageIdDTO
 from ib_boards.interactors.get_column_details_interactor import \
@@ -158,7 +158,7 @@ class TestGetColumnDetailsInteractor:
         columns_parameters = ColumnParametersDTO(
             board_id=board_id,
             user_id="user_id_1",
-            view_type=VIEWTYPE.LIST.value
+            view_type=ViewType.LIST.value
         )
         pagination_parameters = PaginationParametersDTO(
             offset=2,
@@ -190,7 +190,7 @@ class TestGetColumnDetailsInteractor:
         columns_parameters = ColumnParametersDTO(
             board_id=board_id,
             user_id="user_id_1",
-            view_type=VIEWTYPE.LIST.value
+            view_type=ViewType.LIST.value
         )
         pagination_parameters = PaginationParametersDTO(
             offset=-1,
@@ -218,7 +218,7 @@ class TestGetColumnDetailsInteractor:
         columns_parameters = ColumnParametersDTO(
             board_id=board_id,
             user_id="user_id_1",
-            view_type=VIEWTYPE.LIST.value
+            view_type=ViewType.LIST.value
         )
         pagination_parameters = PaginationParametersDTO(
             offset=2,
@@ -251,7 +251,7 @@ class TestGetColumnDetailsInteractor:
         columns_parameters = ColumnParametersDTO(
             board_id=board_id,
             user_id=user_id,
-            view_type=VIEWTYPE.LIST.value
+            view_type=ViewType.LIST.value
         )
         pagination_parameters = PaginationParametersDTO(
             offset=2,
@@ -305,7 +305,7 @@ class TestGetColumnDetailsInteractor:
         columns_parameters = ColumnParametersDTO(
             board_id=board_id,
             user_id=user_id,
-            view_type=VIEWTYPE.LIST.value
+            view_type=ViewType.LIST.value
         )
         pagination_parameters = PaginationParametersDTO(
             offset=0,
@@ -326,7 +326,7 @@ class TestGetColumnDetailsInteractor:
             prepare_task_details_dtos
         task_details_dto = prepare_task_details_dtos(mocker, tasks_dtos,
                                                      user_id=user_id,
-                                                     view_type=VIEWTYPE.LIST.value)
+                                                     view_type=ViewType.LIST.value)
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             get_task_ids_mock
 
@@ -360,7 +360,7 @@ class TestGetColumnDetailsInteractor:
             task_config_dtos=task_ids_config
         )
         task_details_dto.assert_called_once_with(
-            task_ids_stage_id, user_id=user_id, view_type=VIEWTYPE.LIST.value
+            task_ids_stage_id, user_id=user_id, view_type=ViewType.LIST.value
         )
         presenter.get_response_for_column_details.assert_called_once_with(
             column_tasks=column_task_stage_ids,
@@ -389,7 +389,7 @@ class TestGetColumnDetailsInteractor:
         columns_parameters = ColumnParametersDTO(
             board_id=board_id,
             user_id=user_id,
-            view_type=VIEWTYPE.LIST.value
+            view_type=ViewType.LIST.value
         )
         pagination_parameters = PaginationParametersDTO(
             offset=0,
@@ -410,7 +410,7 @@ class TestGetColumnDetailsInteractor:
             prepare_task_details_dtos
         task_details_dto = prepare_task_details_dtos(mocker, tasks_dtos,
                                                      user_id=user_id,
-                                                     view_type=VIEWTYPE.LIST.value)
+                                                     view_type=ViewType.LIST.value)
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             get_task_ids_mock
 
@@ -445,7 +445,7 @@ class TestGetColumnDetailsInteractor:
         )
         task_details_dto.assert_called_once_with(
             task_ids_stage_id_no_duplicates, user_id=user_id,
-            view_type=VIEWTYPE.LIST.value
+            view_type=ViewType.LIST.value
         )
         presenter.get_response_for_column_details.assert_called_once_with(
             column_tasks=column_task_stage_ids_no_duplicates,

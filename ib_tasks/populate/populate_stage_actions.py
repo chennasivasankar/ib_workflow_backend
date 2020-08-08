@@ -13,9 +13,13 @@ def populate_stage_actions(action_dicts: List[Dict]):
         CreateUpdateDeleteStageActionsInteractor
     from ib_tasks.storages.action_storage_implementation import \
         ActionsStorageImplementation
+    from ib_tasks.storages.task_template_storage_implementation import \
+        TaskTemplateStorageImplementation
+
     interactor = CreateUpdateDeleteStageActionsInteractor(
         storage=ActionsStorageImplementation(),
-        actions_dto=actions_dtos
+        actions_dto=actions_dtos,
+        template_storage=TaskTemplateStorageImplementation()
     )
     interactor.create_update_delete_stage_actions()
 

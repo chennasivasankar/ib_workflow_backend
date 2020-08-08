@@ -48,7 +48,8 @@ class CreateUpdateDeleteStageActionsInteractor:
         actions_dto = self.actions_dto
         stage_ids = self._get_stage_ids(actions_dto)
         self._validations_for_stage_ids(stage_ids=stage_ids)
-        transition_template_ids = self._get_transition_template_ids(actions_dto)
+        transition_template_ids = self._get_transition_template_ids(
+            actions_dto)
         self._validtions_for_transition_template_ids(transition_template_ids)
         self._validations_for_stage_roles(actions_dto)
         self._validations_for_empty_stage_display_logic(actions_dto)
@@ -58,12 +59,16 @@ class CreateUpdateDeleteStageActionsInteractor:
         self._create_update_delete_stage_actions(actions_dto)
 
     def _validtions_for_transition_template_ids(self,
-                                                transition_template_ids: List[str]):
+                                                transition_template_ids: List[
+                                                    str]):
         valid_transition_template_ids = self.template_storage. \
             get_valid_transition_template_ids(transition_template_ids)
-        invalid_transition_ids = [transition_id
-                                  for transition_id in transition_template_ids
-                                  if transition_id not in valid_transition_template_ids]
+        invalid_transition_ids = [
+            transition_id
+            for transition_id in transition_template_ids
+            if transition_id.strip() and transition_id not in valid_transition_template_ids
+
+        ]
         if invalid_transition_ids:
             raise InvalidTransitionTemplateIds(invalid_transition_ids)
 
@@ -252,7 +257,8 @@ class CreateUpdateDeleteStageActionsInteractor:
                     delete_stage_actions[stage_id].append(action_name)
 
         is_delete_stage_actions_present = delete_stage_actions
-        from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO
+        from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+            StageActionNamesDTO
         if is_delete_stage_actions_present:
             delete_actions = [
                 StageActionNamesDTO(stage_id=key, action_names=value)
