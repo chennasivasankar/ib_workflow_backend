@@ -8,6 +8,7 @@ from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
     import GetTaskPresenterInterface
 from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
     import TaskCompleteDetailsDTO
+from ib_tasks.interactors.stages_dtos import StageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces \
@@ -22,6 +23,10 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import (
 )
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
+from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
+    import \
+    TaskStageStorageInterface
+from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
 
 
 class GetTaskInteractor:
@@ -30,9 +35,11 @@ class GetTaskInteractor:
             self, storage: CreateOrUpdateTaskStorageInterface,
             stages_storage: FieldsStorageInterface,
             task_storage: StorageInterface,
-            action_storage: ActionStorageInterface
+            action_storage: ActionStorageInterface,
+            task_stage_storage: TaskStageStorageInterface
 
     ):
+        self.task_stage_storage = task_stage_storage
         self.action_storage = action_storage
         self.task_storage = task_storage
         self.storage = storage
@@ -56,7 +63,9 @@ class GetTaskInteractor:
         response = presenter.get_task_response(task_complete_details_dto)
         return response
 
-    def get_task_details(self, user_id: str, task_id: int):
+    def get_task_details(
+            self, user_id: str, task_id: int
+    ) -> TaskCompleteDetailsDTO:
         get_task_base_interactor = GetTaskBaseInteractor(storage=self.storage)
         task_details_dto = get_task_base_interactor.get_task(task_id)
         user_roles = self._get_user_roles(user_id)
@@ -65,13 +74,42 @@ class GetTaskInteractor:
         )
         stages_and_actions_details_dtos = \
             self._get_stages_and_actions_details_dtos(task_id, user_id)
+        stage_ids = self._get_stage_ids(stages_and_actions_details_dtos)
+        stage_assignee_details_dtos = self._stage_assignee_details_dtos(
+            task_id, stage_ids
+        )
         task_complete_details_dto = TaskCompleteDetailsDTO(
             task_id=task_id,
             task_details_dto=task_details_dto,
-            stages_and_actions_details_dtos=stages_and_actions_details_dtos
-
+            stages_and_actions_details_dtos=stages_and_actions_details_dtos,
+            stage_assignee_details_dtos=stage_assignee_details_dtos
         )
         return task_complete_details_dto
+
+    def _stage_assignee_details_dtos(
+            self, task_id: int, stage_ids: List[int]
+    ) -> List[StageAssigneeDetailsDTO]:
+        from ib_tasks.interactors.get_stages_assignees_details_interactor \
+            import \
+            GetStagesAssigneesDetailsInteractor
+        interactor = GetStagesAssigneesDetailsInteractor(
+            task_stage_storage=self.task_stage_storage
+        )
+        stage_assignee_details_dtos = \
+            interactor.get_stages_assignee_details_dtos(
+                task_id=task_id,
+                stage_ids=stage_ids
+            )
+        return stage_assignee_details_dtos
+
+    @staticmethod
+    def _get_stage_ids(stages_and_actions_details_dtos) -> List[int]:
+        stage_ids = [
+            stages_and_actions_details_dto.db_stage_id
+            for stages_and_actions_details_dto in
+            stages_and_actions_details_dtos
+        ]
+        return stage_ids
 
     def _get_task_details_dto(
             self, task_details_dto: TaskDetailsDTO, user_roles: List[str]
@@ -97,7 +135,7 @@ class GetTaskInteractor:
 
     def _get_stages_and_actions_details_dtos(
             self, task_id: int, user_id: str
-    ):
+    ) -> List[StageAndActionsDetailsDTO]:
         from ib_tasks.interactors.get_task_stages_and_actions \
             import GetTaskStagesAndActions
         interactor = GetTaskStagesAndActions(
@@ -163,7 +201,8 @@ class GetTaskInteractor:
         ]
         return permission_task_gof_dtos
 
-    def _get_user_roles(self, user_id: str) -> List[str]:
+    @staticmethod
+    def _get_user_roles(user_id: str) -> List[str]:
 
         from ib_tasks.adapters.roles_service_adapter \
             import get_roles_service_adapter

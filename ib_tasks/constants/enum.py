@@ -67,3 +67,7 @@ class Priority(enum.Enum):
 
 class ValidationType(enum.Enum):
     NO_VALIDATIONS = "NO_VALIDATIONS"
+
+
+class ActionTypes(enum.Enum):
+    NO_VALIDATIONS = "NO_VALIDATIONS"

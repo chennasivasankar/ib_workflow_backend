@@ -2,7 +2,8 @@ import pytest
 
 from ib_tasks.storages.task_template_storage_implementation import \
     TaskTemplateStorageImplementation
-from ib_tasks.tests.factories.models import TaskTemplateWithTransitionFactory, \
+from ib_tasks.tests.factories.models import \
+    TaskTemplateWithTransitionFactory, \
     TaskTemplateFactory
 
 

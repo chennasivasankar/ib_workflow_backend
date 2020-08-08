@@ -1,24 +1,25 @@
 from unittest.mock import create_autospec, patch, Mock
 
-import pytest
 import factory
+import pytest
 
 from ib_boards.constants.enum import ViewType
 from ib_boards.interactors.dtos import ColumnParametersDTO, \
-    PaginationParametersDTO
-from ib_boards.interactors.dtos import TaskStageIdDTO
+    PaginationParametersDTO, TaskStageIdDTO
 from ib_boards.interactors.get_column_details_interactor import \
     GetColumnDetailsInteractor
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
-from ib_boards.tests.factories.interactor_dtos import ColumnTaskIdsDTOFactory, \
-    TaskColumnDTOFactory, ColumnStageIdsDTOFactory, TaskDetailsConfigDTOFactory, \
+from ib_boards.tests.factories.interactor_dtos import \
+    ColumnTaskIdsDTOFactory, \
+    TaskColumnDTOFactory, ColumnStageIdsDTOFactory, \
+    TaskDetailsConfigDTOFactory, \
     GetTaskDetailsDTOFactory, TaskStageIdDTOFactory
 from ib_boards.tests.factories.storage_dtos import (
     ColumnDetailsDTOFactory, TaskActionsDTOFactory, TaskFieldsDTOFactory,
-    ColumnCompleteDetailsDTOFactory)
+    ColumnCompleteDetailsDTOFactory, TaskStageColorDTOFactory)
 
 
 class TestGetColumnDetailsInteractor:
@@ -26,6 +27,7 @@ class TestGetColumnDetailsInteractor:
     @classmethod
     def setup_class(cls):
         ColumnDetailsDTOFactory.reset_sequence()
+        TaskStageColorDTOFactory.reset_sequence()
         ColumnTaskIdsDTOFactory.reset_sequence()
         ColumnStageIdsDTOFactory.reset_sequence()
         ColumnCompleteDetailsDTOFactory.reset_sequence()
@@ -74,6 +76,10 @@ class TestGetColumnDetailsInteractor:
         return ColumnTaskIdsDTOFactory.create_batch(
             3, task_stage_ids=factory.Iterator(task_stage_ids)
         )
+
+    @pytest.fixture
+    def task_stage_color_dtos(self):
+        return TaskStageColorDTOFactory.create_batch(size=4)
 
     @pytest.fixture
     def column_task_stage_ids(self):
@@ -292,7 +298,7 @@ class TestGetColumnDetailsInteractor:
             get_task_actions_dtos, get_task_fields_dtos, mock_storage,
             mock_presenter, column_tasks_ids, column_task_stage_ids,
             column_stage_dtos, column_complete_details, task_ids_config,
-            task_ids_stage_id):
+            task_ids_stage_id, task_stage_color_dtos):
         # Arrange
         storage = mock_storage
         presenter = mock_presenter
@@ -330,7 +336,7 @@ class TestGetColumnDetailsInteractor:
             get_task_ids_mock
 
         task_ids_mock = get_task_ids_mock(mocker, column_tasks_ids)
-        task_details_dto.return_value = task_fields_dto, task_actions_dto
+        task_details_dto.return_value = task_fields_dto, task_actions_dto, task_stage_color_dtos
         user_roles_service.get_user_roles.return_value = user_roles
         board_permitted_user_roles = ["FIN_PAYMENT_POC"]
 
@@ -365,7 +371,8 @@ class TestGetColumnDetailsInteractor:
             column_tasks=column_task_stage_ids,
             task_actions_dtos=task_actions_dto,
             task_fields_dtos=task_fields_dto,
-            column_details=column_complete_details
+            column_details=column_complete_details,
+            task_stage_color_dtos=task_stage_color_dtos
         )
         assert actual_response == expected_response
 
@@ -376,7 +383,7 @@ class TestGetColumnDetailsInteractor:
             mock_presenter, column_tasks_ids_no_duplicates,
             column_task_stage_ids_no_duplicates,
             column_stage_dtos, column_complete_details, task_ids_config,
-            task_ids_stage_id_no_duplicates):
+            task_ids_stage_id_no_duplicates, task_stage_color_dtos):
         # Arrange
         storage = mock_storage
         presenter = mock_presenter
@@ -414,7 +421,7 @@ class TestGetColumnDetailsInteractor:
             get_task_ids_mock
 
         task_ids_mock = get_task_ids_mock(mocker, column_tasks_ids_no_duplicates)
-        task_details_dto.return_value = task_fields_dto, task_actions_dto
+        task_details_dto.return_value = task_fields_dto, task_actions_dto, task_stage_color_dtos
         user_roles_service.get_user_roles.return_value = user_roles
         board_permitted_user_roles = ["FIN_PAYMENT_POC"]
 
@@ -450,6 +457,7 @@ class TestGetColumnDetailsInteractor:
             column_tasks=column_task_stage_ids_no_duplicates,
             task_actions_dtos=task_actions_dto,
             task_fields_dtos=task_fields_dto,
-            column_details=column_complete_details
+            column_details=column_complete_details,
+            task_stage_color_dtos=task_stage_color_dtos
         )
         assert actual_response == expected_response

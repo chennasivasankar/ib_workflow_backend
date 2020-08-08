@@ -1,30 +1,21 @@
 from collections import defaultdict
-from typing import List, Optional, Dict
+from typing import List, Dict
 
 from django.db.models import Q, F
 
 from ib_tasks.constants.enum import ViewType
-from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldCompleteDetailsDTO, FieldDTO, UserFieldPermissionDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldIdWithGoFIdDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    StageTaskFieldsDTO, \
-    TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId
+    FieldCompleteDetailsDTO, FieldDTO, UserFieldPermissionDTO, \
+    FieldIdWithGoFIdDTO, StageTaskFieldsDTO, TaskTemplateStageFieldsDTO, \
+    FieldDetailsDTOWithTaskId
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (
     TaskTemplateStageDTO, StageDetailsDTO)
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
-from ib_tasks.models import TaskStage, StageAction, Stage, Task, \
-    TaskGoFField, \
-    FieldRole
-from ib_tasks.models import TaskTemplateGoFs, \
-    Field
+from ib_tasks.models import TaskStage, Stage, TaskGoFField, FieldRole, \
+    TaskTemplateGoFs, Field
 
 
 class FieldsStorageImplementation(FieldsStorageInterface):
@@ -136,11 +127,13 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         if view_type == ViewType.LIST.value:
             stage_objs = (Stage.objects.filter(q)
                           .annotate(view_type=F('card_info_list'))
-                          .values('task_template_id', 'stage_id', 'view_type'))
+                          .values('task_template_id', 'stage_id',
+                                  'view_type', 'stage_color'))
         else:
             stage_objs = (Stage.objects.filter(q)
                           .annotate(view_type=F('card_info_kanban'))
-                          .values('task_template_id', 'stage_id', 'view_type'))
+                          .values('task_template_id', 'stage_id',
+                                  'view_type', 'stage_color'))
 
         task_fields_dtos = self._convert_stage_objs_to_dtos(stage_objs,
                                                             task_stages_dict)
@@ -159,6 +152,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                     TaskTemplateStageFieldsDTO(
                         task_template_id=stage['task_template_id'],
                         task_id=task_id,
+                        stage_color=stage['stage_color'],
                         stage_id=stage['stage_id'],
                         field_ids=field_ids))
         return task_fields_dtos
@@ -170,15 +164,20 @@ class FieldsStorageImplementation(FieldsStorageInterface):
 
     def get_stage_complete_details(self, stage_ids: List[str]) -> \
             List[StageDetailsDTO]:
-        stage_objs = Stage.objects.filter(stage_id__in=stage_ids
-                                          ).values('id', 'stage_id', 'display_name')
+        stage_objs = Stage.objects.filter(
+            stage_id__in=stage_ids
+        ).values(
+            'id', 'stage_id', 'display_name',
+            'stage_color'
+        )
         stage_dtos = []
         for stage in stage_objs:
             stage_dtos.append(
                 StageDetailsDTO(
                     stage_id=stage['stage_id'],
                     name=stage['display_name'],
-                    db_stage_id=stage['id']
+                    db_stage_id=stage['id'],
+                    color=stage['stage_color']
                 )
             )
         return stage_dtos

@@ -13,8 +13,8 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_tasks.tests.common_fixtures.adapters.roles_service import \
     get_user_role_ids
-from ib_tasks.tests.factories.storage_dtos import ActionDetailsDTOFactory, \
-    StageDetailsDTOFactory, StageActionDetailsDTOFactory
+from ib_tasks.tests.factories.storage_dtos import StageDetailsDTOFactory, \
+    StageActionDetailsDTOFactory
 
 
 class TestGetTaskStagesAndActions:

@@ -1,10 +1,11 @@
 """
-create task with valid details
+create task success test case
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ...factories.models import GoFFactory, GoFToTaskTemplateFactory
 
 
 class TestCase01CreateTaskAPITestCase(TestUtils):
@@ -16,11 +17,10 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
 
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
-        import factory
         from ib_tasks.tests.factories.models import \
             ActionPermittedRolesFactory, \
             StageModelFactory, TaskTemplateStatusVariableFactory, \
-            TaskTemplateWith2GoFsFactory, TaskTemplateFactory, FieldFactory, \
+            TaskTemplateFactory, FieldFactory, \
             StageActionFactory, TaskTemplateInitialStageFactory
 
         TaskTemplateFactory.reset_sequence()
@@ -37,21 +37,19 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
 
         import json
         template_id = 'template_1'
-        TaskTemplateWith2GoFsFactory.create(template_id=template_id)
+        gof = GoFFactory.create()
+        GoFToTaskTemplateFactory.create(task_template_id=template_id,gof=gof)
 
         TaskTemplateStatusVariableFactory.create_batch(
             4, task_template_id=template_id
         )
-
-        from ib_tasks.models import GoF
-        gofs = GoF.objects.all()
-        FieldFactory.create_batch(12, gof=factory.Iterator(gofs))
+        FieldFactory.create_batch(3, gof=gof)
 
         stage = StageModelFactory(
             task_template_id='template_1',
             display_logic="variable0==stage_id_0",
-            card_info_kanban=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
-            card_info_list=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
+            card_info_kanban=json.dumps(["FIELD_ID-0", "FIELD_ID-1"]),
+            card_info_list=json.dumps(["FIELD_ID-0", "FIELD_ID-1"]),
         )
         path = \
             'ib_tasks.tests.populate.stage_actions_logic.stage_1_action_name_3'
@@ -67,14 +65,22 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
         body = {
             "task_template_id": "template_1",
             "action_id": 1,
+            "title": "task_title",
+            "description": "task_description",
+            "start_date": "2099-12-31",
+            "due_date": {
+                "date": "2099-12-31",
+                "time": "12:00:00"
+            },
+            "priority": "HIGH",
             "task_gofs": [
                 {
                     "gof_id": "gof_1",
-                    "same_gof_order": 0,
+                    "same_gof_order": 1,
                     "gof_fields": [
                         {
                             "field_id": "FIELD_ID-0",
-                            "field_response": "string"
+                            "field_response": "field_0_response"
                         }
                     ]
                 }
@@ -83,15 +89,20 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
         path_params = {}
         query_params = {}
         headers = {}
-
-        response = self.default_test_case(
-            body=body, path_params=path_params,
-            query_params=query_params, headers=headers, snapshot=snapshot
-        )
+        response = self.make_api_call(body=body,
+                                      path_params=path_params,
+                                      query_params=query_params,
+                                      headers=headers,
+                                      snapshot=snapshot)
         from ib_tasks.models.task import Task
         task_object = Task.objects.get(id=1)
         snapshot.assert_match(task_object.id, 'task_id')
         snapshot.assert_match(task_object.template_id, 'template_id')
+        snapshot.assert_match(task_object.title, 'task_title')
+        snapshot.assert_match(task_object.description, 'task_description')
+        snapshot.assert_match(str(task_object.start_date), 'task_start_date')
+        snapshot.assert_match(str(task_object.due_date), 'task_due_date')
+        snapshot.assert_match(task_object.priority, 'task_priority')
 
         from ib_tasks.models.task_gof import TaskGoF
         task_gofs = TaskGoF.objects.filter(task_id=1)

@@ -18,7 +18,7 @@ class TestUpdateStages:
 
     @pytest.fixture()
     def create_stages(self):
-        StageModelFactory.reset_sequence(50)
+        StageModelFactory.reset_sequence(51)
         StageModelFactory.create_batch(size=4)
 
     @staticmethod

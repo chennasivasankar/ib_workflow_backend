@@ -1,6 +1,5 @@
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
-from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidFileFormat, InvalidUrlForFile, InvalidImageFormat, \
     InvalidUrlForImage, InvalidTimeFormat, InvalidDateFormat, \
@@ -14,8 +13,9 @@ from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
     DuplicateFieldIdsToGoF
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
 from ib_tasks.exceptions.permission_custom_exceptions import \
-    UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
-    UserActionPermissionDenied, UserBoardPermissionDenied
+    UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
+from ib_tasks.exceptions.stage_custom_exceptions import \
+    StageIdsWithInvalidPermissionForAssignee
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskTemplateIds, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
@@ -26,6 +26,19 @@ from ib_tasks.interactors.presenter_interfaces.update_task_presenter import \
 class UpdateTaskPresenterImplementation(
     UpdateTaskPresenterInterface, HTTPResponseMixin
 ):
+
+    def raise_stage_ids_with_invalid_permission_for_assignee_exception(
+            self, err: StageIdsWithInvalidPermissionForAssignee):
+        from ib_tasks.constants.exception_messages import \
+            STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE
+        response_dict = {
+            "response": STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE[0].
+                format(err.invalid_stage_ids),
+            "http_status_code": 400,
+            "res_status": STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE[1]
+        }
+        response_object = self.prepare_400_bad_request_response(response_dict)
+        return response_object
 
     def get_update_task_response(self):
         data = {
@@ -56,16 +69,6 @@ class UpdateTaskPresenterImplementation(
             "response": response_message,
             "http_status_code": 400,
             "res_status": INVALID_TASK_TEMPLATE_IDS[1]
-        }
-        return self.prepare_400_bad_request_response(data)
-
-    def raise_invalid_action_id(self, err: InvalidActionException):
-        from ib_tasks.constants.exception_messages import INVALID_ACTION_ID
-        response_message = INVALID_ACTION_ID[0].format(err.action_id)
-        data = {
-            "response": response_message,
-            "http_status_code": 400,
-            "res_status": INVALID_ACTION_ID[1]
         }
         return self.prepare_400_bad_request_response(data)
 
@@ -408,37 +411,3 @@ class UpdateTaskPresenterImplementation(
             "res_status": INVALID_FILE_FORMAT[1]
         }
         return self.prepare_400_bad_request_response(data)
-
-    def raise_exception_for_user_action_permission_denied(
-            self, error_obj: UserActionPermissionDenied):
-        from ib_tasks.constants.exception_messages import \
-            USER_DO_NOT_HAVE_ACCESS
-
-        response_message = USER_DO_NOT_HAVE_ACCESS[0].format(
-            str(error_obj.action_id)
-        )
-        response_dict = {
-            "response": response_message,
-            "http_status_code": 403,
-            "res_status": USER_DO_NOT_HAVE_ACCESS[1]
-        }
-
-        response_object = self.prepare_403_forbidden_response(response_dict)
-        return response_object
-
-    def raise_exception_for_user_board_permission_denied(
-            self, error_obj: UserBoardPermissionDenied):
-        from ib_tasks.constants.exception_messages import \
-            USER_DO_NOT_HAVE_BOARD_ACCESS
-
-        response_message = USER_DO_NOT_HAVE_BOARD_ACCESS[0].format(
-            str(error_obj.board_id)
-        )
-        response_dict = {
-            "response": response_message,
-            "http_status_code": 403,
-            "res_status": USER_DO_NOT_HAVE_BOARD_ACCESS[1]
-        }
-
-        response_object = self.prepare_403_forbidden_response(response_dict)
-        return response_object

@@ -1,36 +1,32 @@
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
-from ib_tasks.interactors.stages_dtos import StageActionDTO, \
-    TaskIdWithStageAssigneeDTO
-from ib_tasks.interactors.stages_dtos import StageDTO
-from ib_tasks.interactors.stages_dtos import TemplateStageDTO
+from ib_tasks.interactors.stages_dtos import StageActionDTO, StageDTO, \
+    TemplateStageDTO, TaskIdWithStageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
     ActionRolesDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO, \
+from ib_tasks.interactors.storage_interfaces.fields_dtos import \
+    FieldValueDTO, \
     FieldWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GOFMultipleEnableDTO, GoFWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    StageRoleDTO, StageDisplayValueDTO, StageValueWithTaskIdsDTO, \
-    TaskIdWithStageDetailsDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
-    StageValueDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskTemplateStageDTO
+    StageDisplayValueDTO, StageValueWithTaskIdsDTO, \
+    TaskIdWithStageDetailsDTO, \
+    TaskStagesDTO, StageValueDTO, TaskTemplateStageDTO, StageRoleDTO, \
+    StageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import (
     StorageInterface, GroupOfFieldsDTO,
     StatusVariableDTO, StageActionNamesDTO
 )
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
     ActionPermittedRoles, StageAction, TaskStage, FieldRole, GlobalConstant, \
-    StagePermittedRoles
-from ib_tasks.models import TaskTemplateInitialStage, Stage
+    StagePermittedRoles, TaskTemplateInitialStage, Stage
 
 
 class StagesStorageImplementation(StageStorageInterface):
@@ -44,6 +40,19 @@ class StagesStorageImplementation(StageStorageInterface):
         list_of_permitted_roles = self._get_list_of_permitted_roles_objs(
             stages, stage_information)
         StagePermittedRoles.objects.bulk_create(list_of_permitted_roles)
+
+    def get_stage_detail_dtos_given_stage_ids(self, stage_ids: List[str]) -> \
+            List[StageDetailsDTO]:
+        stage_objs = Stage.objects.filter(stage_id__in=stage_ids).values('id',
+                                                                         'stage_id',
+                                                                         'display_name',
+                                                                         'stage_color')
+        stage_detail_dtos = [StageDetailsDTO(db_stage_id=stage_obj['id'],
+                                             stage_id=stage_obj['stage_id'],
+                                             name=stage_obj['display_name'],
+                                             color=stage_obj['stage_color'])
+                             for stage_obj in stage_objs]
+        return stage_detail_dtos
 
     @staticmethod
     def _get_list_of_permitted_roles_objs(stage_objs,
@@ -221,7 +230,9 @@ class StagesStorageImplementation(StageStorageInterface):
                             stage__value=each_stage_value,
                             task_id__in=each_task_ids_group_by_stage_value_dto.
                                 task_ids).values("task_id", "stage__stage_id",
-                                                 "stage__display_name"))
+                                                 "stage__display_name",
+                                                 "stage__stage_color",
+                                                 "stage__id"))
 
                     task_id_with_stage_details_dtos = self. \
                         _get_task_id_with_stage_details_dtos(
@@ -240,7 +251,10 @@ class StagesStorageImplementation(StageStorageInterface):
                 task_id=task_id_with_stage_detail["task_id"],
                 stage_id=task_id_with_stage_detail["stage__stage_id"],
                 stage_display_name=task_id_with_stage_detail[
-                    "stage__display_name"])
+                    "stage__display_name"],
+                stage_color=task_id_with_stage_detail["stage__stage_color"],
+                db_stage_id=task_id_with_stage_detail["stage__id"]
+            )
             for task_id_with_stage_detail in task_id_with_stage_details
         ]
         return task_id_with_stage_details_dtos
@@ -326,8 +340,9 @@ class StorageImplementation(StorageInterface):
         return gof_write_permission_roles_dtos
 
     def get_write_permission_roles_for_given_field_ids(self,
-                                                       field_ids: List[str]) -> \
-            List[FieldWritePermissionRolesDTO]:
+                                                       field_ids: List[str]) \
+            -> \
+                    List[FieldWritePermissionRolesDTO]:
         field_role_objects = FieldRole.objects.filter(
             field_id__in=field_ids, permission_type=PermissionTypes.WRITE.value
         )
@@ -568,3 +583,11 @@ class StorageImplementation(StorageInterface):
         action_ids = StageAction.objects.filter(stage_id__in=task_stage_ids) \
             .values_list('id', flat=True)
         return action_ids
+
+    def validate_if_task_is_assigned_to_user(self,
+                                             task_id: int, user_id: str) -> bool:
+        pass
+
+    def get_task_due_missing_reasons_details(self, task_id: int) -> \
+            List[TaskDueMissingDTO]:
+        pass

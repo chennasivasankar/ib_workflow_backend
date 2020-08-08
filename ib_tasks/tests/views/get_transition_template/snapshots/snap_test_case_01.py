@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestCase01GetTransitionTemplateAPITestCase.test_case status_code'] = '200'

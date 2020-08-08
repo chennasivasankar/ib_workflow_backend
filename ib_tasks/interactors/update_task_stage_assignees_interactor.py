@@ -4,7 +4,8 @@ from ib_tasks.exceptions.stage_custom_exceptions import \
     DuplicateStageIds, \
     StageIdsWithInvalidPermissionForAssignee, InvalidDbStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
-from ib_tasks.interactors.presenter_interfaces.update_task_stage_assignees_presenter_interface import \
+from ib_tasks.interactors.presenter_interfaces\
+    .update_task_stage_assignees_presenter_interface import \
     UpdateTaskStageAssigneesPresenterInterface
 from ib_tasks.interactors.stages_dtos import TaskIdWithStageAssigneesDTO, \
     TaskIdWithStageAssigneeDTO

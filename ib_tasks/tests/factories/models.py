@@ -3,8 +3,8 @@ from datetime import datetime, timedelta
 
 import factory
 
-from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators
-from ib_tasks.constants.enum import Priority
+from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
+    Priority, ActionTypes
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     Task, TaskGoF,
@@ -16,6 +16,7 @@ from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
 from ib_tasks.models.gof import GoF
 from ib_tasks.models.gof_role import GoFRole
+from ib_tasks.models.task_stage import TaskStage
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from ib_tasks.models.task_template_initial_stages import \
@@ -45,7 +46,7 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     display_name = factory.Sequence(lambda n: "name_%d" % n)
     task_template_id = factory.Sequence(lambda n: "task_template_id_%d" % n)
     value = factory.Sequence(lambda n: n)
-    stage_color = "blue"
+    stage_color = factory.Iterator(["blue", "orange", "green"])
     display_logic = factory.Sequence(lambda n: "status_id_%d==stage_id" % n)
     card_info_kanban = json.dumps(['field_id_1', "field_id_2"])
     card_info_list = json.dumps(['field_id_1', "field_id_2"])
@@ -66,6 +67,10 @@ class TaskModelFactory(factory.django.DjangoModelFactory):
 
     template_id = factory.Sequence(lambda n: "template_%d" % (n + 1))
     created_by = factory.Sequence(lambda n: (n + 1))
+    title = factory.Sequence(lambda c: "title_{}".format(c))
+    description = factory.Sequence(lambda c: "description_{}".format(c))
+    start_date = datetime.now()
+    due_date = datetime.now() + timedelta(days=2)
 
 
 class TaskTemplateFactory(factory.django.DjangoModelFactory):
@@ -85,11 +90,13 @@ class StageActionFactory(factory.django.DjangoModelFactory):
         model = StageAction
 
     stage = factory.SubFactory(StageModelFactory)
-    name = factory.Sequence(lambda n: "name_%d" % n)
+    name = factory.Sequence(lambda n: "action_name_%d" % n)
     button_text = "hey"
     button_color = "#fafafa"
     logic = "Status1 = PR_PAYMENT_REQUEST_DRAFTS"
     py_function_import_path = "path"
+    action_type = ActionTypes.NO_VALIDATIONS.value
+    transition_template = factory.SubFactory(TaskTemplateFactory)
 
 
 class StageActionWithTransitionFactory(StageActionFactory):
@@ -244,6 +251,8 @@ class TaskStageFactory(factory.django.DjangoModelFactory):
 
     task = factory.SubFactory(TaskFactory)
     stage = factory.SubFactory(StageModelFactory)
+    assignee_id = factory.sequence(
+        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(counter))
 
 
 class FilterFactory(factory.django.DjangoModelFactory):

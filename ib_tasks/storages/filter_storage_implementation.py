@@ -1,4 +1,5 @@
 from typing import List, Tuple
+
 from django.db.models import F
 
 from ib_tasks.constants.enum import Status
@@ -10,6 +11,8 @@ from ib_tasks.interactors.storage_interfaces.filter_storage_interface \
     import FilterStorageInterface
 from ib_tasks.models import Filter, TaskTemplate, FilterCondition, FieldRole, \
     TaskTemplateGoFs, Field
+from ib_tasks.storages.elasticsearch_storage_implementation import \
+    ApplyFilterDTO
 
 
 class FilterStorageImplementation(FilterStorageInterface):
@@ -88,9 +91,11 @@ class FilterStorageImplementation(FilterStorageInterface):
             'role', flat=True
         ).filter(field_id__in=field_ids)
         user_roles = sorted(list(set(user_roles)))
+        from ib_tasks.constants.constants import ALL_ROLES_ID
+        updated_user_role = user_roles + [ALL_ROLES_ID]
         fields_user_roles = sorted(list(set(fields_user_roles)))
-        invalid_user = not (user_roles == fields_user_roles \
-                            or set(fields_user_roles).issubset(set(user_roles)))
+        invalid_user = not (updated_user_role == fields_user_roles \
+                            or set(fields_user_roles).issubset(set(updated_user_role)))
         if invalid_user:
             raise UserNotHaveAccessToFields
 
@@ -136,14 +141,14 @@ class FilterStorageImplementation(FilterStorageInterface):
 
     def validate_filter_id(self, filter_id: int):
         invalid_filter_id = not Filter.objects.filter(
-            id=filter_id
+            id=int(filter_id)
         ).exists()
         if invalid_filter_id:
             raise InvalidFilterId()
 
     def validate_user_with_filter_id(self, user_id: str, filter_id: int):
         invalid_user = not Filter.objects.filter(
-            id=filter_id, created_by=user_id
+            id=int(filter_id), created_by=user_id
         ).exists()
         if invalid_user:
             raise UserNotHaveAccessToFilter()
@@ -182,3 +187,18 @@ class FilterStorageImplementation(FilterStorageInterface):
             condition_dtos=condition_dtos,
             filter_id=filter_id
         )
+
+    def get_enabled_filters_dto_to_user(self, user_id: str) -> List[ApplyFilterDTO]:
+        filter_objects = FilterCondition.objects.filter(
+            filter__created_by=user_id, filter__is_selected=Status.ENABLED.value
+        ).annotate(template_id=F('filter__template_id'))
+        filter_dtos = [
+            ApplyFilterDTO(
+                template_id=filter_object.template_id,
+                field_id=filter_object.field_id,
+                operator=filter_object.operator,
+                value=filter_object.value
+            )
+            for filter_object in filter_objects
+        ]
+        return filter_dtos

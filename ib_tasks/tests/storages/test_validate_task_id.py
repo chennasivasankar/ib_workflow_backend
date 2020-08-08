@@ -4,7 +4,7 @@ import pytest
 @pytest.mark.django_db
 class TestValidateTaskId:
 
-    def test_giuevn_valid_task_returns_true(self):
+    def test_given_valid_task_returns_true(self):
         # Arrange
         task_id = 1
         from ib_tasks.storages.storage_implementation \

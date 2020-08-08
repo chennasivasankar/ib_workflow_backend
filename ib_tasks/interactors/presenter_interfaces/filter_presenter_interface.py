@@ -1,10 +1,10 @@
 import abc
-from typing import List
 from dataclasses import dataclass
-from ib_tasks.interactors.filter_dtos import FilterDTO, ConditionDTO
+from typing import List
 
 from ib_tasks.constants.enum import Status
-from ib_tasks.interactors.filter_dtos import FilterCompleteDetailsDTO
+from ib_tasks.interactors.filter_dtos import FilterDTO, ConditionDTO, \
+    FilterCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldNameDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFToTaskTemplateDTO

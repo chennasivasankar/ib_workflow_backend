@@ -64,3 +64,7 @@ class FilterStorageInterface(abc.ABC):
     @abc.abstractmethod
     def disable_filter_status(self, filter_id: int) -> Status:
         pass
+
+    @abc.abstractmethod
+    def get_enabled_filters_dto_to_user(self, user_id: str):
+        pass

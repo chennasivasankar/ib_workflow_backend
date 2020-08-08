@@ -1,5 +1,5 @@
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Searchable, \
-    Operators, Priority, ValidationType
+    Operators, Priority
 
 ALL_ROLES_ID = "ALL_ROLES"
 GOF_ORDER_WITH_MINUS_ONE_VALUE = -1
@@ -41,3 +41,5 @@ TRANSITION_TEMPLATES_SUB_SHEET = "Transition Templates"
 PRIORITY_TYPES = [(item.value, item.value) for item in Priority]
 
 OPERATOR_TYPES = [(item.value, item.value)for item in Operators]
+
+DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"

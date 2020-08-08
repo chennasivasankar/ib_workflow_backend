@@ -14,7 +14,7 @@ REQUEST_BODY_JSON = """
 
 RESPONSE_201_JSON = """
 {
-    "company_id": "9d3fec3d-b426-4270-8844-c2fa59c42404"
+    "company_id": "8024fc16-a1ab-4ad7-b194-e2f80c2ec4c0"
 }
 """
 
@@ -38,7 +38,7 @@ RESPONSE_404_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "INVALID_USERS"
+    "res_status": "INVALID_USER_IDS"
 }
 """
 

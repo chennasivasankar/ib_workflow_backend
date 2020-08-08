@@ -1,5 +1,7 @@
-from typing import List
+from typing import List, Optional
 
+from ib_tasks.exceptions.task_custom_exceptions import \
+    InvalidTransitionChecklistTemplateId
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
@@ -13,6 +15,17 @@ from ib_tasks.models import TaskTemplate, TaskTemplateGoFs
 
 
 class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
+
+    def validate_transition_template_id(
+            self, transition_checklist_template_id
+    ) -> Optional[InvalidTransitionChecklistTemplateId]:
+        template_exists = TaskTemplate.objects.filter(
+            template_id=transition_checklist_template_id,
+            is_transition_template=True)
+        if not template_exists:
+            raise InvalidTransitionChecklistTemplateId(
+                transition_checklist_template_id)
+        return
 
     def create_template(self, template_id: str,
                         template_name: str,
@@ -75,7 +88,9 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
         return valid_template_ids
 
     def get_task_templates_dtos(self) -> List[TemplateDTO]:
-        task_template_objs = TaskTemplate.objects.all()
+        task_template_objs = TaskTemplate.objects.filter(
+            is_transition_template=False
+        )
         task_template_dtos = self._convert_task_templates_objs_to_dtos(
             task_template_objs=task_template_objs)
         return task_template_dtos

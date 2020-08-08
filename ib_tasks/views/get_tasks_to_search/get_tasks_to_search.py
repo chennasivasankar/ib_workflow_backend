@@ -1,4 +1,3 @@
-from functools import reduce
 def get_tasks_to_search(*args, **kwargs):  # pylint: disable=invalid-name
     """
     Note: replace below mock implementation with your actual implementation

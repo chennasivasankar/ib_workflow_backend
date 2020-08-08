@@ -1,6 +1,8 @@
 import abc
-from typing import List
+from typing import List, Optional
 
+from ib_tasks.exceptions.task_custom_exceptions import \
+    InvalidTransitionChecklistTemplateId
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
@@ -94,4 +96,10 @@ class TaskTemplateStorageInterface(abc.ABC):
     def get_gofs_to_template_from_permitted_gofs(
             self, gof_ids: List[str],
             template_id: str) -> List[GoFToTaskTemplateDTO]:
+        pass
+
+    @abc.abstractmethod
+    def validate_transition_template_id(
+            self, transition_checklist_template_id
+    ) -> Optional[InvalidTransitionChecklistTemplateId]:
         pass

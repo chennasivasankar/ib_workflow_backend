@@ -2,6 +2,7 @@ import abc
 from dataclasses import dataclass
 from typing import List
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
+from ib_tasks.interactors.stages_dtos import StageAssigneeDetailsDTO
 
 from ib_tasks.interactors.storage_interfaces.get_task_dtos \
     import TaskDetailsDTO
@@ -13,6 +14,7 @@ class TaskCompleteDetailsDTO:
     task_id: int
     task_details_dto: TaskDetailsDTO
     stages_and_actions_details_dtos: List[StageAndActionsDetailsDTO]
+    stage_assignee_details_dtos: List[StageAssigneeDetailsDTO]
 
 
 class GetTaskPresenterInterface(abc.ABC):
@@ -23,4 +25,16 @@ class GetTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_task_response(self, task_complete_details_dto: TaskCompleteDetailsDTO):
+        pass
+
+    @abc.abstractmethod
+    def response_for_invalid_task_id(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_user_is_not_assignee_for_task(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_get_task_due_details(self, task_dtos):
         pass

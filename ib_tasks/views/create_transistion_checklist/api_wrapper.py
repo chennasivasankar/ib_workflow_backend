@@ -1,48 +1,81 @@
+from typing import List, Dict
+
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 from .validator_class import ValidatorClass
+from ...interactors.create_transition_checklist_template import \
+    CreateTransitionChecklistTemplateInteractor
+from ...interactors.task_dtos import GoFFieldsDTO, FieldValuesDTO
+from ...interactors.task_template_dtos import \
+    CreateTransitionChecklistTemplateDTO
+from ...presenters.create_transition_checklist_presenter import \
+    CreateTransitionChecklistTemplatePresenterImplementation
+from ...storages.action_storage_implementation import \
+    ActionsStorageImplementation
+from ...storages.create_or_update_task_storage_implementation import \
+    CreateOrUpdateTaskStorageImplementation
+from ...storages.fields_storage_implementation import \
+    FieldsStorageImplementation
+from ...storages.gof_storage_implementation import GoFStorageImplementation
+from ...storages.storage_implementation import StorageImplementation
+from ...storages.task_template_storage_implementation import \
+    TaskTemplateStorageImplementation
+from ...storages.tasks_storage_implementation import TasksStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    # ---------MOCK IMPLEMENTATION---------
+    user_id = kwargs['user'].user_id
+    request_data = kwargs['request_data']
+    task_id = request_data['task_id']
+    transition_checklist_template_id = request_data[
+        'transition_checklist_template_id']
+    action_id = request_data['action_id']
+    stage_id = request_data['stage_id']
+    transition_checklist_gofs = request_data['transition_checklist_gofs']
+    transition_checklist_gof_dtos = []
+    for transition_checklist_gof in transition_checklist_gofs:
+        gof_field_dto = GoFFieldsDTO(
+            gof_id=transition_checklist_gof['gof_id'],
+            same_gof_order=transition_checklist_gof['same_gof_order'],
+            field_values_dtos=get_field_values_dtos(
+                fields=transition_checklist_gof['gof_fields'])
+        )
+        transition_checklist_gof_dtos.append(gof_field_dto)
+    transition_template_dto = CreateTransitionChecklistTemplateDTO(
+        task_id=task_id, created_by_id=user_id,
+        transition_checklist_template_id=transition_checklist_template_id,
+        action_id=action_id, stage_id=stage_id,
+        transition_checklist_gofs=transition_checklist_gof_dtos
+    )
 
-    try:
-        from ib_tasks.views.create_transistion_checklist.request_response_mocks \
-            import REQUEST_BODY_JSON
-        body = REQUEST_BODY_JSON
-    except ImportError:
-        body = {}
+    task_storage = TasksStorageImplementation()
+    create_task_storage = CreateOrUpdateTaskStorageImplementation()
+    storage = StorageImplementation()
+    gof_storage = GoFStorageImplementation()
+    field_storage = FieldsStorageImplementation()
+    template_storage = TaskTemplateStorageImplementation()
+    stage_action_storage = ActionsStorageImplementation()
 
-    test_case = {
-        "path_params": {},
-        "query_params": {},
-        "header_params": {},
-        "body": body,
-        "securities": [{'oauth': ['read']}]
-    }
+    presenter = CreateTransitionChecklistTemplatePresenterImplementation()
 
-    from django_swagger_utils.drf_server.utils.server_gen.mock_response \
-        import mock_response
-    try:
-        response = ''
-        status_code = 200
-        if '200' in ['201', '404']:
-            from ib_tasks.views.create_transistion_checklist.request_response_mocks \
-                import RESPONSE_200_JSON
-            response = RESPONSE_200_JSON
-            status_code = 200
-        elif '201' in ['201', '404']:
-            from ib_tasks.views.create_transistion_checklist.request_response_mocks \
-                import RESPONSE_201_JSON
-            response = RESPONSE_201_JSON
-            status_code = 201
-    except ImportError:
-        response = ''
-        status_code = 200
-    response_tuple = mock_response(
-        app_name="ib_tasks", test_case=test_case,
-        operation_name="create_transistion_checklist",
-        kwargs=kwargs, default_response_body=response,
-        group_name="", status_code=status_code)
-    return response_tuple
+    interactor = CreateTransitionChecklistTemplateInteractor(
+        create_or_update_task_storage=create_task_storage,
+        template_storage=template_storage, task_storage=task_storage,
+        gof_storage=gof_storage, storage=storage, field_storage=field_storage,
+        stage_action_storage=stage_action_storage
+    )
+    interactor.create_transition_checklist_wrapper(
+        transition_template_dto, presenter
+    )
+
+
+def get_field_values_dtos(fields: List[Dict]) -> List[FieldValuesDTO]:
+    field_values_dtos = [
+        FieldValuesDTO(
+            field_id=field['field_id'],
+            field_response=field['field_response']
+        )
+        for field in fields
+    ]
+    return field_values_dtos

@@ -126,6 +126,9 @@
         "task_id": {
           "type": "string"
         },
+        "stage_color": {
+          "type": "string"
+        },
         "fields": {
           "type": "array",
           "items": {
@@ -164,12 +167,16 @@
               },
               "button_color": {
                 "type": "string"
+              },
+              "transition_template_id": {
+                "type": "string"
               }
             },
             "required": [
               "action_id",
               "name",
-              "button_text"
+              "button_text",
+              "transition_template_id"
             ]
           }
         }
@@ -177,7 +184,8 @@
       "required": [
         "task_id",
         "fields",
-        "actions"
+        "actions",
+        "stage_color"
       ]
     },
     "ColumnDetails": {
@@ -317,6 +325,7 @@
     "ViewTypeParameter": {
       "name": "view_type",
       "in": "body",
+      "required": true,
       "description": "view type",
       "schema": {
         "type": "object",
@@ -481,7 +490,7 @@
       }
     },
     "/boards/{board_id}/columns/v1/": {
-      "get": {
+      "post": {
         "operationId": "get_columns_details",
         "summary": "Get Column Details",
         "description": "get columns details of the given board id",
@@ -524,7 +533,7 @@
       }
     },
     "/columns/{column_id}/tasks/v1/": {
-      "get": {
+      "post": {
         "operationId": "get_column_tasks",
         "summary": "Get Column Tasks",
         "description": "get column tasks details",
