@@ -16,7 +16,7 @@ class TestDeleteDiscussion:
         discussion_id = "71be920b-7b4c-49e7-8adb-41a0c18da848"
         from ib_discussions.tests.factories.models import DiscussionFactory
         DiscussionFactory(id=discussion_id)
-        discussion_objects_not_exists = False
+        is_discussion_objects_not_exists = False
 
         # Act
         storage.delete_discussion(discussion_id=discussion_id)
@@ -25,4 +25,4 @@ class TestDeleteDiscussion:
         from ib_discussions.models import Discussion
         discussion_objects = Discussion.objects.filter(id=discussion_id)
 
-        assert discussion_objects.exists() == discussion_objects_not_exists
+        assert discussion_objects.exists() == is_discussion_objects_not_exists

@@ -1,5 +1,5 @@
 """
-# TODO: Update test case description
+get replies for comments
 """
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
@@ -107,8 +107,6 @@ class TestCase01GetRepliesForCommentAPITestCase(TestUtils):
             discussion_id=replies_list[2]["discussion_id"],
             user_id=replies_list[2]["user_id"]
         )
-
-        from ib_discussions.models import Comment
 
         body = {}
         path_params = {"comment_id": "91be920b-7b4c-49e7-8adb-41a0c18da848"}

@@ -1,5 +1,5 @@
 """
-# TODO: Update test case description
+get comments for discussion
 """
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
