@@ -103,3 +103,8 @@ class InvalidTransitionTemplateIds(Exception):
 
 class UserIsNotAssigneeToTask(Exception):
     pass
+
+
+class InvalidStageIdsForTask(Exception):
+    def __init__(self, message: str):
+        self.message = message

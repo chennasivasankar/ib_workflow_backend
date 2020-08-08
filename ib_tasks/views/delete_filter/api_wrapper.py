@@ -6,7 +6,6 @@ from .validator_class import ValidatorClass
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    # ---------MOCK IMPLEMENTATION---------
     user = kwargs['user']
     user_id = user.user_id
     filter_id = kwargs['filter_id']

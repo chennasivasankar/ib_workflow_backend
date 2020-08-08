@@ -104,3 +104,7 @@ class TaskStorageInterface(abc.ABC):
     @abc.abstractmethod
     def create_task_log(self, create_task_log_dto: CreateTaskLogDTO):
         pass
+
+    @abc.abstractmethod
+    def create_elastic_task(self, task_id: int, elastic_task_id: str):
+        pass

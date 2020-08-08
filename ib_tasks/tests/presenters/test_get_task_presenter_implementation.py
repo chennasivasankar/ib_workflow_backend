@@ -113,11 +113,15 @@ class TestGetTaskPresenterImplementation:
         stage_complete_details_dto = [
             StageAndActionsDetailsDTO(
                 stage_id="stage1", name="stage_name1",
-                actions_dtos=stage1_actions_dtos
+                actions_dtos=stage1_actions_dtos,
+                db_stage_id=1,
+                color='green'
             ),
             StageAndActionsDetailsDTO(
                 stage_id="stage2", name="stage_name2",
-                actions_dtos=stage2_actions_dtos
+                actions_dtos=stage2_actions_dtos,
+                db_stage_id=2,
+                color='green'
             )
         ]
         return stage_complete_details_dto

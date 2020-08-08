@@ -3,9 +3,9 @@ import pytest
 from ib_tasks.models import StageAction, ActionPermittedRoles
 from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
-from ib_tasks.tests.factories.interactor_dtos import ActionDTOFactory
+from ib_tasks.tests.factories.interactor_dtos import ActionDTOFactory, StageActionDTOFactory
 from ib_tasks.tests.factories.models import StageActionFactory, \
-    StageModelFactory
+    StageModelFactory, TaskTemplateWithTransitionFactory, TaskTemplateFactory
 
 
 @pytest.mark.django_db
@@ -19,8 +19,11 @@ class TestUpdateStageActions:
 
     @pytest.fixture()
     def stage_actions_dtos(self):
-        ActionDTOFactory.reset_sequence()
-        return ActionDTOFactory.create_batch(size=4)
+        StageActionDTOFactory.reset_sequence()
+        StageModelFactory.reset_sequence()
+        TaskTemplateFactory.reset_sequence()
+        TaskTemplateWithTransitionFactory.create_batch(size=4)
+        return StageActionDTOFactory.create_batch(size=4)
 
     @pytest.fixture()
     def create_stage_actions(self):
@@ -40,7 +43,7 @@ class TestUpdateStageActions:
             create_stage_actions
     ):
         # Arrange
-        action_ids = [1, 2, 3, 4]
+        action_ids = [5, 2, 3, 4]
         storage = ActionsStorageImplementation()
 
         # Act

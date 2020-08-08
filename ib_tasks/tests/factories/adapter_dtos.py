@@ -1,6 +1,7 @@
 
 import factory
 from ib_tasks.adapters.dtos import *
+from ib_tasks.adapters.dtos import AssigneeDetailsDTO
 
 
 class BoardDTOFactory(factory.Factory):
@@ -31,3 +32,19 @@ class ColumnFieldDTOFactory(factory.Factory):
         model = ColumnFieldDTO
     column_id = factory.Sequence(lambda n: 'column_%d' % (n+1))
     field_ids = factory.Sequence(lambda n: [f"field_{n+1}", f"field_{n+3}"])
+
+
+class AssigneeDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = AssigneeDetailsDTO
+    assignee_id = factory.sequence(lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(counter))
+    name = factory.sequence(lambda counter: "name_{}".format(counter))
+    profile_pic_url = "https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM"
+
+class UserDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = UserDetailsDTO
+
+    user_id = factory.Sequence(lambda n: 'user_id_%d' % (n + 1))
+    user_name = factory.Sequence(lambda n: 'user_name_%d' % (n + 1))
+    profile_pic_url = factory.Sequence(lambda n: 'profile_pic_%d' % (n + 1))

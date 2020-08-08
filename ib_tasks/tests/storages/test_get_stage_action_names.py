@@ -19,7 +19,8 @@ class TestGetStageActions:
         StageActionsDTOFactory.reset_sequence()
         return StageActionsDTOFactory.create_batch(size=3)
 
-    def test_get_stage_actions(self, create_stage_actions, expected_output):
+    def test_get_stage_actions(self, snapshot,
+                               create_stage_actions, expected_output):
         # Arrange
         stage_ids=["stage_id_3", "stage_id_1", "stage_id_2", "stage_id_0"]
         storage = ActionsStorageImplementation()
@@ -29,5 +30,5 @@ class TestGetStageActions:
 
         # Assert
         stages = StageAction.objects.filter(stage__stage_id__in=stage_ids)
-        assert result == expected_output
+        snapshot.assert_match(result , "result")
 
