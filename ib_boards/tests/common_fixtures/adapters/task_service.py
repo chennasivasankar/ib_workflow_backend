@@ -1,8 +1,6 @@
 from typing import List
 
 from ib_boards.constants.enum import ViewType
-from ib_boards.interactors.dtos import TaskStageIdDTO, TaskCompleteDetailsDTO, \
-from ib_boards.constants.enum import VIEWTYPE
 from ib_boards.interactors.dtos import TaskStageIdDTO, \
     TaskCompleteDetailsDTO, \
     ColumnTaskIdsDTO

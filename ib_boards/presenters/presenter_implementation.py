@@ -234,7 +234,8 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
                         "action_id": action_dto.action_id,
                         "name": action_dto.name,
                         "button_text": action_dto.button_text,
-                        "button_color": action_dto.button_color
+                        "button_color": action_dto.button_color,
+                        "transition_template_id": action_dto.transition_template_id
                     }
                 )
                 action_ids.append(action_dto.action_id)

@@ -14,7 +14,7 @@ class TestGetColumnDetails:
     def get_task_actions_dtos_with_duplicates(self):
         TaskActionsDTOFactory.reset_sequence()
         return TaskActionsDTOFactory.create_batch(size=3) + [TaskActionsDTOFactory(
-            task_id='task_id_0'
+            task_id='task_id_0', transition_template_id=None
         )]
 
     @pytest.fixture()

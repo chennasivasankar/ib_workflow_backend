@@ -23,7 +23,7 @@ class GetTaskDueMissingReasonsInteractor:
             return presenter.response_for_invalid_task_id()
         except UserIsNotAssigneeToTask as err:
             return presenter.response_for_user_is_not_assignee_for_task()
-        presenter.get_response_for_get_task_due_details(task_dtos)
+        return presenter.get_response_for_get_task_due_details(task_dtos)
 
     def get_task_due_missing_reasons(self, task_id: int, user_id: str):
         self._validate_task_id(task_id)

@@ -45,7 +45,7 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     display_name = factory.Sequence(lambda n: "name_%d" % n)
     task_template_id = factory.Sequence(lambda n: "task_template_id_%d" % n)
     value = factory.Sequence(lambda n: n)
-    stage_color = "blue"
+    stage_color = factory.Iterator(["blue", "orange", "green"])
     display_logic = factory.Sequence(lambda n: "status_id_%d==stage_id" % n)
     card_info_kanban = json.dumps(['field_id_1', "field_id_2"])
     card_info_list = json.dumps(['field_id_1', "field_id_2"])

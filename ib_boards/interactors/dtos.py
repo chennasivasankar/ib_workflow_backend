@@ -115,6 +115,7 @@ class ActionDTO:
     button_color: str
     task_id: int
     stage_id: str
+    transition_template_id: str
 
 @dataclass
 class StageActionDetailsDTO(ActionDTO):

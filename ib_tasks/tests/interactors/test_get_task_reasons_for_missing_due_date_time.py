@@ -1,4 +1,4 @@
-from unittest.mock import create_autospec
+from unittest.mock import create_autospec, Mock
 
 import pytest
 
@@ -65,6 +65,7 @@ class TestGetTaskReasons:
         # Arrange
         task_id = 1
         user_id = "user_id_1"
+        expected_response = Mock()
         storage = create_autospec(StorageInterface)
         presenter = create_autospec(GetTaskPresenterInterface)
         interactor = GetTaskDueMissingReasonsInteractor(
@@ -74,6 +75,7 @@ class TestGetTaskReasons:
         storage.validate_if_task_is_assigned_to_user.return_value = True
         storage.get_task_due_missing_reasons_details.return_value = \
             get_due_missing_details
+        presenter.get_response_for_get_task_due_details.return_value = expected_response
         user_service = get_user_dtos_given_user_ids(mocker)
         user_dtos = user_service.get_user_dtos_given_user_ids()
 
@@ -85,4 +87,5 @@ class TestGetTaskReasons:
         # Assert
         storage.get_task_due_missing_reasons_details.assert_called_once_with(
             task_id)
+        presenter.get_response_for_get_task_due_details.assert_called_once()
 

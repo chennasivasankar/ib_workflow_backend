@@ -34,6 +34,7 @@ class TaskActionsDTOFactory(factory.Factory):
     name = factory.Sequence(lambda n: "name_%d" % n)
     button_text = factory.Sequence(lambda n: "button_text_%d" % n)
     button_color = None
+    transition_template_id = factory.Sequence(lambda n: "template_%d" % n)
 
     class Params:
         factory.Trait(
