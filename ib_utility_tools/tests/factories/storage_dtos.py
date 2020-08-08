@@ -1,9 +1,9 @@
 import factory
 
-from ib_utility_tools.constants.enum import EntityType
+from ib_utility_tools.constants.enum import EntityType, TimerEntityType
 from ib_utility_tools.interactors.storage_interfaces.dtos import \
     ChecklistItemWithEntityDTO, ChecklistItemWithChecklistIdDTO, EntityDTO, \
-    ChecklistItemWithIdDTO
+    ChecklistItemWithIdDTO, TimerEntityDTO, TimerDetailsDTO
 
 
 class EntityDTOFactory(factory.Factory):
@@ -38,3 +38,19 @@ class ChecklistItemWithIdDTOFactory(factory.Factory):
     checklist_item_id = factory.Faker("uuid4")
     text = factory.sequence(lambda number: "text%s" % number)
     is_checked = False
+
+
+class TimerEntityDTOFactory(factory.Factory):
+    class Meta:
+        model = TimerEntityDTO
+
+    entity_id = factory.Faker("uuid4")
+    entity_type = TimerEntityType.STAGE_TASK.value
+
+
+class TimerDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = TimerDetailsDTO
+
+    duration_in_seconds = factory.Iterator([100, 300, 500])
+    is_running = False

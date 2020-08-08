@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 from snapshottest import GenericRepr, Snapshot
 
+
 snapshots = Snapshot()
 
 snapshots['TestCreateOrUpdateTaskStorageImplementation.test_given_task_id_returns_task_gof_dtos task_gof_dtos'] = [

@@ -30,12 +30,10 @@
       "type": "oauth2"
     }
   },
-  "security": [
-  ],
+  "security": [],
   "definitions": {
     "SaveAndActOnATaskRequestBody": {
-      "allOf": [
-        {
+      "allOf": [{
           "type": "object",
           "properties": {
             "action_id": {
@@ -202,6 +200,21 @@
         "gof_id",
         "same_gof_order",
         "gof_fields"
+      ]
+    },
+    "AddTaskReasons": {
+      "type": "object",
+      "properties": {
+        "updated_due_date_time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "updated_due_date_time", "reason"
       ]
     },
     "CreateTaskRequestBody": {
@@ -401,8 +414,7 @@
       ]
     },
     "Field": {
-      "allOf": [
-        {
+      "allOf": [{
           "$ref": "#/definitions/FieldTypeEnum"
         },
         {
@@ -500,8 +512,7 @@
       }
     },
     "TaskOverviewFields": {
-      "allOf": [
-        {
+      "allOf": [{
           "$ref": "#/definitions/FieldTypeEnum"
         },
         {
@@ -641,9 +652,6 @@
         },
         "button_color": {
           "type": "string"
-        },
-        "transition_template_id": {
-          "type": "string"
         }
       },
       "required": [
@@ -690,7 +698,7 @@
                 "type": "string"
               },
               "same_gof_order": {
-                "type": "number"
+                "type": "integer"
               },
               "gof_fields": {
                 "type": "array",
@@ -731,21 +739,24 @@
               "stage_color": {
                 "type": "string"
               },
+              "task_stage_id": {
+                "type": "integer"
+              },
               "assignee": {
                 "type": "object",
                 "properties": {
-                  "id": {
+                  "assignee_id": {
                     "type": "string"
                   },
                   "name": {
                     "type": "string"
                   },
-                  "profile_pic": {
+                  "profile_pic_url": {
                     "type": "string"
                   }
                 },
                 "required": [
-                  "id",
+                  "assignee_id",
                   "name"
                 ]
               },
@@ -776,8 +787,7 @@
                   "required": [
                     "action_id",
                     "button_text",
-                    "button_color",
-                    "action_type"
+                    "button_color"
                   ]
                 }
               }
@@ -786,7 +796,8 @@
               "stage_id",
               "stage_display_name",
               "actions",
-              "stage_color"
+              "stage_color",
+              "task_stage_id"
             ]
           }
         }
@@ -801,6 +812,23 @@
         "due_date",
         "priority"
       ]
+    },
+    "UserDetails": {
+      "type": "object",
+              "properties": {
+                "user_id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "profile_pic": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "user_id", "name", "profile_pic"
+              ]
     },
     "UpdateTaskRequestBody": {
       "type": "object",
@@ -1075,8 +1103,7 @@
       ]
     },
     "FilterConditionWithFieldName": {
-      "allOf": [
-        {
+      "allOf": [{
           "$ref": "#/definitions/FilterCondition"
         },
         {
@@ -1115,8 +1142,7 @@
       ]
     },
     "FilterDetailsWithID": {
-      "allOf": [
-        {
+      "allOf": [{
           "$ref": "#/definitions/FilterDetails"
         },
         {
@@ -1207,6 +1233,14 @@
     }
   },
   "parameters": {
+    "AddTaskReasonsParameter": {
+      "in": "body",
+      "name": "AddTaskReasonRequestBody",
+      "required": true,
+      "schema": {
+        "$ref": "#/definitions/AddTaskReasons"
+      }
+    },
     "CreateTaskBodyParameter": {
       "in": "body",
       "name": "CreateTaskRequestBody",
@@ -1576,6 +1610,33 @@
         ]
       }
     },
+    "InvalidTaskReasonsResponse": {
+      "description": "invalid add task reasons response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer",
+            "example": 400
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "INVALID_REASON",
+              "INVALID_DUE_DATE_TIME"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
     "UpdateTaskStageAssigneesNotFoundResponse": {
       "description": "Task Stage Assignees Not Found Response",
       "schema": {
@@ -1857,6 +1918,35 @@
         ]
       }
     },
+    "GetTaskReasonsResponse": {
+      "description": "Ok",
+      "schema": {
+          "type": "array",
+          "items": {
+            "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "due_date_time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "due_missed_count": {
+          "type": "integer",
+          "format": "int64"
+        },
+            "user": {
+              "$ref": "#/definitions/UserDetails"
+            }
+      },
+      "required": [
+        "task_id", "user", "due_date_time", "due_missed_count"
+      ]
+        }
+      }
+    },
     "InvalidFilterValueResponse": {
       "description": "value empty response",
       "schema": {
@@ -1872,6 +1962,32 @@
             "type": "string",
             "enum": [
               "VALUE_SHOULD_NOT_BE_EMPTY"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
+    "TaskIsNotAssignedToUserResponse": {
+      "description": "given task is not assigned to user",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer",
+            "example": 403
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "TASK_IS_NOT_ASSIGNED_TO_TASK"
             ]
           }
         },
@@ -2023,18 +2139,14 @@
         "operationId": "perform_task_action",
         "summary": "User Act On Specific Task in a Column",
         "description": "User Submitting Response by acting on a task",
-        "parameters": [
-          {
-            "$ref": "#/parameters/PerformActionBodyParameter"
-          }
-        ],
-        "security": [
-          {
-            "oauth": [
-              "write"
-            ]
-          }
-        ],
+        "parameters": [{
+          "$ref": "#/parameters/PerformActionBodyParameter"
+        }],
+        "security": [{
+          "oauth": [
+            "write"
+          ]
+        }],
         "responses": {
           "200": {
             "description": "successful",
@@ -2062,15 +2174,12 @@
         "operationId": "get_task_templates",
         "summary": "Get list of task templates along with group of fields",
         "description": "Get list of task templates along with group of fields",
-        "security": [
-          {
-            "oauth": [
-              "read"
-            ]
-          }
-        ],
-        "parameters": [
-        ],
+        "security": [{
+          "oauth": [
+            "read"
+          ]
+        }],
+        "parameters": [],
         "responses": {
           "200": {
             "$ref": "#/responses/GetTaskTemplateResponse"
@@ -2086,18 +2195,14 @@
         "operationId": "get_transition_template",
         "summary": "Get transition template",
         "description": "Get transition template based on the action and stage",
-        "security": [
-          {
-            "oauth": [
-              "read"
-            ]
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/parameters/TransitionTemplateIdParameter"
-          }
-        ],
+        "security": [{
+          "oauth": [
+            "read"
+          ]
+        }],
+        "parameters": [{
+          "$ref": "#/parameters/TransitionTemplateIdParameter"
+        }],
         "responses": {
           "200": {
             "$ref": "#/responses/GetTransitionTemplateResponse"
@@ -2113,18 +2218,14 @@
         "operationId": "create_task",
         "summary": "create a task",
         "description": "create a task with given details",
-        "security": [
-          {
-            "oauth": [
-              "write"
-            ]
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/parameters/CreateTaskBodyParameter"
-          }
-        ],
+        "security": [{
+          "oauth": [
+            "write"
+          ]
+        }],
+        "parameters": [{
+          "$ref": "#/parameters/CreateTaskBodyParameter"
+        }],
         "responses": {
           "201": {
             "$ref": "#/responses/CreateTaskSuccessResponse"
@@ -2138,18 +2239,14 @@
         "operationId": "update_task",
         "summary": "update a task",
         "description": "update a task with given details",
-        "security": [
-          {
-            "oauth": [
-              "write"
-            ]
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/parameters/UpdateTaskRequestBodyParameter"
-          }
-        ],
+        "security": [{
+          "oauth": [
+            "write"
+          ]
+        }],
+        "parameters": [{
+          "$ref": "#/parameters/UpdateTaskRequestBodyParameter"
+        }],
         "responses": {
           "201": {
             "$ref": "#/responses/UpdateTaskSuccessResponse"
@@ -2163,22 +2260,18 @@
         "operationId": "get_task",
         "summary": "get task",
         "description": "get task details",
-        "security": [
-          {
-            "oauth": [
-              "write",
-              "read"
-            ]
-          }
-        ],
-        "parameters": [
-          {
-            "name": "task_id",
-            "in": "query",
-            "description": "task id to get task details",
-            "type": "integer"
-          }
-        ],
+        "security": [{
+          "oauth": [
+            "write",
+            "read"
+          ]
+        }],
+        "parameters": [{
+          "name": "task_id",
+          "in": "query",
+          "description": "task id to get task details",
+          "type": "integer"
+        }],
         "responses": {
           "200": {
             "$ref": "#/responses/GetTaskSuccessResponse"
@@ -2194,15 +2287,12 @@
         "operationId": "get_searchable_values",
         "summary": "get searchable values based on search type",
         "description": "get searchable values based on search type given a query",
-        "security": [
-          {
-            "oauth": [
-              "read"
-            ]
-          }
-        ],
-        "parameters": [
-          {
+        "security": [{
+          "oauth": [
+            "read"
+          ]
+        }],
+        "parameters": [{
             "$ref": "#/parameters/SearchableTypeParameter"
           },
           {
@@ -2230,15 +2320,12 @@
         "operationId": "get_tasks_to_search",
         "summary": "get tasks to relevant to search",
         "description": "view the tasks that satisfies the search",
-        "security": [
-          {
-            "oauth": [
-              "read"
-            ]
-          }
-        ],
-        "parameters": [
-          {
+        "security": [{
+          "oauth": [
+            "read"
+          ]
+        }],
+        "parameters": [{
             "$ref": "#/parameters/LimitParameter"
           },
           {
@@ -2263,15 +2350,12 @@
         "operationId": "get_all_tasks_overview",
         "summary": "get all tasks overview",
         "description": "get all tasks overview in home page",
-        "security": [
-          {
-            "oauth": [
-              "read"
-            ]
-          }
-        ],
-        "parameters": [
-          {
+        "security": [{
+          "oauth": [
+            "read"
+          ]
+        }],
+        "parameters": [{
             "$ref": "#/parameters/LimitParameter"
           },
           {
@@ -2293,18 +2377,14 @@
         "operationId": "save_and_act_on_a_task",
         "summary": "save and act on a task",
         "description": "update and act on a task with given details",
-        "security": [
-          {
-            "oauth": [
-              "write"
-            ]
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/parameters/SaveAndActOnATaskBodyParameter"
-          }
-        ],
+        "security": [{
+          "oauth": [
+            "write"
+          ]
+        }],
+        "parameters": [{
+          "$ref": "#/parameters/SaveAndActOnATaskBodyParameter"
+        }],
         "responses": {
           "201": {
             "$ref": "#/responses/SaveAndActOnATaskTaskSuccessResponse"
@@ -2320,15 +2400,12 @@
         "operationId": "get_task_templates_fields_details",
         "summary": "Get Task Templates Fields Details",
         "description": "Get Task Templates Fileds Details",
-        "security": [
-          {
-            "oauth": [
-              "read"
-            ]
-          }
-        ],
-        "parameters": [
-        ],
+        "security": [{
+          "oauth": [
+            "read"
+          ]
+        }],
+        "parameters": [],
         "responses": {
           "200": {
             "$ref": "#/responses/GetTaskTemplateFieldsResponse"
@@ -2341,18 +2418,14 @@
         "operationId": "select_filter",
         "summary": "update filter status",
         "description": "Update filter selected status",
-        "security": [
-          {
-            "oauth": [
-              "write"
-            ]
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/parameters/SelectFilterRequestBody"
-          }
-        ],
+        "security": [{
+          "oauth": [
+            "write"
+          ]
+        }],
+        "parameters": [{
+          "$ref": "#/parameters/SelectFilterRequestBody"
+        }],
         "responses": {
           "200": {
             "description": "successful",
@@ -2395,18 +2468,14 @@
         "operationId": "create_filter",
         "summary": "create filter",
         "description": "create filter with given details",
-        "security": [
-          {
-            "oauth": [
-              "write"
-            ]
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/parameters/CreateFilterBodyParameter"
-          }
-        ],
+        "security": [{
+          "oauth": [
+            "write"
+          ]
+        }],
+        "parameters": [{
+          "$ref": "#/parameters/CreateFilterBodyParameter"
+        }],
         "responses": {
           "201": {
             "$ref": "#/responses/FilterDetailsResponse"
@@ -2425,15 +2494,12 @@
       "get": {
         "summary": "get filters",
         "operationId": "get_filters",
-        "security": [
-          {
-            "oauth": [
-              "read"
-            ]
-          }
-        ],
-        "parameters": [
-        ],
+        "security": [{
+          "oauth": [
+            "read"
+          ]
+        }],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "Field details",
@@ -2452,15 +2518,12 @@
         "operationId": "update_filter",
         "summary": "update filter",
         "description": "update filter with given details",
-        "security": [
-          {
-            "oauth": [
-              "write"
-            ]
-          }
-        ],
-        "parameters": [
-          {
+        "security": [{
+          "oauth": [
+            "write"
+          ]
+        }],
+        "parameters": [{
             "$ref": "#/parameters/UpdateFilterBodyParameter"
           },
           {
@@ -2485,19 +2548,15 @@
       "delete": {
         "summary": "delete filter",
         "operationId": "delete_filter",
-        "security": [
-          {
-            "oauth": [
-              "write",
-              "delete"
-            ]
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/parameters/DeleteFilterPathParameter"
-          }
-        ],
+        "security": [{
+          "oauth": [
+            "write",
+            "delete"
+          ]
+        }],
+        "parameters": [{
+          "$ref": "#/parameters/DeleteFilterPathParameter"
+        }],
         "responses": {
           "200": {
             "description": "filter deleted"
@@ -2516,15 +2575,12 @@
         "operationId": "get_task_assignees_of_diff_stages_for_an_action",
         "summary": "get assignees of diff stages for a task when an action is performed",
         "description": "get assignees of diff stages for a task when an action is performed",
-        "security": [
-          {
-            "oauth": [
-              "read"
-            ]
-          }
-        ],
-        "parameters": [
-          {
+        "security": [{
+          "oauth": [
+            "read"
+          ]
+        }],
+        "parameters": [{
             "$ref": "#/parameters/TaskIDParameter"
           },
           {
@@ -2546,15 +2602,12 @@
         "operationId": "update_assignees_of_diff_stages_for_a_task",
         "summary": "update assignees of different stages for a given task",
         "description": "update assignees of different stages for a given task",
-        "security": [
-          {
-            "oauth": [
-              "read"
-            ]
-          }
-        ],
-        "parameters": [
-          {
+        "security": [{
+          "oauth": [
+            "read"
+          ]
+        }],
+        "parameters": [{
             "$ref": "#/parameters/TaskIDParameter"
           },
           {
@@ -2579,18 +2632,14 @@
         "operationId": "create_transistion_checklist",
         "summary": "create transition checklist",
         "description": "create transition checklist",
-        "security": [
-          {
-            "oauth": [
-              "read"
-            ]
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/parameters/CreateTransitionChecklistRequestBodyParameter"
-          }
-        ],
+        "security": [{
+          "oauth": [
+            "read"
+          ]
+        }],
+        "parameters": [{
+          "$ref": "#/parameters/CreateTransitionChecklistRequestBodyParameter"
+        }],
         "responses": {
           "201": {
             "$ref": "#/responses/CreateTransitionChecklistSuccessResponse"
@@ -2600,8 +2649,70 @@
           }
         }
       }
+    },
+    "/task/{task_id}/reasons/v1/": {
+      "get": {
+        "operationId": "get_reasons_for_missing_task_due_date_time",
+        "summary": "get reasons for missing task due date time",
+        "description": "get reasons for missing task due date time",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TaskIDParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetTaskReasonsResponse"
+          },
+          "404": {
+            "$ref": "#/responses/GetTaskFailureResponse"
+          },
+          "403": {
+            "$ref": "#/responses/TaskIsNotAssignedToUserResponse"
+          }
+        }
+      },
+      "post": {
+         "operationId": "add_reason_for_missing_due_date_time",
+        "summary": "add reason for missing due date time",
+        "description": "add reason for missing due date time",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TaskIDParameter"
+          },
+          {
+            "$ref": "#/parameters/AddTaskReasonsParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "404": {
+            "$ref": "#/responses/GetTaskFailureResponse"
+          },
+          "400": {
+            "$ref": "#/responses/InvalidTaskReasonsResponse"
+          },
+          "403": {
+            "$ref": "#/responses/TaskIsNotAssignedToUserResponse"
+          }
+        }
+      }
     }
   }
 }
-
-
