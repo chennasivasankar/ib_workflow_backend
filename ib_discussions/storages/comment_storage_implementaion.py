@@ -106,7 +106,8 @@ class CommentStorageImplementation(CommentStorageInterface):
         if is_parent_comment_object_exists:
             comment_object = Comment.objects.create(
                 user_id=user_id, discussion_id=discussion_id,
-                content=comment_content, parent_comment=parent_comment_objects[0]
+                content=comment_content,
+                parent_comment=parent_comment_objects[0]
             )
         else:
             comment_object = Comment.objects.create(
@@ -147,7 +148,7 @@ class CommentStorageImplementation(CommentStorageInterface):
         multi_media_objects = [
             CommentWithMultiMedia(
                 comment_id=comment_id,
-                multi_media=MultiMedia.objects.get_or_create(
+                multi_media=MultiMedia.objects.create(
                     format_type=multi_media_dto.format_type,
                     url=multi_media_dto.url
                 )
@@ -167,8 +168,37 @@ class CommentStorageImplementation(CommentStorageInterface):
 
     def get_comment_id_with_mention_user_id_dtos(self, comment_ids: List[str]) \
             -> List[CommentIdWithMentionUserIdDTO]:
-        pass
+        from ib_discussions.models.comment import CommentWithMentionUserId
+        comment_id_with_mention_user_id_objects = \
+            CommentWithMentionUserId.objects.filter(comment_id__in=comment_ids)
+
+        comment_id_with_mention_user_id_dtos = [
+            CommentIdWithMentionUserIdDTO(
+                comment_id=str(
+                    comment_id_with_mention_user_id_object.comment_id),
+                mention_user_id= \
+                    str(comment_id_with_mention_user_id_object.mention_user_id)
+            )
+            for comment_id_with_mention_user_id_object in
+            comment_id_with_mention_user_id_objects
+        ]
+
+        return comment_id_with_mention_user_id_dtos
 
     def get_multi_media_dtos(self, comment_ids: List[str]) -> \
             List[CommentIdWithMultiMediaDTO]:
-        pass
+        from ib_discussions.models.comment import CommentWithMultiMedia
+        comment_id_with_multi_media_objects = \
+            CommentWithMultiMedia.objects.filter(comment_id__in=comment_ids)
+
+        comment_id_with_multi_media_dtos = [
+            CommentIdWithMultiMediaDTO(
+                comment_id=str(comment_id_with_multi_media_object.comment_id),
+                multi_media_id=str(comment_id_with_multi_media_object.multi_media_id),
+                format_type=comment_id_with_multi_media_object.multi_media.format_type,
+                url=comment_id_with_multi_media_object.multi_media.url
+            )
+            for comment_id_with_multi_media_object in
+            comment_id_with_multi_media_objects
+        ]
+        return comment_id_with_multi_media_dtos

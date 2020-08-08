@@ -61,15 +61,16 @@ class CommentIdWithMentionUserIdDTOFactory(factory.Factory):
     class Meta:
         model = CommentIdWithMentionUserIdDTO
 
-    comment_id = factory.Faker("uuid")
-    user_id = factory.Faker("uuid")
+    comment_id = factory.Faker("uuid4")
+    mention_user_id = factory.Faker("uuid4")
 
 
 class CommentIdWithMultiMediaDTOFactory(factory.Factory):
     class Meta:
         model = CommentIdWithMultiMediaDTO
 
-    comment_id = factory.Faker("uuid")
+    comment_id = factory.Faker("uuid4")
+    multi_media_id = factory.Faker("uuid4")
     format_type = factory.Iterator([
         MultiMediaFormatEnum.IMAGE.value,
         MultiMediaFormatEnum.VIDEO.value

@@ -32,10 +32,12 @@ snapshots['TestCreateCommentPresenterImplementation.test_prepare_response_for_cr
     'multi_media': [
         {
             'format_type': 'IMAGE',
+            'multi_media_id': 'f26c1802-d996-4e89-9644-23ebaf02713a',
             'url': 'https://picsum.photos/200'
         },
         {
             'format_type': 'VIDEO',
+            'multi_media_id': 'a5f52868-8065-403c-abe5-24c09e42bafe',
             'url': 'https://picsum.photos/200'
         }
     ],

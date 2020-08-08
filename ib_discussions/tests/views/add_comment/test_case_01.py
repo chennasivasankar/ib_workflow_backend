@@ -1,7 +1,6 @@
 """
 add comment
 """
-from unittest.mock import patch
 
 import pytest
 from django_swagger_utils.utils.test_v1 import TestUtils
@@ -15,6 +14,12 @@ class TestCase01AddCommentAPITestCase(TestUtils):
     REQUEST_METHOD = REQUEST_METHOD
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['write']}}
+
+    def _get_or_create_user(self):
+        user_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        from ib_users.models import UserAccount
+        user = UserAccount.objects.create(user_id=user_id)
+        return user
 
     @pytest.mark.django_db
     def test_case(self, mocker, snapshot):
@@ -42,6 +47,10 @@ class TestCase01AddCommentAPITestCase(TestUtils):
         user_ids = [
             "31be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
+        mention_user_ids = [
+            "10be920b-7b4c-49e7-8adb-41a0c18da848",
+            "20be920b-7b4c-49e7-8adb-41a0c18da848"
+        ]
         from ib_discussions.tests.common_fixtures.adapters import \
             prepare_get_user_profile_dtos_mock
         get_user_profile_dtos_mock = prepare_get_user_profile_dtos_mock(mocker)
@@ -49,11 +58,27 @@ class TestCase01AddCommentAPITestCase(TestUtils):
             UserProfileDTOFactory
         user_profile_dtos = [
             UserProfileDTOFactory(user_id=user_id)
-            for user_id in user_ids
+            for user_id in (user_ids + mention_user_ids)
         ]
         get_user_profile_dtos_mock.return_value = user_profile_dtos
 
-        body = {'comment_content': comment_content}
+        from ib_discussions.constants.enum import MultiMediaFormatEnum
+        multi_media = [
+            {
+                "format_type": MultiMediaFormatEnum.IMAGE.value,
+                "url": "https://picsum.photos/200"
+            },
+            {
+                "format_type": MultiMediaFormatEnum.VIDEO.value,
+                "url": "https://picsum.photos/200"
+            }
+        ]
+
+        body = {
+            'comment_content': comment_content,
+            'mention_user_ids': mention_user_ids,
+            'multi_media': multi_media
+        }
         path_params = {"discussion_id": discussion_id}
         query_params = {}
         headers = {}

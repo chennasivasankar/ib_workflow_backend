@@ -21,4 +21,4 @@ class TestGetMentionUserIds:
             comment_ids=comment_ids)
 
         # Assert
-        assert mention_user_ids == expected_mention_user_ids
+        assert sorted(mention_user_ids) == sorted(expected_mention_user_ids)

@@ -113,8 +113,8 @@ class GetCommentsForDiscussionPresenterImplementation(
     def _prepare_comment_id_with_multi_media_dto_dict(
             comment_id_with_multi_media_dto: CommentIdWithMultiMediaDTO):
         comment_id_with_multi_media_dict = {
-            "comment_id": str(comment_id_with_multi_media_dto.comment_id),
-            "format_type": comment_id_with_multi_media_dto.format,
+            "multi_media_id": str(comment_id_with_multi_media_dto.multi_media_id),
+            "format_type": comment_id_with_multi_media_dto.format_type,
             "url": comment_id_with_multi_media_dto.url
         }
         return comment_id_with_multi_media_dict
@@ -129,7 +129,8 @@ class GetCommentsForDiscussionPresenterImplementation(
 
         for comment_id_with_mention_user_id_dto in comment_id_with_mention_user_id_dtos:
             comment_id = str(comment_id_with_mention_user_id_dto.comment_id)
-            user_id = str(comment_id_with_mention_user_id_dto.user_id)
-            comment_id_wise_mention_user_details_list_dict[comment_id] = \
+            user_id = str(comment_id_with_mention_user_id_dto.mention_user_id)
+            comment_id_wise_mention_user_details_list_dict[comment_id].append(
                 user_id_wise_user_details_dict[user_id]
+            )
         return comment_id_wise_mention_user_details_list_dict

@@ -45,11 +45,12 @@ class DiscussionIdWithCommentsCountDTO:
 @dataclass
 class CommentIdWithMentionUserIdDTO:
     comment_id: str
-    user_id: str
+    mention_user_id: str
 
 
 @dataclass
 class CommentIdWithMultiMediaDTO:
     comment_id: str
-    format: MultiMediaFormatEnum
+    multi_media_id: str
+    format_type: MultiMediaFormatEnum
     url: str

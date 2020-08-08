@@ -50,7 +50,8 @@ class CreateCommentPresenterImplementation(CreateCommentPresenterInterface,
 
         multi_media_list = [
             {
-                "format_type": multi_media_dto.format,
+                "multi_media_id": str(multi_media_dto.multi_media_id),
+                "format_type": multi_media_dto.format_type,
                 "url": multi_media_dto.url
             }
             for multi_media_dto in comment_id_with_multi_media_dtos
@@ -62,7 +63,7 @@ class CreateCommentPresenterImplementation(CreateCommentPresenterInterface,
             )
         mention_users = [
             user_id_wise_user_details_dict[
-                comment_id_with_mention_user_id_dto.user_id
+                comment_id_with_mention_user_id_dto.mention_user_id
             ]
             for comment_id_with_mention_user_id_dto in
             comment_id_with_mention_user_id_dtos
@@ -79,6 +80,7 @@ class CreateCommentPresenterImplementation(CreateCommentPresenterInterface,
             "multi_media": multi_media_list,
             "mention_users": mention_users
         }
+        print(multi_media_list)
         return self.prepare_200_success_response(response_dict=response)
 
     @staticmethod

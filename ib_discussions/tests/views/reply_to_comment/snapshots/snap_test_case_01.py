@@ -18,5 +18,5 @@ snapshots['TestCase01ReplyToCommentAPITestCase.test_case body'] = {
     'comment_content': 'content',
     'comment_id': '01be920b-7b4c-49e7-8adb-41a0c18da848',
     'created_at': '2020-05-01 00:00:00',
-    'is_editable': False
+    'is_editable': True
 }

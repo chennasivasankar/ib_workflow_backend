@@ -60,21 +60,28 @@ class TestCreateCommentPresenterImplementation:
             for user_id in user_ids
         ]
 
+        multi_media_ids = [
+            "f26c1802-d996-4e89-9644-23ebaf02713a",
+            "a5f52868-8065-403c-abe5-24c09e42bafe"
+        ]
+
         from ib_discussions.tests.factories.storage_dtos import \
             CommentIdWithMultiMediaDTOFactory
-        CommentIdWithMultiMediaDTOFactory.format.reset()
+        CommentIdWithMultiMediaDTOFactory.format_type.reset()
         comment_id_with_multi_media_dtos = [
-            CommentIdWithMultiMediaDTOFactory(comment_id=comment_id)
-            for _ in range(2)
+            CommentIdWithMultiMediaDTOFactory(
+                multi_media_id=multi_media_id,
+                comment_id=comment_id)
+            for multi_media_id in multi_media_ids
         ]
 
         from ib_discussions.tests.factories.storage_dtos import \
             CommentIdWithMentionUserIdDTOFactory
         comment_id_with_mention_user_id_dtos = [
             CommentIdWithMentionUserIdDTOFactory(
-                comment_id=comment_id, user_id=user_ids[0]),
+                comment_id=comment_id, mention_user_id=user_ids[0]),
             CommentIdWithMentionUserIdDTOFactory(
-                comment_id=comment_id, user_id=user_ids[1])
+                comment_id=comment_id, mention_user_id=user_ids[1])
         ]
 
         # Act

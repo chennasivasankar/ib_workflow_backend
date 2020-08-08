@@ -177,6 +177,10 @@
     "Multimedia": {
       "type": "object",
       "properties": {
+        "multi_media_id": {
+          "type": "string",
+          "format": "uuid"
+        },
         "format_type": {
           "type": "string",
           "enum": [
@@ -189,8 +193,9 @@
         }
       },
       "required": [
-        "format",
-        "url"
+        "format_type",
+        "url",
+        "multi_media_id"
       ]
     },
     "Reply": {
@@ -359,7 +364,23 @@
           "multi_media": {
             "type": "array",
             "items": {
-              "$ref": "#/definitions/Multimedia"
+              "type": "object",
+              "properties": {
+                "format_type": {
+                  "type": "string",
+                  "enum": [
+                    "IMAGE",
+                    "VIDEO"
+                  ]
+                },
+                "url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "format_type",
+                "url"
+              ]
             }
           }
         },
