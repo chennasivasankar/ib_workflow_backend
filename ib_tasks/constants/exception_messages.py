@@ -265,6 +265,28 @@ TRANSITION_TEMPLATE_DOES_NOT_EXISTS = (
     "TRANSITION_TEMPLATE_DOES_NOT_EXISTS"
 )
 
+DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF = (
+    "duplicate same gof orders given for gof {}, duplicates are {}",
+    "DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF"
+)
+
+INVALID_TRANSITION_CHECKLIST_TEMPLATE_ID = (
+    "please give a valid transition checklist template id, {} is invalid \
+    transition checklist template id",
+    "INVALID_TRANSITION_CHECKLIST_TEMPLATE_ID"
+)
+
+INVALID_STAGE_ID = (
+    "please give a valid stage id, {} is invalid stage id",
+    "INVALID_STAGE_ID"
+)
+
+TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION = (
+    "given transition template id {} is not linked to given stage id {} and \
+    action id {}",
+    "TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION"
+)
+
 INVALID_STAGE_IDS = (
     "Invalid stage ids that you have sent are: {},"
     "please send valid stage ids",
@@ -275,3 +297,5 @@ STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE = (
     "please assign valid assignees for stages",
     "STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE"
 )
+
+INVALID_STAGE_IDS_FOR_TASK = "Invalid stage_ids : {} for the task_id: {}"

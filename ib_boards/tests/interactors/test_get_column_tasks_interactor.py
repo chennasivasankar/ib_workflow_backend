@@ -5,17 +5,17 @@ Author: Pavankumar Pamuru
 """
 from unittest.mock import Mock
 
-import pytest
 import factory
+import pytest
 
-from ib_boards.constants.enum import VIEWTYPE
+from ib_boards.constants.enum import ViewType
 from ib_boards.interactors.dtos import ColumnTasksParametersDTO, \
     TaskIdStageDTO, \
-    TaskCompleteDetailsDTO, ColumnTaskIdsDTO
+    TaskCompleteDetailsDTO
 from ib_boards.interactors.get_column_tasks_interactor import \
     GetColumnTasksInteractor
 from ib_boards.tests.factories.interactor_dtos import ActionDTOFactory, \
-    TaskStatusDTOFactory, FieldDetailsDTOFactory, GetTaskDetailsDTOFactory, \
+    FieldDetailsDTOFactory, GetTaskDetailsDTOFactory, \
     ColumnTaskIdsDTOFactory, TaskStageIdDTOFactory
 from ib_boards.tests.factories.storage_dtos import TaskDTOFactory
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
@@ -43,7 +43,7 @@ class TestGetColumnTasksInteractor:
     def get_column_tasks_dto(self):
         return ColumnTasksParametersDTO(
             user_id=1,
-            view_type=VIEWTYPE.LIST.value,
+            view_type=ViewType.LIST.value,
             column_id='COLUMN_ID_1',
             offset=0,
             limit=5
@@ -53,7 +53,7 @@ class TestGetColumnTasksInteractor:
     def get_column_tasks_dto_with_invalid_offset(self):
         return ColumnTasksParametersDTO(
             user_id=1,
-            view_type=VIEWTYPE.LIST.value,
+            view_type=ViewType.LIST.value,
             column_id='COLUMN_ID_1',
             offset=-1,
             limit=1
@@ -63,7 +63,7 @@ class TestGetColumnTasksInteractor:
     def get_column_tasks_dto_with_invalid_limit(self):
         return ColumnTasksParametersDTO(
             user_id=1,
-            view_type=VIEWTYPE.LIST.value,
+            view_type=ViewType.LIST.value,
             column_id='COLUMN_ID_1',
             offset=1,
             limit=-1

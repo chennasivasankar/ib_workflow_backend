@@ -36,6 +36,11 @@ class AuthService:
 
     def get_permitted_user_details(self, role_ids: List[str]) \
             -> List[UserDetailsDTO]:
-        user_details_dto = self.interface.get_permitted_user_details(
+        user_profile_details_dtos = self.interface.get_user_details_for_given_role_ids(
             role_ids=role_ids)
-        return user_details_dto
+        user_details_dtos = [
+            UserDetailsDTO(user_id=each_user_profile_detail_dto.user_id,
+                           user_name=each_user_profile_detail_dto.name,
+                           profile_pic_url=each_user_profile_detail_dto.profile_pic_url)
+            for each_user_profile_detail_dto in user_profile_details_dtos]
+        return user_details_dtos

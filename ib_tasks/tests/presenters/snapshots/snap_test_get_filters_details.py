@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestGetFiltersDetailsPresenter.test_get_filter_details filters'] = [

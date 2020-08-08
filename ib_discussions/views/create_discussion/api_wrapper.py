@@ -7,8 +7,9 @@ from .validator_class import ValidatorClass
 def api_wrapper(*args, **kwargs):
     user_object = kwargs["user"]
     request_data = kwargs["request_data"]
-    from ib_discussions.interactors.DTOs.common_dtos import DiscussionDTO
-    discussion_dto = DiscussionDTO(
+    from ib_discussions.interactors.dtos.dtos import \
+        DiscussionWithEntityDetailsDTO
+    discussion_dto = DiscussionWithEntityDetailsDTO(
         user_id=user_object.user_id,
         entity_type=request_data["entity_type"],
         entity_id=request_data["entity_id"],
@@ -29,6 +30,6 @@ def api_wrapper(*args, **kwargs):
     interactor = DiscussionInteractor(storage=storage)
 
     response = interactor.create_discussion_wrapper(
-        discussion_dto=discussion_dto, presenter=presenter
+        discussion_with_entity_details_dto=discussion_dto, presenter=presenter
     )
     return response

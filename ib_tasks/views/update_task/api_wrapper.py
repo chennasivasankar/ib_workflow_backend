@@ -1,48 +1,82 @@
+from typing import Dict, List
+
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
+
 from .validator_class import ValidatorClass
+from ...interactors.create_or_update_task.update_task_interactor import \
+    UpdateTaskInteractor
+from ...interactors.task_dtos import UpdateTaskDTO, FieldValuesDTO
+from ...presenters.update_task_presenter import \
+    UpdateTaskPresenterImplementation
+from ...storages.elasticsearch_storage_implementation \
+    import ElasticSearchStorageImplementation
+from ...storages.fields_storage_implementation import \
+    FieldsStorageImplementation
+from ...storages.gof_storage_implementation import GoFStorageImplementation
+from ...storages.storage_implementation import StorageImplementation, \
+    StagesStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    # ---------MOCK IMPLEMENTATION---------
+    user_id = kwargs['user'].user_id
+    request_data = kwargs['request_data']
+    task_id = request_data['task_id']
+    task_gofs = request_data['task_gofs']
 
-    try:
-        from ib_tasks.views.update_task.request_response_mocks \
-            import REQUEST_BODY_JSON
-        body = REQUEST_BODY_JSON
-    except ImportError:
-        body = {}
+    from ib_tasks.interactors.task_dtos import GoFFieldsDTO
 
-    test_case = {
-        "path_params": {},
-        "query_params": {},
-        "header_params": {},
-        "body": body,
-        "securities": [{'oauth': ['write']}]
-    }
+    task_gofs_dtos = []
+    for task_gof in task_gofs:
+        gof_field_dto = GoFFieldsDTO(
+            gof_id=task_gof['gof_id'],
+            same_gof_order=task_gof['same_gof_order'],
+            field_values_dtos=get_field_values_dtos(
+                fields=task_gof['gof_fields'])
+        )
+        task_gofs_dtos.append(gof_field_dto)
 
-    from django_swagger_utils.drf_server.utils.server_gen.mock_response \
-        import mock_response
-    try:
-        response = ''
-        status_code = 200
-        if '200' in ['201', '400']:
-            from ib_tasks.views.update_task.request_response_mocks \
-                import RESPONSE_200_JSON
-            response = RESPONSE_200_JSON
-            status_code = 200
-        elif '201' in ['201', '400']:
-            from ib_tasks.views.update_task.request_response_mocks \
-                import RESPONSE_201_JSON
-            response = RESPONSE_201_JSON
-            status_code = 201
-    except ImportError:
-        response = ''
-        status_code = 200
-    response_tuple = mock_response(
-        app_name="ib_tasks", test_case=test_case,
-        operation_name="update_task",
-        kwargs=kwargs, default_response_body=response,
-        group_name="", status_code=status_code)
-    return response_tuple
+    task_dto = UpdateTaskDTO(
+        task_id=task_id,
+        created_by_id=user_id,
+        gof_fields_dtos=task_gofs_dtos
+    )
+
+    from ib_tasks.storages.tasks_storage_implementation \
+        import TasksStorageImplementation
+    from ib_tasks.storages.create_or_update_task_storage_implementation \
+        import \
+        CreateOrUpdateTaskStorageImplementation
+    task_storage = TasksStorageImplementation()
+    create_task_storage = CreateOrUpdateTaskStorageImplementation()
+    storage = StorageImplementation()
+    gof_storage = GoFStorageImplementation()
+    field_storage = FieldsStorageImplementation()
+    stage_storage = StagesStorageImplementation()
+    elastic_storage = ElasticSearchStorageImplementation()
+
+    presenter = UpdateTaskPresenterImplementation()
+    interactor = UpdateTaskInteractor(
+        task_storage=task_storage, gof_storage=gof_storage,
+        create_task_storage=create_task_storage,
+        storage=storage, field_storage=field_storage,
+        stage_storage=stage_storage,
+        elastic_storage=elastic_storage
+    )
+
+    response = interactor.update_task_wrapper(
+        task_dto=task_dto, presenter=presenter
+    )
+    return response
+
+
+def get_field_values_dtos(fields: List[Dict]) -> List[FieldValuesDTO]:
+    field_values_dtos = [
+        FieldValuesDTO(
+            field_id=field['field_id'],
+            field_response=field['field_response']
+        )
+        for field in fields
+    ]
+    return field_values_dtos

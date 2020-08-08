@@ -1,29 +1,31 @@
 from unittest.mock import create_autospec, patch
+
 import pytest
 
 from ib_boards.exceptions.custom_exceptions import InvalidTemplateFields
-from ib_tasks.exceptions.roles_custom_exceptions import InvalidStageRolesException
-from ib_tasks.interactors.storage_interfaces.get_task_dtos import TemplateFieldsDTO
+from ib_tasks.exceptions.roles_custom_exceptions import \
+    InvalidStageRolesException
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageValues, \
     DuplicateStageIds, InvalidStageDisplayLogic, \
     InvalidStagesDisplayName
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidStagesTaskTemplateId, InvalidTaskTemplateIds
-from ib_tasks.interactors.stages_dtos import StageLogicAttributes
-from ib_tasks.interactors.stage_display_logic import \
-    StageDisplayLogicInteractor
-
 from ib_tasks.interactors.create_or_update_stages import \
     CreateOrUpdateStagesInteractor
+from ib_tasks.interactors.stage_display_logic import \
+    StageDisplayLogicInteractor
+from ib_tasks.interactors.stages_dtos import StageLogicAttributes
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
+    TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_template_storage_interface import \
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface\
+    import \
     TaskTemplateStorageInterface
-from ib_tasks.tests.factories.storage_dtos import (
-    StageDTOFactory, TaskStagesDTOFactory)
-from ib_tasks.tests.factories.storage_dtos import ValidStageDTOFactory
+from ib_tasks.tests.factories.storage_dtos import StageDTOFactory, \
+    TaskStagesDTOFactory, ValidStageDTOFactory
 
 
 class TestCreateOrUpdateStageInformation:
@@ -346,52 +348,52 @@ class TestCreateOrUpdateStageInformation:
         task_template_storage.get_valid_template_ids_in_given_template_ids. \
             assert_called_once_with(task_template_ids)
 
-    @patch.object(StageDisplayLogicInteractor,
-                  'get_stage_display_logic_attributes')
-    def test_validate_stage_display_logic_invalid_stage_display_logic_raises_exception(
-            self, logic_interactor, mocker, task_template_storage):
-        # Arrange
-
-        StageDTOFactory.reset_sequence()
-        stages_details = StageDTOFactory.create_batch(
-            stage_display_logic="", size=2
-        )
-        storage = create_autospec(StageStorageInterface)
-        task_storage = create_autospec(TaskStorageInterface)
-        logic_interactor.return_value = StageLogicAttributes(
-            status_id="status1",
-            stage_id="PR_APPROVED"
-        )
-        storage.get_existing_stage_ids.return_value = []
-        task_template_storage.get_valid_template_ids_in_given_template_ids. \
-            return_value = ["task_template_id_1", "task_template_id_2"]
-
-        task_storage.get_field_ids_for_given_task_template_ids.return_value = \
-            [TemplateFieldsDTO(
-                task_template_id="task_template_id_1",
-                field_ids=["field_id_1", "field_id_2"]
-            ),
-                TemplateFieldsDTO(
-                    task_template_id="task_template_id_2",
-                    field_ids=["field_id_1", "field_id_2"]
-                )]
-        from ib_tasks.tests.common_fixtures.adapters.roles_service \
-            import get_valid_role_ids_in_given_role_ids
-        mocker_obj = get_valid_role_ids_in_given_role_ids(mocker)
-        mocker_obj.return_value = ["role_id_1", "role_id_2", "role_id_0"]
-
-        stage_interactor = CreateOrUpdateStagesInteractor(
-            stage_storage=storage, task_storage=task_storage,
-            task_template_storage=task_template_storage
-        )
-
-        # Act
-        with pytest.raises(InvalidStageDisplayLogic) as error:
-            stage_interactor.create_or_update_stages(
-                stages_details=stages_details
-            )
-
-        # Assert
+    # @patch.object(StageDisplayLogicInteractor,
+    #               'get_stage_display_logic_attributes')
+    # def test_validate_stage_display_logic_invalid_stage_display_logic_raises_exception(
+    #         self, logic_interactor, mocker, task_template_storage):
+    #     # Arrange
+    #
+    #     StageDTOFactory.reset_sequence()
+    #     stages_details = StageDTOFactory.create_batch(
+    #         stage_display_logic="", size=2
+    #     )
+    #     storage = create_autospec(StageStorageInterface)
+    #     task_storage = create_autospec(TaskStorageInterface)
+    #     logic_interactor.return_value = StageLogicAttributes(
+    #         status_id="status1",
+    #         stage_id="PR_APPROVED"
+    #     )
+    #     storage.get_existing_stage_ids.return_value = []
+    #     task_template_storage.get_valid_template_ids_in_given_template_ids. \
+    #         return_value = ["task_template_id_1", "task_template_id_2"]
+    #
+    #     task_storage.get_field_ids_for_given_task_template_ids.return_value = \
+    #         [TemplateFieldsDTO(
+    #             task_template_id="task_template_id_1",
+    #             field_ids=["field_id_1", "field_id_2"]
+    #         ),
+    #             TemplateFieldsDTO(
+    #                 task_template_id="task_template_id_2",
+    #                 field_ids=["field_id_1", "field_id_2"]
+    #             )]
+    #     from ib_tasks.tests.common_fixtures.adapters.roles_service \
+    #         import get_valid_role_ids_in_given_role_ids
+    #     mocker_obj = get_valid_role_ids_in_given_role_ids(mocker)
+    #     mocker_obj.return_value = ["role_id_1", "role_id_2", "role_id_0"]
+    #
+    #     stage_interactor = CreateOrUpdateStagesInteractor(
+    #         stage_storage=storage, task_storage=task_storage,
+    #         task_template_storage=task_template_storage
+    #     )
+    #
+    #     # Act
+    #     with pytest.raises(InvalidStageDisplayLogic) as error:
+    #         stage_interactor.create_or_update_stages(
+    #             stages_details=stages_details
+    #         )
+    #
+    #     # Assert
 
     def test_validate_stage_display_name_invalid_stage_display_name_raises_exception(
             self, stage_storage, task_storage, task_template_storage):

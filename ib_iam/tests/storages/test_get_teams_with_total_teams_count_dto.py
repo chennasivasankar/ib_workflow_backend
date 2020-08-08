@@ -24,11 +24,9 @@ class TestGetTeamsWithTotalTeamsCountDto:
         ]
         expected_dto = TeamsWithTotalTeamsCountDTOFactory(
             total_teams_count=3,
-            teams=team_dtos
-        )
+            teams=team_dtos)
 
         actual_dto = storage.get_teams_with_total_teams_count_dto(
-            pagination_dto=pagination_dto
-        )
+            pagination_dto=pagination_dto)
 
         assert actual_dto == expected_dto

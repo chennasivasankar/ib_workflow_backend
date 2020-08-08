@@ -31,7 +31,8 @@ APPS = [
     "ib_iam",
     "ib_tasks",
     "ib_boards",
-    "ib_discussions"
+    "ib_discussions",
+    "ib_utility_tools",
 ]
 
 INSTALLED_APPS += THIRD_PARTY_APPS
@@ -79,7 +80,8 @@ SWAGGER_UTILS = {
         "ib_tasks": {"dsu_version": "1.0"},
         "ib_boards": {"dsu_version": "1.0"},
         "ib_discussions": {"dsu_version": "1.0"},
-        "django_elasticsearch_dsl": {}
+        "ib_utility_tools": {"dsu_version": "1.0"}
+
     },
     "HOST": os.environ.get('APIGATEWAY_ENDPOINT', '127.0.0.1:8000'),
 }
@@ -95,7 +97,7 @@ DEFAULT_OAUTH_APPLICATION_NAME = os.environ.get(
     "DEFAULT_OAUTH_APPLICATION_NAME", "")
 DEFAULT_OAUTH_CLIENT_ID = os.environ.get("DEFAULT_OAUTH_CLIENT_ID", "")
 DEFAULT_OAUTH_CLIENT_SECRET = os.environ.get("DEFAULT_OAUTH_CLIENT_SECRET", "")
-DEFAULT_OAUTH_SCOPES = os.environ.get("DEFAULT_OAUTH_SCOPES", "read write")
+DEFAULT_OAUTH_SCOPES = os.environ.get("DEFAULT_OAUTH_SCOPES", "read write update delete")
 DEFAULT_ACCESS_TOKEN_EXPIRY_IN_SECONDS = int(
     os.environ.get("DEFAULT_ACCESS_TOKEN_EXPIRY_IN_SECONDS", "100000000"))
 

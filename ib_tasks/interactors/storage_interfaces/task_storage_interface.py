@@ -12,14 +12,11 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskIdWithStageValueDTO, StageIdWithTemplateIdDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
-    StageDTO
+    TaskIdWithStageValueDTO, StageIdWithTemplateIdDTO, TaskStageIdsDTO, \
+    TaskStagesDTO, StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
-from ib_tasks.interactors.task_dtos import CreateTaskLogDTO
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
+from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO
 
 
 class TaskStorageInterface(abc.ABC):
@@ -106,4 +103,8 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def create_task_log(self, create_task_log_dto: CreateTaskLogDTO):
+        pass
+
+    @abc.abstractmethod
+    def create_elastic_task(self, task_id: int, elastic_task_id: str):
         pass

@@ -4,7 +4,8 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos \
     import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos \
     import TaskDetailsDTO, TaskGoFDTO, TaskGoFFieldDTO
-from ib_tasks.interactors.storage_interfaces.status_dtos import StatusVariableDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import \
+    StatusVariableDTO
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 

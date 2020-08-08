@@ -5,7 +5,6 @@ import pytest
 from ib_tasks.constants.enum import VIEWTYPE
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidTaskStageIds
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds
-
 from ib_tasks.interactors.get_task_fields_and_actions import \
     GetTaskFieldsAndActionsInteractor
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \

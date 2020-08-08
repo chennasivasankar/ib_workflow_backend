@@ -24,6 +24,12 @@ def api_wrapper(*args, **kwargs):
     request_data = kwargs['request_data']
     task_template_id = request_data['task_template_id']
     action_id = request_data['action_id']
+    title = request_data['title']
+    description = request_data['description']
+    start_date = request_data['start_date']
+    due_date = request_data['due_date']['date']
+    due_time = request_data['due_date']['time']
+    priority = request_data['priority']
     task_gofs = request_data['task_gofs']
 
     from ib_tasks.interactors.task_dtos import GoFFieldsDTO, CreateTaskDTO
@@ -39,10 +45,10 @@ def api_wrapper(*args, **kwargs):
         task_gofs_dtos.append(gof_field_dto)
 
     task_dto = CreateTaskDTO(
-        task_template_id=task_template_id,
-        created_by_id=user_id,
-        action_id=action_id,
-        gof_fields_dtos=task_gofs_dtos
+        task_template_id=task_template_id, created_by_id=user_id,
+        action_id=action_id, title=title, description=description,
+        start_date=start_date, due_date=due_date, due_time=due_time,
+        priority=priority, gof_fields_dtos=task_gofs_dtos
     )
 
     from ib_tasks.storages.tasks_storage_implementation \
@@ -51,6 +57,8 @@ def api_wrapper(*args, **kwargs):
         import CreateOrUpdateTaskStorageImplementation
     from ib_tasks.interactors.create_or_update_task.create_task_interactor \
         import CreateTaskInteractor
+    from ib_tasks.storages.elasticsearch_storage_implementation \
+        import ElasticSearchStorageImplementation
     task_storage = TasksStorageImplementation()
     create_task_storage = CreateOrUpdateTaskStorageImplementation()
     storage = StorageImplementation()
@@ -60,6 +68,7 @@ def api_wrapper(*args, **kwargs):
     task_template_storage = TaskTemplateStorageImplementation()
     action_storage = ActionsStorageImplementation()
     presenter = CreateTaskPresenterImplementation()
+    elastic_storage = ElasticSearchStorageImplementation()
 
     interactor = CreateTaskInteractor(
         task_storage=task_storage,
@@ -67,7 +76,8 @@ def api_wrapper(*args, **kwargs):
         storage=storage, field_storage=field_storage,
         stage_storage=stage_storage, gof_storage=gof_storage,
         task_template_storage=task_template_storage,
-        action_storage=action_storage
+        action_storage=action_storage,
+        elastic_storage=elastic_storage
     )
 
     response = interactor.create_task_wrapper(

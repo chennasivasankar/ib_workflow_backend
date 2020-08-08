@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestCreateTaskTemplate.test_with_invalid_template_id_raises_exception message'] = 'Invalid value for template id!, template id should not be empty'

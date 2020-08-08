@@ -1,4 +1,3 @@
-from functools import reduce
 def get_task_assignees_of_diff_stages_for_an_action(*args, **kwargs):  # pylint: disable=invalid-name
     """
     Note: replace below mock implementation with your actual implementation

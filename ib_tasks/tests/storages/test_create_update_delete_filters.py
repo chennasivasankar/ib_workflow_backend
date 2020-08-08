@@ -3,11 +3,11 @@ Created on: 06/08/20
 Author: Pavankumar Pamuru
 
 """
+import factory
 import pytest
 
-import factory
-
-from ib_tasks.tests.factories.models import TaskTemplateFactory, FilterFactory, \
+from ib_tasks.tests.factories.models import TaskTemplateFactory, \
+    FilterFactory, \
     FieldFactory, FilterConditionFactory, FieldRoleFactory, \
     GoFToTaskTemplateFactory
 
