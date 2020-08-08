@@ -96,6 +96,13 @@ class GetNextStagesRandomAssigneesOfATaskInteractor:
             task_stages_having_assignee_dtos]
         task_stage_ids_not_having_assignees = list(
             set(db_stage_ids) - set(task_stage_ids_having_assignees))
+        assignee_ids_assigned_to_stages = [
+            each_task_stages_having_assignee_dto.assignee_id for
+            each_task_stages_having_assignee_dto in
+            task_stages_having_assignee_dtos]
+        task_stages_having_assignee_details_dtos = self.\
+            _get_assignee_details_for_task_stages_having_assignees(
+            assignee_ids_assigned_to_stages, task_stages_having_assignee_dtos)
 
         stage_role_dtos = \
             self.stage_storage.get_stage_role_dtos_given_db_stage_ids(
@@ -108,6 +115,29 @@ class GetNextStagesRandomAssigneesOfATaskInteractor:
             _get_random_permitted_user_details_dto_of_stage_id(
             role_ids_group_by_stage_id_dtos, stage_detail_dtos)
         return stage_with_user_details_dtos
+
+    @staticmethod
+    def _get_assignee_details_for_task_stages_having_assignees(
+            assignee_ids_assigned_to_stages: List[str],
+            task_stages_having_assignee_dtos):
+        auth_service_adapter = AuthService()
+        user_details_dtos = auth_service_adapter.get_user_details(
+            user_ids=assignee_ids_assigned_to_stages)
+        task_stages_having_assignee_details_dtos = []
+        for task_stages_having_assignee_dto in task_stages_having_assignee_dtos:
+            for user_details_dto in user_details_dtos:
+                if user_details_dto.user_id == task_stages_having_assignee_dto.assignee_id:
+                    stage_with_user_details_dto = StageWithUserDetailsDTO(
+                        db_stage_id=task_stages_having_assignee_dto.db_stage_id,
+                        assignee_id=task_stages_having_assignee_dto.assignee_id,
+                        assignee_name=user_details_dto.user_name,
+                        profile_pic_url=user_details_dto.
+                            profile_pic_url,
+                        stage_display_name=task_stages_having_assignee_dto.stage_display_name
+                    )
+                    task_stages_having_assignee_details_dtos.append(
+                        stage_with_user_details_dto)
+        return task_stages_having_assignee_details_dtos
 
     @staticmethod
     def _get_random_permitted_user_details_dto_of_stage_id(
