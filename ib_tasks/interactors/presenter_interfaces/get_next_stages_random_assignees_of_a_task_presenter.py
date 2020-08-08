@@ -1,4 +1,7 @@
 import abc
+from typing import List
+
+from ib_tasks.interactors.stages_dtos import StageWithUserDetailsDTO
 
 
 class GetNextStagesRandomAssigneesOfATaskPresenterInterface(abc.ABC):
@@ -27,6 +30,6 @@ class GetNextStagesRandomAssigneesOfATaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_next_stages_random_assignees_of_a_task_response(self,
-                                                            stage_with_user_details_dtos):
+    def get_next_stages_random_assignees_of_a_task_response(
+            self, stage_with_user_details_dtos: List[StageWithUserDetailsDTO]):
         pass
