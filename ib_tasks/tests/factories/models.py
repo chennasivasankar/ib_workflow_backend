@@ -283,3 +283,4 @@ class StagePermittedRolesFactory(factory.django.DjangoModelFactory):
     role_id = factory.Iterator(
         ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"]
     )
+

@@ -74,7 +74,7 @@ class GetNextStagesRandomAssigneesOfATaskInteractor:
                 method_name=exception.method_name)
 
     def get_next_stages_random_assignees_of_a_task(self, task_id: int,
-                                                   action_id: int)-> List[
+                                                   action_id: int) -> List[
         StageWithUserDetailsDTO]:
         self._validate_task_id(task_id=task_id)
         self._validate_action_id(action_id=action_id)
@@ -85,14 +85,27 @@ class GetNextStagesRandomAssigneesOfATaskInteractor:
             updated_status_variable_dtos)
         stage_detail_dtos = self.stage_storage. \
             get_stage_detail_dtos_given_stage_ids(next_stages_of_task)
+
         db_stage_ids = self._get_db_stage_ids(stage_detail_dtos)
+        task_stages_having_assignee_dtos = self.stage_storage. \
+            get_stage_details_having_assignees_in_given_stage_ids(
+            task_id, db_stage_ids)
+        task_stage_ids_having_assignees = [
+            each_task_stages_having_assignee_dto.db_stage_id for
+            each_task_stages_having_assignee_dto in
+            task_stages_having_assignee_dtos]
+        task_stage_ids_not_having_assignees = list(
+            set(db_stage_ids) - set(task_stage_ids_having_assignees))
+
         stage_role_dtos = \
             self.stage_storage.get_stage_role_dtos_given_db_stage_ids(
-                db_stage_ids)
+                task_stage_ids_not_having_assignees)
         role_ids_group_by_stage_id_dtos = \
             self._get_role_ids_group_by_stage_id_dtos(
-                stage_ids=db_stage_ids, stage_role_dtos=stage_role_dtos)
-        stage_with_user_details_dtos = self._get_random_permitted_user_details_dto_of_stage_id(
+                stage_ids=task_stage_ids_not_having_assignees,
+                stage_role_dtos=stage_role_dtos)
+        stage_with_user_details_dtos = self. \
+            _get_random_permitted_user_details_dto_of_stage_id(
             role_ids_group_by_stage_id_dtos, stage_detail_dtos)
         return stage_with_user_details_dtos
 
