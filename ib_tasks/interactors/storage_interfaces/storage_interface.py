@@ -11,6 +11,7 @@ from ib_tasks.interactors.storage_interfaces.gof_dtos \
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO, StageValueDTO, StageDisplayValueDTO
 from ib_tasks.interactors.stages_dtos import StageActionDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import StatusVariableDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
 
 
 class StorageInterface(abc.ABC):
@@ -132,5 +133,6 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_task_due_missing_reasons(self, task_id: int) -> :
+    def get_task_due_missing_reasons_details(self, task_id: int) -> \
+            List[TaskDueMissingDTO]:
         pass
