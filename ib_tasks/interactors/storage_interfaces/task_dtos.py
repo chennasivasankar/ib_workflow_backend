@@ -1,4 +1,6 @@
 from dataclasses import dataclass
+from datetime import datetime
+from typing import List
 
 
 @dataclass
@@ -21,7 +23,11 @@ class TaskGoFFieldDTO:
     field_response: str
     task_gof_id: int
 
+
 @dataclass
 class TaskDueMissingReasons:
     task_id: int
-    due_date_time
+    due_date_time: datetime
+    due_missed_count: int
+    reason: str
+    users: List[str]
