@@ -696,7 +696,7 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "COMMENT_ID_NOT_FOUND"
+                  "DISCUSSION_ID_NOT_FOUND"
                 ]
               }
             },
