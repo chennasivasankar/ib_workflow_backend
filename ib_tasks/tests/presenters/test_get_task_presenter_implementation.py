@@ -107,11 +107,7 @@ class TestGetTaskPresenterImplementation:
             AssigneeDetailsDTOFactory
         assignee_details_dtos = [
             AssigneeDetailsDTOFactory(
-                assignee_id="123e4567-e89b-12d3-a456-426614174001"),
-            # AssigneeDetailsDTOFactory(
-            #     assignee_id="123e4567-e89b-12d3-a456-426614174002"),
-            # AssigneeDetailsDTOFactory(
-            #     assignee_id="123e4567-e89b-12d3-a456-426614174003")
+                assignee_id="123e4567-e89b-12d3-a456-426614174001")
         ]
         return assignee_details_dtos
 
@@ -122,10 +118,6 @@ class TestGetTaskPresenterImplementation:
         stage_assignee_dtos = [
             StageAssigneeDTOFactory(
                 assignee_id="123e4567-e89b-12d3-a456-426614174001"),
-            # StageAssigneeDTOFactory(
-            #     assignee_id="123e4567-e89b-12d3-a456-426614174002"),
-            # StageAssigneeDTOFactory(
-            #     assignee_id="123e4567-e89b-12d3-a456-426614174003"),
             StageAssigneeDTOFactory(assignee_id=None)
         ]
         return stage_assignee_dtos
@@ -144,15 +136,7 @@ class TestGetTaskPresenterImplementation:
             StageAssigneeDetailsDTOFactory(
                 task_stage_id=stage_assignee_dtos[1].task_stage_id,
                 stage_id=stage_assignee_dtos[1].stage_id,
-                assignee_details_dto=None),
-            # StageAssigneeDetailsDTOFactory(
-            #     task_stage_id=stage_assignee_dtos[2].task_stage_id,
-            #     stage_id=stage_assignee_dtos[2].stage_id,
-            #     assignee_details_dto=assignee_details_dtos[2]),
-            # StageAssigneeDetailsDTOFactory(
-            #     task_stage_id=stage_assignee_dtos[3].task_stage_id,
-            #     stage_id=stage_assignee_dtos[3].stage_id,
-            #     assignee_details_dto=None)
+                assignee_details_dto=None)
         ]
         return stage_assignee_details_dtos
 
