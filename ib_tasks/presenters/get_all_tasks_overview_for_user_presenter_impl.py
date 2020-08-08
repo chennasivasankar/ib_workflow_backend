@@ -63,6 +63,16 @@ class GetAllTasksOverviewForUserPresenterImpl(
                                             all_tasks_overview_details_dto:
                                             AllTasksOverviewDetailsDTO) -> \
             response.HttpResponse:
+        task_overview_details = self.get_task_overview_details(
+            all_tasks_overview_details_dto)
+        all_tasks_overview_details_response_dict = {
+            'tasks': task_overview_details,
+            'total_tasks': len(task_overview_details)
+        }
+        return self.prepare_200_success_response(
+            response_dict=all_tasks_overview_details_response_dict)
+
+    def get_task_overview_details(self, all_tasks_overview_details_dto):
         task_with_complete_stage_details_dtos = all_tasks_overview_details_dto. \
             task_with_complete_stage_details_dtos
         task_fields_and_action_details_dtos = all_tasks_overview_details_dto. \
@@ -78,8 +88,8 @@ class GetAllTasksOverviewForUserPresenterImpl(
                 task_fields_and_action_details_dtos
             )
             assignee = self._get_assignee_details(
-                        task_with_complete_stage_details_dto.stage_assignee_dto
-                    )
+                task_with_complete_stage_details_dto.stage_assignee_dto
+            )
             task_overview_details_dict = {
                 "task_id": each_task_id_with_stage_details_dto.task_id,
                 "task_overview_fields": task_overview_fields_details,
@@ -95,12 +105,7 @@ class GetAllTasksOverviewForUserPresenterImpl(
                 }
             }
             task_overview_details.append(task_overview_details_dict)
-        all_tasks_overview_details_response_dict = {
-            'tasks': task_overview_details,
-            'total_tasks': len(task_overview_details)
-        }
-        return self.prepare_200_success_response(
-            response_dict=all_tasks_overview_details_response_dict)
+        return task_overview_details
 
     def task_fields_and_actions_details(
             self, given_task_id: int,
