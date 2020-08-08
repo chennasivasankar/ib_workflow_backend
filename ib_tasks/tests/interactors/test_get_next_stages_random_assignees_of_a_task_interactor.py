@@ -54,7 +54,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
 
     @pytest.fixture
     def presenter_mock(self):
-        from ib_tasks.presenters.get_next_stages_random_assignees_of_a_task_presenter import \
+        from ib_tasks.interactors.presenter_interfaces.get_next_stages_random_assignees_of_a_task_presenter import \
             GetNextStagesRandomAssigneesOfATaskPresenterInterface
         presenter_mock = create_autospec(
             GetNextStagesRandomAssigneesOfATaskPresenterInterface)
