@@ -21,8 +21,10 @@ from .task_template_global_constants import TaskTemplateGlobalConstants
 from .task_template_initial_stages import TaskTemplateInitialStage
 from .task_template_status_variable import TaskTemplateStatusVariable
 from .template_status_variables import TaskTemplateStatusVariables
+from .task import ElasticSearchTask
 
 __all__ = [
+    "ElasticSearchTask",
     "Filter",
     "FilterCondition",
     "TaskStatusVariable",

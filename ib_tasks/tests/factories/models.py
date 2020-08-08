@@ -16,6 +16,7 @@ from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
 from ib_tasks.models.gof import GoF
 from ib_tasks.models.gof_role import GoFRole
+from ib_tasks.models.task_stage import TaskStage
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from ib_tasks.models.task_template_initial_stages import \
@@ -89,7 +90,7 @@ class StageActionFactory(factory.django.DjangoModelFactory):
         model = StageAction
 
     stage = factory.SubFactory(StageModelFactory)
-    name = factory.Sequence(lambda n: "name_%d" % n)
+    name = factory.Sequence(lambda n: "action_name_%d" % n)
     button_text = "hey"
     button_color = "#fafafa"
     logic = "Status1 = PR_PAYMENT_REQUEST_DRAFTS"
@@ -250,6 +251,8 @@ class TaskStageFactory(factory.django.DjangoModelFactory):
 
     task = factory.SubFactory(TaskFactory)
     stage = factory.SubFactory(StageModelFactory)
+    assignee_id = factory.sequence(
+        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(counter))
 
 
 class FilterFactory(factory.django.DjangoModelFactory):

@@ -131,3 +131,32 @@ class CreateTaskPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def raise_duplicate_same_gof_orders_for_a_gof(self, err):
         pass
+
+    @abc.abstractmethod
+    def raise_invalid_key_error(self):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_custom_logic_function_exception(self):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_path_not_found_exception(self, path_name):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_method_not_found_exception(self, method_name):
+        pass
+
+    @abc.abstractmethod
+    def raise_duplicate_stage_ids_not_valid(self, duplicate_stage_ids):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_stage_ids_exception(self, invalid_stage_ids):
+        pass
+
+    @abc.abstractmethod
+    def raise_stage_ids_with_invalid_permission_for_assignee_exception(self,
+                                                                       invalid_stage_ids):
+        pass

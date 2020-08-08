@@ -297,3 +297,23 @@ STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE = (
     "please assign valid assignees for stages",
     "STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE"
 )
+
+INVALID_STAGE_IDS_FOR_TASK = "Invalid stage_ids : {} for the task_id: {}"
+
+INVALID_KEY_ERROR = (
+    "invalid key error",
+    "INVALID_KEY_ERROR"
+)
+
+INVALID_CUSTOM_LOGIC = (
+    "invalid custom logic",
+    "INVALID_CUSTOM_LOGIC"
+)
+
+PATH_NOT_FOUND= (
+    "path not found", "PATH_NOT_FOUND"
+)
+METHOD_NOT_FOUND = (
+    "method not found", "METHOD_NOT_FOUND"
+)
+

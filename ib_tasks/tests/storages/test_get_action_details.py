@@ -4,7 +4,7 @@ from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
 from ib_tasks.tests.factories.models import StageModelFactory, \
     StageActionFactory, ActionPermittedRolesFactory, \
-    StageActionWithTransitionFactory
+    StageActionWithTransitionFactory, TaskTemplateFactory
 
 
 @pytest.mark.django_db
@@ -12,6 +12,7 @@ class TestGetActionDetails:
 
     @pytest.fixture()
     def populate_data(self):
+        TaskTemplateFactory.reset_sequence()
         StageModelFactory.reset_sequence()
         stages = StageModelFactory.create_batch(size=3)
         ActionPermittedRolesFactory.reset_sequence()
@@ -37,6 +38,7 @@ class TestGetActionDetails:
 
     @pytest.fixture()
     def populate_data_with_all_roles(self):
+        TaskTemplateFactory.reset_sequence()
         StageModelFactory.reset_sequence()
         stages = StageModelFactory.create_batch(size=3)
         ActionPermittedRolesFactory.reset_sequence()

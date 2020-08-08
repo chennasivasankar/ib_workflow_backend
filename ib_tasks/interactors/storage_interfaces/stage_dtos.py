@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Any
+from typing import List, Any, Optional
 
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     StageActionDetailsDTO
@@ -90,6 +90,7 @@ class StageDetailsDTO:
     db_stage_id: int
     stage_id: str
     name: str
+    color: str
 
 
 @dataclass()
@@ -111,8 +112,20 @@ class StageIdWithRoleIdsAndAssigneeIdDTO:
     role_ids: List[str]
     assignee_id: str
 
+@dataclass
+class StageIdWithRoleIdsDTO:
+    db_stage_id: int
+    role_ids: List[str]
+
 
 @dataclass
 class StageIdWithTemplateIdDTO:
     template_id: str
     stage_id: int
+
+
+@dataclass
+class TaskStageAssigneeDTO:
+    task_stage_id: int
+    stage_id: int
+    assignee_id: Optional[str]

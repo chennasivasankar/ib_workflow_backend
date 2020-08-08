@@ -10,6 +10,8 @@ from ...interactors.task_dtos import UpdateTaskDTO, FieldValuesDTO, \
     StageIdWithAssigneeIdDTO
 from ...presenters.update_task_presenter import \
     UpdateTaskPresenterImplementation
+from ...storages.elasticsearch_storage_implementation \
+    import ElasticSearchStorageImplementation
 from ...storages.fields_storage_implementation import \
     FieldsStorageImplementation
 from ...storages.gof_storage_implementation import GoFStorageImplementation
@@ -67,13 +69,15 @@ def api_wrapper(*args, **kwargs):
     gof_storage = GoFStorageImplementation()
     field_storage = FieldsStorageImplementation()
     stage_storage = StagesStorageImplementation()
+    elastic_storage = ElasticSearchStorageImplementation()
 
     presenter = UpdateTaskPresenterImplementation()
     interactor = UpdateTaskInteractor(
         task_storage=task_storage, gof_storage=gof_storage,
         create_task_storage=create_task_storage,
         storage=storage, field_storage=field_storage,
-        stage_storage=stage_storage
+        stage_storage=stage_storage,
+        elastic_storage=elastic_storage
     )
 
     response = interactor.update_task_wrapper(
