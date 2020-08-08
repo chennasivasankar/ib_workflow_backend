@@ -301,7 +301,7 @@ class TestGetColumnTasksInteractor:
             task_fields_dtos=task_complete_details_dto[0].field_dtos,
             total_tasks=10,
             task_ids=task_ids,
-            task_stage_color_dtos=task_stage_color_dtos
+            task_stage_dtos=task_stage_color_dtos
         )
 
     def test_with_valid_details_return_task_details_without_duplicates(
@@ -360,5 +360,5 @@ class TestGetColumnTasksInteractor:
             task_fields_dtos=task_complete_details_dto[0].field_dtos,
             total_tasks=10,
             task_ids=task_ids,
-            task_stage_color_dtos=task_stage_color_dtos
+            task_stage_dtos=task_stage_color_dtos
         )

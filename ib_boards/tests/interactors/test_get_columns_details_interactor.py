@@ -372,7 +372,7 @@ class TestGetColumnDetailsInteractor:
             task_actions_dtos=task_actions_dto,
             task_fields_dtos=task_fields_dto,
             column_details=column_complete_details,
-            task_stage_color_dtos=task_stage_color_dtos
+            task_stage_dtos=task_stage_color_dtos
         )
         assert actual_response == expected_response
 
@@ -458,6 +458,6 @@ class TestGetColumnDetailsInteractor:
             task_actions_dtos=task_actions_dto,
             task_fields_dtos=task_fields_dto,
             column_details=column_complete_details,
-            task_stage_color_dtos=task_stage_color_dtos
+            task_stage_dtos=task_stage_color_dtos
         )
         assert actual_response == expected_response
