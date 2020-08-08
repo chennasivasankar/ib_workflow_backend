@@ -29,7 +29,7 @@ RESPONSE_404_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "TASK_ID_DOESNT_EXIST"
+    "res_status": "INVALID_TASK_ID"
 }
 """
 
