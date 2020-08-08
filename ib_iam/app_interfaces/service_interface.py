@@ -103,3 +103,7 @@ class ServiceInterface:
             search_query=search_query
         )
         return user_details_dtos
+
+    def get_permitted_user_details(self, role_ids: List[str]):
+        pass
+

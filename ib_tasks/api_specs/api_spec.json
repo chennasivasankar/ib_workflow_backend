@@ -558,7 +558,7 @@
       "type": "object",
       "properties": {
         "stage_id": {
-          "type": "integer"
+          "type": "string"
         },
         "stage_display_name": {
           "type": "string"

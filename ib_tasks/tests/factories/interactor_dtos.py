@@ -9,7 +9,7 @@ from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
 from ib_tasks.interactors.stages_dtos import \
     TaskTemplateStageActionDTO, StageActionDTO, StagesActionDTO, \
-    TaskIdWithStageAssigneeDTO
+    TaskIdWithStageAssigneeDTO, StageWithUserDetailsDTO
 from ib_tasks.interactors.stages_dtos import UserStagesWithPaginationDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
@@ -214,3 +214,9 @@ class TaskIdWithStageAssigneeDTOFactory(factory.Factory):
     task_id = factory.sequence(lambda n: n+1)
     db_stage_id = factory.Sequence(lambda n: n+1)
     assignee_id = factory.sequence(lambda n: "user_{}".format(n))
+
+
+
+
+
+

@@ -4,22 +4,26 @@ from typing import List, Dict, Any
 from ib_tasks.adapters.auth_service import AuthService
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
-from ib_tasks.interactors.get_task_stage_logic_satisfied_next_stages_based_on_given_status_vars import \
+from ib_tasks.interactors \
+    .get_task_stage_logic_satisfied_next_stages_based_on_given_status_vars import \
     GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor
-from ib_tasks.interactors.stages_dtos import StageIdWithUserDetailsDTO, \
-    StageWithUserDetailsDTO
+from ib_tasks.interactors.stages_dtos import StageWithUserDetailsDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
     StageIdWithRoleIdsDTO, StageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
+from ib_tasks.exceptions.action_custom_exceptions \
+    import InvalidKeyError, InvalidCustomLogicException
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     StatusVariableDTO
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
+from ib_tasks.presenters.get_next_stages_random_assignees_of_a_task_presenter import \
+    GetNextStagesRandomAssigneesOfATaskPresenterInterface
 
 
 class InvalidModulePathFound(Exception):
@@ -43,16 +47,31 @@ class GetNextStagesRandomAssigneesOfATaskInteractor:
         self.storage = storage
 
     def get_next_stages_random_assignees_of_a_task_wrapper(
-            self, task_id: int, action_id: int):
+            self, task_id: int, action_id: int, presenter:
+            GetNextStagesRandomAssigneesOfATaskPresenterInterface):
         try:
-            self.get_next_stages_random_assignees_of_a_task(
-                task_id=task_id, action_id=action_id)
+            stage_with_user_details_dtos = \
+                self.get_next_stages_random_assignees_of_a_task(
+                    task_id=task_id, action_id=action_id)
+            return presenter. \
+                get_next_stages_random_assignees_of_a_task_response(
+                stage_with_user_details_dtos)
         except InvalidTaskIdException as exception:
             return presenter.raise_invalid_task_id_exception(
                 task_id=exception.task_id)
         except InvalidActionException as exception:
             return presenter.raise_exception_for_invalid_action(
-                task_id=exception.action_id)
+                action_id=exception.action_id)
+        except InvalidKeyError:
+            return presenter.raise_invalid_key_error()
+        except InvalidCustomLogicException:
+            return presenter.raise_invalid_custom_logic_function_exception()
+        except InvalidModulePathFound as exception:
+            return presenter.raise_invalid_path_not_found_exception(
+                path_name=exception.path_name)
+        except InvalidMethodFound as exception:
+            return presenter.raise_invalid_method_not_found_exception(
+                method_name=exception.method_name)
 
     def get_next_stages_random_assignees_of_a_task(self, task_id: int,
                                                    action_id: int):
@@ -72,19 +91,20 @@ class GetNextStagesRandomAssigneesOfATaskInteractor:
         role_ids_group_by_stage_id_dtos = \
             self._get_role_ids_group_by_stage_id_dtos(
                 stage_ids=db_stage_ids, stage_role_dtos=stage_role_dtos)
-        self._get_random_permitted_user_details_dto_of_stage_id(
+        stage_with_user_details_dtos = self._get_random_permitted_user_details_dto_of_stage_id(
             role_ids_group_by_stage_id_dtos, stage_detail_dtos)
+        return stage_with_user_details_dtos
 
     @staticmethod
     def _get_random_permitted_user_details_dto_of_stage_id(
             role_ids_group_by_stage_id_dtos: List[StageIdWithRoleIdsDTO],
             stage_detail_dtos: List[StageDetailsDTO]) -> List[
-        StageIdWithUserDetailsDTO]:
+        StageWithUserDetailsDTO]:
         stage_with_user_details_dtos = []
         auth_service_adapter = AuthService()
         for each_dto in role_ids_group_by_stage_id_dtos:
-            permitted_user_details_dtos = auth_service_adapter.get_permitted_user_details(
-                role_ids=each_dto.role_ids)
+            permitted_user_details_dtos = auth_service_adapter. \
+                get_permitted_user_details(role_ids=each_dto.role_ids)
             random_permitted_user_detail_dto = choice(
                 permitted_user_details_dtos)
             for each_stage_detail_dto in stage_detail_dtos:
