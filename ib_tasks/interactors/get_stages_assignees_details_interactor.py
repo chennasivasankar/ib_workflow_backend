@@ -2,13 +2,14 @@ from typing import List, Optional
 
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
 from ib_tasks.adapters.service_adapter import get_service_adapter
+from ib_tasks.exceptions.task_custom_exceptions import \
+    InvalidStageIdsForTask
 from ib_tasks.interactors.stages_dtos import StageAssigneeDetailsDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageAssigneeDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    TaskStageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import \
     TaskStageStorageInterface
-from ib_tasks.exceptions.task_custom_exceptions import \
-            InvalidStageIdsForTask
 
 
 class GetStagesAssigneesDetailsInteractor:
@@ -43,8 +44,9 @@ class GetStagesAssigneesDetailsInteractor:
             stage_assignee_details_dtos.append(stage_assignee_details_dto)
         return stage_assignee_details_dtos
 
+    @staticmethod
     def _get_stage_assignee_details_dto(
-            self, stage_assignee_dto: TaskStageAssigneeDTO,
+            stage_assignee_dto: TaskStageAssigneeDTO,
             assignee_details_dtos: List[AssigneeDetailsDTO]
     ) -> StageAssigneeDetailsDTO:
         stage_assignee_id = stage_assignee_dto.assignee_id
@@ -63,8 +65,9 @@ class GetStagesAssigneesDetailsInteractor:
         )
         return stage_assignee_details_dto
 
+    @staticmethod
     def _get_assignee_details_dtos(
-            self, assignee_ids: List[str]
+            assignee_ids: List[str]
     ) -> List[AssigneeDetailsDTO]:
 
         service_adapter = get_service_adapter()
@@ -76,7 +79,7 @@ class GetStagesAssigneesDetailsInteractor:
         return assignee_details_dtos
 
     def _validate_stage_ids_of_task(
-            self, task_id: int, stage_ids: List[str]
+            self, task_id: int, stage_ids: List[int]
     ) -> Optional[InvalidStageIdsForTask]:
 
         from ib_tasks.constants.exception_messages import \
@@ -94,7 +97,8 @@ class GetStagesAssigneesDetailsInteractor:
             )
         return
 
-    def _get_assignee_ids(self, stage_assignee_dtos: List[TaskStageAssigneeDTO]):
+    @staticmethod
+    def _get_assignee_ids(stage_assignee_dtos: List[TaskStageAssigneeDTO]):
         assignee_ids = []
         for stage_assignee_dto in stage_assignee_dtos:
             assignee_id = not stage_assignee_dto.assignee_id
