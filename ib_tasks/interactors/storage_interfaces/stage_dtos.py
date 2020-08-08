@@ -89,6 +89,7 @@ class TaskIdWithStageDetailsDTO:
 class StageDetailsDTO:
     db_stage_id: int
     stage_id: str
+    color: str
     name: str
 
 
