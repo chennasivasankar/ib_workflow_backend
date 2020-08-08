@@ -5,7 +5,6 @@ from __future__ import unicode_literals
 from snapshottest import Snapshot, GenericRepr
 
 
-
 snapshots = Snapshot()
 
 snapshots['TestGetStagesDetails.test_get_stage_ids_details stage_details_dtos'] = [

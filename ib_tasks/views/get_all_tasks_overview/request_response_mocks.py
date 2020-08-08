@@ -14,12 +14,12 @@ RESPONSE_200_JSON = """
                 }
             ],
             "stage_with_actions": {
-                "stage_id": 1,
+                "stage_id": "string",
                 "stage_display_name": "string",
                 "stage_color": "string",
                 "assignee": {
                     "assignee_id": "string",
-                    "assignee_name": "string",
+                    "name": "string",
                     "profile_pic_url": "string"
                 },
                 "actions": [
