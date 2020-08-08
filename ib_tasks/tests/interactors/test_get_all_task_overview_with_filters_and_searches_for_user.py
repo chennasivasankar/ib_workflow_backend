@@ -17,40 +17,42 @@ class TestGetTasksOverviewForUserInteractor:
     @pytest.fixture
     def task_actions_fields(self):
         return GetTaskStageCompleteDetailsDTO(
-                    task_id=1,
+            task_id=1,
+            stage_id='stage_id_1',
+            db_stage_id=2,
+            stage_color="blue",
+            field_dtos=[
+                FieldDetailsDTO(
+                    field_type='Drop down',
+                    field_id='FIELD-ID-1',
+                    key='key', value='value'
+                ),
+                FieldDetailsDTO(
+                    field_type='Drop down',
+                    field_id='FIELD-ID-2',
+                    key='key', value='value')
+            ],
+            action_dtos=[
+                StageActionDetailsDTO(
+                    action_id=1,
+                    name='name_1',
                     stage_id='stage_id_1',
-                    field_dtos=[
-                        FieldDetailsDTO(
-                            field_type='Drop down',
-                            field_id='FIELD-ID-1',
-                            key='key', value='value'
-                        ),
-                        FieldDetailsDTO(
-                            field_type='Drop down',
-                            field_id='FIELD-ID-2',
-                            key='key', value='value')
-                    ],
-                    action_dtos=[
-                        StageActionDetailsDTO(
-                            action_id=1,
-                            name='name_1',
-                            stage_id='stage_id_1',
-                            button_text='button_text_1',
-                            button_color=None,
-                            action_type='action_type_1',
-                            transition_template_id='template_id_1'
-                        ),
-                        StageActionDetailsDTO(
-                            action_id=2,
-                            name='name_2',
-                            stage_id='stage_id_1',
-                            button_text='button_text_2',
-                            button_color=None,
-                            action_type='action_type_2',
-                            transition_template_id='template_id_2'
-                        )
-                    ]
+                    button_text='button_text_1',
+                    button_color=None,
+                    action_type='action_type_1',
+                    transition_template_id='template_id_1'
+                ),
+                StageActionDetailsDTO(
+                    action_id=2,
+                    name='name_2',
+                    stage_id='stage_id_1',
+                    button_text='button_text_2',
+                    button_color=None,
+                    action_type='action_type_2',
+                    transition_template_id='template_id_2'
                 )
+            ]
+        )
 
     def test_get_filtered_tasks_overview_for_user_with_valid_details(
             self, mocker, task_actions_fields):
@@ -111,5 +113,3 @@ class TestGetTasksOverviewForUserInteractor:
 
         # Assert
         assert actual_response == expected_response
-
-

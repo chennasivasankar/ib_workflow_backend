@@ -588,9 +588,9 @@ class UserDetailsDTOFactory(factory.Factory):
     class Meta:
         model = UserDetailsDTO
 
-    user_id = factory.Sequence(lambda n: "user_id_%d" % n)
-    name = factory.Sequence(lambda n: "name_%d" % n)
-    profile_pic = "pic"
+    user_id = factory.Sequence(lambda n: "user_id_%d" % (n + 1))
+    user_name = factory.Sequence(lambda n: "user_name_%d" % (n + 1))
+    profile_pic_url = factory.Sequence(lambda n: "profile_pic_%d" % (n + 1))
 
 
 class StageAssigneeDTOFactory(factory.Factory):
