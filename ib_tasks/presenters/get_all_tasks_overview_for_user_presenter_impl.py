@@ -1,3 +1,4 @@
+import abc
 from typing import List
 
 from ib_tasks.interactors.presenter_interfaces.dtos import \
@@ -56,6 +57,16 @@ class GetAllTasksOverviewForUserPresenterImpl(
                                             all_tasks_overview_details_dto:
                                             AllTasksOverviewDetailsDTO) -> \
             response.HttpResponse:
+        task_overview_details = self.get_task_overview_details(
+            all_tasks_overview_details_dto)
+        all_tasks_overview_details_response_dict = {
+            'tasks': task_overview_details,
+            'total_tasks': len(task_overview_details)
+        }
+        return self.prepare_200_success_response(
+            response_dict=all_tasks_overview_details_response_dict)
+
+    def get_task_overview_details(self, all_tasks_overview_details_dto):
         task_id_with_stage_details_dtos = all_tasks_overview_details_dto. \
             task_id_with_stage_details_dtos
         task_fields_and_action_details_dtos = all_tasks_overview_details_dto. \
@@ -79,12 +90,7 @@ class GetAllTasksOverviewForUserPresenterImpl(
                 }
             }
             task_overview_details.append(task_overview_details_dict)
-        all_tasks_overview_details_response_dict = {
-            'tasks': task_overview_details,
-            'total_tasks': len(task_overview_details)
-        }
-        return self.prepare_200_success_response(
-            response_dict=all_tasks_overview_details_response_dict)
+        return task_overview_details
 
     def task_fields_and_actions_details(
             self, given_task_id: int,
@@ -125,3 +131,25 @@ class GetAllTasksOverviewForUserPresenterImpl(
         } for each_action_dto in
             each_task_fields_and_action_details_dto.action_dtos]
         return action_details
+
+    def get_response_for_filtered_tasks_overview_details_response(
+            self,
+            filtered_tasks_overview_details_dto: AllTasksOverviewDetailsDTO,
+            total_tasks: int):
+        pass
+
+
+class GetFilteredTasksOverviewForUserPresenterImplementation(GetAllTasksOverviewForUserPresenterImpl):
+
+    def get_response_for_filtered_tasks_overview_details_response(
+            self,
+            filtered_tasks_overview_details_dto: AllTasksOverviewDetailsDTO,
+            total_tasks: int):
+        task_overview_details = self.get_task_overview_details(
+            filtered_tasks_overview_details_dto)
+        all_tasks_overview_details_response_dict = {
+            'tasks': task_overview_details,
+            'total_tasks': total_tasks
+        }
+        return self.prepare_200_success_response(
+            response_dict=all_tasks_overview_details_response_dict)

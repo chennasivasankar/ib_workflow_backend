@@ -3,7 +3,6 @@ from ib_tasks.tests.factories.storage_dtos import TaskDetailsDTOFactory
 
 
 def prepare_task_gof_and_fields_dto():
-
     from ib_tasks.tests.factories.storage_dtos import TaskGoFDTOFactory
     TaskGoFDTOFactory.reset_sequence()
     task_gof_dtos = [
@@ -22,7 +21,6 @@ def prepare_task_gof_and_fields_dto():
 
 
 def prepare_call_action_logic_update_stages_mock(mocker):
-
     path = "ib_tasks.interactors.call_action_logic_function_and_update_task_status_variables_interactor" \
            ".CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor" \
            ".call_action_logic_function_and_update_task_status_variables"
@@ -31,7 +29,6 @@ def prepare_call_action_logic_update_stages_mock(mocker):
 
 
 def prepare_stage_display_satisfied_stage_ids(mocker):
-
     path = 'ib_tasks.interactors.get_task_stage_logic_satisfied_stages.GetTaskStageLogicSatisfiedStages' \
            '.get_task_stage_logic_satisfied_stages'
     mock_obj = mocker.patch(path)
@@ -39,7 +36,6 @@ def prepare_stage_display_satisfied_stage_ids(mocker):
 
 
 def prepare_task_boards_details():
-
     from ib_tasks.tests.factories.adapter_dtos import (
         BoardDTOFactory, ColumnDTOFactory, ColumnStageDTOFactory,
         ColumnFieldDTOFactory
@@ -59,7 +55,6 @@ def prepare_task_boards_details():
 
 
 def prepare_integration_task_boards_details():
-
     from ib_tasks.tests.factories.adapter_dtos import (
         BoardDTOFactory, ColumnDTOFactory, ColumnStageDTOFactory,
         ColumnFieldDTOFactory
@@ -80,7 +75,6 @@ def prepare_integration_task_boards_details():
 
 
 def prepare_fields_and_actions_dto(mocker):
-
     path = 'ib_tasks.interactors.get_task_fields_and_actions.GetTaskFieldsAndActionsInteractor' \
            '.get_task_fields_and_action'
     mock_obj = mocker.patch(path)
@@ -121,3 +115,17 @@ def mock_user_action_on_task_method(mocker, mock_object):
     )
     mock_method.return_value = mock_object
     return mock_method
+
+
+def prepare_task_ids_with_stage_ids(
+        mocker, stage_ids_dto, fields_and_actions, stage_ids):
+    mock = mocker.patch(
+        'ib_tasks.interactors.get_valid_task_ids_for_user_based_on_stage_ids.GetTaskIdsOfUserBasedOnStagesInteractor.get_task_ids_of_user_based_on_stage_ids')
+    mock.return_value = stage_ids_dto
+    mock = mocker.patch(
+        'ib_tasks.interactors.get_task_fields_and_actions.GetTaskFieldsAndActionsInteractor.get_task_fields_and_action')
+    mock.return_value = fields_and_actions
+
+    mock = mocker.patch(
+        'ib_tasks.interactors.get_allowed_stage_ids_of_user_interactor.GetAllowedStageIdsOfUserInteractor.get_allowed_stage_ids_of_user')
+    mock = stage_ids

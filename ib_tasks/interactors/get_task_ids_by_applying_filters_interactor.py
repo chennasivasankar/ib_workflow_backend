@@ -3,7 +3,7 @@ Created on: 07/08/20
 Author: Pavankumar Pamuru
 
 """
-from typing import List
+from typing import List, Tuple
 
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface
@@ -19,14 +19,14 @@ class GetTaskIdsBasedOnUserFilters:
         self.filter_storage = filter_storage
 
     def get_task_ids_by_applying_filters(
-            self, user_id: str, limit: int, offset: int) -> List[int]:
+            self, user_id: str, limit: int, offset: int) -> Tuple[List[int], int]:
         filter_dtos = self.filter_storage.get_enabled_filters_dto_to_user(
             user_id=user_id
         )
-        filtered_task_ids = self.elasticsearch_storage.filter_tasks(
+        filtered_task_ids, total_tasks = self.elasticsearch_storage.filter_tasks(
             filter_dtos=filter_dtos, offset=offset, limit=limit
         )
-        return filtered_task_ids
+        return filtered_task_ids, total_tasks
 
     @staticmethod
     def _validations_of_limit_and_offset(offset: int, limit: int):

@@ -10,7 +10,7 @@ from ib_tasks.exceptions.fields_custom_exceptions import \
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsListEmptyException
 from ib_tasks.interactors.presenter_interfaces.get_all_tasks_overview_for_user_presenter_interface import \
-    GetAllTasksOverviewForUserPresenterInterface
+    GetFilteredTasksOverviewForUserPresenterInterface
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
@@ -41,9 +41,9 @@ class GetTaskDetailsByFilterInteractor:
 
     def get_filtered_tasks_overview_for_user_wrapper(
             self, user_id: str, limit: int, offset: int,
-            presenter: GetAllTasksOverviewForUserPresenterInterface):
+            presenter: GetFilteredTasksOverviewForUserPresenterInterface):
         try:
-            all_tasks_overview_details_dto = self.get_filtered_tasks_overview_for_user(
+            filtered_tasks_overview_details_dto, total_tasks = self.get_filtered_tasks_overview_for_user(
                 user_id=user_id, limit=limit, offset=offset
             )
         except StageIdsListEmptyException:
@@ -57,14 +57,16 @@ class GetTaskDetailsByFilterInteractor:
             return presenter. \
                 raise_offset_should_be_greater_than_zero_exception(
             )
-        return presenter.all_tasks_overview_details_response(
-            all_tasks_overview_details_dto)
+        return presenter.get_response_for_filtered_tasks_overview_details_response(
+            filtered_tasks_overview_details_dto=filtered_tasks_overview_details_dto,
+            total_tasks=total_tasks
+        )
 
     def get_filtered_tasks_overview_for_user(self, user_id: str, limit: int, offset: int):
 
         from ib_tasks.interactors.get_task_ids_by_applying_filters_interactor import \
             GetTaskIdsBasedOnUserFilters
-        filtered_task_ids_interactor = GetTaskIdsBasedOnUserFilters(
+        filtered_task_ids_interactor, total_tasks = GetTaskIdsBasedOnUserFilters(
             filter_storage=self.filter_storage,
             elasticsearch_storage=self.elasticsearch_storage
         )
@@ -83,5 +85,5 @@ class GetTaskDetailsByFilterInteractor:
             get_filtered_tasks_overview_for_user(
                 user_id=user_id, task_ids=task_ids
         )
-        return all_tasks_overview_details_dto
+        return all_tasks_overview_details_dto, total_tasks
 

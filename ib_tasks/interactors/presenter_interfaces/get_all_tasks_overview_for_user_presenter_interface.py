@@ -28,3 +28,13 @@ class GetAllTasksOverviewForUserPresenterInterface(abc.ABC):
     def all_tasks_overview_details_response(
             self, all_tasks_overview_details_dto: AllTasksOverviewDetailsDTO):
         pass
+
+
+class GetFilteredTasksOverviewForUserPresenterInterface(GetAllTasksOverviewForUserPresenterInterface):
+
+    @abc.abstractmethod
+    def get_response_for_filtered_tasks_overview_details_response(
+            self,
+            filtered_tasks_overview_details_dto: AllTasksOverviewDetailsDTO,
+            total_tasks: int):
+        pass

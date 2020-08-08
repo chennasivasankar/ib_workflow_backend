@@ -95,3 +95,4 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
                 InvalidStageIdsListException
             raise InvalidStageIdsListException(
                 invalid_stage_ids=invalid_stage_ids)
+
