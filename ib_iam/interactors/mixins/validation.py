@@ -52,8 +52,8 @@ class ValidationMixin:
             len(value) < LengthConstants.MIN_USER_NAME_LENGTH.value
         if is_string_not_satisfies_minimum_length:
             from ib_iam.exceptions.custom_exceptions import \
-                NameMinimumLengthShouldBeFiveOrMore
-            raise NameMinimumLengthShouldBeFiveOrMore
+                NameMinimumLengthShouldBe
+            raise NameMinimumLengthShouldBe
 
     @staticmethod
     def _check_string_contains_special_characters_and_throw_exception(value):

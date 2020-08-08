@@ -2,7 +2,7 @@ from ib_iam.exceptions.custom_exceptions import (
     UserIsNotAdmin, GivenNameIsEmpty, InvalidEmailAddress,
     UserAccountAlreadyExistWithThisEmail,
     NameShouldNotContainsNumbersSpecCharacters, RoleIdsAreInvalid,
-    InvalidCompanyId, TeamIdsAreInvalid, NameMinimumLengthShouldBeFiveOrMore
+    InvalidCompanyId, TeamIdsAreInvalid, NameMinimumLengthShouldBe
 )
 from ib_iam.interactors.DTOs.common_dtos import \
     UserDetailsWithTeamRoleAndCompanyIdsDTO
@@ -32,7 +32,7 @@ class AddNewUserInteractor(ValidationMixin):
             response = presenter.raise_user_is_not_admin_exception()
         except GivenNameIsEmpty:
             response = presenter.raise_invalid_name_exception()
-        except NameMinimumLengthShouldBeFiveOrMore:
+        except NameMinimumLengthShouldBe:
             response = presenter \
                 .raise_name_minimum_length_should_be_equal_or_more_than()
         except InvalidEmailAddress:
