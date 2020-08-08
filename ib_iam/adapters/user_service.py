@@ -51,9 +51,13 @@ class UserService:
             self, user_id: str, user_profile_dto: UserProfileDTO):
         from ib_users.interactors.user_profile_interactor import \
             CreateUserProfileDTO
+        profile_pic_url = user_profile_dto.profile_pic_url
+        if profile_pic_url == "":
+            profile_pic_url = None
         create_user_profile_dto = CreateUserProfileDTO(
             name=user_profile_dto.name,
             email=user_profile_dto.email,
+            profile_pic_url=profile_pic_url
         )
         self.interface.create_user_profile(
             user_id=user_id, user_profile=create_user_profile_dto)
