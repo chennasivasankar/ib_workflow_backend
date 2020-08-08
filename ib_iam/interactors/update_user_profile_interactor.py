@@ -63,11 +63,14 @@ class UpdateUserProfileInteractor(ValidationMixin):
             user_id_name_email_and_profile_pic_url_dto:
             UserIdNameEmailAndProfilePicUrlDTO):
         from ib_iam.adapters.dtos import UserProfileDTO
+        profile_pic_url = \
+            user_id_name_email_and_profile_pic_url_dto.profile_pic_url
+        if profile_pic_url == "":
+            profile_pic_url = None
         user_profile_dto = UserProfileDTO(
             user_id=user_id_name_email_and_profile_pic_url_dto.user_id,
             name=user_id_name_email_and_profile_pic_url_dto.name,
             email=user_id_name_email_and_profile_pic_url_dto.email,
-            profile_pic_url=
-            user_id_name_email_and_profile_pic_url_dto.profile_pic_url
+            profile_pic_url=profile_pic_url
         )
         return user_profile_dto

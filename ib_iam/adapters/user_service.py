@@ -62,8 +62,6 @@ class UserService:
             self, user_id: str, user_profile_dto: UserProfileDTO):
         from ib_users.interactors.user_profile_interactor import UserProfileDTO
         profile_pic_url = user_profile_dto.profile_pic_url
-        if profile_pic_url == "":
-            profile_pic_url = None
         user_profile = UserProfileDTO(
             name=user_profile_dto.name,
             email=user_profile_dto.email,
