@@ -44,6 +44,7 @@ class StageDetailsDTOFactory(factory.Factory):
     stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)
     name = factory.Sequence(lambda n: "name_%d" % n)
     db_stage_id = factory.Sequence(lambda n: (n + 1))
+    color = 'green'
 
 
 class FieldValueDTOFactory(factory.Factory):

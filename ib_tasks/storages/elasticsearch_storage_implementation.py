@@ -7,19 +7,17 @@ from typing import List, Tuple
 
 from elasticsearch_dsl import Q, Search
 
-from ib_tasks.documents.elastic_task import ElasticTaskDTO, ElasticFieldDTO, \
-    Field, QueryTasksDTO
-from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
-    ApplyFilterDTO, ElasticSearchStorageInterface
+from ib_tasks.documents.elastic_task import ElasticFieldDTO, \
+    Field
 from ib_tasks.documents.elastic_task import ElasticTaskDTO, Task, QueryTasksDTO
-from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import ElasticSearchStorageInterface
+from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
+    ApplyFilterDTO
+from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
+    ElasticSearchStorageInterface
 
 
 class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
 
-class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
-
-    def create_task(self, elastic_task_dto: ElasticTaskDTO) -> str:
     def create_task(self, elastic_task_dto: ElasticTaskDTO) -> str:
 
         task_obj = Task(
@@ -32,9 +30,6 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         task_obj.save()
         elastic_task_id = task_obj.meta.id
         return elastic_task_id
-
-    def update_task(self, task_dto: ElasticTaskDTO):
-        pass
 
     def update_task(self, task_dto: ElasticTaskDTO):
         from ib_tasks.models import ElasticSearchTask
