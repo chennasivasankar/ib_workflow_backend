@@ -93,6 +93,7 @@ def prepare_fields_and_actions_dto(mocker):
     lst = [
         GetTaskStageCompleteDetailsDTO(
             task_id=1, stage_id="stage_1",
+            stage_color="blue",
             field_dtos=[FieldDetailsDTOFactory()],
             action_dtos=[ActionDetailsDTOFactory()]
         )

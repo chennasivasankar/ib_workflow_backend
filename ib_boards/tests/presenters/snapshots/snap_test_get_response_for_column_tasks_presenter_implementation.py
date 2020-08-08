@@ -38,6 +38,7 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_duplic
                     'value': 'value_3'
                 }
             ],
+            'stage_color': 'blue',
             'task_id': 'task_id_0'
         },
         {
@@ -57,6 +58,7 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_duplic
                     'value': 'value_1'
                 }
             ],
+            'stage_color': 'orange',
             'task_id': 'task_id_1'
         },
         {
@@ -76,6 +78,7 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_duplic
                     'value': 'value_2'
                 }
             ],
+            'stage_color': 'green',
             'task_id': 'task_id_2'
         }
     ],
@@ -101,6 +104,7 @@ snapshots['TestGetColumnDetails.test_with_duplicate_tasks_in_same_column_and_dup
                     'value': 'value_0'
                 }
             ],
+            'stage_color': 'blue',
             'task_id': 'task_id_0'
         },
         {
@@ -120,6 +124,7 @@ snapshots['TestGetColumnDetails.test_with_duplicate_tasks_in_same_column_and_dup
                     'value': 'value_1'
                 }
             ],
+            'stage_color': 'orange',
             'task_id': 'task_id_1'
         },
         {
@@ -139,6 +144,7 @@ snapshots['TestGetColumnDetails.test_with_duplicate_tasks_in_same_column_and_dup
                     'value': 'value_2'
                 }
             ],
+            'stage_color': 'green',
             'task_id': 'task_id_2'
         }
     ],
@@ -164,6 +170,7 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_proper
                     'value': 'value_0'
                 }
             ],
+            'stage_color': 'blue',
             'task_id': 'task_id_0'
         },
         {
@@ -183,6 +190,7 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_proper
                     'value': 'value_1'
                 }
             ],
+            'stage_color': 'orange',
             'task_id': 'task_id_1'
         },
         {
@@ -202,6 +210,7 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_proper
                     'value': 'value_2'
                 }
             ],
+            'stage_color': 'green',
             'task_id': 'task_id_2'
         }
     ],

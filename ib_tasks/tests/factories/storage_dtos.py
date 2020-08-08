@@ -211,7 +211,7 @@ class StageDTOFactory(factory.Factory):
     stage_display_name = factory.Sequence(lambda n: 'name_%d' % (n + 1))
     stage_display_logic = factory.Sequence(
         lambda n: 'status_id_%d==stage_id' % (n + 1))
-    stage_color = "blue"
+    stage_color = factory.Iterator(["blue", "orange", "green"])
     roles = factory.Sequence(lambda n: "role_id_0\nrole_id_%d" % (n + 1))
 
 

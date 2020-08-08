@@ -1,7 +1,7 @@
 import dataclasses
 from typing import List
 
-from ib_tasks.adapters.dtos import UserDTO, UserDetailsDTO
+from ib_tasks.adapters.dtos import UserDetailsDTO
 from ib_tasks.interactors.field_dtos import SearchableFieldDetailDTO
 
 

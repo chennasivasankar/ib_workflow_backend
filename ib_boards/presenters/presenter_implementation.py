@@ -6,7 +6,7 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 from ib_boards.constants.exception_messages import (
     INVALID_BOARD_ID, INVALID_OFFSET_VALUE, INVALID_LIMIT_VALUE,
     USER_DONOT_HAVE_ACCESS)
-from ib_boards.interactors.dtos import ColumnTasksDTO, FieldDTO, ActionDTO, StarredAndOtherBoardsDTO
+from ib_boards.interactors.dtos import ColumnTasksDTO, FieldDTO, ActionDTO, StarredAndOtherBoardsDTO, TaskStageColorDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     GetBoardsPresenterInterface, \
     GetColumnTasksPresenterInterface, TaskCompleteDetailsDTO
@@ -149,7 +149,8 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
     def get_response_for_column_tasks(
             self, task_fields_dtos: List[FieldDTO],
             task_actions_dtos: List[ActionDTO],
-            total_tasks: int, task_ids: List[int]):
+            total_tasks: int, task_ids: List[int],
+            task_stage_color_dtos: List[TaskStageColorDTO]):
 
         task_ids_with_duplicates = task_ids
 
@@ -158,10 +159,16 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
             if task_id not in task_ids:
                 task_ids.append(task_id)
 
+        task_color_map = {}
+        for task_stage_color_dto in task_stage_color_dtos:
+            task_color_map[
+                task_stage_color_dto.task_id] = task_stage_color_dto.stage_color
+
         tasks_list = self.get_task_details_dict_from_dtos(
             task_fields_dtos=task_fields_dtos,
             task_actions_dtos=task_actions_dtos,
-            task_ids=task_ids
+            task_ids=task_ids,
+            task_color_map=task_color_map
         )
 
         response_dict = {
@@ -173,7 +180,8 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
 
     def get_task_details_dict_from_dtos(
             self, task_fields_dtos: List[FieldDTO],
-            task_actions_dtos: List[ActionDTO], task_ids: List[int]):
+            task_actions_dtos: List[ActionDTO], task_ids: List[int],
+            task_color_map):
         from collections import defaultdict
 
         tasks_fields_map = defaultdict(lambda: [])
@@ -201,6 +209,7 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
             tasks_list.append(
                 {
                     "task_id": task_id,
+                    "stage_color": task_color_map[task_id],
                     "fields": fields_list,
                     "actions": actions_list
                 }
@@ -282,7 +291,8 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             self, column_details: List[ColumnCompleteDetails],
             task_fields_dtos: List[FieldDTO],
             task_actions_dtos: List[ActionDTO],
-            column_tasks: List[ColumnTasksDTO]) -> response.HttpResponse:
+            column_tasks: List[ColumnTasksDTO],
+            task_stage_color_dtos: List[TaskStageColorDTO]) -> response.HttpResponse:
 
         from collections import defaultdict
         column_stages_map = defaultdict(lambda: [])
@@ -295,7 +305,8 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
                 column_dto=column_dto,
                 column_stages=column_stages_map[column_dto.column_id],
                 task_fields_dtos=task_fields_dtos,
-                task_actions_dtos=task_actions_dtos
+                task_actions_dtos=task_actions_dtos,
+                task_stage_color_dtos=task_stage_color_dtos
             )
             columns_complete_details.append(column_details)
 
@@ -311,7 +322,9 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             column_dto: ColumnCompleteDetails,
             task_fields_dtos: List[FieldDTO],
             task_actions_dtos: List[ActionDTO],
-            column_stages: List[ColumnTasksDTO]):
+            column_stages: List[ColumnTasksDTO],
+            task_stage_color_dtos: List[TaskStageColorDTO]):
+
         from collections import defaultdict
         column_tasks_map = defaultdict(lambda: [])
         for task_fields_dto in task_fields_dtos:
@@ -330,6 +343,11 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
             if column_stage.task_id not in task_ids:
                 task_ids.append(column_stage.task_id)
 
+        task_color_map = {}
+        for task_stage_color_dto in task_stage_color_dtos:
+            task_color_map[
+                task_stage_color_dto.task_id] = task_stage_color_dto.stage_color
+
         task_fields_dtos_list = []
         task_actions_dtos_list = []
         for column_stage in column_stages:
@@ -343,7 +361,8 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
         task_details_list = presenter.get_task_details_dict_from_dtos(
             task_fields_dtos=task_fields_dtos_list,
             task_actions_dtos=task_actions_dtos_list,
-            task_ids=task_ids
+            task_ids=task_ids,
+            task_color_map=task_color_map
         )
 
         return {

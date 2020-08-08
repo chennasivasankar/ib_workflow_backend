@@ -1,7 +1,7 @@
 import factory
 
 from ib_boards.interactors.dtos import TaskStageIdDTO, TaskDetailsDTO, \
-    FieldsDTO, ActionDTO, FieldDTO
+    FieldsDTO, ActionDTO, FieldDTO, TaskStageColorDTO
 from ib_boards.interactors.storage_interfaces.dtos import (
     TaskFieldsDTO, TaskActionsDTO, ColumnDetailsDTO, BoardDTO,
     ColumnCompleteDetails)
@@ -40,6 +40,15 @@ class TaskActionsDTOFactory(factory.Factory):
         factory.Trait(
             button_color=factory.Sequence(lambda n: "a%df1fd" % n)
         )
+
+
+class TaskStageColorDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskStageColorDTO
+
+    task_id = factory.Sequence(lambda n: "task_id_%d" % n)
+    stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)
+    stage_color = factory.Iterator(["blue", "orange", "green"])
 
 
 class TaskFieldsDTOFactory(factory.Factory):

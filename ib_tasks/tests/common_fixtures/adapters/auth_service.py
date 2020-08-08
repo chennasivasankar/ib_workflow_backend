@@ -1,6 +1,5 @@
 from typing import List
 
-from ib_tasks.adapters.dtos import UserDetailsDTO
 from ib_tasks.tests.factories.adapter_dtos import UserDetailsDTOFactory
 from ib_tasks.tests.factories.interactor_dtos import \
     SearchableFieldUserDetailDTOFactory

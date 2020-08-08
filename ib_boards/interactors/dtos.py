@@ -117,10 +117,12 @@ class ActionDTO:
     stage_id: str
     transition_template_id: str
 
+
 @dataclass
 class StageActionDetailsDTO(ActionDTO):
     action_type: str
     transition_template_id: str
+
 
 @dataclass
 class TaskStatusDTO:
@@ -168,6 +170,7 @@ class ActionDetailsDTO:
 class TaskCompleteDetailsDTO:
     task_id: int
     stage_id: str
+    stage_color: str
     field_dtos: List[FieldDetailsDTO]
     action_dtos: List[ActionDetailsDTO]
 
@@ -183,8 +186,16 @@ class StarredAndOtherBoardsDTO:
     starred_boards_dtos: List[BoardDTO]
     other_boards_dtos: List[BoardDTO]
 
+
 @dataclass
 class StarOrUnstarParametersDTO:
     board_id: str
     user_id: str
     action: str
+
+
+@dataclass
+class TaskStageColorDTO:
+    task_id: int
+    stage_id: str
+    stage_color: str
