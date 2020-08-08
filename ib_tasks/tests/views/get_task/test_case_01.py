@@ -20,7 +20,7 @@ class TestCase01GetTaskAPITestCase(TestUtils):
         path_params = {}
         query_params = {'task_id': 506}
         headers = {}
-        self.default_test_case(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
