@@ -137,7 +137,7 @@ class GetUsersDetailsInteractor(ValidationMixin):
         return user_details_dtos
 
     def get_user_details_for_given_role_ids(
-            self, role_ids: List[str]) -> UserProfileDTO:
+            self, role_ids: List[str]) -> List[UserProfileDTO]:
         self._validate_role_ids(role_ids=role_ids)
         user_ids = self.user_storage.get_user_ids(role_ids=role_ids)
         from ib_iam.adapters.service_adapter import get_service_adapter
