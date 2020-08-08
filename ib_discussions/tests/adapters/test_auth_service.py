@@ -29,8 +29,7 @@ class TestAuthService:
         auth_service = serice_adapter.auth_service
 
         # Assert
-        from ib_discussions.interactors.discussion_interactor import \
-            InvalidUserId
+        from ib_discussions.exceptions.custom_exceptions import InvalidUserId
 
         with pytest.raises(InvalidUserId):
             auth_service.get_user_profile_dtos(user_ids=user_ids)
@@ -62,8 +61,7 @@ class TestAuthService:
         auth_service = serice_adapter.auth_service
 
         # Assert
-        from ib_discussions.interactors.discussion_interactor import \
-            InvalidUserId
+        from ib_discussions.exceptions.custom_exceptions import InvalidUserId
 
         with pytest.raises(InvalidUserId):
             auth_service.get_user_profile_dtos(user_ids=user_ids)

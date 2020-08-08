@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import GenericRepr, Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestFilterStorageImplementation.test_create_filter_with_valid_details filter_dto'] = GenericRepr("FilterDTO(filter_id=1, filter_name='filed_name_0', user_id='0', is_selected=False, template_id='template_0', template_name='Template 6')")

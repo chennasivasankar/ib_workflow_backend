@@ -38,3 +38,11 @@ class TaskBoardsDetailsDTO:
 class UserDTO:
     user_id: str
     name: str
+
+
+@dataclass
+class AssigneeDetailsDTO:
+    assignee_id: str
+    name: str
+    profile_pic_url: str
+

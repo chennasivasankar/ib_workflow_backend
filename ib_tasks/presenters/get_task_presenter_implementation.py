@@ -1,15 +1,18 @@
+from datetime import datetime
 from typing import List, Dict
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
+from ib_tasks.constants.constants import DATETIME_FORMAT
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
 from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
     import GetTaskPresenterInterface
 from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
     import TaskCompleteDetailsDTO
-from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
+from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
+    StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos \
-    import TaskGoFFieldDTO, TaskGoFDTO
+    import TaskGoFFieldDTO, TaskGoFDTO, TaskBaseDetailsDTO
 from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
 
 
@@ -19,7 +22,6 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
     def raise_exception_for_invalid_task_id(self, err: InvalidTaskIdException):
         from ib_tasks.constants.exception_messages import INVALID_TASK_ID
         task_id = err.task_id
-        print("task_uid = ", task_id)
         response_message = INVALID_TASK_ID[0].format(task_id)
         data = {
             "response": response_message,
@@ -35,6 +37,7 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
             self, task_complete_details_dto: TaskCompleteDetailsDTO
     ):
         task_details_dto = task_complete_details_dto.task_details_dto
+        task_base_details_dto = task_details_dto.task_base_details_dto
         task_gof_dtos = task_details_dto.task_gof_dtos
         task_gof_field_dtos = task_details_dto.task_gof_field_dtos
         gofs = self._get_task_gofs(task_gof_dtos, task_gof_field_dtos)
@@ -43,9 +46,20 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
         stages_with_actions = self._get_task_stages_with_actions_details(
             task_stage_complete_details_dtos
         )
+        start_date = self._convert_datetime_object_to_string(
+            task_base_details_dto.start_date
+        )
+        due_date = self._convert_datetime_object_to_string(
+            task_base_details_dto.due_date
+        )
         task_details_dict = {
             "task_id": task_complete_details_dto.task_id,
-            "template_id": task_details_dto.template_id,
+            "template_id": task_base_details_dto.template_id,
+            "title": task_base_details_dto.title,
+            "description": task_base_details_dto.description,
+            "start_date": start_date,
+            "due_date": due_date,
+            "priority": task_base_details_dto.priority,
             "gofs": gofs,
             "stages_with_actions": stages_with_actions
         }
@@ -53,6 +67,13 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
             response_dict=task_details_dict
         )
         return response_object
+
+    @staticmethod
+    def _convert_datetime_object_to_string(
+            datetime_obj: datetime
+    ):
+        datetime_in_string_format = datetime_obj.strftime(DATETIME_FORMAT)
+        return datetime_in_string_format
 
     def _get_task_stages_with_actions_details(
             self,
@@ -80,7 +101,7 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
         }
         return stage_details_dict
 
-    def _get_action_details(self, actions_dtos: List[ActionDTO]):
+    def _get_action_details(self, actions_dtos: List[StageActionDetailsDTO]):
         actions = []
         for actions_dto in actions_dtos:
             action_dict = self._prepare_action_dict(actions_dto)
