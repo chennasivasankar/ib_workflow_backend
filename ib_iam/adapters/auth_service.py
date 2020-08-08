@@ -56,11 +56,11 @@ class AuthService:
                 from ib_iam.exceptions.custom_exceptions import \
                     UserAccountDoesNotExist
                 raise UserAccountDoesNotExist
-        else:
-            converted_user_tokens_dto = self._convert_to_user_tokens_dto(
-                user_auth_tokens_dto
-            )
-            return converted_user_tokens_dto
+            raise err
+        converted_user_tokens_dto = self._convert_to_user_tokens_dto(
+            user_auth_tokens_dto
+        )
+        return converted_user_tokens_dto
 
     def user_log_out_from_a_device(self, user_id: str):
         self.interface.logout_in_all_devices(user_id=user_id)

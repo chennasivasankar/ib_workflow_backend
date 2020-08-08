@@ -51,7 +51,7 @@ class ActionsStorageImplementation(ActionStorageInterface):
 
     def get_action_type_for_given_action_id(self,
                                             action_id: int) -> ActionTypes:
-        action_type = StageAction.objecs.get(id=action_id).action_type
+        action_type = StageAction.objects.get(id=action_id).action_type
         return action_type
 
     def get_stage_action_names(

@@ -14,7 +14,7 @@ RESPONSE_200_JSON = """
                 }
             ],
             "stage_with_actions": {
-                "stage_id": 1,
+                "stage_id": "string",
                 "stage_display_name": "string",
                 "stage_color": "string",
                 "assignee": {

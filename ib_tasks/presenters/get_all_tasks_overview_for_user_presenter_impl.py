@@ -4,7 +4,8 @@ from typing import List
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.get_all_tasks_overview_for_user_presenter_interface import \
-    GetAllTasksOverviewForUserPresenterInterface
+    GetAllTasksOverviewForUserPresenterInterface, \
+    GetFilteredTasksOverviewForUserPresenterInterface
 from django.http import response
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
@@ -139,7 +140,8 @@ class GetAllTasksOverviewForUserPresenterImpl(
         pass
 
 
-class GetFilteredTasksOverviewForUserPresenterImplementation(GetAllTasksOverviewForUserPresenterImpl):
+class GetFilteredTasksOverviewForUserPresenterImplementation(GetAllTasksOverviewForUserPresenterImpl,
+                                                             GetFilteredTasksOverviewForUserPresenterInterface):
 
     def get_response_for_filtered_tasks_overview_details_response(
             self,

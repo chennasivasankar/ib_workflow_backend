@@ -44,7 +44,7 @@ class GetTaskDetailsByFilterInteractor:
             presenter: GetFilteredTasksOverviewForUserPresenterInterface):
         try:
             filtered_tasks_overview_details_dto, total_tasks = self.get_filtered_tasks_overview_for_user(
-                user_id=user_id, limit=limit, offset=offset
+                user_id=user_id, limit=limit, offset=offset, view_type=view_type
             )
         except StageIdsListEmptyException:
             return presenter.raise_stage_ids_empty_exception()
@@ -67,11 +67,11 @@ class GetTaskDetailsByFilterInteractor:
 
         from ib_tasks.interactors.get_task_ids_by_applying_filters_interactor import \
             GetTaskIdsBasedOnUserFilters
-        filtered_task_ids_interactor, total_tasks = GetTaskIdsBasedOnUserFilters(
+        filtered_task_ids_interactor = GetTaskIdsBasedOnUserFilters(
             filter_storage=self.filter_storage,
             elasticsearch_storage=self.elasticsearch_storage
         )
-        task_ids = filtered_task_ids_interactor.get_task_ids_by_applying_filters(
+        task_ids, total_tasks = filtered_task_ids_interactor.get_task_ids_by_applying_filters(
             user_id=user_id, limit=limit, offset=offset
         )
         from ib_tasks.interactors.get_all_task_overview_with_filters_and_searches_for_user import \
