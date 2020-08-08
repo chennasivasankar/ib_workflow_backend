@@ -4,7 +4,7 @@ Author: Pavankumar Pamuru
 
 """
 from dataclasses import dataclass
-from typing import List
+from typing import List, Any, Optional
 
 from elasticsearch_dsl import connections
 
@@ -16,20 +16,27 @@ from elasticsearch_dsl import Document, Nested, InnerDoc, Text, Integer
 @dataclass
 class ElasticFieldDTO:
     field_id: str
-    value: str
+    value: Any
 
 
 @dataclass
 class ElasticTaskDTO:
-    template_id: str
+    template_id: Optional[str]
     task_id: int
     title: str
     fields: List[ElasticFieldDTO]
 
 
-@dataclass
+@dataclass()
+class ElasticTaskIdDto:
+    task_id: int
+    elastic_task_id: str
+
+
+@dataclass()
 class QueryTasksDTO:
-    pass
+    total_tasks_count: int
+    task_ids: List[int]
 
 
 class Field(InnerDoc):
