@@ -21,6 +21,7 @@ from ib_tasks.interactors.storage_interfaces.filter_storage_interface import \
     FilterStorageInterface
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 
@@ -31,7 +32,9 @@ class GetTaskDetailsByFilterInteractor:
                  field_storage: FieldsStorageInterface,
                  action_storage: ActionStorageInterface,
                  filter_storage: FilterStorageInterface,
-                 elasticsearch_storage: ElasticSearchStorageInterface):
+                 elasticsearch_storage: ElasticSearchStorageInterface,
+                 task_stage_storage: TaskStageStorageInterface):
+        self.task_stage_storage = task_stage_storage
         self.filter_storage = filter_storage
         self.stage_storage = stage_storage
         self.task_storage = task_storage
@@ -80,7 +83,8 @@ class GetTaskDetailsByFilterInteractor:
             stage_storage=self.stage_storage,
             task_storage=self.task_storage,
             field_storage=self.field_storage,
-            action_storage=self.action_storage
+            action_storage=self.action_storage,
+            task_stage_storage=self.task_stage_storage
         )
         all_tasks_overview_details_dto = task_details_interactor.\
             get_filtered_tasks_overview_for_user(
