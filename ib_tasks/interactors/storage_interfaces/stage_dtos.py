@@ -90,6 +90,7 @@ class StageDetailsDTO:
     db_stage_id: int
     stage_id: str
     name: str
+    color: str
 
 
 @dataclass()
