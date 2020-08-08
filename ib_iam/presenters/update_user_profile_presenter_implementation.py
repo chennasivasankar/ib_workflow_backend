@@ -15,21 +15,22 @@ class UpdateUserProfilePresenterImplementation(
 
     def get_response_for_empty_name_exception(self):
         from ib_iam.constants.exception_messages import EMPTY_NAME_IS_INVALID
-        response_dict = {
-            "response": EMPTY_NAME_IS_INVALID[0],
-            "http_status_code": StatusCode.BAD_REQUEST.value,
-            "res_status": EMPTY_NAME_IS_INVALID[1]
-        }
+        response_dict = {"response": EMPTY_NAME_IS_INVALID[0],
+                         "http_status_code": StatusCode.BAD_REQUEST.value,
+                         "res_status": EMPTY_NAME_IS_INVALID[1]}
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
 
     def get_response_for_minimum_name_length(self):
         from ib_iam.constants.exception_messages import \
-            NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE
+            NAME_MINIMUM_LENGTH_SHOULD_BE
+        from ib_iam.constants.enums import StatusCode, LengthConstants
         response_dict = {
-            "response": NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE[0],
+            "response": NAME_MINIMUM_LENGTH_SHOULD_BE[0].format(
+                minimum_name_length=LengthConstants.MIN_USER_NAME_LENGTH.value
+            ),
             "http_status_code": StatusCode.BAD_REQUEST.value,
-            "res_status": NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE[1]
+            "res_status": NAME_MINIMUM_LENGTH_SHOULD_BE[1]
         }
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
@@ -45,5 +46,21 @@ class UpdateUserProfilePresenterImplementation(
             "res_status":
                 NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS[1]
         }
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict)
+
+    def get_response_for_invalid_email_exception(self):
+        from ib_iam.constants.exception_messages import INVALID_EMAIL
+        response_dict = {"response": INVALID_EMAIL[0],
+                         "http_status_code": StatusCode.BAD_REQUEST.value,
+                         "res_status": INVALID_EMAIL[1]}
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict)
+
+    def get_response_for_email_already_exists(self):
+        from ib_iam.constants.exception_messages import EMAIL_ALREADY_IN_USE
+        response_dict = {"response": EMAIL_ALREADY_IN_USE[0],
+                         "http_status_code": StatusCode.BAD_REQUEST.value,
+                         "res_status": EMAIL_ALREADY_IN_USE[1]}
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
