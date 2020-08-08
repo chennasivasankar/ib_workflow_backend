@@ -1,13 +1,10 @@
 import factory
 
-from ib_tasks.interactors.stages_dtos import StageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskIdWithStageDetailsDTO, GetTaskStageCompleteDetailsDTO, \
     TaskWithCompleteStageDetailsDTO
 from ib_tasks.tests.factories.interactor_dtos import \
-    StageAssigneeDetailsDTOFactory
-from ib_tasks.tests.factories.storage_dtos import ActionDetailsDTOFactory, \
-    FieldDetailsDTOFactory, StageAssigneeDTOFactory
+    StageAssigneeDetailsWithOneAssigneeDTOFactory
 
 
 class TaskIdWithStageDetailsDTOFactory(factory.Factory):
@@ -28,7 +25,7 @@ class TaskWithCompleteStageDetailsDTOFactory(factory.Factory):
     task_with_stage_details_dto = \
         factory.SubFactory(TaskIdWithStageDetailsDTOFactory)
     stage_assignee_dto = \
-        factory.SubFactory(StageAssigneeDetailsDTOFactory)
+        factory.SubFactory(StageAssigneeDetailsWithOneAssigneeDTOFactory)
 
 
 class GetTaskStageCompleteDetailsDTOFactory(factory.Factory):

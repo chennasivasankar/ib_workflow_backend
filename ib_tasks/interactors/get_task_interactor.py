@@ -26,6 +26,7 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import \
     TaskStageStorageInterface
+from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
 
 
 class GetTaskInteractor:
@@ -101,7 +102,8 @@ class GetTaskInteractor:
             )
         return stage_assignee_details_dtos
 
-    def _get_stage_ids(self, stages_and_actions_details_dtos) -> List[int]:
+    @staticmethod
+    def _get_stage_ids(stages_and_actions_details_dtos) -> List[int]:
         stage_ids = [
             stages_and_actions_details_dto.db_stage_id
             for stages_and_actions_details_dto in
@@ -133,7 +135,7 @@ class GetTaskInteractor:
 
     def _get_stages_and_actions_details_dtos(
             self, task_id: int, user_id: str
-    ):
+    ) -> List[StageAndActionsDetailsDTO]:
         from ib_tasks.interactors.get_task_stages_and_actions \
             import GetTaskStagesAndActions
         interactor = GetTaskStagesAndActions(
@@ -199,7 +201,8 @@ class GetTaskInteractor:
         ]
         return permission_task_gof_dtos
 
-    def _get_user_roles(self, user_id: str) -> List[str]:
+    @staticmethod
+    def _get_user_roles(user_id: str) -> List[str]:
 
         from ib_tasks.adapters.roles_service_adapter \
             import get_roles_service_adapter

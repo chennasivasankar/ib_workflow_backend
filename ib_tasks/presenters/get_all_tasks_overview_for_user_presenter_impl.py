@@ -146,7 +146,7 @@ class GetAllTasksOverviewForUserPresenterImpl(
         if assignee_details_dto:
             assignee_details = {
                 "assignee_id": assignee_details_dto.assignee_id,
-                "assignee_name": assignee_details_dto.name,
+                "name": assignee_details_dto.name,
                 "profile_pic_url": assignee_details_dto.profile_pic_url
             }
             return assignee_details

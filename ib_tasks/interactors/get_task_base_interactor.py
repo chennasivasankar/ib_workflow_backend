@@ -10,7 +10,7 @@ class GetTaskBaseInteractor:
     def __init__(self, storage: CreateOrUpdateTaskStorageInterface):
         self.storage = storage
 
-    def get_task(self, task_id: int):
+    def get_task(self, task_id: int) -> TaskDetailsDTO:
         task_base_details_dto = self.storage.validate_task_id(task_id)
         task_gof_dtos = self.storage.get_task_gof_dtos(task_id)
         task_gof_ids = [
