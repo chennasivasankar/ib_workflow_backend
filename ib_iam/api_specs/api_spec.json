@@ -157,8 +157,7 @@
       "type": "object",
       "properties": {
         "company_id": {
-          "type": "string",
-          "format": "uuid"
+          "type": "string"
         },
         "company_name": {
           "type": "string"
@@ -495,7 +494,7 @@
         }
       ]
     },
-    "TeamNameAlreadyExistsOrDuplicateUsersException": {
+    "TeamNameAlreadyExistsOrDuplicateUserIdsException": {
       "allOf": [
         {
           "$ref": "#/definitions/CommonHttpExceptionFields"
@@ -507,7 +506,7 @@
               "type": "string",
               "enum": [
                 "TEAM_NAME_ALREADY_EXISTS",
-                "DUPLICATE_USERS"
+                "DUPLICATE_USER_IDS"
               ]
             }
           },
@@ -547,7 +546,7 @@
         }
       ]
     },
-    "CompanyNameAlreadyExistsOrDuplicateUsersException": {
+    "CompanyNameAlreadyExistsOrDuplicateUserIdsException": {
       "allOf": [
         {
           "$ref": "#/definitions/CommonHttpExceptionFields"
@@ -559,7 +558,7 @@
               "type": "string",
               "enum": [
                 "COMPANY_NAME_ALREADY_EXISTS",
-                "DUPLICATE_USERS"
+                "DUPLICATE_USER_IDS"
               ]
             }
           },
@@ -1154,7 +1153,7 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_USERS"
+                  "INVALID_USER_IDS"
                 ]
               }
             },
@@ -1168,7 +1167,7 @@
     "BadRequestForAddTeamResponse": {
       "description": "Team name already exists or duplicate users has sent",
       "schema": {
-        "$ref": "#/definitions/TeamNameAlreadyExistsOrDuplicateUsersException"
+        "$ref": "#/definitions/TeamNameAlreadyExistsOrDuplicateUserIdsException"
       }
     },
     "SuccessfullyCreatedForAddTeamResponse": {
@@ -1180,7 +1179,7 @@
     "BadRequestForUpdateTeamResponse": {
       "description": "Team name already exists or duplicate users has sent",
       "schema": {
-        "$ref": "#/definitions/TeamNameAlreadyExistsOrDuplicateUsersException"
+        "$ref": "#/definitions/TeamNameAlreadyExistsOrDuplicateUserIdsException"
       }
     },
     "UnauthorizedForUpdateTeamResponse": {
@@ -1202,8 +1201,8 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_TEAM",
-                  "INVALID_USERS"
+                  "INVALID_TEAM_ID",
+                  "INVALID_USER_IDS"
                 ]
               }
             },
@@ -1253,7 +1252,7 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_USERS"
+                  "INVALID_USER_IDS"
                 ]
               }
             },
@@ -1267,7 +1266,7 @@
     "BadRequestForAddCompanyResponse": {
       "description": "Company name already exists or duplicate users has sent",
       "schema": {
-        "$ref": "#/definitions/CompanyNameAlreadyExistsOrDuplicateUsersException"
+        "$ref": "#/definitions/CompanyNameAlreadyExistsOrDuplicateUserIdsException"
       }
     },
     "SuccessfullyCreatedForAddCompanyResponse": {
@@ -1289,7 +1288,7 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_COMPANY"
+                  "INVALID_COMPANY_ID"
                 ]
               }
             },
@@ -1309,7 +1308,7 @@
     "BadRequestForUpdateCompanyResponse": {
       "description": "Company name already exists or duplicate users has sent",
       "schema": {
-        "$ref": "#/definitions/CompanyNameAlreadyExistsOrDuplicateUsersException"
+        "$ref": "#/definitions/CompanyNameAlreadyExistsOrDuplicateUserIdsException"
       }
     },
     "UnauthorizedForUpdateCompanyResponse": {
@@ -1331,8 +1330,8 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_COMPANY",
-                  "INVALID_USERS"
+                  "INVALID_COMPANY_ID",
+                  "INVALID_USER_IDS"
                 ]
               }
             },
@@ -1356,7 +1355,7 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_TEAM"
+                  "INVALID_TEAM_ID"
                 ]
               }
             },

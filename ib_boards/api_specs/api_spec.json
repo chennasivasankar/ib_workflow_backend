@@ -126,6 +126,9 @@
         "task_id": {
           "type": "string"
         },
+        "stage_color": {
+          "type": "string"
+        },
         "fields": {
           "type": "array",
           "items": {
@@ -164,12 +167,16 @@
               },
               "button_color": {
                 "type": "string"
+              },
+              "transition_template_id": {
+                "type": "string"
               }
             },
             "required": [
               "action_id",
               "name",
-              "button_text"
+              "button_text",
+              "transition_template_id"
             ]
           }
         }
@@ -177,7 +184,8 @@
       "required": [
         "task_id",
         "fields",
-        "actions"
+        "actions",
+        "stage_color"
       ]
     },
     "ColumnDetails": {
@@ -206,6 +214,45 @@
         "total_tasks_count",
         "tasks"
       ]
+    },
+    "InvalidStarBoardDetails": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string"
+        },
+        "http_status_code": {
+          "type": "integer"
+        },
+        "res_status": {
+          "type": "string",
+          "enum": [
+            "INVALID_BOARD_ID"
+          ]
+        }
+      },
+      "required": [
+        "response",
+        "http_status_code",
+        "res_status"
+      ]
+      },
+    "BoardDetails": {
+      "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "board_id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "board_id",
+                "name"
+              ]}
     },
     "TaskCompleteDetails": {
       "type": "object",
@@ -257,6 +304,41 @@
       "description": "column id value",
       "type": "string",
       "required": true
+    },
+    "ActionParameter": {
+      "name": "action",
+      "in": "body",
+      "description": "is starred value",
+      "schema": {
+        "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["STAR" , "UNSTAR"]
+        }
+      },
+        "required": [
+          "action"
+        ]
+      }
+    },
+    "ViewTypeParameter": {
+      "name": "view_type",
+      "in": "body",
+      "required": true,
+      "description": "view type",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "view_type": {
+            "type": "string",
+            "enum": ["LIST", "KANBAN"]
+          }
+        },
+        "required": [
+          "view_type"
+        ]
+      }
     }
   },
   "responses": {
@@ -284,38 +366,33 @@
         "$ref": "#/definitions/InvalidPaginationDetails"
       }
     },
+    "InvalidStarResponse": {
+      "description": "invalid starred board response",
+      "schema": {
+        "$ref": "#/definitions/InvalidStarBoardDetails"
+      }
+    },
     "GetBoardsResponse": {
       "description": "get boards response",
       "schema": {
         "type": "object",
-        "properties": {
-          "total_boards_count": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "boards_details": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "board_id": {
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "board_id",
-                "name"
-              ]
-            }
-          }
-        },
-        "required": [
-          "total_boards_count",
-          "boards_details"
-        ]
+          "properties": {
+            "total_boards_count": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "starred_boards": {
+              "$ref": "#/definitions/BoardDetails"
+            },
+            "all_boards": {
+              "$ref": "#/definitions/BoardDetails"
+              }
+            },
+          "required": [
+            "total_boards_count",
+            "starred_boards",
+            "all_boards"
+          ]
       }
     },
     "ColumnsDetailsResponse": {
@@ -359,18 +436,18 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/LimitParameter"
+            "$ref": "#/parameters/OffsetParameter"
           },
           {
-            "$ref": "#/parameters/OffsetParameter"
+            "$ref": "#/parameters/LimitParameter"
           }
         ],
         "responses": {
-          "400": {
-            "$ref": "#/responses/InvalidPaginationResponse"
-          },
           "403": {
             "$ref": "#/responses/InvalidAccessResponse"
+          },
+          "400": {
+            "$ref": "#/responses/InvalidPaginationResponse"
           },
           "200": {
             "$ref": "#/responses/GetBoardsResponse"
@@ -378,8 +455,42 @@
         }
       }
     },
+    "/boards/{board_id}/star/v1/": {
+      "post": {
+        "operationId": "add_or_remove_given_board_id_from_starred_boards",
+        "summary": "Add Or Remove Given BoardId From Starred Boards",
+        "description": "add or remove given board id from starred boards",
+        "security": [
+          {
+            "oauth": [
+              "read",
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/BoardIdParameter"
+          },
+          {
+            "$ref": "#/parameters/ActionParameter"
+          }
+        ],
+        "responses": {
+          "403": {
+            "$ref": "#/responses/InvalidAccessResponse"
+          },
+            "404": {
+            "$ref": "#/responses/InvalidStarResponse"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/boards/{board_id}/columns/v1/": {
-      "get": {
+      "post": {
         "operationId": "get_columns_details",
         "summary": "Get Column Details",
         "description": "get columns details of the given board id",
@@ -400,6 +511,9 @@
           },
           {
             "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/ViewTypeParameter"
           }
         ],
         "responses": {
@@ -419,7 +533,7 @@
       }
     },
     "/columns/{column_id}/tasks/v1/": {
-      "get": {
+      "post": {
         "operationId": "get_column_tasks",
         "summary": "Get Column Tasks",
         "description": "get column tasks details",
@@ -440,6 +554,9 @@
           },
           {
             "$ref": "#/parameters/ColumnIdParameter"
+          },
+          {
+            "$ref": "#/parameters/ViewTypeParameter"
           }
         ],
         "responses": {

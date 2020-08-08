@@ -1,15 +1,19 @@
-import pytest
 import json
 from unittest.mock import create_autospec
+
+import pytest
+
+from ib_tasks.exceptions.task_custom_exceptions import \
+    InvalidTransitionTemplateIds
+from ib_tasks.interactors.create_update_delete_stage_actions import \
+    EmptyStageDisplayLogic, DuplicateStageButtonsException, \
+    DuplicateStageActionNamesException, EmptyStageButtonText, \
+    CreateUpdateDeleteStageActionsInteractor
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
-from ib_tasks.interactors.create_update_delete_stage_actions \
-    import (
-        EmptyStageDisplayLogic, DuplicateStageButtonsException,
-        DuplicateStageActionNamesException, EmptyStageButtonText
-    )
-from ib_tasks.interactors.create_update_delete_stage_actions \
-    import CreateUpdateDeleteStageActionsInteractor
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface\
+    import \
+    TaskTemplateStorageInterface
 from ib_tasks.tests.factories.interactor_dtos import StageActionDTOFactory
 
 
@@ -18,17 +22,19 @@ class TestCreateUpdateDeleteStageActionsInteractor:
     @staticmethod
     def test_given_invalid_stage_ids_raises_exception():
         # Arrange
-        expected_stage_ids = ["stage_2"]
+        expected_stage_ids = ["stage_id_2"]
         expected_stage_ids_dict = json.dumps(
             {"invalid_stage_ids": expected_stage_ids}
         )
         StageActionDTOFactory.reset_sequence(0)
         actions_dto = StageActionDTOFactory.create_batch(size=2)
-        stage_ids = ["stage_1", "stage_2"]
+        stage_ids = ["stage_id_1", "stage_id_2"]
         storage = create_autospec(StorageInterface)
-        storage.get_valid_stage_ids.return_value = ["stage_1"]
+        template_storage = create_autospec(TaskTemplateStorageInterface)
+        storage.get_valid_stage_ids.return_value = ["stage_id_1"]
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
+            template_storage=template_storage,
             actions_dto=actions_dto
         )
         from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageIdsException
@@ -43,20 +49,53 @@ class TestCreateUpdateDeleteStageActionsInteractor:
             .assert_called_once_with(stage_ids=stage_ids)
 
     @staticmethod
+    def test_given_invalid_transition_template_ids_raises_exception():
+        # Arrange
+        StageActionDTOFactory.reset_sequence(0)
+        actions_dto = StageActionDTOFactory.create_batch(size=2)
+        stage_ids = ["stage_id_1", "stage_id_2"]
+        transition_ids = ["template_1", "template_2"]
+        storage = create_autospec(StorageInterface)
+        template_storage = create_autospec(TaskTemplateStorageInterface)
+        storage.get_valid_stage_ids.return_value = ["stage_id_1", "stage_id_2"]
+        template_storage.get_valid_transition_template_ids.return_value = []
+        interactor = CreateUpdateDeleteStageActionsInteractor(
+            storage=storage,
+            template_storage=template_storage,
+            actions_dto=actions_dto
+        )
+
+        # Act
+        with pytest.raises(InvalidTransitionTemplateIds) as err:
+            assert interactor.create_update_delete_stage_actions()
+
+        # Assert
+
+        storage.get_valid_stage_ids \
+            .assert_called_once_with(stage_ids=stage_ids)
+        template_storage.get_valid_transition_template_ids.\
+            assert_called_once_with(transition_ids)
+
+    @staticmethod
     def test_given_invalid_roles_raises_exception(mocker):
+        stage_ids = ["stage_id_1", "stage_id_2", "stage_id_3"]
         expected_stage_roles = {
-            "stage_1": ["ROLE_1", "ROLE_2"],
-            "stage_2": ["ROLE_2"],
-            "stage_3": ["ROLE_4"]
+            "stage_id_1": ["ROLE_1", "ROLE_2"],
+            "stage_id_2": ["ROLE_2"],
+            "stage_id_3": ["ROLE_4"]
         }
         expected_stage_role_dict = json.dumps(expected_stage_roles)
         StageActionDTOFactory.reset_sequence(0)
         actions_dto = StageActionDTOFactory.create_batch(size=3)
         storage = create_autospec(StorageInterface)
-        stage_ids = ["stage_1", "stage_2", "stage_3"]
+        template_storage = create_autospec(TaskTemplateStorageInterface)
+        template_storage.get_valid_transition_template_ids.return_value =\
+        ["template_1", "template_2", "template_3"]
+        stage_ids = ["stage_id_1", "stage_id_2", "stage_id_3"]
         storage.get_valid_stage_ids.return_value = stage_ids
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
+            template_storage=template_storage,
             actions_dto=actions_dto
         )
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
@@ -75,17 +114,21 @@ class TestCreateUpdateDeleteStageActionsInteractor:
 
     @staticmethod
     def test_given_empty_stage_display_logic_raises_exception(mocker):
-        expected_stage_ids = {"stage_ids": ["stage_3"]}
+        expected_stage_ids = {"stage_ids": ["stage_id_3"]}
         expected_stage_ids_dict = json.dumps(expected_stage_ids)
         StageActionDTOFactory.reset_sequence(0)
         actions_dto = StageActionDTOFactory.create_batch(size=2)
         action_dto = StageActionDTOFactory(logic="")
         actions_dto.append(action_dto)
         storage = create_autospec(StorageInterface)
-        stage_ids = ["stage_1", "stage_2", "stage_3"]
+        stage_ids = ["stage_id_1", "stage_id_2", "stage_id_3"]
+        template_storage = create_autospec(TaskTemplateStorageInterface)
+        template_storage.get_valid_transition_template_ids.return_value = \
+            ["template_1", "template_2", "template_3"]
         storage.get_valid_stage_ids.return_value = stage_ids
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
+            template_storage=template_storage,
             actions_dto=actions_dto
         )
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
@@ -101,18 +144,23 @@ class TestCreateUpdateDeleteStageActionsInteractor:
 
     @staticmethod
     def test_given_empty_stage_button_text_raises_exception(mocker):
-        expected_stage_ids = {"stage_ids": ["stage_3"]}
+        expected_stage_ids = {"stage_ids": ["stage_id_3"]}
         expected_stage_ids_dict = json.dumps(expected_stage_ids)
         StageActionDTOFactory.reset_sequence(0)
         actions_dto = StageActionDTOFactory.create_batch(size=2)
         action_dto = StageActionDTOFactory(button_text="")
         actions_dto.append(action_dto)
-
+        template_storage = create_autospec(TaskTemplateStorageInterface)
+        template_storage.get_valid_transition_template_ids.return_value = \
+            ["template_1", "template_2",
+             "template_3"
+             ]
         storage = create_autospec(StorageInterface)
-        stage_ids = ["stage_1", "stage_2", "stage_3"]
+        stage_ids = ["stage_id_1", "stage_id_2", "stage_id_3"]
         storage.get_valid_stage_ids.return_value = stage_ids
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
+            template_storage=template_storage,
             actions_dto=actions_dto
         )
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
@@ -129,20 +177,26 @@ class TestCreateUpdateDeleteStageActionsInteractor:
     @staticmethod
     def test_given_duplicate_stage_buttons_raises_exception(mocker):
         expected_stage_buttons = {
-            "stage_1": ["add"]
+            "stage_id_1": ["add"]
         }
         expected_stage_buttons_dict = json.dumps(expected_stage_buttons)
         StageActionDTOFactory.reset_sequence(0)
         actions_dto = StageActionDTOFactory.create_batch(
-            size=2, stage_id="stage_1", button_text="add"
+            size=2, stage_id="stage_id_1", button_text="add"
         )
-        action_dto = StageActionDTOFactory(stage_id="stage_2", button_text="pay")
+        action_dto = StageActionDTOFactory(stage_id="stage_id_2", button_text="pay")
         actions_dto.append(action_dto)
         storage = create_autospec(StorageInterface)
-        stage_ids = ["stage_1", "stage_2"]
+        template_storage = create_autospec(TaskTemplateStorageInterface)
+        template_storage.get_valid_transition_template_ids.return_value = \
+            ["template_1", "template_2",
+             "template_3"
+             ]
+        stage_ids = ["stage_id_1", "stage_id_2"]
         storage.get_valid_stage_ids.return_value = stage_ids
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
+            template_storage=template_storage,
             actions_dto=actions_dto
         )
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
@@ -159,19 +213,25 @@ class TestCreateUpdateDeleteStageActionsInteractor:
     @staticmethod
     def test_given_duplicate_stage_action_names_raises_exception(mocker):
         expected_stage_actions = {
-            "stage_1": ["action_name_1"]
+            "stage_id_1": ["action_name_1"]
         }
         expected_stage_actions_dict = json.dumps(expected_stage_actions)
         StageActionDTOFactory.reset_sequence(0)
         actions_dto = StageActionDTOFactory.create_batch(
-            size=2, stage_id="stage_1", action_name="action_name_1"
+            size=2, stage_id="stage_id_1", action_name="action_name_1"
         )
-        action_dto = StageActionDTOFactory(stage_id="stage_2")
+        action_dto = StageActionDTOFactory(stage_id="stage_id_2")
         actions_dto.append(action_dto)
         storage = create_autospec(StorageInterface)
-        storage.get_valid_stage_ids.return_value = ["stage_1", "stage_2"]
+        template_storage = create_autospec(TaskTemplateStorageInterface)
+        template_storage.get_valid_transition_template_ids.return_value = \
+            ["template_1", "template_2",
+             "template_3"
+             ]
+        storage.get_valid_stage_ids.return_value = ["stage_id_1", "stage_id_2"]
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
+            template_storage=template_storage,
             actions_dto=actions_dto
         )
 
@@ -193,12 +253,18 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         actions_dto = StageActionDTOFactory.create_batch(size=2)
         stage_actions_dto = []
         create_stage_actions_dto = actions_dto
-        stage_ids = ["stage_1", "stage_2"]
+        stage_ids = ["stage_id_1", "stage_id_2"]
         storage = create_autospec(StorageInterface)
+        template_storage = create_autospec(TaskTemplateStorageInterface)
+        template_storage.get_valid_transition_template_ids.return_value = \
+            ["template_1", "template_2",
+             "template_3"
+             ]
         storage.get_valid_stage_ids.return_value = stage_ids
         storage.get_stage_action_names.return_value = stage_actions_dto
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
+            template_storage=template_storage,
             actions_dto=actions_dto
         )
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
@@ -223,16 +289,22 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO
         stage_actions_dto = [
             StageActionNamesDTO(
-                stage_id="stage_1", action_names=["action_name_1"]
+                stage_id="stage_id_1", action_names=["action_name_1"]
             )
         ]
         update_stage_actions_dto = [actions_dto[0]]
-        stage_ids = ["stage_1", "stage_2"]
+        stage_ids = ["stage_id_1", "stage_id_2"]
         storage = create_autospec(StorageInterface)
+        template_storage = create_autospec(TaskTemplateStorageInterface)
+        template_storage.get_valid_transition_template_ids.return_value = \
+            ["template_1", "template_2",
+             "template_3"
+             ]
         storage.get_valid_stage_ids.return_value = stage_ids
         storage.get_stage_action_names.return_value = stage_actions_dto
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
+            template_storage=template_storage,
             actions_dto=actions_dto
         )
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
@@ -254,7 +326,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO
         expected_stage_actions = [
             StageActionNamesDTO(
-                stage_id="stage_3", action_names=["action_name_3"]
+                stage_id="stage_id_3", action_names=["action_name_3"]
             )
         ]
         from ib_tasks.tests.factories.interactor_dtos import StageActionDTOFactory
@@ -262,19 +334,25 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         actions_dto = StageActionDTOFactory.create_batch(size=2)
         stage_actions_dto = [
             StageActionNamesDTO(
-                stage_id="stage_1", action_names=["action_name_1"]
+                stage_id="stage_id_1", action_names=["action_name_1"]
             ),
             StageActionNamesDTO(
-                stage_id="stage_3", action_names=["action_name_3"]
+                stage_id="stage_id_3", action_names=["action_name_3"]
             )
         ]
         update_stage_actions_dto = [actions_dto[0]]
-        stage_ids = ["stage_1", "stage_2"]
+        stage_ids = ["stage_id_1", "stage_id_2"]
         storage = create_autospec(StorageInterface)
+        template_storage = create_autospec(TaskTemplateStorageInterface)
+        template_storage.get_valid_transition_template_ids.return_value = \
+            ["template_1", "template_2",
+             "template_3"
+             ]
         storage.get_valid_stage_ids.return_value = stage_ids
         storage.get_stage_action_names.return_value = stage_actions_dto
         interactor = CreateUpdateDeleteStageActionsInteractor(
             storage=storage,
+            template_storage=template_storage,
             actions_dto=actions_dto
         )
         from ib_tasks.tests.common_fixtures.adapters.roles_service \

@@ -1,31 +1,32 @@
 import abc
 from dataclasses import dataclass
 from typing import List
+
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    ActionsOfTemplateDTO
+    ActionWithStageIdDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldWithPermissionsDTO
+    FieldPermissionDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFToTaskTemplateDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    StageIdWithTemplateIdDTO
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
-    TaskTemplateDTO
-from ib_tasks.exceptions.task_custom_exceptions import \
-    TaskTemplatesDoesNotExists
+    TemplateDTO
 
 
 @dataclass
 class CompleteTaskTemplatesDTO:
-    task_template_dtos: List[TaskTemplateDTO]
-    actions_of_templates_dtos: List[ActionsOfTemplateDTO]
+    task_template_dtos: List[TemplateDTO]
+    stage_id_with_template_id_dtos: List[StageIdWithTemplateIdDTO]
+    action_with_stage_id_dtos: List[ActionWithStageIdDTO]
     gof_dtos: List[GoFDTO]
-    gofs_to_task_templates_dtos: List[GoFToTaskTemplateDTO]
-    field_with_permissions_dtos: List[FieldWithPermissionsDTO]
+    gofs_of_task_templates_dtos: List[GoFToTaskTemplateDTO]
+    field_with_permissions_dtos: List[FieldPermissionDTO]
 
 
 class GetTaskTemplatesPresenterInterface(abc.ABC):
     @abc.abstractmethod
-    def raise_task_templates_does_not_exists_exception(
-            self, err: TaskTemplatesDoesNotExists):
+    def raise_task_templates_does_not_exists_exception(self):
         pass
 
     @abc.abstractmethod

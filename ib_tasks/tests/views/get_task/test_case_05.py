@@ -2,11 +2,12 @@
 # TODO: Update test case description
 """
 import pytest
-from django_swagger_utils.utils.test_v1 import TestUtils
-from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from django_swagger_utils.utils.test_utils import TestUtils
+
 from ib_tasks.tests.factories.models import (
     TaskFactory
 )
+from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
 class TestCase05GetTaskAPITestCase(TestUtils):
@@ -28,12 +29,16 @@ class TestCase05GetTaskAPITestCase(TestUtils):
     def test_case(self, snapshot, setup, mocker):
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids
-        get_user_role_ids_mock_method = get_user_role_ids(mocker)
+        get_user_role_ids(mocker)
+        from ib_tasks.tests.common_fixtures.adapters\
+            .assignees_details_service \
+            import assignee_details_dtos_mock
+        assignee_details_dtos_mock(mocker)
         body = {}
         path_params = {}
         query_params = {'task_id': 1}
         headers = {}
-        self.default_test_case(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

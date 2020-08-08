@@ -1,13 +1,15 @@
 from typing import List
 
-from ib_boards.interactors.dtos import TaskStageIdDTO, TaskCompleteDetailsDTO, \
+from ib_boards.constants.enum import ViewType
+from ib_boards.interactors.dtos import TaskStageIdDTO, \
+    TaskCompleteDetailsDTO, \
     ColumnTaskIdsDTO
 from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
-    TaskFieldsDTOFactory
+    TaskFieldsDTOFactory, TaskStageColorDTOFactory
 
 
 def prepare_task_details_dtos(mocker, task_dtos: List[TaskStageIdDTO],
-                              user_id: str):
+                              user_id: str, view_type: ViewType):
     mock = mocker.patch(
         'ib_boards.adapters.task_service.TaskService.get_task_complete_details'
     )
@@ -23,7 +25,11 @@ def prepare_task_details_dtos(mocker, task_dtos: List[TaskStageIdDTO],
             task_id=task_dto.task_id
         ) for _index, task_dto in enumerate(task_dtos)
     ]
-
+    # task_stage_color_dtos = [
+    #     TaskStageColorDTOFactory.create(
+    #         task_id=task_dto.task_id
+    #     ) for _index, task_dto in enumerate(task_dtos)
+    # ]
     mock.return_value = fields_dto, actions_dto
     return mock
 
@@ -51,16 +57,12 @@ def get_valid_task_ids_mock(
 
 
 def get_valid_task_ids_for_kanban_view_mock(
-        mocker, task_template_ids_for_stages: List[str],
-        task_template_ids_list_view: List[str], task_ids: List[str]):
+        mocker, task_template_ids_for_stages: List[str]):
     mock = mocker.patch(
         'ib_boards.adapters.task_service.TaskService.get_valid_task_template_ids'
     )
-    mock.side_effect = [
-        task_template_ids_for_stages,
-        task_template_ids_list_view,
-        task_ids
-    ]
+    mock.return_value = task_template_ids_for_stages,
+
     return mock
 
 
@@ -105,23 +107,14 @@ def validate_stage_ids_mock(mocker, stage_ids: List[str]):
     return mock
 
 
-def get_stage_display_logics_mock(mocker):
-    mock = mocker.patch(
-        'ib_boards.adapters.task_service.TaskService.get_stage_display_logics'
-    )
-    stage_display_logics = [
-        "STATUS_ID_3 == STAGE_ID_3",
-        "STATUS_ID_4 == STAGE_ID_4"
-    ]
-    mock.return_value = stage_display_logics
-    return mock
-
-
 def task_details_mock(mocker, task_details: List[TaskCompleteDetailsDTO]):
     mock = mocker.patch(
         'ib_boards.adapters.task_service.TaskService.get_task_complete_details'
     )
-    mock.return_value = task_details[0].field_dtos, task_details[0].action_dtos
+    TaskStageColorDTOFactory.reset_sequence()
+    colors = TaskStageColorDTOFactory.create_batch(size=3)
+
+    mock.return_value = task_details[0].field_dtos, task_details[0].action_dtos, colors
     return mock
 
 

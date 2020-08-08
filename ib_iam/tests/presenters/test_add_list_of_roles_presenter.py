@@ -26,13 +26,22 @@ class TestAddListOfRolesPresenter:
     def test_raise_role_id_duplicate_exception(self):
         # Arrange
         presenter = AddRolesPresenterImplementation()
+        duplicate_role_ids = ["PAYMENT_POC"]
         from ib_iam.constants.exception_messages \
             import DUPLICATE_ROLE_IDS
-        expected_response = DUPLICATE_ROLE_IDS[0]
+        expected_response = DUPLICATE_ROLE_IDS[0].format(
+            duplicate_role_ids=duplicate_role_ids
+        )
         response_status_code = DUPLICATE_ROLE_IDS[1]
+        from ib_iam.exceptions.custom_exceptions import DuplicateRoleIds
+        duplicate_ids_err_object = DuplicateRoleIds(
+            role_ids=duplicate_role_ids
+        )
 
         # Act
-        response_object = presenter.raise_duplicate_role_ids_exception()
+        response_object = presenter.raise_duplicate_role_ids_exception(
+            err=duplicate_ids_err_object
+        )
 
         # Assert
         response = json.loads(response_object.content)

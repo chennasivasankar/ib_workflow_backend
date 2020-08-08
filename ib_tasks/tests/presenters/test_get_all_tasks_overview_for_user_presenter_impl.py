@@ -2,14 +2,13 @@ import pytest
 
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskIdWithStageDetailsDTO
 from ib_tasks.presenters.get_all_tasks_overview_for_user_presenter_impl import \
     GetAllTasksOverviewForUserPresenterImpl
 from ib_tasks.tests.factories.presenter_dtos import \
-    TaskIdWithStageDetailsDTOFactory, GetTaskStageCompleteDetailsDTOFactory
+    TaskIdWithStageDetailsDTOFactory, GetTaskStageCompleteDetailsDTOFactory, \
+    TaskWithCompleteStageDetailsDTOFactory
 from ib_tasks.tests.factories.storage_dtos import FieldDetailsDTOFactory, \
-    ActionDetailsDTOFactory
+    StageActionDetailsDTOFactory
 
 
 class TestGetAllTasksOverviewForUserPresenterImpl:
@@ -83,17 +82,26 @@ class TestGetAllTasksOverviewForUserPresenterImpl:
                     "field_response": "value"
                 }],
                 "stage_with_actions": {
-                    "stage_id":
-                        "stage_1",
+                    "stage_id": 1,
                     "stage_display_name":
                         "stage_display_1",
+                    "stage_color": "color_1",
+                    "assignee": {
+                        "assignee_id": "123e4567-e89b-12d3-a456-426614174000",
+                        "name": "name_0",
+                        "profile_pic_url": "https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM"
+                    },
                     "actions": [{
                         "action_id": 1,
                         "button_text": "button_text_1",
+                        'action_type': 'action_type_1',
+                        'transition_template_id': 'template_id_1',
                         "button_color": None
                     }, {
                         "action_id": 2,
                         "button_text": "button_text_2",
+                        'action_type': 'action_type_2',
+                        'transition_template_id': 'template_id_2',
                         "button_color": None
                     }]
                 }
@@ -106,16 +114,25 @@ class TestGetAllTasksOverviewForUserPresenterImpl:
                     "field_response": "value"
                 }],
                 "stage_with_actions": {
-                    "stage_id":
-                        "stage_2",
+                    "stage_id": 2,
                     "stage_display_name":
                         "stage_display_2",
+                    "stage_color": "color_2",
+                    "assignee": {
+                        "assignee_id": "123e4567-e89b-12d3-a456-426614174001",
+                        "name": "name_1",
+                        "profile_pic_url": "https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM"
+                    },
                     "actions": [{
                         "action_id": 1,
+                        'action_type': 'action_type_1',
+                        'transition_template_id': 'template_id_1',
                         "button_text": "button_text_1",
                         "button_color": None
                     }, {
                         "action_id": 2,
+                        'action_type': 'action_type_2',
+                        'transition_template_id': 'template_id_2',
                         "button_text": "button_text_2",
                         "button_color": None
                     }]
@@ -128,22 +145,22 @@ class TestGetAllTasksOverviewForUserPresenterImpl:
 
     def test_given_valid_details_get_all_tasks_overview_details_response(
             self, all_tasks_overview_details_response_dict):
-        #Arrange
+        # Arrange
         TaskIdWithStageDetailsDTOFactory.reset_sequence()
         GetTaskStageCompleteDetailsDTOFactory.reset_sequence()
         FieldDetailsDTOFactory.reset_sequence()
-        ActionDetailsDTOFactory.reset_sequence()
-        task_id_with_stage_details_dtos = TaskIdWithStageDetailsDTOFactory. \
-            create_batch(2)
-
+        StageActionDetailsDTOFactory.reset_sequence()
+        TaskWithCompleteStageDetailsDTOFactory.reset_sequence()
+        task_with_complete_stage_details_dtos = \
+            TaskWithCompleteStageDetailsDTOFactory.create_batch(2)
         task_fields_and_action_details_dtos = \
-            GetTaskStageCompleteDetailsDTOFactory. \
-                create_batch(2, field_dtos=[FieldDetailsDTOFactory()],
-                             action_dtos=ActionDetailsDTOFactory.create_batch(
-                                 2))
+            GetTaskStageCompleteDetailsDTOFactory.create_batch(
+                2, field_dtos=[FieldDetailsDTOFactory()],
+                action_dtos=StageActionDetailsDTOFactory.create_batch(2))
 
         all_tasks_overview_details_dto = AllTasksOverviewDetailsDTO(
-            task_id_with_stage_details_dtos=task_id_with_stage_details_dtos,
+            task_with_complete_stage_details_dtos=
+            task_with_complete_stage_details_dtos,
             task_fields_and_action_details_dtos=
             task_fields_and_action_details_dtos)
 

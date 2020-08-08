@@ -1,18 +1,16 @@
 import abc
-from typing import List, Optional
+from typing import List
 
-from ib_boards.exceptions.custom_exceptions import InvalidBoardId
-from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, BoardColumnsDTO
+from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
+    StarOrUnstarParametersDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
-    ColumnStageIdsDTO
-from ib_boards.interactors.storage_interfaces.dtos import ColumnDetailsDTO
-from ib_boards.interactors.storage_interfaces.dtos import TaskBoardsDetailsDTO
+    ColumnStageIdsDTO, ColumnDetailsDTO, TaskBoardsDetailsDTO
 
 
 class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
-    def validate_board_id(self, board_id) -> Optional[InvalidBoardId]:
+    def validate_board_id(self, board_id) -> bool:
         pass
 
     @abc.abstractmethod
@@ -23,12 +21,12 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_board_ids_for_column_ids(self, column_ids: List[str]) -> List[
-        BoardColumnDTO]:
+            BoardColumnDTO]:
         pass
 
     @abc.abstractmethod
     def get_boards_column_ids(
-            self, board_ids: List[str]) -> List[BoardColumnDTO]:
+            self, board_ids: List[str]) -> List[str]:
         pass
 
     @abc.abstractmethod
@@ -41,7 +39,7 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def delete_columns_which_are_not_in_configuration(
-            self, column_for_delete_dtos: List[BoardColumnsDTO]) -> None:
+            self, column_ids: List[str]) -> None:
         pass
 
     @abc.abstractmethod
@@ -50,7 +48,7 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_board_ids(
-            self, user_role: str, ) -> List[str]:
+            self, user_id: str, ) -> List[str]:
         pass
 
     @abc.abstractmethod
@@ -103,5 +101,15 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_columns_stage_ids(self, column_ids) -> List[ColumnStageIdsDTO]:
+    def get_columns_stage_ids(self, column_ids: List[str]) -> List[ColumnStageIdsDTO]:
+        pass
+
+    @abc.abstractmethod
+    def star_given_board(self,
+                         parameters: StarOrUnstarParametersDTO):
+        pass
+
+    @abc.abstractmethod
+    def unstar_given_board(self,
+                           parameters: StarOrUnstarParametersDTO):
         pass

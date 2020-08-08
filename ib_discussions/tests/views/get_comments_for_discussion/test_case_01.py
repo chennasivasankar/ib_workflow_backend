@@ -2,7 +2,7 @@
 get comments for discussion
 """
 import pytest
-from django_swagger_utils.utils.test_v1 import TestUtils
+from django_swagger_utils.utils.test_utils import TestUtils
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
@@ -102,7 +102,7 @@ class TestCase01GetCommentsForDiscussionAPITestCase(TestUtils):
         path_params = {"discussion_id": discussion_id}
         query_params = {}
         headers = {}
-        response = self.default_test_case(
+        response = self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

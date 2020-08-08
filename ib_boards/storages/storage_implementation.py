@@ -1,14 +1,15 @@
+import json
 from typing import List, Tuple
 
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
-    BoardColumnsDTO, TaskTemplateStagesDTO, TaskSummaryFieldsDTO
+    BoardColumnsDTO, TaskTemplateStagesDTO, TaskSummaryFieldsDTO, StarOrUnstarParametersDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
     ColumnDetailsDTO, TaskBoardsDetailsDTO, ColumnStageIdsDTO
 from ib_boards.interactors.storage_interfaces.dtos import ColumnBoardDTO, \
     ColumnStageDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
-from ib_boards.models import Board, ColumnPermission, Column
+from ib_boards.models import Board, ColumnPermission, Column, UserStarredBoard
 
 
 class StorageImplementation(StorageInterface):
@@ -157,10 +158,7 @@ class StorageImplementation(StorageInterface):
         ColumnPermission.objects.bulk_create(user_role_ids)
 
     def delete_columns_which_are_not_in_configuration(
-            self, column_for_delete_dtos: List[BoardColumnsDTO]) -> None:
-        column_ids = []
-        for column_for_delete_dto in column_for_delete_dtos:
-            column_ids += column_for_delete_dto.column_ids
+            self, column_ids: List[str]) -> None:
         column_objects = Column.objects.filter(
             column_id__in=column_ids
         )
@@ -226,10 +224,12 @@ class StorageImplementation(StorageInterface):
     def validate_user_role_with_boards_roles(self, user_role: str):
         pass
 
-    def get_board_ids(
-            self, user_role: str, ) -> List[str]:
-        board_ids = Board.objects.values_list('board_id', flat=True)
-        return list(board_ids)
+    def get_board_ids(self, user_id: str) -> List[str]:
+        starred_board_ids = list(UserStarredBoard.objects.filter(user_id=user_id)
+                                 .values_list('board_id', flat=True))
+        board_ids = list(Board.objects.exclude(board_id__in=starred_board_ids) \
+                         .values_list('board_id', flat=True))
+        return board_ids, starred_board_ids
 
     def get_board_details(self, board_ids: List[str]) -> List[BoardDTO]:
         board_objects = Board.objects.filter(
@@ -300,7 +300,8 @@ class StorageImplementation(StorageInterface):
 
     def get_columns_details(self, column_ids: List[str]) -> \
             List[ColumnDetailsDTO]:
-        column_objs = Column.objects.filter(column_id__in=column_ids)
+        column_objs = (Column.objects.filter(column_id__in=column_ids)
+                       .order_by('display_order'))
         columns_dtos = self._convert_column_objs_to_dtos(column_objs)
         return columns_dtos
 
@@ -317,9 +318,9 @@ class StorageImplementation(StorageInterface):
 
     def get_column_ids_for_board(self, board_id: str, user_roles: List[str]) \
             -> List[str]:
+        column_ids = []
         column_objs = Column.objects.filter(board__board_id=board_id)
         roles = ColumnPermission.objects.filter(column__in=column_objs)
-        column_ids = []
         for role in roles:
             if role.user_role_id == "ALL_ROLES":
                 column_ids.append(role.column.column_id)
@@ -333,8 +334,16 @@ class StorageImplementation(StorageInterface):
     def get_board_complete_details(self, board_id: str,
                                    stage_ids: List[str]) -> \
             TaskBoardsDetailsDTO:
-
+        stage_related_columns = []
         column_objs = Column.objects.filter(board_id=board_id)
+        for stage in stage_ids:
+            for column in column_objs:
+                task_selection_config = json.loads(
+                    column.task_selection_config)
+                for key, value in enumerate(task_selection_config.values()):
+                    if stage in value:
+                        stage_related_columns.append(column)
+
         board_obj = Board.objects.get(board_id=board_id)
         board_dto = BoardDTO(
             board_id=board_obj.board_id,
@@ -342,7 +351,7 @@ class StorageImplementation(StorageInterface):
         )
 
         list_of_column_dtos, column_stages = self._convert_column_details_to_dtos(
-            column_objs,
+            list(set(stage_related_columns)),
             stage_ids)
         board_details_dto = TaskBoardsDetailsDTO(
             board_dto=board_dto,
@@ -384,10 +393,11 @@ class StorageImplementation(StorageInterface):
                         )
         return list_of_column_dtos, column_stages
 
-    def get_columns_stage_ids(self, column_ids) -> List[ColumnStageIdsDTO]:
-        column_stages = Column.objects.filter(
-            column_id__in=column_ids
-        ).values_list('column_id', 'task_selection_config')
+    def get_columns_stage_ids(self, column_ids: List[str]) -> \
+            List[ColumnStageIdsDTO]:
+        column_stages = (Column.objects.filter(column_id__in=column_ids)
+                         .values_list('column_id', 'task_selection_config')
+                         .order_by('display_order'))
 
         return [
             ColumnStageIdsDTO(
@@ -396,3 +406,19 @@ class StorageImplementation(StorageInterface):
             )
             for key, value in column_stages
         ]
+
+    def unstar_given_board(self,
+                           parameters: StarOrUnstarParametersDTO):
+        user_id = parameters.user_id
+        board_id = parameters.board_id
+
+        UserStarredBoard.objects.filter(
+                board_id=board_id, user_id=user_id).delete()
+
+    def star_given_board(self,
+                         parameters: StarOrUnstarParametersDTO):
+        user_id = parameters.user_id
+        board_id = parameters.board_id
+
+        UserStarredBoard.objects.get_or_create(
+                board_id=board_id, user_id=user_id)

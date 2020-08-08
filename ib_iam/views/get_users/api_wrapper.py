@@ -14,14 +14,19 @@ from ib_iam.storages.user_storage_implementation import UserStorageImplementatio
 def api_wrapper(*args, **kwargs):
     storage = UserStorageImplementation()
     presenter = GetUsersListPresenterImplementation()
-    interactor = GetUsersDetailsInteractor(storage=storage)
+    interactor = GetUsersDetailsInteractor(user_storage=storage)
 
     user = kwargs['user']
     user_id = user.user_id
     query_params = kwargs['query_params']
     offset = query_params["offset"]
     limit = query_params["limit"]
+    from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
+    pagination_dto = PaginationDTO(
+        offset=offset,
+        limit=limit
+    )
     response = interactor.get_users_details_wrapper(
-        user_id=user_id, limit=limit, offset=offset, presenter=presenter)
+        user_id=user_id, pagination_dto=pagination_dto, presenter=presenter)
 
     return response
