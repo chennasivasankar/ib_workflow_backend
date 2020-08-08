@@ -89,9 +89,11 @@ class FilterStorageImplementation(FilterStorageInterface):
             'role', flat=True
         ).filter(field_id__in=field_ids)
         user_roles = sorted(list(set(user_roles)))
+        from ib_tasks.constants.constants import ALL_ROLES_ID
+        updated_user_role = user_roles + [ALL_ROLES_ID]
         fields_user_roles = sorted(list(set(fields_user_roles)))
-        invalid_user = not (user_roles == fields_user_roles \
-                            or set(fields_user_roles).issubset(set(user_roles)))
+        invalid_user = not (updated_user_role == fields_user_roles \
+                            or set(fields_user_roles).issubset(set(updated_user_role)))
         if invalid_user:
             raise UserNotHaveAccessToFields
 
@@ -137,14 +139,14 @@ class FilterStorageImplementation(FilterStorageInterface):
 
     def validate_filter_id(self, filter_id: int):
         invalid_filter_id = not Filter.objects.filter(
-            id=filter_id
+            id=int(filter_id)
         ).exists()
         if invalid_filter_id:
             raise InvalidFilterId()
 
     def validate_user_with_filter_id(self, user_id: str, filter_id: int):
         invalid_user = not Filter.objects.filter(
-            id=filter_id, created_by=user_id
+            id=int(filter_id), created_by=user_id
         ).exists()
         if invalid_user:
             raise UserNotHaveAccessToFilter()
