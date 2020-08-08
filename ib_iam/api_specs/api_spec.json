@@ -605,6 +605,26 @@
         "$ref": "#/definitions/UserWithCompanyWithTeamsAndRoles"
       }
     },
+    "UpdateUserProfileParameter": {
+      "name": "UpdateUserProfile",
+      "description": "Update User profile",
+      "in": "body",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/UserNameAndEmail"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "profile_pic_url": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      }
+    },
     "LoginParameter": {
       "name": "login",
       "description": "email and password to login in database",
@@ -855,6 +875,33 @@
                   "INVALID_COMPANY_ID",
                   "INVALID_TEAM_IDS",
                   "INVALID_ROLE_IDS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "BadRequestForUpdateUserProfileResponse": {
+      "description": "Failed to add user",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_EMAIL",
+                  "EMPTY_NAME_IS_INVALID",
+                  "NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE",
+                  "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
                 ]
               }
             },
@@ -1922,6 +1969,33 @@
           },
           "401": {
             "$ref": "#/responses/UnauthorizedForDeleteCompanyResponse"
+          }
+        }
+      }
+    },
+    "/user/profile/update/v1/": {
+      "put": {
+        "summary": "update user profile",
+        "description": "updates user profile details",
+        "operationId": "update_user_profile",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/UpdateUserProfileParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Company details updated Successfully"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequestForUpdateUserProfileResponse"
           }
         }
       }
