@@ -91,6 +91,53 @@ class TestUpdateUserProfileInteractor:
             .get_response_for_name_contains_special_chars_and_numbers_exception \
             .assert_called_once()
 
+    def test_given_invalid_email_returns_invalid_email_exception_response(
+            self, mocker, presenter_mock, interactor):
+        # Arrange
+        user_id_name_email_and_profile_pic_url_dto = \
+            UserIdNameEmailAndProfilePicUrlDTOFactory()
+        from ib_iam.tests.common_fixtures.adapters.user_service \
+            import update_user_profile_adapter_mock
+        adapter_mock = update_user_profile_adapter_mock(mocker=mocker)
+        from ib_iam.exceptions.custom_exceptions import InvalidEmail
+        adapter_mock.side_effect = InvalidEmail
+        presenter_mock.get_response_for_invalid_email_exception \
+            .return_value = mock.Mock()
+
+        # Act
+        interactor.update_user_profile_wrapper(
+            user_id_name_email_and_profile_pic_url_dto=
+            user_id_name_email_and_profile_pic_url_dto,
+            presenter=presenter_mock)
+
+        # Assert
+        presenter_mock.get_response_for_invalid_email_exception \
+            .assert_called_once()
+
+    def test_given_email_already_in_use_returns_email_already_in_use_response(
+            self, mocker, presenter_mock, interactor):
+        # Arrange
+        user_id_name_email_and_profile_pic_url_dto = \
+            UserIdNameEmailAndProfilePicUrlDTOFactory()
+        from ib_iam.tests.common_fixtures.adapters.user_service \
+            import update_user_profile_adapter_mock
+        adapter_mock = update_user_profile_adapter_mock(mocker=mocker)
+        from ib_iam.exceptions.custom_exceptions import \
+            UserAccountAlreadyExistWithThisEmail
+        adapter_mock.side_effect = UserAccountAlreadyExistWithThisEmail
+        presenter_mock.get_response_for_email_already_exists \
+            .return_value = mock.Mock()
+
+        # Act
+        interactor.update_user_profile_wrapper(
+            user_id_name_email_and_profile_pic_url_dto=
+            user_id_name_email_and_profile_pic_url_dto,
+            presenter=presenter_mock)
+
+        # Assert
+        presenter_mock.get_response_for_email_already_exists \
+            .assert_called_once()
+
     def test_given_valid_details_returns_success_response(
             self, mocker, storage_mock, presenter_mock, interactor):
         # Arrange
