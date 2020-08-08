@@ -57,35 +57,6 @@ class TestAddNewUserIneractor:
         storage_mock.is_user_admin.assert_called_once_with(user_id=user_id)
         presenter_mock.raise_user_is_not_admin_exception.assert_called_once()
 
-    def test_validate_name_when_empty_throw_exception(self, storage_mock,
-                                                      presenter_mock):
-        # Arrange
-        user_id = "user_1"
-        name = ""
-        email = "user@email.com"
-        team_ids = ['team0', 'team1']
-        role_ids = ['role0', 'role1']
-        company_id = 'company0'
-        interactor = AddNewUserInteractor(user_storage=storage_mock)
-        storage_mock.is_user_admin.return_value = True
-        presenter_mock.raise_invalid_name_exception.return_value = Mock()
-
-        user_details_with_team_role_and_company_ids_dto \
-            = UserDetailsWithTeamRoleAndCompanyIdsDTOFactory(
-            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
-            company_id=company_id
-        )
-
-        # Act
-        interactor.add_new_user_wrapper(
-            user_id=user_id,
-            user_details_with_team_role_and_company_ids_dto \
-                =user_details_with_team_role_and_company_ids_dto,
-            presenter=presenter_mock)
-
-        # Assert
-        presenter_mock.raise_invalid_name_exception.assert_called_once()
-
     def test_validate_name_when_contains_special_characters_and_numbers_throw_exception(
             self, storage_mock, presenter_mock):
         # Arrange
@@ -161,7 +132,7 @@ class TestAddNewUserIneractor:
         company_id = 'company0'
         interactor = AddNewUserInteractor(user_storage=storage_mock)
         storage_mock.is_user_admin.return_value = True
-        presenter_mock.raise_invalid_name_exception.return_value = Mock()
+        presenter_mock.raise_invalid_email_exception.return_value = Mock()
 
         user_details_with_team_role_and_company_ids_dto \
             = UserDetailsWithTeamRoleAndCompanyIdsDTOFactory(

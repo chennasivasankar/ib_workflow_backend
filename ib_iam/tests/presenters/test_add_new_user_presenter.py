@@ -6,21 +6,6 @@ from ib_iam.presenters.add_new_user_presenter_implementation \
 
 
 class TestResponseAddNewUser:
-    def test_raise_invalid_name_exception(self):
-        # Arrange
-        presenter = AddUserPresenterImplementation()
-        from ib_iam.constants.exception_messages import EMPTY_NAME_IS_INVALID
-        expected_response = EMPTY_NAME_IS_INVALID[0]
-        response_status_code = EMPTY_NAME_IS_INVALID[1]
-
-        # Act
-        response_object = presenter.raise_invalid_name_exception()
-
-        # Assert
-        response = json.loads(response_object.content)
-        assert response['http_status_code'] == StatusCode.BAD_REQUEST.value
-        assert response['res_status'] == response_status_code
-        assert response['response'] == expected_response
 
     def test_raise_name_should_not_contain_special_characters_exception(self):
         # Arrange
@@ -42,7 +27,7 @@ class TestResponseAddNewUser:
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
 
-    def test_raise_name_should_contain_minimum_of_5_characters_exception(self):
+    def test_raise_name_length_should_be_exception_response(self):
         # Arrange
         presenter = AddUserPresenterImplementation()
         from ib_iam.constants.exception_messages \

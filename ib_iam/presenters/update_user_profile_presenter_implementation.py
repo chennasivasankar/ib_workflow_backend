@@ -13,14 +13,6 @@ class UpdateUserProfilePresenterImplementation(
         empty_dict = {}
         return self.prepare_200_success_response(response_dict=empty_dict)
 
-    def get_response_for_empty_name_exception(self):
-        from ib_iam.constants.exception_messages import EMPTY_NAME_IS_INVALID
-        response_dict = {"response": EMPTY_NAME_IS_INVALID[0],
-                         "http_status_code": StatusCode.BAD_REQUEST.value,
-                         "res_status": EMPTY_NAME_IS_INVALID[1]}
-        return self.prepare_400_bad_request_response(
-            response_dict=response_dict)
-
     def get_response_for_minimum_name_length(self):
         from ib_iam.constants.exception_messages import \
             NAME_MINIMUM_LENGTH_SHOULD_BE

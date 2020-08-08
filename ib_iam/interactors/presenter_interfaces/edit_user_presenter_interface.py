@@ -11,10 +11,6 @@ class EditUserPresenterInterface(ABC):
         pass
 
     @abstractmethod
-    def raise_invalid_name_exception(self):
-        pass
-
-    @abstractmethod
     def raise_name_minimum_length_should_be_equal_or_more_than(self):
         pass
 

@@ -25,10 +25,6 @@ class UserAccountAlreadyExistWithThisEmail(Exception):
     pass
 
 
-class GivenNameIsEmpty(Exception):
-    pass
-
-
 class InvalidEmailAddress(Exception):
     pass
 

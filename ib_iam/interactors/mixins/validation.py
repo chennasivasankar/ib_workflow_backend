@@ -26,28 +26,15 @@ class ValidationMixin:
         self._validate_offset_value_and_throw_exception(offset=offset)
         self._validate_limit_value_and_throw_exception(limit=limit)
 
-    @staticmethod
-    def _validate_is_string_empty(value):
-        is_in_string_format = bool(isinstance(value, str))
-        is_not_in_string_format = not is_in_string_format
-        is_string_empty = not value
-        is_string_contains_only_white_spaces = value.isspace()
-        is_string_empty = (is_not_in_string_format or
-                           is_string_empty or
-                           is_string_contains_only_white_spaces)
-        if is_string_empty:
-            from ib_iam.exceptions.custom_exceptions import GivenNameIsEmpty
-            raise GivenNameIsEmpty
-
     def _validate_name_and_throw_exception(self, name: str):
-        self._validate_is_string_empty(name)
         self._validate_is_name_satisfies_minimum_length_constant(name)
-        self._check_string_contains_special_characters_and_throw_exception(
+        self._check_string_contains_special_characters_except_space_and_throw_exception(
             name)
 
     @staticmethod
-    def _validate_is_name_satisfies_minimum_length_constant(value):
+    def _validate_is_name_satisfies_minimum_length_constant(value: str):
         from ib_iam.constants.enums import LengthConstants
+        # value = value.replace(" ", "")
         is_string_not_satisfies_minimum_length = \
             len(value) < LengthConstants.MIN_USER_NAME_LENGTH.value
         if is_string_not_satisfies_minimum_length:
@@ -56,7 +43,8 @@ class ValidationMixin:
             raise NameMinimumLengthShouldBe
 
     @staticmethod
-    def _check_string_contains_special_characters_and_throw_exception(value):
+    def _check_string_contains_special_characters_except_space_and_throw_exception(
+            value: str):
         spaces_removed_string = value.replace(" ", "")
         is_special_characters_and_numbers_not_exists_in_string = \
             not spaces_removed_string.isalpha()

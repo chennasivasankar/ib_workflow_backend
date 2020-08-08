@@ -20,7 +20,7 @@ class TestCase01UpdateUserProfileAPITestCase(TestUtils):
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import update_user_profile_adapter_mock
         update_user_profile_adapter_mock(mocker=mocker)
-        body = {'name': 'updatedusername',
+        body = {'name': 'username',
                 'email': 'jaswanthmamidipudi@gmail.com',
                 'profile_pic_url': 'https://sample.com'}
         path_params = {}

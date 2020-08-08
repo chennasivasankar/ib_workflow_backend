@@ -31,25 +31,6 @@ class TestUpdateUserProfileInteractor:
         interactor = UpdateUserProfileInteractor(user_storage=storage_mock)
         return interactor
 
-    @pytest.mark.parametrize("name", [(""), ("  ")])
-    def test_validate_name_when_empty_throw_exception(
-            self, presenter_mock, interactor, name):
-        # Arrange
-        user_id_name_email_and_profile_pic_url_dto = \
-            UserIdNameEmailAndProfilePicUrlDTOFactory(name=name)
-        presenter_mock.get_response_for_empty_name_exception \
-            .return_value = mock.Mock()
-
-        # Act
-        interactor.update_user_profile_wrapper(
-            user_id_name_email_and_profile_pic_url_dto=
-            user_id_name_email_and_profile_pic_url_dto,
-            presenter=presenter_mock)
-
-        # Assert
-        presenter_mock.get_response_for_empty_name_exception \
-            .assert_called_once()
-
     @pytest.mark.parametrize("name", [("user"), ("u")])
     def test_validate_name_minimum_name_length_exception(
             self, presenter_mock, interactor, name):

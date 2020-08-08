@@ -12,4 +12,4 @@ snapshots['TestCase01UpdateUserProfileAPITestCase.test_case status_code'] = '200
 snapshots['TestCase01UpdateUserProfileAPITestCase.test_case body'] = {
 }
 
-snapshots['TestCase01UpdateUserProfileAPITestCase.test_case updated_user_name'] = 'updatedusername'
+snapshots['TestCase01UpdateUserProfileAPITestCase.test_case updated_user_name'] = 'username'

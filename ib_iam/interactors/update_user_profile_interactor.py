@@ -1,5 +1,5 @@
 from ib_iam.exceptions.custom_exceptions import (
-    GivenNameIsEmpty, NameMinimumLengthShouldBe,
+    NameMinimumLengthShouldBe,
     NameShouldNotContainsNumbersSpecCharacters, InvalidEmail,
     UserAccountAlreadyExistWithThisEmail)
 from ib_iam.interactors.mixins.validation import ValidationMixin
@@ -26,8 +26,6 @@ class UpdateUserProfileInteractor(ValidationMixin):
                 user_id_name_email_and_profile_pic_url_dto=
                 user_id_name_email_and_profile_pic_url_dto)
             response = presenter.get_success_response_for_update_user_profile()
-        except GivenNameIsEmpty:
-            response = presenter.get_response_for_empty_name_exception()
         except NameMinimumLengthShouldBe:
             response = presenter.get_response_for_minimum_name_length()
         except NameShouldNotContainsNumbersSpecCharacters:

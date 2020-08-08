@@ -1,7 +1,7 @@
 from typing import List
 
 from ib_iam.exceptions.custom_exceptions import (
-    UserIsNotAdmin, GivenNameIsEmpty, InvalidEmailAddress,
+    UserIsNotAdmin, InvalidEmailAddress,
     RoleIdsAreInvalid, InvalidCompanyId, TeamIdsAreInvalid, UserDoesNotExist,
     NameShouldNotContainsNumbersSpecCharacters,
     NameMinimumLengthShouldBe
@@ -35,8 +35,6 @@ class EditUserInteractor(ValidationMixin):
             response = presenter.raise_user_is_not_admin_exception()
         except UserDoesNotExist:
             response = presenter.raise_user_does_not_exist()
-        except GivenNameIsEmpty:
-            response = presenter.raise_invalid_name_exception()
         except InvalidEmailAddress:
             response = presenter.raise_invalid_email_exception()
         except NameMinimumLengthShouldBe:

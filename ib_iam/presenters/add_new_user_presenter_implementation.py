@@ -18,16 +18,6 @@ class AddUserPresenterImplementation(AddUserPresenterInterface,
         return self.prepare_403_forbidden_response(
             response_dict=response_dict)
 
-    def raise_invalid_name_exception(self):
-        from ib_iam.constants.exception_messages import EMPTY_NAME_IS_INVALID
-        response_dict = {
-            "response": EMPTY_NAME_IS_INVALID[0],
-            "http_status_code": StatusCode.BAD_REQUEST.value,
-            "res_status": EMPTY_NAME_IS_INVALID[1]
-        }
-        return self.prepare_400_bad_request_response(
-            response_dict=response_dict)
-
     def raise_invalid_email_exception(self):
         from ib_iam.constants.exception_messages import INVALID_EMAIL
         response_dict = {

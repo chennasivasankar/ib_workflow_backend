@@ -15,23 +15,6 @@ class TestUpdateUserProfilePresenterImplementation:
         actual_response = json.loads(result.content)
         assert actual_response == expected_response
 
-    def test_whether_it_returns_empty_name_exception_response(self):
-        from ib_iam.constants.exception_messages import EMPTY_NAME_IS_INVALID
-        json_presenter = UpdateUserProfilePresenterImplementation()
-        expected_response = EMPTY_NAME_IS_INVALID[0]
-        expected_res_status = EMPTY_NAME_IS_INVALID[1]
-        expected_http_status_code = StatusCode.BAD_REQUEST.value
-
-        result = json_presenter.get_response_for_empty_name_exception()
-
-        response_dict = json.loads(result.content)
-        actual_response = response_dict["response"]
-        actual_res_status = response_dict["res_status"]
-        actual_http_status_code = response_dict["http_status_code"]
-        assert actual_response == expected_response
-        assert actual_res_status == expected_res_status
-        assert expected_http_status_code == actual_http_status_code
-
     def test_whether_it_returns_minimum_name_length_exception_response(self):
         from ib_iam.constants.exception_messages import \
             NAME_MINIMUM_LENGTH_SHOULD_BE
