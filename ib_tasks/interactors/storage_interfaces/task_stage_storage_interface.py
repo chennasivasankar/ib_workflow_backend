@@ -1,7 +1,8 @@
 import abc
 from typing import List
 
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageAssigneeDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    TaskStageAssigneeDTO
 
 
 class TaskStageStorageInterface(abc.ABC):

@@ -6,7 +6,7 @@ from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskIdWithStageDetailsDTO, GetTaskStageCompleteDetailsDTO
+    GetTaskStageCompleteDetailsDTO, TaskWithCompleteStageDetailsDTO
 
 
 @dataclass
@@ -17,8 +17,7 @@ class TaskCompleteDetailsDTO:
     field_dtos: List[FieldDisplayDTO]
 
 
-
 @dataclass
 class AllTasksOverviewDetailsDTO:
-    task_id_with_stage_details_dtos: List[TaskIdWithStageDetailsDTO]
+    task_with_complete_stage_details_dtos: List[TaskWithCompleteStageDetailsDTO]
     task_fields_and_action_details_dtos: List[GetTaskStageCompleteDetailsDTO]
