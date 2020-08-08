@@ -19,3 +19,11 @@ class UpdateUserProfilePresenterInterface(abc.ABC):
     def get_response_for_name_contains_special_chars_and_numbers_exception(
             self):
         pass
+
+    @abc.abstractmethod
+    def get_response_for_invalid_email_exception(self):
+        pass
+
+    @abc.abstractmethod
+    def get_response_for_email_already_exists(self):
+        pass
