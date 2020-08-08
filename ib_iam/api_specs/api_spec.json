@@ -900,7 +900,8 @@
                 "enum": [
                   "INVALID_EMAIL",
                   "EMPTY_NAME_IS_INVALID",
-                  "NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE",
+                  "EMAIL_ALREADY_IN_USE",
+                  "NAME_MINIMUM_LENGTH_SHOULD_BE",
                   "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
                 ]
               }
