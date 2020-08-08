@@ -34,10 +34,12 @@ class TestUpdateUserProfilePresenterImplementation:
 
     def test_whether_it_returns_minimum_name_length_exception_response(self):
         from ib_iam.constants.exception_messages import \
-            NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE
+            NAME_MINIMUM_LENGTH_SHOULD_BE
+        from ib_iam.constants.enums import StatusCode, LengthConstants
         json_presenter = UpdateUserProfilePresenterImplementation()
-        expected_response = NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE[0]
-        expected_res_status = NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE[1]
+        expected_response = NAME_MINIMUM_LENGTH_SHOULD_BE[0].format(
+            minimum_name_length=LengthConstants.MIN_USER_NAME_LENGTH.value)
+        expected_res_status = NAME_MINIMUM_LENGTH_SHOULD_BE[1]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
 
         result = json_presenter.get_response_for_minimum_name_length()
@@ -63,6 +65,40 @@ class TestUpdateUserProfilePresenterImplementation:
 
         result = json_presenter \
             .get_response_for_name_contains_special_chars_and_numbers_exception()
+
+        response_dict = json.loads(result.content)
+        actual_response = response_dict["response"]
+        actual_res_status = response_dict["res_status"]
+        actual_http_status_code = response_dict["http_status_code"]
+        assert actual_response == expected_response
+        assert actual_res_status == expected_res_status
+        assert expected_http_status_code == actual_http_status_code
+
+    def test_whether_it_returns_invalid_email_exception_response(self):
+        from ib_iam.constants.exception_messages import INVALID_EMAIL
+        json_presenter = UpdateUserProfilePresenterImplementation()
+        expected_response = INVALID_EMAIL[0]
+        expected_res_status = INVALID_EMAIL[1]
+        expected_http_status_code = StatusCode.BAD_REQUEST.value
+
+        result = json_presenter.get_response_for_invalid_email_exception()
+
+        response_dict = json.loads(result.content)
+        actual_response = response_dict["response"]
+        actual_res_status = response_dict["res_status"]
+        actual_http_status_code = response_dict["http_status_code"]
+        assert actual_response == expected_response
+        assert actual_res_status == expected_res_status
+        assert expected_http_status_code == actual_http_status_code
+
+    def test_whether_it_returns_email_already_in_use_exception_response(self):
+        from ib_iam.constants.exception_messages import EMAIL_ALREADY_IN_USE
+        json_presenter = UpdateUserProfilePresenterImplementation()
+        expected_response = EMAIL_ALREADY_IN_USE[0]
+        expected_res_status = EMAIL_ALREADY_IN_USE[1]
+        expected_http_status_code = StatusCode.BAD_REQUEST.value
+
+        result = json_presenter.get_response_for_email_already_exists()
 
         response_dict = json.loads(result.content)
         actual_response = response_dict["response"]
