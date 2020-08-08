@@ -58,7 +58,7 @@ class TestUpdateUserProfile:
             email=profile_dto_from_interactor.email,
             profile_pic_url=profile_dto_from_interactor.profile_pic_url
         )
-        from ib_users.interactors.exceptions.user_profile import \
+        from ib_users.exceptions.invalid_email_exception import \
             InvalidEmailException
         from ib_users.constants.custom_exception_messages import INVALID_EMAIL
         update_user_profile_with_invalid_mail_mock.side_effect = \

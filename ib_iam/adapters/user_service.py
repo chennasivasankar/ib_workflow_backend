@@ -61,12 +61,13 @@ class UserService:
     def update_user_profile(
             self, user_id: str, user_profile_dto: UserProfileDTO):
         from ib_users.interactors.user_profile_interactor import UserProfileDTO
-        from ib_users.interactors.exceptions.user_profile import \
+        from ib_users.exceptions.invalid_email_exception import \
             InvalidEmailException
+        from ib_users.constants.custom_exception_messages import INVALID_EMAIL
         from ib_users.interactors.exceptions.user_profile import \
             EmailAlreadyLinkedException
         from ib_users.constants.user_profile.error_types import \
-            INVALID_EMAIL_ERROR_TYPE, EMAIL_ALREADY_LINKED_ERROR_TYPE
+            EMAIL_ALREADY_LINKED_ERROR_TYPE
         user_profile = UserProfileDTO(
             name=user_profile_dto.name,
             email=user_profile_dto.email,
@@ -76,7 +77,7 @@ class UserService:
             self.interface.update_user_profile(
                 user_id=user_id, user_profile=user_profile)
         except InvalidEmailException as exception:
-            if exception.error_type == INVALID_EMAIL_ERROR_TYPE:
+            if exception.error_type == INVALID_EMAIL.code:
                 from ib_iam.exceptions.custom_exceptions import InvalidEmail
                 raise InvalidEmail
         except EmailAlreadyLinkedException as exception:
