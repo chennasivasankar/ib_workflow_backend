@@ -1626,9 +1626,7 @@
           },
           "http_status_code": {
             "type": "integer",
-            "enum": [
-              400
-            ]
+            "example": 400
           },
           "res_status": {
             "type": "string",
