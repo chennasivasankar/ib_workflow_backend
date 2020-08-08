@@ -11,7 +11,7 @@ class AddUserPresenterInterface(ABC):
         pass
 
     @abstractmethod
-    def raise_name_should_contain_minimum_5_characters(self):
+    def raise_name_minimum_length_should_be_equal_or_more_than(self):
         pass
 
     @abstractmethod

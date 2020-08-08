@@ -130,7 +130,7 @@ class TestAddNewUserIneractor:
         company_id = 'company0'
         interactor = AddNewUserInteractor(user_storage=storage_mock)
         storage_mock.is_user_admin.return_value = True
-        presenter_mock.raise_name_should_contain_minimum_5_characters \
+        presenter_mock.raise_name_minimum_length_should_be_equal_or_more_than \
             .return_value = Mock()
 
         user_details_with_team_role_and_company_ids_dto \
@@ -147,7 +147,7 @@ class TestAddNewUserIneractor:
             presenter=presenter_mock)
 
         # Assert
-        presenter_mock.raise_name_should_contain_minimum_5_characters. \
+        presenter_mock.raise_name_minimum_length_should_be_equal_or_more_than. \
             assert_called_once()
 
     def test_validate_email_and_throw_exception(self, storage_mock,

@@ -41,14 +41,16 @@ class ValidationMixin:
 
     def _validate_name_and_throw_exception(self, name: str):
         self._validate_is_string_empty(name)
-        self._validate_is_string_contains_minimum_5_characters(name)
+        self._validate_is_name_satisfies_minimum_length_constant(name)
         self._check_string_contains_special_characters_and_throw_exception(
             name)
 
     @staticmethod
-    def _validate_is_string_contains_minimum_5_characters(value):
-        is_string_not_in_minimum_length = len(value) < 5
-        if is_string_not_in_minimum_length:
+    def _validate_is_name_satisfies_minimum_length_constant(value):
+        from ib_iam.constants.enums import LengthConstants
+        is_string_not_satisfies_minimum_length = \
+            len(value) < LengthConstants.MIN_USER_NAME_LENGTH.value
+        if is_string_not_satisfies_minimum_length:
             from ib_iam.exceptions.custom_exceptions import \
                 NameMinimumLengthShouldBeFiveOrMore
             raise NameMinimumLengthShouldBeFiveOrMore

@@ -27,8 +27,8 @@ NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS = (
     "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
 )
 
-NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE = (
-    "Name minimum length should be five or more",
+NAME_MINIMUM_LENGTH_SHOULD_BE = (
+    "Name minimum length should be {minimum_name_length} or more",
     "NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE"
 )
 

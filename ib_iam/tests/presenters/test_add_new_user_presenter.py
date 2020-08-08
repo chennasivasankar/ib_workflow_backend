@@ -46,13 +46,15 @@ class TestResponseAddNewUser:
         # Arrange
         presenter = AddUserPresenterImplementation()
         from ib_iam.constants.exception_messages \
-            import NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE
-        expected_response = NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE[0]
-        response_status_code = NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE[1]
+            import NAME_MINIMUM_LENGTH_SHOULD_BE
+        from ib_iam.constants.enums import LengthConstants
+        expected_response = NAME_MINIMUM_LENGTH_SHOULD_BE[0].format(
+            minimum_name_length=LengthConstants.MIN_USER_NAME_LENGTH.value)
+        response_status_code = NAME_MINIMUM_LENGTH_SHOULD_BE[1]
 
         # Act
         response_object = \
-            presenter.raise_name_should_contain_minimum_5_characters()
+            presenter.raise_name_minimum_length_should_be_equal_or_more_than()
 
         # Assert
         response = json.loads(response_object.content)
