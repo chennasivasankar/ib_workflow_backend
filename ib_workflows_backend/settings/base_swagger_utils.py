@@ -31,7 +31,8 @@ APPS = [
     "ib_iam",
     "ib_tasks",
     "ib_boards",
-    "ib_discussions"
+    "ib_discussions",
+    "ib_utility_tools",
 ]
 
 INSTALLED_APPS += THIRD_PARTY_APPS
@@ -78,7 +79,10 @@ SWAGGER_UTILS = {
         "ib_iam": {"dsu_version": "1.0"},
         "ib_tasks": {"dsu_version": "1.0"},
         "ib_boards": {"dsu_version": "1.0"},
-        "ib_discussions": {"dsu_version": "1.0"}
+        "ib_discussions": {"dsu_version": "1.0"},
+        "ib_utility_tools": {"dsu_version": "1.0"},
+        "django_elasticsearch_dsl": {},
+
     },
     "HOST": os.environ.get('APIGATEWAY_ENDPOINT', '127.0.0.1:8000'),
 }

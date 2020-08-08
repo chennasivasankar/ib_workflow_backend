@@ -10,20 +10,12 @@ from ib_iam.interactors.storage_interfaces.dtos import \
 class CompanyStorageInterface(ABC):
 
     @abstractmethod
-    def validate_is_user_admin(self, user_id: str):
-        pass
-
-    @abstractmethod
     def get_company_dtos(self) -> List[CompanyDTO]:
         pass
 
     @abstractmethod
     def get_company_employee_ids_dtos(self, company_ids: List[str]) -> \
             List[CompanyIdWithEmployeeIdsDTO]:
-        pass
-
-    @abstractmethod
-    def get_valid_user_ids_among_the_given_user_ids(self, user_ids: List[str]):
         pass
 
     @abstractmethod

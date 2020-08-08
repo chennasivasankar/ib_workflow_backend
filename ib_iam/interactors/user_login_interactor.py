@@ -52,6 +52,6 @@ class LoginInteractor:
             email_and_password_dto=email_and_password_dto,
         )
         user_id = user_tokens_dto.user_id
-        is_admin = self.storage.check_is_admin_user(user_id=user_id)
+        is_admin = self.storage.is_user_admin(user_id=user_id)
 
         return user_tokens_dto, is_admin

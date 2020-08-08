@@ -1,13 +1,15 @@
 import datetime
 
 import factory
+
 from ib_discussions.interactors.storage_interfaces.dtos import \
-    CompleteDiscussionDTO
+    DiscussionDTO, CommentDTO, CommentIdWithRepliesCountDTO, \
+    DiscussionIdWithCommentsCountDTO
 
 
-class CompleteDiscussionFactory(factory.Factory):
+class DiscussionDTOFactory(factory.Factory):
     class Meta:
-        model = CompleteDiscussionDTO
+        model = DiscussionDTO
 
     user_id = factory.Faker("uuid4")
     discussion_id = factory.Faker("uuid4")
@@ -22,5 +24,32 @@ class CompleteDiscussionFactory(factory.Factory):
             discussion_id=obj.discussion_id
         )
     )
-    created_at = datetime.datetime(2008, 1, 1, tzinfo=datetime.timezone.utc)
+    created_at = datetime.datetime(2008, 1, 1)
     is_clarified = factory.Iterator([True, False])
+
+
+class CommentDTOFactory(factory.Factory):
+    class Meta:
+        model = CommentDTO
+
+    comment_id = factory.Faker("uuid4")
+    parent_comment_id = factory.Faker("uuid4")
+    comment_content = factory.LazyAttribute(lambda obj: "content")
+    user_id = factory.Faker("uuid4")
+    created_at = datetime.datetime(2008, 1, 1)
+
+
+class CommentIdWithRepliesCountDTOFactory(factory.Factory):
+    class Meta:
+        model = CommentIdWithRepliesCountDTO
+
+    comment_id = factory.Faker("uuid4")
+    replies_count = factory.Iterator([1, 2, 3, 4])
+
+
+class DiscussionIdWithCommentsCountDTOFactory(factory.Factory):
+    class Meta:
+        model = DiscussionIdWithCommentsCountDTO
+
+    discussion_id = factory.Faker("uuid4")
+    comments_count = factory.Iterator([1, 2, 3, 4])

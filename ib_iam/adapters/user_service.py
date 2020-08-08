@@ -23,8 +23,8 @@ class UserService:
             user_profiles = self.interface.get_user_profile_bulk(
                 user_ids=user_ids)
         except InvalidUserException:
-            from ib_iam.exceptions.custom_exceptions import InvalidUser
-            raise InvalidUser()
+            from ib_iam.exceptions.custom_exceptions import InvalidUserId
+            raise InvalidUserId()
         user_profile_dtos = []
         for user in user_profiles:
             user_profile_dtos.append(UserProfileDTO(

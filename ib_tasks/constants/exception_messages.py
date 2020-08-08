@@ -297,3 +297,5 @@ STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE = (
     "please assign valid assignees for stages",
     "STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE"
 )
+
+INVALID_STAGE_IDS_FOR_TASK = "Invalid stage_ids : {} for the task_id: {}"

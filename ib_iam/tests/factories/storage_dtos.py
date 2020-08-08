@@ -73,13 +73,13 @@ from ib_iam.interactors.storage_interfaces.dtos import (
     TeamNameAndDescriptionDTO,
     PaginationDTO,
     TeamsWithTotalTeamsCountDTO,
-    TeamDetailsWithUserIdsDTO,
     TeamWithUserIdsDTO,
+    TeamWithTeamIdAndUserIdsDTO,
     CompanyDTO,
     CompanyIdWithEmployeeIdsDTO,
     CompanyNameLogoAndDescriptionDTO,
-    CompanyDetailsWithUserIdsDTO,
-    CompanyWithUserIdsDTO
+    CompanyWithUserIdsDTO,
+    CompanyWithCompanyIdAndUserIdsDTO
 )
 
 team_ids = [
@@ -123,15 +123,15 @@ class TeamNameAndDescriptionDTOFactory(factory.Factory):
     class Meta:
         model = TeamNameAndDescriptionDTO
 
-    name = factory.sequence(lambda n: "team%d" % n)
+    name = factory.sequence(lambda n: "name%d" % n)
     description = factory.sequence(lambda n: "team_description%d" % n)
 
 
-class TeamDetailsWithUserIdsDTOFactory(
+class TeamWithUserIdsDTOFactory(
     TeamNameAndDescriptionDTOFactory, factory.Factory
 ):
     class Meta:
-        model = TeamDetailsWithUserIdsDTO
+        model = TeamWithUserIdsDTO
 
     user_ids = factory.Iterator([
         [user_ids[0], user_ids[2]],
@@ -140,10 +140,10 @@ class TeamDetailsWithUserIdsDTOFactory(
     ])
 
 
-class TeamWithUserIdsDTOFactory(TeamDetailsWithUserIdsDTOFactory,
-                                factory.Factory):
+class TeamWithTeamIdAndUserIdsDTOFactory(TeamWithUserIdsDTOFactory,
+                                         factory.Factory):
     class Meta:
-        model = TeamWithUserIdsDTO
+        model = TeamWithTeamIdAndUserIdsDTO
 
     team_id = factory.sequence(lambda n: "team%d" % n)
 
@@ -219,11 +219,11 @@ class CompanyIdWithEmployeeIdsDTOFactory(factory.Factory):
     ])
 
 
-class CompanyDetailsWithUserIdsDTOFactory(
+class CompanyWithUserIdsDTOFactory(
     CompanyNameLogoAndDescriptionDTOFactory, factory.Factory
 ):
     class Meta:
-        model = CompanyDetailsWithUserIdsDTO
+        model = CompanyWithUserIdsDTO
 
     user_ids = factory.Iterator([
         [user_ids[0], user_ids[2]],
@@ -232,19 +232,10 @@ class CompanyDetailsWithUserIdsDTOFactory(
     ])
 
 
-class CompanyWithUserIdsDTOFactory(
-    CompanyDetailsWithUserIdsDTOFactory, factory.Factory
+class CompanyWithCompanyIdAndUserIdsDTOFactory(
+    CompanyWithUserIdsDTOFactory, factory.Factory
 ):
     class Meta:
-        model = CompanyWithUserIdsDTO
+        model = CompanyWithCompanyIdAndUserIdsDTO
 
     company_id = factory.Faker("uuid4")
-
-
-class EmployeeDTOFactory(factory.Factory):
-    class Meta:
-        model = EmployeeDTO
-
-    employee_id = factory.sequence(lambda n: "user%d" % n)
-    name = factory.sequence(lambda n: "name%d" % n)
-    profile_pic_url = factory.sequence(lambda n: "url%d" % n)
