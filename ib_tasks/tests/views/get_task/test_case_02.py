@@ -16,7 +16,8 @@ from ib_tasks.tests.factories.models import (
     FieldFactory,
     StageModelFactory,
     TaskStageModelFactory,
-    StageActionFactory,
+    StageActionFactory, StagePermittedRolesFactory,
+    ActionPermittedRolesFactory,
 )
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
@@ -56,7 +57,8 @@ class TestCase02GetTaskAPITestCase(TestUtils):
             task_gof=factory.Iterator(task_gof_objs),
             field=factory.Iterator(field_objs)
         )
-        roles = ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC"]
+        roles = ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC",
+                 "FIN_PAYMENT_APPROVER"]
         permission_type = [
             PermissionTypes.READ.value,
             PermissionTypes.WRITE.value
@@ -72,22 +74,37 @@ class TestCase02GetTaskAPITestCase(TestUtils):
             role=factory.Iterator(roles),
             permission_type=factory.Iterator(permission_type)
         )
-        stage_objs = StageModelFactory.create_batch(size=10)
+        stage_objs = StageModelFactory.create_batch(size=3)
+        assignee_ids = [
+            "123e4567-e89b-12d3-a456-426614174001",
+            "123e4567-e89b-12d3-a456-426614174002",
+            "123e4567-e89b-12d3-a456-426614174003"
+        ]
         TaskStageModelFactory.create_batch(
-            size=3, task=task_obj, stage=factory.Iterator(stage_objs)
+            size=3, task=task_obj, stage=factory.Iterator(stage_objs),
+            assignee_id=factory.Iterator(assignee_ids)
         )
-        StageActionFactory.create_batch(
-            size=20, stage=factory.Iterator(stage_objs)
+        StagePermittedRolesFactory.create_batch(
+            size=3,
+            stage=factory.Iterator(stage_objs),
+        )
+        stage_actions_objs = StageActionFactory.create_batch(
+            size=10, stage=factory.Iterator(stage_objs)
+        )
+        ActionPermittedRolesFactory.create_batch(
+            size=10, role_id=factory.Iterator(roles),
+            action=factory.Iterator(stage_actions_objs)
         )
 
     @pytest.mark.django_db
     def test_case(self, snapshot, setup, mocker):
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids
-        get_user_role_ids_mock_method = get_user_role_ids(mocker)
-        from ib_tasks.tests.common_fixtures.adapters.assignees_details_service \
+        get_user_role_ids(mocker)
+        from ib_tasks.tests.common_fixtures.adapters\
+            .assignees_details_service \
             import assignee_details_dtos_mock
-        assignee_details_dtos_mock_method = assignee_details_dtos_mock(mocker)
+        assignee_details_dtos_mock(mocker)
 
         body = {}
         path_params = {}

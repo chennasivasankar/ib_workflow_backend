@@ -250,7 +250,7 @@ class StageAssigneeDetailsDTOFactory(factory.Factory):
 
     @factory.lazy_attribute
     def assignee_details_dto(self):
-        return List[AssigneeDetailsDTOFactory()]
+        return [AssigneeDetailsDTOFactory()]
 
 
 

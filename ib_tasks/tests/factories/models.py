@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import factory
 
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
-    Priority
+    Priority, ActionTypes
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     Task, TaskGoF,
@@ -95,7 +95,7 @@ class StageActionFactory(factory.django.DjangoModelFactory):
     button_color = "#fafafa"
     logic = "Status1 = PR_PAYMENT_REQUEST_DRAFTS"
     py_function_import_path = "path"
-    action_type = factory.Sequence(lambda c: "action_type{}".format(c))
+    action_type = ActionTypes.NO_VALIDATIONS.value
     transition_template = factory.SubFactory(TaskTemplateFactory)
 
 
