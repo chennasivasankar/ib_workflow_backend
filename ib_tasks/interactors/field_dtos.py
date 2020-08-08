@@ -15,3 +15,9 @@ class SearchableFieldTypeDTO:
 class SearchableFieldDetailDTO:
     id: str
     name: str
+
+
+@dataclass
+class FieldIdWithTaskGoFIdDTO:
+    field_id: str
+    task_gof_id: int

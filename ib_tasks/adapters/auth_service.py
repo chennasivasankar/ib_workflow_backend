@@ -1,7 +1,7 @@
 import dataclasses
 from typing import List
 
-from ib_tasks.adapters.dtos import UserDTO
+from ib_tasks.adapters.dtos import UserDetailsDTO
 from ib_tasks.interactors.field_dtos import SearchableFieldDetailDTO
 
 
@@ -33,3 +33,18 @@ class AuthService:
             for user_dto in user_dtos
         ]
         return searchable_value_detail_dtos
+
+    def get_user_details(self, user_ids: List[str]) -> \
+            List[UserDetailsDTO]:
+        pass
+
+    def get_permitted_user_details(self, role_ids: List[str]) \
+            -> List[UserDetailsDTO]:
+        user_profile_details_dtos = self.interface.get_user_details_for_given_role_ids(
+            role_ids=role_ids)
+        user_details_dtos = [
+            UserDetailsDTO(user_id=each_user_profile_detail_dto.user_id,
+                           user_name=each_user_profile_detail_dto.name,
+                           profile_pic_url=each_user_profile_detail_dto.profile_pic_url)
+            for each_user_profile_detail_dto in user_profile_details_dtos]
+        return user_details_dtos

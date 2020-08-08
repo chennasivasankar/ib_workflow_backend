@@ -1,3 +1,4 @@
+import json
 from ib_iam.presenters.team_presenter_implementation import (
     TeamPresenterImplementation
 )
@@ -9,10 +10,10 @@ from ib_iam.constants.exception_messages import (
 class TestRaiseExceptionForInvalidOffsetForGetListOfTeams:
     def test_whether_it_returns_invalid_offset_exception_http_response(self):
         json_presenter = TeamPresenterImplementation()
-        import json
         expected_response = INVALID_OFFSET_FOR_GET_LIST_OF_TEAMS[0]
         expected_res_status = INVALID_OFFSET_FOR_GET_LIST_OF_TEAMS[1]
-        expected_http_status_code = 400
+        from ib_iam.constants.enums import StatusCode
+        expected_http_status_code = StatusCode.BAD_REQUEST.value
 
         result = json_presenter.get_invalid_offset_response_for_get_list_of_teams()
         response_dict = json.loads(result.content)

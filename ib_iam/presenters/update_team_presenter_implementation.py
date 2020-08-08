@@ -2,11 +2,11 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_iam.constants.enums import StatusCode
 from ib_iam.constants.exception_messages import (
-    INVALID_TEAM_FOR_UPDATE_TEAM,
+    INVALID_TEAM_ID_FOR_UPDATE_TEAM,
     USER_HAS_NO_ACCESS_FOR_UPDATE_TEAM,
     TEAM_NAME_ALREADY_EXISTS_FOR_UPDATE_TEAM,
-    DUPLICATE_USERS_FOR_UPDATE_TEAM,
-    INVALID_USERS_FOR_UPDATE_TEAM
+    DUPLICATE_USER_IDS_FOR_UPDATE_TEAM,
+    INVALID_USER_IDS_FOR_UPDATE_TEAM
 
 )
 from ib_iam.interactors.presenter_interfaces \
@@ -33,9 +33,9 @@ class UpdateTeamPresenterImplementation(
 
     def get_invalid_team_response_for_update_team(self):
         response_dict = {
-            "response": INVALID_TEAM_FOR_UPDATE_TEAM[0],
+            "response": INVALID_TEAM_ID_FOR_UPDATE_TEAM[0],
             "http_status_code": StatusCode.NOT_FOUND.value,
-            "res_status": INVALID_TEAM_FOR_UPDATE_TEAM[1]
+            "res_status": INVALID_TEAM_ID_FOR_UPDATE_TEAM[1]
         }
         return self.prepare_404_not_found_response(
             response_dict=response_dict
@@ -53,21 +53,23 @@ class UpdateTeamPresenterImplementation(
             response_dict=response_dict
         )
 
-    def get_duplicate_users_response_for_update_team(self):
+    def get_duplicate_users_response_for_update_team(self, exception):
         response_dict = {
-            "response": DUPLICATE_USERS_FOR_UPDATE_TEAM[0],
+            "response": DUPLICATE_USER_IDS_FOR_UPDATE_TEAM[0] %
+                        exception.user_ids,
             "http_status_code": StatusCode.BAD_REQUEST.value,
-            "res_status": DUPLICATE_USERS_FOR_UPDATE_TEAM[1]
+            "res_status": DUPLICATE_USER_IDS_FOR_UPDATE_TEAM[1]
         }
         return self.prepare_400_bad_request_response(
             response_dict=response_dict
         )
 
-    def get_invalid_users_response_for_update_team(self):
+    def get_invalid_users_response_for_update_team(self, exception):
         response_dict = {
-            "response": INVALID_USERS_FOR_UPDATE_TEAM[0],
+            "response": INVALID_USER_IDS_FOR_UPDATE_TEAM[0] %
+                        exception.user_ids,
             "http_status_code": StatusCode.NOT_FOUND.value,
-            "res_status": INVALID_USERS_FOR_UPDATE_TEAM[1]
+            "res_status": INVALID_USER_IDS_FOR_UPDATE_TEAM[1]
         }
         return self.prepare_404_not_found_response(
             response_dict=response_dict

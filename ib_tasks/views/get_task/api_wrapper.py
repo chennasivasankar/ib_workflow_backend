@@ -9,6 +9,11 @@ from ib_tasks.presenters.get_task_presenter_implementation \
     import GetTaskPresenterImplementation
 from ib_tasks.storages.fields_storage_implementation \
     import FieldsStorageImplementation
+from ...storages.action_storage_implementation import \
+    ActionsStorageImplementation
+from ...storages.storage_implementation import StorageImplementation
+from ...storages.task_stage_storage_implementation import \
+    TaskStageStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
@@ -21,8 +26,13 @@ def api_wrapper(*args, **kwargs):
     storage = CreateOrUpdateTaskStorageImplementation()
     stages_storage = FieldsStorageImplementation()
     presenter = GetTaskPresenterImplementation()
+    task_storage = StorageImplementation()
+    task_stage_storage = TaskStageStorageImplementation()
+    action_storage = ActionsStorageImplementation()
     interactor = GetTaskInteractor(
-        storage=storage, stages_storage=stages_storage
+        storage=storage, stages_storage=stages_storage,
+        task_storage=task_storage, action_storage=action_storage,
+        task_stage_storage=task_stage_storage
     )
     response = interactor.get_task_details_wrapper(
        user_id=user_id, task_id=task_id, presenter=presenter

@@ -26,7 +26,7 @@ class TestServiceInterface:
         # Arrange
         board_id = "BOARD_ID_1"
         stages = ["stage_id_1", "stage_id_2", "stage_id_3"]
-        user_id = 1
+        user_id = "user_id_1"
         roles = ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_POC", "FIN_PAYMENT_APPROVER",
                  "FIN_PAYMENTS_LEVEL1_VERIFIER", "FIN_PAYMENTS_LEVEL2_VERIFIER", "FIN_PAYMENTS_LEVEL3_VERIFIER"]
         user_roles = adapter_mock_to_get_user_role(mocker, "361362f1-a5e3-4822-a6ba-30019252e40d")

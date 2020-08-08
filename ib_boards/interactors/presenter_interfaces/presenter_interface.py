@@ -1,14 +1,15 @@
 import abc
-from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 
 from django.http import response
 
-from ib_boards.exceptions.custom_exceptions import InvalidBoardIds
-from ib_boards.interactors.dtos import TaskStageIdDTO, ActionDTO, \
-    TaskCompleteDetailsDTO, FieldDTO
-from ib_boards.interactors.storage_interfaces.dtos import BoardDTO, \
-    ColumnCompleteDetails
+from ib_boards.interactors.dtos import ActionDTO, \
+    TaskCompleteDetailsDTO, FieldDTO, StarredAndOtherBoardsDTO, TaskStageColorDTO
+from ib_boards.interactors.storage_interfaces.dtos import ColumnCompleteDetails
+
+from ib_boards.interactors.dtos import ColumnTasksDTO
+from ib_boards.interactors.storage_interfaces.dtos import (
+    TaskFieldsDTO, TaskActionsDTO)
 
 
 class GetBoardsPresenterInterface(abc.ABC):
@@ -28,21 +29,13 @@ class GetBoardsPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_response_for_get_boards(
-            self, board_dtos: List[BoardDTO],
+            self, starred_and_other_boards_dto: StarredAndOtherBoardsDTO,
             total_boards: int) -> response.HttpResponse:
         pass
 
     @abc.abstractmethod
     def get_response_for_offset_exceeds_total_tasks(self):
         pass
-
-
-import abc
-from typing import List
-
-from ib_boards.interactors.dtos import ColumnTasksDTO
-from ib_boards.interactors.storage_interfaces.dtos import (
-    TaskFieldsDTO, TaskActionsDTO, ColumnDetailsDTO)
 
 
 class PresenterInterface(abc.ABC):
@@ -74,25 +67,13 @@ class PresenterInterface(abc.ABC):
                                         column_details: List[ColumnCompleteDetails],
                                         task_fields_dtos: List[FieldDTO],
                                         task_actions_dtos: List[ActionDTO],
-                                        column_tasks: List[ColumnTasksDTO]
+                                        column_tasks: List[ColumnTasksDTO],
+                                        task_stage_color_dtos: List[TaskStageColorDTO]
                                         ):
         pass
 
     @abc.abstractmethod
     def get_response_for_offset_exceeds_total_tasks(self):
-        pass
-
-
-class GetBoardsDetailsPresenterInterface(abc.ABC):
-
-    @abc.abstractmethod
-    def get_response_for_invalid_board_ids(
-            self, error: InvalidBoardIds) -> response.HttpResponse:
-        pass
-
-    @abc.abstractmethod
-    def get_response_for_board_details(
-            self, board_dtos: List[BoardDTO]) -> response.HttpResponse:
         pass
 
 
@@ -133,16 +114,6 @@ class GetColumnTasksPresenterInterface(abc.ABC):
             self, task_fields_dtos: List[FieldDTO],
             task_actions_dtos: List[ActionDTO],
             total_tasks: int,
-            task_ids: List[int]):
-        pass
-
-
-class StageDisplayLogicPresenterInterface(abc.ABC):
-
-    @abc.abstractmethod
-    def get_response_for_invalid_stage_ids(self, error) -> response.HttpResponse:
-        pass
-
-    @abc.abstractmethod
-    def get_response_for_stage_display_logic(self, task_status_dtos) -> response.HttpResponse:
+            task_ids: List[int],
+            task_stage_color_dtos: List[TaskStageColorDTO]):
         pass

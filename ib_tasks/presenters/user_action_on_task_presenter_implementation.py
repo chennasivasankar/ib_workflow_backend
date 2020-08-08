@@ -1,4 +1,5 @@
 from typing import List, Dict
+
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO, ColumnStageDTO
@@ -112,19 +113,26 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
 
         print(task_complete_details_dto)
         task_id = task_complete_details_dto.task_id
-        task_board_details = task_complete_details_dto.task_boards_details
-        actions_dto = task_complete_details_dto.actions_dto
-        fields_dto = task_complete_details_dto.field_dtos
-        board_dto = task_board_details.board_dto
-        response_dict = {
-            "task_id": str(task_id),
-            "current_board_details": {
+        # TODO: Need to refactor
+        if task_complete_details_dto.task_boards_details:
+            actions_dto = task_complete_details_dto.actions_dto
+            fields_dto = task_complete_details_dto.field_dtos
+            task_board_details = task_complete_details_dto.task_boards_details
+            board_dto = task_board_details.board_dto
+
+            current_board_details = {
                 "board_id": board_dto.board_id,
                 "board_name": board_dto.name,
                 "column_details": self._get_column_details(
                     actions_dto, fields_dto, task_board_details
                 )
-            },
+            }
+        else:
+            current_board_details = None
+
+        response_dict = {
+            "task_id": str(task_id),
+            "current_board_details": current_board_details,
             "other_board_details": []
         }
         response_object = self.prepare_200_success_response(response_dict)
@@ -218,3 +226,75 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
             }
             for field_dto in fields_dto
         ]
+
+    def raise_invalid_key_error(self):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_KEY_ERROR
+        data = {
+            "response": INVALID_KEY_ERROR[0],
+            "http_status_code": 400,
+            "res_status": INVALID_KEY_ERROR[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_custom_logic_function_exception(self):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_CUSTOM_LOGIC
+        data = {
+            "response": INVALID_CUSTOM_LOGIC[0],
+            "http_status_code": 400,
+            "res_status": INVALID_CUSTOM_LOGIC[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_path_not_found_exception(self, path_name):
+        from ib_tasks.constants.exception_messages import \
+            PATH_NOT_FOUND
+        data = {
+            "response": PATH_NOT_FOUND[0],
+            "http_status_code": 400,
+            "res_status": PATH_NOT_FOUND[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_method_not_found_exception(self, method_name):
+        from ib_tasks.constants.exception_messages import \
+            METHOD_NOT_FOUND
+        data = {
+            "response": METHOD_NOT_FOUND[0],
+            "http_status_code": 400,
+            "res_status": METHOD_NOT_FOUND[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_duplicate_stage_ids_not_valid(self, duplicate_stage_ids):
+        from ib_tasks.constants.exception_messages import \
+            DUPLICATE_STAGE_IDS
+        data = {
+            "response": DUPLICATE_STAGE_IDS[0].format(duplicate_stage_ids),
+            "http_status_code": 400,
+            "res_status": DUPLICATE_STAGE_IDS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_stage_ids_exception(self, invalid_stage_ids):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_STAGE_IDS
+        data = {
+            "response": INVALID_STAGE_IDS[0].format(invalid_stage_ids),
+            "http_status_code": 400,
+            "res_status": INVALID_STAGE_IDS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_stage_ids_with_invalid_permission_for_assignee_exception(self,
+                                                                       invalid_stage_ids):
+        from ib_tasks.constants.exception_messages import \
+            STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE
+        data = {
+            "response": STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE[
+                0].format(invalid_stage_ids),
+            "http_status_code": 400,
+            "res_status": STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE[1]
+        }
+        return self.prepare_400_bad_request_response(data)

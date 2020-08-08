@@ -7,13 +7,16 @@ from ib_iam.presenters.delete_user_presenter_implementation import \
 from ib_iam.storages.delete_user_storage_implementation import \
     DeleteUserStorageImplementation
 from .validator_class import ValidatorClass
+from ...storages.user_storage_implementation import UserStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     storage = DeleteUserStorageImplementation()
+    user_storage = UserStorageImplementation()
     presenter = DeleteUserPresenterImplementation()
-    interactor = DeleteUserInteractor(storage=storage)
+    interactor = DeleteUserInteractor(storage=storage,
+                                      user_storage=user_storage)
 
     user = kwargs['user']
     user_id = user.user_id

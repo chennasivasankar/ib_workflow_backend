@@ -2,25 +2,16 @@
 
 REQUEST_BODY_JSON = """
 {
-    "comment_content": "string",
-    "mention_user_ids": [
-        "ce6dd72a-a030-4d03-a3ed-33a36f522c85"
-    ],
-    "multimedia": [
-        {
-            "format_type": "IMAGE",
-            "url": "string"
-        }
-    ]
+    "comment_content": "string"
 }
 """
 
 
 RESPONSE_200_JSON = """
 {
-    "comment_id": "3a0d9ca8-a162-4fc3-a054-2452ee0ff9dd",
+    "comment_id": "8bebdfc0-255d-4405-a2ac-639f7eeaed8d",
     "author": {
-        "user_id": "7cdcaa77-9b20-4c61-8e19-ec695f8afc71",
+        "user_id": "6aa0589d-0134-4df4-8cc9-42e404e2e82f",
         "name": "string",
         "profile_pic_url": "string"
     },

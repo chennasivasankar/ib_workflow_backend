@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case status_code'] = '200'
@@ -15,13 +14,17 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
             'actions': [
                 {
                     'action_id': 1,
+                    'action_type': 'NO_VALIDATIONS',
                     'button_color': '#fafafa',
-                    'button_text': 'hey'
+                    'button_text': 'hey',
+                    'transition_template_id': None
                 },
                 {
                     'action_id': 3,
+                    'action_type': 'NO_VALIDATIONS',
                     'button_color': '#fafafa',
-                    'button_text': 'hey'
+                    'button_text': 'hey',
+                    'transition_template_id': None
                 }
             ],
             'group_of_fields': [
@@ -36,7 +39,6 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                             'field_type': 'PLAIN_TEXT',
                             'field_values': None,
                             'help_text': None,
-                            'is_field_readable': True,
                             'is_field_required': True,
                             'is_field_writable': False,
                             'placeholder_text': None,
@@ -51,7 +53,6 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                             'field_type': 'PLAIN_TEXT',
                             'field_values': None,
                             'help_text': None,
-                            'is_field_readable': True,
                             'is_field_required': True,
                             'is_field_writable': False,
                             'placeholder_text': None,
@@ -75,7 +76,6 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                             'field_type': 'PLAIN_TEXT',
                             'field_values': None,
                             'help_text': None,
-                            'is_field_readable': True,
                             'is_field_required': True,
                             'is_field_writable': False,
                             'placeholder_text': None,
@@ -90,7 +90,6 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                             'field_type': 'PLAIN_TEXT',
                             'field_values': None,
                             'help_text': None,
-                            'is_field_readable': True,
                             'is_field_required': True,
                             'is_field_writable': False,
                             'placeholder_text': None,
@@ -114,7 +113,6 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                             'field_type': 'PLAIN_TEXT',
                             'field_values': None,
                             'help_text': None,
-                            'is_field_readable': True,
                             'is_field_required': True,
                             'is_field_writable': False,
                             'placeholder_text': None,
@@ -135,19 +133,51 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
             'actions': [
                 {
                     'action_id': 2,
+                    'action_type': 'NO_VALIDATIONS',
                     'button_color': '#fafafa',
-                    'button_text': 'hey'
+                    'button_text': 'hey',
+                    'transition_template_id': None
                 },
                 {
                     'action_id': 4,
+                    'action_type': 'NO_VALIDATIONS',
                     'button_color': '#fafafa',
-                    'button_text': 'hey'
+                    'button_text': 'hey',
+                    'transition_template_id': None
                 }
             ],
             'group_of_fields': [
                 {
                     'enable_add_another': False,
                     'fields': [
+                        {
+                            'allowed_formats': None,
+                            'display_name': 'DISPLAY_NAME-1',
+                            'error_msg': None,
+                            'field_id': 'FIELD_ID-1',
+                            'field_type': 'PLAIN_TEXT',
+                            'field_values': None,
+                            'help_text': None,
+                            'is_field_required': True,
+                            'is_field_writable': False,
+                            'placeholder_text': None,
+                            'tooltip': None,
+                            'validation_regex': None
+                        },
+                        {
+                            'allowed_formats': None,
+                            'display_name': 'DISPLAY_NAME-5',
+                            'error_msg': None,
+                            'field_id': 'FIELD_ID-5',
+                            'field_type': 'PLAIN_TEXT',
+                            'field_values': None,
+                            'help_text': None,
+                            'is_field_required': True,
+                            'is_field_writable': False,
+                            'placeholder_text': None,
+                            'tooltip': None,
+                            'validation_regex': None
+                        }
                     ],
                     'gof_display_name': 'GOF_DISPLAY_NAME-1',
                     'gof_id': 'gof_2',
@@ -157,6 +187,34 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                 {
                     'enable_add_another': False,
                     'fields': [
+                        {
+                            'allowed_formats': None,
+                            'display_name': 'DISPLAY_NAME-1',
+                            'error_msg': None,
+                            'field_id': 'FIELD_ID-1',
+                            'field_type': 'PLAIN_TEXT',
+                            'field_values': None,
+                            'help_text': None,
+                            'is_field_required': True,
+                            'is_field_writable': False,
+                            'placeholder_text': None,
+                            'tooltip': None,
+                            'validation_regex': None
+                        },
+                        {
+                            'allowed_formats': None,
+                            'display_name': 'DISPLAY_NAME-5',
+                            'error_msg': None,
+                            'field_id': 'FIELD_ID-5',
+                            'field_type': 'PLAIN_TEXT',
+                            'field_values': None,
+                            'help_text': None,
+                            'is_field_required': True,
+                            'is_field_writable': False,
+                            'placeholder_text': None,
+                            'tooltip': None,
+                            'validation_regex': None
+                        }
                     ],
                     'gof_display_name': 'GOF_DISPLAY_NAME-1',
                     'gof_id': 'gof_2',
@@ -166,6 +224,20 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                 {
                     'enable_add_another': False,
                     'fields': [
+                        {
+                            'allowed_formats': None,
+                            'display_name': 'DISPLAY_NAME-3',
+                            'error_msg': None,
+                            'field_id': 'FIELD_ID-3',
+                            'field_type': 'PLAIN_TEXT',
+                            'field_values': None,
+                            'help_text': None,
+                            'is_field_required': True,
+                            'is_field_writable': False,
+                            'placeholder_text': None,
+                            'tooltip': None,
+                            'validation_regex': None
+                        }
                     ],
                     'gof_display_name': 'GOF_DISPLAY_NAME-3',
                     'gof_id': 'gof_4',

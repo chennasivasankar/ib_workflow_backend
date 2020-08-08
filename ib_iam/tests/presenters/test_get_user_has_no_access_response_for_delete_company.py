@@ -1,3 +1,4 @@
+import json
 from ib_iam.presenters.delete_company_presenter_implementation import (
     DeleteCompanyPresenterImplementation
 )
@@ -11,10 +12,10 @@ class TestRaiseExceptionForUserHasNoAccessForDeleteCompany:
             self
     ):
         json_presenter = DeleteCompanyPresenterImplementation()
-        import json
         expected_response = USER_HAS_NO_ACCESS_FOR_DELETE_COMPANY[0]
         expected_res_status = USER_HAS_NO_ACCESS_FOR_DELETE_COMPANY[1]
-        expected_http_status_code = 401
+        from ib_iam.constants.enums import StatusCode
+        expected_http_status_code = StatusCode.UNAUTHORIZED.value
 
         result = \
             json_presenter.get_user_has_no_access_response_for_delete_company()

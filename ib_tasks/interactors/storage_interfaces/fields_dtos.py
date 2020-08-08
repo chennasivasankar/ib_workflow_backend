@@ -28,6 +28,13 @@ class FieldDTO:
     validation_regex: Optional[str]
 
 
+@dataclass()
+class FieldNameDTO:
+    field_id: str
+    gof_id: str
+    field_display_name: str
+
+
 @dataclass
 class FieldRolesDTO:
     field_id: str
@@ -82,6 +89,7 @@ class TaskTemplateStageFieldsDTO:
     task_template_id: str
     task_id: int
     stage_id: str
+    stage_color: str
     field_ids: List[str]
 
 
@@ -92,9 +100,8 @@ class StageTaskFieldsDTO:
 
 
 @dataclass
-class FieldWithPermissionsDTO:
+class FieldPermissionDTO:
     field_dto: FieldDTO
-    is_field_readable: bool
     is_field_writable: bool
 
 
@@ -102,3 +109,15 @@ class FieldWithPermissionsDTO:
 class FieldTypeDTO:
     field_id: str
     field_type: FieldTypes
+
+
+@dataclass
+class FieldIdWithGoFIdDTO:
+    field_id: str
+    gof_id: str
+
+
+@dataclass
+class FieldWritePermissionRolesDTO:
+    field_id: str
+    write_permission_roles: List[str]

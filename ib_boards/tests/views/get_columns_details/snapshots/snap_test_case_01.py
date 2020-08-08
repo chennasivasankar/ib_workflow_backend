@@ -10,7 +10,7 @@ snapshots = Snapshot()
 snapshots['TestCase01GetColumnsDetailsAPITestCase.test_case status_code'] = '404'
 
 snapshots['TestCase01GetColumnsDetailsAPITestCase.test_case body'] = {
-    'http_status_code': 404,
-    'res_status': 'INVALID_BOARD_ID',
-    'response': 'board id is invalid'
-}
+     'http_status_code': 404,
+     'res_status': 'INVALID_BOARD_ID',
+     'response': 'board id is invalid'
+ }

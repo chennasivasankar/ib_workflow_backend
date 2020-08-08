@@ -16,19 +16,31 @@ class InvalidStageIdsListException(Exception):
         self.invalid_stage_ids = invalid_stage_ids
 
 
+class InvalidDbStageIdsListException(Exception):
+    def __init__(self, invalid_stage_ids: List[int]):
+        self.invalid_stage_ids = invalid_stage_ids
+
+
+class StageIdsWithInvalidPermissionForAssignee(Exception):
+    def __init__(self,
+                 invalid_stage_ids: List[int]):
+        self.invalid_stage_ids = invalid_stage_ids
+
+
 class InvalidStageValues(Exception):
     def __init__(self, invalid_value_stages: List[str]):
         self.invalid_value_stages = invalid_value_stages
 
 
 class DuplicateStageIds(Exception):
-    def __init__(self, duplicate_stage_ids: List[str]):
+    def __init__(self, duplicate_stage_ids: List[int]):
         self.duplicate_stage_ids = duplicate_stage_ids
 
 
 class InvalidStageDisplayLogic(Exception):
     def __init__(self, invalid_stage_display_logic_stages: List[str]):
-        self.invalid_stage_display_logic_stages = invalid_stage_display_logic_stages
+        self.invalid_stage_display_logic_stages = \
+            invalid_stage_display_logic_stages
 
 
 class InvalidStagesDisplayName(Exception):
@@ -47,3 +59,18 @@ class InvalidTaskStageIds(Exception):
 
 class StageIdsListEmptyException(Exception):
     pass
+
+
+class InvalidStageId(Exception):
+
+    def __init__(self, stage_id: int):
+        self.stage_id = stage_id
+
+
+class TransitionTemplateIsNotRelatedToGivenStageAction(Exception):
+
+    def __init__(self, transition_checklist_template_id, action_id, stage_id):
+        self.stage_id = stage_id
+        self.action_id = action_id
+        self.transition_checklist_template_id = \
+            transition_checklist_template_id

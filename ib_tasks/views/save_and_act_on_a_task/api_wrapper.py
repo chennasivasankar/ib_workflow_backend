@@ -1,12 +1,23 @@
 from typing import List, Dict
+
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
+
+from ib_tasks.interactors.task_dtos import FieldValuesDTO, \
+    SaveAndActOnTaskDTO, \
+    StageIdWithAssigneeIdDTO
 from .validator_class import ValidatorClass
-from ib_tasks.interactors.task_dtos import FieldValuesDTO
-from ...presenters.user_action_on_task_presenter_implementation import \
-    UserActionOnTaskPresenterImplementation
+from ...interactors.create_or_update_task.save_and_act_on_task import \
+    SaveAndActOnATaskInteractor
+from ...presenters.save_and_act_on_task_presenter_implementation import \
+    SaveAndActOnATaskPresenterImplementation
+from ...storages.action_storage_implementation import \
+    ActionsStorageImplementation
+from ...storages.elasticsearch_storage_implementation import \
+    ElasticSearchStorageImplementation
 from ...storages.fields_storage_implementation import \
     FieldsStorageImplementation
+from ...storages.gof_storage_implementation import GoFStorageImplementation
 from ...storages.storage_implementation import StorageImplementation, \
     StagesStorageImplementation
 
@@ -17,9 +28,17 @@ def api_wrapper(*args, **kwargs):
     request_data = kwargs['request_data']
     task_id = request_data['task_id']
     action_id = request_data['action_id']
+    title = request_data['title']
+    description = request_data['description']
+    start_date = request_data['start_date']
+    due_date = request_data['due_date']['date']
+    due_time = request_data['due_date']['time']
+    priority = request_data['priority']
     task_gofs = request_data['task_gofs']
+    stage_assignee_stage_id = request_data['stage_assignee']['stage_id']
+    stage_assignee_assignee_id = request_data['stage_assignee']['assignee_id']
 
-    from ib_tasks.interactors.task_dtos import GoFFieldsDTO, TaskDTO
+    from ib_tasks.interactors.task_dtos import GoFFieldsDTO
 
     task_gofs_dtos = []
     for task_gof in task_gofs:
@@ -31,39 +50,44 @@ def api_wrapper(*args, **kwargs):
         )
         task_gofs_dtos.append(gof_field_dto)
 
-    task_dto = TaskDTO(
-        task_id=task_id,
-        task_template_id=None,
-        created_by_id=user_id,
-        action_id=action_id,
+    stage_assignee = StageIdWithAssigneeIdDTO(
+        stage_id=stage_assignee_stage_id,
+        assignee_id=stage_assignee_assignee_id
+    )
+
+    task_dto = SaveAndActOnTaskDTO(
+        task_id=task_id, action_id=action_id, created_by_id=user_id,
+        title=title,
+        description=description, start_date=start_date, due_date=due_date,
+        due_time=due_time, priority=priority, stage_assignee=stage_assignee,
         gof_fields_dtos=task_gofs_dtos
     )
 
     from ib_tasks.storages.tasks_storage_implementation \
         import TasksStorageImplementation
-    from ib_tasks.storages.create_or_update_task_storage_implementation import \
+    from ib_tasks.storages.create_or_update_task_storage_implementation \
+        import \
         CreateOrUpdateTaskStorageImplementation
-    from ib_tasks.presenters.create_or_update_task_presenter_implementation \
-        import CreateOrUpdateTaskPresenterImplementation
-    from ib_tasks.interactors.create_or_update_task import \
-        CreateOrUpdateTaskInteractor
     task_storage = TasksStorageImplementation()
     create_task_storage = CreateOrUpdateTaskStorageImplementation()
-    presenter = CreateOrUpdateTaskPresenterImplementation()
-    act_on_task_presenter = UserActionOnTaskPresenterImplementation()
     storage = StorageImplementation()
+    gof_storage = GoFStorageImplementation()
     field_storage = FieldsStorageImplementation()
     stage_storage = StagesStorageImplementation()
-    interactor = CreateOrUpdateTaskInteractor(
-        task_storage=task_storage,
+    action_storage = ActionsStorageImplementation()
+    elastic_storage = ElasticSearchStorageImplementation()
+
+    presenter = SaveAndActOnATaskPresenterImplementation()
+    interactor = SaveAndActOnATaskInteractor(
+        task_storage=task_storage, gof_storage=gof_storage,
         create_task_storage=create_task_storage,
         storage=storage, field_storage=field_storage,
-        stage_storage=stage_storage
+        stage_storage=stage_storage, action_storage=action_storage,
+        elastic_storage=elastic_storage
     )
 
-    response = interactor.create_or_update_task_wrapper(
-        task_dto=task_dto, presenter=presenter,
-        act_on_task_presenter=act_on_task_presenter
+    response = interactor.save_and_act_on_task_wrapper(
+        task_dto=task_dto, presenter=presenter
     )
     return response
 
