@@ -99,3 +99,8 @@ class TransitionTemplateDoesNotExist(Exception):
 class InvalidTransitionTemplateIds(Exception):
     def __init__(self, invalid_transition_ids: List[str]):
         self.invalid_transition_ids = invalid_transition_ids
+
+
+class InvalidStageIdsForTask(Exception):
+    def __init__(self, message: str):
+        self.message = message
