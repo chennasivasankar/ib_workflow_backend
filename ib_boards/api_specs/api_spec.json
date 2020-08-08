@@ -481,7 +481,7 @@
       }
     },
     "/boards/{board_id}/columns/v1/": {
-      "get": {
+      "post": {
         "operationId": "get_columns_details",
         "summary": "Get Column Details",
         "description": "get columns details of the given board id",
@@ -524,7 +524,7 @@
       }
     },
     "/columns/{column_id}/tasks/v1/": {
-      "get": {
+      "post": {
         "operationId": "get_column_tasks",
         "summary": "Get Column Tasks",
         "description": "get column tasks details",
