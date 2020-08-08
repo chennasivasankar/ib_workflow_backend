@@ -35,7 +35,7 @@ class GetCommentsForDiscussionPresenterImplementation(
             comment_with_replies_count_and_editable_dtos: List[
                 CommentWithRepliesCountAndEditableDTO],
             user_profile_dtos: List[UserProfileDTO],
-            comment_id_with_multi_media_dtos: List[CommentIdWithMultiMediaDTO],
+            comment_id_with_multimedia_dtos: List[CommentIdWithMultiMediaDTO],
             comment_id_with_mention_user_id_dtos: List[
                 CommentIdWithMentionUserIdDTO]
     ):
@@ -47,9 +47,9 @@ class GetCommentsForDiscussionPresenterImplementation(
             self._prepare_user_id_wise_user_details_dict(
                 user_profile_dtos=user_profile_dtos
             )
-        comment_id_wise_multi_media_list_dict = \
+        comment_id_wise_multimedia_list_dict = \
             self._prepare_comment_id_wise_multimedia_list_dict(
-                comment_id_with_multi_media_dtos=comment_id_with_multi_media_dtos
+                comment_id_with_multimedia_dtos=comment_id_with_multimedia_dtos
             )
         comment_id_wise_mention_user_details_list_dict = \
             self._prepare_comment_id_wise_mention_user_details_list(
@@ -70,7 +70,7 @@ class GetCommentsForDiscussionPresenterImplementation(
                 ),
                 "total_replies_count": comment_details_dto.replies_count,
                 "is_editable": comment_details_dto.is_editable,
-                "multi_media": comment_id_wise_multi_media_list_dict[comment_id],
+                "multimedia": comment_id_wise_multimedia_list_dict[comment_id],
                 "mention_users": comment_id_wise_mention_user_details_list_dict[
                     comment_id
                 ]
@@ -98,26 +98,26 @@ class GetCommentsForDiscussionPresenterImplementation(
 
     def _prepare_comment_id_wise_multimedia_list_dict(
             self,
-            comment_id_with_multi_media_dtos: List[CommentIdWithMultiMediaDTO]):
+            comment_id_with_multimedia_dtos: List[CommentIdWithMultiMediaDTO]):
         comment_id_wise_multimedia_list_dict = defaultdict(list)
-        for comment_id_with_multi_media_dto in comment_id_with_multi_media_dtos:
-            comment_id = str(comment_id_with_multi_media_dto.comment_id)
+        for comment_id_with_multimedia_dto in comment_id_with_multimedia_dtos:
+            comment_id = str(comment_id_with_multimedia_dto.comment_id)
             comment_id_wise_multimedia_list_dict[comment_id].append(
-                self._prepare_comment_id_with_multi_media_dto_dict(
-                    comment_id_with_multi_media_dto
+                self._prepare_comment_id_with_multimedia_dto_dict(
+                    comment_id_with_multimedia_dto
                 )
             )
         return comment_id_wise_multimedia_list_dict
 
     @staticmethod
-    def _prepare_comment_id_with_multi_media_dto_dict(
-            comment_id_with_multi_media_dto: CommentIdWithMultiMediaDTO):
-        comment_id_with_multi_media_dict = {
-            "multi_media_id": str(comment_id_with_multi_media_dto.multi_media_id),
-            "format_type": comment_id_with_multi_media_dto.format_type,
-            "url": comment_id_with_multi_media_dto.url
+    def _prepare_comment_id_with_multimedia_dto_dict(
+            comment_id_with_multimedia_dto: CommentIdWithMultiMediaDTO):
+        comment_id_with_multimedia_dict = {
+            "multimedia_id": str(comment_id_with_multimedia_dto.multimedia_id),
+            "format_type": comment_id_with_multimedia_dto.format_type,
+            "url": comment_id_with_multimedia_dto.url
         }
-        return comment_id_with_multi_media_dict
+        return comment_id_with_multimedia_dict
 
     @staticmethod
     def _prepare_comment_id_wise_mention_user_details_list(

@@ -70,7 +70,7 @@ class CommentIdWithMultiMediaDTOFactory(factory.Factory):
         model = CommentIdWithMultiMediaDTO
 
     comment_id = factory.Faker("uuid4")
-    multi_media_id = factory.Faker("uuid4")
+    multimedia_id = factory.Faker("uuid4")
     format_type = factory.Iterator([
         MultiMediaFormatEnum.IMAGE.value,
         MultiMediaFormatEnum.VIDEO.value

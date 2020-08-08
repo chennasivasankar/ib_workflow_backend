@@ -127,7 +127,7 @@ class TestGetCommentsForDiscussionInteractor:
         storage_mock.get_comment_id_with_mention_user_id_dtos.assert_called_once_with(
             comment_ids=comment_ids
         )
-        storage_mock.get_multi_media_dtos.assert_called_once_with(
+        storage_mock.get_multimedia_dtos.assert_called_once_with(
             comment_ids=comment_ids
         )
 

@@ -15,16 +15,16 @@ def api_wrapper(*args, **kwargs):
     request_data = kwargs["request_data"]
     comment_content = request_data["comment_content"]
     mention_user_ids = request_data["mention_user_ids"]
-    multi_media_list = request_data["multi_media"]
+    multimedia_list = request_data["multimedia"]
 
     from ib_discussions.tests.factories.interactor_dtos import \
         MultiMediaDTOFactory
-    multi_media_dtos = [
+    multimedia_dtos = [
         MultiMediaDTOFactory(
-            format_type=multi_media_dict["format_type"],
-            url=multi_media_dict["url"]
+            format_type=multimedia_dict["format_type"],
+            url=multimedia_dict["url"]
         )
-        for multi_media_dict in multi_media_list
+        for multimedia_dict in multimedia_list
     ]
 
     from ib_discussions.storages.comment_storage_implementaion import \
@@ -42,6 +42,6 @@ def api_wrapper(*args, **kwargs):
     response = interactor.create_comment_for_discussion_wrapper(
         presenter=presenter, user_id=user_id, discussion_id=discussion_id,
         comment_content=comment_content, mention_user_ids=mention_user_ids,
-        multi_media_dtos=multi_media_dtos
+        multimedia_dtos=multimedia_dtos
     )
     return response

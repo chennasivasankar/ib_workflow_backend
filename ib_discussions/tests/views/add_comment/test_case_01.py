@@ -63,7 +63,7 @@ class TestCase01AddCommentAPITestCase(TestUtils):
         get_user_profile_dtos_mock.return_value = user_profile_dtos
 
         from ib_discussions.constants.enum import MultiMediaFormatEnum
-        multi_media = [
+        multimedia = [
             {
                 "format_type": MultiMediaFormatEnum.IMAGE.value,
                 "url": "https://picsum.photos/200"
@@ -74,35 +74,35 @@ class TestCase01AddCommentAPITestCase(TestUtils):
             }
         ]
 
-        multi_media_ids = [
+        multimedia_ids = [
             "97be920b-7b4c-49e7-8adb-41a0c18da848",
             "92be920b-7b4c-49e7-8adb-41a0c18da848",
         ]
         from ib_discussions.tests.factories.storage_dtos import \
             CommentIdWithMultiMediaDTOFactory
-        multi_media_dtos = [
+        multimedia_dtos = [
             CommentIdWithMultiMediaDTOFactory(
                 comment_id=comment_id,
-                multi_media_id=multi_media_ids[0],
-                format_type=multi_media[0]["format_type"],
-                url=multi_media[0]["url"]
+                multimedia_id=multimedia_ids[0],
+                format_type=multimedia[0]["format_type"],
+                url=multimedia[0]["url"]
             ),
             CommentIdWithMultiMediaDTOFactory(
                 comment_id=comment_id,
-                multi_media_id=multi_media_ids[1],
-                format_type=multi_media[1]["format_type"],
-                url=multi_media[1]["url"]
+                multimedia_id=multimedia_ids[1],
+                format_type=multimedia[1]["format_type"],
+                url=multimedia[1]["url"]
             )
         ]
         from ib_discussions.tests.common_fixtures.storages import \
-            prepare_get_multi_media_dtos_mock
-        multi_media_mock = prepare_get_multi_media_dtos_mock(mocker)
-        multi_media_mock.return_value = multi_media_dtos
+            prepare_get_multimedia_dtos_mock
+        multimedia_mock = prepare_get_multimedia_dtos_mock(mocker)
+        multimedia_mock.return_value = multimedia_dtos
 
         body = {
             'comment_content': comment_content,
             'mention_user_ids': mention_user_ids,
-            'multi_media': multi_media
+            'multimedia': multimedia
         }
         path_params = {"discussion_id": discussion_id}
         query_params = {}

@@ -60,8 +60,8 @@ class CommentStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def add_multi_media_to_comment(self, comment_id,
-                                   multi_media_dtos: List[MultiMediaDTO]):
+    def add_multimedia_to_comment(self, comment_id,
+                                   multimedia_dtos: List[MultiMediaDTO]):
         pass
 
     @abstractmethod
@@ -74,6 +74,6 @@ class CommentStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_multi_media_dtos(self, comment_ids: List[str]) -> \
+    def get_multimedia_dtos(self, comment_ids: List[str]) -> \
             List[CommentIdWithMultiMediaDTO]:
         pass

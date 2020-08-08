@@ -4,7 +4,7 @@ from datetime import datetime
 from django.db import models
 
 from ib_discussions.models import Discussion
-from ib_discussions.models.multi_media import MultiMedia
+from ib_discussions.models.multimedia import MultiMedia
 
 
 def generate_uuid():
@@ -31,7 +31,7 @@ class Comment(models.Model):
 
 class CommentWithMultiMedia(models.Model):
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
-    multi_media = models.ForeignKey(MultiMedia, on_delete=models.CASCADE)
+    multimedia = models.ForeignKey(MultiMedia, on_delete=models.CASCADE)
 
 
 class CommentWithMentionUserId(models.Model):

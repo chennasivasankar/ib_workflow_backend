@@ -156,7 +156,7 @@
         "mention_users": {
           "$ref": "#/definitions/MentionUsers"
         },
-        "multi_media": {
+        "multimedia": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/Multimedia"
@@ -171,13 +171,13 @@
         "comment_id",
         "comment_content",
         "mention_users",
-        "multi_media"
+        "multimedia"
       ]
     },
     "Multimedia": {
       "type": "object",
       "properties": {
-        "multi_media_id": {
+        "multimedia_id": {
           "type": "string",
           "format": "uuid"
         },
@@ -195,7 +195,7 @@
       "required": [
         "format_type",
         "url",
-        "multi_media_id"
+        "multimedia_id"
       ]
     },
     "Reply": {
@@ -361,7 +361,7 @@
               "format": "uuid"
             }
           },
-          "multi_media": {
+          "multimedia": {
             "type": "array",
             "items": {
               "type": "object",
@@ -387,7 +387,7 @@
         "required": [
           "comment_content",
           "mention_user_ids",
-          "multi_media"
+          "multimedia"
         ]
       }
     },

@@ -141,21 +141,21 @@ class CommentStorageImplementation(CommentStorageInterface):
         CommentWithMentionUserId.objects.bulk_create(
             comment_with_mention_user_ids_objects)
 
-    def add_multi_media_to_comment(self, comment_id,
-                                   multi_media_dtos: List[MultiMediaDTO]):
+    def add_multimedia_to_comment(self, comment_id,
+                                   multimedia_dtos: List[MultiMediaDTO]):
         from ib_discussions.models.comment import CommentWithMultiMedia
-        from ib_discussions.models.multi_media import MultiMedia
-        multi_media_objects = [
+        from ib_discussions.models.multimedia import MultiMedia
+        multimedia_objects = [
             CommentWithMultiMedia(
                 comment_id=comment_id,
-                multi_media=MultiMedia.objects.create(
-                    format_type=multi_media_dto.format_type,
-                    url=multi_media_dto.url
+                multimedia=MultiMedia.objects.create(
+                    format_type=multimedia_dto.format_type,
+                    url=multimedia_dto.url
                 )
             )
-            for multi_media_dto in multi_media_dtos
+            for multimedia_dto in multimedia_dtos
         ]
-        CommentWithMultiMedia.objects.bulk_create(multi_media_objects)
+        CommentWithMultiMedia.objects.bulk_create(multimedia_objects)
 
     def get_mention_user_ids(self, comment_ids: List[str]) -> List[str]:
         from ib_discussions.models.comment import CommentWithMentionUserId
@@ -185,20 +185,20 @@ class CommentStorageImplementation(CommentStorageInterface):
 
         return comment_id_with_mention_user_id_dtos
 
-    def get_multi_media_dtos(self, comment_ids: List[str]) -> \
+    def get_multimedia_dtos(self, comment_ids: List[str]) -> \
             List[CommentIdWithMultiMediaDTO]:
         from ib_discussions.models.comment import CommentWithMultiMedia
-        comment_id_with_multi_media_objects = \
+        comment_id_with_multimedia_objects = \
             CommentWithMultiMedia.objects.filter(comment_id__in=comment_ids)
 
-        comment_id_with_multi_media_dtos = [
+        comment_id_with_multimedia_dtos = [
             CommentIdWithMultiMediaDTO(
-                comment_id=str(comment_id_with_multi_media_object.comment_id),
-                multi_media_id=str(comment_id_with_multi_media_object.multi_media_id),
-                format_type=comment_id_with_multi_media_object.multi_media.format_type,
-                url=comment_id_with_multi_media_object.multi_media.url
+                comment_id=str(comment_id_with_multimedia_object.comment_id),
+                multimedia_id=str(comment_id_with_multimedia_object.multimedia_id),
+                format_type=comment_id_with_multimedia_object.multimedia.format_type,
+                url=comment_id_with_multimedia_object.multimedia.url
             )
-            for comment_id_with_multi_media_object in
-            comment_id_with_multi_media_objects
+            for comment_id_with_multimedia_object in
+            comment_id_with_multimedia_objects
         ]
-        return comment_id_with_multi_media_dtos
+        return comment_id_with_multimedia_dtos

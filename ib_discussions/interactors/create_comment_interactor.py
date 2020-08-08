@@ -20,24 +20,24 @@ class CreateCommentInteractor:
     def create_comment_for_discussion_wrapper(
             self, presenter: CreateCommentPresenterInterface,
             user_id: str, discussion_id: str, comment_content: str,
-            mention_user_ids: List[str], multi_media_dtos: List[MultiMediaDTO]
+            mention_user_ids: List[str], multimedia_dtos: List[MultiMediaDTO]
     ):
-        # TODO: Validate mention_user_ids and multi_media_dtos
+        # TODO: Validate mention_user_ids and multimedia_dtos
         try:
             comment_with_replies_count_and_editable_dto, user_profile_dtos, \
-            comment_id_with_mention_user_id_dtos, comment_id_with_multi_media_dtos = \
+            comment_id_with_mention_user_id_dtos, comment_id_with_multimedia_dtos = \
                 self.create_comment_for_discussion(
                     user_id=user_id, discussion_id=discussion_id,
                     comment_content=comment_content,
                     mention_user_ids=mention_user_ids,
-                    multi_media_dtos=multi_media_dtos
+                    multimedia_dtos=multimedia_dtos
                 )
             response = presenter.prepare_response_for_comment(
                 comment_with_replies_count_and_editable_dto \
                     =comment_with_replies_count_and_editable_dto,
                 user_profile_dtos=user_profile_dtos,
                 comment_id_with_mention_user_id_dtos=comment_id_with_mention_user_id_dtos,
-                comment_id_with_multi_media_dtos=comment_id_with_multi_media_dtos
+                comment_id_with_multimedia_dtos=comment_id_with_multimedia_dtos
             )
         except DiscussionIdNotFound:
             response = presenter.response_for_discussion_id_not_found()
@@ -46,7 +46,7 @@ class CreateCommentInteractor:
     def create_comment_for_discussion(
             self, user_id: str, discussion_id: str,
             comment_content: Optional[str],
-            mention_user_ids: List[str], multi_media_dtos: List[MultiMediaDTO]
+            mention_user_ids: List[str], multimedia_dtos: List[MultiMediaDTO]
     ):
         is_discussion_id_not_exists = not self.storage. \
             is_discussion_id_exists(discussion_id=discussion_id)
@@ -60,28 +60,28 @@ class CreateCommentInteractor:
         )
         self.storage.add_mention_users_to_comment(
             comment_id=comment_id, mention_user_ids=mention_user_ids)
-        self.storage.add_multi_media_to_comment(
-            comment_id=comment_id, multi_media_dtos=multi_media_dtos
+        self.storage.add_multimedia_to_comment(
+            comment_id=comment_id, multimedia_dtos=multimedia_dtos
         )
         comment_with_replies_count_and_editable_dto, user_profile_dtos, \
-        comment_id_with_mention_user_id_dtos, comment_id_with_multi_media_dtos = \
+        comment_id_with_mention_user_id_dtos, comment_id_with_multimedia_dtos = \
             self.get_comment_details(comment_id=comment_id,
                                      user_id=user_id)
 
         return comment_with_replies_count_and_editable_dto, user_profile_dtos, \
-            comment_id_with_mention_user_id_dtos, comment_id_with_multi_media_dtos
+            comment_id_with_mention_user_id_dtos, comment_id_with_multimedia_dtos
 
     def get_comment_details(self, comment_id: str, user_id: str, ):
         comment_dto = self.storage.get_comment_details_dto(comment_id)
 
         comment_with_replies_count_and_editable_dtos, user_profile_dtos, \
-        comment_id_with_mention_user_id_dtos, comment_id_with_multi_media_dtos = \
+        comment_id_with_mention_user_id_dtos, comment_id_with_multimedia_dtos = \
             self.get_comments_for_discussion(
                 comment_dtos=[comment_dto], user_id=user_id)
 
         return comment_with_replies_count_and_editable_dtos[0], \
                user_profile_dtos, comment_id_with_mention_user_id_dtos, \
-               comment_id_with_multi_media_dtos
+               comment_id_with_multimedia_dtos
 
     def get_comments_for_discussion(self, comment_dtos: List[CommentDTO],
                                     user_id: str):
@@ -107,7 +107,7 @@ class CreateCommentInteractor:
             self.storage.get_comment_id_with_mention_user_id_dtos(
                 comment_ids=comment_ids
             )
-        comment_id_with_multi_media_dtos = self.storage.get_multi_media_dtos(
+        comment_id_with_multimedia_dtos = self.storage.get_multimedia_dtos(
             comment_ids=comment_ids
         )
         comment_with_replies_count_and_editable_dtos = \
@@ -120,7 +120,7 @@ class CreateCommentInteractor:
 
         return comment_with_replies_count_and_editable_dtos, \
                user_profile_dtos, comment_id_with_mention_user_id_dtos, \
-               comment_id_with_multi_media_dtos
+               comment_id_with_multimedia_dtos
 
     @staticmethod
     def _get_user_profile_dtos(user_ids: List[str]):

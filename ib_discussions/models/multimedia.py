@@ -12,11 +12,11 @@ def generate_uuid():
 class MultiMedia(models.Model):
     id = models.UUIDField(primary_key=True, default=generate_uuid,
                           editable=False)
-    multi_media_choices = (
+    multimedia_choices = (
         (MultiMediaFormatEnum.IMAGE.value, MultiMediaFormatEnum.IMAGE.value),
         (MultiMediaFormatEnum.VIDEO.value, MultiMediaFormatEnum.VIDEO.value)
     )
     format_type = models.CharField(
-        max_length=30, choices=multi_media_choices
+        max_length=30, choices=multimedia_choices
     )
     url = models.TextField()

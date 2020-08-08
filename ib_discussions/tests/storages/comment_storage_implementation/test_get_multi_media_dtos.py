@@ -11,37 +11,37 @@ class TestGetMultiMediaDTOS:
             "91be920b-7b4c-49e7-8adb-41a0c18da848",
             "11be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
-        comment_id_with_multi_media_list = [{
+        comment_id_with_multimedia_list = [{
             'comment_id': '11be920b-7b4c-49e7-8adb-41a0c18da848',
-            'multi_media_id': '92be920b-7b4c-49e7-8adb-41a0c18da848',
+            'multimedia_id': '92be920b-7b4c-49e7-8adb-41a0c18da848',
             'format_type': 'VIDEO',
             'url': 'https://picsum.photos/200'
         }, {
             'comment_id': '91be920b-7b4c-49e7-8adb-41a0c18da848',
-            'multi_media_id': '97be920b-7b4c-49e7-8adb-41a0c18da848',
+            'multimedia_id': '97be920b-7b4c-49e7-8adb-41a0c18da848',
             'format_type': 'IMAGE',
             'url': 'https://picsum.photos/200'
         }, {
             'comment_id': '91be920b-7b4c-49e7-8adb-41a0c18da848',
-            'multi_media_id': '92be920b-7b4c-49e7-8adb-41a0c18da848',
+            'multimedia_id': '92be920b-7b4c-49e7-8adb-41a0c18da848',
             'format_type': 'VIDEO',
             'url': 'https://picsum.photos/200'
         }]
         from ib_discussions.tests.factories.storage_dtos import \
             CommentIdWithMultiMediaDTOFactory
-        expected_comment_id_with_multi_media_dtos = [
+        expected_comment_id_with_multimedia_dtos = [
             CommentIdWithMultiMediaDTOFactory(
-                comment_id=comment_id_with_multi_media_dict["comment_id"],
-                multi_media_id=comment_id_with_multi_media_dict["multi_media_id"],
-                format_type=comment_id_with_multi_media_dict["format_type"],
-                url=comment_id_with_multi_media_dict["url"]
+                comment_id=comment_id_with_multimedia_dict["comment_id"],
+                multimedia_id=comment_id_with_multimedia_dict["multimedia_id"],
+                format_type=comment_id_with_multimedia_dict["format_type"],
+                url=comment_id_with_multimedia_dict["url"]
             )
-            for comment_id_with_multi_media_dict in
-            comment_id_with_multi_media_list
+            for comment_id_with_multimedia_dict in
+            comment_id_with_multimedia_list
         ]
 
         # Act
-        response = comment_storage.get_multi_media_dtos(comment_ids=comment_ids)
+        response = comment_storage.get_multimedia_dtos(comment_ids=comment_ids)
 
         # Assert
-        assert response == expected_comment_id_with_multi_media_dtos
+        assert response == expected_comment_id_with_multimedia_dtos

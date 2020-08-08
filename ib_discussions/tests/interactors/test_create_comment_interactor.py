@@ -42,7 +42,7 @@ class TestCreateCommentInteractor:
         from ib_discussions.tests.factories.interactor_dtos import \
             MultiMediaDTOFactory
         MultiMediaDTOFactory.format_type.reset()
-        multi_media_dtos = MultiMediaDTOFactory.create_batch(2)
+        multimedia_dtos = MultiMediaDTOFactory.create_batch(2)
 
         expected_presenter_response_for_discussion_id_not_found_mock = Mock()
 
@@ -55,7 +55,7 @@ class TestCreateCommentInteractor:
         response = interactor.create_comment_for_discussion_wrapper(
             discussion_id=discussion_id, comment_content=comment_content,
             user_id=user_id, presenter=presenter_mock,
-            mention_user_ids=mention_user_ids, multi_media_dtos=multi_media_dtos
+            mention_user_ids=mention_user_ids, multimedia_dtos=multimedia_dtos
         )
 
         # Assert
@@ -78,7 +78,7 @@ class TestCreateCommentInteractor:
         from ib_discussions.tests.factories.interactor_dtos import \
             MultiMediaDTOFactory
         MultiMediaDTOFactory.format_type.reset()
-        multi_media_dtos = MultiMediaDTOFactory.create_batch(2)
+        multimedia_dtos = MultiMediaDTOFactory.create_batch(2)
 
         from ib_discussions.tests.factories.storage_dtos import \
             CommentDTOFactory
@@ -119,7 +119,7 @@ class TestCreateCommentInteractor:
         response = interactor.create_comment_for_discussion_wrapper(
             discussion_id=discussion_id, comment_content=comment_content,
             user_id=user_id, presenter=presenter_mock,
-            mention_user_ids=mention_user_ids, multi_media_dtos=multi_media_dtos
+            mention_user_ids=mention_user_ids, multimedia_dtos=multimedia_dtos
         )
 
         # Assert
@@ -142,7 +142,7 @@ class TestCreateCommentInteractor:
         storage_mock.get_comment_id_with_mention_user_id_dtos.assert_called_once_with(
             comment_ids=[comment_id]
         )
-        storage_mock.get_multi_media_dtos.assert_called_once_with(
+        storage_mock.get_multimedia_dtos.assert_called_once_with(
             comment_ids=[comment_id]
         )
 

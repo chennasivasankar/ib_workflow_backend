@@ -60,7 +60,7 @@ class TestCreateCommentPresenterImplementation:
             for user_id in user_ids
         ]
 
-        multi_media_ids = [
+        multimedia_ids = [
             "f26c1802-d996-4e89-9644-23ebaf02713a",
             "a5f52868-8065-403c-abe5-24c09e42bafe"
         ]
@@ -68,11 +68,11 @@ class TestCreateCommentPresenterImplementation:
         from ib_discussions.tests.factories.storage_dtos import \
             CommentIdWithMultiMediaDTOFactory
         CommentIdWithMultiMediaDTOFactory.format_type.reset()
-        comment_id_with_multi_media_dtos = [
+        comment_id_with_multimedia_dtos = [
             CommentIdWithMultiMediaDTOFactory(
-                multi_media_id=multi_media_id,
+                multimedia_id=multimedia_id,
                 comment_id=comment_id)
-            for multi_media_id in multi_media_ids
+            for multimedia_id in multimedia_ids
         ]
 
         from ib_discussions.tests.factories.storage_dtos import \
@@ -90,7 +90,7 @@ class TestCreateCommentPresenterImplementation:
                 comment_with_replies_count_and_editable_dto,
             user_profile_dtos=user_profile_dtos,
             comment_id_with_mention_user_id_dtos=comment_id_with_mention_user_id_dtos,
-            comment_id_with_multi_media_dtos=comment_id_with_multi_media_dtos
+            comment_id_with_multimedia_dtos=comment_id_with_multimedia_dtos
         )
 
         # Assert

@@ -32,7 +32,7 @@ class CreateCommentPresenterImplementation(CreateCommentPresenterInterface,
             self,
             comment_with_replies_count_and_editable_dto: CommentWithRepliesCountAndEditableDTO,
             user_profile_dtos: List[UserProfileDTO],
-            comment_id_with_multi_media_dtos: List[CommentIdWithMultiMediaDTO],
+            comment_id_with_multimedia_dtos: List[CommentIdWithMultiMediaDTO],
             comment_id_with_mention_user_id_dtos: List[
                 CommentIdWithMentionUserIdDTO]
     ):
@@ -48,13 +48,13 @@ class CreateCommentPresenterImplementation(CreateCommentPresenterInterface,
             replies_count
         is_editable = comment_with_replies_count_and_editable_dto.is_editable
 
-        multi_media_list = [
+        multimedia_list = [
             {
-                "multi_media_id": str(multi_media_dto.multi_media_id),
-                "format_type": multi_media_dto.format_type,
-                "url": multi_media_dto.url
+                "multimedia_id": str(multimedia_dto.multimedia_id),
+                "format_type": multimedia_dto.format_type,
+                "url": multimedia_dto.url
             }
-            for multi_media_dto in comment_id_with_multi_media_dtos
+            for multimedia_dto in comment_id_with_multimedia_dtos
         ]
 
         user_id_wise_user_details_dict = \
@@ -77,10 +77,10 @@ class CreateCommentPresenterImplementation(CreateCommentPresenterInterface,
             "created_at": created_at,
             "total_replies_count": replies_count,
             "is_editable": is_editable,
-            "multi_media": multi_media_list,
+            "multimedia": multimedia_list,
             "mention_users": mention_users
         }
-        print(multi_media_list)
+        print(multimedia_list)
         return self.prepare_200_success_response(response_dict=response)
 
     @staticmethod

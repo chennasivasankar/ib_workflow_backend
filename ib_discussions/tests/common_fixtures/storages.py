@@ -12,8 +12,8 @@ def prepare_create_reply_to_comment_mock(mocker):
     return mock
 
 
-def prepare_get_multi_media_dtos_mock(mocker):
+def prepare_get_multimedia_dtos_mock(mocker):
     mock = mocker.patch(
-        "ib_discussions.storages.comment_storage_implementaion.CommentStorageImplementation.get_multi_media_dtos"
+        "ib_discussions.storages.comment_storage_implementaion.CommentStorageImplementation.get_multimedia_dtos"
     )
     return mock

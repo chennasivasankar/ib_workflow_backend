@@ -33,15 +33,15 @@ snapshots['TestCase01GetCommentsForDiscussionAPITestCase.test_case body'] = {
                     'user_id': '01be920b-7b4c-49e7-8adb-41a0c18da848'
                 }
             ],
-            'multi_media': [
+            'multimedia': [
                 {
                     'format_type': 'IMAGE',
-                    'multi_media_id': '97be920b-7b4c-49e7-8adb-41a0c18da848',
+                    'multimedia_id': '97be920b-7b4c-49e7-8adb-41a0c18da848',
                     'url': 'https://picsum.photos/200'
                 },
                 {
                     'format_type': 'VIDEO',
-                    'multi_media_id': '92be920b-7b4c-49e7-8adb-41a0c18da848',
+                    'multimedia_id': '92be920b-7b4c-49e7-8adb-41a0c18da848',
                     'url': 'https://picsum.photos/200'
                 }
             ],
@@ -64,10 +64,10 @@ snapshots['TestCase01GetCommentsForDiscussionAPITestCase.test_case body'] = {
                     'user_id': '01be920b-7b4c-49e7-8adb-41a0c18da848'
                 }
             ],
-            'multi_media': [
+            'multimedia': [
                 {
                     'format_type': 'VIDEO',
-                    'multi_media_id': '92be920b-7b4c-49e7-8adb-41a0c18da848',
+                    'multimedia_id': '92be920b-7b4c-49e7-8adb-41a0c18da848',
                     'url': 'https://picsum.photos/200'
                 }
             ],
@@ -85,7 +85,7 @@ snapshots['TestCase01GetCommentsForDiscussionAPITestCase.test_case body'] = {
             'is_editable': False,
             'mention_users': [
             ],
-            'multi_media': [
+            'multimedia': [
             ],
             'total_replies_count': 0
         }

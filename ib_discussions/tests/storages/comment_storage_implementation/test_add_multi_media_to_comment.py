@@ -10,17 +10,17 @@ class TestAddMultiMediaToComment:
         from ib_discussions.tests.factories.interactor_dtos import \
             MultiMediaDTOFactory
         MultiMediaDTOFactory.format_type.reset()
-        multi_media_dtos = MultiMediaDTOFactory.create_batch(2)
+        multimedia_dtos = MultiMediaDTOFactory.create_batch(2)
 
         # Act
-        comment_storage.add_multi_media_to_comment(
-            comment_id=comment_id, multi_media_dtos=multi_media_dtos
+        comment_storage.add_multimedia_to_comment(
+            comment_id=comment_id, multimedia_dtos=multimedia_dtos
         )
 
         # Assert
         from ib_discussions.models.comment import CommentWithMultiMedia
-        multi_media_objects_count = CommentWithMultiMedia.objects.filter(
+        multimedia_objects_count = CommentWithMultiMedia.objects.filter(
             comment_id=comment_id
         ).count()
 
-        assert multi_media_objects_count == 2
+        assert multimedia_objects_count == 2

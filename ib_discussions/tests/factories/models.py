@@ -8,7 +8,7 @@ from ib_discussions.models.comment import Comment, CommentWithMultiMedia, \
 from ib_discussions.models.discussion import Discussion
 from ib_discussions.models.discussion_set import DiscussionSet
 from ib_discussions.models.entity import Entity
-from ib_discussions.models.multi_media import MultiMedia
+from ib_discussions.models.multimedia import MultiMedia
 
 
 class EntityFactory(factory.django.DjangoModelFactory):
@@ -110,7 +110,7 @@ class CommentWithMultiMediaFactory(factory.django.DjangoModelFactory):
         model = CommentWithMultiMedia
 
     comment = factory.SubFactory(CommentFactory)
-    multi_media = factory.SubFactory(MultiMediaFactory)
+    multimedia = factory.SubFactory(MultiMediaFactory)
 
 
 class CommentWithMentionUserIdFactory(factory.django.DjangoModelFactory):

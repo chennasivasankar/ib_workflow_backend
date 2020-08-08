@@ -51,6 +51,6 @@ class CommentIdWithMentionUserIdDTO:
 @dataclass
 class CommentIdWithMultiMediaDTO:
     comment_id: str
-    multi_media_id: str
+    multimedia_id: str
     format_type: MultiMediaFormatEnum
     url: str
