@@ -1923,42 +1923,6 @@
           }
         }
       }
-    },
-    "/user/{company_id}/v1/": {
-      "put": {
-        "summary": "update company details",
-        "description": "updates company details",
-        "operationId": "update_company_details",
-        "security": [
-          {
-            "oauth": [
-              "write"
-            ]
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/parameters/CompanyIdPathParameter"
-          },
-          {
-            "$ref": "#/parameters/UpdateCompanyParameter"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Company details updated Successfully"
-          },
-          "400": {
-            "$ref": "#/responses/BadRequestForUpdateCompanyResponse"
-          },
-          "401": {
-            "$ref": "#/responses/UnauthorizedForUpdateCompanyResponse"
-          },
-          "404": {
-            "$ref": "#/responses/NotFoundForUpdateCompanyResponse"
-          }
-        }
-      }
     }
   }
 }
