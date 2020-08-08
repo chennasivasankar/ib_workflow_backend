@@ -7,7 +7,7 @@ Author: Pavankumar Pamuru
 from dataclasses import dataclass
 from typing import List
 
-from ib_tasks.constants.enum import VIEWTYPE
+from ib_tasks.constants.enum import ViewType
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
@@ -42,7 +42,7 @@ class GetTasksOverviewForUserInteractor:
         self.action_storage = action_storage
 
     def get_filtered_tasks_overview_for_user(
-            self, user_id: str, task_ids: List[int], view_type: VIEWTYPE):
+            self, user_id: str, task_ids: List[int], view_type: ViewType):
         stage_ids = self._get_allowed_stage_ids_of_user(user_id=user_id)
         task_id_with_stage_ids_dtos = self._get_task_ids_of_user(
             user_id=user_id,
@@ -101,7 +101,7 @@ class GetTasksOverviewForUserInteractor:
 
     def _get_task_fields_and_action(
             self, task_id_with_stage_id_dtos: List[GetTaskDetailsDTO],
-            user_id: str, view_type: VIEWTYPE
+            user_id: str, view_type: ViewType
     ) -> List[GetTaskStageCompleteDetailsDTO]:
         from ib_tasks.interactors.get_task_fields_and_actions import \
             GetTaskFieldsAndActionsInteractor

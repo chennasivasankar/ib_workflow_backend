@@ -86,7 +86,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         from elasticsearch_dsl import Q, Search
 
         search = Search(index=TASK_INDEX_NAME)
-        if search_query is not None:
+        if search_query:
             search = search.query(
                 Q(
                     "match",
@@ -119,7 +119,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         from elasticsearch_dsl import Q, Search
 
         search = Search(index=USER_INDEX_NAME)
-        if search_query is not None:
+        if search_query:
             search = search.query(
                 Q(
                     "match",
@@ -153,7 +153,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         from elasticsearch_dsl import Q, Search
 
         search = Search(index=COUNTRY_INDEX_NAME)
-        if search_query is not None:
+        if search_query:
             search = search.query(
                 Q(
                     "match",
@@ -187,7 +187,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         from elasticsearch_dsl import Q, Search
 
         search = Search(index=STATE_INDEX_NAME)
-        if search_query is not None:
+        if search_query:
             search = search.query(
                 Q(
                     "match",
@@ -221,7 +221,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         from elasticsearch_dsl import Q, Search
 
         search = Search(index=CITY_INDEX_NAME)
-        if search_query is not None:
+        if search_query:
             search = search.query(
                 Q(
                     "match",

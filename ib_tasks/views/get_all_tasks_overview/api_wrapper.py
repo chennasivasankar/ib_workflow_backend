@@ -3,6 +3,7 @@ import json
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 from .validator_class import ValidatorClass
+from ...constants.enum import ViewType
 from ...interactors.get_all_tasks_overview_for_user_interactor import \
     GetAllTasksOverviewForUserInteractor, UserIdPaginationDTO
 from ...presenters.get_all_tasks_overview_for_user_presenter_impl import \
@@ -52,12 +53,11 @@ def api_wrapper(*args, **kwargs):
         filter_storage=filter_storage,
         task_stage_storage=task_stage_storage
     )
-    from ib_tasks.constants.enum import VIEWTYPE
     response = interactor.get_filtered_tasks_overview_for_user_wrapper(
         presenter=presenter,
         user_id=user_id,
         limit=limit,
         offset=offset,
-        view_type=VIEWTYPE.KANBAN.value
+        view_type=ViewType.KANBAN.value
     )
     return response

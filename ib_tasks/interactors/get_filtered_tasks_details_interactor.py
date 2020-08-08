@@ -3,7 +3,7 @@ Created on: 07/08/20
 Author: Pavankumar Pamuru
 
 """
-from ib_tasks.constants.enum import VIEWTYPE
+from ib_tasks.constants.enum import ViewType
 from ib_tasks.exceptions.fields_custom_exceptions import \
     LimitShouldBeGreaterThanZeroException, \
     OffsetShouldBeGreaterThanZeroException
@@ -43,7 +43,7 @@ class GetTaskDetailsByFilterInteractor:
         self.elasticsearch_storage = elasticsearch_storage
 
     def get_filtered_tasks_overview_for_user_wrapper(
-            self, user_id: str, limit: int, offset: int, view_type: VIEWTYPE,
+            self, user_id: str, limit: int, offset: int, view_type: ViewType,
             presenter: GetFilteredTasksOverviewForUserPresenterInterface):
         try:
             filtered_tasks_overview_details_dto, total_tasks = self.get_filtered_tasks_overview_for_user(
@@ -66,7 +66,7 @@ class GetTaskDetailsByFilterInteractor:
         )
 
     def get_filtered_tasks_overview_for_user(
-            self, user_id: str, limit: int, offset: int, view_type: VIEWTYPE):
+            self, user_id: str, limit: int, offset: int, view_type: ViewType):
 
         from ib_tasks.interactors.get_task_ids_by_applying_filters_interactor import \
             GetTaskIdsBasedOnUserFilters

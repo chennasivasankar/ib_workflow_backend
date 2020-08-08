@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any
 
-from ib_tasks.constants.enum import VIEWTYPE
+from ib_tasks.constants.enum import ViewType
 from ib_tasks.exceptions.fields_custom_exceptions import LimitShouldBeGreaterThanZeroException, \
     OffsetShouldBeGreaterThanZeroException
 from ib_tasks.exceptions.stage_custom_exceptions import StageIdsListEmptyException
@@ -21,7 +21,7 @@ class SearchQueryDTO:
     offset: int
     limit: int
     query_value: Any
-    view_type: VIEWTYPE
+    view_type: ViewType
 
 
 class GetTasksToRelevantSearchQuery:

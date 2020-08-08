@@ -2,7 +2,7 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 
 from .validator_class import ValidatorClass
-from ...constants.enum import VIEWTYPE
+from ...constants.enum import ViewType
 from ...interactors.get_tasks_to_relevant_search_query \
     import GetTasksToRelevantSearchQuery, SearchQueryDTO
 from ...presenters.get_all_tasks_overview_for_user_presenter_impl \
@@ -46,5 +46,5 @@ def get_search_query_dto(request_data, user_id: str):
         limit=request_data.limit,
         user_id=user_id,
         query_value=request_data.search_query,
-        view_type=VIEWTYPE.KANBAN.value
+        view_type=ViewType.KANBAN.value
     )
