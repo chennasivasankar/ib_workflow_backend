@@ -195,7 +195,8 @@ class StarOrUnstarParametersDTO:
 
 
 @dataclass
-class TaskStageColorDTO:
+class TaskStageDTO:
     task_id: int
     stage_id: str
+    db_stage_id: int
     stage_color: str

@@ -7,7 +7,7 @@ from typing import List, Tuple
 
 from ib_boards.constants.enum import ViewType
 from ib_boards.interactors.dtos import TaskTemplateStagesDTO, \
-    TaskSummaryFieldsDTO, TaskStatusDTO, FieldDTO, ColumnTaskIdsDTO, ActionDTO, TaskStageColorDTO
+    TaskSummaryFieldsDTO, TaskStatusDTO, FieldDTO, ColumnTaskIdsDTO, ActionDTO, TaskStageDTO
 from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
     TaskFieldsDTOFactory
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, \
@@ -83,7 +83,7 @@ class TaskService:
     def get_task_complete_details(
             self, task_stage_ids: List[GetTaskDetailsDTO],
             user_id: str, view_type: ViewType) \
-            -> Tuple[List[FieldDTO], List[ActionDTO], List[TaskStageColorDTO]]:
+            -> Tuple[List[FieldDTO], List[ActionDTO], List[TaskStageDTO]]:
         tasks_complete_details_dtos = self.interface.get_task_details(
             task_dtos=task_stage_ids, user_id=user_id, view_type=view_type
         )
@@ -102,9 +102,10 @@ class TaskService:
                 action_dtos=tasks_complete_details_dto.action_dtos
             )
             task_stage_color_dtos.append(
-                TaskStageColorDTO(
+                TaskStageDTO(
                     task_id=tasks_complete_details_dto.task_id,
                     stage_id=tasks_complete_details_dto.stage_id,
+                    db_stage_id=tasks_complete_details_dtos.db_stage_id,
                     stage_color=tasks_complete_details_dto.stage_color)
             )
 
