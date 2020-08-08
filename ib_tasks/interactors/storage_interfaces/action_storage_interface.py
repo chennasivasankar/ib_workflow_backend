@@ -74,3 +74,7 @@ class ActionStorageInterface(ABC):
             self, transition_checklist_template_id, action_id, stage_id
     ) -> Optional[TransitionTemplateIsNotRelatedToGivenStageAction]:
         pass
+
+    @abc.abstractmethod
+    def validate_action(self, action_id: int) -> bool:
+        pass

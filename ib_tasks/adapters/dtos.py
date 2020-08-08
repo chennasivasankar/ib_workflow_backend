@@ -46,3 +46,11 @@ class AssigneeDetailsDTO:
     name: str
     profile_pic_url: str
 
+
+
+
+@dataclass
+class UserDetailsDTO:
+    user_id: str
+    user_name: str
+    profile_pic_url: str
