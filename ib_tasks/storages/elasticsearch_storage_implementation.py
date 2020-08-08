@@ -3,20 +3,15 @@ Created on: 07/08/20
 Author: Pavankumar Pamuru
 
 """
-from typing import List, Tuple
-from typing import List, Union
+from typing import Tuple
 
 from elasticsearch_dsl import Q, Search
 
-from ib_tasks.documents.elastic_task import ElasticFieldDTO, \
-    Field
-from ib_tasks.documents.elastic_task import ElasticTaskDTO, Task, QueryTasksDTO
+from ib_tasks.documents.elastic_task import *
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ApplyFilterDTO
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface
-from ib_tasks.documents.elastic_task import *
-from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import ElasticSearchStorageInterface
 
 
 class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
@@ -61,7 +56,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             else:
                 query = query & current_queue
 
-        search = Search(index='task')
+        search = Search(index=TASK_INDEX_NAME)
         if query is None:
             task_objects = search
         else:
