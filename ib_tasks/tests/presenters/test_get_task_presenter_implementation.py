@@ -184,3 +184,4 @@ class TestGetTaskPresenterImplementation:
         # Assert
         snapshot.assert_match(name="task_details = ",
                               value=response_object.content)
+
