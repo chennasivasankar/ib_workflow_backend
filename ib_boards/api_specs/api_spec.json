@@ -175,8 +175,7 @@
             "required": [
               "action_id",
               "name",
-              "button_text",
-              "transition_template_id"
+              "button_text"
             ]
           }
         }

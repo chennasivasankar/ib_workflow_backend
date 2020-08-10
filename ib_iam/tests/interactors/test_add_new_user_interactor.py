@@ -3,8 +3,8 @@ from unittest.mock import Mock
 import pytest
 
 from ib_iam.interactors.add_new_user_interactor import AddNewUserInteractor
-from ib_iam.interactors.DTOs.common_dtos import \
-    UserDetailsWithTeamRoleAndCompanyIdsDTO
+from ib_iam.interactors.dtos.dtos import \
+    UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO
 from ib_iam.tests.factories.interactor_dtos import \
     UserDetailsWithTeamRoleAndCompanyIdsDTOFactory
 

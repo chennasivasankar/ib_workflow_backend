@@ -1228,6 +1228,20 @@
           }
         }
       }
+    },
+    "AdvancedSearchRequestBody": {
+      "type": "object",
+      "properties": {
+        "template_id": {
+          "type": "string"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FilterCondition"
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -1237,6 +1251,23 @@
       "required": true,
       "schema": {
         "$ref": "#/definitions/AddTaskReasons"
+      }
+    },
+    "AdvancedSearchableBody": {
+      "in": "body",
+      "name": "AdvancedSearchRequestBody",
+      "description": "advanced search",
+      "required": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "templates_conditions": {
+              "type": "array",
+              "items": {
+                  "$ref": "#/definitions/AdvancedSearchRequestBody"
+              }
+          }
+        }
       }
     },
     "CreateTaskBodyParameter": {
@@ -2362,6 +2393,9 @@
           },
           {
             "$ref": "#/parameters/SearchableQueryParameter"
+          },
+          {
+            "$ref": "#/parameters/AdvancedSearchableBody"
           }
         ],
         "responses": {

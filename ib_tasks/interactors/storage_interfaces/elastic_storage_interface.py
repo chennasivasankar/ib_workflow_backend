@@ -38,8 +38,9 @@ class ElasticSearchStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def query_tasks(
-            self, offset: int, limit: int, search_query: str
+    def search_tasks(
+            self, offset: int, limit: int, search_query: str,
+            apply_filter_dtos: List[ApplyFilterDTO]
     ) -> QueryTasksDTO:
         pass
 

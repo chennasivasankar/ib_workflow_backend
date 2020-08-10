@@ -17,17 +17,11 @@ from ib_tasks.storages.elasticsearch_storage_implementation import \
 
 class FilterStorageImplementation(FilterStorageInterface):
 
-    def enable_filter_status(self, filter_id: int) -> Status:
+    def update_filter_status(self, filter_id: int,
+                             is_selected: Status) -> Status:
 
         filter_obj = Filter.objects.get(id=filter_id)
-        filter_obj.is_selected = Status.ENABLED.value
-        filter_obj.save()
-        return filter_obj.is_selected
-
-    def disable_filter_status(self, filter_id: int) -> Status:
-
-        filter_obj = Filter.objects.get(id=filter_id)
-        filter_obj.is_selected = Status.DISABLED.value
+        filter_obj.is_selected = is_selected
         filter_obj.save()
         return filter_obj.is_selected
 
