@@ -18,14 +18,15 @@ class TestUpdateUserProfilePresenterImplementation:
     def test_whether_it_returns_minimum_name_length_exception_response(self):
         from ib_iam.constants.exception_messages import \
             NAME_MINIMUM_LENGTH_SHOULD_BE
-        from ib_iam.constants.enums import StatusCode, LengthConstants
+        from ib_iam.constants.enums import StatusCode
         json_presenter = UpdateUserProfilePresenterImplementation()
+        from ib_iam.constants.config import MINIMUM_USER_NAME_LENGTH
         expected_response = NAME_MINIMUM_LENGTH_SHOULD_BE[0].format(
-            minimum_name_length=LengthConstants.MIN_USER_NAME_LENGTH.value)
+            minimum_name_length=MINIMUM_USER_NAME_LENGTH)
         expected_res_status = NAME_MINIMUM_LENGTH_SHOULD_BE[1]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
 
-        result = json_presenter.get_response_for_minimum_name_length()
+        result = json_presenter.raise_minimum_name_length_exception_for_update_user_profile()
 
         response_dict = json.loads(result.content)
         actual_response = response_dict["response"]
@@ -38,16 +39,16 @@ class TestUpdateUserProfilePresenterImplementation:
     def test_whether_it_returns_name_contains_numbers_or_special_chars_exception_response(
             self):
         from ib_iam.constants.exception_messages import \
-            NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS
+            NAME_SHOULD_NOT_CONTAIN_SPECIAL_CHARACTERS_AND_NUMBERS
         json_presenter = UpdateUserProfilePresenterImplementation()
         expected_response = \
-            NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS[0]
+            NAME_SHOULD_NOT_CONTAIN_SPECIAL_CHARACTERS_AND_NUMBERS[0]
         expected_res_status = \
-            NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS[1]
+            NAME_SHOULD_NOT_CONTAIN_SPECIAL_CHARACTERS_AND_NUMBERS[1]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
 
         result = json_presenter \
-            .get_response_for_name_contains_special_chars_and_numbers_exception()
+            .raise_name_should_not_contain_special_chars_and_numbers_exception_for_update_user_profile()
 
         response_dict = json.loads(result.content)
         actual_response = response_dict["response"]
@@ -64,7 +65,7 @@ class TestUpdateUserProfilePresenterImplementation:
         expected_res_status = INVALID_EMAIL[1]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
 
-        result = json_presenter.get_response_for_invalid_email_exception()
+        result = json_presenter.raise_invalid_email_exception_for_update_user_profile()
 
         response_dict = json.loads(result.content)
         actual_response = response_dict["response"]
@@ -81,7 +82,7 @@ class TestUpdateUserProfilePresenterImplementation:
         expected_res_status = EMAIL_ALREADY_IN_USE[1]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
 
-        result = json_presenter.get_response_for_email_already_exists()
+        result = json_presenter.raise_email_already_in_use_exception_for_update_user_profile()
 
         response_dict = json.loads(result.content)
         actual_response = response_dict["response"]

@@ -37,17 +37,17 @@ class TestUpdateUserProfileInteractor:
         # Arrange
         user_id_name_email_and_profile_pic_url_dto = \
             UserIdNameEmailAndProfilePicUrlDTOFactory(name=name)
-        presenter_mock.get_response_for_minimum_name_length \
+        presenter_mock.raise_minimum_name_length_exception_for_update_user_profile \
             .return_value = mock.Mock()
 
         # Act
         interactor.update_user_profile_wrapper(
-            user_id_name_email_and_profile_pic_url_dto=
+            user_profile_dto=
             user_id_name_email_and_profile_pic_url_dto,
             presenter=presenter_mock)
 
         # Assert
-        presenter_mock.get_response_for_minimum_name_length \
+        presenter_mock.raise_minimum_name_length_exception_for_update_user_profile \
             .assert_called_once()
 
     @pytest.mark.parametrize("name", [("user@"), ("_user"), ("user_name"),
@@ -58,18 +58,18 @@ class TestUpdateUserProfileInteractor:
         user_id_name_email_and_profile_pic_url_dto = \
             UserIdNameEmailAndProfilePicUrlDTOFactory(name=name)
         presenter_mock \
-            .get_response_for_name_contains_special_chars_and_numbers_exception \
+            .raise_name_should_not_contain_special_chars_and_numbers_exception_for_update_user_profile \
             .return_value = mock.Mock()
 
         # Act
         interactor.update_user_profile_wrapper(
-            user_id_name_email_and_profile_pic_url_dto=
+            user_profile_dto=
             user_id_name_email_and_profile_pic_url_dto,
             presenter=presenter_mock)
 
         # Assert
         presenter_mock \
-            .get_response_for_name_contains_special_chars_and_numbers_exception \
+            .raise_name_should_not_contain_special_chars_and_numbers_exception_for_update_user_profile \
             .assert_called_once()
 
     def test_given_invalid_email_returns_invalid_email_exception_response(
@@ -78,21 +78,21 @@ class TestUpdateUserProfileInteractor:
         user_id_name_email_and_profile_pic_url_dto = \
             UserIdNameEmailAndProfilePicUrlDTOFactory()
         from ib_iam.tests.common_fixtures.adapters.user_service \
-            import update_user_profile_adapter_mock
-        adapter_mock = update_user_profile_adapter_mock(mocker=mocker)
+            import prepare_update_user_profile_adapter_mock
+        adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
         from ib_iam.exceptions.custom_exceptions import InvalidEmail
         adapter_mock.side_effect = InvalidEmail
-        presenter_mock.get_response_for_invalid_email_exception \
+        presenter_mock.raise_invalid_email_exception_for_update_user_profile \
             .return_value = mock.Mock()
 
         # Act
         interactor.update_user_profile_wrapper(
-            user_id_name_email_and_profile_pic_url_dto=
+            user_profile_dto=
             user_id_name_email_and_profile_pic_url_dto,
             presenter=presenter_mock)
 
         # Assert
-        presenter_mock.get_response_for_invalid_email_exception \
+        presenter_mock.raise_invalid_email_exception_for_update_user_profile \
             .assert_called_once()
 
     def test_given_email_already_in_use_returns_email_already_in_use_response(
@@ -101,22 +101,22 @@ class TestUpdateUserProfileInteractor:
         user_id_name_email_and_profile_pic_url_dto = \
             UserIdNameEmailAndProfilePicUrlDTOFactory()
         from ib_iam.tests.common_fixtures.adapters.user_service \
-            import update_user_profile_adapter_mock
-        adapter_mock = update_user_profile_adapter_mock(mocker=mocker)
+            import prepare_update_user_profile_adapter_mock
+        adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
         from ib_iam.exceptions.custom_exceptions import \
             UserAccountAlreadyExistWithThisEmail
         adapter_mock.side_effect = UserAccountAlreadyExistWithThisEmail
-        presenter_mock.get_response_for_email_already_exists \
+        presenter_mock.raise_email_already_in_use_exception_for_update_user_profile \
             .return_value = mock.Mock()
 
         # Act
         interactor.update_user_profile_wrapper(
-            user_id_name_email_and_profile_pic_url_dto=
+            user_profile_dto=
             user_id_name_email_and_profile_pic_url_dto,
             presenter=presenter_mock)
 
         # Assert
-        presenter_mock.get_response_for_email_already_exists \
+        presenter_mock.raise_email_already_in_use_exception_for_update_user_profile \
             .assert_called_once()
 
     def test_given_valid_details_returns_success_response(
@@ -128,14 +128,14 @@ class TestUpdateUserProfileInteractor:
             UserIdNameEmailAndProfilePicUrlDTOFactory(user_id=user_id,
                                                       name=name)
         from ib_iam.tests.common_fixtures.adapters.user_service \
-            import update_user_profile_adapter_mock
-        adapter_mock = update_user_profile_adapter_mock(mocker=mocker)
+            import prepare_update_user_profile_adapter_mock
+        adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
         presenter_mock.get_success_response_for_update_user_profile \
             .return_value = mock.Mock()
 
         # Act
         interactor.update_user_profile_wrapper(
-            user_id_name_email_and_profile_pic_url_dto=
+            user_profile_dto=
             user_id_name_email_and_profile_pic_url_dto,
             presenter=presenter_mock)
 

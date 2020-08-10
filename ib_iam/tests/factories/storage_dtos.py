@@ -3,7 +3,7 @@ import factory
 from ib_iam.interactors.storage_interfaces.dtos \
     import UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO, RoleDTO, TeamDTO, UserIdAndNameDTO, \
-    UserIdNameEmailAndProfilePicUrlDTO
+    UserProfileDTO
 
 
 class UserDTOFactory(factory.Factory):
@@ -244,7 +244,7 @@ class CompanyWithCompanyIdAndUserIdsDTOFactory(
 
 class UserIdNameEmailAndProfilePicUrlDTOFactory(factory.Factory):
     class Meta:
-        model = UserIdNameEmailAndProfilePicUrlDTO
+        model = UserProfileDTO
 
     user_id = factory.Faker("uuid4")
     name = factory.Iterator(["username", "testuser", "dummyuser"])

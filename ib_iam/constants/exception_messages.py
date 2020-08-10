@@ -22,7 +22,7 @@ EMPTY_NAME_IS_INVALID = (
     "EMPTY_NAME_IS_INVALID"
 )
 
-NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS = (
+NAME_SHOULD_NOT_CONTAIN_SPECIAL_CHARACTERS_AND_NUMBERS = (
     "name should not contains special characters and numbers",
     "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
 )
@@ -31,7 +31,6 @@ NAME_MINIMUM_LENGTH_SHOULD_BE = (
     "Name minimum length should be {minimum_name_length} or more",
     "NAME_MINIMUM_LENGTH_SHOULD_BE"
 )
-
 
 INVALID_EMAIL = (
     "given email is invalid",
@@ -225,7 +224,6 @@ DUPLICATE_USER_IDS_FOR_UPDATE_COMPANY = (
     "Given users '%s' are duplicated, so update is not possible",
     "DUPLICATE_USER_IDS"
 )
-
 
 INVALID_USER_IDS_FOR_UPDATE_COMPANY = (
     "Given users '%s' invalid(not found), so update is not possible",

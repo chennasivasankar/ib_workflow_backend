@@ -4,7 +4,7 @@ from typing import Optional, List
 
 
 @dataclass
-class UserIdNameEmailAndProfilePicUrlDTO:
+class UserProfileDTO:
     user_id: str
     name: str
     email: str

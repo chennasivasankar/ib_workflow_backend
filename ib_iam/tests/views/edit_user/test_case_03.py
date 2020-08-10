@@ -42,8 +42,8 @@ class TestCase03EditUserAPITestCase(TestUtils):
         query_params = {}
         headers = {}
         from ib_iam.tests.common_fixtures.adapters.user_service \
-            import update_user_profile_adapter_mock
-        adapter_mock = update_user_profile_adapter_mock(mocker=mocker)
+            import prepare_update_user_profile_adapter_mock
+        adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
         self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
