@@ -4,7 +4,7 @@ REQUEST_BODY_JSON = """
 {
     "comment_content": "string",
     "mention_user_ids": [
-        "41ae2d9d-a1ba-46ee-a03e-9801972aca9a"
+        "187fe395-d38d-463a-b5b9-a11b3eeb828f"
     ],
     "multimedia": [
         {
