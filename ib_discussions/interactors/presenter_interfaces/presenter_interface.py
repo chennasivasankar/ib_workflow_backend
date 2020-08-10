@@ -49,7 +49,8 @@ class GetDiscussionsPresenterInterface(ABC):
             discussions_with_users_and_discussion_count_dto: DiscussionsWithUsersAndDiscussionCountDTO,
             discussion_id_with_editable_status_dtos: List[
                 DiscussionIdWithEditableStatusDTO],
-            discussion_id_with_comments_count_dtos: List[DiscussionIdWithCommentsCountDTO]
+            discussion_id_with_comments_count_dtos: List[
+                DiscussionIdWithCommentsCountDTO]
     ):
         pass
 
@@ -123,8 +124,13 @@ class CreateCommentPresenterInterface(ABC):
             comment_with_replies_count_and_editable_dto: CommentWithRepliesCountAndEditableDTO,
             user_profile_dtos: List[UserProfileDTO],
             comment_id_with_multimedia_dtos: List[CommentIdWithMultiMediaDTO],
-            comment_id_with_mention_user_id_dtos: List[CommentIdWithMentionUserIdDTO]
+            comment_id_with_mention_user_id_dtos: List[
+                CommentIdWithMentionUserIdDTO]
     ):
+        pass
+
+    @abstractmethod
+    def response_for_invalid_user_ids(self, err):
         pass
 
 
@@ -162,6 +168,10 @@ class CreateReplyPresenterInterface(ABC):
             comment_id_with_mention_user_id_dtos: List[
                 CommentIdWithMentionUserIdDTO]
     ):
+        pass
+
+    @abstractmethod
+    def response_for_invalid_user_ids(self, err):
         pass
 
 
