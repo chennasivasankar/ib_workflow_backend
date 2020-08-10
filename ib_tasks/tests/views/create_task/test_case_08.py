@@ -1,11 +1,12 @@
 """
-create task success test case
+create task failure test case
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...factories.models import StageActionFactory, TaskTemplateFactory
+from ...factories.models import StageActionFactory, TaskTemplateFactory, \
+    GoFFactory
 
 
 class TestCase01CreateTaskAPITestCase(TestUtils):
@@ -18,11 +19,13 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
     @pytest.fixture
     def reset_sequence(self):
         TaskTemplateFactory.reset_sequence()
+        GoFFactory.reset_sequence()
 
     @pytest.fixture(autouse=True)
     def setup(self, reset_sequence):
         TaskTemplateFactory()
         StageActionFactory()
+        GoFFactory.create_batch(size=2)
 
     @pytest.mark.django_db
     def test_case(self, snapshot):
@@ -31,9 +34,9 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
             "action_id": 1,
             "title": "task_title",
             "description": "task_description",
-            "start_date": "2099-12-31",
+            "start_date": "2018-12-31",
             "due_date": {
-                "date": "2099-12-31",
+                "date": "2019-12-31",
                 "time": "12:00:00"
             },
             "priority": "HIGH",
@@ -44,6 +47,16 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
                     "gof_fields": [
                         {
                             "field_id": "FIELD_ID-0",
+                            "field_response": "field_0_response"
+                        }
+                    ]
+                },
+                {
+                    "gof_id": "gof_2",
+                    "same_gof_order": 1,
+                    "gof_fields": [
+                        {
+                            "field_id": "FIELD_ID-1",
                             "field_response": "field_0_response"
                         }
                     ]
