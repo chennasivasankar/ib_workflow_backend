@@ -895,7 +895,7 @@
     "/discussion/v1/": {
       "post": {
         "operationId": "create_discussion",
-        "summary": "create the discussion ",
+        "summary": "Create The Discussion ",
         "description": "create the discussion with title and description",
         "security": [
           {
@@ -925,7 +925,7 @@
     "/get_discussions/v1/": {
       "post": {
         "operationId": "get_discussions",
-        "summary": "get discussions",
+        "summary": "Get Discussions",
         "description": "get all discussion for given entity id and entity type",
         "security": [
           {
@@ -961,7 +961,7 @@
     "/discussion/{discussion_id}/mark_as_clarified/v1/": {
       "post": {
         "operationId": "clarify_discussion",
-        "summary": "Mark discussion is clarified",
+        "summary": "Mark discussion Is Clarified",
         "description": "Mark discussion is clarified for creator of discussion",
         "security": [
           {
@@ -1050,8 +1050,9 @@
     },
     "/discussion/{discussion_id}/comment/v1/": {
       "post": {
-        "summary": "add comment to a discussion",
         "operationId": "add_comment",
+        "summary": "Add Comment To Discussion",
+        "description": "To given discussion id in path, create comment",
         "security": [
           {
             "oauth": [
@@ -1080,8 +1081,9 @@
         }
       },
       "get": {
-        "summary": "Comments for a discussion",
         "operationId": "get_comments_for_discussion",
+        "summary": "Comments For A Discussion",
+        "description": "For given discussion id, return comments with multimedia, mention users",
         "security": [
           {
             "oauth": [
@@ -1109,8 +1111,9 @@
     },
     "/comment/{comment_id}/reply/v1/": {
       "post": {
-        "summary": "Reply to comment",
         "operationId": "reply_to_comment",
+        "summary": "Reply To Comment",
+        "description": "To given comment id in path, create reply to comment",
         "security": [
           {
             "oauth": [
@@ -1139,8 +1142,9 @@
         }
       },
       "get": {
-        "summary": "Replies for comment",
         "operationId": "get_replies_for_comment",
+        "summary": "Replies For Comment",
+        "description": "To given comment id in path, return replies",
         "security": [
           {
             "oauth": [

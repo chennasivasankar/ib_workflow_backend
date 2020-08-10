@@ -160,7 +160,7 @@ class GetDiscussionInteractor:
     def _prepare_discussion_id_with_editable_status_dto(
             discussion_dto: DiscussionDTO, user_id):
         is_editable = False
-        id_discussion_owner_can_edit = str(discussion_dto.user_id) == str(user_id)
+        id_discussion_owner_can_edit = discussion_dto.user_id == user_id
         if id_discussion_owner_can_edit:
             is_editable = True
         from ib_iam.interactors.presenter_interfaces.dtos import \

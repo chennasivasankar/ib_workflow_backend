@@ -21,33 +21,30 @@ class TestCase01ReplyToCommentAPITestCase(TestUtils):
         return user
 
     @pytest.mark.django_db
-    def test_case(self, snapshot, mocker):
-        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
-        discussion_id = "71be920b-7b4c-49e7-8adb-41a0c18da848"
+    def test_create_reply_to_comment_return_response(
+            self, snapshot, prepare_reply_to_comment_mock_setup,
+            prepare_multimedia_setup, prepare_discussion_with_comment_setup
+    ):
+        comment_id = prepare_discussion_with_comment_setup
+        multimedia = prepare_multimedia_setup
+        mention_user_ids = prepare_reply_to_comment_mock_setup
+
+        body = {
+            'comment_content': "string",
+            'mention_user_ids': mention_user_ids,
+            'multimedia': multimedia
+        }
+        path_params = {"comment_id": comment_id}
+        query_params = {}
+        headers = {}
+        response = self.make_api_call(
+            body=body, path_params=path_params,
+            query_params=query_params, headers=headers, snapshot=snapshot
+        )
+
+    @pytest.fixture()
+    def prepare_multimedia_setup(self, mocker):
         comment_reply_id = "01be920b-7b4c-49e7-8adb-41a0c18da848"
-
-        from ib_discussions.tests.common_fixtures.adapters import \
-            prepare_validate_user_ids_mock
-        prepare_validate_user_ids_mock(mocker=mocker)
-
-        user_ids = [
-            "c8939223-79a0-4566-ba13-b4fbf7db6f93"
-        ]
-        mention_user_ids = [
-            "10be920b-7b4c-49e7-8adb-41a0c18da848",
-            "20be920b-7b4c-49e7-8adb-41a0c18da848"
-        ]
-        from ib_discussions.tests.common_fixtures.adapters import \
-            prepare_get_user_profile_dtos_mock
-        get_user_profile_dtos_mock = prepare_get_user_profile_dtos_mock(mocker)
-        from ib_discussions.tests.factories.adapter_dtos import \
-            UserProfileDTOFactory
-        user_profile_dtos = [
-            UserProfileDTOFactory(user_id=user_id)
-            for user_id in (user_ids + mention_user_ids)
-        ]
-        get_user_profile_dtos_mock.return_value = user_profile_dtos
-
         from ib_discussions.constants.enum import MultiMediaFormatEnum
         multimedia = [
             {
@@ -59,7 +56,6 @@ class TestCase01ReplyToCommentAPITestCase(TestUtils):
                 "url": "https://picsum.photos/200"
             }
         ]
-
         multimedia_ids = [
             "97be920b-7b4c-49e7-8adb-41a0c18da848",
             "92be920b-7b4c-49e7-8adb-41a0c18da848",
@@ -84,10 +80,15 @@ class TestCase01ReplyToCommentAPITestCase(TestUtils):
             prepare_get_multimedia_dtos_mock
         multimedia_mock = prepare_get_multimedia_dtos_mock(mocker)
         multimedia_mock.return_value = multimedia_dtos
+        return multimedia
 
+    @pytest.fixture()
+    def prepare_discussion_with_comment_setup(self, mocker):
+        user_id = "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        discussion_id = "71be920b-7b4c-49e7-8adb-41a0c18da848"
+        comment_reply_id = "01be920b-7b4c-49e7-8adb-41a0c18da848"
         from ib_discussions.tests.factories.models import DiscussionFactory
         DiscussionFactory(id=discussion_id)
-
         from ib_discussions.tests.factories.models import CommentFactory
         CommentFactory.created_at.reset()
         comment_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
@@ -96,7 +97,6 @@ class TestCase01ReplyToCommentAPITestCase(TestUtils):
             discussion_id=discussion_id,
             user_id=user_id
         )
-
         from ib_discussions.tests.common_fixtures.storages import \
             prepare_create_reply_to_comment_mock
         create_reply_to_comment_mock = \
@@ -108,16 +108,28 @@ class TestCase01ReplyToCommentAPITestCase(TestUtils):
             discussion_id=discussion_id,
             user_id=user_id
         )
+        return comment_id
 
-        body = {
-            'comment_content': "string",
-            'mention_user_ids': mention_user_ids,
-            'multimedia': multimedia
-        }
-        path_params = {"comment_id": comment_id}
-        query_params = {}
-        headers = {}
-        response = self.make_api_call(
-            body=body, path_params=path_params,
-            query_params=query_params, headers=headers, snapshot=snapshot
-        )
+    @pytest.fixture()
+    def prepare_reply_to_comment_mock_setup(self, mocker):
+        from ib_discussions.tests.common_fixtures.adapters import \
+            prepare_validate_user_ids_mock
+        prepare_validate_user_ids_mock(mocker=mocker)
+        user_ids = [
+            "c8939223-79a0-4566-ba13-b4fbf7db6f93"
+        ]
+        mention_user_ids = [
+            "10be920b-7b4c-49e7-8adb-41a0c18da848",
+            "20be920b-7b4c-49e7-8adb-41a0c18da848"
+        ]
+        from ib_discussions.tests.common_fixtures.adapters import \
+            prepare_get_user_profile_dtos_mock
+        get_user_profile_dtos_mock = prepare_get_user_profile_dtos_mock(mocker)
+        from ib_discussions.tests.factories.adapter_dtos import \
+            UserProfileDTOFactory
+        user_profile_dtos = [
+            UserProfileDTOFactory(user_id=user_id)
+            for user_id in (user_ids + mention_user_ids)
+        ]
+        get_user_profile_dtos_mock.return_value = user_profile_dtos
+        return mention_user_ids
