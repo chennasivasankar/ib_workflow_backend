@@ -33,10 +33,10 @@ class ValidationMixin:
 
     @staticmethod
     def _validate_is_name_satisfies_minimum_length_constant(value: str):
-        from ib_iam.constants.enums import LengthConstants
         # value = value.replace(" ", "")
+        from ib_iam.constants.config import MINIMUM_USER_NAME_LENGTH
         is_string_not_satisfies_minimum_length = \
-            len(value) < LengthConstants.MIN_USER_NAME_LENGTH.value
+            len(value) < MINIMUM_USER_NAME_LENGTH
         if is_string_not_satisfies_minimum_length:
             from ib_iam.exceptions.custom_exceptions import \
                 NameMinimumLengthShouldBe

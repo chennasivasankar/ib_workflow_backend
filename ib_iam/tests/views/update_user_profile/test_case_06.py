@@ -1,5 +1,5 @@
 """
-Given valid details, it updates user profile
+raises invalid email exception as given email is invalid
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
@@ -7,7 +7,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01UpdateUserProfileAPITestCase(TestUtils):
+class TestCase06UpdateUserProfileAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -16,10 +16,14 @@ class TestCase01UpdateUserProfileAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_case(self, mocker, setup, snapshot):
-        user_id = setup
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import prepare_update_user_profile_adapter_mock
-        prepare_update_user_profile_adapter_mock(mocker=mocker)
+        update_user_profile_mock = prepare_update_user_profile_adapter_mock(
+            mocker=mocker)
+        from ib_iam.exceptions.custom_exceptions import\
+            UserAccountAlreadyExistWithThisEmail
+        update_user_profile_mock.side_effect = \
+            UserAccountAlreadyExistWithThisEmail
         body = {'name': 'username',
                 'email': 'jaswanthmamidipudi@gmail.com',
                 'profile_pic_url': 'https://sample.com'}
@@ -31,9 +35,6 @@ class TestCase01UpdateUserProfileAPITestCase(TestUtils):
                                       query_params=query_params,
                                       headers=headers,
                                       snapshot=snapshot)
-        from ib_iam.models import UserDetails
-        user_object = UserDetails.objects.get(user_id=user_id)
-        snapshot.assert_match(user_object.name, "updated_user_name")
 
     @pytest.fixture
     def setup(self, api_user):

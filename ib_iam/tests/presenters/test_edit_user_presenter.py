@@ -28,9 +28,9 @@ class TestEditUserPresenter:
         presenter = EditUserPresenterImplementation()
         from ib_iam.constants.exception_messages \
             import NAME_MINIMUM_LENGTH_SHOULD_BE
-        from ib_iam.constants.enums import LengthConstants
+        from ib_iam.constants.config import MINIMUM_USER_NAME_LENGTH
         expected_response = NAME_MINIMUM_LENGTH_SHOULD_BE[0].format(
-            minimum_name_length=LengthConstants.MIN_USER_NAME_LENGTH.value)
+            minimum_name_length=MINIMUM_USER_NAME_LENGTH)
         response_status_code = NAME_MINIMUM_LENGTH_SHOULD_BE[1]
 
         # Act
@@ -47,11 +47,11 @@ class TestEditUserPresenter:
         # Arrange
         presenter = EditUserPresenterImplementation()
         from ib_iam.constants.exception_messages \
-            import NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS
+            import NAME_SHOULD_NOT_CONTAIN_SPECIAL_CHARACTERS_AND_NUMBERS
         expected_response = \
-            NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS[0]
+            NAME_SHOULD_NOT_CONTAIN_SPECIAL_CHARACTERS_AND_NUMBERS[0]
         response_status_code = \
-            NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS[1]
+            NAME_SHOULD_NOT_CONTAIN_SPECIAL_CHARACTERS_AND_NUMBERS[1]
 
         # Act
         response_object = presenter. \

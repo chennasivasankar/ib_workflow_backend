@@ -24,7 +24,7 @@ def api_wrapper(*args, **kwargs):
     interactor = UpdateUserProfileInteractor(user_storage=user_storage)
 
     response_data = interactor.update_user_profile_wrapper(
-        user_id_name_email_and_profile_pic_url_dto=
+        user_profile_dto=
         user_id_name_email_and_profile_pic_url_dto,
         presenter=presenter)
     return response_data
@@ -33,9 +33,9 @@ def api_wrapper(*args, **kwargs):
 def _prepare_user_id_name_email_and_profile_pic_url_dto(request_data,
                                                         user_object):
     from ib_iam.interactors.storage_interfaces.dtos import \
-        UserIdNameEmailAndProfilePicUrlDTO
+        UserProfileDTO
     user_id_name_email_and_profile_pic_url_dto = \
-        UserIdNameEmailAndProfilePicUrlDTO(
+        UserProfileDTO(
             user_id=user_object.user_id,
             name=request_data["name"],
             email=request_data["email"],

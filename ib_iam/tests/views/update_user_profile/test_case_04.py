@@ -1,5 +1,6 @@
 """
-Given valid details, it updates user profile
+raises name should not contain special characters and numbers exception as
+given name contains numbers
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
@@ -7,7 +8,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01UpdateUserProfileAPITestCase(TestUtils):
+class TestCase04UpdateUserProfileAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -15,12 +16,8 @@ class TestCase01UpdateUserProfileAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.mark.django_db
-    def test_case(self, mocker, setup, snapshot):
-        user_id = setup
-        from ib_iam.tests.common_fixtures.adapters.user_service \
-            import prepare_update_user_profile_adapter_mock
-        prepare_update_user_profile_adapter_mock(mocker=mocker)
-        body = {'name': 'username',
+    def test_case(self, setup, snapshot):
+        body = {'name': 'user123',
                 'email': 'jaswanthmamidipudi@gmail.com',
                 'profile_pic_url': 'https://sample.com'}
         path_params = {}
@@ -31,9 +28,6 @@ class TestCase01UpdateUserProfileAPITestCase(TestUtils):
                                       query_params=query_params,
                                       headers=headers,
                                       snapshot=snapshot)
-        from ib_iam.models import UserDetails
-        user_object = UserDetails.objects.get(user_id=user_id)
-        snapshot.assert_match(user_object.name, "updated_user_name")
 
     @pytest.fixture
     def setup(self, api_user):

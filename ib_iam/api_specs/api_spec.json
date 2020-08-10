@@ -1993,7 +1993,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Company details updated Successfully"
+            "description": "User Profile Updated Successfully"
           },
           "400": {
             "$ref": "#/responses/BadRequestForUpdateUserProfileResponse"
