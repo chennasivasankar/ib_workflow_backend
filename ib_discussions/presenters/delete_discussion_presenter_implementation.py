@@ -38,4 +38,4 @@ class DeleteDiscussionPresenterImplementation(
         )
 
     def prepare_success_response_for_delete_discussion(self):
-        return self.prepare_201_created_response(response_dict={})
+        return self.prepare_200_success_response(response_dict={})
