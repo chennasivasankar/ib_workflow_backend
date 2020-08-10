@@ -1,5 +1,5 @@
 """
-test with invalid gof ids raises exception
+test with start date is ahead of due date raises exception
 """
 
 import pytest
@@ -17,16 +17,12 @@ class TestCase03UpdateTaskAPITestCase(TestUtils):
 
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
-        from ib_tasks.tests.factories.models import TaskTemplateFactory, \
-            TaskFactory
-
-        TaskTemplateFactory.reset_sequence()
-
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids
         get_user_role_ids(mocker)
 
         template_id = "template_1"
+        from ib_tasks.tests.factories.models import TaskFactory
         TaskFactory.create(template_id=template_id)
 
     @pytest.mark.django_db
@@ -37,7 +33,7 @@ class TestCase03UpdateTaskAPITestCase(TestUtils):
             "description": "updated_description",
             "start_date": "2099-12-31",
             "due_date": {
-                "date": "2099-12-31",
+                "date": "2099-10-31",
                 "time": "12:00:00"
             },
             "priority": "HIGH",

@@ -14,3 +14,11 @@ snapshots['TestCase06UpdateTaskAPITestCase.test_case body'] = {
     'res_status': 'INVALID_FIELDS_OF_TASK_TEMPLATE',
     'response': "invalid fields ['FIELD_ID-2']  given to the gof gof_1"
 }
+
+snapshots['TestCase07UpdateTaskAPITestCase.test_case status_code'] = '400'
+
+snapshots['TestCase07UpdateTaskAPITestCase.test_case body'] = {
+    'http_status_code': 400,
+    'res_status': 'INVALID_FIELDS_OF_TASK_TEMPLATE',
+    'response': "invalid fields ['FIELD_ID-2']  given to the gof gof_1"
+}

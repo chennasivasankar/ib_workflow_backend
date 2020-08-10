@@ -1,5 +1,5 @@
 """
-test with invalid task id raises exception
+test with invalid gof ids raises exception
 """
 
 import pytest
@@ -8,7 +8,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase02UpdateTaskAPITestCase(TestUtils):
+class TestCase013UpdateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -17,9 +17,17 @@ class TestCase02UpdateTaskAPITestCase(TestUtils):
 
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
+        from ib_tasks.tests.factories.models import TaskTemplateFactory, \
+            TaskFactory
+
+        TaskTemplateFactory.reset_sequence()
+
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids
         get_user_role_ids(mocker)
+
+        template_id = "template_1"
+        TaskFactory.create(template_id=template_id)
 
     @pytest.mark.django_db
     def test_case(self, snapshot):
