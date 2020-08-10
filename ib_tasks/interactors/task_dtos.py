@@ -115,3 +115,11 @@ class CreateTaskLogDTO:
     task_id: int
     user_id: str
     action_id: int
+
+
+@dataclass
+class TaskDueParametersDTO:
+    task_id: int
+    user_id: str
+    due_date_time: datetime
+    reason: str

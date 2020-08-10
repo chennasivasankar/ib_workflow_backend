@@ -4,8 +4,8 @@ import pytest
 
 from ib_tasks.interactors.get_task_due_missing_reasons import \
     GetTaskDueMissingReasonsInteractor
-from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface import \
-    GetTaskPresenterInterface
+from ib_tasks.interactors.presenter_interfaces.task_due_missing_details_presenter import \
+    TaskDueDetailsPresenterInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import StorageInterface
 from ib_tasks.tests.common_fixtures.adapters.auth_service import get_user_dtos_given_user_ids
 from ib_tasks.tests.factories.storage_dtos import TaskDueMissingDTOFactory
@@ -24,7 +24,7 @@ class TestGetTaskReasons:
         task_id = 1
         user_id = "user_id_1"
         storage = create_autospec(StorageInterface)
-        presenter = create_autospec(GetTaskPresenterInterface)
+        presenter = create_autospec(TaskDueDetailsPresenterInterface)
         interactor = GetTaskDueMissingReasonsInteractor(
             task_storage=storage
         )
@@ -44,7 +44,7 @@ class TestGetTaskReasons:
         task_id = 1
         user_id = "user_id_1"
         storage = create_autospec(StorageInterface)
-        presenter = create_autospec(GetTaskPresenterInterface)
+        presenter = create_autospec(TaskDueDetailsPresenterInterface)
         interactor = GetTaskDueMissingReasonsInteractor(
             task_storage=storage
         )
@@ -67,7 +67,7 @@ class TestGetTaskReasons:
         user_id = "user_id_1"
         expected_response = Mock()
         storage = create_autospec(StorageInterface)
-        presenter = create_autospec(GetTaskPresenterInterface)
+        presenter = create_autospec(TaskDueDetailsPresenterInterface)
         interactor = GetTaskDueMissingReasonsInteractor(
             task_storage=storage
         )

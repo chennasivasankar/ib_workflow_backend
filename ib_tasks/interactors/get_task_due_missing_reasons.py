@@ -1,11 +1,10 @@
 from typing import List
 
-from ib_tasks.adapters.dtos import UserDetailsDTO
 from ib_tasks.adapters.service_adapter import get_service_adapter
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException, \
     UserIsNotAssigneeToTask
-from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface import \
-    GetTaskPresenterInterface
+from ib_tasks.interactors.presenter_interfaces.task_due_missing_details_presenter import \
+    TaskDueDetailsPresenterInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO, TaskDueDetailsDTO
 
@@ -14,9 +13,10 @@ class GetTaskDueMissingReasonsInteractor:
     def __init__(self, task_storage: StorageInterface):
         self.task_storage = task_storage
 
-    def get_task_due_missing_reasons_wrapper(self,
-                                             presenter: GetTaskPresenterInterface,
-                                             task_id: int, user_id: str):
+    def get_task_due_missing_reasons_wrapper(
+            self,
+            presenter: TaskDueDetailsPresenterInterface,
+            task_id: int, user_id: str):
         try:
             task_dtos = self.get_task_due_missing_reasons(task_id, user_id)
         except InvalidTaskIdException as err:
@@ -71,4 +71,3 @@ class GetTaskDueMissingReasonsInteractor:
                 )
             )
         return tasks_dtos
-

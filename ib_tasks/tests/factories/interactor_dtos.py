@@ -1,4 +1,4 @@
-
+from datetime import timedelta, datetime
 from typing import List
 from ib_tasks.interactors.get_tasks_to_relevant_search_query import SearchQueryDTO
 
@@ -18,8 +18,9 @@ from ib_tasks.interactors.stages_dtos import UserStagesWithPaginationDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
-    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, CreateTaskLogDTO
+    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, CreateTaskLogDTO, TaskDueParametersDTO
 from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory
 
 
@@ -245,11 +246,22 @@ class StageAssigneeDetailsWithOneAssigneeDTOFactory(factory.Factory):
     def assignee_details_dto(self):
         return AssigneeDetailsDTOFactory()
 
+
 class SearchQueryDTOFactory(factory.Factory):
     class Meta:
         model = SearchQueryDTO
 
     user_id = factory.sequence(lambda n: n)
-    offset = factory.sequence(lambda n: n-1)
+    offset = factory.sequence(lambda n: n - 1)
     limit = factory.sequence(lambda n: n)
     search_query = factory.sequence(lambda n: "value_{}" % n)
+
+
+class TaskDueParametersDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskDueParametersDTO
+
+    user_id = factory.Sequence(lambda n: "user_id_%d" % n)
+    task_id = factory.sequence(lambda n: n)
+    due_date_time = datetime.now() + timedelta(days=2)
+    reason = "reason"
