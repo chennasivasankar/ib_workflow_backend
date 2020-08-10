@@ -1,5 +1,5 @@
 """
-test when complete transition details exists
+test when user has only write permissions to fields returns is field writable True
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
@@ -7,7 +7,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01GetTransitionTemplateAPITestCase(TestUtils):
+class TestCase08GetTransitionTemplateAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -53,8 +53,7 @@ class TestCase01GetTransitionTemplateAPITestCase(TestUtils):
         from ib_tasks.constants.enum import PermissionTypes
         FieldRoleFactory.create_batch(
             size=6, field=factory.Iterator(field_objs),
-            permission_type=factory.Iterator(
-                [PermissionTypes.READ.value, PermissionTypes.WRITE.value])
+            permission_type=factory.Iterator([PermissionTypes.WRITE.value])
         )
 
     @pytest.mark.django_db

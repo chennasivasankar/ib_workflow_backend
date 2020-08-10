@@ -18,8 +18,7 @@ class TestCase04GetTransitionTemplateAPITestCase(TestUtils):
     def setup(self, mocker):
         import factory
         from ib_tasks.tests.factories.models import TaskTemplateFactory, \
-            GoFFactory, GoFRoleFactory, FieldFactory, FieldRoleFactory, \
-            GoFToTaskTemplateFactory
+            GoFFactory, GoFRoleFactory, GoFToTaskTemplateFactory
 
         TaskTemplateFactory.reset_sequence()
         GoFRoleFactory.reset_sequence()

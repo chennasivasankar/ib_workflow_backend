@@ -7,9 +7,9 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01GetTransitionTemplateAPITestCase.test_case status_code'] = '200'
+snapshots['TestCase08GetTransitionTemplateAPITestCase.test_case status_code'] = '200'
 
-snapshots['TestCase01GetTransitionTemplateAPITestCase.test_case body'] = {
+snapshots['TestCase08GetTransitionTemplateAPITestCase.test_case body'] = {
     'group_of_fields': [
         {
             'enable_add_another': True,
@@ -23,7 +23,7 @@ snapshots['TestCase01GetTransitionTemplateAPITestCase.test_case body'] = {
                     'field_values': None,
                     'help_text': None,
                     'is_field_required': True,
-                    'is_field_writable': False,
+                    'is_field_writable': True,
                     'placeholder_text': None,
                     'tooltip': None,
                     'validation_regex': None
@@ -37,7 +37,7 @@ snapshots['TestCase01GetTransitionTemplateAPITestCase.test_case body'] = {
                     'field_values': None,
                     'help_text': None,
                     'is_field_required': True,
-                    'is_field_writable': False,
+                    'is_field_writable': True,
                     'placeholder_text': None,
                     'tooltip': None,
                     'validation_regex': None
