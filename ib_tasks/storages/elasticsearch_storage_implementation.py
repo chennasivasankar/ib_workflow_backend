@@ -65,10 +65,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
                                       timeout=20)
         query = None
         for counter, item in enumerate(filter_dtos):
-            current_queue = Q('term', template_id__keyword=item.template_id) \
-                            & Q('term',
-                                fields__field_id__keyword=item.field_id) \
-                            & Q('term', fields__value__keyword=item.value)
+            current_queue = self._prepare_q_object_for_the_eq_operator(item)
             if counter == 0:
                 query = current_queue
             else:
@@ -84,6 +81,13 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
                    task_object.task_id
                    for task_object in task_objects[offset: offset + limit]
                ], total_tasks
+
+    @staticmethod
+    def _prepare_q_object_for_the_eq_operator(item: ApplyFilterDTO):
+        current_queue = Q('term', template_id__keyword=item.template_id) \
+                        & Q('term', fields__field_id__keyword=item.field_id) \
+                        & Q('term', fields__value__keyword=item.value)
+        return current_queue
 
     @staticmethod
     def _get_field_objects(field_dtos: List[ElasticFieldDTO]) -> List[Field]:
