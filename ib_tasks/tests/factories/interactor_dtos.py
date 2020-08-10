@@ -22,6 +22,7 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, CreateTaskLogDTO, TaskDueParametersDTO
 from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory
+from ib_tasks.tests.factories.storage_dtos import UserDetailsDTOFactory
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
@@ -30,6 +31,17 @@ class GetTaskDetailsDTOFactory(factory.Factory):
 
     task_id = factory.Sequence(lambda n: n + 1)
     stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n + 1))
+
+
+class GetTaskDueDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskDueDetailsDTO
+
+    user = factory.SubFactory(UserDetailsDTOFactory)
+    task_id = factory.Sequence(lambda n: 'task_id_%d' % (n + 1))
+    due_date_time = datetime.now()
+    due_missed_count = factory.Sequence(lambda n: n)
+    reason = factory.Sequence(lambda n: "reason_id_%d" % n)
 
 
 class StageActionDTOFactory(factory.Factory):

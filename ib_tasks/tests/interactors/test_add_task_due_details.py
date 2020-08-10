@@ -19,6 +19,7 @@ class TestAddTaskDueDetails:
 
     def test_given_invalid_task_id(self, due_details):
         # Arrange
+        task_id = due_details.task_id
         storage = create_autospec(TaskStorageInterface)
         presenter = create_autospec(TaskDueDetailsPresenterInterface)
         interactor = AddTaskDueDetailsInteractor(storage=storage)
@@ -29,3 +30,5 @@ class TestAddTaskDueDetails:
                                                            due_details=due_details)
 
         # Assert
+        storage.validate_task_id.assert_called_once_with(task_id)
+        presenter.response_for_invalid_task_id.assert_called_once()

@@ -6,7 +6,8 @@ from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException, \
 from ib_tasks.interactors.presenter_interfaces.task_due_missing_details_presenter import \
     TaskDueDetailsPresenterInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import StorageInterface
-from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO, TaskDueDetailsDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO, \
+    TaskDueDetailsDTO
 
 
 class GetTaskDueMissingReasonsInteractor:
@@ -16,11 +17,11 @@ class GetTaskDueMissingReasonsInteractor:
     def get_task_due_missing_reasons_wrapper(
             self,
             presenter: TaskDueDetailsPresenterInterface,
-            task_id: int, user_id: str):
+            task_id: int, user_id: str) -> List[TaskDueDetailsDTO]:
         try:
             task_dtos = self.get_task_due_missing_reasons(task_id, user_id)
         except InvalidTaskIdException as err:
-            return presenter.response_for_invalid_task_id()
+            return presenter.response_for_invalid_task_id(err)
         except UserIsNotAssigneeToTask as err:
             return presenter.response_for_user_is_not_assignee_for_task()
         return presenter.get_response_for_get_task_due_details(task_dtos)
@@ -46,7 +47,7 @@ class GetTaskDueMissingReasonsInteractor:
             raise UserIsNotAssigneeToTask
 
     def _get_task_reasons(self, task_id: int):
-        task_details = self.task_storage.get_task_due_missing_reasons_details(task_id)
+        task_details = self.task_storage.get_task_due_details(task_id)
         user_ids = [task.user_id for task in task_details]
         user_service = get_service_adapter().auth_service
         user_dtos = user_service.get_user_details(user_ids)

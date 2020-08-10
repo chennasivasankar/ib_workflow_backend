@@ -73,7 +73,7 @@ class TestGetTaskReasons:
         )
         storage.validate_task_id.return_value = True
         storage.validate_if_task_is_assigned_to_user.return_value = True
-        storage.get_task_due_missing_reasons_details.return_value = \
+        storage.get_task_due_details.return_value = \
             get_due_missing_details
         presenter.get_response_for_get_task_due_details.return_value = expected_response
         user_service = get_user_dtos_given_user_ids(mocker)
@@ -85,7 +85,7 @@ class TestGetTaskReasons:
         )
 
         # Assert
-        storage.get_task_due_missing_reasons_details.assert_called_once_with(
+        storage.get_task_due_details.assert_called_once_with(
             task_id)
         presenter.get_response_for_get_task_due_details.assert_called_once()
 

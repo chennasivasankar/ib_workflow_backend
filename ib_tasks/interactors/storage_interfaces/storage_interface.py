@@ -133,6 +133,6 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_task_due_missing_reasons_details(self, task_id: int) -> \
+    def get_task_due_details(self, task_id: int) -> \
             List[TaskDueMissingDTO]:
         pass

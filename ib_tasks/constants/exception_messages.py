@@ -246,3 +246,6 @@ INVALID_CUSTOM_LOGIC = ("invalid custom logic", "INVALID_CUSTOM_LOGIC")
 
 PATH_NOT_FOUND = ("path not found", "PATH_NOT_FOUND")
 METHOD_NOT_FOUND = ("method not found", "METHOD_NOT_FOUND")
+
+
+USER_IS_NOT_ASSIGNED_TO_TASK = ("user is not assigned to the task", "USER_IS_NOT_ASSIGNED_TO_TASK")

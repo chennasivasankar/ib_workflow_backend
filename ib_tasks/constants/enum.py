@@ -71,3 +71,35 @@ class ValidationType(enum.Enum):
 
 class ActionTypes(enum.Enum):
     NO_VALIDATIONS = "NO_VALIDATIONS"
+
+
+class DelayReasons(enum.Enum):
+    WRONG_ESTIMATION_OF_TIME = "wrong estimation of time"
+    EXECUTION_LEVEL_PLAN_FAIL = "Execution level plan fail"
+    NO_CLARITY_IN_OBJECTIVE = "No clarity in objective"
+    DOESNOT_FOLLOW_INSTRUCTIONS = "Doesn't follow Instructions"
+    OTHERS = "others"
+
+
+REASONS = [
+    {
+        "id": 1,
+        "reason": "wrong estimation of time"
+    },
+    {
+        "id": 2,
+        "reason": "Execution level plan fail"
+    },
+    {
+        "id": 3,
+        "reason": "No clarity in objective"
+    },
+    {
+        "id": 4,
+        "reason": "Doesn't follow Instructions"
+    },
+    {
+        "id": -1,
+        "reason": ""
+    }
+]

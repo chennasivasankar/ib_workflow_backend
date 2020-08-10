@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from ib_tasks.constants.enum import PermissionTypes
+from ib_tasks.constants.enum import PermissionTypes, DelayReasons, REASONS
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.stages_dtos import StageActionDTO, StageDTO, \
     TemplateStageDTO, TaskIdWithStageAssigneeDTO
@@ -27,6 +27,7 @@ from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
     ActionPermittedRoles, StageAction, TaskStage, FieldRole, GlobalConstant, \
     StagePermittedRoles, TaskTemplateInitialStage, Stage
+from ib_tasks.models.task_due_details import UserTaskDelayReason
 
 
 class StagesStorageImplementation(StageStorageInterface):
@@ -586,8 +587,29 @@ class StorageImplementation(StorageInterface):
 
     def validate_if_task_is_assigned_to_user(self,
                                              task_id: int, user_id: str) -> bool:
-        pass
+        is_assigned = TaskStage.objects.filter(
+            task_id=task_id, assignee_id=user_id).exists()
+        return is_assigned
 
-    def get_task_due_missing_reasons_details(self, task_id: int) -> \
+    def get_task_due_details(self, task_id: int) -> \
             List[TaskDueMissingDTO]:
-        pass
+        task_due_objs = UserTaskDelayReason.objects.filter(task_id=task_id)
+
+        task_due_details_dtos = self._convert_task_due_details_objs_to_dtos(
+            task_due_objs)
+        return task_due_details_dtos
+
+    @staticmethod
+    def _convert_task_due_details_objs_to_dtos(task_due_objs):
+        task_due_details_dtos = []
+        for task in task_due_objs:
+            task_due_details_dtos.append(
+                TaskDueMissingDTO(
+                    task_id=task.task_id,
+                    due_date_time=task.due_datetime,
+                    due_missed_count=task.count,
+                    reason=task.reason,
+                    user_id=task.user_id
+                )
+            )
+        return task_due_details_dtos

@@ -4,13 +4,13 @@ from datetime import datetime, timedelta
 import factory
 
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
-    Priority, ActionTypes
+    Priority, ActionTypes, DelayReasons, REASONS
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     Task, TaskGoF,
     TaskGoFField, TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage,
     Filter,
-    FilterCondition, StagePermittedRoles)
+    FilterCondition, StagePermittedRoles, UserTaskDelayReason)
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
@@ -83,6 +83,18 @@ class TaskTemplateFactory(factory.django.DjangoModelFactory):
 
 class TaskTemplateWithTransitionFactory(TaskTemplateFactory):
     is_transition_template = factory.Iterator([True, False])
+
+
+class TaskDueDetailsFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = UserTaskDelayReason
+
+    task = factory.SubFactory(TaskFactory)
+    due_datetime = datetime.now() + timedelta(days=2)
+    count = factory.Sequence(lambda n: (n + 1))
+    user_id = factory.Sequence(lambda n: "user_id_%d" % n)
+    reason_id = REASONS[0]['id']
+    reason = REASONS[0]['reason']
 
 
 class StageActionFactory(factory.django.DjangoModelFactory):

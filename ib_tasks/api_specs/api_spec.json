@@ -1966,12 +1966,15 @@
           "type": "integer",
           "format": "int64"
         },
+        "reason": {
+          "type": "string"
+        },
             "user": {
               "$ref": "#/definitions/UserDetails"
             }
       },
       "required": [
-        "task_id", "user", "due_date_time", "due_missed_count"
+        "task_id", "user", "due_date_time", "due_missed_count", "reason"
       ]
         }
       }
