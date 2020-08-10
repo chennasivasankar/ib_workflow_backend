@@ -1001,8 +1001,8 @@
         }
       }
     },
-    "/discussion/{discussion_id}/update/v1/": {
-      "post": {
+    "/discussion/{discussion_id}/v1/": {
+      "put": {
         "operationId": "update_discussion",
         "summary": "Update Discussion",
         "description": "update Discussion of discussion id",
@@ -1022,7 +1022,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Successfully Edit the Discussion"
           },
           "400": {
@@ -1032,9 +1032,7 @@
             "$ref": "#/responses/UpdateDiscussionNotFoundResponse"
           }
         }
-      }
-    },
-    "/discussion/{discussion_id}/v1/": {
+      },
       "delete": {
         "summary": "delete discussion of discussion id",
         "operationId": "delete_discussion",
@@ -1051,7 +1049,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Successfully deleted the discussion"
           },
           "400": {

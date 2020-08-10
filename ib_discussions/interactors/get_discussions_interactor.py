@@ -104,18 +104,10 @@ class GetDiscussionInteractor:
             discussion_id_with_comments_count_dtos
 
     def _validate_limit_offset_entity_id_and_entity_type(
-            self, entity_id_and_entity_type_dto, offset_and_limit_dto
+            self, offset_and_limit_dto
     ):
         self._validate_offset(offset_and_limit_dto.offset)
         self._validate_limit(offset_and_limit_dto.limit)
-        # TODO: FIX IT
-        # self.storage.validate_entity_id(
-        #     entity_id=entity_id_and_entity_type_dto.entity_id
-        # )
-        # self.storage.validate_entity_type_for_entity_id(
-        #     entity_id=entity_id_and_entity_type_dto.entity_id,
-        #     entity_type=entity_id_and_entity_type_dto.entity_type
-        # )
 
     @staticmethod
     def _validate_offset(offset):
