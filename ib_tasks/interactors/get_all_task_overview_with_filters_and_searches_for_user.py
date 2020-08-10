@@ -4,7 +4,6 @@ Author: Pavankumar Pamuru
 
 """
 
-from dataclasses import dataclass
 from typing import List
 
 from ib_tasks.constants.enum import ViewType
@@ -13,10 +12,12 @@ from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskIdWithStageDetailsDTO, GetTaskStageCompleteDetailsDTO, TaskWithCompleteStageDetailsDTO
+    TaskIdWithStageDetailsDTO, GetTaskStageCompleteDetailsDTO, \
+    TaskWithCompleteStageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import TaskStageStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
+    TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO

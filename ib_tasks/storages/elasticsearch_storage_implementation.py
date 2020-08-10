@@ -8,13 +8,13 @@ from typing import Tuple
 from elasticsearch_dsl import Q, Search
 
 from ib_tasks.documents.elastic_task import *
-
-from ib_tasks.documents.elastic_task import ElasticTaskDTO, ElasticFieldDTO, \
-    Field, QueryTasksDTO
-from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
-    ApplyFilterDTO, ElasticSearchStorageInterface
+from ib_tasks.documents.elastic_task import ElasticFieldDTO, \
+    Field
 from ib_tasks.documents.elastic_task import ElasticTaskDTO, Task, QueryTasksDTO
-from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import ElasticSearchStorageInterface
+from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
+    ApplyFilterDTO
+from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
+    ElasticSearchStorageInterface
 
 
 class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
