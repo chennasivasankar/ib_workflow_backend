@@ -7,7 +7,7 @@ from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.stage_custom_exceptions import \
     TransitionTemplateIsNotRelatedToGivenStageAction, InvalidStageId
 from ib_tasks.interactors.stages_dtos import StagesActionDTO, \
-    TemplateStageDTO
+    TemplateStageDTO, StageActionDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
@@ -51,7 +51,7 @@ class ActionsStorageImplementation(ActionStorageInterface):
 
     def get_action_type_for_given_action_id(self,
                                             action_id: int) -> ActionTypes:
-        action_type = StageAction.objecs.get(id=action_id).action_type
+        action_type = StageAction.objects.get(id=action_id).action_type
         return action_type
 
     def get_stage_action_names(
@@ -79,7 +79,7 @@ class ActionsStorageImplementation(ActionStorageInterface):
             ))
         return list_of_dtos
 
-    def create_stage_actions(self, stage_actions: List[StagesActionDTO]):
+    def create_stage_actions(self, stage_actions: List[StageActionDTO]):
         names_list = [stage.action_name for stage in stage_actions]
         stage_ids = [stage.stage_id for stage in stage_actions]
         stages = Stage.objects.filter(stage_id__in=stage_ids).values(
@@ -118,12 +118,14 @@ class ActionsStorageImplementation(ActionStorageInterface):
                 name=stage_action.action_name,
                 logic=stage_action.logic,
                 py_function_import_path=stage_action.function_path,
+                action_type=stage_action.action_type,
+                transition_template_id=stage_action.transition_template_id,
                 button_text=stage_action.button_text,
                 button_color=stage_action.button_color
             ))
         return list_of_actions
 
-    def update_stage_actions(self, stage_actions: List[StagesActionDTO]):
+    def update_stage_actions(self, stage_actions: List[StageActionDTO]):
         # TODO: Optimize db hits
         for stage_action in stage_actions:
             StageAction.objects.filter(stage__stage_id=stage_action.stage_id,
@@ -132,6 +134,8 @@ class ActionsStorageImplementation(ActionStorageInterface):
                 logic=stage_action.logic,
                 py_function_import_path=stage_action.function_path,
                 button_text=stage_action.button_text,
+                action_type=stage_action.action_type,
+                transition_template_id=stage_action.transition_template_id,
                 button_color=stage_action.button_color
             )
         action_objs = []
@@ -241,3 +245,7 @@ class ActionsStorageImplementation(ActionStorageInterface):
                 )
             )
         return action_dtos
+
+
+    def validate_action(self, action_id: int) -> bool:
+        return StageAction.objects.filter(id=action_id).exists()

@@ -1,3 +1,4 @@
+from functools import reduce
 def create_transistion_checklist(*args, **kwargs):  # pylint: disable=invalid-name
     """
     Note: replace below mock implementation with your actual implementation

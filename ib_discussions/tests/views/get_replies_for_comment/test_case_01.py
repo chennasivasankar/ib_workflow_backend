@@ -1,5 +1,5 @@
 """
-# TODO: Update test case description
+get replies for comments
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
@@ -89,24 +89,57 @@ class TestCase01GetRepliesForCommentAPITestCase(TestUtils):
         ]
         from ib_discussions.tests.factories.models import ReplyToCommentFactory
         ReplyToCommentFactory.created_at.reset()
-        ReplyToCommentFactory(
-            id=replies_list[0]["id"],
-            parent_comment=comment_objects[0],
-            discussion_id=replies_list[0]["discussion_id"],
-            user_id=replies_list[0]["user_id"]
-        )
-        ReplyToCommentFactory(
-            id=replies_list[1]["id"],
-            parent_comment=comment_objects[0],
-            discussion_id=replies_list[1]["discussion_id"],
-            user_id=replies_list[1]["user_id"]
-        )
-        ReplyToCommentFactory(
-            id=replies_list[2]["id"],
-            parent_comment=comment_objects[1],
-            discussion_id=replies_list[2]["discussion_id"],
-            user_id=replies_list[2]["user_id"]
-        )
+        reply_to_comment_objects = [
+            ReplyToCommentFactory(
+                id=replies_list[0]["id"],
+                parent_comment=comment_objects[0],
+                discussion_id=replies_list[0]["discussion_id"],
+                user_id=replies_list[0]["user_id"]
+            ),
+            ReplyToCommentFactory(
+                id=replies_list[1]["id"],
+                parent_comment=comment_objects[0],
+                discussion_id=replies_list[1]["discussion_id"],
+                user_id=replies_list[1]["user_id"]
+            ),
+            ReplyToCommentFactory(
+                id=replies_list[2]["id"],
+                parent_comment=comment_objects[1],
+                discussion_id=replies_list[2]["discussion_id"],
+                user_id=replies_list[2]["user_id"]
+            )
+        ]
+
+        multimedia_ids = [
+            "97be920b-7b4c-49e7-8adb-41a0c18da848",
+            "92be920b-7b4c-49e7-8adb-41a0c18da848",
+            "93be920b-7b4c-49e7-8adb-41a0c18da848"
+        ]
+
+        from ib_discussions.tests.factories.models import MultiMediaFactory
+        MultiMediaFactory.format_type.reset()
+        multimedia_objects = [
+            MultiMediaFactory(id=multimedia_id)
+            for multimedia_id in multimedia_ids
+        ]
+
+        from ib_discussions.tests.factories.models import \
+            CommentWithMultiMediaFactory
+        CommentWithMultiMediaFactory(comment=reply_to_comment_objects[0],
+                                     multimedia=multimedia_objects[0])
+        CommentWithMultiMediaFactory(comment=reply_to_comment_objects[0],
+                                     multimedia=multimedia_objects[1])
+        CommentWithMultiMediaFactory(comment=reply_to_comment_objects[1],
+                                     multimedia=multimedia_objects[1])
+
+        from ib_discussions.tests.factories.models import \
+            CommentWithMentionUserIdFactory
+        CommentWithMentionUserIdFactory(comment=reply_to_comment_objects[0],
+                                        mention_user_id=user_ids[0])
+        CommentWithMentionUserIdFactory(comment=reply_to_comment_objects[0],
+                                        mention_user_id=user_ids[1])
+        CommentWithMentionUserIdFactory(comment=reply_to_comment_objects[1],
+                                        mention_user_id=user_ids[1])
 
         body = {}
         path_params = {"comment_id": "91be920b-7b4c-49e7-8adb-41a0c18da848"}

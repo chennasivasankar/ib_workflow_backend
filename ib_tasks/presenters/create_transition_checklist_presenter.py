@@ -100,7 +100,7 @@ class CreateTransitionChecklistTemplatePresenterImplementation(
         data = {
             "message": "transition checklist created successfully"
         }
-        return self.prepare_201_created_response(response_dict=data)
+        return self.prepare_200_success_response(response_dict=data)
 
     def raise_invalid_task_id(self, err):
         from ib_tasks.constants.exception_messages import \

@@ -151,6 +151,15 @@
         "created_at": {
           "type": "string",
           "format": "date-time"
+        },
+        "mention_users": {
+          "$ref": "#/definitions/MentionUsers"
+        },
+        "multimedia": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Multimedia"
+          }
         }
       },
       "required": [
@@ -159,7 +168,33 @@
         "created_at",
         "is_editable",
         "comment_id",
-        "comment_content"
+        "comment_content",
+        "mention_users",
+        "multimedia"
+      ]
+    },
+    "Multimedia": {
+      "type": "object",
+      "properties": {
+        "multimedia_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "format_type": {
+          "type": "string",
+          "enum": [
+            "IMAGE",
+            "VIDEO"
+          ]
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "format_type",
+        "url",
+        "multimedia_id"
       ]
     },
     "Reply": {
@@ -181,6 +216,15 @@
         "created_at": {
           "type": "string",
           "format": "date-time"
+        },
+        "mention_users": {
+          "$ref": "#/definitions/MentionUsers"
+        },
+        "multimedia": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Multimedia"
+          }
         }
       },
       "required": [
@@ -188,8 +232,33 @@
         "created_at",
         "is_editable",
         "comment_id",
-        "comment_content"
+        "comment_content",
+        "mention_users",
+        "multimedia"
       ]
+    },
+    "MentionUsers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "profile_pic_url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id",
+          "name",
+          "profile_pic_url"
+        ]
+      }
     }
   },
   "parameters": {
@@ -294,10 +363,41 @@
         "properties": {
           "comment_content": {
             "type": "string"
+          },
+          "mention_user_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "multimedia": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "format_type": {
+                  "type": "string",
+                  "enum": [
+                    "IMAGE",
+                    "VIDEO"
+                  ]
+                },
+                "url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "format_type",
+                "url"
+              ]
+            }
           }
         },
         "required": [
-          "comment_content"
+          "comment_content",
+          "mention_user_ids",
+          "multimedia"
         ]
       }
     },
@@ -334,10 +434,41 @@
         "properties": {
           "comment_content": {
             "type": "string"
+          },
+          "mention_user_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "multimedia": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "format_type": {
+                  "type": "string",
+                  "enum": [
+                    "IMAGE",
+                    "VIDEO"
+                  ]
+                },
+                "url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "format_type",
+                "url"
+              ]
+            }
           }
         },
         "required": [
-          "comment_content"
+          "comment_content",
+          "mention_user_ids",
+          "multimedia"
         ]
       }
     }

@@ -12,12 +12,12 @@ class AssigneeDetailsService:
 
     def get_assignees_details_dtos(
             self, assignee_ids: List[str]
-    ) -> AssigneeDetailsDTO:
+    ) -> List[AssigneeDetailsDTO]:
 
         user_details_dtos = self.interface.get_user_details_bulk(assignee_ids)
         assignee_details_dtos = [
             AssigneeDetailsDTO(
-                id=user_details_dto.user_id,
+                assignee_id=user_details_dto.user_id,
                 name=user_details_dto.name,
                 profile_pic_url=user_details_dto.profile_pic_url
             )

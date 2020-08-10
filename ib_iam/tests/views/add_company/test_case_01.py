@@ -5,9 +5,8 @@ from uuid import UUID
 
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
-
-from ib_iam.tests.common_fixtures.adapters.uuid_mock import prepare_uuid_mock
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ib_iam.tests.common_fixtures.adapters.uuid_mock import prepare_uuid_mock
 
 
 class TestCase01AddCompanyAPITestCase(TestUtils):

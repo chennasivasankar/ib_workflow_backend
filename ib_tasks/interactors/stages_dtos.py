@@ -32,9 +32,8 @@ class StageActionDTO:
     function_path: str
     button_text: str
     button_color: Optional[str]
-    action_type: str
-    transition_template_id: str
-
+    action_type: Optional[str]
+    transition_template_id: Optional[str]
 
 
 @dataclass()
@@ -91,3 +90,18 @@ class StageAssigneeDetailsDTO:
     task_stage_id: int
     stage_id: int
     assignee_details_dto: Optional[AssigneeDetailsDTO]
+
+
+@dataclass
+class UserDetailsDTO:
+    assignee_id: str
+    assignee_name: str
+    profile_pic_url: str
+
+
+
+
+@dataclass
+class StageWithUserDetailsDTO(UserDetailsDTO):
+    db_stage_id: int
+    stage_display_name: str

@@ -138,8 +138,12 @@ class GetUsersDetailsInteractor(ValidationMixin):
 
     def get_user_details_for_given_role_ids(
             self, role_ids: List[str]) -> List[UserProfileDTO]:
-        self._validate_role_ids(role_ids=role_ids)
-        user_ids = self.user_storage.get_user_ids(role_ids=role_ids)
+        from ib_iam.constants.config import ALL_ROLES_ID
+        if ALL_ROLES_ID in role_ids:
+            user_ids = self.user_storage.get_user_ids_who_are_not_admin()
+        else:
+            self._validate_role_ids(role_ids=role_ids)
+            user_ids = self.user_storage.get_user_ids(role_ids=role_ids)
         from ib_iam.adapters.service_adapter import get_service_adapter
         service = get_service_adapter()
         user_details_dtos = service.user_service.get_basic_user_dtos(

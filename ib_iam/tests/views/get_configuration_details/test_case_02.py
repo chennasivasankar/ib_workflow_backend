@@ -3,7 +3,6 @@
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
-
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 COMPANY_ID = "b9d000c7-c14f-4909-8c5a-6a6c02abb200"
