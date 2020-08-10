@@ -2376,7 +2376,7 @@
       }
     },
     "/tasks/search/v1/": {
-      "get": {
+      "post": {
         "operationId": "get_tasks_to_search",
         "summary": "get tasks to relevant to search",
         "description": "view the tasks that satisfies the search",
