@@ -20,6 +20,12 @@ from ib_tasks.tests.factories.storage_dtos import CreateTaskDTOFactory, \
 
 class TestCreateTaskInteractor:
 
+    @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        FieldValuesDTOFactory.reset_sequence()
+        GoFFieldsDTOFactory.reset_sequence()
+        CreateTaskDTOFactory.reset_sequence()
+
     @pytest.fixture
     def task_storage_mock(self):
         from ib_tasks.interactors.storage_interfaces.task_storage_interface \
@@ -102,15 +108,6 @@ class TestCreateTaskInteractor:
                ".UserActionOnTaskInteractor.user_action_on_task"
         return mocker.patch(path)
 
-    @pytest.fixture
-    def get_random_assignees_of_next_stages_and_update_in_db_mock(self,
-                                                                  mocker):
-        path = "ib_tasks.interactors.get_random_assignees_of_next_stages_" \
-               "and_update_in_db_interactor" \
-               ".GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor" \
-               ".get_random_assignees_of_next_stages_and_update_in_db"
-        return mocker.patch(path)
-
     def test_with_invalid_task_template_id(
             self, task_storage_mock, gof_storage_mock,
             task_template_storage_mock, create_task_storage_mock, storage_mock,
@@ -118,8 +115,8 @@ class TestCreateTaskInteractor:
             elastic_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
-        template_id = "template_id"
-        task_dto = CreateTaskDTOFactory(task_template_id=template_id)
+        given_template_id = "template_id"
+        task_dto = CreateTaskDTOFactory(task_template_id=given_template_id)
         task_template_storage_mock.check_is_template_exists.return_value = \
             False
         interactor = CreateTaskInteractor(
@@ -139,12 +136,12 @@ class TestCreateTaskInteractor:
         # Assert
         assert response == mock_object
         task_template_storage_mock.check_is_template_exists \
-            .assert_called_once_with(template_id=template_id)
+            .assert_called_once_with(template_id=given_template_id)
         presenter_mock.raise_invalid_task_template_ids.assert_called_once()
         call_args = presenter_mock.raise_invalid_task_template_ids.call_args
         error_object = call_args[0][0]
         invalid_template_id = error_object.invalid_task_template_ids[0]
-        assert invalid_template_id == template_id
+        assert invalid_template_id == given_template_id
 
     def test_with_invalid_action_id(
             self, task_storage_mock, gof_storage_mock,
@@ -153,8 +150,8 @@ class TestCreateTaskInteractor:
             elastic_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
-        action_id = "action_id"
-        task_dto = CreateTaskDTOFactory(action_id=action_id)
+        given_action_id = "action_id"
+        task_dto = CreateTaskDTOFactory(action_id=given_action_id)
         task_template_storage_mock.check_is_template_exists.return_value = \
             True
         storage_mock.validate_action.return_value = False
@@ -174,12 +171,12 @@ class TestCreateTaskInteractor:
         # Assert
         assert response == mock_object
         storage_mock.validate_action.assert_called_once_with(
-            action_id=action_id)
+            action_id=given_action_id)
         presenter_mock.raise_invalid_action_id.assert_called_once()
         call_args = presenter_mock.raise_invalid_action_id.call_args
         error_object = call_args[0][0]
         invalid_action_id = error_object.action_id
-        assert invalid_action_id == action_id
+        assert invalid_action_id == given_action_id
 
     def test_with_invalid_due_time_format(
             self, task_storage_mock, gof_storage_mock,
@@ -188,8 +185,8 @@ class TestCreateTaskInteractor:
             elastic_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
-        due_time = "12-12-12"
-        task_dto = CreateTaskDTOFactory(due_time=due_time)
+        given_due_time = "12-12-12"
+        task_dto = CreateTaskDTOFactory(due_time=given_due_time)
         task_template_storage_mock.check_is_template_exists.return_value = \
             True
         storage_mock.validate_action.return_value = True
@@ -213,7 +210,7 @@ class TestCreateTaskInteractor:
         call_args = presenter_mock.raise_invalid_due_time_format.call_args
         error_object = call_args[0][0]
         invalid_due_time = error_object.due_time
-        assert invalid_due_time == due_time
+        assert invalid_due_time == given_due_time
 
     def test_with_start_date_ahead_of_due_date(
             self, task_storage_mock, gof_storage_mock,
@@ -222,10 +219,10 @@ class TestCreateTaskInteractor:
             elastic_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
-        start_date = datetime.date(2020, 9, 9)
-        due_date = datetime.date(2020, 9, 1)
-        task_dto = CreateTaskDTOFactory(start_date=start_date,
-                                        due_date=due_date)
+        given_start_date = datetime.date(2020, 9, 9)
+        given_due_date = datetime.date(2020, 9, 1)
+        task_dto = CreateTaskDTOFactory(start_date=given_start_date,
+                                        due_date=given_due_date)
         task_template_storage_mock.check_is_template_exists.return_value = \
             True
         storage_mock.validate_action.return_value = True
@@ -252,8 +249,8 @@ class TestCreateTaskInteractor:
         error_object = call_args[0][0]
         invalid_start_date = error_object.given_start_date
         invalid_due_date = error_object.given_due_date
-        assert invalid_start_date == start_date
-        assert invalid_due_date == due_date
+        assert invalid_start_date == given_start_date
+        assert invalid_due_date == given_due_date
 
     @freezegun.freeze_time('2020-09-09 13:00:00')
     def test_with_expired_due_time_for_today(
@@ -263,11 +260,12 @@ class TestCreateTaskInteractor:
             elastic_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
-        start_date = datetime.date(2020, 9, 1)
-        due_date = datetime.date(2020, 9, 9)
-        due_time = "12:00:00"
-        task_dto = CreateTaskDTOFactory(start_date=start_date,
-                                        due_date=due_date, due_time=due_time)
+        given_start_date = datetime.date(2020, 9, 1)
+        given_due_date = datetime.date(2020, 9, 9)
+        given_due_time = "12:00:00"
+        task_dto = CreateTaskDTOFactory(start_date=given_start_date,
+                                        due_date=given_due_date,
+                                        due_time=given_due_time)
         task_template_storage_mock.check_is_template_exists.return_value = \
             True
         storage_mock.validate_action.return_value = True
@@ -293,7 +291,7 @@ class TestCreateTaskInteractor:
             .call_args
         error_object = call_args[0][0]
         invalid_due_time = error_object.due_time
-        assert invalid_due_time == due_time
+        assert invalid_due_time == given_due_time
 
     def test_with_duplicate_same_gof_order_for_a_gof(
             self, task_storage_mock, gof_storage_mock,
@@ -302,10 +300,10 @@ class TestCreateTaskInteractor:
             elastic_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
-        gof_id = "gof_0"
-        same_gof_order = 1
+        given_gof_id = "gof_0"
+        given_same_gof_order = 1
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
-            size=3, gof_id=gof_id, same_gof_order=same_gof_order
+            size=3, gof_id=given_gof_id, same_gof_order=given_same_gof_order
         )
 
         task_dto = CreateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
@@ -335,8 +333,8 @@ class TestCreateTaskInteractor:
         error_object = call_args[0][0]
         same_orders_gof_id = error_object.gof_id
         duplicate_same_gof_orders = error_object.same_gof_orders
-        assert same_orders_gof_id == gof_id
-        assert duplicate_same_gof_orders == [same_gof_order]
+        assert same_orders_gof_id == given_gof_id
+        assert duplicate_same_gof_orders == [given_same_gof_order]
 
     def test_with_invalid_gof_ids(
             self, task_storage_mock, gof_storage_mock,
@@ -346,9 +344,9 @@ class TestCreateTaskInteractor:
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
-        gof_ids = ["gof_0", "gof_1", "gof_2"]
+        given_gof_ids = ["gof_0", "gof_1", "gof_2"]
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
-            size=3, gof_id=factory.Iterator(gof_ids)
+            size=3, gof_id=factory.Iterator(given_gof_ids)
         )
         task_dto = CreateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
         task_template_storage_mock.check_is_template_exists.return_value = \
@@ -356,7 +354,7 @@ class TestCreateTaskInteractor:
         storage_mock.validate_action.return_value = True
         from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
         perform_base_validations_for_template_gofs_and_fields_mock \
-            .side_effect = InvalidGoFIds(gof_ids)
+            .side_effect = InvalidGoFIds(given_gof_ids)
         interactor = CreateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             task_template_storage=task_template_storage_mock,
@@ -376,7 +374,7 @@ class TestCreateTaskInteractor:
         call_args = presenter_mock.raise_invalid_gof_ids.call_args
         error_object = call_args[0][0]
         invalid_gof_ids = error_object.gof_ids
-        assert invalid_gof_ids == gof_ids
+        assert invalid_gof_ids == given_gof_ids
 
     def test_with_invalid_gofs_to_task_template(
             self, task_storage_mock, gof_storage_mock,
@@ -386,13 +384,14 @@ class TestCreateTaskInteractor:
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
-        task_template_id = "template_0"
-        gof_ids = ["gof_0", "gof_1", "gof_2"]
+        given_task_template_id = "template_0"
+        given_gof_ids = ["gof_0", "gof_1", "gof_2"]
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
-            size=3, gof_id=factory.Iterator(gof_ids)
+            size=3, gof_id=factory.Iterator(given_gof_ids)
         )
         task_dto = CreateTaskDTOFactory(
-            task_template_id=task_template_id, gof_fields_dtos=gof_fields_dtos
+            task_template_id=given_task_template_id,
+            gof_fields_dtos=gof_fields_dtos
         )
         task_template_storage_mock.check_is_template_exists.return_value = \
             True
@@ -400,7 +399,8 @@ class TestCreateTaskInteractor:
         from ib_tasks.exceptions.task_custom_exceptions import \
             InvalidGoFsOfTaskTemplate
         perform_base_validations_for_template_gofs_and_fields_mock \
-            .side_effect = InvalidGoFsOfTaskTemplate(gof_ids, task_template_id)
+            .side_effect = InvalidGoFsOfTaskTemplate(given_gof_ids,
+                                                     given_task_template_id)
         interactor = CreateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             task_template_storage=task_template_storage_mock,
@@ -421,12 +421,12 @@ class TestCreateTaskInteractor:
             .assert_called_once()
         call_args = \
             presenter_mock.raise_invalid_gofs_given_to_a_task_template \
-                .call_args
+            .call_args
         error_object = call_args[0][0]
         invalid_gof_ids = error_object.gof_ids
-        given_template_id = error_object.task_template_id
-        assert invalid_gof_ids == gof_ids
-        assert task_template_id == given_template_id
+        invalid_gofs_template_id = error_object.task_template_id
+        assert invalid_gof_ids == given_gof_ids
+        assert invalid_gofs_template_id == given_task_template_id
 
     def test_with_invalid_field_ids(
             self, task_storage_mock, gof_storage_mock,
@@ -436,9 +436,9 @@ class TestCreateTaskInteractor:
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
-        field_ids = ["field_0", "field_1", "field_2"]
+        given_field_ids = ["field_0", "field_1", "field_2"]
         field_values_dtos = FieldValuesDTOFactory.build_batch(
-            size=3, field_id=factory.Iterator(field_ids))
+            size=3, field_id=factory.Iterator(given_field_ids))
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
         task_dto = CreateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
@@ -449,7 +449,7 @@ class TestCreateTaskInteractor:
         from ib_tasks.exceptions.fields_custom_exceptions import \
             InvalidFieldIds
         perform_base_validations_for_template_gofs_and_fields_mock \
-            .side_effect = InvalidFieldIds(field_ids)
+            .side_effect = InvalidFieldIds(given_field_ids)
         interactor = CreateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             task_template_storage=task_template_storage_mock,
@@ -469,7 +469,7 @@ class TestCreateTaskInteractor:
         call_args = presenter_mock.raise_invalid_field_ids.call_args
         error_object = call_args[0][0]
         invalid_field_ids = error_object.field_ids
-        assert invalid_field_ids == field_ids
+        assert invalid_field_ids == given_field_ids
 
     def test_with_duplicate_field_ids_to_a_gof(
             self, task_storage_mock, gof_storage_mock,
@@ -479,13 +479,13 @@ class TestCreateTaskInteractor:
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
-        gof_id = "gof_0"
-        duplicate_field_ids = ["field_0", "field_0"]
-        field_ids = duplicate_field_ids + ["field_2"]
+        given_gof_id = "gof_0"
+        given_duplicate_field_ids = ["field_0", "field_0"]
+        given_field_ids = given_duplicate_field_ids + ["field_2"]
         field_values_dtos = FieldValuesDTOFactory.build_batch(
-            size=3, field_id=factory.Iterator(field_ids))
+            size=3, field_id=factory.Iterator(given_field_ids))
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
-            size=1, gof_id=gof_id, field_values_dtos=field_values_dtos)
+            size=1, gof_id=given_gof_id, field_values_dtos=field_values_dtos)
         task_dto = CreateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
         task_template_storage_mock.check_is_template_exists.return_value = \
             True
@@ -494,7 +494,8 @@ class TestCreateTaskInteractor:
         from ib_tasks.exceptions.fields_custom_exceptions import \
             DuplicateFieldIdsToGoF
         perform_base_validations_for_template_gofs_and_fields_mock \
-            .side_effect = DuplicateFieldIdsToGoF(gof_id, duplicate_field_ids)
+            .side_effect = DuplicateFieldIdsToGoF(given_gof_id,
+                                                  given_duplicate_field_ids)
         interactor = CreateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             task_template_storage=task_template_storage_mock,
@@ -516,8 +517,8 @@ class TestCreateTaskInteractor:
         error_object = call_args[0][0]
         invalid_gof_id = error_object.gof_id
         invalid_field_ids = error_object.field_ids
-        assert invalid_gof_id == gof_id
-        assert invalid_field_ids == duplicate_field_ids
+        assert invalid_gof_id == given_gof_id
+        assert invalid_field_ids == given_duplicate_field_ids
 
     def test_with_invalid_field_ids_to_a_gof(
             self, task_storage_mock, gof_storage_mock,
@@ -527,12 +528,12 @@ class TestCreateTaskInteractor:
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
-        gof_id = "gof_0"
-        field_ids = ["field_0", "field_0", "field_2"]
+        given_gof_id = "gof_0"
+        given_field_ids = ["field_0", "field_0", "field_2"]
         field_values_dtos = FieldValuesDTOFactory.build_batch(
-            size=3, field_id=factory.Iterator(field_ids))
+            size=3, field_id=factory.Iterator(given_field_ids))
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
-            size=1, gof_id=gof_id, field_values_dtos=field_values_dtos)
+            size=1, gof_id=given_gof_id, field_values_dtos=field_values_dtos)
         task_dto = CreateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
         task_template_storage_mock.check_is_template_exists.return_value = \
             True
@@ -541,7 +542,7 @@ class TestCreateTaskInteractor:
         from ib_tasks.exceptions.task_custom_exceptions import \
             InvalidFieldsOfGoF
         perform_base_validations_for_template_gofs_and_fields_mock \
-            .side_effect = InvalidFieldsOfGoF(gof_id, field_ids)
+            .side_effect = InvalidFieldsOfGoF(given_gof_id, given_field_ids)
         interactor = CreateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             task_template_storage=task_template_storage_mock,
@@ -564,8 +565,8 @@ class TestCreateTaskInteractor:
         error_object = call_args[0][0]
         invalid_gof_id = error_object.gof_id
         invalid_field_ids = error_object.field_ids
-        assert invalid_gof_id == gof_id
-        assert invalid_field_ids == field_ids
+        assert invalid_gof_id == given_gof_id
+        assert invalid_field_ids == given_field_ids
 
     def test_with_user_who_does_not_have_write_permission_to_a_gof(
             self, task_storage_mock, gof_storage_mock,
@@ -575,13 +576,13 @@ class TestCreateTaskInteractor:
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
-        created_by_id = "user_0"
-        gof_id = "gof_0"
-        required_user_roles = ["role_1", "role_2"]
+        given_created_by_id = "user_0"
+        given_gof_id = "gof_0"
+        given_required_user_roles = ["role_1", "role_2"]
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(size=1,
-                                                          gof_id=gof_id)
+                                                          gof_id=given_gof_id)
         task_dto = CreateTaskDTOFactory(
-            gof_fields_dtos=gof_fields_dtos, created_by_id=created_by_id)
+            gof_fields_dtos=gof_fields_dtos, created_by_id=given_created_by_id)
         task_template_storage_mock.check_is_template_exists.return_value = \
             True
         storage_mock.validate_action.return_value = True
@@ -590,7 +591,7 @@ class TestCreateTaskInteractor:
             UserNeedsGoFWritablePermission
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = UserNeedsGoFWritablePermission(
-            created_by_id, gof_id, required_user_roles)
+            given_created_by_id, given_gof_id, given_required_user_roles)
         interactor = CreateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             task_template_storage=task_template_storage_mock,
@@ -616,9 +617,9 @@ class TestCreateTaskInteractor:
         user_id = error_object.user_id
         invalid_gof_id = error_object.gof_id
         required_roles = error_object.required_roles
-        assert user_id == created_by_id
-        assert invalid_gof_id == gof_id
-        assert required_roles == required_user_roles
+        assert user_id == given_created_by_id
+        assert invalid_gof_id == given_gof_id
+        assert required_roles == given_required_user_roles
 
     def test_with_user_who_does_not_have_write_permission_to_a_field(
             self, task_storage_mock, gof_storage_mock,
@@ -628,15 +629,15 @@ class TestCreateTaskInteractor:
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
-        created_by_id = "user_0"
-        required_user_roles = ["role_1", "role_2"]
-        field_id = "field_0"
+        given_created_by_id = "user_0"
+        given_required_user_roles = ["role_1", "role_2"]
+        given_field_id = "field_0"
         field_values_dtos = FieldValuesDTOFactory.build_batch(
-            size=1, field_id=field_id)
+            size=1, field_id=given_field_id)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
         task_dto = CreateTaskDTOFactory(
-            gof_fields_dtos=gof_fields_dtos, created_by_id=created_by_id)
+            gof_fields_dtos=gof_fields_dtos, created_by_id=given_created_by_id)
         task_template_storage_mock.check_is_template_exists.return_value = \
             True
         storage_mock.validate_action.return_value = True
@@ -644,7 +645,7 @@ class TestCreateTaskInteractor:
             UserNeedsFieldWritablePermission
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = UserNeedsFieldWritablePermission(
-            created_by_id, field_id, required_user_roles)
+            given_created_by_id, given_field_id, given_required_user_roles)
         interactor = CreateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             task_template_storage=task_template_storage_mock,
@@ -670,9 +671,9 @@ class TestCreateTaskInteractor:
         user_id = error_object.user_id
         invalid_field_id = error_object.field_id
         required_roles = error_object.required_roles
-        assert user_id == created_by_id
-        assert invalid_field_id == field_id
-        assert required_roles == required_user_roles
+        assert user_id == given_created_by_id
+        assert invalid_field_id == given_field_id
+        assert required_roles == given_required_user_roles
 
     def test_with_empty_response_to_a_required_field(
             self, task_storage_mock, gof_storage_mock,
@@ -682,10 +683,10 @@ class TestCreateTaskInteractor:
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
-        field_id = "field_0"
-        field_response = ""
+        given_field_id = "field_0"
+        given_field_response = ""
         field_values_dtos = FieldValuesDTOFactory.build_batch(
-            size=1, field_id=field_id, field_response=field_response)
+            size=1, field_id=given_field_id, field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
         task_dto = CreateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
@@ -695,7 +696,7 @@ class TestCreateTaskInteractor:
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             EmptyValueForRequiredField
         perform_base_validations_for_template_gofs_and_fields_mock \
-            .side_effect = EmptyValueForRequiredField(field_id)
+            .side_effect = EmptyValueForRequiredField(given_field_id)
         interactor = CreateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             task_template_storage=task_template_storage_mock,
@@ -719,7 +720,7 @@ class TestCreateTaskInteractor:
                 .call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
-        assert invalid_field_id == field_id
+        assert invalid_field_id == given_field_id
 
     def test_with_invalid_response_to_a_phone_number_field(
             self, task_storage_mock, gof_storage_mock,
@@ -729,10 +730,10 @@ class TestCreateTaskInteractor:
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
-        field_id = "field_0"
-        field_response = "890808"
+        given_field_id = "field_0"
+        given_field_response = "890808"
         field_values_dtos = FieldValuesDTOFactory.build_batch(
-            size=1, field_id=field_id, field_response=field_response)
+            size=1, field_id=given_field_id, field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
         task_dto = CreateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
@@ -743,7 +744,7 @@ class TestCreateTaskInteractor:
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidPhoneNumberValue
         perform_base_validations_for_template_gofs_and_fields_mock \
-            .side_effect = InvalidPhoneNumberValue(field_id, field_response)
+            .side_effect = InvalidPhoneNumberValue(given_field_id, given_field_response)
         interactor = CreateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             task_template_storage=task_template_storage_mock,
@@ -768,8 +769,8 @@ class TestCreateTaskInteractor:
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
         invalid_field_response = error_object.field_value
-        assert invalid_field_id == field_id
-        assert invalid_field_response == field_response
+        assert invalid_field_id == given_field_id
+        assert invalid_field_response == given_field_response
 
     def test_with_invalid_response_to_a_email_field(
             self, task_storage_mock, gof_storage_mock,
@@ -779,10 +780,10 @@ class TestCreateTaskInteractor:
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
-        field_id = "field_0"
-        field_response = "sljlsjls@gmail"
+        given_field_id = "field_0"
+        given_field_response = "sljlsjls@gmail"
         field_values_dtos = FieldValuesDTOFactory.build_batch(
-            size=1, field_id=field_id, field_response=field_response)
+            size=1, field_id=given_field_id, field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
         task_dto = CreateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
@@ -792,7 +793,7 @@ class TestCreateTaskInteractor:
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidEmailFieldValue
         perform_base_validations_for_template_gofs_and_fields_mock \
-            .side_effect = InvalidEmailFieldValue(field_id, field_response)
+            .side_effect = InvalidEmailFieldValue(given_field_id, given_field_response)
         interactor = CreateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             task_template_storage=task_template_storage_mock,
@@ -817,8 +818,8 @@ class TestCreateTaskInteractor:
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
         invalid_field_response = error_object.field_value
-        assert invalid_field_id == field_id
-        assert invalid_field_response == field_response
+        assert invalid_field_id == given_field_id
+        assert invalid_field_response == given_field_response
 
     def test_with_invalid_response_to_a_url_field(
             self, task_storage_mock, gof_storage_mock,
@@ -828,10 +829,10 @@ class TestCreateTaskInteractor:
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
-        field_id = "field_0"
-        field_response = "invalid url"
+        given_field_id = "field_0"
+        given_field_response = "invalid url"
         field_values_dtos = FieldValuesDTOFactory.build_batch(
-            size=1, field_id=field_id, field_response=field_response)
+            size=1, field_id=given_field_id, field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
         task_dto = CreateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
@@ -842,7 +843,7 @@ class TestCreateTaskInteractor:
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidURLValue
         perform_base_validations_for_template_gofs_and_fields_mock \
-            .side_effect = InvalidURLValue(field_id, field_response)
+            .side_effect = InvalidURLValue(given_field_id, given_field_response)
         interactor = CreateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             task_template_storage=task_template_storage_mock,
@@ -867,9 +868,10 @@ class TestCreateTaskInteractor:
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
         invalid_field_response = error_object.field_value
-        assert invalid_field_id == field_id
-        assert invalid_field_response == field_response
+        assert invalid_field_id == given_field_id
+        assert invalid_field_response == given_field_response
 
+    # todo: refactor variable names to given in arrange part to maintain consistency
     def test_with_weak_password_response_to_a_password_field(
             self, task_storage_mock, gof_storage_mock,
             task_template_storage_mock, create_task_storage_mock, storage_mock,
@@ -1522,9 +1524,8 @@ class TestCreateTaskInteractor:
             action_storage=action_storage_mock,
             elastic_storage=elastic_storage_mock
         )
-        presenter_mock \
-            .raise_exception_for_invalid_image_url \
-            .return_value = mock_object
+        presenter_mock.raise_exception_for_invalid_image_url.return_value = \
+            mock_object
 
         # Act
         response = interactor.create_task_wrapper(presenter_mock, task_dto)
@@ -1719,8 +1720,7 @@ class TestCreateTaskInteractor:
             field_storage_mock, stage_storage_mock, action_storage_mock,
             elastic_storage_mock, presenter_mock, mock_object,
             perform_base_validations_for_template_gofs_and_fields_mock,
-            user_action_on_task_mock,
-            get_random_assignees_of_next_stages_and_update_in_db_mock
+            user_action_on_task_mock
     ):
         # Arrange
         created_task_id = 1
@@ -1845,3 +1845,339 @@ class TestCreateTaskInteractor:
             if gof_matched:
                 return task_gof_details_dto.task_gof_id
         return
+
+    def test_with_not_permitted_user_action(
+            self, task_storage_mock, gof_storage_mock,
+            task_template_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock, action_storage_mock,
+            elastic_storage_mock, presenter_mock, mock_object,
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            user_action_on_task_mock
+    ):
+        # Arrange
+        task_dto = CreateTaskDTOFactory()
+        task_template_storage_mock.check_is_template_exists.return_value = \
+            True
+        storage_mock.validate_action.return_value = True
+        interactor = CreateTaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            task_template_storage=task_template_storage_mock,
+            create_task_storage=create_task_storage_mock, storage=storage_mock,
+            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
+            action_storage=action_storage_mock,
+            elastic_storage=elastic_storage_mock
+        )
+        from ib_tasks.exceptions.permission_custom_exceptions import \
+            UserActionPermissionDenied
+        user_action_on_task_mock.side_effect = UserActionPermissionDenied(
+            task_dto.action_id)
+        presenter_mock.raise_exception_for_user_action_permission_denied \
+            .return_value = \
+            mock_object
+
+        # Act
+        response = interactor.create_task_wrapper(presenter_mock, task_dto)
+
+        # Assert
+        assert response == mock_object
+        presenter_mock \
+            .raise_exception_for_user_action_permission_denied \
+            .assert_called_once()
+        call_args = presenter_mock. \
+            raise_exception_for_user_action_permission_denied \
+            .call_args
+        error_object = call_args.kwargs['error_obj']
+        invalid_action_id = error_object.action_id
+        assert invalid_action_id == task_dto.action_id
+
+    def test_with_invalid_key_error(
+            self, task_storage_mock, gof_storage_mock,
+            task_template_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock, action_storage_mock,
+            elastic_storage_mock, presenter_mock, mock_object,
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            user_action_on_task_mock
+    ):
+        # Arrange
+        task_dto = CreateTaskDTOFactory()
+        task_template_storage_mock.check_is_template_exists.return_value = \
+            True
+        storage_mock.validate_action.return_value = True
+        interactor = CreateTaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            task_template_storage=task_template_storage_mock,
+            create_task_storage=create_task_storage_mock, storage=storage_mock,
+            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
+            action_storage=action_storage_mock,
+            elastic_storage=elastic_storage_mock
+        )
+
+        from ib_tasks.exceptions.action_custom_exceptions import \
+            InvalidKeyError
+        user_action_on_task_mock.side_effect = InvalidKeyError()
+        presenter_mock.raise_invalid_key_error \
+            .return_value = \
+            mock_object
+
+        # Act
+        response = interactor.create_task_wrapper(presenter_mock, task_dto)
+
+        # Assert
+        assert response == mock_object
+
+    def test_with_invalid_custom_logic(
+            self, task_storage_mock, gof_storage_mock,
+            task_template_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock, action_storage_mock,
+            elastic_storage_mock, presenter_mock, mock_object,
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            user_action_on_task_mock
+    ):
+        # Arrange
+        task_dto = CreateTaskDTOFactory()
+        task_template_storage_mock.check_is_template_exists.return_value = \
+            True
+        storage_mock.validate_action.return_value = True
+        interactor = CreateTaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            task_template_storage=task_template_storage_mock,
+            create_task_storage=create_task_storage_mock, storage=storage_mock,
+            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
+            action_storage=action_storage_mock,
+            elastic_storage=elastic_storage_mock
+        )
+
+        from ib_tasks.exceptions.action_custom_exceptions import \
+            InvalidCustomLogicException
+        user_action_on_task_mock.side_effect = InvalidCustomLogicException()
+        presenter_mock.raise_invalid_custom_logic_function_exception \
+            .return_value = \
+            mock_object
+
+        # Act
+        response = interactor.create_task_wrapper(presenter_mock, task_dto)
+
+        # Assert
+        assert response == mock_object
+
+    def test_with_invalid_module_path(
+            self, task_storage_mock, gof_storage_mock,
+            task_template_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock, action_storage_mock,
+            elastic_storage_mock, presenter_mock, mock_object,
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            user_action_on_task_mock
+    ):
+        # Arrange
+        task_dto = CreateTaskDTOFactory()
+        task_template_storage_mock.check_is_template_exists.return_value = \
+            True
+        storage_mock.validate_action.return_value = True
+        interactor = CreateTaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            task_template_storage=task_template_storage_mock,
+            create_task_storage=create_task_storage_mock, storage=storage_mock,
+            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
+            action_storage=action_storage_mock,
+            elastic_storage=elastic_storage_mock
+        )
+        module_path = "invalid module path"
+        from ib_tasks.interactors \
+            .get_next_stages_random_assignees_of_a_task_interactor import \
+            InvalidModulePathFound
+        user_action_on_task_mock.side_effect = InvalidModulePathFound(
+            module_path)
+        presenter_mock.raise_invalid_path_not_found_exception \
+            .return_value = \
+            mock_object
+
+        # Act
+        response = interactor.create_task_wrapper(presenter_mock, task_dto)
+
+        # Assert
+        assert response == mock_object
+        presenter_mock \
+            .raise_invalid_path_not_found_exception \
+            .assert_called_once()
+        call_args = presenter_mock. \
+            raise_invalid_path_not_found_exception \
+            .call_args
+        invalid_path_name = call_args.kwargs['path_name']
+        assert invalid_path_name == module_path
+
+    def test_with_invalid_method_name(
+            self, task_storage_mock, gof_storage_mock,
+            task_template_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock, action_storage_mock,
+            elastic_storage_mock, presenter_mock, mock_object,
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            user_action_on_task_mock
+    ):
+        # Arrange
+        task_dto = CreateTaskDTOFactory()
+        task_template_storage_mock.check_is_template_exists.return_value = \
+            True
+        storage_mock.validate_action.return_value = True
+        interactor = CreateTaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            task_template_storage=task_template_storage_mock,
+            create_task_storage=create_task_storage_mock, storage=storage_mock,
+            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
+            action_storage=action_storage_mock,
+            elastic_storage=elastic_storage_mock
+        )
+        method_name = "invalid method"
+        from ib_tasks.interactors \
+            .get_next_stages_random_assignees_of_a_task_interactor import \
+            InvalidMethodFound
+        user_action_on_task_mock.side_effect = InvalidMethodFound(method_name)
+        presenter_mock.raise_invalid_method_not_found_exception \
+            .return_value = \
+            mock_object
+
+        # Act
+        response = interactor.create_task_wrapper(presenter_mock, task_dto)
+
+        # Assert
+        assert response == mock_object
+        presenter_mock.raise_invalid_method_not_found_exception \
+            .assert_called_once()
+        call_args = presenter_mock. \
+            raise_invalid_method_not_found_exception \
+            .call_args
+        invalid_method_name = call_args.kwargs['method_name']
+        assert invalid_method_name == method_name
+
+    def test_with_duplicate_stage_ids(
+            self, task_storage_mock, gof_storage_mock,
+            task_template_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock, action_storage_mock,
+            elastic_storage_mock, presenter_mock, mock_object,
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            user_action_on_task_mock
+    ):
+        # Arrange
+        task_dto = CreateTaskDTOFactory()
+        task_template_storage_mock.check_is_template_exists.return_value = \
+            True
+        storage_mock.validate_action.return_value = True
+        interactor = CreateTaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            task_template_storage=task_template_storage_mock,
+            create_task_storage=create_task_storage_mock, storage=storage_mock,
+            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
+            action_storage=action_storage_mock,
+            elastic_storage=elastic_storage_mock
+        )
+        duplicate_stage_ids = [1, 2]
+        from ib_tasks.exceptions.stage_custom_exceptions import \
+            DuplicateStageIds
+        user_action_on_task_mock.side_effect = DuplicateStageIds(
+            duplicate_stage_ids)
+        presenter_mock.raise_duplicate_stage_ids_not_valid \
+            .return_value = \
+            mock_object
+
+        # Act
+        response = interactor.create_task_wrapper(presenter_mock, task_dto)
+
+        # Assert
+        assert response == mock_object
+        presenter_mock.raise_duplicate_stage_ids_not_valid \
+            .assert_called_once()
+        call_args = presenter_mock. \
+            raise_duplicate_stage_ids_not_valid \
+            .call_args
+        given_duplicate_stage_ids = call_args.kwargs['duplicate_stage_ids']
+        assert given_duplicate_stage_ids == duplicate_stage_ids
+
+    def test_with_invalid_db_stage_ids(
+            self, task_storage_mock, gof_storage_mock,
+            task_template_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock, action_storage_mock,
+            elastic_storage_mock, presenter_mock, mock_object,
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            user_action_on_task_mock
+    ):
+        # Arrange
+        task_dto = CreateTaskDTOFactory()
+        task_template_storage_mock.check_is_template_exists.return_value = \
+            True
+        storage_mock.validate_action.return_value = True
+        interactor = CreateTaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            task_template_storage=task_template_storage_mock,
+            create_task_storage=create_task_storage_mock, storage=storage_mock,
+            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
+            action_storage=action_storage_mock,
+            elastic_storage=elastic_storage_mock
+        )
+        invalid_db_stage_ids = [1, 2]
+
+        from ib_tasks.exceptions.stage_custom_exceptions import \
+            InvalidDbStageIdsListException
+        user_action_on_task_mock.side_effect = InvalidDbStageIdsListException(
+            invalid_db_stage_ids)
+        presenter_mock.raise_invalid_stage_ids_exception \
+            .return_value = \
+            mock_object
+
+        # Act
+        response = interactor.create_task_wrapper(presenter_mock, task_dto)
+
+        # Assert
+        assert response == mock_object
+        presenter_mock.raise_invalid_stage_ids_exception \
+            .assert_called_once()
+        call_args = presenter_mock. \
+            raise_invalid_stage_ids_exception \
+            .call_args
+        given_invalid_db_stage_ids = call_args.kwargs['invalid_stage_ids']
+        assert given_invalid_db_stage_ids == invalid_db_stage_ids
+
+    def test_with_invalid_user_permission_for_given_stage_ids(
+            self, task_storage_mock, gof_storage_mock,
+            task_template_storage_mock, create_task_storage_mock, storage_mock,
+            field_storage_mock, stage_storage_mock, action_storage_mock,
+            elastic_storage_mock, presenter_mock, mock_object,
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            user_action_on_task_mock
+    ):
+        # Arrange
+        task_dto = CreateTaskDTOFactory()
+        task_template_storage_mock.check_is_template_exists.return_value = \
+            True
+        storage_mock.validate_action.return_value = True
+        interactor = CreateTaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            task_template_storage=task_template_storage_mock,
+            create_task_storage=create_task_storage_mock, storage=storage_mock,
+            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
+            action_storage=action_storage_mock,
+            elastic_storage=elastic_storage_mock
+        )
+        stage_ids = [1, 2]
+
+        from ib_tasks.exceptions.stage_custom_exceptions import \
+            StageIdsWithInvalidPermissionForAssignee
+        user_action_on_task_mock.side_effect = \
+            StageIdsWithInvalidPermissionForAssignee(
+                stage_ids)
+        presenter_mock \
+            .raise_stage_ids_with_invalid_permission_for_assignee_exception \
+            .return_value = \
+            mock_object
+
+        # Act
+        response = interactor.create_task_wrapper(presenter_mock, task_dto)
+
+        # Assert
+        assert response == mock_object
+        presenter_mock \
+            .raise_stage_ids_with_invalid_permission_for_assignee_exception \
+            .assert_called_once()
+        call_args = presenter_mock. \
+            raise_stage_ids_with_invalid_permission_for_assignee_exception \
+            .call_args
+        given_invalid_stage_ids = call_args.kwargs['invalid_stage_ids']
+        assert given_invalid_stage_ids == stage_ids

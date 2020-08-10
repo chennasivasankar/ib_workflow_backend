@@ -175,31 +175,27 @@ class CreateTaskInteractor:
                 err)
         except UserActionPermissionDenied as err:
             return presenter.raise_exception_for_user_action_permission_denied(
-                error_obj=err
-            )
-        except UserBoardPermissionDenied as err:
-            return presenter.raise_exception_for_user_board_permission_denied(
                 error_obj=err)
         except InvalidKeyError:
             return presenter.raise_invalid_key_error()
         except InvalidCustomLogicException:
             return presenter.raise_invalid_custom_logic_function_exception()
-        except InvalidModulePathFound as exception:
+        except InvalidModulePathFound as err:
             return presenter.raise_invalid_path_not_found_exception(
-                path_name=exception.path_name)
-        except InvalidMethodFound as exception:
+                path_name=err.path_name)
+        except InvalidMethodFound as err:
             return presenter.raise_invalid_method_not_found_exception(
-                method_name=exception.method_name)
-        except DuplicateStageIds as exception:
+                method_name=err.method_name)
+        except DuplicateStageIds as err:
             return presenter.raise_duplicate_stage_ids_not_valid(
-                duplicate_stage_ids=exception.duplicate_stage_ids)
-        except InvalidDbStageIdsListException as exception:
+                duplicate_stage_ids=err.duplicate_stage_ids)
+        except InvalidDbStageIdsListException as err:
             return presenter.raise_invalid_stage_ids_exception(
-                invalid_stage_ids=exception.invalid_stage_ids)
-        except StageIdsWithInvalidPermissionForAssignee as exception:
+                invalid_stage_ids=err.invalid_stage_ids)
+        except StageIdsWithInvalidPermissionForAssignee as err:
             return presenter. \
                 raise_stage_ids_with_invalid_permission_for_assignee_exception(
-                invalid_stage_ids=exception.invalid_stage_ids)
+                invalid_stage_ids=err.invalid_stage_ids)
 
     def _prepare_create_task_response(
             self, task_dto: CreateTaskDTO,
@@ -272,16 +268,6 @@ class CreateTaskInteractor:
             action_storage=self.action_storage,
         )
         act_on_task_interactor.user_action_on_task()
-        set_stage_assignees_interactor = \
-            GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor(
-                storage=self.storage, stage_storage=self.stage_storage,
-                task_storage=self.task_storage,
-                action_storage=self.action_storage
-            )
-        set_stage_assignees_interactor \
-            .get_random_assignees_of_next_stages_and_update_in_db(
-            task_id=created_task_id, action_id=task_dto.action_id
-        )
 
     def _get_elastic_task_dto(self, task_dto: CreateTaskDTO, task_id: int):
 
