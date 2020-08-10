@@ -7,9 +7,9 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case status_code'] = '200'
+snapshots['TestCase09GetTaskTemplatesAPITestCase.test_case status_code'] = '200'
 
-snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
+snapshots['TestCase09GetTaskTemplatesAPITestCase.test_case body'] = {
     'task_templates': [
         {
             'actions': [
@@ -41,7 +41,7 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                             'field_values': None,
                             'help_text': None,
                             'is_field_required': True,
-                            'is_field_writable': False,
+                            'is_field_writable': True,
                             'placeholder_text': None,
                             'tooltip': None,
                             'validation_regex': None
@@ -55,7 +55,7 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                             'field_values': None,
                             'help_text': None,
                             'is_field_required': True,
-                            'is_field_writable': False,
+                            'is_field_writable': True,
                             'placeholder_text': None,
                             'tooltip': None,
                             'validation_regex': None
@@ -78,7 +78,7 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                             'field_values': None,
                             'help_text': None,
                             'is_field_required': True,
-                            'is_field_writable': False,
+                            'is_field_writable': True,
                             'placeholder_text': None,
                             'tooltip': None,
                             'validation_regex': None
@@ -92,7 +92,7 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                             'field_values': None,
                             'help_text': None,
                             'is_field_required': True,
-                            'is_field_writable': False,
+                            'is_field_writable': True,
                             'placeholder_text': None,
                             'tooltip': None,
                             'validation_regex': None
@@ -115,7 +115,7 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                             'field_values': None,
                             'help_text': None,
                             'is_field_required': True,
-                            'is_field_writable': False,
+                            'is_field_writable': True,
                             'placeholder_text': None,
                             'tooltip': None,
                             'validation_regex': None
@@ -160,7 +160,7 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                             'field_values': None,
                             'help_text': None,
                             'is_field_required': True,
-                            'is_field_writable': False,
+                            'is_field_writable': True,
                             'placeholder_text': None,
                             'tooltip': None,
                             'validation_regex': None
@@ -174,7 +174,7 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                             'field_values': None,
                             'help_text': None,
                             'is_field_required': True,
-                            'is_field_writable': False,
+                            'is_field_writable': True,
                             'placeholder_text': None,
                             'tooltip': None,
                             'validation_regex': None
@@ -197,7 +197,7 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                             'field_values': None,
                             'help_text': None,
                             'is_field_required': True,
-                            'is_field_writable': False,
+                            'is_field_writable': True,
                             'placeholder_text': None,
                             'tooltip': None,
                             'validation_regex': None
@@ -211,7 +211,7 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                             'field_values': None,
                             'help_text': None,
                             'is_field_required': True,
-                            'is_field_writable': False,
+                            'is_field_writable': True,
                             'placeholder_text': None,
                             'tooltip': None,
                             'validation_regex': None
@@ -234,7 +234,7 @@ snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
                             'field_values': None,
                             'help_text': None,
                             'is_field_required': True,
-                            'is_field_writable': False,
+                            'is_field_writable': True,
                             'placeholder_text': None,
                             'tooltip': None,
                             'validation_regex': None

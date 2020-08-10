@@ -7,9 +7,9 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case status_code'] = '200'
+snapshots['TestCase08GetTaskTemplatesAPITestCase.test_case status_code'] = '200'
 
-snapshots['TestCase01GetTaskTemplatesAPITestCase.test_case body'] = {
+snapshots['TestCase08GetTaskTemplatesAPITestCase.test_case body'] = {
     'task_templates': [
         {
             'actions': [

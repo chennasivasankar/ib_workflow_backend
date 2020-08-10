@@ -1,13 +1,14 @@
 """
-get task templates when complete task details exists returns task templates details
+get task templates when user has write permission to fields returns is_field_writable true
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
+from ib_tasks.constants.enum import PermissionTypes
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01GetTaskTemplatesAPITestCase(TestUtils):
+class TestCase09GetTaskTemplatesAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -69,7 +70,8 @@ class TestCase01GetTaskTemplatesAPITestCase(TestUtils):
             size=6, gof=factory.Iterator(gof_objs)
         )
         FieldRoleFactory.create_batch(
-            size=6, field=factory.Iterator(field_objs)
+            size=6, field=factory.Iterator(field_objs),
+            permission_type=PermissionTypes.WRITE.value
         )
 
     @pytest.mark.django_db

@@ -1,5 +1,5 @@
 """
-test when complete transition details exists
+test when user has no field permissions returns empty fields
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
@@ -7,7 +7,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01GetTransitionTemplateAPITestCase(TestUtils):
+class TestCase05GetTransitionTemplateAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -50,11 +50,9 @@ class TestCase01GetTransitionTemplateAPITestCase(TestUtils):
         field_objs = FieldFactory.create_batch(
             size=6, gof=factory.Iterator(gof_objs)
         )
-        from ib_tasks.constants.enum import PermissionTypes
         FieldRoleFactory.create_batch(
             size=6, field=factory.Iterator(field_objs),
-            permission_type=factory.Iterator(
-                [PermissionTypes.READ.value, PermissionTypes.WRITE.value])
+            role="SUPER_USER_ROLE"
         )
 
     @pytest.mark.django_db

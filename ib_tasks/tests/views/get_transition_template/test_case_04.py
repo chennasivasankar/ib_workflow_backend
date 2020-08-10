@@ -1,5 +1,5 @@
 """
-test when complete transition details exists
+test when no fields exists returns empty fields list
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
@@ -7,7 +7,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01GetTransitionTemplateAPITestCase(TestUtils):
+class TestCase04GetTransitionTemplateAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -18,14 +18,11 @@ class TestCase01GetTransitionTemplateAPITestCase(TestUtils):
     def setup(self, mocker):
         import factory
         from ib_tasks.tests.factories.models import TaskTemplateFactory, \
-            GoFFactory, GoFRoleFactory, FieldFactory, FieldRoleFactory, \
-            GoFToTaskTemplateFactory
+            GoFFactory, GoFRoleFactory, GoFToTaskTemplateFactory
 
         TaskTemplateFactory.reset_sequence()
         GoFRoleFactory.reset_sequence()
         GoFFactory.reset_sequence()
-        FieldFactory.reset_sequence()
-        FieldRoleFactory.reset_sequence()
         GoFToTaskTemplateFactory.reset_sequence()
 
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
@@ -45,16 +42,6 @@ class TestCase01GetTransitionTemplateAPITestCase(TestUtils):
         GoFRoleFactory.create_batch(
             size=4, gof=factory.Iterator(gof_objs),
             role=factory.Iterator(["FIN_PAYMENT_REQUESTER", "ALL_ROLES"])
-        )
-
-        field_objs = FieldFactory.create_batch(
-            size=6, gof=factory.Iterator(gof_objs)
-        )
-        from ib_tasks.constants.enum import PermissionTypes
-        FieldRoleFactory.create_batch(
-            size=6, field=factory.Iterator(field_objs),
-            permission_type=factory.Iterator(
-                [PermissionTypes.READ.value, PermissionTypes.WRITE.value])
         )
 
     @pytest.mark.django_db

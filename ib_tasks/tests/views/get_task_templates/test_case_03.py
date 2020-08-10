@@ -1,5 +1,5 @@
 """
-test when complete transition details exists
+get task templates when no actions exists returns empty actions list
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
@@ -7,7 +7,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01GetTransitionTemplateAPITestCase(TestUtils):
+class TestCase03GetTaskTemplatesAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -16,55 +16,55 @@ class TestCase01GetTransitionTemplateAPITestCase(TestUtils):
 
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_user_role_ids
+        get_user_role_ids(mocker)
+
         import factory
         from ib_tasks.tests.factories.models import TaskTemplateFactory, \
-            GoFFactory, GoFRoleFactory, FieldFactory, FieldRoleFactory, \
-            GoFToTaskTemplateFactory
+            StageModelFactory, StageActionFactory, GoFFactory, GoFRoleFactory, \
+            FieldFactory, FieldRoleFactory, GoFToTaskTemplateFactory, \
+            TaskTemplateInitialStageFactory
+        from ib_tasks.constants.enum import ValidationType
 
         TaskTemplateFactory.reset_sequence()
+        StageModelFactory.reset_sequence()
+        StageActionFactory.reset_sequence()
         GoFRoleFactory.reset_sequence()
         GoFFactory.reset_sequence()
         FieldFactory.reset_sequence()
         FieldRoleFactory.reset_sequence()
         GoFToTaskTemplateFactory.reset_sequence()
+        TaskTemplateInitialStageFactory.reset_sequence()
 
-        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids
-        get_user_role_ids(mocker)
+        template_ids = ['template_1', 'template_2']
 
-        transition_template_id = 'template_1'
-        template_obj = TaskTemplateFactory.create(
-            template_id=transition_template_id,
-            is_transition_template=True
+        task_template_objs = TaskTemplateFactory.create_batch(
+            size=2, template_id=factory.Iterator(template_ids)
         )
         gof_objs = GoFFactory.create_batch(size=4)
-        GoFToTaskTemplateFactory.create_batch(size=2,
+        GoFToTaskTemplateFactory.create_batch(size=6,
                                               gof=factory.Iterator(gof_objs),
-                                              task_template=template_obj)
-
+                                              task_template=factory.Iterator(
+                                                  task_template_objs))
         GoFRoleFactory.create_batch(
             size=4, gof=factory.Iterator(gof_objs),
             role=factory.Iterator(["FIN_PAYMENT_REQUESTER", "ALL_ROLES"])
         )
-
         field_objs = FieldFactory.create_batch(
             size=6, gof=factory.Iterator(gof_objs)
         )
-        from ib_tasks.constants.enum import PermissionTypes
         FieldRoleFactory.create_batch(
-            size=6, field=factory.Iterator(field_objs),
-            permission_type=factory.Iterator(
-                [PermissionTypes.READ.value, PermissionTypes.WRITE.value])
+            size=6, field=factory.Iterator(field_objs)
         )
 
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {}
-        path_params = {"transition_template_id": "template_1"}
+        path_params = {}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(
+            body=body, path_params=path_params,
+            query_params=query_params, headers=headers, snapshot=snapshot
+        )
