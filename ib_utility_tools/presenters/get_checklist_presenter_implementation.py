@@ -12,17 +12,15 @@ class GetChecklistPresenterImplementation(GetChecklistPresenterInterface,
                                           HTTPResponseMixin):
 
     def get_success_response_for_get_checklist(
-            self, entity_dto: EntityDTO,
-            checklist_item_dtos: List[ChecklistItemWithIdDTO]):
+            self, checklist_item_dtos: List[ChecklistItemWithIdDTO]):
+        print("*" * 80)
+        print(checklist_item_dtos)
         checklist_items = self._prepare_checklist_items(
             checklist_item_dtos=checklist_item_dtos)
-        checklist_items_with_entity_details_dict = {
-            "entity_id": entity_dto.entity_id,
-            "entity_type": entity_dto.entity_type,
-            "checklist": checklist_items
-        }
+        print("*" * 80)
+        print(checklist_items)
         return self.prepare_200_success_response(
-            response_dict=checklist_items_with_entity_details_dict)
+            response_dict={"checklist": checklist_items})
 
     def _prepare_checklist_items(
             self, checklist_item_dtos: List[ChecklistItemWithIdDTO]):
