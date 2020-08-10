@@ -10,4 +10,6 @@ snapshots = Snapshot()
 snapshots['TestCase02GetChecklistAPITestCase.test_case status_code'] = '200'
 
 snapshots['TestCase02GetChecklistAPITestCase.test_case body'] = {
+    'checklist': [
+    ]
 }
