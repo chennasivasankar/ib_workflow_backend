@@ -77,7 +77,8 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
     def test_given_invalid_path_raises_exception(storage_mock,
                                                  stage_storage_mock,
                                                  action_storage_mock,
-                                                 task_storage_mock):
+                                                 task_storage_mock,
+                                                 presenter_mock):
         # Arrange
         task_id = 1
         action_id = 1
@@ -93,21 +94,22 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         )
 
         # Act
-        with pytest.raises(InvalidModulePathFound) as error:
-            interactor \
-                .get_next_stages_random_assignees_of_a_task(
-                action_id=action_id, task_id=task_id)
+        interactor \
+            .get_next_stages_random_assignees_of_a_task_wrapper(
+            action_id=action_id, task_id=task_id, presenter=presenter_mock)
 
         # Assert
-        assert error.value.path_name == path_name
         storage_mock.get_path_name_to_action.assert_called_once_with(
             action_id=action_id)
+        presenter_mock.raise_invalid_path_not_found_exception.assert_called_once_with(
+            path_name)
 
     @staticmethod
     def test_given_invalid_method_name_raises_exception(mocker, storage_mock,
                                                         stage_storage_mock,
                                                         action_storage_mock,
-                                                        task_storage_mock):
+                                                        task_storage_mock,
+                                                        presenter_mock):
         # Arrange
         task_id = 1
         action_id = 1
@@ -127,22 +129,22 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         )
 
         # Act
-        with pytest.raises(InvalidMethodFound) as error:
-            interactor \
-                .get_next_stages_random_assignees_of_a_task(
-                action_id=action_id, task_id=task_id
+        interactor \
+                .get_next_stages_random_assignees_of_a_task_wrapper(
+                action_id=action_id, task_id=task_id, presenter=presenter_mock
             )
 
         # Assert
-        assert error.value.method_name == "stage_1_action_name_1"
         storage_mock.get_path_name_to_action.assert_called_once_with(
             action_id=action_id)
+        presenter_mock.raise_invalid_method_not_found_exception.assert_called_once_with(method_name="stage_1_action_name_1")
 
     @staticmethod
     def test_assert_called_with_expected_arguments(mocker, storage_mock,
                                                    stage_storage_mock,
                                                    action_storage_mock,
-                                                   task_storage_mock):
+                                                   task_storage_mock,
+                                                   presenter_mock):
         # Arrange
         mock_task_dict = {'status_variables': {'variable_1': 'stage_1'}}
         action_id = 1
@@ -162,8 +164,8 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
 
         # Act
         interactor \
-            .get_next_stages_random_assignees_of_a_task(
-            action_id=action_id, task_id=task_id
+            .get_next_stages_random_assignees_of_a_task_wrapper(
+            action_id=action_id, task_id=task_id, presenter=presenter_mock
         )
 
         # Assert
@@ -181,6 +183,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
 
     @staticmethod
     def test_access_invalid_key_raises_invalid_key_error(storage_mock,
+                                                         presenter_mock,
                                                          stage_storage_mock,
                                                          action_storage_mock,
                                                          task_storage_mock):
@@ -203,17 +206,15 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             InvalidKeyError
 
         # Act
-        with pytest.raises(InvalidKeyError):
-            interactor \
-                .get_next_stages_random_assignees_of_a_task(
-                action_id=action_id, task_id=task_id
+        interactor \
+                .get_next_stages_random_assignees_of_a_task_wrapper(
+                action_id=action_id, task_id=task_id, presenter=presenter_mock
             )
         # Assert
         storage_mock.get_path_name_to_action.assert_called_once_with(
             action_id=action_id
         )
-
-    # ToDo: Add Custom Logic raise error function test case
+        presenter_mock.raise_invalid_key_error.assert_called_once()
 
     @staticmethod
     def test_given_valid_details_updates_statuses(storage_mock,
@@ -241,7 +242,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         )
 
         # Act
-        actual_result = interactor.get_updated_status_variables_dtos_of_task(
+        actual_result = interactor.get_status_variables_dtos_of_task_based_on_action(
             action_id=action_id, task_id=task_id)
         # Assert
         storage_mock.get_path_name_to_action.assert_called_once_with(
@@ -332,6 +333,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             stage_details_dto
         stage_storage_mock.get_stage_role_dtos_given_db_stage_ids.return_value = \
             stage_role_dtos
+
         user_details_mock = prepare_permitted_user_details_mock(mocker)
         interactor = GetNextStagesRandomAssigneesOfATaskInteractor(
             storage=storage_mock, action_storage=action_storage_mock,
@@ -339,7 +341,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         )
 
         # Act
-        actual_result = interactor.get_next_stages_random_assignees_of_a_task_wrapper(
+        interactor.get_next_stages_random_assignees_of_a_task_wrapper(
             task_id=task_id, action_id=action_id, presenter=presenter_mock)
         # Assert
         presenter_mock. \

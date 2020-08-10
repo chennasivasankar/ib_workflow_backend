@@ -16,7 +16,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.exceptions.action_custom_exceptions \
-    import InvalidKeyError, InvalidCustomLogicException
+    import InvalidKeyError
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     StatusVariableDTO
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
@@ -69,69 +69,48 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
         self.validate_task_id(task_id=task_id)
         self.validate_action_id(action_id=action_id)
         status_variable_dtos = self. \
-            _get_status_variables_dtos_of_task_based_on_action(
+            get_status_variables_dtos_of_task_based_on_action(
             task_id=task_id, action_id=action_id)
         next_stage_ids_of_task = \
             self.get_next_stages_of_task(task_id=task_id, status_variable_dtos=
             status_variable_dtos)
         stage_detail_dtos = self.stage_storage. \
             get_stage_detail_dtos_given_stage_ids(next_stage_ids_of_task)
-        stages_having_user_details_dtos = self._stages_having_user_details_dtos(
-            stage_detail_dtos, task_id)
+        db_stage_ids = self._get_db_stage_ids(stage_detail_dtos)
+        stages_having_user_details_dtos = self. \
+            _all_stages_assigned_with_random_user_details_dtos(
+            db_stage_ids, stage_detail_dtos)
         return stages_having_user_details_dtos
 
-    def _stages_having_user_details_dtos(self, stage_detail_dtos: List[
-        StageDetailsDTO], task_id: int) -> List[StageWithUserDetailsDTO]:
-        db_stage_ids = self._get_db_stage_ids(stage_detail_dtos)
-        task_stages_having_assignee_dtos = self.stage_storage. \
-            get_stage_details_having_assignees_in_given_stage_ids(
-            task_id, db_stage_ids)
-        task_stage_ids_having_assignees = [
-            each_task_stages_having_assignee_dto.db_stage_id
-            for each_task_stages_having_assignee_dto in
-            task_stages_having_assignee_dtos
-        ]
-        assignee_ids_assigned_to_stages = [
-            each_task_stages_having_assignee_dto.assignee_id
-            for each_task_stages_having_assignee_dto in
-            task_stages_having_assignee_dtos
-        ]
-        task_stages_having_assignee_details_dtos = self. \
-            _get_assignee_details_for_task_stages_having_assignees(
-            assignee_ids_assigned_to_stages, task_stages_having_assignee_dtos)
-
-        task_stage_ids_not_having_assignees = list(
-            set(db_stage_ids) - set(task_stage_ids_having_assignees))
+    def _all_stages_assigned_with_random_user_details_dtos(
+            self, db_stage_ids: List[int],
+            stage_detail_dtos: List[StageDetailsDTO]) -> \
+            List[StageWithUserDetailsDTO]:
 
         stage_with_random_user_details_dtos = self. \
             _get_stage_with_random_user_details_dtos(
-            task_stage_ids_not_having_assignees=
-            task_stage_ids_not_having_assignees,
+            db_stage_ids=db_stage_ids,
             stage_detail_dtos=stage_detail_dtos)
-
-        all_stages_having_user_details_dtos = \
-            task_stages_having_assignee_details_dtos + \
-            stage_with_random_user_details_dtos
-        return all_stages_having_user_details_dtos
+        return stage_with_random_user_details_dtos
 
     def _get_stage_with_random_user_details_dtos(
-            self, task_stage_ids_not_having_assignees: List[int],
+            self, db_stage_ids: List[int],
             stage_detail_dtos: List[StageDetailsDTO]) -> List[
         StageWithUserDetailsDTO]:
         stage_role_dtos = \
             self.stage_storage.get_stage_role_dtos_given_db_stage_ids(
-                task_stage_ids_not_having_assignees)
+                db_stage_ids)
         role_ids_group_by_stage_id_dtos = \
             self._get_role_ids_group_by_stage_id_dtos(
-                stage_ids=task_stage_ids_not_having_assignees,
+                stage_ids=db_stage_ids,
                 stage_role_dtos=stage_role_dtos)
         stage_with_random_user_details_dtos = self. \
             _get_random_permitted_user_details_dto_of_stage_id(
             role_ids_group_by_stage_id_dtos, stage_detail_dtos)
         return stage_with_random_user_details_dtos
 
-    def _get_status_variables_dtos_of_task_based_on_action(self, task_id: int,
-                                                           action_id: int) -> \
+    def get_status_variables_dtos_of_task_based_on_action(self, task_id: int,
+                                                          action_id: int) -> \
             List[StatusVariableDTO]:
         from ib_tasks.interactors. \
             call_action_logic_function_and_get_status_variables_interactor \
@@ -145,32 +124,6 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
             get_status_variables_dtos_of_task_based_on_action(
             task_id, action_id)
         return updated_status_variable_dtos
-
-    @staticmethod
-    def _get_assignee_details_for_task_stages_having_assignees(
-            assignee_ids_assigned_to_stages: List[str],
-            task_stages_having_assignee_dtos:
-            List[TaskStageHavingAssigneeIdDTO]) -> \
-            List[StageWithUserDetailsDTO]:
-        from ib_tasks.adapters.auth_service import AuthService
-        auth_service_adapter = AuthService()
-        user_details_dtos = auth_service_adapter.get_user_details(
-            user_ids=assignee_ids_assigned_to_stages)
-        task_stages_having_assignee_details_dtos = []
-        for task_stage_with_assignee_dto in task_stages_having_assignee_dtos:
-            for user_details_dto in user_details_dtos:
-                if user_details_dto.user_id \
-                        == task_stage_with_assignee_dto.assignee_id:
-                    stage_with_user_details_dto = StageWithUserDetailsDTO(
-                        db_stage_id=task_stage_with_assignee_dto.db_stage_id,
-                        assignee_id=task_stage_with_assignee_dto.assignee_id,
-                        assignee_name=user_details_dto.user_name,
-                        profile_pic_url=user_details_dto.profile_pic_url,
-                        stage_display_name=task_stage_with_assignee_dto.
-                            stage_display_name)
-                    task_stages_having_assignee_details_dtos.append(
-                        stage_with_user_details_dto)
-        return task_stages_having_assignee_details_dtos
 
     def _get_random_permitted_user_details_dto_of_stage_id(
             self, role_ids_group_by_stage_id_dtos: List[StageIdWithRoleIdsDTO],
@@ -257,3 +210,67 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
             get_task_stage_logic_satisfied_next_stages(
             task_id=task_id, status_variable_dtos=status_variable_dtos)
         return next_stage_ids
+
+    # If we dont want to override with random user when a stage is assigned
+    # with user we can use this function instead of the
+    # _all_stages_assigned_ with_random_user_details_dtos
+    def _not_overriding_random_user_for_stages_having_assignees(
+            self, db_stage_ids: List[int],
+            stage_detail_dtos: List[StageDetailsDTO], task_id: int) -> \
+            List[StageWithUserDetailsDTO]:
+        task_stages_having_assignee_dtos = self.stage_storage. \
+            get_stage_details_having_assignees_in_given_stage_ids(
+            task_id, db_stage_ids)
+        task_stage_ids_having_assignees = [
+            each_task_stages_having_assignee_dto.db_stage_id
+            for each_task_stages_having_assignee_dto in
+            task_stages_having_assignee_dtos
+        ]
+        assignee_ids_assigned_to_stages = [
+            each_task_stages_having_assignee_dto.assignee_id
+            for each_task_stages_having_assignee_dto in
+            task_stages_having_assignee_dtos
+        ]
+        task_stages_having_assignee_details_dtos = self. \
+            _get_assignee_details_for_task_stages_having_assignees(
+            assignee_ids_assigned_to_stages,
+            task_stages_having_assignee_dtos)
+
+        task_stage_ids_not_having_assignees = list(
+            set(db_stage_ids) - set(task_stage_ids_having_assignees))
+        stage_with_random_user_details_dtos = self. \
+            _get_stage_with_random_user_details_dtos(
+            db_stage_ids=
+            task_stage_ids_not_having_assignees,
+            stage_detail_dtos=stage_detail_dtos)
+
+        all_stages_having_user_details_dtos = \
+            task_stages_having_assignee_details_dtos + \
+            stage_with_random_user_details_dtos
+        return all_stages_having_user_details_dtos
+
+    @staticmethod
+    def _get_assignee_details_for_task_stages_having_assignees(
+            assignee_ids_assigned_to_stages: List[str],
+            task_stages_having_assignee_dtos:
+            List[TaskStageHavingAssigneeIdDTO]) -> \
+            List[StageWithUserDetailsDTO]:
+        from ib_tasks.adapters.auth_service import AuthService
+        auth_service_adapter = AuthService()
+        user_details_dtos = auth_service_adapter.get_user_details(
+            user_ids=assignee_ids_assigned_to_stages)
+        task_stages_having_assignee_details_dtos = []
+        for task_stage_with_assignee_dto in task_stages_having_assignee_dtos:
+            for user_details_dto in user_details_dtos:
+                if user_details_dto.user_id \
+                        == task_stage_with_assignee_dto.assignee_id:
+                    stage_with_user_details_dto = StageWithUserDetailsDTO(
+                        db_stage_id=task_stage_with_assignee_dto.db_stage_id,
+                        assignee_id=task_stage_with_assignee_dto.assignee_id,
+                        assignee_name=user_details_dto.user_name,
+                        profile_pic_url=user_details_dto.profile_pic_url,
+                        stage_display_name=task_stage_with_assignee_dto.
+                            stage_display_name)
+                    task_stages_having_assignee_details_dtos.append(
+                        stage_with_user_details_dto)
+        return task_stages_having_assignee_details_dtos

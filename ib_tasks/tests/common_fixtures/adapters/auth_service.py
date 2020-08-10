@@ -1,9 +1,6 @@
-from typing import List
-
 from ib_tasks.tests.factories.adapter_dtos import UserDetailsDTOFactory
 from ib_tasks.tests.factories.interactor_dtos import \
     SearchableFieldUserDetailDTOFactory
-from ib_tasks.tests.factories.storage_dtos import UserDetailsDTOFactory
 
 
 def get_user_dtos_based_on_limit_and_offset_mock(mocker):
