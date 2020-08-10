@@ -196,7 +196,8 @@ class TestGetTransitionTemplateInteractor:
             )
         presenter_mock.get_transition_template_response. \
             assert_called_once_with(
-                complete_transition_template_dto=complete_transition_template_dto
+                complete_transition_template_dto=
+                complete_transition_template_dto
             )
 
     def test_with_invalid_transition_template_id_raises_exception(
@@ -237,3 +238,303 @@ class TestGetTransitionTemplateInteractor:
                 transition_template_id=transition_template_id
             )
 
+    def test_when_no_gofs_exists_returns_empty_gofs_list(
+            self, task_storage_mock, presenter_mock,
+            presenter_response_mock, mocker,
+            field_storage_mock, gof_storage_mock, task_template_storage_mock
+    ):
+        # Arrange
+        user_id = "user_1"
+        transition_template_id = "transition_template_1"
+        expected_gof_ids = []
+        expected_field_ids = ['field0', 'field1', 'field2', 'field3']
+        expected_roles = ['ALL_ROLES', 'FIN_PAYMENT_REQUESTER',
+                          'FIN_PAYMENT_POC',
+                          'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER',
+                          'FIN_COMPLIANCE_APPROVER',
+                          'FIN_PAYMENTS_LEVEL1_VERIFIER',
+                          'FIN_PAYMENTS_LEVEL2_VERIFIER',
+                          'FIN_PAYMENTS_LEVEL3_VERIFIER',
+                          'FIN_PAYMENTS_RP', 'FIN_FINANCE_RP',
+                          'FIN_ACCOUNTS_LEVEL1_VERIFIER',
+                          'FIN_ACCOUNTS_LEVEL2_VERIFIER']
+
+        transition_template_dto = TaskTemplateDTOFactory.create()
+        gof_dtos = []
+        field_dtos = FieldDTOFactory.create_batch(size=4)
+        user_field_permission_dtos = \
+            UserFieldPermissionDTOFactory.create_batch(
+                size=2, field_id=factory.Iterator(expected_field_ids)
+            )
+        field_with_permissions_dtos = \
+            FieldPermissionDTOFactory.create_batch(
+                size=2, field_dto=factory.Iterator(field_dtos),
+                is_field_writable=factory.Iterator([False, True])
+            )
+        gof_to_template_dtos = \
+            GoFToTaskTemplateDTOFactory.create_batch(size=2)
+
+        get_user_role_ids_mock_method = get_user_role_ids(mocker)
+        task_template_storage_mock.check_is_transition_template_exists. \
+            return_value = True
+        task_template_storage_mock.get_transition_template_dto.return_value = \
+            transition_template_dto
+        gof_storage_mock.get_gof_ids_with_read_permission_for_user \
+            .return_value = expected_gof_ids
+        gof_storage_mock.get_gofs_details_dtos_for_given_gof_ids. \
+            return_value = gof_dtos
+        task_template_storage_mock. \
+            get_gofs_to_template_from_permitted_gofs. \
+            return_value = gof_to_template_dtos
+        field_storage_mock.get_fields_of_gofs_in_dtos.return_value = field_dtos
+        field_storage_mock.get_user_field_permission_dtos.return_value = \
+            user_field_permission_dtos
+        presenter_mock.get_transition_template_response.return_value = \
+            presenter_response_mock
+
+        complete_transition_template_dto = CompleteTransitionTemplateDTO(
+            transition_template_dto=transition_template_dto,
+            gof_dtos=gof_dtos,
+            gofs_of_transition_template_dtos=gof_to_template_dtos,
+            field_with_permissions_dtos=field_with_permissions_dtos
+        )
+
+        transition_template_interactor = GetTransitionTemplateInteractor(
+            task_storage=task_storage_mock,
+            task_template_storage=task_template_storage_mock,
+            gof_storage=gof_storage_mock, field_storage=field_storage_mock
+        )
+
+        # Act
+        complete_transition_template = \
+            transition_template_interactor.get_transition_template_wrapper(
+                user_id=user_id, presenter=presenter_mock,
+                transition_template_id=transition_template_id
+            )
+
+        # Assert
+        assert complete_transition_template == presenter_response_mock
+        get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
+        task_template_storage_mock.check_is_transition_template_exists. \
+            assert_called_once_with(
+                transition_template_id=transition_template_id
+            )
+        task_template_storage_mock. \
+            get_transition_template_dto.assert_called_once()
+        gof_storage_mock.get_gofs_details_dtos_for_given_gof_ids. \
+            assert_called_once_with(gof_ids=expected_gof_ids)
+        task_template_storage_mock \
+            .get_gofs_to_template_from_permitted_gofs.assert_called_once_with(
+                gof_ids=expected_gof_ids, template_id=transition_template_id
+            )
+        gof_storage_mock.get_gof_ids_with_read_permission_for_user. \
+            assert_called_once_with(roles=expected_roles)
+        field_storage_mock.get_fields_of_gofs_in_dtos. \
+            assert_called_once_with(gof_ids=expected_gof_ids)
+        field_storage_mock.get_user_field_permission_dtos. \
+            assert_called_once_with(
+                roles=expected_roles, field_ids=expected_field_ids
+            )
+        presenter_mock.get_transition_template_response. \
+            assert_called_once_with(
+                complete_transition_template_dto=
+                complete_transition_template_dto
+            )
+
+    def test_when_no_fields_exists_returns_empty_fields_list(
+            self, task_storage_mock, presenter_mock,
+            presenter_response_mock, mocker,
+            field_storage_mock, gof_storage_mock, task_template_storage_mock
+    ):
+        # Arrange
+        user_id = "user_1"
+        transition_template_id = "transition_template_1"
+        expected_gof_ids = ['gof_1', 'gof_2']
+        expected_field_ids = []
+        expected_roles = ['ALL_ROLES', 'FIN_PAYMENT_REQUESTER',
+                          'FIN_PAYMENT_POC',
+                          'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER',
+                          'FIN_COMPLIANCE_APPROVER',
+                          'FIN_PAYMENTS_LEVEL1_VERIFIER',
+                          'FIN_PAYMENTS_LEVEL2_VERIFIER',
+                          'FIN_PAYMENTS_LEVEL3_VERIFIER',
+                          'FIN_PAYMENTS_RP', 'FIN_FINANCE_RP',
+                          'FIN_ACCOUNTS_LEVEL1_VERIFIER',
+                          'FIN_ACCOUNTS_LEVEL2_VERIFIER']
+
+        transition_template_dto = TaskTemplateDTOFactory.create()
+        gof_dtos = GoFDTOFactory.create_batch(size=2)
+        field_dtos = []
+        user_field_permission_dtos = []
+        field_with_permissions_dtos = []
+        gof_to_template_dtos = \
+            GoFToTaskTemplateDTOFactory.create_batch(size=2)
+
+        get_user_role_ids_mock_method = get_user_role_ids(mocker)
+        task_template_storage_mock.check_is_transition_template_exists. \
+            return_value = True
+        task_template_storage_mock.get_transition_template_dto.return_value = \
+            transition_template_dto
+        gof_storage_mock.get_gof_ids_with_read_permission_for_user \
+            .return_value = expected_gof_ids
+        gof_storage_mock.get_gofs_details_dtos_for_given_gof_ids. \
+            return_value = gof_dtos
+        task_template_storage_mock. \
+            get_gofs_to_template_from_permitted_gofs. \
+            return_value = gof_to_template_dtos
+        field_storage_mock.get_fields_of_gofs_in_dtos.return_value = field_dtos
+        field_storage_mock.get_user_field_permission_dtos.return_value = \
+            user_field_permission_dtos
+        presenter_mock.get_transition_template_response.return_value = \
+            presenter_response_mock
+
+        complete_transition_template_dto = CompleteTransitionTemplateDTO(
+            transition_template_dto=transition_template_dto,
+            gof_dtos=gof_dtos,
+            gofs_of_transition_template_dtos=gof_to_template_dtos,
+            field_with_permissions_dtos=field_with_permissions_dtos
+        )
+
+        transition_template_interactor = GetTransitionTemplateInteractor(
+            task_storage=task_storage_mock,
+            task_template_storage=task_template_storage_mock,
+            gof_storage=gof_storage_mock, field_storage=field_storage_mock
+        )
+
+        # Act
+        complete_transition_template = \
+            transition_template_interactor.get_transition_template_wrapper(
+                user_id=user_id, presenter=presenter_mock,
+                transition_template_id=transition_template_id
+            )
+
+        # Assert
+        assert complete_transition_template == presenter_response_mock
+        get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
+        task_template_storage_mock.check_is_transition_template_exists. \
+            assert_called_once_with(
+                transition_template_id=transition_template_id
+            )
+        task_template_storage_mock. \
+            get_transition_template_dto.assert_called_once()
+        gof_storage_mock.get_gofs_details_dtos_for_given_gof_ids. \
+            assert_called_once_with(gof_ids=expected_gof_ids)
+        task_template_storage_mock \
+            .get_gofs_to_template_from_permitted_gofs.assert_called_once_with(
+                gof_ids=expected_gof_ids, template_id=transition_template_id
+            )
+        gof_storage_mock.get_gof_ids_with_read_permission_for_user. \
+            assert_called_once_with(roles=expected_roles)
+        field_storage_mock.get_fields_of_gofs_in_dtos. \
+            assert_called_once_with(gof_ids=expected_gof_ids)
+        field_storage_mock.get_user_field_permission_dtos. \
+            assert_called_once_with(
+                roles=expected_roles, field_ids=expected_field_ids
+            )
+        presenter_mock.get_transition_template_response. \
+            assert_called_once_with(
+                complete_transition_template_dto=
+                complete_transition_template_dto
+            )
+
+    def test_when_no_gofs_to_template_exists_returns_empty_gofs_to_template(
+            self, task_storage_mock, presenter_mock,
+            presenter_response_mock, mocker,
+            field_storage_mock, gof_storage_mock, task_template_storage_mock
+    ):
+        # Arrange
+        user_id = "user_1"
+        transition_template_id = "transition_template_1"
+        expected_gof_ids = ['gof_1', 'gof_2']
+        expected_field_ids = ['field0', 'field1', 'field2', 'field3']
+        expected_roles = ['ALL_ROLES', 'FIN_PAYMENT_REQUESTER',
+                          'FIN_PAYMENT_POC',
+                          'FIN_PAYMENT_APPROVER', 'FIN_COMPLIANCE_VERIFIER',
+                          'FIN_COMPLIANCE_APPROVER',
+                          'FIN_PAYMENTS_LEVEL1_VERIFIER',
+                          'FIN_PAYMENTS_LEVEL2_VERIFIER',
+                          'FIN_PAYMENTS_LEVEL3_VERIFIER',
+                          'FIN_PAYMENTS_RP', 'FIN_FINANCE_RP',
+                          'FIN_ACCOUNTS_LEVEL1_VERIFIER',
+                          'FIN_ACCOUNTS_LEVEL2_VERIFIER']
+
+        transition_template_dto = TaskTemplateDTOFactory.create()
+        gof_dtos = GoFDTOFactory.create_batch(size=2)
+        field_dtos = FieldDTOFactory.create_batch(size=4)
+        user_field_permission_dtos = \
+            UserFieldPermissionDTOFactory.create_batch(
+                size=2, field_id=factory.Iterator(expected_field_ids)
+            )
+        field_with_permissions_dtos = \
+            FieldPermissionDTOFactory.create_batch(
+                size=2, field_dto=factory.Iterator(field_dtos),
+                is_field_writable=factory.Iterator([False, True])
+            )
+        gof_to_template_dtos = []
+
+        get_user_role_ids_mock_method = get_user_role_ids(mocker)
+        task_template_storage_mock.check_is_transition_template_exists. \
+            return_value = True
+        task_template_storage_mock.get_transition_template_dto.return_value = \
+            transition_template_dto
+        gof_storage_mock.get_gof_ids_with_read_permission_for_user \
+            .return_value = expected_gof_ids
+        gof_storage_mock.get_gofs_details_dtos_for_given_gof_ids. \
+            return_value = gof_dtos
+        task_template_storage_mock. \
+            get_gofs_to_template_from_permitted_gofs. \
+            return_value = gof_to_template_dtos
+        field_storage_mock.get_fields_of_gofs_in_dtos.return_value = field_dtos
+        field_storage_mock.get_user_field_permission_dtos.return_value = \
+            user_field_permission_dtos
+        presenter_mock.get_transition_template_response.return_value = \
+            presenter_response_mock
+
+        complete_transition_template_dto = CompleteTransitionTemplateDTO(
+            transition_template_dto=transition_template_dto,
+            gof_dtos=gof_dtos,
+            gofs_of_transition_template_dtos=gof_to_template_dtos,
+            field_with_permissions_dtos=field_with_permissions_dtos
+        )
+
+        transition_template_interactor = GetTransitionTemplateInteractor(
+            task_storage=task_storage_mock,
+            task_template_storage=task_template_storage_mock,
+            gof_storage=gof_storage_mock, field_storage=field_storage_mock
+        )
+
+        # Act
+        complete_transition_template = \
+            transition_template_interactor.get_transition_template_wrapper(
+                user_id=user_id, presenter=presenter_mock,
+                transition_template_id=transition_template_id
+            )
+
+        # Assert
+        assert complete_transition_template == presenter_response_mock
+        get_user_role_ids_mock_method.assert_called_once_with(user_id=user_id)
+        task_template_storage_mock.check_is_transition_template_exists. \
+            assert_called_once_with(
+                transition_template_id=transition_template_id
+            )
+        task_template_storage_mock. \
+            get_transition_template_dto.assert_called_once()
+        gof_storage_mock.get_gofs_details_dtos_for_given_gof_ids. \
+            assert_called_once_with(gof_ids=expected_gof_ids)
+        task_template_storage_mock \
+            .get_gofs_to_template_from_permitted_gofs.assert_called_once_with(
+                gof_ids=expected_gof_ids, template_id=transition_template_id
+            )
+        gof_storage_mock.get_gof_ids_with_read_permission_for_user. \
+            assert_called_once_with(roles=expected_roles)
+        field_storage_mock.get_fields_of_gofs_in_dtos. \
+            assert_called_once_with(gof_ids=expected_gof_ids)
+        field_storage_mock.get_user_field_permission_dtos. \
+            assert_called_once_with(
+                roles=expected_roles, field_ids=expected_field_ids
+            )
+        presenter_mock.get_transition_template_response. \
+            assert_called_once_with(
+                complete_transition_template_dto=
+                complete_transition_template_dto
+            )
