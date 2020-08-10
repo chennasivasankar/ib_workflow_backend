@@ -1,15 +1,11 @@
 from random import choice
 from typing import List
-from ib_tasks.adapters.auth_service import AuthService
 from ib_tasks.adapters.dtos import UserDetailsDTO
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.custom_exceptions import InvalidModulePathFound, \
     InvalidMethodFound
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
 
-from ib_tasks.interactors. \
-    get_task_stage_logic_satisfied_next_stages_given_status_vars import \
-    GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor
 from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 
 from ib_tasks.interactors.stages_dtos import StageWithUserDetailsDTO
@@ -74,7 +70,8 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
             action_id: int) -> List[StageWithUserDetailsDTO]:
         self.validate_task_id(task_id=task_id)
         self.validate_action_id(action_id=action_id)
-        status_variable_dtos = self._get_status_variables_dtos_of_task_based_on_action(
+        status_variable_dtos = self. \
+            _get_status_variables_dtos_of_task_based_on_action(
             task_id=task_id, action_id=action_id)
         next_stage_ids_of_task = \
             self.get_next_stages_of_task(task_id=task_id, status_variable_dtos=
@@ -157,22 +154,21 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
             task_stages_having_assignee_dtos:
             List[TaskStageHavingAssigneeIdDTO]) -> \
             List[StageWithUserDetailsDTO]:
+        from ib_tasks.adapters.auth_service import AuthService
         auth_service_adapter = AuthService()
         user_details_dtos = auth_service_adapter.get_user_details(
             user_ids=assignee_ids_assigned_to_stages)
         task_stages_having_assignee_details_dtos = []
-        for task_stages_having_assignee_dto in task_stages_having_assignee_dtos:
+        for task_stage_with_assignee_dto in task_stages_having_assignee_dtos:
             for user_details_dto in user_details_dtos:
-                if user_details_dto.user_id == \
-                        task_stages_having_assignee_dto.assignee_id:
+                if user_details_dto.user_id \
+                        == task_stage_with_assignee_dto.assignee_id:
                     stage_with_user_details_dto = StageWithUserDetailsDTO(
-                        db_stage_id=task_stages_having_assignee_dto.
-                            db_stage_id,
-                        assignee_id=task_stages_having_assignee_dto.
-                            assignee_id,
+                        db_stage_id=task_stage_with_assignee_dto.db_stage_id,
+                        assignee_id=task_stage_with_assignee_dto.assignee_id,
                         assignee_name=user_details_dto.user_name,
                         profile_pic_url=user_details_dto.profile_pic_url,
-                        stage_display_name=task_stages_having_assignee_dto.
+                        stage_display_name=task_stage_with_assignee_dto.
                             stage_display_name)
                     task_stages_having_assignee_details_dtos.append(
                         stage_with_user_details_dto)
@@ -183,6 +179,7 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
             stage_detail_dtos: List[StageDetailsDTO]
     ) -> List[StageWithUserDetailsDTO]:
         stage_with_user_details_dtos = []
+        from ib_tasks.adapters.auth_service import AuthService
         auth_service_adapter = AuthService()
         for each_dto in role_ids_group_by_stage_id_dtos:
             permitted_user_details_dtos = auth_service_adapter. \
@@ -252,6 +249,9 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
 
     def get_next_stages_of_task(self, task_id: int,
                                 status_variable_dtos) -> List[str]:
+        from ib_tasks.interactors. \
+            get_task_stage_logic_satisfied_next_stages_given_status_vars import \
+            GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor
         get_task_stage_logic_satisfied_next_stages_interactor = \
             GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor(
                 storage=self.storage)
