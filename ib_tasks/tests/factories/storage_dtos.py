@@ -9,7 +9,7 @@ from ib_tasks.constants.enum import Priority, ValidationType, FieldTypes, \
     PermissionTypes, Status, Operators
 from ib_tasks.interactors.filter_dtos import FilterDTO, ConditionDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
-from ib_tasks.interactors.stages_dtos import StageDTO
+from ib_tasks.interactors.stages_dtos import StageDTO, StageRolesDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
     StageActionDetailsDTO, ActionDetailsDTO, ActionWithStageIdDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
@@ -374,6 +374,13 @@ class UserFieldPermissionDTOFactory(factory.Factory):
 
     field_id = factory.Sequence(lambda n: 'field_{}'.format(n + 1))
     permission_type = factory.Iterator(["READ", "WRITE"])
+
+
+class StageRolesDTOFactory(factory.Factory):
+    class Meta:
+        model = StageRolesDTO
+    stage_id = factory.Sequence(lambda n: 'stage_{}'.format(n))
+    role_ids = factory.Sequence(lambda n: ['ROLE_'.format(n), 'ROLE_'.format(n+1)])
 
 
 class GoFToTaskTemplateDTOFactory(factory.Factory):

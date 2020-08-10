@@ -3,7 +3,7 @@ from typing import List, Optional
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.stages_dtos import StageActionDTO, StageDTO, \
-    TemplateStageDTO, TaskIdWithStageAssigneeDTO
+    TemplateStageDTO, TaskIdWithStageAssigneeDTO, StageRolesDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
     ActionRolesDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
@@ -70,10 +70,25 @@ class StagesStorageImplementation(StageStorageInterface):
                                         role_id=role))
         return list_of_permitted_roles
 
-    def get_allowed_stage_ids_of_user(self) -> List[str]:
-        stage_ids = list(
-            Stage.objects.all().values_list('stage_id', flat=True))
-        return stage_ids
+    def get_stages_roles(self) -> List[StageRolesDTO]:
+
+        stage_permitted_objs = \
+            StagePermittedRoles.objects.all().values('stage__stage_id', 'role_id')
+
+        from collections import defaultdict
+        stage_roles_dict = defaultdict(list)
+        for stage_role_obj in stage_permitted_objs:
+            stage_id = stage_role_obj['stage__stage_id']
+            role_id = stage_role_obj.role_id
+            stage_roles_dict[stage_id].append(role_id)
+
+        return [
+            StageRolesDTO(
+                stage_id=stage_id,
+                role_ids=role_ids
+            )
+            for stage_id, role_ids in stage_roles_dict.items()
+        ]
 
     @staticmethod
     def _get_stage_object(stage):
