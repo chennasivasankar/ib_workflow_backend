@@ -109,6 +109,15 @@ class TestGetRepliesForCommentInteractor:
         )
         presenter_mock.prepare_response_for_replies_with_users_dtos. \
             assert_called_once()
+        storage_mock.get_mention_user_ids.assert_called_once_with(
+            comment_ids=replies_ids
+        )
+        storage_mock.get_comment_id_with_mention_user_id_dtos.assert_called_once_with(
+            comment_ids=replies_ids
+        )
+        storage_mock.get_multimedia_dtos.assert_called_once_with(
+            comment_ids=replies_ids
+        )
 
     @staticmethod
     def _get_user_profile_dtos():

@@ -238,7 +238,7 @@ class StorageImplementation(StorageInterface):
 
         from ib_discussions.models import Comment
         discussion_id_with_comments_count_list = Comment.objects.filter(
-            discussion_id__in=discussion_ids
+            discussion_id__in=discussion_ids, parent_comment=None
         ).values(
             "discussion_id"
         ).annotate(

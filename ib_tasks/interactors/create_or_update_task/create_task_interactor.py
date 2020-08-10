@@ -2,7 +2,8 @@ from typing import List, Optional, Union
 
 from ib_tasks.constants.config import TIME_FORMAT
 from ib_tasks.documents.elastic_task import ElasticTaskDTO, ElasticFieldDTO
-from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
+from ib_tasks.exceptions.action_custom_exceptions import \
+    InvalidActionException, InvalidKeyError, InvalidCustomLogicException
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     DueTimeHasExpiredForToday, InvalidDueTimeFormat, \
     StartDateIsAheadOfDueDate, \
@@ -23,14 +24,20 @@ from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
     UserActionPermissionDenied, UserBoardPermissionDenied
+from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
+    InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskTemplateIds, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
 from ib_tasks.interactors.create_or_update_task \
     .template_gofs_fields_base_validations import \
     TemplateGoFsFieldsBaseValidationsInteractor
-from ib_tasks.interactors.storage_interfaces.elastic_storage_interface \
-    import ElasticSearchStorageInterface
+from ib_tasks.interactors \
+    .get_next_stages_random_assignees_of_a_task_interactor import \
+    InvalidModulePathFound, InvalidMethodFound
+from ib_tasks.interactors \
+    .get_random_assignees_of_next_stages_and_update_in_db_interactor import \
+    GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor
 from ib_tasks.interactors.presenter_interfaces.create_task_presenter import \
     CreateTaskPresenterInterface
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
@@ -38,6 +45,8 @@ from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
 from ib_tasks.interactors.storage_interfaces. \
     create_or_update_task_storage_interface import \
     CreateOrUpdateTaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.elastic_storage_interface \
+    import ElasticSearchStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
@@ -57,8 +66,6 @@ from ib_tasks.interactors.task_dtos import CreateTaskDTO, GoFFieldsDTO, \
     UpdateTaskDTO, FieldValuesDTO
 from ib_tasks.interactors.user_action_on_task_interactor import \
     UserActionOnTaskInteractor
-
-
 
 
 class CreateTaskInteractor:
@@ -167,6 +174,26 @@ class CreateTaskInteractor:
         except UserBoardPermissionDenied as err:
             return presenter.raise_exception_for_user_board_permission_denied(
                 error_obj=err)
+        except InvalidKeyError:
+            return presenter.raise_invalid_key_error()
+        except InvalidCustomLogicException:
+            return presenter.raise_invalid_custom_logic_function_exception()
+        except InvalidModulePathFound as exception:
+            return presenter.raise_invalid_path_not_found_exception(
+                path_name=exception.path_name)
+        except InvalidMethodFound as exception:
+            return presenter.raise_invalid_method_not_found_exception(
+                method_name=exception.method_name)
+        except DuplicateStageIds as exception:
+            return presenter.raise_duplicate_stage_ids_not_valid(
+                duplicate_stage_ids=exception.duplicate_stage_ids)
+        except InvalidDbStageIdsListException as exception:
+            return presenter.raise_invalid_stage_ids_exception(
+                invalid_stage_ids=exception.invalid_stage_ids)
+        except StageIdsWithInvalidPermissionForAssignee as exception:
+            return presenter. \
+                raise_stage_ids_with_invalid_permission_for_assignee_exception(
+                invalid_stage_ids=exception.invalid_stage_ids)
 
     def _prepare_create_task_response(
             self, task_dto: CreateTaskDTO,
@@ -238,6 +265,16 @@ class CreateTaskInteractor:
             task_id=created_task_id, template_id=task_dto.task_template_id
         )
         act_on_task_interactor.user_action_on_task()
+        set_stage_assignees_interactor = \
+            GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor(
+                storage=self.storage, stage_storage=self.stage_storage,
+                task_storage=self.task_storage,
+                action_storage=self.action_storage
+            )
+        set_stage_assignees_interactor \
+            .get_random_assignees_of_next_stages_and_update_in_db(
+            task_id=created_task_id, action_id=task_dto.action_id
+        )
 
     def _get_elastic_task_dto(self, task_dto: CreateTaskDTO, task_id: int):
 
