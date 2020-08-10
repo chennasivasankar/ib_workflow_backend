@@ -85,11 +85,7 @@ class TestUpdateCommentInteractor:
                 url=multimedia[1]["url"]
             )
         ]
-        from ib_discussions.tests.common_fixtures.storages import \
-            prepare_get_multimedia_dtos_mock
-        multimedia_mock = prepare_get_multimedia_dtos_mock(mocker)
-        multimedia_mock.return_value = multimedia_dtos
-        return multimedia
+        return multimedia_dtos
 
     def test_with_comment_id_not_found_return_response(
             self, storage_mock, presenter_mock, interactor, prepare_users_setup,
@@ -98,6 +94,7 @@ class TestUpdateCommentInteractor:
         # Arrange
         user_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         comment_id = "97be920b-7b4c-49e7-8adb-41a0c18da848"
+        comment_content = "content"
         mention_user_ids = prepare_users_setup
         multimedia_dtos = prepare_multimedia_setup
         expected_presenter_prepare_response_for_comment_id_not_found_mock = \
@@ -111,6 +108,7 @@ class TestUpdateCommentInteractor:
         response = interactor.update_comment_wrapper(
             user_id=user_id, comment_id=comment_id, presenter=presenter_mock,
             mention_user_ids=mention_user_ids, multimedia_dtos=multimedia_dtos,
+            comment_content=comment_content
         )
 
         # Assert
@@ -123,7 +121,7 @@ class TestUpdateCommentInteractor:
     ):
         # Arrange
         user_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
-        discussion_id = "71be920b-7b4c-49e7-8adb-41a0c18da848"
+        comment_id = "97be920b-7b4c-49e7-8adb-41a0c18da848"
         comment_content = "content"
         mention_user_ids = prepare_users_setup
         invalid_user_ids = [
@@ -136,25 +134,52 @@ class TestUpdateCommentInteractor:
         validate_user_ids_mock.side_effect = InvalidUserIds(
             user_ids=invalid_user_ids)
 
-        from ib_discussions.tests.factories.interactor_dtos import \
-            MultiMediaDTOFactory
-        MultiMediaDTOFactory.format_type.reset()
-        multimedia_dtos = MultiMediaDTOFactory.create_batch(2)
+        multimedia_dtos = prepare_multimedia_setup
 
         expected_presenter_response_for_invalid_user_ids_mock = Mock()
 
-        storage_mock.is_discussion_id_exists.return_value = False
+        storage_mock.is_comment_id_exists.return_value = True
 
         presenter_mock.response_for_invalid_user_ids.return_value \
             = expected_presenter_response_for_invalid_user_ids_mock
 
         # Act
-        response = interactor.create_comment_for_discussion_wrapper(
-            discussion_id=discussion_id, comment_content=comment_content,
-            user_id=user_id, presenter=presenter_mock,
-            mention_user_ids=mention_user_ids, multimedia_dtos=multimedia_dtos
+        response = interactor.update_comment_wrapper(
+            user_id=user_id, presenter=presenter_mock, comment_id=comment_id,
+            mention_user_ids=mention_user_ids, multimedia_dtos=multimedia_dtos,
+            comment_content=comment_content
         )
 
         # Assert
         assert response == expected_presenter_response_for_invalid_user_ids_mock
         presenter_mock.response_for_invalid_user_ids.assert_called_once()
+
+    def test_with_valid_details_return_response(
+            self, storage_mock, presenter_mock, interactor, mocker,
+            prepare_users_setup, prepare_multimedia_setup
+    ):
+        # Arrange
+        user_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        comment_id = "97be920b-7b4c-49e7-8adb-41a0c18da848"
+        comment_content = "content"
+        mention_user_ids = prepare_users_setup
+        multimedia_dtos = prepare_multimedia_setup
+
+        expected_presenter_prepare_response_for_comment_mock = Mock()
+
+        presenter_mock.prepare_response_for_comment.return_value = \
+            expected_presenter_prepare_response_for_comment_mock
+
+        from ib_discussions.tests.common_fixtures.adapters import \
+            prepare_validate_user_ids_mock
+        prepare_validate_user_ids_mock(mocker=mocker)
+
+        # Act
+        response = interactor.update_comment_wrapper(
+            user_id=user_id, presenter=presenter_mock, comment_id=comment_id,
+            mention_user_ids=mention_user_ids, multimedia_dtos=multimedia_dtos,
+            comment_content=comment_content
+        )
+
+        # Assert
+        assert response == expected_presenter_prepare_response_for_comment_mock

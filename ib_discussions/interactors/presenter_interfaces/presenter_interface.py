@@ -200,3 +200,17 @@ class UpdateCommentPresenterInterface(ABC):
     def prepare_response_for_comment_id_not_found(self):
         pass
 
+    @abstractmethod
+    def response_for_invalid_user_ids(self, err):
+        pass
+
+    @abstractmethod
+    def prepare_response_for_comment(
+            self,
+            comment_with_replies_count_and_editable_dto: CommentWithRepliesCountAndEditableDTO,
+            user_profile_dtos: List[UserProfileDTO],
+            comment_id_with_multimedia_dtos: List[CommentIdWithMultiMediaDTO],
+            comment_id_with_mention_user_id_dtos: List[
+                CommentIdWithMentionUserIdDTO]
+    ):
+        pass

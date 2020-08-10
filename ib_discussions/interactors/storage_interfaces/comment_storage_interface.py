@@ -77,3 +77,7 @@ class CommentStorageInterface(ABC):
     def get_multimedia_dtos(self, comment_ids: List[str]) -> \
             List[CommentIdWithMultiMediaDTO]:
         pass
+
+    @abstractmethod
+    def update_comment(self, comment_id: str, comment_content: str):
+        pass
