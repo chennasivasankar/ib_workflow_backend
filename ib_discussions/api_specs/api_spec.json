@@ -215,6 +215,9 @@
           "type": "string",
           "format": "uuid"
         },
+        "comment_content": {
+          "type": "string"
+        },
         "total_replies_count": {
           "type": "integer",
           "format": "int64"
@@ -1238,6 +1241,13 @@
         "summary": "Delete The Comment",
         "operationId": "delete_comment",
         "description": "To given comment id in path, delete comment",
+        "security": [
+          {
+            "oauth": [
+              "delete"
+            ]
+          }
+        ],
         "parameters": [
           {
             "$ref": "#/parameters/CommentIdPathParameter"
