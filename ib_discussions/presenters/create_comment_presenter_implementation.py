@@ -80,7 +80,6 @@ class CreateCommentPresenterImplementation(CreateCommentPresenterInterface,
             "multimedia": multimedia_list,
             "mention_users": mention_users
         }
-        print(multimedia_list)
         return self.prepare_200_success_response(response_dict=response)
 
     @staticmethod
