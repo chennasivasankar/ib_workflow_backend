@@ -502,8 +502,8 @@ class StorageImplementation(StorageInterface):
         return StageAction.objects.filter(id=action_id).exists()
 
     def get_enable_multiple_gofs_field_to_gof_ids(
-            self, template_id: str, gof_ids: List[str]) -> List[
-        GOFMultipleEnableDTO]:
+            self, template_id: str, gof_ids: List[str]
+    ) -> List[GOFMultipleEnableDTO]:
 
         from ib_tasks.models import TaskTemplateGoFs
         task_template_gofs = TaskTemplateGoFs.objects \
