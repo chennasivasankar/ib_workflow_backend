@@ -203,15 +203,16 @@ class CreateTaskInteractor:
         return presenter.get_create_task_response()
 
     def create_task(self, task_dto: CreateTaskDTO):
-        is_valid_action_id = self.storage.validate_action(task_dto.action_id)
+        self._validate_task_template_id(task_dto.task_template_id)
+        is_valid_action_id = self.storage.validate_action(
+            action_id=task_dto.action_id)
         if not is_valid_action_id:
             raise InvalidActionException(task_dto.action_id)
-        self._validate_task_template_id(task_dto.task_template_id)
+        self._validate_task_details(task_dto)
+        self._validate_same_gof_order(task_dto.gof_fields_dtos)
         action_type = self.action_storage.get_action_type_for_given_action_id(
             action_id=task_dto.action_id
         )
-        self._validate_same_gof_order(task_dto.gof_fields_dtos)
-        self._validate_task_details(task_dto)
         base_validations_interactor = \
             TemplateGoFsFieldsBaseValidationsInteractor(
                 self.task_storage, self.gof_storage,
@@ -376,6 +377,7 @@ class CreateTaskInteractor:
                 ]
             )
         )
+        duplicate_values.sort()
         return duplicate_values
 
     def _validate_task_details(self,
