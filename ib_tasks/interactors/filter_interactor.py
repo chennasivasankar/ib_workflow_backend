@@ -197,24 +197,10 @@ class FilterInteractor:
         self._validate_user_with_filter_id(
             user_id=user_id, filter_id=filter_id
         )
-        is_enabled = is_selected == Status.ENABLED.value
-        if is_enabled:
-            response = self.filter_storage\
-                .enable_filter_status(filter_id=filter_id)
-        else:
-            response = self.filter_storage\
-                .disable_filter_status(filter_id=filter_id)
+        response = self.filter_storage.update_filter_status(
+            filter_id=filter_id, is_selected=is_selected
+        )
         return response
-
-    def _validate_user_with_filter_id(self, user_id: str, filter_id: int):
-        self.filter_storage.validate_user_with_filter_id(
-            user_id=user_id, filter_id=filter_id
-        )
-
-    def _validate_filter_id(self, filter_id: int):
-        self.filter_storage.validate_filter_id(
-            filter_id=filter_id
-        )
 
     @staticmethod
     def _get_filter_ids(filters_dto: List[FilterDTO]):
