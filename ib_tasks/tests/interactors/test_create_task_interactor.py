@@ -96,6 +96,21 @@ class TestCreateTaskInteractor:
                ".perform_base_validations_for_template_gofs_and_fields"
         return mocker.patch(path)
 
+    @pytest.fixture
+    def user_action_on_task_mock(self, mocker):
+        path = "ib_tasks.interactors.user_action_on_task_interactor" \
+               ".UserActionOnTaskInteractor.user_action_on_task"
+        return mocker.patch(path)
+
+    @pytest.fixture
+    def get_random_assignees_of_next_stages_and_update_in_db_mock(self,
+                                                                  mocker):
+        path = "ib_tasks.interactors.get_random_assignees_of_next_stages_" \
+               "and_update_in_db_interactor" \
+               ".GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor" \
+               ".get_random_assignees_of_next_stages_and_update_in_db"
+        return mocker.patch(path)
+
     def test_with_invalid_task_template_id(
             self, task_storage_mock, gof_storage_mock,
             task_template_storage_mock, create_task_storage_mock, storage_mock,
@@ -1703,7 +1718,9 @@ class TestCreateTaskInteractor:
             task_template_storage_mock, create_task_storage_mock, storage_mock,
             field_storage_mock, stage_storage_mock, action_storage_mock,
             elastic_storage_mock, presenter_mock, mock_object,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            user_action_on_task_mock,
+            get_random_assignees_of_next_stages_and_update_in_db_mock
     ):
         # Arrange
         created_task_id = 1
@@ -1756,7 +1773,7 @@ class TestCreateTaskInteractor:
         response = interactor.create_task_wrapper(presenter_mock, task_dto)
 
         # Assert
-        create_task_storage_mock.create_task_with_given_task_details\
+        create_task_storage_mock.create_task_with_given_task_details \
             .assert_called_once_with(
             task_dto
         )
@@ -1767,11 +1784,14 @@ class TestCreateTaskInteractor:
         )
         create_task_storage_mock.create_task_gofs.assert_called_once_with(
             task_gof_dtos=expected_task_gof_dtos)
-        create_task_storage_mock.create_task_gof_fields.assert_called_once_with(
+        create_task_storage_mock.create_task_gof_fields \
+            .assert_called_once_with(
             expected_task_gof_field_dtos)
-        create_task_storage_mock.set_status_variables_for_template_and_task.assert_called_once_with(
+        create_task_storage_mock.set_status_variables_for_template_and_task \
+            .assert_called_once_with(
             task_dto.task_template_id, created_task_id)
-        create_task_storage_mock.create_initial_task_stage.assert_called_once_with(
+        create_task_storage_mock.create_initial_task_stage \
+            .assert_called_once_with(
             task_id=created_task_id, template_id=task_dto.task_template_id
         )
 
