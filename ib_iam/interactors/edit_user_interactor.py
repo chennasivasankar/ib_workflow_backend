@@ -5,7 +5,7 @@ from ib_iam.exceptions.custom_exceptions import (
     RoleIdsAreInvalid, InvalidCompanyId, TeamIdsAreInvalid, UserDoesNotExist,
     NameShouldNotContainsNumbersSpecCharacters
 )
-from ib_iam.interactors.DTOs.common_dtos import \
+from ib_iam.interactors.dtos.dtos import \
     UserDetailsWithTeamRoleAndCompanyIdsDTO
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.edit_user_presenter_interface \

@@ -24,7 +24,7 @@ def api_wrapper(*args, **kwargs):
     team_ids = request_object['team_ids']
     role_ids = request_object['role_ids']
 
-    from ib_iam.interactors.DTOs.common_dtos import \
+    from ib_iam.interactors.dtos.dtos import \
         UserDetailsWithTeamRoleAndCompanyIdsDTO
     user_details_with_team_role_and_company_ids_dto \
         = UserDetailsWithTeamRoleAndCompanyIdsDTO(

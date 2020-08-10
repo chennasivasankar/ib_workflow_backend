@@ -1,7 +1,7 @@
 from typing import List
 
 from ib_iam.adapters.dtos import UserProfileDTO
-from ib_iam.interactors.DTOs.common_dtos import UserIdWithRoleIdsDTO
+from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserIdAndNameDTO
 
 
