@@ -505,9 +505,10 @@ class StorageImplementation(StorageInterface):
             self, template_id: str, gof_ids: List[str]) -> List[
         GOFMultipleEnableDTO]:
 
+        # TODO: Fix me
         from ib_tasks.models import TaskTemplateGoFs
         task_template_gofs = TaskTemplateGoFs.objects \
-            .filter(gof_id__in=gof_ids, task_template_id=template_id)
+            .filter(task_template_id=template_id)
         return [
             GOFMultipleEnableDTO(
                 group_of_field_id=task_template_gof.gof_id,

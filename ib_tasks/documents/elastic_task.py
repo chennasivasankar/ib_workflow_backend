@@ -3,15 +3,10 @@ Created on: 07/08/20
 Author: Pavankumar Pamuru
 
 """
+from django.conf import settings
 from dataclasses import dataclass
 from typing import List, Any, Optional
 
-from elasticsearch_dsl import connections
-
-from django.conf import settings
-
-connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
-                              timeout=20)
 from elasticsearch_dsl import Document, Nested, InnerDoc, Text, Integer
 
 TASK_INDEX_NAME = 'task-{}'.format(settings.STAGE)
