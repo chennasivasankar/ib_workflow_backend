@@ -192,3 +192,7 @@ class GetRepliesForCommentPresenterInterface(ABC):
                 CommentIdWithMentionUserIdDTO]
     ):
         pass
+
+
+class UpdateCommentPresenterInterface(ABC):
+    pass

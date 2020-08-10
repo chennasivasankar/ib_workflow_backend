@@ -130,7 +130,8 @@ class GetCommentsForDiscussionPresenterImplementation(
         comment_id_with_multimedia_dict = {
             "multimedia_id": str(comment_id_with_multimedia_dto.multimedia_id),
             "format_type": comment_id_with_multimedia_dto.format_type,
-            "url": comment_id_with_multimedia_dto.url
+            "url": comment_id_with_multimedia_dto.url,
+            "thumbnail_url": comment_id_with_multimedia_dto.thumbnail_url
         }
         return comment_id_with_multimedia_dict
 

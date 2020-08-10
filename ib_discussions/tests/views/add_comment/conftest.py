@@ -59,11 +59,13 @@ def prepare_multimedia_setup(mocker):
     multimedia = [
         {
             "format_type": MultiMediaFormatEnum.IMAGE.value,
-            "url": "https://picsum.photos/200"
+            "url": "https://picsum.photos/200",
+            "thumbnail_url": "https://picsum.photos/200"
         },
         {
             "format_type": MultiMediaFormatEnum.VIDEO.value,
-            "url": "https://picsum.photos/200"
+            "url": "https://picsum.photos/200",
+            "thumbnail_url": "https://picsum.photos/200"
         }
     ]
     multimedia_ids = [

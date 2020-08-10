@@ -102,7 +102,8 @@ class CreateCommentPresenterImplementation(CreateCommentPresenterInterface,
             {
                 "multimedia_id": str(multimedia_dto.multimedia_id),
                 "format_type": multimedia_dto.format_type,
-                "url": multimedia_dto.url
+                "url": multimedia_dto.url,
+                "thumbnail_url": multimedia_dto.thumbnail_url
             }
             for multimedia_dto in comment_id_with_multimedia_dtos
         ]

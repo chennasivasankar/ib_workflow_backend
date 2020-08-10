@@ -23,12 +23,14 @@ class TestCase02ReplyToCommentAPITestCase(TestUtils):
 
         from ib_discussions.constants.enum import MultiMediaFormatEnum
         multimedia = [{
-                "format_type": MultiMediaFormatEnum.IMAGE.value,
-                "url": "https://picsum.photos/200"
-            }, {
-                "format_type": MultiMediaFormatEnum.VIDEO.value,
-                "url": "https://picsum.photos/200"
-            }]
+            "format_type": MultiMediaFormatEnum.IMAGE.value,
+            "url": "https://picsum.photos/200",
+            "thumbnail_url": "https://picsum.photos/200"
+        }, {
+            "format_type": MultiMediaFormatEnum.VIDEO.value,
+            "url": "https://picsum.photos/200",
+            "thumbnail_url": "https://picsum.photos/200"
+        }]
         mention_user_ids = [
             "10be920b-7b4c-49e7-8adb-41a0c18da848",
             "20be920b-7b4c-49e7-8adb-41a0c18da848"
@@ -66,10 +68,12 @@ class TestCase02ReplyToCommentAPITestCase(TestUtils):
         from ib_discussions.constants.enum import MultiMediaFormatEnum
         multimedia = [{
             "format_type": MultiMediaFormatEnum.IMAGE.value,
-            "url": "https://picsum.photos/200"
+            "url": "https://picsum.photos/200",
+            "thumbnail_url": "https://picsum.photos/200"
         }, {
             "format_type": MultiMediaFormatEnum.VIDEO.value,
-            "url": "https://picsum.photos/200"
+            "url": "https://picsum.photos/200",
+            "thumbnail_url": "https://picsum.photos/200"
         }]
         mention_user_ids = [
             "10be920b-7b4c-49e7-8adb-41a0c18da848",

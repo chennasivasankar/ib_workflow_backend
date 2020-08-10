@@ -35,11 +35,13 @@ snapshots['TestCase01ReplyToCommentAPITestCase.test_create_reply_to_comment_retu
         {
             'format_type': 'IMAGE',
             'multimedia_id': '97be920b-7b4c-49e7-8adb-41a0c18da848',
+            'thumbnail_url': 'https://picsum.photos/200',
             'url': 'https://picsum.photos/200'
         },
         {
             'format_type': 'VIDEO',
             'multimedia_id': '92be920b-7b4c-49e7-8adb-41a0c18da848',
+            'thumbnail_url': 'https://picsum.photos/200',
             'url': 'https://picsum.photos/200'
         }
     ]
