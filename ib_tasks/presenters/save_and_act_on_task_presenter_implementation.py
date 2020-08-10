@@ -1,6 +1,9 @@
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
+from ib_tasks.exceptions.datetime_custom_exceptions import \
+    InvalidDueTimeFormat, StartDateIsAheadOfDueDate, DueDateIsBehindStartDate, \
+    DueTimeHasExpiredForToday
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     EmptyValueForRequiredField, InvalidPhoneNumberValue, \
     InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
@@ -29,6 +32,57 @@ from ib_tasks.interactors.presenter_interfaces \
 class SaveAndActOnATaskPresenterImplementation(
     SaveAndActOnATaskPresenterInterface, HTTPResponseMixin
 ):
+
+    def raise_invalid_due_time_format(self, err: InvalidDueTimeFormat):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_DUE_TIME_FORMAT
+        message = INVALID_DUE_TIME_FORMAT[0].format(err.due_time)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_DUE_TIME_FORMAT[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_start_date_is_ahead_of_due_date(self,
+                                              err: StartDateIsAheadOfDueDate):
+        from ib_tasks.constants.exception_messages import \
+            START_DATE_IS_AHEAD_OF_DUE_DATE
+        message = START_DATE_IS_AHEAD_OF_DUE_DATE[0].format(
+            str(err.given_start_date), str(err.given_due_date)
+        )
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": START_DATE_IS_AHEAD_OF_DUE_DATE[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_due_date_is_behind_start_date(self,
+                                            err: DueDateIsBehindStartDate):
+        from ib_tasks.constants.exception_messages import \
+            DUE_DATE_IS_BEHIND_START_DATE
+        message = DUE_DATE_IS_BEHIND_START_DATE[0].format(
+            str(err.given_due_date), str(err.given_start_date)
+        )
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": DUE_DATE_IS_BEHIND_START_DATE[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_due_time_has_expired_for_today(self,
+                                             err: DueTimeHasExpiredForToday):
+        from ib_tasks.constants.exception_messages import \
+            DUE_TIME_HAS_EXPIRED_FOR_TODAY
+        message = DUE_TIME_HAS_EXPIRED_FOR_TODAY[0].format(err.due_time)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": DUE_TIME_HAS_EXPIRED_FOR_TODAY[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_stage_ids_with_invalid_permission_for_assignee_exception(
             self, err: StageIdsWithInvalidPermissionForAssignee

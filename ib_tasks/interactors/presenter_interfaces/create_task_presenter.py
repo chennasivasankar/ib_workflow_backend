@@ -160,3 +160,19 @@ class CreateTaskPresenterInterface(abc.ABC):
     def raise_stage_ids_with_invalid_permission_for_assignee_exception(self,
                                                                        invalid_stage_ids):
         pass
+
+    @abc.abstractmethod
+    def raise_invalid_due_time_format(self, err):
+        pass
+
+    @abc.abstractmethod
+    def raise_start_date_is_ahead_of_due_date(self, err):
+        pass
+
+    @abc.abstractmethod
+    def raise_due_date_is_behind_start_date(self, err):
+        pass
+
+    @abc.abstractmethod
+    def raise_due_time_has_expired_for_today(self, err):
+        pass
