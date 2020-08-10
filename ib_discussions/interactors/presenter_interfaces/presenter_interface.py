@@ -195,4 +195,8 @@ class GetRepliesForCommentPresenterInterface(ABC):
 
 
 class UpdateCommentPresenterInterface(ABC):
-    pass
+
+    @abstractmethod
+    def prepare_response_for_comment_id_not_found(self):
+        pass
+
