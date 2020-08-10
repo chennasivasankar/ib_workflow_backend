@@ -284,6 +284,30 @@
           "is_running"
         ]
       }
+    },
+    "StartTimerBadRequestResponse": {
+      "description": "start timer bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "TIMER_IS_ALREADY_RUNNING"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
     }
   },
   "paths": {
@@ -391,6 +415,9 @@
         "responses": {
           "200": {
             "$ref": "#/responses/TimerResponse"
+          },
+          "400": {
+            "$ref": "#/responses/StartTimerBadRequestResponse"
           }
         }
       }
