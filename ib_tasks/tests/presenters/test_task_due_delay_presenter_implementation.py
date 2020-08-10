@@ -32,7 +32,7 @@ class TestGetTaskDueDelay:
     def test_get_response_for_get_task_due_details(self, snapshot):
         # Arrange
         GetTaskDueDetailsDTOFactory.reset_sequence()
-        tasks_dtos = GetTaskDueDetailsDTOFactory.create_batch(size=2)
+        tasks_dtos = GetTaskDueDetailsDTOFactory.create_batch(size=5)
         presenter = TaskDueDetailsPresenterImplementation()
 
         # Act
