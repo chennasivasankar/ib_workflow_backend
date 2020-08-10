@@ -4,3 +4,7 @@ class EmptyChecklistItemText(Exception):
 
 class ChecklistItemIdNotFound(Exception):
     pass
+
+
+class TimerIsAlreadyRunning(Exception):
+    pass
