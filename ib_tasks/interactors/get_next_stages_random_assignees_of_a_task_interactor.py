@@ -56,8 +56,6 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
                 action_id=exception.action_id)
         except InvalidKeyError:
             return presenter.raise_invalid_key_error()
-        except InvalidCustomLogicException:
-            return presenter.raise_invalid_custom_logic_function_exception()
         except InvalidModulePathFound as exception:
             return presenter.raise_invalid_path_not_found_exception(
                 path_name=exception.path_name)

@@ -62,16 +62,13 @@ class CallActionLogicFunctionAndGetTaskStatusVariablesInteractor(
         stage_value_dict = \
             self._get_stage_value_dict_to_task(task_id=task_id)
         from ib_tasks.exceptions.action_custom_exceptions \
-            import InvalidKeyError, InvalidCustomLogicException
+            import InvalidKeyError
         try:
             task_dict = method_object(task_dict=task_dict,
                                       global_constants=global_constants,
                                       stage_value_dict=stage_value_dict)
         except KeyError:
             raise InvalidKeyError()
-
-        except:
-            raise InvalidCustomLogicException()
 
         return task_dict
 
