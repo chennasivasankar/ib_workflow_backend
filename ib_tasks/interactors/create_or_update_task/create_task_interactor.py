@@ -108,16 +108,14 @@ class CreateTaskInteractor:
             return presenter.raise_invalid_due_time_format(err)
         except StartDateIsAheadOfDueDate as err:
             return presenter.raise_start_date_is_ahead_of_due_date(err)
-        except DueDateIsBehindStartDate as err:
-            return presenter.raise_due_date_is_behind_start_date(err)
         except DueTimeHasExpiredForToday as err:
             return presenter.raise_due_time_has_expired_for_today(err)
         except InvalidGoFIds as err:
             return presenter.raise_invalid_gof_ids(err)
-        except InvalidFieldIds as err:
-            return presenter.raise_invalid_field_ids(err)
         except InvalidGoFsOfTaskTemplate as err:
             return presenter.raise_invalid_gofs_given_to_a_task_template(err)
+        except InvalidFieldIds as err:
+            return presenter.raise_invalid_field_ids(err)
         except DuplicateFieldIdsToGoF as err:
             return presenter.raise_duplicate_field_ids_to_a_gof(err)
         except InvalidFieldsOfGoF as err:
@@ -256,6 +254,12 @@ class CreateTaskInteractor:
             task_dto, task_gof_details_dtos
         )
         self.create_task_storage.create_task_gof_fields(task_gof_field_dtos)
+        self.create_task_storage.set_status_variables_for_template_and_task(
+            task_dto.task_template_id, created_task_id
+        )
+        self.create_task_storage.create_initial_task_stage(
+            task_id=created_task_id, template_id=task_dto.task_template_id
+        )
         act_on_task_interactor = UserActionOnTaskInteractor(
             user_id=task_dto.created_by_id, board_id=None,
             task_id=created_task_id,
@@ -266,12 +270,6 @@ class CreateTaskInteractor:
             stage_storage=self.stage_storage,
             task_storage=self.task_storage,
             action_storage=self.action_storage,
-        )
-        self.create_task_storage.set_status_variables_for_template_and_task(
-            task_dto.task_template_id, created_task_id
-        )
-        self.create_task_storage.create_initial_task_stage(
-            task_id=created_task_id, template_id=task_dto.task_template_id
         )
         act_on_task_interactor.user_action_on_task()
         set_stage_assignees_interactor = \
@@ -304,7 +302,6 @@ class CreateTaskInteractor:
         for gof_fields_dto in gof_fields_dtos:
             for field_value_dto in gof_fields_dto.field_values_dtos:
                 fields_dto.append(self._get_elastic_field_dto(field_value_dto))
-
         return fields_dto
 
     @staticmethod
@@ -420,6 +417,3 @@ class CreateTaskInteractor:
         start_date_is_ahead_of_due_date = start_date > due_date
         if start_date_is_ahead_of_due_date:
             raise StartDateIsAheadOfDueDate(start_date, due_date)
-        due_date_is_behind_start_date = due_date < start_date
-        if due_date_is_behind_start_date:
-            raise DueDateIsBehindStartDate(due_date, start_date)
