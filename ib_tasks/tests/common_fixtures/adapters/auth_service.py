@@ -32,6 +32,13 @@ def prepare_permitted_user_details_mock(mocker):
     mock.return_value = user_details_dtos
     return mock
 
+def prepare_empty_permitted_user_details_mock(mocker):
+    mock = mocker.patch(
+        "ib_tasks.adapters.auth_service.AuthService.get_permitted_user_details"
+    )
+    user_details_dtos = []
+    mock.return_value = user_details_dtos
+    return mock
 
 def get_user_dtos_given_user_ids(mocker):
     mock = mocker.patch(

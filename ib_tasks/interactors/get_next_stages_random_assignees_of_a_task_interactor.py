@@ -1,6 +1,7 @@
 from random import choice
 from typing import List
 from ib_tasks.adapters.dtos import UserDetailsDTO
+from ib_tasks.constants.constants import EMPTY_STRING
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.custom_exceptions import InvalidModulePathFound, \
     InvalidMethodFound
@@ -135,6 +136,12 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
         for each_dto in role_ids_group_by_stage_id_dtos:
             permitted_user_details_dtos = auth_service_adapter. \
                 get_permitted_user_details(role_ids=each_dto.role_ids)
+            if not permitted_user_details_dtos:
+                permitted_user_details_dtos = [UserDetailsDTO(
+                    user_id=EMPTY_STRING,
+                    user_name=EMPTY_STRING,
+                    profile_pic_url=EMPTY_STRING)]
+
             random_permitted_user_detail_dto = choice(
                 permitted_user_details_dtos)
             stage_with_user_details_dto = self._prepare_stage_with_user_details_dto(
