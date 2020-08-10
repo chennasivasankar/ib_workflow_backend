@@ -1,5 +1,5 @@
 """
-get task templates when complete task details exists returns task templates details
+get task templates when user has no field read/write permissions returns empty fields
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
@@ -7,7 +7,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01GetTaskTemplatesAPITestCase(TestUtils):
+class TestCase07GetTaskTemplatesAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -43,6 +43,10 @@ class TestCase01GetTaskTemplatesAPITestCase(TestUtils):
             size=2, template_id=factory.Iterator(template_ids)
         )
         gof_objs = GoFFactory.create_batch(size=4)
+        GoFRoleFactory.create_batch(
+            size=4, gof=factory.Iterator(gof_objs),
+            role=factory.Iterator(["FIN_PAYMENT_REQUESTER", "ALL_ROLES"])
+        )
         GoFToTaskTemplateFactory.create_batch(size=6,
                                               gof=factory.Iterator(gof_objs),
                                               task_template=factory.Iterator(
@@ -60,16 +64,8 @@ class TestCase01GetTaskTemplatesAPITestCase(TestUtils):
             size=4, stage=factory.Iterator(stage_objs),
             task_template=factory.Iterator(task_template_objs)
         )
-        GoFRoleFactory.create_batch(
-            size=4, gof=factory.Iterator(gof_objs),
-            role=factory.Iterator(["FIN_PAYMENT_REQUESTER", "ALL_ROLES"])
-        )
-
-        field_objs = FieldFactory.create_batch(
+        FieldFactory.create_batch(
             size=6, gof=factory.Iterator(gof_objs)
-        )
-        FieldRoleFactory.create_batch(
-            size=6, field=factory.Iterator(field_objs)
         )
 
     @pytest.mark.django_db
