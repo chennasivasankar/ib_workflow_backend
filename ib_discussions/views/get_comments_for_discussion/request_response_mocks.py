@@ -6,25 +6,25 @@ RESPONSE_200_JSON = """
     "comments": [
         {
             "author": {
-                "user_id": "e5cdd0ee-12b4-44da-975d-3cc827bb26ac",
+                "user_id": "868c3d43-6b77-41b6-80f4-b69a75c06adc",
                 "name": "string",
                 "profile_pic_url": "string"
             },
-            "comment_id": "42c44be3-383f-4105-8acc-edeb47047b4a",
+            "comment_id": "c05b6999-6cf9-4520-a90d-404152e01ba5",
             "comment_content": "string",
             "total_replies_count": 1,
             "is_editable": true,
             "created_at": "2099-12-31 00:00:00",
             "mention_users": [
                 {
-                    "user_id": "8498139e-cd2a-46d3-8e35-91c3412022af",
+                    "user_id": "57898e1f-5b47-4497-82fb-c16a578110e9",
                     "name": "string",
                     "profile_pic_url": "string"
                 }
             ],
             "multimedia": [
                 {
-                    "multimedia_id": "d56f0d8a-6654-49d9-8b0b-c78b9f093902",
+                    "multimedia_id": "f0025992-55d4-42a9-8fdf-45aec536187f",
                     "format_type": "IMAGE",
                     "url": "string",
                     "thumbnail_url": "string"
