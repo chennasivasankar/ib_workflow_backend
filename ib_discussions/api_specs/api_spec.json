@@ -67,6 +67,49 @@
         "entity_type"
       ]
     },
+    "Multimedia": {
+      "type": "object",
+      "properties": {
+        "format_type": {
+          "type": "string",
+          "enum": [
+            "IMAGE",
+            "VIDEO"
+          ]
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "format_type",
+        "url"
+      ]
+    },
+    "MultiMediaWithId": {
+      "type": "object",
+      "properties": {
+        "multimedia_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "format_type": {
+          "type": "string",
+          "enum": [
+            "IMAGE",
+            "VIDEO"
+          ]
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "multimedia_id",
+        "format_type",
+        "url"
+      ]
+    },
     "UserDetails": {
       "type": "object",
       "properties": {
@@ -158,7 +201,7 @@
         "multimedia": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/Multimedia"
+            "$ref": "#/definitions/MultiMediaWithId"
           }
         }
       },
@@ -171,30 +214,6 @@
         "comment_content",
         "mention_users",
         "multimedia"
-      ]
-    },
-    "Multimedia": {
-      "type": "object",
-      "properties": {
-        "multimedia_id": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "format_type": {
-          "type": "string",
-          "enum": [
-            "IMAGE",
-            "VIDEO"
-          ]
-        },
-        "url": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "format_type",
-        "url",
-        "multimedia_id"
       ]
     },
     "Reply": {
@@ -223,7 +242,7 @@
         "multimedia": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/Multimedia"
+            "$ref": "#/definitions/MultiMediaWithId"
           }
         }
       },
@@ -374,23 +393,7 @@
           "multimedia": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "format_type": {
-                  "type": "string",
-                  "enum": [
-                    "IMAGE",
-                    "VIDEO"
-                  ]
-                },
-                "url": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "format_type",
-                "url"
-              ]
+              "$ref": "#/definitions/Multimedia"
             }
           }
         },
@@ -445,23 +448,7 @@
           "multimedia": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "format_type": {
-                  "type": "string",
-                  "enum": [
-                    "IMAGE",
-                    "VIDEO"
-                  ]
-                },
-                "url": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "format_type",
-                "url"
-              ]
+              "$ref": "#/definitions/Multimedia"
             }
           }
         },

@@ -69,7 +69,7 @@ class GetDiscussionInteractor:
             filter_by_dto: FilterByDTO, sort_by_dto: SortByDTO,
     ):
         self._validate_limit_offset_entity_id_and_entity_type(
-            entity_id_and_entity_type_dto, offset_and_limit_dto)
+            offset_and_limit_dto)
         discussion_set_id = self._get_discussion_set_id(
             entity_id=entity_id_and_entity_type_dto.entity_id,
             entity_type=entity_id_and_entity_type_dto.entity_type

@@ -7,9 +7,9 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01AddCommentAPITestCase.test_case status_code'] = '200'
+snapshots['TestCase01AddCommentAPITestCase.test_with_valid_details_create_comment status_code'] = '200'
 
-snapshots['TestCase01AddCommentAPITestCase.test_case body'] = {
+snapshots['TestCase01AddCommentAPITestCase.test_with_valid_details_create_comment body'] = {
     'author': {
         'name': 'name',
         'profile_pic_url': 'https://graph.ib_users.com/',
