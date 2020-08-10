@@ -1,6 +1,5 @@
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
-
 from .validator_class import ValidatorClass
 
 
@@ -9,14 +8,14 @@ def api_wrapper(*args, **kwargs):
     # ---------MOCK IMPLEMENTATION---------
 
     try:
-        from ib_tasks.views.get_task_assignees_of_diff_stages_for_an_action.request_response_mocks \
+        from ib_tasks.views.get_reasons_for_missing_task_due_date_time.request_response_mocks \
             import REQUEST_BODY_JSON
         body = REQUEST_BODY_JSON
     except ImportError:
         body = {}
 
     test_case = {
-        "path_params": {'task_id': 499, 'action_id': 604},
+        "path_params": {'task_id': 88},
         "query_params": {},
         "header_params": {},
         "body": body,
@@ -28,13 +27,13 @@ def api_wrapper(*args, **kwargs):
     try:
         response = ''
         status_code = 200
-        if '200' in ['200', '404']:
-            from ib_tasks.views.get_task_assignees_of_diff_stages_for_an_action.request_response_mocks \
+        if '200' in ['200', '404', '403']:
+            from ib_tasks.views.get_reasons_for_missing_task_due_date_time.request_response_mocks \
                 import RESPONSE_200_JSON
             response = RESPONSE_200_JSON
             status_code = 200
-        elif '201' in ['200', '404']:
-            from ib_tasks.views.get_task_assignees_of_diff_stages_for_an_action.request_response_mocks \
+        elif '201' in ['200', '404', '403']:
+            from ib_tasks.views.get_reasons_for_missing_task_due_date_time.request_response_mocks \
                 import RESPONSE_201_JSON
             response = RESPONSE_201_JSON
             status_code = 201
@@ -43,7 +42,7 @@ def api_wrapper(*args, **kwargs):
         status_code = 200
     response_tuple = mock_response(
         app_name="ib_tasks", test_case=test_case,
-        operation_name="get_task_assignees_of_diff_stages_for_an_action",
+        operation_name="get_reasons_for_missing_task_due_date_time",
         kwargs=kwargs, default_response_body=response,
         group_name="", status_code=status_code)
     return response_tuple

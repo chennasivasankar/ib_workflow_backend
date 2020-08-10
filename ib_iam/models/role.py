@@ -14,3 +14,6 @@ class Role(AbstractDateTimeModel):
     role_id = models.CharField(unique=True, max_length=100)
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=120)
+
+    def __str__(self):
+        return f"{self.role_id}"

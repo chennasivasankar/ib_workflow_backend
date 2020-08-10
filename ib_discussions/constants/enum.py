@@ -29,3 +29,8 @@ class FilterByEnum(Enum):
 class OrderByEnum(Enum):
     ASC = "ASC"
     DESC = "DESC"
+
+
+class MultiMediaFormatEnum(Enum):
+    IMAGE = "IMAGE"
+    VIDEO = "VIDEO"

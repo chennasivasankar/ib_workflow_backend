@@ -6,7 +6,8 @@ from ib_discussions.interactors.presenter_interfaces.dtos import \
     DiscussionsWithUsersAndDiscussionCountDTO, \
     CommentWithRepliesCountAndEditableDTO, CommentIdWithEditableStatusDTO
 from ib_discussions.interactors.storage_interfaces.dtos import CommentDTO, \
-    DiscussionIdWithCommentsCountDTO
+    DiscussionIdWithCommentsCountDTO, CommentIdWithMultiMediaDTO, \
+    CommentIdWithMentionUserIdDTO
 from ib_iam.interactors.presenter_interfaces.dtos import \
     DiscussionIdWithEditableStatusDTO
 
@@ -120,7 +121,9 @@ class CreateCommentPresenterInterface(ABC):
     def prepare_response_for_comment(
             self,
             comment_with_replies_count_and_editable_dto: CommentWithRepliesCountAndEditableDTO,
-            user_profile_dto: UserProfileDTO
+            user_profile_dtos: List[UserProfileDTO],
+            comment_id_with_multimedia_dtos: List[CommentIdWithMultiMediaDTO],
+            comment_id_with_mention_user_id_dtos: List[CommentIdWithMentionUserIdDTO]
     ):
         pass
 
@@ -136,7 +139,10 @@ class GetCommentsForDiscussionPresenterInterface(ABC):
             self,
             comment_with_replies_count_and_editable_dtos: List[
                 CommentWithRepliesCountAndEditableDTO],
-            user_profile_dtos: List[UserProfileDTO]
+            user_profile_dtos: List[UserProfileDTO],
+            comment_id_with_multimedia_dtos: List[CommentIdWithMultiMediaDTO],
+            comment_id_with_mention_user_id_dtos: List[
+                CommentIdWithMentionUserIdDTO]
     ):
         pass
 
@@ -151,7 +157,10 @@ class CreateReplyPresenterInterface(ABC):
     def prepare_response_for_reply(
             self, comment_dto: CommentDTO,
             comment_with_editable_status_dto: CommentIdWithEditableStatusDTO,
-            user_profile_dto: UserProfileDTO
+            user_profile_dtos: List[UserProfileDTO],
+            comment_id_with_multimedia_dtos: List[CommentIdWithMultiMediaDTO],
+            comment_id_with_mention_user_id_dtos: List[
+                CommentIdWithMentionUserIdDTO]
     ):
         pass
 
@@ -167,6 +176,9 @@ class GetRepliesForCommentPresenterInterface(ABC):
             self, user_profile_dtos: List[UserProfileDTO],
             comment_with_editable_status_dtos: List[
                 CommentIdWithEditableStatusDTO],
-            comment_dtos: List[CommentDTO]
+            comment_dtos: List[CommentDTO],
+            comment_id_with_multimedia_dtos: List[CommentIdWithMultiMediaDTO],
+            comment_id_with_mention_user_id_dtos: List[
+                CommentIdWithMentionUserIdDTO]
     ):
         pass

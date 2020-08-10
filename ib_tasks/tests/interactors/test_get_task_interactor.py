@@ -228,12 +228,14 @@ class TestGetTaskInteractor:
                 stage_id="stage0",
                 name="name1",
                 db_stage_id=1,
+                color="color1",
                 actions_dtos=[stages_action_dtos[0], stages_action_dtos[1]]
             ),
             StageAndActionsDetailsDTO(
                 stage_id="stage1",
                 name="name2",
                 db_stage_id=1,
+                color="color2",
                 actions_dtos=[stages_action_dtos[2], stages_action_dtos[3]]
             )
         ]

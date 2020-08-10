@@ -1,6 +1,8 @@
 from typing import Optional, List, Union
 
 from ib_tasks.constants.config import TIME_FORMAT
+from ib_tasks.documents.elastic_task import ElasticFieldDTO, ElasticTaskDTO
+from ib_tasks.documents.elastic_task import ElasticFieldDTO, ElasticTaskDTO
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     DueTimeHasExpiredForToday, InvalidDueTimeFormat, \
     StartDateIsAheadOfDueDate, \
@@ -19,6 +21,8 @@ from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission
+from ib_tasks.exceptions.stage_custom_exceptions import \
+    StageIdsWithInvalidPermissionForAssignee
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
 from ib_tasks.interactors.create_or_update_task. \
@@ -28,9 +32,13 @@ from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
 from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrder
 from ib_tasks.interactors.presenter_interfaces.update_task_presenter import \
     UpdateTaskPresenterInterface
+from ib_tasks.interactors.stages_dtos import StageAssigneeDTO, \
+    TaskIdWithStageAssigneesDTO
 from ib_tasks.interactors.storage_interfaces. \
     create_or_update_task_storage_interface import \
     CreateOrUpdateTaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
+    ElasticSearchStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
@@ -46,6 +54,10 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import \
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.task_dtos import UpdateTaskDTO, CreateTaskDTO
+from ib_tasks.interactors.update_task_stage_assignees_interactor import \
+    UpdateTaskStageAssigneesInteractor
+from ib_tasks.interactors.task_dtos import UpdateTaskDTO, CreateTaskDTO, \
+    FieldValuesDTO
 
 
 class UpdateTaskInteractor:
@@ -55,7 +67,8 @@ class UpdateTaskInteractor:
             gof_storage: GoFStorageInterface,
             create_task_storage: CreateOrUpdateTaskStorageInterface,
             storage: StorageInterface, field_storage: FieldsStorageInterface,
-            stage_storage: StageStorageInterface
+            stage_storage: StageStorageInterface,
+            elastic_storage: ElasticSearchStorageInterface
     ):
         self.gof_storage = gof_storage
         self.task_storage = task_storage
@@ -63,6 +76,7 @@ class UpdateTaskInteractor:
         self.storage = storage
         self.field_storage = field_storage
         self.stage_storage = stage_storage
+        self.elastic_storage = elastic_storage
 
     def update_task_wrapper(
             self, presenter: UpdateTaskPresenterInterface,
@@ -136,6 +150,11 @@ class UpdateTaskInteractor:
         except InvalidFileFormat as err:
             return presenter.raise_exception_for_not_acceptable_file_format(
                 err)
+        except StageIdsWithInvalidPermissionForAssignee as err:
+            return \
+                presenter.raise_stage_ids_with_invalid_permission_for_assignee_exception(
+                    err
+                )
 
     def _prepare_update_task_response(
             self, task_dto: UpdateTaskDTO,
@@ -162,6 +181,8 @@ class UpdateTaskInteractor:
             task_template_id, action_type=None)
         self.create_task_storage.update_task_with_given_task_details(
             task_dto=task_dto)
+        elastic_dto = self._get_elastic_task_dto(task_dto)
+        self.elastic_storage.update_task(task_dto=elastic_dto)
         existing_gofs = \
             self.create_task_storage \
                 .get_gof_ids_with_same_gof_order_related_to_a_task(task_id)
@@ -193,6 +214,49 @@ class UpdateTaskInteractor:
                 task_gof_dtos_for_updation, task_dto, existing_fields)
         if task_gof_dtos_for_creation:
             self._create_task_gofs(task_gof_dtos_for_creation, task_dto)
+        update_stage_assignee_interactor = UpdateTaskStageAssigneesInteractor(
+            stage_storage=self.stage_storage, task_storage=self.task_storage
+        )
+        stage_assignees = [
+            StageAssigneeDTO(
+                db_stage_id=task_dto.stage_assignee.stage_id,
+                assignee_id=task_dto.stage_assignee.assignee_id
+            )
+        ]
+        task_stage_assignee_dto = TaskIdWithStageAssigneesDTO(
+            task_id=task_dto.task_id, stage_assignees=stage_assignees
+        )
+        update_stage_assignee_interactor.update_task_stage_assignees(
+            task_stage_assignee_dto)
+
+    def _get_elastic_task_dto(self, task_dto: UpdateTaskDTO):
+
+        fields_dto = self._get_fields_dto(task_dto)
+        elastic_task_dto = ElasticTaskDTO(
+            template_id=None,
+            task_id=task_dto.task_id,
+            title=task_dto.title,
+            fields=fields_dto
+        )
+        return elastic_task_dto
+
+    def _get_fields_dto(
+            self, task_dto: UpdateTaskDTO) -> List[ElasticFieldDTO]:
+
+        fields_dto = []
+        gof_fields_dtos = task_dto.gof_fields_dtos
+        for gof_fields_dto in gof_fields_dtos:
+            for field_value_dto in gof_fields_dto.field_values_dtos:
+                fields_dto.append(self._get_elastic_field_dto(field_value_dto))
+
+        return fields_dto
+
+    @staticmethod
+    def _get_elastic_field_dto(field_dto: FieldValuesDTO) -> ElasticFieldDTO:
+        return ElasticFieldDTO(
+            field_id=field_dto.field_id,
+            value=field_dto.field_response
+        )
 
     def _validate_task_id(
             self, task_id: int) -> Optional[InvalidTaskException]:

@@ -238,6 +238,10 @@ class CreateUpdateDeleteStageActionsInteractor:
         stage_ids = self._get_stage_ids(actions_dto)
         db_stage_actions_dto = self.storage \
             .get_stage_action_names(stage_ids=stage_ids)
+        for action in actions_dto:
+            if action.transition_template_id == '':
+                action.transition_template_id = None
+
         is_db_stage_actions_empty = not db_stage_actions_dto
         if is_db_stage_actions_empty:
             self.storage.create_stage_actions(stage_actions=actions_dto)

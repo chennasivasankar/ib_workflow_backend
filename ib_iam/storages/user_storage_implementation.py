@@ -9,6 +9,11 @@ from ib_iam.interactors.storage_interfaces.user_storage_interface \
 
 class UserStorageImplementation(UserStorageInterface):
 
+    def get_user_ids_who_are_not_admin(self) -> List[str]:
+        from ib_iam.models import UserDetails
+        return list(UserDetails.objects.filter(
+            is_admin=False).values_list("user_id", flat=True))
+
     def get_user_ids(self, role_ids: List[str]) -> List[str]:
         from ib_iam.models import UserRole
         return list(UserRole.objects.filter(

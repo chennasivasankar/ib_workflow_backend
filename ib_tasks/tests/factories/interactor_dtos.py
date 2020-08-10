@@ -1,25 +1,6 @@
-from typing import List
 
-import factory
-
-from ib_tasks.adapters.dtos import UserDTO
-from ib_tasks.constants.enum import Searchable
-from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
-    SearchableFieldDetailDTO
-from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
-from ib_tasks.interactors.gofs_dtos \
-    import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
-from ib_tasks.interactors.stages_dtos import \
-    TaskTemplateStageActionDTO, StageActionDTO, StagesActionDTO, \
-    TaskIdWithStageAssigneeDTO, StageAssigneeDetailsDTO
-from ib_tasks.interactors.stages_dtos import UserStagesWithPaginationDTO
-from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    ActionDetailsDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
-from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
-    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, CreateTaskLogDTO
-from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory
 from typing import List
+from ib_tasks.interactors.get_tasks_to_relevant_search_query import SearchQueryDTO
 
 import factory
 
@@ -54,14 +35,13 @@ class StageActionDTOFactory(factory.Factory):
     class Meta:
         model = StageActionDTO
 
-    stage_id = factory.Sequence(lambda n: 'stage_%d' % (n + 1))
+    stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n + 1))
     action_name = factory.Sequence(lambda n: 'action_name_%d' % (n + 1))
     logic = factory.Sequence(lambda n: 'logic%d' % (n + 1))
     roles = factory.Sequence(lambda n: [f'ROLE_{n + 1}', f'ROLE_{n + 2}'])
     button_text = factory.Sequence(lambda n: 'button_text_%d' % (n + 1))
     action_type = "action_type"
-    transition_template_id = factory.Sequence(
-        lambda n: "transition_template_id_%d" % (n + 1))
+    transition_template_id = factory.Sequence(lambda n: "template_%d" % (n + 1))
     button_color = factory.Sequence(lambda n: 'button_color_%d' % (n + 1))
     function_path = "sample_function_path"
 
@@ -251,4 +231,25 @@ class StageAssigneeDetailsDTOFactory(factory.Factory):
 
     @factory.lazy_attribute
     def assignee_details_dto(self):
-        return List[AssigneeDetailsDTOFactory()]
+        return [AssigneeDetailsDTOFactory()]
+
+
+class StageAssigneeDetailsWithOneAssigneeDTOFactory(factory.Factory):
+    class Meta:
+        model = StageAssigneeDetailsDTO
+
+    task_stage_id = factory.sequence(lambda counter: counter + 1)
+    stage_id = factory.sequence(lambda counter: counter)
+
+    @factory.lazy_attribute
+    def assignee_details_dto(self):
+        return AssigneeDetailsDTOFactory()
+
+class SearchQueryDTOFactory(factory.Factory):
+    class Meta:
+        model = SearchQueryDTO
+
+    user_id = factory.sequence(lambda n: n)
+    offset = factory.sequence(lambda n: n-1)
+    limit = factory.sequence(lambda n: n)
+    search_query = factory.sequence(lambda n: "value_{}" % n)

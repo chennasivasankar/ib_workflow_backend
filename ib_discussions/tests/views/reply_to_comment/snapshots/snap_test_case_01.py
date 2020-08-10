@@ -18,5 +18,29 @@ snapshots['TestCase01ReplyToCommentAPITestCase.test_case body'] = {
     'comment_content': 'content',
     'comment_id': '01be920b-7b4c-49e7-8adb-41a0c18da848',
     'created_at': '2020-05-01 00:00:00',
-    'is_editable': True
+    'is_editable': True,
+    'mention_users': [
+        {
+            'name': 'name',
+            'profile_pic_url': 'https://graph.ib_users.com/',
+            'user_id': '10be920b-7b4c-49e7-8adb-41a0c18da848'
+        },
+        {
+            'name': 'name',
+            'profile_pic_url': 'https://graph.ib_users.com/',
+            'user_id': '20be920b-7b4c-49e7-8adb-41a0c18da848'
+        }
+    ],
+    'multimedia': [
+        {
+            'format_type': 'IMAGE',
+            'multimedia_id': '97be920b-7b4c-49e7-8adb-41a0c18da848',
+            'url': 'https://picsum.photos/200'
+        },
+        {
+            'format_type': 'VIDEO',
+            'multimedia_id': '92be920b-7b4c-49e7-8adb-41a0c18da848',
+            'url': 'https://picsum.photos/200'
+        }
+    ]
 }

@@ -101,6 +101,10 @@ class InvalidTransitionTemplateIds(Exception):
         self.invalid_transition_ids = invalid_transition_ids
 
 
+class UserIsNotAssigneeToTask(Exception):
+    pass
+
+
 class InvalidStageIdsForTask(Exception):
     def __init__(self, message: str):
         self.message = message

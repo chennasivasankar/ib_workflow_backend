@@ -7,7 +7,7 @@ from .validator_class import ValidatorClass
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     user_object = kwargs["user"]
-    user_id = user_object.user_id
+    user_id = str(user_object.user_id)
 
     path_params = kwargs["path_params"]
     discussion_id = path_params["discussion_id"]

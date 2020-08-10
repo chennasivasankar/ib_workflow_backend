@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import factory
 
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
-    Priority
+    Priority, ActionTypes
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     Task, TaskGoF,
@@ -46,7 +46,7 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     display_name = factory.Sequence(lambda n: "name_%d" % n)
     task_template_id = factory.Sequence(lambda n: "task_template_id_%d" % n)
     value = factory.Sequence(lambda n: n)
-    stage_color = "blue"
+    stage_color = factory.Iterator(["blue", "orange", "green"])
     display_logic = factory.Sequence(lambda n: "status_id_%d==stage_id" % n)
     card_info_kanban = json.dumps(['field_id_1', "field_id_2"])
     card_info_list = json.dumps(['field_id_1', "field_id_2"])
@@ -81,14 +81,6 @@ class TaskTemplateFactory(factory.django.DjangoModelFactory):
     name = factory.sequence(lambda n: "Template {}".format(n + 1))
 
 
-class TaskTemplateFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = TaskTemplate
-
-    template_id = factory.sequence(lambda n: "template_{}".format(n + 1))
-    name = factory.sequence(lambda n: "Template {}".format(n + 1))
-
-
 class TaskTemplateWithTransitionFactory(TaskTemplateFactory):
     is_transition_template = factory.Iterator([True, False])
 
@@ -98,12 +90,12 @@ class StageActionFactory(factory.django.DjangoModelFactory):
         model = StageAction
 
     stage = factory.SubFactory(StageModelFactory)
-    name = factory.Sequence(lambda n: "name_%d" % n)
+    name = factory.Sequence(lambda n: "action_name_%d" % n)
     button_text = "hey"
     button_color = "#fafafa"
     logic = "Status1 = PR_PAYMENT_REQUEST_DRAFTS"
     py_function_import_path = "path"
-    action_type = factory.Sequence(lambda c: "action_type{}".format(c))
+    action_type = ActionTypes.NO_VALIDATIONS.value
     transition_template = factory.SubFactory(TaskTemplateFactory)
 
 

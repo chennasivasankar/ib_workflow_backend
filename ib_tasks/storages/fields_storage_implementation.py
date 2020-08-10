@@ -3,7 +3,7 @@ from typing import List, Dict
 
 from django.db.models import Q, F
 
-from ib_tasks.constants.enum import VIEWTYPE
+from ib_tasks.constants.enum import ViewType
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldCompleteDetailsDTO, FieldDTO, UserFieldPermissionDTO, \
     FieldIdWithGoFIdDTO, StageTaskFieldsDTO, TaskTemplateStageFieldsDTO, \
@@ -107,7 +107,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         return task_fields_dtos
 
     def get_field_ids(self, task_dtos: List[TaskTemplateStageDTO],
-                      view_type: VIEWTYPE) -> \
+                      view_type: ViewType) -> \
             List[TaskTemplateStageFieldsDTO]:
         from collections import defaultdict
         task_stages_dict = defaultdict(list)
@@ -124,14 +124,16 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         if q is None:
             return []
 
-        if view_type == VIEWTYPE.LIST.value:
+        if view_type == ViewType.LIST.value:
             stage_objs = (Stage.objects.filter(q)
                           .annotate(view_type=F('card_info_list'))
-                          .values('task_template_id', 'stage_id', 'view_type'))
+                          .values('task_template_id', 'stage_id',
+                                  'view_type', 'stage_color'))
         else:
             stage_objs = (Stage.objects.filter(q)
                           .annotate(view_type=F('card_info_kanban'))
-                          .values('task_template_id', 'stage_id', 'view_type'))
+                          .values('task_template_id', 'stage_id',
+                                  'view_type', 'stage_color'))
 
         task_fields_dtos = self._convert_stage_objs_to_dtos(stage_objs,
                                                             task_stages_dict)
@@ -144,12 +146,15 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         import json
         for stage in stage_objs:
             fields = stage['view_type']
+            if not fields:
+                continue
             field_ids = json.loads(fields)
             for task_id in task_stages_dict[stage['stage_id']]:
                 task_fields_dtos.append(
                     TaskTemplateStageFieldsDTO(
                         task_template_id=stage['task_template_id'],
                         task_id=task_id,
+                        stage_color=stage['stage_color'],
                         stage_id=stage['stage_id'],
                         field_ids=field_ids))
         return task_fields_dtos
@@ -161,15 +166,20 @@ class FieldsStorageImplementation(FieldsStorageInterface):
 
     def get_stage_complete_details(self, stage_ids: List[str]) -> \
             List[StageDetailsDTO]:
-        stage_objs = Stage.objects.filter(stage_id__in=stage_ids
-                                          ).values('id', 'stage_id', 'display_name')
+        stage_objs = Stage.objects.filter(
+            stage_id__in=stage_ids
+        ).values(
+            'id', 'stage_id', 'display_name',
+            'stage_color'
+        )
         stage_dtos = []
         for stage in stage_objs:
             stage_dtos.append(
                 StageDetailsDTO(
                     stage_id=stage['stage_id'],
                     name=stage['display_name'],
-                    db_stage_id=stage['id']
+                    db_stage_id=stage['id'],
+                    color=stage['stage_color']
                 )
             )
         return stage_dtos
