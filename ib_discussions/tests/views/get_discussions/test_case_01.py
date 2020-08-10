@@ -17,6 +17,12 @@ class TestCase01GetDiscussionsAPITestCase(TestUtils):
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['read']}}
 
+    def _get_or_create_user(self):
+        user_id = "e597ab2f-a10c-4164-930e-23af375741cb"
+        from ib_users.models import UserAccount
+        user = UserAccount.objects.create(user_id=user_id)
+        return user
+
     @pytest.mark.django_db
     def test_case(self, snapshot, mocker):
         from ib_discussions.tests.common_fixtures.adapters import \

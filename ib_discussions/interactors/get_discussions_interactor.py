@@ -50,7 +50,7 @@ class GetDiscussionInteractor:
             presenter: GetDiscussionsPresenterInterface
     ):
         discussions_with_users_and_discussion_count_dto, \
-        discussion_id_with_editable_status_dtos, discussion_id_with_comments_count_dtos\
+        discussion_id_with_editable_status_dtos, discussion_id_with_comments_count_dtos \
             = self.get_discussions_details_dto(
             entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
             offset_and_limit_dto=offset_and_limit_dto, user_id=user_id,
@@ -101,7 +101,7 @@ class GetDiscussionInteractor:
             total_count=total_discussions_count
         )
         return discussions_with_users_and_discussion_count_dto, discussion_id_with_editable_status_dtos, \
-            discussion_id_with_comments_count_dtos
+               discussion_id_with_comments_count_dtos
 
     def _validate_limit_offset_entity_id_and_entity_type(
             self, offset_and_limit_dto
@@ -160,13 +160,14 @@ class GetDiscussionInteractor:
     def _prepare_discussion_id_with_editable_status_dto(
             discussion_dto: DiscussionDTO, user_id):
         is_editable = False
-        id_discussion_owner_can_edit = discussion_dto.user_id == user_id
+        id_discussion_owner_can_edit = str(discussion_dto.user_id) == str(user_id)
         if id_discussion_owner_can_edit:
             is_editable = True
         from ib_iam.interactors.presenter_interfaces.dtos import \
             DiscussionIdWithEditableStatusDTO
-        discussion_id_with_editable_status_dto = DiscussionIdWithEditableStatusDTO(
-            discussion_id=discussion_dto.discussion_id,
-            is_editable=is_editable
-        )
+        discussion_id_with_editable_status_dto = \
+            DiscussionIdWithEditableStatusDTO(
+                discussion_id=discussion_dto.discussion_id,
+                is_editable=is_editable
+            )
         return discussion_id_with_editable_status_dto
