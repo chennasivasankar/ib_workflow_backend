@@ -205,11 +205,11 @@ FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE = (
 
 USER_NOT_HAVE_PERMISSIONS_TO_UPDATE = (
     'user not have access to update the filter',
-    'USER_DO_NOT_ACCESS_TO_UPDATE_FILTER')
+    'USER_NOT_HAVE_PERMISSIONS_TO_UPDATE')
 
 USER_NOT_HAVE_PERMISSIONS_TO_DELETE = (
     'user not have access to delete the filter',
-    'USER_DO_NOT_ACCESS_TO_DELETE_FILTER')
+    'USER_NOT_HAVE_PERMISSIONS_TO_DELETE')
 DUPLICATE_STAGE_IDS = ("Duplicate stage ids that you have sent are: {},"
                        "please send unique stage ids", "DUPLICATE_STAGE_IDS")
 TRANSITION_TEMPLATE_DOES_NOT_EXISTS = (

@@ -7,7 +7,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01CreateFilterAPITestCase(TestUtils):
+class TestCase02UpdateFilterAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -15,7 +15,7 @@ class TestCase01CreateFilterAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.fixture(autouse=True)
-    def setup(self, mocker):
+    def setup(self, mocker, api_user):
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids
         get_user_role_ids(mocker)
@@ -47,11 +47,17 @@ class TestCase01CreateFilterAPITestCase(TestUtils):
         FieldRoleFactory.create_batch(
             size=6, field=factory.Iterator(field_objs)
         )
+        from ib_tasks.tests.factories.models import FilterFactory
+        FilterFactory.create_batch(3)
+        FilterFactory.create_batch(1, created_by=api_user.user_id)
+        from ib_tasks.tests.factories.models import FilterConditionFactory
+        FilterConditionFactory.create_batch(1, filter_id=1)
+
 
     @pytest.mark.django_db
     def test_case(self, snapshot):
-        body = {'name': 'Filter', 'template_id': 'template_1', 'conditions': [{'field_id': 'FIELD_ID-2', 'operator': 'EQ', 'value': 'string'}]}
-        path_params = {}
+        body = {'name': 'string', 'template_id': 'template_1', 'conditions': [{'field_id': 'FIELD_ID-0', 'operator': 'EQ', 'value': 'string'}]}
+        path_params = {"filter_id": "1"}
         query_params = {}
         headers = {}
         response = self.make_api_call(

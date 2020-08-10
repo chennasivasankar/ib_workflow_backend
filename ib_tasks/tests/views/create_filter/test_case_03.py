@@ -7,7 +7,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01CreateFilterAPITestCase(TestUtils):
+class TestCase02CreateFilterAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -50,7 +50,7 @@ class TestCase01CreateFilterAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_case(self, snapshot):
-        body = {'name': 'Filter', 'template_id': 'template_1', 'conditions': [{'field_id': 'FIELD_ID-2', 'operator': 'EQ', 'value': 'string'}]}
+        body = {'name': 'New Filter', 'template_id': 'template_1', 'conditions': [{'field_id': 'FIELD_ID-1', 'operator': 'EQ', 'value': 'VALUE'}]}
         path_params = {}
         query_params = {}
         headers = {}
