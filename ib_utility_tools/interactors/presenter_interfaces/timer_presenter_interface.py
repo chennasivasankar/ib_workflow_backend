@@ -9,3 +9,7 @@ class TimerPresenterInterface(abc.ABC):
     def get_success_response_with_timer_details_dto(
             self, timer_details_dto: TimerDetailsDTO):
         pass
+
+    @abc.abstractmethod
+    def raise_timer_is_already_running_exception(self):
+        pass

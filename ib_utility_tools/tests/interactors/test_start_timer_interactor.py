@@ -25,6 +25,24 @@ class TestStartTimerInteractor:
         interactor = StartTimerInteractor(timer_storage=storage_mock)
         return interactor
 
+    def test_timer_is_already_running_raises_timer_already_running_exception(
+            self, interactor, storage_mock, presenter_mock):
+        from ib_utility_tools.tests.factories.storage_dtos import \
+            TimerEntityDTOFactory, TimerDetailsDTOFactory
+        timer_entity_dto = TimerEntityDTOFactory()
+        timer_details_dto = TimerDetailsDTOFactory(is_running=True)
+        storage_mock.get_timer_details_dto.return_value = timer_details_dto
+        presenter_mock.raise_timer_is_already_running_exception \
+            .return_value = mock.Mock()
+
+        interactor.start_timer_wrapper(timer_entity_dto=timer_entity_dto,
+                                       presenter=presenter_mock)
+
+        storage_mock.get_timer_details_dto.assert_called_once_with(
+            timer_entity_dto=timer_entity_dto)
+        presenter_mock.raise_timer_is_already_running_exception \
+            .assert_called_once()
+
     def test_it_returns_timer_details_dict(
             self, interactor, storage_mock, presenter_mock):
         from ib_utility_tools.tests.factories.storage_dtos import \
