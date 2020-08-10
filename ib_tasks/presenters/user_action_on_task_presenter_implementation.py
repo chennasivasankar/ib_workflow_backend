@@ -111,24 +111,13 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
     def get_response_for_user_action_on_task(
             self, task_complete_details_dto: TaskCompleteDetailsDTO):
 
-        print(task_complete_details_dto)
         task_id = task_complete_details_dto.task_id
-        # TODO: Need to refactor
-        if task_complete_details_dto.task_boards_details:
-            actions_dto = task_complete_details_dto.actions_dto
-            fields_dto = task_complete_details_dto.field_dtos
-            task_board_details = task_complete_details_dto.task_boards_details
-            board_dto = task_board_details.board_dto
-
-            current_board_details = {
-                "board_id": board_dto.board_id,
-                "board_name": board_dto.name,
-                "column_details": self._get_column_details(
-                    actions_dto, fields_dto, task_board_details
-                )
-            }
+        is_board_id_none = not task_complete_details_dto.task_boards_details
+        if is_board_id_none:
+            current_board_details = {}
         else:
-            current_board_details = None
+            current_board_details = \
+                self._get_current_board_details(task_complete_details_dto)
 
         response_dict = {
             "task_id": str(task_id),
@@ -137,6 +126,21 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
         }
         response_object = self.prepare_200_success_response(response_dict)
         return response_object
+
+    def _get_current_board_details(
+            self, task_complete_details_dto: TaskCompleteDetailsDTO):
+        actions_dto = task_complete_details_dto.actions_dto
+        fields_dto = task_complete_details_dto.field_dtos
+        task_board_details = task_complete_details_dto.task_boards_details
+        board_dto = task_board_details.board_dto
+
+        return {
+            "board_id": board_dto.board_id,
+            "board_name": board_dto.name,
+            "column_details": self._get_column_details(
+                actions_dto, fields_dto, task_board_details
+            )
+        }
 
     def _get_column_details(self, actions_dto: List[ActionDTO],
                             fields_dto: List[FieldDisplayDTO],

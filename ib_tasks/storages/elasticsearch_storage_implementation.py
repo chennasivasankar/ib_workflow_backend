@@ -63,9 +63,23 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         from django.conf import settings
         connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
                                       timeout=20)
+        task_objects = self._get_search_task_objects(filter_dtos)
+
+        total_tasks = task_objects.count()
+        return [
+                   task_object.task_id
+                   for task_object in task_objects[offset: offset + limit]
+               ], total_tasks
+
+    @staticmethod
+    def _get_search_task_objects(filter_dtos: List[ApplyFilterDTO]):
+
         query = None
         for counter, item in enumerate(filter_dtos):
-            current_queue = self._prepare_q_object_for_the_eq_operator(item)
+            current_queue = Q('term', template_id__keyword=item.template_id) \
+                            & Q('term',
+                                fields__field_id__keyword=item.field_id) \
+                            & Q('term', fields__value__keyword=item.value)
             if counter == 0:
                 query = current_queue
             else:
@@ -76,40 +90,19 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             task_objects = search
         else:
             task_objects = search.filter(query)
-        total_tasks = task_objects.count()
-        return [
-                   task_object.task_id
-                   for task_object in task_objects[offset: offset + limit]
-               ], total_tasks
+        return task_objects
 
-    @staticmethod
-    def _prepare_q_object_for_the_eq_operator(item: ApplyFilterDTO):
-        current_queue = Q('term', template_id__keyword=item.template_id) \
-                        & Q('term', fields__field_id__keyword=item.field_id) \
-                        & Q('term', fields__value__keyword=item.value)
-        return current_queue
-
-    @staticmethod
-    def _get_field_objects(field_dtos: List[ElasticFieldDTO]) -> List[Field]:
-        return [
-            Field(
-                field_id=field_dto.field_id,
-                value=field_dto.value
-            )
-            for field_dto in field_dtos
-        ]
-
-    def query_tasks(
-            self, offset: int, limit: int, search_query: str
+    def search_tasks(
+            self, offset: int, limit: int, search_query: str,
+            apply_filter_dtos: List[ApplyFilterDTO]
     ) -> QueryTasksDTO:
         from elasticsearch_dsl import connections
         from django.conf import settings
         connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
                                       timeout=20)
 
-        from elasticsearch_dsl import Q, Search
-
-        search = Search(index=TASK_INDEX_NAME)
+        from elasticsearch_dsl import Q
+        search = self._get_search_task_objects(apply_filter_dtos)
         if search_query:
             search = search.query(
                 Q(
@@ -129,6 +122,16 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             total_tasks_count=total_tasks_count,
             task_ids=task_ids
         )
+
+    @staticmethod
+    def _get_field_objects(field_dtos: List[ElasticFieldDTO]) -> List[Field]:
+        return [
+            Field(
+                field_id=field_dto.field_id,
+                value=field_dto.value
+            )
+            for field_dto in field_dtos
+        ]
 
     def create_elastic_user(self, user_dto: ElasticUserDTO):
         from elasticsearch_dsl import connections

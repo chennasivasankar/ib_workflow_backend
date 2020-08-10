@@ -1,8 +1,6 @@
 from typing import List, Optional
 from ib_tasks.exceptions.action_custom_exceptions import \
-    InvalidActionException, InvalidKeyError, InvalidCustomLogicException
-
-from ib_tasks.constants.enum import ViewType
+    InvalidKeyError, InvalidCustomLogicException
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.permission_custom_exceptions import UserActionPermissionDenied, UserBoardPermissionDenied
 
@@ -111,13 +109,13 @@ class UserActionOnTaskInteractor:
         except StageIdsWithInvalidPermissionForAssignee as exception:
             return presenter. \
                 raise_stage_ids_with_invalid_permission_for_assignee_exception(
-                invalid_stage_ids=exception.invalid_stage_ids)
+                    invalid_stage_ids=exception.invalid_stage_ids)
         return presenter.get_response_for_user_action_on_task(
             task_complete_details_dto=task_complete_details_dto
         )
 
     def user_action_on_task(self):
-        self._validations_for_task_action()
+        # self._validations_for_task_action()
         task_dto = self._get_task_dto()
         self._call_logic_and_update_status_variables_and_get_stage_ids(
             task_dto=task_dto
@@ -139,8 +137,8 @@ class UserActionOnTaskInteractor:
             )
         set_stage_assignees_interactor \
             .get_random_assignees_of_next_stages_and_update_in_db(
-            task_id=self.task_id, action_id=self.action_id
-        )
+                task_id=self.task_id, action_id=self.action_id
+            )
         return TaskCompleteDetailsDTO(
             task_id=self.task_id,
             task_boards_details=task_boards_details,

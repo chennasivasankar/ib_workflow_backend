@@ -1,14 +1,13 @@
 from typing import List
 
 from ib_iam.adapters.dtos import UserProfileDTO
-from ib_iam.interactors.DTOs.common_dtos import UserIdWithRoleIdsDTO
+from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserIdAndNameDTO
 
 
 class ServiceInterface:
-
     @staticmethod
-    def get_valid_role_ids(role_ids: List[str]):
+    def get_valid_role_ids(role_ids: List[str]) -> List[str]:
         from ib_iam.storages.roles_storage_implementation import \
             RolesStorageImplementation
         storage = RolesStorageImplementation()
@@ -41,8 +40,7 @@ class ServiceInterface:
         interactor = RolesInteractor(storage=storage)
 
         user_id_with_role_ids_dtos = interactor.get_role_ids_for_each_user_id(
-            user_ids=user_ids
-        )
+            user_ids=user_ids)
         return user_id_with_role_ids_dtos
 
     @staticmethod
@@ -84,8 +82,7 @@ class ServiceInterface:
         interactor = GetUsersDetailsInteractor(user_storage=storage)
 
         user_details_dtos = interactor.get_user_dtos_based_on_limit_and_offset(
-            limit=limit, offset=offset, search_query=search_query
-        )
+            limit=limit, offset=offset, search_query=search_query)
         return user_details_dtos
 
     @staticmethod
@@ -100,8 +97,7 @@ class ServiceInterface:
         interactor = GetUsersDetailsInteractor(user_storage=storage)
 
         user_details_dtos = interactor.get_all_user_dtos_based_on_query(
-            search_query=search_query
-        )
+            search_query=search_query)
         return user_details_dtos
 
     @staticmethod

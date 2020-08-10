@@ -1,5 +1,5 @@
 from functools import reduce
-def user_reset_password_link(*args, **kwargs):  # pylint: disable=invalid-name
+def reset_user_password(*args, **kwargs):  # pylint: disable=invalid-name
     """
     Note: replace below mock implementation with your actual implementation
 
