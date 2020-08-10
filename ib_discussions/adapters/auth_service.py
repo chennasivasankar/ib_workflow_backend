@@ -9,6 +9,11 @@ class UserProfileDTO:
     profile_pic_url: str = None
 
 
+class InvalidUserIds(Exception):
+    def __init__(self, user_ids: List[str]):
+        self.user_ids = user_ids
+
+
 class AuthService:
     @property
     def interface(self):
@@ -62,3 +67,16 @@ class AuthService:
         if profile_pic_url is None:
             profile_pic_url = ""
         return profile_pic_url
+
+    @staticmethod
+    def validate_user_ids(user_ids: List[str]):
+        from ib_iam.app_interfaces.service_interface import ServiceInterface
+        service_interface = ServiceInterface()
+        valid_user_ids = service_interface.get_valid_user_ids(user_ids=user_ids)
+        invalid_user_ids = [
+            user_id
+            for user_id in user_ids if user_id not in valid_user_ids
+        ]
+        if invalid_user_ids:
+            raise InvalidUserIds(user_ids=user_ids)
+        return

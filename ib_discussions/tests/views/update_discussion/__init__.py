@@ -2,5 +2,5 @@
 
 APP_NAME = "ib_discussions"
 OPERATION_NAME = "update_discussion"
-REQUEST_METHOD = "post"
-URL_SUFFIX = "discussion/{discussion_id}/update/v1/"
+REQUEST_METHOD = "put"
+URL_SUFFIX = "discussion/{discussion_id}/v1/"
