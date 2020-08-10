@@ -93,21 +93,21 @@ class AuthService:
             from ib_users.exceptions.custom_exception_constants import \
                 PASSWORD_AT_LEAST_1_SPECIAL_CHARACTER
             if err.error_type == PASSWORD_AT_LEAST_1_SPECIAL_CHARACTER.code:
-                from ib_iam.interactors.update_user_password_interactor import \
+                from ib_iam.interactors.reset_user_password_interactor import \
                     PasswordAtLeastOneSpecialCharacter
                 raise PasswordAtLeastOneSpecialCharacter
             from ib_users.exceptions.custom_exception_constants import \
                 PASSWORD_MIN_LENGTH_IS
             if err.error_type == PASSWORD_MIN_LENGTH_IS.code:
-                from ib_iam.interactors.update_user_password_interactor import \
+                from ib_iam.interactors.reset_user_password_interactor import \
                     PasswordMinLength
                 raise PasswordMinLength
         except InvalidTokenException:
-            from ib_iam.interactors.update_user_password_interactor import \
+            from ib_iam.interactors.reset_user_password_interactor import \
                 TokenDoesNotExist
             raise TokenDoesNotExist
         except TokenExpiredException:
-            from ib_iam.interactors.update_user_password_interactor import \
+            from ib_iam.interactors.reset_user_password_interactor import \
                 TokenHasExpired
             raise TokenHasExpired
 
