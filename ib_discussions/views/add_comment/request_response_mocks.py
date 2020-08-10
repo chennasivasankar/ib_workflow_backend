@@ -4,7 +4,7 @@ REQUEST_BODY_JSON = """
 {
     "comment_content": "string",
     "mention_user_ids": [
-        "0280ed25-b6bc-4010-95d6-3c70ce0d9254"
+        "41ae2d9d-a1ba-46ee-a03e-9801972aca9a"
     ],
     "multimedia": [
         {
@@ -19,25 +19,25 @@ REQUEST_BODY_JSON = """
 RESPONSE_200_JSON = """
 {
     "author": {
-        "user_id": "60af3d68-5ae7-4894-8f6b-50033ad96b7b",
+        "user_id": "7cdce5c7-31a2-4e6d-92dd-70eee559b3fa",
         "name": "string",
         "profile_pic_url": "string"
     },
-    "comment_id": "1098a61e-7c05-43fa-945e-7e54a71fb3c4",
+    "comment_id": "eef59a85-b9f3-40fc-8025-f21b86749652",
     "comment_content": "string",
     "total_replies_count": 1,
     "is_editable": true,
     "created_at": "2099-12-31 00:00:00",
     "mention_users": [
         {
-            "user_id": "0ad16a52-18b3-454b-8ddb-09ffbe9d80cc",
+            "user_id": "50d56121-4ad4-40a2-a4eb-fc937e984cec",
             "name": "string",
             "profile_pic_url": "string"
         }
     ],
     "multimedia": [
         {
-            "multimedia_id": "b1bacff9-8582-4b27-a780-33ad023180de",
+            "multimedia_id": "c8c1d8a9-c3d1-439a-8038-eccfdb129c15",
             "format_type": "IMAGE",
             "url": "string"
         }
