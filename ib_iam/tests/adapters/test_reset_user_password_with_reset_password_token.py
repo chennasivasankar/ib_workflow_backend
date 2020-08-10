@@ -1,14 +1,15 @@
 import pytest
 
 
-class TestUpdateUserPasswordAdapter:
-    def reset_password_mock(self, mocker):
+class TestResetUserPasswordAdapter:
+    @staticmethod
+    def reset_password_mock(mocker):
         mock = mocker.patch(
             "ib_users.interfaces.service_interface.ServiceInterface.reset_password_for_given_user_password_reset_token"
         )
         return mock
 
-    def test_update_user_password_with_reset_password_token(
+    def test_reset_user_password_with_reset_password_token(
             self, mocker):
         # Arrange
         reset_password_token = "string"
@@ -32,8 +33,7 @@ class TestUpdateUserPasswordAdapter:
             assert_called_once()
 
     def test_incorrect_password_for_password_at_least_one_special_character_raise_exception(
-            self, mocker
-    ):
+            self, mocker):
         # Arrange
         reset_password_token = "string"
         password = "string123"
@@ -53,7 +53,7 @@ class TestUpdateUserPasswordAdapter:
         auth_service = service_adapter.auth_service
 
         # Assert
-        from ib_iam.interactors.update_user_password_interactor import \
+        from ib_iam.interactors.reset_user_password_interactor import \
             PasswordAtLeastOneSpecialCharacter
         with pytest.raises(PasswordAtLeastOneSpecialCharacter):
             auth_service.update_user_password_with_reset_password_token(
@@ -65,8 +65,7 @@ class TestUpdateUserPasswordAdapter:
             assert_called_once()
 
     def test_incorrect_password_for_password_min_length_raise_exception(
-            self, mocker
-    ):
+            self, mocker):
         # Arrange
         reset_password_token = "string"
         password = "string123"
@@ -88,7 +87,7 @@ class TestUpdateUserPasswordAdapter:
         auth_service = service_adapter.auth_service
 
         # Assert
-        from ib_iam.interactors.update_user_password_interactor import \
+        from ib_iam.interactors.reset_user_password_interactor import \
             PasswordMinLength
         with pytest.raises(PasswordMinLength):
             auth_service.update_user_password_with_reset_password_token(
@@ -100,8 +99,7 @@ class TestUpdateUserPasswordAdapter:
             assert_called_once()
 
     def test_with_token_does_not_exist_raise_exception(
-            self, mocker
-    ):
+            self, mocker):
         # Arrange
         reset_password_token = "string"
         password = "string123"
@@ -118,7 +116,7 @@ class TestUpdateUserPasswordAdapter:
         auth_service = service_adapter.auth_service
 
         # Assert
-        from ib_iam.interactors.update_user_password_interactor import \
+        from ib_iam.interactors.reset_user_password_interactor import \
             TokenDoesNotExist
         with pytest.raises(TokenDoesNotExist):
             auth_service.update_user_password_with_reset_password_token(
@@ -130,8 +128,7 @@ class TestUpdateUserPasswordAdapter:
             assert_called_once()
 
     def test_with_token_has_expired_raise_exception(
-            self, mocker
-    ):
+            self, mocker):
         # Arrange
         reset_password_token = "string"
         password = "string123"
@@ -149,7 +146,7 @@ class TestUpdateUserPasswordAdapter:
 
         # Assert
 
-        from ib_iam.interactors.update_user_password_interactor import \
+        from ib_iam.interactors.reset_user_password_interactor import \
             TokenHasExpired
         with pytest.raises(TokenHasExpired):
             auth_service.update_user_password_with_reset_password_token(
