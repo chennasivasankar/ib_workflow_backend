@@ -1,5 +1,8 @@
 import abc
 
+from ib_tasks.exceptions.stage_custom_exceptions import \
+    StageIdsWithInvalidPermissionForAssignee
+
 
 class UpdateTaskPresenterInterface(abc.ABC):
 
@@ -114,5 +117,10 @@ class UpdateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_exception_for_not_acceptable_file_format(self, err):
+        pass
+
+    @abc.abstractmethod
+    def raise_stage_ids_with_invalid_permission_for_assignee_exception(
+            self, err: StageIdsWithInvalidPermissionForAssignee):
         pass
 
