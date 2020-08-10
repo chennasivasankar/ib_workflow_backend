@@ -1,5 +1,5 @@
 """
-test with valid data updates task
+test with user has no gof writable permission raises exception
 """
 import json
 
@@ -8,11 +8,9 @@ from django_swagger_utils.utils.test_utils import TestUtils
 
 from ib_tasks.constants.enum import FieldTypes
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-from ...factories.models import StageActionFactory, StageModelFactory, \
-    StagePermittedRolesFactory
 
 
-class TestCase01UpdateTaskAPITestCase(TestUtils):
+class TestCase08UpdateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -25,7 +23,7 @@ class TestCase01UpdateTaskAPITestCase(TestUtils):
         from ib_tasks.tests.factories.models import TaskTemplateFactory, \
             GoFFactory, GoFRoleFactory, TaskFactory, TaskGoFFactory, \
             FieldFactory, FieldRoleFactory, GoFToTaskTemplateFactory, \
-            TaskGoFFieldFactory, ElasticSearchTaskFactory
+            TaskGoFFieldFactory
 
         TaskTemplateFactory.reset_sequence()
         GoFRoleFactory.reset_sequence()
@@ -33,8 +31,6 @@ class TestCase01UpdateTaskAPITestCase(TestUtils):
         FieldFactory.reset_sequence()
         FieldRoleFactory.reset_sequence()
         GoFToTaskTemplateFactory.reset_sequence()
-        StagePermittedRolesFactory.reset_sequence()
-        ElasticSearchTaskFactory.reset_sequence(1)
 
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids
@@ -77,17 +73,6 @@ class TestCase01UpdateTaskAPITestCase(TestUtils):
             field=checkbox_group,
             field_response='["interactors", "storages"]'
         )
-        stage = StageModelFactory(
-            task_template_id='template_1',
-            display_logic="variable0==stage_id_0",
-            card_info_kanban=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
-            card_info_list=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
-        )
-        ElasticSearchTaskFactory.create(task_id=1)
-        path = \
-            'ib_tasks.tests.populate.stage_actions_logic.stage_1_action_name_3'
-        StageActionFactory(stage=stage, py_function_import_path=path)
-        StagePermittedRolesFactory.create(stage=stage)
 
     @pytest.mark.django_db
     def test_case(self, snapshot):

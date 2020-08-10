@@ -176,8 +176,8 @@ INVALID_GOFS_OF_TASK_TEMPLATE = (
     "invalid gofs {}  given to the task template {}",
     "INVALID_GOFS_OF_TASK_TEMPLATE")
 
-DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF = ("gof id {} has duplicate field ids {}",
-                                    "DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF")
+DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF = ("gof id {} has duplicate field ids {}",
+                                    "DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF")
 
 INVALID_FIELDS_OF_TASK_TEMPLATE = ("invalid fields {}  given to the gof {}",
                                    "INVALID_FIELDS_OF_TASK_TEMPLATE")

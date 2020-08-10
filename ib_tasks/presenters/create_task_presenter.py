@@ -182,13 +182,13 @@ class CreateTaskPresenterImplementation(
 
     def raise_duplicate_field_ids_to_a_gof(self, err: DuplicateFieldIdsToGoF):
         from ib_tasks.constants.exception_messages import \
-            DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF
-        response_message = DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF[0].format(
+            DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF
+        response_message = DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF[0].format(
             err.gof_id, str(err.field_ids))
         data = {
             "response": response_message,
             "http_status_code": 400,
-            "res_status": DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF[1]
+            "res_status": DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF[1]
         }
         return self.prepare_400_bad_request_response(data)
 
