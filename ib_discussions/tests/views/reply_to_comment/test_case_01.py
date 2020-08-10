@@ -26,6 +26,10 @@ class TestCase01ReplyToCommentAPITestCase(TestUtils):
         discussion_id = "71be920b-7b4c-49e7-8adb-41a0c18da848"
         comment_reply_id = "01be920b-7b4c-49e7-8adb-41a0c18da848"
 
+        from ib_discussions.tests.common_fixtures.adapters import \
+            prepare_validate_user_ids_mock
+        prepare_validate_user_ids_mock(mocker=mocker)
+
         user_ids = [
             "c8939223-79a0-4566-ba13-b4fbf7db6f93"
         ]

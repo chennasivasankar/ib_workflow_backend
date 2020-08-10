@@ -22,13 +22,61 @@ class TestCase02AddCommentAPITestCase(TestUtils):
         return user
 
     @pytest.mark.django_db
-    def test_discussion_id_not_found_return_response(self, snapshot):
+    def test_discussion_id_not_found_return_response(self, snapshot, mocker):
         discussion_id = "71be920b-7b4c-49e7-8adb-41a0c18da848"
         comment_content = "content"
         mention_user_ids = [
             "10be920b-7b4c-49e7-8adb-41a0c18da848",
             "20be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
+
+        from ib_discussions.tests.common_fixtures.adapters import \
+            prepare_validate_user_ids_mock
+        prepare_validate_user_ids_mock(mocker=mocker)
+
+        from ib_discussions.constants.enum import MultiMediaFormatEnum
+        multimedia = [
+            {
+                "format_type": MultiMediaFormatEnum.IMAGE.value,
+                "url": "https://picsum.photos/200"
+            },
+            {
+                "format_type": MultiMediaFormatEnum.VIDEO.value,
+                "url": "https://picsum.photos/200"
+            }
+        ]
+        body = {
+            'comment_content': comment_content,
+            'mention_user_ids': mention_user_ids,
+            'multimedia': multimedia
+        }
+        path_params = {"discussion_id": discussion_id}
+        query_params = {}
+        headers = {}
+        response = self.make_api_call(
+            body=body, path_params=path_params,
+            query_params=query_params, headers=headers, snapshot=snapshot
+        )
+
+    @pytest.mark.django_db
+    def test_invalid_user_ids_return_response(self, snapshot, mocker):
+        discussion_id = "71be920b-7b4c-49e7-8adb-41a0c18da848"
+        comment_content = "content"
+        mention_user_ids = [
+            "10be920b-7b4c-49e7-8adb-41a0c18da848",
+            "20be920b-7b4c-49e7-8adb-41a0c18da848"
+        ]
+
+        from ib_discussions.tests.common_fixtures.adapters import \
+            prepare_validate_user_ids_mock
+        validate_user_ids_mock = prepare_validate_user_ids_mock(mocker=mocker)
+        invalid_user_ids = [
+            "10be920b-7b4c-49e7-8adb-41a0c18da848"
+        ]
+        from ib_discussions.adapters.auth_service import InvalidUserIds
+        validate_user_ids_mock.side_effect = InvalidUserIds(
+            user_ids=invalid_user_ids)
+
         from ib_discussions.constants.enum import MultiMediaFormatEnum
         multimedia = [
             {

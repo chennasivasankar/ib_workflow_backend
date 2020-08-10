@@ -27,6 +27,10 @@ class TestCase01AddCommentAPITestCase(TestUtils):
         comment_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
         comment_content = "content"
 
+        from ib_discussions.tests.common_fixtures.adapters import \
+            prepare_validate_user_ids_mock
+        prepare_validate_user_ids_mock(mocker=mocker)
+
         from ib_discussions.tests.common_fixtures.storages import \
             prepare_create_comment_for_discussion_mock
         create_comment_for_discussion_mock = \

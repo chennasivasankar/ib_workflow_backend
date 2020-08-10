@@ -854,6 +854,54 @@
           }
         ]
       }
+    },
+    "ReplyToCommentBadRequestResponse": {
+      "description": "create replies bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_USER_IDS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "CreateCommentBadRequestResponse": {
+      "description": "create comment bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_USER_IDS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
     }
   },
   "paths": {
@@ -1040,6 +1088,9 @@
           },
           "404": {
             "$ref": "#/responses/CommentNotFoundResponse"
+          },
+          "400": {
+            "$ref": "#/responses/CreateCommentBadRequestResponse"
           }
         }
       },
@@ -1096,6 +1147,9 @@
           },
           "404": {
             "$ref": "#/responses/ReplyToCommentNotFoundResponse"
+          },
+          "400": {
+            "$ref": "#/responses/ReplyToCommentBadRequestResponse"
           }
         }
       },
