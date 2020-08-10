@@ -9,7 +9,7 @@ class TestResetUserPasswordAdapter:
         )
         return mock
 
-    def test_update_user_password_with_reset_password_token(
+    def test_reset_user_password_with_reset_password_token(
             self, mocker):
         # Arrange
         reset_password_token = "string"
