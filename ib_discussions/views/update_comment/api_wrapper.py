@@ -6,8 +6,6 @@ from .validator_class import ValidatorClass
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    print("****************")
-
     user_object = kwargs["user"]
     user_id = str(user_object.user_id)
 
