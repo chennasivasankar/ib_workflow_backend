@@ -2,12 +2,13 @@ import factory
 import pytest
 
 from ib_tasks.constants.constants import ALL_ROLES_ID
-from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrder
+from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrderDTO
 from ib_tasks.models import Task, TaskGoF, TaskGoFField
 from ib_tasks.tests.factories.models import GoFRoleFactory, FieldRoleFactory, \
     TaskFactory, FieldFactory, TaskGoFFactory, TaskGoFFieldFactory, GoFFactory
 from ib_tasks.tests.factories.storage_dtos import TaskGoFFieldDTOFactory, \
-    TaskGoFWithTaskIdDTOFactory, CreateTaskDTOFactory
+    TaskGoFWithTaskIdDTOFactory
+from ib_tasks.tests.factories.interactor_dtos import CreateTaskDTOFactory
 
 
 @pytest.mark.django_db
@@ -332,7 +333,7 @@ class TestCreateOrUpdateTaskStorageImplementation:
             size=2, task_id=task_id
         )
         expected_task_gof_dtos = [
-            GoFIdWithSameGoFOrder(
+            GoFIdWithSameGoFOrderDTO(
                 gof_id=task_gof.gof_id,
                 same_gof_order=task_gof.same_gof_order
             )

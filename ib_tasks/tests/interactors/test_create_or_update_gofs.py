@@ -1,5 +1,5 @@
-import pytest
 import factory
+import pytest
 
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.exceptions.gofs_custom_exceptions import \
@@ -103,11 +103,12 @@ class TestCreateOrUpdateGOFs:
         storage_mock.update_gofs.assert_not_called()
 
     @pytest.mark.parametrize("gof_display_name", [None, "", "   "])
-    def test_create_or_update_gofs_with_invalid_gof_display_name_field_raise_exception(
+    def test_with_invalid_gof_display_name_field_raise_exception(
             self, gof_display_name, storage_mock
     ):
         # Arrange
-        from ib_tasks.exceptions.gofs_custom_exceptions import GOFDisplayNameCantBeEmpty
+        from ib_tasks.exceptions.gofs_custom_exceptions import \
+            GOFDisplayNameCantBeEmpty
         gof_dto = GoFDTOFactory(gof_display_name=gof_display_name)
         complete_gof_details_dtos = [
             CompleteGoFDetailsDTOFactory(gof_dto=gof_dto)
@@ -126,11 +127,12 @@ class TestCreateOrUpdateGOFs:
         storage_mock.update_gofs.assert_not_called()
 
     @pytest.mark.parametrize("max_columns", [0, -1])
-    def test_create_or_update_gofs_with_invalid_gof_max_coloumns_value_raise_exception(
+    def test_with_invalid_gof_max_coloumns_value_raise_exception(
             self, max_columns, storage_mock
     ):
         # Arrange
-        from ib_tasks.exceptions.columns_custom_exceptions import MaxColumnsMustBeAPositiveInteger
+        from ib_tasks.exceptions.columns_custom_exceptions import \
+            MaxColumnsMustBeAPositiveInteger
         gof_dto = GoFDTOFactory(max_columns=max_columns)
         complete_gof_details_dtos = [
             CompleteGoFDetailsDTOFactory(gof_dto=gof_dto)
@@ -149,11 +151,12 @@ class TestCreateOrUpdateGOFs:
         storage_mock.update_gofs.assert_not_called()
 
     @pytest.mark.parametrize("read_permission_roles", [None, []])
-    def test_create_or_update_gofs_with_empty_gof_read_permission_roles_raise_exception(
+    def test_with_empty_gof_read_permission_roles_raise_exception(
             self, storage_mock, read_permission_roles
     ):
         # Arrange
-        from ib_tasks.exceptions.gofs_custom_exceptions import GOFReadPermissionsCantBeEmpty
+        from ib_tasks.exceptions.gofs_custom_exceptions import \
+            GOFReadPermissionsCantBeEmpty
         gof_roles_dto = GoFRolesDTOFactory(
             read_permission_roles=read_permission_roles
         )
@@ -174,11 +177,12 @@ class TestCreateOrUpdateGOFs:
         storage_mock.update_gofs.assert_not_called()
 
     @pytest.mark.parametrize("write_permission_roles", [None, []])
-    def test_create_or_update_gofs_with_empty_write_permission_roles_raise_exception(
+    def test_with_empty_write_permission_roles_raise_exception(
             self, storage_mock, write_permission_roles
     ):
         # Arrange
-        from ib_tasks.exceptions.gofs_custom_exceptions import GOFWritePermissionsCantBeEmpty
+        from ib_tasks.exceptions.gofs_custom_exceptions import \
+            GOFWritePermissionsCantBeEmpty
         gof_roles_dto = GoFRolesDTOFactory(
             write_permission_roles=write_permission_roles)
         complete_gof_details_dtos = [
@@ -197,7 +201,7 @@ class TestCreateOrUpdateGOFs:
         storage_mock.create_gof_roles.assert_not_called()
         storage_mock.update_gofs.assert_not_called()
 
-    def test_create_or_update_gofs_with_duplicate_write_permission_roles_raise_exception(
+    def test_with_duplicate_write_permission_roles_raise_exception(
             self, storage_mock
     ):
         # Arrange
@@ -220,7 +224,7 @@ class TestCreateOrUpdateGOFs:
         storage_mock.create_gof_roles.assert_not_called()
         storage_mock.update_gofs.assert_not_called()
 
-    def test_create_or_update_gofs_with_duplicate_read_permission_roles_raise_exception(
+    def test_with_duplicate_read_permission_roles_raise_exception(
             self, storage_mock
     ):
         # Arrange
@@ -243,12 +247,12 @@ class TestCreateOrUpdateGOFs:
         storage_mock.create_gof_roles.assert_not_called()
         storage_mock.update_gofs.assert_not_called()
 
-
-    def test_create_or_update_gofs_with_invalid_read_permission_roles_raises_exception(
+    def test_with_invalid_read_permission_roles_raises_exception(
             self, storage_mock, mocker
     ):
         # Arrange
-        from ib_tasks.exceptions.roles_custom_exceptions import InvalidReadPermissionRoles
+        from ib_tasks.exceptions.roles_custom_exceptions import \
+            InvalidReadPermissionRoles
         from ib_tasks.tests.common_fixtures.adapters.roles_service import (
             get_valid_role_ids_in_given_role_ids
         )
@@ -275,11 +279,12 @@ class TestCreateOrUpdateGOFs:
         storage_mock.create_gof_roles.assert_not_called()
         storage_mock.update_gofs.assert_not_called()
 
-    def test_create_or_update_gofs_with_invalid_write_permission_roles_raises_exception(
+    def test_with_invalid_write_permission_roles_raises_exception(
             self, storage_mock, mocker
     ):
         # Arrange
-        from ib_tasks.exceptions.roles_custom_exceptions import InvalidWritePermissionRoles
+        from ib_tasks.exceptions.roles_custom_exceptions import \
+            InvalidWritePermissionRoles
         from ib_tasks.tests.common_fixtures.adapters.roles_service import (
             get_valid_role_ids_in_given_role_ids
         )
@@ -305,7 +310,7 @@ class TestCreateOrUpdateGOFs:
         storage_mock.create_gof_roles.assert_not_called()
         storage_mock.update_gofs.assert_not_called()
 
-    def test_create_or_update_gofs_with_already_existing_gof_ids_updates_gofs(
+    def test_with_already_existing_gof_ids_updates_gofs(
             self, storage_mock, mocker
     ):
         # Arrange
@@ -325,7 +330,8 @@ class TestCreateOrUpdateGOFs:
             size=2, gof_dto=factory.Iterator(gof_dtos),
             gof_roles_dto=factory.Iterator(gof_roles_dtos)
         )
-        storage_mock.get_existing_gof_ids_in_given_gof_ids.return_value = gof_ids
+        storage_mock.get_existing_gof_ids_in_given_gof_ids.return_value = \
+            gof_ids
         gof_role_dtos = []
         for gof_roles_dto in gof_roles_dtos:
             gof_role_dtos += [
