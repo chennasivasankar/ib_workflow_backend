@@ -28,6 +28,7 @@ class ElasticTaskDTO:
     task_id: int
     title: str
     fields: List[ElasticFieldDTO]
+    stages: List[str]
 
 
 class Field(InnerDoc):
@@ -53,6 +54,12 @@ class Task(Document):
         self.fields = [
             Field(field_id=field_dto.field_id, value=field_dto.value)
             for field_dto in field_dtos
+        ]
+
+    def add_stages(self, stages: List[str]):
+        self.stages = [
+            Stage(stage_id=stage_id)
+            for stage_id in stages
         ]
 
 

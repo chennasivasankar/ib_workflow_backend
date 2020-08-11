@@ -32,7 +32,9 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             title=elastic_task_dto.title
         )
         field_dtos = elastic_task_dto.fields
+        stages = elastic_task_dto.stages
         task_obj.add_fields(field_dtos=field_dtos)
+        task_obj.add_stages(stages)
         task_obj.save()
         elastic_task_id = task_obj.meta.id
         return elastic_task_id
@@ -46,7 +48,9 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         from ib_tasks.models import ElasticSearchTask
         task_id = task_dto.task_id
         fields = task_dto.fields
+        stage_ids = task_dto.stages
         field_objects = self._get_field_objects(field_dtos=fields)
+        stage_objects = self.get_stage_objects(stages_ids=stage_ids)
         elastic_search_task_id = ElasticSearchTask.objects.get(
             task_id=task_id
         ).elasticsearch_id
@@ -342,4 +346,11 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             )
             for stage in task_object.stages
             if stage.stage_id in stage_ids
+        ]
+
+    @staticmethod
+    def get_stage_objects(stages_ids: List[str]) -> List[Stage]:
+        return [
+            Stage(stage_id=stage_id)
+            for stage_id in stages_ids
         ]
