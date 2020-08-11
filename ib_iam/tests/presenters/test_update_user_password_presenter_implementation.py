@@ -60,7 +60,7 @@ class TestUpdateUserPasswordPresenterImplementation:
         expected_res_status = CURRENT_PASSWORD_MISMATCH[1]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
 
-        result = json_presenter.raise_invalid_new_password_exception()
+        result = json_presenter.raise_current_password_mismatch_exception()
 
         response_dict = json.loads(result.content)
         actual_response = response_dict["response"]
