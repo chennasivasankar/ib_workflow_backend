@@ -1242,6 +1242,78 @@
 					}
 				}
 			}
+		},
+		"StageResponseBody": {
+		  "type": "object",
+			"properties": {
+				"stage_id": {
+					"type": "integer"
+				},
+				"name": {
+					"type": "string"
+				},
+				"color": {
+					"type": "string"
+				}
+			},
+			"required": ["stage_id", "name", "color"]
+		},
+		"UserResponseBody": {
+		  "type": "object",
+			"properties": {
+				"user_id": {
+					"type": "string"
+				},
+				"profile_pic_url": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				}
+			},
+			"required": ["user_id", "profile_pic_url", "name"]
+		},
+		"TaskStageResponseBody": {
+		  "type": "object",
+			"properties": {
+				"stage_id": {
+					"type": "integer"
+				},
+				"created_at": {
+					"type": "string",
+					"format": "date-time"
+				},
+				"time_spent_by_user": {
+					"type": "string",
+					"example": "14:30:00"
+				},
+				"stage_time": {
+					"type": "string",
+					"example": "14:30:00"
+				},
+				"user_details": {
+					"$ref": "#/definitions/UserResponseBody"
+				}
+			},
+			"required": [
+				"stage_id", "created_at", "time_spent_by_user",
+				"stage_time", "user_details"
+			]
+		},
+		"TaskStagesCompleteResponseBody": {
+		  "type": "object",
+			"properties": {
+				"stages_details": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/StageResponseBody"
+					}
+				},
+				"stages_history": {
+					"$ref": "#/definitions/TaskStageResponseBody"
+				}
+			},
+			"required": ["stages_details", "stages_history"]
 		}
 	},
 	"parameters": {
@@ -1464,67 +1536,7 @@
 		"GetTaskStagesResponse": {
 			"description": "succesful",
 			"schema": {
-				"type": "object",
-				"properties": {
-					"stages_details": {
-						"type": "array",
-						"items": {
-							"type": "object",
-							"properties": {
-								"stage_id": {
-									"type": "integer"
-								},
-								"name": {
-									"type": "string"
-								},
-								"color": {
-									"type": "string"
-								}
-							},
-							"required": ["stage_id", "name", "color"]
-						}
-					},
-					"stages_history": {
-						"type": "object",
-						"properties": {
-							"stage_id": {
-								"type": "integer"
-							},
-							"created_at": {
-								"type": "string",
-								"format": "date-time"
-							},
-							"time_spent_by_user": {
-								"type": "string",
-								"example": "14:30:00"
-							},
-							"stage_time": {
-								"type": "string",
-								"example": "14:30:00"
-							},
-							"user_details": {
-								"type": "object",
-								"properties": {
-									"user_id": {
-										"type": "string"
-									},
-									"profile_pic_url": {
-										"type": "string"
-									},
-									"username": {
-										"type": "string"
-									}
-								},
-								"required": ["user_id", "profile_pic_url", "username"]
-							}
-						},
-						"required": [
-							"stage_id", "created_at", "time_spent_by_user",
-							"stage_time", "user_details"
-						]
-					}
-				},
-				"required": ["stages_details", "stages_history"]
+				"$ref": "#/definitions/TaskStagesCompleteResponseBody"
 			}
 		},
 		"TaskTemplatesDoesNotExistsResponse": {
