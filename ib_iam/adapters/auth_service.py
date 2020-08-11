@@ -1,6 +1,8 @@
 import dataclasses
 from ib_users.validators.base_validator import CustomException
 
+from ib_iam.adapters.dtos import CurrentAndNewPasswordDTO
+
 
 @dataclasses.dataclass
 class EmailAndPasswordDTO:
@@ -121,5 +123,29 @@ class AuthService:
         )
         return converted_user_tokens_dto
 
-    def update_user_password(self, user_id, current_and_new_password_dto):
-        pass
+    def update_user_password(
+            self, user_id: str,
+            current_and_new_password_dto: CurrentAndNewPasswordDTO):
+        from ib_users.interactors.user_credentials.exceptions.user_credentials_exceptions import \
+            InvalidCurrentPasswordException
+        from ib_users.interactors.user_credentials.exceptions.user_credentials_exceptions import \
+            InvalidNewPasswordException
+        from ib_users.interactors.exceptions.user_credentials_exceptions import \
+            CurrentPasswordMismatchException
+        try:
+            self.interface.update_password(
+                user_id=user_id,
+                new_password=current_and_new_password_dto.new_password,
+                current_password=current_and_new_password_dto.current_password
+            )
+        except InvalidCurrentPasswordException:
+            from ib_iam.exceptions.custom_exceptions import \
+                InvalidCurrentPassword
+            raise InvalidCurrentPassword
+        except InvalidNewPasswordException:
+            from ib_iam.exceptions.custom_exceptions import InvalidNewPassword
+            raise InvalidNewPassword
+        except CurrentPasswordMismatchException:
+            from ib_iam.exceptions.custom_exceptions import \
+                CurrentPasswordMismatch
+            raise CurrentPasswordMismatch

@@ -110,11 +110,11 @@ class InvalidUserIds(Exception):
         self.user_ids = user_ids
 
 
-class InvalidNewPassword(Exception):
+class InvalidCurrentPassword(Exception):
     pass
 
 
-class InvalidCurrentPassword(Exception):
+class InvalidNewPassword(Exception):
     pass
 
 
