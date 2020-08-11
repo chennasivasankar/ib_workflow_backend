@@ -246,3 +246,27 @@ INVALID_CUSTOM_LOGIC = ("invalid custom logic", "INVALID_CUSTOM_LOGIC")
 
 PATH_NOT_FOUND = ("path not found", "PATH_NOT_FOUND")
 METHOD_NOT_FOUND = ("method not found", "METHOD_NOT_FOUND")
+
+INVALID_DUE_TIME_FORMAT = (
+    "{} has invalid due time format, time format should be HH:MM:SS",
+    "INVALID_DUE_TIME_FORMAT"
+)
+START_DATE_IS_AHEAD_OF_DUE_DATE = (
+    "given start date {} is ahead of given due date {} ",
+    "START_DATE_IS_AHEAD_OF_DUE_DATE"
+)
+
+DUE_DATE_IS_BEHIND_START_DATE = (
+    "given due date {} is behind given start date {}",
+    "DUE_DATE_IS_BEHIND_START_DATE"
+)
+
+DUE_TIME_HAS_EXPIRED_FOR_TODAY = (
+    "give due time {} has expired for today date",
+    "DUE_TIME_HAS_EXPIRED_FOR_TODAY"
+)
+
+DUE_DATE_HAS_EXPIRED = (
+    "given due date {} has expired",
+    "DUE_DATE_HAS_EXPIRED"
+)
