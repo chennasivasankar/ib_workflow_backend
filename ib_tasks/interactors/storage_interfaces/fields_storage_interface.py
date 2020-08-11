@@ -63,3 +63,23 @@ class FieldsStorageInterface(abc.ABC):
             self, roles: List[str],
             field_ids: List[str]) -> List[UserFieldPermissionDTO]:
         pass
+
+    @abc.abstractmethod
+    def get_field_ids_having_read_permission_for_user(
+            self, user_roles: List[str], field_ids: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_field_ids_having_write_permission_for_user(
+            self, user_roles: List[str], field_ids: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def check_is_user_has_read_permission_for_field(
+            self, field_id: str, user_roles: List[str]) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def check_is_user_has_write_permission_for_field(
+            self, field_id: str, user_roles: List[str]) -> bool:
+        pass
