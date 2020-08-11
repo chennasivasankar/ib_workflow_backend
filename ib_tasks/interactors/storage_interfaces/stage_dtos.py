@@ -49,7 +49,7 @@ class TaskStageIdsDTO:
 @dataclass
 class TaskWithDbStageIdDTO:
     task_id: int
-    stage_id: int
+    db_stage_id: int
 
 
 @dataclass

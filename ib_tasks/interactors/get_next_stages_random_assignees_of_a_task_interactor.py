@@ -90,11 +90,17 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
             stage_storage. \
             get_current_stages_of_all_tasks()
 
-        stage_ids_of_tasks = [task_id_with_stage_details_dto.db_stage_id for
-                              task_id_with_stage_details_dto in
-                              task_id_with_stage_details_dtos]
+        stage_ids_of_tasks = [task_with_stage_id_dto.db_stage_id for
+                              task_with_stage_id_dto in
+                              task_with_stage_id_dtos]
         stage_ids_having_actions = self.action_storage.get_stage_ids_having_actions(
             db_stage_ids=stage_ids_of_tasks)
+
+        tasks_that_are_not_completed = []
+        for each_task_with_stage_id_dto in task_with_stage_id_dtos:
+            if each_task_with_stage_id_dto.db_stage_id in stage_ids_having_actions:
+                tasks_that_are_not_completed.append(
+                    each_task_with_stage_id_dto.task_id)
 
 
     @staticmethod
