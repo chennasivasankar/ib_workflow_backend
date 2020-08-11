@@ -6,7 +6,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import \
     TaskStageStorageInterface
-from ib_tasks.models import TaskStage
+from ib_tasks.models import CurrentTaskStage
 
 
 class TaskStageStorageImplementation(TaskStageStorageInterface):
@@ -17,7 +17,7 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
     def get_valid_stage_ids_of_task(self, task_id: int,
                                     stage_ids: List[int]) -> List[int]:
         valid_stage_ids = list(
-            TaskStage.objects.filter(
+            CurrentTaskStage.objects.filter(
                 task_id=task_id, stage_id__in=stage_ids
             ).values_list('stage_id', flat=True)
         )
@@ -27,7 +27,7 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
             self, task_id: int, stage_ids: List[int]
     ) -> List[TaskStageAssigneeDTO]:
 
-        task_stage_objs = TaskStage.objects.filter(
+        task_stage_objs = CurrentTaskStage.objects.filter(
             task_id=task_id, stage_id__in=stage_ids
         )
         task_stage_assignee_dtos = [

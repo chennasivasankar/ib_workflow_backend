@@ -6,6 +6,8 @@ Author: Pavankumar Pamuru
 import pytest
 
 
+
+
 class TestGetTaskIdsOfUserBasedOnStagesInteractor:
     @pytest.fixture()
     def task_storage_mock(self):
@@ -24,6 +26,15 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
         storage = create_autospec(StageStorageInterface)
         return storage
 
+    @pytest.fixture()
+    def task_stage_storage_mock(self):
+        from mock import create_autospec
+
+        from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
+            TaskStageStorageInterface
+        storage = create_autospec(TaskStageStorageInterface)
+        return storage
+
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
         from ib_tasks.tests.factories.interactor_dtos import \
@@ -31,7 +42,7 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
         UserStagesWithPaginationDTOFactory.reset_sequence()
 
     def test_given_valid_stage_ids_get_tasks_with_max_stage_value_dtos(
-            self, task_storage_mock, stage_storage_mock):
+            self, task_storage_mock, stage_storage_mock, task_stage_storage_mock):
         # Arrange
         valid_stage_ids = ["stage_id_1", "stage_id_2"]
         from ib_tasks.tests.factories.interactor_dtos import \
@@ -58,7 +69,7 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
             GetTaskIdsOfUserBasedOnStagesInteractor
         # Act
         interactor = GetTaskIdsOfUserBasedOnStagesInteractor(
-            task_storage=task_storage_mock, stage_storage=stage_storage_mock)
+            task_storage=task_storage_mock, stage_storage=stage_storage_mock,task_stage_storage=task_stage_storage_mock)
         interactor.get_task_ids_of_user_based_on_stage_ids(
             user_id=user_id,
             stage_ids=valid_stage_ids

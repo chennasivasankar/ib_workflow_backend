@@ -20,9 +20,9 @@ class CheckBoxGroupFieldValidationInteractor(BaseFieldValidation):
             self) -> Optional[IncorrectCheckBoxOptionsSelected]:
         import json
         selected_check_box_options = json.loads(self.field_response)
-        invalid_checkbox_options = list(
+        invalid_checkbox_options = sorted(list(
             set(selected_check_box_options) - set(self.valid_check_box_options)
-        )
+        ))
         if invalid_checkbox_options:
             raise IncorrectCheckBoxOptionsSelected(
                 self.field_id, invalid_checkbox_options,
