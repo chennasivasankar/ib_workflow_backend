@@ -625,6 +625,22 @@
         ]
       }
     },
+    "UpdateUserPasswordParameter": {
+      "name": "UpdateUserPassword",
+      "description": "Update User password",
+      "in": "body",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "current_password": {
+            "type": "string"
+          },
+          "new_password": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "LoginParameter": {
       "name": "login",
       "description": "email and password to login in database",
@@ -903,6 +919,32 @@
                   "EMAIL_ALREADY_IN_USE",
                   "NAME_MINIMUM_LENGTH_SHOULD_BE",
                   "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "BadRequestForUpdateUserPasswordResponse": {
+      "description": "Failed to update user password",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_CURRENT_PASSWORD",
+                  "INVALID_NEW_PASSWORD",
+                  "CURRENT_PASSWORD_MISMATCH"
                 ]
               }
             },
@@ -2001,6 +2043,33 @@
           },
           "400": {
             "$ref": "#/responses/BadRequestForUpdateUserProfileResponse"
+          }
+        }
+      }
+    },
+    "/user/password/update/v1/": {
+      "put": {
+        "summary": "update user password",
+        "description": "updates user password",
+        "operationId": "update_user_password",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/UpdateUserPasswordParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User Password Updated Successfully"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequestForUpdateUserPasswordResponse"
           }
         }
       }
