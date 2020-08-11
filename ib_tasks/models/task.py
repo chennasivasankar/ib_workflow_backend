@@ -1,3 +1,4 @@
+from django.db.models import Max
 from django.db import models
 from ib_common.models.abstract_date_time_model \
     import AbstractDateTimeModel
@@ -15,6 +16,16 @@ class Task(AbstractDateTimeModel):
     due_date = models.DateTimeField()
     priority = models.CharField(max_length=20, choices=PRIORITY_TYPES,
                                 default=PRIORITY_TYPES[0][0])
+
+    def save(self, *args, **kwargs):
+        maximum_display_id = Task.objects.aggregate(id_max=Max('id'))['id_max']
+        self.task_display_id = \
+            "{}{}".format(
+                'IBWF-',
+                maximum_display_id + 1 if maximum_display_id is not None else 1
+            )
+
+        super().save(*args, **kwargs)
 
 
 class ElasticSearchTask(models.Model):
