@@ -9,7 +9,6 @@ from ib_iam.storages.user_storage_implementation \
 from ib_iam.tests.common_fixtures.storages import \
     user_not_admin, users_company, users_team, users_role
 
-
 class TestGetUsers:
     @pytest.fixture()
     def user_dtos(self):
@@ -178,8 +177,8 @@ class TestGetUsers:
 
     @pytest.mark.django_db
     @pytest.mark.parametrize("given_user_ids, expected_user_ids", [
-                            (["user1", "user2", "user3"], ["user1", "user2"]),
-                              (["user_id-3", "user_id-4"], [])
+        (["user1", "user2", "user3"], ["user1", "user2"]),
+        (["user_id-3", "user_id-4"], [])
     ])
     def test_given_some_valid_members_it_returns_member_ids(
             self, create_users, given_user_ids, expected_user_ids):
@@ -190,3 +189,17 @@ class TestGetUsers:
                 user_ids=given_user_ids)
 
         assert actual_user_ids == expected_user_ids
+
+    @pytest.mark.django_db
+    def test_update_user_name(self):
+        from ib_iam.tests.factories.models import UserDetailsFactory
+        user_id = "6ce31e92-f188-4019-b295-2e5ddc9c7a11"
+        UserDetailsFactory(user_id=user_id)
+        expected_name = "testusername"
+        storage = UserStorageImplementation()
+
+        storage.update_user_name(user_id=user_id, name=expected_name)
+
+        from ib_iam.models import UserDetails
+        user_object = UserDetails.objects.get(user_id=user_id)
+        assert user_object.name == expected_name

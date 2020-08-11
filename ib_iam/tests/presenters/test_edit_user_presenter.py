@@ -6,7 +6,7 @@ from ib_iam.presenters.edit_user_presenter_implementation \
 
 
 class TestEditUserPresenter:
-    def test_edit_user_response_successfull_returns_success_response(self):
+    def test_edit_user_response_successful_returns_success_response(self):
         # Arrange
         presenter = EditUserPresenterImplementation()
         from ib_iam.constants.exception_messages \
@@ -23,15 +23,19 @@ class TestEditUserPresenter:
         assert response['res_status'] == response_status_code
         assert response['response'] == expected_response
 
-    def test_raise_invalid_name_exception(self):
+    def test_raise_name_length_should_be_exception_response(self):
         # Arrange
         presenter = EditUserPresenterImplementation()
-        from ib_iam.constants.exception_messages import EMPTY_NAME_IS_INVALID
-        expected_response = EMPTY_NAME_IS_INVALID[0]
-        response_status_code = EMPTY_NAME_IS_INVALID[1]
+        from ib_iam.constants.exception_messages \
+            import NAME_MINIMUM_LENGTH_SHOULD_BE
+        from ib_iam.constants.config import MINIMUM_USER_NAME_LENGTH
+        expected_response = NAME_MINIMUM_LENGTH_SHOULD_BE[0].format(
+            minimum_name_length=MINIMUM_USER_NAME_LENGTH)
+        response_status_code = NAME_MINIMUM_LENGTH_SHOULD_BE[1]
 
         # Act
-        response_object = presenter.raise_invalid_name_exception()
+        response_object = \
+            presenter.raise_name_minimum_length_should_be_equal_or_more_than()
 
         # Assert
         response = json.loads(response_object.content)
@@ -43,11 +47,11 @@ class TestEditUserPresenter:
         # Arrange
         presenter = EditUserPresenterImplementation()
         from ib_iam.constants.exception_messages \
-            import NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS
+            import NAME_SHOULD_NOT_CONTAIN_SPECIAL_CHARACTERS_AND_NUMBERS
         expected_response = \
-            NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS[0]
+            NAME_SHOULD_NOT_CONTAIN_SPECIAL_CHARACTERS_AND_NUMBERS[0]
         response_status_code = \
-            NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS[1]
+            NAME_SHOULD_NOT_CONTAIN_SPECIAL_CHARACTERS_AND_NUMBERS[1]
 
         # Act
         response_object = presenter. \

@@ -1,7 +1,7 @@
 from typing import List
+
 from ib_iam.exceptions.custom_exceptions import InvalidOffsetValue, \
-    InvalidLimitValue, GivenNameIsEmpty, \
-    NameShouldNotContainsNumbersSpecCharacters
+    InvalidLimitValue
 
 
 class ValidationMixin:
@@ -26,22 +26,31 @@ class ValidationMixin:
         self._validate_offset_value_and_throw_exception(offset=offset)
         self._validate_limit_value_and_throw_exception(limit=limit)
 
-    @staticmethod
-    def _validate_string(value):
-        valid = bool(isinstance(value, str) and value != "")
-        invalid = not valid
-        if invalid:
-            return False
-        return True
-
     def _validate_name_and_throw_exception(self, name: str):
-        if not self._validate_string(value=name):
-            raise GivenNameIsEmpty()
-        self._check_name_contains_special_characters_and_throw_exception(name)
+        self._validate_is_name_satisfies_minimum_length_constant(name)
+        self._check_string_contains_special_characters_except_space_and_throw_exception(
+            name)
 
     @staticmethod
-    def _check_name_contains_special_characters_and_throw_exception(name):
-        if not name.isalpha():
+    def _validate_is_name_satisfies_minimum_length_constant(value: str):
+        # value = value.replace(" ", "")
+        from ib_iam.constants.config import MINIMUM_USER_NAME_LENGTH
+        is_string_not_satisfies_minimum_length = \
+            len(value) < MINIMUM_USER_NAME_LENGTH
+        if is_string_not_satisfies_minimum_length:
+            from ib_iam.exceptions.custom_exceptions import \
+                NameMinimumLengthShouldBe
+            raise NameMinimumLengthShouldBe
+
+    @staticmethod
+    def _check_string_contains_special_characters_except_space_and_throw_exception(
+            value: str):
+        spaces_removed_string = value.replace(" ", "")
+        is_special_characters_and_numbers_not_exists_in_string = \
+            not spaces_removed_string.isalpha()
+        if is_special_characters_and_numbers_not_exists_in_string:
+            from ib_iam.exceptions.custom_exceptions import \
+                NameShouldNotContainsNumbersSpecCharacters
             raise NameShouldNotContainsNumbersSpecCharacters()
 
     def _validate_is_user_admin(self, user_id: str):
