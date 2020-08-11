@@ -92,7 +92,7 @@ class TaskDueDetailsFactory(factory.django.DjangoModelFactory):
     task = factory.SubFactory(TaskFactory)
     due_datetime = datetime.now() + timedelta(days=2)
     count = factory.Sequence(lambda n: (n + 1))
-    user_id = factory.Sequence(lambda n: "user_id_%d" % n)
+    user_id = factory.Sequence(lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
     reason_id = REASONS[0]['id']
     reason = REASONS[0]['reason']
 
