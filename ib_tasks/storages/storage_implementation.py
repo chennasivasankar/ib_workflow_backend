@@ -215,8 +215,8 @@ class StagesStorageImplementation(StageStorageInterface):
 
     def get_task_id_with_stage_details_dtos_based_on_stage_value(
             self, stage_values: List[int],
-            task_ids_group_by_stage_value_dtos: List[StageValueWithTaskIdsDTO],
-            user_id: str) -> List[TaskIdWithStageDetailsDTO]:
+            task_ids_group_by_stage_value_dtos: List[StageValueWithTaskIdsDTO]
+    ) -> List[TaskIdWithStageDetailsDTO]:
         # ToDo: Need to optimize the storage calls which are in for loop
         all_task_id_with_stage_details_dtos = []
         for each_stage_value in stage_values:
@@ -226,7 +226,6 @@ class StagesStorageImplementation(StageStorageInterface):
                         == each_stage_value:
                     task_id_with_stage_details = list(
                         TaskStage.objects.filter(
-                            task__created_by=user_id,
                             stage__value=each_stage_value,
                             task_id__in=each_task_ids_group_by_stage_value_dto.
                                 task_ids).values("task_id", "stage__stage_id",
