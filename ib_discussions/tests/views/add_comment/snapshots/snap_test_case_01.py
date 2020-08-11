@@ -7,9 +7,9 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01AddCommentAPITestCase.test_case status_code'] = '200'
+snapshots['TestCase01AddCommentAPITestCase.test_with_valid_details_create_comment status_code'] = '200'
 
-snapshots['TestCase01AddCommentAPITestCase.test_case body'] = {
+snapshots['TestCase01AddCommentAPITestCase.test_with_valid_details_create_comment body'] = {
     'author': {
         'name': 'name',
         'profile_pic_url': 'https://graph.ib_users.com/',
@@ -35,11 +35,13 @@ snapshots['TestCase01AddCommentAPITestCase.test_case body'] = {
         {
             'format_type': 'IMAGE',
             'multimedia_id': '97be920b-7b4c-49e7-8adb-41a0c18da848',
+            'thumbnail_url': 'https://picsum.photos/200',
             'url': 'https://picsum.photos/200'
         },
         {
             'format_type': 'VIDEO',
             'multimedia_id': '92be920b-7b4c-49e7-8adb-41a0c18da848',
+            'thumbnail_url': 'https://picsum.photos/200',
             'url': 'https://picsum.photos/200'
         }
     ],

@@ -27,6 +27,7 @@ class TaskFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Task
 
+    task_display_id = factory.sequence(lambda counter: "iB_{}".format(counter))
     template_id = factory.Sequence(
         lambda counter: "template_{}".format(counter))
     created_by = "123e4567-e89b-12d3-a456-426614174000"
@@ -65,6 +66,7 @@ class TaskModelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Task
 
+    task_display_id = factory.sequence(lambda counter: "iB_{}".format(counter))
     template_id = factory.Sequence(lambda n: "template_%d" % (n + 1))
     created_by = factory.Sequence(lambda n: (n + 1))
     title = factory.Sequence(lambda c: "title_{}".format(c))
