@@ -1,3 +1,4 @@
+from django.db.models import Max
 from django.db import models
 from ib_common.models.abstract_date_time_model \
     import AbstractDateTimeModel
@@ -6,7 +7,8 @@ from ib_tasks.constants.constants import PRIORITY_TYPES
 
 
 class Task(AbstractDateTimeModel):
-    task_display_id = models.CharField(max_length=50, unique=True)
+    task_display_id = models.CharField(
+        max_length=50, unique=True, null=True, blank=True)
     template_id = models.CharField(max_length=100)
     created_by = models.CharField(max_length=50)
     title = models.CharField(max_length=100)
