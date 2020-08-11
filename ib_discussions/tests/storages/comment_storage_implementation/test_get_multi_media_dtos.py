@@ -15,17 +15,20 @@ class TestGetMultiMediaDTOS:
             'comment_id': '11be920b-7b4c-49e7-8adb-41a0c18da848',
             'multimedia_id': '92be920b-7b4c-49e7-8adb-41a0c18da848',
             'format_type': 'VIDEO',
-            'url': 'https://picsum.photos/200'
+            'url': 'https://picsum.photos/200',
+            'thumbnail_url': 'https://picsum.photos/200'
         }, {
             'comment_id': '91be920b-7b4c-49e7-8adb-41a0c18da848',
             'multimedia_id': '97be920b-7b4c-49e7-8adb-41a0c18da848',
             'format_type': 'IMAGE',
-            'url': 'https://picsum.photos/200'
+            'url': 'https://picsum.photos/200',
+            'thumbnail_url': 'https://picsum.photos/200'
         }, {
             'comment_id': '91be920b-7b4c-49e7-8adb-41a0c18da848',
             'multimedia_id': '92be920b-7b4c-49e7-8adb-41a0c18da848',
             'format_type': 'VIDEO',
-            'url': 'https://picsum.photos/200'
+            'url': 'https://picsum.photos/200',
+            'thumbnail_url': 'https://picsum.photos/200'
         }]
         from ib_discussions.tests.factories.storage_dtos import \
             CommentIdWithMultiMediaDTOFactory
@@ -34,7 +37,8 @@ class TestGetMultiMediaDTOS:
                 comment_id=comment_id_with_multimedia_dict["comment_id"],
                 multimedia_id=comment_id_with_multimedia_dict["multimedia_id"],
                 format_type=comment_id_with_multimedia_dict["format_type"],
-                url=comment_id_with_multimedia_dict["url"]
+                url=comment_id_with_multimedia_dict["url"],
+                thumbnail_url=comment_id_with_multimedia_dict["thumbnail_url"]
             )
             for comment_id_with_multimedia_dict in
             comment_id_with_multimedia_list

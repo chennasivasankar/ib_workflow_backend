@@ -4,12 +4,13 @@ REQUEST_BODY_JSON = """
 {
     "comment_content": "string",
     "mention_user_ids": [
-        "91b6a870-0f91-438a-a457-288133824130"
+        "934ea299-4858-4937-bd4d-bc638a2e0dec"
     ],
     "multimedia": [
         {
             "format_type": "IMAGE",
-            "url": "string"
+            "url": "string",
+            "thumbnail_url": "string"
         }
     ]
 }
@@ -19,27 +20,28 @@ REQUEST_BODY_JSON = """
 RESPONSE_200_JSON = """
 {
     "author": {
-        "user_id": "1a60550e-7b65-4bc9-b8f2-ab9908de9a5d",
+        "user_id": "9fe2a342-2346-4803-8c37-c132313d7e15",
         "name": "string",
         "profile_pic_url": "string"
     },
-    "comment_id": "b1968072-8fec-477a-bf11-0b9f46909944",
+    "comment_id": "f9e69202-ed22-439e-9f51-7d2d640815e2",
     "comment_content": "string",
     "total_replies_count": 1,
     "is_editable": true,
     "created_at": "2099-12-31 00:00:00",
     "mention_users": [
         {
-            "user_id": "457b28dc-c653-4e44-a23e-0d35c83c290a",
+            "user_id": "b1a89c4d-8268-4a1e-af14-f531b092bd2c",
             "name": "string",
             "profile_pic_url": "string"
         }
     ],
     "multimedia": [
         {
-            "multimedia_id": "a4d89bf4-9422-498f-a941-9630f32ea398",
+            "multimedia_id": "c04fa0d4-8b03-4b7e-ada5-ece9a9666751",
             "format_type": "IMAGE",
-            "url": "string"
+            "url": "string",
+            "thumbnail_url": "string"
         }
     ]
 }
@@ -50,6 +52,14 @@ RESPONSE_404_JSON = """
     "response": "string",
     "http_status_code": 1,
     "res_status": "DISCUSSION_ID_NOT_FOUND"
+}
+"""
+
+RESPONSE_400_JSON = """
+{
+    "response": "string",
+    "http_status_code": 1,
+    "res_status": "INVALID_USER_IDS"
 }
 """
 
