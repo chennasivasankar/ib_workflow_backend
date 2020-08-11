@@ -14,7 +14,7 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (
     TaskTemplateStageDTO, StageDetailsDTO)
-from ib_tasks.models import TaskStage, Stage, TaskGoFField, FieldRole, \
+from ib_tasks.models import CurrentTaskStage, Stage, TaskGoFField, FieldRole, \
     TaskTemplateGoFs, Field
 
 
@@ -146,6 +146,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         import json
         for stage in stage_objs:
             fields = stage['view_type']
+            if not fields:
+                continue
             field_ids = json.loads(fields)
             for task_id in task_stages_dict[stage['stage_id']]:
                 task_fields_dtos.append(
@@ -158,7 +160,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         return task_fields_dtos
 
     def get_task_stages(self, task_id: int) -> List[str]:
-        stage_ids = TaskStage.objects.filter(task_id=task_id).values_list(
+        stage_ids = CurrentTaskStage.objects.filter(task_id=task_id).values_list(
             'stage__stage_id', flat=True)
         return list(stage_ids)
 

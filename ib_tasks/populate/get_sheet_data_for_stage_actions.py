@@ -57,7 +57,7 @@ class GetSheetDataForStageActions:
                 "Button Text": And(str, len),
                 Optional("Button Colour"): str,
                 "Action Type": str,
-                "Transition Template ID": str
+                Optional("Transition Template ID"): str
 
             }]
         )

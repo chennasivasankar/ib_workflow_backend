@@ -2,6 +2,7 @@ from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Searchable, \
     Operators, Priority
 
 ALL_ROLES_ID = "ALL_ROLES"
+EMPTY_STRING=""
 GOF_ORDER_WITH_MINUS_ONE_VALUE = -1
 
 FIELD_TYPES_LIST = [item.value for item in FieldTypes]
@@ -22,7 +23,7 @@ MULTI_VALUES_INPUT_FIELDS = [
     FieldTypes.MULTI_SELECT_LABELS.value
 ]
 
-GOOGLE_SHEET_NAME = "Vendor Configuration_v0 - Test"
+GOOGLE_SHEET_NAME = "Vendor Configuration_v1 - Test"
 TASK_TEMPLATE_SUB_SHEET_TITLE = "Task Templates"
 GOF_SUB_SHEET_TITLE = "GOF"
 FIELD_SUB_SHEET_TITLE = "Fields"
