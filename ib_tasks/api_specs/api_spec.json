@@ -209,12 +209,16 @@
           "type": "string",
           "format": "date-time"
         },
+        "reason_id": {
+          "type": "integer",
+          "format": "int64"
+        },
         "reason": {
           "type": "string"
         }
       },
       "required": [
-        "updated_due_date_time", "reason"
+        "updated_due_date_time", "reason_id"
       ]
     },
     "CreateTaskRequestBody": {

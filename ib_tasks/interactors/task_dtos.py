@@ -122,4 +122,5 @@ class TaskDueParametersDTO:
     task_id: int
     user_id: str
     due_date_time: datetime
+    reason_id: int
     reason: str

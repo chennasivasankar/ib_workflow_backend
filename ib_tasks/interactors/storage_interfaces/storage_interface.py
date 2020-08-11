@@ -12,6 +12,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesD
 from ib_tasks.interactors.stages_dtos import StageActionDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import StatusVariableDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
+from ib_tasks.interactors.task_dtos import TaskDueParametersDTO
 
 
 class StorageInterface(abc.ABC):
@@ -135,4 +136,8 @@ class StorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_task_due_details(self, task_id: int) -> \
             List[TaskDueMissingDTO]:
+        pass
+
+    @abc.abstractmethod
+    def add_due_delay_details(self, due_details: TaskDueParametersDTO):
         pass

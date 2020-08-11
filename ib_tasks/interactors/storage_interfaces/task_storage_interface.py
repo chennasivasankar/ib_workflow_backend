@@ -113,7 +113,3 @@ class TaskStorageInterface(abc.ABC):
     @abc.abstractmethod
     def create_elastic_task(self, task_id: int, elastic_task_id: str):
         pass
-
-    @abc.abstractmethod
-    def validate_task_id(self, task_id: int) -> bool:
-        pass

@@ -249,3 +249,8 @@ METHOD_NOT_FOUND = ("method not found", "METHOD_NOT_FOUND")
 
 
 USER_IS_NOT_ASSIGNED_TO_TASK = ("user is not assigned to the task", "USER_IS_NOT_ASSIGNED_TO_TASK")
+
+INVALID_DUE_DATE_TIME = ("given updated due datetime is invalid", "INVALID_DUE_DATE_TIME")
+
+
+INVALID_REASON_ID = ("given reason id is not in options", "INVALID_REASON_ID")

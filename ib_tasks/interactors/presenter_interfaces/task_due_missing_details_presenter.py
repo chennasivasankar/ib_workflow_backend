@@ -20,3 +20,10 @@ class TaskDueDetailsPresenterInterface(abc.ABC):
     def get_response_for_get_task_due_details(self, task_dtos: List[TaskDueDetailsDTO]):
         pass
 
+    @abc.abstractmethod
+    def response_for_invalid_due_datetime(self):
+        pass
+
+    @abc.abstractmethod
+    def response_for_invalid_reason_id(self):
+        pass

@@ -4,7 +4,7 @@ from typing import List
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.adapters.dtos import UserDetailsDTO
-from ib_tasks.constants.exception_messages import USER_IS_NOT_ASSIGNED_TO_TASK
+from ib_tasks.constants.exception_messages import USER_IS_NOT_ASSIGNED_TO_TASK, INVALID_DUE_DATE_TIME, INVALID_REASON_ID
 from ib_tasks.exceptions.custom_exceptions import InvalidTaskIdException
 from ib_tasks.interactors.presenter_interfaces.task_due_missing_details_presenter import \
     TaskDueDetailsPresenterInterface
@@ -66,3 +66,27 @@ class TaskDueDetailsPresenterImplementation(TaskDueDetailsPresenterInterface,
                      'name': user.user_name,
                      'profile_pic': user.profile_pic_url}
         return user_dict
+
+    def response_for_invalid_due_datetime(self):
+        response_message = INVALID_DUE_DATE_TIME[0]
+        data = {
+            "response": response_message,
+            "http_status_code": 400,
+            "res_status": INVALID_DUE_DATE_TIME[1]
+        }
+        response_object = self.prepare_400_bad_request_response(
+            response_dict=data
+        )
+        return response_object
+
+    def response_for_invalid_reason_id(self):
+        response_message = INVALID_REASON_ID[0]
+        data = {
+            "response": response_message,
+            "http_status_code": 400,
+            "res_status": INVALID_REASON_ID[1]
+        }
+        response_object = self.prepare_400_bad_request_response(
+            response_dict=data
+        )
+        return response_object
