@@ -33,6 +33,7 @@ class GetTaskStageCompleteDetailsDTOFactory(factory.Factory):
         model = GetTaskStageCompleteDetailsDTO
 
     task_id = factory.Sequence(lambda n: 'task_%d' % (n + 1))
+    stage_color = factory.sequence(lambda n: "color_%d" % (n + 1))
     stage_id = factory.Sequence(lambda n: 'stage_%d' % (n + 1))
     field_dtos = None
     action_dtos = None

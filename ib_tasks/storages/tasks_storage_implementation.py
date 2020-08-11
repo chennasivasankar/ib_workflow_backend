@@ -34,7 +34,6 @@ from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
 
 class TasksStorageImplementation(TaskStorageInterface):
-
     def create_elastic_task(self, task_id: int, elastic_task_id: str):
 
         ElasticSearchTask.objects.create(
@@ -477,3 +476,13 @@ class TasksStorageImplementation(TaskStorageInterface):
                     stage_value=task_with_stage_value_item['stage_value']))
         return task_id_with_max_stage_value_dtos
 
+    def check_is_valid_task_display_id(self, task_display_id: str) -> bool:
+        is_task_exists = \
+            Task.objects.filter(task_display_id=task_display_id).exists()
+        return is_task_exists
+
+    def get_task_id_for_task_display_id(self, task_display_id: str) -> int:
+        task_id_queryset = Task.objects.filter(
+            task_display_id=task_display_id).values_list('id', flat=True)
+        task_id = task_id_queryset.first()
+        return task_id
