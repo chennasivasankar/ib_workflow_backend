@@ -13,12 +13,8 @@ class GetChecklistPresenterImplementation(GetChecklistPresenterInterface,
 
     def get_success_response_for_get_checklist(
             self, checklist_item_dtos: List[ChecklistItemWithIdDTO]):
-        print("*" * 80)
-        print(checklist_item_dtos)
         checklist_items = self._prepare_checklist_items(
             checklist_item_dtos=checklist_item_dtos)
-        print("*" * 80)
-        print(checklist_items)
         return self.prepare_200_success_response(
             response_dict={"checklist": checklist_items})
 
