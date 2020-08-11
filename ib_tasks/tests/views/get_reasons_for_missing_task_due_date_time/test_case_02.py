@@ -1,13 +1,14 @@
 """
-#
+# get task delay reasons
 """
+import uuid
+from unittest.mock import patch
+
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+from freezegun import freeze_time
 
-from ib_tasks.models import UserTaskDelayReason
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
-
-UserTaskDelayReason
 
 
 class TestCase01GetReasonsForMissingTaskDueDateTimeAPITestCase(TestUtils):
@@ -18,13 +19,13 @@ class TestCase01GetReasonsForMissingTaskDueDateTimeAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['read']}}
 
     @pytest.fixture()
+    @freeze_time("2020-08-11 14:19:33")
     def setup(self, api_user, mocker):
         from ib_tasks.tests.common_fixtures.adapters.assignees_details_service import \
             assignee_details_dtos_mock
         from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory
         AssigneeDetailsDTOFactory.reset_sequence()
-        # AssigneeDetailsDTOFactory(assignee_id=api_user.user_id)
-        user_dtos = assignee_details_dtos_mock(mocker, api_user.user_id)
+        user_dtos = assignee_details_dtos_mock(mocker, str(api_user.user_id))
         from ib_tasks.tests.factories.models import TaskFactory
 
         TaskFactory.reset_sequence()
@@ -34,7 +35,8 @@ class TestCase01GetReasonsForMissingTaskDueDateTimeAPITestCase(TestUtils):
         TaskStageFactory(task=tasks[0], assignee_id=api_user.user_id)
         from ib_tasks.tests.factories.models import TaskDueDetailsFactory
         TaskDueDetailsFactory.reset_sequence()
-        TaskDueDetailsFactory(user_id=api_user.user_id, task=tasks[0])
+        TaskDueDetailsFactory(user_id=api_user.user_id, task=tasks[0],
+                              reason="Missed reiterating objective")
         TaskDueDetailsFactory.create_batch(size=3, task=tasks[0])
 
     @pytest.mark.django_db
