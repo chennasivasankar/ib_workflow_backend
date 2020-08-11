@@ -20,9 +20,9 @@ class CreateReplyToCommentInteractor:
             comment_id: str, comment_content: str,
             mention_user_ids: List[str], multimedia_dtos: List[MultiMediaDTO]
     ):
-        # TODO: Validate mention_user_ids and multimedia_dtos
         from ib_discussions.exceptions.custom_exceptions import \
             CommentIdNotFound
+        from ib_discussions.adapters.auth_service import InvalidUserIds
         try:
             response = self._reply_to_comment_response(
                 comment_content=comment_content, comment_id=comment_id,
@@ -32,6 +32,8 @@ class CreateReplyToCommentInteractor:
             )
         except CommentIdNotFound:
             response = presenter.response_for_comment_id_not_found()
+        except InvalidUserIds as err:
+            response = presenter.response_for_invalid_user_ids(err)
         return response
 
     def _reply_to_comment_response(
@@ -60,6 +62,10 @@ class CreateReplyToCommentInteractor:
             self, user_id: str, comment_id: str, comment_content: str,
             mention_user_ids: List[str], multimedia_dtos: List[MultiMediaDTO]
     ):
+        from ib_discussions.adapters.service_adapter import ServiceAdapter
+        service_adapter = ServiceAdapter()
+        service_adapter.auth_service.validate_user_ids(
+            user_ids=mention_user_ids)
         is_comment_id_not_exists = not self.storage.is_comment_id_exists(
             comment_id=comment_id
         )

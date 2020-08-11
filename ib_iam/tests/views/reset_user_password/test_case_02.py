@@ -16,7 +16,7 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_token_does_not_exist(self, mocker, snapshot):
-        from ib_iam.interactors.update_user_password_interactor import \
+        from ib_iam.interactors.reset_user_password_interactor import \
             TokenDoesNotExist
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
             prepare_update_user_password_with_reset_password_token_mock
@@ -35,7 +35,7 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_token_has_expired(self, mocker, snapshot):
-        from ib_iam.interactors.update_user_password_interactor import \
+        from ib_iam.interactors.reset_user_password_interactor import \
             TokenHasExpired
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
             prepare_update_user_password_with_reset_password_token_mock
@@ -56,7 +56,7 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
     def test_case_for_required_password_min_length(
             self, mocker, snapshot
     ):
-        from ib_iam.interactors.update_user_password_interactor import \
+        from ib_iam.interactors.reset_user_password_interactor import \
             PasswordMinLength
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
             prepare_update_user_password_with_reset_password_token_mock
@@ -79,7 +79,7 @@ class TestCase02UpdateUserPasswordAPITestCase(TestUtils):
     def test_case_for_required_password_one_special_character(
             self, mocker, snapshot
     ):
-        from ib_iam.interactors.update_user_password_interactor import \
+        from ib_iam.interactors.reset_user_password_interactor import \
             PasswordAtLeastOneSpecialCharacter
         from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
             prepare_update_user_password_with_reset_password_token_mock

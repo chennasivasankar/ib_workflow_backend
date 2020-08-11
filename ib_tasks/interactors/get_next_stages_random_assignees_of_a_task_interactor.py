@@ -205,7 +205,6 @@ class GetNextStagesRandomAssigneesOfATaskInteractor:
                                       stage_value_dict=stage_value_dict)
         except KeyError:
             raise InvalidKeyError()
-
         except:
             raise InvalidCustomLogicException()
 
