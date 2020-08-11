@@ -17,7 +17,7 @@ class UserDetailsWithTeamRoleAndCompanyIdsDTOFactory(factory.Factory):
     company_id = factory.Faker("uuid")
 
 
-class CurrentAndNewPasswordDTOFactor(factory.Factory):
+class CurrentAndNewPasswordDTOFactory(factory.Factory):
     class Meta:
         model = CurrentAndNewPasswordDTO
 
