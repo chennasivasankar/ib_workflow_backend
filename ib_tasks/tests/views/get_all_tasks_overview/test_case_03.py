@@ -14,6 +14,11 @@ class TestCase03GetAllTasksOverviewAPITestCase(TestUtils):
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['read']}}
 
+    @pytest.fixture(autouse=True)
+    def setup(self, mocker):
+        from ib_tasks.tests.common_fixtures.storages import mock_filter_tasks
+        mock_filter_tasks(mocker)
+
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {}
