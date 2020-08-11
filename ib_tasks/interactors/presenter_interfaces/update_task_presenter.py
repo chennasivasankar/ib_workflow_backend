@@ -1,5 +1,6 @@
 import abc
 
+from ib_tasks.exceptions.datetime_custom_exceptions import DueDateHasExpired
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee
 
@@ -138,6 +139,10 @@ class UpdateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_due_time_has_expired_for_today(self, err):
+        pass
+
+    @abc.abstractmethod
+    def raise_due_date_has_expired(self, err: DueDateHasExpired):
         pass
 
 

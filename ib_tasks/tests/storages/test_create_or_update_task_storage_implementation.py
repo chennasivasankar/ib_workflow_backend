@@ -7,7 +7,8 @@ from ib_tasks.models import Task, TaskGoF, TaskGoFField
 from ib_tasks.tests.factories.models import GoFRoleFactory, FieldRoleFactory, \
     TaskFactory, FieldFactory, TaskGoFFactory, TaskGoFFieldFactory, GoFFactory
 from ib_tasks.tests.factories.storage_dtos import TaskGoFFieldDTOFactory, \
-    TaskGoFWithTaskIdDTOFactory, CreateTaskDTOFactory
+    TaskGoFWithTaskIdDTOFactory
+from ib_tasks.tests.factories.interactor_dtos import CreateTaskDTOFactory
 
 
 @pytest.mark.django_db
