@@ -83,24 +83,26 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
         user_roles = roles_service_adapter.roles_service.get_user_role_ids(
             user_id)
         for gof_roles_dto in gof_write_permission_roles_dtos:
-            required_roles = \
-                gof_roles_dto.write_permission_roles
-            missed_user_roles = list(set(required_roles) - set(user_roles))
-            if missed_user_roles:
-                raise UserNeedsGoFWritablePermission(
-                    user_id, gof_roles_dto.gof_id,
-                    missed_user_roles
-                )
+            required_roles = gof_roles_dto.write_permission_roles
+            user_permitted = self.any_in(user_roles, required_roles)
+            required_roles_are_empty = not required_roles
+            if not user_permitted or required_roles_are_empty:
+                raise UserNeedsGoFWritablePermission(user_id,
+                                                     gof_roles_dto.gof_id,
+                                                     required_roles)
         for field_roles_dto in field_write_permission_roles_dtos:
-            required_roles = \
-                field_roles_dto.write_permission_roles
-            missed_user_roles = list(set(required_roles) - set(user_roles))
-            if missed_user_roles:
-                raise UserNeedsFieldWritablePermission(
-                    user_id, field_roles_dto.field_id,
-                    missed_user_roles
-                )
+            required_roles = field_roles_dto.write_permission_roles
+            user_permitted = self.any_in(user_roles, required_roles)
+            required_roles_are_empty = not required_roles
+            if not user_permitted or required_roles_are_empty:
+                raise UserNeedsFieldWritablePermission(user_id,
+                                                       field_roles_dto.field_id,
+                                                       required_roles)
         return
+
+    @staticmethod
+    def any_in(user_roles: List[str], required_roles: List[str]) -> bool:
+        return any(role in required_roles for role in user_roles)
 
     def _validate_for_given_fields_are_related_to_given_gofs(
             self, gof_fields_dtos: List[GoFFieldsDTO], gof_ids: List[str]
@@ -131,9 +133,9 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
             given_gof_field_ids)
         if duplicate_field_ids:
             raise DuplicateFieldIdsToGoF(gof_id, duplicate_field_ids)
-        invalid_gof_field_ids = list(
+        invalid_gof_field_ids = sorted(list(
             set(given_gof_field_ids) - set(valid_gof_field_ids)
-        )
+        ))
         if invalid_gof_field_ids:
             raise InvalidFieldsOfGoF(gof_id, invalid_gof_field_ids)
         return
@@ -182,12 +184,12 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
 
     @staticmethod
     def _get_duplicates_in_given_list(values: List) -> List:
-        duplicate_values = list(
+        duplicate_values = sorted(list(
             set(
                 [
                     value
                     for value in values if values.count(value) > 1
                 ]
             )
-        )
+        ))
         return duplicate_values

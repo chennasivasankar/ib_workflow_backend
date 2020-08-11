@@ -265,3 +265,8 @@ DUE_TIME_HAS_EXPIRED_FOR_TODAY = (
     "give due time {} has expired for today date",
     "DUE_TIME_HAS_EXPIRED_FOR_TODAY"
 )
+
+DUE_DATE_HAS_EXPIRED = (
+    "given due date {} has expired",
+    "DUE_DATE_HAS_EXPIRED"
+)

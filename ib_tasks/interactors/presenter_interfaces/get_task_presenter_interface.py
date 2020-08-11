@@ -1,9 +1,9 @@
 import abc
 from dataclasses import dataclass
 from typing import List
+
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
 from ib_tasks.interactors.stages_dtos import StageAssigneeDetailsDTO
-
 from ib_tasks.interactors.storage_interfaces.get_task_dtos \
     import TaskDetailsDTO
 from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
@@ -24,7 +24,8 @@ class GetTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_task_response(self, task_complete_details_dto: TaskCompleteDetailsDTO):
+    def get_task_response(self,
+                          task_complete_details_dto: TaskCompleteDetailsDTO):
         pass
 
     @abc.abstractmethod

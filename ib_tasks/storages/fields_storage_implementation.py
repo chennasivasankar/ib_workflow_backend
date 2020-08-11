@@ -14,7 +14,7 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (
     TaskTemplateStageDTO, StageDetailsDTO)
-from ib_tasks.models import TaskStage, Stage, TaskGoFField, FieldRole, \
+from ib_tasks.models import CurrentTaskStage, Stage, TaskGoFField, FieldRole, \
     TaskTemplateGoFs, Field
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.constants.constants import ALL_ROLES_ID
@@ -162,7 +162,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         return task_fields_dtos
 
     def get_task_stages(self, task_id: int) -> List[str]:
-        stage_ids = TaskStage.objects.filter(task_id=task_id).values_list(
+        stage_ids = CurrentTaskStage.objects.filter(task_id=task_id).values_list(
             'stage__stage_id', flat=True)
         return list(stage_ids)
 

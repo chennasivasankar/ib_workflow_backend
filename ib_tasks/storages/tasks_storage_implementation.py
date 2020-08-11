@@ -24,7 +24,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO
 from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO
-from ib_tasks.models import Stage, TaskTemplate, TaskStage, \
+from ib_tasks.models import Stage, TaskTemplate, CurrentTaskStage, \
     TaskTemplateStatusVariable
 from ib_tasks.models.field import Field
 from ib_tasks.models.stage_actions import StageAction
@@ -185,14 +185,14 @@ class TasksStorageImplementation(TaskStorageInterface):
     def get_task_ids_for_the_stage_ids(
             self, stage_ids: List[str],
             offset: int, limit: int) -> Tuple[List[TaskStageIdsDTO], int]:
-        total_tasks = TaskStage.objects.aggregate(
+        total_tasks = CurrentTaskStage.objects.aggregate(
             tasks_count=Count(
                 'task',
                 filter=Q(stage__stage_id__in=stage_ids),
                 distinct=True
             )
         )['tasks_count']
-        task_stage_ids = TaskStage.objects.filter(
+        task_stage_ids = CurrentTaskStage.objects.filter(
             stage__stage_id__in=stage_ids
         ).values('task_id', 'stage__stage_id')
         # dup_task_ids = []
@@ -320,7 +320,7 @@ class TasksStorageImplementation(TaskStorageInterface):
             offset: int) -> List[TaskIdWithStageValueDTO]:
         from django.db.models import Max
         task_objs_with_max_stage_value = list(
-            TaskStage.objects.filter(
+            CurrentTaskStage.objects.filter(
                 task__created_by=user_id,
                 stage__stage_id__in=stage_ids).values("task_id").annotate(
                 stage_value=Max("stage__value"))[offset:limit])
@@ -446,7 +446,7 @@ class TasksStorageImplementation(TaskStorageInterface):
                 q = q | current_queue
         if q is None:
             return []
-        task_objs = TaskStage.objects.filter(q).values('task_id',
+        task_objs = CurrentTaskStage.objects.filter(q).values('task_id',
                                                        'stage__stage_id')
 
         task_stage_dtos = self._convert_task_objs_to_dtos(task_objs)
@@ -465,7 +465,7 @@ class TasksStorageImplementation(TaskStorageInterface):
             self, user_id: str, stage_ids: List[str]) -> List[TaskIdWithStageValueDTO]:
         from django.db.models import Max
         task_objs_with_max_stage_value = list(
-            TaskStage.objects.filter(
+            CurrentTaskStage.objects.filter(
                 task__created_by=user_id,
                 stage__stage_id__in=stage_ids).values("task_id").annotate(
                 stage_value=Max("stage__value")))

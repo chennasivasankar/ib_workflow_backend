@@ -346,7 +346,7 @@ class TestGetTaskInteractor:
     @patch.object(GetTaskStagesAndActions, "get_task_stages_and_actions")
     @patch.object(GetTaskBaseInteractor, 'get_task')
     @patch.object(GetStagesAssigneesDetailsInteractor,
-                   "get_stages_assignee_details_dtos")
+                  "get_stages_assignee_details_dtos")
     def test_given_valid_task_returns_task_complete_details_dto(
             self, stage_assignee_details_dtos_mock, get_task_mock,
             get_task_stages_and_actions_mock, stage_assignee_details_dtos,

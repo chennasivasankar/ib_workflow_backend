@@ -20,10 +20,10 @@ class MultiSelectLabelFieldValidationInteractor(BaseFieldValidation):
             self) -> Optional[IncorrectMultiSelectLabelsSelected]:
         import json
         selected_multi_select_labels = json.loads(self.field_response)
-        invalid_multi_select_labels = list(
+        invalid_multi_select_labels = sorted(list(
             set(selected_multi_select_labels) - set(
                 self.valid_multi_select_labels)
-        )
+        ))
         if invalid_multi_select_labels:
             raise IncorrectMultiSelectLabelsSelected(
                 self.field_id, invalid_multi_select_labels,
