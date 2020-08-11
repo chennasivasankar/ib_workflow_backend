@@ -58,7 +58,7 @@ class StageStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_task_id_with_stage_details_dtos_based_on_stage_value(
-            self, user_id: str, stage_values: List[int],
+            self, stage_values: List[int],
             task_ids_group_by_stage_value_dtos: List[
                 StageValueWithTaskIdsDTO]) \
             -> [TaskIdWithStageDetailsDTO]:
@@ -76,15 +76,10 @@ class StageStorageInterface(abc.ABC):
             List[int]:
         pass
 
-    @abc.abstractmethod
-    def update_task_stage_assignees(
-            self, task_id_with_stage_assignee_dtos_for_updation: List[
-                TaskIdWithStageAssigneeDTO]):
-        pass
 
     @abc.abstractmethod
     def create_task_stage_assignees(
-            self, task_id_with_stage_assignee_dtos_for_creation: List[
+            self, task_id_with_stage_assignee_dtos: List[
                 TaskIdWithStageAssigneeDTO]):
         pass
 

@@ -1,5 +1,22 @@
 
 
+REQUEST_BODY_JSON = """
+{
+    "templates_conditions": [
+        {
+            "template_id": "string",
+            "conditions": [
+                {
+                    "field_id": "string",
+                    "operator": "EQ",
+                    "value": "string"
+                }
+            ]
+        }
+    ]
+}
+"""
+
 
 RESPONSE_200_JSON = """
 {

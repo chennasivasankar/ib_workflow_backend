@@ -9,6 +9,7 @@ def api_wrapper(*args, **kwargs):
     request_data = kwargs["request_data"]
     query_params = kwargs["query_params"]
     user_object = kwargs["user"]
+    user_id = str(user_object.user_id)
 
     entity_id_and_entity_type_dto = _prepare_entity_id_and_entity_type_dto(
         request_data)
@@ -35,7 +36,7 @@ def api_wrapper(*args, **kwargs):
         entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
         offset_and_limit_dto=offset_and_limit_dto,
         filter_by_dto=filter_by_dto, sort_by_dto=sort_by_dto,
-        presenter=presenter, user_id=user_object.user_id
+        presenter=presenter, user_id=user_id
     )
     return response
 
