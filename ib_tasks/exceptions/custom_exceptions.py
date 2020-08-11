@@ -309,3 +309,13 @@ class EmptyValuesForAllowedFormats(Exception):
 class InvalidValueForSearchable(Exception):
     def __init__(self, message: str):
         self.message = message
+
+
+class InvalidModulePathFound(Exception):
+    def __init__(self, path_name: str):
+        self.path_name = path_name
+
+
+class InvalidMethodFound(Exception):
+    def __init__(self, method_name: str):
+        self.method_name = method_name
