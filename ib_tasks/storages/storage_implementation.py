@@ -615,4 +615,14 @@ class StorageImplementation(StorageInterface):
         return task_due_details_dtos
 
     def add_due_delay_details(self, due_details: TaskDueParametersDTO):
-        pass
+        user_id = due_details.user_id
+        task_id = due_details.task_id
+        reason_id = due_details.reason_id
+        count = UserTaskDelayReason.objects.filter(
+            task_id=task_id, user_id=user_id).count()
+
+        UserTaskDelayReason.objects.create(user_id=user_id, task_id=task_id,
+                                           due_datetime=due_details.due_date_time,
+                                           count=count+1,
+                                           reason_id=reason_id,
+                                           reason=due_details.reason)

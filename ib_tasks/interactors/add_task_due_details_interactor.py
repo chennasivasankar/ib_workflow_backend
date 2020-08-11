@@ -38,6 +38,15 @@ class AddTaskDueDetailsInteractor:
         self._validate_updated_due_datetime(updated_due_datetime)
         self._validate_reason_id(reason_id)
 
+        self._add_task_due_delay_details(due_details)
+
+    def _add_task_due_delay_details(self, due_details):
+        reason_id = due_details.reason_id
+        from ib_tasks.constants.enum import REASONS
+        for reason_dict in REASONS:
+            if reason_dict['id'] == reason_id and reason_id != -1:
+                due_details.reason = reason_dict['reason']
+
         self.storage.add_due_delay_details(due_details)
 
     @staticmethod
