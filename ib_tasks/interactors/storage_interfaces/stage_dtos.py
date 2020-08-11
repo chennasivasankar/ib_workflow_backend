@@ -157,3 +157,9 @@ class TaskStageHavingAssigneeIdDTO:
     db_stage_id: int
     assignee_id: str
     stage_display_name: str
+
+
+@dataclass
+class CurrentStageDetailsDTO:
+    stage_id: str
+    stage_display_name: str
