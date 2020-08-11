@@ -14,10 +14,13 @@ class TestGetFiltersDetails:
         from ib_tasks.storages.filter_storage_implementation \
             import FilterStorageImplementation
         storage = FilterStorageImplementation()
+        action_enum = Status.ENABLED.value
         filter_id = 1
 
         # Act
-        response = storage.enable_filter_status(filter_id=filter_id)
+        response = storage.update_filter_status(
+            filter_id=filter_id, is_selected=action_enum
+        )
 
         # Assert
         from ib_tasks.models import Filter

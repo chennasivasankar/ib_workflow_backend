@@ -18,7 +18,7 @@ class TestGetRoleIdsForEachUserId:
             "abc1a0c1-b9ef-4e59-b415-60a28ef17b10"
         ]
 
-        from ib_iam.interactors.DTOs.common_dtos import UserIdWithRoleIdsDTO
+        from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
         user_id_with_role_ids_dtos = [
             UserIdWithRoleIdsDTO(
                 user_id="eca1a0c1-b9ef-4e59-b415-60a28ef17b10",

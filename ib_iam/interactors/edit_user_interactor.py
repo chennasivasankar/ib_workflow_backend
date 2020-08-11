@@ -6,8 +6,8 @@ from ib_iam.exceptions.custom_exceptions import (
     NameShouldNotContainsNumbersSpecCharacters,
     NameMinimumLengthShouldBe
 )
-from ib_iam.interactors.DTOs.common_dtos import \
-    UserDetailsWithTeamRoleAndCompanyIdsDTO
+from ib_iam.interactors.dtos.dtos import \
+    UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.edit_user_presenter_interface \
     import EditUserPresenterInterface
@@ -21,10 +21,9 @@ class EditUserInteractor(ValidationMixin):
 
     def edit_user_wrapper(
             self, admin_user_id: str, user_id: str,
-            user_details_with_team_role_and_company_ids_dto \
-                    : UserDetailsWithTeamRoleAndCompanyIdsDTO,
-            presenter: EditUserPresenterInterface
-    ):
+            user_details_with_team_role_and_company_ids_dto:
+            UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO,
+            presenter: EditUserPresenterInterface):
         try:
             self.edit_user(admin_user_id=admin_user_id, user_id=user_id,
                            user_details_with_team_role_and_company_ids_dto \
@@ -138,11 +137,11 @@ class EditUserInteractor(ValidationMixin):
             self, user_id: str, company_id: str,
             role_ids: List[str], team_ids: List[str], name: str):
         self._remove_existing_teams_roles_and_company(user_id)
-        self._assaign_teams_roles_company_to_user(
+        self._assign_teams_roles_company_to_user(
             company_id, role_ids, team_ids, user_id, name
         )
 
-    def _assaign_teams_roles_company_to_user(
+    def _assign_teams_roles_company_to_user(
             self, company_id: str, role_ids: List[str], team_ids: List[str],
             user_id: str, name: str):
         ids_of_role_objs = self.user_storage.get_role_objs_ids(role_ids)

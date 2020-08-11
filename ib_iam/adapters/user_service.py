@@ -25,13 +25,13 @@ class UserService:
         except InvalidUserException:
             from ib_iam.exceptions.custom_exceptions import InvalidUserId
             raise InvalidUserId()
-        user_profile_dtos = []
-        for user in user_profiles:
-            user_profile_dtos.append(UserProfileDTO(
+        user_profile_dtos = [
+            UserProfileDTO(
                 user_id=user.user_id,
                 name=user.name,
                 email=user.email
-            ))
+            ) for user in user_profiles
+        ]
         return user_profile_dtos
 
     def create_user_account_with_email(self, email: str) -> str:
@@ -39,7 +39,6 @@ class UserService:
             import UserAccountAlreadyExistWithThisEmail
         from ib_users.exceptions.registration_exceptions \
             import AccountWithThisEmailAlreadyExistsException
-
         try:
             user_id = self.interface.create_user_account_with_email(
                 email=email)
@@ -90,9 +89,7 @@ class UserService:
         from ib_users.interactors.exceptions.user_profile import \
             InvalidUserException
         try:
-            user_profile_dto = self.interface.get_user_profile(
-                user_id=user_id
-            )
+            user_profile_dto = self.interface.get_user_profile(user_id=user_id)
         except InvalidUserException as err:
             from ib_users.constants.user_profile.error_types import \
                 EMPTY_USER_ID_ERROR_TYPE
@@ -104,8 +101,7 @@ class UserService:
                 raise UserAccountDoesNotExist()
         else:
             user_profile_dto = self._convert_to_user_profile_dto(
-                user_profile_dto=user_profile_dto
-            )
+                user_profile_dto=user_profile_dto)
             return user_profile_dto
 
     def deactivate_delete_user_id_in_ib_users(self, user_id: str):
@@ -123,8 +119,7 @@ class UserService:
 
     def get_basic_user_dtos(self, user_ids: List[str]):
         user_dtos_from_service = self.interface.get_user_profile_bulk(
-            user_ids=user_ids
-        )
+            user_ids=user_ids)
         basic_user_profile_dto = [
             UserProfileDTO(
                 user_id=user_dto.user_id,

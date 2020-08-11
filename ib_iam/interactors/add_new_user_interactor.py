@@ -4,8 +4,8 @@ from ib_iam.exceptions.custom_exceptions import (
     NameShouldNotContainsNumbersSpecCharacters, RoleIdsAreInvalid,
     InvalidCompanyId, TeamIdsAreInvalid, NameMinimumLengthShouldBe
 )
-from ib_iam.interactors.DTOs.common_dtos import \
-    UserDetailsWithTeamRoleAndCompanyIdsDTO
+from ib_iam.interactors.dtos.dtos import \
+    UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.add_new_user_presenter_inerface \
     import AddUserPresenterInterface
@@ -20,7 +20,7 @@ class AddNewUserInteractor(ValidationMixin):
     def add_new_user_wrapper(
             self, user_id: str,
             user_details_with_team_role_and_company_ids_dto \
-                    : UserDetailsWithTeamRoleAndCompanyIdsDTO,
+                    : UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO,
             presenter: AddUserPresenterInterface):
         try:
             self.add_new_user(
@@ -74,9 +74,8 @@ class AddNewUserInteractor(ValidationMixin):
 
     def _validate_add_new_user_details(
             self, user_id,
-            user_details_with_team_role_and_company_ids_dto \
-                    : UserDetailsWithTeamRoleAndCompanyIdsDTO
-    ):
+            user_details_with_team_role_and_company_ids_dto:
+            UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO):
         name = user_details_with_team_role_and_company_ids_dto.name
         email = user_details_with_team_role_and_company_ids_dto.email
         role_ids = user_details_with_team_role_and_company_ids_dto.role_ids

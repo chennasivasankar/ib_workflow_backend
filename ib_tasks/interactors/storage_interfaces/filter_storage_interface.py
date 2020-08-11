@@ -58,11 +58,8 @@ class FilterStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def enable_filter_status(self, filter_id: int) -> Status:
-        pass
-
-    @abc.abstractmethod
-    def disable_filter_status(self, filter_id: int) -> Status:
+    def update_filter_status(self, filter_id: int,
+                             is_selected: Status) -> Status:
         pass
 
     @abc.abstractmethod
