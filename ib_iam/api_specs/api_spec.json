@@ -791,7 +791,6 @@
                 "type": "string",
                 "enum": [
                   "INVALID_EMAIL",
-                  "INVALID_NAME",
                   "USER_ALREADY_EXIST_WITH_THIS_EMAIL",
                   "NAME_MINIMUM_LENGTH_SHOULD_BE",
                   "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
@@ -819,7 +818,6 @@
                 "type": "string",
                 "enum": [
                   "INVALID_EMAIL",
-                  "EMPTY_NAME_IS_INVALID",
                   "NAME_MINIMUM_LENGTH_SHOULD_BE",
                   "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
                 ]

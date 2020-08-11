@@ -4,7 +4,7 @@ from ib_iam.exceptions.custom_exceptions import (
     UserIsNotAdmin, InvalidEmailAddress,
     RoleIdsAreInvalid, InvalidCompanyId, TeamIdsAreInvalid, UserDoesNotExist,
     NameShouldNotContainsNumbersSpecCharacters,
-    NameMinimumLengthShouldBe
+    InvalidNameLength
 )
 from ib_iam.interactors.dtos.dtos import \
     UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO
@@ -36,7 +36,7 @@ class EditUserInteractor(ValidationMixin):
             response = presenter.raise_user_does_not_exist()
         except InvalidEmailAddress:
             response = presenter.raise_invalid_email_exception()
-        except NameMinimumLengthShouldBe:
+        except InvalidNameLength:
             response = presenter \
                 .raise_name_minimum_length_should_be_equal_or_more_than()
         except NameShouldNotContainsNumbersSpecCharacters:
