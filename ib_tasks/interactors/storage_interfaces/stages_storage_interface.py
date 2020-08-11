@@ -3,7 +3,8 @@ from typing import Optional, List
 
 from ib_tasks.interactors.stages_dtos import StageDTO, \
     TaskIdWithStageAssigneeDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDetailsDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDetailsDTO, \
+    TaskStageHavingAssigneeIdDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
     TaskStagesDTO, TaskTemplateStageDTO, StageValueWithTaskIdsDTO, \
     TaskIdWithStageDetailsDTO
@@ -57,7 +58,7 @@ class StageStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_task_id_with_stage_details_dtos_based_on_stage_value(
-            self, user_id: str, stage_values: List[int],
+            self, stage_values: List[int],
             task_ids_group_by_stage_value_dtos: List[
                 StageValueWithTaskIdsDTO]) \
             -> [TaskIdWithStageDetailsDTO]:
@@ -88,6 +89,12 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_stage_detail_dtos_given_stage_ids(self, stage_ids: List[str])->\
+    def get_stage_detail_dtos_given_stage_ids(self, stage_ids: List[str]) -> \
             List[StageDetailsDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_stage_details_having_assignees_in_given_stage_ids(
+            self, task_id: int, db_stage_ids: List[int]) -> List[
+        TaskStageHavingAssigneeIdDTO]:
         pass

@@ -28,7 +28,8 @@ from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionNamesDTO, ValidStageDTO, TaskStageIdsDTO, StageValueDTO, \
     StageDetailsDTO, StageDisplayValueDTO, StageIdWithTemplateIdDTO, \
-    StageRoleDTO, TaskStagesDTO, TaskTemplateStageDTO, TaskStageAssigneeDTO
+    StageRoleDTO, TaskStagesDTO, TaskTemplateStageDTO, TaskStageAssigneeDTO, \
+    TaskStageHavingAssigneeIdDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     StatusVariableDTO, TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
@@ -584,6 +585,17 @@ class StageAssigneeDTOFactory(factory.Factory):
     assignee_id = factory.sequence(
         lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
             counter))
+
+
+class TaskStageHavingAssigneeIdDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskStageHavingAssigneeIdDTO
+
+    db_stage_id = factory.Sequence(lambda counter: counter + 1)
+    assignee_id = factory.sequence(
+        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
+            counter))
+    stage_display_name = factory.Sequence(lambda n: "name_%d" % n)
 
 
 class GoFIdWithSameGoFOrderDTOFactory(factory.Factory):

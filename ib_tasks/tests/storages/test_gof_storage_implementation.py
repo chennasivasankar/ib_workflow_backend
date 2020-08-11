@@ -1,6 +1,7 @@
 import factory
 import pytest
 
+from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.models import GoFRole
 from ib_tasks.tests.factories.models import GoFFactory, TaskTemplateFactory, \
     GoFRoleFactory, FieldFactory, TaskTemplateWith2GoFsFactory
@@ -35,7 +36,8 @@ class TestGoFStorageImplementation:
         GoFRoleDTOFactory.reset_sequence(1)
         FieldCompleteDetailsDTOFactory.reset_sequence(1)
 
-    def test_get_gof_ids_with_read_permission_for_user(self, storage, reset_sequence):
+    def test_get_gof_ids_with_read_permission_for_user(self, storage,
+                                                       reset_sequence):
         # Arrange
         from ib_tasks.tests.factories.models import GoFRoleFactory
         expected_output = ['gof_2', 'gof_3']
@@ -44,7 +46,7 @@ class TestGoFStorageImplementation:
 
         # Act
         result = storage.get_gof_ids_with_read_permission_for_user(
-            roles=expected_roles
+            user_roles=expected_roles
         )
 
         # Assert
@@ -162,7 +164,6 @@ class TestGoFStorageImplementation:
         assert gof_roles == []
 
     def test_get_gof_dtos_for_given_gof_ids(self, storage):
-
         # Arrange
         from ib_tasks.tests.factories.models import GoFFactory
         gofs = GoFFactory.create_batch(size=2)
@@ -177,3 +178,87 @@ class TestGoFStorageImplementation:
                 if gof.gof_id == gof_dto.gof_id:
                     assert gof.display_name == gof_dto.gof_display_name
                     assert gof.max_columns == gof_dto.max_columns
+
+    def test_get_gof_ids_having_read_permission_for_user(self, storage):
+        # Arrange
+        user_roles = ["FIN_MAN"]
+        from ib_tasks.tests.factories.models import GoFFactory
+        gofs = GoFFactory.create_batch(size=2)
+        GoFRoleFactory.create_batch(
+            size=2, permission_type=PermissionTypes.READ.value,
+            role=factory.Iterator(user_roles),
+            gof=factory.Iterator(gofs)
+        )
+        gof_ids = [gof.gof_id for gof in gofs]
+
+        # Act
+        gof_ids_having_read_permission_for_user = \
+            storage.get_gof_ids_having_read_permission_for_user(
+                gof_ids=gof_ids, user_roles=user_roles)
+
+        # Assert
+        assert gof_ids_having_read_permission_for_user == gof_ids
+
+    def test_get_gof_ids_having_write_permission_for_user(self, storage):
+        # Arrange
+        user_roles = ["FIN_MAN"]
+        from ib_tasks.tests.factories.models import GoFFactory
+        gofs = GoFFactory.create_batch(size=2)
+        GoFRoleFactory.create_batch(
+            size=2, permission_type=PermissionTypes.WRITE.value,
+            role=factory.Iterator(user_roles),
+            gof=factory.Iterator(gofs)
+        )
+        gof_ids = [gof.gof_id for gof in gofs]
+
+        # Act
+        gof_ids_having_write_permission_for_user = \
+            storage.get_gof_ids_having_write_permission_for_user(
+                gof_ids=gof_ids, user_roles=user_roles)
+
+        # Assert
+        assert gof_ids_having_write_permission_for_user == gof_ids
+
+    def test_get_gof_ids_having_write_permission_for_user_when_gofs_has_all_roles(
+            self, storage):
+        # Arrange
+        user_roles = ["FIN_MAN"]
+        from ib_tasks.tests.factories.models import GoFFactory
+        gofs = GoFFactory.create_batch(size=2)
+        from ib_tasks.constants.constants import ALL_ROLES_ID
+        GoFRoleFactory.create_batch(
+            size=2, permission_type=PermissionTypes.WRITE.value,
+            role=factory.Iterator([ALL_ROLES_ID]),
+            gof=factory.Iterator(gofs)
+        )
+        gof_ids = [gof.gof_id for gof in gofs]
+
+        # Act
+        gof_ids_having_write_permission_for_user = \
+            storage.get_gof_ids_having_write_permission_for_user(
+                gof_ids=gof_ids, user_roles=user_roles)
+
+        # Assert
+        assert gof_ids_having_write_permission_for_user == gof_ids
+
+    def test_get_gof_ids_having_read_permission_for_user_when_gofs_has_all_roles(
+            self, storage):
+        # Arrange
+        user_roles = ["FIN_MAN"]
+        from ib_tasks.tests.factories.models import GoFFactory
+        gofs = GoFFactory.create_batch(size=2)
+        from ib_tasks.constants.constants import ALL_ROLES_ID
+        GoFRoleFactory.create_batch(
+            size=2, permission_type=PermissionTypes.READ.value,
+            role=factory.Iterator([ALL_ROLES_ID]),
+            gof=factory.Iterator(gofs)
+        )
+        gof_ids = [gof.gof_id for gof in gofs]
+
+        # Act
+        gof_ids_having_read_permission_for_user = \
+            storage.get_gof_ids_having_read_permission_for_user(
+                gof_ids=gof_ids, user_roles=user_roles)
+
+        # Assert
+        assert gof_ids_having_read_permission_for_user == gof_ids

@@ -41,9 +41,9 @@ class CreateOrUpdateTaskStorageImplementation(
         task_obj.save()
 
     def create_initial_task_stage(self, task_id: int, template_id: str):
-        from ib_tasks.models import TaskStage
+        from ib_tasks.models import CurrentTaskStage
         from ib_tasks.models import TaskTemplateInitialStage
-        TaskStage.objects.get_or_create(
+        CurrentTaskStage.objects.get_or_create(
             task_id=task_id,
             stage=TaskTemplateInitialStage.objects.get(
                 task_template_id=template_id
