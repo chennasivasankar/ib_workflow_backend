@@ -13,7 +13,8 @@ class TestUpdateUserPasswordAdapter:
         current_password = "Password@"
         new_password = "Password@"
         user_id = "1"
-        from ib_iam.adapters.dtos import CurrentAndNewPasswordDTO
+        from ib_iam.interactors.update_user_password_interactor import \
+            CurrentAndNewPasswordDTO
         current_and_new_password_dto = CurrentAndNewPasswordDTO(
             current_password=current_password, new_password=new_password)
         update_user_password_mock = self.update_user_password_mock(
@@ -37,7 +38,8 @@ class TestUpdateUserPasswordAdapter:
         invalid_current_password = "Password 1234"
         new_password = "Password@"
         user_id = "1"
-        from ib_iam.adapters.dtos import CurrentAndNewPasswordDTO
+        from ib_iam.interactors.update_user_password_interactor import \
+            CurrentAndNewPasswordDTO
         current_and_new_password_dto = CurrentAndNewPasswordDTO(
             current_password=invalid_current_password,
             new_password=new_password)
@@ -66,7 +68,8 @@ class TestUpdateUserPasswordAdapter:
         current_password = "Password@"
         invalid_new_password = "Password 123"
         user_id = "1"
-        from ib_iam.adapters.dtos import CurrentAndNewPasswordDTO
+        from ib_iam.interactors.update_user_password_interactor import \
+            CurrentAndNewPasswordDTO
         current_and_new_password_dto = CurrentAndNewPasswordDTO(
             current_password=current_password,
             new_password=invalid_new_password)
@@ -95,14 +98,16 @@ class TestUpdateUserPasswordAdapter:
         current_password = "Password@"
         invalid_new_password = "Password1@"
         user_id = "1"
-        from ib_iam.adapters.dtos import CurrentAndNewPasswordDTO
+        from ib_iam.interactors.update_user_password_interactor import \
+            CurrentAndNewPasswordDTO
         current_and_new_password_dto = CurrentAndNewPasswordDTO(
             current_password=current_password,
             new_password=invalid_new_password)
         update_user_password_mock = self.update_user_password_mock(
             mocker=mocker)
 
-        from ib_users.interactors.exceptions.user_credentials_exceptions import \
+        from ib_users.interactors.exceptions \
+            .user_credentials_exceptions import \
             CurrentPasswordMismatchException
         update_user_password_mock.side_effect = CurrentPasswordMismatchException
         from ib_iam.adapters.service_adapter import ServiceAdapter
