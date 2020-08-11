@@ -15,7 +15,7 @@ from ib_tasks.tests.factories.models import (
     FieldRoleFactory,
     FieldFactory,
     StageModelFactory,
-    TaskStageModelFactory,
+    CurrentTaskStageModelFactory,
     StageActionFactory, StagePermittedRolesFactory,
     ActionPermittedRolesFactory,
 )
@@ -39,7 +39,7 @@ class TestCase02GetTaskAPITestCase(TestUtils):
         FieldFactory.reset_sequence()
         TaskGoFFieldFactory.reset_sequence()
         StageModelFactory.reset_sequence()
-        TaskStageModelFactory.reset_sequence()
+        CurrentTaskStageModelFactory.reset_sequence()
         StageActionFactory.reset_sequence()
 
     @pytest.fixture
@@ -80,7 +80,7 @@ class TestCase02GetTaskAPITestCase(TestUtils):
             "123e4567-e89b-12d3-a456-426614174002",
             "123e4567-e89b-12d3-a456-426614174003"
         ]
-        TaskStageModelFactory.create_batch(
+        CurrentTaskStageModelFactory.create_batch(
             size=3, task=task_obj, stage=factory.Iterator(stage_objs),
             assignee_id=factory.Iterator(assignee_ids)
         )

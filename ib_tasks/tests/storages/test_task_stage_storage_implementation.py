@@ -1,7 +1,8 @@
 import factory
 import pytest
 
-from ib_tasks.tests.factories.models import TaskStageFactory
+from ib_tasks.tests.factories.models import CurrentTaskStageModelFactory, \
+    TaskStageHistoryModelFactory
 
 
 @pytest.mark.django_db
@@ -16,20 +17,32 @@ class TestTaskStageStorageImplementation:
 
     @pytest.fixture
     def reset_sequence(self):
-        TaskStageFactory.reset_sequence()
+        CurrentTaskStageModelFactory.reset_sequence()
 
     @pytest.fixture()
     def populate_task_stages(self):
+        CurrentTaskStageModelFactory.reset_sequence()
         stage_ids = [1, 2, 3, 4]
-        TaskStageFactory.create_batch(size=4, task_id=1, stage_id=factory.Iterator(stage_ids))
+        CurrentTaskStageModelFactory.create_batch(size=4, task_id=1,
+                                                  stage_id=factory.Iterator(
+                                                      stage_ids))
+
+    @pytest.fixture()
+    def populate_task_stages_history(self):
+        TaskStageHistoryModelFactory.reset_sequence()
+        stage_ids = [1, 2, 3, 4]
+        TaskStageHistoryModelFactory.create_batch(size=4, task_id=1,
+                                                  stage_id=factory.Iterator(
+                                                      stage_ids))
 
     def test_given_task_id_and_stage_ids_returns_valid_stage_ids(
             self, task_storage, reset_sequence, populate_task_stages
     ):
         # Arrange
+        CurrentTaskStageModelFactory.reset_sequence()
         task_id = 1
         stage_ids = [1, 2, 3, 4, 5, 6]
-        TaskStageFactory.create_batch(size=4)
+        CurrentTaskStageModelFactory.create_batch(size=4)
         expected_valid_stage_ids = [1, 2, 3, 4]
 
         # Act
@@ -45,9 +58,10 @@ class TestTaskStageStorageImplementation:
             self, task_storage, reset_sequence, populate_task_stages
     ):
         # Arrange
+        CurrentTaskStageModelFactory.reset_sequence()
         task_id = 1
         stage_ids = [1, 2, 3, 4]
-        TaskStageFactory.create_batch(size=4)
+        CurrentTaskStageModelFactory.create_batch(size=4)
         expected_valid_stage_ids = [1, 2, 3, 4]
 
         # Act
@@ -61,7 +75,7 @@ class TestTaskStageStorageImplementation:
 
     def test_given_task_id_stage_ids_returns_task_stage_assignee_dtos(
             self, task_storage, reset_sequence,
-            populate_task_stages, snapshot
+            populate_task_stages_history, snapshot
     ):
         # Arrange
         task_id = 1

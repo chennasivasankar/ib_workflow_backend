@@ -184,5 +184,4 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
             get_task_id_with_stage_details_dtos_based_on_stage_value(
             stage_values=[2],
             task_ids_group_by_stage_value_dtos=
-            task_ids_group_by_stage_value_dtos,
-            user_id=user_id)
+            task_ids_group_by_stage_value_dtos)

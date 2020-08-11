@@ -4,7 +4,7 @@ from ib_tasks.storages.storage_implementation import \
     StagesStorageImplementation
 from ib_tasks.tests.factories.interactor_dtos import GetTaskDetailsDTOFactory
 from ib_tasks.tests.factories.models import StageModelFactory, TaskFactory, \
-    TaskTemplateFactory, TaskStageModelFactory, \
+    TaskTemplateFactory, CurrentTaskStageModelFactory, \
     GoFFactory
 
 
@@ -26,8 +26,8 @@ class TestGetStageDetails:
         TaskFactory.create_batch(size=3)
         TaskTemplateFactory.reset_sequence()
         TaskTemplateFactory.create_batch(size=3)
-        TaskStageModelFactory.reset_sequence()
-        TaskStageModelFactory.create_batch(size=4)
+        CurrentTaskStageModelFactory.reset_sequence()
+        CurrentTaskStageModelFactory.create_batch(size=4)
 
     def test_get_stage_details(self, get_task_stage_dtos,
                                populate_data,
