@@ -1,5 +1,6 @@
 from typing import List
 
+from ib_iam.interactors.dtos.dtos import SearchQueryAndTypeDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, RoleIdAndNameDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO, UserIdAndNameDTO
@@ -94,10 +95,14 @@ class UserStorageImplementation(UserStorageInterface):
             company_id=company_id, name=name
         )
 
-    def get_users_who_are_not_admins(self, offset, limit) -> List[UserDTO]:
+    def get_users_who_are_not_admins(
+            self, offset: int, limit: int,
+            search_query_and_type_dto: SearchQueryAndTypeDTO) -> List[UserDTO]:
         from ib_iam.models import UserDetails
-        users = UserDetails.objects.filter(is_admin=False)[
-                offset: offset + limit]
+        users = UserDetails.objects.filter(
+            is_admin=False,
+            name__icontains=search_query_and_type_dto.search_query
+        )[offset: offset + limit]
         user_dtos = [self._convert_to_user_dto(user_object=user_object) for
                      user_object in users]
         return user_dtos
