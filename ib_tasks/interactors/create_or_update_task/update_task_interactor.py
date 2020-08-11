@@ -237,7 +237,7 @@ class UpdateTaskInteractor:
             template_id=None,
             task_id=task_dto.task_id,
             title=task_dto.title,
-            fields=fields_dto
+                fields=fields_dto
         )
         return elastic_task_dto
 

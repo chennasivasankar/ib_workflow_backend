@@ -160,8 +160,7 @@ class SaveAndActOnATaskInteractor:
         except StageIdsWithInvalidPermissionForAssignee as err:
             return \
                 presenter.raise_stage_ids_with_invalid_permission_for_assignee_exception(
-                    err
-                )
+                    err)
 
     def _prepare_save_and_act_response(self, presenter, task_dto):
         self.save_and_act_on_task(task_dto)
