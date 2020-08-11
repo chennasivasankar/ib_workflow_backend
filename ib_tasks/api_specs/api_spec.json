@@ -919,38 +919,7 @@
           "type": "integer"
         },
         "res_status": {
-          "type": "string",
-          "enum": [
-            "INVALID_TASK_ID",
-            "INVALID_ACTION_ID",
-            "INVALID_GOF_IDS",
-            "INVALID_FIELD_IDS",
-            "INVALID_GOFS_OF_TASK_TEMPLATE",
-            "DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF",
-            "INVALID_FIELDS_OF_TASK_TEMPLATE",
-            "USER_NEEDS_GOF_WRITABLE_PERMISSION",
-            "USER_NEEDS_FILED_WRITABLE_PERMISSION",
-            "EMPTY_VALUE_FOR_REQUIRED_FIELD",
-            "INVALID_PHONE_NUMBER_VALUE",
-            "INVALID_EMAIL",
-            "NOT_A_STRONG_PASSWORD",
-            "INVALID_NUMBER_VALUE",
-            "INVALID_FLOAT_VALUE",
-            "INVALID_VALUE_FOR_DROPDOWN",
-            "INCORRECT_NAME_IN_GOF_SELECTOR_FIELD",
-            "INCORRECT_RADIO_GROUP_CHOICE",
-            "INCORRECT_CHECK_BOX_OPTIONS_SELECTED",
-            "INCORRECT_MULTI_SELECT_OPTIONS_SELECTED",
-            "INCORRECT_MULTI_SELECT_LABELS_SELECTED",
-            "INVALID_DATE_FORMAT",
-            "INVALID_TIME_FORMAT",
-            "INVALID_IMAGE_URL",
-            "INVALID_IMAGE_FORMAT",
-            "INVALID_FILE_URL",
-            "INVALID_FILE_FORMAT",
-            "USER_DO_NOT_HAVE_ACCESS",
-            "USER_DO_NOT_HAVE_BOARD_ACCESS"
-          ]
+          "type": "string"
         }
       },
       "required": [
@@ -969,36 +938,7 @@
           "type": "integer"
         },
         "res_status": {
-          "type": "string",
-          "enum": [
-            "INVALID_TASK_ID",
-            "INVALID_GOF_IDS",
-            "INVALID_FIELD_IDS",
-            "INVALID_GOFS_OF_TASK_TEMPLATE",
-            "DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF",
-            "INVALID_FIELDS_OF_TASK_TEMPLATE",
-            "USER_NEEDS_GOF_WRITABLE_PERMISSION",
-            "USER_NEEDS_FILED_WRITABLE_PERMISSION",
-            "EMPTY_VALUE_FOR_REQUIRED_FIELD",
-            "INVALID_PHONE_NUMBER_VALUE",
-            "INVALID_EMAIL",
-            "NOT_A_STRONG_PASSWORD",
-            "INVALID_NUMBER_VALUE",
-            "INVALID_FLOAT_VALUE",
-            "INVALID_VALUE_FOR_DROPDOWN",
-            "INCORRECT_NAME_IN_GOF_SELECTOR_FIELD",
-            "INCORRECT_RADIO_GROUP_CHOICE",
-            "INCORRECT_CHECK_BOX_OPTIONS_SELECTED",
-            "INCORRECT_MULTI_SELECT_OPTIONS_SELECTED",
-            "INCORRECT_MULTI_SELECT_LABELS_SELECTED",
-            "INVALID_DATE_FORMAT",
-            "INVALID_TIME_FORMAT",
-            "INVALID_IMAGE_URL",
-            "INVALID_IMAGE_FORMAT",
-            "INVALID_FILE_URL",
-            "INVALID_FILE_FORMAT",
-            "USER_DO_NOT_HAVE_BOARD_ACCESS"
-          ]
+          "type": "string"
         }
       },
       "required": [

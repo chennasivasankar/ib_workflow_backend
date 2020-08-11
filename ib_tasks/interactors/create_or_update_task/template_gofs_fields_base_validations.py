@@ -133,9 +133,9 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
             given_gof_field_ids)
         if duplicate_field_ids:
             raise DuplicateFieldIdsToGoF(gof_id, duplicate_field_ids)
-        invalid_gof_field_ids = list(
+        invalid_gof_field_ids = sorted(list(
             set(given_gof_field_ids) - set(valid_gof_field_ids)
-        )
+        ))
         if invalid_gof_field_ids:
             raise InvalidFieldsOfGoF(gof_id, invalid_gof_field_ids)
         return
@@ -184,12 +184,12 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
 
     @staticmethod
     def _get_duplicates_in_given_list(values: List) -> List:
-        duplicate_values = list(
+        duplicate_values = sorted(list(
             set(
                 [
                     value
                     for value in values if values.count(value) > 1
                 ]
             )
-        )
+        ))
         return duplicate_values
