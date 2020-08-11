@@ -148,7 +148,8 @@ class TestFieldsStorageImplementation:
         user_roles = ["FIN_MAN"]
         fields = FieldFactory.create_batch(size=2)
         FieldRoleFactory.create_batch(
-            size=2, permission_type=PermissionTypes.READ.value,
+            size=2, permission_type=factory.Iterator(
+                [PermissionTypes.WRITE.value, PermissionTypes.READ.value]),
             role=factory.Iterator([ALL_ROLES_ID]),
             field=factory.Iterator(fields)
         )

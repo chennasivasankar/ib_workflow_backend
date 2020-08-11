@@ -110,7 +110,8 @@ class GoFStorageImplementation(GoFStorageInterface):
         from ib_tasks.constants.constants import ALL_ROLES_ID
 
         gof_ids_queryset = GoFRole.objects.filter(
-            Q(permission_type=PermissionTypes.READ.value),
+            (Q(permission_type=PermissionTypes.READ.value) |
+             Q(permission_type=PermissionTypes.WRITE.value)),
             (Q(role__in=user_roles) | Q(role=ALL_ROLES_ID)),
             Q(gof_id__in=gof_ids)
         ).values_list('gof_id', flat=True)
