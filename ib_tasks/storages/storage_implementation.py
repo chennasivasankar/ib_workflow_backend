@@ -15,7 +15,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageDisplayValueDTO, StageValueWithTaskIdsDTO, \
     TaskIdWithStageDetailsDTO, \
     TaskStagesDTO, StageValueDTO, TaskTemplateStageDTO, StageRoleDTO, \
-    StageDetailsDTO
+    StageDetailsDTO, TaskStageHavingAssigneeIdDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import (
@@ -310,6 +310,21 @@ class StagesStorageImplementation(StageStorageInterface):
                  values_list('stage_id', flat=True))
         return task_stage_ids
 
+    def get_stage_details_having_assignees_in_given_stage_ids(
+            self, task_id: int, db_stage_ids: List[int]) -> List[
+        TaskStageHavingAssigneeIdDTO]:
+
+        task_stage_objs = list(TaskStage.objects.filter(task_id=task_id,
+                                                        stage_id__in=db_stage_ids). \
+                               values('stage_id', 'assignee_id',
+                                      'stage__display_name'))
+        stages_having_assignee_dtos = [TaskStageHavingAssigneeIdDTO(
+            assignee_id=task_stage_obj['assignee_id'],
+            db_stage_id=task_stage_obj['stage_id'],
+            stage_display_name=task_stage_obj['stage__display_name']) for
+            task_stage_obj in task_stage_objs]
+        return stages_having_assignee_dtos
+
 
 class StorageImplementation(StorageInterface):
 
@@ -585,7 +600,8 @@ class StorageImplementation(StorageInterface):
         return action_ids
 
     def validate_if_task_is_assigned_to_user(self,
-                                             task_id: int, user_id: str) -> bool:
+                                             task_id: int,
+                                             user_id: str) -> bool:
         pass
 
     def get_task_due_missing_reasons_details(self, task_id: int) -> \
