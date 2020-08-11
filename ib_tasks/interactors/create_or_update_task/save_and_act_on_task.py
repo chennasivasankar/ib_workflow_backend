@@ -1,7 +1,6 @@
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.datetime_custom_exceptions import \
-    InvalidDueTimeFormat, StartDateIsAheadOfDueDate, DueDateIsBehindStartDate, \
-    DueTimeHasExpiredForToday
+    InvalidDueTimeFormat, StartDateIsAheadOfDueDate, DueTimeHasExpiredForToday
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     EmptyValueForRequiredField, InvalidPhoneNumberValue, \
     InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
@@ -16,7 +15,7 @@ from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
 from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
-    UserActionPermissionDenied, UserBoardPermissionDenied
+    UserActionPermissionDenied
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
@@ -149,12 +148,7 @@ class SaveAndActOnATaskInteractor:
                 err)
         except UserActionPermissionDenied as err:
             return presenter.raise_exception_for_user_action_permission_denied(
-                error_obj=err
-            )
-        except UserBoardPermissionDenied as err:
-            return presenter.raise_exception_for_user_board_permission_denied(
-                error_obj=err
-            )
+                error_obj=err)
         except StageIdsWithInvalidPermissionForAssignee as err:
             return \
                 presenter.raise_stage_ids_with_invalid_permission_for_assignee_exception(
