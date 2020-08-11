@@ -8,3 +8,7 @@ class ChecklistItemIdNotFound(Exception):
 
 class TimerIsAlreadyRunning(Exception):
     pass
+
+
+class TimerIsAlreadyStopped(Exception):
+    pass
