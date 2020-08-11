@@ -128,6 +128,10 @@ class AuthService:
             current_and_new_password_dto: CurrentAndNewPasswordDTO):
         from ib_users.interactors.user_credentials.exceptions.user_credentials_exceptions import \
             InvalidCurrentPasswordException
+        from ib_users.interactors.user_credentials.exceptions.user_credentials_exceptions import \
+            InvalidNewPasswordException
+        from ib_users.interactors.exceptions.user_credentials_exceptions import \
+            CurrentPasswordMismatchException
         try:
             self.interface.update_password(
                 user_id=user_id,
@@ -138,3 +142,10 @@ class AuthService:
             from ib_iam.exceptions.custom_exceptions import \
                 InvalidCurrentPassword
             raise InvalidCurrentPassword
+        except InvalidNewPasswordException:
+            from ib_iam.exceptions.custom_exceptions import InvalidNewPassword
+            raise InvalidNewPassword
+        except CurrentPasswordMismatchException:
+            from ib_iam.exceptions.custom_exceptions import \
+                CurrentPasswordMismatch
+            raise CurrentPasswordMismatch

@@ -112,3 +112,11 @@ class InvalidUserIds(Exception):
 
 class InvalidCurrentPassword(Exception):
     pass
+
+
+class InvalidNewPassword(Exception):
+    pass
+
+
+class CurrentPasswordMismatch(Exception):
+    pass
