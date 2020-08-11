@@ -3,7 +3,7 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     InvalidDueTimeFormat, StartDateIsAheadOfDueDate, DueDateIsBehindStartDate, \
-    DueTimeHasExpiredForToday
+    DueTimeHasExpiredForToday, DueDateHasExpired
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidUrlForFile, InvalidFileFormat, InvalidImageFormat, \
     InvalidUrlForImage, InvalidTimeFormat, InvalidDateFormat, \
@@ -30,6 +30,17 @@ from ib_tasks.interactors.presenter_interfaces.create_task_presenter import \
 class CreateTaskPresenterImplementation(
     CreateTaskPresenterInterface, HTTPResponseMixin
 ):
+
+    def raise_due_date_has_expired(self, err: DueDateHasExpired):
+        from ib_tasks.constants.exception_messages import \
+            DUE_DATE_HAS_EXPIRED
+        message = DUE_DATE_HAS_EXPIRED[0].format(err.due_date)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": DUE_DATE_HAS_EXPIRED[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_invalid_due_time_format(self, err: InvalidDueTimeFormat):
         from ib_tasks.constants.exception_messages import \

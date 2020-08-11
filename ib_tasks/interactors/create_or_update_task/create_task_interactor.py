@@ -7,7 +7,7 @@ from ib_tasks.exceptions.action_custom_exceptions import \
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     DueTimeHasExpiredForToday, InvalidDueTimeFormat, \
     StartDateIsAheadOfDueDate, \
-    DueDateIsBehindStartDate
+    DueDateIsBehindStartDate, DueDateHasExpired
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     EmptyValueForRequiredField, InvalidPhoneNumberValue, \
     InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
@@ -106,6 +106,8 @@ class CreateTaskInteractor:
             return presenter.raise_duplicate_same_gof_orders_for_a_gof(err)
         except InvalidDueTimeFormat as err:
             return presenter.raise_invalid_due_time_format(err)
+        except DueDateHasExpired as err:
+            return presenter.raise_due_date_has_expired(err)
         except StartDateIsAheadOfDueDate as err:
             return presenter.raise_start_date_is_ahead_of_due_date(err)
         except DueTimeHasExpiredForToday as err:
@@ -381,6 +383,9 @@ class CreateTaskInteractor:
         )
         import datetime
         self._validate_due_time_format(due_time)
+        due_date_is_expired = (due_date < datetime.datetime.today().date())
+        if due_date_is_expired:
+            raise DueDateHasExpired(due_date)
         due_time_obj = datetime.datetime.strptime(due_time, TIME_FORMAT).time()
         now_time = datetime.datetime.now().time()
         due_time_is_expired_if_due_date_is_today = (
