@@ -76,3 +76,4 @@ class CommentIdWithMultiMediaDTOFactory(factory.Factory):
         MultiMediaFormatEnum.VIDEO.value
     ])
     url = "https://picsum.photos/200"
+    thumbnail_url = "https://picsum.photos/200"

@@ -1,6 +1,4 @@
 import dataclasses
-from typing import List
-
 from ib_users.validators.base_validator import CustomException
 
 
@@ -19,7 +17,6 @@ class UserTokensDTO:
 
 
 class AuthService:
-
     @property
     def interface(self):
         from ib_users.interfaces.service_interface import ServiceInterface
@@ -33,8 +30,7 @@ class AuthService:
             user_auth_tokens_dto = self.interface. \
                 get_user_auth_tokens_for_login_with_email_and_password(
                 email=email_and_password_dto.email,
-                password=email_and_password_dto.password
-            )
+                password=email_and_password_dto.password)
         except CustomException as err:
             from ib_users.exceptions.custom_exception_constants import \
                 INVALID_EMAIL
@@ -59,15 +55,13 @@ class AuthService:
                 raise UserAccountDoesNotExist
         else:
             converted_user_tokens_dto = self._convert_to_user_tokens_dto(
-                user_auth_tokens_dto
-            )
+                user_auth_tokens_dto)
             return converted_user_tokens_dto
 
     def user_log_out_from_a_device(self, user_id: str):
         self.interface.logout_in_all_devices(user_id=user_id)
 
-    def get_reset_password_token(self, email: str,
-                                 expires_in_sec: int) -> str:
+    def get_reset_password_token(self, email: str, expires_in_sec: int) -> str:
         from ib_users.interactors.exceptions.user_credentials_exceptions import \
             AccountWithEmailDoesntExistException
         try:
@@ -87,35 +81,33 @@ class AuthService:
             raise UserAccountDoesNotExist
 
     def update_user_password_with_reset_password_token(
-            self, reset_password_token: str, password: str
-    ):
+            self, reset_password_token: str, password: str):
         from ib_users.interactors.exceptions.user_credentials_exceptions import \
             InvalidTokenException
         from ib_users.interactors.exceptions.user_credentials_exceptions import \
             TokenExpiredException
         try:
             self.interface.reset_password_for_given_user_password_reset_token(
-                token=reset_password_token, new_password=password
-            )
+                token=reset_password_token, new_password=password)
         except CustomException as err:
             from ib_users.exceptions.custom_exception_constants import \
                 PASSWORD_AT_LEAST_1_SPECIAL_CHARACTER
             if err.error_type == PASSWORD_AT_LEAST_1_SPECIAL_CHARACTER.code:
-                from ib_iam.interactors.update_user_password_interactor import \
+                from ib_iam.interactors.reset_user_password_interactor import \
                     PasswordAtLeastOneSpecialCharacter
                 raise PasswordAtLeastOneSpecialCharacter
             from ib_users.exceptions.custom_exception_constants import \
                 PASSWORD_MIN_LENGTH_IS
             if err.error_type == PASSWORD_MIN_LENGTH_IS.code:
-                from ib_iam.interactors.update_user_password_interactor import \
+                from ib_iam.interactors.reset_user_password_interactor import \
                     PasswordMinLength
                 raise PasswordMinLength
         except InvalidTokenException:
-            from ib_iam.interactors.update_user_password_interactor import \
+            from ib_iam.interactors.reset_user_password_interactor import \
                 TokenDoesNotExist
             raise TokenDoesNotExist
         except TokenExpiredException:
-            from ib_iam.interactors.update_user_password_interactor import \
+            from ib_iam.interactors.reset_user_password_interactor import \
                 TokenHasExpired
             raise TokenHasExpired
 
