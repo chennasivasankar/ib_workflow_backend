@@ -9,6 +9,8 @@ import pytest
 from ib_tasks.documents.elastic_task import ElasticFieldDTO, ElasticTaskDTO
 from ib_tasks.interactors.create_or_update_task.update_task_interactor import \
     UpdateTaskInteractor
+from ib_tasks.interactors.stages_dtos import StageAssigneeDTO, \
+    TaskIdWithStageAssigneesDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TaskGoFFieldDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
@@ -1695,7 +1697,8 @@ class TestUpdateTaskInteractor:
             for gof_fields_dto in task_dto.gof_fields_dtos
         ]
         gof_ids = [gof.gof_id for gof in expected_existing_gofs]
-        same_gof_orders = [gof.same_gof_order for gof in expected_existing_gofs]
+        same_gof_orders = [gof.same_gof_order for gof in
+                           expected_existing_gofs]
         expected_task_gof_details_dtos = TaskGoFDetailsDTOFactory.build_batch(
             size=len(gof_ids), task_gof_id=factory.Iterator([0, 1]),
             gof_id=factory.Iterator(gof_ids),
@@ -1729,7 +1732,7 @@ class TestUpdateTaskInteractor:
             task_dto.task_id)
         create_task_storage_mock.update_task_gofs(
             expected_task_gof_dtos_for_updation)
-        create_task_storage_mock.update_task_gof_fields\
+        create_task_storage_mock.update_task_gof_fields \
             .assert_called_once_with(
             expected_task_gof_field_dtos_for_updation)
 
@@ -1795,3 +1798,86 @@ class TestUpdateTaskInteractor:
             if gof_matched:
                 return task_gof_details_dto.task_gof_id
         return
+
+    def test_with_invalid_permission_for_assignee_to_given_stage_ids(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock, presenter_mock, mock_object,
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            update_task_stage_assignees_mock
+    ):
+        # Arrange
+        task_dto = UpdateTaskDTOFactory()
+        create_task_storage_mock.is_valid_task_id.return_value = True
+        create_task_storage_mock.get_template_id_for_given_task.return_value \
+            = "template_1"
+        stage_assignees = [
+            StageAssigneeDTO(
+                db_stage_id=task_dto.stage_assignee.stage_id,
+                assignee_id=task_dto.stage_assignee.assignee_id
+            )
+        ]
+        expected_task_stage_assignee_dto = TaskIdWithStageAssigneesDTO(
+            task_id=task_dto.task_id, stage_assignees=stage_assignees)
+        interactor = UpdateTaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock,
+            storage=storage_mock, field_storage=field_storage_mock,
+            stage_storage=stage_storage_mock,
+            elastic_storage=elastic_storage_mock
+        )
+        given_invalid_stage_ids = [1, 2]
+        from ib_tasks.exceptions.stage_custom_exceptions import \
+            StageIdsWithInvalidPermissionForAssignee
+        update_task_stage_assignees_mock.side_effect = \
+            StageIdsWithInvalidPermissionForAssignee(
+                given_invalid_stage_ids)
+        presenter_mock \
+            .raise_stage_ids_with_invalid_permission_for_assignee_exception \
+            .return_value = mock_object
+
+        # Act
+        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+
+        # Assert
+        assert response == mock_object
+        update_task_stage_assignees_mock.assert_called_once_with(
+            expected_task_stage_assignee_dto)
+        presenter_mock \
+            .raise_stage_ids_with_invalid_permission_for_assignee_exception \
+            .assert_called_once()
+        call_args = presenter_mock. \
+            raise_stage_ids_with_invalid_permission_for_assignee_exception \
+            .call_args
+        error_object = call_args[0][0]
+        invalid_stage_ids = error_object.invalid_stage_ids
+        assert invalid_stage_ids == given_invalid_stage_ids
+
+    def test_with_valid_permission_for_assignee_to_given_stage_ids(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock, presenter_mock, mock_object,
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            update_task_stage_assignees_mock
+    ):
+        # Arrange
+        task_dto = UpdateTaskDTOFactory()
+        create_task_storage_mock.is_valid_task_id.return_value = True
+        create_task_storage_mock.get_template_id_for_given_task.return_value \
+            = "template_1"
+        interactor = UpdateTaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock,
+            storage=storage_mock, field_storage=field_storage_mock,
+            stage_storage=stage_storage_mock,
+            elastic_storage=elastic_storage_mock
+        )
+        presenter_mock.get_update_task_response.return_value = mock_object
+
+        # Act
+        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+
+        # Assert
+        assert response == mock_object

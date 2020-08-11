@@ -2,7 +2,6 @@ from typing import Optional, List, Union
 
 from ib_tasks.constants.config import TIME_FORMAT
 from ib_tasks.documents.elastic_task import ElasticFieldDTO, ElasticTaskDTO
-from ib_tasks.documents.elastic_task import ElasticFieldDTO, ElasticTaskDTO
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     DueTimeHasExpiredForToday, InvalidDueTimeFormat, \
     StartDateIsAheadOfDueDate, \
@@ -53,11 +52,10 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.task_dtos import UpdateTaskDTO, CreateTaskDTO
-from ib_tasks.interactors.update_task_stage_assignees_interactor import \
-    UpdateTaskStageAssigneesInteractor
 from ib_tasks.interactors.task_dtos import UpdateTaskDTO, CreateTaskDTO, \
     FieldValuesDTO
+from ib_tasks.interactors.update_task_stage_assignees_interactor import \
+    UpdateTaskStageAssigneesInteractor
 
 
 class UpdateTaskInteractor:
@@ -161,8 +159,7 @@ class UpdateTaskInteractor:
         except StageIdsWithInvalidPermissionForAssignee as err:
             return \
                 presenter.raise_stage_ids_with_invalid_permission_for_assignee_exception(
-                    err
-                )
+                    err)
 
     def _prepare_update_task_response(
             self, task_dto: UpdateTaskDTO,
@@ -192,9 +189,9 @@ class UpdateTaskInteractor:
         elastic_dto = self._get_elastic_task_dto(task_dto)
         self.elastic_storage.update_task(task_dto=elastic_dto)
         existing_gofs = self.create_task_storage \
-                .get_gof_ids_with_same_gof_order_related_to_a_task(task_id)
+            .get_gof_ids_with_same_gof_order_related_to_a_task(task_id)
         existing_fields = self.create_task_storage \
-                .get_field_ids_with_task_gof_id_related_to_given_task(task_id)
+            .get_field_ids_with_task_gof_id_related_to_given_task(task_id)
         task_gof_dtos = [
             TaskGoFWithTaskIdDTO(
                 task_id=task_id,
@@ -229,8 +226,7 @@ class UpdateTaskInteractor:
             )
         ]
         task_stage_assignee_dto = TaskIdWithStageAssigneesDTO(
-            task_id=task_dto.task_id, stage_assignees=stage_assignees
-        )
+            task_id=task_dto.task_id, stage_assignees=stage_assignees)
         update_stage_assignee_interactor.update_task_stage_assignees(
             task_stage_assignee_dto)
 
