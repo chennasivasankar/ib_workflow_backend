@@ -128,7 +128,7 @@ class TestChecklistStorageImplementation:
         checklist_item_id = '2bdb417e-4632-419a-8ddd-085ea272c6eb'
         ChecklistItemFactory.create(checklist_item_id=checklist_item_id)
 
-        actual_value = storage.validate_checklist_item_id(
+        actual_value = storage.is_checklist_item_id_exists(
             checklist_item_id=checklist_item_id_to_search)
 
         assert actual_value == expected_value
@@ -139,7 +139,7 @@ class TestChecklistStorageImplementation:
                                      expected_checklist_item_dtos):
         checklist_id = create_checklist_items_for_checklist_id
 
-        checklist_item_dtos = storage.get_checklist_items_dto(
+        checklist_item_dtos = storage.get_checklist_item_dtos(
             checklist_id=checklist_id)
 
         assert checklist_item_dtos == expected_checklist_item_dtos

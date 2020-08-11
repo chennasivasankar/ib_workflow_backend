@@ -32,7 +32,7 @@ class TestGetUserIdWithRoleIdsDTO:
     @pytest.mark.django_db
     def test_with_valid_user_ids_return_response(self):
         # Arrange
-        from ib_iam.interactors.DTOs.common_dtos import UserIdWithRoleIdsDTO
+        from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
         expected_response = [
             UserIdWithRoleIdsDTO(
                 user_id='eca1a0c1-b9ef-4e59-b415-60a28ef17b10',

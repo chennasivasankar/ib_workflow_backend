@@ -13,13 +13,13 @@ class GetChecklistInteractor:
                               presenter: GetChecklistPresenterInterface):
         checklist_item_dtos = self.get_checklist(entity_dto=entity_dto)
         return presenter.get_success_response_for_get_checklist(
-            entity_dto=entity_dto, checklist_item_dtos=checklist_item_dtos)
+            checklist_item_dtos=checklist_item_dtos)
 
     def get_checklist(self, entity_dto: EntityDTO):
         checklist_id = self.checklist_storage.get_checklist_id_if_exists(
             entity_dto=entity_dto)
         if checklist_id is None:
             return []
-        checklist_item_dtos = self.checklist_storage.get_checklist_items_dto(
+        checklist_item_dtos = self.checklist_storage.get_checklist_item_dtos(
             checklist_id=checklist_id)
         return checklist_item_dtos
