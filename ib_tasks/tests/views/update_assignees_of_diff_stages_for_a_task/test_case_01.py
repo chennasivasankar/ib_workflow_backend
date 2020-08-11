@@ -7,7 +7,8 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from ib_iam.tests.factories.models import UserRoleFactory, RoleFactory
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories.models import TaskFactory, StageModelFactory, \
-    CurrentTaskStageModelFactory, StagePermittedRolesFactory
+    StagePermittedRolesFactory, \
+    TaskStageHistoryModelFactory
 
 
 class TestCase01UpdateAssigneesOfDiffStagesForATaskAPITestCase(TestUtils):
@@ -27,7 +28,7 @@ class TestCase01UpdateAssigneesOfDiffStagesForATaskAPITestCase(TestUtils):
         UserRoleFactory.reset_sequence()
         TaskFactory.reset_sequence()
         StageModelFactory.reset_sequence()
-        CurrentTaskStageModelFactory.reset_sequence()
+        TaskStageHistoryModelFactory.reset_sequence()
         UserDetailsFactory.create(user_id=user_id, is_admin=True)
         role_obj = RoleFactory(role_id="FIN_PAYMENT_REQUESTER")
         UserRoleFactory(user_id=user_id, role=role_obj)
@@ -37,9 +38,9 @@ class TestCase01UpdateAssigneesOfDiffStagesForATaskAPITestCase(TestUtils):
                                                     'task_template_id_1')
         StagePermittedRolesFactory(stage=stage_objs[0])
         StagePermittedRolesFactory(stage=stage_objs[1])
-        task_stage_obj_1 = CurrentTaskStageModelFactory(task=task_obj,
+        task_stage_obj_1 = TaskStageHistoryModelFactory(task=task_obj,
                                                         stage=stage_objs[0])
-        task_stage_obj_1 = CurrentTaskStageModelFactory(task=task_obj,
+        task_stage_obj_1 = TaskStageHistoryModelFactory(task=task_obj,
                                                         stage=stage_objs[1])
         return user_id
 

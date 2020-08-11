@@ -295,7 +295,7 @@ class StagesStorageImplementation(StageStorageInterface):
             self, task_id: int, db_stage_ids: List[int]) -> List[
         TaskStageHavingAssigneeIdDTO]:
 
-        task_stage_objs = list(CurrentTaskStage.objects.filter(task_id=task_id,
+        task_stage_objs = list(TaskStageHistory.objects.filter(task_id=task_id,
                                                                stage_id__in=db_stage_ids). \
                                values('stage_id', 'assignee_id',
                                       'stage__display_name'))
