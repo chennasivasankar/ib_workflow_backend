@@ -29,7 +29,7 @@ from ib_tasks.interactors.create_or_update_task. \
     template_gofs_fields_base_validations import \
     TemplateGoFsFieldsBaseValidationsInteractor
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
-from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrder
+from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrderDTO
 from ib_tasks.interactors.presenter_interfaces.update_task_presenter import \
     UpdateTaskPresenterInterface
 from ib_tasks.interactors.stages_dtos import StageAssigneeDTO, \
@@ -191,13 +191,10 @@ class UpdateTaskInteractor:
             task_dto=task_dto)
         elastic_dto = self._get_elastic_task_dto(task_dto)
         self.elastic_storage.update_task(task_dto=elastic_dto)
-        existing_gofs = \
-            self.create_task_storage \
+        existing_gofs = self.create_task_storage \
                 .get_gof_ids_with_same_gof_order_related_to_a_task(task_id)
-        existing_fields = \
-            self.create_task_storage \
-                .get_field_ids_with_task_gof_id_related_to_given_task(
-                task_id)
+        existing_fields = self.create_task_storage \
+                .get_field_ids_with_task_gof_id_related_to_given_task(task_id)
         task_gof_dtos = [
             TaskGoFWithTaskIdDTO(
                 task_id=task_id,
@@ -334,8 +331,7 @@ class UpdateTaskInteractor:
     ):
         task_gof_details_dtos = \
             self.create_task_storage.update_task_gofs(
-                task_gof_dtos_for_updation
-            )
+                task_gof_dtos_for_updation)
         task_gof_field_dtos = self._prepare_task_gof_fields_dtos(
             task_dto, task_gof_details_dtos)
         task_gof_field_dtos_for_updation, task_gof_field_dtos_for_creation = \
@@ -343,13 +339,11 @@ class UpdateTaskInteractor:
                 task_gof_field_dtos, existing_fields)
         if task_gof_field_dtos_for_updation:
             self.create_task_storage.update_task_gof_fields(
-                task_gof_field_dtos_for_updation
-            )
+                task_gof_field_dtos_for_updation)
 
         if task_gof_field_dtos_for_creation:
             self.create_task_storage.create_task_gof_fields(
-                task_gof_field_dtos_for_creation
-            )
+                task_gof_field_dtos_for_creation)
 
     def _create_task_gofs(
             self, task_gof_dtos_for_creation: List[TaskGoFWithTaskIdDTO],
@@ -383,7 +377,7 @@ class UpdateTaskInteractor:
     @staticmethod
     def _is_gof_already_exists(
             gof_id: str, same_gof_order: int,
-            existing_gofs_with_same_gof_order: List[GoFIdWithSameGoFOrder]
+            existing_gofs_with_same_gof_order: List[GoFIdWithSameGoFOrderDTO]
     ) -> bool:
         for existing_gof in existing_gofs_with_same_gof_order:
             gof_already_exists = (

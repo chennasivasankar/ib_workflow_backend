@@ -7,8 +7,10 @@ from ib_tasks.adapters.dtos import UserDetailsDTO
 from ib_tasks.constants.constants import VALID_FIELD_TYPES
 from ib_tasks.constants.enum import Priority, ValidationType, FieldTypes, \
     PermissionTypes, Status, Operators
+from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
 from ib_tasks.interactors.filter_dtos import FilterDTO, ConditionDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
+from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrderDTO
 from ib_tasks.interactors.stages_dtos import StageDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
     StageActionDetailsDTO, ActionDetailsDTO, ActionWithStageIdDTO
@@ -582,3 +584,20 @@ class StageAssigneeDTOFactory(factory.Factory):
     assignee_id = factory.sequence(
         lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
             counter))
+
+
+class GoFIdWithSameGoFOrderDTOFactory(factory.Factory):
+    class Meta:
+        model = GoFIdWithSameGoFOrderDTO
+
+    gof_id = factory.Sequence(lambda c: "gof_{}".format(c))
+    same_gof_order = factory.Sequence(lambda c: c)
+
+
+class FieldIdWithTaskGoFIdDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldIdWithTaskGoFIdDTO
+
+    field_id = factory.Sequence(lambda c: "field_{}".format(c))
+    task_gof_id = factory.Sequence(lambda c: c)
+

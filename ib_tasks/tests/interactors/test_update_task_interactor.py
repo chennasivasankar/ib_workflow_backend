@@ -1,14 +1,24 @@
 import datetime
+from typing import List, Optional
 
 import factory
 import freezegun
 import mock
 import pytest
 
+from ib_tasks.documents.elastic_task import ElasticFieldDTO, ElasticTaskDTO
 from ib_tasks.interactors.create_or_update_task.update_task_interactor import \
     UpdateTaskInteractor
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
+    TaskGoFFieldDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import \
+    TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO
+from ib_tasks.interactors.task_dtos import UpdateTaskDTO, FieldValuesDTO
 from ib_tasks.tests.factories.interactor_dtos import FieldValuesDTOFactory, \
     GoFFieldsDTOFactory, UpdateTaskDTOFactory
+from ib_tasks.tests.factories.storage_dtos import \
+    GoFIdWithSameGoFOrderDTOFactory, FieldIdWithTaskGoFIdDTOFactory, \
+    TaskGoFDetailsDTOFactory
 
 
 class TestUpdateTaskInteractor:
@@ -18,6 +28,8 @@ class TestUpdateTaskInteractor:
         FieldValuesDTOFactory.reset_sequence()
         GoFFieldsDTOFactory.reset_sequence()
         UpdateTaskDTOFactory.reset_sequence()
+        GoFIdWithSameGoFOrderDTOFactory.reset_sequence()
+        FieldIdWithTaskGoFIdDTOFactory.reset_sequence()
 
     @pytest.fixture
     def task_storage_mock(self):
@@ -80,6 +92,13 @@ class TestUpdateTaskInteractor:
                ".template_gofs_fields_base_validations" \
                ".TemplateGoFsFieldsBaseValidationsInteractor" \
                ".perform_base_validations_for_template_gofs_and_fields"
+        return mocker.patch(path)
+
+    @pytest.fixture
+    def update_task_stage_assignees_mock(self, mocker):
+        path = "ib_tasks.interactors.update_task_stage_assignees_interactor" \
+               ".UpdateTaskStageAssigneesInteractor" \
+               ".update_task_stage_assignees"
         return mocker.patch(path)
 
     def test_with_invalid_task_id(
@@ -1637,13 +1656,57 @@ class TestUpdateTaskInteractor:
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
             elastic_storage_mock, presenter_mock, mock_object,
-            perform_base_validations_for_template_gofs_and_fields_mock
+            perform_base_validations_for_template_gofs_and_fields_mock,
+            update_task_stage_assignees_mock
     ):
         # Arrange
         task_dto = UpdateTaskDTOFactory()
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        expected_existing_gofs = [
+            GoFIdWithSameGoFOrderDTOFactory(
+                gof_id=gof_fields_dto.gof_id,
+                same_gof_order=gof_fields_dto.same_gof_order
+            )
+            for gof_fields_dto in task_dto.gof_fields_dtos
+        ]
+        create_task_storage_mock \
+            .get_gof_ids_with_same_gof_order_related_to_a_task.return_value \
+            = expected_existing_gofs
+        field_ids = []
+        for gof_fields_dto in task_dto.gof_fields_dtos:
+            for field_values_dto in gof_fields_dto.field_values_dtos:
+                field_ids.append(field_values_dto.field_id)
+        task_gof_ids = [0, 0, 1, 1]
+        expected_existing_fields = FieldIdWithTaskGoFIdDTOFactory.build_batch(
+            size=len(field_ids), field_id=factory.Iterator(field_ids),
+            task_gof_id=factory.Iterator(task_gof_ids)
+        )
+        create_task_storage_mock \
+            .get_field_ids_with_task_gof_id_related_to_given_task \
+            .return_value = expected_existing_fields
+        expected_task_gof_dtos_for_updation = [
+            TaskGoFWithTaskIdDTO(
+                task_id=task_dto.task_id,
+                gof_id=gof_fields_dto.gof_id,
+                same_gof_order=gof_fields_dto.same_gof_order
+            )
+            for gof_fields_dto in task_dto.gof_fields_dtos
+        ]
+        gof_ids = [gof.gof_id for gof in expected_existing_gofs]
+        same_gof_orders = [gof.same_gof_order for gof in expected_existing_gofs]
+        expected_task_gof_details_dtos = TaskGoFDetailsDTOFactory.build_batch(
+            size=len(gof_ids), task_gof_id=factory.Iterator([0, 1]),
+            gof_id=factory.Iterator(gof_ids),
+            same_gof_order=factory.Iterator(same_gof_orders)
+        )
+
+        create_task_storage_mock.update_task_gofs.return_value = \
+            expected_task_gof_details_dtos
+        expected_task_gof_field_dtos_for_updation = \
+            self._prepare_task_gof_fields_dtos(task_dto,
+                                               expected_task_gof_details_dtos)
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock,
@@ -1656,5 +1719,79 @@ class TestUpdateTaskInteractor:
         response = interactor.update_task_wrapper(presenter_mock, task_dto)
 
         # Assert
-        create_task_storage_mock.update_task_with_given_task_details.assert_called_once_with(
-            task_dto=task_dto)
+        create_task_storage_mock.update_task_with_given_task_details \
+            .assert_called_once_with(task_dto=task_dto)
+        elastic_storage_mock.update_task.assert_called_once_with(
+            task_dto=self._get_elastic_task_dto(task_dto))
+        create_task_storage_mock \
+            .get_gof_ids_with_same_gof_order_related_to_a_task \
+            .assert_called_once_with(
+            task_dto.task_id)
+        create_task_storage_mock.update_task_gofs(
+            expected_task_gof_dtos_for_updation)
+        create_task_storage_mock.update_task_gof_fields\
+            .assert_called_once_with(
+            expected_task_gof_field_dtos_for_updation)
+
+    def _get_elastic_task_dto(self, task_dto: UpdateTaskDTO):
+
+        fields_dto = self._get_fields_dto(task_dto)
+        elastic_task_dto = ElasticTaskDTO(
+            template_id=None,
+            task_id=task_dto.task_id,
+            title=task_dto.title,
+            fields=fields_dto
+        )
+        return elastic_task_dto
+
+    def _get_fields_dto(
+            self, task_dto: UpdateTaskDTO) -> List[ElasticFieldDTO]:
+
+        fields_dto = []
+        gof_fields_dtos = task_dto.gof_fields_dtos
+        for gof_fields_dto in gof_fields_dtos:
+            for field_value_dto in gof_fields_dto.field_values_dtos:
+                fields_dto.append(self._get_elastic_field_dto(field_value_dto))
+
+        return fields_dto
+
+    @staticmethod
+    def _get_elastic_field_dto(field_dto: FieldValuesDTO) -> ElasticFieldDTO:
+        return ElasticFieldDTO(
+            field_id=field_dto.field_id,
+            value=field_dto.field_response
+        )
+
+    def _prepare_task_gof_fields_dtos(
+            self, task_dto: UpdateTaskDTO,
+            task_gof_details_dtos: List[TaskGoFDetailsDTO]
+    ) -> List[TaskGoFFieldDTO]:
+        task_gof_field_dtos = []
+        for gof_fields_dto in task_dto.gof_fields_dtos:
+            task_gof_id = self._get_task_gof_id_for_field_in_task_gof_details(
+                gof_fields_dto.gof_id, gof_fields_dto.same_gof_order,
+                task_gof_details_dtos)
+            if task_gof_id is not None:
+                task_gof_field_dtos += [
+                    TaskGoFFieldDTO(
+                        field_id=field_values_dto.field_id,
+                        field_response=field_values_dto.field_response,
+                        task_gof_id=task_gof_id
+                    )
+                    for field_values_dto in gof_fields_dto.field_values_dtos
+                ]
+        return task_gof_field_dtos
+
+    @staticmethod
+    def _get_task_gof_id_for_field_in_task_gof_details(
+            gof_id: str, same_gof_order: int,
+            task_gof_details_dtos: List[TaskGoFDetailsDTO]
+    ) -> Optional[int]:
+        for task_gof_details_dto in task_gof_details_dtos:
+            gof_matched = (
+                    task_gof_details_dto.gof_id == gof_id and
+                    task_gof_details_dto.same_gof_order == same_gof_order
+            )
+            if gof_matched:
+                return task_gof_details_dto.task_gof_id
+        return
