@@ -96,8 +96,7 @@ class CreateTaskInteractor:
     ):
         try:
             return self._prepare_create_task_response(
-                task_dto, presenter
-            )
+                task_dto, presenter)
         except InvalidTaskTemplateIds as err:
             return presenter.raise_invalid_task_template_ids(err)
         except InvalidActionException as err:

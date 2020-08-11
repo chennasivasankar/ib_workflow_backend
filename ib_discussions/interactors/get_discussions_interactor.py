@@ -50,7 +50,7 @@ class GetDiscussionInteractor:
             presenter: GetDiscussionsPresenterInterface
     ):
         discussions_with_users_and_discussion_count_dto, \
-        discussion_id_with_editable_status_dtos, discussion_id_with_comments_count_dtos\
+        discussion_id_with_editable_status_dtos, discussion_id_with_comments_count_dtos \
             = self.get_discussions_details_dto(
             entity_id_and_entity_type_dto=entity_id_and_entity_type_dto,
             offset_and_limit_dto=offset_and_limit_dto, user_id=user_id,
@@ -69,7 +69,7 @@ class GetDiscussionInteractor:
             filter_by_dto: FilterByDTO, sort_by_dto: SortByDTO,
     ):
         self._validate_limit_offset_entity_id_and_entity_type(
-            entity_id_and_entity_type_dto, offset_and_limit_dto)
+            offset_and_limit_dto)
         discussion_set_id = self._get_discussion_set_id(
             entity_id=entity_id_and_entity_type_dto.entity_id,
             entity_type=entity_id_and_entity_type_dto.entity_type
@@ -101,21 +101,13 @@ class GetDiscussionInteractor:
             total_count=total_discussions_count
         )
         return discussions_with_users_and_discussion_count_dto, discussion_id_with_editable_status_dtos, \
-            discussion_id_with_comments_count_dtos
+               discussion_id_with_comments_count_dtos
 
     def _validate_limit_offset_entity_id_and_entity_type(
-            self, entity_id_and_entity_type_dto, offset_and_limit_dto
+            self, offset_and_limit_dto
     ):
         self._validate_offset(offset_and_limit_dto.offset)
         self._validate_limit(offset_and_limit_dto.limit)
-        # TODO: FIX IT
-        # self.storage.validate_entity_id(
-        #     entity_id=entity_id_and_entity_type_dto.entity_id
-        # )
-        # self.storage.validate_entity_type_for_entity_id(
-        #     entity_id=entity_id_and_entity_type_dto.entity_id,
-        #     entity_type=entity_id_and_entity_type_dto.entity_type
-        # )
 
     @staticmethod
     def _validate_offset(offset):
@@ -173,8 +165,9 @@ class GetDiscussionInteractor:
             is_editable = True
         from ib_iam.interactors.presenter_interfaces.dtos import \
             DiscussionIdWithEditableStatusDTO
-        discussion_id_with_editable_status_dto = DiscussionIdWithEditableStatusDTO(
-            discussion_id=discussion_dto.discussion_id,
-            is_editable=is_editable
-        )
+        discussion_id_with_editable_status_dto = \
+            DiscussionIdWithEditableStatusDTO(
+                discussion_id=discussion_dto.discussion_id,
+                is_editable=is_editable
+            )
         return discussion_id_with_editable_status_dto

@@ -103,6 +103,7 @@ class MultiMediaFactory(factory.django.DjangoModelFactory):
         MultiMediaFormatEnum.VIDEO.value
     ])
     url = "https://picsum.photos/200"
+    thumbnail_url = "https://picsum.photos/200"
 
 
 class CommentWithMultiMediaFactory(factory.django.DjangoModelFactory):

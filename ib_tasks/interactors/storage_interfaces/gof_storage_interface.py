@@ -43,8 +43,8 @@ class GoFStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_gof_ids_with_read_permission_for_user(self, roles: List[str]) -> \
-            List[str]:
+    def get_gof_ids_with_read_permission_for_user(
+            self, user_roles: List[str]) -> List[str]:
         pass
 
     @abc.abstractmethod
@@ -56,4 +56,14 @@ class GoFStorageInterface(abc.ABC):
     def get_gof_dtos_for_given_gof_ids(
             self, gof_ids: List[str]
     ) -> List[GoFDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_gof_ids_having_read_permission_for_user(
+            self, user_roles: List[str], gof_ids: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_gof_ids_having_write_permission_for_user(
+            self, user_roles: List[str], gof_ids: List[str]) -> List[str]:
         pass

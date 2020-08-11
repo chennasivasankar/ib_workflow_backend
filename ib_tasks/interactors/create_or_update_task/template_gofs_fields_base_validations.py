@@ -133,9 +133,9 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
             given_gof_field_ids)
         if duplicate_field_ids:
             raise DuplicateFieldIdsToGoF(gof_id, duplicate_field_ids)
-        invalid_gof_field_ids = list(
+        invalid_gof_field_ids = sorted(list(
             set(given_gof_field_ids) - set(valid_gof_field_ids)
-        )
+        ))
         if invalid_gof_field_ids:
             raise InvalidFieldsOfGoF(gof_id, invalid_gof_field_ids)
         return
@@ -145,8 +145,8 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
     ) -> Optional[InvalidGoFsOfTaskTemplate]:
         valid_task_template_gof_ids = self.create_task_storage. \
             get_all_gof_ids_related_to_a_task_template(task_template_id)
-        invalid_task_template_gof_ids = list(
-            set(gof_ids) - set(valid_task_template_gof_ids))
+        invalid_task_template_gof_ids = sorted(list(
+            set(gof_ids) - set(valid_task_template_gof_ids)))
         if invalid_task_template_gof_ids:
             raise InvalidGoFsOfTaskTemplate(
                 invalid_task_template_gof_ids, task_template_id)
@@ -168,7 +168,7 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
             self, gof_ids: List[str]
     ) -> Optional[InvalidGoFIds]:
         valid_gof_ids = self.gof_storage.get_existing_gof_ids(gof_ids)
-        invalid_gof_ids = list(set(gof_ids) - set(valid_gof_ids))
+        invalid_gof_ids = sorted(list(set(gof_ids) - set(valid_gof_ids)))
         if invalid_gof_ids:
             raise InvalidGoFIds(gof_ids)
         return
@@ -177,19 +177,19 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
             self, field_ids: List[str]
     ) -> Optional[InvalidFieldIds]:
         valid_field_ids = self.task_storage.get_existing_field_ids(field_ids)
-        invalid_field_ids = list(set(field_ids) - set(valid_field_ids))
+        invalid_field_ids = sorted(list(set(field_ids) - set(valid_field_ids)))
         if invalid_field_ids:
             raise InvalidFieldIds(invalid_field_ids)
         return
 
     @staticmethod
     def _get_duplicates_in_given_list(values: List) -> List:
-        duplicate_values = list(
+        duplicate_values = sorted(list(
             set(
                 [
                     value
                     for value in values if values.count(value) > 1
                 ]
             )
-        )
+        ))
         return duplicate_values

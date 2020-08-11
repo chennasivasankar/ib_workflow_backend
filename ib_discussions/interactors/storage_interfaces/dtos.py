@@ -54,3 +54,4 @@ class CommentIdWithMultiMediaDTO:
     multimedia_id: str
     format_type: MultiMediaFormatEnum
     url: str
+    thumbnail_url: str

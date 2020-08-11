@@ -7,15 +7,15 @@ from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
     Priority, ActionTypes
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
-    Task, TaskGoF,
-    TaskGoFField, TaskTemplateGlobalConstants, TaskStatusVariable, Filter,
-    FilterCondition, StagePermittedRoles, TaskStageHistory)
+    TaskStageHistory, Task, TaskGoF, TaskGoFField, TaskTemplateGlobalConstants,
+    TaskStatusVariable, Filter, FilterCondition,
+    StagePermittedRoles, ElasticSearchTask)
+from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
 from ib_tasks.models.gof import GoF
 from ib_tasks.models.gof_role import GoFRole
-from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from ib_tasks.models.task_template_initial_stages import \
@@ -26,6 +26,7 @@ class TaskFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Task
 
+    task_display_id = factory.sequence(lambda counter: "iB_{}".format(counter))
     template_id = factory.Sequence(
         lambda counter: "template_{}".format(counter))
     created_by = "123e4567-e89b-12d3-a456-426614174000"
@@ -55,6 +56,7 @@ class TaskModelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Task
 
+    task_display_id = factory.sequence(lambda counter: "iB_{}".format(counter))
     template_id = factory.Sequence(lambda n: "template_%d" % (n + 1))
     created_by = factory.Sequence(lambda n: (n + 1))
     title = factory.Sequence(lambda c: "title_{}".format(c))
@@ -276,4 +278,14 @@ class TaskStageHistoryModelFactory(factory.django.DjangoModelFactory):
 
     task = factory.SubFactory(TaskFactory)
     stage = factory.SubFactory(StageModelFactory)
-    assignee_id =factory.sequence(lambda n: "123e4567-e89b-12d3-a456-42661417400{}".format(n))
+    assignee_id = factory.sequence(
+        lambda n: "123e4567-e89b-12d3-a456-42661417400{}".format(n))
+
+class ElasticSearchTaskFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ElasticSearchTask
+
+    elasticsearch_id = factory.sequence(
+        lambda n: 'elastic_search_id_{}'.format(n))
+    task_id = factory.sequence(lambda n: n)
+
