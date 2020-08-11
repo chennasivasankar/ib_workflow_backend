@@ -1,2784 +1,2866 @@
 {
-  "swagger": "2.0",
-  "host": "127.0.0.1:8000",
-  "basePath": "/api/ib_tasks/",
-  "info": {
-    "version": "1.0.0",
-    "title": "Simple API",
-    "description": "A simple API to learn how to write OpenAPI Specification"
-  },
-  "schemes": [
-    "http"
-  ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
-  "securityDefinitions": {
-    "oauth": {
-      "tokenUrl": "http://auth.ibtspl.com/oauth2/",
-      "flow": "password",
-      "scopes": {
-        "read": "read users",
-        "write": "create users",
-        "update": "update users",
-        "delete": "delete users",
-        "superuser": "superuser scope"
-      },
-      "type": "oauth2"
-    }
-  },
-  "security": [],
-  "definitions": {
-    "SaveAndActOnATaskRequestBody": {
-      "allOf": [{
-          "type": "object",
-          "properties": {
-            "action_id": {
-              "type": "string"
-            }
-          }
-        },
-        {
-          "$ref": "#/definitions/UpdateTaskRequestBody"
-        }
-      ]
-    },
-    "InvalidTaskActionDetails": {
-      "type": "object",
-      "properties": {
-        "response": {
-          "type": "string"
-        },
-        "http_status_code": {
-          "type": "integer"
-        },
-        "res_status": {
-          "type": "string",
-          "enum": [
-            "INVALID_ACTION_ID",
-            "INVALID_TASK_ID"
-          ]
-        }
-      },
-      "required": [
-        "response",
-        "http_status_code",
-        "res_status"
-      ]
-    },
-    "InvalidFilterIdResponse": {
-      "type": "object",
-      "properties": {
-        "response": {
-          "type": "string"
-        },
-        "http_status_code": {
-          "type": "integer"
-        },
-        "res_status": {
-          "type": "string",
-          "enum": [
-            "INVALID_FILTER_ID"
-          ]
-        }
-      },
-      "required": [
-        "response",
-        "http_status_code",
-        "res_status"
-      ]
-    },
-    "UserDoNotHavePermissionToFilter": {
-      "type": "object",
-      "properties": {
-        "response": {
-          "type": "string"
-        },
-        "http_status_code": {
-          "type": "integer"
-        },
-        "res_status": {
-          "type": "string",
-          "enum": [
-            "USER_DO_NOT_HAVE_PERMISSION_TO_FILTER"
-          ]
-        }
-      },
-      "required": [
-        "response",
-        "http_status_code",
-        "res_status"
-      ]
-    },
-    "AccessUnauthorized": {
-      "type": "object",
-      "properties": {
-        "response": {
-          "type": "string"
-        },
-        "http_status_code": {
-          "type": "integer"
-        },
-        "res_status": {
-          "type": "string",
-          "enum": [
-            "USER_DONOT_HAVE_ACCESS"
-          ]
-        }
-      },
-      "required": [
-        "response",
-        "http_status_code",
-        "res_status"
-      ]
-    },
-    "FieldTypeEnum": {
-      "type": "object",
-      "properties": {
-        "field_type": {
-          "type": "string",
-          "enum": [
-            "PLAIN_TEXT",
-            "PHONE_NUMBER",
-            "EMAIL",
-            "URL",
-            "PASSWORD",
-            "NUMBER",
-            "FLOAT",
-            "LONG_TEXT",
-            "GOF_SELECTOR",
-            "RADIO_GROUP",
-            "CHECKBOX_GROUP",
-            "DROPDOWN",
-            "IMAGE_UPLOADER",
-            "FILE_UPLOADER",
-            "SEARCHABLE",
-            "DATE",
-            "MULTI_SELECT_FIELD"
-          ]
-        }
-      },
-      "required": [
-        "field_type"
-      ]
-    },
-    "GoFField": {
-      "type": "object",
-      "properties": {
-        "field_id": {
-          "type": "string",
-          "example": "FIN_FIRST_NAME"
-        },
-        "field_response": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "field_id"
-      ]
-    },
-    "GoF": {
-      "type": "object",
-      "properties": {
-        "gof_id": {
-          "type": "string"
-        },
-        "same_gof_order": {
-          "type": "integer"
-        },
-        "gof_fields": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/GoFField"
-          }
-        }
-      },
-      "required": [
-        "gof_id",
-        "same_gof_order",
-        "gof_fields"
-      ]
-    },
-    "AddTaskReasons": {
-      "type": "object",
-      "properties": {
-        "updated_due_date_time": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "reason": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "updated_due_date_time", "reason"
-      ]
-    },
-    "CreateTaskRequestBody": {
-      "type": "object",
-      "properties": {
-        "task_template_id": {
-          "type": "string"
-        },
-        "action_id": {
-          "type": "integer"
-        },
-        "title": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "start_date": {
-          "type": "string",
-          "format": "date"
-        },
-        "due_date": {
-          "type": "object",
-          "properties": {
-            "date": {
-              "type": "string",
-              "format": "date"
-            },
-            "time": {
-              "type": "string",
-              "example": "14:30:00"
-            }
-          }
-        },
-        "priority": {
-          "type": "string",
-          "enum": [
-            "HIGH",
-            "MEDIUM",
-            "LOW"
-          ]
-        },
-        "task_gofs": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/GoF"
-          }
-        }
-      },
-      "required": [
-        "task_gofs",
-        "action_id",
-        "task_template_id",
-        "title"
-      ]
-    },
-    "ActionDetailsResponse": {
-      "type": "object",
-      "properties": {
-        "action_id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "button_text": {
-          "type": "string"
-        },
-        "button_color": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "action_id",
-        "name",
-        "button_text"
-      ]
-    },
-    "ColumnDetailsResponse": {
-      "type": "object",
-      "properties": {
-        "column_id": {
-          "type": "string"
-        },
-        "column_name": {
-          "type": "string"
-        },
-        "actions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ActionDetailsResponse"
-          }
-        },
-        "fields": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/FieldsResponse"
-          }
-        }
-      },
-      "required": [
-        "column_id",
-        "actions",
-        "fields",
-        "column_name"
-      ]
-    },
-    "FieldsResponse": {
-      "type": "object",
-      "properties": {
-        "field_type": {
-          "type": "string"
-        },
-        "key": {
-          "type": "string"
-        },
-        "value": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "field_type",
-        "key",
-        "value"
-      ]
-    },
-    "TaskActionResponseBody": {
-      "type": "object",
-      "properties": {
-        "task_id": {
-          "type": "integer"
-        },
-        "current_board_details": {
-          "type": "object",
-          "properties": {
-            "board_id": {
-              "type": "string"
-            },
-            "board_name": {
-              "type": "string"
-            },
-            "column_details": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/ColumnDetailsResponse"
-              }
-            }
-          },
-          "required": [
-            "board_id",
-            "column_details",
-            "board_name"
-          ]
-        },
-        "other_board_details": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "board_id": {
-                "type": "string"
-              },
-              "board_name": {
-                "type": "string"
-              },
-              "column_details": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "column_id": {
-                      "type": "string"
-                    },
-                    "column_name": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "column_id",
-                    "column_name"
-                  ]
-                }
-              }
-            },
-            "required": [
-              "board_id",
-              "board_name",
-              "column_details"
-            ]
-          }
-        }
-      },
-      "required": [
-        "task_id",
-        "other_board_details"
-      ]
-    },
-    "Field": {
-      "allOf": [{
-          "$ref": "#/definitions/FieldTypeEnum"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "field_id": {
-              "type": "string"
-            },
-            "display_name": {
-              "type": "string"
-            },
-            "is_field_required": {
-              "type": "boolean"
-            },
-            "field_values": {
-              "type": "string"
-            },
-            "allowed_formats": {
-              "type": "string"
-            },
-            "validation_regex": {
-              "type": "string"
-            },
-            "error_msg": {
-              "type": "string"
-            },
-            "tooltip": {
-              "type": "string"
-            },
-            "help_text": {
-              "type": "string"
-            },
-            "placeholder_text": {
-              "type": "string"
-            },
-            "is_field_writable": {
-              "type": "boolean"
-            }
-          },
-          "required": [
-            "field_id",
-            "display_name",
-            "is_field_required",
-            "is_field_writable"
-          ]
-        }
-      ]
-    },
-    "GroupOfFields": {
-      "type": "object",
-      "properties": {
-        "gof_id": {
-          "type": "string"
-        },
-        "gof_display_name": {
-          "type": "string"
-        },
-        "max_columns": {
-          "type": "integer"
-        },
-        "order": {
-          "type": "integer"
-        },
-        "enable_add_another": {
-          "type": "boolean"
-        },
-        "fields": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Field"
-          }
-        }
-      },
-      "required": [
-        "gof_id",
-        "gof_display_name",
-        "order",
-        "enable_add_another",
-        "max_columns",
-        "fields"
-      ]
-    },
-    "PerformActionRequestBody": {
-      "type": "object",
-      "properties": {
-        "board_id": {
-          "type": "string"
-        },
-        "task_id": {
-          "type": "string"
-        },
-        "action_id": {
-          "type": "string"
-        }
-      }
-    },
-    "TaskOverviewFields": {
-      "allOf": [{
-          "$ref": "#/definitions/FieldTypeEnum"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "field_display_name": {
-              "type": "string"
-            },
-            "field_response": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "field_display_name",
-            "field_response"
-          ]
-        }
-      ]
-    },
-    "Assignee": {
-      "type": "object",
-      "properties": {
-        "assignee_id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "profile_pic_url": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "assignee_id",
-        "name"
-      ]
-    },
-    "StageWithAssignee": {
-      "type": "object",
-      "properties": {
-        "stage_id": {
-          "type": "integer"
-        },
-        "assignee_id": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "assignee_id",
-        "stage_id"
-      ]
-    },
-    "StagesWithActions": {
-      "type": "object",
-      "properties": {
-        "stage_id": {
-          "type": "integer"
-        },
-        "stage_display_name": {
-          "type": "string"
-        },
-        "stage_color": {
-          "type": "string"
-        },
-        "assignee": {
-          "$ref": "#/definitions/Assignee"
-        },
-        "actions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Action"
-          }
-        }
-      },
-      "required": [
-        "stage_id",
-        "stage_display_name",
-        "stage_color",
-        "actions"
-      ]
-    },
-    "TaskOverviewWithStageAndActions": {
-      "type": "object",
-      "properties": {
-        "task_id": {
-          "type": "integer"
-        },
-        "task_overview_fields": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/TaskOverviewFields"
-          }
-        },
-        "stage_with_actions": {
-          "$ref": "#/definitions/StagesWithActions"
-        }
-      },
-      "required": [
-        "task_id",
-        "task_overview_fields",
-        "stage_with_actions"
-      ]
-    },
-    "TaskStageAssignees": {
-      "type": "object",
-      "properties": {
-        "stage_assignees": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/StageWithAssignee"
-          }
-        }
-      },
-      "required": [
-        "stage_assignees"
-      ]
-    },
-    "Action": {
-      "type": "object",
-      "properties": {
-        "action_id": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "action_type": {
-          "type": "string",
-          "enum": [
-            "NO_VALIDATIONS"
-          ]
-        },
-        "transition_template_id": {
-          "type": "string"
-        },
-        "button_text": {
-          "type": "string"
-        },
-        "button_color": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "action_id",
-        "button_text",
-        "button_color"
-      ]
-    },
-    "GetTaskResponseBody": {
-      "type": "object",
-      "properties": {
-        "task_id": {
-          "type": "integer"
-        },
-        "template_id": {
-          "type": "string"
-        },
-        "title": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "start_date": {
-          "type": "string"
-        },
-        "due_date": {
-          "type": "string"
-        },
-        "priority": {
-          "type": "string",
-          "enum": [
-            "HIGH",
-            "MEDIUM",
-            "LOW"
-          ]
-        },
-        "gofs": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "gof_id": {
-                "type": "string"
-              },
-              "same_gof_order": {
-                "type": "integer"
-              },
-              "gof_fields": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "field_id": {
-                      "type": "string"
-                    },
-                    "field_response": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "field_id"
-                  ]
-                }
-              }
-            },
-            "required": [
-              "gof_id",
-              "gof_fields",
-              "same_gof_order"
-            ]
-          }
-        },
-        "stages_with_actions": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "stage_id": {
-                "type": "integer"
-              },
-              "stage_display_name": {
-                "type": "string"
-              },
-              "stage_color": {
-                "type": "string"
-              },
-              "task_stage_id": {
-                "type": "integer"
-              },
-              "assignee": {
-                "type": "object",
-                "properties": {
-                  "assignee_id": {
-                    "type": "string"
-                  },
-                  "name": {
-                    "type": "string"
-                  },
-                  "profile_pic_url": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "assignee_id",
-                  "name"
-                ]
-              },
-              "actions": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "action_id": {
-                      "type": "integer"
-                    },
-                    "button_text": {
-                      "type": "string"
-                    },
-                    "button_color": {
-                      "type": "string"
-                    },
-                    "action_type": {
-                      "type": "string",
-                      "enum": [
-                        "NO_VALIDATIONS"
-                      ]
-                    },
-                    "transition_template_id": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "action_id",
-                    "button_text",
-                    "button_color"
-                  ]
-                }
-              }
-            },
-            "required": [
-              "stage_id",
-              "stage_display_name",
-              "actions",
-              "stage_color",
-              "task_stage_id"
-            ]
-          }
-        }
-      },
-      "required": [
-        "task_id",
-        "template_id",
-        "gofs",
-        "stages_with_actions",
-        "title",
-        "start_date",
-        "due_date",
-        "priority"
-      ]
-    },
-    "UserDetails": {
-      "type": "object",
-              "properties": {
-                "user_id": {
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                },
-                "profile_pic": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "user_id", "name", "profile_pic"
-              ]
-    },
-    "UpdateTaskRequestBody": {
-      "type": "object",
-      "properties": {
-        "task_id": {
-          "type": "integer"
-        },
-        "title": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "start_date": {
-          "type": "string",
-          "format": "date"
-        },
-        "due_date": {
-          "type": "object",
-          "properties": {
-            "date": {
-              "type": "string",
-              "format": "date"
-            },
-            "time": {
-              "type": "string",
-              "example": "14:30:00"
-            }
-          }
-        },
-        "priority": {
-          "type": "string",
-          "enum": [
-            "HIGH",
-            "MEDIUM",
-            "LOW"
-          ]
-        },
-        "stage_assignee": {
-          "type": "object",
-          "properties": {
-            "stage_id": {
-              "type": "integer"
-            },
-            "assignee_id": {
-              "type": "string"
-            }
-          }
-        },
-        "task_gofs": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/GoF"
-          }
-        }
-      },
-      "required": [
-        "task_gofs",
-        "task_id",
-        "title",
-        "stage_assignee"
-      ]
-    },
-    "CreateTaskFailureResponseBody": {
-      "type": "object",
-      "properties": {
-        "response": {
-          "type": "string"
-        },
-        "http_status_code": {
-          "type": "integer"
-        },
-        "res_status": {
-          "type": "string",
-          "enum": [
-            "INVALID_TASK_TEMPLATE_IDS",
-            "INVALID_ACTION_ID",
-            "INVALID_GOF_IDS",
-            "INVALID_FIELD_IDS",
-            "INVALID_GOFS_OF_TASK_TEMPLATE",
-            "DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF",
-            "INVALID_FIELDS_OF_TASK_TEMPLATE",
-            "USER_NEEDS_GOF_WRITABLE_PERMISSION",
-            "USER_NEEDS_FILED_WRITABLE_PERMISSION",
-            "EMPTY_VALUE_FOR_REQUIRED_FIELD",
-            "INVALID_PHONE_NUMBER_VALUE",
-            "INVALID_EMAIL",
-            "NOT_A_STRONG_PASSWORD",
-            "INVALID_NUMBER_VALUE",
-            "INVALID_FLOAT_VALUE",
-            "INVALID_VALUE_FOR_DROPDOWN",
-            "INCORRECT_NAME_IN_GOF_SELECTOR_FIELD",
-            "INCORRECT_RADIO_GROUP_CHOICE",
-            "INCORRECT_CHECK_BOX_OPTIONS_SELECTED",
-            "INCORRECT_MULTI_SELECT_OPTIONS_SELECTED",
-            "INCORRECT_MULTI_SELECT_LABELS_SELECTED",
-            "INVALID_DATE_FORMAT",
-            "INVALID_TIME_FORMAT",
-            "INVALID_IMAGE_URL",
-            "INVALID_IMAGE_FORMAT",
-            "INVALID_FILE_URL",
-            "INVALID_FILE_FORMAT",
-            "USER_DO_NOT_HAVE_ACCESS",
-            "USER_DO_NOT_HAVE_BOARD_ACCESS"
-          ]
-        }
-      },
-      "required": [
-        "response",
-        "http_status_code",
-        "res_status"
-      ]
-    },
-    "SaveAndActOnATaskTaskFailureResponseBody": {
-      "type": "object",
-      "properties": {
-        "response": {
-          "type": "string"
-        },
-        "http_status_code": {
-          "type": "integer"
-        },
-        "res_status": {
-          "type": "string",
-          "enum": [
-            "INVALID_TASK_ID",
-            "INVALID_ACTION_ID",
-            "INVALID_GOF_IDS",
-            "INVALID_FIELD_IDS",
-            "INVALID_GOFS_OF_TASK_TEMPLATE",
-            "DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF",
-            "INVALID_FIELDS_OF_TASK_TEMPLATE",
-            "USER_NEEDS_GOF_WRITABLE_PERMISSION",
-            "USER_NEEDS_FILED_WRITABLE_PERMISSION",
-            "EMPTY_VALUE_FOR_REQUIRED_FIELD",
-            "INVALID_PHONE_NUMBER_VALUE",
-            "INVALID_EMAIL",
-            "NOT_A_STRONG_PASSWORD",
-            "INVALID_NUMBER_VALUE",
-            "INVALID_FLOAT_VALUE",
-            "INVALID_VALUE_FOR_DROPDOWN",
-            "INCORRECT_NAME_IN_GOF_SELECTOR_FIELD",
-            "INCORRECT_RADIO_GROUP_CHOICE",
-            "INCORRECT_CHECK_BOX_OPTIONS_SELECTED",
-            "INCORRECT_MULTI_SELECT_OPTIONS_SELECTED",
-            "INCORRECT_MULTI_SELECT_LABELS_SELECTED",
-            "INVALID_DATE_FORMAT",
-            "INVALID_TIME_FORMAT",
-            "INVALID_IMAGE_URL",
-            "INVALID_IMAGE_FORMAT",
-            "INVALID_FILE_URL",
-            "INVALID_FILE_FORMAT",
-            "USER_DO_NOT_HAVE_ACCESS",
-            "USER_DO_NOT_HAVE_BOARD_ACCESS"
-          ]
-        }
-      },
-      "required": [
-        "response",
-        "http_status_code",
-        "res_status"
-      ]
-    },
-    "UpdateTaskFailureResponseBody": {
-      "type": "object",
-      "properties": {
-        "response": {
-          "type": "string"
-        },
-        "http_status_code": {
-          "type": "integer"
-        },
-        "res_status": {
-          "type": "string",
-          "enum": [
-            "INVALID_TASK_ID",
-            "INVALID_GOF_IDS",
-            "INVALID_FIELD_IDS",
-            "INVALID_GOFS_OF_TASK_TEMPLATE",
-            "DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF",
-            "INVALID_FIELDS_OF_TASK_TEMPLATE",
-            "USER_NEEDS_GOF_WRITABLE_PERMISSION",
-            "USER_NEEDS_FILED_WRITABLE_PERMISSION",
-            "EMPTY_VALUE_FOR_REQUIRED_FIELD",
-            "INVALID_PHONE_NUMBER_VALUE",
-            "INVALID_EMAIL",
-            "NOT_A_STRONG_PASSWORD",
-            "INVALID_NUMBER_VALUE",
-            "INVALID_FLOAT_VALUE",
-            "INVALID_VALUE_FOR_DROPDOWN",
-            "INCORRECT_NAME_IN_GOF_SELECTOR_FIELD",
-            "INCORRECT_RADIO_GROUP_CHOICE",
-            "INCORRECT_CHECK_BOX_OPTIONS_SELECTED",
-            "INCORRECT_MULTI_SELECT_OPTIONS_SELECTED",
-            "INCORRECT_MULTI_SELECT_LABELS_SELECTED",
-            "INVALID_DATE_FORMAT",
-            "INVALID_TIME_FORMAT",
-            "INVALID_IMAGE_URL",
-            "INVALID_IMAGE_FORMAT",
-            "INVALID_FILE_URL",
-            "INVALID_FILE_FORMAT",
-            "USER_DO_NOT_HAVE_BOARD_ACCESS"
-          ]
-        }
-      },
-      "required": [
-        "response",
-        "http_status_code",
-        "res_status"
-      ]
-    },
-    "TaskTemplateFieldsResponse": {
-      "type": "object",
-      "properties": {
-        "task_template_id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "fields": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "field_id": {
-                "type": "string"
-              },
-              "name": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "field_id",
-              "name"
-            ]
-          }
-        }
-      },
-      "required": [
-        "task_template_id",
-        "name",
-        "fields"
-      ]
-    },
-    "FilterCondition": {
-      "type": "object",
-      "properties": {
-        "field_id": {
-          "type": "string"
-        },
-        "operator": {
-          "type": "string",
-          "enum": [
-            "EQ",
-            "NE",
-            "GTE",
-            "GT",
-            "LTE",
-            "LT",
-            "CONTAINS"
-          ]
-        },
-        "value": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "field_id",
-        "operator",
-        "value"
-      ]
-    },
-    "FilterConditionWithFieldName": {
-      "allOf": [{
-          "$ref": "#/definitions/FilterCondition"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "field_name": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "field_name"
-          ]
-        }
-      ]
-    },
-    "FilterDetails": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "template_id": {
-          "type": "string"
-        },
-        "conditions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/FilterCondition"
-          }
-        }
-      },
-      "required": [
-        "name",
-        "conditions",
-        "template_id"
-      ]
-    },
-    "FilterDetailsWithID": {
-      "allOf": [{
-          "$ref": "#/definitions/FilterDetails"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "filter_id": {
-              "type": "integer",
-              "format": "int64"
-            },
-            "filter_name": {
-              "type": "string"
-            },
-            "template_name": {
-              "type": "string"
-            },
-            "is_selected": {
-              "type": "boolean"
-            }
-          },
-          "required": [
-            "filter_id",
-            "filter_name",
-            "is_selected"
-          ]
-        }
-      ]
-    },
-    "FilterDetailsCompleteDetails": {
-      "type": "object",
-      "properties": {
-        "filter_id": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "name": {
-          "type": "string"
-        },
-        "template_id": {
-          "type": "string"
-        },
-        "template_name": {
-          "type": "string"
-        },
-        "status": {
-          "type": "string",
-          "enum": [
-            "ENABLED",
-            "DISABLED"
-          ]
-        },
-        "conditions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/FilterConditionWithFieldName"
-          }
-        }
-      },
-      "required": [
-        "filter_id",
-        "name",
-        "conditions",
-        "template_id",
-        "status"
-      ]
-    },
-    "CreateTransitionChecklistRequestBody": {
-      "type": "object",
-      "properties": {
-        "task_id": {
-          "type": "integer"
-        },
-        "transition_checklist_template_id": {
-          "type": "string"
-        },
-        "action_id": {
-          "type": "integer"
-        },
-        "stage_id": {
-          "type": "integer"
-        },
-        "transition_checklist_gofs": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/GoF"
-          }
-        }
-      }
-    },
-    "AdvancedSearchRequestBody": {
-      "type": "object",
-      "properties": {
-        "template_id": {
-          "type": "string"
-        },
-        "conditions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/FilterCondition"
-          }
-        }
-      }
-    }
-  },
-  "parameters": {
-    "AddTaskReasonsParameter": {
-      "in": "body",
-      "name": "AddTaskReasonRequestBody",
-      "required": true,
-      "schema": {
-        "$ref": "#/definitions/AddTaskReasons"
-      }
-    },
-    "AdvancedSearchableBody": {
-      "in": "body",
-      "name": "AdvancedSearchRequestBody",
-      "description": "advanced search",
-      "required": false,
-      "schema": {
-        "type": "object",
-        "properties": {
-          "templates_conditions": {
-              "type": "array",
-              "items": {
-                  "$ref": "#/definitions/AdvancedSearchRequestBody"
-              }
-          }
-        }
-      }
-    },
-    "CreateTaskBodyParameter": {
-      "in": "body",
-      "name": "CreateTaskRequestBody",
-      "description": "give valid details",
-      "required": true,
-      "schema": {
-        "$ref": "#/definitions/CreateTaskRequestBody"
-      }
-    },
-    "PerformActionBodyParameter": {
-      "in": "body",
-      "name": "CreateTaskRequestBody",
-      "description": "give valid details",
-      "required": true,
-      "schema": {
-        "$ref": "#/definitions/PerformActionRequestBody"
-      }
-    },
-    "TaskParameterize": {
-      "name": "task_id",
-      "in": "path",
-      "required": true,
-      "description": "Id of the Task",
-      "type": "integer"
-    },
-    "ActionParameterize": {
-      "name": "action_id",
-      "in": "path",
-      "required": true,
-      "description": "Id of the Action",
-      "type": "string"
-    },
-    "BoardParameterize": {
-      "name": "board_id",
-      "in": "path",
-      "required": true,
-      "description": "Id of the Board",
-      "type": "string"
-    },
-    "SearchableTypeParameter": {
-      "name": "search_type",
-      "description": "Searchable Type Parameter",
-      "in": "query",
-      "required": true,
-      "type": "string",
-      "enum": [
-        "USER", "COUNTRY", "STATE", "CITY"
-      ]
-    },
-    "LimitParameter": {
-      "name": "limit",
-      "description": "Limit Parameter",
-      "in": "query",
-      "type": "integer",
-      "required": true
-    },
-    "OffsetParameter": {
-      "name": "offset",
-      "description": "Offset Parameter",
-      "in": "query",
-      "type": "integer",
-      "required": true
-    },
-    "SearchableQueryParameter": {
-      "name": "search_query",
-      "description": "Searchable Query Parameter",
-      "in": "query",
-      "required": false,
-      "type": "string"
-    },
-    "SaveAndActOnATaskBodyParameter": {
-      "in": "body",
-      "name": "SaveAndActOnATaskRequestBody",
-      "description": "give valid details",
-      "required": true,
-      "schema": {
-        "$ref": "#/definitions/SaveAndActOnATaskRequestBody"
-      }
-    },
-    "UpdateTaskRequestBodyParameter": {
-      "in": "body",
-      "name": "UpdateTaskRequestBody",
-      "description": "give valid details",
-      "required": true,
-      "schema": {
-        "$ref": "#/definitions/UpdateTaskRequestBody"
-      }
-    },
-    "TaskIDParameter": {
-      "description": "task id",
-      "in": "path",
-      "name": "task_id",
-      "required": true,
-      "type": "integer"
-    },
-    "TaskStageAssigneesParameter": {
-      "description": "Task Stage Assignees Parameter",
-      "in": "body",
-      "name": "TaskStageAssigneesParameter",
-      "required": true,
-      "schema": {
-        "$ref": "#/definitions/TaskStageAssignees"
-      }
-    },
-    "ActionIDParameter": {
-      "description": "action id",
-      "in": "path",
-      "name": "action_id",
-      "required": true,
-      "type": "integer"
-    },
-    "SelectFilterRequestBody": {
-      "in": "body",
-      "name": "select_filter_status",
-      "description": "select filter status",
-      "required": true,
-      "schema": {
-        "type": "object",
-        "properties": {
-          "filter_id": {
-            "type": "integer"
-          },
-          "action": {
-            "type": "string",
-            "enum": [
-              "ENABLED",
-              "DISABLED"
-            ]
-          }
-        },
-        "required": [
-          "filter_id",
-          "action"
-        ]
-      }
-    },
-    "CreateFilterBodyParameter": {
-      "in": "body",
-      "name": "CreateFilterBodyParameter",
-      "description": "create filter details",
-      "required": true,
-      "schema": {
-        "$ref": "#/definitions/FilterDetails"
-      }
-    },
-    "UpdateFilterBodyParameter": {
-      "in": "body",
-      "name": "UpdateFilterBodyParameter",
-      "description": "update filter details",
-      "required": true,
-      "schema": {
-        "$ref": "#/definitions/FilterDetails"
-      }
-    },
-    "UpdateFilterPathParameter": {
-      "name": "filter_id",
-      "in": "path",
-      "required": true,
-      "description": "Id of the filter",
-      "type": "integer",
-      "format": "int64"
-    },
-    "DeleteFilterPathParameter": {
-      "name": "filter_id",
-      "in": "path",
-      "required": true,
-      "description": "Id of the filter",
-      "type": "integer",
-      "format": "int64"
-    },
-    "TransitionTemplateIdParameter": {
-      "name": "transition_template_id",
-      "in": "path",
-      "required": true,
-      "description": "transition template Id",
-      "type": "string"
-    },
-    "CreateTransitionChecklistRequestBodyParameter": {
-      "in": "body",
-      "name": "CreateTransitionChecklistRequestBody",
-      "description": "create transition checklist request body",
-      "required": true,
-      "schema": {
-        "$ref": "#/definitions/CreateTransitionChecklistRequestBody"
-      }
-    }
-  },
-  "responses": {
-    "CreateTaskSuccessResponse": {
-      "description": "task created successfully"
-    },
-    "TaskTemplatesDoesNotExistsResponse": {
-      "description": "No task templates exists",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
-          },
-          "http_status_code": {
-            "type": "integer"
-          },
-          "res_status": {
-            "type": "string",
-            "enum": [
-              "TASK_TEMPLATES_DOES_NOT_EXISTS"
-            ]
-          }
-        },
-        "required": [
-          "response",
-          "http_status_code",
-          "res_status"
-        ]
-      }
-    },
-    "GetTaskTemplateResponse": {
-      "description": "OK",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "task_templates": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "template_id": {
-                  "type": "string"
-                },
-                "template_name": {
-                  "type": "string"
-                },
-                "actions": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/Action"
-                  }
-                },
-                "group_of_fields": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/GroupOfFields"
-                  }
-                }
-              },
-              "required": [
-                "template_id",
-                "template_name",
-                "actions",
-                "group_of_fields"
-              ]
-            }
-          }
-        },
-        "required": [
-          "task_templates"
-        ]
-      }
-    },
-    "GetTransitionTemplateResponse": {
-      "description": "OK",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "transition_template_id": {
-            "type": "string"
-          },
-          "transition_template_name": {
-            "type": "string"
-          },
-          "group_of_fields": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/GroupOfFields"
-            }
-          }
-        },
-        "required": [
-          "transition_template_id",
-          "transition_template_name",
-          "group_of_fields"
-        ]
-      }
-    },
-    "GetTransitionTemplateFailureResponse": {
-      "description": "get transition template failure response",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
-          },
-          "http_status_code": {
-            "type": "integer"
-          },
-          "res_status": {
-            "type": "string",
-            "enum": [
-              "TRANSITION_TEMPLATE_DOES_NOT_EXISTS"
-            ]
-          }
-        },
-        "required": [
-          "response",
-          "http_status_code",
-          "res_status"
-        ]
-      }
-    },
-    "GetTaskSuccessResponse": {
-      "description": "Success",
-      "schema": {
-        "$ref": "#/definitions/GetTaskResponseBody"
-      }
-    },
-    "GetTaskFailureResponse": {
-      "description": "get task failure response",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
-          },
-          "http_status_code": {
-            "type": "integer",
-            "example": 404
-          },
-          "res_status": {
-            "type": "string",
-            "enum": [
-              "INVALID_TASK_ID"
-            ]
-          }
-        }
-      }
-    },
-    "TaskStageAssigneesResponse": {
-      "description": "OK",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "stage_assignees": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "stage_id": {
-                  "type": "integer"
-                },
-                "stage_display_name": {
-                  "type": "string"
-                },
-                "assignee": {
-                  "$ref": "#/definitions/Assignee"
-                }
-              },
-              "required": [
-                "stage_id",
-                "stage_display_name",
-                "assignee"
-              ]
-            }
-          }
-        },
-        "required": [
-          "stage_assignees"
-        ]
-      }
-    },
-    "InvalidTaskReasonsResponse": {
-      "description": "invalid add task reasons response",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
-          },
-          "http_status_code": {
-            "type": "integer",
-            "example": 400
-          },
-          "res_status": {
-            "type": "string",
-            "enum": [
-              "INVALID_REASON",
-              "INVALID_DUE_DATE_TIME"
-            ]
-          }
-        },
-        "required": [
-          "response",
-          "http_status_code",
-          "res_status"
-        ]
-      }
-    },
-    "UpdateTaskStageAssigneesNotFoundResponse": {
-      "description": "Task Stage Assignees Not Found Response",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
-          },
-          "http_status_code": {
-            "type": "integer",
-            "enum": [
-              404
-            ]
-          },
-          "res_status": {
-            "type": "string",
-            "enum": [
-              "INVALID_TASK_ID",
-              "INVALID_STAGE_IDS"
-            ]
-          }
-        },
-        "required": [
-          "response",
-          "http_status_code",
-          "res_status"
-        ]
-      }
-    },
-    "UpdateTaskStageAssigneesFailureResponse": {
-      "description": "Task Stage Assignees Failure Response",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
-          },
-          "http_status_code": {
-            "type": "integer",
-            "enum": [
-              400
-            ]
-          },
-          "res_status": {
-            "type": "string",
-            "enum": [
-              "DUPLICATE_STAGE_IDS",
-              "STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE"
+	"swagger": "2.0",
+	"host": "127.0.0.1:8000",
+	"basePath": "/api/ib_tasks/",
+	"info": {
+		"version": "1.0.0",
+		"title": "Simple API",
+		"description": "A simple API to learn how to write OpenAPI Specification"
+	},
+	"schemes": [
+		"http"
+	],
+	"consumes": [
+		"application/json"
+	],
+	"produces": [
+		"application/json"
+	],
+	"securityDefinitions": {
+		"oauth": {
+			"tokenUrl": "http://auth.ibtspl.com/oauth2/",
+			"flow": "password",
+			"scopes": {
+				"read": "read users",
+				"write": "create users",
+				"update": "update users",
+				"delete": "delete users",
+				"superuser": "superuser scope"
+			},
+			"type": "oauth2"
+		}
+	},
+	"security": [],
+	"definitions": {
+		"SaveAndActOnATaskRequestBody": {
+			"allOf": [{
+					"type": "object",
+					"properties": {
+						"action_id": {
+							"type": "string"
+						}
+					}
+				},
+				{
+					"$ref": "#/definitions/UpdateTaskRequestBody"
+				}
+			]
+		},
+		"InvalidTaskActionDetails": {
+			"type": "object",
+			"properties": {
+				"response": {
+					"type": "string"
+				},
+				"http_status_code": {
+					"type": "integer"
+				},
+				"res_status": {
+					"type": "string",
+					"enum": [
+						"INVALID_ACTION_ID",
+						"INVALID_TASK_ID"
+					]
+				}
+			},
+			"required": [
+				"response",
+				"http_status_code",
+				"res_status"
+			]
+		},
+		"InvalidFilterIdResponse": {
+			"type": "object",
+			"properties": {
+				"response": {
+					"type": "string"
+				},
+				"http_status_code": {
+					"type": "integer"
+				},
+				"res_status": {
+					"type": "string",
+					"enum": [
+						"INVALID_FILTER_ID"
+					]
+				}
+			},
+			"required": [
+				"response",
+				"http_status_code",
+				"res_status"
+			]
+		},
+		"UserDoNotHavePermissionToFilter": {
+			"type": "object",
+			"properties": {
+				"response": {
+					"type": "string"
+				},
+				"http_status_code": {
+					"type": "integer"
+				},
+				"res_status": {
+					"type": "string",
+					"enum": [
+						"USER_DO_NOT_HAVE_PERMISSION_TO_FILTER"
+					]
+				}
+			},
+			"required": [
+				"response",
+				"http_status_code",
+				"res_status"
+			]
+		},
+		"AccessUnauthorized": {
+			"type": "object",
+			"properties": {
+				"response": {
+					"type": "string"
+				},
+				"http_status_code": {
+					"type": "integer"
+				},
+				"res_status": {
+					"type": "string",
+					"enum": [
+						"USER_DONOT_HAVE_ACCESS"
+					]
+				}
+			},
+			"required": [
+				"response",
+				"http_status_code",
+				"res_status"
+			]
+		},
+		"FieldTypeEnum": {
+			"type": "object",
+			"properties": {
+				"field_type": {
+					"type": "string",
+					"enum": [
+						"PLAIN_TEXT",
+						"PHONE_NUMBER",
+						"EMAIL",
+						"URL",
+						"PASSWORD",
+						"NUMBER",
+						"FLOAT",
+						"LONG_TEXT",
+						"GOF_SELECTOR",
+						"RADIO_GROUP",
+						"CHECKBOX_GROUP",
+						"DROPDOWN",
+						"IMAGE_UPLOADER",
+						"FILE_UPLOADER",
+						"SEARCHABLE",
+						"DATE",
+						"MULTI_SELECT_FIELD"
+					]
+				}
+			},
+			"required": [
+				"field_type"
+			]
+		},
+		"GoFField": {
+			"type": "object",
+			"properties": {
+				"field_id": {
+					"type": "string",
+					"example": "FIN_FIRST_NAME"
+				},
+				"field_response": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"field_id"
+			]
+		},
+		"GoF": {
+			"type": "object",
+			"properties": {
+				"gof_id": {
+					"type": "string"
+				},
+				"same_gof_order": {
+					"type": "integer"
+				},
+				"gof_fields": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/GoFField"
+					}
+				}
+			},
+			"required": [
+				"gof_id",
+				"same_gof_order",
+				"gof_fields"
+			]
+		},
+		"AddTaskReasons": {
+			"type": "object",
+			"properties": {
+				"updated_due_date_time": {
+					"type": "string",
+					"format": "date-time"
+				},
+				"reason": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"updated_due_date_time", "reason"
+			]
+		},
+		"CreateTaskRequestBody": {
+			"type": "object",
+			"properties": {
+				"task_template_id": {
+					"type": "string"
+				},
+				"action_id": {
+					"type": "integer"
+				},
+				"title": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string"
+				},
+				"start_date": {
+					"type": "string",
+					"format": "date"
+				},
+				"due_date": {
+					"type": "object",
+					"properties": {
+						"date": {
+							"type": "string",
+							"format": "date"
+						},
+						"time": {
+							"type": "string",
+							"example": "14:30:00"
+						}
+					}
+				},
+				"priority": {
+					"type": "string",
+					"enum": [
+						"HIGH",
+						"MEDIUM",
+						"LOW"
+					]
+				},
+				"task_gofs": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/GoF"
+					}
+				}
+			},
+			"required": [
+				"task_gofs",
+				"action_id",
+				"task_template_id",
+				"title"
+			]
+		},
+		"ActionDetailsResponse": {
+			"type": "object",
+			"properties": {
+				"action_id": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"button_text": {
+					"type": "string"
+				},
+				"button_color": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"action_id",
+				"name",
+				"button_text"
+			]
+		},
+		"ColumnDetailsResponse": {
+			"type": "object",
+			"properties": {
+				"column_id": {
+					"type": "string"
+				},
+				"column_name": {
+					"type": "string"
+				},
+				"actions": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/ActionDetailsResponse"
+					}
+				},
+				"fields": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/FieldsResponse"
+					}
+				}
+			},
+			"required": [
+				"column_id",
+				"actions",
+				"fields",
+				"column_name"
+			]
+		},
+		"FieldsResponse": {
+			"type": "object",
+			"properties": {
+				"field_type": {
+					"type": "string"
+				},
+				"key": {
+					"type": "string"
+				},
+				"value": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"field_type",
+				"key",
+				"value"
+			]
+		},
+		"TaskActionResponseBody": {
+			"type": "object",
+			"properties": {
+				"task_id": {
+					"type": "integer"
+				},
+				"current_board_details": {
+					"type": "object",
+					"properties": {
+						"board_id": {
+							"type": "string"
+						},
+						"board_name": {
+							"type": "string"
+						},
+						"column_details": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/ColumnDetailsResponse"
+							}
+						}
+					},
+					"required": [
+						"board_id",
+						"column_details",
+						"board_name"
+					]
+				},
+				"other_board_details": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"board_id": {
+								"type": "string"
+							},
+							"board_name": {
+								"type": "string"
+							},
+							"column_details": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"column_id": {
+											"type": "string"
+										},
+										"column_name": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"column_id",
+										"column_name"
+									]
+								}
+							}
+						},
+						"required": [
+							"board_id",
+							"board_name",
+							"column_details"
+						]
+					}
+				}
+			},
+			"required": [
+				"task_id",
+				"other_board_details"
+			]
+		},
+		"Field": {
+			"allOf": [{
+					"$ref": "#/definitions/FieldTypeEnum"
+				},
+				{
+					"type": "object",
+					"properties": {
+						"field_id": {
+							"type": "string"
+						},
+						"display_name": {
+							"type": "string"
+						},
+						"is_field_required": {
+							"type": "boolean"
+						},
+						"field_values": {
+							"type": "string"
+						},
+						"allowed_formats": {
+							"type": "string"
+						},
+						"validation_regex": {
+							"type": "string"
+						},
+						"error_msg": {
+							"type": "string"
+						},
+						"tooltip": {
+							"type": "string"
+						},
+						"help_text": {
+							"type": "string"
+						},
+						"placeholder_text": {
+							"type": "string"
+						},
+						"is_field_writable": {
+							"type": "boolean"
+						}
+					},
+					"required": [
+						"field_id",
+						"display_name",
+						"is_field_required",
+						"is_field_writable"
+					]
+				}
+			]
+		},
+		"GroupOfFields": {
+			"type": "object",
+			"properties": {
+				"gof_id": {
+					"type": "string"
+				},
+				"gof_display_name": {
+					"type": "string"
+				},
+				"max_columns": {
+					"type": "integer"
+				},
+				"order": {
+					"type": "integer"
+				},
+				"enable_add_another": {
+					"type": "boolean"
+				},
+				"fields": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/Field"
+					}
+				}
+			},
+			"required": [
+				"gof_id",
+				"gof_display_name",
+				"order",
+				"enable_add_another",
+				"max_columns",
+				"fields"
+			]
+		},
+		"PerformActionRequestBody": {
+			"type": "object",
+			"properties": {
+				"board_id": {
+					"type": "string"
+				},
+				"task_id": {
+					"type": "string"
+				},
+				"action_id": {
+					"type": "string"
+				}
+			}
+		},
+		"TaskOverviewFields": {
+			"allOf": [{
+					"$ref": "#/definitions/FieldTypeEnum"
+				},
+				{
+					"type": "object",
+					"properties": {
+						"field_display_name": {
+							"type": "string"
+						},
+						"field_response": {
+							"type": "string"
+						}
+					},
+					"required": [
+						"field_display_name",
+						"field_response"
+					]
+				}
+			]
+		},
+		"Assignee": {
+			"type": "object",
+			"properties": {
+				"assignee_id": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"profile_pic_url": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"assignee_id",
+				"name"
+			]
+		},
+		"StageWithAssignee": {
+			"type": "object",
+			"properties": {
+				"stage_id": {
+					"type": "integer"
+				},
+				"assignee_id": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"assignee_id",
+				"stage_id"
+			]
+		},
+		"StagesWithActions": {
+			"type": "object",
+			"properties": {
+				"stage_id": {
+					"type": "integer"
+				},
+				"stage_display_name": {
+					"type": "string"
+				},
+				"stage_color": {
+					"type": "string"
+				},
+				"assignee": {
+					"$ref": "#/definitions/Assignee"
+				},
+				"actions": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/Action"
+					}
+				}
+			},
+			"required": [
+				"stage_id",
+				"stage_display_name",
+				"stage_color",
+				"actions"
+			]
+		},
+		"TaskOverviewWithStageAndActions": {
+			"type": "object",
+			"properties": {
+				"task_id": {
+					"type": "integer"
+				},
+				"task_overview_fields": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/TaskOverviewFields"
+					}
+				},
+				"stage_with_actions": {
+					"$ref": "#/definitions/StagesWithActions"
+				}
+			},
+			"required": [
+				"task_id",
+				"task_overview_fields",
+				"stage_with_actions"
+			]
+		},
+		"TaskStageAssignees": {
+			"type": "object",
+			"properties": {
+				"stage_assignees": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/StageWithAssignee"
+					}
+				}
+			},
+			"required": [
+				"stage_assignees"
+			]
+		},
+		"Action": {
+			"type": "object",
+			"properties": {
+				"action_id": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"action_type": {
+					"type": "string",
+					"enum": [
+						"NO_VALIDATIONS"
+					]
+				},
+				"transition_template_id": {
+					"type": "string"
+				},
+				"button_text": {
+					"type": "string"
+				},
+				"button_color": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"action_id",
+				"button_text",
+				"button_color"
+			]
+		},
+		"GetTaskResponseBody": {
+			"type": "object",
+			"properties": {
+				"task_id": {
+					"type": "integer"
+				},
+				"template_id": {
+					"type": "string"
+				},
+				"title": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string"
+				},
+				"start_date": {
+					"type": "string"
+				},
+				"due_date": {
+					"type": "string"
+				},
+				"priority": {
+					"type": "string",
+					"enum": [
+						"HIGH",
+						"MEDIUM",
+						"LOW"
+					]
+				},
+				"gofs": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"gof_id": {
+								"type": "string"
+							},
+							"same_gof_order": {
+								"type": "integer"
+							},
+							"gof_fields": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"field_id": {
+											"type": "string"
+										},
+										"field_response": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"field_id"
+									]
+								}
+							}
+						},
+						"required": [
+							"gof_id",
+							"gof_fields",
+							"same_gof_order"
+						]
+					}
+				},
+				"stages_with_actions": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"stage_id": {
+								"type": "integer"
+							},
+							"stage_display_name": {
+								"type": "string"
+							},
+							"stage_color": {
+								"type": "string"
+							},
+							"task_stage_id": {
+								"type": "integer"
+							},
+							"assignee": {
+								"type": "object",
+								"properties": {
+									"assignee_id": {
+										"type": "string"
+									},
+									"name": {
+										"type": "string"
+									},
+									"profile_pic_url": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"assignee_id",
+									"name"
+								]
+							},
+							"actions": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"action_id": {
+											"type": "integer"
+										},
+										"button_text": {
+											"type": "string"
+										},
+										"button_color": {
+											"type": "string"
+										},
+										"action_type": {
+											"type": "string",
+											"enum": [
+												"NO_VALIDATIONS"
+											]
+										},
+										"transition_template_id": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"action_id",
+										"button_text",
+										"button_color"
+									]
+								}
+							}
+						},
+						"required": [
+							"stage_id",
+							"stage_display_name",
+							"actions",
+							"stage_color",
+							"task_stage_id"
+						]
+					}
+				}
+			},
+			"required": [
+				"task_id",
+				"template_id",
+				"gofs",
+				"stages_with_actions",
+				"title",
+				"start_date",
+				"due_date",
+				"priority"
+			]
+		},
+		"UserDetails": {
+			"type": "object",
+			"properties": {
+				"user_id": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"profile_pic": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"user_id", "name", "profile_pic"
+			]
+		},
+		"UpdateTaskRequestBody": {
+			"type": "object",
+			"properties": {
+				"task_id": {
+					"type": "integer"
+				},
+				"title": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string"
+				},
+				"start_date": {
+					"type": "string",
+					"format": "date"
+				},
+				"due_date": {
+					"type": "object",
+					"properties": {
+						"date": {
+							"type": "string",
+							"format": "date"
+						},
+						"time": {
+							"type": "string",
+							"example": "14:30:00"
+						}
+					}
+				},
+				"priority": {
+					"type": "string",
+					"enum": [
+						"HIGH",
+						"MEDIUM",
+						"LOW"
+					]
+				},
+				"stage_assignee": {
+					"type": "object",
+					"properties": {
+						"stage_id": {
+							"type": "integer"
+						},
+						"assignee_id": {
+							"type": "string"
+						}
+					}
+				},
+				"task_gofs": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/GoF"
+					}
+				}
+			},
+			"required": [
+				"task_gofs",
+				"task_id",
+				"title",
+				"stage_assignee"
+			]
+		},
+		"CreateTaskFailureResponseBody": {
+			"type": "object",
+			"properties": {
+				"response": {
+					"type": "string"
+				},
+				"http_status_code": {
+					"type": "integer"
+				},
+				"res_status": {
+					"type": "string",
+					"enum": [
+						"INVALID_TASK_TEMPLATE_IDS",
+						"INVALID_ACTION_ID",
+						"INVALID_GOF_IDS",
+						"INVALID_FIELD_IDS",
+						"INVALID_GOFS_OF_TASK_TEMPLATE",
+						"DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF",
+						"INVALID_FIELDS_OF_TASK_TEMPLATE",
+						"USER_NEEDS_GOF_WRITABLE_PERMISSION",
+						"USER_NEEDS_FILED_WRITABLE_PERMISSION",
+						"EMPTY_VALUE_FOR_REQUIRED_FIELD",
+						"INVALID_PHONE_NUMBER_VALUE",
+						"INVALID_EMAIL",
+						"NOT_A_STRONG_PASSWORD",
+						"INVALID_NUMBER_VALUE",
+						"INVALID_FLOAT_VALUE",
+						"INVALID_VALUE_FOR_DROPDOWN",
+						"INCORRECT_NAME_IN_GOF_SELECTOR_FIELD",
+						"INCORRECT_RADIO_GROUP_CHOICE",
+						"INCORRECT_CHECK_BOX_OPTIONS_SELECTED",
+						"INCORRECT_MULTI_SELECT_OPTIONS_SELECTED",
+						"INCORRECT_MULTI_SELECT_LABELS_SELECTED",
+						"INVALID_DATE_FORMAT",
+						"INVALID_TIME_FORMAT",
+						"INVALID_IMAGE_URL",
+						"INVALID_IMAGE_FORMAT",
+						"INVALID_FILE_URL",
+						"INVALID_FILE_FORMAT",
+						"USER_DO_NOT_HAVE_ACCESS",
+						"USER_DO_NOT_HAVE_BOARD_ACCESS"
+					]
+				}
+			},
+			"required": [
+				"response",
+				"http_status_code",
+				"res_status"
+			]
+		},
+		"SaveAndActOnATaskTaskFailureResponseBody": {
+			"type": "object",
+			"properties": {
+				"response": {
+					"type": "string"
+				},
+				"http_status_code": {
+					"type": "integer"
+				},
+				"res_status": {
+					"type": "string",
+					"enum": [
+						"INVALID_TASK_ID",
+						"INVALID_ACTION_ID",
+						"INVALID_GOF_IDS",
+						"INVALID_FIELD_IDS",
+						"INVALID_GOFS_OF_TASK_TEMPLATE",
+						"DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF",
+						"INVALID_FIELDS_OF_TASK_TEMPLATE",
+						"USER_NEEDS_GOF_WRITABLE_PERMISSION",
+						"USER_NEEDS_FILED_WRITABLE_PERMISSION",
+						"EMPTY_VALUE_FOR_REQUIRED_FIELD",
+						"INVALID_PHONE_NUMBER_VALUE",
+						"INVALID_EMAIL",
+						"NOT_A_STRONG_PASSWORD",
+						"INVALID_NUMBER_VALUE",
+						"INVALID_FLOAT_VALUE",
+						"INVALID_VALUE_FOR_DROPDOWN",
+						"INCORRECT_NAME_IN_GOF_SELECTOR_FIELD",
+						"INCORRECT_RADIO_GROUP_CHOICE",
+						"INCORRECT_CHECK_BOX_OPTIONS_SELECTED",
+						"INCORRECT_MULTI_SELECT_OPTIONS_SELECTED",
+						"INCORRECT_MULTI_SELECT_LABELS_SELECTED",
+						"INVALID_DATE_FORMAT",
+						"INVALID_TIME_FORMAT",
+						"INVALID_IMAGE_URL",
+						"INVALID_IMAGE_FORMAT",
+						"INVALID_FILE_URL",
+						"INVALID_FILE_FORMAT",
+						"USER_DO_NOT_HAVE_ACCESS",
+						"USER_DO_NOT_HAVE_BOARD_ACCESS"
+					]
+				}
+			},
+			"required": [
+				"response",
+				"http_status_code",
+				"res_status"
+			]
+		},
+		"UpdateTaskFailureResponseBody": {
+			"type": "object",
+			"properties": {
+				"response": {
+					"type": "string"
+				},
+				"http_status_code": {
+					"type": "integer"
+				},
+				"res_status": {
+					"type": "string",
+					"enum": [
+						"INVALID_TASK_ID",
+						"INVALID_GOF_IDS",
+						"INVALID_FIELD_IDS",
+						"INVALID_GOFS_OF_TASK_TEMPLATE",
+						"DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF",
+						"INVALID_FIELDS_OF_TASK_TEMPLATE",
+						"USER_NEEDS_GOF_WRITABLE_PERMISSION",
+						"USER_NEEDS_FILED_WRITABLE_PERMISSION",
+						"EMPTY_VALUE_FOR_REQUIRED_FIELD",
+						"INVALID_PHONE_NUMBER_VALUE",
+						"INVALID_EMAIL",
+						"NOT_A_STRONG_PASSWORD",
+						"INVALID_NUMBER_VALUE",
+						"INVALID_FLOAT_VALUE",
+						"INVALID_VALUE_FOR_DROPDOWN",
+						"INCORRECT_NAME_IN_GOF_SELECTOR_FIELD",
+						"INCORRECT_RADIO_GROUP_CHOICE",
+						"INCORRECT_CHECK_BOX_OPTIONS_SELECTED",
+						"INCORRECT_MULTI_SELECT_OPTIONS_SELECTED",
+						"INCORRECT_MULTI_SELECT_LABELS_SELECTED",
+						"INVALID_DATE_FORMAT",
+						"INVALID_TIME_FORMAT",
+						"INVALID_IMAGE_URL",
+						"INVALID_IMAGE_FORMAT",
+						"INVALID_FILE_URL",
+						"INVALID_FILE_FORMAT",
+						"USER_DO_NOT_HAVE_BOARD_ACCESS"
+					]
+				}
+			},
+			"required": [
+				"response",
+				"http_status_code",
+				"res_status"
+			]
+		},
+		"TaskTemplateFieldsResponse": {
+			"type": "object",
+			"properties": {
+				"task_template_id": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"fields": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"field_id": {
+								"type": "string"
+							},
+							"name": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"field_id",
+							"name"
+						]
+					}
+				}
+			},
+			"required": [
+				"task_template_id",
+				"name",
+				"fields"
+			]
+		},
+		"FilterCondition": {
+			"type": "object",
+			"properties": {
+				"field_id": {
+					"type": "string"
+				},
+				"operator": {
+					"type": "string",
+					"enum": [
+						"EQ",
+						"NE",
+						"GTE",
+						"GT",
+						"LTE",
+						"LT",
+						"CONTAINS"
+					]
+				},
+				"value": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"field_id",
+				"operator",
+				"value"
+			]
+		},
+		"FilterConditionWithFieldName": {
+			"allOf": [{
+					"$ref": "#/definitions/FilterCondition"
+				},
+				{
+					"type": "object",
+					"properties": {
+						"field_name": {
+							"type": "string"
+						}
+					},
+					"required": [
+						"field_name"
+					]
+				}
+			]
+		},
+		"FilterDetails": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"template_id": {
+					"type": "string"
+				},
+				"conditions": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/FilterCondition"
+					}
+				}
+			},
+			"required": [
+				"name",
+				"conditions",
+				"template_id"
+			]
+		},
+		"FilterDetailsWithID": {
+			"allOf": [{
+					"$ref": "#/definitions/FilterDetails"
+				},
+				{
+					"type": "object",
+					"properties": {
+						"filter_id": {
+							"type": "integer",
+							"format": "int64"
+						},
+						"filter_name": {
+							"type": "string"
+						},
+						"template_name": {
+							"type": "string"
+						},
+						"is_selected": {
+							"type": "boolean"
+						}
+					},
+					"required": [
+						"filter_id",
+						"filter_name",
+						"is_selected"
+					]
+				}
+			]
+		},
+		"FilterDetailsCompleteDetails": {
+			"type": "object",
+			"properties": {
+				"filter_id": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"name": {
+					"type": "string"
+				},
+				"template_id": {
+					"type": "string"
+				},
+				"template_name": {
+					"type": "string"
+				},
+				"status": {
+					"type": "string",
+					"enum": [
+						"ENABLED",
+						"DISABLED"
+					]
+				},
+				"conditions": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/FilterConditionWithFieldName"
+					}
+				}
+			},
+			"required": [
+				"filter_id",
+				"name",
+				"conditions",
+				"template_id",
+				"status"
+			]
+		},
+		"CreateTransitionChecklistRequestBody": {
+			"type": "object",
+			"properties": {
+				"task_id": {
+					"type": "integer"
+				},
+				"transition_checklist_template_id": {
+					"type": "string"
+				},
+				"action_id": {
+					"type": "integer"
+				},
+				"stage_id": {
+					"type": "integer"
+				},
+				"transition_checklist_gofs": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/GoF"
+					}
+				}
+			}
+		},
+		"AdvancedSearchRequestBody": {
+			"type": "object",
+			"properties": {
+				"template_id": {
+					"type": "string"
+				},
+				"conditions": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/FilterCondition"
+					}
+				}
+			}
+		}
+	},
+	"parameters": {
+		"AddTaskReasonsParameter": {
+			"in": "body",
+			"name": "AddTaskReasonRequestBody",
+			"required": true,
+			"schema": {
+				"$ref": "#/definitions/AddTaskReasons"
+			}
+		},
+		"AdvancedSearchableBody": {
+			"in": "body",
+			"name": "AdvancedSearchRequestBody",
+			"description": "advanced search",
+			"required": false,
+			"schema": {
+				"type": "object",
+				"properties": {
+					"templates_conditions": {
+						"type": "array",
+						"items": {
+							"$ref": "#/definitions/AdvancedSearchRequestBody"
+						}
+					}
+				}
+			}
+		},
+		"CreateTaskBodyParameter": {
+			"in": "body",
+			"name": "CreateTaskRequestBody",
+			"description": "give valid details",
+			"required": true,
+			"schema": {
+				"$ref": "#/definitions/CreateTaskRequestBody"
+			}
+		},
+		"PerformActionBodyParameter": {
+			"in": "body",
+			"name": "CreateTaskRequestBody",
+			"description": "give valid details",
+			"required": true,
+			"schema": {
+				"$ref": "#/definitions/PerformActionRequestBody"
+			}
+		},
+		"TaskParameterize": {
+			"name": "task_id",
+			"in": "path",
+			"required": true,
+			"description": "Id of the Task",
+			"type": "integer"
+		},
+		"ActionParameterize": {
+			"name": "action_id",
+			"in": "path",
+			"required": true,
+			"description": "Id of the Action",
+			"type": "string"
+		},
+		"BoardParameterize": {
+			"name": "board_id",
+			"in": "path",
+			"required": true,
+			"description": "Id of the Board",
+			"type": "string"
+		},
+		"SearchableTypeParameter": {
+			"name": "search_type",
+			"description": "Searchable Type Parameter",
+			"in": "query",
+			"required": true,
+			"type": "string",
+			"enum": [
+				"USER", "COUNTRY", "STATE", "CITY"
+			]
+		},
+		"LimitParameter": {
+			"name": "limit",
+			"description": "Limit Parameter",
+			"in": "query",
+			"type": "integer",
+			"required": true
+		},
+		"OffsetParameter": {
+			"name": "offset",
+			"description": "Offset Parameter",
+			"in": "query",
+			"type": "integer",
+			"required": true
+		},
+		"SearchableQueryParameter": {
+			"name": "search_query",
+			"description": "Searchable Query Parameter",
+			"in": "query",
+			"required": false,
+			"type": "string"
+		},
+		"SaveAndActOnATaskBodyParameter": {
+			"in": "body",
+			"name": "SaveAndActOnATaskRequestBody",
+			"description": "give valid details",
+			"required": true,
+			"schema": {
+				"$ref": "#/definitions/SaveAndActOnATaskRequestBody"
+			}
+		},
+		"UpdateTaskRequestBodyParameter": {
+			"in": "body",
+			"name": "UpdateTaskRequestBody",
+			"description": "give valid details",
+			"required": true,
+			"schema": {
+				"$ref": "#/definitions/UpdateTaskRequestBody"
+			}
+		},
+		"TaskIDParameter": {
+			"description": "task id",
+			"in": "path",
+			"name": "task_id",
+			"required": true,
+			"type": "integer"
+		},
+		"TaskStageAssigneesParameter": {
+			"description": "Task Stage Assignees Parameter",
+			"in": "body",
+			"name": "TaskStageAssigneesParameter",
+			"required": true,
+			"schema": {
+				"$ref": "#/definitions/TaskStageAssignees"
+			}
+		},
+		"ActionIDParameter": {
+			"description": "action id",
+			"in": "path",
+			"name": "action_id",
+			"required": true,
+			"type": "integer"
+		},
+		"SelectFilterRequestBody": {
+			"in": "body",
+			"name": "select_filter_status",
+			"description": "select filter status",
+			"required": true,
+			"schema": {
+				"type": "object",
+				"properties": {
+					"filter_id": {
+						"type": "integer"
+					},
+					"action": {
+						"type": "string",
+						"enum": [
+							"ENABLED",
+							"DISABLED"
+						]
+					}
+				},
+				"required": [
+					"filter_id",
+					"action"
+				]
+			}
+		},
+		"CreateFilterBodyParameter": {
+			"in": "body",
+			"name": "CreateFilterBodyParameter",
+			"description": "create filter details",
+			"required": true,
+			"schema": {
+				"$ref": "#/definitions/FilterDetails"
+			}
+		},
+		"UpdateFilterBodyParameter": {
+			"in": "body",
+			"name": "UpdateFilterBodyParameter",
+			"description": "update filter details",
+			"required": true,
+			"schema": {
+				"$ref": "#/definitions/FilterDetails"
+			}
+		},
+		"UpdateFilterPathParameter": {
+			"name": "filter_id",
+			"in": "path",
+			"required": true,
+			"description": "Id of the filter",
+			"type": "integer",
+			"format": "int64"
+		},
+		"DeleteFilterPathParameter": {
+			"name": "filter_id",
+			"in": "path",
+			"required": true,
+			"description": "Id of the filter",
+			"type": "integer",
+			"format": "int64"
+		},
+		"TransitionTemplateIdParameter": {
+			"name": "transition_template_id",
+			"in": "path",
+			"required": true,
+			"description": "transition template Id",
+			"type": "string"
+		},
+		"CreateTransitionChecklistRequestBodyParameter": {
+			"in": "body",
+			"name": "CreateTransitionChecklistRequestBody",
+			"description": "create transition checklist request body",
+			"required": true,
+			"schema": {
+				"$ref": "#/definitions/CreateTransitionChecklistRequestBody"
+			}
+		}
+	},
+	"responses": {
+		"CreateTaskSuccessResponse": {
+			"description": "task created successfully"
+		},
+		"GetTaskStagesResponse": {
+			"description": "succesful",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"stages_details": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"stage_id": {
+									"type": "integer"
+								},
+								"name": {
+									"type": "string"
+								},
+								"color": {
+									"type": "string"
+								}
+							},
+							"required": ["stage_id", "name", "color"]
+						}
+					},
+					"stages_history": {
+						"type": "object",
+						"properties": {
+							"stage_id": {
+								"type": "integer"
+							},
+							"created_at": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"time_spent_by_user": {
+								"type": "string",
+								"example": "14:30:00"
+							},
+							"stage_time": {
+								"type": "string",
+								"example": "14:30:00"
+							},
+							"user_details": {
+								"type": "object",
+								"properties": {
+									"user_id": {
+										"type": "string"
+									},
+									"profile_pic_url": {
+										"type": "string"
+									},
+									"username": {
+										"type": "string"
+									}
+								},
+								"required": ["user_id", "profile_pic_url", "username"]
+							}
+						},
+						"required": [
+							"stage_id", "created_at", "time_spent_by_user",
+							"stage_time", "user_details"
+						]
+					}
+				},
+				"required": ["stages_details", "stages_history"]
+			}
+		},
+		"TaskTemplatesDoesNotExistsResponse": {
+			"description": "No task templates exists",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"response": {
+						"type": "string"
+					},
+					"http_status_code": {
+						"type": "integer"
+					},
+					"res_status": {
+						"type": "string",
+						"enum": [
+							"TASK_TEMPLATES_DOES_NOT_EXISTS"
+						]
+					}
+				},
+				"required": [
+					"response",
+					"http_status_code",
+					"res_status"
+				]
+			}
+		},
+		"GetTaskTemplateResponse": {
+			"description": "OK",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"task_templates": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"template_id": {
+									"type": "string"
+								},
+								"template_name": {
+									"type": "string"
+								},
+								"actions": {
+									"type": "array",
+									"items": {
+										"$ref": "#/definitions/Action"
+									}
+								},
+								"group_of_fields": {
+									"type": "array",
+									"items": {
+										"$ref": "#/definitions/GroupOfFields"
+									}
+								}
+							},
+							"required": [
+								"template_id",
+								"template_name",
+								"actions",
+								"group_of_fields"
+							]
+						}
+					}
+				},
+				"required": [
+					"task_templates"
+				]
+			}
+		},
+		"GetTransitionTemplateResponse": {
+			"description": "OK",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"transition_template_id": {
+						"type": "string"
+					},
+					"transition_template_name": {
+						"type": "string"
+					},
+					"group_of_fields": {
+						"type": "array",
+						"items": {
+							"$ref": "#/definitions/GroupOfFields"
+						}
+					}
+				},
+				"required": [
+					"transition_template_id",
+					"transition_template_name",
+					"group_of_fields"
+				]
+			}
+		},
+		"GetTransitionTemplateFailureResponse": {
+			"description": "get transition template failure response",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"response": {
+						"type": "string"
+					},
+					"http_status_code": {
+						"type": "integer"
+					},
+					"res_status": {
+						"type": "string",
+						"enum": [
+							"TRANSITION_TEMPLATE_DOES_NOT_EXISTS"
+						]
+					}
+				},
+				"required": [
+					"response",
+					"http_status_code",
+					"res_status"
+				]
+			}
+		},
+		"GetTaskSuccessResponse": {
+			"description": "Success",
+			"schema": {
+				"$ref": "#/definitions/GetTaskResponseBody"
+			}
+		},
+		"GetTaskFailureResponse": {
+			"description": "get task failure response",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"response": {
+						"type": "string"
+					},
+					"http_status_code": {
+						"type": "integer",
+						"example": 404
+					},
+					"res_status": {
+						"type": "string",
+						"enum": [
+							"INVALID_TASK_ID"
+						]
+					}
+				}
+			}
+		},
+		"TaskStageAssigneesResponse": {
+			"description": "OK",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"stage_assignees": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"stage_id": {
+									"type": "integer"
+								},
+								"stage_display_name": {
+									"type": "string"
+								},
+								"assignee": {
+									"$ref": "#/definitions/Assignee"
+								}
+							},
+							"required": [
+								"stage_id",
+								"stage_display_name",
+								"assignee"
+							]
+						}
+					}
+				},
+				"required": [
+					"stage_assignees"
+				]
+			}
+		},
+		"InvalidTaskReasonsResponse": {
+			"description": "invalid add task reasons response",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"response": {
+						"type": "string"
+					},
+					"http_status_code": {
+						"type": "integer",
+						"example": 400
+					},
+					"res_status": {
+						"type": "string",
+						"enum": [
+							"INVALID_REASON",
+							"INVALID_DUE_DATE_TIME"
+						]
+					}
+				},
+				"required": [
+					"response",
+					"http_status_code",
+					"res_status"
+				]
+			}
+		},
+		"UpdateTaskStageAssigneesNotFoundResponse": {
+			"description": "Task Stage Assignees Not Found Response",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"response": {
+						"type": "string"
+					},
+					"http_status_code": {
+						"type": "integer",
+						"enum": [
+							404
+						]
+					},
+					"res_status": {
+						"type": "string",
+						"enum": [
+							"INVALID_TASK_ID",
+							"INVALID_STAGE_IDS"
+						]
+					}
+				},
+				"required": [
+					"response",
+					"http_status_code",
+					"res_status"
+				]
+			}
+		},
+		"UpdateTaskStageAssigneesFailureResponse": {
+			"description": "Task Stage Assignees Failure Response",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"response": {
+						"type": "string"
+					},
+					"http_status_code": {
+						"type": "integer",
+						"enum": [
+							400
+						]
+					},
+					"res_status": {
+						"type": "string",
+						"enum": [
+							"DUPLICATE_STAGE_IDS",
+							"STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE"
 
-            ]
-          }
-        },
-        "required": [
-          "response",
-          "http_status_code",
-          "res_status"
-        ]
-      }
-    },
-    "TaskStageAssigneesNotFoundResponse": {
-      "description": "Task Stage Assignees Not Found Response",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
-          },
-          "http_status_code": {
-            "type": "integer",
-            "enum": [
-              404
-            ]
-          },
-          "res_status": {
-            "type": "string",
-            "enum": [
-              "INVALID_TASK_ID",
-              "INVALID_ACTION_ID"
-            ]
-          }
-        },
-        "required": [
-          "response",
-          "http_status_code",
-          "res_status"
-        ]
-      }
-    },
-     "TaskStageAssigneesFailureResponse": {
-      "description": "Task Stage Assignees Failure Response",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
-          },
-          "http_status_code": {
-            "type": "integer",
-            "enum": [
-              400
-            ]
-          },
-          "res_status": {
-            "type": "string",
-            "enum": [
-              "INVALID_KEY_ERROR",
-              "INVALID_CUSTOM_LOGIC",
-              "PATH_NOT_FOUND",
-              "METHOD_NOT_FOUND"
-            ]
-          }
-        },
-        "required": [
-          "response",
-          "http_status_code",
-          "res_status"
-        ]
-      }
-    },
-    "AllTasksOverviewResponse": {
-      "description": "Ok",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "tasks": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/TaskOverviewWithStageAndActions",
-              "required": [
-                "tasks"
-              ]
-            }
-          },
-          "total_tasks": {
-            "type": "integer"
-          }
-        },
-        "required": [
-          "tasks",
-          "total_tasks"
-        ]
-      }
-    },
-    "SearchableValuesResponse": {
-      "description": "OK",
-      "schema": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string"
-            },
-            "name": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "id",
-            "name"
-          ]
-        }
-      }
-    },
-    "AllTasksOverviewFailureResponse": {
-      "description": "All Tasks Overview Failure Response",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
-          },
-          "http_status_code": {
-            "type": "integer",
-            "enum": [
-              400
-            ]
-          },
-          "res_status": {
-            "type": "string",
-            "enum": [
-              "LIMIT_SHOULD_BE_GREATER_THAN_ZERO",
-              "OFFSET_SHOULD_BE_GREATER_THAN_ZERO",
-              "EMPTY_STAGE_IDS_ARE_INVALID"
-            ]
-          }
-        },
-        "required": [
-          "response",
-          "http_status_code",
-          "res_status"
-        ]
-      }
-    },
-    "SearchableValuesFailureResponse": {
-      "description": "Searchable Values Failure Response",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
-          },
-          "http_status_code": {
-            "type": "integer",
-            "enum": [
-              400
-            ]
-          },
-          "res_status": {
-            "type": "string",
-            "enum": [
-              "LIMIT_SHOULD_BE_GREATER_THAN_ZERO",
-              "OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE"
-            ]
-          }
-        },
-        "required": [
-          "response",
-          "http_status_code",
-          "res_status"
-        ]
-      }
-    },
-    "SaveAndActOnATaskTaskSuccessResponse": {
-      "description": "task saved and action performed successfully"
-    },
-    "UpdateTaskSuccessResponse": {
-      "description": "task updated successfully"
-    },
-    "CreateTaskFailureResponse": {
-      "description": "can not create a task",
-      "schema": {
-        "$ref": "#/definitions/CreateTaskFailureResponseBody"
-      }
-    },
-    "SaveAndActOnATaskTaskFailureResponse": {
-      "description": "can not update and act on a task",
-      "schema": {
-        "$ref": "#/definitions/SaveAndActOnATaskTaskFailureResponseBody"
-      }
-    },
-    "UpdateTaskFailureResponse": {
-      "description": "can not update task",
-      "schema": {
-        "$ref": "#/definitions/UpdateTaskFailureResponseBody"
-      }
-    },
-    "GetTaskTemplateFieldsResponse": {
-      "description": "Get Task Template Fileds Response",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "task_template_fields_details": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/TaskTemplateFieldsResponse"
-            }
-          },
-          "operators": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": [
-                "GTE",
-                "LTE",
-                "GT",
-                "LE",
-                "NE",
-                "EQ",
-                "CONTAINS"
-              ]
-            }
-          }
-        },
-        "required": [
-          "task_template_fields_details",
-          "operators"
-        ]
-      }
-    },
-    "FilterDetailsResponse": {
-      "description": "filter details",
-      "schema": {
-        "$ref": "#/definitions/FilterDetailsCompleteDetails"
-      }
-    },
-    "FilterFailedResponse": {
-      "description": "creating filter is failed",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
-          },
-          "http_status_code": {
-            "type": "integer"
-          },
-          "res_status": {
-            "type": "string",
-            "enum": [
-              "TASK_TEMPLATES_DOES_NOT_EXISTS",
-              "FIELDS_DOES_NOT_EXIST"
-            ]
-          }
-        },
-        "required": [
-          "response",
-          "http_status_code",
-          "res_status"
-        ]
-      }
-    },
-    "GetTaskReasonsResponse": {
-      "description": "Ok",
-      "schema": {
-          "type": "array",
-          "items": {
-            "type": "object",
-      "properties": {
-        "task_id": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "due_date_time": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "due_missed_count": {
-          "type": "integer",
-          "format": "int64"
-        },
-            "user": {
-              "$ref": "#/definitions/UserDetails"
-            }
-      },
-      "required": [
-        "task_id", "user", "due_date_time", "due_missed_count"
-      ]
-        }
-      }
-    },
-    "InvalidFilterValueResponse": {
-      "description": "value empty response",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
-          },
-          "http_status_code": {
-            "type": "integer"
-          },
-          "res_status": {
-            "type": "string",
-            "enum": [
-              "VALUE_SHOULD_NOT_BE_EMPTY"
-            ]
-          }
-        },
-        "required": [
-          "response",
-          "http_status_code",
-          "res_status"
-        ]
-      }
-    },
-    "TaskIsNotAssignedToUserResponse": {
-      "description": "given task is not assigned to user",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
-          },
-          "http_status_code": {
-            "type": "integer",
-            "example": 403
-          },
-          "res_status": {
-            "type": "string",
-            "enum": [
-              "TASK_IS_NOT_ASSIGNED_TO_TASK"
-            ]
-          }
-        },
-        "required": [
-          "response",
-          "http_status_code",
-          "res_status"
-        ]
-      }
-    },
-    "UserNotBelongsToResponse": {
-      "description": "user not belongs to filter",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
-          },
-          "http_status_code": {
-            "type": "integer"
-          },
-          "res_status": {
-            "type": "string",
-            "enum": [
-              "USER_NOT_HAVE_PERMISSIONS_TO_UPDATE"
-            ]
-          }
-        },
-        "required": [
-          "response",
-          "http_status_code",
-          "res_status"
-        ]
-      }
-    },
-    "FieldNotBelongsToTaskTemplate": {
-      "description": "fields not belongs to task template",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
-          },
-          "http_status_code": {
-            "type": "integer"
-          },
-          "res_status": {
-            "type": "string",
-            "enum": [
-              "FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE",
-              "USER_NOT_HAVE_PERMISSIONS_TO_FIELDS"
-            ]
-          }
-        },
-        "required": [
-          "response",
-          "http_status_code",
-          "res_status"
-        ]
-      }
-    },
-    "DeleteFailedResponse": {
-      "description": "deleting filter is failed",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
-          },
-          "http_status_code": {
-            "type": "integer"
-          },
-          "res_status": {
-            "type": "string",
-            "enum": [
-              "USER_NOT_HAVE_PERMISSIONS_TO_DELETE"
-            ]
-          }
-        },
-        "required": [
-          "response",
-          "http_status_code",
-          "res_status"
-        ]
-      }
-    },
-    "FieldNotExistResponse": {
-      "description": "deleting filter is failed",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
-          },
-          "http_status_code": {
-            "type": "integer"
-          },
-          "res_status": {
-            "type": "string",
-            "enum": [
-              "INVALID_FILTER_ID"
-            ]
-          }
-        },
-        "required": [
-          "response",
-          "http_status_code",
-          "res_status"
-        ]
-      }
-    },
-    "FieldAndUserForbiddenResponse": {
-      "description": "fields not belongs to task template",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
-          },
-          "http_status_code": {
-            "type": "integer"
-          },
-          "res_status": {
-            "type": "string",
-            "enum": [
-              "FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE",
-              "USER_NOT_HAVE_PERMISSIONS_TO_FIELDS",
-              "USER_NOT_HAVE_PERMISSIONS_TO_UPDATE"
-            ]
-          }
-        },
-        "required": [
-          "response",
-          "http_status_code",
-          "res_status"
-        ]
-      }
-    },
-    "CreateTransitionChecklistSuccessResponse": {
-      "description": "transition checklist created successfully"
-    },
-    "CreateTransitionChecklistFailureResponse": {
-      "description": "transition checklist creation failed"
-    }
-  },
-  "paths": {
-    "/perform_user_action_on_task/v1/": {
-      "post": {
-        "operationId": "perform_task_action",
-        "summary": "User Act On Specific Task in a Column",
-        "description": "User Submitting Response by acting on a task",
-        "parameters": [{
-          "$ref": "#/parameters/PerformActionBodyParameter"
-        }],
-        "security": [{
-          "oauth": [
-            "write"
-          ]
-        }],
-        "responses": {
-          "200": {
-            "description": "successful",
-            "schema": {
-              "$ref": "#/definitions/TaskActionResponseBody"
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "schema": {
-              "$ref": "#/definitions/AccessUnauthorized"
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "$ref": "#/definitions/InvalidTaskActionDetails"
-            }
-          }
-        }
-      }
-    },
-    "/task_templates/v1/": {
-      "get": {
-        "operationId": "get_task_templates",
-        "summary": "Get list of task templates along with group of fields",
-        "description": "Get list of task templates along with group of fields",
-        "security": [{
-          "oauth": [
-            "read"
-          ]
-        }],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "$ref": "#/responses/GetTaskTemplateResponse"
-          },
-          "404": {
-            "$ref": "#/responses/TaskTemplatesDoesNotExistsResponse"
-          }
-        }
-      }
-    },
-    "/transition_template/{transition_template_id}/v1/": {
-      "get": {
-        "operationId": "get_transition_template",
-        "summary": "Get transition template",
-        "description": "Get transition template based on the action and stage",
-        "security": [{
-          "oauth": [
-            "read"
-          ]
-        }],
-        "parameters": [{
-          "$ref": "#/parameters/TransitionTemplateIdParameter"
-        }],
-        "responses": {
-          "200": {
-            "$ref": "#/responses/GetTransitionTemplateResponse"
-          },
-          "404": {
-            "$ref": "#/responses/GetTransitionTemplateFailureResponse"
-          }
-        }
-      }
-    },
-    "/task/v1/": {
-      "post": {
-        "operationId": "create_task",
-        "summary": "create a task",
-        "description": "create a task with given details",
-        "security": [{
-          "oauth": [
-            "write"
-          ]
-        }],
-        "parameters": [{
-          "$ref": "#/parameters/CreateTaskBodyParameter"
-        }],
-        "responses": {
-          "201": {
-            "$ref": "#/responses/CreateTaskSuccessResponse"
-          },
-          "400": {
-            "$ref": "#/responses/CreateTaskFailureResponse"
-          }
-        }
-      },
-      "put": {
-        "operationId": "update_task",
-        "summary": "update a task",
-        "description": "update a task with given details",
-        "security": [{
-          "oauth": [
-            "write"
-          ]
-        }],
-        "parameters": [{
-          "$ref": "#/parameters/UpdateTaskRequestBodyParameter"
-        }],
-        "responses": {
-          "201": {
-            "$ref": "#/responses/UpdateTaskSuccessResponse"
-          },
-          "400": {
-            "$ref": "#/responses/UpdateTaskFailureResponse"
-          }
-        }
-      },
-      "get": {
-        "operationId": "get_task",
-        "summary": "get task",
-        "description": "get task details",
-        "security": [{
-          "oauth": [
-            "write",
-            "read"
-          ]
-        }],
-        "parameters": [{
-          "name": "task_id",
-          "in": "query",
-          "description": "task id to get task details",
-          "type": "integer"
-        }],
-        "responses": {
-          "200": {
-            "$ref": "#/responses/GetTaskSuccessResponse"
-          },
-          "404": {
-            "$ref": "#/responses/GetTaskFailureResponse"
-          }
-        }
-      }
-    },
-    "/field_search/v1/": {
-      "get": {
-        "operationId": "get_searchable_values",
-        "summary": "get searchable values based on search type",
-        "description": "get searchable values based on search type given a query",
-        "security": [{
-          "oauth": [
-            "read"
-          ]
-        }],
-        "parameters": [{
-            "$ref": "#/parameters/SearchableTypeParameter"
-          },
-          {
-            "$ref": "#/parameters/LimitParameter"
-          },
-          {
-            "$ref": "#/parameters/OffsetParameter"
-          },
-          {
-            "$ref": "#/parameters/SearchableQueryParameter"
-          }
-        ],
-        "responses": {
-          "200": {
-            "$ref": "#/responses/SearchableValuesResponse"
-          },
-          "400": {
-            "$ref": "#/responses/SearchableValuesFailureResponse"
-          }
-        }
-      }
-    },
-    "/tasks/search/v1/": {
-      "post": {
-        "operationId": "get_tasks_to_search",
-        "summary": "get tasks to relevant to search",
-        "description": "view the tasks that satisfies the search",
-        "security": [{
-          "oauth": [
-            "read"
-          ]
-        }],
-        "parameters": [{
-            "$ref": "#/parameters/LimitParameter"
-          },
-          {
-            "$ref": "#/parameters/OffsetParameter"
-          },
-          {
-            "$ref": "#/parameters/SearchableQueryParameter"
-          },
-          {
-            "$ref": "#/parameters/AdvancedSearchableBody"
-          }
-        ],
-        "responses": {
-          "200": {
-            "$ref": "#/responses/AllTasksOverviewResponse"
-          },
-          "400": {
-            "$ref": "#/responses/AllTasksOverviewFailureResponse"
-          }
-        }
-      }
-    },
-    "/tasks_overview/v1/": {
-      "get": {
-        "operationId": "get_all_tasks_overview",
-        "summary": "get all tasks overview",
-        "description": "get all tasks overview in home page",
-        "security": [{
-          "oauth": [
-            "read"
-          ]
-        }],
-        "parameters": [{
-            "$ref": "#/parameters/LimitParameter"
-          },
-          {
-            "$ref": "#/parameters/OffsetParameter"
-          }
-        ],
-        "responses": {
-          "200": {
-            "$ref": "#/responses/AllTasksOverviewResponse"
-          },
-          "400": {
-            "$ref": "#/responses/AllTasksOverviewFailureResponse"
-          }
-        }
-      }
-    },
-    "/task/save_and_act/v1/": {
-      "post": {
-        "operationId": "save_and_act_on_a_task",
-        "summary": "save and act on a task",
-        "description": "update and act on a task with given details",
-        "security": [{
-          "oauth": [
-            "write"
-          ]
-        }],
-        "parameters": [{
-          "$ref": "#/parameters/SaveAndActOnATaskBodyParameter"
-        }],
-        "responses": {
-          "201": {
-            "$ref": "#/responses/SaveAndActOnATaskTaskSuccessResponse"
-          },
-          "400": {
-            "$ref": "#/responses/SaveAndActOnATaskTaskFailureResponse"
-          }
-        }
-      }
-    },
-    "/task_templates_fields/v1/": {
-      "get": {
-        "operationId": "get_task_templates_fields_details",
-        "summary": "Get Task Templates Fields Details",
-        "description": "Get Task Templates Fileds Details",
-        "security": [{
-          "oauth": [
-            "read"
-          ]
-        }],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "$ref": "#/responses/GetTaskTemplateFieldsResponse"
-          }
-        }
-      }
-    },
-    "/filter/select/v1/": {
-      "put": {
-        "operationId": "select_filter",
-        "summary": "update filter status",
-        "description": "Update filter selected status",
-        "security": [{
-          "oauth": [
-            "write"
-          ]
-        }],
-        "parameters": [{
-          "$ref": "#/parameters/SelectFilterRequestBody"
-        }],
-        "responses": {
-          "200": {
-            "description": "successful",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "filter_id": {
-                  "type": "integer"
-                },
-                "action": {
-                  "type": "string",
-                  "enum": [
-                    "ENABLED",
-                    "DISABLED"
-                  ]
-                }
-              },
-              "required": [
-                "filter_id"
-              ]
-            }
-          },
-          "403": {
-            "description": "forbidden",
-            "schema": {
-              "$ref": "#/definitions/InvalidFilterIdResponse"
-            }
-          },
-          "404": {
-            "description": "Not found",
-            "schema": {
-              "$ref": "#/definitions/UserDoNotHavePermissionToFilter"
-            }
-          }
-        }
-      }
-    },
-    "/filters/v1/": {
-      "post": {
-        "operationId": "create_filter",
-        "summary": "create filter",
-        "description": "create filter with given details",
-        "security": [{
-          "oauth": [
-            "write"
-          ]
-        }],
-        "parameters": [{
-          "$ref": "#/parameters/CreateFilterBodyParameter"
-        }],
-        "responses": {
-          "201": {
-            "$ref": "#/responses/FilterDetailsResponse"
-          },
-          "404": {
-            "$ref": "#/responses/FilterFailedResponse"
-          },
-          "417": {
-            "$ref": "#/responses/InvalidFilterValueResponse"
-          },
-          "403": {
-            "$ref": "#/responses/FieldNotBelongsToTaskTemplate"
-          }
-        }
-      },
-      "get": {
-        "summary": "get filters",
-        "operationId": "get_filters",
-        "security": [{
-          "oauth": [
-            "read"
-          ]
-        }],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Field details",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/FilterDetailsCompleteDetails"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/filters/{filter_id}/v1/": {
-      "put": {
-        "operationId": "update_filter",
-        "summary": "update filter",
-        "description": "update filter with given details",
-        "security": [{
-          "oauth": [
-            "write"
-          ]
-        }],
-        "parameters": [{
-            "$ref": "#/parameters/UpdateFilterBodyParameter"
-          },
-          {
-            "$ref": "#/parameters/UpdateFilterPathParameter"
-          }
-        ],
-        "responses": {
-          "201": {
-            "$ref": "#/responses/FilterDetailsResponse"
-          },
-          "404": {
-            "$ref": "#/responses/FilterFailedResponse"
-          },
-          "417": {
-            "$ref": "#/responses/InvalidFilterValueResponse"
-          },
-          "403": {
-            "$ref": "#/responses/FieldAndUserForbiddenResponse"
-          }
-        }
-      },
-      "delete": {
-        "summary": "delete filter",
-        "operationId": "delete_filter",
-        "security": [{
-          "oauth": [
-            "write",
-            "delete"
-          ]
-        }],
-        "parameters": [{
-          "$ref": "#/parameters/DeleteFilterPathParameter"
-        }],
-        "responses": {
-          "200": {
-            "description": "filter deleted"
-          },
-          "404": {
-            "$ref": "#/responses/FieldNotExistResponse"
-          },
-          "403": {
-            "$ref": "#/responses/DeleteFailedResponse"
-          }
-        }
-      }
-    },
-    "/task/{task_id}/action/{action_id}/stage_assignees/v1/": {
-      "get": {
-        "operationId": "get_next_stages_random_assignees_of_a_task",
-        "summary": "get next stages random assignees for a task when an action is performed",
-        "description": "get next stages random assignees for a task when an action is performed",
-        "security": [{
-          "oauth": [
-            "read"
-          ]
-        }],
-        "parameters": [{
-            "$ref": "#/parameters/TaskIDParameter"
-          },
-          {
-            "$ref": "#/parameters/ActionIDParameter"
-          }
-        ],
-        "responses": {
-          "200": {
-            "$ref": "#/responses/TaskStageAssigneesResponse"
-          },
-          "400": {
-            "$ref": "#/responses/TaskStageAssigneesFailureResponse"
-          },
-           "404": {
-            "$ref": "#/responses/TaskStageAssigneesNotFoundResponse"
-          }
-        }
-      }
-    },
-    "/task/{task_id}/stage_assignees/update/v1/": {
-      "put": {
-        "operationId": "update_assignees_of_diff_stages_for_a_task",
-        "summary": "update assignees of different stages for a given task",
-        "description": "update assignees of different stages for a given task",
-        "security": [{
-          "oauth": [
-            "read"
-          ]
-        }],
-        "parameters": [{
-            "$ref": "#/parameters/TaskIDParameter"
-          },
-          {
-            "$ref": "#/parameters/TaskStageAssigneesParameter"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "$ref": "#/responses/UpdateTaskStageAssigneesFailureResponse"
-          },
-          "404": {
-            "$ref": "#/responses/UpdateTaskStageAssigneesNotFoundResponse"
-          }
-        }
-      }
-    },
-    "/transition_checklist/v1/": {
-      "post": {
-        "operationId": "create_transistion_checklist",
-        "summary": "create transition checklist",
-        "description": "create transition checklist",
-        "security": [{
-          "oauth": [
-            "read"
-          ]
-        }],
-        "parameters": [{
-          "$ref": "#/parameters/CreateTransitionChecklistRequestBodyParameter"
-        }],
-        "responses": {
-          "201": {
-            "$ref": "#/responses/CreateTransitionChecklistSuccessResponse"
-          },
-          "404": {
-            "$ref": "#/responses/CreateTransitionChecklistFailureResponse"
-          }
-        }
-      }
-    },
-    "/task/{task_id}/reasons/v1/": {
-      "get": {
-        "operationId": "get_reasons_for_missing_task_due_date_time",
-        "summary": "get reasons for missing task due date time",
-        "description": "get reasons for missing task due date time",
-        "security": [
-          {
-            "oauth": [
-              "read"
-            ]
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/parameters/TaskIDParameter"
-          }
-        ],
-        "responses": {
-          "200": {
-            "$ref": "#/responses/GetTaskReasonsResponse"
-          },
-          "404": {
-            "$ref": "#/responses/GetTaskFailureResponse"
-          },
-          "403": {
-            "$ref": "#/responses/TaskIsNotAssignedToUserResponse"
-          }
-        }
-      },
-      "post": {
-         "operationId": "add_reason_for_missing_due_date_time",
-        "summary": "add reason for missing due date time",
-        "description": "add reason for missing due date time",
-        "security": [
-          {
-            "oauth": [
-              "read"
-            ]
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/parameters/TaskIDParameter"
-          },
-          {
-            "$ref": "#/parameters/AddTaskReasonsParameter"
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "404": {
-            "$ref": "#/responses/GetTaskFailureResponse"
-          },
-          "400": {
-            "$ref": "#/responses/InvalidTaskReasonsResponse"
-          },
-          "403": {
-            "$ref": "#/responses/TaskIsNotAssignedToUserResponse"
-          }
-        }
-      }
-    }
-  }
+						]
+					}
+				},
+				"required": [
+					"response",
+					"http_status_code",
+					"res_status"
+				]
+			}
+		},
+		"TaskStageAssigneesNotFoundResponse": {
+			"description": "Task Stage Assignees Not Found Response",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"response": {
+						"type": "string"
+					},
+					"http_status_code": {
+						"type": "integer",
+						"enum": [
+							404
+						]
+					},
+					"res_status": {
+						"type": "string",
+						"enum": [
+							"INVALID_TASK_ID",
+							"INVALID_ACTION_ID"
+						]
+					}
+				},
+				"required": [
+					"response",
+					"http_status_code",
+					"res_status"
+				]
+			}
+		},
+		"TaskStageAssigneesFailureResponse": {
+			"description": "Task Stage Assignees Failure Response",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"response": {
+						"type": "string"
+					},
+					"http_status_code": {
+						"type": "integer",
+						"enum": [
+							400
+						]
+					},
+					"res_status": {
+						"type": "string",
+						"enum": [
+							"INVALID_KEY_ERROR",
+							"INVALID_CUSTOM_LOGIC",
+							"PATH_NOT_FOUND",
+							"METHOD_NOT_FOUND"
+						]
+					}
+				},
+				"required": [
+					"response",
+					"http_status_code",
+					"res_status"
+				]
+			}
+		},
+		"AllTasksOverviewResponse": {
+			"description": "Ok",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"tasks": {
+						"type": "array",
+						"items": {
+							"$ref": "#/definitions/TaskOverviewWithStageAndActions",
+							"required": [
+								"tasks"
+							]
+						}
+					},
+					"total_tasks": {
+						"type": "integer"
+					}
+				},
+				"required": [
+					"tasks",
+					"total_tasks"
+				]
+			}
+		},
+		"SearchableValuesResponse": {
+			"description": "OK",
+			"schema": {
+				"type": "array",
+				"items": {
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "string"
+						},
+						"name": {
+							"type": "string"
+						}
+					},
+					"required": [
+						"id",
+						"name"
+					]
+				}
+			}
+		},
+		"AllTasksOverviewFailureResponse": {
+			"description": "All Tasks Overview Failure Response",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"response": {
+						"type": "string"
+					},
+					"http_status_code": {
+						"type": "integer",
+						"enum": [
+							400
+						]
+					},
+					"res_status": {
+						"type": "string",
+						"enum": [
+							"LIMIT_SHOULD_BE_GREATER_THAN_ZERO",
+							"OFFSET_SHOULD_BE_GREATER_THAN_ZERO",
+							"EMPTY_STAGE_IDS_ARE_INVALID"
+						]
+					}
+				},
+				"required": [
+					"response",
+					"http_status_code",
+					"res_status"
+				]
+			}
+		},
+		"SearchableValuesFailureResponse": {
+			"description": "Searchable Values Failure Response",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"response": {
+						"type": "string"
+					},
+					"http_status_code": {
+						"type": "integer",
+						"enum": [
+							400
+						]
+					},
+					"res_status": {
+						"type": "string",
+						"enum": [
+							"LIMIT_SHOULD_BE_GREATER_THAN_ZERO",
+							"OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE"
+						]
+					}
+				},
+				"required": [
+					"response",
+					"http_status_code",
+					"res_status"
+				]
+			}
+		},
+		"SaveAndActOnATaskTaskSuccessResponse": {
+			"description": "task saved and action performed successfully"
+		},
+		"UpdateTaskSuccessResponse": {
+			"description": "task updated successfully"
+		},
+		"CreateTaskFailureResponse": {
+			"description": "can not create a task",
+			"schema": {
+				"$ref": "#/definitions/CreateTaskFailureResponseBody"
+			}
+		},
+		"SaveAndActOnATaskTaskFailureResponse": {
+			"description": "can not update and act on a task",
+			"schema": {
+				"$ref": "#/definitions/SaveAndActOnATaskTaskFailureResponseBody"
+			}
+		},
+		"UpdateTaskFailureResponse": {
+			"description": "can not update task",
+			"schema": {
+				"$ref": "#/definitions/UpdateTaskFailureResponseBody"
+			}
+		},
+		"GetTaskTemplateFieldsResponse": {
+			"description": "Get Task Template Fileds Response",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"task_template_fields_details": {
+						"type": "array",
+						"items": {
+							"$ref": "#/definitions/TaskTemplateFieldsResponse"
+						}
+					},
+					"operators": {
+						"type": "array",
+						"items": {
+							"type": "string",
+							"enum": [
+								"GTE",
+								"LTE",
+								"GT",
+								"LE",
+								"NE",
+								"EQ",
+								"CONTAINS"
+							]
+						}
+					}
+				},
+				"required": [
+					"task_template_fields_details",
+					"operators"
+				]
+			}
+		},
+		"FilterDetailsResponse": {
+			"description": "filter details",
+			"schema": {
+				"$ref": "#/definitions/FilterDetailsCompleteDetails"
+			}
+		},
+		"FilterFailedResponse": {
+			"description": "creating filter is failed",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"response": {
+						"type": "string"
+					},
+					"http_status_code": {
+						"type": "integer"
+					},
+					"res_status": {
+						"type": "string",
+						"enum": [
+							"TASK_TEMPLATES_DOES_NOT_EXISTS",
+							"FIELDS_DOES_NOT_EXIST"
+						]
+					}
+				},
+				"required": [
+					"response",
+					"http_status_code",
+					"res_status"
+				]
+			}
+		},
+		"GetTaskReasonsResponse": {
+			"description": "Ok",
+			"schema": {
+				"type": "array",
+				"items": {
+					"type": "object",
+					"properties": {
+						"task_id": {
+							"type": "integer",
+							"format": "int64"
+						},
+						"due_date_time": {
+							"type": "string",
+							"format": "date-time"
+						},
+						"due_missed_count": {
+							"type": "integer",
+							"format": "int64"
+						},
+						"user": {
+							"$ref": "#/definitions/UserDetails"
+						}
+					},
+					"required": [
+						"task_id", "user", "due_date_time", "due_missed_count"
+					]
+				}
+			}
+		},
+		"InvalidFilterValueResponse": {
+			"description": "value empty response",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"response": {
+						"type": "string"
+					},
+					"http_status_code": {
+						"type": "integer"
+					},
+					"res_status": {
+						"type": "string",
+						"enum": [
+							"VALUE_SHOULD_NOT_BE_EMPTY"
+						]
+					}
+				},
+				"required": [
+					"response",
+					"http_status_code",
+					"res_status"
+				]
+			}
+		},
+		"TaskIsNotAssignedToUserResponse": {
+			"description": "given task is not assigned to user",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"response": {
+						"type": "string"
+					},
+					"http_status_code": {
+						"type": "integer",
+						"example": 403
+					},
+					"res_status": {
+						"type": "string",
+						"enum": [
+							"TASK_IS_NOT_ASSIGNED_TO_TASK"
+						]
+					}
+				},
+				"required": [
+					"response",
+					"http_status_code",
+					"res_status"
+				]
+			}
+		},
+		"UserNotBelongsToResponse": {
+			"description": "user not belongs to filter",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"response": {
+						"type": "string"
+					},
+					"http_status_code": {
+						"type": "integer"
+					},
+					"res_status": {
+						"type": "string",
+						"enum": [
+							"USER_NOT_HAVE_PERMISSIONS_TO_UPDATE"
+						]
+					}
+				},
+				"required": [
+					"response",
+					"http_status_code",
+					"res_status"
+				]
+			}
+		},
+		"FieldNotBelongsToTaskTemplate": {
+			"description": "fields not belongs to task template",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"response": {
+						"type": "string"
+					},
+					"http_status_code": {
+						"type": "integer"
+					},
+					"res_status": {
+						"type": "string",
+						"enum": [
+							"FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE",
+							"USER_NOT_HAVE_PERMISSIONS_TO_FIELDS"
+						]
+					}
+				},
+				"required": [
+					"response",
+					"http_status_code",
+					"res_status"
+				]
+			}
+		},
+		"DeleteFailedResponse": {
+			"description": "deleting filter is failed",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"response": {
+						"type": "string"
+					},
+					"http_status_code": {
+						"type": "integer"
+					},
+					"res_status": {
+						"type": "string",
+						"enum": [
+							"USER_NOT_HAVE_PERMISSIONS_TO_DELETE"
+						]
+					}
+				},
+				"required": [
+					"response",
+					"http_status_code",
+					"res_status"
+				]
+			}
+		},
+		"FieldNotExistResponse": {
+			"description": "deleting filter is failed",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"response": {
+						"type": "string"
+					},
+					"http_status_code": {
+						"type": "integer"
+					},
+					"res_status": {
+						"type": "string",
+						"enum": [
+							"INVALID_FILTER_ID"
+						]
+					}
+				},
+				"required": [
+					"response",
+					"http_status_code",
+					"res_status"
+				]
+			}
+		},
+		"FieldAndUserForbiddenResponse": {
+			"description": "fields not belongs to task template",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"response": {
+						"type": "string"
+					},
+					"http_status_code": {
+						"type": "integer"
+					},
+					"res_status": {
+						"type": "string",
+						"enum": [
+							"FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE",
+							"USER_NOT_HAVE_PERMISSIONS_TO_FIELDS",
+							"USER_NOT_HAVE_PERMISSIONS_TO_UPDATE"
+						]
+					}
+				},
+				"required": [
+					"response",
+					"http_status_code",
+					"res_status"
+				]
+			}
+		},
+		"CreateTransitionChecklistSuccessResponse": {
+			"description": "transition checklist created successfully"
+		},
+		"CreateTransitionChecklistFailureResponse": {
+			"description": "transition checklist creation failed"
+		}
+	},
+	"paths": {
+		"/perform_user_action_on_task/v1/": {
+			"post": {
+				"operationId": "perform_task_action",
+				"summary": "User Act On Specific Task in a Column",
+				"description": "User Submitting Response by acting on a task",
+				"parameters": [{
+					"$ref": "#/parameters/PerformActionBodyParameter"
+				}],
+				"security": [{
+					"oauth": [
+						"write"
+					]
+				}],
+				"responses": {
+					"200": {
+						"description": "successful",
+						"schema": {
+							"$ref": "#/definitions/TaskActionResponseBody"
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"schema": {
+							"$ref": "#/definitions/AccessUnauthorized"
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"schema": {
+							"$ref": "#/definitions/InvalidTaskActionDetails"
+						}
+					}
+				}
+			}
+		},
+		"/task_templates/v1/": {
+			"get": {
+				"operationId": "get_task_templates",
+				"summary": "Get list of task templates along with group of fields",
+				"description": "Get list of task templates along with group of fields",
+				"security": [{
+					"oauth": [
+						"read"
+					]
+				}],
+				"parameters": [],
+				"responses": {
+					"200": {
+						"$ref": "#/responses/GetTaskTemplateResponse"
+					},
+					"404": {
+						"$ref": "#/responses/TaskTemplatesDoesNotExistsResponse"
+					}
+				}
+			}
+		},
+		"/transition_template/{transition_template_id}/v1/": {
+			"get": {
+				"operationId": "get_transition_template",
+				"summary": "Get transition template",
+				"description": "Get transition template based on the action and stage",
+				"security": [{
+					"oauth": [
+						"read"
+					]
+				}],
+				"parameters": [{
+					"$ref": "#/parameters/TransitionTemplateIdParameter"
+				}],
+				"responses": {
+					"200": {
+						"$ref": "#/responses/GetTransitionTemplateResponse"
+					},
+					"404": {
+						"$ref": "#/responses/GetTransitionTemplateFailureResponse"
+					}
+				}
+			}
+		},
+		"/task/v1/": {
+			"post": {
+				"operationId": "create_task",
+				"summary": "create a task",
+				"description": "create a task with given details",
+				"security": [{
+					"oauth": [
+						"write"
+					]
+				}],
+				"parameters": [{
+					"$ref": "#/parameters/CreateTaskBodyParameter"
+				}],
+				"responses": {
+					"201": {
+						"$ref": "#/responses/CreateTaskSuccessResponse"
+					},
+					"400": {
+						"$ref": "#/responses/CreateTaskFailureResponse"
+					}
+				}
+			},
+			"put": {
+				"operationId": "update_task",
+				"summary": "update a task",
+				"description": "update a task with given details",
+				"security": [{
+					"oauth": [
+						"write"
+					]
+				}],
+				"parameters": [{
+					"$ref": "#/parameters/UpdateTaskRequestBodyParameter"
+				}],
+				"responses": {
+					"201": {
+						"$ref": "#/responses/UpdateTaskSuccessResponse"
+					},
+					"400": {
+						"$ref": "#/responses/UpdateTaskFailureResponse"
+					}
+				}
+			},
+			"get": {
+				"operationId": "get_task",
+				"summary": "get task",
+				"description": "get task details",
+				"security": [{
+					"oauth": [
+						"write",
+						"read"
+					]
+				}],
+				"parameters": [{
+					"name": "task_id",
+					"in": "query",
+					"description": "task id to get task details",
+					"type": "integer"
+				}],
+				"responses": {
+					"200": {
+						"$ref": "#/responses/GetTaskSuccessResponse"
+					},
+					"404": {
+						"$ref": "#/responses/GetTaskFailureResponse"
+					}
+				}
+			}
+		},
+		"/field_search/v1/": {
+			"get": {
+				"operationId": "get_searchable_values",
+				"summary": "get searchable values based on search type",
+				"description": "get searchable values based on search type given a query",
+				"security": [{
+					"oauth": [
+						"read"
+					]
+				}],
+				"parameters": [{
+						"$ref": "#/parameters/SearchableTypeParameter"
+					},
+					{
+						"$ref": "#/parameters/LimitParameter"
+					},
+					{
+						"$ref": "#/parameters/OffsetParameter"
+					},
+					{
+						"$ref": "#/parameters/SearchableQueryParameter"
+					}
+				],
+				"responses": {
+					"200": {
+						"$ref": "#/responses/SearchableValuesResponse"
+					},
+					"400": {
+						"$ref": "#/responses/SearchableValuesFailureResponse"
+					}
+				}
+			}
+		},
+		"/tasks/search/v1/": {
+			"post": {
+				"operationId": "get_tasks_to_search",
+				"summary": "get tasks to relevant to search",
+				"description": "view the tasks that satisfies the search",
+				"security": [{
+					"oauth": [
+						"read"
+					]
+				}],
+				"parameters": [{
+						"$ref": "#/parameters/LimitParameter"
+					},
+					{
+						"$ref": "#/parameters/OffsetParameter"
+					},
+					{
+						"$ref": "#/parameters/SearchableQueryParameter"
+					},
+					{
+						"$ref": "#/parameters/AdvancedSearchableBody"
+					}
+				],
+				"responses": {
+					"200": {
+						"$ref": "#/responses/AllTasksOverviewResponse"
+					},
+					"400": {
+						"$ref": "#/responses/AllTasksOverviewFailureResponse"
+					}
+				}
+			}
+		},
+		"/tasks_overview/v1/": {
+			"get": {
+				"operationId": "get_all_tasks_overview",
+				"summary": "get all tasks overview",
+				"description": "get all tasks overview in home page",
+				"security": [{
+					"oauth": [
+						"read"
+					]
+				}],
+				"parameters": [{
+						"$ref": "#/parameters/LimitParameter"
+					},
+					{
+						"$ref": "#/parameters/OffsetParameter"
+					}
+				],
+				"responses": {
+					"200": {
+						"$ref": "#/responses/AllTasksOverviewResponse"
+					},
+					"400": {
+						"$ref": "#/responses/AllTasksOverviewFailureResponse"
+					}
+				}
+			}
+		},
+		"/task/save_and_act/v1/": {
+			"post": {
+				"operationId": "save_and_act_on_a_task",
+				"summary": "save and act on a task",
+				"description": "update and act on a task with given details",
+				"security": [{
+					"oauth": [
+						"write"
+					]
+				}],
+				"parameters": [{
+					"$ref": "#/parameters/SaveAndActOnATaskBodyParameter"
+				}],
+				"responses": {
+					"201": {
+						"$ref": "#/responses/SaveAndActOnATaskTaskSuccessResponse"
+					},
+					"400": {
+						"$ref": "#/responses/SaveAndActOnATaskTaskFailureResponse"
+					}
+				}
+			}
+		},
+		"/task_templates_fields/v1/": {
+			"get": {
+				"operationId": "get_task_templates_fields_details",
+				"summary": "Get Task Templates Fields Details",
+				"description": "Get Task Templates Fileds Details",
+				"security": [{
+					"oauth": [
+						"read"
+					]
+				}],
+				"parameters": [],
+				"responses": {
+					"200": {
+						"$ref": "#/responses/GetTaskTemplateFieldsResponse"
+					}
+				}
+			}
+		},
+		"/filter/select/v1/": {
+			"put": {
+				"operationId": "select_filter",
+				"summary": "update filter status",
+				"description": "Update filter selected status",
+				"security": [{
+					"oauth": [
+						"write"
+					]
+				}],
+				"parameters": [{
+					"$ref": "#/parameters/SelectFilterRequestBody"
+				}],
+				"responses": {
+					"200": {
+						"description": "successful",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"filter_id": {
+									"type": "integer"
+								},
+								"action": {
+									"type": "string",
+									"enum": [
+										"ENABLED",
+										"DISABLED"
+									]
+								}
+							},
+							"required": [
+								"filter_id"
+							]
+						}
+					},
+					"403": {
+						"description": "forbidden",
+						"schema": {
+							"$ref": "#/definitions/InvalidFilterIdResponse"
+						}
+					},
+					"404": {
+						"description": "Not found",
+						"schema": {
+							"$ref": "#/definitions/UserDoNotHavePermissionToFilter"
+						}
+					}
+				}
+			}
+		},
+		"/filters/v1/": {
+			"post": {
+				"operationId": "create_filter",
+				"summary": "create filter",
+				"description": "create filter with given details",
+				"security": [{
+					"oauth": [
+						"write"
+					]
+				}],
+				"parameters": [{
+					"$ref": "#/parameters/CreateFilterBodyParameter"
+				}],
+				"responses": {
+					"201": {
+						"$ref": "#/responses/FilterDetailsResponse"
+					},
+					"404": {
+						"$ref": "#/responses/FilterFailedResponse"
+					},
+					"417": {
+						"$ref": "#/responses/InvalidFilterValueResponse"
+					},
+					"403": {
+						"$ref": "#/responses/FieldNotBelongsToTaskTemplate"
+					}
+				}
+			},
+			"get": {
+				"summary": "get filters",
+				"operationId": "get_filters",
+				"security": [{
+					"oauth": [
+						"read"
+					]
+				}],
+				"parameters": [],
+				"responses": {
+					"200": {
+						"description": "Field details",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/FilterDetailsCompleteDetails"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/filters/{filter_id}/v1/": {
+			"put": {
+				"operationId": "update_filter",
+				"summary": "update filter",
+				"description": "update filter with given details",
+				"security": [{
+					"oauth": [
+						"write"
+					]
+				}],
+				"parameters": [{
+						"$ref": "#/parameters/UpdateFilterBodyParameter"
+					},
+					{
+						"$ref": "#/parameters/UpdateFilterPathParameter"
+					}
+				],
+				"responses": {
+					"201": {
+						"$ref": "#/responses/FilterDetailsResponse"
+					},
+					"404": {
+						"$ref": "#/responses/FilterFailedResponse"
+					},
+					"417": {
+						"$ref": "#/responses/InvalidFilterValueResponse"
+					},
+					"403": {
+						"$ref": "#/responses/FieldAndUserForbiddenResponse"
+					}
+				}
+			},
+			"delete": {
+				"summary": "delete filter",
+				"operationId": "delete_filter",
+				"security": [{
+					"oauth": [
+						"write",
+						"delete"
+					]
+				}],
+				"parameters": [{
+					"$ref": "#/parameters/DeleteFilterPathParameter"
+				}],
+				"responses": {
+					"200": {
+						"description": "filter deleted"
+					},
+					"404": {
+						"$ref": "#/responses/FieldNotExistResponse"
+					},
+					"403": {
+						"$ref": "#/responses/DeleteFailedResponse"
+					}
+				}
+			}
+		},
+		"/task/{task_id}/action/{action_id}/stage_assignees/v1/": {
+			"get": {
+				"operationId": "get_next_stages_random_assignees_of_a_task",
+				"summary": "get next stages random assignees for a task when an action is performed",
+				"description": "get next stages random assignees for a task when an action is performed",
+				"security": [{
+					"oauth": [
+						"read"
+					]
+				}],
+				"parameters": [{
+						"$ref": "#/parameters/TaskIDParameter"
+					},
+					{
+						"$ref": "#/parameters/ActionIDParameter"
+					}
+				],
+				"responses": {
+					"200": {
+						"$ref": "#/responses/TaskStageAssigneesResponse"
+					},
+					"400": {
+						"$ref": "#/responses/TaskStageAssigneesFailureResponse"
+					},
+					"404": {
+						"$ref": "#/responses/TaskStageAssigneesNotFoundResponse"
+					}
+				}
+			}
+		},
+		"/task/{task_id}/stage_assignees/update/v1/": {
+			"put": {
+				"operationId": "update_assignees_of_diff_stages_for_a_task",
+				"summary": "update assignees of different stages for a given task",
+				"description": "update assignees of different stages for a given task",
+				"security": [{
+					"oauth": [
+						"read"
+					]
+				}],
+				"parameters": [{
+						"$ref": "#/parameters/TaskIDParameter"
+					},
+					{
+						"$ref": "#/parameters/TaskStageAssigneesParameter"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK"
+					},
+					"400": {
+						"$ref": "#/responses/UpdateTaskStageAssigneesFailureResponse"
+					},
+					"404": {
+						"$ref": "#/responses/UpdateTaskStageAssigneesNotFoundResponse"
+					}
+				}
+			}
+		},
+		"/transition_checklist/v1/": {
+			"post": {
+				"operationId": "create_transistion_checklist",
+				"summary": "create transition checklist",
+				"description": "create transition checklist",
+				"security": [{
+					"oauth": [
+						"read"
+					]
+				}],
+				"parameters": [{
+					"$ref": "#/parameters/CreateTransitionChecklistRequestBodyParameter"
+				}],
+				"responses": {
+					"201": {
+						"$ref": "#/responses/CreateTransitionChecklistSuccessResponse"
+					},
+					"404": {
+						"$ref": "#/responses/CreateTransitionChecklistFailureResponse"
+					}
+				}
+			}
+		},
+		"/task/{task_id}/reasons/v1/": {
+			"get": {
+				"operationId": "get_reasons_for_missing_task_due_date_time",
+				"summary": "get reasons for missing task due date time",
+				"description": "get reasons for missing task due date time",
+				"security": [{
+					"oauth": [
+						"read"
+					]
+				}],
+				"parameters": [{
+					"$ref": "#/parameters/TaskIDParameter"
+				}],
+				"responses": {
+					"200": {
+						"$ref": "#/responses/GetTaskReasonsResponse"
+					},
+					"404": {
+						"$ref": "#/responses/GetTaskFailureResponse"
+					},
+					"403": {
+						"$ref": "#/responses/TaskIsNotAssignedToUserResponse"
+					}
+				}
+			},
+			"post": {
+				"operationId": "add_reason_for_missing_due_date_time",
+				"summary": "add reason for missing due date time",
+				"description": "add reason for missing due date time",
+				"security": [{
+					"oauth": [
+						"read"
+					]
+				}],
+				"parameters": [{
+						"$ref": "#/parameters/TaskIDParameter"
+					},
+					{
+						"$ref": "#/parameters/AddTaskReasonsParameter"
+					}
+				],
+				"responses": {
+					"201": {
+						"description": "Created"
+					},
+					"404": {
+						"$ref": "#/responses/GetTaskFailureResponse"
+					},
+					"400": {
+						"$ref": "#/responses/InvalidTaskReasonsResponse"
+					},
+					"403": {
+						"$ref": "#/responses/TaskIsNotAssignedToUserResponse"
+					}
+				}
+			}
+		},
+		"/task/{task_id}/stage_log/v1/": {
+			"get": {
+				"operationId": "get_stages_history_to_task",
+				"summary": "get task stages information",
+				"description": "get task stages history",
+				"security": [{
+					"oauth": [
+						"read"
+					]
+				}],
+				"parameters": [{
+					"$ref": "#/parameters/TaskIDParameter"
+				}],
+				"responses": {
+					"200": {
+						"$ref": "#/responses/GetTaskStagesResponse"
+					},
+					"404": {
+						"$ref": "#/responses/GetTaskFailureResponse"
+					}
+				}
+			}
+		}
+	}
 }
