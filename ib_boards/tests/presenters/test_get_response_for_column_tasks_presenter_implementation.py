@@ -57,7 +57,12 @@ class TestGetColumnDetails:
     @pytest.fixture()
     def get_task_fields_dtos(self):
         TaskFieldsDTOFactory.reset_sequence()
-        return TaskFieldsDTOFactory.create_batch(size=3)
+        tasks = TaskFieldsDTOFactory.create_batch(size=3, task_id="task_id_1", stage_id="stage_id_1")
+        tasks.append(TaskFieldsDTOFactory(task_id="task_id_2", stage_id="stage_id_2", key="key_0"))
+        tasks.append(TaskFieldsDTOFactory(task_id="task_id_2", stage_id="stage_id_2", key="key_4"))
+        tasks.append(TaskFieldsDTOFactory(task_id="task_id_2", stage_id="stage_id_2", key="key_1"))
+        tasks.append(TaskFieldsDTOFactory(task_id="task_id_0", stage_id="stage_id_0"))
+        return tasks
 
     def test_get_response_for_column_details_with_duplicate_tasks_in_same_column(
             self, get_task_fields_dtos_with_duplicates,

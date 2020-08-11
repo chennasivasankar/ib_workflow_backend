@@ -182,11 +182,12 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
             self, task_fields_dtos: List[FieldDTO],
             task_actions_dtos: List[ActionDTO], task_ids: List[int],
             task_color_map):
+        sorted_fields = sorted(task_fields_dtos, key=lambda i: i.key)
         from collections import defaultdict
 
         tasks_fields_map = defaultdict(lambda: [])
 
-        for task_fields_dto in task_fields_dtos:
+        for task_fields_dto in sorted_fields:
             tasks_fields_map[task_fields_dto.task_id].append(
                 task_fields_dto
             )

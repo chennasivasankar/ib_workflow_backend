@@ -6,7 +6,7 @@ from ib_tasks.exceptions.fields_custom_exceptions import LimitShouldBeGreaterTha
     OffsetShouldBeGreaterThanZeroException
 from ib_tasks.exceptions.stage_custom_exceptions import StageIdsListEmptyException
 from ib_tasks.interactors.presenter_interfaces.get_all_tasks_overview_for_user_presenter_interface import \
-     GetFilteredTasksOverviewForUserPresenterInterface
+    GetFilteredTasksOverviewForUserPresenterInterface
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import ElasticSearchStorageInterface, \
     ApplyFilterDTO
@@ -95,9 +95,9 @@ class GetTasksToRelevantSearchQuery:
         )
         all_tasks_overview_details_dto = task_details_interactor. \
             get_filtered_tasks_overview_for_user(
-                user_id=user_id, task_ids=query_tasks_dto.task_ids,
-                view_type=view_type
-            )
+            user_id=user_id, task_ids=query_tasks_dto.task_ids,
+            view_type=view_type
+        )
         return all_tasks_overview_details_dto, query_tasks_dto.total_tasks_count
 
     @staticmethod

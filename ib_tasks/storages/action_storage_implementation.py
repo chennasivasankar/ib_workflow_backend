@@ -246,6 +246,5 @@ class ActionsStorageImplementation(ActionStorageInterface):
             )
         return action_dtos
 
-
     def validate_action(self, action_id: int) -> bool:
         return StageAction.objects.filter(id=action_id).exists()
