@@ -9,6 +9,7 @@ class ColumnParametersDTO:
     board_id: str
     user_id: str
     view_type: ViewType
+    search_query: Optional[str]
 
 
 @dataclass
@@ -95,6 +96,7 @@ class ColumnTasksParametersDTO:
     offset: int
     limit: int
     view_type: ViewType
+    search_query: Optional[str]
 
 
 @dataclass

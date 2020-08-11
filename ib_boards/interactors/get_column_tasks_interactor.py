@@ -64,7 +64,8 @@ class GetColumnTasksInteractor:
             limit=column_tasks_parameters.limit,
             offset=column_tasks_parameters.offset,
             user_id=user_id,
-            view_type=view_type
+            view_type=view_type,
+            search_query=column_tasks_parameters.search_query
         )
         return self._get_column_tasks_complete_details(column_tasks)
 

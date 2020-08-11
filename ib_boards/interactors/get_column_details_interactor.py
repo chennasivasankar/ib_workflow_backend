@@ -58,7 +58,8 @@ class GetColumnDetailsInteractor:
             limit=limit,
             offset=offset,
             user_id=user_id,
-            view_type=view_type
+            view_type=view_type,
+            search_query=columns_parameters.search_query
         )
         task_field_dtos, task_action_dtos, task_stage_color_dtos, task_ids_stages_dtos = \
             self._get_column_tasks_complete_details(column_tasks_parameters)

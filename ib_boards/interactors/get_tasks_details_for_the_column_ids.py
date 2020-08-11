@@ -4,7 +4,7 @@ Author: Pavankumar Pamuru
 
 """
 from dataclasses import dataclass
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 from ib_boards.constants.enum import ViewType
 from ib_boards.interactors.dtos import ColumnTaskIdsDTO, FieldDTO, ActionDTO, \
@@ -21,6 +21,7 @@ class ColumnsTasksParametersDTO:
     limit: int
     offset: int
     view_type: ViewType
+    search_query: Optional[str]
 
 
 class GetColumnsTasksDetailsInteractor:
@@ -36,6 +37,7 @@ class GetColumnsTasksDetailsInteractor:
         user_id = column_tasks_parameters.user_id
         column_ids = column_tasks_parameters.column_ids
         view_type = column_tasks_parameters.view_type
+        search_query = column_tasks_parameters.search_query
         self._validate_offset_value(offset=offset)
         self._validate_limit_value(limit=limit)
         column_stage_dtos = self.storage.get_columns_stage_ids(
@@ -45,7 +47,8 @@ class GetColumnsTasksDetailsInteractor:
             column_stage_dtos=column_stage_dtos,
             limit=limit,
             offset=offset,
-            user_id=user_id
+            user_id=user_id,
+            search_query=search_query
         )
         task_field_dtos, task_action_dtos, task_stage_color_dtos = \
             self._get_tasks_complete_details(
@@ -94,7 +97,7 @@ class GetColumnsTasksDetailsInteractor:
     @staticmethod
     def _get_task_ids_for_given_stages(
             column_stage_dtos: List[ColumnStageIdsDTO],
-            limit: int, offset: int, user_id: str) -> List[ColumnTaskIdsDTO]:
+            limit: int, offset: int, user_id: str, search_query: str) -> List[ColumnTaskIdsDTO]:
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
@@ -104,7 +107,8 @@ class GetColumnsTasksDetailsInteractor:
                 stage_ids=column_stage_dto.stage_ids,
                 limit=limit,
                 offset=offset,
-                user_id=user_id
+                user_id=user_id,
+                search_query=search_query
             )
             for column_stage_dto in column_stage_dtos
         ]

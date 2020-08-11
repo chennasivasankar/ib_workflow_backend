@@ -16,6 +16,7 @@ from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
+from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
 
 
 class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
@@ -311,26 +312,31 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
 
     def filter_tasks_with_stage_ids(
             self, filter_dtos: List[ApplyFilterDTO],
-            offset: int, limit: int, stage_ids: List[str]) -> Tuple[List[TaskStageIdsDTO], int]:
-        query = None
-        for counter, item in enumerate(filter_dtos):
-            current_queue = Q('term', template_id__keyword=item.template_id) \
-                            & Q('term', fields__field_id__keyword=item.field_id) \
-                            & Q('term', fields__value__keyword=item.value) \
-                            & Q('terms', stages__stage_id=stage_ids)
-            if counter == 0:
-                query = current_queue
-            else:
-                query = query & current_queue
+            task_details_config: TaskDetailsConfigDTO) -> Tuple[List[TaskStageIdsDTO], int]:
+        from elasticsearch_dsl import connections
+        from django.conf import settings
+        connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
+                                      timeout=20)
+        stage_ids = task_details_config.stage_ids
+        search_query = task_details_config.search_query
+        search = self._get_search_task_objects(filter_dtos)
+        search = search.filter('terms', stages__stage_id=stage_ids)
 
-        search = Search(index=TASK_INDEX_NAME)
-        if query is None:
-            task_objects = search
-        else:
-            task_objects = search.filter(query)
-        total_tasks = task_objects.count()
+        if search_query:
+            search = search.query(
+                Q(
+                    "match",
+                    state_name={
+                        "query": search_query,
+                        "fuzziness": "2"
+                    }
+                )
+            )
+        limit = task_details_config.limit
+        offset = task_details_config.offset
+        total_tasks = search.count()
         task_stage_dtos_list = []
-        for task_object in task_objects[offset: offset + limit]:
+        for task_object in search[offset: offset + limit]:
             task_stage_dtos = self._get_task_stage_dtos(task_object, stage_ids)
             task_stage_dtos_list += task_stage_dtos
 

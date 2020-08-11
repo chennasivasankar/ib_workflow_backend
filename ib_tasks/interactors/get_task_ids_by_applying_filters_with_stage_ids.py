@@ -10,6 +10,7 @@ from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.filter_storage_interface import \
     FilterStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
+from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
 
 
 class GetTaskIdsBasedOnUserFiltersInColumns:
@@ -20,12 +21,13 @@ class GetTaskIdsBasedOnUserFiltersInColumns:
         self.filter_storage = filter_storage
 
     def get_task_ids_by_applying_filters(
-            self, user_id: str, limit: int, offset: int, stage_ids: List[str]) -> Tuple[List[TaskStageIdsDTO], int]:
+            self, task_details_config: TaskDetailsConfigDTO) -> Tuple[List[TaskStageIdsDTO], int]:
+        user_id = task_details_config.user_id
         filter_dtos = self.filter_storage.get_enabled_filters_dto_to_user(
             user_id=user_id
         )
         filtered_task_ids, total_tasks = self.elasticsearch_storage.filter_tasks_with_stage_ids(
-            filter_dtos=filter_dtos, offset=offset, limit=limit, stage_ids=stage_ids
+            filter_dtos=filter_dtos, task_details_config=task_details_config
         )
         return filtered_task_ids, total_tasks
 

@@ -81,8 +81,7 @@ class GetTaskIdsInteractor:
         )
         # TODO: need to verify total tasks count
         task_stage_dtos, total_count = filtered_task_ids_interactor.get_task_ids_by_applying_filters(
-            user_id=task_details_config.user_id, limit=task_details_config.limit,
-            offset=task_details_config.offset, stage_ids=task_details_config.stage_ids
+            task_details_config=task_details_config
         )
 
         return TaskIdsDTO(

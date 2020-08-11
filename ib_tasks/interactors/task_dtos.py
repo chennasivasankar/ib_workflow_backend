@@ -1,6 +1,6 @@
 import datetime
 from dataclasses import dataclass
-from typing import Union, List, Any
+from typing import Union, List, Any, Optional
 
 from ib_tasks.constants.enum import Priority
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
@@ -83,6 +83,7 @@ class TaskDetailsConfigDTO:
     offset: int
     limit: int
     user_id: str
+    search_query: Optional[str]
 
 
 @dataclass
