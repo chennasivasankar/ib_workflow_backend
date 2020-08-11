@@ -1658,7 +1658,7 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "INVALID_REASON",
+              "INVALID_REASON_ID",
               "INVALID_DUE_DATE_TIME"
             ]
           }
