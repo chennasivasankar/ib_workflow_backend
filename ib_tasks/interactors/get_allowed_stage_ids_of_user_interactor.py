@@ -23,7 +23,7 @@ class GetAllowedStageIdsOfUserInteractor:
 
     @staticmethod
     def _check_for_roles_match(stage_roles_dto: StageRolesDTO,
-                               user_role_ids: List[str]):
+                               user_role_ids: List[str]) -> bool:
 
         from ib_tasks.constants.constants import ALL_ROLES_ID
         if ALL_ROLES_ID in stage_roles_dto.role_ids:
