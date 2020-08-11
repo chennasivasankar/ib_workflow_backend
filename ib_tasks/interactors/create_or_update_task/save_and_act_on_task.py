@@ -74,16 +74,14 @@ class SaveAndActOnATaskInteractor:
     ):
         try:
             return self._prepare_save_and_act_response(presenter, task_dto)
-        except InvalidTaskException as err:
-            return presenter.raise_invalid_task_id(err)
         except InvalidActionException as err:
             return presenter.raise_invalid_action_id(err)
+        except InvalidTaskException as err:
+            return presenter.raise_invalid_task_id(err)
         except InvalidDueTimeFormat as err:
             return presenter.raise_invalid_due_time_format(err)
         except StartDateIsAheadOfDueDate as err:
             return presenter.raise_start_date_is_ahead_of_due_date(err)
-        except DueDateIsBehindStartDate as err:
-            return presenter.raise_due_date_is_behind_start_date(err)
         except DueTimeHasExpiredForToday as err:
             return presenter.raise_due_time_has_expired_for_today(err)
         except InvalidGoFIds as err:

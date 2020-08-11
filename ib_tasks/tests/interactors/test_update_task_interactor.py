@@ -32,6 +32,7 @@ class TestUpdateTaskInteractor:
         UpdateTaskDTOFactory.reset_sequence()
         GoFIdWithSameGoFOrderDTOFactory.reset_sequence()
         FieldIdWithTaskGoFIdDTOFactory.reset_sequence()
+        TaskGoFDetailsDTOFactory.reset_sequence()
 
     @pytest.fixture
     def task_storage_mock(self):
