@@ -76,11 +76,6 @@ class StageStorageInterface(abc.ABC):
             List[int]:
         pass
 
-    @abc.abstractmethod
-    def update_task_stage_assignees(
-            self, task_id_with_stage_assignee_dtos_for_updation: List[
-                TaskIdWithStageAssigneeDTO]):
-        pass
 
     @abc.abstractmethod
     def create_task_stage_assignees(

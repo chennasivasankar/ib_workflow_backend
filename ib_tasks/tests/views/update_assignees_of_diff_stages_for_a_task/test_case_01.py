@@ -38,11 +38,9 @@ class TestCase01UpdateAssigneesOfDiffStagesForATaskAPITestCase(TestUtils):
         StagePermittedRolesFactory(stage=stage_objs[0])
         StagePermittedRolesFactory(stage=stage_objs[1])
         task_stage_obj_1 = CurrentTaskStageModelFactory(task=task_obj,
-                                                        stage=stage_objs[0],
-                                                        assignee_id=user_id)
+                                                        stage=stage_objs[0])
         task_stage_obj_1 = CurrentTaskStageModelFactory(task=task_obj,
-                                                        stage=stage_objs[1],
-                                                        assignee_id=user_id)
+                                                        stage=stage_objs[1])
         return user_id
 
     @pytest.mark.django_db
