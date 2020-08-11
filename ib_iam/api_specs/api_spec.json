@@ -792,7 +792,7 @@
                 "enum": [
                   "INVALID_EMAIL",
                   "USER_ALREADY_EXIST_WITH_THIS_EMAIL",
-                  "NAME_MINIMUM_LENGTH_SHOULD_BE",
+                  "INVALID_NAME_LENGTH",
                   "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
                 ]
               }
@@ -818,7 +818,7 @@
                 "type": "string",
                 "enum": [
                   "INVALID_EMAIL",
-                  "NAME_MINIMUM_LENGTH_SHOULD_BE",
+                  "INVALID_NAME_LENGTH",
                   "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
                 ]
               }
@@ -899,7 +899,7 @@
                   "INVALID_EMAIL",
                   "EMPTY_NAME_IS_INVALID",
                   "EMAIL_ALREADY_IN_USE",
-                  "NAME_MINIMUM_LENGTH_SHOULD_BE",
+                  "INVALID_NAME_LENGTH",
                   "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
                 ]
               }

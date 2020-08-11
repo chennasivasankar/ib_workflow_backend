@@ -31,11 +31,11 @@ class EditUserPresenterImplementation(EditUserPresenterInterface,
 
     def raise_name_minimum_length_should_be_equal_or_more_than(self):
         from ib_iam.constants.exception_messages \
-            import NAME_MINIMUM_LENGTH_SHOULD_BE
+            import INVALID_NAME_LENGTH
         from ib_iam.constants.config import MINIMUM_USER_NAME_LENGTH
-        response = NAME_MINIMUM_LENGTH_SHOULD_BE[0].format(
+        response = INVALID_NAME_LENGTH[0].format(
             minimum_name_length=MINIMUM_USER_NAME_LENGTH)
-        res_status = NAME_MINIMUM_LENGTH_SHOULD_BE[1]
+        res_status = INVALID_NAME_LENGTH[1]
         response_dict = {
             "response": response,
             "http_status_code": StatusCode.BAD_REQUEST.value,

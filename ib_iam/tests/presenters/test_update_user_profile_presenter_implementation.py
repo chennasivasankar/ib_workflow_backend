@@ -17,13 +17,13 @@ class TestUpdateUserProfilePresenterImplementation:
 
     def test_whether_it_returns_minimum_name_length_exception_response(self):
         from ib_iam.constants.exception_messages import \
-            NAME_MINIMUM_LENGTH_SHOULD_BE
+            INVALID_NAME_LENGTH
         from ib_iam.constants.enums import StatusCode
         json_presenter = UpdateUserProfilePresenterImplementation()
         from ib_iam.constants.config import MINIMUM_USER_NAME_LENGTH
-        expected_response = NAME_MINIMUM_LENGTH_SHOULD_BE[0].format(
+        expected_response = INVALID_NAME_LENGTH[0].format(
             minimum_name_length=MINIMUM_USER_NAME_LENGTH)
-        expected_res_status = NAME_MINIMUM_LENGTH_SHOULD_BE[1]
+        expected_res_status = INVALID_NAME_LENGTH[1]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
 
         result = json_presenter.raise_minimum_name_length_exception_for_update_user_profile()
