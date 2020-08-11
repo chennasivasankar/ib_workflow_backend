@@ -97,6 +97,13 @@ class TestGetTaskPresenterImplementation:
                 db_stage_id=2,
                 color="color2",
                 actions_dtos=[stages_action_dtos[2], stages_action_dtos[3]]
+            ),
+            StageAndActionsDetailsDTO(
+                stage_id="stage2",
+                name="name3",
+                db_stage_id=3,
+                color="color3",
+                actions_dtos=[]
             )
         ]
         return stages_and_actions_details_dtos
@@ -118,6 +125,7 @@ class TestGetTaskPresenterImplementation:
         stage_assignee_dtos = [
             StageAssigneeDTOFactory(
                 assignee_id="123e4567-e89b-12d3-a456-426614174001"),
+            StageAssigneeDTOFactory(assignee_id=None),
             StageAssigneeDTOFactory(assignee_id=None)
         ]
         return stage_assignee_dtos
@@ -136,7 +144,12 @@ class TestGetTaskPresenterImplementation:
             StageAssigneeDetailsDTOFactory(
                 task_stage_id=stage_assignee_dtos[1].task_stage_id,
                 stage_id=stage_assignee_dtos[1].stage_id,
-                assignee_details_dto=None)
+                assignee_details_dto=None),
+            StageAssigneeDetailsDTOFactory(
+                task_stage_id=stage_assignee_dtos[2].task_stage_id,
+                stage_id=stage_assignee_dtos[2].stage_id,
+                assignee_details_dto=None),
+
         ]
         return stage_assignee_details_dtos
 
