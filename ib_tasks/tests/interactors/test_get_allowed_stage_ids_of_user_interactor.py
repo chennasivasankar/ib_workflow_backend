@@ -22,9 +22,9 @@ class TestGetAllowedStageIdsOfUserInteractor:
         stages = StageRolesDTOFactory.create_batch(2)
         storage_mock.get_stages_roles.return_value = stages
         interactor = GetAllowedStageIdsOfUserInteractor(storage=storage_mock)
-        path = 'ib_tasks.adapters.roles_service_adapter.get_roles_service_adapter'
+        path = "ib_tasks.adapters.roles_service.RolesService.get_user_role_ids"
         mock_obj = mocker.patch(path)
-        mock_obj.roles_service.get_user_role_ids.return_value = ['ROLE_1']
+        mock_obj.return_value = ['ROLE_1']
         # Act
         result = interactor.get_allowed_stage_ids_of_user(user_id=user_id)
         # Assert
@@ -40,7 +40,7 @@ class TestGetAllowedStageIdsOfUserInteractor:
         stages = StageRolesDTOFactory.create_batch(2)
         storage_mock.get_stages_roles.return_value = stages
         interactor = GetAllowedStageIdsOfUserInteractor(storage=storage_mock)
-        path = 'ib_tasks.adapters.roles_service_adapter.get_roles_service_adapter'
+        path = "ib_tasks.adapters.roles_service.RolesService.get_user_role_ids"
         mock_obj = mocker.patch(path)
         mock_obj.return_value = ['ROLE_2']
         # Act
@@ -58,7 +58,7 @@ class TestGetAllowedStageIdsOfUserInteractor:
         stages = StageRolesDTOFactory.create_batch(2)
         storage_mock.get_stages_roles.return_value = stages
         interactor = GetAllowedStageIdsOfUserInteractor(storage=storage_mock)
-        path = 'ib_tasks.adapters.roles_service_adapter.get_roles_service_adapter'
+        path = "ib_tasks.adapters.roles_service.RolesService.get_user_role_ids"
         mock_obj = mocker.patch(path)
         mock_obj.return_value = ['ROLE_4']
         # Act
@@ -73,10 +73,11 @@ class TestGetAllowedStageIdsOfUserInteractor:
         stage_ids = ['stage_1']
         from ib_tasks.tests.factories.storage_dtos import StageRolesDTOFactory
         StageRolesDTOFactory.reset_sequence(1)
-        stages = StageRolesDTOFactory.create_batch(role_ids=['ALL_ROLES'])
+        stages = StageRolesDTOFactory.create_batch(1, role_ids=['ALL_ROLES'])
+        stages.append(StageRolesDTOFactory())
         storage_mock.get_stages_roles.return_value = stages
         interactor = GetAllowedStageIdsOfUserInteractor(storage=storage_mock)
-        path = 'ib_tasks.adapters.roles_service_adapter.get_roles_service_adapter'
+        path = "ib_tasks.adapters.roles_service.RolesService.get_user_role_ids"
         mock_obj = mocker.patch(path)
         mock_obj.return_value = ['ROLE_4']
         # Act

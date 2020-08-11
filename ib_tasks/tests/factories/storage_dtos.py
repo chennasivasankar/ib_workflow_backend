@@ -380,7 +380,7 @@ class StageRolesDTOFactory(factory.Factory):
     class Meta:
         model = StageRolesDTO
     stage_id = factory.Sequence(lambda n: 'stage_{}'.format(n))
-    role_ids = factory.Sequence(lambda n: ['ROLE_'.format(n), 'ROLE_'.format(n+1)])
+    role_ids = factory.Sequence(lambda n: ['ROLE_{}'.format(n), 'ROLE_{}'.format(n+1)])
 
 
 class GoFToTaskTemplateDTOFactory(factory.Factory):

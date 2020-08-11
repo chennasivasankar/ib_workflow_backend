@@ -79,7 +79,7 @@ class StagesStorageImplementation(StageStorageInterface):
         stage_roles_dict = defaultdict(list)
         for stage_role_obj in stage_permitted_objs:
             stage_id = stage_role_obj['stage__stage_id']
-            role_id = stage_role_obj.role_id
+            role_id = stage_role_obj['role_id']
             stage_roles_dict[stage_id].append(role_id)
 
         return [
