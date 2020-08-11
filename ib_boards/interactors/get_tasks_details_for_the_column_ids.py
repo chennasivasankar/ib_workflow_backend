@@ -15,7 +15,7 @@ from ib_boards.interactors.storage_interfaces.storage_interface import \
 
 
 @dataclass
-class ColumnTasksParametersDTO:
+class ColumnsTasksParametersDTO:
     column_ids: List[str]
     user_id: str
     limit: int
@@ -23,13 +23,14 @@ class ColumnTasksParametersDTO:
     view_type: ViewType
 
 
-class GetColumnTasksInteractor:
+class GetColumnsTasksDetailsInteractor:
 
     def __init__(self, storage: StorageInterface):
         self.storage = storage
 
     def get_column_tasks_with_column_ids(
-            self, column_tasks_parameters: ColumnTasksParametersDTO):
+            self, column_tasks_parameters: ColumnsTasksParametersDTO) \
+            -> Tuple[List[FieldDTO], List[ActionDTO], List[TaskStageColorDTO], List[ColumnTaskIdsDTO]]:
         limit = column_tasks_parameters.limit
         offset = column_tasks_parameters.offset
         user_id = column_tasks_parameters.user_id
@@ -53,7 +54,7 @@ class GetColumnTasksInteractor:
                 view_type=view_type
             )
 
-        return task_field_dtos, task_action_dtos, task_ids_stages_dtos, task_stage_color_dtos
+        return task_field_dtos, task_action_dtos, task_stage_color_dtos, task_ids_stages_dtos
 
     @staticmethod
     def _validate_offset_value(offset: int):

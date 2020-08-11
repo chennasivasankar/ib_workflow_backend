@@ -324,4 +324,22 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             task_objects = search
         else:
             task_objects = search.filter(query)
-        return task_objects
+        total_tasks = task_objects.count()
+        task_stage_dtos_list = []
+        for task_object in task_objects[offset: offset + limit]:
+            task_stage_dtos = self._get_task_stage_dtos(task_object, stage_ids)
+            task_stage_dtos_list += task_stage_dtos
+
+        return task_objects, total_tasks
+
+    @staticmethod
+    def _get_task_stage_dtos(task_object: Task, stage_ids: List[str]) -> List[TaskStageIdsDTO]:
+
+        return [
+            TaskStageIdsDTO(
+                task_id=task_object.task_id,
+                stage_id=stage.stage_id
+            )
+            for stage in task_object.stages
+            if stage.stage_id in stage_ids
+        ]

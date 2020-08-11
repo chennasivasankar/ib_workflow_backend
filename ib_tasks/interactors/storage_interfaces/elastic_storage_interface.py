@@ -9,6 +9,7 @@ from typing import List, Tuple
 from typing import Union
 
 from ib_tasks.constants.enum import Operators
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
 
 
 @dataclass
@@ -87,5 +88,5 @@ class ElasticSearchStorageInterface(abc.ABC):
     @abc.abstractmethod
     def filter_tasks_with_stage_ids(
             self, filter_dtos: List[ApplyFilterDTO],
-            offset: int, limit: int, stage_ids: List[str]) -> Tuple[List[int], int]:
+            offset: int, limit: int, stage_ids: List[str]) -> Tuple[List[TaskStageIdsDTO], int]:
         pass

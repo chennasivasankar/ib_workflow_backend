@@ -4,6 +4,11 @@ Author: Pavankumar Pamuru
 
 """
 from typing import List
+
+from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
+    ElasticSearchStorageInterface
+from ib_tasks.interactors.storage_interfaces.filter_storage_interface import \
+    FilterStorageInterface
 from ib_tasks.models import Stage
 
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
@@ -24,7 +29,11 @@ class InvalidLimitValue(Exception):
 class GetTaskIdsInteractor:
     def __init__(
             self, stage_storage: StageStorageInterface,
-            task_storage: TaskStorageInterface):
+            task_storage: TaskStorageInterface,
+            filter_storage: FilterStorageInterface,
+            elasticsearch_storage: ElasticSearchStorageInterface):
+        self.elasticsearch_storage = elasticsearch_storage
+        self.filter_storage = filter_storage
         self.stage_storage = stage_storage
         self.task_storage = task_storage
 
@@ -64,12 +73,20 @@ class GetTaskIdsInteractor:
 
     def _get_task_ids_dto(self, task_details_config: TaskDetailsConfigDTO):
 
-        task_ids_dtos, total_count = self.task_storage.get_task_ids_for_the_stage_ids(
-            stage_ids=task_details_config.stage_ids,
-            task_ids=task_details_config.task_ids
+        from ib_tasks.interactors.get_task_ids_by_applying_filters_with_stage_ids import \
+            GetTaskIdsBasedOnUserFiltersInColumns
+        filtered_task_ids_interactor = GetTaskIdsBasedOnUserFiltersInColumns(
+            filter_storage=self.filter_storage,
+            elasticsearch_storage=self.elasticsearch_storage
         )
+
+        task_stage_dtos, total_count = filtered_task_ids_interactor.get_task_ids_by_applying_filters(
+            user_id=task_details_config.user_id, limit=task_details_config.limit,
+            offset=task_details_config.offset, stage_ids=task_details_config.stage_ids
+        )
+
         return TaskIdsDTO(
             unique_key=task_details_config.unique_key,
-            task_stage_ids=task_ids_dtos,
+            task_stage_ids=task_stage_dtos,
             total_tasks=total_count
         )

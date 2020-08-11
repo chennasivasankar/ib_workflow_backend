@@ -199,3 +199,13 @@ class FilterInteractor:
             filter_dto.filter_id
             for filter_dto in filters_dto
         ]
+
+    def _validate_filter_id(self, filter_id: int):
+        self.filter_storage.validate_filter_id(
+            filter_id=filter_id
+        )
+
+    def _validate_user_with_filter_id(self, user_id: str, filter_id: int):
+        self.filter_storage.validate_user_with_filter_id(
+            user_id=user_id, filter_id=filter_id
+        )
