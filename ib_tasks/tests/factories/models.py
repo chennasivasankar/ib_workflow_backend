@@ -8,15 +8,14 @@ from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     Task, TaskGoF,
-    TaskGoFField, TaskTemplateGlobalConstants, TaskStatusVariable, TaskStage,
-    Filter,
+    TaskGoFField, TaskTemplateGlobalConstants, TaskStatusVariable, Filter,
     FilterCondition, StagePermittedRoles)
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
 from ib_tasks.models.gof import GoF
 from ib_tasks.models.gof_role import GoFRole
-from ib_tasks.models.task_stage import TaskStage
+from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from ib_tasks.models.task_template_initial_stages import \
@@ -55,7 +54,7 @@ class StageModelFactory(factory.django.DjangoModelFactory):
 
 class TaskStageModelFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = TaskStage
+        model = CurrentTaskStage
 
     task = factory.SubFactory(TaskFactory)
     stage = factory.SubFactory(StageModelFactory)
@@ -249,7 +248,7 @@ class TaskTemplateInitialStageFactory(factory.django.DjangoModelFactory):
 
 class TaskStageFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = TaskStage
+        model = CurrentTaskStage
 
     task = factory.SubFactory(TaskFactory)
     stage = factory.SubFactory(StageModelFactory)

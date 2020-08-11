@@ -25,8 +25,8 @@ class TestUpdateTaskStages:
         storage.update_task_stages(task_id=task_id, stage_ids=['stage_id_0'])
 
         # Assert
-        from ib_tasks.models import TaskStage
-        task_stage_obj = TaskStage.objects.get(id=3)
-        assert TaskStage.objects.filter(id__in=[1, 2]).exists() == False
+        from ib_tasks.models import CurrentTaskStage
+        task_stage_obj = CurrentTaskStage.objects.get(id=3)
+        assert CurrentTaskStage.objects.filter(id__in=[1, 2]).exists() == False
         assert task_stage_obj.task_id == 1
         assert task_stage_obj.stage_id == 1
