@@ -15,6 +15,7 @@ from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ApplyFilterDTO
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
 
 
 class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
@@ -303,3 +304,24 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             for hit in search[offset: offset + limit]
         ]
         return city_dtos
+
+    def filter_tasks_with_stage_ids(
+            self, filter_dtos: List[ApplyFilterDTO],
+            offset: int, limit: int, stage_ids: List[str]) -> Tuple[List[TaskStageIdsDTO], int]:
+        query = None
+        for counter, item in enumerate(filter_dtos):
+            current_queue = Q('term', template_id__keyword=item.template_id) \
+                            & Q('term', fields__field_id__keyword=item.field_id) \
+                            & Q('term', fields__value__keyword=item.value) \
+                            & Q('terms', stages__stage_id=stage_ids)
+            if counter == 0:
+                query = current_queue
+            else:
+                query = query & current_queue
+
+        search = Search(index=TASK_INDEX_NAME)
+        if query is None:
+            task_objects = search
+        else:
+            task_objects = search.filter(query)
+        return task_objects

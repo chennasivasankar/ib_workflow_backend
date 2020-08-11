@@ -5,7 +5,7 @@ Author: Pavankumar Pamuru
 """
 import abc
 from dataclasses import dataclass
-from typing import List
+from typing import List, Tuple
 from typing import Union
 
 from ib_tasks.constants.enum import Operators
@@ -34,7 +34,7 @@ class ElasticSearchStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def filter_tasks(self, filter_dtos: List[ApplyFilterDTO], offset: int, limit: int) -> List[int]:
+    def filter_tasks(self, filter_dtos: List[ApplyFilterDTO], offset: int, limit: int) -> Tuple[List[int], int]:
         pass
 
     @abc.abstractmethod
@@ -82,4 +82,10 @@ class ElasticSearchStorageInterface(abc.ABC):
     def query_cities(
             self, offset: int, limit: int, search_query: str
     ) -> List[ElasticCityDTO]:
+        pass
+
+    @abc.abstractmethod
+    def filter_tasks_with_stage_ids(
+            self, filter_dtos: List[ApplyFilterDTO],
+            offset: int, limit: int, stage_ids: List[str]) -> Tuple[List[int], int]:
         pass

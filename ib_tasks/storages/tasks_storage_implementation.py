@@ -183,31 +183,18 @@ class TasksStorageImplementation(TaskStorageInterface):
         )
 
     def get_task_ids_for_the_stage_ids(
-            self, stage_ids: List[str],
-            offset: int, limit: int) -> Tuple[List[TaskStageIdsDTO], int]:
-        total_tasks = TaskStage.objects.aggregate(
-            tasks_count=Count(
-                'task',
-                filter=Q(stage__stage_id__in=stage_ids),
-                distinct=True
-            )
-        )['tasks_count']
+            self, stage_ids: List[str], task_ids: List[int]) -> List[TaskStageIdsDTO]:
         task_stage_ids = TaskStage.objects.filter(
-            stage__stage_id__in=stage_ids
+            stage__stage_id__in=stage_ids, task_id__in=task_ids
         ).values('task_id', 'stage__stage_id')
-        # dup_task_ids = []
-        # for task_stage_id in task_stage_ids:
-        #     if task_stage_id['task_id'] not in dup_task_ids:
-
-        # TODO:
         task_stage_dtos = [
             TaskStageIdsDTO(
                 task_id=task_stage_id['task_id'],
                 stage_id=task_stage_id['stage__stage_id']
             )
-            for task_stage_id in task_stage_ids[offset: offset + limit]
+            for task_stage_id in task_stage_ids
         ]
-        return task_stage_dtos, total_tasks
+        return task_stage_dtos
 
     @staticmethod
     def _get_task_tempalate_and_stage_ids(task_dtos, task_objs):

@@ -82,6 +82,7 @@ class TaskDetailsConfigDTO:
     stage_ids: List[str]
     offset: int
     limit: int
+    user_id: str
 
 
 @dataclass
