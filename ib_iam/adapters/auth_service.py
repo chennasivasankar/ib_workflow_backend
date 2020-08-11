@@ -120,3 +120,6 @@ class AuthService:
             expires_in_seconds=user_auth_tokens_dto.expires_in
         )
         return converted_user_tokens_dto
+
+    def update_user_password(self, user_id, current_and_new_password_dto):
+        pass
