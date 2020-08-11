@@ -308,6 +308,30 @@
           }
         ]
       }
+    },
+    "StopTimerBadRequestResponse": {
+      "description": "stop timer bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "TIMER_IS_ALREADY_STOPPED"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
     }
   },
   "paths": {
@@ -442,6 +466,9 @@
         "responses": {
           "200": {
             "$ref": "#/responses/TimerResponse"
+          },
+          "400": {
+            "$ref": "#/responses/StopTimerBadRequestResponse"
           }
         }
       }
