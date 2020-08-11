@@ -3,7 +3,7 @@
 
 RESPONSE_200_JSON = """
 {
-    "user_id": "51b76aa7-1ad4-4988-8948-34b0b39f36d7",
+    "user_id": "0cf8639e-35b2-442a-8e45-67d0fb45c7fc",
     "name": "string",
     "email": "string",
     "profile_pic_url": "string",
