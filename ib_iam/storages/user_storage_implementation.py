@@ -95,6 +95,10 @@ class UserStorageImplementation(UserStorageInterface):
             company_id=company_id, name=name
         )
 
+    def update_user_name(self, user_id: str, name: str):
+        from ib_iam.models import UserDetails
+        UserDetails.objects.filter(user_id=user_id).update(name=name)
+
     def get_users_who_are_not_admins(
             self, offset: int, limit: int,
             search_query_and_type_dto: SearchQueryAndTypeDTO) -> List[UserDTO]:
