@@ -3,7 +3,7 @@ from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
 from ib_tasks.models.gof import GoF
 from ib_tasks.models.gof_role import GoFRole
-from ib_tasks.models.task_stage import TaskStage
+from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from .action_permitted_roles import ActionPermittedRoles
 from .filter import Filter
@@ -30,7 +30,6 @@ from ib_tasks.models.gof_role import GoFRole
 from ib_tasks.models.global_constant import GlobalConstant
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from .task_status_variable import TaskStatusVariable
-from ib_tasks.models.task_stage import TaskStage
 from .filter import Filter
 from .filter_condition import FilterCondition
 from ib_tasks.models.task import ElasticSearchTask
@@ -51,8 +50,8 @@ __all__ = [
     "Field", "FieldRole", "GoF", "GoFRole",
     "Stage", "StageAction", "TaskTemplateStatusVariables",
     "TaskTemplate", "Task", "TaskGoF", "TaskGoFField", "TaskLog",
-    "GlobalConstant", "TaskStage", "TaskTemplateGoFs",
-    "GlobalConstant", "TaskStage",
+    "GlobalConstant", "CurrentTaskStage", "TaskTemplateGoFs",
+    "GlobalConstant", "CurrentTaskStage",
     "TaskTemplateGoFs",
     "TaskTemplateStatusVariable",
     "TaskTemplateStatusVariables",

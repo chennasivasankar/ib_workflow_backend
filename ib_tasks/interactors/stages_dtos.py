@@ -105,3 +105,9 @@ class UserDetailsDTO:
 class StageWithUserDetailsDTO(UserDetailsDTO):
     db_stage_id: int
     stage_display_name: str
+
+
+@dataclass()
+class StageRolesDTO:
+    stage_id: str
+    role_ids: List[str]

@@ -4,7 +4,7 @@ from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GoFToTaskTemplateDTO, GoFDTO, GoFRoleDTO
 from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
     GoFStorageInterface
-from ib_tasks.models import GoFRole, GoF, TaskTemplateGoFs
+from ib_tasks.models import GoFRole, GoF, TaskTemplateGoFs, FieldRole
 
 
 class GoFStorageImplementation(GoFStorageInterface):
@@ -75,14 +75,14 @@ class GoFStorageImplementation(GoFStorageInterface):
             task_template_gofs=task_template_gofs)
         return gof_to_task_template_dtos
 
-    def get_gof_ids_with_read_permission_for_user(self, roles: List[str]) -> \
-            List[str]:
+    def get_gof_ids_with_read_permission_for_user(
+            self, user_roles: List[str]) -> List[str]:
         from django.db.models import Q
         from ib_tasks.constants.enum import PermissionTypes
         from ib_tasks.constants.constants import ALL_ROLES_ID
         gof_ids_queryset = GoFRole.objects.filter(
             Q(permission_type=PermissionTypes.READ.value),
-            (Q(role__in=roles) | Q(role=ALL_ROLES_ID))
+            (Q(role__in=user_roles) | Q(role=ALL_ROLES_ID))
         ).values_list('gof_id', flat=True)
 
         gof_ids_list = list(gof_ids_queryset)
@@ -102,6 +102,37 @@ class GoFStorageImplementation(GoFStorageInterface):
         gofs = GoF.objects.filter(pk__in=gof_ids)
         gof_dtos = self._prepare_gof_dtos(gofs)
         return gof_dtos
+
+    def get_gof_ids_having_read_permission_for_user(
+            self, user_roles: List[str], gof_ids: List[str]) -> List[str]:
+        from django.db.models import Q
+        from ib_tasks.constants.enum import PermissionTypes
+        from ib_tasks.constants.constants import ALL_ROLES_ID
+
+        gof_ids_queryset = GoFRole.objects.filter(
+            (Q(permission_type=PermissionTypes.READ.value) |
+             Q(permission_type=PermissionTypes.WRITE.value)),
+            (Q(role__in=user_roles) | Q(role=ALL_ROLES_ID)),
+            Q(gof_id__in=gof_ids)
+        ).values_list('gof_id', flat=True)
+
+        gof_ids_list = list(gof_ids_queryset)
+        return gof_ids_list
+
+    def get_gof_ids_having_write_permission_for_user(
+            self, user_roles: List[str], gof_ids: List[str]) -> List[str]:
+        from django.db.models import Q
+        from ib_tasks.constants.enum import PermissionTypes
+        from ib_tasks.constants.constants import ALL_ROLES_ID
+
+        gof_ids_queryset = GoFRole.objects.filter(
+            Q(permission_type=PermissionTypes.WRITE.value),
+            (Q(role__in=user_roles) | Q(role=ALL_ROLES_ID)),
+            Q(gof_id__in=gof_ids)
+        ).values_list('gof_id', flat=True)
+
+        gof_ids_list = list(gof_ids_queryset)
+        return gof_ids_list
 
     @staticmethod
     def _prepare_gof_dtos(gofs: List[GoF]):

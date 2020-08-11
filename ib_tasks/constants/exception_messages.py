@@ -176,8 +176,8 @@ INVALID_GOFS_OF_TASK_TEMPLATE = (
     "invalid gofs {}  given to the task template {}",
     "INVALID_GOFS_OF_TASK_TEMPLATE")
 
-DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF = ("gof id {} has duplicate field ids {}",
-                                    "DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF")
+DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF = ("gof id {} has duplicate field ids {}",
+                                    "DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF")
 
 INVALID_FIELDS_OF_TASK_TEMPLATE = ("invalid fields {}  given to the gof {}",
                                    "INVALID_FIELDS_OF_TASK_TEMPLATE")
@@ -254,3 +254,27 @@ INVALID_DUE_DATE_TIME = ("given updated due datetime is invalid", "INVALID_DUE_D
 
 
 INVALID_REASON_ID = ("given reason id is not in options", "INVALID_REASON_ID")
+
+INVALID_DUE_TIME_FORMAT = (
+    "{} has invalid due time format, time format should be HH:MM:SS",
+    "INVALID_DUE_TIME_FORMAT"
+)
+START_DATE_IS_AHEAD_OF_DUE_DATE = (
+    "given start date {} is ahead of given due date {} ",
+    "START_DATE_IS_AHEAD_OF_DUE_DATE"
+)
+
+DUE_DATE_IS_BEHIND_START_DATE = (
+    "given due date {} is behind given start date {}",
+    "DUE_DATE_IS_BEHIND_START_DATE"
+)
+
+DUE_TIME_HAS_EXPIRED_FOR_TODAY = (
+    "give due time {} has expired for today date",
+    "DUE_TIME_HAS_EXPIRED_FOR_TODAY"
+)
+
+DUE_DATE_HAS_EXPIRED = (
+    "given due date {} has expired",
+    "DUE_DATE_HAS_EXPIRED"
+)
