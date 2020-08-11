@@ -76,6 +76,8 @@ class TaskStorageInterface(abc.ABC):
     ) -> List[TaskIdWithStageValueDTO]:
         pass
 
+
+
     @abc.abstractmethod
     def validate_task_related_stage_ids(self,
                                         task_dtos: List[GetTaskDetailsDTO]) \
@@ -112,4 +114,8 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def create_elastic_task(self, task_id: int, elastic_task_id: str):
+        pass
+
+    @abc.abstractmethod
+    def get_tasks_with_max_stage_value_dto(self)-> List[TaskIdWithStageValueDTO]:
         pass

@@ -13,7 +13,8 @@ from ib_tasks.interactors.stages_dtos import StageWithUserDetailsDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
-    StageIdWithRoleIdsDTO, StageDetailsDTO, TaskStageHavingAssigneeIdDTO
+    StageIdWithRoleIdsDTO, StageDetailsDTO, TaskStageHavingAssigneeIdDTO, \
+    StageValueWithTaskIdsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.exceptions.action_custom_exceptions \
@@ -82,6 +83,51 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
             _all_stages_assigned_with_random_user_details_dtos(
             db_stage_ids, stage_detail_dtos)
         return stages_having_user_details_dtos
+
+    def _get_user_having_less_tasks_for_each_stage(self):
+        task_id_with_max_stage_value_dtos = self.task_storage. \
+            get_tasks_with_max_stage_value_dto()
+        stage_values = [
+            task_id_with_max_stage_value_dto.stage_value
+            for task_id_with_max_stage_value_dto in
+            task_id_with_max_stage_value_dtos
+        ]
+        task_ids_group_by_stage_value_dtos = \
+            self._get_task_ids_group_by_stage_value_dtos(
+                stage_values, task_id_with_max_stage_value_dtos
+            )
+        task_id_with_stage_details_dtos = self. \
+            stage_storage. \
+            get_task_id_with_stage_details_dtos_based_on_stage_value(
+            stage_values=stage_values,
+            task_ids_group_by_stage_value_dtos=
+            task_ids_group_by_stage_value_dtos)
+
+        stage_ids_of_tasks = [task_id_with_stage_details_dto.db_stage_id for
+                              task_id_with_stage_details_dto in
+                              task_id_with_stage_details_dtos]
+        stage_ids_having_actions = self.action_storage.get_stage_ids_having_actions(
+            db_stage_ids=stage_ids_of_tasks)
+
+    @staticmethod
+    def _get_task_ids_group_by_stage_value_dtos(
+            stage_values: List[int], task_id_with_max_stage_value_dtos
+    ) -> List[StageValueWithTaskIdsDTO]:
+        task_ids_group_by_stage_value_dtos = []
+        for each_value in stage_values:
+
+            list_of_task_ids = []
+            for each_task_id_with_max_stage_value_dto in \
+                    task_id_with_max_stage_value_dtos:
+                if each_task_id_with_max_stage_value_dto.stage_value == \
+                        each_value:
+                    list_of_task_ids.append(
+                        each_task_id_with_max_stage_value_dto.task_id)
+            each_stage_value_with_task_ids_dto = StageValueWithTaskIdsDTO(
+                stage_value=each_value, task_ids=list_of_task_ids)
+            task_ids_group_by_stage_value_dtos.append(
+                each_stage_value_with_task_ids_dto)
+        return task_ids_group_by_stage_value_dtos
 
     def _all_stages_assigned_with_random_user_details_dtos(
             self, db_stage_ids: List[int],
