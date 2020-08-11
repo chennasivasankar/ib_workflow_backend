@@ -16,3 +16,8 @@ TIMER_IS_ALREADY_RUNNING = (
     "Timer is already running",
     "TIMER_IS_ALREADY_RUNNING"
 )
+
+TIMER_IS_ALREADY_STOPPED = (
+    "Timer is already in stop state",
+    "TIMER_IS_ALREADY_STOPPED"
+)
