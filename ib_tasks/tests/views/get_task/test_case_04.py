@@ -8,7 +8,7 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from ib_tasks.tests.factories.models import (
     TaskFactory,
     StageModelFactory,
-    TaskStageModelFactory,
+    CurrentTaskStageModelFactory,
     StageActionFactory,
 )
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
@@ -25,14 +25,14 @@ class TestCase04GetTaskAPITestCase(TestUtils):
     def reset_factories(self):
         TaskFactory.reset_sequence()
         StageModelFactory.reset_sequence()
-        TaskStageModelFactory.reset_sequence()
+        CurrentTaskStageModelFactory.reset_sequence()
         StageActionFactory.reset_sequence()
 
     @pytest.fixture
     def setup(self, reset_factories):
         task_obj = TaskFactory()
         stage_objs = StageModelFactory.create_batch(size=10)
-        TaskStageModelFactory.create_batch(
+        CurrentTaskStageModelFactory.create_batch(
             size=3, task=task_obj, stage=factory.Iterator(stage_objs)
         )
         StageActionFactory.create_batch(
