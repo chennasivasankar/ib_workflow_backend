@@ -9,7 +9,7 @@ from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     Task, TaskGoF,
     TaskGoFField, TaskTemplateGlobalConstants, TaskStatusVariable, Filter,
-    FilterCondition, StagePermittedRoles)
+    FilterCondition, StagePermittedRoles, TaskStageHistory)
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
@@ -270,3 +270,10 @@ class StagePermittedRolesFactory(factory.django.DjangoModelFactory):
         ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"]
     )
 
+class TaskStageHistoryModelFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskStageHistory
+
+    task = factory.SubFactory(TaskFactory)
+    stage = factory.SubFactory(StageModelFactory)
+    assignee_id =factory.sequence(lambda n: "123e4567-e89b-12d3-a456-42661417400{}".format(n))

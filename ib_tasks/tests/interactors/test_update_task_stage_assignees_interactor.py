@@ -48,6 +48,7 @@ class TestUpdateTaskStageAssigneesInteractor:
 
     @pytest.fixture
     def stage_role_dtos(self):
+        StageRoleDTOFactory.reset_sequence()
         stage_role_dtos = StageRoleDTOFactory.create_batch(2,
                                                            role_id=ALL_ROLES_ID)
         return stage_role_dtos
@@ -135,6 +136,7 @@ class TestUpdateTaskStageAssigneesInteractor:
         stage_storage_mock. \
             get_valid_db_stage_ids_in_given_db_stage_ids.return_value = [
             1, 2]
+        stage_storage_mock.create_task_stage_assignees.return_value = None
         stage_storage_mock. \
             get_stage_role_dtos_given_db_stage_ids.return_value = stage_role_dtos
         from ib_tasks.interactors.update_task_stage_assignees_interactor import \
