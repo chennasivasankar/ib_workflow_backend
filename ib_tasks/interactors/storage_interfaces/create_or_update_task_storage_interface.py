@@ -102,9 +102,17 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def create_initial_task_stage(self, task_id: int, template_id: str):
+    def create_initial_task_stage(self, task_id: int, initial_stage_id: str):
+        pass
+
+    @abc.abstractmethod
+    def get_initial_stage_for_task_template(self, template_id: str) -> str:
         pass
 
     @abc.abstractmethod
     def update_task_with_given_task_details(self, task_dto: UpdateTaskDTO):
+        pass
+
+    @abc.abstractmethod
+    def get_current_stage_ids_of_task(self, task_id: int) -> List[str]:
         pass

@@ -40,15 +40,26 @@ class CreateOrUpdateTaskStorageImplementation(
         task_obj.priority = task_dto.priority
         task_obj.save()
 
-    def create_initial_task_stage(self, task_id: int, template_id: str):
+    def create_initial_task_stage(self, task_id: int, initial_stage_id: str):
         from ib_tasks.models import TaskStage
-        from ib_tasks.models import TaskTemplateInitialStage
         TaskStage.objects.get_or_create(
             task_id=task_id,
-            stage=TaskTemplateInitialStage.objects.get(
-                task_template_id=template_id
-            ).stage
+            stage_id=initial_stage_id
         )
+
+    def get_initial_stage_for_task_template(self, template_id: str) -> str:
+        from ib_tasks.models import TaskTemplateInitialStage
+        stage_id = TaskTemplateInitialStage.objects.get(
+            task_template_id=template_id
+        ).stage_id
+        return stage_id
+
+    def get_current_stage_ids_of_task(self, task_id: int) -> List[str]:
+        from ib_tasks.models import TaskStage
+        stage_ids = TaskStage.objects.filter(
+            task_id=task_id
+        ).values_list('stage__stage_id', flat=True)
+        return list(stage_ids)
 
     def get_all_gof_ids_related_to_a_task_template(self,
                                                    task_template_id: str) -> \

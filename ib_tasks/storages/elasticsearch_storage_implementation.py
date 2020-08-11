@@ -354,3 +354,9 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             Stage(stage_id=stage_id)
             for stage_id in stages_ids
         ]
+
+    def validate_task_id_in_elasticsearch(self, task_id: int) -> bool:
+        from ib_tasks.models import ElasticSearchTask
+        return ElasticSearchTask.objects.filter(
+            task_id=task_id
+        ).exists()

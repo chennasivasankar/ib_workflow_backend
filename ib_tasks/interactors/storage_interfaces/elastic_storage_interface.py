@@ -90,3 +90,6 @@ class ElasticSearchStorageInterface(abc.ABC):
             self, filter_dtos: List[ApplyFilterDTO],
             offset: int, limit: int, stage_ids: List[str]) -> Tuple[List[TaskStageIdsDTO], int]:
         pass
+
+    def validate_task_id_in_elasticsearch(self, task_id: int) -> bool:
+        pass

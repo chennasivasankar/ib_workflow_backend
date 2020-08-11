@@ -181,6 +181,7 @@ class SaveAndActOnATaskInteractor:
             task_id=task_dto.task_id, task_storage=self.task_storage,
             action_storage=self.action_storage, action_id=task_dto.action_id,
             storage=self.storage, gof_storage=self.create_task_storage,
-            field_storage=self.field_storage, stage_storage=self.stage_storage
+            field_storage=self.field_storage, stage_storage=self.stage_storage,
+            elasticsearch_storage=self.elastic_storage
         )
         act_on_task_interactor.user_action_on_task()

@@ -226,12 +226,6 @@ class CreateTaskInteractor:
         created_task_id = \
             self.create_task_storage.create_task_with_given_task_details(
                 task_dto)
-        elastic_dto = self._get_elastic_task_dto(task_dto, created_task_id)
-        elastic_task_id = \
-            self.elastic_storage.create_task(elastic_task_dto=elastic_dto)
-        self.task_storage.create_elastic_task(
-            task_id=created_task_id, elastic_task_id=elastic_task_id
-        )
         task_gof_dtos = [
             TaskGoFWithTaskIdDTO(
                 task_id=created_task_id,
@@ -257,12 +251,16 @@ class CreateTaskInteractor:
             stage_storage=self.stage_storage,
             task_storage=self.task_storage,
             action_storage=self.action_storage,
+            elasticsearch_storage=self.elastic_storage
         )
         self.create_task_storage.set_status_variables_for_template_and_task(
             task_dto.task_template_id, created_task_id
         )
+        initial_stage_id = self.create_task_storage.get_initial_stage_for_task_template(
+            template_id=task_dto.task_template_id
+        )
         self.create_task_storage.create_initial_task_stage(
-            task_id=created_task_id, template_id=task_dto.task_template_id
+            task_id=created_task_id, initial_stage_id=initial_stage_id
         )
         act_on_task_interactor.user_action_on_task()
         set_stage_assignees_interactor = \
@@ -273,30 +271,8 @@ class CreateTaskInteractor:
             )
         set_stage_assignees_interactor \
             .get_random_assignees_of_next_stages_and_update_in_db(
-            task_id=created_task_id, action_id=task_dto.action_id
-        )
-
-    def _get_elastic_task_dto(self, task_dto: CreateTaskDTO, task_id: int):
-
-        fields_dto = self._get_fields_dto(task_dto)
-        elastic_task_dto = ElasticTaskDTO(
-            template_id=task_dto.task_template_id,
-            task_id=task_id,
-            title=task_dto.title,
-            fields=fields_dto
-        )
-        return elastic_task_dto
-
-    def _get_fields_dto(
-            self, task_dto: CreateTaskDTO) -> List[ElasticFieldDTO]:
-
-        fields_dto = []
-        gof_fields_dtos = task_dto.gof_fields_dtos
-        for gof_fields_dto in gof_fields_dtos:
-            for field_value_dto in gof_fields_dto.field_values_dtos:
-                fields_dto.append(self._get_elastic_field_dto(field_value_dto))
-
-        return fields_dto
+                task_id=created_task_id, action_id=task_dto.action_id
+            )
 
     @staticmethod
     def _get_elastic_field_dto(field_dto: FieldValuesDTO) -> ElasticFieldDTO:
