@@ -7,9 +7,10 @@ from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
     Priority, ActionTypes
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
-    Task, TaskGoF,
-    TaskGoFField, TaskTemplateGlobalConstants, TaskStatusVariable, Filter,
-    FilterCondition, StagePermittedRoles, ElasticSearchTask)
+    Task, TaskGoF, TaskGoFField, TaskTemplateGlobalConstants,
+    TaskStatusVariable, Filter, FilterCondition,
+    StagePermittedRoles, ElasticSearchTask)
+
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
@@ -26,6 +27,7 @@ class TaskFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Task
 
+    task_display_id = factory.sequence(lambda counter: "iB_{}".format(counter))
     template_id = factory.Sequence(
         lambda counter: "template_{}".format(counter))
     created_by = "123e4567-e89b-12d3-a456-426614174000"
@@ -55,6 +57,7 @@ class TaskModelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Task
 
+    task_display_id = factory.sequence(lambda counter: "iB_{}".format(counter))
     template_id = factory.Sequence(lambda n: "template_%d" % (n + 1))
     created_by = factory.Sequence(lambda n: (n + 1))
     title = factory.Sequence(lambda c: "title_{}".format(c))

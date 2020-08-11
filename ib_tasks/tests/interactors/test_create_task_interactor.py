@@ -13,9 +13,8 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFDetailsDTO, TaskGoFFieldDTO
 from ib_tasks.interactors.task_dtos import FieldValuesDTO, CreateTaskDTO
 from ib_tasks.tests.factories.interactor_dtos import GoFFieldsDTOFactory, \
-    FieldValuesDTOFactory
-from ib_tasks.tests.factories.storage_dtos import CreateTaskDTOFactory, \
-    TaskGoFDetailsDTOFactory
+    FieldValuesDTOFactory, CreateTaskDTOFactory
+from ib_tasks.tests.factories.storage_dtos import TaskGoFDetailsDTOFactory
 
 
 class TestCreateTaskInteractor:

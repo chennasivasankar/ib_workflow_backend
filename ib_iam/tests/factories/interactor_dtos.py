@@ -1,12 +1,12 @@
 import factory
 
-from ib_iam.interactors.DTOs.common_dtos import \
-    UserDetailsWithTeamRoleAndCompanyIdsDTO
+from ib_iam.interactors.dtos.dtos import \
+    UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO
 
 
 class UserDetailsWithTeamRoleAndCompanyIdsDTOFactory(factory.Factory):
     class Meta:
-        model = UserDetailsWithTeamRoleAndCompanyIdsDTO
+        model = UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO
 
     name = factory.Faker("name")
     email = factory.Faker("email")
