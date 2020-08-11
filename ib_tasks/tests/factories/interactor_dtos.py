@@ -1,25 +1,26 @@
-
-from typing import List
-from ib_tasks.interactors.get_tasks_to_relevant_search_query import SearchQueryDTO
+from datetime import datetime, timedelta
 
 import factory
 
 from ib_tasks.adapters.dtos import UserDTO
-from ib_tasks.constants.enum import Searchable
+from ib_tasks.constants.enum import Searchable, Priority
 from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
+from ib_tasks.interactors.get_tasks_to_relevant_search_query import \
+    SearchQueryDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
-from ib_tasks.interactors.stages_dtos import \
-    TaskTemplateStageActionDTO, StageActionDTO, StagesActionDTO, \
-    TaskIdWithStageAssigneeDTO, StageAssigneeDetailsDTO
-from ib_tasks.interactors.stages_dtos import UserStagesWithPaginationDTO
+from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
+    StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
+    StageAssigneeDetailsDTO, UserStagesWithPaginationDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
-    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, CreateTaskLogDTO
+    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, \
+    CreateTaskLogDTO, \
+    CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeIdDTO
 from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory
 
 
@@ -41,7 +42,8 @@ class StageActionDTOFactory(factory.Factory):
     roles = factory.Sequence(lambda n: [f'ROLE_{n + 1}', f'ROLE_{n + 2}'])
     button_text = factory.Sequence(lambda n: 'button_text_%d' % (n + 1))
     action_type = "action_type"
-    transition_template_id = factory.Sequence(lambda n: "template_%d" % (n + 1))
+    transition_template_id = factory.Sequence(
+        lambda n: "template_%d" % (n + 1))
     button_color = factory.Sequence(lambda n: 'button_color_%d' % (n + 1))
     function_path = "sample_function_path"
 
@@ -245,11 +247,58 @@ class StageAssigneeDetailsWithOneAssigneeDTOFactory(factory.Factory):
     def assignee_details_dto(self):
         return AssigneeDetailsDTOFactory()
 
+
 class SearchQueryDTOFactory(factory.Factory):
     class Meta:
         model = SearchQueryDTO
 
     user_id = factory.sequence(lambda n: n)
-    offset = factory.sequence(lambda n: n-1)
+    offset = factory.sequence(lambda n: n - 1)
     limit = factory.sequence(lambda n: n)
     search_query = factory.sequence(lambda n: "value_{}" % n)
+
+
+class CreateTaskDTOFactory(factory.Factory):
+    class Meta:
+        model = CreateTaskDTO
+
+    task_template_id = factory.Sequence(lambda c: "task_template_{}".format(c))
+    created_by_id = "123e4567-e89b-12d3-a456-426614174000"
+    action_id = factory.Sequence(lambda c: "action_id_{}".format(c))
+    title = factory.Sequence(lambda c: "title_{}".format(c))
+    description = factory.Sequence(lambda c: "description{}".format(c))
+    start_date = datetime.today().date()
+    due_date = datetime.today().date() + timedelta(days=2)
+    due_time = "12:30:20"
+    priority = Priority.HIGH.value
+
+    @factory.lazy_attribute
+    def gof_fields_dtos(self):
+        return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]
+
+
+class StageIdWithAssigneeIdDTOFactory(factory.Factory):
+    class Meta:
+        model = StageIdWithAssigneeIdDTO
+
+    stage_id = factory.Sequence(lambda c: "stage_{}".format(c))
+    assignee_id = factory.Sequence(lambda c: "assignee_{}".format(c))
+
+
+class UpdateTaskDTOFactory(factory.Factory):
+    class Meta:
+        model = UpdateTaskDTO
+
+    task_id = factory.Sequence(lambda c: "task_{}".format(c))
+    created_by_id = "123e4567-e89b-12d3-a456-426614174000"
+    title = factory.Sequence(lambda c: "title_{}".format(c))
+    description = factory.Sequence(lambda c: "description{}".format(c))
+    start_date = datetime.today().date()
+    due_date = datetime.today().date() + timedelta(days=2)
+    due_time = "12:30:20"
+    priority = Priority.HIGH.value
+    stage_assignee = factory.SubFactory(StageIdWithAssigneeIdDTOFactory)
+
+    @factory.lazy_attribute
+    def gof_fields_dtos(self):
+        return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]
