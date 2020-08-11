@@ -1,6 +1,8 @@
 import dataclasses
 from ib_users.validators.base_validator import CustomException
 
+from ib_iam.adapters.dtos import CurrentAndNewPasswordDTO
+
 
 @dataclasses.dataclass
 class EmailAndPasswordDTO:
@@ -120,3 +122,12 @@ class AuthService:
             expires_in_seconds=user_auth_tokens_dto.expires_in
         )
         return converted_user_tokens_dto
+
+    def update_user_password(
+            self, user_id: str,
+            current_and_new_password_dto: CurrentAndNewPasswordDTO):
+        self.interface.update_password(
+            user_id=user_id,
+            new_password=current_and_new_password_dto.new_password,
+            current_password=current_and_new_password_dto.current_password
+        )
