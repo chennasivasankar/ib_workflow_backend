@@ -1,8 +1,5 @@
 """
-It returns duration_in_seconds = 3700, because
-previous duration_in_seconds = 100 and
-delta between timer_starting_point and timer_stop_point is 3600 seconds
-and is running false
+Returns timer is already stopped exception as timer is already in stop state
 """
 import datetime
 
@@ -13,7 +10,7 @@ from freezegun import freeze_time
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01StopTimerAPITestCase(TestUtils):
+class TestCase02StopTimerAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -43,7 +40,5 @@ class TestCase01StopTimerAPITestCase(TestUtils):
 
         TimerFactory.create(entity_id=entity_id,
                             entity_type=entity_type,
-                            start_datetime=datetime.datetime(2020, 8, 7, 17),
-                            duration_in_seconds=100,
-                            is_running=True)
+                            is_running=False)
         return entity_id, entity_type

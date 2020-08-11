@@ -1,5 +1,5 @@
 """
-returns the response of timer is already running exception
+returns timer is already running exception response
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
