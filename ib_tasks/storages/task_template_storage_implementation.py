@@ -1,5 +1,7 @@
-from typing import List
+from typing import List, Optional
 
+from ib_tasks.exceptions.task_custom_exceptions import \
+    InvalidTransitionChecklistTemplateId
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos import GoFWithOrderAndAddAnotherDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
@@ -13,6 +15,17 @@ from ib_tasks.models import TaskTemplate, TaskTemplateGoFs
 
 
 class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
+
+    def validate_transition_template_id(
+            self, transition_checklist_template_id
+    ) -> Optional[InvalidTransitionChecklistTemplateId]:
+        template_exists = TaskTemplate.objects.filter(
+            template_id=transition_checklist_template_id,
+            is_transition_template=True)
+        if not template_exists:
+            raise InvalidTransitionChecklistTemplateId(
+                transition_checklist_template_id)
+        return
 
     def create_template(self, template_id: str,
                         template_name: str,
@@ -75,14 +88,15 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
         return valid_template_ids
 
     def get_task_templates_dtos(self) -> List[TemplateDTO]:
-        task_template_objs = TaskTemplate.objects.all()
+        task_template_objs = TaskTemplate.objects.filter(
+            is_transition_template=False
+        )
         task_template_dtos = self._convert_task_templates_objs_to_dtos(
             task_template_objs=task_template_objs)
         return task_template_dtos
 
-    def get_gofs_to_template_from_permitted_gofs(self,
-                                                 gof_ids: List[str]) -> \
-            List[GoFToTaskTemplateDTO]:
+    def get_gofs_to_templates_from_permitted_gofs(
+                self, gof_ids: List[str]) -> List[GoFToTaskTemplateDTO]:
         task_template_gofs = \
             TaskTemplateGoFs.objects.filter(gof_id__in=gof_ids)
         gof_to_task_template_dtos = self._convert_task_template_gofs_to_dtos(
@@ -195,3 +209,38 @@ class TaskTemplateStorageImplementation(TaskTemplateStorageInterface):
         for gof_dto in gof_dtos:
             gofs_dict[gof_dto.gof_id] = gof_dto
         return gofs_dict
+
+    def get_transition_template_dto(
+            self, transition_template_id: str) -> TemplateDTO:
+        transition_template_queryset = TaskTemplate.objects.filter(
+            template_id=transition_template_id).values('template_id', 'name')
+        transition_template = transition_template_queryset.first()
+
+        return TemplateDTO(
+            template_id=transition_template['template_id'],
+            template_name=transition_template['name']
+        )
+
+    def check_is_transition_template_exists(
+            self, transition_template_id: str) -> bool:
+        is_transition_template_exists = TaskTemplate.objects.filter(
+            template_id=transition_template_id, is_transition_template=True
+        ).exists()
+        return is_transition_template_exists
+
+    def get_valid_transition_template_ids(
+            self, transition_template_ids: List[str]) -> List[str]:
+        transition_ids = list(TaskTemplate.objects.filter(
+            template_id__in=transition_template_ids).filter(
+            is_transition_template=True).values_list('template_id', flat=True))
+        return transition_ids
+
+    def get_gofs_to_template_from_permitted_gofs(
+            self, gof_ids: List[str],
+            template_id: str) -> List[GoFToTaskTemplateDTO]:
+        task_template_gofs = TaskTemplateGoFs.objects.filter(
+            gof_id__in=gof_ids, task_template_id=template_id
+        )
+        gof_to_task_template_dtos = self._convert_task_template_gofs_to_dtos(
+            task_template_gofs=task_template_gofs)
+        return gof_to_task_template_dtos

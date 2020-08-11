@@ -1,6 +1,11 @@
 import enum
 
 
+class ViewType(enum.Enum):
+    LIST = "LIST"
+    KANBAN = "KANBAN"
+
+
 class FieldTypes(enum.Enum):
     PLAIN_TEXT = "PLAIN_TEXT"
     PHONE_NUMBER = "PHONE_NUMBER"
@@ -58,3 +63,11 @@ class Priority(enum.Enum):
     HIGH = "HIGH"
     LOW = "LOW"
     MEDIUM = "MEDIUM"
+
+
+class ValidationType(enum.Enum):
+    NO_VALIDATIONS = "NO_VALIDATIONS"
+
+
+class ActionTypes(enum.Enum):
+    NO_VALIDATIONS = "NO_VALIDATIONS"

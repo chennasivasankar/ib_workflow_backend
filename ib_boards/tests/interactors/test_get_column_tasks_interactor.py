@@ -5,22 +5,28 @@ Author: Pavankumar Pamuru
 """
 from unittest.mock import Mock
 
-import pytest
 import factory
+import pytest
 
+from ib_boards.constants.enum import ViewType
 from ib_boards.interactors.dtos import ColumnTasksParametersDTO, \
     TaskIdStageDTO, \
-    TaskCompleteDetailsDTO, ColumnTaskIdsDTO
+    TaskCompleteDetailsDTO
 from ib_boards.interactors.get_column_tasks_interactor import \
     GetColumnTasksInteractor
 from ib_boards.tests.factories.interactor_dtos import ActionDTOFactory, \
-    TaskStatusDTOFactory, FieldDetailsDTOFactory, GetTaskDetailsDTOFactory, \
+    FieldDetailsDTOFactory, GetTaskDetailsDTOFactory, \
     ColumnTaskIdsDTOFactory, TaskStageIdDTOFactory
-from ib_boards.tests.factories.storage_dtos import TaskDTOFactory
+from ib_boards.tests.factories.storage_dtos import TaskDTOFactory, TaskStageColorDTOFactory
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
 
 
 class TestGetColumnTasksInteractor:
+
+    @pytest.fixture
+    def task_stage_color_dtos(self):
+        TaskStageColorDTOFactory.reset_sequence()
+        return TaskStageColorDTOFactory.create_batch(size=3)
 
     @pytest.fixture
     def storage_mock(self):
@@ -42,6 +48,7 @@ class TestGetColumnTasksInteractor:
     def get_column_tasks_dto(self):
         return ColumnTasksParametersDTO(
             user_id=1,
+            view_type=ViewType.LIST.value,
             column_id='COLUMN_ID_1',
             offset=0,
             limit=5
@@ -51,6 +58,7 @@ class TestGetColumnTasksInteractor:
     def get_column_tasks_dto_with_invalid_offset(self):
         return ColumnTasksParametersDTO(
             user_id=1,
+            view_type=ViewType.LIST.value,
             column_id='COLUMN_ID_1',
             offset=-1,
             limit=1
@@ -60,6 +68,7 @@ class TestGetColumnTasksInteractor:
     def get_column_tasks_dto_with_invalid_limit(self):
         return ColumnTasksParametersDTO(
             user_id=1,
+            view_type=ViewType.LIST.value,
             column_id='COLUMN_ID_1',
             offset=1,
             limit=-1
@@ -71,6 +80,7 @@ class TestGetColumnTasksInteractor:
             TaskCompleteDetailsDTO(
                 task_id=1,
                 stage_id='STAGE_ID_1',
+                stage_color="blue",
                 field_dtos=FieldDetailsDTOFactory.create_batch(2),
                 action_dtos=ActionDTOFactory.create_batch(2)
             )
@@ -237,8 +247,9 @@ class TestGetColumnTasksInteractor:
             self, storage_mock, presenter_mock, get_column_tasks_dto, mocker,
             task_complete_details_dto, task_dtos,
             action_dtos, column_tasks_ids, task_stage_dtos,
-            get_task_details_dto):
+            get_task_details_dto, task_stage_color_dtos):
         # Arrange
+        view_type = get_column_tasks_dto.view_type
         stage_ids = ['STAGE_ID_1', 'STAGE_ID_2']
         task_ids = ['TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3']
         expected_response = Mock()
@@ -283,20 +294,22 @@ class TestGetColumnTasksInteractor:
             task_config_dtos=task_config_dto
         )
         task_details_mock.assert_called_once_with(
-            get_task_details_dto, user_id=user_id
+            get_task_details_dto, user_id=user_id, view_type=view_type
         )
         presenter_mock.get_response_for_column_tasks.assert_called_once_with(
             task_actions_dtos=task_complete_details_dto[0].action_dtos,
             task_fields_dtos=task_complete_details_dto[0].field_dtos,
             total_tasks=10,
-            task_ids=task_ids
+            task_ids=task_ids,
+            task_stage_color_dtos=task_stage_color_dtos
         )
 
     def test_with_valid_details_return_task_details_without_duplicates(
             self, storage_mock, presenter_mock, get_column_tasks_dto, mocker,
             task_complete_details_dto, task_dtos,
-            column_tasks_ids_no_duplicates,
+            column_tasks_ids_no_duplicates, task_stage_color_dtos,
             action_dtos, column_tasks_ids, task_stage_dtos):
+
         # Arrange
         stage_ids = ['STAGE_ID_1', 'STAGE_ID_2']
         task_ids = ['TASK_ID_4', 'TASK_ID_5', 'TASK_ID_6']
@@ -346,5 +359,6 @@ class TestGetColumnTasksInteractor:
             task_actions_dtos=task_complete_details_dto[0].action_dtos,
             task_fields_dtos=task_complete_details_dto[0].field_dtos,
             total_tasks=10,
-            task_ids=task_ids
+            task_ids=task_ids,
+            task_stage_color_dtos=task_stage_color_dtos
         )

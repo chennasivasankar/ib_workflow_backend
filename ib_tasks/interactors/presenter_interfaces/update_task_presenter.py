@@ -1,14 +1,13 @@
 import abc
 
+from ib_tasks.exceptions.stage_custom_exceptions import \
+    StageIdsWithInvalidPermissionForAssignee
+
 
 class UpdateTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_update_task_response(self):
-        pass
-
-    @abc.abstractmethod
-    def raise_invalid_action_id(self, err):
         pass
 
     @abc.abstractmethod
@@ -121,9 +120,7 @@ class UpdateTaskPresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_exception_for_user_action_permission_denied(self, error_obj):
+    def raise_stage_ids_with_invalid_permission_for_assignee_exception(
+            self, err: StageIdsWithInvalidPermissionForAssignee):
         pass
 
-    @abc.abstractmethod
-    def raise_exception_for_user_board_permission_denied(self, error_obj):
-        pass

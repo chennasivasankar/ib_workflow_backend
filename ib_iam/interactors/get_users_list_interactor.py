@@ -1,7 +1,8 @@
 from typing import List
 
+from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, \
-    InvalidOffsetValue, InvalidLimitValue, InvalidUserId
+    InvalidOffsetValue, InvalidLimitValue, InvalidUserId, RoleIdsAreInvalid
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.dtos \
     import ListOfCompleteUsersDTO
@@ -75,7 +76,8 @@ class GetUsersDetailsInteractor(ValidationMixin):
         return user_dtos
 
     def get_valid_user_ids(self, user_ids: List[str]):
-        valid_user_ids = self.user_storage.get_valid_user_ids(user_ids=user_ids)
+        valid_user_ids = self.user_storage.get_valid_user_ids(
+            user_ids=user_ids)
         return valid_user_ids
 
     @staticmethod
@@ -133,3 +135,23 @@ class GetUsersDetailsInteractor(ValidationMixin):
             search_query=search_query
         )
         return user_details_dtos
+
+    def get_user_details_for_given_role_ids(
+            self, role_ids: List[str]) -> List[UserProfileDTO]:
+        from ib_iam.constants.config import ALL_ROLES_ID
+        if ALL_ROLES_ID in role_ids:
+            user_ids = self.user_storage.get_user_ids_who_are_not_admin()
+        else:
+            self._validate_role_ids(role_ids=role_ids)
+            user_ids = self.user_storage.get_user_ids(role_ids=role_ids)
+        from ib_iam.adapters.service_adapter import get_service_adapter
+        service = get_service_adapter()
+        user_details_dtos = service.user_service.get_basic_user_dtos(
+            user_ids=user_ids)
+        return user_details_dtos
+
+    def _validate_role_ids(self, role_ids: List[str]):
+        valid_role_ids = self.user_storage.get_valid_role_ids(
+            role_ids=role_ids)
+        if len(role_ids) != len(valid_role_ids):
+            raise RoleIdsAreInvalid

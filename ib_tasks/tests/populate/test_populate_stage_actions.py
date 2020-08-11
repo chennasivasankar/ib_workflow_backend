@@ -13,19 +13,23 @@ class TestCasePopulateStageActions:
             "action_name": "action_name_1",
             "roles": "ROLE_1, ROLE_2",
             "button_text": "button_text_1",
-            "button_color": "button_color_1"
+            "button_color": "button_color_1",
+            "action_type": "NO VALIDATIONS",
+            "transition_template_id": "transition_id"
         }
         import json
         import pytest
         json_valid_format = json.dumps(valid_format)
         actions = [
             {
-                "stage": "stage_1",
-                "stage_display_logic": "logic_1",
-                "action_name": "action_name_1",
-                "roles": "ROLE_1",
+                "stage_id": "stage_1",
+                "action_logic": "logic_1",
+                "invalid_key": "action_name_1",
+                "roles": "ROLE_1, ROLE_2",
                 "button_text": "button_text_1",
-                "button_color": "button_color_1"
+                "button_color": "button_color_1",
+                "action_type": "NO VALIDATIONS",
+                "transition_template_id": "transition_id"
             }
         ]
         from ib_tasks.populate.populate_stage_actions \
@@ -48,9 +52,11 @@ class TestCasePopulateStageActions:
                 "stage_id": "stage_1",
                 "action_logic": "if a> b c=8",
                 "action_name": "action_name_1",
-                "roles": "ROLE_1",
+                "roles": "ROLE_1, ROLE_2",
                 "button_text": "button_text_1",
-                "button_color": "button_color_1"
+                "button_color": "button_color_1",
+                "action_type": "NO VALIDATIONS",
+                "transition_template_id": "transition_id"
             }
         ]
         import pytest
@@ -72,9 +78,11 @@ class TestCasePopulateStageActions:
                 "stage_id": "stage_1",
                 "action_logic": "logic_1",
                 "action_name": "action_name_1",
-                "roles": "ROLE_1",
+                "roles": "ROLE_1, ROLE_2",
                 "button_text": "button_text_1",
-                "button_color": "button_color_1"
+                "button_color": "button_color_1",
+                "action_type": "NO VALIDATIONS",
+                "transition_template_id": "transition_id"
             }
         ]
         from ib_tasks.interactors.stages_dtos import StageActionDTO
@@ -85,7 +93,9 @@ class TestCasePopulateStageActions:
             roles=["ROLE_1"],
             function_path='ib_tasks.populate.stage_actions_logic.stage_1_action_name_1',
             button_text="button_text_1",
-            button_color="button_color_1"
+            button_color="button_color_1",
+            action_type="NO VALIDATIONS",
+            transition_template_id="transition_template_id"
         )]
         from ib_tasks.populate.populate_stage_actions \
             import populate_stage_actions

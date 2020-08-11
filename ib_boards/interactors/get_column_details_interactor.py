@@ -1,6 +1,7 @@
 from typing import List, Tuple
 
 from ib_boards.adapters.service_adapter import get_service_adapter
+from ib_boards.constants.enum import ViewType
 from ib_boards.exceptions.custom_exceptions import (
     InvalidBoardId, InvalidOffsetValue, InvalidLimitValue, UserDonotHaveAccess)
 from ib_boards.interactors.dtos import ColumnParametersDTO, \
@@ -23,7 +24,7 @@ class GetColumnDetailsInteractor:
                                    columns_parameters: ColumnParametersDTO,
                                    pagination_parameters: PaginationParametersDTO):
         try:
-            column_details, task_fields_dtos, task_actions_dtos, column_tasks = \
+            column_details, task_fields_dtos, task_actions_dtos, column_tasks, task_stage_color_dtos = \
                 self.get_column_details(
                     columns_parameters=columns_parameters,
                     pagination_parameters=pagination_parameters
@@ -38,7 +39,8 @@ class GetColumnDetailsInteractor:
             return presenter.response_for_user_donot_have_access_for_board()
         return presenter.get_response_for_column_details(
             column_tasks=column_tasks, task_actions_dtos=task_actions_dtos,
-            task_fields_dtos=task_fields_dtos, column_details=column_details)
+            task_fields_dtos=task_fields_dtos, column_details=column_details,
+            task_stage_color_dtos=task_stage_color_dtos)
 
     def get_column_details(self, columns_parameters: ColumnParametersDTO,
                            pagination_parameters: PaginationParametersDTO):
@@ -46,6 +48,7 @@ class GetColumnDetailsInteractor:
         offset = pagination_parameters.offset
         limit = pagination_parameters.limit
         user_id = columns_parameters.user_id
+        view_type = columns_parameters.view_type
 
         self._validations(board_id, limit, offset)
 
@@ -59,10 +62,13 @@ class GetColumnDetailsInteractor:
             limit=limit,
             offset=offset
         )
-        task_field_dtos, task_action_dtos = self._get_tasks_complete_details(
-            task_ids_stages_dtos=task_ids_stages_dtos,
-            user_id=user_id
+        task_field_dtos, task_action_dtos, task_stage_color_dtos = \
+            self. _get_tasks_complete_details(
+                task_ids_stages_dtos=task_ids_stages_dtos,
+                user_id=user_id,
+                view_type=view_type
         )
+
         column_tasks = self._get_column_task_ids_map(
             task_ids_stages_dtos=task_ids_stages_dtos
         )
@@ -70,12 +76,13 @@ class GetColumnDetailsInteractor:
             task_ids_stages_dtos=task_ids_stages_dtos,
             column_dtos=column_dtos
         )
-        return column_details, task_field_dtos, task_action_dtos, column_tasks
+        return column_details, task_field_dtos, task_action_dtos, column_tasks, task_stage_color_dtos
 
     @staticmethod
     def _get_tasks_complete_details(
             task_ids_stages_dtos: List[ColumnTaskIdsDTO],
-            user_id: str) \
+            user_id: str,
+            view_type: ViewType) \
             -> Tuple[List[FieldDTO], List[ActionDTO]]:
         task_details_dtos = []
         for task_ids_stages_dto in task_ids_stages_dtos:
@@ -90,7 +97,7 @@ class GetColumnDetailsInteractor:
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         return service_adapter.task_service.get_task_complete_details(
-            task_details_dtos, user_id=user_id)
+            task_details_dtos, user_id=user_id, view_type=view_type)
 
     @staticmethod
     def _get_task_ids_for_given_stages(

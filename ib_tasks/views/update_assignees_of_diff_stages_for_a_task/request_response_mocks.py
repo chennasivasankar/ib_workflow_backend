@@ -4,7 +4,7 @@ REQUEST_BODY_JSON = """
 {
     "stage_assignees": [
         {
-            "stage_id": "string",
+            "stage_id": 1,
             "assignee_id": "string"
         }
     ]
@@ -12,11 +12,19 @@ REQUEST_BODY_JSON = """
 """
 
 
+RESPONSE_400_JSON = """
+{
+    "response": "string",
+    "http_status_code": 1,
+    "res_status": "DUPLICATE_STAGE_IDS"
+}
+"""
+
 RESPONSE_404_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "TASK_ID_DOESNT_EXIST"
+    "res_status": "INVALID_TASK_ID"
 }
 """
 

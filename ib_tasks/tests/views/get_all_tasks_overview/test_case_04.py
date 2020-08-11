@@ -7,7 +7,6 @@ import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
 from ib_iam.tests.factories.models import UserRoleFactory, RoleFactory
-from ib_tasks.models import GoF, TaskGoFField, TaskStage, StageAction
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories.models import TaskFactory, StageModelFactory, \
     TaskStageModelFactory, StageActionFactory, TaskGoFFieldFactory, \
@@ -23,9 +22,15 @@ class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['read']}}
 
     @pytest.fixture(autouse=True)
-    def setup(self, api_user):
+    def setup(self, api_user, mocker):
         user_obj = api_user
         user_id = str(user_obj.user_id)
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_user_role_ids, get_assignees_details_dtos
+        from ib_tasks.constants.enum import ValidationType
+        get_user_role_ids(mocker)
+        get_assignees_details_dtos(mocker)
+
         from ib_iam.tests.factories.models import UserDetailsFactory
         UserDetailsFactory.reset_sequence()
         UserDetailsFactory.create(user_id=user_id, is_admin=True)
@@ -40,7 +45,7 @@ class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
         ActionPermittedRolesFactory.reset_sequence()
         UserRoleFactory.reset_sequence()
         RoleFactory.reset_sequence()
-        role_obj_1=RoleFactory(role_id="FIN_PAYMENT_REQUESTER")
+        role_obj_1 = RoleFactory(role_id="FIN_PAYMENT_REQUESTER")
         role_obj_2 = RoleFactory(role_id="FIN_PAYMENT_APPROVER")
         UserRoleFactory(user_id=user_id, role=role_obj_1)
         UserRoleFactory(user_id=user_id, role=role_obj_2)
@@ -68,7 +73,9 @@ class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
         task_stage_obj_4 = TaskStageModelFactory(task=task_objs[0],
                                                  stage=stage_objs[0])
 
-        action_obj_1 = StageActionFactory(stage=stage_objs[2])
+        action_obj_1 = StageActionFactory(
+            stage=stage_objs[2],
+            action_type=ValidationType.NO_VALIDATIONS.value)
         action_obj_2 = StageActionFactory(stage=stage_other_objs[1])
         ActionPermittedRolesFactory(action=action_obj_1, role_id="ALL_ROLES")
         ActionPermittedRolesFactory(action=action_obj_2, role_id="ALL_ROLES")
@@ -108,8 +115,7 @@ class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
         path_params = {}
         query_params = {'limit': 3, 'offset': 0}
         headers = {}
-        response = self.make_api_call(body=body,
-                                          path_params=path_params,
-                                          query_params=query_params,
-                                          headers=headers,
-                                          snapshot=snapshot)
+        response = self.make_api_call(
+            body=body, path_params=path_params,
+            query_params=query_params, headers=headers, snapshot=snapshot
+        )

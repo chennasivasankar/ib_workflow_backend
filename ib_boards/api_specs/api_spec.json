@@ -126,6 +126,9 @@
         "task_id": {
           "type": "string"
         },
+        "stage_color": {
+          "type": "string"
+        },
         "fields": {
           "type": "array",
           "items": {
@@ -164,6 +167,9 @@
               },
               "button_color": {
                 "type": "string"
+              },
+              "transition_template_id": {
+                "type": "string"
               }
             },
             "required": [
@@ -177,7 +183,8 @@
       "required": [
         "task_id",
         "fields",
-        "actions"
+        "actions",
+        "stage_color"
       ]
     },
     "ColumnDetails": {
@@ -311,6 +318,24 @@
       },
         "required": [
           "action"
+        ]
+      }
+    },
+    "ViewTypeParameter": {
+      "name": "view_type",
+      "in": "body",
+      "required": true,
+      "description": "view type",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "view_type": {
+            "type": "string",
+            "enum": ["LIST", "KANBAN"]
+          }
+        },
+        "required": [
+          "view_type"
         ]
       }
     }
@@ -464,7 +489,7 @@
       }
     },
     "/boards/{board_id}/columns/v1/": {
-      "get": {
+      "post": {
         "operationId": "get_columns_details",
         "summary": "Get Column Details",
         "description": "get columns details of the given board id",
@@ -485,6 +510,9 @@
           },
           {
             "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/ViewTypeParameter"
           }
         ],
         "responses": {
@@ -504,7 +532,7 @@
       }
     },
     "/columns/{column_id}/tasks/v1/": {
-      "get": {
+      "post": {
         "operationId": "get_column_tasks",
         "summary": "Get Column Tasks",
         "description": "get column tasks details",
@@ -525,6 +553,9 @@
           },
           {
             "$ref": "#/parameters/ColumnIdParameter"
+          },
+          {
+            "$ref": "#/parameters/ViewTypeParameter"
           }
         ],
         "responses": {

@@ -3,11 +3,11 @@ Created on: 06/08/20
 Author: Pavankumar Pamuru
 
 """
+import factory
 import pytest
 
-import factory
-
-from ib_tasks.tests.factories.models import TaskTemplateFactory, FilterFactory, \
+from ib_tasks.tests.factories.models import TaskTemplateFactory, \
+    FilterFactory, \
     FieldFactory, FilterConditionFactory, FieldRoleFactory, \
     GoFToTaskTemplateFactory
 
@@ -67,6 +67,7 @@ class TestFilterStorageImplementation:
     def test_validate_template_id_with_valid_template_id(self, storage):
         # Arrange
         template_id = 'template_1'
+        TaskTemplateFactory.reset_sequence()
         TaskTemplateFactory()
 
         # Act

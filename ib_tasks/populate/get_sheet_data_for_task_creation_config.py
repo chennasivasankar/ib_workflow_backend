@@ -40,9 +40,11 @@ class GetSheetDataForTaskCreationConfig:
                 "Role": str,
                 "Logic": str,
                 "Button Text": str,
-                Optional("Button Colour"): str
-
-            }]
+                Optional("Button Colour"): str,
+                Optional("Action Type"): str,
+                Optional("Transition Template ID"): str
+            }],
+            ignore_extra_keys=True
         )
         try:
             schema.validate(tasks_dict)
@@ -59,7 +61,9 @@ class GetSheetDataForTaskCreationConfig:
             "action_name": field_record["Action name"],
             "roles": field_record["Role"],
             "button_text": field_record["Button Text"],
-            "button_color": field_record["Button Colour"]
+            "button_color": field_record["Button Colour"],
+            "action_type": field_record["Action Type"],
+            "transition_template_id": field_record["Transition Template ID"]
         }
 
     def _raise_exception_for_valid_task_creation_format(self):

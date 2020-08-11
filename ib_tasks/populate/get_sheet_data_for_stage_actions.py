@@ -38,7 +38,9 @@ class GetSheetDataForStageActions:
             "action_name": field_record["Action name"],
             "roles": field_record["Role"],
             "button_text": field_record["Button Text"],
-            "button_color": field_record["Button Colour"]
+            "button_color": field_record["Button Colour"],
+            "action_type": field_record["Action Type"],
+            "transition_template_id": field_record["Transition Template ID"]
         }
 
     def _validation_for_action_dict(self, actions_dict: List[Dict]):
@@ -53,7 +55,9 @@ class GetSheetDataForStageActions:
                 "Role": And(str, len),
                 "Logic": And(str, len),
                 "Button Text": And(str, len),
-                Optional("Button Colour"): str
+                Optional("Button Colour"): str,
+                "Action Type": str,
+                Optional("Transition Template ID"): str
 
             }]
         )
@@ -71,7 +75,9 @@ class GetSheetDataForStageActions:
             "Role": "ALL_ROLES",
             "Logic": "Status1 = PR_PAYMENT_REQUEST_DRAFTS",
             "Button Text": "Save Draft",
-            "Button Colour": "Blue"
+            "Button Colour": "Blue",
+            "Transition Template ID": "transition_template_id",
+            "Action Type": "NO VALIDATIONS"
 
         }
         self.data_sheet.raise_exception_for_valid_format(valid_format)

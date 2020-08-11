@@ -1,6 +1,8 @@
 import pytest
 
-from ib_tasks.storages.fields_storage_implementation import FieldsStorageImplementation
+from ib_tasks.constants.enum import ViewType
+from ib_tasks.storages.fields_storage_implementation import \
+    FieldsStorageImplementation
 from ib_tasks.tests.factories.models import (
     StageModelFactory, TaskFactory, TaskTemplateFactory, TaskStageModelFactory)
 from ib_tasks.tests.factories.storage_dtos import TemplateStagesDTOFactory
@@ -20,9 +22,15 @@ class TestGetFieldIds:
         StageModelFactory()
         import json
         StageModelFactory(card_info_kanban=json.dumps(
-            ['field_id_3', 'field_id_4']))
+            ['field_id_3', 'field_id_4']),
+            card_info_list=json.dumps(
+                ['field_id_5', 'field_id_6'])
+        )
         StageModelFactory(card_info_kanban=json.dumps(
-            ['field_id_5', 'field_id_6']))
+            ['field_id_5', 'field_id_6']),
+            card_info_list=json.dumps(
+                ['field_id_7', 'field_id_8'])
+        )
         TaskFactory.reset_sequence()
         TaskFactory.create_batch(size=3)
         TaskTemplateFactory.reset_sequence()
@@ -46,11 +54,19 @@ class TestGetFieldIds:
         import json
         StageModelFactory(card_info_kanban=json.dumps(
             ['field_id_3', 'field_id_4']),
-                          task_template_id="task_template_id_0")
+            card_info_list=json.dumps(
+                ['field_id_5', 'field_id_6']),
+            task_template_id="task_template_id_0")
         StageModelFactory(card_info_kanban=json.dumps(
-            ['field_id_5', 'field_id_6']))
+            ['field_id_5', 'field_id_6']),
+            card_info_list=json.dumps(
+                ['field_id_7', 'field_id_8'])
+        )
         StageModelFactory(card_info_kanban=json.dumps(
-            ['field_id_7', 'field_id_8']))
+            ['field_id_7', 'field_id_8']),
+            card_info_list=json.dumps(
+                ['field_id_9', 'field_id_10'])
+        )
         TaskFactory.reset_sequence()
         TaskFactory.create_batch(size=3)
         TaskTemplateFactory.reset_sequence()
@@ -65,14 +81,28 @@ class TestGetFieldIds:
             task_template_id="task_template_id_0")
         return templates
 
-    def test_get_field_ids(self, get_task_template_stage_dtos,
-                           populate_data,
-                           snapshot):
+    def test_get_field_ids_when_view_type_is_list(self, get_task_template_stage_dtos,
+                                                  populate_data,
+                                                  snapshot):
         # Arrange
+        view_type = ViewType.LIST.value
         storage = FieldsStorageImplementation()
 
         # Act
-        response = storage.get_field_ids(get_task_template_stage_dtos)
+        response = storage.get_field_ids(get_task_template_stage_dtos, view_type)
+
+        # Assert
+        snapshot.assert_match(response, "response")
+
+    def test_get_field_ids_when_view_type_is_kanban(self, get_task_template_stage_dtos,
+                                                    populate_data,
+                                                    snapshot):
+        # Arrange
+        view_type = ViewType.KANBAN.value
+        storage = FieldsStorageImplementation()
+
+        # Act
+        response = storage.get_field_ids(get_task_template_stage_dtos, view_type)
 
         # Assert
         snapshot.assert_match(response, "response")
@@ -83,11 +113,12 @@ class TestGetFieldIds:
             populate_data_for_one_task_in_two_stages,
             snapshot):
         # Arrange
+        view_type = ViewType.LIST.value
         storage = FieldsStorageImplementation()
 
         # Act
         response = storage.get_field_ids(
-            get_task_template_stage_dtos_with_one_task_with_two_stages)
+            get_task_template_stage_dtos_with_one_task_with_two_stages, view_type)
 
         # Assert
         snapshot.assert_match(response, "response")
@@ -97,11 +128,12 @@ class TestGetFieldIds:
             populate_data,
             snapshot):
         # Arrange
+        view_type = ViewType.LIST.value
         storage = FieldsStorageImplementation()
 
         # Act
         response = storage.get_field_ids(
-            get_task_template_stage_dtos_with_two_tasks_on_stage)
+            get_task_template_stage_dtos_with_two_tasks_on_stage, view_type)
 
         # Assert
         snapshot.assert_match(response, "response")

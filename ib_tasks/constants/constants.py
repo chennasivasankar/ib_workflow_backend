@@ -1,5 +1,5 @@
-from ib_tasks.constants.enum \
-    import PermissionTypes, FieldTypes, Searchable, Operators, Priority
+from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Searchable, \
+    Operators, Priority
 
 ALL_ROLES_ID = "ALL_ROLES"
 GOF_ORDER_WITH_MINUS_ONE_VALUE = -1
@@ -22,7 +22,7 @@ MULTI_VALUES_INPUT_FIELDS = [
     FieldTypes.MULTI_SELECT_LABELS.value
 ]
 
-GOOGLE_SHEET_NAME = "Vendor Configuration_v0 - Test"
+GOOGLE_SHEET_NAME = "Vendor Configuration_v1 - Test"
 TASK_TEMPLATE_SUB_SHEET_TITLE = "Task Templates"
 GOF_SUB_SHEET_TITLE = "GOF"
 FIELD_SUB_SHEET_TITLE = "Fields"
@@ -41,3 +41,5 @@ TRANSITION_TEMPLATES_SUB_SHEET = "Transition Templates"
 PRIORITY_TYPES = [(item.value, item.value) for item in Priority]
 
 OPERATOR_TYPES = [(item.value, item.value)for item in Operators]
+
+DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"

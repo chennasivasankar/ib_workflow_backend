@@ -66,5 +66,7 @@ class GetTaskStagesAndActions:
         return StageAndActionsDetailsDTO(
             stage_id=stage_dto.stage_id,
             name=stage_dto.name,
-            actions_dtos=actions_dtos
+            db_stage_id=stage_dto.db_stage_id,
+            actions_dtos=actions_dtos,
+            color=stage_dto.color
         )

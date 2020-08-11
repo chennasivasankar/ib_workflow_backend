@@ -2,13 +2,16 @@ from unittest.mock import create_autospec
 
 import pytest
 
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskTemplateIds, DuplicateTaskStatusVariableIds
+from ib_tasks.exceptions.task_custom_exceptions import \
+    InvalidTaskTemplateIds, \
+    DuplicateTaskStatusVariableIds
 from ib_tasks.interactors.create_task_status_interactor import \
     CreateTaskStatusInteractor
-from ib_tasks.interactors.storage_interfaces.status_dtos import TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_template_storage_interface import TaskTemplateStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_template_storage_interface\
+    import \
+    TaskTemplateStorageInterface
 from ib_tasks.tests.factories.storage_dtos import TaskTemplateStatusDTOFactory
 
 

@@ -14,31 +14,32 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
 from ib_tasks.interactors.storage_interfaces.gof_dtos import GoFDTO, \
     GoFToTaskTemplateDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    GetTaskStageCompleteDetailsDTO, TaskStageIdsDTO, StageIdWithTemplateIdDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskIdWithStageValueDTO, TaskIdWithStageDetailsDTO, \
-    StageValueWithTaskIdsDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO, \
-    StageDTO
+    GetTaskStageCompleteDetailsDTO, TaskStageIdsDTO, \
+    StageIdWithTemplateIdDTO, \
+    TaskIdWithStageValueDTO, TaskStagesDTO, StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
     TemplateDTO
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, CreateTaskLogDTO
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
-from ib_tasks.models import Stage, TaskTemplate
-from ib_tasks.models import TaskStage
-from ib_tasks.models import TaskTemplateStatusVariable
+from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO
+from ib_tasks.models import Stage, TaskTemplate, TaskStage, \
+    TaskTemplateStatusVariable
 from ib_tasks.models.field import Field
 from ib_tasks.models.stage_actions import StageAction
-from ib_tasks.models.task import Task
+from ib_tasks.models.task import Task, ElasticSearchTask
 from ib_tasks.models.task_gof_field import TaskGoFField
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
 
 class TasksStorageImplementation(TaskStorageInterface):
+
+    def create_elastic_task(self, task_id: int, elastic_task_id: str):
+
+        ElasticSearchTask.objects.create(
+            task_id=task_id, elasticsearch_id=elastic_task_id
+        )
 
     def get_field_types_for_given_field_ids(self, field_ids: List[str]) -> \
             List[FieldCompleteDetailsDTO]:
@@ -365,7 +366,8 @@ class TasksStorageImplementation(TaskStorageInterface):
         from ib_tasks.models.task_template_initial_stages import \
             TaskTemplateInitialStage
         template_id_with_stage_id_dicts = \
-            TaskTemplateInitialStage.objects.all().values('stage_id', 'task_template_id')
+            TaskTemplateInitialStage.objects.all().values(
+                'stage_id', 'task_template_id')
 
         template_id_with_stage_id_dtos = \
             self._convert_template_id_with_stage_id_dicts_to_dtos(
@@ -395,7 +397,9 @@ class TasksStorageImplementation(TaskStorageInterface):
                 action_id=stage_action['id'],
                 stage_id=stage_action['stage_id'],
                 button_color=stage_action['button_color'],
-                button_text=stage_action['button_text']
+                button_text=stage_action['button_text'],
+                action_type=stage_action['action_type'],
+                transition_template_id=stage_action['transition_template_id']
             )
             for stage_action in stage_action_details
         ]
@@ -405,7 +409,10 @@ class TasksStorageImplementation(TaskStorageInterface):
             self, stage_ids: List[int]) -> List[ActionWithStageIdDTO]:
         stage_action_details = StageAction.objects.filter(
             stage_id__in=stage_ids
-        ).values('id', 'button_text', 'button_color', 'stage_id')
+        ).values(
+            'id', 'button_text', 'button_color', 'stage_id',
+            'action_type', 'transition_template_id'
+        )
 
         action_with_stage_id_dtos = \
             self._convert_stage_actions_details_to_dtos(
@@ -453,3 +460,20 @@ class TasksStorageImplementation(TaskStorageInterface):
             for task_obj in task_objs
         ]
         return valid_task_stages_dtos
+
+    def get_user_task_ids_and_max_stage_value_dto_based_on_given_stage_ids(
+            self, user_id: str, stage_ids: List[str]) -> List[TaskIdWithStageValueDTO]:
+        from django.db.models import Max
+        task_objs_with_max_stage_value = list(
+            TaskStage.objects.filter(
+                task__created_by=user_id,
+                stage__stage_id__in=stage_ids).values("task_id").annotate(
+                stage_value=Max("stage__value")))
+        task_id_with_max_stage_value_dtos = []
+        for task_with_stage_value_item in task_objs_with_max_stage_value:
+            task_id_with_max_stage_value_dtos.append(
+                TaskIdWithStageValueDTO(
+                    task_id=task_with_stage_value_item['task_id'],
+                    stage_value=task_with_stage_value_item['stage_value']))
+        return task_id_with_max_stage_value_dtos
+

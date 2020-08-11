@@ -13,7 +13,7 @@ RESPONSE_200_JSON = """
     "gofs": [
         {
             "gof_id": "string",
-            "same_gof_order": 1.1,
+            "same_gof_order": 1,
             "gof_fields": [
                 {
                     "field_id": "string",
@@ -24,13 +24,14 @@ RESPONSE_200_JSON = """
     ],
     "stages_with_actions": [
         {
-            "stage_id": "string",
+            "stage_id": 1,
             "stage_display_name": "string",
             "stage_color": "string",
+            "task_stage_id": 1,
             "assignee": {
-                "id": "string",
+                "assignee_id": "string",
                 "name": "string",
-                "profile_pic": "string"
+                "profile_pic_url": "string"
             },
             "actions": [
                 {

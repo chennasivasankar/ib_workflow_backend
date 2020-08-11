@@ -12,13 +12,19 @@ from ...storages.storage_implementation import StorageImplementation
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     user = kwargs["user"]
+    request_body = kwargs['request_data']
     board_id = kwargs['board_id']
     params = kwargs['request_query_params']
     offset = params['offset']
     limit = params['limit']
+
+    from ib_boards.constants.enum import ViewType
+    view_type = request_body.get('view_type', ViewType.KANBAN.value)
+
     column_params = ColumnParametersDTO(
         board_id=board_id,
-        user_id=user.user_id
+        user_id=user.user_id,
+        view_type=view_type
     )
     pagination_params = PaginationParametersDTO(
         offset=offset,

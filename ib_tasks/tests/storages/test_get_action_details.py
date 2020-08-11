@@ -2,8 +2,9 @@ import pytest
 
 from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
-from ib_tasks.storages.fields_storage_implementation import FieldsStorageImplementation
-from ib_tasks.tests.factories.models import StageModelFactory, StageActionFactory, ActionPermittedRolesFactory
+from ib_tasks.tests.factories.models import StageModelFactory, \
+    StageActionFactory, ActionPermittedRolesFactory, \
+    StageActionWithTransitionFactory, TaskTemplateFactory
 
 
 @pytest.mark.django_db
@@ -11,23 +12,24 @@ class TestGetActionDetails:
 
     @pytest.fixture()
     def populate_data(self):
+        TaskTemplateFactory.reset_sequence()
         StageModelFactory.reset_sequence()
         stages = StageModelFactory.create_batch(size=3)
         ActionPermittedRolesFactory.reset_sequence()
         StageActionFactory.reset_sequence()
-        actions = StageActionFactory.create_batch(size=3, stage=stages[0])
+        actions = StageActionWithTransitionFactory.create_batch(size=3, stage=stages[0])
         ActionPermittedRolesFactory.create_batch(size=4, action=actions[0])
         ActionPermittedRolesFactory.reset_sequence()
         ActionPermittedRolesFactory.create_batch(size=4, action=actions[1])
         ActionPermittedRolesFactory.reset_sequence()
         ActionPermittedRolesFactory.create_batch(size=4, action=actions[2])
-        actions = StageActionFactory.create_batch(size=3, stage=stages[1])
+        actions = StageActionWithTransitionFactory.create_batch(size=3, stage=stages[1])
         ActionPermittedRolesFactory.create_batch(size=4, action=actions[0])
         ActionPermittedRolesFactory.reset_sequence()
         ActionPermittedRolesFactory.create_batch(size=4, action=actions[1])
         ActionPermittedRolesFactory.reset_sequence()
         ActionPermittedRolesFactory.create_batch(size=4, action=actions[2])
-        actions = StageActionFactory.create_batch(size=3, stage=stages[2])
+        actions = StageActionWithTransitionFactory.create_batch(size=3, stage=stages[2])
         ActionPermittedRolesFactory.create_batch(size=4, action=actions[0])
         ActionPermittedRolesFactory.reset_sequence()
         ActionPermittedRolesFactory.create_batch(size=4, action=actions[1])
@@ -36,21 +38,22 @@ class TestGetActionDetails:
 
     @pytest.fixture()
     def populate_data_with_all_roles(self):
+        TaskTemplateFactory.reset_sequence()
         StageModelFactory.reset_sequence()
         stages = StageModelFactory.create_batch(size=3)
         ActionPermittedRolesFactory.reset_sequence()
         StageActionFactory.reset_sequence()
-        actions = StageActionFactory.create_batch(size=3, stage=stages[0])
+        actions = StageActionWithTransitionFactory.create_batch(size=3, stage=stages[0])
         ActionPermittedRolesFactory.create_batch(size=4, action=actions[0])
         ActionPermittedRolesFactory.reset_sequence()
         ActionPermittedRolesFactory.create_batch(size=4, action=actions[1])
         ActionPermittedRolesFactory.reset_sequence()
         ActionPermittedRolesFactory.create_batch(size=4, action=actions[2])
-        actions = StageActionFactory.create_batch(size=3, stage=stages[1])
+        actions = StageActionWithTransitionFactory.create_batch(size=3, stage=stages[1])
         ActionPermittedRolesFactory(action=actions[0], role_id="ALL_ROLES")
         ActionPermittedRolesFactory(action=actions[1], role_id="ALL_ROLES")
         ActionPermittedRolesFactory(action=actions[2], role_id="ALL_ROLES")
-        actions = StageActionFactory.create_batch(size=3, stage=stages[2])
+        actions = StageActionWithTransitionFactory.create_batch(size=3, stage=stages[2])
         ActionPermittedRolesFactory(action=actions[0], role_id="ALL_ROLES")
         ActionPermittedRolesFactory(action=actions[1], role_id="ALL_ROLES")
         ActionPermittedRolesFactory(action=actions[2], role_id="ALL_ROLES")

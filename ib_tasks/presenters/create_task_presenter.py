@@ -12,7 +12,8 @@ from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidEmailFieldValue, InvalidPhoneNumberValue, EmptyValueForRequiredField
 from ib_tasks.exceptions.fields_custom_exceptions import InvalidFieldIds, \
     DuplicateFieldIdsToGoF
-from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
+from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
+    DuplicateSameGoFOrderForAGoF
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
     UserBoardPermissionDenied, UserActionPermissionDenied
@@ -26,6 +27,93 @@ from ib_tasks.interactors.presenter_interfaces.create_task_presenter import \
 class CreateTaskPresenterImplementation(
     CreateTaskPresenterInterface, HTTPResponseMixin
 ):
+
+    def raise_invalid_key_error(self):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_KEY_ERROR
+        data = {
+            "response": INVALID_KEY_ERROR[0],
+            "http_status_code": 400,
+            "res_status": INVALID_KEY_ERROR[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_custom_logic_function_exception(self):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_CUSTOM_LOGIC
+        data = {
+            "response": INVALID_CUSTOM_LOGIC[0],
+            "http_status_code": 400,
+            "res_status": INVALID_CUSTOM_LOGIC[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_path_not_found_exception(self, path_name):
+        from ib_tasks.constants.exception_messages import \
+            PATH_NOT_FOUND
+        data = {
+            "response": PATH_NOT_FOUND[0],
+            "http_status_code": 400,
+            "res_status": PATH_NOT_FOUND[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_method_not_found_exception(self, method_name):
+        from ib_tasks.constants.exception_messages import \
+            METHOD_NOT_FOUND
+        data = {
+            "response": METHOD_NOT_FOUND[0],
+            "http_status_code": 400,
+            "res_status": METHOD_NOT_FOUND[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_duplicate_stage_ids_not_valid(self, duplicate_stage_ids):
+        from ib_tasks.constants.exception_messages import \
+            DUPLICATE_STAGE_IDS
+        data = {
+            "response": DUPLICATE_STAGE_IDS[0].format(duplicate_stage_ids),
+            "http_status_code": 400,
+            "res_status": DUPLICATE_STAGE_IDS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_stage_ids_exception(self, invalid_stage_ids):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_STAGE_IDS
+        data = {
+            "response": INVALID_STAGE_IDS[0].format(invalid_stage_ids),
+            "http_status_code": 400,
+            "res_status": INVALID_STAGE_IDS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_stage_ids_with_invalid_permission_for_assignee_exception(self,
+                                                                       invalid_stage_ids):
+        from ib_tasks.constants.exception_messages import \
+            STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE
+        data = {
+            "response": STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE[
+                0].format(invalid_stage_ids),
+            "http_status_code": 400,
+            "res_status": STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_duplicate_same_gof_orders_for_a_gof(self,
+                                                  err:
+                                                  DuplicateSameGoFOrderForAGoF):
+        from ib_tasks.constants.exception_messages import \
+            DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF
+        response_message = DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF[0].format(
+            err.gof_id, err.same_gof_orders
+        )
+        data = {
+            "response": response_message,
+            "http_status_code": 400,
+            "res_status": DUPLICATE_SAME_GOF_ORDERS_FOR_A_GOF[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def get_create_task_response(self):
         data = {
