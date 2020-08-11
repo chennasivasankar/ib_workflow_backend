@@ -181,6 +181,50 @@ class TestGetUsers:
         assert output == expected_output
 
     @pytest.mark.django_db
+    def test_get_users_with_empty_search_query(
+            self, prepare_create_users_setup):
+        # Arrange
+        users_list = [{
+            'user_id': '1',
+            'is_admin': False,
+            'company_id': 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331'
+        }, {
+            'user_id': '2',
+            'is_admin': False,
+            'company_id': 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331'
+        }, {
+            'user_id': '3',
+            'is_admin': False,
+            'company_id': 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331'
+        }, {
+            'user_id': '4',
+            'is_admin': False,
+            'company_id': 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331'
+        }]
+        from ib_iam.tests.factories.storage_dtos import UserDTOFactory
+        expected_output = [
+            UserDTOFactory(
+                user_id=user_dict["user_id"],
+                is_admin=user_dict["is_admin"],
+                company_id=user_dict["company_id"]
+            )
+            for user_dict in users_list
+        ]
+        from ib_iam.constants.enums import SearchType
+        from ib_iam.interactors.dtos.dtos import SearchQueryAndTypeDTO
+        search_query_and_type_dto = SearchQueryAndTypeDTO(
+            search_query="",
+            search_type=SearchType.USER.value
+        )
+        storage = UserStorageImplementation()
+
+        # Act
+        output = storage.get_users_who_are_not_admins(
+            offset=0, limit=10,
+            search_query_and_type_dto=search_query_and_type_dto)
+        assert output == expected_output
+
+    @pytest.mark.django_db
     def test_get_users_count_for_query(self, users_company, user_dtos):
         # Arrange
         expected_output = 6
