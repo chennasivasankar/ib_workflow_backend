@@ -11,4 +11,6 @@ class TaskStageHistory(models.Model):
     left_at = models.DateTimeField(null=True)
 
     def __str__(self):
-        return "{} with {} and assigned to {}".format(self.task_id, self.stage_id, self.assignee_id)
+        return "{} with {} and assigned to {}".format(self.task_id,
+                                                      self.stage_id,
+                                                      self.assignee_id)

@@ -1,7 +1,7 @@
 import factory
 import pytest
 
-from ib_tasks.tests.factories.models import TaskStageFactory
+from ib_tasks.tests.factories.models import CurrentTaskStageModelFactory
 
 
 @pytest.mark.django_db
@@ -16,12 +16,12 @@ class TestTaskStageStorageImplementation:
 
     @pytest.fixture
     def reset_sequence(self):
-        TaskStageFactory.reset_sequence()
+        CurrentTaskStageModelFactory.reset_sequence()
 
     @pytest.fixture()
     def populate_task_stages(self):
         stage_ids = [1, 2, 3, 4]
-        TaskStageFactory.create_batch(size=4, task_id=1, stage_id=factory.Iterator(stage_ids))
+        CurrentTaskStageModelFactory.create_batch(size=4, task_id=1, stage_id=factory.Iterator(stage_ids))
 
     def test_given_task_id_and_stage_ids_returns_valid_stage_ids(
             self, task_storage, reset_sequence, populate_task_stages
@@ -29,7 +29,7 @@ class TestTaskStageStorageImplementation:
         # Arrange
         task_id = 1
         stage_ids = [1, 2, 3, 4, 5, 6]
-        TaskStageFactory.create_batch(size=4)
+        CurrentTaskStageModelFactory.create_batch(size=4)
         expected_valid_stage_ids = [1, 2, 3, 4]
 
         # Act
@@ -47,7 +47,7 @@ class TestTaskStageStorageImplementation:
         # Arrange
         task_id = 1
         stage_ids = [1, 2, 3, 4]
-        TaskStageFactory.create_batch(size=4)
+        CurrentTaskStageModelFactory.create_batch(size=4)
         expected_valid_stage_ids = [1, 2, 3, 4]
 
         # Act

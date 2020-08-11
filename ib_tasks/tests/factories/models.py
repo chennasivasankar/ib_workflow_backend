@@ -51,15 +51,6 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     card_info_list = json.dumps(['field_id_1', "field_id_2"])
 
 
-class TaskStageModelFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = CurrentTaskStage
-
-    task = factory.SubFactory(TaskFactory)
-    stage = factory.SubFactory(StageModelFactory)
-    assignee_id = "123e4567-e89b-12d3-a456-426614174000"
-
-
 class TaskModelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Task
@@ -243,16 +234,12 @@ class TaskTemplateInitialStageFactory(factory.django.DjangoModelFactory):
     task_template = factory.SubFactory(TaskTemplateFactory)
     stage = factory.SubFactory(StageModelFactory)
 
-
-class TaskStageFactory(factory.django.DjangoModelFactory):
+class CurrentTaskStageModelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = CurrentTaskStage
 
     task = factory.SubFactory(TaskFactory)
     stage = factory.SubFactory(StageModelFactory)
-    assignee_id = factory.sequence(
-        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(counter))
-
 
 class FilterFactory(factory.django.DjangoModelFactory):
     class Meta:

@@ -4,7 +4,7 @@ from ib_tasks.storages.storage_implementation import \
     StagesStorageImplementation
 from ib_tasks.storages.tasks_storage_implementation import \
     TasksStorageImplementation
-from ib_tasks.tests.factories.models import TaskFactory, TaskStageFactory, \
+from ib_tasks.tests.factories.models import TaskFactory, CurrentTaskStageModelFactory, \
     StageModelFactory
 from ib_tasks.tests.factories.storage_dtos import \
     TaskStageHavingAssigneeIdDTOFactory
@@ -22,9 +22,9 @@ class TestUserTaskWithRecentStageDetails:
     def create_task_stages_setup(self, create_task):
         task_obj = create_task
 
-        TaskStageFactory.reset_sequence()
+        CurrentTaskStageModelFactory.reset_sequence()
         StageModelFactory.reset_sequence()
-        TaskStageFactory.create_batch(size=3, task=task_obj)
+        CurrentTaskStageModelFactory.create_batch(size=3, task=task_obj)
 
     @pytest.fixture()
     def stages_having_assignees_dtos(self):
