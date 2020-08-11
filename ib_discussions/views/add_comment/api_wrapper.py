@@ -22,7 +22,8 @@ def api_wrapper(*args, **kwargs):
     multimedia_dtos = [
         MultiMediaDTOFactory(
             format_type=multimedia_dict["format_type"],
-            url=multimedia_dict["url"]
+            url=multimedia_dict["url"],
+            thumbnail_url=multimedia_dict["thumbnail_url"]
         )
         for multimedia_dict in multimedia_list
     ]

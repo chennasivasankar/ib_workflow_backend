@@ -1232,6 +1232,20 @@
           }
         }
       }
+    },
+    "AdvancedSearchRequestBody": {
+      "type": "object",
+      "properties": {
+        "template_id": {
+          "type": "string"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FilterCondition"
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -1241,6 +1255,23 @@
       "required": true,
       "schema": {
         "$ref": "#/definitions/AddTaskReasons"
+      }
+    },
+    "AdvancedSearchableBody": {
+      "in": "body",
+      "name": "AdvancedSearchRequestBody",
+      "description": "advanced search",
+      "required": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "templates_conditions": {
+              "type": "array",
+              "items": {
+                  "$ref": "#/definitions/AdvancedSearchRequestBody"
+              }
+          }
+        }
       }
     },
     "CreateTaskBodyParameter": {
@@ -2352,7 +2383,7 @@
       }
     },
     "/tasks/search/v1/": {
-      "get": {
+      "post": {
         "operationId": "get_tasks_to_search",
         "summary": "get tasks to relevant to search",
         "description": "view the tasks that satisfies the search",
@@ -2369,6 +2400,9 @@
           },
           {
             "$ref": "#/parameters/SearchableQueryParameter"
+          },
+          {
+            "$ref": "#/parameters/AdvancedSearchableBody"
           }
         ],
         "responses": {

@@ -32,8 +32,8 @@ class StageActionDTO:
     function_path: str
     button_text: str
     button_color: Optional[str]
-    action_type: str
-    transition_template_id: str
+    action_type: Optional[str]
+    transition_template_id: Optional[str]
 
 
 @dataclass()
