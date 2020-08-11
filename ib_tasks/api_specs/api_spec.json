@@ -2054,7 +2054,7 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "TASK_IS_NOT_ASSIGNED_TO_TASK"
+              "USER_IS_NOT_ASSIGNED_TO_TASK"
             ]
           }
         },
