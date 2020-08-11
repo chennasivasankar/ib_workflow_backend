@@ -85,29 +85,17 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
         return stages_having_user_details_dtos
 
     def _get_user_having_less_tasks_for_each_stage(self):
-        task_id_with_max_stage_value_dtos = self.task_storage. \
-            get_tasks_with_max_stage_value_dto()
-        stage_values = [
-            task_id_with_max_stage_value_dto.stage_value
-            for task_id_with_max_stage_value_dto in
-            task_id_with_max_stage_value_dtos
-        ]
-        task_ids_group_by_stage_value_dtos = \
-            self._get_task_ids_group_by_stage_value_dtos(
-                stage_values, task_id_with_max_stage_value_dtos
-            )
-        task_id_with_stage_details_dtos = self. \
+
+        task_with_stage_id_dtos = self. \
             stage_storage. \
-            get_task_id_with_stage_details_dtos_based_on_stage_value(
-            stage_values=stage_values,
-            task_ids_group_by_stage_value_dtos=
-            task_ids_group_by_stage_value_dtos)
+            get_current_stages_of_all_tasks()
 
         stage_ids_of_tasks = [task_id_with_stage_details_dto.db_stage_id for
                               task_id_with_stage_details_dto in
                               task_id_with_stage_details_dtos]
         stage_ids_having_actions = self.action_storage.get_stage_ids_having_actions(
             db_stage_ids=stage_ids_of_tasks)
+
 
     @staticmethod
     def _get_task_ids_group_by_stage_value_dtos(

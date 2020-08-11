@@ -324,6 +324,9 @@ class StagesStorageImplementation(StageStorageInterface):
             task_stage_obj in task_stage_objs]
         return stages_having_assignee_dtos
 
+    # def get_current_stages_of_all_tasks(self) -> List[TaskWithDbStageIdDTO]:
+
+
 
 class StorageImplementation(StorageInterface):
 

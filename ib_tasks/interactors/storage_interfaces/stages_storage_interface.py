@@ -4,7 +4,7 @@ from typing import Optional, List
 from ib_tasks.interactors.stages_dtos import StageDTO, \
     TaskIdWithStageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDetailsDTO, \
-    TaskStageHavingAssigneeIdDTO
+    TaskStageHavingAssigneeIdDTO, TaskWithDbStageIdDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
     TaskStagesDTO, TaskTemplateStageDTO, StageValueWithTaskIdsDTO, \
     TaskIdWithStageDetailsDTO
@@ -97,4 +97,8 @@ class StageStorageInterface(abc.ABC):
     def get_stage_details_having_assignees_in_given_stage_ids(
             self, task_id: int, db_stage_ids: List[int]) -> List[
         TaskStageHavingAssigneeIdDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_current_stages_of_all_tasks(self) -> List[TaskWithDbStageIdDTO]:
         pass

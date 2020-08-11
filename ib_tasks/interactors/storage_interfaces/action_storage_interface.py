@@ -81,6 +81,6 @@ class ActionStorageInterface(ABC):
         pass
 
     @abc.abstractmethod
-    def get_stage_ids_having_actions(self, db_stage_ids: List[int]) -> List[
-        int]:
+    def get_stage_ids_having_actions(self, db_stage_ids: List[int]) \
+            -> List[int]:
         pass
