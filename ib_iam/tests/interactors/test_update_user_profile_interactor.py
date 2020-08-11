@@ -37,7 +37,7 @@ class TestUpdateUserProfileInteractor:
         # Arrange
         user_id_name_email_and_profile_pic_url_dto = \
             UserIdNameEmailAndProfilePicUrlDTOFactory(name=name)
-        presenter_mock.raise_minimum_name_length_exception_for_update_user_profile \
+        presenter_mock.raise_invalid_name_length_exception_for_update_user_profile \
             .return_value = mock.Mock()
 
         # Act
@@ -47,7 +47,7 @@ class TestUpdateUserProfileInteractor:
             presenter=presenter_mock)
 
         # Assert
-        presenter_mock.raise_minimum_name_length_exception_for_update_user_profile \
+        presenter_mock.raise_invalid_name_length_exception_for_update_user_profile \
             .assert_called_once()
 
     @pytest.mark.parametrize("name", [("user@"), ("_user"), ("user_name"),

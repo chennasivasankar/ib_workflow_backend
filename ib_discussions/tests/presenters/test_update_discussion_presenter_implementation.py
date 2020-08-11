@@ -74,4 +74,4 @@ class TestUpdateDiscussionPresenterImplementation:
             = presenter.prepare_success_response_for_update_discussion()
 
         # Assert
-        assert response_obj.status_code == StatusCode.CREATED.value
+        assert response_obj.status_code == StatusCode.SUCCESS.value

@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import List
+from typing import List, Dict
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
@@ -31,17 +31,13 @@ class GetCommentsForDiscussionPresenterImplementation(
         return self.prepare_404_not_found_response(response_dict=response_dict)
 
     def prepare_response_for_comments_with_users_dtos(
-            self,
+            self, user_profile_dtos: List[UserProfileDTO],
             comment_with_replies_count_and_editable_dtos: List[
                 CommentWithRepliesCountAndEditableDTO],
-            user_profile_dtos: List[UserProfileDTO],
             comment_id_with_multimedia_dtos: List[CommentIdWithMultiMediaDTO],
             comment_id_with_mention_user_id_dtos: List[
                 CommentIdWithMentionUserIdDTO]
     ):
-        # TODO: optimise the code to below 20 lines
-        from ib_discussions.utils.datetime_utils import \
-            get_datetime_as_string
 
         user_id_wise_user_details_dict = \
             self._prepare_user_id_wise_user_details_dict(
@@ -56,36 +52,53 @@ class GetCommentsForDiscussionPresenterImplementation(
                 comment_id_with_mention_user_id_dtos=comment_id_with_mention_user_id_dtos,
                 user_id_wise_user_details_dict=user_id_wise_user_details_dict
             )
-        comments_details_list = []
-        for comment_details_dto in comment_with_replies_count_and_editable_dtos:
-            comment_id = str(comment_details_dto.comment_id)
-            comment_details_dict = {
-                "comment_id": comment_id,
-                "comment_content": comment_details_dto.comment_content,
-                "author": user_id_wise_user_details_dict[
-                    comment_details_dto.user_id
-                ],
-                "created_at": get_datetime_as_string(
-                    comment_details_dto.created_at
-                ),
-                "total_replies_count": comment_details_dto.replies_count,
-                "is_editable": comment_details_dto.is_editable,
-                "multimedia": comment_id_wise_multimedia_list_dict[comment_id],
-                "mention_users": comment_id_wise_mention_user_details_list_dict[
-                    comment_id
-                ]
-            }
-            comments_details_list.append(comment_details_dict)
-
+        comments_details_list = [
+            self._prepare_comment_details_dict(
+                comment_details_dto,
+                comment_id_wise_mention_user_details_list_dict,
+                comment_id_wise_multimedia_list_dict,
+                user_id_wise_user_details_dict)
+            for comment_details_dto in
+            comment_with_replies_count_and_editable_dtos
+        ]
         response = {
             "comments": comments_details_list
         }
-        return self.prepare_200_success_response(
-            response_dict=response)
+        return self.prepare_200_success_response(response_dict=response)
+
+    @staticmethod
+    def _prepare_comment_details_dict(
+            comment_details_dto,
+            comment_id_wise_mention_user_details_list_dict: Dict[
+                str, List[Dict[str, str]]],
+            comment_id_wise_multimedia_list_dict: Dict[
+                str, List[Dict[str, str]]],
+            user_id_wise_user_details_dict: Dict[str, Dict[str, str]]
+    ):
+        comment_id = str(comment_details_dto.comment_id)
+        from ib_discussions.utils.datetime_utils import get_datetime_as_string
+        comment_details_dict = {
+            "comment_id": comment_id,
+            "comment_content": comment_details_dto.comment_content,
+            "author": user_id_wise_user_details_dict[
+                comment_details_dto.user_id
+            ],
+            "created_at": get_datetime_as_string(
+                comment_details_dto.created_at
+            ),
+            "total_replies_count": comment_details_dto.replies_count,
+            "is_editable": comment_details_dto.is_editable,
+            "multimedia": comment_id_wise_multimedia_list_dict[comment_id],
+            "mention_users": comment_id_wise_mention_user_details_list_dict[
+                comment_id
+            ]
+        }
+        return comment_details_dict
 
     @staticmethod
     def _prepare_user_id_wise_user_details_dict(
-            user_profile_dtos: List[UserProfileDTO]):
+            user_profile_dtos: List[UserProfileDTO]
+    ) -> Dict[str, Dict[str, str]]:
         user_id_wise_user_details_dict = {
             str(user_profile_dto.user_id): {
                 "user_id": str(user_profile_dto.user_id),
@@ -98,7 +111,8 @@ class GetCommentsForDiscussionPresenterImplementation(
 
     def _prepare_comment_id_wise_multimedia_list_dict(
             self,
-            comment_id_with_multimedia_dtos: List[CommentIdWithMultiMediaDTO]):
+            comment_id_with_multimedia_dtos: List[CommentIdWithMultiMediaDTO]
+    ) -> Dict[str, List[Dict[str, str]]]:
         comment_id_wise_multimedia_list_dict = defaultdict(list)
         for comment_id_with_multimedia_dto in comment_id_with_multimedia_dtos:
             comment_id = str(comment_id_with_multimedia_dto.comment_id)
@@ -111,11 +125,13 @@ class GetCommentsForDiscussionPresenterImplementation(
 
     @staticmethod
     def _prepare_comment_id_with_multimedia_dto_dict(
-            comment_id_with_multimedia_dto: CommentIdWithMultiMediaDTO):
+            comment_id_with_multimedia_dto: CommentIdWithMultiMediaDTO
+    ) -> Dict[str, str]:
         comment_id_with_multimedia_dict = {
             "multimedia_id": str(comment_id_with_multimedia_dto.multimedia_id),
             "format_type": comment_id_with_multimedia_dto.format_type,
-            "url": comment_id_with_multimedia_dto.url
+            "url": comment_id_with_multimedia_dto.url,
+            "thumbnail_url": comment_id_with_multimedia_dto.thumbnail_url
         }
         return comment_id_with_multimedia_dict
 
@@ -124,7 +140,7 @@ class GetCommentsForDiscussionPresenterImplementation(
             comment_id_with_mention_user_id_dtos: List[
                 CommentIdWithMentionUserIdDTO],
             user_id_wise_user_details_dict
-    ):
+    ) -> Dict[str, List[Dict[str, str]]]:
         comment_id_wise_mention_user_details_list_dict = defaultdict(list)
 
         for comment_id_with_mention_user_id_dto in comment_id_with_mention_user_id_dtos:

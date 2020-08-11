@@ -807,9 +807,8 @@
                 "type": "string",
                 "enum": [
                   "INVALID_EMAIL",
-                  "INVALID_NAME",
                   "USER_ALREADY_EXIST_WITH_THIS_EMAIL",
-                  "NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE",
+                  "INVALID_NAME_LENGTH",
                   "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
                 ]
               }
@@ -835,8 +834,7 @@
                 "type": "string",
                 "enum": [
                   "INVALID_EMAIL",
-                  "EMPTY_NAME_IS_INVALID",
-                  "NAME_MINIMUM_LENGTH_SHOULD_BE_FIVE_OR_MORE",
+                  "INVALID_NAME_LENGTH",
                   "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
                 ]
               }
@@ -902,7 +900,7 @@
       }
     },
     "BadRequestForUpdateUserProfileResponse": {
-      "description": "Failed to add user",
+      "description": "bad request for update user profile",
       "schema": {
         "allOf": [
           {
@@ -915,9 +913,8 @@
                 "type": "string",
                 "enum": [
                   "INVALID_EMAIL",
-                  "EMPTY_NAME_IS_INVALID",
                   "EMAIL_ALREADY_IN_USE",
-                  "NAME_MINIMUM_LENGTH_SHOULD_BE",
+                  "INVALID_NAME_LENGTH",
                   "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
                 ]
               }

@@ -31,15 +31,15 @@ class TestResponseAddNewUser:
         # Arrange
         presenter = AddUserPresenterImplementation()
         from ib_iam.constants.exception_messages \
-            import NAME_MINIMUM_LENGTH_SHOULD_BE
+            import INVALID_NAME_LENGTH
         from ib_iam.constants.config import MINIMUM_USER_NAME_LENGTH
-        expected_response = NAME_MINIMUM_LENGTH_SHOULD_BE[0].format(
+        expected_response = INVALID_NAME_LENGTH[0].format(
             minimum_name_length=MINIMUM_USER_NAME_LENGTH)
-        response_status_code = NAME_MINIMUM_LENGTH_SHOULD_BE[1]
+        response_status_code = INVALID_NAME_LENGTH[1]
 
         # Act
         response_object = \
-            presenter.raise_name_minimum_length_should_be_equal_or_more_than()
+            presenter.raise_invalid_name_length_exception_for_update_user_profile()
 
         # Assert
         response = json.loads(response_object.content)
