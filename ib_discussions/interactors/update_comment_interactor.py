@@ -18,7 +18,7 @@ class UpdateCommentInteractor:
                                mention_user_ids: List[str],
                                multimedia_dtos: List[MultiMediaDTO]):
         from ib_discussions.exceptions.custom_exceptions import \
-            CommentIdNotFound
+            CommentIdNotFound, UserCannotEditComment
         from ib_discussions.adapters.auth_service import InvalidUserIds
         try:
             response = self._update_comment_response(
@@ -30,6 +30,8 @@ class UpdateCommentInteractor:
             response = presenter.prepare_response_for_comment_id_not_found()
         except InvalidUserIds as err:
             response = presenter.response_for_invalid_user_ids(err)
+        except UserCannotEditComment:
+            response = presenter.response_for_user_cannot_edit_comment()
         return response
 
     def _update_comment_response(self, comment_content, comment_id,
@@ -55,12 +57,19 @@ class UpdateCommentInteractor:
             self, user_id: str, comment_id: str, mention_user_ids: List[str],
             multimedia_dtos: List[MultiMediaDTO], comment_content: str
     ):
+        from ib_discussions.exceptions.custom_exceptions import \
+            CommentIdNotFound, UserCannotEditComment
         is_comment_id_not_exists = \
             not self.comment_storage.is_comment_id_exists(comment_id=comment_id)
         if is_comment_id_not_exists:
-            from ib_discussions.exceptions.custom_exceptions import \
-                CommentIdNotFound
             raise CommentIdNotFound
+
+        comment_creator_id = self.comment_storage.get_comment_creator_id(
+            comment_id=comment_id
+        )
+        is_not_comment_creator = not comment_creator_id == user_id
+        if is_not_comment_creator:
+            raise UserCannotEditComment
 
         from ib_discussions.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()

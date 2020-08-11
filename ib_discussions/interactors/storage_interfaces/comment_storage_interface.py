@@ -81,3 +81,11 @@ class CommentStorageInterface(ABC):
     @abstractmethod
     def update_comment(self, comment_id: str, comment_content: str):
         pass
+
+    @abstractmethod
+    def get_comment_creator_id(self, comment_id: str):
+        pass
+
+    @abstractmethod
+    def delete_comment(self, comment_id: str):
+        pass

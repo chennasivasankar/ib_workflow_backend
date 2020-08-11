@@ -114,6 +114,42 @@ class TestUpdateCommentInteractor:
         # Assert
         assert response == \
                expected_presenter_prepare_response_for_comment_id_not_found_mock
+        presenter_mock.prepare_response_for_comment_id_not_found. \
+            assert_called_once()
+        storage_mock.is_comment_id_exists.assert_called_once()
+
+    def test_with_user_cannot_edit_comment_return_response(
+            self, storage_mock, presenter_mock, interactor, prepare_users_setup,
+            prepare_multimedia_setup
+    ):
+        # Arrange
+        user_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        comment_id = "97be920b-7b4c-49e7-8adb-41a0c18da848"
+        comment_content = "content"
+        mention_user_ids = prepare_users_setup
+        multimedia_dtos = prepare_multimedia_setup
+        expected_presenter_response_for_user_cannot_edit_comment_mock = \
+            Mock()
+        presenter_mock.response_for_user_cannot_edit_comment. \
+            return_value = expected_presenter_response_for_user_cannot_edit_comment_mock
+
+        storage_mock.is_comment_id_exists.return_value = True
+        storage_mock.get_comment_creator_id.return_value = \
+            "21be920b-7b4c-49e7-8adb-41a0c18da848"
+
+        # Act
+        response = interactor.update_comment_wrapper(
+            user_id=user_id, comment_id=comment_id, presenter=presenter_mock,
+            mention_user_ids=mention_user_ids, multimedia_dtos=multimedia_dtos,
+            comment_content=comment_content
+        )
+
+        # Assert
+        assert response == \
+               expected_presenter_response_for_user_cannot_edit_comment_mock
+        storage_mock.is_comment_id_exists.assert_called_once()
+        storage_mock.get_comment_creator_id.assert_called_once()
+        presenter_mock.response_for_user_cannot_edit_comment.assert_called_once()
 
     def test_invalid_user_ids_return_response(
             self, storage_mock, presenter_mock, interactor, mocker,
@@ -138,6 +174,7 @@ class TestUpdateCommentInteractor:
 
         expected_presenter_response_for_invalid_user_ids_mock = Mock()
 
+        storage_mock.get_comment_creator_id.return_value = user_id
         storage_mock.is_comment_id_exists.return_value = True
 
         presenter_mock.response_for_invalid_user_ids.return_value \
@@ -164,8 +201,30 @@ class TestUpdateCommentInteractor:
         comment_content = "content"
         mention_user_ids = prepare_users_setup
         multimedia_dtos = prepare_multimedia_setup
+        from ib_discussions.tests.factories.storage_dtos import \
+            CommentDTOFactory
+        comment_dto = CommentDTOFactory(
+            comment_id=comment_id,
+            user_id=user_id,
+            comment_content=comment_content
+        )
+
+        from ib_discussions.tests.factories.storage_dtos import \
+            CommentIdWithRepliesCountDTOFactory
+        comment_id_with_replies_count_dtos = [
+            CommentIdWithRepliesCountDTOFactory(
+                comment_id=comment_id,
+                replies_count=0
+            )
+        ]
 
         expected_presenter_prepare_response_for_comment_mock = Mock()
+
+        storage_mock.is_comment_id_exists.return_value = True
+        storage_mock.get_comment_creator_id.return_value = user_id
+        storage_mock.get_comment_details_dto.return_value = comment_dto
+        storage_mock.get_replies_count_for_comments.return_value \
+            = comment_id_with_replies_count_dtos
 
         presenter_mock.prepare_response_for_comment.return_value = \
             expected_presenter_prepare_response_for_comment_mock
@@ -183,3 +242,19 @@ class TestUpdateCommentInteractor:
 
         # Assert
         assert response == expected_presenter_prepare_response_for_comment_mock
+        storage_mock.get_comment_details_dto.assert_called_once_with(
+            comment_id=comment_id
+        )
+        storage_mock.is_comment_id_exists.assert_called_once()
+        storage_mock.get_replies_count_for_comments.assert_called_once_with(
+            comment_ids=[comment_id]
+        )
+        storage_mock.get_mention_user_ids.assert_called_once_with(
+            comment_ids=[comment_id]
+        )
+        storage_mock.get_comment_id_with_mention_user_id_dtos.assert_called_once_with(
+            comment_ids=[comment_id]
+        )
+        storage_mock.get_multimedia_dtos.assert_called_once_with(
+            comment_ids=[comment_id]
+        )

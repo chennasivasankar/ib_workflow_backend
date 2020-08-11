@@ -951,7 +951,8 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_USER_IDS"
+                  "INVALID_USER_IDS",
+                  "USER_CANNOT_EDIT_COMMENT"
                 ]
               }
             },
@@ -975,7 +976,31 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "COMMENT_ID_NOT_FOUNT"
+                  "COMMENT_ID_NOT_FOUND"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "DeleteCommentBadRequestResponse": {
+      "description": "delete comment bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_CANNOT_EDIT_COMMENT"
                 ]
               }
             },
@@ -1205,7 +1230,7 @@
         }
       }
     },
-    "/discussion/{comment_id}/v1/": {
+    "/comment/{comment_id}/v1/": {
       "put": {
         "operationId": "update_comment",
         "summary": "Update Comment",
@@ -1259,6 +1284,9 @@
           },
           "404": {
             "$ref": "#/responses/DeleteCommentNotFoundResponse"
+          },
+          "400": {
+            "$ref": "#/responses/DeleteCommentBadRequestResponse"
           }
         }
       }
