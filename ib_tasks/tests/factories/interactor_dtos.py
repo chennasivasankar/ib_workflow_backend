@@ -1,6 +1,4 @@
 from datetime import timedelta, datetime
-from typing import List
-from ib_tasks.interactors.get_tasks_to_relevant_search_query import SearchQueryDTO
 
 import factory
 
@@ -8,6 +6,7 @@ from ib_tasks.adapters.dtos import UserDTO
 from ib_tasks.constants.enum import Searchable
 from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
+from ib_tasks.interactors.get_tasks_to_relevant_search_query import SearchQueryDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
@@ -45,7 +44,7 @@ class GetTaskDueDetailsDTOFactory(factory.Factory):
     class Meta:
         model = TaskDueDetailsDTO
 
-    user = factory.SubFactory(UserDetailsDTOFactory)
+    user = factory.SubFactory(AssigneeDetailsDTOFactory)
     task_id = factory.Sequence(lambda n: 'task_id_%d' % (n + 1))
     due_date_time = datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S.%z")
     due_missed_count = factory.Sequence(lambda n: n)

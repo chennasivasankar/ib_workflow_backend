@@ -1,4 +1,5 @@
 import pytest
+from freezegun import freeze_time
 
 from ib_tasks.storages.storage_implementation import StorageImplementation
 from ib_tasks.tests.factories.models import TaskFactory, TaskStageModelFactory, TaskDueDetailsFactory
@@ -69,6 +70,7 @@ class TestGetTaskDueMissingDetails:
         # Assert
         assert response == expected_response
 
+    @freeze_time("2020-08-10 12:30:56")
     def test_get_due_details_of_task_given_task_id(self, populate_data, snapshot):
         # Arrange
         task_id = 1
@@ -80,6 +82,7 @@ class TestGetTaskDueMissingDetails:
         # Assert
         snapshot.assert_match(response, "due_details")
 
+    @freeze_time("2020-08-10 12:30:56")
     def test_get_due_details_of_task_when_task_has_no_delays(self, snapshot):
         # Arrange
         TaskFactory.reset_sequence()

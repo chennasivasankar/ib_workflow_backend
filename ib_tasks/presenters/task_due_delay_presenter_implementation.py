@@ -1,9 +1,8 @@
-from datetime import datetime
 from typing import List
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
-from ib_tasks.adapters.dtos import UserDetailsDTO
+from ib_tasks.adapters.dtos import AssigneeDetailsDTO
 from ib_tasks.constants.exception_messages import USER_IS_NOT_ASSIGNED_TO_TASK, INVALID_DUE_DATE_TIME, INVALID_REASON_ID
 from ib_tasks.exceptions.custom_exceptions import InvalidTaskIdException
 from ib_tasks.interactors.presenter_interfaces.task_due_missing_details_presenter import \
@@ -61,9 +60,9 @@ class TaskDueDetailsPresenterImplementation(TaskDueDetailsPresenterInterface,
         return task_delay_details_list
 
     @staticmethod
-    def _convert_user_dto_to_dict(user: UserDetailsDTO):
-        user_dict = {'user_id': user.user_id,
-                     'name': user.user_name,
+    def _convert_user_dto_to_dict(user: AssigneeDetailsDTO):
+        user_dict = {'user_id': user.assignee_id,
+                     'name': user.name,
                      'profile_pic': user.profile_pic_url}
         return user_dict
 

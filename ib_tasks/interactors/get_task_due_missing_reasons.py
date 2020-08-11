@@ -49,11 +49,11 @@ class GetTaskDueMissingReasonsInteractor:
     def _get_task_reasons(self, task_id: int):
         task_details = self.task_storage.get_task_due_details(task_id)
         user_ids = [task.user_id for task in task_details]
-        user_service = get_service_adapter().auth_service
-        user_dtos = user_service.get_user_details(user_ids)
+        user_service = get_service_adapter().assignee_details_service
+        user_dtos = user_service.get_assignees_details_dtos(user_ids)
         users_dict = {}
         for user in user_dtos:
-            users_dict[user.user_id] = user
+            users_dict[user.assignee_id] = user
         task_dtos = self._map_user_and_tasks(task_details, users_dict)
         return task_dtos
 
