@@ -8,7 +8,8 @@
     "description": "IB Utility Tools"
   },
   "schemes": [
-    "http"
+    "http",
+    "https"
   ],
   "consumes": [
     "application/json"
@@ -249,22 +250,15 @@
     "GetChecklistResponse": {
       "description": "get checklist response",
       "schema": {
-        "allOf": [
-          {
-            "$ref": "#/definitions/EntityDetails"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "checklist": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/ChecklistItemWithIdAndDetails"
-                }
-              }
+        "type": "object",
+        "properties": {
+          "checklist": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/ChecklistItemWithIdAndDetails"
             }
           }
-        ]
+        }
       }
     },
     "TimerResponse": {
