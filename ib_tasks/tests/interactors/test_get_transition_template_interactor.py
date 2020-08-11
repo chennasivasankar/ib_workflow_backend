@@ -187,7 +187,7 @@ class TestGetTransitionTemplateInteractor:
                 gof_ids=expected_gof_ids, template_id=transition_template_id
             )
         gof_storage_mock.get_gof_ids_with_read_permission_for_user. \
-            assert_called_once_with(roles=expected_roles)
+            assert_called_once_with(user_roles=expected_roles)
         field_storage_mock.get_fields_of_gofs_in_dtos. \
             assert_called_once_with(gof_ids=expected_gof_ids)
         field_storage_mock.get_user_field_permission_dtos. \
@@ -328,7 +328,7 @@ class TestGetTransitionTemplateInteractor:
                 gof_ids=expected_gof_ids, template_id=transition_template_id
             )
         gof_storage_mock.get_gof_ids_with_read_permission_for_user. \
-            assert_called_once_with(roles=expected_roles)
+            assert_called_once_with(user_roles=expected_roles)
         field_storage_mock.get_fields_of_gofs_in_dtos. \
             assert_called_once_with(gof_ids=expected_gof_ids)
         field_storage_mock.get_user_field_permission_dtos. \
@@ -424,7 +424,7 @@ class TestGetTransitionTemplateInteractor:
                 gof_ids=expected_gof_ids, template_id=transition_template_id
             )
         gof_storage_mock.get_gof_ids_with_read_permission_for_user. \
-            assert_called_once_with(roles=expected_roles)
+            assert_called_once_with(user_roles=expected_roles)
         field_storage_mock.get_fields_of_gofs_in_dtos. \
             assert_called_once_with(gof_ids=expected_gof_ids)
         field_storage_mock.get_user_field_permission_dtos. \
@@ -526,7 +526,7 @@ class TestGetTransitionTemplateInteractor:
                 gof_ids=expected_gof_ids, template_id=transition_template_id
             )
         gof_storage_mock.get_gof_ids_with_read_permission_for_user. \
-            assert_called_once_with(roles=expected_roles)
+            assert_called_once_with(user_roles=expected_roles)
         field_storage_mock.get_fields_of_gofs_in_dtos. \
             assert_called_once_with(gof_ids=expected_gof_ids)
         field_storage_mock.get_user_field_permission_dtos. \
