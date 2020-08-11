@@ -218,7 +218,7 @@
         }
       },
       "required": [
-        "updated_due_date_time", "reason_id"
+        "updated_due_date_time", "reason_id", "reason"
       ]
     },
     "CreateTaskRequestBody": {
