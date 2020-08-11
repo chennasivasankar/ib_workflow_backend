@@ -10,7 +10,7 @@ from ib_tasks.models.task import Task, ElasticSearchTask
 from ib_tasks.models.task_gof import TaskGoF
 from ib_tasks.models.task_gof_field import TaskGoFField
 from ib_tasks.models.task_log import TaskLog
-from ib_tasks.models.task_stage import TaskStage
+from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from ib_tasks.models.filter import Filter
@@ -27,14 +27,14 @@ admin.site.register(StagePermittedRoles)
 admin.site.register(TaskTemplateStatusVariable)
 admin.site.register(TaskTemplateInitialStage)
 admin.site.register(TaskStatusVariable)
-admin.site.register(TaskStage)
+admin.site.register(CurrentTaskStage)
 admin.site.register(TaskGoF)
 admin.site.register(TaskGoFField)
 admin.site.register(TaskTemplateGoFs)
 
 
 class TaskStageInline(admin.StackedInline):
-    model = TaskStage
+    model = CurrentTaskStage
     extra = 3
 
 

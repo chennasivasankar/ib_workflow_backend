@@ -1,4 +1,7 @@
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
+from ib_tasks.exceptions.datetime_custom_exceptions import \
+    InvalidDueTimeFormat, StartDateIsAheadOfDueDate, DueDateIsBehindStartDate, \
+    DueTimeHasExpiredForToday
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     EmptyValueForRequiredField, InvalidPhoneNumberValue, \
     InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
@@ -75,6 +78,14 @@ class SaveAndActOnATaskInteractor:
             return presenter.raise_invalid_task_id(err)
         except InvalidActionException as err:
             return presenter.raise_invalid_action_id(err)
+        except InvalidDueTimeFormat as err:
+            return presenter.raise_invalid_due_time_format(err)
+        except StartDateIsAheadOfDueDate as err:
+            return presenter.raise_start_date_is_ahead_of_due_date(err)
+        except DueDateIsBehindStartDate as err:
+            return presenter.raise_due_date_is_behind_start_date(err)
+        except DueTimeHasExpiredForToday as err:
+            return presenter.raise_due_time_has_expired_for_today(err)
         except InvalidGoFIds as err:
             return presenter.raise_invalid_gof_ids(err)
         except InvalidFieldIds as err:

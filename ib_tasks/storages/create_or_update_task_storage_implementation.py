@@ -6,7 +6,7 @@ from ib_tasks.constants.config import TIME_FORMAT
 from ib_tasks.exceptions.task_custom_exceptions \
     import InvalidTaskIdException
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
-from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrder
+from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrderDTO
 from ib_tasks.interactors.storage_interfaces. \
     create_or_update_task_storage_interface \
     import CreateOrUpdateTaskStorageInterface
@@ -40,26 +40,15 @@ class CreateOrUpdateTaskStorageImplementation(
         task_obj.priority = task_dto.priority
         task_obj.save()
 
-    def create_initial_task_stage(self, task_id: int, initial_stage_id: str):
-        from ib_tasks.models import TaskStage
-        TaskStage.objects.get_or_create(
-            task_id=task_id,
-            stage_id=initial_stage_id
-        )
-
-    def get_initial_stage_for_task_template(self, template_id: str) -> str:
+    def create_initial_task_stage(self, task_id: int, template_id: str):
+        from ib_tasks.models import CurrentTaskStage
         from ib_tasks.models import TaskTemplateInitialStage
-        stage_id = TaskTemplateInitialStage.objects.get(
-            task_template_id=template_id
-        ).stage_id
-        return stage_id
-
-    def get_current_stage_ids_of_task(self, task_id: int) -> List[str]:
-        from ib_tasks.models import TaskStage
-        stage_ids = TaskStage.objects.filter(
-            task_id=task_id
-        ).values_list('stage__stage_id', flat=True)
-        return list(stage_ids)
+        CurrentTaskStage.objects.get_or_create(
+            task_id=task_id,
+            stage=TaskTemplateInitialStage.objects.get(
+                task_template_id=template_id
+            ).stage
+        )
 
     def get_all_gof_ids_related_to_a_task_template(self,
                                                    task_template_id: str) -> \
@@ -157,12 +146,12 @@ class CreateOrUpdateTaskStorageImplementation(
         return task_existence
 
     def get_gof_ids_with_same_gof_order_related_to_a_task(
-            self, task_id: int) -> List[GoFIdWithSameGoFOrder]:
+            self, task_id: int) -> List[GoFIdWithSameGoFOrderDTO]:
         gof_dicts = list(
             TaskGoF.objects.filter(task_id=task_id).values(
                 'gof_id', 'same_gof_order'))
         gof_id_with_same_gof_order_dtos = [
-            GoFIdWithSameGoFOrder(
+            GoFIdWithSameGoFOrderDTO(
                 gof_id=gof_dict['gof_id'],
                 same_gof_order=gof_dict['same_gof_order']
             )

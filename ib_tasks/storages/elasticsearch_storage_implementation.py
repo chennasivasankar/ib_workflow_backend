@@ -109,6 +109,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
 
         from elasticsearch_dsl import Q
         search = self._get_search_task_objects(apply_filter_dtos)
+
         if search_query:
             search = search.query(
                 Q(
