@@ -23,7 +23,7 @@ from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, \
     CreateTaskLogDTO, \
     CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeIdDTO
-from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory
+from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory,\
     FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, CreateTaskLogDTO, TaskDueParametersDTO
 from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory, UserDetailsDTO
 
