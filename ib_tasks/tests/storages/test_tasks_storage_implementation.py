@@ -15,12 +15,13 @@ class TestTasksStorageImplementation:
     def reset_sequence(self):
         from ib_tasks.tests.factories.models import StageModelFactory, \
             TaskTemplateInitialStageFactory, TaskTemplateFactory, \
-            StageActionFactory
+            StageActionFactory, TaskFactory
 
         TaskTemplateFactory.reset_sequence(1)
         StageModelFactory.reset_sequence(1)
         TaskTemplateInitialStageFactory.reset_sequence(1)
         StageActionFactory.reset_sequence(1)
+        TaskFactory.reset_sequence()
 
     def test_get_initial_stage_ids_of_templates(self, storage):
         # Arrange
