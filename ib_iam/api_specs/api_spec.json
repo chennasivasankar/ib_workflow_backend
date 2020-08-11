@@ -884,7 +884,7 @@
       }
     },
     "BadRequestForUpdateUserProfileResponse": {
-      "description": "Failed to add user",
+      "description": "bad request for update user profile",
       "schema": {
         "allOf": [
           {
@@ -897,7 +897,6 @@
                 "type": "string",
                 "enum": [
                   "INVALID_EMAIL",
-                  "EMPTY_NAME_IS_INVALID",
                   "EMAIL_ALREADY_IN_USE",
                   "INVALID_NAME_LENGTH",
                   "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
