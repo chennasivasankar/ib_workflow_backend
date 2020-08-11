@@ -66,6 +66,7 @@ class TestGetColumnDetailsInteractor:
 
     @pytest.fixture
     def column_tasks_ids(self):
+        TaskStageIdDTOFactory.reset_sequence()
         return ColumnTaskIdsDTOFactory.create_batch(3)
 
     @pytest.fixture
@@ -127,6 +128,8 @@ class TestGetColumnDetailsInteractor:
 
     @pytest.fixture
     def column_stage_dtos(self):
+        ColumnStageIdsDTOFactory.reset_sequence()
+        ColumnStageIdsDTOFactory.stage_ids.reset()
         return ColumnStageIdsDTOFactory.create_batch(3)
 
     @pytest.fixture
@@ -137,6 +140,7 @@ class TestGetColumnDetailsInteractor:
 
     @pytest.fixture
     def task_ids_config(self):
+        TaskDetailsConfigDTOFactory.reset_sequence()
         return TaskDetailsConfigDTOFactory.create_batch(3)
 
     @pytest.fixture
@@ -188,10 +192,17 @@ class TestGetColumnDetailsInteractor:
         storage.validate_board_id.assert_called_once_with(board_id=board_id)
         presenter.response_for_invalid_board_id.assert_called_once()
 
-    def test_with_invalid_offset_raises_exception(self):
+    @patch("ib_boards.adapters.service_adapter.ServiceAdapter.iam_service")
+    def test_with_invalid_offset_raises_exception(self, user_roles_service):
         # Arrange
 
         board_id = "board_id_1"
+        user_roles = ["FIN_PAYMENT_REQUESTER",
+                      "FIN_PAYMENT_POC",
+                      "FIN_PAYMENT_APPROVER",
+                      "FIN_PAYMENTS_LEVEL1_VERIFIER",
+                      "FIN_PAYMENTS_LEVEL2_VERIFIER",
+                      "FIN_PAYMENTS_LEVEL3_VERIFIER"]
         columns_parameters = ColumnParametersDTO(
             board_id=board_id,
             user_id="user_id_1",
@@ -207,6 +218,10 @@ class TestGetColumnDetailsInteractor:
         interactor = GetColumnDetailsInteractor(
             storage=storage
         )
+        user_roles_service.get_user_roles.return_value = user_roles
+        board_permitted_user_roles = ["FIN_PAYMENT_POC"]
+
+        storage.get_permitted_user_roles_for_board.return_value = board_permitted_user_roles
 
         # Act
         interactor.get_column_details_wrapper(
@@ -217,9 +232,16 @@ class TestGetColumnDetailsInteractor:
         # Assert
         presenter.response_for_invalid_offset_value.assert_called_once()
 
-    def test_with_invalid_limit_raises_exception(self):
+    @patch("ib_boards.adapters.service_adapter.ServiceAdapter.iam_service")
+    def test_with_invalid_limit_raises_exception(self, user_roles_service):
         # Arrange
         board_id = "board_id_1"
+        user_roles = ["FIN_PAYMENT_REQUESTER",
+                      "FIN_PAYMENT_POC",
+                      "FIN_PAYMENT_APPROVER",
+                      "FIN_PAYMENTS_LEVEL1_VERIFIER",
+                      "FIN_PAYMENTS_LEVEL2_VERIFIER",
+                      "FIN_PAYMENTS_LEVEL3_VERIFIER"]
         columns_parameters = ColumnParametersDTO(
             board_id=board_id,
             user_id="user_id_1",
@@ -235,6 +257,10 @@ class TestGetColumnDetailsInteractor:
         interactor = GetColumnDetailsInteractor(
             storage=storage
         )
+        user_roles_service.get_user_roles.return_value = user_roles
+        board_permitted_user_roles = ["FIN_PAYMENT_POC"]
+
+        storage.get_permitted_user_roles_for_board.return_value = board_permitted_user_roles
 
         # Act
         interactor.get_column_details_wrapper(
@@ -443,9 +469,6 @@ class TestGetColumnDetailsInteractor:
         # Assert
         storage.get_columns_details.assert_called_once_with(
             column_ids=column_ids)
-        storage.get_columns_stage_ids.assert_called_once_with(
-            column_ids=column_ids
-        )
         task_ids_mock.assert_called_once_with(
             task_config_dtos=task_ids_config
         )

@@ -53,9 +53,6 @@ class GetColumnDetailsInteractor:
 
         column_dtos = self._get_column_details_dto(board_id, user_id)
         column_ids = [column_dto.column_id for column_dto in column_dtos]
-        column_stage_dtos = self.storage.get_columns_stage_ids(
-            column_ids=column_ids
-        )
         column_tasks_parameters = ColumnsTasksParametersDTO(
             column_ids=column_ids,
             limit=limit,
