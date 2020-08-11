@@ -126,8 +126,15 @@ class AuthService:
     def update_user_password(
             self, user_id: str,
             current_and_new_password_dto: CurrentAndNewPasswordDTO):
-        self.interface.update_password(
-            user_id=user_id,
-            new_password=current_and_new_password_dto.new_password,
-            current_password=current_and_new_password_dto.current_password
-        )
+        from ib_users.interactors.user_credentials.exceptions.user_credentials_exceptions import \
+            InvalidCurrentPasswordException
+        try:
+            self.interface.update_password(
+                user_id=user_id,
+                new_password=current_and_new_password_dto.new_password,
+                current_password=current_and_new_password_dto.current_password
+            )
+        except InvalidCurrentPasswordException:
+            from ib_iam.exceptions.custom_exceptions import \
+                InvalidCurrentPassword
+            raise InvalidCurrentPassword
