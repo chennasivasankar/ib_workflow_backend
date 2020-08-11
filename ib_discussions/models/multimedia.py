@@ -20,3 +20,4 @@ class MultiMedia(models.Model):
         max_length=30, choices=multimedia_choices
     )
     url = models.TextField()
+    thumbnail_url = models.TextField()

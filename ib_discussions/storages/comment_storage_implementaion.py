@@ -150,7 +150,8 @@ class CommentStorageImplementation(CommentStorageInterface):
                 comment_id=comment_id,
                 multimedia=MultiMedia.objects.create(
                     format_type=multimedia_dto.format_type,
-                    url=multimedia_dto.url
+                    url=multimedia_dto.url,
+                    thumbnail_url=multimedia_dto.thumbnail_url
                 )
             )
             for multimedia_dto in multimedia_dtos
@@ -197,7 +198,8 @@ class CommentStorageImplementation(CommentStorageInterface):
                 comment_id=str(comment_id_with_multimedia_object.comment_id),
                 multimedia_id=str(comment_id_with_multimedia_object.multimedia_id),
                 format_type=comment_id_with_multimedia_object.multimedia.format_type,
-                url=comment_id_with_multimedia_object.multimedia.url
+                url=comment_id_with_multimedia_object.multimedia.url,
+                thumbnail_url=comment_id_with_multimedia_object.multimedia.thumbnail_url
             )
             for comment_id_with_multimedia_object in
             comment_id_with_multimedia_objects

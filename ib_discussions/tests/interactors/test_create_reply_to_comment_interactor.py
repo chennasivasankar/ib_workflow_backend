@@ -29,7 +29,7 @@ class TestCreateReplyToCommentInteractor:
         return interactor
 
     def test_comment_id_not_found_return_response(
-            self, storage_mock, presenter_mock, interactor
+            self, storage_mock, presenter_mock, interactor, mocker
     ):
         # Arrange
         user_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
@@ -39,6 +39,11 @@ class TestCreateReplyToCommentInteractor:
             "10be920b-7b4c-49e7-8adb-41a0c18da848",
             "20be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
+
+        from ib_discussions.tests.common_fixtures.adapters import \
+            prepare_validate_user_ids_mock
+        prepare_validate_user_ids_mock(mocker=mocker)
+
         from ib_discussions.tests.factories.interactor_dtos import \
             MultiMediaDTOFactory
         MultiMediaDTOFactory.format_type.reset()
@@ -64,6 +69,52 @@ class TestCreateReplyToCommentInteractor:
         presenter_mock.response_for_comment_id_not_found.assert_called_once()
         storage_mock.is_comment_id_exists.assert_called_once()
 
+    def test_invalid_user_ids_return_response(
+            self, storage_mock, presenter_mock, interactor, mocker
+    ):
+        # Arrange
+        user_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
+        comment_id = "71be920b-7b4c-49e7-8adb-41a0c18da848"
+        comment_content = "content"
+        mention_user_ids = [
+            "10be920b-7b4c-49e7-8adb-41a0c18da848",
+            "20be920b-7b4c-49e7-8adb-41a0c18da848"
+        ]
+
+        invalid_user_ids = [
+            "10be920b-7b4c-49e7-8adb-41a0c18da848"
+        ]
+        from ib_discussions.tests.common_fixtures.adapters import \
+            prepare_validate_user_ids_mock
+        validate_user_ids_mock = prepare_validate_user_ids_mock(mocker=mocker)
+        from ib_discussions.adapters.auth_service import InvalidUserIds
+        validate_user_ids_mock.side_effect = InvalidUserIds(
+            user_ids=invalid_user_ids)
+
+        from ib_discussions.tests.factories.interactor_dtos import \
+            MultiMediaDTOFactory
+        MultiMediaDTOFactory.format_type.reset()
+        multimedia_dtos = MultiMediaDTOFactory.create_batch(2)
+
+        expected_presenter_response_for_invalid_user_ids_mock = Mock()
+
+        storage_mock.is_comment_id_exists.return_value = False
+
+        presenter_mock.response_for_invalid_user_ids.return_value \
+            = expected_presenter_response_for_invalid_user_ids_mock
+
+        # Act
+        response = interactor.reply_to_comment_wrapper(
+            comment_id=comment_id, comment_content=comment_content,
+            user_id=user_id, presenter=presenter_mock,
+            mention_user_ids=mention_user_ids, multimedia_dtos=multimedia_dtos
+        )
+
+        # Assert
+        assert response == \
+               expected_presenter_response_for_invalid_user_ids_mock
+        presenter_mock.response_for_invalid_user_ids.assert_called_once()
+
     def test_with_valid_details_for_direct_reply_to_comment_return_response(
             self, storage_mock, presenter_mock, interactor, mocker
     ):
@@ -73,6 +124,10 @@ class TestCreateReplyToCommentInteractor:
         reply_comment_id = "01be920b-7b4c-49e7-8adb-41a0c18da848"
         comment_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
         comment_content = "content"
+
+        from ib_discussions.tests.common_fixtures.adapters import \
+            prepare_validate_user_ids_mock
+        prepare_validate_user_ids_mock(mocker=mocker)
 
         from ib_discussions.tests.factories.storage_dtos import \
             CommentDTOFactory
@@ -157,6 +212,10 @@ class TestCreateReplyToCommentInteractor:
         reply_comment_id = "01be920b-7b4c-49e7-8adb-41a0c18da848"
         comment_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
         comment_content = "content"
+
+        from ib_discussions.tests.common_fixtures.adapters import \
+            prepare_validate_user_ids_mock
+        prepare_validate_user_ids_mock(mocker=mocker)
 
         from ib_discussions.tests.factories.storage_dtos import \
             CommentDTOFactory

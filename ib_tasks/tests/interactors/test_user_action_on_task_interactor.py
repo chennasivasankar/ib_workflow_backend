@@ -240,9 +240,8 @@ class TestUserActionOnTaskInteractor:
         # Assert
         mock_obj.called_once()
         storage.validate_action.assert_called_once_with(action_id=action_id)
-        dict_obj = \
-            presenter.raise_exception_for_invalid_present_actions.call_args\
-                .kwargs
+        dict_obj = presenter.raise_exception_for_invalid_present_actions\
+            .call_args.kwargs
         expected_action_id = dict_obj['error_obj'].action_id
         assert action_id == expected_action_id
 
@@ -384,12 +383,12 @@ class TestUserActionOnTaskInteractor:
                '.does_user_has_required_permission'
         validation_mock_obj = mocker.patch(path)
         validation_mock_obj.return_value = True
-        from ib_tasks.tests.common_fixtures.interactors \
-            import (
+        from ib_tasks.tests.common_fixtures.interactors import (
             prepare_stage_display_satisfied_stage_ids,
-            prepare_task_boards_details,
-            prepare_fields_and_actions_dto
+            prepare_task_boards_details, prepare_fields_and_actions_dto,
+            prepare_mock_for_next_stage_random_assignees
         )
+        prepare_mock_for_next_stage_random_assignees(mocker)
         task_board_details = prepare_task_boards_details()
         stage_mock = prepare_stage_display_satisfied_stage_ids(mocker)
         task_stage_details_dto = prepare_fields_and_actions_dto(mocker)
@@ -413,4 +412,5 @@ class TestUserActionOnTaskInteractor:
         validation_mock_obj.called_once()
         presenter.get_response_for_user_action_on_task \
             .assert_called_once_with(
-            task_complete_details_dto=task_complete_details)
+                task_complete_details_dto=task_complete_details
+            )
