@@ -290,6 +290,13 @@
       "format": "int64",
       "required": true
     },
+    "SearchQueryParameter": {
+      "name": "search_query",
+      "in": "query",
+      "description": "Search Query value",
+      "type": "string",
+      "required": false
+    },
     "BoardIdParameter": {
       "name": "board_id",
       "in": "path",
@@ -513,6 +520,9 @@
           },
           {
             "$ref": "#/parameters/ViewTypeParameter"
+          },
+          {
+            "$ref":"#/parameters/SearchQueryParameter"
           }
         ],
         "responses": {
@@ -556,6 +566,9 @@
           },
           {
             "$ref": "#/parameters/ViewTypeParameter"
+          },
+          {
+            "$ref":"#/parameters/SearchQueryParameter"
           }
         ],
         "responses": {
