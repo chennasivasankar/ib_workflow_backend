@@ -334,11 +334,12 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             task_stage_dtos = self._get_task_stage_dtos(task_object, stage_ids)
             task_stage_dtos_list += task_stage_dtos
 
-        return task_objects, total_tasks
+        return task_stage_dtos_list, total_tasks
 
     @staticmethod
     def _get_task_stage_dtos(task_object: Task, stage_ids: List[str]) -> List[TaskStageIdsDTO]:
-
+        stages = task_object.stages
+        stage_id = stages[0].stage_id
         return [
             TaskStageIdsDTO(
                 task_id=task_object.task_id,
