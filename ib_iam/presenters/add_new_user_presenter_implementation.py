@@ -39,7 +39,7 @@ class AddUserPresenterImplementation(AddUserPresenterInterface,
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
 
-    def raise_name_minimum_length_should_be_equal_or_more_than(self):
+    def raise_invalid_name_length_exception_for_update_user_profile(self):
         from ib_iam.constants.exception_messages \
             import INVALID_NAME_LENGTH
         from ib_iam.constants.config import MINIMUM_USER_NAME_LENGTH

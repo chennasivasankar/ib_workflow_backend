@@ -25,7 +25,7 @@ class UpdateUserProfileInteractor(ValidationMixin):
             self.update_user_profile(user_profile_dto=user_profile_dto)
             response = presenter.get_success_response_for_update_user_profile()
         except InvalidNameLength:
-            response = presenter.raise_minimum_name_length_exception_for_update_user_profile()
+            response = presenter.raise_invalid_name_length_exception_for_update_user_profile()
         except NameShouldNotContainsNumbersSpecCharacters:
             response = presenter \
                 .raise_name_should_not_contain_special_chars_and_numbers_exception_for_update_user_profile()

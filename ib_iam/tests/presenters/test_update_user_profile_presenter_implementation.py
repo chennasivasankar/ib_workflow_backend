@@ -26,7 +26,7 @@ class TestUpdateUserProfilePresenterImplementation:
         expected_res_status = INVALID_NAME_LENGTH[1]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
 
-        result = json_presenter.raise_minimum_name_length_exception_for_update_user_profile()
+        result = json_presenter.raise_invalid_name_length_exception_for_update_user_profile()
 
         response_dict = json.loads(result.content)
         actual_response = response_dict["response"]

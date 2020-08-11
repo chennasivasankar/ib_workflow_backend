@@ -13,7 +13,7 @@ class UpdateUserProfilePresenterImplementation(
         empty_dict = {}
         return self.prepare_200_success_response(response_dict=empty_dict)
 
-    def raise_minimum_name_length_exception_for_update_user_profile(self):
+    def raise_invalid_name_length_exception_for_update_user_profile(self):
         from ib_iam.constants.exception_messages import \
             INVALID_NAME_LENGTH
         from ib_iam.constants.enums import StatusCode

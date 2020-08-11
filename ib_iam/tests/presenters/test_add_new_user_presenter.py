@@ -39,7 +39,7 @@ class TestResponseAddNewUser:
 
         # Act
         response_object = \
-            presenter.raise_name_minimum_length_should_be_equal_or_more_than()
+            presenter.raise_invalid_name_length_exception_for_update_user_profile()
 
         # Assert
         response = json.loads(response_object.content)
