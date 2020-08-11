@@ -7,7 +7,8 @@ from ib_tasks.constants.constants import PRIORITY_TYPES
 
 
 class Task(AbstractDateTimeModel):
-    task_display_id = models.CharField(max_length=50, unique=True)
+    task_display_id = models.CharField(
+        max_length=50, unique=True, null=True, blank=True)
     template_id = models.CharField(max_length=100)
     created_by = models.CharField(max_length=50)
     title = models.CharField(max_length=100)
@@ -16,16 +17,6 @@ class Task(AbstractDateTimeModel):
     due_date = models.DateTimeField()
     priority = models.CharField(max_length=20, choices=PRIORITY_TYPES,
                                 default=PRIORITY_TYPES[0][0])
-
-    def save(self, *args, **kwargs):
-        maximum_display_id = Task.objects.aggregate(id_max=Max('id'))['id_max']
-        self.task_display_id = \
-            "{}{}".format(
-                'IBWF-',
-                maximum_display_id + 1 if maximum_display_id is not None else 1
-            )
-
-        super().save(*args, **kwargs)
 
 
 class ElasticSearchTask(models.Model):
