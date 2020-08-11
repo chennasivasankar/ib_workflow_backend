@@ -41,6 +41,8 @@ class TestGetTaskDueDelay:
         # Assert
         snapshot.assert_match(response_object.content, "response")
 
+
+class TestAddTaskDueDelay:
     def test_response_for_invalid_due_datetime(self, snapshot):
         # Arrange
         presenter = TaskDueDetailsPresenterImplementation()

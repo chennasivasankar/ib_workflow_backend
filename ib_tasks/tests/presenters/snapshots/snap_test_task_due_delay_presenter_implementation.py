@@ -16,3 +16,7 @@ snapshots['TestGetTaskDueDelay.test_get_response_for_get_task_due_details respon
 snapshots['TestGetTaskDueDelay.test_response_for_invalid_due_datetime response'] = b'{"response": "given updated due datetime is invalid", "http_status_code": 400, "res_status": "INVALID_DUE_DATE_TIME"}'
 
 snapshots['TestGetTaskDueDelay.test_response_for_invalid_reason_id response'] = b'{"response": "given reason id is not in options", "http_status_code": 400, "res_status": "INVALID_REASON_ID"}'
+
+snapshots['TestAddTaskDueDelay.test_response_for_invalid_due_datetime response'] = b'{"response": "given updated due datetime is invalid", "http_status_code": 400, "res_status": "INVALID_DUE_DATE_TIME"}'
+
+snapshots['TestAddTaskDueDelay.test_response_for_invalid_reason_id response'] = b'{"response": "given reason id is not in options", "http_status_code": 400, "res_status": "INVALID_REASON_ID"}'
