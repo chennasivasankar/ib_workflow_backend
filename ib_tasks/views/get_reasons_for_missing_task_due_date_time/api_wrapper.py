@@ -18,6 +18,6 @@ def api_wrapper(*args, **kwargs):
     interactor = GetTaskDueMissingReasonsInteractor(task_storage=storage)
 
     response = interactor.get_task_due_missing_reasons_wrapper(presenter=presenter,
-                                                               task_id=int(task_id),
+                                                               task_id=task_id,
                                                                user_id=user.user_id)
     return response
