@@ -1,5 +1,7 @@
 from typing import List
 
+from django.db.models import Count
+
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskStageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
@@ -34,3 +36,11 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
             for task_stage_obj in task_stage_objs
         ]
         return task_stage_assignee_dtos
+
+    def get_count_of_tasks_assigned_for_each_user(
+            self, db_stage_ids: List[int],
+            task_ids: List[int], permitted_user_ids: List[str]):
+        assignee_with_count_objs = list(TaskStageHistory.objects.filter(
+            task_id=task_ids, stage_id__in=db_stage_ids,
+            assignee_id__in=permitted_user_ids).values('assignee_id').annotate(
+            assignees_count=Count('assignee_id')))
