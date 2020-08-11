@@ -13,3 +13,7 @@ class TimerPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def raise_timer_is_already_running_exception(self):
         pass
+
+    @abc.abstractmethod
+    def raise_timer_is_already_stopped_exception(self):
+        pass

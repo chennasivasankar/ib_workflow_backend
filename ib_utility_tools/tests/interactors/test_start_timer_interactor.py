@@ -1,5 +1,8 @@
+import datetime
+
 import mock
 import pytest
+from freezegun import freeze_time
 
 
 class TestStartTimerInteractor:
@@ -43,6 +46,7 @@ class TestStartTimerInteractor:
         presenter_mock.raise_timer_is_already_running_exception \
             .assert_called_once()
 
+    @freeze_time("2020-08-07 18:00:00")
     def test_it_returns_timer_details_dict(
             self, interactor, storage_mock, presenter_mock):
         from ib_utility_tools.tests.factories.storage_dtos import \
@@ -56,5 +60,11 @@ class TestStartTimerInteractor:
         interactor.start_timer_wrapper(timer_entity_dto=timer_entity_dto,
                                        presenter=presenter_mock)
 
+        timer_details_dto.start_datetime = datetime.datetime.now()
+        timer_details_dto.is_running = True
+        storage_mock.get_timer_details_dto.assert_called_once_with(
+            timer_entity_dto=timer_entity_dto)
+        storage_mock.update_timer(timer_entity_dto=timer_entity_dto,
+                                  timer_details_dto=timer_details_dto)
         presenter_mock.get_success_response_with_timer_details_dto \
             .assert_called_once_with(timer_details_dto=timer_details_dto)

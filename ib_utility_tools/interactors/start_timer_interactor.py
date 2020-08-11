@@ -1,3 +1,5 @@
+import datetime
+
 from ib_utility_tools.exceptions.custom_exceptions import TimerIsAlreadyRunning
 from ib_utility_tools.interactors.presenter_interfaces \
     .timer_presenter_interface import TimerPresenterInterface
@@ -26,8 +28,8 @@ class StartTimerInteractor:
             timer_entity_dto=timer_entity_dto)
         if timer_details_dto.is_running is True:
             raise TimerIsAlreadyRunning
-        self.timer_storage \
-            .update_start_datetime_to_present_time_and_timer_status_to_true(
-            timer_entity_dto=timer_entity_dto)
+        timer_details_dto.start_datetime = datetime.datetime.now()
         timer_details_dto.is_running = True
+        self.timer_storage.update_timer(timer_entity_dto=timer_entity_dto,
+                                        timer_details_dto=timer_details_dto)
         return timer_details_dto
