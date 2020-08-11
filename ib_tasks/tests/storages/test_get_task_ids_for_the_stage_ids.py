@@ -6,7 +6,6 @@ Author: Pavankumar Pamuru
 
 import pytest
 
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.storages.tasks_storage_implementation import TasksStorageImplementation
 from ib_tasks.tests.factories.models import StageModelFactory, StageActionFactory, TaskStageModelFactory, TaskFactory
 

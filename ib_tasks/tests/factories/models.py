@@ -17,6 +17,7 @@ from ib_tasks.models.global_constant import GlobalConstant
 from ib_tasks.models.gof import GoF
 from ib_tasks.models.gof_role import GoFRole
 from ib_tasks.models.current_task_stage import CurrentTaskStage
+from ib_tasks.models.task_stage_history import TaskStageHistory
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from ib_tasks.models.task_template_initial_stages import \
@@ -295,3 +296,11 @@ class ElasticSearchTaskFactory(factory.django.DjangoModelFactory):
     elasticsearch_id = factory.sequence(
         lambda n: 'elastic_search_id_{}'.format(n))
     task_id = factory.sequence(lambda n: n)
+
+
+class TaskStageHistoryModelDTO(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskStageHistory
+
+    task = factory.SubFactory(TaskFactory)
+    stage = factory.SubFactory(StageModelFactory)

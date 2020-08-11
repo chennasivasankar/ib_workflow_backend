@@ -11,7 +11,6 @@ from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
 from ib_tasks.interactors.filter_dtos import FilterDTO, ConditionDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrderDTO
-from ib_tasks.interactors.stages_dtos import StageDTO, StageRolesDTO
 from ib_tasks.interactors.stages_dtos import StageDTO, StageRolesDTO, TaskStageHistoryDTO, LogDurationDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
     StageActionDetailsDTO, ActionDetailsDTO, ActionWithStageIdDTO
