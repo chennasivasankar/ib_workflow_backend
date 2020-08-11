@@ -41,8 +41,8 @@ class GetSheetDataForTaskCreationConfig:
                 "Logic": str,
                 "Button Text": str,
                 Optional("Button Colour"): str,
-                "Action Type": str,
-                "Transition Template ID": str
+                Optional("Action Type"): str,
+                Optional("Transition Template ID"): str
             }],
             ignore_extra_keys=True
         )

@@ -146,6 +146,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         import json
         for stage in stage_objs:
             fields = stage['view_type']
+            if not fields:
+                continue
             field_ids = json.loads(fields)
             for task_id in task_stages_dict[stage['stage_id']]:
                 task_fields_dtos.append(

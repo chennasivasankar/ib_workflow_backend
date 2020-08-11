@@ -67,6 +67,57 @@
         "entity_type"
       ]
     },
+    "Multimedia": {
+      "type": "object",
+      "properties": {
+        "format_type": {
+          "type": "string",
+          "enum": [
+            "IMAGE",
+            "VIDEO"
+          ]
+        },
+        "url": {
+          "type": "string"
+        },
+        "thumbnail_url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "format_type",
+        "url",
+        "thumbnail_url"
+      ]
+    },
+    "MultiMediaWithId": {
+      "type": "object",
+      "properties": {
+        "multimedia_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "format_type": {
+          "type": "string",
+          "enum": [
+            "IMAGE",
+            "VIDEO"
+          ]
+        },
+        "url": {
+          "type": "string"
+        },
+        "thumbnail_url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "multimedia_id",
+        "format_type",
+        "url",
+        "thumbnail_url"
+      ]
+    },
     "UserDetails": {
       "type": "object",
       "properties": {
@@ -131,6 +182,32 @@
     "Comment": {
       "type": "object",
       "properties": {
+        "comment_content": {
+          "type": "string"
+        },
+        "mention_user_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "multimedia": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Multimedia"
+          }
+        }
+      },
+      "required": [
+        "comment_content",
+        "mention_user_ids",
+        "multimedia"
+      ]
+    },
+    "CompleteCommentDetails": {
+      "type": "object",
+      "properties": {
         "author": {
           "$ref": "#/definitions/UserDetails"
         },
@@ -158,7 +235,7 @@
         "multimedia": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/Multimedia"
+            "$ref": "#/definitions/MultiMediaWithId"
           }
         }
       },
@@ -173,31 +250,7 @@
         "multimedia"
       ]
     },
-    "Multimedia": {
-      "type": "object",
-      "properties": {
-        "multimedia_id": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "format_type": {
-          "type": "string",
-          "enum": [
-            "IMAGE",
-            "VIDEO"
-          ]
-        },
-        "url": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "format_type",
-        "url",
-        "multimedia_id"
-      ]
-    },
-    "Reply": {
+    "CompleteReplyDetails": {
       "type": "object",
       "properties": {
         "comment_id": {
@@ -216,6 +269,15 @@
         "created_at": {
           "type": "string",
           "format": "date-time"
+        },
+        "mention_users": {
+          "$ref": "#/definitions/MentionUsers"
+        },
+        "multimedia": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MultiMediaWithId"
+          }
         }
       },
       "required": [
@@ -223,7 +285,9 @@
         "created_at",
         "is_editable",
         "comment_id",
-        "comment_content"
+        "comment_content",
+        "mention_users",
+        "multimedia"
       ]
     },
     "MentionUsers": {
@@ -348,46 +412,7 @@
       "in": "body",
       "name": "AddCommentParameter",
       "schema": {
-        "type": "object",
-        "properties": {
-          "comment_content": {
-            "type": "string"
-          },
-          "mention_user_ids": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          "multimedia": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "format_type": {
-                  "type": "string",
-                  "enum": [
-                    "IMAGE",
-                    "VIDEO"
-                  ]
-                },
-                "url": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "format_type",
-                "url"
-              ]
-            }
-          }
-        },
-        "required": [
-          "comment_content",
-          "mention_user_ids",
-          "multimedia"
-        ]
+        "$ref": "#/definitions/Comment"
       }
     },
     "OffsetQueryParameter": {
@@ -423,11 +448,33 @@
         "properties": {
           "comment_content": {
             "type": "string"
+          },
+          "mention_user_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "multimedia": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Multimedia"
+            }
           }
         },
         "required": [
-          "comment_content"
+          "comment_content",
+          "mention_user_ids",
+          "multimedia"
         ]
+      }
+    },
+    "UpdateCommentParameter": {
+      "in": "body",
+      "name": "UpdateCommentParameter",
+      "schema": {
+        "$ref": "#/definitions/Comment"
       }
     }
   },
@@ -679,7 +726,7 @@
     "AddCommentResponse": {
       "description": "get comment details",
       "schema": {
-        "$ref": "#/definitions/Comment"
+        "$ref": "#/definitions/CompleteCommentDetails"
       }
     },
     "CommentNotFoundResponse": {
@@ -739,7 +786,7 @@
           "comments": {
             "type": "array",
             "items": {
-              "$ref": "#/definitions/Comment"
+              "$ref": "#/definitions/CompleteCommentDetails"
             }
           }
         }
@@ -748,7 +795,7 @@
     "ReplyToCommentResponse": {
       "description": "get reply details",
       "schema": {
-        "$ref": "#/definitions/Reply"
+        "$ref": "#/definitions/CompleteReplyDetails"
       }
     },
     "ReplyToCommentNotFoundResponse": {
@@ -783,7 +830,7 @@
           "replies": {
             "type": "array",
             "items": {
-              "$ref": "#/definitions/Reply"
+              "$ref": "#/definitions/CompleteReplyDetails"
             }
           }
         }
@@ -812,13 +859,139 @@
           }
         ]
       }
+    },
+    "ReplyToCommentBadRequestResponse": {
+      "description": "create replies bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_USER_IDS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "CreateCommentBadRequestResponse": {
+      "description": "create comment bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_USER_IDS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "UpdateCommentResponse": {
+      "description": "update comment details",
+      "schema": {
+        "$ref": "#/definitions/CompleteCommentDetails"
+      }
+    },
+    "UpdateCommentNotFoundResponse": {
+      "description": "update comment not found response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "COMMENT_ID_NOT_FOUND"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "UpdateCommentBadRequestResponse": {
+      "description": "update comment bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_USER_IDS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "DeleteCommentNotFoundResponse": {
+      "description": "delete comment not found response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "COMMENT_ID_NOT_FOUNT"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
     }
   },
   "paths": {
     "/discussion/v1/": {
       "post": {
         "operationId": "create_discussion",
-        "summary": "create the discussion ",
+        "summary": "Create The Discussion ",
         "description": "create the discussion with title and description",
         "security": [
           {
@@ -848,7 +1021,7 @@
     "/get_discussions/v1/": {
       "post": {
         "operationId": "get_discussions",
-        "summary": "get discussions",
+        "summary": "Get Discussions",
         "description": "get all discussion for given entity id and entity type",
         "security": [
           {
@@ -884,7 +1057,7 @@
     "/discussion/{discussion_id}/mark_as_clarified/v1/": {
       "post": {
         "operationId": "clarify_discussion",
-        "summary": "Mark discussion is clarified",
+        "summary": "Mark discussion Is Clarified",
         "description": "Mark discussion is clarified for creator of discussion",
         "security": [
           {
@@ -911,8 +1084,8 @@
         }
       }
     },
-    "/discussion/{discussion_id}/update/v1/": {
-      "post": {
+    "/discussion/{discussion_id}/v1/": {
+      "put": {
         "operationId": "update_discussion",
         "summary": "Update Discussion",
         "description": "update Discussion of discussion id",
@@ -932,7 +1105,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Successfully Edit the Discussion"
           },
           "400": {
@@ -942,9 +1115,7 @@
             "$ref": "#/responses/UpdateDiscussionNotFoundResponse"
           }
         }
-      }
-    },
-    "/discussion/{discussion_id}/v1/": {
+      },
       "delete": {
         "summary": "delete discussion of discussion id",
         "operationId": "delete_discussion",
@@ -961,7 +1132,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Successfully deleted the discussion"
           },
           "400": {
@@ -975,8 +1146,9 @@
     },
     "/discussion/{discussion_id}/comment/v1/": {
       "post": {
-        "summary": "add comment to a discussion",
         "operationId": "add_comment",
+        "summary": "Add Comment To Discussion",
+        "description": "To given discussion id in path, create comment",
         "security": [
           {
             "oauth": [
@@ -998,12 +1170,16 @@
           },
           "404": {
             "$ref": "#/responses/CommentNotFoundResponse"
+          },
+          "400": {
+            "$ref": "#/responses/CreateCommentBadRequestResponse"
           }
         }
       },
       "get": {
-        "summary": "Comments for a discussion",
         "operationId": "get_comments_for_discussion",
+        "summary": "Comments For A Discussion",
+        "description": "For given discussion id, return comments with multimedia, mention users",
         "security": [
           {
             "oauth": [
@@ -1029,10 +1205,69 @@
         }
       }
     },
+    "/discussion/{comment_id}/v1/": {
+      "put": {
+        "operationId": "update_comment",
+        "summary": "Update Comment",
+        "description": "To given comment id update with given details, return update details",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/CommentIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/UpdateCommentParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/UpdateCommentResponse"
+          },
+          "404": {
+            "$ref": "#/responses/UpdateCommentNotFoundResponse"
+          },
+          "400": {
+            "$ref": "#/responses/UpdateCommentBadRequestResponse"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete The Comment",
+        "operationId": "delete_comment",
+        "description": "To given comment id in path, delete comment",
+        "security": [
+          {
+            "oauth": [
+              "delete"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/CommentIdPathParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted"
+          },
+          "404": {
+            "$ref": "#/responses/DeleteCommentNotFoundResponse"
+          }
+        }
+      }
+    },
     "/comment/{comment_id}/reply/v1/": {
       "post": {
-        "summary": "Reply to comment",
         "operationId": "reply_to_comment",
+        "summary": "Reply To Comment",
+        "description": "To given comment id in path, create reply to comment",
         "security": [
           {
             "oauth": [
@@ -1054,12 +1289,16 @@
           },
           "404": {
             "$ref": "#/responses/ReplyToCommentNotFoundResponse"
+          },
+          "400": {
+            "$ref": "#/responses/ReplyToCommentBadRequestResponse"
           }
         }
       },
       "get": {
-        "summary": "Replies for comment",
         "operationId": "get_replies_for_comment",
+        "summary": "Replies For Comment",
+        "description": "To given comment id in path, return replies",
         "security": [
           {
             "oauth": [

@@ -14,3 +14,11 @@ snapshots['TestCase02ReplyToCommentAPITestCase.test_comment_id_not_found_return_
     'res_status': 'COMMENT_ID_NOT_FOUND',
     'response': 'Please send valid comment id to create reply for comment'
 }
+
+snapshots['TestCase02ReplyToCommentAPITestCase.test_invalid_user_ids_return_response status_code'] = '400'
+
+snapshots['TestCase02ReplyToCommentAPITestCase.test_invalid_user_ids_return_response body'] = {
+    'http_status_code': 400,
+    'res_status': 'INVALID_USER_IDS',
+    'response': "Please send valid mention user ids, invalid user ids are ['10be920b-7b4c-49e7-8adb-41a0c18da848']"
+}

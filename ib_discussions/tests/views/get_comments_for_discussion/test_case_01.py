@@ -15,21 +15,65 @@ class TestCase01GetCommentsForDiscussionAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['read']}}
 
     @pytest.mark.django_db
-    def test_case(self, snapshot, mocker):
+    def test_case(self, snapshot, prepare_get_comments_mock_setup,
+                  prepare_multimedia_and_mention_users_setup):
         discussion_id = "71be920b-7b4c-49e7-8adb-41a0c18da848"
         from ib_discussions.tests.factories.models import DiscussionFactory
         DiscussionFactory(id=discussion_id)
 
+        body = {}
+        path_params = {"discussion_id": discussion_id}
+        query_params = {}
+        headers = {}
+        response = self.make_api_call(
+            body=body, path_params=path_params,
+            query_params=query_params, headers=headers, snapshot=snapshot
+        )
+
+    @pytest.fixture()
+    def prepare_multimedia_and_mention_users_setup(
+            self, prepare_comments_setup, prepare_get_comments_mock_setup):
+        comment_objects = prepare_comments_setup
+        multimedia_ids = [
+            "97be920b-7b4c-49e7-8adb-41a0c18da848",
+            "92be920b-7b4c-49e7-8adb-41a0c18da848",
+            "93be920b-7b4c-49e7-8adb-41a0c18da848"
+        ]
+        user_ids = prepare_get_comments_mock_setup
+
+        from ib_discussions.tests.factories.models import MultiMediaFactory
+        MultiMediaFactory.format_type.reset()
+        multimedia_objects = [
+            MultiMediaFactory(id=multimedia_id)
+            for multimedia_id in multimedia_ids
+        ]
+        from ib_discussions.tests.factories.models import \
+            CommentWithMultiMediaFactory
+        CommentWithMultiMediaFactory(comment=comment_objects[0],
+                                     multimedia=multimedia_objects[0])
+        CommentWithMultiMediaFactory(comment=comment_objects[0],
+                                     multimedia=multimedia_objects[1])
+        CommentWithMultiMediaFactory(comment=comment_objects[1],
+                                     multimedia=multimedia_objects[1])
+        from ib_discussions.tests.factories.models import \
+            CommentWithMentionUserIdFactory
+        CommentWithMentionUserIdFactory(comment=comment_objects[0],
+                                        mention_user_id=user_ids[0])
+        CommentWithMentionUserIdFactory(comment=comment_objects[0],
+                                        mention_user_id=user_ids[1])
+        CommentWithMentionUserIdFactory(comment=comment_objects[1],
+                                        mention_user_id=user_ids[1])
+
+    @pytest.fixture()
+    def prepare_get_comments_mock_setup(self, mocker):
         user_ids = [
             "31be920b-7b4c-49e7-8adb-41a0c18da848",
             "01be920b-7b4c-49e7-8adb-41a0c18da848",
             "77be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
-
         from ib_discussions.tests.common_fixtures.adapters import \
             prepare_get_user_profile_dtos_mock
         get_user_profile_dtos_mock = prepare_get_user_profile_dtos_mock(mocker)
-
         from ib_discussions.tests.factories.adapter_dtos import \
             UserProfileDTOFactory
         user_profile_dtos = [
@@ -37,7 +81,16 @@ class TestCase01GetCommentsForDiscussionAPITestCase(TestUtils):
             for user_id in user_ids
         ]
         get_user_profile_dtos_mock.return_value = user_profile_dtos
+        return user_ids
 
+    @pytest.fixture()
+    def prepare_comments_setup(self):
+        discussion_id = "71be920b-7b4c-49e7-8adb-41a0c18da848"
+        user_ids = [
+            "31be920b-7b4c-49e7-8adb-41a0c18da848",
+            "01be920b-7b4c-49e7-8adb-41a0c18da848",
+            "77be920b-7b4c-49e7-8adb-41a0c18da848"
+        ]
         comments_list = [
             {
                 "id": "91be920b-7b4c-49e7-8adb-41a0c18da848",
@@ -57,7 +110,6 @@ class TestCase01GetCommentsForDiscussionAPITestCase(TestUtils):
         ]
         from ib_discussions.tests.factories.models import CommentFactory
         CommentFactory.created_at.reset()
-
         comment_objects = [
             CommentFactory(
                 id=comment_dict["id"],
@@ -66,43 +118,4 @@ class TestCase01GetCommentsForDiscussionAPITestCase(TestUtils):
             )
             for comment_dict in comments_list
         ]
-
-        multimedia_ids = [
-            "97be920b-7b4c-49e7-8adb-41a0c18da848",
-            "92be920b-7b4c-49e7-8adb-41a0c18da848",
-            "93be920b-7b4c-49e7-8adb-41a0c18da848"
-        ]
-
-        from ib_discussions.tests.factories.models import MultiMediaFactory
-        MultiMediaFactory.format_type.reset()
-        multimedia_objects = [
-            MultiMediaFactory(id=multimedia_id)
-            for multimedia_id in multimedia_ids
-        ]
-
-        from ib_discussions.tests.factories.models import \
-            CommentWithMultiMediaFactory
-        CommentWithMultiMediaFactory(comment=comment_objects[0],
-                                     multimedia=multimedia_objects[0])
-        CommentWithMultiMediaFactory(comment=comment_objects[0],
-                                     multimedia=multimedia_objects[1])
-        CommentWithMultiMediaFactory(comment=comment_objects[1],
-                                     multimedia=multimedia_objects[1])
-
-        from ib_discussions.tests.factories.models import \
-            CommentWithMentionUserIdFactory
-        CommentWithMentionUserIdFactory(comment=comment_objects[0],
-                                        mention_user_id=user_ids[0])
-        CommentWithMentionUserIdFactory(comment=comment_objects[0],
-                                        mention_user_id=user_ids[1])
-        CommentWithMentionUserIdFactory(comment=comment_objects[1],
-                                        mention_user_id=user_ids[1])
-
-        body = {}
-        path_params = {"discussion_id": discussion_id}
-        query_params = {}
-        headers = {}
-        response = self.make_api_call(
-            body=body, path_params=path_params,
-            query_params=query_params, headers=headers, snapshot=snapshot
-        )
+        return comment_objects

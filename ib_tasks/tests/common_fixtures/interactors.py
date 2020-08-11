@@ -20,6 +20,14 @@ def prepare_task_gof_and_fields_dto():
     return task_dto
 
 
+def prepare_mock_for_next_stage_random_assignees(mocker):
+    path = "ib_tasks.interactors.get_random_assignees_of_next_stages_and_update_in_db_interactor" \
+           ".GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor" \
+           ".get_random_assignees_of_next_stages_and_update_in_db"
+    mock_obj = mocker.patch(path)
+    return mock_obj
+
+
 def prepare_call_action_logic_update_stages_mock(mocker):
     path = "ib_tasks.interactors.call_action_logic_function_and_update_task_status_variables_interactor" \
            ".CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor" \

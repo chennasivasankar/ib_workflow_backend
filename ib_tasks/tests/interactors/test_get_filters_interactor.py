@@ -139,7 +139,7 @@ class TestGetFilterInteractor:
         )
         from ib_tasks.constants.enum import Status
         boolean_field = Status.ENABLED.value
-        filter_storage.enable_filter_status.return_value = boolean_field
+        filter_storage.update_filter_status.return_value = boolean_field
         user_id = "1"
         filter_id = 1
 
@@ -163,7 +163,7 @@ class TestGetFilterInteractor:
         )
         from ib_tasks.constants.enum import Status
         boolean_field = Status.DISABLED.value
-        filter_storage.disable_filter_status.return_value = boolean_field
+        filter_storage.update_filter_status.return_value = boolean_field
         user_id = "1"
         filter_id = 1
 

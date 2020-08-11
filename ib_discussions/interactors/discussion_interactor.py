@@ -56,12 +56,6 @@ class DiscussionInteractor:
             self,
             discussion_with_entity_details_dto: DiscussionWithEntityDetailsDTO
     ):
-        # TODO: FIX IT
-        # self.storage.validate_entity_id(entity_id=discussion_dto.entity_id)
-        # self.storage.validate_entity_type_for_entity_id(
-        #     entity_id=discussion_dto.entity_id,
-        #     entity_type=discussion_dto.entity_type
-        # )
         discussion_set_id = self._get_or_create_the_discussion_set(
             discussion_with_entity_details_dto \
                 =discussion_with_entity_details_dto

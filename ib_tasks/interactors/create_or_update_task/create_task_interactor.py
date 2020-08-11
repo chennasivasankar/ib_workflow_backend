@@ -226,12 +226,12 @@ class CreateTaskInteractor:
         created_task_id = \
             self.create_task_storage.create_task_with_given_task_details(
                 task_dto)
-        # elastic_dto = self._get_elastic_task_dto(task_dto, created_task_id)
-        # elastic_task_id = \
-        #     self.elastic_storage.create_task(elastic_task_dto=elastic_dto)
-        # self.task_storage.create_elastic_task(
-        #     task_id=created_task_id, elastic_task_id=elastic_task_id
-        # )
+        elastic_dto = self._get_elastic_task_dto(task_dto, created_task_id)
+        elastic_task_id = \
+            self.elastic_storage.create_task(elastic_task_dto=elastic_dto)
+        self.task_storage.create_elastic_task(
+            task_id=created_task_id, elastic_task_id=elastic_task_id
+        )
         task_gof_dtos = [
             TaskGoFWithTaskIdDTO(
                 task_id=created_task_id,

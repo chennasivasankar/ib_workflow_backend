@@ -168,7 +168,7 @@ class StorageImplementation(StorageInterface):
     @staticmethod
     def _convert_to_disucssion_dto(discussion_object):
         discussion_dto = DiscussionDTO(
-            user_id=discussion_object.user_id,
+            user_id=str(discussion_object.user_id),
             discussion_id=str(discussion_object.id),
             discussion_set_id=str(discussion_object.discussion_set_id),
             description=discussion_object.description,
@@ -238,7 +238,7 @@ class StorageImplementation(StorageInterface):
 
         from ib_discussions.models import Comment
         discussion_id_with_comments_count_list = Comment.objects.filter(
-            discussion_id__in=discussion_ids
+            discussion_id__in=discussion_ids, parent_comment=None
         ).values(
             "discussion_id"
         ).annotate(

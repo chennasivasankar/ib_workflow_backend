@@ -48,3 +48,5 @@ class DiscussionIdWithTitleAndDescriptionDTO:
 class MultiMediaDTO:
     format_type: MultiMediaFormatEnum
     url: str
+    thumbnail_url: str
+

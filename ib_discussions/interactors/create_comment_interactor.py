@@ -22,25 +22,36 @@ class CreateCommentInteractor:
             user_id: str, discussion_id: str, comment_content: str,
             mention_user_ids: List[str], multimedia_dtos: List[MultiMediaDTO]
     ):
-        # TODO: Validate mention_user_ids and multimedia_dtos
+        from ib_discussions.adapters.auth_service import InvalidUserIds
         try:
-            comment_with_replies_count_and_editable_dto, user_profile_dtos, \
-            comment_id_with_mention_user_id_dtos, comment_id_with_multimedia_dtos = \
-                self.create_comment_for_discussion(
-                    user_id=user_id, discussion_id=discussion_id,
-                    comment_content=comment_content,
-                    mention_user_ids=mention_user_ids,
-                    multimedia_dtos=multimedia_dtos
-                )
-            response = presenter.prepare_response_for_comment(
-                comment_with_replies_count_and_editable_dto \
-                    =comment_with_replies_count_and_editable_dto,
-                user_profile_dtos=user_profile_dtos,
-                comment_id_with_mention_user_id_dtos=comment_id_with_mention_user_id_dtos,
-                comment_id_with_multimedia_dtos=comment_id_with_multimedia_dtos
-            )
+            response = self._create_comment_for_discussion_response(
+                comment_content, discussion_id, mention_user_ids,
+                multimedia_dtos, presenter, user_id)
         except DiscussionIdNotFound:
             response = presenter.response_for_discussion_id_not_found()
+        except InvalidUserIds as err:
+            response = presenter.response_for_invalid_user_ids(err)
+        return response
+
+    def _create_comment_for_discussion_response(self, comment_content,
+                                                discussion_id, mention_user_ids,
+                                                multimedia_dtos, presenter,
+                                                user_id):
+        comment_with_replies_count_and_editable_dto, user_profile_dtos, \
+        comment_id_with_mention_user_id_dtos, comment_id_with_multimedia_dtos = \
+            self.create_comment_for_discussion(
+                user_id=user_id, discussion_id=discussion_id,
+                comment_content=comment_content,
+                mention_user_ids=mention_user_ids,
+                multimedia_dtos=multimedia_dtos
+            )
+        response = presenter.prepare_response_for_comment(
+            comment_with_replies_count_and_editable_dto \
+                =comment_with_replies_count_and_editable_dto,
+            user_profile_dtos=user_profile_dtos,
+            comment_id_with_mention_user_id_dtos=comment_id_with_mention_user_id_dtos,
+            comment_id_with_multimedia_dtos=comment_id_with_multimedia_dtos
+        )
         return response
 
     def create_comment_for_discussion(
@@ -48,6 +59,10 @@ class CreateCommentInteractor:
             comment_content: Optional[str],
             mention_user_ids: List[str], multimedia_dtos: List[MultiMediaDTO]
     ):
+        from ib_discussions.adapters.service_adapter import ServiceAdapter
+        service_adapter = ServiceAdapter()
+        service_adapter.auth_service.validate_user_ids(
+            user_ids=mention_user_ids)
         is_discussion_id_not_exists = not self.storage. \
             is_discussion_id_exists(discussion_id=discussion_id)
 
@@ -69,7 +84,7 @@ class CreateCommentInteractor:
                                      user_id=user_id)
 
         return comment_with_replies_count_and_editable_dto, user_profile_dtos, \
-            comment_id_with_mention_user_id_dtos, comment_id_with_multimedia_dtos
+               comment_id_with_mention_user_id_dtos, comment_id_with_multimedia_dtos
 
     def get_comment_details(self, comment_id: str, user_id: str, ):
         comment_dto = self.storage.get_comment_details_dto(comment_id)

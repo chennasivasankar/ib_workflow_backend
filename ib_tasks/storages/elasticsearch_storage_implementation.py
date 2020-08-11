@@ -8,18 +8,22 @@ from typing import Tuple
 from elasticsearch_dsl import Q, Search
 
 from ib_tasks.documents.elastic_task import *
-
-from ib_tasks.documents.elastic_task import ElasticTaskDTO, ElasticFieldDTO, \
-    Field, QueryTasksDTO
-from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
-    ApplyFilterDTO, ElasticSearchStorageInterface
+from ib_tasks.documents.elastic_task import ElasticFieldDTO, \
+    Field
 from ib_tasks.documents.elastic_task import ElasticTaskDTO, Task, QueryTasksDTO
-from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import ElasticSearchStorageInterface
+from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
+    ApplyFilterDTO
+from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
+    ElasticSearchStorageInterface
 
 
 class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
 
     def create_task(self, elastic_task_dto: ElasticTaskDTO) -> str:
+        from elasticsearch_dsl import connections
+        from django.conf import settings
+        connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
+                                      timeout=20)
 
         task_obj = Task(
             template_id=elastic_task_dto.template_id,
@@ -33,6 +37,11 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         return elastic_task_id
 
     def update_task(self, task_dto: ElasticTaskDTO):
+        from elasticsearch_dsl import connections
+        from django.conf import settings
+        connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
+                                      timeout=20)
+
         from ib_tasks.models import ElasticSearchTask
         task_id = task_dto.task_id
         fields = task_dto.fields
@@ -48,11 +57,28 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         task.save()
 
     def filter_tasks(
-            self, filter_dtos: List[ApplyFilterDTO], offset: int, limit: int) -> Tuple[List[int], int]:
+            self, filter_dtos: List[ApplyFilterDTO], offset: int,
+            limit: int) -> Tuple[List[int], int]:
+        from elasticsearch_dsl import connections
+        from django.conf import settings
+        connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
+                                      timeout=20)
+        task_objects = self._get_search_task_objects(filter_dtos)
+
+        total_tasks = task_objects.count()
+        return [
+                   task_object.task_id
+                   for task_object in task_objects[offset: offset + limit]
+               ], total_tasks
+
+    @staticmethod
+    def _get_search_task_objects(filter_dtos: List[ApplyFilterDTO]):
+
         query = None
         for counter, item in enumerate(filter_dtos):
             current_queue = Q('term', template_id__keyword=item.template_id) \
-                            & Q('term', fields__field_id__keyword=item.field_id) \
+                            & Q('term',
+                                fields__field_id__keyword=item.field_id) \
                             & Q('term', fields__value__keyword=item.value)
             if counter == 0:
                 query = current_queue
@@ -64,28 +90,19 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             task_objects = search
         else:
             task_objects = search.filter(query)
-        total_tasks = task_objects.count()
-        return [
-            task_object.task_id
-            for task_object in task_objects[offset: offset + limit]
-        ], total_tasks
+        return task_objects
 
-    @staticmethod
-    def _get_field_objects(field_dtos: List[ElasticFieldDTO]) -> List[Field]:
-        return [
-            Field(
-                field_id=field_dto.field_id,
-                value=field_dto.value
-            )
-            for field_dto in field_dtos
-        ]
-
-    def query_tasks(
-            self, offset: int, limit: int, search_query: str
+    def search_tasks(
+            self, offset: int, limit: int, search_query: str,
+            apply_filter_dtos: List[ApplyFilterDTO]
     ) -> QueryTasksDTO:
-        from elasticsearch_dsl import Q, Search
+        from elasticsearch_dsl import connections
+        from django.conf import settings
+        connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
+                                      timeout=20)
 
-        search = Search(index=TASK_INDEX_NAME)
+        from elasticsearch_dsl import Q
+        search = self._get_search_task_objects(apply_filter_dtos)
         if search_query:
             search = search.query(
                 Q(
@@ -99,15 +116,28 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         total_tasks_count = search.count()
         task_ids = [
             hit.task_id
-            for hit in search[offset: offset+limit]
+            for hit in search[offset: offset + limit]
         ]
         return QueryTasksDTO(
             total_tasks_count=total_tasks_count,
             task_ids=task_ids
         )
 
-    def create_elastic_user(self, user_dto: ElasticUserDTO):
+    @staticmethod
+    def _get_field_objects(field_dtos: List[ElasticFieldDTO]) -> List[Field]:
+        return [
+            Field(
+                field_id=field_dto.field_id,
+                value=field_dto.value
+            )
+            for field_dto in field_dtos
+        ]
 
+    def create_elastic_user(self, user_dto: ElasticUserDTO):
+        from elasticsearch_dsl import connections
+        from django.conf import settings
+        connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
+                                      timeout=20)
         user_obj = User(user_id=user_dto.user_id, username=user_dto.username)
         user_obj.save()
         elastic_user_id = user_obj.meta.id
@@ -116,6 +146,12 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def query_users(
             self, offset: int, limit: int, search_query: str
     ) -> List[ElasticUserDTO]:
+        from elasticsearch_dsl import connections
+        from django.conf import settings
+        connections.create_connection(
+            hosts=[settings.ELASTICSEARCH_ENDPOINT],
+                    timeout=20
+        )
         from elasticsearch_dsl import Q, Search
 
         search = Search(index=USER_INDEX_NAME)
@@ -135,13 +171,18 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
                 username=hit.username,
                 elastic_user_id=None
             )
-            for hit in search[offset: offset+limit]
+            for hit in search[offset: offset + limit]
         ]
         return user_dtos
 
     def create_elastic_country(self, country_dto: ElasticCountryDTO):
+        from elasticsearch_dsl import connections
+        from django.conf import settings
+        connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
+                                      timeout=20)
         country_obj = Country(
-            country_id=country_dto.country_id, country_name=country_dto.country_name
+            country_id=country_dto.country_id,
+            country_name=country_dto.country_name
         )
         country_obj.save()
         elastic_country_id = country_obj.meta.id
@@ -150,6 +191,10 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def query_countries(
             self, offset: int, limit: int, search_query: str
     ) -> List[ElasticCountryDTO]:
+        from elasticsearch_dsl import connections
+        from django.conf import settings
+        connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
+                                      timeout=20)
         from elasticsearch_dsl import Q, Search
 
         search = Search(index=COUNTRY_INDEX_NAME)
@@ -174,6 +219,10 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         return country_dtos
 
     def create_elastic_state(self, state_dto: ElasticStateDTO):
+        from elasticsearch_dsl import connections
+        from django.conf import settings
+        connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
+                                      timeout=20)
         state_obj = State(
             state_id=state_dto.state_id, state_name=state_dto.state_name
         )
@@ -184,6 +233,10 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def query_states(
             self, offset: int, limit: int, search_query: str
     ) -> List[ElasticStateDTO]:
+        from elasticsearch_dsl import connections
+        from django.conf import settings
+        connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
+                                      timeout=20)
         from elasticsearch_dsl import Q, Search
 
         search = Search(index=STATE_INDEX_NAME)
@@ -208,6 +261,10 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         return state_dtos
 
     def create_elastic_city(self, city_dto: ElasticCityDTO):
+        from elasticsearch_dsl import connections
+        from django.conf import settings
+        connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
+                                      timeout=20)
         city_obj = City(
             city_id=city_dto.city_id, city_name=city_dto.city_name
         )
@@ -218,6 +275,12 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
     def query_cities(
             self, offset: int, limit: int, search_query: str
     ) -> List[ElasticCityDTO]:
+        from elasticsearch_dsl import connections
+        from django.conf import settings
+        connections.create_connection(
+            hosts=[settings.ELASTICSEARCH_ENDPOINT],
+            timeout=20
+        )
         from elasticsearch_dsl import Q, Search
 
         search = Search(index=CITY_INDEX_NAME)
