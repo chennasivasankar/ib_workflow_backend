@@ -1,4 +1,5 @@
 import dataclasses
+
 from ib_users.validators.base_validator import CustomException
 
 
@@ -14,6 +15,10 @@ class UserTokensDTO:
     refresh_token: str
     expires_in_seconds: int
     user_id: str
+
+
+class AccessTokenNotFound(Exception):
+    pass
 
 
 class AuthService:
@@ -120,3 +125,15 @@ class AuthService:
             expires_in_seconds=user_auth_tokens_dto.expires_in
         )
         return converted_user_tokens_dto
+
+    def get_refresh_auth_tokens(self, access_token: str, refresh_token: str):
+        from ib_users.exceptions.oauth2_exceptions import \
+            AccessTokenNotFoundException
+        try:
+            user_auth_tokens_dto = \
+                self.interface.refresh_auth_tokens(
+                    access_token=access_token, refresh_token=refresh_token
+                )
+        except AccessTokenNotFoundException:
+            raise AccessTokenNotFound
+

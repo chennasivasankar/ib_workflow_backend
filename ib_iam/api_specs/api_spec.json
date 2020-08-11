@@ -723,6 +723,26 @@
       "schema": {
         "$ref": "#/definitions/CompanyWithEmployeeIds"
       }
+    },
+    "RefreshTokenParameter": {
+      "name": "RefreshTokenParameter",
+      "in": "body",
+      "description": "refresh token parameter",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string"
+          },
+          "refresh_token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "access_token",
+          "refresh_token"
+        ]
+      }
     }
   },
   "responses": {
@@ -1395,6 +1415,83 @@
           }
         ]
       }
+    },
+    "RefreshTokensNotFoundResponse": {
+      "description": "refresh tokens not found Response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "ACCESS_TOKEN_NOT_FOUND",
+                  "REFRESH_TOKEN_NOT_FOUND"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "RefreshTokensBadRequestResponse": {
+      "description": "refresh tokens bad request Response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_ACCOUNT_DOES_NOT_EXIST",
+                  "REFRESH_TOKEN_EXPIRED"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "RefreshTokensSuccessResponse": {
+      "description": "Success Response for refresh tokens",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string"
+          },
+          "refresh_token": {
+            "type": "string"
+          },
+          "expires_in_seconds": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "is_admin": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "access_token",
+          "refresh_token",
+          "expires_in_seconds",
+          "is_admin"
+        ]
+      }
     }
   },
   "paths": {
@@ -1924,6 +2021,29 @@
           },
           "401": {
             "$ref": "#/responses/UnauthorizedForDeleteCompanyResponse"
+          }
+        }
+      }
+    },
+    "/user/refresh_tokens/v1/": {
+      "post": {
+        "summary": "Refresh Tokens",
+        "operationId": "refresh_tokens",
+        "description": "Get refresh tokens for given access token and refresh token",
+        "parameters": [
+          {
+            "$ref": "#/parameters/RefreshTokenParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/RefreshTokensSuccessResponse"
+          },
+          "404": {
+            "$ref": "#/responses/RefreshTokensNotFoundResponse"
+          },
+          "400": {
+            "$ref": "#/responses/RefreshTokensBadRequestResponse"
           }
         }
       }
