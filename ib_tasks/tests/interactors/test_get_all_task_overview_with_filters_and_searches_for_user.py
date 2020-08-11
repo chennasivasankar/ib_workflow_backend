@@ -5,6 +5,7 @@ Author: Pavankumar Pamuru
 """
 import pytest
 
+from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
@@ -22,12 +23,12 @@ class TestGetTasksOverviewForUserInteractor:
                     field_dtos=[
                         FieldDetailsDTO(
                             field_type='Drop down',
-                            field_id='FIELD-ID-1',
+                            field_id=1,
                             key='key', value='value'
                         ),
                         FieldDetailsDTO(
                             field_type='Drop down',
-                            field_id='FIELD-ID-2',
+                            field_id=2,
                             key='key', value='value')
                     ],
                     action_dtos=[
@@ -37,7 +38,7 @@ class TestGetTasksOverviewForUserInteractor:
                             stage_id='stage_id_1',
                             button_text='button_text_1',
                             button_color=None,
-                            action_type='action_type_1',
+                            action_type=ActionTypes.NO_VALIDATIONS.value,
                             transition_template_id='template_id_1'
                         ),
                         StageActionDetailsDTO(
@@ -46,7 +47,7 @@ class TestGetTasksOverviewForUserInteractor:
                             stage_id='stage_id_1',
                             button_text='button_text_2',
                             button_color=None,
-                            action_type='action_type_2',
+                            action_type=ActionTypes.NO_VALIDATIONS.value,
                             transition_template_id='template_id_2'
                         )
                     ]
@@ -111,5 +112,3 @@ class TestGetTasksOverviewForUserInteractor:
 
         # Assert
         assert actual_response == expected_response
-
-

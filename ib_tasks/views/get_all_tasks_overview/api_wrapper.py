@@ -1,13 +1,14 @@
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 
+from ib_boards.constants.enum import ViewType
+from ib_tasks.storages.action_storage_implementation import \
+    ActionsStorageImplementation
+from ib_tasks.storages.fields_storage_implementation import \
+    FieldsStorageImplementation
 from .validator_class import ValidatorClass
 from ...presenters.get_all_tasks_overview_for_user_presenter_impl import \
     GetFilteredTasksOverviewForUserPresenterImplementation
-from ...storages.action_storage_implementation import \
-    ActionsStorageImplementation
-from ...storages.fields_storage_implementation import \
-    FieldsStorageImplementation
 from ...storages.storage_implementation import StagesStorageImplementation
 from ...storages.task_stage_storage_implementation import \
     TaskStageStorageImplementation
@@ -27,23 +28,30 @@ def api_wrapper(*args, **kwargs):
     task_storage = TasksStorageImplementation()
     field_storage = FieldsStorageImplementation()
     action_storage = ActionsStorageImplementation()
+    from ib_tasks.storages.filter_storage_implementation import \
+        FilterStorageImplementation
+    filter_storage = FilterStorageImplementation()
+    from ib_tasks.storages.elasticsearch_storage_implementation import \
+        ElasticSearchStorageImplementation
+    elasticsearch_storage = ElasticSearchStorageImplementation()
     task_stage_storage = TaskStageStorageImplementation()
 
-    from ib_tasks.interactors.get_all_tasks_overview_for_user_interactor import \
-        GetAllTasksOverviewForUserInteractor, UserIdPaginationDTO
-    interactor = GetAllTasksOverviewForUserInteractor(
+    from ib_tasks.interactors.get_filtered_tasks_details_interactor import \
+        GetTaskDetailsByFilterInteractor
+    interactor = GetTaskDetailsByFilterInteractor(
         stage_storage=stage_storage,
         task_storage=task_storage,
         field_storage=field_storage,
         action_storage=action_storage,
+        elasticsearch_storage=elasticsearch_storage,
+        filter_storage=filter_storage,
         task_stage_storage=task_stage_storage
     )
-    user_id_with_pagination_dto = UserIdPaginationDTO(
+    response = interactor.get_filtered_tasks_overview_for_user_wrapper(
+        presenter=presenter,
         user_id=user_id,
         limit=limit,
         offset=offset,
-    )
-    response = interactor.get_all_tasks_overview_for_user_wrapper(
-        presenter=presenter, user_id_with_pagination_dto=user_id_with_pagination_dto
+        view_type=ViewType.KANBAN.value
     )
     return response

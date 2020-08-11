@@ -27,9 +27,11 @@ class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
         user_id = str(user_obj.user_id)
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids, get_assignees_details_dtos
-        from ib_tasks.constants.enum import ValidationType
+        from ib_tasks.tests.common_fixtures.storages import mock_filter_tasks
+        mock_filter_tasks(mocker)
         get_user_role_ids(mocker)
         get_assignees_details_dtos(mocker)
+        from ib_tasks.constants.enum import ValidationType
 
         from ib_iam.tests.factories.models import UserDetailsFactory
         UserDetailsFactory.reset_sequence()
