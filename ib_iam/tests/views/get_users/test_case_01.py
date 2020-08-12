@@ -27,7 +27,7 @@ class TestCase01GetUsersAPITestCase(TestUtils):
     def test_case(self, set_up, snapshot):
         body = {}
         path_params = {}
-        query_params = {'offset': 0, 'limit': 10}
+        query_params = {'offset': 0, 'limit': 10, 'search_query': ''}
         headers = {}
         self.make_api_call(
             body=body, path_params=path_params,
