@@ -93,3 +93,11 @@ class StageStorageInterface(abc.ABC):
             self, task_id: int, db_stage_ids: List[int]) -> List[
         TaskStageHavingAssigneeIdDTO]:
         pass
+
+    @abc.abstractmethod
+    def check_is_stage_exists(self, stage_id: int) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def get_stage_permitted_user_roles(self, stage_id: int) -> List[str]:
+        pass

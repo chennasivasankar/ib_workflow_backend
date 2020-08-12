@@ -306,6 +306,17 @@ class StagesStorageImplementation(StageStorageInterface):
             task_stage_obj in task_stage_objs]
         return stages_having_assignee_dtos
 
+    def check_is_stage_exists(self, stage_id: int) -> bool:
+        is_valid_stage_id = Stage.ojects.filter(id=stage_id).exists()
+        return is_valid_stage_id
+
+    def get_stage_permitted_user_roles(self, stage_id: int) -> List[str]:
+        permitted_user_role_ids_queryset = StagePermittedRoles.objects.filter(
+            stage_id=stage_id).values_list('role', flat=True)
+
+        permitted_user_role_ids_list = list(permitted_user_role_ids_queryset)
+        return permitted_user_role_ids_list
+
 
 class StorageImplementation(StorageInterface):
 

@@ -1,6 +1,6 @@
 from typing import List
 
-from ib_iam.adapters.dtos import UserProfileDTO
+from ib_iam.adapters.dtos import UserProfileDTO, SearchQueryWithPaginationDTO
 from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, \
     InvalidOffsetValue, InvalidLimitValue, InvalidUserId, RoleIdsAreInvalid
 from ib_iam.interactors.mixins.validation import ValidationMixin
@@ -45,6 +45,31 @@ class GetUsersDetailsInteractor(ValidationMixin):
         total_count = self.user_storage.get_total_count_of_users_for_query()
         user_ids = [user_dto.user_id for user_dto in user_dtos]
         return self._get_complete_user_details_dto(user_ids, total_count)
+
+    def get_user_details_for_given_role_ids_based_on_query(
+            self, role_ids: List[str],
+            search_query_with_pagination_dto: SearchQueryWithPaginationDTO
+            ):
+        self._validate_pagination_details(
+            offset=search_query_with_pagination_dto.offset,
+            limit=search_query_with_pagination_dto.limit)
+
+        from ib_iam.constants.config import ALL_ROLES_ID
+        if ALL_ROLES_ID in role_ids:
+            role_ids = self.user_storage.get_all_distinct_roles()
+
+        user_ids = self.user_storage.get_user_ids_for_given_role_ids(
+            role_ids=role_ids)
+
+        user_ids_based_on_query = \
+            self.user_storage.get_user_ids_based_on_given_query(
+                user_ids=user_ids,
+                search_query_with_pagination_dto=
+                search_query_with_pagination_dto)
+        user_profile_dtos = \
+            self._get_basic_user_dtos(user_ids_based_on_query)
+
+        return user_profile_dtos
 
     def _get_complete_user_details_dto(self, user_ids, total_count):
         user_team_dtos = self.user_storage.get_team_details_of_users_bulk(
@@ -155,3 +180,10 @@ class GetUsersDetailsInteractor(ValidationMixin):
             role_ids=role_ids)
         if len(role_ids) != len(valid_role_ids):
             raise RoleIdsAreInvalid
+
+    @staticmethod
+    def _get_basic_user_dtos(user_ids) -> List[UserProfileDTO]:
+        from ib_iam.adapters.user_service import UserService
+        user_service = UserService()
+        user_dtos = user_service.get_basic_user_dtos(user_ids=user_ids)
+        return user_dtos

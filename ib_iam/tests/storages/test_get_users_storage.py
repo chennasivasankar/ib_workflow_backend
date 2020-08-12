@@ -190,3 +190,19 @@ class TestGetUsers:
                 user_ids=given_user_ids)
 
         assert actual_user_ids == expected_user_ids
+
+    @pytest.mark.django_db
+    def test_get_all_distinct_roles(self):
+        # Arrange
+        from ib_iam.tests.factories.models import RoleFactory
+        RoleFactory.reset_sequence()
+        roles = RoleFactory.create_batch(size=5)
+        role_ids = [role.role for role in roles]
+
+        storage = UserStorageImplementation()
+
+        # Act
+        output = storage.get_all_distinct_roles()
+
+        # Assert
+        assert output == role_ids

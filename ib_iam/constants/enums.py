@@ -9,3 +9,13 @@ class StatusCode(BaseEnumClass, enum.Enum):
     FORBIDDEN = 403
     SUCCESS = 200
     SUCCESS_CREATE = 201
+
+
+class Searchable(enum.Enum):
+    CITY = "CITY"
+    STATE = "STATE"
+    COUNTRY = "COUNTRY"
+    VENDOR = "VENDOR"
+    USER = "USER"
+    COMPANY = "COMPANY"
+    TEAM = "TEAM"
