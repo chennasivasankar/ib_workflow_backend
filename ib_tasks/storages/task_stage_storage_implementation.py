@@ -1,16 +1,29 @@
 from typing import List
 
-from ib_tasks.interactors.stages_dtos import TaskStageHistoryDTO
+from ib_tasks.interactors.stages_dtos import TaskStageHistoryDTO, StageMinimalDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskStageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import \
     TaskStageStorageInterface
-from ib_tasks.models import CurrentTaskStage
+from ib_tasks.models import CurrentTaskStage, Stage
 from ib_tasks.models.task_stage_history import TaskStageHistory
 
 
 class TaskStageStorageImplementation(TaskStageStorageInterface):
+
+    def get_stage_details(self, stage_ids: List[int]) -> List[StageMinimalDTO]:
+
+        stage_objs = Stage.objects.filter(id__in=stage_ids)
+
+        return [
+            StageMinimalDTO(
+                stage_id=stage_obj.id,
+                name=stage_obj.display_name,
+                color=stage_obj.stage_color
+            )
+            for stage_obj in stage_objs
+        ]
 
     def get_task_stage_dtos(self, task_id: int) -> List[TaskStageHistoryDTO]:
         task_stage_history_objs = \

@@ -36,16 +36,28 @@ class GetTaskStagesHistory:
         self._validate_task_id(task_id=task_id)
         task_stages_dto = \
             self._get_task_stages_history(task_id)
+        stage_ids = self._get_stage_ids(task_stages_dto)
+        stage_dtos = self.stage_storage.get_stage_details(stage_ids)
         log_duration_dtos = self._get_log_duration_dtos(task_stages_dto)
         updated_task_stage_dtos = \
             self._get_updated_task_stage_dtos(task_stages_dto)
         user_ids = self._get_user_ids(task_stages_dto)
         user_dtos = self._get_user_details_dtos(user_ids)
         return TaskStageCompleteDetailsDTO(
+            stage_dtos=stage_dtos,
             task_stage_dtos=updated_task_stage_dtos,
             log_duration_dtos=log_duration_dtos,
             assignee_details=user_dtos
         )
+
+    @staticmethod
+    def _get_stage_ids(task_stages_dto: List[TaskStageHistoryDTO]
+                       ) -> List[int]:
+
+        return list({
+            task_stage.stage_id
+            for task_stage in task_stages_dto
+        })
 
     @staticmethod
     def _get_user_details_dtos(

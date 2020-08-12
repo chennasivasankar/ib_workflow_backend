@@ -1180,7 +1180,7 @@
 					"type": "string"
 				}
 			},
-			"required": ["user_id", "profile_pic_url", "name"]
+			"required": ["user_id", "name"]
 		},
 		"TaskStageResponseBody": {
 		  "type": "object",
@@ -1219,7 +1219,10 @@
 					}
 				},
 				"stages_history": {
-					"$ref": "#/definitions/TaskStageResponseBody"
+				  "type": "array",
+				  "items": {
+				    "$ref": "#/definitions/TaskStageResponseBody"
+				  }
 				}
 			},
 			"required": ["stages_details", "stages_history"]

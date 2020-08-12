@@ -11,7 +11,8 @@ from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
 from ib_tasks.interactors.filter_dtos import FilterDTO, ConditionDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrderDTO
-from ib_tasks.interactors.stages_dtos import StageDTO, StageRolesDTO, TaskStageHistoryDTO, LogDurationDTO
+from ib_tasks.interactors.stages_dtos import StageDTO, StageRolesDTO, TaskStageHistoryDTO, LogDurationDTO, \
+    StageMinimalDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
     StageActionDetailsDTO, ActionDetailsDTO, ActionWithStageIdDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
@@ -606,12 +607,24 @@ class TaskStageHistoryDTOFactory(factory.Factory):
     left_at = datetime(2012, 10, 11)
 
 
+class StageMinimalDTOFactory(factory.Factory):
+    class Meta:
+        model = StageMinimalDTO
+    stage_id = factory.sequence(lambda n: n)
+    name = factory.sequence(lambda n: "stage_%d" % n)
+    color = None
+
+    class Params:
+        stage_color = factory.Trait(color="#ffffff")
+
+
 class LogDurationDTOFactory(factory.Factory):
 
     class Meta:
         model = LogDurationDTO
     entity_id = factory.sequence(lambda n: n)
     duration = timedelta(days=1)
+
 
 class TaskStageHavingAssigneeIdDTOFactory(factory.Factory):
     class Meta:
