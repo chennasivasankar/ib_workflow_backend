@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import List
 
 from ib_discussions.constants.enum import EntityType, FilterByEnum, SortByEnum, \
     OrderByEnum, MultimediaFormat
@@ -50,3 +51,20 @@ class MultimediaDTO:
     url: str
     thumbnail_url: str
 
+
+@dataclass
+class UpdateCompleteCommentDTO:
+    comment_id: str
+    user_id: str
+    comment_content: str
+    mention_user_ids: List[str]
+    multimedia_dtos: List[MultimediaDTO]
+
+
+@dataclass
+class CreateCompleteCommentDTO:
+    discussion_id: str
+    user_id: str
+    comment_content: str
+    mention_user_ids: List[str]
+    multimedia_dtos: List[MultimediaDTO]

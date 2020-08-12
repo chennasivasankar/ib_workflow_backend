@@ -14,12 +14,12 @@ RESPONSE_200_JSON = """
 {
     "discussions": [
         {
-            "discussion_id": "efffd63e-cb47-4983-b717-a4c47781035e",
+            "discussion_id": "dac5f3a1-e2ec-4bba-a1b2-ec86eef0df66",
             "description": "string",
             "title": "string",
             "created_at": "2099-12-31 00:00:00",
             "author": {
-                "user_id": "17a1b0e2-9d5d-45ce-9e5e-62f9f07b38a8",
+                "user_id": "71f5eac4-848b-43ca-b2bd-23aa48bdddea",
                 "name": "string",
                 "profile_pic_url": "string"
             },
@@ -32,19 +32,11 @@ RESPONSE_200_JSON = """
 }
 """
 
-RESPONSE_404_JSON = """
-{
-    "response": "string",
-    "http_status_code": 1,
-    "res_status": "ENTITY_ID_NOT_FOUND"
-}
-"""
-
 RESPONSE_400_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "INVALID_ENTITY_TYPE_FOR_ENTITY_ID"
+    "res_status": "INVALID_OFFSET"
 }
 """
 

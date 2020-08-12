@@ -2,7 +2,8 @@ import factory
 
 from ib_discussions.constants.enum import EntityType, MultimediaFormat
 from ib_discussions.interactors.dtos.dtos import DiscussionWithEntityDetailsDTO, \
-    DiscussionIdWithTitleAndDescriptionDTO, MultimediaDTO
+    DiscussionIdWithTitleAndDescriptionDTO, MultimediaDTO, \
+    UpdateCompleteCommentDTO, CreateCompleteCommentDTO
 
 
 class DiscussionWithEntityDetailsDTOFactory(factory.Factory):
@@ -37,3 +38,31 @@ class MultimediaDTOFactory(factory.Factory):
     ])
     url = "https://picsum.photos/200"
     thumbnail_url = "https://picsum.photos/200"
+
+
+class UpdateCompleteCommentDTOFactory(factory.Factory):
+    class Meta:
+        model = UpdateCompleteCommentDTO
+
+    comment_id = factory.Faker("uuid4")
+    user_id = factory.Faker("uuid4")
+    comment_content = "content"
+    mention_user_ids = factory.List([
+        "10be920b-7b4c-49e7-8adb-41a0c18da848",
+        "20be920b-7b4c-49e7-8adb-41a0c18da848"
+    ])
+    multimedia_dtos = factory.List([])
+
+
+class CreateCompleteCommentDTOFactory(factory.Factory):
+    class Meta:
+        model = CreateCompleteCommentDTO
+
+    discussion_id = factory.Faker("uuid4")
+    user_id = factory.Faker("uuid4")
+    comment_content = "content"
+    mention_user_ids = factory.List([
+        "10be920b-7b4c-49e7-8adb-41a0c18da848",
+        "20be920b-7b4c-49e7-8adb-41a0c18da848"
+    ])
+    multimedia_dtos = factory.List([])

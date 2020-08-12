@@ -97,6 +97,17 @@ class TestUpdateCommentInteractor:
         comment_content = "content"
         mention_user_ids = prepare_users_setup
         multimedia_dtos = prepare_multimedia_setup
+
+        from ib_discussions.tests.factories.interactor_dtos import \
+            UpdateCompleteCommentDTOFactory
+        update_complete_comment_dto = UpdateCompleteCommentDTOFactory(
+            comment_id=comment_id,
+            user_id=user_id,
+            comment_content=comment_content,
+            mention_user_ids=mention_user_ids,
+            multimedia_dtos=multimedia_dtos
+        )
+
         expected_presenter_prepare_response_for_comment_id_not_found_mock = \
             Mock()
         presenter_mock.prepare_response_for_comment_id_not_found. \
@@ -106,9 +117,8 @@ class TestUpdateCommentInteractor:
 
         # Act
         response = interactor.update_comment_wrapper(
-            user_id=user_id, comment_id=comment_id, presenter=presenter_mock,
-            mention_user_ids=mention_user_ids, multimedia_dtos=multimedia_dtos,
-            comment_content=comment_content
+            presenter=presenter_mock,
+            update_complete_comment_dto=update_complete_comment_dto
         )
 
         # Assert
@@ -129,6 +139,17 @@ class TestUpdateCommentInteractor:
         comment_content = "content"
         mention_user_ids = prepare_users_setup
         multimedia_dtos = prepare_multimedia_setup
+
+        from ib_discussions.tests.factories.interactor_dtos import \
+            UpdateCompleteCommentDTOFactory
+        update_complete_comment_dto = UpdateCompleteCommentDTOFactory(
+            comment_id=comment_id,
+            user_id=user_id,
+            comment_content=comment_content,
+            mention_user_ids=mention_user_ids,
+            multimedia_dtos=multimedia_dtos
+        )
+
         expected_presenter_response_for_user_cannot_edit_comment_mock = \
             Mock()
         presenter_mock.response_for_user_cannot_edit_comment. \
@@ -140,9 +161,8 @@ class TestUpdateCommentInteractor:
 
         # Act
         response = interactor.update_comment_wrapper(
-            user_id=user_id, comment_id=comment_id, presenter=presenter_mock,
-            mention_user_ids=mention_user_ids, multimedia_dtos=multimedia_dtos,
-            comment_content=comment_content
+            presenter=presenter_mock,
+            update_complete_comment_dto=update_complete_comment_dto
         )
 
         # Assert
@@ -175,6 +195,16 @@ class TestUpdateCommentInteractor:
 
         multimedia_dtos = prepare_multimedia_setup
 
+        from ib_discussions.tests.factories.interactor_dtos import \
+            UpdateCompleteCommentDTOFactory
+        update_complete_comment_dto = UpdateCompleteCommentDTOFactory(
+            comment_id=comment_id,
+            user_id=user_id,
+            comment_content=comment_content,
+            mention_user_ids=mention_user_ids,
+            multimedia_dtos=multimedia_dtos
+        )
+
         expected_presenter_response_for_invalid_user_ids_mock = Mock()
 
         storage_mock.get_comment_creator_id.return_value = user_id
@@ -185,9 +215,8 @@ class TestUpdateCommentInteractor:
 
         # Act
         response = interactor.update_comment_wrapper(
-            user_id=user_id, presenter=presenter_mock, comment_id=comment_id,
-            mention_user_ids=mention_user_ids, multimedia_dtos=multimedia_dtos,
-            comment_content=comment_content
+            presenter=presenter_mock,
+            update_complete_comment_dto=update_complete_comment_dto
         )
 
         # Assert
@@ -205,6 +234,17 @@ class TestUpdateCommentInteractor:
         comment_content = "content"
         mention_user_ids = prepare_users_setup
         multimedia_dtos = prepare_multimedia_setup
+
+        from ib_discussions.tests.factories.interactor_dtos import \
+            UpdateCompleteCommentDTOFactory
+        update_complete_comment_dto = UpdateCompleteCommentDTOFactory(
+            comment_id=comment_id,
+            user_id=user_id,
+            comment_content=comment_content,
+            mention_user_ids=mention_user_ids,
+            multimedia_dtos=multimedia_dtos
+        )
+
         from ib_discussions.tests.factories.storage_dtos import \
             CommentDTOFactory
         comment_dto = CommentDTOFactory(
@@ -239,9 +279,8 @@ class TestUpdateCommentInteractor:
 
         # Act
         response = interactor.update_comment_wrapper(
-            user_id=user_id, presenter=presenter_mock, comment_id=comment_id,
-            mention_user_ids=mention_user_ids, multimedia_dtos=multimedia_dtos,
-            comment_content=comment_content
+            presenter=presenter_mock,
+            update_complete_comment_dto=update_complete_comment_dto
         )
 
         # Assert

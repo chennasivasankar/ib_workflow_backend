@@ -90,7 +90,7 @@
         "thumbnail_url"
       ]
     },
-    "MultiMediaWithId": {
+    "MultimediaWithId": {
       "type": "object",
       "properties": {
         "multimedia_id": {
@@ -218,10 +218,6 @@
         "comment_content": {
           "type": "string"
         },
-        "total_replies_count": {
-          "type": "integer",
-          "format": "int64"
-        },
         "is_editable": {
           "type": "boolean"
         },
@@ -235,48 +231,7 @@
         "multimedia": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/MultiMediaWithId"
-          }
-        }
-      },
-      "required": [
-        "total_replies_count",
-        "author",
-        "created_at",
-        "is_editable",
-        "comment_id",
-        "comment_content",
-        "mention_users",
-        "multimedia"
-      ]
-    },
-    "CompleteReplyDetails": {
-      "type": "object",
-      "properties": {
-        "comment_id": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "author": {
-          "$ref": "#/definitions/UserDetails"
-        },
-        "comment_content": {
-          "type": "string"
-        },
-        "is_editable": {
-          "type": "boolean"
-        },
-        "created_at": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "mention_users": {
-          "$ref": "#/definitions/MentionUsers"
-        },
-        "multimedia": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/MultiMediaWithId"
+            "$ref": "#/definitions/MultimediaWithId"
           }
         }
       },
@@ -700,7 +655,20 @@
     "AddCommentResponse": {
       "description": "get comment details",
       "schema": {
-        "$ref": "#/definitions/CompleteCommentDetails"
+        "allOf": [
+          {
+            "$ref": "#/definitions/CompleteCommentDetails"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "total_replies_count": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          }
+        ]
       }
     },
     "CommentNotFoundResponse": {
@@ -760,7 +728,20 @@
           "comments": {
             "type": "array",
             "items": {
-              "$ref": "#/definitions/CompleteCommentDetails"
+              "allOf": [
+                {
+                  "$ref": "#/definitions/CompleteCommentDetails"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "total_replies_count": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              ]
             }
           }
         }
@@ -769,7 +750,7 @@
     "ReplyToCommentResponse": {
       "description": "get reply details",
       "schema": {
-        "$ref": "#/definitions/CompleteReplyDetails"
+        "$ref": "#/definitions/CompleteCommentDetails"
       }
     },
     "ReplyToCommentNotFoundResponse": {
@@ -804,7 +785,7 @@
           "replies": {
             "type": "array",
             "items": {
-              "$ref": "#/definitions/CompleteReplyDetails"
+              "$ref": "#/definitions/CompleteCommentDetails"
             }
           }
         }
@@ -885,7 +866,20 @@
     "UpdateCommentResponse": {
       "description": "update comment details",
       "schema": {
-        "$ref": "#/definitions/CompleteCommentDetails"
+        "allOf": [
+          {
+            "$ref": "#/definitions/CompleteCommentDetails"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "total_replies_count": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          }
+        ]
       }
     },
     "UpdateCommentNotFoundResponse": {
