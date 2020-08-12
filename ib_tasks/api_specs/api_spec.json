@@ -1228,6 +1228,15 @@
         "USER", "COUNTRY", "STATE", "CITY"
       ]
     },
+    "UserSearchableParameter": {
+      "name": "user_search_type",
+      "description": "User Searchable Type Parameter",
+      "in": "query",
+      "type": "string",
+      "enum": [
+        "USER"
+      ]
+    },
     "LimitParameter": {
       "name": "limit",
       "description": "Limit Parameter",
@@ -1273,6 +1282,13 @@
       "name": "task_id",
       "required": true,
       "type": "integer"
+    },
+    "StageIdParamter": {
+      "description": "stage id",
+      "in": "path",
+      "name": "stage_id",
+      "required": true,
+      "type": "string"
     },
     "TaskStageAssigneesParameter": {
       "description": "Task Stage Assignees Parameter",
@@ -1548,6 +1564,20 @@
         ]
       }
     },
+    "StageAssigneesResponse": {
+      "description": "OK",
+      "schema": {
+        "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "assignee": {
+                  "$ref": "#/definitions/Assignee"
+                }
+              }
+            }
+          }
+    },
     "InvalidTaskReasonsResponse": {
       "description": "invalid add task reasons response",
       "schema": {
@@ -1653,6 +1683,35 @@
             "enum": [
               "INVALID_TASK_ID",
               "INVALID_ACTION_ID"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
+    "TaskStagePossibleAssigneesNotFoundResponse": {
+      "description": "Task Stage Assignees Not Found Response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer",
+            "enum": [
+              404
+            ]
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "INVALID_TASK_ID",
+              "INVALID_STAGE_ID"
             ]
           }
         },
@@ -2685,6 +2744,48 @@
           },
           "403": {
             "$ref": "#/responses/TaskIsNotAssignedToUserResponse"
+          }
+        }
+      }
+    },
+    "/task/{task_id}/stage/{stage_id}/stage_assignees/v1/": {
+      "get": {
+        "operationId": "get_stage_possible_assignees_of_a_task",
+        "summary": "get stage pssible assignees for a task",
+        "description": "get stage pssible assignees for a task and you can search a user",
+        "security": [{
+          "oauth": [
+            "read"
+          ]
+        }],
+        "parameters": [{
+            "$ref": "#/parameters/TaskIDParameter"
+          },
+          {
+            "$ref": "#/parameters/StageIdParamter"
+          },
+          {
+            "$ref": "#/parameters/UserSearchableParameter"
+          },
+          {
+            "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/SearchableQueryParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/StageAssigneesResponse"
+          },
+          "400": {
+            "$ref": "#/responses/SearchableValuesFailureResponse"
+          },
+           "404": {
+            "$ref": "#/responses/TaskStagePossibleAssigneesNotFoundResponse"
           }
         }
       }
