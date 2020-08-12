@@ -71,3 +71,7 @@ class ServiceInterface:
         )
         result = interactor.get_task_fields_and_action(task_dtos, user_id, view_type)
         return result
+
+    def get_assignees_for_task_stages(self, task_stage_dtos: List[GetTaskDetailsDTO]):
+        pass
+
