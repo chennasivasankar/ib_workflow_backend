@@ -12,5 +12,5 @@ snapshots['TestCase02UpdateCommentAPITestCase.test_with_invalid_user_ids status_
 snapshots['TestCase02UpdateCommentAPITestCase.test_with_invalid_user_ids body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_USER_IDS',
-    'response': "Please send valid user ids to update comment, invalid user ids are [UUID('00be920b-7b4c-49e7-8adb-41a0c18da848'), UUID('20be920b-7b4c-49e7-8adb-41a0c18da848')]"
+    'response': "Please send valid user ids to update comment, invalid user ids are ['00be920b-7b4c-49e7-8adb-41a0c18da848', '20be920b-7b4c-49e7-8adb-41a0c18da848']"
 }

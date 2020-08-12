@@ -1,7 +1,7 @@
 from typing import Optional, List
 
 from ib_discussions.exceptions.custom_exceptions import DiscussionIdNotFound
-from ib_discussions.interactors.dtos.dtos import MultiMediaDTO
+from ib_discussions.interactors.dtos.dtos import MultimediaDTO
 from ib_discussions.interactors.presenter_interfaces.dtos import \
     CommentIdWithEditableStatusDTO, CommentWithRepliesCountAndEditableDTO
 from ib_discussions.interactors.presenter_interfaces.presenter_interface import \
@@ -20,7 +20,7 @@ class CreateCommentInteractor:
     def create_comment_for_discussion_wrapper(
             self, presenter: CreateCommentPresenterInterface,
             user_id: str, discussion_id: str, comment_content: str,
-            mention_user_ids: List[str], multimedia_dtos: List[MultiMediaDTO]
+            mention_user_ids: List[str], multimedia_dtos: List[MultimediaDTO]
     ):
         from ib_discussions.adapters.auth_service import InvalidUserIds
         try:
@@ -57,7 +57,7 @@ class CreateCommentInteractor:
     def create_comment_for_discussion(
             self, user_id: str, discussion_id: str,
             comment_content: Optional[str],
-            mention_user_ids: List[str], multimedia_dtos: List[MultiMediaDTO]
+            mention_user_ids: List[str], multimedia_dtos: List[MultimediaDTO]
     ):
         from ib_discussions.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
@@ -88,11 +88,12 @@ class CreateCommentInteractor:
 
     def get_comment_details(self, comment_id: str, user_id: str, ):
         comment_dto = self.storage.get_comment_details_dto(comment_id)
+        comment_dtos = [comment_dto]
 
         comment_with_replies_count_and_editable_dtos, user_profile_dtos, \
         comment_id_with_mention_user_id_dtos, comment_id_with_multimedia_dtos = \
             self.get_comments_for_discussion(
-                comment_dtos=[comment_dto], user_id=user_id)
+                comment_dtos=comment_dtos, user_id=user_id)
 
         return comment_with_replies_count_and_editable_dtos[0], \
                user_profile_dtos, comment_id_with_mention_user_id_dtos, \

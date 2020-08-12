@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from ib_discussions.constants.enum import MultiMediaFormatEnum
+from ib_discussions.constants.enum import MultimediaFormat
 
 
 @dataclass
@@ -52,6 +52,6 @@ class CommentIdWithMentionUserIdDTO:
 class CommentIdWithMultiMediaDTO:
     comment_id: str
     multimedia_id: str
-    format_type: MultiMediaFormatEnum
+    format_type: MultimediaFormat
     url: str
     thumbnail_url: str

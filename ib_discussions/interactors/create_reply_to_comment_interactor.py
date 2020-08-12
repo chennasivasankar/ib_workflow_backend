@@ -1,6 +1,6 @@
 from typing import List
 
-from ib_discussions.interactors.dtos.dtos import MultiMediaDTO
+from ib_discussions.interactors.dtos.dtos import MultimediaDTO
 from ib_discussions.interactors.presenter_interfaces.dtos import \
     CommentIdWithEditableStatusDTO
 from ib_discussions.interactors.presenter_interfaces.presenter_interface import \
@@ -18,7 +18,7 @@ class CreateReplyToCommentInteractor:
     def reply_to_comment_wrapper(
             self, presenter: CreateReplyPresenterInterface, user_id: str,
             comment_id: str, comment_content: str,
-            mention_user_ids: List[str], multimedia_dtos: List[MultiMediaDTO]
+            mention_user_ids: List[str], multimedia_dtos: List[MultimediaDTO]
     ):
         from ib_discussions.exceptions.custom_exceptions import \
             CommentIdNotFound
@@ -39,7 +39,7 @@ class CreateReplyToCommentInteractor:
     def _reply_to_comment_response(
             self, comment_content: str, comment_id: str,
             presenter: CreateReplyPresenterInterface, user_id: str,
-            mention_user_ids: List[str], multimedia_dtos: List[MultiMediaDTO]):
+            mention_user_ids: List[str], multimedia_dtos: List[MultimediaDTO]):
         comment_dto, comment_with_editable_status_dto, user_profile_dtos, \
         comment_id_with_mention_user_id_dtos, comment_id_with_multimedia_dtos = \
             self.reply_to_comment(
@@ -60,7 +60,7 @@ class CreateReplyToCommentInteractor:
 
     def reply_to_comment(
             self, user_id: str, comment_id: str, comment_content: str,
-            mention_user_ids: List[str], multimedia_dtos: List[MultiMediaDTO]
+            mention_user_ids: List[str], multimedia_dtos: List[MultimediaDTO]
     ):
         from ib_discussions.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
@@ -102,10 +102,12 @@ class CreateReplyToCommentInteractor:
     def get_reply_details(self, reply_comment_id: str, user_id: str):
         comment_dto = self.storage.get_comment_details_dto(
             comment_id=reply_comment_id)
+        comment_dtos = [comment_dto]
 
         comment_with_editable_status_dtos, user_profile_dtos, \
         comment_id_with_mention_user_id_dtos, comment_id_with_multimedia_dtos = \
-            self.get_replies_for_comment([comment_dto], user_id)
+            self.get_replies_for_comment(
+                reply_dtos=comment_dtos, user_id=user_id)
 
         return comment_dto, comment_with_editable_status_dtos[0], \
                user_profile_dtos, comment_id_with_mention_user_id_dtos, \

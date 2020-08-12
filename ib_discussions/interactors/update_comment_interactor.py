@@ -1,6 +1,6 @@
 from typing import List
 
-from ib_discussions.interactors.dtos.dtos import MultiMediaDTO
+from ib_discussions.interactors.dtos.dtos import MultimediaDTO
 from ib_discussions.interactors.presenter_interfaces.presenter_interface import \
     UpdateCommentPresenterInterface
 from ib_discussions.interactors.storage_interfaces.comment_storage_interface import \
@@ -16,7 +16,7 @@ class UpdateCommentInteractor:
                                user_id: str, comment_id: str,
                                comment_content: str,
                                mention_user_ids: List[str],
-                               multimedia_dtos: List[MultiMediaDTO]):
+                               multimedia_dtos: List[MultimediaDTO]):
         from ib_discussions.exceptions.custom_exceptions import \
             CommentIdNotFound, UserCannotEditComment
         from ib_discussions.adapters.auth_service import InvalidUserIds
@@ -55,26 +55,11 @@ class UpdateCommentInteractor:
 
     def update_comment(
             self, user_id: str, comment_id: str, mention_user_ids: List[str],
-            multimedia_dtos: List[MultiMediaDTO], comment_content: str
+            multimedia_dtos: List[MultimediaDTO], comment_content: str
     ):
-        from ib_discussions.exceptions.custom_exceptions import \
-            CommentIdNotFound, UserCannotEditComment
-        is_comment_id_not_exists = \
-            not self.comment_storage.is_comment_id_exists(comment_id=comment_id)
-        if is_comment_id_not_exists:
-            raise CommentIdNotFound
-
-        comment_creator_id = self.comment_storage.get_comment_creator_id(
-            comment_id=comment_id
-        )
-        is_not_comment_creator = not comment_creator_id == user_id
-        if is_not_comment_creator:
-            raise UserCannotEditComment
-
-        from ib_discussions.adapters.service_adapter import ServiceAdapter
-        service_adapter = ServiceAdapter()
-        service_adapter.auth_service.validate_user_ids(
-            user_ids=mention_user_ids)
+        self._validate_varibles_for_update_comment(
+            comment_id=comment_id, mention_user_ids=mention_user_ids,
+            user_id=user_id)
 
         self.comment_storage.update_comment(
             comment_id=comment_id, comment_content=comment_content)
@@ -94,3 +79,26 @@ class UpdateCommentInteractor:
             )
         return comment_with_replies_count_and_editable_dto, user_profile_dtos, \
                comment_id_with_mention_user_id_dtos, comment_id_with_multimedia_dtos
+
+    def _validate_varibles_for_update_comment(
+            self, comment_id: str, mention_user_ids: List[str],
+            user_id: str):
+        from ib_discussions.exceptions.custom_exceptions import \
+            CommentIdNotFound, UserCannotEditComment
+        from ib_discussions.adapters.service_adapter import ServiceAdapter
+
+        is_comment_id_not_exists = \
+            not self.comment_storage.is_comment_id_exists(comment_id=comment_id)
+        if is_comment_id_not_exists:
+            raise CommentIdNotFound
+
+        comment_creator_id = self.comment_storage.get_comment_creator_id(
+            comment_id=comment_id
+        )
+        is_not_comment_creator = not comment_creator_id == user_id
+        if is_not_comment_creator:
+            raise UserCannotEditComment
+
+        service_adapter = ServiceAdapter()
+        service_adapter.auth_service.validate_user_ids(
+            user_ids=mention_user_ids)

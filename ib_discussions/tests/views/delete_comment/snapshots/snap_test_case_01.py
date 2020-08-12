@@ -19,6 +19,6 @@ snapshots['TestCase01DeleteCommentAPITestCase.test_with_user_id_cannot_edit_the_
 
 snapshots['TestCase01DeleteCommentAPITestCase.test_with_user_id_cannot_edit_the_comment body'] = {
     'http_status_code': 400,
-    'res_status': 'USER_CANNOT_EDIT_COMMENT',
+    'res_status': 'USER_CANNOT_DELETE_COMMENT',
     'response': 'Please send valid user id to comment id to delete comment'
 }

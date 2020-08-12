@@ -1,8 +1,8 @@
 import factory
 
-from ib_discussions.constants.enum import EntityType, MultiMediaFormatEnum
+from ib_discussions.constants.enum import EntityType, MultimediaFormat
 from ib_discussions.interactors.dtos.dtos import DiscussionWithEntityDetailsDTO, \
-    DiscussionIdWithTitleAndDescriptionDTO, MultiMediaDTO
+    DiscussionIdWithTitleAndDescriptionDTO, MultimediaDTO
 
 
 class DiscussionWithEntityDetailsDTOFactory(factory.Factory):
@@ -27,13 +27,13 @@ class DiscussionIdWithTitleAndDescriptionDTOFactory(factory.Factory):
     description = factory.LazyAttribute(lambda obj: "description")
 
 
-class MultiMediaDTOFactory(factory.Factory):
+class MultimediaDTOFactory(factory.Factory):
     class Meta:
-        model = MultiMediaDTO
+        model = MultimediaDTO
 
     format_type = factory.Iterator([
-        MultiMediaFormatEnum.IMAGE.value,
-        MultiMediaFormatEnum.VIDEO.value
+        MultimediaFormat.IMAGE.value,
+        MultimediaFormat.VIDEO.value
     ])
     url = "https://picsum.photos/200"
     thumbnail_url = "https://picsum.photos/200"

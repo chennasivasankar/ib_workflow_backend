@@ -51,7 +51,8 @@ class TestDeleteCommentInteractor:
                expected_presenter_prepare_response_for_comment_id_not_found_mock
         presenter_mock.prepare_response_for_comment_id_not_found. \
             assert_called_once()
-        storage_mock.is_comment_id_exists.assert_called_once()
+        storage_mock.is_comment_id_exists.assert_called_once_with(
+            comment_id=comment_id)
 
     def test_with_user_cannot_edit_comment_return_response(
             self, storage_mock, presenter_mock, interactor):
@@ -74,8 +75,10 @@ class TestDeleteCommentInteractor:
         # Assert
         assert response == \
                expected_presenter_response_for_user_cannot_edit_comment_mock
-        storage_mock.is_comment_id_exists.assert_called_once()
-        storage_mock.get_comment_creator_id.assert_called_once()
+        storage_mock.is_comment_id_exists.assert_called_once_with(
+            comment_id=comment_id)
+        storage_mock.get_comment_creator_id.assert_called_once_with(
+            comment_id=comment_id)
         presenter_mock.response_for_user_cannot_edit_comment.assert_called_once()
 
     def test_with_valid_details_return_respones(

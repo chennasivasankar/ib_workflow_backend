@@ -18,9 +18,9 @@ def api_wrapper(*args, **kwargs):
     multimedia_list = request_data["multimedia"]
 
     from ib_discussions.tests.factories.interactor_dtos import \
-        MultiMediaDTOFactory
+        MultimediaDTOFactory
     multimedia_dtos = [
-        MultiMediaDTOFactory(
+        MultimediaDTOFactory(
             format_type=multimedia_dict["format_type"],
             url=multimedia_dict["url"],
             thumbnail_url=multimedia_dict["thumbnail_url"]

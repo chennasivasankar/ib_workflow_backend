@@ -11,7 +11,7 @@ snapshots['TestCase02UpdateCommentAPITestCase.test_with_user_cannot_edit_for_giv
 
 snapshots['TestCase02UpdateCommentAPITestCase.test_with_user_cannot_edit_for_given_comment_id body'] = {
     'http_status_code': 400,
-    'res_status': 'USER_CANNOT_EDIT_COMMENT',
+    'res_status': 'USER_CANNOT_UPDATE_COMMENT',
     'response': 'Please send valid user id to comment id to update comment'
 }
 
@@ -22,4 +22,3 @@ snapshots['TestCase02UpdateCommentAPITestCase.test_with_comment_id_not_found bod
     'res_status': 'COMMENT_ID_NOT_FOUND',
     'response': 'Please send valid comment id to update comment'
 }
-

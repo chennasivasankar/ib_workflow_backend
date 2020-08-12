@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from ib_discussions.interactors.dtos.dtos import MultiMediaDTO
+from ib_discussions.interactors.dtos.dtos import MultimediaDTO
 from ib_discussions.interactors.storage_interfaces.dtos import \
     CommentIdWithRepliesCountDTO, CommentDTO, CommentIdWithMentionUserIdDTO, \
     CommentIdWithMultiMediaDTO
@@ -61,7 +61,7 @@ class CommentStorageInterface(ABC):
 
     @abstractmethod
     def add_multimedia_to_comment(self, comment_id,
-                                   multimedia_dtos: List[MultiMediaDTO]):
+                                  multimedia_dtos: List[MultimediaDTO]):
         pass
 
     @abstractmethod

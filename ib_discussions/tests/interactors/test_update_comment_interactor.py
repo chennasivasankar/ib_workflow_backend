@@ -52,15 +52,15 @@ class TestUpdateCommentInteractor:
     @pytest.fixture()
     def prepare_multimedia_setup(self, mocker):
         comment_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
-        from ib_discussions.constants.enum import MultiMediaFormatEnum
+        from ib_discussions.constants.enum import MultimediaFormat
         multimedia = [
             {
-                "format_type": MultiMediaFormatEnum.IMAGE.value,
+                "format_type": MultimediaFormat.IMAGE.value,
                 "url": "https://picsum.photos/200",
                 "thumbnail_url": "https://picsum.photos/200"
             },
             {
-                "format_type": MultiMediaFormatEnum.VIDEO.value,
+                "format_type": MultimediaFormat.VIDEO.value,
                 "url": "https://picsum.photos/200",
                 "thumbnail_url": "https://picsum.photos/200"
             }
@@ -116,7 +116,8 @@ class TestUpdateCommentInteractor:
                expected_presenter_prepare_response_for_comment_id_not_found_mock
         presenter_mock.prepare_response_for_comment_id_not_found. \
             assert_called_once()
-        storage_mock.is_comment_id_exists.assert_called_once()
+        storage_mock.is_comment_id_exists.assert_called_once_with(
+            comment_id=comment_id)
 
     def test_with_user_cannot_edit_comment_return_response(
             self, storage_mock, presenter_mock, interactor, prepare_users_setup,
@@ -147,8 +148,10 @@ class TestUpdateCommentInteractor:
         # Assert
         assert response == \
                expected_presenter_response_for_user_cannot_edit_comment_mock
-        storage_mock.is_comment_id_exists.assert_called_once()
-        storage_mock.get_comment_creator_id.assert_called_once()
+        storage_mock.is_comment_id_exists.assert_called_once_with(
+            comment_id=comment_id)
+        storage_mock.get_comment_creator_id.assert_called_once_with(
+            comment_id=comment_id)
         presenter_mock.response_for_user_cannot_edit_comment.assert_called_once()
 
     def test_invalid_user_ids_return_response(
@@ -198,6 +201,7 @@ class TestUpdateCommentInteractor:
         # Arrange
         user_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         comment_id = "97be920b-7b4c-49e7-8adb-41a0c18da848"
+        comment_ids = [comment_id]
         comment_content = "content"
         mention_user_ids = prepare_users_setup
         multimedia_dtos = prepare_multimedia_setup
@@ -245,16 +249,18 @@ class TestUpdateCommentInteractor:
         storage_mock.get_comment_details_dto.assert_called_once_with(
             comment_id=comment_id
         )
-        storage_mock.is_comment_id_exists.assert_called_once()
+        storage_mock.is_comment_id_exists.assert_called_once_with(
+            comment_id=comment_id
+        )
         storage_mock.get_replies_count_for_comments.assert_called_once_with(
-            comment_ids=[comment_id]
+            comment_ids=comment_ids
         )
         storage_mock.get_mention_user_ids.assert_called_once_with(
-            comment_ids=[comment_id]
+            comment_ids=comment_ids
         )
         storage_mock.get_comment_id_with_mention_user_id_dtos.assert_called_once_with(
-            comment_ids=[comment_id]
+            comment_ids=comment_ids
         )
         storage_mock.get_multimedia_dtos.assert_called_once_with(
-            comment_ids=[comment_id]
+            comment_ids=comment_ids
         )

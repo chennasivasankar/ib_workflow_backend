@@ -61,10 +61,10 @@ class TestUpdateCommentPresenterImplementation:
     def test_response_for_user_cannot_edit_comment(self, presenter):
         # Arrange
         from ib_discussions.presenters.update_comment_presenter_implementaion \
-            import USER_CANNOT_EDIT_COMMENT
-        expected_response = USER_CANNOT_EDIT_COMMENT[0]
+            import USER_CANNOT_UPDATE_COMMENT
+        expected_response = USER_CANNOT_UPDATE_COMMENT[0]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
-        expected_res_status = USER_CANNOT_EDIT_COMMENT[1]
+        expected_res_status = USER_CANNOT_UPDATE_COMMENT[1]
 
         # Act
         response_obj = presenter.response_for_user_cannot_edit_comment()

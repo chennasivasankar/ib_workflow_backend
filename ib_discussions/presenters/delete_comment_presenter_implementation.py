@@ -9,9 +9,9 @@ COMMENT_ID_NOT_FOUND = (
     "COMMENT_ID_NOT_FOUND"
 )
 
-USER_CANNOT_EDIT_COMMENT = (
+USER_CANNOT_DELETE_COMMENT = (
     "Please send valid user id to comment id to delete comment",
-    "USER_CANNOT_EDIT_COMMENT"
+    "USER_CANNOT_DELETE_COMMENT"
 )
 
 
@@ -29,9 +29,9 @@ class DeleteCommentPresenterImplementation(
 
     def response_for_user_cannot_edit_comment(self):
         response_dict = {
-            "response": USER_CANNOT_EDIT_COMMENT[0],
+            "response": USER_CANNOT_DELETE_COMMENT[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
-            "res_status": USER_CANNOT_EDIT_COMMENT[1]
+            "res_status": USER_CANNOT_DELETE_COMMENT[1]
         }
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)

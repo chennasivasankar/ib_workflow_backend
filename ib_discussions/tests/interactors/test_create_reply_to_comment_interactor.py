@@ -45,9 +45,9 @@ class TestCreateReplyToCommentInteractor:
         prepare_validate_user_ids_mock(mocker=mocker)
 
         from ib_discussions.tests.factories.interactor_dtos import \
-            MultiMediaDTOFactory
-        MultiMediaDTOFactory.format_type.reset()
-        multimedia_dtos = MultiMediaDTOFactory.create_batch(2)
+            MultimediaDTOFactory
+        MultimediaDTOFactory.format_type.reset()
+        multimedia_dtos = MultimediaDTOFactory.create_batch(2)
 
         expected_presenter_response_for_comment_id_not_found_mock = Mock()
 
@@ -92,9 +92,9 @@ class TestCreateReplyToCommentInteractor:
             user_ids=invalid_user_ids)
 
         from ib_discussions.tests.factories.interactor_dtos import \
-            MultiMediaDTOFactory
-        MultiMediaDTOFactory.format_type.reset()
-        multimedia_dtos = MultiMediaDTOFactory.create_batch(2)
+            MultimediaDTOFactory
+        MultimediaDTOFactory.format_type.reset()
+        multimedia_dtos = MultimediaDTOFactory.create_batch(2)
 
         expected_presenter_response_for_invalid_user_ids_mock = Mock()
 
@@ -122,6 +122,7 @@ class TestCreateReplyToCommentInteractor:
         user_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         discussion_id = "71be920b-7b4c-49e7-8adb-41a0c18da848"
         reply_comment_id = "01be920b-7b4c-49e7-8adb-41a0c18da848"
+        comment_ids = [reply_comment_id]
         comment_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
         comment_content = "content"
 
@@ -142,9 +143,9 @@ class TestCreateReplyToCommentInteractor:
             "20be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
         from ib_discussions.tests.factories.interactor_dtos import \
-            MultiMediaDTOFactory
-        MultiMediaDTOFactory.format_type.reset()
-        multimedia_dtos = MultiMediaDTOFactory.create_batch(2)
+            MultimediaDTOFactory
+        MultimediaDTOFactory.format_type.reset()
+        multimedia_dtos = MultimediaDTOFactory.create_batch(2)
 
         from ib_discussions.tests.common_fixtures.adapters import \
             prepare_get_user_profile_dtos_mock
@@ -192,13 +193,13 @@ class TestCreateReplyToCommentInteractor:
             comment_id=reply_comment_id
         )
         storage_mock.get_mention_user_ids.assert_called_once_with(
-            comment_ids=[reply_comment_id]
+            comment_ids=comment_ids
         )
         storage_mock.get_comment_id_with_mention_user_id_dtos.assert_called_once_with(
-            comment_ids=[reply_comment_id]
+            comment_ids=comment_ids
         )
         storage_mock.get_multimedia_dtos.assert_called_once_with(
-            comment_ids=[reply_comment_id]
+            comment_ids=comment_ids
         )
         presenter_mock.prepare_response_for_reply.assert_called_once()
 
@@ -210,6 +211,7 @@ class TestCreateReplyToCommentInteractor:
         discussion_id = "71be920b-7b4c-49e7-8adb-41a0c18da848"
         parent_comment_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
         reply_comment_id = "01be920b-7b4c-49e7-8adb-41a0c18da848"
+        comment_ids = [reply_comment_id]
         comment_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
         comment_content = "content"
 
@@ -230,9 +232,9 @@ class TestCreateReplyToCommentInteractor:
             "20be920b-7b4c-49e7-8adb-41a0c18da848"
         ]
         from ib_discussions.tests.factories.interactor_dtos import \
-            MultiMediaDTOFactory
-        MultiMediaDTOFactory.format_type.reset()
-        multimedia_dtos = MultiMediaDTOFactory.create_batch(2)
+            MultimediaDTOFactory
+        MultimediaDTOFactory.format_type.reset()
+        multimedia_dtos = MultimediaDTOFactory.create_batch(2)
 
         from ib_discussions.tests.common_fixtures.adapters import \
             prepare_get_user_profile_dtos_mock
@@ -280,13 +282,13 @@ class TestCreateReplyToCommentInteractor:
             comment_id=reply_comment_id
         )
         storage_mock.get_mention_user_ids.assert_called_once_with(
-            comment_ids=[reply_comment_id]
+            comment_ids=comment_ids
         )
         storage_mock.get_comment_id_with_mention_user_id_dtos.assert_called_once_with(
-            comment_ids=[reply_comment_id]
+            comment_ids=comment_ids
         )
         storage_mock.get_multimedia_dtos.assert_called_once_with(
-            comment_ids=[reply_comment_id]
+            comment_ids=comment_ids
         )
         presenter_mock.prepare_response_for_reply.assert_called_once()
 

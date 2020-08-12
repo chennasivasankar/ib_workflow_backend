@@ -13,7 +13,7 @@ RESPONSE_400_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "USER_CANNOT_EDIT_COMMENT"
+    "res_status": "USER_CANNOT_DELETE_COMMENT"
 }
 """
 
