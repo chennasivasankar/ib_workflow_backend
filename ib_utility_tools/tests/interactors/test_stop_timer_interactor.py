@@ -62,7 +62,7 @@ class TestStopTimerInteractor:
         stop_datetime = datetime.datetime.now()
         time_delta = stop_datetime - start_datetime
         duration_in_seconds = duration_in_seconds_from_db + time_delta.seconds
-        timer_details_dto_for_presenter = TimerDetailsDTOFactory(
+        timer_details_dto = TimerDetailsDTOFactory(
             duration_in_seconds=duration_in_seconds, is_running=False)
 
         presenter_mock.get_success_response_with_timer_details_dto \
@@ -75,7 +75,7 @@ class TestStopTimerInteractor:
             timer_entity_dto=timer_entity_dto)
         storage_mock.update_timer.assert_called_once_with(
             timer_entity_dto=timer_entity_dto,
-            timer_details_dto=timer_details_dto_for_presenter)
+            timer_details_dto=timer_details_dto)
         presenter_mock.get_success_response_with_timer_details_dto \
             .assert_called_once_with(
-            timer_details_dto=timer_details_dto_for_presenter)
+            timer_details_dto=timer_details_dto)
