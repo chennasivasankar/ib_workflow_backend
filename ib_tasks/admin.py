@@ -15,8 +15,10 @@ from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from ib_tasks.models.filter import Filter
 from ib_tasks.models.filter_condition import FilterCondition
+from ib_tasks.models.task_stage_history import TaskStageHistory
 
 
+admin.site.register(TaskStageHistory)
 admin.site.register(Filter)
 admin.site.register(FilterCondition)
 admin.site.register(ElasticSearchTask)
