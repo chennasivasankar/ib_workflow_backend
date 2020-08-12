@@ -1,4 +1,5 @@
 import enum
+
 from ib_common.constants import BaseEnumClass
 
 
@@ -11,11 +12,5 @@ class StatusCode(BaseEnumClass, enum.Enum):
     SUCCESS_CREATE = 201
 
 
-class Searchable(enum.Enum):
-    CITY = "CITY"
-    STATE = "STATE"
-    COUNTRY = "COUNTRY"
-    VENDOR = "VENDOR"
+class SearchType(enum.Enum):
     USER = "USER"
-    COMPANY = "COMPANY"
-    TEAM = "TEAM"

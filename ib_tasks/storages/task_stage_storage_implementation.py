@@ -1,16 +1,51 @@
+import datetime
 from typing import List
 
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
+from ib_tasks.interactors.stages_dtos import TaskStageHistoryDTO, StageMinimalDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskStageAssigneeDTO, CurrentStageDetailsDTO
+    TaskStageAssigneeDTO, CurrentStageDetailsDTO, TaskIdWithDbStageIdsDTO, \
+    AssigneeCurrentTasksCountDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import \
     TaskStageStorageInterface
+from ib_tasks.models import CurrentTaskStage, Stage
+from ib_tasks.models.task_stage_history import TaskStageHistory
 from ib_tasks.models import CurrentTaskStage, Task, TaskStageHistory, \
     StagePermittedRoles, Stage
 
 
 class TaskStageStorageImplementation(TaskStageStorageInterface):
+
+    def get_stage_details(self, stage_ids: List[int]) -> List[StageMinimalDTO]:
+
+        stage_objs = Stage.objects.filter(id__in=stage_ids)
+
+        return [
+            StageMinimalDTO(
+                stage_id=stage_obj.id,
+                name=stage_obj.display_name,
+                color=stage_obj.stage_color
+            )
+            for stage_obj in stage_objs
+        ]
+
+    def get_task_stage_dtos(self, task_id: int) -> List[TaskStageHistoryDTO]:
+        task_stage_history_objs = \
+            TaskStageHistory.objects.filter(task_id=task_id)
+
+        return [
+            TaskStageHistoryDTO(
+                log_id=task_stage_obj.id,
+                task_id=task_stage_obj.task_id,
+                stage_id=task_stage_obj.stage_id,
+                started_at=task_stage_obj.joined_at,
+                left_at=task_stage_obj.left_at,
+                assignee_id=task_stage_obj.task_stage_assignee_id,
+                stage_duration=None
+            )
+            for task_stage_obj in task_stage_history_objs
+        ]
 
     def get_valid_stage_ids_of_task(self, task_id: int,
                                     stage_ids: List[int]) -> List[int]:
@@ -73,3 +108,22 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
             stage_id__in=stage_ids, role_id__in=user_roles
         ).exists()
         return is_user_has_permissions
+
+
+
+    def get_count_of_tasks_assigned_for_each_user(
+            self, db_stage_ids: List[int],
+            task_ids: List[int], user_ids: List[str]) -> List[
+        AssigneeCurrentTasksCountDTO]:
+        from django.db.models import Count
+        assignee_with_count_objs = list(TaskStageHistory.objects.filter(
+            task_id__in=task_ids, stage_id__in=db_stage_ids,
+            assignee_id__in=user_ids, left_at=None).
+                                        values('assignee_id').annotate(
+            tasks_count=Count('assignee_id')).order_by('tasks_count'))
+        assignee_with_current_tasks_count_dtos = [AssigneeCurrentTasksCountDTO(
+            assignee_id=assignee_with_count_obj['assignee_id'],
+            tasks_count=assignee_with_count_obj['tasks_count']) for
+            assignee_with_count_obj in
+            assignee_with_count_objs]
+        return assignee_with_current_tasks_count_dtos

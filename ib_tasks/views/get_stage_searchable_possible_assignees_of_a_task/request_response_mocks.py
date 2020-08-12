@@ -1,12 +1,5 @@
 
 
-REQUEST_BODY_JSON = """
-{
-    "task_id": "string",
-    "stage_id": "string"
-}
-"""
-
 
 RESPONSE_200_JSON = """
 [
@@ -30,7 +23,7 @@ RESPONSE_404_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "INVALID_TASK_ID"
+    "res_status": "INVALID_STAGE_ID"
 }
 """
 

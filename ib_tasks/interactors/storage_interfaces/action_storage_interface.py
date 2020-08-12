@@ -62,7 +62,8 @@ class ActionStorageInterface(ABC):
         pass
 
     @abc.abstractmethod
-    def validate_action_id(self, action_id) -> Optional[InvalidActionException]:
+    def validate_action_id(self, action_id) -> Optional[
+        InvalidActionException]:
         pass
 
     @abc.abstractmethod
@@ -77,4 +78,9 @@ class ActionStorageInterface(ABC):
 
     @abc.abstractmethod
     def validate_action(self, action_id: int) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def get_stage_ids_having_actions(self, db_stage_ids: List[int]) \
+            -> List[int]:
         pass

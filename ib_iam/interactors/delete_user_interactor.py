@@ -36,6 +36,7 @@ class DeleteUserInteractor(ValidationMixin):
         self.storage.delete_user_teams(user_id=delete_user_id)
         self._deactivate_delete_user_id_in_ib_users(
             delete_user_id=delete_user_id)
+        ## TODO delete_user_id for delete elastic search
 
     def _validate_delete_user_details(self, user_id: str, delete_user_id: str):
         self._validate_is_user_admin(user_id=user_id)

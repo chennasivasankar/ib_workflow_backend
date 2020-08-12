@@ -5,7 +5,8 @@ from ib_iam.interactors.presenter_interfaces.edit_user_presenter_interface \
     import EditUserPresenterInterface
 
 
-class EditUserPresenterImplementation(EditUserPresenterInterface, HTTPResponseMixin):
+class EditUserPresenterImplementation(EditUserPresenterInterface,
+                                      HTTPResponseMixin):
     def edit_user_success_response(self):
         from ib_iam.constants.exception_messages import EDIT_USER_SUCCESSFULLY
         response_dict = {
@@ -28,12 +29,17 @@ class EditUserPresenterImplementation(EditUserPresenterInterface, HTTPResponseMi
         return self.prepare_403_forbidden_response(
             response_dict=response_dict)
 
-    def raise_invalid_name_exception(self):
-        from ib_iam.constants.exception_messages import EMPTY_NAME_IS_INVALID
+    def raise_invalid_name_length_exception_for_update_user_profile(self):
+        from ib_iam.constants.exception_messages \
+            import INVALID_NAME_LENGTH
+        from ib_iam.constants.config import MINIMUM_USER_NAME_LENGTH
+        response = INVALID_NAME_LENGTH[0].format(
+            minimum_name_length=MINIMUM_USER_NAME_LENGTH)
+        res_status = INVALID_NAME_LENGTH[1]
         response_dict = {
-            "response": EMPTY_NAME_IS_INVALID[0],
+            "response": response,
             "http_status_code": StatusCode.BAD_REQUEST.value,
-            "res_status": EMPTY_NAME_IS_INVALID[1]
+            "res_status": res_status
         }
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
@@ -50,9 +56,9 @@ class EditUserPresenterImplementation(EditUserPresenterInterface, HTTPResponseMi
 
     def raise_name_should_not_contain_special_characters_exception(self):
         from ib_iam.constants.exception_messages \
-            import NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS
-        response = NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS[0]
-        res_status = NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS[1]
+            import NAME_SHOULD_NOT_CONTAIN_SPECIAL_CHARACTERS_AND_NUMBERS
+        response = NAME_SHOULD_NOT_CONTAIN_SPECIAL_CHARACTERS_AND_NUMBERS[0]
+        res_status = NAME_SHOULD_NOT_CONTAIN_SPECIAL_CHARACTERS_AND_NUMBERS[1]
         response_dict = {
             "response": response,
             "http_status_code": StatusCode.BAD_REQUEST.value,

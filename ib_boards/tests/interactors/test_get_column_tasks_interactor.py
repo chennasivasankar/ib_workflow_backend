@@ -16,8 +16,9 @@ from ib_boards.interactors.get_column_tasks_interactor import \
     GetColumnTasksInteractor
 from ib_boards.tests.factories.interactor_dtos import ActionDTOFactory, \
     FieldDetailsDTOFactory, GetTaskDetailsDTOFactory, \
-    ColumnTaskIdsDTOFactory, TaskStageIdDTOFactory
-from ib_boards.tests.factories.storage_dtos import TaskDTOFactory, TaskStageColorDTOFactory
+    ColumnTaskIdsDTOFactory, TaskStageIdDTOFactory, ColumnStageIdsDTOFactory
+from ib_boards.tests.factories.storage_dtos import TaskDTOFactory, TaskStageDTOFactory
+from ib_boards.tests.factories.storage_dtos import TaskDTOFactory, TaskStageDTOFactory
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
 
 
@@ -25,8 +26,8 @@ class TestGetColumnTasksInteractor:
 
     @pytest.fixture
     def task_stage_color_dtos(self):
-        TaskStageColorDTOFactory.reset_sequence()
-        return TaskStageColorDTOFactory.create_batch(size=3)
+        TaskStageDTOFactory.reset_sequence()
+        return TaskStageDTOFactory.create_batch(size=3)
 
     @pytest.fixture
     def storage_mock(self):
@@ -47,11 +48,12 @@ class TestGetColumnTasksInteractor:
     @pytest.fixture
     def get_column_tasks_dto(self):
         return ColumnTasksParametersDTO(
-            user_id=1,
+            user_id='user_id_1',
             view_type=ViewType.LIST.value,
             column_id='COLUMN_ID_1',
             offset=0,
-            limit=5
+            limit=5,
+            search_query="hello"
         )
 
     @pytest.fixture
@@ -61,7 +63,8 @@ class TestGetColumnTasksInteractor:
             view_type=ViewType.LIST.value,
             column_id='COLUMN_ID_1',
             offset=-1,
-            limit=1
+            limit=1,
+            search_query="hello"
         )
 
     @pytest.fixture
@@ -71,7 +74,8 @@ class TestGetColumnTasksInteractor:
             view_type=ViewType.LIST.value,
             column_id='COLUMN_ID_1',
             offset=1,
-            limit=-1
+            limit=-1,
+            search_query="hello"
         )
 
     @pytest.fixture
@@ -89,13 +93,13 @@ class TestGetColumnTasksInteractor:
     @pytest.fixture
     def column_tasks_ids(self):
         task_ids = ['TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3']
+        stage_ids = ['STAGE_ID_1', 'STAGE_ID_2', 'STAGE_ID_3']
         return ColumnTaskIdsDTOFactory.create_batch(
             1,
             task_stage_ids=TaskStageIdDTOFactory.create_batch(
-                3, task_id=factory.Iterator(task_ids)
-            ) + TaskStageIdDTOFactory.create_batch(
-                    3, task_id=factory.Iterator(task_ids)
-                )
+                3, task_id=factory.Iterator(task_ids),
+                stage_id=factory.Iterator(stage_ids)
+            )
         )
 
     @pytest.fixture
@@ -106,10 +110,6 @@ class TestGetColumnTasksInteractor:
         return ColumnTaskIdsDTOFactory.create_batch(
             1, task_stage_ids=factory.Iterator(task_stage_ids)
         )
-
-    @pytest.fixture
-    def column_tasks_ids(self):
-        return ColumnTaskIdsDTOFactory.create_batch(3)
 
     @pytest.fixture
     def task_stage_dtos(self):
@@ -135,6 +135,11 @@ class TestGetColumnTasksInteractor:
     @pytest.fixture
     def action_dtos(self):
         return ActionDTOFactory.create_batch(9)
+
+    @pytest.fixture
+    def column_stage_dtos(self):
+        ColumnStageIdsDTOFactory.reset_sequence()
+        return ColumnStageIdsDTOFactory.create_batch(1)
 
     def test_with_invalid_column_id_return_error_message(
             self, presenter_mock, storage_mock, get_column_tasks_dto):
@@ -247,19 +252,19 @@ class TestGetColumnTasksInteractor:
             self, storage_mock, presenter_mock, get_column_tasks_dto, mocker,
             task_complete_details_dto, task_dtos,
             action_dtos, column_tasks_ids, task_stage_dtos,
-            get_task_details_dto, task_stage_color_dtos):
+            get_task_details_dto, task_stage_color_dtos, column_stage_dtos):
         # Arrange
         view_type = get_column_tasks_dto.view_type
         stage_ids = ['STAGE_ID_1', 'STAGE_ID_2']
         task_ids = ['TASK_ID_1', 'TASK_ID_2', 'TASK_ID_3']
         expected_response = Mock()
-        storage_mock.get_column_display_stage_ids.return_value = stage_ids
+        storage_mock.get_columns_stage_ids.return_value = column_stage_dtos
         presenter_mock.get_response_for_column_tasks. \
             return_value = expected_response
         interactor = GetColumnTasksInteractor(
             storage=storage_mock
         )
-        user_id = 1
+        user_id = 'user_id_1'
         from ib_boards.tests.common_fixtures.adapters.task_service import \
             task_details_mock
         task_details_mock = task_details_mock(mocker, task_complete_details_dto)
@@ -272,7 +277,9 @@ class TestGetColumnTasksInteractor:
                 unique_key=get_column_tasks_dto.column_id,
                 stage_ids=stage_ids,
                 offset=get_column_tasks_dto.offset,
-                limit=get_column_tasks_dto.limit
+                limit=get_column_tasks_dto.limit,
+                user_id='user_id_1',
+                search_query="hello"
             )
         ]
         user_role = 'User'
@@ -301,20 +308,20 @@ class TestGetColumnTasksInteractor:
             task_fields_dtos=task_complete_details_dto[0].field_dtos,
             total_tasks=10,
             task_ids=task_ids,
-            task_stage_color_dtos=task_stage_color_dtos
+            task_stage_dtos=task_stage_color_dtos
         )
 
     def test_with_valid_details_return_task_details_without_duplicates(
             self, storage_mock, presenter_mock, get_column_tasks_dto, mocker,
             task_complete_details_dto, task_dtos,
             column_tasks_ids_no_duplicates, task_stage_color_dtos,
-            action_dtos, column_tasks_ids, task_stage_dtos):
+            action_dtos, column_tasks_ids, task_stage_dtos, column_stage_dtos):
 
         # Arrange
-        stage_ids = ['STAGE_ID_1', 'STAGE_ID_2']
-        task_ids = ['TASK_ID_4', 'TASK_ID_5', 'TASK_ID_6']
+        stage_ids = ['STAGE_ID_3', 'STAGE_ID_4']
+        task_ids = ['TASK_ID_7', 'TASK_ID_8', 'TASK_ID_9']
         expected_response = Mock()
-        storage_mock.get_column_display_stage_ids.return_value = stage_ids
+        storage_mock.get_columns_stage_ids.return_value = column_stage_dtos
         presenter_mock.get_response_for_column_tasks. \
             return_value = expected_response
         interactor = GetColumnTasksInteractor(
@@ -334,7 +341,9 @@ class TestGetColumnTasksInteractor:
                 unique_key=get_column_tasks_dto.column_id,
                 stage_ids=stage_ids,
                 offset=get_column_tasks_dto.offset,
-                limit=get_column_tasks_dto.limit
+                limit=get_column_tasks_dto.limit,
+                user_id='user_id_1',
+                search_query="hello"
             )
         ]
         user_role = 'User'
@@ -360,5 +369,5 @@ class TestGetColumnTasksInteractor:
             task_fields_dtos=task_complete_details_dto[0].field_dtos,
             total_tasks=10,
             task_ids=task_ids,
-            task_stage_color_dtos=task_stage_color_dtos
+            task_stage_dtos=task_stage_color_dtos
         )
