@@ -57,6 +57,7 @@ class TestCase01GetUserProfileAPITestCase(TestUtils):
             name="test"
         )
         from ib_iam.tests.factories.models import UserDetailsFactory
+        UserDetailsFactory.reset_sequence(0)
         UserDetailsFactory(user_id=user_id, is_admin=False)
 
         response = self.make_api_call(
