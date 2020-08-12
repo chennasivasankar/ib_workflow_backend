@@ -12,6 +12,6 @@ class TaskStageHistory(models.Model):
 
     def __str__(self):
         return "{} with {} and assigned to {}".format(
-            self.task__task_display_id,
-            self.stage__stage_id,
+            self.task_id,
+            self.stage_id,
             self.assignee_id)

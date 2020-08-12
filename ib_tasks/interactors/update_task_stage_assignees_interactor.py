@@ -10,9 +10,11 @@ from ib_tasks.interactors.presenter_interfaces \
 from ib_tasks.interactors.stages_dtos import TaskIdWithStageAssigneesDTO, \
     TaskIdWithStageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
-    StageIdWithRoleIdsAndAssigneeIdDTO
+    StageIdWithRoleIdsAndAssigneeIdDTO, TaskIdWithDbStageIdsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
+    TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.user_role_validation_interactor import \
@@ -21,9 +23,11 @@ from ib_tasks.interactors.user_role_validation_interactor import \
 
 class UpdateTaskStageAssigneesInteractor:
     def __init__(self, stage_storage: StageStorageInterface,
-                 task_storage: TaskStorageInterface):
+                 task_storage: TaskStorageInterface,
+                 task_stage_storage: TaskStageStorageInterface):
         self.stage_storage = stage_storage
         self.task_storage = task_storage
+        self.task_stage_storage = task_stage_storage
 
     def update_task_stage_assignees_wrapper(
             self,
@@ -48,8 +52,8 @@ class UpdateTaskStageAssigneesInteractor:
     def update_task_stage_assignees(
             self,
             task_id_with_stage_assignees_dto: TaskIdWithStageAssigneesDTO):
-        self._validate_task_id(
-            task_id=task_id_with_stage_assignees_dto.task_id)
+        task_id = task_id_with_stage_assignees_dto.task_id
+        self._validate_task_id(task_id=task_id)
         stage_ids = self._get_stage_ids_from_given_dto(
             task_id_with_stage_assignees_dto)
         self._check_duplicate_stage_ids(stage_ids)
@@ -67,12 +71,19 @@ class UpdateTaskStageAssigneesInteractor:
             )
         self._validate_does_given_assignee_of_stage_ids_have_valid_permission(
             role_ids_and_assignee_id_group_by_stage_id_dtos)
+        task_id_with_db_stage_ids_dto = TaskIdWithDbStageIdsDTO(
+            task_id=task_id, db_stage_ids=stage_ids)
+
+        self.task_stage_storage. \
+            update_task_stage_having_assignees_with_left_at_status(
+            task_id_with_db_stage_ids_dto=task_id_with_db_stage_ids_dto)
 
         task_id_with_stage_assignee_dtos_for_creation = self. \
             _get_task_id_with_stage_assignee_dtos_given_task_stage_ids(
             stage_ids, task_id_with_stage_assignees_dto)
         self.stage_storage.create_task_stage_assignees(
-            task_id_with_stage_assignee_dtos=task_id_with_stage_assignee_dtos_for_creation)
+            task_id_with_stage_assignee_dtos=
+            task_id_with_stage_assignee_dtos_for_creation)
         return
 
     @staticmethod

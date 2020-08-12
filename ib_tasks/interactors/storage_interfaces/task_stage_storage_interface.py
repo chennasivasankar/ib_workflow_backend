@@ -2,7 +2,7 @@ import abc
 from typing import List
 
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskStageAssigneeDTO, CurrentStageDetailsDTO
+    TaskStageAssigneeDTO, CurrentStageDetailsDTO, TaskIdWithDbStageIdsDTO
 
 
 class TaskStageStorageInterface(abc.ABC):
@@ -37,4 +37,11 @@ class TaskStageStorageInterface(abc.ABC):
     def is_user_has_permission_for_at_least_one_stage(
             self, stage_ids: List[int], user_roles: List[str]
     ) -> bool:
+        pass
+
+
+    @abc.abstractmethod
+    def update_task_stage_having_assignees_with_left_at_status(
+            self, task_id_with_db_stage_ids_dto:
+            TaskIdWithDbStageIdsDTO):
         pass
