@@ -2,7 +2,7 @@
 
 REQUEST_BODY_JSON = """
 {
-    "task_id": 1,
+    "task_id": "string",
     "title": "string",
     "description": "string",
     "start_date": "2099-12-31",
