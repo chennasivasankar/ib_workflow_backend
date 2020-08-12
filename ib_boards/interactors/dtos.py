@@ -113,6 +113,7 @@ class FieldDTO:
 class ActionDTO:
     action_id: str
     name: str
+    action_type: str
     button_text: str
     button_color: str
     task_id: int
@@ -209,11 +210,11 @@ class TaskStageDTO:
 class AssigneesDTO:
     assignee_id: str
     name: str
-    profile_pic_url: str
+    profile_pic_url = ''
 
 
 @dataclass
 class StageAssigneesDTO:
     task_id: int
     stage_id: str
-    assignees_details: AssigneesDetailsDTO
+    assignees_details: AssigneesDTO
