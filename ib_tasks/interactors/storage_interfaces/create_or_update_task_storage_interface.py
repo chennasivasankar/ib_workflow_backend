@@ -113,6 +113,3 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
     def update_task_with_given_task_details(self, task_dto: UpdateTaskDTO):
         pass
 
-    @abc.abstractmethod
-    def get_current_stage_ids_of_task(self, task_id: int) -> List[str]:
-        pass

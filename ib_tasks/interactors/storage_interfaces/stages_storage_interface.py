@@ -60,7 +60,7 @@ class StageStorageInterface(abc.ABC):
     def get_task_id_with_stage_details_dtos_based_on_stage_value(
             self, stage_values: List[int],
             task_ids_group_by_stage_value_dtos: List[
-                StageValueWithTaskIdsDTO]) \
+                StageValueWithTaskIdsDTO], user_id: str) \
             -> [TaskIdWithStageDetailsDTO]:
         pass
 
