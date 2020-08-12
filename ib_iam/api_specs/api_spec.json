@@ -724,7 +724,7 @@
         "$ref": "#/definitions/CompanyWithEmployeeIds"
       }
     },
-    "RefreshTokenParameter": {
+    "RefreshAuthTokenParameter": {
       "name": "RefreshTokenParameter",
       "in": "body",
       "description": "refresh token parameter",
@@ -1416,7 +1416,7 @@
         ]
       }
     },
-    "RefreshTokensNotFoundResponse": {
+    "RefreshAuthTokensNotFoundResponse": {
       "description": "refresh tokens not found Response",
       "schema": {
         "allOf": [
@@ -1442,7 +1442,7 @@
         ]
       }
     },
-    "RefreshTokensBadRequestResponse": {
+    "RefreshAuthTokensBadRequestResponse": {
       "description": "refresh tokens bad request Response",
       "schema": {
         "allOf": [
@@ -1466,7 +1466,7 @@
         ]
       }
     },
-    "RefreshTokensSuccessResponse": {
+    "RefreshAuthTokensSuccessResponse": {
       "description": "Success Response for refresh tokens",
       "schema": {
         "type": "object",
@@ -2021,25 +2021,31 @@
         }
       }
     },
-    "/user/refresh_tokens/v1/": {
+    "/refresh_auth_tokens/v1/": {
       "post": {
-        "summary": "Refresh Tokens",
-        "operationId": "refresh_tokens",
-        "description": "Get refresh tokens for given access token and refresh token",
+        "summary": "Refresh Auth Tokens",
+        "operationId": "refresh_auth_tokens",
+        "description": "Get refresh auth tokens for given access token and refresh token",
+        "security": [
+          {
+            "oauth": [
+            ]
+          }
+        ],
         "parameters": [
           {
-            "$ref": "#/parameters/RefreshTokenParameter"
+            "$ref": "#/parameters/RefreshAuthTokenParameter"
           }
         ],
         "responses": {
           "200": {
-            "$ref": "#/responses/RefreshTokensSuccessResponse"
+            "$ref": "#/responses/RefreshAuthTokensSuccessResponse"
           },
           "404": {
-            "$ref": "#/responses/RefreshTokensNotFoundResponse"
+            "$ref": "#/responses/RefreshAuthTokensNotFoundResponse"
           },
           "400": {
-            "$ref": "#/responses/RefreshTokensBadRequestResponse"
+            "$ref": "#/responses/RefreshAuthTokensBadRequestResponse"
           }
         }
       }

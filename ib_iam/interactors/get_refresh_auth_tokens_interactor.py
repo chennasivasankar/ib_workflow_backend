@@ -4,7 +4,7 @@ from ib_iam.interactors.presenter_interfaces.get_refresh_auth_tokens_presenter_i
 
 class GetRefreshTokensInteractor:
 
-    def get_refresh_tokens_wrapper(
+    def get_refresh_auth_tokens_wrapper(
             self, access_token: str, refresh_token: str,
             presenter: GetRefreshTokensPresenterInterface
     ):
@@ -13,7 +13,7 @@ class GetRefreshTokensInteractor:
             RefreshTokenHasExpired, RefreshTokenHasNotFound
         )
         try:
-            response = self._get_refresh_tokens_response(
+            response = self._get_refresh_auth_tokens_response(
                 access_token=access_token, presenter=presenter,
                 refresh_token=refresh_token
             )
@@ -27,11 +27,11 @@ class GetRefreshTokensInteractor:
             response = presenter.response_for_user_account_not_found()
         return response
 
-    def _get_refresh_tokens_response(
+    def _get_refresh_auth_tokens_response(
             self, access_token: str, refresh_token: str,
             presenter: GetRefreshTokensPresenterInterface,
     ):
-        user_tokens_dto = self.get_refresh_tokens(
+        user_tokens_dto = self.get_refresh_auth_tokens(
             access_token=access_token, refresh_token=refresh_token
         )
         response = presenter.response_for_user_tokens_dto(
@@ -39,7 +39,7 @@ class GetRefreshTokensInteractor:
         return response
 
     @staticmethod
-    def get_refresh_tokens(access_token: str, refresh_token: str):
+    def get_refresh_auth_tokens(access_token: str, refresh_token: str):
         from ib_iam.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
         user_tokens_dto = \

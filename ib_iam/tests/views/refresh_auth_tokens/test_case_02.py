@@ -3,7 +3,7 @@ get refresh tokens
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
-from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ib_iam.tests.views.refresh_auth_tokens import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
 class TestCase02RefreshTokensAPITestCase(TestUtils):

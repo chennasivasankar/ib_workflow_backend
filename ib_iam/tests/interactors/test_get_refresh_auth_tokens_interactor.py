@@ -39,7 +39,7 @@ class TestGetRefreshTokensInteractor:
         get_refresh_auth_tokens_dto_mock.side_effect = AccessTokenNotFound
 
         # Act
-        response = interactor.get_refresh_tokens_wrapper(
+        response = interactor.get_refresh_auth_tokens_wrapper(
             access_token=access_token, refresh_token=refresh_token,
             presenter=presenter_mock
         )
@@ -71,7 +71,7 @@ class TestGetRefreshTokensInteractor:
         get_refresh_auth_tokens_dto_mock.side_effect = RefreshTokenHasExpired
 
         # Act
-        response = interactor.get_refresh_tokens_wrapper(
+        response = interactor.get_refresh_auth_tokens_wrapper(
             access_token=access_token, refresh_token=refresh_token,
             presenter=presenter_mock
         )
@@ -103,7 +103,7 @@ class TestGetRefreshTokensInteractor:
         get_refresh_auth_tokens_dto_mock.side_effect = RefreshTokenHasNotFound
 
         # Act
-        response = interactor.get_refresh_tokens_wrapper(
+        response = interactor.get_refresh_auth_tokens_wrapper(
             access_token=access_token, refresh_token=refresh_token,
             presenter=presenter_mock
         )
@@ -135,7 +135,7 @@ class TestGetRefreshTokensInteractor:
         get_refresh_auth_tokens_dto_mock.side_effect = UserAccountNotFound
 
         # Act
-        response = interactor.get_refresh_tokens_wrapper(
+        response = interactor.get_refresh_auth_tokens_wrapper(
             access_token=access_token, refresh_token=refresh_token,
             presenter=presenter_mock
         )
@@ -174,7 +174,7 @@ class TestGetRefreshTokensInteractor:
         get_refresh_auth_tokens_dto_mock.return_value = user_tokens_dto
 
         # Act
-        response = interactor.get_refresh_tokens_wrapper(
+        response = interactor.get_refresh_auth_tokens_wrapper(
             access_token=access_token, refresh_token=refresh_token,
             presenter=presenter_mock
         )
