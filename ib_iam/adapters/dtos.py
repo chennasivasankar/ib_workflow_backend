@@ -1,8 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from ib_iam.constants.enums import Searchable
-
 
 @dataclass
 class UserProfileDTO:

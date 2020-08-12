@@ -23,6 +23,11 @@ def api_wrapper(*args, **kwargs):
         StagesStorageImplementation
     stage_storage = StagesStorageImplementation()
 
+    from ib_tasks.presenters.\
+        get_stage_searchable_possible_assignees_presenter_implementation \
+        import GetStageSearchablePossibleAssigneesPresenterImplementation
+    presenter = GetStageSearchablePossibleAssigneesPresenterImplementation()
+
     from ib_tasks.interactors.\
         get_stage_searchable_possible_assignees_interactor import \
         GetStageSearchablePossibleAssigneesInteractor
@@ -30,8 +35,9 @@ def api_wrapper(*args, **kwargs):
         stage_storage=stage_storage
     )
 
-    response = interactor.get_stage_searchable_possible_assignees_of_a_task(
-        search_query_with_pagination_dto=search_query_with_pagination_dto,
-        stage_id=stage_id
-    )
+    response = \
+        interactor.get_stage_searchable_possible_assignees_of_a_task_wrapper(
+            search_query_with_pagination_dto=search_query_with_pagination_dto,
+            stage_id=stage_id, presenter=presenter)
+
     return response

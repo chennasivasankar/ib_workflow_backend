@@ -18,12 +18,7 @@ class ValidationMixin:
         if is_invalid_action:
             raise InvalidActionException(action_id=action_id)
 
-    def validate_stage_id(self, stage_id: int):
+    def check_is_valid_stage_id(self, stage_id: int) -> bool:
         is_valid_stage = \
             self.stage_storage.check_is_stage_exists(stage_id=stage_id)
-
-        from ib_tasks.exceptions.stage_custom_exceptions import \
-            InvalidStageId
-        is_invalid_stage = not is_valid_stage
-        if is_invalid_stage:
-            raise InvalidStageId(stage_id)
+        return is_valid_stage

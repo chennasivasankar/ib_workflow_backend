@@ -39,7 +39,6 @@ class GetStageSearchablePossibleAssigneesInteractor(
                     search_query_with_pagination_dto=
                     search_query_with_pagination_dto,
                     stage_id=stage_id)
-
         except InvalidStageId as err:
             return presenter.raise_invalid_stage_id_exception(err)
         except LimitShouldBeGreaterThanZeroException as err:
@@ -55,7 +54,11 @@ class GetStageSearchablePossibleAssigneesInteractor(
             search_query_with_pagination_dto: SearchQueryWithPaginationDTO
             ) -> List[UserDetailsDTO]:
 
-        self.validate_stage_id(stage_id=stage_id)
+        is_valid_stage_id = self.check_is_valid_stage_id(stage_id=stage_id)
+        is_invalid_stage_id = not is_valid_stage_id
+        if is_invalid_stage_id:
+            raise InvalidStageId(stage_id)
+
         self._validations_of_limit_and_offset(
             limit=search_query_with_pagination_dto.limit,
             offset=search_query_with_pagination_dto.offset)
@@ -63,11 +66,15 @@ class GetStageSearchablePossibleAssigneesInteractor(
         stage_permitted_user_roles = \
             self.stage_storage.get_stage_permitted_user_roles(
                 stage_id=stage_id)
+        is_no_stage_permitted_users = not stage_permitted_user_roles
+        if is_no_stage_permitted_users:
+            permitted_user_details_dtos = []
+            return permitted_user_details_dtos
 
-        from ib_tasks.adapters.auth_service import AuthService
-        auth_service_adapter = AuthService()
+        from ib_tasks.adapters.service_adapter import get_service_adapter
+        service_adapter = get_service_adapter()
 
-        permitted_user_details_dtos = auth_service_adapter.\
+        permitted_user_details_dtos = service_adapter.auth_service. \
             get_user_details_for_the_given_role_ids_based_on_query(
                 role_ids=stage_permitted_user_roles,
                 search_query_with_pagination_dto=

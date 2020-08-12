@@ -3006,9 +3006,6 @@
             "$ref": "#/parameters/StageIdParameter"
           },
           {
-            "$ref": "#/parameters/SearchableTypeParameter"
-          },
-          {
             "$ref": "#/parameters/LimitParameter"
           },
           {
