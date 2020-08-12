@@ -120,8 +120,8 @@ class UserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def create_user(self, company_id: str, is_admin: bool, user_id: str,
-                    name: str):
+    def create_user(self, is_admin: bool, user_id: str, name: str,
+                    company_id: str = None):
         pass
 
     @abstractmethod
