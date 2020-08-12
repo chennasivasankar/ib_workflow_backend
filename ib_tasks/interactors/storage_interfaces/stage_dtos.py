@@ -107,6 +107,7 @@ class TaskIdWithStageDetailsDTO:
     # TODO refactor stage_id_db name after removal of stage_id
     db_stage_id: int
     task_id: int
+    task_display_id: str
     stage_id: str
     stage_display_name: str
     stage_color: str
