@@ -129,6 +129,10 @@
         "stage_color": {
           "type": "string"
         },
+        "stage_id": {
+          "type": "integer",
+          "format": "int64"
+        },
         "fields": {
           "type": "array",
           "items": {
@@ -184,7 +188,8 @@
         "task_id",
         "fields",
         "actions",
-        "stage_color"
+        "stage_color",
+        "stage_id"
       ]
     },
     "ColumnDetails": {

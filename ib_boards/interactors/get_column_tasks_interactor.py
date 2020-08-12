@@ -26,7 +26,7 @@ class GetColumnTasksInteractor:
             presenter: GetColumnTasksPresenterInterface):
         from ib_boards.exceptions.custom_exceptions import InvalidColumnId
         try:
-            task_fields_dtos, tasks_action_dtos, total_tasks, task_ids, task_stage_color_dtos = \
+            task_fields_dtos, tasks_action_dtos, total_tasks, task_ids, task_stage_dtos = \
                 self.get_column_tasks(
                     column_tasks_parameters=column_tasks_parameters
                 )
@@ -47,7 +47,7 @@ class GetColumnTasksInteractor:
             task_fields_dtos=task_fields_dtos,
             total_tasks=total_tasks,
             task_ids=task_ids,
-            task_stage_color_dtos=task_stage_color_dtos
+            task_stage_dtos=task_stage_dtos
         )
 
     def get_column_tasks(self,
@@ -64,7 +64,7 @@ class GetColumnTasksInteractor:
             stage_ids=stage_ids,
             column_tasks_parameters=column_tasks_parameters)
 
-        task_fields_dtos, tasks_action_dtos, task_stage_color_dtos = \
+        task_fields_dtos, tasks_action_dtos, task_stage_dtos = \
             self._get_tasks_complete_details(
                 task_ids_stages_dtos=task_ids_stages_dto, user_id=user_id,
                 view_type=view_type
@@ -74,7 +74,7 @@ class GetColumnTasksInteractor:
             for task_ids_stage_dto in task_ids_stages_dto.task_stage_ids
         ]
         return task_fields_dtos, tasks_action_dtos, \
-            task_ids_stages_dto.total_tasks, task_ids, task_stage_color_dtos
+            task_ids_stages_dto.total_tasks, task_ids, task_stage_dtos
 
     @staticmethod
     def _get_tasks_complete_details(

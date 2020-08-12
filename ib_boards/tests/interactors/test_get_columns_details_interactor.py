@@ -19,7 +19,7 @@ from ib_boards.tests.factories.interactor_dtos import \
     GetTaskDetailsDTOFactory, TaskStageIdDTOFactory
 from ib_boards.tests.factories.storage_dtos import (
     ColumnDetailsDTOFactory, TaskActionsDTOFactory, TaskFieldsDTOFactory,
-    ColumnCompleteDetailsDTOFactory, TaskStageColorDTOFactory)
+    ColumnCompleteDetailsDTOFactory, TaskStageDTOFactory)
 
 
 class TestGetColumnDetailsInteractor:
@@ -27,7 +27,7 @@ class TestGetColumnDetailsInteractor:
     @classmethod
     def setup_class(cls):
         ColumnDetailsDTOFactory.reset_sequence()
-        TaskStageColorDTOFactory.reset_sequence()
+        TaskStageDTOFactory.reset_sequence()
         ColumnTaskIdsDTOFactory.reset_sequence()
         ColumnStageIdsDTOFactory.reset_sequence()
         ColumnCompleteDetailsDTOFactory.reset_sequence()
@@ -79,7 +79,7 @@ class TestGetColumnDetailsInteractor:
 
     @pytest.fixture
     def task_stage_color_dtos(self):
-        return TaskStageColorDTOFactory.create_batch(size=4)
+        return TaskStageDTOFactory.create_batch(size=4)
 
     @pytest.fixture
     def column_task_stage_ids(self):
@@ -372,7 +372,7 @@ class TestGetColumnDetailsInteractor:
             task_actions_dtos=task_actions_dto,
             task_fields_dtos=task_fields_dto,
             column_details=column_complete_details,
-            task_stage_color_dtos=task_stage_color_dtos
+            task_stage_dtos=task_stage_color_dtos
         )
         assert actual_response == expected_response
 
@@ -458,6 +458,6 @@ class TestGetColumnDetailsInteractor:
             task_actions_dtos=task_actions_dto,
             task_fields_dtos=task_fields_dto,
             column_details=column_complete_details,
-            task_stage_color_dtos=task_stage_color_dtos
+            task_stage_dtos=task_stage_color_dtos
         )
         assert actual_response == expected_response
