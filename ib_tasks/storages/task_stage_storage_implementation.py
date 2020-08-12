@@ -75,16 +75,4 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
         ).exists()
         return is_user_has_permissions
 
-    def update_task_stage_having_assignees_with_left_at_status(
-            self, task_id_with_db_stage_ids_dto:
-            TaskIdWithDbStageIdsDTO):
-        task_id = task_id_with_db_stage_ids_dto.task_id
-        stage_ids = task_id_with_db_stage_ids_dto.db_stage_ids
-        task_stage_objs_having_assignees = TaskStageHistory.objects.filter(
-            task_id=task_id,
-            stage_id__in=stage_ids).exclude(assignee_id=None)
-        for each_task_stage_obj in task_stage_objs_having_assignees:
-            each_task_stage_obj.left_at = datetime.datetime.now()
-        TaskStageHistory.objects.bulk_update(
-            task_stage_objs_having_assignees, ['left_at']
-        )
+

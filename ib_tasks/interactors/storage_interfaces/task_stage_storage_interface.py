@@ -2,7 +2,7 @@ import abc
 from typing import List
 
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskStageAssigneeDTO, CurrentStageDetailsDTO, TaskIdWithDbStageIdsDTO
+    TaskStageAssigneeDTO, CurrentStageDetailsDTO
 
 
 class TaskStageStorageInterface(abc.ABC):
@@ -40,8 +40,4 @@ class TaskStageStorageInterface(abc.ABC):
         pass
 
 
-    @abc.abstractmethod
-    def update_task_stage_having_assignees_with_left_at_status(
-            self, task_id_with_db_stage_ids_dto:
-            TaskIdWithDbStageIdsDTO):
-        pass
+

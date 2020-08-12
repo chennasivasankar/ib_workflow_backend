@@ -13,8 +13,6 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
     StageIdWithRoleIdsAndAssigneeIdDTO, TaskIdWithDbStageIdsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
-    TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.user_role_validation_interactor import \
@@ -23,11 +21,9 @@ from ib_tasks.interactors.user_role_validation_interactor import \
 
 class UpdateTaskStageAssigneesInteractor:
     def __init__(self, stage_storage: StageStorageInterface,
-                 task_storage: TaskStorageInterface,
-                 task_stage_storage: TaskStageStorageInterface):
+                 task_storage: TaskStorageInterface):
         self.stage_storage = stage_storage
         self.task_storage = task_storage
-        self.task_stage_storage = task_stage_storage
 
     def update_task_stage_assignees_wrapper(
             self,
@@ -74,7 +70,7 @@ class UpdateTaskStageAssigneesInteractor:
         task_id_with_db_stage_ids_dto = TaskIdWithDbStageIdsDTO(
             task_id=task_id, db_stage_ids=stage_ids)
 
-        self.task_stage_storage. \
+        self.stage_storage. \
             update_task_stage_having_assignees_with_left_at_status(
             task_id_with_db_stage_ids_dto=task_id_with_db_stage_ids_dto)
 
