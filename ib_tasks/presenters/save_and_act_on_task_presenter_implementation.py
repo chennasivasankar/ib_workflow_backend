@@ -2,7 +2,8 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.datetime_custom_exceptions import \
-    InvalidDueTimeFormat, StartDateIsAheadOfDueDate, DueDateIsBehindStartDate, \
+    InvalidDueTimeFormat, StartDateIsAheadOfDueDate, \
+    DueDateIsBehindStartDate, \
     DueTimeHasExpiredForToday
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     EmptyValueForRequiredField, InvalidPhoneNumberValue, \
@@ -27,6 +28,7 @@ from ib_tasks.exceptions.task_custom_exceptions import \
 from ib_tasks.interactors.presenter_interfaces \
     .save_and_act_on_task_presenter_interface import \
     SaveAndActOnATaskPresenterInterface
+from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 
 
 class SaveAndActOnATaskPresenterImplementation(
@@ -98,11 +100,21 @@ class SaveAndActOnATaskPresenterImplementation(
         response_object = self.prepare_400_bad_request_response(response_dict)
         return response_object
 
-    def get_save_and_act_on_task_response(self):
+    def get_save_and_act_on_task_response(
+            self, task_current_stage_details_dto: TaskCurrentStageDetailsDTO):
         data = {
-            "message": "task saved and acted successfully"
+            "task_id": task_current_stage_details_dto.task_display_id,
+            "stages": [],
+            "user_has_permission":
+                task_current_stage_details_dto.user_has_permission
         }
-        return self.prepare_201_created_response(response_dict=data)
+        for stage_dto in task_current_stage_details_dto.stage_details_dtos:
+            stage = {
+                "stage_id": stage_dto.stage_id,
+                "stage_display_name": stage_dto.stage_display_name
+            }
+            data['stages'].append(stage)
+        return self.prepare_200_success_response(response_dict=data)
 
     def raise_invalid_task_id(self, err):
         from ib_tasks.constants.exception_messages import \

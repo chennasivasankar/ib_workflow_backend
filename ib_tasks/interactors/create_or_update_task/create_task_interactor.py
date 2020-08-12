@@ -7,7 +7,7 @@ from ib_tasks.exceptions.action_custom_exceptions import \
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     DueTimeHasExpiredForToday, InvalidDueTimeFormat, \
     StartDateIsAheadOfDueDate, \
-    DueDateIsBehindStartDate, DueDateHasExpired
+    DueDateHasExpired
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     EmptyValueForRequiredField, InvalidPhoneNumberValue, \
     InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
@@ -23,7 +23,7 @@ from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds, \
     DuplicateSameGoFOrderForAGoF
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
-    UserActionPermissionDenied, UserBoardPermissionDenied
+    UserActionPermissionDenied
 from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
     InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee
 from ib_tasks.exceptions.task_custom_exceptions import \
@@ -35,9 +35,6 @@ from ib_tasks.interactors.create_or_update_task \
 from ib_tasks.interactors \
     .get_next_stages_random_assignees_of_a_task_interactor import \
     InvalidModulePathFound, InvalidMethodFound
-from ib_tasks.interactors \
-    .get_random_assignees_of_next_stages_and_update_in_db_interactor import \
-    GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor
 from ib_tasks.interactors.presenter_interfaces.create_task_presenter import \
     CreateTaskPresenterInterface
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
@@ -57,6 +54,9 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFWithTaskIdDTO, TaskGoFFieldDTO, TaskGoFDetailsDTO
+from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
+    import \
+    TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
@@ -78,8 +78,10 @@ class CreateTaskInteractor:
             storage: StorageInterface, field_storage: FieldsStorageInterface,
             stage_storage: StageStorageInterface,
             action_storage: ActionStorageInterface,
-            elastic_storage: ElasticSearchStorageInterface
+            elastic_storage: ElasticSearchStorageInterface,
+            task_stage_storage: TaskStageStorageInterface
     ):
+        self.task_stage_storage = task_stage_storage
         self.task_template_storage = task_template_storage
         self.gof_storage = gof_storage
         self.task_storage = task_storage
@@ -202,8 +204,9 @@ class CreateTaskInteractor:
             self, task_dto: CreateTaskDTO,
             presenter: CreateTaskPresenterInterface
     ):
-        self.create_task(task_dto)
-        return presenter.get_create_task_response()
+        task_current_stage_details_dto = self.create_task(task_dto)
+        return presenter.get_create_task_response(
+            task_current_stage_details_dto)
 
     def create_task(self, task_dto: CreateTaskDTO):
         self._validate_task_template_id(task_dto.task_template_id)
@@ -269,6 +272,14 @@ class CreateTaskInteractor:
             action_storage=self.action_storage,
         )
         act_on_task_interactor.user_action_on_task()
+        from ib_tasks.interactors.get_task_current_stages_interactor import \
+            GetTaskCurrentStagesInteractor
+        get_task_current_stages_interactor = GetTaskCurrentStagesInteractor(
+            task_stage_storage=self.task_stage_storage)
+        task_current_stage_details_dto = \
+            get_task_current_stages_interactor.get_task_current_stages_details(
+                task_id=created_task_id, user_id=task_dto.created_by_id)
+        return task_current_stage_details_dto
 
     def _get_elastic_task_dto(self, task_dto: CreateTaskDTO, task_id: int):
 

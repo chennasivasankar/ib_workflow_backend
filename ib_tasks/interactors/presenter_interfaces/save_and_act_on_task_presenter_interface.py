@@ -2,12 +2,15 @@ import abc
 
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee
+from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 
 
 class SaveAndActOnATaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
-    def get_save_and_act_on_task_response(self):
+    def get_save_and_act_on_task_response(self,
+                                          task_current_stage_details_dto:
+                                          TaskCurrentStageDetailsDTO):
         pass
 
     @abc.abstractmethod

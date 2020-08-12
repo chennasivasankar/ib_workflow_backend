@@ -40,6 +40,9 @@ from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
+from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
+    import \
+    TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.task_dtos import UpdateTaskDTO, SaveAndActOnTaskDTO
@@ -56,8 +59,10 @@ class SaveAndActOnATaskInteractor:
             storage: StorageInterface, field_storage: FieldsStorageInterface,
             stage_storage: StageStorageInterface,
             action_storage: ActionStorageInterface,
-            elastic_storage: ElasticSearchStorageInterface
+            elastic_storage: ElasticSearchStorageInterface,
+            task_stage_storage: TaskStageStorageInterface
     ):
+        self.task_stage_storage = task_stage_storage
         self.elastic_storage = elastic_storage
         self.action_storage = action_storage
         self.gof_storage = gof_storage
@@ -150,13 +155,14 @@ class SaveAndActOnATaskInteractor:
             return presenter.raise_exception_for_user_action_permission_denied(
                 error_obj=err)
         except StageIdsWithInvalidPermissionForAssignee as err:
-            return \
-                presenter.raise_stage_ids_with_invalid_permission_for_assignee_exception(
-                    err)
+            return presenter. \
+                raise_stage_ids_with_invalid_permission_for_assignee_exception(
+                err)
 
     def _prepare_save_and_act_response(self, presenter, task_dto):
-        self.save_and_act_on_task(task_dto)
-        return presenter.get_save_and_act_on_task_response()
+        task_current_stage_details_dto = self.save_and_act_on_task(task_dto)
+        return presenter.get_save_and_act_on_task_response(
+            task_current_stage_details_dto)
 
     def save_and_act_on_task(self, task_dto: SaveAndActOnTaskDTO):
         is_valid_action_id = self.storage.validate_action(task_dto.action_id)
@@ -183,6 +189,15 @@ class SaveAndActOnATaskInteractor:
             task_id=task_dto.task_id, task_storage=self.task_storage,
             action_storage=self.action_storage, action_id=task_dto.action_id,
             storage=self.storage, gof_storage=self.create_task_storage,
-            field_storage=self.field_storage, stage_storage=self.stage_storage
+            field_storage=self.field_storage, stage_storage=self.stage_storage,
+            task_stage_storage=self.task_stage_storage
         )
         act_on_task_interactor.user_action_on_task()
+        from ib_tasks.interactors.get_task_current_stages_interactor import \
+            GetTaskCurrentStagesInteractor
+        get_task_current_stages_interactor = GetTaskCurrentStagesInteractor(
+            task_stage_storage=self.task_stage_storage)
+        task_current_stage_details_dto = \
+            get_task_current_stages_interactor.get_task_current_stages_details(
+                task_id=task_dto.task_id, user_id=task_dto.created_by_id)
+        return task_current_stage_details_dto
