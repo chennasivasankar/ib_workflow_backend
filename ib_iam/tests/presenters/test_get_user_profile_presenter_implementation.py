@@ -60,20 +60,7 @@ class TestGetUserProfilePresenterImplementation:
         # Arrange
         from ib_iam.adapters.dtos import UserProfileDTO
         user_id = "eca1a0c1-b9ef-4e59-b415-60a28ef17b10"
-        user_profile_dto = UserProfileDTO(
-            user_id=user_id,
-            email="test@gmail.com",
-            profile_pic_url="test.com",
-            is_admin=True,
-            name="test"
-        )
-        expected_response = {
-            'user_id': 'eca1a0c1-b9ef-4e59-b415-60a28ef17b10',
-            'name': 'test',
-            'is_admin': True,
-            'email': 'test@gmail.com',
-            'profile_pic_url': 'test.com'
-        }
+        user_profile_dto = UserProfileDTOFactory()
 
         # Act
         response_object = presenter_implementation. \
