@@ -4,7 +4,8 @@ from typing import Union, List, Any
 
 from ib_tasks.constants.enum import Priority
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    StageActionDetailsDTO, TaskStageIdsDTO, StageDetailsDTO
+    StageActionDetailsDTO, TaskStageIdsDTO, StageDetailsDTO, \
+    CurrentStageDetailsDTO
 
 
 @dataclass
@@ -115,3 +116,10 @@ class CreateTaskLogDTO:
     task_id: int
     user_id: str
     action_id: int
+
+
+@dataclass
+class TaskCurrentStageDetailsDTO:
+    task_display_id: str
+    stage_details_dtos: List[CurrentStageDetailsDTO]
+    user_has_permission: bool
