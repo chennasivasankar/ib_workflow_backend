@@ -900,38 +900,7 @@
           "type": "integer"
         },
         "res_status": {
-          "type": "string",
-          "enum": [
-            "INVALID_TASK_TEMPLATE_IDS",
-            "INVALID_ACTION_ID",
-            "INVALID_GOF_IDS",
-            "INVALID_FIELD_IDS",
-            "INVALID_GOFS_OF_TASK_TEMPLATE",
-            "DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF",
-            "INVALID_FIELDS_OF_TASK_TEMPLATE",
-            "USER_NEEDS_GOF_WRITABLE_PERMISSION",
-            "USER_NEEDS_FILED_WRITABLE_PERMISSION",
-            "EMPTY_VALUE_FOR_REQUIRED_FIELD",
-            "INVALID_PHONE_NUMBER_VALUE",
-            "INVALID_EMAIL",
-            "NOT_A_STRONG_PASSWORD",
-            "INVALID_NUMBER_VALUE",
-            "INVALID_FLOAT_VALUE",
-            "INVALID_VALUE_FOR_DROPDOWN",
-            "INCORRECT_NAME_IN_GOF_SELECTOR_FIELD",
-            "INCORRECT_RADIO_GROUP_CHOICE",
-            "INCORRECT_CHECK_BOX_OPTIONS_SELECTED",
-            "INCORRECT_MULTI_SELECT_OPTIONS_SELECTED",
-            "INCORRECT_MULTI_SELECT_LABELS_SELECTED",
-            "INVALID_DATE_FORMAT",
-            "INVALID_TIME_FORMAT",
-            "INVALID_IMAGE_URL",
-            "INVALID_IMAGE_FORMAT",
-            "INVALID_FILE_URL",
-            "INVALID_FILE_FORMAT",
-            "USER_DO_NOT_HAVE_ACCESS",
-            "USER_DO_NOT_HAVE_BOARD_ACCESS"
-          ]
+          "type": "string"
         }
       },
       "required": [
@@ -950,38 +919,7 @@
           "type": "integer"
         },
         "res_status": {
-          "type": "string",
-          "enum": [
-            "INVALID_TASK_ID",
-            "INVALID_ACTION_ID",
-            "INVALID_GOF_IDS",
-            "INVALID_FIELD_IDS",
-            "INVALID_GOFS_OF_TASK_TEMPLATE",
-            "DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF",
-            "INVALID_FIELDS_OF_TASK_TEMPLATE",
-            "USER_NEEDS_GOF_WRITABLE_PERMISSION",
-            "USER_NEEDS_FILED_WRITABLE_PERMISSION",
-            "EMPTY_VALUE_FOR_REQUIRED_FIELD",
-            "INVALID_PHONE_NUMBER_VALUE",
-            "INVALID_EMAIL",
-            "NOT_A_STRONG_PASSWORD",
-            "INVALID_NUMBER_VALUE",
-            "INVALID_FLOAT_VALUE",
-            "INVALID_VALUE_FOR_DROPDOWN",
-            "INCORRECT_NAME_IN_GOF_SELECTOR_FIELD",
-            "INCORRECT_RADIO_GROUP_CHOICE",
-            "INCORRECT_CHECK_BOX_OPTIONS_SELECTED",
-            "INCORRECT_MULTI_SELECT_OPTIONS_SELECTED",
-            "INCORRECT_MULTI_SELECT_LABELS_SELECTED",
-            "INVALID_DATE_FORMAT",
-            "INVALID_TIME_FORMAT",
-            "INVALID_IMAGE_URL",
-            "INVALID_IMAGE_FORMAT",
-            "INVALID_FILE_URL",
-            "INVALID_FILE_FORMAT",
-            "USER_DO_NOT_HAVE_ACCESS",
-            "USER_DO_NOT_HAVE_BOARD_ACCESS"
-          ]
+          "type": "string"
         }
       },
       "required": [
@@ -1000,36 +938,7 @@
           "type": "integer"
         },
         "res_status": {
-          "type": "string",
-          "enum": [
-            "INVALID_TASK_ID",
-            "INVALID_GOF_IDS",
-            "INVALID_FIELD_IDS",
-            "INVALID_GOFS_OF_TASK_TEMPLATE",
-            "DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF",
-            "INVALID_FIELDS_OF_TASK_TEMPLATE",
-            "USER_NEEDS_GOF_WRITABLE_PERMISSION",
-            "USER_NEEDS_FILED_WRITABLE_PERMISSION",
-            "EMPTY_VALUE_FOR_REQUIRED_FIELD",
-            "INVALID_PHONE_NUMBER_VALUE",
-            "INVALID_EMAIL",
-            "NOT_A_STRONG_PASSWORD",
-            "INVALID_NUMBER_VALUE",
-            "INVALID_FLOAT_VALUE",
-            "INVALID_VALUE_FOR_DROPDOWN",
-            "INCORRECT_NAME_IN_GOF_SELECTOR_FIELD",
-            "INCORRECT_RADIO_GROUP_CHOICE",
-            "INCORRECT_CHECK_BOX_OPTIONS_SELECTED",
-            "INCORRECT_MULTI_SELECT_OPTIONS_SELECTED",
-            "INCORRECT_MULTI_SELECT_LABELS_SELECTED",
-            "INVALID_DATE_FORMAT",
-            "INVALID_TIME_FORMAT",
-            "INVALID_IMAGE_URL",
-            "INVALID_IMAGE_FORMAT",
-            "INVALID_FILE_URL",
-            "INVALID_FILE_FORMAT",
-            "USER_DO_NOT_HAVE_BOARD_ACCESS"
-          ]
+          "type": "string"
         }
       },
       "required": [
@@ -1242,7 +1151,80 @@
           }
         }
       }
-    }
+    },
+    "StageResponseBody": {
+		  "type": "object",
+			"properties": {
+				"stage_id": {
+					"type": "integer"
+				},
+				"name": {
+					"type": "string"
+				},
+				"color": {
+					"type": "string"
+				}
+			},
+			"required": ["stage_id", "name", "color"]
+		},
+    "UserResponseBody": {
+		  "type": "object",
+			"properties": {
+				"user_id": {
+					"type": "string"
+				},
+				"profile_pic_url": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				}
+			},
+			"required": ["user_id", "name"]
+		},
+		"TaskStageResponseBody": {
+		  "type": "object",
+			"properties": {
+				"stage_id": {
+					"type": "integer"
+				},
+				"created_at": {
+					"type": "string",
+					"format": "date-time"
+				},
+				"time_spent_by_user": {
+					"type": "integer"
+				},
+				"stage_time": {
+					"type": "integer"
+				},
+				"user_details": {
+					"$ref": "#/definitions/UserResponseBody"
+				}
+			},
+			"required": [
+				"stage_id", "created_at", "time_spent_by_user",
+				"stage_time", "user_details"
+			]
+		},
+    "TaskStagesCompleteResponseBody": {
+		  "type": "object",
+			"properties": {
+				"stages_details": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/StageResponseBody"
+					}
+				},
+				"stages_history": {
+				  "type": "array",
+				  "items": {
+				    "$ref": "#/definitions/TaskStageResponseBody"
+				  }
+				}
+			},
+			"required": ["stages_details", "stages_history"]
+		}
   },
   "parameters": {
     "AddTaskReasonsParameter": {
@@ -2191,7 +2173,13 @@
     },
     "CreateTransitionChecklistFailureResponse": {
       "description": "transition checklist creation failed"
-    }
+    },
+    "GetTaskStagesResponse": {
+			"description": "succesful",
+			"schema": {
+				"$ref": "#/definitions/TaskStagesCompleteResponseBody"
+			}
+		}
   },
   "paths": {
     "/perform_user_action_on_task/v1/": {
@@ -2779,6 +2767,29 @@
           }
         }
       }
-    }
+    },
+    "/task/{task_id}/stage_log/v1/": {
+			"get": {
+				"operationId": "get_stages_history_to_task",
+				"summary": "get task stages information",
+				"description": "get task stages history",
+				"security": [{
+					"oauth": [
+						"read"
+					]
+				}],
+				"parameters": [{
+					"$ref": "#/parameters/TaskIDParameter"
+				}],
+				"responses": {
+					"200": {
+						"$ref": "#/responses/GetTaskStagesResponse"
+					},
+					"404": {
+						"$ref": "#/responses/GetTaskFailureResponse"
+					}
+				}
+			}
+		}
   }
 }

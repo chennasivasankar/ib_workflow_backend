@@ -61,12 +61,14 @@ class TaskTemplateStageDTO:
     task_template_id: str
     stage_id: str
 
+
 @dataclass
 class TaskTemplateWithStageColorDTO:
     task_id: int
     task_template_id: str
     stage_color: str
     stage_id: str
+
 
 @dataclass
 class StageValueDTO:
@@ -95,7 +97,7 @@ class TaskStageAssigneeDTO:
 
 @dataclass
 class TaskIdWithStageDetailsDTO:
-    #TODO refactor stage_id_db name after removal of stage_id
+    # TODO refactor stage_id_db name after removal of stage_id
     db_stage_id: int
     task_id: int
     stage_id: str
@@ -137,6 +139,7 @@ class StageIdWithRoleIdsAndAssigneeIdDTO:
     role_ids: List[str]
     assignee_id: str
 
+
 @dataclass
 class StageIdWithRoleIdsDTO:
     db_stage_id: int
@@ -148,3 +151,9 @@ class StageIdWithTemplateIdDTO:
     template_id: str
     stage_id: int
 
+
+@dataclass
+class TaskStageHavingAssigneeIdDTO:
+    db_stage_id: int
+    assignee_id: str
+    stage_display_name: str

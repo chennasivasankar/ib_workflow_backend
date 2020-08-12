@@ -43,10 +43,12 @@ class TestUserTaskWithRecentStageDetails:
         task_id_with_stage_details_dtos = [
             TaskIdWithStageDetailsDTO(task_id=task_objs[0].id,
                                       stage_id="stage_id_2",
-                                      stage_display_name="name_2"),
+                                      stage_display_name="name_2",
+                                      db_stage_id=3, stage_color="blue"),
             TaskIdWithStageDetailsDTO(task_id=task_objs[1].id,
                                       stage_id="stage_id_3",
-                                      stage_display_name="name_3")
+                                      stage_display_name="name_3",
+                                      db_stage_id=4, stage_color="orange")
         ]
         return task_id_with_stage_details_dtos
 

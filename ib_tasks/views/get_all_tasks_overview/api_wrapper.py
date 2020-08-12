@@ -1,20 +1,17 @@
-import json
-
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
-from .validator_class import ValidatorClass
-from ...constants.enum import ViewType
-from ...interactors.get_all_tasks_overview_for_user_interactor import \
-    GetAllTasksOverviewForUserInteractor, UserIdPaginationDTO
-from ...presenters.get_all_tasks_overview_for_user_presenter_impl import \
-    GetAllTasksOverviewForUserPresenterImpl, \
-    GetFilteredTasksOverviewForUserPresenterImplementation
-from ...storages.action_storage_implementation import \
+
+from ib_boards.constants.enum import ViewType
+from ib_tasks.storages.action_storage_implementation import \
     ActionsStorageImplementation
-from ...storages.fields_storage_implementation import \
+from ib_tasks.storages.fields_storage_implementation import \
     FieldsStorageImplementation
+from .validator_class import ValidatorClass
+from ...presenters.get_all_tasks_overview_for_user_presenter_impl import \
+    GetFilteredTasksOverviewForUserPresenterImplementation
 from ...storages.storage_implementation import StagesStorageImplementation
-from ...storages.task_stage_storage_implementation import TaskStageStorageImplementation
+from ...storages.task_stage_storage_implementation import \
+    TaskStageStorageImplementation
 from ...storages.tasks_storage_implementation import TasksStorageImplementation
 
 
@@ -26,9 +23,6 @@ def api_wrapper(*args, **kwargs):
     offset = params['offset']
     limit = params['limit']
 
-    user_id_with_pagination_dto = UserIdPaginationDTO(user_id=user_id,
-                                                      offset=offset,
-                                                      limit=limit)
     presenter = GetFilteredTasksOverviewForUserPresenterImplementation()
     stage_storage = StagesStorageImplementation()
     task_storage = TasksStorageImplementation()
