@@ -1443,27 +1443,13 @@
             "$ref":"#/definitions/CreateTransitionChecklistRequestBody"
          }
       },
-    "GetTaskStagePossibleAssigneesBody": {
-      "in": "body",
-      "name": "GetTaskStagePossibleAssigneesRequestBody",
-      "description": "get task stage possible assignees request body",
-      "required": true,
-      "schema": {
-        "type": "object",
-        "properties": {
-          "task_id": {
-              "type": "string"
-          },
-          "stage_id": {
-              "type": "string"
-          }
-        },
-        "required": [
-          "task_id",
-          "stage_id"
-        ]
+      "StageIdParameter": {
+        "name":"stage_id",
+         "in":"path",
+         "required":true,
+         "description":"stage id",
+         "type":"integer"
       }
-    }
    },
    "responses":{
       "CreateTaskSuccessResponse":{
@@ -2248,7 +2234,6 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "INVALID_TASK_ID",
               "INVALID_STAGE_ID"
             ]
           }
@@ -2918,7 +2903,7 @@
             }
          }
       },
-    "/task/stage/stage_assignees/v1/": {
+    "/task/stage/{stage_id}/stage_assignees/v1/": {
       "get": {
         "operationId": "get_stage_searchable_possible_assignees_of_a_task",
         "summary": "get stage pssible assignees for a task",
@@ -2929,7 +2914,7 @@
           ]
         }],
         "parameters": [{
-            "$ref": "#/parameters/GetTaskStagePossibleAssigneesBody"
+            "$ref": "#/parameters/StageIdParameter"
           },
           {
             "$ref": "#/parameters/SearchableTypeParameter"
