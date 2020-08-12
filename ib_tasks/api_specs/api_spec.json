@@ -1193,12 +1193,10 @@
 					"format": "date-time"
 				},
 				"time_spent_by_user": {
-					"type": "string",
-					"example": "14:30:00"
+					"type": "integer"
 				},
 				"stage_time": {
-					"type": "string",
-					"example": "14:30:00"
+					"type": "integer"
 				},
 				"user_details": {
 					"$ref": "#/definitions/UserResponseBody"

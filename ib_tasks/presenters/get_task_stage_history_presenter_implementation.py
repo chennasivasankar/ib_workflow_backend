@@ -45,7 +45,7 @@ class GetTaskStageHistoryPresenterImplementation(
               "stage_id": task_stage_dto.stage_id,
               "created_at": str(task_stage_dto.started_at),
               "time_spent_by_user": log_duration_dict[task_stage_dto.log_id],
-              "stage_time": task_stage_dto.stage_duration.total_seconds(),
+              "stage_time": int(task_stage_dto.stage_duration.total_seconds()),
               "user_details": self._get_assignee_dict(
                   assignee_dto_dict[task_stage_dto.assignee_id]
               )
@@ -76,7 +76,7 @@ class GetTaskStageHistoryPresenterImplementation(
         for log_duration in log_duration_dtos:
             log_id = log_duration.entity_id
             stage_duration = log_duration.duration
-            log_duration_dict[log_id] = stage_duration.total_seconds()
+            log_duration_dict[log_id] = int(stage_duration.total_seconds())
         return log_duration_dict
 
     @staticmethod
