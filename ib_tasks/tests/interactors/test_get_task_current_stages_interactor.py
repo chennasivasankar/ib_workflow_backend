@@ -131,7 +131,7 @@ class TestGetTaskCurrentStagesInteractor:
 
         # Assert
         task_stage_storage_mock.get_stage_details_dtos.assert_called_once_with(
-            stage_ids=stage_ids, task_id=task_id
+            stage_ids=stage_ids
         )
         get_user_role_ids_mock_method.assert_called_once()
 

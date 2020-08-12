@@ -6,7 +6,8 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import \
     TaskStageStorageInterface
-from ib_tasks.models import CurrentTaskStage, Task, TaskStageHistory
+from ib_tasks.models import CurrentTaskStage, Task, TaskStageHistory, \
+    StagePermittedRoles, Stage
 
 
 class TaskStageStorageImplementation(TaskStageStorageInterface):
@@ -51,11 +52,24 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
         return stage_ids
 
     def get_stage_details_dtos(
-            self, stage_ids: List[int], task_id: int
+            self, stage_ids: List[int]
     ) -> List[CurrentStageDetailsDTO]:
-        pass
+
+        stage_details_dict = Stage.objects.filter(id__in=stage_ids).values(
+            'stage_id', 'display_name')
+        stage_details_dtos = [
+            CurrentStageDetailsDTO(
+                stage_id=stage_detail_dict['stage_id'],
+                stage_display_name=stage_detail_dict['display_name']
+            )
+            for stage_detail_dict in stage_details_dict
+        ]
+        return stage_details_dtos
 
     def is_user_has_permission_for_at_least_one_stage(
             self, stage_ids: List[int], user_roles: List[str]
     ) -> bool:
-        pass
+        is_user_has_permissions = StagePermittedRoles.objects.filter(
+            stage_id__in=stage_ids, role_id__in=user_roles
+        ).exists()
+        return is_user_has_permissions

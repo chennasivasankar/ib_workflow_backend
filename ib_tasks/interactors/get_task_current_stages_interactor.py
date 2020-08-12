@@ -17,7 +17,7 @@ class GetTaskCurrentStagesInteractor:
         task_display_id = self._validate_task_id(task_id)
         stage_ids = self.task_stage_storage.get_task_current_stage_ids(task_id)
         stage_details_dtos = self.task_stage_storage.get_stage_details_dtos(
-            stage_ids, task_id
+            stage_ids
         )
         user_roles = self._get_user_roles(user_id)
         is_user_has_permission = \

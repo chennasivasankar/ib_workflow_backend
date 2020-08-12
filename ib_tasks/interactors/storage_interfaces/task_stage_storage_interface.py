@@ -29,7 +29,7 @@ class TaskStageStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_stage_details_dtos(
-            self, stage_ids: List[int], task_id: int
+            self, stage_ids: List[int]
     ) -> List[CurrentStageDetailsDTO]:
         pass
 
