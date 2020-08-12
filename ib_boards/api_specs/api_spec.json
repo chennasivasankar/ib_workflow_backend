@@ -365,7 +365,7 @@
       "required": [
         "column_id",
         "name",
-        "total_tasks_count",
+        "total_tasks",
         "tasks"
       ]
     },
@@ -423,7 +423,7 @@
         }
       },
       "required": [
-        "total_tasks_count",
+        "total_tasks",
         "tasks"
       ]
     }
