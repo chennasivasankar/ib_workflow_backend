@@ -103,6 +103,15 @@
             },
             "is_admin": {
               "type": "boolean"
+            },
+            "company": {
+              "$ref": "#/definitions/CompanyDetailsWithEmployeeDetails"
+            },
+            "teams": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TeamWithMembersDetails"
+              }
             }
           },
           "required": [
@@ -377,6 +386,31 @@
             "team_id": {
               "type": "string"
             },
+            "members": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/MemberDetails"
+              }
+            }
+          },
+          "required": [
+            "team_id",
+            "members"
+          ]
+        }
+      ]
+    },
+    "TeamWithMembersAndNoOfMembersDetails": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/TeamNameAndDescription"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "team_id": {
+              "type": "string"
+            },
             "no_of_members": {
               "type": "integer"
             },
@@ -389,7 +423,6 @@
           },
           "required": [
             "team_id",
-            "no_of_members",
             "members"
           ]
         }
@@ -446,7 +479,7 @@
         "teams": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/TeamWithMembersDetails"
+            "$ref": "#/definitions/TeamWithMembersAndNoOfMembersDetails"
           }
         }
       },
