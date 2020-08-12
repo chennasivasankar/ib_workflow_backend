@@ -156,7 +156,8 @@ class TestGetTaskIdsInteractor:
             interactor.get_task_ids(task_details_configs=task_config_dtos)
 
     def test_with_valid_stage_ids_return_task_ids_with_stage_ids_dict(
-            self, stage_storage, task_storage, elasticsearch_storage, filter_storage):
+            self, stage_storage, task_storage, snapshot,
+            elasticsearch_storage, filter_storage, mocker):
         # Arrange
         from ib_tasks.tests.factories.storage_dtos import \
             TaskStageIdsDTOFactory
@@ -214,6 +215,11 @@ class TestGetTaskIdsInteractor:
         task_storage.get_task_ids_for_the_stage_ids.side_effect = [
             (expected_response[0], 100), (expected_response[1], 100)
         ]
+        from ib_tasks.tests.common_fixtures.interactors import \
+            prepare_mock_for_filters_interactor
+        mock = prepare_mock_for_filters_interactor(mocker=mocker)
+        mock.side_effect = [(expected_response[0], 100), (expected_response[1], 100)]
+
         # Act
         actual_response = interactor.get_task_ids(
             task_details_configs=task_config_dtos
@@ -224,5 +230,4 @@ class TestGetTaskIdsInteractor:
         stage_storage.get_existing_stage_ids.assert_called_once_with(
             stage_ids=stage_ids_single_list
         )
-        task_storage.get_task_ids_for_the_stage_ids.assert_has_calls(calls)
-        assert actual_response == task_ids_dtos
+        snapshot.assert_match(actual_response, 'response')
