@@ -72,6 +72,16 @@ class ServiceInterface:
         result = interactor.get_task_fields_and_action(task_dtos, user_id, view_type)
         return result
 
-    def get_assignees_for_task_stages(self, task_stage_dtos: List[GetTaskDetailsDTO]):
-        pass
+    @staticmethod
+    def get_assignees_for_task_stages(task_stage_dtos: List[GetTaskDetailsDTO]):
+        from ib_tasks.interactors.get_stages_assignees_details_interactor import \
+            GetStagesAssigneesDetailsInteractor
+        from ib_tasks.storages.task_stage_storage_implementation import \
+            TaskStageStorageImplementation
+        assignees_interactor = GetStagesAssigneesDetailsInteractor(
+            task_stage_storage=TaskStageStorageImplementation()
+        )
+        return assignees_interactor.get_get_stages_assignee_details_by_given_task_ids(
+            task_stage_dtos=task_stage_dtos
+        )
 

@@ -152,6 +152,7 @@ class GetTaskFieldsAndActionsInteractor:
             task_id=stage.task_id,
             stage_id=stage.stage_id,
             db_stage_id=stage.db_stage_id,
+            display_name=stage.display_name,
             stage_color=stage.stage_color,
             field_dtos=fields_dtos,
             action_dtos=list_of_action_dtos

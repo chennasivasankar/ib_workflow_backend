@@ -7,9 +7,11 @@ from typing import List, Tuple
 
 from ib_boards.constants.enum import ViewType
 from ib_boards.interactors.dtos import TaskTemplateStagesDTO, \
-    TaskSummaryFieldsDTO, TaskStatusDTO, FieldDTO, ColumnTaskIdsDTO, ActionDTO, TaskStageDTO
+    TaskSummaryFieldsDTO, TaskStatusDTO, FieldDTO, ColumnTaskIdsDTO, ActionDTO, \
+    TaskStageDTO, StageAssigneesDTO, AssigneesDetailsDTO, AssigneesDTO
 from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
     TaskFieldsDTOFactory
+from ib_tasks.adapters.dtos import AssigneeDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, \
     GetTaskDetailsDTO
 
@@ -105,7 +107,8 @@ class TaskService:
                 TaskStageDTO(
                     task_id=tasks_complete_details_dto.task_id,
                     stage_id=tasks_complete_details_dto.stage_id,
-                    db_stage_id=tasks_complete_details_dtos.db_stage_id,
+                    db_stage_id=tasks_complete_details_dto.db_stage_id,
+                    display_name=tasks_complete_details_dto.display_name,
                     stage_color=tasks_complete_details_dto.stage_color)
             )
 
@@ -141,3 +144,28 @@ class TaskService:
             )
             for action_dto in action_dtos
         ]
+
+    def get_tasks_assignees_details(
+            self, task_stage_ids: List[GetTaskDetailsDTO]) -> List[StageAssigneesDTO]:
+
+        stage_assignees_dtos = self.interface.get_assignees_for_task_stages(
+            task_stage_dtos=task_stage_ids
+        )
+        return [
+            StageAssigneesDTO(
+                task_id=stage_assignees_dto.task_id,
+                stage_id=stage_assignees_dto.stage_id,
+                assignees_details=self._get_assignee_details_dto(
+                    stage_assignees_dto.assignee_details
+                )
+            )
+            for stage_assignees_dto in stage_assignees_dtos
+        ]
+
+    @staticmethod
+    def _get_assignee_details_dto(assignee_details: AssigneeDetailsDTO) -> AssigneesDTO:
+        return AssigneesDTO(
+            assignee_id=assignee_details.assignee_id,
+            name=assignee_details.name,
+            profile_pic_url=assignee_details.profile_pic_url
+        )

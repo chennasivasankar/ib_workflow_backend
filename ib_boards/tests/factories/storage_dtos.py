@@ -49,6 +49,7 @@ class TaskStageDTOFactory(factory.Factory):
     task_id = factory.Sequence(lambda n: "task_id_%d" % n)
     stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)
     db_stage_id = factory.Sequence(lambda n: n)
+    display_name = "stage"
     stage_color = factory.Iterator(["blue", "orange", "green"])
 
 
