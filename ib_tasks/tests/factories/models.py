@@ -7,9 +7,9 @@ from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
     Priority, ActionTypes
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
-    TaskStageHistory, Task, TaskGoF, TaskGoFField, TaskTemplateGlobalConstants,
+    Task, TaskGoF, TaskGoFField, TaskTemplateGlobalConstants,
     TaskStatusVariable, Filter, FilterCondition,
-    StagePermittedRoles, ElasticSearchTask)
+    StagePermittedRoles, ElasticSearchTask, TaskStageHistory)
 from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
@@ -236,12 +236,14 @@ class TaskTemplateInitialStageFactory(factory.django.DjangoModelFactory):
     task_template = factory.SubFactory(TaskTemplateFactory)
     stage = factory.SubFactory(StageModelFactory)
 
+
 class CurrentTaskStageModelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = CurrentTaskStage
 
     task = factory.SubFactory(TaskFactory)
     stage = factory.SubFactory(StageModelFactory)
+
 
 class FilterFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -272,6 +274,7 @@ class StagePermittedRolesFactory(factory.django.DjangoModelFactory):
         ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"]
     )
 
+
 class TaskStageHistoryModelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = TaskStageHistory
@@ -281,6 +284,7 @@ class TaskStageHistoryModelFactory(factory.django.DjangoModelFactory):
     assignee_id = factory.sequence(
         lambda n: "123e4567-e89b-12d3-a456-42661417400{}".format(n))
 
+
 class ElasticSearchTaskFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ElasticSearchTask
@@ -289,3 +293,11 @@ class ElasticSearchTaskFactory(factory.django.DjangoModelFactory):
         lambda n: 'elastic_search_id_{}'.format(n))
     task_id = factory.sequence(lambda n: n)
 
+
+class ElasticSearchTaskFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ElasticSearchTask
+
+    elasticsearch_id = factory.sequence(
+        lambda n: 'elastic_search_id_{}'.format(n))
+    task_id = factory.sequence(lambda n: n)

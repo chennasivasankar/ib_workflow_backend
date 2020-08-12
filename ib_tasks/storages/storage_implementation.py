@@ -1,3 +1,4 @@
+import datetime
 from typing import List, Optional
 
 from ib_tasks.constants.enum import PermissionTypes
@@ -15,7 +16,8 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageDisplayValueDTO, StageValueWithTaskIdsDTO, \
     TaskIdWithStageDetailsDTO, \
     TaskStagesDTO, StageValueDTO, TaskTemplateStageDTO, StageRoleDTO, \
-    StageDetailsDTO, TaskStageHavingAssigneeIdDTO, TaskWithDbStageIdDTO
+    StageDetailsDTO, TaskStageHavingAssigneeIdDTO, TaskWithDbStageIdDTO, \
+    TaskIdWithDbStageIdsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import (
@@ -310,6 +312,20 @@ class StagesStorageImplementation(StageStorageInterface):
             stage_display_name=task_stage_obj['stage__display_name']) for
             task_stage_obj in task_stage_objs]
         return stages_having_assignee_dtos
+
+    def update_task_stage_having_assignees_with_left_at_status(
+            self, task_id_with_db_stage_ids_dto:
+            TaskIdWithDbStageIdsDTO):
+        task_id = task_id_with_db_stage_ids_dto.task_id
+        stage_ids = task_id_with_db_stage_ids_dto.db_stage_ids
+        task_stage_objs_having_assignees = TaskStageHistory.objects.filter(
+            task_id=task_id,
+            stage_id__in=stage_ids).exclude(assignee_id=None)
+        for each_task_stage_obj in task_stage_objs_having_assignees:
+            each_task_stage_obj.left_at = datetime.datetime.now()
+        TaskStageHistory.objects.bulk_update(
+            task_stage_objs_having_assignees, ['left_at']
+        )
 
     def get_current_stages_of_all_tasks(self) -> List[TaskWithDbStageIdDTO]:
         task_stage_objs = list(
