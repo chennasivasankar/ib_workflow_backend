@@ -38,3 +38,6 @@ class TaskStageStorageInterface(abc.ABC):
             self, stage_ids: List[int], user_roles: List[str]
     ) -> bool:
         pass
+
+
+
