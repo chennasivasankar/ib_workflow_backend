@@ -640,11 +640,14 @@ class StorageImplementation(StorageInterface):
         user_id = due_details.user_id
         task_id = due_details.task_id
         reason_id = due_details.reason_id
+        updated_due_datetime = due_details.due_date_time
         count = UserTaskDelayReason.objects.filter(
             task_id=task_id, user_id=user_id).count()
 
         UserTaskDelayReason.objects.create(user_id=user_id, task_id=task_id,
-                                           due_datetime=due_details.due_date_time,
+                                           due_datetime=updated_due_datetime,
                                            count=count+1,
                                            reason_id=reason_id,
                                            reason=due_details.reason)
+        Task.objects.filter(pk=task_id, tasklog__user_id=user_id
+                            ).update(due_date=updated_due_datetime)
