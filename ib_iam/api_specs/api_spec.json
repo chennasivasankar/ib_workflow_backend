@@ -1430,7 +1430,8 @@
                 "type": "string",
                 "enum": [
                   "ACCESS_TOKEN_NOT_FOUND",
-                  "REFRESH_TOKEN_NOT_FOUND"
+                  "REFRESH_TOKEN_NOT_FOUND",
+                  "USER_ACCOUNT_NOT_FOUND"
                 ]
               }
             },
@@ -1454,8 +1455,7 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "USER_ACCOUNT_DOES_NOT_EXIST",
-                  "REFRESH_TOKEN_EXPIRED"
+                  "REFRESH_TOKEN_HAS_EXPIRED"
                 ]
               }
             },
@@ -1480,16 +1480,12 @@
           "expires_in_seconds": {
             "type": "integer",
             "format": "int64"
-          },
-          "is_admin": {
-            "type": "boolean"
           }
         },
         "required": [
           "access_token",
           "refresh_token",
-          "expires_in_seconds",
-          "is_admin"
+          "expires_in_seconds"
         ]
       }
     }

@@ -143,7 +143,7 @@ class AuthService:
         return converted_user_tokens_dto
 
     def get_refresh_auth_tokens_dto(self, access_token: str,
-                                    refresh_token: str):
+                                    refresh_token: str) -> UserTokensDTO:
         from ib_users.constants.custom_exception_messages import \
             INVALID_ACCESS_TOKEN
         from django_swagger_utils.drf_server.exceptions import NotFound

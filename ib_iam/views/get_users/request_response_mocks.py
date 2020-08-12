@@ -5,12 +5,12 @@ RESPONSE_200_JSON = """
 {
     "users": [
         {
-            "user_id": "c46f7044-00f6-4aed-8d47-96865eba8505",
+            "user_id": "2bc085ef-d430-4c0a-8730-f9ea71a43a09",
             "name": "string",
             "email": "string",
             "teams": [
                 {
-                    "team_id": "fea9667c-c7b4-4dda-a535-f0d2d7169aeb",
+                    "team_id": "01ff8a24-ffac-49d7-bd1e-4ad5a011fcd1",
                     "team_name": "string"
                 }
             ],

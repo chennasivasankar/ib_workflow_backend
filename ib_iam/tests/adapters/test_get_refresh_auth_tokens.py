@@ -115,8 +115,8 @@ class TestGetRefreshAuthTokens:
             user_id="11"
         )
 
-        from ib_iam.adapters.auth_service import UserTokensDTO
-        expected_user_tokens_dto = UserTokensDTO(
+        from ib_iam.tests.factories.adapter_dtos import UserTokensDTOFactory
+        expected_user_tokens_dto = UserTokensDTOFactory(
             access_token='asdfaldskfjdfdlsdkf',
             refresh_token='sadfenkljkdfeller',
             expires_in_seconds=5647665599,
