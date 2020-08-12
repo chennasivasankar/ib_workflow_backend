@@ -49,7 +49,7 @@ class GetTaskStageDetailsOfUserBasedOnStagesInteractor:
         ]
         stage_values = sorted(list(set(stage_values)))
         task_ids_group_by_stage_value_dtos = \
-            self.get_task_ids_group_by_stage_value_dtos(
+            self._get_task_ids_group_by_stage_value_dtos(
                 stage_values, task_id_with_max_stage_value_dtos
             )
         task_id_with_stage_details_dtos = self. \
@@ -98,7 +98,7 @@ class GetTaskStageDetailsOfUserBasedOnStagesInteractor:
         return task_with_complete_stage_details_dtos
 
     @staticmethod
-    def get_task_ids_group_by_stage_value_dtos(
+    def _get_task_ids_group_by_stage_value_dtos(
             stage_values: List[int], task_id_with_max_stage_value_dtos
     ) -> List[StageValueWithTaskIdsDTO]:
         task_ids_group_by_stage_value_dtos = []

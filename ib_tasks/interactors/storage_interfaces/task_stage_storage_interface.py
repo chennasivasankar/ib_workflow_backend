@@ -2,7 +2,7 @@ import abc
 from typing import List
 
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskStageAssigneeDTO, CurrentStageDetailsDTO
+    TaskStageAssigneeDTO, CurrentStageDetailsDTO, AssigneeCurrentTasksCountDTO
 
 
 class TaskStageStorageInterface(abc.ABC):
@@ -37,4 +37,14 @@ class TaskStageStorageInterface(abc.ABC):
     def is_user_has_permission_for_at_least_one_stage(
             self, stage_ids: List[int], user_roles: List[str]
     ) -> bool:
+        pass
+
+
+
+
+    @abc.abstractmethod
+    def get_count_of_tasks_assigned_for_each_user(
+            self, db_stage_ids: List[int],
+            task_ids: List[int], user_ids: List[str])-> List[
+        AssigneeCurrentTasksCountDTO]:
         pass

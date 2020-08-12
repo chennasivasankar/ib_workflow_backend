@@ -30,7 +30,6 @@ class SearchableFieldValuesInteractor:
             return presenter. \
                 raise_offset_should_be_greater_than_or_equal_to_minus_one_exception(
             )
-        print("searchable_value_detail_dtos", searchable_value_detail_dtos)
 
         return presenter.get_searchable_field_values_response(
             searchable_value_detail_dtos)
