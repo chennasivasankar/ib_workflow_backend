@@ -27,11 +27,9 @@ class TestGetChecklistPresenterImplementation:
         json_presenter = GetChecklistPresenterImplementation()
         from ib_utility_tools.tests.factories.storage_dtos import \
             EntityDTOFactory
-        entity_dto = EntityDTOFactory(
-            entity_id='bb3e538e-a18a-4268-b2d6-0b6dba669ba0')
 
         http_response = json_presenter.get_success_response_for_get_checklist(
-            entity_dto=entity_dto, checklist_item_dtos=checklist_item_dtos)
+            checklist_item_dtos=checklist_item_dtos)
 
         response = json.loads(http_response.content)
 

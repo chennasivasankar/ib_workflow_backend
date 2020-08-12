@@ -25,15 +25,15 @@ class UserAccountAlreadyExistWithThisEmail(Exception):
     pass
 
 
-class GivenNameIsEmpty(Exception):
-    pass
-
-
 class InvalidEmailAddress(Exception):
     pass
 
 
 class NameShouldNotContainsNumbersSpecCharacters(Exception):
+    pass
+
+
+class InvalidNameLength(Exception):
     pass
 
 

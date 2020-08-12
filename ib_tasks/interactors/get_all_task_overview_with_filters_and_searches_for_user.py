@@ -77,10 +77,16 @@ class GetTasksOverviewForUserInteractor:
                 task_fields_and_action_details_dtos
             )
 
+        filtered_tasks_details = [
+            task_with_stage_details_having_actions_dto
+            for task_with_stage_details_having_actions_dto in task_with_stage_details_having_actions_dtos
+            if task_with_stage_details_having_actions_dto.task_with_stage_details_dto.task_id in task_ids
+        ]
+
         from ib_tasks.interactors.presenter_interfaces.dtos import \
             AllTasksOverviewDetailsDTO
         all_tasks_overview_details_dto = AllTasksOverviewDetailsDTO(
-            task_with_complete_stage_details_dtos=task_with_stage_details_having_actions_dtos,
+            task_with_complete_stage_details_dtos=filtered_tasks_details,
             task_fields_and_action_details_dtos=
             task_fields_and_action_details_dtos,
         )

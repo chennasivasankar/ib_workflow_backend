@@ -9,6 +9,7 @@ class ColumnParametersDTO:
     board_id: str
     user_id: str
     view_type: ViewType
+    search_query: Optional[str]
 
 
 @dataclass
@@ -95,6 +96,7 @@ class ColumnTasksParametersDTO:
     offset: int
     limit: int
     view_type: ViewType
+    search_query: Optional[str]
 
 
 @dataclass
@@ -195,7 +197,8 @@ class StarOrUnstarParametersDTO:
 
 
 @dataclass
-class TaskStageColorDTO:
+class TaskStageDTO:
     task_id: int
     stage_id: str
+    db_stage_id: int
     stage_color: str

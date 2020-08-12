@@ -57,6 +57,7 @@ class GetTaskStageCompleteDetailsDTO:
     task_id: int
     stage_id: str
     stage_color: str
+    db_stage_id: int
     field_dtos: List[FieldDetailsDTO]
     action_dtos: List[StageActionDetailsDTO]
 

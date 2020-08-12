@@ -59,8 +59,7 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_task_ids_for_the_stage_ids(
-            self, stage_ids: List[str],
-            offset: int, limit: int) -> Tuple[List[TaskStageIdsDTO], int]:
+            self, stage_ids: List[str], task_ids: List[int]) -> List[TaskStageIdsDTO]:
         pass
 
     @abc.abstractmethod
