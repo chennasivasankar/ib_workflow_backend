@@ -23,12 +23,14 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
-    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
+    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskDisplayId
 from ib_tasks.interactors.create_or_update_task. \
     template_gofs_fields_base_validations import \
     TemplateGoFsFieldsBaseValidationsInteractor
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
 from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrderDTO
+from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
+    GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.presenter_interfaces.update_task_presenter import \
     UpdateTaskPresenterInterface
 from ib_tasks.interactors.stages_dtos import StageAssigneeDTO, \
@@ -53,12 +55,12 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import \
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.task_dtos import UpdateTaskDTO, CreateTaskDTO, \
-    FieldValuesDTO
+    FieldValuesDTO, UpdateTaskWithTaskDisplayIdDTO
 from ib_tasks.interactors.update_task_stage_assignees_interactor import \
     UpdateTaskStageAssigneesInteractor
 
 
-class UpdateTaskInteractor:
+class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
 
     def __init__(
             self, task_storage: TaskStorageInterface,
@@ -78,11 +80,13 @@ class UpdateTaskInteractor:
 
     def update_task_wrapper(
             self, presenter: UpdateTaskPresenterInterface,
-            task_dto: UpdateTaskDTO
+            task_dto: UpdateTaskWithTaskDisplayIdDTO
     ):
         try:
             return self._prepare_update_task_response(
                 task_dto, presenter)
+        except InvalidTaskDisplayId as err:
+            return presenter.raise_invalid_task_display_id(err)
         except InvalidTaskException as err:
             return presenter.raise_invalid_task_id(err)
         except InvalidDueTimeFormat as err:
@@ -157,16 +161,30 @@ class UpdateTaskInteractor:
             return presenter.raise_exception_for_not_acceptable_file_format(
                 err)
         except StageIdsWithInvalidPermissionForAssignee as err:
-            return \
-                presenter.raise_stage_ids_with_invalid_permission_for_assignee_exception(
-                    err)
+            return presenter. \
+                raise_stage_ids_with_invalid_permission_for_assignee_exception(
+                err)
 
     def _prepare_update_task_response(
-            self, task_dto: UpdateTaskDTO,
+            self, task_dto: UpdateTaskWithTaskDisplayIdDTO,
             presenter: UpdateTaskPresenterInterface
     ):
-        self.update_task(task_dto)
+        self.update_task_with_task_display_id(task_dto)
         return presenter.get_update_task_response()
+
+    def update_task_with_task_display_id(
+            self, task_dto: UpdateTaskWithTaskDisplayIdDTO):
+        task_id = self.get_task_id_for_task_display_id(
+            task_dto.task_display_id)
+        task_dto_with_db_task_id = UpdateTaskDTO(
+            task_id=task_id, created_by_id=task_dto.created_by_id,
+            title=task_dto.title, description=task_dto.description,
+            start_date=task_dto.start_date, due_date=task_dto.due_date,
+            due_time=task_dto.due_time, priority=task_dto.priority,
+            stage_assignee=task_dto.stage_assignee,
+            gof_fields_dtos=task_dto.gof_fields_dtos
+        )
+        self.update_task(task_dto_with_db_task_id)
 
     def update_task(self, task_dto: UpdateTaskDTO):
         task_id = task_dto.task_id
@@ -237,7 +255,7 @@ class UpdateTaskInteractor:
             template_id=None,
             task_id=task_dto.task_id,
             title=task_dto.title,
-                fields=fields_dto
+            fields=fields_dto
         )
         return elastic_task_dto
 

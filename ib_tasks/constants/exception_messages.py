@@ -270,3 +270,8 @@ DUE_DATE_HAS_EXPIRED = (
     "given due date {} has expired",
     "DUE_DATE_HAS_EXPIRED"
 )
+
+INVALID_TASK_DISPLAY_ID = (
+    "please give a valid task display id, {} is an invalid task display id",
+    "INVALID_TASK_DISPLAY_ID"
+)

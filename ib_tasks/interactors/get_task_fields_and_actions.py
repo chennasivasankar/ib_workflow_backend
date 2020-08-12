@@ -15,7 +15,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import \
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    GetTaskStageCompleteDetailsDTO, TaskTemplateWithStageColorDTO
+    GetTaskStageCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
@@ -54,7 +54,8 @@ class GetTaskFieldsAndActionsInteractor:
             unique_stage_ids)
 
         self._validate_stage_ids(unique_stage_ids, valid_stage_ids)
-        valid_stage_and_tasks = self.task_storage.validate_task_related_stage_ids(
+        valid_stage_and_tasks = \
+            self.task_storage.validate_task_related_stage_ids(
             task_dtos)
         self._validate_stage_and_tasks(valid_stage_and_tasks, task_dtos)
 
@@ -63,7 +64,8 @@ class GetTaskFieldsAndActionsInteractor:
         action_dtos = self.action_storage.get_actions_details(
             unique_stage_ids, user_roles)
 
-        stage_fields_dtos = self.field_storage.get_field_ids(task_stage_dtos, view_type)
+        stage_fields_dtos = self.field_storage.get_field_ids(task_stage_dtos,
+                                                             view_type)
         task_fields_dtos = self._map_task_and_their_fields(
             stage_fields_dtos, task_stage_dtos)
         field_dtos = self.field_storage.get_fields_details(
@@ -71,7 +73,7 @@ class GetTaskFieldsAndActionsInteractor:
 
         task_details_dtos = self. \
             _map_fields_and_actions_based_on_their_stage_and_task_id(
-                action_dtos, field_dtos, stage_fields_dtos)
+            action_dtos, field_dtos, stage_fields_dtos)
         return task_details_dtos
 
     def _map_task_and_their_fields(self, stage_fields_dtos, task_stage_dtos):
@@ -83,15 +85,16 @@ class GetTaskFieldsAndActionsInteractor:
                                      task.task_template_id
                 stage_condition = stage.stage_id == task.stage_id
                 # TODO: check for case where a task is in two stages
-                if task.task_id not in task_ids and stage_condition and template_condition:
-                    task_ids.append(task.task_id)
+                if task.task_display_id not in task_ids and stage_condition \
+                        and template_condition:
+                    task_ids.append(task.task_display_id)
                     list_of_stage_fields.append(
                         self._get_task_fields(stage, task))
         return list_of_stage_fields
 
     @staticmethod
     def _get_task_fields(stage, task):
-        return StageTaskFieldsDTO(task_id=task.task_id,
+        return StageTaskFieldsDTO(task_id=task.task_display_id,
                                   field_ids=stage.field_ids)
 
     @staticmethod
@@ -149,7 +152,7 @@ class GetTaskFieldsAndActionsInteractor:
             for field in list_of_field_dtos
         ]
         return GetTaskStageCompleteDetailsDTO(
-            task_id=stage.task_id,
+            task_id=stage.task_display_id,
             stage_id=stage.stage_id,
             stage_color=stage.stage_color,
             field_dtos=fields_dtos,
@@ -165,7 +168,8 @@ class GetTaskFieldsAndActionsInteractor:
         if not field_dtos:
             return []
         for field in field_dtos:
-            if field.field_id in stage.field_ids and field.task_id == stage.task_id:
+            if field.field_id in stage.field_ids and field.task_id == \
+                    stage.task_id:
                 list_of_field_dtos.append(field)
         return list_of_field_dtos
 
@@ -184,7 +188,8 @@ class GetTaskFieldsAndActionsInteractor:
         invalid_task_stage_ids = copy.deepcopy(task_dtos)
         for task in task_dtos:
             for valid_task in valid_task_stage_ids:
-                task_id_condition = task.task_id == valid_task.task_id
+                task_id_condition = task.task_display_id == \
+                                    valid_task.task_display_id
                 stage_id_condition = task.stage_id == valid_task.stage_id
                 if task_id_condition and stage_id_condition:
                     invalid_task_stage_ids.remove(task)

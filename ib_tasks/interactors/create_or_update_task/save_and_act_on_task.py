@@ -22,6 +22,8 @@ from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
 from ib_tasks.interactors.create_or_update_task.update_task_interactor import \
     UpdateTaskInteractor
+from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
+    GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.presenter_interfaces \
     .save_and_act_on_task_presenter_interface import \
     SaveAndActOnATaskPresenterInterface
@@ -45,12 +47,14 @@ from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.task_dtos import UpdateTaskDTO, SaveAndActOnTaskDTO
+from ib_tasks.interactors.task_dtos import UpdateTaskDTO, \
+    SaveAndActOnTaskDTO, \
+    SaveAndActOnTaskWithTaskDisplayIdDTO
 from ib_tasks.interactors.user_action_on_task_interactor import \
     UserActionOnTaskInteractor
 
 
-class SaveAndActOnATaskInteractor:
+class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
 
     def __init__(
             self, task_storage: TaskStorageInterface,
@@ -74,7 +78,7 @@ class SaveAndActOnATaskInteractor:
 
     def save_and_act_on_task_wrapper(
             self, presenter: SaveAndActOnATaskPresenterInterface,
-            task_dto: SaveAndActOnTaskDTO
+            task_dto: SaveAndActOnTaskWithTaskDisplayIdDTO
     ):
         try:
             return self._prepare_save_and_act_response(presenter, task_dto)
@@ -159,10 +163,27 @@ class SaveAndActOnATaskInteractor:
                 raise_stage_ids_with_invalid_permission_for_assignee_exception(
                 err)
 
-    def _prepare_save_and_act_response(self, presenter, task_dto):
-        task_current_stage_details_dto = self.save_and_act_on_task(task_dto)
+    def _prepare_save_and_act_response(
+            self, presenter, task_dto: SaveAndActOnTaskWithTaskDisplayIdDTO):
+        task_current_stage_details_dto = \
+            self.save_and_act_on_task_with_task_display_id(
+                task_dto)
         return presenter.get_save_and_act_on_task_response(
             task_current_stage_details_dto)
+
+    def save_and_act_on_task_with_task_display_id(
+            self, task_dto: SaveAndActOnTaskWithTaskDisplayIdDTO):
+        task_db_id = self.get_task_id_for_task_display_id(
+            task_dto.task_display_id)
+        task_dto_with_db_task_id = SaveAndActOnTaskDTO(
+            task_id=task_db_id, created_by_id=task_dto.created_by_id,
+            action_id=task_dto.action_id, title=task_dto.title,
+            description=task_dto.description, start_date=task_dto.start_date,
+            due_date=task_dto.due_date, due_time=task_dto.due_time,
+            priority=task_dto.priority, stage_assignee=task_dto.stage_assignee,
+            gof_fields_dtos=task_dto.gof_fields_dtos
+        )
+        return self.save_and_act_on_task(task_dto_with_db_task_id)
 
     def save_and_act_on_task(self, task_dto: SaveAndActOnTaskDTO):
         is_valid_action_id = self.storage.validate_action(task_dto.action_id)

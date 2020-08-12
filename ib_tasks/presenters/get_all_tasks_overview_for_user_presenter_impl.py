@@ -84,14 +84,14 @@ class GetAllTasksOverviewForUserPresenterImpl(
                 task_with_complete_stage_details_dto.task_with_stage_details_dto
             task_overview_fields_details, actions_details = self. \
                 task_fields_and_actions_details(
-                each_task_id_with_stage_details_dto.task_id,
+                each_task_id_with_stage_details_dto.task_display_id,
                 task_fields_and_action_details_dtos
             )
             assignee = self._get_assignee_details(
                 task_with_complete_stage_details_dto.stage_assignee_dto
             )
             task_overview_details_dict = {
-                "task_id": each_task_id_with_stage_details_dto.task_id,
+                "task_id": each_task_id_with_stage_details_dto.task_display_id,
                 "task_overview_fields": task_overview_fields_details,
                 "stage_with_actions": {
                     "stage_id":

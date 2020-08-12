@@ -106,7 +106,7 @@ class CreateTransitionChecklistTemplatePresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             INVALID_TASK_ID
         response_message = INVALID_TASK_ID[0].format(
-            err.task_id
+            err.task_display_id
         )
         data = {
             "response": response_message,

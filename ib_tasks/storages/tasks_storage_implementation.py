@@ -213,7 +213,7 @@ class TasksStorageImplementation(TaskStorageInterface):
         task_template_and_stage_ids = []
         for task in task_objs:
             for task_dto in task_dtos:
-                if task['id'] == task_dto.task_id:
+                if task['id'] == task_dto.task_display_id:
                     task_template_and_stage_ids.append(
                         {
                             "template_id": task['template_id'],

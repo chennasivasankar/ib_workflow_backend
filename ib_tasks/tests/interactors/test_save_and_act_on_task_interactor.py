@@ -164,7 +164,7 @@ class TestSaveAndActOnATaskInteractor:
         presenter_mock.raise_invalid_task_id.assert_called_once()
         call_args = presenter_mock.raise_invalid_task_id.call_args
         error_object = call_args[0][0]
-        invalid_task_id = error_object.task_id
+        invalid_task_id = error_object.task_display_id
         assert invalid_task_id == given_task_id
 
     def test_with_invalid_due_time_format(

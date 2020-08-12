@@ -270,6 +270,7 @@ class CreateTaskInteractor:
             stage_storage=self.stage_storage,
             task_storage=self.task_storage,
             action_storage=self.action_storage,
+            task_stage_storage=self.task_stage_storage
         )
         act_on_task_interactor.user_action_on_task()
         from ib_tasks.interactors.get_task_current_stages_interactor import \
