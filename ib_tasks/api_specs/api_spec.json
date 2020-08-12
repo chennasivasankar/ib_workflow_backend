@@ -1179,6 +1179,27 @@
         }
       }
     },
+    "GetTaskStagePossibleAssigneesBody": {
+      "in": "body",
+      "name": "GetTaskStagePossibleAssigneesRequestBody",
+      "description": "get task stage possible assignees request body",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "task_id": {
+              "type": "string"
+          },
+          "stage_id": {
+              "type": "string"
+          }
+        },
+        "required": [
+          "task_id",
+          "stage_id"
+        ]
+      }
+    },
     "CreateTaskBodyParameter": {
       "in": "body",
       "name": "CreateTaskRequestBody",
@@ -1226,15 +1247,6 @@
       "type": "string",
       "enum": [
         "USER", "COUNTRY", "STATE", "CITY"
-      ]
-    },
-    "UserSearchableParameter": {
-      "name": "user_search_type",
-      "description": "User Searchable Type Parameter",
-      "in": "query",
-      "type": "string",
-      "enum": [
-        "USER"
       ]
     },
     "LimitParameter": {
@@ -1564,20 +1576,6 @@
         ]
       }
     },
-    "StageAssigneesResponse": {
-      "description": "OK",
-      "schema": {
-        "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "assignee": {
-                  "$ref": "#/definitions/Assignee"
-                }
-              }
-            }
-          }
-    },
     "InvalidTaskReasonsResponse": {
       "description": "invalid add task reasons response",
       "schema": {
@@ -1788,6 +1786,30 @@
               "type": "string"
             },
             "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "name"
+          ]
+        }
+      }
+    },
+    "AssigneeSearchableValuesResponse": {
+      "description": "OK",
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "profile_pic": {
               "type": "string"
             }
           },
@@ -2748,9 +2770,9 @@
         }
       }
     },
-    "/task/{task_id}/stage/{stage_id}/stage_assignees/v1/": {
+    "/task/stage/stage_assignees/v1/": {
       "get": {
-        "operationId": "get_stage_possible_assignees_of_a_task",
+        "operationId": "get_stage_searchable_possible_assignees_of_a_task",
         "summary": "get stage pssible assignees for a task",
         "description": "get stage pssible assignees for a task and you can search a user",
         "security": [{
@@ -2759,13 +2781,10 @@
           ]
         }],
         "parameters": [{
-            "$ref": "#/parameters/TaskIDParameter"
+            "$ref": "#/parameters/GetTaskStagePossibleAssigneesBody"
           },
           {
-            "$ref": "#/parameters/StageIdParamter"
-          },
-          {
-            "$ref": "#/parameters/UserSearchableParameter"
+            "$ref": "#/parameters/SearchableTypeParameter"
           },
           {
             "$ref": "#/parameters/LimitParameter"
@@ -2779,7 +2798,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/responses/StageAssigneesResponse"
+            "$ref": "#/responses/AssigneeSearchableValuesResponse"
           },
           "400": {
             "$ref": "#/responses/SearchableValuesFailureResponse"
