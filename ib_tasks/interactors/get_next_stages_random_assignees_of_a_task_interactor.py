@@ -1,5 +1,5 @@
 from random import choice
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Tuple
 from ib_tasks.adapters.dtos import UserDetailsDTO
 from ib_tasks.constants.constants import EMPTY_STRING
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
@@ -14,7 +14,8 @@ from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
     StageIdWithRoleIdsDTO, StageDetailsDTO, TaskStageHavingAssigneeIdDTO, \
-    StageValueWithTaskIdsDTO, TaskWithDbStageIdDTO
+    StageValueWithTaskIdsDTO, TaskWithDbStageIdDTO, \
+    AssigneeCurrentTasksCountDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.exceptions.action_custom_exceptions \
@@ -150,12 +151,17 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
         stage_with_user_details_dtos = []
         from ib_tasks.adapters.auth_service import AuthService
         auth_service_adapter = AuthService()
+        updated_task_count_dto_for_assignee_having_less_tasks = \
+            AssigneeCurrentTasksCountDTO(
+                assignee_id=EMPTY_STRING, tasks_count=0)
         for each_dto in role_ids_group_by_stage_id_dtos:
             permitted_user_details_dtos = auth_service_adapter. \
                 get_permitted_user_details(role_ids=each_dto.role_ids)
-            permitted_user_details_dto_having_less_tasks = self. \
+            permitted_user_details_dto_having_less_tasks, \
+            updated_task_count_dto_for_assignee_having_less_tasks = self. \
                 _get_user_having_less_tasks_for_each_stage(
-                permitted_user_details_dtos)
+                permitted_user_details_dtos,
+                updated_task_count_dto_for_assignee_having_less_tasks)
 
             stage_with_user_details_dto = self. \
                 _prepare_stage_with_user_details_dto(
@@ -166,10 +172,12 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
             stage_with_user_details_dtos.append(stage_with_user_details_dto)
         return stage_with_user_details_dtos
 
-    def _get_user_having_less_tasks_for_each_stage(self,
-                                                   permitted_user_details_dtos:
-                                                   List[
-                                                       UserDetailsDTO]) -> UserDetailsDTO:
+    def _get_user_having_less_tasks_for_each_stage(
+            self, permitted_user_details_dtos: List[
+                UserDetailsDTO],
+            updated_task_count_dto_for_assignee_having_less_tasks:
+            AssigneeCurrentTasksCountDTO) -> \
+            Tuple[UserDetailsDTO, AssigneeCurrentTasksCountDTO]:
 
         tasks_that_are_not_completed_with_stage_dtos = self. \
             _get_tasks_that_are_not_completed_with_stage_dtos()
@@ -189,11 +197,20 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
             db_stage_ids=stage_ids_of_tasks_that_are_not_completed,
             user_ids=permitted_user_ids,
             task_ids=task_ids_of_tasks_that_are_not_completed)
+        for each_assignee_with_current_tasks_count_dto in assignee_with_current_tasks_count_dtos:
+            if each_assignee_with_current_tasks_count_dto.tasks_count<updated_task_count_dto_for_assignee_having_less_tasks.tasks_count:
+
         assignee_id_with_current_less_tasks = \
             assignee_with_current_tasks_count_dtos[0].assignee_id
+        updated_task_count_dto_for_assignee_having_less_tasks = \
+            AssigneeCurrentTasksCountDTO(
+                assignee_id=assignee_id_with_current_less_tasks,
+                tasks_count=assignee_with_current_tasks_count_dtos[
+                    0].tasks_count)
+
         for each_permitted_user_details_dto in permitted_user_details_dtos:
             if assignee_id_with_current_less_tasks == each_permitted_user_details_dto.user_id:
-                return each_permitted_user_details_dto
+                return each_permitted_user_details_dto, updated_task_count_dto_for_assignee_having_less_tasks
 
     def _get_tasks_that_are_not_completed_with_stage_dtos(self) -> List[
         TaskWithDbStageIdDTO]:
