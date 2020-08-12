@@ -2,7 +2,8 @@ from typing import List
 
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, RoleIdAndNameDTO, TeamIdAndNameDTO, \
-    CompanyIdAndNameDTO, UserIdAndNameDTO
+    CompanyIdAndNameDTO, UserIdAndNameDTO, TeamDTO, TeamUserIdsDTO, CompanyDTO, \
+    CompanyIdWithEmployeeIdsDTO
 from ib_iam.interactors.storage_interfaces.user_storage_interface \
     import UserStorageInterface
 
@@ -276,3 +277,79 @@ class UserStorageImplementation(UserStorageInterface):
             name=user_details_object.name
         )
         return user_details_dto
+
+    def get_user_related_team_dtos(self, user_id: str) -> List[TeamDTO]:
+        from ib_iam.models import Team
+        team_objects = Team.objects.filter(users__user_id=user_id)
+        team_dtos = self._get_team_dtos(team_objects=team_objects)
+        return team_dtos
+
+    def get_team_user_ids_dtos(self, team_ids: List[str]) -> \
+            List[TeamUserIdsDTO]:
+        from ib_iam.models import UserTeam
+        team_users = UserTeam.objects.filter(
+            team__team_id__in=team_ids
+        ).values_list('team__team_id', 'user_id')
+        from collections import defaultdict
+        team_user_ids_dictionary = defaultdict(list)
+        for team_user in team_users:
+            team_id = str(team_user[0])
+            team_user_ids_dictionary[team_id].extend([team_user[1]])
+        team_user_ids_dtos = [
+            TeamUserIdsDTO(
+                team_id=team_id,
+                user_ids=team_user_ids_dictionary[team_id]
+            ) for team_id in team_ids
+        ]
+        return team_user_ids_dtos
+
+    def get_user_related_company_dto(self, user_id: str) -> CompanyDTO:
+        from ib_iam.models import Company
+        try:
+            company_object = Company.objects.get(users__user_id=user_id)
+        except Company.DoesNotExist:
+            return None
+        company_dto = self._convert_company_object_to_company_dto(
+            company_object=company_object)
+        return company_dto
+
+    def get_company_employee_ids_dtos(self, company_ids: List[str]) \
+            -> List[CompanyIdWithEmployeeIdsDTO]:
+        from ib_iam.models import UserDetails
+        company_employees = \
+            UserDetails.objects.filter(company_id__in=company_ids) \
+                .values_list('company_id', 'user_id')
+        from collections import defaultdict
+        company_employee_ids_dictionary = defaultdict(list)
+        for company_employee in company_employees:
+            company_id = str(company_employee[0])
+            company_employee_ids_dictionary[company_id].extend([
+                company_employee[1]])
+        company_employee_ids_dtos = [
+            CompanyIdWithEmployeeIdsDTO(
+                company_id=company_id,
+                employee_ids=company_employee_ids_dictionary[company_id]
+            ) for company_id in company_ids
+        ]
+        return company_employee_ids_dtos
+
+    @staticmethod
+    def _convert_company_object_to_company_dto(company_object) -> CompanyDTO:
+        company_dto = CompanyDTO(
+            company_id=str(company_object.company_id),
+            name=company_object.name,
+            description=company_object.description,
+            logo_url=company_object.logo_url)
+        return company_dto
+
+    @staticmethod
+    def _get_team_dtos(team_objects):
+        team_dtos = [
+            TeamDTO(
+                team_id=str(team_object.team_id),
+                name=team_object.name,
+                description=team_object.description
+            )
+            for team_object in team_objects
+        ]
+        return team_dtos
