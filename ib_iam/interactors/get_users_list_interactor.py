@@ -50,7 +50,9 @@ class GetUsersDetailsInteractor(ValidationMixin):
             offset=offset, limit=limit,
             search_query_and_type_dto=search_query_and_type_dto
         )
-        total_count = self.user_storage.get_total_count_of_users_for_query()
+        total_count = self.user_storage.get_total_count_of_users_for_query(
+            search_query=search_query_and_type_dto.search_query
+        )
         user_ids = [user_dto.user_id for user_dto in user_dtos]
         return self._get_complete_user_details_dto(user_ids, total_count)
 

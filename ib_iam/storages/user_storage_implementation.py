@@ -123,10 +123,12 @@ class UserStorageImplementation(UserStorageInterface):
                 company_id=str(user_object.company_id))
         return user_dto
 
-    def get_total_count_of_users_for_query(self):
+    def get_total_count_of_users_for_query(self, search_query: str):
         from ib_iam.models import UserDetails
         total_count_of_users = \
-            UserDetails.objects.filter(is_admin=False).count()
+            UserDetails.objects.filter(
+                is_admin=False, name__icontains=search_query
+            ).count()
         return total_count_of_users
 
     def get_team_details_of_users_bulk(
