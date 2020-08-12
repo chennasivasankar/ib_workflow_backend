@@ -15,6 +15,7 @@ def api_wrapper(*args, **kwargs):
     request_body = kwargs['request_data']
     board_id = kwargs['board_id']
     params = kwargs['request_query_params']
+    search_query = params.search_query
     offset = params['offset']
     limit = params['limit']
 
@@ -24,7 +25,8 @@ def api_wrapper(*args, **kwargs):
     column_params = ColumnParametersDTO(
         board_id=board_id,
         user_id=user.user_id,
-        view_type=view_type
+        view_type=view_type,
+        search_query=search_query
     )
     pagination_params = PaginationParametersDTO(
         offset=offset,

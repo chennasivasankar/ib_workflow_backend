@@ -15,6 +15,8 @@ from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ApplyFilterDTO
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
     ElasticSearchStorageInterface
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
+from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
 
 
 class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
@@ -31,7 +33,9 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             title=elastic_task_dto.title
         )
         field_dtos = elastic_task_dto.fields
+        stages = elastic_task_dto.stages
         task_obj.add_fields(field_dtos=field_dtos)
+        task_obj.add_stages(stages)
         task_obj.save()
         elastic_task_id = task_obj.meta.id
         return elastic_task_id
@@ -45,7 +49,9 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         from ib_tasks.models import ElasticSearchTask
         task_id = task_dto.task_id
         fields = task_dto.fields
+        stage_ids = task_dto.stages
         field_objects = self._get_field_objects(field_dtos=fields)
+        stage_objects = self.get_stage_objects(stages_ids=stage_ids)
         elastic_search_task_id = ElasticSearchTask.objects.get(
             task_id=task_id
         ).elasticsearch_id
@@ -150,8 +156,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         from elasticsearch_dsl import connections
         from django.conf import settings
         connections.create_connection(
-            hosts=[settings.ELASTICSEARCH_ENDPOINT],
-                    timeout=20
+            hosts=[settings.ELASTICSEARCH_ENDPOINT], timeout=20
         )
         from elasticsearch_dsl import Q, Search
 
@@ -255,7 +260,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             ElasticStateDTO(
                 state_id=hit.state_id,
                 state_name=hit.state_name,
-                elastic_state_name=None
+                elastic_state_id=None
             )
             for hit in search[offset: offset + limit]
         ]
@@ -299,8 +304,66 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             ElasticCityDTO(
                 city_id=hit.city_id,
                 city_name=hit.city_name,
-                elastic_city_name=None
+                elastic_city_id=None
             )
             for hit in search[offset: offset + limit]
         ]
         return city_dtos
+
+    def filter_tasks_with_stage_ids(
+            self, filter_dtos: List[ApplyFilterDTO],
+            task_details_config: TaskDetailsConfigDTO) -> Tuple[List[TaskStageIdsDTO], int]:
+        from elasticsearch_dsl import connections
+        from django.conf import settings
+        connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
+                                      timeout=20)
+        stage_ids = task_details_config.stage_ids
+        search_query = task_details_config.search_query
+        search = self._get_search_task_objects(filter_dtos)
+        search = search.filter('terms', stages__stage_id=stage_ids)
+
+        if search_query:
+            search = search.query(
+                Q(
+                    "match",
+                    state_name={
+                        "query": search_query,
+                        "fuzziness": "2"
+                    }
+                )
+            )
+        limit = task_details_config.limit
+        offset = task_details_config.offset
+        total_tasks = search.count()
+        task_stage_dtos_list = []
+        for task_object in search[offset: offset + limit]:
+            task_stage_dtos = self._get_task_stage_dtos(task_object, stage_ids)
+            task_stage_dtos_list += task_stage_dtos
+
+        return task_stage_dtos_list, total_tasks
+
+    @staticmethod
+    def _get_task_stage_dtos(task_object: Task, stage_ids: List[str]) -> List[TaskStageIdsDTO]:
+        stages = task_object.stages
+        stage_id = stages[0].stage_id
+        return [
+            TaskStageIdsDTO(
+                task_id=task_object.task_id,
+                stage_id=stage.stage_id
+            )
+            for stage in task_object.stages
+            if stage.stage_id in stage_ids
+        ]
+
+    @staticmethod
+    def get_stage_objects(stages_ids: List[str]) -> List[Stage]:
+        return [
+            Stage(stage_id=stage_id)
+            for stage_id in stages_ids
+        ]
+
+    def validate_task_id_in_elasticsearch(self, task_id: int) -> bool:
+        from ib_tasks.models import ElasticSearchTask
+        return ElasticSearchTask.objects.filter(
+            task_id=task_id
+        ).exists()

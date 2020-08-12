@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional, List
-
+from datetime import time, datetime
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
 
 
@@ -111,3 +111,41 @@ class StageWithUserDetailsDTO(UserDetailsDTO):
 class StageRolesDTO:
     stage_id: str
     role_ids: List[str]
+
+
+@dataclass()
+class TaskStageHistoryDTO:
+    log_id: int
+    task_id: int
+    stage_id: int
+    stage_duration: Optional[time]
+    started_at: datetime
+    assignee_id: str
+    left_at: Optional[datetime]
+
+
+@dataclass()
+class StageMinimalDTO:
+    stage_id: int
+    name: str
+    color: str
+
+
+@dataclass()
+class EntityTypeDTO:
+    entity_id: int
+    entity_type: str
+
+
+@dataclass()
+class LogDurationDTO:
+    entity_id: int
+    duration: time
+
+
+@dataclass()
+class TaskStageCompleteDetailsDTO:
+    stage_dtos: List[StageMinimalDTO]
+    task_stage_dtos: List[TaskStageHistoryDTO]
+    log_duration_dtos: List[LogDurationDTO]
+    assignee_details: List[AssigneeDetailsDTO]

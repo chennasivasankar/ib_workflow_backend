@@ -43,6 +43,7 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_duplic
                         }
                     ],
                     'stage_color': 'blue',
+                    'stage_id': 0,
                     'task_id': 'task_id_0'
                 }
             ],
@@ -70,6 +71,7 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_duplic
                         }
                     ],
                     'stage_color': 'orange',
+                    'stage_id': 1,
                     'task_id': 'task_id_1'
                 }
             ],
@@ -97,6 +99,7 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_duplic
                         }
                     ],
                     'stage_color': 'green',
+                    'stage_id': 2,
                     'task_id': 'task_id_2'
                 }
             ],
@@ -130,6 +133,7 @@ snapshots['TestGetColumnDetails.test_with_duplicate_tasks_in_same_column_and_dup
                         }
                     ],
                     'stage_color': 'blue',
+                    'stage_id': 0,
                     'task_id': 'task_id_0'
                 }
             ],
@@ -157,6 +161,7 @@ snapshots['TestGetColumnDetails.test_with_duplicate_tasks_in_same_column_and_dup
                         }
                     ],
                     'stage_color': 'orange',
+                    'stage_id': 1,
                     'task_id': 'task_id_1'
                 }
             ],
@@ -184,6 +189,7 @@ snapshots['TestGetColumnDetails.test_with_duplicate_tasks_in_same_column_and_dup
                         }
                     ],
                     'stage_color': 'green',
+                    'stage_id': 2,
                     'task_id': 'task_id_2'
                 }
             ],
@@ -217,6 +223,7 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_proper
                         }
                     ],
                     'stage_color': 'blue',
+                    'stage_id': 0,
                     'task_id': 'task_id_0'
                 }
             ],
@@ -254,6 +261,7 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_proper
                         }
                     ],
                     'stage_color': 'orange',
+                    'stage_id': 1,
                     'task_id': 'task_id_1'
                 }
             ],
@@ -291,6 +299,7 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_proper
                         }
                     ],
                     'stage_color': 'green',
+                    'stage_id': 2,
                     'task_id': 'task_id_2'
                 }
             ],

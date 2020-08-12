@@ -46,6 +46,6 @@ class UpdateChecklistItemInteractor:
 
     def _validate_checklist_item_id(self, checklist_item_id: str):
         is_checklist_item_id_exist = self.checklist_storage \
-            .validate_checklist_item_id(checklist_item_id=checklist_item_id)
+            .is_checklist_item_id_exists(checklist_item_id=checklist_item_id)
         if is_checklist_item_id_exist is False:
             raise ChecklistItemIdNotFound

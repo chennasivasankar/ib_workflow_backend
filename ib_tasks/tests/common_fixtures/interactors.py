@@ -119,6 +119,7 @@ def prepare_fields_and_actions_dto(mocker):
         GetTaskStageCompleteDetailsDTO(
             task_id=1, stage_id="stage_1",
             stage_color="blue",
+            db_stage_id=1,
             field_dtos=[FieldDetailsDTOFactory()],
             action_dtos=[ActionDetailsDTOFactory()]
         )
@@ -161,3 +162,8 @@ def prepare_task_ids_with_stage_ids(
     mock = mocker.patch(
         'ib_tasks.interactors.get_allowed_stage_ids_of_user_interactor.GetAllowedStageIdsOfUserInteractor.get_allowed_stage_ids_of_user')
     mock = stage_ids
+
+
+def prepare_mock_for_filters_interactor(mocker):
+    mock = mocker.patch('ib_tasks.interactors.get_task_ids_by_applying_filters_with_stage_ids.GetTaskIdsBasedOnUserFiltersInColumns.get_task_ids_by_applying_filters')
+    return mock
