@@ -1,9 +1,10 @@
 from typing import List
 
 from ib_iam.exceptions.custom_exceptions import (
-    UserIsNotAdmin, GivenNameIsEmpty, InvalidEmailAddress,
+    UserIsNotAdmin, InvalidEmailAddress,
     RoleIdsAreInvalid, InvalidCompanyId, TeamIdsAreInvalid, UserDoesNotExist,
-    NameShouldNotContainsNumbersSpecCharacters
+    NameShouldNotContainsNumbersSpecCharacters,
+    InvalidNameLength
 )
 from ib_iam.interactors.dtos.dtos import \
     UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO
@@ -33,10 +34,11 @@ class EditUserInteractor(ValidationMixin):
             response = presenter.raise_user_is_not_admin_exception()
         except UserDoesNotExist:
             response = presenter.raise_user_does_not_exist()
-        except GivenNameIsEmpty:
-            response = presenter.raise_invalid_name_exception()
         except InvalidEmailAddress:
             response = presenter.raise_invalid_email_exception()
+        except InvalidNameLength:
+            response = presenter \
+                .raise_invalid_name_length_exception_for_update_user_profile()
         except NameShouldNotContainsNumbersSpecCharacters:
             response = presenter. \
                 raise_name_should_not_contain_special_characters_exception()
@@ -69,6 +71,7 @@ class EditUserInteractor(ValidationMixin):
             user_id=user_id, company_id=company_id, role_ids=role_ids,
             team_ids=team_ids, name=name
         )
+        ## TODO user_id  and name elastic serach
 
     @staticmethod
     def _validate_email_and_throw_exception(email: str):

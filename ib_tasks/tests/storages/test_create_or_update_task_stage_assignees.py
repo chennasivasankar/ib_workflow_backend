@@ -1,6 +1,6 @@
 import pytest
 
-from ib_tasks.models import TaskStage
+from ib_tasks.models import CurrentTaskStage
 from ib_tasks.tests.factories.interactor_dtos import \
     TaskIdWithStageAssigneeDTOFactory
 from ib_tasks.tests.factories.models import TaskFactory, StageModelFactory, \
@@ -42,7 +42,7 @@ class TestTaskStageAssignees:
         # Assert
         for each_task_id_with_stage_assignee_dto in \
                 task_id_with_stage_assignee_dtos:
-            task_stage_obj = TaskStage.objects.get(
+            task_stage_obj = CurrentTaskStage.objects.get(
                 task_id=each_task_id_with_stage_assignee_dto.task_id,
                 stage_id=each_task_id_with_stage_assignee_dto.db_stage_id
             )
@@ -67,7 +67,7 @@ class TestTaskStageAssignees:
         # Assert
         for each_task_id_with_stage_assignee_dto in \
                 task_id_with_stage_assignee_dtos:
-            task_stage_obj = TaskStage.objects.get(
+            task_stage_obj = CurrentTaskStage.objects.get(
                 task_id=each_task_id_with_stage_assignee_dto.task_id,
                 stage_id=each_task_id_with_stage_assignee_dto.db_stage_id
             )

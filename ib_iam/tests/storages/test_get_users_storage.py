@@ -1,6 +1,3 @@
-import uuid
-from unittest.mock import patch
-
 import pytest
 
 from ib_iam.storages.user_storage_implementation \
@@ -8,7 +5,6 @@ from ib_iam.storages.user_storage_implementation \
 
 from ib_iam.tests.common_fixtures.storages import \
     user_not_admin, users_company, users_team, users_role
-
 
 class TestGetUsers:
     @pytest.fixture()
@@ -114,15 +110,117 @@ class TestGetUsers:
         # Assert
         assert output == expected_output
 
+    @pytest.fixture()
+    def prepare_create_users_setup(self):
+        company_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8331"
+        from ib_iam.tests.factories.models import CompanyFactory
+        company_object = CompanyFactory(
+            company_id=company_id,
+            name="name", description="description",
+            logo_url="www.google.com"
+        )
+        users = [
+            {
+                "user_id": "1",
+                "name": "sham",
+                "company": company_object
+            },
+            {
+                "user_id": "2",
+                "name": "harry",
+                "company": company_object
+            },
+            {
+                "user_id": "3",
+                "name": "noah",
+                "company": company_object
+            },
+            {
+                "user_id": "4",
+                "name": "ava",
+                "company": company_object
+            }
+        ]
+        from ib_iam.tests.factories.models import UserDetailsFactory
+        for user in users:
+            UserDetailsFactory(
+                user_id=user["user_id"], name=user["name"],
+                company=user["company"]
+            )
+
     @pytest.mark.django_db
-    def test_get_users(self, users_company, user_dtos):
+    def test_get_users(self, prepare_create_users_setup):
         # Arrange
-        expected_output = user_dtos
+        users_list = [{
+            'user_id': '1',
+            'is_admin': False,
+            'company_id': 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331'
+        }]
+        from ib_iam.tests.factories.storage_dtos import UserDTOFactory
+        expected_output = [
+            UserDTOFactory(
+                user_id=user_dict["user_id"],
+                is_admin=user_dict["is_admin"],
+                company_id=user_dict["company_id"]
+            )
+            for user_dict in users_list
+        ]
+        from ib_iam.constants.enums import SearchType
+        from ib_iam.interactors.dtos.dtos import SearchQueryAndTypeDTO
+        search_query_and_type_dto = SearchQueryAndTypeDTO(
+            search_query="s",
+            search_type=SearchType.USER.value
+        )
         storage = UserStorageImplementation()
 
         # Act
-        output = storage.get_users_who_are_not_admins(offset=0, limit=10)
+        output = storage.get_users_who_are_not_admins(
+            offset=0, limit=10,
+            search_query_and_type_dto=search_query_and_type_dto)
+        assert output == expected_output
 
+    @pytest.mark.django_db
+    def test_get_users_with_empty_search_query(
+            self, prepare_create_users_setup):
+        # Arrange
+        users_list = [{
+            'user_id': '1',
+            'is_admin': False,
+            'company_id': 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331'
+        }, {
+            'user_id': '2',
+            'is_admin': False,
+            'company_id': 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331'
+        }, {
+            'user_id': '3',
+            'is_admin': False,
+            'company_id': 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331'
+        }, {
+            'user_id': '4',
+            'is_admin': False,
+            'company_id': 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331'
+        }]
+        from ib_iam.tests.factories.storage_dtos import UserDTOFactory
+        expected_output = [
+            UserDTOFactory(
+                user_id=user_dict["user_id"],
+                is_admin=user_dict["is_admin"],
+                company_id=user_dict["company_id"]
+            )
+            for user_dict in users_list
+        ]
+        from ib_iam.constants.enums import SearchType
+        from ib_iam.interactors.dtos.dtos import SearchQueryAndTypeDTO
+        search_query_and_type_dto = SearchQueryAndTypeDTO(
+            search_query="",
+            search_type=SearchType.USER.value
+        )
+        storage = UserStorageImplementation()
+
+        # Act
+        output = storage.get_users_who_are_not_admins(
+            offset=0, limit=10,
+            search_query_and_type_dto=search_query_and_type_dto)
         assert output == expected_output
 
     @pytest.mark.django_db
@@ -178,8 +276,8 @@ class TestGetUsers:
 
     @pytest.mark.django_db
     @pytest.mark.parametrize("given_user_ids, expected_user_ids", [
-                            (["user1", "user2", "user3"], ["user1", "user2"]),
-                              (["user_id-3", "user_id-4"], [])
+        (["user1", "user2", "user3"], ["user1", "user2"]),
+        (["user_id-3", "user_id-4"], [])
     ])
     def test_given_some_valid_members_it_returns_member_ids(
             self, create_users, given_user_ids, expected_user_ids):
@@ -190,3 +288,17 @@ class TestGetUsers:
                 user_ids=given_user_ids)
 
         assert actual_user_ids == expected_user_ids
+
+    @pytest.mark.django_db
+    def test_update_user_name(self):
+        from ib_iam.tests.factories.models import UserDetailsFactory
+        user_id = "6ce31e92-f188-4019-b295-2e5ddc9c7a11"
+        UserDetailsFactory(user_id=user_id)
+        expected_name = "testusername"
+        storage = UserStorageImplementation()
+
+        storage.update_user_name(user_id=user_id, name=expected_name)
+
+        from ib_iam.models import UserDetails
+        user_object = UserDetails.objects.get(user_id=user_id)
+        assert user_object.name == expected_name

@@ -21,7 +21,5 @@ snapshots['TestCase01GetChecklistAPITestCase.test_case body'] = {
             'is_checked': False,
             'text': 'text2'
         }
-    ],
-    'entity_id': '09b6cf6d-90ea-43ac-b0ee-3cee3c59ce5a',
-    'entity_type': 'TASK'
+    ]
 }

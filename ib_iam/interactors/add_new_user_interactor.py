@@ -1,8 +1,8 @@
 from ib_iam.exceptions.custom_exceptions import (
-    UserIsNotAdmin, GivenNameIsEmpty, InvalidEmailAddress,
+    UserIsNotAdmin, InvalidEmailAddress,
     UserAccountAlreadyExistWithThisEmail,
     NameShouldNotContainsNumbersSpecCharacters, RoleIdsAreInvalid,
-    InvalidCompanyId, TeamIdsAreInvalid
+    InvalidCompanyId, TeamIdsAreInvalid, InvalidNameLength
 )
 from ib_iam.interactors.dtos.dtos import \
     UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO
@@ -30,8 +30,9 @@ class AddNewUserInteractor(ValidationMixin):
             response = presenter.user_created_response()
         except UserIsNotAdmin:
             response = presenter.raise_user_is_not_admin_exception()
-        except GivenNameIsEmpty:
-            response = presenter.raise_invalid_name_exception()
+        except InvalidNameLength:
+            response = presenter \
+                .raise_invalid_name_length_exception_for_update_user_profile()
         except InvalidEmailAddress:
             response = presenter.raise_invalid_email_exception()
         except UserAccountAlreadyExistWithThisEmail:
@@ -70,6 +71,7 @@ class AddNewUserInteractor(ValidationMixin):
             user_id=new_user_id, team_ids=team_ids)
         self.user_storage.add_roles_to_the_user(
             user_id=new_user_id, role_ids=role_obj_ids)
+        ## TODO use the new_user_id and name for elastic search
 
     def _validate_add_new_user_details(
             self, user_id,

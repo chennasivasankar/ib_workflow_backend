@@ -53,7 +53,8 @@ class TestCase01GetTaskTemplatesAPITestCase(TestUtils):
         )
         StageActionFactory.create_batch(
             size=4, stage=factory.Iterator(stage_objs),
-            action_type=ValidationType.NO_VALIDATIONS.value
+            action_type=ValidationType.NO_VALIDATIONS.value,
+            transition_template=None
         )
         TaskTemplateInitialStageFactory.create_batch(
             size=4, stage=factory.Iterator(stage_objs),

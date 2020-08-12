@@ -115,7 +115,7 @@ class UserActionOnTaskInteractor:
         )
 
     def user_action_on_task(self):
-        # self._validations_for_task_action()
+        self._validations_for_task_action()
         task_dto = self._get_task_dto()
         self._call_logic_and_update_status_variables_and_get_stage_ids(
             task_dto=task_dto
