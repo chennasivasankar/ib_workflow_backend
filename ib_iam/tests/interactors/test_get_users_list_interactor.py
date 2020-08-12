@@ -83,8 +83,18 @@ class TestGetUsersDetailsInteractor:
         storage = mock.create_autospec(GetUsersListPresenterInterface)
         return storage
 
+    @pytest.fixture()
+    def search_query_and_type_dto(self):
+        from ib_iam.constants.enums import SearchType
+        from ib_iam.interactors.dtos.dtos import SearchQueryAndTypeDTO
+        search_query_and_type_dto = SearchQueryAndTypeDTO(
+            search_query="",
+            search_type=SearchType.USER.value
+        )
+        return search_query_and_type_dto
+
     def test_get_users_when_user_is_not_admin_then_throw_exception(
-            self, storage_mock, presenter_mock):
+            self, storage_mock, presenter_mock, search_query_and_type_dto):
         # Arrange
         user_id = USER_ID
         limit = 10
@@ -100,7 +110,8 @@ class TestGetUsersDetailsInteractor:
         # Act
         interactor.get_users_details_wrapper(
             user_id=user_id, pagination_dto=pagination_dto,
-            presenter=presenter_mock
+            presenter=presenter_mock,
+            search_query_and_type_dto=search_query_and_type_dto
         )
 
         # Assert
@@ -109,7 +120,7 @@ class TestGetUsersDetailsInteractor:
         presenter_mock.raise_user_is_not_admin_exception.assert_called_once()
 
     def test_get_users_when_offset_value_is_less_than_0_then_throw_exception(
-            self, storage_mock, presenter_mock):
+            self, storage_mock, presenter_mock, search_query_and_type_dto):
         # Arrange
         user_id = USER_ID
         limit = 10
@@ -125,14 +136,15 @@ class TestGetUsersDetailsInteractor:
         # Act
         interactor.get_users_details_wrapper(
             user_id=user_id, pagination_dto=pagination_dto,
-            presenter=presenter_mock
+            presenter=presenter_mock,
+            search_query_and_type_dto=search_query_and_type_dto
         )
 
         # Assert
         presenter_mock.raise_invalid_offset_value_exception.assert_called_once()
 
     def test_get_users_when_limit_value_is_less_than_0_then_throw_exception(
-            self, storage_mock, presenter_mock):
+            self, storage_mock, presenter_mock, search_query_and_type_dto):
         # Arrange
         user_id = USER_ID
         limit = -10
@@ -148,14 +160,17 @@ class TestGetUsersDetailsInteractor:
         # Act
         interactor.get_users_details_wrapper(
             user_id=user_id, pagination_dto=pagination_dto,
-            presenter=presenter_mock
+            presenter=presenter_mock,
+            search_query_and_type_dto=search_query_and_type_dto
         )
 
         # Assert
         presenter_mock.raise_invalid_limit_value_exception.assert_called_once()
 
     def test_get_users_returns_user_dtos(
-            self, storage_mock, presenter_mock, user_dtos, mocker):
+            self, storage_mock, presenter_mock, user_dtos, mocker,
+            search_query_and_type_dto
+    ):
         # Arrange
         user_id = USER_ID
         limit = 10
@@ -178,7 +193,8 @@ class TestGetUsersDetailsInteractor:
         # Act
         interactor.get_users_details_wrapper(
             user_id=user_id, pagination_dto=pagination_dto,
-            presenter=presenter_mock
+            presenter=presenter_mock,
+            search_query_and_type_dto=search_query_and_type_dto
         )
 
         # Assert
@@ -187,7 +203,7 @@ class TestGetUsersDetailsInteractor:
 
     def test_get_users_team_details_returns_team_details_of_users(
             self, user_dtos, user_team_dtos, storage_mock, presenter_mock,
-            mocker):
+            mocker, search_query_and_type_dto):
         user_id = USER_ID
         limit = 10
         offset = 0
@@ -211,7 +227,8 @@ class TestGetUsersDetailsInteractor:
         # Act
         interactor.get_users_details_wrapper(
             user_id=user_id, pagination_dto=pagination_dto,
-            presenter=presenter_mock
+            presenter=presenter_mock,
+            search_query_and_type_dto=search_query_and_type_dto
         )
 
         # Assert
@@ -222,7 +239,7 @@ class TestGetUsersDetailsInteractor:
 
     def test_get_users_role_details_returns_team_details_of_users(
             self, user_dtos, user_role_dtos, storage_mock, presenter_mock,
-            mocker):
+            mocker, search_query_and_type_dto):
         user_id = USER_ID
         limit = 10
         offset = 0
@@ -246,7 +263,8 @@ class TestGetUsersDetailsInteractor:
         # Act
         interactor.get_users_details_wrapper(
             user_id=user_id, pagination_dto=pagination_dto,
-            presenter=presenter_mock
+            presenter=presenter_mock,
+            search_query_and_type_dto=search_query_and_type_dto
         )
         adapter_mock.assert_called_once()
 
@@ -257,7 +275,7 @@ class TestGetUsersDetailsInteractor:
 
     def test_get_users_company_details_returns_team_details_of_users(
             self, user_dtos, user_company_dtos, storage_mock, presenter_mock,
-            mocker):
+            mocker, search_query_and_type_dto):
         user_id = USER_ID
         limit = 10
         offset = 0
@@ -281,7 +299,8 @@ class TestGetUsersDetailsInteractor:
         # Act
         interactor.get_users_details_wrapper(
             user_id=user_id, pagination_dto=pagination_dto,
-            presenter=presenter_mock
+            presenter=presenter_mock,
+            search_query_and_type_dto=search_query_and_type_dto
         )
 
         # Assert
@@ -290,7 +309,9 @@ class TestGetUsersDetailsInteractor:
         adapter_mock.assert_called_once()
 
     def test_get_users_from_adapter_return_user_deails(
-            self, user_profile_dtos, storage_mock, presenter_mock, mocker):
+            self, user_profile_dtos, storage_mock, presenter_mock, mocker,
+            search_query_and_type_dto
+    ):
         user_id = USER_ID
         limit = 10
         offset = 0
@@ -316,7 +337,8 @@ class TestGetUsersDetailsInteractor:
         # Act
         interactor.get_users_details_wrapper(
             user_id=user_id, pagination_dto=pagination_dto,
-            presenter=presenter_mock
+            presenter=presenter_mock,
+            search_query_and_type_dto=search_query_and_type_dto
         )
 
         # Assert
@@ -325,7 +347,8 @@ class TestGetUsersDetailsInteractor:
     def test_get_users_complete_details(
             self, user_dtos, user_team_dtos,
             user_role_dtos, user_company_dtos, user_profile_dtos,
-            storage_mock, presenter_mock, mocker):
+            storage_mock, presenter_mock, mocker, search_query_and_type_dto
+    ):
         user_id = USER_ID
         limit = 10
         offset = 0
@@ -353,7 +376,8 @@ class TestGetUsersDetailsInteractor:
         # Act
         interactor.get_users_details_wrapper(
             user_id=user_id, pagination_dto=pagination_dto,
-            presenter=presenter_mock
+            presenter=presenter_mock,
+            search_query_and_type_dto=search_query_and_type_dto
         )
 
         # Assert
@@ -362,7 +386,8 @@ class TestGetUsersDetailsInteractor:
         presenter_mock.response_for_get_users.assert_called_once()
 
     def test_get_user_dtos_return_response(self, mocker, storage_mock,
-                                           user_profile_dtos):
+                                           user_profile_dtos
+                                           ):
         # Arrange
         user_ids = ["user1", "user2", "user3"]
 
