@@ -235,7 +235,9 @@ class StagesStorageImplementation(StageStorageInterface):
                         CurrentTaskStage.objects.filter(
                             stage__value=each_stage_value,
                             task_id__in=each_task_ids_group_by_stage_value_dto.
-                                task_ids).values("task_id", "stage__stage_id",
+                                task_ids).values("task_id",
+                                                 "task__task_display_id",
+                                                 "stage__stage_id",
                                                  "stage__display_name",
                                                  "stage__stage_color",
                                                  "stage__id"))
@@ -255,6 +257,8 @@ class StagesStorageImplementation(StageStorageInterface):
         task_id_with_stage_details_dtos = [
             TaskIdWithStageDetailsDTO(
                 task_id=task_id_with_stage_detail["task_id"],
+                task_display_id=task_id_with_stage_detail[
+                    "task__task_display_id"],
                 stage_id=task_id_with_stage_detail["stage__stage_id"],
                 stage_display_name=task_id_with_stage_detail[
                     "stage__display_name"],
