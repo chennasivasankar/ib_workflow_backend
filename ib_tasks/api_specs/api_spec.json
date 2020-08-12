@@ -1225,6 +1225,92 @@
         "stages",
         "user_has_permission"
       ]
+    },
+    "StageResponseBody": {
+      "type": "object",
+      "properties": {
+        "stage_id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "color": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "stage_id",
+        "name",
+        "color"
+      ]
+    },
+    "UserResponseBody": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string"
+        },
+        "profile_pic_url": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "user_id",
+        "name"
+      ]
+    },
+    "TaskStageResponseBody": {
+      "type": "object",
+      "properties": {
+        "stage_id": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "time_spent_by_user": {
+          "type": "integer"
+        },
+        "stage_time": {
+          "type": "integer"
+        },
+        "user_details": {
+          "$ref": "#/definitions/UserResponseBody"
+        }
+      },
+      "required": [
+        "stage_id",
+        "created_at",
+        "time_spent_by_user",
+        "stage_time",
+        "user_details"
+      ]
+    },
+    "TaskStagesCompleteResponseBody": {
+      "type": "object",
+      "properties": {
+        "stages_details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StageResponseBody"
+          }
+        },
+        "stages_history": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TaskStageResponseBody"
+          }
+        }
+      },
+      "required": [
+        "stages_details",
+        "stages_history"
+      ]
     }
   },
   "parameters": {
@@ -2242,6 +2328,12 @@
           "res_status"
         ]
       }
+    },
+    "GetTaskStagesResponse": {
+      "description": "succesful",
+      "schema": {
+        "$ref": "#/definitions/TaskStagesCompleteResponseBody"
+      }
     }
   },
   "paths": {
@@ -2662,8 +2754,7 @@
             ]
           }
         ],
-        "parameters": [
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "Field details",
@@ -2936,6 +3027,33 @@
           },
           "404": {
             "$ref": "#/responses/TaskStagePossibleAssigneesNotFoundResponse"
+          }
+        }
+      }
+    },
+    "/task/{task_id}/stage_log/v1/": {
+      "get": {
+        "operationId": "get_stages_history_to_task",
+        "summary": "get task stages information",
+        "description": "get task stages history",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TaskIDParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetTaskStagesResponse"
+          },
+          "404": {
+            "$ref": "#/responses/GetTaskFailureResponse"
           }
         }
       }

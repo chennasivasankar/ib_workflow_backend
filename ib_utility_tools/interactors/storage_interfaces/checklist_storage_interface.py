@@ -28,10 +28,10 @@ class ChecklistStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def validate_checklist_item_id(self, checklist_item_id: str) -> bool:
+    def is_checklist_item_id_exists(self, checklist_item_id: str) -> bool:
         pass
 
     @abc.abstractmethod
-    def get_checklist_items_dto(self, checklist_id: str) -> \
+    def get_checklist_item_dtos(self, checklist_id: str) -> \
             List[ChecklistItemWithIdDTO]:
         pass

@@ -13,10 +13,12 @@ from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskIdWithStageDetailsDTO, GetTaskStageCompleteDetailsDTO, TaskWithCompleteStageDetailsDTO
+    TaskIdWithStageDetailsDTO, GetTaskStageCompleteDetailsDTO, \
+    TaskWithCompleteStageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import TaskStageStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
+    TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
@@ -72,10 +74,16 @@ class GetTasksOverviewForUserInteractor:
                 task_fields_and_action_details_dtos
             )
 
+        filtered_tasks_details = [
+            task_with_stage_details_having_actions_dto
+            for task_with_stage_details_having_actions_dto in task_with_stage_details_having_actions_dtos
+            if task_with_stage_details_having_actions_dto.task_with_stage_details_dto.task_id in task_ids
+        ]
+
         from ib_tasks.interactors.presenter_interfaces.dtos import \
             AllTasksOverviewDetailsDTO
         all_tasks_overview_details_dto = AllTasksOverviewDetailsDTO(
-            task_with_complete_stage_details_dtos=task_with_stage_details_having_actions_dtos,
+            task_with_complete_stage_details_dtos=filtered_tasks_details,
             task_fields_and_action_details_dtos=
             task_fields_and_action_details_dtos,
         )

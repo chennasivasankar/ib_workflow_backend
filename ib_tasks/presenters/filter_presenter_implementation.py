@@ -100,11 +100,11 @@ class FilterPresenterImplementation(FilterPresenterInterface,
             TASK_TEMPLATES_DOES_NOT_EXISTS
         response_dict = {
             "response": TASK_TEMPLATES_DOES_NOT_EXISTS[0],
-            "http_status_code": 403,
+            "http_status_code": 404,
             "res_status": TASK_TEMPLATES_DOES_NOT_EXISTS[1]
         }
 
-        response_object = self.prepare_403_forbidden_response(response_dict)
+        response_object = self.prepare_404_not_found_response(response_dict)
         return response_object
 
     def get_response_for_create_filter(
