@@ -22,6 +22,8 @@ from ib_tasks.interactors \
 from ib_tasks.interactors.get_user_permitted_stage_actions \
     import GetUserPermittedStageActions
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
+from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
+    GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     TaskCompleteDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.presenter_interface import \
@@ -57,10 +59,9 @@ class InvalidBoardIdException(Exception):
         self.board_id = board_id
 
 
-class UserActionOnTaskInteractor:
+class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
 
-    def __init__(self, user_id: str, task_id: int,
-                 action_id: int, storage: StorageInterface,
+    def __init__(self, user_id: str, action_id: int, storage: StorageInterface,
                  gof_storage: CreateOrUpdateTaskStorageInterface,
                  board_id: Optional[str],
                  field_storage: FieldsStorageInterface,
@@ -72,7 +73,6 @@ class UserActionOnTaskInteractor:
         self.task_stage_storage = task_stage_storage
         self.user_id = user_id
         self.board_id = board_id
-        self.task_id = task_id
         self.action_id = action_id
         self.storage = storage
         self.gof_storage = gof_storage
@@ -81,11 +81,14 @@ class UserActionOnTaskInteractor:
         self.task_storage = task_storage
         self.action_storage = action_storage
 
-    def user_action_on_task_wrapper(self, presenter: PresenterInterface):
+    def user_action_on_task_wrapper(
+            self, presenter: PresenterInterface, task_display_id: str
+    ):
 
         try:
+            task_id = self.get_task_id_for_task_display_id(task_display_id)
             task_complete_details_dto, task_current_stage_details_dto = \
-                self.user_action_on_task()
+                self.user_action_on_task(task_id)
         except InvalidTaskException as err:
             return presenter.raise_exception_for_invalid_task(error_obj=err)
         except InvalidBoardIdException as err:
@@ -129,33 +132,34 @@ class UserActionOnTaskInteractor:
             task_current_stage_details_dto=task_current_stage_details_dto
         )
 
-    def user_action_on_task(self):
-        self._validations_for_task_action()
-        task_dto = self._get_task_dto()
+    def user_action_on_task(self, task_id: int):
+        self._validations_for_task_action(task_id)
+        task_dto = self._get_task_dto(task_id)
         self._call_logic_and_update_status_variables_and_get_stage_ids(
-            task_dto=task_dto
+            task_dto=task_dto, task_id=task_id
         )
 
-        stage_ids = self._get_task_stage_display_satisfied_stage_ids()
-        self._update_task_stages(stage_ids=stage_ids)
+        stage_ids = self._get_task_stage_display_satisfied_stage_ids(task_id)
+        self._update_task_stages(stage_ids=stage_ids, task_id=task_id)
         if self.board_id:
             task_boards_details = self._get_task_boards_details(stage_ids)
         else:
             task_boards_details = None
         actions_dto, fields_dto = \
-            self._get_task_fields_and_actions_dto(stage_ids)
+            self._get_task_fields_and_actions_dto(stage_ids, task_id)
         set_stage_assignees_interactor = \
             GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor(
                 storage=self.storage, stage_storage=self.stage_storage,
                 task_storage=self.task_storage,
-                action_storage=self.action_storage
+                action_storage=self.action_storage,
+                task_stage_storage=self.task_stage_storage
             )
         set_stage_assignees_interactor \
             .get_random_assignees_of_next_stages_and_update_in_db(
-            task_id=self.task_id, action_id=self.action_id
+            task_id=task_id, action_id=self.action_id
         )
         task_complete_details_dto = TaskCompleteDetailsDTO(
-            task_id=self.task_id,
+            task_id=task_id,
             task_boards_details=task_boards_details,
             actions_dto=actions_dto,
             field_dtos=fields_dto
@@ -166,15 +170,16 @@ class UserActionOnTaskInteractor:
             task_stage_storage=self.task_stage_storage)
         task_current_stage_details_dto = \
             get_task_current_stages_interactor.get_task_current_stages_details(
-                task_id=self.task_id, user_id=self.user_id)
+                task_id=task_id, user_id=self.user_id)
         return task_complete_details_dto, task_current_stage_details_dto
 
-    def _get_task_fields_and_actions_dto(self, stage_ids: List[str]):
+    def _get_task_fields_and_actions_dto(self, stage_ids: List[str],
+                                         task_id: int):
 
         from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
         task_stage_dtos = [
             GetTaskDetailsDTO(
-                task_id=self.task_id,
+                task_id=task_id,
                 stage_id=stage_id
             )
             for stage_id in stage_ids
@@ -238,17 +243,17 @@ class UserActionOnTaskInteractor:
             for action_dto in actions_dto
         ]
 
-    def _update_task_stages(self, stage_ids: List[str]):
+    def _update_task_stages(self, stage_ids: List[str], task_id: int):
 
         self.storage.update_task_stages(
-            task_id=self.task_id, stage_ids=stage_ids
+            task_id=task_id, stage_ids=stage_ids
         )
 
-    def _get_task_stage_display_satisfied_stage_ids(self):
+    def _get_task_stage_display_satisfied_stage_ids(self, task_id: int):
         from ib_tasks.interactors.get_task_stage_logic_satisfied_stages \
             import GetTaskStageLogicSatisfiedStages
         interactor = GetTaskStageLogicSatisfiedStages(
-            task_id=self.task_id, storage=self.storage
+            task_id=task_id, storage=self.storage
         )
         stage_ids = interactor.get_task_stage_logic_satisfied_stages()
         return stage_ids
@@ -279,11 +284,11 @@ class UserActionOnTaskInteractor:
         )
 
     def _call_logic_and_update_status_variables_and_get_stage_ids(
-            self, task_dto: TaskDetailsDTO):
+            self, task_dto: TaskDetailsDTO, task_id: int):
         update_status_variable_obj = \
             CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor(
                 action_id=self.action_id, storage=self.storage,
-                task_id=self.task_id
+                task_id=task_id
             )
         stage_ids = update_status_variable_obj \
             .call_action_logic_function_and_update_task_status_variables(
@@ -291,7 +296,7 @@ class UserActionOnTaskInteractor:
         )
         return stage_ids
 
-    def _get_task_dto(self):
+    def _get_task_dto(self, task_id: int):
 
         from ib_tasks.interactors.get_task_base_interactor \
             import GetTaskBaseInteractor
@@ -300,7 +305,7 @@ class UserActionOnTaskInteractor:
                 storage=self.gof_storage
             )
         task_dto = gof_and_status_obj \
-            .get_task(task_id=self.task_id)
+            .get_task(task_id=task_id)
         return task_dto
 
     @staticmethod
@@ -320,9 +325,9 @@ class UserActionOnTaskInteractor:
             for column_stage_dto in column_stage_dtos
         ]
 
-    def _validations_for_task_action(self):
+    def _validations_for_task_action(self, task_id: int):
 
-        self._validate_task_id()
+        self._validate_task_id(task_id)
         if self.board_id:
             self._validate_board_id()
         valid_action = self.storage.validate_action(action_id=self.action_id)
@@ -330,24 +335,24 @@ class UserActionOnTaskInteractor:
         if is_invalid_action:
             raise InvalidActionException(action_id=self.action_id)
         action_roles = self.storage.get_action_roles(action_id=self.action_id)
-        self._validate_present_task_stage_actions()
+        self._validate_present_task_stage_actions(task_id=task_id)
         self._validate_user_permission_to_user(
             self.user_id, action_roles, self.action_id
         )
 
-    def _validate_present_task_stage_actions(self):
+    def _validate_present_task_stage_actions(self, task_id: int):
 
         action_id = self.action_id
         action_ids = self.storage.get_task_present_stage_actions(
-            task_id=self.task_id
+            task_id=task_id
         )
         is_not_present_stage_actions = int(action_id) not in action_ids
         if is_not_present_stage_actions:
             raise InvalidPresentStageAction(action_id=action_id)
 
-    def _validate_task_id(self):
+    def _validate_task_id(self, task_id: int):
 
-        task_id = self.task_id
+        task_id = task_id
         valid_task = self.storage.validate_task_id(task_id=task_id)
         is_invalid_task = not valid_task
         if is_invalid_task:

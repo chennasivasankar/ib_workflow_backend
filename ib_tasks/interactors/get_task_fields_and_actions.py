@@ -85,16 +85,16 @@ class GetTaskFieldsAndActionsInteractor:
                                      task.task_template_id
                 stage_condition = stage.stage_id == task.stage_id
                 # TODO: check for case where a task is in two stages
-                if task.task_display_id not in task_ids and stage_condition \
+                if task.task_id not in task_ids and stage_condition \
                         and template_condition:
-                    task_ids.append(task.task_display_id)
+                    task_ids.append(task.task_id)
                     list_of_stage_fields.append(
                         self._get_task_fields(stage, task))
         return list_of_stage_fields
 
     @staticmethod
     def _get_task_fields(stage, task):
-        return StageTaskFieldsDTO(task_id=task.task_display_id,
+        return StageTaskFieldsDTO(task_id=task.task_id,
                                   field_ids=stage.field_ids)
 
     @staticmethod
@@ -152,7 +152,7 @@ class GetTaskFieldsAndActionsInteractor:
             for field in list_of_field_dtos
         ]
         return GetTaskStageCompleteDetailsDTO(
-            task_id=stage.task_display_id,
+            task_id=stage.task_id,
             stage_id=stage.stage_id,
             stage_color=stage.stage_color,
             field_dtos=fields_dtos,
@@ -188,8 +188,7 @@ class GetTaskFieldsAndActionsInteractor:
         invalid_task_stage_ids = copy.deepcopy(task_dtos)
         for task in task_dtos:
             for valid_task in valid_task_stage_ids:
-                task_id_condition = task.task_display_id == \
-                                    valid_task.task_display_id
+                task_id_condition = task.task_id == valid_task.task_id
                 stage_id_condition = task.stage_id == valid_task.stage_id
                 if task_id_condition and stage_id_condition:
                     invalid_task_stage_ids.remove(task)

@@ -99,7 +99,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         for field in field_objs:
             task_fields_dtos.append(
                 FieldDetailsDTOWithTaskId(
-                    task_id=field.task_gof.task_display_id,
+                    task_id=field.task_gof.task_id,
                     field_id=field.field_id,
                     value=field.field_response,
                     key=field.field.display_name,

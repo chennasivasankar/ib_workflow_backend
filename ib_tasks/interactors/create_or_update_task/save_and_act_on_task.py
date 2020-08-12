@@ -207,13 +207,13 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         update_task_interactor.update_task(update_task_dto)
         act_on_task_interactor = UserActionOnTaskInteractor(
             user_id=task_dto.created_by_id, board_id=None,
-            task_id=task_dto.task_id, task_storage=self.task_storage,
+            task_storage=self.task_storage,
             action_storage=self.action_storage, action_id=task_dto.action_id,
             storage=self.storage, gof_storage=self.create_task_storage,
             field_storage=self.field_storage, stage_storage=self.stage_storage,
             task_stage_storage=self.task_stage_storage
         )
-        act_on_task_interactor.user_action_on_task()
+        act_on_task_interactor.user_action_on_task(task_id=task_dto.task_id)
         from ib_tasks.interactors.get_task_current_stages_interactor import \
             GetTaskCurrentStagesInteractor
         get_task_current_stages_interactor = GetTaskCurrentStagesInteractor(

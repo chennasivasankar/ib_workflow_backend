@@ -14,7 +14,7 @@ def api_wrapper(*args, **kwargs):
     user = kwargs['user']
     user_id = user.user_id
     request_dict = kwargs['request_data']
-    task_id = int(request_dict['task_id'])
+    task_id = request_dict['task_id']
     action_id = int(request_dict['action_id'])
     board_id = request_dict['board_id']
     from ib_tasks.storages.create_or_update_task_storage_implementation \
@@ -36,7 +36,7 @@ def api_wrapper(*args, **kwargs):
     action_storage = ActionsStorageImplementation()
     task_stage_storage = TaskStageStorageImplementation()
     interactor = UserActionOnTaskInteractor(
-        user_id=user_id, task_id=task_id, action_id=action_id,
+        user_id=user_id, action_id=action_id,
         board_id=board_id, storage=storage, gof_storage=gof_storage,
         stage_storage=stage_storage, field_storage=field_storage,
         task_storage=task_storage, action_storage=action_storage,
@@ -44,6 +44,6 @@ def api_wrapper(*args, **kwargs):
     )
 
     response = interactor.user_action_on_task_wrapper(
-        presenter=presenter
+        presenter=presenter, task_display_id=task_id
     )
     return response

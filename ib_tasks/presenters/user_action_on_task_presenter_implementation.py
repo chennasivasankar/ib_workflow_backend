@@ -129,6 +129,7 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
             "task_current_stages_details": dict()
         }
         task_current_stages_data = {
+            "task_id": task_current_stage_details_dto.task_display_id,
             "stages": [],
             "user_has_permission":
                 task_current_stage_details_dto.user_has_permission
