@@ -1,12 +1,26 @@
+import dataclasses
+from typing import List
+
 from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
     GetUserProfilePresenterInterface
+from ib_iam.interactors.storage_interfaces.dtos import UserProfileDTO, \
+    CompanyDTO, TeamDTO, TeamUserIdsDTO, CompanyIdWithEmployeeIdsDTO
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
 
 
+@dataclasses.dataclass
+class UserProfileWithTeamsAndCompanyAndTheirUsers:
+    user_profile_dto: UserProfileDTO
+    company_dto: CompanyDTO
+    team_dtos: List[TeamDTO]
+    team_with_user_ids_dto: List[TeamUserIdsDTO]
+    company_id_with_employee_ids_dto: CompanyIdWithEmployeeIdsDTO
+
+
 class GetUserProfileInteractor:
-    def __init__(self, storage: UserStorageInterface):
-        self.storage = storage
+    def __init__(self, user_storage: UserStorageInterface):
+        self.user_storage = user_storage
 
     def get_user_profile_wrapper(self, user_id: str,
                                  presenter: GetUserProfilePresenterInterface):
@@ -35,6 +49,57 @@ class GetUserProfileInteractor:
         from ib_iam.adapters.service_adapter import get_service_adapter
         user_service = get_service_adapter().user_service
         user_profile_dto = user_service.get_user_profile_dto(user_id=user_id)
-        is_admin = self.storage.is_user_admin(user_id=user_id)
+        is_admin = self.user_storage.is_user_admin(user_id=user_id)
         user_profile_dto.is_admin = is_admin
+
+        team_dtos = self.user_storage.get_user_related_team_dtos(
+            user_id=user_id)
+        team_ids = self._get_team_ids_from_team_dtos(
+            team_dtos=team_dtos)
+
+        team_user_ids_dtos = self.user_storage.get_team_user_ids_dtos(
+            team_ids=team_ids)
+
+        company_dto = self.user_storage.get_user_related_company_dto(
+            user_id=user_id)
+        company_id = company_dto.company_id
+        company_id_with_employee_ids_dto, = self.user_storage \
+            .get_company_employee_ids_dtos(company_ids=[company_id])
+
+        user_ids = self._get_all_user_ids_from_teams_and_companies(
+            team_user_ids_dtos=team_user_ids_dtos,
+            company_id_with_employee_ids_dto=company_id_with_employee_ids_dto)
+        user_dtos = self._get_user_dtos_from_service(user_ids=user_ids)
+
         return user_profile_dto
+
+    @staticmethod
+    def _get_team_ids_from_team_dtos(team_dtos: List[TeamDTO]) -> List[str]:
+        team_ids = [team_dto.team_id for team_dto in team_dtos]
+        return team_ids
+
+    def _get_all_user_ids_from_teams_and_companies(
+            self,
+            team_user_ids_dtos: List[TeamUserIdsDTO],
+            company_id_with_employee_ids_dto):
+        user_ids = []
+        user_ids.extend(
+            self._get_user_ids_from_teams(
+                team_user_ids_dtos=team_user_ids_dtos))
+        user_ids.extend(company_id_with_employee_ids_dto.employee_ids)
+        return user_ids
+
+    @staticmethod
+    def _get_user_ids_from_teams(team_user_ids_dtos: List[TeamUserIdsDTO]):
+        user_ids = []
+        for team_user_ids_dto in team_user_ids_dtos:
+            user_ids.extend(team_user_ids_dto.user_ids)
+        unique_member_ids = list(set(user_ids))
+        return unique_member_ids
+
+    @staticmethod
+    def _get_user_dtos_from_service(user_ids: List[str]):
+        from ib_iam.adapters.service_adapter import get_service_adapter
+        service = get_service_adapter()
+        user_dtos = service.user_service.get_basic_user_dtos(user_ids=user_ids)
+        return user_dtos

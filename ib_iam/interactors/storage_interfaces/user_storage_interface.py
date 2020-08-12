@@ -4,7 +4,8 @@ from typing import List, Optional
 from ib_iam.exceptions.custom_exceptions import InvalidUserId, InvalidUserIds
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, CompanyIdAndNameDTO, TeamIdAndNameDTO, \
-    RoleIdAndNameDTO, UserIdAndNameDTO
+    RoleIdAndNameDTO, UserIdAndNameDTO, TeamDTO, TeamUserIdsDTO, CompanyDTO, \
+    CompanyIdWithEmployeeIdsDTO
 
 
 class UserStorageInterface(ABC):
@@ -138,4 +139,22 @@ class UserStorageInterface(ABC):
 
     @abstractmethod
     def get_user_ids_who_are_not_admin(self) -> List[str]:
+        pass
+
+    @abstractmethod
+    def get_user_related_team_dtos(self, user_id: str) -> List[TeamDTO]:
+        pass
+
+    @abstractmethod
+    def get_team_user_ids_dtos(self, team_ids: List[str]) -> List[
+            TeamUserIdsDTO]:
+        pass
+
+    @abstractmethod
+    def get_user_related_company_dto(self, user_id: str) -> CompanyDTO:
+        pass
+
+    @abstractmethod
+    def get_company_employee_ids_dtos(self, company_ids: List[str]) \
+            -> List[CompanyIdWithEmployeeIdsDTO]:
         pass
