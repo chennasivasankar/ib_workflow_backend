@@ -8,7 +8,7 @@ from typing import List, Tuple, Optional
 
 from ib_boards.constants.enum import ViewType
 from ib_boards.interactors.dtos import ColumnTaskIdsDTO, FieldDTO, ActionDTO, \
-    TaskStageColorDTO
+    TaskStageDTO
 from ib_boards.interactors.storage_interfaces.dtos import ColumnStageIdsDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
@@ -31,7 +31,7 @@ class GetColumnsTasksDetailsInteractor:
 
     def get_column_tasks_with_column_ids(
             self, column_tasks_parameters: ColumnsTasksParametersDTO) \
-            -> Tuple[List[FieldDTO], List[ActionDTO], List[TaskStageColorDTO], List[ColumnTaskIdsDTO]]:
+            -> Tuple[List[FieldDTO], List[ActionDTO], List[TaskStageDTO], List[ColumnTaskIdsDTO]]:
         limit = column_tasks_parameters.limit
         offset = column_tasks_parameters.offset
         user_id = column_tasks_parameters.user_id
@@ -78,7 +78,7 @@ class GetColumnsTasksDetailsInteractor:
             task_ids_stages_dtos: List[ColumnTaskIdsDTO],
             user_id: str,
             view_type: ViewType) \
-            -> Tuple[List[FieldDTO], List[ActionDTO], List[TaskStageColorDTO]]:
+            -> Tuple[List[FieldDTO], List[ActionDTO], List[TaskStageDTO]]:
         task_details_dtos = []
         for task_ids_stages_dto in task_ids_stages_dtos:
             for stage_id_dto in task_ids_stages_dto.task_stage_ids:

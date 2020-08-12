@@ -61,7 +61,7 @@ class GetColumnDetailsInteractor:
             view_type=view_type,
             search_query=columns_parameters.search_query
         )
-        task_field_dtos, task_action_dtos, task_stage_color_dtos, task_ids_stages_dtos = \
+        task_field_dtos, task_action_dtos, task_stage_dtos, task_ids_stages_dtos = \
             self._get_column_tasks_complete_details(column_tasks_parameters)
 
         column_tasks = self._get_column_task_ids_map(

@@ -17,8 +17,7 @@ from ib_boards.interactors.get_column_tasks_interactor import \
 from ib_boards.tests.factories.interactor_dtos import ActionDTOFactory, \
     FieldDetailsDTOFactory, GetTaskDetailsDTOFactory, \
     ColumnTaskIdsDTOFactory, TaskStageIdDTOFactory, ColumnStageIdsDTOFactory
-from ib_boards.tests.factories.storage_dtos import TaskDTOFactory, TaskStageColorDTOFactory
-    ColumnTaskIdsDTOFactory, TaskStageIdDTOFactory
+from ib_boards.tests.factories.storage_dtos import TaskDTOFactory, TaskStageDTOFactory
 from ib_boards.tests.factories.storage_dtos import TaskDTOFactory, TaskStageDTOFactory
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
 
@@ -27,8 +26,8 @@ class TestGetColumnTasksInteractor:
 
     @pytest.fixture
     def task_stage_color_dtos(self):
-        TaskStageColorDTOFactory.reset_sequence()
-        return TaskStageColorDTOFactory.create_batch(size=3)
+        TaskStageDTOFactory.reset_sequence()
+        return TaskStageDTOFactory.create_batch(size=3)
 
     @pytest.fixture
     def storage_mock(self):
