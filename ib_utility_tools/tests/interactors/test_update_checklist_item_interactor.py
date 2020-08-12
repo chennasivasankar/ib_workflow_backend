@@ -59,14 +59,14 @@ class TestUpdateChecklistItemInteractor:
     def test_given_invalid_checklist_item_id_returns_checklist_item_id_not_found_exception_response(
             self, interactor, storage_mock, presenter_mock):
         checklist_item_with_id_dto = ChecklistItemWithIdDTOFactory()
-        storage_mock.validate_checklist_item_id.return_value = False
+        storage_mock.is_checklist_item_id_exists.return_value = False
         presenter_mock.get_checklist_item_id_not_found_response = mock.Mock()
 
         interactor.update_checklist_item_wrapper(
             checklist_item_with_id_dto=checklist_item_with_id_dto,
             presenter=presenter_mock)
 
-        storage_mock.validate_checklist_item_id.assert_called_once_with(
+        storage_mock.is_checklist_item_id_exists.assert_called_once_with(
             checklist_item_id=checklist_item_with_id_dto.checklist_item_id)
         presenter_mock.get_checklist_item_id_not_found_response \
             .assert_called_once()
@@ -80,7 +80,7 @@ class TestUpdateChecklistItemInteractor:
             checklist_item_with_id_dto=checklist_item_with_id_dto,
             presenter=presenter_mock)
 
-        storage_mock.validate_checklist_item_id.assert_called_once_with(
+        storage_mock.is_checklist_item_id_exists.assert_called_once_with(
             checklist_item_id=checklist_item_with_id_dto.checklist_item_id)
         storage_mock.update_checklist_item.assert_called_once_with(
             checklist_item_with_id_dto=checklist_item_with_id_dto)

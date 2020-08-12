@@ -10,8 +10,6 @@ REQUEST_BODY_JSON = """
 
 RESPONSE_200_JSON = """
 {
-    "entity_id": "string",
-    "entity_type": "TASK",
     "checklist": [
         {
             "text": "string",
