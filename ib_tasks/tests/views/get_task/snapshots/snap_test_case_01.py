@@ -12,5 +12,5 @@ snapshots['TestCase01GetTaskAPITestCase.test_case status_code'] = '404'
 snapshots['TestCase01GetTaskAPITestCase.test_case body'] = {
     'http_status_code': 404,
     'res_status': 'INVALID_TASK_ID',
-    'response': 'invalid task id is: 506, please send valid task id'
+    'response': 'ibw-1 is invalid task_id send valid task_id'
 }

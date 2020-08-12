@@ -486,3 +486,8 @@ class TasksStorageImplementation(TaskStorageInterface):
             task_display_id=task_display_id).values_list('id', flat=True)
         task_id = task_id_queryset.first()
         return task_id
+
+    def get_task_display_id(self, task_id: int) -> str:
+        task_obj = Task.objects.get(id=task_id)
+        return task_obj.task_display_id
+
