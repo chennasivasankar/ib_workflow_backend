@@ -74,7 +74,6 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
     ) -> List[TaskWithCompleteStageDetailsDTO]:
         from ib_tasks.interactors.get_stages_assignees_details_interactor \
             import GetStagesAssigneesDetailsInteractor
-        print("task_id_with_stage_details_dtos",task_id_with_stage_details_dtos)
         get_stage_assignees_details_interactor = \
             GetStagesAssigneesDetailsInteractor(
                 task_stage_storage=self.task_stage_storage
@@ -86,7 +85,6 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
                     get_stages_assignee_details_dtos(
                         task_id=task_id_with_stage_details_dto.task_id,
                         stage_ids=[task_id_with_stage_details_dto.db_stage_id])
-            print("stage_assignee_details_dtos", stage_assignee_details_dtos)
             task_with_complete_stage_details_dto = \
                 TaskWithCompleteStageDetailsDTO(
                     task_with_stage_details_dto=task_id_with_stage_details_dto,

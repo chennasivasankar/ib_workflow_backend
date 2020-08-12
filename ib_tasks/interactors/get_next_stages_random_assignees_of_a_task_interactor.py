@@ -189,8 +189,11 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
             db_stage_ids=stage_ids_of_tasks_that_are_not_completed,
             user_ids=permitted_user_ids,
             task_ids=task_ids_of_tasks_that_are_not_completed)
-        assignee_id_with_current_less_tasks = \
-            assignee_with_current_tasks_count_dtos[0].assignee_id
+        if not assignee_with_current_tasks_count_dtos:
+            assignee_id_with_current_less_tasks=permitted_user_ids[0]
+        else:
+            assignee_id_with_current_less_tasks = \
+                assignee_with_current_tasks_count_dtos[0].assignee_id
         for each_permitted_user_details_dto in permitted_user_details_dtos:
             if assignee_id_with_current_less_tasks == each_permitted_user_details_dto.user_id:
                 return each_permitted_user_details_dto
