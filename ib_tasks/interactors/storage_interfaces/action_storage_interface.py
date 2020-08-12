@@ -51,8 +51,7 @@ class ActionStorageInterface(ABC):
 
     @abc.abstractmethod
     def get_actions_details(self,
-                            stage_ids: List[str],
-                            user_roles: List[str]) -> \
+                            action_ids: List[int]) -> \
             List[StageActionDetailsDTO]:
         pass
 
@@ -77,4 +76,9 @@ class ActionStorageInterface(ABC):
 
     @abc.abstractmethod
     def validate_action(self, action_id: int) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def get_permitted_action_ids_given_stage_ids(self, user_roles: List[str],
+                                                 stage_ids: List[str]) -> List[int]:
         pass

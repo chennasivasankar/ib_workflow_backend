@@ -68,17 +68,14 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         return task_fields_dtos
 
     def get_fields_details(self,
-                           task_fields_dtos: List[StageTaskFieldsDTO],
-                           user_roles: List[str]) -> \
+                           task_fields_dtos: List[StageTaskFieldsDTO]) -> \
             List[FieldDetailsDTOWithTaskId]:
         q = None
         for counter, item in enumerate(task_fields_dtos):
             current_queue = Q(task_gof__task_id=item.task_id,
-                              field_id__in=item.field_ids,
-                              field__fieldrole__role="ALL_ROLES") | Q(
+                              field_id__in=item.field_ids) | Q(
                 task_gof__task_id=item.task_id,
-                field_id__in=item.field_ids,
-                field__fieldrole__role__in=user_roles
+                field_id__in=item.field_ids
             )
             if counter == 0:
                 q = current_queue

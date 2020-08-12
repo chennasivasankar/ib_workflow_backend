@@ -4,7 +4,7 @@ from freezegun import freeze_time
 from ib_tasks.models import UserTaskDelayReason
 from ib_tasks.storages.storage_implementation import StorageImplementation
 from ib_tasks.tests.factories.interactor_dtos import TaskDueParametersDTOFactory
-from ib_tasks.tests.factories.models import TaskModelFactory, TaskStageFactory
+from ib_tasks.tests.factories.models import TaskModelFactory, TaskStageFactory, TaskLogFactory
 
 
 @pytest.mark.django_db
@@ -29,7 +29,7 @@ class TestAddDueDelayDetails:
     def populate_data(self):
 
         tasks = TaskModelFactory.create_batch(size=4)
-        TaskStageFactory.create_batch(task=tasks[0], size=3)
+        TaskLogFactory.create_batch(task=tasks[0], size=3)
 
     @freeze_time("2020-08-10 12:30:00")
     def test_add_due_delay_details_given_details(self, snapshot,

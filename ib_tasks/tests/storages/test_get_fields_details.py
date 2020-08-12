@@ -71,38 +71,7 @@ class TestGetFieldDetails:
         storage = FieldsStorageImplementation()
 
         # Act
-        response = storage.get_fields_details(get_task_template_stage_dtos,
-                                              user_roles)
-
-        # Assert
-        snapshot.assert_match(response, "response")
-
-    def test_when_user_donot_have_permissions_for_fields(
-            self, get_task_template_stage_dtos,
-            populate_data,
-            snapshot):
-        # Arrange
-        user_roles = ["role_1", "role_2", "role_3"]
-        storage = FieldsStorageImplementation()
-
-        # Act
-        response = storage.get_fields_details(get_task_template_stage_dtos,
-                                              user_roles)
-
-        # Assert
-        snapshot.assert_match(response, "response")
-
-    def test_when_actions_has_all_roles_permissions(
-            self, snapshot,
-            populate_data_for_all_roles,
-            get_task_template_stage_dtos):
-        # Arrange
-        user_roles = ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"]
-        storage = FieldsStorageImplementation()
-
-        # Act
-        response = storage.get_fields_details(get_task_template_stage_dtos,
-                                              user_roles)
+        response = storage.get_fields_details(get_task_template_stage_dtos)
 
         # Assert
         snapshot.assert_match(response, "response")

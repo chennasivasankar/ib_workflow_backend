@@ -35,8 +35,7 @@ class TestGetFieldIds:
         TaskFactory.create_batch(size=3)
         TaskTemplateFactory.reset_sequence()
         TaskTemplateFactory.create_batch(size=3)
-        TaskStageModelFactory.reset_sequence()
-        TaskStageModelFactory.create_batch(size=4)
+
 
     @pytest.fixture()
     def get_task_template_stage_dtos_with_one_task_with_two_stages(self):
@@ -71,7 +70,7 @@ class TestGetFieldIds:
         TaskFactory.create_batch(size=3)
         TaskTemplateFactory.reset_sequence()
         TaskTemplateFactory.create_batch(size=3)
-        TaskStageModelFactory.create_batch(size=4)
+        # TaskStageModelFactory.create_batch(size=4)
 
     @pytest.fixture()
     def get_task_template_stage_dtos_with_two_tasks_on_stage(self):

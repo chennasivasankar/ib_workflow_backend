@@ -155,6 +155,7 @@ class TaskWithFieldsDTOFactory(factory.Factory):
         model = StageTaskFieldsDTO
 
     field_ids = ['FIELD_ID-1', 'FIELD_ID-2']
+    stage_id = factory.Sequence(lambda n: "stage_id_%d" % (n + 1))
     task_id = factory.Sequence(lambda n: n + 1)
 
 

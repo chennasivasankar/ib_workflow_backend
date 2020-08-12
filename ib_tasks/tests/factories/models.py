@@ -11,7 +11,7 @@ from ib_tasks.models import (
     UserTaskDelayReason,
     Task, TaskGoF, TaskGoFField, TaskTemplateGlobalConstants,
     TaskStatusVariable, Filter, FilterCondition,
-    StagePermittedRoles, ElasticSearchTask)
+    StagePermittedRoles, ElasticSearchTask, TaskLog)
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
@@ -59,7 +59,6 @@ class TaskStageModelFactory(factory.django.DjangoModelFactory):
 
     task = factory.SubFactory(TaskFactory)
     stage = factory.SubFactory(StageModelFactory)
-    assignee_id = "123e4567-e89b-12d3-a456-426614174000"
 
 
 class TaskModelFactory(factory.django.DjangoModelFactory):
@@ -265,10 +264,19 @@ class TaskStageFactory(factory.django.DjangoModelFactory):
 
     task = factory.SubFactory(TaskFactory)
     stage = factory.SubFactory(StageModelFactory)
-    assignee_id = factory.sequence(
+
+
+class TaskLogFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskLog
+
+    task = factory.SubFactory(TaskFactory)
+    task_json = """ values"""
+    action = factory.SubFactory(StageActionFactory)
+    acted_at = "2020-10-25 12:00:00"
+    user_id = factory.sequence(
         lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
             counter))
-
 
 class FilterFactory(factory.django.DjangoModelFactory):
     class Meta:
