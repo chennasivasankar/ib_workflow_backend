@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from ib_tasks.constants.enum import PermissionTypes, DelayReasons, REASONS
+from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.stages_dtos import StageActionDTO, StageDTO, \
     TemplateStageDTO, TaskIdWithStageAssigneeDTO
@@ -619,11 +619,14 @@ class StorageImplementation(StorageInterface):
         user_id = due_details.user_id
         task_id = due_details.task_id
         reason_id = due_details.reason_id
+        updated_datetime = due_details.due_date_time
         count = UserTaskDelayReason.objects.filter(
             task_id=task_id, user_id=user_id).count()
 
         UserTaskDelayReason.objects.create(user_id=user_id, task_id=task_id,
-                                           due_datetime=due_details.due_date_time,
-                                           count=count+1,
+                                           due_datetime=updated_datetime,
+                                           count=count + 1,
                                            reason_id=reason_id,
                                            reason=due_details.reason)
+        Task.objects.filter(pk=task_id, tasklog__user_id=user_id
+                            ).update(due_date=updated_datetime)

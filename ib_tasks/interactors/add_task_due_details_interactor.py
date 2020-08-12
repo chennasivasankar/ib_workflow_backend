@@ -42,8 +42,8 @@ class AddTaskDueDetailsInteractor:
 
     def _add_task_due_delay_details(self, due_details):
         reason_id = due_details.reason_id
-        from ib_tasks.constants.enum import REASONS
-        for reason_dict in REASONS:
+        from ib_tasks.constants.enum import DelayReasons
+        for reason_dict in DelayReasons:
             if reason_dict['id'] == reason_id and reason_id != -1:
                 due_details.reason = reason_dict['reason']
 
@@ -51,7 +51,9 @@ class AddTaskDueDetailsInteractor:
 
     @staticmethod
     def _validate_reason_id(reason_id):
-        if reason_id not in [1, 2, 3, 4, -1]:
+        from ib_tasks.constants.enum import DelayReasons
+        valid_reason_ids = [reason['id'] for reason in DelayReasons]
+        if reason_id not in valid_reason_ids:
             raise InvalidReasonIdException
 
     @staticmethod

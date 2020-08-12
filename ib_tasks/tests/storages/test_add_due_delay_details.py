@@ -46,4 +46,9 @@ class TestAddDueDelayDetails:
         # Assert
         reason = UserTaskDelayReason.objects.filter(
             task_id=task_id, user_id=user_id, reason_id=reason_id).values()
+        from ib_tasks.models import Task
+        task_due_datetime = Task.objects.filter(pk=task_id, tasklog__user_id=user_id).values(
+            'id', 'tasklog__user_id', 'due_date'
+        )
+        snapshot.assert_match(task_due_datetime, "task_due_datetime")
         snapshot.assert_match(reason, "reason")
