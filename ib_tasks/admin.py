@@ -1,7 +1,8 @@
 from django.contrib import admin
 
 from ib_tasks.models import Stage, TaskTemplateStatusVariable, StageAction, \
-    TaskTemplateInitialStage, TaskStatusVariable, StagePermittedRoles
+    TaskTemplateInitialStage, TaskStatusVariable, StagePermittedRoles, \
+    TaskStageHistory
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.gof import GoF
@@ -33,6 +34,7 @@ admin.site.register(CurrentTaskStage)
 admin.site.register(TaskGoF)
 admin.site.register(TaskGoFField)
 admin.site.register(TaskTemplateGoFs)
+admin.site.register(TaskStageHistory)
 
 
 class TaskStageInline(admin.StackedInline):
