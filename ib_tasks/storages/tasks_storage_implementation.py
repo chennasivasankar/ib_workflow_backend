@@ -497,7 +497,5 @@ class TasksStorageImplementation(TaskStorageInterface):
         task_id = task_id_queryset.first()
         return task_id
 
-    def get_task_display_id(self, task_id: int) -> str:
-        task_obj = Task.objects.get(id=task_id)
-        return task_obj.task_display_id
-
+    def get_tasks_with_max_stage_value_dto(self)-> List[TaskIdWithStageValueDTO]:
+        pass

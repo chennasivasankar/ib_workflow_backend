@@ -12,7 +12,6 @@ from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
 
 @dataclass
 class TaskCompleteDetailsDTO:
-    task_id: str
     task_details_dto: TaskDetailsDTO
     stages_and_actions_details_dtos: List[StageAndActionsDetailsDTO]
     stage_assignee_details_dtos: List[StageAssigneeDetailsDTO]

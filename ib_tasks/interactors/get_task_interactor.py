@@ -36,20 +36,19 @@ from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
 class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
 
     def __init__(
-            self, storage: CreateOrUpdateTaskStorageInterface,
+            self, task_crud_storage: CreateOrUpdateTaskStorageInterface,
             stages_storage: FieldsStorageInterface,
-            task_storage1: StorageInterface,
+            storage: StorageInterface,
             task_storage: TaskStorageInterface,
             action_storage: ActionStorageInterface,
             task_stage_storage: TaskStageStorageInterface
 
     ):
-        # TODO : Need to give proper names for interfaces
-        self.task_storage1 = task_storage1
+        self.storage = storage
         self.task_stage_storage = task_stage_storage
         self.action_storage = action_storage
         self.task_storage = task_storage
-        self.storage = storage
+        self.task_crud_storage = task_crud_storage
         self.stages_storage = stages_storage
 
     def get_task_details_wrapper(
@@ -60,7 +59,6 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         try:
             return self.get_task_details_response(user_id, task_display_id,
                                                   presenter)
-        # TODO: Need to verify here exception needed or not
         except InvalidTaskIdException as err:
             response = presenter.raise_exception_for_invalid_task_id(err)
             return response
@@ -71,18 +69,12 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             response = presenter.raise_invalid_task_display_id(err)
             return response
 
-    def _get_task_id_for_given_task_display_id(self, task_display_id: str):
-        task_id = self.get_task_id_for_task_display_id(
-            task_display_id=task_display_id
-        )
-        return task_id
-
     def get_task_details_response(
             self, user_id: str, task_display_id: str,
             presenter: GetTaskPresenterInterface
     ):
-        task_id = self._get_task_id_for_given_task_display_id(
-            task_display_id)
+        task_id = self.get_task_id_for_task_display_id(
+            task_display_id=task_display_id)
         task_complete_details_dto = self.get_task_details(user_id, task_id)
         response = presenter.get_task_response(task_complete_details_dto)
         return response
@@ -90,7 +82,8 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
     def get_task_details(
             self, user_id: str, task_id: int
     ) -> TaskCompleteDetailsDTO:
-        get_task_base_interactor = GetTaskBaseInteractor(storage=self.storage)
+        get_task_base_interactor = GetTaskBaseInteractor(
+            storage=self.task_crud_storage)
         task_details_dto = get_task_base_interactor.get_task(task_id)
         user_roles = self._get_user_roles(user_id)
         task_details_dto = self._get_task_details_dto(
@@ -102,9 +95,7 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         stage_assignee_details_dtos = self._stage_assignee_details_dtos(
             task_id, stage_ids
         )
-        task_display_id = self.task_storage.get_task_display_id(task_id)
         task_complete_details_dto = TaskCompleteDetailsDTO(
-            task_id=task_display_id,
             task_details_dto=task_details_dto,
             stages_and_actions_details_dtos=stages_and_actions_details_dtos,
             stage_assignee_details_dtos=stage_assignee_details_dtos
@@ -165,7 +156,7 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             import GetTaskStagesAndActions
         interactor = GetTaskStagesAndActions(
             storage=self.stages_storage,
-            task_storage=self.task_storage1,
+            task_storage=self.storage,
             action_storage=self.action_storage
         )
         stages_and_actions_details_dtos = \
@@ -198,7 +189,8 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             task_gof_field_dto.field_id
             for task_gof_field_dto in task_gof_field_dtos
         ]
-        permission_field_ids = self.storage.get_field_ids_having_permission(
+        permission_field_ids = \
+            self.task_crud_storage.get_field_ids_having_permission(
             field_ids, user_roles
         )
         permission_task_gof_field_dtos = [
@@ -216,7 +208,8 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             task_gof_dto.gof_id
             for task_gof_dto in task_gof_dtos
         ]
-        permission_gof_ids = self.storage.get_gof_ids_having_permission(
+        permission_gof_ids = \
+            self.task_crud_storage.get_gof_ids_having_permission(
             gof_ids, user_roles
         )
         permission_task_gof_dtos = [

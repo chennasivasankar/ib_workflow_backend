@@ -257,6 +257,7 @@ class CreateOrUpdateTaskStorageImplementation(
     def _get_task_base_details_dto(task_obj: Task):
         task_base_details_dto = TaskBaseDetailsDTO(
             template_id=task_obj.template_id,
+            task_display_id=task_obj.task_display_id,
             title=task_obj.title,
             description=task_obj.description,
             start_date=task_obj.start_date,
