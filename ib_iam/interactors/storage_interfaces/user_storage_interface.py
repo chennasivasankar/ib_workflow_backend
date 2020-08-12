@@ -146,8 +146,8 @@ class UserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_team_user_ids_dtos(self, team_ids: List[str]) -> List[
-            TeamUserIdsDTO]:
+    def get_team_user_ids_dtos(self, team_ids: List[str]) -> \
+            List[TeamUserIdsDTO]:
         pass
 
     @abstractmethod
