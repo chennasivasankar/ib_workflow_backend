@@ -24,7 +24,7 @@ class GetColumnDetailsInteractor:
                                    columns_parameters: ColumnParametersDTO,
                                    pagination_parameters: PaginationParametersDTO):
         try:
-            column_details, task_fields_dtos, task_actions_dtos, column_tasks, task_stage_color_dtos = \
+            column_details, task_fields_dtos, task_actions_dtos, column_tasks, task_stage_dtos = \
                 self.get_column_details(
                     columns_parameters=columns_parameters,
                     pagination_parameters=pagination_parameters
@@ -40,7 +40,7 @@ class GetColumnDetailsInteractor:
         return presenter.get_response_for_column_details(
             column_tasks=column_tasks, task_actions_dtos=task_actions_dtos,
             task_fields_dtos=task_fields_dtos, column_details=column_details,
-            task_stage_color_dtos=task_stage_color_dtos)
+            task_stage_dtos=task_stage_dtos)
 
     def get_column_details(self, columns_parameters: ColumnParametersDTO,
                            pagination_parameters: PaginationParametersDTO):
@@ -62,7 +62,7 @@ class GetColumnDetailsInteractor:
             limit=limit,
             offset=offset
         )
-        task_field_dtos, task_action_dtos, task_stage_color_dtos = \
+        task_field_dtos, task_action_dtos, task_stage_dtos = \
             self. _get_tasks_complete_details(
                 task_ids_stages_dtos=task_ids_stages_dtos,
                 user_id=user_id,
@@ -76,7 +76,7 @@ class GetColumnDetailsInteractor:
             task_ids_stages_dtos=task_ids_stages_dtos,
             column_dtos=column_dtos
         )
-        return column_details, task_field_dtos, task_action_dtos, column_tasks, task_stage_color_dtos
+        return column_details, task_field_dtos, task_action_dtos, column_tasks, task_stage_dtos
 
     @staticmethod
     def _get_tasks_complete_details(
