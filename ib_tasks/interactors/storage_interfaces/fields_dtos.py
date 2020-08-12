@@ -62,7 +62,7 @@ class FieldCompleteDetailsDTO:
 @dataclass
 class FieldDetailsDTO:
     field_type: str
-    field_id: int
+    field_id: str
     key: str
     value: str
 

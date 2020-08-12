@@ -13,66 +13,67 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import TaskStageStorageInterface
 from ib_tasks.tests.common_fixtures.interactors import prepare_get_stage_ids_for_user
+from ib_tasks.tests.factories.presenter_dtos import TaskWithCompleteStageDetailsDTOFactory
 
 
 class TestGetTasksOverviewForUserInteractor:
 
     @pytest.fixture
     def task_actions_fields(self):
-        return GetTaskStageCompleteDetailsDTO(
-                    task_id=1,
+        return [GetTaskStageCompleteDetailsDTO(
+            task_id=1,
+            stage_id='stage_id_1',
+            stage_color="blue",
+            field_dtos=[
+                FieldDetailsDTO(
+                    field_type='Drop down',
+                    field_id='FIELD-ID-1',
+                    key='key', value='value'
+                ),
+                FieldDetailsDTO(
+                    field_type='Drop down',
+                    field_id='FIELD-ID-2',
+                    key='key', value='value')
+            ],
+            action_dtos=[
+                StageActionDetailsDTO(
+                    action_id=1,
+                    name='name_1',
                     stage_id='stage_id_1',
-                    stage_color="#ffffff",
-                    field_dtos=[
-                        FieldDetailsDTO(
-                            field_type='Drop down',
-                            field_id=1,
-                            key='key', value='value'
-                        ),
-                        FieldDetailsDTO(
-                            field_type='Drop down',
-                            field_id=2,
-                            key='key', value='value')
-                    ],
-                    action_dtos=[
-                        StageActionDetailsDTO(
-                            action_id=1,
-                            name='name_1',
-                            stage_id='stage_id_1',
-                            button_text='button_text_1',
-                            button_color=None,
-                            action_type=ActionTypes.NO_VALIDATIONS.value,
-                            transition_template_id='template_id_1'
-                        ),
-                        StageActionDetailsDTO(
-                            action_id=2,
-                            name='name_2',
-                            stage_id='stage_id_1',
-                            button_text='button_text_2',
-                            button_color=None,
-                            action_type=ActionTypes.NO_VALIDATIONS.value,
-                            transition_template_id='template_id_2'
-                        )
-                    ]
+                    button_text='button_text_1',
+                    button_color=None,
+                    action_type=ActionTypes.NO_VALIDATIONS.value,
+                    transition_template_id='template_id_1'
+                ),
+                StageActionDetailsDTO(
+                    action_id=2,
+                    name='name_2',
+                    stage_id='stage_id_1',
+                    button_text='button_text_2',
+                    button_color=None,
+                    action_type=ActionTypes.NO_VALIDATIONS.value,
+                    transition_template_id='template_id_2'
                 )
+            ]
+        )]
 
     def test_get_filtered_tasks_overview_for_user_with_valid_details(
             self, mocker, task_actions_fields):
         # Arrange
         user_id = 'user_id'
-        task_ids = ['task_1', 'task_2', 'task_3']
+        task_ids = [1, 2, 3]
 
         from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
             StageStorageInterface
         from unittest.mock import create_autospec
         stage_storage = create_autospec(StageStorageInterface)
+        task_stage_storage = create_autospec(TaskStageStorageInterface)
         from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
             TaskStorageInterface
         task_storage = create_autospec(TaskStorageInterface)
         from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
             FieldsStorageInterface
         field_storage = create_autospec(FieldsStorageInterface)
-        task_stage_storage = create_autospec(TaskStageStorageInterface)
         from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
             ActionStorageInterface
         action_storage = create_autospec(ActionStorageInterface)
@@ -83,13 +84,13 @@ class TestGetTasksOverviewForUserInteractor:
             stage_storage=stage_storage,
             task_storage=task_storage,
             field_storage=field_storage,
-            task_stage_storage=task_stage_storage,
             action_storage=action_storage,
+            task_stage_storage=task_stage_storage
         )
         from ib_tasks.tests.factories.presenter_dtos import \
             TaskIdWithStageDetailsDTOFactory
         TaskIdWithStageDetailsDTOFactory.reset_sequence()
-        stage_ids_dto = TaskIdWithStageDetailsDTOFactory.create_batch(2)
+        stage_ids_dto = TaskWithCompleteStageDetailsDTOFactory.create_batch(2)
         fields_and_actions = task_actions_fields
         stage_ids = ['stage_id_1', "stage_id_2"]
         prepare_get_stage_ids_for_user(mocker, stage_ids)
