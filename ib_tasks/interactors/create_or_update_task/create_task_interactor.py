@@ -7,7 +7,7 @@ from ib_tasks.exceptions.action_custom_exceptions import \
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     DueTimeHasExpiredForToday, InvalidDueTimeFormat, \
     StartDateIsAheadOfDueDate, \
-    DueDateIsBehindStartDate
+    DueDateIsBehindStartDate, DueDateHasExpired
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     EmptyValueForRequiredField, InvalidPhoneNumberValue, \
     InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
@@ -96,20 +96,27 @@ class CreateTaskInteractor:
     ):
         try:
             return self._prepare_create_task_response(
-                task_dto, presenter
-            )
+                task_dto, presenter)
         except InvalidTaskTemplateIds as err:
             return presenter.raise_invalid_task_template_ids(err)
         except InvalidActionException as err:
             return presenter.raise_invalid_action_id(err)
         except DuplicateSameGoFOrderForAGoF as err:
             return presenter.raise_duplicate_same_gof_orders_for_a_gof(err)
+        except InvalidDueTimeFormat as err:
+            return presenter.raise_invalid_due_time_format(err)
+        except DueDateHasExpired as err:
+            return presenter.raise_due_date_has_expired(err)
+        except StartDateIsAheadOfDueDate as err:
+            return presenter.raise_start_date_is_ahead_of_due_date(err)
+        except DueTimeHasExpiredForToday as err:
+            return presenter.raise_due_time_has_expired_for_today(err)
         except InvalidGoFIds as err:
             return presenter.raise_invalid_gof_ids(err)
-        except InvalidFieldIds as err:
-            return presenter.raise_invalid_field_ids(err)
         except InvalidGoFsOfTaskTemplate as err:
             return presenter.raise_invalid_gofs_given_to_a_task_template(err)
+        except InvalidFieldIds as err:
+            return presenter.raise_invalid_field_ids(err)
         except DuplicateFieldIdsToGoF as err:
             return presenter.raise_duplicate_field_ids_to_a_gof(err)
         except InvalidFieldsOfGoF as err:
@@ -169,31 +176,27 @@ class CreateTaskInteractor:
                 err)
         except UserActionPermissionDenied as err:
             return presenter.raise_exception_for_user_action_permission_denied(
-                error_obj=err
-            )
-        except UserBoardPermissionDenied as err:
-            return presenter.raise_exception_for_user_board_permission_denied(
                 error_obj=err)
         except InvalidKeyError:
             return presenter.raise_invalid_key_error()
         except InvalidCustomLogicException:
             return presenter.raise_invalid_custom_logic_function_exception()
-        except InvalidModulePathFound as exception:
+        except InvalidModulePathFound as err:
             return presenter.raise_invalid_path_not_found_exception(
-                path_name=exception.path_name)
-        except InvalidMethodFound as exception:
+                path_name=err.path_name)
+        except InvalidMethodFound as err:
             return presenter.raise_invalid_method_not_found_exception(
-                method_name=exception.method_name)
-        except DuplicateStageIds as exception:
+                method_name=err.method_name)
+        except DuplicateStageIds as err:
             return presenter.raise_duplicate_stage_ids_not_valid(
-                duplicate_stage_ids=exception.duplicate_stage_ids)
-        except InvalidDbStageIdsListException as exception:
+                duplicate_stage_ids=err.duplicate_stage_ids)
+        except InvalidDbStageIdsListException as err:
             return presenter.raise_invalid_stage_ids_exception(
-                invalid_stage_ids=exception.invalid_stage_ids)
-        except StageIdsWithInvalidPermissionForAssignee as exception:
+                invalid_stage_ids=err.invalid_stage_ids)
+        except StageIdsWithInvalidPermissionForAssignee as err:
             return presenter. \
                 raise_stage_ids_with_invalid_permission_for_assignee_exception(
-                invalid_stage_ids=exception.invalid_stage_ids)
+                invalid_stage_ids=err.invalid_stage_ids)
 
     def _prepare_create_task_response(
             self, task_dto: CreateTaskDTO,
@@ -203,15 +206,16 @@ class CreateTaskInteractor:
         return presenter.get_create_task_response()
 
     def create_task(self, task_dto: CreateTaskDTO):
-        is_valid_action_id = self.storage.validate_action(task_dto.action_id)
+        self._validate_task_template_id(task_dto.task_template_id)
+        is_valid_action_id = self.storage.validate_action(
+            action_id=task_dto.action_id)
         if not is_valid_action_id:
             raise InvalidActionException(task_dto.action_id)
-        self._validate_task_template_id(task_dto.task_template_id)
+        self._validate_task_details(task_dto)
+        self._validate_same_gof_order(task_dto.gof_fields_dtos)
         action_type = self.action_storage.get_action_type_for_given_action_id(
             action_id=task_dto.action_id
         )
-        self._validate_same_gof_order(task_dto.gof_fields_dtos)
-        self._validate_task_details(task_dto)
         base_validations_interactor = \
             TemplateGoFsFieldsBaseValidationsInteractor(
                 self.task_storage, self.gof_storage,
@@ -226,12 +230,6 @@ class CreateTaskInteractor:
         created_task_id = \
             self.create_task_storage.create_task_with_given_task_details(
                 task_dto)
-        elastic_dto = self._get_elastic_task_dto(task_dto, created_task_id)
-        elastic_task_id = \
-            self.elastic_storage.create_task(elastic_task_dto=elastic_dto)
-        self.task_storage.create_elastic_task(
-            task_id=created_task_id, elastic_task_id=elastic_task_id
-        )
         task_gof_dtos = [
             TaskGoFWithTaskIdDTO(
                 task_id=created_task_id,
@@ -247,6 +245,12 @@ class CreateTaskInteractor:
             task_dto, task_gof_details_dtos
         )
         self.create_task_storage.create_task_gof_fields(task_gof_field_dtos)
+        self.create_task_storage.set_status_variables_for_template_and_task(
+            task_dto.task_template_id, created_task_id
+        )
+        self.create_task_storage.create_initial_task_stage(
+            task_id=created_task_id, template_id=task_dto.task_template_id
+        )
         act_on_task_interactor = UserActionOnTaskInteractor(
             user_id=task_dto.created_by_id, board_id=None,
             task_id=created_task_id,
@@ -257,12 +261,16 @@ class CreateTaskInteractor:
             stage_storage=self.stage_storage,
             task_storage=self.task_storage,
             action_storage=self.action_storage,
+            elasticsearch_storage=self.elastic_storage
         )
         self.create_task_storage.set_status_variables_for_template_and_task(
             task_dto.task_template_id, created_task_id
         )
+        initial_stage_id = self.create_task_storage.get_initial_stage_for_task_template(
+            template_id=task_dto.task_template_id
+        )
         self.create_task_storage.create_initial_task_stage(
-            task_id=created_task_id, template_id=task_dto.task_template_id
+            task_id=created_task_id, initial_stage_id=initial_stage_id
         )
         act_on_task_interactor.user_action_on_task()
         set_stage_assignees_interactor = \
@@ -273,30 +281,8 @@ class CreateTaskInteractor:
             )
         set_stage_assignees_interactor \
             .get_random_assignees_of_next_stages_and_update_in_db(
-            task_id=created_task_id, action_id=task_dto.action_id
-        )
-
-    def _get_elastic_task_dto(self, task_dto: CreateTaskDTO, task_id: int):
-
-        fields_dto = self._get_fields_dto(task_dto)
-        elastic_task_dto = ElasticTaskDTO(
-            template_id=task_dto.task_template_id,
-            task_id=task_id,
-            title=task_dto.title,
-            fields=fields_dto
-        )
-        return elastic_task_dto
-
-    def _get_fields_dto(
-            self, task_dto: CreateTaskDTO) -> List[ElasticFieldDTO]:
-
-        fields_dto = []
-        gof_fields_dtos = task_dto.gof_fields_dtos
-        for gof_fields_dto in gof_fields_dtos:
-            for field_value_dto in gof_fields_dto.field_values_dtos:
-                fields_dto.append(self._get_elastic_field_dto(field_value_dto))
-
-        return fields_dto
+                task_id=created_task_id, action_id=task_dto.action_id
+            )
 
     @staticmethod
     def _get_elastic_field_dto(field_dto: FieldValuesDTO) -> ElasticFieldDTO:
@@ -376,6 +362,7 @@ class CreateTaskInteractor:
                 ]
             )
         )
+        duplicate_values.sort()
         return duplicate_values
 
     def _validate_task_details(self,
@@ -388,6 +375,9 @@ class CreateTaskInteractor:
         )
         import datetime
         self._validate_due_time_format(due_time)
+        due_date_is_expired = (due_date < datetime.datetime.today().date())
+        if due_date_is_expired:
+            raise DueDateHasExpired(due_date)
         due_time_obj = datetime.datetime.strptime(due_time, TIME_FORMAT).time()
         now_time = datetime.datetime.now().time()
         due_time_is_expired_if_due_date_is_today = (
@@ -410,6 +400,3 @@ class CreateTaskInteractor:
         start_date_is_ahead_of_due_date = start_date > due_date
         if start_date_is_ahead_of_due_date:
             raise StartDateIsAheadOfDueDate(start_date, due_date)
-        due_date_is_behind_start_date = due_date < start_date
-        if due_date_is_behind_start_date:
-            raise DueDateIsBehindStartDate(due_date, start_date)

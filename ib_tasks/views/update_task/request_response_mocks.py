@@ -2,7 +2,7 @@
 
 REQUEST_BODY_JSON = """
 {
-    "task_id": 1,
+    "task_id": "string",
     "title": "string",
     "description": "string",
     "start_date": "2099-12-31",
@@ -35,7 +35,7 @@ RESPONSE_400_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "INVALID_TASK_ID"
+    "res_status": "string"
 }
 """
 

@@ -15,7 +15,7 @@ class GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor:
 
     def get_task_stage_logic_satisfied_next_stages(
             self, task_id: int,
-            updated_status_variable_dtos: List[StatusVariableDTO]) ->\
+            status_variable_dtos: List[StatusVariableDTO]) ->\
             List[str]:
         self._validate_task_id(task_id=task_id)
         stage_display_value_dtos = self.storage \
@@ -25,7 +25,7 @@ class GetTaskStageLogicSatisfiedNextStagesGivenStatusVarsInteractor:
         status_stage_dtos = self._get_status_operand_stage_dtos(
             stage_display_logics=stage_display_logics)
         status_variable_dict = self._get_task_status_variable_dict(
-            status_variable_dtos=updated_status_variable_dtos)
+            status_variable_dtos=status_variable_dtos)
         stage_value_dict = self._get_stage_values_dict(
             stage_display_value_dtos)
         logic_satisfied_stages = self._get_stage_logic_satisfied_stages(

@@ -5,7 +5,7 @@ from ib_boards.interactors.dtos import TaskStageIdDTO, \
     TaskCompleteDetailsDTO, \
     ColumnTaskIdsDTO
 from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
-    TaskFieldsDTOFactory, TaskStageColorDTOFactory
+    TaskFieldsDTOFactory, TaskStageDTOFactory
 
 
 def prepare_task_details_dtos(mocker, task_dtos: List[TaskStageIdDTO],
@@ -25,11 +25,7 @@ def prepare_task_details_dtos(mocker, task_dtos: List[TaskStageIdDTO],
             task_id=task_dto.task_id
         ) for _index, task_dto in enumerate(task_dtos)
     ]
-    # task_stage_color_dtos = [
-    #     TaskStageColorDTOFactory.create(
-    #         task_id=task_dto.task_id
-    #     ) for _index, task_dto in enumerate(task_dtos)
-    # ]
+
     mock.return_value = fields_dto, actions_dto
     return mock
 
@@ -111,8 +107,8 @@ def task_details_mock(mocker, task_details: List[TaskCompleteDetailsDTO]):
     mock = mocker.patch(
         'ib_boards.adapters.task_service.TaskService.get_task_complete_details'
     )
-    TaskStageColorDTOFactory.reset_sequence()
-    colors = TaskStageColorDTOFactory.create_batch(size=3)
+    TaskStageDTOFactory.reset_sequence()
+    colors = TaskStageDTOFactory.create_batch(size=3)
 
     mock.return_value = task_details[0].field_dtos, task_details[0].action_dtos, colors
     return mock

@@ -5,13 +5,13 @@ import factory
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
-from ib_tasks.models import TaskStage, TaskTemplateGoFs
+from ib_tasks.models import CurrentTaskStage, TaskTemplateGoFs
 from ib_tasks.tests.factories.models import TaskTemplateFactory, \
     TaskTemplateStatusVariableFactory, GoFFactory, \
     FieldFactory, StageModelFactory, StageActionFactory, \
     TaskFactory, TaskStatusVariableFactory, TaskGoFFactory, \
     TaskGoFFieldFactory, \
-    TaskStageModelFactory, GoFToTaskTemplateFactory, \
+    CurrentTaskStageModelFactory, GoFToTaskTemplateFactory, \
     ActionPermittedRolesFactory, \
     TaskTemplateInitialStageFactory, GoFRoleFactory, FieldRoleFactory
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
@@ -28,7 +28,7 @@ class TestCase03PerformTaskActionAPITestCase(TestUtils):
     def setup(self):
         TaskTemplateInitialStageFactory.reset_sequence()
         ActionPermittedRolesFactory.reset_sequence()
-        TaskStageModelFactory.reset_sequence()
+        CurrentTaskStageModelFactory.reset_sequence()
         TaskGoFFieldFactory.reset_sequence()
         TaskGoFFactory.reset_sequence()
         TaskTemplateStatusVariableFactory.reset_sequence()
@@ -99,7 +99,7 @@ class TestCase03PerformTaskActionAPITestCase(TestUtils):
             6, task_gof=factory.Iterator(task_gofs),
             field=factory.Iterator(fields)
         )
-        TaskStageModelFactory.create_batch(
+        CurrentTaskStageModelFactory.create_batch(
             3, task=task,
             stage=factory.Iterator(stages)
         )
@@ -133,10 +133,10 @@ class TestCase03PerformTaskActionAPITestCase(TestUtils):
             query_params=query_params, headers=headers, snapshot=snapshot
         )
 
-        task_stage_objs = TaskStage.objects.filter(id__in=[4, 5])
+        task_stage_objs = CurrentTaskStage.objects.filter(id__in=[4, 5])
         task_stage_3 = task_stage_objs[0]
         task_stage_4 = task_stage_objs[1]
-        boolean = TaskStage.objects.filter(id__in=[1, 2, 3]).exists()
+        boolean = CurrentTaskStage.objects.filter(id__in=[1, 2, 3]).exists()
         snapshot.assert_match(task_stage_3.stage.stage_id, "stage_id_0")
         snapshot.assert_match(task_stage_4.stage.stage_id, "stage_id_2")
         snapshot.assert_match(boolean, 'deleted task stages')

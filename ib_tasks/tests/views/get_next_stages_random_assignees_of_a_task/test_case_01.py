@@ -10,7 +10,7 @@ from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...common_fixtures.adapters.auth_service import \
     prepare_permitted_user_details_mock
 from ...factories.models import StagePermittedRolesFactory, TaskFactory, \
-    StageModelFactory, TaskStageModelFactory, StageActionFactory, \
+    StageModelFactory, CurrentTaskStageModelFactory, StageActionFactory, \
     TaskStatusVariableFactory, ActionPermittedRolesFactory
 
 
@@ -29,7 +29,7 @@ class TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase(TestUtils):
 
         TaskFactory.reset_sequence()
         StageModelFactory.reset_sequence()
-        TaskStageModelFactory.reset_sequence()
+        CurrentTaskStageModelFactory.reset_sequence()
 
         user_details_mock = prepare_permitted_user_details_mock(mocker)
         stage1 = StageModelFactory(
@@ -65,7 +65,7 @@ class TestCase01GetNextStagesRandomAssigneesOfATaskAPITestCase(TestUtils):
                                   value="stage_id_2")
         TaskStatusVariableFactory(task_id=1, variable='variable3',
                                   value="stage_id_1")
-        TaskStageModelFactory.create_batch(
+        CurrentTaskStageModelFactory.create_batch(
             3, task=task,
             stage=factory.Iterator(stages)
         )

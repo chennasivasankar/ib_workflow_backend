@@ -14,8 +14,10 @@ from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
     TemplateFieldsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import (
     TaskTemplateStageDTO, StageDetailsDTO)
-from ib_tasks.models import TaskStage, Stage, TaskGoFField, FieldRole, \
+from ib_tasks.models import CurrentTaskStage, Stage, TaskGoFField, FieldRole, \
     TaskTemplateGoFs, Field
+from ib_tasks.constants.enum import PermissionTypes
+from ib_tasks.constants.constants import ALL_ROLES_ID
 
 
 class FieldsStorageImplementation(FieldsStorageInterface):
@@ -128,12 +130,12 @@ class FieldsStorageImplementation(FieldsStorageInterface):
             stage_objs = (Stage.objects.filter(q)
                           .annotate(view_type=F('card_info_list'))
                           .values('task_template_id', 'stage_id',
-                                  'view_type', 'stage_color'))
+                                  'view_type', 'stage_color', 'id'))
         else:
             stage_objs = (Stage.objects.filter(q)
                           .annotate(view_type=F('card_info_kanban'))
                           .values('task_template_id', 'stage_id',
-                                  'view_type', 'stage_color'))
+                                  'view_type', 'stage_color', 'id'))
 
         task_fields_dtos = self._convert_stage_objs_to_dtos(stage_objs,
                                                             task_stages_dict)
@@ -156,11 +158,12 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                         task_id=task_id,
                         stage_color=stage['stage_color'],
                         stage_id=stage['stage_id'],
+                        db_stage_id=stage['id'],
                         field_ids=field_ids))
         return task_fields_dtos
 
     def get_task_stages(self, task_id: int) -> List[str]:
-        stage_ids = TaskStage.objects.filter(task_id=task_id).values_list(
+        stage_ids = CurrentTaskStage.objects.filter(task_id=task_id).values_list(
             'stage__stage_id', flat=True)
         return list(stage_ids)
 
@@ -242,8 +245,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
     def get_user_field_permission_dtos(
             self, roles: List[str],
             field_ids: List[str]) -> List[UserFieldPermissionDTO]:
-        from django.db.models import Q
-        from ib_tasks.constants.constants import ALL_ROLES_ID
+
         user_field_permission_details = FieldRole.objects.filter(
             Q(field_id__in=field_ids),
             (Q(role__in=roles) | Q(role=ALL_ROLES_ID))
@@ -252,6 +254,58 @@ class FieldsStorageImplementation(FieldsStorageInterface):
             self._convert_user_field_permission_details_to_dtos(
                 user_field_permission_details=user_field_permission_details)
         return user_field_permission_dtos
+
+    def get_field_ids_having_read_permission_for_user(
+            self, user_roles: List[str], field_ids: List[str]) -> List[str]:
+
+        field_ids_queryset = FieldRole.objects.filter(
+            (
+                Q(permission_type=PermissionTypes.READ.value) |
+                Q(permission_type=PermissionTypes.WRITE.value)
+            ),
+            (
+                    Q(role__in=user_roles) | Q(role=ALL_ROLES_ID)
+            ),
+            Q(field_id__in=field_ids)
+        ).values_list('field_id', flat=True)
+
+        field_ids_list = list(field_ids_queryset)
+        return field_ids_list
+
+    def get_field_ids_having_write_permission_for_user(
+            self, user_roles: List[str], field_ids: List[str]) -> List[str]:
+
+        field_ids_queryset = FieldRole.objects.filter(
+            Q(permission_type=PermissionTypes.WRITE.value),
+            (Q(role__in=user_roles) | Q(role=ALL_ROLES_ID)),
+            Q(field_id__in=field_ids)
+        ).values_list('field_id', flat=True)
+
+        field_ids_list = list(field_ids_queryset)
+        return field_ids_list
+
+    def check_is_user_has_read_permission_for_field(
+            self, field_id: str, user_roles: List[str]) -> bool:
+
+        is_user_has_read_permission = FieldRole.objects.filter(
+            (
+                Q(permission_type=PermissionTypes.READ.value) |
+                Q(permission_type=PermissionTypes.WRITE.value)
+            ),
+            (Q(role__in=user_roles) | Q(role=ALL_ROLES_ID)),
+            Q(field_id=field_id)).exists()
+
+        return is_user_has_read_permission
+
+    def check_is_user_has_write_permission_for_field(
+            self, field_id: str, user_roles: List[str]) -> bool:
+
+        is_user_has_write_permission = FieldRole.objects.filter(
+            Q(permission_type=PermissionTypes.WRITE.value),
+            (Q(role__in=user_roles) | Q(role=ALL_ROLES_ID)),
+            Q(field_id=field_id)).exists()
+
+        return is_user_has_write_permission
 
     @staticmethod
     def _convert_user_field_permission_details_to_dtos(

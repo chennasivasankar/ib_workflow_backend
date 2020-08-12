@@ -4,7 +4,7 @@ from typing import Union, List
 from ib_tasks.exceptions.task_custom_exceptions \
     import InvalidTaskIdException
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
-from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrder
+from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrderDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import TaskGoFDTO, \
     TaskGoFFieldDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
@@ -65,7 +65,7 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_gof_ids_with_same_gof_order_related_to_a_task(
-            self, task_id: int) -> List[GoFIdWithSameGoFOrder]:
+            self, task_id: int) -> List[GoFIdWithSameGoFOrderDTO]:
         pass
 
     @abc.abstractmethod
@@ -102,9 +102,14 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def create_initial_task_stage(self, task_id: int, template_id: str):
+    def create_initial_task_stage(self, task_id: int, initial_stage_id: str):
+        pass
+
+    @abc.abstractmethod
+    def get_initial_stage_for_task_template(self, template_id: str) -> str:
         pass
 
     @abc.abstractmethod
     def update_task_with_given_task_details(self, task_dto: UpdateTaskDTO):
         pass
+

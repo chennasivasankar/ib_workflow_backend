@@ -12,7 +12,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 
 
-class GetTaskIdsOfUserBasedOnStagesInteractor:
+class GetTaskStageDetailsOfUserBasedOnStagesInteractor:
     def __init__(self, stage_storage: StageStorageInterface,
                  task_storage: TaskStorageInterface,
                  task_stage_storage: TaskStageStorageInterface):
@@ -20,8 +20,7 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
         self.task_storage = task_storage
         self.task_stage_storage = task_stage_storage
 
-    # TODO change interactor name
-    def get_task_ids_of_user_based_on_stage_ids(
+    def get_task_stage_details_of_user_based_on_stage_ids(
             self,
             user_stages_with_pagination_dto: UserStagesWithPaginationDTO) \
             -> List[TaskWithCompleteStageDetailsDTO]:
@@ -41,8 +40,8 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
         self._validate_stage_ids(valid_stage_ids, given_unique_stage_ids)
         task_id_with_max_stage_value_dtos = self.task_storage. \
             get_user_task_and_max_stage_value_dto_based_on_given_stage_ids(
-                user_id=user_id, stage_ids=valid_stage_ids, limit=limit,
-                offset=offset)
+            user_id=user_id, stage_ids=valid_stage_ids, limit=limit,
+            offset=offset)
         stage_values = [
             task_id_with_max_stage_value_dto.stage_value
             for task_id_with_max_stage_value_dto in
@@ -50,19 +49,26 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
         ]
         stage_values = sorted(list(set(stage_values)))
         task_ids_group_by_stage_value_dtos = \
-            self.get_task_ids_group_by_stage_value_dtos(
+            self._get_task_ids_group_by_stage_value_dtos(
                 stage_values, task_id_with_max_stage_value_dtos
             )
         task_id_with_stage_details_dtos = self. \
             stage_storage. \
             get_task_id_with_stage_details_dtos_based_on_stage_value(
-                stage_values=stage_values,
-                task_ids_group_by_stage_value_dtos=
-                task_ids_group_by_stage_value_dtos,
-                user_id=user_id)
+            stage_values=stage_values,
+            task_ids_group_by_stage_value_dtos=
+            task_ids_group_by_stage_value_dtos)
+        task_ids = []
+        task_id_with_single_stage_details_dto = []
+        for task_id_with_stage_details_dto in task_id_with_stage_details_dtos:
+            if task_id_with_stage_details_dto.task_id not in task_ids:
+                task_ids.append(task_id_with_stage_details_dto.task_id)
+                task_id_with_single_stage_details_dto.append(
+                    task_id_with_stage_details_dto)
+
         task_with_complete_stage_details_dtos = \
             self._get_task_with_complete_stage_details_dtos(
-                task_id_with_stage_details_dtos=task_id_with_stage_details_dtos)
+                task_id_with_stage_details_dtos=task_id_with_single_stage_details_dto)
         return task_with_complete_stage_details_dtos
 
     def _get_task_with_complete_stage_details_dtos(
@@ -80,8 +86,8 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
             stage_assignee_details_dtos = \
                 get_stage_assignees_details_interactor. \
                     get_stages_assignee_details_dtos(
-                        task_id=task_id_with_stage_details_dto.task_id,
-                        stage_ids=[task_id_with_stage_details_dto.db_stage_id]
+                    task_id=task_id_with_stage_details_dto.task_id,
+                    stage_ids=[task_id_with_stage_details_dto.db_stage_id]
                 )
             task_with_complete_stage_details_dto = \
                 TaskWithCompleteStageDetailsDTO(
@@ -92,7 +98,7 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
         return task_with_complete_stage_details_dtos
 
     @staticmethod
-    def get_task_ids_group_by_stage_value_dtos(
+    def _get_task_ids_group_by_stage_value_dtos(
             stage_values: List[int], task_id_with_max_stage_value_dtos
     ) -> List[StageValueWithTaskIdsDTO]:
         task_ids_group_by_stage_value_dtos = []

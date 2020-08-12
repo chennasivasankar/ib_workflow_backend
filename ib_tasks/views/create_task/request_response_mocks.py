@@ -28,11 +28,24 @@ REQUEST_BODY_JSON = """
 """
 
 
+RESPONSE_201_JSON = """
+{
+    "task_id": "string",
+    "stages": [
+        {
+            "stage_id": "string",
+            "stage_display_name": "string"
+        }
+    ],
+    "user_has_permission": true
+}
+"""
+
 RESPONSE_400_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "INVALID_TASK_TEMPLATE_IDS"
+    "res_status": "string"
 }
 """
 
