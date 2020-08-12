@@ -1442,7 +1442,28 @@
          "schema":{
             "$ref":"#/definitions/CreateTransitionChecklistRequestBody"
          }
+      },
+    "GetTaskStagePossibleAssigneesBody": {
+      "in": "body",
+      "name": "GetTaskStagePossibleAssigneesRequestBody",
+      "description": "get task stage possible assignees request body",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "task_id": {
+              "type": "string"
+          },
+          "stage_id": {
+              "type": "string"
+          }
+        },
+        "required": [
+          "task_id",
+          "stage_id"
+        ]
       }
+    }
    },
    "responses":{
       "CreateTaskSuccessResponse":{
@@ -2185,7 +2206,60 @@
          "schema":{
             "$ref":"#/definitions/TaskWithCurrentStages"
          }
+      },
+    "AssigneeSearchableValuesResponse": {
+      "description": "OK",
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "profile_pic": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "name"
+          ]
+        }
       }
+    },
+    "TaskStagePossibleAssigneesNotFoundResponse": {
+      "description": "Task Stage Assignees Not Found Response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer",
+            "enum": [
+              404
+            ]
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "INVALID_TASK_ID",
+              "INVALID_STAGE_ID"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    }
    },
    "paths":{
       "/perform_user_action_on_task/v1/":{
@@ -2843,6 +2917,45 @@
                }
             }
          }
+      },
+    "/task/stage/stage_assignees/v1/": {
+      "get": {
+        "operationId": "get_stage_searchable_possible_assignees_of_a_task",
+        "summary": "get stage pssible assignees for a task",
+        "description": "get stage pssible assignees for a task and you can search a user",
+        "security": [{
+          "oauth": [
+            "read"
+          ]
+        }],
+        "parameters": [{
+            "$ref": "#/parameters/GetTaskStagePossibleAssigneesBody"
+          },
+          {
+            "$ref": "#/parameters/SearchableTypeParameter"
+          },
+          {
+            "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/SearchableQueryParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/AssigneeSearchableValuesResponse"
+          },
+          "400": {
+            "$ref": "#/responses/SearchableValuesFailureResponse"
+          },
+           "404": {
+            "$ref": "#/responses/TaskStagePossibleAssigneesNotFoundResponse"
+          }
+        }
       }
+    }
    }
 }
