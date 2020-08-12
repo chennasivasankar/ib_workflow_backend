@@ -20,10 +20,10 @@ class MultiSelectFieldValidationInteractor(BaseFieldValidation):
             self) -> Optional[IncorrectMultiSelectOptionsSelected]:
         import json
         selected_multi_select_options = json.loads(self.field_response)
-        invalid_multi_select_options = list(
+        invalid_multi_select_options = sorted(list(
             set(selected_multi_select_options) - set(
                 self.valid_multi_select_options)
-        )
+        ))
         if invalid_multi_select_options:
             raise IncorrectMultiSelectOptionsSelected(
                 self.field_id, invalid_multi_select_options,

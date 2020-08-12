@@ -73,7 +73,7 @@ class TestEditNewUserInteractor:
 
         interactor = EditUserInteractor(user_storage=storage_mock)
         storage_mock.is_user_admin.return_value = True
-        presenter_mock.raise_name_minimum_length_should_be_equal_or_more_than \
+        presenter_mock.raise_invalid_name_length_exception_for_update_user_profile \
             .return_value = Mock()
 
         user_details_with_team_role_and_company_ids_dto \
@@ -91,7 +91,7 @@ class TestEditNewUserInteractor:
 
         # Assert
         presenter_mock. \
-            raise_name_minimum_length_should_be_equal_or_more_than. \
+            raise_invalid_name_length_exception_for_update_user_profile. \
             assert_called_once()
 
     def test_validate_name_when_contains_special_characters_and_numbers_throw_exception(

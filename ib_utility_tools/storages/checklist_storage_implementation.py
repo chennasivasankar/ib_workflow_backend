@@ -41,12 +41,12 @@ class ChecklistStorageImplementation(ChecklistStorageInterface):
             text=checklist_item_with_id_dto.text,
             is_checked=checklist_item_with_id_dto.is_checked)
 
-    def validate_checklist_item_id(self, checklist_item_id: str) -> bool:
+    def is_checklist_item_id_exists(self, checklist_item_id: str) -> bool:
         is_checklist_item_exists = ChecklistItem.objects.filter(
             checklist_item_id=checklist_item_id).exists()
         return is_checklist_item_exists
 
-    def get_checklist_items_dto(self, checklist_id: str) -> \
+    def get_checklist_item_dtos(self, checklist_id: str) -> \
             List[ChecklistItemWithIdDTO]:
         checklist_item_objects = ChecklistItem.objects.filter(
             checklist_id=checklist_id)

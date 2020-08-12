@@ -33,11 +33,13 @@ snapshots['TestCreateCommentPresenterImplementation.test_prepare_response_for_cr
         {
             'format_type': 'IMAGE',
             'multimedia_id': 'f26c1802-d996-4e89-9644-23ebaf02713a',
+            'thumbnail_url': 'https://picsum.photos/200',
             'url': 'https://picsum.photos/200'
         },
         {
             'format_type': 'VIDEO',
             'multimedia_id': 'a5f52868-8065-403c-abe5-24c09e42bafe',
+            'thumbnail_url': 'https://picsum.photos/200',
             'url': 'https://picsum.photos/200'
         }
     ],

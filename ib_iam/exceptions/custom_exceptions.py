@@ -33,7 +33,7 @@ class NameShouldNotContainsNumbersSpecCharacters(Exception):
     pass
 
 
-class NameMinimumLengthShouldBe(Exception):
+class InvalidNameLength(Exception):
     pass
 
 

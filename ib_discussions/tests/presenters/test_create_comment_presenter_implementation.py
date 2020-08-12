@@ -32,6 +32,32 @@ class TestCreateCommentPresenterImplementation:
         assert response_data["http_status_code"] == expected_http_status_code
         assert response_data["res_status"] == expected_res_status
 
+    def test_response_for_invalid_user_ids(self, presenter):
+        # Arrange
+        invalid_user_ids = [
+            "f26c1802-d996-4e89-9644-23ebaf02713a",
+            "a5f52868-8065-403c-abe5-24c09e42bafe"
+        ]
+        from ib_discussions.presenters.create_comment_presenter_implementation import \
+            INVALID_USER_IDS
+        expected_response = INVALID_USER_IDS[0].format(
+            user_ids=invalid_user_ids)
+        expected_http_status_code = StatusCode.BAD_REQUEST.value
+        expected_res_status = INVALID_USER_IDS[1]
+
+        from ib_discussions.adapters.auth_service import InvalidUserIds
+        error_object = InvalidUserIds(user_ids=invalid_user_ids)
+
+        # Act
+        response_obj = presenter.response_for_invalid_user_ids(err=error_object)
+
+        # Assert
+        response_data = json.loads(response_obj.content)
+
+        assert response_data["response"] == expected_response
+        assert response_data["http_status_code"] == expected_http_status_code
+        assert response_data["res_status"] == expected_res_status
+
     def test_prepare_response_for_create_comment(self, presenter, snapshot):
         user_ids = [
             '01be920b-7b4c-49e7-8adb-41a0c18da848',

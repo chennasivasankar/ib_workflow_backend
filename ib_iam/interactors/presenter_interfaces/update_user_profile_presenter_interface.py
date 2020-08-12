@@ -8,7 +8,7 @@ class UpdateUserProfilePresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def raise_minimum_name_length_exception_for_update_user_profile(self):
+    def raise_invalid_name_length_exception_for_update_user_profile(self):
         pass
 
     @abc.abstractmethod

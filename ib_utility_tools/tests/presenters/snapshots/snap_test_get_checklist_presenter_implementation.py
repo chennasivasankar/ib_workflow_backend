@@ -19,7 +19,5 @@ snapshots['TestGetChecklistPresenterImplementation.test_whether_it_returns_check
             'is_checked': False,
             'text': 'text2'
         }
-    ],
-    'entity_id': 'bb3e538e-a18a-4268-b2d6-0b6dba669ba0',
-    'entity_type': 'TASK'
+    ]
 }
