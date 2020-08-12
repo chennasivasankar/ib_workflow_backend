@@ -26,13 +26,12 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import (
 )
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, TaskDueParametersDTO
-from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
-    ActionPermittedRoles, StageAction, TaskStage, FieldRole, GlobalConstant, \
-    StagePermittedRoles, TaskTemplateInitialStage, Stage
-from ib_tasks.models.task_due_details import UserTaskDelayReason
+from ib_tasks.models import \
     ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, \
-    GlobalConstant, \
-    StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskStageHistory
+    GlobalConstant, TaskStageHistory, \
+    StagePermittedRoles, TaskTemplateInitialStage, Stage
+from ib_tasks.models import GoFRole, TaskStatusVariable, Task
+from ib_tasks.models.task_due_details import UserTaskDelayReason
 
 
 class StagesStorageImplementation(StageStorageInterface):
@@ -672,4 +671,3 @@ class StorageImplementation(StorageInterface):
                                            reason=due_details.reason)
         Task.objects.filter(pk=task_id, tasklog__user_id=user_id
                             ).update(due_date=updated_datetime)
-        Task.objects.all()
