@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from snapshottest import GenericRepr, Snapshot
 
-
 snapshots = Snapshot()
 
 snapshots['TestGetFieldIds.test_get_field_ids_when_one_task_is_in_two_stages response'] = [
