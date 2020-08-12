@@ -21,7 +21,7 @@ class TestCase01GetSearchableValuesAPITestCase(TestUtils):
         query_params = {'search_type': 'USER', 'limit': 0, 'offset': 18,
                         'search_query': 'string'}
         headers = {}
-        response = self.default_test_case(
+        response = self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

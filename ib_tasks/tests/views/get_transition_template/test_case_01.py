@@ -16,10 +16,6 @@ class TestCase01GetTransitionTemplateAPITestCase(TestUtils):
 
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
-        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids
-        get_user_role_ids(mocker)
-
         import factory
         from ib_tasks.tests.factories.models import TaskTemplateFactory, \
             GoFFactory, GoFRoleFactory, FieldFactory, FieldRoleFactory, \
@@ -32,8 +28,11 @@ class TestCase01GetTransitionTemplateAPITestCase(TestUtils):
         FieldRoleFactory.reset_sequence()
         GoFToTaskTemplateFactory.reset_sequence()
 
-        transition_template_id = 'template_1'
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_user_role_ids
+        get_user_role_ids(mocker)
 
+        transition_template_id = 'template_1'
         template_obj = TaskTemplateFactory.create(
             template_id=transition_template_id,
             is_transition_template=True
@@ -51,8 +50,11 @@ class TestCase01GetTransitionTemplateAPITestCase(TestUtils):
         field_objs = FieldFactory.create_batch(
             size=6, gof=factory.Iterator(gof_objs)
         )
+        from ib_tasks.constants.enum import PermissionTypes
         FieldRoleFactory.create_batch(
-            size=6, field=factory.Iterator(field_objs)
+            size=6, field=factory.Iterator(field_objs),
+            permission_type=factory.Iterator(
+                [PermissionTypes.READ.value, PermissionTypes.WRITE.value])
         )
 
     @pytest.mark.django_db

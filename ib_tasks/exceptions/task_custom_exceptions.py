@@ -108,3 +108,8 @@ class UserIsNotAssigneeToTask(Exception):
 class InvalidStageIdsForTask(Exception):
     def __init__(self, message: str):
         self.message = message
+
+
+class InvalidTaskDisplayId(Exception):
+    def __init__(self, task_display_id: str):
+        self.task_display_id = task_display_id

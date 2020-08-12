@@ -1,6 +1,8 @@
 import pytest
 
 
+
+
 class TestSearchableFieldValuesInteractor:
     @pytest.fixture
     def presenter_mock(self):
@@ -11,9 +13,17 @@ class TestSearchableFieldValuesInteractor:
         presenter = create_autospec(SearchableFieldValuesPresenterInterface)
         return presenter
 
+    @pytest.fixture()
+    def elastic_storage_mock(self):
+        from mock import create_autospec
+        from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
+            ElasticSearchStorageInterface
+        storage = create_autospec(ElasticSearchStorageInterface)
+        return storage
+
     @pytest.mark.parametrize("limit", [0, -1])
     def test_given_limit_values_less_than_one_raise_exception(
-            self, limit, presenter_mock):
+            self, limit, presenter_mock, elastic_storage_mock):
         # Arrange
         from ib_tasks.tests.factories.interactor_dtos import \
             SearchableFieldTypeDTOFactory
@@ -25,7 +35,7 @@ class TestSearchableFieldValuesInteractor:
             side_effect = LimitShouldBeGreaterThanZeroException
         from ib_tasks.interactors.searchable_field_values_interactor import \
             SearchableFieldValuesInteractor
-        interactor = SearchableFieldValuesInteractor()
+        interactor = SearchableFieldValuesInteractor(elastic_storage=elastic_storage_mock)
 
         # Act
         with pytest.raises(LimitShouldBeGreaterThanZeroException):
@@ -38,7 +48,7 @@ class TestSearchableFieldValuesInteractor:
 
     @pytest.mark.parametrize("offset", [-2, -3])
     def test_given_offset_values_less_than_minus_one_raise_exception(
-            self, offset, presenter_mock):
+            self, offset, presenter_mock, elastic_storage_mock):
         # Arrange
 
         from ib_tasks.tests.factories.interactor_dtos import \
@@ -52,7 +62,7 @@ class TestSearchableFieldValuesInteractor:
             .side_effect = OffsetShouldBeGreaterThanOrEqualToMinusOneException
         from ib_tasks.interactors.searchable_field_values_interactor import \
             SearchableFieldValuesInteractor
-        interactor = SearchableFieldValuesInteractor()
+        interactor = SearchableFieldValuesInteractor(elastic_storage=elastic_storage_mock)
 
         # Act
         with pytest.raises(
@@ -66,7 +76,7 @@ class TestSearchableFieldValuesInteractor:
             .assert_called_once()
 
     def test_get_searchable_field_value_details_given_valid_user_details(
-            self, mocker, presenter_mock):
+            self, mocker, presenter_mock, elastic_storage_mock):
         # Arrange
 
         from ib_tasks.tests.factories.interactor_dtos import \
@@ -82,7 +92,7 @@ class TestSearchableFieldValuesInteractor:
 
         from ib_tasks.interactors.searchable_field_values_interactor import \
             SearchableFieldValuesInteractor
-        interactor = SearchableFieldValuesInteractor()
+        interactor = SearchableFieldValuesInteractor(elastic_storage=elastic_storage_mock)
 
         interactor.searchable_field_values_wrapper(
             presenter=presenter_mock,
@@ -92,7 +102,7 @@ class TestSearchableFieldValuesInteractor:
             searchable_user_detail_dtos)
 
     def test_get_searchable_field_value_details_given_valid_user_details_and_offset_one(
-            self, mocker, presenter_mock):
+            self, mocker, presenter_mock, elastic_storage_mock):
         # Arrange
 
         from ib_tasks.tests.factories.interactor_dtos import \
@@ -107,7 +117,7 @@ class TestSearchableFieldValuesInteractor:
 
         from ib_tasks.interactors.searchable_field_values_interactor import \
             SearchableFieldValuesInteractor
-        interactor = SearchableFieldValuesInteractor()
+        interactor = SearchableFieldValuesInteractor(elastic_storage=elastic_storage_mock)
 
         interactor.searchable_field_values_wrapper(
             presenter=presenter_mock,

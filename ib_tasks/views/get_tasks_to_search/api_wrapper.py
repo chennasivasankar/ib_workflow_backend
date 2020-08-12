@@ -21,7 +21,7 @@ def api_wrapper(*args, **kwargs):
     request_data = kwargs['request_query_params']
     user_obj = kwargs['user']
     request_body = kwargs['request_data']
-    templates_conditions = request_body['templates_conditions']
+    templates_conditions = request_body.get('templates_conditions', [])
     apply_filters_dto = get_apply_filters_dto(templates_conditions)
     search_query_dto = get_search_query_dto(request_data, user_obj.user_id)
     stage_storage = StagesStorageImplementation()
