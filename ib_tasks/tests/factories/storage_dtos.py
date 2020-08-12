@@ -31,8 +31,9 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageActionNamesDTO, ValidStageDTO, TaskStageIdsDTO, StageValueDTO, \
     StageDetailsDTO, StageDisplayValueDTO, StageIdWithTemplateIdDTO, \
     StageRoleDTO, TaskStagesDTO, TaskTemplateStageDTO, TaskStageAssigneeDTO, \
-    TaskStageHavingAssigneeIdDTO, StageRoleDTO, TaskStagesDTO,
-    TaskTemplateStageDTO, TaskStageAssigneeDTO, \TaskStageHavingAssigneeIdDTO
+    TaskStageHavingAssigneeIdDTO, StageRoleDTO, TaskStagesDTO, \
+    TaskTemplateStageDTO, TaskStageAssigneeDTO, TaskStageHavingAssigneeIdDTO, \
+    CurrentStageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     StatusVariableDTO, TaskTemplateStatusDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
@@ -384,8 +385,10 @@ class UserFieldPermissionDTOFactory(factory.Factory):
 class StageRolesDTOFactory(factory.Factory):
     class Meta:
         model = StageRolesDTO
+
     stage_id = factory.Sequence(lambda n: 'stage_{}'.format(n))
-    role_ids = factory.Sequence(lambda n: ['ROLE_{}'.format(n), 'ROLE_{}'.format(n+1)])
+    role_ids = factory.Sequence(
+        lambda n: ['ROLE_{}'.format(n), 'ROLE_{}'.format(n + 1)])
 
 
 class GoFToTaskTemplateDTOFactory(factory.Factory):
@@ -598,9 +601,9 @@ class StageAssigneeDTOFactory(factory.Factory):
 
 
 class TaskStageHistoryDTOFactory(factory.Factory):
-
     class Meta:
         model = TaskStageHistoryDTO
+
     log_id = factory.sequence(lambda n: n)
     task_id = factory.sequence(lambda n: n)
     stage_id = factory.sequence(lambda n: n)
@@ -613,6 +616,7 @@ class TaskStageHistoryDTOFactory(factory.Factory):
 class StageMinimalDTOFactory(factory.Factory):
     class Meta:
         model = StageMinimalDTO
+
     stage_id = factory.sequence(lambda n: n)
     name = factory.sequence(lambda n: "stage_%d" % n)
     color = None
@@ -622,9 +626,9 @@ class StageMinimalDTOFactory(factory.Factory):
 
 
 class LogDurationDTOFactory(factory.Factory):
-
     class Meta:
         model = LogDurationDTO
+
     entity_id = factory.sequence(lambda n: n)
     duration = timedelta(days=1)
 
@@ -654,6 +658,7 @@ class FieldIdWithTaskGoFIdDTOFactory(factory.Factory):
 
     field_id = factory.Sequence(lambda c: "field_{}".format(c))
     task_gof_id = factory.Sequence(lambda c: c)
+
 
 class CurrentStageDetailsDTOFactory(factory.Factory):
     class Meta:
