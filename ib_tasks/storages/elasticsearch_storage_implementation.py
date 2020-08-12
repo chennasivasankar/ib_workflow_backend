@@ -150,8 +150,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         from elasticsearch_dsl import connections
         from django.conf import settings
         connections.create_connection(
-            hosts=[settings.ELASTICSEARCH_ENDPOINT],
-                    timeout=20
+            hosts=[settings.ELASTICSEARCH_ENDPOINT], timeout=20
         )
         from elasticsearch_dsl import Q, Search
 
@@ -255,7 +254,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             ElasticStateDTO(
                 state_id=hit.state_id,
                 state_name=hit.state_name,
-                elastic_state_name=None
+                elastic_state_id=None
             )
             for hit in search[offset: offset + limit]
         ]
@@ -299,7 +298,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             ElasticCityDTO(
                 city_id=hit.city_id,
                 city_name=hit.city_name,
-                elastic_city_name=None
+                elastic_city_id=None
             )
             for hit in search[offset: offset + limit]
         ]

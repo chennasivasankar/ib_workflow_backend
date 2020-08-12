@@ -710,6 +710,11 @@
       "type": "integer",
       "default": 0
     },
+    "SearchQueryParameter": {
+      "name": "search_query",
+      "in": "query",
+      "type": "string"
+    },
     "AddTeamParameter": {
       "name": "add_team",
       "in": "body",
@@ -1527,6 +1532,9 @@
           },
           {
             "$ref": "#/parameters/LimitQueryParameter"
+          },
+          {
+            "$ref": "#/parameters/SearchQueryParameter"
           }
         ],
         "responses": {

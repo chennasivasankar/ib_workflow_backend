@@ -71,6 +71,7 @@ class EditUserInteractor(ValidationMixin):
             user_id=user_id, company_id=company_id, role_ids=role_ids,
             team_ids=team_ids, name=name
         )
+        ## TODO user_id  and name elastic serach
 
     @staticmethod
     def _validate_email_and_throw_exception(email: str):
