@@ -11,12 +11,16 @@ from ib_iam.interactors.dtos.dtos import \
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.edit_user_presenter_interface \
     import EditUserPresenterInterface
+from ib_iam.interactors.storage_interfaces.elastic_storage_interface \
+    import ElasticSearchStorageInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface \
     import UserStorageInterface
 
 
 class EditUserInteractor(ValidationMixin):
-    def __init__(self, user_storage: UserStorageInterface):
+    def __init__(self, user_storage: UserStorageInterface,
+                 elastic_storage: ElasticSearchStorageInterface):
+        self.elastic_storage = elastic_storage
         self.user_storage = user_storage
 
     def edit_user_wrapper(
@@ -71,6 +75,8 @@ class EditUserInteractor(ValidationMixin):
             user_id=user_id, company_id=company_id, role_ids=role_ids,
             team_ids=team_ids, name=name
         )
+        self.elastic_storage.update_elastic_user(user_id=user_id, name=name)
+
 
     @staticmethod
     def _validate_email_and_throw_exception(email: str):

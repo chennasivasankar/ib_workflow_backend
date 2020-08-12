@@ -5,13 +5,17 @@ from ib_iam.interactors.presenter_interfaces.delete_user_presenter_interface imp
     DeleteUserPresenterInterface
 from ib_iam.interactors.storage_interfaces.delete_user_storage_interface import \
     DeleteUserStorageInterface
+from ib_iam.interactors.storage_interfaces.elastic_storage_interface \
+    import ElasticSearchStorageInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
 
 
 class DeleteUserInteractor(ValidationMixin):
     def __init__(self, storage: DeleteUserStorageInterface,
-                 user_storage: UserStorageInterface):
+                 user_storage: UserStorageInterface,
+                 elastic_storage: ElasticSearchStorageInterface):
+        self.elastic_storage = elastic_storage
         self.user_storage = user_storage
         self.storage = storage
 
@@ -36,6 +40,7 @@ class DeleteUserInteractor(ValidationMixin):
         self.storage.delete_user_teams(user_id=delete_user_id)
         self._deactivate_delete_user_id_in_ib_users(
             delete_user_id=delete_user_id)
+        self.elastic_storage.delete_elastic_user(user_id=delete_user_id)
 
     def _validate_delete_user_details(self, user_id: str, delete_user_id: str):
         self._validate_is_user_admin(user_id=user_id)

@@ -21,6 +21,11 @@ class ServiceAdapter:
             AssigneeDetailsService
         return AssigneeDetailsService()
 
+    @property
+    def elastic_service(self):
+        from .elastic_service import ElasticService
+        return ElasticService()
+
 
 def get_service_adapter():
     return ServiceAdapter()

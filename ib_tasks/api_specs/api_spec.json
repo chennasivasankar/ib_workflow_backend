@@ -1185,6 +1185,9 @@
 		"TaskStageResponseBody": {
 		  "type": "object",
 			"properties": {
+			  "log_id": {
+			    "type": "integer"
+			  },
 				"stage_id": {
 					"type": "integer"
 				},
@@ -1204,7 +1207,7 @@
 			},
 			"required": [
 				"stage_id", "created_at", "time_spent_by_user",
-				"stage_time", "user_details"
+				"stage_time", "user_details", "log_id"
 			]
 		},
     "TaskStagesCompleteResponseBody": {
