@@ -3,6 +3,10 @@ from ib_tasks.storages.elasticsearch_storage_implementation import ElasticSearch
 
 
 def populate_data():
+    from elasticsearch_dsl import connections
+    from django.conf import settings
+    connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
+                                  timeout=20)
     push_user_details_to_elasticsearch()
     populate_elastic_search_user_data()
     populate_elastic_search_country_data()

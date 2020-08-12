@@ -45,7 +45,7 @@ class TestGetTaskIdsInteractor:
                 unique_key="1",
                 stage_ids=stage_ids[0],
                 offset=0,
-                limit=5
+                limit=5,
             ),
             TaskDetailsConfigDTO(
                 unique_key="1",

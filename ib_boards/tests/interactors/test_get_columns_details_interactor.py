@@ -167,7 +167,8 @@ class TestGetColumnDetailsInteractor:
         columns_parameters = ColumnParametersDTO(
             board_id=board_id,
             user_id="user_id_1",
-            view_type=ViewType.LIST.value
+            view_type=ViewType.LIST.value,
+            search_query="hello"
         )
         pagination_parameters = PaginationParametersDTO(
             offset=2,
@@ -206,7 +207,8 @@ class TestGetColumnDetailsInteractor:
         columns_parameters = ColumnParametersDTO(
             board_id=board_id,
             user_id="user_id_1",
-            view_type=ViewType.LIST.value
+            view_type=ViewType.LIST.value,
+            search_query="hello"
         )
         pagination_parameters = PaginationParametersDTO(
             offset=-1,
@@ -245,7 +247,8 @@ class TestGetColumnDetailsInteractor:
         columns_parameters = ColumnParametersDTO(
             board_id=board_id,
             user_id="user_id_1",
-            view_type=ViewType.LIST.value
+            view_type=ViewType.LIST.value,
+            search_query="hello"
         )
         pagination_parameters = PaginationParametersDTO(
             offset=2,
@@ -282,7 +285,8 @@ class TestGetColumnDetailsInteractor:
         columns_parameters = ColumnParametersDTO(
             board_id=board_id,
             user_id=user_id,
-            view_type=ViewType.LIST.value
+            view_type=ViewType.LIST.value,
+            search_query="hello"
         )
         pagination_parameters = PaginationParametersDTO(
             offset=2,
@@ -336,7 +340,8 @@ class TestGetColumnDetailsInteractor:
         columns_parameters = ColumnParametersDTO(
             board_id=board_id,
             user_id=user_id,
-            view_type=ViewType.LIST.value
+            view_type=ViewType.LIST.value,
+            search_query="hello"
         )
         pagination_parameters = PaginationParametersDTO(
             offset=0,
@@ -421,7 +426,8 @@ class TestGetColumnDetailsInteractor:
         columns_parameters = ColumnParametersDTO(
             board_id=board_id,
             user_id=user_id,
-            view_type=ViewType.LIST.value
+            view_type=ViewType.LIST.value,
+            search_query="hello"
         )
         pagination_parameters = PaginationParametersDTO(
             offset=0,

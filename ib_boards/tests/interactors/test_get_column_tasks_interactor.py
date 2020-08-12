@@ -51,7 +51,8 @@ class TestGetColumnTasksInteractor:
             view_type=ViewType.LIST.value,
             column_id='COLUMN_ID_1',
             offset=0,
-            limit=5
+            limit=5,
+            search_query="hello"
         )
 
     @pytest.fixture
@@ -61,7 +62,8 @@ class TestGetColumnTasksInteractor:
             view_type=ViewType.LIST.value,
             column_id='COLUMN_ID_1',
             offset=-1,
-            limit=1
+            limit=1,
+            search_query="hello"
         )
 
     @pytest.fixture
@@ -71,7 +73,8 @@ class TestGetColumnTasksInteractor:
             view_type=ViewType.LIST.value,
             column_id='COLUMN_ID_1',
             offset=1,
-            limit=-1
+            limit=-1,
+            search_query="hello"
         )
 
     @pytest.fixture
@@ -274,7 +277,8 @@ class TestGetColumnTasksInteractor:
                 stage_ids=stage_ids,
                 offset=get_column_tasks_dto.offset,
                 limit=get_column_tasks_dto.limit,
-                user_id='user_id_1'
+                user_id='user_id_1',
+                search_query="hello"
             )
         ]
         user_role = 'User'
@@ -337,7 +341,8 @@ class TestGetColumnTasksInteractor:
                 stage_ids=stage_ids,
                 offset=get_column_tasks_dto.offset,
                 limit=get_column_tasks_dto.limit,
-                user_id='user_id_1'
+                user_id='user_id_1',
+                search_query="hello"
             )
         ]
         user_role = 'User'
