@@ -169,12 +169,10 @@ class TestGetUserTokens:
         from ib_users.constants.custom_exception_messages import \
             USER_ACCOUNT_IS_DEACTIVATED
         from ib_users.validators.base_validator import CustomException
-        from ib_iam.constants.config import REQUIRED_PASSWORD_MIN_LENGTH
         get_user_auth_tokens_for_login_with_email_and_password_mock.side_effect \
             = CustomException(
             exception_type=USER_ACCOUNT_IS_DEACTIVATED.code,
-            message=USER_ACCOUNT_IS_DEACTIVATED.message.format(
-                val=REQUIRED_PASSWORD_MIN_LENGTH))
+            message=USER_ACCOUNT_IS_DEACTIVATED.message)
 
         from ib_iam.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
@@ -183,6 +181,38 @@ class TestGetUserTokens:
         # Assert
         from ib_iam.exceptions.custom_exceptions import UserAccountDoesNotExist
         with pytest.raises(UserAccountDoesNotExist):
+            auth_service.get_user_tokens_dto_for_given_email_and_password_dto(
+                email_and_password_dto=email_and_password_dto
+            )
+        get_user_auth_tokens_for_login_with_email_and_password_mock.assert_called_once()
+
+    def test_with_incorrect_password_then_raise_exception(
+            self, mocker
+    ):
+        # Arrange
+        from ib_iam.adapters.auth_service import EmailAndPasswordDTO
+        email_and_password_dto = EmailAndPasswordDTO(
+            email="test@gmail.com",
+            password="test123"
+        )
+        get_user_auth_tokens_for_login_with_email_and_password_mock = \
+            self.get_user_auth_tokens_mock(mocker=mocker)
+
+        from ib_users.exceptions.custom_exception_constants import \
+            INCORRECT_PASSWORD
+        from ib_users.validators.base_validator import CustomException
+        get_user_auth_tokens_for_login_with_email_and_password_mock.side_effect \
+            = CustomException(
+            exception_type=INCORRECT_PASSWORD.code,
+            message=INCORRECT_PASSWORD.message)
+
+        from ib_iam.adapters.service_adapter import ServiceAdapter
+        service_adapter = ServiceAdapter()
+        auth_service = service_adapter.auth_service
+
+        # Assert
+        from ib_iam.interactors.user_login_interactor import IncorrectPassword
+        with pytest.raises(IncorrectPassword):
             auth_service.get_user_tokens_dto_for_given_email_and_password_dto(
                 email_and_password_dto=email_and_password_dto
             )
