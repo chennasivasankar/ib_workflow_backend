@@ -1,7 +1,7 @@
 from typing import List, Optional, Union
 
 from ib_tasks.constants.config import TIME_FORMAT
-from ib_tasks.documents.elastic_task import ElasticTaskDTO, ElasticFieldDTO
+from ib_tasks.documents.elastic_task import ElasticFieldDTO
 from ib_tasks.exceptions.action_custom_exceptions import \
     InvalidActionException, InvalidKeyError, InvalidCustomLogicException
 from ib_tasks.exceptions.datetime_custom_exceptions import \
@@ -233,12 +233,6 @@ class CreateTaskInteractor:
         created_task_id = \
             self.create_task_storage.create_task_with_given_task_details(
                 task_dto)
-        elastic_dto = self._get_elastic_task_dto(task_dto, created_task_id)
-        elastic_task_id = \
-            self.elastic_storage.create_task(elastic_task_dto=elastic_dto)
-        self.task_storage.create_elastic_task(
-            task_id=created_task_id, elastic_task_id=elastic_task_id
-        )
         task_gof_dtos = [
             TaskGoFWithTaskIdDTO(
                 task_id=created_task_id,
@@ -257,6 +251,9 @@ class CreateTaskInteractor:
         self.create_task_storage.set_status_variables_for_template_and_task(
             task_dto.task_template_id, created_task_id
         )
+        self.create_task_storage.set_status_variables_for_template_and_task(
+            task_dto.task_template_id, created_task_id
+        )
         self.create_task_storage.create_initial_task_stage(
             task_id=created_task_id, template_id=task_dto.task_template_id
         )
@@ -269,7 +266,8 @@ class CreateTaskInteractor:
             stage_storage=self.stage_storage,
             task_storage=self.task_storage,
             action_storage=self.action_storage,
-            task_stage_storage=self.task_stage_storage
+            task_stage_storage=self.task_stage_storage,
+            elasticsearch_storage=self.elastic_storage
         )
         act_on_task_interactor.user_action_on_task(task_id=created_task_id)
         from ib_tasks.interactors.get_task_current_stages_interactor import \
@@ -280,17 +278,6 @@ class CreateTaskInteractor:
             get_task_current_stages_interactor.get_task_current_stages_details(
                 task_id=created_task_id, user_id=task_dto.created_by_id)
         return task_current_stage_details_dto
-
-    def _get_elastic_task_dto(self, task_dto: CreateTaskDTO, task_id: int):
-
-        fields_dto = self._get_fields_dto(task_dto)
-        elastic_task_dto = ElasticTaskDTO(
-            template_id=task_dto.task_template_id,
-            task_id=task_id,
-            title=task_dto.title,
-            fields=fields_dto
-        )
-        return elastic_task_dto
 
     def _get_fields_dto(
             self, task_dto: CreateTaskDTO) -> List[ElasticFieldDTO]:

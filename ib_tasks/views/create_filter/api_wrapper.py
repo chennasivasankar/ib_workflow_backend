@@ -44,6 +44,5 @@ def api_wrapper(*args, **kwargs):
         filter_dto=filter_dto,
         condition_dtos=condition_dtos
     )
-    content = response.content
     return response
 

@@ -32,9 +32,17 @@ class ServiceInterface:
             TasksStorageImplementation
         from ib_tasks.storages.storage_implementation import \
             StagesStorageImplementation
+        from ib_tasks.storages.elasticsearch_storage_implementation import \
+            ElasticSearchStorageImplementation
+        elasticsearch_storage = ElasticSearchStorageImplementation()
+        from ib_tasks.storages.filter_storage_implementation import \
+            FilterStorageImplementation
+        filter_storage = FilterStorageImplementation()
         interactor = GetTaskIdsInteractor(
             task_storage=TasksStorageImplementation(),
-            stage_storage=StagesStorageImplementation()
+            stage_storage=StagesStorageImplementation(),
+            filter_storage=filter_storage,
+            elasticsearch_storage=elasticsearch_storage
         )
 
         task_ids_dtos = interactor.get_task_ids(

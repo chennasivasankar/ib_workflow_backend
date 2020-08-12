@@ -188,27 +188,22 @@ class TasksStorageImplementation(TaskStorageInterface):
     def get_task_ids_for_the_stage_ids(
             self, stage_ids: List[str],
             offset: int, limit: int) -> Tuple[List[TaskStageIdsDTO], int]:
-        total_tasks = CurrentTaskStage.objects.aggregate(
+        total_tasks = TaskStage.objects.aggregate(
             tasks_count=Count(
                 'task',
                 filter=Q(stage__stage_id__in=stage_ids),
                 distinct=True
             )
         )['tasks_count']
-        task_stage_ids = CurrentTaskStage.objects.filter(
+        task_stage_ids = TaskStage.objects.filter(
             stage__stage_id__in=stage_ids
         ).values('task_id', 'stage__stage_id')
-        # dup_task_ids = []
-        # for task_stage_id in task_stage_ids:
-        #     if task_stage_id['task_id'] not in dup_task_ids:
-
-        # TODO:
         task_stage_dtos = [
             TaskStageIdsDTO(
                 task_id=task_stage_id['task_id'],
                 stage_id=task_stage_id['stage__stage_id']
             )
-            for task_stage_id in task_stage_ids[offset: offset + limit]
+            for task_stage_id in task_stage_ids
         ]
         return task_stage_dtos, total_tasks
 
