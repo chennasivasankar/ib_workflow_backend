@@ -2026,12 +2026,6 @@
         "summary": "Refresh Auth Tokens",
         "operationId": "refresh_auth_tokens",
         "description": "Get refresh auth tokens for given access token and refresh token",
-        "security": [
-          {
-            "oauth": [
-            ]
-          }
-        ],
         "parameters": [
           {
             "$ref": "#/parameters/RefreshAuthTokenParameter"
