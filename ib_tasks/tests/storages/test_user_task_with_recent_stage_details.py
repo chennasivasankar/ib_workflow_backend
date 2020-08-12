@@ -7,7 +7,7 @@ from ib_tasks.storages.storage_implementation import \
     StagesStorageImplementation
 from ib_tasks.storages.tasks_storage_implementation import \
     TasksStorageImplementation
-from ib_tasks.tests.factories.models import TaskStageFactory, TaskFactory, \
+from ib_tasks.tests.factories.models import CurrentTaskStageModelFactory, TaskFactory, \
     StageModelFactory
 
 
@@ -22,11 +22,11 @@ class TestUserTaskWithRecentStageDetails:
     @pytest.fixture()
     def create_task_stages_setup(self, create_tasks):
         task_objs = create_tasks
-        TaskStageFactory.reset_sequence()
+        CurrentTaskStageModelFactory.reset_sequence()
         StageModelFactory.reset_sequence()
-        TaskStageFactory.create_batch(size=3, task=task_objs[0])
+        CurrentTaskStageModelFactory.create_batch(size=3, task=task_objs[0])
         stage = StageModelFactory(value=2)
-        TaskStageFactory(task=task_objs[1], stage=stage)
+        CurrentTaskStageModelFactory(task=task_objs[1], stage=stage)
 
     @pytest.fixture()
     def get_task_id_with_max_stage_value_dtos(self, create_tasks):
@@ -42,15 +42,16 @@ class TestUserTaskWithRecentStageDetails:
         task_objs = create_tasks
         task_id_with_stage_details_dtos = [
             TaskIdWithStageDetailsDTO(task_id=task_objs[0].id,
+                                      task_display_id=task_objs[0].task_display_id,
                                       stage_id="stage_id_2",
-                                      db_stage_id=3,
-                                      stage_color="blue",
-                                      stage_display_name="name_2"),
+                                      stage_display_name="name_2",
+                                      db_stage_id=3, stage_color="blue"),
             TaskIdWithStageDetailsDTO(task_id=task_objs[1].id,
+                                      task_display_id=task_objs[
+                                          1].task_display_id,
                                       stage_id="stage_id_3",
-                                      db_stage_id=4,
-                                      stage_color="blue",
-                                      stage_display_name="name_3")
+                                      stage_display_name="name_3",
+                                      db_stage_id=4, stage_color="orange")
         ]
         return task_id_with_stage_details_dtos
 
@@ -88,8 +89,7 @@ class TestUserTaskWithRecentStageDetails:
         # Act
         result = storage. \
             get_task_id_with_stage_details_dtos_based_on_stage_value(
-                stage_values=stage_values,
-                user_id=user_id,
-                task_ids_group_by_stage_value_dtos=
-                task_ids_group_by_stage_value_dtos)
+            stage_values=stage_values,
+            task_ids_group_by_stage_value_dtos=
+            task_ids_group_by_stage_value_dtos)
         assert result == expected_output

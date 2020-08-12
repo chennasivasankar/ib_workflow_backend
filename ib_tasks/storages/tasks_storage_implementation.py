@@ -184,27 +184,22 @@ class TasksStorageImplementation(TaskStorageInterface):
     def get_task_ids_for_the_stage_ids(
             self, stage_ids: List[str],
             offset: int, limit: int) -> Tuple[List[TaskStageIdsDTO], int]:
-        total_tasks = CurrentTaskStage.objects.aggregate(
+        total_tasks = TaskStage.objects.aggregate(
             tasks_count=Count(
                 'task',
                 filter=Q(stage__stage_id__in=stage_ids),
                 distinct=True
             )
         )['tasks_count']
-        task_stage_ids = CurrentTaskStage.objects.filter(
+        task_stage_ids = TaskStage.objects.filter(
             stage__stage_id__in=stage_ids
         ).values('task_id', 'stage__stage_id')
-        # dup_task_ids = []
-        # for task_stage_id in task_stage_ids:
-        #     if task_stage_id['task_id'] not in dup_task_ids:
-
-        # TODO:
         task_stage_dtos = [
             TaskStageIdsDTO(
                 task_id=task_stage_id['task_id'],
                 stage_id=task_stage_id['stage__stage_id']
             )
-            for task_stage_id in task_stage_ids[offset: offset + limit]
+            for task_stage_id in task_stage_ids
         ]
         return task_stage_dtos, total_tasks
 
@@ -461,13 +456,23 @@ class TasksStorageImplementation(TaskStorageInterface):
         return valid_task_stages_dtos
 
     def get_user_task_ids_and_max_stage_value_dto_based_on_given_stage_ids(
-            self, user_id: str, stage_ids: List[str]) -> List[TaskIdWithStageValueDTO]:
+            self, user_id: str, stage_ids: List[str]) -> List[
+        TaskIdWithStageValueDTO]:
         from django.db.models import Max
         task_objs_with_max_stage_value = list(
             CurrentTaskStage.objects.filter(
                 task__created_by=user_id,
                 stage__stage_id__in=stage_ids).values("task_id").annotate(
                 stage_value=Max("stage__value")))
+        task_id_with_max_stage_value_dtos = self. \
+            _prepare_task_id_with_max_stage_value_dtos(
+            task_objs_with_max_stage_value)
+        return task_id_with_max_stage_value_dtos
+
+    @staticmethod
+    def _prepare_task_id_with_max_stage_value_dtos(
+            task_objs_with_max_stage_value) \
+            -> List[TaskIdWithStageValueDTO]:
         task_id_with_max_stage_value_dtos = []
         for task_with_stage_value_item in task_objs_with_max_stage_value:
             task_id_with_max_stage_value_dtos.append(
@@ -486,3 +491,8 @@ class TasksStorageImplementation(TaskStorageInterface):
             task_display_id=task_display_id).values_list('id', flat=True)
         task_id = task_id_queryset.first()
         return task_id
+
+    def get_task_display_id(self, task_id: int) -> str:
+        task_obj = Task.objects.get(id=task_id)
+        return task_obj.task_display_id
+

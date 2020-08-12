@@ -1,9 +1,11 @@
 from typing import List
 
 from ib_tasks.exceptions.task_custom_exceptions \
-    import InvalidTaskIdException
+    import InvalidTaskIdException, InvalidStageIdsForTask, InvalidTaskDisplayId
 from ib_tasks.interactors.get_task_base_interactor \
     import GetTaskBaseInteractor
+from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
+    GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
     import GetTaskPresenterInterface
 from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
@@ -26,19 +28,24 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import \
     TaskStageStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
+    TaskStorageInterface
 from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
 
 
-class GetTaskInteractor:
+class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
 
     def __init__(
             self, storage: CreateOrUpdateTaskStorageInterface,
             stages_storage: FieldsStorageInterface,
-            task_storage: StorageInterface,
+            task_storage1: StorageInterface,
+            task_storage: TaskStorageInterface,
             action_storage: ActionStorageInterface,
             task_stage_storage: TaskStageStorageInterface
 
     ):
+        # TODO : Need to give proper names for interfaces
+        self.task_storage1 = task_storage1
         self.task_stage_storage = task_stage_storage
         self.action_storage = action_storage
         self.task_storage = task_storage
@@ -46,19 +53,36 @@ class GetTaskInteractor:
         self.stages_storage = stages_storage
 
     def get_task_details_wrapper(
-            self, user_id: str, task_id: int,
+            self, user_id: str, task_display_id: str,
             presenter: GetTaskPresenterInterface
     ):
+
         try:
-            return self.get_task_details_response(user_id, task_id, presenter)
+            return self.get_task_details_response(user_id, task_display_id,
+                                                  presenter)
+        # TODO: Need to verify here exception needed or not
         except InvalidTaskIdException as err:
             response = presenter.raise_exception_for_invalid_task_id(err)
             return response
+        except InvalidStageIdsForTask as err:
+            response = presenter.raise_invalid_stage_ids_for_task(err)
+            return response
+        except InvalidTaskDisplayId as err:
+            response = presenter.raise_invalid_task_display_id(err)
+            return response
+
+    def _get_task_id_for_given_task_display_id(self, task_display_id: str):
+        task_id = self.get_task_id_for_task_display_id(
+            task_display_id=task_display_id
+        )
+        return task_id
 
     def get_task_details_response(
-            self, user_id: str, task_id: int,
+            self, user_id: str, task_display_id: str,
             presenter: GetTaskPresenterInterface
     ):
+        task_id = self._get_task_id_for_given_task_display_id(
+            task_display_id)
         task_complete_details_dto = self.get_task_details(user_id, task_id)
         response = presenter.get_task_response(task_complete_details_dto)
         return response
@@ -78,8 +102,9 @@ class GetTaskInteractor:
         stage_assignee_details_dtos = self._stage_assignee_details_dtos(
             task_id, stage_ids
         )
+        task_display_id = self.task_storage.get_task_display_id(task_id)
         task_complete_details_dto = TaskCompleteDetailsDTO(
-            task_id=task_id,
+            task_id=task_display_id,
             task_details_dto=task_details_dto,
             stages_and_actions_details_dtos=stages_and_actions_details_dtos,
             stage_assignee_details_dtos=stage_assignee_details_dtos
@@ -140,7 +165,7 @@ class GetTaskInteractor:
             import GetTaskStagesAndActions
         interactor = GetTaskStagesAndActions(
             storage=self.stages_storage,
-            task_storage=self.task_storage,
+            task_storage=self.task_storage1,
             action_storage=self.action_storage
         )
         stages_and_actions_details_dtos = \

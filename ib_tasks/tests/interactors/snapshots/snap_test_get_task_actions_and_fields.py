@@ -5,9 +5,6 @@ from __future__ import unicode_literals
 from snapshottest import Snapshot, GenericRepr
 
 
-from snapshottest import GenericRepr, Snapshot
-
-
 snapshots = Snapshot()
 
 snapshots['TestGetFieldsAndActionsInteractor.test_get_actions_and_fields_when_task_has_no_actions_or_fields_returns_empty_list response'] = [

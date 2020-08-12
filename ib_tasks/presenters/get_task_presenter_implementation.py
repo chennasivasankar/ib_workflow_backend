@@ -5,7 +5,8 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
 from ib_tasks.constants.constants import DATETIME_FORMAT
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException, \
+    InvalidStageIdsForTask, InvalidTaskDisplayId
 from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
     import GetTaskPresenterInterface
 from ib_tasks.interactors.presenter_interfaces.get_task_presenter_interface \
@@ -29,6 +30,36 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
             "response": response_message,
             "http_status_code": 404,
             "res_status": INVALID_TASK_ID[1]
+        }
+        response_object = self.prepare_404_not_found_response(
+            response_dict=data
+        )
+        return response_object
+
+    def raise_invalid_stage_ids_for_task(self, err: InvalidStageIdsForTask):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_STAGES_FOR_TASK
+        message = err.message
+        response_message = INVALID_STAGES_FOR_TASK[0].format(message)
+        data = {
+            "response": response_message,
+            "http_status_code": 404,
+            "res_status": INVALID_STAGES_FOR_TASK[1]
+        }
+        response_object = self.prepare_404_not_found_response(
+            response_dict=data
+        )
+        return response_object
+
+    def raise_invalid_task_display_id(self, err: InvalidTaskDisplayId):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_TASK_DISPLAY_ID
+        task_id = err.task_display_id
+        response_message = INVALID_TASK_DISPLAY_ID[0].format(task_id)
+        data = {
+            "response": response_message,
+            "http_status_code": 404,
+            "res_status": INVALID_TASK_DISPLAY_ID[1]
         }
         response_object = self.prepare_404_not_found_response(
             response_dict=data

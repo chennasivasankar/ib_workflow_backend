@@ -11,3 +11,13 @@ CHECKLIST_ITEM_ID_NOT_FOUND_FOR_UPDATE_CHECKLIST_ITEM = (
     "Given Checklist item id is not found(invalid)",
     "CHECKLIST_ITEM_ID_NOT_FOUND"
 )
+
+TIMER_IS_ALREADY_RUNNING = (
+    "Timer is already running",
+    "TIMER_IS_ALREADY_RUNNING"
+)
+
+TIMER_IS_ALREADY_STOPPED = (
+    "Timer is already in stop state",
+    "TIMER_IS_ALREADY_STOPPED"
+)

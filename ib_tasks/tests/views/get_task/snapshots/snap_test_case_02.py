@@ -66,25 +66,18 @@ snapshots['TestCase02GetTaskAPITestCase.test_case body'] = {
                     'transition_template_id': 'template_1'
                 },
                 {
-                    'action_id': 4,
+                    'action_id': 5,
                     'action_type': 'NO_VALIDATIONS',
                     'button_color': '#fafafa',
                     'button_text': 'hey',
-                    'transition_template_id': 'template_4'
+                    'transition_template_id': 'template_5'
                 },
                 {
-                    'action_id': 7,
+                    'action_id': 9,
                     'action_type': 'NO_VALIDATIONS',
                     'button_color': '#fafafa',
                     'button_text': 'hey',
-                    'transition_template_id': 'template_7'
-                },
-                {
-                    'action_id': 10,
-                    'action_type': 'NO_VALIDATIONS',
-                    'button_color': '#fafafa',
-                    'button_text': 'hey',
-                    'transition_template_id': 'template_10'
+                    'transition_template_id': 'template_9'
                 }
             ],
             'assignee': {
@@ -107,18 +100,18 @@ snapshots['TestCase02GetTaskAPITestCase.test_case body'] = {
                     'transition_template_id': 'template_2'
                 },
                 {
-                    'action_id': 5,
+                    'action_id': 6,
                     'action_type': 'NO_VALIDATIONS',
                     'button_color': '#fafafa',
                     'button_text': 'hey',
-                    'transition_template_id': 'template_5'
+                    'transition_template_id': 'template_6'
                 },
                 {
-                    'action_id': 8,
+                    'action_id': 10,
                     'action_type': 'NO_VALIDATIONS',
                     'button_color': '#fafafa',
                     'button_text': 'hey',
-                    'transition_template_id': 'template_8'
+                    'transition_template_id': 'template_10'
                 }
             ],
             'assignee': {
@@ -126,7 +119,7 @@ snapshots['TestCase02GetTaskAPITestCase.test_case body'] = {
                 'name': 'name_1',
                 'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM'
             },
-            'stage_color': 'blue',
+            'stage_color': 'orange',
             'stage_display_name': 'name_1',
             'stage_id': 2,
             'task_stage_id': 2
@@ -141,18 +134,11 @@ snapshots['TestCase02GetTaskAPITestCase.test_case body'] = {
                     'transition_template_id': 'template_3'
                 },
                 {
-                    'action_id': 6,
+                    'action_id': 7,
                     'action_type': 'NO_VALIDATIONS',
                     'button_color': '#fafafa',
                     'button_text': 'hey',
-                    'transition_template_id': 'template_6'
-                },
-                {
-                    'action_id': 9,
-                    'action_type': 'NO_VALIDATIONS',
-                    'button_color': '#fafafa',
-                    'button_text': 'hey',
-                    'transition_template_id': 'template_9'
+                    'transition_template_id': 'template_7'
                 }
             ],
             'assignee': {
@@ -160,14 +146,37 @@ snapshots['TestCase02GetTaskAPITestCase.test_case body'] = {
                 'name': 'name_2',
                 'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM'
             },
-            'stage_color': 'blue',
+            'stage_color': 'green',
             'stage_display_name': 'name_2',
             'stage_id': 3,
             'task_stage_id': 3
+        },
+        {
+            'actions': [
+                {
+                    'action_id': 4,
+                    'action_type': 'NO_VALIDATIONS',
+                    'button_color': '#fafafa',
+                    'button_text': 'hey',
+                    'transition_template_id': 'template_4'
+                },
+                {
+                    'action_id': 8,
+                    'action_type': 'NO_VALIDATIONS',
+                    'button_color': '#fafafa',
+                    'button_text': 'hey',
+                    'transition_template_id': 'template_8'
+                }
+            ],
+            'assignee': None,
+            'stage_color': 'blue',
+            'stage_display_name': 'name_3',
+            'stage_id': 4,
+            'task_stage_id': 4
         }
     ],
     'start_date': '2020-10-12 04:40:00',
-    'task_id': 1,
+    'task_id': 'iBWF-1',
     'template_id': 'template_0',
     'title': 'title_0'
 }
