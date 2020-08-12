@@ -53,6 +53,12 @@ class StagesStorageImplementation(StageStorageInterface):
                              for stage_obj in stage_objs]
         return stage_detail_dtos
 
+    def get_valid_next_stage_ids_of_task_by_excluding_virtual_stages(
+            self, stage_ids: List[str]) -> List[str]:
+        stage_ids = list(Stage.objects.filter(stage_id__in=stage_ids).exclude(
+            value=-1).values('stage_id'))
+        return stage_ids
+
     @staticmethod
     def _get_list_of_permitted_roles_objs(stage_objs,
                                           stage_dtos):

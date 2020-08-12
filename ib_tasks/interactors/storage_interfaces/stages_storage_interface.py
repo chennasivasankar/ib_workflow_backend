@@ -76,11 +76,15 @@ class StageStorageInterface(abc.ABC):
             List[int]:
         pass
 
-
     @abc.abstractmethod
     def create_task_stage_assignees(
             self, task_id_with_stage_assignee_dtos: List[
                 TaskIdWithStageAssigneeDTO]):
+        pass
+
+    @abc.abstractmethod
+    def get_valid_next_stage_ids_of_task_by_excluding_virtual_stages(
+            self, stage_ids: List[str]) -> List[str]:
         pass
 
     @abc.abstractmethod
