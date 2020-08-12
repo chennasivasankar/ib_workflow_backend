@@ -52,6 +52,6 @@ class FieldDisplayDTO:
 
 
 @dataclass
-class GoFIdWithSameGoFOrder:
+class GoFIdWithSameGoFOrderDTO:
     gof_id: str
-    same_gof_order: str
+    same_gof_order: int

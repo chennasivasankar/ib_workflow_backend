@@ -6,7 +6,7 @@ from ib_tasks.constants.config import TIME_FORMAT
 from ib_tasks.exceptions.task_custom_exceptions \
     import InvalidTaskIdException
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
-from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrder
+from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrderDTO
 from ib_tasks.interactors.storage_interfaces. \
     create_or_update_task_storage_interface \
     import CreateOrUpdateTaskStorageInterface
@@ -41,9 +41,9 @@ class CreateOrUpdateTaskStorageImplementation(
         task_obj.save()
 
     def create_initial_task_stage(self, task_id: int, template_id: str):
-        from ib_tasks.models import TaskStage
+        from ib_tasks.models import CurrentTaskStage
         from ib_tasks.models import TaskTemplateInitialStage
-        TaskStage.objects.get_or_create(
+        CurrentTaskStage.objects.get_or_create(
             task_id=task_id,
             stage=TaskTemplateInitialStage.objects.get(
                 task_template_id=template_id
@@ -146,12 +146,12 @@ class CreateOrUpdateTaskStorageImplementation(
         return task_existence
 
     def get_gof_ids_with_same_gof_order_related_to_a_task(
-            self, task_id: int) -> List[GoFIdWithSameGoFOrder]:
+            self, task_id: int) -> List[GoFIdWithSameGoFOrderDTO]:
         gof_dicts = list(
             TaskGoF.objects.filter(task_id=task_id).values(
                 'gof_id', 'same_gof_order'))
         gof_id_with_same_gof_order_dtos = [
-            GoFIdWithSameGoFOrder(
+            GoFIdWithSameGoFOrderDTO(
                 gof_id=gof_dict['gof_id'],
                 same_gof_order=gof_dict['same_gof_order']
             )

@@ -10,7 +10,7 @@ from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
 
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes
 
-from ib_tasks.interactors.multi_values_input_fileds_validation_interactor \
+from ib_tasks.interactors.multi_values_input_fields_validation_interactor \
     import MultiValuesInputFieldsValidationInteractor
 
 from ib_tasks.interactors.gof_selector_validations_interactor \

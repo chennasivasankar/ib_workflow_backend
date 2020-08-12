@@ -2,6 +2,7 @@ from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Searchable, \
     Operators, Priority
 
 ALL_ROLES_ID = "ALL_ROLES"
+EMPTY_STRING=""
 GOF_ORDER_WITH_MINUS_ONE_VALUE = -1
 
 FIELD_TYPES_LIST = [item.value for item in FieldTypes]

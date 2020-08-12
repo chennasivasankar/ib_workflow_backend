@@ -13,15 +13,15 @@ class UserBoardPermissionDenied(Exception):
 
 class UserNeedsGoFWritablePermission(Exception):
     def __init__(self, user_id: str, gof_id: str,
-                 missed_user_roles: List[str]):
+                 required_user_roles: List[str]):
         self.user_id = user_id
         self.gof_id = gof_id
-        self.missed_roles = missed_user_roles
+        self.required_roles = required_user_roles
 
 
 class UserNeedsFieldWritablePermission(Exception):
     def __init__(self, user_id: str, field_id: str,
-                 missed_user_roles: List[str]):
+                 required_user_roles: List[str]):
         self.user_id = user_id
         self.field_id = field_id
-        self.missed_roles = missed_user_roles
+        self.required_roles = required_user_roles
