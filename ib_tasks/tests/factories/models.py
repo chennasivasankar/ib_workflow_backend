@@ -9,7 +9,7 @@ from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     Task, TaskGoF,
     TaskGoFField, TaskTemplateGlobalConstants, TaskStatusVariable, Filter,
-    FilterCondition, StagePermittedRoles, UserTaskDelayReason)
+    FilterCondition, StagePermittedRoles, UserTaskDelayReason, TaskLog)
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
@@ -294,3 +294,14 @@ class StagePermittedRolesFactory(factory.django.DjangoModelFactory):
     role_id = factory.Iterator(
         ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"]
     )
+
+
+class TaskLogFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskLog
+
+    task = factory.SubFactory(TaskFactory)
+    task_json = """ json """
+    acted_at = "2020-08-11 12:00:00"
+    action = factory.SubFactory(StageActionFactory)
+    user_id = factory.Sequence(lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
