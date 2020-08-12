@@ -24,3 +24,9 @@ def prepare_update_user_password_with_reset_password_token_mock(mocker):
         "ib_iam.adapters.auth_service.AuthService.update_user_password_with_reset_password_token"
     )
     return mock
+
+
+def prepare_update_user_password(mocker):
+    mock = mocker.patch(
+        "ib_iam.adapters.auth_service.AuthService.update_user_password")
+    return mock

@@ -30,7 +30,8 @@
       "type": "oauth2"
     }
   },
-  "security": [],
+  "security": [
+  ],
   "definitions": {
     "SaveAndActOnATaskRequestBody": {
       "allOf": [
@@ -347,7 +348,7 @@
       "type": "object",
       "properties": {
         "task_id": {
-          "type": "integer"
+          "type": "string"
         },
         "current_board_details": {
           "type": "object",
@@ -407,11 +408,42 @@
               "column_details"
             ]
           }
+        },
+        "task_current_stages_details": {
+          "type": "object",
+          "properties": {
+            "stages": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "stage_id": {
+                    "type": "string"
+                  },
+                  "stage_display_name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "stage_id",
+                  "stage_display_name"
+                ]
+              }
+            },
+            "user_has_permission": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "stages",
+            "user_has_permission"
+          ]
         }
       },
       "required": [
         "task_id",
-        "other_board_details"
+        "other_board_details",
+        "task_current_stages_details"
       ]
     },
     "Field": {
@@ -601,7 +633,7 @@
       "type": "object",
       "properties": {
         "task_id": {
-          "type": "integer"
+          "type": "string"
         },
         "task_overview_fields": {
           "type": "array",
@@ -666,7 +698,7 @@
       "type": "object",
       "properties": {
         "task_id": {
-          "type": "integer"
+          "type": "string"
         },
         "template_id": {
           "type": "string"
@@ -838,7 +870,7 @@
       "type": "object",
       "properties": {
         "task_id": {
-          "type": "integer"
+          "type": "string"
         },
         "title": {
           "type": "string"
@@ -1127,7 +1159,7 @@
       "type": "object",
       "properties": {
         "task_id": {
-          "type": "integer"
+          "type": "string"
         },
         "transition_checklist_template_id": {
           "type": "string"
@@ -1159,6 +1191,40 @@
           }
         }
       }
+    },
+    "TaskWithCurrentStages": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "stages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "stage_id": {
+                "type": "string"
+              },
+              "stage_display_name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "stage_id",
+              "stage_display_name"
+            ]
+          }
+        },
+        "user_has_permission": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "task_id",
+        "stages",
+        "user_has_permission"
+      ]
     },
     "StageResponseBody": {
       "type": "object",
@@ -1284,7 +1350,7 @@
     },
     "PerformActionBodyParameter": {
       "in": "body",
-      "name": "CreateTaskRequestBody",
+      "name": "ActOnTaskRequestBody",
       "description": "give valid details",
       "required": true,
       "schema": {
@@ -1296,7 +1362,7 @@
       "in": "path",
       "required": true,
       "description": "Id of the Task",
-      "type": "integer"
+      "type": "string"
     },
     "ActionParameterize": {
       "name": "action_id",
@@ -1369,7 +1435,7 @@
       "in": "path",
       "name": "task_id",
       "required": true,
-      "type": "integer"
+      "type": "string"
     },
     "TaskStageAssigneesParameter": {
       "description": "Task Stage Assignees Parameter",
@@ -1461,6 +1527,13 @@
       "schema": {
         "$ref": "#/definitions/CreateTransitionChecklistRequestBody"
       }
+    },
+    "StageIdParameter": {
+      "name": "stage_id",
+      "in": "path",
+      "required": true,
+      "description": "stage id",
+      "type": "integer"
     }
   },
   "responses": {
@@ -1634,8 +1707,7 @@
               },
               "required": [
                 "stage_id",
-                "stage_display_name",
-                "assignee"
+                "stage_display_name"
               ]
             }
           }
@@ -1991,8 +2063,7 @@
           "type": "object",
           "properties": {
             "task_id": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string"
             },
             "due_date_time": {
               "type": "string",
@@ -2200,6 +2271,64 @@
     "CreateTransitionChecklistFailureResponse": {
       "description": "transition checklist creation failed"
     },
+    "TaskWithCurrentStagesResponse": {
+      "description": "task with current stages details response",
+      "schema": {
+        "$ref": "#/definitions/TaskWithCurrentStages"
+      }
+    },
+    "AssigneeSearchableValuesResponse": {
+      "description": "OK",
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "profile_pic": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "name"
+          ]
+        }
+      }
+    },
+    "TaskStagePossibleAssigneesNotFoundResponse": {
+      "description": "Task Stage Assignees Not Found Response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer",
+            "enum": [
+              404
+            ]
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "INVALID_STAGE_ID"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
     "GetTaskStagesResponse": {
       "description": "succesful",
       "schema": {
@@ -2259,7 +2388,8 @@
             ]
           }
         ],
-        "parameters": [],
+        "parameters": [
+        ],
         "responses": {
           "200": {
             "$ref": "#/responses/GetTaskTemplateResponse"
@@ -2316,7 +2446,7 @@
         ],
         "responses": {
           "201": {
-            "$ref": "#/responses/CreateTaskSuccessResponse"
+            "$ref": "#/responses/TaskWithCurrentStagesResponse"
           },
           "400": {
             "$ref": "#/responses/CreateTaskFailureResponse"
@@ -2365,7 +2495,7 @@
             "name": "task_id",
             "in": "query",
             "description": "task id to get task details",
-            "type": "integer"
+            "type": "string"
           }
         ],
         "responses": {
@@ -2499,7 +2629,7 @@
         ],
         "responses": {
           "201": {
-            "$ref": "#/responses/SaveAndActOnATaskTaskSuccessResponse"
+            "$ref": "#/responses/TaskWithCurrentStagesResponse"
           },
           "400": {
             "$ref": "#/responses/SaveAndActOnATaskTaskFailureResponse"
@@ -2519,7 +2649,8 @@
             ]
           }
         ],
-        "parameters": [],
+        "parameters": [
+        ],
         "responses": {
           "200": {
             "$ref": "#/responses/GetTaskTemplateFieldsResponse"
@@ -2854,6 +2985,48 @@
           },
           "403": {
             "$ref": "#/responses/TaskIsNotAssignedToUserResponse"
+          }
+        }
+      }
+    },
+    "/task/stage/{stage_id}/stage_assignees/v1/": {
+      "get": {
+        "operationId": "get_stage_searchable_possible_assignees_of_a_task",
+        "summary": "get stage possible assignees for a task",
+        "description": "get stage possible assignees for a task and you can search a user",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/StageIdParameter"
+          },
+          {
+            "$ref": "#/parameters/SearchableTypeParameter"
+          },
+          {
+            "$ref": "#/parameters/LimitParameter"
+          },
+          {
+            "$ref": "#/parameters/OffsetParameter"
+          },
+          {
+            "$ref": "#/parameters/SearchableQueryParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/AssigneeSearchableValuesResponse"
+          },
+          "400": {
+            "$ref": "#/responses/SearchableValuesFailureResponse"
+          },
+          "404": {
+            "$ref": "#/responses/TaskStagePossibleAssigneesNotFoundResponse"
           }
         }
       }

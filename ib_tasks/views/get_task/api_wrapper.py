@@ -14,27 +14,29 @@ from ...storages.action_storage_implementation import \
 from ...storages.storage_implementation import StorageImplementation
 from ...storages.task_stage_storage_implementation import \
     TaskStageStorageImplementation
+from ...storages.tasks_storage_implementation import TasksStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     user_obj = kwargs['user']
     query_params_dict = kwargs['query_params']
-    task_id = query_params_dict['task_id']
+    task_display_id = query_params_dict['task_id']
     user_id = user_obj.user_id
 
     storage = CreateOrUpdateTaskStorageImplementation()
     stages_storage = FieldsStorageImplementation()
     presenter = GetTaskPresenterImplementation()
-    task_storage = StorageImplementation()
+    task_storage1 = StorageImplementation()
     task_stage_storage = TaskStageStorageImplementation()
     action_storage = ActionsStorageImplementation()
+    task_storage = TasksStorageImplementation()
     interactor = GetTaskInteractor(
         storage=storage, stages_storage=stages_storage,
-        task_storage=task_storage, action_storage=action_storage,
-        task_stage_storage=task_stage_storage
+        task_storage1=task_storage1, action_storage=action_storage,
+        task_stage_storage=task_stage_storage, task_storage=task_storage
     )
     response = interactor.get_task_details_wrapper(
-       user_id=user_id, task_id=task_id, presenter=presenter
+       user_id=user_id, task_display_id=task_display_id, presenter=presenter
     )
     return response

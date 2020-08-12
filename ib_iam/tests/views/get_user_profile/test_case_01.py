@@ -56,6 +56,9 @@ class TestCase01GetUserProfileAPITestCase(TestUtils):
             is_admin=False,
             name="test"
         )
+        from ib_iam.tests.common_fixtures.reset_fixture \
+            import reset_sequence_user_details_factory
+        reset_sequence_user_details_factory()
         from ib_iam.tests.factories.models import UserDetailsFactory
         UserDetailsFactory(user_id=user_id, is_admin=False)
 

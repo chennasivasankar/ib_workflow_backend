@@ -7,7 +7,7 @@ from ib_tasks.storages.storage_implementation import \
     StagesStorageImplementation
 from ib_tasks.storages.tasks_storage_implementation import \
     TasksStorageImplementation
-from ib_tasks.tests.factories.models import TaskStageFactory, TaskFactory, \
+from ib_tasks.tests.factories.models import CurrentTaskStageModelFactory, TaskFactory, \
     StageModelFactory
 
 
@@ -22,11 +22,11 @@ class TestUserTaskWithRecentStageDetails:
     @pytest.fixture()
     def create_task_stages_setup(self, create_tasks):
         task_objs = create_tasks
-        TaskStageFactory.reset_sequence()
+        CurrentTaskStageModelFactory.reset_sequence()
         StageModelFactory.reset_sequence()
-        TaskStageFactory.create_batch(size=3, task=task_objs[0])
+        CurrentTaskStageModelFactory.create_batch(size=3, task=task_objs[0])
         stage = StageModelFactory(value=2)
-        TaskStageFactory(task=task_objs[1], stage=stage)
+        CurrentTaskStageModelFactory(task=task_objs[1], stage=stage)
 
     @pytest.fixture()
     def get_task_id_with_max_stage_value_dtos(self, create_tasks):

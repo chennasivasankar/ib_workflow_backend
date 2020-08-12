@@ -241,7 +241,9 @@ class TestCreateOrUpdateTaskStorageImplementation:
 
     def test_create_task_with_template_id(self, storage, reset_sequence):
         # Arrange
+        from ib_tasks.constants.constants import TASK_DISPLAY_ID
         create_task_dto = CreateTaskDTOFactory()
+        expected_task_display_id = TASK_DISPLAY_ID.format(1)
 
         # Act
         created_task_id = \
@@ -263,6 +265,7 @@ class TestCreateOrUpdateTaskStorageImplementation:
         assert task.start_date.date() == create_task_dto.start_date
         assert task.due_date == due_date_time
         assert task.priority == create_task_dto.priority
+        assert task.task_display_id == expected_task_display_id
 
     def test_create_task_gofs(self, storage, reset_sequence):
         # Arrange
