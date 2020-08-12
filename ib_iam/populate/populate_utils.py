@@ -16,13 +16,13 @@ def populate_admin_users():
         {
             "name": "Pavan",
             "email": "ibadmin@ibhubs.co",
-            "password": "Admin@123",
+            "password": "Admin123@",
             "is_admin": True
         },
         {
             "name": "Rajesh",
             "email": "cybereyeadmin@ibhubs.co",
-            "password": "Admin@123",
+            "password": "Admin123@",
             "is_admin": True
         }
     ]
