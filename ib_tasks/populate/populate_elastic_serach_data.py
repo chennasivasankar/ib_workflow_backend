@@ -106,37 +106,37 @@ def populate_elastic_search_state_data():
         ElasticStateDTO(
             state_id=1,
             state_name="Andhra Pradhesh",
-            elastic_state_name=None
+            elastic_state_id=None
         ),
         ElasticStateDTO(
             state_id=2,
             state_name="Uttar Pradhesh",
-            elastic_state_name=None
+            elastic_state_id=None
         ),
         ElasticStateDTO(
             state_id=1,
             state_name="Telangana",
-            elastic_state_name=None
+            elastic_state_id=None
         ),
         ElasticStateDTO(
             state_id=1,
             state_name="Tamilnadu",
-            elastic_state_name=None
+            elastic_state_id=None
         ),
         ElasticStateDTO(
             state_id=1,
             state_name="Karnataka",
-            elastic_state_name=None
+            elastic_state_id=None
         ),
         ElasticStateDTO(
             state_id=1,
             state_name="Kerala",
-            elastic_state_name=None
+            elastic_state_id=None
         ),
         ElasticStateDTO(
             state_id=1,
             state_name="Orissa",
-            elastic_state_name=None
+            elastic_state_id=None
         )
     ]
     storage = ElasticSearchStorageImplementation()
@@ -149,32 +149,32 @@ def populate_elastic_search_city_data():
         ElasticCityDTO(
             city_id=1,
             city_name="Hyderabad",
-            elastic_city_name=None
+            elastic_city_id=None
         ),
         ElasticCityDTO(
             city_id=2,
             city_name="Vijayawada",
-            elastic_city_name=None
+            elastic_city_id=None
         ),
         ElasticCityDTO(
             city_id=3,
             city_name="Mumbai",
-            elastic_city_name=None
+            elastic_city_id=None
         ),
         ElasticCityDTO(
             city_id=4,
             city_name="Chennai",
-            elastic_city_name=None
+            elastic_city_id=None
         ),
         ElasticCityDTO(
             city_id=5,
             city_name="Punjab",
-            elastic_city_name=None
+            elastic_city_id=None
         ),
         ElasticCityDTO(
             city_id=6,
             city_name="Visakapatnam",
-            elastic_city_name=None
+            elastic_city_id=None
         )
     ]
     storage = ElasticSearchStorageImplementation()

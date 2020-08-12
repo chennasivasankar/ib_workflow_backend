@@ -71,6 +71,7 @@ class AddNewUserInteractor(ValidationMixin):
             user_id=new_user_id, team_ids=team_ids)
         self.user_storage.add_roles_to_the_user(
             user_id=new_user_id, role_ids=role_obj_ids)
+        ## TODO use the new_user_id and name for elastic search
 
     def _validate_add_new_user_details(
             self, user_id,

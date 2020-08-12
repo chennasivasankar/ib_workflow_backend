@@ -109,7 +109,7 @@ class Country(Document):
 class ElasticStateDTO:
     state_id: int
     state_name: Optional[str]
-    elastic_state_name: Optional[str]
+    elastic_state_id: Optional[str]
 
 
 class State(Document):
@@ -124,7 +124,7 @@ class State(Document):
 class ElasticCityDTO:
     city_id: int
     city_name: Optional[str]
-    elastic_city_name: Optional[str]
+    elastic_city_id: Optional[str]
 
 
 class City(Document):

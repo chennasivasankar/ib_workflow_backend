@@ -1180,7 +1180,7 @@
 					"type": "string"
 				}
 			},
-			"required": ["user_id", "profile_pic_url", "name"]
+			"required": ["user_id", "name"]
 		},
 		"TaskStageResponseBody": {
 		  "type": "object",
@@ -1193,12 +1193,10 @@
 					"format": "date-time"
 				},
 				"time_spent_by_user": {
-					"type": "string",
-					"example": "14:30:00"
+					"type": "integer"
 				},
 				"stage_time": {
-					"type": "string",
-					"example": "14:30:00"
+					"type": "integer"
 				},
 				"user_details": {
 					"$ref": "#/definitions/UserResponseBody"
@@ -1219,7 +1217,10 @@
 					}
 				},
 				"stages_history": {
-					"$ref": "#/definitions/TaskStageResponseBody"
+				  "type": "array",
+				  "items": {
+				    "$ref": "#/definitions/TaskStageResponseBody"
+				  }
 				}
 			},
 			"required": ["stages_details", "stages_history"]
