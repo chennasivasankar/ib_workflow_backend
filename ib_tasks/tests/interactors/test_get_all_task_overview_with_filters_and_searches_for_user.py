@@ -11,6 +11,8 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO
+from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import TaskStageStorageInterface
+from ib_tasks.tests.common_fixtures.interactors import prepare_get_stage_ids_for_user
 
 
 class TestGetTasksOverviewForUserInteractor:
@@ -20,6 +22,7 @@ class TestGetTasksOverviewForUserInteractor:
         return GetTaskStageCompleteDetailsDTO(
                     task_id=1,
                     stage_id='stage_id_1',
+                    stage_color="#ffffff",
                     field_dtos=[
                         FieldDetailsDTO(
                             field_type='Drop down',
@@ -69,6 +72,7 @@ class TestGetTasksOverviewForUserInteractor:
         from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
             FieldsStorageInterface
         field_storage = create_autospec(FieldsStorageInterface)
+        task_stage_storage = create_autospec(TaskStageStorageInterface)
         from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
             ActionStorageInterface
         action_storage = create_autospec(ActionStorageInterface)
@@ -79,6 +83,7 @@ class TestGetTasksOverviewForUserInteractor:
             stage_storage=stage_storage,
             task_storage=task_storage,
             field_storage=field_storage,
+            task_stage_storage=task_stage_storage,
             action_storage=action_storage,
         )
         from ib_tasks.tests.factories.presenter_dtos import \
@@ -87,10 +92,11 @@ class TestGetTasksOverviewForUserInteractor:
         stage_ids_dto = TaskIdWithStageDetailsDTOFactory.create_batch(2)
         fields_and_actions = task_actions_fields
         stage_ids = ['stage_id_1', "stage_id_2"]
+        prepare_get_stage_ids_for_user(mocker, stage_ids)
         from ib_tasks.interactors.presenter_interfaces.dtos import \
             AllTasksOverviewDetailsDTO
         expected_response = AllTasksOverviewDetailsDTO(
-            task_id_with_stage_details_dtos=stage_ids_dto,
+            task_with_complete_stage_details_dtos=stage_ids_dto,
             task_fields_and_action_details_dtos=fields_and_actions
         )
         from ib_tasks.tests.common_fixtures.interactors import \

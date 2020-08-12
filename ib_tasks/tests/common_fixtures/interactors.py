@@ -28,6 +28,22 @@ def prepare_mock_for_next_stage_random_assignees(mocker):
     return mock_obj
 
 
+def prepare_get_field_ids_having_write_permission_for_user(mocker, field_ids):
+    path = "ib_tasks.interactors.user_role_validation_interactor." \
+           "UserRoleValidationInteractor.get_field_ids_having_write_permission_for_user"
+    mock_obj = mocker.patch(path)
+    mock_obj.return_value = field_ids
+    return mock_obj
+
+
+def prepare_get_stage_ids_for_user(mocker, stage_ids):
+    path = "ib_tasks.interactors.user_role_validation_interactor." \
+           "UserRoleValidationInteractor.get_permitted_stage_ids_given_user_id"
+    mock_obj = mocker.patch(path)
+    mock_obj.return_value = stage_ids
+    return mock_obj
+
+
 def prepare_call_action_logic_update_stages_mock(mocker):
     path = "ib_tasks.interactors.call_action_logic_function_and_update_task_status_variables_interactor" \
            ".CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor" \

@@ -14,7 +14,7 @@ class FilterStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_field_ids_for_task_template(
-            self, template_id: str, field_ids: List[int]) -> List[int]:
+            self, template_id: str, field_ids: List[str]) -> List[str]:
         pass
 
     @abc.abstractmethod

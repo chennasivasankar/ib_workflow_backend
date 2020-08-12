@@ -71,7 +71,7 @@ class StagesStorageImplementation(StageStorageInterface):
                                         role_id=role))
         return list_of_permitted_roles
 
-    def get_stages_roles(self) -> List[StageRolesDTO]:
+    def get_permitted_stage_ids(self, user_role_ids: List[str]) -> List[str]:
 
         stage_permitted_objs = \
             StagePermittedRoles.objects.all().values('stage__stage_id', 'role_id')

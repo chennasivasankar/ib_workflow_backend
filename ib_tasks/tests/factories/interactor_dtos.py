@@ -6,7 +6,6 @@ from ib_tasks.adapters.dtos import UserDTO
 from ib_tasks.constants.enum import Searchable, Priority
 from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
-from ib_tasks.interactors.get_tasks_to_relevant_search_query import SearchQueryDTO
 from ib_tasks.interactors.get_tasks_to_relevant_search_query import \
     SearchQueryDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
@@ -20,12 +19,10 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
-    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, \
-    CreateTaskLogDTO, \
-    CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeIdDTO
-from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory,\
-    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, CreateTaskLogDTO, TaskDueParametersDTO
+    CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeIdDTO, GetTaskDetailsDTO, FieldValuesDTO, StatusOperandStageDTO, \
+    CreateTaskLogDTO, TaskDueParametersDTO
 from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory, UserDetailsDTO
+
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
@@ -291,7 +288,6 @@ class TaskDueParametersDTOFactory(factory.Factory):
     due_date_time = datetime.now() + timedelta(days=2)
     reason_id = factory.Iterator([1, 2, 3, 4, -1])
     reason = "reason"
-
 
 
 class CreateTaskDTOFactory(factory.Factory):

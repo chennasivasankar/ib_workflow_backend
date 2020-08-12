@@ -23,7 +23,7 @@ class TestGetAllowedStageIdsOfUser:
             StageRolesDTOFactory(stage_id='stage_id_2', role_ids=['ROLE_1'])
         ]
         # Act
-        result = storage.get_stages_roles()
+        result = storage.get_permitted_stage_ids()
 
         # Assert
         assert result == expected
@@ -36,7 +36,7 @@ class TestGetAllowedStageIdsOfUser:
 
         expected = []
         # Act
-        result = storage.get_stages_roles()
+        result = storage.get_permitted_stage_ids()
 
         # Assert
         assert result == expected

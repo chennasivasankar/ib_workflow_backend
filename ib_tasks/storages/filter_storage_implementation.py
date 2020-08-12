@@ -69,7 +69,7 @@ class FilterStorageImplementation(FilterStorageInterface):
             raise InvalidTemplateID
 
     def get_field_ids_for_task_template(
-            self, template_id: str, field_ids: List[int]) -> List[int]:
+            self, template_id: str, field_ids: List[str]) -> List[str]:
         gof_ids = list(TaskTemplateGoFs.objects.filter(
             task_template_id=template_id
         ).values_list('gof_id', flat=True))
@@ -88,7 +88,7 @@ class FilterStorageImplementation(FilterStorageInterface):
         from ib_tasks.constants.constants import ALL_ROLES_ID
         updated_user_role = user_roles + [ALL_ROLES_ID]
         fields_user_roles = sorted(list(set(fields_user_roles)))
-        invalid_user = not (updated_user_role == fields_user_roles \
+        invalid_user = not (updated_user_role == fields_user_roles\
                             or set(fields_user_roles).issubset(set(updated_user_role)))
         if invalid_user:
             raise UserNotHaveAccessToFields

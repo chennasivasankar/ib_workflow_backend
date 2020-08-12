@@ -2,7 +2,7 @@ import abc
 from typing import Optional, List
 
 from ib_tasks.interactors.stages_dtos import StageDTO, StageRolesDTO, TaskIdWithStageAssigneeDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDetailsDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDetailsDTO, TaskStageHavingAssigneeIdDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
     TaskStagesDTO, TaskTemplateStageDTO, StageValueWithTaskIdsDTO, \
@@ -36,7 +36,7 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_stages_roles(self) -> List[StageRolesDTO]:
+    def get_permitted_stage_ids(self, user_role_ids: List[str]) -> List[str]:
         pass
 
     @abc.abstractmethod
