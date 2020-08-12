@@ -130,12 +130,12 @@ class FieldsStorageImplementation(FieldsStorageInterface):
             stage_objs = (Stage.objects.filter(q)
                           .annotate(view_type=F('card_info_list'))
                           .values('task_template_id', 'stage_id',
-                                  'view_type', 'stage_color'))
+                                  'view_type', 'stage_color', 'id'))
         else:
             stage_objs = (Stage.objects.filter(q)
                           .annotate(view_type=F('card_info_kanban'))
                           .values('task_template_id', 'stage_id',
-                                  'view_type', 'stage_color'))
+                                  'view_type', 'stage_color', 'id'))
 
         task_fields_dtos = self._convert_stage_objs_to_dtos(stage_objs,
                                                             task_stages_dict)
@@ -158,6 +158,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
                         task_id=task_id,
                         stage_color=stage['stage_color'],
                         stage_id=stage['stage_id'],
+                        db_stage_id=stage['id'],
                         field_ids=field_ids))
         return task_fields_dtos
 

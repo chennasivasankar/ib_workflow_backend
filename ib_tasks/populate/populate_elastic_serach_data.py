@@ -3,10 +3,16 @@ from ib_tasks.storages.elasticsearch_storage_implementation import ElasticSearch
 
 
 def populate_data():
+    from elasticsearch_dsl import connections
+    from django.conf import settings
+    connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
+                                  timeout=20)
+    push_user_details_to_elasticsearch()
     populate_elastic_search_user_data()
     populate_elastic_search_country_data()
     populate_elastic_search_state_data()
     populate_elastic_search_city_data()
+
 
 def populate_elastic_search_user_data():
     user_dtos = [
@@ -17,7 +23,7 @@ def populate_elastic_search_user_data():
         ),
         ElasticUserDTO(
             user_id="2",
-            username="Pavan Kumar",
+            username="Pavankumar",
             elastic_user_id=None
         ),
         ElasticUserDTO(
@@ -41,9 +47,20 @@ def populate_elastic_search_user_data():
             elastic_user_id=None
         )
     ]
+
     storage = ElasticSearchStorageImplementation()
     for user_dto in user_dtos:
         storage.create_elastic_user(user_dto=user_dto)
+
+
+def push_user_details_to_elasticsearch():
+    from ib_iam.models import UserDetails
+    user_objects = UserDetails.objects.all()
+
+    for user_object in user_objects:
+        from ib_tasks.documents.elastic_task import User
+        user = User(user_id=user_object.user_id, name=user_object.name)
+        user.save()
 
 
 def populate_elastic_search_country_data():
