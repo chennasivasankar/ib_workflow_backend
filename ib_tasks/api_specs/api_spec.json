@@ -2065,7 +2065,7 @@
             "type": "object",
       "properties": {
         "task_id": {
-          "type": "string",
+          "type": "string"
         },
         "due_date_time": {
           "type": "string",
