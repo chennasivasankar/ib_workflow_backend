@@ -95,6 +95,10 @@ OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE = (
     "Offset should be greater than or equal to minus one",
     "OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE")
 
+OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_ZERO = (
+    "Offset should be greater than or equal to zero",
+    "OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_ZERO")
+
 INVALID_TASK_ID = [
     "invalid task id is: {}, please send valid task id", "INVALID_TASK_ID"
 ]

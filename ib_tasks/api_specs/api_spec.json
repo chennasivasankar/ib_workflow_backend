@@ -1966,6 +1966,35 @@
         ]
       }
     },
+    "StageAssigneesPaginationFailureResponse": {
+      "description": "Searchable Values Failure Response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer",
+            "enum": [
+              400
+            ]
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "LIMIT_SHOULD_BE_GREATER_THAN_ZERO",
+              "OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_ZERO"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
     "SaveAndActOnATaskTaskSuccessResponse": {
       "description": "task saved and action performed successfully"
     },
@@ -3020,7 +3049,7 @@
             "$ref": "#/responses/AssigneeSearchableValuesResponse"
           },
           "400": {
-            "$ref": "#/responses/SearchableValuesFailureResponse"
+            "$ref": "#/responses/StageAssigneesPaginationFailureResponse"
           },
           "404": {
             "$ref": "#/responses/TaskStagePossibleAssigneesNotFoundResponse"

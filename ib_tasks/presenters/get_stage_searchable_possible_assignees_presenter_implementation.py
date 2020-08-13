@@ -4,11 +4,8 @@ from django.http import response
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.adapters.dtos import UserDetailsDTO
-from ib_tasks.exceptions.fields_custom_exceptions import \
-    OffsetShouldBeGreaterThanZeroException, \
-    LimitShouldBeGreaterThanZeroException
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId
-from ib_tasks.interactors.presenter_interfaces.\
+from ib_tasks.interactors.presenter_interfaces. \
     get_stage_searchable_possible_assignees_presenter_interface import \
     GetStageSearchablePossibleAssigneesPresenterInterface
 
@@ -16,9 +13,7 @@ from ib_tasks.interactors.presenter_interfaces.\
 class GetStageSearchablePossibleAssigneesPresenterImplementation(
         GetStageSearchablePossibleAssigneesPresenterInterface,
         HTTPResponseMixin):
-    def raise_invalid_limit_exception(
-            self, err: LimitShouldBeGreaterThanZeroException
-    ) -> response.HttpResponse:
+    def raise_invalid_limit_exception(self) -> response.HttpResponse:
         from ib_tasks.constants.exception_messages import \
             LIMIT_SHOULD_BE_GREATER_THAN_ZERO
         response_dict = {
@@ -30,18 +25,15 @@ class GetStageSearchablePossibleAssigneesPresenterImplementation(
             response_dict=response_dict
         )
 
-    def raise_invalid_offset_exception(
-            self, err: OffsetShouldBeGreaterThanZeroException
-    ) -> response.HttpResponse:
+    def raise_invalid_offset_exception(self) -> response.HttpResponse:
         from ib_tasks.constants.exception_messages import \
-            OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE
+            OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_ZERO
         response_dict = {
-            "response": OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE[0],
+            "response": OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_ZERO[0],
             "http_status_code": 400,
             "res_status":
-                OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_MINUS_ONE[1]
+                OFFSET_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_ZERO[1]
         }
-
         return self.prepare_400_bad_request_response(
             response_dict=response_dict
         )

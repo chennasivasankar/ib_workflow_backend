@@ -1,7 +1,7 @@
 from typing import List
 
-from ib_iam.interactors.dtos.dtos import SearchQueryAndTypeDTO
 from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
+from ib_iam.interactors.dtos.dtos import SearchQueryAndTypeDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, RoleIdAndNameDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO, UserIdAndNameDTO
@@ -278,7 +278,7 @@ class UserStorageImplementation(UserStorageInterface):
     def get_all_distinct_roles(self) -> List[str]:
         from ib_iam.models import UserRole
         user_roles_queryset = \
-            UserRole.objects.all().distince().values_list('role', flat=True)
+            UserRole.objects.all().distinct().values_list('role', flat=True)
         user_roles_list = list(user_roles_queryset)
         return user_roles_list
 
@@ -287,7 +287,7 @@ class UserStorageImplementation(UserStorageInterface):
         from ib_iam.models import UserRole
         user_ids_queryset = \
             UserRole.objects.filter(
-                role__in=role_ids).values_list('user_id', flat=True)
+                role__in=role_ids).distinct().values_list('user_id', flat=True)
         user_ids_list = list(user_ids_queryset)
         return user_ids_list
 
@@ -301,7 +301,7 @@ class UserStorageImplementation(UserStorageInterface):
 
         from ib_iam.models import UserDetails
         user_ids_queryset = UserDetails.objects.filter(
-            name__icontains=search_query
+            name__icontains=search_query, user_id__in=user_ids,
         ).values_list('user_id', flat=True)[offset: limit + offset]
 
         user_ids_list = list(user_ids_queryset)
