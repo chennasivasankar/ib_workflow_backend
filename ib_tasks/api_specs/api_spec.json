@@ -420,7 +420,6 @@
       },
       "required": [
         "task_id",
-        "other_board_details",
         "task_current_stages_details"
       ]
     },
