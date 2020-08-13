@@ -54,9 +54,10 @@ class CompanyStorageImplementation(CompanyStorageInterface):
         except Company.DoesNotExist:
             return None
 
-    def add_company(self, user_id: str,
-                    company_name_logo_and_description_dto:
-                    CompanyNameLogoAndDescriptionDTO):
+    def add_company(
+            self,
+            company_name_logo_and_description_dto: CompanyNameLogoAndDescriptionDTO
+    ):
         company_object = Company.objects.create(
             name=company_name_logo_and_description_dto.name,
             description=company_name_logo_and_description_dto.description,

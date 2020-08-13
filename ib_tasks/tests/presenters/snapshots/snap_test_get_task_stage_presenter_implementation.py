@@ -18,6 +18,7 @@ snapshots['TestGetTaskPresenterImplementation.test_get_task_stages_history task_
     'stages_history': [
         {
             'created_at': '2012-10-10 00:00:00',
+            'log_id': 1,
             'stage_id': 1,
             'stage_time': 86400,
             'time_spent_by_user': 86400,

@@ -6,7 +6,6 @@ from ...interactors.searchable_field_values_interactor import \
     SearchableFieldValuesInteractor
 from ...presenters.searchable_field_values_presenter_implementation import \
     SearchableFieldValuesPresenterImplementation
-from ...storages.elasticsearch_storage_implementation import ElasticSearchStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
@@ -16,7 +15,6 @@ def api_wrapper(*args, **kwargs):
     search_query = params['search_query']
     offset = params['offset']
     limit = params['limit']
-    elastic_storage = ElasticSearchStorageImplementation()
     searchable_field_type_dto = SearchableFieldTypeDTO(
         searchable_type=searchable_type,
         offset=offset,
@@ -25,7 +23,7 @@ def api_wrapper(*args, **kwargs):
     )
     presenter = SearchableFieldValuesPresenterImplementation()
 
-    interactor = SearchableFieldValuesInteractor(elastic_storage=elastic_storage)
+    interactor = SearchableFieldValuesInteractor()
     response = interactor. \
         searchable_field_values_wrapper(presenter=presenter,
                                         searchable_field_type_dto=
