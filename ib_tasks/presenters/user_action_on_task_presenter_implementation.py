@@ -159,7 +159,7 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
             {
                 "column_id": column_dto.column_id,
                 "column_name": column_dto.name,
-                "actions": self._get_column_actions(
+                "stage_with_actions": self._get_column_actions(
                     column_actions_dict[column_dto.column_id]
                 ),
                 "task_overview_fields": self._get_column_fields(

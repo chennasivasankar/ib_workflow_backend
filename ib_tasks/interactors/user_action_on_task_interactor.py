@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import List, Optional
 from ib_tasks.exceptions.action_custom_exceptions import \
     InvalidKeyError, InvalidCustomLogicException
@@ -47,6 +48,13 @@ class InvalidBoardIdException(Exception):
 
     def __init__(self, board_id: str):
         self.board_id = board_id
+
+
+@dataclass
+class TaskStageDTO:
+    stage_id: str
+    display_name: str
+    stage_colour: str
 
 
 class UserActionOnTaskInteractor:
@@ -135,7 +143,7 @@ class UserActionOnTaskInteractor:
         self._create_or_update_task_in_elasticsearch_dto(
             task_dto=updated_task_dto, stage_ids=stage_ids
         )
-        actions_dto, fields_dto = \
+        actions_dto, fields_dto, task_stage_details = \
             self._get_task_fields_and_actions_dto(stage_ids)
         set_stage_assignees_interactor = \
             GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor(
@@ -151,7 +159,8 @@ class UserActionOnTaskInteractor:
             task_id=self.task_id,
             task_boards_details=task_boards_details,
             actions_dto=actions_dto,
-            field_dtos=fields_dto
+            field_dtos=fields_dto,
+            task_stage_details=task_stage_details
         )
 
     def _get_task_fields_and_actions_dto(self, stage_ids: List[str]):
@@ -177,9 +186,9 @@ class UserActionOnTaskInteractor:
             task_dtos=task_stage_dtos, user_id=self.user_id,
             view_type=ViewType.KANBAN.value
         )
-        actions_dto, fields_dto = self._get_field_dtos_and_actions_dtos(
+        actions_dto, fields_dto, task_stage_details = self._get_field_dtos_and_actions_dtos(
             task_stage_details_dtos=task_stage_details_dtos)
-        return actions_dto, fields_dto
+        return actions_dto, fields_dto, task_stage_details
 
     def _get_field_dtos_and_actions_dtos(
             self, task_stage_details_dtos: List[GetTaskStageCompleteDetailsDTO]):
@@ -195,7 +204,16 @@ class UserActionOnTaskInteractor:
             stage_id = task_stage_details_dto.stage_id
             for field_dto in task_stage_details_dto.field_dtos:
                 fields_dto.append(self._get_field_dto(field_dto, stage_id))
-        return actions_dto, fields_dto
+        task_stage_details = [
+            TaskStageDTO(
+                stage_id=task_stage_details_dto.stage_id,
+                display_name=task_stage_details_dto.display_name,
+                stage_colour=task_stage_details_dto.stage_color
+            )
+            for task_stage_details_dto in task_stage_details_dtos
+        ]
+
+        return actions_dto, fields_dto, task_stage_details
 
     @staticmethod
     def _get_field_dto(field_dto: FieldDetailsDTO, stage_id: str):
