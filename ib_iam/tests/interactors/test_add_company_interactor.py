@@ -161,7 +161,6 @@ class TestAddCompanyInteractor:
             presenter=presenter)
 
         company_storage.add_company.assert_called_once_with(
-            user_id=user_id,
             company_name_logo_and_description_dto=company_name_logo_and_description_dto)
         company_storage.add_users_to_company(company_id=company_id,
                                              user_ids=user_ids)

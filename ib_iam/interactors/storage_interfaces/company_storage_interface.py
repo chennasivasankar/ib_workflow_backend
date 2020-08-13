@@ -24,8 +24,8 @@ class CompanyStorageInterface(ABC):
 
     @abstractmethod
     def add_company(
-            self, user_id: str,
-            company_name_logo_and_description_dto: CompanyNameLogoAndDescriptionDTO):
+            self, company_name_logo_and_description_dto:
+            CompanyNameLogoAndDescriptionDTO):
         pass
 
     @abstractmethod
