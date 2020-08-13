@@ -11,7 +11,7 @@ from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories.models import TaskFactory, StageModelFactory, \
     CurrentTaskStageModelFactory, StageActionFactory, TaskGoFFieldFactory, \
     TaskGoFFactory, FieldFactory, GoFFactory, ActionPermittedRolesFactory, \
-    FieldRoleFactory, TaskTemplateFactory
+    FieldRoleFactory, TaskTemplateFactory, TaskStageHistoryModelFactory
 
 
 class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
@@ -43,6 +43,7 @@ class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
         TaskTemplateFactory.reset_sequence()
         TaskGoFFactory.reset_sequence()
         TaskGoFFieldFactory.reset_sequence()
+        TaskStageHistoryModelFactory.reset_sequence()
         FieldFactory.reset_sequence()
         FieldRoleFactory.reset_sequence()
         ActionPermittedRolesFactory.reset_sequence()
@@ -75,6 +76,13 @@ class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
                                                         stage=stage_other_objs[1])
         task_stage_obj_4 = CurrentTaskStageModelFactory(task=task_objs[0],
                                                         stage=stage_objs[0])
+        TaskStageHistoryModelFactory(task=task_objs[0],
+                                     stage=stage_objs[2])
+        TaskStageHistoryModelFactory(task=task_objs[2],
+                                     stage=stage_other_objs[1])
+        TaskStageHistoryModelFactory(task=task_objs[1],
+                                     stage=stage_objs[2])
+
 
         action_obj_1 = StageActionFactory(
             stage=stage_objs[2],
