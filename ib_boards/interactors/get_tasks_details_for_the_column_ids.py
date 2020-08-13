@@ -93,7 +93,7 @@ class GetColumnsTasksDetailsInteractor:
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         assignees_dtos = service_adapter.task_service.get_tasks_assignees_details(
-            task_details_dtos=task_details_dtos
+            task_stage_ids=task_details_dtos
         )
         task_field_dtos, task_action_dtos, task_stage_color_dtos =\
             service_adapter.task_service.get_task_complete_details(

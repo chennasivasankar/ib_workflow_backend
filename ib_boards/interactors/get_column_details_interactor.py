@@ -40,7 +40,7 @@ class GetColumnDetailsInteractor:
         return presenter.get_response_for_column_details(
             column_tasks=column_tasks, task_actions_dtos=task_actions_dtos,
             task_fields_dtos=task_fields_dtos, column_details=column_details,
-            task_stage_dtos=task_stage_dtos)
+            task_stage_dtos=task_stage_dtos, assignees_dtos=assignees_dtos)
 
     def get_column_details(self, columns_parameters: ColumnParametersDTO,
                            pagination_parameters: PaginationParametersDTO):

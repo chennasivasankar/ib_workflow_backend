@@ -4,7 +4,7 @@ from typing import List
 
 from ib_tasks.interactors.stages_dtos import TaskStageHistoryDTO, StageMinimalDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskStageAssigneeDTO
+    TaskStageAssigneeDTO, AssigneeCurrentTasksCountDTO, CurrentStageDetailsDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 
 
@@ -13,7 +13,6 @@ class TaskStageAssigneeIdDTO:
     task_id: int
     stage_id: str
     assignee_id: str
-    TaskStageAssigneeDTO, CurrentStageDetailsDTO, AssigneeCurrentTasksCountDTO
 
 
 class TaskStageStorageInterface(abc.ABC):

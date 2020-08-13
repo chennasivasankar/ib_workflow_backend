@@ -210,7 +210,7 @@ class TaskStageDTO:
 class AssigneesDTO:
     assignee_id: str
     name: str
-    profile_pic_url = ''
+    profile_pic_url: str
 
 
 @dataclass

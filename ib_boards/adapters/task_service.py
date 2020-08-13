@@ -8,7 +8,7 @@ from typing import List, Tuple
 from ib_boards.constants.enum import ViewType
 from ib_boards.interactors.dtos import TaskTemplateStagesDTO, \
     TaskSummaryFieldsDTO, TaskStatusDTO, FieldDTO, ColumnTaskIdsDTO, ActionDTO, \
-    TaskStageDTO, StageAssigneesDTO, AssigneesDetailsDTO, AssigneesDTO
+    TaskStageDTO, StageAssigneesDTO, AssigneesDTO
 from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
     TaskFieldsDTOFactory
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO

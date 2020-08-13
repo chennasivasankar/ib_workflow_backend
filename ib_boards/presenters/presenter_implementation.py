@@ -7,7 +7,7 @@ from ib_boards.constants.exception_messages import (
     INVALID_BOARD_ID, INVALID_OFFSET_VALUE, INVALID_LIMIT_VALUE,
     USER_DONOT_HAVE_ACCESS)
 from ib_boards.interactors.dtos import ColumnTasksDTO, FieldDTO, ActionDTO, \
-    StarredAndOtherBoardsDTO, TaskStageDTO, StageAssigneesDTO
+    StarredAndOtherBoardsDTO, TaskStageDTO, StageAssigneesDTO, AssigneesDTO
 from ib_boards.interactors.presenter_interfaces.presenter_interface import \
     GetBoardsPresenterInterface, \
     GetColumnTasksPresenterInterface, TaskCompleteDetailsDTO
@@ -216,8 +216,7 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
             tasks_list.append(task_dict)
         return tasks_list
 
-    @staticmethod
-    def _get_task_details_dict(actions_list, assignees_dtos_dict,
+    def _get_task_details_dict(self, actions_list, assignees_dtos_dict,
                                fields_list, task_id, task_stage_map):
         task_dict = {
             "task_id": task_id,
@@ -226,16 +225,20 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
                 "stage_id": task_stage_map[task_id].db_stage_id,
                 "stage_display_name": task_stage_map[task_id].display_name,
                 "stage_color": task_stage_map[task_id].stage_color,
-                "assignee": {
-                    "assignee_id": assignees_dtos_dict[task_id].assignee_id,
-                    "name": assignees_dtos_dict[task_id].name,
-                    "profile_pic_url": assignees_dtos_dict[
-                        task_id].profile_pic_url
-                },
+                "assignee": self._get_assignee_details_dict(
+                    assignees_dtos_dict[task_id]),
                 "actions": actions_list
             }
         }
         return task_dict
+
+    @staticmethod
+    def _get_assignee_details_dict(self, assignees_dto: AssigneesDTO):
+        return {
+            "assignee_id": assignees_dto.assignee_id,
+            "name": assignees_dto.name,
+            "profile_pic_url": assignees_dto.profile_pic_url
+        }
 
     @staticmethod
     def _convert_fields_dtos_to_dict(field_dtos: List[FieldDTO]):

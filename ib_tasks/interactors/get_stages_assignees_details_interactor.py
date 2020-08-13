@@ -116,7 +116,7 @@ class GetStagesAssigneesDetailsInteractor:
             assignee_ids.append(stage_assignee_dto.assignee_id)
         return assignee_ids
 
-    def get_get_stages_assignee_details_by_given_task_ids(
+    def get_stages_assignee_details_by_given_task_ids(
             self, task_stage_dtos: List[GetTaskDetailsDTO]) -> List[TaskStageAssigneeDetailsDTO]:
         stage_assignee_dtos = self.task_stage_storage.get_stage_assignee_id_dtos(
             task_stage_dtos=task_stage_dtos
