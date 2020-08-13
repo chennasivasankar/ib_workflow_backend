@@ -211,13 +211,16 @@
           "type": "string",
           "format": "date-time"
         },
+        "reason_id": {
+          "type": "integer",
+          "format": "int64"
+        },
         "reason": {
           "type": "string"
         }
       },
       "required": [
-        "updated_due_date_time",
-        "reason"
+        "updated_due_date_time", "reason_id"
       ]
     },
     "CreateTaskRequestBody": {
@@ -862,8 +865,7 @@
       },
       "required": [
         "user_id",
-        "name",
-        "profile_pic"
+        "name"
       ]
     },
     "UpdateTaskRequestBody": {
@@ -1732,7 +1734,7 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "INVALID_REASON",
+              "INVALID_REASON_ID",
               "INVALID_DUE_DATE_TIME"
             ]
           }
@@ -2058,21 +2060,24 @@
     "GetTaskReasonsResponse": {
       "description": "Ok",
       "schema": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "task_id": {
-              "type": "string"
-            },
-            "due_date_time": {
-              "type": "string",
-              "format": "date-time"
-            },
-            "due_missed_count": {
-              "type": "integer",
-              "format": "int64"
-            },
+          "type": "array",
+          "items": {
+            "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "due_date_time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "due_missed_count": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "reason": {
+          "type": "string"
+        },
             "user": {
               "$ref": "#/definitions/UserDetails"
             }
@@ -2080,6 +2085,7 @@
           "required": [
             "task_id",
             "user",
+            "reason",
             "due_date_time",
             "due_missed_count"
           ]
@@ -2126,7 +2132,7 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "TASK_IS_NOT_ASSIGNED_TO_TASK"
+              "USER_IS_NOT_ASSIGNED_TO_TASK"
             ]
           }
         },
@@ -2974,8 +2980,8 @@
           }
         ],
         "responses": {
-          "201": {
-            "description": "Created"
+          "200": {
+            "description": "Success"
           },
           "404": {
             "$ref": "#/responses/GetTaskFailureResponse"

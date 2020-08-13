@@ -8,6 +8,10 @@ class InvalidTaskException(Exception):
         self.task_id = task_id
 
 
+class InvalidReasonIdException(Exception):
+    pass
+
+
 class InvalidTaskIdException(Exception):
     def __init__(self, task_id: int):
         self.task_id = task_id

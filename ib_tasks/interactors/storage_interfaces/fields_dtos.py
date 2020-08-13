@@ -62,7 +62,7 @@ class FieldCompleteDetailsDTO:
 @dataclass
 class FieldDetailsDTO:
     field_type: str
-    field_id: int
+    field_id: str
     key: str
     value: str
 
@@ -98,6 +98,7 @@ class TaskTemplateStageFieldsDTO:
 @dataclass
 class StageTaskFieldsDTO:
     task_id: int
+    stage_id: str
     field_ids: List[str]
 
 

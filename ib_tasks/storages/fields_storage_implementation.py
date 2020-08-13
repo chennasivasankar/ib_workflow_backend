@@ -1,13 +1,17 @@
 from collections import defaultdict
 from typing import List, Dict
 
-from django.db.models import Q, F
+from django.db.models import F
+from django.db.models import Q
 
 from ib_tasks.constants.enum import ViewType
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldCompleteDetailsDTO, FieldDTO, UserFieldPermissionDTO, \
     FieldIdWithGoFIdDTO, StageTaskFieldsDTO, TaskTemplateStageFieldsDTO, \
     FieldDetailsDTOWithTaskId
+
+StageTaskFieldsDTO, \
+TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
@@ -68,17 +72,14 @@ class FieldsStorageImplementation(FieldsStorageInterface):
         return task_fields_dtos
 
     def get_fields_details(self,
-                           task_fields_dtos: List[StageTaskFieldsDTO],
-                           user_roles: List[str]) -> \
+                           task_fields_dtos: List[StageTaskFieldsDTO]) -> \
             List[FieldDetailsDTOWithTaskId]:
         q = None
         for counter, item in enumerate(task_fields_dtos):
             current_queue = Q(task_gof__task_id=item.task_id,
-                              field_id__in=item.field_ids,
-                              field__fieldrole__role="ALL_ROLES") | Q(
+                              field_id__in=item.field_ids) | Q(
                 task_gof__task_id=item.task_id,
-                field_id__in=item.field_ids,
-                field__fieldrole__role__in=user_roles
+                field_id__in=item.field_ids
             )
             if counter == 0:
                 q = current_queue
@@ -261,8 +262,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
 
         field_ids_queryset = FieldRole.objects.filter(
             (
-                Q(permission_type=PermissionTypes.READ.value) |
-                Q(permission_type=PermissionTypes.WRITE.value)
+                    Q(permission_type=PermissionTypes.READ.value) |
+                    Q(permission_type=PermissionTypes.WRITE.value)
             ),
             (
                     Q(role__in=user_roles) | Q(role=ALL_ROLES_ID)
@@ -290,8 +291,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
 
         is_user_has_read_permission = FieldRole.objects.filter(
             (
-                Q(permission_type=PermissionTypes.READ.value) |
-                Q(permission_type=PermissionTypes.WRITE.value)
+                    Q(permission_type=PermissionTypes.READ.value) |
+                    Q(permission_type=PermissionTypes.WRITE.value)
             ),
             (Q(role__in=user_roles) | Q(role=ALL_ROLES_ID)),
             Q(field_id=field_id)).exists()
