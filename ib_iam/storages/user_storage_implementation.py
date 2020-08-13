@@ -1,7 +1,6 @@
 from typing import List
 
 from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
-from ib_iam.interactors.dtos.dtos import SearchQueryAndTypeDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, RoleIdAndNameDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO, UserIdAndNameDTO
