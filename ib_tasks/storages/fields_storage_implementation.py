@@ -1,21 +1,17 @@
 from collections import defaultdict
 from typing import List, Dict
 
-from django.db.models import Q, F
-
-from ib_tasks.constants.enum import ViewType
+from django.db.models import F
 from django.db.models import Q
 
-from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldIdWithGoFIdDTO
-from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    ActionDetailsDTO
+from ib_tasks.constants.enum import ViewType
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldCompleteDetailsDTO, FieldDTO, UserFieldPermissionDTO, \
     FieldIdWithGoFIdDTO, StageTaskFieldsDTO, TaskTemplateStageFieldsDTO, \
     FieldDetailsDTOWithTaskId
-    StageTaskFieldsDTO, \
-    TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId
+
+StageTaskFieldsDTO, \
+TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
@@ -265,8 +261,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
 
         field_ids_queryset = FieldRole.objects.filter(
             (
-                Q(permission_type=PermissionTypes.READ.value) |
-                Q(permission_type=PermissionTypes.WRITE.value)
+                    Q(permission_type=PermissionTypes.READ.value) |
+                    Q(permission_type=PermissionTypes.WRITE.value)
             ),
             (
                     Q(role__in=user_roles) | Q(role=ALL_ROLES_ID)
@@ -294,8 +290,8 @@ class FieldsStorageImplementation(FieldsStorageInterface):
 
         is_user_has_read_permission = FieldRole.objects.filter(
             (
-                Q(permission_type=PermissionTypes.READ.value) |
-                Q(permission_type=PermissionTypes.WRITE.value)
+                    Q(permission_type=PermissionTypes.READ.value) |
+                    Q(permission_type=PermissionTypes.WRITE.value)
             ),
             (Q(role__in=user_roles) | Q(role=ALL_ROLES_ID)),
             Q(field_id=field_id)).exists()

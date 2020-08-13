@@ -47,7 +47,7 @@ class CreateOrUpdateStagesInteractor:
         existing_stage_ids = self._get_existing_stage_ids(stage_ids)
         self._validate_values_for_stages(stages_details)
 
-        # self._validate_stage_display_logic(stages_details)
+        self._validate_stage_display_logic(stages_details)
 
         task_fields_dtos = self.task_storage.get_field_ids_for_given_task_template_ids(
             task_template_ids)
