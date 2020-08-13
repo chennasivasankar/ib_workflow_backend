@@ -225,15 +225,14 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
                 "stage_id": task_stage_map[task_id].db_stage_id,
                 "stage_display_name": task_stage_map[task_id].display_name,
                 "stage_color": task_stage_map[task_id].stage_color,
-                "assignee": self._get_assignee_details_dict(
-                    assignees_dtos_dict[task_id]),
+                "assignee": self._get_assignee_details_dict(assignees_dto=assignees_dtos_dict[task_id]),
                 "actions": actions_list
             }
         }
         return task_dict
 
     @staticmethod
-    def _get_assignee_details_dict(self, assignees_dto: AssigneesDTO):
+    def _get_assignee_details_dict(assignees_dto: AssigneesDTO):
         return {
             "assignee_id": assignees_dto.assignee_id,
             "name": assignees_dto.name,
@@ -325,7 +324,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
 
         columns_complete_details = []
         for column_dto in column_details:
-            column_details = self._get_column_complete_details(
+            column_details_dict = self._get_column_complete_details(
                 column_dto=column_dto,
                 column_stages=column_stages_map[column_dto.column_id],
                 task_fields_dtos=task_fields_dtos,
@@ -333,7 +332,7 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
                 task_stage_dtos=task_stage_dtos,
                 assignees_dtos=assignees_dtos
             )
-            columns_complete_details.append(column_details)
+            columns_complete_details.append(column_details_dict)
 
         response_dict = {
             "total_columns_count": len(column_details),

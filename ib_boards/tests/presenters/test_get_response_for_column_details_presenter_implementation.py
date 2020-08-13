@@ -76,7 +76,7 @@ class TestGetColumnDetails:
     @pytest.fixture
     def assignee_dtos(self):
         StageAssigneesDTOFactory.reset_sequence()
-        return StageAssigneesDTOFactory.create_batch(3)
+        return StageAssigneesDTOFactory.create_batch(4)
 
     def test_get_response_for_column_details_with_duplicate_tasks_in_same_column(
             self, get_task_fields_dtos_with_duplicates, assignee_dtos,
