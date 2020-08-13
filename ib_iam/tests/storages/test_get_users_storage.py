@@ -6,6 +6,8 @@ import pytest
 from ib_iam.storages.user_storage_implementation \
     import UserStorageImplementation
 
+from ib_iam.tests.common_fixtures.storages import \
+    user_not_admin, users_company, users_team, users_role
 
 
 class TestGetUsers:
@@ -214,13 +216,29 @@ class TestGetUsers:
         assert output == expected_output
 
     @pytest.mark.django_db
-    def test_get_users_count_for_query(self, users_company, user_dtos):
+    def test_get_users_count_for_empty_search_query(
+            self, users_company, user_dtos):
         # Arrange
         expected_output = 6
+        name_search_query = ""
         storage = UserStorageImplementation()
 
         # Act
-        output = storage.get_total_count_of_users_for_query()
+        output = storage.get_total_count_of_users_for_query(
+            name_search_query=name_search_query)
+        assert output == expected_output
+
+    @pytest.mark.django_db
+    def test_get_users_count_for_search_query(
+            self, users_company, prepare_create_users_setup):
+        # Arrange
+        expected_output = 1
+        name_search_query = "s"
+        storage = UserStorageImplementation()
+
+        # Act
+        output = storage.get_total_count_of_users_for_query(
+            name_search_query=name_search_query)
         assert output == expected_output
 
     @pytest.mark.django_db

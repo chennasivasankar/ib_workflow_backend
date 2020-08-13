@@ -9,7 +9,6 @@ from ib_iam.tests.factories.storage_dtos \
     UserRoleDTOFactory, CompanyIdAndNameDTOFactory, TeamDTOFactory, RoleDTOFactory
 
 
-#
 def reset_sequence():
     UserDetailsFactory.reset_sequence(0)
     CompanyFactory.reset_sequence(0)
