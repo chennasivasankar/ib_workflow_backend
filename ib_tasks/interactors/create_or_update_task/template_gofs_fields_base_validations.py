@@ -170,7 +170,7 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
         valid_gof_ids = self.gof_storage.get_existing_gof_ids(gof_ids)
         invalid_gof_ids = sorted(list(set(gof_ids) - set(valid_gof_ids)))
         if invalid_gof_ids:
-            raise InvalidGoFIds(gof_ids)
+            raise InvalidGoFIds(invalid_gof_ids)
         return
 
     def _validate_for_invalid_field_ids(

@@ -32,7 +32,7 @@ REQUEST_BODY_JSON = """
 """
 
 
-RESPONSE_200_JSON = """
+RESPONSE_201_JSON = """
 {
     "task_id": "string",
     "stages": [

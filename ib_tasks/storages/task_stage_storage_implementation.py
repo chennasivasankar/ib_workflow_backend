@@ -1,5 +1,7 @@
 from typing import List
 
+from django.db.models import Q
+
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
 from ib_tasks.interactors.stages_dtos import TaskStageHistoryDTO, \
     StageMinimalDTO
@@ -7,7 +9,8 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskStageAssigneeDTO, CurrentStageDetailsDTO, AssigneeCurrentTasksCountDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import \
-    TaskStageStorageInterface
+    TaskStageStorageInterface, TaskStageAssigneeIdDTO
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.models import CurrentTaskStage, Task, TaskStageHistory, \
     StagePermittedRoles, Stage
 
@@ -108,12 +111,12 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
 
     def get_count_of_tasks_assigned_for_each_user(
             self, db_stage_ids: List[int],
-            task_ids: List[int], user_ids: List[str]) -> List[
+            task_ids: List[int]) -> List[
         AssigneeCurrentTasksCountDTO]:
         from django.db.models import Count
         assignee_with_count_objs = list(TaskStageHistory.objects.filter(
             task_id__in=task_ids, stage_id__in=db_stage_ids,
-            assignee_id__in=user_ids, left_at=None).values(
+            left_at=None).values(
             'assignee_id').annotate(
             tasks_count=Count('assignee_id')).order_by('tasks_count'))
         assignee_with_current_tasks_count_dtos = [AssigneeCurrentTasksCountDTO(
@@ -122,3 +125,27 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
             assignee_with_count_obj in
             assignee_with_count_objs]
         return assignee_with_current_tasks_count_dtos
+
+    def get_stage_assignee_id_dtos(
+            self, task_stage_dtos: List[GetTaskDetailsDTO]) -> List[TaskStageAssigneeIdDTO]:
+        q = None
+        for counter, item in enumerate(task_stage_dtos):
+            current_queue = Q(
+                task_id=item.task_id, stage__stage_id=item.stage_id
+            )
+            if counter == 0:
+                q = current_queue
+            q = q | current_queue
+        if q is None:
+            return []
+        task_stage_objects = TaskStageHistory.objects.filter(q).values(
+            'task_id', 'stage__stage_id', 'assignee_id'
+        )
+        return [
+            TaskStageAssigneeIdDTO(
+                task_id=task_stage_object['task_id'],
+                stage_id=task_stage_object['stage__stage_id'],
+                assignee_id=task_stage_object['assignee_id']
+            )
+            for task_stage_object in task_stage_objects
+        ]

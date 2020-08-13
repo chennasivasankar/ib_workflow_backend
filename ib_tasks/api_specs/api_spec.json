@@ -310,23 +310,23 @@
         "column_name": {
           "type": "string"
         },
-        "actions": {
+        "stage_with_actions": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/ActionDetailsResponse"
+            "$ref": "#/definitions/StagesWithActions"
           }
         },
-        "fields": {
+        "task_overview_fields": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/FieldsResponse"
+            "$ref": "#/definitions/TaskOverviewFields"
           }
         }
       },
       "required": [
         "column_id",
-        "actions",
-        "fields",
+        "stage_with_actions",
+        "task_overview_fields",
         "column_name"
       ]
     },
@@ -336,17 +336,17 @@
         "field_type": {
           "type": "string"
         },
-        "key": {
+        "field_display_name": {
           "type": "string"
         },
-        "value": {
+        "field_response": {
           "type": "string"
         }
       },
       "required": [
         "field_type",
-        "key",
-        "value"
+        "field_display_name",
+        "field_response"
       ]
     },
     "TaskActionResponseBody": {
@@ -2332,7 +2332,7 @@
             "name": {
               "type": "string"
             },
-            "profile_pic": {
+            "profile_pic_url": {
               "type": "string"
             }
           },
