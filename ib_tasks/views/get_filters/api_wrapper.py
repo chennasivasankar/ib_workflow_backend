@@ -17,7 +17,11 @@ def api_wrapper(*args, **kwargs):
     from ib_tasks.presenters.filter_presenter_implementation \
         import FilterPresenterImplementation
     presenter = FilterPresenterImplementation()
+    from ib_tasks.storages.fields_storage_implementation import \
+        FieldsStorageImplementation
+    field_storage = FieldsStorageImplementation()
     interactor = FilterInteractor(
+        field_storage=field_storage,
         filter_storage=storage, presenter=presenter
     )
 
