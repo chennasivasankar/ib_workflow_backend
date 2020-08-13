@@ -106,6 +106,15 @@ class StageStorageInterface(abc.ABC):
             self, task_id_with_db_stage_ids_dto:
             TaskIdWithDbStageIdsDTO):
         pass
+
     @abc.abstractmethod
     def get_current_stages_of_all_tasks(self) -> List[TaskWithDbStageIdDTO]:
+        pass
+
+    @abc.abstractmethod
+    def check_is_stage_exists(self, stage_id: int) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def get_stage_permitted_user_roles(self, stage_id: int) -> List[str]:
         pass

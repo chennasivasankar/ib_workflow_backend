@@ -130,6 +130,10 @@ class OffsetShouldBeGreaterThanZeroException(Exception):
     pass
 
 
+class OffsetShouldBeGreaterThanOrEqualToZeroException(Exception):
+    pass
+
+
 class DuplicateFieldIdsToGoF(Exception):
 
     def __init__(self, gof_id: str, duplicate_field_ids: List[str]):

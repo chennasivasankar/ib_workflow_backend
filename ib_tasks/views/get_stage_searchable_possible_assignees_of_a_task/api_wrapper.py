@@ -1,48 +1,43 @@
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
+
 from .validator_class import ValidatorClass
 
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    # ---------MOCK IMPLEMENTATION---------
+    path_params = kwargs['path_params']
+    query_params = kwargs['query_params']
 
-    try:
-        from ib_tasks.views.get_stage_searchable_possible_assignees_of_a_task.request_response_mocks \
-            import REQUEST_BODY_JSON
-        body = REQUEST_BODY_JSON
-    except ImportError:
-        body = {}
+    stage_id = path_params['stage_id']
+    search_query = query_params['search_query']
+    offset = query_params['offset']
+    limit = query_params['limit']
 
-    test_case = {
-        "path_params": {},
-        "query_params": {'search_type': 'USER', 'limit': 34, 'offset': 512, 'search_query': 'string'},
-        "header_params": {},
-        "body": body,
-        "securities": [{'oauth': ['read']}]
-    }
+    from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
+    search_query_with_pagination_dto = SearchQueryWithPaginationDTO(
+        limit=limit, offset=offset, search_query=search_query
+    )
 
-    from django_swagger_utils.drf_server.utils.server_gen.mock_response \
-        import mock_response
-    try:
-        response = ''
-        status_code = 200
-        if '200' in ['200', '400', '404']:
-            from ib_tasks.views.get_stage_searchable_possible_assignees_of_a_task.request_response_mocks \
-                import RESPONSE_200_JSON
-            response = RESPONSE_200_JSON
-            status_code = 200
-        elif '201' in ['200', '400', '404']:
-            from ib_tasks.views.get_stage_searchable_possible_assignees_of_a_task.request_response_mocks \
-                import RESPONSE_201_JSON
-            response = RESPONSE_201_JSON
-            status_code = 201
-    except ImportError:
-        response = ''
-        status_code = 200
-    response_tuple = mock_response(
-        app_name="ib_tasks", test_case=test_case,
-        operation_name="get_stage_searchable_possible_assignees_of_a_task",
-        kwargs=kwargs, default_response_body=response,
-        group_name="", status_code=status_code)
-    return response_tuple
+    from ib_tasks.storages.storage_implementation import \
+        StagesStorageImplementation
+    stage_storage = StagesStorageImplementation()
+
+    from ib_tasks.presenters.\
+        get_stage_searchable_possible_assignees_presenter_implementation \
+        import GetStageSearchablePossibleAssigneesPresenterImplementation
+    presenter = GetStageSearchablePossibleAssigneesPresenterImplementation()
+
+    from ib_tasks.interactors.\
+        get_stage_searchable_possible_assignees_interactor import \
+        GetStageSearchablePossibleAssigneesInteractor
+    interactor = GetStageSearchablePossibleAssigneesInteractor(
+        stage_storage=stage_storage
+    )
+
+    response = \
+        interactor.get_stage_searchable_possible_assignees_of_a_task_wrapper(
+            search_query_with_pagination_dto=search_query_with_pagination_dto,
+            stage_id=stage_id, presenter=presenter)
+
+    return response
