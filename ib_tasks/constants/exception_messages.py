@@ -279,15 +279,13 @@ INVALID_TASK_DISPLAY_ID = (
     "{} is invalid task_id send valid task_id",
     "INVALID_TASK_ID"
 )
-<<<<<<< HEAD
 
 INVALID_PRESENT_STAGE_ACTION = (
     "{} is invalid present stage action",
     "INVALID_PRESENT_STAGE_ACTION"
 )
-=======
+
 INVALID_TASK_DB_ID = (
     "Invalid task id",
     "INVALID_TASK_ID"
 )
->>>>>>> 50fc05f65c2d10f12d0ad6bcf80c68bedac30471

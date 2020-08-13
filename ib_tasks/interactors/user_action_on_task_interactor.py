@@ -312,9 +312,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         from ib_tasks.interactors.get_task_base_interactor \
             import GetTaskBaseInteractor
         gof_and_status_obj = \
-            GetTaskBaseInteractor(
-                storage=self.gof_storage
-            )
+            GetTaskBaseInteractor(storage=self.gof_storage)
         task_dto = gof_and_status_obj \
             .get_task(task_id=task_id)
         return task_dto
