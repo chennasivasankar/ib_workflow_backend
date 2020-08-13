@@ -299,22 +299,25 @@
     "ColumnDetailsResponse": {
       "type": "object",
       "properties": {
+        "task_id": {
+          "type": "string"
+        },
         "column_id": {
           "type": "string"
         },
         "column_name": {
           "type": "string"
         },
-        "actions": {
+        "stage_with_actions": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/ActionDetailsResponse"
+            "$ref": "#/definitions/StagesWithActions"
           }
         },
-        "fields": {
+        "task_overview_fields": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/FieldsResponse"
+            "$ref": "#/definitions/TaskOverviewFields"
           }
         }
       },
@@ -331,10 +334,10 @@
         "field_type": {
           "type": "string"
         },
-        "key": {
+        "field_display_name": {
           "type": "string"
         },
-        "value": {
+        "field_response": {
           "type": "string"
         }
       },

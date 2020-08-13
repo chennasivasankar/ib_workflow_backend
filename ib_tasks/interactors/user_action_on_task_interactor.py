@@ -25,7 +25,8 @@ from ib_tasks.interactors.presenter_interfaces.dtos import TaskCompleteDetailsDT
 from ib_tasks.interactors.presenter_interfaces.presenter_interface import PresenterInterface
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
-from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDetailsDTO, ActionDTO
+from ib_tasks.interactors.storage_interfaces.actions_dtos import \
+    ActionDetailsDTO, ActionDTO, StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.create_or_update_task_storage_interface import \
     CreateOrUpdateTaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
@@ -208,12 +209,14 @@ class UserActionOnTaskInteractor:
         )
 
     @staticmethod
-    def _get_actions_dto(actions_dto: List[ActionDetailsDTO]):
+    def _get_actions_dto(actions_dto: List[StageActionDetailsDTO]):
 
         return [
             ActionDTO(
                 action_id=action_dto.action_id,
                 name=action_dto.name,
+                action_type=action_dto.action_type,
+                transition_template_id=action_dto.transition_template_id,
                 stage_id=action_dto.stage_id,
                 button_text=action_dto.button_text,
                 button_color=action_dto.button_color
