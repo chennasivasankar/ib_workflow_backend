@@ -131,7 +131,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
             stage_objs = (Stage.objects.filter(q)
                           .annotate(view_type=F('card_info_list'))
                           .values('task_template_id', 'stage_id',
-                                  'view_type', 'stage_color', 'id'))
+                                  'view_type', 'stage_color', 'id', 'display_name'))
         else:
             stage_objs = (Stage.objects.filter(q)
                           .annotate(view_type=F('card_info_kanban'))
