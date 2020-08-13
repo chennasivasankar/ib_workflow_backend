@@ -8,7 +8,7 @@ from typing import List, Tuple, Optional
 
 from ib_boards.constants.enum import ViewType
 from ib_boards.interactors.dtos import ColumnTaskIdsDTO, FieldDTO, ActionDTO, \
-    TaskStageDTO
+    TaskStageDTO, StageAssigneesDTO
 from ib_boards.interactors.storage_interfaces.dtos import ColumnStageIdsDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
@@ -31,7 +31,8 @@ class GetColumnsTasksDetailsInteractor:
 
     def get_column_tasks_with_column_ids(
             self, column_tasks_parameters: ColumnsTasksParametersDTO) \
-            -> Tuple[List[FieldDTO], List[ActionDTO], List[TaskStageDTO], List[ColumnTaskIdsDTO]]:
+            -> Tuple[List[FieldDTO], List[ActionDTO], List[TaskStageDTO],
+                     List[ColumnTaskIdsDTO], List[StageAssigneesDTO]]:
         limit = column_tasks_parameters.limit
         offset = column_tasks_parameters.offset
         user_id = column_tasks_parameters.user_id
@@ -50,14 +51,14 @@ class GetColumnsTasksDetailsInteractor:
             user_id=user_id,
             search_query=search_query
         )
-        task_field_dtos, task_action_dtos, task_stage_color_dtos = \
+        task_field_dtos, task_action_dtos, task_stage_color_dtos, assignees_dtos = \
             self._get_tasks_complete_details(
                 task_ids_stages_dtos=task_ids_stages_dtos,
                 user_id=user_id,
                 view_type=view_type
             )
 
-        return task_field_dtos, task_action_dtos, task_stage_color_dtos, task_ids_stages_dtos
+        return task_field_dtos, task_action_dtos, task_stage_color_dtos, task_ids_stages_dtos, assignees_dtos
 
     @staticmethod
     def _validate_offset_value(offset: int):
@@ -78,7 +79,7 @@ class GetColumnsTasksDetailsInteractor:
             task_ids_stages_dtos: List[ColumnTaskIdsDTO],
             user_id: str,
             view_type: ViewType) \
-            -> Tuple[List[FieldDTO], List[ActionDTO], List[TaskStageDTO]]:
+            -> Tuple[List[FieldDTO], List[ActionDTO], List[TaskStageDTO], List[StageAssigneesDTO]]:
         task_details_dtos = []
         for task_ids_stages_dto in task_ids_stages_dtos:
             for stage_id_dto in task_ids_stages_dto.task_stage_ids:
@@ -91,8 +92,14 @@ class GetColumnsTasksDetailsInteractor:
                 )
         from ib_boards.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
-        return service_adapter.task_service.get_task_complete_details(
-            task_details_dtos, user_id=user_id, view_type=view_type)
+        assignees_dtos = service_adapter.task_service.get_tasks_assignees_details(
+            task_stage_ids=task_details_dtos
+        )
+        task_field_dtos, task_action_dtos, task_stage_color_dtos =\
+            service_adapter.task_service.get_task_complete_details(
+                task_details_dtos, user_id=user_id, view_type=view_type
+            )
+        return task_field_dtos, task_action_dtos, task_stage_color_dtos, assignees_dtos
 
     @staticmethod
     def _get_task_ids_for_given_stages(

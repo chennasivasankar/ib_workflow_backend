@@ -16,16 +16,6 @@ from ib_discussions.interactors.storage_interfaces.dtos import \
 class StorageInterface(ABC):
 
     @abstractmethod
-    def validate_entity_id(self, entity_id: str) -> Optional[EntityIdNotFound]:
-        pass
-
-    @abstractmethod
-    def validate_entity_type_for_entity_id(
-            self, entity_id: str, entity_type: EntityType
-    ) -> Optional[InvalidEntityTypeForEntityId]:
-        pass
-
-    @abstractmethod
     def get_discussion_set_id_if_exists(
             self, entity_id: str, entity_type: EntityType
     ) -> Optional[str]:

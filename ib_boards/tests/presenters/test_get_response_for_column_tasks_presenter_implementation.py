@@ -64,10 +64,16 @@ class TestGetColumnDetails:
         tasks.append(TaskFieldsDTOFactory(task_id="task_id_0", stage_id="stage_id_0"))
         return tasks
 
+    @pytest.fixture
+    def assignee_dtos(self):
+        from ib_boards.tests.factories.interactor_dtos import \
+            StageAssigneesDTOFactory
+        StageAssigneesDTOFactory.reset_sequence()
+        return StageAssigneesDTOFactory.create_batch(4)
+
     def test_get_response_for_column_details_with_duplicate_tasks_in_same_column(
-            self, get_task_fields_dtos_with_duplicates,
-            get_task_actions_dtos_with_duplicates, snapshot,
-    task_stage_dtos):
+            self, get_task_fields_dtos_with_duplicates, assignee_dtos,
+            get_task_actions_dtos_with_duplicates, snapshot, task_stage_dtos):
         total_tasks = 10
         task_ids = ['task_id_0', 'task_id_0', 'task_id_1', 'task_id_2']
         # Arrange
@@ -80,7 +86,8 @@ class TestGetColumnDetails:
             total_tasks=total_tasks, task_fields_dtos=task_fields_dtos,
             task_actions_dtos=task_actions_dtos,
             task_ids=task_ids,
-            task_stage_dtos=task_stage_dtos
+            task_stage_dtos=task_stage_dtos,
+            assignees_dtos=assignee_dtos
         )
 
         # Assert
@@ -92,7 +99,7 @@ class TestGetColumnDetails:
     def test_with_duplicate_tasks_in_same_column_and_duplicate_fields(
             self, get_task_fields_dtos_with_duplicates_fields,
             get_task_actions_dtos_with_duplicate_fields, snapshot,
-            task_stage_dtos):
+            task_stage_dtos, assignee_dtos):
         # Arrange
         task_fields_dtos = get_task_fields_dtos_with_duplicates_fields
         task_actions_dtos = get_task_actions_dtos_with_duplicate_fields
@@ -105,7 +112,8 @@ class TestGetColumnDetails:
             total_tasks=total_tasks, task_fields_dtos=task_fields_dtos,
             task_actions_dtos=task_actions_dtos,
             task_ids=task_ids,
-            task_stage_dtos=task_stage_dtos
+            task_stage_dtos=task_stage_dtos,
+            assignees_dtos=assignee_dtos
         )
 
         # Assert
@@ -115,7 +123,7 @@ class TestGetColumnDetails:
         snapshot.assert_match(result, "column_details_with_duplicates_fields")
 
     def test_get_response_for_column_details_with_proper_data(
-            self, get_task_fields_dtos,
+            self, get_task_fields_dtos, assignee_dtos,
             get_task_actions_dtos, snapshot, task_stage_dtos):
         # Arrange
         total_tasks = 10
@@ -129,7 +137,8 @@ class TestGetColumnDetails:
             total_tasks=total_tasks, task_fields_dtos=task_fields_dtos,
             task_actions_dtos=task_actions_dtos,
             task_ids=task_ids,
-            task_stage_dtos=task_stage_dtos
+            task_stage_dtos=task_stage_dtos,
+            assignees_dtos=assignee_dtos
         )
 
         # Assert

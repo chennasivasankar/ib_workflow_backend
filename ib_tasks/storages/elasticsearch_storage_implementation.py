@@ -150,13 +150,13 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         stage_ids = task_details_config.stage_ids
         search_query = task_details_config.search_query
         search = self._get_search_task_objects(filter_dtos)
-        search = search.filter('terms', stages__stage_id=stage_ids)
+        search = search.filter('terms', stages__stage_id__keyword=stage_ids)
 
         if search_query:
             search = search.query(
                 Q(
                     "match",
-                    state_name={
+                    title={
                         "query": search_query,
                         "fuzziness": "2"
                     }
