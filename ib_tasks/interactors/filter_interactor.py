@@ -121,42 +121,6 @@ class FilterInteractor:
             filter_id=filter_id, user_id=user_id
         )
 
-    def _validate_filter_data(
-            self, filter_dto: CreateFilterDTO,
-            condition_dtos: List[CreateConditionDTO]):
-        template_id = filter_dto.template_id
-        field_ids = [condition_dto.field_id for condition_dto in condition_dtos]
-        self.filter_storage.validate_template_id(
-            template_id=filter_dto.template_id
-        )
-        valid_field_ids = self.filter_storage.get_field_ids_for_task_template(
-            template_id=template_id, field_ids=field_ids
-        )
-        invalid_field_ids = [
-            invalid_field_id for invalid_field_id in field_ids
-            if invalid_field_id not in valid_field_ids
-        ]
-        if invalid_field_ids:
-            raise FieldIdsNotBelongsToTemplateId(field_ids=field_ids)
-        from ib_tasks.adapters.service_adapter import get_service_adapter
-        service_adapter = get_service_adapter()
-        user_roles = service_adapter.roles_service.get_user_role_ids(
-            user_id=filter_dto.user_id
-        )
-        self.filter_storage.validate_user_roles_with_field_ids_roles(
-            user_roles=user_roles, field_ids=field_ids
-        )
-
-    def _validate_filter_id(self, filter_id: int):
-        self.filter_storage.validate_filter_id(
-            filter_id=filter_id
-        )
-
-    def _validate_user_with_filter_id(self, user_id: str, filter_id: int):
-        self.filter_storage.validate_user_with_filter_id(
-            user_id=user_id, filter_id=filter_id
-        )
-
     def get_filters_details(self, user_id: str):
 
         filters_dto = \
@@ -202,6 +166,32 @@ class FilterInteractor:
         )
         return response
 
+    def _validate_filter_data(
+            self, filter_dto: CreateFilterDTO,
+            condition_dtos: List[CreateConditionDTO]):
+        template_id = filter_dto.template_id
+        field_ids = [condition_dto.field_id for condition_dto in condition_dtos]
+        self.filter_storage.validate_template_id(
+            template_id=filter_dto.template_id
+        )
+        valid_field_ids = self.filter_storage.get_field_ids_for_task_template(
+            template_id=template_id, field_ids=field_ids
+        )
+        invalid_field_ids = [
+            invalid_field_id for invalid_field_id in field_ids
+            if invalid_field_id not in valid_field_ids
+        ]
+        if invalid_field_ids:
+            raise FieldIdsNotBelongsToTemplateId(field_ids=field_ids)
+        from ib_tasks.adapters.service_adapter import get_service_adapter
+        service_adapter = get_service_adapter()
+        user_roles = service_adapter.roles_service.get_user_role_ids(
+            user_id=filter_dto.user_id
+        )
+        self.filter_storage.validate_user_roles_with_field_ids_roles(
+            user_roles=user_roles, field_ids=field_ids
+        )
+
     @staticmethod
     def _get_filter_ids(filters_dto: List[FilterDTO]):
 
@@ -209,3 +199,13 @@ class FilterInteractor:
             filter_dto.filter_id
             for filter_dto in filters_dto
         ]
+
+    def _validate_filter_id(self, filter_id: int):
+        self.filter_storage.validate_filter_id(
+            filter_id=filter_id
+        )
+
+    def _validate_user_with_filter_id(self, user_id: str, filter_id: int):
+        self.filter_storage.validate_user_with_filter_id(
+            user_id=user_id, filter_id=filter_id
+        )

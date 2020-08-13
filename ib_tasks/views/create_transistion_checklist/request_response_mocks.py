@@ -2,7 +2,7 @@
 
 REQUEST_BODY_JSON = """
 {
-    "task_id": 1,
+    "task_id": "string",
     "transition_checklist_template_id": "string",
     "action_id": 1,
     "stage_id": 1,

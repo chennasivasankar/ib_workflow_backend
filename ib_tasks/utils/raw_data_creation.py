@@ -14,7 +14,7 @@ from ib_tasks.tests.factories.models import TaskTemplateFactory, \
     StageModelFactory, StageActionFactory, \
     TaskTemplateInitialStageFactory, TaskFactory, TaskStatusVariableFactory, \
     TaskGoFFactory, TaskGoFFieldFactory, \
-    TaskStageModelFactory, GoFToTaskTemplateFactory
+    CurrentTaskStageModelFactory, GoFToTaskTemplateFactory
 
 
 class FieldFactory(factory.django.DjangoModelFactory):
@@ -96,7 +96,7 @@ class DataCreation:
             20, task_gof=factory.Iterator(task_gofs),
             field=factory.Iterator(fields)
         )
-        TaskStageModelFactory.create_batch(
+        CurrentTaskStageModelFactory.create_batch(
             20, task=factory.Iterator(tasks),
             stage=factory.Iterator(stages)
         )

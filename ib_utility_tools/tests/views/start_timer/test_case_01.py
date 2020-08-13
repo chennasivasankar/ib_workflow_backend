@@ -1,6 +1,6 @@
 """
-It returns duration in seconds as 0 and is running true
-This usecase is, if the user starting time for the first time
+It returns duration in seconds and is running true
+This usecase is, if the user starting time
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils

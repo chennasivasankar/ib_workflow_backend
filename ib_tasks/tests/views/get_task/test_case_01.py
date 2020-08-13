@@ -18,7 +18,7 @@ class TestCase01GetTaskAPITestCase(TestUtils):
     def test_case(self, snapshot):
         body = {}
         path_params = {}
-        query_params = {'task_id': 506}
+        query_params = {'task_id': "ibw-1"}
         headers = {}
         self.make_api_call(
             body=body, path_params=path_params,

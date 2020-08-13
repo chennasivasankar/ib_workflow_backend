@@ -1,6 +1,7 @@
 import dataclasses
 
-from ib_iam.interactors.presenter_interfaces.update_user_password_presenter_interface import \
+from ib_iam.interactors.presenter_interfaces \
+    .update_user_password_presenter_interface import \
     UpdateUserPasswordPresenterInterface
 
 

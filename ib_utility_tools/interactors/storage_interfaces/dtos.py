@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 
 from ib_utility_tools.constants.enum import EntityType, TimerEntityType
 
@@ -41,3 +42,4 @@ class TimerEntityDTO:
 class TimerDetailsDTO:
     duration_in_seconds: int
     is_running: bool
+    start_datetime: datetime = None

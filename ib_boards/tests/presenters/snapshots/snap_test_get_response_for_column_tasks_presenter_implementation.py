@@ -39,6 +39,7 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_duplic
                 }
             ],
             'stage_color': 'blue',
+            'stage_id': 0,
             'task_id': 'task_id_0'
         },
         {
@@ -59,6 +60,7 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_duplic
                 }
             ],
             'stage_color': 'orange',
+            'stage_id': 1,
             'task_id': 'task_id_1'
         },
         {
@@ -79,6 +81,7 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_duplic
                 }
             ],
             'stage_color': 'green',
+            'stage_id': 2,
             'task_id': 'task_id_2'
         }
     ],
@@ -105,6 +108,7 @@ snapshots['TestGetColumnDetails.test_with_duplicate_tasks_in_same_column_and_dup
                 }
             ],
             'stage_color': 'blue',
+            'stage_id': 0,
             'task_id': 'task_id_0'
         },
         {
@@ -125,6 +129,7 @@ snapshots['TestGetColumnDetails.test_with_duplicate_tasks_in_same_column_and_dup
                 }
             ],
             'stage_color': 'orange',
+            'stage_id': 1,
             'task_id': 'task_id_1'
         },
         {
@@ -145,6 +150,7 @@ snapshots['TestGetColumnDetails.test_with_duplicate_tasks_in_same_column_and_dup
                 }
             ],
             'stage_color': 'green',
+            'stage_id': 2,
             'task_id': 'task_id_2'
         }
     ],
@@ -165,12 +171,13 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_proper
             ],
             'fields': [
                 {
-                    'field_type': 'field_type_0',
-                    'key': 'key_0',
-                    'value': 'value_0'
+                    'field_type': 'field_type_6',
+                    'key': 'key_6',
+                    'value': 'value_6'
                 }
             ],
             'stage_color': 'blue',
+            'stage_id': 0,
             'task_id': 'task_id_0'
         },
         {
@@ -185,12 +192,23 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_proper
             ],
             'fields': [
                 {
+                    'field_type': 'field_type_0',
+                    'key': 'key_0',
+                    'value': 'value_0'
+                },
+                {
                     'field_type': 'field_type_1',
                     'key': 'key_1',
                     'value': 'value_1'
+                },
+                {
+                    'field_type': 'field_type_2',
+                    'key': 'key_2',
+                    'value': 'value_2'
                 }
             ],
             'stage_color': 'orange',
+            'stage_id': 1,
             'task_id': 'task_id_1'
         },
         {
@@ -205,12 +223,23 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_proper
             ],
             'fields': [
                 {
-                    'field_type': 'field_type_2',
-                    'key': 'key_2',
-                    'value': 'value_2'
+                    'field_type': 'field_type_3',
+                    'key': 'key_0',
+                    'value': 'value_3'
+                },
+                {
+                    'field_type': 'field_type_5',
+                    'key': 'key_1',
+                    'value': 'value_5'
+                },
+                {
+                    'field_type': 'field_type_4',
+                    'key': 'key_4',
+                    'value': 'value_4'
                 }
             ],
             'stage_color': 'green',
+            'stage_id': 2,
             'task_id': 'task_id_2'
         }
     ],
