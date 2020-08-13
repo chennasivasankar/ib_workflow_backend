@@ -24,3 +24,5 @@ STRONG_PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[" \
         * Should have at least one special symbol.
         * Should be between 6 to 20 characters long.
 """
+
+TASK_DISPLAY_ID_PREFIX = "IBWF-"

@@ -111,7 +111,7 @@ class TestCase01CreateTaskAPITestCase(TestUtils):
             snapshot.assert_match(
                 task_gof.same_gof_order, f'same_gof_order_{counter}')
             snapshot.assert_match(task_gof.gof_id, f'gof_id_{counter}')
-            snapshot.assert_match(task_gof.task_id, f'gof_task_id_{counter}')
+            snapshot.assert_match(task_gof.task_display_id, f'gof_task_id_{counter}')
             counter = counter + 1
 
         from ib_tasks.models.task_gof_field import TaskGoFField

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
-from typing import Optional, List
 from datetime import time, datetime, timedelta
+from typing import Optional, List
+
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
 
 
@@ -75,6 +76,12 @@ class StageAssigneeDTO:
 @dataclass
 class TaskIdWithStageAssigneesDTO:
     task_id: int
+    stage_assignees: List[StageAssigneeDTO]
+
+
+@dataclass
+class TaskDisplayIdWithStageAssigneesDTO:
+    task_display_id: str
     stage_assignees: List[StageAssigneeDTO]
 
 

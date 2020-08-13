@@ -122,7 +122,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             )
         total_tasks_count = search.count()
         task_ids = [
-            hit.task_id
+            hit.task_display_id
             for hit in search[offset: offset + limit]
         ]
         return QueryTasksDTO(

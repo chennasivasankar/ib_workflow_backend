@@ -136,3 +136,7 @@ class CreateTransitionChecklistTemplatePresenterInterface(abc.ABC):
     @abc.abstractmethod
     def raise_exception_for_not_acceptable_file_format(self, err):
         pass
+
+    @abc.abstractmethod
+    def raise_invalid_task_display_id(self, err):
+        pass
