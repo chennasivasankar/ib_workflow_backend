@@ -18,7 +18,7 @@ from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 class TaskStageAssigneeDetailsDTO:
     task_id: int
     stage_id: str
-    assignee_details: AssigneeDetailsDTO
+    assignee_details: Optional[AssigneeDetailsDTO]
 
 
 class GetStagesAssigneesDetailsInteractor:
@@ -143,7 +143,6 @@ class GetStagesAssigneesDetailsInteractor:
         assignees_dict = {}
         for assignee_details_dto in assignee_details_dtos:
             assignees_dict[assignee_details_dto.assignee_id] = assignee_details_dto
-
         return [
             TaskStageAssigneeDetailsDTO(
                 task_id=stage_assignee_dto.task_id,

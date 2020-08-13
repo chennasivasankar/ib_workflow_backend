@@ -264,11 +264,7 @@
         "profile_pic_url": {
           "type": "string"
         }
-      },
-      "required": [
-        "assignee_id",
-        "name"
-      ]
+      }
     },
     "TaskDetails": {
       "type": "object",
