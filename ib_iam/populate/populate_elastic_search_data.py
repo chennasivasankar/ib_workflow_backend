@@ -1,11 +1,11 @@
-from ib_iam.documents.elastic_docs import \
-    ElasticCountryDTO, ElasticStateDTO, ElasticCityDTO, ElasticUser
+
+from ib_iam.documents.elastic_docs import *
 from ib_iam.models import UserDetails
 from ib_iam.storages.elastic_storage_implementation import ElasticStorageImplementation
 
 
 def populate_data():
-    populate_elastic_search_user_data()
+    # populate_elastic_search_user_data()
     populate_elastic_search_country_data()
     populate_elastic_search_state_data()
     populate_elastic_search_city_data()
@@ -123,3 +123,17 @@ def populate_elastic_search_city_data():
     for state_dto in state_dtos:
         storage.create_elastic_city(city_dto=state_dto)
 
+
+def delete_elastic_search_data():
+    from elasticsearch_dsl import connections
+    from django.conf import settings
+    connections.create_connection(
+        hosts=[settings.ELASTICSEARCH_ENDPOINT], timeout=20
+    )
+    from elasticsearch import Elasticsearch
+    es = Elasticsearch()
+    indices = [
+        USER_INDEX_NAME, COUNTRY_INDEX_NAME,
+        STATE_INDEX_NAME, CITY_INDEX_NAME
+    ]
+    es.delete_by_query(index=indices, body={"query": {"match_all": {}}})
