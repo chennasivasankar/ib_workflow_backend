@@ -50,4 +50,4 @@ class TestCreateAccountWithEmail:
         # Assert
         assert user_id == expected_user_id
         create_user_account_with_email_mock.assert_called_once_with(
-            email=email)
+            email=email, password=None)

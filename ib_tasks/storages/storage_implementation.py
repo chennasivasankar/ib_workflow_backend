@@ -68,7 +68,7 @@ class StagesStorageImplementation(StageStorageInterface):
     def get_valid_next_stage_ids_of_task_by_excluding_virtual_stages(
             self, stage_ids: List[str]) -> List[str]:
         stage_ids = list(Stage.objects.filter(stage_id__in=stage_ids).exclude(
-            value=-1).values('stage_id'))
+            value=-1).values_list('stage_id', flat=True))
         return stage_ids
 
     @staticmethod
@@ -236,7 +236,8 @@ class StagesStorageImplementation(StageStorageInterface):
     def get_task_id_with_stage_details_dtos_based_on_stage_value(
             self, stage_values: List[int],
             task_ids_group_by_stage_value_dtos: List[
-                StageValueWithTaskIdsDTO]) -> List[TaskIdWithStageDetailsDTO]:
+                StageValueWithTaskIdsDTO], user_id: str
+    ) -> List[TaskIdWithStageDetailsDTO]:
         # ToDo: Need to optimize the storage calls which are in for loop
         all_task_id_with_stage_details_dtos = []
         for each_stage_value in stage_values:
@@ -352,6 +353,17 @@ class StagesStorageImplementation(StageStorageInterface):
                                  db_stage_id=task_stage_obj['stage_id']) for
             task_stage_obj in task_stage_objs]
         return task_with_stage_id_dtos
+
+    def check_is_stage_exists(self, stage_id: int) -> bool:
+        is_valid_stage_id = Stage.objects.filter(id=stage_id).exists()
+        return is_valid_stage_id
+
+    def get_stage_permitted_user_roles(self, stage_id: int) -> List[str]:
+        permitted_user_role_ids_queryset = StagePermittedRoles.objects.filter(
+            stage_id=stage_id).values_list('role_id', flat=True)
+
+        permitted_user_role_ids_list = list(permitted_user_role_ids_queryset)
+        return permitted_user_role_ids_list
 
 
 class StorageImplementation(StorageInterface):

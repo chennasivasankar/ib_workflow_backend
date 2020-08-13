@@ -1,4 +1,6 @@
 from typing import List
+
+from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, RoleIdAndNameDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO, UserIdAndNameDTO
@@ -85,8 +87,8 @@ class UserStorageImplementation(UserStorageInterface):
         user.name = name
         user.save()
 
-    def create_user(self, company_id: str, is_admin: bool, user_id: str,
-                    name: str):
+    def create_user(self, is_admin: bool, user_id: str, name: str,
+                    company_id: str = None):
         from ib_iam.models import UserDetails
         UserDetails.objects.create(
             user_id=user_id, is_admin=is_admin,
@@ -271,6 +273,38 @@ class UserStorageImplementation(UserStorageInterface):
             for user_details_object in user_details_objects
         ]
         return user_details_dtos
+
+    def get_all_distinct_roles(self) -> List[str]:
+        from ib_iam.models import UserRole
+        user_roles_queryset = \
+            UserRole.objects.all().distinct().values_list('role', flat=True)
+        user_roles_list = list(user_roles_queryset)
+        return user_roles_list
+
+    def get_user_ids_for_given_role_ids(self,
+                                        role_ids: List[str]) -> List[str]:
+        from ib_iam.models import UserRole
+        user_ids_queryset = \
+            UserRole.objects.filter(
+                role__in=role_ids).distinct().values_list('user_id', flat=True)
+        user_ids_list = list(user_ids_queryset)
+        return user_ids_list
+
+    def get_user_ids_based_on_given_query(
+            self, user_ids: List[str],
+            search_query_with_pagination_dto: SearchQueryWithPaginationDTO
+    ) -> List[str]:
+        limit = search_query_with_pagination_dto.limit
+        offset = search_query_with_pagination_dto.offset
+        search_query = search_query_with_pagination_dto.search_query
+
+        from ib_iam.models import UserDetails
+        user_ids_queryset = UserDetails.objects.filter(
+            name__icontains=search_query, user_id__in=user_ids,
+        ).values_list('user_id', flat=True)[offset: limit + offset]
+
+        user_ids_list = list(user_ids_queryset)
+        return user_ids_list
 
     @staticmethod
     def _convert_to_user_details_dto(user_details_object):

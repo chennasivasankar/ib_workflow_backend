@@ -42,6 +42,7 @@ class GetTaskStageHistoryPresenterImplementation(
           "stages_details": stages_details,
           "stages_history": [
             {
+              "log_id": task_stage_dto.log_id,
               "stage_id": task_stage_dto.stage_id,
               "created_at": str(task_stage_dto.started_at),
               "time_spent_by_user": log_duration_dict[task_stage_dto.log_id],
