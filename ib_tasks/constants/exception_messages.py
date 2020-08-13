@@ -205,11 +205,11 @@ FIELDS_NOT_BELONGS_TO_TASK_TEMPLATE = (
 
 USER_NOT_HAVE_PERMISSIONS_TO_UPDATE = (
     'user not have access to update the filter',
-    'USER_DO_NOT_ACCESS_TO_UPDATE_FILTER')
+    'USER_NOT_HAVE_PERMISSIONS_TO_UPDATE')
 
 USER_NOT_HAVE_PERMISSIONS_TO_DELETE = (
     'user not have access to delete the filter',
-    'USER_DO_NOT_ACCESS_TO_DELETE_FILTER')
+    'USER_NOT_HAVE_PERMISSIONS_TO_DELETE')
 DUPLICATE_STAGE_IDS = ("Duplicate stage ids that you have sent are: {},"
                        "please send unique stage ids", "DUPLICATE_STAGE_IDS")
 TRANSITION_TEMPLATE_DOES_NOT_EXISTS = (
@@ -269,4 +269,13 @@ DUE_TIME_HAS_EXPIRED_FOR_TODAY = (
 DUE_DATE_HAS_EXPIRED = (
     "given due date {} has expired",
     "DUE_DATE_HAS_EXPIRED"
+)
+
+INVALID_STAGES_FOR_TASK = (
+    "{}",
+    "INVALID_STAGE_IDS_FOR_TASK"
+)
+INVALID_TASK_DISPLAY_ID = (
+    "{} is invalid task_id send valid task_id",
+    "INVALID_TASK_ID"
 )

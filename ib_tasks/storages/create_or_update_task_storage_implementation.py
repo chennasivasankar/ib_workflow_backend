@@ -281,6 +281,9 @@ class CreateOrUpdateTaskStorageImplementation(
             start_date=task_dto.start_date, due_date=due_date_time,
             priority=task_dto.priority
         )
+        from ib_tasks.constants.constants import TASK_DISPLAY_ID
+        task_object.task_display_id = TASK_DISPLAY_ID.format(task_object.id)
+        task_object.save()
         return task_object.id
 
     def create_task_gofs(
@@ -338,3 +341,6 @@ class CreateOrUpdateTaskStorageImplementation(
             for task_gof_field_dto in task_gof_field_dtos
         ]
         TaskGoFField.objects.bulk_create(task_gof_field_objects)
+
+    def get_initial_stage_for_task_template(self, template_id: str) -> str:
+        pass

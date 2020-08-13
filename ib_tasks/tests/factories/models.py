@@ -9,8 +9,8 @@ from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     Task, TaskGoF, TaskGoFField, TaskTemplateGlobalConstants,
     TaskStatusVariable, Filter, FilterCondition,
-    StagePermittedRoles, ElasticSearchTask)
-
+    StagePermittedRoles, ElasticSearchTask, TaskStageHistory)
+from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
@@ -28,7 +28,8 @@ class TaskFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Task
 
-    task_display_id = factory.Sequence(lambda counter: "iB_{}".format(counter))
+    task_display_id = factory.sequence(
+        lambda counter: "iBWF-{}".format(counter))
     template_id = factory.Sequence(
         lambda counter: "template_{}".format(counter))
     created_by = "123e4567-e89b-12d3-a456-426614174000"
@@ -52,15 +53,6 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     display_logic = factory.Sequence(lambda n: "status_id_%d==stage_id" % n)
     card_info_kanban = json.dumps(['field_id_1', "field_id_2"])
     card_info_list = json.dumps(['field_id_1', "field_id_2"])
-
-
-class TaskStageModelFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = CurrentTaskStage
-
-    task = factory.SubFactory(TaskFactory)
-    stage = factory.SubFactory(StageModelFactory)
-    assignee_id = "123e4567-e89b-12d3-a456-426614174000"
 
 
 class TaskModelFactory(factory.django.DjangoModelFactory):
@@ -248,15 +240,12 @@ class TaskTemplateInitialStageFactory(factory.django.DjangoModelFactory):
     stage = factory.SubFactory(StageModelFactory)
 
 
-class TaskStageFactory(factory.django.DjangoModelFactory):
+class CurrentTaskStageModelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = CurrentTaskStage
 
     task = factory.SubFactory(TaskFactory)
     stage = factory.SubFactory(StageModelFactory)
-    assignee_id = factory.sequence(
-        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
-            counter))
 
 
 class FilterFactory(factory.django.DjangoModelFactory):
@@ -287,6 +276,25 @@ class StagePermittedRolesFactory(factory.django.DjangoModelFactory):
     role_id = factory.Iterator(
         ["FIN_PAYMENT_REQUESTER", "FIN_PAYMENT_APPROVER"]
     )
+
+
+class TaskStageHistoryModelFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskStageHistory
+
+    task = factory.SubFactory(TaskFactory)
+    stage = factory.SubFactory(StageModelFactory)
+    assignee_id = factory.sequence(
+        lambda n: "123e4567-e89b-12d3-a456-42661417400{}".format(n))
+
+
+class ElasticSearchTaskFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ElasticSearchTask
+
+    elasticsearch_id = factory.sequence(
+        lambda n: 'elastic_search_id_{}'.format(n))
+    task_id = factory.sequence(lambda n: n)
 
 
 class ElasticSearchTaskFactory(factory.django.DjangoModelFactory):

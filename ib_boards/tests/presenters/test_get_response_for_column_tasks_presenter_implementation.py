@@ -9,15 +9,15 @@ import pytest
 from ib_boards.presenters.presenter_implementation import \
     GetColumnTasksPresenterImplementation
 from ib_boards.tests.factories.storage_dtos import (
-    TaskActionsDTOFactory, TaskFieldsDTOFactory, TaskStageColorDTOFactory)
+    TaskActionsDTOFactory, TaskFieldsDTOFactory, TaskStageDTOFactory)
 
 
 class TestGetColumnDetails:
 
     @pytest.fixture
-    def task_stage_color_dtos(self):
-        TaskStageColorDTOFactory.reset_sequence()
-        return TaskStageColorDTOFactory.create_batch(size=3)
+    def task_stage_dtos(self):
+        TaskStageDTOFactory.reset_sequence()
+        return TaskStageDTOFactory.create_batch(size=3)
 
     @pytest.fixture()
     def get_task_actions_dtos_with_duplicates(self):
@@ -62,7 +62,7 @@ class TestGetColumnDetails:
     def test_get_response_for_column_details_with_duplicate_tasks_in_same_column(
             self, get_task_fields_dtos_with_duplicates,
             get_task_actions_dtos_with_duplicates, snapshot,
-    task_stage_color_dtos):
+    task_stage_dtos):
         total_tasks = 10
         task_ids = ['task_id_0', 'task_id_0', 'task_id_1', 'task_id_2']
         # Arrange
@@ -75,7 +75,7 @@ class TestGetColumnDetails:
             total_tasks=total_tasks, task_fields_dtos=task_fields_dtos,
             task_actions_dtos=task_actions_dtos,
             task_ids=task_ids,
-            task_stage_color_dtos=task_stage_color_dtos
+            task_stage_dtos=task_stage_dtos
         )
 
         # Assert
@@ -87,7 +87,7 @@ class TestGetColumnDetails:
     def test_with_duplicate_tasks_in_same_column_and_duplicate_fields(
             self, get_task_fields_dtos_with_duplicates_fields,
             get_task_actions_dtos_with_duplicate_fields, snapshot,
-    task_stage_color_dtos):
+            task_stage_dtos):
         # Arrange
         task_fields_dtos = get_task_fields_dtos_with_duplicates_fields
         task_actions_dtos = get_task_actions_dtos_with_duplicate_fields
@@ -100,7 +100,7 @@ class TestGetColumnDetails:
             total_tasks=total_tasks, task_fields_dtos=task_fields_dtos,
             task_actions_dtos=task_actions_dtos,
             task_ids=task_ids,
-            task_stage_color_dtos=task_stage_color_dtos
+            task_stage_dtos=task_stage_dtos
         )
 
         # Assert
@@ -111,7 +111,7 @@ class TestGetColumnDetails:
 
     def test_get_response_for_column_details_with_proper_data(
             self, get_task_fields_dtos,
-            get_task_actions_dtos, snapshot, task_stage_color_dtos):
+            get_task_actions_dtos, snapshot, task_stage_dtos):
         # Arrange
         total_tasks = 10
         task_ids = ['task_id_0', 'task_id_1', 'task_id_2']
@@ -124,7 +124,7 @@ class TestGetColumnDetails:
             total_tasks=total_tasks, task_fields_dtos=task_fields_dtos,
             task_actions_dtos=task_actions_dtos,
             task_ids=task_ids,
-            task_stage_color_dtos=task_stage_color_dtos
+            task_stage_dtos=task_stage_dtos
         )
 
         # Assert

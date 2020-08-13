@@ -99,8 +99,6 @@ class UserDetailsDTO:
     profile_pic_url: str
 
 
-
-
 @dataclass
 class StageWithUserDetailsDTO(UserDetailsDTO):
     db_stage_id: int

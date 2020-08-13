@@ -15,9 +15,9 @@ from ib_tasks.tests.factories.models import (
     FieldRoleFactory,
     FieldFactory,
     StageModelFactory,
-    TaskStageModelFactory,
+    CurrentTaskStageModelFactory,
     StageActionFactory, StagePermittedRolesFactory,
-    ActionPermittedRolesFactory,
+    ActionPermittedRolesFactory, TaskStageHistoryModelFactory,
 )
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
@@ -39,12 +39,13 @@ class TestCase02GetTaskAPITestCase(TestUtils):
         FieldFactory.reset_sequence()
         TaskGoFFieldFactory.reset_sequence()
         StageModelFactory.reset_sequence()
-        TaskStageModelFactory.reset_sequence()
+        CurrentTaskStageModelFactory.reset_sequence()
         StageActionFactory.reset_sequence()
+        TaskStageHistoryModelFactory.reset_sequence()
 
     @pytest.fixture
     def setup(self, reset_factories):
-        task_obj = TaskFactory()
+        task_obj = TaskFactory(task_display_id="iBWF-1")
         gof_objs = GoFFactory.create_batch(size=3)
         task_gof_objs = TaskGoFFactory.create_batch(
             size=3, task=task_obj, gof=factory.Iterator(gof_objs)
@@ -74,15 +75,22 @@ class TestCase02GetTaskAPITestCase(TestUtils):
             role=factory.Iterator(roles),
             permission_type=factory.Iterator(permission_type)
         )
-        stage_objs = StageModelFactory.create_batch(size=3)
+        stage_objs = StageModelFactory.create_batch(size=4)
         assignee_ids = [
             "123e4567-e89b-12d3-a456-426614174001",
             "123e4567-e89b-12d3-a456-426614174002",
             "123e4567-e89b-12d3-a456-426614174003"
         ]
-        TaskStageModelFactory.create_batch(
+
+        CurrentTaskStageModelFactory.create_batch(size=4, task=task_obj,
+                                                  stage=factory.Iterator(
+                                                      stage_objs))
+        TaskStageHistoryModelFactory.create_batch(
             size=3, task=task_obj, stage=factory.Iterator(stage_objs),
             assignee_id=factory.Iterator(assignee_ids)
+        )
+        TaskStageHistoryModelFactory.create(
+            task=task_obj, stage=stage_objs[3], assignee_id=None
         )
         StagePermittedRolesFactory.create_batch(
             size=3,
@@ -101,14 +109,14 @@ class TestCase02GetTaskAPITestCase(TestUtils):
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids
         get_user_role_ids(mocker)
-        from ib_tasks.tests.common_fixtures.adapters\
+        from ib_tasks.tests.common_fixtures.adapters \
             .assignees_details_service \
             import assignee_details_dtos_mock
         assignee_details_dtos_mock(mocker)
 
         body = {}
         path_params = {}
-        query_params = {'task_id': 1}
+        query_params = {'task_id': "iBWF-1"}
         headers = {}
         self.make_api_call(
             body=body, path_params=path_params,

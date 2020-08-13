@@ -26,13 +26,6 @@ class TimerStorageImplementation(TimerStorageInterface):
             entity_type=timer_entity_dto.entity_type)
         return str(timer_object.timer_id)
 
-    def update_start_datetime_to_present_time_and_timer_status_to_true(
-            self, timer_entity_dto: TimerEntityDTO):
-        Timer.objects.filter(entity_id=timer_entity_dto.entity_id,
-                             entity_type=timer_entity_dto.entity_type
-                             ).update(start_datetime=datetime.datetime.now(),
-                                      is_running=True)
-
     def get_timer_details_dto(
             self, timer_entity_dto: TimerEntityDTO) -> TimerDetailsDTO:
         timer_object = Timer.objects.get(
@@ -42,35 +35,19 @@ class TimerStorageImplementation(TimerStorageInterface):
             timer_object=timer_object)
         return timer_details_dto
 
-    def get_start_datetime_and_duration(self,
-                                        timer_entity_dto: TimerEntityDTO):
-        timer_object = Timer.objects.get(
-            entity_id=timer_entity_dto.entity_id,
-            entity_type=timer_entity_dto.entity_type)
-        return timer_object.start_datetime, timer_object.duration_in_seconds
-
-    def update_timer_while_stopping_timer(
-            self, timer_entity_dto: TimerEntityDTO, duration_in_seconds: int):
+    def update_timer(self, timer_entity_dto: TimerEntityDTO,
+                     timer_details_dto: TimerDetailsDTO):
         Timer.objects.filter(entity_id=timer_entity_dto.entity_id,
-                             entity_type=timer_entity_dto.entity_type
-                             ).update(start_datetime=None,
-                                      is_running=False,
-                                      duration_in_seconds=duration_in_seconds)
-
-    def update_start_datetime_to_present_and_duration(
-            self, timer_entity_dto: TimerEntityDTO,
-            present_datetime: datetime,
-            duration_in_seconds: int):
-        Timer.objects.filter(entity_id=timer_entity_dto.entity_id,
-                             entity_type=timer_entity_dto.entity_type
-                             ).update(start_datetime=present_datetime,
-                                      duration_in_seconds=duration_in_seconds)
+                             entity_type=timer_entity_dto.entity_type) \
+             .update(
+                start_datetime=timer_details_dto.start_datetime,
+                duration_in_seconds=timer_details_dto.duration_in_seconds,
+                is_running=timer_details_dto.is_running)
 
     @staticmethod
     def _prepare_timer_details_dto(timer_object) -> TimerDetailsDTO:
-        from ib_utility_tools.interactors.storage_interfaces.dtos import \
-            TimerDetailsDTO
         timer_details_dto = TimerDetailsDTO(
             duration_in_seconds=timer_object.duration_in_seconds,
-            is_running=timer_object.is_running)
+            is_running=timer_object.is_running,
+            start_datetime=timer_object.start_datetime)
         return timer_details_dto

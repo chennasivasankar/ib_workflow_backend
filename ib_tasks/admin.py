@@ -1,7 +1,8 @@
 from django.contrib import admin
 
 from ib_tasks.models import Stage, TaskTemplateStatusVariable, StageAction, \
-    TaskTemplateInitialStage, TaskStatusVariable, StagePermittedRoles
+    TaskTemplateInitialStage, TaskStatusVariable, StagePermittedRoles, \
+    TaskStageHistory
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.gof import GoF
@@ -15,10 +16,9 @@ from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from ib_tasks.models.filter import Filter
 from ib_tasks.models.filter_condition import FilterCondition
-from ib_tasks.models.task_stage_history import TaskStageHistory
 
 
-admin.site.register(TaskStageHistory)
+
 admin.site.register(Filter)
 admin.site.register(FilterCondition)
 admin.site.register(ElasticSearchTask)
@@ -35,6 +35,7 @@ admin.site.register(CurrentTaskStage)
 admin.site.register(TaskGoF)
 admin.site.register(TaskGoFField)
 admin.site.register(TaskTemplateGoFs)
+admin.site.register(TaskStageHistory)
 
 
 class TaskStageInline(admin.StackedInline):
@@ -71,3 +72,8 @@ admin.site.register(Stage, StagesAdmin)
 
 
 admin.site.register(StageAction, StagesActionsAdmin)
+
+
+admin.site.register(Filter)
+
+admin.site.register(FilterCondition)
