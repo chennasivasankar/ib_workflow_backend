@@ -17,3 +17,8 @@ class ValidationMixin:
             InvalidActionException
         if is_invalid_action:
             raise InvalidActionException(action_id=action_id)
+
+    def check_is_valid_stage_id(self, stage_id: int) -> bool:
+        is_valid_stage = \
+            self.stage_storage.check_is_stage_exists(stage_id=stage_id)
+        return is_valid_stage
