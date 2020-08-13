@@ -1,5 +1,7 @@
-import pytest
 import json
+
+import pytest
+
 from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     TaskCompleteDetailsDTO
@@ -9,6 +11,9 @@ from ib_tasks.tests.factories.storage_dtos import ActionDTOFactory
 from ib_tasks.tests.factories.adapter_dtos import (
     ColumnStageDTOFactory, BoardDTOFactory, ColumnDTOFactory
 )
+from ib_tasks.tests.factories.interactor_dtos import FieldDisplayDTOFactory, \
+    TaskCurrentStageDetailsDTOFactory
+from ib_tasks.tests.factories.storage_dtos import ActionDTOFactory
 
 
 class TestCreateOrUpdateTaskPresenterImplementation:
@@ -149,10 +154,14 @@ class TestCreateOrUpdateTaskPresenterImplementation:
     def test_get_response_for_user_action_on_task(
             self, presenter, snapshot, task_complete_details
     ):
+        # Arrange
+        task_current_stage_details_dto = TaskCurrentStageDetailsDTOFactory()
+
         # Act
         response_object = \
             presenter.get_response_for_user_action_on_task(
-                task_complete_details_dto=task_complete_details
+                task_complete_details_dto=task_complete_details,
+                task_current_stage_details_dto=task_current_stage_details_dto
             )
 
         # Assert

@@ -65,7 +65,6 @@ class CompanyInteractor(ValidationMixin):
                 description=company_with_user_ids_dto.description,
                 logo_url=company_with_user_ids_dto.logo_url)
         company_id = self.company_storage.add_company(
-            user_id=user_id,
             company_name_logo_and_description_dto=
             company_name_logo_and_description_dto)
         self.company_storage.add_users_to_company(company_id=company_id,

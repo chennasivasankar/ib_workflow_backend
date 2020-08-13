@@ -16,6 +16,7 @@ from ib_tasks.interactors.presenter_interfaces.dtos import \
 from ib_tasks.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
+from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 from ib_tasks.interactors.user_action_on_task_interactor import \
     InvalidBoardIdException
 from ib_tasks.interactors.stage_dtos import TaskStageDTO
@@ -23,6 +24,17 @@ from ib_tasks.interactors.stage_dtos import TaskStageDTO
 
 class UserActionOnTaskPresenterImplementation(PresenterInterface,
                                               HTTPResponseMixin):
+
+    def raise_invalid_task_display_id(self, err):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_TASK_DISPLAY_ID
+        message = INVALID_TASK_DISPLAY_ID[0].format(err.task_display_id)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_TASK_DISPLAY_ID[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_exception_for_invalid_task(
             self, error_obj: InvalidTaskException):
@@ -113,7 +125,9 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
         return response_object
 
     def get_response_for_user_action_on_task(
-            self, task_complete_details_dto: TaskCompleteDetailsDTO):
+            self, task_complete_details_dto: TaskCompleteDetailsDTO,
+            task_current_stage_details_dto: TaskCurrentStageDetailsDTO
+    ):
 
         task_id = task_complete_details_dto.task_id
         is_board_id_none = not task_complete_details_dto.task_boards_details
@@ -126,8 +140,22 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
         response_dict = {
             "task_id": str(task_id),
             "current_board_details": current_board_details,
-            "other_board_details": []
+            "other_board_details": [],
+            "task_current_stages_details": dict()
         }
+        task_current_stages_data = {
+            "task_id": task_current_stage_details_dto.task_display_id,
+            "stages": [],
+            "user_has_permission":
+                task_current_stage_details_dto.user_has_permission
+        }
+        for stage_dto in task_current_stage_details_dto.stage_details_dtos:
+            stage = {
+                "stage_id": stage_dto.stage_id,
+                "stage_display_name": stage_dto.stage_display_name
+            }
+            task_current_stages_data['stages'].append(stage)
+        response_dict["task_current_stages_details"] = task_current_stages_data
         response_object = self.prepare_200_success_response(response_dict)
         return response_object
 
@@ -322,8 +350,8 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_stage_ids_with_invalid_permission_for_assignee_exception(self,
-                                                                       invalid_stage_ids):
+    def raise_stage_ids_with_invalid_permission_for_assignee_exception(
+            self, invalid_stage_ids):
         from ib_tasks.constants.exception_messages import \
             STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE
         data = {

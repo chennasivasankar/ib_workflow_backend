@@ -6,7 +6,7 @@ from ib_tasks.exceptions.task_custom_exceptions \
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
 from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrderDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import TaskGoFDTO, \
-    TaskGoFFieldDTO
+    TaskGoFFieldDTO, TaskBaseDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFDetailsDTO, TaskGoFWithTaskIdDTO
 from ib_tasks.interactors.task_dtos import CreateTaskDTO, UpdateTaskDTO
@@ -17,7 +17,7 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
     @abc.abstractmethod
     def validate_task_id(
             self, task_id: int
-    ) -> Union[str, InvalidTaskIdException]:
+    ) -> Union[str, TaskBaseDetailsDTO, InvalidTaskIdException]:
         pass
 
     @abc.abstractmethod
@@ -102,7 +102,7 @@ class CreateOrUpdateTaskStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def create_initial_task_stage(self, task_id: int, initial_stage_id: str):
+    def create_initial_task_stage(self, task_id: int, template_id: str):
         pass
 
     @abc.abstractmethod

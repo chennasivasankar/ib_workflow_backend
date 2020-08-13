@@ -51,8 +51,6 @@ class AuthService:
             user_profile_details_dtos)
         return user_details_dtos
 
-
-
     @staticmethod
     def _get_user_details_dtos(user_profile_details_dtos):
         user_details_dtos = [

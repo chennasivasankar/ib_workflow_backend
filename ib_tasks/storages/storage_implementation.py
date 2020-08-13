@@ -31,7 +31,7 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, TaskDueParametersDTO
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
     ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, GlobalConstant, \
-    StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskLog
+    StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskLog, TaskTemplateStatusVariable
 from ib_tasks.models import \
     TaskStageHistory
 from ib_tasks.models.task_due_details import UserTaskDelayReason
@@ -49,6 +49,10 @@ class StagesStorageImplementation(StageStorageInterface):
             stages, stage_information)
         StagePermittedRoles.objects.bulk_create(list_of_permitted_roles)
 
+    def get_existing_status_ids(self, status_ids: List[str]):
+        status = TaskTemplateStatusVariable.objects.filter(variable__in=status_ids)
+        return list(status)
+
     def get_stage_detail_dtos_given_stage_ids(self, stage_ids: List[str]) -> \
             List[StageDetailsDTO]:
         stage_objs = Stage.objects.filter(stage_id__in=stage_ids).values(
@@ -63,7 +67,7 @@ class StagesStorageImplementation(StageStorageInterface):
     def get_valid_next_stage_ids_of_task_by_excluding_virtual_stages(
             self, stage_ids: List[str]) -> List[str]:
         stage_ids = list(Stage.objects.filter(stage_id__in=stage_ids).exclude(
-            value=-1).values('stage_id'))
+            value=-1).values_list('stage_id', flat=True))
         return stage_ids
 
     @staticmethod
@@ -231,7 +235,8 @@ class StagesStorageImplementation(StageStorageInterface):
     def get_task_id_with_stage_details_dtos_based_on_stage_value(
             self, stage_values: List[int],
             task_ids_group_by_stage_value_dtos: List[
-                StageValueWithTaskIdsDTO]) -> List[TaskIdWithStageDetailsDTO]:
+                StageValueWithTaskIdsDTO], user_id: str
+    ) -> List[TaskIdWithStageDetailsDTO]:
         # ToDo: Need to optimize the storage calls which are in for loop
         all_task_id_with_stage_details_dtos = []
         for each_stage_value in stage_values:
@@ -666,3 +671,4 @@ class StorageImplementation(StorageInterface):
                                            reason=due_details.reason)
         Task.objects.filter(pk=task_id, tasklog__user_id=user_id
                             ).update(due_date=updated_due_datetime)
+

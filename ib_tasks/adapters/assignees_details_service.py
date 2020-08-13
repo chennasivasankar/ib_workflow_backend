@@ -1,3 +1,4 @@
+from datetime import timedelta
 from typing import List
 
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
@@ -29,4 +30,11 @@ class AssigneeDetailsService:
     def get_log_duration_dtos(
             self, entity_dtos: List[EntityTypeDTO]
     ) -> List[LogDurationDTO]:
-        pass
+
+        return [
+            LogDurationDTO(
+                entity_id=entity_dto.entity_id,
+                duration=timedelta(seconds=300)
+            )
+            for entity_dto in entity_dtos
+        ]

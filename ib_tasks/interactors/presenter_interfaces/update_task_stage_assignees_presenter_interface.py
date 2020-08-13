@@ -21,3 +21,7 @@ class UpdateTaskStageAssigneesPresenterInterface(abc.ABC):
     def raise_stage_ids_with_invalid_permission_for_assignee_exception(
             self, invalid_stage_ids: List[int]):
         pass
+
+    @abc.abstractmethod
+    def raise_invalid_task_display_id(self, err):
+        pass

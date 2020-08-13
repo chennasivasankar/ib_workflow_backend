@@ -17,7 +17,7 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO
 from ib_tasks.interactors.task_dtos import UpdateTaskDTO, FieldValuesDTO
 from ib_tasks.tests.factories.interactor_dtos import FieldValuesDTOFactory, \
-    GoFFieldsDTOFactory, UpdateTaskDTOFactory
+    GoFFieldsDTOFactory, UpdateTaskWithTaskDisplayIdDTOFactory
 from ib_tasks.tests.factories.storage_dtos import \
     GoFIdWithSameGoFOrderDTOFactory, FieldIdWithTaskGoFIdDTOFactory, \
     TaskGoFDetailsDTOFactory
@@ -29,7 +29,7 @@ class TestUpdateTaskInteractor:
     def reset_sequence(self):
         FieldValuesDTOFactory.reset_sequence()
         GoFFieldsDTOFactory.reset_sequence()
-        UpdateTaskDTOFactory.reset_sequence()
+        UpdateTaskWithTaskDisplayIdDTOFactory.reset_sequence()
         GoFIdWithSameGoFOrderDTOFactory.reset_sequence()
         FieldIdWithTaskGoFIdDTOFactory.reset_sequence()
         TaskGoFDetailsDTOFactory.reset_sequence()
@@ -111,8 +111,9 @@ class TestUpdateTaskInteractor:
             elastic_storage_mock, presenter_mock, mock_object
     ):
         # Arrange
-        given_task_id = "task_1"
-        task_dto = UpdateTaskDTOFactory(task_id=given_task_id)
+        given_task_display_id = "task_1"
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            given_task_display_id=given_task_display_id)
         create_task_storage_mock.is_valid_task_id.return_value = False
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
@@ -133,7 +134,7 @@ class TestUpdateTaskInteractor:
         presenter_mock.raise_invalid_task_id.assert_called_once()
         call_args = presenter_mock.raise_invalid_task_id.call_args
         error_object = call_args[0][0]
-        invalid_task_id = error_object.task_id
+        invalid_task_id = error_object.task_display_id
         assert invalid_task_id == given_task_id
 
     def test_with_invalid_due_time_format(
@@ -145,8 +146,8 @@ class TestUpdateTaskInteractor:
         # Arrange
         given_due_time = "12-12-12"
         task_id = "task_1"
-        task_dto = UpdateTaskDTOFactory(task_id=task_id,
-                                        due_time=given_due_time)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(task_id=task_id,
+                                                         due_time=given_due_time)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = \
@@ -184,7 +185,8 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
-        task_dto = UpdateTaskDTOFactory(due_date=given_due_date)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            due_date=given_due_date)
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock,
@@ -215,8 +217,9 @@ class TestUpdateTaskInteractor:
         # Arrange
         given_start_date = datetime.date(2020, 9, 9)
         given_due_date = datetime.date(2020, 9, 1)
-        task_dto = UpdateTaskDTOFactory(start_date=given_start_date,
-                                        due_date=given_due_date)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            start_date=given_start_date,
+            due_date=given_due_date)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -256,9 +259,10 @@ class TestUpdateTaskInteractor:
         given_start_date = datetime.date(2020, 9, 1)
         given_due_date = datetime.date(2020, 9, 9)
         given_due_time = "12:00:00"
-        task_dto = UpdateTaskDTOFactory(start_date=given_start_date,
-                                        due_date=given_due_date,
-                                        due_time=given_due_time)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            start_date=given_start_date,
+            due_date=given_due_date,
+            due_time=given_due_time)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -296,7 +300,8 @@ class TestUpdateTaskInteractor:
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=3, gof_id=factory.Iterator(given_gof_ids)
         )
-        task_dto = UpdateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -333,7 +338,8 @@ class TestUpdateTaskInteractor:
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=3, gof_id=factory.Iterator(given_gof_ids)
         )
-        task_dto = UpdateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -381,7 +387,8 @@ class TestUpdateTaskInteractor:
             size=3, field_id=factory.Iterator(given_field_ids))
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -425,7 +432,8 @@ class TestUpdateTaskInteractor:
             size=3, field_id=factory.Iterator(given_field_ids))
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, gof_id=given_gof_id, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -472,7 +480,8 @@ class TestUpdateTaskInteractor:
             size=3, field_id=factory.Iterator(given_field_ids))
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, gof_id=given_gof_id, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -518,7 +527,7 @@ class TestUpdateTaskInteractor:
         given_required_user_roles = ["role_1", "role_2"]
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(size=1,
                                                           gof_id=given_gof_id)
-        task_dto = UpdateTaskDTOFactory(
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
             gof_fields_dtos=gof_fields_dtos, created_by_id=given_created_by_id)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
@@ -572,7 +581,7 @@ class TestUpdateTaskInteractor:
             size=1, field_id=given_field_id)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskDTOFactory(
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
             gof_fields_dtos=gof_fields_dtos, created_by_id=given_created_by_id)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
@@ -625,7 +634,8 @@ class TestUpdateTaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -672,7 +682,8 @@ class TestUpdateTaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -723,7 +734,8 @@ class TestUpdateTaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -773,7 +785,8 @@ class TestUpdateTaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -824,7 +837,8 @@ class TestUpdateTaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -875,7 +889,8 @@ class TestUpdateTaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -926,7 +941,8 @@ class TestUpdateTaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -978,7 +994,8 @@ class TestUpdateTaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -1034,7 +1051,8 @@ class TestUpdateTaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -1092,7 +1110,8 @@ class TestUpdateTaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -1150,7 +1169,8 @@ class TestUpdateTaskInteractor:
             field_response=invalid_checkbox_options_selected)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -1208,7 +1228,8 @@ class TestUpdateTaskInteractor:
             field_response=invalid_multi_select_options_selected)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -1269,7 +1290,8 @@ class TestUpdateTaskInteractor:
             field_response=invalid_multi_select_labels_selected)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -1330,7 +1352,8 @@ class TestUpdateTaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -1389,7 +1412,8 @@ class TestUpdateTaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -1446,7 +1470,8 @@ class TestUpdateTaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -1501,7 +1526,8 @@ class TestUpdateTaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -1557,7 +1583,8 @@ class TestUpdateTaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -1613,7 +1640,8 @@ class TestUpdateTaskInteractor:
             field_response=given_field_response)
         gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskDTOFactory(gof_fields_dtos=gof_fields_dtos)
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
+            gof_fields_dtos=gof_fields_dtos)
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -1663,7 +1691,7 @@ class TestUpdateTaskInteractor:
             update_task_stage_assignees_mock
     ):
         # Arrange
-        task_dto = UpdateTaskDTOFactory()
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -1809,7 +1837,7 @@ class TestUpdateTaskInteractor:
             update_task_stage_assignees_mock
     ):
         # Arrange
-        task_dto = UpdateTaskDTOFactory()
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
@@ -1864,7 +1892,7 @@ class TestUpdateTaskInteractor:
             update_task_stage_assignees_mock
     ):
         # Arrange
-        task_dto = UpdateTaskDTOFactory()
+        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
