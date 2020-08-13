@@ -274,10 +274,10 @@ class UserStorageImplementation(UserStorageInterface):
         ]
         return user_details_dtos
 
-    def get_all_distinct_roles(self) -> List[str]:
+    def get_all_distinct_db_user_db_role_ids(self) -> List[str]:
         from ib_iam.models import UserRole
         user_roles_queryset = \
-            UserRole.objects.all().distinct().values_list('role', flat=True)
+            UserRole.objects.all().distinct().values_list('role_id', flat=True)
         user_roles_list = list(user_roles_queryset)
         return user_roles_list
 
@@ -305,6 +305,14 @@ class UserStorageImplementation(UserStorageInterface):
 
         user_ids_list = list(user_ids_queryset)
         return user_ids_list
+
+    def get_db_role_ids(self, role_ids: List[str]) -> List[str]:
+        from ib_iam.models import Role
+        db_role_ids_queryset = \
+            Role.objects.filter(
+                role_id__in=role_ids).values_list('id', flat=True)
+        db_role_ids_list = list(db_role_ids_queryset)
+        return db_role_ids_list
 
     @staticmethod
     def _convert_to_user_details_dto(user_details_object):

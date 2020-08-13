@@ -62,11 +62,15 @@ class GetUsersDetailsInteractor(ValidationMixin):
             limit=search_query_with_pagination_dto.limit)
 
         from ib_iam.constants.config import ALL_ROLES_ID
+
         if ALL_ROLES_ID in role_ids:
-            role_ids = self.user_storage.get_all_distinct_roles()
+            db_role_ids = \
+                self.user_storage.get_all_distinct_db_user_db_role_ids()
+        else:
+            db_role_ids = self.user_storage.get_db_role_ids(role_ids=role_ids)
 
         user_ids = self.user_storage.get_user_ids_for_given_role_ids(
-            role_ids=role_ids)
+            role_ids=db_role_ids)
 
         user_ids_based_on_query = \
             self.user_storage.get_user_ids_based_on_given_query(

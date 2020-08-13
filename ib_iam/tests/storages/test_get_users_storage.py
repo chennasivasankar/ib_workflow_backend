@@ -313,7 +313,7 @@ class TestGetUsers:
         storage = UserStorageImplementation()
 
         # Act
-        output = storage.get_all_distinct_roles()
+        output = storage.get_all_distinct_db_user_db_role_ids()
 
         # Assert
         assert output == expected_user_role_ids
@@ -326,7 +326,7 @@ class TestGetUsers:
         storage = UserStorageImplementation()
 
         # Act
-        output = storage.get_all_distinct_roles()
+        output = storage.get_all_distinct_db_user_db_role_ids()
 
         # Assert
         assert output == expected_user_role_ids
@@ -454,3 +454,26 @@ class TestGetUsers:
 
         # Assert
         assert output == expected_user_ids
+
+    @pytest.mark.django_db
+    def test_get_db_role_ids(self):
+        # Arrange
+        from ib_iam.tests.factories.models import RoleFactory
+        RoleFactory.reset_sequence(1)
+
+        role_ids = ["ROLE_1", "ROLE_2"]
+        expected_db_role_ids = [
+            uuid.UUID('b8cb1520-279a-44bb-95bf-bbca3aa057ba'),
+            uuid.UUID('b8cb1520-279a-44bb-95bf-bbca3aa057bb')
+        ]
+        RoleFactory.create_batch(
+            size=2, id=factory.Iterator(expected_db_role_ids)
+        )
+
+        storage = UserStorageImplementation()
+
+        # Act
+        output = storage.get_db_role_ids(role_ids=role_ids)
+
+        # Assert
+        assert output == expected_db_role_ids
