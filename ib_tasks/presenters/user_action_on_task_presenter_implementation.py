@@ -132,7 +132,7 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
         task_id = task_complete_details_dto.task_id
         is_board_id_none = not task_complete_details_dto.task_boards_details
         if is_board_id_none:
-            current_board_details = {}
+            current_board_details = None
         else:
             current_board_details = \
                 self._get_current_board_details(task_complete_details_dto)
