@@ -121,11 +121,11 @@ class UserStorageImplementation(UserStorageInterface):
                 company_id=str(user_object.company_id))
         return user_dto
 
-    def get_total_count_of_users_for_query(self, search_query: str):
+    def get_total_count_of_users_for_query(self, name_search_query: str):
         from ib_iam.models import UserDetails
         total_count_of_users = \
             UserDetails.objects.filter(
-                is_admin=False, name__icontains=search_query
+                is_admin=False, name__icontains=name_search_query
             ).count()
         return total_count_of_users
 

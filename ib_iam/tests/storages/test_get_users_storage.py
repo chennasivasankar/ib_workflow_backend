@@ -217,12 +217,12 @@ class TestGetUsers:
             self, users_company, user_dtos):
         # Arrange
         expected_output = 6
-        search_query = ""
+        name_search_query = ""
         storage = UserStorageImplementation()
 
         # Act
         output = storage.get_total_count_of_users_for_query(
-            search_query=search_query)
+            name_search_query=name_search_query)
         assert output == expected_output
 
     @pytest.mark.django_db
@@ -230,12 +230,12 @@ class TestGetUsers:
             self, users_company, prepare_create_users_setup):
         # Arrange
         expected_output = 1
-        search_query = "s"
+        name_search_query = "s"
         storage = UserStorageImplementation()
 
         # Act
         output = storage.get_total_count_of_users_for_query(
-            search_query=search_query)
+            name_search_query=name_search_query)
         assert output == expected_output
 
     @pytest.mark.django_db
