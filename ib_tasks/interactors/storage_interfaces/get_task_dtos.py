@@ -22,6 +22,7 @@ class TaskGoFFieldDTO:
 @dataclass
 class TaskBaseDetailsDTO:
     template_id: str
+    task_display_id: str
     title: str
     description: Optional[str]
     start_date: datetime
