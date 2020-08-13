@@ -2,13 +2,16 @@ import json
 from datetime import datetime, timedelta
 
 import factory
-from ib_tasks.models.current_task_stage import CurrentTaskStage
 
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
     Priority, ActionTypes, DelayReasons
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
+    TaskLog,
     UserTaskDelayReason,
+    Task, TaskGoF, TaskGoFField, TaskTemplateGlobalConstants,
+    TaskStatusVariable, Filter, FilterCondition,
+    StagePermittedRoles, ElasticSearchTask,
     Task, TaskGoF,
     TaskGoFField, TaskTemplateGlobalConstants, TaskStatusVariable, Filter,
     FilterCondition, StagePermittedRoles, UserTaskDelayReason, TaskLog,

@@ -33,7 +33,7 @@ from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, TaskDueParametersD
 from ib_tasks.models import \
     ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, \
     GlobalConstant, TaskStageHistory, \
-    StagePermittedRoles, TaskTemplateInitialStage, Stage
+    StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskLog
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
     ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, GlobalConstant, \

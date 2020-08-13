@@ -6,7 +6,6 @@ from ib_tasks.adapters.dtos import UserDTO
 from ib_tasks.constants.enum import Searchable, Priority
 from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
-from ib_tasks.interactors.get_tasks_to_relevant_search_query import SearchQueryDTO
 from ib_tasks.interactors.get_tasks_to_relevant_search_query import \
     SearchQueryDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
@@ -20,6 +19,10 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
+    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, CreateTaskLogDTO, TaskDueParametersDTO, \
+    SaveAndActOnTaskDTO, StageIdWithAssigneeIdDTO, UpdateTaskDTO, CreateTaskDTO
+from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory
+from ib_tasks.tests.factories.adapter_dtos import UserDetailsDTO
     FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, CreateTaskLogDTO, TaskDueParametersDTO
 from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory, UserDetailsDTO,\
     FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, \
@@ -296,7 +299,6 @@ class TaskDueParametersDTOFactory(factory.Factory):
     reason = "reason"
 
 
-
 class CreateTaskDTOFactory(factory.Factory):
     class Meta:
         model = CreateTaskDTO
@@ -344,7 +346,6 @@ class UpdateTaskDTOFactory(factory.Factory):
 
 
 class SaveAndActOnTaskDTOFactory(factory.Factory):
-
     class Meta:
         model = SaveAndActOnTaskDTO
 
