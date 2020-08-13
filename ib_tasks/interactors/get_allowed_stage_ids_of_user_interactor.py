@@ -13,14 +13,6 @@ class GetAllowedStageIdsOfUserInteractor:
 
         user_role_ids = self._get_user_role_ids(user_id=user_id)
 
-        stage_roles_dtos = self.storage.get_stages_roles()
-
-        return [
-            stage_roles_dto.stage_id
-            for stage_roles_dto in stage_roles_dtos
-            if self._check_for_roles_match(stage_roles_dto, user_role_ids)
-        ]
-
     @staticmethod
     def _check_for_roles_match(stage_roles_dto: StageRolesDTO,
                                user_role_ids: List[str]) -> bool:

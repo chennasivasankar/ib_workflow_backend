@@ -16,7 +16,7 @@ from ib_boards.tests.factories.interactor_dtos import \
     ColumnTaskIdsDTOFactory, \
     TaskColumnDTOFactory, ColumnStageIdsDTOFactory, \
     TaskDetailsConfigDTOFactory, \
-    GetTaskDetailsDTOFactory, TaskStageIdDTOFactory
+    GetTaskDetailsDTOFactory, TaskStageIdDTOFactory, StageAssigneesDTOFactory
 from ib_boards.tests.factories.storage_dtos import (
     ColumnDetailsDTOFactory, TaskActionsDTOFactory, TaskFieldsDTOFactory,
     ColumnCompleteDetailsDTOFactory, TaskStageDTOFactory)
@@ -32,7 +32,6 @@ class TestGetColumnDetailsInteractor:
         ColumnStageIdsDTOFactory.reset_sequence()
         ColumnCompleteDetailsDTOFactory.reset_sequence()
         TaskStageIdDTOFactory.reset_sequence()
-
 
     @classmethod
     def teardown_class(cls):
@@ -81,6 +80,11 @@ class TestGetColumnDetailsInteractor:
     @pytest.fixture
     def task_stage_color_dtos(self):
         return TaskStageDTOFactory.create_batch(size=4)
+
+    @pytest.fixture
+    def assignee_dtos(self):
+        StageAssigneesDTOFactory.reset_sequence()
+        return StageAssigneesDTOFactory.create_batch(3)
 
     @pytest.fixture
     def column_task_stage_ids(self):
@@ -328,7 +332,7 @@ class TestGetColumnDetailsInteractor:
             get_task_actions_dtos, get_task_fields_dtos, mock_storage,
             mock_presenter, column_tasks_ids, column_task_stage_ids,
             column_stage_dtos, column_complete_details, task_ids_config,
-            task_ids_stage_id, task_stage_color_dtos):
+            task_ids_stage_id, task_stage_color_dtos, assignee_dtos):
         # Arrange
         storage = mock_storage
         presenter = mock_presenter
@@ -379,6 +383,10 @@ class TestGetColumnDetailsInteractor:
         interactor = GetColumnDetailsInteractor(
             storage=storage
         )
+        from ib_boards.tests.common_fixtures.interactors import \
+            get_assignee_details_mock
+        mock = get_assignee_details_mock(mocker=mocker)
+        mock.return_value = assignee_dtos
 
         # Act
         actual_response = interactor.get_column_details_wrapper(
@@ -403,7 +411,8 @@ class TestGetColumnDetailsInteractor:
             task_actions_dtos=task_actions_dto,
             task_fields_dtos=task_fields_dto,
             column_details=column_complete_details,
-            task_stage_dtos=task_stage_color_dtos
+            task_stage_dtos=task_stage_color_dtos,
+            assignees_dtos=assignee_dtos
         )
         assert actual_response == expected_response
 
@@ -412,7 +421,7 @@ class TestGetColumnDetailsInteractor:
             self, user_roles_service, get_column_details_dto, mocker,
             get_task_actions_dtos, get_task_fields_dtos, mock_storage,
             mock_presenter, column_tasks_ids_no_duplicates,
-            column_task_stage_ids_no_duplicates,
+            column_task_stage_ids_no_duplicates, assignee_dtos,
             column_stage_dtos, column_complete_details, task_ids_config,
             task_ids_stage_id_no_duplicates, task_stage_color_dtos):
         # Arrange
@@ -465,6 +474,10 @@ class TestGetColumnDetailsInteractor:
         interactor = GetColumnDetailsInteractor(
             storage=storage
         )
+        from ib_boards.tests.common_fixtures.interactors import \
+            get_assignee_details_mock
+        mock = get_assignee_details_mock(mocker=mocker)
+        mock.return_value = assignee_dtos
 
         # Act
         actual_response = interactor.get_column_details_wrapper(
@@ -487,6 +500,7 @@ class TestGetColumnDetailsInteractor:
             task_actions_dtos=task_actions_dto,
             task_fields_dtos=task_fields_dto,
             column_details=column_complete_details,
-            task_stage_dtos=task_stage_color_dtos
+            task_stage_dtos=task_stage_color_dtos,
+            assignees_dtos=assignee_dtos
         )
         assert actual_response == expected_response

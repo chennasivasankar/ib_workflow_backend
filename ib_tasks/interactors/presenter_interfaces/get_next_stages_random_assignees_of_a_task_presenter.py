@@ -33,3 +33,7 @@ class GetNextStagesRandomAssigneesOfATaskPresenterInterface(abc.ABC):
     def get_next_stages_random_assignees_of_a_task_response(
             self, stage_with_user_details_dtos: List[StageWithUserDetailsDTO]):
         pass
+
+    @abc.abstractmethod
+    def raise_invalid_task_display_id(self, err):
+        pass

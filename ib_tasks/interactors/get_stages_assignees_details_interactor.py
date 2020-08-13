@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import List, Optional
 
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
@@ -7,9 +8,17 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskStageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import \
-    TaskStageStorageInterface
+    TaskStageStorageInterface, TaskStageAssigneeIdDTO
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidStageIdsForTask
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
+
+
+@dataclass
+class TaskStageAssigneeDetailsDTO:
+    task_id: int
+    stage_id: str
+    assignee_details: AssigneeDetailsDTO
 
 
 class GetStagesAssigneesDetailsInteractor:
@@ -106,3 +115,40 @@ class GetStagesAssigneesDetailsInteractor:
                 continue
             assignee_ids.append(stage_assignee_dto.assignee_id)
         return assignee_ids
+
+    def get_stages_assignee_details_by_given_task_ids(
+            self, task_stage_dtos: List[GetTaskDetailsDTO]) -> List[TaskStageAssigneeDetailsDTO]:
+        stage_assignee_dtos = self.task_stage_storage.get_stage_assignee_id_dtos(
+            task_stage_dtos=task_stage_dtos
+        )
+        assignee_ids = self._get_unique_assignee_ids(stage_assignee_dtos)
+        assignee_details_dtos = self._get_assignee_details_dtos(assignee_ids)
+        return self._get_task_stage_assignee_details_dtos(
+            stage_assignee_dtos, assignee_details_dtos
+        )
+
+    @staticmethod
+    def _get_unique_assignee_ids(
+            stage_assignee_dtos: List[TaskStageAssigneeIdDTO]) -> List[str]:
+        assignee_ids = [
+            stage_assignee_dto.assignee_id
+            for stage_assignee_dto in stage_assignee_dtos
+        ]
+        return list(set(assignee_ids))
+
+    @staticmethod
+    def _get_task_stage_assignee_details_dtos(
+            stage_assignee_dtos: List[TaskStageAssigneeIdDTO],
+            assignee_details_dtos: List[AssigneeDetailsDTO]) -> List[TaskStageAssigneeDetailsDTO]:
+        assignees_dict = {}
+        for assignee_details_dto in assignee_details_dtos:
+            assignees_dict[assignee_details_dto.assignee_id] = assignee_details_dto
+
+        return [
+            TaskStageAssigneeDetailsDTO(
+                task_id=stage_assignee_dto.task_id,
+                stage_id=stage_assignee_dto.stage_id,
+                assignee_details=assignees_dict[stage_assignee_dto.assignee_id]
+            )
+            for stage_assignee_dto in stage_assignee_dtos
+        ]

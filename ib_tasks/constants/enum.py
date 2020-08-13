@@ -71,3 +71,27 @@ class ValidationType(enum.Enum):
 
 class ActionTypes(enum.Enum):
     NO_VALIDATIONS = "NO_VALIDATIONS"
+
+
+DelayReasons = [
+    {
+        "id": 1,
+        "reason": "wrong estimation of time"
+    },
+    {
+        "id": 2,
+        "reason": "Execution level plan fail"
+    },
+    {
+        "id": 3,
+        "reason": "No clarity in objective"
+    },
+    {
+        "id": 4,
+        "reason": "Doesn't follow Instructions"
+    },
+    {
+        "id": -1,
+        "reason": ""
+    }
+]

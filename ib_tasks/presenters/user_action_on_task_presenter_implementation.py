@@ -1,24 +1,40 @@
-from typing import List, Dict
+from typing import List, Dict, Any
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
-from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO, ColumnStageDTO
+from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO, ColumnStageDTO, \
+    AssigneeDetailsDTO
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.permission_custom_exceptions import \
     UserActionPermissionDenied, UserBoardPermissionDenied
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException
+from ib_tasks.interactors.get_stages_assignees_details_interactor import \
+    TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     TaskCompleteDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
+from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 from ib_tasks.interactors.user_action_on_task_interactor import \
     InvalidBoardIdException
+from ib_tasks.interactors.stage_dtos import TaskStageDTO
 
 
 class UserActionOnTaskPresenterImplementation(PresenterInterface,
                                               HTTPResponseMixin):
+
+    def raise_invalid_task_display_id(self, err):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_TASK_DISPLAY_ID
+        message = INVALID_TASK_DISPLAY_ID[0].format(err.task_display_id)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_TASK_DISPLAY_ID[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_exception_for_invalid_task(
             self, error_obj: InvalidTaskException):
@@ -109,12 +125,14 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
         return response_object
 
     def get_response_for_user_action_on_task(
-            self, task_complete_details_dto: TaskCompleteDetailsDTO):
+            self, task_complete_details_dto: TaskCompleteDetailsDTO,
+            task_current_stage_details_dto: TaskCurrentStageDetailsDTO
+    ):
 
         task_id = task_complete_details_dto.task_id
         is_board_id_none = not task_complete_details_dto.task_boards_details
         if is_board_id_none:
-            current_board_details = {}
+            current_board_details = None
         else:
             current_board_details = \
                 self._get_current_board_details(task_complete_details_dto)
@@ -122,30 +140,44 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
         response_dict = {
             "task_id": str(task_id),
             "current_board_details": current_board_details,
-            "other_board_details": []
+            "other_board_details": [],
+            "task_current_stages_details": dict()
         }
+        task_current_stages_data = {
+            "task_id": task_current_stage_details_dto.task_display_id,
+            "stages": [],
+            "user_has_permission":
+                task_current_stage_details_dto.user_has_permission
+        }
+        for stage_dto in task_current_stage_details_dto.stage_details_dtos:
+            stage = {
+                "stage_id": stage_dto.stage_id,
+                "stage_display_name": stage_dto.stage_display_name
+            }
+            task_current_stages_data['stages'].append(stage)
+        response_dict["task_current_stages_details"] = task_current_stages_data
         response_object = self.prepare_200_success_response(response_dict)
         return response_object
 
     def _get_current_board_details(
             self, task_complete_details_dto: TaskCompleteDetailsDTO):
-        actions_dto = task_complete_details_dto.actions_dto
-        fields_dto = task_complete_details_dto.field_dtos
         task_board_details = task_complete_details_dto.task_boards_details
         board_dto = task_board_details.board_dto
-
         return {
             "board_id": board_dto.board_id,
             "board_name": board_dto.name,
             "column_details": self._get_column_details(
-                actions_dto, fields_dto, task_board_details
+                task_complete_details_dto=task_complete_details_dto
             )
         }
 
-    def _get_column_details(self, actions_dto: List[ActionDTO],
-                            fields_dto: List[FieldDisplayDTO],
-                            task_board_details: TaskBoardsDetailsDTO):
-
+    def _get_column_details(self,
+                            task_complete_details_dto: TaskCompleteDetailsDTO):
+        actions_dto = task_complete_details_dto.actions_dto
+        fields_dto = task_complete_details_dto.field_dtos
+        task_board_details = task_complete_details_dto.task_boards_details
+        task_stage_dtos = task_complete_details_dto.task_stage_details
+        assignee_dtos = task_complete_details_dto.assignees_details
         column_stage_dtos = task_board_details.column_stage_dtos
         stage_fields_dict = self._get_stage_fields_dict(fields_dto)
         stage_actions_dict = self._get_stage_actions_dict(actions_dto)
@@ -154,15 +186,21 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
                 column_stage_dtos, stage_actions_dict, stage_fields_dict
             )
 
+        assignees_dict, task_stages_dict = self._get_stage_details_and_assignees_details_dict(
+            column_stage_dtos, assignee_dtos, task_stage_dtos
+        )
+
         column_dtos = task_board_details.columns_dtos
         return [
             {
                 "column_id": column_dto.column_id,
                 "column_name": column_dto.name,
-                "actions": self._get_column_actions(
-                    column_actions_dict[column_dto.column_id]
+                "stage_with_actions": self._get_stages_with_column_actions(
+                    column_actions_dict[column_dto.column_id],
+                    assignees_dict[column_dto.column_id],
+                    task_stages_dict[column_dto.column_id]
                 ),
-                "fields": self._get_column_fields(
+                "task_overview_fields": self._get_column_fields(
                     column_fields_dict[column_dto.column_id]
                 )
             }
@@ -206,13 +244,34 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
             stage_actions_dict[stage_id].append(action_dto)
         return stage_actions_dict
 
-    @staticmethod
-    def _get_column_actions(actions_dto: List[ActionDTO]):
+    def _get_stages_with_column_actions(
+            self, actions_dto: List[ActionDTO],
+            assignee_dto: AssigneeDetailsDTO, task_stage_dto: TaskStageDTO):
 
+        return {
+            "stage_id": task_stage_dto.db_stage_id,
+            "stage_display_name": task_stage_dto.display_name,
+            "stage_color": task_stage_dto.stage_colour,
+            "assignee": self._get_assignee_details_dict(assignee_dto),
+            "actions": self._get_actions_dict(actions_dto)
+        }
+
+    @staticmethod
+    def _get_assignee_details_dict(assignee_dto: AssigneeDetailsDTO):
+        return {
+            "assignee_id": assignee_dto.assignee_id,
+            "name": assignee_dto.name,
+            "profile_pic_url": assignee_dto.profile_pic_url
+        }
+
+    @staticmethod
+    def _get_actions_dict(self, actions_dto: List[ActionDTO]):
         return [
             {
                 "action_id": str(action_dto.action_id),
                 "name": action_dto.name,
+                "action_type": action_dto.action_type,
+                "transition_template_id": action_dto.transition_template_id,
                 "button_text": action_dto.button_text,
                 "button_color": action_dto.button_color
             }
@@ -225,8 +284,8 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
         return [
             {
                 "field_type": field_dto.field_type,
-                "key": field_dto.key,
-                "value": field_dto.value
+                "field_display_name": field_dto.key,
+                "field_response": field_dto.value
             }
             for field_dto in fields_dto
         ]
@@ -291,8 +350,8 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
         }
         return self.prepare_400_bad_request_response(data)
 
-    def raise_stage_ids_with_invalid_permission_for_assignee_exception(self,
-                                                                       invalid_stage_ids):
+    def raise_stage_ids_with_invalid_permission_for_assignee_exception(
+            self, invalid_stage_ids):
         from ib_tasks.constants.exception_messages import \
             STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE
         data = {
@@ -302,3 +361,27 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
             "res_status": STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE[1]
         }
         return self.prepare_400_bad_request_response(data)
+
+    @staticmethod
+    def _get_stage_details_and_assignees_details_dict(
+            column_stage_dtos: List[ColumnStageDTO],
+            assignee_dtos: List[TaskStageAssigneeDetailsDTO],
+            task_stage_dtos: List[TaskStageDTO]):
+
+        assignee_dtos_dict = {}
+        for assignee_dto in assignee_dtos:
+            assignee_dtos_dict[
+                assignee_dto.stage_id] = assignee_dto.assignee_details
+
+        task_stages_dict = {}
+        for task_stage_dto in task_stage_dtos:
+            task_stages_dict[task_stage_dto.stage_id] = task_stage_dto
+
+        assignees_dict = {}
+        task_stages_dict = {}
+        for column_stage_dto in column_stage_dtos:
+            column_id = column_stage_dto.column_id
+            stage_id = column_stage_dto.stage_id
+            assignees_dict[column_id] = assignee_dtos_dict[stage_id]
+            task_stages_dict[column_id] = task_stages_dict[stage_id]
+        return assignees_dict, task_stages_dict

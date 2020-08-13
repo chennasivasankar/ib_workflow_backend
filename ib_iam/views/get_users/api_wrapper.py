@@ -21,18 +21,10 @@ def api_wrapper(*args, **kwargs):
     query_params = kwargs['query_params']
     offset = query_params["offset"]
     limit = query_params["limit"]
-    search_query = query_params["search_query"]
+    name_search_query = query_params["search_query"]
 
-    from ib_iam.interactors.dtos.dtos import SearchQueryAndTypeDTO
-    from ib_iam.constants.enums import SearchType
-
-    if search_query is None:
-        search_query = ""
-
-    search_query_and_type_dto = SearchQueryAndTypeDTO(
-        search_query=search_query,
-        search_type=SearchType.USER.value
-    )
+    if name_search_query is None:
+        name_search_query = ""
 
     from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
     pagination_dto = PaginationDTO(
@@ -41,7 +33,7 @@ def api_wrapper(*args, **kwargs):
     )
     response = interactor.get_users_details_wrapper(
         user_id=user_id, pagination_dto=pagination_dto, presenter=presenter,
-        search_query_and_type_dto=search_query_and_type_dto
+        name_search_query=name_search_query
     )
 
     return response

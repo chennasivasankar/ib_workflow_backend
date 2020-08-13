@@ -6,13 +6,17 @@ from ib_iam.presenters.add_new_user_presenter_implementation \
     import AddUserPresenterImplementation
 from ib_iam.storages.user_storage_implementation \
     import UserStorageImplementation
+from ...storages.elastic_storage_implementation import ElasticStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     storage = UserStorageImplementation()
     presenter = AddUserPresenterImplementation()
-    interactor = AddNewUserInteractor(user_storage=storage)
+    elastic_storage = ElasticStorageImplementation()
+    interactor = AddNewUserInteractor(
+        user_storage=storage, elastic_storage=elastic_storage
+    )
 
     user = kwargs['user']
     user_id = user.user_id

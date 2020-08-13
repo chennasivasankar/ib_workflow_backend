@@ -4,12 +4,13 @@ from datetime import datetime, timedelta
 import factory
 
 from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
-    Priority, ActionTypes
+    Priority, ActionTypes, DelayReasons
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
-    Task, TaskGoF, TaskGoFField, TaskTemplateGlobalConstants,
-    TaskStatusVariable, Filter, FilterCondition,
-    StagePermittedRoles, ElasticSearchTask)
+    UserTaskDelayReason, Task, TaskGoF, TaskGoFField,
+    TaskTemplateGlobalConstants,
+    TaskStatusVariable, Filter, FilterCondition, TaskLog,
+    StagePermittedRoles, ElasticSearchTask, TaskStageHistory)
 from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
@@ -28,7 +29,7 @@ class TaskFactory(factory.django.DjangoModelFactory):
         model = Task
 
     task_display_id = factory.sequence(
-        lambda counter: "IBWF-{}".format(counter + 1))
+        lambda counter: "iBWF-{}".format(counter))
     template_id = factory.Sequence(
         lambda counter: "template_{}".format(counter))
     created_by = "123e4567-e89b-12d3-a456-426614174000"
@@ -54,6 +55,14 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     card_info_list = json.dumps(['field_id_1', "field_id_2"])
 
 
+class TaskStageModelFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CurrentTaskStage
+
+    task = factory.SubFactory(TaskFactory)
+    stage = factory.SubFactory(StageModelFactory)
+
+
 class TaskModelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Task
@@ -77,6 +86,19 @@ class TaskTemplateFactory(factory.django.DjangoModelFactory):
 
 class TaskTemplateWithTransitionFactory(TaskTemplateFactory):
     is_transition_template = factory.Iterator([True, False])
+
+
+class TaskDueDetailsFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = UserTaskDelayReason
+
+    task = factory.SubFactory(TaskFactory)
+    due_datetime = datetime.now() + timedelta(days=2)
+    count = factory.Sequence(lambda n: (n + 1))
+    user_id = factory.Sequence(
+        lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
+    reason_id = DelayReasons[0]['id']
+    reason = DelayReasons[0]['reason']
 
 
 class StageActionFactory(factory.django.DjangoModelFactory):
@@ -247,6 +269,19 @@ class CurrentTaskStageModelFactory(factory.django.DjangoModelFactory):
     stage = factory.SubFactory(StageModelFactory)
 
 
+class TaskLogFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskLog
+
+    task = factory.SubFactory(TaskFactory)
+    task_json = """ values"""
+    action = factory.SubFactory(StageActionFactory)
+    acted_at = "2020-10-25 12:00:00"
+    user_id = factory.sequence(
+        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
+            counter))
+
+
 class FilterFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Filter
@@ -296,3 +331,24 @@ class ElasticSearchTaskFactory(factory.django.DjangoModelFactory):
     elasticsearch_id = factory.sequence(
         lambda n: 'elastic_search_id_{}'.format(n))
     task_id = factory.sequence(lambda n: n)
+
+
+class ElasticSearchTaskFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ElasticSearchTask
+
+    elasticsearch_id = factory.sequence(
+        lambda n: 'elastic_search_id_{}'.format(n))
+    task_id = factory.sequence(lambda n: n)
+
+
+class TaskLogFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskLog
+
+    task = factory.SubFactory(TaskFactory)
+    task_json = """ json """
+    acted_at = "2020-08-11 12:00:00"
+    action = factory.SubFactory(StageActionFactory)
+    user_id = factory.Sequence(
+        lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
