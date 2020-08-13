@@ -1,5 +1,6 @@
 import pytest
-from ib_iam.tests.factories.storage_dtos import CompanyNameLogoAndDescriptionDTOFactory
+from ib_iam.tests.factories.storage_dtos import \
+    CompanyNameLogoAndDescriptionDTOFactory
 from ib_iam.models import Company
 from ib_iam.storages.company_storage_implementation import \
     CompanyStorageImplementation
@@ -11,8 +12,6 @@ class TestAddTeam:
 
     def test_given_valid_details_return_company_id(self, mocker):
         storage = CompanyStorageImplementation()
-
-        user_id = "155f3fa1-e4eb-4bfa-89e7-ca80edd23a6e"
         company_id = "f2c02d98-f311-4ab2-8673-3daa00757002"
         mock = prepare_uuid_mock(mocker)
         mock.return_value = company_id
@@ -24,7 +23,6 @@ class TestAddTeam:
         company_name_logo_and_description_dto = CompanyNameLogoAndDescriptionDTOFactory()
 
         actual_company_id = storage.add_company(
-            user_id=user_id,
             company_name_logo_and_description_dto=company_name_logo_and_description_dto)
 
         company_object = Company.objects.get(company_id=actual_company_id)

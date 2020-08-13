@@ -21,6 +21,11 @@ class ServiceAdapter:
             AssigneeDetailsService
         return AssigneeDetailsService()
 
+    @property
+    def search_service(self):
+        from .search_service import SearchService
+        return SearchService()
+
 
 def get_service_adapter():
     return ServiceAdapter()

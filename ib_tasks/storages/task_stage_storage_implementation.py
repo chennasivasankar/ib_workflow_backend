@@ -38,7 +38,7 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
                 stage_id=task_stage_obj.stage_id,
                 started_at=task_stage_obj.joined_at,
                 left_at=task_stage_obj.left_at,
-                assignee_id=task_stage_obj.task_stage_assignee_id,
+                assignee_id=task_stage_obj.assignee_id,
                 stage_duration=None
             )
             for task_stage_obj in task_stage_history_objs

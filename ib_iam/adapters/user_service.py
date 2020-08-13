@@ -34,14 +34,15 @@ class UserService:
         ]
         return user_profile_dtos
 
-    def create_user_account_with_email(self, email: str) -> str:
+    def create_user_account_with_email(
+            self, email: str, password: str = None) -> str:
         from ib_iam.exceptions.custom_exceptions \
             import UserAccountAlreadyExistWithThisEmail
         from ib_users.exceptions.registration_exceptions \
             import AccountWithThisEmailAlreadyExistsException
         try:
             user_id = self.interface.create_user_account_with_email(
-                email=email)
+                email=email, password=password)
             return user_id
         except AccountWithThisEmailAlreadyExistsException:
             raise UserAccountAlreadyExistWithThisEmail
