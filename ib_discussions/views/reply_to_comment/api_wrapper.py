@@ -28,6 +28,16 @@ def api_wrapper(*args, **kwargs):
         for multimedia_dict in multimedia_list
     ]
 
+    from ib_discussions.interactors.dtos.dtos import \
+        CreateCompleteReplyToCommentDTO
+    create_complete_reply_to_comment_dto = CreateCompleteReplyToCommentDTO(
+        comment_id=comment_id,
+        user_id=user_id,
+        comment_content=comment_content,
+        mention_user_ids=mention_user_ids,
+        multimedia_dtos=multimedia_dtos
+    )
+
     from ib_discussions.storages.comment_storage_implementaion import \
         CommentStorageImplementation
     comment_storage = CommentStorageImplementation()
@@ -41,8 +51,7 @@ def api_wrapper(*args, **kwargs):
     interactor = CreateReplyToCommentInteractor(storage=comment_storage)
 
     response = interactor.reply_to_comment_wrapper(
-        presenter=presenter, user_id=user_id, comment_id=comment_id,
-        comment_content=comment_content, mention_user_ids=mention_user_ids,
-        multimedia_dtos=multimedia_dtos
+        presenter=presenter,
+        create_complete_reply_to_comment_dto=create_complete_reply_to_comment_dto
     )
     return response

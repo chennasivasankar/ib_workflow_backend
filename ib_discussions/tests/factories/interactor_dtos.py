@@ -3,7 +3,8 @@ import factory
 from ib_discussions.constants.enum import EntityType, MultimediaFormat
 from ib_discussions.interactors.dtos.dtos import DiscussionWithEntityDetailsDTO, \
     DiscussionIdWithTitleAndDescriptionDTO, MultimediaDTO, \
-    UpdateCompleteCommentDTO, CreateCompleteCommentDTO
+    UpdateCompleteCommentDTO, CreateCompleteCommentDTO, \
+    CreateCompleteReplyToCommentDTO
 
 
 class DiscussionWithEntityDetailsDTOFactory(factory.Factory):
@@ -59,6 +60,20 @@ class CreateCompleteCommentDTOFactory(factory.Factory):
         model = CreateCompleteCommentDTO
 
     discussion_id = factory.Faker("uuid4")
+    user_id = factory.Faker("uuid4")
+    comment_content = "content"
+    mention_user_ids = factory.List([
+        "10be920b-7b4c-49e7-8adb-41a0c18da848",
+        "20be920b-7b4c-49e7-8adb-41a0c18da848"
+    ])
+    multimedia_dtos = factory.List([])
+
+
+class CreateCompleteReplyToCommentDTOFactory(factory.Factory):
+    class Meta:
+        model = CreateCompleteReplyToCommentDTO
+
+    comment_id = factory.Faker("uuid4")
     user_id = factory.Faker("uuid4")
     comment_content = "content"
     mention_user_ids = factory.List([

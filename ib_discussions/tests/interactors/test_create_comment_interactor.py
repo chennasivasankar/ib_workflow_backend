@@ -48,6 +48,16 @@ class TestCreateCommentInteractor:
         MultimediaDTOFactory.format_type.reset()
         multimedia_dtos = MultimediaDTOFactory.create_batch(2)
 
+        from ib_discussions.tests.factories.interactor_dtos import \
+            CreateCompleteCommentDTOFactory
+        create_complete_comment_dto = CreateCompleteCommentDTOFactory(
+            discussion_id=discussion_id,
+            user_id=user_id,
+            comment_content=comment_content,
+            mention_user_ids=mention_user_ids,
+            multimedia_dtos=multimedia_dtos
+        )
+
         expected_presenter_response_for_discussion_id_not_found_mock = Mock()
 
         storage_mock.is_discussion_id_exists.return_value = False
@@ -57,9 +67,8 @@ class TestCreateCommentInteractor:
 
         # Act
         response = interactor.create_comment_for_discussion_wrapper(
-            discussion_id=discussion_id, comment_content=comment_content,
-            user_id=user_id, presenter=presenter_mock,
-            mention_user_ids=mention_user_ids, multimedia_dtos=multimedia_dtos
+            create_complete_comment_dto=create_complete_comment_dto,
+            presenter=presenter_mock
         )
 
         # Assert
@@ -95,6 +104,16 @@ class TestCreateCommentInteractor:
         MultimediaDTOFactory.format_type.reset()
         multimedia_dtos = MultimediaDTOFactory.create_batch(2)
 
+        from ib_discussions.tests.factories.interactor_dtos import \
+            CreateCompleteCommentDTOFactory
+        create_complete_comment_dto = CreateCompleteCommentDTOFactory(
+            discussion_id=discussion_id,
+            user_id=user_id,
+            comment_content=comment_content,
+            mention_user_ids=mention_user_ids,
+            multimedia_dtos=multimedia_dtos
+        )
+
         expected_presenter_response_for_invalid_user_ids_mock = Mock()
 
         storage_mock.is_discussion_id_exists.return_value = False
@@ -104,9 +123,8 @@ class TestCreateCommentInteractor:
 
         # Act
         response = interactor.create_comment_for_discussion_wrapper(
-            discussion_id=discussion_id, comment_content=comment_content,
-            user_id=user_id, presenter=presenter_mock,
-            mention_user_ids=mention_user_ids, multimedia_dtos=multimedia_dtos
+            create_complete_comment_dto=create_complete_comment_dto,
+            presenter=presenter_mock
         )
 
         # Assert
@@ -133,6 +151,16 @@ class TestCreateCommentInteractor:
             MultimediaDTOFactory
         MultimediaDTOFactory.format_type.reset()
         multimedia_dtos = MultimediaDTOFactory.create_batch(2)
+
+        from ib_discussions.tests.factories.interactor_dtos import \
+            CreateCompleteCommentDTOFactory
+        create_complete_comment_dto = CreateCompleteCommentDTOFactory(
+            discussion_id=discussion_id,
+            user_id=user_id,
+            comment_content=comment_content,
+            mention_user_ids=mention_user_ids,
+            multimedia_dtos=multimedia_dtos
+        )
 
         from ib_discussions.tests.factories.storage_dtos import \
             CommentDTOFactory
@@ -171,9 +199,8 @@ class TestCreateCommentInteractor:
 
         # Act
         response = interactor.create_comment_for_discussion_wrapper(
-            discussion_id=discussion_id, comment_content=comment_content,
-            user_id=user_id, presenter=presenter_mock,
-            mention_user_ids=mention_user_ids, multimedia_dtos=multimedia_dtos
+            create_complete_comment_dto=create_complete_comment_dto,
+            presenter=presenter_mock
         )
 
         # Assert

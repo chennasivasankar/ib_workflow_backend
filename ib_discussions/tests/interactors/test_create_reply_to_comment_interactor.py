@@ -49,6 +49,16 @@ class TestCreateReplyToCommentInteractor:
         MultimediaDTOFactory.format_type.reset()
         multimedia_dtos = MultimediaDTOFactory.create_batch(2)
 
+        from ib_discussions.tests.factories.interactor_dtos import \
+            CreateCompleteReplyToCommentDTOFactory
+        create_complete_reply_to_comment_dto = CreateCompleteReplyToCommentDTOFactory(
+            comment_id=comment_id,
+            user_id=user_id,
+            comment_content=comment_content,
+            mention_user_ids=mention_user_ids,
+            multimedia_dtos=multimedia_dtos
+        )
+
         expected_presenter_response_for_comment_id_not_found_mock = Mock()
 
         storage_mock.is_comment_id_exists.return_value = False
@@ -58,9 +68,8 @@ class TestCreateReplyToCommentInteractor:
 
         # Act
         response = interactor.reply_to_comment_wrapper(
-            comment_id=comment_id, comment_content=comment_content,
-            user_id=user_id, presenter=presenter_mock,
-            mention_user_ids=mention_user_ids, multimedia_dtos=multimedia_dtos
+            presenter=presenter_mock,
+            create_complete_reply_to_comment_dto=create_complete_reply_to_comment_dto
         )
 
         # Assert
@@ -96,6 +105,16 @@ class TestCreateReplyToCommentInteractor:
         MultimediaDTOFactory.format_type.reset()
         multimedia_dtos = MultimediaDTOFactory.create_batch(2)
 
+        from ib_discussions.tests.factories.interactor_dtos import \
+            CreateCompleteReplyToCommentDTOFactory
+        create_complete_reply_to_comment_dto = CreateCompleteReplyToCommentDTOFactory(
+            comment_id=comment_id,
+            user_id=user_id,
+            comment_content=comment_content,
+            mention_user_ids=mention_user_ids,
+            multimedia_dtos=multimedia_dtos
+        )
+
         expected_presenter_response_for_invalid_user_ids_mock = Mock()
 
         storage_mock.is_comment_id_exists.return_value = False
@@ -105,9 +124,8 @@ class TestCreateReplyToCommentInteractor:
 
         # Act
         response = interactor.reply_to_comment_wrapper(
-            comment_id=comment_id, comment_content=comment_content,
-            user_id=user_id, presenter=presenter_mock,
-            mention_user_ids=mention_user_ids, multimedia_dtos=multimedia_dtos
+            presenter=presenter_mock,
+            create_complete_reply_to_comment_dto=create_complete_reply_to_comment_dto
         )
 
         # Assert
@@ -147,6 +165,16 @@ class TestCreateReplyToCommentInteractor:
         MultimediaDTOFactory.format_type.reset()
         multimedia_dtos = MultimediaDTOFactory.create_batch(2)
 
+        from ib_discussions.tests.factories.interactor_dtos import \
+            CreateCompleteReplyToCommentDTOFactory
+        create_complete_reply_to_comment_dto = CreateCompleteReplyToCommentDTOFactory(
+            comment_id=comment_id,
+            user_id=user_id,
+            comment_content=comment_content,
+            mention_user_ids=mention_user_ids,
+            multimedia_dtos=multimedia_dtos
+        )
+
         from ib_discussions.tests.common_fixtures.adapters import \
             prepare_get_user_profile_dtos_mock
         get_user_profile_dtos_mock = prepare_get_user_profile_dtos_mock(mocker)
@@ -167,9 +195,8 @@ class TestCreateReplyToCommentInteractor:
 
         # Act
         response = interactor.reply_to_comment_wrapper(
-            comment_content=comment_content, comment_id=comment_id,
-            user_id=user_id, presenter=presenter_mock,
-            mention_user_ids=mention_user_ids, multimedia_dtos=multimedia_dtos
+            presenter=presenter_mock,
+            create_complete_reply_to_comment_dto=create_complete_reply_to_comment_dto
         )
 
         # Assert
@@ -236,6 +263,16 @@ class TestCreateReplyToCommentInteractor:
         MultimediaDTOFactory.format_type.reset()
         multimedia_dtos = MultimediaDTOFactory.create_batch(2)
 
+        from ib_discussions.tests.factories.interactor_dtos import \
+            CreateCompleteReplyToCommentDTOFactory
+        create_complete_reply_to_comment_dto = CreateCompleteReplyToCommentDTOFactory(
+            comment_id=comment_id,
+            user_id=user_id,
+            comment_content=comment_content,
+            mention_user_ids=mention_user_ids,
+            multimedia_dtos=multimedia_dtos
+        )
+
         from ib_discussions.tests.common_fixtures.adapters import \
             prepare_get_user_profile_dtos_mock
         get_user_profile_dtos_mock = prepare_get_user_profile_dtos_mock(mocker)
@@ -256,9 +293,8 @@ class TestCreateReplyToCommentInteractor:
 
         # Act
         response = interactor.reply_to_comment_wrapper(
-            comment_content=comment_content, comment_id=comment_id,
-            user_id=user_id, presenter=presenter_mock,
-            mention_user_ids=mention_user_ids, multimedia_dtos=multimedia_dtos
+            presenter=presenter_mock,
+            create_complete_reply_to_comment_dto=create_complete_reply_to_comment_dto
         )
 
         # Assert

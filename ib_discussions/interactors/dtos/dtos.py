@@ -68,3 +68,12 @@ class CreateCompleteCommentDTO:
     comment_content: str
     mention_user_ids: List[str]
     multimedia_dtos: List[MultimediaDTO]
+
+
+@dataclass
+class CreateCompleteReplyToCommentDTO:
+    comment_id: str
+    user_id: str
+    comment_content: str
+    mention_user_ids: List[str]
+    multimedia_dtos: List[MultimediaDTO]

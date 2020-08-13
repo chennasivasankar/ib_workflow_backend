@@ -50,8 +50,7 @@ def api_wrapper(*args, **kwargs):
     interactor = CreateCommentInteractor(storage=comment_storage)
 
     response = interactor.create_comment_for_discussion_wrapper(
-        presenter=presenter, user_id=user_id, discussion_id=discussion_id,
-        comment_content=comment_content, mention_user_ids=mention_user_ids,
-        multimedia_dtos=multimedia_dtos
+        presenter=presenter,
+        create_complete_comment_dto=create_complete_comment_dto
     )
     return response
