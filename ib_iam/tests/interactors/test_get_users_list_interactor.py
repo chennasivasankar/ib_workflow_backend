@@ -423,6 +423,7 @@ class TestGetUsersDetailsInteractor:
         # Arrange
         user_role_ids = ["role1", "role2", "role3"]
         expected_user_ids = ['user_1', 'user_2']
+        expected_db_role_ids = ['8738f416-b32c-4c95-99ba-48056ec10e30']
 
         from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
         search_query_with_pagination_dto = SearchQueryWithPaginationDTO(
@@ -433,6 +434,7 @@ class TestGetUsersDetailsInteractor:
             expected_user_ids
         storage_mock.get_user_ids_based_on_given_query.return_value = \
             expected_user_ids
+        storage_mock.get_db_role_ids.return_value = expected_db_role_ids
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import get_users_adapter_mock
         get_users_adapter_mock_method = get_users_adapter_mock(
@@ -451,8 +453,10 @@ class TestGetUsersDetailsInteractor:
 
         # Assert
         assert response == user_profile_dtos
+        storage_mock.get_db_role_ids.assert_called_once_with(
+            role_ids=user_role_ids)
         storage_mock.get_user_ids_for_given_role_ids.assert_called_once_with(
-            role_ids=user_role_ids
+            role_ids=expected_db_role_ids
         )
         storage_mock.get_user_ids_based_on_given_query.assert_called_once_with(
             user_ids=expected_user_ids,
@@ -473,7 +477,7 @@ class TestGetUsersDetailsInteractor:
             offset=1, limit=0, search_query="iB"
         )
 
-        storage_mock.get_all_distinct_roles.return_value = \
+        storage_mock.get_all_distinct_user_db_role_ids.return_value = \
             expected_user_role_ids
         storage_mock.get_user_ids_for_given_role_ids.return_value = \
             expected_user_ids
@@ -497,7 +501,7 @@ class TestGetUsersDetailsInteractor:
 
         # Assert
         assert response == user_profile_dtos
-        storage_mock.get_all_distinct_roles.assert_called_once()
+        storage_mock.get_all_distinct_user_db_role_ids.assert_called_once()
         storage_mock.get_user_ids_for_given_role_ids.assert_called_once_with(
             role_ids=expected_user_role_ids
         )

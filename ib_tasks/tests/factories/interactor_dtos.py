@@ -6,7 +6,8 @@ from ib_tasks.adapters.dtos import UserDTO
 from ib_tasks.constants.enum import Searchable, Priority
 from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
-from ib_tasks.interactors.get_stage_searchable_possible_assignees_interactor import \
+from ib_tasks.interactors.get_stage_searchable_possible_assignees_interactor \
+    import \
     SearchQueryWithPaginationDTO
 from ib_tasks.interactors.get_tasks_to_relevant_search_query import \
     SearchQueryDTO
@@ -18,7 +19,10 @@ from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
     StageAssigneeDetailsDTO, UserStagesWithPaginationDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import \
+    FieldDetailsDTO, FieldWritePermissionRolesDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import \
+    GoFWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     CurrentStageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
@@ -420,3 +424,19 @@ class TaskCurrentStageDetailsDTOFactory(factory.Factory):
     def stage_details_dtos(self):
         return [CurrentStageDetailsDTOFactory(),
                 CurrentStageDetailsDTOFactory()]
+
+
+class GoFWritePermissionRolesDTOFactory(factory.Factory):
+    class Meta:
+        model = GoFWritePermissionRolesDTO
+
+    gof_id = factory.sequence(lambda counter: "gof_{}".format(counter))
+    write_permission_roles = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC']
+
+
+class FieldWritePermissionRolesDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldWritePermissionRolesDTO
+
+    field_id = factory.sequence(lambda counter: "field_{}".format(counter))
+    write_permission_roles = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC']
