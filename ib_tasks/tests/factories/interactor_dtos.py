@@ -94,6 +94,13 @@ class TaskTemplateStageActionDTOFactory(factory.Factory):
         lambda n: "transition_template_id_%d" % (n + 1))
 
 
+class TaskStageDTOFactory(factory.Factory):
+    stage_id = factory.Sequence(lambda n: 'stage_%d' % (n + 1))
+    db_stage_id = factory.Sequence(lambda n: 'db_stage_%d' % (n + 1))
+    display_name = factory.Sequence(lambda n: 'display_name_%d' % (n + 1))
+    stage_colour = factory.Sequence(lambda n: 'stage_color_%d' % (n + 1))
+
+
 class FieldDisplayDTOFactory(factory.Factory):
     class Meta:
         model = FieldDisplayDTO

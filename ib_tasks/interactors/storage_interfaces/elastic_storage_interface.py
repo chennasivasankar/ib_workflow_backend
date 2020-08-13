@@ -45,3 +45,9 @@ class ElasticSearchStorageInterface(abc.ABC):
             apply_filter_dtos: List[ApplyFilterDTO]
     ) -> QueryTasksDTO:
         pass
+
+    def validate_task_id_in_elasticsearch(self, task_id):
+        pass
+
+    def filter_tasks_with_stage_ids(self, filter_dtos, task_details_config):
+        pass

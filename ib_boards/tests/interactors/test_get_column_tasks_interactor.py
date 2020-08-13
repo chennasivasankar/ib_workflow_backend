@@ -14,10 +14,12 @@ from ib_boards.interactors.dtos import ColumnTasksParametersDTO, \
     TaskCompleteDetailsDTO
 from ib_boards.interactors.get_column_tasks_interactor import \
     GetColumnTasksInteractor
-from ib_boards.tests.factories.interactor_dtos import ActionDTOFactory, \
+from ib_boards.tests.factories.interactor_dtos import  \
     FieldDetailsDTOFactory, GetTaskDetailsDTOFactory, \
-    ColumnTaskIdsDTOFactory, TaskStageIdDTOFactory, ColumnStageIdsDTOFactory
-from ib_boards.tests.factories.storage_dtos import TaskDTOFactory, TaskStageDTOFactory
+    ColumnTaskIdsDTOFactory, TaskStageIdDTOFactory, ColumnStageIdsDTOFactory, \
+    StageAssigneesDTOFactory
+from ib_boards.tests.factories.storage_dtos import TaskDTOFactory, \
+    TaskStageDTOFactory, TaskActionsDTOFactory
 from ib_boards.tests.factories.storage_dtos import TaskDTOFactory, TaskStageDTOFactory
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
 
@@ -86,7 +88,7 @@ class TestGetColumnTasksInteractor:
                 stage_id='STAGE_ID_1',
                 stage_color="blue",
                 field_dtos=FieldDetailsDTOFactory.create_batch(2),
-                action_dtos=ActionDTOFactory.create_batch(2)
+                action_dtos=TaskActionsDTOFactory.create_batch(2)
             )
         ]
 
@@ -134,12 +136,17 @@ class TestGetColumnTasksInteractor:
 
     @pytest.fixture
     def action_dtos(self):
-        return ActionDTOFactory.create_batch(9)
+        return TaskActionsDTOFactory.create_batch(9)
 
     @pytest.fixture
     def column_stage_dtos(self):
         ColumnStageIdsDTOFactory.reset_sequence()
         return ColumnStageIdsDTOFactory.create_batch(1)
+
+    @pytest.fixture
+    def assignee_dtos(self):
+        StageAssigneesDTOFactory.reset_sequence()
+        return StageAssigneesDTOFactory.create_batch(3)
 
     def test_with_invalid_column_id_return_error_message(
             self, presenter_mock, storage_mock, get_column_tasks_dto):
@@ -252,7 +259,7 @@ class TestGetColumnTasksInteractor:
             self, storage_mock, presenter_mock, get_column_tasks_dto, mocker,
             task_complete_details_dto, task_dtos,
             action_dtos, column_tasks_ids, task_stage_dtos,
-            get_task_details_dto, task_stage_color_dtos, column_stage_dtos):
+            get_task_details_dto, task_stage_color_dtos, column_stage_dtos, assignee_dtos):
         # Arrange
         view_type = get_column_tasks_dto.view_type
         stage_ids = ['STAGE_ID_1', 'STAGE_ID_2']
@@ -288,6 +295,10 @@ class TestGetColumnTasksInteractor:
         adapter_mock = adapter_mock_to_get_user_role(
             mocker=mocker, user_role=user_role
         )
+        from ib_boards.tests.common_fixtures.interactors import \
+            get_assignee_details_mock
+        mock = get_assignee_details_mock(mocker=mocker)
+        mock.return_value = assignee_dtos
 
         # Act
         actual_response = interactor.get_column_tasks_wrapper(
@@ -308,12 +319,13 @@ class TestGetColumnTasksInteractor:
             task_fields_dtos=task_complete_details_dto[0].field_dtos,
             total_tasks=10,
             task_ids=task_ids,
-            task_stage_dtos=task_stage_color_dtos
+            task_stage_dtos=task_stage_color_dtos,
+            assignees_dtos=assignee_dtos
         )
 
     def test_with_valid_details_return_task_details_without_duplicates(
             self, storage_mock, presenter_mock, get_column_tasks_dto, mocker,
-            task_complete_details_dto, task_dtos,
+            task_complete_details_dto, task_dtos, assignee_dtos,
             column_tasks_ids_no_duplicates, task_stage_color_dtos,
             action_dtos, column_tasks_ids, task_stage_dtos, column_stage_dtos):
 
@@ -352,6 +364,10 @@ class TestGetColumnTasksInteractor:
         adapter_mock = adapter_mock_to_get_user_role(
             mocker=mocker, user_role=user_role
         )
+        from ib_boards.tests.common_fixtures.interactors import \
+            get_assignee_details_mock
+        mock = get_assignee_details_mock(mocker=mocker)
+        mock.return_value = assignee_dtos
 
         # Act
         actual_response = interactor.get_column_tasks_wrapper(
@@ -369,5 +385,6 @@ class TestGetColumnTasksInteractor:
             task_fields_dtos=task_complete_details_dto[0].field_dtos,
             total_tasks=10,
             task_ids=task_ids,
-            task_stage_dtos=task_stage_color_dtos
+            task_stage_dtos=task_stage_color_dtos,
+            assignees_dtos=assignee_dtos
         )

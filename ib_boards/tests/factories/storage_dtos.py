@@ -31,6 +31,7 @@ class TaskActionsDTOFactory(factory.Factory):
     task_id = factory.Sequence(lambda n: "task_id_%d" % n)
     stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)
     action_id = factory.Sequence(lambda n: "action_id_%d" % n)
+    action_type = factory.Sequence(lambda n: "action_type_%d" % n)
     name = factory.Sequence(lambda n: "name_%d" % n)
     button_text = factory.Sequence(lambda n: "button_text_%d" % n)
     button_color = None
@@ -49,6 +50,7 @@ class TaskStageDTOFactory(factory.Factory):
     task_id = factory.Sequence(lambda n: "task_id_%d" % n)
     stage_id = factory.Sequence(lambda n: "stage_id_%d" % n)
     db_stage_id = factory.Sequence(lambda n: n)
+    display_name = "stage"
     stage_color = factory.Iterator(["blue", "orange", "green"])
 
 
