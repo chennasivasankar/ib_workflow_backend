@@ -1,3 +1,5 @@
+from unittest.mock import Mock
+
 import pytest
 
 
@@ -31,6 +33,29 @@ class TestCreateDiscussionInteractor:
             description="test for interactor"
         )
         return discussion_dto
+
+    def test_empty_title_return_reponse(self, storage_mock, presenter_mock,
+                                        discussion_dto):
+        # Arrange
+        discussion_dto.title = ""
+        expected_presenter_response_for_empty_title_mock = Mock()
+
+        presenter_mock.response_for_empty_title.return_value = \
+            expected_presenter_response_for_empty_title_mock
+
+        from ib_discussions.interactors.discussion_interactor import \
+            DiscussionInteractor
+        interactor = DiscussionInteractor(storage=storage_mock)
+
+        # Act
+        response = interactor.create_discussion_wrapper(
+            discussion_with_entity_details_dto=discussion_dto,
+            presenter=presenter_mock
+        )
+
+        # Assert
+        assert response == expected_presenter_response_for_empty_title_mock
+        presenter_mock.response_for_empty_title.assert_called_once()
 
     def test_create_discussion_set_when_does_not_exists(
             self, storage_mock, presenter_mock, discussion_dto

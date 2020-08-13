@@ -26,19 +26,14 @@ class DiscussionInteractor:
             discussion_with_entity_details_dto: DiscussionWithEntityDetailsDTO,
             presenter: CreateDiscussionPresenterInterface
     ):
-        from ib_discussions.exceptions.custom_exceptions import \
-            EntityIdNotFound, InvalidEntityTypeForEntityId
         try:
             response = self._create_discussion_response(
                 discussion_with_entity_details_dto \
                     =discussion_with_entity_details_dto,
                 presenter=presenter
             )
-        except EntityIdNotFound:
-            response = presenter.raise_exception_for_entity_id_not_found()
-        except InvalidEntityTypeForEntityId:
-            response = presenter. \
-                raise_exception_for_invalid_entity_type_for_entity_id()
+        except EmptyTitle:
+            response = presenter.response_for_empty_title()
         return response
 
     def _create_discussion_response(
@@ -56,6 +51,9 @@ class DiscussionInteractor:
             self,
             discussion_with_entity_details_dto: DiscussionWithEntityDetailsDTO
     ):
+        is_title_empty = not discussion_with_entity_details_dto.title
+        if is_title_empty:
+            raise EmptyTitle
         discussion_set_id = self._get_or_create_the_discussion_set(
             discussion_with_entity_details_dto \
                 =discussion_with_entity_details_dto
