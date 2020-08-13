@@ -4,6 +4,8 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
 from .validator_class import ValidatorClass
 from ...storages.action_storage_implementation import \
     ActionsStorageImplementation
+from ...storages.elasticsearch_storage_implementation import \
+    ElasticSearchStorageImplementation
 from ...storages.task_stage_storage_implementation import \
     TaskStageStorageImplementation
 from ...storages.tasks_storage_implementation import TasksStorageImplementation
@@ -35,12 +37,14 @@ def api_wrapper(*args, **kwargs):
     task_storage = TasksStorageImplementation()
     action_storage = ActionsStorageImplementation()
     task_stage_storage = TaskStageStorageImplementation()
+    elastic_search_storage = ElasticSearchStorageImplementation()
     interactor = UserActionOnTaskInteractor(
         user_id=user_id, action_id=action_id,
         board_id=board_id, storage=storage, gof_storage=gof_storage,
         stage_storage=stage_storage, field_storage=field_storage,
         task_storage=task_storage, action_storage=action_storage,
-        task_stage_storage=task_stage_storage
+        task_stage_storage=task_stage_storage,
+        elasticsearch_storage=elastic_search_storage
     )
 
     response = interactor.user_action_on_task_wrapper(
