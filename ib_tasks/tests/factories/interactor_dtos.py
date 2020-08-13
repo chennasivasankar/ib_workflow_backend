@@ -6,6 +6,8 @@ from ib_tasks.adapters.dtos import UserDTO
 from ib_tasks.constants.enum import Searchable, Priority
 from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
+from ib_tasks.interactors.get_stage_searchable_possible_assignees_interactor import \
+    SearchQueryWithPaginationDTO
 from ib_tasks.interactors.get_tasks_to_relevant_search_query import \
     SearchQueryDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
@@ -387,6 +389,15 @@ class SaveAndActOnTaskDTOFactory(factory.Factory):
     @factory.lazy_attribute
     def gof_fields_dtos(self):
         return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]
+
+
+class SearchDTOFactory(factory.Factory):
+    class Meta:
+        model = SearchQueryWithPaginationDTO
+
+    limit = factory.Sequence(lambda number: number)
+    offset = factory.Sequence(lambda number: number)
+    search_query = factory.Sequence(lambda number: 'user_{}'.format(number))
 
 
 class CurrentStageDetailsDTOFactory(factory.Factory):

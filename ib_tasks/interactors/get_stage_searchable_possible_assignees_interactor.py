@@ -4,7 +4,6 @@ from typing import List
 from ib_tasks.adapters.dtos import UserDetailsDTO
 from ib_tasks.exceptions.fields_custom_exceptions import \
     LimitShouldBeGreaterThanZeroException, \
-    OffsetShouldBeGreaterThanZeroException, \
     OffsetShouldBeGreaterThanOrEqualToZeroException
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
@@ -81,14 +80,14 @@ class GetStageSearchablePossibleAssigneesInteractor(
     def _make_validations(
             self, stage_id: int,
             search_query_with_pagination_dto: SearchQueryWithPaginationDTO):
+        self._validations_of_limit_and_offset(
+            limit=search_query_with_pagination_dto.limit,
+            offset=search_query_with_pagination_dto.offset)
+
         is_valid_stage_id = self.check_is_valid_stage_id(stage_id=stage_id)
         is_invalid_stage_id = not is_valid_stage_id
         if is_invalid_stage_id:
             raise InvalidStageId(stage_id)
-
-        self._validations_of_limit_and_offset(
-            limit=search_query_with_pagination_dto.limit,
-            offset=search_query_with_pagination_dto.offset)
 
     @staticmethod
     def _validations_of_limit_and_offset(offset: int, limit: int):

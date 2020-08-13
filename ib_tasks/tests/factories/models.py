@@ -7,8 +7,9 @@ from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
     Priority, ActionTypes, DelayReasons
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
-    UserTaskDelayReason, Task, TaskGoF, TaskGoFField, TaskTemplateGlobalConstants,
-    TaskStatusVariable, Filter, FilterCondition,TaskLog,
+    UserTaskDelayReason, Task, TaskGoF, TaskGoFField,
+    TaskTemplateGlobalConstants,
+    TaskStatusVariable, Filter, FilterCondition, TaskLog,
     StagePermittedRoles, ElasticSearchTask, TaskStageHistory)
 from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.field import Field
@@ -94,7 +95,8 @@ class TaskDueDetailsFactory(factory.django.DjangoModelFactory):
     task = factory.SubFactory(TaskFactory)
     due_datetime = datetime.now() + timedelta(days=2)
     count = factory.Sequence(lambda n: (n + 1))
-    user_id = factory.Sequence(lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
+    user_id = factory.Sequence(
+        lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
     reason_id = DelayReasons[0]['id']
     reason = DelayReasons[0]['reason']
 
@@ -321,6 +323,7 @@ class TaskStageHistoryModelFactory(factory.django.DjangoModelFactory):
     joined_at = datetime(2012, 10, 10)
     left_at = datetime(2012, 10, 11)
 
+
 class ElasticSearchTaskFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ElasticSearchTask
@@ -347,4 +350,5 @@ class TaskLogFactory(factory.django.DjangoModelFactory):
     task_json = """ json """
     acted_at = "2020-08-11 12:00:00"
     action = factory.SubFactory(StageActionFactory)
-    user_id = factory.Sequence(lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
+    user_id = factory.Sequence(
+        lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)

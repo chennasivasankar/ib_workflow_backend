@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 from snapshottest import GenericRepr, Snapshot
 
+
 snapshots = Snapshot()
 
 snapshots['TestGetTaskStagesAndActions.test_given_task_id_but_task_has_no_actions_returns_actions_as_empty_list response'] = [
