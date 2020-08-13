@@ -299,9 +299,6 @@
     "ColumnDetailsResponse": {
       "type": "object",
       "properties": {
-        "task_id": {
-          "type": "string"
-        },
         "column_id": {
           "type": "string"
         },

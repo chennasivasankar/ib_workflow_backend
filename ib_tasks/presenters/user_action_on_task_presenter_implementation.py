@@ -162,7 +162,7 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
                 "actions": self._get_column_actions(
                     column_actions_dict[column_dto.column_id]
                 ),
-                "fields": self._get_column_fields(
+                "task_overview_fields": self._get_column_fields(
                     column_fields_dict[column_dto.column_id]
                 )
             }
@@ -213,6 +213,8 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
             {
                 "action_id": str(action_dto.action_id),
                 "name": action_dto.name,
+                "action_type": action_dto.action_type,
+                "transition_template_id": action_dto.transition_template_id,
                 "button_text": action_dto.button_text,
                 "button_color": action_dto.button_color
             }
@@ -225,8 +227,8 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
         return [
             {
                 "field_type": field_dto.field_type,
-                "key": field_dto.key,
-                "value": field_dto.value
+                "field_display_name": field_dto.key,
+                "field_response": field_dto.value
             }
             for field_dto in fields_dto
         ]
