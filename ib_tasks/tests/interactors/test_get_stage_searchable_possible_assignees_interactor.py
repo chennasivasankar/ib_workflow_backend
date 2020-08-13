@@ -1,8 +1,8 @@
 import pytest
 from mock import create_autospec
 
-from ib_tasks.interactors.get_stage_searchable_possible_assignees_interactor import \
-    SearchQueryWithPaginationDTO
+from ib_tasks.interactors.get_stage_searchable_possible_assignees_interactor \
+    import SearchQueryWithPaginationDTO
 
 
 class TestGetStageSearchablePossibleAssigneesInteractor:
@@ -38,35 +38,6 @@ class TestGetStageSearchablePossibleAssigneesInteractor:
     def reset_sequence(self):
         from ib_tasks.tests.factories.interactor_dtos import SearchDTOFactory
         SearchDTOFactory.reset_sequence()
-
-    @pytest.fixture
-    def assignee_details_dtos(self, reset_sequence):
-        from ib_tasks.tests.factories.adapter_dtos import \
-            AssigneeDetailsDTOFactory
-        assignee_details_dtos = [
-            AssigneeDetailsDTOFactory(
-                assignee_id="123e4567-e89b-12d3-a456-426614174001"),
-            AssigneeDetailsDTOFactory(
-                assignee_id="123e4567-e89b-12d3-a456-426614174002"),
-            AssigneeDetailsDTOFactory(
-                assignee_id="123e4567-e89b-12d3-a456-426614174003")
-        ]
-        return assignee_details_dtos
-
-    @pytest.fixture
-    def stage_assignee_dtos(self, reset_sequence):
-        from ib_tasks.tests.factories.storage_dtos import \
-            StageAssigneeDTOFactory
-        stage_assignee_dtos = [
-            StageAssigneeDTOFactory(
-                assignee_id="123e4567-e89b-12d3-a456-426614174001"),
-            StageAssigneeDTOFactory(
-                assignee_id="123e4567-e89b-12d3-a456-426614174002"),
-            StageAssigneeDTOFactory(
-                assignee_id="123e4567-e89b-12d3-a456-426614174003"),
-            StageAssigneeDTOFactory(assignee_id=None)
-        ]
-        return stage_assignee_dtos
 
     @pytest.mark.parametrize('limit', [-1, 0, -5])
     def test_with_invalid_limit_raises_exception(
