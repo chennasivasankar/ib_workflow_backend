@@ -15,7 +15,8 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import \
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    GetTaskStageCompleteDetailsDTO, TaskTemplateWithStageColorDTO, TaskTemplateStageDTO
+    GetTaskStageCompleteDetailsDTO, TaskTemplateWithStageColorDTO, TaskTemplateStageDTO,\
+    GetTaskStageCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \

@@ -147,4 +147,4 @@ class GetTaskStagesHistory:
         is_invalid_task = \
             not self.task_storage.check_is_task_exists(task_id=task_id)
         if is_invalid_task:
-            raise InvalidTaskException(task_id=task_id)
+            raise InvalidTaskIdException(task_id=task_id)

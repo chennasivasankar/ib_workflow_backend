@@ -7,20 +7,6 @@ from snapshottest import Snapshot, GenericRepr
 
 snapshots = Snapshot()
 
-snapshots['TestCreateOrUpdateTaskStorageImplementation.test_given_task_id_returns_task_gof_dtos task_gof_dtos'] = [
-    GenericRepr("TaskGoFDTO(task_gof_id=1, gof_id='gof_1', same_gof_order=1)"),
-    GenericRepr("TaskGoFDTO(task_gof_id=2, gof_id='gof_2', same_gof_order=1)"),
-    GenericRepr("TaskGoFDTO(task_gof_id=3, gof_id='gof_3', same_gof_order=1)")
-]
-
-snapshots['TestCreateOrUpdateTaskStorageImplementation.test_given_task_gof_ids_returns_task_gof_field_dtos task_gof_field_dtos'] = [
-    GenericRepr("TaskGoFFieldDTO(task_gof_id=1, field_id='FIELD_ID-0', field_response='field_response_0')"),
-    GenericRepr("TaskGoFFieldDTO(task_gof_id=1, field_id='FIELD_ID-4', field_response='field_response_4')"),
-    GenericRepr("TaskGoFFieldDTO(task_gof_id=2, field_id='FIELD_ID-1', field_response='field_response_1')"),
-    GenericRepr("TaskGoFFieldDTO(task_gof_id=2, field_id='FIELD_ID-3', field_response='field_response_3')"),
-    GenericRepr("TaskGoFFieldDTO(task_gof_id=3, field_id='FIELD_ID-2', field_response='field_response_2')")
-]
-
 snapshots['TestCreateOrUpdateTaskStorageImplementation.test_given_gof_ids_and_user_roles_returns_gof_ids_having_permission_for_roles gof_ids_having_permission'] = [
     'gof_10',
     'gof_11',
@@ -45,4 +31,16 @@ snapshots['TestCreateOrUpdateTaskStorageImplementation.test_given_field_ids_and_
 snapshots['TestCreateOrUpdateTaskStorageImplementation.test_given_task_id_with_no_gof_ids_returns_empty_list task_gof_dtos'] = [
 ]
 
-snapshots['TestCreateOrUpdateTaskStorageImplementation.test_given_valid_task_id_returns_template_id task_base_details_dtos'] = GenericRepr("TaskBaseDetailsDTO(template_id='template_0', title='title_0', description='description_0', start_date=datetime.datetime(2020, 8, 6, 16, 28, 45, 783523), due_date=datetime.datetime(2020, 8, 16, 16, 28, 45, 783530), priority='HIGH')")
+snapshots['TestCreateOrUpdateTaskStorageImplementation.test_given_task_id_returns_task_gof_dtos task_gof_dtos'] = [
+    GenericRepr("TaskGoFDTO(task_gof_id=1, gof_id='gof_1', same_gof_order=1)"),
+    GenericRepr("TaskGoFDTO(task_gof_id=2, gof_id='gof_2', same_gof_order=1)"),
+    GenericRepr("TaskGoFDTO(task_gof_id=3, gof_id='gof_3', same_gof_order=1)")
+]
+
+snapshots['TestCreateOrUpdateTaskStorageImplementation.test_given_task_gof_ids_returns_task_gof_field_dtos task_gof_field_dtos'] = [
+    GenericRepr("TaskGoFFieldDTO(task_gof_id=1, field_id='FIELD_ID-0', field_response='field_response_0')"),
+    GenericRepr("TaskGoFFieldDTO(task_gof_id=1, field_id='FIELD_ID-4', field_response='field_response_4')"),
+    GenericRepr("TaskGoFFieldDTO(task_gof_id=2, field_id='FIELD_ID-1', field_response='field_response_1')"),
+    GenericRepr("TaskGoFFieldDTO(task_gof_id=2, field_id='FIELD_ID-3', field_response='field_response_3')"),
+    GenericRepr("TaskGoFFieldDTO(task_gof_id=3, field_id='FIELD_ID-2', field_response='field_response_2')")
+]

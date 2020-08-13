@@ -43,11 +43,11 @@ class TestTaskStageAssignees:
         for each_task_id_with_stage_assignee_dto in \
                 task_id_with_stage_assignee_dtos:
             task_stage_obj = TaskStageHistory.objects.get(
-                task_id=each_task_id_with_stage_assignee_dto.task_id,
+                task_id=each_task_id_with_stage_assignee_dto.task_display_id,
                 stage_id=each_task_id_with_stage_assignee_dto.db_stage_id
             )
-            assert task_stage_obj.task_id == \
-                   each_task_id_with_stage_assignee_dto.task_id
+            assert task_stage_obj.task_display_id == \
+                   each_task_id_with_stage_assignee_dto.task_display_id
             assert task_stage_obj.stage_id == \
                    each_task_id_with_stage_assignee_dto.db_stage_id
             assert task_stage_obj.assignee_id == \

@@ -280,10 +280,20 @@ DUE_DATE_HAS_EXPIRED = (
 )
 
 INVALID_STAGES_FOR_TASK = (
-    "{}",
+    "invalid stages for task",
     "INVALID_STAGE_IDS_FOR_TASK"
 )
 INVALID_TASK_DISPLAY_ID = (
     "{} is invalid task_id send valid task_id",
+    "INVALID_TASK_ID"
+)
+
+INVALID_PRESENT_STAGE_ACTION = (
+    "{} is invalid present stage action",
+    "INVALID_PRESENT_STAGE_ACTION"
+)
+
+INVALID_TASK_DB_ID = (
+    "Invalid task id",
     "INVALID_TASK_ID"
 )

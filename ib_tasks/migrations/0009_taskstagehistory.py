@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ib_tasks', '0008_merge_20200812_1435'),
+        ('ib_tasks', '0008_merge_20200813_1442'),
     ]
 
     operations = [
@@ -23,3 +23,4 @@ class Migration(migrations.Migration):
             ],
         ),
     ]
+
