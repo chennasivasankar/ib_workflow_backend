@@ -74,6 +74,3 @@ admin.site.register(Stage, StagesAdmin)
 admin.site.register(StageAction, StagesActionsAdmin)
 
 
-admin.site.register(Filter)
-
-admin.site.register(FilterCondition)
