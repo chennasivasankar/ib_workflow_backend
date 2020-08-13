@@ -47,33 +47,34 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
             user_profile_response_dto:
             UserProfileWithTeamsAndCompanyAndTheirUsersDTO):
         user_profile_dto = user_profile_response_dto.user_profile_dto
-        response_dict = self._get_user_profile_dict_from_user_profile_dto(
-            user_profile_dto=user_profile_dto)
         teams = self._convert_team_dtos_to_teams(
-            team_dtos=UserProfileWithTeamsAndCompanyAndTheirUsersDTO.team_dtos,
-            user_dtos=UserProfileWithTeamsAndCompanyAndTheirUsersDTO.user_dtos,
+            team_dtos=user_profile_response_dto.team_dtos,
+            user_dtos=user_profile_response_dto.user_dtos,
             team_user_ids_dtos=
-            UserProfileWithTeamsAndCompanyAndTheirUsersDTO.team_user_ids_dto)
+            user_profile_response_dto.team_user_ids_dto)
         company_dictionary = self._get_company_dictionary(
             company_dto=
-            UserProfileWithTeamsAndCompanyAndTheirUsersDTO.company_dto,
-            user_dtos=UserProfileWithTeamsAndCompanyAndTheirUsersDTO.user_dtos,
+            user_profile_response_dto.company_dto,
+            user_dtos=user_profile_response_dto.user_dtos,
             company_id_with_employee_ids_dto=
-            UserProfileWithTeamsAndCompanyAndTheirUsersDTO
+            user_profile_response_dto
                 .company_id_with_employee_ids_dto)
-        response_dict["teams"] = teams
-        response_dict["company"] = company_dictionary
+        response_dict = self._get_user_profile_dict_from_user_profile_dto(
+            user_profile_dto=user_profile_dto, teams=teams,
+            company=company_dictionary)
         return self.prepare_200_success_response(response_dict=response_dict)
 
     @staticmethod
     def _get_user_profile_dict_from_user_profile_dto(
-            user_profile_dto: UserProfileDTO):
+            user_profile_dto: UserProfileDTO, teams, company):
         user_profile_dictionary = {
             "user_id": user_profile_dto.user_id,
             "name": user_profile_dto.name,
             "is_admin": user_profile_dto.is_admin,
             "email": user_profile_dto.email,
-            "profile_pic_url": user_profile_dto.profile_pic_url
+            "profile_pic_url": user_profile_dto.profile_pic_url,
+            "teams": teams,
+            "company": company
         }
         return user_profile_dictionary
 
