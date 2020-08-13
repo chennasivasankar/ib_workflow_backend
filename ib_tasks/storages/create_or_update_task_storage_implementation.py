@@ -2,7 +2,7 @@ from typing import Union, List, Optional
 
 from django.db.models import Q
 
-from ib_tasks.constants.config import TIME_FORMAT
+from ib_tasks.constants.config import TIME_FORMAT, TASK_DISPLAY_ID_PREFIX
 from ib_tasks.exceptions.task_custom_exceptions \
     import InvalidTaskIdException
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
@@ -257,6 +257,7 @@ class CreateOrUpdateTaskStorageImplementation(
     def _get_task_base_details_dto(task_obj: Task):
         task_base_details_dto = TaskBaseDetailsDTO(
             template_id=task_obj.template_id,
+            task_display_id=task_obj.task_display_id,
             title=task_obj.title,
             description=task_obj.description,
             start_date=task_obj.start_date,
@@ -275,6 +276,7 @@ class CreateOrUpdateTaskStorageImplementation(
             datetime.datetime.strptime(task_dto.due_time, TIME_FORMAT).time()
         )
         task_object = Task.objects.create(
+            task_display_id=None,
             template_id=task_dto.task_template_id,
             created_by=task_dto.created_by_id,
             title=task_dto.title, description=task_dto.description,

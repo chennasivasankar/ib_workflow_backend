@@ -12,7 +12,6 @@ from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
 
 @dataclass
 class TaskCompleteDetailsDTO:
-    task_id: str
     task_details_dto: TaskDetailsDTO
     stages_and_actions_details_dtos: List[StageAndActionsDetailsDTO]
     stage_assignee_details_dtos: List[StageAssigneeDetailsDTO]
@@ -27,18 +26,6 @@ class GetTaskPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def get_task_response(self,
                           task_complete_details_dto: TaskCompleteDetailsDTO):
-        pass
-
-    @abc.abstractmethod
-    def response_for_invalid_task_id(self):
-        pass
-
-    @abc.abstractmethod
-    def response_for_user_is_not_assignee_for_task(self):
-        pass
-
-    @abc.abstractmethod
-    def get_response_for_get_task_due_details(self, task_dtos):
         pass
 
     @abc.abstractmethod

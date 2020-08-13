@@ -2,12 +2,13 @@ from typing import List, Dict
 
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
+
 from .validator_class import ValidatorClass
 from ...interactors.create_transition_checklist_template import \
     CreateTransitionChecklistTemplateInteractor
 from ...interactors.task_dtos import GoFFieldsDTO, FieldValuesDTO
 from ...interactors.task_template_dtos import \
-    CreateTransitionChecklistTemplateDTO
+    CreateTransitionChecklistTemplateWithTaskDisplayIdDTO
 from ...presenters.create_transition_checklist_presenter import \
     CreateTransitionChecklistTemplatePresenterImplementation
 from ...storages.action_storage_implementation import \
@@ -42,8 +43,9 @@ def api_wrapper(*args, **kwargs):
                 fields=transition_checklist_gof['gof_fields'])
         )
         transition_checklist_gof_dtos.append(gof_field_dto)
-    transition_template_dto = CreateTransitionChecklistTemplateDTO(
-        task_id=task_id, created_by_id=user_id,
+    transition_template_dto = \
+        CreateTransitionChecklistTemplateWithTaskDisplayIdDTO(
+        task_display_id=task_id, created_by_id=user_id,
         transition_checklist_template_id=transition_checklist_template_id,
         action_id=action_id, stage_id=stage_id,
         transition_checklist_gofs=transition_checklist_gof_dtos

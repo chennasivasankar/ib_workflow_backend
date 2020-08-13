@@ -5,7 +5,7 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
 
 from ib_tasks.interactors.task_dtos import FieldValuesDTO, \
     SaveAndActOnTaskDTO, \
-    StageIdWithAssigneeIdDTO
+    StageIdWithAssigneeIdDTO, SaveAndActOnTaskWithTaskDisplayIdDTO
 from .validator_class import ValidatorClass
 from ...interactors.create_or_update_task.save_and_act_on_task import \
     SaveAndActOnATaskInteractor
@@ -20,6 +20,8 @@ from ...storages.fields_storage_implementation import \
 from ...storages.gof_storage_implementation import GoFStorageImplementation
 from ...storages.storage_implementation import StorageImplementation, \
     StagesStorageImplementation
+from ...storages.task_stage_storage_implementation import \
+    TaskStageStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
@@ -55,8 +57,8 @@ def api_wrapper(*args, **kwargs):
         assignee_id=stage_assignee_assignee_id
     )
 
-    task_dto = SaveAndActOnTaskDTO(
-        task_id=task_id, action_id=action_id, created_by_id=user_id,
+    task_dto = SaveAndActOnTaskWithTaskDisplayIdDTO(
+        task_display_id=task_id, action_id=action_id, created_by_id=user_id,
         title=title,
         description=description, start_date=start_date, due_date=due_date,
         due_time=due_time, priority=priority, stage_assignee=stage_assignee,
@@ -76,6 +78,7 @@ def api_wrapper(*args, **kwargs):
     stage_storage = StagesStorageImplementation()
     action_storage = ActionsStorageImplementation()
     elastic_storage = ElasticSearchStorageImplementation()
+    task_stage_storage = TaskStageStorageImplementation()
 
     presenter = SaveAndActOnATaskPresenterImplementation()
     interactor = SaveAndActOnATaskInteractor(
@@ -83,7 +86,7 @@ def api_wrapper(*args, **kwargs):
         create_task_storage=create_task_storage,
         storage=storage, field_storage=field_storage,
         stage_storage=stage_storage, action_storage=action_storage,
-        elastic_storage=elastic_storage
+        elastic_storage=elastic_storage, task_stage_storage=task_stage_storage
     )
 
     response = interactor.save_and_act_on_task_wrapper(

@@ -247,6 +247,14 @@ INVALID_CUSTOM_LOGIC = ("invalid custom logic", "INVALID_CUSTOM_LOGIC")
 PATH_NOT_FOUND = ("path not found", "PATH_NOT_FOUND")
 METHOD_NOT_FOUND = ("method not found", "METHOD_NOT_FOUND")
 
+
+USER_IS_NOT_ASSIGNED_TO_TASK = ("user is not assigned to the task", "USER_IS_NOT_ASSIGNED_TO_TASK")
+
+INVALID_DUE_DATE_TIME = ("given updated due datetime is invalid", "INVALID_DUE_DATE_TIME")
+
+
+INVALID_REASON_ID = ("given reason id is not in options", "INVALID_REASON_ID")
+
 INVALID_DUE_TIME_FORMAT = (
     "{} has invalid due time format, time format should be HH:MM:SS",
     "INVALID_DUE_TIME_FORMAT"
@@ -272,10 +280,20 @@ DUE_DATE_HAS_EXPIRED = (
 )
 
 INVALID_STAGES_FOR_TASK = (
-    "{}",
+    "invalid stages for task",
     "INVALID_STAGE_IDS_FOR_TASK"
 )
 INVALID_TASK_DISPLAY_ID = (
     "{} is invalid task_id send valid task_id",
+    "INVALID_TASK_ID"
+)
+
+INVALID_PRESENT_STAGE_ACTION = (
+    "{} is invalid present stage action",
+    "INVALID_PRESENT_STAGE_ACTION"
+)
+
+INVALID_TASK_DB_ID = (
+    "Invalid task id",
     "INVALID_TASK_ID"
 )

@@ -1,14 +1,19 @@
-from random import choice
 from typing import List, Dict, Any, Tuple
+
 from ib_tasks.adapters.dtos import UserDetailsDTO
-from ib_tasks.constants.constants import EMPTY_STRING
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
+from ib_tasks.exceptions.action_custom_exceptions \
+    import InvalidKeyError
 from ib_tasks.exceptions.custom_exceptions import InvalidModulePathFound, \
     InvalidMethodFound
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
-
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException, \
+    InvalidTaskDisplayId
+from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
+    GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
-
+from ib_tasks.interactors.presenter_interfaces. \
+    get_next_stages_random_assignees_of_a_task_presenter import \
+    GetNextStagesRandomAssigneesOfATaskPresenterInterface
 from ib_tasks.interactors.stages_dtos import StageWithUserDetailsDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
@@ -18,8 +23,6 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
     AssigneeCurrentTasksCountDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
-from ib_tasks.exceptions.action_custom_exceptions \
-    import InvalidKeyError
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     StatusVariableDTO
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
@@ -28,12 +31,11 @@ from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import
     TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.presenter_interfaces. \
-    get_next_stages_random_assignees_of_a_task_presenter import \
-    GetNextStagesRandomAssigneesOfATaskPresenterInterface
 
 
-class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
+class GetNextStagesRandomAssigneesOfATaskInteractor(
+    ValidationMixin, GetTaskIdForTaskDisplayIdMixin
+):
     def __init__(self, storage: StorageInterface,
                  stage_storage: StageStorageInterface,
                  task_storage: TaskStorageInterface,
@@ -46,15 +48,18 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
         self.task_stage_storage = task_stage_storage
 
     def get_next_stages_random_assignees_of_a_task_wrapper(
-            self, task_id: int, action_id: int,
+            self, task_display_id: str, action_id: int,
             presenter: GetNextStagesRandomAssigneesOfATaskPresenterInterface):
         try:
+            task_id = self.get_task_id_for_task_display_id(task_display_id)
             stage_with_user_details_dtos = \
                 self.get_next_stages_random_assignees_of_a_task(
                     task_id=task_id, action_id=action_id)
             return presenter. \
                 get_next_stages_random_assignees_of_a_task_response(
                 stage_with_user_details_dtos)
+        except InvalidTaskDisplayId as err:
+            return presenter.raise_invalid_task_display_id(err)
         except InvalidTaskIdException as exception:
             return presenter.raise_invalid_task_id_exception(
                 task_id=exception.task_id)
@@ -199,7 +204,6 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
             assignee_id_with_current_less_tasks, \
             updated_task_count_dto_for_assignee_having_less_tasks = self. \
                 _get_user_having_less_tasks_for_each_stage(
-                permitted_user_details_dtos,
                 permitted_assignee_with_current_tasks_count_dtos,
                 updated_task_count_dto_for_assignee_having_less_tasks)
             for permitted_user_details_dto in permitted_user_details_dtos:
@@ -219,7 +223,7 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
         return stage_with_user_details_dtos
 
     def _get_user_having_less_tasks_for_each_stage(
-            self, permitted_user_details_dtos: List[UserDetailsDTO],
+            self,
             permitted_assignee_with_current_tasks_count_dtos: List[
                 AssigneeCurrentTasksCountDTO],
             updated_task_count_dtos_for_assignee_having_less_tasks:
@@ -436,44 +440,6 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
             task_id=task_id, status_variable_dtos=status_variable_dtos)
         return next_stage_ids
 
-    # If we dont want to override with random user when a stage is assigned
-    # with user we can use this function instead of the
-    # _all_stages_assigned_ with_random_user_details_dtos
-    def _not_overriding_random_user_for_stages_having_assignees(
-            self, db_stage_ids: List[int],
-            stage_detail_dtos: List[StageDetailsDTO], task_id: int) -> \
-            List[StageWithUserDetailsDTO]:
-        task_stages_having_assignee_dtos = self.stage_storage. \
-            get_stage_details_having_assignees_in_given_stage_ids(
-            task_id, db_stage_ids)
-        task_stage_ids_having_assignees = [
-            each_task_stages_having_assignee_dto.db_stage_id
-            for each_task_stages_having_assignee_dto in
-            task_stages_having_assignee_dtos
-        ]
-        assignee_ids_assigned_to_stages = [
-            each_task_stages_having_assignee_dto.assignee_id
-            for each_task_stages_having_assignee_dto in
-            task_stages_having_assignee_dtos
-        ]
-        task_stages_having_assignee_details_dtos = self. \
-            _get_assignee_details_for_task_stages_having_assignees(
-            assignee_ids_assigned_to_stages,
-            task_stages_having_assignee_dtos)
-
-        task_stage_ids_not_having_assignees = list(
-            set(db_stage_ids) - set(task_stage_ids_having_assignees))
-        stage_with_random_user_details_dtos = self. \
-            _get_stage_with_random_user_details_dtos(
-            db_stage_ids=
-            task_stage_ids_not_having_assignees,
-            stage_detail_dtos=stage_detail_dtos)
-
-        all_stages_having_user_details_dtos = \
-            task_stages_having_assignee_details_dtos + \
-            stage_with_random_user_details_dtos
-        return all_stages_having_user_details_dtos
-
     @staticmethod
     def _get_updated_status_variable_dto(
             status_dict: Dict[str,
@@ -574,6 +540,7 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
         if is_invalid_action:
             raise InvalidActionException(action_id=action_id)
 
+    @staticmethod
     def _get_assignee_details_for_task_stages_having_assignees(
             assignee_ids_assigned_to_stages: List[str],
             task_stages_having_assignee_dtos:

@@ -21,7 +21,7 @@ from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskTemplateIds, \
-    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
+    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskDisplayId
 from ib_tasks.interactors.presenter_interfaces.update_task_presenter import \
     UpdateTaskPresenterInterface
 
@@ -29,6 +29,17 @@ from ib_tasks.interactors.presenter_interfaces.update_task_presenter import \
 class UpdateTaskPresenterImplementation(
     UpdateTaskPresenterInterface, HTTPResponseMixin
 ):
+
+    def raise_invalid_task_display_id(self, err: InvalidTaskDisplayId):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_TASK_DISPLAY_ID
+        message = INVALID_TASK_DISPLAY_ID[0].format(err.task_display_id)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_TASK_DISPLAY_ID[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_due_date_has_expired(self, err: DueDateHasExpired):
         from ib_tasks.constants.exception_messages import \
@@ -115,7 +126,7 @@ class UpdateTaskPresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             INVALID_TASK_ID
         response_message = INVALID_TASK_ID[0].format(
-            err.task_id
+            err.task_display_id
         )
         data = {
             "response": response_message,
