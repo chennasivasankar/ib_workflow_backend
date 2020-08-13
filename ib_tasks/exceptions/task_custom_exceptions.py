@@ -117,3 +117,9 @@ class InvalidStageIdsForTask(Exception):
 class InvalidTaskDisplayId(Exception):
     def __init__(self, task_display_id: str):
         self.task_display_id = task_display_id
+
+
+class UserPermissionDenied(Exception):
+   pass
+
+

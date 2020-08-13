@@ -22,6 +22,9 @@ from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
 class GetTaskPresenterImplementation(GetTaskPresenterInterface,
                                      HTTPResponseMixin):
 
+    def raise_user_permission_denied(self):
+        pass
+
     def raise_exception_for_invalid_task_id(self, err: InvalidTaskIdException):
         from ib_tasks.constants.exception_messages import INVALID_TASK_DB_ID
         response_message = INVALID_TASK_DB_ID[0]
