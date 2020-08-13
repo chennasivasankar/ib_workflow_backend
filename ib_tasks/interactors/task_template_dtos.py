@@ -19,3 +19,13 @@ class CreateTransitionChecklistTemplateDTO:
     action_id: int
     stage_id: int
     transition_checklist_gofs: List[GoFFieldsDTO]
+
+
+@dataclass
+class CreateTransitionChecklistTemplateWithTaskDisplayIdDTO:
+    task_display_id: str
+    created_by_id: str
+    transition_checklist_template_id: str
+    action_id: int
+    stage_id: int
+    transition_checklist_gofs: List[GoFFieldsDTO]

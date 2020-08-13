@@ -91,6 +91,19 @@ snapshots['TestCreateOrUpdateTaskPresenterImplementation.test_get_response_for_u
     },
     'other_board_details': [
     ],
+    'task_current_stages_details': {
+        'stages': [
+            {
+                'stage_display_name': 'stage_display_name_0',
+                'stage_id': 'stage_0'
+            },
+            {
+                'stage_display_name': 'stage_display_name_1',
+                'stage_id': 'stage_1'
+            }
+        ],
+        'user_has_permission': True
+    },
     'task_id': '1'
 }
 

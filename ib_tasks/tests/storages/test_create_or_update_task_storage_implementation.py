@@ -283,7 +283,7 @@ class TestCreateOrUpdateTaskStorageImplementation:
         # Assert
         for task_gof_dto in task_gof_dtos:
             TaskGoF.objects.get(
-                task_id=task_gof_dto.task_id,
+                task_id=task_gof_dto.task_display_id,
                 gof_id=task_gof_dto.gof_id,
                 same_gof_order=task_gof_dto.same_gof_order
             )
@@ -391,7 +391,7 @@ class TestCreateOrUpdateTaskStorageImplementation:
         )
         task_gof_dtos = [
             TaskGoFWithTaskIdDTOFactory(
-                task_id=task_gof.task_id,
+                task_id=task_gof.task_display_id,
                 gof_id=task_gof.gof_id,
                 same_gof_order=2
             )

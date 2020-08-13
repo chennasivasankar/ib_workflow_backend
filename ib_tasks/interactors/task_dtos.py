@@ -56,8 +56,37 @@ class UpdateTaskDTO:
 
 
 @dataclass
+class UpdateTaskWithTaskDisplayIdDTO:
+    task_display_id: str
+    created_by_id: str
+    title: str
+    description: str
+    start_date: datetime.date
+    due_date: datetime.date
+    due_time: str
+    priority: Priority
+    stage_assignee: StageIdWithAssigneeIdDTO
+    gof_fields_dtos: List[GoFFieldsDTO]
+
+
+@dataclass
 class SaveAndActOnTaskDTO:
     task_id: int
+    created_by_id: str
+    action_id: int
+    title: str
+    description: str
+    start_date: datetime.date
+    due_date: datetime.date
+    due_time: str
+    priority: Priority
+    stage_assignee: StageIdWithAssigneeIdDTO
+    gof_fields_dtos: List[GoFFieldsDTO]
+
+
+@dataclass
+class SaveAndActOnTaskWithTaskDisplayIdDTO:
+    task_display_id: str
     created_by_id: str
     action_id: int
     title: str

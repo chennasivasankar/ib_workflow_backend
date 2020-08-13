@@ -170,7 +170,7 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
             snapshot.assert_match(task_gof.same_gof_order,
                                   f'same_gof_order_{counter}')
             snapshot.assert_match(task_gof.gof_id, f'gof_id_{counter}')
-            snapshot.assert_match(task_gof.task_id, f'task_id_{counter}')
+            snapshot.assert_match(task_gof.task_display_id, f'task_id_{counter}')
 
             counter = counter + 1
 

@@ -63,7 +63,7 @@ class StagesStorageImplementation(StageStorageInterface):
     def get_valid_next_stage_ids_of_task_by_excluding_virtual_stages(
             self, stage_ids: List[str]) -> List[str]:
         stage_ids = list(Stage.objects.filter(stage_id__in=stage_ids).exclude(
-            value=-1).values('stage_id'))
+            value=-1).values_list('stage_id', flat=True))
         return stage_ids
 
     @staticmethod
@@ -231,7 +231,8 @@ class StagesStorageImplementation(StageStorageInterface):
     def get_task_id_with_stage_details_dtos_based_on_stage_value(
             self, stage_values: List[int],
             task_ids_group_by_stage_value_dtos: List[
-                StageValueWithTaskIdsDTO]) -> List[TaskIdWithStageDetailsDTO]:
+                StageValueWithTaskIdsDTO], user_id: str
+    ) -> List[TaskIdWithStageDetailsDTO]:
         # ToDo: Need to optimize the storage calls which are in for loop
         all_task_id_with_stage_details_dtos = []
         for each_stage_value in stage_values:
