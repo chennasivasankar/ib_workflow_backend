@@ -87,8 +87,8 @@ class TestGetTaskDueMissingDetails:
         # Arrange
         TaskFactory.reset_sequence()
         tasks = TaskFactory.create_batch(size=3)
-        TaskStageModelFactory.reset_sequence()
-        TaskStageModelFactory(task=tasks[0])
+        TaskLogFactory.reset_sequence()
+        TaskLogFactory(task=tasks[0])
         task_id = 1
         storage = StorageImplementation()
 
