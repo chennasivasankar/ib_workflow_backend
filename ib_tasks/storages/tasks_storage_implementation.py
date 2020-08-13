@@ -34,6 +34,10 @@ from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 
 
 class TasksStorageImplementation(TaskStorageInterface):
+    def get_tasks_with_max_stage_value_dto(self) -> List[
+        TaskIdWithStageValueDTO]:
+        pass
+
     def create_elastic_task(self, task_id: int, elastic_task_id: str):
 
         ElasticSearchTask.objects.create(
@@ -208,7 +212,7 @@ class TasksStorageImplementation(TaskStorageInterface):
         task_template_and_stage_ids = []
         for task in task_objs:
             for task_dto in task_dtos:
-                if task['id'] == task_dto.task_id:
+                if task['id'] == task_dto.task_display_id:
                     task_template_and_stage_ids.append(
                         {
                             "template_id": task['template_id'],
@@ -492,7 +496,5 @@ class TasksStorageImplementation(TaskStorageInterface):
         task_id = task_id_queryset.first()
         return task_id
 
-    def get_task_display_id(self, task_id: int) -> str:
-        task_obj = Task.objects.get(id=task_id)
-        return task_obj.task_display_id
-
+    def get_tasks_with_max_stage_value_dto(self)-> List[TaskIdWithStageValueDTO]:
+        pass

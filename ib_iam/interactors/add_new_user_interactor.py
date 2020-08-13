@@ -9,13 +9,17 @@ from ib_iam.interactors.dtos.dtos import \
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.add_new_user_presenter_inerface \
     import AddUserPresenterInterface
+from ib_iam.interactors.storage_interfaces.elastic_storage_interface \
+    import ElasticSearchStorageInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface \
     import UserStorageInterface
 
 
 class AddNewUserInteractor(ValidationMixin):
-    def __init__(self, user_storage: UserStorageInterface):
+    def __init__(self, user_storage: UserStorageInterface,
+                 elastic_storage: ElasticSearchStorageInterface):
         self.user_storage = user_storage
+        self.elastic_storage = elastic_storage
 
     def add_new_user_wrapper(
             self, user_id: str,
@@ -71,7 +75,12 @@ class AddNewUserInteractor(ValidationMixin):
             user_id=new_user_id, team_ids=team_ids)
         self.user_storage.add_roles_to_the_user(
             user_id=new_user_id, role_ids=role_obj_ids)
-        ## TODO use the new_user_id and name for elastic search
+        elastic_user_id = self.elastic_storage.create_elastic_user(
+            user_id=new_user_id, name=name
+        )
+        self.elastic_storage.create_elastic_user_intermediary(
+            elastic_user_id=elastic_user_id, user_id=new_user_id
+        )
 
     def _validate_add_new_user_details(
             self, user_id,

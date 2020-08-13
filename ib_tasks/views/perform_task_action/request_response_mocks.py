@@ -50,6 +50,7 @@ RESPONSE_200_JSON = """
         }
     ],
     "task_current_stages_details": {
+        "task_id": "string",
         "stages": [
             {
                 "stage_id": "string",

@@ -7,11 +7,9 @@ from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
     Priority, ActionTypes, DelayReasons
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
-    TaskLog,
-    UserTaskDelayReason,
-    Task, TaskGoF, TaskGoFField, TaskTemplateGlobalConstants,
-    TaskStatusVariable, Filter, FilterCondition,
-    StagePermittedRoles, ElasticSearchTask)
+    UserTaskDelayReason, Task, TaskGoF, TaskGoFField, TaskTemplateGlobalConstants,
+    TaskStatusVariable, Filter, FilterCondition,TaskLog,
+    StagePermittedRoles, ElasticSearchTask, TaskStageHistory)
 from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
@@ -54,6 +52,14 @@ class StageModelFactory(factory.django.DjangoModelFactory):
     display_logic = factory.Sequence(lambda n: "status_id_%d==stage_id" % n)
     card_info_kanban = json.dumps(['field_id_1', "field_id_2"])
     card_info_list = json.dumps(['field_id_1', "field_id_2"])
+
+
+class TaskStageModelFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CurrentTaskStage
+
+    task = factory.SubFactory(TaskFactory)
+    stage = factory.SubFactory(StageModelFactory)
 
 
 class TaskModelFactory(factory.django.DjangoModelFactory):
@@ -261,6 +267,19 @@ class CurrentTaskStageModelFactory(factory.django.DjangoModelFactory):
     stage = factory.SubFactory(StageModelFactory)
 
 
+class TaskLogFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TaskLog
+
+    task = factory.SubFactory(TaskFactory)
+    task_json = """ values"""
+    action = factory.SubFactory(StageActionFactory)
+    acted_at = "2020-10-25 12:00:00"
+    user_id = factory.sequence(
+        lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
+            counter))
+
+
 class FilterFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Filter
@@ -299,35 +318,25 @@ class TaskStageHistoryModelFactory(factory.django.DjangoModelFactory):
     stage = factory.SubFactory(StageModelFactory)
     assignee_id = factory.sequence(
         lambda n: "123e4567-e89b-12d3-a456-42661417400{}".format(n))
-
-
-class ElasticSearchTaskFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = ElasticSearchTask
-
-    elasticsearch_id = factory.sequence(
-        lambda n: 'elastic_search_id_{}'.format(n))
-    task_id = factory.sequence(lambda n: n)
-
-
-class ElasticSearchTaskFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = ElasticSearchTask
-
-    elasticsearch_id = factory.sequence(
-        lambda n: 'elastic_search_id_{}'.format(n))
-    task_id = factory.sequence(lambda n: n)
-
-
-class TaskStageHistoryModelFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = TaskStageHistory
-
-    task = factory.SubFactory(TaskFactory)
-    stage = factory.SubFactory(StageModelFactory)
-    task_stage_assignee_id = factory.Sequence(lambda n: "%d" % n)
     joined_at = datetime(2012, 10, 10)
     left_at = datetime(2012, 10, 11)
+
+class ElasticSearchTaskFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ElasticSearchTask
+
+    elasticsearch_id = factory.sequence(
+        lambda n: 'elastic_search_id_{}'.format(n))
+    task_id = factory.sequence(lambda n: n)
+
+
+class ElasticSearchTaskFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ElasticSearchTask
+
+    elasticsearch_id = factory.sequence(
+        lambda n: 'elastic_search_id_{}'.format(n))
+    task_id = factory.sequence(lambda n: n)
 
 
 class TaskLogFactory(factory.django.DjangoModelFactory):

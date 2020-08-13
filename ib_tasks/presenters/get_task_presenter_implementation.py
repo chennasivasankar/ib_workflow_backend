@@ -23,13 +23,12 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
                                      HTTPResponseMixin):
 
     def raise_exception_for_invalid_task_id(self, err: InvalidTaskIdException):
-        from ib_tasks.constants.exception_messages import INVALID_TASK_ID
-        task_id = err.task_id
-        response_message = INVALID_TASK_ID[0].format(task_id)
+        from ib_tasks.constants.exception_messages import INVALID_TASK_DB_ID
+        response_message = INVALID_TASK_DB_ID[0]
         data = {
             "response": response_message,
             "http_status_code": 404,
-            "res_status": INVALID_TASK_ID[1]
+            "res_status": INVALID_TASK_DB_ID[1]
         }
         response_object = self.prepare_404_not_found_response(
             response_dict=data
@@ -39,8 +38,7 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
     def raise_invalid_stage_ids_for_task(self, err: InvalidStageIdsForTask):
         from ib_tasks.constants.exception_messages import \
             INVALID_STAGES_FOR_TASK
-        message = err.message
-        response_message = INVALID_STAGES_FOR_TASK[0].format(message)
+        response_message = INVALID_STAGES_FOR_TASK[0]
         data = {
             "response": response_message,
             "http_status_code": 404,
@@ -86,7 +84,7 @@ class GetTaskPresenterImplementation(GetTaskPresenterInterface,
             task_base_details_dto.due_date
         )
         task_details_dict = {
-            "task_id": task_complete_details_dto.task_id,
+            "task_id": task_base_details_dto.task_display_id,
             "template_id": task_base_details_dto.template_id,
             "title": task_base_details_dto.title,
             "description": task_base_details_dto.description,

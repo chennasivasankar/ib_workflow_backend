@@ -2,7 +2,8 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.datetime_custom_exceptions import \
-    InvalidDueTimeFormat, StartDateIsAheadOfDueDate, DueDateIsBehindStartDate, \
+    InvalidDueTimeFormat, StartDateIsAheadOfDueDate, \
+    DueDateIsBehindStartDate, \
     DueTimeHasExpiredForToday, DueDateHasExpired
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidUrlForFile, InvalidFileFormat, InvalidImageFormat, \
@@ -25,6 +26,7 @@ from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
 from ib_tasks.interactors.presenter_interfaces.create_task_presenter import \
     CreateTaskPresenterInterface
+from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 
 
 class CreateTaskPresenterImplementation(
@@ -180,10 +182,20 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def get_create_task_response(self):
+    def get_create_task_response(
+            self, task_current_stage_details_dto: TaskCurrentStageDetailsDTO):
         data = {
-            "message": "task created successfully"
+            "task_id": task_current_stage_details_dto.task_display_id,
+            "stages": [],
+            "user_has_permission":
+                task_current_stage_details_dto.user_has_permission
         }
+        for stage_dto in task_current_stage_details_dto.stage_details_dtos:
+            stage = {
+                "stage_id": stage_dto.stage_id,
+                "stage_display_name": stage_dto.stage_display_name
+            }
+            data['stages'].append(stage)
         return self.prepare_201_created_response(response_dict=data)
 
     def raise_invalid_task_template_ids(self, err: InvalidTaskTemplateIds):

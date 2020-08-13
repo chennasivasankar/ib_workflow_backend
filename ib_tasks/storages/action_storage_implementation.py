@@ -2,12 +2,12 @@ from typing import List, Optional
 
 from django.db.models import F, Q
 
+from ib_tasks.constants.constants import ALL_ROLES_ID
 from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.stage_custom_exceptions import \
     TransitionTemplateIsNotRelatedToGivenStageAction, InvalidStageId
-from ib_tasks.interactors.stages_dtos import StagesActionDTO, \
-    TemplateStageDTO, StageActionDTO
+from ib_tasks.interactors.stages_dtos import TemplateStageDTO, StageActionDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
@@ -217,14 +217,10 @@ class ActionsStorageImplementation(ActionStorageInterface):
         return list(valid_stage_ids)
 
     def get_actions_details(self,
-                            stage_ids: List[str],
-                            user_roles: List[str]) -> \
+                            action_ids: List[int]) -> \
             List[StageActionDetailsDTO]:
         action_objs = (StageAction.objects
-                       .filter(stage__stage_id__in=stage_ids)
-                       .filter(Q(actionpermittedroles__role_id="ALL_ROLES") |
-                               Q(actionpermittedroles__role_id__in=user_roles)
-                               ))
+                       .filter(id__in=action_ids))
         unique_action_objs = list(set(action_objs))
         action_dtos = self._convert_action_objs_to_dtos(unique_action_objs)
         return action_dtos
@@ -248,6 +244,15 @@ class ActionsStorageImplementation(ActionStorageInterface):
 
     def validate_action(self, action_id: int) -> bool:
         return StageAction.objects.filter(id=action_id).exists()
+
+    def get_permitted_action_ids_given_stage_ids(self, user_roles: List[str],
+                                                 stage_ids: List[str]) -> List[int]:
+        action_ids = list(ActionPermittedRoles.objects.filter(
+            Q(action__stage__stage_id__in=stage_ids),
+            Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID))
+                          .values_list('id', flat=True)
+                          )
+        return action_ids
 
     def get_stage_ids_having_actions(self, db_stage_ids: List[int]) \
             -> List[int]:

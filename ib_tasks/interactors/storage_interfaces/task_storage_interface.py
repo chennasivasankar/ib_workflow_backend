@@ -5,7 +5,7 @@ Author: Pavankumar Pamuru
 """
 
 import abc
-from typing import List, Optional, Tuple
+from typing import List, Optional
 
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionWithStageIdDTO
@@ -59,7 +59,8 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_task_ids_for_the_stage_ids(
-            self, stage_ids: List[str], task_ids: List[int]) -> List[TaskStageIdsDTO]:
+            self, stage_ids: List[str], task_ids: List[int]) -> List[
+        TaskStageIdsDTO]:
         pass
 
     @abc.abstractmethod
@@ -120,8 +121,4 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_task_id_for_task_display_id(self, task_display_id: str) -> int:
-        pass
-
-    @abc.abstractmethod
-    def get_task_display_id(self, task_id: int) -> str:
         pass

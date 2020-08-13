@@ -2,13 +2,25 @@ from typing import List
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
-from ib_tasks.interactors.presenter_interfaces\
+from ib_tasks.interactors.presenter_interfaces \
     .update_task_stage_assignees_presenter_interface import \
     UpdateTaskStageAssigneesPresenterInterface
 
 
 class UpdateTaskStageAssigneesPresenterImplementation(
-    UpdateTaskStageAssigneesPresenterInterface, HTTPResponseMixin):
+    UpdateTaskStageAssigneesPresenterInterface, HTTPResponseMixin
+):
+
+    def raise_invalid_task_display_id(self, err):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_TASK_DISPLAY_ID
+        message = INVALID_TASK_DISPLAY_ID[0].format(err.task_display_id)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_TASK_DISPLAY_ID[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_duplicate_stage_ids_not_valid(self,
                                             duplicate_stage_ids: List[int]):

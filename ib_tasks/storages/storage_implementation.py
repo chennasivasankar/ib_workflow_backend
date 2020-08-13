@@ -1,10 +1,13 @@
 import datetime
 from typing import List, Optional
 
+from django.db.models import Q
+
+from ib_tasks.constants.constants import ALL_ROLES_ID
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.stages_dtos import StageActionDTO, StageDTO, \
-    TemplateStageDTO, TaskIdWithStageAssigneeDTO, StageRolesDTO
+    TemplateStageDTO, TaskIdWithStageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
     ActionRolesDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
@@ -26,11 +29,11 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import (
 )
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, TaskDueParametersDTO
+from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
+    ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, GlobalConstant, \
+    StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskLog, TaskTemplateStatusVariable
 from ib_tasks.models import \
-    ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, \
-    GlobalConstant, TaskStageHistory, \
-    StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskLog
-from ib_tasks.models import GoFRole, TaskStatusVariable, Task
+    TaskStageHistory
 from ib_tasks.models.task_due_details import UserTaskDelayReason
 
 
@@ -46,6 +49,11 @@ class StagesStorageImplementation(StageStorageInterface):
             stages, stage_information)
         StagePermittedRoles.objects.bulk_create(list_of_permitted_roles)
 
+    def get_existing_status_ids(self, status_ids: List[str]):
+        status = TaskTemplateStatusVariable.objects.filter(variable__in=status_ids
+                                                           ).values_list('variable', flat=True)
+        return list(status)
+
     def get_stage_detail_dtos_given_stage_ids(self, stage_ids: List[str]) -> \
             List[StageDetailsDTO]:
         stage_objs = Stage.objects.filter(stage_id__in=stage_ids).values(
@@ -60,7 +68,7 @@ class StagesStorageImplementation(StageStorageInterface):
     def get_valid_next_stage_ids_of_task_by_excluding_virtual_stages(
             self, stage_ids: List[str]) -> List[str]:
         stage_ids = list(Stage.objects.filter(stage_id__in=stage_ids).exclude(
-            value=-1).values('stage_id'))
+            value=-1).values_list('stage_id', flat=True))
         return stage_ids
 
     @staticmethod
@@ -79,25 +87,13 @@ class StagesStorageImplementation(StageStorageInterface):
                                         role_id=role))
         return list_of_permitted_roles
 
-    def get_stages_roles(self) -> List[StageRolesDTO]:
+    def get_permitted_stage_ids(self, user_role_ids: List[str]) -> List[str]:
 
-        stage_permitted_objs = \
-            StagePermittedRoles.objects.all().values('stage__stage_id', 'role_id')
+        stage_ids = StagePermittedRoles.objects.filter(
+            (Q(role_id__in=user_role_ids) | Q(role_id=ALL_ROLES_ID))
+        ).values_list('stage__stage_id', flat=True)
 
-        from collections import defaultdict
-        stage_roles_dict = defaultdict(list)
-        for stage_role_obj in stage_permitted_objs:
-            stage_id = stage_role_obj['stage__stage_id']
-            role_id = stage_role_obj['role_id']
-            stage_roles_dict[stage_id].append(role_id)
-
-        return [
-            StageRolesDTO(
-                stage_id=stage_id,
-                role_ids=role_ids
-            )
-            for stage_id, role_ids in stage_roles_dict.items()
-        ]
+        return list(stage_ids)
 
     @staticmethod
     def _get_stage_object(stage):
@@ -240,7 +236,8 @@ class StagesStorageImplementation(StageStorageInterface):
     def get_task_id_with_stage_details_dtos_based_on_stage_value(
             self, stage_values: List[int],
             task_ids_group_by_stage_value_dtos: List[
-                StageValueWithTaskIdsDTO]) -> List[TaskIdWithStageDetailsDTO]:
+                StageValueWithTaskIdsDTO], user_id: str
+    ) -> List[TaskIdWithStageDetailsDTO]:
         # ToDo: Need to optimize the storage calls which are in for loop
         all_task_id_with_stage_details_dtos = []
         for each_stage_value in stage_values:
@@ -356,6 +353,17 @@ class StagesStorageImplementation(StageStorageInterface):
                                  db_stage_id=task_stage_obj['stage_id']) for
             task_stage_obj in task_stage_objs]
         return task_with_stage_id_dtos
+
+    def check_is_stage_exists(self, stage_id: int) -> bool:
+        is_valid_stage_id = Stage.objects.filter(id=stage_id).exists()
+        return is_valid_stage_id
+
+    def get_stage_permitted_user_roles(self, stage_id: int) -> List[str]:
+        permitted_user_role_ids_queryset = StagePermittedRoles.objects.filter(
+            stage_id=stage_id).values_list('role_id', flat=True)
+
+        permitted_user_role_ids_list = list(permitted_user_role_ids_queryset)
+        return permitted_user_role_ids_list
 
 
 class StorageImplementation(StorageInterface):
@@ -664,14 +672,15 @@ class StorageImplementation(StorageInterface):
         user_id = due_details.user_id
         task_id = due_details.task_id
         reason_id = due_details.reason_id
-        updated_datetime = due_details.due_date_time
+        updated_due_datetime = due_details.due_date_time
         count = UserTaskDelayReason.objects.filter(
             task_id=task_id, user_id=user_id).count()
 
         UserTaskDelayReason.objects.create(user_id=user_id, task_id=task_id,
-                                           due_datetime=updated_datetime,
+                                           due_datetime=updated_due_datetime,
                                            count=count + 1,
                                            reason_id=reason_id,
                                            reason=due_details.reason)
         Task.objects.filter(pk=task_id, tasklog__user_id=user_id
-                            ).update(due_date=updated_datetime)
+                            ).update(due_date=updated_due_datetime)
+

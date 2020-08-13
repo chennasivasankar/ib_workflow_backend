@@ -24,17 +24,17 @@ def api_wrapper(*args, **kwargs):
     task_display_id = query_params_dict['task_id']
     user_id = user_obj.user_id
 
-    storage = CreateOrUpdateTaskStorageImplementation()
+    task_crud_storage = CreateOrUpdateTaskStorageImplementation()
     stages_storage = FieldsStorageImplementation()
     presenter = GetTaskPresenterImplementation()
-    task_storage1 = StorageImplementation()
+    storage = StorageImplementation()
     task_stage_storage = TaskStageStorageImplementation()
     action_storage = ActionsStorageImplementation()
     task_storage = TasksStorageImplementation()
     interactor = GetTaskInteractor(
-        storage=storage, stages_storage=stages_storage,
-        task_storage1=task_storage1, action_storage=action_storage,
-        task_stage_storage=task_stage_storage, task_storage=task_storage
+        task_crud_storage=task_crud_storage, stages_storage=stages_storage,
+        action_storage=action_storage, task_stage_storage=task_stage_storage,
+        task_storage=task_storage, storage=storage
     )
     response = interactor.get_task_details_wrapper(
        user_id=user_id, task_display_id=task_display_id, presenter=presenter
