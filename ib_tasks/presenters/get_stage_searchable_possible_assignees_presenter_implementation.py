@@ -47,7 +47,7 @@ class GetStageSearchablePossibleAssigneesPresenterImplementation(
             user_details_dict = {
                 'id': user_details_dto.user_id,
                 'name': user_details_dto.user_name,
-                'profile_pic': user_details_dto.profile_pic_url
+                'profile_pic_url': user_details_dto.profile_pic_url
             }
             user_details_dicts.append(user_details_dict)
 
