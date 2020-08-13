@@ -68,7 +68,6 @@ class TestCase01GetUserProfileAPITestCase(TestUtils):
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )
-        print(response.content)
 
     @pytest.fixture
     def setup(self):
