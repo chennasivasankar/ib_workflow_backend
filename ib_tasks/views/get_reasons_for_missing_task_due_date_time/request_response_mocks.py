@@ -4,7 +4,7 @@
 RESPONSE_200_JSON = """
 [
     {
-        "task_id": "string",
+        "task_id": 1,
         "due_date_time": "2099-12-31 00:00:00",
         "due_missed_count": 1,
         "user": {

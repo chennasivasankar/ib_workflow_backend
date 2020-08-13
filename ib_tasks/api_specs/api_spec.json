@@ -220,7 +220,7 @@
         }
       },
       "required": [
-        "updated_due_date_time", "reason_id", "reason"
+        "updated_due_date_time", "reason_id"
       ]
     },
     "CreateTaskRequestBody": {
@@ -865,8 +865,7 @@
       },
       "required": [
         "user_id",
-        "name",
-        "profile_pic"
+        "name"
       ]
     },
     "UpdateTaskRequestBody": {
@@ -2066,8 +2065,7 @@
             "type": "object",
       "properties": {
         "task_id": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string",
         },
         "due_date_time": {
           "type": "string",
