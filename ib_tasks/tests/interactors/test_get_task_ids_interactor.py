@@ -212,13 +212,10 @@ class TestGetTaskIdsInteractor:
             elasticsearch_storage=elasticsearch_storage
         )
         stage_storage.get_existing_stage_ids.return_value = stage_ids_single_list
+        elasticsearch_storage.filter_tasks_with_stage_ids.side_effect = [(expected_response[0], 100), (expected_response[1], 100)]
         task_storage.get_task_ids_for_the_stage_ids.side_effect = [
             (expected_response[0], 100), (expected_response[1], 100)
         ]
-        from ib_tasks.tests.common_fixtures.interactors import \
-            prepare_mock_for_filters_interactor
-        mock = prepare_mock_for_filters_interactor(mocker=mocker)
-        mock.side_effect = [(expected_response[0], 100), (expected_response[1], 100)]
 
         # Act
         actual_response = interactor.get_task_ids(

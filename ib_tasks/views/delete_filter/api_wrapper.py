@@ -15,14 +15,13 @@ def api_wrapper(*args, **kwargs):
     from ib_tasks.presenters.filter_presenter_implementation import \
         FilterPresenterImplementation
     presenter = FilterPresenterImplementation()
+    from ib_tasks.interactors.filter_interactor import FilterInteractor
     from ib_tasks.storages.fields_storage_implementation import \
         FieldsStorageImplementation
-    field_storage = FieldsStorageImplementation()
-    from ib_tasks.interactors.filter_interactor import FilterInteractor
     interactor = FilterInteractor(
         filter_storage=storage,
-        field_storage=field_storage,
-        presenter=presenter
+        presenter=presenter,
+        field_storage=FieldsStorageImplementation()
     )
     return interactor.delete_filter_wrapper(
         filter_id=filter_id,

@@ -33,3 +33,10 @@ def get_task_details_mock(mocker, task_dtos, action_dtos):
     )
     mock.return_value = task_dtos, action_dtos
     return mock
+
+
+def get_assignee_details_mock(mocker):
+    mock = mocker.patch(
+        'ib_boards.adapters.task_service.TaskService.get_tasks_assignees_details'
+    )
+    return mock
