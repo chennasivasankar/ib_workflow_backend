@@ -23,8 +23,8 @@ class ServiceAdapter:
 
     @property
     def elastic_service(self):
-        from .elastic_service import ElasticService
-        return ElasticService()
+        from .search_service import SearchService
+        return SearchService()
 
 
 def get_service_adapter():

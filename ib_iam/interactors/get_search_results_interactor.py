@@ -1,6 +1,6 @@
 from typing import List
 
-from ib_iam.documents.elastic_user import ElasticCountryDTO, ElasticStateDTO, ElasticCityDTO
+from ib_iam.documents.elastic_docs import ElasticCountryDTO, ElasticStateDTO, ElasticCityDTO
 from ib_iam.interactors.storage_interfaces.elastic_storage_interface \
     import ElasticSearchStorageInterface
 

@@ -47,7 +47,7 @@ class SearchableFieldValuesInteractor:
         from ib_tasks.constants.enum import Searchable
         if search_type == Searchable.USER.value:
             adapter = get_service_adapter()
-            user_ids = adapter.elastic_service.get_search_user_ids(
+            user_ids = adapter.search_service.get_search_user_ids(
                 offset=offset, limit=limit, search_query=search_query
             )
             user_dtos = adapter.auth_service.get_user_details(user_ids=user_ids)
@@ -59,17 +59,17 @@ class SearchableFieldValuesInteractor:
             ]
         elif search_type == Searchable.COUNTRY.value:
             adapter = get_service_adapter()
-            return adapter.elastic_service.get_search_countries(
+            return adapter.search_service.get_search_countries(
                 offset=offset, limit=limit, search_query=search_query
             )
         elif search_type == Searchable.STATE.value:
             adapter = get_service_adapter()
-            return adapter.elastic_service.get_search_states(
+            return adapter.search_service.get_search_states(
                 offset=offset, limit=limit, search_query=search_query
             )
         elif search_type == Searchable.CITY.value:
             adapter = get_service_adapter()
-            return adapter.elastic_service.get_search_cities(
+            return adapter.search_service.get_search_cities(
                 offset=offset, limit=limit, search_query=search_query
             )
 

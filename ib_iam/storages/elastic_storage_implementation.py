@@ -1,6 +1,6 @@
 from typing import List
 
-from ib_iam.documents.elastic_user import *
+from ib_iam.documents.elastic_docs import *
 from ib_iam.interactors.storage_interfaces.elastic_storage_interface \
     import ElasticSearchStorageInterface
 from ib_iam.models import ElasticUserIntermediary

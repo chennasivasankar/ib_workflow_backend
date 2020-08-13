@@ -1,4 +1,4 @@
-from ib_iam.documents.elastic_user import \
+from ib_iam.documents.elastic_docs import \
     ElasticCountryDTO, ElasticStateDTO, ElasticCityDTO, ElasticUser
 from ib_iam.models import UserDetails
 from ib_iam.storages.elastic_storage_implementation import ElasticStorageImplementation

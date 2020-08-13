@@ -1,11 +1,11 @@
 from ib_tasks.interactors.field_dtos import SearchableFieldDetailDTO
 
 
-class ElasticService:
+class SearchService:
 
     @property
     def interface(self):
-        from ib_iam.app_interfaces.elastic_service_interface \
+        from ib_iam.app_interfaces.service_interface \
             import ServiceInterface
         return ServiceInterface()
 
