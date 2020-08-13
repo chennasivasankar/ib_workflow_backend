@@ -1,6 +1,5 @@
 import pytest
 
-from ib_iam.models import Role
 from ib_iam.tests.common_fixtures.reset_fixture import \
     reset_sequence_role_factory
 
