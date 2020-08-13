@@ -2479,7 +2479,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "$ref": "#/responses/UpdateTaskSuccessResponse"
           },
           "400": {
@@ -2637,7 +2637,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "$ref": "#/responses/TaskWithCurrentStagesResponse"
           },
           "400": {
