@@ -90,3 +90,10 @@ class InvalidGoFIds(Exception):
 
     def __init__(self, invalid_gof_ids: List[str]):
         self.gof_ids = invalid_gof_ids
+
+
+class DuplicateSameGoFOrderForAGoF(Exception):
+
+    def __init__(self, gof_id: str, duplicate_same_gof_orders: List[int]):
+        self.gof_id = gof_id
+        self.same_gof_orders = duplicate_same_gof_orders

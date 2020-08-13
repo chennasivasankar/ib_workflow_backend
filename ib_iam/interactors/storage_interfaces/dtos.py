@@ -4,6 +4,14 @@ from typing import Optional, List
 
 
 @dataclass
+class UserProfileDTO:
+    user_id: str
+    name: str
+    email: str
+    profile_pic_url: str
+
+
+@dataclass
 class UserDTO:
     user_id: str
     is_admin: bool
@@ -64,12 +72,12 @@ class TeamNameAndDescriptionDTO:
 
 
 @dataclass
-class TeamDetailsWithUserIdsDTO(TeamNameAndDescriptionDTO):
+class TeamWithUserIdsDTO(TeamNameAndDescriptionDTO):
     user_ids: List[str]
 
 
 @dataclass
-class TeamWithUserIdsDTO(TeamDetailsWithUserIdsDTO):
+class TeamWithTeamIdAndUserIdsDTO(TeamWithUserIdsDTO):
     team_id: str
 
 
@@ -137,10 +145,10 @@ class CompanyIdWithEmployeeIdsDTO:
 
 
 @dataclass
-class CompanyDetailsWithUserIdsDTO(CompanyNameLogoAndDescriptionDTO):
+class CompanyWithUserIdsDTO(CompanyNameLogoAndDescriptionDTO):
     user_ids: List[str]
 
 
 @dataclass
-class CompanyWithUserIdsDTO(CompanyDetailsWithUserIdsDTO):
+class CompanyWithCompanyIdAndUserIdsDTO(CompanyWithUserIdsDTO):
     company_id: str

@@ -17,3 +17,6 @@ class UserTeam(models.Model):
 class UserRole(models.Model):
     user_id = models.CharField(max_length=1000)
     role = models.ForeignKey('Role', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.user_id} have {self.role.role_id}"

@@ -2,7 +2,7 @@
 # TODO: Update test case description
 """
 import pytest
-from django_swagger_utils.utils.test_v1 import TestUtils
+from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -41,9 +41,9 @@ class TestCase03EditUserAPITestCase(TestUtils):
         query_params = {}
         headers = {}
         from ib_iam.tests.common_fixtures.adapters.user_service \
-            import update_user_profile_adapter_mock
-        adapter_mock = update_user_profile_adapter_mock(mocker=mocker)
-        self.default_test_case(
+            import prepare_update_user_profile_adapter_mock
+        adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

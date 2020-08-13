@@ -1,3 +1,6 @@
+from typing import List
+
+
 class UserAccountDoesNotExist(Exception):
     pass
 
@@ -7,10 +10,6 @@ class InvalidEmail(Exception):
 
 
 class UserIsNotAdmin(Exception):
-    pass
-
-
-class InvalidUser(Exception):
     pass
 
 
@@ -26,15 +25,15 @@ class UserAccountAlreadyExistWithThisEmail(Exception):
     pass
 
 
-class GivenNameIsEmpty(Exception):
-    pass
-
-
 class InvalidEmailAddress(Exception):
     pass
 
 
 class NameShouldNotContainsNumbersSpecCharacters(Exception):
+    pass
+
+
+class InvalidNameLength(Exception):
     pass
 
 
@@ -67,7 +66,8 @@ class RoleIdFormatIsInvalid(Exception):
 
 
 class DuplicateRoleIds(Exception):
-    pass
+    def __init__(self, role_ids: List[str]):
+        self.role_ids = role_ids
 
 
 class UserHasNoAccess(Exception):
@@ -79,15 +79,7 @@ class TeamNameAlreadyExists(Exception):
         self.team_name = team_name
 
 
-class InvalidTeam(Exception):
-    pass
-
-
-class InvalidUsers(Exception):
-    pass
-
-
-class DuplicateUsers(Exception):
+class InvalidTeamId(Exception):
     pass
 
 
@@ -95,9 +87,6 @@ class CompanyNameAlreadyExists(Exception):
     def __init__(self, company_name: str):
         self.company_name = company_name
 
-
-class InvalidCompany(Exception):
-    pass
 
 class UserNotFound(Exception):
     pass
@@ -111,6 +100,23 @@ class InvalidUserId(Exception):
     pass
 
 
+class DuplicateUserIds(Exception):
+    def __init__(self, user_ids):
+        self.user_ids = user_ids
+
+
 class InvalidUserIds(Exception):
     def __init__(self, user_ids):
         self.user_ids = user_ids
+
+
+class InvalidCurrentPassword(Exception):
+    pass
+
+
+class InvalidNewPassword(Exception):
+    pass
+
+
+class CurrentPasswordMismatch(Exception):
+    pass

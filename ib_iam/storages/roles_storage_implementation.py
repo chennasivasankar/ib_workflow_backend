@@ -1,17 +1,12 @@
 from typing import List
 
-from ib_iam.interactors.DTOs.common_dtos import UserIdWithRoleIdsDTO
+from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import RoleDTO
 from ib_iam.interactors.storage_interfaces.roles_storage_interface import \
     RolesStorageInterface
 
 
 class RolesStorageImplementation(RolesStorageInterface):
-
-    def check_is_admin_user(self, user_id: str) -> bool:
-        from ib_iam.models.user import UserDetails
-        user = UserDetails.objects.get(user_id=user_id)
-        return user.is_admin
 
     def create_roles(self, role_dtos: List[RoleDTO]):
         from ib_iam.models import Role
@@ -66,7 +61,7 @@ class RolesStorageImplementation(RolesStorageInterface):
 
     @staticmethod
     def _prepare_user_id_with_role_ids_dto(user_id, role_ids):
-        from ib_iam.interactors.DTOs.common_dtos import UserIdWithRoleIdsDTO
+        from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
         user_id_with_role_ids_dto = UserIdWithRoleIdsDTO(
             user_id=user_id,
             role_ids=role_ids

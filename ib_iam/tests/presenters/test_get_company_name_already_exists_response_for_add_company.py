@@ -14,7 +14,8 @@ class TestRaiseExceptionIfCompanyNameAlreadyExistsForAddCompany:
         company_name = "company_name1"
         expected_response = COMPANY_NAME_ALREADY_EXISTS_FOR_ADD_COMPANY[0] % company_name
         expected_res_status = COMPANY_NAME_ALREADY_EXISTS_FOR_ADD_COMPANY[1]
-        expected_http_status_code = 400
+        from ib_iam.constants.enums import StatusCode
+        expected_http_status_code = StatusCode.BAD_REQUEST.value
 
         result = \
             json_presenter.get_company_name_already_exists_response_for_add_company(

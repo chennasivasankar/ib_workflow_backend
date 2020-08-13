@@ -4,7 +4,8 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos \
     import FieldValueDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos \
     import TaskDetailsDTO, TaskGoFDTO, TaskGoFFieldDTO
-from ib_tasks.interactors.storage_interfaces.status_dtos import StatusVariableDTO
+from ib_tasks.interactors.storage_interfaces.status_dtos import \
+    StatusVariableDTO
 from ib_tasks.interactors.storage_interfaces.storage_interface \
     import StorageInterface
 
@@ -28,10 +29,10 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
         self.task_id = task_id
 
     def call_action_logic_function_and_update_task_status_variables(
-            self, task_dto: TaskDetailsDTO):
+            self, task_dto: TaskDetailsDTO) -> TaskDetailsDTO:
         task_gof_dtos = task_dto.task_gof_dtos
         gof_multiple_enable_dict = self._get_gof_multiple_enable_dict(
-            template_id=task_dto.template_id,
+            template_id=task_dto.task_base_details_dto.template_id,
             group_of_fields_dto=task_gof_dtos)
         task_gof_fields_dto = task_dto.task_gof_field_dtos
         task_gof_fields_dto_dict = \
@@ -44,6 +45,7 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
         # TODO update fields
         status_dict = task_dict.get("status_variables", {})
         self._update_task_status_variables(status_dict, status_variables_dto)
+        return task_dto
 
     def _get_updated_task_dict(
             self, task_dict: Dict[str, Any]) -> Dict[str, Any]:
@@ -161,6 +163,7 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
         task_gof_id = task_gof_dto.task_gof_id
         fields_dict = task_gof_fields_dict[task_gof_id]
 
+        # TODO: Fixme
         if gof_multiple_enable_dict[gof_id]:
             multiple_gof_dict[gof_id].append(fields_dict)
         else:

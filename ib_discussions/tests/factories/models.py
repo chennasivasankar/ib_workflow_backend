@@ -2,10 +2,13 @@ import datetime
 
 import factory
 
-from ib_discussions.constants.enum import EntityType
+from ib_discussions.constants.enum import EntityType, MultiMediaFormatEnum
+from ib_discussions.models.comment import Comment, CommentWithMultiMedia, \
+    CommentWithMentionUserId
 from ib_discussions.models.discussion import Discussion
 from ib_discussions.models.discussion_set import DiscussionSet
 from ib_discussions.models.entity import Entity
+from ib_discussions.models.multimedia import MultiMedia
 
 
 class EntityFactory(factory.django.DjangoModelFactory):
@@ -49,9 +52,71 @@ class DiscussionFactory(factory.django.DjangoModelFactory):
         lambda obj: "description"
     )
     created_at = factory.Iterator([
-        datetime.datetime(2008, 1, 1, tzinfo=datetime.timezone.utc),
-        datetime.datetime(2020, 5, 1, tzinfo=datetime.timezone.utc),
-        datetime.datetime(2020, 1, 20, tzinfo=datetime.timezone.utc),
-        datetime.datetime(2007, 2, 5, tzinfo=datetime.timezone.utc)
+        datetime.datetime(2008, 1, 1),
+        datetime.datetime(2020, 5, 1),
+        datetime.datetime(2020, 1, 20),
+        datetime.datetime(2007, 2, 5)
     ])
     is_clarified = factory.Iterator([True, False])
+
+
+class CommentFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Comment
+
+    id = factory.Faker("uuid4")
+    user_id = factory.Faker("uuid4")
+    discussion = factory.SubFactory(DiscussionFactory)
+    content = factory.LazyAttribute(lambda obj: "content")
+    created_at = factory.Iterator([
+        datetime.datetime(2008, 1, 1),
+        datetime.datetime(2020, 5, 1),
+        datetime.datetime(2020, 1, 20),
+        datetime.datetime(2007, 2, 5)
+    ])
+
+
+class ReplyToCommentFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Comment
+
+    id = factory.Faker("uuid4")
+    user_id = factory.Faker("uuid4")
+    discussion = factory.SubFactory(DiscussionFactory)
+    parent_comment = factory.SubFactory(CommentFactory)
+    content = factory.LazyAttribute(lambda obj: "content")
+    created_at = factory.Iterator([
+        datetime.datetime(2008, 1, 1),
+        datetime.datetime(2020, 5, 1),
+        datetime.datetime(2020, 1, 20),
+        datetime.datetime(2007, 2, 5)
+    ])
+
+
+class MultiMediaFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = MultiMedia
+
+    id = factory.Faker("uuid")
+    format_type = factory.Iterator([
+        MultiMediaFormatEnum.IMAGE.value,
+        MultiMediaFormatEnum.VIDEO.value
+    ])
+    url = "https://picsum.photos/200"
+    thumbnail_url = "https://picsum.photos/200"
+
+
+class CommentWithMultiMediaFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CommentWithMultiMedia
+
+    comment = factory.SubFactory(CommentFactory)
+    multimedia = factory.SubFactory(MultiMediaFactory)
+
+
+class CommentWithMentionUserIdFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CommentWithMentionUserId
+
+    comment = factory.SubFactory(CommentFactory)
+    mention_user_id = factory.Faker("uuid")

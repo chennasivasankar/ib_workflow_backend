@@ -5,7 +5,7 @@ import pytest
 @pytest.mark.django_db
 class TestGetEnableMultipleGofIds:
 
-    def test_given_valid_details_returns_mutiple_enable_gof_ids(self):
+    def test_given_valid_details_returns_multiple_enable_gof_ids(self):
 
         # Arrange
         task_id = 1

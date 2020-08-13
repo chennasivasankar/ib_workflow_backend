@@ -2,7 +2,7 @@
 
 REQUEST_BODY_JSON = """
 {
-    "entity_id": "28a85071-bf8d-481d-9d5b-00af2a23f1ab",
+    "entity_id": "string",
     "entity_type": "TASK",
     "filter_by": "ALL",
     "sort_by": "LATEST"
@@ -14,16 +14,18 @@ RESPONSE_200_JSON = """
 {
     "discussions": [
         {
-            "discussion_id": "a44f2836-0e19-40c4-9606-52b885d794a0",
+            "discussion_id": "03022dfc-c232-4281-8fc0-cd31df43ecd2",
             "description": "string",
             "title": "string",
             "created_at": "2099-12-31 00:00:00",
             "author": {
-                "user_id": "17ffd041-2d66-44f4-a9b8-7360776b9fc2",
+                "user_id": "159ceca0-3f6f-4043-a669-84a95abb0297",
                 "name": "string",
                 "profile_pic_url": "string"
             },
-            "is_clarified": true
+            "is_clarified": true,
+            "is_editable": true,
+            "total_comments_count": 1
         }
     ],
     "total_count": 1

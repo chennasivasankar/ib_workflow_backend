@@ -3,7 +3,7 @@ Returns duplicate users exception response as
 duplicate user ids has been sent
 """
 import pytest
-from django_swagger_utils.utils.test_v1 import TestUtils
+from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -22,7 +22,7 @@ class TestCase04UpdateCompanyDetailsAPITestCase(TestUtils):
         path_params = {"company_id": company_id}
         query_params = {}
         headers = {}
-        response = self.default_test_case(
+        response = self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot)
 

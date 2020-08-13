@@ -140,6 +140,8 @@ class TaskDetailsConfigDTOFactory(factory.Factory):
     )
     offset = 0
     limit = 10
+    user_id = 'user_id_1'
+    search_query = "hello"
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):

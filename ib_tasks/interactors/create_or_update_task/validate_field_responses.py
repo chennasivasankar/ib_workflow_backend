@@ -1,14 +1,8 @@
 from typing import List, Optional
 
+from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.exceptions.field_values_custom_exceptions import \
-    EmptyValueForRequiredField, InvalidPhoneNumberValue, \
-    InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
-    InvalidNumberValue, InvalidFloatValue, InvalidValueForDropdownField, \
-    IncorrectRadioGroupChoice, IncorrectCheckBoxOptionsSelected, \
-    IncorrectMultiSelectOptionsSelected, IncorrectMultiSelectLabelsSelected, \
-    InvalidDateFormat, InvalidTimeFormat, InvalidUrlForImage, \
-    InvalidImageFormat, InvalidUrlForFile, InvalidFileFormat, \
-    IncorrectNameInGoFSelectorField
+    EmptyValueForRequiredField
 from ib_tasks.interactors.create_or_update_task.field_response_validations \
     import NumberFieldValidationInteractor, FloatFieldValidationInteractor, \
     DropDownFieldValidationInteractor, GoFSelectorFieldValidationInteractor, \
@@ -22,87 +16,29 @@ from ib_tasks.interactors.create_or_update_task.field_response_validations \
     MultiSelectLabelFieldValidationInteractor
 from ib_tasks.interactors.create_or_update_task.field_response_validations. \
     base_field_validation import BaseFieldValidation
-from ib_tasks.interactors.presenter_interfaces. \
-    field_response_validations_presenter import \
-    FieldResponseValidationsPresenterInterface
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldCompleteDetailsDTO
-from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
-    TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
+    FieldsStorageInterface
 from ib_tasks.interactors.task_dtos import FieldValuesDTO
 
 
 class ValidateFieldResponsesInteractor:
 
     def __init__(
-            self, task_storage: TaskStorageInterface
+            self, field_storage: FieldsStorageInterface
     ):
-        self.task_storage = task_storage
-
-    def validate_field_responses_wrapper(
-            self, presenter: FieldResponseValidationsPresenterInterface,
-            field_values_dtos: List[FieldValuesDTO]
-    ):
-        try:
-            self.validate_field_responses(field_values_dtos)
-        except EmptyValueForRequiredField as err:
-            return presenter. \
-                raise_exception_for_empty_value_in_required_field(err)
-        except InvalidPhoneNumberValue as err:
-            return presenter.raise_exception_for_invalid_phone_number_value(
-                err)
-        except InvalidEmailFieldValue as err:
-            return presenter.raise_exception_for_invalid_email_address(err)
-        except InvalidURLValue as err:
-            return presenter.raise_exception_for_invalid_url_address(err)
-        except NotAStrongPassword as err:
-            return presenter.raise_exception_for_weak_password(err)
-        except InvalidNumberValue as err:
-            return presenter.raise_exception_for_invalid_number_value(err)
-        except InvalidFloatValue as err:
-            return presenter.raise_exception_for_invalid_float_value(err)
-        except InvalidValueForDropdownField as err:
-            return presenter.raise_exception_for_invalid_dropdown_value(err)
-        except IncorrectNameInGoFSelectorField as err:
-            return presenter. \
-                raise_exception_for_invalid_name_in_gof_selector_field_value(
-                err)
-        except IncorrectRadioGroupChoice as err:
-            return presenter. \
-                raise_exception_for_invalid_choice_in_radio_group_field(err)
-        except IncorrectCheckBoxOptionsSelected as err:
-            return presenter. \
-                raise_exception_for_invalid_checkbox_group_options_selected(
-                err)
-        except IncorrectMultiSelectOptionsSelected as err:
-            return presenter. \
-                raise_exception_for_invalid_multi_select_options_selected(err)
-        except IncorrectMultiSelectLabelsSelected as err:
-            return presenter. \
-                raise_exception_for_invalid_multi_select_labels_selected(err)
-        except InvalidDateFormat as err:
-            return presenter.raise_exception_for_invalid_date_format(err)
-        except InvalidTimeFormat as err:
-            return presenter.raise_exception_for_invalid_time_format(err)
-        except InvalidUrlForImage as err:
-            return presenter.raise_exception_for_invalid_image_url(err)
-        except InvalidImageFormat as err:
-            return presenter.raise_exception_for_not_acceptable_image_format(
-                err)
-        except InvalidUrlForFile as err:
-            return presenter.raise_exception_for_invalid_file_url(err)
-        except InvalidFileFormat as err:
-            return presenter.raise_exception_for_not_acceptable_file_format(
-                err)
+        self.field_storage = field_storage
 
     def validate_field_responses(
-            self, field_values_dtos: List[FieldValuesDTO]
+            self, field_values_dtos: List[FieldValuesDTO],
+            action_type: Optional[ActionTypes]
     ) -> Optional[Exception]:
         field_ids = [
             field_values_dto.field_id
             for field_values_dto in field_values_dtos
         ]
-        field_details_dtos = self.task_storage. \
+        field_details_dtos = self.field_storage. \
             get_field_details_for_given_field_ids(field_ids=field_ids)
         for field_details_dto in field_details_dtos:
             field_response = self._get_field_response_for_given_field_id(
@@ -112,8 +48,8 @@ class ValidateFieldResponsesInteractor:
             field_validation_required = \
                 field_response or field_details_dto.required
             if field_validation_required:
-                self._validate_field_response(
-                    field_response, field_details_dto)
+                self._validate_field_response(field_response, action_type,
+                                              field_details_dto)
         return
 
     @staticmethod
@@ -127,11 +63,17 @@ class ValidateFieldResponsesInteractor:
         return
 
     def _validate_field_response(
-            self, field_response: str,
+            self, field_response: str, action_type: Optional[ActionTypes],
             field_details_dto: FieldCompleteDetailsDTO
     ) -> Optional[Exception]:
         field_response = field_response.strip()
         field_id = field_details_dto.field_id
+        field_response_is_empty_and_action_type_is_no_validations = (
+                not field_response and action_type ==
+                ActionTypes.NO_VALIDATIONS.value
+        )
+        if field_response_is_empty_and_action_type_is_no_validations:
+            return
         field_is_required_but_not_given = (
                 not field_response and field_details_dto.required)
         if field_is_required_but_not_given:
@@ -140,7 +82,8 @@ class ValidateFieldResponsesInteractor:
             self._get_field_validation_interactor_based_on_field_details(
                 field_id, field_response, field_details_dto
             )
-        if field_validation_interactor is not None:
+        validations_is_required = field_validation_interactor is not None
+        if validations_is_required:
             field_validation_interactor.validate_field_response()
         return
 

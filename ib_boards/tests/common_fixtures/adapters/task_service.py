@@ -1,13 +1,15 @@
 from typing import List
 
-from ib_boards.interactors.dtos import TaskStageIdDTO, TaskCompleteDetailsDTO, \
+from ib_boards.constants.enum import ViewType
+from ib_boards.interactors.dtos import TaskStageIdDTO, \
+    TaskCompleteDetailsDTO, \
     ColumnTaskIdsDTO
 from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
-    TaskFieldsDTOFactory
+    TaskFieldsDTOFactory, TaskStageDTOFactory
 
 
 def prepare_task_details_dtos(mocker, task_dtos: List[TaskStageIdDTO],
-                              user_id: str):
+                              user_id: str, view_type: ViewType):
     mock = mocker.patch(
         'ib_boards.adapters.task_service.TaskService.get_task_complete_details'
     )
@@ -105,7 +107,10 @@ def task_details_mock(mocker, task_details: List[TaskCompleteDetailsDTO]):
     mock = mocker.patch(
         'ib_boards.adapters.task_service.TaskService.get_task_complete_details'
     )
-    mock.return_value = task_details[0].field_dtos, task_details[0].action_dtos
+    TaskStageDTOFactory.reset_sequence()
+    colors = TaskStageDTOFactory.create_batch(size=3)
+
+    mock.return_value = task_details[0].field_dtos, task_details[0].action_dtos, colors
     return mock
 
 

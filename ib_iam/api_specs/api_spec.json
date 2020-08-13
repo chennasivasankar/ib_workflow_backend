@@ -157,8 +157,7 @@
       "type": "object",
       "properties": {
         "company_id": {
-          "type": "string",
-          "format": "uuid"
+          "type": "string"
         },
         "company_name": {
           "type": "string"
@@ -495,7 +494,7 @@
         }
       ]
     },
-    "TeamNameAlreadyExistsOrDuplicateUsersException": {
+    "TeamNameAlreadyExistsOrDuplicateUserIdsException": {
       "allOf": [
         {
           "$ref": "#/definitions/CommonHttpExceptionFields"
@@ -507,7 +506,7 @@
               "type": "string",
               "enum": [
                 "TEAM_NAME_ALREADY_EXISTS",
-                "DUPLICATE_USERS"
+                "DUPLICATE_USER_IDS"
               ]
             }
           },
@@ -547,7 +546,7 @@
         }
       ]
     },
-    "CompanyNameAlreadyExistsOrDuplicateUsersException": {
+    "CompanyNameAlreadyExistsOrDuplicateUserIdsException": {
       "allOf": [
         {
           "$ref": "#/definitions/CommonHttpExceptionFields"
@@ -559,7 +558,7 @@
               "type": "string",
               "enum": [
                 "COMPANY_NAME_ALREADY_EXISTS",
-                "DUPLICATE_USERS"
+                "DUPLICATE_USER_IDS"
               ]
             }
           },
@@ -591,7 +590,7 @@
       "format": "uuid"
     },
     "AddUserParameter": {
-      "name": "AddUser",
+      "name": "add_user",
       "description": "Details of User to add",
       "in": "body",
       "schema": {
@@ -599,11 +598,47 @@
       }
     },
     "UpdateUserParameter": {
-      "name": "UpdateUser",
+      "name": "update_user",
       "description": "Update the User details",
       "in": "body",
       "schema": {
         "$ref": "#/definitions/UserWithCompanyWithTeamsAndRoles"
+      }
+    },
+    "UpdateUserProfileParameter": {
+      "name": "UpdateUserProfile",
+      "description": "Update User profile",
+      "in": "body",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/UserNameAndEmail"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "profile_pic_url": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "UpdateUserPasswordParameter": {
+      "name": "UpdateUserPassword",
+      "description": "Update User password",
+      "in": "body",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "current_password": {
+            "type": "string"
+          },
+          "new_password": {
+            "type": "string"
+          }
+        }
       }
     },
     "LoginParameter": {
@@ -628,8 +663,8 @@
       }
     },
     "SendResetPasswordLinkParameter": {
-      "name": "ResetPasswordParameter",
-      "description": "email to reset the password",
+      "name": "send_reset_password_link",
+      "description": "send reset password link to email",
       "in": "body",
       "required": true,
       "schema": {
@@ -644,9 +679,9 @@
         ]
       }
     },
-    "UpdatePasswordParameter": {
-      "name": "UpdatePasswordParameter",
-      "description": "update password of user",
+    "ResetPasswordParameter": {
+      "name": "reset_password",
+      "description": "reset user password",
       "in": "body",
       "required": true,
       "schema": {
@@ -675,8 +710,13 @@
       "type": "integer",
       "default": 0
     },
+    "SearchQueryParameter": {
+      "name": "search_query",
+      "in": "query",
+      "type": "string"
+    },
     "AddTeamParameter": {
-      "name": "details_to_add_team",
+      "name": "add_team",
       "in": "body",
       "required": true,
       "description": "parameters or details to create/add a team",
@@ -693,7 +733,7 @@
       "format": "uuid"
     },
     "UpdateTeamParameter": {
-      "name": "team_details_to_be_updated",
+      "name": "update_team",
       "in": "body",
       "description": "details that are to be updated of a team",
       "schema": {
@@ -701,7 +741,7 @@
       }
     },
     "AddCompanyParameter": {
-      "name": "details_to_add_company",
+      "name": "add_team",
       "in": "body",
       "required": true,
       "description": "parameters or details to create/add a company",
@@ -718,11 +758,31 @@
       "format": "uuid"
     },
     "UpdateCompanyParameter": {
-      "name": "company_details_to_update",
+      "name": "update_company",
       "in": "body",
       "description": "details that are to be updated of a company",
       "schema": {
         "$ref": "#/definitions/CompanyWithEmployeeIds"
+      }
+    },
+    "RefreshAuthTokenParameter": {
+      "name": "RefreshTokenParameter",
+      "in": "body",
+      "description": "refresh token parameter",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string"
+          },
+          "refresh_token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "access_token",
+          "refresh_token"
+        ]
       }
     }
   },
@@ -772,8 +832,8 @@
                 "type": "string",
                 "enum": [
                   "INVALID_EMAIL",
-                  "INVALID_NAME",
                   "USER_ALREADY_EXIST_WITH_THIS_EMAIL",
+                  "INVALID_NAME_LENGTH",
                   "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
                 ]
               }
@@ -799,7 +859,7 @@
                 "type": "string",
                 "enum": [
                   "INVALID_EMAIL",
-                  "EMPTY_NAME_IS_INVALID",
+                  "INVALID_NAME_LENGTH",
                   "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
                 ]
               }
@@ -854,6 +914,59 @@
                   "INVALID_COMPANY_ID",
                   "INVALID_TEAM_IDS",
                   "INVALID_ROLE_IDS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "BadRequestForUpdateUserProfileResponse": {
+      "description": "bad request for update user profile",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_EMAIL",
+                  "EMAIL_ALREADY_IN_USE",
+                  "INVALID_NAME_LENGTH",
+                  "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "BadRequestForUpdateUserPasswordResponse": {
+      "description": "Failed to update user password",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_CURRENT_PASSWORD",
+                  "INVALID_NEW_PASSWORD",
+                  "CURRENT_PASSWORD_MISMATCH"
                 ]
               }
             },
@@ -1154,7 +1267,7 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_USERS"
+                  "INVALID_USER_IDS"
                 ]
               }
             },
@@ -1168,7 +1281,7 @@
     "BadRequestForAddTeamResponse": {
       "description": "Team name already exists or duplicate users has sent",
       "schema": {
-        "$ref": "#/definitions/TeamNameAlreadyExistsOrDuplicateUsersException"
+        "$ref": "#/definitions/TeamNameAlreadyExistsOrDuplicateUserIdsException"
       }
     },
     "SuccessfullyCreatedForAddTeamResponse": {
@@ -1180,7 +1293,7 @@
     "BadRequestForUpdateTeamResponse": {
       "description": "Team name already exists or duplicate users has sent",
       "schema": {
-        "$ref": "#/definitions/TeamNameAlreadyExistsOrDuplicateUsersException"
+        "$ref": "#/definitions/TeamNameAlreadyExistsOrDuplicateUserIdsException"
       }
     },
     "UnauthorizedForUpdateTeamResponse": {
@@ -1202,8 +1315,8 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_TEAM",
-                  "INVALID_USERS"
+                  "INVALID_TEAM_ID",
+                  "INVALID_USER_IDS"
                 ]
               }
             },
@@ -1253,7 +1366,7 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_USERS"
+                  "INVALID_USER_IDS"
                 ]
               }
             },
@@ -1267,7 +1380,7 @@
     "BadRequestForAddCompanyResponse": {
       "description": "Company name already exists or duplicate users has sent",
       "schema": {
-        "$ref": "#/definitions/CompanyNameAlreadyExistsOrDuplicateUsersException"
+        "$ref": "#/definitions/CompanyNameAlreadyExistsOrDuplicateUserIdsException"
       }
     },
     "SuccessfullyCreatedForAddCompanyResponse": {
@@ -1289,7 +1402,7 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_COMPANY"
+                  "INVALID_COMPANY_ID"
                 ]
               }
             },
@@ -1309,7 +1422,7 @@
     "BadRequestForUpdateCompanyResponse": {
       "description": "Company name already exists or duplicate users has sent",
       "schema": {
-        "$ref": "#/definitions/CompanyNameAlreadyExistsOrDuplicateUsersException"
+        "$ref": "#/definitions/CompanyNameAlreadyExistsOrDuplicateUserIdsException"
       }
     },
     "UnauthorizedForUpdateCompanyResponse": {
@@ -1331,8 +1444,8 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_COMPANY",
-                  "INVALID_USERS"
+                  "INVALID_COMPANY_ID",
+                  "INVALID_USER_IDS"
                 ]
               }
             },
@@ -1356,7 +1469,7 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_TEAM"
+                  "INVALID_TEAM_ID"
                 ]
               }
             },
@@ -1396,13 +1509,87 @@
           }
         ]
       }
+    },
+    "RefreshAuthTokensNotFoundResponse": {
+      "description": "refresh tokens not found Response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "ACCESS_TOKEN_NOT_FOUND",
+                  "REFRESH_TOKEN_NOT_FOUND",
+                  "USER_ACCOUNT_NOT_FOUND"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "RefreshAuthTokensBadRequestResponse": {
+      "description": "refresh tokens bad request Response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "REFRESH_TOKEN_HAS_EXPIRED"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "RefreshAuthTokensSuccessResponse": {
+      "description": "Success Response for refresh tokens",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string"
+          },
+          "refresh_token": {
+            "type": "string"
+          },
+          "expires_in_seconds": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "access_token",
+          "refresh_token",
+          "expires_in_seconds"
+        ]
+      }
     }
   },
   "paths": {
     "/configuration_details/v1": {
       "get": {
+        "summary": "Get Configuration Details",
+        "description": "Get configuration details for add and edit user",
         "operationId": "get_configuration_details",
-        "description": "get configuration details to add/edit user",
         "security": [
           {
             "oauth": [
@@ -1422,8 +1609,9 @@
     },
     "/users/v1/": {
       "get": {
+        "summary": "Get List of Users",
+        "description": "Get list of users",
         "operationId": "get_users",
-        "description": "get list of users api",
         "security": [
           {
             "oauth": [
@@ -1437,6 +1625,9 @@
           },
           {
             "$ref": "#/parameters/LimitQueryParameter"
+          },
+          {
+            "$ref": "#/parameters/SearchQueryParameter"
           }
         ],
         "responses": {
@@ -1454,8 +1645,9 @@
     },
     "/users/create/v1/": {
       "post": {
+        "summary": "Add User",
+        "description": "Add user details",
         "operationId": "add_user",
-        "description": "add an user with valid details",
         "security": [
           {
             "oauth": [
@@ -1486,9 +1678,9 @@
     },
     "/users/{user_id}/v1/": {
       "put": {
-        "operationId": "edit_user",
         "summary": "Edit User",
-        "description": "edit an user",
+        "description": "Edit user details",
+        "operationId": "edit_user",
         "security": [
           {
             "oauth": [
@@ -1520,8 +1712,9 @@
         }
       },
       "delete": {
+        "summary": "Delete User",
+        "description": "Delete user details",
         "operationId": "delete_user",
-        "description": "delete an user with valid details",
         "security": [
           {
             "oauth": [
@@ -1549,9 +1742,9 @@
     },
     "/login/v1/": {
       "post": {
+        "summary": "User Login",
+        "description": "Login the use and return access token of user",
         "operationId": "user_login",
-        "summary": "user login",
-        "description": "if user is exists return the access_token and is_admin",
         "parameters": [
           {
             "$ref": "#/parameters/LoginParameter"
@@ -1572,9 +1765,9 @@
     },
     "/logout/v1/": {
       "post": {
+        "summary": "User Logout",
+        "description": "Logout the user from all devices",
         "operationId": "user_logout",
-        "summary": "user logout",
-        "description": "user want to log out from a device",
         "security": [
           {
             "oauth": [
@@ -1591,9 +1784,9 @@
     },
     "/send/reset_password_link/v1/": {
       "post": {
+        "summary": "Send User Reset Password Link",
+        "description": "Send user reset password link to email",
         "operationId": "send_user_reset_password_link",
-        "summary": "send user reset password link",
-        "description": "user reset password link to email",
         "parameters": [
           {
             "$ref": "#/parameters/SendResetPasswordLinkParameter"
@@ -1612,11 +1805,11 @@
         }
       }
     },
-    "/update_password/v1/": {
+    "/reset_password/v1/": {
       "post": {
-        "summary": "update user the password",
-        "operationId": "update_user_password",
-        "description": "update user password using token which we provided",
+        "summary": "Reset User Password",
+        "description": "Reset user password using token which we provided",
+        "operationId": "reset_user_password",
         "security": [
           {
             "oauth": [
@@ -1633,7 +1826,7 @@
             "required": true
           },
           {
-            "$ref": "#/parameters/UpdatePasswordParameter"
+            "$ref": "#/parameters/ResetPasswordParameter"
           }
         ],
         "responses": {
@@ -1651,9 +1844,9 @@
     },
     "/user_profile/v1/": {
       "get": {
+        "summary": "Get User Profile",
+        "description": "Get user profile details",
         "operationId": "get_user_profile",
-        "summary": "get user profile",
-        "description": "get user profile details",
         "security": [
           {
             "oauth": [
@@ -1676,7 +1869,7 @@
     },
     "/teams/v1/": {
       "get": {
-        "summary": "get list of teams",
+        "summary": "Get List of Teams",
         "description": "Returns a list containing all teams related to a user(admin).",
         "operationId": "get_list_of_teams",
         "security": [
@@ -1709,8 +1902,8 @@
     },
     "/team/add/v1/": {
       "post": {
-        "summary": "Adds a new team",
-        "description": "Creates a new team",
+        "summary": "Add Team",
+        "description": "Add the team",
         "operationId": "add_team",
         "security": [
           {
@@ -1742,8 +1935,8 @@
     },
     "/team/{team_id}/v1/": {
       "put": {
-        "summary": "update team name",
-        "description": "updates a team name",
+        "summary": "Update Team",
+        "description": "Updates team details",
         "operationId": "update_team_details",
         "security": [
           {
@@ -1776,8 +1969,8 @@
         }
       },
       "delete": {
-        "summary": "delete team",
-        "description": "deletes a team",
+        "summary": "Delete Team",
+        "description": "Delete the team details",
         "operationId": "delete_team",
         "security": [
           {
@@ -1806,7 +1999,7 @@
     },
     "/companies/v1/": {
       "get": {
-        "summary": "get companies",
+        "summary": "Get Companies",
         "description": "Returns all companies and related employee count, if accessed by admin",
         "operationId": "get_companies",
         "security": [
@@ -1830,8 +2023,8 @@
     },
     "/company/add/v1/": {
       "post": {
-        "summary": "Adds a new company",
-        "description": "Creates/Adds a new company",
+        "summary": "Add Company",
+        "description": "Add the company",
         "operationId": "add_company",
         "security": [
           {
@@ -1863,8 +2056,8 @@
     },
     "/company/{company_id}/v1/": {
       "put": {
-        "summary": "update company details",
-        "description": "updates company details",
+        "summary": "Update Company Details",
+        "description": "Update company details",
         "operationId": "update_company_details",
         "security": [
           {
@@ -1897,8 +2090,8 @@
         }
       },
       "delete": {
-        "summary": "delete company",
-        "description": "deletes a company",
+        "summary": "Delete Company",
+        "description": "Delete the company",
         "operationId": "delete_company",
         "security": [
           {
@@ -1921,6 +2114,83 @@
           },
           "401": {
             "$ref": "#/responses/UnauthorizedForDeleteCompanyResponse"
+          }
+        }
+      }
+    },
+    "/user/profile/update/v1/": {
+      "put": {
+        "summary": "update user profile",
+        "description": "updates user profile details",
+        "operationId": "update_user_profile",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/UpdateUserProfileParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User Profile Updated Successfully"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequestForUpdateUserProfileResponse"
+          }
+        }
+      }
+    },
+    "/user/password/update/v1/": {
+      "put": {
+        "summary": "update user password",
+        "description": "updates user password",
+        "operationId": "update_user_password",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/UpdateUserPasswordParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User Password Updated Successfully"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequestForUpdateUserPasswordResponse"
+          }
+        }
+      }
+    },
+    "/refresh_auth_tokens/v1/": {
+      "post": {
+        "summary": "Refresh Auth Tokens",
+        "operationId": "refresh_auth_tokens",
+        "description": "Get refresh auth tokens for given access token and refresh token",
+        "parameters": [
+          {
+            "$ref": "#/parameters/RefreshAuthTokenParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/RefreshAuthTokensSuccessResponse"
+          },
+          "404": {
+            "$ref": "#/responses/RefreshAuthTokensNotFoundResponse"
+          },
+          "400": {
+            "$ref": "#/responses/RefreshAuthTokensBadRequestResponse"
           }
         }
       }

@@ -109,7 +109,7 @@ class TestGetUserProfileInteractor:
             name="test"
         )
 
-        storage_mock.check_is_admin_user.return_value = True
+        storage_mock.is_user_admin.return_value = True
 
         presenter_mock.prepare_response_for_user_profile_dto \
             .return_value = expected_presenter_user_profile_response_mock

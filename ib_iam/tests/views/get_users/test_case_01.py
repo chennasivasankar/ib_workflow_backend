@@ -1,7 +1,7 @@
 from unittest.mock import patch
 
 import pytest
-from django_swagger_utils.utils.test_v1 import TestUtils
+from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 USER_ID = '7e39bf1c-f9a5-4e76-8451-b962ddd520fc'
@@ -27,9 +27,9 @@ class TestCase01GetUsersAPITestCase(TestUtils):
     def test_case(self, set_up, snapshot):
         body = {}
         path_params = {}
-        query_params = {'offset': 0, 'limit': 10}
+        query_params = {'offset': 0, 'limit': 10, 'search_query': ''}
         headers = {}
-        self.default_test_case(
+        self.make_api_call(
             body=body, path_params=path_params,
             query_params=query_params, headers=headers, snapshot=snapshot
         )

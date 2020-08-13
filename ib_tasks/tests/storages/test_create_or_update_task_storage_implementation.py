@@ -1,16 +1,14 @@
 import factory
 import pytest
 
+from ib_tasks.constants.constants import ALL_ROLES_ID
+from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrderDTO
 from ib_tasks.models import Task, TaskGoF, TaskGoFField
-from ib_tasks.tests.factories.models import (
-    GoFRoleFactory,
-    FieldRoleFactory
-)
-from ib_tasks.tests.factories.models import TaskFactory, FieldFactory, \
-    TaskGoFFactory, TaskGoFFieldFactory, GoFFactory
+from ib_tasks.tests.factories.models import GoFRoleFactory, FieldRoleFactory, \
+    TaskFactory, FieldFactory, TaskGoFFactory, TaskGoFFieldFactory, GoFFactory
 from ib_tasks.tests.factories.storage_dtos import TaskGoFFieldDTOFactory, \
     TaskGoFWithTaskIdDTOFactory
-from ib_tasks.constants.constants import ALL_ROLES_ID
+from ib_tasks.tests.factories.interactor_dtos import CreateTaskDTOFactory
 
 
 @pytest.mark.django_db
@@ -50,18 +48,26 @@ class TestCreateOrUpdateTaskStorageImplementation:
         exception_obj = err.value
         assert exception_obj.task_id == task_id
 
-    def test_given_valid_task_id_returns_template_id(self, storage,
-                                                     reset_sequence):
+    def test_given_valid_task_id_returns_task_base_details_dto(
+            self, storage, reset_sequence, snapshot):
         # Arrange
         task_id = 1
         task_obj = TaskFactory()
-        excepted_template_id = task_obj.template_id
-
+        from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
+            TaskBaseDetailsDTO
+        excepted_task_base_details_dto = TaskBaseDetailsDTO(
+            template_id=task_obj.template_id,
+            title=task_obj.title,
+            description=task_obj.description,
+            start_date=task_obj.start_date,
+            due_date=task_obj.due_date,
+            priority=task_obj.priority
+        )
         # Act
-        actual_template_id = storage.validate_task_id(task_id)
+        actual_task_base_details_dto = storage.validate_task_id(task_id)
 
         # Assert
-        assert excepted_template_id == actual_template_id
+        assert actual_task_base_details_dto == excepted_task_base_details_dto
 
     def test_given_task_id_returns_task_gof_dtos(self, storage, snapshot):
         # Arrange
@@ -235,17 +241,31 @@ class TestCreateOrUpdateTaskStorageImplementation:
 
     def test_create_task_with_template_id(self, storage, reset_sequence):
         # Arrange
-        template_id = "TEMPLATE_ID-1"
-        created_by_id = "123e4567-e89b-12d3-a456-426614174000"
+        from ib_tasks.constants.constants import TASK_DISPLAY_ID
+        create_task_dto = CreateTaskDTOFactory()
+        expected_task_display_id = TASK_DISPLAY_ID.format(1)
 
         # Act
         created_task_id = \
-            storage.create_task_with_template_id(template_id, created_by_id)
+            storage.create_task_with_given_task_details(create_task_dto)
 
         # Assert
+        import datetime
+        from ib_tasks.constants.config import TIME_FORMAT
+        due_date_time = datetime.datetime.combine(
+            create_task_dto.due_date,
+            datetime.datetime.strptime(create_task_dto.due_time,
+                                       TIME_FORMAT).time()
+        )
         task = Task.objects.get(id=created_task_id)
-        assert task.template_id == template_id
-        assert task.created_by == created_by_id
+        assert task.template_id == create_task_dto.task_template_id
+        assert task.created_by == create_task_dto.created_by_id
+        assert task.title == create_task_dto.title
+        assert task.description == create_task_dto.description
+        assert task.start_date.date() == create_task_dto.start_date
+        assert task.due_date == due_date_time
+        assert task.priority == create_task_dto.priority
+        assert task.task_display_id == expected_task_display_id
 
     def test_create_task_gofs(self, storage, reset_sequence):
         # Arrange
@@ -315,13 +335,21 @@ class TestCreateOrUpdateTaskStorageImplementation:
         task_gofs = TaskGoFFactory.create_batch(
             size=2, task_id=task_id
         )
-        expected_gof_ids = [task_gof.gof_id for task_gof in task_gofs]
+        expected_task_gof_dtos = [
+            GoFIdWithSameGoFOrderDTO(
+                gof_id=task_gof.gof_id,
+                same_gof_order=task_gof.same_gof_order
+            )
+            for task_gof in task_gofs
+        ]
 
         # Act
-        actual_gof_ids = storage.get_gof_ids_with_same_gof_order_related_to_a_task(task_id)
+        actual_task_gof_dtos = \
+            storage.get_gof_ids_with_same_gof_order_related_to_a_task(
+                task_id)
 
         # Assert
-        assert expected_gof_ids == actual_gof_ids
+        assert expected_task_gof_dtos == actual_task_gof_dtos
 
     def test_get_field_ids_related_to_given_task(self, storage,
                                                  reset_sequence):
@@ -335,17 +363,22 @@ class TestCreateOrUpdateTaskStorageImplementation:
         task_gof_fields = TaskGoFFieldFactory.create_batch(
             size=2, task_gof=factory.Iterator(task_gofs)
         )
-        expected_field_ids = [
-            task_gof_field.field_id
+        from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
+        expected_fields_dtos = [
+            FieldIdWithTaskGoFIdDTO(
+                field_id=task_gof_field.field_id,
+                task_gof_id=task_gof_field.task_gof_id
+            )
             for task_gof_field in task_gof_fields
         ]
 
         # Act
-        actual_field_ids = \
-            storage.get_field_ids_with_task_gof_id_related_to_given_task(task_id)
+        actual_fields_dtos = \
+            storage.get_field_ids_with_task_gof_id_related_to_given_task(
+                task_id)
 
         # Assert
-        assert actual_field_ids == expected_field_ids
+        assert expected_fields_dtos == actual_fields_dtos
 
     def test_update_task_gofs(self, storage, reset_sequence):
 

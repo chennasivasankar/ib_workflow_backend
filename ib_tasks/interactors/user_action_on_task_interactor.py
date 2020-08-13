@@ -1,20 +1,35 @@
 from typing import List, Optional
+from ib_tasks.exceptions.action_custom_exceptions import \
+    InvalidKeyError, InvalidCustomLogicException
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.permission_custom_exceptions import UserActionPermissionDenied, UserBoardPermissionDenied
+
+from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
+    InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException
 from ib_tasks.interactors\
     .call_action_logic_function_and_update_task_status_variables_interactor \
     import CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor
 from ib_tasks.adapters.dtos import ColumnFieldDTO, ColumnStageDTO
 from ib_tasks.interactors.get_field_details import GetFieldsDetails
+from ib_tasks.interactors \
+    .get_next_stages_random_assignees_of_a_task_interactor import \
+    InvalidModulePathFound, InvalidMethodFound
+from ib_tasks.interactors\
+    .get_random_assignees_of_next_stages_and_update_in_db_interactor import \
+    GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor
 from ib_tasks.interactors.get_user_permitted_stage_actions \
     import GetUserPermittedStageActions
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
 from ib_tasks.interactors.presenter_interfaces.dtos import TaskCompleteDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.presenter_interface import PresenterInterface
+from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
+    ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDetailsDTO, ActionDTO
 from ib_tasks.interactors.storage_interfaces.create_or_update_task_storage_interface import \
     CreateOrUpdateTaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
+    ElasticSearchStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import TaskDetailsDTO
@@ -23,6 +38,8 @@ from ib_tasks.interactors.storage_interfaces.stages_storage_interface import Sta
 from ib_tasks.interactors.storage_interfaces.storage_interface import StorageInterface
 from ib_tasks.exceptions.action_custom_exceptions \
     import InvalidPresentStageAction
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
+    TaskStorageInterface
 
 
 class InvalidBoardIdException(Exception):
@@ -38,8 +55,12 @@ class UserActionOnTaskInteractor:
                  gof_storage: CreateOrUpdateTaskStorageInterface,
                  board_id: Optional[str],
                  field_storage: FieldsStorageInterface,
-                 stage_storage: StageStorageInterface
+                 stage_storage: StageStorageInterface,
+                 task_storage: TaskStorageInterface,
+                 action_storage: ActionStorageInterface,
+                 elasticsearch_storage: ElasticSearchStorageInterface,
                  ):
+        self.elasticsearch_storage = elasticsearch_storage
         self.user_id = user_id
         self.board_id = board_id
         self.task_id = task_id
@@ -48,6 +69,8 @@ class UserActionOnTaskInteractor:
         self.gof_storage = gof_storage
         self.field_storage = field_storage
         self.stage_storage = stage_storage
+        self.task_storage = task_storage
+        self.action_storage = action_storage
 
     def user_action_on_task_wrapper(self, presenter: PresenterInterface):
 
@@ -71,6 +94,26 @@ class UserActionOnTaskInteractor:
             return presenter.raise_exception_for_user_board_permission_denied(
                 error_obj=err
             )
+        except InvalidKeyError:
+            return presenter.raise_invalid_key_error()
+        except InvalidCustomLogicException:
+            return presenter.raise_invalid_custom_logic_function_exception()
+        except InvalidModulePathFound as exception:
+            return presenter.raise_invalid_path_not_found_exception(
+                path_name=exception.path_name)
+        except InvalidMethodFound as exception:
+            return presenter.raise_invalid_method_not_found_exception(
+                method_name=exception.method_name)
+        except DuplicateStageIds as exception:
+            return presenter.raise_duplicate_stage_ids_not_valid(
+                duplicate_stage_ids=exception.duplicate_stage_ids)
+        except InvalidDbStageIdsListException as exception:
+            return presenter.raise_invalid_stage_ids_exception(
+                invalid_stage_ids=exception.invalid_stage_ids)
+        except StageIdsWithInvalidPermissionForAssignee as exception:
+            return presenter. \
+                raise_stage_ids_with_invalid_permission_for_assignee_exception(
+                    invalid_stage_ids=exception.invalid_stage_ids)
         return presenter.get_response_for_user_action_on_task(
             task_complete_details_dto=task_complete_details_dto
         )
@@ -78,7 +121,7 @@ class UserActionOnTaskInteractor:
     def user_action_on_task(self):
         self._validations_for_task_action()
         task_dto = self._get_task_dto()
-        self._call_logic_and_update_status_variables_and_get_stage_ids(
+        updated_task_dto = self._call_logic_and_update_status_variables_and_get_stage_ids(
             task_dto=task_dto
         )
 
@@ -88,8 +131,21 @@ class UserActionOnTaskInteractor:
             task_boards_details = self._get_task_boards_details(stage_ids)
         else:
             task_boards_details = None
+        self._create_or_update_task_in_elasticsearch_dto(
+            task_dto=updated_task_dto, stage_ids=stage_ids
+        )
         actions_dto, fields_dto = \
             self._get_task_fields_and_actions_dto(stage_ids)
+        set_stage_assignees_interactor = \
+            GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor(
+                storage=self.storage, stage_storage=self.stage_storage,
+                task_storage=self.task_storage,
+                action_storage=self.action_storage
+            )
+        set_stage_assignees_interactor \
+            .get_random_assignees_of_next_stages_and_update_in_db(
+                task_id=self.task_id, action_id=self.action_id
+            )
         return TaskCompleteDetailsDTO(
             task_id=self.task_id,
             task_boards_details=task_boards_details,
@@ -110,10 +166,16 @@ class UserActionOnTaskInteractor:
         from ib_tasks.interactors.get_task_fields_and_actions \
             import GetTaskFieldsAndActionsInteractor
         interactor = GetTaskFieldsAndActionsInteractor(
-            storage=self.field_storage,
-            stage_storage=self.stage_storage)
+            field_storage=self.field_storage,
+            task_storage=self.task_storage,
+            action_storage=self.action_storage,
+            stage_storage=self.stage_storage
+        )
+        from ib_boards.constants.enum import ViewType
         task_stage_details_dtos = interactor.get_task_fields_and_action(
-            task_dtos=task_stage_dtos, user_id=self.user_id)
+            task_dtos=task_stage_dtos, user_id=self.user_id,
+            view_type=ViewType.KANBAN.value
+        )
         actions_dto, fields_dto = self._get_field_dtos_and_actions_dtos(
             task_stage_details_dtos=task_stage_details_dtos)
         return actions_dto, fields_dto
@@ -200,16 +262,16 @@ class UserActionOnTaskInteractor:
             )
 
     def _call_logic_and_update_status_variables_and_get_stage_ids(
-            self, task_dto: TaskDetailsDTO):
+            self, task_dto: TaskDetailsDTO) -> TaskDetailsDTO:
         update_status_variable_obj = \
             CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor(
                 action_id=self.action_id, storage=self.storage, task_id=self.task_id
             )
-        stage_ids = update_status_variable_obj \
+        task_dto = update_status_variable_obj \
             .call_action_logic_function_and_update_task_status_variables(
                 task_dto=task_dto
             )
-        return stage_ids
+        return task_dto
 
     def _get_task_dto(self):
 
@@ -298,3 +360,42 @@ class UserActionOnTaskInteractor:
         is_permission_denied = not permit
         if is_permission_denied:
             raise UserActionPermissionDenied(action_id=action_id)
+
+    def _create_or_update_task_in_elasticsearch_dto(
+            self, task_dto: TaskDetailsDTO, stage_ids: List[str]):
+
+        is_task_id_exists = self.elasticsearch_storage.validate_task_id_in_elasticsearch(
+            task_id=self.task_id
+        )
+        elastic_task_dto = self._get_elastic_task_dto(
+            task_dto=task_dto,
+            stage_ids=stage_ids
+        )
+        if is_task_id_exists:
+            self.elasticsearch_storage.update_task(task_dto=elastic_task_dto)
+        else:
+            elastic_task_id = self.elasticsearch_storage.create_task(
+                elastic_task_dto=elastic_task_dto
+            )
+            self.task_storage.create_elastic_task(
+                task_id=self.task_id, elastic_task_id=elastic_task_id
+            )
+
+    def _get_elastic_task_dto(self, task_dto: TaskDetailsDTO, stage_ids: List[str]):
+        from ib_tasks.documents.elastic_task import ElasticFieldDTO
+        fields = [
+            ElasticFieldDTO(
+                field_id=field.field_id,
+                value=field.field_response
+            )
+            for field in task_dto.task_gof_field_dtos
+        ]
+        from ib_tasks.documents.elastic_task import ElasticTaskDTO
+        return ElasticTaskDTO(
+            template_id=task_dto.task_base_details_dto.template_id,
+            task_id=self.task_id,
+            title=task_dto.task_base_details_dto.title,
+            fields=fields,
+            stages=stage_ids
+        )
+

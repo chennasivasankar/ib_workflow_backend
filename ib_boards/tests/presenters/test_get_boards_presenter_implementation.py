@@ -5,6 +5,7 @@ Author: Pavankumar Pamuru
 """
 import json
 
+from ib_boards.interactors.dtos import StarredAndOtherBoardsDTO
 from ib_boards.presenters.presenter_implementation import \
     GetBoardsPresenterImplementation
 
@@ -73,16 +74,46 @@ class TestGetBoardsPresenterImplementation:
 
     def test_get_response_for_get_boards(self, snapshot):
         # Arrange
-        total_boards = 3
+        total_boards = 6
         from ib_boards.tests.factories.storage_dtos import BoardDTOFactory
         BoardDTOFactory.reset_sequence()
         board_dtos = BoardDTOFactory.create_batch(3)
+        starred_boards_dtos = BoardDTOFactory.create_batch(3)
+        starred_and_other_boards_dto = StarredAndOtherBoardsDTO(
+            starred_boards_dtos=starred_boards_dtos,
+            other_boards_dtos=board_dtos
+        )
 
         presenter = GetBoardsPresenterImplementation()
 
         # Act
         actual_response = presenter.get_response_for_get_boards(
-            board_dtos=board_dtos, total_boards=total_boards
+            starred_and_other_boards_dto=starred_and_other_boards_dto,
+            total_boards=total_boards
+        )
+
+        # Assert
+        actual_response_content = json.loads(actual_response.content)
+
+        snapshot.assert_match(actual_response_content, 'boards')
+
+    def test_get_response_for_get_boards_when_no_starred_boards(self, snapshot):
+        # Arrange
+        total_boards = 3
+        from ib_boards.tests.factories.storage_dtos import BoardDTOFactory
+        BoardDTOFactory.reset_sequence()
+        board_dtos = BoardDTOFactory.create_batch(3)
+        starred_and_other_boards_dto = StarredAndOtherBoardsDTO(
+            starred_boards_dtos=[],
+            other_boards_dtos=board_dtos
+        )
+
+        presenter = GetBoardsPresenterImplementation()
+
+        # Act
+        actual_response = presenter.get_response_for_get_boards(
+            starred_and_other_boards_dto=starred_and_other_boards_dto,
+            total_boards=total_boards
         )
 
         # Assert

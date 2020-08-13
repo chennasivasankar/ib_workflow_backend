@@ -1,57 +1,43 @@
-from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
-    AuthPresenterInterface
+import dataclasses
+
+from ib_iam.interactors.presenter_interfaces \
+    .update_user_password_presenter_interface import \
+    UpdateUserPasswordPresenterInterface
 
 
-class PasswordMinLength(Exception):
-    pass
+@dataclasses.dataclass
+class CurrentAndNewPasswordDTO:
+    current_password: str
+    new_password: str
 
 
-class PasswordAtLeastOneSpecialCharacter(Exception):
-    pass
+class UpdateUserPassword:
 
-
-class TokenDoesNotExist(Exception):
-    pass
-
-
-class TokenHasExpired(Exception):
-    pass
-
-
-class UpdateUserPasswordInteractor:
-    def update_user_password_wrapper(self, presenter: AuthPresenterInterface,
-                                     reset_password_token: str, password: str):
+    def update_user_password_wrapper(
+            self, user_id: str,
+            current_and_new_password_dto: CurrentAndNewPasswordDTO,
+            presenter: UpdateUserPasswordPresenterInterface):
+        from ib_iam.exceptions.custom_exceptions import InvalidNewPassword, \
+            InvalidCurrentPassword, CurrentPasswordMismatch
         try:
-            response = self.update_user_password_response(
-                password=password, presenter=presenter,
-                reset_password_token=reset_password_token
-            )
-        except TokenDoesNotExist:
-            response = presenter.raise_exception_for_token_does_not_exists()
-        except TokenHasExpired:
-            response = presenter.raise_exception_for_token_has_expired()
-        except PasswordMinLength:
-            response = presenter.raise_exception_for_password_min_length_required()
-        except PasswordAtLeastOneSpecialCharacter:
-            response = presenter.raise_exception_for_password_at_least_one_special_character_required()
+            self.update_user_password(
+                user_id=user_id,
+                current_and_new_password_dto=current_and_new_password_dto)
+            response = presenter.get_success_response_for_update_user_password()
+        except InvalidNewPassword:
+            response = presenter.raise_invalid_new_password_exception()
+        except InvalidCurrentPassword:
+            response = presenter.raise_invalid_current_password_exception()
+        except CurrentPasswordMismatch:
+            response = presenter.raise_current_password_mismatch_exception()
         return response
 
-    def update_user_password_response(self, password: str,
-                                      reset_password_token: str,
-                                      presenter: AuthPresenterInterface
-                                      ):
-        self.update_user_password_with_reset_password_token(
-            reset_password_token=reset_password_token,
-            password=password)
-        return presenter.get_update_user_password_success_response()
-
     @staticmethod
-    def update_user_password_with_reset_password_token(
-            reset_password_token: str,
-            password: str):
+    def update_user_password(
+            user_id: str,
+            current_and_new_password_dto: CurrentAndNewPasswordDTO):
         from ib_iam.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
-
-        service_adapter.auth_service.update_user_password_with_reset_password_token(
-            reset_password_token=reset_password_token, password=password
-        )
+        service_adapter.auth_service.update_user_password(
+            user_id=user_id,
+            current_and_new_password_dto=current_and_new_password_dto)

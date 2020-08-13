@@ -5,7 +5,7 @@ from ib_boards.presenters.presenter_implementation import \
 from ib_boards.tests.factories.interactor_dtos import TaskColumnDTOFactory
 from ib_boards.tests.factories.storage_dtos import (
     TaskActionsDTOFactory, TaskFieldsDTOFactory,
-    ColumnCompleteDetailsDTOFactory)
+    ColumnCompleteDetailsDTOFactory, TaskStageDTOFactory)
 
 
 class TestGetColumnDetails:
@@ -14,7 +14,7 @@ class TestGetColumnDetails:
     def get_task_actions_dtos_with_duplicates(self):
         TaskActionsDTOFactory.reset_sequence()
         return TaskActionsDTOFactory.create_batch(size=3) + [TaskActionsDTOFactory(
-            task_id='task_id_0'
+            task_id='task_id_0', transition_template_id=None
         )]
 
     @pytest.fixture()
@@ -47,6 +47,11 @@ class TestGetColumnDetails:
                 task_id='task_id_0', field_id='field_id_0'
             )]
 
+    @pytest.fixture
+    def task_stage_dtos(self):
+        TaskStageDTOFactory.reset_sequence()
+        return TaskStageDTOFactory.create_batch(size=3)
+
     @pytest.fixture()
     def get_task_actions_dtos(self):
         TaskActionsDTOFactory.reset_sequence()
@@ -55,7 +60,12 @@ class TestGetColumnDetails:
     @pytest.fixture()
     def get_task_fields_dtos(self):
         TaskFieldsDTOFactory.reset_sequence()
-        return TaskFieldsDTOFactory.create_batch(size=3)
+        tasks = TaskFieldsDTOFactory.create_batch(size=3, task_id="task_id_1", stage_id="stage_id_1")
+        tasks.append(TaskFieldsDTOFactory(task_id="task_id_2", stage_id="stage_id_2", key="key_0"))
+        tasks.append(TaskFieldsDTOFactory(task_id="task_id_2", stage_id="stage_id_2", key="key_4"))
+        tasks.append(TaskFieldsDTOFactory(task_id="task_id_2", stage_id="stage_id_2", key="key_1"))
+        tasks.append(TaskFieldsDTOFactory(task_id="task_id_0", stage_id="stage_id_0"))
+        return tasks
 
     @pytest.fixture()
     def get_column_task_details(self):
@@ -69,7 +79,7 @@ class TestGetColumnDetails:
 
     def test_get_response_for_column_details_with_duplicate_tasks_in_same_column(
             self, get_task_fields_dtos_with_duplicates,
-            get_column_task_details_with_duplicates,
+            get_column_task_details_with_duplicates, task_stage_dtos,
             get_task_actions_dtos_with_duplicates, get_column_details, snapshot):
         # Arrange
         task_fields_dtos = get_task_fields_dtos_with_duplicates
@@ -82,7 +92,8 @@ class TestGetColumnDetails:
         response = presenter.get_response_for_column_details(
             column_details=column_details,
             column_tasks=task_details, task_fields_dtos=task_fields_dtos,
-            task_actions_dtos=task_actions_dtos)
+            task_actions_dtos=task_actions_dtos,
+            task_stage_dtos=task_stage_dtos)
 
         # Assert
         import json
@@ -93,6 +104,7 @@ class TestGetColumnDetails:
     def test_with_duplicate_tasks_in_same_column_and_duplicate_fields(
             self, get_task_fields_dtos_with_duplicates_fields,
             get_column_task_details_with_duplicates,
+            task_stage_dtos,
             get_task_actions_dtos_with_duplicate_fields, get_column_details, snapshot):
         # Arrange
         task_fields_dtos = get_task_fields_dtos_with_duplicates_fields
@@ -105,7 +117,8 @@ class TestGetColumnDetails:
         response = presenter.get_response_for_column_details(
             column_details=column_details,
             column_tasks=task_details, task_fields_dtos=task_fields_dtos,
-            task_actions_dtos=task_actions_dtos)
+            task_actions_dtos=task_actions_dtos,
+            task_stage_dtos=task_stage_dtos)
 
         # Assert
         import json
@@ -115,7 +128,8 @@ class TestGetColumnDetails:
 
     def test_get_response_for_column_details_with_proper_data(
             self, get_task_fields_dtos, get_column_task_details,
-            get_task_actions_dtos, get_column_details, snapshot):
+            get_task_actions_dtos, get_column_details, snapshot,
+            task_stage_dtos):
         # Arrange
         task_fields_dtos = get_task_fields_dtos
         task_actions_dtos = get_task_actions_dtos
@@ -127,7 +141,8 @@ class TestGetColumnDetails:
         response = presenter.get_response_for_column_details(
             column_details=column_details,
             column_tasks=task_details, task_fields_dtos=task_fields_dtos,
-            task_actions_dtos=task_actions_dtos)
+            task_actions_dtos=task_actions_dtos,
+            task_stage_dtos=task_stage_dtos)
 
         # Assert
         import json
@@ -137,7 +152,8 @@ class TestGetColumnDetails:
 
     def test_get_response_for_column_details_with_no_tasks(
             self, get_task_fields_dtos, get_column_task_details,
-            get_task_actions_dtos, get_column_details, snapshot):
+            get_task_actions_dtos, get_column_details, snapshot,
+            task_stage_dtos):
         # Arrange
         task_fields_dtos = []
         task_actions_dtos = []
@@ -149,7 +165,8 @@ class TestGetColumnDetails:
         response = presenter.get_response_for_column_details(
             column_details=column_details,
             column_tasks=task_details, task_fields_dtos=task_fields_dtos,
-            task_actions_dtos=task_actions_dtos)
+            task_actions_dtos=task_actions_dtos,
+            task_stage_dtos=task_stage_dtos)
 
         # Assert
         import json

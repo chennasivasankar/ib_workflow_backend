@@ -2,14 +2,14 @@ import json
 from typing import List, Tuple
 
 from ib_boards.interactors.dtos import BoardDTO, ColumnDTO, \
-    BoardColumnsDTO, TaskTemplateStagesDTO, TaskSummaryFieldsDTO
+    BoardColumnsDTO, TaskTemplateStagesDTO, TaskSummaryFieldsDTO, StarOrUnstarParametersDTO
 from ib_boards.interactors.storage_interfaces.dtos import BoardColumnDTO, \
     ColumnDetailsDTO, TaskBoardsDetailsDTO, ColumnStageIdsDTO
 from ib_boards.interactors.storage_interfaces.dtos import ColumnBoardDTO, \
     ColumnStageDTO
 from ib_boards.interactors.storage_interfaces.storage_interface import \
     StorageInterface
-from ib_boards.models import Board, ColumnPermission, Column
+from ib_boards.models import Board, ColumnPermission, Column, UserStarredBoard
 
 
 class StorageImplementation(StorageInterface):
@@ -166,7 +166,7 @@ class StorageImplementation(StorageInterface):
 
     def _get_column_objects_and_column_permission_objects_from_dtos(
             self, column_dtos: List[ColumnDTO]) -> Tuple[
-            List[Column], List[ColumnPermission]]:
+        List[Column], List[ColumnPermission]]:
         column_objects = [
             Column(
                 column_id=column_dto.column_id,
@@ -224,10 +224,12 @@ class StorageImplementation(StorageInterface):
     def validate_user_role_with_boards_roles(self, user_role: str):
         pass
 
-    def get_board_ids(
-            self, user_role: str, ) -> List[str]:
-        board_ids = Board.objects.values_list('board_id', flat=True)
-        return list(board_ids)
+    def get_board_ids(self, user_id: str) -> List[str]:
+        starred_board_ids = list(UserStarredBoard.objects.filter(user_id=user_id)
+                                 .values_list('board_id', flat=True))
+        board_ids = list(Board.objects.exclude(board_id__in=starred_board_ids) \
+                         .values_list('board_id', flat=True))
+        return board_ids, starred_board_ids
 
     def get_board_details(self, board_ids: List[str]) -> List[BoardDTO]:
         board_objects = Board.objects.filter(
@@ -404,3 +406,19 @@ class StorageImplementation(StorageInterface):
             )
             for key, value in column_stages
         ]
+
+    def unstar_given_board(self,
+                           parameters: StarOrUnstarParametersDTO):
+        user_id = parameters.user_id
+        board_id = parameters.board_id
+
+        UserStarredBoard.objects.filter(
+                board_id=board_id, user_id=user_id).delete()
+
+    def star_given_board(self,
+                         parameters: StarOrUnstarParametersDTO):
+        user_id = parameters.user_id
+        board_id = parameters.board_id
+
+        UserStarredBoard.objects.get_or_create(
+                board_id=board_id, user_id=user_id)

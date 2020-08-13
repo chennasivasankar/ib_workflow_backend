@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 
-@dataclass()
+@dataclass
 class StatusVariableDTO:
     status_id: int
     status_variable: str
