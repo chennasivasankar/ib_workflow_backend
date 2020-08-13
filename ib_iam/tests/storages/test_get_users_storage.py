@@ -1,3 +1,6 @@
+import uuid
+from unittest.mock import patch
+
 import pytest
 
 from ib_iam.storages.user_storage_implementation \
@@ -306,10 +309,20 @@ class TestGetUsers:
     @pytest.mark.django_db
     def test_get_all_distinct_roles(self):
         # Arrange
-        from ib_iam.tests.factories.models import RoleFactory
+        import factory
+        from ib_iam.tests.factories.models import RoleFactory, UserRoleFactory
         RoleFactory.reset_sequence()
-        roles = RoleFactory.create_batch(size=5)
-        role_ids = [role.role for role in roles]
+        UserRoleFactory.reset_sequence()
+
+        expected_user_role_ids = [
+            uuid.UUID('b8cb1520-279a-44bb-95bf-bbca3aa057ba'),
+            uuid.UUID('b8cb1520-279a-44bb-95bf-bbca3aa057bb')
+        ]
+
+        RoleFactory.create_batch(
+            size=2, id=factory.Iterator(expected_user_role_ids)
+        )
+        UserRoleFactory.create_batch(size=2)
 
         storage = UserStorageImplementation()
 
@@ -317,4 +330,17 @@ class TestGetUsers:
         output = storage.get_all_distinct_roles()
 
         # Assert
-        assert output == role_ids
+        assert output == expected_user_role_ids
+
+    @pytest.mark.django_db
+    def test_get_all_distinct_roles_when_no_roles_exists_returns_empty_list(
+            self):
+        # Arrange
+        expected_user_role_ids = []
+        storage = UserStorageImplementation()
+
+        # Act
+        output = storage.get_all_distinct_roles()
+
+        # Assert
+        assert output == expected_user_role_ids
