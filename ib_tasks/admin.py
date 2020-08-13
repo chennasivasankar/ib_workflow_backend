@@ -18,6 +18,9 @@ from ib_tasks.models.filter import Filter
 from ib_tasks.models.filter_condition import FilterCondition
 
 
+
+admin.site.register(Filter)
+admin.site.register(FilterCondition)
 admin.site.register(ElasticSearchTask)
 admin.site.register(GoF)
 admin.site.register(Field)
@@ -72,6 +75,3 @@ admin.site.register(Stage, StagesAdmin)
 admin.site.register(StageAction, StagesActionsAdmin)
 
 
-admin.site.register(Filter)
-
-admin.site.register(FilterCondition)
