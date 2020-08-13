@@ -193,7 +193,7 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
         assignees_dtos_dict = {}
         for assignees_dto in assignees_dtos:
             assignees_dtos_dict[
-                assignees_dto.task_id] = assignees_dto.assignees_details
+                assignees_dto.stage_id] = assignees_dto.assignees_details
 
         tasks_actions_map = defaultdict(lambda: [])
         for task_actions_dto in task_actions_dtos:
@@ -225,7 +225,7 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
                 "stage_id": task_stage_map[task_id].db_stage_id,
                 "stage_display_name": task_stage_map[task_id].display_name,
                 "stage_color": task_stage_map[task_id].stage_color,
-                "assignee": self._get_assignee_details_dict(assignees_dto=assignees_dtos_dict[task_id]),
+                "assignee": self._get_assignee_details_dict(assignees_dto=assignees_dtos_dict[task_stage_map[task_id].stage_id]),
                 "actions": actions_list
             }
         }
