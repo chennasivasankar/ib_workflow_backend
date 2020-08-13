@@ -12,7 +12,6 @@ RESPONSE_200_JSON = """
     ],
     "stages_history": [
         {
-            "log_id": 1,
             "stage_id": 1,
             "created_at": "2099-12-31 00:00:00",
             "time_spent_by_user": 1,
