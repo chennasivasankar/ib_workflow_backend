@@ -4,7 +4,6 @@ from typing import List
 from ib_tasks.adapters.dtos import UserDetailsDTO
 from ib_tasks.exceptions.fields_custom_exceptions import \
     LimitShouldBeGreaterThanZeroException, \
-    OffsetShouldBeGreaterThanZeroException, \
     OffsetShouldBeGreaterThanOrEqualToZeroException
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \

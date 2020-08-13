@@ -59,7 +59,7 @@ class GetStageSearchablePossibleAssigneesPresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             INVALID_STAGE_ID
         response_dict = {
-            "response": INVALID_STAGE_ID[0],
+            "response": INVALID_STAGE_ID[0].format(err.stage_id),
             "http_status_code": 404,
             "res_status": INVALID_STAGE_ID[1]
         }
