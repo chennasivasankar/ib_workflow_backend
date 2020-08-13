@@ -7,25 +7,16 @@ from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
     Priority, ActionTypes, DelayReasons
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
+    UserTaskDelayReason, Task, TaskGoF, TaskGoFField, TaskTemplateGlobalConstants,
+    TaskStatusVariable, Filter, FilterCondition,
     TaskLog,
-    UserTaskDelayReason,
-    Task, TaskGoF, TaskGoFField, TaskTemplateGlobalConstants,
-    TaskStatusVariable, Filter, FilterCondition,
-    StagePermittedRoles, ElasticSearchTask,
-    Task, TaskGoF,
-    TaskGoFField, TaskTemplateGlobalConstants, TaskStatusVariable, Filter,
-    FilterCondition, StagePermittedRoles, UserTaskDelayReason, TaskLog,
-    Task, TaskGoF, TaskGoFField, TaskTemplateGlobalConstants,
-    TaskStatusVariable, Filter, FilterCondition,
-    StagePermittedRoles, ElasticSearchTask, TaskLog,
-    StagePermittedRoles, ElasticSearchTask, TaskStageHistory)
+    StagePermittedRoles, ElasticSearchTask)
 from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
 from ib_tasks.models.gof import GoF
 from ib_tasks.models.gof_role import GoFRole
-from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.task_stage_history import TaskStageHistory
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
@@ -288,6 +279,7 @@ class TaskLogFactory(factory.django.DjangoModelFactory):
     user_id = factory.sequence(
         lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(
             counter))
+
 
 class FilterFactory(factory.django.DjangoModelFactory):
     class Meta:

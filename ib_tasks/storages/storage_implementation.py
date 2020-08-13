@@ -4,11 +4,10 @@ from typing import List, Optional
 from django.db.models import Q
 
 from ib_tasks.constants.constants import ALL_ROLES_ID
-from ib_tasks.constants.enum import PermissionTypes, DelayReasons, REASONS
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.stages_dtos import StageActionDTO, StageDTO, \
-    TemplateStageDTO, TaskIdWithStageAssigneeDTO, StageRolesDTO
+    TemplateStageDTO, TaskIdWithStageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
     ActionRolesDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
@@ -30,14 +29,11 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import (
 )
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, TaskDueParametersDTO
-from ib_tasks.models import \
-    ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, \
-    GlobalConstant, TaskStageHistory, \
-    StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskLog
-from ib_tasks.models import GoFRole, TaskStatusVariable, Task
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
     ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, GlobalConstant, \
     StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskLog
+from ib_tasks.models import \
+    TaskStageHistory
 from ib_tasks.models.task_due_details import UserTaskDelayReason
 
 
