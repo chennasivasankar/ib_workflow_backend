@@ -19,6 +19,8 @@ from ib_tasks.interactors \
 from ib_tasks.interactors\
     .get_random_assignees_of_next_stages_and_update_in_db_interactor import \
     GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor
+from ib_tasks.interactors.get_stages_assignees_details_interactor import \
+    TaskStageAssigneeDetailsDTO
 from ib_tasks.interactors.get_user_permitted_stage_actions \
     import GetUserPermittedStageActions
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
@@ -40,6 +42,8 @@ from ib_tasks.interactors.storage_interfaces.stages_storage_interface import Sta
 from ib_tasks.interactors.storage_interfaces.storage_interface import StorageInterface
 from ib_tasks.exceptions.action_custom_exceptions \
     import InvalidPresentStageAction
+from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
+    TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 
@@ -53,6 +57,7 @@ class InvalidBoardIdException(Exception):
 @dataclass
 class TaskStageDTO:
     stage_id: str
+    db_stage_id: int
     display_name: str
     stage_colour: str
 
@@ -68,7 +73,8 @@ class UserActionOnTaskInteractor:
                  task_storage: TaskStorageInterface,
                  action_storage: ActionStorageInterface,
                  elasticsearch_storage: ElasticSearchStorageInterface,
-                 ):
+                 task_stage_storage: Optional[TaskStageStorageInterface]):
+        self.task_stage_storage = task_stage_storage
         self.elasticsearch_storage = elasticsearch_storage
         self.user_id = user_id
         self.board_id = board_id
@@ -155,12 +161,16 @@ class UserActionOnTaskInteractor:
             .get_random_assignees_of_next_stages_and_update_in_db(
                 task_id=self.task_id, action_id=self.action_id
             )
+        current_assignees_of_stages = self._get_stage_assignees_details(
+            stage_ids=stage_ids
+        )
         return TaskCompleteDetailsDTO(
             task_id=self.task_id,
             task_boards_details=task_boards_details,
             actions_dto=actions_dto,
             field_dtos=fields_dto,
-            task_stage_details=task_stage_details
+            task_stage_details=task_stage_details,
+            assignees_details=current_assignees_of_stages
         )
 
     def _get_task_fields_and_actions_dto(self, stage_ids: List[str]):
@@ -207,6 +217,7 @@ class UserActionOnTaskInteractor:
         task_stage_details = [
             TaskStageDTO(
                 stage_id=task_stage_details_dto.stage_id,
+                db_stage_id=task_stage_details_dto.db_stage_id,
                 display_name=task_stage_details_dto.display_name,
                 stage_colour=task_stage_details_dto.stage_color
             )
@@ -418,5 +429,26 @@ class UserActionOnTaskInteractor:
             title=task_dto.task_base_details_dto.title,
             fields=fields,
             stages=stage_ids
+        )
+
+    def _get_stage_assignees_details(
+            self, stage_ids: List[str]) -> List[TaskStageAssigneeDetailsDTO]:
+        if self.task_stage_storage is None:
+            return []
+        from ib_tasks.interactors.get_stages_assignees_details_interactor import \
+            GetStagesAssigneesDetailsInteractor
+        assignees_interactor = GetStagesAssigneesDetailsInteractor(
+            task_stage_storage=self.task_stage_storage
+        )
+        from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
+        task_stage_dtos = [
+            GetTaskDetailsDTO(
+                task_id=self.task_id,
+                stage_id=stage_id
+            )
+            for stage_id in stage_ids
+        ]
+        return assignees_interactor.get_stages_assignee_details_by_given_task_ids(
+            task_stage_dtos=task_stage_dtos
         )
 
