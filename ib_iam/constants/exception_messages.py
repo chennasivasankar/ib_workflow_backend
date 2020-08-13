@@ -229,3 +229,17 @@ INVALID_USER_IDS_FOR_UPDATE_COMPANY = (
     "Given users '%s' invalid(not found), so update is not possible",
     "INVALID_USER_IDS"
 )
+
+INVALID_NEW_PASSWORD = (
+    "Given new password is not valid",
+    "INVALID_NEW_PASSWORD"
+)
+
+INVALID_CURRENT_PASSWORD = (
+    "Given current password is not valid",
+    "INVALID_CURRENT_PASSWORD"
+)
+CURRENT_PASSWORD_MISMATCH = (
+    "Given current password is not matching with the current password",
+    "CURRENT_PASSWORD_MISMATCH"
+)
