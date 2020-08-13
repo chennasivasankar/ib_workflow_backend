@@ -87,8 +87,8 @@ class UserStorageImplementation(UserStorageInterface):
         user.name = name
         user.save()
 
-    def create_user(self, company_id: str, is_admin: bool, user_id: str,
-                    name: str):
+    def create_user(self, is_admin: bool, user_id: str, name: str,
+                    company_id: str = None):
         from ib_iam.models import UserDetails
         UserDetails.objects.create(
             user_id=user_id, is_admin=is_admin,

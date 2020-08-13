@@ -1,11 +1,9 @@
 import abc
 from typing import Optional, List
 
-from ib_tasks.interactors.stages_dtos import StageDTO, TaskIdWithStageAssigneeDTO
-from ib_tasks.interactors.stages_dtos import StageDTO, StageRolesDTO, \
-    TaskIdWithStageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDetailsDTO, \
-    TaskStageHavingAssigneeIdDTO, TaskIdWithDbStageIdsDTO, TaskWithDbStageIdDTO
+    TaskIdWithDbStageIdsDTO, TaskWithDbStageIdDTO
+from ib_tasks.interactors.stages_dtos import StageDTO, TaskIdWithStageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
     TaskStagesDTO, TaskTemplateStageDTO, StageValueWithTaskIdsDTO, \
@@ -15,6 +13,10 @@ from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 
 
 class StageStorageInterface(abc.ABC):
+
+    @abc.abstractmethod
+    def get_existing_status_ids(self, status_ids: List[str]):
+        pass
 
     @abc.abstractmethod
     def create_stages(self, stage_details: List[StageDTO]):

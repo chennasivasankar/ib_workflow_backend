@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import time, datetime
+from datetime import time, datetime, timedelta
 from typing import Optional, List
 
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
@@ -145,7 +145,7 @@ class EntityTypeDTO:
 @dataclass()
 class LogDurationDTO:
     entity_id: int
-    duration: time
+    duration: timedelta
 
 
 @dataclass()
