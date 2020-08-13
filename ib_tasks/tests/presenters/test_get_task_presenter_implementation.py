@@ -184,6 +184,17 @@ class TestGetTaskPresenterImplementation:
         snapshot.assert_match(name="exception_object",
                               value=response_object.content)
 
+    def test_raise_user_permission_denied(self, presenter, snapshot):
+        # Arrange
+
+        # Act
+        response_object = presenter.raise_user_permission_denied()
+
+        # Assert
+        snapshot.assert_match(name="exception_object",
+                              value=response_object.content)
+
+
     def test_raise_exception_for_invalid_task_display_id(
             self, presenter, snapshot
     ):
