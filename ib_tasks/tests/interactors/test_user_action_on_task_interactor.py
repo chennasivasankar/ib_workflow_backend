@@ -2,6 +2,7 @@ from unittest.mock import create_autospec
 
 import pytest
 
+from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
 from ib_tasks.interactors.user_action_on_task_interactor \
     import UserActionOnTaskInteractor
 
@@ -40,6 +41,18 @@ class TestUserActionOnTaskInteractor:
             .stages_storage_interface import StageStorageInterface
         storage = create_autospec(StageStorageInterface)
         return storage
+
+    @pytest.fixture
+    def elasticsearch_storage(self):
+        from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
+            ElasticSearchStorageInterface
+        return create_autospec(ElasticSearchStorageInterface)
+
+    @pytest.fixture
+    def task_stage_storage(self):
+        from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
+            TaskStageStorageInterface
+        return create_autospec(TaskStageStorageInterface)
 
     @staticmethod
     @pytest.fixture()
@@ -120,15 +133,18 @@ class TestUserActionOnTaskInteractor:
         from ib_tasks.tests.factories.interactor_dtos \
             import FieldDisplayDTOFactory
         FieldDisplayDTOFactory.reset_sequence()
+        from ib_tasks.interactors.stage_dtos import TaskStageDTO
         return TaskCompleteDetailsDTO(
             task_id=task_id,
             task_boards_details=task_boards_details,
             actions_dto=[ActionDTOFactory()],
-            field_dtos=[FieldDisplayDTOFactory()]
+            field_dtos=[FieldDisplayDTOFactory()],
+            assignees_details=[],
+            task_stage_details=[TaskStageDTO(stage_id='stage_1', db_stage_id=1, display_name='display_name', stage_colour='blue')]
         )
 
     def test_invalid_task_raises_exception(
-            self, storage, presenter, gof_storage, field_storage,
+            self, storage, presenter, gof_storage, field_storage, elasticsearch_storage, task_stage_storage,
             stage_storage, task_storage_mock, action_storage_mock):
         # Arrange
         user_id = "user_1"
@@ -139,7 +155,9 @@ class TestUserActionOnTaskInteractor:
             user_id=user_id, board_id=board_id, task_id=task_id,
             action_id=action_id, storage=storage, gof_storage=gof_storage,
             field_storage=field_storage, stage_storage=stage_storage,
-            task_storage=task_storage_mock, action_storage=action_storage_mock
+            task_storage=task_storage_mock, action_storage=action_storage_mock,
+            elasticsearch_storage=elasticsearch_storage,
+            task_stage_storage=task_stage_storage
         )
         storage.validate_task_id.return_value = False
 
@@ -152,7 +170,7 @@ class TestUserActionOnTaskInteractor:
         assert expected_task_id == task_id
 
     def test_invalid_board_raises_exception(
-            self, mocker, storage, presenter, gof_storage,
+            self, mocker, storage, presenter, gof_storage, elasticsearch_storage, task_stage_storage,
             field_storage, stage_storage, task_storage_mock, action_storage_mock):
         # Arrange
         user_id = "user_1"
@@ -166,7 +184,8 @@ class TestUserActionOnTaskInteractor:
             user_id=user_id, board_id=board_id, task_id=task_id,
             action_id=action_id, storage=storage, gof_storage=gof_storage,
             field_storage=field_storage, stage_storage=stage_storage,
-            task_storage=task_storage_mock, action_storage=action_storage_mock
+            task_storage=task_storage_mock, action_storage=action_storage_mock,
+            elasticsearch_storage=elasticsearch_storage, task_stage_storage=task_stage_storage
         )
         storage.validate_task_id.return_value = True
 
@@ -180,7 +199,7 @@ class TestUserActionOnTaskInteractor:
         assert board_id == expected_board_id
 
     def test_invalid_action_raises_exception(
-            self, mocker, storage, presenter,
+            self, mocker, storage, presenter, elasticsearch_storage, task_stage_storage,
             gof_storage, field_storage, stage_storage, task_storage_mock, action_storage_mock):
         # Arrange
         user_id = "user_1"
@@ -196,7 +215,9 @@ class TestUserActionOnTaskInteractor:
             user_id=user_id, board_id=board_id, task_id=task_id,
             action_id=action_id, storage=storage, gof_storage=gof_storage,
             field_storage=field_storage, stage_storage=stage_storage,
-            task_storage=task_storage_mock, action_storage=action_storage_mock
+            task_storage=task_storage_mock, action_storage=action_storage_mock,
+            elasticsearch_storage=elasticsearch_storage,
+            task_stage_storage=task_stage_storage
         )
         storage.validate_action.return_value = False
 
@@ -212,7 +233,7 @@ class TestUserActionOnTaskInteractor:
         assert action_id == expected_action_id
 
     def test_invalid_present_stage_action_raises_exception(
-            self, mocker, storage, presenter,
+            self, mocker, storage, presenter, elasticsearch_storage, task_stage_storage,
             gof_storage, field_storage, stage_storage, task_storage_mock, action_storage_mock):
         # Arrange
         user_id = "user_1"
@@ -229,7 +250,9 @@ class TestUserActionOnTaskInteractor:
             user_id=user_id, board_id=board_id, task_id=task_id,
             action_id=action_id, storage=storage, gof_storage=gof_storage,
             field_storage=field_storage, stage_storage=stage_storage,
-            task_storage=task_storage_mock, action_storage=action_storage_mock
+            task_storage=task_storage_mock, action_storage=action_storage_mock,
+            elasticsearch_storage=elasticsearch_storage,
+            task_stage_storage=task_stage_storage
         )
         storage.validate_action.return_value = True
         storage.get_task_present_stage_actions.return_value = action_ids
@@ -246,7 +269,7 @@ class TestUserActionOnTaskInteractor:
         assert action_id == expected_action_id
 
     def test_given_user_permission_denied_raises_exception(
-            self, mocker, storage, presenter,
+            self, mocker, storage, presenter, elasticsearch_storage, task_stage_storage,
             gof_storage, field_storage, stage_storage, task_storage_mock, action_storage_mock):
         # Arrange
         user_id = "user_1"
@@ -266,7 +289,9 @@ class TestUserActionOnTaskInteractor:
             user_id=user_id, board_id=board_id, task_id=task_id,
             action_id=action_id, storage=storage, gof_storage=gof_storage,
             field_storage=field_storage, stage_storage=stage_storage,
-            task_storage=task_storage_mock, action_storage=action_storage_mock
+            task_storage=task_storage_mock, action_storage=action_storage_mock,
+            elasticsearch_storage=elasticsearch_storage,
+            task_stage_storage=task_stage_storage
         )
         storage.validate_action.return_value = True
         storage.get_action_roles.return_value = ["ROLE_2", "ROLE_4"]
@@ -290,7 +315,7 @@ class TestUserActionOnTaskInteractor:
         validation_mock_obj.called_once()
 
     def test_given_user_board_permission_denied_raises_exception(
-            self, mocker, storage, presenter,
+            self, mocker, storage, presenter, elasticsearch_storage, task_stage_storage,
             gof_storage, field_storage, stage_storage, board_mock, task_storage_mock, action_storage_mock):
         # Arrange
         user_id = "user_1"
@@ -307,7 +332,9 @@ class TestUserActionOnTaskInteractor:
             user_id=user_id, board_id=board_id, task_id=task_id,
             action_id=action_id, storage=storage, gof_storage=gof_storage,
             field_storage=field_storage, stage_storage=stage_storage,
-            task_storage=task_storage_mock, action_storage=action_storage_mock
+            task_storage=task_storage_mock, action_storage=action_storage_mock,
+            elasticsearch_storage=elasticsearch_storage,
+            task_stage_storage=task_stage_storage
         )
         from ib_tasks.tests.common_fixtures.interactors \
             import prepare_task_gof_and_fields_dto
@@ -350,7 +377,7 @@ class TestUserActionOnTaskInteractor:
         validation_mock_obj.called_once()
 
     def test_given_valid_details_returns_task_complete_details(
-            self, mocker, storage, presenter,
+            self, mocker, storage, presenter, elasticsearch_storage, task_stage_storage,
             gof_storage, field_storage, stage_storage, board_mock, task_storage_mock, action_storage_mock):
         # Arrange
         user_id = "1"
@@ -367,7 +394,9 @@ class TestUserActionOnTaskInteractor:
             user_id=user_id, board_id=board_id, task_id=task_id,
             action_id=action_id, storage=storage, gof_storage=gof_storage,
             field_storage=field_storage, stage_storage=stage_storage,
-            task_storage=task_storage_mock, action_storage=action_storage_mock
+            task_storage=task_storage_mock, action_storage=action_storage_mock,
+            elasticsearch_storage=elasticsearch_storage,
+            task_stage_storage=task_stage_storage
         )
         from ib_tasks.tests.common_fixtures.interactors \
             import prepare_task_gof_and_fields_dto

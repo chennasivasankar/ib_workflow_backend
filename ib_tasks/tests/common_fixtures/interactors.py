@@ -1,5 +1,6 @@
 from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO
-from ib_tasks.tests.factories.storage_dtos import TaskDetailsDTOFactory
+from ib_tasks.tests.factories.storage_dtos import TaskDetailsDTOFactory, \
+    StageActionDetailsDTOFactory
 
 
 def prepare_task_gof_and_fields_dto():
@@ -120,8 +121,9 @@ def prepare_fields_and_actions_dto(mocker):
             task_id=1, stage_id="stage_1",
             stage_color="blue",
             db_stage_id=1,
+            display_name='display_name',
             field_dtos=[FieldDetailsDTOFactory()],
-            action_dtos=[ActionDetailsDTOFactory()]
+            action_dtos=[StageActionDetailsDTOFactory()]
         )
     ]
     mock_obj.return_value = lst

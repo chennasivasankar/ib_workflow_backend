@@ -17,7 +17,8 @@ from ib_tasks.interactors.presenter_interfaces.presenter_interface import \
     PresenterInterface
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
 from ib_tasks.interactors.user_action_on_task_interactor import \
-    InvalidBoardIdException, TaskStageDTO
+    InvalidBoardIdException
+from ib_tasks.interactors.stage_dtos import TaskStageDTO
 
 
 class UserActionOnTaskPresenterImplementation(PresenterInterface,

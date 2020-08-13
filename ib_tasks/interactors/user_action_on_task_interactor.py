@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import List, Optional
 from ib_tasks.exceptions.action_custom_exceptions import \
     InvalidKeyError, InvalidCustomLogicException
@@ -26,10 +25,11 @@ from ib_tasks.interactors.get_user_permitted_stage_actions \
 from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
 from ib_tasks.interactors.presenter_interfaces.dtos import TaskCompleteDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.presenter_interface import PresenterInterface
+from ib_tasks.interactors.stage_dtos import TaskStageDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
-    ActionDetailsDTO, ActionDTO, StageActionDetailsDTO
+    ActionDTO, StageActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.create_or_update_task_storage_interface import \
     CreateOrUpdateTaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.elastic_storage_interface import \
@@ -52,14 +52,6 @@ class InvalidBoardIdException(Exception):
 
     def __init__(self, board_id: str):
         self.board_id = board_id
-
-
-@dataclass
-class TaskStageDTO:
-    stage_id: str
-    db_stage_id: int
-    display_name: str
-    stage_colour: str
 
 
 class UserActionOnTaskInteractor:

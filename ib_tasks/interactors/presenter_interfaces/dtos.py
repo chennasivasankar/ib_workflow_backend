@@ -9,7 +9,7 @@ from ib_tasks.interactors.gofs_dtos import FieldDisplayDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     GetTaskStageCompleteDetailsDTO, TaskWithCompleteStageDetailsDTO
-from ib_tasks.interactors.user_action_on_task_interactor import TaskStageDTO
+from ib_tasks.interactors.stage_dtos import TaskStageDTO
 
 
 @dataclass
