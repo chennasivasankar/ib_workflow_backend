@@ -2329,7 +2329,7 @@
             "name": {
               "type": "string"
             },
-            "profile_pic": {
+            "profile_pic_url": {
               "type": "string"
             }
           },

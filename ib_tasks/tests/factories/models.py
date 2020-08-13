@@ -8,7 +8,7 @@ from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
     UserTaskDelayReason, Task, TaskGoF, TaskGoFField, TaskTemplateGlobalConstants,
-    TaskStatusVariable, Filter, FilterCondition,TaskLog
+    TaskStatusVariable, Filter, FilterCondition,TaskLog, \
     StagePermittedRoles, ElasticSearchTask, TaskStageHistory)
 from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.field import Field

@@ -50,3 +50,19 @@ class TestGetStageSearchablePossibleAssigneesPresenterImplementation:
         snapshot.assert_match(response['http_status_code'], 'http_status_code')
         snapshot.assert_match(response['res_status'], 'res_status')
         snapshot.assert_match(response['response'], 'response')
+
+    def test_get_stage_assignee_details_response(self, snapshot, presenter):
+        # Arrange
+        from ib_tasks.tests.factories.interactor_dtos import \
+            UserDetailsDTOFactory
+        user_details_dtos = UserDetailsDTOFactory.create_batch(size=3)
+
+        # Act
+        response_object = presenter.get_stage_assignee_details_response(
+            user_details_dtos=user_details_dtos
+        )
+
+        # Assert
+        import json
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response, 'user_details')
