@@ -122,8 +122,19 @@ class TestUserActionOnTaskInteractor:
         mock_obj.return_value = fields_dto
         return mock_obj
 
+    @pytest.fixture
+    def assignees(self):
+        from ib_tasks.interactors.get_stages_assignees_details_interactor import \
+            TaskStageAssigneeDetailsDTO
+        from ib_tasks.adapters.dtos import AssigneeDetailsDTO
+        return TaskStageAssigneeDetailsDTO(
+            task_id=1,
+            stage_id='stage_id_1',
+            assignee_details=AssigneeDetailsDTO(assignee_id='1', name='name', profile_pic_url='pavan.com')
+        )
+
     @staticmethod
-    def prepare_task_complete_details(task_id,
+    def prepare_task_complete_details(task_id, assignees,
                                       task_boards_details):
         from ib_tasks.interactors.presenter_interfaces.dtos \
             import TaskCompleteDetailsDTO
@@ -139,7 +150,7 @@ class TestUserActionOnTaskInteractor:
             task_boards_details=task_boards_details,
             actions_dto=[ActionDTOFactory()],
             field_dtos=[FieldDisplayDTOFactory()],
-            assignees_details=[],
+            assignees_details=[assignees],
             task_stage_details=[TaskStageDTO(stage_id='stage_1', db_stage_id=1, display_name='display_name', stage_colour='blue')]
         )
 
@@ -377,7 +388,7 @@ class TestUserActionOnTaskInteractor:
         validation_mock_obj.called_once()
 
     def test_given_valid_details_returns_task_complete_details(
-            self, mocker, storage, presenter, elasticsearch_storage, task_stage_storage,
+            self, mocker, storage, presenter, elasticsearch_storage, task_stage_storage, assignees,
             gof_storage, field_storage, stage_storage, board_mock, task_storage_mock, action_storage_mock):
         # Arrange
         user_id = "1"
@@ -415,14 +426,17 @@ class TestUserActionOnTaskInteractor:
         from ib_tasks.tests.common_fixtures.interactors import (
             prepare_stage_display_satisfied_stage_ids,
             prepare_task_boards_details, prepare_fields_and_actions_dto,
-            prepare_mock_for_next_stage_random_assignees
+            prepare_mock_for_next_stage_random_assignees, prepare_assignees_interactor_mock
         )
+        prepare_assignees_interactor_mock(mocker, assignees)
         prepare_mock_for_next_stage_random_assignees(mocker)
         task_board_details = prepare_task_boards_details()
         stage_mock = prepare_stage_display_satisfied_stage_ids(mocker)
         task_stage_details_dto = prepare_fields_and_actions_dto(mocker)
         task_complete_details = self.prepare_task_complete_details(
-            task_id=task_id, task_boards_details=task_board_details)
+            task_id=task_id, task_boards_details=task_board_details,
+            assignees=assignees
+        )
         stage_ids = ['stage_1', 'stage_2']
         stage_mock.return_value = stage_ids
         board_mock.return_value = task_board_details
