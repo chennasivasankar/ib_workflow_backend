@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List
 
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
@@ -51,7 +52,7 @@ class TaskDueDetailsPresenterImplementation(TaskDueDetailsPresenterInterface,
         for task in task_dtos:
             task_details_dict = {'task_id': task.task_id,
                                  'reason': task.reason,
-                                 'due_date_time': task.due_date_time,
+                                 'due_date_time': datetime.strftime(task.due_date_time, "%Y-%m-%d %H:%M:%S"),
                                  'due_missed_count': task.due_missed_count,
                                  'user': self._convert_user_dto_to_dict(task.user)}
             task_delay_details_list.append(

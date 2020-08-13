@@ -7,19 +7,17 @@ from ib_tasks.constants.enum import PermissionTypes, FieldTypes, Operators, \
     Priority, ActionTypes, DelayReasons
 from ib_tasks.models import (
     Stage, ActionPermittedRoles, StageAction, TaskTemplateStatusVariable,
-    Task, TaskGoF,
-    TaskGoFField, TaskTemplateGlobalConstants, TaskStatusVariable, Filter,
-    FilterCondition, StagePermittedRoles, UserTaskDelayReason, TaskLog,
+    TaskLog,
+    UserTaskDelayReason,
     Task, TaskGoF, TaskGoFField, TaskTemplateGlobalConstants,
     TaskStatusVariable, Filter, FilterCondition,
-    StagePermittedRoles, ElasticSearchTask, TaskStageHistory)
+    StagePermittedRoles, ElasticSearchTask)
 from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.global_constant import GlobalConstant
 from ib_tasks.models.gof import GoF
 from ib_tasks.models.gof_role import GoFRole
-from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.task_stage_history import TaskStageHistory
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
@@ -90,7 +88,7 @@ class TaskDueDetailsFactory(factory.django.DjangoModelFactory):
     task = factory.SubFactory(TaskFactory)
     due_datetime = datetime.now() + timedelta(days=2)
     count = factory.Sequence(lambda n: (n + 1))
-    user_id = factory.Sequence(lambda n: "user_id_%d" % n)
+    user_id = factory.Sequence(lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)
     reason_id = DelayReasons[0]['id']
     reason = DelayReasons[0]['reason']
 
