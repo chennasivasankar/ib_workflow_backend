@@ -1,15 +1,15 @@
 import pytest
 
-from ib_tasks.tests.factories.models import TaskStageFactory, TaskFactory
+from ib_tasks.tests.factories.models import CurrentTaskStageModelFactory, TaskFactory
 
 
 class TestGetTaskStageIds:
     @pytest.fixture()
     def task_stage_objs(self):
-        TaskStageFactory.reset_sequence()
+        CurrentTaskStageModelFactory.reset_sequence()
         TaskFactory.reset_sequence()
         task_obj = TaskFactory()
-        task_stage_objs = TaskStageFactory.create_batch(4, task=task_obj)
+        task_stage_objs = CurrentTaskStageModelFactory.create_batch(4, task=task_obj)
         return task_stage_objs
 
     @pytest.mark.django_db

@@ -6,6 +6,7 @@ from ib_iam.storages.user_storage_implementation \
 from ib_iam.tests.common_fixtures.storages import \
     user_not_admin, users_company, users_team, users_role
 
+
 class TestGetUsers:
     @pytest.fixture()
     def user_dtos(self):
@@ -165,24 +166,19 @@ class TestGetUsers:
             )
             for user_dict in users_list
         ]
-        from ib_iam.constants.enums import SearchType
-        from ib_iam.interactors.dtos.dtos import SearchQueryAndTypeDTO
-        search_query_and_type_dto = SearchQueryAndTypeDTO(
-            search_query="s",
-            search_type=SearchType.USER.value
-        )
+        name_search_query = "s"
         storage = UserStorageImplementation()
 
         # Act
         output = storage.get_users_who_are_not_admins(
-            offset=0, limit=10,
-            search_query_and_type_dto=search_query_and_type_dto)
+            offset=0, limit=10, name_search_query=name_search_query)
         assert output == expected_output
 
     @pytest.mark.django_db
     def test_get_users_with_empty_search_query(
             self, prepare_create_users_setup):
         # Arrange
+        name_search_query = ""
         users_list = [{
             'user_id': '1',
             'is_admin': False,
@@ -209,18 +205,11 @@ class TestGetUsers:
             )
             for user_dict in users_list
         ]
-        from ib_iam.constants.enums import SearchType
-        from ib_iam.interactors.dtos.dtos import SearchQueryAndTypeDTO
-        search_query_and_type_dto = SearchQueryAndTypeDTO(
-            search_query="",
-            search_type=SearchType.USER.value
-        )
         storage = UserStorageImplementation()
 
         # Act
         output = storage.get_users_who_are_not_admins(
-            offset=0, limit=10,
-            search_query_and_type_dto=search_query_and_type_dto)
+            offset=0, limit=10, name_search_query=name_search_query)
         assert output == expected_output
 
     @pytest.mark.django_db

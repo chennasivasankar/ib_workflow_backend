@@ -7,7 +7,7 @@ from ib_tasks.interactors.presenter_interfaces.dtos import \
 from ib_tasks.interactors.presenter_interfaces.get_all_tasks_overview_for_user_presenter_interface import \
     GetAllTasksOverviewForUserPresenterInterface, \
     GetFilteredTasksOverviewForUserPresenterInterface
-from ib_tasks.interactors.presenter_interfaces.\
+from ib_tasks.interactors.presenter_interfaces. \
     get_all_tasks_overview_for_user_presenter_interface import \
     GetAllTasksOverviewForUserPresenterInterface
 from django.http import response
@@ -20,7 +20,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 
 
 class GetAllTasksOverviewForUserPresenterImpl(
-        GetAllTasksOverviewForUserPresenterInterface, HTTPResponseMixin):
+    GetAllTasksOverviewForUserPresenterInterface, HTTPResponseMixin):
     def raise_limit_should_be_greater_than_zero_exception(
             self) -> response.HttpResponse:
         from ib_tasks.constants.exception_messages import \
@@ -91,7 +91,7 @@ class GetAllTasksOverviewForUserPresenterImpl(
                 task_with_complete_stage_details_dto.stage_assignee_dto
             )
             task_overview_details_dict = {
-                "task_id": each_task_id_with_stage_details_dto.task_id,
+                "task_id": each_task_id_with_stage_details_dto.task_display_id,
                 "task_overview_fields": task_overview_fields_details,
                 "stage_with_actions": {
                     "stage_id":
@@ -168,8 +168,9 @@ class GetAllTasksOverviewForUserPresenterImpl(
         pass
 
 
-class GetFilteredTasksOverviewForUserPresenterImplementation(GetAllTasksOverviewForUserPresenterImpl,
-                                                             GetFilteredTasksOverviewForUserPresenterInterface):
+class GetFilteredTasksOverviewForUserPresenterImplementation(
+    GetAllTasksOverviewForUserPresenterImpl,
+    GetFilteredTasksOverviewForUserPresenterInterface):
 
     def get_response_for_filtered_tasks_overview_details_response(
             self,

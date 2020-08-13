@@ -311,6 +311,10 @@ class InvalidValueForSearchable(Exception):
         self.message = message
 
 
+class InvalidDueDateTimeException(Exception):
+    pass
+
+
 class InvalidModulePathFound(Exception):
     def __init__(self, path_name: str):
         self.path_name = path_name
