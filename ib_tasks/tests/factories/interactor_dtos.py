@@ -19,19 +19,10 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
-    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, CreateTaskLogDTO, TaskDueParametersDTO, \
-    SaveAndActOnTaskDTO, StageIdWithAssigneeIdDTO, UpdateTaskDTO, CreateTaskDTO
-from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory
-from ib_tasks.tests.factories.adapter_dtos import UserDetailsDTO
-    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, CreateTaskLogDTO, TaskDueParametersDTO
-from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory, UserDetailsDTO,\
-    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, \
-    CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeIdDTO, SaveAndActOnTaskDTO
-from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory,\
-    CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeIdDTO, GetTaskDetailsDTO, FieldValuesDTO, StatusOperandStageDTO, \
-    CreateTaskLogDTO, TaskDueParametersDTO
-from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory, UserDetailsDTO
+    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, CreateTaskLogDTO, TaskDueParametersDTO, CreateTaskDTO, \
+    StageIdWithAssigneeIdDTO, UpdateTaskDTO, SaveAndActOnTaskDTO
 
+from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory, UserDetailsDTO
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
