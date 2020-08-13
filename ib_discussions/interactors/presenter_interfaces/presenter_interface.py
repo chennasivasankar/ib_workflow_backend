@@ -13,12 +13,9 @@ from ib_iam.interactors.presenter_interfaces.dtos import \
 
 
 class CreateDiscussionPresenterInterface(ABC):
-    @abstractmethod
-    def raise_exception_for_entity_id_not_found(self):
-        pass
 
     @abstractmethod
-    def raise_exception_for_invalid_entity_type_for_entity_id(self):
+    def response_for_empty_title(self):
         pass
 
     @abstractmethod
@@ -27,13 +24,6 @@ class CreateDiscussionPresenterInterface(ABC):
 
 
 class GetDiscussionsPresenterInterface(ABC):
-    @abstractmethod
-    def raise_exception_for_entity_id_not_found(self):
-        pass
-
-    @abstractmethod
-    def raise_exception_for_invalid_entity_type_for_entity_id(self):
-        pass
 
     @abstractmethod
     def raise_exception_for_invalid_offset(self):

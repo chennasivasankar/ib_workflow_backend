@@ -11,7 +11,8 @@ class TestGetUserDetailsBulk:
                              for user_id in user_ids]
         return user_profile_dtos
 
-    def test_with_valid_user_ids_return_respone(self, mocker, user_profile_dtos):
+    def test_with_valid_user_ids_return_respone(self, mocker,
+                                                user_profile_dtos):
         # Arrange
         user_ids = ["user1", "user2", "user3"]
 
