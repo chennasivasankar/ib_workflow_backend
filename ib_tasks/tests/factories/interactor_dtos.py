@@ -1,4 +1,4 @@
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 
 import factory
 
@@ -20,12 +20,17 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
+    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, CreateTaskLogDTO, TaskDueParametersDTO, \
+    SaveAndActOnTaskDTO
+from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory, UserDetailsDTO,\
     FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, \
     CreateTaskLogDTO, \
     CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeIdDTO
 from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory,\
     FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, CreateTaskLogDTO, TaskDueParametersDTO
-from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory, UserDetailsDTO
+from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory, UserDetailsDTO,\
+    CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeIdDTO
+from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
@@ -327,6 +332,27 @@ class UpdateTaskDTOFactory(factory.Factory):
 
     task_id = factory.Sequence(lambda c: "task_{}".format(c))
     created_by_id = "123e4567-e89b-12d3-a456-426614174000"
+    title = factory.Sequence(lambda c: "title_{}".format(c))
+    description = factory.Sequence(lambda c: "description{}".format(c))
+    start_date = datetime.today().date()
+    due_date = datetime.today().date() + timedelta(days=2)
+    due_time = "12:30:20"
+    priority = Priority.HIGH.value
+    stage_assignee = factory.SubFactory(StageIdWithAssigneeIdDTOFactory)
+
+    @factory.lazy_attribute
+    def gof_fields_dtos(self):
+        return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]
+
+
+class SaveAndActOnTaskDTOFactory(factory.Factory):
+
+    class Meta:
+        model = SaveAndActOnTaskDTO
+
+    task_id = factory.Sequence(lambda c: "task_{}".format(c))
+    created_by_id = "123e4567-e89b-12d3-a456-426614174000"
+    action_id = factory.Sequence(lambda c: c)
     title = factory.Sequence(lambda c: "title_{}".format(c))
     description = factory.Sequence(lambda c: "description{}".format(c))
     start_date = datetime.today().date()

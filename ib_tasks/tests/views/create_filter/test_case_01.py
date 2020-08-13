@@ -50,7 +50,7 @@ class TestCase01CreateFilterAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_case(self, snapshot):
-        body = {'name': 'string', 'template_id': 'string', 'conditions': [{'field_id': 'string', 'operator': 'EQ', 'value': 'string'}]}
+        body = {'name': 'Filter', 'template_id': 'template_1', 'conditions': [{'field_id': 'FIELD_ID-2', 'operator': 'EQ', 'value': 'string'}]}
         path_params = {}
         query_params = {}
         headers = {}

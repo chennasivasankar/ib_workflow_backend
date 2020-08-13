@@ -4,7 +4,7 @@ from freezegun import freeze_time
 from ib_tasks.models import UserTaskDelayReason
 from ib_tasks.storages.storage_implementation import StorageImplementation
 from ib_tasks.tests.factories.interactor_dtos import TaskDueParametersDTOFactory
-from ib_tasks.tests.factories.models import TaskModelFactory, TaskStageFactory
+from ib_tasks.tests.factories.models import TaskModelFactory, TaskStageFactory, TaskLogFactory
 
 
 @pytest.mark.django_db
@@ -23,12 +23,14 @@ class TestAddDueDelayDetails:
     @pytest.fixture()
     def due_details(self):
         return TaskDueParametersDTOFactory(task_id=1,
+                                           due_date_time="2020-08-10 12:30:00",
                                            user_id="123e4567-e89b-12d3-a456-426614174000")
 
     @pytest.fixture()
     def populate_data(self):
-
-        tasks = TaskModelFactory.create_batch(size=4)
+        tasks = TaskModelFactory.create_batch(size=4, due_date="2020-08-10 12:30:00")
+        TaskLogFactory.reset_sequence()
+        TaskLogFactory.create_batch(size=3, task=tasks[0])
         TaskStageFactory.create_batch(task=tasks[0], size=3)
 
     @freeze_time("2020-08-10 12:30:00")
@@ -46,4 +48,9 @@ class TestAddDueDelayDetails:
         # Assert
         reason = UserTaskDelayReason.objects.filter(
             task_id=task_id, user_id=user_id, reason_id=reason_id).values()
+        from ib_tasks.models import Task
+        task_due_datetime = Task.objects.filter(pk=task_id, tasklog__user_id=user_id).values(
+            'id', 'tasklog__user_id', 'due_date'
+        )
+        snapshot.assert_match(task_due_datetime, "task_due_datetime")
         snapshot.assert_match(reason, "reason")

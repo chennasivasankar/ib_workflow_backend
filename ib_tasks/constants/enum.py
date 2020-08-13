@@ -73,15 +73,7 @@ class ActionTypes(enum.Enum):
     NO_VALIDATIONS = "NO_VALIDATIONS"
 
 
-class DelayReasons(enum.Enum):
-    WRONG_ESTIMATION_OF_TIME = "wrong estimation of time"
-    EXECUTION_LEVEL_PLAN_FAIL = "Execution level plan fail"
-    NO_CLARITY_IN_OBJECTIVE = "No clarity in objective"
-    DOESNOT_FOLLOW_INSTRUCTIONS = "Doesn't follow Instructions"
-    OTHERS = "others"
-
-
-REASONS = [
+DelayReasons = [
     {
         "id": 1,
         "reason": "wrong estimation of time"

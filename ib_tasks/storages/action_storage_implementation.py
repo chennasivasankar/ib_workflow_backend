@@ -248,3 +248,10 @@ class ActionsStorageImplementation(ActionStorageInterface):
 
     def validate_action(self, action_id: int) -> bool:
         return StageAction.objects.filter(id=action_id).exists()
+
+    def get_stage_ids_having_actions(self, db_stage_ids: List[int]) \
+            -> List[int]:
+        db_stage_ids = \
+            StageAction.objects.filter(stage_id__in=db_stage_ids).values(
+                'stage_id')
+        return db_stage_ids

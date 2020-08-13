@@ -1,6 +1,7 @@
 from ib_tasks.tests.factories.adapter_dtos import UserDetailsDTOFactory
 
 from ib_tasks.tests.factories.interactor_dtos import \
+    UserDetailsDTOFactory, \
     SearchableFieldUserDetailDTOFactory
 
 
@@ -48,6 +49,7 @@ def get_user_dtos_given_user_ids(mocker):
         "ib_tasks.adapters.auth_service.AuthService."
         "get_user_details"
     )
+    UserDetailsDTOFactory.reset_sequence()
     user_dtos = UserDetailsDTOFactory.create_batch(size=2)
     mock.return_value = user_dtos
     return mock

@@ -52,7 +52,7 @@ class UserService:
             CreateUserProfileDTO
         create_user_profile_dto = CreateUserProfileDTO(
             name=user_profile_dto.name,
-            email=user_profile_dto.email,
+            email=user_profile_dto.email
         )
         self.interface.create_user_profile(
             user_id=user_id, user_profile=create_user_profile_dto)
@@ -60,12 +60,30 @@ class UserService:
     def update_user_profile(
             self, user_id: str, user_profile_dto: UserProfileDTO):
         from ib_users.interactors.user_profile_interactor import UserProfileDTO
+        from ib_users.exceptions.invalid_email_exception import \
+            InvalidEmailException
+        from ib_users.constants.custom_exception_messages import INVALID_EMAIL
+        from ib_users.interactors.exceptions.user_profile import \
+            EmailAlreadyLinkedException
+        from ib_users.constants.user_profile.error_types import \
+            EMAIL_ALREADY_LINKED_ERROR_TYPE
         user_profile = UserProfileDTO(
             name=user_profile_dto.name,
             email=user_profile_dto.email,
+            profile_pic_url=user_profile_dto.profile_pic_url
         )
-        self.interface.update_user_profile(
-            user_id=user_id, user_profile=user_profile)
+        try:
+            self.interface.update_user_profile(
+                user_id=user_id, user_profile=user_profile)
+        except InvalidEmailException as exception:
+            if exception.error_type == INVALID_EMAIL.code:
+                from ib_iam.exceptions.custom_exceptions import InvalidEmail
+                raise InvalidEmail
+        except EmailAlreadyLinkedException as exception:
+            if exception.error_type == EMAIL_ALREADY_LINKED_ERROR_TYPE:
+                from ib_iam.exceptions.custom_exceptions import \
+                    UserAccountAlreadyExistWithThisEmail
+                raise UserAccountAlreadyExistWithThisEmail
 
     def get_user_profile_dto(self, user_id: str) -> UserProfileDTO:
         from ib_users.interactors.exceptions.user_profile import \
