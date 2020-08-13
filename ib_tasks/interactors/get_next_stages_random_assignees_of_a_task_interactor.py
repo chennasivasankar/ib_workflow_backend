@@ -151,9 +151,7 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
         stage_with_user_details_dtos = []
         from ib_tasks.adapters.auth_service import AuthService
         auth_service_adapter = AuthService()
-        updated_task_count_dto_for_assignee_having_less_tasks = \
-            AssigneeCurrentTasksCountDTO(
-                assignee_id=EMPTY_STRING, tasks_count=0)
+        updated_task_count_dto_for_assignee_having_less_tasks = []
         for each_dto in role_ids_group_by_stage_id_dtos:
             permitted_user_details_dtos = auth_service_adapter. \
                 get_permitted_user_details(role_ids=each_dto.role_ids)
