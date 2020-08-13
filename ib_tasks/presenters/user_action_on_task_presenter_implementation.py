@@ -265,7 +265,7 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
         }
 
     @staticmethod
-    def _get_actions_dict(self, actions_dto: List[ActionDTO]):
+    def _get_actions_dict(actions_dto: List[ActionDTO]):
         return [
             {
                 "action_id": str(action_dto.action_id),
