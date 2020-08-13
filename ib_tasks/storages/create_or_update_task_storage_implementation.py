@@ -342,3 +342,6 @@ class CreateOrUpdateTaskStorageImplementation(
             for task_gof_field_dto in task_gof_field_dtos
         ]
         TaskGoFField.objects.bulk_create(task_gof_field_objects)
+
+    def get_initial_stage_for_task_template(self, template_id: str) -> str:
+        pass

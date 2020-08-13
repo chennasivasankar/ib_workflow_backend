@@ -42,10 +42,13 @@ class TestUserTaskWithRecentStageDetails:
         task_objs = create_tasks
         task_id_with_stage_details_dtos = [
             TaskIdWithStageDetailsDTO(task_id=task_objs[0].id,
+                                      task_display_id=task_objs[0].task_display_id,
                                       stage_id="stage_id_2",
                                       stage_display_name="name_2",
                                       db_stage_id=3, stage_color="blue"),
             TaskIdWithStageDetailsDTO(task_id=task_objs[1].id,
+                                      task_display_id=task_objs[
+                                          1].task_display_id,
                                       stage_id="stage_id_3",
                                       stage_display_name="name_3",
                                       db_stage_id=4, stage_color="orange")
@@ -87,7 +90,6 @@ class TestUserTaskWithRecentStageDetails:
         result = storage. \
             get_task_id_with_stage_details_dtos_based_on_stage_value(
             stage_values=stage_values,
-            user_id=user_id,
             task_ids_group_by_stage_value_dtos=
             task_ids_group_by_stage_value_dtos)
         assert result == expected_output

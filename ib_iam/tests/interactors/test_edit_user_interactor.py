@@ -51,7 +51,7 @@ class TestEditNewUserInteractor:
         # Act
         interactor.edit_user_wrapper(
             admin_user_id=admin_user_id, user_id=user_id,
-            user_details_with_team_role_and_company_ids_dto\
+            user_details_with_team_role_and_company_ids_dto \
                 =user_details_with_team_role_and_company_ids_dto,
             presenter=presenter_mock)
 
@@ -60,12 +60,12 @@ class TestEditNewUserInteractor:
             user_id=admin_user_id)
         presenter_mock.raise_user_is_not_admin_exception.assert_called_once()
 
-    def test_validate_name_when_empty_throw_exception(
+    def test_validate_name_returns_should_contain_minimum_5_characters_exception(
             self, storage_mock, presenter_mock):
         # Arrange
         user_id = "user_1"
         admin_user_id = "user_0"
-        name = ""
+        name = "user"
         email = "user@email.com"
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
@@ -73,7 +73,8 @@ class TestEditNewUserInteractor:
 
         interactor = EditUserInteractor(user_storage=storage_mock)
         storage_mock.is_user_admin.return_value = True
-        presenter_mock.raise_invalid_name_exception.return_value = Mock()
+        presenter_mock.raise_invalid_name_length_exception_for_update_user_profile \
+            .return_value = Mock()
 
         user_details_with_team_role_and_company_ids_dto \
             = UserDetailsWithTeamRoleAndCompanyIdsDTOFactory(
@@ -89,7 +90,9 @@ class TestEditNewUserInteractor:
             presenter=presenter_mock)
 
         # Assert
-        presenter_mock.raise_invalid_name_exception.assert_called_once()
+        presenter_mock. \
+            raise_invalid_name_length_exception_for_update_user_profile. \
+            assert_called_once()
 
     def test_validate_name_when_contains_special_characters_and_numbers_throw_exception(
             self, storage_mock, presenter_mock):
@@ -104,7 +107,9 @@ class TestEditNewUserInteractor:
 
         interactor = EditUserInteractor(user_storage=storage_mock)
         storage_mock.is_user_admin.return_value = True
-        presenter_mock.raise_invalid_name_exception.return_value = Mock()
+        presenter_mock \
+            .raise_name_should_not_contain_special_characters_exception \
+            .return_value = Mock()
 
         user_details_with_team_role_and_company_ids_dto \
             = UserDetailsWithTeamRoleAndCompanyIdsDTOFactory(
@@ -129,7 +134,7 @@ class TestEditNewUserInteractor:
         # Arrange
         user_id = "user_1"
         admin_user_id = "user_0"
-        name = "name"
+        name = "username"
         email = ""
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
@@ -160,7 +165,7 @@ class TestEditNewUserInteractor:
         # Arrange
         user_id = "user_1"
         admin_user_id = "user_0"
-        name = "name"
+        name = "username"
         email = "user@gmail.com"
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
@@ -195,7 +200,7 @@ class TestEditNewUserInteractor:
         # Arrange
         user_id = "user_1"
         admin_user_id = "user_0"
-        name = "name"
+        name = "username"
         email = "user@gmail.com"
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
@@ -228,7 +233,7 @@ class TestEditNewUserInteractor:
         # Arrange
         user_id = "user_1"
         admin_user_id = "user_0"
-        name = "name"
+        name = "username"
         email = "user@gmail.com"
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
@@ -263,7 +268,7 @@ class TestEditNewUserInteractor:
         # Arrange
         user_id = "user_1"
         admin_user_id = "user_0"
-        name = "name"
+        name = "username"
         email = "user@gmail.com"
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
@@ -296,7 +301,7 @@ class TestEditNewUserInteractor:
         # Arrange
         user_id = "user_1"
         admin_user_id = "user_0"
-        name = "name"
+        name = "username"
         email = "user@gmail.com"
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
@@ -307,8 +312,8 @@ class TestEditNewUserInteractor:
         storage_mock.is_user_exist.return_value = True
         presenter_mock.raise_user_does_not_exist.return_value = Mock()
         from ib_iam.tests.common_fixtures.adapters.user_service \
-            import update_user_profile_adapter_mock
-        adapter_mock = update_user_profile_adapter_mock(mocker=mocker)
+            import prepare_update_user_profile_adapter_mock
+        adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
 
         user_details_with_team_role_and_company_ids_dto \
             = UserDetailsWithTeamRoleAndCompanyIdsDTOFactory(
@@ -332,7 +337,7 @@ class TestEditNewUserInteractor:
         # Arrange
         user_id = "user_1"
         admin_user_id = "user_0"
-        name = "name"
+        name = "username"
         email = "user@gmail.com"
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
@@ -340,8 +345,8 @@ class TestEditNewUserInteractor:
 
         interactor = EditUserInteractor(user_storage=storage_mock)
         from ib_iam.tests.common_fixtures.adapters.user_service \
-            import update_user_profile_adapter_mock
-        adapter_mock = update_user_profile_adapter_mock(mocker=mocker)
+            import prepare_update_user_profile_adapter_mock
+        adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
 
         user_details_with_team_role_and_company_ids_dto \
             = UserDetailsWithTeamRoleAndCompanyIdsDTOFactory(
@@ -366,7 +371,7 @@ class TestEditNewUserInteractor:
         # Arrange
         user_id = "user_1"
         admin_user_id = "user_0"
-        name = "name"
+        name = "username"
         email = "user@gmail.com"
         team_ids = ['team0', 'team1']
         role_ids = ['role0', 'role1']
@@ -374,8 +379,8 @@ class TestEditNewUserInteractor:
 
         interactor = EditUserInteractor(user_storage=storage_mock)
         from ib_iam.tests.common_fixtures.adapters.user_service \
-            import update_user_profile_adapter_mock
-        adapter_mock = update_user_profile_adapter_mock(mocker=mocker)
+            import prepare_update_user_profile_adapter_mock
+        adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
         presenter_mock.edit_user_success_response.return_value = Mock()
 
         user_details_with_team_role_and_company_ids_dto \

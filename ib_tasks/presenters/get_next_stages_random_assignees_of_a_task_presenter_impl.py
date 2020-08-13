@@ -10,6 +10,7 @@ from ib_tasks.interactors.presenter_interfaces.get_next_stages_random_assignees_
 class GetNextStagesRandomAssigneesOfATaskPresenterImpl(
     GetNextStagesRandomAssigneesOfATaskPresenterInterface, HTTPResponseMixin):
     def raise_invalid_task_id_exception(self, task_id: int):
+
         from ib_tasks.constants.exception_messages import INVALID_TASK_ID
         data = {
             "response": INVALID_TASK_ID[0].format(task_id),

@@ -33,9 +33,10 @@ from .filter import Filter
 from .filter_condition import FilterCondition
 from ib_tasks.models.task import ElasticSearchTask
 from .task import ElasticSearchTask
-from ib_tasks.models.task_stage_history import TaskStageHistory
+from .task_stage_history import TaskStageHistory
 
 __all__ = [
+    "TaskStageHistory",
     "ElasticSearchTask",
     "Filter",
     "FilterCondition",
@@ -57,6 +58,5 @@ __all__ = [
     "TaskTemplateStatusVariables",
     "TaskTemplateInitialStage",
     "TaskTemplateInitialStage",
-    "StagePermittedRoles",
-    "TaskStageHistory"
+    "StagePermittedRoles"
 ]

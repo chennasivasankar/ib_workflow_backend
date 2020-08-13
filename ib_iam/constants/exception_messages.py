@@ -22,9 +22,14 @@ EMPTY_NAME_IS_INVALID = (
     "EMPTY_NAME_IS_INVALID"
 )
 
-NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS = (
+NAME_SHOULD_NOT_CONTAIN_SPECIAL_CHARACTERS_AND_NUMBERS = (
     "name should not contains special characters and numbers",
     "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
+)
+
+INVALID_NAME_LENGTH = (
+    "Name minimum length should be {minimum_name_length} or more",
+    "INVALID_NAME_LENGTH"
 )
 
 INVALID_EMAIL = (
@@ -35,6 +40,11 @@ INVALID_EMAIL = (
 USER_ALREADY_EXIST_WITH_THIS_EMAIL = (
     'given email already registered for another account',
     "USER_ALREADY_EXIST_WITH_THIS_EMAIL"
+)
+
+EMAIL_ALREADY_IN_USE = (
+    "Email is already in use",
+    "EMAIL_ALREADY_IN_USE"
 )
 
 ROLE_NAME_SHOULD_NOT_BE_EMPTY = (
@@ -215,8 +225,21 @@ DUPLICATE_USER_IDS_FOR_UPDATE_COMPANY = (
     "DUPLICATE_USER_IDS"
 )
 
-
 INVALID_USER_IDS_FOR_UPDATE_COMPANY = (
     "Given users '%s' invalid(not found), so update is not possible",
     "INVALID_USER_IDS"
+)
+
+INVALID_NEW_PASSWORD = (
+    "Given new password is not valid",
+    "INVALID_NEW_PASSWORD"
+)
+
+INVALID_CURRENT_PASSWORD = (
+    "Given current password is not valid",
+    "INVALID_CURRENT_PASSWORD"
+)
+CURRENT_PASSWORD_MISMATCH = (
+    "Given current password is not matching with the current password",
+    "CURRENT_PASSWORD_MISMATCH"
 )

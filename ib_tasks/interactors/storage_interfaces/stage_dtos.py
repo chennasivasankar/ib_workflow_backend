@@ -57,6 +57,7 @@ class GetTaskStageCompleteDetailsDTO:
     task_id: int
     stage_id: str
     stage_color: str
+    db_stage_id: int
     field_dtos: List[FieldDetailsDTO]
     action_dtos: List[StageActionDetailsDTO]
 
@@ -106,6 +107,7 @@ class TaskIdWithStageDetailsDTO:
     # TODO refactor stage_id_db name after removal of stage_id
     db_stage_id: int
     task_id: int
+    task_display_id: str
     stage_id: str
     stage_display_name: str
     stage_color: str

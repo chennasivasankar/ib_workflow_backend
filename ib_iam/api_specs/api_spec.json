@@ -605,6 +605,42 @@
         "$ref": "#/definitions/UserWithCompanyWithTeamsAndRoles"
       }
     },
+    "UpdateUserProfileParameter": {
+      "name": "UpdateUserProfile",
+      "description": "Update User profile",
+      "in": "body",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/UserNameAndEmail"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "profile_pic_url": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "UpdateUserPasswordParameter": {
+      "name": "UpdateUserPassword",
+      "description": "Update User password",
+      "in": "body",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "current_password": {
+            "type": "string"
+          },
+          "new_password": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "LoginParameter": {
       "name": "login",
       "description": "email and password to login in database",
@@ -673,6 +709,11 @@
       "required": true,
       "type": "integer",
       "default": 0
+    },
+    "SearchQueryParameter": {
+      "name": "search_query",
+      "in": "query",
+      "type": "string"
     },
     "AddTeamParameter": {
       "name": "add_team",
@@ -771,8 +812,8 @@
                 "type": "string",
                 "enum": [
                   "INVALID_EMAIL",
-                  "INVALID_NAME",
                   "USER_ALREADY_EXIST_WITH_THIS_EMAIL",
+                  "INVALID_NAME_LENGTH",
                   "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
                 ]
               }
@@ -798,7 +839,7 @@
                 "type": "string",
                 "enum": [
                   "INVALID_EMAIL",
-                  "EMPTY_NAME_IS_INVALID",
+                  "INVALID_NAME_LENGTH",
                   "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
                 ]
               }
@@ -853,6 +894,59 @@
                   "INVALID_COMPANY_ID",
                   "INVALID_TEAM_IDS",
                   "INVALID_ROLE_IDS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "BadRequestForUpdateUserProfileResponse": {
+      "description": "bad request for update user profile",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_EMAIL",
+                  "EMAIL_ALREADY_IN_USE",
+                  "INVALID_NAME_LENGTH",
+                  "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "BadRequestForUpdateUserPasswordResponse": {
+      "description": "Failed to update user password",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_CURRENT_PASSWORD",
+                  "INVALID_NEW_PASSWORD",
+                  "CURRENT_PASSWORD_MISMATCH"
                 ]
               }
             },
@@ -1438,6 +1532,9 @@
           },
           {
             "$ref": "#/parameters/LimitQueryParameter"
+          },
+          {
+            "$ref": "#/parameters/SearchQueryParameter"
           }
         ],
         "responses": {
@@ -1924,6 +2021,60 @@
           },
           "401": {
             "$ref": "#/responses/UnauthorizedForDeleteCompanyResponse"
+          }
+        }
+      }
+    },
+    "/user/profile/update/v1/": {
+      "put": {
+        "summary": "update user profile",
+        "description": "updates user profile details",
+        "operationId": "update_user_profile",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/UpdateUserProfileParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User Profile Updated Successfully"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequestForUpdateUserProfileResponse"
+          }
+        }
+      }
+    },
+    "/user/password/update/v1/": {
+      "put": {
+        "summary": "update user password",
+        "description": "updates user password",
+        "operationId": "update_user_password",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/UpdateUserPasswordParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User Password Updated Successfully"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequestForUpdateUserPasswordResponse"
           }
         }
       }
