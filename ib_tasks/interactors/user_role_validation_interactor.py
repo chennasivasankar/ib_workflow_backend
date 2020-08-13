@@ -1,9 +1,11 @@
 from typing import List
 
+from ib_tasks.interactors.storage_interfaces.action_storage_interface import ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
     GoFStorageInterface
+from ib_tasks.interactors.storage_interfaces.stages_storage_interface import StageStorageInterface
 
 
 class UserRoleValidationInteractor:
@@ -82,6 +84,21 @@ class UserRoleValidationInteractor:
             field_storage.check_is_user_has_write_permission_for_field(
                 field_id=field_id, user_roles=user_role_ids)
         return is_user_has_write_permission
+
+    def get_permitted_stage_ids_given_user_id(self, user_id: str,
+                                              stage_storage: StageStorageInterface) -> List[str]:
+        user_role_ids = self._get_user_role_ids(user_id)
+        permitted_stage_ids = stage_storage.get_permitted_stage_ids(user_role_ids)
+        return permitted_stage_ids
+
+    def get_permitted_action_ids_for_given_user_id(
+            self, stage_ids: List[str],
+            user_id: str,
+            action_storage: ActionStorageInterface) -> List[int]:
+        user_role_ids = self._get_user_role_ids(user_id)
+        permitted_action_ids = action_storage.get_permitted_action_ids_given_stage_ids(
+            user_role_ids, stage_ids)
+        return permitted_action_ids
 
     @staticmethod
     def _get_user_role_ids(user_id: str) -> List[str]:

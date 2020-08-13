@@ -154,3 +154,12 @@ class TaskCurrentStageDetailsDTO:
     task_display_id: str
     stage_details_dtos: List[CurrentStageDetailsDTO]
     user_has_permission: bool
+
+
+@dataclass
+class TaskDueParametersDTO:
+    task_id: int
+    user_id: str
+    due_date_time: datetime
+    reason_id: int
+    reason: str

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import List
 
-from ib_tasks.adapters.dtos import UserDetailsDTO
+from ib_tasks.adapters.dtos import UserDetailsDTO, AssigneeDetailsDTO
 
 
 @dataclass
@@ -41,4 +41,4 @@ class TaskDueDetailsDTO:
     due_date_time: datetime
     due_missed_count: int
     reason: str
-    user: UserDetailsDTO
+    user: AssigneeDetailsDTO

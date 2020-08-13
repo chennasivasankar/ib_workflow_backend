@@ -52,7 +52,7 @@ class UpdateFilterDTO(CreateFilterDTO):
 
 @dataclass
 class CreateConditionDTO:
-    field_id: int
+    field_id: str
     operator: Operators
     value: Any
 
