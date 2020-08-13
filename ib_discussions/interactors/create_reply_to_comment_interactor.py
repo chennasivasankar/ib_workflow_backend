@@ -1,6 +1,6 @@
 from typing import List
 
-from ib_discussions.interactors.dtos.dtos import MultiMediaDTO
+from ib_discussions.interactors.dtos.dtos import CreateCompleteReplyToCommentDTO
 from ib_discussions.interactors.presenter_interfaces.dtos import \
     CommentIdWithEditableStatusDTO
 from ib_discussions.interactors.presenter_interfaces.presenter_interface import \
@@ -16,19 +16,17 @@ class CreateReplyToCommentInteractor:
         self.storage = storage
 
     def reply_to_comment_wrapper(
-            self, presenter: CreateReplyPresenterInterface, user_id: str,
-            comment_id: str, comment_content: str,
-            mention_user_ids: List[str], multimedia_dtos: List[MultiMediaDTO]
+            self, presenter: CreateReplyPresenterInterface,
+            create_complete_reply_to_comment_dto: CreateCompleteReplyToCommentDTO
     ):
+        from ib_discussions.adapters.auth_service import InvalidUserIds
         from ib_discussions.exceptions.custom_exceptions import \
             CommentIdNotFound
-        from ib_discussions.adapters.auth_service import InvalidUserIds
         try:
             response = self._reply_to_comment_response(
-                comment_content=comment_content, comment_id=comment_id,
-                presenter=presenter, user_id=user_id,
-                mention_user_ids=mention_user_ids,
-                multimedia_dtos=multimedia_dtos
+                presenter=presenter,
+                create_complete_reply_to_comment_dto= \
+                    create_complete_reply_to_comment_dto
             )
         except CommentIdNotFound:
             response = presenter.response_for_comment_id_not_found()
@@ -37,16 +35,12 @@ class CreateReplyToCommentInteractor:
         return response
 
     def _reply_to_comment_response(
-            self, comment_content: str, comment_id: str,
-            presenter: CreateReplyPresenterInterface, user_id: str,
-            mention_user_ids: List[str], multimedia_dtos: List[MultiMediaDTO]):
+            self, presenter: CreateReplyPresenterInterface,
+            create_complete_reply_to_comment_dto: CreateCompleteReplyToCommentDTO):
         comment_dto, comment_with_editable_status_dto, user_profile_dtos, \
         comment_id_with_mention_user_id_dtos, comment_id_with_multimedia_dtos = \
             self.reply_to_comment(
-                user_id=user_id, comment_id=comment_id,
-                comment_content=comment_content,
-                mention_user_ids=mention_user_ids,
-                multimedia_dtos=multimedia_dtos
+                create_complete_reply_to_comment_dto=create_complete_reply_to_comment_dto
             )
 
         response = presenter.prepare_response_for_reply(
@@ -59,53 +53,66 @@ class CreateReplyToCommentInteractor:
         return response
 
     def reply_to_comment(
-            self, user_id: str, comment_id: str, comment_content: str,
-            mention_user_ids: List[str], multimedia_dtos: List[MultiMediaDTO]
+            self,
+            create_complete_reply_to_comment_dto: CreateCompleteReplyToCommentDTO
     ):
+        self._validate_comment_id_and_mention_user_ids(
+            create_complete_reply_to_comment_dto)
+
+        parent_comment_id = self.storage.get_parent_comment_id(
+            comment_id=create_complete_reply_to_comment_dto.comment_id)
+        if parent_comment_id is None:
+            parent_comment_id = create_complete_reply_to_comment_dto.comment_id
+        discussion_id = self.storage.get_discussion_id(
+            comment_id=create_complete_reply_to_comment_dto.comment_id)
+
+        reply_comment_id = self.storage.create_reply_to_comment(
+            parent_comment_id=parent_comment_id,
+            comment_content=create_complete_reply_to_comment_dto.comment_content,
+            user_id=create_complete_reply_to_comment_dto.user_id,
+            discussion_id=discussion_id
+        )
+        self.storage.add_mention_users_to_comment(
+            comment_id=reply_comment_id,
+            mention_user_ids=create_complete_reply_to_comment_dto.mention_user_ids)
+        self.storage.add_multimedia_to_comment(
+            comment_id=reply_comment_id,
+            multimedia_dtos=create_complete_reply_to_comment_dto.multimedia_dtos
+        )
+
+        comment_dto, comment_with_editable_status_dto, user_profile_dtos, \
+        comment_id_with_mention_user_id_dtos, comment_id_with_multimedia_dtos = \
+            self.get_reply_details(
+                reply_comment_id=reply_comment_id,
+                user_id=create_complete_reply_to_comment_dto.user_id
+            )
+        return comment_dto, comment_with_editable_status_dto, user_profile_dtos, \
+               comment_id_with_mention_user_id_dtos, comment_id_with_multimedia_dtos
+
+    def _validate_comment_id_and_mention_user_ids(
+            self,
+            create_complete_reply_to_comment_dto: CreateCompleteReplyToCommentDTO):
         from ib_discussions.adapters.service_adapter import ServiceAdapter
         service_adapter = ServiceAdapter()
         service_adapter.auth_service.validate_user_ids(
-            user_ids=mention_user_ids)
+            user_ids=create_complete_reply_to_comment_dto.mention_user_ids)
         is_comment_id_not_exists = not self.storage.is_comment_id_exists(
-            comment_id=comment_id
+            comment_id=create_complete_reply_to_comment_dto.comment_id
         )
-
         from ib_discussions.exceptions.custom_exceptions import \
             CommentIdNotFound
         if is_comment_id_not_exists:
             raise CommentIdNotFound
 
-        parent_comment_id = self.storage.get_parent_comment_id(
-            comment_id=comment_id)
-        if parent_comment_id is None:
-            parent_comment_id = comment_id
-        discussion_id = self.storage.get_discussion_id(
-            comment_id=comment_id)
-
-        reply_comment_id = self.storage.create_reply_to_comment(
-            parent_comment_id=parent_comment_id,
-            comment_content=comment_content,
-            user_id=user_id, discussion_id=discussion_id
-        )
-        self.storage.add_mention_users_to_comment(
-            comment_id=reply_comment_id, mention_user_ids=mention_user_ids)
-        self.storage.add_multimedia_to_comment(
-            comment_id=reply_comment_id, multimedia_dtos=multimedia_dtos
-        )
-
-        comment_dto, comment_with_editable_status_dto, user_profile_dtos, \
-        comment_id_with_mention_user_id_dtos, comment_id_with_multimedia_dtos = \
-            self.get_reply_details(reply_comment_id, user_id)
-        return comment_dto, comment_with_editable_status_dto, user_profile_dtos, \
-               comment_id_with_mention_user_id_dtos, comment_id_with_multimedia_dtos
-
     def get_reply_details(self, reply_comment_id: str, user_id: str):
         comment_dto = self.storage.get_comment_details_dto(
             comment_id=reply_comment_id)
+        comment_dtos = [comment_dto]
 
         comment_with_editable_status_dtos, user_profile_dtos, \
         comment_id_with_mention_user_id_dtos, comment_id_with_multimedia_dtos = \
-            self.get_replies_for_comment([comment_dto], user_id)
+            self.get_replies_for_comment(
+                reply_dtos=comment_dtos, user_id=user_id)
 
         return comment_dto, comment_with_editable_status_dtos[0], \
                user_profile_dtos, comment_id_with_mention_user_id_dtos, \

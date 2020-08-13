@@ -10,14 +10,6 @@ REQUEST_BODY_JSON = """
 """
 
 
-RESPONSE_404_JSON = """
-{
-    "response": "string",
-    "http_status_code": 1,
-    "res_status": "ENTITY_ID_NOT_FOUND"
-}
-"""
-
 RESPONSE_400_JSON = """
 {
     "response": "string",

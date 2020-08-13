@@ -163,7 +163,7 @@ class GetDiscussionInteractor:
         id_discussion_owner_can_edit = discussion_dto.user_id == user_id
         if id_discussion_owner_can_edit:
             is_editable = True
-        from ib_iam.interactors.presenter_interfaces.dtos import \
+        from ib_discussions.interactors.presenter_interfaces.dtos import \
             DiscussionIdWithEditableStatusDTO
         discussion_id_with_editable_status_dto = \
             DiscussionIdWithEditableStatusDTO(

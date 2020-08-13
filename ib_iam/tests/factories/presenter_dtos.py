@@ -1,7 +1,9 @@
 import factory
 
 from ib_iam.interactors.presenter_interfaces.dtos import \
-    ListOfCompleteUsersDTO, DiscussionIdWithEditableStatusDTO
+    ListOfCompleteUsersDTO
+from ib_discussions.interactors.presenter_interfaces.dtos import \
+    DiscussionIdWithEditableStatusDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO
 
 
