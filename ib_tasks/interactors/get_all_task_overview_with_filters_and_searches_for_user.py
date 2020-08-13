@@ -24,6 +24,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
+from ib_tasks.interactors.user_role_validation_interactor import UserRoleValidationInteractor
 
 
 @dataclass
@@ -93,13 +94,10 @@ class GetTasksOverviewForUserInteractor:
         return all_tasks_overview_details_dto
 
     def _get_allowed_stage_ids_of_user(self, user_id: str) -> List[str]:
-        from ib_tasks.interactors.get_allowed_stage_ids_of_user_interactor \
-            import \
-            GetAllowedStageIdsOfUserInteractor
-        get_allowed_stage_ids_of_user_interactor \
-            = GetAllowedStageIdsOfUserInteractor(storage=self.stage_storage)
-        stage_ids = get_allowed_stage_ids_of_user_interactor. \
-            get_allowed_stage_ids_of_user(user_id=user_id)
+        user_interactor = UserRoleValidationInteractor()
+        stage_ids = user_interactor. \
+            get_permitted_stage_ids_given_user_id(user_id=user_id,
+                                                  stage_storage=self.stage_storage)
         return stage_ids
 
     def _get_task_with_complete_stage_details_dtos(

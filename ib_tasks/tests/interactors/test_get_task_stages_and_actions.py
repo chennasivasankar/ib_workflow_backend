@@ -13,6 +13,7 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_tasks.tests.common_fixtures.adapters.roles_service import \
     get_user_role_ids
+from ib_tasks.tests.common_fixtures.interactors import prepare_get_permitted_action_ids
 from ib_tasks.tests.factories.storage_dtos import StageDetailsDTOFactory, \
     StageActionDetailsDTOFactory
 
@@ -72,6 +73,8 @@ class TestGetTaskStagesAndActions:
         task_storage = create_autospec(StorageInterface)
         storage.get_task_stages.return_value = [
             "stage_id_0", "stage_id_1", "stage_id_2"]
+        action_ids = [1, 2, 3, 4]
+        prepare_get_permitted_action_ids(mocker, action_ids=action_ids)
         action_storage.get_actions_details.return_value = get_stage_actions
         storage.get_stage_complete_details.return_value = get_stage_details
         interactor = GetTaskStagesAndActions(storage=storage,
@@ -105,6 +108,7 @@ class TestGetTaskStagesAndActions:
         action_storage.get_actions_details.return_value = get_stage_actions
         storage.get_task_stages.return_value = [
             "stage_id_0", "stage_id_1", "stage_id_2"]
+        prepare_get_permitted_action_ids(mocker, action_ids=[])
         action_storage.get_actions_details.return_value = []
         storage.get_stage_complete_details.return_value = get_stage_details
         interactor = GetTaskStagesAndActions(storage=storage,
@@ -133,6 +137,8 @@ class TestGetTaskStagesAndActions:
         user_roles = get_user_roles
         user_roles_mock = get_user_role_ids(mocker)
         user_roles_mock.return_value = user_roles
+        action_ids = [1, 2]
+        prepare_get_permitted_action_ids(mocker, action_ids=action_ids)
         storage.get_task_stages.return_value = ["stage_id_0"]
         action_storage.get_actions_details.return_value = get_stage_actions_for_one_stage
         storage.get_stage_complete_details.return_value = get_stage_details_for_one_stage
@@ -161,6 +167,7 @@ class TestGetTaskStagesAndActions:
         user_roles_mock.return_value = user_roles
         storage.get_task_stages.return_value = ["stage_id_0", "stage_id_1",
                                                 "stage_id_2"]
+        prepare_get_permitted_action_ids(mocker, action_ids=[])
         action_storage.get_actions_details.return_value = []
         storage.get_stage_complete_details.return_value = get_stage_details
         interactor = GetTaskStagesAndActions(storage=storage,
@@ -189,6 +196,7 @@ class TestGetTaskStagesAndActions:
         task_storage = create_autospec(StorageInterface)
         task_storage.validate_task_id.return_value = True
         storage.get_task_stages.return_value = ["stage_id_0"]
+        prepare_get_permitted_action_ids(mocker, action_ids=[])
         action_storage.get_actions_details.return_value = []
         storage.get_stage_complete_details.return_value = get_stage_details
         interactor = GetTaskStagesAndActions(storage=storage,

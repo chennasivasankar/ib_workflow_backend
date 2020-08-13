@@ -764,6 +764,26 @@
       "schema": {
         "$ref": "#/definitions/CompanyWithEmployeeIds"
       }
+    },
+    "RefreshAuthTokenParameter": {
+      "name": "RefreshTokenParameter",
+      "in": "body",
+      "description": "refresh token parameter",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string"
+          },
+          "refresh_token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "access_token",
+          "refresh_token"
+        ]
+      }
     }
   },
   "responses": {
@@ -1489,6 +1509,79 @@
           }
         ]
       }
+    },
+    "RefreshAuthTokensNotFoundResponse": {
+      "description": "refresh tokens not found Response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "ACCESS_TOKEN_NOT_FOUND",
+                  "REFRESH_TOKEN_NOT_FOUND",
+                  "USER_ACCOUNT_NOT_FOUND"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "RefreshAuthTokensBadRequestResponse": {
+      "description": "refresh tokens bad request Response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "REFRESH_TOKEN_HAS_EXPIRED"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "RefreshAuthTokensSuccessResponse": {
+      "description": "Success Response for refresh tokens",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string"
+          },
+          "refresh_token": {
+            "type": "string"
+          },
+          "expires_in_seconds": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "access_token",
+          "refresh_token",
+          "expires_in_seconds"
+        ]
+      }
     }
   },
   "paths": {
@@ -2075,6 +2168,29 @@
           },
           "400": {
             "$ref": "#/responses/BadRequestForUpdateUserPasswordResponse"
+          }
+        }
+      }
+    },
+    "/refresh_auth_tokens/v1/": {
+      "post": {
+        "summary": "Refresh Auth Tokens",
+        "operationId": "refresh_auth_tokens",
+        "description": "Get refresh auth tokens for given access token and refresh token",
+        "parameters": [
+          {
+            "$ref": "#/parameters/RefreshAuthTokenParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/RefreshAuthTokensSuccessResponse"
+          },
+          "404": {
+            "$ref": "#/responses/RefreshAuthTokensNotFoundResponse"
+          },
+          "400": {
+            "$ref": "#/responses/RefreshAuthTokensBadRequestResponse"
           }
         }
       }

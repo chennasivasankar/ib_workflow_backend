@@ -3,7 +3,6 @@ from typing import List
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.exceptions.custom_exceptions import UserIsNotAdmin, \
     InvalidOffsetValue, InvalidLimitValue, InvalidUserId, RoleIdsAreInvalid
-from ib_iam.interactors.dtos.dtos import SearchQueryAndTypeDTO
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.dtos \
     import ListOfCompleteUsersDTO
@@ -21,13 +20,13 @@ class GetUsersDetailsInteractor(ValidationMixin):
     def get_users_details_wrapper(
             self, user_id: str, pagination_dto: PaginationDTO,
             presenter: GetUsersListPresenterInterface,
-            search_query_and_type_dto: SearchQueryAndTypeDTO
+            name_search_query: str
     ):
         try:
             complete_user_details_dtos = self.get_users_details(
                 user_id=user_id, offset=pagination_dto.offset,
                 limit=pagination_dto.limit,
-                search_query_and_type_dto=search_query_and_type_dto)
+                name_search_query=name_search_query)
             response = presenter.response_for_get_users(
                 complete_user_details_dtos)
         except UserIsNotAdmin:
@@ -42,13 +41,13 @@ class GetUsersDetailsInteractor(ValidationMixin):
 
     def get_users_details(
             self, user_id: str, offset: int, limit: int,
-            search_query_and_type_dto: SearchQueryAndTypeDTO
+            name_search_query: str
     ) -> ListOfCompleteUsersDTO:
         self._validate_is_user_admin(user_id=user_id)
         self._validate_pagination_details(offset=offset, limit=limit)
         user_dtos = self.user_storage.get_users_who_are_not_admins(
             offset=offset, limit=limit,
-            search_query_and_type_dto=search_query_and_type_dto
+            name_search_query=name_search_query
         )
         total_count = self.user_storage.get_total_count_of_users_for_query()
         user_ids = [user_dto.user_id for user_dto in user_dtos]
