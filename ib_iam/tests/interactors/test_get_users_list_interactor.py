@@ -420,3 +420,37 @@ class TestGetUsersDetailsInteractor:
 
         # Assert
         assert response == valid_user_ids
+
+    def test_get_user_details_for_given_role_ids_based_on_query(
+            self, storage_mock, mocker):
+        # Arrange
+        user_role_ids = ["role1", "role2", "role3"]
+        expected_user_ids = ['user_1', 'user_2']
+
+        from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
+        search_query_with_pagination_dto = SearchQueryWithPaginationDTO(
+            offset=1, limit=0, search_query="iB"
+        )
+
+        storage_mock.get_user_ids_for_given_role_ids.return_value = \
+            expected_user_ids
+        storage_mock.get_user_ids_based_on_given_query.return_value = \
+            expected_user_ids
+        from ib_iam.tests.common_fixtures.adapters.user_service \
+            import get_users_adapter_mock
+        get_users_adapter_mock(
+            mocker=mocker,
+            user_profile_dtos=user_profile_dtos
+        )
+
+        interactor = GetUsersDetailsInteractor(user_storage=storage_mock)
+
+        # Act
+        response = \
+            interactor.get_user_details_for_given_role_ids_based_on_query(
+                role_ids=user_role_ids,
+                search_query_with_pagination_dto=
+                search_query_with_pagination_dto)
+
+        # Assert
+        assert response == user_profile_dtos

@@ -57,7 +57,7 @@ class GetUsersDetailsInteractor(ValidationMixin):
     def get_user_details_for_given_role_ids_based_on_query(
             self, role_ids: List[str],
             search_query_with_pagination_dto: SearchQueryWithPaginationDTO
-            ):
+    ) -> List[UserProfileDTO]:
         self._validate_pagination_details(
             offset=search_query_with_pagination_dto.offset,
             limit=search_query_with_pagination_dto.limit)
@@ -75,7 +75,7 @@ class GetUsersDetailsInteractor(ValidationMixin):
                 search_query_with_pagination_dto=
                 search_query_with_pagination_dto)
         user_profile_dtos = \
-            self._get_basic_user_dtos(user_ids_based_on_query)
+            self._get_user_profile_dtos(user_ids_based_on_query)
 
         return user_profile_dtos
 
@@ -188,10 +188,3 @@ class GetUsersDetailsInteractor(ValidationMixin):
             role_ids=role_ids)
         if len(role_ids) != len(valid_role_ids):
             raise RoleIdsAreInvalid
-
-    @staticmethod
-    def _get_basic_user_dtos(user_ids) -> List[UserProfileDTO]:
-        from ib_iam.adapters.user_service import UserService
-        user_service = UserService()
-        user_dtos = user_service.get_basic_user_dtos(user_ids=user_ids)
-        return user_dtos
