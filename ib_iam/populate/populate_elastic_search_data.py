@@ -5,7 +5,6 @@ from ib_iam.storages.elastic_storage_implementation import ElasticStorageImpleme
 
 
 def populate_data():
-    ElasticUser.init()
     populate_elastic_search_user_data()
     populate_elastic_search_country_data()
     populate_elastic_search_state_data()
@@ -19,7 +18,7 @@ def populate_elastic_search_user_data():
 
     for user_obj in user_objs:
         elastic_user_id = \
-            storage.create_elastic_user(user_id=user_obj.id, name=user_obj.name)
+            storage.create_elastic_user(user_id=user_obj.user_id, name=user_obj.name)
         storage.create_elastic_user_intermediary(
             elastic_user_id=elastic_user_id, user_id=user_obj.id)
 

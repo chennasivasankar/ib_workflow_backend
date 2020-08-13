@@ -1,6 +1,6 @@
 from typing import List
 
-from ib_tasks.adapters.dtos import UserDetailsDTO
+from ib_tasks.adapters.dtos import AssigneeDetailsDTO
 from ib_tasks.adapters.service_adapter import get_service_adapter
 from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
@@ -50,10 +50,11 @@ class SearchableFieldValuesInteractor:
             user_ids = adapter.search_service.get_search_user_ids(
                 offset=offset, limit=limit, search_query=search_query
             )
-            user_dtos = adapter.auth_service.get_user_details(user_ids=user_ids)
+            user_dtos = adapter.assignee_details_service\
+                .get_assignees_details_dtos(assignee_ids=user_ids)
             return [
                 SearchableFieldDetailDTO(
-                    id=user_dto.user_id,
+                    id=user_dto.assignee_id,
                     name=self._get_name_and_profile_pic(user_dto)
                 ) for user_dto in user_dtos
             ]
@@ -74,12 +75,12 @@ class SearchableFieldValuesInteractor:
             )
 
     @staticmethod
-    def _get_name_and_profile_pic(user_dto: UserDetailsDTO):
+    def _get_name_and_profile_pic(user_dto: AssigneeDetailsDTO):
 
         import json
 
         return json.dumps({
-            "name": user_dto.user_name,
+            "name": user_dto.name,
             "profile_pic_url": user_dto.profile_pic_url
         })
 

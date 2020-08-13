@@ -22,7 +22,7 @@ class ServiceAdapter:
         return AssigneeDetailsService()
 
     @property
-    def elastic_service(self):
+    def search_service(self):
         from .search_service import SearchService
         return SearchService()
 
