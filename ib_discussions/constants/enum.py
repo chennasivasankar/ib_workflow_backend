@@ -31,6 +31,6 @@ class OrderByEnum(Enum):
     DESC = "DESC"
 
 
-class MultiMediaFormatEnum(Enum):
+class MultimediaFormat(Enum):
     IMAGE = "IMAGE"
     VIDEO = "VIDEO"
