@@ -76,10 +76,10 @@ class AddNewUserInteractor(ValidationMixin):
         self.user_storage.add_roles_to_the_user(
             user_id=new_user_id, role_ids=role_obj_ids)
         elastic_user_id = self.elastic_storage.create_elastic_user(
-            user_id=user_id, name=name
+            user_id=new_user_id, name=name
         )
         self.elastic_storage.create_elastic_user_intermediary(
-            elastic_user_id=elastic_user_id, user_id=user_id
+            elastic_user_id=elastic_user_id, user_id=new_user_id
         )
 
     def _validate_add_new_user_details(

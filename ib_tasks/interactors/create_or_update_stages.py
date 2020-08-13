@@ -143,7 +143,7 @@ class CreateOrUpdateStagesInteractor:
 
     def _validate_stage_display_logic(self, stages_details):
         list_of_stage_display_logics = [
-            stage.stage_id for stage in stages_details
+            stage.stage_display_logic for stage in stages_details
             if not stage.stage_display_logic == ""
         ]
 
@@ -166,7 +166,7 @@ class CreateOrUpdateStagesInteractor:
             list(set(list_of_status_ids)))
 
         for attribute in list_of_logic_attributes:
-            if attribute.variable not in valid_status_ids:
+            if attribute.variable not in valid_status_ids and attribute.variable != "":
                 invalid_stage_display_logic_stages.append(attribute.stage)
 
         if invalid_stage_display_logic_stages:
