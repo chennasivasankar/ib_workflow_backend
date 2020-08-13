@@ -96,8 +96,11 @@ class ActionDTOFactory(factory.Factory):
         model = ActionDTO
 
     action_id = factory.Sequence(lambda n: (n + 1))
+    action_type = factory.Sequence(lambda n: "action_type_%d" % (n + 1))
     name = factory.Sequence(lambda n: 'name_%d' % (n + 1))
-    stage_id = factory.Sequence(lambda n: 'stage_%d' % (n + 1))
+    transition_template_id = factory.Sequence(
+        lambda n: 'template_id_%d' % (n + 1))
+    stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n + 1))
     button_text = factory.Sequence(lambda n: 'button_text_%d' % (n + 1))
     button_color = None
 

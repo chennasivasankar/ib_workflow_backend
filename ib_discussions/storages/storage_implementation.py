@@ -17,35 +17,10 @@ from ib_discussions.interactors.storage_interfaces.storage_interface import \
 
 
 class StorageImplementation(StorageInterface):
-    def validate_entity_id(self, entity_id: str) -> Optional[EntityIdNotFound]:
-        from ib_discussions.models import Entity
-        try:
-            Entity.objects.get(id=entity_id)
-        except Entity.DoesNotExist:
-            raise EntityIdNotFound
-        return
-
-    def validate_entity_type_for_entity_id(
-            self, entity_id: str, entity_type: EntityType
-    ) -> Optional[InvalidEntityTypeForEntityId]:
-        from ib_discussions.models import Entity
-        try:
-            entity_object = Entity.objects.get(id=entity_id)
-        except Entity.DoesNotExist:
-            raise EntityIdNotFound
-        is_invalid_entity_type_for_entity_object \
-            = entity_object.entity_type != entity_type
-        if is_invalid_entity_type_for_entity_object:
-            raise InvalidEntityTypeForEntityId
-        return
 
     def get_discussion_set_id_if_exists(
             self, entity_id: str, entity_type: EntityType
     ) -> Optional[str]:
-        # self.validate_entity_id(entity_id=entity_id)
-        # self.validate_entity_type_for_entity_id(
-        #     entity_id=entity_id, entity_type=entity_type
-        # )
         from ib_discussions.models import DiscussionSet
         try:
             discussion_set_object = DiscussionSet.objects.get(

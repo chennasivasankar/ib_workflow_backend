@@ -56,33 +56,6 @@ class TestStorageImplementation:
         return storage
 
     @pytest.mark.django_db
-    def test_validate_entity_id(self, create_entity_objects,
-                                storage_implementation):
-        # Arrange
-        entity_id = "13be920b-7b4c-49e7-8adb-41a0c18da848"
-
-        # Assert
-        from ib_discussions.exceptions.custom_exceptions import EntityIdNotFound
-        with pytest.raises(EntityIdNotFound):
-            storage_implementation.validate_entity_id(entity_id=entity_id)
-
-    @pytest.mark.django_db
-    def test_validate_entity_type_for_entity_id(self, create_entity_objects,
-                                                storage_implementation):
-        # Arrange
-        entity_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
-        from ib_discussions.constants.enum import EntityType
-        entity_type = EntityType.COLUMN.value
-
-        # Assert
-        from ib_discussions.exceptions.custom_exceptions import \
-            InvalidEntityTypeForEntityId
-        with pytest.raises(InvalidEntityTypeForEntityId):
-            storage_implementation.validate_entity_type_for_entity_id(
-                entity_id=entity_id, entity_type=entity_type
-            )
-
-    @pytest.mark.django_db
     def test_get_discussion_set_id_if_exists_return_id(
             self, create_entity_objects, create_discussion_set_objects,
             storage_implementation):

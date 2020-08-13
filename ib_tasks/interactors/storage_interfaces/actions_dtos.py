@@ -8,6 +8,8 @@ from ib_tasks.constants.enum import ValidationType, ActionTypes
 class ActionDTO:
     action_id: int
     name: str
+    action_type: Optional[ActionTypes]
+    transition_template_id: str
     stage_id: str
     button_text: str
     button_color: Optional[str]

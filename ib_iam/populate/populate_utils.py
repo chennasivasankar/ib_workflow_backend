@@ -11,6 +11,14 @@ def get_company_id(company_name):
     return company_id
 
 
+def populate():
+    populate_admin_users()
+    populate_companies()
+    populate_teams()
+    populate_roles()
+    populate_test_users()
+
+
 def populate_admin_users():
     admin_users = [
         {
@@ -227,7 +235,11 @@ def populate_test_users():
         team_ids = get_team_ids(team_names=user["teams"])
         company_id = get_company_id(company_name=user["company_name"])
         user_storage = UserStorageImplementation()
-        interactor = AddNewUserInteractor(user_storage=user_storage)
+        from ib_iam.storages.elastic_storage_implementation import \
+            ElasticStorageImplementation
+        elastic_storage = ElasticStorageImplementation()
+        interactor = AddNewUserInteractor(
+            user_storage=user_storage, elastic_storage=elastic_storage)
 
         complete_user_details_dto = UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO(
             name=user["name"], email=user["email"], team_ids=team_ids,
