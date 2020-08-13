@@ -155,3 +155,35 @@ class SaveAndActOnATaskPresenterInterface(abc.ABC):
     @abc.abstractmethod
     def raise_due_time_has_expired_for_today(self, err):
         pass
+
+    @abc.abstractmethod
+    def raise_exception_for_invalid_present_actions(self, error_obj):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_key_error(self):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_custom_logic_function_exception(self):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_path_not_found_exception(self, path_name):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_method_not_found_exception(self, method_name):
+        pass
+
+    @abc.abstractmethod
+    def raise_duplicate_stage_ids_not_valid(self, duplicate_stage_ids):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_stage_ids_exception(self, invalid_stage_ids):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_task_display_id(self, err):
+        pass

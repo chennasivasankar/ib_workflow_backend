@@ -1,4 +1,8 @@
-from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
+from ib_tasks.exceptions.action_custom_exceptions import \
+    InvalidActionException, InvalidPresentStageAction, InvalidKeyError, \
+    InvalidCustomLogicException
+from ib_tasks.exceptions.custom_exceptions import InvalidModulePathFound, \
+    InvalidMethodFound
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     InvalidDueTimeFormat, StartDateIsAheadOfDueDate, DueTimeHasExpiredForToday
 from ib_tasks.exceptions.field_values_custom_exceptions import \
@@ -17,9 +21,10 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
     UserNeedsGoFWritablePermission, UserNeedsFieldWritablePermission, \
     UserActionPermissionDenied
 from ib_tasks.exceptions.stage_custom_exceptions import \
-    StageIdsWithInvalidPermissionForAssignee
+    StageIdsWithInvalidPermissionForAssignee, DuplicateStageIds, \
+    InvalidDbStageIdsListException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
-    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
+    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskDisplayId
 from ib_tasks.interactors.create_or_update_task.update_task_interactor import \
     UpdateTaskInteractor
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
@@ -82,6 +87,8 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
     ):
         try:
             return self._prepare_save_and_act_response(presenter, task_dto)
+        except InvalidTaskDisplayId as err:
+            return presenter.raise_invalid_task_display_id(err)
         except InvalidActionException as err:
             return presenter.raise_invalid_action_id(err)
         except InvalidTaskException as err:
@@ -158,6 +165,25 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         except UserActionPermissionDenied as err:
             return presenter.raise_exception_for_user_action_permission_denied(
                 error_obj=err)
+        except InvalidPresentStageAction as err:
+            return presenter.raise_exception_for_invalid_present_actions(
+                error_obj=err)
+        except InvalidKeyError:
+            return presenter.raise_invalid_key_error()
+        except InvalidCustomLogicException:
+            return presenter.raise_invalid_custom_logic_function_exception()
+        except InvalidModulePathFound as exception:
+            return presenter.raise_invalid_path_not_found_exception(
+                path_name=exception.path_name)
+        except InvalidMethodFound as exception:
+            return presenter.raise_invalid_method_not_found_exception(
+                method_name=exception.method_name)
+        except DuplicateStageIds as exception:
+            return presenter.raise_duplicate_stage_ids_not_valid(
+                duplicate_stage_ids=exception.duplicate_stage_ids)
+        except InvalidDbStageIdsListException as exception:
+            return presenter.raise_invalid_stage_ids_exception(
+                invalid_stage_ids=exception.invalid_stage_ids)
         except StageIdsWithInvalidPermissionForAssignee as err:
             return presenter. \
                 raise_stage_ids_with_invalid_permission_for_assignee_exception(
@@ -211,8 +237,8 @@ class SaveAndActOnATaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             action_storage=self.action_storage, action_id=task_dto.action_id,
             storage=self.storage, gof_storage=self.create_task_storage,
             field_storage=self.field_storage, stage_storage=self.stage_storage,
-            task_stage_storage=self.task_stage_storage
-        )
+            task_stage_storage=self.task_stage_storage,
+            elasticsearch_storage=self.elastic_storage)
         act_on_task_interactor.user_action_on_task(task_id=task_dto.task_id)
         from ib_tasks.interactors.get_task_current_stages_interactor import \
             GetTaskCurrentStagesInteractor

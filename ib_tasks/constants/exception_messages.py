@@ -279,3 +279,8 @@ INVALID_TASK_DISPLAY_ID = (
     "{} is invalid task_id send valid task_id",
     "INVALID_TASK_ID"
 )
+
+INVALID_PRESENT_STAGE_ACTION = (
+    "{} is invalid present stage action",
+    "INVALID_PRESENT_STAGE_ACTION"
+)

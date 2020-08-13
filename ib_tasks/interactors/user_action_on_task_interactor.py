@@ -8,7 +8,8 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
     UserActionPermissionDenied, UserBoardPermissionDenied
 from ib_tasks.exceptions.stage_custom_exceptions import DuplicateStageIds, \
     InvalidDbStageIdsListException, StageIdsWithInvalidPermissionForAssignee
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
+    InvalidTaskDisplayId
 from ib_tasks.interactors \
     .call_action_logic_function_and_update_task_status_variables_interactor \
     import CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor
@@ -93,6 +94,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             task_id = self.get_task_id_for_task_display_id(task_display_id)
             task_complete_details_dto, task_current_stage_details_dto = \
                 self.user_action_on_task(task_id)
+        except InvalidTaskDisplayId as err:
+            return presenter.raise_invalid_task_display_id(err)
         except InvalidTaskException as err:
             return presenter.raise_exception_for_invalid_task(error_obj=err)
         except InvalidBoardIdException as err:

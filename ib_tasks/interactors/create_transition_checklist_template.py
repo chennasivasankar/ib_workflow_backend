@@ -21,10 +21,12 @@ from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId, \
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskIdException, \
     InvalidTransitionChecklistTemplateId, InvalidGoFsOfTaskTemplate, \
-    InvalidFieldsOfGoF
+    InvalidFieldsOfGoF, InvalidTaskDisplayId
 from ib_tasks.interactors.create_or_update_task \
     .template_gofs_fields_base_validations import \
     TemplateGoFsFieldsBaseValidationsInteractor
+from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
+    GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.presenter_interfaces \
     .create_transition_checklist_presenter_interface import \
     CreateTransitionChecklistTemplatePresenterInterface
@@ -50,10 +52,12 @@ from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     TaskTemplateStorageInterface
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO
 from ib_tasks.interactors.task_template_dtos import \
-    CreateTransitionChecklistTemplateDTO
+    CreateTransitionChecklistTemplateDTO, \
+    CreateTransitionChecklistTemplateWithTaskDisplayIdDTO
 
 
-class CreateTransitionChecklistTemplateInteractor:
+class CreateTransitionChecklistTemplateInteractor(
+    GetTaskIdForTaskDisplayIdMixin):
 
     def __init__(self,
                  create_or_update_task_storage:
@@ -74,13 +78,16 @@ class CreateTransitionChecklistTemplateInteractor:
 
     def create_transition_checklist_wrapper(
             self,
-            transition_template_dto: CreateTransitionChecklistTemplateDTO,
+            transition_template_dto:
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTO,
             presenter: CreateTransitionChecklistTemplatePresenterInterface
     ):
         try:
             return self._prepare_create_transition_checklist_response(
                 transition_template_dto, presenter
             )
+        except InvalidTaskDisplayId as err:
+            return presenter.raise_invalid_task_display_id(err)
         except InvalidTaskIdException as err:
             return presenter.raise_invalid_task_id(err)
         except InvalidTransitionChecklistTemplateId as err:
@@ -162,9 +169,22 @@ class CreateTransitionChecklistTemplateInteractor:
 
     def _prepare_create_transition_checklist_response(
             self,
-            transition_template_dto: CreateTransitionChecklistTemplateDTO,
+            transition_template_dto:
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTO,
             presenter: CreateTransitionChecklistTemplatePresenterInterface
     ):
+        task_id = self.get_task_id_for_task_display_id(
+            transition_template_dto.task_display_id)
+        transition_template_dto = CreateTransitionChecklistTemplateDTO(
+            task_id=task_id,
+            created_by_id=transition_template_dto.created_by_id,
+            transition_checklist_template_id=transition_template_dto
+                .transition_checklist_template_id,
+            action_id=transition_template_dto.action_id,
+            stage_id=transition_template_dto.stage_id,
+            transition_checklist_gofs=transition_template_dto
+                .transition_checklist_gofs
+        )
         self.create_transition_checklist(transition_template_dto)
         response = presenter.get_create_transition_checklist_response()
         return response

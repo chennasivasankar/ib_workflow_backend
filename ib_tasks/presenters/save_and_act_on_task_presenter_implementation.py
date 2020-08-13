@@ -35,6 +35,88 @@ class SaveAndActOnATaskPresenterImplementation(
     SaveAndActOnATaskPresenterInterface, HTTPResponseMixin
 ):
 
+    def raise_invalid_task_display_id(self, err):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_TASK_DISPLAY_ID
+        message = INVALID_TASK_DISPLAY_ID[0].format(err.task_display_id)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_TASK_DISPLAY_ID[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_key_error(self):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_KEY_ERROR
+        data = {
+            "response": INVALID_KEY_ERROR[0],
+            "http_status_code": 400,
+            "res_status": INVALID_KEY_ERROR[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_custom_logic_function_exception(self):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_CUSTOM_LOGIC
+        data = {
+            "response": INVALID_CUSTOM_LOGIC[0],
+            "http_status_code": 400,
+            "res_status": INVALID_CUSTOM_LOGIC[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_path_not_found_exception(self, path_name):
+        from ib_tasks.constants.exception_messages import \
+            PATH_NOT_FOUND
+        data = {
+            "response": PATH_NOT_FOUND[0],
+            "http_status_code": 400,
+            "res_status": PATH_NOT_FOUND[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_method_not_found_exception(self, method_name):
+        from ib_tasks.constants.exception_messages import \
+            METHOD_NOT_FOUND
+        data = {
+            "response": METHOD_NOT_FOUND[0],
+            "http_status_code": 400,
+            "res_status": METHOD_NOT_FOUND[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_duplicate_stage_ids_not_valid(self, duplicate_stage_ids):
+        from ib_tasks.constants.exception_messages import \
+            DUPLICATE_STAGE_IDS
+        data = {
+            "response": DUPLICATE_STAGE_IDS[0].format(duplicate_stage_ids),
+            "http_status_code": 400,
+            "res_status": DUPLICATE_STAGE_IDS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_stage_ids_exception(self, invalid_stage_ids):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_STAGE_IDS
+        data = {
+            "response": INVALID_STAGE_IDS[0].format(invalid_stage_ids),
+            "http_status_code": 400,
+            "res_status": INVALID_STAGE_IDS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_exception_for_invalid_present_actions(self, error_obj):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_PRESENT_STAGE_ACTION
+        message = INVALID_PRESENT_STAGE_ACTION[0].format(error_obj.action_id)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_PRESENT_STAGE_ACTION[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
     def raise_invalid_due_time_format(self, err: InvalidDueTimeFormat):
         from ib_tasks.constants.exception_messages import \
             INVALID_DUE_TIME_FORMAT

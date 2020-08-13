@@ -1,7 +1,7 @@
 import abc
 
-from ib_tasks.interactors.presenter_interfaces.dtos import TaskCompleteDetailsDTO
-
+from ib_tasks.interactors.presenter_interfaces.dtos import \
+    TaskCompleteDetailsDTO
 from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 
 
@@ -65,4 +65,8 @@ class PresenterInterface(abc.ABC):
     @abc.abstractmethod
     def raise_stage_ids_with_invalid_permission_for_assignee_exception(self,
                                                                        invalid_stage_ids):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_task_display_id(self, err):
         pass
