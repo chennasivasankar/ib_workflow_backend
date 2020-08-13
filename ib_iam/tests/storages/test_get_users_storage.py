@@ -1,10 +1,12 @@
+import uuid
+
+import factory
 import pytest
 
 from ib_iam.storages.user_storage_implementation \
     import UserStorageImplementation
 
-from ib_iam.tests.common_fixtures.storages import \
-    user_not_admin, users_company, users_team, users_role
+
 
 class TestGetUsers:
     @pytest.fixture()
@@ -165,24 +167,19 @@ class TestGetUsers:
             )
             for user_dict in users_list
         ]
-        from ib_iam.constants.enums import SearchType
-        from ib_iam.interactors.dtos.dtos import SearchQueryAndTypeDTO
-        search_query_and_type_dto = SearchQueryAndTypeDTO(
-            search_query="s",
-            search_type=SearchType.USER.value
-        )
+        name_search_query = "s"
         storage = UserStorageImplementation()
 
         # Act
         output = storage.get_users_who_are_not_admins(
-            offset=0, limit=10,
-            search_query_and_type_dto=search_query_and_type_dto)
+            offset=0, limit=10, name_search_query=name_search_query)
         assert output == expected_output
 
     @pytest.mark.django_db
     def test_get_users_with_empty_search_query(
             self, prepare_create_users_setup):
         # Arrange
+        name_search_query = ""
         users_list = [{
             'user_id': '1',
             'is_admin': False,
@@ -209,18 +206,11 @@ class TestGetUsers:
             )
             for user_dict in users_list
         ]
-        from ib_iam.constants.enums import SearchType
-        from ib_iam.interactors.dtos.dtos import SearchQueryAndTypeDTO
-        search_query_and_type_dto = SearchQueryAndTypeDTO(
-            search_query="",
-            search_type=SearchType.USER.value
-        )
         storage = UserStorageImplementation()
 
         # Act
         output = storage.get_users_who_are_not_admins(
-            offset=0, limit=10,
-            search_query_and_type_dto=search_query_and_type_dto)
+            offset=0, limit=10, name_search_query=name_search_query)
         assert output == expected_output
 
     @pytest.mark.django_db
@@ -302,3 +292,165 @@ class TestGetUsers:
         from ib_iam.models import UserDetails
         user_object = UserDetails.objects.get(user_id=user_id)
         assert user_object.name == expected_name
+
+    @pytest.mark.django_db
+    def test_get_all_distinct_roles(self):
+        # Arrange
+        from ib_iam.tests.factories.models import RoleFactory, UserRoleFactory
+        RoleFactory.reset_sequence()
+        UserRoleFactory.reset_sequence()
+
+        expected_user_role_ids = [
+            uuid.UUID('b8cb1520-279a-44bb-95bf-bbca3aa057ba'),
+            uuid.UUID('b8cb1520-279a-44bb-95bf-bbca3aa057bb')
+        ]
+
+        RoleFactory.create_batch(
+            size=2, id=factory.Iterator(expected_user_role_ids)
+        )
+        UserRoleFactory.create_batch(size=2)
+
+        storage = UserStorageImplementation()
+
+        # Act
+        output = storage.get_all_distinct_roles()
+
+        # Assert
+        assert output == expected_user_role_ids
+
+    @pytest.mark.django_db
+    def test_get_all_distinct_roles_when_no_roles_exists_returns_empty_list(
+            self):
+        # Arrange
+        expected_user_role_ids = []
+        storage = UserStorageImplementation()
+
+        # Act
+        output = storage.get_all_distinct_roles()
+
+        # Assert
+        assert output == expected_user_role_ids
+
+    @pytest.mark.django_db
+    def test_get_user_ids_for_given_role_ids_when_exists_returns_user_ids(
+            self):
+        # Arrange
+        from ib_iam.tests.factories.models import RoleFactory, UserRoleFactory
+        RoleFactory.reset_sequence()
+        UserRoleFactory.reset_sequence()
+
+        user_role_ids = [
+            'b8cb1520-279a-44bb-95bf-bbca3aa057ba',
+            'b8cb1520-279a-44bb-95bf-bbca3aa057bb'
+        ]
+        expected_user_ids = ['user0', 'user1']
+
+        RoleFactory.create_batch(
+            size=2, id=factory.Iterator(user_role_ids)
+        )
+        UserRoleFactory.create_batch(size=2)
+
+        storage = UserStorageImplementation()
+
+        # Act
+        output = \
+            storage.get_user_ids_for_given_role_ids(role_ids=user_role_ids)
+
+        # Assert
+        assert output == expected_user_ids
+
+    @pytest.mark.django_db
+    def test_get_user_ids_for_given_role_ids_when_not_exists_returns_empty_list(
+            self):
+        # Arrange
+        user_role_ids = [
+            'b8cb1520-279a-44bb-95bf-bbca3aa057ba',
+            'b8cb1520-279a-44bb-95bf-bbca3aa057bb'
+        ]
+        expected_user_ids = []
+        storage = UserStorageImplementation()
+
+        # Act
+        output = \
+            storage.get_user_ids_for_given_role_ids(role_ids=user_role_ids)
+
+        # Assert
+        assert output == expected_user_ids
+
+    @pytest.mark.django_db
+    def test_get_user_ids_based_on_given_query(self):
+        # Arrange
+        from ib_iam.tests.factories.models import UserDetailsFactory
+        UserDetailsFactory.reset_sequence()
+
+        from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
+        search_query_with_pagination_dto = SearchQueryWithPaginationDTO(
+            limit=2, offset=0, search_query='b'
+        )
+        user_ids = ['user0', 'user1']
+        UserDetailsFactory.create_batch(
+            size=2, name=factory.Iterator(["iB", "Hubs"])
+        )
+
+        storage = UserStorageImplementation()
+
+        # Act
+        output = storage.get_user_ids_based_on_given_query(
+            user_ids=user_ids,
+            search_query_with_pagination_dto=search_query_with_pagination_dto)
+
+        # Assert
+        assert output == user_ids
+
+    @pytest.mark.django_db
+    def test_get_user_ids_based_on_given_query_when_query_is_empty_returns_all_user_ids(
+            self):
+        # Arrange
+        from ib_iam.tests.factories.models import UserDetailsFactory
+        UserDetailsFactory.reset_sequence()
+
+        from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
+        search_query_with_pagination_dto = SearchQueryWithPaginationDTO(
+            limit=2, offset=0, search_query=''
+        )
+        user_ids = ['user0', 'user1']
+        UserDetailsFactory.create_batch(
+            size=2, name=factory.Iterator(["iB", "Hubs"])
+        )
+
+        storage = UserStorageImplementation()
+
+        # Act
+        output = storage.get_user_ids_based_on_given_query(
+            user_ids=user_ids,
+            search_query_with_pagination_dto=search_query_with_pagination_dto)
+
+        # Assert
+        assert output == user_ids
+
+    @pytest.mark.django_db
+    def test_get_user_ids_based_on_given_query_when_no_query_matching_users_exists_return_empty_list(
+            self):
+        # Arrange
+        from ib_iam.tests.factories.models import UserDetailsFactory
+        UserDetailsFactory.reset_sequence()
+
+        from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
+        search_query_with_pagination_dto = SearchQueryWithPaginationDTO(
+            limit=2, offset=0, search_query='Dragon'
+        )
+        user_ids = ['user0', 'user1']
+        expected_user_ids = []
+        UserDetailsFactory.create_batch(
+            size=2, name=factory.Iterator(["iB", "Hubs"])
+        )
+
+        storage = UserStorageImplementation()
+
+        # Act
+        output = storage.get_user_ids_based_on_given_query(
+            user_ids=user_ids,
+            search_query_with_pagination_dto=search_query_with_pagination_dto)
+
+        # Assert
+        assert output == expected_user_ids

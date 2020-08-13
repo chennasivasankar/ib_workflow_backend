@@ -10,6 +10,7 @@ from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
+from ib_tasks.interactors.user_role_validation_interactor import UserRoleValidationInteractor
 
 
 class GetTaskStagesAndActions:
@@ -34,9 +35,12 @@ class GetTaskStagesAndActions:
         stage_ids = self.storage.get_task_stages(task_id)
         stage_details_dtos = self.storage.get_stage_complete_details(
             stage_ids)
+        user_roles_interactor = UserRoleValidationInteractor()
+        permitted_action_ids = user_roles_interactor. \
+            get_permitted_action_ids_for_given_user_id(
+                action_storage=self.action_storage, user_id=user_id, stage_ids=stage_ids)
 
-        stage_actions_dtos = self.action_storage.get_actions_details(stage_ids,
-                                                                     user_roles)
+        stage_actions_dtos = self.action_storage.get_actions_details(permitted_action_ids)
 
         stage_actions_dtos = self._convert_to_task_complete_details_dto(
             stage_details_dtos, stage_actions_dtos, stage_ids)

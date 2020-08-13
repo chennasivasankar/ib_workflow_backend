@@ -7,7 +7,7 @@ from .validator_class import ValidatorClass
 from ...interactors.create_or_update_task.update_task_interactor import \
     UpdateTaskInteractor
 from ...interactors.task_dtos import UpdateTaskDTO, FieldValuesDTO, \
-    StageIdWithAssigneeIdDTO
+    StageIdWithAssigneeIdDTO, UpdateTaskWithTaskDisplayIdDTO
 from ...presenters.update_task_presenter import \
     UpdateTaskPresenterImplementation
 from ...storages.elasticsearch_storage_implementation \
@@ -51,8 +51,8 @@ def api_wrapper(*args, **kwargs):
         assignee_id=stage_assignee_assignee_id
     )
 
-    task_dto = UpdateTaskDTO(
-        task_id=task_id, created_by_id=user_id, title=title,
+    task_dto = UpdateTaskWithTaskDisplayIdDTO(
+        task_display_id=task_id, created_by_id=user_id, title=title,
         description=description, start_date=start_date, due_date=due_date,
         due_time=due_time, priority=priority, stage_assignee=stage_assignee,
         gof_fields_dtos=task_gofs_dtos
@@ -81,8 +81,7 @@ def api_wrapper(*args, **kwargs):
     )
 
     response = interactor.update_task_wrapper(
-        task_dto=task_dto, presenter=presenter
-    )
+        task_dto=task_dto, presenter=presenter)
     return response
 
 

@@ -5,7 +5,10 @@ from ib_tasks.constants.constants import EMPTY_STRING
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.custom_exceptions import InvalidModulePathFound, \
     InvalidMethodFound
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException, \
+    InvalidTaskDisplayId
+from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
+    GetTaskIdForTaskDisplayIdMixin
 
 from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
 
@@ -32,7 +35,9 @@ from ib_tasks.interactors.presenter_interfaces. \
     GetNextStagesRandomAssigneesOfATaskPresenterInterface
 
 
-class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
+class GetNextStagesRandomAssigneesOfATaskInteractor(
+    ValidationMixin, GetTaskIdForTaskDisplayIdMixin
+):
     def __init__(self, storage: StorageInterface,
                  stage_storage: StageStorageInterface,
                  task_storage: TaskStorageInterface,
@@ -45,15 +50,18 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
         self.task_stage_storage = task_stage_storage
 
     def get_next_stages_random_assignees_of_a_task_wrapper(
-            self, task_id: int, action_id: int,
+            self, task_display_id: str, action_id: int,
             presenter: GetNextStagesRandomAssigneesOfATaskPresenterInterface):
         try:
+            task_id = self.get_task_id_for_task_display_id(task_display_id)
             stage_with_user_details_dtos = \
                 self.get_next_stages_random_assignees_of_a_task(
                     task_id=task_id, action_id=action_id)
             return presenter. \
                 get_next_stages_random_assignees_of_a_task_response(
                 stage_with_user_details_dtos)
+        except InvalidTaskDisplayId as err:
+            return presenter.raise_invalid_task_display_id(err)
         except InvalidTaskIdException as exception:
             return presenter.raise_invalid_task_id_exception(
                 task_id=exception.task_id)
@@ -189,8 +197,11 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
             db_stage_ids=stage_ids_of_tasks_that_are_not_completed,
             user_ids=permitted_user_ids,
             task_ids=task_ids_of_tasks_that_are_not_completed)
-        assignee_id_with_current_less_tasks = \
-            assignee_with_current_tasks_count_dtos[0].assignee_id
+        if not assignee_with_current_tasks_count_dtos:
+            assignee_id_with_current_less_tasks=permitted_user_ids[0]
+        else:
+            assignee_id_with_current_less_tasks = \
+                assignee_with_current_tasks_count_dtos[0].assignee_id
         for each_permitted_user_details_dto in permitted_user_details_dtos:
             if assignee_id_with_current_less_tasks == each_permitted_user_details_dto.user_id:
                 return each_permitted_user_details_dto
