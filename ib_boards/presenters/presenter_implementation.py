@@ -330,7 +330,8 @@ class PresenterImplementation(PresenterInterface, HTTPResponseMixin):
                 column_stages=column_stages_map[column_dto.column_id],
                 task_fields_dtos=task_fields_dtos,
                 task_actions_dtos=task_actions_dtos,
-                task_stage_dtos=task_stage_dtos
+                task_stage_dtos=task_stage_dtos,
+                assignees_dtos=assignees_dtos
             )
             columns_complete_details.append(column_details)
 

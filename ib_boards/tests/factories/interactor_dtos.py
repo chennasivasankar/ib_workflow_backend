@@ -165,7 +165,7 @@ class StageAssigneesDTOFactory(factory.Factory):
     class Meta:
         model = StageAssigneesDTO
 
-    stage_id = factory.Sequence(lambda n: f'STAGE_ID_{n + 1}')
-    task_id = factory.Sequence(lambda n: f'TASK_ID_{n + 1}')
+    stage_id = factory.Sequence(lambda n: f'stage_id_{n}')
+    task_id = factory.Sequence(lambda n: f'task_id_{n}')
     assignees_details = factory.SubFactory(AssigneeDetailsDTOFactory)
 
