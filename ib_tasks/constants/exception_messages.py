@@ -278,3 +278,12 @@ DUE_DATE_HAS_EXPIRED = (
     "given due date {} has expired",
     "DUE_DATE_HAS_EXPIRED"
 )
+
+INVALID_STAGES_FOR_TASK = (
+    "{}",
+    "INVALID_STAGE_IDS_FOR_TASK"
+)
+INVALID_TASK_DISPLAY_ID = (
+    "{} is invalid task_id send valid task_id",
+    "INVALID_TASK_ID"
+)

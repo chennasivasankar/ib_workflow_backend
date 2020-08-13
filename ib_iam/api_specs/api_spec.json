@@ -625,6 +625,22 @@
         ]
       }
     },
+    "UpdateUserPasswordParameter": {
+      "name": "UpdateUserPassword",
+      "description": "Update User password",
+      "in": "body",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "current_password": {
+            "type": "string"
+          },
+          "new_password": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "LoginParameter": {
       "name": "login",
       "description": "email and password to login in database",
@@ -747,6 +763,26 @@
       "description": "details that are to be updated of a company",
       "schema": {
         "$ref": "#/definitions/CompanyWithEmployeeIds"
+      }
+    },
+    "RefreshAuthTokenParameter": {
+      "name": "RefreshTokenParameter",
+      "in": "body",
+      "description": "refresh token parameter",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string"
+          },
+          "refresh_token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "access_token",
+          "refresh_token"
+        ]
       }
     }
   },
@@ -905,6 +941,32 @@
                   "EMAIL_ALREADY_IN_USE",
                   "INVALID_NAME_LENGTH",
                   "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "BadRequestForUpdateUserPasswordResponse": {
+      "description": "Failed to update user password",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_CURRENT_PASSWORD",
+                  "INVALID_NEW_PASSWORD",
+                  "CURRENT_PASSWORD_MISMATCH"
                 ]
               }
             },
@@ -1445,6 +1507,79 @@
               "res_status"
             ]
           }
+        ]
+      }
+    },
+    "RefreshAuthTokensNotFoundResponse": {
+      "description": "refresh tokens not found Response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "ACCESS_TOKEN_NOT_FOUND",
+                  "REFRESH_TOKEN_NOT_FOUND",
+                  "USER_ACCOUNT_NOT_FOUND"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "RefreshAuthTokensBadRequestResponse": {
+      "description": "refresh tokens bad request Response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "REFRESH_TOKEN_HAS_EXPIRED"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "RefreshAuthTokensSuccessResponse": {
+      "description": "Success Response for refresh tokens",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string"
+          },
+          "refresh_token": {
+            "type": "string"
+          },
+          "expires_in_seconds": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "access_token",
+          "refresh_token",
+          "expires_in_seconds"
         ]
       }
     }
@@ -2006,6 +2141,56 @@
           },
           "400": {
             "$ref": "#/responses/BadRequestForUpdateUserProfileResponse"
+          }
+        }
+      }
+    },
+    "/user/password/update/v1/": {
+      "put": {
+        "summary": "update user password",
+        "description": "updates user password",
+        "operationId": "update_user_password",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/UpdateUserPasswordParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User Password Updated Successfully"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequestForUpdateUserPasswordResponse"
+          }
+        }
+      }
+    },
+    "/refresh_auth_tokens/v1/": {
+      "post": {
+        "summary": "Refresh Auth Tokens",
+        "operationId": "refresh_auth_tokens",
+        "description": "Get refresh auth tokens for given access token and refresh token",
+        "parameters": [
+          {
+            "$ref": "#/parameters/RefreshAuthTokenParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/RefreshAuthTokensSuccessResponse"
+          },
+          "404": {
+            "$ref": "#/responses/RefreshAuthTokensNotFoundResponse"
+          },
+          "400": {
+            "$ref": "#/responses/RefreshAuthTokensBadRequestResponse"
           }
         }
       }

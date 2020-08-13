@@ -11,7 +11,7 @@ from ib_tasks.tests.factories.models import TaskTemplateFactory, \
     FieldFactory, StageModelFactory, StageActionFactory, \
     TaskFactory, TaskStatusVariableFactory, TaskGoFFactory, \
     TaskGoFFieldFactory, \
-    TaskStageModelFactory, GoFToTaskTemplateFactory, \
+    CurrentTaskStageModelFactory, GoFToTaskTemplateFactory, \
     ActionPermittedRolesFactory, \
     TaskTemplateInitialStageFactory, GoFRoleFactory, FieldRoleFactory
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
@@ -28,7 +28,7 @@ class TestCase01PerformTaskActionAPITestCase(TestUtils):
     def setup(self):
         TaskTemplateInitialStageFactory.reset_sequence()
         ActionPermittedRolesFactory.reset_sequence()
-        TaskStageModelFactory.reset_sequence()
+        CurrentTaskStageModelFactory.reset_sequence()
         TaskGoFFieldFactory.reset_sequence()
         TaskGoFFactory.reset_sequence()
         TaskTemplateStatusVariableFactory.reset_sequence()
@@ -96,7 +96,7 @@ class TestCase01PerformTaskActionAPITestCase(TestUtils):
             6, task_gof=factory.Iterator(task_gofs),
             field=factory.Iterator(fields)
         )
-        TaskStageModelFactory.create_batch(
+        CurrentTaskStageModelFactory.create_batch(
             3, task=task,
             stage=factory.Iterator(stages)
         )

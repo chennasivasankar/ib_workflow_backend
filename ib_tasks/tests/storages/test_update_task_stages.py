@@ -11,12 +11,12 @@ class TestUpdateTaskStages:
         from ib_tasks.storages.storage_implementation \
             import StorageImplementation
         from ib_tasks.tests.factories.models \
-            import TaskStageModelFactory, TaskFactory, StageModelFactory
+            import CurrentTaskStageModelFactory, TaskFactory, StageModelFactory
         TaskFactory.reset_sequence()
-        TaskStageModelFactory.reset_sequence()
+        CurrentTaskStageModelFactory.reset_sequence()
         StageModelFactory.reset_sequence()
         task = TaskFactory()
-        TaskStageModelFactory.create_batch(size=2, task=task)
+        CurrentTaskStageModelFactory.create_batch(size=2, task=task)
 
         storage = StorageImplementation()
 

@@ -6,6 +6,7 @@ from ib_tasks.adapters.dtos import UserDTO
 from ib_tasks.constants.enum import Searchable, Priority
 from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
+from ib_tasks.interactors.get_tasks_to_relevant_search_query import SearchQueryDTO
 from ib_tasks.interactors.get_tasks_to_relevant_search_query import \
     SearchQueryDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
@@ -19,6 +20,11 @@ from ib_tasks.interactors.storage_interfaces.actions_dtos import \
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
+    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, CreateTaskLogDTO, TaskDueParametersDTO
+from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory, UserDetailsDTO,\
+    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, \
+    CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeIdDTO, SaveAndActOnTaskDTO
+from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory,\
     CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeIdDTO, GetTaskDetailsDTO, FieldValuesDTO, StatusOperandStageDTO, \
     CreateTaskLogDTO, TaskDueParametersDTO
 from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory, UserDetailsDTO
@@ -290,6 +296,7 @@ class TaskDueParametersDTOFactory(factory.Factory):
     reason = "reason"
 
 
+
 class CreateTaskDTOFactory(factory.Factory):
     class Meta:
         model = CreateTaskDTO
@@ -323,6 +330,27 @@ class UpdateTaskDTOFactory(factory.Factory):
 
     task_id = factory.Sequence(lambda c: "task_{}".format(c))
     created_by_id = "123e4567-e89b-12d3-a456-426614174000"
+    title = factory.Sequence(lambda c: "title_{}".format(c))
+    description = factory.Sequence(lambda c: "description{}".format(c))
+    start_date = datetime.today().date()
+    due_date = datetime.today().date() + timedelta(days=2)
+    due_time = "12:30:20"
+    priority = Priority.HIGH.value
+    stage_assignee = factory.SubFactory(StageIdWithAssigneeIdDTOFactory)
+
+    @factory.lazy_attribute
+    def gof_fields_dtos(self):
+        return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]
+
+
+class SaveAndActOnTaskDTOFactory(factory.Factory):
+
+    class Meta:
+        model = SaveAndActOnTaskDTO
+
+    task_id = factory.Sequence(lambda c: "task_{}".format(c))
+    created_by_id = "123e4567-e89b-12d3-a456-426614174000"
+    action_id = factory.Sequence(lambda c: c)
     title = factory.Sequence(lambda c: "title_{}".format(c))
     description = factory.Sequence(lambda c: "description{}".format(c))
     start_date = datetime.today().date()

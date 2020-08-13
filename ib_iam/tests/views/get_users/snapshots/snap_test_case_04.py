@@ -10,7 +10,7 @@ snapshots = Snapshot()
 snapshots['TestCase04GetUsersAPITestCase.test_case status_code'] = '200'
 
 snapshots['TestCase04GetUsersAPITestCase.test_case body'] = {
-    'total': 5,
+    'total': 4,
     'users': [
         {
             'company': {
@@ -21,7 +21,7 @@ snapshots['TestCase04GetUsersAPITestCase.test_case body'] = {
             'name': 'name0',
             'roles': [
                 {
-                    'role_id': 'ROLE_0',
+                    'role_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb211',
                     'role_name': 'role 0'
                 }
             ],
@@ -35,16 +35,24 @@ snapshots['TestCase04GetUsersAPITestCase.test_case body'] = {
         },
         {
             'company': {
-                'company_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb200',
-                'company_name': 'company 0'
+                'company_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb201',
+                'company_name': 'company 1'
             },
             'email': 'name1@gmail.com',
             'name': 'name1',
             'roles': [
+                {
+                    'role_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb222',
+                    'role_name': 'role 1'
+                }
             ],
             'teams': [
+                {
+                    'team_id': '6ce31e92-f188-4019-b295-2e5ddc9c7a22',
+                    'team_name': 'team 1'
+                }
             ],
-            'user_id': '7e39bf1c-f9a5-4e76-8451-b962ddd52122'
+            'user_id': '7e39bf1c-f9a5-4e76-8451-b962ddd52022'
         },
         {
             'company': {
@@ -59,6 +67,10 @@ snapshots['TestCase04GetUsersAPITestCase.test_case body'] = {
                 {
                     'team_id': '6ce31e92-f188-4019-b295-2e5ddc9c7a22',
                     'team_name': 'team 1'
+                },
+                {
+                    'team_id': '6ce31e92-f188-4019-b295-2e5ddc9c7a11',
+                    'team_name': 'team 0'
                 }
             ],
             'user_id': '7e39bf1c-f9a5-4e76-8451-b962ddd52033'
@@ -71,31 +83,18 @@ snapshots['TestCase04GetUsersAPITestCase.test_case body'] = {
             'email': 'name3@gmail.com',
             'name': 'name3',
             'roles': [
-            ],
-            'teams': [
-            ],
-            'user_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb300'
-        },
-        {
-            'company': {
-                'company_id': '',
-                'company_name': ''
-            },
-            'email': 'name4@gmail.com',
-            'name': 'name4',
-            'roles': [
                 {
-                    'role_id': 'ROLE_0',
+                    'role_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb211',
                     'role_name': 'role 0'
+                },
+                {
+                    'role_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb222s',
+                    'role_name': 'role 2'
                 }
             ],
             'teams': [
-                {
-                    'team_id': '6ce31e92-f188-4019-b295-2e5ddc9c7a11',
-                    'team_name': 'team 0'
-                }
             ],
-            'user_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb600'
+            'user_id': '7e39bf1c-f9a5-4e76-8451-b962ddd52044'
         }
     ]
 }

@@ -7,8 +7,7 @@ from ib_tasks.constants.enum import ActionTypes
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.stage_custom_exceptions import \
     TransitionTemplateIsNotRelatedToGivenStageAction, InvalidStageId
-from ib_tasks.interactors.stages_dtos import StagesActionDTO, \
-    TemplateStageDTO, StageActionDTO
+from ib_tasks.interactors.stages_dtos import TemplateStageDTO, StageActionDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
@@ -251,6 +250,13 @@ class ActionsStorageImplementation(ActionStorageInterface):
         action_ids = list(ActionPermittedRoles.objects.filter(
             Q(action__stage__stage_id__in=stage_ids),
             Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID))
-            .values_list('id', flat=True)
-        )
+                          .values_list('id', flat=True)
+                          )
         return action_ids
+
+    def get_stage_ids_having_actions(self, db_stage_ids: List[int]) \
+            -> List[int]:
+        db_stage_ids = \
+            StageAction.objects.filter(stage_id__in=db_stage_ids).values(
+                'stage_id')
+        return db_stage_ids

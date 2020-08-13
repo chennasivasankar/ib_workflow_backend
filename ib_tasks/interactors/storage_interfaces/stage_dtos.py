@@ -47,6 +47,12 @@ class TaskStageIdsDTO:
 
 
 @dataclass
+class TaskWithDbStageIdDTO:
+    task_id: int
+    db_stage_id: int
+
+
+@dataclass
 class GetTaskStageCompleteDetailsDTO:
     task_id: int
     stage_id: str
@@ -101,6 +107,7 @@ class TaskIdWithStageDetailsDTO:
     # TODO refactor stage_id_db name after removal of stage_id
     db_stage_id: int
     task_id: int
+    task_display_id: str
     stage_id: str
     stage_display_name: str
     stage_color: str
@@ -158,3 +165,21 @@ class TaskStageHavingAssigneeIdDTO:
     db_stage_id: int
     assignee_id: str
     stage_display_name: str
+
+
+@dataclass
+class CurrentStageDetailsDTO:
+    stage_id: str
+    stage_display_name: str
+
+
+@dataclass
+class TaskIdWithDbStageIdsDTO:
+    task_id: int
+    db_stage_ids: List[int]
+
+
+@dataclass
+class AssigneeCurrentTasksCountDTO:
+    assignee_id: str
+    tasks_count: int

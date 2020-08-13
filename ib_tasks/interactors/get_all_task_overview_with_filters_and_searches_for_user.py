@@ -21,6 +21,8 @@ from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import
     TaskStageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
+from ib_tasks.interactors.presenter_interfaces.dtos import \
+    AllTasksOverviewDetailsDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.interactors.user_role_validation_interactor import UserRoleValidationInteractor
 
@@ -45,7 +47,8 @@ class GetTasksOverviewForUserInteractor:
         self.action_storage = action_storage
 
     def get_filtered_tasks_overview_for_user(
-            self, user_id: str, task_ids: List[int], view_type: ViewType):
+            self, user_id: str, task_ids: List[int], view_type: ViewType) -> \
+            AllTasksOverviewDetailsDTO:
         stage_ids = self._get_allowed_stage_ids_of_user(user_id=user_id)
         task_with_complete_stage_details_dtos = \
             self._get_task_with_complete_stage_details_dtos(
@@ -111,8 +114,8 @@ class GetTasksOverviewForUserInteractor:
             )
         task_id_with_stage_ids_dtos = task_ids_of_user_based_on_stage_ids_interactor. \
             get_task_ids_of_user_based_on_stage_ids(
-                user_id=user_id, stage_ids=stage_ids
-            )
+            user_id=user_id, stage_ids=stage_ids
+        )
         return task_id_with_stage_ids_dtos
 
     def _get_task_fields_and_action(
@@ -145,8 +148,10 @@ class GetTasksOverviewForUserInteractor:
 
     def _filter_tasks_with_stage_details_having_actions(
             self,
-            task_with_complete_stage_details_dtos: List[TaskWithCompleteStageDetailsDTO],
-            task_fields_and_action_details_dtos: List[GetTaskStageCompleteDetailsDTO]
+            task_with_complete_stage_details_dtos: List[
+                TaskWithCompleteStageDetailsDTO],
+            task_fields_and_action_details_dtos: List[
+                GetTaskStageCompleteDetailsDTO]
     ) -> List[TaskWithCompleteStageDetailsDTO]:
         task_with_stage_details_having_actions_dtos = []
 

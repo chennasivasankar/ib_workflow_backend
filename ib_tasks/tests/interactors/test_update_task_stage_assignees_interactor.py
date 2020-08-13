@@ -7,6 +7,9 @@ from ib_tasks.constants.constants import ALL_ROLES_ID
 from ib_tasks.interactors.stages_dtos import TaskIdWithStageAssigneesDTO, \
     StageAssigneeDTO, TaskIdWithStageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO
+from ib_tasks.tests.factories.interactor_dtos import \
+    TaskIdWithStageAssigneeDTOFactory
+from ib_tasks.tests.factories.storage_dtos import StageRoleDTOFactory
 
 
 class TestUpdateTaskStageAssigneesInteractor:
@@ -35,20 +38,19 @@ class TestUpdateTaskStageAssigneesInteractor:
 
     @pytest.fixture
     def task_id_with_duplicate_stage_assignees_dto(self):
-        task_id_with_stage_assignees_dto = \
-            TaskIdWithStageAssigneesDTO(task_id=1, stage_assignees=[
+        task_id_with_stage_assignees_dto = TaskIdWithStageAssigneesDTO(
+            task_id=1, stage_assignees=[
                 StageAssigneeDTO(db_stage_id=1,
                                  assignee_id="user_1"),
                 StageAssigneeDTO(db_stage_id=1,
-                                 assignee_id="user_2")])
+                                 assignee_id="user_1")])
         return task_id_with_stage_assignees_dto
 
     @pytest.fixture
     def stage_role_dtos(self):
-        stage_role_dtos = [
-            StageRoleDTO(db_stage_id=1, role_id=ALL_ROLES_ID),
-            StageRoleDTO(db_stage_id=2,
-                         role_id=ALL_ROLES_ID)]
+        StageRoleDTOFactory.reset_sequence()
+        stage_role_dtos = StageRoleDTOFactory.create_batch(2,
+                                                           role_id=ALL_ROLES_ID)
         return stage_role_dtos
 
     @pytest.fixture
@@ -56,9 +58,9 @@ class TestUpdateTaskStageAssigneesInteractor:
         task_id_with_stage_assignees_dto = \
             TaskIdWithStageAssigneesDTO(task_id=1, stage_assignees=[
                 StageAssigneeDTO(db_stage_id=1,
-                                 assignee_id="user_1"),
+                                 assignee_id="user_0"),
                 StageAssigneeDTO(db_stage_id=2,
-                                 assignee_id="user_2")])
+                                 assignee_id="user_1")])
         return task_id_with_stage_assignees_dto
 
     def test_given_invalid_task_id_raise_exception(self, task_storage_mock,
@@ -128,13 +130,13 @@ class TestUpdateTaskStageAssigneesInteractor:
                                  task_storage_mock,
                                  stage_storage_mock,
                                  presenter_mock, stage_role_dtos):
+        task_id_with_stage_assignee_dtos = TaskIdWithStageAssigneeDTOFactory. \
+            create_batch(2, task_id=1)
         task_storage_mock.check_is_task_exists.return_value = True
         stage_storage_mock. \
             get_valid_db_stage_ids_in_given_db_stage_ids.return_value = [
             1, 2]
-        stage_storage_mock. \
-            get_task_stage_ids_in_given_stage_ids.return_value = \
-            [1]
+        stage_storage_mock.create_task_stage_assignees.return_value = None
         stage_storage_mock. \
             get_stage_role_dtos_given_db_stage_ids.return_value = stage_role_dtos
         from ib_tasks.interactors.update_task_stage_assignees_interactor import \
@@ -147,14 +149,6 @@ class TestUpdateTaskStageAssigneesInteractor:
             update_task_stage_assignees_wrapper(
             task_id_with_stage_assignees_dto,
             presenter=presenter_mock)
-        stage_storage_mock.update_task_stage_assignees.assert_called_once_with(
-            task_id_with_stage_assignee_dtos_for_updation=[
-                TaskIdWithStageAssigneeDTO(
-                    task_id=task_id_with_stage_assignees_dto.task_id,
-                    db_stage_id=1, assignee_id="user_1")])
+
         stage_storage_mock.create_task_stage_assignees.assert_called_once_with(
-            task_id_with_stage_assignee_dtos_for_creation=[
-                TaskIdWithStageAssigneeDTO(
-                    task_id=task_id_with_stage_assignees_dto.task_id,
-                    db_stage_id=2,
-                    assignee_id="user_2")])
+            task_id_with_stage_assignee_dtos=task_id_with_stage_assignee_dtos)

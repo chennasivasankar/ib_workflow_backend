@@ -1,6 +1,7 @@
 from ib_tasks.tests.factories.adapter_dtos import UserDetailsDTOFactory
 
 from ib_tasks.tests.factories.interactor_dtos import \
+    UserDetailsDTOFactory, \
     SearchableFieldUserDetailDTOFactory
 
 
