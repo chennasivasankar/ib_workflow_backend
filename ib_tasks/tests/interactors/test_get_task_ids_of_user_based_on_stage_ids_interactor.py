@@ -46,18 +46,17 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
 
         from ib_tasks.interactors. \
             get_task_ids_of_user_based_on_stage_ids_interactor import \
-            GetTaskIdsOfUserBasedOnStagesInteractor
+            GetTaskStageDetailsOfUserBasedOnStagesInteractor
 
-        interactor = GetTaskIdsOfUserBasedOnStagesInteractor(
+        interactor = GetTaskStageDetailsOfUserBasedOnStagesInteractor(
             task_storage=task_storage_mock, stage_storage=stage_storage_mock,
-            task_stage_storage=task_stage_storage_mock
-        )
+            task_stage_storage=task_stage_storage_mock)
 
         # Act
         from ib_tasks.exceptions.fields_custom_exceptions import \
             LimitShouldBeGreaterThanZeroException
         with pytest.raises(LimitShouldBeGreaterThanZeroException):
-            interactor.get_task_ids_of_user_based_on_stage_ids(
+            interactor.get_task_stage_details_of_user_based_on_stage_ids(
                 user_stages_with_pagination_dto)
 
     @pytest.mark.parametrize("offset", [-1, -2])
@@ -71,9 +70,9 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
 
         from ib_tasks.interactors. \
             get_task_ids_of_user_based_on_stage_ids_interactor import \
-            GetTaskIdsOfUserBasedOnStagesInteractor
+            GetTaskStageDetailsOfUserBasedOnStagesInteractor
 
-        interactor = GetTaskIdsOfUserBasedOnStagesInteractor(
+        interactor = GetTaskStageDetailsOfUserBasedOnStagesInteractor(
             task_storage=task_storage_mock, stage_storage=stage_storage_mock,
             task_stage_storage=task_stage_storage_mock)
 
@@ -82,7 +81,7 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
             OffsetShouldBeGreaterThanZeroException
         with pytest.raises(
                 OffsetShouldBeGreaterThanZeroException):
-            interactor.get_task_ids_of_user_based_on_stage_ids(
+            interactor.get_task_stage_details_of_user_based_on_stage_ids(
                 user_stages_with_pagination_dto)
 
     def test_given_empty_stage_ids_list_raise_exception(
@@ -93,18 +92,19 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
         user_stages_with_pagination_dto = UserStagesWithPaginationDTOFactory(
             stage_ids=[])
 
+
         from ib_tasks.interactors. \
             get_task_ids_of_user_based_on_stage_ids_interactor import \
-            GetTaskIdsOfUserBasedOnStagesInteractor
+            GetTaskStageDetailsOfUserBasedOnStagesInteractor
 
-        interactor = GetTaskIdsOfUserBasedOnStagesInteractor(
+        interactor = GetTaskStageDetailsOfUserBasedOnStagesInteractor(
             task_storage=task_storage_mock, stage_storage=stage_storage_mock,
             task_stage_storage=task_stage_storage_mock)
 
         from ib_tasks.exceptions.stage_custom_exceptions import \
             StageIdsListEmptyException
         with pytest.raises(StageIdsListEmptyException):
-            interactor.get_task_ids_of_user_based_on_stage_ids(
+            interactor.get_task_stage_details_of_user_based_on_stage_ids(
                 user_stages_with_pagination_dto)
 
     def test_given_invalid_stage_ids_raise_exception_with_ids(
@@ -116,18 +116,19 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
         stage_storage_mock.get_valid_stage_ids_in_given_stage_ids.return_value \
             = ["stage_id_1", "stage_id_4", "stage_id_5"]
 
+
         from ib_tasks.interactors. \
             get_task_ids_of_user_based_on_stage_ids_interactor import \
-            GetTaskIdsOfUserBasedOnStagesInteractor
+            GetTaskStageDetailsOfUserBasedOnStagesInteractor
 
-        interactor = GetTaskIdsOfUserBasedOnStagesInteractor(
+        interactor = GetTaskStageDetailsOfUserBasedOnStagesInteractor(
             task_storage=task_storage_mock, stage_storage=stage_storage_mock,
             task_stage_storage=task_stage_storage_mock)
 
         from ib_tasks.exceptions.stage_custom_exceptions import \
             InvalidStageIdsListException
         with pytest.raises(InvalidStageIdsListException):
-            interactor.get_task_ids_of_user_based_on_stage_ids(
+            interactor.get_task_stage_details_of_user_based_on_stage_ids(
                 user_stages_with_pagination_dto)
         stage_storage_mock.get_valid_stage_ids_in_given_stage_ids.assert_called_once_with(
             user_stages_with_pagination_dto.stage_ids)
@@ -158,14 +159,16 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
                                      task_ids=[1, 2])
         ]
 
+
         from ib_tasks.interactors. \
             get_task_ids_of_user_based_on_stage_ids_interactor import \
-            GetTaskIdsOfUserBasedOnStagesInteractor
-        # Act
-        interactor = GetTaskIdsOfUserBasedOnStagesInteractor(
+            GetTaskStageDetailsOfUserBasedOnStagesInteractor
+
+        interactor = GetTaskStageDetailsOfUserBasedOnStagesInteractor(
             task_storage=task_storage_mock, stage_storage=stage_storage_mock,
             task_stage_storage=task_stage_storage_mock)
-        interactor.get_task_ids_of_user_based_on_stage_ids(
+        # Act
+        interactor.get_task_stage_details_of_user_based_on_stage_ids(
             user_stages_with_pagination_dto)
 
         # Assert
@@ -181,5 +184,4 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
             get_task_id_with_stage_details_dtos_based_on_stage_value(
             stage_values=[2],
             task_ids_group_by_stage_value_dtos=
-            task_ids_group_by_stage_value_dtos,
-            user_id=user_id)
+            task_ids_group_by_stage_value_dtos)

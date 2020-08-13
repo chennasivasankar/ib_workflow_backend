@@ -1,14 +1,13 @@
 from typing import List
 
-from ib_iam.adapters.dtos import UserProfileDTO
-from ib_iam.interactors.DTOs.common_dtos import UserIdWithRoleIdsDTO
+from ib_iam.adapters.dtos import UserProfileDTO, SearchQueryWithPaginationDTO
+from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserIdAndNameDTO
 
 
 class ServiceInterface:
-
     @staticmethod
-    def get_valid_role_ids(role_ids: List[str]):
+    def get_valid_role_ids(role_ids: List[str]) -> List[str]:
         from ib_iam.storages.roles_storage_implementation import \
             RolesStorageImplementation
         storage = RolesStorageImplementation()
@@ -41,8 +40,7 @@ class ServiceInterface:
         interactor = RolesInteractor(storage=storage)
 
         user_id_with_role_ids_dtos = interactor.get_role_ids_for_each_user_id(
-            user_ids=user_ids
-        )
+            user_ids=user_ids)
         return user_id_with_role_ids_dtos
 
     @staticmethod
@@ -84,8 +82,7 @@ class ServiceInterface:
         interactor = GetUsersDetailsInteractor(user_storage=storage)
 
         user_details_dtos = interactor.get_user_dtos_based_on_limit_and_offset(
-            limit=limit, offset=offset, search_query=search_query
-        )
+            limit=limit, offset=offset, search_query=search_query)
         return user_details_dtos
 
     @staticmethod
@@ -100,8 +97,7 @@ class ServiceInterface:
         interactor = GetUsersDetailsInteractor(user_storage=storage)
 
         user_details_dtos = interactor.get_all_user_dtos_based_on_query(
-            search_query=search_query
-        )
+            search_query=search_query)
         return user_details_dtos
 
     @staticmethod
@@ -118,3 +114,77 @@ class ServiceInterface:
         user_details_dtos = interactor.get_user_details_for_given_role_ids(
             role_ids=role_ids)
         return user_details_dtos
+
+    @staticmethod
+    def get_user_details_for_the_given_role_ids_based_on_query(
+            role_ids: List[str],
+            search_query_with_pagination_dto:
+            SearchQueryWithPaginationDTO
+    ) -> List[UserProfileDTO]:
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        user_storage = UserStorageImplementation()
+
+        from ib_iam.interactors.get_users_list_interactor import \
+            GetUsersDetailsInteractor
+        interactor = GetUsersDetailsInteractor(user_storage=user_storage)
+
+        user_details_dtos = \
+            interactor.get_user_details_for_given_role_ids_based_on_query(
+                role_ids=role_ids,
+                search_query_with_pagination_dto=
+                search_query_with_pagination_dto)
+        return user_details_dtos
+
+    @staticmethod
+    def get_search_users(offset: int, limit: int, search_query: str):
+        from ib_iam.storages.elastic_storage_implementation \
+            import ElasticStorageImplementation
+        elastic_storage = ElasticStorageImplementation()
+        from ib_iam.interactors.get_search_results_interactor \
+            import GetSearchResultsInteractor
+        interactor = GetSearchResultsInteractor(
+            elastic_storage=elastic_storage)
+
+        return interactor.search_users_results(
+            offset=offset, limit=limit, search_query=search_query
+        )
+
+    @staticmethod
+    def get_search_countries(offset: int, limit: int, search_query: str):
+        from ib_iam.storages.elastic_storage_implementation \
+            import ElasticStorageImplementation
+        elastic_storage = ElasticStorageImplementation()
+        from ib_iam.interactors.get_search_results_interactor \
+            import GetSearchResultsInteractor
+        interactor = GetSearchResultsInteractor(
+            elastic_storage=elastic_storage)
+        return interactor.search_countries_results(
+            offset=offset, limit=limit, search_query=search_query
+        )
+
+    @staticmethod
+    def get_search_states(offset: int, limit: int, search_query: str):
+        from ib_iam.storages.elastic_storage_implementation \
+            import ElasticStorageImplementation
+        elastic_storage = ElasticStorageImplementation()
+        from ib_iam.interactors.get_search_results_interactor \
+            import GetSearchResultsInteractor
+        interactor = GetSearchResultsInteractor(
+            elastic_storage=elastic_storage)
+        return interactor.search_states_results(
+            offset=offset, limit=limit, search_query=search_query
+        )
+
+    @staticmethod
+    def get_search_cities(offset: int, limit: int, search_query: str):
+        from ib_iam.storages.elastic_storage_implementation \
+            import ElasticStorageImplementation
+        elastic_storage = ElasticStorageImplementation()
+        from ib_iam.interactors.get_search_results_interactor \
+            import GetSearchResultsInteractor
+        interactor = GetSearchResultsInteractor(
+            elastic_storage=elastic_storage)
+        return interactor.search_cities_results(
+            offset=offset, limit=limit, search_query=search_query
+        )

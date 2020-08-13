@@ -9,9 +9,9 @@ from django_swagger_utils.utils.test_utils import TestUtils
 from ib_iam.tests.factories.models import UserRoleFactory, RoleFactory
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories.models import TaskFactory, StageModelFactory, \
-    TaskStageModelFactory, StageActionFactory, TaskGoFFieldFactory, \
+    CurrentTaskStageModelFactory, StageActionFactory, TaskGoFFieldFactory, \
     TaskGoFFactory, FieldFactory, GoFFactory, ActionPermittedRolesFactory, \
-    FieldRoleFactory
+    FieldRoleFactory, TaskTemplateFactory, TaskStageHistoryModelFactory
 
 
 class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
@@ -27,19 +27,23 @@ class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
         user_id = str(user_obj.user_id)
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids, get_assignees_details_dtos
-        from ib_tasks.constants.enum import ValidationType
+        from ib_tasks.tests.common_fixtures.storages import mock_filter_tasks
+        mock_filter_tasks(mocker)
         get_user_role_ids(mocker)
         get_assignees_details_dtos(mocker)
+        from ib_tasks.constants.enum import ValidationType
 
         from ib_iam.tests.factories.models import UserDetailsFactory
         UserDetailsFactory.reset_sequence()
         UserDetailsFactory.create(user_id=user_id, is_admin=True)
         TaskFactory.reset_sequence()
         StageModelFactory.reset_sequence()
-        TaskStageModelFactory.reset_sequence()
+        CurrentTaskStageModelFactory.reset_sequence()
         StageActionFactory.reset_sequence()
+        TaskTemplateFactory.reset_sequence()
         TaskGoFFactory.reset_sequence()
         TaskGoFFieldFactory.reset_sequence()
+        TaskStageHistoryModelFactory.reset_sequence()
         FieldFactory.reset_sequence()
         FieldRoleFactory.reset_sequence()
         ActionPermittedRolesFactory.reset_sequence()
@@ -64,14 +68,21 @@ class TestCase04GetAllTasksOverviewAPITestCase(TestUtils):
                          card_info_kanban=json.dumps(
                              ['FIELD_ID-0', "FIELD_ID-1", 'FIELD_ID-2']))
 
-        task_stage_obj_1 = TaskStageModelFactory(task=task_objs[0],
-                                                 stage=stage_objs[2])
-        task_stage_obj_2 = TaskStageModelFactory(task=task_objs[1],
-                                                 stage=stage_objs[2])
-        task_stage_obj_3 = TaskStageModelFactory(task=task_objs[2],
-                                                 stage=stage_other_objs[1])
-        task_stage_obj_4 = TaskStageModelFactory(task=task_objs[0],
-                                                 stage=stage_objs[0])
+        task_stage_obj_1 = CurrentTaskStageModelFactory(task=task_objs[0],
+                                                        stage=stage_objs[2])
+        task_stage_obj_2 = CurrentTaskStageModelFactory(task=task_objs[1],
+                                                        stage=stage_objs[2])
+        task_stage_obj_3 = CurrentTaskStageModelFactory(task=task_objs[2],
+                                                        stage=stage_other_objs[1])
+        task_stage_obj_4 = CurrentTaskStageModelFactory(task=task_objs[0],
+                                                        stage=stage_objs[0])
+        TaskStageHistoryModelFactory(task=task_objs[0],
+                                     stage=stage_objs[2])
+        TaskStageHistoryModelFactory(task=task_objs[2],
+                                     stage=stage_other_objs[1])
+        TaskStageHistoryModelFactory(task=task_objs[1],
+                                     stage=stage_objs[2])
+
 
         action_obj_1 = StageActionFactory(
             stage=stage_objs[2],

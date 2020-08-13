@@ -17,26 +17,34 @@ from ib_tasks.tests.factories.storage_dtos import StageActionDetailsDTOFactory
 class TestGetTaskInteractor:
 
     @pytest.fixture
-    def storage_mock(self):
+    def task_crud_storage_mock(self):
         from ib_tasks.interactors.storage_interfaces \
             .create_or_update_task_storage_interface \
             import CreateOrUpdateTaskStorageInterface
-        storage = create_autospec(CreateOrUpdateTaskStorageInterface)
-        return storage
+        task_crud_storage = create_autospec(CreateOrUpdateTaskStorageInterface)
+        return task_crud_storage
 
     @pytest.fixture
     def stages_storage_mock(self):
         from ib_tasks.interactors.storage_interfaces.fields_storage_interface \
             import FieldsStorageInterface
-        storage = create_autospec(FieldsStorageInterface)
-        return storage
+        stages_storage_mock = create_autospec(FieldsStorageInterface)
+        return stages_storage_mock
 
     @pytest.fixture
-    def task_storage_mock(self):
+    def storage_mock(self):
         from ib_tasks.interactors.storage_interfaces.storage_interface import \
             StorageInterface
         storage = create_autospec(StorageInterface)
         return storage
+
+    @pytest.fixture
+    def task_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces.task_storage_interface \
+            import \
+            TaskStorageInterface
+        task_storage = create_autospec(TaskStorageInterface)
+        return task_storage
 
     @pytest.fixture
     def action_storage_mock(self):
@@ -306,7 +314,6 @@ class TestGetTaskInteractor:
             .get_task_presenter_interface \
             import TaskCompleteDetailsDTO
         task_complete_details_dto = TaskCompleteDetailsDTO(
-            task_id="task0",
             task_details_dto=permission_task_details_dto,
             stages_and_actions_details_dtos=stages_and_actions_details_dtos,
             stage_assignee_details_dtos=stage_assignee_details_dtos
@@ -315,81 +322,199 @@ class TestGetTaskInteractor:
 
     @patch.object(GetTaskBaseInteractor, 'get_task')
     def test_given_invalid_task_id_raise_exception(
-            self, get_task_mock, storage_mock, presenter_mock,
-            mock_object, stages_storage_mock, task_storage_mock,
-            action_storage_mock, task_stage_storage_mock, reset_sequence
+            self, get_task_mock, presenter_mock,
+            mock_object, task_crud_storage_mock,
+            stages_storage_mock, storage_mock,
+            task_storage_mock, action_storage_mock,
+            task_stage_storage_mock, reset_sequence
     ):
         # Arrange
         from ib_tasks.exceptions.task_custom_exceptions \
             import InvalidTaskIdException
         user_id = "user1"
-        task_id = "task0"
+        task_display_id = "IBWF-1"
+        task_id = 1
         exception_object = InvalidTaskIdException(task_id)
         get_task_mock.side_effect = exception_object
         interactor = GetTaskInteractor(
             storage=storage_mock, stages_storage=stages_storage_mock,
             task_storage=task_storage_mock, action_storage=action_storage_mock,
-            task_stage_storage=task_stage_storage_mock
+            task_stage_storage=task_stage_storage_mock,
+            task_crud_storage=task_crud_storage_mock
         )
         presenter_mock.raise_exception_for_invalid_task_id.return_value = \
             mock_object
 
         # Act
         interactor.get_task_details_wrapper(
-            user_id=user_id, task_id=task_id, presenter=presenter_mock
+            user_id=user_id, task_display_id=task_display_id,
+            presenter=presenter_mock
         )
 
         # Assert
         presenter_mock.raise_exception_for_invalid_task_id. \
             assert_called_once_with(exception_object)
 
+    def test_given_invalid_task_display_id_raise_exception(
+            self, presenter_mock,
+            mock_object, task_crud_storage_mock,
+            stages_storage_mock, storage_mock,
+            task_storage_mock, action_storage_mock,
+            task_stage_storage_mock, reset_sequence
+    ):
+        # Arrange
+        from ib_tasks.exceptions.task_custom_exceptions \
+            import InvalidTaskDisplayId
+        user_id = "user1"
+        task_display_id = "IBWF-1"
+        exception_object = InvalidTaskDisplayId(task_display_id)
+        task_storage_mock.check_is_valid_task_display_id.return_value = False
+
+        interactor = GetTaskInteractor(
+            storage=storage_mock, stages_storage=stages_storage_mock,
+            task_storage=task_storage_mock, action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock,
+            task_crud_storage=task_crud_storage_mock
+        )
+        presenter_mock.raise_invalid_task_display_id.return_value = \
+            mock_object
+
+        # Act
+        interactor.get_task_details_wrapper(
+            user_id=user_id, task_display_id=task_display_id,
+            presenter=presenter_mock
+        )
+
+        # Assert
+        call_tuple = presenter_mock.raise_invalid_task_display_id.call_args
+        error_obj = call_tuple.args[0]
+        assert error_obj.task_display_id == exception_object.task_display_id
+
     @patch.object(GetTaskStagesAndActions, "get_task_stages_and_actions")
     @patch.object(GetTaskBaseInteractor, 'get_task')
     @patch.object(GetStagesAssigneesDetailsInteractor,
-                   "get_stages_assignee_details_dtos")
-    def test_given_valid_task_returns_task_complete_details_dto(
+                  "get_stages_assignee_details_dtos")
+    def test_given_valid_task_and_invalid_stage_ids_raise_exception(
             self, stage_assignee_details_dtos_mock, get_task_mock,
             get_task_stages_and_actions_mock, stage_assignee_details_dtos,
             mocker, storage_mock, presenter_mock, stages_storage_mock,
-            task_details_dto, user_roles, gof_ids, permission_gof_ids,
+            task_storage_mock, task_crud_storage_mock, action_storage_mock,
+            task_stage_storage_mock, task_details_dto, user_roles, gof_ids,
             permission_task_gof_dtos, field_ids, permission_field_ids,
             permission_task_gof_field_dtos, task_complete_details_dto,
-            mock_object, stages_and_actions_details_dtos, task_storage_mock,
-            action_storage_mock, task_stage_storage_mock, reset_sequence
+            mock_object, stages_and_actions_details_dtos, permission_gof_ids,
+            reset_sequence,
     ):
         # Arrange
         from ib_tasks.tests.common_fixtures.adapters.roles_service \
             import get_user_role_ids
         get_user_role_ids_mock_method = get_user_role_ids(mocker)
         user_id = "user1"
-        task_id = "task0"
+        task_id = 1
+        task_display_id = "IBWF-1"
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            InvalidStageIdsForTask
+        from ib_tasks.constants.exception_messages import \
+            INVALID_STAGE_IDS_FOR_TASK
+        invalid_stages_ids = [1, 2, 3]
+        message = INVALID_STAGE_IDS_FOR_TASK.format(
+            invalid_stages_ids, task_id
+        )
+        exception_object = InvalidStageIdsForTask(message)
+        get_task_mock.return_value = task_details_dto
+        stage_assignee_details_dtos_mock.side_effect = \
+            exception_object
+        get_task_stages_and_actions_mock.return_value = \
+            stages_and_actions_details_dtos
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_storage_mock.get_task_id_for_task_display_id.return_value = \
+            task_id
+
+        interactor = GetTaskInteractor(
+            storage=storage_mock, stages_storage=stages_storage_mock,
+            task_storage=task_storage_mock, action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock,
+            task_crud_storage=task_crud_storage_mock
+        )
+        task_crud_storage_mock.get_gof_ids_having_permission.return_value = \
+            permission_gof_ids
+        task_crud_storage_mock.get_field_ids_having_permission.return_value = \
+            permission_field_ids
+        presenter_mock.raise_invalid_stage_ids_for_task.return_value = mock_object
+
+        # Act
+        interactor.get_task_details_wrapper(
+            user_id=user_id, task_display_id=task_display_id,
+            presenter=presenter_mock
+        )
+        # Assert
+        get_user_role_ids_mock_method.assert_called_once()
+        task_crud_storage_mock.get_gof_ids_having_permission \
+            .assert_called_once_with(
+            gof_ids, user_roles
+        )
+        task_crud_storage_mock.get_field_ids_having_permission \
+            .assert_called_once_with(
+            field_ids, user_roles)
+        presenter_mock.raise_invalid_stage_ids_for_task.assert_called_once()
+
+
+    @patch.object(GetTaskStagesAndActions, "get_task_stages_and_actions")
+    @patch.object(GetTaskBaseInteractor, 'get_task')
+    @patch.object(GetStagesAssigneesDetailsInteractor,
+                  "get_stages_assignee_details_dtos")
+    def test_given_valid_task_returns_task_complete_details_dto(
+            self, stage_assignee_details_dtos_mock, get_task_mock,
+            get_task_stages_and_actions_mock, stage_assignee_details_dtos,
+            mocker, storage_mock, presenter_mock, stages_storage_mock,
+            task_storage_mock, task_crud_storage_mock, action_storage_mock,
+            task_stage_storage_mock, task_details_dto, user_roles, gof_ids,
+            permission_task_gof_dtos, field_ids, permission_field_ids,
+            permission_task_gof_field_dtos, task_complete_details_dto,
+            mock_object, stages_and_actions_details_dtos, permission_gof_ids,
+            reset_sequence,
+    ):
+        # Arrange
+        from ib_tasks.tests.common_fixtures.adapters.roles_service \
+            import get_user_role_ids
+        get_user_role_ids_mock_method = get_user_role_ids(mocker)
+        user_id = "user1"
+        task_id = 1
+        task_display_id = "IBWF-1"
         get_task_mock.return_value = task_details_dto
         stage_assignee_details_dtos_mock.return_value = \
             stage_assignee_details_dtos
         get_task_stages_and_actions_mock.return_value = \
             stages_and_actions_details_dtos
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_storage_mock.get_task_id_for_task_display_id.return_value = \
+            task_id
 
         interactor = GetTaskInteractor(
             storage=storage_mock, stages_storage=stages_storage_mock,
             task_storage=task_storage_mock, action_storage=action_storage_mock,
-            task_stage_storage=task_stage_storage_mock
+            task_stage_storage=task_stage_storage_mock,
+            task_crud_storage=task_crud_storage_mock
         )
-        storage_mock.get_gof_ids_having_permission.return_value = \
+        task_crud_storage_mock.get_gof_ids_having_permission.return_value = \
             permission_gof_ids
-        storage_mock.get_field_ids_having_permission.return_value = \
+        task_crud_storage_mock.get_field_ids_having_permission.return_value = \
             permission_field_ids
         presenter_mock.get_task_response.return_value = mock_object
 
         # Act
         interactor.get_task_details_wrapper(
-            user_id=user_id, task_id=task_id, presenter=presenter_mock
+            user_id=user_id, task_display_id=task_display_id,
+            presenter=presenter_mock
         )
         # Assert
         get_user_role_ids_mock_method.assert_called_once()
-        storage_mock.get_gof_ids_having_permission.assert_called_once_with(
+        task_crud_storage_mock.get_gof_ids_having_permission\
+            .assert_called_once_with(
             gof_ids, user_roles
         )
-        storage_mock.get_field_ids_having_permission.assert_called_once_with(
+        task_crud_storage_mock.get_field_ids_having_permission\
+            .assert_called_once_with(
             field_ids, user_roles)
         presenter_mock.get_task_response.assert_called_once_with(
             task_complete_details_dto)

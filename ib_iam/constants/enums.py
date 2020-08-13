@@ -1,4 +1,5 @@
 import enum
+
 from ib_common.constants import BaseEnumClass
 
 
@@ -9,3 +10,4 @@ class StatusCode(BaseEnumClass, enum.Enum):
     FORBIDDEN = 403
     SUCCESS = 200
     SUCCESS_CREATE = 201
+

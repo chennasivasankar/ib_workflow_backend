@@ -2,12 +2,13 @@ import factory
 import pytest
 
 from ib_tasks.constants.constants import ALL_ROLES_ID
-from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrder
+from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrderDTO
 from ib_tasks.models import Task, TaskGoF, TaskGoFField
 from ib_tasks.tests.factories.models import GoFRoleFactory, FieldRoleFactory, \
     TaskFactory, FieldFactory, TaskGoFFactory, TaskGoFFieldFactory, GoFFactory
 from ib_tasks.tests.factories.storage_dtos import TaskGoFFieldDTOFactory, \
-    TaskGoFWithTaskIdDTOFactory, CreateTaskDTOFactory
+    TaskGoFWithTaskIdDTOFactory
+from ib_tasks.tests.factories.interactor_dtos import CreateTaskDTOFactory
 
 
 @pytest.mark.django_db
@@ -56,6 +57,7 @@ class TestCreateOrUpdateTaskStorageImplementation:
             TaskBaseDetailsDTO
         excepted_task_base_details_dto = TaskBaseDetailsDTO(
             template_id=task_obj.template_id,
+            task_display_id=task_obj.task_display_id,
             title=task_obj.title,
             description=task_obj.description,
             start_date=task_obj.start_date,
@@ -240,7 +242,9 @@ class TestCreateOrUpdateTaskStorageImplementation:
 
     def test_create_task_with_template_id(self, storage, reset_sequence):
         # Arrange
+        from ib_tasks.constants.constants import TASK_DISPLAY_ID
         create_task_dto = CreateTaskDTOFactory()
+        expected_task_display_id = TASK_DISPLAY_ID.format(1)
 
         # Act
         created_task_id = \
@@ -262,6 +266,7 @@ class TestCreateOrUpdateTaskStorageImplementation:
         assert task.start_date.date() == create_task_dto.start_date
         assert task.due_date == due_date_time
         assert task.priority == create_task_dto.priority
+        assert task.task_display_id == expected_task_display_id
 
     def test_create_task_gofs(self, storage, reset_sequence):
         # Arrange
@@ -278,7 +283,7 @@ class TestCreateOrUpdateTaskStorageImplementation:
         # Assert
         for task_gof_dto in task_gof_dtos:
             TaskGoF.objects.get(
-                task_id=task_gof_dto.task_id,
+                task_id=task_gof_dto.task_display_id,
                 gof_id=task_gof_dto.gof_id,
                 same_gof_order=task_gof_dto.same_gof_order
             )
@@ -332,7 +337,7 @@ class TestCreateOrUpdateTaskStorageImplementation:
             size=2, task_id=task_id
         )
         expected_task_gof_dtos = [
-            GoFIdWithSameGoFOrder(
+            GoFIdWithSameGoFOrderDTO(
                 gof_id=task_gof.gof_id,
                 same_gof_order=task_gof.same_gof_order
             )
@@ -386,7 +391,7 @@ class TestCreateOrUpdateTaskStorageImplementation:
         )
         task_gof_dtos = [
             TaskGoFWithTaskIdDTOFactory(
-                task_id=task_gof.task_id,
+                task_id=task_gof.task_display_id,
                 gof_id=task_gof.gof_id,
                 same_gof_order=2
             )

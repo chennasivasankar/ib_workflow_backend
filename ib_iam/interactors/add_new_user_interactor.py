@@ -1,26 +1,30 @@
 from ib_iam.exceptions.custom_exceptions import (
-    UserIsNotAdmin, GivenNameIsEmpty, InvalidEmailAddress,
+    UserIsNotAdmin, InvalidEmailAddress,
     UserAccountAlreadyExistWithThisEmail,
     NameShouldNotContainsNumbersSpecCharacters, RoleIdsAreInvalid,
-    InvalidCompanyId, TeamIdsAreInvalid
+    InvalidCompanyId, TeamIdsAreInvalid, InvalidNameLength
 )
-from ib_iam.interactors.DTOs.common_dtos import \
-    UserDetailsWithTeamRoleAndCompanyIdsDTO
+from ib_iam.interactors.dtos.dtos import \
+    UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.add_new_user_presenter_inerface \
     import AddUserPresenterInterface
+from ib_iam.interactors.storage_interfaces.elastic_storage_interface \
+    import ElasticSearchStorageInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface \
     import UserStorageInterface
 
 
 class AddNewUserInteractor(ValidationMixin):
-    def __init__(self, user_storage: UserStorageInterface):
+    def __init__(self, user_storage: UserStorageInterface,
+                 elastic_storage: ElasticSearchStorageInterface):
         self.user_storage = user_storage
+        self.elastic_storage = elastic_storage
 
     def add_new_user_wrapper(
             self, user_id: str,
             user_details_with_team_role_and_company_ids_dto \
-                    : UserDetailsWithTeamRoleAndCompanyIdsDTO,
+                    : UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO,
             presenter: AddUserPresenterInterface):
         try:
             self.add_new_user(
@@ -30,8 +34,9 @@ class AddNewUserInteractor(ValidationMixin):
             response = presenter.user_created_response()
         except UserIsNotAdmin:
             response = presenter.raise_user_is_not_admin_exception()
-        except GivenNameIsEmpty:
-            response = presenter.raise_invalid_name_exception()
+        except InvalidNameLength:
+            response = presenter \
+                .raise_invalid_name_length_exception_for_update_user_profile()
         except InvalidEmailAddress:
             response = presenter.raise_invalid_email_exception()
         except UserAccountAlreadyExistWithThisEmail:
@@ -70,12 +75,17 @@ class AddNewUserInteractor(ValidationMixin):
             user_id=new_user_id, team_ids=team_ids)
         self.user_storage.add_roles_to_the_user(
             user_id=new_user_id, role_ids=role_obj_ids)
+        elastic_user_id = self.elastic_storage.create_elastic_user(
+            user_id=new_user_id, name=name
+        )
+        self.elastic_storage.create_elastic_user_intermediary(
+            elastic_user_id=elastic_user_id, user_id=new_user_id
+        )
 
     def _validate_add_new_user_details(
             self, user_id,
-            user_details_with_team_role_and_company_ids_dto \
-                    : UserDetailsWithTeamRoleAndCompanyIdsDTO
-    ):
+            user_details_with_team_role_and_company_ids_dto:
+            UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO):
         name = user_details_with_team_role_and_company_ids_dto.name
         email = user_details_with_team_role_and_company_ids_dto.email
         role_ids = user_details_with_team_role_and_company_ids_dto.role_ids

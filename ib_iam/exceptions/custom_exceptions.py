@@ -25,15 +25,15 @@ class UserAccountAlreadyExistWithThisEmail(Exception):
     pass
 
 
-class GivenNameIsEmpty(Exception):
-    pass
-
-
 class InvalidEmailAddress(Exception):
     pass
 
 
 class NameShouldNotContainsNumbersSpecCharacters(Exception):
+    pass
+
+
+class InvalidNameLength(Exception):
     pass
 
 
@@ -108,3 +108,15 @@ class DuplicateUserIds(Exception):
 class InvalidUserIds(Exception):
     def __init__(self, user_ids):
         self.user_ids = user_ids
+
+
+class InvalidCurrentPassword(Exception):
+    pass
+
+
+class InvalidNewPassword(Exception):
+    pass
+
+
+class CurrentPasswordMismatch(Exception):
+    pass

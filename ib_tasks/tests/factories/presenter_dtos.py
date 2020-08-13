@@ -12,10 +12,12 @@ class TaskIdWithStageDetailsDTOFactory(factory.Factory):
         model = TaskIdWithStageDetailsDTO
 
     task_id = factory.Sequence(lambda n: 'task_%d' % (n + 1))
+    task_display_id = factory.sequence(
+        lambda counter: "iBWF-{}".format(counter+1))
     stage_id = factory.Sequence(lambda n: 'stage_%d' % (n + 1))
     stage_display_name = factory.Sequence(
         lambda n: 'stage_display_%d' % (n + 1))
-    stage_color = factory.sequence(lambda n: "color_{}".format(n + 1))
+    stage_color = factory.Sequence(lambda n: "color_{}".format(n + 1))
     db_stage_id = factory.Sequence(lambda n: n + 1)
 
 
@@ -33,6 +35,7 @@ class GetTaskStageCompleteDetailsDTOFactory(factory.Factory):
         model = GetTaskStageCompleteDetailsDTO
 
     task_id = factory.Sequence(lambda n: 'task_%d' % (n + 1))
+    stage_color = factory.Sequence(lambda n: 'color_%d' % (n + 1))
     stage_id = factory.Sequence(lambda n: 'stage_%d' % (n + 1))
     field_dtos = None
     action_dtos = None

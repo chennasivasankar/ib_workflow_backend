@@ -11,7 +11,5 @@ snapshots['TestCase02GetChecklistAPITestCase.test_case status_code'] = '200'
 
 snapshots['TestCase02GetChecklistAPITestCase.test_case body'] = {
     'checklist': [
-    ],
-    'entity_id': '09b6cf6d-90ea-43ac-b0ee-3cee3c59ce5a',
-    'entity_type': 'TASK'
+    ]
 }

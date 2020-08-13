@@ -1,11 +1,28 @@
 
 
+REQUEST_BODY_JSON = """
+{
+    "templates_conditions": [
+        {
+            "template_id": "string",
+            "conditions": [
+                {
+                    "field_id": "string",
+                    "operator": "EQ",
+                    "value": "string"
+                }
+            ]
+        }
+    ]
+}
+"""
+
 
 RESPONSE_200_JSON = """
 {
     "tasks": [
         {
-            "task_id": 1,
+            "task_id": "string",
             "task_overview_fields": [
                 {
                     "field_type": "PLAIN_TEXT",

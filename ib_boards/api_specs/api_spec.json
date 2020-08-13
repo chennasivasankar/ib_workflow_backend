@@ -129,6 +129,10 @@
         "stage_color": {
           "type": "string"
         },
+        "stage_id": {
+          "type": "integer",
+          "format": "int64"
+        },
         "fields": {
           "type": "array",
           "items": {
@@ -175,8 +179,7 @@
             "required": [
               "action_id",
               "name",
-              "button_text",
-              "transition_template_id"
+              "button_text"
             ]
           }
         }
@@ -185,7 +188,8 @@
         "task_id",
         "fields",
         "actions",
-        "stage_color"
+        "stage_color",
+        "stage_id"
       ]
     },
     "ColumnDetails": {
@@ -290,6 +294,13 @@
       "type": "integer",
       "format": "int64",
       "required": true
+    },
+    "SearchQueryParameter": {
+      "name": "search_query",
+      "in": "query",
+      "description": "Search Query value",
+      "type": "string",
+      "required": false
     },
     "BoardIdParameter": {
       "name": "board_id",
@@ -514,6 +525,9 @@
           },
           {
             "$ref": "#/parameters/ViewTypeParameter"
+          },
+          {
+            "$ref":"#/parameters/SearchQueryParameter"
           }
         ],
         "responses": {
@@ -557,6 +571,9 @@
           },
           {
             "$ref": "#/parameters/ViewTypeParameter"
+          },
+          {
+            "$ref":"#/parameters/SearchQueryParameter"
           }
         ],
         "responses": {

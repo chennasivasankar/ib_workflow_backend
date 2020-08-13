@@ -97,6 +97,13 @@ class TestGetTaskPresenterImplementation:
                 db_stage_id=2,
                 color="color2",
                 actions_dtos=[stages_action_dtos[2], stages_action_dtos[3]]
+            ),
+            StageAndActionsDetailsDTO(
+                stage_id="stage2",
+                name="name3",
+                db_stage_id=3,
+                color="color3",
+                actions_dtos=[]
             )
         ]
         return stages_and_actions_details_dtos
@@ -118,6 +125,7 @@ class TestGetTaskPresenterImplementation:
         stage_assignee_dtos = [
             StageAssigneeDTOFactory(
                 assignee_id="123e4567-e89b-12d3-a456-426614174001"),
+            StageAssigneeDTOFactory(assignee_id=None),
             StageAssigneeDTOFactory(assignee_id=None)
         ]
         return stage_assignee_dtos
@@ -136,7 +144,12 @@ class TestGetTaskPresenterImplementation:
             StageAssigneeDetailsDTOFactory(
                 task_stage_id=stage_assignee_dtos[1].task_stage_id,
                 stage_id=stage_assignee_dtos[1].stage_id,
-                assignee_details_dto=None)
+                assignee_details_dto=None),
+            StageAssigneeDetailsDTOFactory(
+                task_stage_id=stage_assignee_dtos[2].task_stage_id,
+                stage_id=stage_assignee_dtos[2].stage_id,
+                assignee_details_dto=None),
+
         ]
         return stage_assignee_details_dtos
 
@@ -150,7 +163,6 @@ class TestGetTaskPresenterImplementation:
             .get_task_presenter_interface \
             import TaskCompleteDetailsDTO
         task_complete_details_dto = TaskCompleteDetailsDTO(
-            task_id="task0",
             task_details_dto=permission_task_details_dto,
             stages_and_actions_details_dtos=stages_and_actions_details_dtos,
             stage_assignee_details_dtos=stage_assignee_details_dtos
@@ -167,6 +179,38 @@ class TestGetTaskPresenterImplementation:
 
         # Act
         response_object = presenter.raise_exception_for_invalid_task_id(err)
+
+        # Assert
+        snapshot.assert_match(name="exception_object",
+                              value=response_object.content)
+
+    def test_raise_exception_for_invalid_task_display_id(
+            self, presenter, snapshot
+    ):
+        # Arrange
+        task_display_id = "IBWF-10"
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            InvalidTaskDisplayId
+        err = InvalidTaskDisplayId(task_display_id)
+
+        # Act
+        response_object = presenter.raise_invalid_task_display_id(err)
+
+        # Assert
+        snapshot.assert_match(name="exception_object",
+                              value=response_object.content)
+
+    def test_raise_exception_for_raise_invalid_stage_ids_for_task(
+            self, presenter, snapshot
+    ):
+        # Arrange
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            InvalidStageIdsForTask
+        message = "invaild stage ids"
+        err = InvalidStageIdsForTask(message)
+
+        # Act
+        response_object = presenter.raise_invalid_stage_ids_for_task(err)
 
         # Assert
         snapshot.assert_match(name="exception_object",

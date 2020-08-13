@@ -14,8 +14,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 class FieldsStorageInterface(abc.ABC):
 
     @abc.abstractmethod
-    def get_fields_details(self, template_stage_dtos: List[StageTaskFieldsDTO],
-                           user_roles: List[str]) -> \
+    def get_fields_details(self, template_stage_dtos: List[StageTaskFieldsDTO]) -> \
             List[FieldDetailsDTOWithTaskId]:
         pass
 
@@ -62,4 +61,24 @@ class FieldsStorageInterface(abc.ABC):
     def get_user_field_permission_dtos(
             self, roles: List[str],
             field_ids: List[str]) -> List[UserFieldPermissionDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_field_ids_having_read_permission_for_user(
+            self, user_roles: List[str], field_ids: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_field_ids_having_write_permission_for_user(
+            self, user_roles: List[str], field_ids: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def check_is_user_has_read_permission_for_field(
+            self, field_id: str, user_roles: List[str]) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def check_is_user_has_write_permission_for_field(
+            self, field_id: str, user_roles: List[str]) -> bool:
         pass

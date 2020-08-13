@@ -2,11 +2,10 @@ from typing import Optional, List, Union
 
 from ib_tasks.constants.config import TIME_FORMAT
 from ib_tasks.documents.elastic_task import ElasticFieldDTO, ElasticTaskDTO
-from ib_tasks.documents.elastic_task import ElasticFieldDTO, ElasticTaskDTO
 from ib_tasks.exceptions.datetime_custom_exceptions import \
     DueTimeHasExpiredForToday, InvalidDueTimeFormat, \
     StartDateIsAheadOfDueDate, \
-    DueDateIsBehindStartDate
+    DueDateIsBehindStartDate, DueDateHasExpired
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     EmptyValueForRequiredField, InvalidPhoneNumberValue, \
     InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
@@ -24,12 +23,14 @@ from ib_tasks.exceptions.permission_custom_exceptions import \
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, \
-    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
+    InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF, InvalidTaskDisplayId
 from ib_tasks.interactors.create_or_update_task. \
     template_gofs_fields_base_validations import \
     TemplateGoFsFieldsBaseValidationsInteractor
 from ib_tasks.interactors.field_dtos import FieldIdWithTaskGoFIdDTO
-from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrder
+from ib_tasks.interactors.gofs_dtos import GoFIdWithSameGoFOrderDTO
+from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
+    GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.presenter_interfaces.update_task_presenter import \
     UpdateTaskPresenterInterface
 from ib_tasks.interactors.stages_dtos import StageAssigneeDTO, \
@@ -53,14 +54,13 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import \
     TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from ib_tasks.interactors.task_dtos import UpdateTaskDTO, CreateTaskDTO
+from ib_tasks.interactors.task_dtos import UpdateTaskDTO, CreateTaskDTO, \
+    FieldValuesDTO, UpdateTaskWithTaskDisplayIdDTO
 from ib_tasks.interactors.update_task_stage_assignees_interactor import \
     UpdateTaskStageAssigneesInteractor
-from ib_tasks.interactors.task_dtos import UpdateTaskDTO, CreateTaskDTO, \
-    FieldValuesDTO
 
 
-class UpdateTaskInteractor:
+class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
 
     def __init__(
             self, task_storage: TaskStorageInterface,
@@ -80,13 +80,23 @@ class UpdateTaskInteractor:
 
     def update_task_wrapper(
             self, presenter: UpdateTaskPresenterInterface,
-            task_dto: UpdateTaskDTO
+            task_dto: UpdateTaskWithTaskDisplayIdDTO
     ):
         try:
             return self._prepare_update_task_response(
                 task_dto, presenter)
+        except InvalidTaskDisplayId as err:
+            return presenter.raise_invalid_task_display_id(err)
         except InvalidTaskException as err:
             return presenter.raise_invalid_task_id(err)
+        except InvalidDueTimeFormat as err:
+            return presenter.raise_invalid_due_time_format(err)
+        except DueDateHasExpired as err:
+            return presenter.raise_due_date_has_expired(err)
+        except StartDateIsAheadOfDueDate as err:
+            return presenter.raise_start_date_is_ahead_of_due_date(err)
+        except DueTimeHasExpiredForToday as err:
+            return presenter.raise_due_time_has_expired_for_today(err)
         except InvalidGoFIds as err:
             return presenter.raise_invalid_gof_ids(err)
         except InvalidFieldIds as err:
@@ -151,17 +161,30 @@ class UpdateTaskInteractor:
             return presenter.raise_exception_for_not_acceptable_file_format(
                 err)
         except StageIdsWithInvalidPermissionForAssignee as err:
-            return \
-                presenter.raise_stage_ids_with_invalid_permission_for_assignee_exception(
-                    err
-                )
+            return presenter. \
+                raise_stage_ids_with_invalid_permission_for_assignee_exception(
+                err)
 
     def _prepare_update_task_response(
-            self, task_dto: UpdateTaskDTO,
+            self, task_dto: UpdateTaskWithTaskDisplayIdDTO,
             presenter: UpdateTaskPresenterInterface
     ):
-        self.update_task(task_dto)
+        self.update_task_with_task_display_id(task_dto)
         return presenter.get_update_task_response()
+
+    def update_task_with_task_display_id(
+            self, task_dto: UpdateTaskWithTaskDisplayIdDTO):
+        task_id = self.get_task_id_for_task_display_id(
+            task_dto.task_display_id)
+        task_dto_with_db_task_id = UpdateTaskDTO(
+            task_id=task_id, created_by_id=task_dto.created_by_id,
+            title=task_dto.title, description=task_dto.description,
+            start_date=task_dto.start_date, due_date=task_dto.due_date,
+            due_time=task_dto.due_time, priority=task_dto.priority,
+            stage_assignee=task_dto.stage_assignee,
+            gof_fields_dtos=task_dto.gof_fields_dtos
+        )
+        self.update_task(task_dto_with_db_task_id)
 
     def update_task(self, task_dto: UpdateTaskDTO):
         task_id = task_dto.task_id
@@ -181,8 +204,6 @@ class UpdateTaskInteractor:
             task_template_id, action_type=None)
         self.create_task_storage.update_task_with_given_task_details(
             task_dto=task_dto)
-        elastic_dto = self._get_elastic_task_dto(task_dto)
-        self.elastic_storage.update_task(task_dto=elastic_dto)
         existing_gofs = \
             self.create_task_storage \
                 .get_gof_ids_with_same_gof_order_related_to_a_task(task_id)
@@ -224,8 +245,7 @@ class UpdateTaskInteractor:
             )
         ]
         task_stage_assignee_dto = TaskIdWithStageAssigneesDTO(
-            task_id=task_dto.task_id, stage_assignees=stage_assignees
-        )
+            task_id=task_dto.task_id, stage_assignees=stage_assignees)
         update_stage_assignee_interactor.update_task_stage_assignees(
             task_stage_assignee_dto)
 
@@ -326,8 +346,7 @@ class UpdateTaskInteractor:
     ):
         task_gof_details_dtos = \
             self.create_task_storage.update_task_gofs(
-                task_gof_dtos_for_updation
-            )
+                task_gof_dtos_for_updation)
         task_gof_field_dtos = self._prepare_task_gof_fields_dtos(
             task_dto, task_gof_details_dtos)
         task_gof_field_dtos_for_updation, task_gof_field_dtos_for_creation = \
@@ -335,13 +354,11 @@ class UpdateTaskInteractor:
                 task_gof_field_dtos, existing_fields)
         if task_gof_field_dtos_for_updation:
             self.create_task_storage.update_task_gof_fields(
-                task_gof_field_dtos_for_updation
-            )
+                task_gof_field_dtos_for_updation)
 
         if task_gof_field_dtos_for_creation:
             self.create_task_storage.create_task_gof_fields(
-                task_gof_field_dtos_for_creation
-            )
+                task_gof_field_dtos_for_creation)
 
     def _create_task_gofs(
             self, task_gof_dtos_for_creation: List[TaskGoFWithTaskIdDTO],
@@ -375,7 +392,7 @@ class UpdateTaskInteractor:
     @staticmethod
     def _is_gof_already_exists(
             gof_id: str, same_gof_order: int,
-            existing_gofs_with_same_gof_order: List[GoFIdWithSameGoFOrder]
+            existing_gofs_with_same_gof_order: List[GoFIdWithSameGoFOrderDTO]
     ) -> bool:
         for existing_gof in existing_gofs_with_same_gof_order:
             gof_already_exists = (
@@ -395,6 +412,9 @@ class UpdateTaskInteractor:
         )
         import datetime
         self._validate_due_time_format(due_time)
+        due_date_is_expired = (due_date < datetime.datetime.today().date())
+        if due_date_is_expired:
+            raise DueDateHasExpired(due_date)
         due_time_obj = datetime.datetime.strptime(due_time, TIME_FORMAT).time()
         now_time = datetime.datetime.now().time()
         due_time_is_expired_if_due_date_is_today = (

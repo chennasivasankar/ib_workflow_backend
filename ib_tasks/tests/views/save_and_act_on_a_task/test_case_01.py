@@ -11,7 +11,7 @@ from ib_tasks.models import GoF
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 from ...factories.models import StageModelFactory, StageActionFactory, \
     ActionPermittedRolesFactory, \
-    TaskTemplateWith2GoFsFactory, TaskStageFactory, TaskStatusVariableFactory, \
+    TaskTemplateWith2GoFsFactory, CurrentTaskStageModelFactory, TaskStatusVariableFactory, \
     StagePermittedRolesFactory
 
 
@@ -97,7 +97,7 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
         action = StageActionFactory(stage=stage, py_function_import_path=path)
         ActionPermittedRolesFactory.create(
             action=action, role_id="FIN_PAYMENT_REQUESTER")
-        TaskStageFactory.create(task=task_obj, stage=stage)
+        CurrentTaskStageModelFactory.create(task=task_obj, stage=stage)
         StagePermittedRolesFactory.create(stage=stage)
 
     @pytest.mark.django_db
@@ -170,7 +170,7 @@ class TestCase01SaveAndActOnATaskAPITestCase(TestUtils):
             snapshot.assert_match(task_gof.same_gof_order,
                                   f'same_gof_order_{counter}')
             snapshot.assert_match(task_gof.gof_id, f'gof_id_{counter}')
-            snapshot.assert_match(task_gof.task_id, f'task_id_{counter}')
+            snapshot.assert_match(task_gof.task_display_id, f'task_id_{counter}')
 
             counter = counter + 1
 

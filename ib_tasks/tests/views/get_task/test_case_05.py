@@ -36,7 +36,7 @@ class TestCase05GetTaskAPITestCase(TestUtils):
         assignee_details_dtos_mock(mocker)
         body = {}
         path_params = {}
-        query_params = {'task_id': 1}
+        query_params = {'task_id': "IBWF-1"}
         headers = {}
         self.make_api_call(
             body=body, path_params=path_params,

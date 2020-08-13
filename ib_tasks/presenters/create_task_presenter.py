@@ -1,6 +1,10 @@
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
+from ib_tasks.exceptions.datetime_custom_exceptions import \
+    InvalidDueTimeFormat, StartDateIsAheadOfDueDate, \
+    DueDateIsBehindStartDate, \
+    DueTimeHasExpiredForToday, DueDateHasExpired
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     InvalidUrlForFile, InvalidFileFormat, InvalidImageFormat, \
     InvalidUrlForImage, InvalidTimeFormat, InvalidDateFormat, \
@@ -22,11 +26,74 @@ from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidGoFsOfTaskTemplate, InvalidFieldsOfGoF
 from ib_tasks.interactors.presenter_interfaces.create_task_presenter import \
     CreateTaskPresenterInterface
+from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 
 
 class CreateTaskPresenterImplementation(
     CreateTaskPresenterInterface, HTTPResponseMixin
 ):
+
+    def raise_due_date_has_expired(self, err: DueDateHasExpired):
+        from ib_tasks.constants.exception_messages import \
+            DUE_DATE_HAS_EXPIRED
+        message = DUE_DATE_HAS_EXPIRED[0].format(err.due_date)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": DUE_DATE_HAS_EXPIRED[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_due_time_format(self, err: InvalidDueTimeFormat):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_DUE_TIME_FORMAT
+        message = INVALID_DUE_TIME_FORMAT[0].format(err.due_time)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_DUE_TIME_FORMAT[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_start_date_is_ahead_of_due_date(self,
+                                              err: StartDateIsAheadOfDueDate):
+        from ib_tasks.constants.exception_messages import \
+            START_DATE_IS_AHEAD_OF_DUE_DATE
+        message = START_DATE_IS_AHEAD_OF_DUE_DATE[0].format(
+            str(err.given_start_date), str(err.given_due_date)
+        )
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": START_DATE_IS_AHEAD_OF_DUE_DATE[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_due_date_is_behind_start_date(self,
+                                            err: DueDateIsBehindStartDate):
+        from ib_tasks.constants.exception_messages import \
+            DUE_DATE_IS_BEHIND_START_DATE
+        message = DUE_DATE_IS_BEHIND_START_DATE[0].format(
+            str(err.given_due_date), str(err.given_start_date)
+        )
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": DUE_DATE_IS_BEHIND_START_DATE[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_due_time_has_expired_for_today(self,
+                                             err: DueTimeHasExpiredForToday):
+        from ib_tasks.constants.exception_messages import \
+            DUE_TIME_HAS_EXPIRED_FOR_TODAY
+        message = DUE_TIME_HAS_EXPIRED_FOR_TODAY[0].format(err.due_time)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": DUE_TIME_HAS_EXPIRED_FOR_TODAY[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_invalid_key_error(self):
         from ib_tasks.constants.exception_messages import \
@@ -115,10 +182,20 @@ class CreateTaskPresenterImplementation(
         }
         return self.prepare_400_bad_request_response(data)
 
-    def get_create_task_response(self):
+    def get_create_task_response(
+            self, task_current_stage_details_dto: TaskCurrentStageDetailsDTO):
         data = {
-            "message": "task created successfully"
+            "task_id": task_current_stage_details_dto.task_display_id,
+            "stages": [],
+            "user_has_permission":
+                task_current_stage_details_dto.user_has_permission
         }
+        for stage_dto in task_current_stage_details_dto.stage_details_dtos:
+            stage = {
+                "stage_id": stage_dto.stage_id,
+                "stage_display_name": stage_dto.stage_display_name
+            }
+            data['stages'].append(stage)
         return self.prepare_201_created_response(response_dict=data)
 
     def raise_invalid_task_template_ids(self, err: InvalidTaskTemplateIds):
@@ -182,13 +259,13 @@ class CreateTaskPresenterImplementation(
 
     def raise_duplicate_field_ids_to_a_gof(self, err: DuplicateFieldIdsToGoF):
         from ib_tasks.constants.exception_messages import \
-            DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF
-        response_message = DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF[0].format(
+            DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF
+        response_message = DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF[0].format(
             err.gof_id, str(err.field_ids))
         data = {
             "response": response_message,
             "http_status_code": 400,
-            "res_status": DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF[1]
+            "res_status": DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF[1]
         }
         return self.prepare_400_bad_request_response(data)
 
@@ -209,7 +286,7 @@ class CreateTaskPresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             USER_NEEDS_GOF_WRITABLE_PERMISSION
         response_message = USER_NEEDS_GOF_WRITABLE_PERMISSION[0].format(
-            err.user_id, err.gof_id, str(err.missed_roles))
+            err.user_id, err.gof_id, str(err.required_roles))
         data = {
             "response": response_message,
             "http_status_code": 400,
@@ -223,7 +300,7 @@ class CreateTaskPresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             USER_NEEDS_FILED_WRITABLE_PERMISSION
         response_message = USER_NEEDS_FILED_WRITABLE_PERMISSION[0].format(
-            err.user_id, err.field_id, str(err.missed_roles))
+            err.user_id, err.field_id, str(err.required_roles))
         data = {
             "response": response_message,
             "http_status_code": 400,

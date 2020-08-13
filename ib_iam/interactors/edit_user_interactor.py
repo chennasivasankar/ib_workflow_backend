@@ -1,29 +1,33 @@
 from typing import List
 
 from ib_iam.exceptions.custom_exceptions import (
-    UserIsNotAdmin, GivenNameIsEmpty, InvalidEmailAddress,
+    UserIsNotAdmin, InvalidEmailAddress,
     RoleIdsAreInvalid, InvalidCompanyId, TeamIdsAreInvalid, UserDoesNotExist,
-    NameShouldNotContainsNumbersSpecCharacters
+    NameShouldNotContainsNumbersSpecCharacters,
+    InvalidNameLength
 )
-from ib_iam.interactors.DTOs.common_dtos import \
-    UserDetailsWithTeamRoleAndCompanyIdsDTO
+from ib_iam.interactors.dtos.dtos import \
+    UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.edit_user_presenter_interface \
     import EditUserPresenterInterface
+from ib_iam.interactors.storage_interfaces.elastic_storage_interface \
+    import ElasticSearchStorageInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface \
     import UserStorageInterface
 
 
 class EditUserInteractor(ValidationMixin):
-    def __init__(self, user_storage: UserStorageInterface):
+    def __init__(self, user_storage: UserStorageInterface,
+                 elastic_storage: ElasticSearchStorageInterface):
+        self.elastic_storage = elastic_storage
         self.user_storage = user_storage
 
     def edit_user_wrapper(
             self, admin_user_id: str, user_id: str,
-            user_details_with_team_role_and_company_ids_dto \
-                    : UserDetailsWithTeamRoleAndCompanyIdsDTO,
-            presenter: EditUserPresenterInterface
-    ):
+            user_details_with_team_role_and_company_ids_dto:
+            UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO,
+            presenter: EditUserPresenterInterface):
         try:
             self.edit_user(admin_user_id=admin_user_id, user_id=user_id,
                            user_details_with_team_role_and_company_ids_dto \
@@ -34,10 +38,11 @@ class EditUserInteractor(ValidationMixin):
             response = presenter.raise_user_is_not_admin_exception()
         except UserDoesNotExist:
             response = presenter.raise_user_does_not_exist()
-        except GivenNameIsEmpty:
-            response = presenter.raise_invalid_name_exception()
         except InvalidEmailAddress:
             response = presenter.raise_invalid_email_exception()
+        except InvalidNameLength:
+            response = presenter \
+                .raise_invalid_name_length_exception_for_update_user_profile()
         except NameShouldNotContainsNumbersSpecCharacters:
             response = presenter. \
                 raise_name_should_not_contain_special_characters_exception()
@@ -70,6 +75,8 @@ class EditUserInteractor(ValidationMixin):
             user_id=user_id, company_id=company_id, role_ids=role_ids,
             team_ids=team_ids, name=name
         )
+        self.elastic_storage.update_elastic_user(user_id=user_id, name=name)
+
 
     @staticmethod
     def _validate_email_and_throw_exception(email: str):
@@ -136,11 +143,11 @@ class EditUserInteractor(ValidationMixin):
             self, user_id: str, company_id: str,
             role_ids: List[str], team_ids: List[str], name: str):
         self._remove_existing_teams_roles_and_company(user_id)
-        self._assaign_teams_roles_company_to_user(
+        self._assign_teams_roles_company_to_user(
             company_id, role_ids, team_ids, user_id, name
         )
 
-    def _assaign_teams_roles_company_to_user(
+    def _assign_teams_roles_company_to_user(
             self, company_id: str, role_ids: List[str], team_ids: List[str],
             user_id: str, name: str):
         ids_of_role_objs = self.user_storage.get_role_objs_ids(role_ids)

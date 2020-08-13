@@ -30,6 +30,17 @@ from ib_tasks.interactors.presenter_interfaces \
 class CreateTransitionChecklistTemplatePresenterImplementation(
     CreateTransitionChecklistTemplatePresenterInterface, HTTPResponseMixin
 ):
+    def raise_invalid_task_display_id(self, err):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_TASK_DISPLAY_ID
+        message = INVALID_TASK_DISPLAY_ID[0].format(err.task_display_id)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_TASK_DISPLAY_ID[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
     def raise_invalid_transition_checklist_template_id(
             self, err: InvalidTransitionChecklistTemplateId
     ):
@@ -106,7 +117,7 @@ class CreateTransitionChecklistTemplatePresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             INVALID_TASK_ID
         response_message = INVALID_TASK_ID[0].format(
-            err.task_id
+            err.task_display_id
         )
         data = {
             "response": response_message,
@@ -166,13 +177,13 @@ class CreateTransitionChecklistTemplatePresenterImplementation(
 
     def raise_duplicate_field_ids_to_a_gof(self, err: DuplicateFieldIdsToGoF):
         from ib_tasks.constants.exception_messages import \
-            DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF
-        response_message = DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF[0].format(
+            DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF
+        response_message = DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF[0].format(
             err.gof_id, str(err.field_ids))
         data = {
             "response": response_message,
             "http_status_code": 400,
-            "res_status": DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF[1]
+            "res_status": DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF[1]
         }
         return self.prepare_400_bad_request_response(data)
 
@@ -193,7 +204,7 @@ class CreateTransitionChecklistTemplatePresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             USER_NEEDS_GOF_WRITABLE_PERMISSION
         response_message = USER_NEEDS_GOF_WRITABLE_PERMISSION[0].format(
-            err.user_id, err.gof_id, str(err.missed_roles))
+            err.user_id, err.gof_id, str(err.required_roles))
         data = {
             "response": response_message,
             "http_status_code": 400,
@@ -207,7 +218,7 @@ class CreateTransitionChecklistTemplatePresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             USER_NEEDS_FILED_WRITABLE_PERMISSION
         response_message = USER_NEEDS_FILED_WRITABLE_PERMISSION[0].format(
-            err.user_id, err.field_id, str(err.missed_roles))
+            err.user_id, err.field_id, str(err.required_roles))
         data = {
             "response": response_message,
             "http_status_code": 400,

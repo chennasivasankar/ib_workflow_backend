@@ -2,5 +2,5 @@
 
 APP_NAME = "ib_iam"
 OPERATION_NAME = "update_user_password"
-REQUEST_METHOD = "post"
-URL_SUFFIX = "update_password/v1/"
+REQUEST_METHOD = "put"
+URL_SUFFIX = "user/password/update/v1/"

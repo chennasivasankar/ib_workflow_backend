@@ -1,5 +1,6 @@
 import factory
 
+from ib_iam.adapters.auth_service import UserTokensDTO
 from ib_iam.adapters.dtos import UserProfileDTO
 
 
@@ -11,3 +12,13 @@ class UserProfileDTOFactory(factory.Factory):
     name = factory.sequence(lambda number: "name%s" % number)
     email = factory.LazyAttribute(lambda user: "%s@gmail.com" % user.name)
     profile_pic_url = factory.sequence(lambda n: "url%d" % n)
+
+
+class UserTokensDTOFactory(factory.Factory):
+    class Meta:
+        model = UserTokensDTO
+
+    access_token = factory.sequence(lambda n: "access_token_%s" % n)
+    refresh_token = factory.sequence(lambda n: "refresh_token_token_%s" % n)
+    expires_in_seconds = 10000000000
+    user_id = factory.Faker("uuid4")

@@ -1,17 +1,18 @@
 from typing import List
+
+from ib_tasks.adapters.dtos import AssigneeDetailsDTO
+from ib_tasks.adapters.service_adapter import get_service_adapter
 from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
 from ib_tasks.interactors.presenter_interfaces. \
     searchable_field_values_presenter_interface import \
     SearchableFieldValuesPresenterInterface
-from ib_tasks.interactors.storage_interfaces.elastic_storage_interface \
-    import ElasticSearchStorageInterface
 
 
 class SearchableFieldValuesInteractor:
 
-    def __init__(self, elastic_storage: ElasticSearchStorageInterface):
-        self.elastic_storage = elastic_storage
+    def __init__(self):
+        pass
 
     def searchable_field_values_wrapper(
             self, searchable_field_type_dto: SearchableFieldTypeDTO,
@@ -30,7 +31,6 @@ class SearchableFieldValuesInteractor:
             return presenter. \
                 raise_offset_should_be_greater_than_or_equal_to_minus_one_exception(
             )
-        print("searchable_value_detail_dtos", searchable_value_detail_dtos)
 
         return presenter.get_searchable_field_values_response(
             searchable_value_detail_dtos)
@@ -46,45 +46,43 @@ class SearchableFieldValuesInteractor:
         search_type = searchable_field_type_dto.searchable_type
         from ib_tasks.constants.enum import Searchable
         if search_type == Searchable.USER.value:
-            user_dtos = self.elastic_storage.query_users(
+            adapter = get_service_adapter()
+            user_ids = adapter.search_service.get_search_user_ids(
                 offset=offset, limit=limit, search_query=search_query
             )
+            user_dtos = adapter.assignee_details_service\
+                .get_assignees_details_dtos(assignee_ids=user_ids)
             return [
                 SearchableFieldDetailDTO(
-                    id=user_dto.user_id,
-                    name=user_dto.username
+                    id=user_dto.assignee_id,
+                    name=self._get_name_and_profile_pic(user_dto)
                 ) for user_dto in user_dtos
             ]
         elif search_type == Searchable.COUNTRY.value:
-            country_dtos = self.elastic_storage.query_countries(
+            adapter = get_service_adapter()
+            return adapter.search_service.get_search_countries(
                 offset=offset, limit=limit, search_query=search_query
             )
-            return [
-                SearchableFieldDetailDTO(
-                    id=str(country_dto.country_id),
-                    name=country_dto.country_name
-                ) for country_dto in country_dtos
-            ]
         elif search_type == Searchable.STATE.value:
-            state_dtos = self.elastic_storage.query_states(
+            adapter = get_service_adapter()
+            return adapter.search_service.get_search_states(
                 offset=offset, limit=limit, search_query=search_query
             )
-            return [
-                SearchableFieldDetailDTO(
-                    id=str(state_dto.state_id),
-                    name=state_dto.state_name
-                ) for state_dto in state_dtos
-            ]
         elif search_type == Searchable.CITY.value:
-            city_dtos = self.elastic_storage.query_cities(
+            adapter = get_service_adapter()
+            return adapter.search_service.get_search_cities(
                 offset=offset, limit=limit, search_query=search_query
             )
-            return [
-                SearchableFieldDetailDTO(
-                    id=str(city_dto.city_id),
-                    name=city_dto.city_name
-                ) for city_dto in city_dtos
-            ]
+
+    @staticmethod
+    def _get_name_and_profile_pic(user_dto: AssigneeDetailsDTO):
+
+        import json
+
+        return json.dumps({
+            "name": user_dto.name,
+            "profile_pic_url": user_dto.profile_pic_url
+        })
 
     @staticmethod
     def _get_user_dtos(offset: int, limit: int, search_query: str) -> \

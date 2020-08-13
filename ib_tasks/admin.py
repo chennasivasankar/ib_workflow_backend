@@ -1,19 +1,27 @@
 from django.contrib import admin
 
 from ib_tasks.models import Stage, TaskTemplateStatusVariable, StageAction, \
-    TaskTemplateInitialStage, TaskStatusVariable, StagePermittedRoles
+    TaskTemplateInitialStage, TaskStatusVariable, StagePermittedRoles, \
+    TaskStageHistory, UserTaskDelayReason
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
 from ib_tasks.models.gof import GoF
 from ib_tasks.models.gof_role import GoFRole
-from ib_tasks.models.task import Task
+from ib_tasks.models.task import Task, ElasticSearchTask
 from ib_tasks.models.task_gof import TaskGoF
 from ib_tasks.models.task_gof_field import TaskGoFField
 from ib_tasks.models.task_log import TaskLog
-from ib_tasks.models.task_stage import TaskStage
+from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.task_template import TaskTemplate
 from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
+from ib_tasks.models.filter import Filter
+from ib_tasks.models.filter_condition import FilterCondition
 
+
+
+admin.site.register(Filter)
+admin.site.register(FilterCondition)
+admin.site.register(ElasticSearchTask)
 admin.site.register(GoF)
 admin.site.register(Field)
 admin.site.register(TaskTemplate)
@@ -23,14 +31,16 @@ admin.site.register(StagePermittedRoles)
 admin.site.register(TaskTemplateStatusVariable)
 admin.site.register(TaskTemplateInitialStage)
 admin.site.register(TaskStatusVariable)
-admin.site.register(TaskStage)
+admin.site.register(CurrentTaskStage)
 admin.site.register(TaskGoF)
 admin.site.register(TaskGoFField)
 admin.site.register(TaskTemplateGoFs)
+admin.site.register(TaskStageHistory)
+admin.site.register(UserTaskDelayReason)
 
 
 class TaskStageInline(admin.StackedInline):
-    model = TaskStage
+    model = CurrentTaskStage
     extra = 3
 
 
@@ -63,3 +73,5 @@ admin.site.register(Stage, StagesAdmin)
 
 
 admin.site.register(StageAction, StagesActionsAdmin)
+
+

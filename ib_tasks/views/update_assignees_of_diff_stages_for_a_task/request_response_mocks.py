@@ -2,6 +2,7 @@
 
 REQUEST_BODY_JSON = """
 {
+    "task_id": "string",
     "stage_assignees": [
         {
             "stage_id": 1,

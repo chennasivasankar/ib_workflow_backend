@@ -3,7 +3,7 @@
 REQUEST_BODY_JSON = """
 {
     "action_id": "string",
-    "task_id": 1,
+    "task_id": "string",
     "title": "string",
     "description": "string",
     "start_date": "2099-12-31",
@@ -32,11 +32,24 @@ REQUEST_BODY_JSON = """
 """
 
 
+RESPONSE_200_JSON = """
+{
+    "task_id": "string",
+    "stages": [
+        {
+            "stage_id": "string",
+            "stage_display_name": "string"
+        }
+    ],
+    "user_has_permission": true
+}
+"""
+
 RESPONSE_400_JSON = """
 {
     "response": "string",
     "http_status_code": 1,
-    "res_status": "INVALID_TASK_ID"
+    "res_status": "string"
 }
 """
 

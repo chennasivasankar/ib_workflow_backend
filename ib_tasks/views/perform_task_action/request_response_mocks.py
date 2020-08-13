@@ -11,7 +11,7 @@ REQUEST_BODY_JSON = """
 
 RESPONSE_200_JSON = """
 {
-    "task_id": 1,
+    "task_id": "string",
     "current_board_details": {
         "board_id": "string",
         "board_name": "string",
@@ -48,7 +48,17 @@ RESPONSE_200_JSON = """
                 }
             ]
         }
-    ]
+    ],
+    "task_current_stages_details": {
+        "task_id": "string",
+        "stages": [
+            {
+                "stage_id": "string",
+                "stage_display_name": "string"
+            }
+        ],
+        "user_has_permission": true
+    }
 }
 """
 

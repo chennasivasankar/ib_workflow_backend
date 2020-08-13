@@ -1,16 +1,22 @@
 import abc
 from typing import Optional, List
 
-from ib_tasks.interactors.stages_dtos import StageDTO, \
-    TaskIdWithStageAssigneeDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDetailsDTO, \
+    TaskIdWithDbStageIdsDTO, TaskWithDbStageIdDTO
+from ib_tasks.interactors.stages_dtos import StageDTO, TaskIdWithStageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
     TaskStagesDTO, TaskTemplateStageDTO, StageValueWithTaskIdsDTO, \
     TaskIdWithStageDetailsDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageHavingAssigneeIdDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 
 
 class StageStorageInterface(abc.ABC):
+
+    @abc.abstractmethod
+    def get_existing_status_ids(self, status_ids: List[str]):
+        pass
 
     @abc.abstractmethod
     def create_stages(self, stage_details: List[StageDTO]):
@@ -36,7 +42,7 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_allowed_stage_ids_of_user(self) -> List[str]:
+    def get_permitted_stage_ids(self, user_role_ids: List[str]) -> List[str]:
         pass
 
     @abc.abstractmethod
@@ -57,10 +63,10 @@ class StageStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_task_id_with_stage_details_dtos_based_on_stage_value(
-            self, user_id: str, stage_values: List[int],
+            self, stage_values: List[int],
             task_ids_group_by_stage_value_dtos: List[
-                StageValueWithTaskIdsDTO]) \
-            -> [TaskIdWithStageDetailsDTO]:
+                StageValueWithTaskIdsDTO], user_id: str) \
+            -> List[TaskIdWithStageDetailsDTO]:
         pass
 
     @abc.abstractmethod
@@ -76,18 +82,41 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def update_task_stage_assignees(
-            self, task_id_with_stage_assignee_dtos_for_updation: List[
-                TaskIdWithStageAssigneeDTO]):
-        pass
-
-    @abc.abstractmethod
     def create_task_stage_assignees(
-            self, task_id_with_stage_assignee_dtos_for_creation: List[
+            self, task_id_with_stage_assignee_dtos: List[
                 TaskIdWithStageAssigneeDTO]):
         pass
 
     @abc.abstractmethod
-    def get_stage_detail_dtos_given_stage_ids(self, stage_ids: List[str])->\
+    def get_valid_next_stage_ids_of_task_by_excluding_virtual_stages(
+            self, stage_ids: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_stage_detail_dtos_given_stage_ids(self, stage_ids: List[str]) -> \
             List[StageDetailsDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_stage_details_having_assignees_in_given_stage_ids(
+            self, task_id: int, db_stage_ids: List[int]) -> List[
+        TaskStageHavingAssigneeIdDTO]:
+        pass
+
+    @abc.abstractmethod
+    def update_task_stage_having_assignees_with_left_at_status(
+            self, task_id_with_db_stage_ids_dto:
+            TaskIdWithDbStageIdsDTO):
+        pass
+
+    @abc.abstractmethod
+    def get_current_stages_of_all_tasks(self) -> List[TaskWithDbStageIdDTO]:
+        pass
+
+    @abc.abstractmethod
+    def check_is_stage_exists(self, stage_id: int) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def get_stage_permitted_user_roles(self, stage_id: int) -> List[str]:
         pass

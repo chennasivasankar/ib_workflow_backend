@@ -6,6 +6,8 @@ Author: Pavankumar Pamuru
 import pytest
 
 
+
+
 class TestGetTaskIdsOfUserBasedOnStagesInteractor:
     @pytest.fixture()
     def task_storage_mock(self):
@@ -24,18 +26,23 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
         storage = create_autospec(StageStorageInterface)
         return storage
 
-    @pytest.fixture(autouse=True)
-    def reset_sequence(self):
-        from ib_tasks.tests.factories.interactor_dtos import \
-            UserStagesWithPaginationDTOFactory
-        UserStagesWithPaginationDTOFactory.reset_sequence()
+    @pytest.fixture()
+    def task_stage_storage_mock(self):
+        from mock import create_autospec
+
+        from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
+            TaskStageStorageInterface
+        storage = create_autospec(TaskStageStorageInterface)
+        return storage
+
 
     def test_given_valid_stage_ids_get_tasks_with_max_stage_value_dtos(
-            self, task_storage_mock, stage_storage_mock):
+            self, task_storage_mock, stage_storage_mock, task_stage_storage_mock):
         # Arrange
         valid_stage_ids = ["stage_id_1", "stage_id_2"]
         from ib_tasks.tests.factories.interactor_dtos import \
             UserStagesWithPaginationDTOFactory
+        UserStagesWithPaginationDTOFactory.reset_sequence()
         user_stages_with_pagination_dto = UserStagesWithPaginationDTOFactory()
         user_id = user_stages_with_pagination_dto.user_id
         stage_storage_mock.get_valid_stage_ids_in_given_stage_ids.return_value \
@@ -58,7 +65,7 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
             GetTaskIdsOfUserBasedOnStagesInteractor
         # Act
         interactor = GetTaskIdsOfUserBasedOnStagesInteractor(
-            task_storage=task_storage_mock, stage_storage=stage_storage_mock)
+            task_storage=task_storage_mock, stage_storage=stage_storage_mock,task_stage_storage=task_stage_storage_mock)
         interactor.get_task_ids_of_user_based_on_stage_ids(
             user_id=user_id,
             stage_ids=valid_stage_ids
@@ -77,5 +84,4 @@ class TestGetTaskIdsOfUserBasedOnStagesInteractor:
             get_task_id_with_stage_details_dtos_based_on_stage_value(
             stage_values=[2],
             task_ids_group_by_stage_value_dtos=
-            task_ids_group_by_stage_value_dtos,
-            user_id=user_id)
+            task_ids_group_by_stage_value_dtos)

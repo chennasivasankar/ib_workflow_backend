@@ -3,14 +3,18 @@ from typing import List
 from ib_tasks.exceptions.stage_custom_exceptions import \
     DuplicateStageIds, \
     StageIdsWithInvalidPermissionForAssignee, InvalidDbStageIdsListException
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
-from ib_tasks.interactors.presenter_interfaces\
+from ib_tasks.exceptions.task_custom_exceptions import \
+    InvalidTaskIdException, \
+    InvalidTaskDisplayId
+from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
+    GetTaskIdForTaskDisplayIdMixin
+from ib_tasks.interactors.presenter_interfaces \
     .update_task_stage_assignees_presenter_interface import \
     UpdateTaskStageAssigneesPresenterInterface
 from ib_tasks.interactors.stages_dtos import TaskIdWithStageAssigneesDTO, \
-    TaskIdWithStageAssigneeDTO
+    TaskIdWithStageAssigneeDTO, TaskDisplayIdWithStageAssigneesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
-    StageIdWithRoleIdsAndAssigneeIdDTO
+    StageIdWithRoleIdsAndAssigneeIdDTO, TaskIdWithDbStageIdsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
@@ -19,7 +23,7 @@ from ib_tasks.interactors.user_role_validation_interactor import \
     UserRoleValidationInteractor
 
 
-class UpdateTaskStageAssigneesInteractor:
+class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
     def __init__(self, stage_storage: StageStorageInterface,
                  task_storage: TaskStorageInterface):
         self.stage_storage = stage_storage
@@ -27,10 +31,21 @@ class UpdateTaskStageAssigneesInteractor:
 
     def update_task_stage_assignees_wrapper(
             self,
-            task_id_with_stage_assignees_dto: TaskIdWithStageAssigneesDTO,
-            presenter: UpdateTaskStageAssigneesPresenterInterface):
+            task_display_id_with_stage_assignees_dto:
+            TaskDisplayIdWithStageAssigneesDTO,
+            presenter: UpdateTaskStageAssigneesPresenterInterface
+    ):
         try:
+            task_id = self.get_task_id_for_task_display_id(
+                task_display_id_with_stage_assignees_dto.task_display_id)
+            task_id_with_stage_assignees_dto = TaskIdWithStageAssigneesDTO(
+                task_id=task_id,
+                stage_assignees=task_display_id_with_stage_assignees_dto
+                    .stage_assignees
+            )
             self.update_task_stage_assignees(task_id_with_stage_assignees_dto)
+        except InvalidTaskDisplayId as err:
+            return presenter.raise_invalid_task_display_id(err)
         except InvalidTaskIdException as exception:
             return presenter.raise_invalid_task_id_exception(
                 task_id=exception.task_id)
@@ -48,8 +63,8 @@ class UpdateTaskStageAssigneesInteractor:
     def update_task_stage_assignees(
             self,
             task_id_with_stage_assignees_dto: TaskIdWithStageAssigneesDTO):
-        self._validate_task_id(
-            task_id=task_id_with_stage_assignees_dto.task_id)
+        task_id = task_id_with_stage_assignees_dto.task_id
+        self._validate_task_id(task_id=task_id)
         stage_ids = self._get_stage_ids_from_given_dto(
             task_id_with_stage_assignees_dto)
         self._check_duplicate_stage_ids(stage_ids)
@@ -67,26 +82,19 @@ class UpdateTaskStageAssigneesInteractor:
             )
         self._validate_does_given_assignee_of_stage_ids_have_valid_permission(
             role_ids_and_assignee_id_group_by_stage_id_dtos)
-        task_stage_ids_for_updation = self.stage_storage. \
-            get_task_stage_ids_in_given_stage_ids(
-            stage_ids=stage_ids,
-            task_id=task_id_with_stage_assignees_dto.task_id)
+        task_id_with_db_stage_ids_dto = TaskIdWithDbStageIdsDTO(
+            task_id=task_id, db_stage_ids=stage_ids)
 
-        task_stage_ids_for_creation = self._get_task_stage_ids_for_creation(
-            task_stage_ids_for_updation, stage_ids)
-        if task_stage_ids_for_updation:
-            task_id_with_stage_assignee_dtos_for_updation = self. \
-                _get_task_id_with_stage_assignee_dtos_given_task_stage_ids(
-                task_stage_ids_for_updation, task_id_with_stage_assignees_dto)
-            self.stage_storage.update_task_stage_assignees(
-                task_id_with_stage_assignee_dtos_for_updation)
+        self.stage_storage. \
+            update_task_stage_having_assignees_with_left_at_status(
+            task_id_with_db_stage_ids_dto=task_id_with_db_stage_ids_dto)
 
-        if task_stage_ids_for_creation:
-            task_id_with_stage_assignee_dtos_for_creation = self. \
-                _get_task_id_with_stage_assignee_dtos_given_task_stage_ids(
-                task_stage_ids_for_creation, task_id_with_stage_assignees_dto)
-            self.stage_storage.create_task_stage_assignees(
-                task_id_with_stage_assignee_dtos_for_creation)
+        task_id_with_stage_assignee_dtos_for_creation = self. \
+            _get_task_id_with_stage_assignee_dtos_given_task_stage_ids(
+            stage_ids, task_id_with_stage_assignees_dto)
+        self.stage_storage.create_task_stage_assignees(
+            task_id_with_stage_assignee_dtos=
+            task_id_with_stage_assignee_dtos_for_creation)
         return
 
     @staticmethod
@@ -110,7 +118,7 @@ class UpdateTaskStageAssigneesInteractor:
 
     @staticmethod
     def _validate_does_given_assignee_of_stage_ids_have_valid_permission(
-            role_ids_and_assignee_id_group_by_stage_id_dtos:List[
+            role_ids_and_assignee_id_group_by_stage_id_dtos: List[
                 StageIdWithRoleIdsAndAssigneeIdDTO]):
         stage_ids_with_invalid_permission_for_assignee_id = []
         user_role_validation_interactor = UserRoleValidationInteractor()
@@ -192,15 +200,6 @@ class UpdateTaskStageAssigneesInteractor:
                 InvalidDbStageIdsListException
             raise InvalidDbStageIdsListException(invalid_stage_ids)
         return
-
-    @staticmethod
-    def _get_task_stage_ids_for_creation(task_stage_ids_for_updation,
-                                         stage_ids):
-        task_stage_ids_for_creation = [
-            stage_id for stage_id in stage_ids
-            if stage_id not in task_stage_ids_for_updation
-        ]
-        return task_stage_ids_for_creation
 
     @staticmethod
     def _check_duplicate_stage_ids(stage_ids: List[int]):

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import time, datetime, timedelta
 from typing import Optional, List
 
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
@@ -32,8 +33,8 @@ class StageActionDTO:
     function_path: str
     button_text: str
     button_color: Optional[str]
-    action_type: str
-    transition_template_id: str
+    action_type: Optional[str]
+    transition_template_id: Optional[str]
 
 
 @dataclass()
@@ -79,6 +80,12 @@ class TaskIdWithStageAssigneesDTO:
 
 
 @dataclass
+class TaskDisplayIdWithStageAssigneesDTO:
+    task_display_id: str
+    stage_assignees: List[StageAssigneeDTO]
+
+
+@dataclass
 class TaskIdWithStageAssigneeDTO:
     task_id: int
     db_stage_id: int
@@ -99,9 +106,51 @@ class UserDetailsDTO:
     profile_pic_url: str
 
 
-
-
 @dataclass
 class StageWithUserDetailsDTO(UserDetailsDTO):
     db_stage_id: int
     stage_display_name: str
+
+
+@dataclass()
+class StageRolesDTO:
+    stage_id: str
+    role_ids: List[str]
+
+
+@dataclass()
+class TaskStageHistoryDTO:
+    log_id: int
+    task_id: int
+    stage_id: int
+    stage_duration: Optional[time]
+    started_at: datetime
+    assignee_id: str
+    left_at: Optional[datetime]
+
+
+@dataclass()
+class StageMinimalDTO:
+    stage_id: int
+    name: str
+    color: str
+
+
+@dataclass()
+class EntityTypeDTO:
+    entity_id: int
+    entity_type: str
+
+
+@dataclass()
+class LogDurationDTO:
+    entity_id: int
+    duration: timedelta
+
+
+@dataclass()
+class TaskStageCompleteDetailsDTO:
+    stage_dtos: List[StageMinimalDTO]
+    task_stage_dtos: List[TaskStageHistoryDTO]
+    log_duration_dtos: List[LogDurationDTO]
+    assignee_details: List[AssigneeDetailsDTO]

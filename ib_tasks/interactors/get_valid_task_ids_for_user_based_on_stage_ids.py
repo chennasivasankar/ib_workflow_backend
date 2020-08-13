@@ -5,7 +5,6 @@ Author: Pavankumar Pamuru
 """
 from typing import List
 
-from ib_tasks.interactors.stages_dtos import UserStagesWithPaginationDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageValueWithTaskIdsDTO, TaskIdWithStageDetailsDTO, \
     TaskWithCompleteStageDetailsDTO
@@ -38,8 +37,7 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
         self._validate_stage_ids(valid_stage_ids, given_unique_stage_ids)
         task_id_with_max_stage_value_dtos = self.task_storage. \
             get_user_task_ids_and_max_stage_value_dto_based_on_given_stage_ids(
-            user_id=user_id, stage_ids=valid_stage_ids
-        )
+                user_id=user_id, stage_ids=valid_stage_ids)
         stage_values = [
             task_id_with_max_stage_value_dto.stage_value
             for task_id_with_max_stage_value_dto in
@@ -54,9 +52,17 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
             stage_storage. \
             get_task_id_with_stage_details_dtos_based_on_stage_value(
                 stage_values=stage_values,
-                task_ids_group_by_stage_value_dtos=task_ids_group_by_stage_value_dtos,
+                task_ids_group_by_stage_value_dtos=
+                task_ids_group_by_stage_value_dtos,
                 user_id=user_id
             )
+        task_ids = []
+        task_id_with_single_stage_details_dto = []
+        for task_id_with_stage_details_dto in task_id_with_stage_details_dtos:
+            if task_id_with_stage_details_dto.task_display_id not in task_ids:
+                task_ids.append(task_id_with_stage_details_dto.task_display_id)
+                task_id_with_single_stage_details_dto.append(
+                    task_id_with_stage_details_dto)
         task_with_complete_stage_details_dtos = \
             self._get_task_with_complete_stage_details_dtos(
                 task_id_with_stage_details_dtos=task_id_with_stage_details_dtos)
@@ -77,9 +83,8 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
             stage_assignee_details_dtos = \
                 get_stage_assignees_details_interactor. \
                     get_stages_assignee_details_dtos(
-                    task_id=task_id_with_stage_details_dto.task_id,
-                    stage_ids=[task_id_with_stage_details_dto.db_stage_id]
-                )
+                        task_id=task_id_with_stage_details_dto.task_id,
+                        stage_ids=[task_id_with_stage_details_dto.db_stage_id])
             task_with_complete_stage_details_dto = \
                 TaskWithCompleteStageDetailsDTO(
                     task_with_stage_details_dto=task_id_with_stage_details_dto,

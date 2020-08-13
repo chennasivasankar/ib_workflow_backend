@@ -1,7 +1,9 @@
 import abc
 
+from ib_tasks.exceptions.datetime_custom_exceptions import DueDateHasExpired
 from ib_tasks.exceptions.stage_custom_exceptions import \
     StageIdsWithInvalidPermissionForAssignee
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskDisplayId
 
 
 class UpdateTaskPresenterInterface(abc.ABC):
@@ -123,4 +125,29 @@ class UpdateTaskPresenterInterface(abc.ABC):
     def raise_stage_ids_with_invalid_permission_for_assignee_exception(
             self, err: StageIdsWithInvalidPermissionForAssignee):
         pass
+
+    @abc.abstractmethod
+    def raise_invalid_due_time_format(self, err):
+        pass
+
+    @abc.abstractmethod
+    def raise_start_date_is_ahead_of_due_date(self, err):
+        pass
+
+    @abc.abstractmethod
+    def raise_due_date_is_behind_start_date(self, err):
+        pass
+
+    @abc.abstractmethod
+    def raise_due_time_has_expired_for_today(self, err):
+        pass
+
+    @abc.abstractmethod
+    def raise_due_date_has_expired(self, err: DueDateHasExpired):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_task_display_id(self, err: InvalidTaskDisplayId):
+        pass
+
 

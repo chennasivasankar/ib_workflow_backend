@@ -20,7 +20,7 @@ snapshots['TestCase04GetTaskAPITestCase.test_case body'] = {
             'actions': [
             ],
             'assignee': None,
-            'stage_color': 'blue',
+            'stage_color': 'orange',
             'stage_display_name': 'name_0',
             'stage_id': 1,
             'task_stage_id': 1
@@ -29,7 +29,7 @@ snapshots['TestCase04GetTaskAPITestCase.test_case body'] = {
             'actions': [
             ],
             'assignee': None,
-            'stage_color': 'blue',
+            'stage_color': 'green',
             'stage_display_name': 'name_1',
             'stage_id': 2,
             'task_stage_id': 2
@@ -45,7 +45,7 @@ snapshots['TestCase04GetTaskAPITestCase.test_case body'] = {
         }
     ],
     'start_date': '2020-10-12 04:40:00',
-    'task_id': 1,
+    'task_id': 'IBWF-1',
     'template_id': 'template_0',
     'title': 'title_0'
 }

@@ -1,5 +1,5 @@
 """
-# TODO: Update test case description
+test with valid data updates task
 """
 import json
 
@@ -25,7 +25,7 @@ class TestCase01UpdateTaskAPITestCase(TestUtils):
         from ib_tasks.tests.factories.models import TaskTemplateFactory, \
             GoFFactory, GoFRoleFactory, TaskFactory, TaskGoFFactory, \
             FieldFactory, FieldRoleFactory, GoFToTaskTemplateFactory, \
-            TaskGoFFieldFactory
+            TaskGoFFieldFactory, ElasticSearchTaskFactory
 
         TaskTemplateFactory.reset_sequence()
         GoFRoleFactory.reset_sequence()
@@ -34,6 +34,7 @@ class TestCase01UpdateTaskAPITestCase(TestUtils):
         FieldRoleFactory.reset_sequence()
         GoFToTaskTemplateFactory.reset_sequence()
         StagePermittedRolesFactory.reset_sequence()
+        ElasticSearchTaskFactory.reset_sequence(1)
 
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids
@@ -57,8 +58,7 @@ class TestCase01UpdateTaskAPITestCase(TestUtils):
             field_values='["interactors", "storages", "presenters"]'
         )
 
-        task_obj = TaskFactory.create(
-            template_id="template_1")
+        task_obj = TaskFactory.create(template_id=template_id)
         task_gofs = TaskGoFFactory.create_batch(
             size=2, gof_id=factory.Iterator(gof_ids), task=task_obj
         )
@@ -83,6 +83,7 @@ class TestCase01UpdateTaskAPITestCase(TestUtils):
             card_info_kanban=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
             card_info_list=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
         )
+        ElasticSearchTaskFactory.create(task_id=1)
         path = \
             'ib_tasks.tests.populate.stage_actions_logic.stage_1_action_name_3'
         StageActionFactory(stage=stage, py_function_import_path=path)
@@ -135,11 +136,11 @@ class TestCase01UpdateTaskAPITestCase(TestUtils):
         path_params = {}
         query_params = {}
         headers = {}
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(body=body,
+                           path_params=path_params,
+                           query_params=query_params,
+                           headers=headers,
+                           snapshot=snapshot)
         from ib_tasks.models.task import Task
         task_object = Task.objects.get(id=1)
         snapshot.assert_match(task_object.id, 'task_id')
@@ -157,7 +158,7 @@ class TestCase01UpdateTaskAPITestCase(TestUtils):
             snapshot.assert_match(
                 task_gof.same_gof_order, f'same_gof_order_{counter}')
             snapshot.assert_match(task_gof.gof_id, f'gof_id_{counter}')
-            snapshot.assert_match(task_gof.task_id, f'gof_task_id_{counter}')
+            snapshot.assert_match(task_gof.task_display_id, f'gof_task_id_{counter}')
             counter = counter + 1
 
         from ib_tasks.models.task_gof_field import TaskGoFField

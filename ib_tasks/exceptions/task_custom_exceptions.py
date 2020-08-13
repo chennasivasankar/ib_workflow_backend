@@ -8,6 +8,10 @@ class InvalidTaskException(Exception):
         self.task_id = task_id
 
 
+class InvalidReasonIdException(Exception):
+    pass
+
+
 class InvalidTaskIdException(Exception):
     def __init__(self, task_id: int):
         self.task_id = task_id
@@ -108,3 +112,8 @@ class UserIsNotAssigneeToTask(Exception):
 class InvalidStageIdsForTask(Exception):
     def __init__(self, message: str):
         self.message = message
+
+
+class InvalidTaskDisplayId(Exception):
+    def __init__(self, task_display_id: str):
+        self.task_display_id = task_display_id

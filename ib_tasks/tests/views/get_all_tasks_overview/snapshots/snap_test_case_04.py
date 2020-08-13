@@ -7,24 +7,105 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase04GetAllTasksOverviewAPITestCase.test_case status_code'] = '500'
+snapshots['TestCase04GetAllTasksOverviewAPITestCase.test_case status_code'] = '200'
 
 snapshots['TestCase04GetAllTasksOverviewAPITestCase.test_case body'] = {
     'tasks': [
         {
-        },
-        {
+            'stage_with_actions': {
+                'actions': [
+                    {
+                        'action_id': 1,
+                        'action_type': 'NO_VALIDATIONS',
+                        'button_color': '#fafafa',
+                        'button_text': 'hey',
+                        'transition_template_id': 'template_1'
+                    }
+                ],
+                'assignee': None,
+                'stage_color': 'green',
+                'stage_display_name': 'name_2',
+                'stage_id': 3
+            },
+            'task_id': 'iBWF-0',
+            'task_overview_fields': [
+                {
+                    'field_display_name': 'DISPLAY_NAME-1',
+                    'field_response': 'field_response_1',
+                    'field_type': 'PLAIN_TEXT'
+                },
+                {
+                    'field_display_name': 'DISPLAY_NAME-2',
+                    'field_response': 'field_response_2',
+                    'field_type': 'PLAIN_TEXT'
+                }
+            ]
         },
         {
             'stage_with_actions': {
                 'actions': [
                     {
-                        'action_type': [
-                            '"action_type1" is not a valid choice.'
-                        ]
+                        'action_id': 1,
+                        'action_type': 'NO_VALIDATIONS',
+                        'button_color': '#fafafa',
+                        'button_text': 'hey',
+                        'transition_template_id': 'template_1'
                     }
-                ]
-            }
+                ],
+                'assignee': None,
+                'stage_color': 'green',
+                'stage_display_name': 'name_2',
+                'stage_id': 3
+            },
+            'task_id': 'iBWF-1',
+            'task_overview_fields': [
+                {
+                    'field_display_name': 'DISPLAY_NAME-1',
+                    'field_response': 'field_response_4',
+                    'field_type': 'PLAIN_TEXT'
+                },
+                {
+                    'field_display_name': 'DISPLAY_NAME-2',
+                    'field_response': 'field_response_5',
+                    'field_type': 'PLAIN_TEXT'
+                }
+            ]
+        },
+        {
+            'stage_with_actions': {
+                'actions': [
+                    {
+                        'action_id': 2,
+                        'action_type': 'NO_VALIDATIONS',
+                        'button_color': '#fafafa',
+                        'button_text': 'hey',
+                        'transition_template_id': 'template_2'
+                    }
+                ],
+                'assignee': None,
+                'stage_color': 'orange',
+                'stage_display_name': 'name_4',
+                'stage_id': 5
+            },
+            'task_id': 'iBWF-2',
+            'task_overview_fields': [
+                {
+                    'field_display_name': 'DISPLAY_NAME-0',
+                    'field_response': 'field_response_6',
+                    'field_type': 'PLAIN_TEXT'
+                },
+                {
+                    'field_display_name': 'DISPLAY_NAME-1',
+                    'field_response': 'field_response_7',
+                    'field_type': 'PLAIN_TEXT'
+                },
+                {
+                    'field_display_name': 'DISPLAY_NAME-2',
+                    'field_response': 'field_response_8',
+                    'field_type': 'PLAIN_TEXT'
+                }
+            ]
         }
-    ]
+    ],
+    'total_tasks': 3
 }

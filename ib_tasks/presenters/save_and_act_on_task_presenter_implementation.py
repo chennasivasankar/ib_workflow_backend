@@ -1,6 +1,10 @@
 from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
+from ib_tasks.exceptions.datetime_custom_exceptions import \
+    InvalidDueTimeFormat, StartDateIsAheadOfDueDate, \
+    DueDateIsBehindStartDate, \
+    DueTimeHasExpiredForToday
 from ib_tasks.exceptions.field_values_custom_exceptions import \
     EmptyValueForRequiredField, InvalidPhoneNumberValue, \
     InvalidEmailFieldValue, InvalidURLValue, NotAStrongPassword, \
@@ -24,11 +28,145 @@ from ib_tasks.exceptions.task_custom_exceptions import \
 from ib_tasks.interactors.presenter_interfaces \
     .save_and_act_on_task_presenter_interface import \
     SaveAndActOnATaskPresenterInterface
+from ib_tasks.interactors.task_dtos import TaskCurrentStageDetailsDTO
 
 
 class SaveAndActOnATaskPresenterImplementation(
     SaveAndActOnATaskPresenterInterface, HTTPResponseMixin
 ):
+
+    def raise_invalid_task_display_id(self, err):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_TASK_DISPLAY_ID
+        message = INVALID_TASK_DISPLAY_ID[0].format(err.task_display_id)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_TASK_DISPLAY_ID[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_key_error(self):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_KEY_ERROR
+        data = {
+            "response": INVALID_KEY_ERROR[0],
+            "http_status_code": 400,
+            "res_status": INVALID_KEY_ERROR[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_custom_logic_function_exception(self):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_CUSTOM_LOGIC
+        data = {
+            "response": INVALID_CUSTOM_LOGIC[0],
+            "http_status_code": 400,
+            "res_status": INVALID_CUSTOM_LOGIC[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_path_not_found_exception(self, path_name):
+        from ib_tasks.constants.exception_messages import \
+            PATH_NOT_FOUND
+        data = {
+            "response": PATH_NOT_FOUND[0],
+            "http_status_code": 400,
+            "res_status": PATH_NOT_FOUND[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_method_not_found_exception(self, method_name):
+        from ib_tasks.constants.exception_messages import \
+            METHOD_NOT_FOUND
+        data = {
+            "response": METHOD_NOT_FOUND[0],
+            "http_status_code": 400,
+            "res_status": METHOD_NOT_FOUND[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_duplicate_stage_ids_not_valid(self, duplicate_stage_ids):
+        from ib_tasks.constants.exception_messages import \
+            DUPLICATE_STAGE_IDS
+        data = {
+            "response": DUPLICATE_STAGE_IDS[0].format(duplicate_stage_ids),
+            "http_status_code": 400,
+            "res_status": DUPLICATE_STAGE_IDS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_stage_ids_exception(self, invalid_stage_ids):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_STAGE_IDS
+        data = {
+            "response": INVALID_STAGE_IDS[0].format(invalid_stage_ids),
+            "http_status_code": 400,
+            "res_status": INVALID_STAGE_IDS[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_exception_for_invalid_present_actions(self, error_obj):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_PRESENT_STAGE_ACTION
+        message = INVALID_PRESENT_STAGE_ACTION[0].format(error_obj.action_id)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_PRESENT_STAGE_ACTION[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_invalid_due_time_format(self, err: InvalidDueTimeFormat):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_DUE_TIME_FORMAT
+        message = INVALID_DUE_TIME_FORMAT[0].format(err.due_time)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_DUE_TIME_FORMAT[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_start_date_is_ahead_of_due_date(self,
+                                              err: StartDateIsAheadOfDueDate):
+        from ib_tasks.constants.exception_messages import \
+            START_DATE_IS_AHEAD_OF_DUE_DATE
+        message = START_DATE_IS_AHEAD_OF_DUE_DATE[0].format(
+            str(err.given_start_date), str(err.given_due_date)
+        )
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": START_DATE_IS_AHEAD_OF_DUE_DATE[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_due_date_is_behind_start_date(self,
+                                            err: DueDateIsBehindStartDate):
+        from ib_tasks.constants.exception_messages import \
+            DUE_DATE_IS_BEHIND_START_DATE
+        message = DUE_DATE_IS_BEHIND_START_DATE[0].format(
+            str(err.given_due_date), str(err.given_start_date)
+        )
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": DUE_DATE_IS_BEHIND_START_DATE[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
+    def raise_due_time_has_expired_for_today(self,
+                                             err: DueTimeHasExpiredForToday):
+        from ib_tasks.constants.exception_messages import \
+            DUE_TIME_HAS_EXPIRED_FOR_TODAY
+        message = DUE_TIME_HAS_EXPIRED_FOR_TODAY[0].format(err.due_time)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": DUE_TIME_HAS_EXPIRED_FOR_TODAY[1]
+        }
+        return self.prepare_400_bad_request_response(data)
 
     def raise_stage_ids_with_invalid_permission_for_assignee_exception(
             self, err: StageIdsWithInvalidPermissionForAssignee
@@ -44,17 +182,27 @@ class SaveAndActOnATaskPresenterImplementation(
         response_object = self.prepare_400_bad_request_response(response_dict)
         return response_object
 
-    def get_save_and_act_on_task_response(self):
+    def get_save_and_act_on_task_response(
+            self, task_current_stage_details_dto: TaskCurrentStageDetailsDTO):
         data = {
-            "message": "task saved and acted successfully"
+            "task_id": task_current_stage_details_dto.task_display_id,
+            "stages": [],
+            "user_has_permission":
+                task_current_stage_details_dto.user_has_permission
         }
-        return self.prepare_201_created_response(response_dict=data)
+        for stage_dto in task_current_stage_details_dto.stage_details_dtos:
+            stage = {
+                "stage_id": stage_dto.stage_id,
+                "stage_display_name": stage_dto.stage_display_name
+            }
+            data['stages'].append(stage)
+        return self.prepare_200_success_response(response_dict=data)
 
     def raise_invalid_task_id(self, err):
         from ib_tasks.constants.exception_messages import \
             INVALID_TASK_ID
         response_message = INVALID_TASK_ID[0].format(
-            err.task_id
+            err.task_display_id
         )
         data = {
             "response": response_message,
@@ -124,13 +272,13 @@ class SaveAndActOnATaskPresenterImplementation(
 
     def raise_duplicate_field_ids_to_a_gof(self, err: DuplicateFieldIdsToGoF):
         from ib_tasks.constants.exception_messages import \
-            DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF
-        response_message = DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF[0].format(
+            DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF
+        response_message = DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF[0].format(
             err.gof_id, str(err.field_ids))
         data = {
             "response": response_message,
             "http_status_code": 400,
-            "res_status": DUPLICATE_GOF_IDS_GIVEN_TO_A_GOF[1]
+            "res_status": DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF[1]
         }
         return self.prepare_400_bad_request_response(data)
 
@@ -151,7 +299,7 @@ class SaveAndActOnATaskPresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             USER_NEEDS_GOF_WRITABLE_PERMISSION
         response_message = USER_NEEDS_GOF_WRITABLE_PERMISSION[0].format(
-            err.user_id, err.gof_id, str(err.missed_roles))
+            err.user_id, err.gof_id, str(err.required_roles))
         data = {
             "response": response_message,
             "http_status_code": 400,
@@ -165,7 +313,7 @@ class SaveAndActOnATaskPresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             USER_NEEDS_FILED_WRITABLE_PERMISSION
         response_message = USER_NEEDS_FILED_WRITABLE_PERMISSION[0].format(
-            err.user_id, err.field_id, str(err.missed_roles))
+            err.user_id, err.field_id, str(err.required_roles))
         data = {
             "response": response_message,
             "http_status_code": 400,
