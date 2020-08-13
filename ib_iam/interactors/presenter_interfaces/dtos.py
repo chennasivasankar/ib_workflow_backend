@@ -32,7 +32,3 @@ class TeamWithUsersDetailsDTO:
     user_dtos: List[BasicUserDetailsDTO]
 
 
-@dataclass
-class DiscussionIdWithEditableStatusDTO:
-    discussion_id: str
-    is_editable: bool

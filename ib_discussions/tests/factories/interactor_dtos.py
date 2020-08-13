@@ -1,8 +1,10 @@
 import factory
 
-from ib_discussions.constants.enum import EntityType, MultiMediaFormatEnum
+from ib_discussions.constants.enum import EntityType, MultimediaFormat
 from ib_discussions.interactors.dtos.dtos import DiscussionWithEntityDetailsDTO, \
-    DiscussionIdWithTitleAndDescriptionDTO, MultiMediaDTO
+    DiscussionIdWithTitleAndDescriptionDTO, MultimediaDTO, \
+    UpdateCompleteCommentDTO, CreateCompleteCommentDTO, \
+    CreateCompleteReplyToCommentDTO
 
 
 class DiscussionWithEntityDetailsDTOFactory(factory.Factory):
@@ -27,13 +29,55 @@ class DiscussionIdWithTitleAndDescriptionDTOFactory(factory.Factory):
     description = factory.LazyAttribute(lambda obj: "description")
 
 
-class MultiMediaDTOFactory(factory.Factory):
+class MultimediaDTOFactory(factory.Factory):
     class Meta:
-        model = MultiMediaDTO
+        model = MultimediaDTO
 
     format_type = factory.Iterator([
-        MultiMediaFormatEnum.IMAGE.value,
-        MultiMediaFormatEnum.VIDEO.value
+        MultimediaFormat.IMAGE.value,
+        MultimediaFormat.VIDEO.value
     ])
     url = "https://picsum.photos/200"
     thumbnail_url = "https://picsum.photos/200"
+
+
+class UpdateCompleteCommentDTOFactory(factory.Factory):
+    class Meta:
+        model = UpdateCompleteCommentDTO
+
+    comment_id = factory.Faker("uuid4")
+    user_id = factory.Faker("uuid4")
+    comment_content = "content"
+    mention_user_ids = factory.List([
+        "10be920b-7b4c-49e7-8adb-41a0c18da848",
+        "20be920b-7b4c-49e7-8adb-41a0c18da848"
+    ])
+    multimedia_dtos = factory.List([])
+
+
+class CreateCompleteCommentDTOFactory(factory.Factory):
+    class Meta:
+        model = CreateCompleteCommentDTO
+
+    discussion_id = factory.Faker("uuid4")
+    user_id = factory.Faker("uuid4")
+    comment_content = "content"
+    mention_user_ids = factory.List([
+        "10be920b-7b4c-49e7-8adb-41a0c18da848",
+        "20be920b-7b4c-49e7-8adb-41a0c18da848"
+    ])
+    multimedia_dtos = factory.List([])
+
+
+class CreateCompleteReplyToCommentDTOFactory(factory.Factory):
+    class Meta:
+        model = CreateCompleteReplyToCommentDTO
+
+    comment_id = factory.Faker("uuid4")
+    user_id = factory.Faker("uuid4")
+    comment_content = "content"
+    mention_user_ids = factory.List([
+        "10be920b-7b4c-49e7-8adb-41a0c18da848",
+        "20be920b-7b4c-49e7-8adb-41a0c18da848"
+    ])
+    multimedia_dtos = factory.List([])
