@@ -1,5 +1,5 @@
 """
-# TODO: Update test case description
+# TODO: given valid details
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
@@ -13,13 +13,23 @@ class TestCase01AddReasonForMissingDueDateTimeAPITestCase(TestUtils):
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['read']}}
 
+    @pytest.fixture()
+    def setup(self, api_user):
+        from ib_tasks.tests.factories.models import TaskFactory
+        TaskFactory.reset_sequence()
+        tasks = TaskFactory.create_batch(size=2)
+        from ib_tasks.tests.factories.models import TaskLogFactory
+        TaskLogFactory.reset_sequence()
+        TaskLogFactory(task=tasks[0], user_id=api_user.user_id)
+
     @pytest.mark.django_db
-    def test_case(self, snapshot):
+    def test_case(self, snapshot, setup):
         body = {
-            'updated_due_date_time': '2099-12-31 00:00:00',
+            'updated_due_date_time': '2020-09-10T11:30:45.34523',
+            'reason_id': 1,
             'reason': 'string'
         }
-        path_params = {"task_id": "1234"}
+        path_params = {"task_id": 1}
         query_params = {}
         headers = {}
         response = self.make_api_call(body=body,

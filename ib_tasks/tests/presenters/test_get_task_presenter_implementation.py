@@ -163,7 +163,6 @@ class TestGetTaskPresenterImplementation:
             .get_task_presenter_interface \
             import TaskCompleteDetailsDTO
         task_complete_details_dto = TaskCompleteDetailsDTO(
-            task_id="task0",
             task_details_dto=permission_task_details_dto,
             stages_and_actions_details_dtos=stages_and_actions_details_dtos,
             stage_assignee_details_dtos=stage_assignee_details_dtos
@@ -185,6 +184,38 @@ class TestGetTaskPresenterImplementation:
         snapshot.assert_match(name="exception_object",
                               value=response_object.content)
 
+    def test_raise_exception_for_invalid_task_display_id(
+            self, presenter, snapshot
+    ):
+        # Arrange
+        task_display_id = "IBWF-10"
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            InvalidTaskDisplayId
+        err = InvalidTaskDisplayId(task_display_id)
+
+        # Act
+        response_object = presenter.raise_invalid_task_display_id(err)
+
+        # Assert
+        snapshot.assert_match(name="exception_object",
+                              value=response_object.content)
+
+    def test_raise_exception_for_raise_invalid_stage_ids_for_task(
+            self, presenter, snapshot
+    ):
+        # Arrange
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            InvalidStageIdsForTask
+        message = "invaild stage ids"
+        err = InvalidStageIdsForTask(message)
+
+        # Act
+        response_object = presenter.raise_invalid_stage_ids_for_task(err)
+
+        # Assert
+        snapshot.assert_match(name="exception_object",
+                              value=response_object.content)
+
     def test_given_task_complete_details_dto_returns_task_details(
             self, presenter, task_complete_details_dto, snapshot
     ):
@@ -197,4 +228,3 @@ class TestGetTaskPresenterImplementation:
         # Assert
         snapshot.assert_match(name="task_details = ",
                               value=response_object.content)
-

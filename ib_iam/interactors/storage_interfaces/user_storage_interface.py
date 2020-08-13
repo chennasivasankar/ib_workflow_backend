@@ -3,7 +3,6 @@ from typing import List, Optional
 
 from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
 from ib_iam.exceptions.custom_exceptions import InvalidUserId, InvalidUserIds
-from ib_iam.interactors.dtos.dtos import SearchQueryAndTypeDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, CompanyIdAndNameDTO, TeamIdAndNameDTO, \
     RoleIdAndNameDTO, UserIdAndNameDTO
@@ -58,7 +57,7 @@ class UserStorageInterface(ABC):
     @abstractmethod
     def get_users_who_are_not_admins(
             self, offset: int, limit: int,
-            search_query_and_type_dto: SearchQueryAndTypeDTO) -> List[UserDTO]:
+            name_search_query: str) -> List[UserDTO]:
         pass
 
     @abstractmethod

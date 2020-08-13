@@ -151,6 +151,7 @@ class TaskFieldsDTOFactory(factory.Factory):
         model = StageTaskFieldsDTO
 
     field_ids = ['FIELD-ID-1', 'FIELD-ID-2']
+    stage_id = factory.Sequence(lambda n: "stage_id_%d" % (n + 1))
     task_id = factory.Sequence(lambda n: n + 1)
 
 
@@ -159,6 +160,7 @@ class TaskWithFieldsDTOFactory(factory.Factory):
         model = StageTaskFieldsDTO
 
     field_ids = ['FIELD_ID-1', 'FIELD_ID-2']
+    stage_id = factory.Sequence(lambda n: "stage_id_%d" % (n + 1))
     task_id = factory.Sequence(lambda n: n + 1)
 
 
@@ -534,6 +536,8 @@ class TaskBaseDetailsDTOFactory(factory.Factory):
 
     template_id = factory.sequence(
         lambda counter: "template_{}".format(counter))
+    task_display_id = factory.sequence(
+        lambda counter: "IBWF-{}".format(counter + 1))
     title = factory.sequence(lambda counter: "title_{}".format(counter))
     description = factory.sequence(
         lambda counter: "description_{}".format(counter))
@@ -576,7 +580,7 @@ class TaskDueMissingDTOFactory(factory.Factory):
     task_id = factory.Sequence(lambda n: "task_id_%d" % n)
     due_missed_count = factory.Sequence(lambda n: n)
     due_date_time = datetime.today().date() + timedelta(days=2)
-    user_id = factory.Sequence(lambda n: "user_id_%d" % (n + 1))
+    user_id = factory.Sequence(lambda counter: "123e4567-e89b-12d3-a456-42661417400{}".format(counter))
     reason = "reason"
 
 

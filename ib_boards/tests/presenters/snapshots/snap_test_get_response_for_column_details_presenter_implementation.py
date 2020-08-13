@@ -217,9 +217,9 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_proper
                     ],
                     'fields': [
                         {
-                            'field_type': 'field_type_0',
-                            'key': 'key_0',
-                            'value': 'value_0'
+                            'field_type': 'field_type_6',
+                            'key': 'key_6',
+                            'value': 'value_6'
                         }
                     ],
                     'stage_color': 'blue',
@@ -245,9 +245,19 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_proper
                     ],
                     'fields': [
                         {
+                            'field_type': 'field_type_0',
+                            'key': 'key_0',
+                            'value': 'value_0'
+                        },
+                        {
                             'field_type': 'field_type_1',
                             'key': 'key_1',
                             'value': 'value_1'
+                        },
+                        {
+                            'field_type': 'field_type_2',
+                            'key': 'key_2',
+                            'value': 'value_2'
                         }
                     ],
                     'stage_color': 'orange',
@@ -273,9 +283,19 @@ snapshots['TestGetColumnDetails.test_get_response_for_column_details_with_proper
                     ],
                     'fields': [
                         {
-                            'field_type': 'field_type_2',
-                            'key': 'key_2',
-                            'value': 'value_2'
+                            'field_type': 'field_type_3',
+                            'key': 'key_0',
+                            'value': 'value_3'
+                        },
+                        {
+                            'field_type': 'field_type_5',
+                            'key': 'key_1',
+                            'value': 'value_5'
+                        },
+                        {
+                            'field_type': 'field_type_4',
+                            'key': 'key_4',
+                            'value': 'value_4'
                         }
                     ],
                     'stage_color': 'green',

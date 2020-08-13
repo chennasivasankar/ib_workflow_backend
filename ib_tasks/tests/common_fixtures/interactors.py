@@ -19,12 +19,35 @@ def prepare_task_gof_and_fields_dto():
     )
     return task_dto
 
-
 def prepare_mock_for_next_stage_random_assignees(mocker):
     path = "ib_tasks.interactors.get_random_assignees_of_next_stages_and_update_in_db_interactor" \
            ".GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor" \
            ".get_random_assignees_of_next_stages_and_update_in_db"
     mock_obj = mocker.patch(path)
+    return mock_obj
+
+
+def prepare_get_field_ids_having_write_permission_for_user(mocker, field_ids):
+    path = "ib_tasks.interactors.user_role_validation_interactor." \
+           "UserRoleValidationInteractor.get_field_ids_having_write_permission_for_user"
+    mock_obj = mocker.patch(path)
+    mock_obj.return_value = field_ids
+    return mock_obj
+
+
+def prepare_get_stage_ids_for_user(mocker, stage_ids):
+    path = "ib_tasks.interactors.user_role_validation_interactor." \
+           "UserRoleValidationInteractor.get_permitted_stage_ids_given_user_id"
+    mock_obj = mocker.patch(path)
+    mock_obj.return_value = stage_ids
+    return mock_obj
+
+
+def prepare_get_permitted_action_ids(mocker, action_ids):
+    path = "ib_tasks.interactors.user_role_validation_interactor." \
+           "UserRoleValidationInteractor.get_permitted_action_ids_for_given_user_id"
+    mock_obj = mocker.patch(path)
+    mock_obj.return_value = action_ids
     return mock_obj
 
 

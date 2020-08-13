@@ -14,8 +14,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 class FieldsStorageInterface(abc.ABC):
 
     @abc.abstractmethod
-    def get_fields_details(self, template_stage_dtos: List[StageTaskFieldsDTO],
-                           user_roles: List[str]) -> \
+    def get_fields_details(self, template_stage_dtos: List[StageTaskFieldsDTO]) -> \
             List[FieldDetailsDTOWithTaskId]:
         pass
 

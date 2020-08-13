@@ -30,3 +30,10 @@ def prepare_update_user_password(mocker):
     mock = mocker.patch(
         "ib_iam.adapters.auth_service.AuthService.update_user_password")
     return mock
+
+
+def prepare_get_refresh_auth_tokens_dto_mock(mocker):
+    mock = mocker.patch(
+        "ib_iam.adapters.auth_service.AuthService.get_refresh_auth_tokens_dto"
+    )
+    return mock

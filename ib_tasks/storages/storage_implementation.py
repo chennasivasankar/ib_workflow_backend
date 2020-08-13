@@ -1,10 +1,13 @@
 import datetime
 from typing import List, Optional
 
+from django.db.models import Q
+
+from ib_tasks.constants.constants import ALL_ROLES_ID
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.stages_dtos import StageActionDTO, StageDTO, \
-    TemplateStageDTO, TaskIdWithStageAssigneeDTO, StageRolesDTO
+    TemplateStageDTO, TaskIdWithStageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
     ActionRolesDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
@@ -25,11 +28,13 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import (
     StatusVariableDTO, StageActionNamesDTO
 )
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, TaskDueParametersDTO
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
-    ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, \
-    GlobalConstant, \
-    StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskStageHistory
+    ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, GlobalConstant, \
+    StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskLog
+from ib_tasks.models import \
+    TaskStageHistory
+from ib_tasks.models.task_due_details import UserTaskDelayReason
 
 
 class StagesStorageImplementation(StageStorageInterface):
@@ -77,25 +82,13 @@ class StagesStorageImplementation(StageStorageInterface):
                                         role_id=role))
         return list_of_permitted_roles
 
-    def get_stages_roles(self) -> List[StageRolesDTO]:
+    def get_permitted_stage_ids(self, user_role_ids: List[str]) -> List[str]:
 
-        stage_permitted_objs = \
-            StagePermittedRoles.objects.all().values('stage__stage_id', 'role_id')
+        stage_ids = StagePermittedRoles.objects.filter(
+            (Q(role_id__in=user_role_ids) | Q(role_id=ALL_ROLES_ID))
+        ).values_list('stage__stage_id', flat=True)
 
-        from collections import defaultdict
-        stage_roles_dict = defaultdict(list)
-        for stage_role_obj in stage_permitted_objs:
-            stage_id = stage_role_obj['stage__stage_id']
-            role_id = stage_role_obj['role_id']
-            stage_roles_dict[stage_id].append(role_id)
-
-        return [
-            StageRolesDTO(
-                stage_id=stage_id,
-                role_ids=role_ids
-            )
-            for stage_id, role_ids in stage_roles_dict.items()
-        ]
+        return list(stage_ids)
 
     @staticmethod
     def _get_stage_object(stage):
@@ -641,10 +634,46 @@ class StorageImplementation(StorageInterface):
         return action_ids
 
     def validate_if_task_is_assigned_to_user(self,
-                                             task_id: int,
-                                             user_id: str) -> bool:
-        pass
+                                             task_id: int, user_id: str) -> bool:
+        is_assigned = TaskLog.objects.filter(
+            task_id=task_id, user_id=user_id).exists()
+        return is_assigned
 
-    def get_task_due_missing_reasons_details(self, task_id: int) -> \
+    def get_task_due_details(self, task_id: int) -> \
             List[TaskDueMissingDTO]:
-        pass
+        task_due_objs = UserTaskDelayReason.objects.filter(task_id=task_id)
+
+        task_due_details_dtos = self._convert_task_due_details_objs_to_dtos(
+            task_due_objs)
+        return task_due_details_dtos
+
+    @staticmethod
+    def _convert_task_due_details_objs_to_dtos(task_due_objs):
+        task_due_details_dtos = []
+        for task in task_due_objs:
+            task_due_details_dtos.append(
+                TaskDueMissingDTO(
+                    task_id=task.task_id,
+                    due_date_time=task.due_datetime,
+                    due_missed_count=task.count,
+                    reason=task.reason,
+                    user_id=task.user_id
+                )
+            )
+        return task_due_details_dtos
+
+    def add_due_delay_details(self, due_details: TaskDueParametersDTO):
+        user_id = due_details.user_id
+        task_id = due_details.task_id
+        reason_id = due_details.reason_id
+        updated_due_datetime = due_details.due_date_time
+        count = UserTaskDelayReason.objects.filter(
+            task_id=task_id, user_id=user_id).count()
+
+        UserTaskDelayReason.objects.create(user_id=user_id, task_id=task_id,
+                                           due_datetime=updated_due_datetime,
+                                           count=count + 1,
+                                           reason_id=reason_id,
+                                           reason=due_details.reason)
+        Task.objects.filter(pk=task_id, tasklog__user_id=user_id
+                            ).update(due_date=updated_due_datetime)
