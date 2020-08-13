@@ -50,7 +50,8 @@ class StagesStorageImplementation(StageStorageInterface):
         StagePermittedRoles.objects.bulk_create(list_of_permitted_roles)
 
     def get_existing_status_ids(self, status_ids: List[str]):
-        status = TaskTemplateStatusVariable.objects.filter(variable__in=status_ids)
+        status = TaskTemplateStatusVariable.objects.filter(variable__in=status_ids
+                                                           ).values_list('variable', flat=True)
         return list(status)
 
     def get_stage_detail_dtos_given_stage_ids(self, stage_ids: List[str]) -> \
