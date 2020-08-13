@@ -652,6 +652,12 @@
             "properties": {
               "profile_pic_url": {
                 "type": "string"
+              },
+              "role_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
               }
             }
           }
