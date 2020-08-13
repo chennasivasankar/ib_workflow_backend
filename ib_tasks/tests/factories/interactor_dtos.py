@@ -16,7 +16,10 @@ from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
     StageAssigneeDetailsDTO, UserStagesWithPaginationDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import \
+    FieldDetailsDTO, FieldWritePermissionRolesDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import \
+    GoFWritePermissionRolesDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, \
     CreateTaskLogDTO, \
@@ -323,3 +326,19 @@ class SaveAndActOnTaskDTOFactory(factory.Factory):
     @factory.lazy_attribute
     def gof_fields_dtos(self):
         return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]
+
+
+class GoFWritePermissionRolesDTOFactory(factory.Factory):
+    class Meta:
+        model = GoFWritePermissionRolesDTO
+
+    gof_id = factory.sequence(lambda counter: "gof_{}".format(counter))
+    write_permission_roles = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC']
+
+
+class FieldWritePermissionRolesDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldWritePermissionRolesDTO
+
+    field_id = factory.sequence(lambda counter: "field_{}".format(counter))
+    write_permission_roles = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC']
