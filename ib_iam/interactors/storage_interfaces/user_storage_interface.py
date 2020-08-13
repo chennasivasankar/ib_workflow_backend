@@ -143,7 +143,7 @@ class UserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_all_distinct_db_user_db_role_ids(self) -> List[str]:
+    def get_all_distinct_user_db_role_ids(self) -> List[str]:
         pass
 
     @abstractmethod

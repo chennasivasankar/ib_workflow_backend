@@ -313,7 +313,7 @@ class TestGetUsers:
         storage = UserStorageImplementation()
 
         # Act
-        output = storage.get_all_distinct_db_user_db_role_ids()
+        output = storage.get_all_distinct_user_db_role_ids()
 
         # Assert
         assert output == expected_user_role_ids
@@ -326,7 +326,7 @@ class TestGetUsers:
         storage = UserStorageImplementation()
 
         # Act
-        output = storage.get_all_distinct_db_user_db_role_ids()
+        output = storage.get_all_distinct_user_db_role_ids()
 
         # Assert
         assert output == expected_user_role_ids

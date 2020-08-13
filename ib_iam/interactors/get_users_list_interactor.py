@@ -65,7 +65,7 @@ class GetUsersDetailsInteractor(ValidationMixin):
 
         if ALL_ROLES_ID in role_ids:
             db_role_ids = \
-                self.user_storage.get_all_distinct_db_user_db_role_ids()
+                self.user_storage.get_all_distinct_user_db_role_ids()
         else:
             db_role_ids = self.user_storage.get_db_role_ids(role_ids=role_ids)
 

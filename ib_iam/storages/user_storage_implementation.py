@@ -274,7 +274,7 @@ class UserStorageImplementation(UserStorageInterface):
         ]
         return user_details_dtos
 
-    def get_all_distinct_db_user_db_role_ids(self) -> List[str]:
+    def get_all_distinct_user_db_role_ids(self) -> List[str]:
         from ib_iam.models import UserRole
         user_roles_queryset = \
             UserRole.objects.all().distinct().values_list('role_id', flat=True)
