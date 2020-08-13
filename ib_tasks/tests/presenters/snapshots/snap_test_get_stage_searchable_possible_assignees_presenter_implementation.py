@@ -42,3 +42,6 @@ snapshots['TestGetStageSearchablePossibleAssigneesPresenterImplementation.test_g
         'profile_pic_url': 'pic_url'
     }
 ]
+
+snapshots['TestGetStageSearchablePossibleAssigneesPresenterImplementation.test_get_stage_assignee_details_response_when_no_assignees_returns_empty_list user_details'] = [
+]

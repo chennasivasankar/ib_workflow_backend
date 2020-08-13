@@ -55,7 +55,23 @@ class TestGetStageSearchablePossibleAssigneesPresenterImplementation:
         # Arrange
         from ib_tasks.tests.factories.interactor_dtos import \
             UserDetailsDTOFactory
+        UserDetailsDTOFactory.reset_sequence()
         user_details_dtos = UserDetailsDTOFactory.create_batch(size=3)
+
+        # Act
+        response_object = presenter.get_stage_assignee_details_response(
+            user_details_dtos=user_details_dtos
+        )
+
+        # Assert
+        import json
+        response = json.loads(response_object.content)
+        snapshot.assert_match(response, 'user_details')
+
+    def test_get_stage_assignee_details_response_when_no_assignees_returns_empty_list(
+            self, snapshot, presenter):
+        # Arrange
+        user_details_dtos = []
 
         # Act
         response_object = presenter.get_stage_assignee_details_response(
