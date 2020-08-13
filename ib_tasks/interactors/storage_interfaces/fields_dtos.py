@@ -97,6 +97,7 @@ class TaskTemplateStageFieldsDTO:
 @dataclass
 class StageTaskFieldsDTO:
     task_id: int
+    stage_id: str
     field_ids: List[str]
 
 

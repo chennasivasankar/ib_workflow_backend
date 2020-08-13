@@ -75,7 +75,7 @@ class TestGetAllTasksOverviewForUserPresenterImpl:
         all_tasks_overview_details_response_dict = {
             "tasks": [{
                 "task_id":
-                    "task_1",
+                    'iBWF-1',
                 "task_overview_fields": [{
                     "field_type": "Drop down",
                     "field_display_name": "key",
@@ -107,7 +107,7 @@ class TestGetAllTasksOverviewForUserPresenterImpl:
                 }
             }, {
                 "task_id":
-                    "task_2",
+                    'iBWF-2',
                 "task_overview_fields": [{
                     "field_type": "Drop down",
                     "field_display_name": "key",

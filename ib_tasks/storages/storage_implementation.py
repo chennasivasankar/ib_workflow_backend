@@ -25,11 +25,13 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import (
     StatusVariableDTO, StageActionNamesDTO
 )
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
-from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, TaskDueParametersDTO
+from ib_tasks.models import \
     ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, \
-    GlobalConstant, \
-    StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskStageHistory
+    GlobalConstant, TaskStageHistory, \
+    StagePermittedRoles, TaskTemplateInitialStage, Stage
+from ib_tasks.models import GoFRole, TaskStatusVariable, Task
+from ib_tasks.models.task_due_details import UserTaskDelayReason
 
 
 class StagesStorageImplementation(StageStorageInterface):
@@ -250,7 +252,9 @@ class StagesStorageImplementation(StageStorageInterface):
                         CurrentTaskStage.objects.filter(
                             stage__value=each_stage_value,
                             task_id__in=each_task_ids_group_by_stage_value_dto.
-                                task_ids).values("task_id", "stage__stage_id",
+                                task_ids).values("task_id",
+                                                 "task__task_display_id",
+                                                 "stage__stage_id",
                                                  "stage__display_name",
                                                  "stage__stage_color",
                                                  "stage__id"))
@@ -270,6 +274,8 @@ class StagesStorageImplementation(StageStorageInterface):
         task_id_with_stage_details_dtos = [
             TaskIdWithStageDetailsDTO(
                 task_id=task_id_with_stage_detail["task_id"],
+                task_display_id=task_id_with_stage_detail[
+                    "task__task_display_id"],
                 stage_id=task_id_with_stage_detail["stage__stage_id"],
                 stage_display_name=task_id_with_stage_detail[
                     "stage__display_name"],
@@ -626,10 +632,46 @@ class StorageImplementation(StorageInterface):
         return action_ids
 
     def validate_if_task_is_assigned_to_user(self,
-                                             task_id: int,
-                                             user_id: str) -> bool:
-        pass
+                                             task_id: int, user_id: str) -> bool:
+        is_assigned = TaskStage.objects.filter(
+            task_id=task_id, assignee_id=user_id).exists()
+        return is_assigned
 
-    def get_task_due_missing_reasons_details(self, task_id: int) -> \
+    def get_task_due_details(self, task_id: int) -> \
             List[TaskDueMissingDTO]:
-        pass
+        task_due_objs = UserTaskDelayReason.objects.filter(task_id=task_id)
+
+        task_due_details_dtos = self._convert_task_due_details_objs_to_dtos(
+            task_due_objs)
+        return task_due_details_dtos
+
+    @staticmethod
+    def _convert_task_due_details_objs_to_dtos(task_due_objs):
+        task_due_details_dtos = []
+        for task in task_due_objs:
+            task_due_details_dtos.append(
+                TaskDueMissingDTO(
+                    task_id=task.task_id,
+                    due_date_time=task.due_datetime,
+                    due_missed_count=task.count,
+                    reason=task.reason,
+                    user_id=task.user_id
+                )
+            )
+        return task_due_details_dtos
+
+    def add_due_delay_details(self, due_details: TaskDueParametersDTO):
+        user_id = due_details.user_id
+        task_id = due_details.task_id
+        reason_id = due_details.reason_id
+        updated_datetime = due_details.due_date_time
+        count = UserTaskDelayReason.objects.filter(
+            task_id=task_id, user_id=user_id).count()
+
+        UserTaskDelayReason.objects.create(user_id=user_id, task_id=task_id,
+                                           due_datetime=updated_datetime,
+                                           count=count + 1,
+                                           reason_id=reason_id,
+                                           reason=due_details.reason)
+        Task.objects.filter(pk=task_id, tasklog__user_id=user_id
+                            ).update(due_date=updated_datetime)

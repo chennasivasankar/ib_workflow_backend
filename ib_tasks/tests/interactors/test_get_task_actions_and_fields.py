@@ -122,7 +122,7 @@ class TestGetFieldsAndActionsInteractor:
                 db_stage_id=2,
                 stage_color="blue",
                 stage_id="stage_id_2",
-                field_ids=["FIELD-ID-1", "FIELD-ID-2"]
+                field_ids=["FIELD-ID-3", "FIELD-ID-4"]
             )
         ]
 
@@ -224,7 +224,7 @@ class TestGetFieldsAndActionsInteractor:
     @pytest.fixture()
     def task_fields_dtos_with_for_same_stage_tasks(self):
         TaskFieldsDTOFactory.reset_sequence()
-        tasks = TaskFieldsDTOFactory.create_batch(size=2)
+        tasks = TaskFieldsDTOFactory.create_batch(size=2, stage_id="stage_id_1")
         return tasks
 
     @pytest.fixture()
@@ -233,8 +233,8 @@ class TestGetFieldsAndActionsInteractor:
         fields = FieldDetailsDTOWithTaskIdFactory.create_batch(size=2,
                                                                task_id=1)
         FieldDetailsDTOWithTaskIdFactory.reset_sequence()
-        fields.append(FieldDetailsDTOWithTaskIdFactory(task_id=1))
-        fields.append(FieldDetailsDTOWithTaskIdFactory(task_id=1))
+        fields.append(FieldDetailsDTOWithTaskIdFactory(task_id=2))
+        fields.append(FieldDetailsDTOWithTaskIdFactory(task_id=2))
         return fields
 
     def test_get_user_permitted_fields_and_actions(
@@ -469,7 +469,9 @@ class TestGetFieldsAndActionsInteractor:
         user_roles_mock.return_value = user_roles
         task_dtos = get_task_dtos
         TaskFieldsDTOFactory.reset_sequence()
-        task_fields_dtos = [TaskFieldsDTOFactory()]
+        task_fields_dtos = [TaskFieldsDTOFactory(),
+                            TaskFieldsDTOFactory(task_id=1,
+                                                 field_ids=["FIELD-ID-3", "FIELD-ID-4"])]
         field_storage = create_autospec(FieldsStorageInterface)
         stage_storage = create_autospec(StageStorageInterface)
         task_storage = create_autospec(TaskStorageInterface)

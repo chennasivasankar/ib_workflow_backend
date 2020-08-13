@@ -6,6 +6,7 @@ from ib_tasks.adapters.dtos import UserDTO
 from ib_tasks.constants.enum import Searchable, Priority
 from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
+from ib_tasks.interactors.get_tasks_to_relevant_search_query import SearchQueryDTO
 from ib_tasks.interactors.get_tasks_to_relevant_search_query import \
     SearchQueryDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
@@ -17,7 +18,10 @@ from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
+    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, CreateTaskLogDTO, TaskDueParametersDTO
+from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory, UserDetailsDTO,\
     FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, \
     CreateTaskLogDTO, \
     CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeIdDTO, SaveAndActOnTaskDTO
@@ -30,6 +34,26 @@ class GetTaskDetailsDTOFactory(factory.Factory):
 
     task_id = factory.Sequence(lambda n: n + 1)
     stage_id = factory.Sequence(lambda n: 'stage_id_%d' % (n + 1))
+
+
+class UserDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = UserDetailsDTO
+
+    user_id = factory.Sequence(lambda n: "user_id_%d" % n)
+    user_name = factory.Sequence(lambda n: "name_%d" % n)
+    profile_pic_url = "pic_url"
+
+
+class GetTaskDueDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskDueDetailsDTO
+
+    user = factory.SubFactory(AssigneeDetailsDTOFactory)
+    task_id = factory.Sequence(lambda n: 'task_id_%d' % (n + 1))
+    due_date_time = datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S.%z")
+    due_missed_count = factory.Sequence(lambda n: n)
+    reason = factory.Sequence(lambda n: "reason_id_%d" % n)
 
 
 class StageActionDTOFactory(factory.Factory):
@@ -256,6 +280,18 @@ class SearchQueryDTOFactory(factory.Factory):
     offset = factory.sequence(lambda n: n - 1)
     limit = factory.sequence(lambda n: n)
     search_query = factory.sequence(lambda n: "value_{}" % n)
+
+
+class TaskDueParametersDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskDueParametersDTO
+
+    user_id = factory.Sequence(lambda n: "user_id_%d" % n)
+    task_id = factory.sequence(lambda n: n)
+    due_date_time = datetime.now() + timedelta(days=2)
+    reason_id = factory.Iterator([1, 2, 3, 4, -1])
+    reason = "reason"
+
 
 
 class CreateTaskDTOFactory(factory.Factory):
