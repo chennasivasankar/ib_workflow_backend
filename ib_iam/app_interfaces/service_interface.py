@@ -1,6 +1,6 @@
 from typing import List
 
-from ib_iam.adapters.dtos import UserProfileDTO
+from ib_iam.adapters.dtos import UserProfileDTO, SearchQueryWithPaginationDTO
 from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserIdAndNameDTO
 
@@ -113,4 +113,25 @@ class ServiceInterface:
 
         user_details_dtos = interactor.get_user_details_for_given_role_ids(
             role_ids=role_ids)
+        return user_details_dtos
+
+    @staticmethod
+    def get_user_details_for_the_given_role_ids_based_on_query(
+            role_ids: List[str],
+            search_query_with_pagination_dto:
+            SearchQueryWithPaginationDTO
+    ) -> List[UserProfileDTO]:
+        from ib_iam.storages.user_storage_implementation import \
+            UserStorageImplementation
+        user_storage = UserStorageImplementation()
+
+        from ib_iam.interactors.get_users_list_interactor import \
+            GetUsersDetailsInteractor
+        interactor = GetUsersDetailsInteractor(user_storage=user_storage)
+
+        user_details_dtos = \
+            interactor.get_user_details_for_given_role_ids_based_on_query(
+                role_ids=role_ids,
+                search_query_with_pagination_dto=
+                search_query_with_pagination_dto)
         return user_details_dtos
