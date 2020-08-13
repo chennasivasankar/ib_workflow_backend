@@ -201,11 +201,18 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
             permitted_assignee_with_current_tasks_count_dtos = self. \
                 _get_permitted_assignee_with_current_tasks_count_dtos(
                 permitted_user_ids, assignee_with_current_tasks_count_dtos)
-            assignee_id_with_current_less_tasks, \
-            updated_task_count_dto_for_assignee_having_less_tasks = self. \
-                _get_user_having_less_tasks_for_each_stage(
-                permitted_assignee_with_current_tasks_count_dtos,
-                updated_task_count_dto_for_assignee_having_less_tasks)
+            if not permitted_assignee_with_current_tasks_count_dtos:
+                assignee_id_with_current_less_tasks=permitted_user_ids[0]
+                updated_task_count_dto_for_assignee_having_less_tasks. \
+                    append(AssigneeCurrentTasksCountDTO(
+                    assignee_id=assignee_id_with_current_less_tasks,
+                    tasks_count=1))
+            else:
+                assignee_id_with_current_less_tasks, \
+                updated_task_count_dto_for_assignee_having_less_tasks = self. \
+                    _get_user_having_less_tasks_for_each_stage(
+                    permitted_assignee_with_current_tasks_count_dtos,
+                    updated_task_count_dto_for_assignee_having_less_tasks)
             for permitted_user_details_dto in permitted_user_details_dtos:
                 if assignee_id_with_current_less_tasks == \
                         permitted_user_details_dto.user_id:
@@ -229,6 +236,8 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
             updated_task_count_dtos_for_assignee_having_less_tasks:
             List[AssigneeCurrentTasksCountDTO]) -> \
             Tuple[str, List[AssigneeCurrentTasksCountDTO]]:
+
+
 
         permitted_assignee_with_current_tasks_count_dtos_dict = [
             {"assignee_id": assignee_with_current_tasks_count_dto.assignee_id,
