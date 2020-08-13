@@ -44,5 +44,6 @@ class TestCase01StopTimerAPITestCase(TestUtils):
         TimerFactory.create(entity_id=entity_id,
                             entity_type=entity_type,
                             start_datetime=datetime.datetime(2020, 8, 7, 17),
-                            duration_in_seconds=100)
+                            duration_in_seconds=100,
+                            is_running=True)
         return entity_id, entity_type

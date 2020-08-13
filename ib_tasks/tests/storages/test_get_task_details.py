@@ -4,7 +4,7 @@ from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 from ib_tasks.storages.tasks_storage_implementation import \
     TasksStorageImplementation
 from ib_tasks.tests.factories.models import StageModelFactory, \
-    StageActionFactory, TaskStageModelFactory, TaskFactory
+    StageActionFactory, CurrentTaskStageModelFactory, TaskFactory
 
 
 @pytest.mark.django_db
@@ -18,10 +18,10 @@ class TestGetTaskDetails:
         StageActionFactory.create_batch(size=3, stage=stages[0])
         TaskFactory.reset_sequence()
         tasks = TaskFactory.create_batch(size=3)
-        TaskStageModelFactory.reset_sequence()
-        TaskStageModelFactory(stage=stages[0], task=tasks[0])
-        TaskStageModelFactory(stage=stages[0], task=tasks[1])
-        TaskStageModelFactory(stage=stages[0], task=tasks[2])
+        CurrentTaskStageModelFactory.reset_sequence()
+        CurrentTaskStageModelFactory(stage=stages[0], task=tasks[0])
+        CurrentTaskStageModelFactory(stage=stages[0], task=tasks[1])
+        CurrentTaskStageModelFactory(stage=stages[0], task=tasks[2])
 
     # def test_with_valid_details_returns_task_details_dtos(self,
     #                                                       snapshot,

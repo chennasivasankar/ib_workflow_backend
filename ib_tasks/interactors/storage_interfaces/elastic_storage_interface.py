@@ -5,10 +5,12 @@ Author: Pavankumar Pamuru
 """
 import abc
 from dataclasses import dataclass
-from typing import List
+from typing import List, Tuple
 from typing import Union
 
 from ib_tasks.constants.enum import Operators
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStageIdsDTO
+from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO
 
 
 @dataclass
@@ -34,7 +36,7 @@ class ElasticSearchStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def filter_tasks(self, filter_dtos: List[ApplyFilterDTO], offset: int, limit: int) -> List[int]:
+    def filter_tasks(self, filter_dtos: List[ApplyFilterDTO], offset: int, limit: int) -> Tuple[List[int], int]:
         pass
 
     @abc.abstractmethod
@@ -82,4 +84,13 @@ class ElasticSearchStorageInterface(abc.ABC):
     def query_cities(
             self, offset: int, limit: int, search_query: str
     ) -> List[ElasticCityDTO]:
+        pass
+
+    @abc.abstractmethod
+    def filter_tasks_with_stage_ids(
+            self, filter_dtos: List[ApplyFilterDTO],
+            task_details_config: TaskDetailsConfigDTO) -> Tuple[List[TaskStageIdsDTO], int]:
+        pass
+
+    def validate_task_id_in_elasticsearch(self, task_id: int) -> bool:
         pass

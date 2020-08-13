@@ -3,7 +3,7 @@
 
 RESPONSE_200_JSON = """
 {
-    "task_id": 1,
+    "task_id": "string",
     "template_id": "string",
     "title": "string",
     "description": "string",

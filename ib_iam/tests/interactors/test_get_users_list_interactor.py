@@ -89,6 +89,7 @@ class TestGetUsersDetailsInteractor:
         user_id = USER_ID
         limit = 10
         offset = 0
+        name_search_query = ""
         from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
         pagination_dto = PaginationDTO(
             offset=offset,
@@ -100,7 +101,8 @@ class TestGetUsersDetailsInteractor:
         # Act
         interactor.get_users_details_wrapper(
             user_id=user_id, pagination_dto=pagination_dto,
-            presenter=presenter_mock
+            presenter=presenter_mock,
+            name_search_query=name_search_query
         )
 
         # Assert
@@ -114,6 +116,7 @@ class TestGetUsersDetailsInteractor:
         user_id = USER_ID
         limit = 10
         offset = -1
+        name_search_query = ""
         from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
         pagination_dto = PaginationDTO(
             offset=offset,
@@ -125,7 +128,8 @@ class TestGetUsersDetailsInteractor:
         # Act
         interactor.get_users_details_wrapper(
             user_id=user_id, pagination_dto=pagination_dto,
-            presenter=presenter_mock
+            presenter=presenter_mock,
+            name_search_query=name_search_query
         )
 
         # Assert
@@ -137,6 +141,7 @@ class TestGetUsersDetailsInteractor:
         user_id = USER_ID
         limit = -10
         offset = 0
+        name_search_query = ""
         from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
         pagination_dto = PaginationDTO(
             offset=offset,
@@ -148,18 +153,21 @@ class TestGetUsersDetailsInteractor:
         # Act
         interactor.get_users_details_wrapper(
             user_id=user_id, pagination_dto=pagination_dto,
-            presenter=presenter_mock
+            presenter=presenter_mock,
+            name_search_query=name_search_query
         )
 
         # Assert
         presenter_mock.raise_invalid_limit_value_exception.assert_called_once()
 
     def test_get_users_returns_user_dtos(
-            self, storage_mock, presenter_mock, user_dtos, mocker):
+            self, storage_mock, presenter_mock, user_dtos, mocker
+    ):
         # Arrange
         user_id = USER_ID
         limit = 10
         offset = 0
+        name_search_query = ""
         from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
         pagination_dto = PaginationDTO(
             offset=offset,
@@ -178,7 +186,8 @@ class TestGetUsersDetailsInteractor:
         # Act
         interactor.get_users_details_wrapper(
             user_id=user_id, pagination_dto=pagination_dto,
-            presenter=presenter_mock
+            presenter=presenter_mock,
+            name_search_query=name_search_query
         )
 
         # Assert
@@ -191,6 +200,7 @@ class TestGetUsersDetailsInteractor:
         user_id = USER_ID
         limit = 10
         offset = 0
+        name_search_query = ""
         from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
         pagination_dto = PaginationDTO(
             offset=offset,
@@ -211,7 +221,8 @@ class TestGetUsersDetailsInteractor:
         # Act
         interactor.get_users_details_wrapper(
             user_id=user_id, pagination_dto=pagination_dto,
-            presenter=presenter_mock
+            presenter=presenter_mock,
+            name_search_query=name_search_query
         )
 
         # Assert
@@ -226,6 +237,7 @@ class TestGetUsersDetailsInteractor:
         user_id = USER_ID
         limit = 10
         offset = 0
+        name_search_query = ""
         from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
         pagination_dto = PaginationDTO(
             offset=offset,
@@ -246,7 +258,8 @@ class TestGetUsersDetailsInteractor:
         # Act
         interactor.get_users_details_wrapper(
             user_id=user_id, pagination_dto=pagination_dto,
-            presenter=presenter_mock
+            presenter=presenter_mock,
+            name_search_query=name_search_query
         )
         adapter_mock.assert_called_once()
 
@@ -261,6 +274,7 @@ class TestGetUsersDetailsInteractor:
         user_id = USER_ID
         limit = 10
         offset = 0
+        name_search_query = ""
         from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
         pagination_dto = PaginationDTO(
             offset=offset,
@@ -281,7 +295,8 @@ class TestGetUsersDetailsInteractor:
         # Act
         interactor.get_users_details_wrapper(
             user_id=user_id, pagination_dto=pagination_dto,
-            presenter=presenter_mock
+            presenter=presenter_mock,
+            name_search_query=name_search_query
         )
 
         # Assert
@@ -290,10 +305,12 @@ class TestGetUsersDetailsInteractor:
         adapter_mock.assert_called_once()
 
     def test_get_users_from_adapter_return_user_deails(
-            self, user_profile_dtos, storage_mock, presenter_mock, mocker):
+            self, user_profile_dtos, storage_mock, presenter_mock, mocker
+    ):
         user_id = USER_ID
         limit = 10
         offset = 0
+        name_search_query = ""
         user_ids = ["user1", "user2", "user3"]
         from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
         pagination_dto = PaginationDTO(
@@ -316,7 +333,8 @@ class TestGetUsersDetailsInteractor:
         # Act
         interactor.get_users_details_wrapper(
             user_id=user_id, pagination_dto=pagination_dto,
-            presenter=presenter_mock
+            presenter=presenter_mock,
+            name_search_query=name_search_query
         )
 
         # Assert
@@ -325,10 +343,12 @@ class TestGetUsersDetailsInteractor:
     def test_get_users_complete_details(
             self, user_dtos, user_team_dtos,
             user_role_dtos, user_company_dtos, user_profile_dtos,
-            storage_mock, presenter_mock, mocker):
+            storage_mock, presenter_mock, mocker
+    ):
         user_id = USER_ID
         limit = 10
         offset = 0
+        name_search_query = ""
         from ib_iam.interactors.storage_interfaces.dtos import PaginationDTO
         pagination_dto = PaginationDTO(
             offset=offset,
@@ -353,7 +373,8 @@ class TestGetUsersDetailsInteractor:
         # Act
         interactor.get_users_details_wrapper(
             user_id=user_id, pagination_dto=pagination_dto,
-            presenter=presenter_mock
+            presenter=presenter_mock,
+            name_search_query=name_search_query
         )
 
         # Assert
@@ -362,7 +383,8 @@ class TestGetUsersDetailsInteractor:
         presenter_mock.response_for_get_users.assert_called_once()
 
     def test_get_user_dtos_return_response(self, mocker, storage_mock,
-                                           user_profile_dtos):
+                                           user_profile_dtos
+                                           ):
         # Arrange
         user_ids = ["user1", "user2", "user3"]
 

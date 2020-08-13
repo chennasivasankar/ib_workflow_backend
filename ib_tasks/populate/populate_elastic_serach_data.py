@@ -3,10 +3,16 @@ from ib_tasks.storages.elasticsearch_storage_implementation import ElasticSearch
 
 
 def populate_data():
+    from elasticsearch_dsl import connections
+    from django.conf import settings
+    connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
+                                  timeout=20)
+    push_user_details_to_elasticsearch()
     populate_elastic_search_user_data()
     populate_elastic_search_country_data()
     populate_elastic_search_state_data()
     populate_elastic_search_city_data()
+
 
 def populate_elastic_search_user_data():
     user_dtos = [
@@ -17,7 +23,7 @@ def populate_elastic_search_user_data():
         ),
         ElasticUserDTO(
             user_id="2",
-            username="Pavan Kumar",
+            username="Pavankumar",
             elastic_user_id=None
         ),
         ElasticUserDTO(
@@ -41,9 +47,20 @@ def populate_elastic_search_user_data():
             elastic_user_id=None
         )
     ]
+
     storage = ElasticSearchStorageImplementation()
     for user_dto in user_dtos:
         storage.create_elastic_user(user_dto=user_dto)
+
+
+def push_user_details_to_elasticsearch():
+    from ib_iam.models import UserDetails
+    user_objects = UserDetails.objects.all()
+
+    for user_object in user_objects:
+        from ib_tasks.documents.elastic_task import User
+        user = User(user_id=user_object.user_id, name=user_object.name)
+        user.save()
 
 
 def populate_elastic_search_country_data():
@@ -89,37 +106,37 @@ def populate_elastic_search_state_data():
         ElasticStateDTO(
             state_id=1,
             state_name="Andhra Pradhesh",
-            elastic_state_name=None
+            elastic_state_id=None
         ),
         ElasticStateDTO(
             state_id=2,
             state_name="Uttar Pradhesh",
-            elastic_state_name=None
+            elastic_state_id=None
         ),
         ElasticStateDTO(
             state_id=1,
             state_name="Telangana",
-            elastic_state_name=None
+            elastic_state_id=None
         ),
         ElasticStateDTO(
             state_id=1,
             state_name="Tamilnadu",
-            elastic_state_name=None
+            elastic_state_id=None
         ),
         ElasticStateDTO(
             state_id=1,
             state_name="Karnataka",
-            elastic_state_name=None
+            elastic_state_id=None
         ),
         ElasticStateDTO(
             state_id=1,
             state_name="Kerala",
-            elastic_state_name=None
+            elastic_state_id=None
         ),
         ElasticStateDTO(
             state_id=1,
             state_name="Orissa",
-            elastic_state_name=None
+            elastic_state_id=None
         )
     ]
     storage = ElasticSearchStorageImplementation()
@@ -132,32 +149,32 @@ def populate_elastic_search_city_data():
         ElasticCityDTO(
             city_id=1,
             city_name="Hyderabad",
-            elastic_city_name=None
+            elastic_city_id=None
         ),
         ElasticCityDTO(
             city_id=2,
             city_name="Vijayawada",
-            elastic_city_name=None
+            elastic_city_id=None
         ),
         ElasticCityDTO(
             city_id=3,
             city_name="Mumbai",
-            elastic_city_name=None
+            elastic_city_id=None
         ),
         ElasticCityDTO(
             city_id=4,
             city_name="Chennai",
-            elastic_city_name=None
+            elastic_city_id=None
         ),
         ElasticCityDTO(
             city_id=5,
             city_name="Punjab",
-            elastic_city_name=None
+            elastic_city_id=None
         ),
         ElasticCityDTO(
             city_id=6,
             city_name="Visakapatnam",
-            elastic_city_name=None
+            elastic_city_id=None
         )
     ]
     storage = ElasticSearchStorageImplementation()

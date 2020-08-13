@@ -27,7 +27,7 @@ snapshots['TestCase04GetAllTasksOverviewAPITestCase.test_case body'] = {
                 'stage_display_name': 'name_2',
                 'stage_id': 3
             },
-            'task_id': 1,
+            'task_id': 'iBWF-0',
             'task_overview_fields': [
                 {
                     'field_display_name': 'DISPLAY_NAME-1',
@@ -57,7 +57,7 @@ snapshots['TestCase04GetAllTasksOverviewAPITestCase.test_case body'] = {
                 'stage_display_name': 'name_2',
                 'stage_id': 3
             },
-            'task_id': 2,
+            'task_id': 'iBWF-1',
             'task_overview_fields': [
                 {
                     'field_display_name': 'DISPLAY_NAME-1',
@@ -87,7 +87,7 @@ snapshots['TestCase04GetAllTasksOverviewAPITestCase.test_case body'] = {
                 'stage_display_name': 'name_4',
                 'stage_id': 5
             },
-            'task_id': 3,
+            'task_id': 'iBWF-2',
             'task_overview_fields': [
                 {
                     'field_display_name': 'DISPLAY_NAME-0',

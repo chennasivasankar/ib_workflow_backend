@@ -186,12 +186,13 @@ class UpdateTaskInteractor:
             task_template_id, action_type=None)
         self.create_task_storage.update_task_with_given_task_details(
             task_dto=task_dto)
-        elastic_dto = self._get_elastic_task_dto(task_dto)
-        self.elastic_storage.update_task(task_dto=elastic_dto)
-        existing_gofs = self.create_task_storage \
-            .get_gof_ids_with_same_gof_order_related_to_a_task(task_id)
-        existing_fields = self.create_task_storage \
-            .get_field_ids_with_task_gof_id_related_to_given_task(task_id)
+        existing_gofs = \
+            self.create_task_storage \
+                .get_gof_ids_with_same_gof_order_related_to_a_task(task_id)
+        existing_fields = \
+            self.create_task_storage \
+                .get_field_ids_with_task_gof_id_related_to_given_task(
+                task_id)
         task_gof_dtos = [
             TaskGoFWithTaskIdDTO(
                 task_id=task_id,
@@ -237,7 +238,7 @@ class UpdateTaskInteractor:
             template_id=None,
             task_id=task_dto.task_id,
             title=task_dto.title,
-            fields=fields_dto
+                fields=fields_dto
         )
         return elastic_task_dto
 
