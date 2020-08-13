@@ -89,6 +89,7 @@ class TaskTemplateStageFieldsDTO:
     task_template_id: str
     task_id: int
     stage_id: str
+    db_stage_id: int
     stage_color: str
     field_ids: List[str]
 
@@ -96,6 +97,7 @@ class TaskTemplateStageFieldsDTO:
 @dataclass
 class StageTaskFieldsDTO:
     task_id: int
+    stage_id: str
     field_ids: List[str]
 
 

@@ -3,38 +3,11 @@
 
 RESPONSE_200_JSON = """
 {
-    "user_id": "fff1c214-e1b4-48a3-9fee-f514e3783826",
+    "user_id": "32f6b0b1-4d0b-4d5e-8a32-b79fae70cd1e",
     "name": "string",
     "email": "string",
     "profile_pic_url": "string",
-    "is_admin": true,
-    "company": {
-        "name": "string",
-        "description": "string",
-        "logo_url": "string",
-        "company_id": "string",
-        "employees": [
-            {
-                "employee_id": "string",
-                "name": "string",
-                "profile_pic_url": "string"
-            }
-        ]
-    },
-    "teams": [
-        {
-            "name": "string",
-            "description": "string",
-            "team_id": "string",
-            "members": [
-                {
-                    "member_id": "string",
-                    "name": "string",
-                    "profile_pic_url": "string"
-                }
-            ]
-        }
-    ]
+    "is_admin": true
 }
 """
 

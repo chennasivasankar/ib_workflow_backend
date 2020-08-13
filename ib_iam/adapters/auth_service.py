@@ -20,6 +20,22 @@ class UserTokensDTO:
     user_id: str
 
 
+class AccessTokenNotFound(Exception):
+    pass
+
+
+class UserAccountNotFound(Exception):
+    pass
+
+
+class RefreshTokenHasExpired(Exception):
+    pass
+
+
+class RefreshTokenHasNotFound(Exception):
+    pass
+
+
 class AuthService:
     @property
     def interface(self):
@@ -36,31 +52,49 @@ class AuthService:
                 email=email_and_password_dto.email,
                 password=email_and_password_dto.password)
         except CustomException as err:
-            from ib_users.exceptions.custom_exception_constants import \
-                INVALID_EMAIL
-            from ib_iam.interactors.user_login_interactor import \
-                IncorrectPassword
-            if err.error_type == INVALID_EMAIL.code:
-                from ib_iam.exceptions.custom_exceptions import InvalidEmail
-                raise InvalidEmail
-            from ib_users.exceptions.custom_exception_constants import \
-                PASSWORD_AT_LEAST_1_SPECIAL_CHARACTER
-            if err.error_type == PASSWORD_AT_LEAST_1_SPECIAL_CHARACTER.code:
-                raise IncorrectPassword
-            from ib_users.exceptions.custom_exception_constants import \
-                PASSWORD_MIN_LENGTH_IS
-            if err.error_type == PASSWORD_MIN_LENGTH_IS.code:
-                raise IncorrectPassword
-            from ib_users.exceptions.custom_exception_constants import \
-                USER_ACCOUNT_IS_DEACTIVATED
-            if err.error_type == USER_ACCOUNT_IS_DEACTIVATED.code:
-                from ib_iam.exceptions.custom_exceptions import \
-                    UserAccountDoesNotExist
-                raise UserAccountDoesNotExist
+            self._raise_exception_for_invalid_email(error_type=err.error_type)
+            self._raise_exception_for_invalid_password(
+                error_type=err.error_type)
+            self._raise_exception_for_account_id_deactivated(
+                error_type=err.error_type)
         else:
             converted_user_tokens_dto = self._convert_to_user_tokens_dto(
                 user_auth_tokens_dto)
             return converted_user_tokens_dto
+
+    @staticmethod
+    def _raise_exception_for_account_id_deactivated(error_type: str):
+        from ib_users.exceptions.custom_exception_constants import \
+            USER_ACCOUNT_IS_DEACTIVATED
+        if error_type == USER_ACCOUNT_IS_DEACTIVATED.code:
+            from ib_iam.exceptions.custom_exceptions import \
+                UserAccountDoesNotExist
+            raise UserAccountDoesNotExist
+
+    @staticmethod
+    def _raise_exception_for_invalid_email(error_type: str):
+        from ib_users.exceptions.custom_exception_constants import \
+            INVALID_EMAIL
+        if error_type == INVALID_EMAIL.code:
+            from ib_iam.exceptions.custom_exceptions import InvalidEmail
+            raise InvalidEmail
+
+    @staticmethod
+    def _raise_exception_for_invalid_password(error_type: str):
+        from ib_iam.interactors.user_login_interactor import \
+            IncorrectPassword
+        from ib_users.exceptions.custom_exception_constants import \
+            PASSWORD_AT_LEAST_1_SPECIAL_CHARACTER
+        if error_type == PASSWORD_AT_LEAST_1_SPECIAL_CHARACTER.code:
+            raise IncorrectPassword
+        from ib_users.exceptions.custom_exception_constants import \
+            PASSWORD_MIN_LENGTH_IS
+        if error_type == PASSWORD_MIN_LENGTH_IS.code:
+            raise IncorrectPassword
+        from ib_users.exceptions.custom_exception_constants import \
+            INCORRECT_PASSWORD
+        if error_type == INCORRECT_PASSWORD.code:
+            raise IncorrectPassword
 
     def user_log_out_from_a_device(self, user_id: str):
         self.interface.logout_in_all_devices(user_id=user_id)
@@ -152,3 +186,33 @@ class AuthService:
             from ib_iam.exceptions.custom_exceptions import \
                 CurrentPasswordMismatch
             raise CurrentPasswordMismatch
+
+    def get_refresh_auth_tokens_dto(self, access_token: str,
+                                    refresh_token: str) -> UserTokensDTO:
+        from ib_users.constants.custom_exception_messages import \
+            INVALID_ACCESS_TOKEN
+        from django_swagger_utils.drf_server.exceptions import NotFound
+        from ib_users.exceptions.custom_exception_constants import \
+            USER_ACCOUNT_IS_DEACTIVATED
+        from ib_users.exceptions.oauth2_exceptions import RefreshTokenExpired
+        from ib_users.exceptions.oauth2_exceptions import RefreshTokenNotFound
+
+        try:
+            user_auth_tokens_dto = \
+                self.interface.refresh_auth_tokens(
+                    access_token=access_token, refresh_token=refresh_token
+                )
+        except NotFound as err:
+            if err.res_status == INVALID_ACCESS_TOKEN.code:
+                raise AccessTokenNotFound
+        except RefreshTokenExpired:
+            raise RefreshTokenHasExpired
+        except RefreshTokenNotFound:
+            raise RefreshTokenHasNotFound
+        except CustomException as err:
+            if err.error_type == USER_ACCOUNT_IS_DEACTIVATED.code:
+                raise UserAccountNotFound
+        else:
+            converted_user_tokens_dto = self._convert_to_user_tokens_dto(
+                user_auth_tokens_dto)
+            return converted_user_tokens_dto

@@ -4,7 +4,7 @@ from ib_tasks.storages.fields_storage_implementation import FieldsStorageImpleme
 from ib_tasks.storages.tasks_storage_implementation import \
     TasksStorageImplementation
 from ib_tasks.tests.factories.interactor_dtos import GetTaskDetailsDTOFactory
-from ib_tasks.tests.factories.models import StageModelFactory, TaskFactory, TaskTemplateFactory, TaskStageModelFactory
+from ib_tasks.tests.factories.models import StageModelFactory, TaskFactory, TaskTemplateFactory, CurrentTaskStageModelFactory
 
 
 @pytest.mark.django_db
@@ -17,8 +17,8 @@ class TestValidateTaskStageIds:
 
     @pytest.fixture()
     def populate_data(self):
-        TaskStageModelFactory.reset_sequence()
-        TaskStageModelFactory.create_batch(size=4)
+        CurrentTaskStageModelFactory.reset_sequence()
+        CurrentTaskStageModelFactory.create_batch(size=4)
 
     def test_validate_stage_task_details(self, get_task_stage_dtos,
                                          populate_data,

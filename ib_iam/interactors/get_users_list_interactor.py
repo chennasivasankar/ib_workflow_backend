@@ -19,11 +19,14 @@ class GetUsersDetailsInteractor(ValidationMixin):
 
     def get_users_details_wrapper(
             self, user_id: str, pagination_dto: PaginationDTO,
-            presenter: GetUsersListPresenterInterface):
+            presenter: GetUsersListPresenterInterface,
+            name_search_query: str
+    ):
         try:
             complete_user_details_dtos = self.get_users_details(
                 user_id=user_id, offset=pagination_dto.offset,
-                limit=pagination_dto.limit)
+                limit=pagination_dto.limit,
+                name_search_query=name_search_query)
             response = presenter.response_for_get_users(
                 complete_user_details_dtos)
         except UserIsNotAdmin:
@@ -36,12 +39,16 @@ class GetUsersDetailsInteractor(ValidationMixin):
             response = presenter.raise_invalid_user()
         return response
 
-    def get_users_details(self, user_id: str, offset: int,
-                          limit: int) -> ListOfCompleteUsersDTO:
+    def get_users_details(
+            self, user_id: str, offset: int, limit: int,
+            name_search_query: str
+    ) -> ListOfCompleteUsersDTO:
         self._validate_is_user_admin(user_id=user_id)
         self._validate_pagination_details(offset=offset, limit=limit)
         user_dtos = self.user_storage.get_users_who_are_not_admins(
-            offset=offset, limit=limit)
+            offset=offset, limit=limit,
+            name_search_query=name_search_query
+        )
         total_count = self.user_storage.get_total_count_of_users_for_query()
         user_ids = [user_dto.user_id for user_dto in user_dtos]
         return self._get_complete_user_details_dto(user_ids, total_count)

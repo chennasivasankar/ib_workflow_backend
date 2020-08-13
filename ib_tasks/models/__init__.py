@@ -12,6 +12,7 @@ from .stage import Stage
 from .stage_actions import StageAction
 from .stage_permitted_roles import StagePermittedRoles
 from .task import Task
+from .task_due_details import UserTaskDelayReason
 from .task_gof import TaskGoF
 from .task_gof_field import TaskGoFField
 from .task_log import TaskLog
@@ -33,8 +34,10 @@ from .filter import Filter
 from .filter_condition import FilterCondition
 from ib_tasks.models.task import ElasticSearchTask
 from .task import ElasticSearchTask
+from .task_stage_history import TaskStageHistory
 
 __all__ = [
+    "TaskStageHistory",
     "ElasticSearchTask",
     "Filter",
     "FilterCondition",
@@ -56,5 +59,6 @@ __all__ = [
     "TaskTemplateStatusVariables",
     "TaskTemplateInitialStage",
     "TaskTemplateInitialStage",
-    "StagePermittedRoles"
+    "StagePermittedRoles",
+    "UserTaskDelayReason"
 ]

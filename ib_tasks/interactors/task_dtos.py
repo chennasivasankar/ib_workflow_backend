@@ -1,10 +1,11 @@
 import datetime
 from dataclasses import dataclass
-from typing import Union, List, Any
+from typing import Union, List, Any, Optional
 
 from ib_tasks.constants.enum import Priority
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    StageActionDetailsDTO, TaskStageIdsDTO, StageDetailsDTO
+    StageActionDetailsDTO, TaskStageIdsDTO, StageDetailsDTO, \
+    CurrentStageDetailsDTO
 
 
 @dataclass
@@ -82,6 +83,8 @@ class TaskDetailsConfigDTO:
     stage_ids: List[str]
     offset: int
     limit: int
+    user_id: str
+    search_query: Optional[str]
 
 
 @dataclass
@@ -115,3 +118,19 @@ class CreateTaskLogDTO:
     task_id: int
     user_id: str
     action_id: int
+
+
+@dataclass
+class TaskCurrentStageDetailsDTO:
+    task_display_id: str
+    stage_details_dtos: List[CurrentStageDetailsDTO]
+    user_has_permission: bool
+
+
+@dataclass
+class TaskDueParametersDTO:
+    task_id: int
+    user_id: str
+    due_date_time: datetime
+    reason_id: int
+    reason: str

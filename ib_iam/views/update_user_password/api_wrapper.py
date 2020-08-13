@@ -7,10 +7,10 @@ from .validator_class import ValidatorClass
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
     user_object = kwargs["user"]
-    user_id = user_object.user_id
+    user_id = str(user_object.user_id)
     request_data = kwargs["request_data"]
     current_and_new_password_dto = \
-        _prepare_current_and_new_password_dto(request_data=request_data)
+        prepare_current_and_new_password_dto(request_data=request_data)
 
     from ib_iam.presenters.update_user_password_presenter_implementation import \
         UpdateUserPasswordPresenterImplementation
@@ -26,7 +26,7 @@ def api_wrapper(*args, **kwargs):
     return response_data
 
 
-def _prepare_current_and_new_password_dto(request_data):
+def prepare_current_and_new_password_dto(request_data):
     from ib_iam.interactors.update_user_password_interactor import \
         CurrentAndNewPasswordDTO
     current_and_new_password_dto = CurrentAndNewPasswordDTO(
