@@ -3,7 +3,8 @@ import json
 from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     TaskCompleteDetailsDTO
-from ib_tasks.tests.factories.interactor_dtos import FieldDisplayDTOFactory
+from ib_tasks.tests.factories.interactor_dtos import FieldDisplayDTOFactory, \
+    TaskStageDTOFactory
 from ib_tasks.tests.factories.storage_dtos import ActionDTOFactory
 from ib_tasks.tests.factories.adapter_dtos import (
     ColumnStageDTOFactory, BoardDTOFactory, ColumnDTOFactory
@@ -140,7 +141,9 @@ class TestCreateOrUpdateTaskPresenterImplementation:
             task_id=1,
             task_boards_details=task_board_details,
             actions_dto=ActionDTOFactory.create_batch(size=3),
-            field_dtos=FieldDisplayDTOFactory.create_batch(size=3)
+            field_dtos=FieldDisplayDTOFactory.create_batch(size=3),
+            assignees_details=[],
+            task_stage_details=TaskStageDTOFactory.create_batch(3)
         )
 
     def test_get_response_for_user_action_on_task(

@@ -323,8 +323,8 @@
       },
       "required": [
         "column_id",
-        "actions",
-        "fields",
+        "stage_with_actions",
+        "task_overview_fields",
         "column_name"
       ]
     },
@@ -343,8 +343,8 @@
       },
       "required": [
         "field_type",
-        "key",
-        "value"
+        "field_display_name",
+        "field_response"
       ]
     },
     "TaskActionResponseBody": {
