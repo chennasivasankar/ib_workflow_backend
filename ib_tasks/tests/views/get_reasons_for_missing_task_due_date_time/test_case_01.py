@@ -18,9 +18,9 @@ class TestCase01GetReasonsForMissingTaskDueDateTimeAPITestCase(TestUtils):
         from ib_tasks.tests.factories.models import TaskFactory
         TaskFactory.reset_sequence()
         tasks = TaskFactory.create_batch(size=2)
-        from ib_tasks.tests.factories.models import TaskStageFactory
-        TaskStageFactory.reset_sequence()
-        TaskStageFactory(task=tasks[0], assignee_id=api_user.user_id)
+        from ib_tasks.tests.factories.models import TaskLogFactory
+        TaskLogFactory.reset_sequence()
+        TaskLogFactory(task=tasks[0], assignee_id=api_user.user_id)
         from ib_tasks.tests.factories.models import TaskDueDetailsFactory
         TaskDueDetailsFactory.reset_sequence()
         TaskDueDetailsFactory(user_id=api_user.user_id, task=tasks[0])

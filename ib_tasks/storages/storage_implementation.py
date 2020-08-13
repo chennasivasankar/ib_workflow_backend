@@ -29,7 +29,7 @@ from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, TaskDueParametersD
 from ib_tasks.models import \
     ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, \
     GlobalConstant, TaskStageHistory, \
-    StagePermittedRoles, TaskTemplateInitialStage, Stage
+    StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskLog
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task
 from ib_tasks.models.task_due_details import UserTaskDelayReason
 
@@ -633,8 +633,8 @@ class StorageImplementation(StorageInterface):
 
     def validate_if_task_is_assigned_to_user(self,
                                              task_id: int, user_id: str) -> bool:
-        is_assigned = CurrentTaskStage.objects.filter(
-            task_id=task_id, assignee_id=user_id).exists()
+        is_assigned = TaskLog.objects.filter(
+            task_id=task_id, user_id=user_id).exists()
         return is_assigned
 
     def get_task_due_details(self, task_id: int) -> \

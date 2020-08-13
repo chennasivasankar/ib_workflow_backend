@@ -11,7 +11,7 @@ from freezegun import freeze_time
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01GetReasonsForMissingTaskDueDateTimeAPITestCase(TestUtils):
+class TestCase02GetReasonsForMissingTaskDueDateTimeAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -30,9 +30,9 @@ class TestCase01GetReasonsForMissingTaskDueDateTimeAPITestCase(TestUtils):
 
         TaskFactory.reset_sequence()
         tasks = TaskFactory.create_batch(size=2)
-        from ib_tasks.tests.factories.models import TaskStageFactory
-        TaskStageFactory.reset_sequence()
-        TaskStageFactory(task=tasks[0], assignee_id=api_user.user_id)
+        from ib_tasks.tests.factories.models import TaskLogFactory
+        TaskLogFactory.reset_sequence()
+        TaskLogFactory(task=tasks[0], user_id=api_user.user_id)
         from ib_tasks.tests.factories.models import TaskDueDetailsFactory
         TaskDueDetailsFactory.reset_sequence()
         TaskDueDetailsFactory(user_id=api_user.user_id, task=tasks[0],
