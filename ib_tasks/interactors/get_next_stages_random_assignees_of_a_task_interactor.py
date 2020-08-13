@@ -112,22 +112,6 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
                 each_stage_value_with_task_ids_dto)
         return task_ids_group_by_stage_value_dtos
 
-    def _all_stages_assigned_with_random_user_details_dtos(
-            self, db_stage_ids: List[int],
-            stage_detail_dtos: List[StageDetailsDTO]) -> \
-            List[StageWithUserDetailsDTO]:
-        stage_role_dtos = \
-            self.stage_storage.get_stage_role_dtos_given_db_stage_ids(
-                db_stage_ids)
-        role_ids_group_by_stage_id_dtos = \
-            self._get_role_ids_group_by_stage_id_dtos(
-                stage_ids=db_stage_ids,
-                stage_role_dtos=stage_role_dtos)
-        stage_with_random_user_details_dtos = self. \
-            _get_random_permitted_user_details_dto_of_stage_id(
-            role_ids_group_by_stage_id_dtos, stage_detail_dtos)
-        return stage_with_random_user_details_dtos
-
     def get_status_variables_dtos_of_task_based_on_action(self, task_id: int,
                                                           action_id: int) -> \
             List[StatusVariableDTO]:
@@ -144,10 +128,59 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
             task_id, action_id)
         return updated_status_variable_dtos
 
+    def _all_stages_assigned_with_random_user_details_dtos(
+            self, db_stage_ids: List[int],
+            stage_detail_dtos: List[StageDetailsDTO]) -> \
+            List[StageWithUserDetailsDTO]:
+        stage_role_dtos = \
+            self.stage_storage.get_stage_role_dtos_given_db_stage_ids(
+                db_stage_ids)
+        role_ids_group_by_stage_id_dtos = \
+            self._get_role_ids_group_by_stage_id_dtos(
+                stage_ids=db_stage_ids,
+                stage_role_dtos=stage_role_dtos)
+        stage_with_random_user_details_dtos = self. \
+            _get_random_permitted_user_details_dto_of_stage_id(
+            role_ids_group_by_stage_id_dtos, stage_detail_dtos)
+        return stage_with_random_user_details_dtos
+
+    def _get_assignee_with_current_tasks_count_dtos(self) -> List[
+        AssigneeCurrentTasksCountDTO]:
+        tasks_that_are_not_completed_with_stage_dtos = self. \
+            _get_tasks_that_are_not_completed_with_stage_dtos()
+        stage_ids_of_tasks_that_are_not_completed = [
+            each_task_stage_dto.db_stage_id for each_task_stage_dto in
+            tasks_that_are_not_completed_with_stage_dtos
+        ]
+        task_ids_of_tasks_that_are_not_completed = [
+            each_task_stage_dto.task_id for each_task_stage_dto in
+            tasks_that_are_not_completed_with_stage_dtos]
+        assignee_with_current_tasks_count_dtos = self.task_stage_storage. \
+            get_count_of_tasks_assigned_for_each_user(
+            db_stage_ids=stage_ids_of_tasks_that_are_not_completed,
+            task_ids=task_ids_of_tasks_that_are_not_completed)
+        return assignee_with_current_tasks_count_dtos
+
+    @staticmethod
+    def _get_permitted_assignee_with_current_tasks_count_dtos(
+            permitted_user_ids: List[str],
+            assignee_with_current_tasks_count_dtos: List[
+                AssigneeCurrentTasksCountDTO]) -> List[
+        AssigneeCurrentTasksCountDTO]:
+        permitted_assignee_with_current_tasks_count_dtos = [
+            assignee_with_current_tasks_count_dto for
+            assignee_with_current_tasks_count_dto in
+            assignee_with_current_tasks_count_dtos if
+            assignee_with_current_tasks_count_dto.assignee_id in
+            permitted_user_ids]
+        return permitted_assignee_with_current_tasks_count_dtos
+
     def _get_random_permitted_user_details_dto_of_stage_id(
             self, role_ids_group_by_stage_id_dtos: List[StageIdWithRoleIdsDTO],
             stage_detail_dtos: List[StageDetailsDTO]
     ) -> List[StageWithUserDetailsDTO]:
+        assignee_with_current_tasks_count_dtos = self. \
+            _get_assignee_with_current_tasks_count_dtos()
         stage_with_user_details_dtos = []
         from ib_tasks.adapters.auth_service import AuthService
         auth_service_adapter = AuthService()
@@ -155,11 +188,26 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
         for each_dto in role_ids_group_by_stage_id_dtos:
             permitted_user_details_dtos = auth_service_adapter. \
                 get_permitted_user_details(role_ids=each_dto.role_ids)
-            permitted_user_details_dto_having_less_tasks, \
+            permitted_user_ids = [
+                each_permitted_user_details_dto.user_id
+                for each_permitted_user_details_dto in
+                permitted_user_details_dtos
+            ]
+            permitted_assignee_with_current_tasks_count_dtos = self. \
+                _get_permitted_assignee_with_current_tasks_count_dtos(
+                permitted_user_ids, assignee_with_current_tasks_count_dtos)
+            assignee_id_with_current_less_tasks, \
             updated_task_count_dto_for_assignee_having_less_tasks = self. \
                 _get_user_having_less_tasks_for_each_stage(
                 permitted_user_details_dtos,
+                permitted_assignee_with_current_tasks_count_dtos,
                 updated_task_count_dto_for_assignee_having_less_tasks)
+            for permitted_user_details_dto in permitted_user_details_dtos:
+                if assignee_id_with_current_less_tasks == \
+                        permitted_user_details_dto.user_id:
+                    permitted_user_details_dto_having_less_tasks = \
+                        permitted_user_details_dto
+                    break
 
             stage_with_user_details_dto = self. \
                 _prepare_stage_with_user_details_dto(
@@ -171,54 +219,145 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
         return stage_with_user_details_dtos
 
     def _get_user_having_less_tasks_for_each_stage(
-            self, permitted_user_details_dtos: List[
-                UserDetailsDTO],
-            updated_task_count_dto_for_assignee_having_less_tasks:
-            AssigneeCurrentTasksCountDTO) -> \
-            Tuple[UserDetailsDTO, AssigneeCurrentTasksCountDTO]:
+            self, permitted_user_details_dtos: List[UserDetailsDTO],
+            permitted_assignee_with_current_tasks_count_dtos: List[
+                AssigneeCurrentTasksCountDTO],
+            updated_task_count_dtos_for_assignee_having_less_tasks:
+            List[AssigneeCurrentTasksCountDTO]) -> \
+            Tuple[str, List[AssigneeCurrentTasksCountDTO]]:
 
-        tasks_that_are_not_completed_with_stage_dtos = self. \
-            _get_tasks_that_are_not_completed_with_stage_dtos()
-        stage_ids_of_tasks_that_are_not_completed = [
-            each_task_stage_dto.db_stage_id for each_task_stage_dto in
-            tasks_that_are_not_completed_with_stage_dtos]
-        task_ids_of_tasks_that_are_not_completed = [
-            each_task_stage_dto.task_id
-            for each_task_stage_dto in
-            tasks_that_are_not_completed_with_stage_dtos]
+        permitted_assignee_with_current_tasks_count_dtos_dict = [
+            {"assignee_id": assignee_with_current_tasks_count_dto.assignee_id,
+             "tasks_count": assignee_with_current_tasks_count_dto.tasks_count}
+            for assignee_with_current_tasks_count_dto in
+            permitted_assignee_with_current_tasks_count_dtos]
 
-        permitted_user_ids = [each_permitted_user_details_dto.user_id for
-                              each_permitted_user_details_dto in
-                              permitted_user_details_dtos]
-        assignee_with_current_tasks_count_dtos = self.task_stage_storage. \
-            get_count_of_tasks_assigned_for_each_user(
-            db_stage_ids=stage_ids_of_tasks_that_are_not_completed,
-            user_ids=permitted_user_ids,
-            task_ids=task_ids_of_tasks_that_are_not_completed)
-        for each_assignee_with_current_tasks_count_dto in assignee_with_current_tasks_count_dtos:
-            if each_assignee_with_current_tasks_count_dto.tasks_count<updated_task_count_dto_for_assignee_having_less_tasks.tasks_count:
+        permitted_assignee_with_current_tasks_count_dtos_dict = sorted(
+            permitted_assignee_with_current_tasks_count_dtos_dict,
+            key=lambda i: i['tasks_count'])
 
+        if not updated_task_count_dtos_for_assignee_having_less_tasks:
+            assignee_id_with_current_less_tasks = \
+                permitted_assignee_with_current_tasks_count_dtos_dict[0][
+                    "assignee_id"]
+            updated_task_count_dtos_for_assignee_having_less_tasks = \
+                self._get_updated_task_count_dtos_for_assignee_having_less_tasks(
+                    permitted_assignee_with_current_tasks_count_dtos,
+                    assignee_id_with_current_less_tasks,
+                    updated_task_count_dtos_for_assignee_having_less_tasks)
+            return assignee_id_with_current_less_tasks, \
+                   updated_task_count_dtos_for_assignee_having_less_tasks
+
+        updated_task_count_dto_for_assignee_having_less_tasks_dict = [{
+            "assignee_id": updated_task_count_dto_for_assignee.assignee_id,
+            "tasks_count": updated_task_count_dto_for_assignee.tasks_count}
+            for updated_task_count_dto_for_assignee in
+            updated_task_count_dtos_for_assignee_having_less_tasks]
+
+        for each_assignee_with_current_tasks_count_dto_dict in \
+                permitted_assignee_with_current_tasks_count_dtos_dict:
+            assignee_id_index = self._get_assignee_id_index(
+                updated_task_count_dto_for_assignee_having_less_tasks_dict,
+                each_assignee_with_current_tasks_count_dto_dict)
+            if assignee_id_index is None:
+                updated_task_count_dto_for_assignee_with_index = self. \
+                    _get_update_task_count_dto_of_assignee(
+                    each_assignee_with_current_tasks_count_dto_dict)
+                updated_task_count_dtos_for_assignee_having_less_tasks.append(
+                    updated_task_count_dto_for_assignee_with_index)
+                assignee_id_with_current_less_tasks = \
+                    each_assignee_with_current_tasks_count_dto_dict[
+                        'assignee_id']
+                return assignee_id_with_current_less_tasks, \
+                       updated_task_count_dtos_for_assignee_having_less_tasks
+            updated_task_count_of_assignee = \
+                updated_task_count_dto_for_assignee_having_less_tasks_dict[
+                    assignee_id_index]['tasks_count']
+            each_assignee_with_current_tasks_count_dto_dict[
+                'tasks_count'] = updated_task_count_of_assignee
+        permitted_assignee_with_current_tasks_count_dtos_dict = sorted(
+            permitted_assignee_with_current_tasks_count_dtos_dict,
+            key=lambda i: i['tasks_count'])
         assignee_id_with_current_less_tasks = \
-            assignee_with_current_tasks_count_dtos[0].assignee_id
-        updated_task_count_dto_for_assignee_having_less_tasks = \
+            permitted_assignee_with_current_tasks_count_dtos_dict[0][
+                'assignee_id']
+        assignee_id_index = self._get_assignee_id_index_given_assignee_id(
+            updated_task_count_dto_for_assignee_having_less_tasks_dict,
+            assignee_id_with_current_less_tasks)
+        updated_task_count_dto_for_assignee_having_less_tasks_dict[
+            assignee_id_index]['tasks_count'] += 1
+        updated_task_count_dtos_for_assignee_having_less_tasks = [
             AssigneeCurrentTasksCountDTO(
-                assignee_id=assignee_id_with_current_less_tasks,
-                tasks_count=assignee_with_current_tasks_count_dtos[
-                    0].tasks_count)
+                assignee_id=updated_task_count_dict_for_assignee[
+                    'assignee_id'],
+                tasks_count=updated_task_count_dict_for_assignee[
+                    'tasks_count']) for updated_task_count_dict_for_assignee in
+            updated_task_count_dto_for_assignee_having_less_tasks_dict]
 
-        for each_permitted_user_details_dto in permitted_user_details_dtos:
-            if assignee_id_with_current_less_tasks == each_permitted_user_details_dto.user_id:
-                return each_permitted_user_details_dto, updated_task_count_dto_for_assignee_having_less_tasks
+        return assignee_id_with_current_less_tasks, \
+               updated_task_count_dtos_for_assignee_having_less_tasks
 
-    def _get_tasks_that_are_not_completed_with_stage_dtos(self) -> List[
-        TaskWithDbStageIdDTO]:
+    @staticmethod
+    def _get_update_task_count_dto_of_assignee(
+            each_assignee_with_current_tasks_count_dto_dict):
+        updated_task_count_dto_of_assignee = AssigneeCurrentTasksCountDTO(
+            assignee_id=
+            each_assignee_with_current_tasks_count_dto_dict[
+                'assignee_id'],
+            tasks_count=
+            each_assignee_with_current_tasks_count_dto_dict[
+                'tasks_count'] + 1)
+        return updated_task_count_dto_of_assignee
+
+    @staticmethod
+    def _get_updated_task_count_dtos_for_assignee_having_less_tasks(
+            permitted_assignee_with_current_tasks_count_dtos,
+            assignee_id_with_current_less_tasks,
+            updated_task_count_dtos_for_assignee_having_less_tasks):
+        for assignee_with_tasks_count_dto in \
+                permitted_assignee_with_current_tasks_count_dtos:
+            if assignee_with_tasks_count_dto.assignee_id == \
+                    assignee_id_with_current_less_tasks:
+                updated_task_count_dtos_for_assignee_having_less_tasks. \
+                    append(AssigneeCurrentTasksCountDTO(
+                    assignee_id=assignee_id_with_current_less_tasks,
+                    tasks_count=assignee_with_tasks_count_dto.
+                                    tasks_count + 1))
+        return updated_task_count_dtos_for_assignee_having_less_tasks
+
+    @staticmethod
+    def _get_assignee_id_index_given_assignee_id(
+            updated_task_count_dto_for_assignee_having_less_tasks_dict,
+            assignee_id_with_current_less_tasks) -> int:
+        assignee_id_index = next(
+            (index for (index, d) in enumerate(
+                updated_task_count_dto_for_assignee_having_less_tasks_dict)
+             if d["assignee_id"] == assignee_id_with_current_less_tasks),
+            None)
+        return assignee_id_index
+
+    @staticmethod
+    def _get_assignee_id_index(
+            updated_task_count_dto_for_assignee_having_less_tasks_dict,
+            assignee_with_current_tasks_count_dto_dict) -> int:
+        assignee_id_index = next(
+            (index for (index, d) in enumerate(
+                updated_task_count_dto_for_assignee_having_less_tasks_dict)
+             if d["assignee_id"] ==
+             assignee_with_current_tasks_count_dto_dict[
+                 'assignee_id']), None)
+        return assignee_id_index
+
+    def _get_tasks_that_are_not_completed_with_stage_dtos(
+            self) -> List[TaskWithDbStageIdDTO]:
         task_with_stage_id_dtos = self. \
             stage_storage. \
             get_current_stages_of_all_tasks()
 
-        stage_ids_of_tasks = [task_with_stage_id_dto.db_stage_id for
-                              task_with_stage_id_dto in
-                              task_with_stage_id_dtos]
+        stage_ids_of_tasks = [
+            task_with_stage_id_dto.db_stage_id
+            for task_with_stage_id_dto in task_with_stage_id_dtos
+        ]
         stage_ids_having_actions = self.action_storage.get_stage_ids_having_actions(
             db_stage_ids=stage_ids_of_tasks)
 
@@ -243,8 +382,10 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(ValidationMixin):
         stage_with_user_details_dto = StageWithUserDetailsDTO(
             db_stage_id=role_ids_group_by_stage_id_dto.db_stage_id,
             assignee_id=permitted_user_details_dto_having_less_tasks.user_id,
-            assignee_name=permitted_user_details_dto_having_less_tasks.user_name,
-            profile_pic_url=permitted_user_details_dto_having_less_tasks.profile_pic_url,
+            assignee_name=permitted_user_details_dto_having_less_tasks.
+                user_name,
+            profile_pic_url=permitted_user_details_dto_having_less_tasks.
+                profile_pic_url,
             stage_display_name=name,
         )
         return stage_with_user_details_dto
