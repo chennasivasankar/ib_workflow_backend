@@ -247,6 +247,7 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
             if field_dto.field_id not in field_ids:
                 task_fields_list.append(
                     {
+                        "field_type": field_dto.field_type,
                         "field_display_name": field_dto.key,
                         "field_response": field_dto.value
                     }
