@@ -1,12 +1,12 @@
 """
-# TODO: given valid details
+# TODO: invalid task id raises exception
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01AddReasonForMissingDueDateTimeAPITestCase(TestUtils):
+class TestCase02AddReasonForMissingDueDateTimeAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -29,7 +29,7 @@ class TestCase01AddReasonForMissingDueDateTimeAPITestCase(TestUtils):
             'reason_id': 1,
             'reason': 'string'
         }
-        path_params = {"task_id": 1}
+        path_params = {"task_id": 123}
         query_params = {}
         headers = {}
         response = self.make_api_call(body=body,

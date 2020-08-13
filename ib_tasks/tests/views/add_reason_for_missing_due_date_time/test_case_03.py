@@ -1,12 +1,12 @@
 """
-# TODO: given valid details
+# TODO: invalid updated due datetime
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01AddReasonForMissingDueDateTimeAPITestCase(TestUtils):
+class TestCase03AddReasonForMissingDueDateTimeAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -25,7 +25,7 @@ class TestCase01AddReasonForMissingDueDateTimeAPITestCase(TestUtils):
     @pytest.mark.django_db
     def test_case(self, snapshot, setup):
         body = {
-            'updated_due_date_time': '2020-09-10T11:30:45.34523',
+            'updated_due_date_time': '2020-08-10T11:30:45.34523',
             'reason_id': 1,
             'reason': 'string'
         }
