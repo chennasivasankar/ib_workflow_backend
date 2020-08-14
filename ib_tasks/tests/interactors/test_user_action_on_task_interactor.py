@@ -13,6 +13,10 @@ from ib_tasks.tests.factories.interactor_dtos import \
 
 class TestUserActionOnTaskInteractor:
 
+    @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        TaskCurrentStageDetailsDTOFactory.reset_sequence()
+
     @staticmethod
     @pytest.fixture()
     def storage():
@@ -112,7 +116,7 @@ class TestUserActionOnTaskInteractor:
     @pytest.fixture
     def elasticsearch_storage_mock(self):
         from mock import create_autospec
-        from ib_tasks.interactors.storage_interfaces\
+        from ib_tasks.interactors.storage_interfaces \
             .elastic_storage_interface import \
             ElasticSearchStorageInterface
         return create_autospec(ElasticSearchStorageInterface)
@@ -195,7 +199,6 @@ class TestUserActionOnTaskInteractor:
         board_id = "board_1"
         task_display_id = "task_1"
         action_id = 1
-        task_id = 1
         task_storage_mock.check_is_valid_task_display_id.return_value = False
         interactor = UserActionOnTaskInteractor(
             user_id=user_id, board_id=board_id, action_id=action_id,
