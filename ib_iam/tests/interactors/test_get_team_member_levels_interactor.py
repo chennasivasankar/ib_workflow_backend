@@ -10,8 +10,8 @@ class TestGetTeamMemberLevelsInteractor:
         from unittest.mock import create_autospec
 
         from ib_iam.interactors.storage_interfaces.level_storage_interface import \
-            LevelStorageInterface
-        storage = create_autospec(LevelStorageInterface)
+            TeamMemberLevelStorageInterface
+        storage = create_autospec(TeamMemberLevelStorageInterface)
         return storage
 
     @pytest.fixture()
@@ -25,7 +25,8 @@ class TestGetTeamMemberLevelsInteractor:
 
     @pytest.fixture()
     def interactor(self, storage_mock):
-        from ib_iam.interactors.get_team_member_levels_interactor import GetTeamMemberLevelsInteractor
+        from ib_iam.interactors.get_team_member_levels_interactor import \
+            GetTeamMemberLevelsInteractor
         interactor = GetTeamMemberLevelsInteractor(level_storage=storage_mock)
         return interactor
 
@@ -48,7 +49,8 @@ class TestGetTeamMemberLevelsInteractor:
         assert response == \
                expected_presenter_response_for_level_details_dtos_mock
 
-        presenter_mock.response_for_team_member_level_details_dtos.assert_called_once()
+        presenter_mock.response_for_team_member_level_details_dtos. \
+            assert_called_once()
         storage_mock.get_team_member_level_details_dtos.assert_called_once_with(
             team_id=team_id
         )

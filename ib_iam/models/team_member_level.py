@@ -15,4 +15,6 @@ class TeamMemberLevel(models.Model):
     level_name = models.CharField(max_length=200)
     level_hierarchy = models.IntegerField()
 
+    class Meta:
+        unique_together = ('team', 'level_hierarchy', 'level_name')
 

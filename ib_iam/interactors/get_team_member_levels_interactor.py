@@ -4,16 +4,17 @@ from ib_iam.interactors.presenter_interfaces.level_presenter_interface import \
     GetTeamMemberLevelsPresenterInterface
 from ib_iam.interactors.storage_interfaces.dtos import TeamMemberLevelDetailsDTO
 from ib_iam.interactors.storage_interfaces.level_storage_interface import \
-    LevelStorageInterface
+    TeamMemberLevelStorageInterface
 
 
 class GetTeamMemberLevelsInteractor:
 
-    def __init__(self, level_storage: LevelStorageInterface):
+    def __init__(self, level_storage: TeamMemberLevelStorageInterface):
         self.level_storage = level_storage
 
-    def get_team_member_levels_wrapper(self, team_id: str,
-                                       presenter: GetTeamMemberLevelsPresenterInterface):
+    def get_team_member_levels_wrapper(
+            self, team_id: str,
+            presenter: GetTeamMemberLevelsPresenterInterface):
         '''
         TODO:
         Invalid TeamId
@@ -22,8 +23,9 @@ class GetTeamMemberLevelsInteractor:
             team_id=team_id, presenter=presenter)
         return response
 
-    def _get_team_member_levels_response(self, team_id: str,
-                                         presenter: GetTeamMemberLevelsPresenterInterface):
+    def _get_team_member_levels_response(
+            self, team_id: str,
+            presenter: GetTeamMemberLevelsPresenterInterface):
         level_details_dtos = self.get_team_member_levels(team_id=team_id)
         response = presenter.response_for_team_member_level_details_dtos(
             level_details_dtos=level_details_dtos

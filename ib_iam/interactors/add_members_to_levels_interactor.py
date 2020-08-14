@@ -4,12 +4,12 @@ from ib_iam.interactors.dtos.dtos import TeamMemberLevelIdWithMemberIdsDTO
 from ib_iam.interactors.presenter_interfaces.level_presenter_interface import \
     AddMembersToLevelPresenterInterface
 from ib_iam.interactors.storage_interfaces.level_storage_interface import \
-    LevelStorageInterface
+    TeamMemberLevelStorageInterface
 
 
 class AddMembersToLevelsInteractor:
 
-    def __init__(self, level_storage: LevelStorageInterface):
+    def __init__(self, level_storage: TeamMemberLevelStorageInterface):
         self.level_storage = level_storage
 
     def add_members_to_levels_wrapper(

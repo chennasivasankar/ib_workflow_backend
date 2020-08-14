@@ -5,9 +5,9 @@ class TestAddLevelsToTeam:
 
     @pytest.fixture()
     def storage(self):
-        from ib_iam.storages.level_storage_implementation import \
-            LevelStorageImplementation
-        storage = LevelStorageImplementation()
+        from ib_iam.storages.team_member_level_storage_implementation import \
+            TeamMemberLevelStorageImplementation
+        storage = TeamMemberLevelStorageImplementation()
         return storage
 
     @pytest.fixture()
@@ -41,19 +41,6 @@ class TestAddLevelsToTeam:
             for level_dict in level_list
         ]
         return level_dtos
-
-    @pytest.fixture()
-    def create_team(self):
-        from ib_iam.tests.factories.models import TeamFactory
-        team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
-        user_id = "21be920b-7b4c-49e7-8adb-41a0c18da848"
-        team_object = TeamFactory(
-            team_id=team_id,
-            name="name",
-            description="description",
-            created_by=user_id
-        )
-        return team_object
 
     @pytest.mark.django_db
     def test_with_valid_details_create_team_levels(

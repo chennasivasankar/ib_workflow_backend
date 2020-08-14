@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, TeamMemberLevelIdWithMemberIdsDTO
+from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, \
+    TeamMemberLevelIdWithMemberIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import TeamMemberLevelDetailsDTO
 
 
-class LevelStorageInterface(ABC):
+class TeamMemberLevelStorageInterface(ABC):
 
     @abstractmethod
     def add_team_member_levels(
@@ -14,7 +15,8 @@ class LevelStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_team_member_level_details_dtos(self, team_id: str) -> List[TeamMemberLevelDetailsDTO]:
+    def get_team_member_level_details_dtos(self, team_id: str) -> \
+            List[TeamMemberLevelDetailsDTO]:
         pass
 
     @abstractmethod

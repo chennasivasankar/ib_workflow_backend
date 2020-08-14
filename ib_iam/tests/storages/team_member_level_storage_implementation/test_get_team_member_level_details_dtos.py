@@ -5,9 +5,9 @@ class TestGetLevelDetailsDTOs:
 
     @pytest.fixture()
     def storage(self):
-        from ib_iam.storages.level_storage_implementation import \
-            LevelStorageImplementation
-        storage = LevelStorageImplementation()
+        from ib_iam.storages.team_member_level_storage_implementation import \
+            TeamMemberLevelStorageImplementation
+        storage = TeamMemberLevelStorageImplementation()
         return storage
 
     @pytest.fixture()

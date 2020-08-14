@@ -791,21 +791,26 @@
       "required": true,
       "description": "add member levels parameter",
       "schema": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "level_name": {
-              "type": "string"
-            },
-            "level_hierarchy": {
-              "type": "string"
+        "type": "object",
+        "properties": {
+          "team_member_levels": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "level_name": {
+                  "type": "string"
+                },
+                "level_hierarchy": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "level_name",
+                "level_hierarchy"
+              ]
             }
-          },
-          "required": [
-            "level_name",
-            "level_hierarchy"
-          ]
+          }
         }
       }
     },
@@ -2290,7 +2295,7 @@
     },
     "/team/{team_id}/member_levels/v1/": {
       "post": {
-        "operationId": "add_member_levels",
+        "operationId": "add_team_member_levels",
         "summary": "Add Member Levels",
         "description": "Add member levels to team",
         "security": [

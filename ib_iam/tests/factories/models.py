@@ -52,6 +52,8 @@ class UserTeamFactory(factory.django.DjangoModelFactory):
 
     user_id = factory.sequence(lambda number: "user%s" % number)
     team = factory.Iterator(models.Team.objects.all())
+    team_member_level = None
+    immediate_superior_team_user = None
 
 
 class UserRoleFactory(factory.django.DjangoModelFactory):
@@ -83,4 +85,3 @@ class TeamMemberLevelFactory(factory.DjangoModelFactory):
         "Product Owner"
     ])
     level_hierarchy = factory.Iterator([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-

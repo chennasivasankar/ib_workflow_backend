@@ -1,12 +1,13 @@
 from typing import List
 
-from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, TeamMemberLevelIdWithMemberIdsDTO
+from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, \
+    TeamMemberLevelIdWithMemberIdsDTO
 from ib_iam.interactors.storage_interfaces.dtos import TeamMemberLevelDetailsDTO
 from ib_iam.interactors.storage_interfaces.level_storage_interface import \
-    LevelStorageInterface
+    TeamMemberLevelStorageInterface
 
 
-class LevelStorageImplementation(LevelStorageInterface):
+class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
 
     def add_team_member_levels(
             self, team_id: str,
@@ -23,7 +24,8 @@ class LevelStorageImplementation(LevelStorageInterface):
         TeamMemberLevel.objects.bulk_create(team_member_level_objects)
         return
 
-    def get_team_member_level_details_dtos(self, team_id: str) -> List[TeamMemberLevelDetailsDTO]:
+    def get_team_member_level_details_dtos(self, team_id: str) -> \
+            List[TeamMemberLevelDetailsDTO]:
         from ib_iam.models.team_member_level import TeamMemberLevel
         team_member_level_objects = TeamMemberLevel.objects.filter(
             team_id=team_id)
@@ -41,4 +43,23 @@ class LevelStorageImplementation(LevelStorageInterface):
             self, team_member_level_id_with_member_ids_dtos: List[
                 TeamMemberLevelIdWithMemberIdsDTO]
     ):
-        pass
+        for team_member_level_id_with_member_ids_dto in team_member_level_id_with_member_ids_dtos:
+            self._add_members_to_team_member_level(
+                team_member_level_id_with_member_ids_dto=team_member_level_id_with_member_ids_dto
+            )
+
+    @staticmethod
+    def _add_members_to_team_member_level(
+            team_member_level_id_with_member_ids_dto: TeamMemberLevelIdWithMemberIdsDTO):
+        from ib_iam.models import TeamMemberLevel
+        team_member_level_id = \
+            team_member_level_id_with_member_ids_dto.team_member_level_id
+        team_member_level_object = \
+            TeamMemberLevel.objects.get(id=team_member_level_id)
+        team_id = team_member_level_object.team_id
+
+        member_ids = team_member_level_id_with_member_ids_dto.member_ids
+        from ib_iam.models import UserTeam
+        UserTeam.objects.filter(
+            team_id=team_id, user_id__in=member_ids
+        ).update(team_member_level=team_member_level_object)

@@ -9,8 +9,8 @@ class TestAddTeamMemberLevelsInteractor:
     def storage_mock(self):
         from unittest.mock import create_autospec
         from ib_iam.interactors.storage_interfaces.level_storage_interface import \
-            LevelStorageInterface
-        storage = create_autospec(LevelStorageInterface)
+            TeamMemberLevelStorageInterface
+        storage = create_autospec(TeamMemberLevelStorageInterface)
         return storage
 
     @pytest.fixture()
@@ -31,7 +31,7 @@ class TestAddTeamMemberLevelsInteractor:
 
     @pytest.fixture()
     def prepare_team_member_level_dtos(self):
-        level_list = [
+        team_member_level_list = [
             {
                 "level_name": "Developer",
                 "level_hierarchy": 0
@@ -57,7 +57,7 @@ class TestAddTeamMemberLevelsInteractor:
                 team_member_level_name=level_dict["level_name"],
                 level_hierarchy=level_dict["level_hierarchy"]
             )
-            for level_dict in level_list
+            for level_dict in team_member_level_list
         ]
         return team_member_level_dtos
 

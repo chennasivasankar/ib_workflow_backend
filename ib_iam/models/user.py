@@ -12,6 +12,14 @@ class UserDetails(models.Model):
 class UserTeam(models.Model):
     user_id = models.CharField(max_length=1000)
     team = models.ForeignKey('Team', on_delete=models.CASCADE)
+    team_member_level = models.ForeignKey(
+        "TeamMemberLevel", on_delete=models.CASCADE,
+        null=True, default=None
+    )
+    immediate_superior_team_user = models.ForeignKey(
+        "self", on_delete=models.CASCADE,
+        null=True, default=None
+    )
 
 
 class UserRole(models.Model):

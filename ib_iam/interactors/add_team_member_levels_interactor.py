@@ -4,12 +4,12 @@ from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO
 from ib_iam.interactors.presenter_interfaces.level_presenter_interface import \
     AddTeamMemberLevelsPresenterInterface
 from ib_iam.interactors.storage_interfaces.level_storage_interface import \
-    LevelStorageInterface
+    TeamMemberLevelStorageInterface
 
 
 class AddTeamMemberLevelsInteractor:
 
-    def __init__(self, level_storage: LevelStorageInterface):
+    def __init__(self, level_storage: TeamMemberLevelStorageInterface):
         self.level_storage = level_storage
 
     def add_team_member_levels_wrapper(
@@ -35,10 +35,14 @@ class AddTeamMemberLevelsInteractor:
             presenter: AddTeamMemberLevelsPresenterInterface
     ):
         self.add_team_member_levels(team_id=team_id, team_member_level_dtos=team_member_level_dtos)
-        response = presenter.prepare_success_response_for_add_team_member_levels_to_team()
+        response = presenter. \
+            prepare_success_response_for_add_team_member_levels_to_team()
         return response
 
-    def add_team_member_levels(self, team_id: str, team_member_level_dtos: List[TeamMemberLevelDTO]):
+    def add_team_member_levels(
+            self, team_id: str,
+            team_member_level_dtos: List[TeamMemberLevelDTO]
+    ):
         self.level_storage.add_team_member_levels(
             team_id=team_id, team_member_level_dtos=team_member_level_dtos
         )
