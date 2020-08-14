@@ -46,6 +46,8 @@ from ib_tasks.interactors.storage_interfaces.elastic_storage_interface \
     import ElasticSearchStorageInterface
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
+from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
+    TaskGoFFieldDTO
 from ib_tasks.interactors.storage_interfaces.gof_storage_interface import \
     GoFStorageInterface
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
@@ -53,7 +55,7 @@ from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.storage_interface import \
     StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_dtos import \
-    TaskGoFWithTaskIdDTO, TaskGoFFieldDTO, TaskGoFDetailsDTO
+    TaskGoFWithTaskIdDTO, TaskGoFDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import \
     TaskStageStorageInterface
