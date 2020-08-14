@@ -230,7 +230,7 @@ class TestGetUsers:
 
     @pytest.mark.django_db
     def test_get_users_count_for_search_query(
-            self, users_company, prepare_create_users_setup):
+            self, prepare_create_users_setup):
         # Arrange
         expected_output = 1
         name_search_query = "s"
