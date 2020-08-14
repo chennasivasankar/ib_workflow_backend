@@ -1,14 +1,14 @@
 import factory
 
 from ib_iam.interactors.dtos.dtos import \
-    UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO
+    AddUserDetailsDTO
 from ib_iam.interactors.update_user_password_interactor import \
     CurrentAndNewPasswordDTO
 
 
-class UserDetailsWithTeamRoleAndCompanyIdsDTOFactory(factory.Factory):
+class AddUserDetailsDTOFactory(factory.Factory):
     class Meta:
-        model = UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO
+        model = AddUserDetailsDTO
 
     name = factory.Faker("name")
     email = factory.Faker("email")

@@ -52,7 +52,9 @@ class TestDeleteDiscussionInteractor:
         # Assert
         assert response == expected_presenter_response_for_discussion_id_not_found_mock
         presenter_mock.response_for_discussion_id_not_found.assert_called_once()
-        storage_mock.is_discussion_id_exists.assert_called_once()
+        storage_mock.is_discussion_id_exists.assert_called_once_with(
+            discussion_id=discussion_id
+        )
 
     def test_user_cannot_update_return_response(
             self, storage_mock, presenter_mock, interactor,
@@ -78,7 +80,9 @@ class TestDeleteDiscussionInteractor:
         # Assert
         assert response == expected_presenter_response_for_user_cannot_delete_discussion_mock
         presenter_mock.response_for_user_cannot_delete_discussion.assert_called_once()
-        storage_mock.is_user_can_edit_discussion.assert_called_once()
+        storage_mock.is_user_can_edit_discussion.assert_called_once_with(
+            user_id=user_id, discussion_id=discussion_id
+        )
 
     def test_with_valid_details_return_response(
             self, presenter_mock, storage_mock, interactor):
@@ -103,4 +107,5 @@ class TestDeleteDiscussionInteractor:
         # Assert
         assert response == expected_presenter_prepare_success_response_for_delete_discussion_mock
         presenter_mock.prepare_success_response_for_delete_discussion.assert_called_once()
-        storage_mock.delete_discussion.assert_called_once()
+        storage_mock.delete_discussion.assert_called_once_with(
+            discussion_id=discussion_id)

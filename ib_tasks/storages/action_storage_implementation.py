@@ -257,6 +257,6 @@ class ActionsStorageImplementation(ActionStorageInterface):
     def get_stage_ids_having_actions(self, db_stage_ids: List[int]) \
             -> List[int]:
         db_stage_ids = \
-            StageAction.objects.filter(stage_id__in=db_stage_ids).values(
-                'stage_id')
+            list(StageAction.objects.filter(stage_id__in=db_stage_ids).values_list(
+                'stage_id', flat=True))
         return db_stage_ids

@@ -6,7 +6,8 @@ from ib_iam.presenters.add_new_user_presenter_implementation \
     import AddUserPresenterImplementation
 from ib_iam.storages.user_storage_implementation \
     import UserStorageImplementation
-from ...storages.elastic_storage_implementation import ElasticStorageImplementation
+from ...storages.elastic_storage_implementation import \
+    ElasticStorageImplementation
 
 
 @validate_decorator(validator_class=ValidatorClass)
@@ -28,17 +29,15 @@ def api_wrapper(*args, **kwargs):
     role_ids = request_object['role_ids']
 
     from ib_iam.interactors.dtos.dtos import \
-        UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO
-    user_details_with_team_role_and_company_ids_dto \
-        = UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO(
+        AddUserDetailsDTO
+    add_user_details_dto = AddUserDetailsDTO(
         name=name, email=email, team_ids=team_ids, role_ids=role_ids,
         company_id=company_id
     )
 
     response = interactor.add_new_user_wrapper(
         user_id=user_id,
-        user_details_with_team_role_and_company_ids_dto\
-            = user_details_with_team_role_and_company_ids_dto,
+        add_user_details_dto=add_user_details_dto,
         presenter=presenter
     )
 
