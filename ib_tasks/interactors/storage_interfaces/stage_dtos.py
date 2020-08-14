@@ -43,6 +43,7 @@ class StageDTO:
 @dataclass
 class TaskStageIdsDTO:
     task_id: int
+    task_display_id: Optional[str]
     stage_id: str
 
 

@@ -149,7 +149,8 @@ class GetColumnDetailsInteractor:
                     ColumnTasksDTO(
                         column_id=task_ids_stages_dto.unique_key,
                         stage_id=task_stage_dto.stage_id,
-                        task_id=task_stage_dto.task_id
+                        task_id=task_stage_dto.task_id,
+                        task_display_id=task_stage_dto.task_display_id
                     )
                 )
         return column_tasks

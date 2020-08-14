@@ -180,6 +180,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         return [
             TaskStageIdsDTO(
                 task_id=task_object.task_id,
+                task_display_id=None,
                 stage_id=stage.stage_id
             )
             for stage in task_object.stages

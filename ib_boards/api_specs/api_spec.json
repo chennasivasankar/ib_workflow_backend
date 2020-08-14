@@ -212,7 +212,7 @@
       "type": "object",
       "properties": {
         "task_id": {
-          "type": "integer"
+          "type": "string"
         },
         "task_overview_fields": {
           "type": "array",

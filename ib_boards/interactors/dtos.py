@@ -17,6 +17,7 @@ class ColumnTasksDTO:
     column_id: str
     stage_id: str
     task_id: int
+    task_display_id: str
 
 
 @dataclass
@@ -136,6 +137,7 @@ class TaskStatusDTO:
 @dataclass
 class TaskIdStageDTO:
     task_id: int
+    task_display_id: str
     stage_id: str
 
 
