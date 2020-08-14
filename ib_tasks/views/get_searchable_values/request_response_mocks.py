@@ -5,7 +5,7 @@ RESPONSE_200_JSON = """
 [
     {
         "id": "string",
-        "name": "string"
+        "value": "string"
     }
 ]
 """

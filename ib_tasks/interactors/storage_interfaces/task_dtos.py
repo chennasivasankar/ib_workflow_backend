@@ -42,3 +42,9 @@ class TaskDueDetailsDTO:
     due_missed_count: int
     reason: str
     user: AssigneeDetailsDTO
+
+
+@dataclass
+class TaskDisplayIdDTO:
+    task_id: int
+    display_id: str
