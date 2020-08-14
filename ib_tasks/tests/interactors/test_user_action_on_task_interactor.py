@@ -183,7 +183,6 @@ class TestUserActionOnTaskInteractor:
             task_storage=task_storage_mock, action_storage=action_storage_mock,
             elasticsearch_storage=elasticsearch_storage,
             task_stage_storage=task_stage_storage
-            task_storage=task_storage_mock, action_storage=action_storage_mock,
         )
         storage.validate_task_id.return_value = False
 
@@ -198,9 +197,8 @@ class TestUserActionOnTaskInteractor:
     def test_invalid_board_raises_exception(
             self, mocker, storage, presenter, gof_storage,
             field_storage, stage_storage, task_storage_mock,
-            action_storage_mock, task_stage_storage_mock):
-            self, mocker, storage, presenter, gof_storage, elasticsearch_storage, task_stage_storage,
-            field_storage, stage_storage, task_storage_mock, action_storage_mock):
+            action_storage_mock, task_stage_storage_mock,
+            elasticsearch_storage, task_stage_storage):
         # Arrange
         user_id = "user_1"
         board_id = "board_1"
@@ -408,11 +406,7 @@ class TestUserActionOnTaskInteractor:
     def test_given_valid_details_returns_task_complete_details(
             self, mocker, storage, presenter, elasticsearch_storage, task_stage_storage, assignees,
             gof_storage, field_storage, stage_storage, board_mock, task_storage_mock, action_storage_mock):
-            self, mocker, storage, presenter,
-            gof_storage, field_storage, stage_storage, board_mock,
-            task_storage_mock, action_storage_mock, task_stage_storage_mock,
-            get_task_current_stages_mock
-    ):
+
         # Arrange
         user_id = "1"
         board_id = "board_1"
