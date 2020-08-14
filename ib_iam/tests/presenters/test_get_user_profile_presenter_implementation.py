@@ -52,48 +52,91 @@ class TestGetUserProfilePresenterImplementation:
         assert response_data["res_status"] == expected_res_status
 
     def test_prepare_response_for_user_profile_dto(
-            self, presenter, snapshot):
+            self, presenter,user_dtos, user_role_dtos, company_dto,
+            company_employee_ids_dtos, team_dtos, team_user_ids_dtos,
+            snapshot):
         # Arrange
         user_ids = ['eca1a0c1-b9ef-4e59-b415-60a28ef17b10',
                     '4b8fb6eb-fa7d-47c1-8726-cd917901104e',
-                    '548a803c-7b48-47ba-a700-24f2ea0d1280', ]
-        company_id = 'f2c02d98-f311-4ab2-8673-3daa00757002'
-        team_id = '2bdb417e-4632-419a-8ddd-085ea272c6eb'
+                    '548a803c-7b48-47ba-a700-24f2ea0d1280']
         from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         from ib_iam.interactors.presenter_interfaces.auth_presenter_interface \
-            import UserProfileWithTeamsAndCompanyAndTheirUsersDTO
-        from ib_iam.tests.factories.storage_dtos import (
-            CompanyDTOFactory, TeamDTOFactory, TeamUserIdsDTOFactory,
-            CompanyIdWithEmployeeIdsDTOFactory)
+            import CompleteUserProfileDTO
         UserProfileDTOFactory.reset_sequence(1)
-        TeamDTOFactory.reset_sequence(1)
-        CompanyDTOFactory.reset_sequence(1, force=True)
         user_profile_dto = UserProfileDTOFactory(user_id=user_ids[0])
-        UserProfileDTOFactory.reset_sequence(1)
-        user_dtos = [UserProfileDTOFactory(user_id=user_id)
-                     for user_id in user_ids]
-        company_dto = CompanyDTOFactory(company_id=company_id)
-        team_dtos = [TeamDTOFactory(team_id=team_id)]
-        team_user_ids_dtos = [TeamUserIdsDTOFactory(
-            team_id=team_id, user_ids=[user_ids[0], user_ids[1]])]
-
-        company_id_with_employee_ids_dto = CompanyIdWithEmployeeIdsDTOFactory(
-            company_id=company_id, employee_ids=[user_ids[0], user_ids[2]])
-        user_profile_response_dto = \
-            UserProfileWithTeamsAndCompanyAndTheirUsersDTO(
+        complete_user_profile_dto = \
+            CompleteUserProfileDTO(
                 user_profile_dto=user_profile_dto,
+                role_dtos=user_role_dtos,
                 company_dto=company_dto,
                 team_dtos=team_dtos,
                 team_user_ids_dto=team_user_ids_dtos,
                 user_dtos=user_dtos,
-                company_id_with_employee_ids_dto=
-                company_id_with_employee_ids_dto
+                company_id_with_employee_ids_dto=company_employee_ids_dtos
             )
 
         # Act
         response_object = presenter.prepare_response_for_get_user_profile(
-            user_profile_response_dto=user_profile_response_dto)
+            complete_user_profile_dto=complete_user_profile_dto)
 
         # Assert
         response_data = json.loads(response_object.content)
         snapshot.assert_match(response_data, "get_user_profile_response")
+
+    @pytest.fixture
+    def user_dtos(self):
+        user_ids = ['eca1a0c1-b9ef-4e59-b415-60a28ef17b10',
+                    '4b8fb6eb-fa7d-47c1-8726-cd917901104e',
+                    '548a803c-7b48-47ba-a700-24f2ea0d1280']
+        from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
+        UserProfileDTOFactory.reset_sequence(1)
+        user_dtos = [UserProfileDTOFactory(user_id=user_id)
+                     for user_id in user_ids]
+        return user_dtos
+
+    @pytest.fixture
+    def user_role_dtos(self):
+        user_id = 'eca1a0c1-b9ef-4e59-b415-60a28ef17b10'
+        from ib_iam.tests.factories.storage_dtos import UserRoleDTOFactory
+        UserRoleDTOFactory.reset_sequence(1)
+        role_dtos = UserRoleDTOFactory.create_batch(2, user_id=user_id)
+        return role_dtos
+
+    @pytest.fixture
+    def team_dtos(self):
+        team_id = '2bdb417e-4632-419a-8ddd-085ea272c6eb'
+        from ib_iam.tests.factories.storage_dtos import TeamDTOFactory
+        TeamDTOFactory.reset_sequence(1)
+        team_dtos = [TeamDTOFactory(team_id=team_id)]
+        return team_dtos
+
+    @pytest.fixture
+    def team_user_ids_dtos(self):
+        team_id = '2bdb417e-4632-419a-8ddd-085ea272c6eb'
+        user_ids = ['eca1a0c1-b9ef-4e59-b415-60a28ef17b10',
+                    '4b8fb6eb-fa7d-47c1-8726-cd917901104e']
+        from ib_iam.tests.factories.storage_dtos import TeamUserIdsDTOFactory
+        TeamUserIdsDTOFactory.reset_sequence(1)
+        team_user_ids_dtos = [TeamUserIdsDTOFactory(team_id=team_id,
+                                                    user_ids=user_ids)]
+        return team_user_ids_dtos
+
+    @pytest.fixture
+    def company_dto(self):
+        company_id = 'f2c02d98-f311-4ab2-8673-3daa00757002'
+        from ib_iam.tests.factories.storage_dtos import CompanyDTOFactory
+        CompanyDTOFactory.reset_sequence(1, force=True)
+        company_dto = CompanyDTOFactory(company_id=company_id)
+        return company_dto
+
+    @pytest.fixture
+    def company_employee_ids_dtos(self):
+        company_id = 'f2c02d98-f311-4ab2-8673-3daa00757002'
+        user_ids = ['eca1a0c1-b9ef-4e59-b415-60a28ef17b10',
+                    '548a803c-7b48-47ba-a700-24f2ea0d1280']
+        from ib_iam.tests.factories.storage_dtos import \
+            CompanyIdWithEmployeeIdsDTOFactory
+        CompanyIdWithEmployeeIdsDTOFactory.reset_sequence(1)
+        company_id_with_employee_ids_dto = CompanyIdWithEmployeeIdsDTOFactory(
+            company_id=company_id, employee_ids=user_ids)
+        return company_id_with_employee_ids_dto

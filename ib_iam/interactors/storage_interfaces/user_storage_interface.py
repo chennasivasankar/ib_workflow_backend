@@ -128,7 +128,7 @@ class UserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_user_name(self, user_id: str, name: str):
+    def update_user_name_and_cover_page_url(self, user_profile_dto):
         pass
 
     @abstractmethod
@@ -177,6 +177,10 @@ class UserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_company_employee_ids_dtos(self, company_ids: List[str]) \
-            -> List[CompanyIdWithEmployeeIdsDTO]:
+    def get_company_employee_ids_dto(self, company_id: str) \
+            -> CompanyIdWithEmployeeIdsDTO:
+        pass
+
+    @abstractmethod
+    def get_user_details(self, user_id: str) -> UserDTO:
         pass

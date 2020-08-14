@@ -47,6 +47,34 @@ class TestGetUserProfileInteractor:
         return user_profile_dtos
 
     @pytest.fixture()
+    def expected_role_dtos(self):
+        user_id = "1"
+        from ib_iam.tests.factories.storage_dtos import UserRoleDTOFactory
+        role_dtos = [UserRoleDTOFactory.create_batch(size=4, user_id=user_id)]
+        return role_dtos
+
+    @pytest.fixture()
+    def complete_user_profile_dto(
+            self, expected_company_dto, expected_company_employee_ids_dto,
+            expected_role_dtos, expected_team_dtos,
+            expected_team_user_ids_dtos,expected_user_dtos):
+        user_id = "1"
+        from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
+            CompleteUserProfileDTO
+        UserProfileDTOFactory.reset_sequence(1)
+        user_profile_dto = UserProfileDTOFactory(user_id="1")
+        expected_response_dto = CompleteUserProfileDTO(
+            user_profile_dto=user_profile_dto,
+            role_dtos=expected_role_dtos,
+            company_dto=expected_company_dto,
+            team_dtos=expected_team_dtos,
+            team_user_ids_dto=expected_team_user_ids_dtos,
+            company_id_with_employee_ids_dto=expected_company_employee_ids_dto,
+            user_dtos=expected_user_dtos
+        )
+        return expected_response_dto
+
+    @pytest.fixture()
     def presenter_mock(self):
         from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
             GetUserProfilePresenterInterface
@@ -127,39 +155,33 @@ class TestGetUserProfileInteractor:
     def test_with_valid_user_id_return_response(
             self, mocker, storage_mock, presenter_mock, expected_company_dto,
             expected_company_employee_ids_dto, expected_team_dtos,
-            expected_team_user_ids_dtos, expected_user_dtos
+            expected_team_user_ids_dtos, expected_user_dtos,
+            expected_role_dtos, complete_user_profile_dto
     ):
         # Arrange
         user_id = "1"
         from unittest.mock import Mock
+        UserProfileDTOFactory.reset_sequence(1)
         user_profile_dto = UserProfileDTOFactory(user_id=user_id)
         from ib_iam.tests.common_fixtures.adapters.user_service import \
             prepare_get_user_profile_dto_mock
         get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(mocker)
         get_user_profile_dto_mock.return_value = user_profile_dto
-        storage_mock.is_user_admin.return_value = True
+        storage_mock.get_user_details.return_value = user_profile_dto
         storage_mock.get_user_related_team_dtos \
             .return_value = expected_team_dtos
         storage_mock.get_team_user_ids_dtos \
             .return_value = expected_team_user_ids_dtos
+        storage_mock.get_role_details_of_users_bulk \
+            .return_value = expected_role_dtos
         storage_mock.get_user_related_company_dto \
             .return_value = expected_company_dto
-        storage_mock.get_company_employee_ids_dtos \
-            .return_value = [expected_company_employee_ids_dto]
+        storage_mock.get_company_employee_ids_dto \
+            .return_value = expected_company_employee_ids_dto
         from ib_iam.tests.common_fixtures.adapters.user_service_mocks import \
             prepare_user_profile_dtos_mock
         user_profile_dtos_mock = prepare_user_profile_dtos_mock(mocker)
         user_profile_dtos_mock.return_value = expected_user_dtos
-        from ib_iam.interactors.get_user_profile_interactor import \
-            UserProfileWithTeamsAndCompanyAndTheirUsersDTO
-        expected_response_dto = UserProfileWithTeamsAndCompanyAndTheirUsersDTO(
-            user_profile_dto=user_profile_dto,
-            company_dto=expected_company_dto,
-            team_dtos=expected_team_dtos,
-            team_user_ids_dto=expected_team_user_ids_dtos,
-            company_id_with_employee_ids_dto=expected_company_employee_ids_dto,
-            user_dtos=expected_user_dtos
-        )
         presenter_mock.prepare_response_for_get_user_profile \
             .return_value = Mock()
 
@@ -172,15 +194,17 @@ class TestGetUserProfileInteractor:
                                             presenter=presenter_mock)
 
         # Assert
-        storage_mock.is_user_admin.assert_called_once_with(user_id=user_id)
+        storage_mock.get_user_details.assert_called_once_with(user_id=user_id)
         storage_mock.get_user_related_team_dtos \
             .assert_called_once_with(user_id=user_id)
         storage_mock.get_team_user_ids_dtos \
             .assert_called_once_with(team_ids=["1"])
+        storage_mock.get_role_details_of_users_bulk \
+            .assert_called_once_with(user_ids=[user_id])
         storage_mock.get_user_related_company_dto \
             .assert_called_once_with(user_id=user_id)
-        storage_mock.get_company_employee_ids_dtos \
-            .assert_called_once_with(company_ids=["1"])
+        storage_mock.get_company_employee_ids_dto \
+            .assert_called_once_with(company_id="1")
         presenter_mock.prepare_response_for_get_user_profile. \
             assert_called_once_with(
-            user_profile_response_dto=expected_response_dto)
+            complete_user_profile_dto=complete_user_profile_dto)

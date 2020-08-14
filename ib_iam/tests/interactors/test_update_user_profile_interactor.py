@@ -2,8 +2,7 @@ from unittest import mock
 
 import pytest
 
-from ib_iam.tests.factories.storage_dtos import \
-    UserIdNameEmailAndProfilePicUrlDTOFactory
+from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
 
 
 class TestUpdateUserProfileInteractor:
@@ -36,14 +35,13 @@ class TestUpdateUserProfileInteractor:
             self, presenter_mock, interactor, name):
         # Arrange
         role_ids = ["1"]
-        user_id_name_email_and_profile_pic_url_dto = \
-            UserIdNameEmailAndProfilePicUrlDTOFactory(name=name)
+        user_profile_dto = UserProfileDTOFactory(name=name)
         presenter_mock.raise_invalid_name_length_exception_for_update_user_profile \
             .return_value = mock.Mock()
 
         # Act
         interactor.update_user_profile_wrapper(
-            user_profile_dto=user_id_name_email_and_profile_pic_url_dto,
+            user_profile_dto=user_profile_dto,
             role_ids=role_ids,
             presenter=presenter_mock)
 
@@ -57,15 +55,14 @@ class TestUpdateUserProfileInteractor:
             self, presenter_mock, interactor, name):
         # Arrange
         role_ids = ["1"]
-        user_id_name_email_and_profile_pic_url_dto = \
-            UserIdNameEmailAndProfilePicUrlDTOFactory(name=name)
+        user_profile_dto = UserProfileDTOFactory(name=name)
         presenter_mock \
             .raise_name_should_not_contain_special_chars_and_numbers_exception_for_update_user_profile \
             .return_value = mock.Mock()
 
         # Act
         interactor.update_user_profile_wrapper(
-            user_profile_dto=user_id_name_email_and_profile_pic_url_dto,
+            user_profile_dto=user_profile_dto,
             role_ids=role_ids,
             presenter=presenter_mock)
 
@@ -79,14 +76,14 @@ class TestUpdateUserProfileInteractor:
         # Arrange
         role_ids = ["1", "1"]
         user_id = "user_1"
-        user_id_name_email_and_profile_pic_url_dto = \
-            UserIdNameEmailAndProfilePicUrlDTOFactory(user_id=user_id)
+        user_profile_dto = UserProfileDTOFactory(user_id=user_id,
+                                                 name="username")
         storage_mock.is_user_admin.return_value = True
         presenter_mock.raise_duplicate_role_ids_exception.return_value = mock.Mock()
 
         # Act
         interactor.update_user_profile_wrapper(
-            user_profile_dto=user_id_name_email_and_profile_pic_url_dto,
+            user_profile_dto=user_profile_dto,
             role_ids=role_ids,
             presenter=presenter_mock)
 
@@ -99,15 +96,15 @@ class TestUpdateUserProfileInteractor:
         # Arrange
         role_ids = ["1"]
         user_id = "user_1"
-        user_id_name_email_and_profile_pic_url_dto = \
-            UserIdNameEmailAndProfilePicUrlDTOFactory(user_id=user_id)
+        user_profile_dto = UserProfileDTOFactory(user_id=user_id,
+                                                 name="username")
         storage_mock.is_user_admin.return_value = True
         storage_mock.check_are_valid_role_ids.return_value = False
         presenter_mock.raise_invalid_role_ids_exception.return_value = mock.Mock()
 
         # Act
         interactor.update_user_profile_wrapper(
-            user_profile_dto=user_id_name_email_and_profile_pic_url_dto,
+            user_profile_dto=user_profile_dto,
             role_ids=role_ids,
             presenter=presenter_mock)
 
@@ -121,8 +118,7 @@ class TestUpdateUserProfileInteractor:
             self, mocker, presenter_mock, interactor):
         # Arrange
         role_ids = ["1"]
-        user_id_name_email_and_profile_pic_url_dto = \
-            UserIdNameEmailAndProfilePicUrlDTOFactory()
+        user_profile_dto = UserProfileDTOFactory(name="username")
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import prepare_update_user_profile_adapter_mock
         adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
@@ -133,7 +129,7 @@ class TestUpdateUserProfileInteractor:
 
         # Act
         interactor.update_user_profile_wrapper(
-            user_profile_dto=user_id_name_email_and_profile_pic_url_dto,
+            user_profile_dto=user_profile_dto,
             role_ids=role_ids,
             presenter=presenter_mock)
 
@@ -145,8 +141,7 @@ class TestUpdateUserProfileInteractor:
             self, mocker, presenter_mock, interactor):
         # Arrange
         role_ids = ["1"]
-        user_id_name_email_and_profile_pic_url_dto = \
-            UserIdNameEmailAndProfilePicUrlDTOFactory()
+        user_profile_dto = UserProfileDTOFactory(name="username")
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import prepare_update_user_profile_adapter_mock
         adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
@@ -158,7 +153,7 @@ class TestUpdateUserProfileInteractor:
 
         # Act
         interactor.update_user_profile_wrapper(
-            user_profile_dto=user_id_name_email_and_profile_pic_url_dto,
+            user_profile_dto=user_profile_dto,
             role_ids=role_ids,
             presenter=presenter_mock)
 
@@ -172,9 +167,7 @@ class TestUpdateUserProfileInteractor:
         name = "username"
         user_id = "user_id1"
         role_ids = ["1"]
-        user_id_name_email_and_profile_pic_url_dto = \
-            UserIdNameEmailAndProfilePicUrlDTOFactory(user_id=user_id,
-                                                      name=name)
+        user_profile_dto = UserProfileDTOFactory(user_id=user_id, name=name)
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import prepare_update_user_profile_adapter_mock
         adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
@@ -183,15 +176,15 @@ class TestUpdateUserProfileInteractor:
 
         # Act
         interactor.update_user_profile_wrapper(
-            user_profile_dto=user_id_name_email_and_profile_pic_url_dto,
+            user_profile_dto=user_profile_dto,
             role_ids=role_ids,
             presenter=presenter_mock)
 
         # Assert
         adapter_mock.assert_called_once()
         storage_mock.is_user_admin.assert_called_once_with(user_id=user_id)
-        storage_mock.update_user_name.assert_called_once_with(user_id=user_id,
-                                                              name=name)
+        storage_mock.update_user_name_and_cover_page_url \
+            .assert_called_once_with(user_profile_dto=user_profile_dto)
         presenter_mock.get_success_response_for_update_user_profile \
             .assert_called_once()
 
@@ -202,9 +195,7 @@ class TestUpdateUserProfileInteractor:
         user_id = "user_id1"
         role_ids = ["1"]
         ids_of_role_objects = ["role_1"]
-        user_id_name_email_and_profile_pic_url_dto = \
-            UserIdNameEmailAndProfilePicUrlDTOFactory(user_id=user_id,
-                                                      name=name)
+        user_profile_dto = UserProfileDTOFactory(user_id=user_id, name=name)
         from ib_iam.tests.common_fixtures.adapters.user_service \
             import prepare_update_user_profile_adapter_mock
         adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
@@ -215,7 +206,7 @@ class TestUpdateUserProfileInteractor:
 
         # Act
         interactor.update_user_profile_wrapper(
-            user_profile_dto=user_id_name_email_and_profile_pic_url_dto,
+            user_profile_dto=user_profile_dto,
             role_ids=role_ids,
             presenter=presenter_mock)
 
@@ -227,7 +218,7 @@ class TestUpdateUserProfileInteractor:
         storage_mock.get_role_objs_ids.assert_called_once_with(role_ids)
         storage_mock.add_roles_to_the_user.assert_called_once_with(
             user_id=user_id, role_ids=ids_of_role_objects)
-        storage_mock.update_user_name.assert_called_once_with(user_id=user_id,
-                                                              name=name)
+        storage_mock.update_user_name_and_cover_page_url \
+            .assert_called_once_with(user_profile_dto=user_profile_dto)
         presenter_mock.get_success_response_for_update_user_profile \
             .assert_called_once()

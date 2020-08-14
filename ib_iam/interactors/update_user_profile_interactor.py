@@ -1,5 +1,6 @@
 from typing import List
 
+from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.exceptions.custom_exceptions import (
     InvalidNameLength,
     NameShouldNotContainsNumbersSpecCharacters, InvalidEmail,
@@ -9,8 +10,6 @@ from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces \
     .update_user_profile_presenter_interface import \
     UpdateUserProfilePresenterInterface
-from ib_iam.interactors.storage_interfaces.dtos import \
-    UserProfileDTO
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
 
@@ -54,7 +53,7 @@ class UpdateUserProfileInteractor(ValidationMixin):
             self._update_user_roles(role_ids=role_ids, user_id=user_id)
         self._update_user_profile_in_ib_users(
             user_profile_dto=user_profile_dto)
-        self.user_storage.update_user_name(user_id=user_id, name=name)
+        self.user_storage.update_user_name_and_cover_page_url(user_profile_dto)
 
     def _update_user_profile_in_ib_users(self,
                                          user_profile_dto: UserProfileDTO):

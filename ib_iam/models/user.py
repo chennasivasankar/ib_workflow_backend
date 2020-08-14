@@ -5,6 +5,7 @@ class UserDetails(models.Model):
     user_id = models.CharField(max_length=1000)
     name = models.CharField(max_length=1000, null=True)
     is_admin = models.BooleanField(default=False)
+    cover_page_url = models.URLField(max_length=1000, null=True, blank=True)
     company = models.ForeignKey('Company', on_delete=models.SET_NULL,
                                 null=True,
                                 blank=True, related_name="users")

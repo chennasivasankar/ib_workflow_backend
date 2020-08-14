@@ -7,12 +7,20 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
+snapshots['TestCase01GetUserProfileAPITestCase.test_user_account_does_not_exist status_code'] = '404'
+
+snapshots['TestCase01GetUserProfileAPITestCase.test_user_account_does_not_exist body'] = {
+    'http_status_code': 404,
+    'res_status': 'USER_ACCOUNT_DOES_NOT_EXIST',
+    'response': 'Please send valid user id'
+}
+
 snapshots['TestCase01GetUserProfileAPITestCase.test_valid_user_id status_code'] = '200'
 
 snapshots['TestCase01GetUserProfileAPITestCase.test_valid_user_id body'] = {
     'company': {
-        'company_id': 'f2c02d98-f311-4ab2-8673-3daa00757002',
-        'description': 'description 1',
+        'company_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb200',
+        'description': 'description 0',
         'employees': [
             {
                 'employee_id': '217abeb3-6466-4440-96e7-bf02ee941bf8',
@@ -25,16 +33,27 @@ snapshots['TestCase01GetUserProfileAPITestCase.test_valid_user_id body'] = {
                 'profile_pic_url': 'url2'
             }
         ],
-        'logo_url': 'url 1',
-        'name': 'company 1'
+        'logo_url': 'url 0',
+        'name': 'company 0'
     },
-    'email': 'test@gmail.com',
+    'cover_page_url': '',
+    'email': 'name1@gmail.com',
     'is_admin': False,
-    'name': 'test',
-    'profile_pic_url': 'test.com',
+    'name': 'name1',
+    'profile_pic_url': 'url1',
+    'roles': [
+        {
+            'name': 'role 0',
+            'role_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb211'
+        },
+        {
+            'name': 'role 1',
+            'role_id': 'b9d000c7-c14f-4909-8c5a-6a6c02abb222'
+        }
+    ],
     'teams': [
         {
-            'description': 'team_description 1',
+            'description': 'team_description 0',
             'members': [
                 {
                     'member_id': '217abeb3-6466-4440-96e7-bf02ee941bf8',
@@ -42,22 +61,14 @@ snapshots['TestCase01GetUserProfileAPITestCase.test_valid_user_id body'] = {
                     'profile_pic_url': 'url1'
                 },
                 {
-                    'member_id': '548a803c-7b48-47ba-a700-24f2ea0d1280',
+                    'member_id': '7e39bf1c-f9a5-4e76-8451-b962ddd52044',
                     'name': 'name3',
                     'profile_pic_url': 'url3'
                 }
             ],
-            'name': 'team 1',
-            'team_id': '2bdb417e-4632-419a-8ddd-085ea272c6eb'
+            'name': 'team 0',
+            'team_id': '6ce31e92-f188-4019-b295-2e5ddc9c7a11'
         }
     ],
     'user_id': '217abeb3-6466-4440-96e7-bf02ee941bf8'
-}
-
-snapshots['TestCase01GetUserProfileAPITestCase.test_user_account_does_not_exist status_code'] = '404'
-
-snapshots['TestCase01GetUserProfileAPITestCase.test_user_account_does_not_exist body'] = {
-    'http_status_code': 404,
-    'res_status': 'USER_ACCOUNT_DOES_NOT_EXIST',
-    'response': 'Please send valid user id'
 }

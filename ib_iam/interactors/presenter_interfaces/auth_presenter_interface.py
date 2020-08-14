@@ -7,12 +7,14 @@ from django.http import HttpResponse
 from ib_iam.adapters.auth_service import UserTokensDTO
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.interactors.storage_interfaces.dtos import \
-    CompanyDTO, TeamDTO, TeamUserIdsDTO, CompanyIdWithEmployeeIdsDTO
+    CompanyDTO, TeamDTO, TeamUserIdsDTO, CompanyIdWithEmployeeIdsDTO, \
+    UserRoleDTO
 
 
 @dataclasses.dataclass
-class UserProfileWithTeamsAndCompanyAndTheirUsersDTO:
+class CompleteUserProfileDTO:
     user_profile_dto: UserProfileDTO
+    role_dtos: List[UserRoleDTO]
     company_dto: Optional[CompanyDTO]
     team_dtos: List[TeamDTO]
     team_user_ids_dto: List[TeamUserIdsDTO]
@@ -79,6 +81,6 @@ class GetUserProfilePresenterInterface(ABC):
     @abstractmethod
     def prepare_response_for_get_user_profile(
             self,
-            user_profile_response_dto:
-            UserProfileWithTeamsAndCompanyAndTheirUsersDTO):
+            complete_user_profile_dto:
+            CompleteUserProfileDTO):
         pass

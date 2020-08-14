@@ -25,8 +25,8 @@ class TestCase01UpdateUserProfileAPITestCase(TestUtils):
         body = {'name': 'username',
                 'email': 'jaswanthmamidipudi@gmail.com',
                 'profile_pic_url': 'https://sample.com',
-                'role_ids': ["1", "1"]
-                }
+                'role_ids': ["1", "1"],
+                "cover_page_url": ""}
         path_params = {}
         query_params = {}
         headers = {}
@@ -42,8 +42,8 @@ class TestCase01UpdateUserProfileAPITestCase(TestUtils):
         body = {'name': 'username',
                 'email': 'jaswanthmamidipudi@gmail.com',
                 'profile_pic_url': 'https://sample.com',
-                'role_ids': ["2"]
-                }
+                'role_ids': ["2"],
+                "cover_page_url": ""}
         path_params = {}
         query_params = {}
         headers = {}

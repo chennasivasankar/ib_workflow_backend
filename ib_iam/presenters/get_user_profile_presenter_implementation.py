@@ -6,7 +6,7 @@ from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.constants.enums import StatusCode
 from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
     GetUserProfilePresenterInterface, \
-    UserProfileWithTeamsAndCompanyAndTheirUsersDTO
+    CompleteUserProfileDTO
 from ib_iam.interactors.storage_interfaces.dtos import TeamDTO, CompanyDTO, \
     CompanyIdWithEmployeeIdsDTO, TeamUserIdsDTO
 
@@ -44,39 +44,54 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
 
     def prepare_response_for_get_user_profile(
             self,
-            user_profile_response_dto:
-            UserProfileWithTeamsAndCompanyAndTheirUsersDTO):
-        user_profile_dto = user_profile_response_dto.user_profile_dto
+            complete_user_profile_dto:
+            CompleteUserProfileDTO):
+        user_profile_dto = complete_user_profile_dto.user_profile_dto
         teams = self._convert_team_dtos_to_teams(
-            team_dtos=user_profile_response_dto.team_dtos,
-            user_dtos=user_profile_response_dto.user_dtos,
+            team_dtos=complete_user_profile_dto.team_dtos,
+            user_dtos=complete_user_profile_dto.user_dtos,
             team_user_ids_dtos=
-            user_profile_response_dto.team_user_ids_dto)
+            complete_user_profile_dto.team_user_ids_dto)
         company_dictionary = self._get_company_dictionary(
-            company_dto=
-            user_profile_response_dto.company_dto,
-            user_dtos=user_profile_response_dto.user_dtos,
+            company_dto=complete_user_profile_dto.company_dto,
+            user_dtos=complete_user_profile_dto.user_dtos,
             company_id_with_employee_ids_dto=
-            user_profile_response_dto
-                .company_id_with_employee_ids_dto)
+            complete_user_profile_dto.company_id_with_employee_ids_dto)
+        roles = self._get_roles(role_dtos=complete_user_profile_dto.role_dtos)
         response_dict = self._get_user_profile_dict_from_user_profile_dto(
             user_profile_dto=user_profile_dto, teams=teams,
-            company=company_dictionary)
+            company=company_dictionary, roles=roles)
+        print("I am in response")
+        print(response_dict)
         return self.prepare_200_success_response(response_dict=response_dict)
 
     @staticmethod
     def _get_user_profile_dict_from_user_profile_dto(
-            user_profile_dto: UserProfileDTO, teams, company):
+            user_profile_dto: UserProfileDTO, teams, company, roles):
+        cover_page_url = user_profile_dto.cover_page_url
+        if cover_page_url is None:
+            cover_page_url = ""
         user_profile_dictionary = {
             "user_id": user_profile_dto.user_id,
             "name": user_profile_dto.name,
             "is_admin": user_profile_dto.is_admin,
             "email": user_profile_dto.email,
             "profile_pic_url": user_profile_dto.profile_pic_url,
-            "teams": teams,
-            "company": company
+            "cover_page_url": cover_page_url,
+            "roles": roles,
+            "teams": teams
         }
+        if company is not None:
+            user_profile_dictionary["company"] = company
+        else:
+            user_profile_dictionary["company"] = None
         return user_profile_dictionary
+
+    @staticmethod
+    def _get_roles(role_dtos):
+        roles = [{"role_id": role_dto.role_id, "name": role_dto.name}
+                 for role_dto in role_dtos]
+        return roles
 
     def _convert_team_dtos_to_teams(
             self, team_dtos: List[TeamDTO],
@@ -84,14 +99,14 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
             team_user_ids_dtos: List[TeamUserIdsDTO]):
         teams = []
         for team_dto in team_dtos:
-            team_dictionary = self._convert_team_dto_to_dictionary(team_dto)
-            team_dictionary["members"] = self._get_members_of_team(
+            team_dictionary = self._convert_to_team_dictionary(team_dto)
+            team_dictionary["members"] = self._get_team_members(
                 team_dto=team_dto, team_user_ids_dtos=team_user_ids_dtos,
                 user_dtos=user_dtos)
             teams.append(team_dictionary)
         return teams
 
-    def _get_members_of_team(self, team_dto, team_user_ids_dtos, user_dtos):
+    def _get_team_members(self, team_dto, team_user_ids_dtos, user_dtos):
         members = []
         for team_user_ids_dto in team_user_ids_dtos:
             if team_user_ids_dto.team_id == team_dto.team_id:
@@ -110,7 +125,7 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
         return member_dictionary
 
     @staticmethod
-    def _convert_team_dto_to_dictionary(team_dto):
+    def _convert_to_team_dictionary(team_dto):
         team_details_dict = {
             "team_id": team_dto.team_id,
             "name": team_dto.name,
@@ -122,6 +137,8 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
             self, company_dto: CompanyDTO,
             user_dtos: List[UserProfileDTO],
             company_id_with_employee_ids_dto: CompanyIdWithEmployeeIdsDTO):
+        if company_dto is None:
+            return None
         company_dictionary = self._convert_company_dto_to_dictionary(
             company_dto=company_dto)
         employees = []

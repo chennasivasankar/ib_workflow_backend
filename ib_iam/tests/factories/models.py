@@ -45,6 +45,7 @@ class UserDetailsFactory(factory.django.DjangoModelFactory):
     is_admin = False
     name = factory.Faker('name')
     company = factory.SubFactory(CompanyFactory)
+    cover_page_url = None
 
 
 class UserTeamFactory(factory.django.DjangoModelFactory):

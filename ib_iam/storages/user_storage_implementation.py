@@ -1,6 +1,6 @@
 from typing import List
 
-from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
+from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO, UserProfileDTO
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, RoleIdAndNameDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO, UserIdAndNameDTO, TeamDTO, TeamUserIdsDTO, CompanyDTO, \
@@ -96,9 +96,12 @@ class UserStorageImplementation(UserStorageInterface):
             company_id=company_id, name=name
         )
 
-    def update_user_name(self, user_id: str, name: str):
+    def update_user_name_and_cover_page_url(self,
+                                            user_profile_dto: UserProfileDTO):
         from ib_iam.models import UserDetails
-        UserDetails.objects.filter(user_id=user_id).update(name=name)
+        UserDetails.objects.filter(user_id=user_profile_dto.user_id) \
+            .update(name=user_profile_dto.name,
+                    cover_page_url=user_profile_dto.cover_page_url)
 
     def get_users_who_are_not_admins(
             self, offset: int, limit: int,
@@ -360,25 +363,24 @@ class UserStorageImplementation(UserStorageInterface):
             company_object=company_object)
         return company_dto
 
-    def get_company_employee_ids_dtos(self, company_ids: List[str]) \
-            -> List[CompanyIdWithEmployeeIdsDTO]:
+    def get_company_employee_ids_dto(self, company_id: str) \
+            -> CompanyIdWithEmployeeIdsDTO:
         from ib_iam.models import UserDetails
         company_employees = \
-            UserDetails.objects.filter(company_id__in=company_ids) \
-                .values_list('company_id', 'user_id')
-        from collections import defaultdict
-        company_employee_ids_dictionary = defaultdict(list)
-        for company_employee in company_employees:
-            company_id = str(company_employee[0])
-            company_employee_ids_dictionary[company_id].extend([
-                company_employee[1]])
-        company_employee_ids_dtos = [
-            CompanyIdWithEmployeeIdsDTO(
-                company_id=company_id,
-                employee_ids=company_employee_ids_dictionary[company_id]
-            ) for company_id in company_ids
-        ]
+            UserDetails.objects.filter(company_id=company_id) \
+                .values_list('user_id', flat=True)
+        company_employee_ids_dtos = CompanyIdWithEmployeeIdsDTO(
+            company_id=company_id,
+            employee_ids=list(company_employees))
         return company_employee_ids_dtos
+
+    def get_user_details(self, user_id: str) -> UserDTO:
+        from ib_iam.models import UserDetails
+        user_object = UserDetails.objects.get(user_id=user_id)
+        user_dto = UserDTO(user_id=user_object.user_id,
+                           is_admin=user_object.is_admin,
+                           cover_page_url=user_object.cover_page_url)
+        return user_dto
 
     @staticmethod
     def _convert_company_object_to_company_dto(company_object) -> CompanyDTO:
