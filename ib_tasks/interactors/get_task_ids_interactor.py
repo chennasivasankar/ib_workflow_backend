@@ -40,8 +40,6 @@ class GetTaskIdsInteractor:
 
     def get_task_ids(self, task_details_configs: List[TaskDetailsConfigDTO]):
         self._validate_given_data(task_details_configs=task_details_configs)
-
-
         filter_dtos = self.filter_storage.get_enabled_filters_dto_to_user(
             user_id=task_details_configs[0].user_id
         )
@@ -61,7 +59,6 @@ class GetTaskIdsInteractor:
         task_display_id_dtos_dict = {}
         for task_display_id_dto in task_display_id_dtos:
             task_display_id_dtos_dict[task_display_id_dto.task_id] = task_display_id_dto.display_id
-        task_stage_details = []
         task_stage_details = self._get_task_stage_details(
             task_display_id_dtos_dict=task_display_id_dtos_dict,
             task_stage_dtos=total_task_ids_dtos
