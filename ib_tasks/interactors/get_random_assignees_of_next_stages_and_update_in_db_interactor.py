@@ -45,10 +45,12 @@ class GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor:
             get_next_stages_random_assignees_of_a_task_interactor. \
                 get_next_stages_random_assignees_of_a_task(
                 task_id=task_id, action_id=action_id)
+
         stage_assignee_dtos = [
             StageAssigneeDTO(
                 db_stage_id=random_user_for_each_stage_dto.db_stage_id,
-                assignee_id=random_user_for_each_stage_dto.assignee_details_dto.assignee_id
+                assignee_id=random_user_for_each_stage_dto.
+                    assignee_details_dto.assignee_id
             )
             for random_user_for_each_stage_dto in
             random_users_for_each_stage_dtos

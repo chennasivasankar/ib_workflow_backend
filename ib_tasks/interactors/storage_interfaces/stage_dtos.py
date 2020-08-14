@@ -176,12 +176,6 @@ class CurrentStageDetailsDTO:
 
 
 @dataclass
-class TaskIdWithDbStageIdsDTO:
-    task_id: int
-    db_stage_ids: List[int]
-
-
-@dataclass
 class AssigneeCurrentTasksCountDTO:
     assignee_id: str
     tasks_count: int

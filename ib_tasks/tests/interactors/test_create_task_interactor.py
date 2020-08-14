@@ -1,20 +1,16 @@
 import datetime
-from typing import List, Optional
 
 import factory
 import freezegun
 import mock
 import pytest
 
-from ib_tasks.documents.elastic_task import ElasticFieldDTO
 from ib_tasks.interactors.create_or_update_task.create_task_interactor import \
     CreateTaskInteractor
-from ib_tasks.interactors.storage_interfaces.task_dtos import \
-    TaskGoFDetailsDTO, TaskGoFFieldDTO
-from ib_tasks.interactors.task_dtos import FieldValuesDTO, CreateTaskDTO
 from ib_tasks.tests.factories.interactor_dtos import GoFFieldsDTOFactory, \
     FieldValuesDTOFactory, CreateTaskDTOFactory
-from ib_tasks.tests.factories.storage_dtos import TaskGoFDetailsDTOFactory
+from ib_tasks.tests.factories.storage_dtos import TaskGoFDetailsDTOFactory, \
+    TaskGoFFieldDTOFactory
 
 
 class TestCreateTaskInteractor:
@@ -24,6 +20,7 @@ class TestCreateTaskInteractor:
         FieldValuesDTOFactory.reset_sequence()
         GoFFieldsDTOFactory.reset_sequence()
         CreateTaskDTOFactory.reset_sequence()
+        TaskGoFFieldDTOFactory.reset_sequence()
 
     @pytest.fixture
     def task_storage_mock(self):
@@ -1852,7 +1849,7 @@ class TestCreateTaskInteractor:
         assert given_invalid_format == given_format
         assert valid_formats == allowed_formats
 
-    def test_with_valid_task_details_creates_task_in_normal_db_and_also_in_elastic_db_and_sets_status_variables(
+    def test_with_valid_task_details_creates_task(
             self, task_storage_mock, gof_storage_mock,
             task_template_storage_mock, create_task_storage_mock, storage_mock,
             field_storage_mock, stage_storage_mock, action_storage_mock,
@@ -1863,15 +1860,7 @@ class TestCreateTaskInteractor:
     ):
         # Arrange
         created_task_id = 1
-        elastic_task_id = 1
         task_dto = CreateTaskDTOFactory()
-        from ib_tasks.documents.elastic_task import ElasticTaskDTO
-        expected_elastic_task_dto = ElasticTaskDTO(
-            template_id=task_dto.task_template_id,
-            task_id=created_task_id,
-            title=task_dto.title,
-            fields=self._get_fields_dto(task_dto)
-        )
         from ib_tasks.interactors.storage_interfaces.task_dtos import \
             TaskGoFWithTaskIdDTO
         expected_task_gof_dtos = [
@@ -1884,16 +1873,15 @@ class TestCreateTaskInteractor:
         ]
         expected_task_gof_details_dtos = TaskGoFDetailsDTOFactory.build_batch(
             size=2)
-        expected_task_gof_field_dtos = self._prepare_task_gof_fields_dtos(
-            task_dto, expected_task_gof_details_dtos
-        )
+        task_gof_ids = [0, 0, 1, 1]
+        expected_task_gof_field_dtos = TaskGoFFieldDTOFactory.build_batch(
+            size=4, task_gof_id=factory.Iterator(task_gof_ids))
 
         task_template_storage_mock.check_is_template_exists.return_value = \
             True
         storage_mock.validate_action.return_value = True
         create_task_storage_mock.create_task_with_given_task_details \
             .return_value = created_task_id
-        elastic_storage_mock.create_task.return_value = elastic_task_id
         create_task_storage_mock.create_task_gofs.return_value = \
             expected_task_gof_details_dtos
         interactor = CreateTaskInteractor(
@@ -1905,28 +1893,17 @@ class TestCreateTaskInteractor:
             elastic_storage=elastic_storage_mock,
             task_stage_storage=task_stage_storage_mock
         )
-        presenter_mock \
-            .raise_exception_for_not_acceptable_file_format \
-            .return_value = mock_object
 
         # Act
         response = interactor.create_task_wrapper(presenter_mock, task_dto)
 
         # Assert
         create_task_storage_mock.create_task_with_given_task_details \
-            .assert_called_once_with(
-            task_dto
-        )
-        elastic_storage_mock.create_task.assert_called_once_with(
-            elastic_task_dto=expected_elastic_task_dto)
-        task_storage_mock.create_elastic_task.assert_called_once_with(
-            task_id=created_task_id, elastic_task_id=elastic_task_id
-        )
+            .assert_called_once_with(task_dto)
         create_task_storage_mock.create_task_gofs.assert_called_once_with(
             task_gof_dtos=expected_task_gof_dtos)
-        create_task_storage_mock.create_task_gof_fields \
-            .assert_called_once_with(
-            expected_task_gof_field_dtos)
+        create_task_storage_mock.create_task_gof_fields\
+            .assert_called_once_with(expected_task_gof_field_dtos)
         create_task_storage_mock.set_status_variables_for_template_and_task \
             .assert_called_once_with(
             task_dto.task_template_id, created_task_id)
@@ -1934,57 +1911,6 @@ class TestCreateTaskInteractor:
             .assert_called_once_with(
             task_id=created_task_id, template_id=task_dto.task_template_id
         )
-
-    @staticmethod
-    def _get_elastic_field_dto(field_dto: FieldValuesDTO) -> ElasticFieldDTO:
-        return ElasticFieldDTO(
-            field_id=field_dto.field_id,
-            value=field_dto.field_response
-        )
-
-    def _get_fields_dto(
-            self, task_dto: CreateTaskDTO) -> List[ElasticFieldDTO]:
-
-        fields_dto = []
-        gof_fields_dtos = task_dto.gof_fields_dtos
-        for gof_fields_dto in gof_fields_dtos:
-            for field_value_dto in gof_fields_dto.field_values_dtos:
-                fields_dto.append(self._get_elastic_field_dto(field_value_dto))
-        return fields_dto
-
-    def _prepare_task_gof_fields_dtos(
-            self, task_dto: CreateTaskDTO,
-            task_gof_details_dtos: List[TaskGoFDetailsDTO]
-    ) -> List[TaskGoFFieldDTO]:
-        task_gof_field_dtos = []
-        for gof_fields_dto in task_dto.gof_fields_dtos:
-            task_gof_id = self._get_gof_id_for_field_in_task_gof_details(
-                gof_fields_dto.gof_id, gof_fields_dto.same_gof_order,
-                task_gof_details_dtos
-            )
-            task_gof_field_dtos += [
-                TaskGoFFieldDTO(
-                    field_id=field_values_dto.field_id,
-                    field_response=field_values_dto.field_response,
-                    task_gof_id=task_gof_id
-                )
-                for field_values_dto in gof_fields_dto.field_values_dtos
-            ]
-        return task_gof_field_dtos
-
-    @staticmethod
-    def _get_gof_id_for_field_in_task_gof_details(
-            gof_id: str, same_gof_order: int,
-            task_gof_details_dtos: List[TaskGoFDetailsDTO]
-    ) -> Optional[int]:
-        for task_gof_details_dto in task_gof_details_dtos:
-            gof_matched = (
-                    task_gof_details_dto.gof_id == gof_id and
-                    task_gof_details_dto.same_gof_order == same_gof_order
-            )
-            if gof_matched:
-                return task_gof_details_dto.task_gof_id
-        return
 
     def test_with_not_permitted_user_action(
             self, task_storage_mock, gof_storage_mock,

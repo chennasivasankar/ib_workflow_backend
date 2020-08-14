@@ -61,5 +61,4 @@ test_data_for_integration.ipynb
 .gitignore
 env_*.sh
 
-
 venv/
