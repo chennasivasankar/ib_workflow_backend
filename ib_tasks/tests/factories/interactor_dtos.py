@@ -32,7 +32,7 @@ from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     CreateTaskLogDTO, \
     CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeIdDTO, \
     SaveAndActOnTaskDTO, TaskCurrentStageDetailsDTO, \
-    UpdateTaskWithTaskDisplayIdDTO
+    UpdateTaskWithTaskDisplayIdDTO, SaveAndActOnTaskWithTaskDisplayIdDTO
 from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory, \
     UserDetailsDTO
 
@@ -380,6 +380,26 @@ class SaveAndActOnTaskDTOFactory(factory.Factory):
         model = SaveAndActOnTaskDTO
 
     task_id = factory.Sequence(lambda c: "task_{}".format(c))
+    created_by_id = "123e4567-e89b-12d3-a456-426614174000"
+    action_id = factory.Sequence(lambda c: c)
+    title = factory.Sequence(lambda c: "title_{}".format(c))
+    description = factory.Sequence(lambda c: "description{}".format(c))
+    start_date = datetime.today().date()
+    due_date = datetime.today().date() + timedelta(days=2)
+    due_time = "12:30:20"
+    priority = Priority.HIGH.value
+    stage_assignee = factory.SubFactory(StageIdWithAssigneeIdDTOFactory)
+
+    @factory.lazy_attribute
+    def gof_fields_dtos(self):
+        return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]
+
+
+class SaveAndActOnTaskWithTaskDisplayIdDTOFactory(factory.Factory):
+    class Meta:
+        model = SaveAndActOnTaskWithTaskDisplayIdDTO
+
+    task_display_id = factory.Sequence(lambda c: "task_{}".format(c))
     created_by_id = "123e4567-e89b-12d3-a456-426614174000"
     action_id = factory.Sequence(lambda c: c)
     title = factory.Sequence(lambda c: "title_{}".format(c))
