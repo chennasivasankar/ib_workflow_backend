@@ -1,6 +1,6 @@
 from typing import List, Dict, Any, Tuple
 
-from ib_tasks.adapters.dtos import UserDetailsDTO
+from ib_tasks.adapters.dtos import UserDetailsDTO, AssigneeDetailsDTO
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.action_custom_exceptions \
     import InvalidKeyError
@@ -18,8 +18,8 @@ from ib_tasks.interactors.stages_dtos import StageWithUserDetailsDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
-    StageIdWithRoleIdsDTO, StageDetailsDTO, TaskStageHavingAssigneeIdDTO, \
-    StageValueWithTaskIdsDTO, TaskWithDbStageIdDTO, \
+    StageIdWithRoleIdsDTO, StageDetailsDTO, StageValueWithTaskIdsDTO, \
+    TaskWithDbStageIdDTO, \
     AssigneeCurrentTasksCountDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
@@ -103,7 +103,6 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
     ) -> List[StageValueWithTaskIdsDTO]:
         task_ids_group_by_stage_value_dtos = []
         for each_value in stage_values:
-
             list_of_task_ids = []
             for each_task_id_with_max_stage_value_dto in \
                     task_id_with_max_stage_value_dtos:
@@ -216,19 +215,21 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
             permitted_assignee_with_current_tasks_count_dtos = self. \
                 _get_permitted_assignee_with_current_tasks_count_dtos(
                 permitted_user_ids, assignee_with_current_tasks_count_dtos)
-            print("permitted_assignee_with_current_tasks_count_dtos", permitted_assignee_with_current_tasks_count_dtos)
+            if not permitted_assignee_with_current_tasks_count_dtos:
+                permitted_user_details_dto_having_less_tasks = []
 
-            assignee_id_with_current_less_tasks, \
-            updated_task_count_dtos_for_assignee_having_less_tasks = self. \
-                _get_user_having_less_tasks_for_each_stage(
-                permitted_assignee_with_current_tasks_count_dtos,
-                updated_task_count_dtos_for_assignee_having_less_tasks)
-            for permitted_user_details_dto in permitted_user_details_dtos:
-                if assignee_id_with_current_less_tasks == \
-                        permitted_user_details_dto.user_id:
-                    permitted_user_details_dto_having_less_tasks = \
-                        permitted_user_details_dto
-                    break
+            else:
+                assignee_id_with_current_less_tasks, \
+                updated_task_count_dtos_for_assignee_having_less_tasks = self. \
+                    _get_user_having_less_tasks_for_each_stage(
+                    permitted_assignee_with_current_tasks_count_dtos,
+                    updated_task_count_dtos_for_assignee_having_less_tasks)
+                for permitted_user_details_dto in permitted_user_details_dtos:
+                    if assignee_id_with_current_less_tasks == \
+                            permitted_user_details_dto.user_id:
+                        permitted_user_details_dto_having_less_tasks = \
+                            permitted_user_details_dto
+                        break
 
             stage_with_user_details_dto = self. \
                 _prepare_stage_with_user_details_dto(
@@ -246,14 +247,13 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
             updated_task_count_dtos_for_assignee_having_less_tasks:
             List[AssigneeCurrentTasksCountDTO]) -> \
             Tuple[str, List[AssigneeCurrentTasksCountDTO]]:
+
         permitted_assignee_with_current_tasks_count_dtos_dict = [
             {"assignee_id": assignee_with_current_tasks_count_dto.assignee_id,
              "tasks_count": assignee_with_current_tasks_count_dto.tasks_count}
             for assignee_with_current_tasks_count_dto in
             permitted_assignee_with_current_tasks_count_dtos]
-        print("*" * 5)
-        print("updated_task_count_dtos_for_assignee_having_less_tasks",
-              updated_task_count_dtos_for_assignee_having_less_tasks)
+
 
         permitted_assignee_with_current_tasks_count_dtos_dict = sorted(
             permitted_assignee_with_current_tasks_count_dtos_dict,
@@ -276,7 +276,6 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
             "tasks_count": updated_task_count_dto_for_assignee.tasks_count}
             for updated_task_count_dto_for_assignee in
             updated_task_count_dtos_for_assignee_having_less_tasks]
-
         for each_assignee_with_current_tasks_count_dto_dict in \
                 permitted_assignee_with_current_tasks_count_dtos_dict:
             assignee_id_index = self._get_assignee_id_index(
@@ -298,6 +297,7 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
                     assignee_id_index]['tasks_count']
             each_assignee_with_current_tasks_count_dto_dict[
                 'tasks_count'] = updated_task_count_of_assignee
+            break
         permitted_assignee_with_current_tasks_count_dtos_dict = sorted(
             permitted_assignee_with_current_tasks_count_dtos_dict,
             key=lambda i: i['tasks_count'])
@@ -401,15 +401,16 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
             if each_stage_detail_dto.db_stage_id == \
                     role_ids_group_by_stage_id_dto.db_stage_id:
                 name = each_stage_detail_dto.name
-
+        assignee_details_dto = None
+        if permitted_user_details_dto_having_less_tasks:
+            assignee_details_dto = AssigneeDetailsDTO(
+                assignee_id=permitted_user_details_dto_having_less_tasks.user_id,
+                name=permitted_user_details_dto_having_less_tasks.user_name,
+                profile_pic_url=permitted_user_details_dto_having_less_tasks.profile_pic_url)
         stage_with_user_details_dto = StageWithUserDetailsDTO(
             db_stage_id=role_ids_group_by_stage_id_dto.db_stage_id,
-            assignee_id=permitted_user_details_dto_having_less_tasks.user_id,
-            assignee_name=permitted_user_details_dto_having_less_tasks.
-                user_name,
-            profile_pic_url=permitted_user_details_dto_having_less_tasks.
-                profile_pic_url,
             stage_display_name=name,
+            assignee_details_dto=assignee_details_dto
         )
         return stage_with_user_details_dto
 
@@ -559,28 +560,3 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
         if is_invalid_action:
             raise InvalidActionException(action_id=action_id)
 
-    @staticmethod
-    def _get_assignee_details_for_task_stages_having_assignees(
-            assignee_ids_assigned_to_stages: List[str],
-            task_stages_having_assignee_dtos:
-            List[TaskStageHavingAssigneeIdDTO]) -> \
-            List[StageWithUserDetailsDTO]:
-        from ib_tasks.adapters.auth_service import AuthService
-        auth_service_adapter = AuthService()
-        user_details_dtos = auth_service_adapter.get_user_details(
-            user_ids=assignee_ids_assigned_to_stages)
-        task_stages_having_assignee_details_dtos = []
-        for task_stage_with_assignee_dto in task_stages_having_assignee_dtos:
-            for user_details_dto in user_details_dtos:
-                if user_details_dto.user_id \
-                        == task_stage_with_assignee_dto.assignee_id:
-                    stage_with_user_details_dto = StageWithUserDetailsDTO(
-                        db_stage_id=task_stage_with_assignee_dto.db_stage_id,
-                        assignee_id=task_stage_with_assignee_dto.assignee_id,
-                        assignee_name=user_details_dto.user_name,
-                        profile_pic_url=user_details_dto.profile_pic_url,
-                        stage_display_name=task_stage_with_assignee_dto.
-                            stage_display_name)
-                    task_stages_having_assignee_details_dtos.append(
-                        stage_with_user_details_dto)
-        return task_stages_having_assignee_details_dtos
