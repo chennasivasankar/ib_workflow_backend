@@ -113,15 +113,12 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
             self, db_stage_ids: List[int],
             task_ids: List[int]) -> List[
         AssigneeCurrentTasksCountDTO]:
-        print("db_stage_ids", db_stage_ids)
-        print("task_ids", task_ids)
         from django.db.models import Count
         assignee_with_count_objs = list(TaskStageHistory.objects.filter(
             task_id__in=task_ids, stage_id__in=db_stage_ids,
             left_at=None).values(
             'assignee_id').annotate(
             tasks_count=Count('assignee_id')).order_by('tasks_count'))
-        print("assignee_with_count_objs", assignee_with_count_objs)
         assignee_with_current_tasks_count_dtos = [AssigneeCurrentTasksCountDTO(
             assignee_id=assignee_with_count_obj['assignee_id'],
             tasks_count=assignee_with_count_obj['tasks_count']) for
