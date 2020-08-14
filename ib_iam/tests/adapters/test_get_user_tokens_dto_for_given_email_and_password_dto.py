@@ -186,6 +186,38 @@ class TestGetUserTokens:
             )
         get_user_auth_tokens_for_login_with_email_and_password_mock.assert_called_once()
 
+    def test_user_account_not_registered_raise_exception(
+            self, mocker
+    ):
+        # Arrange
+        from ib_iam.adapters.auth_service import EmailAndPasswordDTO
+        email_and_password_dto = EmailAndPasswordDTO(
+            email="test@gmail.com",
+            password="test123"
+        )
+        get_user_auth_tokens_for_login_with_email_and_password_mock = \
+            self.get_user_auth_tokens_mock(mocker=mocker)
+
+        from ib_users.validators.base_validator import CustomException
+        from ib_users.exceptions.custom_exception_constants import \
+            NOT_REGISTERED_USER
+        get_user_auth_tokens_for_login_with_email_and_password_mock.side_effect \
+            = CustomException(
+            exception_type=NOT_REGISTERED_USER.code,
+            message=NOT_REGISTERED_USER.message)
+
+        from ib_iam.adapters.service_adapter import ServiceAdapter
+        service_adapter = ServiceAdapter()
+        auth_service = service_adapter.auth_service
+
+        # Assert
+        from ib_iam.exceptions.custom_exceptions import UserAccountDoesNotExist
+        with pytest.raises(UserAccountDoesNotExist):
+            auth_service.get_user_tokens_dto_for_given_email_and_password_dto(
+                email_and_password_dto=email_and_password_dto
+            )
+        get_user_auth_tokens_for_login_with_email_and_password_mock.assert_called_once()
+
     def test_with_incorrect_password_then_raise_exception(
             self, mocker
     ):
