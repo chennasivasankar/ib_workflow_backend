@@ -28,7 +28,7 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import (
     StatusVariableDTO, StageActionNamesDTO
 )
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, TaskDueParametersDTO
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, TaskDueParametersDTO, TaskDelayParametersDTO
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
     ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, GlobalConstant, \
     StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskLog, TaskTemplateStatusVariable
@@ -647,7 +647,8 @@ class StorageImplementation(StorageInterface):
 
     def get_task_due_details(self, task_id: int) -> \
             List[TaskDueMissingDTO]:
-        task_due_objs = UserTaskDelayReason.objects.filter(task_id=task_id)
+        task_due_objs = (UserTaskDelayReason.objects.filter(task_id=task_id)
+                         .values('due_datetime', 'count', 'reason', 'user_id', 'task__task_display_id'))
 
         task_due_details_dtos = self._convert_task_due_details_objs_to_dtos(
             task_due_objs)
@@ -659,16 +660,16 @@ class StorageImplementation(StorageInterface):
         for task in task_due_objs:
             task_due_details_dtos.append(
                 TaskDueMissingDTO(
-                    task_id=task.task_id,
-                    due_date_time=task.due_datetime,
-                    due_missed_count=task.count,
-                    reason=task.reason,
-                    user_id=task.user_id
+                    task_id=task['task__task_display_id'],
+                    due_date_time=task['due_datetime'],
+                    due_missed_count=task['count'],
+                    reason=task['reason'],
+                    user_id=task['user_id']
                 )
             )
         return task_due_details_dtos
 
-    def add_due_delay_details(self, due_details: TaskDueParametersDTO):
+    def add_due_delay_details(self, due_details: TaskDelayParametersDTO):
         user_id = due_details.user_id
         task_id = due_details.task_id
         reason_id = due_details.reason_id

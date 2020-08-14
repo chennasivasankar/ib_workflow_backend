@@ -27,9 +27,10 @@ class TestCase02AddReasonForMissingDueDateTimeAPITestCase(TestUtils):
         body = {
             'updated_due_date_time': '2020-09-10T11:30:45.34523',
             'reason_id': 1,
-            'reason': 'string'
+            'reason': 'string',
+            "task_id": "iBWF-3"
         }
-        path_params = {"task_id": 123}
+        path_params = {}
         query_params = {}
         headers = {}
         response = self.make_api_call(body=body,

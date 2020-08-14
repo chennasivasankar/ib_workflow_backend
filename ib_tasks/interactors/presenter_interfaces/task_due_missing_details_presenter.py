@@ -2,14 +2,14 @@ import abc
 from typing import List
 
 from ib_tasks.exceptions.task_custom_exceptions import \
-    InvalidTaskIdException
+    InvalidTaskIdException, InvalidTaskDisplayId
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 
 
 class TaskDueDetailsPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
-    def response_for_invalid_task_id(self, err: InvalidTaskIdException):
+    def response_for_invalid_task_id(self, err: InvalidTaskDisplayId):
         pass
 
     @abc.abstractmethod

@@ -1,25 +1,32 @@
 from datetime import datetime
 
 from ib_tasks.exceptions.custom_exceptions import InvalidDueDateTimeException
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException, \
-    UserIsNotAssigneeToTask, InvalidReasonIdException
+from ib_tasks.exceptions.task_custom_exceptions import UserIsNotAssigneeToTask, \
+    InvalidReasonIdException, InvalidTaskDisplayId
+from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
+    GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.presenter_interfaces.task_due_missing_details_presenter import \
     TaskDueDetailsPresenterInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import StorageInterface
-from ib_tasks.interactors.task_dtos import TaskDueParametersDTO
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import TaskStorageInterface
+from ib_tasks.interactors.task_dtos import TaskDueParametersDTO, TaskDelayParametersDTO
 
 
-class AddTaskDueDetailsInteractor:
+class AddTaskDueDetailsInteractor(GetTaskIdForTaskDisplayIdMixin):
     def __init__(self,
-                 storage: StorageInterface):
+                 storage: StorageInterface,
+                 task_storage: TaskStorageInterface):
+        self.task_storage = task_storage
         self.storage = storage
 
     def add_task_due_details_wrapper(self,
                                      presenter: TaskDueDetailsPresenterInterface,
-                                     due_details: TaskDueParametersDTO):
+                                     due_details: TaskDueParametersDTO, task_display_id: str):
+
         try:
-            self.add_task_due_details(due_details)
-        except InvalidTaskIdException as err:
+            task_id = self.get_task_id_for_task_display_id(task_display_id)
+            self.add_task_due_details(due_details, task_id)
+        except InvalidTaskDisplayId as err:
             return presenter.response_for_invalid_task_id(err)
         except InvalidDueDateTimeException:
             return presenter.response_for_invalid_due_datetime()
@@ -28,19 +35,30 @@ class AddTaskDueDetailsInteractor:
         except InvalidReasonIdException:
             return presenter.response_for_invalid_reason_id()
 
-    def add_task_due_details(self, due_details: TaskDueParametersDTO):
-        task_id = due_details.task_id
+    def add_task_due_details(self, parameters: TaskDueParametersDTO, task_id: int):
+        due_details = self._get_parameters_dto(parameters, task_id)
         user_id = due_details.user_id
         reason_id = due_details.reason_id
         updated_due_datetime = due_details.due_date_time
-        self._validate_task_id(task_id)
+        task_id = due_details.task_id
         self._validate_if_task_is_assigned_to_user(task_id=task_id, user_id=user_id)
         self._validate_updated_due_datetime(updated_due_datetime)
         self._validate_reason_id(reason_id)
 
         self._add_task_due_delay_details(due_details)
 
-    def _add_task_due_delay_details(self, due_details):
+    @staticmethod
+    def _get_parameters_dto(due_details: TaskDueParametersDTO,
+                            task_id: int):
+        return TaskDelayParametersDTO(
+            task_id=task_id,
+            user_id=due_details.user_id,
+            reason=due_details.reason,
+            reason_id=due_details.reason_id,
+            due_date_time=due_details.due_date_time
+        )
+
+    def _add_task_due_delay_details(self, due_details: TaskDelayParametersDTO):
         reason_id = due_details.reason_id
         from ib_tasks.constants.enum import DELAYREASONS
         for reason_dict in DELAYREASONS:
@@ -60,12 +78,6 @@ class AddTaskDueDetailsInteractor:
     def _validate_updated_due_datetime(updated_due_datetime):
         if updated_due_datetime < datetime.now():
             raise InvalidDueDateTimeException()
-
-    def _validate_task_id(self, task_id):
-        is_valid = self.storage.validate_task_id(task_id)
-        is_invalid = not is_valid
-        if is_invalid:
-            raise InvalidTaskIdException(task_id)
 
     def _validate_if_task_is_assigned_to_user(self, task_id: int, user_id: str):
         is_assigned = self.storage.validate_if_task_is_assigned_to_user(

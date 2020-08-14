@@ -28,7 +28,7 @@ class TaskGoFFieldDTO:
 
 @dataclass
 class TaskDueMissingDTO:
-    task_id: int
+    task_id: str
     due_date_time: datetime
     due_missed_count: int
     reason: str
@@ -37,7 +37,7 @@ class TaskDueMissingDTO:
 
 @dataclass
 class TaskDueDetailsDTO:
-    task_id: int
+    task_id: str
     due_date_time: datetime
     due_missed_count: int
     reason: str

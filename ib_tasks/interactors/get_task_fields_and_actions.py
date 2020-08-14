@@ -1,7 +1,6 @@
 from typing import List
 
 from ib_boards.interactors.dtos import StageActionDetailsDTO
-from ib_tasks.adapters.roles_service_adapter import get_roles_service_adapter
 from ib_tasks.constants.enum import ViewType
 from ib_tasks.exceptions.stage_custom_exceptions import InvalidTaskStageIds
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIds
@@ -15,7 +14,7 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import \
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    GetTaskStageCompleteDetailsDTO, TaskTemplateWithStageColorDTO, TaskTemplateStageDTO,\
+    TaskTemplateStageDTO, \
     GetTaskStageCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
