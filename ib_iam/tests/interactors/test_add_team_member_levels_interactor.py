@@ -26,7 +26,8 @@ class TestAddTeamMemberLevelsInteractor:
     def interactor(self, storage_mock):
         from ib_iam.interactors.add_team_member_levels_interactor import \
             AddTeamMemberLevelsInteractor
-        interactor = AddTeamMemberLevelsInteractor(level_storage=storage_mock)
+        interactor = AddTeamMemberLevelsInteractor(
+            team_member_level_storage=storage_mock)
         return interactor
 
     @pytest.fixture()

@@ -27,7 +27,8 @@ class TestGetTeamMemberLevelsInteractor:
     def interactor(self, storage_mock):
         from ib_iam.interactors.get_team_member_levels_interactor import \
             GetTeamMemberLevelsInteractor
-        interactor = GetTeamMemberLevelsInteractor(level_storage=storage_mock)
+        interactor = GetTeamMemberLevelsInteractor(
+            team_member_level_storage=storage_mock)
         return interactor
 
     def test_with_valid_details_return_response(

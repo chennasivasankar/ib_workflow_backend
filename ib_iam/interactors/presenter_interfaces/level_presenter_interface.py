@@ -15,7 +15,7 @@ class GetTeamMemberLevelsPresenterInterface(ABC):
 
     @abstractmethod
     def response_for_team_member_level_details_dtos(
-            self, level_details_dtos: List[TeamMemberLevelDetailsDTO]):
+            self, team_member_level_details_dtos: List[TeamMemberLevelDetailsDTO]):
         pass
 
 

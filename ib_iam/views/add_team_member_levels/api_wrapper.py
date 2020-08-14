@@ -5,44 +5,37 @@ from .validator_class import ValidatorClass
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    # ---------MOCK IMPLEMENTATION---------
+    path_params = kwargs["path_params"]
+    request_data = kwargs["request_data"]
 
-    try:
-        from ib_iam.views.add_team_member_levels.request_response_mocks \
-            import REQUEST_BODY_JSON
-        body = REQUEST_BODY_JSON
-    except ImportError:
-        body = {}
+    team_id = path_params["team_id"]
+    team_member_levels = request_data["team_member_levels"]
 
-    test_case = {
-        "path_params": {'team_id': 'd801121a-447d-431a-b1ec-f08ee09e6c32'},
-        "query_params": {},
-        "header_params": {},
-        "body": body,
-        "securities": [{'oauth': ['write']}]
-    }
+    from ib_iam.tests.factories.interactor_dtos import TeamMemberLevelDTOFactory
+    team_member_level_dtos = [
+        TeamMemberLevelDTOFactory(
+            team_member_level_name=team_member_level_dict["level_name"],
+            level_hierarchy=team_member_level_dict["level_hierarchy"]
+        )
+        for team_member_level_dict in team_member_levels
+    ]
 
-    from django_swagger_utils.drf_server.utils.server_gen.mock_response \
-        import mock_response
-    try:
-        response = ''
-        status_code = 200
-        if '200' in ['201']:
-            from ib_iam.views.add_team_member_levels.request_response_mocks \
-                import RESPONSE_200_JSON
-            response = RESPONSE_200_JSON
-            status_code = 200
-        elif '201' in ['201']:
-            from ib_iam.views.add_team_member_levels.request_response_mocks \
-                import RESPONSE_201_JSON
-            response = RESPONSE_201_JSON
-            status_code = 201
-    except ImportError:
-        response = ''
-        status_code = 200
-    response_tuple = mock_response(
-        app_name="ib_iam", test_case=test_case,
-        operation_name="add_team_member_levels",
-        kwargs=kwargs, default_response_body=response,
-        group_name="", status_code=status_code)
-    return response_tuple
+    from ib_iam.storages.team_member_level_storage_implementation import \
+        TeamMemberLevelStorageImplementation
+    team_member_level_storage = TeamMemberLevelStorageImplementation()
+
+    from ib_iam.presenters.add_levels_presenter_implementation import \
+        AddTeamMemberLevelsPresenterImplementation
+    presenter = AddTeamMemberLevelsPresenterImplementation()
+
+    from ib_iam.interactors.add_team_member_levels_interactor import \
+        AddTeamMemberLevelsInteractor
+    interactor = AddTeamMemberLevelsInteractor(
+        team_member_level_storage=team_member_level_storage
+    )
+
+    response = interactor.add_team_member_levels_wrapper(
+        team_id=team_id, team_member_level_dtos=team_member_level_dtos,
+        presenter=presenter
+    )
+    return response
