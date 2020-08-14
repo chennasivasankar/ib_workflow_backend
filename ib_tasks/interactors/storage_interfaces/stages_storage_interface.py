@@ -129,7 +129,7 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_virtual_stages_already_having_task(
+    def get_virtual_stages_already_having_in_task(
             self, task_id: int,
             stage_ids_having_virtual_stages: List[str]) -> List[str]:
         pass

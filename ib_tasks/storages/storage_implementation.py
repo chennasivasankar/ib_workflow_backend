@@ -365,7 +365,7 @@ class StagesStorageImplementation(StageStorageInterface):
                                                                      flat=True))
         return db_stage_ids
 
-    def get_virtual_stages_already_having_task(
+    def get_virtual_stages_already_having_in_task(
             self, task_id: int, stage_ids_having_virtual_stages: List[str]) -> \
             List[str]:
         virtual_stages_already_having_task = list(

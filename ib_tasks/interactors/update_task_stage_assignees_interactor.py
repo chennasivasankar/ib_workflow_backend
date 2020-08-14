@@ -57,16 +57,23 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
                 raise_stage_ids_with_invalid_permission_for_assignee_exception(
                 invalid_stage_ids=exception.invalid_stage_ids)
 
-    def update_task_stage_assignees(
+    def validate_and_update_task_stage_assignees(
             self,
             task_id_with_stage_assignees_dto: TaskIdWithStageAssigneesDTO):
+        self.validations_of_request(task_id_with_stage_assignees_dto)
+        self.update_task_stage_assignees(task_id_with_stage_assignees_dto)
+
+    def validations_of_request(self,
+                               task_id_with_stage_assignees_dto:
+                               TaskIdWithStageAssigneesDTO):
         task_id = task_id_with_stage_assignees_dto.task_id
         self._validate_task_id(task_id=task_id)
         stage_ids = self._get_stage_ids_from_given_dto(
             task_id_with_stage_assignees_dto)
         self._check_duplicate_stage_ids(stage_ids)
         valid_stage_ids = self.stage_storage. \
-            get_valid_db_stage_ids_excluding_virtual_stages_in_given_db_stage_ids(stage_ids)
+            get_valid_db_stage_ids_excluding_virtual_stages_in_given_db_stage_ids(
+            stage_ids)
         self._validate_stage_ids(stage_ids, valid_stage_ids)
         stage_role_dtos = self.stage_storage. \
             get_stage_role_dtos_given_db_stage_ids(stage_ids)
@@ -79,6 +86,14 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
             )
         self._validate_does_given_assignee_of_stage_ids_have_valid_permission(
             role_ids_and_assignee_id_group_by_stage_id_dtos)
+        return
+
+    def update_task_stage_assignees(
+            self,
+            task_id_with_stage_assignees_dto: TaskIdWithStageAssigneesDTO):
+        task_id = task_id_with_stage_assignees_dto.task_id
+        stage_ids = self._get_stage_ids_from_given_dto(
+            task_id_with_stage_assignees_dto)
         stage_assignee_dtos_having_assignees = self.stage_storage. \
             get_task_stages_having_assignees_without_having_left_at_status(
             task_id=task_id, db_stage_ids=stage_ids)

@@ -79,7 +79,7 @@ class GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor:
             [stage_id for stage_id in stage_ids
              if stage_id not in stage_ids_excluding_virtual_stages]
         virtual_stages_already_having_task = self.stage_storage. \
-            get_virtual_stages_already_having_task(
+            get_virtual_stages_already_having_in_task(
             task_id, stage_ids_having_virtual_stages)
         virtual_stages_not_in_task = [stage_id for stage_id in
                                       stage_ids_having_virtual_stages if
