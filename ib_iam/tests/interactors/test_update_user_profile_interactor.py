@@ -228,6 +228,6 @@ class TestUpdateUserProfileInteractor:
         storage_mock.add_roles_to_the_user.assert_called_once_with(
             user_id=user_id, role_ids=ids_of_role_objects)
         storage_mock.update_user_name.assert_called_once_with(user_id=user_id,
-                                                               name=name)
+                                                              name=name)
         presenter_mock.get_success_response_for_update_user_profile \
             .assert_called_once()
