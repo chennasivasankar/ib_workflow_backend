@@ -113,6 +113,7 @@ class FieldDTO:
 class ActionDTO:
     action_id: str
     name: str
+    action_type: str
     button_text: str
     button_color: str
     task_id: int
@@ -201,4 +202,19 @@ class TaskStageDTO:
     task_id: int
     stage_id: str
     db_stage_id: int
+    display_name: str
     stage_color: str
+
+
+@dataclass
+class AssigneesDTO:
+    assignee_id: str
+    name: str
+    profile_pic_url: str
+
+
+@dataclass
+class StageAssigneesDTO:
+    task_id: int
+    stage_id: str
+    assignees_details: AssigneesDTO

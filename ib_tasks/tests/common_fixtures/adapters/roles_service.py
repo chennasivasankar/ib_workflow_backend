@@ -8,7 +8,8 @@ def get_valid_role_ids_in_given_role_ids(mocker):
     valid_roles = [
         "ALL_ROLES", "FIN_PAYMENT_REQUESTER",
         "FIN_PAYMENT_POC", "FIN_FINANCE_RP",
-        "FIN_PAYMENTS_RP"
+        "FIN_PAYMENTS_RP", "role_id_1",
+        "role_id_2", "role_id_3", "role_id_0"
     ]
     mock.return_value = valid_roles
     return mock
@@ -58,3 +59,15 @@ def get_assignees_details_dtos(mocker):
     )]
     mock.return_value = assignees_details_dtos
     return assignees_details_dtos
+
+
+def get_some_user_role_ids(mocker):
+    mock = mocker.patch(
+        "ib_tasks.adapters.roles_service.RolesService.get_user_role_ids"
+    )
+    user_role_ids = [
+        'FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC'
+    ]
+
+    mock.return_value = user_role_ids
+    return mock

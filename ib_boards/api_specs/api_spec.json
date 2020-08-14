@@ -120,6 +120,156 @@
         "res_status"
       ]
     },
+    "FieldTypeEnum": {
+      "type": "object",
+      "properties": {
+        "field_type": {
+          "type": "string",
+          "enum": [
+            "PLAIN_TEXT",
+            "PHONE_NUMBER",
+            "EMAIL",
+            "URL",
+            "PASSWORD",
+            "NUMBER",
+            "FLOAT",
+            "LONG_TEXT",
+            "GOF_SELECTOR",
+            "RADIO_GROUP",
+            "CHECKBOX_GROUP",
+            "DROPDOWN",
+            "IMAGE_UPLOADER",
+            "FILE_UPLOADER",
+            "SEARCHABLE",
+            "DATE",
+            "MULTI_SELECT_FIELD"
+          ]
+        }
+      },
+      "required": [
+        "field_type"
+      ]
+    },
+    "StagesWithActions": {
+      "type": "object",
+      "properties": {
+        "stage_id": {
+          "type": "integer"
+        },
+        "stage_display_name": {
+          "type": "string"
+        },
+        "stage_color": {
+          "type": "string"
+        },
+        "assignee": {
+          "$ref": "#/definitions/Assignee"
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Action"
+          }
+        }
+      },
+      "required": [
+        "stage_id",
+        "stage_display_name",
+        "stage_color",
+        "actions"
+      ]
+    },
+    "Action": {
+      "type": "object",
+      "properties": {
+        "action_id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "action_type": {
+          "type": "string",
+          "enum": [
+            "NO_VALIDATIONS"
+          ]
+        },
+        "transition_template_id": {
+          "type": "string"
+        },
+        "button_text": {
+          "type": "string"
+        },
+        "button_color": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "action_id",
+        "button_text",
+        "button_color"
+      ]
+    },
+    "TaskOverviewWithStageAndActions": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "integer"
+        },
+        "task_overview_fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TaskOverviewFields"
+          }
+        },
+        "stage_with_actions": {
+          "$ref": "#/definitions/StagesWithActions"
+        }
+      },
+      "required": [
+        "task_id",
+        "task_overview_fields",
+        "stage_with_actions"
+      ]
+    },
+    "TaskOverviewFields": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/FieldTypeEnum"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "field_display_name": {
+              "type": "string"
+            },
+            "field_response": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "field_display_name",
+            "field_response"
+          ]
+        }
+      ]
+    },
+    "Assignee": {
+      "type": "object",
+      "properties": {
+        "assignee_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "profile_pic_url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "assignee_id",
+        "name"
+      ]
+    },
     "TaskDetails": {
       "type": "object",
       "properties": {
@@ -201,21 +351,21 @@
         "name": {
           "type": "string"
         },
-        "total_tasks_count": {
+        "total_tasks": {
           "type": "integer",
           "format": "int64"
         },
         "tasks": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/TaskDetails"
+            "$ref": "#/definitions/TaskOverviewWithStageAndActions"
           }
         }
       },
       "required": [
         "column_id",
         "name",
-        "total_tasks_count",
+        "total_tasks",
         "tasks"
       ]
     },
@@ -261,19 +411,19 @@
     "TaskCompleteDetails": {
       "type": "object",
       "properties": {
-        "total_tasks_count": {
+        "total_tasks": {
           "type": "integer",
           "format": "int64"
         },
         "tasks": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/TaskDetails"
+            "$ref": "#/definitions/TaskOverviewWithStageAndActions"
           }
         }
       },
       "required": [
-        "total_tasks_count",
+        "total_tasks",
         "tasks"
       ]
     }

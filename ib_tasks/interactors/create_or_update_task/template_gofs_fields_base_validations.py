@@ -74,9 +74,6 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
                UserNeedsFieldWritablePermission]:
         gof_write_permission_roles_dtos = \
             self.storage.get_write_permission_roles_for_given_gof_ids(gof_ids)
-        field_write_permission_roles_dtos = \
-            self.storage.get_write_permission_roles_for_given_field_ids(
-                field_ids)
         from ib_tasks.adapters.roles_service_adapter import \
             get_roles_service_adapter
         roles_service_adapter = get_roles_service_adapter()
@@ -90,6 +87,9 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
                 raise UserNeedsGoFWritablePermission(user_id,
                                                      gof_roles_dto.gof_id,
                                                      required_roles)
+        field_write_permission_roles_dtos = \
+            self.storage.get_write_permission_roles_for_given_field_ids(
+                field_ids)
         for field_roles_dto in field_write_permission_roles_dtos:
             required_roles = field_roles_dto.write_permission_roles
             user_permitted = self.any_in(user_roles, required_roles)
@@ -170,7 +170,7 @@ class TemplateGoFsFieldsBaseValidationsInteractor:
         valid_gof_ids = self.gof_storage.get_existing_gof_ids(gof_ids)
         invalid_gof_ids = sorted(list(set(gof_ids) - set(valid_gof_ids)))
         if invalid_gof_ids:
-            raise InvalidGoFIds(gof_ids)
+            raise InvalidGoFIds(invalid_gof_ids)
         return
 
     def _validate_for_invalid_field_ids(

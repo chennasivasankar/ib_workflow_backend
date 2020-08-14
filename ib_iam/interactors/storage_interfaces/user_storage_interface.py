@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
+from ib_iam.adapters.dtos import SearchQueryWithPaginationDTO
 from ib_iam.exceptions.custom_exceptions import InvalidUserId, InvalidUserIds
 from ib_iam.interactors.storage_interfaces.dtos import UserDTO, UserTeamDTO, \
     UserRoleDTO, UserCompanyDTO, CompanyIdAndNameDTO, TeamIdAndNameDTO, \
@@ -76,7 +77,7 @@ class UserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_total_count_of_users_for_query(self):
+    def get_total_count_of_users_for_query(self, name_search_query: str):
         pass
 
     @abstractmethod
@@ -122,8 +123,8 @@ class UserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def create_user(self, company_id: str, is_admin: bool, user_id: str,
-                    name: str):
+    def create_user(self, is_admin: bool, user_id: str, name: str,
+                    company_id: str = None):
         pass
 
     @abstractmethod
@@ -140,6 +141,26 @@ class UserStorageInterface(ABC):
 
     @abstractmethod
     def get_user_ids_who_are_not_admin(self) -> List[str]:
+        pass
+
+    @abstractmethod
+    def get_all_distinct_user_db_role_ids(self) -> List[str]:
+        pass
+
+    @abstractmethod
+    def get_user_ids_for_given_role_ids(
+            self, role_ids: List[str]) -> List[str]:
+        pass
+
+    @abstractmethod
+    def get_user_ids_based_on_given_query(
+            self, user_ids: List[str],
+            search_query_with_pagination_dto: SearchQueryWithPaginationDTO
+    ) -> List[str]:
+        pass
+
+    @abstractmethod
+    def get_db_role_ids(self, role_ids: List[str]) -> List[str]:
         pass
 
     @abstractmethod

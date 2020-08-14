@@ -4,21 +4,17 @@ from typing import List
 from ib_discussions.adapters.auth_service import UserProfileDTO
 from ib_discussions.interactors.presenter_interfaces.dtos import \
     DiscussionsWithUsersAndDiscussionCountDTO, \
-    CommentWithRepliesCountAndEditableDTO, CommentIdWithEditableStatusDTO
+    CommentWithRepliesCountAndEditableDTO, CommentIdWithEditableStatusDTO, \
+    DiscussionIdWithEditableStatusDTO
 from ib_discussions.interactors.storage_interfaces.dtos import CommentDTO, \
     DiscussionIdWithCommentsCountDTO, CommentIdWithMultiMediaDTO, \
     CommentIdWithMentionUserIdDTO
-from ib_iam.interactors.presenter_interfaces.dtos import \
-    DiscussionIdWithEditableStatusDTO
 
 
 class CreateDiscussionPresenterInterface(ABC):
-    @abstractmethod
-    def raise_exception_for_entity_id_not_found(self):
-        pass
 
     @abstractmethod
-    def raise_exception_for_invalid_entity_type_for_entity_id(self):
+    def response_for_empty_title(self):
         pass
 
     @abstractmethod
@@ -27,13 +23,6 @@ class CreateDiscussionPresenterInterface(ABC):
 
 
 class GetDiscussionsPresenterInterface(ABC):
-    @abstractmethod
-    def raise_exception_for_entity_id_not_found(self):
-        pass
-
-    @abstractmethod
-    def raise_exception_for_invalid_entity_type_for_entity_id(self):
-        pass
 
     @abstractmethod
     def raise_exception_for_invalid_offset(self):
@@ -195,4 +184,41 @@ class GetRepliesForCommentPresenterInterface(ABC):
 
 
 class UpdateCommentPresenterInterface(ABC):
-    pass
+
+    @abstractmethod
+    def prepare_response_for_comment_id_not_found(self):
+        pass
+
+    @abstractmethod
+    def response_for_invalid_user_ids(self, err):
+        pass
+
+    @abstractmethod
+    def prepare_response_for_comment(
+            self,
+            comment_with_replies_count_and_editable_dto: CommentWithRepliesCountAndEditableDTO,
+            user_profile_dtos: List[UserProfileDTO],
+            comment_id_with_multimedia_dtos: List[CommentIdWithMultiMediaDTO],
+            comment_id_with_mention_user_id_dtos: List[
+                CommentIdWithMentionUserIdDTO]
+    ):
+        pass
+
+    @abstractmethod
+    def response_for_user_cannot_edit_comment(self):
+        pass
+
+
+class DeleteCommentPresenterInterface(ABC):
+
+    @abstractmethod
+    def prepare_response_for_comment_id_not_found(self):
+        pass
+
+    @abstractmethod
+    def response_for_user_cannot_edit_comment(self):
+        pass
+
+    @abstractmethod
+    def prepare_response_for_delete_comment(self):
+        pass

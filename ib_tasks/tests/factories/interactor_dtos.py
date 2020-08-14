@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import timedelta, datetime
 
 import factory
 
@@ -6,6 +6,9 @@ from ib_tasks.adapters.dtos import UserDTO
 from ib_tasks.constants.enum import Searchable, Priority
 from ib_tasks.interactors.field_dtos import SearchableFieldTypeDTO, \
     SearchableFieldDetailDTO
+from ib_tasks.interactors.get_stage_searchable_possible_assignees_interactor \
+    import \
+    SearchQueryWithPaginationDTO
 from ib_tasks.interactors.get_tasks_to_relevant_search_query import \
     SearchQueryDTO
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
@@ -16,13 +19,22 @@ from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
     StageAssigneeDetailsDTO, UserStagesWithPaginationDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDetailsDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import \
+    FieldDetailsDTO, FieldWritePermissionRolesDTO
+from ib_tasks.interactors.storage_interfaces.gof_dtos import \
+    GoFWritePermissionRolesDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    CurrentStageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueDetailsDTO
 from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
-    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, CreateTaskLogDTO, TaskDueParametersDTO, \
-    SaveAndActOnTaskDTO, StageIdWithAssigneeIdDTO, UpdateTaskDTO, CreateTaskDTO
-from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory
-from ib_tasks.tests.factories.adapter_dtos import UserDetailsDTO
+    TaskDueParametersDTO, \
+    FieldValuesDTO, GetTaskDetailsDTO, StatusOperandStageDTO, \
+    CreateTaskLogDTO, \
+    CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeIdDTO, \
+    SaveAndActOnTaskDTO, TaskCurrentStageDetailsDTO, \
+    UpdateTaskWithTaskDisplayIdDTO
+from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory, \
+    UserDetailsDTO
 
 
 class GetTaskDetailsDTOFactory(factory.Factory):
@@ -84,6 +96,13 @@ class TaskTemplateStageActionDTOFactory(factory.Factory):
     action_type = "action_type"
     transition_template_id = factory.Sequence(
         lambda n: "transition_template_id_%d" % (n + 1))
+
+
+class TaskStageDTOFactory(factory.Factory):
+    stage_id = factory.Sequence(lambda n: 'stage_%d' % (n + 1))
+    db_stage_id = factory.Sequence(lambda n: 'db_stage_%d' % (n + 1))
+    display_name = factory.Sequence(lambda n: 'display_name_%d' % (n + 1))
+    stage_colour = factory.Sequence(lambda n: 'stage_color_%d' % (n + 1))
 
 
 class FieldDisplayDTOFactory(factory.Factory):
@@ -321,7 +340,27 @@ class UpdateTaskDTOFactory(factory.Factory):
     class Meta:
         model = UpdateTaskDTO
 
-    task_id = factory.Sequence(lambda c: "task_{}".format(c))
+    task_id = factory.Sequence(lambda c: c)
+    created_by_id = "123e4567-e89b-12d3-a456-426614174000"
+    title = factory.Sequence(lambda c: "title_{}".format(c))
+    description = factory.Sequence(lambda c: "description{}".format(c))
+    start_date = datetime.today().date()
+    due_date = datetime.today().date() + timedelta(days=2)
+    due_time = "12:30:20"
+    priority = Priority.HIGH.value
+    stage_assignee = factory.SubFactory(StageIdWithAssigneeIdDTOFactory)
+
+    @factory.lazy_attribute
+    def gof_fields_dtos(self):
+        return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]
+
+
+class UpdateTaskWithTaskDisplayIdDTOFactory(UpdateTaskDTOFactory):
+    class Meta:
+        model = UpdateTaskWithTaskDisplayIdDTO
+
+    task_display_id = factory.Sequence(
+        lambda c: "task_display_id_{}".format(c))
     created_by_id = "123e4567-e89b-12d3-a456-426614174000"
     title = factory.Sequence(lambda c: "title_{}".format(c))
     description = factory.Sequence(lambda c: "description{}".format(c))
@@ -354,3 +393,50 @@ class SaveAndActOnTaskDTOFactory(factory.Factory):
     @factory.lazy_attribute
     def gof_fields_dtos(self):
         return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]
+
+
+class SearchDTOFactory(factory.Factory):
+    class Meta:
+        model = SearchQueryWithPaginationDTO
+
+    limit = factory.Sequence(lambda number: number)
+    offset = factory.Sequence(lambda number: number)
+    search_query = factory.Sequence(lambda number: 'user_{}'.format(number))
+
+
+class CurrentStageDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = CurrentStageDetailsDTO
+
+    stage_id = factory.Sequence(lambda c: "stage_{}".format(c))
+    stage_display_name = factory.Sequence(
+        lambda c: "stage_display_name_{}".format(c))
+
+
+class TaskCurrentStageDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskCurrentStageDetailsDTO
+
+    task_display_id = factory.Sequence(lambda c: "task_display_{}".format(c))
+    user_has_permission = True
+
+    @factory.lazy_attribute
+    def stage_details_dtos(self):
+        return [CurrentStageDetailsDTOFactory(),
+                CurrentStageDetailsDTOFactory()]
+
+
+class GoFWritePermissionRolesDTOFactory(factory.Factory):
+    class Meta:
+        model = GoFWritePermissionRolesDTO
+
+    gof_id = factory.sequence(lambda counter: "gof_{}".format(counter))
+    write_permission_roles = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC']
+
+
+class FieldWritePermissionRolesDTOFactory(factory.Factory):
+    class Meta:
+        model = FieldWritePermissionRolesDTO
+
+    field_id = factory.sequence(lambda counter: "field_{}".format(counter))
+    write_permission_roles = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC']

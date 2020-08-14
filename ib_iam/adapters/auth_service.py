@@ -66,9 +66,14 @@ class AuthService:
     def _raise_exception_for_account_id_deactivated(error_type: str):
         from ib_users.exceptions.custom_exception_constants import \
             USER_ACCOUNT_IS_DEACTIVATED
+        from ib_users.exceptions.custom_exception_constants import \
+            NOT_REGISTERED_USER
+        from ib_iam.exceptions.custom_exceptions import \
+            UserAccountDoesNotExist
+
         if error_type == USER_ACCOUNT_IS_DEACTIVATED.code:
-            from ib_iam.exceptions.custom_exceptions import \
-                UserAccountDoesNotExist
+            raise UserAccountDoesNotExist
+        if error_type == NOT_REGISTERED_USER.code:
             raise UserAccountDoesNotExist
 
     @staticmethod

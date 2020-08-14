@@ -3,12 +3,16 @@ from typing import List
 from ib_tasks.exceptions.stage_custom_exceptions import \
     DuplicateStageIds, \
     StageIdsWithInvalidPermissionForAssignee, InvalidDbStageIdsListException
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException
+from ib_tasks.exceptions.task_custom_exceptions import \
+    InvalidTaskIdException, \
+    InvalidTaskDisplayId
+from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
+    GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.presenter_interfaces \
     .update_task_stage_assignees_presenter_interface import \
     UpdateTaskStageAssigneesPresenterInterface
 from ib_tasks.interactors.stages_dtos import TaskIdWithStageAssigneesDTO, \
-    TaskIdWithStageAssigneeDTO
+    TaskIdWithStageAssigneeDTO, TaskDisplayIdWithStageAssigneesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
     StageIdWithRoleIdsAndAssigneeIdDTO, TaskIdWithDbStageIdsDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
@@ -19,7 +23,7 @@ from ib_tasks.interactors.user_role_validation_interactor import \
     UserRoleValidationInteractor
 
 
-class UpdateTaskStageAssigneesInteractor:
+class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
     def __init__(self, stage_storage: StageStorageInterface,
                  task_storage: TaskStorageInterface):
         self.stage_storage = stage_storage
@@ -27,10 +31,21 @@ class UpdateTaskStageAssigneesInteractor:
 
     def update_task_stage_assignees_wrapper(
             self,
-            task_id_with_stage_assignees_dto: TaskIdWithStageAssigneesDTO,
-            presenter: UpdateTaskStageAssigneesPresenterInterface):
+            task_display_id_with_stage_assignees_dto:
+            TaskDisplayIdWithStageAssigneesDTO,
+            presenter: UpdateTaskStageAssigneesPresenterInterface
+    ):
         try:
+            task_id = self.get_task_id_for_task_display_id(
+                task_display_id_with_stage_assignees_dto.task_display_id)
+            task_id_with_stage_assignees_dto = TaskIdWithStageAssigneesDTO(
+                task_id=task_id,
+                stage_assignees=task_display_id_with_stage_assignees_dto
+                    .stage_assignees
+            )
             self.update_task_stage_assignees(task_id_with_stage_assignees_dto)
+        except InvalidTaskDisplayId as err:
+            return presenter.raise_invalid_task_display_id(err)
         except InvalidTaskIdException as exception:
             return presenter.raise_invalid_task_id_exception(
                 task_id=exception.task_id)

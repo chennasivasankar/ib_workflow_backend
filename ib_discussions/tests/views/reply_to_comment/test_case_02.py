@@ -21,13 +21,13 @@ class TestCase02ReplyToCommentAPITestCase(TestUtils):
             prepare_validate_user_ids_mock
         prepare_validate_user_ids_mock(mocker=mocker)
 
-        from ib_discussions.constants.enum import MultiMediaFormatEnum
+        from ib_discussions.constants.enum import MultimediaFormat
         multimedia = [{
-            "format_type": MultiMediaFormatEnum.IMAGE.value,
+            "format_type": MultimediaFormat.IMAGE.value,
             "url": "https://picsum.photos/200",
             "thumbnail_url": "https://picsum.photos/200"
         }, {
-            "format_type": MultiMediaFormatEnum.VIDEO.value,
+            "format_type": MultimediaFormat.VIDEO.value,
             "url": "https://picsum.photos/200",
             "thumbnail_url": "https://picsum.photos/200"
         }]
@@ -65,13 +65,13 @@ class TestCase02ReplyToCommentAPITestCase(TestUtils):
             self, snapshot, prepare_invalid_user_ids_mock_setup
     ):
         comment_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
-        from ib_discussions.constants.enum import MultiMediaFormatEnum
+        from ib_discussions.constants.enum import MultimediaFormat
         multimedia = [{
-            "format_type": MultiMediaFormatEnum.IMAGE.value,
+            "format_type": MultimediaFormat.IMAGE.value,
             "url": "https://picsum.photos/200",
             "thumbnail_url": "https://picsum.photos/200"
         }, {
-            "format_type": MultiMediaFormatEnum.VIDEO.value,
+            "format_type": MultimediaFormat.VIDEO.value,
             "url": "https://picsum.photos/200",
             "thumbnail_url": "https://picsum.photos/200"
         }]

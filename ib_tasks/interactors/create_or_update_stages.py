@@ -1,5 +1,5 @@
 import json
-from typing import List
+from typing import List, Optional
 
 from ib_boards.exceptions.custom_exceptions import InvalidTemplateFields
 from ib_tasks.constants.constants import ALL_ROLES_ID
@@ -12,7 +12,8 @@ from ib_tasks.exceptions.stage_custom_exceptions import (
     InvalidStagesDisplayName)
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidStagesTaskTemplateId, InvalidTaskTemplateIds
-from ib_tasks.interactors.stages_dtos import StageLogicAttributes, StageDTO
+from ib_tasks.interactors.get_stage_display_logic_interactor import StageDisplayLogicInteractor
+from ib_tasks.interactors.stages_dtos import StageDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
@@ -21,6 +22,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface \
     import \
     TaskTemplateStorageInterface
+from ib_tasks.interactors.task_dtos import StatusOperandStageDTO
 
 
 class CreateOrUpdateStagesInteractor:
@@ -45,7 +47,7 @@ class CreateOrUpdateStagesInteractor:
         existing_stage_ids = self._get_existing_stage_ids(stage_ids)
         self._validate_values_for_stages(stages_details)
 
-        # self._validate_stage_display_logic(stages_details)
+        self._validate_stage_display_logic(stages_details)
 
         task_fields_dtos = self.task_storage.get_field_ids_for_given_task_template_ids(
             task_template_ids)
@@ -70,8 +72,8 @@ class CreateOrUpdateStagesInteractor:
 
         invalid_template_ids = []
         for stage in stages_dict:
-            kanban, list_value, task_template_id, template_id = self._get_required_constants(
-                stage, stages_dict)
+            kanban, list_value, task_template_id, template_id = self.\
+                _get_required_constants(stage, stages_dict)
             if not kanban.issubset(set(tasks_dict[task_template_id])):
                 invalid_template_ids.append(template_id.task_template_id)
             if not list_value.issubset(set(tasks_dict[task_template_id])):
@@ -139,43 +141,36 @@ class CreateOrUpdateStagesInteractor:
             self.stage_storage.create_stages(
                 create_stages_details)
 
-    @staticmethod
-    def _validate_stage_display_logic(stages_details):
-        list_of_logic_attributes = []
-        invalid_stage_display_logic_stages = [
-            stage.stage_id for stage in stages_details
-            if stage.stage_display_logic == ""
+    def _validate_stage_display_logic(self, stages_details):
+        list_of_stage_display_logics = [
+            stage.stage_display_logic for stage in stages_details
+            if not stage.stage_display_logic == ""
         ]
-        if invalid_stage_display_logic_stages:
-            raise InvalidStageDisplayLogic(invalid_stage_display_logic_stages)
 
-        # TODO: validate stage display logic
-        # for stage in stages_details:
-        #     logic_interactor = StageDisplayLogicInteractor()
-        #     stage_logic_attributes_dto = logic_interactor.get_stage_display_logic_attributes(
-        #         stage.stage_display_logic
-        #     )
-        #     list_of_logic_attributes.append(stage_logic_attributes_dto)
-        #
-        # self._validate_stage_display_logic_attributes(list_of_logic_attributes)
+        logic_interactor = StageDisplayLogicInteractor()
+        stage_logic_attributes_dto = logic_interactor.get_stage_display_logic_condition(
+            list_of_stage_display_logics
+        )
+
+        self._validate_stage_display_logic_attributes(stage_logic_attributes_dto)
 
     def _validate_stage_display_logic_attributes(
-            self, list_of_logic_attributes: List[StageLogicAttributes]):
+            self, list_of_logic_attributes: List[StatusOperandStageDTO]):
 
         invalid_stage_display_logic_stages = []
 
-        list_of_stage_ids = [attribute.stage_id
-                             for attribute in list_of_logic_attributes]
+        list_of_status_ids = [attribute.variable
+                              for attribute in list_of_logic_attributes]
 
-        valid_stage_ids = self.stage_storage.get_existing_stage_ids(
-            list(set(list_of_stage_ids)))
+        valid_status_ids = self.stage_storage.get_existing_status_ids(
+            list(set(list_of_status_ids)))
 
         for attribute in list_of_logic_attributes:
-            if attribute.stage_id not in valid_stage_ids:
-                invalid_stage_display_logic_stages.append(attribute.stage_id)
+            if attribute.variable not in valid_status_ids and attribute.variable != "":
+                invalid_stage_display_logic_stages.append(attribute.stage)
 
         if invalid_stage_display_logic_stages:
-            raise InvalidStageDisplayLogic(invalid_stage_display_logic_stages)
+            raise InvalidStageDisplayLogic(list(set(invalid_stage_display_logic_stages)))
         return
 
     @staticmethod
@@ -195,7 +190,8 @@ class CreateOrUpdateStagesInteractor:
         if duplicate_stage_ids:
             raise DuplicateStageIds(duplicate_stage_ids)
 
-    def _get_existing_stage_ids(self, stage_ids: List[str]):
+    def _get_existing_stage_ids(self, stage_ids: List[str]) -> \
+            List[Optional[str]]:
         existing_stage_ids = self.stage_storage.get_existing_stage_ids(
             stage_ids)
         return existing_stage_ids
@@ -231,14 +227,15 @@ class CreateOrUpdateStagesInteractor:
         return
 
     @staticmethod
-    def _get_stage_ids(stages_details: List[StageDTO]):
+    def _get_stage_ids(stages_details: List[StageDTO]) -> List[str]:
         stage_ids = []
         for stage_information in stages_details:
             stage_ids.append(stage_information.stage_id)
         return stage_ids
 
     @staticmethod
-    def _get_task_stages_dto(stages_details: List[StageDTO]):
+    def _get_task_stages_dto(stages_details: List[StageDTO]) -> \
+            List[TaskStagesDTO]:
         task_stages_dto = []
         for stage_information in stages_details:
             task_stages_dto.append(TaskStagesDTO(

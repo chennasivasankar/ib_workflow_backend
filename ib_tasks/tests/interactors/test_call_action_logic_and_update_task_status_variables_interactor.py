@@ -178,6 +178,60 @@ class TestUpdateTaskStatusVariablesInteractor:
             .assert_called_once_with(task_id=task_id)
 
     @staticmethod
+    def test_assert_called_with_eliminates_transition_gofs(mocker, task_gof_dtos):
+        # Arrange
+        mock_task_dict = {'gof2': [{'field2': 'field_response2'},
+                                   {'field3': 'field_response3'}],
+                          'status_variables': {'variable_1': 'stage_1'}}
+        action_id = 1
+        task_id = 1
+        storage = create_autospec(StorageInterface)
+        GOFMultipleStatusDTOFactory.reset_sequence()
+        single_gof = GOFMultipleStatusDTOFactory(multiple_status=False)
+        TaskGoFFieldDTOFactory.reset_sequence(1)
+        gof_field_dtos = TaskGoFFieldDTOFactory.create_batch(size=3)
+        multiple_gof = GOFMultipleStatusDTOFactory()
+        storage.get_enable_multiple_gofs_field_to_gof_ids.return_value = [
+            multiple_gof
+        ]
+        path_name = "ib_tasks.populate.dynamic_logic_test_file.stage_1_action_name_1"
+        mock_obj = mocker.patch(path_name)
+
+        storage.get_path_name_to_action.return_value = path_name
+        StatusVariableDTOFactory.reset_sequence()
+        statuses = [StatusVariableDTOFactory()]
+        storage.get_status_variables_to_task.return_value = statuses
+        task_dto = TaskDetailsDTOFactory(
+            task_gof_dtos=task_gof_dtos,
+            task_gof_field_dtos=gof_field_dtos
+        )
+        interactor = CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor(
+            storage=storage, action_id=action_id, task_id=task_id
+        )
+
+        # Act
+        interactor \
+            .call_action_logic_function_and_update_task_status_variables(
+            task_dto=task_dto
+        )
+
+        # Assert
+        storage.get_path_name_to_action.assert_called_once_with(
+            action_id=action_id
+        )
+        mock_obj.assert_called_once_with(
+            task_dict=mock_task_dict, global_constants={},
+            stage_value_dict={}
+        )
+        storage.update_status_variables_to_task.assert_called_once_with(
+            task_id=1, status_variables_dto=statuses
+        )
+        storage.get_global_constants_to_task \
+            .assert_called_once_with(task_id=task_id)
+        storage.get_stage_dtos_to_task \
+            .assert_called_once_with(task_id=task_id)
+
+    @staticmethod
     def test_given_all_multiple_gofs(mocker, task_gof_dtos):
         # Arrange
         mock_task_dict = {'gof2': [{'field2': 'field_response2'},

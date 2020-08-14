@@ -9,7 +9,7 @@ class UserIdWithRoleIdsDTO:
 
 
 @dataclass
-class UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO:
+class AddUserDetailsDTO:
     name: str
     email: str
     team_ids: List[str]

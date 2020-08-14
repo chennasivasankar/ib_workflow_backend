@@ -6,7 +6,7 @@ RESPONSE_200_JSON = """
     {
         "id": "string",
         "name": "string",
-        "profile_pic": "string"
+        "profile_pic_url": "string"
     }
 ]
 """

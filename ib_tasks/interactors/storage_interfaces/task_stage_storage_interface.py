@@ -1,9 +1,19 @@
 import abc
+from dataclasses import dataclass
 from typing import List
 
-from ib_tasks.interactors.stages_dtos import TaskStageHistoryDTO, StageMinimalDTO
+from ib_tasks.interactors.stages_dtos import TaskStageHistoryDTO, \
+    StageMinimalDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
-    TaskStageAssigneeDTO, CurrentStageDetailsDTO, AssigneeCurrentTasksCountDTO
+    TaskStageAssigneeDTO, AssigneeCurrentTasksCountDTO, CurrentStageDetailsDTO
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
+
+
+@dataclass
+class TaskStageAssigneeIdDTO:
+    task_id: int
+    stage_id: str
+    assignee_id: str
 
 
 class TaskStageStorageInterface(abc.ABC):
@@ -40,13 +50,10 @@ class TaskStageStorageInterface(abc.ABC):
     ) -> bool:
         pass
 
-
-
-
     @abc.abstractmethod
     def get_count_of_tasks_assigned_for_each_user(
             self, db_stage_ids: List[int],
-            task_ids: List[int], user_ids: List[str])-> List[
+            task_ids: List[int]) -> List[
         AssigneeCurrentTasksCountDTO]:
         pass
 
@@ -56,4 +63,9 @@ class TaskStageStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_stage_details(self, stage_ids: List[int]) -> List[StageMinimalDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_stage_assignee_id_dtos(
+            self, task_stage_dtos: List[GetTaskDetailsDTO]) -> List[TaskStageAssigneeIdDTO]:
         pass

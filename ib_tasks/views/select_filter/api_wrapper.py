@@ -20,8 +20,12 @@ def api_wrapper(*args, **kwargs):
     from ib_tasks.presenters.filter_presenter_implementation \
         import FilterPresenterImplementation
     presenter = FilterPresenterImplementation()
+    from ib_tasks.storages.fields_storage_implementation import \
+        FieldsStorageImplementation
     interactor = FilterInteractor(
-        filter_storage=storage, presenter=presenter
+        filter_storage=storage,
+        presenter=presenter,
+        field_storage=FieldsStorageImplementation()
     )
     response = interactor.update_filter_select_status_wrapper(
         user_id=user_id, filter_id=filter_id, is_selected=action

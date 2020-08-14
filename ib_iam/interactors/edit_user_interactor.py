@@ -7,28 +7,31 @@ from ib_iam.exceptions.custom_exceptions import (
     InvalidNameLength
 )
 from ib_iam.interactors.dtos.dtos import \
-    UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO
+    AddUserDetailsDTO
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.edit_user_presenter_interface \
     import EditUserPresenterInterface
+from ib_iam.interactors.storage_interfaces.elastic_storage_interface \
+    import ElasticSearchStorageInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface \
     import UserStorageInterface
 
 
 class EditUserInteractor(ValidationMixin):
-    def __init__(self, user_storage: UserStorageInterface):
+    def __init__(self, user_storage: UserStorageInterface,
+                 elastic_storage: ElasticSearchStorageInterface):
+        self.elastic_storage = elastic_storage
         self.user_storage = user_storage
 
     def edit_user_wrapper(
             self, admin_user_id: str, user_id: str,
-            user_details_with_team_role_and_company_ids_dto:
-            UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO,
+            add_user_details_dto: AddUserDetailsDTO,
             presenter: EditUserPresenterInterface):
         try:
-            self.edit_user(admin_user_id=admin_user_id, user_id=user_id,
-                           user_details_with_team_role_and_company_ids_dto \
-                               =user_details_with_team_role_and_company_ids_dto
-                           )
+            self.edit_user(
+                admin_user_id=admin_user_id, user_id=user_id,
+                add_user_details_dto=add_user_details_dto
+            )
             response = presenter.edit_user_success_response()
         except UserIsNotAdmin:
             response = presenter.raise_user_is_not_admin_exception()
@@ -52,12 +55,12 @@ class EditUserInteractor(ValidationMixin):
 
     def edit_user(
             self, admin_user_id: str, user_id: str,
-            user_details_with_team_role_and_company_ids_dto):
-        name = user_details_with_team_role_and_company_ids_dto.name
-        team_ids = user_details_with_team_role_and_company_ids_dto.team_ids
-        role_ids = user_details_with_team_role_and_company_ids_dto.role_ids
-        company_id = user_details_with_team_role_and_company_ids_dto.company_id
-        email = user_details_with_team_role_and_company_ids_dto.email
+            add_user_details_dto):
+        name = add_user_details_dto.name
+        team_ids = add_user_details_dto.team_ids
+        role_ids = add_user_details_dto.role_ids
+        company_id = add_user_details_dto.company_id
+        email = add_user_details_dto.email
 
         self._validate_is_user_admin(user_id=admin_user_id)
         self._is_user_exist(user_id=user_id)
@@ -71,7 +74,7 @@ class EditUserInteractor(ValidationMixin):
             user_id=user_id, company_id=company_id, role_ids=role_ids,
             team_ids=team_ids, name=name
         )
-        ## TODO user_id  and name elastic serach
+        self.elastic_storage.update_elastic_user(user_id=user_id, name=name)
 
     @staticmethod
     def _validate_email_and_throw_exception(email: str):

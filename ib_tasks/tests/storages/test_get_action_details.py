@@ -62,43 +62,26 @@ class TestGetActionDetails:
                                 populate_data,
                                 snapshot):
         # Arrange
-        stage_ids = ["stage_id_0", "stage_id_1", "stage_id_2"]
-        user_roles = ["role_1", "role_2", "role_3", "role_4"]
+        action_ids = [1, 2, 3, 4]
         storage = ActionsStorageImplementation()
 
         # Act
-        response = storage.get_actions_details(stage_ids=stage_ids,
-                                               user_roles=user_roles)
+        response = storage.get_actions_details(action_ids=action_ids)
 
         # Assert
         snapshot.assert_match(response, "response")
 
-    def test_given_stage_ids_has_no_permitted_actions(self,
+    def test_get_permitted_action_ids_given_stage_ids(self,
                                                       populate_data,
                                                       snapshot):
         # Arrange
-        stage_ids = ["stage_id_1", "stage_id_2", "stage_id_3"]
-        user_roles = ["role_10", "role_12", "role_13", "role_14"]
-        storage = ActionsStorageImplementation()
-
-        # Act
-        response = storage.get_actions_details(stage_ids=stage_ids,
-                                               user_roles=user_roles)
-
-        # Assert
-        snapshot.assert_match(response, "response")
-
-    def test_get_action_details_when_action_has_all_roles_permission(
-            self, snapshot,
-            populate_data_with_all_roles):
-        # Arrange
         stage_ids = ["stage_id_0", "stage_id_1", "stage_id_2"]
         user_roles = ["role_1", "role_2", "role_3", "role_4"]
         storage = ActionsStorageImplementation()
 
         # Act
-        response = storage.get_actions_details(stage_ids=stage_ids,
-                                               user_roles=user_roles)
+        response = storage.get_permitted_action_ids_given_stage_ids(
+            stage_ids=stage_ids, user_roles=user_roles)
 
         # Assert
         snapshot.assert_match(response, "response")

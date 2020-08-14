@@ -1,8 +1,9 @@
-import dataclasses
 from typing import List
 
 from ib_tasks.adapters.dtos import UserDetailsDTO
 from ib_tasks.interactors.field_dtos import SearchableFieldDetailDTO
+from ib_tasks.interactors.get_stage_searchable_possible_assignees_interactor \
+    import SearchQueryWithPaginationDTO
 
 
 class AuthService:
@@ -51,7 +52,18 @@ class AuthService:
             user_profile_details_dtos)
         return user_details_dtos
 
+    def get_user_details_for_the_given_role_ids_based_on_query(
+            self, role_ids: List[str],
+            search_query_with_pagination_dto:
+            SearchQueryWithPaginationDTO) -> List[UserDetailsDTO]:
+        user_profile_details_dtos = self.interface.\
+            get_user_details_for_the_given_role_ids_based_on_query(
+                role_ids=role_ids, search_query_with_pagination_dto=
+                search_query_with_pagination_dto)
 
+        user_details_dtos = self._get_user_details_dtos(
+            user_profile_details_dtos)
+        return user_details_dtos
 
     @staticmethod
     def _get_user_details_dtos(user_profile_details_dtos):
