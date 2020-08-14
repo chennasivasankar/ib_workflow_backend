@@ -4,18 +4,11 @@ from typing import Optional, List
 
 
 @dataclass
-class UserProfileDTO:
-    user_id: str
-    name: str
-    email: str
-    profile_pic_url: str
-
-
-@dataclass
 class UserDTO:
     user_id: str
     is_admin: bool
     company_id: Optional[str] = None
+    cover_page_url: Optional[str] = None
 
 
 @dataclass
