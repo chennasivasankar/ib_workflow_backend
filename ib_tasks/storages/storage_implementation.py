@@ -28,7 +28,7 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import (
     StatusVariableDTO, StageActionNamesDTO
 )
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, TaskDueParametersDTO
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, TaskDueParametersDTO, TaskDelayParametersDTO
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
     ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, GlobalConstant, \
     StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskLog, TaskTemplateStatusVariable
@@ -136,14 +136,14 @@ class StagesStorageImplementation(StageStorageInterface):
         task_objs = Task.objects.filter(id__in=task_ids).values(
             'id', 'template_id')
         template_stage_ids_list = []
-        task_template_dict = {}
-        for item in task_objs:
-            task_template_dict[item['id']] = item['template_id']
-        for task in task_dtos:
+        task_stages_dict = {}
+        for item in task_dtos:
+            task_stages_dict[item.task_id] = item.stage_id
+        for task in task_objs:
             template_stage_ids_list.append(
-                TaskTemplateStageDTO(task_id=task.task_id,
-                                     task_template_id=task_template_dict[task.task_id],
-                                     stage_id=task.stage_id))
+                TaskTemplateStageDTO(task_id=task['id'],
+                                     task_template_id=task['template_id'],
+                                     stage_id=task_stages_dict[task['id']]))
         return template_stage_ids_list
 
     def update_stages(self,
@@ -647,7 +647,8 @@ class StorageImplementation(StorageInterface):
 
     def get_task_due_details(self, task_id: int) -> \
             List[TaskDueMissingDTO]:
-        task_due_objs = UserTaskDelayReason.objects.filter(task_id=task_id)
+        task_due_objs = (UserTaskDelayReason.objects.filter(task_id=task_id)
+                         .values('due_datetime', 'count', 'reason', 'user_id', 'task__task_display_id'))
 
         task_due_details_dtos = self._convert_task_due_details_objs_to_dtos(
             task_due_objs)
@@ -659,16 +660,16 @@ class StorageImplementation(StorageInterface):
         for task in task_due_objs:
             task_due_details_dtos.append(
                 TaskDueMissingDTO(
-                    task_id=task.task_id,
-                    due_date_time=task.due_datetime,
-                    due_missed_count=task.count,
-                    reason=task.reason,
-                    user_id=task.user_id
+                    task_id=task['task__task_display_id'],
+                    due_date_time=task['due_datetime'],
+                    due_missed_count=task['count'],
+                    reason=task['reason'],
+                    user_id=task['user_id']
                 )
             )
         return task_due_details_dtos
 
-    def add_due_delay_details(self, due_details: TaskDueParametersDTO):
+    def add_due_delay_details(self, due_details: TaskDelayParametersDTO):
         user_id = due_details.user_id
         task_id = due_details.task_id
         reason_id = due_details.reason_id

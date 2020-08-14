@@ -24,7 +24,7 @@ class TaskDueDetailsPresenterImplementation(TaskDueDetailsPresenterInterface,
             "http_status_code": 404,
             "res_status": INVALID_TASK_DISPLAY_ID[1]
         }
-        return self.prepare_400_bad_request_response(data)
+        return self.prepare_404_not_found_response(data)
 
     def response_for_user_is_not_assignee_for_task(self):
         response_message = USER_IS_NOT_ASSIGNED_TO_TASK[0]
