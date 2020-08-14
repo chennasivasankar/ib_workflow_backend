@@ -61,5 +61,5 @@ test_data_for_integration.ipynb
 .gitignore
 env_*.sh
 
-
+ib_tasks/migrations/
 venv/
