@@ -157,6 +157,7 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
             task_current_stages_data['stages'].append(stage)
         response_dict["task_current_stages_details"] = task_current_stages_data
         response_object = self.prepare_200_success_response(response_dict)
+        content = response_object.content
         return response_object
 
     def _get_current_board_details(
@@ -378,10 +379,10 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
             task_stages_dict[task_stage_dto.stage_id] = task_stage_dto
 
         assignees_dict = {}
-        task_stages_dict = {}
+        task_stages_dtos_dict = {}
         for column_stage_dto in column_stage_dtos:
             column_id = column_stage_dto.column_id
             stage_id = column_stage_dto.stage_id
             assignees_dict[column_id] = assignee_dtos_dict[stage_id]
-            task_stages_dict[column_id] = task_stages_dict[stage_id]
-        return assignees_dict, task_stages_dict
+            task_stages_dtos_dict[column_id] = task_stages_dict[stage_id]
+        return assignees_dict, task_stages_dtos_dict
