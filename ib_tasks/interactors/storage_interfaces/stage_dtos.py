@@ -117,7 +117,7 @@ class TaskIdWithStageDetailsDTO:
 @dataclass
 class TaskWithCompleteStageDetailsDTO:
     task_with_stage_details_dto: TaskIdWithStageDetailsDTO
-    stage_assignee_dto: Optional[StageAssigneeDetailsDTO]
+    stage_assignee_dto: List[StageAssigneeDetailsDTO]
 
 
 @dataclass
