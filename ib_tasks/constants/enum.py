@@ -73,7 +73,7 @@ class ActionTypes(enum.Enum):
     NO_VALIDATIONS = "NO_VALIDATIONS"
 
 
-DelayReasons = [
+DELAYREASONS = [
     {
         "id": 1,
         "reason": "wrong estimation of time"
