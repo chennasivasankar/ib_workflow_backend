@@ -134,6 +134,47 @@ class TestSaveAndActOnATaskInteractor:
         invalid_action_id = error_object.action_id
         assert invalid_action_id == given_action_id
 
+    def test_with_invalid_task_display_id(
+            self, task_storage_mock, gof_storage_mock,
+            create_task_storage_mock,
+            storage_mock, field_storage_mock, stage_storage_mock,
+            elastic_storage_mock,
+            action_storage_mock, task_stage_storage_mock,
+            presenter_mock, mock_object, update_task_mock
+    ):
+        # Arrange
+        given_task_display_id = "task_1"
+        task_dto = SaveAndActOnTaskWithTaskDisplayIdDTOFactory(
+            task_display_id=given_task_display_id)
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            InvalidTaskDisplayId
+        task_storage_mock.check_is_valid_task_display_id.return_value = False
+        update_task_mock.side_effect = InvalidTaskDisplayId(
+            given_task_display_id)
+        interactor = SaveAndActOnATaskInteractor(
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            create_task_storage=create_task_storage_mock, storage=storage_mock,
+            field_storage=field_storage_mock, stage_storage=stage_storage_mock,
+            action_storage=action_storage_mock,
+            elastic_storage=elastic_storage_mock,
+            task_stage_storage=task_stage_storage_mock)
+        presenter_mock.raise_invalid_task_display_id.return_value = mock_object
+
+        # Act
+        response = interactor.save_and_act_on_task_wrapper(presenter_mock,
+                                                           task_dto)
+
+        # Assert
+        assert response == mock_object
+        task_storage_mock.check_is_valid_task_display_id\
+            .assert_called_once_with(
+            task_display_id=given_task_display_id)
+        presenter_mock.raise_invalid_task_display_id.assert_called_once()
+        call_args = presenter_mock.raise_invalid_task_display_id.call_args
+        error_object = call_args[0][0]
+        invalid_task_display_id = error_object.task_display_id
+        assert invalid_task_display_id == given_task_display_id
+
     def test_with_invalid_task_id(
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
