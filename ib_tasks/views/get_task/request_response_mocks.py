@@ -55,3 +55,11 @@ RESPONSE_404_JSON = """
 }
 """
 
+RESPONSE_403_JSON = """
+{
+    "response": "string",
+    "http_status_code": 1,
+    "res_status": "USER_PERMISSION_DENIED"
+}
+"""
+

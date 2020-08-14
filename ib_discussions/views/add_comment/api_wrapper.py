@@ -18,15 +18,24 @@ def api_wrapper(*args, **kwargs):
     multimedia_list = request_data["multimedia"]
 
     from ib_discussions.tests.factories.interactor_dtos import \
-        MultiMediaDTOFactory
+        MultimediaDTOFactory
     multimedia_dtos = [
-        MultiMediaDTOFactory(
+        MultimediaDTOFactory(
             format_type=multimedia_dict["format_type"],
             url=multimedia_dict["url"],
             thumbnail_url=multimedia_dict["thumbnail_url"]
         )
         for multimedia_dict in multimedia_list
     ]
+
+    from ib_discussions.interactors.dtos.dtos import CreateCompleteCommentDTO
+    create_complete_comment_dto = CreateCompleteCommentDTO(
+        discussion_id=discussion_id,
+        user_id=user_id,
+        comment_content=comment_content,
+        mention_user_ids=mention_user_ids,
+        multimedia_dtos=multimedia_dtos
+    )
 
     from ib_discussions.storages.comment_storage_implementaion import \
         CommentStorageImplementation
@@ -41,8 +50,7 @@ def api_wrapper(*args, **kwargs):
     interactor = CreateCommentInteractor(storage=comment_storage)
 
     response = interactor.create_comment_for_discussion_wrapper(
-        presenter=presenter, user_id=user_id, discussion_id=discussion_id,
-        comment_content=comment_content, mention_user_ids=mention_user_ids,
-        multimedia_dtos=multimedia_dtos
+        presenter=presenter,
+        create_complete_comment_dto=create_complete_comment_dto
     )
     return response

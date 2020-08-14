@@ -56,6 +56,54 @@ snapshots['TestCase03GetTaskAPITestCase.test_case body'] = {
     ],
     'priority': 'HIGH',
     'stages_with_actions': [
+        {
+            'actions': [
+            ],
+            'assignee': {
+                'assignee_id': '123e4567-e89b-12d3-a456-426614174001',
+                'name': 'name_0',
+                'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM'
+            },
+            'stage_color': 'orange',
+            'stage_display_name': 'name_0',
+            'stage_id': 1,
+            'task_stage_id': 1
+        },
+        {
+            'actions': [
+            ],
+            'assignee': {
+                'assignee_id': '123e4567-e89b-12d3-a456-426614174002',
+                'name': 'name_1',
+                'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM'
+            },
+            'stage_color': 'green',
+            'stage_display_name': 'name_1',
+            'stage_id': 2,
+            'task_stage_id': 2
+        },
+        {
+            'actions': [
+            ],
+            'assignee': {
+                'assignee_id': '123e4567-e89b-12d3-a456-426614174003',
+                'name': 'name_2',
+                'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM'
+            },
+            'stage_color': 'blue',
+            'stage_display_name': 'name_2',
+            'stage_id': 3,
+            'task_stage_id': 3
+        },
+        {
+            'actions': [
+            ],
+            'assignee': None,
+            'stage_color': 'orange',
+            'stage_display_name': 'name_3',
+            'stage_id': 4,
+            'task_stage_id': 4
+        }
     ],
     'start_date': '2020-10-12 04:40:00',
     'task_id': 'IBWF-1',

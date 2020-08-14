@@ -3,8 +3,7 @@ import datetime
 import factory
 
 from ib_discussions.interactors.presenter_interfaces.dtos import \
-    CommentWithRepliesCountAndEditableDTO, CommentIdWithEditableStatusDTO
-from ib_iam.interactors.presenter_interfaces.dtos import \
+    CommentWithRepliesCountAndEditableDTO, CommentIdWithEditableStatusDTO, \
     DiscussionIdWithEditableStatusDTO
 
 

@@ -1,3 +1,6 @@
+from django.db import transaction
+
+
 def get_team_ids(team_names):
     from ib_iam.models import Team
     teams_ids = list(Team.objects.filter(name__in=team_names).values_list(
@@ -11,6 +14,7 @@ def get_company_id(company_name):
     return company_id
 
 
+@transaction.atomic()
 def populate():
     populate_admin_users()
     populate_companies()
@@ -228,7 +232,7 @@ def populate_test_users():
     from ib_iam.storages.user_storage_implementation import \
         UserStorageImplementation
     from ib_iam.interactors.dtos.dtos import \
-        UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO
+        AddUserDetailsDTO
     from ib_users.models import UserAccount
     admin_user_id = UserAccount.objects.get(email="ibadmin@ibhubs.co").user_id
     for user in users:
@@ -241,12 +245,12 @@ def populate_test_users():
         interactor = AddNewUserInteractor(
             user_storage=user_storage, elastic_storage=elastic_storage)
 
-        complete_user_details_dto = UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO(
+        complete_user_details_dto = AddUserDetailsDTO(
             name=user["name"], email=user["email"], team_ids=team_ids,
             role_ids=user["roles"],
             company_id=company_id
         )
         interactor.add_new_user(
             user_id=admin_user_id,
-            user_details_with_team_role_and_company_ids_dto=complete_user_details_dto
+            add_user_details_dto=complete_user_details_dto
         )
