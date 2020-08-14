@@ -114,8 +114,8 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
                                           stage_id not in matched_stage_ids_in_stage_assignee_dtos]
 
         self.stage_storage. \
-            update_task_stage_with_left_at_status(
-            task_id=task_id, db_stage_ids=stage_ids_that_are_not_matched)
+            update_task_stages_with_left_at_status(
+            task_id=task_id, db_stage_ids=matched_stage_ids_in_stage_assignee_dtos)
 
         task_id_with_stage_assignee_dtos_for_creation = self. \
             _get_task_id_with_stage_assignee_dtos_given_task_stage_ids(

@@ -334,11 +334,11 @@ class StagesStorageImplementation(StageStorageInterface):
             task_stage_obj in task_stage_objs]
         return stages_having_assignee_dtos
 
-    def update_task_stage_with_left_at_status(
+    def update_task_stages_with_left_at_status(
             self, task_id: int, db_stage_ids: List[int]):
-        task_stage_objs = TaskStageHistory.objects.filter(
-            task_id=task_id,
-            stage_id__in=db_stage_ids)
+        task_stage_objs = TaskStageHistory.objects \
+            .filter(task_id=task_id, left_at__isnull=True) \
+            .exclude(stage_id__in=db_stage_ids)
         for each_task_stage_obj in task_stage_objs:
             each_task_stage_obj.left_at = datetime.datetime.now()
         TaskStageHistory.objects.bulk_update(
