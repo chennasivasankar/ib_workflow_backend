@@ -1,3 +1,6 @@
+from django.db import transaction
+
+
 def get_team_ids(team_names):
     from ib_iam.models import Team
     teams_ids = list(Team.objects.filter(name__in=team_names).values_list(
@@ -11,6 +14,7 @@ def get_company_id(company_name):
     return company_id
 
 
+@transaction.atomic()
 def populate():
     populate_admin_users()
     populate_companies()

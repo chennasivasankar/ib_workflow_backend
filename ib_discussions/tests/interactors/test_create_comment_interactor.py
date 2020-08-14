@@ -44,9 +44,19 @@ class TestCreateCommentInteractor:
         prepare_validate_user_ids_mock(mocker=mocker)
 
         from ib_discussions.tests.factories.interactor_dtos import \
-            MultiMediaDTOFactory
-        MultiMediaDTOFactory.format_type.reset()
-        multimedia_dtos = MultiMediaDTOFactory.create_batch(2)
+            MultimediaDTOFactory
+        MultimediaDTOFactory.format_type.reset()
+        multimedia_dtos = MultimediaDTOFactory.create_batch(2)
+
+        from ib_discussions.tests.factories.interactor_dtos import \
+            CreateCompleteCommentDTOFactory
+        create_complete_comment_dto = CreateCompleteCommentDTOFactory(
+            discussion_id=discussion_id,
+            user_id=user_id,
+            comment_content=comment_content,
+            mention_user_ids=mention_user_ids,
+            multimedia_dtos=multimedia_dtos
+        )
 
         expected_presenter_response_for_discussion_id_not_found_mock = Mock()
 
@@ -57,15 +67,16 @@ class TestCreateCommentInteractor:
 
         # Act
         response = interactor.create_comment_for_discussion_wrapper(
-            discussion_id=discussion_id, comment_content=comment_content,
-            user_id=user_id, presenter=presenter_mock,
-            mention_user_ids=mention_user_ids, multimedia_dtos=multimedia_dtos
+            create_complete_comment_dto=create_complete_comment_dto,
+            presenter=presenter_mock
         )
 
         # Assert
         assert response == expected_presenter_response_for_discussion_id_not_found_mock
         presenter_mock.response_for_discussion_id_not_found.assert_called_once()
-        storage_mock.is_discussion_id_exists.assert_called_once()
+        storage_mock.is_discussion_id_exists.assert_called_once_with(
+            discussion_id=discussion_id
+        )
 
     def test_invalid_user_ids_return_response(
             self, storage_mock, presenter_mock, interactor, mocker
@@ -89,9 +100,19 @@ class TestCreateCommentInteractor:
             user_ids=invalid_user_ids)
 
         from ib_discussions.tests.factories.interactor_dtos import \
-            MultiMediaDTOFactory
-        MultiMediaDTOFactory.format_type.reset()
-        multimedia_dtos = MultiMediaDTOFactory.create_batch(2)
+            MultimediaDTOFactory
+        MultimediaDTOFactory.format_type.reset()
+        multimedia_dtos = MultimediaDTOFactory.create_batch(2)
+
+        from ib_discussions.tests.factories.interactor_dtos import \
+            CreateCompleteCommentDTOFactory
+        create_complete_comment_dto = CreateCompleteCommentDTOFactory(
+            discussion_id=discussion_id,
+            user_id=user_id,
+            comment_content=comment_content,
+            mention_user_ids=mention_user_ids,
+            multimedia_dtos=multimedia_dtos
+        )
 
         expected_presenter_response_for_invalid_user_ids_mock = Mock()
 
@@ -102,9 +123,8 @@ class TestCreateCommentInteractor:
 
         # Act
         response = interactor.create_comment_for_discussion_wrapper(
-            discussion_id=discussion_id, comment_content=comment_content,
-            user_id=user_id, presenter=presenter_mock,
-            mention_user_ids=mention_user_ids, multimedia_dtos=multimedia_dtos
+            create_complete_comment_dto=create_complete_comment_dto,
+            presenter=presenter_mock
         )
 
         # Assert
@@ -118,6 +138,7 @@ class TestCreateCommentInteractor:
         user_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
         discussion_id = "71be920b-7b4c-49e7-8adb-41a0c18da848"
         comment_id = "91be920b-7b4c-49e7-8adb-41a0c18da848"
+        comment_ids = [comment_id]
         comment_content = "content"
         mention_user_ids = [
             "10be920b-7b4c-49e7-8adb-41a0c18da848",
@@ -127,9 +148,19 @@ class TestCreateCommentInteractor:
             prepare_validate_user_ids_mock
         prepare_validate_user_ids_mock(mocker=mocker)
         from ib_discussions.tests.factories.interactor_dtos import \
-            MultiMediaDTOFactory
-        MultiMediaDTOFactory.format_type.reset()
-        multimedia_dtos = MultiMediaDTOFactory.create_batch(2)
+            MultimediaDTOFactory
+        MultimediaDTOFactory.format_type.reset()
+        multimedia_dtos = MultimediaDTOFactory.create_batch(2)
+
+        from ib_discussions.tests.factories.interactor_dtos import \
+            CreateCompleteCommentDTOFactory
+        create_complete_comment_dto = CreateCompleteCommentDTOFactory(
+            discussion_id=discussion_id,
+            user_id=user_id,
+            comment_content=comment_content,
+            mention_user_ids=mention_user_ids,
+            multimedia_dtos=multimedia_dtos
+        )
 
         from ib_discussions.tests.factories.storage_dtos import \
             CommentDTOFactory
@@ -168,9 +199,8 @@ class TestCreateCommentInteractor:
 
         # Act
         response = interactor.create_comment_for_discussion_wrapper(
-            discussion_id=discussion_id, comment_content=comment_content,
-            user_id=user_id, presenter=presenter_mock,
-            mention_user_ids=mention_user_ids, multimedia_dtos=multimedia_dtos
+            create_complete_comment_dto=create_complete_comment_dto,
+            presenter=presenter_mock
         )
 
         # Assert
@@ -185,16 +215,16 @@ class TestCreateCommentInteractor:
             comment_id=comment_id
         )
         storage_mock.get_replies_count_for_comments.assert_called_once_with(
-            comment_ids=[comment_id]
+            comment_ids=comment_ids
         )
         storage_mock.get_mention_user_ids.assert_called_once_with(
-            comment_ids=[comment_id]
+            comment_ids=comment_ids
         )
         storage_mock.get_comment_id_with_mention_user_id_dtos.assert_called_once_with(
-            comment_ids=[comment_id]
+            comment_ids=comment_ids
         )
         storage_mock.get_multimedia_dtos.assert_called_once_with(
-            comment_ids=[comment_id]
+            comment_ids=comment_ids
         )
 
     @staticmethod

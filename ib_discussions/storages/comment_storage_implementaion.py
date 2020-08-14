@@ -2,7 +2,7 @@ from typing import List, Optional
 
 from django.db.models import Count
 
-from ib_discussions.interactors.dtos.dtos import MultiMediaDTO
+from ib_discussions.interactors.dtos.dtos import MultimediaDTO
 from ib_discussions.interactors.storage_interfaces.comment_storage_interface import \
     CommentStorageInterface
 from ib_discussions.interactors.storage_interfaces.dtos import CommentDTO, \
@@ -142,7 +142,7 @@ class CommentStorageImplementation(CommentStorageInterface):
             comment_with_mention_user_ids_objects)
 
     def add_multimedia_to_comment(self, comment_id,
-                                   multimedia_dtos: List[MultiMediaDTO]):
+                                  multimedia_dtos: List[MultimediaDTO]):
         from ib_discussions.models.comment import CommentWithMultiMedia
         from ib_discussions.models.multimedia import MultiMedia
         multimedia_objects = [
@@ -205,3 +205,18 @@ class CommentStorageImplementation(CommentStorageInterface):
             comment_id_with_multimedia_objects
         ]
         return comment_id_with_multimedia_dtos
+
+    def update_comment(self, comment_id: str, comment_content: str):
+        comment_object = Comment.objects.get(id=comment_id)
+        comment_object.content = comment_content
+        comment_object.save()
+        return
+
+    def get_comment_creator_id(self, comment_id: str):
+        comment_object = Comment.objects.get(id=comment_id)
+        return str(comment_object.user_id)
+
+    def delete_comment(self, comment_id: str):
+        Comment.objects.filter(id=comment_id).delete()
+        return
+

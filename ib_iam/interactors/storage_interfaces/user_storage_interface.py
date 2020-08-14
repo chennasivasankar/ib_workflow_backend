@@ -143,7 +143,7 @@ class UserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_all_distinct_roles(self) -> List[str]:
+    def get_all_distinct_user_db_role_ids(self) -> List[str]:
         pass
 
     @abstractmethod
@@ -156,4 +156,8 @@ class UserStorageInterface(ABC):
             self, user_ids: List[str],
             search_query_with_pagination_dto: SearchQueryWithPaginationDTO
     ) -> List[str]:
+        pass
+
+    @abstractmethod
+    def get_db_role_ids(self, role_ids: List[str]) -> List[str]:
         pass

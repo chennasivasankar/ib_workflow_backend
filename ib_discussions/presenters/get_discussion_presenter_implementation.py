@@ -5,13 +5,11 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 from ib_discussions.adapters.auth_service import UserProfileDTO
 from ib_discussions.constants.enum import StatusCode
 from ib_discussions.interactors.presenter_interfaces.dtos import \
-    DiscussionsWithUsersAndDiscussionCountDTO
+    DiscussionsWithUsersAndDiscussionCountDTO, DiscussionIdWithEditableStatusDTO
 from ib_discussions.interactors.presenter_interfaces.presenter_interface import \
     GetDiscussionsPresenterInterface
 from ib_discussions.interactors.storage_interfaces.dtos import \
     DiscussionIdWithCommentsCountDTO
-from ib_iam.interactors.presenter_interfaces.dtos import \
-    DiscussionIdWithEditableStatusDTO
 
 INVALID_OFFSET = (
     "Please send the valid offset value",

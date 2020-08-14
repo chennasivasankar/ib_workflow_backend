@@ -8,9 +8,9 @@ class TestAddMultiMediaToComment:
         # Arrange
         comment_id = "21be920b-7b4c-49e7-8adb-41a0c18da848"
         from ib_discussions.tests.factories.interactor_dtos import \
-            MultiMediaDTOFactory
-        MultiMediaDTOFactory.format_type.reset()
-        multimedia_dtos = MultiMediaDTOFactory.create_batch(2)
+            MultimediaDTOFactory
+        MultimediaDTOFactory.format_type.reset()
+        multimedia_dtos = MultimediaDTOFactory.create_batch(2)
 
         # Act
         comment_storage.add_multimedia_to_comment(
