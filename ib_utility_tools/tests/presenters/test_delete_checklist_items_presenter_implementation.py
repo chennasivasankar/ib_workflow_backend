@@ -1,15 +1,14 @@
 import json
 
 from ib_utility_tools.constants.enum import StatusCode
-from ib_utility_tools.presenters.delete_checklist_items_presenter_implementation import \
-    DeleteChecklistItemsPresenterImplementation
 from ib_utility_tools.presenters \
-    .update_checklist_item_presenter_implementation import \
-    UpdateChecklistItemPresenterImplementation
+    .delete_checklist_items_presenter_implementation import \
+    DeleteChecklistItemsPresenterImplementation
 
 
 class TestUpdateChecklistItemPresenterImplementation:
-    def test_whether_it_gives_empty_checklist_item_ids_not_found_response(self):
+    def test_whether_it_gives_empty_checklist_item_ids_not_found_response(
+            self):
         from ib_utility_tools.constants.exception_messages import \
             INVALID_CHECKLIST_ITEM_IDS
         json_presenter = DeleteChecklistItemsPresenterImplementation()
