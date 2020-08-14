@@ -22,10 +22,10 @@ class TestCase02GetReasonsForMissingTaskDueDateTimeAPITestCase(TestUtils):
     @freeze_time("2020-08-11 14:19:33")
     def setup(self, api_user, mocker):
         from ib_tasks.tests.common_fixtures.adapters.assignees_details_service import \
-            assignee_details_dtos_mock
+            get_assignee_details_dtos_mock
         from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory
         AssigneeDetailsDTOFactory.reset_sequence()
-        user_dtos = assignee_details_dtos_mock(mocker, str(api_user.user_id))
+        user_dtos = get_assignee_details_dtos_mock(mocker, str(api_user.user_id))
         from ib_tasks.tests.factories.models import TaskFactory
 
         TaskFactory.reset_sequence()
