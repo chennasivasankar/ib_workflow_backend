@@ -1,7 +1,9 @@
 from typing import List
 
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, InvalidTaskIdException
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, InvalidTaskIdException, \
+    InvalidTaskDisplayId
+from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.presenter_interfaces.get_task_stages_history_presenter_interface import \
     GetTaskStagePresenterInterface
 from ib_tasks.interactors.stages_dtos import TaskStageHistoryDTO, EntityTypeDTO, LogDurationDTO, \
@@ -11,7 +13,7 @@ from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import TaskStorageInterface
 
 
-class GetTaskStagesHistory:
+class GetTaskStagesHistory(GetTaskIdForTaskDisplayIdMixin):
 
     def __init__(self, stage_storage: TaskStageStorageInterface,
                  task_storage: TaskStorageInterface):
@@ -19,12 +21,16 @@ class GetTaskStagesHistory:
         self.task_storage = task_storage
 
     def get_task_stages_history_wrapper(
-            self, task_id: int, presenter: GetTaskStagePresenterInterface
+            self, task_display_id: str, presenter: GetTaskStagePresenterInterface
     ):
 
         try:
+            task_id = self.get_task_id_for_task_display_id(
+                task_display_id=task_display_id)
             task_stages_details = \
                 self._get_task_stages_log_history(task_id=task_id)
+        except InvalidTaskDisplayId as err:
+            return presenter.raise_invalid_task_display_id(err)
         except InvalidTaskIdException as err:
             return presenter.raise_exception_for_invalid_task_id(err=err)
         return presenter.get_task_stages_history_response(
