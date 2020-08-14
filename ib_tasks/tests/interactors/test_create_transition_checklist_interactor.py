@@ -1,60 +1,57 @@
-import datetime
-
 import factory
-import freezegun
 import mock
 import pytest
 
-from ib_tasks.interactors.create_or_update_task.update_task_interactor import \
-    UpdateTaskInteractor
-from ib_tasks.interactors.stages_dtos import StageAssigneeDTO, \
-    TaskIdWithStageAssigneesDTO
-from ib_tasks.tests.factories.interactor_dtos import FieldValuesDTOFactory, \
-    GoFFieldsDTOFactory, UpdateTaskWithTaskDisplayIdDTOFactory, \
-    UpdateTaskDTOFactory
-from ib_tasks.tests.factories.storage_dtos import \
-    GoFIdWithSameGoFOrderDTOFactory, FieldIdWithTaskGoFIdDTOFactory, \
-    TaskGoFDetailsDTOFactory, TaskGoFFieldDTOFactory, \
-    TaskGoFWithTaskIdDTOFactory
+from ib_tasks.interactors.create_transition_checklist_template import \
+    CreateTransitionChecklistTemplateInteractor
+from ib_tasks.tests.factories.interactor_dtos import \
+    CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory, \
+    GoFFieldsDTOFactory, FieldValuesDTOFactory
 
 
-class TestUpdateTaskInteractor:
+class TestCreateTransitionChecklistInteractor:
 
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
-        FieldValuesDTOFactory.reset_sequence()
+        CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory \
+            .reset_sequence()
         GoFFieldsDTOFactory.reset_sequence()
-        UpdateTaskWithTaskDisplayIdDTOFactory.reset_sequence()
-        GoFIdWithSameGoFOrderDTOFactory.reset_sequence()
-        FieldIdWithTaskGoFIdDTOFactory.reset_sequence()
-        TaskGoFDetailsDTOFactory.reset_sequence()
-        TaskGoFFieldDTOFactory.reset_sequence()
-        TaskGoFWithTaskIdDTOFactory.reset_sequence()
+        FieldValuesDTOFactory.reset_sequence()
 
     @pytest.fixture
-    def task_storage_mock(self):
-        from ib_tasks.interactors.storage_interfaces.task_storage_interface \
-            import TaskStorageInterface
-        return mock.create_autospec(TaskStorageInterface)
-
-    @pytest.fixture
-    def gof_storage_mock(self):
-        from ib_tasks.interactors.storage_interfaces.gof_storage_interface \
-            import GoFStorageInterface
-        return mock.create_autospec(GoFStorageInterface)
-
-    @pytest.fixture
-    def create_task_storage_mock(self):
+    def create_or_update_task_storage_mock(self):
         from ib_tasks.interactors.storage_interfaces \
             .create_or_update_task_storage_interface import \
             CreateOrUpdateTaskStorageInterface
         return mock.create_autospec(CreateOrUpdateTaskStorageInterface)
 
     @pytest.fixture
-    def storage_mock(self):
-        from ib_tasks.interactors.storage_interfaces.storage_interface import \
-            StorageInterface
-        return mock.create_autospec(StorageInterface)
+    def template_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces \
+            .task_template_storage_interface import \
+            TaskTemplateStorageInterface
+        return mock.create_autospec(TaskTemplateStorageInterface)
+
+    @pytest.fixture
+    def stage_action_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces \
+            .action_storage_interface import \
+            ActionStorageInterface
+        return mock.create_autospec(ActionStorageInterface)
+
+    @pytest.fixture
+    def task_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces.task_storage_interface \
+            import \
+            TaskStorageInterface
+        return mock.create_autospec(TaskStorageInterface)
+
+    @pytest.fixture
+    def gof_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces.gof_storage_interface \
+            import \
+            GoFStorageInterface
+        return mock.create_autospec(GoFStorageInterface)
 
     @pytest.fixture
     def field_storage_mock(self):
@@ -64,26 +61,22 @@ class TestUpdateTaskInteractor:
         return mock.create_autospec(FieldsStorageInterface)
 
     @pytest.fixture
-    def stage_storage_mock(self):
-        from ib_tasks.interactors.storage_interfaces \
-            .stages_storage_interface import StageStorageInterface
-        return mock.create_autospec(StageStorageInterface)
-
-    @pytest.fixture
-    def elastic_storage_mock(self):
-        from ib_tasks.interactors.storage_interfaces \
-            .elastic_storage_interface import ElasticSearchStorageInterface
-        return mock.create_autospec(ElasticSearchStorageInterface)
-
-    @pytest.fixture
-    def presenter_mock(self):
-        from ib_tasks.interactors.presenter_interfaces.update_task_presenter \
-            import UpdateTaskPresenterInterface
-        return mock.create_autospec(UpdateTaskPresenterInterface)
+    def storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces.storage_interface import \
+            StorageInterface
+        return mock.create_autospec(StorageInterface)
 
     @pytest.fixture
     def mock_object(self):
         return mock.Mock()
+
+    @pytest.fixture
+    def presenter_mock(self):
+        from ib_tasks.interactors.presenter_interfaces \
+            .create_transition_checklist_presenter_interface import \
+            CreateTransitionChecklistTemplatePresenterInterface
+        return mock.create_autospec(
+            CreateTransitionChecklistTemplatePresenterInterface)
 
     @pytest.fixture
     def perform_base_validations_for_template_gofs_and_fields_mock(self,
@@ -94,41 +87,34 @@ class TestUpdateTaskInteractor:
                ".perform_base_validations_for_template_gofs_and_fields"
         return mocker.patch(path)
 
-    @pytest.fixture
-    def update_task_stage_assignees_mock(self, mocker):
-        path = "ib_tasks.interactors.update_task_stage_assignees_interactor" \
-               ".UpdateTaskStageAssigneesInteractor" \
-               ".update_task_stage_assignees"
-        return mocker.patch(path)
-
     def test_with_invalid_task_display_id(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock
     ):
         # Arrange
         given_task_display_id = "task_1"
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            task_display_id=given_task_display_id)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                task_display_id=given_task_display_id)
         task_storage_mock.check_is_valid_task_display_id.return_value = False
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock.raise_invalid_task_display_id.return_value = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
         task_storage_mock.check_is_valid_task_display_id \
-            .assert_called_once_with(
-            given_task_display_id)
+            .assert_called_once_with(given_task_display_id)
         presenter_mock.raise_invalid_task_display_id.assert_called_once()
         call_args = presenter_mock.raise_invalid_task_display_id.call_args
         error_object = call_args[0][0]
@@ -136,35 +122,38 @@ class TestUpdateTaskInteractor:
         assert invalid_task_display_id == given_task_display_id
 
     def test_with_invalid_task_id(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock
     ):
         # Arrange
         given_task_display_id = "task_1"
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            task_display_id=given_task_display_id)
         task_id = 1
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                task_display_id=given_task_display_id)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = False
-        interactor = UpdateTaskInteractor(
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = \
+            False
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock.raise_invalid_task_id.return_value = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
-        create_task_storage_mock.is_valid_task_id.assert_called_once_with(
+        create_or_update_task_storage_mock.is_valid_task_id \
+            .assert_called_once_with(
             task_id)
         presenter_mock.raise_invalid_task_id.assert_called_once()
         call_args = presenter_mock.raise_invalid_task_id.call_args
@@ -172,213 +161,293 @@ class TestUpdateTaskInteractor:
         invalid_task_id = error_object.task_id
         assert invalid_task_id == task_id
 
-    def test_with_invalid_due_time_format(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object
+    def test_with_invalid_transition_checklist_template_id(
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock
     ):
         # Arrange
-        given_due_time = "12-12-12"
         given_task_display_id = "task_1"
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            task_display_id=given_task_display_id, due_time=given_due_time)
+        given_transition_checklist_template_id = "checklist_template_1"
         task_id = 1
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                task_display_id=given_task_display_id,
+                transition_checklist_template_id
+                =given_transition_checklist_template_id
+            )
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        task_storage_mock.check_is_valid_task_display_id.return_value = True
-        task_storage_mock.get_task_id_for_task_display_id.return_value = \
-            task_id
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
-            = \
-            "template_1"
-        interactor = UpdateTaskInteractor(
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = \
+            True
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            InvalidTransitionChecklistTemplateId
+        template_storage_mock.validate_transition_template_id.side_effect = \
+            InvalidTransitionChecklistTemplateId(
+                given_transition_checklist_template_id)
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
-        presenter_mock.raise_invalid_due_time_format \
+        presenter_mock.raise_invalid_transition_checklist_template_id \
             .return_value = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_invalid_due_time_format.assert_called_once()
-        call_args = presenter_mock.raise_invalid_due_time_format.call_args
-        error_object = call_args[0][0]
-        invalid_due_time = error_object.due_time
-        assert invalid_due_time == given_due_time
-
-    @freezegun.freeze_time('2020-09-09 13:00:00')
-    def test_with_expired_due_date(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object
-    ):
-        # Arrange
-        given_due_date = datetime.date(2020, 9, 1)
-        task_storage_mock.check_is_valid_task_display_id.return_value = True
-        task_id = 1
-        task_storage_mock.get_task_id_for_task_display_id.return_value = \
-            task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
-            = "template_1"
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            due_date=given_due_date)
-        interactor = UpdateTaskInteractor(
-            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
-        )
-        presenter_mock.raise_due_date_has_expired \
-            .return_value = mock_object
-
-        # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
-
-        # Assert
-        assert response == mock_object
-        presenter_mock.raise_due_date_has_expired.assert_called_once()
-        call_args = presenter_mock.raise_due_date_has_expired.call_args
-        error_object = call_args[0][0]
-        invalid_due_date = error_object.due_date
-        assert invalid_due_date == given_due_date
-
-    def test_with_start_date_ahead_of_due_date(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object
-    ):
-        # Arrange
-        given_start_date = datetime.date(2020, 9, 9)
-        given_due_date = datetime.date(2020, 9, 1)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            start_date=given_start_date,
-            due_date=given_due_date)
-        task_storage_mock.check_is_valid_task_display_id.return_value = True
-        task_id = 1
-        task_storage_mock.get_task_id_for_task_display_id.return_value = \
-            task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
-            = "template_1"
-        interactor = UpdateTaskInteractor(
-            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
-        )
-        presenter_mock.raise_start_date_is_ahead_of_due_date \
-            .return_value = mock_object
-
-        # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
-
-        # Assert
-        assert response == mock_object
-        presenter_mock.raise_start_date_is_ahead_of_due_date \
+        template_storage_mock.validate_transition_template_id \
+            .assert_called_once_with(
+            given_transition_checklist_template_id)
+        presenter_mock.raise_invalid_transition_checklist_template_id \
             .assert_called_once()
-        call_args = presenter_mock.raise_start_date_is_ahead_of_due_date \
+        call_args = \
+            presenter_mock.raise_invalid_transition_checklist_template_id \
+                .call_args
+        error_object = call_args[0][0]
+        invalid_transition_template_id = \
+            error_object.transition_checklist_template_id
+        assert invalid_transition_template_id == \
+               given_transition_checklist_template_id
+
+    def test_with_invalid_action_id(
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock
+    ):
+        # Arrange
+        task_id = 1
+        given_action_id = 2
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                action_id=given_action_id)
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_storage_mock.get_task_id_for_task_display_id.return_value = \
+            task_id
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = \
+            True
+        from ib_tasks.exceptions.action_custom_exceptions import \
+            InvalidActionException
+        stage_action_storage_mock.validate_action_id.side_effect = \
+            InvalidActionException(given_action_id)
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            storage=storage_mock, field_storage=field_storage_mock
+        )
+        presenter_mock.raise_invalid_action \
+            .return_value = mock_object
+
+        # Act
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
+
+        # Assert
+        assert response == mock_object
+        stage_action_storage_mock.validate_action_id.assert_called_once_with(
+            given_action_id)
+        presenter_mock.raise_invalid_action.assert_called_once()
+        call_args = presenter_mock.raise_invalid_action.call_args
+        error_object = call_args[0][0]
+        invalid_action_id = error_object.action_id
+        assert invalid_action_id == given_action_id
+
+    def test_with_invalid_stage_id(
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock
+    ):
+        # Arrange
+        task_id = 1
+        given_stage_id = 2
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                stage_id=given_stage_id)
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_storage_mock.get_task_id_for_task_display_id.return_value = \
+            task_id
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = \
+            True
+        from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId
+        stage_action_storage_mock.validate_stage_id.side_effect = \
+            InvalidStageId(given_stage_id)
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            storage=storage_mock, field_storage=field_storage_mock
+        )
+        presenter_mock.raise_invalid_stage_id.return_value = mock_object
+
+        # Act
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
+
+        # Assert
+        assert response == mock_object
+        stage_action_storage_mock.validate_stage_id.assert_called_once_with(
+            given_stage_id)
+        presenter_mock.raise_invalid_stage_id.assert_called_once()
+        call_args = presenter_mock.raise_invalid_stage_id.call_args
+        error_object = call_args[0][0]
+        invalid_stage_id = error_object.stage_id
+        assert invalid_stage_id == given_stage_id
+
+    def test_with_irrelevant_transition_template_for_given_stage_action(
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock
+    ):
+        # Arrange
+        task_id = 1
+        given_stage_id = 2
+        given_action_id = 3
+        given_transition_template_id = "transition_template_1"
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                stage_id=given_stage_id, action_id=given_action_id,
+                transition_checklist_template_id=given_transition_template_id
+            )
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_storage_mock.get_task_id_for_task_display_id.return_value = \
+            task_id
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = \
+            True
+        from ib_tasks.exceptions.stage_custom_exceptions import \
+            TransitionTemplateIsNotRelatedToGivenStageAction
+        stage_action_storage_mock \
+            .validate_transition_template_id_is_related_to_given_stage_action. \
+            side_effect = TransitionTemplateIsNotRelatedToGivenStageAction(
+            stage_id=given_stage_id, action_id=given_action_id,
+            transition_checklist_template_id=given_transition_template_id
+        )
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
+            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
+            storage=storage_mock, field_storage=field_storage_mock
+        )
+        presenter_mock \
+            .raise_transition_template_is_not_related_to_given_stage_action \
+            .return_value = mock_object
+
+        # Act
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
+
+        # Assert
+        assert response == mock_object
+        stage_action_storage_mock \
+            .validate_transition_template_id_is_related_to_given_stage_action. \
+            assert_called_once_with(
+            given_transition_template_id, given_action_id, given_stage_id
+        )
+        presenter_mock \
+            .raise_transition_template_is_not_related_to_given_stage_action \
+            .assert_called_once()
+        call_args = presenter_mock. \
+            raise_transition_template_is_not_related_to_given_stage_action \
             .call_args
         error_object = call_args[0][0]
-        invalid_start_date = error_object.given_start_date
-        invalid_due_date = error_object.given_due_date
-        assert invalid_start_date == given_start_date
-        assert invalid_due_date == given_due_date
+        stage_id = error_object.stage_id
+        action_id = error_object.action_id
+        transition_template_id = error_object.transition_checklist_template_id
+        assert stage_id == given_stage_id
+        assert action_id == given_action_id
+        assert transition_template_id == given_transition_template_id
 
-    @freezegun.freeze_time('2020-09-09 13:00:00')
-    def test_with_expired_due_time_for_today(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object
+    def test_with_duplicate_same_gof_order_for_a_gof(
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock
     ):
         # Arrange
-        given_start_date = datetime.date(2020, 9, 1)
-        given_due_date = datetime.date(2020, 9, 9)
-        given_due_time = "12:00:00"
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            start_date=given_start_date,
-            due_date=given_due_date,
-            due_time=given_due_time)
-        task_storage_mock.check_is_valid_task_display_id.return_value = True
-
         task_id = 1
+        given_gof_id = "gof_1"
+        given_same_gof_orders = [1]
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
+            size=2, gof_id=given_gof_id, same_gof_order=1)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
-            = "template_1"
-        interactor = UpdateTaskInteractor(
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = \
+            True
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
-        presenter_mock.raise_due_time_has_expired_for_today \
-            .return_value = mock_object
+        presenter_mock.raise_same_gof_order_for_a_gof.return_value = \
+            mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
-        presenter_mock.raise_due_time_has_expired_for_today \
-            .assert_called_once()
-        call_args = presenter_mock.raise_due_time_has_expired_for_today \
-            .call_args
+        presenter_mock.raise_same_gof_order_for_a_gof.assert_called_once()
+        call_args = presenter_mock.raise_same_gof_order_for_a_gof.call_args
         error_object = call_args[0][0]
-        invalid_due_time = error_object.due_time
-        assert invalid_due_time == given_due_time
+        invalid_gof_id = error_object.gof_id
+        same_gof_orders = error_object.same_gof_orders
+        assert invalid_gof_id == given_gof_id
+        assert same_gof_orders == given_same_gof_orders
 
     def test_with_invalid_gof_ids(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
         given_gof_ids = ["gof_0", "gof_1", "gof_2"]
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=3, gof_id=factory.Iterator(given_gof_ids)
         )
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
         from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
-        perform_base_validations_for_template_gofs_and_fields_mock.side_effect = \
+        perform_base_validations_for_template_gofs_and_fields_mock \
+            .side_effect = \
             InvalidGoFIds(given_gof_ids)
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock.raise_invalid_gof_ids.return_value = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -389,27 +458,28 @@ class TestUpdateTaskInteractor:
         assert invalid_gof_ids == given_gof_ids
 
     def test_with_invalid_gofs_to_task_template(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
         given_task_template_id = "template_0"
         given_gof_ids = ["gof_0", "gof_1", "gof_2"]
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=3, gof_id=factory.Iterator(given_gof_ids)
         )
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
         from ib_tasks.exceptions.task_custom_exceptions import \
             InvalidGoFsOfTaskTemplate
@@ -417,18 +487,19 @@ class TestUpdateTaskInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidGoFsOfTaskTemplate(given_gof_ids,
                                                      given_task_template_id)
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock.raise_invalid_gofs_given_to_a_task_template \
             .return_value = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -444,27 +515,28 @@ class TestUpdateTaskInteractor:
         assert invalid_gofs_template_id == given_task_template_id
 
     def test_with_invalid_field_ids(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
         given_field_ids = ["field_0", "field_1", "field_2"]
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=3, field_id=factory.Iterator(given_field_ids))
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
 
         from ib_tasks.exceptions.fields_custom_exceptions import \
@@ -472,17 +544,18 @@ class TestUpdateTaskInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidFieldIds(given_field_ids)
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock.raise_invalid_field_ids.return_value = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -493,10 +566,9 @@ class TestUpdateTaskInteractor:
         assert invalid_field_ids == given_field_ids
 
     def test_with_duplicate_field_ids_to_a_gof(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -505,17 +577,19 @@ class TestUpdateTaskInteractor:
         given_field_ids = given_duplicate_field_ids + ["field_2"]
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=3, field_id=factory.Iterator(given_field_ids))
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=1, gof_id=given_gof_id, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
 
         from ib_tasks.exceptions.fields_custom_exceptions import \
@@ -524,18 +598,19 @@ class TestUpdateTaskInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = DuplicateFieldIdsToGoF(given_gof_id,
                                                   given_duplicate_field_ids)
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock.raise_duplicate_field_ids_to_a_gof.return_value = \
             mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -548,10 +623,9 @@ class TestUpdateTaskInteractor:
         assert invalid_field_ids == given_duplicate_field_ids
 
     def test_with_invalid_field_ids_to_a_gof(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -559,17 +633,19 @@ class TestUpdateTaskInteractor:
         given_field_ids = ["field_0", "field_0", "field_2"]
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=3, field_id=factory.Iterator(given_field_ids))
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=1, gof_id=given_gof_id, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
 
         from ib_tasks.exceptions.task_custom_exceptions import \
@@ -577,18 +653,19 @@ class TestUpdateTaskInteractor:
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidFieldsOfGoF(given_gof_id, given_field_ids)
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock.raise_invalid_fields_given_to_a_gof.return_value = \
             mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -602,27 +679,29 @@ class TestUpdateTaskInteractor:
         assert invalid_field_ids == given_field_ids
 
     def test_with_user_who_does_not_have_write_permission_to_a_gof(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
         given_created_by_id = "user_0"
         given_gof_id = "gof_0"
         given_required_user_roles = ["role_1", "role_2"]
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(size=1,
-                                                          gof_id=given_gof_id)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos, created_by_id=given_created_by_id)
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(size=1,
+                                                                    gof_id=given_gof_id)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs,
+                created_by_id=given_created_by_id)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
 
         from ib_tasks.exceptions.permission_custom_exceptions import \
@@ -631,19 +710,20 @@ class TestUpdateTaskInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = UserNeedsGoFWritablePermission(
             given_created_by_id, given_gof_id, given_required_user_roles)
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock.raise_user_needs_gof_writable_permission.return_value \
             = \
             mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -660,10 +740,9 @@ class TestUpdateTaskInteractor:
         assert required_roles == given_required_user_roles
 
     def test_with_user_who_does_not_have_write_permission_to_a_field(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -672,17 +751,20 @@ class TestUpdateTaskInteractor:
         given_field_id = "field_0"
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id)
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos, created_by_id=given_created_by_id)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs,
+                created_by_id=given_created_by_id)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
         from ib_tasks.exceptions.permission_custom_exceptions import \
             UserNeedsFieldWritablePermission
@@ -690,19 +772,20 @@ class TestUpdateTaskInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = UserNeedsFieldWritablePermission(
             given_created_by_id, given_field_id, given_required_user_roles)
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock.raise_user_needs_field_writable_permission \
             .return_value \
             = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -719,10 +802,9 @@ class TestUpdateTaskInteractor:
         assert required_roles == given_required_user_roles
 
     def test_with_empty_response_to_a_required_field(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -731,35 +813,38 @@ class TestUpdateTaskInteractor:
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
             field_response=given_field_response)
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             EmptyValueForRequiredField
 
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = EmptyValueForRequiredField(given_field_id)
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock.raise_exception_for_empty_value_in_required_field \
             .return_value = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -773,10 +858,9 @@ class TestUpdateTaskInteractor:
         assert invalid_field_id == given_field_id
 
     def test_with_invalid_response_to_a_phone_number_field(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -785,17 +869,19 @@ class TestUpdateTaskInteractor:
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
             field_response=given_field_response)
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
@@ -804,18 +890,19 @@ class TestUpdateTaskInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidPhoneNumberValue(given_field_id,
                                                    given_field_response)
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock.raise_exception_for_invalid_phone_number_value \
             .return_value = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -831,10 +918,9 @@ class TestUpdateTaskInteractor:
         assert invalid_field_response == given_field_response
 
     def test_with_invalid_response_to_a_email_field(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -843,17 +929,19 @@ class TestUpdateTaskInteractor:
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
             field_response=given_field_response)
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
         from ib_tasks.exceptions.field_values_custom_exceptions import \
             InvalidEmailFieldValue
@@ -861,18 +949,19 @@ class TestUpdateTaskInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidEmailFieldValue(given_field_id,
                                                   given_field_response)
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock.raise_exception_for_invalid_email_address \
             .return_value = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -888,10 +977,9 @@ class TestUpdateTaskInteractor:
         assert invalid_field_response == given_field_response
 
     def test_with_invalid_response_to_a_url_field(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -900,17 +988,19 @@ class TestUpdateTaskInteractor:
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
             field_response=given_field_response)
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
@@ -919,26 +1009,26 @@ class TestUpdateTaskInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidURLValue(given_field_id,
                                            given_field_response)
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock.raise_exception_for_invalid_url_address \
             .return_value = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
         presenter_mock.raise_exception_for_invalid_url_address \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_invalid_url_address \
-                .call_args
+            presenter_mock.raise_exception_for_invalid_url_address.call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
         invalid_field_response = error_object.field_value
@@ -946,10 +1036,9 @@ class TestUpdateTaskInteractor:
         assert invalid_field_response == given_field_response
 
     def test_with_weak_password_response_to_a_password_field(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -958,17 +1047,19 @@ class TestUpdateTaskInteractor:
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
             field_response=given_field_response)
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
@@ -977,26 +1068,26 @@ class TestUpdateTaskInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = NotAStrongPassword(given_field_id,
                                               given_field_response)
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock.raise_exception_for_weak_password \
             .return_value = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
         presenter_mock.raise_exception_for_weak_password \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_weak_password \
-                .call_args
+            presenter_mock.raise_exception_for_weak_password.call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
         invalid_field_response = error_object.field_value
@@ -1004,10 +1095,9 @@ class TestUpdateTaskInteractor:
         assert invalid_field_response == given_field_response
 
     def test_with_invalid_response_to_a_number_field(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1016,17 +1106,19 @@ class TestUpdateTaskInteractor:
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
             field_response=given_field_response)
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
@@ -1035,26 +1127,26 @@ class TestUpdateTaskInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidNumberValue(given_field_id,
                                               given_field_response)
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock.raise_exception_for_invalid_number_value \
             .return_value = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
         presenter_mock.raise_exception_for_invalid_number_value \
             .assert_called_once()
         call_args = \
-            presenter_mock.raise_exception_for_invalid_number_value \
-                .call_args
+            presenter_mock.raise_exception_for_invalid_number_value.call_args
         error_object = call_args[0][0]
         invalid_field_id = error_object.field_id
         invalid_field_response = error_object.field_value
@@ -1062,10 +1154,9 @@ class TestUpdateTaskInteractor:
         assert invalid_field_response == given_field_response
 
     def test_with_invalid_response_to_a_float_field(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1074,17 +1165,19 @@ class TestUpdateTaskInteractor:
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
             field_response=given_field_response)
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
@@ -1093,18 +1186,19 @@ class TestUpdateTaskInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidFloatValue(given_field_id,
                                              given_field_response)
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock.raise_exception_for_invalid_float_value \
             .return_value = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -1120,10 +1214,9 @@ class TestUpdateTaskInteractor:
         assert invalid_field_response == given_field_response
 
     def test_with_invalid_response_to_a_dropdown_field(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1133,17 +1226,19 @@ class TestUpdateTaskInteractor:
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
             field_response=given_field_response)
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
@@ -1153,18 +1248,19 @@ class TestUpdateTaskInteractor:
             .side_effect = InvalidValueForDropdownField(
             given_field_id, given_field_response, valid_choices
         )
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock.raise_exception_for_invalid_dropdown_value \
             .return_value = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -1183,10 +1279,9 @@ class TestUpdateTaskInteractor:
         assert invalid_field_response == given_field_response
 
     def test_with_invalid_name_to_a_gof_selector_field(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1196,17 +1291,19 @@ class TestUpdateTaskInteractor:
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
             field_response=given_field_response)
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
@@ -1216,19 +1313,20 @@ class TestUpdateTaskInteractor:
             .side_effect = IncorrectNameInGoFSelectorField(
             given_field_id, given_field_response, valid_choices
         )
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock \
             .raise_exception_for_invalid_name_in_gof_selector_field_value \
             .return_value = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -1248,10 +1346,9 @@ class TestUpdateTaskInteractor:
         assert invalid_field_response == given_field_response
 
     def test_with_invalid_choice_to_a_radio_group_field(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1261,17 +1358,19 @@ class TestUpdateTaskInteractor:
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
             field_response=given_field_response)
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
@@ -1281,19 +1380,20 @@ class TestUpdateTaskInteractor:
             .side_effect = IncorrectRadioGroupChoice(
             given_field_id, given_field_response, valid_choices
         )
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock \
             .raise_exception_for_invalid_choice_in_radio_group_field \
             .return_value = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -1313,10 +1413,9 @@ class TestUpdateTaskInteractor:
         assert invalid_field_response == given_field_response
 
     def test_with_invalid_choice_to_a_check_box_field(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1326,17 +1425,19 @@ class TestUpdateTaskInteractor:
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
             field_response=invalid_checkbox_options_selected)
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
@@ -1346,19 +1447,20 @@ class TestUpdateTaskInteractor:
             .side_effect = IncorrectCheckBoxOptionsSelected(
             given_field_id, invalid_checkbox_options_selected, valid_choices
         )
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock \
             .raise_exception_for_invalid_checkbox_group_options_selected \
             .return_value = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -1378,10 +1480,9 @@ class TestUpdateTaskInteractor:
         assert valid_check_box_choices == valid_choices
 
     def test_with_invalid_option_to_a_multi_select_options_field(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1391,17 +1492,19 @@ class TestUpdateTaskInteractor:
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
             field_response=invalid_multi_select_options_selected)
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
@@ -1412,19 +1515,20 @@ class TestUpdateTaskInteractor:
             given_field_id, invalid_multi_select_options_selected,
             valid_choices
         )
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock \
             .raise_exception_for_invalid_multi_select_options_selected \
             .return_value = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -1446,10 +1550,9 @@ class TestUpdateTaskInteractor:
         assert valid_multi_select_options == valid_choices
 
     def test_with_invalid_option_to_a_multi_select_label_field(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1459,17 +1562,19 @@ class TestUpdateTaskInteractor:
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
             field_response=invalid_multi_select_labels_selected)
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
@@ -1479,19 +1584,20 @@ class TestUpdateTaskInteractor:
             .side_effect = IncorrectMultiSelectLabelsSelected(
             given_field_id, invalid_multi_select_labels_selected, valid_choices
         )
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock \
             .raise_exception_for_invalid_multi_select_labels_selected \
             .return_value = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -1513,10 +1619,9 @@ class TestUpdateTaskInteractor:
         assert valid_multi_select_labels == valid_choices
 
     def test_with_invalid_date_format_to_a_date_field(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1527,17 +1632,19 @@ class TestUpdateTaskInteractor:
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
             field_response=given_field_response)
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
@@ -1547,19 +1654,20 @@ class TestUpdateTaskInteractor:
             .side_effect = InvalidDateFormat(
             given_field_id, given_field_response, expected_format
         )
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock \
             .raise_exception_for_invalid_date_format \
             .return_value = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -1579,10 +1687,9 @@ class TestUpdateTaskInteractor:
         assert valid_format == expected_format
 
     def test_with_invalid_time_format_to_a_time_field(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1593,17 +1700,19 @@ class TestUpdateTaskInteractor:
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
             field_response=given_field_response)
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
@@ -1613,19 +1722,20 @@ class TestUpdateTaskInteractor:
             .side_effect = InvalidTimeFormat(
             given_field_id, given_field_response, expected_format
         )
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock \
             .raise_exception_for_invalid_time_format \
             .return_value = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -1645,10 +1755,9 @@ class TestUpdateTaskInteractor:
         assert valid_format == expected_format
 
     def test_with_invalid_url_to_a_image_uploader_field(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1657,17 +1766,19 @@ class TestUpdateTaskInteractor:
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
             field_response=given_field_response)
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
@@ -1676,18 +1787,19 @@ class TestUpdateTaskInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidUrlForImage(given_field_id,
                                               given_field_response)
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock.raise_exception_for_invalid_image_url.return_value = \
             mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -1705,10 +1817,9 @@ class TestUpdateTaskInteractor:
         assert given_field_response == invalid_image_url
 
     def test_with_invalid_image_format_to_a_image_uploader_field(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1719,17 +1830,19 @@ class TestUpdateTaskInteractor:
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
             field_response=given_field_response)
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
@@ -1738,19 +1851,20 @@ class TestUpdateTaskInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidImageFormat(given_field_id, given_format,
                                               allowed_formats)
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock \
             .raise_exception_for_not_acceptable_image_format \
             .return_value = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -1770,10 +1884,9 @@ class TestUpdateTaskInteractor:
         assert valid_formats == allowed_formats
 
     def test_with_invalid_url_to_a_file_uploader_field(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1782,17 +1895,19 @@ class TestUpdateTaskInteractor:
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
             field_response=given_field_response)
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
@@ -1801,19 +1916,20 @@ class TestUpdateTaskInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidUrlForFile(given_field_id,
                                              given_field_response)
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock \
             .raise_exception_for_invalid_file_url \
             .return_value = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -1831,10 +1947,9 @@ class TestUpdateTaskInteractor:
         assert invalid_file_url == given_field_response
 
     def test_with_invalid_file_format_to_a_file_uploader_field(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
+            self, create_or_update_task_storage_mock, template_storage_mock,
+            stage_action_storage_mock, task_storage_mock, gof_storage_mock,
+            storage_mock, field_storage_mock, mock_object, presenter_mock,
             perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
@@ -1845,17 +1960,19 @@ class TestUpdateTaskInteractor:
         field_values_dtos = FieldValuesDTOFactory.build_batch(
             size=1, field_id=given_field_id,
             field_response=given_field_response)
-        gof_fields_dtos = GoFFieldsDTOFactory.build_batch(
+        transition_checklist_gofs = GoFFieldsDTOFactory.build_batch(
             size=1, field_values_dtos=field_values_dtos)
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory(
-            gof_fields_dtos=gof_fields_dtos)
+        transition_checklist_dto = \
+            CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+                transition_checklist_gofs=transition_checklist_gofs)
         task_storage_mock.check_is_valid_task_display_id.return_value = True
 
         task_id = 1
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
+        create_or_update_task_storage_mock.is_valid_task_id.return_value = True
+        create_or_update_task_storage_mock.get_template_id_for_given_task \
+            .return_value \
             = "template_1"
 
         from ib_tasks.exceptions.field_values_custom_exceptions import \
@@ -1864,19 +1981,20 @@ class TestUpdateTaskInteractor:
         perform_base_validations_for_template_gofs_and_fields_mock \
             .side_effect = InvalidFileFormat(given_field_id, given_format,
                                              allowed_formats)
-        interactor = UpdateTaskInteractor(
+        interactor = CreateTransitionChecklistTemplateInteractor(
+            create_or_update_task_storage=create_or_update_task_storage_mock,
+            template_storage=template_storage_mock,
+            stage_action_storage=stage_action_storage_mock,
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
+            storage=storage_mock, field_storage=field_storage_mock
         )
         presenter_mock \
             .raise_exception_for_not_acceptable_file_format \
             .return_value = mock_object
 
         # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
+        response = interactor.create_transition_checklist_wrapper(
+            transition_checklist_dto, presenter_mock)
 
         # Assert
         assert response == mock_object
@@ -1894,190 +2012,3 @@ class TestUpdateTaskInteractor:
         assert invalid_field_id == given_field_id
         assert given_invalid_format == given_format
         assert valid_formats == allowed_formats
-
-    def test_with_valid_task_details_updates_task(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
-            perform_base_validations_for_template_gofs_and_fields_mock,
-            update_task_stage_assignees_mock
-    ):
-        # Arrange
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
-        task_storage_mock.check_is_valid_task_display_id.return_value = True
-        task_id = 1
-        task_storage_mock.get_task_id_for_task_display_id.return_value = \
-            task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
-            = "template_1"
-        expected_existing_gofs = [
-            GoFIdWithSameGoFOrderDTOFactory(
-                gof_id=gof_fields_dto.gof_id,
-                same_gof_order=gof_fields_dto.same_gof_order
-            )
-            for gof_fields_dto in task_dto.gof_fields_dtos
-        ]
-        create_task_storage_mock \
-            .get_gof_ids_with_same_gof_order_related_to_a_task.return_value \
-            = expected_existing_gofs
-        field_ids = []
-        for gof_fields_dto in task_dto.gof_fields_dtos:
-            for field_values_dto in gof_fields_dto.field_values_dtos:
-                field_ids.append(field_values_dto.field_id)
-        task_gof_ids = [0, 0, 1, 1]
-        expected_existing_fields = FieldIdWithTaskGoFIdDTOFactory.build_batch(
-            size=len(field_ids), field_id=factory.Iterator(field_ids),
-            task_gof_id=factory.Iterator(task_gof_ids)
-        )
-        create_task_storage_mock \
-            .get_field_ids_with_task_gof_id_related_to_given_task \
-            .return_value = expected_existing_fields
-        expected_task_gof_dtos_for_updation = [
-            TaskGoFWithTaskIdDTOFactory(
-                task_id=task_id,
-                gof_id=gof_fields_dto.gof_id,
-                same_gof_order=gof_fields_dto.same_gof_order
-            )
-            for gof_fields_dto in task_dto.gof_fields_dtos
-        ]
-        gof_ids = [gof.gof_id for gof in expected_existing_gofs]
-        same_gof_orders = [gof.same_gof_order for gof in
-                           expected_existing_gofs]
-        expected_task_gof_details_dtos = TaskGoFDetailsDTOFactory.build_batch(
-            size=len(gof_ids), task_gof_id=factory.Iterator([0, 1]),
-            gof_id=factory.Iterator(gof_ids),
-            same_gof_order=factory.Iterator(same_gof_orders)
-        )
-        create_task_storage_mock.update_task_gofs.return_value = \
-            expected_task_gof_details_dtos
-        task_gof_ids = [0, 0, 1, 1]
-        expected_task_gof_field_dtos = TaskGoFFieldDTOFactory.build_batch(
-            size=4, task_gof_id=factory.Iterator(task_gof_ids))
-        expected_task_gof_field_dtos_for_updation = \
-            expected_task_gof_field_dtos
-        interactor = UpdateTaskInteractor(
-            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
-        )
-
-        # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
-
-        # Assert
-        update_task_dto_with_task_db_id = UpdateTaskDTOFactory(
-            task_id=task_id, created_by_id=task_dto.created_by_id,
-            title=task_dto.title,
-            description=task_dto.description,
-            start_date=task_dto.start_date,
-            due_date=task_dto.due_date,
-            due_time=task_dto.due_time,
-            priority=task_dto.priority,
-            stage_assignee=task_dto.stage_assignee,
-            gof_fields_dtos=task_dto.gof_fields_dtos
-        )
-        create_task_storage_mock.update_task_with_given_task_details \
-            .assert_called_once_with(task_dto=update_task_dto_with_task_db_id)
-        create_task_storage_mock \
-            .get_gof_ids_with_same_gof_order_related_to_a_task \
-            .assert_called_once_with(task_id)
-        create_task_storage_mock.update_task_gofs(
-            expected_task_gof_dtos_for_updation)
-        create_task_storage_mock.update_task_gof_fields \
-            .assert_called_once_with(
-            expected_task_gof_field_dtos_for_updation)
-
-    def test_with_invalid_permission_for_assignee_to_given_stage_ids(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
-            perform_base_validations_for_template_gofs_and_fields_mock,
-            update_task_stage_assignees_mock
-    ):
-        # Arrange
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
-        task_storage_mock.check_is_valid_task_display_id.return_value = True
-        task_id = 1
-        task_storage_mock.get_task_id_for_task_display_id.return_value = \
-            task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
-            = "template_1"
-        stage_assignees = [
-            StageAssigneeDTO(
-                db_stage_id=task_dto.stage_assignee.stage_id,
-                assignee_id=task_dto.stage_assignee.assignee_id
-            )
-        ]
-        expected_task_stage_assignee_dto = TaskIdWithStageAssigneesDTO(
-            task_id=task_id, stage_assignees=stage_assignees)
-        interactor = UpdateTaskInteractor(
-            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
-        )
-        given_invalid_stage_ids = [1, 2]
-        from ib_tasks.exceptions.stage_custom_exceptions import \
-            StageIdsWithInvalidPermissionForAssignee
-        update_task_stage_assignees_mock.side_effect = \
-            StageIdsWithInvalidPermissionForAssignee(
-                given_invalid_stage_ids)
-        presenter_mock \
-            .raise_stage_ids_with_invalid_permission_for_assignee_exception \
-            .return_value = mock_object
-
-        # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
-
-        # Assert
-        assert response == mock_object
-        update_task_stage_assignees_mock.assert_called_once_with(
-            expected_task_stage_assignee_dto)
-        presenter_mock \
-            .raise_stage_ids_with_invalid_permission_for_assignee_exception \
-            .assert_called_once()
-        call_args = presenter_mock. \
-            raise_stage_ids_with_invalid_permission_for_assignee_exception \
-            .call_args
-        error_object = call_args[0][0]
-        invalid_stage_ids = error_object.invalid_stage_ids
-        assert invalid_stage_ids == given_invalid_stage_ids
-
-    def test_with_valid_permission_for_assignee_to_given_stage_ids(
-            self, task_storage_mock, gof_storage_mock,
-            create_task_storage_mock,
-            storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object,
-            perform_base_validations_for_template_gofs_and_fields_mock,
-            update_task_stage_assignees_mock
-    ):
-        # Arrange
-        task_dto = UpdateTaskWithTaskDisplayIdDTOFactory()
-        task_storage_mock.check_is_valid_task_display_id.return_value = True
-        task_id = 1
-        task_storage_mock.get_task_id_for_task_display_id.return_value = \
-            task_id
-        create_task_storage_mock.is_valid_task_id.return_value = True
-        create_task_storage_mock.get_template_id_for_given_task.return_value \
-            = "template_1"
-        interactor = UpdateTaskInteractor(
-            task_storage=task_storage_mock, gof_storage=gof_storage_mock,
-            create_task_storage=create_task_storage_mock,
-            storage=storage_mock, field_storage=field_storage_mock,
-            stage_storage=stage_storage_mock,
-            elastic_storage=elastic_storage_mock
-        )
-        presenter_mock.get_update_task_response.return_value = mock_object
-
-        # Act
-        response = interactor.update_task_wrapper(presenter_mock, task_dto)
-
-        # Assert
-        assert response == mock_object
