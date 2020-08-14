@@ -51,7 +51,9 @@ class TestGetRepliesForCommentInteractor:
         assert response == \
                expected_presenter_response_for_comment_id_not_found_mock
         presenter_mock.response_for_comment_id_not_found.assert_called_once()
-        storage_mock.is_comment_id_exists.assert_called_once()
+        storage_mock.is_comment_id_exists.assert_called_once_with(
+            comment_id=comment_id
+        )
 
     def test_with_valid_details_return_response(
             self, storage_mock, presenter_mock, interactor, mocker

@@ -136,14 +136,14 @@ class StagesStorageImplementation(StageStorageInterface):
         task_objs = Task.objects.filter(id__in=task_ids).values(
             'id', 'template_id')
         template_stage_ids_list = []
-        task_stages_dict = {}
-        for item in task_dtos:
-            task_stages_dict[item.task_id] = item.stage_id
-        for task in task_objs:
+        task_template_dict = {}
+        for item in task_objs:
+            task_template_dict[item['id']] = item['template_id']
+        for task in task_dtos:
             template_stage_ids_list.append(
-                TaskTemplateStageDTO(task_id=task['id'],
-                                     task_template_id=task['template_id'],
-                                     stage_id=task_stages_dict[task['id']]))
+                TaskTemplateStageDTO(task_id=task.task_id,
+                                     task_template_id=task_template_dict[task.task_id],
+                                     stage_id=task.stage_id))
         return template_stage_ids_list
 
     def update_stages(self,
@@ -348,7 +348,6 @@ class StagesStorageImplementation(StageStorageInterface):
     def get_current_stages_of_all_tasks(self) -> List[TaskWithDbStageIdDTO]:
         task_stage_objs = list(
             CurrentTaskStage.objects.all().values('task_id', 'stage_id'))
-        print("task_stage_objs", task_stage_objs)
         task_with_stage_id_dtos = [
             TaskWithDbStageIdDTO(task_id=task_stage_obj['task_id'],
                                  db_stage_id=task_stage_obj['stage_id']) for

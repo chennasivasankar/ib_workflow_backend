@@ -2,7 +2,7 @@ import datetime
 
 import factory
 
-from ib_discussions.constants.enum import EntityType, MultiMediaFormatEnum
+from ib_discussions.constants.enum import EntityType, MultimediaFormat
 from ib_discussions.models.comment import Comment, CommentWithMultiMedia, \
     CommentWithMentionUserId
 from ib_discussions.models.discussion import Discussion
@@ -99,8 +99,8 @@ class MultiMediaFactory(factory.django.DjangoModelFactory):
 
     id = factory.Faker("uuid")
     format_type = factory.Iterator([
-        MultiMediaFormatEnum.IMAGE.value,
-        MultiMediaFormatEnum.VIDEO.value
+        MultimediaFormat.IMAGE.value,
+        MultimediaFormat.VIDEO.value
     ])
     url = "https://picsum.photos/200"
     thumbnail_url = "https://picsum.photos/200"

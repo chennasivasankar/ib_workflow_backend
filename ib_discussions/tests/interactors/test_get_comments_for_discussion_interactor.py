@@ -52,7 +52,9 @@ class TestGetCommentsForDiscussionInteractor:
         assert response == \
                expected_presenter_response_for_discussion_id_not_found_mock
         presenter_mock.response_for_discussion_id_not_found.assert_called_once()
-        storage_mock.is_discussion_id_exists.assert_called_once()
+        storage_mock.is_discussion_id_exists.assert_called_once_with(
+            discussion_id=discussion_id
+        )
 
     def test_with_valid_details_return_response(
             self, storage_mock, presenter_mock, interactor, mocker

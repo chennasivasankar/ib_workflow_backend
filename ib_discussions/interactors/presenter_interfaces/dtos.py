@@ -28,3 +28,9 @@ class CommentWithRepliesCountAndEditableDTO:
     created_at: datetime
     replies_count: int
     is_editable: bool
+
+
+@dataclass
+class DiscussionIdWithEditableStatusDTO:
+    discussion_id: str
+    is_editable: bool

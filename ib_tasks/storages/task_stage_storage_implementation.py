@@ -32,7 +32,7 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
 
     def get_task_stage_dtos(self, task_id: int) -> List[TaskStageHistoryDTO]:
         task_stage_history_objs = \
-            TaskStageHistory.objects.filter(task_id=task_id)
+            TaskStageHistory.objects.filter(task_id=task_id, assignee_id__isnull=False)
 
         return [
             TaskStageHistoryDTO(
@@ -104,8 +104,10 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
     def is_user_has_permission_for_at_least_one_stage(
             self, stage_ids: List[int], user_roles: List[str]
     ) -> bool:
+        from ib_tasks.constants.constants import ALL_ROLES_ID
         is_user_has_permissions = StagePermittedRoles.objects.filter(
-            stage_id__in=stage_ids, role_id__in=user_roles
+            Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID),
+            stage_id__in=stage_ids
         ).exists()
         return is_user_has_permissions
 
@@ -113,15 +115,12 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
             self, db_stage_ids: List[int],
             task_ids: List[int]) -> List[
         AssigneeCurrentTasksCountDTO]:
-        print("db_stage_ids", db_stage_ids)
-        print("task_ids", task_ids)
         from django.db.models import Count
         assignee_with_count_objs = list(TaskStageHistory.objects.filter(
             task_id__in=task_ids, stage_id__in=db_stage_ids,
             left_at=None).values(
             'assignee_id').annotate(
             tasks_count=Count('assignee_id')).order_by('tasks_count'))
-        print("assignee_with_count_objs", assignee_with_count_objs)
         assignee_with_current_tasks_count_dtos = [AssigneeCurrentTasksCountDTO(
             assignee_id=assignee_with_count_obj['assignee_id'],
             tasks_count=assignee_with_count_obj['tasks_count']) for

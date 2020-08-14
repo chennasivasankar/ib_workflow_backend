@@ -76,7 +76,7 @@ class UserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_total_count_of_users_for_query(self):
+    def get_total_count_of_users_for_query(self, name_search_query: str):
         pass
 
     @abstractmethod

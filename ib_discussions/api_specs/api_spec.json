@@ -90,7 +90,7 @@
         "thumbnail_url"
       ]
     },
-    "MultiMediaWithId": {
+    "MultimediaWithId": {
       "type": "object",
       "properties": {
         "multimedia_id": {
@@ -218,10 +218,6 @@
         "comment_content": {
           "type": "string"
         },
-        "total_replies_count": {
-          "type": "integer",
-          "format": "int64"
-        },
         "is_editable": {
           "type": "boolean"
         },
@@ -235,48 +231,7 @@
         "multimedia": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/MultiMediaWithId"
-          }
-        }
-      },
-      "required": [
-        "total_replies_count",
-        "author",
-        "created_at",
-        "is_editable",
-        "comment_id",
-        "comment_content",
-        "mention_users",
-        "multimedia"
-      ]
-    },
-    "CompleteReplyDetails": {
-      "type": "object",
-      "properties": {
-        "comment_id": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "author": {
-          "$ref": "#/definitions/UserDetails"
-        },
-        "comment_content": {
-          "type": "string"
-        },
-        "is_editable": {
-          "type": "boolean"
-        },
-        "created_at": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "mention_users": {
-          "$ref": "#/definitions/MentionUsers"
-        },
-        "multimedia": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/MultiMediaWithId"
+            "$ref": "#/definitions/MultimediaWithId"
           }
         }
       },
@@ -479,30 +434,6 @@
     }
   },
   "responses": {
-    "EntityDetailsNotFoundResponse": {
-      "description": "create discussion not found response",
-      "schema": {
-        "allOf": [
-          {
-            "$ref": "#/definitions/HttpResponseAndStatusCode"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "res_status": {
-                "type": "string",
-                "enum": [
-                  "ENTITY_ID_NOT_FOUND"
-                ]
-              }
-            },
-            "required": [
-              "res_status"
-            ]
-          }
-        ]
-      }
-    },
     "CreateDiscussionBadRequestResponse": {
       "description": "create discussion bad request response",
       "schema": {
@@ -516,8 +447,7 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "EMPTY_TITLE",
-                  "INVALID_ENTITY_TYPE_FOR_ENTITY_ID"
+                  "EMPTY_TITLE"
                 ]
               }
             },
@@ -563,7 +493,6 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_ENTITY_TYPE_FOR_ENTITY_ID",
                   "INVALID_OFFSET",
                   "INVALID_LIMIT",
                   "INVALID_USER_ID"
@@ -726,7 +655,20 @@
     "AddCommentResponse": {
       "description": "get comment details",
       "schema": {
-        "$ref": "#/definitions/CompleteCommentDetails"
+        "allOf": [
+          {
+            "$ref": "#/definitions/CompleteCommentDetails"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "total_replies_count": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          }
+        ]
       }
     },
     "CommentNotFoundResponse": {
@@ -786,7 +728,20 @@
           "comments": {
             "type": "array",
             "items": {
-              "$ref": "#/definitions/CompleteCommentDetails"
+              "allOf": [
+                {
+                  "$ref": "#/definitions/CompleteCommentDetails"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "total_replies_count": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              ]
             }
           }
         }
@@ -795,7 +750,7 @@
     "ReplyToCommentResponse": {
       "description": "get reply details",
       "schema": {
-        "$ref": "#/definitions/CompleteReplyDetails"
+        "$ref": "#/definitions/CompleteCommentDetails"
       }
     },
     "ReplyToCommentNotFoundResponse": {
@@ -830,7 +785,7 @@
           "replies": {
             "type": "array",
             "items": {
-              "$ref": "#/definitions/CompleteReplyDetails"
+              "$ref": "#/definitions/CompleteCommentDetails"
             }
           }
         }
@@ -911,7 +866,20 @@
     "UpdateCommentResponse": {
       "description": "update comment details",
       "schema": {
-        "$ref": "#/definitions/CompleteCommentDetails"
+        "allOf": [
+          {
+            "$ref": "#/definitions/CompleteCommentDetails"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "total_replies_count": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          }
+        ]
       }
     },
     "UpdateCommentNotFoundResponse": {
@@ -951,7 +919,8 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_USER_IDS"
+                  "INVALID_USER_IDS",
+                  "USER_CANNOT_UPDATE_COMMENT"
                 ]
               }
             },
@@ -975,7 +944,31 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "COMMENT_ID_NOT_FOUNT"
+                  "COMMENT_ID_NOT_FOUND"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "DeleteCommentBadRequestResponse": {
+      "description": "delete comment bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/HttpResponseAndStatusCode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "USER_CANNOT_DELETE_COMMENT"
                 ]
               }
             },
@@ -1009,9 +1002,6 @@
           "201": {
             "description": "Success response for create discussion"
           },
-          "404": {
-            "$ref": "#/responses/EntityDetailsNotFoundResponse"
-          },
           "400": {
             "$ref": "#/responses/CreateDiscussionBadRequestResponse"
           }
@@ -1044,9 +1034,6 @@
         "responses": {
           "200": {
             "$ref": "#/responses/GetDiscussionSuccessResponse"
-          },
-          "404": {
-            "$ref": "#/responses/EntityDetailsNotFoundResponse"
           },
           "400": {
             "$ref": "#/responses/GetDiscussionBadRequestResponse"
@@ -1205,7 +1192,7 @@
         }
       }
     },
-    "/discussion/{comment_id}/v1/": {
+    "/comment/{comment_id}/v1/": {
       "put": {
         "operationId": "update_comment",
         "summary": "Update Comment",
@@ -1259,6 +1246,9 @@
           },
           "404": {
             "$ref": "#/responses/DeleteCommentNotFoundResponse"
+          },
+          "400": {
+            "$ref": "#/responses/DeleteCommentBadRequestResponse"
           }
         }
       }
