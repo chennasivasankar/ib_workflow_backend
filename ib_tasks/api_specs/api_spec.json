@@ -1310,6 +1310,15 @@
             "task_id",
             "action_id"
          ]
+      },
+      "TaskIdRequestBody": {
+          "type": "object",
+          "properties": {
+            "task_id": {
+              "type": "string"
+            }
+          },
+          "required": ["task_id"]
       }
   },
   "parameters": {
@@ -1435,6 +1444,15 @@
       "name": "task_id",
       "required": true,
       "type": "string"
+    },
+    "TaskBodyParamaeter": {
+      "description": "Task Body Parameter",
+      "in": "body",
+      "name": "TaskBodyParameter",
+      "required": true,
+      "schema": {
+        "$ref": "#/definitions/TaskIdRequestBody"
+      }
     },
     "TaskStageAssigneesParameter": {
       "description": "Task Stage Assignees Parameter",
@@ -3086,8 +3104,8 @@
         }
       }
     },
-    "/task/{task_id}/stage_log/v1/": {
-      "get": {
+    "/task/stage_log/v1/": {
+      "post": {
         "operationId": "get_stages_history_to_task",
         "summary": "get task stages information",
         "description": "get task stages history",
@@ -3100,7 +3118,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/TaskIDParameter"
+            "$ref": "#/parameters/TaskBodyParamaeter"
           }
         ],
         "responses": {
