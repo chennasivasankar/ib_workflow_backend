@@ -101,11 +101,20 @@
             "profile_pic_url": {
               "type": "string"
             },
+            "cover_page_url": {
+              "type": "string"
+            },
             "is_admin": {
               "type": "boolean"
             },
+            "roles": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/RoleDetailsForGetUserProfile"
+              }
+            },
             "company": {
-              "$ref": "#/definitions/CompanyDetailsWithEmployeeDetails"
+              "$ref": "#/definitions/CompanyDetailsWithEmployeeDetailsForGetUserProfile"
             },
             "teams": {
               "type": "array",
@@ -115,7 +124,9 @@
             }
           },
           "required": [
-            "is_admin"
+            "is_admin",
+            "roles",
+            "teams"
           ]
         }
       ]
@@ -200,6 +211,21 @@
       },
       "required": [
         "roles"
+      ]
+    },
+    "RoleDetailsForGetUserProfile": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "role_id",
+        "name"
       ]
     },
     "CompleteUserDetails": {
@@ -423,6 +449,7 @@
           },
           "required": [
             "team_id",
+            "no_of_members",
             "members"
           ]
         }
@@ -469,6 +496,29 @@
           ]
         }
       ]
+    },
+    "CompanyDetailsWithEmployeeDetailsForGetUserProfile": {
+      "type": "object",
+      "properties": {
+        "company_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "logo_url": {
+          "type": "string"
+        },
+        "employees": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EmployeeDetails"
+          }
+        }
+      }
     },
     "TeamsWithTotalTeamsCount": {
       "type": "object",
@@ -651,6 +701,9 @@
             "type": "object",
             "properties": {
               "profile_pic_url": {
+                "type": "string"
+              },
+              "cover_page_url": {
                 "type": "string"
               },
               "role_ids": {
