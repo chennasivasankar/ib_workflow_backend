@@ -784,6 +784,67 @@
           "refresh_token"
         ]
       }
+    },
+    "AddMemberLevelsParameter": {
+      "name": "AddMemberLevelsParameter",
+      "in": "body",
+      "required": true,
+      "description": "add member levels parameter",
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "level_name": {
+              "type": "string"
+            },
+            "level_hierarchy": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "level_name",
+            "level_hierarchy"
+          ]
+        }
+      }
+    },
+    "AddMembersToLevelsParameter": {
+      "name": "AddMembersToLevelsParameter",
+      "in": "body",
+      "required": true,
+      "description": "add members to levels",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "team_member_level_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "member_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              },
+              "required": [
+                "team_member_level_id",
+                "member_ids"
+              ]
+            }
+          }
+        },
+        "required": [
+          "members"
+        ]
+      }
     }
   },
   "responses": {
@@ -1582,6 +1643,38 @@
           "expires_in_seconds"
         ]
       }
+    },
+    "GetTeamMemberLevelsSuccessResponse": {
+      "description": "Success response for get team member levels",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "levels": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "team_member_level_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "team_member_level_name": {
+                  "type": "string"
+                },
+                "level_hierarchy": {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              },
+              "required": [
+                "team_member_level_id",
+                "team_member_level_name",
+                "level_hierarchy"
+              ]
+            }
+          }
+        }
+      }
     }
   },
   "paths": {
@@ -2191,6 +2284,82 @@
           },
           "400": {
             "$ref": "#/responses/RefreshAuthTokensBadRequestResponse"
+          }
+        }
+      }
+    },
+    "/team/{team_id}/member_levels/v1/": {
+      "post": {
+        "operationId": "add_member_levels",
+        "summary": "Add Member Levels",
+        "description": "Add member levels to team",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TeamIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/AddMemberLevelsParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfully created the team member levels"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get Team Member Levels",
+        "description": "Get levels for given team id in path",
+        "operationId": "get_team_member_levels",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TeamIdPathParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetTeamMemberLevelsSuccessResponse"
+          }
+        }
+      }
+    },
+    "/team/{team_id}/add_members_to_levels/v1/": {
+      "post": {
+        "summary": "Add Users To Levels",
+        "operationId": "add_members_to_levels",
+        "description": "Add users to levels for given team id in path",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/TeamIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/AddMembersToLevelsParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfully add members to levels"
           }
         }
       }

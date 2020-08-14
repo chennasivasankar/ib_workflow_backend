@@ -1,9 +1,8 @@
-import uuid
-
 import factory
 
 from ib_iam import models
 from ib_iam.models import Role, Team, Company
+from ib_iam.models.team_member_level import TeamMemberLevel
 from ib_iam.models.user import UserDetails, UserTeam, UserRole
 
 
@@ -69,3 +68,19 @@ class UserFactory(factory.django.DjangoModelFactory):
 
     user_id = factory.sequence(lambda n: n)
     is_admin = False
+
+
+class TeamMemberLevelFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = TeamMemberLevel
+
+    id = factory.Faker("uuid4")
+    team = factory.SubFactory(TeamFactory)
+    level_name = factory.Iterator([
+        "Developer",
+        "Software Developer Lead",
+        "Engineer Manager",
+        "Product Owner"
+    ])
+    level_hierarchy = factory.Iterator([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+

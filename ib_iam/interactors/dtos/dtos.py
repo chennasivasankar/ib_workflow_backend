@@ -15,3 +15,15 @@ class AddUserDetailsDTO:
     team_ids: List[str]
     role_ids: List[str]
     company_id: str
+
+
+@dataclass
+class TeamMemberLevelDTO:
+    team_member_level_name: str
+    level_hierarchy: int
+
+
+@dataclass
+class TeamMemberLevelIdWithMemberIdsDTO:
+    team_member_level_id: str
+    member_ids: List[str]

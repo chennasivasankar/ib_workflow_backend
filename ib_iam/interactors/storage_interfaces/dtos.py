@@ -152,3 +152,10 @@ class CompanyWithUserIdsDTO(CompanyNameLogoAndDescriptionDTO):
 @dataclass
 class CompanyWithCompanyIdAndUserIdsDTO(CompanyWithUserIdsDTO):
     company_id: str
+
+
+@dataclass
+class TeamMemberLevelDetailsDTO:
+    team_member_level_id: str
+    team_member_level_name: str
+    level_hierarchy: int
