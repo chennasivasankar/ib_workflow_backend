@@ -1,7 +1,7 @@
 from typing import List
 
 from ib_utility_tools.exceptions.custom_exceptions import \
-    DuplicateChecklistItemIds
+    DuplicateChecklistItemIds, InvalidChecklistItemIds
 from ib_utility_tools.interactors.presenter_interfaces.delete_checklist_items_presenter_interface import \
     DeleteChecklistItemsPresenterInterface
 from ib_utility_tools.interactors.storage_interfaces.checklist_storage_interface import \
@@ -22,6 +22,9 @@ class DeleteChecklistItemsInteractor:
         except DuplicateChecklistItemIds:
             response = presenter \
                 .get_duplicate_checklist_item_ids_for_delete_checklist_items()
+        except InvalidChecklistItemIds:
+            response = presenter \
+                .get_invalid_checklist_item_ids_for_delete_checklist_items()
         return response
 
     def delete_checklist_items(self, checklist_item_ids: List[str]):
@@ -32,6 +35,7 @@ class DeleteChecklistItemsInteractor:
 
     def _validate_checklist_item_ids(self, checklist_item_ids: List[str]):
         self._validate_duplicate_checklist_item_ids(checklist_item_ids)
+        self._validate_invalid_checklist_item_ids(checklist_item_ids)
 
     @staticmethod
     def _validate_duplicate_checklist_item_ids(checklist_item_ids):
@@ -39,3 +43,10 @@ class DeleteChecklistItemsInteractor:
             len(checklist_item_ids) != len(set(checklist_item_ids))
         if is_duplicate_ids_exist:
             raise DuplicateChecklistItemIds
+
+    def _validate_invalid_checklist_item_ids(self, checklist_item_ids):
+        valid_ids = self.checklist_storage.get_valid_checklist_item_ids(
+            checklist_item_ids=checklist_item_ids)
+        is_invalid_ids_exist = len(valid_ids) != len(checklist_item_ids)
+        if is_invalid_ids_exist:
+            InvalidChecklistItemIds

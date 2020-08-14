@@ -39,3 +39,8 @@ class ChecklistStorageInterface(abc.ABC):
     @abc.abstractmethod
     def delete_checklist_items_bulk(self, checklist_item_ids: List[str]):
         pass
+
+    @abc.abstractmethod
+    def get_valid_checklist_item_ids(self, checklist_item_ids: List[str]) \
+            -> List[str]:
+        pass
