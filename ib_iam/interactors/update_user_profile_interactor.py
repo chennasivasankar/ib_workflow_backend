@@ -3,7 +3,8 @@ from typing import List
 from ib_iam.exceptions.custom_exceptions import (
     InvalidNameLength,
     NameShouldNotContainsNumbersSpecCharacters, InvalidEmail,
-    UserAccountAlreadyExistWithThisEmail, RoleIdsAreInvalid)
+    UserAccountAlreadyExistWithThisEmail, RoleIdsAreInvalid,
+    RoleIdsAreDuplicated)
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces \
     .update_user_profile_presenter_interface import \
@@ -32,8 +33,10 @@ class UpdateUserProfileInteractor(ValidationMixin):
         except NameShouldNotContainsNumbersSpecCharacters:
             response = presenter \
                 .raise_name_should_not_contain_special_chars_and_numbers_exception_for_update_user_profile()
+        except RoleIdsAreDuplicated:
+            response = presenter.raise_duplicate_role_ids_exception()
         except RoleIdsAreInvalid:
-            response = presenter.raise_role_ids_are_invalid()
+            response = presenter.raise_invalid_role_ids_exception()
         except InvalidEmail:
             response = presenter.raise_invalid_email_exception_for_update_user_profile()
         except UserAccountAlreadyExistWithThisEmail:
@@ -45,13 +48,13 @@ class UpdateUserProfileInteractor(ValidationMixin):
         name = user_profile_dto.name
         user_id = user_profile_dto.user_id
         self._validate_name_and_throw_exception(name=name)
-        self._validate_roles(role_ids=role_ids)
+        is_user_admin = self.user_storage.is_user_admin(user_id=user_id)
+        if is_user_admin:
+            self._validate_roles(role_ids=role_ids)
+            self._update_user_roles(role_ids=role_ids, user_id=user_id)
         self._update_user_profile_in_ib_users(
             user_profile_dto=user_profile_dto)
         self.user_storage.update_user_name(user_id=user_id, name=name)
-        is_user_admin = self.user_storage.is_user_admin(user_id=user_id)
-        if is_user_admin:
-            self._update_user_roles(role_ids=role_ids, user_id=user_id)
 
     def _update_user_profile_in_ib_users(self,
                                          user_profile_dto: UserProfileDTO):
@@ -82,8 +85,18 @@ class UpdateUserProfileInteractor(ValidationMixin):
                                                 role_ids=ids_of_role_objects)
 
     def _validate_roles(self, role_ids: List[str]):
-        valid_role_ids = self.user_storage.get_valid_role_ids(role_ids=role_ids)
-        # todo check whether duplicate ids sent or invalid role ids sent
-        #  then exceptions accordingly and modify the interactors accordingly
+        self._validate_duplicate_role_ids(role_ids=role_ids)
+        self._validate_invalid_role_ids(role_ids=role_ids)
+
+    @staticmethod
+    def _validate_duplicate_role_ids(role_ids):
+        is_duplicate_role_ids_exist = len(role_ids) != len(set(role_ids))
+        if is_duplicate_role_ids_exist:
+            raise RoleIdsAreDuplicated()
+
+    def _validate_invalid_role_ids(self, role_ids):
+        are_valid = self.user_storage.check_are_valid_role_ids(
+            role_ids=role_ids)
+        are_not_valid = not are_valid
         if are_not_valid:
             raise RoleIdsAreInvalid()
