@@ -255,6 +255,7 @@ class TestGetFieldsAndActionsInteractor:
             get_actions_dtos,
             get_fields_dtos, expected_response,
             get_field_ids_for_two_tasks, task_fields_dtos, snapshot):
+
         # Arrange
         user_id = "user_id_1"
         view_type = ViewType.LIST.value
