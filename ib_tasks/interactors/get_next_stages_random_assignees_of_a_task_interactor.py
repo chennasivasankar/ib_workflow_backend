@@ -34,8 +34,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 
 
 class GetNextStagesRandomAssigneesOfATaskInteractor(
-    ValidationMixin, GetTaskIdForTaskDisplayIdMixin
-):
+    ValidationMixin, GetTaskIdForTaskDisplayIdMixin):
     def __init__(self, storage: StorageInterface,
                  stage_storage: StageStorageInterface,
                  task_storage: TaskStorageInterface,
@@ -97,25 +96,6 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
             db_stage_ids, stage_detail_dtos)
         return stages_having_user_details_dtos
 
-    @staticmethod
-    def _get_task_ids_group_by_stage_value_dtos(
-            stage_values: List[int], task_id_with_max_stage_value_dtos
-    ) -> List[StageValueWithTaskIdsDTO]:
-        task_ids_group_by_stage_value_dtos = []
-        for each_value in stage_values:
-            list_of_task_ids = []
-            for each_task_id_with_max_stage_value_dto in \
-                    task_id_with_max_stage_value_dtos:
-                if each_task_id_with_max_stage_value_dto.stage_value == \
-                        each_value:
-                    list_of_task_ids.append(
-                        each_task_id_with_max_stage_value_dto.task_id)
-            each_stage_value_with_task_ids_dto = StageValueWithTaskIdsDTO(
-                stage_value=each_value, task_ids=list_of_task_ids)
-            task_ids_group_by_stage_value_dtos.append(
-                each_stage_value_with_task_ids_dto)
-        return task_ids_group_by_stage_value_dtos
-
     def get_status_variables_dtos_of_task_based_on_action(self, task_id: int,
                                                           action_id: int) -> \
             List[StatusVariableDTO]:
@@ -171,7 +151,7 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
             assignee_with_current_tasks_count_dtos: List[
                 AssigneeCurrentTasksCountDTO]) -> List[
         AssigneeCurrentTasksCountDTO]:
-        assignee_ids_with_current_task_count_dtos = [
+        assignee_ids_with_current_task_count = [
             assignee_with_current_tasks_count_dto.assignee_id for
             assignee_with_current_tasks_count_dto in
             assignee_with_current_tasks_count_dtos]
@@ -181,9 +161,10 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
                 assignee_id=permitted_user_id,
                 tasks_count=0) for permitted_user_id in permitted_user_ids if
             permitted_user_id not in
-            assignee_ids_with_current_task_count_dtos]
+            assignee_ids_with_current_task_count]
         assignee_with_all_current_tasks_count_dtos = \
-            assignee_with_current_tasks_count_dtos + permitted_user_dtos_not_in_current_tasks
+            assignee_with_current_tasks_count_dtos + \
+            permitted_user_dtos_not_in_current_tasks
         permitted_assignee_with_current_tasks_count_dtos = [
             assignee_with_current_tasks_count_dto for
             assignee_with_current_tasks_count_dto in
@@ -459,104 +440,3 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
             get_task_stage_logic_satisfied_next_stages(
             task_id=task_id, status_variable_dtos=status_variable_dtos)
         return next_stage_ids
-
-    @staticmethod
-    def _get_updated_status_variable_dto(
-            status_dict: Dict[str,
-                              str],
-            status_variables_dto: List[StatusVariableDTO]
-    ) -> List[StatusVariableDTO]:
-        lst = []
-        for status_dto in status_variables_dto:
-            status_dto.value = status_dict[status_dto.status_variable]
-            lst.append(status_dto)
-        return lst
-
-    def _get_updated_task_dict(
-            self, task_dict: Dict[str, Any], action_id: int, task_id: int) -> \
-            Dict[str, Any]:
-        method_object = \
-            self._get_method_object_for_condition(action_id=action_id)
-        global_constants = \
-            self._get_global_constants_to_task(task_id=task_id)
-        stage_value_dict = \
-            self._get_stage_value_dict_to_task(task_id=task_id)
-        from ib_tasks.exceptions.action_custom_exceptions \
-            import InvalidKeyError, InvalidCustomLogicException
-        try:
-            task_dict = method_object(task_dict=task_dict,
-                                      global_constants=global_constants,
-                                      stage_value_dict=stage_value_dict)
-        except KeyError:
-            raise InvalidKeyError()
-        except:
-            raise InvalidCustomLogicException()
-
-        return task_dict
-
-    def _get_stage_value_dict_to_task(self, task_id: int) -> Dict[str, int]:
-
-        task_stage_dtos = \
-            self.storage.get_stage_dtos_to_task(task_id=task_id)
-
-        stage_value_dict = {}
-        for task_stage_dto in task_stage_dtos:
-            stage_id = task_stage_dto.stage_id
-            stage_value_dict[stage_id] = task_stage_dto.value
-        return stage_value_dict
-
-    def _get_global_constants_to_task(self, task_id: int) -> Dict[str, Any]:
-
-        global_constants_dto = \
-            self.storage.get_global_constants_to_task(task_id=task_id)
-
-        global_constants = {}
-        for global_constant_dto in global_constants_dto:
-            constant_name = global_constant_dto.constant_name
-            global_constants[constant_name] = global_constant_dto.value
-        return global_constants
-
-    def _get_method_object_for_condition(self, action_id: int):
-        path_name = self.storage.get_path_name_to_action(action_id=action_id)
-        path, method = path_name.rsplit(".", 1)
-        from importlib import import_module
-        try:
-            module = import_module(path)
-        except ModuleNotFoundError:
-            raise InvalidModulePathFound(path_name=path_name)
-        try:
-            method_object = getattr(module, method)
-        except AttributeError:
-            raise InvalidMethodFound(method_name=method)
-        return method_object
-
-    @staticmethod
-    def _get_task_dict(status_variables_dto: List[StatusVariableDTO]):
-        task_dict = {}
-        statuses_dict = {}
-        for status_dto in status_variables_dto:
-            statuses_dict[status_dto.status_variable] = status_dto.value
-        task_dict["status_variables"] = statuses_dict
-        return task_dict
-
-    def _get_task_status_variables_dtos(
-            self, task_id: int) -> List[StatusVariableDTO]:
-        status_variable_dtos = \
-            self.storage.get_status_variables_to_task(task_id=task_id)
-        return status_variable_dtos
-
-    def _validate_task_id(self, task_id: int):
-        is_task_exists = self.task_storage. \
-            check_is_task_exists(
-            task_id=task_id)
-
-        is_task_does_not_exists = not is_task_exists
-        if is_task_does_not_exists:
-            raise InvalidTaskIdException(task_id=task_id)
-
-    def _validate_action_id(self, action_id: int):
-        valid_action = self.action_storage.validate_action(action_id=action_id)
-        is_invalid_action = not valid_action
-        if is_invalid_action:
-            raise InvalidActionException(action_id=action_id)
-
