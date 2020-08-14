@@ -32,7 +32,7 @@ from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     CreateTaskLogDTO, \
     CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeIdDTO, \
     SaveAndActOnTaskDTO, TaskCurrentStageDetailsDTO, \
-    UpdateTaskWithTaskDisplayIdDTO
+    UpdateTaskWithTaskDisplayIdDTO, SearchableDTO
 from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory, \
     UserDetailsDTO
 
@@ -440,3 +440,11 @@ class FieldWritePermissionRolesDTOFactory(factory.Factory):
 
     field_id = factory.sequence(lambda counter: "field_{}".format(counter))
     write_permission_roles = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC']
+
+
+class SearchableDTOFactory(factory.Factory):
+    class Meta:
+        model = SearchableDTO
+
+    search_type = Searchable.TEAM.value
+    id = "team1"

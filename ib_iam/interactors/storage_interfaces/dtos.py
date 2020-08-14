@@ -1,6 +1,8 @@
 import uuid
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import Optional, List, Union
+
+from ib_iam.constants.enums import Searchable
 
 
 @dataclass
@@ -152,3 +154,10 @@ class CompanyWithUserIdsDTO(CompanyNameLogoAndDescriptionDTO):
 @dataclass
 class CompanyWithCompanyIdAndUserIdsDTO(CompanyWithUserIdsDTO):
     company_id: str
+
+
+@dataclass
+class SearchableDetailsDTO:
+    search_type: Searchable
+    id: Union[int, str]
+    value: str

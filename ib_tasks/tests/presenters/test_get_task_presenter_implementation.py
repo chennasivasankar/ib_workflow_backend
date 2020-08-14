@@ -45,7 +45,7 @@ class TestGetTaskPresenterImplementation:
     def permission_task_gof_field_dtos(self):
         permission_task_gof_field_dtos = [
             TaskGoFFieldDTOFactory(task_gof_id=0, field_id="field0",
-                                   field_response="response0"),
+                                   field_response='{"id": 1, "value": "Hyderabad"}'),
             TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field2",
                                    field_response="response2"),
             TaskGoFFieldDTOFactory(task_gof_id=1, field_id="field3",

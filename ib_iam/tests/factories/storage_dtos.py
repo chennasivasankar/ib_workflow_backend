@@ -1,9 +1,10 @@
 import factory
 
+from ib_iam.constants.enums import Searchable
 from ib_iam.interactors.storage_interfaces.dtos \
     import UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO, RoleDTO, TeamDTO, UserIdAndNameDTO, \
-    UserProfileDTO
+    UserProfileDTO, SearchableDetailsDTO
 
 
 class UserDTOFactory(factory.Factory):
@@ -250,3 +251,12 @@ class UserIdNameEmailAndProfilePicUrlDTOFactory(factory.Factory):
     name = factory.Iterator(["username", "testuser", "dummyuser"])
     email = factory.sequence(lambda n: "email%d@gmail.com" % n)
     profile_pic_url = factory.sequence(lambda n: "url%d" % n)
+
+
+class SearchableDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = SearchableDetailsDTO
+
+    search_type = Searchable.CITY.value
+    id = 1
+    value = "Hyderabad"

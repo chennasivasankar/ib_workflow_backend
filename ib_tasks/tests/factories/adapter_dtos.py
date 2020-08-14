@@ -52,3 +52,11 @@ class UserDetailsDTOFactory(factory.Factory):
     user_id = factory.Sequence(lambda n: 'user_id_%d' % (n + 1))
     user_name = factory.Sequence(lambda n: 'user_name_%d' % (n + 1))
     profile_pic_url = factory.Sequence(lambda n: 'profile_pic_%d' % (n + 1))
+
+
+class SearchableDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = SearchableDetailsDTO
+    search_type = Searchable.STATE.value
+    id = 2
+    value = "Hyderabad"

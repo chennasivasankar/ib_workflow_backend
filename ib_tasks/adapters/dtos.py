@@ -1,5 +1,7 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Union
+
+from ib_tasks.constants.enum import Searchable
 
 
 @dataclass()
@@ -52,3 +54,10 @@ class UserDetailsDTO:
     user_id: str
     user_name: str
     profile_pic_url: str
+
+
+@dataclass
+class SearchableDetailsDTO:
+    search_type: Searchable
+    id: Union[int, str]
+    value: str

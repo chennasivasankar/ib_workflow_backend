@@ -2,6 +2,8 @@ import factory
 
 from ib_iam.adapters.auth_service import UserTokensDTO
 from ib_iam.adapters.dtos import UserProfileDTO
+from ib_iam.app_interfaces.dtos import SearchableDTO
+from ib_iam.constants.enums import Searchable
 
 
 class UserProfileDTOFactory(factory.Factory):
@@ -22,3 +24,12 @@ class UserTokensDTOFactory(factory.Factory):
     refresh_token = factory.sequence(lambda n: "refresh_token_token_%s" % n)
     expires_in_seconds = 10000000000
     user_id = factory.Faker("uuid4")
+
+
+class SearchableDTOFactory(factory.Factory):
+    class Meta:
+        model = SearchableDTO
+
+    search_type = Searchable.CITY.value
+    id = 1
+
