@@ -1,16 +1,19 @@
-import datetime
 import json
 
 import pytest
 
 
-class TestUpdateTaskPresenterImplementation:
+class TestCreateTransitionChecklistTemplatePresenterImplementation:
+
+    @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        pass
 
     @pytest.fixture
     def presenter(self):
-        from ib_tasks.presenters.update_task_presenter import \
-            UpdateTaskPresenterImplementation
-        return UpdateTaskPresenterImplementation()
+        from ib_tasks.presenters.create_transition_checklist_presenter import \
+            CreateTransitionChecklistTemplatePresenterImplementation
+        return CreateTransitionChecklistTemplatePresenterImplementation()
 
     def test_with_invalid_task_display_id(self, presenter, snapshot):
         # Arrange
@@ -32,10 +35,11 @@ class TestUpdateTaskPresenterImplementation:
 
     def test_raise_invalid_task_id(self, presenter, snapshot):
         # Arrange
+
         task_id = 1
         from ib_tasks.exceptions.task_custom_exceptions import \
-            InvalidTaskException
-        err = InvalidTaskException(task_id)
+            InvalidTaskIdException
+        err = InvalidTaskIdException(task_id)
 
         # Act
         json_response = presenter.raise_invalid_task_id(err)
@@ -48,89 +52,37 @@ class TestUpdateTaskPresenterImplementation:
         snapshot.assert_match(json_json_response['response'],
                               'json_response')
 
-    def test_raise_due_date_has_expired(self, snapshot, presenter):
+    def test_raise_invalid_transition_checklist_template_id(self, snapshot,
+                                                            presenter):
         # Arrange
-        expected_due_date = datetime.date(2020, 3, 5)
-        from ib_tasks.exceptions.datetime_custom_exceptions import \
-            DueDateHasExpired
-
-        err = DueDateHasExpired(expected_due_date)
-
-        # Act
-        response = presenter.raise_due_date_has_expired(err)
-
-        # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
-
-    def test_raise_invalid_due_time_format(self, snapshot, presenter):
-        # Arrange
-        expected_due_time_format = "55:55:03"
-        from ib_tasks.exceptions.datetime_custom_exceptions import \
-            InvalidDueTimeFormat
-
-        err = InvalidDueTimeFormat(expected_due_time_format)
-
-        # Act
-        response = presenter.raise_invalid_due_time_format(err)
-
-        # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
-
-    def test_raise_start_date_is_ahead_of_due_date(self, snapshot, presenter):
-        # Arrange
-        expected_start_date = datetime.date(2020, 5, 4)
-        expected_due_date = datetime.date(2020, 4, 4)
-        from ib_tasks.exceptions.datetime_custom_exceptions import \
-            StartDateIsAheadOfDueDate
-
-        err = StartDateIsAheadOfDueDate(expected_start_date, expected_due_date)
-
-        # Act
-        response = presenter.raise_start_date_is_ahead_of_due_date(err)
-
-        # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
-
-    def test_raise_due_time_has_expired_for_today(self, snapshot, presenter):
-        # Arrange
-        expected_due_time = "05:08:55"
-        from ib_tasks.exceptions.datetime_custom_exceptions import \
-            DueTimeHasExpiredForToday
-
-        err = DueTimeHasExpiredForToday(expected_due_time)
-
-        # Act
-        response = presenter.raise_due_time_has_expired_for_today(err)
-
-        # Assert
-        json_response = json.loads(response.content)
-        snapshot.assert_match(json_response['http_status_code'],
-                              'http_status_code')
-        snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
-
-    def test_raise_invalid_task_template_ids(self, snapshot, presenter):
-        # Arrange
-        expected_invalid_task_template_ids = ["template_1", "template_2"]
+        transition_checklist_template_id = "transition_checklist_template_id"
 
         from ib_tasks.exceptions.task_custom_exceptions import \
-            InvalidTaskTemplateIds
-        err = InvalidTaskTemplateIds(expected_invalid_task_template_ids)
+            InvalidTransitionChecklistTemplateId
+        err = InvalidTransitionChecklistTemplateId(
+            transition_checklist_template_id)
 
         # Act
-        response = presenter.raise_invalid_task_template_ids(err)
+        response = presenter.raise_invalid_transition_checklist_template_id(
+            err)
+
+        # Assert
+        json_response = json.loads(response.content)
+        snapshot.assert_match(json_response['http_status_code'],
+                              'http_status_code')
+        snapshot.assert_match(json_response['res_status'], 'res_status')
+        snapshot.assert_match(json_response['response'], 'json_response')
+
+    def test_raise_invalid_action(self, snapshot, presenter):
+        # Arrange
+        action_id = 1
+
+        from ib_tasks.exceptions.action_custom_exceptions import \
+            InvalidActionException
+        err = InvalidActionException(action_id=action_id)
+
+        # Act
+        response = presenter.raise_invalid_action(err)
 
         # Assert
         json_response = json.loads(response.content)
@@ -702,18 +654,36 @@ class TestUpdateTaskPresenterImplementation:
         snapshot.assert_match(json_response['res_status'], 'res_status')
         snapshot.assert_match(json_response['response'], 'json_response')
 
-    def test_raise_stage_ids_with_invalid_permission_for_assignee_exception(
-            self, presenter, snapshot
-    ):
+    def test_raise_invalid_stage_id(self, snapshot, presenter):
         # Arrange
-        stage_ids = [1, 2]
+        stage_id = 1
+        from ib_tasks.exceptions.stage_custom_exceptions import InvalidStageId
+        err = InvalidStageId(stage_id)
+
+        # Act
+        response = presenter.raise_invalid_stage_id(err)
+
+        # Assert
+        json_response = json.loads(response.content)
+        snapshot.assert_match(json_response['http_status_code'],
+                              'http_status_code')
+        snapshot.assert_match(json_response['res_status'], 'res_status')
+        snapshot.assert_match(json_response['response'], 'response')
+
+    def test_raise_transition_template_is_not_related_to_given_stage_action(
+            self, snapshot, presenter):
+        # Arrange
+        stage_id = 1
+        action_id = 2
+        transition_checklist_template_id = "transition_template_1"
         from ib_tasks.exceptions.stage_custom_exceptions import \
-            StageIdsWithInvalidPermissionForAssignee
-        err = StageIdsWithInvalidPermissionForAssignee(stage_ids)
+            TransitionTemplateIsNotRelatedToGivenStageAction
+        err = TransitionTemplateIsNotRelatedToGivenStageAction(
+            transition_checklist_template_id, action_id, stage_id)
 
         # Act
         response = \
-            presenter.raise_stage_ids_with_invalid_permission_for_assignee_exception(
+            presenter.raise_transition_template_is_not_related_to_given_stage_action(
                 err)
 
         # Assert
@@ -721,11 +691,31 @@ class TestUpdateTaskPresenterImplementation:
         snapshot.assert_match(json_response['http_status_code'],
                               'http_status_code')
         snapshot.assert_match(json_response['res_status'], 'res_status')
-        snapshot.assert_match(json_response['response'], 'json_response')
+        snapshot.assert_match(json_response['response'], 'response')
 
-    def test_get_update_task_response(self, presenter, snapshot):
+    def test_raise_same_gof_order_for_a_gof(
+            self, snapshot, presenter):
+        # Arrange
+        gof_id = "gof_1"
+        duplicate_same_gof_order = [1]
+        from ib_tasks.exceptions.gofs_custom_exceptions import \
+            DuplicateSameGoFOrderForAGoF
+        err = DuplicateSameGoFOrderForAGoF(gof_id, duplicate_same_gof_order)
+
         # Act
-        response = presenter.get_update_task_response()
+        response = presenter.raise_same_gof_order_for_a_gof(err)
+
+        # Assert
+        json_response = json.loads(response.content)
+        snapshot.assert_match(json_response['http_status_code'],
+                              'http_status_code')
+        snapshot.assert_match(json_response['res_status'], 'res_status')
+        snapshot.assert_match(json_response['response'], 'response')
+
+    def test_get_create_transition_checklist_response(self, snapshot,
+                                                      presenter):
+        # Act
+        response = presenter.get_create_transition_checklist_response()
 
         # Assert
         json_response = json.loads(response.content)

@@ -3,8 +3,17 @@ import json
 
 import pytest
 
+from ib_tasks.tests.factories.interactor_dtos import \
+    TaskCurrentStageDetailsDTOFactory
+from ib_tasks.tests.factories.storage_dtos import CurrentStageDetailsDTOFactory
+
 
 class TestSaveAndActOnATaskPresenterImplementation:
+
+    @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        CurrentStageDetailsDTOFactory.reset_sequence()
+        TaskCurrentStageDetailsDTOFactory.reset_sequence()
 
     @pytest.fixture
     def presenter(self):
@@ -22,6 +31,42 @@ class TestSaveAndActOnATaskPresenterImplementation:
 
         # Act
         json_response = presenter.raise_invalid_task_display_id(err)
+
+        # Assert
+        json_json_response = json.loads(json_response.content)
+        snapshot.assert_match(
+            json_json_response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(json_json_response['res_status'], 'res_status')
+        snapshot.assert_match(json_json_response['response'],
+                              'json_response')
+
+    def test_raise_invalid_action_id(self, presenter, snapshot):
+        # Arrange
+        action_id = 1
+        from ib_tasks.exceptions.action_custom_exceptions import \
+            InvalidActionException
+        err = InvalidActionException(action_id)
+
+        # Act
+        json_response = presenter.raise_invalid_action_id(err)
+
+        # Assert
+        json_json_response = json.loads(json_response.content)
+        snapshot.assert_match(
+            json_json_response['http_status_code'], 'http_status_code')
+        snapshot.assert_match(json_json_response['res_status'], 'res_status')
+        snapshot.assert_match(json_json_response['response'],
+                              'json_response')
+
+    def test_raise_invalid_task_id(self, presenter, snapshot):
+        # Arrange
+        task_id = 1
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            InvalidTaskException
+        err = InvalidTaskException(task_id)
+
+        # Act
+        json_response = presenter.raise_invalid_task_id(err)
 
         # Assert
         json_json_response = json.loads(json_response.content)
@@ -830,3 +875,16 @@ class TestSaveAndActOnATaskPresenterImplementation:
                               'http_status_code')
         snapshot.assert_match(json_response['res_status'], 'res_status')
         snapshot.assert_match(json_response['response'], 'response')
+
+    def test_get_save_and_act_on_task_response(self, presenter, snapshot):
+        # Arrange
+        task_current_stage_details_dto = TaskCurrentStageDetailsDTOFactory()
+
+        # Act
+        response = presenter.get_save_and_act_on_task_response(
+            task_current_stage_details_dto)
+
+        # Assert
+        json_response = json.loads(response.content)
+        snapshot.assert_match(name="task_current_stage_details",
+                              value=json_response)

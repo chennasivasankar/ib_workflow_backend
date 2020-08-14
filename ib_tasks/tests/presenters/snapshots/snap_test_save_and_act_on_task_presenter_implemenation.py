@@ -13,6 +13,24 @@ snapshots['TestSaveAndActOnATaskPresenterImplementation.test_with_invalid_task_d
 
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_with_invalid_task_display_id json_response'] = 'task_display_id is invalid task_id send valid task_id'
 
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_invalid_action_id http_status_code'] = 400
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_invalid_action_id res_status'] = 'INVALID_ACTION_ID'
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_invalid_action_id json_response'] = 'invalid action id is: 1, please send valid action id'
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_invalid_task_id http_status_code'] = 400
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_invalid_task_id res_status'] = 'INVALID_TASK_ID'
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_invalid_task_id json_response'] = 'invalid task id is: 1, please send valid task id'
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_due_date_has_expired http_status_code'] = 400
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_due_date_has_expired res_status'] = 'DUE_DATE_HAS_EXPIRED'
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_due_date_has_expired json_response'] = 'given due date 2020-03-05 has expired'
+
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_invalid_due_time_format http_status_code'] = 400
 
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_invalid_due_time_format res_status'] = 'INVALID_DUE_TIME_FORMAT'
@@ -193,17 +211,17 @@ snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for
 
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for_not_acceptable_file_format json_response'] = "Invalid format for a file: .png for field: field_1! Try with these formats: ['.pdf', '.txt']"
 
-snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_due_date_has_expired http_status_code'] = 400
-
-snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_due_date_has_expired res_status'] = 'DUE_DATE_HAS_EXPIRED'
-
-snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_due_date_has_expired json_response'] = 'given due date 2020-03-05 has expired'
-
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for_user_action_permission_denied http_status_code'] = 403
 
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for_user_action_permission_denied res_status'] = 'USER_DO_NOT_HAVE_ACCESS'
 
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for_user_action_permission_denied response'] = 'User do not have access to the action: 1'
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for_invalid_present_actions http_status_code'] = 400
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for_invalid_present_actions res_status'] = 'INVALID_PRESENT_STAGE_ACTION'
+
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for_invalid_present_actions response'] = '1 is invalid present stage action'
 
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_invalid_key_error http_status_code'] = 400
 
@@ -247,8 +265,17 @@ snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_stage_ids_wit
 
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_stage_ids_with_invalid_permission_for_assignee_exception response'] = 'Stage ids with invalid permission of assignees that you have sent are: [1, 2],please assign valid assignees for stages'
 
-snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for_invalid_present_actions http_status_code'] = 400
-
-snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for_invalid_present_actions res_status'] = 'INVALID_PRESENT_STAGE_ACTION'
-
-snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_exception_for_invalid_present_actions response'] = '1 is invalid present stage action'
+snapshots['TestSaveAndActOnATaskPresenterImplementation.test_get_save_and_act_on_task_response task_current_stage_details'] = {
+    'stages': [
+        {
+            'stage_display_name': 'stage_display_name_2',
+            'stage_id': 'stage_2'
+        },
+        {
+            'stage_display_name': 'stage_display_name_3',
+            'stage_id': 'stage_3'
+        }
+    ],
+    'task_id': 'task_display_0',
+    'user_has_permission': True
+}
