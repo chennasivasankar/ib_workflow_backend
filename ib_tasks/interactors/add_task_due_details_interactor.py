@@ -2,7 +2,7 @@ from datetime import datetime
 
 from ib_tasks.exceptions.custom_exceptions import InvalidDueDateTimeException
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException, \
-    UserIsNotAssigneeToTask, InvalidReasonIdException
+    UserIsNotAssigneeToTask, InvalidReasonIdException, InvalidTaskDisplayId
 from ib_tasks.interactors.presenter_interfaces.task_due_missing_details_presenter import \
     TaskDueDetailsPresenterInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import StorageInterface
@@ -19,7 +19,7 @@ class AddTaskDueDetailsInteractor:
                                      due_details: TaskDueParametersDTO):
         try:
             self.add_task_due_details(due_details)
-        except InvalidTaskIdException as err:
+        except InvalidTaskDisplayId as err:
             return presenter.response_for_invalid_task_id(err)
         except InvalidDueDateTimeException:
             return presenter.response_for_invalid_due_datetime()
@@ -33,7 +33,6 @@ class AddTaskDueDetailsInteractor:
         user_id = due_details.user_id
         reason_id = due_details.reason_id
         updated_due_datetime = due_details.due_date_time
-        self._validate_task_id(task_id)
         self._validate_if_task_is_assigned_to_user(task_id=task_id, user_id=user_id)
         self._validate_updated_due_datetime(updated_due_datetime)
         self._validate_reason_id(reason_id)
@@ -60,12 +59,6 @@ class AddTaskDueDetailsInteractor:
     def _validate_updated_due_datetime(updated_due_datetime):
         if updated_due_datetime < datetime.now():
             raise InvalidDueDateTimeException()
-
-    def _validate_task_id(self, task_id):
-        is_valid = self.storage.validate_task_id(task_id)
-        is_invalid = not is_valid
-        if is_invalid:
-            raise InvalidTaskIdException(task_id)
 
     def _validate_if_task_is_assigned_to_user(self, task_id: int, user_id: str):
         is_assigned = self.storage.validate_if_task_is_assigned_to_user(
