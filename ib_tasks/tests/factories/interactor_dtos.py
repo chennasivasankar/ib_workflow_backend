@@ -32,7 +32,7 @@ from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     CreateTaskLogDTO, \
     CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeIdDTO, \
     SaveAndActOnTaskDTO, TaskCurrentStageDetailsDTO, \
-    UpdateTaskWithTaskDisplayIdDTO, TaskDelayParametersDTO
+    UpdateTaskWithTaskDisplayIdDTO
 from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory, \
     UserDetailsDTO
 
@@ -308,15 +308,15 @@ class TaskDueParametersDTOFactory(factory.Factory):
     reason = "reason"
 
 
-class TaskDelayParametersDTOFactory(factory.Factory):
-    class Meta:
-        model = TaskDelayParametersDTO
-
-    user_id = factory.Sequence(lambda n: "user_id_%d" % n)
-    task_id = factory.sequence(lambda n: (n + 1))
-    due_date_time = datetime.now() + timedelta(days=2)
-    reason_id = factory.Iterator([1, 2, 3, 4, -1])
-    reason = "reason"
+# class TaskDelayParametersDTOFactory(factory.Factory):
+#     class Meta:
+#         model = TaskDelayParametersDTO
+#
+#     user_id = factory.Sequence(lambda n: "user_id_%d" % n)
+#     task_id = factory.sequence(lambda n: (n + 1))
+#     due_date_time = datetime.now() + timedelta(days=2)
+#     reason_id = factory.Iterator([1, 2, 3, 4, -1])
+#     reason = "reason"
 
 
 class CreateTaskDTOFactory(factory.Factory):
