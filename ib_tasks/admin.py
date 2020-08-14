@@ -17,8 +17,6 @@ from ib_tasks.models.task_template_gofs import TaskTemplateGoFs
 from ib_tasks.models.filter import Filter
 from ib_tasks.models.filter_condition import FilterCondition
 
-
-
 admin.site.register(Filter)
 admin.site.register(FilterCondition)
 admin.site.register(ElasticSearchTask)
@@ -49,9 +47,9 @@ class TaskGoFInline(admin.StackedInline):
 
 
 class StagesAdmin(admin.ModelAdmin):
-    list_display_links = ('display_name', )
-    list_display = ('stage_id', 'display_name')
-    list_editable = ('stage_id', )
+    list_display_links = ('display_name',)
+    list_display = ('id', 'stage_id', 'display_name')
+    list_editable = ('stage_id',)
 
 
 class StagesActionsAdmin(admin.ModelAdmin):
@@ -71,7 +69,4 @@ admin.site.register(TaskLog)
 
 admin.site.register(Stage, StagesAdmin)
 
-
 admin.site.register(StageAction, StagesActionsAdmin)
-
-

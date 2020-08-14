@@ -458,9 +458,9 @@ class TaskGoFFieldDTOFactory(factory.Factory):
     class Meta:
         model = TaskGoFFieldDTO
 
-    task_gof_id = factory.Sequence(lambda n: n)
     field_id = factory.Sequence(lambda n: "field{}".format(n))
     field_response = factory.Sequence(lambda n: "field_response{}".format(n))
+    task_gof_id = factory.Sequence(lambda n: n)
 
 
 class GlobalConstantDTOFactory(factory.Factory):
