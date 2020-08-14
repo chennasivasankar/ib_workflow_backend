@@ -1,6 +1,7 @@
 import pytest
 
-from ib_tasks.tests.factories.storage_dtos import StageActionDetailsDTOFactory
+from ib_tasks.tests.factories.storage_dtos import StageActionDetailsDTOFactory, \
+    TaskGoFDTOFactory
 
 
 class TestGetTaskPresenterImplementation:
@@ -20,9 +21,11 @@ class TestGetTaskPresenterImplementation:
         return task_base_details_dto
 
     @pytest.fixture
+    def reset_sequence(self):
+        TaskGoFDTOFactory.reset_sequence()
+
+    @pytest.fixture
     def permission_task_gof_dtos(self):
-        from ib_tasks.tests.factories.storage_dtos \
-            import TaskGoFDTOFactory
         permission_task_gof_dtos = [
             TaskGoFDTOFactory(task_gof_id=0, gof_id="gof0", same_gof_order=0),
             TaskGoFDTOFactory(task_gof_id=1, gof_id="gof1", same_gof_order=0),
