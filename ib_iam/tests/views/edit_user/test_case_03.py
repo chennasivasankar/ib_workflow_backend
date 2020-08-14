@@ -21,17 +21,29 @@ class TestCase03EditUserAPITestCase(TestUtils):
         reset_sequence_for_model_factories()
         from ib_iam.tests.factories.models import UserDetailsFactory
         UserDetailsFactory.create(user_id=user_id, is_admin=True, company=None)
-        UserDetailsFactory.create(user_id="ef6d1fc6-ac3f-4d2d-a983-752c992e8300", \
-                                  company=None, is_admin=False)
+        UserDetailsFactory.create(
+            user_id="ef6d1fc6-ac3f-4d2d-a983-752c992e8300", \
+            company=None, is_admin=False)
         from ib_iam.tests.factories.models \
             import CompanyFactory, TeamFactory, RoleFactory
-        CompanyFactory.create(company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331')
+        CompanyFactory.create(
+            company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331')
         TeamFactory.create(team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8344')
         TeamFactory.create(team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8343')
-        RoleFactory.create(id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331', role_id='ROLE_1')
+        RoleFactory.create(id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
+                           role_id='ROLE_1')
+
+    @staticmethod
+    def elastic_search_update_user_mock(mocker):
+        mock = mocker.patch(
+            "ib_iam.storages.elastic_storage_implementation.ElasticStorageImplementation.update_elastic_user"
+        )
+        mock.update_elastic_user.return_value = None
+        return mock
 
     @pytest.mark.django_db
     def test_case(self, user_set_up, snapshot, mocker):
+        self.elastic_search_update_user_mock(mocker=mocker)
         body = {'name': 'parker', 'email': 'parker2020@gmail.com',
                 'company_id': 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
                 'team_ids': ['ef6d1fc6-ac3f-4d2d-a983-752c992e8344',

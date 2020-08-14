@@ -26,6 +26,17 @@ class GetTaskStageHistoryPresenterImplementation(
         )
         return response_object
 
+    def raise_invalid_task_display_id(self, err):
+        from ib_tasks.constants.exception_messages import \
+            INVALID_TASK_DISPLAY_ID
+        message = INVALID_TASK_DISPLAY_ID[0].format(err.task_display_id)
+        data = {
+            "response": message,
+            "http_status_code": 400,
+            "res_status": INVALID_TASK_DISPLAY_ID[1]
+        }
+        return self.prepare_400_bad_request_response(data)
+
 
     def get_task_stages_history_response(
             self, task_stages_details_dto: TaskStageCompleteDetailsDTO):
