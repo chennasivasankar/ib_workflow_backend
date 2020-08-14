@@ -311,10 +311,11 @@
           "type": "string"
         },
         "stage_with_actions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/StagesWithActions"
-          }
+          "allOf": [
+            {
+              "$ref": "#/definitions/StagesWithActions"
+            }
+          ]
         },
         "task_overview_fields": {
           "type": "array",

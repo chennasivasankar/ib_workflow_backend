@@ -48,7 +48,7 @@ class GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor:
         stage_assignee_dtos = [
             StageAssigneeDTO(
                 db_stage_id=random_user_for_each_stage_dto.db_stage_id,
-                assignee_id=random_user_for_each_stage_dto.assignee_id
+                assignee_id=random_user_for_each_stage_dto.assignee_details_dto.assignee_id
             )
             for random_user_for_each_stage_dto in
             random_users_for_each_stage_dtos

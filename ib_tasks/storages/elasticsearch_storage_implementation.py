@@ -60,6 +60,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         task.template_id = task_dto.template_id
         task.title = task_dto.title
         task.fields = field_objects
+        task.stages = stage_objects
         task.save()
 
     def filter_tasks(
