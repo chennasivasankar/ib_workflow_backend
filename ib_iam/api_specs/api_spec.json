@@ -979,7 +979,32 @@
                   "INVALID_EMAIL",
                   "EMAIL_ALREADY_IN_USE",
                   "INVALID_NAME_LENGTH",
+                  "DUPLICATE_ROLE_IDS",
                   "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "NotFoundForUpdateUserProfileResponse": {
+      "description": "bad request for update user profile",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_ROLE_IDS"
                 ]
               }
             },
@@ -2180,6 +2205,9 @@
           },
           "400": {
             "$ref": "#/responses/BadRequestForUpdateUserProfileResponse"
+          },
+          "404": {
+            "$ref": "#/responses/NotFoundForUpdateUserProfileResponse"
           }
         }
       }
