@@ -22,6 +22,20 @@ from ib_tasks.interactors.task_dtos import StageAndActionsDetailsDTO
 class GetTaskPresenterImplementation(GetTaskPresenterInterface,
                                      HTTPResponseMixin):
 
+    def raise_user_permission_denied(self):
+        from ib_tasks.constants.exception_messages import \
+            USER_PERMISSION_DENIED
+        response_message = USER_PERMISSION_DENIED[0]
+        data = {
+            "response": response_message,
+            "http_status_code": 403,
+            "res_status": USER_PERMISSION_DENIED[1]
+        }
+        response_object = self.prepare_403_forbidden_response(
+            response_dict=data
+        )
+        return response_object
+
     def raise_exception_for_invalid_task_id(self, err: InvalidTaskIdException):
         from ib_tasks.constants.exception_messages import INVALID_TASK_DB_ID
         response_message = INVALID_TASK_DB_ID[0]

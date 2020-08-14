@@ -301,3 +301,7 @@ INVALID_TASK_DB_ID = (
     "Invalid task id",
     "INVALID_TASK_ID"
 )
+USER_PERMISSION_DENIED = (
+    "user doesn't have permission",
+    "USER_PERMISSION_DENIED"
+)
