@@ -218,11 +218,6 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
 
     def _get_task_details_dict(self, actions_list, assignees_dtos_dict,
                                fields_list, task_id, task_stage_map):
-        try:
-            assignees_details_dict = self._get_assignee_details_dict(
-                assignees_dto=assignees_dtos_dict[task_stage_map[task_id].stage_id])
-        except KeyError:
-            assignees_details_dict = {}
         task_dict = {
             "task_id": task_id,
             "task_overview_fields": fields_list,
@@ -230,18 +225,25 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
                 "stage_id": task_stage_map[task_id].db_stage_id,
                 "stage_display_name": task_stage_map[task_id].display_name,
                 "stage_color": task_stage_map[task_id].stage_color,
-                "assignee": assignees_details_dict,
                 "actions": actions_list
             }
         }
+        try:
+            assignees_details_dict = self._get_assignee_details_dict(
+                assignees_dto=assignees_dtos_dict[task_stage_map[task_id].stage_id])
+            task_dict['stage_with_actions'].update(assignees_details_dict)
+        except KeyError:
+            pass
         return task_dict
 
     @staticmethod
     def _get_assignee_details_dict(assignees_dto: AssigneesDTO):
         return {
-            "assignee_id": assignees_dto.assignee_id,
-            "name": assignees_dto.name,
-            "profile_pic_url": assignees_dto.profile_pic_url
+            "assignee": {
+                "assignee_id": assignees_dto.assignee_id,
+                "name": assignees_dto.name,
+                "profile_pic_url": assignees_dto.profile_pic_url
+            }
         }
 
     @staticmethod

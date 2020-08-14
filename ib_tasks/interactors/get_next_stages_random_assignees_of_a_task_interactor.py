@@ -202,7 +202,7 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
                 _get_permitted_assignee_with_current_tasks_count_dtos(
                 permitted_user_ids, assignee_with_current_tasks_count_dtos)
             if not permitted_assignee_with_current_tasks_count_dtos:
-                assignee_id_with_current_less_tasks=permitted_user_ids[0]
+                assignee_id_with_current_less_tasks = permitted_user_ids[0]
                 updated_task_count_dto_for_assignee_having_less_tasks. \
                     append(AssigneeCurrentTasksCountDTO(
                     assignee_id=assignee_id_with_current_less_tasks,

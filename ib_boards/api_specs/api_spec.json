@@ -264,7 +264,11 @@
         "profile_pic_url": {
           "type": "string"
         }
-      }
+      },
+      "required": [
+        "assignee_id",
+        "name"
+      ]
     },
     "TaskDetails": {
       "type": "object",
@@ -386,23 +390,24 @@
         "http_status_code",
         "res_status"
       ]
-      },
+    },
     "BoardDetails": {
       "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "board_id": {
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "board_id",
-                "name"
-              ]}
+      "items": {
+        "type": "object",
+        "properties": {
+          "board_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "board_id",
+          "name"
+        ]
+      }
     },
     "TaskCompleteDetails": {
       "type": "object",
@@ -468,12 +473,15 @@
       "description": "is starred value",
       "schema": {
         "type": "object",
-      "properties": {
-        "action": {
-          "type": "string",
-          "enum": ["STAR" , "UNSTAR"]
-        }
-      },
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "STAR",
+              "UNSTAR"
+            ]
+          }
+        },
         "required": [
           "action"
         ]
@@ -489,7 +497,10 @@
         "properties": {
           "view_type": {
             "type": "string",
-            "enum": ["LIST", "KANBAN"]
+            "enum": [
+              "LIST",
+              "KANBAN"
+            ]
           }
         },
         "required": [
@@ -533,23 +544,23 @@
       "description": "get boards response",
       "schema": {
         "type": "object",
-          "properties": {
-            "total_boards_count": {
-              "type": "integer",
-              "format": "int64"
-            },
-            "starred_boards": {
-              "$ref": "#/definitions/BoardDetails"
-            },
-            "all_boards": {
-              "$ref": "#/definitions/BoardDetails"
-              }
-            },
-          "required": [
-            "total_boards_count",
-            "starred_boards",
-            "all_boards"
-          ]
+        "properties": {
+          "total_boards_count": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "starred_boards": {
+            "$ref": "#/definitions/BoardDetails"
+          },
+          "all_boards": {
+            "$ref": "#/definitions/BoardDetails"
+          }
+        },
+        "required": [
+          "total_boards_count",
+          "starred_boards",
+          "all_boards"
+        ]
       }
     },
     "ColumnsDetailsResponse": {
@@ -637,7 +648,7 @@
           "403": {
             "$ref": "#/responses/InvalidAccessResponse"
           },
-            "404": {
+          "404": {
             "$ref": "#/responses/InvalidStarResponse"
           },
           "200": {
@@ -673,7 +684,7 @@
             "$ref": "#/parameters/ViewTypeParameter"
           },
           {
-            "$ref":"#/parameters/SearchQueryParameter"
+            "$ref": "#/parameters/SearchQueryParameter"
           }
         ],
         "responses": {
@@ -719,7 +730,7 @@
             "$ref": "#/parameters/ViewTypeParameter"
           },
           {
-            "$ref":"#/parameters/SearchQueryParameter"
+            "$ref": "#/parameters/SearchQueryParameter"
           }
         ],
         "responses": {
