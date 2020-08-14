@@ -183,7 +183,7 @@
       "in": "body",
       "required": true,
       "schema": {
-        "$ref": "#/definitions/EntityDetails"
+        "$ref": "#/definitions/TimerEntityDetails"
       }
     },
     "TimerEntityParameter": {
@@ -193,6 +193,23 @@
       "required": true,
       "schema": {
         "$ref": "#/definitions/TimerEntityDetails"
+      }
+    },
+    "DeleteChecklistItemsParameter": {
+      "name": "DeleteChecklistItemsParameter",
+      "description": "delete checklist items",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "checklist_item_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
       }
     }
   },
@@ -317,6 +334,54 @@
                 "type": "string",
                 "enum": [
                   "TIMER_IS_ALREADY_STOPPED"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "DeleteChecklistItemsNotFoundResponse": {
+      "description": "checklist items not found",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "CHECKLIST_ITEM_IDS_NOT_FOUND"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "DeleteChecklistItemsBadRequestResponse": {
+      "description": "duplicate checklist item ids sent",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "DUPLICATE_CHECKLIST_ITEM_IDS"
                 ]
               }
             },
@@ -487,6 +552,36 @@
         "responses": {
           "200": {
             "$ref": "#/responses/TimerResponse"
+          }
+        }
+      }
+    },
+    "/checklist/items/delete/v1/": {
+      "delete": {
+        "summary": "Delete checklist items bulk",
+        "description": "Delete checklist items bulk",
+        "operationId": "delete_checklist_items",
+        "security": [
+          {
+            "oauth": [
+              "delete"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/DeleteChecklistItemsParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SuccessFully Delete Checklist items"
+          },
+          "400": {
+            "$ref": "#/responses/DeleteChecklistItemsBadRequestResponse"
+          },
+          "404": {
+            "$ref": "#/responses/DeleteChecklistItemsNotFoundResponse"
           }
         }
       }
