@@ -49,11 +49,13 @@ class TestGetTaskStagesHistory:
         user_dtos = [
             AssigneeDetailsDTOFactory(assignee_id="1")
         ]
+        task_display_id = "1"
         task_id = 1
         TaskStageHistoryDTOFactory.reset_sequence(1)
         LogDurationDTOFactory.reset_sequence(1)
         task_storage.check_is_task_exists.return_value = True
-
+        task_storage.check_is_valid_task_display_id.return_value = True
+        task_storage.get_task_id_for_task_display_id.return_value = task_id
         task_stage_1 = TaskStageHistoryDTOFactory()
         task_stages = [task_stage_1]
         log_dtos = LogDurationDTOFactory.create_batch(1)
@@ -73,7 +75,7 @@ class TestGetTaskStagesHistory:
 
         # Act
         interactor.get_task_stages_history_wrapper(
-            task_id=task_id, presenter=presenter
+            task_display_id=task_display_id, presenter=presenter
         )
 
         # Assert
@@ -101,10 +103,13 @@ class TestGetTaskStagesHistory:
         AssigneeDetailsDTOFactory.reset_sequence(1)
         stage_dtos = StageMinimalDTOFactory.create_batch(1)
         stage_storage.get_stage_details.return_value = stage_dtos
+        task_display_id = "1"
         task_id = 1
         TaskStageHistoryDTOFactory.reset_sequence(1)
         LogDurationDTOFactory.reset_sequence(1)
         task_storage.check_is_task_exists.return_value = True
+        task_storage.check_is_valid_task_display_id.return_value = True
+        task_storage.get_task_id_for_task_display_id.return_value = task_id
         task_stage_1 = TaskStageHistoryDTOFactory(left_at=None)
         time_mock = mocker.patch('datetime.datetime')
         time_mock.return_value = datetime(2012, 10, 11)
@@ -129,7 +134,7 @@ class TestGetTaskStagesHistory:
 
         # Act
         interactor.get_task_stages_history_wrapper(
-            task_id=task_id, presenter=presenter
+            task_display_id=task_display_id, presenter=presenter
         )
 
         # Assert

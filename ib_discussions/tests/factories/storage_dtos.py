@@ -2,7 +2,7 @@ import datetime
 
 import factory
 
-from ib_discussions.constants.enum import MultiMediaFormatEnum
+from ib_discussions.constants.enum import MultimediaFormat
 from ib_discussions.interactors.storage_interfaces.dtos import \
     DiscussionDTO, CommentDTO, CommentIdWithRepliesCountDTO, \
     DiscussionIdWithCommentsCountDTO, CommentIdWithMentionUserIdDTO, \
@@ -72,8 +72,8 @@ class CommentIdWithMultiMediaDTOFactory(factory.Factory):
     comment_id = factory.Faker("uuid4")
     multimedia_id = factory.Faker("uuid4")
     format_type = factory.Iterator([
-        MultiMediaFormatEnum.IMAGE.value,
-        MultiMediaFormatEnum.VIDEO.value
+        MultimediaFormat.IMAGE.value,
+        MultimediaFormat.VIDEO.value
     ])
     url = "https://picsum.photos/200"
     thumbnail_url = "https://picsum.photos/200"

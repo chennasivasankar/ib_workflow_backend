@@ -32,7 +32,7 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
 
     def get_task_stage_dtos(self, task_id: int) -> List[TaskStageHistoryDTO]:
         task_stage_history_objs = \
-            TaskStageHistory.objects.filter(task_id=task_id)
+            TaskStageHistory.objects.filter(task_id=task_id, assignee_id__isnull=False)
 
         return [
             TaskStageHistoryDTO(

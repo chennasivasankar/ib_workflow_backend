@@ -32,3 +32,7 @@ class DiscussionSetNotFound(Exception):
 
 class CommentIdNotFound(Exception):
     pass
+
+
+class UserCannotEditComment(Exception):
+    pass

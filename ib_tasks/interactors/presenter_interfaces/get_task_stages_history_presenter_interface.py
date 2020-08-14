@@ -15,3 +15,7 @@ class GetTaskStagePresenterInterface(abc.ABC):
     def get_task_stages_history_response(
             self, task_stages_details_dto: TaskStageCompleteDetailsDTO):
         pass
+
+    @abc.abstractmethod
+    def raise_invalid_task_display_id(self, err):
+        pass

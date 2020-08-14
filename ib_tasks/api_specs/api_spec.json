@@ -1926,13 +1926,13 @@
             "id": {
               "type": "string"
             },
-            "name": {
+            "value": {
               "type": "string"
             }
           },
           "required": [
             "id",
-            "name"
+            "value"
           ]
         }
       }
