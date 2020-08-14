@@ -250,7 +250,7 @@ class GetColumnTasksPresenterImplementation(GetColumnTasksPresenterInterface,
             "assignee": {
                 "assignee_id": assignees_dto.assignee_id,
                 "name": assignees_dto.name,
-                "profile_pic_url": "https://pbs.twimg.com/profile_images/1195221976203198469/BzPJZcn8_400x400.jpg"
+                "profile_pic_url": assignees_dto.profile_pic_url
             }
         }
 
