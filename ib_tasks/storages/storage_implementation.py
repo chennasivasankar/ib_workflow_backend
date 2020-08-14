@@ -348,6 +348,7 @@ class StagesStorageImplementation(StageStorageInterface):
     def get_current_stages_of_all_tasks(self) -> List[TaskWithDbStageIdDTO]:
         task_stage_objs = list(
             CurrentTaskStage.objects.all().values('task_id', 'stage_id'))
+        print("task_stage_objs", task_stage_objs)
         task_with_stage_id_dtos = [
             TaskWithDbStageIdDTO(task_id=task_stage_obj['task_id'],
                                  db_stage_id=task_stage_obj['stage_id']) for
