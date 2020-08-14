@@ -1,7 +1,11 @@
 import pytest
 
+from ib_tasks.tests.factories.interactor_dtos import \
+    StageAssigneeDetailsDTOFactory
 from ib_tasks.tests.factories.storage_dtos import StageActionDetailsDTOFactory, \
-    TaskGoFDTOFactory
+    TaskGoFDTOFactory, TaskGoFFieldDTOFactory, StageAssigneeDTOFactory
+from ib_tasks.tests.factories.adapter_dtos import \
+            AssigneeDetailsDTOFactory
 
 
 class TestGetTaskPresenterImplementation:
@@ -23,6 +27,11 @@ class TestGetTaskPresenterImplementation:
     @pytest.fixture
     def reset_sequence(self):
         TaskGoFDTOFactory.reset_sequence()
+        TaskGoFFieldDTOFactory.reset_sequence()
+        StageActionDetailsDTOFactory.reset_sequence()
+        AssigneeDetailsDTOFactory.reset_sequence()
+        StageAssigneeDTOFactory.reset_sequence()
+        StageAssigneeDetailsDTOFactory.reset_sequence()
 
     @pytest.fixture
     def permission_task_gof_dtos(self):
@@ -34,8 +43,6 @@ class TestGetTaskPresenterImplementation:
 
     @pytest.fixture
     def permission_task_gof_field_dtos(self):
-        from ib_tasks.tests.factories.storage_dtos \
-            import TaskGoFFieldDTOFactory
         permission_task_gof_field_dtos = [
             TaskGoFFieldDTOFactory(task_gof_id=0, field_id="field0",
                                    field_response="response0"),
@@ -113,8 +120,6 @@ class TestGetTaskPresenterImplementation:
 
     @pytest.fixture
     def assignee_details_dtos(self):
-        from ib_tasks.tests.factories.adapter_dtos import \
-            AssigneeDetailsDTOFactory
         assignee_details_dtos = [
             AssigneeDetailsDTOFactory(
                 assignee_id="123e4567-e89b-12d3-a456-426614174001")
@@ -123,8 +128,6 @@ class TestGetTaskPresenterImplementation:
 
     @pytest.fixture
     def stage_assignee_dtos(self):
-        from ib_tasks.tests.factories.storage_dtos import \
-            StageAssigneeDTOFactory
         stage_assignee_dtos = [
             StageAssigneeDTOFactory(
                 assignee_id="123e4567-e89b-12d3-a456-426614174001"),
@@ -137,8 +140,6 @@ class TestGetTaskPresenterImplementation:
     def stage_assignee_details_dtos(
             self, assignee_details_dtos, stage_assignee_dtos
     ):
-        from ib_tasks.tests.factories.interactor_dtos import \
-            StageAssigneeDetailsDTOFactory
         stage_assignee_details_dtos = [
             StageAssigneeDetailsDTOFactory(
                 task_stage_id=stage_assignee_dtos[0].task_stage_id,
