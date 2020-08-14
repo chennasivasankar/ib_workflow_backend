@@ -1,8 +1,6 @@
 import abc
 from typing import Optional, List
 
-from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDetailsDTO, \
-    TaskIdWithDbStageIdsDTO, TaskWithDbStageIdDTO
 from ib_tasks.interactors.stages_dtos import StageDTO, \
     TaskIdWithStageAssigneeDTO, StageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDetailsDTO
@@ -11,6 +9,8 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
     TaskIdWithStageDetailsDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskStageHavingAssigneeIdDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    TaskWithDbStageIdDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
 
 

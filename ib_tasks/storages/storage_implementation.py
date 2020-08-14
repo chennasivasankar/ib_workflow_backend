@@ -19,8 +19,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageDisplayValueDTO, StageValueWithTaskIdsDTO, \
     TaskIdWithStageDetailsDTO, \
     TaskStagesDTO, StageValueDTO, TaskTemplateStageDTO, StageRoleDTO, \
-    StageDetailsDTO, TaskStageHavingAssigneeIdDTO, TaskWithDbStageIdDTO, \
-    TaskIdWithDbStageIdsDTO
+    StageDetailsDTO, TaskStageHavingAssigneeIdDTO, TaskWithDbStageIdDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import (
@@ -129,7 +128,7 @@ class StagesStorageImplementation(StageStorageInterface):
             self, stage_ids: List[int]) -> List[int]:
 
         stage_ids = list(
-            Stage.objects.filter(id__in=stage_ids, value=-1).
+            Stage.objects.filter(id__in=stage_ids).exclude(value=-1).
                 values_list('id', flat=True))
         return stage_ids
 
