@@ -40,3 +40,25 @@ class TestDeleteChecklistItemsInteractor:
             checklist_item_ids=checklist_item_ids)
         presenter_mock.get_success_response_for_delete_checklist_items \
             .return_value = mock.Mock()
+
+    def test_given_duplicate_item_ids_returns_duplicate_item_ids_response(
+            self, storage_mock, presenter_mock, interactor):
+        checklist_item_ids = ["1", "1"]
+
+        interactor.delete_checklist_items_wrapper(
+            checklist_item_ids=checklist_item_ids,
+            presenter=presenter_mock)
+
+        presenter_mock \
+            .get_duplicate_checklist_item_ids_for_delete_checklist_items \
+            .return_value = mock.Mock()
+
+
+
+
+
+
+
+
+
+

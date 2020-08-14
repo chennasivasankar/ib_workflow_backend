@@ -12,3 +12,8 @@ class TimerIsAlreadyRunning(Exception):
 
 class TimerIsAlreadyStopped(Exception):
     pass
+
+
+class DuplicateChecklistItemIds(Exception):
+    pass
+
