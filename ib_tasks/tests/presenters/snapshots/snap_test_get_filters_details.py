@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 from snapshottest import Snapshot
 
+
 snapshots = Snapshot()
 
 snapshots['TestGetFiltersDetailsPresenter.test_get_filter_details filters'] = [
@@ -66,8 +67,8 @@ snapshots['TestGetFiltersDetailsPresenter.test_create_filter_details filters'] =
         }
     ],
     'filter_id': 'field_1',
-    'is_selected': False,
     'name': 'filed_name_1',
+    'status': False,
     'template_id': 'template_1',
     'template_name': 'template_name_1'
 }
@@ -88,8 +89,8 @@ snapshots['TestGetFiltersDetailsPresenter.test_update_filter_details filters'] =
         }
     ],
     'filter_id': 'field_1',
-    'is_selected': False,
     'name': 'filed_name_1',
+    'status': False,
     'template_id': 'template_1',
     'template_name': 'template_name_1'
 }
@@ -107,9 +108,9 @@ snapshots['TestGetFiltersDetailsPresenter.test_get_response_for_invalid_user_to_
 }
 
 snapshots['TestGetFiltersDetailsPresenter.test_get_response_for_invalid_task_template_id filters'] = {
-    'http_status_code': 403,
-    'res_status': 'INVALID_TASK_TEMPLATE_ID',
-    'response': 'invalid task template id'
+    'http_status_code': 404,
+    'res_status': 'TASK_TEMPLATES_DOES_NOT_EXISTS',
+    'response': 'No Task Templates are exists'
 }
 
 snapshots['TestGetFiltersDetailsPresenter.test_get_response_for_invalid_field_ids filters'] = {
@@ -126,13 +127,13 @@ snapshots['TestGetFiltersDetailsPresenter.test_get_response_for_user_not_have_ac
 
 snapshots['TestGetFiltersDetailsPresenter.test_get_response_for_user_not_have_access_to_update_filter filters'] = {
     'http_status_code': 403,
-    'res_status': 'USER_DO_NOT_ACCESS_TO_UPDATE_FILTER',
+    'res_status': 'USER_NOT_HAVE_PERMISSIONS_TO_UPDATE',
     'response': 'user not have access to update the filter'
 }
 
 snapshots['TestGetFiltersDetailsPresenter.test_get_response_for_user_not_have_access_to_delete_filter filters'] = {
     'http_status_code': 403,
-    'res_status': 'USER_DO_NOT_ACCESS_TO_DELETE_FILTER',
+    'res_status': 'USER_NOT_HAVE_PERMISSIONS_TO_DELETE',
     'response': 'user not have access to delete the filter'
 }
 

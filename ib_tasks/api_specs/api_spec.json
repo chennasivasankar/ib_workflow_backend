@@ -1713,6 +1713,27 @@
         }
       }
     },
+    "GetTaskFailureResponseForUserPermission": {
+      "description": "get task failure response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer",
+            "example": 403
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "USER_PERMISSION_DENIED"
+            ]
+          }
+        }
+      }
+    },
     "TaskStageAssigneesResponse": {
       "description": "OK",
       "schema": {
@@ -1925,13 +1946,13 @@
             "id": {
               "type": "string"
             },
-            "name": {
+            "value": {
               "type": "string"
             }
           },
           "required": [
             "id",
-            "name"
+            "value"
           ]
         }
       }
@@ -2566,6 +2587,9 @@
           },
           "404": {
             "$ref": "#/responses/GetTaskFailureResponse"
+          },
+          "403": {
+            "$ref": "#/responses/GetTaskFailureResponseForUserPermission"
           }
         }
       }

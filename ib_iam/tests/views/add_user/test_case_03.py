@@ -3,6 +3,8 @@
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+from mock import patch, create_autospec
+
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
@@ -23,12 +25,32 @@ class TestCase03AddUserAPITestCase(TestUtils):
         UserDetailsFactory.create(user_id=user_id, is_admin=True)
         from ib_iam.tests.factories.models \
             import CompanyFactory, TeamFactory, RoleFactory
-        CompanyFactory.create(company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331')
+        CompanyFactory.create(
+            company_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331')
         TeamFactory.create(team_id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331')
         RoleFactory.create(id='ef6d1fc6-ac3f-4d2d-a983-752c992e8331')
 
+    @staticmethod
+    def elastic_storage_create_elastic_user_mock(mocker):
+        mock = mocker.patch(
+            "ib_iam.storages.elastic_storage_implementation.ElasticStorageImplementation.create_elastic_user"
+        )
+        mock.create_elastic_user.return_value = "elastic_user1"
+        return mock
+
+    @staticmethod
+    def elastic_storage_create_elastic_user_intermediary_mock(mocker):
+        mock = mocker.patch(
+            "ib_iam.storages.elastic_storage_implementation.ElasticStorageImplementation.create_elastic_user_intermediary"
+        )
+        mock.create_elastic_user_intermediary.return_value = None
+        return mock
+
     @pytest.mark.django_db
     def test_case(self, user_set_up, snapshot, mocker):
+        self.elastic_storage_create_elastic_user_mock(mocker=mocker)
+        self.elastic_storage_create_elastic_user_intermediary_mock(
+            mocker=mocker)
         body = {'name': 'parker', 'email': 'parker@gmail.com',
                 'company_id': 'ef6d1fc6-ac3f-4d2d-a983-752c992e8331',
                 'team_ids': ['ef6d1fc6-ac3f-4d2d-a983-752c992e8331'],

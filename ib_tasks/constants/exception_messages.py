@@ -133,8 +133,8 @@ INVALID_VALUE_FOR_DROPDOWN = (
     "Invalid dropdown value: {} for field: {}! Try with these dropdown values: {}",
     "INVALID_VALUE_FOR_DROPDOWN")
 INCORRECT_NAME_IN_GOF_SELECTOR_FIELD = (
-    "Invalid gof_id: {} for field: {}! Try with these gof_id values: {}",
-    "INCORRECT_GOF_ID_IN_GOF_SELECTOR_FIELD")
+    "Invalid gof selector name: {} for field: {}! Try with these gof_id values: {}",
+    "INCORRECT_NAME_IN_GOF_SELECTOR_FIELD")
 INCORRECT_RADIO_GROUP_CHOICE = (
     "Invalid radio group choice: {} for field: {}! Try with these valid options: {}",
     "INCORRECT_RADIO_GROUP_CHOICE")
@@ -183,8 +183,8 @@ INVALID_GOFS_OF_TASK_TEMPLATE = (
 DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF = ("gof id {} has duplicate field ids {}",
                                     "DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF")
 
-INVALID_FIELDS_OF_TASK_TEMPLATE = ("invalid fields {}  given to the gof {}",
-                                   "INVALID_FIELDS_OF_TASK_TEMPLATE")
+INVALID_FIELDS_OF_GOF = ("invalid fields {}  given to the gof {}",
+                                   "INVALID_FIELDS_OF_GOF")
 
 USER_NEEDS_GOF_WRITABLE_PERMISSION = (
     "user {} needs write access on gof {}, because user does not have {} roles",
@@ -300,4 +300,8 @@ INVALID_PRESENT_STAGE_ACTION = (
 INVALID_TASK_DB_ID = (
     "Invalid task id",
     "INVALID_TASK_ID"
+)
+USER_PERMISSION_DENIED = (
+    "user doesn't have permission",
+    "USER_PERMISSION_DENIED"
 )
