@@ -39,8 +39,17 @@ class TestCase01DeleteUserAPITestCase(TestUtils):
             range(4)]
         return delete_user_id, user_id
 
+    @staticmethod
+    def elastic_search_delete_user_mock(mocker):
+        mock = mocker.patch(
+            "ib_iam.storages.elastic_storage_implementation.ElasticStorageImplementation.delete_elastic_user"
+        )
+        mock.delete_elastic_user.return_value = None
+        return mock
+
     @pytest.mark.django_db
-    def test_case(self, set_up, snapshot):
+    def test_case(self, set_up, snapshot, mocker):
+        self.elastic_search_delete_user_mock(mocker=mocker)
         delete_user_id, user_id = set_up
 
         body = {}

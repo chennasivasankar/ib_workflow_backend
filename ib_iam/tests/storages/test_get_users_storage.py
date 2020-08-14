@@ -315,18 +315,15 @@ class TestGetUsers:
     def test_get_all_distinct_roles(self):
         # Arrange
         from ib_iam.tests.factories.models import RoleFactory, UserRoleFactory
-        RoleFactory.reset_sequence()
-        UserRoleFactory.reset_sequence()
+        RoleFactory.reset_sequence(0)
+        UserRoleFactory.reset_sequence(0)
 
         expected_user_role_ids = [
             uuid.UUID('b8cb1520-279a-44bb-95bf-bbca3aa057ba'),
             uuid.UUID('b8cb1520-279a-44bb-95bf-bbca3aa057bb')
         ]
-
-        RoleFactory.create_batch(
-            size=2, id=factory.Iterator(expected_user_role_ids)
-        )
-        UserRoleFactory.create_batch(size=2)
+        [UserRoleFactory.create(role=RoleFactory.create(id=_id))
+         for _id in expected_user_role_ids]
 
         storage = UserStorageImplementation()
 
@@ -354,25 +351,36 @@ class TestGetUsers:
             self):
         # Arrange
         from ib_iam.tests.factories.models import RoleFactory, UserRoleFactory
-        RoleFactory.reset_sequence()
-        UserRoleFactory.reset_sequence()
+        RoleFactory.reset_sequence(0)
+        UserRoleFactory.reset_sequence(0)
 
-        user_role_ids = [
-            'b8cb1520-279a-44bb-95bf-bbca3aa057ba',
-            'b8cb1520-279a-44bb-95bf-bbca3aa057bb'
+        user_roles = [
+            {
+                "user_id": "b8cb1520-279a-44bb-95bf-bbca3aa05123",
+                "db_role_id": "b8cb1520-279a-44bb-95bf-bbca3aa057ba"
+            },
+            {
+                "user_id": "b8cb1520-279a-44bb-95bf-bbca3aa05124",
+                "db_role_id": "b8cb1520-279a-44bb-95bf-bbca3aa057bb"
+            }
         ]
-        expected_user_ids = ['user0', 'user1']
-
-        RoleFactory.create_batch(
-            size=2, id=factory.Iterator(user_role_ids)
-        )
-        UserRoleFactory.create_batch(size=2)
+        [UserRoleFactory.create(
+            role=RoleFactory.create(id=user_role["db_role_id"]),
+            user_id=user_role["user_id"]
+        ) for user_role in user_roles]
+        expected_user_ids = [
+            "b8cb1520-279a-44bb-95bf-bbca3aa05123",
+            "b8cb1520-279a-44bb-95bf-bbca3aa05124"]
+        db_role_ids = [
+            "b8cb1520-279a-44bb-95bf-bbca3aa057ba",
+            "b8cb1520-279a-44bb-95bf-bbca3aa057bb"
+        ]
 
         storage = UserStorageImplementation()
 
         # Act
         output = \
-            storage.get_user_ids_for_given_role_ids(role_ids=user_role_ids)
+            storage.get_user_ids_for_given_role_ids(role_ids=db_role_ids)
 
         # Assert
         assert output == expected_user_ids
