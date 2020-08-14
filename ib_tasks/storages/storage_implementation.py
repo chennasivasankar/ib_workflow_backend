@@ -350,8 +350,8 @@ class StagesStorageImplementation(StageStorageInterface):
         StageAssigneeDTO]:
         task_stage_objs = list(TaskStageHistory.objects.filter(
             task_id=task_id,
-            stage_id__in=db_stage_ids, left_at=None).exclude(
-            assignee_id=None).values('stage_id', 'assignee_id'))
+            stage_id__in=db_stage_ids, left_at__isnull=True).exclude(
+            assignee_id__isnull=True).values('stage_id', 'assignee_id'))
         stages_having_assignee_dtos = [StageAssigneeDTO(
             assignee_id=task_stage_obj['assignee_id'],
             db_stage_id=task_stage_obj['stage_id']) for
@@ -371,7 +371,7 @@ class StagesStorageImplementation(StageStorageInterface):
         virtual_stages_already_having_task = list(
             TaskStageHistory.objects.filter(task_id=task_id,
                                             stage__stage_id__in=stage_ids_having_virtual_stages,
-                                            left_at=None)
+                                            left_at__isnull=True)
                 .values_list('stage__stage_id', flat=True))
         return virtual_stages_already_having_task
 
