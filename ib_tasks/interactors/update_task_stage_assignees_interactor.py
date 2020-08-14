@@ -67,7 +67,6 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
         self._check_duplicate_stage_ids(stage_ids)
         valid_stage_ids = self.stage_storage. \
             get_valid_db_stage_ids_excluding_virtual_stages_in_given_db_stage_ids(stage_ids)
-        print("valid_stage_ids", valid_stage_ids)
         self._validate_stage_ids(stage_ids, valid_stage_ids)
         stage_role_dtos = self.stage_storage. \
             get_stage_role_dtos_given_db_stage_ids(stage_ids)
