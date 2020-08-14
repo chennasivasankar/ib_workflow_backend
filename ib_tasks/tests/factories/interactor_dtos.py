@@ -182,9 +182,9 @@ class FieldValuesDTOFactory(factory.Factory):
     class Meta:
         model = FieldValuesDTO
 
-    field_id = factory.sequence(lambda counter: "FIELD_ID-{}".format(counter))
-    field_response = factory.sequence(
-        lambda counter: "FIELD_VALUE-{}".format(counter))
+    field_id = factory.Sequence(lambda counter: "field{}".format(counter))
+    field_response = factory.Sequence(
+        lambda counter: "field_response{}".format(counter))
 
 
 class GoFFieldsDTOFactory(factory.Factory):
@@ -355,7 +355,7 @@ class UpdateTaskDTOFactory(factory.Factory):
         return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]
 
 
-class UpdateTaskWithTaskDisplayIdDTOFactory(UpdateTaskDTOFactory):
+class UpdateTaskWithTaskDisplayIdDTOFactory(factory.Factory):
     class Meta:
         model = UpdateTaskWithTaskDisplayIdDTO
 
