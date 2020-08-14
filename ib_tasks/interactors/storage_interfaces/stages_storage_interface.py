@@ -53,8 +53,9 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_valid_db_stage_ids_excluding_virtual_stages_in_given_db_stage_ids(self, db_stage_ids: List[
-        int]) -> List[int]:
+    def get_valid_db_stage_ids_excluding_virtual_stages_in_given_db_stage_ids(
+            self, db_stage_ids: List[
+                int]) -> List[int]:
         pass
 
     @abc.abstractmethod
@@ -89,7 +90,7 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_valid_next_stage_ids_of_task_by_excluding_virtual_stages(
+    def get_stage_ids_excluding_virtual_stages(
             self, stage_ids: List[str]) -> List[str]:
         pass
 
@@ -125,4 +126,15 @@ class StageStorageInterface(abc.ABC):
     def get_task_stages_having_assignees_without_having_left_at_status(
             self, task_id: int, db_stage_ids: List[int]) \
             -> List[StageAssigneeDTO]:
+        pass
+
+    @abc.abstractmethod
+    def get_virtual_stages_already_having_task(
+            self, task_id: int,
+            stage_ids_having_virtual_stages: List[str]) -> List[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_db_stage_ids_for_given_stage_ids(
+            self, stage_ids: List[str]) -> List[int]:
         pass

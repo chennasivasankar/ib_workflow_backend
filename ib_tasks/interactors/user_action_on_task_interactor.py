@@ -172,8 +172,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             )
         set_stage_assignees_interactor \
             .get_random_assignees_of_next_stages_and_update_in_db(
-                task_id=task_id, action_id=self.action_id
-            )
+            task_id=task_id, action_id=self.action_id
+        )
         current_assignees_of_stages = self._get_stage_assignees_details(
             stage_ids=stage_ids, task_id=task_id
         )
@@ -282,7 +282,8 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             task_id=task_id, stage_ids=stage_ids
         )
 
-    def _get_task_stage_display_satisfied_stage_ids(self, task_id: int):
+    def _get_task_stage_display_satisfied_stage_ids(self, task_id: int) -> \
+    List[str]:
         from ib_tasks.interactors.get_task_stage_logic_satisfied_stages \
             import GetTaskStageLogicSatisfiedStages
         interactor = GetTaskStageLogicSatisfiedStages(

@@ -1,4 +1,5 @@
 from typing import List
+
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.action_custom_exceptions \
     import InvalidKeyError
@@ -82,9 +83,10 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
             self.get_next_stages_of_task(task_id=task_id, status_variable_dtos=
             status_variable_dtos)
         valid_next_stage_ids_of_task = self.stage_storage. \
-            get_valid_next_stage_ids_of_task_by_excluding_virtual_stages(
+            get_stage_ids_excluding_virtual_stages(
             next_stage_ids_of_task)
-        stages_having_user_details_dtos = self.get_users_with_less_tasks_in_given_stages(
+        stages_having_user_details_dtos = self.\
+            get_users_with_less_tasks_in_given_stages(
             valid_next_stage_ids_of_task)
 
         return stages_having_user_details_dtos
