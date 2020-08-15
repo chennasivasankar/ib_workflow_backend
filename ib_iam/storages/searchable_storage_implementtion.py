@@ -29,14 +29,50 @@ class SearchableStorageImplementation(SearchableStorageInterface):
     def get_searchable_type_state_details_dtos(
             self, ids: List[int]
     ) -> List[SearchableDetailsDTO]:
-        pass
+        from ib_iam.models import State
+        state_details_set = State.objects.filter(
+            id__in=ids
+        ).values_list('id', 'name')
+        searchable_type_state_details_dtos = [
+            SearchableDetailsDTO(
+                search_type=Searchable.STATE.value,
+                id=state_details[0],
+                value=state_details[1]
+            )
+            for state_details in state_details_set
+        ]
+        return searchable_type_state_details_dtos
 
     def get_searchable_type_country_details_dtos(
             self, ids: List[int]
     ) -> List[SearchableDetailsDTO]:
-        pass
+        from ib_iam.models import Country
+        country_details_set = Country.objects.filter(
+            id__in=ids
+        ).values_list('id', 'name')
+        searchable_type_country_details_dtos = [
+            SearchableDetailsDTO(
+                search_type=Searchable.COUNTRY.value,
+                id=country_details[0],
+                value=country_details[1]
+            )
+            for country_details in country_details_set
+        ]
+        return searchable_type_country_details_dtos
 
     def get_searchable_type_user_details_dtos(
             self, ids: List[int]
     ) -> List[SearchableDetailsDTO]:
-        pass
+        from ib_iam.models import UserDetails
+        user_details_set = UserDetails.objects.filter(
+            id__in=ids
+        ).values_list('id', 'name')
+        searchable_type_user_details_dtos = [
+            SearchableDetailsDTO(
+                search_type=Searchable.USER.value,
+                id=user_details[0],
+                value=user_details[1]
+            )
+            for user_details in user_details_set
+        ]
+        return searchable_type_user_details_dtos
