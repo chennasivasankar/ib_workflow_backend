@@ -84,9 +84,9 @@ class GetAllTasksOverviewForUserPresenterImpl(
                 task_with_complete_stage_details_dto.task_with_stage_details_dto
             task_overview_fields_details, actions_details = self. \
                 task_fields_and_actions_details(
-                each_task_id_with_stage_details_dto.task_id,
-                task_fields_and_action_details_dtos
-            )
+                    each_task_id_with_stage_details_dto.task_id,
+                    task_fields_and_action_details_dtos
+                )
             assignee = self._get_assignee_details(
                 task_with_complete_stage_details_dto.stage_assignee_dto
             )
@@ -116,8 +116,8 @@ class GetAllTasksOverviewForUserPresenterImpl(
             if given_task_id == each_task_fields_and_action_details_dto.task_id:
                 task_overview_fields_details = self. \
                     _get_task_overview_fields_details(
-                    each_task_fields_and_action_details_dto
-                )
+                        each_task_fields_and_action_details_dto
+                    )
                 action_details = self._get_actions_details_of_task_stage(
                     each_task_fields_and_action_details_dto)
                 return task_overview_fields_details, action_details
@@ -151,8 +151,11 @@ class GetAllTasksOverviewForUserPresenterImpl(
 
     @staticmethod
     def _get_assignee_details(
-            stage_assignee_dto: StageAssigneeDetailsDTO) -> Optional[Dict]:
-        assignee_details_dto = stage_assignee_dto.assignee_details_dto
+            stage_assignee_dto: List[StageAssigneeDetailsDTO]) -> Optional[Dict]:
+        if stage_assignee_dto:
+            assignee_details_dto = stage_assignee_dto[0].assignee_details_dto
+        else:
+            return None
         if assignee_details_dto:
             assignee_details = {
                 "assignee_id": assignee_details_dto.assignee_id,

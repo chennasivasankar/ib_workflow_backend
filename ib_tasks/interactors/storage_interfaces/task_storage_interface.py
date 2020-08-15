@@ -16,7 +16,9 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskStagesDTO, StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDisplayIdDTO
 from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO
+
 
 
 class TaskStorageInterface(abc.ABC):
@@ -121,4 +123,8 @@ class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_task_id_for_task_display_id(self, task_display_id: str) -> int:
+        pass
+
+    @abc.abstractmethod
+    def get_task_display_ids_dtos(self, task_ids: List[int]) -> List[TaskDisplayIdDTO]:
         pass

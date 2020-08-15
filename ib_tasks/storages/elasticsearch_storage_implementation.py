@@ -60,6 +60,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         task.template_id = task_dto.template_id
         task.title = task_dto.title
         task.fields = field_objects
+        task.stages = stage_objects
         task.save()
 
     def filter_tasks(
@@ -122,7 +123,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             )
         total_tasks_count = search.count()
         task_ids = [
-            hit.task_display_id
+            hit.task_id
             for hit in search[offset: offset + limit]
         ]
         return QueryTasksDTO(
@@ -179,6 +180,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         return [
             TaskStageIdsDTO(
                 task_id=task_object.task_id,
+                task_display_id=None,
                 stage_id=stage.stage_id
             )
             for stage in task_object.stages

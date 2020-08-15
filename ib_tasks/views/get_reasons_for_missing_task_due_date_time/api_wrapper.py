@@ -10,14 +10,18 @@ from ib_tasks.storages.storage_implementation import StorageImplementation
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    task_id = kwargs['task_id']
+    request_data = kwargs['request_data']
+    task_id=request_data['task_id']
     user = kwargs["user"]
 
     storage = StorageImplementation()
+    from ib_tasks.storages.tasks_storage_implementation import TasksStorageImplementation
+    task_storage = TasksStorageImplementation()
     presenter = TaskDueDetailsPresenterImplementation()
-    interactor = GetTaskDueMissingReasonsInteractor(task_storage=storage)
+    interactor = GetTaskDueMissingReasonsInteractor(storage=storage,
+                                                    task_storage=task_storage)
 
     response = interactor.get_task_due_missing_reasons_wrapper(presenter=presenter,
-                                                               task_id=task_id,
+                                                               task_display_id=task_id,
                                                                user_id=user.user_id)
     return response

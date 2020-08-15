@@ -208,6 +208,9 @@
     "AddTaskReasons": {
       "type": "object",
       "properties": {
+        "task_id": {
+          "type": "string"
+        },
         "updated_due_date_time": {
           "type": "string",
           "format": "date-time"
@@ -222,7 +225,7 @@
       },
       "required": [
         "updated_due_date_time",
-        "reason_id"
+        "reason_id", "task_id"
       ]
     },
     "CreateTaskRequestBody": {
@@ -311,10 +314,11 @@
           "type": "string"
         },
         "stage_with_actions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/StagesWithActions"
-          }
+          "allOf": [
+            {
+              "$ref": "#/definitions/StagesWithActions"
+            }
+          ]
         },
         "task_overview_fields": {
           "type": "array",
@@ -1436,6 +1440,23 @@
       "required": true,
       "schema": {
         "$ref": "#/definitions/UpdateTaskRequestBody"
+      }
+      },
+    "TaskIdRequestBody": {
+      "in": "body",
+      "name": "TaskId",
+      "description": "task id",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "task_id"
+        ]
       }
     },
     "TaskIDParameter": {
@@ -3001,8 +3022,8 @@
         }
       }
     },
-    "/task/{task_id}/reasons/v1/": {
-      "get": {
+    "/task/reasons/get/v1/": {
+      "post": {
         "operationId": "get_reasons_for_missing_task_due_date_time",
         "summary": "get reasons for missing task due date time",
         "description": "get reasons for missing task due date time",
@@ -3015,7 +3036,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/TaskIDParameter"
+            "$ref": "#/parameters/TaskIdRequestBody"
           }
         ],
         "responses": {
@@ -3029,7 +3050,8 @@
             "$ref": "#/responses/TaskIsNotAssignedToUserResponse"
           }
         }
-      },
+      }},
+    "/task/reasons/v1/": {
       "post": {
         "operationId": "add_reason_for_missing_due_date_time",
         "summary": "add reason for missing due date time",
@@ -3042,9 +3064,6 @@
           }
         ],
         "parameters": [
-          {
-            "$ref": "#/parameters/TaskIDParameter"
-          },
           {
             "$ref": "#/parameters/AddTaskReasonsParameter"
           }

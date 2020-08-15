@@ -20,6 +20,7 @@ def prepare_task_gof_and_fields_dto():
     )
     return task_dto
 
+
 def prepare_mock_for_next_stage_random_assignees(mocker):
     path = "ib_tasks.interactors.get_random_assignees_of_next_stages_and_update_in_db_interactor" \
            ".GetNextStageRandomAssigneesOfTaskAndUpdateInDbInteractor" \
@@ -167,7 +168,8 @@ def prepare_task_ids_with_stage_ids(
 
 
 def prepare_mock_for_filters_interactor(mocker):
-    mock = mocker.patch('ib_tasks.interactors.get_task_ids_by_applying_filters_with_stage_ids.GetTaskIdsBasedOnUserFiltersInColumns.get_task_ids_by_applying_filters')
+    mock = mocker.patch(
+        'ib_tasks.interactors.get_task_ids_by_applying_filters_with_stage_ids.GetTaskIdsBasedOnUserFiltersInColumns.get_task_ids_by_applying_filters')
     return mock
 
 
