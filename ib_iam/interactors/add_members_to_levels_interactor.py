@@ -9,8 +9,8 @@ from ib_iam.interactors.storage_interfaces.level_storage_interface import \
 
 class AddMembersToLevelsInteractor:
 
-    def __init__(self, level_storage: TeamMemberLevelStorageInterface):
-        self.level_storage = level_storage
+    def __init__(self, team_member_level_storage: TeamMemberLevelStorageInterface):
+        self.team_member_level_storage = team_member_level_storage
 
     def add_members_to_levels_wrapper(
             self, presenter: AddMembersToLevelPresenterInterface, team_id: str,
@@ -45,7 +45,7 @@ class AddMembersToLevelsInteractor:
             self, team_member_level_id_with_member_ids_dtos: List[TeamMemberLevelIdWithMemberIdsDTO],
             team_id: str
     ):
-        self.level_storage.add_members_to_levels_for_a_team(
+        self.team_member_level_storage.add_members_to_levels_for_a_team(
             team_member_level_id_with_member_ids_dtos=team_member_level_id_with_member_ids_dtos,
         )
         return
