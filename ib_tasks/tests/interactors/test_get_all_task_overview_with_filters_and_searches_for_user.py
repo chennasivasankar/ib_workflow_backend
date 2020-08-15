@@ -27,6 +27,8 @@ class TestGetTasksOverviewForUserInteractor:
             task_id=1,
             stage_id='stage_id_1',
             stage_color="blue",
+            db_stage_id=1,
+            display_name="display_name_1",
             field_dtos=[
                 FieldDetailsDTO(
                     field_type='Drop down',
@@ -66,6 +68,7 @@ class TestGetTasksOverviewForUserInteractor:
             TaskWithCompleteStageDetailsDTO(
                 task_with_stage_details_dto=TaskIdWithStageDetailsDTO(
                     db_stage_id=1, task_id=1, stage_id='stage_1',
+                    task_display_id="task_display_id_1",
                     stage_display_name='stage_display_1',
                     stage_color='color_1'),
                 stage_assignee_dto=StageAssigneeDetailsDTO(
@@ -79,6 +82,8 @@ class TestGetTasksOverviewForUserInteractor:
                 GetTaskStageCompleteDetailsDTO(
                     task_id=1,
                     stage_id='stage_id_1',
+                    db_stage_id=1,
+                    display_name="task_name_1",
                     stage_color='blue',
                     field_dtos=[FieldDetailsDTO(
                         field_type='Drop down',
