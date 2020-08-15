@@ -52,6 +52,15 @@ class TestCase01AddMembersToLevelsAPITestCase(TestUtils):
                                       headers=headers,
                                       snapshot=snapshot)
 
+        from ib_iam.models import UserTeam
+        user_team_details = UserTeam.objects.filter(team_id=team_id).values(
+            "user_id", "team_member_level_id")
+        for user_team_details_dict in user_team_details:
+            user_team_details_dict["team_member_level_id"] = \
+                str(user_team_details_dict["team_member_level_id"])
+
+        snapshot.assert_match(list(user_team_details), "user_team_details")
+
     @pytest.fixture()
     def create_team(self):
         from ib_iam.tests.factories.models import TeamFactory

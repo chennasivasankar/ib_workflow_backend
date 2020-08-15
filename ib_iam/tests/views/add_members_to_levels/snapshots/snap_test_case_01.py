@@ -11,3 +11,30 @@ snapshots['TestCase01AddMembersToLevelsAPITestCase.test_case status_code'] = '20
 
 snapshots['TestCase01AddMembersToLevelsAPITestCase.test_case body'] = {
 }
+
+snapshots['TestCase01AddMembersToLevelsAPITestCase.test_case user_team_details'] = [
+    {
+        'team_member_level_id': '00be920b-7b4c-49e7-8adb-41a0c18da848',
+        'user_id': '31be920b-7b4c-49e7-8adb-41a0c18da848'
+    },
+    {
+        'team_member_level_id': '00be920b-7b4c-49e7-8adb-41a0c18da848',
+        'user_id': '01be920b-7b4c-49e7-8adb-41a0c18da848'
+    },
+    {
+        'team_member_level_id': '01be920b-7b4c-49e7-8adb-41a0c18da848',
+        'user_id': '77be920b-7b4c-49e7-8adb-41a0c18da848'
+    },
+    {
+        'team_member_level_id': '01be920b-7b4c-49e7-8adb-41a0c18da848',
+        'user_id': '17be920b-7b4c-49e7-8adb-41a0c18da848'
+    },
+    {
+        'team_member_level_id': '01be920b-7b4c-49e7-8adb-41a0c18da848',
+        'user_id': '27be920b-7b4c-49e7-8adb-41a0c18da848'
+    },
+    {
+        'team_member_level_id': 'None',
+        'user_id': '37be920b-7b4c-49e7-8adb-41a0c18da848'
+    }
+]
