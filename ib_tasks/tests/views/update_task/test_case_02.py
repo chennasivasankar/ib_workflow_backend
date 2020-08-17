@@ -1,14 +1,16 @@
 """
-test with invalid task id raises exception
+test with invalid due time format
 """
 
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
 
-from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ib_tasks.tests.factories.models import TaskFactory
+from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
+    REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase02UpdateTaskAPITestCase(TestUtils):
+class TestCase01UpdateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -17,20 +19,20 @@ class TestCase02UpdateTaskAPITestCase(TestUtils):
 
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
-        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
-            get_user_role_ids
-        get_user_role_ids(mocker)
+        task_id = "IBWF-1"
+
+        TaskFactory.create(task_display_id=task_id)
 
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {
-            "task_id": 1,
+            "task_id": "IBWF-1",
             "title": "updated_title",
             "description": "updated_description",
             "start_date": "2099-12-31",
             "due_date": {
                 "date": "2099-12-31",
-                "time": "12:00:00"
+                "time": "12-00-00"
             },
             "priority": "HIGH",
             "stage_assignee": {

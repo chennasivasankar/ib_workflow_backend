@@ -1,17 +1,14 @@
 """
-test with expired due date
+test with invalid gof ids raises exception
 """
 
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
-from freezegun import freeze_time
 
-from ib_tasks.tests.factories.models import TaskFactory
-from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
-    REQUEST_METHOD, URL_SUFFIX
+from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01UpdateTaskAPITestCase(TestUtils):
+class TestCase013UpdateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -20,20 +17,27 @@ class TestCase01UpdateTaskAPITestCase(TestUtils):
 
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
-        task_id = "IBWF-1"
+        from ib_tasks.tests.factories.models import TaskTemplateFactory, \
+            TaskFactory
 
-        TaskFactory.create(task_display_id=task_id)
+        TaskTemplateFactory.reset_sequence()
 
-    @freeze_time("2020-09-09 12:00:00")
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_user_role_ids
+        get_user_role_ids(mocker)
+
+        template_id = "template_1"
+        TaskFactory.create(template_id=template_id)
+
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {
-            "task_id": "IBWF-1",
+            "task_id": 1,
             "title": "updated_title",
             "description": "updated_description",
-            "start_date": "2020-08-01",
+            "start_date": "2099-12-31",
             "due_date": {
-                "date": "2020-08-02",
+                "date": "2099-12-31",
                 "time": "12:00:00"
             },
             "priority": "HIGH",

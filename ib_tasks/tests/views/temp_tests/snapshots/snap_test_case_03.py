@@ -7,10 +7,10 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase01UpdateTaskAPITestCase.test_case status_code'] = '400'
+snapshots['TestCase03UpdateTaskAPITestCase.test_case status_code'] = '400'
 
-snapshots['TestCase01UpdateTaskAPITestCase.test_case body'] = {
+snapshots['TestCase03UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
     'res_status': 'INVALID_TASK_ID',
-    'response': 'task_id is invalid task_id send valid task_id'
+    'response': '1 is invalid task_id send valid task_id'
 }

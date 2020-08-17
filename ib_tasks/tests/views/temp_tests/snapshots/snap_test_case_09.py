@@ -19,9 +19,9 @@ snapshots['TestCase09UpdateTaskAPITestCase.test_case task_id'] = 1
 
 snapshots['TestCase09UpdateTaskAPITestCase.test_case template_id'] = 'template_1'
 
-snapshots['TestCase09UpdateTaskAPITestCase.test_case task_title'] = 'title_8'
+snapshots['TestCase09UpdateTaskAPITestCase.test_case task_title'] = 'title_9'
 
-snapshots['TestCase09UpdateTaskAPITestCase.test_case task_description'] = 'description_8'
+snapshots['TestCase09UpdateTaskAPITestCase.test_case task_description'] = 'description_9'
 
 snapshots['TestCase09UpdateTaskAPITestCase.test_case task_start_date'] = '2020-10-12 04:40:00'
 

@@ -10,7 +10,7 @@ from ib_tasks.models import (
     UserTaskDelayReason, Task, TaskGoF, TaskGoFField,
     TaskTemplateGlobalConstants,
     TaskStatusVariable, Filter, FilterCondition, TaskLog,
-    StagePermittedRoles, ElasticSearchTask, TaskStageHistory)
+    StagePermittedRoles, ElasticSearchTask)
 from ib_tasks.models.current_task_stage import CurrentTaskStage
 from ib_tasks.models.field import Field
 from ib_tasks.models.field_role import FieldRole
@@ -185,7 +185,7 @@ class FieldFactory(factory.django.DjangoModelFactory):
         )
 
 
-class GoFRoleFactory(factory.DjangoModelFactory):
+class GoFRoleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = GoFRole
 
@@ -194,7 +194,7 @@ class GoFRoleFactory(factory.DjangoModelFactory):
     permission_type = PermissionTypes.READ.value
 
 
-class FieldRoleFactory(factory.DjangoModelFactory):
+class FieldRoleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = FieldRole
 
@@ -322,15 +322,6 @@ class TaskStageHistoryModelFactory(factory.django.DjangoModelFactory):
         lambda n: "123e4567-e89b-12d3-a456-42661417400{}".format(n))
     joined_at = datetime(2012, 10, 10)
     left_at = datetime(2012, 10, 11)
-
-
-class ElasticSearchTaskFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = ElasticSearchTask
-
-    elasticsearch_id = factory.sequence(
-        lambda n: 'elastic_search_id_{}'.format(n))
-    task_id = factory.sequence(lambda n: n)
 
 
 class ElasticSearchTaskFactory(factory.django.DjangoModelFactory):

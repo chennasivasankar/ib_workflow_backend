@@ -7,10 +7,10 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase06UpdateTaskAPITestCase.test_case status_code'] = '400'
+snapshots['TestCase01UpdateTaskAPITestCase.test_case status_code'] = '400'
 
-snapshots['TestCase06UpdateTaskAPITestCase.test_case body'] = {
+snapshots['TestCase01UpdateTaskAPITestCase.test_case body'] = {
     'http_status_code': 400,
-    'res_status': 'DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF',
-    'response': "gof id gof_1 has duplicate field ids ['FIELD_ID-0']"
+    'res_status': 'INVALID_GOF_IDS',
+    'response': "invalid gof ids: ['GOF-19', 'GOF-20']"
 }

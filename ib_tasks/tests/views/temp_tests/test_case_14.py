@@ -1,17 +1,18 @@
 """
-test with expired due date
+test with invalid field ids raises exception
 """
+import json
 
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
-from freezegun import freeze_time
 
-from ib_tasks.tests.factories.models import TaskFactory
-from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
-    REQUEST_METHOD, URL_SUFFIX
+from ib_tasks.constants.enum import FieldTypes
+from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX
+from ib_tasks.tests.factories.models import StageActionFactory, StageModelFactory, \
+    StagePermittedRolesFactory
 
 
-class TestCase01UpdateTaskAPITestCase(TestUtils):
+class TestCase04UpdateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
@@ -20,20 +21,49 @@ class TestCase01UpdateTaskAPITestCase(TestUtils):
 
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
-        task_id = "IBWF-1"
+        import factory
+        from ib_tasks.tests.factories.models import TaskTemplateFactory, \
+            GoFFactory, GoFRoleFactory, TaskFactory, TaskGoFFactory, \
+            GoFToTaskTemplateFactory
 
-        TaskFactory.create(task_display_id=task_id)
+        TaskTemplateFactory.reset_sequence()
+        GoFRoleFactory.reset_sequence()
+        GoFFactory.reset_sequence()
+        GoFToTaskTemplateFactory.reset_sequence()
+        StagePermittedRolesFactory.reset_sequence()
 
-    @freeze_time("2020-09-09 12:00:00")
+        from ib_tasks.tests.common_fixtures.adapters.roles_service import \
+            get_user_role_ids
+        get_user_role_ids(mocker)
+        template_id = "template_1"
+        gofs = GoFFactory.create_batch(size=2)
+        task_template = TaskTemplateFactory.create(template_id=template_id)
+        GoFToTaskTemplateFactory.create_batch(
+            size=2, task_template=task_template, gof=factory.Iterator(gofs)
+        )
+        gof_ids = [gof.gof_id for gof in gofs]
+
+        task_obj = TaskFactory.create(
+            template_id="template_1")
+        TaskGoFFactory.create_batch(
+            size=2, gof_id=factory.Iterator(gof_ids), task=task_obj
+        )
+        stage = StageModelFactory(
+            task_template_id='template_1',
+            display_logic="variable0==stage_id_0",
+            card_info_kanban=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
+            card_info_list=json.dumps(["FIELD_ID-1", "FIELD_ID-2"]),
+        )
+
     @pytest.mark.django_db
     def test_case(self, snapshot):
         body = {
-            "task_id": "IBWF-1",
+            "task_id": 1,
             "title": "updated_title",
             "description": "updated_description",
-            "start_date": "2020-08-01",
+            "start_date": "2099-12-31",
             "due_date": {
-                "date": "2020-08-02",
+                "date": "2099-12-31",
                 "time": "12:00:00"
             },
             "priority": "HIGH",
