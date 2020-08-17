@@ -23,8 +23,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import (
-    StorageInterface, GroupOfFieldsDTO,
-    StatusVariableDTO, StageActionNamesDTO
+    StorageInterface, StatusVariableDTO
 )
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, TaskDueParametersDTO, TaskDelayParametersDTO
@@ -433,44 +432,9 @@ class StorageImplementation(StorageInterface):
         ]
         return field_write_permission_roles_dtos
 
-    def get_stage_action_names(
-            self, stage_ids: List[str]) -> List[StageActionNamesDTO]:
-        pass
-
-    def get_valid_stage_ids(self,
-                            stage_ids: List[str]) -> Optional[List[str]]:
-        pass
-
-    def create_stage_actions(self, stage_actions: List[StageActionDTO]):
-        pass
-
-    def update_stage_actions(self, stage_actions: List[StageActionDTO]):
-        pass
-
-    def delete_stage_actions(self,
-                             stage_actions: List[StageActionNamesDTO]):
-        pass
-
-    def create_initial_stage_to_task_template(
-            self, task_template_stage_dtos: List[TemplateStageDTO]):
-        pass
-
-    def get_valid_task_template_ids(self, task_template_ids: List[str]):
-        pass
-
     def validate_task_id(self, task_id: int) -> bool:
 
         return Task.objects.filter(id=task_id).exists()
-
-    def get_task_group_of_fields_dto(
-            self, task_id: str) -> List[GroupOfFieldsDTO]:
-        # GOF.objects.filter()
-        pass
-
-    def get_fields_to_group_of_field_ids(
-            self, group_of_field_ids: List[str]) -> List[FieldValueDTO]:
-        # Field.objects.filter(gof_id__in=group_of_field_ids)
-        pass
 
     def get_status_variables_to_task(
             self, task_id: int) -> List[StatusVariableDTO]:
@@ -567,10 +531,8 @@ class StorageImplementation(StorageInterface):
         return StageAction.objects.filter(id=action_id).exists()
 
     def get_enable_multiple_gofs_field_to_gof_ids(
-            self, template_id: str, gof_ids: List[str]
-    ) -> List[GOFMultipleEnableDTO]:
+            self, template_id: str) -> List[GOFMultipleEnableDTO]:
 
-        # TODO: Fix me
         from ib_tasks.models import TaskTemplateGoFs
         task_template_gofs = TaskTemplateGoFs.objects \
             .filter(task_template_id=template_id)
