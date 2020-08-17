@@ -1,7 +1,8 @@
 # your django admin
 from django.contrib import admin
 
-from ib_iam.models import UserDetails, UserTeam, UserRole, Company, Role, Team
+from ib_iam.models import UserDetails, UserTeam, UserRole, Company, Role, Team, \
+    TeamMemberLevel
 
 
 class CompanyAdmin(admin.ModelAdmin):
@@ -39,9 +40,14 @@ class UserTeamAdmin(admin.ModelAdmin):
     search_fields = ["user_id"]
 
 
+class TeamMemberLevelAdmin(admin.ModelAdmin):
+    list_display = ("id", "team", "level_name", "level_hierarchy")
+
+
 admin.site.register(Company, CompanyAdmin)
 admin.site.register(Team, TeamAdmin)
 admin.site.register(Role, RoleAdmin)
 admin.site.register(UserDetails, IAMUserAdmin)
 admin.site.register(UserRole, UserRoleAdmin)
 admin.site.register(UserTeam, UserTeamAdmin)
+admin.site.register(TeamMemberLevel, TeamMemberLevelAdmin)
