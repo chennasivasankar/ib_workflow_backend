@@ -27,7 +27,7 @@ class TestChecklistStorageImplementation:
                                         checklist=checklist_object)
             for checklist_item_id in checklist_item_ids
         ]
-        return checklist_id
+        return checklist_id, checklist_item_ids
 
     @pytest.fixture
     def expected_checklist_item_dtos(self):
@@ -137,9 +137,25 @@ class TestChecklistStorageImplementation:
     def test_get_checklist_items_dto(self, storage,
                                      create_checklist_items_for_checklist_id,
                                      expected_checklist_item_dtos):
-        checklist_id = create_checklist_items_for_checklist_id
+        checklist_id, _ = create_checklist_items_for_checklist_id
 
         checklist_item_dtos = storage.get_checklist_item_dtos(
             checklist_id=checklist_id)
 
         assert checklist_item_dtos == expected_checklist_item_dtos
+
+    @pytest.mark.django_db
+    def test_delete_checklist_items_bulk_deletes_the_items(
+            self, storage, create_checklist_items_for_checklist_id,
+            expected_checklist_item_dtos):
+        _, checklist_item_ids = \
+            create_checklist_items_for_checklist_id
+        expected_response = False
+
+        storage.delete_checklist_items_bulk(
+            checklist_item_ids=checklist_item_ids)
+
+        checklist_items = ChecklistItem.objects.filter(
+            checklist_item_id__in=checklist_item_ids)
+        actual_response = checklist_items.exists()
+        assert actual_response == expected_response
