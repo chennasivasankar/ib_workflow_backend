@@ -31,6 +31,8 @@ class TestDeleteChecklistItemsInteractor:
     def test_valid_item_ids_returns_success_response(
             self, storage_mock, presenter_mock, interactor):
         checklist_item_ids = ["1"]
+        storage_mock.get_valid_checklist_item_ids \
+            .return_value = checklist_item_ids
 
         interactor.delete_checklist_items_wrapper(
             checklist_item_ids=checklist_item_ids,
