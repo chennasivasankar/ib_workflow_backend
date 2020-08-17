@@ -28,6 +28,7 @@ class UserRoleAdmin(admin.ModelAdmin):
     list_display = ("user_id", "_role_id")
     search_fields = ["user_id"]
     list_filter = ["user_id"]
+    raw_id_fields = ("role",)
 
     @staticmethod
     def _role_id(obj):
@@ -37,6 +38,7 @@ class UserRoleAdmin(admin.ModelAdmin):
 class UserTeamAdmin(admin.ModelAdmin):
     list_display = ("user_id", "team_id")
     search_fields = ["user_id"]
+    raw_id_fields = ("team",)
 
 
 admin.site.register(Company, CompanyAdmin)
