@@ -18,7 +18,7 @@ class SearchableStorageImplementation(SearchableStorageInterface):
         ).values_list('id', 'name')
         searchable_type_city_details_dtos = [
             SearchableDetailsDTO(
-                search_type=Searchable.City.value,
+                search_type=Searchable.CITY.value,
                 id=city_details[0],
                 value=city_details[1]
             )
@@ -59,20 +59,3 @@ class SearchableStorageImplementation(SearchableStorageInterface):
             for country_details in country_details_set
         ]
         return searchable_type_country_details_dtos
-
-    def get_searchable_type_user_details_dtos(
-            self, ids: List[int]
-    ) -> List[SearchableDetailsDTO]:
-        from ib_iam.models import UserDetails
-        user_details_set = UserDetails.objects.filter(
-            id__in=ids
-        ).values_list('id', 'name')
-        searchable_type_user_details_dtos = [
-            SearchableDetailsDTO(
-                search_type=Searchable.USER.value,
-                id=user_details[0],
-                value=user_details[1]
-            )
-            for user_details in user_details_set
-        ]
-        return searchable_type_user_details_dtos

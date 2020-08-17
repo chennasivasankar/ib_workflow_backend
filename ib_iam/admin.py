@@ -1,7 +1,8 @@
 # your django admin
 from django.contrib import admin
 
-from ib_iam.models import UserDetails, UserTeam, UserRole, Company, Role, Team
+from ib_iam.models import UserDetails, UserTeam, UserRole, Company, Role, Team, \
+    City, State, Country
 
 
 class CompanyAdmin(admin.ModelAdmin):
@@ -45,3 +46,6 @@ admin.site.register(Role, RoleAdmin)
 admin.site.register(UserDetails, IAMUserAdmin)
 admin.site.register(UserRole, UserRoleAdmin)
 admin.site.register(UserTeam, UserTeamAdmin)
+admin.site.register(City)
+admin.site.register(State)
+admin.site.register(Country)

@@ -1,8 +1,10 @@
 from typing import List
 
 from ib_iam.adapters.dtos import UserProfileDTO, SearchQueryWithPaginationDTO
+from ib_iam.app_interfaces.dtos import SearchableDTO
 from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
-from ib_iam.interactors.storage_interfaces.dtos import UserIdAndNameDTO
+from ib_iam.interactors.storage_interfaces.dtos import UserIdAndNameDTO, \
+    SearchableDetailsDTO
 
 
 class ServiceInterface:
@@ -188,3 +190,18 @@ class ServiceInterface:
         return interactor.search_cities_results(
             offset=offset, limit=limit, search_query=search_query
         )
+
+    @staticmethod
+    def get_searchable_details_dtos(
+            searchable_dtos: List[SearchableDTO]
+    ) -> List[SearchableDetailsDTO]:
+        from ib_iam.interactors.get_searchable_details_interactor import \
+            GetSearchableDetailsInteractor
+        from ib_iam.storages.searchable_storage_implementtion import \
+            SearchableStorageImplementation
+        storage = SearchableStorageImplementation()
+        interactor = GetSearchableDetailsInteractor(storage=storage)
+        searchable_details_dtos = interactor.get_searchable_details_dtos(
+            searchable_dtos
+        )
+        return searchable_details_dtos
