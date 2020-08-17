@@ -2,7 +2,7 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
 
 from ib_iam.interactors.get_users_list_interactor \
-    import GetUsersDetailsInteractor
+    import GetListOfUsersInteractor
 from ib_iam.presenters.get_users_list_presenter_implementation \
     import GetUsersListPresenterImplementation
 from ib_iam.storages.user_storage_implementation import \
@@ -14,7 +14,7 @@ from .validator_class import ValidatorClass
 def api_wrapper(*args, **kwargs):
     storage = UserStorageImplementation()
     presenter = GetUsersListPresenterImplementation()
-    interactor = GetUsersDetailsInteractor(user_storage=storage)
+    interactor = GetListOfUsersInteractor(user_storage=storage)
 
     user = kwargs['user']
     user_id = user.user_id
@@ -31,7 +31,7 @@ def api_wrapper(*args, **kwargs):
         offset=offset,
         limit=limit
     )
-    response = interactor.get_users_details_wrapper(
+    response = interactor.get_list_of_users_wrapper(
         user_id=user_id, pagination_dto=pagination_dto, presenter=presenter,
         name_search_query=name_search_query
     )
