@@ -43,9 +43,6 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
             self.update_task_stage_assignees(task_id_with_stage_assignees_dto)
         except InvalidTaskDisplayId as err:
             return presenter.raise_invalid_task_display_id(err)
-        # except InvalidTaskIdException as exception:
-        #     return presenter.raise_invalid_task_id_exception(
-        #         task_id=exception.task_id)
         except DuplicateStageIds as exception:
             return presenter.raise_duplicate_stage_ids_not_valid(
                 duplicate_stage_ids=exception.duplicate_stage_ids)
@@ -66,8 +63,6 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
     def validations_of_request(self,
                                task_id_with_stage_assignees_dto:
                                TaskIdWithStageAssigneesDTO):
-        # task_id = task_id_with_stage_assignees_dto.task_id
-        # self._validate_task_id(task_id=task_id)
         stage_ids = self._get_stage_ids_from_given_dto(
             task_id_with_stage_assignees_dto)
         self._check_duplicate_stage_ids(stage_ids)
