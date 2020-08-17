@@ -2,15 +2,12 @@ from unittest.mock import create_autospec, Mock
 
 import pytest
 
-from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
 from ib_tasks.interactors.user_action_on_task_interactor \
     import UserActionOnTaskInteractor
-from ib_tasks.tests.common_fixtures.interactors import \
-    prepare_task_gof_and_fields_dto, \
-    prepare_call_action_logic_update_stages_mock
 from ib_tasks.tests.factories.interactor_dtos import \
     TaskCurrentStageDetailsDTOFactory
-from ib_tasks.tests.factories.storage_dtos import ActionDTOFactory
+from ib_tasks.tests.factories.storage_dtos import ActionDTOFactory, \
+    StageActionDetailsDTOFactory
 
 
 class TestUserActionOnTaskInteractor:
@@ -18,6 +15,7 @@ class TestUserActionOnTaskInteractor:
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
         ActionDTOFactory.reset_sequence()
+        StageActionDetailsDTOFactory.reset_sequence()
         TaskCurrentStageDetailsDTOFactory.reset_sequence()
 
     @staticmethod
