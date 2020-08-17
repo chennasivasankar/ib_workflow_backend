@@ -249,35 +249,6 @@ class UpdateTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         update_stage_assignee_interactor.update_task_stage_assignees(
             task_stage_assignee_dto)
 
-    def _get_elastic_task_dto(self, task_dto: UpdateTaskDTO):
-
-        fields_dto = self._get_fields_dto(task_dto)
-        elastic_task_dto = ElasticTaskDTO(
-            template_id=None,
-            task_id=task_dto.task_id,
-            title=task_dto.title,
-            fields=fields_dto
-        )
-        return elastic_task_dto
-
-    def _get_fields_dto(
-            self, task_dto: UpdateTaskDTO) -> List[ElasticFieldDTO]:
-
-        fields_dto = []
-        gof_fields_dtos = task_dto.gof_fields_dtos
-        for gof_fields_dto in gof_fields_dtos:
-            for field_value_dto in gof_fields_dto.field_values_dtos:
-                fields_dto.append(self._get_elastic_field_dto(field_value_dto))
-
-        return fields_dto
-
-    @staticmethod
-    def _get_elastic_field_dto(field_dto: FieldValuesDTO) -> ElasticFieldDTO:
-        return ElasticFieldDTO(
-            field_id=field_dto.field_id,
-            value=field_dto.field_response
-        )
-
     def _validate_task_id(
             self, task_id: int) -> Optional[InvalidTaskException]:
         invalid_task_id = \

@@ -21,7 +21,8 @@ from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO
-from ib_tasks.interactors.user_role_validation_interactor import UserRoleValidationInteractor
+from ib_tasks.interactors.user_role_validation_interactor import \
+    UserRoleValidationInteractor
 
 
 class GetTaskFieldsAndActionsInteractor:
