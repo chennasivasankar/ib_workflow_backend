@@ -83,17 +83,24 @@ class GetNextStagesRandomAssigneesOfATaskPresenterImpl(
 
     def get_next_stages_random_assignees_of_a_task_response(
             self, stage_with_user_details_dtos: List[StageWithUserDetailsDTO]):
-        all_stage_assignees_details = [
-            {"stage_id": each_stage_with_user_details_dto.db_stage_id,
-             "stage_display_name": each_stage_with_user_details_dto.
-                 stage_display_name,
-             "assignee": {
-                 "assignee_id": each_stage_with_user_details_dto.assignee_id,
-                 "name": each_stage_with_user_details_dto.assignee_name,
-                 "profile_pic_url": each_stage_with_user_details_dto.
-                     profile_pic_url
-             }} for each_stage_with_user_details_dto in
-            stage_with_user_details_dtos]
+        all_stage_assignees_details = []
+        for each_stage_with_user_details_dto in stage_with_user_details_dtos:
+            assignee_details_dto = each_stage_with_user_details_dto.assignee_details_dto
+            assignee_details_dto_dict = None
+            if assignee_details_dto:
+                assignee_details_dto_dict = {
+                    "assignee_id": assignee_details_dto.assignee_id,
+                    "name": assignee_details_dto.name,
+                    "profile_pic_url": assignee_details_dto.
+                        profile_pic_url}
+
+            stage_assignees_details = {
+                "stage_id": each_stage_with_user_details_dto.db_stage_id,
+                "stage_display_name": each_stage_with_user_details_dto.
+                    stage_display_name,
+                "assignee": assignee_details_dto_dict}
+            all_stage_assignees_details.append(stage_assignees_details)
+
         response_dict = {"stage_assignees": all_stage_assignees_details}
         response_object = self.prepare_200_success_response(
             response_dict=response_dict

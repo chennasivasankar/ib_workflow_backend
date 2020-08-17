@@ -11,7 +11,8 @@ from ...storages.tasks_storage_implementation import TasksStorageImplementation
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
 
-    task_display_id = kwargs['task_id']
+    request_dict = kwargs['request_data']
+    task_display_id = request_dict['task_id']
     task_stage = TaskStageStorageImplementation()
     task_storage = TasksStorageImplementation()
     presenter = GetTaskStageHistoryPresenterImplementation()

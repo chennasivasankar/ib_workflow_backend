@@ -3,7 +3,7 @@ from freezegun import freeze_time
 
 from ib_tasks.models import UserTaskDelayReason
 from ib_tasks.storages.storage_implementation import StorageImplementation
-from ib_tasks.tests.factories.interactor_dtos import TaskDueParametersDTOFactory
+from ib_tasks.tests.factories.interactor_dtos import TaskDelayParametersDTOFactory
 from ib_tasks.tests.factories.models import TaskModelFactory, TaskLogFactory, TaskDueDetailsFactory
 
 
@@ -12,7 +12,7 @@ class TestAddDueDelayDetails:
 
     @classmethod
     def setup(cls):
-        TaskDueParametersDTOFactory.reset_sequence()
+        TaskDelayParametersDTOFactory.reset_sequence()
         TaskModelFactory.reset_sequence()
         TaskLogFactory.reset_sequence()
         TaskDueDetailsFactory.reset_sequence()
@@ -23,7 +23,7 @@ class TestAddDueDelayDetails:
 
     @pytest.fixture()
     def due_details(self):
-        return TaskDueParametersDTOFactory(task_id=1,
+        return TaskDelayParametersDTOFactory(task_id=1,
                                            due_date_time="2020-08-10 12:30:00",
                                            user_id="123e4567-e89b-12d3-a456-426614174000")
 

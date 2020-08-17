@@ -392,6 +392,66 @@ class TestGetTaskInteractor:
 
     @patch.object(GetTaskStagesAndActions, "get_task_stages_and_actions")
     @patch.object(GetTaskBaseInteractor, 'get_task')
+    def test_given_valid_task_and_valid_stage_ids_but_user_has_no_permission_raise_exception(
+            self, get_task_mock,
+            get_task_stages_and_actions_mock, stage_assignee_details_dtos,
+            mocker, storage_mock, presenter_mock, stages_storage_mock,
+            task_storage_mock, task_crud_storage_mock, action_storage_mock,
+            task_stage_storage_mock, task_details_dto, user_roles, gof_ids,
+            permission_task_gof_dtos, field_ids, permission_field_ids,
+            permission_task_gof_field_dtos, mock_object,
+            stages_and_actions_details_dtos, permission_gof_ids,
+            reset_sequence,
+    ):
+        # Arrange
+        from ib_tasks.tests.common_fixtures.adapters.roles_service \
+            import get_user_role_ids
+        get_user_role_ids_mock_method = get_user_role_ids(mocker)
+        user_id = "user1"
+        task_id = 1
+        task_display_id = "IBWF-1"
+        get_task_mock.return_value = task_details_dto
+        get_task_stages_and_actions_mock.return_value = \
+            stages_and_actions_details_dtos
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_storage_mock.get_task_id_for_task_display_id.return_value = \
+            task_id
+        task_stage_storage_mock \
+            .is_user_has_permission_for_at_least_one_stage.return_value = False
+
+        interactor = GetTaskInteractor(
+            storage=storage_mock, stages_storage=stages_storage_mock,
+            task_storage=task_storage_mock, action_storage=action_storage_mock,
+            task_stage_storage=task_stage_storage_mock,
+            task_crud_storage=task_crud_storage_mock
+        )
+        task_crud_storage_mock.get_gof_ids_having_permission.return_value = \
+            permission_gof_ids
+        task_crud_storage_mock.get_field_ids_having_permission.return_value = \
+            permission_field_ids
+        presenter_mock.raise_user_permission_denied.return_value = mock_object
+
+        # Act
+        response = interactor.get_task_details_wrapper(
+            user_id=user_id, task_display_id=task_display_id,
+            presenter=presenter_mock
+        )
+        # Assert
+        get_user_role_ids_mock_method.assert_called_once()
+        task_crud_storage_mock.get_gof_ids_having_permission \
+            .assert_called_once_with(
+                gof_ids, user_roles
+            )
+        task_crud_storage_mock.get_field_ids_having_permission \
+            .assert_called_once_with(
+                field_ids, user_roles)
+        task_stage_storage_mock\
+            .is_user_has_permission_for_at_least_one_stage.assert_called_once()
+        presenter_mock.raise_user_permission_denied.assert_called_once()
+        assert response == mock_object
+
+    @patch.object(GetTaskStagesAndActions, "get_task_stages_and_actions")
+    @patch.object(GetTaskBaseInteractor, 'get_task')
     @patch.object(GetStagesAssigneesDetailsInteractor,
                   "get_stages_assignee_details_dtos")
     def test_given_valid_task_and_invalid_stage_ids_raise_exception(
@@ -429,6 +489,8 @@ class TestGetTaskInteractor:
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
+        task_stage_storage_mock \
+            .is_user_has_permission_for_at_least_one_stage.return_value = True
 
         interactor = GetTaskInteractor(
             storage=storage_mock, stages_storage=stages_storage_mock,
@@ -440,7 +502,8 @@ class TestGetTaskInteractor:
             permission_gof_ids
         task_crud_storage_mock.get_field_ids_having_permission.return_value = \
             permission_field_ids
-        presenter_mock.raise_invalid_stage_ids_for_task.return_value = mock_object
+        presenter_mock.raise_invalid_stage_ids_for_task.return_value = \
+            mock_object
 
         # Act
         interactor.get_task_details_wrapper(
@@ -451,13 +514,14 @@ class TestGetTaskInteractor:
         get_user_role_ids_mock_method.assert_called_once()
         task_crud_storage_mock.get_gof_ids_having_permission \
             .assert_called_once_with(
-            gof_ids, user_roles
-        )
+                gof_ids, user_roles
+            )
         task_crud_storage_mock.get_field_ids_having_permission \
             .assert_called_once_with(
-            field_ids, user_roles)
+                field_ids, user_roles)
+        task_stage_storage_mock \
+            .is_user_has_permission_for_at_least_one_stage.assert_called_once()
         presenter_mock.raise_invalid_stage_ids_for_task.assert_called_once()
-
 
     @patch.object(GetTaskStagesAndActions, "get_task_stages_and_actions")
     @patch.object(GetTaskBaseInteractor, 'get_task')
@@ -489,6 +553,8 @@ class TestGetTaskInteractor:
         task_storage_mock.check_is_valid_task_display_id.return_value = True
         task_storage_mock.get_task_id_for_task_display_id.return_value = \
             task_id
+        task_stage_storage_mock \
+            .is_user_has_permission_for_at_least_one_stage.return_value = True
 
         interactor = GetTaskInteractor(
             storage=storage_mock, stages_storage=stages_storage_mock,
@@ -509,12 +575,13 @@ class TestGetTaskInteractor:
         )
         # Assert
         get_user_role_ids_mock_method.assert_called_once()
-        task_crud_storage_mock.get_gof_ids_having_permission\
+        task_crud_storage_mock.get_gof_ids_having_permission \
             .assert_called_once_with(
-            gof_ids, user_roles
-        )
-        task_crud_storage_mock.get_field_ids_having_permission\
+                gof_ids, user_roles)
+        task_crud_storage_mock.get_field_ids_having_permission \
             .assert_called_once_with(
-            field_ids, user_roles)
+                field_ids, user_roles)
+        task_stage_storage_mock \
+            .is_user_has_permission_for_at_least_one_stage.assert_called_once()
         presenter_mock.get_task_response.assert_called_once_with(
             task_complete_details_dto)
