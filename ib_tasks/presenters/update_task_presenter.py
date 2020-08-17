@@ -126,7 +126,7 @@ class UpdateTaskPresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             INVALID_TASK_ID
         response_message = INVALID_TASK_ID[0].format(
-            err.task_display_id
+            err.task_id
         )
         data = {
             "response": response_message,
