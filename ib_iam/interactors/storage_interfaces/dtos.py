@@ -159,3 +159,9 @@ class TeamMemberLevelDetailsDTO:
     team_member_level_id: str
     team_member_level_name: str
     level_hierarchy: int
+
+
+@dataclass
+class MemberDTO:
+    member_id: str
+    immediate_superior_team_user_id: str = None

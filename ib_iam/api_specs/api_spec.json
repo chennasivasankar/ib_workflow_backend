@@ -732,6 +732,14 @@
       "type": "string",
       "format": "uuid"
     },
+    "LevelHierarchyPathParameter": {
+      "name": "level_hierarchy",
+      "in": "path",
+      "required": true,
+      "description": "level hierarchy to identity particular level of peoples in that team",
+      "type": "string",
+      "format": "uuid"
+    },
     "UpdateTeamParameter": {
       "name": "update_team",
       "in": "body",
@@ -849,6 +857,40 @@
         "required": [
           "members"
         ]
+      }
+    },
+    "AddMembersToSuperiorsParameter": {
+      "name": "AddMembersToSuperiorsParameter",
+      "in": "body",
+      "required": true,
+      "description": "add members to superiors",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "add_members_to_superior": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "immediate_superior_user_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "member_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              },
+              "required": [
+                "immediate_superior_user_id",
+                "member_ids"
+              ]
+            }
+          }
+        }
       }
     }
   },
@@ -1680,6 +1722,32 @@
           }
         }
       }
+    },
+    "GetTeamMembersOfLevelHierarchySuccessResponse": {
+      "description": "Success response for get team members of level hierarchy",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "members": {
+            "type": "array",
+            "items": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/MemberDetails"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "immediate_superior_team_user_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
     }
   },
   "paths": {
@@ -2365,6 +2433,46 @@
         "responses": {
           "201": {
             "description": "Successfully add members to levels"
+          }
+        }
+      }
+    },
+    "/team/{team_id}/{level_hierarchy}/members/v1/": {
+      "get": {
+        "summary": "Get Team Members Of Level Hierarchy",
+        "operationId": "get_team_members_of_level_hierarchy",
+        "description": "Get team members in given level hierarchy",
+        "parameters": [
+          {
+            "$ref": "#/parameters/TeamIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/LevelHierarchyPathParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetTeamMembersOfLevelHierarchySuccessResponse"
+          }
+        }
+      },
+      "post": {
+        "summary": "Add Members To Superiors",
+        "operationId": "add_members_to_superiors",
+        "parameters": [
+          {
+            "$ref": "#/parameters/TeamIdPathParameter"
+          },
+          {
+            "$ref": "#/parameters/LevelHierarchyPathParameter"
+          },
+          {
+            "$ref": "#/parameters/AddMembersToSuperiorsParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfully add members to superiors"
           }
         }
       }

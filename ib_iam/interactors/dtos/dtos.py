@@ -27,3 +27,9 @@ class TeamMemberLevelDTO:
 class TeamMemberLevelIdWithMemberIdsDTO:
     team_member_level_id: str
     member_ids: List[str]
+
+
+@dataclass
+class ImmediateSuperiorUserIdWithUserIdsDTO:
+    immediate_superior_user_id: str
+    member_ids: List[str]

@@ -1,7 +1,7 @@
 import factory
 
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, AddUserDetailsDTO, \
-    TeamMemberLevelIdWithMemberIdsDTO
+    TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO
 from ib_iam.interactors.update_user_password_interactor import \
     CurrentAndNewPasswordDTO
 
@@ -38,6 +38,16 @@ class TeamMemberLevelIdWithMemberIdsDTOFactory(factory.Factory):
         model = TeamMemberLevelIdWithMemberIdsDTO
 
     team_member_level_id = factory.Faker("uuid4")
+    member_ids = factory.List(
+        [factory.Faker("uuid4"), factory.Faker("uuid4"), factory.Faker("uuid4")]
+    )
+
+
+class ImmediateSuperiorUserIdWithUserIdsDTOFactory(factory.Factory):
+    class Meta:
+        model = ImmediateSuperiorUserIdWithUserIdsDTO
+
+    immediate_superior_user_id = factory.Faker("uuid4")
     member_ids = factory.List(
         [factory.Faker("uuid4"), factory.Faker("uuid4"), factory.Faker("uuid4")]
     )

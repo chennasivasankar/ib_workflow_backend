@@ -3,7 +3,7 @@ import factory
 from ib_iam.interactors.storage_interfaces.dtos \
     import UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO, RoleDTO, TeamDTO, UserIdAndNameDTO, \
-    UserProfileDTO, TeamMemberLevelDetailsDTO
+    UserProfileDTO, TeamMemberLevelDetailsDTO, MemberDTO
 
 
 class UserDTOFactory(factory.Factory):
@@ -260,3 +260,10 @@ class TeamMemberLevelDetailsDTOFactory(factory.Factory):
     team_member_level_name = factory.Faker("name")
     level_hierarchy = factory.Iterator([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 
+
+class MemberDTOFactory(factory.Factory):
+    class Meta:
+        model = MemberDTO
+
+    member_id = factory.Faker("uuid4")
+    immediate_superior_team_user_id = factory.Faker("uuid4")
