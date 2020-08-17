@@ -98,9 +98,11 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
             get_task_stages_having_assignees_without_having_left_at_status(
             task_id=task_id, db_stage_ids=stage_ids)
         matched_stage_assignee_dtos = []
-        user_given_stage_assignee_dtos = task_id_with_stage_assignees_dto.stage_assignees
+        user_given_stage_assignee_dtos = task_id_with_stage_assignees_dto.\
+            stage_assignees
         for user_given_stage_assignee_dto in user_given_stage_assignee_dtos:
-            for stage_assignee_dto_having_assignees in stage_assignee_dtos_having_assignees:
+            for stage_assignee_dto_having_assignees in \
+                    stage_assignee_dtos_having_assignees:
                 if user_given_stage_assignee_dto.assignee_id == \
                         stage_assignee_dto_having_assignees.assignee_id \
                         and user_given_stage_assignee_dto.db_stage_id == \
@@ -110,12 +112,14 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
         matched_stage_ids_in_stage_assignee_dtos = [
             matched_stage_assignee_dto.db_stage_id for
             matched_stage_assignee_dto in matched_stage_assignee_dtos]
-        stage_ids_that_are_not_matched = [stage_id for stage_id in stage_ids if
-                                          stage_id not in matched_stage_ids_in_stage_assignee_dtos]
+        stage_ids_that_are_not_matched = [stage_id for stage_id in stage_ids
+                                          if stage_id not in
+                                          matched_stage_ids_in_stage_assignee_dtos]
 
         self.stage_storage. \
             update_task_stages_with_left_at_status(
-            task_id=task_id, db_stage_ids=matched_stage_ids_in_stage_assignee_dtos)
+            task_id=task_id,
+            db_stage_ids=matched_stage_ids_in_stage_assignee_dtos)
 
         task_id_with_stage_assignee_dtos_for_creation = self. \
             _get_task_id_with_stage_assignee_dtos_given_task_stage_ids(
