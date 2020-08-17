@@ -143,31 +143,3 @@ class TestGetTransitionTemplatePresenterImplementation:
         response_content = json.loads(presenter_response_object.content)
 
         snapshot.assert_match(response_content, 'transition_template')
-
-    def test_when_no_fields_exists_returns_empty_fields_list(
-            self, snapshot, presenter):
-        # Arrange
-        transition_template_dto = TaskTemplateDTOFactory.create()
-        gof_dtos = GoFDTOFactory.create_batch(size=2)
-        UserFieldPermissionDTOFactory.create_batch(size=4)
-        gofs_of_template_dtos = \
-            GoFToTaskTemplateDTOFactory.create_batch(size=2)
-        field_with_permissions_dtos = []
-
-        complete_transition_template_dto = CompleteTransitionTemplateDTO(
-            transition_template_dto=transition_template_dto,
-            gof_dtos=gof_dtos,
-            gofs_of_transition_template_dtos=gofs_of_template_dtos,
-            field_with_permissions_dtos=field_with_permissions_dtos
-        )
-
-        # Act
-        presenter_response_object = presenter.get_transition_template_response(
-            complete_transition_template_dto=complete_transition_template_dto
-        )
-
-        # Assert
-        import json
-        response_content = json.loads(presenter_response_object.content)
-
-        snapshot.assert_match(response_content, 'transition_template')

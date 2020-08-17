@@ -250,13 +250,13 @@ class ActionsStorageImplementation(ActionStorageInterface):
         action_ids = list(ActionPermittedRoles.objects.filter(
             Q(action__stage__stage_id__in=stage_ids),
             Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID))
-                          .values_list('id', flat=True)
+                          .values_list('action_id', flat=True)
                           )
         return action_ids
 
     def get_stage_ids_having_actions(self, db_stage_ids: List[int]) \
             -> List[int]:
         db_stage_ids = \
-            StageAction.objects.filter(stage_id__in=db_stage_ids).values(
-                'stage_id')
+            list(StageAction.objects.filter(stage_id__in=db_stage_ids).values_list(
+                'stage_id', flat=True))
         return db_stage_ids

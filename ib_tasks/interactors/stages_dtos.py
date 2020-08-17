@@ -100,16 +100,10 @@ class StageAssigneeDetailsDTO:
 
 
 @dataclass
-class UserDetailsDTO:
-    assignee_id: str
-    assignee_name: str
-    profile_pic_url: str
-
-
-@dataclass
-class StageWithUserDetailsDTO(UserDetailsDTO):
+class StageWithUserDetailsDTO:
     db_stage_id: int
     stage_display_name: str
+    assignee_details_dto: Optional[AssigneeDetailsDTO]
 
 
 @dataclass()

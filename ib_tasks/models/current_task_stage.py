@@ -9,3 +9,8 @@ class CurrentTaskStage(models.Model):
 
     class Meta:
         unique_together = ('stage', 'task')
+
+    def __str__(self):
+        return "{} with {}".format(
+            self.task.task_display_id,
+            self.stage.stage_id)
