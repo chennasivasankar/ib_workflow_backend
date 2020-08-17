@@ -26,6 +26,14 @@ class InvalidStagesForTemplate(Exception):
         return self.invalid_stages_task_template_ids
 
 
+class InvalidTemplateIds(Exception):
+    def __init__(self, invalid_task_template_ids: List[str]):
+        self.invalid_task_template_ids = invalid_task_template_ids
+
+    def __str__(self):
+        return self.invalid_task_template_ids
+
+
 class TaskService:
 
     @property
@@ -33,16 +41,11 @@ class TaskService:
         from ib_tasks.app_interfaces.service_interface import ServiceInterface
         return ServiceInterface()
 
-    @staticmethod
     def get_valid_task_template_ids(
-            task_template_ids: List[str]) -> List[str]:
-        return task_template_ids
-
-    def validate_task_ids(self, task_ids: List[str]):
-        pass
-
-    def validate_stage_ids(self, stage_ids: List[str]):
-        pass
+            self, task_template_ids: List[str]) -> List[str]:
+        return self.interface.validate_task_template_ids(
+            task_template_ids=task_template_ids
+        )
 
     def validate_task_template_stages_with_id(
             self, task_template_stages: List[TaskTemplateStagesDTO]):
@@ -66,17 +69,6 @@ class TaskService:
             raise InvalidStagesForTemplate(
                 invalid_stages_task_template_ids=error.invalid_stages_task_template_ids
             )
-
-    def validate_task_task_summary_fields_with_id(
-            self, task_summary_fields: List[TaskSummaryFieldsDTO]):
-        pass
-
-    def get_stage_display_logics(self, stage_ids: List[str]) -> List[str]:
-        pass
-
-    def get_task_ids_with_respective_stages(
-            self, task_status_dtos: List[TaskStatusDTO]) -> List[str]:
-        pass
 
     @staticmethod
     def get_task_details_dtos(task_dtos: List[FieldDTO],

@@ -92,14 +92,25 @@ class ServiceInterface:
 
     @staticmethod
     def validate_stage_ids_with_template_id(template_stages: List[TaskStagesDTO]):
-        from ib_tasks.interactors.validate_stage_ids_with_template_ids_interactor import \
-            ValidateStageIdsWithTemplateIdsInteractor
+        from ib_tasks.interactors.basic_validations_interactor import \
+            BasicValidationsInteractor
         from ib_tasks.storages.storage_implementation import \
             StagesStorageImplementation
-        interactor = ValidateStageIdsWithTemplateIdsInteractor(
-            stage_storage=StagesStorageImplementation()
+        interactor = BasicValidationsInteractor(
+            storage=StagesStorageImplementation()
         )
         interactor.validate_stages_with_task_template_ids(
             template_stages=template_stages
         )
+
+    @staticmethod
+    def validate_task_template_ids(task_template_ids: List[str]):
+        from ib_tasks.interactors.basic_validations_interactor import \
+            BasicValidationsInteractor
+        from ib_tasks.storages.storage_implementation import \
+            StagesStorageImplementation
+        interactor = BasicValidationsInteractor(
+            storage=StagesStorageImplementation()
+        )
+        return interactor.validate_template_ids(template_ids=task_template_ids)
 
