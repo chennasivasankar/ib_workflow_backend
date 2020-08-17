@@ -1,16 +1,20 @@
 from typing import List
 
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskException, InvalidTaskIdException, \
+from ib_tasks.constants.constants import STAGE_TYPE
+from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException, \
     InvalidTaskDisplayId
-from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import GetTaskIdForTaskDisplayIdMixin
-from ib_tasks.interactors.presenter_interfaces.get_task_stages_history_presenter_interface import \
-    GetTaskStagePresenterInterface
-from ib_tasks.interactors.stages_dtos import TaskStageHistoryDTO, EntityTypeDTO, LogDurationDTO, \
-    TaskStageCompleteDetailsDTO
+from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin \
+    import GetTaskIdForTaskDisplayIdMixin
+from ib_tasks.interactors.presenter_interfaces\
+    .get_task_stages_history_presenter_interface \
+    import GetTaskStagePresenterInterface
+from ib_tasks.interactors.stages_dtos import TaskStageHistoryDTO, EntityTypeDTO, \
+    LogDurationDTO, TaskStageCompleteDetailsDTO
 from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface \
     import TaskStageStorageInterface
-from ib_tasks.interactors.storage_interfaces.task_storage_interface import TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_storage_interface \
+    import TaskStorageInterface
 
 
 class GetTaskStagesHistory(GetTaskIdForTaskDisplayIdMixin):
@@ -133,7 +137,7 @@ class GetTaskStagesHistory(GetTaskIdForTaskDisplayIdMixin):
         entity_dtos = [
             EntityTypeDTO(
                 entity_id=task_stage_dto.log_id,
-                entity_type="STAGE"
+                entity_type=STAGE_TYPE
             )
             for task_stage_dto in task_stages_dto
         ]
