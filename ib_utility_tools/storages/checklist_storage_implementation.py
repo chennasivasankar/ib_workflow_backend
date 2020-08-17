@@ -73,4 +73,8 @@ class ChecklistStorageImplementation(ChecklistStorageInterface):
 
     def get_valid_checklist_item_ids(self, checklist_item_ids: List[str]) \
             -> List[str]:
-        pass
+        valid_checklist_item_ids = ChecklistItem.objects \
+            .filter(checklist_item_id__in=checklist_item_ids) \
+            .values_list("checklist_item_id", flat=True)
+        valid_checklist_item_ids = list(map(str, valid_checklist_item_ids))
+        return valid_checklist_item_ids
