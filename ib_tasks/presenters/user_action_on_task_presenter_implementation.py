@@ -138,7 +138,7 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
                 self._get_current_board_details(task_complete_details_dto)
 
         response_dict = {
-            "task_id": str(task_id),
+            "task_id": task_current_stage_details_dto.task_display_id,
             "current_board_details": current_board_details,
             "other_board_details": [],
             "task_current_stages_details": dict()

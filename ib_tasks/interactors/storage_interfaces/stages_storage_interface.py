@@ -126,3 +126,7 @@ class StageStorageInterface(abc.ABC):
             self, task_id: int, db_stage_ids: List[int]) \
             -> List[StageAssigneeDTO]:
         pass
+
+    @abc.abstractmethod
+    def get_valid_template_ids(self, template_ids: List[str]) -> List[str]:
+        pass

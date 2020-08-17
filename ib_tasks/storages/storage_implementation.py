@@ -355,6 +355,13 @@ class StagesStorageImplementation(StageStorageInterface):
             task_stage_obj in task_stage_objs]
         return stages_having_assignee_dtos
 
+    def get_valid_template_ids(self, template_ids: List[str]) -> List[str]:
+        from ib_tasks.models import TaskTemplate
+        valid_template_ids = TaskTemplate.objects.filter(
+            template_id__in=template_ids
+        ).values_list('template_id', flat=True)
+        return valid_template_ids
+
     def get_current_stages_of_all_tasks(self) -> List[TaskWithDbStageIdDTO]:
         task_stage_objs = list(
             CurrentTaskStage.objects.all().values('task_id', 'stage_id'))

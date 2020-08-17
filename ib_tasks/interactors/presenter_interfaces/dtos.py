@@ -15,6 +15,7 @@ from ib_tasks.interactors.stage_dtos import TaskStageDTO
 @dataclass
 class TaskCompleteDetailsDTO:
     task_id: int
+    task_display_id: str
     task_boards_details: Optional[TaskBoardsDetailsDTO]
     actions_dto: List[ActionDTO]
     field_dtos: List[FieldDisplayDTO]
