@@ -71,17 +71,20 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
             assignee_with_current_tasks_count_dtos: List[
                 AssigneeCurrentTasksCountDTO]) -> List[
         AssigneeCurrentTasksCountDTO]:
-        assignee_ids_with_current_task_count = [
-            assignee_with_current_tasks_count_dto.assignee_id for
-            assignee_with_current_tasks_count_dto in
-            assignee_with_current_tasks_count_dtos]
-
-        permitted_user_dtos_not_in_current_tasks = [
-            AssigneeCurrentTasksCountDTO(
-                assignee_id=permitted_user_id,
-                tasks_count=0) for permitted_user_id in permitted_user_ids if
-            permitted_user_id not in
-            assignee_ids_with_current_task_count]
+        assignee_ids_with_current_task_count = []
+        if assignee_ids_with_current_task_count:
+            assignee_ids_with_current_task_count = [
+                assignee_with_current_tasks_count_dto.assignee_id for
+                assignee_with_current_tasks_count_dto in
+                assignee_with_current_tasks_count_dtos]
+        permitted_user_dtos_not_in_current_tasks = []
+        if permitted_user_ids:
+            permitted_user_dtos_not_in_current_tasks = [
+                AssigneeCurrentTasksCountDTO(
+                    assignee_id=permitted_user_id,
+                    tasks_count=0) for permitted_user_id in permitted_user_ids
+                if permitted_user_id not in
+                   assignee_ids_with_current_task_count]
         assignee_with_all_current_tasks_count_dtos = \
             assignee_with_current_tasks_count_dtos + \
             permitted_user_dtos_not_in_current_tasks
@@ -108,6 +111,7 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
         for each_dto in role_ids_group_by_stage_id_dtos:
             permitted_user_details_dtos = auth_service_adapter. \
                 get_permitted_user_details(role_ids=each_dto.role_ids)
+
             permitted_user_ids = [
                 each_permitted_user_details_dto.user_id
                 for each_permitted_user_details_dto in
