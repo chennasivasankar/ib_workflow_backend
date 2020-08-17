@@ -162,7 +162,11 @@
         "company_name": {
           "type": "string"
         }
-      }
+      },
+      "required": [
+        "company_id",
+        "company_name"
+      ]
     },
     "RoleDetails": {
       "type": "object",
@@ -210,14 +214,11 @@
             "company": {
               "$ref": "#/definitions/CompanyDetails"
             }
-          },
-          "required": [
-            "company"
-          ]
+          }
         }
       ]
     },
-    "UsersDetails": {
+    "ListOfUsers": {
       "type": "object",
       "properties": {
         "users": {
@@ -234,7 +235,7 @@
     "ListOfUsersWithTotalUsersCount": {
       "allOf": [
         {
-          "$ref": "#/definitions/UsersDetails"
+          "$ref": "#/definitions/ListOfUsers"
         },
         {
           "type": "object",
