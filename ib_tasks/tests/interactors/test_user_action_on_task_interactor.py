@@ -10,12 +10,14 @@ from ib_tasks.tests.common_fixtures.interactors import \
     prepare_call_action_logic_update_stages_mock
 from ib_tasks.tests.factories.interactor_dtos import \
     TaskCurrentStageDetailsDTOFactory
+from ib_tasks.tests.factories.storage_dtos import ActionDTOFactory
 
 
 class TestUserActionOnTaskInteractor:
 
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
+        ActionDTOFactory.reset_sequence()
         TaskCurrentStageDetailsDTOFactory.reset_sequence()
 
     @staticmethod
@@ -246,7 +248,7 @@ class TestUserActionOnTaskInteractor:
         )
 
         # Act
-        interactor.user_action_on_task_wrapper(presenter=presenter)
+        interactor.user_action_on_task_wrapper(presenter=presenter, task_display_id=task_display_id)
 
         # Assert
         dict_obj = presenter.raise_exception_for_invalid_task.call_args.kwargs
