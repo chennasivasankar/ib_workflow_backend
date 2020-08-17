@@ -183,7 +183,7 @@
       "in": "body",
       "required": true,
       "schema": {
-        "$ref": "#/definitions/TimerEntityDetails"
+        "$ref": "#/definitions/EntityDetails"
       }
     },
     "TimerEntityParameter": {
@@ -197,7 +197,7 @@
     },
     "DeleteChecklistItemsParameter": {
       "name": "DeleteChecklistItemsParameter",
-      "description": "delete checklist items",
+      "description": "Delete checklist items",
       "in": "body",
       "required": true,
       "schema": {
@@ -206,7 +206,8 @@
           "checklist_item_ids": {
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         }
@@ -557,7 +558,7 @@
       }
     },
     "/checklist/items/delete/v1/": {
-      "delete": {
+      "post": {
         "summary": "Delete checklist items bulk",
         "description": "Delete checklist items bulk",
         "operationId": "delete_checklist_items",
