@@ -7,7 +7,7 @@ from ib_utility_tools.presenters \
 
 
 class TestUpdateChecklistItemPresenterImplementation:
-    def test_whether_it_gives_empty_checklist_item_ids_not_found_response(
+    def test_whether_it_gives_checklist_item_ids_not_found_response(
             self):
         from ib_utility_tools.constants.exception_messages import \
             INVALID_CHECKLIST_ITEM_IDS
