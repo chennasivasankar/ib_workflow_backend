@@ -2,10 +2,11 @@ from typing import List
 
 from ib_utility_tools.exceptions.custom_exceptions import \
     DuplicateChecklistItemIds, InvalidChecklistItemIds
-from ib_utility_tools.interactors.presenter_interfaces.delete_checklist_items_presenter_interface import \
+from ib_utility_tools.interactors.presenter_interfaces \
+    .delete_checklist_items_presenter_interface import \
     DeleteChecklistItemsPresenterInterface
-from ib_utility_tools.interactors.storage_interfaces.checklist_storage_interface import \
-    ChecklistStorageInterface
+from ib_utility_tools.interactors.storage_interfaces \
+    .checklist_storage_interface import ChecklistStorageInterface
 
 
 class DeleteChecklistItemsInteractor:
@@ -28,6 +29,7 @@ class DeleteChecklistItemsInteractor:
         return response
 
     def delete_checklist_items(self, checklist_item_ids: List[str]):
+        print(checklist_item_ids)
         self._validate_checklist_item_ids(
             checklist_item_ids=checklist_item_ids)
         self.checklist_storage.delete_checklist_items_bulk(
@@ -49,4 +51,4 @@ class DeleteChecklistItemsInteractor:
             checklist_item_ids=checklist_item_ids)
         is_invalid_ids_exist = len(valid_ids) != len(checklist_item_ids)
         if is_invalid_ids_exist:
-            InvalidChecklistItemIds
+            raise InvalidChecklistItemIds
