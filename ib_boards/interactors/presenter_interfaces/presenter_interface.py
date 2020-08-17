@@ -1,4 +1,5 @@
 import abc
+from dataclasses import dataclass
 from typing import List
 
 from django.http import response
@@ -11,6 +12,12 @@ from ib_boards.interactors.storage_interfaces.dtos import ColumnCompleteDetails
 from ib_boards.interactors.dtos import ColumnTasksDTO
 from ib_boards.interactors.storage_interfaces.dtos import (
     TaskFieldsDTO, TaskActionsDTO)
+
+
+@dataclass
+class TaskDisplayIdDTO:
+    task_id: int
+    display_id: str
 
 
 class GetBoardsPresenterInterface(abc.ABC):
@@ -116,7 +123,7 @@ class GetColumnTasksPresenterInterface(abc.ABC):
             self, task_fields_dtos: List[FieldDTO],
             task_actions_dtos: List[ActionDTO],
             total_tasks: int,
-            task_ids: List[int],
+            task_id_dtos: List[TaskDisplayIdDTO],
             task_stage_dtos: List[TaskStageDTO],
             assignees_dtos: List[StageAssigneesDTO]):
         pass

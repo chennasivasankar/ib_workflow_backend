@@ -32,7 +32,8 @@ from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     CreateTaskLogDTO, \
     CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeIdDTO, \
     SaveAndActOnTaskDTO, TaskCurrentStageDetailsDTO, \
-    UpdateTaskWithTaskDisplayIdDTO, SaveAndActOnTaskWithTaskDisplayIdDTO
+    TaskDelayParametersDTO, UpdateTaskWithTaskDisplayIdDTO, \
+    SaveAndActOnTaskWithTaskDisplayIdDTO
 from ib_tasks.interactors.task_template_dtos import \
     CreateTransitionChecklistTemplateDTO, \
     CreateTransitionChecklistTemplateWithTaskDisplayIdDTO
@@ -306,7 +307,17 @@ class TaskDueParametersDTOFactory(factory.Factory):
         model = TaskDueParametersDTO
 
     user_id = factory.Sequence(lambda n: "user_id_%d" % n)
-    task_id = factory.sequence(lambda n: n)
+    due_date_time = datetime.now() + timedelta(days=2)
+    reason_id = factory.Iterator([1, 2, 3, 4, -1])
+    reason = "reason"
+
+
+class TaskDelayParametersDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskDelayParametersDTO
+
+    user_id = factory.Sequence(lambda n: "user_id_%d" % n)
+    task_id = factory.sequence(lambda n: (n + 1))
     due_date_time = datetime.now() + timedelta(days=2)
     reason_id = factory.Iterator([1, 2, 3, 4, -1])
     reason = "reason"

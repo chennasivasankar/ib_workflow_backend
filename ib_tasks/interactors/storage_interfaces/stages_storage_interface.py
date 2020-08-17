@@ -138,3 +138,7 @@ class StageStorageInterface(abc.ABC):
     def get_db_stage_ids_for_given_stage_ids(
             self, stage_ids: List[str]) -> List[int]:
         pass
+
+    @abc.abstractmethod
+    def get_valid_template_ids(self, template_ids: List[str]) -> List[str]:
+        pass

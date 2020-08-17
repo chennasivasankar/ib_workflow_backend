@@ -17,7 +17,14 @@ def populate_existing_users_to_elastic_search_database():
     user_objs = UserDetails.objects.all()
 
     for user_obj in user_objs:
-        storage.create_elastic_user(user_id=user_obj.user_id, name=user_obj.name)
+        elastic_id = storage.create_elastic_user(
+            user_id=user_obj.user_id, name=user_obj.name
+        )
+        storage.create_elastic_user_intermediary(
+            elastic_user_id=elastic_id,
+            user_id=user_obj.user_id
+        )
+
 
 
 def populate_elastic_search_country_data():
@@ -128,9 +135,11 @@ def delete_elastic_search_data():
         hosts=[settings.ELASTICSEARCH_ENDPOINT], timeout=20
     )
     from elasticsearch import Elasticsearch
-    es = Elasticsearch()
+    es = Elasticsearch(hosts=[settings.ELASTICSEARCH_ENDPOINT])
     indices = [
-        USER_INDEX_NAME, COUNTRY_INDEX_NAME,
-        STATE_INDEX_NAME, CITY_INDEX_NAME
+        USER_INDEX_NAME,
+        COUNTRY_INDEX_NAME,
+        STATE_INDEX_NAME,
+        CITY_INDEX_NAME
     ]
     es.delete_by_query(index=indices, body={"query": {"match_all": {}}})
