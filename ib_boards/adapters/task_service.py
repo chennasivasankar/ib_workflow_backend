@@ -12,8 +12,18 @@ from ib_boards.interactors.dtos import TaskTemplateStagesDTO, \
 from ib_boards.tests.factories.storage_dtos import TaskActionsDTOFactory, \
     TaskFieldsDTOFactory
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import TaskStagesDTO
 from ib_tasks.interactors.task_dtos import TaskDetailsConfigDTO, \
     GetTaskDetailsDTO
+
+
+class InvalidStagesForTemplate(Exception):
+    def __init__(self, invalid_stages_task_template_ids: List[TaskStagesDTO]):
+        self.invalid_stages_task_template_ids = \
+            invalid_stages_task_template_ids
+
+    def __str__(self):
+        return self.invalid_stages_task_template_ids
 
 
 class TaskService:
@@ -36,7 +46,26 @@ class TaskService:
 
     def validate_task_template_stages_with_id(
             self, task_template_stages: List[TaskTemplateStagesDTO]):
-        pass
+
+        template_stages = []
+        for task_template_stage in task_template_stages:
+            for stage_id in task_template_stage.stages:
+                from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+                    TaskStagesDTO
+                template_stages.append(TaskStagesDTO(
+                    task_template_id=task_template_stage.task_template_id,
+                    stage_id=stage_id
+                ))
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            InvalidStagesTaskTemplateId
+        try:
+            self.interface.validate_stage_ids_with_template_id(
+                template_stages=template_stages
+            )
+        except InvalidStagesTaskTemplateId as error:
+            raise InvalidStagesForTemplate(
+                invalid_stages_task_template_ids=error.invalid_stages_task_template_ids
+            )
 
     def validate_task_task_summary_fields_with_id(
             self, task_summary_fields: List[TaskSummaryFieldsDTO]):

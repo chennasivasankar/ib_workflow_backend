@@ -6,7 +6,8 @@ from ib_tasks.interactors.get_stages_assignees_details_interactor import \
 from ib_tasks.interactors.get_task_fields_and_actions import \
     GetTaskFieldsAndActionsInteractor
 from ib_tasks.interactors.stages_dtos import StageAssigneeDetailsDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import GetTaskStageCompleteDetailsDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import \
+    GetTaskStageCompleteDetailsDTO, TaskStagesDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
     TaskDetailsConfigDTO
 from ib_tasks.storages.action_storage_implementation import \
@@ -87,5 +88,18 @@ class ServiceInterface:
         )
         return assignees_interactor.get_stages_assignee_details_by_given_task_ids(
             task_stage_dtos=task_stage_dtos
+        )
+
+    @staticmethod
+    def validate_stage_ids_with_template_id(template_stages: List[TaskStagesDTO]):
+        from ib_tasks.interactors.validate_stage_ids_with_template_ids_interactor import \
+            ValidateStageIdsWithTemplateIdsInteractor
+        from ib_tasks.storages.storage_implementation import \
+            StagesStorageImplementation
+        interactor = ValidateStageIdsWithTemplateIdsInteractor(
+            stage_storage=StagesStorageImplementation()
+        )
+        interactor.validate_stages_with_task_template_ids(
+            template_stages=template_stages
         )
 
