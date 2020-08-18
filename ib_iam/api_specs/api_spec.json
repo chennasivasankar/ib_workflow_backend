@@ -784,6 +784,48 @@
           "refresh_token"
         ]
       }
+    },
+    "SignUpParameters": {
+      "name": "SignUpParameters",
+      "description": "Parameters to signup the user",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "name",
+          "password"
+        ]
+      }
+    },
+    "EmailParameter": {
+      "name": "EmailParameter",
+      "description": "email to reset the password",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      }
     }
   },
   "responses": {
@@ -1582,6 +1624,111 @@
           "expires_in_seconds"
         ]
       }
+    },
+    "SignUpBadRequestResponse": {
+      "description": "Bad request Response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "ACCOUNT_ALREADY_EXISTS",
+                  "PASSWORD_DOES_NOT_MATCH_CRITERIA",
+                  "INVALID_EMAIL",
+                  "INVALID_DOMAIN",
+                  "INVALID_NAME_LENGTH",
+                  "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "SendEmailVerifyLinkBadRequestResponse": {
+      "description": "BadRequest for send email verify link",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_EMAIL",
+                  "ACCOUNT_ALREADY_EXISTS",
+                  "EMAIL_ALREADY_VERIFIED",
+                  "EMAIL_ALREADY_LINKED"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "SendEmailVerifyLinkNotFoundResponse": {
+      "description": "Send email verify link not found response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "ACCOUNT_DOES_NOT_EXISTS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "VerifyEmailBadRequestResponse": {
+      "description": "Verify Email bad request response",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "EMAIL_ALREADY_VERIFIED",
+                  "EMAIL_ALREADY_LINKED"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
     }
   },
   "paths": {
@@ -2191,6 +2338,73 @@
           },
           "400": {
             "$ref": "#/responses/RefreshAuthTokensBadRequestResponse"
+          }
+        }
+      }
+    },
+    "/user/signup/v1/": {
+      "post": {
+        "summary": "Create Account To User",
+        "description": "Create user account with given_details",
+        "operationId": "user_signup",
+        "parameters": [
+          {
+            "$ref": "#/parameters/SignUpParameters"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response"
+          },
+          "400": {
+            "$ref": "#/responses/SignUpBadRequestResponse"
+          }
+        }
+      }
+    },
+    "/user/send/verify_email_link/v1/": {
+      "post": {
+        "summary": "send verify email link",
+        "operationId": "send_verify_email_link",
+        "description": "send verify link to email",
+        "parameters": [
+          {
+            "$ref": "#/parameters/EmailParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response"
+          },
+          "400": {
+            "$ref": "#/responses/SendEmailVerifyLinkBadRequestResponse"
+          },
+          "404": {
+            "$ref": "#/responses/SendEmailVerifyLinkNotFoundResponse"
+          }
+        }
+      }
+    },
+    "/user/verify_email/v1/": {
+      "post": {
+        "summary": "verify the user email",
+        "operationId": "verify_email",
+        "description": "verify the user email",
+        "parameters": [],
+        "security": [
+          {
+            "oauth": [
+              "write",
+              "read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success Response"
+          },
+          "400": {
+            "$ref": "#/responses/VerifyEmailBadRequestResponse"
           }
         }
       }
