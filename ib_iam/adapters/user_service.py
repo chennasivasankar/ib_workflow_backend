@@ -73,6 +73,7 @@ class UserService:
 
     def update_user_profile(
             self, user_id: str, user_profile_dto: UserProfileDTO):
+        print("hai")
         from ib_users.interactors.user_profile_interactor import UserProfileDTO
         from ib_users.exceptions.invalid_email_exception import \
             InvalidEmailException

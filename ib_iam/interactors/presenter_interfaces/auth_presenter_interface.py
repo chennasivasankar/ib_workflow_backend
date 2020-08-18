@@ -105,3 +105,17 @@ class SendVerifyEmailLinkPresenterInterface(ABC):
     @abstractmethod
     def raise_email_already_verified_exception(self):
         pass
+
+
+class VerifyEmailPresenterInterface(ABC):
+    @abstractmethod
+    def raise_email_does_not_exist_to_verify_exception(self):
+        pass
+
+    @abstractmethod
+    def raise_email_already_verified_exception(self):
+        pass
+
+    @abstractmethod
+    def get_response_for_verified_email(self):
+        pass
