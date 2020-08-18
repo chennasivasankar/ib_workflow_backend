@@ -1667,10 +1667,7 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_EMAIL",
-                  "ACCOUNT_ALREADY_EXISTS",
-                  "EMAIL_ALREADY_VERIFIED",
-                  "EMAIL_ALREADY_LINKED"
+                  "EMAIL_ALREADY_VERIFIED"
                 ]
               }
             },
@@ -1718,8 +1715,7 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "EMAIL_ALREADY_VERIFIED",
-                  "EMAIL_ALREADY_LINKED"
+                  "EMAIL_ALREADY_VERIFIED"
                 ]
               }
             },

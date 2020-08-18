@@ -21,6 +21,7 @@ class SendVerifyEmailLinkInteractor:
             return presenter.raise_account_does_not_exist_exception()
         except EmailAlreadyVerifiedException:
             return presenter.raise_email_already_verified_exception()
+        # TODO validate email pattern
 
     def send_verify_email_link(self, email: str):
         from ib_iam.adapters.service_adapter import get_service_adapter
