@@ -2,6 +2,7 @@ from typing import List
 
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.exceptions.custom_exceptions import InvalidUserId
+from ib_iam.interactors.storage_interfaces.dtos import BasicUserDetailsDTO
 
 
 class UserAccountDoesNotExist(Exception):
@@ -122,7 +123,7 @@ class UserService:
         user_dtos_from_service = self.interface.get_user_profile_bulk(
             user_ids=user_ids)
         basic_user_profile_dto = [
-            UserProfileDTO(
+            BasicUserDetailsDTO(
                 user_id=user_dto.user_id,
                 name=user_dto.name,
                 profile_pic_url=user_dto.profile_pic_url)
