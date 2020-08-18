@@ -3,7 +3,8 @@ from typing import List
 from ib_users.validators.base_validator import CustomException
 
 from ib_iam.adapters.dtos import UserProfileDTO
-from ib_iam.exceptions.custom_exceptions import InvalidUserId, InvalidEmail
+from ib_iam.exceptions.custom_exceptions import InvalidUserId
+from ib_iam.interactors.storage_interfaces.dtos import BasicUserDetailsDTO
 
 
 class UserAccountDoesNotExist(Exception):
@@ -73,7 +74,6 @@ class UserService:
 
     def update_user_profile(
             self, user_id: str, user_profile_dto: UserProfileDTO):
-        print("hai")
         from ib_users.interactors.user_profile_interactor import UserProfileDTO
         from ib_users.exceptions.invalid_email_exception import \
             InvalidEmailException
@@ -136,21 +136,14 @@ class UserService:
         user_dtos_from_service = self.interface.get_user_profile_bulk(
             user_ids=user_ids)
         basic_user_profile_dto = [
-            UserProfileDTO(
+            BasicUserDetailsDTO(
                 user_id=user_dto.user_id,
                 name=user_dto.name,
-                profile_pic_url=self._get_user_profile_pic_url(
-                    user_dto.profile_pic_url),
-            )
+                profile_pic_url=user_dto.profile_pic_url)
             for user_dto in user_dtos_from_service
         ]
         return basic_user_profile_dto
 
-    @staticmethod
-    def _get_user_profile_pic_url(profile_pic_url) -> str:
-        if profile_pic_url is None:
-            profile_pic_url = ""
-        return profile_pic_url
 
     def get_user_id_for_given_email(self, email: str) -> str:
         try:

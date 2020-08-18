@@ -176,8 +176,7 @@ class UserStorageImplementation(UserStorageInterface):
     def _convert_user_company_dto(user_company) -> UserCompanyDTO:
         company = user_company.company
         if company is None:
-            return UserCompanyDTO(user_id=user_company.user_id,
-                                  company_id="", company_name="")
+            return UserCompanyDTO(user_id=user_company.user_id)
         else:
             return UserCompanyDTO(
                 user_id=user_company.user_id,
