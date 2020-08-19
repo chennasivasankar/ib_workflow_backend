@@ -51,6 +51,10 @@ class AuthPresenterInterface(ABC):
     def get_update_user_password_success_response(self):
         pass
 
+    @abstractmethod
+    def raise_exception_for_login_with_not_verify_email(self):
+        pass
+
 
 class GetUserProfilePresenterInterface(ABC):
     @abstractmethod
