@@ -34,12 +34,12 @@ class ChecklistItemWithEntityDTO(EntityDTO):
 
 @dataclass
 class TimerEntityDTO:
-    entity_id: str
-    entity_type: TimerEntityType
+    entity_id: str = None
+    entity_type: TimerEntityType = None
 
 
 @dataclass
-class TimerDetailsDTO:
-    duration_in_seconds: int
-    is_running: bool
+class TimerDetailsDTO(TimerEntityDTO):
+    duration_in_seconds: int = 0
+    is_running: bool = False
     start_datetime: datetime = None

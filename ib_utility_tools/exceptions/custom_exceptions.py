@@ -12,3 +12,7 @@ class TimerIsAlreadyRunning(Exception):
 
 class TimerIsAlreadyStopped(Exception):
     pass
+
+
+class InvalidEntities(Exception):
+    pass

@@ -48,9 +48,10 @@ class TimerEntityDTOFactory(factory.Factory):
     entity_type = TimerEntityType.STAGE_TASK.value
 
 
-class TimerDetailsDTOFactory(factory.Factory):
+class TimerDetailsDTOFactory(TimerEntityDTOFactory, factory.Factory):
     class Meta:
         model = TimerDetailsDTO
 
     duration_in_seconds = factory.Iterator([100, 300, 500])
     is_running = False
+    start_datetime = None
