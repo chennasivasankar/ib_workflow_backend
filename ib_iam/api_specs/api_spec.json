@@ -1066,7 +1066,8 @@
               "res_status": {
                 "type": "string",
                 "enum": [
-                  "INVALID_EMAIL"
+                  "INVALID_EMAIL",
+                  "EMAIL_IS_NOT_VERIFY"
                 ]
               }
             },

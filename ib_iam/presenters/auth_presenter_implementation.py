@@ -47,7 +47,7 @@ TOKEN_HAS_EXPIRED = (
     "TOKEN_HAS_EXPIRED"
 )
 
-EMAIL_NOT_VERIFY = (
+EMAIL_IS_NOT_VERIFY = (
     "Given Email not verify, Please first verify the email",
     "EMAIL_NOT_VERIFY"
 )
@@ -57,9 +57,9 @@ class AuthPresenterImplementation(AuthPresenterInterface, HTTPResponseMixin):
 
     def raise_exception_for_login_with_not_verify_email(self):
         response_dict = {
-            "response": EMAIL_NOT_VERIFY[0],
+            "response": EMAIL_IS_NOT_VERIFY[0],
             "http_status_code": StatusCode.BAD_REQUEST.value,
-            "res_status": EMAIL_NOT_VERIFY[1]
+            "res_status": EMAIL_IS_NOT_VERIFY[1]
         }
         return self.prepare_400_bad_request_response(
             response_dict=response_dict

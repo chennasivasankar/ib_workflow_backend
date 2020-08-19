@@ -227,10 +227,10 @@ class TestAuthPresenterImplementation:
         presenter = AuthPresenterImplementation()
 
         from ib_iam.presenters.auth_presenter_implementation import \
-            EMAIL_NOT_VERIFY
-        expected_response = EMAIL_NOT_VERIFY[0]
+            EMAIL_IS_NOT_VERIFY
+        expected_response = EMAIL_IS_NOT_VERIFY[0]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
-        expected_res_status = EMAIL_NOT_VERIFY[1]
+        expected_res_status = EMAIL_IS_NOT_VERIFY[1]
 
         # Act
         response = presenter.raise_exception_for_login_with_not_verify_email()
