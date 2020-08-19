@@ -130,7 +130,7 @@ class TestSignUpInteractor():
         presenter_mock.raise_account_already_exists_exception.assert_called_once()
         is_active_user_account_mock.assert_called_once_with(email=email)
 
-    def test_given_invalid_password_email_raises_exception(
+    def test_given_invalid_password_then_raises_exception(
             self, init_interactor, presenter_mock, set_up):
         email, password, name = set_up
         password = "123"

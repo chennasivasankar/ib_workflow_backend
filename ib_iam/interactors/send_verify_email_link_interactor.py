@@ -17,6 +17,7 @@ class SendVerifyEmailLinkInteractor:
             presenter: SendVerifyEmailLinkPresenterInterface):
         try:
             self.send_verify_email_link(email=email)
+            return presenter.get_response_send_verify_email_link()
         except AccountDoesNotExists:
             return presenter.raise_account_does_not_exist_exception()
         except EmailAlreadyVerifiedException:

@@ -106,6 +106,10 @@ class SendVerifyEmailLinkPresenterInterface(ABC):
     def raise_email_already_verified_exception(self):
         pass
 
+    @abstractmethod
+    def get_response_send_verify_email_link(self):
+        pass
+
 
 class VerifyEmailPresenterInterface(ABC):
     @abstractmethod

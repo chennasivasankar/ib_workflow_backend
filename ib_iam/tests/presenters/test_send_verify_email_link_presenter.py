@@ -40,3 +40,8 @@ class TestSendVerifyEmailLinkPresenter:
 
         actual_response_content = json.loads(response.content)
         assert response_dict == actual_response_content
+
+    def test_get_response_send_verify_email_link(self, presenter_mock):
+        response = presenter_mock.get_response_send_verify_email_link()
+
+        assert 200 == response.status_code
