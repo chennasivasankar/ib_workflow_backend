@@ -1,6 +1,8 @@
 import pytest
 
 from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
+from ib_iam.tests.factories.interactor_dtos import CompleteUserProfileDTOFactory
+from ib_iam.tests.factories.storage_dtos import UserDTOFactory
 
 
 class TestGetUserProfileInteractor:
@@ -54,16 +56,17 @@ class TestGetUserProfileInteractor:
         return role_dtos
 
     @pytest.fixture()
-    def complete_user_profile_dto(
+    def user_with_extra_details_dto(
             self, expected_company_dto, expected_company_employee_ids_dto,
             expected_role_dtos, expected_team_dtos,
-            expected_team_user_ids_dtos,expected_user_dtos):
+            expected_team_user_ids_dtos, expected_user_dtos):
         user_id = "1"
         from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
-            CompleteUserProfileDTO
-        UserProfileDTOFactory.reset_sequence(1)
-        user_profile_dto = UserProfileDTOFactory(user_id="1")
-        expected_response_dto = CompleteUserProfileDTO(
+            UserWithExtraDetailsDTO
+        CompleteUserProfileDTOFactory.reset_sequence(1)
+        user_profile_dto = CompleteUserProfileDTOFactory(
+            user_id=user_id, is_admin=True, cover_page_url="url1")
+        expected_response_dto = UserWithExtraDetailsDTO(
             user_profile_dto=user_profile_dto,
             role_dtos=expected_role_dtos,
             company_dto=expected_company_dto,
@@ -152,22 +155,24 @@ class TestGetUserProfileInteractor:
         presenter_mock.raise_exception_for_user_account_does_not_exist. \
             assert_called_once()
 
-    def test_with_valid_user_id_return_response(
+    def test_with_valid_user_id_return_user_profile_details_as_response(
             self, mocker, storage_mock, presenter_mock, expected_company_dto,
             expected_company_employee_ids_dto, expected_team_dtos,
             expected_team_user_ids_dtos, expected_user_dtos,
-            expected_role_dtos, complete_user_profile_dto
+            expected_role_dtos, user_with_extra_details_dto
     ):
         # Arrange
         user_id = "1"
         from unittest.mock import Mock
         UserProfileDTOFactory.reset_sequence(1)
+        UserDTOFactory.reset_sequence(1)
         user_profile_dto = UserProfileDTOFactory(user_id=user_id)
+        user_detail_dto = UserDTOFactory(user_id=user_id)
         from ib_iam.tests.common_fixtures.adapters.user_service import \
             prepare_get_user_profile_dto_mock
         get_user_profile_dto_mock = prepare_get_user_profile_dto_mock(mocker)
         get_user_profile_dto_mock.return_value = user_profile_dto
-        storage_mock.get_user_details.return_value = user_profile_dto
+        storage_mock.get_user_details.return_value = user_detail_dto
         storage_mock.get_user_related_team_dtos \
             .return_value = expected_team_dtos
         storage_mock.get_team_user_ids_dtos \
@@ -207,4 +212,4 @@ class TestGetUserProfileInteractor:
             .assert_called_once_with(company_id="1")
         presenter_mock.prepare_response_for_get_user_profile. \
             assert_called_once_with(
-            complete_user_profile_dto=complete_user_profile_dto)
+            user_with_extra_details_dto=user_with_extra_details_dto)

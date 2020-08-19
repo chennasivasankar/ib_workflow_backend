@@ -128,7 +128,8 @@ class UserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_user_name_and_cover_page_url(self, user_profile_dto):
+    def update_user_name_and_cover_page_url(
+            self, name: str, cover_page_url: str, user_id: str):
         pass
 
     @abstractmethod

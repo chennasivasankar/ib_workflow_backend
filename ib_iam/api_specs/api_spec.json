@@ -90,47 +90,6 @@
         "name"
       ]
     },
-    "UserWithExtraFields": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/UserDetails"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "profile_pic_url": {
-              "type": "string"
-            },
-            "cover_page_url": {
-              "type": "string"
-            },
-            "is_admin": {
-              "type": "boolean"
-            },
-            "roles": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/RoleDetailsForGetUserProfile"
-              }
-            },
-            "company": {
-              "$ref": "#/definitions/CompanyDetailsWithEmployeeDetailsForGetUserProfile"
-            },
-            "teams": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/TeamWithMembersDetails"
-              }
-            }
-          },
-          "required": [
-            "is_admin",
-            "roles",
-            "teams"
-          ]
-        }
-      ]
-    },
     "UserId": {
       "type": "object",
       "properties": {
@@ -211,21 +170,6 @@
       },
       "required": [
         "roles"
-      ]
-    },
-    "RoleDetailsForGetUserProfile": {
-      "type": "object",
-      "properties": {
-        "role_id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "role_id",
-        "name"
       ]
     },
     "CompleteUserDetails": {
@@ -496,29 +440,6 @@
           ]
         }
       ]
-    },
-    "CompanyDetailsWithEmployeeDetailsForGetUserProfile": {
-      "type": "object",
-      "properties": {
-        "company_id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "logo_url": {
-          "type": "string"
-        },
-        "employees": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/EmployeeDetails"
-          }
-        }
-      }
     },
     "TeamsWithTotalTeamsCount": {
       "type": "object",
@@ -1277,7 +1198,65 @@
     "GetUserProfileSuccessResponse": {
       "description": "get user profile success response",
       "schema": {
-        "$ref": "#/definitions/UserWithExtraFields"
+        "allOf": [
+          {
+            "$ref": "#/definitions/UserDetails"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "profile_pic_url": {
+                "type": "string"
+              },
+              "cover_page_url": {
+                "type": "string"
+              },
+              "is_admin": {
+                "type": "boolean"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RoleDetails"
+                }
+              },
+              "company": {
+                "type": "object",
+                "properties": {
+                  "company_id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "logo_url": {
+                    "type": "string"
+                  },
+                  "employees": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/EmployeeDetails"
+                    }
+                  }
+                }
+              },
+              "teams": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/TeamWithMembersDetails"
+                }
+              }
+            },
+            "required": [
+              "is_admin",
+              "roles",
+              "teams"
+            ]
+          }
+        ]
       }
     },
     "GetUserProfileBadRequestResponse": {

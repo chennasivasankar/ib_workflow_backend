@@ -4,9 +4,10 @@ from django_swagger_utils.utils.http_response_mixin import HTTPResponseMixin
 
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.constants.enums import StatusCode
+from ib_iam.interactors.dtos.dtos import CompleteUserProfileDTO
 from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
     GetUserProfilePresenterInterface, \
-    CompleteUserProfileDTO
+    UserWithExtraDetailsDTO
 from ib_iam.interactors.storage_interfaces.dtos import TeamDTO, CompanyDTO, \
     CompanyIdWithEmployeeIdsDTO, TeamUserIdsDTO
 
@@ -44,30 +45,27 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
 
     def prepare_response_for_get_user_profile(
             self,
-            complete_user_profile_dto:
-            CompleteUserProfileDTO):
-        user_profile_dto = complete_user_profile_dto.user_profile_dto
+            user_with_extra_details_dto: UserWithExtraDetailsDTO):
+        user_profile_dto = user_with_extra_details_dto.user_profile_dto
         teams = self._convert_team_dtos_to_teams(
-            team_dtos=complete_user_profile_dto.team_dtos,
-            user_dtos=complete_user_profile_dto.user_dtos,
-            team_user_ids_dtos=
-            complete_user_profile_dto.team_user_ids_dto)
+            team_dtos=user_with_extra_details_dto.team_dtos,
+            user_dtos=user_with_extra_details_dto.user_dtos,
+            team_user_ids_dtos=user_with_extra_details_dto.team_user_ids_dto)
         company_dictionary = self._get_company_dictionary(
-            company_dto=complete_user_profile_dto.company_dto,
-            user_dtos=complete_user_profile_dto.user_dtos,
+            company_dto=user_with_extra_details_dto.company_dto,
+            user_dtos=user_with_extra_details_dto.user_dtos,
             company_id_with_employee_ids_dto=
-            complete_user_profile_dto.company_id_with_employee_ids_dto)
-        roles = self._get_roles(role_dtos=complete_user_profile_dto.role_dtos)
+            user_with_extra_details_dto.company_id_with_employee_ids_dto)
+        roles = self._get_roles(
+            role_dtos=user_with_extra_details_dto.role_dtos)
         response_dict = self._get_user_profile_dict_from_user_profile_dto(
             user_profile_dto=user_profile_dto, teams=teams,
             company=company_dictionary, roles=roles)
-        print("I am in response")
-        print(response_dict)
         return self.prepare_200_success_response(response_dict=response_dict)
 
     @staticmethod
     def _get_user_profile_dict_from_user_profile_dto(
-            user_profile_dto: UserProfileDTO, teams, company, roles):
+            user_profile_dto: CompleteUserProfileDTO, teams, company, roles):
         cover_page_url = user_profile_dto.cover_page_url
         if cover_page_url is None:
             cover_page_url = ""
@@ -89,7 +87,7 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
 
     @staticmethod
     def _get_roles(role_dtos):
-        roles = [{"role_id": role_dto.role_id, "name": role_dto.name}
+        roles = [{"role_id": role_dto.role_id, "role_name": role_dto.name}
                  for role_dto in role_dtos]
         return roles
 
@@ -119,9 +117,11 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
 
     @staticmethod
     def _convert_user_dto_to_member_dictionary(user_dto: UserProfileDTO):
-        member_dictionary = {"member_id": user_dto.user_id,
-                             "name": user_dto.name,
-                             "profile_pic_url": user_dto.profile_pic_url}
+        member_dictionary = {
+            "member_id": user_dto.user_id,
+            "name": user_dto.name,
+            "profile_pic_url": user_dto.profile_pic_url
+        }
         return member_dictionary
 
     @staticmethod
@@ -165,7 +165,9 @@ class GetUserProfilePresenterImplementation(GetUserProfilePresenterInterface,
     @staticmethod
     def _convert_user_dto_to_employee_dictionary(
             user_dto: UserProfileDTO):
-        employee_dictionary = {"employee_id": user_dto.user_id,
-                               "name": user_dto.name,
-                               "profile_pic_url": user_dto.profile_pic_url}
+        employee_dictionary = {
+            "employee_id": user_dto.user_id,
+            "name": user_dto.name,
+            "profile_pic_url": user_dto.profile_pic_url
+        }
         return employee_dictionary

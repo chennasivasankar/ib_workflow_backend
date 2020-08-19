@@ -1,11 +1,11 @@
 from typing import List
 
-from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.exceptions.custom_exceptions import (
     InvalidNameLength,
     NameShouldNotContainsNumbersSpecCharacters, InvalidEmail,
     UserAccountAlreadyExistWithThisEmail, RoleIdsAreInvalid,
     RoleIdsAreDuplicated)
+from ib_iam.interactors.dtos.dtos import CompleteUserProfileDTO
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces \
     .update_user_profile_presenter_interface import \
@@ -20,7 +20,7 @@ class UpdateUserProfileInteractor(ValidationMixin):
 
     def update_user_profile_wrapper(
             self,
-            user_profile_dto: UserProfileDTO,
+            user_profile_dto: CompleteUserProfileDTO,
             role_ids: List[str],
             presenter: UpdateUserProfilePresenterInterface):
         try:
@@ -43,7 +43,7 @@ class UpdateUserProfileInteractor(ValidationMixin):
         return response
 
     def update_user_profile(
-            self, user_profile_dto: UserProfileDTO, role_ids: List[str]):
+            self, user_profile_dto: CompleteUserProfileDTO, role_ids: List[str]):
         name = user_profile_dto.name
         user_id = user_profile_dto.user_id
         self._validate_name_and_throw_exception(name=name)
@@ -53,10 +53,12 @@ class UpdateUserProfileInteractor(ValidationMixin):
             self._update_user_roles(role_ids=role_ids, user_id=user_id)
         self._update_user_profile_in_ib_users(
             user_profile_dto=user_profile_dto)
-        self.user_storage.update_user_name_and_cover_page_url(user_profile_dto)
+        self.user_storage.update_user_name_and_cover_page_url(
+            name=name, cover_page_url=user_profile_dto.cover_page_url,
+            user_id=user_id)
 
-    def _update_user_profile_in_ib_users(self,
-                                         user_profile_dto: UserProfileDTO):
+    def _update_user_profile_in_ib_users(
+            self, user_profile_dto: CompleteUserProfileDTO):
         from ib_iam.adapters.service_adapter import get_service_adapter
         service_adapter = get_service_adapter()
         user_profile_dto = self._create_user_profile_dto(
@@ -66,15 +68,17 @@ class UpdateUserProfileInteractor(ValidationMixin):
             user_profile_dto=user_profile_dto)
 
     @staticmethod
-    def _create_user_profile_dto(user_profile_dto: UserProfileDTO):
+    def _create_user_profile_dto(user_profile_dto: CompleteUserProfileDTO):
         from ib_iam.adapters.dtos import UserProfileDTO
         profile_pic_url = user_profile_dto.profile_pic_url
         if profile_pic_url == "":
             profile_pic_url = None
-        user_profile_dto = UserProfileDTO(user_id=user_profile_dto.user_id,
-                                          name=user_profile_dto.name,
-                                          email=user_profile_dto.email,
-                                          profile_pic_url=profile_pic_url)
+        user_profile_dto = UserProfileDTO(
+            user_id=user_profile_dto.user_id,
+            name=user_profile_dto.name,
+            email=user_profile_dto.email,
+            profile_pic_url=profile_pic_url
+        )
         return user_profile_dto
 
     def _update_user_roles(self, role_ids: List[str], user_id: str):

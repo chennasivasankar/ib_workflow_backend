@@ -19,7 +19,7 @@ snapshots['TestCase01GetUserProfileAPITestCase.test_valid_user_id status_code'] 
 
 snapshots['TestCase01GetUserProfileAPITestCase.test_valid_user_id body'] = {
     'company': None,
-    'cover_page_url': '',
+    'cover_page_url': 'url0',
     'email': 'name1@gmail.com',
     'is_admin': False,
     'name': 'name1',

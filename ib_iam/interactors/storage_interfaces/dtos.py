@@ -123,12 +123,15 @@ class EmployeeDTO:
 class CompanyNameLogoAndDescriptionDTO:
     name: str
     description: str
-    logo_url: str
+    logo_url: Optional[str] = None
 
 
 @dataclass
-class CompanyDTO(CompanyNameLogoAndDescriptionDTO):
+class CompanyDTO:
     company_id: str
+    name: str
+    description: str
+    logo_url: Optional[str]
 
 
 @dataclass
@@ -138,10 +141,17 @@ class CompanyIdWithEmployeeIdsDTO:
 
 
 @dataclass
-class CompanyWithUserIdsDTO(CompanyNameLogoAndDescriptionDTO):
+class CompanyWithUserIdsDTO:
     user_ids: List[str]
+    name: str
+    description: str
+    logo_url: Optional[str]
 
 
 @dataclass
-class CompanyWithCompanyIdAndUserIdsDTO(CompanyWithUserIdsDTO):
+class CompanyWithCompanyIdAndUserIdsDTO:
     company_id: str
+    name: str
+    description: str
+    logo_url: Optional[str]
+    user_ids: List[str]

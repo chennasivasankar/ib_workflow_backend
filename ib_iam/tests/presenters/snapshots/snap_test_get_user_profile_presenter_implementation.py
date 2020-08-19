@@ -26,19 +26,19 @@ snapshots['TestGetUserProfilePresenterImplementation.test_prepare_response_for_u
         'logo_url': 'logo_url1',
         'name': 'company1'
     },
-    'cover_page_url': '',
+    'cover_page_url': 'url1',
     'email': 'name1@gmail.com',
     'is_admin': False,
     'name': 'name1',
     'profile_pic_url': 'url1',
     'roles': [
         {
-            'name': 'payment 1',
-            'role_id': 'PAYMENT1'
+            'role_id': 'PAYMENT1',
+            'role_name': 'payment 1'
         },
         {
-            'name': 'payment 2',
-            'role_id': 'PAYMENT2'
+            'role_id': 'PAYMENT2',
+            'role_name': 'payment 2'
         }
     ],
     'teams': [

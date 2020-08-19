@@ -96,12 +96,12 @@ class UserStorageImplementation(UserStorageInterface):
             company_id=company_id, name=name
         )
 
-    def update_user_name_and_cover_page_url(self,
-                                            user_profile_dto: UserProfileDTO):
+    def update_user_name_and_cover_page_url(
+            self, name: str, cover_page_url: str, user_id: str):
         from ib_iam.models import UserDetails
-        UserDetails.objects.filter(user_id=user_profile_dto.user_id) \
-            .update(name=user_profile_dto.name,
-                    cover_page_url=user_profile_dto.cover_page_url)
+        UserDetails.objects.filter(user_id=user_id).update(
+            name=name,
+            cover_page_url=cover_page_url)
 
     def get_users_who_are_not_admins(
             self, offset: int, limit: int,

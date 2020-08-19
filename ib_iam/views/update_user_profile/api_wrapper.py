@@ -8,8 +8,8 @@ from .validator_class import ValidatorClass
 def api_wrapper(*args, **kwargs):
     user_object = kwargs["user"]
     request_data = kwargs["request_data"]
-    user_profile_dto = _prepare_user_profile_dto(request_data=request_data,
-                                                 user_object=user_object)
+    user_profile_dto = prepare_update_user_profile_dto(
+        request_data=request_data, user_object=user_object)
     role_ids = request_data.get("role_ids", [])
 
     from ib_iam.storages.user_storage_implementation import \
@@ -30,14 +30,13 @@ def api_wrapper(*args, **kwargs):
     return response_data
 
 
-def _prepare_user_profile_dto(request_data, user_object):
-    from ib_iam.adapters.dtos import UserProfileDTO
-    user_profile_dto = \
-        UserProfileDTO(
-            user_id=user_object.user_id,
-            name=request_data["name"],
-            email=request_data["email"],
-            profile_pic_url=request_data["profile_pic_url"],
-            cover_page_url=request_data["cover_page_url"]
-        )
-    return user_profile_dto
+def prepare_update_user_profile_dto(request_data, user_object):
+    from ib_iam.interactors.dtos.dtos import CompleteUserProfileDTO
+    update_user_profile_dto = CompleteUserProfileDTO(
+        user_id=user_object.user_id,
+        name=request_data["name"],
+        email=request_data["email"],
+        profile_pic_url=request_data["profile_pic_url"],
+        cover_page_url=request_data["cover_page_url"]
+    )
+    return update_user_profile_dto

@@ -1,9 +1,9 @@
 import factory
 
 from ib_iam.interactors.storage_interfaces.dtos \
-    import (UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO,
-            TeamIdAndNameDTO, CompanyIdAndNameDTO, RoleDTO, TeamDTO,
-            UserIdAndNameDTO)
+    import UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO, \
+    TeamIdAndNameDTO, CompanyIdAndNameDTO, RoleDTO, TeamDTO, \
+    UserIdAndNameDTO
 
 
 class UserDTOFactory(factory.Factory):
@@ -13,6 +13,7 @@ class UserDTOFactory(factory.Factory):
     user_id = factory.sequence(lambda number: "team%s" % number)
     is_admin = True
     company_id = factory.sequence(lambda number: "company%s" % number)
+    cover_page_url = factory.sequence(lambda n: "url%d" % n)
 
 
 class UserTeamDTOFactory(factory.Factory):

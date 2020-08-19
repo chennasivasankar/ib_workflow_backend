@@ -52,20 +52,22 @@ class TestGetUserProfilePresenterImplementation:
         assert response_data["res_status"] == expected_res_status
 
     def test_prepare_response_for_user_profile_dto(
-            self, presenter,user_dtos, user_role_dtos, company_dto,
+            self, presenter, user_dtos, user_role_dtos, company_dto,
             company_employee_ids_dtos, team_dtos, team_user_ids_dtos,
             snapshot):
         # Arrange
         user_ids = ['eca1a0c1-b9ef-4e59-b415-60a28ef17b10',
                     '4b8fb6eb-fa7d-47c1-8726-cd917901104e',
                     '548a803c-7b48-47ba-a700-24f2ea0d1280']
-        from ib_iam.tests.factories.adapter_dtos import UserProfileDTOFactory
         from ib_iam.interactors.presenter_interfaces.auth_presenter_interface \
-            import CompleteUserProfileDTO
-        UserProfileDTOFactory.reset_sequence(1)
-        user_profile_dto = UserProfileDTOFactory(user_id=user_ids[0])
-        complete_user_profile_dto = \
-            CompleteUserProfileDTO(
+            import UserWithExtraDetailsDTO
+        from ib_iam.tests.factories.interactor_dtos import \
+            CompleteUserProfileDTOFactory
+        CompleteUserProfileDTOFactory.reset_sequence(1)
+        user_profile_dto = CompleteUserProfileDTOFactory(
+            user_id=user_ids[0], is_admin=False)
+        user_with_extra_details_dto = \
+            UserWithExtraDetailsDTO(
                 user_profile_dto=user_profile_dto,
                 role_dtos=user_role_dtos,
                 company_dto=company_dto,
@@ -77,7 +79,7 @@ class TestGetUserProfilePresenterImplementation:
 
         # Act
         response_object = presenter.prepare_response_for_get_user_profile(
-            complete_user_profile_dto=complete_user_profile_dto)
+            user_with_extra_details_dto=user_with_extra_details_dto)
 
         # Assert
         response_data = json.loads(response_object.content)
