@@ -57,7 +57,8 @@ from ib_tasks.interactors.task_template_dtos import \
 
 
 class CreateTransitionChecklistTemplateInteractor(
-    GetTaskIdForTaskDisplayIdMixin):
+    GetTaskIdForTaskDisplayIdMixin
+):
 
     def __init__(self,
                  create_or_update_task_storage:

@@ -26,7 +26,8 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import (
     StorageInterface, StatusVariableDTO
 )
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
-from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, TaskDueParametersDTO, TaskDelayParametersDTO
+from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
+    TaskDueParametersDTO, TaskDelayParametersDTO
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
     ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, \
     GlobalConstant, \
@@ -66,7 +67,7 @@ class StagesStorageImplementation(StageStorageInterface):
                              for stage_obj in stage_objs]
         return stage_detail_dtos
 
-    def get_valid_next_stage_ids_of_task_by_excluding_virtual_stages(
+    def get_stage_ids_excluding_virtual_stages(
             self, stage_ids: List[str]) -> List[str]:
         stage_ids = list(Stage.objects.filter(stage_id__in=stage_ids).exclude(
             value=-1).values_list('stage_id', flat=True))
@@ -142,7 +143,8 @@ class StagesStorageImplementation(StageStorageInterface):
         for task in task_dtos:
             template_stage_ids_list.append(
                 TaskTemplateStageDTO(task_id=task.task_id,
-                                     task_template_id=task_template_dict[task.task_id],
+                                     task_template_id=task_template_dict[
+                                         task.task_id],
                                      stage_id=task.stage_id))
         return template_stage_ids_list
 
@@ -331,11 +333,11 @@ class StagesStorageImplementation(StageStorageInterface):
             task_stage_obj in task_stage_objs]
         return stages_having_assignee_dtos
 
-    def update_task_stage_with_left_at_status(
+    def update_task_stages_with_left_at_status(
             self, task_id: int, db_stage_ids: List[int]):
-        task_stage_objs = TaskStageHistory.objects.filter(
-            task_id=task_id,
-            stage_id__in=db_stage_ids)
+        task_stage_objs = TaskStageHistory.objects \
+            .filter(task_id=task_id, left_at__isnull=True) \
+            .exclude(stage_id__in=db_stage_ids)
         for each_task_stage_obj in task_stage_objs:
             each_task_stage_obj.left_at = datetime.datetime.now()
         TaskStageHistory.objects.bulk_update(
@@ -347,8 +349,8 @@ class StagesStorageImplementation(StageStorageInterface):
         StageAssigneeDTO]:
         task_stage_objs = list(TaskStageHistory.objects.filter(
             task_id=task_id,
-            stage_id__in=db_stage_ids, left_at=None).exclude(
-            assignee_id=None).values('stage_id', 'assignee_id'))
+            stage_id__in=db_stage_ids, left_at__isnull=True).exclude(
+            assignee_id__isnull=True).values('stage_id', 'assignee_id'))
         stages_having_assignee_dtos = [StageAssigneeDTO(
             assignee_id=task_stage_obj['assignee_id'],
             db_stage_id=task_stage_obj['stage_id']) for
@@ -361,6 +363,23 @@ class StagesStorageImplementation(StageStorageInterface):
             template_id__in=template_ids
         ).values_list('template_id', flat=True)
         return valid_template_ids
+
+    def get_db_stage_ids_for_given_stage_ids(
+            self, stage_ids: List[str]) -> List[int]:
+        db_stage_ids = list(
+            Stage.objects.filter(stage_id__in=stage_ids).values_list('id',
+                                                                     flat=True))
+        return db_stage_ids
+
+    def get_virtual_stages_already_having_in_task(
+            self, task_id: int, stage_ids_having_virtual_stages: List[str]) -> \
+            List[str]:
+        virtual_stages_already_having_task = list(
+            TaskStageHistory.objects.filter(task_id=task_id,
+                                            stage__stage_id__in=stage_ids_having_virtual_stages,
+                                            left_at__isnull=True)
+                .values_list('stage__stage_id', flat=True))
+        return virtual_stages_already_having_task
 
     def get_current_stages_of_all_tasks(self) -> List[TaskWithDbStageIdDTO]:
         task_stage_objs = list(
@@ -629,7 +648,8 @@ class StorageImplementation(StorageInterface):
     def get_task_due_details(self, task_id: int) -> \
             List[TaskDueMissingDTO]:
         task_due_objs = (UserTaskDelayReason.objects.filter(task_id=task_id)
-                         .values('due_datetime', 'count', 'reason', 'user_id', 'task__task_display_id'))
+                         .values('due_datetime', 'count', 'reason', 'user_id',
+                                 'task__task_display_id'))
 
         task_due_details_dtos = self._convert_task_due_details_objs_to_dtos(
             task_due_objs)
@@ -665,4 +685,3 @@ class StorageImplementation(StorageInterface):
                                            reason=due_details.reason)
         Task.objects.filter(pk=task_id, tasklog__user_id=user_id
                             ).update(due_date=updated_due_datetime)
-
