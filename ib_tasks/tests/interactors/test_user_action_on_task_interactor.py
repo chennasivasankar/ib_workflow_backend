@@ -182,12 +182,14 @@ class TestUserActionOnTaskInteractor:
         from ib_tasks.interactors.stage_dtos import TaskStageDTO
         return TaskCompleteDetailsDTO(
             task_id=task_id,
+            task_display_id="",
             task_boards_details=task_boards_details,
             actions_dto=[ActionDTOFactory()],
             field_dtos=[FieldDisplayDTOFactory()],
             assignees_details=[assignees],
             task_stage_details=[TaskStageDTO(stage_id='stage_1', db_stage_id=1,
                                              display_name='display_name',
+
                                              stage_colour='blue')]
         )
 
