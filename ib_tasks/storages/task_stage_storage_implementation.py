@@ -32,7 +32,8 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
 
     def get_task_stage_dtos(self, task_id: int) -> List[TaskStageHistoryDTO]:
         task_stage_history_objs = \
-            TaskStageHistory.objects.filter(task_id=task_id, assignee_id__isnull=False)
+            TaskStageHistory.objects.filter(task_id=task_id,
+                                            assignee_id__isnull=False)
 
         return [
             TaskStageHistoryDTO(
@@ -104,8 +105,10 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
     def is_user_has_permission_for_at_least_one_stage(
             self, stage_ids: List[int], user_roles: List[str]
     ) -> bool:
+        from ib_tasks.constants.constants import ALL_ROLES_ID
         is_user_has_permissions = StagePermittedRoles.objects.filter(
-            stage_id__in=stage_ids, role_id__in=user_roles
+            Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID),
+            stage_id__in=stage_ids
         ).exists()
         return is_user_has_permissions
 
@@ -116,7 +119,7 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
         from django.db.models import Count
         assignee_with_count_objs = list(TaskStageHistory.objects.filter(
             task_id__in=task_ids, stage_id__in=db_stage_ids,
-            left_at=None).values(
+            left_at__isnull=True).values(
             'assignee_id').annotate(
             tasks_count=Count('assignee_id')).order_by('tasks_count'))
         assignee_with_current_tasks_count_dtos = [AssigneeCurrentTasksCountDTO(
@@ -127,7 +130,8 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
         return assignee_with_current_tasks_count_dtos
 
     def get_stage_assignee_id_dtos(
-            self, task_stage_dtos: List[GetTaskDetailsDTO]) -> List[TaskStageAssigneeIdDTO]:
+            self, task_stage_dtos: List[GetTaskDetailsDTO]) -> List[
+        TaskStageAssigneeIdDTO]:
         q = None
         for counter, item in enumerate(task_stage_dtos):
             current_queue = Q(
@@ -149,3 +153,10 @@ class TaskStageStorageImplementation(TaskStageStorageInterface):
             )
             for task_stage_object in task_stage_objects
         ]
+
+    def create_task_stage_history_records_for_virtual_stages(
+            self, stage_ids: List[int], task_id: int):
+        task_stage_history_objs = [
+            TaskStageHistory(task_id=task_id, stage_id=stage_id)
+            for stage_id in stage_ids]
+        TaskStageHistory.objects.bulk_create(task_stage_history_objs)

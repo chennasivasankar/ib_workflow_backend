@@ -1,7 +1,8 @@
 from typing import List
 
 from ib_tasks.exceptions.task_custom_exceptions \
-    import InvalidTaskIdException, InvalidStageIdsForTask, InvalidTaskDisplayId
+    import InvalidTaskIdException, InvalidStageIdsForTask, \
+    InvalidTaskDisplayId, UserPermissionDenied
 from ib_tasks.interactors.get_task_base_interactor \
     import GetTaskBaseInteractor
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
@@ -68,6 +69,9 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         except InvalidTaskDisplayId as err:
             response = presenter.raise_invalid_task_display_id(err)
             return response
+        except UserPermissionDenied:
+            response = presenter.raise_user_permission_denied()
+            return response
 
     def get_task_details_response(
             self, user_id: str, task_display_id: str,
@@ -92,6 +96,8 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         stages_and_actions_details_dtos = \
             self._get_stages_and_actions_details_dtos(task_id, user_id)
         stage_ids = self._get_stage_ids(stages_and_actions_details_dtos)
+        self._validate_user_have_permission_for_at_least_one_stage(stage_ids,
+                                                                   user_roles)
         stage_assignee_details_dtos = self._stage_assignee_details_dtos(
             task_id, stage_ids
         )
@@ -101,6 +107,18 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             stage_assignee_details_dtos=stage_assignee_details_dtos
         )
         return task_complete_details_dto
+
+    def _validate_user_have_permission_for_at_least_one_stage(
+            self, stage_ids: List[int], user_roles: List[str]
+    ) -> bool:
+        is_user_has_permission = \
+            self.task_stage_storage\
+                .is_user_has_permission_for_at_least_one_stage(
+                    stage_ids=stage_ids, user_roles=user_roles
+                )
+        is_user_permission_denied = not is_user_has_permission
+        if is_user_permission_denied:
+            raise UserPermissionDenied()
 
     def _stage_assignee_details_dtos(
             self, task_id: int, stage_ids: List[int]
@@ -191,8 +209,8 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         ]
         permission_field_ids = \
             self.task_crud_storage.get_field_ids_having_permission(
-            field_ids, user_roles
-        )
+                field_ids, user_roles
+            )
         permission_task_gof_field_dtos = [
             task_gof_field_dto
             for task_gof_field_dto in task_gof_field_dtos
@@ -210,8 +228,8 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         ]
         permission_gof_ids = \
             self.task_crud_storage.get_gof_ids_having_permission(
-            gof_ids, user_roles
-        )
+                gof_ids, user_roles
+            )
         permission_task_gof_dtos = [
             task_gof_dto
             for task_gof_dto in task_gof_dtos

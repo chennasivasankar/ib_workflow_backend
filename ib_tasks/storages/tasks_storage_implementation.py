@@ -19,6 +19,7 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     TaskIdWithStageValueDTO, TaskStagesDTO, StageDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
     TaskTemplateStatusDTO
+from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDisplayIdDTO
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_templates_dtos import \
@@ -82,9 +83,6 @@ class TasksStorageImplementation(TaskStorageInterface):
             ).values_list("field_id", flat=True)
         )
         return existing_field_ids
-
-    def get_existing_template_ids(self):
-        pass
 
     def create_status_for_tasks(
             self, create_status_for_tasks: List[TaskTemplateStatusDTO]):
@@ -498,3 +496,16 @@ class TasksStorageImplementation(TaskStorageInterface):
 
     def get_tasks_with_max_stage_value_dto(self)-> List[TaskIdWithStageValueDTO]:
         pass
+
+    def get_task_display_ids_dtos(self, task_ids: List[int]) -> List[TaskDisplayIdDTO]:
+        task_ids = Task.objects.filter(
+            id__in=task_ids
+        ).values('id', 'task_display_id')
+
+        return [
+            TaskDisplayIdDTO(
+                task_id=task_id['id'],
+                display_id=task_id['task_display_id']
+            )
+            for task_id in task_ids
+        ]

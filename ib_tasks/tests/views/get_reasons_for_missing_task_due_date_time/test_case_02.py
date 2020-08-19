@@ -22,10 +22,10 @@ class TestCase02GetReasonsForMissingTaskDueDateTimeAPITestCase(TestUtils):
     @freeze_time("2020-08-11 14:19:33")
     def setup(self, api_user, mocker):
         from ib_tasks.tests.common_fixtures.adapters.assignees_details_service import \
-            assignee_details_dtos_mock
+            get_assignee_details_dtos_mock
         from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory
         AssigneeDetailsDTOFactory.reset_sequence()
-        user_dtos = assignee_details_dtos_mock(mocker, str(api_user.user_id))
+        user_dtos = get_assignee_details_dtos_mock(mocker, str(api_user.user_id))
         from ib_tasks.tests.factories.models import TaskFactory
 
         TaskFactory.reset_sequence()
@@ -41,8 +41,8 @@ class TestCase02GetReasonsForMissingTaskDueDateTimeAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_case(self, snapshot, setup):
-        body = {}
-        path_params = {"task_id": 1}
+        body = {"task_id": "iBWF-0"}
+        path_params = {}
         query_params = {}
         headers = {}
         response = self.make_api_call(body=body,

@@ -126,7 +126,7 @@ class UpdateTaskPresenterImplementation(
         from ib_tasks.constants.exception_messages import \
             INVALID_TASK_ID
         response_message = INVALID_TASK_ID[0].format(
-            err.task_display_id
+            err.task_id
         )
         data = {
             "response": response_message,
@@ -198,13 +198,13 @@ class UpdateTaskPresenterImplementation(
 
     def raise_invalid_fields_given_to_a_gof(self, err: InvalidFieldsOfGoF):
         from ib_tasks.constants.exception_messages import \
-            INVALID_FIELDS_OF_TASK_TEMPLATE
-        response_message = INVALID_FIELDS_OF_TASK_TEMPLATE[0].format(
+            INVALID_FIELDS_OF_GOF
+        response_message = INVALID_FIELDS_OF_GOF[0].format(
             str(err.field_ids), err.gof_id)
         data = {
             "response": response_message,
             "http_status_code": 400,
-            "res_status": INVALID_FIELDS_OF_TASK_TEMPLATE[1]
+            "res_status": INVALID_FIELDS_OF_GOF[1]
         }
         return self.prepare_400_bad_request_response(data)
 

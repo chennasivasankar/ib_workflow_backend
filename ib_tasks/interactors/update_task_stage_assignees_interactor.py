@@ -14,7 +14,7 @@ from ib_tasks.interactors.presenter_interfaces \
 from ib_tasks.interactors.stages_dtos import TaskIdWithStageAssigneesDTO, \
     TaskIdWithStageAssigneeDTO, TaskDisplayIdWithStageAssigneesDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
-    StageIdWithRoleIdsAndAssigneeIdDTO, TaskIdWithDbStageIdsDTO
+    StageIdWithRoleIdsAndAssigneeIdDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
@@ -30,25 +30,19 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
         self.task_storage = task_storage
 
     def update_task_stage_assignees_wrapper(
-            self,
-            task_display_id_with_stage_assignees_dto:
+            self, task_display_id_with_stage_assignees_dto:
             TaskDisplayIdWithStageAssigneesDTO,
-            presenter: UpdateTaskStageAssigneesPresenterInterface
-    ):
+            presenter: UpdateTaskStageAssigneesPresenterInterface):
         try:
             task_id = self.get_task_id_for_task_display_id(
                 task_display_id_with_stage_assignees_dto.task_display_id)
             task_id_with_stage_assignees_dto = TaskIdWithStageAssigneesDTO(
                 task_id=task_id,
-                stage_assignees=task_display_id_with_stage_assignees_dto
-                    .stage_assignees
-            )
+                stage_assignees=task_display_id_with_stage_assignees_dto.
+                    stage_assignees)
             self.update_task_stage_assignees(task_id_with_stage_assignees_dto)
         except InvalidTaskDisplayId as err:
             return presenter.raise_invalid_task_display_id(err)
-        except InvalidTaskIdException as exception:
-            return presenter.raise_invalid_task_id_exception(
-                task_id=exception.task_id)
         except DuplicateStageIds as exception:
             return presenter.raise_duplicate_stage_ids_not_valid(
                 duplicate_stage_ids=exception.duplicate_stage_ids)
@@ -60,16 +54,21 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
                 raise_stage_ids_with_invalid_permission_for_assignee_exception(
                 invalid_stage_ids=exception.invalid_stage_ids)
 
-    def update_task_stage_assignees(
+    def validate_and_update_task_stage_assignees(
             self,
             task_id_with_stage_assignees_dto: TaskIdWithStageAssigneesDTO):
-        task_id = task_id_with_stage_assignees_dto.task_id
-        self._validate_task_id(task_id=task_id)
+        self.validations_of_request(task_id_with_stage_assignees_dto)
+        self.update_task_stage_assignees(task_id_with_stage_assignees_dto)
+
+    def validations_of_request(self,
+                               task_id_with_stage_assignees_dto:
+                               TaskIdWithStageAssigneesDTO):
         stage_ids = self._get_stage_ids_from_given_dto(
             task_id_with_stage_assignees_dto)
         self._check_duplicate_stage_ids(stage_ids)
         valid_stage_ids = self.stage_storage. \
-            get_valid_db_stage_ids_in_given_db_stage_ids(stage_ids)
+            get_valid_db_stage_ids_excluding_virtual_stages_in_given_db_stage_ids(
+            stage_ids)
         self._validate_stage_ids(stage_ids, valid_stage_ids)
         stage_role_dtos = self.stage_storage. \
             get_stage_role_dtos_given_db_stage_ids(stage_ids)
@@ -82,16 +81,44 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
             )
         self._validate_does_given_assignee_of_stage_ids_have_valid_permission(
             role_ids_and_assignee_id_group_by_stage_id_dtos)
-        task_id_with_db_stage_ids_dto = TaskIdWithDbStageIdsDTO(
+        return
+
+    def update_task_stage_assignees(
+            self,
+            task_id_with_stage_assignees_dto: TaskIdWithStageAssigneesDTO):
+        task_id = task_id_with_stage_assignees_dto.task_id
+        stage_ids = self._get_stage_ids_from_given_dto(
+            task_id_with_stage_assignees_dto)
+        stage_assignee_dtos_having_assignees = self.stage_storage. \
+            get_task_stages_having_assignees_without_having_left_at_status(
             task_id=task_id, db_stage_ids=stage_ids)
+        matched_stage_assignee_dtos = []
+        user_given_stage_assignee_dtos = task_id_with_stage_assignees_dto.\
+            stage_assignees
+        for user_given_stage_assignee_dto in user_given_stage_assignee_dtos:
+            for stage_assignee_dto_having_assignees in \
+                    stage_assignee_dtos_having_assignees:
+                if user_given_stage_assignee_dto.assignee_id == \
+                        stage_assignee_dto_having_assignees.assignee_id \
+                        and user_given_stage_assignee_dto.db_stage_id == \
+                        stage_assignee_dto_having_assignees.db_stage_id:
+                    matched_stage_assignee_dtos.append(
+                        stage_assignee_dto_having_assignees)
+        matched_stage_ids_in_stage_assignee_dtos = [
+            matched_stage_assignee_dto.db_stage_id for
+            matched_stage_assignee_dto in matched_stage_assignee_dtos]
+        stage_ids_that_are_not_matched = [stage_id for stage_id in stage_ids
+                                          if stage_id not in
+                                          matched_stage_ids_in_stage_assignee_dtos]
 
         self.stage_storage. \
-            update_task_stage_having_assignees_with_left_at_status(
-            task_id_with_db_stage_ids_dto=task_id_with_db_stage_ids_dto)
+            update_task_stages_with_left_at_status(
+            task_id=task_id,
+            db_stage_ids=matched_stage_ids_in_stage_assignee_dtos)
 
         task_id_with_stage_assignee_dtos_for_creation = self. \
             _get_task_id_with_stage_assignee_dtos_given_task_stage_ids(
-            stage_ids, task_id_with_stage_assignees_dto)
+            stage_ids_that_are_not_matched, task_id_with_stage_assignees_dto)
         self.stage_storage.create_task_stage_assignees(
             task_id_with_stage_assignee_dtos=
             task_id_with_stage_assignee_dtos_for_creation)
@@ -99,8 +126,9 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
 
     @staticmethod
     def _get_task_id_with_stage_assignee_dtos_given_task_stage_ids(
-            task_stage_ids, task_id_with_stage_assignees_dto:
-            TaskIdWithStageAssigneesDTO) -> List[TaskIdWithStageAssigneeDTO]:
+            task_stage_ids,
+            task_id_with_stage_assignees_dto: TaskIdWithStageAssigneesDTO
+    ) -> List[TaskIdWithStageAssigneeDTO]:
         task_id = task_id_with_stage_assignees_dto.task_id
         task_id_with_stage_assignee_dtos = []
         for each_task_stage_id in task_stage_ids:
@@ -112,7 +140,8 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
                         TaskIdWithStageAssigneeDTO(
                             assignee_id=each_task_id_with_stage_assignees_dto.
                                 assignee_id,
-                            db_stage_id=each_task_stage_id, task_id=task_id))
+                            db_stage_id=each_task_stage_id,
+                            task_id=task_id))
 
         return task_id_with_stage_assignee_dtos
 

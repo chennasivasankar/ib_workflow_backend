@@ -110,7 +110,7 @@ class TestUpdateTaskStageAssigneesInteractor:
                                                      presenter_mock):
         task_storage_mock.check_is_task_exists.return_value = True
         stage_storage_mock. \
-            get_valid_db_stage_ids_in_given_db_stage_ids.return_value = [1]
+            get_valid_db_stage_ids_excluding_virtual_stages_in_given_db_stage_ids.return_value = [1]
         presenter_mock.raise_invalid_stage_ids_exception.return_value = Mock()
         from ib_tasks.interactors.update_task_stage_assignees_interactor import \
             UpdateTaskStageAssigneesInteractor
@@ -134,7 +134,7 @@ class TestUpdateTaskStageAssigneesInteractor:
             create_batch(2, task_id=1)
         task_storage_mock.check_is_task_exists.return_value = True
         stage_storage_mock. \
-            get_valid_db_stage_ids_in_given_db_stage_ids.return_value = [
+            get_valid_db_stage_ids_excluding_virtual_stages_in_given_db_stage_ids.return_value = [
             1, 2]
         stage_storage_mock.create_task_stage_assignees.return_value = None
         stage_storage_mock. \
