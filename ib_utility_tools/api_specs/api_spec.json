@@ -559,7 +559,7 @@
     },
     "/checklist/items/delete/v1/": {
       "post": {
-        "summary": "Delete checklist items bulk",
+        "summary": "Delete Checklist Items Bulk",
         "description": "Delete checklist items bulk",
         "operationId": "delete_checklist_items",
         "security": [

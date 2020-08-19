@@ -7,7 +7,7 @@ from ib_utility_tools.presenters \
 
 
 class TestUpdateChecklistItemPresenterImplementation:
-    def test_whether_it_gives_checklist_item_ids_not_found_response(
+    def test_with_invalid_checklist_item_ids_then_raise_not_found_response(
             self):
         from ib_utility_tools.constants.exception_messages import \
             INVALID_CHECKLIST_ITEM_IDS
@@ -17,7 +17,7 @@ class TestUpdateChecklistItemPresenterImplementation:
         expected_http_status_code = StatusCode.NOT_FOUND.value
 
         result = json_presenter \
-            .get_invalid_checklist_item_ids_for_delete_checklist_items()
+            .raise_invalid_checklist_item_ids_exception()
         response_dict = json.loads(result.content)
         actual_response = response_dict["response"]
         actual_res_status = response_dict["res_status"]
@@ -27,7 +27,8 @@ class TestUpdateChecklistItemPresenterImplementation:
         assert actual_res_status == expected_res_status
         assert expected_http_status_code == actual_http_status_code
 
-    def test_whether_it_gives_duplicate_checklist_item_ids_response(self):
+    def test_with_duplicate_checklist_item_ids_then_raise_duplicate_checklist_items_response(
+            self):
         from ib_utility_tools.constants.exception_messages import \
             DUPLICATE_CHECKLIST_ITEM_IDS
         json_presenter = DeleteChecklistItemsPresenterImplementation()
@@ -36,7 +37,7 @@ class TestUpdateChecklistItemPresenterImplementation:
         expected_http_status_code = StatusCode.BAD_REQUEST.value
 
         result = json_presenter \
-            .get_duplicate_checklist_item_ids_for_delete_checklist_items()
+            .raise_duplicate_checklist_item_ids_exception()
         response_dict = json.loads(result.content)
         actual_response = response_dict["response"]
         actual_res_status = response_dict["res_status"]
@@ -46,7 +47,7 @@ class TestUpdateChecklistItemPresenterImplementation:
         assert actual_res_status == expected_res_status
         assert expected_http_status_code == actual_http_status_code
 
-    def test_whether_it_returns_success_http_response(self):
+    def test_with_valid_details_then_returns_success_http_response(self):
         json_presenter = DeleteChecklistItemsPresenterImplementation()
         expected_response = {}
 

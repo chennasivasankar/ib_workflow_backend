@@ -11,7 +11,7 @@ class DeleteChecklistItemsPresenterImplementation(
     def get_success_response_for_delete_checklist_items(self):
         return self.prepare_200_success_response(response_dict={})
 
-    def get_duplicate_checklist_item_ids_for_delete_checklist_items(self):
+    def raise_duplicate_checklist_item_ids_exception(self):
         from ib_utility_tools.constants.enum import StatusCode
         from ib_utility_tools.constants.exception_messages import \
             DUPLICATE_CHECKLIST_ITEM_IDS
@@ -21,7 +21,7 @@ class DeleteChecklistItemsPresenterImplementation(
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
 
-    def get_invalid_checklist_item_ids_for_delete_checklist_items(self):
+    def raise_invalid_checklist_item_ids_exception(self):
         from ib_utility_tools.constants.enum import StatusCode
         from ib_utility_tools.constants.exception_messages import \
             INVALID_CHECKLIST_ITEM_IDS
