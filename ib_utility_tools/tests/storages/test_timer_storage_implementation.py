@@ -18,21 +18,6 @@ class TestTimerStorageImplementation:
         return storage
 
     @pytest.fixture
-    def timer_entities(self):
-        from ib_utility_tools.constants.enum import TimerEntityType
-        timer_entities = [
-            {
-                "entity_id": "ef6d1fc6-ac3f-4d2d-a983-752c992e8331",
-                "entity_type": TimerEntityType.STAGE_TASK.value
-            },
-            {
-                "entity_id": "ef6d1fc6-ac3f-4d2d-a983-752c992e8332",
-                "entity_type": TimerEntityType.STAGE_TASK.value
-            }
-        ]
-        return timer_entities
-
-    @pytest.fixture
     def timer_details(self):
         from ib_utility_tools.constants.enum import TimerEntityType
         timer_details = [
@@ -54,13 +39,24 @@ class TestTimerStorageImplementation:
         return timer_details
 
     @pytest.fixture
+    def timer_entity_dtos(self, timer_details):
+        timer_entity_dtos = [
+            TimerEntityDTOFactory(
+                entity_id=timer["entity_id"],
+                entity_type=timer["entity_type"]
+            ) for timer in timer_details
+        ]
+        return timer_entity_dtos
+
+    @pytest.fixture
     def timer_objects(self, timer_details):
         timer_objects = [
-            TimerDetailsDTOFactory.create(
+            TimerFactory.create(
                 entity_id=timer["entity_id"],
                 entity_type=timer["entity_type"],
                 duration_in_seconds=timer["duration_in_seconds"],
-                is_running=timer["is_running"]
+                is_running=timer["is_running"],
+                start_datetime=timer["start_datetime"]
             ) for timer in timer_details
         ]
         return timer_objects
@@ -72,7 +68,8 @@ class TestTimerStorageImplementation:
                 entity_id=timer["entity_id"],
                 entity_type=timer["entity_type"],
                 duration_in_seconds=timer["duration_in_seconds"],
-                is_running=timer["is_running"]
+                is_running=timer["is_running"],
+                start_datetime=timer["start_datetime"]
             ) for timer in timer_details
         ]
         return timer_details_dtos
@@ -151,4 +148,39 @@ class TestTimerStorageImplementation:
 
     @pytest.mark.django_db
     def test_get_timer_details_dtos_for_given_entities_returns_timer_details_dtos(
-            self, timer_objects, timer_details_dtos):
+            self, timer_entity_dtos, timer_objects, timer_details_dtos,
+            storage):
+        # Act
+        actual_timer_details_dtos = \
+            storage.get_timer_details_dtos_for_given_entities(
+                timer_entity_dtos=timer_entity_dtos)
+
+        # Assert
+        assert actual_timer_details_dtos == timer_details_dtos
+
+    @pytest.mark.django_db
+    def test_update_timers_bulk_it_will_update_the_given_entities(
+            self, timer_objects, storage):
+        from ib_utility_tools.constants.enum import TimerEntityType
+        entity_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"
+        entity_type = TimerEntityType.STAGE_TASK.value
+        duration_in_seconds = 100
+        is_running = False
+        start_datetime = None
+        timer_details_dto = TimerDetailsDTOFactory(
+            entity_id=entity_id,
+            entity_type=entity_type,
+            duration_in_seconds=duration_in_seconds,
+            is_running=is_running,
+            start_datetime=start_datetime)
+
+        # Act
+        storage.update_timers_bulk(timer_details_dtos=[timer_details_dto])
+
+        # Assert
+        timer_object = Timer.objects.get(entity_id=entity_id,
+                                         entity_type=entity_type)
+        assert timer_object.entity_id == entity_id
+        assert timer_object.duration_in_seconds == duration_in_seconds
+        assert timer_object.is_running == is_running
+        assert timer_object.start_datetime == start_datetime
