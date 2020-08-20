@@ -89,72 +89,73 @@ class TestUpdateTaskStageAssigneesInteractor:
         invalid_task_display_id = error_object.task_display_id
         assert invalid_task_display_id == given_task_display_id
 
-    # def test_given_duplicate_stage_ids_raise_exception(self, task_storage_mock,
-    #                                                    stage_storage_mock,
-    #                                                    task_id_with_duplicate_stage_assignees_dto,
-    #                                                    presenter_mock):
-    #     task_storage_mock.check_is_task_exists.return_value = True
-    #     presenter_mock.raise_duplicate_stage_ids_not_valid.return_value = Mock()
-    #     from ib_tasks.interactors.update_task_stage_assignees_interactor import \
-    #         UpdateTaskStageAssigneesInteractor
-    #     update_task_stage_assignees_interactor = \
-    #         UpdateTaskStageAssigneesInteractor(
-    #             stage_storage=stage_storage_mock,
-    #             task_storage=task_storage_mock)
-    #
-    #     update_task_stage_assignees_interactor. \
-    #         update_task_stage_assignees_wrapper(
-    #         task_id_with_duplicate_stage_assignees_dto,
-    #         presenter=presenter_mock)
-    #     presenter_mock.raise_duplicate_stage_ids_not_valid.assert_called_once_with(
-    #         duplicate_stage_ids=[1])
-    #
-    # def test_given_invalid_stage_ids_raise_exception(self,
-    #                                                  task_display_id_with_stage_assignees_dto,
-    #                                                  task_storage_mock,
-    #                                                  stage_storage_mock,
-    #                                                  presenter_mock):
-    #     task_storage_mock.check_is_task_exists.return_value = True
-    #     stage_storage_mock. \
-    #         get_valid_db_stage_ids_with_stage_value.return_value = [1]
-    #     presenter_mock.raise_invalid_stage_ids_exception.return_value = Mock()
-    #     from ib_tasks.interactors.update_task_stage_assignees_interactor import \
-    #         UpdateTaskStageAssigneesInteractor
-    #     update_task_stage_assignees_interactor = \
-    #         UpdateTaskStageAssigneesInteractor(
-    #             stage_storage=stage_storage_mock,
-    #             task_storage=task_storage_mock)
-    #
-    #     update_task_stage_assignees_interactor. \
-    #         update_task_stage_assignees_wrapper(
-    #         task_display_id_with_stage_assignees_dto,
-    #         presenter=presenter_mock)
-    #     presenter_mock.raise_invalid_stage_ids_exception.assert_called_once_with(
-    #         invalid_stage_ids=[2])
-    #
-    # def test_given_valid_details(self, task_display_id_with_stage_assignees_dto,
-    #                              task_storage_mock,
-    #                              stage_storage_mock,
-    #                              presenter_mock, stage_role_dtos):
-    #     task_id_with_stage_assignee_dtos = TaskIdWithStageAssigneeDTOFactory. \
-    #         create_batch(2, task_id=1)
-    #     task_storage_mock.check_is_task_exists.return_value = True
-    #     stage_storage_mock. \
-    #         get_valid_db_stage_ids_with_stage_value.return_value = [
-    #         1, 2]
-    #     stage_storage_mock.create_task_stage_assignees.return_value = None
-    #     stage_storage_mock. \
-    #         get_stage_role_dtos_given_db_stage_ids.return_value = stage_role_dtos
-    #     from ib_tasks.interactors.update_task_stage_assignees_interactor import \
-    #         UpdateTaskStageAssigneesInteractor
-    #     update_task_stage_assignees_interactor = \
-    #         UpdateTaskStageAssigneesInteractor(
-    #             stage_storage=stage_storage_mock,
-    #             task_storage=task_storage_mock)
-    #     update_task_stage_assignees_interactor. \
-    #         update_task_stage_assignees_wrapper(
-    #         task_display_id_with_stage_assignees_dto,
-    #         presenter=presenter_mock)
-    #
-    #     stage_storage_mock.create_task_stage_assignees.assert_called_once_with(
-    #         task_id_with_stage_assignee_dtos=task_id_with_stage_assignee_dtos)
+    ## Need to crosscheck test cases from here
+    def test_given_duplicate_stage_ids_raise_exception(self, task_storage_mock,
+                                                       stage_storage_mock,
+                                                       task_id_with_duplicate_stage_assignees_dto,
+                                                       presenter_mock):
+        task_storage_mock.check_is_task_exists.return_value = True
+        presenter_mock.raise_duplicate_stage_ids_not_valid.return_value = Mock()
+        from ib_tasks.interactors.update_task_stage_assignees_interactor import \
+            UpdateTaskStageAssigneesInteractor
+        update_task_stage_assignees_interactor = \
+            UpdateTaskStageAssigneesInteractor(
+                stage_storage=stage_storage_mock,
+                task_storage=task_storage_mock)
+
+        update_task_stage_assignees_interactor. \
+            update_task_stage_assignees_wrapper(
+            task_id_with_duplicate_stage_assignees_dto,
+            presenter=presenter_mock)
+        presenter_mock.raise_duplicate_stage_ids_not_valid.assert_called_once_with(
+            duplicate_stage_ids=[1])
+
+    def test_given_invalid_stage_ids_raise_exception(self,
+                                                     task_display_id_with_stage_assignees_dto,
+                                                     task_storage_mock,
+                                                     stage_storage_mock,
+                                                     presenter_mock):
+        task_storage_mock.check_is_task_exists.return_value = True
+        stage_storage_mock. \
+            get_valid_db_stage_ids_with_stage_value.return_value = [1]
+        presenter_mock.raise_invalid_stage_ids_exception.return_value = Mock()
+        from ib_tasks.interactors.update_task_stage_assignees_interactor import \
+            UpdateTaskStageAssigneesInteractor
+        update_task_stage_assignees_interactor = \
+            UpdateTaskStageAssigneesInteractor(
+                stage_storage=stage_storage_mock,
+                task_storage=task_storage_mock)
+
+        update_task_stage_assignees_interactor. \
+            update_task_stage_assignees_wrapper(
+            task_display_id_with_stage_assignees_dto,
+            presenter=presenter_mock)
+        presenter_mock.raise_invalid_stage_ids_exception.assert_called_once_with(
+            invalid_stage_ids=[2])
+
+    def test_given_valid_details(self, task_display_id_with_stage_assignees_dto,
+                                 task_storage_mock,
+                                 stage_storage_mock,
+                                 presenter_mock, stage_role_dtos):
+        task_id_with_stage_assignee_dtos = TaskIdWithStageAssigneeDTOFactory. \
+            create_batch(2, task_id=1)
+        task_storage_mock.check_is_task_exists.return_value = True
+        stage_storage_mock. \
+            get_valid_db_stage_ids_with_stage_value.return_value = [
+            1, 2]
+        stage_storage_mock.create_task_stage_assignees.return_value = None
+        stage_storage_mock. \
+            get_stage_role_dtos_given_db_stage_ids.return_value = stage_role_dtos
+        from ib_tasks.interactors.update_task_stage_assignees_interactor import \
+            UpdateTaskStageAssigneesInteractor
+        update_task_stage_assignees_interactor = \
+            UpdateTaskStageAssigneesInteractor(
+                stage_storage=stage_storage_mock,
+                task_storage=task_storage_mock)
+        update_task_stage_assignees_interactor. \
+            update_task_stage_assignees_wrapper(
+            task_display_id_with_stage_assignees_dto,
+            presenter=presenter_mock)
+
+        stage_storage_mock.create_task_stage_assignees.assert_called_once_with(
+            task_id_with_stage_assignee_dtos=task_id_with_stage_assignee_dtos)
