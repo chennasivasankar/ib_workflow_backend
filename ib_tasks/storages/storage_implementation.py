@@ -539,7 +539,9 @@ class StorageImplementation(StorageInterface):
                 name=action_obj.name,
                 stage_id=action_obj.stage.stage_id,
                 button_text=action_obj.button_text,
-                button_color=action_obj.button_color
+                button_color=action_obj.button_color,
+                action_type=action_obj.action_type,
+                transition_template_id=action_obj.transition_template_id
             )
             for action_obj in action_objs
         ]

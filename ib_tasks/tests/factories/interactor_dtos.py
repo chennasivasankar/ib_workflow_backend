@@ -14,6 +14,7 @@ from ib_tasks.interactors.get_tasks_to_relevant_search_query import \
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
+from ib_tasks.interactors.stage_dtos import TaskStageDTO
 from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
     StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
     StageAssigneeDetailsDTO, UserStagesWithPaginationDTO
@@ -103,6 +104,9 @@ class TaskTemplateStageActionDTOFactory(factory.Factory):
 
 
 class TaskStageDTOFactory(factory.Factory):
+
+    class Meta:
+        model = TaskStageDTO
     stage_id = factory.Sequence(lambda n: 'stage_%d' % (n + 1))
     db_stage_id = factory.Sequence(lambda n: 'db_stage_%d' % (n + 1))
     display_name = factory.Sequence(lambda n: 'display_name_%d' % (n + 1))

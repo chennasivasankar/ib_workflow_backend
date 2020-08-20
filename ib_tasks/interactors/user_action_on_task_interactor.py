@@ -301,14 +301,6 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         fields_dto = get_fields_obj.get_fields_details()
         return fields_dto
 
-    def _get_user_permitted_actions(self, stage_ids: List[str]):
-
-        stage_action_obj = GetUserPermittedStageActions(
-            storage=self.storage, user_id=self.user_id, stage_ids=stage_ids
-        )
-        actions_dto = stage_action_obj.get_user_permitted_stage_actions()
-        return actions_dto
-
     def _get_task_boards_details(self, stage_ids: List[str]):
 
         from ib_tasks.adapters.service_adapter import ServiceAdapter

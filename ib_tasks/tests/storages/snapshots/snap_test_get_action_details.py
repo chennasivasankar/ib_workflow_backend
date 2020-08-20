@@ -2,7 +2,7 @@
 # snapshottest: v1 - https://goo.gl/zC4yUc
 from __future__ import unicode_literals
 
-from snapshottest import GenericRepr, Snapshot
+from snapshottest import Snapshot, GenericRepr
 
 
 snapshots = Snapshot()
@@ -15,27 +15,13 @@ snapshots['TestGetActionDetails.test_get_action_details response'] = [
 ]
 
 snapshots['TestGetActionDetails.test_get_permitted_action_ids_given_stage_ids response'] = [
+    1,
     2,
     3,
     4,
+    5,
     6,
     7,
     8,
-    10,
-    11,
-    12,
-    13,
-    18,
-    19,
-    20,
-    22,
-    23,
-    24,
-    25,
-    30,
-    31,
-    32,
-    34,
-    35,
-    36
+    9
 ]

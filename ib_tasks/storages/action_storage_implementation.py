@@ -247,12 +247,11 @@ class ActionsStorageImplementation(ActionStorageInterface):
 
     def get_permitted_action_ids_given_stage_ids(self, user_roles: List[str],
                                                  stage_ids: List[str]) -> List[int]:
-        action_ids = list(ActionPermittedRoles.objects.filter(
+        action_ids = ActionPermittedRoles.objects.filter(
             Q(action__stage__stage_id__in=stage_ids),
-            Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID))
-                          .values_list('action_id', flat=True)
-                          )
-        return action_ids
+            Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID)
+        ).values_list('action_id', flat=True)
+        return sorted(list(set(action_ids)))
 
     def get_stage_ids_having_actions(self, db_stage_ids: List[int]) \
             -> List[int]:
