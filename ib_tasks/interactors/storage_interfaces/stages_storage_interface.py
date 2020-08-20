@@ -3,7 +3,8 @@ from typing import Optional, List
 
 from ib_tasks.interactors.stages_dtos import StageDTO, \
     TaskIdWithStageAssigneeDTO, StageAssigneeDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDetailsDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import StageDetailsDTO, \
+    StageIdWithValueDTO
 from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
     TaskStagesDTO, TaskTemplateStageDTO, StageValueWithTaskIdsDTO, \
     TaskIdWithStageDetailsDTO
@@ -53,9 +54,9 @@ class StageStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_valid_db_stage_ids_excluding_virtual_stages_in_given_db_stage_ids(
+    def get_valid_db_stage_ids_with_stage_value(
             self, db_stage_ids: List[
-                int]) -> List[int]:
+                int]) -> List[StageIdWithValueDTO]:
         pass
 
     @abc.abstractmethod
