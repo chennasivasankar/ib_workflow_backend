@@ -37,7 +37,7 @@ class TestAddMembersToSuperiorsInteractor:
     ):
         # Arrange
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
-        level_hierarchy = 0
+        member_level_hierarchy = 0
         immediate_superior_id_with_member_ids_dtos = \
             prepare_immediate_superior_id_with_member_ids_dtos
 
@@ -49,7 +49,7 @@ class TestAddMembersToSuperiorsInteractor:
 
         # Act
         response = interactor.add_members_to_superiors_wrapper(
-            team_id=team_id, level_hierarchy=level_hierarchy,
+            team_id=team_id, member_level_hierarchy=member_level_hierarchy,
             presenter=presenter_mock,
             immediate_superior_user_id_with_member_ids_dtos=immediate_superior_id_with_member_ids_dtos
         )
@@ -61,7 +61,7 @@ class TestAddMembersToSuperiorsInteractor:
         presenter_mock.prepare_success_response_for_add_members_superiors. \
             assert_called_once()
         storage_mock.add_members_to_superiors.assert_called_with(
-            team_id=team_id, level_hierarchy=level_hierarchy,
+            team_id=team_id, member_level_hierarchy=member_level_hierarchy,
             immediate_superior_user_id_with_member_ids_dtos=immediate_superior_id_with_member_ids_dtos
         )
 

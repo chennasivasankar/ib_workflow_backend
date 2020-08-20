@@ -16,7 +16,7 @@ class TestCase01AddMembersToSuperiorsAPITestCase(TestUtils):
     @pytest.mark.django_db
     def test_case(self, snapshot, prepare_user_teams_setup):
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
-        level_hierarchy = 0
+        member_level_hierarchy = 0
         user_team_objects_of_level_one = prepare_user_teams_setup
         add_members_to_superior = [{
                 "immediate_superior_user_id": user_team_objects_of_level_one[0].id,
@@ -36,7 +36,7 @@ class TestCase01AddMembersToSuperiorsAPITestCase(TestUtils):
         }
         path_params = {
             "team_id": team_id,
-            "level_hierarchy": level_hierarchy
+            "member_level_hierarchy": member_level_hierarchy
         }
         query_params = {}
         headers = {}

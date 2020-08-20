@@ -35,7 +35,7 @@ class TeamMemberLevelStorageInterface(ABC):
 
     @abstractmethod
     def add_members_to_superiors(
-            self, team_id: str, level_hierarchy: int,
+            self, team_id: str, member_level_hierarchy: int,
             immediate_superior_user_id_with_member_ids_dtos: List[
                 ImmediateSuperiorUserIdWithUserIdsDTO]
     ):

@@ -1,6 +1,5 @@
 from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
     import validate_decorator
-
 from .validator_class import ValidatorClass
 
 
@@ -9,17 +8,19 @@ def api_wrapper(*args, **kwargs):
     path_params = kwargs["path_params"]
     request_data = kwargs["request_data"]
 
-    team_id = path_params["team_id"]
-    level_hierarchy = path_params["level_hierarchy"]
+    team_id = str(path_params["team_id"])
+    member_level_hierarchy = path_params["member_level_hierarchy"]
     members = request_data["add_members_to_superior"]
 
     from ib_iam.interactors.dtos.dtos import \
         ImmediateSuperiorUserIdWithUserIdsDTO
     immediate_superior_user_id_with_member_ids_dtos = [
         ImmediateSuperiorUserIdWithUserIdsDTO(
-            immediate_superior_user_id=member_dict[
-                "immediate_superior_user_id"],
-            member_ids=member_dict["member_ids"]
+            immediate_superior_user_id=str(member_dict[
+                                               "immediate_superior_user_id"]),
+            member_ids=[
+                str(member_id) for member_id in member_dict["member_ids"]
+            ]
         )
         for member_dict in members
     ]
@@ -39,7 +40,8 @@ def api_wrapper(*args, **kwargs):
     )
 
     response = interactor.add_members_to_superiors_wrapper(
-        team_id=team_id, level_hierarchy=level_hierarchy, presenter=presenter,
+        team_id=team_id, member_level_hierarchy=member_level_hierarchy,
+        presenter=presenter,
         immediate_superior_user_id_with_member_ids_dtos=immediate_superior_user_id_with_member_ids_dtos
     )
     return response

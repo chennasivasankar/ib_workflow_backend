@@ -62,17 +62,22 @@ class TestAddMembersToSuperiors:
                                       snapshot):
         # Arrange
         team_id = "31be920b-7b4c-49e7-8adb-41a0c18da848"
-        level_hierarchy = 0
+        member_level_hierarchy = 0
         user_team_objects_of_level_one = create_user_teams
+        immediate_superior_user_ids = [
+            "10be920b-7b4c-49e7-8adb-41a0c18da848",
+            "20be920b-7b4c-49e7-8adb-41a0c18da848",
+            "30be920b-7b4c-49e7-8adb-41a0c18da848"
+        ]
 
         set_hierarchy_list = [{
-                "immediate_superior_user_id": user_team_objects_of_level_one[0].id,
+                "immediate_superior_user_id": immediate_superior_user_ids[0],
                 "member_ids": [
                     "40be920b-7b4c-49e7-8adb-41a0c18da848",
                     "50be920b-7b4c-49e7-8adb-41a0c18da848"
                 ]
             }, {
-                "immediate_superior_user_id": user_team_objects_of_level_one[1].id,
+                "immediate_superior_user_id": immediate_superior_user_ids[1],
                 "member_ids": [
                     "60be920b-7b4c-49e7-8adb-41a0c18da848"
                 ]
@@ -91,7 +96,7 @@ class TestAddMembersToSuperiors:
 
         # Act
         storage.add_members_to_superiors(
-            team_id=team_id, level_hierarchy=level_hierarchy,
+            team_id=team_id, member_level_hierarchy=member_level_hierarchy,
             immediate_superior_user_id_with_member_ids_dtos=immediate_superior_user_id_with_member_ids_dtos
         )
 
