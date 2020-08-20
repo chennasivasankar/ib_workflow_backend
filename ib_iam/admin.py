@@ -36,7 +36,8 @@ class UserRoleAdmin(admin.ModelAdmin):
 
 
 class UserTeamAdmin(admin.ModelAdmin):
-    list_display = ("user_id", "team_id", "team_member_level")
+    list_display = ("user_id", "team_id", "team_member_level",
+                    "immediate_superior_team_user")
     search_fields = ["user_id"]
 
 

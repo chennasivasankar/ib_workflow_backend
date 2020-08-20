@@ -21,6 +21,10 @@ class GetTeamMemberLevelsPresenterImplementation(
             }
             for team_member_level_details_dto in team_member_level_details_dtos
         ]
+        level_details_list = sorted(
+            level_details_list,
+            key=lambda x: x["level_hierarchy"]
+        )
         response = {
             "levels": level_details_list
         }
