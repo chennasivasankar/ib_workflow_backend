@@ -1,9 +1,9 @@
 import factory
 
 from ib_iam.interactors.storage_interfaces.dtos \
-    import UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamIdAndNameDTO, \
-    CompanyIdAndNameDTO, RoleDTO, TeamDTO, UserIdAndNameDTO, \
-    UserProfileDTO
+    import UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO, \
+    TeamIdAndNameDTO, CompanyIdAndNameDTO, RoleDTO, TeamDTO, \
+    UserIdAndNameDTO
 
 
 class UserDTOFactory(factory.Factory):
@@ -13,6 +13,7 @@ class UserDTOFactory(factory.Factory):
     user_id = factory.sequence(lambda number: "team%s" % number)
     is_admin = True
     company_id = factory.sequence(lambda number: "company%s" % number)
+    cover_page_url = factory.sequence(lambda n: "url%d" % n)
 
 
 class UserTeamDTOFactory(factory.Factory):
@@ -240,13 +241,3 @@ class CompanyWithCompanyIdAndUserIdsDTOFactory(
         model = CompanyWithCompanyIdAndUserIdsDTO
 
     company_id = factory.Faker("uuid4")
-
-
-class UserIdNameEmailAndProfilePicUrlDTOFactory(factory.Factory):
-    class Meta:
-        model = UserProfileDTO
-
-    user_id = factory.Faker("uuid4")
-    name = factory.Iterator(["username", "testuser", "dummyuser"])
-    email = factory.sequence(lambda n: "email%d@gmail.com" % n)
-    profile_pic_url = factory.sequence(lambda n: "url%d" % n)

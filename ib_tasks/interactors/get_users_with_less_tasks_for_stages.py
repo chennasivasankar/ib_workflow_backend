@@ -72,7 +72,7 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
                 AssigneeCurrentTasksCountDTO]) -> List[
         AssigneeCurrentTasksCountDTO]:
         assignee_ids_with_current_task_count = []
-        if assignee_ids_with_current_task_count:
+        if assignee_with_current_tasks_count_dtos:
             assignee_ids_with_current_task_count = [
                 assignee_with_current_tasks_count_dto.assignee_id for
                 assignee_with_current_tasks_count_dto in
@@ -103,7 +103,6 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
 
         assignee_with_current_tasks_count_dtos = self. \
             _get_assignee_with_current_tasks_count_dtos()
-
         stage_with_user_details_dtos = []
         from ib_tasks.adapters.auth_service import AuthService
         auth_service_adapter = AuthService()
@@ -117,6 +116,7 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
                 for each_permitted_user_details_dto in
                 permitted_user_details_dtos
             ]
+
             permitted_assignee_with_current_tasks_count_dtos = self. \
                 _get_permitted_assignee_with_current_tasks_count_dtos(
                 permitted_user_ids, assignee_with_current_tasks_count_dtos)
@@ -135,7 +135,6 @@ class GetUsersWithLessTasksInGivenStagesInteractor:
                         permitted_user_details_dto_having_less_tasks = \
                             permitted_user_details_dto
                         break
-
             stage_with_user_details_dto = self. \
                 _prepare_stage_with_user_details_dto(
                 stage_detail_dtos=stage_detail_dtos,

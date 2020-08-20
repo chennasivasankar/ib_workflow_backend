@@ -1,23 +1,6 @@
 import factory
 
 from ib_iam.interactors.presenter_interfaces.dtos import \
-    ListOfCompleteUsersDTO
-from ib_discussions.interactors.presenter_interfaces.dtos import \
-    DiscussionIdWithEditableStatusDTO
-from ib_iam.interactors.storage_interfaces.dtos import UserTeamDTO
-
-
-class CompleteUserDetailsDTOFactory(factory.Factory):
-    class Meta:
-        model = ListOfCompleteUsersDTO
-
-    user_id = factory.sequence(lambda number: "user%s" % number)
-    name = factory.sequence(lambda number: "user%s" % number)
-    email = factory.sequence(lambda number: "useremail%s@gmail.com" % number)
-    teams = factory.SubFactory(UserTeamDTO)
-
-
-from ib_iam.interactors.presenter_interfaces.dtos import \
     TeamWithUsersDetailsDTO
 from ib_iam.tests.factories.storage_dtos import (
     TeamDTOFactory, TeamUserIdsDTOFactory, BasicUserDetailsDTOFactory

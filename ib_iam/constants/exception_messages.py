@@ -72,6 +72,11 @@ INVALID_ROLE_IDS = (
     "INVALID_ROLE_IDS"
 )
 
+DUPLICATE_ROLE_IDS_FOR_UPDATE_USER_PROFILE = (
+    "can't create roles with duplicate role_ids",
+    "DUPLICATE_ROLE_IDS"
+)
+
 INVALID_TEAM_IDS = (
     "given team ids are invalid",
     "INVALID_TEAM_IDS"

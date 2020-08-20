@@ -50,7 +50,7 @@ class SearchableFieldValuesInteractor:
             user_ids = adapter.search_service.get_search_user_ids(
                 offset=offset, limit=limit, search_query=search_query
             )
-            user_dtos = adapter.assignee_details_service\
+            user_dtos = adapter.assignee_details_service \
                 .get_assignees_details_dtos(assignee_ids=user_ids)
             return [
                 SearchableFieldDetailDTO(
