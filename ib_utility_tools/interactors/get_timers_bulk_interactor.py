@@ -19,7 +19,7 @@ class GetTimersBulkInteractor:
         self._validate_timer_entity_dtos(
             complete_timer_details_dtos=complete_timer_details_dtos,
             timer_entity_dtos=timer_entity_dtos)
-        self._update_complete_timer_details_dtos_of_running_timers(
+        self._calculate_and_update_duration_seconds_for_running_timers(
             complete_timer_details_dtos=complete_timer_details_dtos)
         entity_with_timer_dtos = [
             self._convert_complete_timer_details_dto_to_entity_with_timer_dto(
@@ -40,15 +40,15 @@ class GetTimersBulkInteractor:
         )
         return entity_with_timer_dto
 
-    def _update_complete_timer_details_dtos_of_running_timers(
+    def _calculate_and_update_duration_seconds_for_running_timers(
             self, complete_timer_details_dtos: List[CompleteTimerDetailsDTO]):
         for complete_timer_details_dto in complete_timer_details_dtos:
             if complete_timer_details_dto.is_running is True:
-                self._update_complete_timer_details_dto(
+                self._calculate_and_update_duration_seconds_for_running_timer(
                     complete_timer_details_dto=complete_timer_details_dto)
 
     @staticmethod
-    def _update_complete_timer_details_dto(
+    def _calculate_and_update_duration_seconds_for_running_timer(
             complete_timer_details_dto: CompleteTimerDetailsDTO):
         present_datetime = datetime.datetime.now()
         time_delta = \
