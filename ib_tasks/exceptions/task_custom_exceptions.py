@@ -27,6 +27,9 @@ class InvalidStagesTaskTemplateId(Exception):
         self.invalid_stages_task_template_ids = \
             invalid_stages_task_template_ids
 
+    def __str__(self):
+        return self.invalid_stages_task_template_ids
+
 
 class InvalidTaskTemplateIds(Exception):
     def __init__(self, invalid_task_template_ids: List[str]):

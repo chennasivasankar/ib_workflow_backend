@@ -1,3 +1,7 @@
+from datetime import datetime
+
+from freezegun import freeze_time
+
 from ib_tasks.presenters.task_due_delay_presenter_implementation import \
     TaskDueDetailsPresenterImplementation
 from ib_tasks.tests.factories.interactor_dtos import GetTaskDueDetailsDTOFactory
@@ -8,10 +12,10 @@ class TestGetTaskDueDelay:
         # Arrange
         presenter = TaskDueDetailsPresenterImplementation()
         from ib_tasks.exceptions.task_custom_exceptions \
-            import InvalidTaskIdException
-        task_id = -1
+            import InvalidTaskDisplayId
+        task_id = "iBWF-10"
 
-        err = InvalidTaskIdException(task_id)
+        err = InvalidTaskDisplayId(task_id)
 
         # Act
         response_object = presenter.response_for_invalid_task_id(err)
@@ -29,10 +33,12 @@ class TestGetTaskDueDelay:
         # Assert
         snapshot.assert_match(response_object.content, "response")
 
+    @freeze_time("2020-08-14")
     def test_get_response_for_get_task_due_details(self, snapshot):
         # Arrange
         GetTaskDueDetailsDTOFactory.reset_sequence()
-        tasks_dtos = GetTaskDueDetailsDTOFactory.create_batch(size=5)
+        tasks_dtos = GetTaskDueDetailsDTOFactory.create_batch(size=5,
+                                                              due_date_time=datetime.now())
         presenter = TaskDueDetailsPresenterImplementation()
 
         # Act

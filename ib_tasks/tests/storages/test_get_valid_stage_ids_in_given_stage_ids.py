@@ -34,7 +34,7 @@ class TestValidateStageIds:
         expected_result = [1, 2, 3]
 
         # Act
-        valid_stage_ids = storage.get_valid_db_stage_ids_in_given_db_stage_ids(
+        valid_stage_ids = storage.get_valid_db_stage_ids_with_stage_value(
             given_stage_ids)
 
         # Assert

@@ -138,7 +138,7 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
                 self._get_current_board_details(task_complete_details_dto)
 
         response_dict = {
-            "task_id": str(task_id),
+            "task_id": task_current_stage_details_dto.task_display_id,
             "current_board_details": current_board_details,
             "other_board_details": [],
             "task_current_stages_details": dict()
@@ -265,7 +265,7 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
         }
 
     @staticmethod
-    def _get_actions_dict(self, actions_dto: List[ActionDTO]):
+    def _get_actions_dict(actions_dto: List[ActionDTO]):
         return [
             {
                 "action_id": str(action_dto.action_id),
@@ -378,10 +378,13 @@ class UserActionOnTaskPresenterImplementation(PresenterInterface,
             task_stages_dict[task_stage_dto.stage_id] = task_stage_dto
 
         assignees_dict = {}
-        task_stages_dict = {}
+        task_stages_dtos_dict = {}
         for column_stage_dto in column_stage_dtos:
             column_id = column_stage_dto.column_id
             stage_id = column_stage_dto.stage_id
-            assignees_dict[column_id] = assignee_dtos_dict[stage_id]
-            task_stages_dict[column_id] = task_stages_dict[stage_id]
-        return assignees_dict, task_stages_dict
+            try:
+                assignees_dict[column_id] = assignee_dtos_dict[stage_id]
+            except KeyError:
+                assignees_dict[column_id] = None
+            task_stages_dtos_dict[column_id] = task_stages_dict[stage_id]
+        return assignees_dict, task_stages_dtos_dict

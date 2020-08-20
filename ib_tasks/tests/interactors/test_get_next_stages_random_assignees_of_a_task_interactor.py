@@ -1,10 +1,12 @@
 import pytest
 from mock import create_autospec
 
+from ib_tasks.adapters.dtos import AssigneeDetailsDTO
 from ib_tasks.interactors.get_next_stages_random_assignees_of_a_task_interactor import \
     GetNextStagesRandomAssigneesOfATaskInteractor, InvalidModulePathFound, \
     InvalidMethodFound
 from ib_tasks.interactors.stages_dtos import StageWithUserDetailsDTO
+
 from ib_tasks.tests.common_fixtures.adapters.auth_service import \
     prepare_permitted_user_details_mock, \
     prepare_empty_permitted_user_details_mock
@@ -29,6 +31,14 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         stage_storage = create_autospec(
             StageStorageInterface)
         return stage_storage
+
+    @pytest.fixture
+    def task_stage_storage_mock(self):
+        from ib_tasks.interactors.storage_interfaces.task_stage_storage_interface import \
+            TaskStageStorageInterface
+        task_stage_storage = create_autospec(
+            TaskStageStorageInterface)
+        return task_stage_storage
 
     @pytest.fixture
     def task_storage_mock(self):
@@ -79,9 +89,10 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
                                                  stage_storage_mock,
                                                  action_storage_mock,
                                                  task_storage_mock,
-                                                 presenter_mock):
+                                                 presenter_mock,
+                                                 task_stage_storage_mock):
         # Arrange
-        task_id = 1
+        task_display_id = "IBWF-1"
         action_id = 1
         path_name = "ib_tasks.populate.stage_ac.stage_1_action_name_1"
         storage_mock.get_path_name_to_action.return_value = path_name
@@ -91,13 +102,14 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
 
         interactor = GetNextStagesRandomAssigneesOfATaskInteractor(
             storage=storage_mock, action_storage=action_storage_mock,
-            stage_storage=stage_storage_mock, task_storage=task_storage_mock
-        )
+            stage_storage=stage_storage_mock, task_storage=task_storage_mock,
+            task_stage_storage=task_stage_storage_mock)
 
         # Act
         interactor \
             .get_next_stages_random_assignees_of_a_task_wrapper(
-            action_id=action_id, task_id=task_id, presenter=presenter_mock)
+            action_id=action_id, task_display_id=task_display_id,
+            presenter=presenter_mock)
 
         # Assert
         storage_mock.get_path_name_to_action.assert_called_once_with(
@@ -110,9 +122,10 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
                                                         stage_storage_mock,
                                                         action_storage_mock,
                                                         task_storage_mock,
-                                                        presenter_mock):
+                                                        presenter_mock,
+                                                        task_stage_storage_mock):
         # Arrange
-        task_id = 1
+        task_display_id = "IBWF-1"
         action_id = 1
 
         path_name = "ib_tasks.populate.stage_actions_logic.stage_1_action_name_1"
@@ -126,30 +139,33 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
 
         interactor = GetNextStagesRandomAssigneesOfATaskInteractor(
             storage=storage_mock, action_storage=action_storage_mock,
-            stage_storage=stage_storage_mock, task_storage=task_storage_mock
-        )
+            stage_storage=stage_storage_mock, task_storage=task_storage_mock,
+            task_stage_storage=task_stage_storage_mock)
 
         # Act
         interactor \
-                .get_next_stages_random_assignees_of_a_task_wrapper(
-                action_id=action_id, task_id=task_id, presenter=presenter_mock
-            )
+            .get_next_stages_random_assignees_of_a_task_wrapper(
+            action_id=action_id, task_display_id=task_display_id,
+            presenter=presenter_mock
+        )
 
         # Assert
         storage_mock.get_path_name_to_action.assert_called_once_with(
             action_id=action_id)
-        presenter_mock.raise_invalid_method_not_found_exception.assert_called_once_with(method_name="stage_1_action_name_1")
+        presenter_mock.raise_invalid_method_not_found_exception.assert_called_once_with(
+            method_name="stage_1_action_name_1")
 
     @staticmethod
     def test_assert_called_with_expected_arguments(mocker, storage_mock,
                                                    stage_storage_mock,
                                                    action_storage_mock,
                                                    task_storage_mock,
-                                                   presenter_mock):
+                                                   presenter_mock,
+                                                   task_stage_storage_mock):
         # Arrange
         mock_task_dict = {'status_variables': {'variable_1': 'stage_1'}}
         action_id = 1
-        task_id = 1
+        task_display_id = "IBWF-1"
         path_name = "ib_tasks.populate.dynamic_logic_test_file.stage_1_action_name_1"
         mock_obj = mocker.patch(path_name)
 
@@ -160,13 +176,15 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
 
         interactor = GetNextStagesRandomAssigneesOfATaskInteractor(
             storage=storage_mock, action_storage=action_storage_mock,
-            stage_storage=stage_storage_mock, task_storage=task_storage_mock
+            stage_storage=stage_storage_mock, task_storage=task_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
 
         # Act
         interactor \
             .get_next_stages_random_assignees_of_a_task_wrapper(
-            action_id=action_id, task_id=task_id, presenter=presenter_mock
+            action_id=action_id, task_display_id=task_display_id,
+            presenter=presenter_mock
         )
 
         # Assert
@@ -178,19 +196,20 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
             stage_value_dict={}
         )
         storage_mock.get_global_constants_to_task \
-            .assert_called_once_with(task_id=task_id)
+            .assert_called_once_with(task_display_id=task_display_id)
         storage_mock.get_stage_dtos_to_task \
-            .assert_called_once_with(task_id=task_id)
+            .assert_called_once_with(task_display_id=task_display_id)
 
     @staticmethod
     def test_access_invalid_key_raises_invalid_key_error(storage_mock,
                                                          presenter_mock,
                                                          stage_storage_mock,
                                                          action_storage_mock,
-                                                         task_storage_mock):
+                                                         task_storage_mock,
+                                                         task_stage_storage_mock):
         # Arrange
         action_id = 1
-        task_id = 1
+        task_display_id = "IBWF-1"
 
         path_name = "ib_tasks.populate.dynamic_logic_test_file.stage_1_action_name_1"
 
@@ -201,16 +220,18 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
 
         interactor = GetNextStagesRandomAssigneesOfATaskInteractor(
             storage=storage_mock, action_storage=action_storage_mock,
-            stage_storage=stage_storage_mock, task_storage=task_storage_mock
+            stage_storage=stage_storage_mock, task_storage=task_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
         from ib_tasks.exceptions.action_custom_exceptions import \
             InvalidKeyError
 
         # Act
         interactor \
-                .get_next_stages_random_assignees_of_a_task_wrapper(
-                action_id=action_id, task_id=task_id, presenter=presenter_mock
-            )
+            .get_next_stages_random_assignees_of_a_task_wrapper(
+            action_id=action_id, task_display_id=task_display_id,
+            presenter=presenter_mock
+        )
         # Assert
         storage_mock.get_path_name_to_action.assert_called_once_with(
             action_id=action_id
@@ -221,10 +242,11 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
     def test_given_valid_details_updates_statuses(storage_mock,
                                                   stage_storage_mock,
                                                   action_storage_mock,
-                                                  task_storage_mock):
+                                                  task_storage_mock,
+                                                  task_stage_storage_mock):
         # Arrange
         action_id = 1
-        task_id = 1
+        task_display_id = "IBWF-1"
         path_name = "ib_tasks.populate.dynamic_logic_test_file.stage_1_action_name_3"
         storage_mock.get_path_name_to_action.return_value = path_name
         StatusVariableDTOFactory.reset_sequence()
@@ -239,12 +261,13 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
 
         interactor = GetNextStagesRandomAssigneesOfATaskInteractor(
             storage=storage_mock, action_storage=action_storage_mock,
-            stage_storage=stage_storage_mock, task_storage=task_storage_mock
+            stage_storage=stage_storage_mock, task_storage=task_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
 
         # Act
         actual_result = interactor.get_status_variables_dtos_of_task_based_on_action(
-            action_id=action_id, task_id=task_id)
+            action_id=action_id, task_display_id=task_display_id)
         # Assert
         storage_mock.get_path_name_to_action.assert_called_once_with(
             action_id=action_id
@@ -257,9 +280,10 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
                                                                stage_storage_mock,
                                                                action_storage_mock,
                                                                task_storage_mock,
-                                                               stage_display_value):
+                                                               stage_display_value,
+                                                               task_stage_storage_mock):
         # Arrange
-        task_id = 1
+        task_display_id = "IBWF-1"
         path_name = "ib_tasks.populate.dynamic_logic_test_file.stage_1_action_name_3"
         storage_mock.get_path_name_to_action.return_value = path_name
         StatusVariableDTOFactory.reset_sequence()
@@ -268,7 +292,7 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         storage_mock.get_status_variables_to_task.return_value = statuses
         storage_mock.get_task_template_stage_logic_to_task \
             .return_value = stage_display_value
-        storage_mock.validate_task_id.return_value = True
+        storage_mock.validate_task_display_id.return_value = True
         from ib_tasks.tests.factories.interactor_dtos \
             import StatusOperandStageDTOFactory
         StatusOperandStageDTOFactory.reset_sequence()
@@ -278,12 +302,13 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
 
         interactor = GetNextStagesRandomAssigneesOfATaskInteractor(
             storage=storage_mock, action_storage=action_storage_mock,
-            stage_storage=stage_storage_mock, task_storage=task_storage_mock
+            stage_storage=stage_storage_mock, task_storage=task_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
 
         # Act
         actual_result = interactor.get_next_stages_of_task(
-            task_id=task_id, status_variable_dtos=statuses)
+            task_display_id=task_display_id, status_variable_dtos=statuses)
         # Assert
 
         assert actual_result == ['stage_1', 'stage_2', 'stage_3']
@@ -294,10 +319,11 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
                                                      action_storage_mock,
                                                      task_storage_mock,
                                                      presenter_mock,
-                                                     stage_display_value):
+                                                     stage_display_value,
+                                                     task_stage_storage_mock):
         # Arrange
         action_id = 1
-        task_id = 1
+        task_display_id = "IBWF-1"
         path_name = "ib_tasks.populate.dynamic_logic_test_file.stage_1_action_name_3"
         storage_mock.get_path_name_to_action.return_value = path_name
         StatusVariableDTOFactory.reset_sequence()
@@ -309,20 +335,17 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         storage_mock.get_status_variables_to_task.return_value = statuses
         storage_mock.get_task_template_stage_logic_to_task \
             .return_value = stage_display_value
-        storage_mock.validate_task_id.return_value = True
+        storage_mock.validate_task_display_id.return_value = True
+        assignee_details_dto = AssigneeDetailsDTO(assignee_id='user_id_1',
+                                                  name='user_name_1',
+                                                  profile_pic_url='profile_pic_1')
         stage_with_user_details_dtos = [
             StageWithUserDetailsDTO(db_stage_id=1, stage_display_name='name_0',
-                                    assignee_id='user_id_1',
-                                    assignee_name='user_name_1',
-                                    profile_pic_url='profile_pic_1'),
+                                    assignee_details_dto=assignee_details_dto),
             StageWithUserDetailsDTO(db_stage_id=2, stage_display_name='name_1',
-                                    assignee_id='user_id_1',
-                                    assignee_name='user_name_1',
-                                    profile_pic_url='profile_pic_1'),
+                                    assignee_details_dto=assignee_details_dto),
             StageWithUserDetailsDTO(db_stage_id=3, stage_display_name='name_2',
-                                    assignee_id='user_id_1',
-                                    assignee_name='user_name_1',
-                                    profile_pic_url='profile_pic_1')]
+                                    assignee_details_dto=assignee_details_dto)]
         from ib_tasks.tests.factories.interactor_dtos \
             import StatusOperandStageDTOFactory
         StatusOperandStageDTOFactory.reset_sequence()
@@ -338,27 +361,30 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         user_details_mock = prepare_permitted_user_details_mock(mocker)
         interactor = GetNextStagesRandomAssigneesOfATaskInteractor(
             storage=storage_mock, action_storage=action_storage_mock,
-            stage_storage=stage_storage_mock, task_storage=task_storage_mock
+            stage_storage=stage_storage_mock, task_storage=task_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
 
         # Act
         interactor.get_next_stages_random_assignees_of_a_task_wrapper(
-            task_id=task_id, action_id=action_id, presenter=presenter_mock)
+            task_display_id=task_display_id, action_id=action_id,
+            presenter=presenter_mock)
         # Assert
         presenter_mock. \
             get_next_stages_random_assignees_of_a_task_response.assert_called_once_with(
             stage_with_user_details_dtos)
 
     def test_given_valid_details_get_empty_permitted_users(self, mocker,
-                                                     storage_mock,
-                                                     stage_storage_mock,
-                                                     action_storage_mock,
-                                                     task_storage_mock,
-                                                     presenter_mock,
-                                                     stage_display_value):
+                                                           storage_mock,
+                                                           stage_storage_mock,
+                                                           action_storage_mock,
+                                                           task_storage_mock,
+                                                           presenter_mock,
+                                                           stage_display_value,
+                                                           task_stage_storage_mock):
         # Arrange
         action_id = 1
-        task_id = 1
+        task_display_id = "IBWF-1"
         path_name = "ib_tasks.populate.dynamic_logic_test_file.stage_1_action_name_3"
         storage_mock.get_path_name_to_action.return_value = path_name
         StatusVariableDTOFactory.reset_sequence()
@@ -370,12 +396,13 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         storage_mock.get_status_variables_to_task.return_value = statuses
         storage_mock.get_task_template_stage_logic_to_task \
             .return_value = stage_display_value
-        storage_mock.validate_task_id.return_value = True
+        storage_mock.validate_task_display_id.return_value = True
+        assignee_details_dto = AssigneeDetailsDTO(assignee_id="",
+                                                  name="",
+                                                  profile_pic_url="")
         stage_with_user_details_dtos = [
             StageWithUserDetailsDTO(db_stage_id=1, stage_display_name='name_0',
-                                    assignee_id="",
-                                    assignee_name="",
-                                    profile_pic_url="")]
+                                    assignee_details_dto=assignee_details_dto)]
         from ib_tasks.tests.factories.interactor_dtos \
             import StatusOperandStageDTOFactory
         StatusOperandStageDTOFactory.reset_sequence()
@@ -391,13 +418,16 @@ class TestGetNextStagesRandomAssigneesOfATaskInteractor:
         user_details_mock = prepare_empty_permitted_user_details_mock(mocker)
         interactor = GetNextStagesRandomAssigneesOfATaskInteractor(
             storage=storage_mock, action_storage=action_storage_mock,
-            stage_storage=stage_storage_mock, task_storage=task_storage_mock
+            stage_storage=stage_storage_mock, task_storage=task_storage_mock,
+            task_stage_storage=task_stage_storage_mock
         )
 
         # Act
         interactor.get_next_stages_random_assignees_of_a_task_wrapper(
-            task_id=task_id, action_id=action_id, presenter=presenter_mock)
+            task_display_id=task_display_id, action_id=action_id,
+            presenter=presenter_mock)
         # Assert
         presenter_mock. \
-            get_next_stages_random_assignees_of_a_task_response.assert_called_once_with(
+            get_next_stages_random_assignees_of_a_task_response.\
+            assert_called_once_with(
             stage_with_user_details_dtos)

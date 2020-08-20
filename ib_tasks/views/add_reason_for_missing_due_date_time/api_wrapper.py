@@ -14,19 +14,22 @@ def api_wrapper(*args, **kwargs):
     reason_id = request_params['reason_id']
     reason = request_params['reason']
     updated_due_datetime = request_params['updated_due_date_time']
-    task_id = kwargs['task_id']
+    task_id = request_params['task_id']
 
     parameters = TaskDueParametersDTO(
         user_id=user.user_id,
         reason_id=reason_id,
         reason=reason,
-        task_id=task_id,
         due_date_time=updated_due_datetime
     )
 
     storage = StorageImplementation()
     presenter = TaskDueDetailsPresenterImplementation()
-    interactor = AddTaskDueDetailsInteractor(storage=storage)
+    from ib_tasks.storages.tasks_storage_implementation import TasksStorageImplementation
+    task_storage = TasksStorageImplementation()
+    interactor = AddTaskDueDetailsInteractor(storage=storage,
+                                             task_storage=task_storage)
     response = interactor.add_task_due_details_wrapper(presenter=presenter,
-                                                       due_details=parameters)
+                                                       due_details=parameters,
+                                                       task_display_id=task_id)
     return response

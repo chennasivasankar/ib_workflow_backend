@@ -1,11 +1,12 @@
+from typing import List
+
 from ib_iam.exceptions.custom_exceptions import (
     UserIsNotAdmin, InvalidEmailAddress,
     UserAccountAlreadyExistWithThisEmail,
     NameShouldNotContainsNumbersSpecCharacters, RoleIdsAreInvalid,
     InvalidCompanyId, TeamIdsAreInvalid, InvalidNameLength
 )
-from ib_iam.interactors.dtos.dtos import \
-    UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO
+from ib_iam.interactors.dtos.dtos import AddUserDetailsDTO
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.add_new_user_presenter_inerface \
     import AddUserPresenterInterface
@@ -23,14 +24,12 @@ class AddNewUserInteractor(ValidationMixin):
 
     def add_new_user_wrapper(
             self, user_id: str,
-            user_details_with_team_role_and_company_ids_dto \
-                    : UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO,
+            add_user_details_dto: AddUserDetailsDTO,
             presenter: AddUserPresenterInterface):
         try:
             self.add_new_user(
                 user_id=user_id,
-                user_details_with_team_role_and_company_ids_dto \
-                    =user_details_with_team_role_and_company_ids_dto)
+                add_user_details_dto=add_user_details_dto)
             response = presenter.user_created_response()
         except UserIsNotAdmin:
             response = presenter.raise_user_is_not_admin_exception()
@@ -54,16 +53,15 @@ class AddNewUserInteractor(ValidationMixin):
         return response
 
     def add_new_user(self, user_id: str,
-                     user_details_with_team_role_and_company_ids_dto):
+                     add_user_details_dto: AddUserDetailsDTO):
         self._validate_add_new_user_details(
             user_id=user_id,
-            user_details_with_team_role_and_company_ids_dto \
-                =user_details_with_team_role_and_company_ids_dto)
-        email = user_details_with_team_role_and_company_ids_dto.email
-        name = user_details_with_team_role_and_company_ids_dto.name
-        company_id = user_details_with_team_role_and_company_ids_dto.company_id
-        team_ids = user_details_with_team_role_and_company_ids_dto.team_ids
-        role_ids = user_details_with_team_role_and_company_ids_dto.role_ids
+            add_user_details_dto=add_user_details_dto)
+        email = add_user_details_dto.email
+        name = add_user_details_dto.name
+        company_id = add_user_details_dto.company_id
+        team_ids = add_user_details_dto.team_ids
+        role_ids = add_user_details_dto.role_ids
         new_user_id = self._create_user_in_ib_users(email, name)
         role_obj_ids = self.user_storage.get_role_objs_ids(role_ids=role_ids)
         is_admin = False
@@ -84,13 +82,12 @@ class AddNewUserInteractor(ValidationMixin):
 
     def _validate_add_new_user_details(
             self, user_id,
-            user_details_with_team_role_and_company_ids_dto:
-            UserWithTeamIdsANDRoleIdsAndCompanyIdsDTO):
-        name = user_details_with_team_role_and_company_ids_dto.name
-        email = user_details_with_team_role_and_company_ids_dto.email
-        role_ids = user_details_with_team_role_and_company_ids_dto.role_ids
-        team_ids = user_details_with_team_role_and_company_ids_dto.team_ids
-        company_id = user_details_with_team_role_and_company_ids_dto.company_id
+            add_user_details_dto: AddUserDetailsDTO):
+        name = add_user_details_dto.name
+        email = add_user_details_dto.email
+        role_ids = add_user_details_dto.role_ids
+        team_ids = add_user_details_dto.team_ids
+        company_id = add_user_details_dto.company_id
         self._validate_is_user_admin(user_id=user_id)
         self._validate_name_and_throw_exception(name=name)
         self._validate_email_and_throw_exception(email=email)
@@ -137,7 +134,7 @@ class AddNewUserInteractor(ValidationMixin):
         )
         return user_profile_dto
 
-    def _validate_roles(self, role_ids):
+    def _validate_roles(self, role_ids: List[str]):
         are_valid = self.user_storage.check_are_valid_role_ids(
             role_ids=role_ids)
         are_not_valid = not are_valid

@@ -67,6 +67,11 @@ class TaskStageStorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_stage_assignee_id_dtos(
-            self, task_stage_dtos: List[GetTaskDetailsDTO]
-    ) -> List[TaskStageAssigneeIdDTO]:
+            self, task_stage_dtos: List[GetTaskDetailsDTO]) -> List[
+        TaskStageAssigneeIdDTO]:
+        pass
+
+    @abc.abstractmethod
+    def create_task_stage_history_records_for_virtual_stages(
+            self, stage_ids: List[int], task_id: int):
         pass

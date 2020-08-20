@@ -4,14 +4,13 @@ from typing import List, Dict
 from django.db.models import F
 from django.db.models import Q
 
+from ib_tasks.constants.constants import ALL_ROLES_ID
+from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.constants.enum import ViewType
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
     FieldCompleteDetailsDTO, FieldDTO, UserFieldPermissionDTO, \
-    FieldIdWithGoFIdDTO, StageTaskFieldsDTO, TaskTemplateStageFieldsDTO, \
-    FieldDetailsDTOWithTaskId
-
-StageTaskFieldsDTO, \
-TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId
+    FieldIdWithGoFIdDTO, StageTaskFieldsDTO, \
+    TaskTemplateStageFieldsDTO, FieldDetailsDTOWithTaskId
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import \
     FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.get_task_dtos import \
@@ -20,8 +19,6 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import (
     TaskTemplateStageDTO, StageDetailsDTO)
 from ib_tasks.models import CurrentTaskStage, Stage, TaskGoFField, FieldRole, \
     TaskTemplateGoFs, Field
-from ib_tasks.constants.enum import PermissionTypes
-from ib_tasks.constants.constants import ALL_ROLES_ID
 
 
 class FieldsStorageImplementation(FieldsStorageInterface):
@@ -131,7 +128,7 @@ class FieldsStorageImplementation(FieldsStorageInterface):
             stage_objs = (Stage.objects.filter(q)
                           .annotate(view_type=F('card_info_list'))
                           .values('task_template_id', 'stage_id',
-                                  'view_type', 'stage_color', 'id'))
+                                  'view_type', 'stage_color', 'id', 'display_name'))
         else:
             stage_objs = (Stage.objects.filter(q)
                           .annotate(view_type=F('card_info_kanban'))

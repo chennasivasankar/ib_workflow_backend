@@ -32,8 +32,7 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
             self, task_dto: TaskDetailsDTO) -> TaskDetailsDTO:
         task_gof_dtos = task_dto.task_gof_dtos
         gof_multiple_enable_dict = self._get_gof_multiple_enable_dict(
-            template_id=task_dto.task_base_details_dto.template_id,
-            group_of_fields_dto=task_gof_dtos)
+            template_id=task_dto.task_base_details_dto.template_id)
         task_gof_fields_dto = task_dto.task_gof_field_dtos
         task_gof_dtos, task_gof_fields_dto = \
             self._get_updated_task_gof_and_filed_dtos(
@@ -191,19 +190,10 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
         task_gof_id = task_gof_dto.task_gof_id
         fields_dict = task_gof_fields_dict[task_gof_id]
 
-        # TODO: Fixme
-        if gof_multiple_enable_dict.get(gof_id, False):
+        if gof_multiple_enable_dict.get(gof_id):
             multiple_gof_dict[gof_id].append(fields_dict)
         else:
             single_gof_dict[gof_id] = fields_dict
-
-    @staticmethod
-    def _get_common_gof_ids(group_of_fields_dto: List[TaskGoFDTO]):
-
-        return list({
-            group_of_field_dto.gof_id
-            for group_of_field_dto in group_of_fields_dto
-        })
 
     @staticmethod
     def _get_fields_dto_dict(
@@ -215,16 +205,11 @@ class CallActionLogicFunctionAndUpdateTaskStatusVariablesInteractor:
         return field_dict
 
     def _get_gof_multiple_enable_dict(
-            self, template_id: str, group_of_fields_dto: List[TaskGoFDTO]
-    ) -> Dict[str, bool]:
+            self, template_id: str) -> Dict[str, bool]:
 
-        common_gof_ids = self._get_common_gof_ids(
-            group_of_fields_dto=group_of_fields_dto
-        )
         gof_multiple_enable_dtos = self.storage \
             .get_enable_multiple_gofs_field_to_gof_ids(
-                template_id=template_id,
-                gof_ids=common_gof_ids
+                template_id=template_id
             )
         gof_multiple_enable_dict = {}
         for gof_multiple_enable_dto in gof_multiple_enable_dtos:
