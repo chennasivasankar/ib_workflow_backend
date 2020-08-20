@@ -737,8 +737,8 @@
       "in": "path",
       "required": true,
       "description": "level hierarchy to identity particular level of peoples in that team",
-      "type": "string",
-      "format": "uuid"
+      "type": "integer",
+      "format": "int64"
     },
     "UpdateTeamParameter": {
       "name": "update_team",
@@ -2441,6 +2441,13 @@
       "get": {
         "summary": "Get Team Members Of Level Hierarchy",
         "operationId": "get_team_members_of_level_hierarchy",
+        "security": [
+          {
+            "oauth": [
+              "read"
+            ]
+          }
+        ],
         "description": "Get team members in given level hierarchy",
         "parameters": [
           {
@@ -2459,6 +2466,13 @@
       "post": {
         "summary": "Add Members To Superiors",
         "operationId": "add_members_to_superiors",
+        "security": [
+          {
+            "oauth": [
+              "write"
+            ]
+          }
+        ],
         "parameters": [
           {
             "$ref": "#/parameters/TeamIdPathParameter"

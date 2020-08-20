@@ -27,7 +27,7 @@ class UserService:
             raise InvalidUserId()
         user_profile_dtos = [
             UserProfileDTO(
-                user_id=user.user_id,
+                user_id=str(user.user_id),
                 name=user.name,
                 email=user.email
             ) for user in user_profiles
