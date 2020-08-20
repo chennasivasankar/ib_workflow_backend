@@ -17,7 +17,7 @@ from ib_tasks.interactors.gofs_dtos \
 from ib_tasks.interactors.stage_dtos import TaskStageDTO
 from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
     StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
-    StageAssigneeDetailsDTO, UserStagesWithPaginationDTO
+    StageAssigneeDetailsDTO, UserStagesWithPaginationDTO, StageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
@@ -513,3 +513,11 @@ class CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
     @factory.lazy_attribute
     def transition_checklist_gofs(self):
         return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]
+
+
+class StageAssigneeDTOFactory(factory.Factory):
+    class Meta:
+        model = StageAssigneeDTO
+
+    db_stage_id = factory.Sequence(lambda n: n + 1)
+    assignee_id = factory.sequence(lambda n: "user_{}".format(n+1))

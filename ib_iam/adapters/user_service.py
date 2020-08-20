@@ -1,7 +1,10 @@
 from typing import List
 
+from ib_users.validators.base_validator import CustomException
+
 from ib_iam.adapters.dtos import UserProfileDTO
 from ib_iam.exceptions.custom_exceptions import InvalidUserId
+from ib_iam.interactors.storage_interfaces.dtos import BasicUserDetailsDTO
 
 
 class UserAccountDoesNotExist(Exception):
@@ -27,7 +30,7 @@ class UserService:
             raise InvalidUserId()
         user_profile_dtos = [
             UserProfileDTO(
-                user_id=user.user_id,
+                user_id=str(user.user_id),
                 name=user.name,
                 email=user.email
             ) for user in user_profiles
@@ -46,17 +49,28 @@ class UserService:
             return user_id
         except AccountWithThisEmailAlreadyExistsException:
             raise UserAccountAlreadyExistWithThisEmail
+        except CustomException as err:
+            from ib_users.exceptions.custom_exception_constants import \
+                INVALID_EMAIL
+            if err.error_type == INVALID_EMAIL.code:
+                from ib_iam.exceptions.custom_exceptions import InvalidEmail
+                raise InvalidEmail
 
     def create_user_profile(
             self, user_id: str, user_profile_dto: UserProfileDTO):
-        from ib_users.interactors.user_profile_interactor import \
-            CreateUserProfileDTO
-        create_user_profile_dto = CreateUserProfileDTO(
-            name=user_profile_dto.name,
-            email=user_profile_dto.email
-        )
-        self.interface.create_user_profile(
-            user_id=user_id, user_profile=create_user_profile_dto)
+        from ib_users.exceptions.invalid_email_exception import \
+            InvalidEmailException
+        try:
+            from ib_users.interactors.user_profile_interactor import \
+                CreateUserProfileDTO
+            create_user_profile_dto = CreateUserProfileDTO(
+                name=user_profile_dto.name,
+                email=user_profile_dto.email
+            )
+            self.interface.create_user_profile(
+                user_id=user_id, user_profile=create_user_profile_dto)
+        except InvalidEmailException:
+            raise InvalidEmail
 
     def update_user_profile(
             self, user_id: str, user_profile_dto: UserProfileDTO):
@@ -122,18 +136,26 @@ class UserService:
         user_dtos_from_service = self.interface.get_user_profile_bulk(
             user_ids=user_ids)
         basic_user_profile_dto = [
-            UserProfileDTO(
+            BasicUserDetailsDTO(
                 user_id=user_dto.user_id,
                 name=user_dto.name,
-                profile_pic_url=self._get_user_profile_pic_url(
-                    user_dto.profile_pic_url),
-            )
+                profile_pic_url=user_dto.profile_pic_url)
             for user_dto in user_dtos_from_service
         ]
         return basic_user_profile_dto
 
-    @staticmethod
-    def _get_user_profile_pic_url(profile_pic_url) -> str:
-        if profile_pic_url is None:
-            profile_pic_url = ""
-        return profile_pic_url
+
+    def get_user_id_for_given_email(self, email: str) -> str:
+        try:
+            return self.interface.get_user_id_give_email(email=email)
+        except CustomException as err:
+            from ib_users.exceptions.custom_exception_constants import \
+                NOT_REGISTERED_USER
+            if err.error_type == NOT_REGISTERED_USER.code:
+                raise UserAccountDoesNotExist
+
+    def is_active_user_account(self, email: str) -> bool:
+        pass
+
+    def activate_user_account(self, user_id: str):
+        pass

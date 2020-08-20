@@ -1,7 +1,9 @@
 import factory
 
-from ib_iam.interactors.dtos.dtos import \
-    AddUserDetailsDTO, CompleteUserProfileDTO
+from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, AddUserDetailsDTO, \
+    TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO, \
+    CompleteUserProfileDTO
+
 from ib_iam.interactors.update_user_password_interactor import \
     CurrentAndNewPasswordDTO
 
@@ -34,3 +36,31 @@ class CompleteUserProfileDTOFactory(factory.Factory):
     email = factory.LazyAttribute(lambda user: "%s@gmail.com" % user.name)
     profile_pic_url = factory.sequence(lambda n: "url%d" % n)
     cover_page_url = factory.sequence(lambda n: "url%d" % n)
+
+
+class TeamMemberLevelDTOFactory(factory.Factory):
+    class Meta:
+        model = TeamMemberLevelDTO
+
+    team_member_level_name = factory.Faker("name")
+    level_hierarchy = factory.Iterator([1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+
+class TeamMemberLevelIdWithMemberIdsDTOFactory(factory.Factory):
+    class Meta:
+        model = TeamMemberLevelIdWithMemberIdsDTO
+
+    team_member_level_id = factory.Faker("uuid4")
+    member_ids = factory.List(
+        [factory.Faker("uuid4"), factory.Faker("uuid4"), factory.Faker("uuid4")]
+    )
+
+
+class ImmediateSuperiorUserIdWithUserIdsDTOFactory(factory.Factory):
+    class Meta:
+        model = ImmediateSuperiorUserIdWithUserIdsDTO
+
+    immediate_superior_user_id = factory.Faker("uuid4")
+    member_ids = factory.List(
+        [factory.Faker("uuid4"), factory.Faker("uuid4"), factory.Faker("uuid4")]
+    )

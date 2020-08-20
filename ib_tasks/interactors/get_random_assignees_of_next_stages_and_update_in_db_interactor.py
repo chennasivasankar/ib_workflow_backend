@@ -1,8 +1,5 @@
 from typing import List
 
-from ib_tasks.interactors \
-    .get_next_stages_random_assignees_of_a_task_interactor import \
-    GetNextStagesRandomAssigneesOfATaskInteractor
 from ib_tasks.interactors.get_users_with_less_tasks_for_stages import \
     GetUsersWithLessTasksInGivenStagesInteractor
 from ib_tasks.interactors.stages_dtos import StageAssigneeDTO, \

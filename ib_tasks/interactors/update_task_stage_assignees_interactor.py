@@ -2,7 +2,8 @@ from typing import List
 
 from ib_tasks.exceptions.stage_custom_exceptions import \
     DuplicateStageIds, \
-    StageIdsWithInvalidPermissionForAssignee, InvalidDbStageIdsListException
+    StageIdsWithInvalidPermissionForAssignee, InvalidDbStageIdsListException, \
+    VirtualStageIdsException
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTaskIdException, \
     InvalidTaskDisplayId
@@ -49,6 +50,10 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
         except InvalidDbStageIdsListException as exception:
             return presenter.raise_invalid_stage_ids_exception(
                 invalid_stage_ids=exception.invalid_stage_ids)
+        except VirtualStageIdsException as exception:
+            return presenter.raise_virtual_stage_ids_exception(
+                virtual_stage_ids=exception.virtual_stage_ids)
+
         except StageIdsWithInvalidPermissionForAssignee as exception:
             return presenter. \
                 raise_stage_ids_with_invalid_permission_for_assignee_exception(
@@ -66,10 +71,19 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
         stage_ids = self._get_stage_ids_from_given_dto(
             task_id_with_stage_assignees_dto)
         self._check_duplicate_stage_ids(stage_ids)
-        valid_stage_ids = self.stage_storage. \
-            get_valid_db_stage_ids_excluding_virtual_stages_in_given_db_stage_ids(
-            stage_ids)
-        self._validate_stage_ids(stage_ids, valid_stage_ids)
+        stage_dtos = self.stage_storage. \
+            get_valid_db_stage_ids_with_stage_value(stage_ids)
+        virtual_stage_ids = [stage_dto.db_stage_id for stage_dto in stage_dtos
+                             if stage_dto.stage_value == -1]
+
+        valid_stage_ids = [stage_dto.db_stage_id for stage_dto in stage_dtos if
+                           stage_dto.db_stage_id not in virtual_stage_ids]
+        stage_ids_in_db = valid_stage_ids + virtual_stage_ids
+        self._validate_stage_ids(stage_ids, stage_ids_in_db)
+        if virtual_stage_ids:
+            from ib_tasks.exceptions.stage_custom_exceptions import \
+                VirtualStageIdsException
+            raise VirtualStageIdsException(virtual_stage_ids)
         stage_role_dtos = self.stage_storage. \
             get_stage_role_dtos_given_db_stage_ids(stage_ids)
 
@@ -93,7 +107,7 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
             get_task_stages_having_assignees_without_having_left_at_status(
             task_id=task_id, db_stage_ids=stage_ids)
         matched_stage_assignee_dtos = []
-        user_given_stage_assignee_dtos = task_id_with_stage_assignees_dto.\
+        user_given_stage_assignee_dtos = task_id_with_stage_assignees_dto. \
             stage_assignees
         for user_given_stage_assignee_dto in user_given_stage_assignee_dtos:
             for stage_assignee_dto_having_assignees in \
@@ -219,10 +233,10 @@ class UpdateTaskStageAssigneesInteractor(GetTaskIdForTaskDisplayIdMixin):
         return stage_ids
 
     @staticmethod
-    def _validate_stage_ids(stage_ids, valid_stage_ids):
+    def _validate_stage_ids(stage_ids, stage_ids_in_db):
         invalid_stage_ids = [
             stage_id for stage_id in stage_ids
-            if stage_id not in valid_stage_ids
+            if stage_id not in stage_ids_in_db
         ]
         if invalid_stage_ids:
             from ib_tasks.exceptions.stage_custom_exceptions import \
