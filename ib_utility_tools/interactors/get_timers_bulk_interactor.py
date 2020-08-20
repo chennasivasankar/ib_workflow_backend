@@ -19,7 +19,7 @@ class GetTimersBulkInteractor:
         self._validate_timer_entity_dtos(
             complete_timer_details_dtos=complete_timer_details_dtos,
             timer_entity_dtos=timer_entity_dtos)
-        self._update_complete_timer_details_dtos_of_timers_in_running(
+        self._update_complete_timer_details_dtos_of_running_timers(
             complete_timer_details_dtos=complete_timer_details_dtos)
         entity_with_timer_dtos = [
             self._convert_complete_timer_details_dto_to_entity_with_timer_dto(
@@ -40,7 +40,7 @@ class GetTimersBulkInteractor:
         )
         return entity_with_timer_dto
 
-    def _update_complete_timer_details_dtos_of_timers_in_running(
+    def _update_complete_timer_details_dtos_of_running_timers(
             self, complete_timer_details_dtos: List[CompleteTimerDetailsDTO]):
         for complete_timer_details_dto in complete_timer_details_dtos:
             if complete_timer_details_dto.is_running is True:
