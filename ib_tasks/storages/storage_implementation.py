@@ -35,7 +35,7 @@ from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
     TaskTemplateStatusVariable
 from ib_tasks.models import \
     TaskStageHistory
-from ib_tasks.models.task_due_details import UserTaskDelayReason
+from ib_tasks.models.user_task_delay_reason import UserTaskDelayReason
 
 
 class StagesStorageImplementation(StageStorageInterface):
