@@ -641,8 +641,8 @@ class StorageImplementation(StorageInterface):
     def validate_if_task_is_assigned_to_user(self,
                                              task_id: int,
                                              user_id: str) -> bool:
-        is_assigned = TaskLog.objects.filter(
-            task_id=task_id, user_id=user_id).exists()
+        is_assigned = TaskStageHistory.objects.filter(
+            task_id=task_id, assignee_id=user_id).exists()
         return is_assigned
 
     def get_task_due_details(self, task_id: int) -> \

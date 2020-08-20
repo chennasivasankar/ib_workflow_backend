@@ -340,15 +340,3 @@ class ElasticSearchTaskFactory(factory.django.DjangoModelFactory):
     elasticsearch_id = factory.sequence(
         lambda n: 'elastic_search_id_{}'.format(n))
     task_id = factory.sequence(lambda n: n)
-
-
-class TaskLogFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = TaskLog
-
-    task = factory.SubFactory(TaskFactory)
-    task_json = """ json """
-    acted_at = "2020-08-11 12:00:00"
-    action = factory.SubFactory(StageActionFactory)
-    user_id = factory.Sequence(
-        lambda n: "123e4567-e89b-12d3-a456-42661417400%d" % n)

@@ -2,9 +2,9 @@ import pytest
 from freezegun import freeze_time
 
 from ib_tasks.storages.storage_implementation import StorageImplementation
-from ib_tasks.tests.factories.models import TaskFactory, TaskStageModelFactory, TaskDueDetailsFactory, \
-    TaskLogFactory
-from ib_tasks.tests.factories.models import TaskFactory, TaskDueDetailsFactory, TaskLogFactory
+from ib_tasks.tests.factories.models import TaskFactory, TaskDueDetailsFactory, \
+    TaskStageHistoryModelFactory
+from ib_tasks.tests.factories.models import TaskStageModelFactory
 
 
 @pytest.mark.django_db
@@ -18,8 +18,8 @@ class TestGetTaskDueMissingDetails:
         TaskStageModelFactory.reset_sequence()
         TaskStageModelFactory(task=tasks[0])
         TaskDueDetailsFactory.reset_sequence()
-        TaskLogFactory.reset_sequence()
-        TaskLogFactory.create_batch(size=5, task=tasks[0])
+        TaskStageHistoryModelFactory.reset_sequence()
+        TaskStageHistoryModelFactory.create_batch(size=5, task=tasks[0])
         TaskDueDetailsFactory.create_batch(task=tasks[0], size=2, count=1)
         TaskDueDetailsFactory.create_batch(task=tasks[0], size=2, reason_id=-1, count=1)
 
@@ -92,8 +92,8 @@ class TestGetTaskDueMissingDetails:
         # Arrange
         TaskFactory.reset_sequence()
         tasks = TaskFactory.create_batch(size=3)
-        TaskLogFactory.reset_sequence()
-        TaskLogFactory(task=tasks[0])
+        TaskStageHistoryModelFactory.reset_sequence()
+        TaskStageHistoryModelFactory(task=tasks[0])
         task_id = 1
         storage = StorageImplementation()
 
