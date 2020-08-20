@@ -23,12 +23,12 @@ snapshots['TestCase02UserLoginAPITestCase.test_case_for_invalid_email body'] = {
     'response': 'Please send valid email'
 }
 
-snapshots['TestCase02UserLoginAPITestCase.test_case_email_is_not_verify_then_raise_email_not_verify status_code'] = '500'
+snapshots['TestCase02UserLoginAPITestCase.test_case_email_is_not_verify_then_raise_email_not_verify status_code'] = '400'
 
 snapshots['TestCase02UserLoginAPITestCase.test_case_email_is_not_verify_then_raise_email_not_verify body'] = {
-    'res_status': [
-        '"EMAIL_NOT_VERIFY" is not a valid choice.'
-    ]
+    'http_status_code': 400,
+    'res_status': 'EMAIL_IS_NOT_VERIFY',
+    'response': 'Given Email not verify, Please first verify the email'
 }
 
 snapshots['TestCase02UserLoginAPITestCase.test_with_not_register_email_then_raise_account_not_found_exception status_code'] = '404'

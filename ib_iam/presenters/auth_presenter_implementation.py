@@ -49,7 +49,7 @@ TOKEN_HAS_EXPIRED = (
 
 EMAIL_IS_NOT_VERIFY = (
     "Given Email not verify, Please first verify the email",
-    "EMAIL_NOT_VERIFY"
+    "EMAIL_IS_NOT_VERIFY"
 )
 
 
