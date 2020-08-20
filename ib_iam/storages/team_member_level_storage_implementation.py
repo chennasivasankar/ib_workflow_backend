@@ -1,8 +1,9 @@
 from typing import List
 
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, \
-    TeamMemberLevelIdWithMemberIdsDTO
-from ib_iam.interactors.storage_interfaces.dtos import TeamMemberLevelDetailsDTO
+    TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO
+from ib_iam.interactors.storage_interfaces.dtos import \
+    TeamMemberLevelDetailsDTO, MemberDTO
 from ib_iam.interactors.storage_interfaces.level_storage_interface import \
     TeamMemberLevelStorageInterface
 
@@ -69,3 +70,14 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
         UserTeam.objects.filter(
             team_id=team_id, user_id__in=member_ids
         ).update(team_member_level=team_member_level_object)
+
+    def get_member_details(self, team_id: str, level_hierarchy: int) \
+            -> List[MemberDTO]:
+        pass
+
+    def add_members_to_superiors(
+            self, team_id: str, level_hierarchy: int,
+            immediate_superior_user_id_with_member_ids_dtos: List[
+                ImmediateSuperiorUserIdWithUserIdsDTO]
+    ):
+        pass
