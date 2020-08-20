@@ -1,7 +1,8 @@
 from django.db import transaction
 
+from ib_boards.constants.constants import GOOGLE_SHEET_NAME
 from ib_iam.populate.add_roles_details import RoleDetails
-from ib_tasks.constants.constants import GOOGLE_SHEET_NAME, ROLES_SUB_SHEET
+from ib_tasks.constants.constants import ROLES_SUB_SHEET
 from ib_tasks.populate.get_sheet_data_for_creating_or_updating_stages import \
     GetSheetDataForStages
 from ib_tasks.populate.get_sheet_data_for_stage_actions import \
@@ -27,9 +28,9 @@ def populate_data():
     task_template = PopulateTaskTemplates()
     task_template.populate_task_templates()
 
-    # roles = RoleDetails()
-    # roles.add_roles_details_to_database(
-    #     GOOGLE_SHEET_NAME, ROLES_SUB_SHEET)
+    roles = RoleDetails()
+    roles.add_roles_details_to_database(
+        GOOGLE_SHEET_NAME, ROLES_SUB_SHEET)
 
     gofs = PopulateGoFs()
     gofs.create_or_update_gofs()

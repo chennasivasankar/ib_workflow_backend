@@ -18,6 +18,10 @@ class TestCase01UpdateTaskAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['write']}}
 
     @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        TaskFactory.reset_sequence()
+
+    @pytest.fixture(autouse=True)
     def setup(self, mocker):
         task_id = "IBWF-1"
 

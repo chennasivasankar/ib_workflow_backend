@@ -2,12 +2,11 @@
 test with user who does not have write permission for a gof
 """
 import uuid
-from unittest import mock
+from unittest.mock import patch
 
 import factory
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
-from pyparsing import unicode
 
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.tests.factories.models import TaskFactory, GoFFactory, \
@@ -33,8 +32,6 @@ class TestCase01UpdateTaskAPITestCase(TestUtils):
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids
         valid_roles = get_user_role_ids(mocker)
-        user_id = "b913daae-e562-4267-bf38-c8d0b5df6d6f"
-
         gofs = GoFFactory.create_batch(size=len(gof_ids),
                                        gof_id=factory.Iterator(gof_ids))
         gof_roles = GoFRoleFactory.create_batch(
@@ -57,7 +54,7 @@ class TestCase01UpdateTaskAPITestCase(TestUtils):
             task_display_id=task_id, template_id=task_template.template_id)
 
     @pytest.mark.django_db
-    def test_case(self, snapshot):
+    def test_case(self, snapshot, mocker):
         body = {
             "task_id": "IBWF-1",
             "title": "updated_title",
@@ -103,8 +100,12 @@ class TestCase01UpdateTaskAPITestCase(TestUtils):
         path_params = {}
         query_params = {}
         headers = {}
-        self.make_api_call(body=body,
-                           path_params=path_params,
-                           query_params=query_params,
-                           headers=headers,
-                           snapshot=snapshot)
+        user_id = "b913daae-e562-4267-bf38-c8d0b5df6d6f"
+        with patch('uuid.uuid4') as uuid_mock:
+            uuid_mock.return_value = uuid.UUID(
+                int=0x12345678123456781234567812345678)
+            self.make_api_call(body=body,
+                               path_params=path_params,
+                               query_params=query_params,
+                               headers=headers,
+                               snapshot=snapshot)

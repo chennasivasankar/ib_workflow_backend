@@ -1,13 +1,12 @@
 """
-test with user who does not have write permission for a field
+test with user who does not have write permission for a gof
 """
 import uuid
-from unittest import mock
+from unittest.mock import patch
 
 import factory
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
-from pyparsing import unicode
 
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.tests.factories.models import TaskFactory, GoFFactory, \
@@ -17,12 +16,22 @@ from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
     REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01UpdateTaskAPITestCase(TestUtils):
+class TestCase12UpdateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['write']}}
+
+    @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        TaskFactory.reset_sequence()
+        GoFFactory.reset_sequence()
+        FieldFactory.reset_sequence()
+        TaskTemplateFactory.reset_sequence()
+        GoFToTaskTemplateFactory.reset_sequence()
+        FieldRoleFactory.reset_sequence()
+        GoFRoleFactory.reset_sequence()
 
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
@@ -31,17 +40,15 @@ class TestCase01UpdateTaskAPITestCase(TestUtils):
         gof_ids = ["GOF-1", "GOF-2"]
         field_ids = ["FIELD-1", "FIELD-2", "FIELD-3", "FIELD-4"]
         gof_write_permission_roles = ["FIN_GOF_CREATOR", "FIN_GOF_EDITOR"]
-        field_write_permission_roles = ["FIELD_CREATOR", "FIELD_EDITOR"]
         from ib_tasks.tests.common_fixtures.adapters.roles_service import \
             get_user_role_ids
         valid_roles = get_user_role_ids(mocker)
-        user_id = "b913daae-e562-4267-bf38-c8d0b5df6d6f"
-
         gofs = GoFFactory.create_batch(size=len(gof_ids),
                                        gof_id=factory.Iterator(gof_ids))
         gof_roles = GoFRoleFactory.create_batch(
             size=2, gof=factory.Iterator(gofs),
-            role=valid_roles[0], permission_type=PermissionTypes.WRITE.value
+            role=factory.Iterator(valid_roles),
+            permission_type=PermissionTypes.WRITE.value
         )
         fields = [
             FieldFactory.create(field_id=field_ids[0], gof=gofs[0]),
@@ -50,8 +57,8 @@ class TestCase01UpdateTaskAPITestCase(TestUtils):
             FieldFactory.create(field_id=field_ids[3], gof=gofs[1])
         ]
         field_roles = FieldRoleFactory.create_batch(
-            size=4, field=factory.Iterator(fields),
-            role=factory.Iterator(field_write_permission_roles),
+            size=len(fields), field=factory.Iterator(fields),
+            role=factory.Iterator(valid_roles),
             permission_type=PermissionTypes.WRITE.value
         )
 
@@ -63,7 +70,7 @@ class TestCase01UpdateTaskAPITestCase(TestUtils):
             task_display_id=task_id, template_id=task_template.template_id)
 
     @pytest.mark.django_db
-    def test_case(self, snapshot):
+    def test_case(self, snapshot, mocker):
         body = {
             "task_id": "IBWF-1",
             "title": "updated_title",
@@ -109,8 +116,12 @@ class TestCase01UpdateTaskAPITestCase(TestUtils):
         path_params = {}
         query_params = {}
         headers = {}
-        self.make_api_call(body=body,
-                           path_params=path_params,
-                           query_params=query_params,
-                           headers=headers,
-                           snapshot=snapshot)
+        user_id = "b913daae-e562-4267-bf38-c8d0b5df6d6f"
+        with patch('uuid.uuid4') as uuid_mock:
+            uuid_mock.return_value = uuid.UUID(
+                int=0x12345678123456781234567812345678)
+            self.make_api_call(body=body,
+                               path_params=path_params,
+                               query_params=query_params,
+                               headers=headers,
+                               snapshot=snapshot)

@@ -14,3 +14,11 @@ snapshots['TestCase01UpdateTaskAPITestCase.test_case body'] = {
     'res_status': 'DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF',
     'response': "gof id GOF-1 has duplicate field ids ['FIELD-1']"
 }
+
+snapshots['TestCase09UpdateTaskAPITestCase.test_case status_code'] = '400'
+
+snapshots['TestCase09UpdateTaskAPITestCase.test_case body'] = {
+    'http_status_code': 400,
+    'res_status': 'DUPLICATE_FIELD_IDS_GIVEN_TO_A_GOF',
+    'response': "gof id GOF-1 has duplicate field ids ['FIELD-1']"
+}

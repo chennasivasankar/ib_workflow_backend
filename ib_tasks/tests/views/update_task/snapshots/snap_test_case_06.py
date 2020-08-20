@@ -14,3 +14,11 @@ snapshots['TestCase01UpdateTaskAPITestCase.test_case body'] = {
     'res_status': 'INVALID_GOF_IDS',
     'response': "invalid gof ids: ['GOF-19', 'GOF-20']"
 }
+
+snapshots['TestCase06UpdateTaskAPITestCase.test_case status_code'] = '400'
+
+snapshots['TestCase06UpdateTaskAPITestCase.test_case body'] = {
+    'http_status_code': 400,
+    'res_status': 'INVALID_GOF_IDS',
+    'response': "invalid gof ids: ['GOF-19', 'GOF-20']"
+}

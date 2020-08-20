@@ -11,12 +11,20 @@ from ib_tasks.tests.views.update_task import APP_NAME, OPERATION_NAME, \
     REQUEST_METHOD, URL_SUFFIX
 
 
-class TestCase01UpdateTaskAPITestCase(TestUtils):
+class TestCase10UpdateTaskAPITestCase(TestUtils):
     APP_NAME = APP_NAME
     OPERATION_NAME = OPERATION_NAME
     REQUEST_METHOD = REQUEST_METHOD
     URL_SUFFIX = URL_SUFFIX
     SECURITY = {'oauth': {'scopes': ['write']}}
+
+    @pytest.fixture(autouse=True)
+    def reset_sequence(self):
+        TaskFactory.reset_sequence()
+        GoFFactory.reset_sequence()
+        FieldFactory.reset_sequence()
+        TaskTemplateFactory.reset_sequence()
+        GoFToTaskTemplateFactory.reset_sequence()
 
     @pytest.fixture(autouse=True)
     def setup(self, mocker):
