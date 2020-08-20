@@ -21,7 +21,7 @@ class TestSearchableFieldValuesInteractor:
         storage = create_autospec(ElasticSearchStorageInterface)
         return storage
 
-    @pytest.mark.parametrize("limit", [0, -1])
+    @pytest.mark.parametrize("limit", [-1, -2])
     def test_given_limit_values_less_than_one_raise_exception(
             self, limit, presenter_mock, elastic_storage_mock):
         # Arrange
@@ -35,7 +35,7 @@ class TestSearchableFieldValuesInteractor:
             side_effect = LimitShouldBeGreaterThanZeroException
         from ib_tasks.interactors.searchable_field_values_interactor import \
             SearchableFieldValuesInteractor
-        interactor = SearchableFieldValuesInteractor(elastic_storage=elastic_storage_mock)
+        interactor = SearchableFieldValuesInteractor()
 
         # Act
         with pytest.raises(LimitShouldBeGreaterThanZeroException):
@@ -62,7 +62,7 @@ class TestSearchableFieldValuesInteractor:
             .side_effect = OffsetShouldBeGreaterThanOrEqualToMinusOneException
         from ib_tasks.interactors.searchable_field_values_interactor import \
             SearchableFieldValuesInteractor
-        interactor = SearchableFieldValuesInteractor(elastic_storage=elastic_storage_mock)
+        interactor = SearchableFieldValuesInteractor()
 
         # Act
         with pytest.raises(
@@ -92,7 +92,7 @@ class TestSearchableFieldValuesInteractor:
 
         from ib_tasks.interactors.searchable_field_values_interactor import \
             SearchableFieldValuesInteractor
-        interactor = SearchableFieldValuesInteractor(elastic_storage=elastic_storage_mock)
+        interactor = SearchableFieldValuesInteractor()
 
         interactor.searchable_field_values_wrapper(
             presenter=presenter_mock,
@@ -117,7 +117,7 @@ class TestSearchableFieldValuesInteractor:
 
         from ib_tasks.interactors.searchable_field_values_interactor import \
             SearchableFieldValuesInteractor
-        interactor = SearchableFieldValuesInteractor(elastic_storage=elastic_storage_mock)
+        interactor = SearchableFieldValuesInteractor()
 
         interactor.searchable_field_values_wrapper(
             presenter=presenter_mock,

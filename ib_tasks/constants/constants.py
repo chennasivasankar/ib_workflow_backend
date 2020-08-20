@@ -42,6 +42,6 @@ PRIORITY_TYPES = [(item.value, item.value) for item in Priority]
 
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
-STAGE_TYPE = "STAGE"
+STAGE_TASK = "STAGE_TASK"
 
 TASK_DISPLAY_ID = "IBWF-{}"

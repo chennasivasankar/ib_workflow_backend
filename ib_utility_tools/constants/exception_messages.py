@@ -21,3 +21,13 @@ TIMER_IS_ALREADY_STOPPED = (
     "Timer is already in stop state",
     "TIMER_IS_ALREADY_STOPPED"
 )
+
+INVALID_CHECKLIST_ITEM_IDS = (
+    "Given Checklist item ids not found",
+    "CHECKLIST_ITEM_IDS_NOT_FOUND"
+)
+
+DUPLICATE_CHECKLIST_ITEM_IDS = (
+    "Given checklist item ids are duplicated",
+    "DUPLICATE_CHECKLIST_ITEM_IDS"
+)
