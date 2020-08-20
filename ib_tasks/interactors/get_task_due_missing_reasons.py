@@ -1,21 +1,22 @@
 from typing import List
 
 from ib_tasks.adapters.service_adapter import get_service_adapter
-from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException, \
-    UserIsNotAssigneeToTask, InvalidTaskDisplayId
+from ib_tasks.exceptions.task_custom_exceptions import UserIsNotAssigneeToTask, \
+    InvalidTaskDisplayId
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
-from ib_tasks.interactors.presenter_interfaces.task_due_missing_details_presenter import \
-    TaskDueDetailsPresenterInterface
+from ib_tasks.interactors.presenter_interfaces.task_due_missing_details_presenter \
+    import TaskDueDetailsPresenterInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import StorageInterface
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO, \
     TaskDueDetailsDTO
-from ib_tasks.interactors.storage_interfaces.task_storage_interface import TaskStorageInterface
+from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
+    TaskStorageInterface
 
 
 class GetTaskDueMissingReasonsInteractor(GetTaskIdForTaskDisplayIdMixin):
     def __init__(self, task_storage: TaskStorageInterface,
-                storage: StorageInterface):
+                 storage: StorageInterface):
         self.storage = storage
         self.task_storage = task_storage
 
