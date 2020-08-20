@@ -91,3 +91,38 @@ class TestUpdateUserProfilePresenterImplementation:
         assert actual_response == expected_response
         assert actual_res_status == expected_res_status
         assert expected_http_status_code == actual_http_status_code
+
+    def test_whether_it_returns_invalid_role_ids_exception_response(self):
+        from ib_iam.constants.exception_messages import INVALID_ROLE_IDS
+        json_presenter = UpdateUserProfilePresenterImplementation()
+        expected_response = INVALID_ROLE_IDS[0]
+        expected_res_status = INVALID_ROLE_IDS[1]
+        expected_http_status_code = StatusCode.NOT_FOUND.value
+
+        result = json_presenter.raise_invalid_role_ids_exception()
+
+        response_dict = json.loads(result.content)
+        actual_response = response_dict["response"]
+        actual_res_status = response_dict["res_status"]
+        actual_http_status_code = response_dict["http_status_code"]
+        assert actual_response == expected_response
+        assert actual_res_status == expected_res_status
+        assert expected_http_status_code == actual_http_status_code
+
+    def test_whether_it_returns_duplicate_role_ids_exception_response(self):
+        from ib_iam.constants.exception_messages import \
+            DUPLICATE_ROLE_IDS_FOR_UPDATE_USER_PROFILE as DUPLICATE_ROLE_IDS
+        json_presenter = UpdateUserProfilePresenterImplementation()
+        expected_response = DUPLICATE_ROLE_IDS[0]
+        expected_res_status = DUPLICATE_ROLE_IDS[1]
+        expected_http_status_code = StatusCode.BAD_REQUEST.value
+
+        result = json_presenter.raise_duplicate_role_ids_exception()
+
+        response_dict = json.loads(result.content)
+        actual_response = response_dict["response"]
+        actual_res_status = response_dict["res_status"]
+        actual_http_status_code = response_dict["http_status_code"]
+        assert actual_response == expected_response
+        assert actual_res_status == expected_res_status
+        assert expected_http_status_code == actual_http_status_code

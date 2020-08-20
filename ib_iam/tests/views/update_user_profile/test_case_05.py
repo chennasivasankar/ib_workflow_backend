@@ -24,7 +24,8 @@ class TestCase05UpdateUserProfileAPITestCase(TestUtils):
         update_user_profile_mock.side_effect = InvalidEmail
         body = {'name': 'username',
                 'email': 'jaswanthmamidipudigmail.com',
-                'profile_pic_url': 'https://sample.com'}
+                'profile_pic_url': 'https://sample.com',
+                "cover_page_url": ""}
         path_params = {}
         query_params = {}
         headers = {}

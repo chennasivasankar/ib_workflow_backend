@@ -12,6 +12,14 @@ class UpdateUserProfilePresenterInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def raise_duplicate_role_ids_exception(self):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_role_ids_exception(self):
+        pass
+
+    @abc.abstractmethod
     def raise_name_should_not_contain_special_chars_and_numbers_exception_for_update_user_profile(
             self):
         pass
