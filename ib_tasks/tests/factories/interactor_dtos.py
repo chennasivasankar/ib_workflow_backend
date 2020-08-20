@@ -16,7 +16,7 @@ from ib_tasks.interactors.gofs_dtos \
     import GoFWithOrderAndAddAnotherDTO, GoFsWithTemplateIdDTO, FieldDisplayDTO
 from ib_tasks.interactors.stages_dtos import TaskTemplateStageActionDTO, \
     StageActionDTO, StagesActionDTO, TaskIdWithStageAssigneeDTO, \
-    StageAssigneeDetailsDTO, UserStagesWithPaginationDTO
+    StageAssigneeDetailsDTO, UserStagesWithPaginationDTO, StageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import \
     ActionDetailsDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
@@ -255,6 +255,7 @@ class CreateTaskLogDTOFactory(factory.Factory):
     action_id = factory.sequence(lambda n: n)
 
 
+
 class TaskIdWithStageAssigneeDTOFactory(factory.Factory):
     class Meta:
         model = TaskIdWithStageAssigneeDTO
@@ -460,3 +461,11 @@ class FieldWritePermissionRolesDTOFactory(factory.Factory):
 
     field_id = factory.sequence(lambda counter: "field_{}".format(counter))
     write_permission_roles = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC']
+
+
+class StageAssigneeDTOFactory(factory.Factory):
+    class Meta:
+        model = StageAssigneeDTO
+
+    db_stage_id = factory.Sequence(lambda n: n + 1)
+    assignee_id = factory.sequence(lambda n: "user_{}".format(n+1))

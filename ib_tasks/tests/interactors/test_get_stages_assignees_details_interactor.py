@@ -26,8 +26,8 @@ class TestGetStagesAssigneesDetailsInteractor:
     @pytest.fixture
     def reset_sequence(self):
         from ib_tasks.tests.factories.storage_dtos import \
-            StageAssigneeDTOFactory
-        StageAssigneeDTOFactory.reset_sequence()
+            TaskStageAssigneeDTOFactory
+        TaskStageAssigneeDTOFactory.reset_sequence()
         from ib_tasks.tests.factories.adapter_dtos import \
             AssigneeDetailsDTOFactory
         AssigneeDetailsDTOFactory.reset_sequence()
@@ -49,15 +49,15 @@ class TestGetStagesAssigneesDetailsInteractor:
     @pytest.fixture
     def stage_assignee_dtos(self, reset_sequence):
         from ib_tasks.tests.factories.storage_dtos import \
-            StageAssigneeDTOFactory
+            TaskStageAssigneeDTOFactory
         stage_assignee_dtos = [
-            StageAssigneeDTOFactory(
+            TaskStageAssigneeDTOFactory(
                 assignee_id="123e4567-e89b-12d3-a456-426614174001"),
-            StageAssigneeDTOFactory(
+            TaskStageAssigneeDTOFactory(
                 assignee_id="123e4567-e89b-12d3-a456-426614174002"),
-            StageAssigneeDTOFactory(
+            TaskStageAssigneeDTOFactory(
                 assignee_id="123e4567-e89b-12d3-a456-426614174003"),
-            StageAssigneeDTOFactory(assignee_id=None)
+            TaskStageAssigneeDTOFactory(assignee_id=None)
         ]
         return stage_assignee_dtos
 

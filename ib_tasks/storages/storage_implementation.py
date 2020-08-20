@@ -19,7 +19,8 @@ from ib_tasks.interactors.storage_interfaces.stage_dtos import \
     StageDisplayValueDTO, StageValueWithTaskIdsDTO, \
     TaskIdWithStageDetailsDTO, \
     TaskStagesDTO, StageValueDTO, TaskTemplateStageDTO, StageRoleDTO, \
-    StageDetailsDTO, TaskStageHavingAssigneeIdDTO, TaskWithDbStageIdDTO
+    StageDetailsDTO, TaskStageHavingAssigneeIdDTO, TaskWithDbStageIdDTO, \
+    StageIdWithValueDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.storage_interface import (
@@ -124,13 +125,16 @@ class StagesStorageImplementation(StageStorageInterface):
                 values_list('stage_id', flat=True))
         return stage_ids
 
-    def get_valid_db_stage_ids_excluding_virtual_stages_in_given_db_stage_ids(
-            self, stage_ids: List[int]) -> List[int]:
+    def get_valid_db_stage_ids_with_stage_value(
+            self, stage_ids: List[int]) -> List[StageIdWithValueDTO]:
 
-        stage_ids = list(
-            Stage.objects.filter(id__in=stage_ids).exclude(value=-1).
-                values_list('id', flat=True))
-        return stage_ids
+        stage_objs = list(
+            Stage.objects.filter(id__in=stage_ids).
+                values('id', 'value'))
+        stage_dtos = [StageIdWithValueDTO(db_stage_id=stage_obj['id'],
+                                          stage_value=stage_obj['value']) for
+                      stage_obj in stage_objs]
+        return stage_dtos
 
     def get_stage_details(self, task_dtos: List[GetTaskDetailsDTO]) -> \
             List[TaskTemplateStageDTO]:
