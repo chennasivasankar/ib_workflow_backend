@@ -10,6 +10,7 @@ from ib_tasks.tests.factories.models import TaskFactory, TaskDueDetailsFactory, 
 @pytest.mark.django_db
 class TestGetTaskDueMissingDetails:
 
+    @freeze_time("2020-08-10 12:30:56")
     @pytest.fixture()
     def populate_data(self):
         TaskFactory.reset_sequence()
