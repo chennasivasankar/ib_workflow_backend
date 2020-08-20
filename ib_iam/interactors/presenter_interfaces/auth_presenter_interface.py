@@ -1,8 +1,26 @@
+import dataclasses
 from abc import abstractmethod, ABC
-from django.http import HttpResponse
-from ib_iam.adapters.auth_service import UserTokensDTO
+from typing import List, Optional
 
+from django.http import HttpResponse
+
+from ib_iam.adapters.auth_service import UserTokensDTO
 from ib_iam.adapters.dtos import UserProfileDTO
+from ib_iam.interactors.dtos.dtos import CompleteUserProfileDTO
+from ib_iam.interactors.storage_interfaces.dtos import \
+    CompanyDTO, TeamDTO, TeamUserIdsDTO, CompanyIdWithEmployeeIdsDTO, \
+    UserRoleDTO
+
+
+@dataclasses.dataclass
+class UserWithExtraDetailsDTO:
+    user_profile_dto: CompleteUserProfileDTO
+    role_dtos: List[UserRoleDTO]
+    company_dto: Optional[CompanyDTO]
+    team_dtos: List[TeamDTO]
+    team_user_ids_dto: List[TeamUserIdsDTO]
+    company_id_with_employee_ids_dto: Optional[CompanyIdWithEmployeeIdsDTO]
+    user_dtos: List[UserProfileDTO]
 
 
 class AuthPresenterInterface(ABC):
@@ -66,8 +84,9 @@ class GetUserProfilePresenterInterface(ABC):
         pass
 
     @abstractmethod
-    def prepare_response_for_user_profile_dto(self,
-                                              user_profile_dto: UserProfileDTO):
+    def prepare_response_for_get_user_profile(
+            self,
+            user_with_extra_details_dto: UserWithExtraDetailsDTO):
         pass
 
 
