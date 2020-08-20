@@ -90,27 +90,6 @@
         "name"
       ]
     },
-    "UserWithExtraFields": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/UserDetails"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "profile_pic_url": {
-              "type": "string"
-            },
-            "is_admin": {
-              "type": "boolean"
-            }
-          },
-          "required": [
-            "is_admin"
-          ]
-        }
-      ]
-    },
     "UserId": {
       "type": "object",
       "properties": {
@@ -377,6 +356,31 @@
             "team_id": {
               "type": "string"
             },
+            "members": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/MemberDetails"
+              }
+            }
+          },
+          "required": [
+            "team_id",
+            "members"
+          ]
+        }
+      ]
+    },
+    "TeamWithMembersAndNoOfMembersDetails": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/TeamNameAndDescription"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "team_id": {
+              "type": "string"
+            },
             "no_of_members": {
               "type": "integer"
             },
@@ -446,7 +450,7 @@
         "teams": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/TeamWithMembersDetails"
+            "$ref": "#/definitions/TeamWithMembersAndNoOfMembersDetails"
           }
         }
       },
@@ -619,6 +623,15 @@
             "properties": {
               "profile_pic_url": {
                 "type": "string"
+              },
+              "cover_page_url": {
+                "type": "string"
+              },
+              "role_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
               }
             }
           }
@@ -1056,7 +1069,32 @@
                   "INVALID_EMAIL",
                   "EMAIL_ALREADY_IN_USE",
                   "INVALID_NAME_LENGTH",
+                  "DUPLICATE_ROLE_IDS",
                   "NAME_SHOULD_NOT_CONTAINS_SPECIAL_CHARACTERS_AND_NUMBERS"
+                ]
+              }
+            },
+            "required": [
+              "res_status"
+            ]
+          }
+        ]
+      }
+    },
+    "NotFoundForUpdateUserProfileResponse": {
+      "description": "bad request for update user profile",
+      "schema": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/CommonHttpExceptionFields"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "res_status": {
+                "type": "string",
+                "enum": [
+                  "INVALID_ROLE_IDS"
                 ]
               }
             },
@@ -1276,7 +1314,65 @@
     "GetUserProfileSuccessResponse": {
       "description": "get user profile success response",
       "schema": {
-        "$ref": "#/definitions/UserWithExtraFields"
+        "allOf": [
+          {
+            "$ref": "#/definitions/UserDetails"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "profile_pic_url": {
+                "type": "string"
+              },
+              "cover_page_url": {
+                "type": "string"
+              },
+              "is_admin": {
+                "type": "boolean"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RoleDetails"
+                }
+              },
+              "company": {
+                "type": "object",
+                "properties": {
+                  "company_id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "logo_url": {
+                    "type": "string"
+                  },
+                  "employees": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/EmployeeDetails"
+                    }
+                  }
+                }
+              },
+              "teams": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/TeamWithMembersDetails"
+                }
+              }
+            },
+            "required": [
+              "is_admin",
+              "roles",
+              "teams"
+            ]
+          }
+        ]
       }
     },
     "GetUserProfileBadRequestResponse": {
@@ -2315,6 +2411,9 @@
           },
           "400": {
             "$ref": "#/responses/BadRequestForUpdateUserProfileResponse"
+          },
+          "404": {
+            "$ref": "#/responses/NotFoundForUpdateUserProfileResponse"
           }
         }
       }

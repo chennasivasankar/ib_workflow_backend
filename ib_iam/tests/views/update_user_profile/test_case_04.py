@@ -19,7 +19,8 @@ class TestCase04UpdateUserProfileAPITestCase(TestUtils):
     def test_case(self, setup, snapshot):
         body = {'name': 'user123',
                 'email': 'jaswanthmamidipudi@gmail.com',
-                'profile_pic_url': 'https://sample.com'}
+                'profile_pic_url': 'https://sample.com',
+                "cover_page_url": ""}
         path_params = {}
         query_params = {}
         headers = {}

@@ -65,24 +65,6 @@ class TestCreateTaskPresenterImplementation:
         snapshot.assert_match(response['res_status'], 'res_status')
         snapshot.assert_match(response['response'], 'response')
 
-    def test_raise_due_date_is_behind_start_date(self, snapshot, presenter):
-        # Arrange
-        expected_start_date = datetime.date(2020, 5, 4)
-        expected_due_date = datetime.date(2020, 4, 4)
-        from ib_tasks.exceptions.datetime_custom_exceptions import \
-            DueDateIsBehindStartDate
-
-        err = DueDateIsBehindStartDate(expected_due_date, expected_start_date)
-
-        # Act
-        response_object = presenter.raise_due_date_is_behind_start_date(err)
-
-        # Assert
-        response = json.loads(response_object.content)
-        snapshot.assert_match(response['http_status_code'], 'http_status_code')
-        snapshot.assert_match(response['res_status'], 'res_status')
-        snapshot.assert_match(response['response'], 'response')
-
     def test_raise_due_time_has_expired_for_today(self, snapshot, presenter):
         # Arrange
         expected_due_time = "05:08:55"

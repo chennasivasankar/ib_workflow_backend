@@ -1,6 +1,5 @@
-from typing import List, Dict, Any, Tuple
+from typing import List
 
-from ib_tasks.adapters.dtos import UserDetailsDTO, AssigneeDetailsDTO
 from ib_tasks.exceptions.action_custom_exceptions import InvalidActionException
 from ib_tasks.exceptions.action_custom_exceptions \
     import InvalidKeyError
@@ -8,6 +7,8 @@ from ib_tasks.exceptions.custom_exceptions import InvalidModulePathFound, \
     InvalidMethodFound
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException, \
     InvalidTaskDisplayId
+from ib_tasks.interactors.get_users_with_less_tasks_for_stages import \
+    GetUsersWithLessTasksInGivenStagesInteractor
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
     GetTaskIdForTaskDisplayIdMixin
 from ib_tasks.interactors.mixins.validation_mixin import ValidationMixin
@@ -17,10 +18,6 @@ from ib_tasks.interactors.presenter_interfaces. \
 from ib_tasks.interactors.stages_dtos import StageWithUserDetailsDTO
 from ib_tasks.interactors.storage_interfaces.action_storage_interface import \
     ActionStorageInterface
-from ib_tasks.interactors.storage_interfaces.stage_dtos import StageRoleDTO, \
-    StageIdWithRoleIdsDTO, StageDetailsDTO, StageValueWithTaskIdsDTO, \
-    TaskWithDbStageIdDTO, \
-    AssigneeCurrentTasksCountDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 from ib_tasks.interactors.storage_interfaces.status_dtos import \
@@ -34,8 +31,7 @@ from ib_tasks.interactors.storage_interfaces.task_storage_interface import \
 
 
 class GetNextStagesRandomAssigneesOfATaskInteractor(
-    ValidationMixin, GetTaskIdForTaskDisplayIdMixin
-):
+    ValidationMixin, GetTaskIdForTaskDisplayIdMixin):
     def __init__(self, storage: StorageInterface,
                  stage_storage: StageStorageInterface,
                  task_storage: TaskStorageInterface,
@@ -87,34 +83,26 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
             self.get_next_stages_of_task(task_id=task_id, status_variable_dtos=
             status_variable_dtos)
         valid_next_stage_ids_of_task = self.stage_storage. \
-            get_valid_next_stage_ids_of_task_by_excluding_virtual_stages(
+            get_stage_ids_excluding_virtual_stages(
             next_stage_ids_of_task)
-        stage_detail_dtos = self.stage_storage. \
-            get_stage_detail_dtos_given_stage_ids(valid_next_stage_ids_of_task)
-        db_stage_ids = self._get_db_stage_ids(stage_detail_dtos)
-        stages_having_user_details_dtos = self. \
-            _all_stages_assigned_with_random_user_details_dtos(
-            db_stage_ids, stage_detail_dtos)
+        stages_having_user_details_dtos = self.\
+            get_users_with_less_tasks_in_given_stages(
+            valid_next_stage_ids_of_task)
+
         return stages_having_user_details_dtos
 
-    @staticmethod
-    def _get_task_ids_group_by_stage_value_dtos(
-            stage_values: List[int], task_id_with_max_stage_value_dtos
-    ) -> List[StageValueWithTaskIdsDTO]:
-        task_ids_group_by_stage_value_dtos = []
-        for each_value in stage_values:
-            list_of_task_ids = []
-            for each_task_id_with_max_stage_value_dto in \
-                    task_id_with_max_stage_value_dtos:
-                if each_task_id_with_max_stage_value_dto.stage_value == \
-                        each_value:
-                    list_of_task_ids.append(
-                        each_task_id_with_max_stage_value_dto.task_id)
-            each_stage_value_with_task_ids_dto = StageValueWithTaskIdsDTO(
-                stage_value=each_value, task_ids=list_of_task_ids)
-            task_ids_group_by_stage_value_dtos.append(
-                each_stage_value_with_task_ids_dto)
-        return task_ids_group_by_stage_value_dtos
+    def get_users_with_less_tasks_in_given_stages(
+            self, stage_ids: List[str]) -> List[StageWithUserDetailsDTO]:
+        get_users_with_less_tasks_interactor = \
+            GetUsersWithLessTasksInGivenStagesInteractor(
+                action_storage=self.action_storage,
+                stage_storage=self.stage_storage,
+                task_stage_storage=self.task_stage_storage)
+        stages_having_user_details_dtos = \
+            get_users_with_less_tasks_interactor. \
+                get_users_with_less_tasks_in_given_stages(
+                stage_ids=stage_ids)
+        return stages_having_user_details_dtos
 
     def get_status_variables_dtos_of_task_based_on_action(self, task_id: int,
                                                           action_id: int) -> \
@@ -132,321 +120,6 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
             task_id, action_id)
         return updated_status_variable_dtos
 
-    def _all_stages_assigned_with_random_user_details_dtos(
-            self, db_stage_ids: List[int],
-            stage_detail_dtos: List[StageDetailsDTO]) -> \
-            List[StageWithUserDetailsDTO]:
-        stage_role_dtos = \
-            self.stage_storage.get_stage_role_dtos_given_db_stage_ids(
-                db_stage_ids)
-        role_ids_group_by_stage_id_dtos = \
-            self._get_role_ids_group_by_stage_id_dtos(
-                stage_ids=db_stage_ids,
-                stage_role_dtos=stage_role_dtos)
-        stage_with_random_user_details_dtos = self. \
-            _get_random_permitted_user_details_dto_of_stage_id(
-            role_ids_group_by_stage_id_dtos, stage_detail_dtos)
-        return stage_with_random_user_details_dtos
-
-    def _get_assignee_with_current_tasks_count_dtos(self) -> List[
-        AssigneeCurrentTasksCountDTO]:
-        tasks_that_are_not_completed_with_stage_dtos = self. \
-            _get_tasks_that_are_not_completed_with_stage_dtos()
-        stage_ids_of_tasks_that_are_not_completed = [
-            each_task_stage_dto.db_stage_id for each_task_stage_dto in
-            tasks_that_are_not_completed_with_stage_dtos
-        ]
-        task_ids_of_tasks_that_are_not_completed = [
-            each_task_stage_dto.task_id for each_task_stage_dto in
-            tasks_that_are_not_completed_with_stage_dtos]
-        assignee_with_current_tasks_count_dtos = self.task_stage_storage. \
-            get_count_of_tasks_assigned_for_each_user(
-            db_stage_ids=stage_ids_of_tasks_that_are_not_completed,
-            task_ids=task_ids_of_tasks_that_are_not_completed)
-        return assignee_with_current_tasks_count_dtos
-
-    @staticmethod
-    def _get_permitted_assignee_with_current_tasks_count_dtos(
-            permitted_user_ids: List[str],
-            assignee_with_current_tasks_count_dtos: List[
-                AssigneeCurrentTasksCountDTO]) -> List[
-        AssigneeCurrentTasksCountDTO]:
-        assignee_ids_with_current_task_count_dtos = [
-            assignee_with_current_tasks_count_dto.assignee_id for
-            assignee_with_current_tasks_count_dto in
-            assignee_with_current_tasks_count_dtos]
-
-        permitted_user_dtos_not_in_current_tasks = [
-            AssigneeCurrentTasksCountDTO(
-                assignee_id=permitted_user_id,
-                tasks_count=0) for permitted_user_id in permitted_user_ids if
-            permitted_user_id not in
-            assignee_ids_with_current_task_count_dtos]
-        assignee_with_all_current_tasks_count_dtos = \
-            assignee_with_current_tasks_count_dtos + permitted_user_dtos_not_in_current_tasks
-        permitted_assignee_with_current_tasks_count_dtos = [
-            assignee_with_current_tasks_count_dto for
-            assignee_with_current_tasks_count_dto in
-            assignee_with_all_current_tasks_count_dtos if
-            assignee_with_current_tasks_count_dto.assignee_id in
-            permitted_user_ids]
-        return permitted_assignee_with_current_tasks_count_dtos
-
-    def _get_random_permitted_user_details_dto_of_stage_id(
-            self, role_ids_group_by_stage_id_dtos: List[StageIdWithRoleIdsDTO],
-            stage_detail_dtos: List[StageDetailsDTO]
-    ) -> List[StageWithUserDetailsDTO]:
-
-        assignee_with_current_tasks_count_dtos = self. \
-            _get_assignee_with_current_tasks_count_dtos()
-
-        stage_with_user_details_dtos = []
-        from ib_tasks.adapters.auth_service import AuthService
-        auth_service_adapter = AuthService()
-        updated_task_count_dtos_for_assignee_having_less_tasks = []
-        for each_dto in role_ids_group_by_stage_id_dtos:
-            permitted_user_details_dtos = auth_service_adapter. \
-                get_permitted_user_details(role_ids=each_dto.role_ids)
-            permitted_user_ids = [
-                each_permitted_user_details_dto.user_id
-                for each_permitted_user_details_dto in
-                permitted_user_details_dtos
-            ]
-            permitted_assignee_with_current_tasks_count_dtos = self. \
-                _get_permitted_assignee_with_current_tasks_count_dtos(
-                permitted_user_ids, assignee_with_current_tasks_count_dtos)
-            if not permitted_assignee_with_current_tasks_count_dtos:
-                permitted_user_details_dto_having_less_tasks = []
-
-            else:
-                assignee_id_with_current_less_tasks, \
-                updated_task_count_dtos_for_assignee_having_less_tasks = self. \
-                    _get_user_having_less_tasks_for_each_stage(
-                    permitted_assignee_with_current_tasks_count_dtos,
-                    updated_task_count_dtos_for_assignee_having_less_tasks)
-                for permitted_user_details_dto in permitted_user_details_dtos:
-                    if assignee_id_with_current_less_tasks == \
-                            permitted_user_details_dto.user_id:
-                        permitted_user_details_dto_having_less_tasks = \
-                            permitted_user_details_dto
-                        break
-
-            stage_with_user_details_dto = self. \
-                _prepare_stage_with_user_details_dto(
-                stage_detail_dtos=stage_detail_dtos,
-                role_ids_group_by_stage_id_dto=each_dto,
-                permitted_user_details_dto_having_less_tasks=
-                permitted_user_details_dto_having_less_tasks)
-            stage_with_user_details_dtos.append(stage_with_user_details_dto)
-        return stage_with_user_details_dtos
-
-    def _get_user_having_less_tasks_for_each_stage(
-            self,
-            permitted_assignee_with_current_tasks_count_dtos: List[
-                AssigneeCurrentTasksCountDTO],
-            updated_task_count_dtos_for_assignee_having_less_tasks:
-            List[AssigneeCurrentTasksCountDTO]) -> \
-            Tuple[str, List[AssigneeCurrentTasksCountDTO]]:
-
-        permitted_assignee_with_current_tasks_count_dtos_dict = [
-            {"assignee_id": assignee_with_current_tasks_count_dto.assignee_id,
-             "tasks_count": assignee_with_current_tasks_count_dto.tasks_count}
-            for assignee_with_current_tasks_count_dto in
-            permitted_assignee_with_current_tasks_count_dtos]
-
-
-        permitted_assignee_with_current_tasks_count_dtos_dict = sorted(
-            permitted_assignee_with_current_tasks_count_dtos_dict,
-            key=lambda i: i['tasks_count'])
-
-        if not updated_task_count_dtos_for_assignee_having_less_tasks:
-            assignee_id_with_current_less_tasks = \
-                permitted_assignee_with_current_tasks_count_dtos_dict[0][
-                    "assignee_id"]
-            updated_task_count_dtos_for_assignee_having_less_tasks = \
-                self._get_updated_task_count_dtos_for_assignee_having_less_tasks(
-                    permitted_assignee_with_current_tasks_count_dtos,
-                    assignee_id_with_current_less_tasks,
-                    updated_task_count_dtos_for_assignee_having_less_tasks)
-            return assignee_id_with_current_less_tasks, \
-                   updated_task_count_dtos_for_assignee_having_less_tasks
-
-        updated_task_count_dto_for_assignee_having_less_tasks_dict = [{
-            "assignee_id": updated_task_count_dto_for_assignee.assignee_id,
-            "tasks_count": updated_task_count_dto_for_assignee.tasks_count}
-            for updated_task_count_dto_for_assignee in
-            updated_task_count_dtos_for_assignee_having_less_tasks]
-        for each_assignee_with_current_tasks_count_dto_dict in \
-                permitted_assignee_with_current_tasks_count_dtos_dict:
-            assignee_id_index = self._get_assignee_id_index(
-                updated_task_count_dto_for_assignee_having_less_tasks_dict,
-                each_assignee_with_current_tasks_count_dto_dict)
-            if assignee_id_index is None:
-                updated_task_count_dto_for_assignee_with_index = self. \
-                    _get_update_task_count_dto_of_assignee(
-                    each_assignee_with_current_tasks_count_dto_dict)
-                updated_task_count_dtos_for_assignee_having_less_tasks.append(
-                    updated_task_count_dto_for_assignee_with_index)
-                assignee_id_with_current_less_tasks = \
-                    each_assignee_with_current_tasks_count_dto_dict[
-                        'assignee_id']
-                return assignee_id_with_current_less_tasks, \
-                       updated_task_count_dtos_for_assignee_having_less_tasks
-            updated_task_count_of_assignee = \
-                updated_task_count_dto_for_assignee_having_less_tasks_dict[
-                    assignee_id_index]['tasks_count']
-            each_assignee_with_current_tasks_count_dto_dict[
-                'tasks_count'] = updated_task_count_of_assignee
-            break
-        permitted_assignee_with_current_tasks_count_dtos_dict = sorted(
-            permitted_assignee_with_current_tasks_count_dtos_dict,
-            key=lambda i: i['tasks_count'])
-        assignee_id_with_current_less_tasks = \
-            permitted_assignee_with_current_tasks_count_dtos_dict[0][
-                'assignee_id']
-        assignee_id_index = self._get_assignee_id_index_given_assignee_id(
-            updated_task_count_dto_for_assignee_having_less_tasks_dict,
-            assignee_id_with_current_less_tasks)
-        updated_task_count_dto_for_assignee_having_less_tasks_dict[
-            assignee_id_index]['tasks_count'] += 1
-        updated_task_count_dtos_for_assignee_having_less_tasks = [
-            AssigneeCurrentTasksCountDTO(
-                assignee_id=updated_task_count_dict_for_assignee[
-                    'assignee_id'],
-                tasks_count=updated_task_count_dict_for_assignee[
-                    'tasks_count']) for updated_task_count_dict_for_assignee in
-            updated_task_count_dto_for_assignee_having_less_tasks_dict]
-
-        return assignee_id_with_current_less_tasks, \
-               updated_task_count_dtos_for_assignee_having_less_tasks
-
-    @staticmethod
-    def _get_update_task_count_dto_of_assignee(
-            each_assignee_with_current_tasks_count_dto_dict):
-        updated_task_count_dto_of_assignee = AssigneeCurrentTasksCountDTO(
-            assignee_id=
-            each_assignee_with_current_tasks_count_dto_dict[
-                'assignee_id'],
-            tasks_count=
-            each_assignee_with_current_tasks_count_dto_dict[
-                'tasks_count'] + 1)
-        return updated_task_count_dto_of_assignee
-
-    @staticmethod
-    def _get_updated_task_count_dtos_for_assignee_having_less_tasks(
-            permitted_assignee_with_current_tasks_count_dtos,
-            assignee_id_with_current_less_tasks,
-            updated_task_count_dtos_for_assignee_having_less_tasks):
-        for assignee_with_tasks_count_dto in \
-                permitted_assignee_with_current_tasks_count_dtos:
-            if assignee_with_tasks_count_dto.assignee_id == \
-                    assignee_id_with_current_less_tasks:
-                updated_task_count_dtos_for_assignee_having_less_tasks. \
-                    append(AssigneeCurrentTasksCountDTO(
-                    assignee_id=assignee_id_with_current_less_tasks,
-                    tasks_count=assignee_with_tasks_count_dto.
-                                    tasks_count + 1))
-        return updated_task_count_dtos_for_assignee_having_less_tasks
-
-    @staticmethod
-    def _get_assignee_id_index_given_assignee_id(
-            updated_task_count_dto_for_assignee_having_less_tasks_dict,
-            assignee_id_with_current_less_tasks) -> int:
-        assignee_id_index = next(
-            (index for (index, d) in enumerate(
-                updated_task_count_dto_for_assignee_having_less_tasks_dict)
-             if d["assignee_id"] == assignee_id_with_current_less_tasks),
-            None)
-        return assignee_id_index
-
-    @staticmethod
-    def _get_assignee_id_index(
-            updated_task_count_dto_for_assignee_having_less_tasks_dict,
-            assignee_with_current_tasks_count_dto_dict) -> int:
-        assignee_id_index = next(
-            (index for (index, d) in enumerate(
-                updated_task_count_dto_for_assignee_having_less_tasks_dict)
-             if d["assignee_id"] ==
-             assignee_with_current_tasks_count_dto_dict[
-                 'assignee_id']), None)
-        return assignee_id_index
-
-    def _get_tasks_that_are_not_completed_with_stage_dtos(
-            self) -> List[TaskWithDbStageIdDTO]:
-        task_with_stage_id_dtos = self. \
-            stage_storage. \
-            get_current_stages_of_all_tasks()
-
-        stage_ids_of_tasks = [
-            task_with_stage_id_dto.db_stage_id
-            for task_with_stage_id_dto in task_with_stage_id_dtos
-        ]
-        stage_ids_having_actions = self.action_storage.get_stage_ids_having_actions(
-            db_stage_ids=stage_ids_of_tasks)
-        stage_ids_having_actions = list(set(stage_ids_having_actions))
-        tasks_that_are_not_completed_with_stage_dtos = []
-        for each_task_with_stage_id_dto in task_with_stage_id_dtos:
-            if each_task_with_stage_id_dto.db_stage_id in stage_ids_having_actions:
-                tasks_that_are_not_completed_with_stage_dtos.append(
-                    each_task_with_stage_id_dto)
-        return tasks_that_are_not_completed_with_stage_dtos
-
-    @staticmethod
-    def _prepare_stage_with_user_details_dto(
-            stage_detail_dtos: List[StageDetailsDTO],
-            role_ids_group_by_stage_id_dto: StageIdWithRoleIdsDTO,
-            permitted_user_details_dto_having_less_tasks: UserDetailsDTO) -> \
-            StageWithUserDetailsDTO:
-        for each_stage_detail_dto in stage_detail_dtos:
-            if each_stage_detail_dto.db_stage_id == \
-                    role_ids_group_by_stage_id_dto.db_stage_id:
-                name = each_stage_detail_dto.name
-        assignee_details_dto = None
-        if permitted_user_details_dto_having_less_tasks:
-            assignee_details_dto = AssigneeDetailsDTO(
-                assignee_id=permitted_user_details_dto_having_less_tasks.user_id,
-                name=permitted_user_details_dto_having_less_tasks.user_name,
-                profile_pic_url=permitted_user_details_dto_having_less_tasks.profile_pic_url)
-        stage_with_user_details_dto = StageWithUserDetailsDTO(
-            db_stage_id=role_ids_group_by_stage_id_dto.db_stage_id,
-            stage_display_name=name,
-            assignee_details_dto=assignee_details_dto
-        )
-        return stage_with_user_details_dto
-
-    def _get_role_ids_group_by_stage_id_dtos(
-            self, stage_ids: List[int], stage_role_dtos: List[StageRoleDTO]) \
-            -> List[StageIdWithRoleIdsDTO]:
-        role_ids_group_by_stage_id_dtos = []
-        for each_stage_id in stage_ids:
-            list_of_role_ids = []
-            role_id = self._get_matched_role_id_from_stage_role_dtos(
-                stage_role_dtos=stage_role_dtos, stage_id=each_stage_id)
-            list_of_role_ids.append(role_id)
-            each_stage_id_with_role_ids_dto = \
-                StageIdWithRoleIdsDTO(db_stage_id=each_stage_id,
-                                      role_ids=list_of_role_ids)
-            role_ids_group_by_stage_id_dtos.append(
-                each_stage_id_with_role_ids_dto)
-        return role_ids_group_by_stage_id_dtos
-
-    @staticmethod
-    def _get_matched_role_id_from_stage_role_dtos(
-            stage_role_dtos: List[StageRoleDTO], stage_id: int):
-        for each_stage_role_dto in stage_role_dtos:
-            if each_stage_role_dto.db_stage_id == stage_id:
-                return each_stage_role_dto.role_id
-        return None
-
-    @staticmethod
-    def _get_db_stage_ids(
-            stage_detail_dtos: List[StageDetailsDTO]) -> List[int]:
-        db_stage_ids = [
-            each_stage_detail_dto.db_stage_id
-            for each_stage_detail_dto in stage_detail_dtos
-        ]
-        return db_stage_ids
-
     def get_next_stages_of_task(self, task_id: int,
                                 status_variable_dtos) -> List[str]:
         from ib_tasks.interactors. \
@@ -459,104 +132,3 @@ class GetNextStagesRandomAssigneesOfATaskInteractor(
             get_task_stage_logic_satisfied_next_stages(
             task_id=task_id, status_variable_dtos=status_variable_dtos)
         return next_stage_ids
-
-    @staticmethod
-    def _get_updated_status_variable_dto(
-            status_dict: Dict[str,
-                              str],
-            status_variables_dto: List[StatusVariableDTO]
-    ) -> List[StatusVariableDTO]:
-        lst = []
-        for status_dto in status_variables_dto:
-            status_dto.value = status_dict[status_dto.status_variable]
-            lst.append(status_dto)
-        return lst
-
-    def _get_updated_task_dict(
-            self, task_dict: Dict[str, Any], action_id: int, task_id: int) -> \
-            Dict[str, Any]:
-        method_object = \
-            self._get_method_object_for_condition(action_id=action_id)
-        global_constants = \
-            self._get_global_constants_to_task(task_id=task_id)
-        stage_value_dict = \
-            self._get_stage_value_dict_to_task(task_id=task_id)
-        from ib_tasks.exceptions.action_custom_exceptions \
-            import InvalidKeyError, InvalidCustomLogicException
-        try:
-            task_dict = method_object(task_dict=task_dict,
-                                      global_constants=global_constants,
-                                      stage_value_dict=stage_value_dict)
-        except KeyError:
-            raise InvalidKeyError()
-        except:
-            raise InvalidCustomLogicException()
-
-        return task_dict
-
-    def _get_stage_value_dict_to_task(self, task_id: int) -> Dict[str, int]:
-
-        task_stage_dtos = \
-            self.storage.get_stage_dtos_to_task(task_id=task_id)
-
-        stage_value_dict = {}
-        for task_stage_dto in task_stage_dtos:
-            stage_id = task_stage_dto.stage_id
-            stage_value_dict[stage_id] = task_stage_dto.value
-        return stage_value_dict
-
-    def _get_global_constants_to_task(self, task_id: int) -> Dict[str, Any]:
-
-        global_constants_dto = \
-            self.storage.get_global_constants_to_task(task_id=task_id)
-
-        global_constants = {}
-        for global_constant_dto in global_constants_dto:
-            constant_name = global_constant_dto.constant_name
-            global_constants[constant_name] = global_constant_dto.value
-        return global_constants
-
-    def _get_method_object_for_condition(self, action_id: int):
-        path_name = self.storage.get_path_name_to_action(action_id=action_id)
-        path, method = path_name.rsplit(".", 1)
-        from importlib import import_module
-        try:
-            module = import_module(path)
-        except ModuleNotFoundError:
-            raise InvalidModulePathFound(path_name=path_name)
-        try:
-            method_object = getattr(module, method)
-        except AttributeError:
-            raise InvalidMethodFound(method_name=method)
-        return method_object
-
-    @staticmethod
-    def _get_task_dict(status_variables_dto: List[StatusVariableDTO]):
-        task_dict = {}
-        statuses_dict = {}
-        for status_dto in status_variables_dto:
-            statuses_dict[status_dto.status_variable] = status_dto.value
-        task_dict["status_variables"] = statuses_dict
-        return task_dict
-
-    def _get_task_status_variables_dtos(
-            self, task_id: int) -> List[StatusVariableDTO]:
-        status_variable_dtos = \
-            self.storage.get_status_variables_to_task(task_id=task_id)
-        return status_variable_dtos
-
-    def _validate_task_id(self, task_id: int):
-        is_task_exists = self.task_storage. \
-            check_is_task_exists(
-            task_id=task_id)
-
-        is_task_does_not_exists = not is_task_exists
-        if is_task_does_not_exists:
-            raise InvalidTaskIdException(task_id=task_id)
-
-    def _validate_action_id(self, action_id: int):
-        valid_action = self.action_storage.validate_action(action_id=action_id)
-        is_invalid_action = not valid_action
-        if is_invalid_action:
-            raise InvalidActionException(action_id=action_id)
-

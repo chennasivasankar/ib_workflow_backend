@@ -2,12 +2,8 @@ from unittest.mock import create_autospec, Mock
 
 import pytest
 
-from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
 from ib_tasks.interactors.user_action_on_task_interactor \
     import UserActionOnTaskInteractor
-from ib_tasks.tests.common_fixtures.interactors import \
-    prepare_task_gof_and_fields_dto, \
-    prepare_call_action_logic_update_stages_mock
 from ib_tasks.tests.factories.interactor_dtos import \
     TaskCurrentStageDetailsDTOFactory
 
@@ -170,7 +166,8 @@ class TestUserActionOnTaskInteractor:
 
     @staticmethod
     def prepare_task_complete_details(task_id, assignees,
-                                      task_boards_details):
+                                      task_boards_details,
+                                      task_display_id):
         from ib_tasks.interactors.presenter_interfaces.dtos \
             import TaskCompleteDetailsDTO
         from ib_tasks.tests.factories.storage_dtos \
@@ -182,6 +179,7 @@ class TestUserActionOnTaskInteractor:
         from ib_tasks.interactors.stage_dtos import TaskStageDTO
         return TaskCompleteDetailsDTO(
             task_id=task_id,
+            task_display_id='',
             task_boards_details=task_boards_details,
             actions_dto=[ActionDTOFactory()],
             field_dtos=[FieldDisplayDTOFactory()],
@@ -276,7 +274,7 @@ class TestUserActionOnTaskInteractor:
             storage=storage, gof_storage=gof_storage,
             field_storage=field_storage, stage_storage=stage_storage,
             task_storage=task_storage_mock, action_storage=action_storage_mock,
-            elasticsearch_storage=elasticsearch_storage_mock,
+            elasticsearch_storage=elasticsearch_storage,
             task_stage_storage=task_stage_storage_mock
 
         )
@@ -561,7 +559,7 @@ class TestUserActionOnTaskInteractor:
         task_stage_details_dto = prepare_fields_and_actions_dto(mocker)
         task_complete_details = self.prepare_task_complete_details(
             task_id=task_id, task_boards_details=task_board_details,
-            assignees=assignees
+            assignees=assignees, task_display_id=task_display_id
         )
         stage_ids = ['stage_1', 'stage_2']
         stage_mock.return_value = stage_ids
@@ -580,8 +578,7 @@ class TestUserActionOnTaskInteractor:
             .assert_called_once_with(stage_ids=stage_ids, task_id=task_id)
         task_stage_details_dto.called_once()
         validation_mock_obj.called_once()
-        presenter.get_response_for_user_action_on_task \
-            .assert_called_once_with(
+        presenter.get_response_for_user_action_on_task.assert_called_once_with(
             task_complete_details_dto=task_complete_details,
             task_current_stage_details_dto=task_current_stages_details
         )

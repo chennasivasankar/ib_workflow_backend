@@ -7,7 +7,41 @@ RESPONSE_200_JSON = """
     "name": "string",
     "email": "string",
     "profile_pic_url": "string",
-    "is_admin": true
+    "cover_page_url": "string",
+    "is_admin": true,
+    "roles": [
+        {
+            "role_id": "string",
+            "role_name": "string"
+        }
+    ],
+    "company": {
+        "company_id": "string",
+        "name": "string",
+        "description": "string",
+        "logo_url": "string",
+        "employees": [
+            {
+                "employee_id": "string",
+                "name": "string",
+                "profile_pic_url": "string"
+            }
+        ]
+    },
+    "teams": [
+        {
+            "name": "string",
+            "description": "string",
+            "team_id": "string",
+            "members": [
+                {
+                    "member_id": "string",
+                    "name": "string",
+                    "profile_pic_url": "string"
+                }
+            ]
+        }
+    ]
 }
 """
 
