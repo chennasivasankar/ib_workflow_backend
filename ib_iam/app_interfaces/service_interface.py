@@ -3,8 +3,8 @@ from typing import List
 from ib_iam.adapters.dtos import UserProfileDTO, SearchQueryWithPaginationDTO
 from ib_iam.app_interfaces.dtos import SearchableDTO
 from ib_iam.interactors.dtos.dtos import UserIdWithRoleIdsDTO
-from ib_iam.interactors.storage_interfaces.dtos import UserIdAndNameDTO, \
-    SearchableDetailsDTO
+from ib_iam.interactors.storage_interfaces.dtos import UserIdAndNameDTO
+from ib_tasks.adapters.dtos import SearchableDetailsDTO
 
 
 class ServiceInterface:

@@ -1687,7 +1687,8 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "INVALID_TASK_ID"
+              "INVALID_TASK_ID",
+              "SEARCHABLE_RECORDS_NOT_FOUND"
             ]
           }
         }

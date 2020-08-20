@@ -3,7 +3,9 @@ from dataclasses import dataclass
 from typing import List
 
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException, \
-    InvalidStageIdsForTask, InvalidTaskDisplayId
+    InvalidStageIdsForTask, InvalidTaskDisplayId, InvalidCityIdsException, \
+    InvalidStateIdsException, InvalidCountryIdsException, \
+    InvalidUserIdsException
 from ib_tasks.interactors.stages_dtos import StageAssigneeDetailsDTO
 from ib_tasks.interactors.storage_interfaces.get_task_dtos \
     import TaskDetailsDTO
@@ -38,4 +40,20 @@ class GetTaskPresenterInterface(abc.ABC):
 
     @abc.abstractmethod
     def raise_user_permission_denied(self):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_city_ids(self, err: InvalidCityIdsException):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_state_ids(self, err: InvalidStateIdsException):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_country_ids(self, err: InvalidCountryIdsException):
+        pass
+
+    @abc.abstractmethod
+    def raise_invalid_user_ids(self, err: InvalidUserIdsException):
         pass

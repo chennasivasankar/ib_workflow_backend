@@ -305,3 +305,12 @@ USER_PERMISSION_DENIED = (
     "user doesn't have permission",
     "USER_PERMISSION_DENIED"
 )
+
+SEARCHABLE_RECORDS_NOT_FOUND = (
+    "Something went wrong contact Admin",
+    "SEARCHABLE_RECORDS_NOT_FOUND"
+)
+
+
+
+

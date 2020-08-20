@@ -9,6 +9,15 @@ from ib_iam.interactors.storage_interfaces.searchable_storage_interface \
 
 class SearchableStorageImplementation(SearchableStorageInterface):
 
+    def get_valid_user_ids(self, ids: List[str]) -> List[str]:
+        from ib_iam.models import UserDetails
+        valid_user_ids = list(
+            UserDetails.objects.filter(
+                user_id__in=ids
+            ).values_list('user_id', flat=True)
+        )
+        return valid_user_ids
+
     def get_searchable_type_city_details_dtos(
             self, ids: List[int]
     ) -> List[SearchableDetailsDTO]:

@@ -4,7 +4,9 @@ from ib_tasks.adapters.dtos import SearchableDetailsDTO
 from ib_tasks.constants.enum import Searchable
 from ib_tasks.exceptions.task_custom_exceptions \
     import InvalidTaskIdException, InvalidStageIdsForTask, \
-    InvalidTaskDisplayId, UserPermissionDenied
+    InvalidTaskDisplayId, UserPermissionDenied, InvalidCityIdsException, \
+    InvalidStateIdsException, InvalidCountryIdsException, \
+    InvalidUserIdsException
 from ib_tasks.interactors.get_task_base_interactor \
     import GetTaskBaseInteractor
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin import \
@@ -75,6 +77,18 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         except UserPermissionDenied:
             response = presenter.raise_user_permission_denied()
             return response
+        except InvalidCityIdsException as err:
+            response = presenter.raise_invalid_city_ids(err)
+            return response
+        except InvalidStateIdsException as err:
+            response = presenter.raise_invalid_state_ids(err)
+            return response
+        except InvalidCountryIdsException as err:
+            response = presenter.raise_invalid_country_ids(err)
+            return response
+        except InvalidUserIdsException as err:
+            response = presenter.raise_invalid_user_ids(err)
+            return response
 
     def get_task_details_response(
             self, user_id: str, task_display_id: str,
@@ -117,8 +131,8 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         is_user_has_permission = \
             self.task_stage_storage \
                 .is_user_has_permission_for_at_least_one_stage(
-                stage_ids=stage_ids, user_roles=user_roles
-            )
+                    stage_ids=stage_ids, user_roles=user_roles
+                )
         is_user_permission_denied = not is_user_has_permission
         if is_user_permission_denied:
             raise UserPermissionDenied()
@@ -182,9 +196,13 @@ class GetTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
             permission_task_gof_field_dto.field_id
             for permission_task_gof_field_dto in permission_task_gof_field_dtos
         ]
+        task_gof_ids = [
+            permission_task_gof_field_dto.task_gof_id
+            for permission_task_gof_field_dto in permission_task_gof_field_dtos
+        ]
         field_searchable_dtos = \
             self.task_crud_storage.get_field_searchable_dtos(
-                field_ids)
+                field_ids, task_gof_ids)
         is_field_searchable_dtos_empty = not field_searchable_dtos
         if is_field_searchable_dtos_empty:
             return permission_task_gof_field_dtos

@@ -504,8 +504,10 @@ class TestCreateOrUpdateTaskStorageImplementation:
             "India", "5"
         ]
         FieldFactory()
+        task_gof_objs = TaskGoFFactory.create_batch(size=2)
         TaskGoFFieldFactory.create_batch(
             size=4, field=factory.Iterator(field_objs),
+            task_gof=factory.Iterator(task_gof_objs),
             field_response=factory.Iterator(field_response)
         )
         TaskGoFFieldFactory()
@@ -513,9 +515,15 @@ class TestCreateOrUpdateTaskStorageImplementation:
             field_obj.field_id
             for field_obj in field_objs
         ]
+        task_gof_ids = [
+            task_gof_obj.id
+            for task_gof_obj in task_gof_objs
+        ]
 
         # Act
-        field_searchable_dtos = storage.get_field_searchable_dtos(field_ids)
+        field_searchable_dtos = storage.get_field_searchable_dtos(
+            field_ids, task_gof_ids
+        )
 
         # Assert
         snapshot.assert_match(

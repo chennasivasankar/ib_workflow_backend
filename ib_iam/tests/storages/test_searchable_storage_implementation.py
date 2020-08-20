@@ -1,4 +1,3 @@
-import factory
 import pytest
 
 from ib_iam.tests.factories.models import CityFactory, StateFactory, \
@@ -71,29 +70,17 @@ class TestSearchableStorageImplementation:
             value=searchable_type_country_details_dtos
         )
 
-    def test_given_user_ids_returns_get_searchable_type_user_details_dtos(
-            self, storage, snapshot
-    ):
+    def test_given_user_ids_returns_valid_user_ids(self, storage, snapshot):
         # Arrange
+        user_objs = UserDetailsFactory.create_batch(size=10)
         user_ids = [
-            "123e4567-e89b-12d3-a456-426614174000",
-            "123e4567-e89b-12d3-a456-426614174001",
-            "123e4567-e89b-12d3-a456-426614174002",
-            "123e4567-e89b-12d3-a456-426614174003"
+            user_objs[0], user_objs[1],
+            user_objs[2], "user100", "user200",
+            "user400", "user500"
         ]
-        names = ["name1", "name2", "name3", "name4"]
-        UserDetailsFactory.create_batch(
-            size=4,
-            user_id=factory.Iterator(user_ids),
-            name=factory.Iterator(names)
-        )
 
         # Act
-        searchable_type_user_details_dtos = \
-            storage.get_searchable_type_user_details_dtos(ids=user_ids)
+        valid_user_ids = storage.get_valid_user_ids(ids=user_ids)
 
         # Assert
-        snapshot.assert_match(
-            name="searchable_type_user_details_dtos",
-            value=searchable_type_user_details_dtos
-        )
+        snapshot.assert_match(name=valid_user_ids, value=valid_user_ids)

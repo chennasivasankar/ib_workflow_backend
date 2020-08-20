@@ -17,3 +17,15 @@ def searchable_details_dtos_mock(mocker):
     ]
     mock.return_value = searchable_details_dtos
     return mock
+
+
+def searchable_details_dtos_invalid_city_ids_mock(mocker):
+    path = "ib_tasks.adapters.searchable_details_service" \
+           ".SearchableDetailsService.get_searchable_details_dtos"
+    mock = mocker.patch(path)
+    from ib_tasks.exceptions.task_custom_exceptions import \
+        InvalidCityIdsException
+    invalid_city_ids = [100, 110]
+    exception_object = InvalidCityIdsException(invalid_city_ids)
+    mock.side_effect = exception_object
+    return mock

@@ -2,7 +2,7 @@
 # snapshottest: v1 - https://goo.gl/zC4yUc
 from __future__ import unicode_literals
 
-from snapshottest import Snapshot, GenericRepr
+from snapshottest import GenericRepr, Snapshot
 
 
 snapshots = Snapshot()
@@ -35,4 +35,7 @@ snapshots['TestSearchableStorageImplementation.test_given_user_ids_returns_get_s
     GenericRepr("SearchableDetailsDTO(search_type='USER', id='123e4567-e89b-12d3-a456-426614174001', value='name2')"),
     GenericRepr("SearchableDetailsDTO(search_type='USER', id='123e4567-e89b-12d3-a456-426614174002', value='name3')"),
     GenericRepr("SearchableDetailsDTO(search_type='USER', id='123e4567-e89b-12d3-a456-426614174003', value='name4')")
+]
+
+snapshots['TestSearchableStorageImplementation.test_given_user_ids_returns_valid_user_ids 1'] = [
 ]

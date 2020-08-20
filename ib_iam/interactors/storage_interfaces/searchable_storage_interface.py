@@ -23,3 +23,7 @@ class SearchableStorageInterface(abc.ABC):
             self, ids: List[int]
     ) -> List[SearchableDetailsDTO]:
         pass
+
+    @abc.abstractmethod
+    def get_valid_user_ids(self, ids: List[str]) -> List[str]:
+        pass

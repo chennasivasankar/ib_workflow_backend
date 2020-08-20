@@ -348,12 +348,13 @@ class CreateOrUpdateTaskStorageImplementation(
         pass
 
     def get_field_searchable_dtos(
-            self, field_ids: List[str]
+            self, field_ids: List[str], task_gof_ids: List[int],
     ) -> List[FieldSearchableDTO]:
 
         from ib_tasks.constants.enum import FieldTypes
         field_searchable_values = TaskGoFField.objects.filter(
             field_id__in=field_ids,
+            task_gof_id__in=task_gof_ids,
             field__field_type=FieldTypes.SEARCHABLE.value
         ).values_list('field_id', 'field__field_values', 'field_response')
 

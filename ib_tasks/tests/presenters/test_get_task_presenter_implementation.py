@@ -198,7 +198,6 @@ class TestGetTaskPresenterImplementation:
         snapshot.assert_match(name="exception_object",
                               value=response_object.content)
 
-
     def test_raise_exception_for_invalid_task_display_id(
             self, presenter, snapshot
     ):
@@ -230,6 +229,81 @@ class TestGetTaskPresenterImplementation:
         # Assert
         snapshot.assert_match(name="exception_object",
                               value=response_object.content)
+
+    def test_raise_exception_for_invalid_city_ids(
+            self, presenter, snapshot
+    ):
+        # Arrange
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            InvalidCityIdsException
+        city_ids = [100, 110]
+        err = InvalidCityIdsException(city_ids)
+
+        # Act
+        response_object = presenter.raise_invalid_city_ids(err)
+
+        # Assert
+        snapshot.assert_match(
+            name="exception_object",
+            value=response_object.content
+        )
+
+    def test_raise_exception_for_invalid_state_ids(
+            self, presenter, snapshot
+    ):
+        # Arrange
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            InvalidStateIdsException
+        state_ids = [100, 110]
+        err = InvalidStateIdsException(state_ids)
+
+        # Act
+        response_object = presenter.raise_invalid_state_ids(err)
+
+        # Assert
+        snapshot.assert_match(
+            name="exception_object",
+            value=response_object.content
+        )
+
+    def test_raise_exception_for_invalid_country_ids(
+            self, presenter, snapshot
+    ):
+        # Arrange
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            InvalidCountryIdsException
+        country_ids = [10, 11]
+        err = InvalidCountryIdsException(country_ids)
+
+        # Act
+        response_object = presenter.raise_invalid_country_ids(err)
+
+        # Assert
+        snapshot.assert_match(
+            name="exception_object",
+            value=response_object.content
+        )
+
+    def test_raise_exception_for_invalid_user_ids(
+            self, presenter, snapshot
+    ):
+        # Arrange
+        from ib_tasks.exceptions.task_custom_exceptions import \
+            InvalidUserIdsException
+        user_ids = [
+            "123e4567-e89b-12d3-a456-426614174000",
+            "123e4567-e89b-12d3-a456-426614174001"
+        ]
+        err = InvalidUserIdsException(user_ids)
+
+        # Act
+        response_object = presenter.raise_invalid_user_ids(err)
+
+        # Assert
+        snapshot.assert_match(
+            name="exception_object",
+            value=response_object.content
+        )
 
     def test_given_task_complete_details_dto_returns_task_details(
             self, presenter, task_complete_details_dto, snapshot
