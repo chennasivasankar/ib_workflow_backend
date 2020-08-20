@@ -2449,12 +2449,6 @@
             "$ref": "#/parameters/SignUpParameters"
           }
         ],
-        "security": [
-          {
-            "oauth": [
-            ]
-          }
-        ],
         "responses": {
           "200": {
             "description": "Success Response"
@@ -2473,12 +2467,6 @@
         "parameters": [
           {
             "$ref": "#/parameters/EmailParameter"
-          }
-        ],
-        "security": [
-          {
-            "oauth": [
-            ]
           }
         ],
         "responses": {

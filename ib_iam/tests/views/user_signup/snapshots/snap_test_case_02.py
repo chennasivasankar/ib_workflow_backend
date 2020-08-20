@@ -7,13 +7,13 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase02UserSignupAPITestCase.test_with_active_email_then_raise_exception status_code'] = '400'
-
-snapshots['TestCase02UserSignupAPITestCase.test_with_active_email_then_raise_exception body'] = {
-    'http_status_code': 400,
-    'res_status': 'ACCOUNT_ALREADY_EXISTS',
-    'response': 'The given email has already account, try with another email'
-}
+# snapshots['TestCase02UserSignupAPITestCase.test_with_active_email_then_raise_exception status_code'] = '400'
+#
+# snapshots['TestCase02UserSignupAPITestCase.test_with_active_email_then_raise_exception body'] = {
+#     'http_status_code': 400,
+#     'res_status': 'ACCOUNT_ALREADY_EXISTS',
+#     'response': 'The given email has already account, try with another email'
+# }
 
 snapshots['TestCase02UserSignupAPITestCase.test_with_invalid_email status_code'] = '400'
 

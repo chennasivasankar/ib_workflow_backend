@@ -353,3 +353,5 @@ RESET_PASSWORD_LINK = \
 USER_VERIFICATION_EMAIL_LINK = os.environ.get(
     "USER_VERIFICATION_EMAIL_LINK",
     "https://ib-workflows-web-beta.apigateway.in/verify-email?token=")
+
+DEFAULT_SENDER_NAME = str(os.environ.get("DEFAULT_SENDER_NAME", DEFAULT_SENDER_EMAIL))

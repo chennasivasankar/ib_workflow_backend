@@ -53,17 +53,17 @@ class SignupInteractor(ValidationMixin):
             email=email, password=password, name=name)
         from ib_iam.adapters.service_adapter import get_service_adapter
         adapter = get_service_adapter()
-        try:
-            user_id = adapter.user_service.get_user_id_for_given_email(
-                email=email)
-            is_active_user_account = adapter.user_service.is_active_user_account(
-                email=email)
-            if not is_active_user_account:
-                adapter.user_service.activate_user_account(user_id=user_id)
-            else:
-                raise AccountWithThisEmailAlreadyExistsException
-        except UserAccountDoesNotExist:
-            user_id = self._create_user_account(email=email, password=password,
+        # try:
+        #     user_id = adapter.user_service.get_user_id_for_given_email(
+        #         email=email)
+        #     is_active_user_account = adapter.user_service.is_active_user_account(
+        #         email=email)
+        #     if not is_active_user_account:
+        #         adapter.user_service.activate_user_account(user_id=user_id)
+        #     else:
+        #         raise AccountWithThisEmailAlreadyExistsException
+        # except UserAccountDoesNotExist:
+        user_id = self._create_user_account(email=email, password=password,
                                                 name=name)
         from ib_iam.adapters.dtos import UserProfileDTO
         user_profile_dto = UserProfileDTO(

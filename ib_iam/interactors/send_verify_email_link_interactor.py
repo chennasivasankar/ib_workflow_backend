@@ -48,6 +48,7 @@ class SendVerifyEmailLinkInteractor:
         )
         access_token = auth_token_dto.access_token
         verification_url = verification_link + str(access_token)
+        print(verification_url, "sample verification url")
         from ib_iam.services.email_service_implementation import \
             EmailSenderImpl
         email_sender = EmailSenderImpl(
