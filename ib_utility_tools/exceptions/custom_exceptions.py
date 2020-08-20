@@ -20,3 +20,7 @@ class DuplicateChecklistItemIds(Exception):
 
 class InvalidChecklistItemIds(Exception):
     pass
+
+
+class InvalidEntities(Exception):
+    pass

@@ -84,9 +84,6 @@ class TasksStorageImplementation(TaskStorageInterface):
         )
         return existing_field_ids
 
-    def get_existing_template_ids(self):
-        pass
-
     def create_status_for_tasks(
             self, create_status_for_tasks: List[TaskTemplateStatusDTO]):
         list_of_status_tasks = [

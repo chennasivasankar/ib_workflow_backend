@@ -2,7 +2,7 @@
 # snapshottest: v1 - https://goo.gl/zC4yUc
 from __future__ import unicode_literals
 
-from snapshottest import GenericRepr, Snapshot
+from snapshottest import Snapshot
 
 
 snapshots = Snapshot()
@@ -14,4 +14,4 @@ snapshots['TestCase01StartTimerAPITestCase.test_case body'] = {
     'is_running': True
 }
 
-snapshots['TestCase01StartTimerAPITestCase.test_case start_datetime'] = GenericRepr("FakeDatetime(2020, 8, 7, 18, 0)")
+snapshots['TestCase01StartTimerAPITestCase.test_case start_datetime'] = '08/07/2020, 18:00:00'
