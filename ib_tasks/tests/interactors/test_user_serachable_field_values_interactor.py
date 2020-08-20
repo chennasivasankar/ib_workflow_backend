@@ -21,7 +21,7 @@ class TestSearchableFieldValuesInteractor:
         storage = create_autospec(ElasticSearchStorageInterface)
         return storage
 
-    @pytest.mark.parametrize("limit", [0, -1])
+    @pytest.mark.parametrize("limit", [-1, -2])
     def test_given_limit_values_less_than_one_raise_exception(
             self, limit, presenter_mock, elastic_storage_mock):
         # Arrange
