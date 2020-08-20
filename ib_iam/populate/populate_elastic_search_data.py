@@ -26,7 +26,6 @@ def populate_existing_users_to_elastic_search_database():
         )
 
 
-
 def populate_elastic_search_country_data():
 
     country_dtos = [

@@ -401,6 +401,12 @@ class StagesStorageImplementation(StageStorageInterface):
         permitted_user_role_ids_list = list(permitted_user_role_ids_queryset)
         return permitted_user_role_ids_list
 
+    def get_stage_ids_having_actions(self) -> List[str]:
+        stage_ids = StageAction.objects.values_list(
+            'stage__stage_id', flat=True
+        ).distinct()
+        return list(stage_ids)
+
 
 class StorageImplementation(StorageInterface):
 

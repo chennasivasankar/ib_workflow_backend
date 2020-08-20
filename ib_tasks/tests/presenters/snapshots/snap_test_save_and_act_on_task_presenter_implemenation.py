@@ -268,12 +268,12 @@ snapshots['TestSaveAndActOnATaskPresenterImplementation.test_raise_stage_ids_wit
 snapshots['TestSaveAndActOnATaskPresenterImplementation.test_get_save_and_act_on_task_response task_current_stage_details'] = {
     'stages': [
         {
-            'stage_display_name': 'stage_display_name_2',
-            'stage_id': 'stage_2'
+            'stage_display_name': 'stage_display_name_4',
+            'stage_id': 'stage_4'
         },
         {
-            'stage_display_name': 'stage_display_name_3',
-            'stage_id': 'stage_3'
+            'stage_display_name': 'stage_display_name_5',
+            'stage_id': 'stage_5'
         }
     ],
     'task_id': 'task_display_0',

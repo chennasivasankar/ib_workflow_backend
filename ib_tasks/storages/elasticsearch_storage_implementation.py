@@ -65,12 +65,14 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
 
     def filter_tasks(
             self, filter_dtos: List[ApplyFilterDTO], offset: int,
-            limit: int) -> Tuple[List[int], int]:
+            stage_ids: List[str], limit: int) -> Tuple[List[int], int]:
         from elasticsearch_dsl import connections
         from django.conf import settings
         connections.create_connection(hosts=[settings.ELASTICSEARCH_ENDPOINT],
                                       timeout=20)
-        task_objects = self._get_search_task_objects(filter_dtos)
+        search = self._get_search_task_objects(filter_dtos)
+
+        task_objects = search.filter('terms', stages__stage_id__keyword=stage_ids)
 
         total_tasks = task_objects.count()
         return [
