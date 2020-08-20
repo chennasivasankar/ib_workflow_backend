@@ -40,3 +40,7 @@ class TeamMemberLevelStorageInterface(ABC):
                 ImmediateSuperiorUserIdWithUserIdsDTO]
     ):
         pass
+
+    @abstractmethod
+    def get_immediate_superior_user_id(self, team_id: str, user_id: str) -> str:
+        pass

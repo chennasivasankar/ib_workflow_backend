@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from ib_iam.interactors.dtos.dtos import TeamMemberLevelDTO, \
     TeamMemberLevelIdWithMemberIdsDTO, ImmediateSuperiorUserIdWithUserIdsDTO
@@ -100,8 +100,21 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
     ):
         for immediate_superior_user_id_with_member_ids_dto in immediate_superior_user_id_with_member_ids_dtos:
             self._add_members_to_superior(
-                immediate_superior_user_id_with_member_ids_dto, member_level_hierarchy,
+                immediate_superior_user_id_with_member_ids_dto,
+                member_level_hierarchy,
                 team_id)
+        return
+
+    def get_immediate_superior_user_id(self, team_id: str, user_id: str) -> \
+            Optional[str]:
+        from ib_iam.models import UserTeam
+        user_team_object = UserTeam.objects.get(
+            team_id=team_id, user_id=user_id
+        )
+        immediate_superior_team_user_object = \
+            user_team_object.immediate_superior_team_user
+        if immediate_superior_team_user_object:
+            return immediate_superior_team_user_object.user_id
         return
 
     @staticmethod
