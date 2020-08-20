@@ -244,18 +244,14 @@ class CreateTaskInteractor:
             for gof_fields_dto in task_dto.gof_fields_dtos
         ]
         task_gof_details_dtos = self.create_task_storage.create_task_gofs(
-            task_gof_dtos=task_gof_dtos
-        )
+            task_gof_dtos=task_gof_dtos)
         task_gof_field_dtos = self._prepare_task_gof_fields_dtos(
-            task_dto, task_gof_details_dtos
-        )
+            task_dto, task_gof_details_dtos)
         self.create_task_storage.create_task_gof_fields(task_gof_field_dtos)
         self.create_task_storage.set_status_variables_for_template_and_task(
-            task_dto.task_template_id, created_task_id
-        )
+            task_dto.task_template_id, created_task_id)
         self.create_task_storage.create_initial_task_stage(
-            task_id=created_task_id, template_id=task_dto.task_template_id
-        )
+            task_id=created_task_id, template_id=task_dto.task_template_id)
         act_on_task_interactor = UserActionOnTaskInteractor(
             user_id=task_dto.created_by_id, board_id=None,
             action_id=task_dto.action_id,
