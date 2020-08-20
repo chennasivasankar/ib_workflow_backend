@@ -1,9 +1,6 @@
 from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
     SendVerifyEmailLinkPresenterInterface
-
-
-class AccountDoesNotExists(Exception):
-    pass
+from ib_iam.adapters.user_service import UserAccountDoesNotExist
 
 
 class EmailAlreadyVerifiedException(Exception):
@@ -18,7 +15,7 @@ class SendVerifyEmailLinkInteractor:
         try:
             self.send_verify_email_link(email=email)
             return presenter.get_response_send_verify_email_link()
-        except AccountDoesNotExists:
+        except UserAccountDoesNotExist:
             return presenter.raise_account_does_not_exist_exception()
         except EmailAlreadyVerifiedException:
             return presenter.raise_email_already_verified_exception()
