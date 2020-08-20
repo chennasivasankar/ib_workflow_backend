@@ -6,12 +6,11 @@ from django.db.models import Q
 from ib_tasks.constants.constants import ALL_ROLES_ID
 from ib_tasks.constants.enum import PermissionTypes
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
-from ib_tasks.interactors.stages_dtos import StageActionDTO, StageDTO, \
-    TemplateStageDTO, TaskIdWithStageAssigneeDTO, StageAssigneeDTO
+from ib_tasks.interactors.stages_dtos import StageDTO, \
+    TaskIdWithStageAssigneeDTO, StageAssigneeDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO, \
     ActionRolesDTO
 from ib_tasks.interactors.storage_interfaces.fields_dtos import \
-    FieldValueDTO, \
     FieldWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos import \
     GOFMultipleEnableDTO, GoFWritePermissionRolesDTO
@@ -27,15 +26,14 @@ from ib_tasks.interactors.storage_interfaces.storage_interface import (
 )
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
 from ib_tasks.interactors.task_dtos import GetTaskDetailsDTO, \
-    TaskDueParametersDTO, TaskDelayParametersDTO
+    TaskDelayParametersDTO
 from ib_tasks.models import GoFRole, TaskStatusVariable, Task, \
     ActionPermittedRoles, StageAction, CurrentTaskStage, FieldRole, \
     GlobalConstant, \
-    StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskLog, \
-    TaskTemplateStatusVariable
+    StagePermittedRoles, TaskTemplateInitialStage, Stage, TaskTemplateStatusVariable
 from ib_tasks.models import \
     TaskStageHistory
-from ib_tasks.models.task_due_details import UserTaskDelayReason
+from ib_tasks.models.user_task_delay_reason import UserTaskDelayReason
 
 
 class StagesStorageImplementation(StageStorageInterface):
@@ -641,8 +639,8 @@ class StorageImplementation(StorageInterface):
     def validate_if_task_is_assigned_to_user(self,
                                              task_id: int,
                                              user_id: str) -> bool:
-        is_assigned = TaskLog.objects.filter(
-            task_id=task_id, user_id=user_id).exists()
+        is_assigned = TaskStageHistory.objects.filter(
+            task_id=task_id, assignee_id=user_id).exists()
         return is_assigned
 
     def get_task_due_details(self, task_id: int) -> \
@@ -683,5 +681,5 @@ class StorageImplementation(StorageInterface):
                                            count=count + 1,
                                            reason_id=reason_id,
                                            reason=due_details.reason)
-        Task.objects.filter(pk=task_id, tasklog__user_id=user_id
+        Task.objects.filter(pk=task_id, taskstagehistory__assignee_id=user_id
                             ).update(due_date=updated_due_datetime)

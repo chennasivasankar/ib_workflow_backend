@@ -252,7 +252,7 @@ class ActionsStorageImplementation(ActionStorageInterface):
             Q(role_id__in=user_roles) | Q(role_id=ALL_ROLES_ID))
                           .values_list('action_id', flat=True)
                           )
-        return action_ids
+        return list(set(action_ids))
 
     def get_stage_ids_having_actions(self, db_stage_ids: List[int]) \
             -> List[int]:

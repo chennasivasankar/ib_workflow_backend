@@ -5,14 +5,12 @@ import pytest
 from ib_tasks.adapters.dtos import TaskBoardsDetailsDTO
 from ib_tasks.interactors.presenter_interfaces.dtos import \
     TaskCompleteDetailsDTO
-from ib_tasks.tests.factories.interactor_dtos import FieldDisplayDTOFactory, \
-    TaskStageDTOFactory
-from ib_tasks.tests.factories.storage_dtos import ActionDTOFactory
 from ib_tasks.tests.factories.adapter_dtos import (
     ColumnStageDTOFactory, BoardDTOFactory, ColumnDTOFactory
 )
 from ib_tasks.tests.factories.interactor_dtos import FieldDisplayDTOFactory, \
     TaskCurrentStageDetailsDTOFactory
+from ib_tasks.tests.factories.interactor_dtos import TaskStageDTOFactory
 from ib_tasks.tests.factories.storage_dtos import ActionDTOFactory
 
 

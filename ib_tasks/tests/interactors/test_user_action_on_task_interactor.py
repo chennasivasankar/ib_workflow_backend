@@ -6,12 +6,16 @@ from ib_tasks.interactors.user_action_on_task_interactor \
     import UserActionOnTaskInteractor
 from ib_tasks.tests.factories.interactor_dtos import \
     TaskCurrentStageDetailsDTOFactory
+from ib_tasks.tests.factories.storage_dtos import ActionDTOFactory, \
+    StageActionDetailsDTOFactory
 
 
 class TestUserActionOnTaskInteractor:
 
     @pytest.fixture(autouse=True)
     def reset_sequence(self):
+        ActionDTOFactory.reset_sequence()
+        StageActionDetailsDTOFactory.reset_sequence()
         TaskCurrentStageDetailsDTOFactory.reset_sequence()
 
     @staticmethod
@@ -186,6 +190,7 @@ class TestUserActionOnTaskInteractor:
             assignees_details=[assignees],
             task_stage_details=[TaskStageDTO(stage_id='stage_1', db_stage_id=1,
                                              display_name='display_name',
+
                                              stage_colour='blue')]
         )
 
@@ -244,8 +249,7 @@ class TestUserActionOnTaskInteractor:
         )
 
         # Act
-        interactor.user_action_on_task_wrapper(presenter=presenter,
-                                               task_display_id=task_display_id)
+        interactor.user_action_on_task_wrapper(presenter=presenter, task_display_id=task_display_id)
 
         # Assert
         dict_obj = presenter.raise_exception_for_invalid_task.call_args.kwargs
@@ -350,7 +354,8 @@ class TestUserActionOnTaskInteractor:
             task_id
         mock_obj.return_value = True
 
-        storage.validate_task_id.return_value = True
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_storage_mock.get_task_id_for_task_display_id.return_value = 1
         interactor = UserActionOnTaskInteractor(
             user_id=user_id, board_id=board_id, action_id=action_id,
             storage=storage, gof_storage=gof_storage,
@@ -396,7 +401,8 @@ class TestUserActionOnTaskInteractor:
         user_roles_mock = mocker.patch(
             'ib_tasks.adapters.roles_service.RolesService.get_user_roles')
         user_roles_mock.return_value = ["ROLE_1", "ROLE_3"]
-        storage.validate_task_id.return_value = True
+        task_storage_mock.check_is_valid_task_display_id.return_value = True
+        task_storage_mock.get_task_id_for_task_display_id.return_value = 1
         interactor = UserActionOnTaskInteractor(
             user_id=user_id, board_id=board_id, action_id=action_id,
             storage=storage, gof_storage=gof_storage,
