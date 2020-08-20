@@ -577,7 +577,6 @@
         }
       },
       "required": [
-        "assignee_id",
         "stage_id"
       ]
     },
@@ -1858,8 +1857,8 @@
           "res_status": {
             "type": "string",
             "enum": [
-              "VIRTUAL_STAGE_IDS",
               "DUPLICATE_STAGE_IDS",
+              "VIRTUAL_STAGE_IDS",
               "STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE"
             ]
           }
