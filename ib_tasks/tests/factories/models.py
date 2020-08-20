@@ -133,7 +133,7 @@ class TaskTemplateStatusVariableFactory(factory.django.DjangoModelFactory):
         model = TaskTemplateStatusVariable
 
     task_template_id = factory.Sequence(lambda n: n)
-    variable = factory.Sequence(lambda n: "variable%d" % n)
+    variable = factory.Sequence(lambda n: "status_id_%d" % n)
     value = factory.Sequence(lambda n: n)
 
 
