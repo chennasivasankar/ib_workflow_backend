@@ -32,7 +32,7 @@ snapshots['TestCase01GetStagesHistoryToTaskAPITestCase.test_case body'] = {
             'user_details': {
                 'name': 'name_1',
                 'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM',
-                'user_id': '1'
+                'user_id': '123e4567-e89b-12d3-a456-426614174001'
             }
         },
         {
@@ -44,7 +44,7 @@ snapshots['TestCase01GetStagesHistoryToTaskAPITestCase.test_case body'] = {
             'user_details': {
                 'name': 'name_2',
                 'profile_pic_url': 'https://www.google.com/search?q=ibhubs&client=ubuntu&hs=DI7&channel=fs&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjZqYjthYfrAhUF4zgGHevjDZUQ_AUoA3oECAsQBQ&biw=1848&bih=913#imgrc=Kg3TRY0jmx3udM',
-                'user_id': '2'
+                'user_id': '123e4567-e89b-12d3-a456-426614174002'
             }
         }
     ]

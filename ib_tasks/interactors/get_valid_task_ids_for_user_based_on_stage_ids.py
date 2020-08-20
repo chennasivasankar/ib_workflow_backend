@@ -88,7 +88,7 @@ class GetTaskIdsOfUserBasedOnStagesInteractor:
             task_with_complete_stage_details_dto = \
                 TaskWithCompleteStageDetailsDTO(
                     task_with_stage_details_dto=task_id_with_stage_details_dto,
-                    stage_assignee_dto=stage_assignee_details_dtos[0])
+                    stage_assignee_dto=stage_assignee_details_dtos)
             task_with_complete_stage_details_dtos.append(
                 task_with_complete_stage_details_dto)
         return task_with_complete_stage_details_dtos

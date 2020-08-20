@@ -1,5 +1,11 @@
 
 
+REQUEST_BODY_JSON = """
+{
+    "task_id": "string"
+}
+"""
+
 
 RESPONSE_200_JSON = """
 {
