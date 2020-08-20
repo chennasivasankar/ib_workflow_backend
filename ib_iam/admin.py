@@ -3,12 +3,13 @@ from django.contrib import admin
 
 from ib_iam.models import (
     UserDetails, UserTeam, UserRole, Company,
-    Role, Team, ElasticUserIntermediary
+    Role, Team, ElasticUserIntermediary, TeamMemberLevel
 )
 
 
 class ElasticUserIntermediaryAdmin(admin.ModelAdmin):
     list_display = ("user_id", "elastic_user_id")
+
 
 
 class CompanyAdmin(admin.ModelAdmin):
@@ -35,6 +36,7 @@ class UserRoleAdmin(admin.ModelAdmin):
     list_display = ("user_id", "_role_id")
     search_fields = ["user_id"]
     list_filter = ["user_id"]
+    raw_id_fields = ("role",)
 
     @staticmethod
     def _role_id(obj):
@@ -42,8 +44,14 @@ class UserRoleAdmin(admin.ModelAdmin):
 
 
 class UserTeamAdmin(admin.ModelAdmin):
-    list_display = ("user_id", "team_id")
+    list_display = ("user_id", "team_id", "team_member_level",
+                    "immediate_superior_team_user")
     search_fields = ["user_id"]
+    raw_id_fields = ("team",)
+
+
+class TeamMemberLevelAdmin(admin.ModelAdmin):
+    list_display = ("id", "team", "level_name", "level_hierarchy")
 
 
 admin.site.register(Company, CompanyAdmin)
@@ -52,4 +60,5 @@ admin.site.register(Role, RoleAdmin)
 admin.site.register(UserDetails, IAMUserAdmin)
 admin.site.register(UserRole, UserRoleAdmin)
 admin.site.register(UserTeam, UserTeamAdmin)
+admin.site.register(TeamMemberLevel, TeamMemberLevelAdmin)
 admin.site.register(ElasticUserIntermediary, ElasticUserIntermediaryAdmin)

@@ -76,10 +76,7 @@ snapshots['TestCase04GetUsersAPITestCase.test_case body'] = {
             'user_id': '7e39bf1c-f9a5-4e76-8451-b962ddd52033'
         },
         {
-            'company': {
-                'company_id': '',
-                'company_name': ''
-            },
+            'company': None,
             'email': 'name3@gmail.com',
             'name': 'name3',
             'roles': [
