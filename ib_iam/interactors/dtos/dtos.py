@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 
 @dataclass
@@ -15,6 +15,16 @@ class AddUserDetailsDTO:
     team_ids: List[str]
     role_ids: List[str]
     company_id: str
+
+
+@dataclass
+class CompleteUserProfileDTO:
+    user_id: str
+    name: str
+    email: str
+    is_admin: Optional[bool] = None
+    profile_pic_url: Optional[str] = None
+    cover_page_url: Optional[str] = ""
 
 
 @dataclass

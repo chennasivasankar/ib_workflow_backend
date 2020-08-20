@@ -20,7 +20,6 @@ from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDisplayIdDTO
 from ib_tasks.interactors.task_dtos import CreateTaskLogDTO, GetTaskDetailsDTO
 
 
-
 class TaskStorageInterface(abc.ABC):
 
     @abc.abstractmethod

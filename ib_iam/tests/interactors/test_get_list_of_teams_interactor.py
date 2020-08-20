@@ -1,10 +1,12 @@
+import pytest
 from mock import create_autospec, Mock
+
 from ib_iam.interactors.get_list_of_teams_interactor import \
     GetListOfTeamsInteractor
-from ib_iam.interactors.storage_interfaces.team_storage_interface import \
-    TeamStorageInterface
 from ib_iam.interactors.presenter_interfaces.team_presenter_interface import \
     TeamPresenterInterface
+from ib_iam.interactors.storage_interfaces.team_storage_interface import \
+    TeamStorageInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
 from ib_iam.tests.factories.presenter_dtos import \
@@ -14,7 +16,6 @@ from ib_iam.tests.factories.storage_dtos import (
 
 
 class TestGetListOfTeamsInteractor:
-    import pytest
 
     @pytest.fixture
     def expected_list_of_teams_dtos(self):
@@ -131,7 +132,7 @@ class TestGetListOfTeamsInteractor:
         )
 
         # Assert
-        team_storage.get_teams_with_total_teams_count_dto\
+        team_storage.get_teams_with_total_teams_count_dto \
             .assert_called_once_with(pagination_dto=pagination_dto)
         team_storage.get_team_user_ids_dtos.assert_called_once_with(
             team_ids=team_ids)

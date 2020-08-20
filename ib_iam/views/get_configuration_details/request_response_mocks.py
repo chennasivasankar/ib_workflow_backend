@@ -5,7 +5,7 @@ RESPONSE_200_JSON = """
 {
     "companies": [
         {
-            "company_id": "445add54-6014-4b7c-87ff-b8c24b2a3f38",
+            "company_id": "c9dcbb35-8e6c-40c5-b98b-9b66bce135c6",
             "company_name": "string"
         }
     ],
@@ -17,7 +17,7 @@ RESPONSE_200_JSON = """
     ],
     "teams": [
         {
-            "team_id": "b95120dd-38e3-492e-8e94-d869a9d608be",
+            "team_id": "c1553793-475d-4534-b0b9-0552ba3ee8d8",
             "team_name": "string"
         }
     ]

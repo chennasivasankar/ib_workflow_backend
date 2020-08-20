@@ -1,8 +1,15 @@
 # your django admin
 from django.contrib import admin
 
-from ib_iam.models import UserDetails, UserTeam, UserRole, Company, Role, Team, \
-    TeamMemberLevel
+from ib_iam.models import (
+    UserDetails, UserTeam, UserRole, Company,
+    Role, Team, ElasticUserIntermediary, TeamMemberLevel
+)
+
+
+class ElasticUserIntermediaryAdmin(admin.ModelAdmin):
+    list_display = ("user_id", "elastic_user_id")
+
 
 
 class CompanyAdmin(admin.ModelAdmin):
@@ -52,3 +59,4 @@ admin.site.register(UserDetails, IAMUserAdmin)
 admin.site.register(UserRole, UserRoleAdmin)
 admin.site.register(UserTeam, UserTeamAdmin)
 admin.site.register(TeamMemberLevel, TeamMemberLevelAdmin)
+admin.site.register(ElasticUserIntermediary, ElasticUserIntermediaryAdmin)

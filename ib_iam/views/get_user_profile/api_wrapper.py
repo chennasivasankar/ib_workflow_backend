@@ -16,7 +16,7 @@ def api_wrapper(*args, **kwargs):
     from ib_iam.interactors.get_user_profile_interactor import \
         GetUserProfileInteractor
     interactor = GetUserProfileInteractor(
-        storage=storage
+        user_storage=storage
     )
     response = interactor.get_user_profile_wrapper(
         user_id=user_id, presenter=presenter

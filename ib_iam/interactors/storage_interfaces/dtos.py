@@ -16,6 +16,7 @@ class UserDTO:
     user_id: str
     is_admin: bool
     company_id: Optional[str] = None
+    cover_page_url: Optional[str] = None
 
 
 @dataclass
@@ -130,12 +131,15 @@ class EmployeeDTO:
 class CompanyNameLogoAndDescriptionDTO:
     name: str
     description: str
-    logo_url: str
+    logo_url: Optional[str] = None
 
 
 @dataclass
-class CompanyDTO(CompanyNameLogoAndDescriptionDTO):
+class CompanyDTO:
     company_id: str
+    name: str
+    description: str
+    logo_url: Optional[str]
 
 
 @dataclass
@@ -145,13 +149,20 @@ class CompanyIdWithEmployeeIdsDTO:
 
 
 @dataclass
-class CompanyWithUserIdsDTO(CompanyNameLogoAndDescriptionDTO):
+class CompanyWithUserIdsDTO:
     user_ids: List[str]
+    name: str
+    description: str
+    logo_url: Optional[str]
 
 
 @dataclass
-class CompanyWithCompanyIdAndUserIdsDTO(CompanyWithUserIdsDTO):
+class CompanyWithCompanyIdAndUserIdsDTO:
     company_id: str
+    name: str
+    description: str
+    logo_url: Optional[str]
+    user_ids: List[str]
 
 
 @dataclass
