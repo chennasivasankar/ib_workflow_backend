@@ -28,7 +28,7 @@ class TestStopTimerInteractor:
         interactor = StopTimerInteractor(timer_storage=storage_mock)
         return interactor
 
-    def test_timer_already_stopped_raises_timer_is_already_stopped_exception(
+    def est_timer_already_stopped_raises_timer_is_already_stopped_exception(
             self, interactor, storage_mock, presenter_mock):
         from ib_utility_tools.tests.factories.storage_dtos import \
             TimerEntityDTOFactory, TimerDetailsDTOFactory

@@ -1,7 +1,7 @@
 from typing import Optional, List
 
 from ib_utility_tools.interactors.storage_interfaces.dtos import \
-    TimerEntityDTO, TimerDetailsDTO
+    TimerEntityDTO, TimerDetailsDTO, CompleteTimerDetailsDTO
 from ib_utility_tools.interactors.storage_interfaces \
     .timer_storage_interface import TimerStorageInterface
 from ib_utility_tools.models import Timer
@@ -45,21 +45,30 @@ class TimerStorageImplementation(TimerStorageInterface):
 
     def get_timer_details_dtos_for_given_entities(
             self, timer_entity_dtos: List[TimerEntityDTO]) -> \
-            List[TimerDetailsDTO]:
+            List[CompleteTimerDetailsDTO]:
         entity_q_objects = self._prepare_entity_q_objects_for_given_dtos(
             dtos=timer_entity_dtos)
         timer_objects = Timer.objects.filter(entity_q_objects)
         timer_details_dtos = [
-            self._prepare_timer_details_dto(timer_object=timer_object)
+            self._prepare_complete_timer_details_dto(timer_object=timer_object)
             for timer_object in timer_objects]
         return timer_details_dtos
 
-    def update_timers_bulk(self, timer_details_dtos: List[TimerDetailsDTO]):
+    @staticmethod
+    def _prepare_timer_details_dto(timer_object) -> TimerDetailsDTO:
+        timer_details_dto = TimerDetailsDTO(
+            duration_in_seconds=timer_object.duration_in_seconds,
+            is_running=timer_object.is_running,
+            start_datetime=timer_object.start_datetime)
+        return timer_details_dto
+
+    def update_timers_bulk(
+            self, complete_timer_details_dtos: List[CompleteTimerDetailsDTO]):
         entity_q_objects = self._prepare_entity_q_objects_for_given_dtos(
-            dtos=timer_details_dtos)
+            dtos=complete_timer_details_dtos)
         timer_objects = Timer.objects.filter(entity_q_objects)
         for timer_object in timer_objects:
-            for timer_details_dto in timer_details_dtos:
+            for timer_details_dto in complete_timer_details_dtos:
                 if (timer_object.entity_id == timer_details_dto.entity_id and
                         timer_object.entity_type == timer_details_dto.entity_type):
                     timer_object.duration_in_seconds = timer_details_dto.duration_in_seconds
@@ -70,8 +79,9 @@ class TimerStorageImplementation(TimerStorageInterface):
             ['duration_in_seconds', 'start_datetime', 'is_running'])
 
     @staticmethod
-    def _prepare_timer_details_dto(timer_object) -> TimerDetailsDTO:
-        timer_details_dto = TimerDetailsDTO(
+    def _prepare_complete_timer_details_dto(
+            timer_object) -> CompleteTimerDetailsDTO:
+        timer_details_dto = CompleteTimerDetailsDTO(
             entity_id=timer_object.entity_id,
             entity_type=timer_object.entity_type,
             duration_in_seconds=timer_object.duration_in_seconds,

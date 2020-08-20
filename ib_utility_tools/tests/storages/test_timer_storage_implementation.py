@@ -4,8 +4,9 @@ import pytest
 
 from ib_utility_tools.models import Timer
 from ib_utility_tools.tests.factories.models import TimerFactory
-from ib_utility_tools.tests.factories.storage_dtos import \
-    TimerEntityDTOFactory, TimerDetailsDTOFactory
+from ib_utility_tools.tests.factories.storage_dtos import (
+    TimerEntityDTOFactory, TimerDetailsDTOFactory,
+    CompleteTimerDetailsDTOFactory)
 
 
 class TestTimerStorageImplementation:
@@ -64,7 +65,7 @@ class TestTimerStorageImplementation:
     @pytest.fixture
     def timer_details_dtos(self, timer_details):
         timer_details_dtos = [
-            TimerDetailsDTOFactory(
+            CompleteTimerDetailsDTOFactory(
                 entity_id=timer["entity_id"],
                 entity_type=timer["entity_type"],
                 duration_in_seconds=timer["duration_in_seconds"],
@@ -167,15 +168,17 @@ class TestTimerStorageImplementation:
         duration_in_seconds = 100
         is_running = False
         start_datetime = None
-        timer_details_dto = TimerDetailsDTOFactory(
+        complete_timer_details_dto = CompleteTimerDetailsDTOFactory(
             entity_id=entity_id,
             entity_type=entity_type,
             duration_in_seconds=duration_in_seconds,
             is_running=is_running,
             start_datetime=start_datetime)
+        complete_timer_details_dtos = [complete_timer_details_dto]
 
         # Act
-        storage.update_timers_bulk(timer_details_dtos=[timer_details_dto])
+        storage.update_timers_bulk(
+            complete_timer_details_dtos=complete_timer_details_dtos)
 
         # Assert
         timer_object = Timer.objects.get(entity_id=entity_id,

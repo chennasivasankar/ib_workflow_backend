@@ -27,7 +27,11 @@ class StopTimerInteractor:
     def stop_timer(self, timer_entity_dto: TimerEntityDTO):
         timer_details_dto = self.timer_storage.get_timer_details_dto(
             timer_entity_dto=timer_entity_dto)
+        print("&"*80)
+        print("HI")
+        print(timer_details_dto)
         if timer_details_dto.is_running is False:
+            print("I am in false")
             raise TimerIsAlreadyStopped
         stop_datetime = datetime.datetime.now()
         time_delta = stop_datetime - timer_details_dto.start_datetime
@@ -36,7 +40,9 @@ class StopTimerInteractor:
         timer_details_dto = TimerDetailsDTO(
             duration_in_seconds=duration_in_seconds,
             is_running=False)
+        print("IAm before update")
         self.timer_storage.update_timer(
             timer_entity_dto=timer_entity_dto,
             timer_details_dto=timer_details_dto)
+        print("IAm After update")
         return timer_details_dto

@@ -84,9 +84,9 @@ class TestGetBulkTimerDetailsForGivenEntities:
     @pytest.fixture
     def timer_details_dtos(self, expected_timer_details):
         from ib_utility_tools.tests.factories.storage_dtos import \
-            TimerDetailsDTOFactory
+            CompleteTimerDetailsDTOFactory
         timer_details_dtos = [
-            TimerDetailsDTOFactory(
+            CompleteTimerDetailsDTOFactory(
                 entity_id=timer["entity_id"],
                 entity_type=timer["entity_type"],
                 duration_in_seconds=timer["duration_in_seconds"],

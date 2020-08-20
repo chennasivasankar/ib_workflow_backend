@@ -2,7 +2,7 @@ import abc
 from typing import Optional, List
 
 from ib_utility_tools.interactors.storage_interfaces.dtos import \
-    TimerEntityDTO, TimerDetailsDTO
+    TimerEntityDTO, TimerDetailsDTO, CompleteTimerDetailsDTO
 
 
 class TimerStorageInterface(abc.ABC):
@@ -30,9 +30,10 @@ class TimerStorageInterface(abc.ABC):
     @abc.abstractmethod
     def get_timer_details_dtos_for_given_entities(
             self, timer_entity_dtos: List[TimerEntityDTO]) -> \
-            List[TimerDetailsDTO]:
+            List[CompleteTimerDetailsDTO]:
         pass
 
     @abc.abstractmethod
-    def update_timers_bulk(self, timer_details_dtos: List[TimerDetailsDTO]):
+    def update_timers_bulk(self, complete_timer_details_dtos: List[
+        CompleteTimerDetailsDTO]):
         pass
