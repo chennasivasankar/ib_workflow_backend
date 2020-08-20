@@ -38,7 +38,7 @@ class TestCase01GetStagesHistoryToTaskAPITestCase(TestUtils):
         path_params = {}
         query_params = {}
         headers = {}
-        path1 = 'ib_tasks.adapters.assignees_details_service.AssigneeDetailsService.get_log_duration_dtos'
+        path1 = 'ib_tasks.adapters.utility_tools_service.UtilityToolsService.get_log_duration_dtos'
         log_mock = mocker.patch(path1)
         log_dtos = LogDurationDTOFactory.create_batch(2)
         log_mock.return_value = log_dtos
