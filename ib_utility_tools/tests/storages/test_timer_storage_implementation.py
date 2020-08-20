@@ -148,7 +148,7 @@ class TestTimerStorageImplementation:
         assert timer_object.duration_in_seconds == expected_duration_in_seconds
 
     @pytest.mark.django_db
-    def test_get_timer_details_dtos_for_given_entities_returns_timer_details_dtos(
+    def test_get_complete_timer_details_dtos_for_given_entities_returns_dtos(
             self, timer_entity_dtos, timer_objects, timer_details_dtos,
             storage):
         # Act
@@ -160,8 +160,9 @@ class TestTimerStorageImplementation:
         assert actual_timer_details_dtos == timer_details_dtos
 
     @pytest.mark.django_db
-    def test_update_timers_bulk_it_will_update_the_given_entities(
+    def test_update_timers_bulk_will_update_timers_for_given_entities(
             self, timer_objects, storage):
+        # Arrange
         from ib_utility_tools.constants.enum import TimerEntityType
         entity_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"
         entity_type = TimerEntityType.STAGE_TASK.value
