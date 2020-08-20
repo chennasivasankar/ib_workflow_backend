@@ -1,29 +1,15 @@
-from ib_iam.models.role import Role
+from ib_iam.models.city import City
 from ib_iam.models.company import Company
+from ib_iam.models.country import Country
+from ib_iam.models.elastic_user import ElasticUserIntermediary
+from ib_iam.models.role import Role
+from ib_iam.models.state import State
 from ib_iam.models.team import Team
 from ib_iam.models.user import UserRole, UserTeam, UserDetails
-from ib_iam.models.elastic_user import ElasticUserIntermediary
-from ib_iam.models.country import Country
-from ib_iam.models.state import State
-from ib_iam.models.city import City
+from ib_iam.models.team_member_level import TeamMemberLevel
 
-__all__ = ["Role", "Team", "Company", "UserTeam", "UserRole", "UserDetails",
-           "UserTeam", "ElasticUserIntermediary", "Country", "State", "City"]
-
-# class DummyModel(AbstractDateTimeModel):
-#     """
-#     Model to store key value pair
-#     Attributes:
-#         :var key: String field which will be unique
-#         :var value: String field which will be of 128 char length
-#     """
-#     key = models.CharField(max_length=128, unique=True)
-#     value = models.CharField(max_length=128)
-#
-#     class Meta(object):
-#         app_label = 'sample_app'
-#
-#     def __str__(self):
-#         return "<DummyModel: {key}-{value}>".format(key=self.key,
-#                                                     value=self.value)
-#
+__all__ = [
+    "Role", "Team", "Company", "UserTeam", "UserRole", "UserDetails",
+    "UserTeam", "ElasticUserIntermediary", "Country", "State", "City",
+    "TeamMemberLevel"
+]

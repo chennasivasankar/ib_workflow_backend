@@ -25,3 +25,21 @@ class CompleteUserProfileDTO:
     is_admin: Optional[bool] = None
     profile_pic_url: Optional[str] = None
     cover_page_url: Optional[str] = ""
+
+
+@dataclass
+class TeamMemberLevelDTO:
+    team_member_level_name: str
+    level_hierarchy: int
+
+
+@dataclass
+class TeamMemberLevelIdWithMemberIdsDTO:
+    team_member_level_id: str
+    member_ids: List[str]
+
+
+@dataclass
+class ImmediateSuperiorUserIdWithUserIdsDTO:
+    immediate_superior_user_id: str
+    member_ids: List[str]
