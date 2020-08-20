@@ -32,8 +32,3 @@ class TimerStorageInterface(abc.ABC):
             self, timer_entity_dtos: List[TimerEntityDTO]) -> \
             List[CompleteTimerDetailsDTO]:
         pass
-
-    @abc.abstractmethod
-    def update_timers_bulk(self, complete_timer_details_dtos: List[
-        CompleteTimerDetailsDTO]):
-        pass

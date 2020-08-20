@@ -11,7 +11,6 @@ class EntityType(BaseEnumClass, Enum):
 
 class TimerEntityType(BaseEnumClass, Enum):
     STAGE_TASK = "STAGE_TASK"
-    STAGE = "STAGE"
 
 
 class StatusCode(Enum):

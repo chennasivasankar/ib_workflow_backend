@@ -26,7 +26,8 @@ class TestStopTimerInteractor:
         from ib_utility_tools.tests.factories.storage_dtos import \
             TimerEntityDTOFactory, CompleteTimerDetailsDTOFactory
         timer_entity_dtos = TimerEntityDTOFactory.create_batch(size=2)
-        complete_timer_details_dtos = CompleteTimerDetailsDTOFactory.create_batch(size=1)
+        complete_timer_details_dtos = CompleteTimerDetailsDTOFactory.create_batch(
+            size=1)
         storage_mock.get_timer_details_dtos_for_given_entities \
             .return_value = complete_timer_details_dtos
 
@@ -52,10 +53,9 @@ class TestStopTimerInteractor:
 
         storage_mock.get_timer_details_dtos_for_given_entities \
             .assert_called_once_with(timer_entity_dtos=timer_entity_dtos)
-        storage_mock.update_timers_bulk.assert_not_called()
 
     @freeze_time("2020-08-07 18:00:00")
-    def test_given_valid_entities_and_a_timer_is_running_returns_timer_details_dtos(
+    def test_given_valid_entities_and_timers_running_returns_timer_details_dtos(
             self, interactor, storage_mock):
         from ib_utility_tools.tests.factories.storage_dtos import \
             TimerEntityDTOFactory, CompleteTimerDetailsDTOFactory
@@ -81,5 +81,3 @@ class TestStopTimerInteractor:
 
         storage_mock.get_timer_details_dtos_for_given_entities \
             .assert_called_once_with(timer_entity_dtos=timer_entity_dtos)
-        storage_mock.update_timers_bulk.assert_called_once_with(
-            complete_timer_details_dtos=timer_details_dtos)

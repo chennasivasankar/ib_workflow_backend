@@ -158,33 +158,3 @@ class TestTimerStorageImplementation:
 
         # Assert
         assert actual_timer_details_dtos == timer_details_dtos
-
-    @pytest.mark.django_db
-    def test_update_timers_bulk_will_update_timers_for_given_entities(
-            self, timer_objects, storage):
-        # Arrange
-        from ib_utility_tools.constants.enum import TimerEntityType
-        entity_id = "ef6d1fc6-ac3f-4d2d-a983-752c992e8332"
-        entity_type = TimerEntityType.STAGE_TASK.value
-        duration_in_seconds = 100
-        is_running = False
-        start_datetime = None
-        complete_timer_details_dto = CompleteTimerDetailsDTOFactory(
-            entity_id=entity_id,
-            entity_type=entity_type,
-            duration_in_seconds=duration_in_seconds,
-            is_running=is_running,
-            start_datetime=start_datetime)
-        complete_timer_details_dtos = [complete_timer_details_dto]
-
-        # Act
-        storage.update_timers_bulk(
-            complete_timer_details_dtos=complete_timer_details_dtos)
-
-        # Assert
-        timer_object = Timer.objects.get(entity_id=entity_id,
-                                         entity_type=entity_type)
-        assert timer_object.entity_id == entity_id
-        assert timer_object.duration_in_seconds == duration_in_seconds
-        assert timer_object.is_running == is_running
-        assert timer_object.start_datetime == start_datetime

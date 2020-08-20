@@ -62,22 +62,6 @@ class TimerStorageImplementation(TimerStorageInterface):
             start_datetime=timer_object.start_datetime)
         return timer_details_dto
 
-    def update_timers_bulk(
-            self, complete_timer_details_dtos: List[CompleteTimerDetailsDTO]):
-        entity_q_objects = self._prepare_entity_q_objects_for_given_dtos(
-            dtos=complete_timer_details_dtos)
-        timer_objects = Timer.objects.filter(entity_q_objects)
-        for timer_object in timer_objects:
-            for timer_details_dto in complete_timer_details_dtos:
-                if (timer_object.entity_id == timer_details_dto.entity_id and
-                        timer_object.entity_type == timer_details_dto.entity_type):
-                    timer_object.duration_in_seconds = timer_details_dto.duration_in_seconds
-                    timer_object.start_datetime = timer_details_dto.start_datetime
-                    timer_object.is_running = timer_details_dto.is_running
-        Timer.objects.bulk_update(
-            timer_objects,
-            ['duration_in_seconds', 'start_datetime', 'is_running'])
-
     @staticmethod
     def _prepare_complete_timer_details_dto(
             timer_object) -> CompleteTimerDetailsDTO:
