@@ -102,6 +102,7 @@ class TeamMemberLevelStorageImplementation(TeamMemberLevelStorageInterface):
             self._add_members_to_superior(
                 immediate_superior_user_id_with_member_ids_dto, member_level_hierarchy,
                 team_id)
+        return
 
     @staticmethod
     def _add_members_to_superior(
