@@ -32,7 +32,11 @@ from ib_tasks.interactors.task_dtos import GoFFieldsDTO, \
     CreateTaskLogDTO, \
     CreateTaskDTO, UpdateTaskDTO, StageIdWithAssigneeIdDTO, \
     SaveAndActOnTaskDTO, TaskCurrentStageDetailsDTO, \
-    UpdateTaskWithTaskDisplayIdDTO, SaveAndActOnTaskWithTaskDisplayIdDTO
+    TaskDelayParametersDTO, UpdateTaskWithTaskDisplayIdDTO, \
+    SaveAndActOnTaskWithTaskDisplayIdDTO
+from ib_tasks.interactors.task_template_dtos import \
+    CreateTransitionChecklistTemplateDTO, \
+    CreateTransitionChecklistTemplateWithTaskDisplayIdDTO
 from ib_tasks.tests.factories.adapter_dtos import AssigneeDetailsDTOFactory, \
     UserDetailsDTO
 
@@ -255,7 +259,6 @@ class CreateTaskLogDTOFactory(factory.Factory):
     action_id = factory.sequence(lambda n: n)
 
 
-
 class TaskIdWithStageAssigneeDTOFactory(factory.Factory):
     class Meta:
         model = TaskIdWithStageAssigneeDTO
@@ -304,7 +307,17 @@ class TaskDueParametersDTOFactory(factory.Factory):
         model = TaskDueParametersDTO
 
     user_id = factory.Sequence(lambda n: "user_id_%d" % n)
-    task_id = factory.sequence(lambda n: n)
+    due_date_time = datetime.now() + timedelta(days=2)
+    reason_id = factory.Iterator([1, 2, 3, 4, -1])
+    reason = "reason"
+
+
+class TaskDelayParametersDTOFactory(factory.Factory):
+    class Meta:
+        model = TaskDelayParametersDTO
+
+    user_id = factory.Sequence(lambda n: "user_id_%d" % n)
+    task_id = factory.sequence(lambda n: (n + 1))
     due_date_time = datetime.now() + timedelta(days=2)
     reason_id = factory.Iterator([1, 2, 3, 4, -1])
     reason = "reason"
@@ -461,6 +474,41 @@ class FieldWritePermissionRolesDTOFactory(factory.Factory):
 
     field_id = factory.sequence(lambda counter: "field_{}".format(counter))
     write_permission_roles = ['FIN_PAYMENT_REQUESTER', 'FIN_PAYMENT_POC']
+
+
+class CreateTransitionChecklistTemplateDTOFactory(factory.Factory):
+    class Meta:
+        model = CreateTransitionChecklistTemplateDTO
+
+    task_id = factory.Sequence(lambda c: c)
+    created_by_id: str
+    transition_checklist_template_id: factory.Sequence(
+        lambda c: "transition_checklist_template_".format(c))
+    action_id: factory.Sequence(lambda c: c)
+    stage_id: factory.Sequence(lambda c: c)
+
+    @factory.lazy_attribute
+    def transition_checklist_gofs(self):
+        return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]
+
+
+class CreateTransitionChecklistTemplateWithTaskDisplayIdDTOFactory(
+    factory.Factory
+):
+    class Meta:
+        model = CreateTransitionChecklistTemplateWithTaskDisplayIdDTO
+
+    task_display_id = factory.Sequence(
+        lambda c: "task_display_id_{}".format(c))
+    created_by_id = "123e4567-e89b-12d3-a456-426614174000"
+    transition_checklist_template_id = factory.Sequence(
+        lambda c: "transition_checklist_template_".format(c))
+    action_id = factory.Sequence(lambda c: c)
+    stage_id = factory.Sequence(lambda c: c)
+
+    @factory.lazy_attribute
+    def transition_checklist_gofs(self):
+        return [GoFFieldsDTOFactory(), GoFFieldsDTOFactory()]
 
 
 class StageAssigneeDTOFactory(factory.Factory):

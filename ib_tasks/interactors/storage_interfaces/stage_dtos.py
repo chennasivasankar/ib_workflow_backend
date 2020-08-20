@@ -43,6 +43,7 @@ class StageDTO:
 @dataclass
 class TaskStageIdsDTO:
     task_id: int
+    task_display_id: Optional[str]
     stage_id: str
 
 
@@ -117,7 +118,7 @@ class TaskIdWithStageDetailsDTO:
 @dataclass
 class TaskWithCompleteStageDetailsDTO:
     task_with_stage_details_dto: TaskIdWithStageDetailsDTO
-    stage_assignee_dto: Optional[StageAssigneeDetailsDTO]
+    stage_assignee_dto: List[StageAssigneeDetailsDTO]
 
 
 @dataclass

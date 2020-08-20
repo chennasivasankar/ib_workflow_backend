@@ -41,8 +41,8 @@ class TestCase02GetReasonsForMissingTaskDueDateTimeAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_case(self, snapshot, setup):
-        body = {}
-        path_params = {"task_id": 1}
+        body = {"task_id": "iBWF-0"}
+        path_params = {}
         query_params = {}
         headers = {}
         response = self.make_api_call(body=body,

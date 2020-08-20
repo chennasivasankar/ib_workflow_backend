@@ -7,10 +7,11 @@ from unittest.mock import Mock, create_autospec
 
 import pytest
 
-from ib_tasks.exceptions.filter_exceptions import UserNotHaveAccessToFields, \
-    InvalidFilterId, UserNotHaveAccessToFilter
+from ib_tasks.exceptions.filter_exceptions import InvalidFilterId, \
+    UserNotHaveAccessToFilter
 from ib_tasks.interactors.filter_interactor import FilterInteractor
-from ib_tasks.tests.common_fixtures.interactors import prepare_get_field_ids_having_write_permission_for_user
+from ib_tasks.tests.common_fixtures.interactors import \
+    prepare_get_field_ids_having_write_permission_for_user
 
 
 class TestFiltersInteractor:

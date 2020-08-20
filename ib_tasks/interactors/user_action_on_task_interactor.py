@@ -145,6 +145,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         )
 
     def user_action_on_task(self, task_id: int):
+
         self._validations_for_task_action(task_id)
         task_dto = self._get_task_dto(task_id)
         updated_task_dto = \
@@ -179,6 +180,7 @@ class UserActionOnTaskInteractor(GetTaskIdForTaskDisplayIdMixin):
         )
         task_complete_details_dto = TaskCompleteDetailsDTO(
             task_id=task_id,
+            task_display_id='',
             task_boards_details=task_boards_details,
             actions_dto=actions_dto,
             field_dtos=fields_dto,

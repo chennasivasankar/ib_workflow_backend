@@ -41,7 +41,7 @@ RESPONSE_200_JSON = """
             "total_tasks": 1,
             "tasks": [
                 {
-                    "task_id": 1,
+                    "task_id": "string",
                     "task_overview_fields": [
                         {
                             "field_type": "PLAIN_TEXT",

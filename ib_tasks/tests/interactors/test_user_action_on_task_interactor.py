@@ -2,6 +2,7 @@ from unittest.mock import create_autospec, Mock
 
 import pytest
 
+from ib_tasks.interactors.storage_interfaces.actions_dtos import ActionDTO
 from ib_tasks.interactors.user_action_on_task_interactor \
     import UserActionOnTaskInteractor
 from ib_tasks.tests.common_fixtures.interactors import \
@@ -257,7 +258,7 @@ class TestUserActionOnTaskInteractor:
             self, mocker, storage, presenter, gof_storage,
             field_storage, stage_storage, task_storage_mock,
             action_storage_mock, task_stage_storage_mock,
-            elasticsearch_storage_mock):
+            elasticsearch_storage, task_stage_storage):
         # Arrange
         user_id = "user_1"
         board_id = "board_1"
@@ -494,6 +495,7 @@ class TestUserActionOnTaskInteractor:
         assert board_id == expected_action_id
         storage.update_task_stages \
             .assert_called_once_with(stage_ids=stage_ids, task_id=task_id)
+
         validation_mock_obj.called_once()
 
     def test_given_valid_details_returns_task_complete_details(
@@ -516,6 +518,8 @@ class TestUserActionOnTaskInteractor:
         mock_obj = mocker.patch(
             'ib_tasks.adapters.boards_service.BoardsService.validate_board_id')
         mock_obj.return_value = True
+        from ib_tasks.tests.factories.interactor_dtos import \
+            TaskCurrentStageDetailsDTOFactory
         task_current_stages_details = TaskCurrentStageDetailsDTOFactory()
         get_task_current_stages_mock.return_value = \
             task_current_stages_details
@@ -529,8 +533,12 @@ class TestUserActionOnTaskInteractor:
             task_stage_storage=task_stage_storage
 
         )
+        from ib_tasks.tests.common_fixtures.interactors \
+            import prepare_task_gof_and_fields_dto
         task_dto = prepare_task_gof_and_fields_dto()
         gof_and_fields_mock = self.gof_and_fields_mock(mocker, task_dto)
+        from ib_tasks.tests.common_fixtures.interactors \
+            import prepare_call_action_logic_update_stages_mock
         call_action_mock = prepare_call_action_logic_update_stages_mock(mocker)
         storage.validate_action.return_value = True
         storage.get_action_roles.return_value = ["ROLE_2", "ROLE_4"]

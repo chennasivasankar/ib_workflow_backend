@@ -347,7 +347,8 @@ class TestUpdateTaskInteractor:
             self, task_storage_mock, gof_storage_mock,
             create_task_storage_mock,
             storage_mock, field_storage_mock, stage_storage_mock,
-            elastic_storage_mock, presenter_mock, mock_object
+            elastic_storage_mock, presenter_mock, mock_object,
+            perform_base_validations_for_template_gofs_and_fields_mock
     ):
         # Arrange
         given_gof_ids = ["gof_0", "gof_1", "gof_2"]
@@ -364,6 +365,9 @@ class TestUpdateTaskInteractor:
         create_task_storage_mock.is_valid_task_id.return_value = True
         create_task_storage_mock.get_template_id_for_given_task.return_value \
             = "template_1"
+        from ib_tasks.exceptions.gofs_custom_exceptions import InvalidGoFIds
+        perform_base_validations_for_template_gofs_and_fields_mock.side_effect = \
+            InvalidGoFIds(given_gof_ids)
         interactor = UpdateTaskInteractor(
             task_storage=task_storage_mock, gof_storage=gof_storage_mock,
             create_task_storage=create_task_storage_mock,

@@ -1,63 +1,21 @@
 import abc
-from typing import List, Optional
-
+from typing import List
 from ib_tasks.interactors.global_constants_dtos import GlobalConstantsDTO
 from ib_tasks.interactors.storage_interfaces.actions_dtos \
     import ActionRolesDTO, ActionDTO
-from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldValueDTO, \
-    FieldWritePermissionRolesDTO
+from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldWritePermissionRolesDTO
 from ib_tasks.interactors.storage_interfaces.gof_dtos \
-    import GroupOfFieldsDTO, GOFMultipleEnableDTO, GoFWritePermissionRolesDTO
-from ib_tasks.interactors.storage_interfaces.stage_dtos import StageActionNamesDTO, StageValueDTO, StageDisplayValueDTO
-from ib_tasks.interactors.stages_dtos import StageActionDTO
+    import GOFMultipleEnableDTO, GoFWritePermissionRolesDTO
+from ib_tasks.interactors.storage_interfaces.stage_dtos import StageValueDTO, StageDisplayValueDTO
 from ib_tasks.interactors.storage_interfaces.status_dtos import StatusVariableDTO
 from ib_tasks.interactors.storage_interfaces.task_dtos import TaskDueMissingDTO
-from ib_tasks.interactors.task_dtos import TaskDueParametersDTO
+from ib_tasks.interactors.task_dtos import TaskDelayParametersDTO
 
 
 class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
-    def get_stage_action_names(
-            self, stage_ids: List[str]) -> List[StageActionNamesDTO]:
-        pass
-
-    @abc.abstractmethod
-    def get_valid_stage_ids(self, stage_ids: List[str]) -> Optional[List[str]]:
-        pass
-
-    @abc.abstractmethod
-    def create_stage_actions(self, stage_actions: List[StageActionDTO]):
-        pass
-
-    @abc.abstractmethod
-    def update_stage_actions(self, stage_actions: List[StageActionDTO]):
-        pass
-
-    @abc.abstractmethod
-    def delete_stage_actions(self, stage_actions: List[StageActionNamesDTO]):
-        pass
-
-    @abc.abstractmethod
-    def create_initial_stage_to_task_template(self, task_template_stage_dtos):
-        pass
-
-    @abc.abstractmethod
-    def get_valid_task_template_ids(self, task_template_ids: List[str]):
-        pass
-
-    @abc.abstractmethod
     def validate_task_id(self, task_id: int) -> bool:
-        pass
-
-    @abc.abstractmethod
-    def get_task_group_of_fields_dto(
-            self, task_id: int) -> List[GroupOfFieldsDTO]:
-        pass
-
-    @abc.abstractmethod
-    def get_fields_to_group_of_field_ids(
-            self, group_of_field_ids: List[str]) -> List[FieldValueDTO]:
         pass
 
     @abc.abstractmethod
@@ -67,7 +25,7 @@ class StorageInterface(abc.ABC):
 
     @abc.abstractmethod
     def get_enable_multiple_gofs_field_to_gof_ids(
-            self, template_id: str, gof_ids: List[str]) -> List[GOFMultipleEnableDTO]:
+            self, template_id: str) -> List[GOFMultipleEnableDTO]:
         pass
 
     @abc.abstractmethod
@@ -139,5 +97,5 @@ class StorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def add_due_delay_details(self, due_details: TaskDueParametersDTO):
+    def add_due_delay_details(self, due_details: TaskDelayParametersDTO):
         pass

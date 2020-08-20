@@ -414,10 +414,6 @@ class TestUpdateTaskStatusVariablesInteractor:
     @staticmethod
     def test_given_valid_details_updates_statuses(mocker, single_task_gof_dtos):
         # Arrange
-        mock_task_dict = {'gof2': {'field2': 'field_response2'},
-                          'gof3': {'field3': 'field_response3'},
-                          'gof1': {'field1': 'field_response1'},
-                          'status_variables': {'status_variable_1': 'value_1'}}
         action_id = 1
         task_id = 1
         storage = create_autospec(StorageInterface)
