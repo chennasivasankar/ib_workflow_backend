@@ -60,8 +60,8 @@ class AddTaskDueDetailsInteractor(GetTaskIdForTaskDisplayIdMixin):
 
     def _add_task_due_delay_details(self, due_details: TaskDelayParametersDTO):
         reason_id = due_details.reason_id
-        from ib_tasks.constants.enum import DELAYREASONS
-        for reason_dict in DELAYREASONS:
+        from ib_tasks.constants.enum import DELAY_REASONS
+        for reason_dict in DELAY_REASONS:
             if reason_dict['id'] == reason_id and reason_id != -1:
                 due_details.reason = reason_dict['reason']
 
@@ -69,8 +69,8 @@ class AddTaskDueDetailsInteractor(GetTaskIdForTaskDisplayIdMixin):
 
     @staticmethod
     def _validate_reason_id(reason_id):
-        from ib_tasks.constants.enum import DELAYREASONS
-        valid_reason_ids = [reason['id'] for reason in DELAYREASONS]
+        from ib_tasks.constants.enum import DELAY_REASONS
+        valid_reason_ids = [reason['id'] for reason in DELAY_REASONS]
         if reason_id not in valid_reason_ids:
             raise InvalidReasonIdException
 
