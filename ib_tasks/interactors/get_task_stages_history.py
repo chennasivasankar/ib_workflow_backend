@@ -1,7 +1,7 @@
 from typing import List
 
 from ib_tasks.adapters.dtos import AssigneeDetailsDTO
-from ib_tasks.constants.constants import STAGE_TYPE
+from ib_tasks.constants.constants import STAGE_TASK
 from ib_tasks.exceptions.task_custom_exceptions import InvalidTaskIdException, \
     InvalidTaskDisplayId
 from ib_tasks.interactors.mixins.get_task_id_for_task_display_id_mixin \
@@ -137,7 +137,7 @@ class GetTaskStagesHistory(GetTaskIdForTaskDisplayIdMixin):
         entity_dtos = [
             EntityTypeDTO(
                 entity_id=task_stage_dto.log_id,
-                entity_type=STAGE_TYPE
+                entity_type=STAGE_TASK
             )
             for task_stage_dto in task_stages_dto
         ]
