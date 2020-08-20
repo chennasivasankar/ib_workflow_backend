@@ -8,7 +8,6 @@ class UserProfileDTO:
     name: str
     email: Optional[str] = None
     profile_pic_url: Optional[str] = None
-    is_admin: bool = False
 
 
 @dataclass

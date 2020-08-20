@@ -268,6 +268,8 @@ TRANSITION_TEMPLATE_IS_NOT_RELATED_TO_GIVEN_STAGE_ACTION = (
 
 INVALID_STAGE_IDS = ("Invalid stage ids that you have sent are: {},"
                      "please send valid stage ids", "INVALID_STAGE_IDS")
+VIRTUAL_STAGE_IDS = ("Invalid stage ids that you have sent are: {},"
+                     "please send valid stage ids", "VIRTUAL_STAGE_IDS")
 STAGE_IDS_WITH_INVALID_PERMISSION_OF_ASSIGNEE = (
     "Stage ids with invalid permission of assignees that you have sent are: "
     "{},"

@@ -3,7 +3,7 @@ import pytest
 from ib_tasks.tests.factories.interactor_dtos import \
     StageAssigneeDetailsDTOFactory
 from ib_tasks.tests.factories.storage_dtos import StageActionDetailsDTOFactory, \
-    TaskGoFDTOFactory, TaskGoFFieldDTOFactory, StageAssigneeDTOFactory
+    TaskGoFDTOFactory, TaskGoFFieldDTOFactory, TaskStageAssigneeDTOFactory
 from ib_tasks.tests.factories.adapter_dtos import \
             AssigneeDetailsDTOFactory
 
@@ -30,7 +30,7 @@ class TestGetTaskPresenterImplementation:
         TaskGoFFieldDTOFactory.reset_sequence()
         StageActionDetailsDTOFactory.reset_sequence()
         AssigneeDetailsDTOFactory.reset_sequence()
-        StageAssigneeDTOFactory.reset_sequence()
+        TaskStageAssigneeDTOFactory.reset_sequence()
         StageAssigneeDetailsDTOFactory.reset_sequence()
 
     @pytest.fixture
@@ -129,10 +129,10 @@ class TestGetTaskPresenterImplementation:
     @pytest.fixture
     def stage_assignee_dtos(self):
         stage_assignee_dtos = [
-            StageAssigneeDTOFactory(
+            TaskStageAssigneeDTOFactory(
                 assignee_id="123e4567-e89b-12d3-a456-426614174001"),
-            StageAssigneeDTOFactory(assignee_id=None),
-            StageAssigneeDTOFactory(assignee_id=None)
+            TaskStageAssigneeDTOFactory(assignee_id=None),
+            TaskStageAssigneeDTOFactory(assignee_id=None)
         ]
         return stage_assignee_dtos
 

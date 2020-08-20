@@ -57,3 +57,22 @@ class UpdateUserProfilePresenterImplementation(
                          "res_status": EMAIL_ALREADY_IN_USE[1]}
         return self.prepare_400_bad_request_response(
             response_dict=response_dict)
+
+    def raise_invalid_role_ids_exception(self):
+        from ib_iam.constants.exception_messages import INVALID_ROLE_IDS
+        response_dict = {
+            "response": INVALID_ROLE_IDS[0],
+            "http_status_code": StatusCode.NOT_FOUND.value,
+            "res_status": INVALID_ROLE_IDS[1]
+        }
+        return self.prepare_404_not_found_response(response_dict=response_dict)
+
+    def raise_duplicate_role_ids_exception(self):
+        from ib_iam.constants.exception_messages import \
+            DUPLICATE_ROLE_IDS_FOR_UPDATE_USER_PROFILE
+        response_dict = {
+            "response": DUPLICATE_ROLE_IDS_FOR_UPDATE_USER_PROFILE[0],
+            "http_status_code": StatusCode.BAD_REQUEST.value,
+            "res_status": DUPLICATE_ROLE_IDS_FOR_UPDATE_USER_PROFILE[1]}
+        return self.prepare_400_bad_request_response(
+            response_dict=response_dict)

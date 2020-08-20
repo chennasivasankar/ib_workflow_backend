@@ -1,6 +1,4 @@
 from typing import List
-
-from ib_tasks.interactors.stages_dtos import StageRolesDTO
 from ib_tasks.interactors.storage_interfaces.stages_storage_interface import \
     StageStorageInterface
 
@@ -13,19 +11,10 @@ class GetAllowedStageIdsOfUserInteractor:
 
         user_role_ids = self._get_user_role_ids(user_id=user_id)
 
-    @staticmethod
-    def _check_for_roles_match(stage_roles_dto: StageRolesDTO,
-                               user_role_ids: List[str]) -> bool:
+        stage_ids = \
+            self.storage.get_permitted_stage_ids(user_role_ids=user_role_ids)
 
-        from ib_tasks.constants.constants import ALL_ROLES_ID
-        if ALL_ROLES_ID in stage_roles_dto.role_ids:
-            return True
-
-        is_common_roles_present = \
-            set(stage_roles_dto.role_ids).intersection(set(user_role_ids))
-        if is_common_roles_present:
-            return True
-        return False
+        return stage_ids
 
     @staticmethod
     def _get_user_role_ids(user_id: str) -> List[str]:

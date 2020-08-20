@@ -115,6 +115,7 @@ def prepare_fields_and_actions_dto(mocker):
         import GetTaskStageCompleteDetailsDTO
     from ib_tasks.tests.factories.interactor_dtos import FieldDetailsDTOFactory
     FieldDetailsDTOFactory.reset_sequence()
+    StageActionDetailsDTOFactory.reset_sequence()
     from ib_tasks.tests.factories.interactor_dtos import ActionDetailsDTOFactory
     ActionDetailsDTOFactory.reset_sequence()
     lst = [
