@@ -35,8 +35,6 @@ class GetTimerInteractor:
             duration_in_seconds=duration_in_seconds,
             start_datetime=present_datetime,
             is_running=True)
-        self.timer_storage.update_timer(timer_entity_dto=timer_entity_dto,
-                                        timer_details_dto=timer_details_dto)
         return timer_details_dto
 
     def _create_timer_if_not_exists(self, timer_entity_dto: TimerEntityDTO):
