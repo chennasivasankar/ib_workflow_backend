@@ -1,19 +1,17 @@
+import pytest
 import json
 from unittest.mock import create_autospec
-
-import pytest
-
 from ib_tasks.exceptions.task_custom_exceptions import \
     InvalidTransitionTemplateIds
-from ib_tasks.interactors.create_update_delete_stage_actions import \
-    EmptyStageDisplayLogic, DuplicateStageButtonsException, \
-    DuplicateStageActionNamesException, EmptyStageButtonText, \
+from ib_tasks.interactors.create_update_delete_stage_actions import (
+    EmptyStageDisplayLogic, DuplicateStageButtonsException,
+    DuplicateStageActionNamesException, EmptyStageButtonText,
     CreateUpdateDeleteStageActionsInteractor
-from ib_tasks.interactors.storage_interfaces.storage_interface \
-    import StorageInterface
+)
+from ib_tasks.interactors.storage_interfaces.action_storage_interface \
+    import ActionStorageInterface
 from ib_tasks.interactors.storage_interfaces.task_template_storage_interface\
-    import \
-    TaskTemplateStorageInterface
+    import TaskTemplateStorageInterface
 from ib_tasks.tests.factories.interactor_dtos import StageActionDTOFactory
 
 
@@ -29,7 +27,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         StageActionDTOFactory.reset_sequence(0)
         actions_dto = StageActionDTOFactory.create_batch(size=2)
         stage_ids = ["stage_id_1", "stage_id_2"]
-        storage = create_autospec(StorageInterface)
+        storage = create_autospec(ActionStorageInterface)
         template_storage = create_autospec(TaskTemplateStorageInterface)
         storage.get_valid_stage_ids.return_value = ["stage_id_1"]
         interactor = CreateUpdateDeleteStageActionsInteractor(
@@ -55,7 +53,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         actions_dto = StageActionDTOFactory.create_batch(size=2)
         stage_ids = ["stage_id_1", "stage_id_2"]
         transition_ids = ["template_1", "template_2"]
-        storage = create_autospec(StorageInterface)
+        storage = create_autospec(ActionStorageInterface)
         template_storage = create_autospec(TaskTemplateStorageInterface)
         storage.get_valid_stage_ids.return_value = ["stage_id_1", "stage_id_2"]
         template_storage.get_valid_transition_template_ids.return_value = []
@@ -87,7 +85,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         expected_stage_role_dict = json.dumps(expected_stage_roles)
         StageActionDTOFactory.reset_sequence(0)
         actions_dto = StageActionDTOFactory.create_batch(size=3)
-        storage = create_autospec(StorageInterface)
+        storage = create_autospec(ActionStorageInterface)
         template_storage = create_autospec(TaskTemplateStorageInterface)
         template_storage.get_valid_transition_template_ids.return_value =\
         ["template_1", "template_2", "template_3"]
@@ -120,7 +118,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         actions_dto = StageActionDTOFactory.create_batch(size=2)
         action_dto = StageActionDTOFactory(logic="")
         actions_dto.append(action_dto)
-        storage = create_autospec(StorageInterface)
+        storage = create_autospec(ActionStorageInterface)
         stage_ids = ["stage_id_1", "stage_id_2", "stage_id_3"]
         template_storage = create_autospec(TaskTemplateStorageInterface)
         template_storage.get_valid_transition_template_ids.return_value = \
@@ -155,7 +153,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
             ["template_1", "template_2",
              "template_3"
              ]
-        storage = create_autospec(StorageInterface)
+        storage = create_autospec(ActionStorageInterface)
         stage_ids = ["stage_id_1", "stage_id_2", "stage_id_3"]
         storage.get_valid_stage_ids.return_value = stage_ids
         interactor = CreateUpdateDeleteStageActionsInteractor(
@@ -186,7 +184,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         )
         action_dto = StageActionDTOFactory(stage_id="stage_id_2", button_text="pay")
         actions_dto.append(action_dto)
-        storage = create_autospec(StorageInterface)
+        storage = create_autospec(ActionStorageInterface)
         template_storage = create_autospec(TaskTemplateStorageInterface)
         template_storage.get_valid_transition_template_ids.return_value = \
             ["template_1", "template_2",
@@ -222,7 +220,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         )
         action_dto = StageActionDTOFactory(stage_id="stage_id_2")
         actions_dto.append(action_dto)
-        storage = create_autospec(StorageInterface)
+        storage = create_autospec(ActionStorageInterface)
         template_storage = create_autospec(TaskTemplateStorageInterface)
         template_storage.get_valid_transition_template_ids.return_value = \
             ["template_1", "template_2",
@@ -254,7 +252,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         stage_actions_dto = []
         create_stage_actions_dto = actions_dto
         stage_ids = ["stage_id_1", "stage_id_2"]
-        storage = create_autospec(StorageInterface)
+        storage = create_autospec(ActionStorageInterface)
         template_storage = create_autospec(TaskTemplateStorageInterface)
         template_storage.get_valid_transition_template_ids.return_value = \
             ["template_1", "template_2",
@@ -294,7 +292,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         ]
         update_stage_actions_dto = [actions_dto[0]]
         stage_ids = ["stage_id_1", "stage_id_2"]
-        storage = create_autospec(StorageInterface)
+        storage = create_autospec(ActionStorageInterface)
         template_storage = create_autospec(TaskTemplateStorageInterface)
         template_storage.get_valid_transition_template_ids.return_value = \
             ["template_1", "template_2",
@@ -342,7 +340,7 @@ class TestCreateUpdateDeleteStageActionsInteractor:
         ]
         update_stage_actions_dto = [actions_dto[0]]
         stage_ids = ["stage_id_1", "stage_id_2"]
-        storage = create_autospec(StorageInterface)
+        storage = create_autospec(ActionStorageInterface)
         template_storage = create_autospec(TaskTemplateStorageInterface)
         template_storage.get_valid_transition_template_ids.return_value = \
             ["template_1", "template_2",
