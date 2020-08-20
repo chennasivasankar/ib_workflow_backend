@@ -50,3 +50,9 @@ class CompleteTimerDetailsDTO(TimerEntityDTO):
     duration_in_seconds: int = 0
     is_running: bool = False
     start_datetime: datetime = None
+
+
+@dataclass
+class EntityWithTimerDTO(TimerEntityDTO):
+    duration_in_seconds: int = 0
+    is_running: bool = False

@@ -82,19 +82,18 @@ class TestGetBulkTimerDetailsForGivenEntities:
         return timer_details
 
     @pytest.fixture
-    def timer_details_dtos(self, expected_timer_details):
-        from ib_utility_tools.tests.factories.storage_dtos import \
-            CompleteTimerDetailsDTOFactory
-        timer_details_dtos = [
-            CompleteTimerDetailsDTOFactory(
+    def entity_with_timer_dtos(self, expected_timer_details):
+        from ib_utility_tools.interactors.storage_interfaces.dtos import \
+            EntityWithTimerDTO
+        entity_with_timer_dtos = [
+            EntityWithTimerDTO(
                 entity_id=timer["entity_id"],
                 entity_type=timer["entity_type"],
                 duration_in_seconds=timer["duration_in_seconds"],
-                is_running=timer["is_running"],
-                start_datetime=timer["start_datetime"]
+                is_running=timer["is_running"]
             ) for timer in expected_timer_details
         ]
-        return timer_details_dtos
+        return entity_with_timer_dtos
 
     @pytest.mark.django_db
     def test_given_invalid_entities_raises_invalid_entities_exception(
@@ -116,12 +115,12 @@ class TestGetBulkTimerDetailsForGivenEntities:
     @freeze_time("2020-08-07 18:00:00")
     def test_given_valid_entities_returns_timer_details_dtos(
             self, service_interface, timer_objects, timer_entity_dtos,
-            timer_details_dtos):
+            entity_with_timer_dtos):
         # Arrange
 
         # Assert
-        actual_timer_details_dtos = \
+        actual_entity_with_timer_dtos = \
             service_interface.get_bulk_timer_details_for_given_entities(
                 timer_entity_dtos=timer_entity_dtos)
 
-        assert actual_timer_details_dtos == timer_details_dtos
+        assert actual_entity_with_timer_dtos == entity_with_timer_dtos
