@@ -13,16 +13,14 @@ class GetTimersBulkInteractor:
 
     def get_timers_bulk(self, timer_entity_dtos: List[TimerEntityDTO]) \
             -> List[EntityWithTimerDTO]:
-        complete_timer_details_dtos_from_db = \
+        complete_timer_details_dtos = \
             self.timer_storage.get_timer_details_dtos_for_given_entities(
                 timer_entity_dtos=timer_entity_dtos)
         self._validate_timer_entity_dtos(
-            complete_timer_details_dtos=complete_timer_details_dtos_from_db,
+            complete_timer_details_dtos=complete_timer_details_dtos,
             timer_entity_dtos=timer_entity_dtos)
-        complete_timer_details_dtos = \
-            self._update_running_timers_and_get_complete_timer_details_dtos(
-                complete_timer_details_dtos=complete_timer_details_dtos_from_db
-            )
+        self._update_complete_timer_details_dtos_of_timers_in_running(
+            complete_timer_details_dtos=complete_timer_details_dtos)
         entity_with_timer_dtos = [
             self._convert_complete_timer_details_dto_to_entity_with_timer_dto(
                 complete_timer_details_dto=complete_timer_details_dto
@@ -42,23 +40,15 @@ class GetTimersBulkInteractor:
         )
         return entity_with_timer_dto
 
-    def _update_running_timers_and_get_complete_timer_details_dtos(
-            self, complete_timer_details_dtos: List[CompleteTimerDetailsDTO]) \
-            -> List[CompleteTimerDetailsDTO]:
-        updated_complete_timer_details_dtos = []
+    def _update_complete_timer_details_dtos_of_timers_in_running(
+            self, complete_timer_details_dtos: List[CompleteTimerDetailsDTO]):
         for complete_timer_details_dto in complete_timer_details_dtos:
             if complete_timer_details_dto.is_running is True:
-                updated_complete_timer_details_dtos.append(
-                    self._update_and_get_timer_details_dto(
-                        complete_timer_details_dto=complete_timer_details_dto)
-                )
-            else:
-                updated_complete_timer_details_dtos.append(
-                    complete_timer_details_dto)
-        return complete_timer_details_dtos
+                self._update_complete_timer_details_dto(
+                    complete_timer_details_dto=complete_timer_details_dto)
 
     @staticmethod
-    def _update_and_get_timer_details_dto(
+    def _update_complete_timer_details_dto(
             complete_timer_details_dto: CompleteTimerDetailsDTO):
         present_datetime = datetime.datetime.now()
         time_delta = \
@@ -67,7 +57,6 @@ class GetTimersBulkInteractor:
             complete_timer_details_dto.duration_in_seconds + time_delta.seconds
         complete_timer_details_dto.duration_in_seconds = duration_in_seconds
         complete_timer_details_dto.start_datetime = present_datetime
-        return complete_timer_details_dto
 
     @staticmethod
     def _validate_timer_entity_dtos(
