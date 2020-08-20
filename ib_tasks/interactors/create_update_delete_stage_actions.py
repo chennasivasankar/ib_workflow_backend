@@ -50,7 +50,7 @@ class CreateUpdateDeleteStageActionsInteractor:
         self._validations_for_stage_ids(stage_ids=stage_ids)
         transition_template_ids = self._get_transition_template_ids(
             actions_dto)
-        self._validtions_for_transition_template_ids(transition_template_ids)
+        self._validations_for_transition_template_ids(transition_template_ids)
         self._validations_for_stage_roles(actions_dto)
         self._validations_for_empty_stage_display_logic(actions_dto)
         self._validations_for_empty_button_texts(actions_dto)
@@ -58,7 +58,7 @@ class CreateUpdateDeleteStageActionsInteractor:
         self._validations_for_duplicate_stage_actions(actions_dto)
         self._create_update_delete_stage_actions(actions_dto)
 
-    def _validtions_for_transition_template_ids(self,
+    def _validations_for_transition_template_ids(self,
                                                 transition_template_ids: List[
                                                     str]):
         valid_transition_template_ids = self.template_storage. \
