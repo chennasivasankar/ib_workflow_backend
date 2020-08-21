@@ -219,8 +219,7 @@ class CreateTaskInteractor:
         self._validate_task_details(task_dto)
         self._validate_same_gof_order(task_dto.gof_fields_dtos)
         action_type = self.action_storage.get_action_type_for_given_action_id(
-            action_id=task_dto.action_id
-        )
+            action_id=task_dto.action_id)
         base_validations_interactor = \
             TemplateGoFsFieldsBaseValidationsInteractor(
                 self.task_storage, self.gof_storage,
