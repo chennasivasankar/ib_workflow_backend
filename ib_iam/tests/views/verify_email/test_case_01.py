@@ -42,6 +42,8 @@ class TestCase01VerifyEmailAPITestCase(TestUtils):
             name="Baba",
             is_email_verify=False
         )
-        from ib_iam.tests.common_fixtures.adapters.user_service import \
-            update_user_profile_success_adapter_mock
-        update_user_profile_success_adapter_mock(mocker=mocker)
+        from ib_iam.tests.common_fixtures.adapters.auth_service_adapter_mocks import \
+            update_is_email_verified_value_mock
+        update_is_email_verified_value_mock = update_is_email_verified_value_mock(
+            mocker=mocker)
+        update_is_email_verified_value_mock.return_value = None
