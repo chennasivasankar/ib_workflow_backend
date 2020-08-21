@@ -1,5 +1,4 @@
 import mock
-import mock
 import pytest
 
 from ib_tasks.interactors.get_transition_template_interactor \
