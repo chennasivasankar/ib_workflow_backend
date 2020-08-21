@@ -36,7 +36,9 @@ class ElasticSearchStorageInterface(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def filter_tasks(self, filter_dtos: List[ApplyFilterDTO], offset: int, limit: int) -> Tuple[List[int], int]:
+    def filter_tasks(
+            self, filter_dtos: List[ApplyFilterDTO], offset: int, limit:
+            int, stage_ids: List[str]) -> Tuple[List[int], int]:
         pass
 
     @abc.abstractmethod

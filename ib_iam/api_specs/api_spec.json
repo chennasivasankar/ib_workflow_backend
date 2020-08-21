@@ -257,7 +257,6 @@
             }
           },
           "required": [
-            "company_id",
             "role_ids",
             "team_ids"
           ]
@@ -748,14 +747,6 @@
     },
     "LevelHierarchyPathParameter": {
       "name": "level_hierarchy",
-      "in": "path",
-      "required": true,
-      "description": "level hierarchy to identity particular level of peoples in that team",
-      "type": "integer",
-      "format": "int64"
-    },
-    "MemberLevelHierarchyPathParameter": {
-      "name": "member_level_hierarchy",
       "in": "path",
       "required": true,
       "description": "level hierarchy to identity particular level of peoples in that team",
@@ -2781,9 +2772,7 @@
             "$ref": "#/responses/GetTeamMembersOfLevelHierarchySuccessResponse"
           }
         }
-      }
-    },
-    "/team/{team_id}/{member_level_hierarchy}/members/v1/": {
+      },
       "post": {
         "summary": "Add Members To Superiors",
         "operationId": "add_members_to_superiors",
@@ -2799,7 +2788,7 @@
             "$ref": "#/parameters/TeamIdPathParameter"
           },
           {
-            "$ref": "#/parameters/MemberLevelHierarchyPathParameter"
+            "$ref": "#/parameters/LevelHierarchyPathParameter"
           },
           {
             "$ref": "#/parameters/AddMembersToSuperiorsParameter"

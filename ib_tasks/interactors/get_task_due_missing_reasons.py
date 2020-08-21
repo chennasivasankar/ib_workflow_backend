@@ -33,7 +33,7 @@ class GetTaskDueMissingReasonsInteractor(GetTaskIdForTaskDisplayIdMixin):
         return presenter.get_response_for_get_task_due_details(task_dtos)
 
     def get_task_due_missing_reasons(self, task_id: int, user_id: str):
-        self._validate_if_task_is_assigned_to_user(task_id, user_id)
+        # self._validate_if_task_is_assigned_to_user(task_id, user_id)
         task_dtos = self._get_task_reasons(task_id)
         return task_dtos
 

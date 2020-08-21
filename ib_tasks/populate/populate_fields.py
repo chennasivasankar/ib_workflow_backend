@@ -6,14 +6,13 @@ from ib_tasks.interactors.storage_interfaces.fields_dtos import FieldDTO, \
 
 
 class PopulateFields:
-    def create_fields(self):
-        from ib_tasks.constants.constants import GOOGLE_SHEET_NAME, \
-            FIELD_SUB_SHEET_TITLE
+    def create_fields(self, spread_sheet_name: str):
+        from ib_tasks.constants.constants import FIELD_SUB_SHEET_TITLE
 
         from ib_tasks.interactors.create_or_update_fields_interactor \
             import CreateOrUpdateFieldsInteractor
         from ib_tasks.utils.get_google_sheet import get_google_sheet
-        sheet = get_google_sheet(sheet_name=GOOGLE_SHEET_NAME)
+        sheet = get_google_sheet(sheet_name=spread_sheet_name)
 
         fields_config_sheet = sheet.worksheet(FIELD_SUB_SHEET_TITLE)
         field_records = fields_config_sheet.get_all_records()

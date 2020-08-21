@@ -409,6 +409,46 @@ class TestEditNewUserInteractor:
 
         # Assert
         adapter_mock.assert_called_once()
+        storage_mock.check_is_exists_company_id.assert_called_once_with(
+            company_id=company_id)
+        storage_mock.add_roles_to_the_user.assert_called_once()
+        storage_mock.add_user_to_the_teams.assert_called_once()
+        storage_mock.update_user_details.assert_called_once()
+        presenter_mock.edit_user_success_response.assert_called_once()
+
+    def test_edit_user_given_company_is_none_returns_success_response(
+            self, storage_mock, presenter_mock, mocker, elastic_storage):
+        # Arrange
+        user_id = "user_1"
+        admin_user_id = "user_0"
+        name = "username"
+        email = "user@gmail.com"
+        team_ids = ['team0', 'team1']
+        role_ids = ['role0', 'role1']
+        company_id = None
+
+        interactor = EditUserInteractor(
+            user_storage=storage_mock, elastic_storage=elastic_storage
+        )
+        from ib_iam.tests.common_fixtures.adapters.user_service \
+            import prepare_update_user_profile_adapter_mock
+        adapter_mock = prepare_update_user_profile_adapter_mock(mocker=mocker)
+        presenter_mock.edit_user_success_response.return_value = Mock()
+
+        add_user_details_dto = AddUserDetailsDTOFactory(
+            name=name, email=email, team_ids=team_ids, role_ids=role_ids,
+            company_id=company_id
+        )
+
+        # Act
+        interactor.edit_user_wrapper(
+            admin_user_id=admin_user_id, user_id=user_id,
+            add_user_details_dto=add_user_details_dto,
+            presenter=presenter_mock)
+
+        # Assert
+        adapter_mock.assert_called_once()
+        storage_mock.check_is_exists_company_id.assert_not_called()
         storage_mock.add_roles_to_the_user.assert_called_once()
         storage_mock.add_user_to_the_teams.assert_called_once()
         storage_mock.update_user_details.assert_called_once()

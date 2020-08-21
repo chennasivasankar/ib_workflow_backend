@@ -14,7 +14,6 @@ from ib_tasks.interactors.presenter_interfaces.filter_presenter_interface \
 from ib_tasks.interactors.storage_interfaces.fields_storage_interface import FieldsStorageInterface
 from ib_tasks.interactors.storage_interfaces.filter_storage_interface \
     import FilterStorageInterface
-from ib_tasks.interactors.user_role_validation_interactor import UserRoleValidationInteractor
 
 
 class FilterInteractor:
@@ -170,14 +169,6 @@ class FilterInteractor:
         )
         return response
 
-    @staticmethod
-    def _get_filter_ids(filters_dto: List[FilterDTO]):
-
-        return [
-            filter_dto.filter_id
-            for filter_dto in filters_dto
-        ]
-
     def _validate_filter_data(
             self, filter_dto: CreateFilterDTO,
             condition_dtos: List[CreateConditionDTO]):
@@ -195,14 +186,22 @@ class FilterInteractor:
         ]
         if invalid_field_ids:
             raise FieldIdsNotBelongsToTemplateId(field_ids=field_ids)
+        from ib_tasks.adapters.service_adapter import get_service_adapter
+        service_adapter = get_service_adapter()
+        user_roles = service_adapter.roles_service.get_user_role_ids(
+            user_id=filter_dto.user_id
+        )
+        self.filter_storage.validate_user_roles_with_field_ids_roles(
+            user_roles=user_roles, field_ids=field_ids
+        )
 
-        interactor = UserRoleValidationInteractor()
-        permitted_field_ids = interactor.get_field_ids_having_write_permission_for_user(
-            field_storage=self.field_storage,
-            user_id=filter_dto.user_id,
-            field_ids=field_ids)
-        if not set(valid_field_ids).issubset(permitted_field_ids):
-            raise UserNotHaveAccessToFields
+    @staticmethod
+    def _get_filter_ids(filters_dto: List[FilterDTO]):
+
+        return [
+            filter_dto.filter_id
+            for filter_dto in filters_dto
+        ]
 
     def _validate_filter_id(self, filter_id: int):
         self.filter_storage.validate_filter_id(

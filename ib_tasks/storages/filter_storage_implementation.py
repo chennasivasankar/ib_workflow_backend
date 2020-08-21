@@ -88,8 +88,8 @@ class FilterStorageImplementation(FilterStorageInterface):
         from ib_tasks.constants.constants import ALL_ROLES_ID
         updated_user_role = user_roles + [ALL_ROLES_ID]
         fields_user_roles = sorted(list(set(fields_user_roles)))
-        invalid_user = not (updated_user_role == fields_user_roles\
-                            or set(fields_user_roles).issubset(set(updated_user_role)))
+        invalid_user = not (updated_user_role == fields_user_roles or set(fields_user_roles).issubset(
+                    set(updated_user_role)))
         if invalid_user:
             raise UserNotHaveAccessToFields
 
@@ -182,7 +182,8 @@ class FilterStorageImplementation(FilterStorageInterface):
             filter_id=filter_id
         )
 
-    def get_enabled_filters_dto_to_user(self, user_id: str) -> List[ApplyFilterDTO]:
+    def get_enabled_filters_dto_to_user(self, user_id: str) -> List[
+        ApplyFilterDTO]:
         filter_objects = FilterCondition.objects.filter(
             filter__created_by=user_id, filter__is_selected=Status.ENABLED.value
         ).annotate(template_id=F('filter__template_id'))

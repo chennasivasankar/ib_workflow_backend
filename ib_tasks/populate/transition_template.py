@@ -5,10 +5,9 @@ from ib_tasks.populate.populate_template import PopulateTemplate
 
 class PopulateTransitionTemplates(PopulateTemplate):
 
-    def populate_transition_templates(self):
+    def populate_transition_templates(self, spread_sheet_name: str):
         from ib_tasks.utils.get_google_sheet import get_google_sheet
-        from ib_tasks.constants.constants import GOOGLE_SHEET_NAME
-        sheet = get_google_sheet(sheet_name=GOOGLE_SHEET_NAME)
+        sheet = get_google_sheet(sheet_name=spread_sheet_name)
 
         from ib_tasks.constants.constants import TRANSITION_TEMPLATES_SUB_SHEET
         task_templates_dicts = \

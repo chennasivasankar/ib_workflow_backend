@@ -8,10 +8,9 @@ Author: Pavankumar Pamuru
 class GetDataFromSheet:
 
     @staticmethod
-    def get_data_from_sub_sheet(sub_sheet_name: str):
+    def get_data_from_sub_sheet(spread_sheet_name: str, sub_sheet_name: str):
         from ib_boards.utils.read_google_sheet import read_google_sheet
-        from ib_boards.constants.constants import GOOGLE_SHEET_NAME
-        sheet = read_google_sheet(sheet_name=GOOGLE_SHEET_NAME)
+        sheet = read_google_sheet(sheet_name=spread_sheet_name)
         fields_config_sheet = sheet.worksheet(sub_sheet_name)
         field_records = fields_config_sheet.get_all_records()
         return field_records
