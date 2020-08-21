@@ -21,6 +21,7 @@ class CreateCommentInteractor:
             self, presenter: CreateCommentPresenterInterface,
             create_complete_comment_dto: CreateCompleteCommentDTO
     ):
+        # TODO: if comment_content empty we should have atleast multimedia input
         from ib_discussions.adapters.auth_service import InvalidUserIds
         try:
             response = self._create_comment_for_discussion_response(
