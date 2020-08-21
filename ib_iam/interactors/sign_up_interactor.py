@@ -69,6 +69,7 @@ class SignupInteractor(ValidationMixin):
         user_profile_dto = UserProfileDTO(
             user_id=user_id, name=name,
             email=email, is_email_verify=False)
+        print(user_profile_dto, "user email verify not found")
         adapter.user_service.update_user_profile(
             user_id=user_id, user_profile_dto=user_profile_dto)
         from ib_iam.interactors.send_verify_email_link_interactor import \
