@@ -77,7 +77,8 @@ def validation_for_action_dict(actions_dict: List[Dict]):
             Optional("button_color"): str,
             "action_type": str,
             "transition_template_id": str
-        }]
+        }],
+        ignore_extra_keys=True
     )
     try:
         schema.validate(actions_dict)

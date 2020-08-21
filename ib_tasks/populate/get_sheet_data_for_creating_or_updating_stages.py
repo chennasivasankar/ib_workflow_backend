@@ -55,7 +55,8 @@ class GetSheetDataForStages:
                 "Stage Display Logic": str,
                 "Roles": str,
                 "Stage Color": str
-            }]
+            }],
+            ignore_extra_keys=True
         )
         try:
             schema.validate(actions_dict)
