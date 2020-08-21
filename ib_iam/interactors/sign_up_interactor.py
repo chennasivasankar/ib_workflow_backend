@@ -64,21 +64,16 @@ class SignupInteractor(ValidationMixin):
         #         raise AccountWithThisEmailAlreadyExistsException
         # except UserAccountDoesNotExist:
         user_id = self._create_user_account(email=email, password=password,
-                                                name=name)
-        from ib_iam.adapters.dtos import UserProfileDTO
-        user_profile_dto = UserProfileDTO(
-            user_id=user_id, name=name,
-            email=email, is_email_verify=False)
-        print(user_profile_dto, "user email verify not found")
-        adapter.user_service.update_user_profile(
-            user_id=user_id, user_profile_dto=user_profile_dto)
+                                            name=name)
+        adapter.auth_service.update_is_email_verified_value_in_ib_user_profile_details(
+            user_id=user_id, is_email_verified=False)
+        self.user_storage.create_user(user_id=user_id, is_admin=False,
+                                      name=name)
         from ib_iam.interactors.send_verify_email_link_interactor import \
             SendVerifyEmailLinkInteractor
         interactor = SendVerifyEmailLinkInteractor()
         interactor.send_verification_email(
             user_id=user_id, name=name, email=email)
-        self.user_storage.create_user(user_id=user_id, is_admin=False,
-                                      name=name)
 
     @staticmethod
     def _create_user_account(email: str, password: str,
