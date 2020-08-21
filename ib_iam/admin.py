@@ -36,6 +36,7 @@ class UserRoleAdmin(admin.ModelAdmin):
     list_display = ("user_id", "_role_id")
     search_fields = ["user_id"]
     list_filter = ["user_id"]
+    raw_id_fields = ("role",)
 
     @staticmethod
     def _role_id(obj):
@@ -46,6 +47,7 @@ class UserTeamAdmin(admin.ModelAdmin):
     list_display = ("user_id", "team_id", "team_member_level",
                     "immediate_superior_team_user")
     search_fields = ["user_id"]
+    raw_id_fields = ("team",)
 
 
 class TeamMemberLevelAdmin(admin.ModelAdmin):

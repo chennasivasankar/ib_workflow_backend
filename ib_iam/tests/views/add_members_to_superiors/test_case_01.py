@@ -19,16 +19,16 @@ class TestCase01AddMembersToSuperiorsAPITestCase(TestUtils):
         member_level_hierarchy = 0
         user_team_objects_of_level_one = prepare_user_teams_setup
         add_members_to_superior = [{
-                "immediate_superior_user_id": user_team_objects_of_level_one[0].id,
-                "member_ids": [
-                    "40be920b-7b4c-49e7-8adb-41a0c18da848",
-                    "50be920b-7b4c-49e7-8adb-41a0c18da848"
-                ]
-            }, {
-                "immediate_superior_user_id": user_team_objects_of_level_one[1].id,
-                "member_ids": [
-                    "60be920b-7b4c-49e7-8adb-41a0c18da848"
-                ]
+            "immediate_superior_user_id": user_team_objects_of_level_one[0].id,
+            "member_ids": [
+                "40be920b-7b4c-49e7-8adb-41a0c18da848",
+                "50be920b-7b4c-49e7-8adb-41a0c18da848"
+            ]
+        }, {
+            "immediate_superior_user_id": user_team_objects_of_level_one[1].id,
+            "member_ids": [
+                "60be920b-7b4c-49e7-8adb-41a0c18da848"
+            ]
         }]
 
         body = {
@@ -40,12 +40,12 @@ class TestCase01AddMembersToSuperiorsAPITestCase(TestUtils):
         }
         query_params = {}
         headers = {}
-        print("body", body)
-        response = self.make_api_call(body=body,
-                                      path_params=path_params,
-                                      query_params=query_params,
-                                      headers=headers,
-                                      snapshot=snapshot)
+        self.make_api_call(
+            body=body,
+            path_params=path_params,
+            query_params=query_params,
+            headers=headers,
+            snapshot=snapshot)
 
         from ib_iam.models import UserTeam
         user_team_objects = UserTeam.objects.filter(

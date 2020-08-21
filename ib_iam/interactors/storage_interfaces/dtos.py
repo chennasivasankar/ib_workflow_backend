@@ -47,8 +47,8 @@ class UserTeamDTO:
 @dataclass
 class UserCompanyDTO:
     user_id: str
-    company_id: str
-    company_name: str
+    company_id: Optional[str] = None
+    company_name: Optional[str] = None
 
 
 @dataclass
@@ -130,8 +130,8 @@ class EmployeeDTO:
 @dataclass
 class CompanyNameLogoAndDescriptionDTO:
     name: str
-    description: str
-    logo_url: Optional[str] = None
+    description: Optional[str]
+    logo_url: Optional[str]
 
 
 @dataclass

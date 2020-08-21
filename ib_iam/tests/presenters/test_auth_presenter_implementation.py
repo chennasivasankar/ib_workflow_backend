@@ -11,7 +11,8 @@ class TestAuthPresenterImplementation:
             AuthPresenterImplementation
         presenter = AuthPresenterImplementation()
 
-        from ib_iam.presenters.auth_presenter_implementation import INVALID_EMAIL
+        from ib_iam.presenters.auth_presenter_implementation import \
+            INVALID_EMAIL
         expected_response = INVALID_EMAIL[0]
         expected_http_status_code = StatusCode.BAD_REQUEST.value
         expected_res_status = INVALID_EMAIL[1]
@@ -179,8 +180,8 @@ class TestAuthPresenterImplementation:
         from ib_iam.constants.config import REQUIRED_PASSWORD_MIN_LENGTH
         expected_response \
             = PASSWORD_MIN_LENGTH[0].format(
-                password_min_length=REQUIRED_PASSWORD_MIN_LENGTH
-            )
+            password_min_length=REQUIRED_PASSWORD_MIN_LENGTH
+        )
         expected_http_status_code = StatusCode.BAD_REQUEST.value
         expected_res_status = PASSWORD_MIN_LENGTH[1]
 
@@ -218,3 +219,25 @@ class TestAuthPresenterImplementation:
         assert response['response'] == expected_response
         assert response['http_status_code'] == expected_http_status_code
         assert response['res_status'] == expected_res_status
+
+    def test_raise_exception_for_login_with_not_verify_email(self):
+        # Arrange
+        from ib_iam.presenters.auth_presenter_implementation import \
+            AuthPresenterImplementation
+        presenter = AuthPresenterImplementation()
+
+        from ib_iam.presenters.auth_presenter_implementation import \
+            EMAIL_IS_NOT_VERIFY
+        expected_response = EMAIL_IS_NOT_VERIFY[0]
+        expected_http_status_code = StatusCode.BAD_REQUEST.value
+        expected_res_status = EMAIL_IS_NOT_VERIFY[1]
+
+        # Act
+        response = presenter.raise_exception_for_login_with_not_verify_email()
+
+        # Assert
+        actual_response = json.loads(response.content)
+
+        assert actual_response['response'] == expected_response
+        assert actual_response['http_status_code'] == expected_http_status_code
+        assert actual_response['res_status'] == expected_res_status

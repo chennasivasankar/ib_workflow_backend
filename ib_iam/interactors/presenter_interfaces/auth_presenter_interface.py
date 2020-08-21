@@ -69,6 +69,10 @@ class AuthPresenterInterface(ABC):
     def get_update_user_password_success_response(self):
         pass
 
+    @abstractmethod
+    def raise_exception_for_login_with_not_verify_email(self):
+        pass
+
 
 class GetUserProfilePresenterInterface(ABC):
     @abstractmethod
@@ -83,4 +87,62 @@ class GetUserProfilePresenterInterface(ABC):
     def prepare_response_for_get_user_profile(
             self,
             user_with_extra_details_dto: UserWithExtraDetailsDTO):
+        pass
+
+
+class CreateUserAccountPresenterInterface(ABC):
+    @abstractmethod
+    def raise_account_already_exists_exception(self):
+        pass
+
+    @abstractmethod
+    def raise_password_not_matched_with_criteria_exception(self):
+        pass
+
+    @abstractmethod
+    def raise_invalid_email_exception(self):
+        pass
+
+    @abstractmethod
+    def raise_invalid_domain_exception(self):
+        pass
+
+    @abstractmethod
+    def get_response_for_create_user_account(self):
+        pass
+
+    @abstractmethod
+    def raise_invalid_name_length_exception(self):
+        pass
+
+    @abstractmethod
+    def raise_name_should_not_contain_special_characters_exception(self):
+        pass
+
+
+class SendVerifyEmailLinkPresenterInterface(ABC):
+    @abstractmethod
+    def raise_account_does_not_exist_exception(self):
+        pass
+
+    @abstractmethod
+    def raise_email_already_verified_exception(self):
+        pass
+
+    @abstractmethod
+    def get_response_send_verify_email_link(self):
+        pass
+
+
+class VerifyEmailPresenterInterface(ABC):
+    @abstractmethod
+    def raise_email_does_not_exist_to_verify_exception(self):
+        pass
+
+    @abstractmethod
+    def raise_email_already_verified_exception(self):
+        pass
+
+    @abstractmethod
+    def get_response_for_verified_email(self):
         pass

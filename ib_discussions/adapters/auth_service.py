@@ -53,20 +53,13 @@ class AuthService:
         ]
         return converted_user_profile_dtos
 
-    def _convert_to_required_user_profile_dto(self, user_details_dto):
+    @staticmethod
+    def _convert_to_required_user_profile_dto(user_details_dto):
         converted_user_profile_dto = UserProfileDTO(
             user_id=user_details_dto.user_id,
             name=user_details_dto.name,
-            profile_pic_url=self._get_user_profile_pic_url(
-                user_details_dto.profile_pic_url)
-        )
+            profile_pic_url=user_details_dto.profile_pic_url)
         return converted_user_profile_dto
-
-    @staticmethod
-    def _get_user_profile_pic_url(profile_pic_url: str) -> str:
-        if profile_pic_url is None:
-            profile_pic_url = ""
-        return profile_pic_url
 
     @staticmethod
     def validate_user_ids(user_ids: List[str]):

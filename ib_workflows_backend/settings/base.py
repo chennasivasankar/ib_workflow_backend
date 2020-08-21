@@ -350,3 +350,7 @@ RESET_PASSWORD_LINK = \
     os.environ.get(
         "RESET_PASSWORD_LINK",
         'https://ib-workflows-web-beta.apigateway.in/update-password?token=')
+
+USER_VERIFICATION_EMAIL_LINK = os.environ.get(
+    "USER_VERIFICATION_EMAIL_LINK",
+    "https://ib-workflows-web-alpha.apigateway.in/verify-email?token=")
