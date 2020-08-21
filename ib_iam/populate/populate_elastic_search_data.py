@@ -4,7 +4,9 @@ from ib_iam.documents.elastic_docs import (
     USER_INDEX_NAME, COUNTRY_INDEX_NAME, STATE_INDEX_NAME,
     CITY_INDEX_NAME
 )
-from ib_iam.models import UserDetails, Country, State, City
+from ib_iam.models import (
+    UserDetails, Country, State, City, ElasticUserIntermediary
+)
 from ib_iam.storages.elastic_storage_implementation \
     import ElasticStorageImplementation
 
@@ -19,8 +21,8 @@ def populate_data():
 def populate_existing_users_to_elastic_search_database():
 
     storage = ElasticStorageImplementation()
-    user_objs = UserDetails.objects.all()
-
+    user_objs = UserDetails.objects.filter(is_admin=False)
+    ElasticUserIntermediary.objects.all().delete()
     for user_obj in user_objs:
         elastic_id = storage.create_elastic_user(
             user_id=user_obj.user_id, name=user_obj.name
