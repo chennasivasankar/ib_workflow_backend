@@ -70,7 +70,7 @@ class GetTaskDetailsByFilterInteractor:
             self, user_id: str, limit: int, offset: int, view_type: ViewType):
 
         from ib_tasks.adapters.service_adapter import get_service_adapter
-        roles_service = get_service_adapter().roles_service()
+        roles_service = get_service_adapter().roles_service
         user_roles = roles_service.get_user_role_ids(user_id=user_id)
         stage_ids_having_actions = self.stage_storage\
             .get_stage_ids_having_actions(user_roles=user_roles)
