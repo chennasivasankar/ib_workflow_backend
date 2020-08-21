@@ -1,15 +1,11 @@
 from ib_iam.exceptions.custom_exceptions import InvalidEmail, \
     InvalidNameLength, NameShouldNotContainsNumbersSpecCharacters, \
-    UserAccountDoesNotExist
+    UserAccountDoesNotExist, UserAccountAlreadyExistWithThisEmail
 from ib_iam.interactors.mixins.validation import ValidationMixin
 from ib_iam.interactors.presenter_interfaces.auth_presenter_interface import \
     CreateUserAccountPresenterInterface
 from ib_iam.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
-
-
-class AccountWithThisEmailAlreadyExistsException(Exception):
-    pass
 
 
 class PasswordDoesNotMatchedWithCriteriaException(Exception):
@@ -31,7 +27,7 @@ class SignupInteractor(ValidationMixin):
         try:
             self.create_user_account(email=email, name=name, password=password)
             response = presenter.get_response_for_create_user_account()
-        except AccountWithThisEmailAlreadyExistsException:
+        except UserAccountAlreadyExistWithThisEmail:
             response = presenter.raise_account_already_exists_exception()
         except PasswordDoesNotMatchedWithCriteriaException:
             response = presenter. \
