@@ -3,11 +3,9 @@
 class GetDataFromSheet:
 
     @staticmethod
-    def get_data_from_sub_sheet(sub_sheet_name: str):
+    def get_data_from_sub_sheet(spread_sheet_name: str, sub_sheet_name: str):
         from ib_tasks.utils.get_google_sheet import get_google_sheet
-        from ib_tasks.constants.constants import \
-            GOOGLE_SHEET_NAME
-        sheet = get_google_sheet(sheet_name=GOOGLE_SHEET_NAME)
+        sheet = get_google_sheet(sheet_name=spread_sheet_name)
         fields_config_sheet = sheet.worksheet(sub_sheet_name)
         field_records = fields_config_sheet.get_all_records()
         return field_records
