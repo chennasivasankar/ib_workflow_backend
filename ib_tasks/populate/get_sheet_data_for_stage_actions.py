@@ -49,14 +49,13 @@ class GetSheetDataForStageActions:
         schema = Schema(
             [{
                 "Stage ID*": And(str, len),
-                "Stage Display Name": And(str, len),
                 "Stage Display Logic": And(str, len),
                 "Action name": And(str, len),
                 "Role": And(str, len),
                 "Logic": And(str, len),
                 "Button Text": And(str, len),
                 Optional("Button Colour"): str,
-                "Action Type": str,
+                Optional("Action Type"): str,
                 Optional("Transition Template ID"): str
 
             }]
@@ -69,7 +68,6 @@ class GetSheetDataForStageActions:
     def _raise_exception_for_valid_stage_actions_format(self):
         valid_format = {
             "Stage ID*": "PR_PAYMENT_REQUEST_DRAFTS",
-            "Stage Display Name": "Payment Request Drafts",
             "Stage Display Logic": "Value [Status1] == Value[PR_PAYMENT_REQUEST_DRAFTS]",
             "Action name": "Save Draft",
             "Role": "ALL_ROLES",
