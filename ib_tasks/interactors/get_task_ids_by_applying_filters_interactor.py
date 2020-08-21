@@ -19,13 +19,13 @@ class GetTaskIdsBasedOnUserFilters:
         self.filter_storage = filter_storage
 
     def get_task_ids_by_applying_filters(
-            self, user_id: str, limit: int, offset: int) -> Tuple[List[int], int]:
+            self, user_id: str, limit: int, offset: int, stage_ids: List[str]) -> Tuple[List[int], int]:
         self._validations_of_limit_and_offset(offset=offset, limit=limit)
         filter_dtos = self.filter_storage.get_enabled_filters_dto_to_user(
             user_id=user_id
         )
         filtered_task_ids, total_tasks = self.elasticsearch_storage.filter_tasks(
-            filter_dtos=filter_dtos, offset=offset, limit=limit
+            filter_dtos=filter_dtos, offset=offset, limit=limit, stage_ids=stage_ids
         )
         return filtered_task_ids, total_tasks
 
