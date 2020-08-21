@@ -213,14 +213,13 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
             filter_operations_map[filter_dto.operator].append(filter_dto)
 
         query = None
-        for counter, key, value in enumerate(filter_operations_map.items()):
+        for key, value in filter_operations_map.items():
             current_queue = self._get_q_object_based_on_operation(
                 operation=key, filter_dtos=filter_dtos
             )
-            if counter == 0:
+            if query is None:
                 query = current_queue
-            else:
-                query = query & current_queue
+            query = query & current_queue
 
         search = Search(index=TASK_INDEX_NAME)
         if query is None:
@@ -262,7 +261,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         for counter, item in enumerate(filter_dtos):
             current_queue = Q('term', template_id__keyword=item.template_id) \
                             & Q('term', fields__field_id__keyword=item.field_id) \
-                            & Q('range', fields__value__keyword={"gte": item.value})
+                            & Q('range', fields__value={"gte": item.value})
             if counter == 0:
                 query = current_queue
             else:
@@ -275,7 +274,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         for counter, item in enumerate(filter_dtos):
             current_queue = Q('term', template_id__keyword=item.template_id) \
                             & Q('term', fields__field_id__keyword=item.field_id) \
-                            & Q('range', fields__value__keyword={"gt": item.value})
+                            & Q('range', fields__value={"gt": item.value})
             if counter == 0:
                 query = current_queue
             else:
@@ -288,7 +287,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         for counter, item in enumerate(filter_dtos):
             current_queue = Q('term', template_id__keyword=item.template_id) \
                             & Q('term', fields__field_id__keyword=item.field_id) \
-                            & Q('range', fields__value__keyword={"lte": item.value})
+                            & Q('range', fields__value={"lte": int(item.value)})
             if counter == 0:
                 query = current_queue
             else:
@@ -301,7 +300,7 @@ class ElasticSearchStorageImplementation(ElasticSearchStorageInterface):
         for counter, item in enumerate(filter_dtos):
             current_queue = Q('term', template_id__keyword=item.template_id) \
                             & Q('term', fields__field_id__keyword=item.field_id) \
-                            & Q('range', fields__value__keyword={"lt": item.value})
+                            & Q('range', fields__value={"lt": item.value})
             if counter == 0:
                 query = current_queue
             else:
