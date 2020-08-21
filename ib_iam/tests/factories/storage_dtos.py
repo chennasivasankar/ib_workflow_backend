@@ -4,7 +4,7 @@ from ib_iam.constants.enums import Searchable
 from ib_iam.interactors.storage_interfaces.dtos \
     import UserTeamDTO, UserCompanyDTO, UserRoleDTO, UserDTO, TeamIdAndNameDTO, \
     CompanyIdAndNameDTO, RoleDTO, TeamDTO, UserIdAndNameDTO, \
-    UserProfileDTO, SearchableDetailsDTO
+    UserProfileDTO, TeamMemberLevelDetailsDTO, MemberDTO, SearchableDetailsDTO
 
 
 class UserDTOFactory(factory.Factory):
@@ -14,6 +14,7 @@ class UserDTOFactory(factory.Factory):
     user_id = factory.sequence(lambda number: "team%s" % number)
     is_admin = True
     company_id = factory.sequence(lambda number: "company%s" % number)
+    cover_page_url = factory.sequence(lambda n: "url%d" % n)
 
 
 class UserTeamDTOFactory(factory.Factory):
@@ -251,6 +252,23 @@ class UserIdNameEmailAndProfilePicUrlDTOFactory(factory.Factory):
     name = factory.Iterator(["username", "testuser", "dummyuser"])
     email = factory.sequence(lambda n: "email%d@gmail.com" % n)
     profile_pic_url = factory.sequence(lambda n: "url%d" % n)
+
+
+class TeamMemberLevelDetailsDTOFactory(factory.Factory):
+    class Meta:
+        model = TeamMemberLevelDetailsDTO
+
+    team_member_level_id = factory.Faker("uuid4")
+    team_member_level_name = factory.Faker("name")
+    level_hierarchy = factory.Iterator([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+
+class MemberDTOFactory(factory.Factory):
+    class Meta:
+        model = MemberDTO
+
+    member_id = factory.Faker("uuid4")
+    immediate_superior_team_user_id = factory.Faker("uuid4")
 
 
 class SearchableDetailsDTOFactory(factory.Factory):

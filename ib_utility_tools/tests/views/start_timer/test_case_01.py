@@ -33,7 +33,9 @@ class TestCase01StartTimerAPITestCase(TestUtils):
         from ib_utility_tools.models import Timer
         timer_object = Timer.objects.get(entity_id=entity_id,
                                          entity_type=entity_type)
-        snapshot.assert_match(timer_object.start_datetime, "start_datetime")
+        snapshot.assert_match(
+            timer_object.start_datetime.strftime("%m/%d/%Y, %H:%M:%S"),
+            "start_datetime")
 
     @pytest.fixture
     def setup(self):

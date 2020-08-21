@@ -8,6 +8,7 @@ def generate_uuid4():
     return uuid.uuid4()
 
 
+# TODO: created by should be change to created_by_id
 class Team(AbstractDateTimeModel):
     team_id = models.UUIDField(
         default=generate_uuid4,

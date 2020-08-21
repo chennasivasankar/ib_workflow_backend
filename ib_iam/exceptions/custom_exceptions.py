@@ -41,6 +41,10 @@ class RoleIdsAreInvalid(Exception):
     pass
 
 
+class RoleIdsAreDuplicated(Exception):
+    pass
+
+
 class InvalidCompanyId(Exception):
     pass
 

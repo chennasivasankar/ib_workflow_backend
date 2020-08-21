@@ -22,7 +22,8 @@ class TestCase01UpdateUserProfileAPITestCase(TestUtils):
         prepare_update_user_profile_adapter_mock(mocker=mocker)
         body = {'name': 'username',
                 'email': 'jaswanthmamidipudi@gmail.com',
-                'profile_pic_url': 'https://sample.com'}
+                'profile_pic_url': 'https://sample.com',
+                "cover_page_url": ""}
         path_params = {}
         query_params = {}
         headers = {}

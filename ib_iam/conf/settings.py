@@ -12,3 +12,14 @@ Ib WorkFlow Team<br>
 iB Hubs<br>
 """
 EMAIL_SUBJECT = "Reset your password"
+VERIFY_USER_EMAIL_SUBJECT = "Verification of your email"
+VERIFY_USER_EMAIL_BODY_TEMPLATE = """
+Hi 
+Verify your email by using below link,
+<br>
+<a href="{verification_url}">Verify Your Email</a><br>
+<br>
+Thank you
+"""
+
+USER_VERIFICATION_EMAIL_EXPIRY_IN_SECONDS = 1800
