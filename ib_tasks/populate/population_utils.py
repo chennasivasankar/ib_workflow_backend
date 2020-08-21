@@ -60,3 +60,18 @@ def populate_data():
 
     task_creation_config = GetSheetDataForTaskCreationConfig()
     task_creation_config.get_data_from_task_creation_config_sub_sheet()
+
+
+def delete_elastic_search_data():
+    from elasticsearch_dsl import connections
+    from django.conf import settings
+    from ib_tasks.documents.elastic_task import Task
+    connections.create_connection(
+        hosts=[settings.ELASTICSEARCH_ENDPOINT], timeout=20
+    )
+    from elasticsearch import Elasticsearch
+    es = Elasticsearch(hosts=[settings.ELASTICSEARCH_ENDPOINT])
+    indices = [
+        Task
+    ]
+    es.delete_by_query(index=indices, body={"query": {"match_all": {}}})
