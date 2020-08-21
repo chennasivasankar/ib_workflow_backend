@@ -3,8 +3,7 @@ from typing import List, Optional
 from django.db.models import Count
 
 from ib_discussions.constants.enum import EntityType, FilterByEnum, SortByEnum
-from ib_discussions.exceptions.custom_exceptions import \
-    InvalidEntityTypeForEntityId, EntityIdNotFound, DiscussionIdNotFound, \
+from ib_discussions.exceptions.custom_exceptions import DiscussionIdNotFound, \
     UserCannotMarkAsClarified, DiscussionSetNotFound
 from ib_discussions.interactors.dtos.dtos import \
     DiscussionWithEntityDetailsDTO, \

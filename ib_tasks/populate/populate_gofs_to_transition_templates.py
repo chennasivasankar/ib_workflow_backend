@@ -19,8 +19,7 @@ class PopulateGoFsToTransitionTemplate:
         group_by_template_id_dict = collections.defaultdict(list)
         for item in gofs_with_template_ids_dicts:
             group_by_template_id_dict[item['Template ID'].strip()].append(
-                [item['GOF ID*'].strip(), item['Order'],
-                 item['Enable add another'].strip()]
+                [item['GOF ID*'].strip(), item['Order']]
             )
 
         from ib_tasks.populate.populate_gofs_to_template import \
@@ -69,15 +68,9 @@ class PopulateGoFsToTransitionTemplate:
                 message = INVALID_TYPE_FOR_ORDER.format(order)
                 raise InvalidTypeForOrder(message)
 
-            is_enable_add_another_gof_is_yes = gof[2] == "Yes"
-            if is_enable_add_another_gof_is_yes:
-                enable_add_another_gof = True
-            else:
-                enable_add_another_gof = False
-
             gof_with_order_and_add_another_dto = GoFWithOrderAndAddAnotherDTO(
                 gof_id=gof_id, order=order,
-                enable_add_another_gof=enable_add_another_gof
+                enable_add_another_gof=False
             )
             gof_with_order_and_add_another_dtos.append(
                 gof_with_order_and_add_another_dto

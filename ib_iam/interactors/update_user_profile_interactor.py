@@ -71,8 +71,6 @@ class UpdateUserProfileInteractor(ValidationMixin):
     def _create_user_profile_dto(user_profile_dto: CompleteUserProfileDTO):
         from ib_iam.adapters.dtos import UserProfileDTO
         profile_pic_url = user_profile_dto.profile_pic_url
-        if profile_pic_url == "":
-            profile_pic_url = None
         user_profile_dto = UserProfileDTO(
             user_id=user_profile_dto.user_id,
             name=user_profile_dto.name,

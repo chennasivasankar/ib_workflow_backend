@@ -140,22 +140,22 @@ class EditUserInteractor(ValidationMixin):
     def _update_user_roles_company_roles(
             self, user_id: str, company_id: str,
             role_ids: List[str], team_ids: List[str], name: str):
-        self._remove_existing_teams_roles_and_company(user_id)
-        self._assign_teams_roles_company_to_user(
+        self._remove_existing_teams_and_roles_of_user(user_id)
+        self._assign_teams_and_roles_and_company_to_user(
             company_id, role_ids, team_ids, user_id, name
         )
 
-    def _assign_teams_roles_company_to_user(
+    def _assign_teams_and_roles_and_company_to_user(
             self, company_id: str, role_ids: List[str], team_ids: List[str],
             user_id: str, name: str):
-        ids_of_role_objs = self.user_storage.get_role_objs_ids(role_ids)
+        db_role_ids = self.user_storage.get_role_objs_ids(role_ids)
         self.user_storage.add_roles_to_the_user(
-            user_id=user_id, role_ids=ids_of_role_objs)
+            user_id=user_id, role_ids=db_role_ids)
         self.user_storage.add_user_to_the_teams(user_id=user_id,
                                                 team_ids=team_ids)
         self.user_storage.update_user_details(user_id=user_id,
                                               company_id=company_id, name=name)
 
-    def _remove_existing_teams_roles_and_company(self, user_id: str):
+    def _remove_existing_teams_and_roles_of_user(self, user_id: str):
         self.user_storage.remove_roles_for_user(user_id)
         self.user_storage.remove_teams_for_user(user_id)

@@ -13,17 +13,17 @@ from ib_iam.interactors.storage_interfaces.user_storage_interface \
     import UserStorageInterface
 
 
-class GetUsersDetailsInteractor(ValidationMixin):
+class GetListOfUsersInteractor(ValidationMixin):
     def __init__(self, user_storage: UserStorageInterface):
         self.user_storage = user_storage
 
-    def get_users_details_wrapper(
+    def get_list_of_users_wrapper(
             self, user_id: str, pagination_dto: PaginationDTO,
             presenter: GetUsersListPresenterInterface,
             name_search_query: str
     ):
         try:
-            complete_user_details_dtos = self.get_users_details(
+            complete_user_details_dtos = self.get_users(
                 user_id=user_id, offset=pagination_dto.offset,
                 limit=pagination_dto.limit,
                 name_search_query=name_search_query)
@@ -39,7 +39,7 @@ class GetUsersDetailsInteractor(ValidationMixin):
             response = presenter.raise_invalid_user()
         return response
 
-    def get_users_details(
+    def get_users(
             self, user_id: str, offset: int, limit: int,
             name_search_query: str
     ) -> ListOfCompleteUsersDTO:
